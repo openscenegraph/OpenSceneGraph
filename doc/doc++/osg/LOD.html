@@ -23,68 +23,68 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.55.1">LOD</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.59.1">LOD</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.55.2">LOD</A></B>(const <!1><A HREF="LOD.html#DOC.2.55.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.59.2">LOD</A></B>(const <!1><A HREF="LOD.html#DOC.2.59.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.55.3">META_Node</A></B>(<!1><A HREF="LOD.html">LOD</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.59.3">META_Node</A></B>(<!1><A HREF="LOD.html">LOD</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.55.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.55.5">setRange</A></B>(const unsigned int index, const float range)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.59.5">setRange</A></B>(const unsigned int index, const float range)
 <DD><I>Sets the value of range list element index to range which is a floating point distance specified in world coordinates.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.55.6">getRange</A></B>(const unsigned int index) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.59.6">getRange</A></B>(const unsigned int index) const 
 <DD><I>returns the range for specified index</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.55.7">getNumRanges</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.59.7">getNumRanges</A></B>() const 
 <DD><I>returns the number of ranges currently set</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.55.8">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="BoundingSphere.html#DOC.2.5.8">center</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.59.8">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="ConvexPlanerPolygon.html#DOC.2.27.3">center</A>)
 <DD><I>Sets the object-space point which defines the center of the osg::LOD.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.55.9">getCenter</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.59.9">getCenter</A></B>() const 
 <DD><I>return the LOD center point.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.55.11">setEvaluateLODCallback</A></B>(<!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>* cbc)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.59.11">setEvaluateLODCallback</A></B>(<!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>* cbc)
 <DD><I>Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>* <B><A HREF="#DOC.2.55.12">getEvaluateLODCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>* <B><A HREF="#DOC.2.59.12">getEvaluateLODCallback</A></B>()
 <DD><I>Get the non const ComputeBillboardCallback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>* <B><A HREF="#DOC.2.55.13">getEvaluateLODCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>* <B><A HREF="#DOC.2.59.13">getEvaluateLODCallback</A></B>() const 
 <DD><I>Get the const ComputeBillboardCallback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.55.14">evaluate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.59.14">evaluate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const 
 <DD><I>return the child to traverse.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const int <B><A HREF="#DOC.2.59.15">evaluateLODChild</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.55.10">EvaluateLODCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.59.10">EvaluateLODCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DD><I>Callback attached to an LOD which allows the users to customize the selection of LOD children</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RangeList <B><A HREF="#DOC.2.55.18">_rangeList2</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RangeList <B><A HREF="#DOC.2.59.18">_rangeList2</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>&gt;  <B><A HREF="#DOC.2.55.19">_evaluateLODCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>&gt;  <B><A HREF="#DOC.2.59.19">_evaluateLODCallback</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.55.20">_center</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.59.20">_center</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.55.15">~LOD</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const int <B><A HREF="#DOC.2.55.16">evaluateLODChild</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.59.16">~LOD</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;float&gt; RangeList RangeList <B><A HREF="#DOC.2.55.17">_rangeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;float&gt; RangeList RangeList <B><A HREF="#DOC.2.59.17">_rangeList</A></B>
 </DL></P>
 
 </DL>
@@ -142,24 +142,24 @@ during rendering.</BLOCKQUOTE>
 <DL>
 
 <A NAME="LOD"></A>
-<A NAME="DOC.2.55.1"></A>
+<A NAME="DOC.2.59.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LOD"></A>
-<A NAME="DOC.2.55.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD(const <!1><A HREF="LOD.html#DOC.2.55.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.59.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD(const <!1><A HREF="LOD.html#DOC.2.59.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.55.3"></A>
+<A NAME="DOC.2.59.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="LOD.html">LOD</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.55.4"></A>
+<A NAME="DOC.2.59.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRange"></A>
-<A NAME="DOC.2.55.5"></A>
+<A NAME="DOC.2.59.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRange(const unsigned int index, const float range)</B></TT>
 <DD>Sets the value of range list element index to range which
 is a floating point distance specified in world coordinates.
@@ -167,82 +167,82 @@ Range list automatically expands to accommodate values beyond
 the current getNumRanges().
 <DL><DT><DD></DL><P>
 <A NAME="getRange"></A>
-<A NAME="DOC.2.55.6"></A>
+<A NAME="DOC.2.59.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getRange(const unsigned int index) const </B></TT>
 <DD>returns the range for specified index
 <DL><DT><DD></DL><P>
 <A NAME="getNumRanges"></A>
-<A NAME="DOC.2.55.7"></A>
+<A NAME="DOC.2.59.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumRanges() const </B></TT>
 <DD>returns the number of ranges currently set
 <DL><DT><DD></DL><P>
 <A NAME="setCenter"></A>
-<A NAME="DOC.2.55.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="BoundingSphere.html#DOC.2.5.8">center</A>)</B></TT>
+<A NAME="DOC.2.59.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="ConvexPlanerPolygon.html#DOC.2.27.3">center</A>)</B></TT>
 <DD>Sets the object-space point which defines the center of the osg::LOD.  
 center is affected by any transforms in the hierarchy above the osg::LOD.
 <DL><DT><DD></DL><P>
 <A NAME="getCenter"></A>
-<A NAME="DOC.2.55.9"></A>
+<A NAME="DOC.2.59.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenter() const </B></TT>
 <DD>return the LOD center point. 
 <DL><DT><DD></DL><P>
 <A NAME="EvaluateLODCallback"></A>
-<A NAME="DOC.2.55.10"></A>
+<A NAME="DOC.2.59.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  EvaluateLODCallback: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
 <DD>Callback attached to an LOD which allows the users to customize the selection of LOD children
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="evaluateLODChild"></A>
-<A NAME="DOC.2.55.10.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const int evaluateLODChild(const <!1><A HREF="LOD.html">osg::LOD</A>* lod, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const </B></TT>
+<A NAME="DOC.2.59.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const int evaluateLODChild(const <!1><A HREF="LOD.html">osg::LOD</A>* lod, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const  = 0</B></TT>
 <DD>Compute the child to select
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setEvaluateLODCallback"></A>
-<A NAME="DOC.2.55.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEvaluateLODCallback(<!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>* cbc)</B></TT>
+<A NAME="DOC.2.59.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEvaluateLODCallback(<!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>* cbc)</B></TT>
 <DD>Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children
 <DL><DT><DD></DL><P>
 <A NAME="getEvaluateLODCallback"></A>
-<A NAME="DOC.2.55.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>* getEvaluateLODCallback()</B></TT>
+<A NAME="DOC.2.59.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>* getEvaluateLODCallback()</B></TT>
 <DD>Get the non const ComputeBillboardCallback
 <DL><DT><DD></DL><P>
 <A NAME="getEvaluateLODCallback"></A>
-<A NAME="DOC.2.55.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>* getEvaluateLODCallback() const </B></TT>
+<A NAME="DOC.2.59.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>* getEvaluateLODCallback() const </B></TT>
 <DD>Get the const ComputeBillboardCallback
 <DL><DT><DD></DL><P>
 <A NAME="evaluate"></A>
-<A NAME="DOC.2.55.14"></A>
+<A NAME="DOC.2.59.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int evaluate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const </B></TT>
 <DD>return the child to traverse.
 Selected by the distance between the eye point in local
 coordinates and the LOD center, multiplied by the bias.
 <DL><DT><DD></DL><P>
-<A NAME="~LOD"></A>
-<A NAME="DOC.2.55.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LOD()</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="evaluateLODChild"></A>
-<A NAME="DOC.2.55.16"></A>
+<A NAME="DOC.2.59.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const int evaluateLODChild(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="~LOD"></A>
+<A NAME="DOC.2.59.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LOD()</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_rangeList"></A>
-<A NAME="DOC.2.55.17"></A>
+<A NAME="DOC.2.59.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;float&gt; RangeList RangeList _rangeList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rangeList2"></A>
-<A NAME="DOC.2.55.18"></A>
+<A NAME="DOC.2.59.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RangeList _rangeList2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_evaluateLODCallback"></A>
-<A NAME="DOC.2.55.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="LOD.html#DOC.2.55.10">EvaluateLODCallback</A>&gt;  _evaluateLODCallback</B></TT>
+<A NAME="DOC.2.59.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="LOD.html#DOC.2.59.10">EvaluateLODCallback</A>&gt;  _evaluateLODCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_center"></A>
-<A NAME="DOC.2.55.20"></A>
+<A NAME="DOC.2.59.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _center</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
@@ -250,7 +250,7 @@ coordinates and the LOD center, multiplied by the bias.
 </B><DD><A HREF="Impostor.html">Impostor</A><BR>
 </DL>
 
-<DL><DT><DT><B>Friends:</B><DD>  struct <!1><A HREF="LOD.html#DOC.2.55.10">osg::LOD::EvaluateLODCallback</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
 This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
 </BODY>

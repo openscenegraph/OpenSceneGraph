@@ -73,6 +73,8 @@
 <DD><I>Get the const ComputeBillboardCallback</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.3.21">getMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.3.22">computeMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const 
 </DL></P>
 
 <P><DL>
@@ -101,11 +103,9 @@
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.22">~Billboard</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.23">~Billboard</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.3.23">computeBound</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.3.24">computeMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.3.24">computeBound</A></B>() const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.31">setCachedMode</A></B>()
 </DL></P>
@@ -261,7 +261,7 @@ and do not the reference count of gset is left unchanged.
 
 <A NAME="computeMatrix"></A>
 <A NAME="DOC.2.3.17.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Billboard.html">Billboard</A>* billboard, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Billboard.html">Billboard</A>* billboard, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const  = 0</B></TT>
 <DD>Get the transformation matrix which moves from local coords to world coords
 <DL><DT><DD></DL><P></DL>
 
@@ -285,17 +285,17 @@ seen by cull traversers and alike
 <A NAME="DOC.2.3.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="~Billboard"></A>
+<A NAME="computeMatrix"></A>
 <A NAME="DOC.2.3.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Billboard"></A>
+<A NAME="DOC.2.3.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Billboard()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.3.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="computeMatrix"></A>
 <A NAME="DOC.2.3.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AxisAligned"></A>
 <A NAME="DOC.2.3.25"></A>
@@ -342,7 +342,7 @@ seen by cull traversers and alike
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
-<DL><DT><DT><B>Friends:</B><DD>  struct <!1><A HREF="Billboard.html#DOC.2.3.17">osg::Billboard::ComputeBillboardCallback</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
 This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
 </BODY>

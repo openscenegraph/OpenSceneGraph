@@ -23,112 +23,112 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.47.1">ImpostorSprite</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.1">ImpostorSprite</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.47.2">cloneType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.51.2">cloneType</A></B>() const 
 <DD><I>Clone an object of the same type as an ImpostorSprite</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.47.3">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.51.3">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
 <DD><I>Clone on ImpostorSprite just returns a clone of type,  since it is not appropriate to share data of an ImpostorSprite</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.47.4">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.51.4">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.47.5">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.51.5">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.6">setParent</A></B>(<!1><A HREF="Impostor.html">Impostor</A>* parent)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.6">setParent</A></B>(<!1><A HREF="Impostor.html">Impostor</A>* parent)
 <DD><I>Set the parent, which must be an Impostor.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Impostor.html">Impostor</A>* <B><A HREF="#DOC.2.47.7">getParent</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Impostor.html">Impostor</A>* <B><A HREF="#DOC.2.51.7">getParent</A></B>()
 <DD><I>Get the parent, which is an Impostor.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Impostor.html">Impostor</A>* <B><A HREF="#DOC.2.47.8">getParent</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Impostor.html">Impostor</A>* <B><A HREF="#DOC.2.51.8">getParent</A></B>() const 
 <DD><I>Get the const parent, which is an Impostor.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.47.9">setStoredLocalEyePoint</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.51.9">setStoredLocalEyePoint</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
 <DD><I>Set the eye point for when the ImpsotorSprite was snapped</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.47.10">getStoredLocalEyePoint</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.51.10">getStoredLocalEyePoint</A></B>() const 
 <DD><I>Get the eye point for when the ImpsotorSprite was snapped</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.47.11">setLastFrameUsed</A></B>(const int frameNumber)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.51.11">setLastFrameUsed</A></B>(const int frameNumber)
 <DD><I>Set the frame number for when the ImpostorSprite was last used in rendering</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.47.12">getLastFrameUsed</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.51.12">getLastFrameUsed</A></B>() const 
 <DD><I>Get the frame number for when the ImpostorSprite was last used in rendering</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.47.13">getCoords</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.51.13">getCoords</A></B>()
 <DD><I>Get the coordinates of the corners of the quad.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.47.14">getCoords</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.51.14">getCoords</A></B>() const 
 <DD><I>Get the const coordinates of the corners of the quad</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.47.15">getTexCoords</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.51.15">getTexCoords</A></B>()
 <DD><I>Get the texture coordinates of the corners of the quad.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.47.16">getTexCoords</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.51.16">getTexCoords</A></B>() const 
 <DD><I>Get the const texture coordinates of the corners of the quad</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.47.17">getControlCoords</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.51.17">getControlCoords</A></B>()
 <DD><I>Get the control coordinates of the corners of the quad.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.47.18">getControlCoords</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.51.18">getControlCoords</A></B>() const 
 <DD><I>Get the const control coordinates of the corners of the quad</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.47.19">calcPixelError</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; MVPW) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.51.19">calcPixelError</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; MVPW) const 
 <DD><I>calculate the pixel error value for passing in the ModelViewProjectionWindow transform, which transform local coords into screen space</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.20">setTexture</A></B>(<!1><A HREF="Texture.html">Texture</A>* tex, int <!1><A HREF="ImpostorSprite.html#DOC.2.47.23">s</A>, int <!1><A HREF="ImpostorSprite.html#DOC.2.47.24">t</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.20">setTexture</A></B>(<!1><A HREF="Texture.html">Texture</A>* tex, int <!1><A HREF="ImpostorSprite.html#DOC.2.51.23">s</A>, int <!1><A HREF="ImpostorSprite.html#DOC.2.51.24">t</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.47.21">getTexture</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.51.21">getTexture</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.47.22">getTexture</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.51.22">getTexture</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.47.23">s</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.51.23">s</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.47.24">t</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.51.24">t</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.47.25">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.51.25">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DD><I>draw ImpostorSprite directly.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.26">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A> &amp;stat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.51.26">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A> &amp;stat)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Impostor.html">Impostor</A>* <B><A HREF="#DOC.2.47.31">_parent</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Impostor.html">Impostor</A>* <B><A HREF="#DOC.2.51.31">_parent</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSpriteManager.html">ImpostorSpriteManager</A>* <B><A HREF="#DOC.2.47.32">_ism</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSpriteManager.html">ImpostorSpriteManager</A>* <B><A HREF="#DOC.2.51.32">_ism</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* <B><A HREF="#DOC.2.47.33">_previous</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* <B><A HREF="#DOC.2.51.33">_previous</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* <B><A HREF="#DOC.2.47.34">_next</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* <B><A HREF="#DOC.2.51.34">_next</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.47.35">_lastFrameUsed</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.51.35">_lastFrameUsed</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.47.36">_storedLocalEyePoint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.51.36">_storedLocalEyePoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.47.37">_coords</A></B>[4]
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.51.37">_coords</A></B>[4]
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec2.html">Vec2</A> <B><A HREF="#DOC.2.47.38">_texcoords</A></B>[4]
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec2.html">Vec2</A> <B><A HREF="#DOC.2.51.38">_texcoords</A></B>[4]
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.47.39">_controlcoords</A></B>[4]
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.51.39">_controlcoords</A></B>[4]
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.47.40">_texture</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.51.40">_texture</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.47.41">_s</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.51.41">_s</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.47.42">_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.51.42">_t</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.47.27">ImpostorSprite</A></B>(const <!1><A HREF="ImpostorSprite.html#DOC.2.47.27">ImpostorSprite</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.27">ImpostorSprite</A></B>(const <!1><A HREF="ImpostorSprite.html#DOC.2.51.27">ImpostorSprite</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&amp; <B><A HREF="#DOC.2.47.28">operator = </A></B>(const <!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&amp; <B><A HREF="#DOC.2.51.28">operator = </A></B>(const <!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.47.29">~ImpostorSprite</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.51.29">~ImpostorSprite</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.47.30">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.51.30">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -136,9 +136,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.34.5">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.34.5">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const unsigned int <B>getNumParents</B>() const 
 <DT>
@@ -164,17 +164,17 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* dc)
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.34.22">DrawCallback</A>* dc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* <B>getDrawCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.34.22">DrawCallback</A>* <B>getDrawCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.34.22">DrawCallback</A>* <B>getDrawCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* cc)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.34.26">CullCallback</A>* cc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* <B>getCullCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.34.26">CullCallback</A>* <B>getCullCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* <B>getCullCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.34.26">CullCallback</A>* <B>getCullCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(uint contextID, uint globj)
 <DT>
@@ -202,7 +202,7 @@ class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.34.5">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
 <DT>
@@ -214,9 +214,9 @@ class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bbox_computed</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.34.22">DrawCallback</A>&gt;  <B>_drawCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>&gt;  <B>_cullCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.34.26">CullCallback</A>&gt;  <B>_cullCallback</B>
 </DL></P>
 
 <P><DL>
@@ -238,9 +238,9 @@ class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> <B>getDataVariance</B>() const 
 </DL></P>
 
 <P><DL>
@@ -250,7 +250,7 @@ class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> <B>_dataVariance</B>
 </DL></P>
 
 </DL>
@@ -285,89 +285,89 @@ necessary to deal with it directly.</BLOCKQUOTE>
 <DL>
 
 <A NAME="ImpostorSprite"></A>
-<A NAME="DOC.2.47.1"></A>
+<A NAME="DOC.2.51.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImpostorSprite()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.2.47.2"></A>
+<A NAME="DOC.2.51.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
 <DD>Clone an object of the same type as an ImpostorSprite
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.47.3"></A>
+<A NAME="DOC.2.51.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const </B></TT>
 <DD>Clone on ImpostorSprite just returns a clone of type, 
 since it is not appropriate to share data of an ImpostorSprite
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.47.4"></A>
+<A NAME="DOC.2.51.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.47.5"></A>
+<A NAME="DOC.2.51.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setParent"></A>
-<A NAME="DOC.2.47.6"></A>
+<A NAME="DOC.2.51.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setParent(<!1><A HREF="Impostor.html">Impostor</A>* parent)</B></TT>
 <DD>Set the parent, which must be an Impostor. 
 Unlike conventional Drawables, ImpostorSprite's can only ever have
 one parent.
 <DL><DT><DD></DL><P>
 <A NAME="getParent"></A>
-<A NAME="DOC.2.47.7"></A>
+<A NAME="DOC.2.51.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Impostor.html">Impostor</A>* getParent()</B></TT>
 <DD>Get the parent, which is an Impostor. 
 <DL><DT><DD></DL><P>
 <A NAME="getParent"></A>
-<A NAME="DOC.2.47.8"></A>
+<A NAME="DOC.2.51.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Impostor.html">Impostor</A>* getParent() const </B></TT>
 <DD>Get the const parent, which is an Impostor. 
 <DL><DT><DD></DL><P>
 <A NAME="setStoredLocalEyePoint"></A>
-<A NAME="DOC.2.47.9"></A>
+<A NAME="DOC.2.51.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setStoredLocalEyePoint(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)</B></TT>
 <DD>Set the eye point for when the ImpsotorSprite was snapped
 <DL><DT><DD></DL><P>
 <A NAME="getStoredLocalEyePoint"></A>
-<A NAME="DOC.2.47.10"></A>
+<A NAME="DOC.2.51.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getStoredLocalEyePoint() const </B></TT>
 <DD>Get the eye point for when the ImpsotorSprite was snapped
 <DL><DT><DD></DL><P>
 <A NAME="setLastFrameUsed"></A>
-<A NAME="DOC.2.47.11"></A>
+<A NAME="DOC.2.51.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLastFrameUsed(const int frameNumber)</B></TT>
 <DD>Set the frame number for when the ImpostorSprite was last used in rendering
 <DL><DT><DD></DL><P>
 <A NAME="getLastFrameUsed"></A>
-<A NAME="DOC.2.47.12"></A>
+<A NAME="DOC.2.51.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getLastFrameUsed() const </B></TT>
 <DD>Get the frame number for when the ImpostorSprite was last used in rendering
 <DL><DT><DD></DL><P>
 <A NAME="getCoords"></A>
-<A NAME="DOC.2.47.13"></A>
+<A NAME="DOC.2.51.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A>* getCoords()</B></TT>
 <DD>Get the coordinates of the corners of the quad.
 Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.
 <DL><DT><DD></DL><P>
 <A NAME="getCoords"></A>
-<A NAME="DOC.2.47.14"></A>
+<A NAME="DOC.2.51.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>* getCoords() const </B></TT>
 <DD>Get the const coordinates of the corners of the quad
 <DL><DT><DD></DL><P>
 <A NAME="getTexCoords"></A>
-<A NAME="DOC.2.47.15"></A>
+<A NAME="DOC.2.51.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec2.html">Vec2</A>* getTexCoords()</B></TT>
 <DD>Get the texture coordinates of the corners of the quad.
 Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.
 <DL><DT><DD></DL><P>
 <A NAME="getTexCoords"></A>
-<A NAME="DOC.2.47.16"></A>
+<A NAME="DOC.2.51.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec2.html">Vec2</A>* getTexCoords() const </B></TT>
 <DD>Get the const texture coordinates of the corners of the quad
 <DL><DT><DD></DL><P>
 <A NAME="getControlCoords"></A>
-<A NAME="DOC.2.47.17"></A>
+<A NAME="DOC.2.51.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A>* getControlCoords()</B></TT>
 <DD>Get the control coordinates of the corners of the quad.
 The control coordinates are the corners of the quad projected
@@ -382,107 +382,107 @@ can then be used to determine whether the impostor needs to be updated.
 Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.
 <DL><DT><DD></DL><P>
 <A NAME="getControlCoords"></A>
-<A NAME="DOC.2.47.18"></A>
+<A NAME="DOC.2.51.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>* getControlCoords() const </B></TT>
 <DD>Get the const control coordinates of the corners of the quad
 <DL><DT><DD></DL><P>
 <A NAME="calcPixelError"></A>
-<A NAME="DOC.2.47.19"></A>
+<A NAME="DOC.2.51.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float calcPixelError(const <!1><A HREF="Matrix.html">Matrix</A>&amp; MVPW) const </B></TT>
 <DD>calculate the pixel error value for passing in the ModelViewProjectionWindow transform,
 which transform local coords into screen space
 <DL><DT><DD></DL><P>
 <A NAME="setTexture"></A>
-<A NAME="DOC.2.47.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTexture(<!1><A HREF="Texture.html">Texture</A>* tex, int <!1><A HREF="ImpostorSprite.html#DOC.2.47.23">s</A>, int <!1><A HREF="ImpostorSprite.html#DOC.2.47.24">t</A>)</B></TT>
+<A NAME="DOC.2.51.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTexture(<!1><A HREF="Texture.html">Texture</A>* tex, int <!1><A HREF="ImpostorSprite.html#DOC.2.51.23">s</A>, int <!1><A HREF="ImpostorSprite.html#DOC.2.51.24">t</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTexture"></A>
-<A NAME="DOC.2.47.21"></A>
+<A NAME="DOC.2.51.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html">Texture</A>* getTexture()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTexture"></A>
-<A NAME="DOC.2.47.22"></A>
+<A NAME="DOC.2.51.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Texture.html">Texture</A>* getTexture() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="s"></A>
-<A NAME="DOC.2.47.23"></A>
+<A NAME="DOC.2.51.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int s() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="t"></A>
-<A NAME="DOC.2.47.24"></A>
+<A NAME="DOC.2.51.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int t() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawImmediateMode"></A>
-<A NAME="DOC.2.47.25"></A>
+<A NAME="DOC.2.51.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImmediateMode(<!1><A HREF="State.html">State</A>&amp; state)</B></TT>
 <DD>draw ImpostorSprite directly. 
 <DL><DT><DD></DL><P>
 <A NAME="getStats"></A>
-<A NAME="DOC.2.47.26"></A>
+<A NAME="DOC.2.51.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getStats(<!1><A HREF="Statistics.html">Statistics</A> &amp;stat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ImpostorSprite"></A>
-<A NAME="DOC.2.47.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImpostorSprite(const <!1><A HREF="ImpostorSprite.html#DOC.2.47.27">ImpostorSprite</A>&amp;)</B></TT>
+<A NAME="DOC.2.51.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImpostorSprite(const <!1><A HREF="ImpostorSprite.html#DOC.2.51.27">ImpostorSprite</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.47.28"></A>
+<A NAME="DOC.2.51.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&amp; operator = (const <!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~ImpostorSprite"></A>
-<A NAME="DOC.2.47.29"></A>
+<A NAME="DOC.2.51.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ImpostorSprite()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.47.30"></A>
+<A NAME="DOC.2.51.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_parent"></A>
-<A NAME="DOC.2.47.31"></A>
+<A NAME="DOC.2.51.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Impostor.html">Impostor</A>* _parent</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ism"></A>
-<A NAME="DOC.2.47.32"></A>
+<A NAME="DOC.2.51.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImpostorSpriteManager.html">ImpostorSpriteManager</A>* _ism</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previous"></A>
-<A NAME="DOC.2.47.33"></A>
+<A NAME="DOC.2.51.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* _previous</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_next"></A>
-<A NAME="DOC.2.47.34"></A>
+<A NAME="DOC.2.51.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* _next</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_lastFrameUsed"></A>
-<A NAME="DOC.2.47.35"></A>
+<A NAME="DOC.2.51.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _lastFrameUsed</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_storedLocalEyePoint"></A>
-<A NAME="DOC.2.47.36"></A>
+<A NAME="DOC.2.51.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _storedLocalEyePoint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_coords"></A>
-<A NAME="DOC.2.47.37"></A>
+<A NAME="DOC.2.51.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _coords[4]</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_texcoords"></A>
-<A NAME="DOC.2.47.38"></A>
+<A NAME="DOC.2.51.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec2.html">Vec2</A> _texcoords[4]</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_controlcoords"></A>
-<A NAME="DOC.2.47.39"></A>
+<A NAME="DOC.2.51.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _controlcoords[4]</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_texture"></A>
-<A NAME="DOC.2.47.40"></A>
+<A NAME="DOC.2.51.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html">Texture</A>* _texture</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s"></A>
-<A NAME="DOC.2.47.41"></A>
+<A NAME="DOC.2.51.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _s</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_t"></A>
-<A NAME="DOC.2.47.42"></A>
+<A NAME="DOC.2.51.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _t</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -43,7 +43,7 @@
 #include <osg/GL>
 #include <osg/Texture>
 
-#ifndef MSV_VER
+#if !defined(_MSC_VER)
 typedef char        __int8;
 typedef short       __int16;
 typedef int         __int32;

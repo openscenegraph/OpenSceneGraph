@@ -171,7 +171,7 @@ bool TerrapageNode::computeBound() const
     }
     else
     {
-        return osg::Group::computeBound();
+        return Group::computeBound();
     }
 }
 

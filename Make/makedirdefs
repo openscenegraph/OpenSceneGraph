@@ -33,6 +33,7 @@ PLUGIN_DIRS = \
 	bmp\
 	pic\
 	tga\
+	logos\
 	osgtgz\
 	tgz\
 	zip  

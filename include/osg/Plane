@@ -52,6 +52,13 @@ class SG_EXPORT Plane
             calculateUpperLowerBBCorners();
         }
         
+        inline void set(const Vec3& norm, const Vec3& point)
+        {
+            float d = -norm[0]*point[0] - norm[1]*point[1] - norm[2]*point[2];
+            _fv.set(norm[0],norm[1],norm[2],d);
+            calculateUpperLowerBBCorners();
+        }
+
         /** flip/reverse the orientation of the plane.*/
         inline void flip()
         {
@@ -78,7 +85,7 @@ class SG_EXPORT Plane
 
         }
 
-        inline bool valid() const { return _fv[0]==0.0f && _fv[1]==0.0f && _fv[2]==0.0f; }
+        inline bool valid() const { return _fv.valid(); }
 
 	inline Vec4& asVec4() { return _fv; }
 
@@ -88,7 +95,7 @@ class SG_EXPORT Plane
         inline float  operator [] (unsigned int i) const { return _fv[i]; }
         
         
-        inline osg::Vec3 getNormal() { return osg::Vec3(_fv[0],_fv[1],_fv[2]); }
+        inline osg::Vec3 getNormal() const { return osg::Vec3(_fv[0],_fv[1],_fv[2]); }
       
               /** calculate the distance between a point and the plane.*/
         inline float distance(const osg::Vec3& v) const

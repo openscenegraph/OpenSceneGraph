@@ -460,8 +460,8 @@ void Texture::flushDeletedTextureObjects(uint contextID)
     DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
     if (citr!=s_deletedTextureObjectCache.end())
     {
-        std::set<uint>& textureObjectSet = citr->second;
-        for(std::set<uint>::iterator titr=textureObjectSet.begin();
+        std::set<GLuint>& textureObjectSet = citr->second;
+        for(std::set<GLuint>::iterator titr=textureObjectSet.begin();
                                      titr!=textureObjectSet.end();
                                      ++titr)
         {

@@ -67,7 +67,6 @@ struct SLightPointAppearancePalette
     float32     lodScale;
 };
 
-
 class LtPtAppearancePaletteRecord : public AncillaryRecord
 {
     public:
@@ -83,6 +82,80 @@ class LtPtAppearancePaletteRecord : public AncillaryRecord
     protected:
 
         virtual ~LtPtAppearancePaletteRecord();
+
+        virtual void endian();
+};
+
+
+
+struct SLightPointAnimationPalette
+{
+    SRecHeader  RecHeader;
+    int32       reserved_0;
+    char        name[256];
+    int32       index;
+	float32     period;     // in seconds
+	float32     phaseDelay; // inb seconds, from start of period
+	float32     enabledPeriod; // time on, in seconds
+	float32     axis[3];    // for rotating animations
+	uint32      flags;      // flags bits: 0 -- flashing
+							//             1 -- rotating
+							//             3 -- rotate counter clockwise
+							//             4-31 -- reserved
+	int32     animType;     // animation type: 0 -- flashing sequence
+	                        //                 1 -- rotating
+	                        //                 2 -- strobe
+	                        //                 3 -- Morse code
+	int32     morseTiming;  // Morse timing: 0 -- standard timing
+		                    //               1 -- Farnsworth timing
+	int32     wordRate;     // for Farnsworth timing
+	int32     charRate;     // for Farnsworth timing
+	char      morseString[1024];
+	int32     numSequences; // for flashing sequences
+};
+// Repeated numSequenses times:
+struct SLightPointAnimationSequence
+{
+	uint32    seqState;     // sequence state: 0 -- On
+	                        //                 1 -- Off
+	                        //                 2 -- Color Change
+	float32   duration;     // duration of sequence in seconds
+	uint32    seqColor;     // color, if state is On or Color Change
+};
+
+class LtPtAnimationPaletteRecord : public AncillaryRecord
+{
+    public:
+
+        LtPtAnimationPaletteRecord();
+
+        virtual Record* clone() const { return new LtPtAnimationPaletteRecord(); }
+        virtual const char* className() const { return "LtPtAnimationPaletteRecord"; }
+        virtual int classOpcode() const { return LIGHT_PT_ANIMATION_PALETTE_OP; }
+        virtual size_t sizeofData() const { return sizeof(SLightPointAnimationPalette); }
+        virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
+
+		SLightPointAnimationSequence* sequence( int idx );
+
+		enum FlagsBits {
+			FLASHING = 0x80000000,
+			ROTATING = 0x40000000,
+			ROT_COUNTER_CLOCKWISE = 0x20000000
+		};
+		enum AnimationType {
+			SEQ_TYPE = 0,
+			ROT_TYPE = 1,
+			STROBE_TYPE = 2,
+			MORSE_TYPE = 3
+		};
+		enum SequenceState {
+			SEQ_ON = 0,
+			SEQ_OFF = 1,
+			SEQ_COLOR = 2
+		};
+
+    protected:
+        virtual ~LtPtAnimationPaletteRecord();
 
         virtual void endian();
 };

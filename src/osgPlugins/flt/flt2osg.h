@@ -31,6 +31,7 @@ class MaterialPaletteRecord;
 class OldMaterialPaletteRecord;
 class TexturePaletteRecord;
 class LtPtAppearancePaletteRecord;
+class LtPtAnimationPaletteRecord;
 class VertexPaletteRecord;
 class VertexRecord;
 class NormalVertexRecord;
@@ -137,6 +138,7 @@ class ConvertFromFLT
         void visitOldMaterialPalette(osg::Group& osgParent, OldMaterialPaletteRecord* rec);
         void visitTexturePalette(osg::Group& osgParent, TexturePaletteRecord* rec);
         void visitLtPtAppearancePalette(osg::Group& osgParent, LtPtAppearancePaletteRecord* rec);
+        void visitLtPtAnimationPalette(osg::Group& osgParent, LtPtAnimationPaletteRecord* rec);
         void visitVertexPalette(osg::Group& osgParent, VertexPaletteRecord* rec);
         void visitVertex(osg::Group& osgParent, VertexRecord* rec);
         void visitNormalVertex(osg::Group& osgParent, NormalVertexRecord* rec);

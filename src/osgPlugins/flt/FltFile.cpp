@@ -24,7 +24,9 @@ using namespace flt;
 FltFile::FltFile(
     ColorPool* pColorPool,
     TexturePool* pTexturePool,
-    MaterialPool* pMaterialPool)
+    MaterialPool* pMaterialPool,
+    LtPtAppearancePool* pLtPtAppearancePool,
+    LtPtAnimationPool* pLtPtAnimationPool)
 {
     _useTextureAlphaForTransparancyBinning = true;
     _doUnitsConversion = true;
@@ -69,14 +71,28 @@ FltFile::FltFile(
         setMaterialPool( new MaterialPool );
     }
 
+    if (pLtPtAppearancePool && pLtPtAnimationPool) // Can only be non-NULL if parent is 15.8.
+    {
+        // use external light point appearance and animation palettes, ignore internal
+        _useInternalLtPtPalettes = false;
+        setLtPtAppearancePool( pLtPtAppearancePool );
+        setLtPtAnimationPool( pLtPtAnimationPool );
+    }
+    else
+    {
+		// If they aren't both set, then they must both be NULL.
+		assert( (pLtPtAppearancePool==NULL) && (pLtPtAppearancePool==NULL) );
+        // use internal light point palettes
+        _useInternalLtPtPalettes = true;
+        setLtPtAppearancePool( new LtPtAppearancePool );
+        setLtPtAnimationPool( new LtPtAnimationPool );
+    }
+
     // no support for external light palettes
     setLightPool( new LightPool );
 
     // instances are always internally defined 
     setInstancePool( new InstancePool );
-
-    // Light point appearances are always internally defined 
-    setLtPtAppearancePool( new LtPtAppearancePool );
 }
 
 
@@ -191,26 +207,31 @@ bool FltFile::readFile(const std::string& fileName)
                     ColorPool*      pColorPool    = NULL;
                     TexturePool*    pTexturePool  = NULL;
                     MaterialPool*   pMaterialPool = NULL;
+                    LtPtAppearancePool* pLtPtAppearancePool = NULL;
+                    LtPtAnimationPool* pLtPtAnimationPool = NULL;
                     std::string filename(pSExternal->szPath);
 
                     osg::notify(osg::INFO) << "External=" << filename << std::endl;
 
                     if (rec.getFlightVersion() > 13)
                     {
-                        if (pSExternal->dwFlags & ExternalRecord::COLOR_PALETTE_OVERRIDE)
-                            pColorPool = NULL;
-                        else
+                        if (!(pSExternal->dwFlags & ExternalRecord::COLOR_PALETTE_OVERRIDE))
                             pColorPool = _pFltFile->getColorPool();
 
-                        if (pSExternal->dwFlags & ExternalRecord::TEXTURE_PALETTE_OVERRIDE)
-                            pTexturePool = NULL;
-                        else
+                        if (!(pSExternal->dwFlags & ExternalRecord::TEXTURE_PALETTE_OVERRIDE))
                             pTexturePool = _pFltFile->getTexturePool();
 
-                        if (pSExternal->dwFlags & ExternalRecord::MATERIAL_PALETTE_OVERRIDE)
-                            pMaterialPool = NULL;
-                        else
+                        if (!(pSExternal->dwFlags & ExternalRecord::MATERIAL_PALETTE_OVERRIDE))
                             pMaterialPool = _pFltFile->getMaterialPool();
+
+                        if (rec.getFlightVersion() >= 1580)
+                        {
+                            if (!(pSExternal->dwFlags & ExternalRecord::LIGHT_POINT_PALETTE_OVERRIDE))
+							{
+                                pLtPtAppearancePool = _pFltFile->getLtPtAppearancePool();
+                                pLtPtAnimationPool = _pFltFile->getLtPtAnimationPool();
+							}
+                        }
                     }
 
     #if REGISTER_FLT
@@ -236,12 +257,14 @@ bool FltFile::readFile(const std::string& fileName)
                         osgDB::PushAndPopDataPath tmpfile(pushAndPopPath);
 
 
-                        pExternalFltFile = new FltFile(pColorPool, pTexturePool, pMaterialPool);                        
+                        pExternalFltFile = new FltFile( pColorPool, pTexturePool, pMaterialPool,
+                            pLtPtAppearancePool, pLtPtAnimationPool );                        
                         pExternalFltFile->readModel(filename);
                     }
                     Registry::instance()->addFltFile(filename, pExternalFltFile);
     #else
-                    pExternalFltFile = new FltFile(pColorPool, pTexturePool, pMaterialPool);
+                    pExternalFltFile = new FltFile( pColorPool, pTexturePool, pMaterialPool,
+                        pLtPtAppearancePool, pLtPtAnimationPool );
                     pExternalFltFile->readModel(filename);
     #endif
                     rec.setExternal(pExternalFltFile);

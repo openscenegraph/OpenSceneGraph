@@ -55,7 +55,8 @@ class ExternalRecord : public PrimNodeRecord
             TEXTURE_PALETTE_OVERRIDE    = BIT29,
             LINESTYLE_PALETTE_OVERRIDE  = BIT28,
             SOUND_PALETTE_OVERRIDE      = BIT27,
-            LIGHTSOURCE_PALETTE_OVERRIDE = BIT26
+            LIGHTSOURCE_PALETTE_OVERRIDE = BIT26,
+            LIGHT_POINT_PALETTE_OVERRIDE = BIT25
         };
 
     protected:

@@ -81,7 +81,7 @@
 #define CURVE_OP                        126 // ignored
 #define ROAD_CONSTRUCTION_OP            127
 #define LIGHT_PT_APPEARANCE_PALETTE_OP  128
-#define LIGHT_PT_ANIMATION_PALETTE_OP   129 // ignored
+#define LIGHT_PT_ANIMATION_PALETTE_OP   129
 #define INDEXED_LIGHT_PT_OP             130
 #define LIGHT_PT_SYSTEM_OP              131
 #define INDEXED_STRING_OP               132 // ignored

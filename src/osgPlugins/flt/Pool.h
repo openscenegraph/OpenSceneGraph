@@ -13,6 +13,7 @@
 #include <osg/StateSet>
 #include <osg/Light>
 #include <osg/Group>
+#include <osgSim/BlinkSequence>
 
 #include "AttrData.h"
 
@@ -183,6 +184,30 @@ private:
     typedef std::map<int, osg::ref_ptr<PoolLtPtAppearance> > AppearanceMap;
     AppearanceMap _appearanceMap;
 };
+
+class LtPtAnimationPool : public osg::Referenced
+{
+public:
+    struct PoolLtPtAnimation : public osg::Referenced
+    {
+		std::string _name;
+		osg::ref_ptr<osgSim::BlinkSequence> _blink;
+    };
+
+    LtPtAnimationPool()
+    {}
+
+    PoolLtPtAnimation* get( int nIndex );
+    void add( int nIndex, PoolLtPtAnimation* anim );
+
+protected:
+    ~LtPtAnimationPool() {}
+
+private:
+    typedef std::map<int, osg::ref_ptr<PoolLtPtAnimation> > AnimationMap;
+    AnimationMap _animationMap;
+};
+
 
 }; // end namespace flt
 

@@ -305,5 +305,26 @@ void LtPtAppearancePool::add(int nIndex, PoolLtPtAppearance* appearance)
 }
 
 
+LtPtAnimationPool::PoolLtPtAnimation*
+LtPtAnimationPool::get( int nIndex )
+{
+    if (nIndex < 0)
+        return NULL;
+
+    AnimationMap::iterator fitr = _animationMap.find(nIndex);
+    if (fitr != _animationMap.end())
+        return (*fitr).second.get();
+
+    return NULL;
+}
+
+
+void
+LtPtAnimationPool::add(int nIndex, PoolLtPtAnimation* anim)
+{
+    _animationMap[nIndex] = anim;
+}
+
+
 
 

@@ -10,4 +10,7 @@ LIBS     += -losgProducer -lProducer -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS
 
 EXEC = osgcluster
 
+INC += $(PRODUCER_INCLUDE_DIR)
+LDFLAGS += $(PRODUCER_LIB_DIR)
+
 include $(TOPDIR)/Make/makerules

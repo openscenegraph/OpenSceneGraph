@@ -20,4 +20,8 @@ INSTFILES = \
 
 EXEC = osgcluster
 
+
+INC += $(PRODUCER_INCLUDE_DIR)
+LDFLAGS += $(PRODUCER_LIB_DIR)
+
 include $(TOPDIR)/Make/makerules 

@@ -98,55 +98,15 @@ void Paragraph::createDrawables()
     
     typedef vector<std::string> TextList;
     TextList formatedText;
-
-    std::string::size_type start = 0;
-    std::string::size_type last_space = 0;
-    std::string::size_type current_line_length = 0;
-
-    for(std::string::size_type current=0;
-        current<_text.size();
-        ++current)
-    {
-        const char c = _text[current];
-        if (c==' ') last_space = current;
-        
-        if (c=='\n')
-        {
-            formatedText.push_back(std::string(_text,start,current-start));
-            start = current+1;
-            
-            last_space = start;
-            current_line_length = 0;
-        }
-        else if (current_line_length==_maxCharsPerLine)
-        {
-            if (last_space>start)
-            {
-                formatedText.push_back(std::string(_text,start,last_space-start));
-                start = last_space+1;
-            }
-            
-            else
-            {
-                formatedText.push_back(std::string(_text,start,current-start));
-                start = current+1;
-            }
-            
-            last_space = start;
-            current_line_length = 0;
-        }
-        else ++current_line_length;
-    }
-    if (start<_text.size())
-    {
-        formatedText.push_back(std::string(_text,start,_text.size()-start));
-    }
+    
+    createFormatedText(_maxCharsPerLine,_text,formatedText);
 
     // now create the text drawables from the formate text list.
     for(TextList::iterator itr=formatedText.begin();
         itr!=formatedText.end();
         ++itr)
     {
+    
         osgText::Text* textDrawable = new osgText::Text(_font.get());
         textDrawable->setAlignment(_alignment);
         textDrawable->setPosition(pos);
@@ -161,4 +121,55 @@ void Paragraph::createDrawables()
 
     }
     
+}
+
+bool Paragraph::createFormatedText(unsigned int noCharsPerLine,const std::string& str,std::vector<std::string>& formatedText)
+{
+    if (str.empty()) return false;
+
+    std::string::size_type start = 0;
+    std::string::size_type last_space = 0;
+    std::string::size_type current_line_length = 0;
+
+    for(std::string::size_type current=0;
+        current<str.size();
+        ++current)
+    {
+        const char c = str[current];
+        if (c==' ') last_space = current;
+        
+        if (c=='\n')
+        {
+            formatedText.push_back(std::string(str,start,current-start));
+            start = current+1;
+            
+            last_space = start;
+            current_line_length = 0;
+        }
+        else if (current_line_length==noCharsPerLine)
+        {
+            if (last_space>start)
+            {
+                formatedText.push_back(std::string(str,start,last_space-start));
+                start = last_space+1;
+                current_line_length = current-start;
+            }
+            
+            else
+            {
+                formatedText.push_back(std::string(str,start,current-start));
+                start = current+1;
+                current_line_length = 0;
+            }
+            
+            last_space = start;
+        }
+        else ++current_line_length;
+    }
+    if (start<str.size())
+    {
+        formatedText.push_back(std::string(str,start,str.size()-start));
+    }
+
+    return true;
 }

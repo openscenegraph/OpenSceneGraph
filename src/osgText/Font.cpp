@@ -1,11 +1,11 @@
 /* --------------------------------------------------------------------------
  *
- *	openscenegraph textLib / FTGL
+ *    openscenegraph textLib / FTGL
  *
  * --------------------------------------------------------------------------
- *	
- *	prog:	max rheiner;mrn@paus.ch
- *	date:	4/25/2001	(m/d/y)
+ *    
+ *    prog:    max rheiner;mrn@paus.ch
+ *    date:    4/25/2001    (m/d/y)
  *
  * ----------------------------------------------------------------------------
  *
@@ -61,136 +61,136 @@ std::string findFontFile(const std::string& str)
 Font::
 Font()
 {
-	_init=false;
-	_font=NULL;
-	_created=false;
+    _init=false;
+    _font=NULL;
+    _created=false;
 
-	_pointSize=14;
-	_res=72;
+    _pointSize=14;
+    _res=72;
 }
 
 bool Font::
 init(const std::string& font)
 {
-	_font=NULL;
-	_created=false;
+    _font=NULL;
+    _created=false;
 
-	open(font);
+    open(font);
 
-	if(_font!=NULL)
-		return true; 
-	else
-		return false;
+    if(_font!=NULL)
+        return true; 
+    else
+        return false;
 }
 
 Font::
 ~Font()
 {
-	clear();
+    clear();
 }
 
 bool Font::
 open(const std::string& font)
 {
-	clear();
+    clear();
         
         std::string filename = findFontFile(font);
         if (filename.empty()) return false;
 
-	_font=createFontObj();
-	if( _font!=NULL && _font->Open(filename.c_str()) )
-	{
-		_init=true;
-		_fontName=font;
-		return true;
-	}
-	else
-		return false;
+    _font=createFontObj();
+    if( _font!=NULL && _font->Open(filename.c_str()) )
+    {
+        _init=true;
+        _fontName=font;
+        return true;
+    }
+    else
+        return false;
 }
 
 bool Font::
 create(int pointSize,const unsigned int res)
 {
-	_pointSize=pointSize;
-	_res=res;
+    _pointSize=pointSize;
+    _res=res;
 
-	return create();
+    return create();
 }
 
 bool  Font::
 create()
 {
-	if(_init)
-	{
-		if(_font->FaceSize(_pointSize,_res))
-		{
-			_created=true;
-			return true;
-		}
-		else
-			return false;
-	}
-	else
-		return false;
+    if(_init)
+    {
+        if(_font->FaceSize(_pointSize,_res))
+        {
+            _created=true;
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return false;
 }
 
 void Font::
 output(const char* text)
 {
-	if(_created)
-		_font->render(text);
-	else
-		create(_pointSize);
+    if(_created)
+        _font->render(text);
+    else
+        create(_pointSize);
 }
 
 void  Font::
 clear()
 {
-	_init=false;
-	
-	if(_font)
-	{
-		delete _font;
-		_font=NULL;
-	}
+    _init=false;
+    
+    if(_font)
+    {
+        delete _font;
+        _font=NULL;
+    }
 
-	_fontName="";
+    _fontName="";
 }
 
 float Font::
 getWidth(const char* text)  const
 {
-	if(_init && _created)
-		return _font->Advance(text);
-	else
-		return -1;
+    if(_init && _created)
+        return _font->Advance(text);
+    else
+        return -1;
 }
 
 int Font::
 getHeight()  const
 {
-	if(_init && _created)
-		return _pointSize;
-	else
-		return -1;
+    if(_init && _created)
+        return _pointSize;
+    else
+        return -1;
 }
 
 int Font::
 getDescender() const
 {
-	if(_init && _created)
-		return _font->Descender();
-	else
-		return -1;
+    if(_init && _created)
+        return _font->Descender();
+    else
+        return -1;
 }
 
 int Font::
 getAscender() const
 {
-	if(_init && _created)
-		return _font->Ascender();
-	else
-		return -1;
+    if(_init && _created)
+        return _font->Ascender();
+    else
+        return -1;
 }
 
 
@@ -201,22 +201,22 @@ getAscender() const
 // BitmapFont
 
 BitmapFont::
-BitmapFont(const std::string&	font, 
-		   int					point_size):
+BitmapFont(const std::string&    font, 
+           int                    point_size):
 RasterFont()
 {
-	if(init(font))
-	{
-	}
-	_pointSize=point_size;
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
 }
 
 FTFont*  BitmapFont::
 createFontObj(void)
 {
-	return (FTFont*)(new FTGLBitmapFont);
+    return (FTFont*)(new FTGLBitmapFont);
 }
-	
+    
 // BitmapFont
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -224,23 +224,23 @@ createFontObj(void)
 // PixmapFont
 
 PixmapFont::
-PixmapFont(const std::string&	font, 
-			int					point_size):
+PixmapFont(const std::string&    font, 
+            int                    point_size):
 RasterFont(font)
 {
-	if(init(font))
-	{
-	}
-	_pointSize=point_size;
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
 }
-	
+    
 
 FTFont*  PixmapFont::
 createFontObj(void)
 {
-	return (FTFont*)(new FTGLPixmapFont);
+    return (FTFont*)(new FTGLPixmapFont);
 }
-	
+    
 // PixmapFont
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -248,23 +248,23 @@ createFontObj(void)
 // PixmapFont
 
 TextureFont::
-TextureFont(const std::string&	font, 
-			int					point_size):
+TextureFont(const std::string&    font, 
+            int                    point_size):
 RasterFont(font)
 {
-	if(init(font))
-	{
-	}
-	_pointSize=point_size;
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
 }
-	
+    
 
 FTFont*  TextureFont::
 createFontObj(void)
 {
-	return (FTFont*)(new FTGLTextureFont);
+    return (FTFont*)(new FTGLTextureFont);
 }
-	
+    
 // PixmapFont
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -272,25 +272,25 @@ createFontObj(void)
 // _FTGLOutlineFont
 
 OutlineFont::
-OutlineFont(const std::string&	font, 
-			int					point_size,
-			double				precision):
+OutlineFont(const std::string&    font, 
+            int                    point_size,
+            double                precision):
 VectorFont(font)
 {
-	if(init(font))
-	{
-	}
-	_pointSize=point_size;
-	_precision=precision;
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
+    _precision=precision;
 }
-	
+    
 
 FTFont*  OutlineFont::
 createFontObj(void)
 {
-	return (FTFont*)(new FTGLOutlineFont);
+    return (FTFont*)(new FTGLOutlineFont);
 }
-	
+    
 // _FTGLOutlineFont
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -298,24 +298,24 @@ createFontObj(void)
 // PolygonFont
 
 PolygonFont::
-PolygonFont(const std::string&	font, 
-			int					point_size,
-			double				precision):
+PolygonFont(const std::string&    font, 
+            int                    point_size,
+            double                precision):
 VectorFont(font)
 {
-	if(init(font))
-	{
-	}
-	_pointSize=point_size;
-	_precision=precision;
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
+    _precision=precision;
 }
-	
+    
 FTFont*  PolygonFont::
 createFontObj(void)
 {
-	return (FTFont*)(new FTGLPolygonFont);
+    return (FTFont*)(new FTGLPolygonFont);
 }
-	
+    
 
 // PolygonFont
 ///////////////////////////////////////////////////////////////////////////////

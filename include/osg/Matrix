@@ -17,7 +17,7 @@ using namespace std;
 #endif
 
 // temporary #define to keep backwards compatibility.
-#define USE_DEPRECATED_MATRIX_METHODS
+//#define USE_DEPRECATED_MATRIX_METHODS
 
 namespace osg {
 

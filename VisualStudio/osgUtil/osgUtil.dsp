@@ -185,6 +185,10 @@ SOURCE=..\..\src\osgUtil\Tesselator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\TransformCallback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\TrackballManipulator.cpp
 # End Source File
 # Begin Source File
@@ -310,6 +314,10 @@ SOURCE=..\..\Include\osgUtil\StateSetManipulator
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\Tesselator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\TransformCallback
 # End Source File
 # Begin Source File
 

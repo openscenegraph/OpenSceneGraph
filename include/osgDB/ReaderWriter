@@ -45,14 +45,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         {
             public:
 
-                enum Status
+                enum ReadStatus
                 {
                     FILE_NOT_HANDLED,
                     FILE_LOADED,
                     ERROR_IN_READING_FILE
                 };
 
-                ReadResult(Status status=FILE_NOT_HANDLED):_status(status) {}
+                ReadResult(ReadStatus status=FILE_NOT_HANDLED):_status(status) {}
                 ReadResult(const std::string& m):_status(ERROR_IN_READING_FILE),_message(m) {}
                 ReadResult(osg::Object* obj):_status(FILE_LOADED),_object(obj) {}
                 
@@ -73,14 +73,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
 
                 const std::string& message() const { return _message; }
 
-                const Status status() const { return _status; }
+                const ReadStatus status() const { return _status; }
                 const bool success() const { return _status==FILE_LOADED; }
                 const bool error() const { return _status==ERROR_IN_READING_FILE; }
                 const bool notHandled() const { return _status==FILE_NOT_HANDLED; }
 
             protected:
             
-                Status                      _status;
+                ReadStatus                  _status;
                 std::string                 _message;
                 osg::ref_ptr<osg::Object>   _object;
         };
@@ -89,14 +89,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         {
             public:
 
-                enum Status
+                enum WriteStatus
                 {
                     FILE_NOT_HANDLED,
                     FILE_SAVED,
                     ERROR_IN_WRITING_FILE
                 };
 
-                WriteResult(Status status=FILE_NOT_HANDLED):_status(status) {}
+                WriteResult(WriteStatus status=FILE_NOT_HANDLED):_status(status) {}
                 WriteResult(const std::string& m):_status(ERROR_IN_WRITING_FILE),_message(m) {}
                 
                 WriteResult(const WriteResult& rr):_status(rr._status),_message(rr._message) {}
@@ -104,14 +104,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 
                 const std::string& message() const { return _message; }
 
-                const Status status() const { return _status; }
+                const WriteStatus status() const { return _status; }
                 const bool success() const { return _status==FILE_SAVED; }
                 const bool error() const { return _status==ERROR_IN_WRITING_FILE; }
                 const bool notHandled() const { return _status==FILE_NOT_HANDLED; }
 
             protected:
             
-                Status                      _status;
+                WriteStatus                 _status;
                 std::string                 _message;
         };
 

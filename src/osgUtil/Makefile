@@ -26,6 +26,7 @@ C++FILES = \
         StateSetManipulator.cpp\
         Tesselator.cpp\
         TrackballManipulator.cpp\
+        TransformCallback.cpp\
         TriStripVisitor.cpp\
         Version.cpp\
 	VisualsRequirementsVisitor.cpp\
@@ -68,6 +69,7 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/StateSetManipulator\
 	osgUtil/Tesselator\
 	osgUtil/TrackballManipulator\
+	osgUtil/TransformCallback\
 	osgUtil/TriStripVisitor\
 	osgUtil/Version\
 	osgUtil/VisualsRequirementsVisitor\

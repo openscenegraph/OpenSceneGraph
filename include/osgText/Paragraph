@@ -37,8 +37,9 @@ class OSGTEXT_EXPORT Paragraph : public osg::Geode
         void setAlignment(int alignment);
         int getAlignment() { return _alignment; }
 
-        
         float getHeight() const;
+        
+        static bool createFormatedText(unsigned int noCharsPerLine,const std::string& str,std::vector<std::string>& formatedText); 
         
     protected:
     

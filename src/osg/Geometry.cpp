@@ -2515,3 +2515,619 @@ Geometry* osg::createTexturedQuadGeometry(const osg::Vec3& corner,const osg::Vec
     
     return geom;
 }
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// experimental templated rendering code, please ignore...
+// will move to osg::Geometry once complete.
+// Robert Osfield, August 2003.
+#if 0
+
+struct DrawAttributeArrays 
+{
+    virtual bool valid() const = 0;
+    virtual void set(osg::Geometry* geometry) = 0;
+    virtual unsigned int draw(unsigned int index, unsigned int count) const = 0;
+};
+
+struct V3
+{
+    V3():_array(0) {}
+    
+    bool valid() const { return _array!=0; }
+    
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getVertexArray();
+        if (array && array->getType()==osg::Array::Vec3ArrayType)
+        {
+            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+            if (!vec3array->empty()) _array = &(vec3array->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glVertex3fv(_array[index].ptr());
+    }
+    
+    osg::Vec3* _array;
+};
+
+struct V3USI
+{
+    V3USI():_array(0),_indices(0) {}
+    
+    bool valid() const { return _array!=0 && _indices!=0; }
+
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getVertexArray();
+        if (array && array->getType()==osg::Array::Vec3ArrayType)
+        {
+            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+            if (!vec3array->empty()) _array = &(vec3array->front());
+        }
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getVertexIndices();
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glVertex3fv(_array[_indices[index]].ptr());
+    }
+    
+    osg::Vec3*      _array;
+    unsigned short* _indices;
+};
+
+//////////////////////////////
+
+struct N3
+{
+    N3():_array(0) {}
+    
+    bool valid() const { return _array!=0; }
+    
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getVertexArray();
+        if (array && array->getType()==osg::Array::Vec3ArrayType)
+        {
+            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+            if (!vec3array->empty()) _array = &(vec3array->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glNormal3fv(_array[index].ptr());
+    }
+    
+    osg::Vec3* _array;
+};
+
+struct N3USI
+{
+    N3USI():_array(0),_indices(0) {}
+    
+    bool valid() const { return _array!=0 && _indices!=0; }
+
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getVertexArray();
+        if (array && array->getType()==osg::Array::Vec3ArrayType)
+        {
+            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+            if (!vec3array->empty()) _array = &(vec3array->front());
+        }
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getVertexIndices();
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
+            if (!ushortarray->empty()) _indices = &(ushortarray->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glNormal3fv(_array[_indices[index]].ptr());
+    }
+    
+    osg::Vec3*      _array;
+    unsigned short* _indices;
+};
+
+//////////////////////////////
+
+struct C4
+{
+    C4():_array(0) {}
+    
+    bool valid() const { return _array!=0; }
+    
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getColorArray();
+        if (array && array->getType()==osg::Array::Vec4ArrayType)
+        {
+            osg::Vec4Array* vec4array = static_cast<osg::Vec4Array*>(array);
+            if (!vec4array->empty()) _array = &(vec4array->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glVertex3fv(_array[index].ptr());
+    }
+    
+    osg::Vec4* _array;
+};
+
+struct C4USI
+{
+    C4USI():_array(0),_indices(0) {}
+    
+    bool valid() const { return _array!=0 && _indices!=0; }
+
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getColorArray();
+        if (array && array->getType()==osg::Array::Vec4ArrayType)
+        {
+            osg::Vec4Array* vec4array = static_cast<osg::Vec4Array*>(array);
+            if (!vec4array->empty()) _array = &(vec4array->front());
+        }
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getColorIndices();
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
+            if (!ushortarray->empty()) _indices = &(ushortarray->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glColor4fv(_array[_indices[index]].ptr());
+    }
+    
+    osg::Vec4*      _array;
+    unsigned short* _indices;
+};
+
+//////////////////////////////
+
+struct T2
+{
+    T2():_array(0) {}
+    
+    bool valid() const { return _array!=0; }
+    
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getTexCoordArray(0);
+        if (array && array->getType()==osg::Array::Vec2ArrayType)
+        {
+            osg::Vec2Array* vec2array = static_cast<osg::Vec2Array*>(array);
+            if (!vec2array->empty()) _array = &(vec2array->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glTexCoord2fv(_array[index].ptr());
+    }
+    
+    osg::Vec2* _array;
+};
+
+struct T2USI
+{
+    T2USI():_array(0),_indices(0) {}
+    
+    bool valid() const { return _array!=0 && _indices!=0; }
+
+    void set(osg::Geometry* geometry)
+    {
+        _array = 0;
+        osg::Array* array = geometry->getTexCoordArray(0);
+        if (array && array->getType()==osg::Array::Vec2ArrayType)
+        {
+            osg::Vec2Array* vec2array = static_cast<osg::Vec2Array*>(array);
+            if (!vec2array->empty()) _array = &(vec2array->front());
+        }
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getTexCoordIndices(0);
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
+            if (!ushortarray->empty()) _indices = &(ushortarray->front());
+        }
+    }
+    
+    inline void draw(unsigned int index) const
+    {
+        glTexCoord2fv(_array[_indices[index]].ptr());
+    }
+    
+    osg::Vec2*      _array;
+    unsigned short* _indices;
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template < class T1 >
+struct DrawAttributeArrays_T : public DrawAttributeArrays
+{
+    DrawAttributeArrays_T(osg::Geometry* geometry)
+    {
+        
+    }
+    
+    virtual bool valid() const { return _t1.valid(); }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            _t1.draw(index);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+};
+
+template < class T1, class T2 >
+struct DrawAttributeArrays_TT : public DrawAttributeArrays
+{
+    DrawAttributeArrays_TT()
+    {
+    }
+    
+    virtual bool valid() const { return _t1.valid() && _t2.valid(); }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+        _t2.set(geometry);
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            _t1.draw(index);
+            _t2.draw(index);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+    T1 _t2;
+};
+
+template < class T1, class T2, class T3 >
+struct DrawAttributeArrays_TTT : public DrawAttributeArrays
+{
+    DrawAttributeArrays_TTT()
+    {
+    }
+    
+    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid(); }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+        _t2.set(geometry);
+        _t3.set(geometry);
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            _t1.draw(index);
+            _t2.draw(index);
+            _t3.draw(index);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+    T2 _t2;
+    T3 _t3;
+};
+
+template < class T1, class T2, class T3, class T4 >
+struct DrawAttributeArrays_TTTT : public DrawAttributeArrays
+{
+    DrawAttributeArrays_TTTT()
+    {
+    }
+    
+    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _t4.valid(); }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+        _t2.set(geometry);
+        _t3.set(geometry);
+        _t4.set(geometry);
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            _t1.draw(index);
+            _t2.draw(index);
+            _t3.draw(index);
+            _t4.draw(index);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+    T2 _t2;
+    T3 _t3;
+    T4 _t4;
+};
+
+template < class T1, class T2 >
+struct DrawAttributeArrays_TT_USI : public DrawAttributeArrays
+{
+    DrawAttributeArrays_TT_USI()
+    {
+    }
+    
+    virtual bool valid() const { return _t1.valid() && _t2.valid() && _indices!=0; }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+        _t2.set(geometry);
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getVertexIndices();
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+        }
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            unsigned int ivalue = _indices[index];
+            _t1.draw(ivalue);
+            _t2.draw(ivalue);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+    T2 _t2;
+};
+
+template < class T1, class T2, class T3 >
+struct DrawAttributeArrays_TTT_USI : public DrawAttributeArrays
+{
+    DrawAttributeArrays_TTT_USI()
+    {
+    }
+    
+    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _indices!=0; }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+        _t2.set(geometry);
+        _t3.set(geometry);
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getVertexIndices();
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+        }
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            unsigned int ivalue = _indices[index];
+            _t1.draw(ivalue);
+            _t2.draw(ivalue);
+            _t3.draw(ivalue);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+    T2 _t2;
+    T3 _t3;
+};
+
+template < class T1, class T2, class T3, class T4 >
+struct DrawAttributeArrays_TTTT_USI : public DrawAttributeArrays
+{
+    DrawAttributeArrays_TTTT_USI()
+    {
+    }
+    
+    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _t4.valid() && _indices!=0; }
+
+    virtual void set(osg::Geometry* geometry)
+    {
+        _t1.set(geometry);
+        _t2.set(geometry);
+        _t3.set(geometry);
+        _t4.set(geometry);
+
+        _indices = 0;
+        osg::IndexArray* indices = geometry->getVertexIndices();
+        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        {
+            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+        }
+    }
+    
+    virtual unsigned int draw(unsigned int index, unsigned int count) const
+    {
+        for(unsigned int i=0;i<count;++i,++index)
+        {
+            unsigned int ivalue = _indices[index];
+            _t1.draw(ivalue);
+            _t2.draw(ivalue);
+            _t3.draw(ivalue);
+            _t4.draw(ivalue);
+        }
+        return index;
+    }
+    
+    T1 _t1;
+    T2 _t2;
+    T3 _t3;
+    T4 _t4;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// One attribute x 2
+
+typedef DrawAttributeArrays_T<V3>                    DrawAttributeArrays_V3;
+typedef DrawAttributeArrays_T<V3USI>                 DrawAttributeArrays_V3i;
+
+// Two attributes x 15
+
+typedef DrawAttributeArrays_TT<N3,V3>                DrawAttributeArrays_N3V3;
+typedef DrawAttributeArrays_TT<N3USI,V3>             DrawAttributeArrays_N3iV3;
+typedef DrawAttributeArrays_TT<N3,V3USI>             DrawAttributeArrays_N3V3i;
+typedef DrawAttributeArrays_TT<N3USI,V3USI>          DrawAttributeArrays_N3iV3i;
+
+typedef DrawAttributeArrays_TT_USI<N3,V3>            DrawAttributeArrays_N3V3_i;
+
+typedef DrawAttributeArrays_TT<C4,V3>                DrawAttributeArrays_C4V3;
+typedef DrawAttributeArrays_TT<C4USI,V3>             DrawAttributeArrays_C4iV3;
+typedef DrawAttributeArrays_TT<C4,V3USI>             DrawAttributeArrays_C4V3i;
+typedef DrawAttributeArrays_TT<C4USI,V3USI>          DrawAttributeArrays_C4iV3i;
+
+typedef DrawAttributeArrays_TT_USI<C4,V3>            DrawAttributeArrays_C4V3_i;
+
+typedef DrawAttributeArrays_TT<T2,V3>                DrawAttributeArrays_T2V3;
+typedef DrawAttributeArrays_TT<T2USI,V3>             DrawAttributeArrays_T2iV3;
+typedef DrawAttributeArrays_TT<T2,V3USI>             DrawAttributeArrays_T2V3i;
+typedef DrawAttributeArrays_TT<T2USI,V3USI>          DrawAttributeArrays_T2iV3i;
+
+typedef DrawAttributeArrays_TT_USI<T2,V3>            DrawAttributeArrays_T2V3_i;
+
+// Three attributes x 27
+
+typedef DrawAttributeArrays_TTT<C4,N3,V3>            DrawAttributeArrays_C4N3V3;
+typedef DrawAttributeArrays_TTT<C4USI,N3,V3>         DrawAttributeArrays_C4iN3V3;
+typedef DrawAttributeArrays_TTT<C4,N3USI,V3>         DrawAttributeArrays_C4N3iV3;
+typedef DrawAttributeArrays_TTT<C4USI,N3USI,V3>      DrawAttributeArrays_C4iN3iV3;
+
+typedef DrawAttributeArrays_TTT<C4,N3,V3USI>         DrawAttributeArrays_C4N3V3i;
+typedef DrawAttributeArrays_TTT<C4USI,N3,V3USI>      DrawAttributeArrays_C4iN3V3i;
+typedef DrawAttributeArrays_TTT<C4,N3USI,V3USI>      DrawAttributeArrays_C4N3iV3i;
+typedef DrawAttributeArrays_TTT<C4USI,N3USI,V3USI>   DrawAttributeArrays_C4iN3iV3i;
+
+typedef DrawAttributeArrays_TTT_USI<C4,N3,V3>        DrawAttributeArrays_C4N3V3_i;
+
+
+typedef DrawAttributeArrays_TTT<T2,N3,V3>            DrawAttributeArrays_T2N3V3;
+typedef DrawAttributeArrays_TTT<T2USI,N3,V3>         DrawAttributeArrays_T2iN3V3;
+typedef DrawAttributeArrays_TTT<T2,N3USI,V3>         DrawAttributeArrays_T2iN3iV3;
+typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3>      DrawAttributeArrays_T2N3iV3;
+
+typedef DrawAttributeArrays_TTT<T2,N3,V3USI>         DrawAttributeArrays_T2N3V3i;
+typedef DrawAttributeArrays_TTT<T2USI,N3,V3USI>      DrawAttributeArrays_T2iN3V3i;
+typedef DrawAttributeArrays_TTT<T2,N3USI,V3USI>      DrawAttributeArrays_T2iN3iV3i;
+typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3USI>   DrawAttributeArrays_T2N3iV3i;
+
+typedef DrawAttributeArrays_TTT_USI<T2,N3,V3>        DrawAttributeArrays_T2N3V3_i;
+
+
+typedef DrawAttributeArrays_TTT<T2,C4,V3>            DrawAttributeArrays_T2C4V3;
+typedef DrawAttributeArrays_TTT<T2USI,C4,V3>         DrawAttributeArrays_T2iC4V3;
+typedef DrawAttributeArrays_TTT<T2,C4USI,V3>         DrawAttributeArrays_T2C4iV3;
+typedef DrawAttributeArrays_TTT<T2USI,C4USI,V3>      DrawAttributeArrays_T2iC4iV3;
+
+typedef DrawAttributeArrays_TTT<T2,C4,V3USI>         DrawAttributeArrays_T2C4V3i;
+typedef DrawAttributeArrays_TTT<T2USI,C4,V3USI>      DrawAttributeArrays_T2iC4V3i;
+typedef DrawAttributeArrays_TTT<T2,C4USI,V3USI>      DrawAttributeArrays_T2C4iV3i;
+typedef DrawAttributeArrays_TTT<T2USI,C4USI,V3USI>   DrawAttributeArrays_T2iC4iV3i;
+
+typedef DrawAttributeArrays_TTT_USI<T2,C4,V3>        DrawAttributeArrays_T2C4V3_t;
+
+
+// Four attributes x 17
+
+typedef DrawAttributeArrays_TTTT<T2,C4,N3,V3>                DrawAttributeArrays_T2C4N3V3;
+typedef DrawAttributeArrays_TTTT<T2USI,C4,N3,V3>             DrawAttributeArrays_T2iC4N3V3;
+typedef DrawAttributeArrays_TTTT<T2,C4USI,N3,V3>             DrawAttributeArrays_T2C4iN3V3;
+typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3,V3>          DrawAttributeArrays_T2iC4iN3V3;
+
+typedef DrawAttributeArrays_TTTT<T2,C4,N3USI,V3>             DrawAttributeArrays_T2C4N3iV3;
+typedef DrawAttributeArrays_TTTT<T2USI,C4,N3USI,V3>          DrawAttributeArrays_T2iC4N3iV3;
+typedef DrawAttributeArrays_TTTT<T2,C4USI,N3USI,V3>           DrawAttributeArrays_T2C4iN3iV3;
+typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3USI,V3>       DrawAttributeArrays_T2iC4iN3iV3;
+
+typedef DrawAttributeArrays_TTTT<T2,C4,N3,V3USI>             DrawAttributeArrays_T2C4N3V3i;
+typedef DrawAttributeArrays_TTTT<T2USI,C4,N3,V3USI>          DrawAttributeArrays_T2iC4N3V3i;
+typedef DrawAttributeArrays_TTTT<T2,C4USI,N3,V3USI>          DrawAttributeArrays_T2C4iN3V3i;
+typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3,V3USI>       DrawAttributeArrays_T2iC4iN3V3i;
+
+typedef DrawAttributeArrays_TTTT<T2,C4,N3USI,V3USI>          DrawAttributeArrays_T2C4N3iV3i;
+typedef DrawAttributeArrays_TTTT<T2USI,C4,N3USI,V3USI>       DrawAttributeArrays_T2iC4N3iV3i;
+typedef DrawAttributeArrays_TTTT<T2,C4USI,N3USI,V3USI>       DrawAttributeArrays_T2C4iN3iV3i;
+typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3USI,V3USI>    DrawAttributeArrays_T2iC4iN3iV3i;
+
+typedef DrawAttributeArrays_TTTT_USI<T2,C4,N3,V3>            DrawAttributeArrays_T2C4N3V3_i;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#endif

@@ -683,7 +683,7 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
     material->setAmbient(osg::Material::FRONT_AND_BACK,ambient);
     material->setDiffuse(osg::Material::FRONT_AND_BACK,diffuse);
     material->setSpecular(osg::Material::FRONT_AND_BACK,specular);
-    material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
+    material->setShininess(osg::Material::FRONT_AND_BACK,shininess*128.0f);
 
     stateset->setAttribute(material);
 

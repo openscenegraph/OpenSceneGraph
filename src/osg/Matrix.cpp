@@ -354,6 +354,20 @@ void Matrix::makePerspective(const double fovy,const double aspectRatio,
 
 void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
 {
+    Vec3 f(center-eye);
+    f.normalize();
+    Vec3 s(f^up);
+    s.normalize();
+    Vec3 u(s^f);
+    u.normalize();
+
+    set(
+        s[0],     u[0],     -f[0],     0.0f,
+        s[1],     u[1],     -f[1],     0.0f,
+        s[2],     u[2],     -f[2],     0.0f,
+        0.0f,     0.0f,     0.0f,      1.0f);
+
+    preMult(Matrix::translate(-eye));
 }
 
 #undef SET_ROW

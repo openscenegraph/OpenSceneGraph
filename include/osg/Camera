@@ -106,12 +106,12 @@ class SG_EXPORT Camera: public osg::Referenced
           * width/height.*/
         void adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa);
 
-        const double left() const;
-        const double right() const;
-        const double top() const;
-        const double bottom() const;
-        const double zNear() const;
-        const double zFar() const;
+        const double left() const { return _left; }
+        const double right() const { return _right; }
+        const double bottom() const { return _bottom; }
+        const double top() const { return _top; }
+        const double zNear() const { return _zNear; }
+        const double zFar() const { return _zFar; }
 
         /** Calculate and return the equivalent fovx for the current project setting.
           * This value is only valid for when a symmetric perspective projection exists.
@@ -127,7 +127,6 @@ class SG_EXPORT Camera: public osg::Referenced
           * Aspect ratio is defined as width/height.*/
         const double calc_aspectRatio() const;
 
-        const Matrix& getProjectionMatrix() const;
 
 
 
@@ -222,37 +221,12 @@ class SG_EXPORT Camera: public osg::Referenced
           * allow the OSG to update matrices accordingly.*/
         void attachTransform(const TransformMode mode, Matrix* modelTransform=0);
 
-        /** must be called after you modify an attachedTransform. */        
-        void dirtyTransform();
-        
         Matrix* getTransform(const TransformMode mode);
         
         const Matrix* getTransform(const TransformMode mode) const;
 
-
-        const Vec3 getEyePoint_Model() const;
-        const Vec3 getCenterPoint_Model() const;
-        const Vec3 getLookVector_Model() const;
-        const Vec3 getUpVector_Model() const;
-        const Vec3 getSideVector_Model() const;
         
-        /** Get the ModelView matrix. 
-          * If a ModelTransform is supplied then the ModelView matrix is
-          * created by multiplying the current LookAt by ModelTransform.
-          * Otherwise it is simply created by using the current LookAt,
-          * equivalent to using gluLookAt.*/
-        const Matrix& getModelViewMatrix() const;
         
-
-        /** Map object coordinates into windows coordinates.
-          * Equivalent to gluProject(...). */
-        const bool project(const Vec3& obj,const Viewport& viewport,Vec3& win) const;
-        
-        /** Map window coordinates into object coordinates. 
-          * Equivalent to gluUnProject(...). */
-        const bool unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const;
-
-
 
         enum FusionDistanceMode
         {
@@ -263,7 +237,7 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Set the mode of the fusion distance function which in use to calculate the
           * fusion distance used in stereo rendering. Default value is
           * PROPORTIONAL_TO_LOOK_DISTANCE. Use in conjunction with setFusionDistanceRatio(float).*/
-        void setFusionDistanceMode(FusionDistanceMode mode) { _fusionDistanceMode = mode; _dirty = true; }
+        void setFusionDistanceMode(FusionDistanceMode mode) { _fusionDistanceMode = mode; }
 
         /** Get the mode of the fusion distance function.*/
         FusionDistanceMode getFusionDistanceMode() const { return _fusionDistanceMode; }
@@ -271,7 +245,7 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Set the ratio of the fusion distance function which in use to calculate the
           * fusion distance used in stereo rendering. Default value is 1.0f
           * Use in conjunction with setFusionDistanceMode(..).*/
-        void setFusionDistanceRatio(float ratio) { _fusionDistanceRatio = ratio; _dirty = true; }
+        void setFusionDistanceRatio(float ratio) { _fusionDistanceRatio = ratio; }
 
         /** Get the ratio of the fusion distance function.*/
         float getFusionDistanceRatio() const { return _fusionDistanceRatio; }
@@ -282,10 +256,28 @@ class SG_EXPORT Camera: public osg::Referenced
                 
         /** Set the physical distance between the viewers eyes and the display system.
            * Note, only used when rendering in stereo.*/
-        void setScreenDistance(float screenDistance) { _screenDistance = screenDistance; _dirty = true; }
+        void setScreenDistance(float screenDistance) { _screenDistance = screenDistance; }
 
         /** Get the physical distance between the viewers eyes and the display system.*/
         const float getScreenDistance() const { return _screenDistance; }
+
+
+        
+        /** Get the Projection Matrix.*/
+        const Matrix getProjectionMatrix() const;
+
+        /** Get the ModelView matrix. 
+          * If a ModelTransform is supplied then the ModelView matrix is
+          * created by multiplying the current LookAt by ModelTransform.
+          * Otherwise it is simply created by using the current LookAt,
+          * equivalent to using gluLookAt.*/
+        const Matrix getModelViewMatrix() const;
+
+
+
+
+
+
 
 
     protected:
@@ -320,20 +312,6 @@ class SG_EXPORT Camera: public osg::Referenced
         TransformMode   _attachedTransformMode;
         ref_ptr<Matrix> _eyeToModelTransform;
         ref_ptr<Matrix> _modelToEyeTransform;
-        
-        // flag to determine if near and far clipping planes are required.
-        bool            _useNearAndFarClippingPlanes;
-
-        // cached matrix and clipping volume derived from above settings.
-        mutable bool            _dirty;
-        mutable ref_ptr<Matrix> _projectionMatrix;
-        mutable ref_ptr<Matrix> _modelViewMatrix;
-        mutable ClippingVolume  _clippingVolume;
-
-        mutable ref_ptr<Matrix> _mp;
-        mutable ref_ptr<Matrix> _inversemp;
-
-        void computeMatrices() const;
 
         float               _screenDistance;
         

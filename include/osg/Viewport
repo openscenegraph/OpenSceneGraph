@@ -8,6 +8,7 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/Types>
+#include <osg/Matrix>
 
 namespace osg {
 
@@ -72,6 +73,16 @@ class SG_EXPORT Viewport : public StateAttribute
         /** Return the aspcetRatio of the viewport, which is equal to width/height.
           * If height is zero, the potental division by zero is avoid by simply returning 1.0f.*/
         inline const float aspectRatio() const { if (_height!=0) return (float)_width/(float)_height; else return 1.0f; }
+        
+        /** Compute the Window Matrix which takes projected coords into Window coordinates.
+          * To converted local coodinates into window coordinates use v_window = v_local * MVPW matrix, 
+          * where the MVPW matrix is ModelViewMatrix * ProjectionMatrix * WindowMatrix, the later supplied by 
+          * viewport::computeWindowMatrix(), the ModelView and Projection Matrix can either be sourced from the
+          * curre osg::State object, via osgUtil::SceneView or CullVisitor.*/
+        inline const osg::Matrix computeWindowMatrix() const
+        {
+            return osg::Matrix::translate(1.0f,1.0f,1.0f)*osg::Matrix::scale(0.5f*width(),0.5f*height(),0.5f);
+        }
 
         virtual void apply(State& state) const;
 

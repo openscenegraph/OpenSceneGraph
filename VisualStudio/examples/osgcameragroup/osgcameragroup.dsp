@@ -1,4 +1,4 @@
-# Microsoft Developer Studio Project File - Name="Example osgprerendercubemap" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Example osgcameragroup" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -10,7 +10,7 @@
 
 
 
-CFG=Example osgprerendercubemap - Win32 Release
+CFG=Example osgcameragroup - Win32 Release
 
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 
@@ -18,7 +18,7 @@ CFG=Example osgprerendercubemap - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgprerendercubemap.mak".
+!MESSAGE NMAKE /f "osgcameragroup.mak".
 
 !MESSAGE 
 
@@ -28,7 +28,7 @@ CFG=Example osgprerendercubemap - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgprerendercubemap.mak" CFG="Example osgprerendercubemap - Win32 Release"
+!MESSAGE NMAKE /f "osgcameragroup.mak" CFG="Example osgcameragroup - Win32 Release"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=Example osgprerendercubemap - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE "Example osgprerendercubemap - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Example osgcameragroup - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "Example osgprerendercubemap - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Example osgcameragroup - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "Example osgprerendercubemap - Win32 Release"
+!IF  "$(CFG)" == "Example osgcameragroup - Win32 Release"
 
 
 
@@ -86,7 +86,7 @@ RSC=rc.exe
 
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /Zm200 /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 
@@ -102,11 +102,11 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-# ADD LINK32 opengl32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgprerendercubemap.exe" /libpath:"../../../lib"
+# ADD LINK32 opengl32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgcameragroup.exe" /libpath:"../../../lib"
 
 
 
-!ELSEIF  "$(CFG)" == "Example osgprerendercubemap - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Example osgcameragroup - Win32 Debug"
 
 
 
@@ -134,7 +134,7 @@ LINK32=link.exe
 
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 
-# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /FR /YX /FD /Zm200 /c
+# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /FR /YX /FD /c
 
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 
@@ -150,7 +150,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgprerendercubemapd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgcameragroupd.exe" /pdbtype:sept /libpath:"../../../lib"
 
 # SUBTRACT LINK32 /incremental:no
 
@@ -164,15 +164,15 @@ LINK32=link.exe
 
 
 
-# Name "Example osgprerendercubemap - Win32 Release"
+# Name "Example osgcameragroup - Win32 Release"
 
-# Name "Example osgprerendercubemap - Win32 Debug"
+# Name "Example osgcameragroup - Win32 Debug"
 
 # Begin Source File
 
 
 
-SOURCE=..\..\..\examples\osgprerendercubemap\osgprerendercubemap.cpp
+SOURCE=..\..\..\examples\osgcameragroup\osgcameragroup.cpp
 
 # End Source File
 

@@ -50,16 +50,16 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     }
     
 
-    if (options & REMOVE_REDUNDENT_NODES)
+    if (options & REMOVE_REDUNDANT_NODES)
     {
 
         RemoveEmptyNodesVisitor renv;
         node->accept(renv);
         renv.removeEmptyNodes();
 
-        RemoveRedundentNodesVisitor rrnv;
+        RemoveRedundantNodesVisitor rrnv;
         node->accept(rrnv);
-        rrnv.removeRedundentNodes();
+        rrnv.removeRedundantNodes();
 
     }
     
@@ -809,7 +809,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Geode& geode)
 {
     if (geode.getNumParents()>0)
     {
-        if (geode.getNumDrawables()==0) _redundentNodeList.insert(&geode);
+        if (geode.getNumDrawables()==0) _redundantNodeList.insert(&geode);
     }
 }
 
@@ -821,7 +821,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
         if (group.getNumChildren()==0 && 
             (typeid(group)==typeid(osg::Group) || dynamic_cast<osg::Transform*>(&group)))
         {
-            _redundentNodeList.insert(&group);
+            _redundantNodeList.insert(&group);
         }
     }
     traverse(group);
@@ -833,10 +833,10 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
     NodeList newEmptyGroups;
 
     // keep iterator through until scene graph is cleaned of empty nodes.
-    while (!_redundentNodeList.empty())
+    while (!_redundantNodeList.empty())
     {
-        for(NodeList::iterator itr=_redundentNodeList.begin();
-            itr!=_redundentNodeList.end();
+        for(NodeList::iterator itr=_redundantNodeList.begin();
+            itr!=_redundantNodeList.end();
             ++itr)
         {
             
@@ -859,17 +859,17 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
             }                
         }
 
-        _redundentNodeList.clear();
-        _redundentNodeList.swap(newEmptyGroups);
+        _redundantNodeList.clear();
+        _redundantNodeList.swap(newEmptyGroups);
     }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////
-// RemoveRedundentNodes.
+// RemoveRedundantNodes.
 ////////////////////////////////////////////////////////////////////////////
 
-void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
+void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
 {
     if (group.getNumParents()>0)
     {
@@ -882,7 +882,7 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
                     !group.getStateSet() &&
                     group.getNodeMask()==0xffffffff)
                 {
-                    _redundentNodeList.insert(&group);
+                    _redundantNodeList.insert(&group);
                 }
             }
         }
@@ -890,7 +890,7 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
     traverse(group);
 }
 
-void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Transform& transform)
+void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Transform& transform)
 {
     if (transform.getNumParents()>0 && transform.getDataVariance()==osg::Object::STATIC)
     {
@@ -899,18 +899,18 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Transform& transform)
         transform.getWorldToLocalMatrix(matrix,NULL);
         if (matrix==identity)
         {
-            _redundentNodeList.insert(&transform);
+            _redundantNodeList.insert(&transform);
         }
     }
     traverse(transform);
 }
 
 
-void Optimizer::RemoveRedundentNodesVisitor::removeRedundentNodes()
+void Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes()
 {
 
-    for(NodeList::iterator itr=_redundentNodeList.begin();
-        itr!=_redundentNodeList.end();
+    for(NodeList::iterator itr=_redundantNodeList.begin();
+        itr!=_redundantNodeList.end();
         ++itr)
     {
         osg::ref_ptr<osg::Group> group = dynamic_cast<osg::Group*>(*itr);
@@ -937,7 +937,7 @@ void Optimizer::RemoveRedundentNodesVisitor::removeRedundentNodes()
             std::cout<<"failed dynamic_cast"<<std::endl;
         }                                
     }
-    _redundentNodeList.clear();
+    _redundantNodeList.clear();
 }
 
 

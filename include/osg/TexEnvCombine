@@ -1,0 +1,219 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_TEXENVCOMBINE
+#define OSG_TEXENVCOMBINE 1
+
+#include <osg/GL>
+#include <osg/StateAttribute>
+#include <osg/Vec4>
+
+// if not defined by gl.h use the definition found in:
+// http://oss.sgi.com/projects/ogl-sample/registry/ARB/texture_env_combine.txt
+#ifndef GL_ARB_texture_env_combine
+#define GL_ARB_texture_env_combine 1
+#define GL_COMBINE_ARB                                     0x8570
+#define GL_COMBINE_RGB_ARB                                 0x8571
+#define GL_COMBINE_ALPHA_ARB                               0x8572
+#define GL_SOURCE0_RGB_ARB                                 0x8580
+#define GL_SOURCE1_RGB_ARB                                 0x8581
+#define GL_SOURCE2_RGB_ARB                                 0x8582
+#define GL_SOURCE0_ALPHA_ARB                               0x8588
+#define GL_SOURCE1_ALPHA_ARB                               0x8589
+#define GL_SOURCE2_ALPHA_ARB                               0x858A
+#define GL_OPERAND0_RGB_ARB                                0x8590
+#define GL_OPERAND1_RGB_ARB                                0x8591
+#define GL_OPERAND2_RGB_ARB                                0x8592
+#define GL_OPERAND0_ALPHA_ARB                              0x8598
+#define GL_OPERAND1_ALPHA_ARB                              0x8599
+#define GL_OPERAND2_ALPHA_ARB                              0x859A
+#define GL_RGB_SCALE_ARB                                   0x8573
+#define GL_ADD_SIGNED_ARB                                  0x8574
+#define GL_INTERPOLATE_ARB                                 0x8575
+#define GL_SUBTRACT_ARB                                    0x84E7
+#define GL_CONSTANT_ARB                                    0x8576
+#define GL_PRIMARY_COLOR_ARB                               0x8577
+#define GL_PREVIOUS_ARB                                    0x8578
+#endif
+
+namespace osg {
+
+/** TexEnvCombine - encapsulates the OpenGL glTexEnvCombine (texture environment) state.*/
+class SG_EXPORT TexEnvCombine : public StateAttribute
+{
+    public :
+
+        TexEnvCombine();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        TexEnvCombine(const TexEnvCombine& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(texenv,copyop),
+            _combine_RGB(texenv._combine_RGB),
+            _combine_Alpha(texenv._combine_Alpha),
+            _source0_RGB(texenv._source0_RGB),
+            _source1_RGB(texenv._source1_RGB),
+            _source2_RGB(texenv._source2_RGB),
+            _source0_Alpha(texenv._source0_Alpha),
+            _source1_Alpha(texenv._source1_Alpha),
+            _source2_Alpha(texenv._source2_Alpha),
+            _operand0_RGB(texenv._operand0_RGB),
+            _operand1_RGB(texenv._operand1_RGB),
+            _operand2_RGB(texenv._operand2_RGB),
+            _operand0_Alpha(texenv._operand0_Alpha),
+            _operand1_Alpha(texenv._operand1_Alpha),
+            _operand2_Alpha(texenv._operand2_Alpha),
+            _scale_RGB(texenv._scale_RGB),
+            _scale_Alpha(texenv._scale_Alpha),
+            _constantColor(texenv._constantColor) {}
+
+
+        META_StateAttribute(osg, TexEnvCombine, TEXENV);
+
+
+        virtual bool isTextureAttribute() const { return true; }
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(TexEnvCombine,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_combine_RGB)
+            COMPARE_StateAttribute_Parameter(_combine_Alpha)
+            COMPARE_StateAttribute_Parameter(_source0_RGB)
+            COMPARE_StateAttribute_Parameter(_source1_RGB)
+            COMPARE_StateAttribute_Parameter(_source2_RGB)
+            COMPARE_StateAttribute_Parameter(_source0_Alpha)
+            COMPARE_StateAttribute_Parameter(_source1_Alpha)
+            COMPARE_StateAttribute_Parameter(_source2_Alpha)
+            COMPARE_StateAttribute_Parameter(_operand0_RGB)
+            COMPARE_StateAttribute_Parameter(_operand1_RGB)
+            COMPARE_StateAttribute_Parameter(_operand2_RGB)
+            COMPARE_StateAttribute_Parameter(_operand0_Alpha)
+            COMPARE_StateAttribute_Parameter(_operand1_Alpha)
+            COMPARE_StateAttribute_Parameter(_operand2_Alpha)
+            COMPARE_StateAttribute_Parameter(_scale_RGB)
+            COMPARE_StateAttribute_Parameter(_scale_Alpha)
+            COMPARE_StateAttribute_Parameter(_constantColor)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
+
+        enum CombineParam
+        {
+            REPLACE         = GL_REPLACE,
+            MODULATE        = GL_MODULATE,
+            ADD             = GL_ADD,
+            ADD_SIGNED      = GL_ADD_SIGNED_ARB,
+            INTERPOLATE     = GL_INTERPOLATE_ARB,
+            SUBTRACT        = GL_SUBTRACT_ARB
+        };
+
+        void setCombineRGB(CombineParam cm) { _combine_RGB = cm; }
+        void setCombineAlpha(CombineParam cm) { _combine_Alpha = cm; }
+
+        CombineParam getCombineRGB() const { return _combine_RGB; }
+        CombineParam getCombineAlpha() const { return _combine_Alpha; }
+        
+        enum SourceParam
+        {
+            TEXTURE         = GL_TEXTURE,
+            CONSTANT        = GL_CONSTANT_ARB,
+            PRIMARY_COLOR   = GL_PRIMARY_COLOR_ARB,
+            PREVIOUS        = GL_PREVIOUS_ARB
+        };
+        
+        void setSource0_RGB(SourceParam sp) { _source0_RGB = sp; }
+        void setSource1_RGB(SourceParam sp) { _source1_RGB = sp; }
+        void setSource2_RGB(SourceParam sp) { _source2_RGB = sp; }
+        
+        void setSource0_Alpha(SourceParam sp) { _source0_Alpha = sp; }
+        void setSource1_Alpha(SourceParam sp) { _source1_Alpha = sp; }
+        void setSource2_Alpha(SourceParam sp) { _source2_Alpha = sp; }
+
+        SourceParam getSource0_RGB() const { return _source0_RGB; }
+        SourceParam getSource1_RGB() const { return _source1_RGB; }
+        SourceParam getSource2_RGB() const { return _source2_RGB; }
+        
+        SourceParam getSource0_Alpha() const { return _source0_Alpha; }
+        SourceParam getSource1_Alpha() const { return _source1_Alpha; }
+        SourceParam getSource2_Alpha() const { return _source2_Alpha; }
+
+        enum OperandParam
+        {
+            SRC_COLOR           = GL_SRC_COLOR,
+            ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
+            SRC_ALPHA           = GL_SRC_ALPHA,
+            ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA
+        };
+        
+        void setOperand0_RGB(OperandParam op) { _operand0_RGB = op; }
+        void setOperand1_RGB(OperandParam op) { _operand1_RGB = op; }
+        void setOperand2_RGB(OperandParam op) { _operand2_RGB = op; }
+        
+        void setOperand0_Alpha(OperandParam op) { _operand0_Alpha = op; }
+        void setOperand1_Alpha(OperandParam op) { _operand1_Alpha = op; }
+        void setOperand2_Alpha(OperandParam op) { _operand2_Alpha = op; }
+
+        OperandParam getOperand0_RGB() const { return _operand0_RGB; }
+        OperandParam getOperand1_RGB() const { return _operand1_RGB; }
+        OperandParam getOperand2_RGB() const { return _operand2_RGB; }
+        
+        OperandParam getOperand0_Alpha() const { return _operand0_Alpha; }
+        OperandParam getOperand1_Alpha() const { return _operand1_Alpha; }
+        OperandParam getOperand2_Alpha() const { return _operand2_Alpha; }
+
+
+        void setScale_RGB(float scale) { _scale_RGB = scale; }
+        void setScale_Alpha(float scale) { _scale_Alpha = scale; }
+
+        float getScale_RGB() const { return _scale_RGB; }
+        float getScale_Alpha() const { return _scale_Alpha; }
+
+        void setConstantColor( const Vec4& color ) { _constantColor = color; }
+        const Vec4& getConstantColor() const { return _constantColor; }
+
+
+        virtual void apply(State& state) const;
+
+    protected :
+
+        virtual ~TexEnvCombine();
+
+
+        CombineParam    _combine_RGB;
+        CombineParam    _combine_Alpha;
+
+
+        SourceParam     _source0_RGB;
+        SourceParam     _source1_RGB;
+        SourceParam     _source2_RGB;
+        
+        SourceParam     _source0_Alpha;
+        SourceParam     _source1_Alpha;
+        SourceParam     _source2_Alpha;
+
+
+        OperandParam  _operand0_RGB;
+        OperandParam  _operand1_RGB;
+        OperandParam  _operand2_RGB;
+        
+        OperandParam  _operand0_Alpha;
+        OperandParam  _operand1_Alpha;
+        OperandParam  _operand2_Alpha;
+
+
+        float           _scale_RGB;
+        float           _scale_Alpha;
+        
+        osg::Vec4       _constantColor;
+
+};
+
+}
+
+#endif

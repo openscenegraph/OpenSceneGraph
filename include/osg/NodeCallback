@@ -59,11 +59,9 @@ class SG_EXPORT NodeCallback : public Referenced {
             {
                 if (_nestedCallback==nc)
                 {
-                    NodeCallback* nested_nc = _nestedCallback->getNestedCallback();
-                    if (nested_nc) _nestedCallback = nc;
-                    else _nestedCallback = 0;
+                    _nestedCallback = _nestedCallback->getNestedCallback();
                 }
-                else
+                else if (_nestedCallback.valid())
                 {
                     _nestedCallback->removeNestedCallback(nc);
                 }

@@ -193,10 +193,6 @@ SOURCE=..\..\..\src\osgPlugins\iv\osgvisitor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\iv\parser.cpp.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\iv\readerwriter.h
 # End Source File
 # Begin Source File

@@ -1254,7 +1254,8 @@ osg::Texture2D* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pf
     image->setImage(s,t,r,
                     internalFormat,
                     pixelFormat,
-                    dataType,data);
+                    dataType,data,
+                    osg::Image::USE_MALLOC_FREE);
 
     osgTexture->setImage(image);
 

@@ -5,6 +5,7 @@
 #include <osg/Texture>
 #include <osg/Texture2D>
 #include <osg/TextureRectangle>
+#include <osg/TextureCubeMap>
 
 using namespace osg;
 using namespace osgGA;

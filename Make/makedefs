@@ -103,6 +103,8 @@ PLUGIN_EXT     = so
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 INSTLOGFILE    = /tmp/.osg_inst_log
 
+LIBXML2_INCLUDE = -I/usr/include/libxml2
+
 ifneq ("$(OPENTHREADS_INC_DIR)","")
 INC += -I$(OPENTHREADS_INC_DIR)
 endif
@@ -403,9 +405,10 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
-  QUICKTIME	        = -framework QuickTime $(CARBON_LIB)
+  QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   FREETYPE_INCLUDE  = -I/sw/include/freetype2
-  TIFF_LIB	        = -ltiff
+  LIBXML2_INCLUDE   = -I/sw/include/libxml2
+  TIFF_LIB	    = -ltiff
   LIBVERSION	    = -current_version $(VERSION) \
                         -compatibility_version \
                         $(VERSION_MAJOR).$(VERSION_MINOR).0

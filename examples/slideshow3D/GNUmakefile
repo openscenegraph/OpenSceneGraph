@@ -16,7 +16,7 @@ INSTFILES = \
 
 EXEC = slideshow3D
 
-INC +=  $(X_INC) -I/usr/include/libxml2
+INC +=  $(X_INC) $(LIBXML2_INCLUDE)
 
 include $(TOPDIR)/Make/makerules 
 

@@ -71,6 +71,10 @@ class SG_EXPORT StateSet : public Object
 
         /** get specified StateAttribute for specified type.
           * returns NULL if no type is contained within StateSet.*/
+        StateAttribute* getAttribute(const StateAttribute::Type type);
+
+        /** get specified const StateAttribute for specified type.
+          * returns NULL if no type is contained within const StateSet.*/
         const StateAttribute* getAttribute(const StateAttribute::Type type) const;
 
         /** get specified RefAttributePair for specified type.

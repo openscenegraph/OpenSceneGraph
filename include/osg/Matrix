@@ -48,8 +48,8 @@ class SG_EXPORT Matrix : public Object
         bool operator == (const Matrix& m) const { return compare(m)==0; }
         bool operator != (const Matrix& m) const { return compare(m)!=0; }
 
-        inline float& operator()(int col, int row) { return _mat[row][col]; }
-        inline float operator()(int col, int row) const { return _mat[row][col]; }
+        inline float& operator()(int row, int col) { return _mat[row][col]; }
+        inline float operator()(int row, int col) const { return _mat[row][col]; }
 
         void set( float const * const );
         void set( float a00, float a01, float a02, float a03,

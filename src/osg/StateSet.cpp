@@ -123,6 +123,17 @@ void StateSet::setAttributeToInherit(const StateAttribute::Type type)
     }
 }
 
+StateAttribute* StateSet::getAttribute(const StateAttribute::Type type)
+{
+    AttributeList::iterator itr = _attributeList.find(type);
+    if (itr!=_attributeList.end())
+    {
+        return itr->second.first.get();
+    }
+    else
+        return NULL;
+}
+
 const StateAttribute* StateSet::getAttribute(const StateAttribute::Type type) const
 {
     AttributeList::const_iterator itr = _attributeList.find(type);

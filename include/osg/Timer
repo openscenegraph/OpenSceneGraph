@@ -138,10 +138,7 @@ class SG_EXPORT Timer {
 
     #include <sys/time.h>
 
-#  if defined(__ia64) || defined(__x86_64__)
-    #define CLK(x)        ((x)=0)
-
-#  elif defined(__powerpc)
+#  if defined(__powerpc)
 #    ifndef __HAVE_POWERPC_GET_TBL
 #      define __HAVE_POWERPC_GET_TBL 1
 static inline unsigned long get_tbl(void)

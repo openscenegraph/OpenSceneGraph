@@ -257,6 +257,11 @@ DataSet::SpatialProperties DataSet::SourceData::computeSpatialProperties(osgTerr
     return *this;
 }
 
+bool DataSet::SourceData::intersects(const SpatialProperties& sp) const
+{
+    return sp._extents.intersects(getExtents(sp._cs.get()));
+}
+
 void DataSet::SourceData::read(DestinationData& destination)
 {
     if (!_source) return;
@@ -574,7 +579,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
         return 0;
     }
     
-    if (targetResolution>=0.0f)
+    if (targetResolution>0.0f)
     {
         std::cout<<"recomputing the target transform size"<<std::endl;
         
@@ -591,6 +596,10 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
         adfDstGeoTransform[2] *= ratio;
         adfDstGeoTransform[4] *= ratio;
         adfDstGeoTransform[5] *= ratio;
+        
+        std::cout<<"    extentsPixels="<<extentsPixels<<std::endl;
+        std::cout<<"    extentsLines="<<extentsLines<<std::endl;
+        std::cout<<"    targetResolution="<<targetResolution<<std::endl;
         
         nPixels = (int)ceil(extentsPixels/sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2])))+1;
         nLines = (int)ceil(extentsLines/sqrt(osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5])))+1;
@@ -721,6 +730,27 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
 
                               
     return newSource;
+}
+
+void DataSet::Source::consolodateRequiredResolutions()
+{
+    if (_requiredResolutions.size()<=1) return;
+
+    ResolutionList consolodated;
+    
+    ResolutionList::iterator itr = _requiredResolutions.begin();
+    consolodated.push_back(*itr);
+    
+    double minResX = itr->_resX;
+    double minResY = itr->_resY;
+    ++itr;
+    for(;itr!=_requiredResolutions.end();++itr)
+    {
+        minResX = osg::minimum(minResX,itr->_resX);
+        minResY = osg::minimum(minResY,itr->_resY);
+    }
+    
+    _requiredResolutions.swap(consolodated);
 }
 
 void DataSet::Source::buildOverviews()
@@ -1327,20 +1357,27 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
         Source* source = itr->get();
+        
         if (_imagery.valid() && source->getType()==Source::IMAGE)
         {
-            double resX, resY;
-            if (computeImageResolution(resX,resY))
+            if (source->intersects(*_imagery))
             {
-                source->addRequiredResolution(resX,resY);
+                double resX, resY;
+                if (computeImageResolution(resX,resY))
+                {
+                    source->addRequiredResolution(resX,resY);
+                }
             }
         }
         if (_terrain.valid() && source->getType()==Source::HEIGHT_FIELD)
         {
-            double resX, resY;
-            if (computeTerrainResolution(resX,resY))
+            if (source->intersects(*_terrain))
             {
-                source->addRequiredResolution(resX,resY);
+                double resX, resY;
+                if (computeTerrainResolution(resX,resY))
+                {
+                    source->addRequiredResolution(resX,resY);
+                }
             }
         }
     }
@@ -1668,6 +1705,46 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
 
     std::string temporyFilePrefix("temporaryfile_");
 
+    // compute the resolutions of the source that are required.
+    {
+        _destinationGraph->addRequiredResolutions(_sourceGraph.get());
+
+
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
+        {
+            Source* source = itr->get();
+            std::cout<<"Source File "<<source->getFileName()<<std::endl;
+            
+
+            const Source::ResolutionList& resolutions = source->getRequiredResolutions();
+            std::cout<<"    resolutions.size() "<<resolutions.size()<<std::endl;
+            std::cout<<"    { "<<std::endl;
+            for(Source::ResolutionList::const_iterator itr=resolutions.begin();
+                itr!=resolutions.end();
+                ++itr)
+            {
+                std::cout<<"        resX="<<itr->_resX<<" resY="<<itr->_resY<<std::endl;
+            }
+            std::cout<<"    } "<<std::endl;
+
+            source->consolodateRequiredResolutions();
+            
+            std::cout<<"    consolodated resolutions.size() "<<resolutions.size()<<std::endl;
+            std::cout<<"    consolodated { "<<std::endl;
+            for(Source::ResolutionList::const_iterator itr=resolutions.begin();
+                itr!=resolutions.end();
+                ++itr)
+            {
+                std::cout<<"        resX="<<itr->_resX<<" resY="<<itr->_resY<<std::endl;
+            }
+            std::cout<<"    } "<<std::endl;
+
+
+        }
+
+
+    }
+
     // do standardisation of coordinates systems.
     // do any reprojection if required.
     {
@@ -1687,12 +1764,6 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         }
     }
     
-    // compute the resolutions of the source that are required.
-    {
-        _destinationGraph->addRequiredResolutions(_sourceGraph.get());
-    }
-
-
     // do sampling of data to required values.
     {
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
@@ -1723,6 +1794,11 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         std::cout<<"  LOD "<<(*csitr)->getFileName()<<std::endl;
     }
     std::cout<<"End of Using Source Iterator itr"<<std::endl;
+    
+    
+    
+    
+    
 }
 
 void DataSet::populateDestinationGraphFromSources()

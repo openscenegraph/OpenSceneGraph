@@ -189,6 +189,11 @@ class DataSet : public osg::Referenced
             void setSourceData(SourceData* data) { _sourceData = data; if (_sourceData.valid()) _sourceData->_source = this; }
             SourceData* getSourceData() { return _sourceData.get(); }
             
+            bool intersects(const SpatialProperties& sp) const
+            {
+                return  _sourceData.valid()?_sourceData->intersects(sp):false;
+            }
+
             void loadSourceData();
 
             
@@ -201,16 +206,36 @@ class DataSet : public osg::Referenced
             void buildOverviews();
             
             
-            typedef std::pair<double,double> ResolutionPair;
-            typedef std::set<ResolutionPair> ResolutionList;
+            struct ResolutionPair
+            {
+                ResolutionPair():
+                    _resX(0.0),_resY(0.0) {}
+
+                ResolutionPair(double x,double y):
+                    _resX(x),_resY(y) {}
+                    
+                bool operator < (const ResolutionPair& rhs) const
+                {
+                    double minLHS = osg::minimum(_resX,_resY);
+                    double minRHS = osg::minimum(rhs._resX,rhs._resY);
+                    return minLHS<minRHS;
+                }
             
-            void addRequiredResolution(double resX, double resY) { _requiredResolutions.insert(ResolutionPair(resX,resY)); }
+                double _resX;
+                double _resY;
+            };
+            
+            typedef std::vector<ResolutionPair> ResolutionList;
+            
+            void addRequiredResolution(double resX, double resY) { _requiredResolutions.push_back(ResolutionPair(resX,resY)); }
             
             void setRequiredResolutions(ResolutionList& resolutions) { _requiredResolutions = resolutions; }
             
             ResolutionList& getRequiredResolutions() { return _requiredResolutions; }
             
             const ResolutionList& getRequiredResolutions() const { return _requiredResolutions; }
+            
+            void consolodateRequiredResolutions();
 
         protected:
         

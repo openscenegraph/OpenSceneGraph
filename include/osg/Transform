@@ -23,6 +23,24 @@ class SG_EXPORT Transform : public Group
 
         META_Node(Transform);
 
+        /** Range of type that the Transform can be.*/
+        enum Type
+        {
+            DYNAMIC,
+            STATIC
+        };
+        
+        /** Set the Transform Type, which can be DYNAMIC - the Marix
+          * value is updated duing the main loop, or STATIC - the Matrix
+          * is constant throughut the life of the main loop.  STATIC 
+          * Transforms can be optimized away is some instances, which
+          * can improve performanc so unless you plan to modify the
+          * Matrix explicity set the Matrix to STATIC.  The default
+          * value is DYNAMIC.*/
+        inline void setType(Type type) { _type = type; }
+        /** Get the Transform Type.*/
+        inline const Type getType() const { return _type; }
+
         void setMatrix(const Matrix& mat );
         inline Matrix& getMatrix() { return *_matrix; }
         inline const Matrix& getMatrix() const { return *_matrix; }
@@ -39,6 +57,7 @@ class SG_EXPORT Transform : public Group
         
         virtual const bool computeBound() const;
 
+        Type            _type;
         ref_ptr<Matrix> _matrix;
 };
 

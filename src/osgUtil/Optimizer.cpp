@@ -22,12 +22,13 @@ using namespace osgUtil;
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
 
-    if (options & COMBINE_ADJACENT_LODS)
-    {
-        CombineLODsVisitor clv;
-        node->accept(clv);        
-        clv.combineLODs();
-    }
+// temporarily commented out to prevent problems with combining FLT lod's inapporpriately,
+//     if (options & COMBINE_ADJACENT_LODS)
+//     {
+//         CombineLODsVisitor clv;
+//         node->accept(clv);        
+//         clv.combineLODs();
+//     }
     
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {

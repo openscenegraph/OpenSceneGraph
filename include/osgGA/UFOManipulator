@@ -63,7 +63,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 		UFOManipulator();
 
         /** return className
-          \return returns constant "UFOManipulator"
+          \return returns constant "UFO"
           */
         virtual const char* className() const;
 

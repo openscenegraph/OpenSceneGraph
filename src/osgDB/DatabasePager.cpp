@@ -27,7 +27,11 @@ DatabasePager::DatabasePager()
     _threadPriorityDuringFrame = PRIORITY_MIN;
     _threadPriorityOutwithFrame = PRIORITY_NOMINAL;
 
-    _deleteRemovedSubgraphsInDatabaseThread = false;//true;
+#if 1
+    _deleteRemovedSubgraphsInDatabaseThread = true;
+#else
+    _deleteRemovedSubgraphsInDatabaseThread = false;
+#endif
     
     _expiryDelay = 1.0;
 
@@ -306,8 +310,9 @@ void DatabasePager::run()
             _childrenToDeleteListMutex.lock();
                 if (!_childrenToDeleteList.empty())
                 {
-                    osg::notify(osg::INFO)<<"In DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" subgraphs"<<std::endl;
+                    //std::cout<<"In DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" objects"<<std::endl;
                     _childrenToDeleteList.clear();
+                    //std::cout<<"Done DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" objects"<<std::endl;
                 }
             _childrenToDeleteListMutex.unlock();
         }
@@ -466,57 +471,100 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
     
 }
 
-void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::Node& node)
-{
-    apply(node.getStateSet());
 
-    traverse(node);
-}
-    
-void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::Geode& geode)
+/** Helper class used internally to force the release of texture objects
+  * and displace lists.*/
+class ReleaseTexturesAndDrawablesVisitor : public osg::NodeVisitor
 {
-    apply(geode.getStateSet());
-
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+public:
+    ReleaseTexturesAndDrawablesVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
-        apply(geode.getDrawable(i));
     }
 
-    traverse(geode);
-}
-
-void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::StateSet* stateset)
-{
-    if (stateset)
+    void releaseGLObjects(DatabasePager::ObjectList& objectsToDelete)
     {
-        // search for the existance of any texture object attributes
-        bool foundTextureState = false;
-        osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
-        for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
-            itr!=tal.end() && !foundTextureState;
-            ++itr)
+        for(TextureSet::iterator titr=_textureSet.begin();
+            titr!=_textureSet.end();
+            ++titr)
         {
-            osg::StateSet::AttributeList& al = *itr;
-            osg::StateSet::AttributeList::iterator alitr = al.find(osg::StateAttribute::TEXTURE);
-            if (alitr!=al.end())
+            if ((*titr)->referenceCount()==1)
             {
-                // found texture, so place it in the texture list.
-                osg::Texture* texture = static_cast<osg::Texture*>(alitr->second.first.get());
+                osg::Texture* texture = const_cast<osg::Texture*>(titr->get());
                 texture->dirtyTextureObject();
+                objectsToDelete.push_back(texture);
+            }
+        }
+
+        for(DrawableSet::iterator ditr=_drawableSet.begin();
+            ditr!=_drawableSet.end();
+            ++ditr)
+        {
+            if ((*ditr)->referenceCount()==1)
+            {
+                osg::Drawable* drawable = const_cast<osg::Drawable*>(ditr->get());
+                drawable->dirtyDisplayList();
+                objectsToDelete.push_back(drawable);
             }
         }
     }
-}
 
-void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::Drawable* drawable)
-{
-    apply(drawable->getStateSet());
-
-    if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
+    inline void apply(osg::StateSet* stateset)
     {
-        drawable->dirtyDisplayList();
+        if (stateset)
+        {
+            // search for the existance of any texture object attributes
+            bool foundTextureState = false;
+            osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+            for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
+                itr!=tal.end() && !foundTextureState;
+                ++itr)
+            {
+                osg::StateSet::AttributeList& al = *itr;
+                osg::StateSet::AttributeList::iterator alitr = al.find(osg::StateAttribute::TEXTURE);
+                if (alitr!=al.end())
+                {
+                    // found texture, so place it in the texture list.
+                    osg::Texture* texture = static_cast<osg::Texture*>(alitr->second.first.get());
+                    _textureSet.insert(texture);
+                }
+                
+            }
+        }
     }
-}
+
+    inline void apply(osg::Drawable* drawable)
+    {
+        apply(drawable->getStateSet());
+
+        _drawableSet.insert(drawable);
+    }
+
+    virtual void apply(osg::Node& node)
+    {
+        apply(node.getStateSet());
+
+        traverse(node);
+    }
+
+    virtual void apply(osg::Geode& geode)
+    {
+        apply(geode.getStateSet());
+
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            apply(geode.getDrawable(i));
+        }
+    }
+
+
+    typedef std::set<  osg::ref_ptr<osg::Drawable> > DrawableSet;
+    typedef std::set<  osg::ref_ptr<osg::Texture> >  TextureSet;
+
+    TextureSet _textureSet;
+    DrawableSet _drawableSet;
+
+};
 
 void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 {
@@ -533,30 +581,14 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         plod->removeExpiredChildren(expiryTime,childrenRemoved);
     }
     
-    for(unsigned int i=_pagedLODList.size();
-        i>0;
-        )
-    {
-        --i;
-        
-        osg::PagedLOD* plod = _pagedLODList[i].get();
-        if (plod->referenceCount()==1)
-        {
-            //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" orphaned"<<std::endl;
-            _pagedLODList.erase(_pagedLODList.begin()+i);
-        }
-        else
-        {
-            //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
-        }
-    }
 
     if (osgDB::Registry::instance()->getSharedStateManager()) 
         osgDB::Registry::instance()->getSharedStateManager()->prune();
 
-    
+
     if (_deleteRemovedSubgraphsInDatabaseThread)
     {
+
         // for all the subgraphs to remove find all the textures and drawables and
         // strip them from the display lists.   
         ReleaseTexturesAndDrawablesVisitor rtadv;
@@ -566,14 +598,41 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         {
             (*nitr)->accept(rtadv);
         }
+        
+        // unref' the children we need to remove, keeping behind the Texture's and Drawables for later deletion
+        // inside the database thread.
+        childrenRemoved.clear();
 
         // transfer the removed children over to the to delete list so the database thread can delete them.
         _childrenToDeleteListMutex.lock();
-            _childrenToDeleteList.insert(_childrenToDeleteList.begin(),childrenRemoved.begin(),childrenRemoved.end());
+
+            rtadv.releaseGLObjects(_childrenToDeleteList);
+
         _childrenToDeleteListMutex.unlock();
     }
-    // otherwise the childrenRemoved list will automatically unref() and deleting the nodes.    
 
+    // flush all the references from the child removed list.  If  _deleteRemovedSubgraphsInDatabaseThread 
+    // is false then this will typically resulting in a delete, otherwise this will be left to the
+    // clean up of the _childrenToDeleteList from within the database paging thread.
+    childrenRemoved.clear();
+
+    for(unsigned int i=_pagedLODList.size();
+        i>0;
+        )
+    {
+        --i;
+        
+        osg::PagedLOD* plod = _pagedLODList[i].get();
+        if (plod->referenceCount()==1)
+        {
+            _pagedLODList.erase(_pagedLODList.begin()+i);
+        }
+        else
+        {
+            //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
+        }
+    }
+    
     // update the Registry object cache.
     osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExtenalReferences(currentFrameTime);
     osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);

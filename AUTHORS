@@ -126,6 +126,9 @@ Pavel Moloshtan <pasha@moloshtan.com>
 Alberto Barbati <abarbati@iaanus.com>
         - lazy evaluation of the inverse in the MatrixTransform.
 
+Gideon May <gideon@computer.org>
+        - fixed spacing in osgText.
+
 Indirect Contributors
 ---------------------
     

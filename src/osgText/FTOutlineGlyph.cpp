@@ -18,6 +18,8 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
         return;
     }
 
+    advance = glyph->advance.x >> 16;
+
     vectoriser = osgNew FTVectoriser( glyph);
     
     vectoriser->Process();
@@ -44,7 +46,6 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
     
     vectoriser->MakeOutline( data);
     
-    advance = glyph->advance.x >> 16;
 
     vectoriser=0;
     

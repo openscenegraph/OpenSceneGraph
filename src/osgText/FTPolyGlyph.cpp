@@ -66,6 +66,8 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     if( ft_glyph_format_outline != glyph->format)
     { return;}
 
+    advance = glyph->advance.x >> 16;
+
     vectoriser = osgNew FTVectoriser( glyph);
     
     vectoriser->Process();
@@ -90,7 +92,6 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     vectoriser->MakeOutline( data);
     
     contourFlag = vectoriser->ContourFlag();
-    advance = glyph->advance.x >> 16;
 
     vectoriser=0; // delete it, using ref_ptr.
 

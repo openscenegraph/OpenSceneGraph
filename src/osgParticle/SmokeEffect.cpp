@@ -13,8 +13,6 @@
 
 #include <osgParticle/SmokeEffect>
 
-#include <osgParticle/ModularEmitter>
-#include <osgParticle/ModularProgram>
 #include <osgParticle/RandomRateCounter>
 #include <osgParticle/RadialShooter>
 #include <osgParticle/AccelOperator>
@@ -26,9 +24,15 @@
 
 using namespace osgParticle;
 
-SmokeEffect::SmokeEffect()
+SmokeEffect::SmokeEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
+    
+    _position = position;
+    _scale = scale;
+    _intensity = intensity;
+        
+    buildEffect();
 }
 
 SmokeEffect::SmokeEffect(const SmokeEffect& copy, const osg::CopyOp& copyop):
@@ -37,6 +41,11 @@ SmokeEffect::SmokeEffect(const SmokeEffect& copy, const osg::CopyOp& copyop):
 }
 
 void SmokeEffect::setDefaults()
+{
+    ParticleEffect::setDefaults();
+}
+
+void SmokeEffect::setUpEmitterAndProgram()
 {
     
     osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
@@ -54,35 +63,35 @@ void SmokeEffect::setDefaults()
 
         osgParticle::Particle ptemplate;
 
-        ptemplate.setLifeTime(10);        // 3 seconds of life
+        ptemplate.setLifeTime(10*_scale);
 
         // the following ranges set the envelope of the respective 
         // graphical properties in time.
         ptemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
-        ptemplate.setAlphaRange(osgParticle::rangef(0.0f, 1.0f));
+        ptemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
         ptemplate.setColorRange(osgParticle::rangev4(
             osg::Vec4(1, 1.0f, 1.0f, 1.0f), 
             osg::Vec4(1, 1.0f, 1.f, 0.0f)));
 
         // these are physical properties of the particle
-        ptemplate.setRadius(0.05f);    // 5 cm wide particles
-        ptemplate.setMass(0.01f);    // 10g heavy
+        ptemplate.setRadius(0.05f*_scale);    // 5 cm wide particles
+        ptemplate.setMass(0.01f*_scale);    // 10g heavy
 
         // assign the particle template to the system.
         ps->setDefaultParticleTemplate(ptemplate);
 
         osgParticle::RandomRateCounter* counter = new osgParticle::RandomRateCounter;
-        counter->setRateRange(1,2);    // generate 1000 particles per second
+        counter->setRateRange(1*_intensity*_scale,2*_intensity*_scale);    // generate 1000 particles per second
         emitter->setCounter(counter);
 
         osgParticle::SectorPlacer* placer = new osgParticle::SectorPlacer;
-        placer->setCenter(osg::Vec3(0.0,0.0,0.0));
-        placer->setRadiusRange(0.0f,0.5f);
+        placer->setCenter(_position);
+        placer->setRadiusRange(0.0f*_scale,0.25f*_scale);
         emitter->setPlacer(placer);
 
         osgParticle::RadialShooter* shooter = new osgParticle::RadialShooter;
         shooter->setThetaRange(0.0f, osg::PI_4);
-        shooter->setInitialSpeedRange(0.0f,0.0f);
+        shooter->setInitialSpeedRange(0.0f*_scale,0.0f*_scale);
         emitter->setShooter(shooter);
 
         emitter->setStartTime(0.0f);
@@ -108,30 +117,4 @@ void SmokeEffect::setDefaults()
 
         _program = program;
     }
-      
-    buildEffect();
-}
-
-void SmokeEffect::buildEffect()
-{
-    // clear the children.
-    removeChild(0,getNumChildren());
-    
-    if (!_emitter || !_particleSystem || !_program) return; 
-    
-    // add the emitter
-    addChild(_emitter.get());
-    
-    // add the program to update the particles
-    addChild(_program.get());
-
-    // add the particle system updater.
-    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
-    psu->addParticleSystem(_particleSystem.get());
-    addChild(psu);
-
-    // add the geode to the scene graph
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(_particleSystem.get());
-    addChild(geode);
 }

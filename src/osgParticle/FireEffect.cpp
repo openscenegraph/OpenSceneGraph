@@ -26,9 +26,15 @@
 
 using namespace osgParticle;
 
-FireEffect::FireEffect()
+FireEffect::FireEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
+    
+    _position = position;
+    _scale = scale;
+    _intensity = intensity;
+        
+    buildEffect();
 }
 
 FireEffect::FireEffect(const FireEffect& copy, const osg::CopyOp& copyop):
@@ -37,6 +43,11 @@ FireEffect::FireEffect(const FireEffect& copy, const osg::CopyOp& copyop):
 }
 
 void FireEffect::setDefaults()
+{
+    ParticleEffect::setDefaults();
+}
+
+void FireEffect::setUpEmitterAndProgram()
 {
     osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
     ps->setDefaultAttributes("Images/smoke.rgb", true, false);
@@ -64,27 +75,27 @@ void FireEffect::setDefaults()
             osg::Vec4(1, 0.0f, 0.f, 0.0f)));
 
         // these are physical properties of the particle
-        ptemplate.setRadius(0.05f);    // 5 cm wide particles
-        ptemplate.setMass(0.01f);    // 10g heavy
+        ptemplate.setRadius(0.05f*_scale);    // 5 cm wide particles
+        ptemplate.setMass(0.01f*_scale);    // 10g heavy
 
         // assign the particle template to the system.
         ps->setDefaultParticleTemplate(ptemplate);
 
         osgParticle::RandomRateCounter* counter = new osgParticle::RandomRateCounter;
-        counter->setRateRange(1,10);    // generate 1000 particles per second
+        counter->setRateRange(1*_intensity*_scale,10*_intensity*_scale);    // generate 1000 particles per second
         emitter->setCounter(counter);
 
         osgParticle::SectorPlacer* placer = new osgParticle::SectorPlacer;
-        placer->setCenter(osg::Vec3(0.0,0.0,0.0));
-        placer->setRadiusRange(0.0f,0.25f);
+        placer->setCenter(_position);
+        placer->setRadiusRange(0.0f*_scale,0.25f*_scale);
         emitter->setPlacer(placer);
 
         osgParticle::RadialShooter* shooter = new osgParticle::RadialShooter;
         shooter->setThetaRange(0.0f, osg::PI_4);
-        shooter->setInitialSpeedRange(0.0f,0.0f);
+        shooter->setInitialSpeedRange(0.0f*_scale,0.0f*_scale);
         emitter->setShooter(shooter);
 
-        emitter->setStartTime(0.0f);
+        emitter->setStartTime(_startTime);
 
         _emitter = emitter;
     }
@@ -108,31 +119,4 @@ void FireEffect::setDefaults()
         // add the program to the scene graph
         _program = program;
     }
-     
-    
-    buildEffect();
-}
-
-void FireEffect::buildEffect()
-{
-    // clear the children.
-    removeChild(0,getNumChildren());
-    
-    if (!_emitter || !_particleSystem || !_program) return; 
-    
-    // add the emitter
-    addChild(_emitter.get());
-    
-    // add the program to update the particles
-    addChild(_program.get());
-
-    // add the particle system updater.
-    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
-    psu->addParticleSystem(_particleSystem.get());
-    addChild(psu);
-
-    // add the geode to the scene graph
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(_particleSystem.get());
-    addChild(geode);
 }

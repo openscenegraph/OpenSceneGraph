@@ -124,8 +124,11 @@ namespace osgParticle
         inline int getLastFrameNumber() const;
 
         /// Get a reference to the default particle template.
-        inline const Particle &getDefaultParticleTemplate() const;
+        inline Particle &getDefaultParticleTemplate();
         
+        /// Get a const reference to the default particle template.
+        inline const Particle &getDefaultParticleTemplate() const;
+
         /// Set the default particle template (particle is copied).
         inline void setDefaultParticleTemplate(const Particle &p);
         
@@ -321,6 +324,11 @@ namespace osgParticle
             if (!bounds_computed_) 
                 bounds_computed_ = true;
         }
+    }
+
+    inline Particle &ParticleSystem::getDefaultParticleTemplate()
+    {
+        return def_ptemp_;
     }
 
     inline const Particle &ParticleSystem::getDefaultParticleTemplate() const

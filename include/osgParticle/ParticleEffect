@@ -24,35 +24,63 @@ namespace osgParticle
     {
     public:
     
-        ParticleEffect() {}
+        ParticleEffect():
+            _scale(1.0f),
+            _intensity(1.0f),
+            _startTime(0.0),
+            _duration(1.0),
+            _direction(0.0f,0.0f,1.0f)
+            {}
         
         ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+
 
         virtual const char *libraryName() const { return "osgParticle"; }
         virtual const char *className() const { return "ParticleEffect"; }
         virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const ParticleEffect*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
-        void setEmitter(Emitter* emitter) { _emitter = emitter; }
-        Emitter* getEmitter() { return _emitter.get(); }
-        const Emitter* getEmitter() const { return _emitter.get(); }
+        void setPosition(const osg::Vec3& position);
+        const osg::Vec3& getPosition() const { return _position; }
 
-        void setProgram(Program* program) { _program = program; }
-        Program* getProgram() { return _program.get(); }
-        const Program* getProgram() const { return _program.get(); }
+        void setScale(float scale);
+        float getScale() const { return _scale; }
+
+        void setIntensity(float intensity);
+        float getIntensity() const { return _intensity; }
         
-        void setParticleSystem(ParticleSystem* ps) { _particleSystem = ps; }
-        ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
-        const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
+        void setStartTime(double startTime);
+        double getStartTime() const { return _startTime; }
 
-        virtual void buildEffect() = 0;
+        void setDuration(double duration);
+        double getDuration() const { return _duration; }
+
+
+        virtual Emitter* getEmitter() = 0;
+        virtual const Emitter* getEmitter() const  = 0;
+
+        virtual Program* getProgram()  = 0;
+        virtual const Program* getProgram() const  = 0;
+        
+        virtual ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
+        virtual const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
+
+        virtual void setDefaults();
+
+        virtual void setUpEmitterAndProgram() = 0;
+
+        virtual void buildEffect();
 
     protected:
     
-        osg::ref_ptr<Emitter>           _emitter;
-        osg::ref_ptr<Program>           _program;
         osg::ref_ptr<ParticleSystem>    _particleSystem;
-
+        
+        osg::Vec3                       _position;
+        float                           _scale;
+        float                           _intensity;
+        double                          _startTime;
+        double                          _duration;
+        osg::Vec3                       _direction;
     };
 
 }

@@ -368,6 +368,10 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     
 #elif defined(__APPLE__)
 
+    // #define COMPILE_COCOA_VERSION
+    // #define COMPILE_CARBON_VERSION
+    
+
     // The Cocoa version is about 10 lines of code.
     // The Carbon version is noticably longer.
     // Unfortunately, the Cocoa version requires -lobjc to be 
@@ -381,8 +385,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     // renamed to use the .mm extension to denote Objective-C++.
     // And of course, you will need to link against Cocoa
 
-    // #define COMPILE_COCOA_VERSION_WITH_OBJECT-C++
-    #ifdef COMPILE_COCOA_VERSION_WITH_OBJECT-C++
+    #ifdef COMPILE_COCOA_VERSION
     #include <Foundation/Foundation.h>
     // OS X has preferred locations for where PlugIns should be located.
     // This function will set this as the order to search:
@@ -456,7 +459,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         [mypool release];
     }
 
-    #else
+    #elif defined(COMPILE_CARBON_VERSION)
+
 
     #include <CoreServices/CoreServices.h>
     // OS X has preferred locations for where PlugIns should be located.
@@ -638,7 +642,15 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
         }
     }
-
+    #else
+    void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
+    {
+        char* ptr;
+        if ((ptr = getenv( "DYLD_LIBRARY_PATH" )) )
+        {
+            convertStringPathIntoFilePathList(ptr, filepath);
+        }
+    }
     #endif
     
 #else   

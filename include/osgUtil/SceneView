@@ -156,9 +156,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osgUtil::RenderStage* getRenderStage() { return _renderStage.get(); }
         const osgUtil::RenderStage* getRenderStage() const { return _renderStage.get(); }
 
-        void setLODBias(float bias) { _lodBias = bias; }
-        float getLODBias() const { return _lodBias; }
-
 
         void setCullMask(const osg::Node::NodeMask nm) { _cullMask = nm; }
         const osg::Node::NodeMask getCullMask() const { return _cullMask; }
@@ -169,16 +166,31 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         void setCullMaskRight(const osg::Node::NodeMask nm) { _cullMaskRight = nm; }
         const osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
 
+        /** Set the LOD bias for the CullVisitor to use.*/
+        void setLODBias(float bias) { _LODBias = bias; }
+        
+        /** Get the LOD bias.*/
+        float getLODBias() const { return _LODBias; }
 
-        /** Set to true if you want SceneView to automatically calculate values
-           for the near/far clipping planes, each frame, set false to use camera's
-           internal near and far planes.  Default value is true.
-        */
-	void setCalcNearFar(bool calc) { _calc_nearfar = calc; }
-        /** return true if SceneView automatically calculates near and 
-            far clipping planes for each frame.
-        */
-        bool getCalcNearFar() const { return _calc_nearfar; }
+        /** Set the Small Feature Culling Pixel Size.*/
+        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
+
+        /** Get the Small Feature Culling Pixel Size.*/
+        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
+
+        /** Set the culling mode for the CullVisitor to use.*/
+        void setCullingMode(osg::CullStack::CullingMode mode) { _cullingMode = mode; }
+        
+        /** Returns the current CullingMode.*/
+        osg::CullStack::CullingMode getCullingMode() const { return _cullingMode; }
+
+        /** Set the ComputeNearFarMode for the CullVisitor to use.*/
+        void setComputeNearFarMode(CullVisitor::ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
+        
+        /** Get the ComputeNearFarMode.*/
+        CullVisitor::ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
+
+
 
         /** set whether the draw method should call renderer->prioritizeTexture.*/
         void setPrioritizeTextures(bool pt) { _prioritizeTextures = pt; }
@@ -283,14 +295,14 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::FrameStamp> _frameStamp;
 
         bool _need_compile;
-        bool _calc_nearfar;
+
 
         osg::Vec4 _backgroundColor;
 
-        double _near_plane;
-        double _far_plane;
-        
-        float _lodBias;
+        CullVisitor::ComputeNearFarMode  _computeNearFar;
+        osg::CullStack::CullingMode      _cullingMode;
+        float                            _LODBias;
+        float                            _smallFeatureCullingPixelSize;
 
         osg::ref_ptr<osg::Viewport> _viewport;
 

@@ -88,17 +88,17 @@ inline T square(T v) { return v*v; }
 template<typename T>
 inline T signedSquare(T v) { return v<(T)0?-v*v:v*v;; }
 
-template<typename T>
-inline T inDegrees(T angle) { return angle*(T)PI/(T)180.0; }
+inline float inDegrees(float angle) { return angle*(float)PI/180.0f; }
+inline double inDegrees(double angle) { return angle*PI/180.0; }
 
 template<typename T>
 inline T inRadians(T angle) { return angle; }
 
-template<typename T>
-inline T DegreesToRadians(T angle) { return angle*(T)PI/(T)180.0; }
+inline float DegreesToRadians(float angle) { return angle*(float)PI/180.0f; }
+inline double DegreesToRadians(double angle) { return angle*PI/180.0; }
 
-template<typename T>
-inline T RadiansToDegrees(T angle) { return angle*(T)180.0/(T)PI; }
+inline float RadiansToDegrees(float angle) { return angle*180.0f/(float)PI; }
+inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MWERKS__)
     inline bool isNaN(float v) { return _isnan(v)!=0; }

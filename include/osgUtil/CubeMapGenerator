@@ -30,7 +30,7 @@ namespace osgUtil
 
     /** This is the base class for cube map generators. 
         It exposes the necessary interface to access the six generated images;
-        descendants    should only override the compute_color() method.
+        descendants should only override the compute_color() method.
     */
     class OSGUTIL_EXPORT CubeMapGenerator: public osg::Referenced {
     public:
@@ -40,7 +40,7 @@ namespace osgUtil
         inline osg::Image *getImage(osg::TextureCubeMap::Face face);
         inline const osg::Image *getImage(osg::TextureCubeMap::Face face) const;
 
-        /** generate the six cube images. 
+        /** Generate the six cube images. 
             If use_osg_system is true, then the OSG's coordinate system is used instead 
             of the default OpenGL one.
         */
@@ -53,7 +53,7 @@ namespace osgUtil
         inline void set_pixel(int index, int c, int r, const osg::Vec4 &color);
         inline static osg::Vec4 vector_to_color(const osg::Vec3 &vec);        
 
-        /** override this method to define how colors are computed. 
+        /** Override this method to define how colors are computed. 
             The parameter R is the reflection vector, pointing from the center of the cube.
             The return value should be the RGBA color associated with that reflection ray.
         */

@@ -27,8 +27,9 @@
 namespace osgUtil {
 
 /**
- * SceneView is literally a view of a scene, encapsulating the
- * camera (modelview+projection matrices), global state, lights and the scene itself.  Provides
+ * SceneView is literally a view of a scene, encapsulating the 'camera' 
+ * (not to be confused with Producer::Camera) (modelview+projection matrices),
+ * global state, lights and the scene itself.  Provides
  * methods for setting up the view and rendering it.
 */
 class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSettings
@@ -50,14 +51,14 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
 
         /** Set scene view to use default global state, light, camera
          *  and render visitor.
-        */
+         */
         void setDefaults(unsigned int options = STANDARD_SETTINGS);
 
-        /** Set the data which to view. The data will typically be
+        /** Set the data to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
         void setSceneData(osg::Node* node) { _sceneData = node; }
-        /** Get the scene data which to view. The data will typically be
+        /** Get the scene data to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
         osg::Node* getSceneData() { return _sceneData.get(); }
@@ -67,7 +68,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
          */
         const osg::Node* getSceneData() const { return _sceneData.get(); }
 
-        /** Set the viewport of the scene view to use specfied osg::Viewport. */
+        /** Set the viewport of the scene view to use specified osg::Viewport. */
         void setViewport(osg::Viewport* viewport)
         {
             if (viewport) _viewport = viewport;
@@ -118,7 +119,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Set the color used in glClearColor().
             Defaults to an off blue color.*/
         void setClearColor(const osg::Vec4& color) { _clearColor=color; }
-        /** Get the color usinged in glClearColor.*/
+        /** Get the color used in glClearColor.*/
         const osg::Vec4& getClearColor() const { return _clearColor; }
 
 
@@ -152,7 +153,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
         inline void setProjectionMatrix(const osg::Matrixd& matrix) { _projectionMatrix.set(matrix); }
 
-        /** Set to a orthographic projection. See OpenGL glOrtho for documentation further details.*/
+        /** Set to an orthographic projection. See OpenGL glOrtho for documentation further details.*/
         void setProjectionMatrixAsOrtho(double left, double right,
                                         double bottom, double top,
                                         double zNear, double zFar);
@@ -177,7 +178,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Get the const projection matrix.*/
         const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
 
-        /** Get the othorgraphic settings of the orthographic projection matrix. 
+        /** Get the othographic settings of the orthographic projection matrix. 
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
         bool getProjectionMatrixAsOrtho(double& left, double& right,
                                         double& bottom, double& top,
@@ -189,11 +190,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
                                           double& bottom, double& top,
                                           double& zNear, double& zFar);
 
-        /** Get the frustum setting of a symetric perspective projection matrix.
+        /** Get the frustum setting of a symmetric perspective projection matrix.
           * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
-          * Note, if matrix is not a symetric perspective matrix then the shear will be lost.
-          * Asymetric metrices occur when stereo, power walls, caves and reality center display are used.
-          * In these configuration one should use the AsFrustum method instead.*/
+          * Note, if matrix is not a symmetric perspective matrix then the shear will be lost.
+          * Asymmetric matrices occur when stereo, power walls, caves and reality center display are used.
+          * In these configurations one should use the 'getProjectionMatrixAsFrustum' method instead.*/
         bool getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
                                               double& zNear, double& zFar);
 
@@ -290,7 +291,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         {
             /** Use fusion distance from the value set on the SceneView.*/
             USE_FUSION_DISTANCE_VALUE,
-            /** Compute the fusion distance by multiplying the screen distance by the  fusion distance value.*/
+            /** Compute the fusion distance by multiplying the screen distance by the fusion distance value.*/
             PROPORTIONAL_TO_SCREEN_DISTANCE
         };
 
@@ -308,13 +309,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         float getFusionDistanceValue() const { return _fusionDistanceValue; }
 
 
-        /** set whether the draw method should call renderer->prioritizeTexture.*/
+        /** Set whether the draw method should call renderer->prioritizeTexture.*/
         void setPrioritizeTextures(bool pt) { _prioritizeTextures = pt; }
         
-        /** get whether the draw method should call renderer->prioritizeTexture.*/
+        /** Get whether the draw method should call renderer->prioritizeTexture.*/
         bool getPrioritizeTextures() const { return _prioritizeTextures; }
 
-        /** callback for overidding the default method for compute the offset projection and view matrices.*/
+        /** Callback for overidding the default method for compute the offset projection and view matrices.*/
         struct ComputeStereoMatricesCallback : public osg::Referenced
         {
             virtual osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection) const = 0;
@@ -349,7 +350,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
             Note, current implementation requires that SceneView::draw() has been previously called
             for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
             windows coordinates are calculated relative to the bottom left of the window,
-            whereas as window API's normally have the top left as the origin,
+            whereas window API's normally have the top left as the origin,
             so you may need to pass in (mouseX,window_height-mouseY,...).
             Returns true on successful projection.
         */
@@ -359,7 +360,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Set the frame stamp for the current frame.*/
         inline void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
 
-        /** Set the frame stamp for the current frame.*/
+        /** Get the frame stamp for the current frame.*/
         inline const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 
@@ -399,8 +400,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Do init traversal of attached scene graph using Init NodeVisitor.
           * The init traversal is called once for each SceneView, and should
           * be used to compile display list, texture objects intialize data
-          * not otherwise intializaed during scene graph loading. Note, is
-          * called automatically by update&cull if it hasn't already been called
+          * not otherwise intialized during scene graph loading. Note, is
+          * called automatically by update & cull if it hasn't already been called
           * elsewhere. Also init() should only ever be called within a valid
           * graphics context.*/
         virtual void init();

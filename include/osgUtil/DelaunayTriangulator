@@ -25,7 +25,7 @@
 namespace osgUtil 
 {
 
-/** Utility class that triangulates an irregolar network of sample points.
+/** Utility class that triangulates an irregular network of sample points.
     Just create a DelaunayTriangulator, assign it the sample point array and call
     its triangulate() method to start the triangulation. Then you can obtain the
     generated primitive by calling the getTriangles() method.
@@ -37,31 +37,31 @@ public:
     explicit DelaunayTriangulator(osg::Vec3Array *points, osg::Vec3Array *normals = 0);
     DelaunayTriangulator(const DelaunayTriangulator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-    /// Get the const input point array.
+    /** Get the const input point array. */
     inline const osg::Vec3Array *getInputPointArray() const;
 
-    /// Get the input point array.
+    /** Get the input point array. */
     inline osg::Vec3Array *getInputPointArray();
 
-    /// Set the input point array.
+    /** Set the input point array. */
     inline void setInputPointArray(osg::Vec3Array *points);
 
-    /// Get the const output normal array (optional).
+    /** Get the const output normal array (optional). */
     inline const osg::Vec3Array *getOutputNormalArray() const;
 
-    /// Get the output normal array (optional).
+    /** Get the output normal array (optional). */
     inline osg::Vec3Array *getOutputNormalArray();
 
-    /// Set the output normal array (optional).
+    /** Set the output normal array (optional). */
     inline void setOutputNormalArray(osg::Vec3Array *normals);
 
-    /// Start triangulation.
+    /** Start triangulation. */
     bool triangulate();
 
-    /// Get the generated primitive (call triangulate() first).
+    /** Get the generated primitive (call triangulate() first). */
     inline const osg::DrawElementsUInt *getTriangles() const;
 
-    /// Get the generated primitive (call triangulate() first).
+    /** Get the generated primitive (call triangulate() first). */
     inline osg::DrawElementsUInt *getTriangles();
 
 protected:

@@ -36,6 +36,8 @@ struct LeafDepthSortFunctor
     }
 };
 
+/** RenderGraph - contained in a renderBin, defines the scene to be drawn.
+  */
 class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
 {
     public:
@@ -139,14 +141,14 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             std::sort(_leaves.begin(),_leaves.end(),LeafDepthSortFunctor());
         }
 
-        /** reset the internal contents of a RenderGraph, including deleting all children.*/
+        /** Reset the internal contents of a RenderGraph, including deleting all children.*/
         void reset();
 
-        /** recursively clean the RenderGraph of all its drawables, lights and depths.
+        /** Recursively clean the RenderGraph of all its drawables, lights and depths.
           * Leaves children intact, and ready to be populated again.*/
         void clean();
 
-        /** recursively prune the RenderGraph of empty children.*/
+        /** Recursively prune the RenderGraph of empty children.*/
         void prune();
         
         

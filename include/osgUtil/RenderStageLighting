@@ -24,7 +24,7 @@
 namespace osgUtil {
 
 /**
- * RenderBin base class.
+ * RenderStageLighting base class. Used in RenderStage class.
  */
 class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
 {

@@ -25,7 +25,10 @@ namespace osgUtil {
 class RenderStage;
 class Statistics;
 /**
- * RenderBin base class.
+ * RenderBin base class. Renderbin contains geometries to be rendered as a group, 
+ * renderbins are rendered once each.  They can improve efficiency or 
+ * use different rendering algorithms.
+ * A renderBin can contain further renderBins producing a tree hierarchy of renderBins.
  */
 class OSGUTIL_EXPORT RenderBin : public osg::Object
 {
@@ -68,7 +71,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         RenderStage* getStage() { return _stage; }
         const RenderStage* getStage() const { return _stage; }
 
-	int getBinNum() const { return _binNum; }
+        int getBinNum() const { return _binNum; }
 
         RenderGraphList& getRenderGraphList() { return _renderGraphList; }
         const RenderGraphList& getRenderGraphList() const { return _renderGraphList; }
@@ -90,7 +93,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         void sort();
 
         virtual void sortImplementation();
-	
+    
         void setSortMode(SortMode mode);
         SortMode getSortMode() const { return _sortMode; }
 
@@ -122,7 +125,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
-        /** extract stats for current draw list. */
+        /** Extract stats for current draw list. */
         bool getStats(Statistics* primStats);
         void getPrims(Statistics* primStats);
         bool getPrims(Statistics* primStats, int nbin);

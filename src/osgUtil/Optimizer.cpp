@@ -54,7 +54,7 @@ static bool isNodeEmpty(const osg::Node& node)
 
 void Optimizer::reset()
 {
-    _permissableOptimizationsMap.clear();
+    _permissibleOptimizationsMap.clear();
 }
 
 static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS");
@@ -293,8 +293,8 @@ void Optimizer::StateVisitor::apply(osg::Node& node)
     osg::StateSet* ss = node.getStateSet();
     if (ss && ss->getDataVariance()==osg::Object::STATIC) 
     {
-        if (isOperationPermissableForObject(&node) &&
-            isOperationPermissableForObject(ss))
+        if (isOperationPermissibleForObject(&node) &&
+            isOperationPermissibleForObject(ss))
         {
             addStateSet(ss,&node);
         }
@@ -305,14 +305,14 @@ void Optimizer::StateVisitor::apply(osg::Node& node)
 
 void Optimizer::StateVisitor::apply(osg::Geode& geode)
 {
-    if (!isOperationPermissableForObject(&geode)) return;
+    if (!isOperationPermissibleForObject(&geode)) return;
 
     osg::StateSet* ss = geode.getStateSet();
     
     
     if (ss && ss->getDataVariance()==osg::Object::STATIC)
     {
-        if (isOperationPermissableForObject(ss))
+        if (isOperationPermissibleForObject(ss))
         {
             addStateSet(ss,&geode);
         }
@@ -325,8 +325,8 @@ void Optimizer::StateVisitor::apply(osg::Geode& geode)
             ss = drawable->getStateSet();
             if (ss && ss->getDataVariance()==osg::Object::STATIC)
             {
-                if (isOperationPermissableForObject(drawable) &&
-                    isOperationPermissableForObject(ss))
+                if (isOperationPermissibleForObject(drawable) &&
+                    isOperationPermissibleForObject(ss))
                 {
                     addStateSet(ss,drawable);
                 }
@@ -585,7 +585,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void disableTransform(osg::Transform* transform);
         bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
-        inline bool isOperationPermissableForObject(const osg::Object* object)
+        inline bool isOperationPermissibleForObject(const osg::Object* object)
         {
             // disable if cannot apply transform functor.
             const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
@@ -594,7 +594,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
             // disable if object is a light point node.
             if (strcmp(object->className(),"LightPointNode")==0) return false;
 
-            return _optimizer ? _optimizer->isOperationPermissableForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true; 
+            return _optimizer ? _optimizer->isOperationPermissibleForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true; 
         }
 
     protected:        
@@ -831,7 +831,7 @@ void CollectLowestTransformsVisitor::setUpMaps()
         ObjectStruct& os = oitr->second;
         if (os._canBeApplied)
         {
-            if (os._moreThanOneMatrixRequired || !isOperationPermissableForObject(object))
+            if (os._moreThanOneMatrixRequired || !isOperationPermissibleForObject(object))
             {
                 disableObject(oitr);
             }
@@ -1151,7 +1151,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
         {
             if (group.getNumParents()>0 && group.getNumChildren()<=1)
             {
-                if (isNodeEmpty(group) && isOperationPermissableForObject(&group))
+                if (isNodeEmpty(group) && isOperationPermissibleForObject(&group))
                 {
                     _redundantNodeList.insert(&group);
                 }
@@ -1165,7 +1165,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Transform& transform)
 {
     if (transform.getNumParents()>0 && 
         transform.getDataVariance()==osg::Object::STATIC &&
-        isOperationPermissableForObject(&transform))
+        isOperationPermissibleForObject(&transform))
     {
         static osg::Matrix identity;
         osg::Matrix matrix;
@@ -1224,7 +1224,7 @@ void Optimizer::CombineLODsVisitor::apply(osg::LOD& lod)
     {
         if (typeid(*lod.getParent(i))==typeid(osg::Group))
         {
-            if (isOperationPermissableForObject(&lod))
+            if (isOperationPermissibleForObject(&lod))
             {
                 _groupList.insert(lod.getParent(i));
             }
@@ -1448,12 +1448,12 @@ struct LessGeometryPrimitiveType
 
 void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
 {
-    if (isOperationPermissableForObject(&geode))
+    if (isOperationPermissibleForObject(&geode))
     {
         for(unsigned int i=0;i<geode.getNumDrawables();++i)
         {
             osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            if (geom && isOperationPermissableForObject(geom))
+            if (geom && isOperationPermissibleForObject(geom))
             {
                 geom->computeCorrectBindingsAndArraySizes();
             }
@@ -1463,7 +1463,7 @@ void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
 
 bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
-    if (!isOperationPermissableForObject(&geode)) return false;
+    if (!isOperationPermissibleForObject(&geode)) return false;
 
 #if 1
 
@@ -1984,7 +1984,7 @@ void Optimizer::SpatializeGroupsVisitor::apply(osg::Group& group)
 {
     if (typeid(group)==typeid(osg::Group) || group.asTransform())
     {
-        if (isOperationPermissableForObject(&group))
+        if (isOperationPermissibleForObject(&group))
         {
             _groupsToDivideList.insert(&group);
         }
@@ -2173,7 +2173,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
 void Optimizer::CopySharedSubgraphsVisitor::apply(osg::Node& node)
 {
-    if (node.getNumParents()>1 && !isOperationPermissableForObject(&node))
+    if (node.getNumParents()>1 && !isOperationPermissibleForObject(&node))
     {
         _sharedNodeList.insert(&node);
     }
@@ -2215,8 +2215,8 @@ void Optimizer::TextureVisitor::apply(osg::Node& node)
     
     osg::StateSet* ss = node.getStateSet();
     if (ss && 
-        isOperationPermissableForObject(&node) &&
-        isOperationPermissableForObject(ss))
+        isOperationPermissibleForObject(&node) &&
+        isOperationPermissibleForObject(ss))
     {
         apply(*ss);
     }
@@ -2226,11 +2226,11 @@ void Optimizer::TextureVisitor::apply(osg::Node& node)
 
 void Optimizer::TextureVisitor::apply(osg::Geode& geode)
 {
-    if (!isOperationPermissableForObject(&geode)) return;
+    if (!isOperationPermissibleForObject(&geode)) return;
 
     osg::StateSet* ss = geode.getStateSet();
     
-    if (ss && isOperationPermissableForObject(ss))
+    if (ss && isOperationPermissibleForObject(ss))
     {
         apply(*ss);
     }
@@ -2242,8 +2242,8 @@ void Optimizer::TextureVisitor::apply(osg::Geode& geode)
         {
             ss = drawable->getStateSet();
             if (ss &&
-               isOperationPermissableForObject(drawable) &&
-               isOperationPermissableForObject(ss))
+               isOperationPermissibleForObject(drawable) &&
+               isOperationPermissibleForObject(ss))
             {
                 apply(*ss);
             }
@@ -2257,7 +2257,7 @@ void Optimizer::TextureVisitor::apply(osg::StateSet& stateset)
     {
         osg::StateAttribute* sa = stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE);
         osg::Texture* texture = dynamic_cast<osg::Texture*>(sa);
-        if (texture && isOperationPermissableForObject(texture))
+        if (texture && isOperationPermissibleForObject(texture))
         {
             apply(*texture);
         }

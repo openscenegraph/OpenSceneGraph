@@ -25,8 +25,8 @@
 
 namespace osgUtil {
 
-/** Insert impostor nodes into scene graph.
-  * For example of usage see src/Demos/osgimpostor.
+/** Traverses scene graph to improve efficiency. See OptimizationOptions.
+  * For example of usage see examples/osgimpostor or osgviewer.
   */
   
 class OSGUTIL_EXPORT Optimizer
@@ -69,50 +69,50 @@ class OSGUTIL_EXPORT Optimizer
                                 OPTIMIZE_TEXTURE_SETTINGS
         };
 
-        /** reset internal data to initial state - the getPrimissableOptionsMap is cleared.*/
+        /** Reset internal data to initial state - the getPermissibleOptionsMap is cleared.*/
         void reset();
         
-        /** traverse the node and its subgraph with a series of optimization
-          * visitors, specificied by the OptizationOptions.*/
+        /** Traverse the node and its subgraph with a series of optimization
+          * visitors, specified by the OptimizationOptions.*/
         void optimize(osg::Node* node);
 
-        /** traverse the node and its subgraph with a series of optimization
-          * visitors, specificied by the OptizationOptions.*/
+        /** Traverse the node and its subgraph with a series of optimization
+          * visitors, specified by the OptimizationOptions.*/
         virtual void optimize(osg::Node* node, unsigned int options);
 
 
-        inline void setPermissableOptimizationsForObject(const osg::Object* object, unsigned int options)
+        inline void setPermissibleOptimizationsForObject(const osg::Object* object, unsigned int options)
         {
-            _permissableOptimizationsMap[object] = options;
+            _permissibleOptimizationsMap[object] = options;
         }
         
-        inline unsigned int getPermissableOptimizationsForObject(const osg::Object* object) const
+        inline unsigned int getPermissibleOptimizationsForObject(const osg::Object* object) const
         {
-            PermissableOptimizationsMap::const_iterator itr = _permissableOptimizationsMap.find(object);
-            if (itr!=_permissableOptimizationsMap.end()) return itr->second;
+            PermissibleOptimizationsMap::const_iterator itr = _permissibleOptimizationsMap.find(object);
+            if (itr!=_permissibleOptimizationsMap.end()) return itr->second;
             else return 0xffffffff;
         }
         
-        inline bool isOperationPermissableForObject(const osg::Object* object,unsigned int option) const
+        inline bool isOperationPermissibleForObject(const osg::Object* object,unsigned int option) const
         {
-            return (option & getPermissableOptimizationsForObject(object))!=0; 
+            return (option & getPermissibleOptimizationsForObject(object))!=0; 
         }
         
-        typedef std::map<const osg::Object*,unsigned int> PermissableOptimizationsMap;
+        typedef std::map<const osg::Object*,unsigned int> PermissibleOptimizationsMap;
 
-        PermissableOptimizationsMap& getPrimissableOptionsMap() { return _permissableOptimizationsMap; }
-        const PermissableOptimizationsMap& getPrimissableOptionsMap() const { return _permissableOptimizationsMap; }
+        PermissibleOptimizationsMap& getPermissibleOptionsMap() { return _permissibleOptimizationsMap; }
+        const PermissibleOptimizationsMap& getPermissibleOptionsMap() const { return _permissibleOptimizationsMap; }
         
         
     protected:
     
-        PermissableOptimizationsMap _permissableOptimizationsMap;
+        PermissibleOptimizationsMap _permissibleOptimizationsMap;
 
 
     public:
 
 
-        /** Flatten Static Trasform nodes by applying their transform to the
+        /** Flatten Static Transform nodes by applying their transform to the
           * geometry on the leaves of the scene graph, then removing the 
           * now redundant transforms.*/        
         class OSGUTIL_EXPORT FlattenStaticTransformsVisitor : public osg::NodeVisitor
@@ -132,9 +132,9 @@ class OSGUTIL_EXPORT Optimizer
 
                 bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,FLATTEN_STATIC_TRANSFORMS) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,FLATTEN_STATIC_TRANSFORMS) :  true; 
                 }
 
             
@@ -155,7 +155,7 @@ class OSGUTIL_EXPORT Optimizer
         };
 
 
-        /** Combine Static Trasform nodes that sit above on another.*/        
+        /** Combine Static Transform nodes that sit above one another.*/        
         class OSGUTIL_EXPORT CombineStaticTransformsVisitor : public osg::NodeVisitor
         {
             public:
@@ -168,9 +168,9 @@ class OSGUTIL_EXPORT Optimizer
 
                 bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,FLATTEN_STATIC_TRANSFORMS) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,FLATTEN_STATIC_TRANSFORMS) :  true; 
                 }
 
             protected:
@@ -198,9 +198,9 @@ class OSGUTIL_EXPORT Optimizer
                 
                 void removeEmptyNodes();
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,REMOVE_REDUNDANT_NODES) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,REMOVE_REDUNDANT_NODES) :  true; 
                 }
 
                 Optimizer*      _optimizer;
@@ -223,16 +223,15 @@ class OSGUTIL_EXPORT Optimizer
                 
                 void removeRedundantNodes();
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,REMOVE_REDUNDANT_NODES) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,REMOVE_REDUNDANT_NODES) :  true; 
                 }
 
                 Optimizer*      _optimizer;
         };
 
-        /** Tesselate all geodes, to remove POLYGONS
-          * complementary ranges.*/
+        /** Tesselate all geodes, to remove POLYGONS.*/
         class OSGUTIL_EXPORT TesselateVisitor : public osg::NodeVisitor
         {
             public:
@@ -263,9 +262,9 @@ class OSGUTIL_EXPORT Optimizer
 
                 void combineLODs();
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,COMBINE_ADJACENT_LODS) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,COMBINE_ADJACENT_LODS) :  true; 
                 }
 
                 Optimizer*      _optimizer;
@@ -292,9 +291,9 @@ class OSGUTIL_EXPORT Optimizer
 
                 void optimize();
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,SHARE_DUPLICATE_STATE) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,SHARE_DUPLICATE_STATE) :  true; 
                 }
 
             protected:
@@ -322,9 +321,9 @@ class OSGUTIL_EXPORT Optimizer
 
                 void checkGeode(osg::Geode& geode);
                 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,CHECK_GEOMETRY) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,CHECK_GEOMETRY) :  true; 
                 }
 
                 Optimizer*      _optimizer;
@@ -355,9 +354,9 @@ class OSGUTIL_EXPORT Optimizer
                 static bool mergePrimitive(osg::DrawElementsUShort& lhs,osg::DrawElementsUShort& rhs);
                 static bool mergePrimitive(osg::DrawElementsUInt& lhs,osg::DrawElementsUInt& rhs);
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,MERGE_GEOMETRY) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,MERGE_GEOMETRY) :  true; 
                 }
 
                 Optimizer*      _optimizer;
@@ -381,9 +380,9 @@ class OSGUTIL_EXPORT Optimizer
                 typedef std::set<osg::Group*> GroupsToDivideList;
                 GroupsToDivideList _groupsToDivideList;
 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,SPATIALIZE_GROUPS) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,SPATIALIZE_GROUPS) :  true; 
                 }
 
                 Optimizer*      _optimizer;
@@ -406,9 +405,9 @@ class OSGUTIL_EXPORT Optimizer
                 typedef std::set<osg::Node*> SharedNodeList;
                 SharedNodeList _sharedNodeList;
                 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,COPY_SHARED_NODES) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,COPY_SHARED_NODES) :  true; 
                 }
 
                 Optimizer*      _optimizer;
@@ -437,9 +436,9 @@ class OSGUTIL_EXPORT Optimizer
                 void apply(osg::StateSet& stateset);
                 void apply(osg::Texture& texture);
                 
-                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                inline bool isOperationPermissibleForObject(const osg::Object* object) const
                 {
-                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,OPTIMIZE_TEXTURE_SETTINGS) :  true; 
+                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,OPTIMIZE_TEXTURE_SETTINGS) :  true; 
                 }
 
                 Optimizer*      _optimizer;

@@ -22,16 +22,16 @@
 
 namespace osgUtil {
 
-/** A visitor for traversing a scene graph establishing the OpenGL visuals are required
-  * to support rendering of that scene graph.  The results can then be used by
-  * applications to set up there windows with the correct visuals.  Have a look at
-  * src/osgGLUT/Viewer.cpp's Viewer::open() method for an example how to use it.
+/** A visitor for traversing a scene graph establishing which OpenGL visuals are
+  * required to support rendering of that scene graph.  The results can then be used by
+  * applications to set up their windows with the correct visuals.  Have a look at
+  * src/osgGLUT/Viewer.cpp's Viewer::open() method for an example of how to use it.
   */
 class OSGUTIL_EXPORT DisplayRequirementsVisitor : public osg::NodeVisitor
 {
     public:
 
-        /** Default to traversing all children, and reqiresDoubleBuffer,
+        /** Default to traversing all children, and requiresDoubleBuffer,
           * requiresRGB and requiresDepthBuffer to true and with
           * alpha and stencil off.*/
         DisplayRequirementsVisitor();

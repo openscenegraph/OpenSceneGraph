@@ -29,7 +29,13 @@ namespace osgUtil {
 
 
 class OSGUTIL_EXPORT Hit
-{
+{ 
+    /** Describes a point in space produced by an intersection of a line with a scene.
+      * A Hit is always on a surface as rendered by the Open Scene Graph scene (usually
+      * a triangle or other primitive, but a special hit handler could return a
+      * different value perhaps: a sphere shape might return a Hit on the true sphere
+      * rather than the approximate tesselated sphere rendered.
+      */
     public:
 
         Hit();
@@ -85,7 +91,6 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         /** Add a line segment to use for intersection testing during scene traversal.*/
         void addLineSegment(osg::LineSegment* seg);
 
-        //typedef std::multiset<Hit> HitList;
         typedef std::vector<Hit> HitList;
         typedef std::map<osg::LineSegment*,HitList > LineSegmentHitListMap;
         HitList& getHitList(osg::LineSegment* seg) { return _segHitList[seg]; }

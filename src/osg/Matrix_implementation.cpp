@@ -125,12 +125,12 @@ void Matrix_implementation::get( Quat& q ) const
 
     int nxt[3] = {1, 2, 0};
 
-    tr = _mat[0][0] + _mat[1][1] + _mat[2][2];
+    tr = _mat[0][0] + _mat[1][1] + _mat[2][2]+1.0;
 
     // check the diagonal
     if (tr > 0.0)
     {
-        s = (value_type)sqrt (tr + 1.0);
+        s = (value_type)sqrt (tr);
         QW = s / 2.0;
         s = 0.5 / s;
         QX = (_mat[1][2] - _mat[2][1]) * s;

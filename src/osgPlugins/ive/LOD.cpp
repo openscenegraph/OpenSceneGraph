@@ -53,6 +53,7 @@ void LOD::read(DataInputStream* in){
 	if(id == IVELOD){
 		// Read LOD's identification.
 		id = in->readInt();
+
 		// If the osg class is inherited by any other class we should also read this from file.
 		osg::Group*  group = dynamic_cast<osg::Group*>(this);
 		if(group){
@@ -62,13 +63,15 @@ void LOD::read(DataInputStream* in){
 			throw Exception("LOD::read(): Could not cast this osg::LOD to an osg::Group.");
 		// Read LOD's properties
 
+        if ( in->getVersion() > VERSION_0002 )
                 setRadius(in->readFloat());
 
 		// Read centermode
 		setCenterMode((osg::LOD::CenterMode)in->readInt());
 		setCenter(in->readVec3());
 
-                setRangeMode((RangeMode)in->readInt());
+        if ( in->getVersion() > VERSION_0002 )
+            setRangeMode((RangeMode)in->readInt());
 
 		// Read rangelist
 		int size = in->readInt();;

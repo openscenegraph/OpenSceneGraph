@@ -99,7 +99,8 @@ int main( int argc, char **argv )
         {
             if (insert)
             {
-                osgDB::FileType fileType = osgDB::fileType(arguments[pos]);
+                std::string filePath = osgDB::findDataFile(arguments[pos]);
+                osgDB::FileType fileType = osgDB::fileType(filePath);
                 if (fileType==osgDB::REGULAR_FILE)
                 {
                     files.push_back(arguments[pos]);
@@ -109,10 +110,6 @@ int main( int argc, char **argv )
                     osgDB::DirectoryContents directory = osgDB::getDirectoryContents(arguments[pos]);
                     files.insert(files.end(),directory.begin(),directory.end());
                 }
-            }
-            else
-            {
-                files.push_back(arguments[pos]);
             }
         }
     }
@@ -152,13 +149,17 @@ int main( int argc, char **argv )
         osgDB::Archive archive;
         archive.open(archiveFilename, osgDB::Archive::WRITE);
         
+        std::cout<<"Going through files"<<files.size()<<std::endl;
+
         for (FileNameList::iterator itr=files.begin();
             itr!=files.end();
             ++itr)
         {
+            std::cout<<" Tring to read"<<*itr<<std::endl;
             osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
             if (obj.valid())
             {
+                std::cout<<"   Have read"<<*itr<<std::endl;
                 archive.writeObject(*obj, *itr);
             }
         }

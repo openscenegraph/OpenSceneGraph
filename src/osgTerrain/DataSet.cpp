@@ -3724,14 +3724,28 @@ void DataSet::_equalizeRow(Row& row)
     }
 }
 
+void DataSet::_writeNodeFile(const osg::Node& node,const std::string& filename)
+{
+    if (_archive.valid()) _archive->writeNode(node,filename);
+    else osgDB::writeNodeFile(node, filename);
+}
+
+void DataSet::_writeImageFile(const osg::Image& image,const std::string& filename)
+{
+    if (_archive.valid()) _archive->writeImage(image,filename);
+    else osgDB::writeImageFile(image, filename);
+}
+
 
 class WriteImageFilesVisitor : public osg::NodeVisitor
 {
 public:
 
-    WriteImageFilesVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    WriteImageFilesVisitor(osgTerrain::DataSet* dataSet):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _dataSet(dataSet) {}
 
+    osgTerrain::DataSet* _dataSet;
     
     virtual void apply(osg::Node& node)
     {
@@ -3762,7 +3776,7 @@ public:
             
             if (image)
             {
-                osgDB::writeImageFile(*image,image->getFileName().c_str());
+                _dataSet->_writeImageFile(*image,image->getFileName().c_str());
             }
         }
     }
@@ -3787,11 +3801,11 @@ void DataSet::_writeRow(Row& row)
                 if (node.valid())
                 {
                     my_notify(osg::NOTICE)<<"   writeSubTile filename="<<filename<<std::endl;
-                    osgDB::writeNodeFile(*node,filename);
+                    _writeNodeFile(*node,filename);
 
                     if (_tileExtension==".osg")
                     {
-                        WriteImageFilesVisitor wifv;
+                        WriteImageFilesVisitor wifv(this);
                         node->accept(wifv);
                     }
 
@@ -3825,11 +3839,11 @@ void DataSet::_writeRow(Row& row)
             if (node.valid())
             {
                 my_notify(osg::NOTICE)<<"   writeNodeFile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
-                osgDB::writeNodeFile(*node,filename);
+                _writeNodeFile(*node,filename);
                 
                 if (_tileExtension==".osg")
                 {
-                    WriteImageFilesVisitor wifv;
+                    WriteImageFilesVisitor wifv(this);
                     node->accept(wifv);
                 }
             }
@@ -3879,6 +3893,12 @@ osg::Node* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
 
 void DataSet::_buildDestination(bool writeToDisk)
 {
+    if (!_archive && !_archiveName.empty())
+    {
+        _archive = new osgDB::Archive;
+        _archive->open(_archiveName, osgDB::Archive::WRITE);
+    }
+
     if (_destinationGraph.valid())
     {
         std::string filename = _tileBasename+_tileExtension;
@@ -3901,10 +3921,10 @@ void DataSet::_buildDestination(bool writeToDisk)
 
             if (writeToDisk)
             {
-                osgDB::writeNodeFile(*_rootNode,filename);
+                _writeNodeFile(*_rootNode,filename);
                 if (_tileExtension==".osg")
                 {
-                    WriteImageFilesVisitor wifv;
+                    WriteImageFilesVisitor wifv(this);
                     _rootNode->accept(wifv);
                 }
             }
@@ -3954,5 +3974,6 @@ void DataSet::_buildDestination(bool writeToDisk)
         my_notify(osg::WARN)<<"Error: no scene graph to output, no file written."<<std::endl;
     }
 
+    if (_archive.valid()) _archive->close();
 }
 

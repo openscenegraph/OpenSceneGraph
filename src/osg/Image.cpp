@@ -21,6 +21,7 @@
 #include <osg/StateSet>
 #include <osg/Texture2D>
 
+#include "dxtctool.h"
 
 using namespace osg;
 using namespace std;
@@ -657,7 +658,7 @@ void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* sour
 }
 
 
-void Image::flipHorizontal(int image)
+void Image::flipHorizontal()
 {
     if (_data==NULL)
     {
@@ -667,28 +668,45 @@ void Image::flipHorizontal(int image)
 
     unsigned int elemSize = getPixelSizeInBits()/8;
 
-    for (int t=0; t<_t; ++t)
+    for(int r=0;r<_r;++r)
     {
-        unsigned char* rowData = _data+t*getRowSizeInBytes()+image*getImageSizeInBytes();
-        unsigned char* left  = rowData ;
-        unsigned char* right = rowData + ((_s-1)*getPixelSizeInBits())/8;
-
-        while (left < right)
+        for (int t=0; t<_t; ++t)
         {
-            char tmp[32];  // max elem size is four floats
-            memcpy(tmp, left, elemSize);
-            memcpy(left, right, elemSize);
-            memcpy(right, tmp, elemSize);
-            left  += elemSize;
-            right -= elemSize;
+            unsigned char* rowData = _data+t*getRowSizeInBytes()+r*getImageSizeInBytes();
+            unsigned char* left  = rowData ;
+            unsigned char* right = rowData + ((_s-1)*getPixelSizeInBits())/8;
+
+            while (left < right)
+            {
+                char tmp[32];  // max elem size is four floats
+                memcpy(tmp, left, elemSize);
+                memcpy(left, right, elemSize);
+                memcpy(right, tmp, elemSize);
+                left  += elemSize;
+                right -= elemSize;
+            }
         }
     }
-
+    
     ++_modifiedTag;
 }
 
+void flipImageVertical(unsigned char* top, unsigned char* bottom, unsigned int rowSize)
+{
+    while(top<bottom)
+    {
+        for(unsigned int i=0;i<rowSize;++i, ++top,++bottom)
+        {
+            unsigned char temp=*top;
+            *top = *bottom;
+            *bottom = temp;
+        }
+        bottom -= 2*rowSize;
+    }
+}
 
-void Image::flipVertical(int image)
+
+void Image::flipVertical()
 {
     if (_data==NULL)
     {
@@ -696,25 +714,64 @@ void Image::flipVertical(int image)
         return;
     }
 
-    unsigned int rowSizeInBytes = getRowSizeInBytes();
-    unsigned int imageSizeInBytes = getImageSizeInBytes();
-    unsigned char* imageData = _data+image*imageSizeInBytes;
-
-    // make temp. buffer for one image
-    unsigned char *tmpData = new unsigned char [imageSizeInBytes];
-
-    for (int t=0; t<_t; ++t)
+    if (!_mipmapData.empty() && _r>1)
     {
-        unsigned char* srcRowData = imageData+t*rowSizeInBytes;
-        unsigned char* dstRowData = tmpData+(_t-1-t)*rowSizeInBytes;
-        memcpy(dstRowData, srcRowData, rowSizeInBytes);
+        notify(WARN) << "Error Image::flipVertical() do not succeed : flipping of mipmap 3d textures not yet supported."<<std::endl;
+        return;
     }
 
-    // insert fliped image
-    memcpy(imageData, tmpData, imageSizeInBytes);
+    if (_mipmapData.empty())
+    {
+        // no mipmaps,
+        // so we can safely handle 3d textures
+        for(int r=0;r<_r;++r)
+        {
+            if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,data(0,0,r)))
+            {
+                // its not a compressed image, so implement flip oursleves.
+                
+                unsigned int rowSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing);
+                unsigned char* top = data(0,0,r);
+                unsigned char* bottom = top + (_t-1)*rowSize;
+                    
+                flipImageVertical(top, bottom, rowSize);
+            }
+        }
+    }
+    else if (_r==1)
+    {
+        if (!dxtc_tool::VerticalFlip(_s,_t,_pixelFormat,_data))
+        {
+            // its not a compressed image, so implement flip oursleves.
+            unsigned int rowSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing);
+            unsigned char* top = data(0,0,0);
+            unsigned char* bottom = top + (_t-1)*rowSize;
 
-    delete [] tmpData;
-    
+            flipImageVertical(top, bottom, rowSize);
+        }
+
+        int s = _s;
+        int t = _t;
+        //int r = _r;
+
+        for(unsigned int i=0;i<_mipmapData.size() && _mipmapData[i];++i)
+        {
+            s >>= 1;
+            t >>= 1;
+            if (s==0) s=1;
+            if (t==0) t=1;
+            if (!dxtc_tool::VerticalFlip(s,t,_pixelFormat,_data+_mipmapData[i]))
+            {
+                // its not a compressed image, so implement flip oursleves.
+                unsigned int rowSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing);
+                unsigned char* top = _data+_mipmapData[i];
+                unsigned char* bottom = top + (t-1)*rowSize;
+
+                flipImageVertical(top, bottom, rowSize);
+            }
+       }
+    }   
+
     ++_modifiedTag;
 }
 
@@ -736,11 +793,6 @@ void Image::ensureValidSizeForTexturing(GLint maxTextureSize)
         scaleImage(new_s,new_t,_r);
     }
 }
-
-void Image::computeMipMaps()
-{
-}
-
 
 bool Image::isImageTranslucent() const
 {

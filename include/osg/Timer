@@ -56,14 +56,7 @@ class SG_EXPORT Timer {
 
         static const Timer* instance();
 
-
-    #if defined __APPLE__  || defined macintosh
-        // PJA MAC OSX - inline Tick() pollutes namespace so badly 
-        // we cant compile, due to Carbon.h ...
-            Timer_t tick() const;
-    #else
         inline Timer_t tick() const;
-    #endif
         
         inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerTick; }
         inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }
@@ -206,6 +199,19 @@ class SG_EXPORT Timer {
         }
     }
     
+#elif defined (__APPLE__) || defined (macintosh)
+
+    #include <sys/time.h>
+
+    namespace osg{
+        inline Timer_t Timer::tick() const
+        {
+            // Always uses std::clock()
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+        }
+    }
 #elif defined(unix)
 
     #include <sys/time.h>
@@ -219,7 +225,7 @@ class SG_EXPORT Timer {
         }
     }
 
-#elif !defined (__APPLE__) && !defined (macintosh)
+#else
 
     // no choice, always use std::clock()
     namespace osg{
@@ -228,7 +234,5 @@ class SG_EXPORT Timer {
     }
 
 #endif
-
-// note, MacOSX compiled in the Timer.cpp.
 
 #endif

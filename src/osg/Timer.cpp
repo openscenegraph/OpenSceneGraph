@@ -285,27 +285,10 @@ const Timer* Timer::instance()
 
 #elif defined (__APPLE__)  || defined (macintosh)
 
-    #if defined (__APPLE__)
-        #include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
-    #else    
-        #include <MacTypes.h>
-        #include <Timer.h>
-    #endif
-
-
-    Timer::Timer( void )
+    Timer::Timer()
     {
-        _useStandardClock = false;
-        _secsPerTick = 1e-6; // Carbon timer's precision.
-
-    }
-
-    Timer_t Timer::tick(void) const
-    {
-        UnsignedWide usecs;
-        Microseconds(&usecs);
-
-        return (usecs.hi * 4294967296.0) + usecs.lo;
+        _useStandardClock = true;
+        _secsPerTick = 1e-6; // gettimeofday()'s precision.
     }
 
 #elif defined(unix)

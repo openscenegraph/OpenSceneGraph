@@ -198,7 +198,12 @@ void MpegImageStream::swapData()
     unsigned char* dp = _videoWriteData;
     for (int i = 0; i < t(); i++)
     {
+// #define FLIP_VERTICAL_SO_ORIENTATED_LIKE_OPENGL_WITH_ORIGIN_AT_BOTTOM_LEFT
+#ifdef FLIP_VERTICAL_SO_ORIENTATED_LIKE_OPENGL_WITH_ORIGIN_AT_BOTTOM_LEFT
         _rows[t()-i-1] = dp;
+#else
+        _rows[i] = dp;
+#endif
         dp += (s() * 4);
     }
 }

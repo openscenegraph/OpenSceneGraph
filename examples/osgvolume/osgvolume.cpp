@@ -278,6 +278,7 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
         {
             max_s = osg::maximum(image->s(), max_s);
             max_t = osg::maximum(image->t(), max_t);
+            osg::notify(osg::NOTICE)<<"image, number of components"<<osg::Image::computeNumComponents(pixelFormat)<<std::endl;
             max_components = osg::maximum(osg::Image::computeNumComponents(pixelFormat), max_components);
             total_r += image->r();
         }
@@ -293,15 +294,19 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
     switch(max_components)
     {
     case(1):
+        osg::notify(osg::NOTICE)<<"desiredPixelFormat = GL_LUMINANCE" << std::endl;
         desiredPixelFormat = GL_LUMINANCE;
         break;
     case(2):
+        osg::notify(osg::NOTICE)<<"desiredPixelFormat = GL_LUMINANCE_ALPHA" << std::endl;
         desiredPixelFormat = GL_LUMINANCE_ALPHA;
         break;
     case(3):
+        osg::notify(osg::NOTICE)<<"desiredPixelFormat = GL_RGB" << std::endl;
         desiredPixelFormat = GL_RGB;
         break;
     case(4):
+        osg::notify(osg::NOTICE)<<"desiredPixelFormat = GL_RGBA" << std::endl;
         desiredPixelFormat = GL_RGBA;
         break;
     }    
@@ -316,6 +321,11 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
 
     int r_nearestPowerOfTwo = 1;
     while(r_nearestPowerOfTwo<total_r && r_nearestPowerOfTwo<maximumTextureSize) r_nearestPowerOfTwo*=2;
+
+
+    osg::notify(osg::NOTICE)<<"max image width = "<<max_s<<"  nearest power of two = "<<s_nearestPowerOfTwo<<std::endl;
+    osg::notify(osg::NOTICE)<<"max image height = "<<max_t<<"  nearest power of two = "<<t_nearestPowerOfTwo<<std::endl;
+    osg::notify(osg::NOTICE)<<"max image depth = "<<total_r<<"  nearest power of two = "<<r_nearestPowerOfTwo<<std::endl;
     
     // now allocate the 3d texture;
     osg::ref_ptr<osg::Image> image_3d = new osg::Image;
@@ -360,21 +370,48 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
 
 osg::Image* createNormalMapTexture(osg::Image* image_3d)
 {
+    unsigned int sourcePixelIncrement = 1;
+    unsigned int alphaOffset = 0; 
+    switch(image_3d->getPixelFormat())
+    {
+    case(GL_ALPHA):
+    case(GL_LUMINANCE):
+        sourcePixelIncrement = 1;
+        alphaOffset = 0;
+        break;
+    case(GL_LUMINANCE_ALPHA):
+        sourcePixelIncrement = 2;
+        alphaOffset = 1;
+        break;
+    case(GL_RGB):
+        sourcePixelIncrement = 3;
+        alphaOffset = 0;
+        break;
+    case(GL_RGBA):
+        sourcePixelIncrement = 4;
+        alphaOffset = 3;
+        break;
+    default:
+        osg::notify(osg::NOTICE)<<"Source pixel format not support for normal map generation."<<std::endl;
+        return 0;
+    }
+    
     osg::ref_ptr<osg::Image> bumpmap_3d = new osg::Image;
     bumpmap_3d->allocateImage(image_3d->s(),image_3d->t(),image_3d->r(),
                             GL_RGBA,GL_UNSIGNED_BYTE);
+
 
     for(int r=1;r<image_3d->r()-1;++r)
     {
         for(int t=1;t<image_3d->t()-1;++t)
         {
-            unsigned char* ptr = image_3d->data(1,t,r);
-            unsigned char* left = image_3d->data(0,t,r);
-            unsigned char* right = image_3d->data(2,t,r);
-            unsigned char* above = image_3d->data(1,t+1,r);
-            unsigned char* below = image_3d->data(1,t-1,r);
-            unsigned char* in = image_3d->data(1,t,r+1);
-            unsigned char* out = image_3d->data(1,t,r-1);
+            unsigned char* ptr = image_3d->data(1,t,r)+alphaOffset;
+            unsigned char* left = image_3d->data(0,t,r)+alphaOffset;
+            unsigned char* right = image_3d->data(2,t,r)+alphaOffset;
+            unsigned char* above = image_3d->data(1,t+1,r)+alphaOffset;
+            unsigned char* below = image_3d->data(1,t-1,r)+alphaOffset;
+            unsigned char* in = image_3d->data(1,t,r+1)+alphaOffset;
+            unsigned char* out = image_3d->data(1,t,r-1)+alphaOffset;
 
             unsigned char* destination = (unsigned char*) bumpmap_3d->data(1,t,r);
 
@@ -404,13 +441,13 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
 
                 *destination++ = *ptr;
 
-                ++ptr;
-                ++left;
-                ++right;
-                ++above;
-                ++below;
-                ++in;
-                ++out;
+                ptr += sourcePixelIncrement;
+                left += sourcePixelIncrement;
+                right += sourcePixelIncrement;
+                above += sourcePixelIncrement;
+                below += sourcePixelIncrement;
+                in += sourcePixelIncrement;
+                out += sourcePixelIncrement;
             }
         }
     }
@@ -536,7 +573,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap,
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,0.02f));
+    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,0.00f));
     
     osg::Material* material = new osg::Material;
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -554,8 +591,12 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap,
         texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
         texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
         texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
-        texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
-        texture3D->setInternalFormat(GL_INTENSITY);
+        if (image_3d->getPixelFormat()==GL_ALPHA || 
+            image_3d->getPixelFormat()==GL_LUMINANCE)
+        {
+            texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
+            texture3D->setInternalFormat(GL_INTENSITY);
+        }
         texture3D->setImage(image_3d.get());
 
         stateset->setTextureAttributeAndModes(diffuse_unit,texture3D,osg::StateAttribute::ON);
@@ -672,7 +713,7 @@ int main( int argc, char **argv )
         
         // pack the textures into a single texture.
         ProcessRow processRow;
-        image_3d = createTexture3D(imageList, processRow, 1);
+        image_3d = createTexture3D(imageList, processRow);
     }
 
 

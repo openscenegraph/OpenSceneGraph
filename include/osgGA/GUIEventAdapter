@@ -230,24 +230,24 @@ public:
         /** button pressed/released, return -1 if inappropriate for this event.*/
         virtual int getButton() const = 0;
 
-        /** window minimum x. */
-        virtual int getXmin() const = 0;
+        /** manimum x mouse position. */
+        virtual float getXmin() const = 0;
 
-        /** window maximum x. */
-        virtual int getXmax() const = 0;
+        /** maximum x mouse position. */
+        virtual float getXmax() const = 0;
 
-        /** window minimum y. */
-        virtual int getYmin() const = 0;
+        /** minimum y mouse position. */
+        virtual float getYmin() const = 0;
 
-        /** window maximum y. */   
-        virtual int getYmax() const = 0;
+        /** maximum y mouse position. */   
+        virtual float getYmax() const = 0;
 
         /** current mouse x position.*/
-        virtual int getX() const = 0;
+        virtual float getX() const = 0;
 
         /** current mouse y position.*/
-        virtual int getY() const = 0;
-
+        virtual float getY() const = 0;
+        
         /** current mouse button state */
         virtual unsigned int getButtonMask() const = 0;
 
@@ -256,6 +256,18 @@ public:
 
         /** time in seconds of event. */
         virtual double time() const = 0;
+        
+        /** return the getX() value normalised to the range of -1 to 1.
+          * -1 would be the left hand side of the window.
+          * 0.0 would be the middle of the window. 
+          * +1 would be the right hand side of the window.*/
+        inline float getXnormalized() const { return 2.0f*(getX()-getXmin())/(getXmax()-getXmin())-1.0f; }
+
+        /** return the getY() value normalised to the range of -1 to 1.
+          * -1 would be the bottom of the window.
+          * 0.0 would be the middle of the window. 
+          * +1 would be the top of the window.*/
+        inline float getYnormalized() const { return 2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f; }
 
 protected:
 

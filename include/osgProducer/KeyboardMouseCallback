@@ -30,8 +30,9 @@ namespace osgProducer {
 class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseCallback
 {
     public:
-        KeyboardMouseCallback(bool &done, bool escapeKeySetsDone=true) :
+        KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMouse, bool &done, bool escapeKeySetsDone=true) :
             Producer::KeyboardMouseCallback(),
+            _keyboardMouse(keyboardMouse),
             _mx(0.0f),_my(0.0f),_mbutton(0),
             _done(done),
             _escapeKeySetsDone(escapeKeySetsDone)            
@@ -72,8 +73,14 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         
         double getTime() { return _timer.delta_s(_startTick,_timer.tick()); }
         
+        Producer::KeyboardMouse* getKeyboardMouse() { return _keyboardMouse; }
+        const Producer::KeyboardMouse* getKeyboardMouse() const { return _keyboardMouse; }
+         
     protected:
     
+        EventAdapter* createEventAdapter();
+    
+        Producer::KeyboardMouse* _keyboardMouse;
         float _mx, _my;
         unsigned int _mbutton;
         bool &_done;

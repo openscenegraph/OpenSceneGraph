@@ -157,7 +157,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     us.requestRedraw();
 
-    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
     flushMouseEventStack();
 
@@ -258,7 +258,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     if (ea.getEventType()!=GUIEventAdapter::RESIZE)
     {
-        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
     }
     
     computeLocalDataFromCamera();
@@ -455,9 +455,8 @@ bool DriveManipulator::calcMovement()
     {
         case(USE_MOUSE_Y_FOR_SPEED):
         {
-            float my = (_ga_t0->getYmin()+_ga_t0->getYmax())/2.0f;
-            float dy = _ga_t0->getY()-my;
-            _velocity = -_modelScale*0.0002f*dy;
+            float dy = _ga_t0->getYnormalized();
+            _velocity = -_modelScale*0.2f*dy;
             break;
         }
         case(USE_MOUSE_BUTTONS_FOR_SPEED):
@@ -494,11 +493,9 @@ bool DriveManipulator::calcMovement()
     osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f) * rotation_matrix;
 
     // rotate the camera.
-    float mx = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
+    float dx = _ga_t0->getXnormalized();
 
-    float dx = _ga_t0->getX()-mx;
-
-    float yaw = -inDegrees(dx*0.1f*dt);
+    float yaw = -inDegrees(dx*50.0f*dt);
 
     osg::Quat yaw_rotation;
     yaw_rotation.makeRotate(yaw,up);

@@ -252,23 +252,32 @@ ifeq ($(OS),Linux)
     DEF             += -KPIC
     OPTF            = -O2 
     DBGF            = -g -DOSG_COMPILE_UNIT_TESTS 
+    ifeq ($(SYSARCH),ia64)
+      ARCHARGS        = 
+      ARCH            = 64
+      ARCHINST        = 64
+    else
+      ARCHARGS        = 
+      ARCH            = 32
+      ARCHINST        = 
+    endif
   else
     LIBS            = -lstdc++
     DEF             += -W -Wall -fPIC
     OPTF            = -O2 
     DBGF            = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
+    SYSARCH           := $(shell arch)
+    ifeq ($(SYSARCH),x86_64)
+      ARCHARGS        = -m64 -DARCH64
+      ARCH            = 64
+      ARCHINST        = 64
+    else
+      ARCHARGS        = 
+      ARCH            = 32
+      ARCHINST        = 
+    endif
   endif
 
-  SYSARCH           := $(shell arch)
-  ifeq ($(SYSARCH),ia64)
-    ARCHARGS        = -m64 -DARCH64
-    ARCH            = 64
-    ARCHINST        = 64
-  else
-    ARCHARGS        = 
-    ARCH            = 32
-    ARCHINST        = 
-  endif
 
   SHARED            = -shared
   LINKARGS          = -L/usr/X11R6/lib

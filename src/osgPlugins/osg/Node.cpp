@@ -34,6 +34,14 @@ bool Node_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    unsigned int mask = node.getNodeMask();
+    if (fr[0].matchWord("nodeMask") && fr[1].getUInt(mask))
+    {
+        node.setNodeMask(mask);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
     if (fr[0].matchWord("cullingActive"))
     {
         if (fr[1].matchWord("FALSE"))
@@ -135,6 +143,8 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     const Node& node = static_cast<const Node&>(obj);
 
     if (!node.getName().empty()) fw.indent() << "name "<<fw.wrapString(node.getName())<< std::endl;
+
+    fw.indent() << "nodeMask 0x" << hex << node.getNodeMask() << dec << std::endl;
 
     fw.indent() << "cullingActive ";
     if (node.getCullingActive()) fw << "TRUE"<< std::endl;

@@ -7,7 +7,7 @@ CXXFILES =\
         AreaGeoSetTriangulator.cpp \
         StateSetStr.cpp
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) $(GLUT_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = dx
 include $(TOPDIR)/Make/cygwin_plugin_def

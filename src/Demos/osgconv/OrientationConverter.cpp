@@ -57,7 +57,7 @@ Node* OrientationConverter::convert( Node *node )
     transform->addChild(node);
 
     osgUtil::Optimizer::FlattenStaticTransformsVisitor fstv;
-    node->accept(fstv);
+    root->accept(fstv);
     fstv.removeTransforms();
     
     return root->getChild(0);

@@ -199,11 +199,16 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
     if (threadMode != ThreadFree)
         throw 1;
 
+
+    //std::cout<<"OSGPageManager::ThreadLoop()"<<std::endl;
+    
     std::vector<osg::Group *> unhook;
     std::vector <osg::Group *> nextDelete;
 
-    bool pagingActive = false;
-    while (!t->testCancel()) {
+    //bool pagingActive = false;
+    do
+    {
+
         /*  Here's how we do it:
             Wait for position change
             Update manager w/ position
@@ -227,6 +232,9 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
         trpg2dPoint loc;
         loc.x = myLocX;
         loc.y = myLocY;
+        
+        //std::cout<<"location "<<myLocX<<"  "<<myLocY<<std::endl;
+
         if (pageManage->SetLocation(loc) ) {
             // If there were changes, process them
             // Form the delete list first
@@ -272,8 +280,8 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
             {
                 tile->GetTileLoc(x,y,lod);
 
-                osg::notify(WARN) << "Tile to load :" << x << ' ' << y << ' ' << lod << std::endl;
-                osg::notify(WARN) << "Position     :" << loc.x << ' ' << loc.y << std::endl;
+                //osg::notify(WARN) << "Tile to load :" << x << ' ' << y << ' ' << lod << std::endl;
+                //osg::notify(WARN) << "Position     :" << loc.x << ' ' << loc.y << std::endl;
                 LoadOneTile(tile);                
                 // Now add this tile to the merge list
                 pageManage->AckLoad();
@@ -282,8 +290,12 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
 
         }
         else
-            sleep(10);
-    }
+        {
+            //sleep(10);
+            OpenThreads::Thread::Yield();
+        }
+            
+    } while (!t->testCancel());
 
     return true;
 }

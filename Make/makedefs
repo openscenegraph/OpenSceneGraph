@@ -130,7 +130,7 @@ ifeq ($(ARCH),64)
 else
     ARCHARGS          = -n32
 endif
-  LINKARGS          = -LANG:std -OPT:Olimit=0 -L/usr/local/lib32 -rpath /usr/local/lib32 -rpath $(INST_LIBS)
+  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0 -L/usr/local/lib32 -rpath /usr/local/lib32 -rpath $(INST_LIBS)
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype

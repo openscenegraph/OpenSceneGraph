@@ -30,19 +30,19 @@ class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
 
         virtual void reset();
         
-        typedef std::pair< osg::Light*, osg::ref_ptr<osg::Matrix> >     LightMatrixPair;
-        typedef std::vector< LightMatrixPair >                          LightList;
+        typedef std::pair< const osg::StateAttribute*, osg::ref_ptr<osg::Matrix> >    AttrMatrixPair;
+        typedef std::vector< AttrMatrixPair >                                   AttrMatrixList;
 
-        virtual void addLight(osg::Light* light,osg::Matrix* matrix)
+        virtual void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
         {
-            _lightList.push_back(LightMatrixPair(light,matrix));
+            _attrList.push_back(AttrMatrixPair(attr,matrix));
         }
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
         
     public:
         
-        LightList                _lightList;
+        AttrMatrixList _attrList;
         
     protected:
     

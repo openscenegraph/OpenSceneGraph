@@ -100,11 +100,11 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             return _renderStageLighting.get();
         }
 
-        virtual void addLight(osg::Light* light,osg::Matrix* matrix)
+        virtual void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
         {
-            getRenderStageLighting()->addLight(light,matrix);
+            getRenderStageLighting()->addPositionedAttribute(matrix,attr);
         }
-
+        
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
         void addToDependencyList(RenderStage* rs);

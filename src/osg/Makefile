@@ -8,6 +8,7 @@ CXXFILES =\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
 	Camera.cpp\
+	ClipNode.cpp\
 	ClipPlane.cpp\
 	ColorMask.cpp\
 	ColorMatrix.cpp\

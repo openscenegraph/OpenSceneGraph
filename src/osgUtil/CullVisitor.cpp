@@ -4,6 +4,7 @@
 #include <osg/LOD>
 #include <osg/Billboard>
 #include <osg/LightSource>
+#include <osg/ClipNode>
 #include <osg/Notify>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
@@ -60,6 +61,7 @@ class PrintVisitor : public NodeVisitor
         virtual void apply(Geode& node)         { apply((Node&)node); }
         virtual void apply(Billboard& node)     { apply((Geode&)node); }
         virtual void apply(LightSource& node)   { apply((Node&)node); }
+        virtual void apply(ClipNode& node)      { apply((Node&)node); }
         
         virtual void apply(Group& node)         { apply((Node&)node); }
         virtual void apply(Transform& node)     { apply((Group&)node); }
@@ -524,13 +526,34 @@ void CullVisitor::apply(LightSource& node)
     Light* light = node.getLight();
     if (light)
     {
-        addLight(light,&matrix);
+        addPositionedAttribute(&matrix,light);
     }
 
     // pop the node's state off the geostate stack.    
     if (node_state) popStateSet();
 }
 
+void CullVisitor::apply(ClipNode& node)
+{
+    // push the node's state.
+    StateSet* node_state = node.getStateSet();
+    if (node_state) pushStateSet(node_state);
+
+    Matrix& matrix = getModelViewMatrix();
+
+    const ClipNode::ClipPlaneList& planes = node.getClipPlaneList();
+    for(ClipNode::ClipPlaneList::const_iterator itr=planes.begin();
+        itr!=planes.end();
+        ++itr)
+    {
+        addPositionedAttribute(&matrix,itr->get());
+    }
+
+    handle_cull_callbacks_and_traverse(node);
+
+    // pop the node's state off the geostate stack.    
+    if (node_state) popStateSet();
+}
 
 void CullVisitor::apply(Group& node)
 {
@@ -824,7 +847,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     if (!bs.isValid())
     {
-        std::cout << "bb invalid"<<&node<<std::endl;
+        osg::notify(osg::WARN) << "bb invalid"<<&node<<std::endl;
         return NULL;
     }
 

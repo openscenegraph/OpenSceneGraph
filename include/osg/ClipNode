@@ -1,0 +1,78 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_CLIPNODE
+#define OSG_CLIPNODE 1
+
+#include <osg/Group>
+#include <osg/ClipPlane>
+
+namespace osg {
+
+/** Leaf Node for defining the position of ClipPlanes in the scene.*/
+class SG_EXPORT ClipNode : public Group
+{
+
+    public:
+
+        typedef std::vector<ref_ptr<ClipPlane> > ClipPlaneList;
+
+
+        ClipNode();
+
+        ClipNode(const ClipNode& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(ClipNode);
+	
+	/** Create a 6 clip planes to create a clip box.*/
+	void createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberBase=0);
+
+
+        /** Add a ClipPlane to a ClipNode. Return true if plane is added, 
+          * return false if plane already exists in ClipNode, or clipplane is false.*/
+        const bool addClipPlane(ClipPlane* clipplane);
+
+        /** Remove ClipPlane from a ClipNode. Return true if plane is removed, 
+          * return false if plane does not exists in ClipNode.*/
+        const bool removeClipPlane(ClipPlane* clipplane);
+
+        /** Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed, 
+          * return false if plane does not exists in ClipNode.*/
+        const bool removeClipPlane(unsigned int pos);
+
+        /** return the number of ClipPlanes.*/
+        inline const unsigned  int getNumClipPlanes() const { return _planes.size(); }
+
+
+        /** Get ClipPlane at specificed index position.*/
+        inline ClipPlane* getClipPlane(unsigned int pos) { return _planes[pos].get(); }
+
+        /** Get const ClipPlane at specificed index position.*/
+        inline const ClipPlane* getClipPlane(unsigned int pos) const { return _planes[pos].get(); }
+
+        /** Get the ClipPlaneList.*/
+        inline ClipPlaneList& getClipPlaneList() { return _planes; }
+
+        /** Get the const ClipPlaneList.*/
+        inline const ClipPlaneList& getClipPlaneList() const { return _planes; }
+
+        /** Set the GLModes on StateSet associated with the ClipPlanes.*/
+        void setStateSetModes(StateSet&,const StateAttribute::GLModeValue) const;
+
+        /** Set up the local StateSet */
+        void setLocalStateSetModes(const StateAttribute::GLModeValue=StateAttribute::ON);
+
+    protected:
+
+        virtual ~ClipNode();
+
+        virtual const bool computeBound() const;
+
+        StateAttribute::GLModeValue _value;
+        ClipPlaneList _planes;
+};
+
+}
+
+#endif

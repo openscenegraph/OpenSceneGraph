@@ -16,7 +16,7 @@ RenderStageLighting::~RenderStageLighting()
 
 void RenderStageLighting::reset()
 {
-    _lightList.clear();
+    _attrList.clear();
 }
 
 void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
@@ -30,8 +30,8 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
     }
 
     // apply the light list.
-    for(LightList::iterator litr=_lightList.begin();
-        litr!=_lightList.end();
+    for(AttrMatrixList::iterator litr=_attrList.begin();
+        litr!=_attrList.end();
         ++litr)
     {
         state.applyModelViewMatrix((*litr).second.get());

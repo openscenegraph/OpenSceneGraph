@@ -106,7 +106,15 @@ int main( int argc, char **argv )
         dataset->setDestinationExtents(osg::BoundingBox(x,y,0.0f,x+w,y+h,0.0f));
     }
     
+    while (arguments.read("--LOD"))
+    {
+        dataset->setDatabaseType(osgTerrain::DataSet::LOD_DATABASE);
+    }
     
+    while (arguments.read("--PagedLOD"))
+    {
+        dataset->setDatabaseType(osgTerrain::DataSet::PagedLOD_DATABASE);
+    }
 
     dataset->setDestinationTileBaseName("output");
     dataset->setDestinationTileExtension(".ive");
@@ -121,7 +129,6 @@ int main( int argc, char **argv )
 
         dataset->setDestinationTileBaseName(base);
         dataset->setDestinationTileExtension(extension);
-
     }
 
     float numLevels = 6.0f;
@@ -179,7 +186,7 @@ int main( int argc, char **argv )
 
     dataset->createDestination((unsigned int)numLevels);
     
-    dataset->writeDestination(outputFileName);
+    dataset->writeDestination();
 
     return 0;
 }

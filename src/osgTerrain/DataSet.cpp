@@ -896,7 +896,8 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
             int success = 0;
             GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
             double noDataValue = band->GetNoDataValue(&success);
-            double new_noDataValue = noDataValue;
+            //double new_noDataValue = noDataValue;
+            double new_noDataValue = 0;
             if (success)
             {
                 std::cout<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
@@ -1669,6 +1670,8 @@ osg::Node* DataSet::DestinationTile::createScene()
     }
     
     osg::Geode* geode = 0;
+    osg::ShapeDrawable* shapeDrawable = 0;
+    
     if (heightFieldPresent)
     {
         std::cout<<"--- Have terrain build tile ----"<<std::endl;
@@ -1677,7 +1680,9 @@ osg::Node* DataSet::DestinationTile::createScene()
         
         geode = new osg::Geode;
 
-        geode->addDrawable(new osg::ShapeDrawable(hf));
+
+        shapeDrawable = new osg::ShapeDrawable(hf);
+        geode->addDrawable(shapeDrawable);
 
         hf->setSkirtHeight(geode->getBound().radius()*0.01f);
         
@@ -1694,7 +1699,8 @@ osg::Node* DataSet::DestinationTile::createScene()
 
         geode = new osg::Geode;
 
-        geode->addDrawable(new osg::ShapeDrawable(hf));
+        osg::ShapeDrawable* shapeDrawable = new osg::ShapeDrawable(hf);
+        geode->addDrawable(shapeDrawable);
 
         hf->setSkirtHeight(geode->getBound().radius()*0.01f);
     }
@@ -1711,6 +1717,10 @@ osg::Node* DataSet::DestinationTile::createScene()
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
         texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+    }
+    else if (shapeDrawable)
+    {
+        shapeDrawable->setColor(_dataSet->getDefaultColor());
     }
         
     return geode;
@@ -1970,7 +1980,9 @@ DataSet::DataSet()
 {
     init();
     
-    _defaultColour.set(0.5f,0.5f,1.0f,1.0f);
+    _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
+    _databaseType = PagedLOD_DATABASE;
+    
 }
 
 void DataSet::init()
@@ -2441,19 +2453,27 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
     }
     std::cout<<"End of Using Source Iterator itr"<<std::endl;
     
-    
-    
-    
-    
 }
 
 void DataSet::populateDestinationGraphFromSources()
 {
-    // for each DestinationTile populate it.
-    _destinationGraph->readFrom(_sourceGraph.get());
-    
-    // for each DestinationTile equalize the boundaries so they all fit each other without gaps.
-    _destinationGraph->equalizeBoundaries();
+    if (_databaseType==LOD_DATABASE)
+    {
+
+        // for each DestinationTile populate it.
+        _destinationGraph->readFrom(_sourceGraph.get());
+
+        // for each DestinationTile equalize the boundaries so they all fit each other without gaps.
+        _destinationGraph->equalizeBoundaries();
+        
+        
+    }
+    else
+    {
+        // for each level
+        //  compute x and y range
+        //  from top row down to bottom row equalize boundairies a write out
+    }
 }
 
 
@@ -2468,15 +2488,31 @@ void DataSet::createDestination(unsigned int numLevels)
     
     populateDestinationGraphFromSources();
 
-    if (_destinationGraph.valid()) _rootNode = _destinationGraph->createScene();
+    if (_destinationGraph.valid())
+    {
+        if (_databaseType==LOD_DATABASE)
+        {
+            _rootNode = _destinationGraph->createScene();
+        }
+        else
+        {
+            // create top most level?
+        }
+    }
 }
 
-void DataSet::writeDestination(const std::string& filename)
+void DataSet::writeDestination()
 {
+
+    std::string filename = _tileBasename+_tileExtension;
     std::cout<<"DataSet::writeDestination("<<filename<<")"<<std::endl;
     if (_rootNode.valid())
     {
         osgDB::writeNodeFile(*_rootNode,filename);
+    }
+    else
+    {
+        std::cout<<"Error: no scene graph to output, no file written."<<std::endl;
     }
 }
 

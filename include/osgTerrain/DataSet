@@ -741,13 +741,13 @@ class DataSet : public osg::Referenced
         };
 
 
-        typedef std::map<unsigned int,DestinationTile*> Column;
-        typedef std::map<unsigned int,Column> Level;
+        typedef std::map<unsigned int,DestinationTile*> Row;
+        typedef std::map<unsigned int,Row> Level;
         typedef std::map<unsigned int,Level> QuadMap;
         
         void insertTileToQuadMap(DestinationTile* tile)
         {
-            _quadMap[tile->_level][tile->_tileX][tile->_tileY] = tile;
+            _quadMap[tile->_level][tile->_tileY][tile->_tileX] = tile;
         }
         
         DestinationTile* getTile(unsigned int level,unsigned int X, unsigned int Y)
@@ -755,27 +755,37 @@ class DataSet : public osg::Referenced
             QuadMap::iterator levelItr = _quadMap.find(level);
             if (levelItr==_quadMap.end()) return 0;
 
-            Level::iterator columnItr = levelItr->second.find(X);
-            if (columnItr==levelItr->second.end()) return 0;
+            Level::iterator rowItr = levelItr->second.find(Y);
+            if (rowItr==levelItr->second.end()) return 0;
 
-            Column::iterator rowItr = columnItr->second.find(Y);
-            if (rowItr==columnItr->second.end()) return 0;
-            else return rowItr->second;
+            Row::iterator columnItr = rowItr->second.find(X);
+            if (columnItr==rowItr->second.end()) return 0;
+            else return columnItr->second;
+        }
+
+        Row& getRow(unsigned int level,unsigned int Y)
+        {
+            return _quadMap[level][Y];
         }
 
     public:
 
 
         DataSet();
+        
 
         void addSource(Source* source);
         void addSource(CompositeSource* composite);
 
         void loadSources();
         
-        void setVerticalScale(float verticalScale) { _verticalScale=verticalScale; }
-        float getVerticalScale() const { return _verticalScale; }
         
+        void setVerticalScale(float verticalScale) { _verticalScale = verticalScale; }
+        float getVerticalScale() const { return _verticalScale; }
+               
+        void setDefaultColor(const osg::Vec4& defaultColor) { _defaultColor = defaultColor; }
+        const osg::Vec4& getDefaultColor() const { return _defaultColor; }
+
         void setDestinationCoordinateSystem(const std::string& wellKnownText) { _coordinateSystem = new osgTerrain::CoordinateSystem(wellKnownText); }
         void setDestinationCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _coordinateSystem = cs; }
         
@@ -784,7 +794,7 @@ class DataSet : public osg::Referenced
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
         
         void setDestinationTileBaseName(const std::string& basename) { _tileBasename = basename; }
-        void setDestinationTileExtension(const std::string& extension) { _tileExtension = _tileExtension; }
+        void setDestinationTileExtension(const std::string& extension) { _tileExtension = extension; }
         
         CompositeDestination* createDestinationGraph(osgTerrain::CoordinateSystem* cs,
                                                      const osg::BoundingBox& extents,
@@ -802,7 +812,16 @@ class DataSet : public osg::Referenced
         
         void createDestination(unsigned int numLevels);
         
-        void writeDestination(const std::string& filename);
+        enum DatabaseType
+        {
+            LOD_DATABASE,
+            PagedLOD_DATABASE,
+        };
+        
+        void setDatabaseType(DatabaseType type) { _databaseType = type; }
+        DatabaseType getDatabaseType() const { return _databaseType; }
+
+        void writeDestination();
         
         osg::Node* getDestinationRootNode() { return _rootNode.get(); }
 
@@ -826,7 +845,8 @@ class DataSet : public osg::Referenced
         osg::BoundingBox                            _extents;
         std::string                                 _tileBasename;
         std::string                                 _tileExtension;
-        osg::Vec4                                   _defaultColour;
+        osg::Vec4                                   _defaultColor;
+        DatabaseType                                _databaseType;
         
         
         osg::ref_ptr<osg::Node>                     _rootNode;

@@ -215,14 +215,12 @@ class SG_EXPORT Texture : public StateAttribute
         /** Get the internal format to use when creating OpenGL textures.*/
         inline const int getInternalFormatValue() const { return _internalFormatValue; }
         
-        /** return the OpenGL texture object for specified context.*/
-        inline const uint getTextureObject(const uint contextID) const { if (contextID<_handleList.size()) return _handleList[contextID]; else return 0;}
-
 
         enum SubloadMode {
             OFF,
             AUTO,
-            IF_DIRTY
+            IF_DIRTY,
+            USE_CALLBACK
         };
 
         /** Set the texture subload mode. */
@@ -291,7 +289,8 @@ class SG_EXPORT Texture : public StateAttribute
         }
 
         /** Get the handle to the texture object for the current context.*/
-        inline GLuint& getHandle(const uint contextID) const
+        /** return the OpenGL texture object for specified context.*/
+        inline GLuint& getTextureObject(const uint contextID) const
         {
             // pad out handle list if required.
             if (_handleList.size()<=contextID)
@@ -322,6 +321,23 @@ class SG_EXPORT Texture : public StateAttribute
         virtual void compile(State& state) const;
 
 
+        /** Get the number of mip map levels the the texture has been created with,*/
+        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
+        
+
+
+        class SubloadCallback : public Referenced
+        {
+            public:
+                virtual void load(GLenum target, const Texture& texture,State& state) const;
+                virtual void subload(GLenum target, const Texture& texture,State& state) const;
+        };
+        
+        void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb; _subloadMode = cb ? USE_CALLBACK:OFF; }
+        
+        SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
+
+        const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
 
 
 
@@ -335,6 +351,10 @@ class SG_EXPORT Texture : public StateAttribute
           * in the OpenGL context related to contextID.*/
         static void flushDeletedTextureObjects(uint contextID);
         
+        /** Get the maximum texture size supported, this is the
+            normally define by GL_MAX_TEXTURE_SIZE, but can be overridden
+            by the OSG_MAX_TEXTURE_SIZE environmental variable.*/
+        static GLint getMaxTextureSize();
 
     protected :
 
@@ -378,24 +398,28 @@ class SG_EXPORT Texture : public StateAttribute
 
 
         InternalFormatMode  _internalFormatMode;
-        int                 _internalFormatValue;
+        mutable GLint       _internalFormatValue;
 
         Vec4 _borderColor;
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight;
+        
+        // number of mip map levels the the texture has been created with,        
+        mutable unsigned int _numMimpmapLevels;
 
         SubloadMode _subloadMode;
         GLint _subloadTextureOffsetX, _subloadTextureOffsetY;
         GLint _subloadImageOffsetX, _subloadImageOffsetY;
         GLsizei _subloadImageWidth, _subloadImageHeight;
 
+        ref_ptr<SubloadCallback> _subloadCallback;
+
         // static cache of deleted display lists which can only 
         // by completely deleted once the appropriate OpenGL context
         // is set.
         typedef std::map<uint,std::set<uint> > DeletedTextureObjectCache;
         static DeletedTextureObjectCache s_deletedTextureObjectCache;
-
 };
 
 }

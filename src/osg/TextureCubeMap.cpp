@@ -179,7 +179,7 @@ void TextureCubeMap::apply(State& state) const
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    GLuint& handle = getHandle(contextID);
+    GLuint& handle = getTextureObject(contextID);
 
     if (handle != 0)
     {
@@ -196,14 +196,13 @@ void TextureCubeMap::apply(State& state) const
             glBindTexture( _target, handle );
             if (_texParamtersDirty) applyTexParameters(_target,state);
             
-            
-            unsigned int rowwidth = 0;
+            int rowwidth = 0;
             for (int n=0; n<6; n++)
             {
                 if ((_subloadMode == AUTO) ||
                     (_subloadMode == IF_DIRTY && modifiedTag != _images[n]->getModifiedTag()))
                 {
-                
+
                     if (rowwidth != _images[n]->s())
                     {
                         rowwidth = _images[n]->s();
@@ -217,6 +216,10 @@ void TextureCubeMap::apply(State& state) const
                                     _images[n]->data(_subloadImageOffsetX,_subloadImageOffsetY));
                     // update the modified flag to show that the image has been loaded.
                     modifiedTag += _images[n]->getModifiedTag();
+                }
+                else if (_subloadMode == USE_CALLBACK)
+                {
+                    _subloadCallback->subload(faceTarget[n],*this,state);
                 }
             }
             glPixelStorei(GL_UNPACK_ROW_LENGTH,0);

@@ -128,75 +128,82 @@ flt::AttrData* TexturePool::getTexture(int nIndex, osgDB::ReaderWriter::Options*
         if (nitr != _textureNameMap.end())
         {
             const std::string& textureName = (*nitr).second;
+            flt::AttrData* textureAttrData = 0;
 
-            // Valid index, find the texture
-            // Get AttrData containing texture from registry pool.
-            flt::AttrData* textureAttrData = Registry::instance()->getTexture(textureName);
-
-            if (textureAttrData)
+            if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_IMAGES)
             {
-                // Add texture to local pool to be ab121le to get by index.
-                addTexture(nIndex, textureAttrData);
+
+                // Valid index, find the texture
+                // Get AttrData containing texture from registry pool.
+                textureAttrData = Registry::instance()->getTexture(textureName);
+
+                if (textureAttrData)
+                {
+                    // Add texture to local pool to be ab121le to get by index.
+                    addTexture(nIndex, textureAttrData);
+                    return textureAttrData;
+                }
+            }
+
+            CERR<<"setTexture attempting to load ("<<textureName<<")"<<std::endl;
+
+            unsigned int unit = 0;
+
+            // Read texture and attribute file
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureName, options ? options : osgDB::Registry::instance()->getOptions());
+            if (image.valid())
+            {
+                std::string attrName(textureName);
+                attrName += ".attr";
+
+                textureAttrData = dynamic_cast<flt::AttrData*>(osgDB::readObjectFile(attrName, options ? options : osgDB::Registry::instance()->getOptions() ));
+
+                // if not found create default StateSet for the AttrData
+                if (textureAttrData == NULL)
+                {
+                    textureAttrData = new flt::AttrData;
+                    textureAttrData->stateset = new osg::StateSet;
+
+                    osg::Texture2D* osgTexture = new osg::Texture2D;
+                    osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+                    osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
+                    textureAttrData->stateset->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
+
+                    osg::TexEnv* osgTexEnv = new osg::TexEnv;
+                    osgTexEnv->setMode(osg::TexEnv::MODULATE);
+                    textureAttrData->stateset->setTextureAttribute( unit, osgTexEnv );
+                }
+
+                osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(textureAttrData->stateset->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
+                if (osgTexture == NULL)
+                {
+                    osgTexture = new osg::Texture2D;
+                    textureAttrData->stateset->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
+                }
+
+                osgTexture->setImage(image.get());
+
             }
             else
             {
-                CERR<<"setTexture attempting to load ("<<textureName<<")"<<std::endl;
-
-                unsigned int unit = 0;
-
-                // Read texture and attribute file
-                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureName, options ? options : osgDB::Registry::instance()->getOptions());
-                if (image.valid())
-                {
-                    std::string attrName(textureName);
-                    attrName += ".attr";
-
-                    textureAttrData = dynamic_cast<flt::AttrData*>(osgDB::readObjectFile(attrName, options ? options : osgDB::Registry::instance()->getOptions() ));
-
-                    // if not found create default StateSet for the AttrData
-                    if (textureAttrData == NULL)
-                    {
-                        textureAttrData = new flt::AttrData;
-                        textureAttrData->stateset = new osg::StateSet;
-
-                        osg::Texture2D* osgTexture = new osg::Texture2D;
-                        osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
-                        osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
-                        textureAttrData->stateset->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
-
-                        osg::TexEnv* osgTexEnv = new osg::TexEnv;
-                        osgTexEnv->setMode(osg::TexEnv::MODULATE);
-                        textureAttrData->stateset->setTextureAttribute( unit, osgTexEnv );
-                    }
-
-                    osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(textureAttrData->stateset->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
-                    if (osgTexture == NULL)
-                    {
-                        osgTexture = new osg::Texture2D;
-                        textureAttrData->stateset->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
-                    }
-
-                    osgTexture->setImage(image.get());
-
-                }
-                else
-                {
-                    // invalid image file, register an empty state set AttrData
-                    textureAttrData = new flt::AttrData;
-                    textureAttrData->stateset = new osg::StateSet;
-                }
-
-                // Add new texture to registry pool
-                // ( umm... should this have reference to the texture unit? RO. July2002)
-                Registry::instance()->addTexture(textureName, textureAttrData);
-
-                // Also add to local pool to be able to get texture by index.
-                // ( umm... should this have reference to the texture unit? RO. July2002)
-                addTexture(nIndex, textureAttrData);
-
-                CERR<<"Registry::instance()->addTexture("<<textureName<<", "<<textureAttrData<<")"<<std::endl;
-                CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<textureAttrData<<")"<<std::endl;
+                // invalid image file, register an empty state set AttrData
+                textureAttrData = new flt::AttrData;
+                textureAttrData->stateset = new osg::StateSet;
             }
+
+            // Add new texture to registry pool
+            // ( umm... should this have reference to the texture unit? RO. July2002)
+            if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_IMAGES)
+            {
+                Registry::instance()->addTexture(textureName, textureAttrData);
+            }
+
+            // Also add to local pool to be able to get texture by index.
+            // ( umm... should this have reference to the texture unit? RO. July2002)
+            addTexture(nIndex, textureAttrData);
+
+            CERR<<"Registry::instance()->addTexture("<<textureName<<", "<<textureAttrData<<")"<<std::endl;
+            CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<textureAttrData<<")"<<std::endl;
             
             return textureAttrData;
         }
@@ -313,6 +320,7 @@ LtPtAnimationPool::add(int nIndex, PoolLtPtAnimation* anim)
 {
     _animationMap[nIndex] = anim;
 }
+
 
 
 

@@ -146,7 +146,7 @@ class SG_EXPORT Node : public Object
 
         
         /** return true if this node is an OccluderNode or the subgraph below this node are OccluderNodes.*/
-        inline const bool containsOccluderNodes() const;
+        const bool containsOccluderNodes() const;
 
         /**
          * Set user data, data must be subclased from Referenced to allow

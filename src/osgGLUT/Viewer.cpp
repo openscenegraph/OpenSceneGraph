@@ -909,7 +909,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         return;
     }
 
-    if (key>='1' && key<='3')
+    if (key>='1' && key<='4')
     {
         int pos = key-'1';
         selectCameraManipulator(pos);

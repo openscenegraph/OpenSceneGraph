@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <osg/GL>
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
@@ -11,6 +12,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
+#include <osgGA/AnimationPathManipulator>
 
 
 #include <osgUtil/Optimizer>
@@ -78,12 +80,16 @@ void write_usage(std::ostream& out,const std::string& name)
     out <<"                          also allows the depth complexity statistics mode"<< std::endl;
     out <<"                          to be used (press 'p' three times to cycle to it)."<< std::endl;
     out <<"    -f                  - start with a full screen, borderless window." << std::endl;
+    out <<"    -p  pathfile        - Use the AnimationPathManipulator (key binding '4') and use\n"
+	  "                          pathfile to define the animation path.  pathfile is an ascii\n"
+	  "                          file containing lines of eight floating point numbers representing\n"
+	  "                          time, position (x,y,z) and attitude (x,y,z,w as a quaternion)." << std::endl;
     out << std::endl;
 }
 
-
 int main( int argc, char **argv )
 {
+    std::string pathfile;
 
     // initialize the GLUT
     glutInit( &argc, argv );
@@ -91,13 +97,23 @@ int main( int argc, char **argv )
     if (argc<2)
     {
         write_usage(std::cout,argv[0]);
-        return 0;
+        return 1;
     }
     
     // create the commandline args.
     std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
-    
+    for(int i=1;i<argc;++i) {
+	if( std::string(argv[i]) == "-p" ) {
+	    if( (i+1) >= argc ) {
+		write_usage( std::cout, argv[0]);
+	    	return 1;
+	    }
+	    else
+		pathfile = std::string(argv[++i]);
+	}
+	else 
+	    commandLine.push_back(argv[i]);
+    }
 
     // initialize the viewer.
     osgGLUT::Viewer viewer;
@@ -115,7 +131,7 @@ int main( int argc, char **argv )
     osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
     if (!rootnode)
     {
-//        write_usage(osg::notify(osg::NOTICE),argv[0]);
+        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return 1;
     }
     
@@ -130,6 +146,14 @@ int main( int argc, char **argv )
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     viewer.registerCameraManipulator(new osgGA::FlightManipulator);
     viewer.registerCameraManipulator(new osgGA::DriveManipulator);
+
+    if( !pathfile.empty() ) {
+	osgGA::AnimationPathManipulator *apm = new osgGA::AnimationPathManipulator(pathfile);
+	if( apm->valid() ) 
+            viewer.registerCameraManipulator(apm);
+	else
+	    delete apm;
+    }
     
 //     osgUtil::RenderBin* depth_renderbin = osgUtil::RenderBin::getRenderBinPrototype("DepthSortedBin");
 //     if (depth_renderbin)

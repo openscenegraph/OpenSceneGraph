@@ -1,0 +1,111 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGGA_ANIMATION_PATH_MANIPULATOR
+#define OSGGA_ANIMATION_PATH_MANIPULATOR 1
+
+#include <osg/AnimationPath>
+#include <osg/Notify>
+#include <osgGA/CameraManipulator>
+
+namespace osgGA{
+
+//
+// The AnimationPathManipulator is a Camera Manipulator that reads an
+// animation path from a file and plays it back.  The file is expected
+// to be ascii and a succession of lines with 8 floating point values
+// per line.  The succession of values are:
+// time  px py pz ax ay az aw
+// where:
+//    time = elapsed time in seconds from the begining of the animation
+//    px py pz = World position in catesian coordinates
+//    ax ay az aw = Orientation (attitude) defined as a quaternion
+
+class AnimationPathManipulator : public osgGA::CameraManipulator
+{
+    public:
+	    AnimationPathManipulator( std::string filename ) 
+	    {
+    	        _animationPath = new osg::AnimationPath;
+    		_animationPath->setLoopMode(osg::AnimationPath::LOOP);
+
+		filebuf fb;
+		fb.open( filename.c_str(),"r");
+		if( !fb.is_open() )
+		{
+		    osg::notify(osg::WARN) << "AnimationPathManipulator: Cannot open animation path file \"" << filename << "\".\n";
+		    _valid = false;
+		    return;
+		}
+		istream in(&fb);
+		while( !in.eof() )
+		{
+		    double time;
+        	    osg::Vec3 position;
+        	    osg::Quat rotation;
+		    in >> time;
+		    in >> position[0]; in >> position[1]; in >> position[2];
+		    in >> rotation[0]; in >> rotation[1]; in >> rotation[2]; in >> rotation[3];
+
+		    if( !in.eof() )
+        	        _animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
+		}
+		fb.close();
+		_valid = true;
+	    }
+
+	    bool valid() { return _valid; }
+
+            virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us)
+	    {
+		if( !_valid ) return false;
+
+		us = us;
+
+		bool retval = false;
+		switch( ea.getEventType() )
+		{
+		    case GUIEventAdapter::FRAME:
+			handleFrame( ea.time() );
+			 
+			break;
+		    case GUIEventAdapter::KEYBOARD:
+			switch( ea.getKey())
+			{
+			    default:
+				retval =  false;
+			}
+			break;
+		}
+		return retval;
+	    }
+    private:
+
+	bool _valid;
+
+	void handleFrame( double time )
+	{
+	    osg::AnimationPath::ControlPoint cp;
+	    _animationPath->getInterpolatedControlPoint( time, cp );
+
+	    osg::Matrix mat;
+	    cp.getMatrix( mat );
+
+	    osg::Vec3 eye(mat(3,0), mat(3,1), mat(3,2));
+	    mat(3,0) = 0.0;
+	    mat(3,1) = 0.0;
+	    mat(3,2) = 0.0;
+	    osg::Vec3 look = eye + (osg::Vec3(0,1,0) * mat);
+	    osg::Vec3 up = osg::Vec3(0,0,1) * mat;
+	    if( _camera.valid() )
+		_camera->setView( eye, look, up );
+	}
+
+	osg::AnimationPath *_animationPath;
+
+};
+
+}
+
+#endif

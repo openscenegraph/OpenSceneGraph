@@ -29,38 +29,38 @@
 using namespace osg;
 using namespace osgText;
 
-// define the default paths to look for fonts.
-// note delimator is : for unix, ; for windows.
-#if defined(__linux) || defined(__FreeBSD__) || defined (__sgi) || defined (__DARWIN_OSX__)
-    static char* s_FontFilePath = ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives";
-#elif defined(WIN32)
-    static char* s_FontFilePath = ".;C:/winnt/fonts;C:/windows/fonts";
-#else
-    static char* s_FontFilePath = ".:";
-#endif
-
 std::string findFontFile(const std::string& str)
 {
     // try looking in OSGFILEPATH etc first for fonts.
-    char* filename = osgDB::findFile(str.c_str());
-    if (filename) return std::string(filename);
+    std::string filename = osgDB::findDataFile(str);
+    if (!filename.empty()) return std::string(filename);
 
-#if defined(WIN32)
-    // try windir environment
-    char *ptr;
-    if ((ptr = getenv( "windir" )))
-    {
-        static std::string osPath(ptr);
-        s_FontFilePath = const_cast<char*>(osPath.c_str());
-    }
-#endif
 
-    // else fallback into the standard font file paths.
-    if (s_FontFilePath)
+    static osgDB::FilePathList s_FontFilePath;
+    static bool initialized = false;
+    if (!initialized)
     {
-        filename = osgDB::findFileInPath(str.c_str(),s_FontFilePath);
-        if (filename) return std::string(filename);
+        initialized = true;
+    #if defined(WIN32)
+        osgDB::Registry::convertStringPathIntoFilePathList(
+            ".;C:/winnt/fonts;C:/windows/fonts",
+            s_FontFilePath);
+
+        char *ptr;
+        if ((ptr = getenv( "windir" )))
+        {
+            s_FontFilePath.push_back(ptr);
+        }
+    #else
+        osgDB::Registry::convertStringPathIntoFilePathList(
+            ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
+            s_FontFilePath);
+    #endif
     }
+
+    filename = osgDB::findFileInPath(str,s_FontFilePath);
+    if (!filename.empty()) return filename;
+
     osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
     return std::string();
 }

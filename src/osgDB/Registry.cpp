@@ -18,6 +18,15 @@
 using namespace osg;
 using namespace osgDB;
 
+void PrintFilePathList(ostream& stream,const FilePathList& filepath)
+{
+    for(FilePathList::const_iterator itr=filepath.begin();
+        itr!=filepath.end();
+        ++itr)
+    {
+        stream << "    "<< *itr<<std::endl;
+    }
+}
 
 class RegistryPtr
 {
@@ -47,7 +56,7 @@ Registry::Registry()
     _createNodeFromImage = true;
     _openingLibrary = false;
 
-    osgDB::initFilePath();
+    initFilePathLists();
 
     // register file extension alias.
     addFileExtensionAlias("rgba", "rgb");
@@ -62,6 +71,7 @@ Registry::Registry()
 
     addFileExtensionAlias("geo",  "lwo");
     addFileExtensionAlias("lw",   "lwo");
+
 }
 
 
@@ -70,6 +80,114 @@ Registry::~Registry()
 }
 
 
+
+void Registry::initDataFilePathList()
+{
+    //
+    // set up data file paths
+    //
+    char *ptr;
+    if( (ptr = getenv( "OSG_FILE_PATH" )) )
+    {
+        notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
+        setDataFilePathList(ptr);
+    }
+    else if( (ptr = getenv( "OSGFILEPATH" )) )
+    {
+        notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
+        setDataFilePathList(ptr);
+    }
+
+    osg::notify(INFO)<<"Data FilePathList"<<std::endl;
+    PrintFilePathList(osg::notify(INFO),getDataFilePathList());
+}
+
+void Registry::initLibraryFilePathList()
+{
+    //
+    // set up library paths
+    //
+    char* ptr;
+    if( (ptr = getenv( "OSG_LIBRARY_PATH")) )
+    {
+        notify(DEBUG_INFO) << "OSG_LIBRARY_PATH("<<ptr<<")"<<std::endl;
+        setLibraryFilePathList(ptr);
+    }
+    else if( (ptr = getenv( "OSG_LD_LIBRARY_PATH")) )
+    {
+        notify(DEBUG_INFO) << "OSG_LD_LIBRARY_PATH("<<ptr<<")"<<std::endl;
+        setLibraryFilePathList(ptr);
+    }
+
+#ifdef __sgi
+
+    convertStringPathIntoFilePathList("/usr/lib32/:/usr/local/lib32/",_libraryFilePath);
+
+    // bloody mess see rld(1) man page
+    #if (_MIPS_SIM == _MIPS_SIM_ABI32)
+
+
+    if( (ptr = getenv( "LD_LIBRARY_PATH" )))
+    {
+        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
+    }
+
+    #elif (_MIPS_SIM == _MIPS_SIM_NABI32)
+
+    if( !(ptr = getenv( "LD_LIBRARYN32_PATH" )))
+        ptr = getenv( "LD_LIBRARY_PATH" );
+
+    {
+        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
+    }
+
+    #elif (_MIPS_SIM == _MIPS_SIM_ABI64)
+
+    if( !(ptr = getenv( "LD_LIBRARY64_PATH" )))
+        ptr = getenv( "LD_LIBRARY_PATH" );
+
+    if( ptr )
+    {
+        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
+    }
+    #endif
+    
+#elif defined(__CYGWIN__)
+
+
+    if ((ptr = getenv( "PATH" )))
+    {
+        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
+    }
+
+    convertStringPathIntoFilePathList("/usr/bin/:/usr/local/bin/",_libraryFilePath);
+    
+#elif defined(WIN32)
+
+
+
+    if ((ptr = getenv( "PATH" )))
+    {
+        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
+    }
+
+    convertStringPathIntoFilePathList("C:/Windows/System/",_libraryFilePath);
+
+#else   
+
+    if( (ptr = getenv( "LD_LIBRARY_PATH" )) )
+    {
+        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
+    }
+
+    convertStringPathIntoFilePathList("/usr/lib/:/usr/local/lib/",_libraryFilePath);
+
+#endif
+
+    osg::notify(INFO)<<"Library FilePathList"<<std::endl;
+    PrintFilePathList(osg::notify(INFO),getLibraryFilePathList());
+
+}
 
 void Registry::readCommandLine(std::vector<std::string>& commandLine)
 {
@@ -749,8 +867,10 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 //
 ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
 {
-    char *file = findFile( fileName.c_str() );
-    if (file==NULL) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+    std::string file = findDataFile( fileName );
+    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    PushAndPopDataPath tmpfile(getFilePath(fileName));
 
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
@@ -845,8 +965,10 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
 
 ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 {
-    char *file = findFile( fileName.c_str() );
-    if (file==NULL) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+    std::string file = findDataFile( fileName );
+    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    PushAndPopDataPath tmpfile(getFilePath(fileName));
 
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
@@ -941,8 +1063,10 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
 ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 {
 
-    char *file = findFile( fileName.c_str() );
-    if (file==NULL) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+    std::string file = findDataFile( fileName );
+    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    PushAndPopDataPath tmpfile(getFilePath(fileName));
 
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
@@ -1040,4 +1164,27 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
     }
 
     return results.front();
+}
+
+void Registry::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
+{
+#ifdef WIN32
+    char delimitor = ';';
+#else
+    char delimitor = ':';
+#endif
+
+    if (!paths.empty())
+    {
+        std::string::size_type start = 0;
+        std::string::size_type end;
+        while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
+        {
+            filepath.push_back(std::string(paths,start,end-start));
+            start = end+1;
+        }
+
+        filepath.push_back(std::string(paths,start));
+    }
+ 
 }

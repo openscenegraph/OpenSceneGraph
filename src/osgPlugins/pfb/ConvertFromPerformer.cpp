@@ -443,7 +443,7 @@ osg::Node* ConvertFromPerformer::visitBillboard(osg::Group* osgParent,pfBillboar
         visitGeoSet(osgBillboard,billboard->getGSet(i));
         pfVec3 pos;
         billboard->getPos(i,pos);
-        osgBillboard->setPos(i,osg::Vec3(pos[0],pos[1],pos[2]));
+        osgBillboard->setPosition(i,osg::Vec3(pos[0],pos[1],pos[2]));
     }
 
     return (osg::Node*)osgBillboard;

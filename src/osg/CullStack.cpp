@@ -96,11 +96,11 @@ void CullStack::pushCullingSet()
         float P23 = P(2,3);
         float P33 = P(3,3);
         osg::Vec4 pixelSizeVector(M(0,2)*P23,
-                                     M(1,2)*P23,
-                                     M(2,2)*P23,
-                                     M(3,2)*P23 + M(3,3)*P33);
+                                  M(1,2)*P23,
+                                  M(2,2)*P23,
+                                  M(3,2)*P23 + M(3,3)*P33);
                                   
-        float scaleRatio  = 1.0f/sqrtf(scale_00.length2()+scale_10.length2());
+        float scaleRatio  = 0.701f/sqrtf(scale_00.length2()+scale_10.length2());
 
         pixelSizeVector *= scaleRatio;
         

@@ -44,18 +44,35 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
         virtual void traverse(osg::NodeVisitor& nv);
 
-        
+
         unsigned int addLightPoint(const LightPoint& lp);
 	
+        void removeLightPoint(unsigned int pos);
+
+
 	LightPoint& getLightPoint(unsigned int pos) { return _lightPointList[pos]; }
 
 	const LightPoint& getLightPoint(unsigned int pos) const { return _lightPointList[pos]; }
         
-        void removeLightPoint(unsigned int pos);
-        
-        void removeLightPoints(LightPointList::iterator start,LightPointList::iterator end);
 
-        LightPointList  _lightPointList;
+        void setLightPointList(const LightPointList& lpl) { _lightPointList=lpl; }
+
+        LightPointList& getLightPointList() { return _lightPointList; }
+
+        const LightPointList& getLightPointList() const { return _lightPointList; }
+
+
+        void setMinPixelSize(float minPixelSize) { _minPixelSize = minPixelSize; }
+        
+        float getMinPixelSize() const { return _minPixelSize; }
+
+        void setMaxPixelSize(float maxPixelSize) { _maxPixelSize = maxPixelSize; }
+        
+        float getMaxPixelSize() const { return _maxPixelSize; }
+
+        void setMaxVisableDistance2(float maxVisableDistance2) { _maxVisableDistance2 = maxVisableDistance2; }
+        
+        float setMaxVisableDistance2() const { return _maxVisableDistance2; }
 
     protected:
     
@@ -67,6 +84,11 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
         virtual bool computeBound() const;
 
+        LightPointList  _lightPointList;
+
+        float _minPixelSize;
+        float _maxPixelSize;
+        float _maxVisableDistance2;
         
         
 };

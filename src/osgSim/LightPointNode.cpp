@@ -26,14 +26,20 @@
 
 using namespace osgSim;
 
-LightPointNode::LightPointNode()
+LightPointNode::LightPointNode():
+    _minPixelSize(0.0f),
+    _maxPixelSize(30.0f),
+    _maxVisableDistance2(FLT_MAX)
 {
 }
 
 /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
 LightPointNode::LightPointNode(const LightPointNode& lpn,const osg::CopyOp& copyop):
     osg::Node(lpn,copyop),
-    _lightPointList(lpn._lightPointList)
+    _lightPointList(lpn._lightPointList),
+    _minPixelSize(lpn._minPixelSize),
+    _maxPixelSize(lpn._maxPixelSize),
+    _maxVisableDistance2(lpn._maxVisableDistance2)    
 {
 }
 
@@ -53,11 +59,6 @@ void LightPointNode::removeLightPoint(unsigned int pos)
         dirtyBound();
     }
     dirtyBound();
-}
-
-void LightPointNode::removeLightPoints(LightPointList::iterator start,LightPointList::iterator end)
-{
-    _lightPointList.erase(start,end);
 }
 
 bool LightPointNode::computeBound() const
@@ -81,8 +82,12 @@ bool LightPointNode::computeBound() const
         itr!=_lightPointList.end();
         ++itr)
     {
-        _bsphere.expandRadiusBy(itr->_position);
+        osg::Vec3 dv(itr->_position-_bsphere.center());
+        float radius = dv.length()+itr->_radius;
+        if (_bsphere.radius()<radius) _bsphere.radius()=radius;
     }
+
+    _bsphere.radius()+=1.0f;
 
     _bsphere_computed=true;
     return true;
@@ -231,6 +236,13 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // slip light point if it is intensity is 0.0 or negative.
             if (intensity<=minimumIntensity) continue;
 
+
+            if (_maxVisableDistance2!=FLT_MAX)
+            {
+                if (dv.length2()>_maxVisableDistance2) continue;
+            }
+
+
             osg::Vec4 color = lp._color;
 
             // check the sector.
@@ -265,7 +277,9 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             
             // adjust pixel size to account for intensity.
             if (intensity!=1.0) pixelSize *= sqrt(intensity);
-            
+
+            // round up to the minimum pixel size if required.
+            if (pixelSize<_minPixelSize) pixelSize = _minPixelSize;
             
             osg::Vec3 xpos(position*matrix);
 
@@ -281,7 +295,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 
                     drawable->addBlendedLightPoint(0, xpos,color);
                 }
-                else if (pixelSize<lp._maxPixelSize)
+                else if (pixelSize<_maxPixelSize)
                 {
 
                     unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
@@ -295,7 +309,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 }
                 else // use a billboard geometry.
                 {
-                    drawable->addBlendedLightPoint((unsigned int)(lp._maxPixelSize-1.0), xpos,color);
+                    drawable->addBlendedLightPoint((unsigned int)(_maxPixelSize-1.0), xpos,color);
                 }
             }
             else // ADDITIVE blending.
@@ -310,7 +324,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 
                     drawable->addAdditiveLightPoint(0, xpos,color);
                 }
-                else if (pixelSize<lp._maxPixelSize)
+                else if (pixelSize<_maxPixelSize)
                 {
 
                     unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
@@ -325,7 +339,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 }
                 else // use a billboard geometry.
                 {
-                    drawable->addAdditiveLightPoint((unsigned int)(lp._maxPixelSize-1.0), xpos,color);
+                    drawable->addAdditiveLightPoint((unsigned int)(_maxPixelSize-1.0), xpos,color);
                 }
             }
         }

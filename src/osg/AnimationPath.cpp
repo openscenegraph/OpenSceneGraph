@@ -111,8 +111,9 @@ class AnimationPathCallbackVisitor : public NodeVisitor
 {
     public:
 
-        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp, bool useInverseMatrix):
+        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp, const osg::Vec3& pivotPoint, bool useInverseMatrix):
             _cp(cp),
+            _pivotPoint(pivotPoint),
             _useInverseMatrix(useInverseMatrix) {}
 
         virtual void apply(MatrixTransform& mt)
@@ -123,7 +124,7 @@ class AnimationPathCallbackVisitor : public NodeVisitor
             else
                 _cp.getMatrix(matrix);
                 
-            mt.setMatrix(matrix);
+            mt.setMatrix(osg::Matrix::translate(-_pivotPoint)*matrix);
         }
         
         virtual void apply(PositionAttitudeTransform& pat)
@@ -134,16 +135,21 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 _cp.getInverse(matrix);
                 pat.setPosition(matrix.getTrans());
                 pat.setAttitude(_cp._rotation.inverse());
+                pat.setScale(osg::Vec3(1.0f/_cp._scale.x(),1.0f/_cp._scale.y(),1.0f/_cp._scale.z()));
+                pat.setPivotPoint(_pivotPoint);
                 
             }
             else
             {
                 pat.setPosition(_cp._position);
                 pat.setAttitude(_cp._rotation);
+                pat.setScale(_cp._scale);
+                pat.setPivotPoint(_pivotPoint);
             }
         }
         
         AnimationPath::ControlPoint _cp;
+        osg::Vec3 _pivotPoint;
         bool _useInverseMatrix;      
 };
 
@@ -178,7 +184,7 @@ void AnimationPathCallback::update(osg::Node& node)
     AnimationPath::ControlPoint cp;
     if (_animationPath->getInterpolatedControlPoint(getAnimationTime(),cp))
     {
-        AnimationPathCallbackVisitor apcv(cp,_useInverseMatrix);
+        AnimationPathCallbackVisitor apcv(cp,_pivotPoint,_useInverseMatrix);
         node.accept(apcv);
     }
 }

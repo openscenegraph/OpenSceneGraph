@@ -1,7 +1,7 @@
 ################################################################
 # Dependency library which have been installed on this system
 
-GDAL_INSTALLED = yes
+GDAL_INSTALLED = no
 JASPER_INSTALLED = yes
 
 FREETYPE_INSTALLED = yes

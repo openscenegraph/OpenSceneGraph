@@ -33,6 +33,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
             Transform(pat,copyop),
             _position(pat._position),
             _attitude(pat._attitude),
+            _scale(pat._scale),
             _pivotPoint(pat._pivotPoint) {}
             
 
@@ -42,24 +43,23 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         virtual const PositionAttitudeTransform* asPositionAttitudeTransform() const { return this; }
 
         inline void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
-        
         inline const Vec3& getPosition() const { return _position; }
 
 
         inline void setAttitude(const Quat& quat) { _attitude = quat; dirtyBound(); }
-        
         inline const Quat& getAttitude() const { return _attitude; }
         
+
+        inline void setScale(const Vec3& scale) { _scale = scale; dirtyBound(); }
+        inline const Vec3& getScale() const { return _scale; }
+
         
         inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
-    
         inline const Vec3& getPivotPoint() const { return _pivotPoint; }
         
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
-
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
-
 
 
     protected :
@@ -68,6 +68,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
 
         Vec3 _position;
         Quat _attitude;
+        Vec3 _scale;
         Vec3 _pivotPoint;
 };
 

@@ -32,6 +32,7 @@ void PositionAttitudeTransform::write(DataOutputStream* out){
       
 	out->writeVec3(getPosition());
 	out->writeQuat(getAttitude());
+	out->writeVec3(getScale());
 	out->writeVec3(getPivotPoint());
 }
 
@@ -51,6 +52,7 @@ void PositionAttitudeTransform::read(DataInputStream* in){
 		// Read PositionAttitudeTransform's properties
 		setPosition(in->readVec3());
 		setAttitude(in->readQuat());
+		setScale(in->readVec3());
 		setPivotPoint(in->readVec3());
 
 	}

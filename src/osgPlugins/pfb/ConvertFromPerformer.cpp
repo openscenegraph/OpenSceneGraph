@@ -32,13 +32,6 @@
 #include <Performer/pr/pfMaterial.h>
 #include <Performer/pr/pfTexture.h>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
-#include <iostream>
-using namespace std;
-#endif
-
 extern "C"
 {
 

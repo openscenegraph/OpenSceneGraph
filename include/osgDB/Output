@@ -16,7 +16,7 @@
 #include <fstream.h>
 #else
 #include <fstream>
-using namespace std;
+using std::ofstream;
 #endif
 
 namespace osgDB {

@@ -2,8 +2,6 @@
 #include	"FTGlyphContainer.h"
 #include	"FTTextureGlyph.h"
 
-using namespace std;
-
 inline GLuint NextPowerOf2( GLuint in)
 {
      in -= 1;

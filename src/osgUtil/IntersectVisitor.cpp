@@ -9,11 +9,6 @@
 #include <algorithm>
 #include <map>
 
-#ifndef OSG_USE_IO_DOT_H
-#include <iostream>
-using namespace std;
-#endif
-
 using namespace osg;
 using namespace osgUtil;
 

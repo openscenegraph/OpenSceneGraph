@@ -455,7 +455,10 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
         osg::Image* image = osgDB::readImageFile( textureName );
         if ( image )
         {
-            geodePlanet->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+	    osg::Texture2D* tex2d = new osg::Texture2D( image );
+	    tex2d->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+	    tex2d->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
+            geodePlanet->getOrCreateStateSet()->setTextureAttributeAndModes( 0, tex2d, osg::StateAttribute::ON );
 
             // reset the object color to white to allow the texture to set the colour.
             //sPlanetSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
@@ -491,7 +494,10 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
             texenv->setOperand2_RGB(osg::TexEnvCombine::SRC_COLOR);
 
             stateset->setTextureAttribute( 1, texenv );
-            stateset->setTextureAttributeAndModes( 1, new osg::Texture2D( image ), osg::StateAttribute::ON );
+	    osg::Texture2D* tex2d = new osg::Texture2D( image );
+	    tex2d->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+	    tex2d->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
+            stateset->setTextureAttributeAndModes( 1, tex2d, osg::StateAttribute::ON );
         }
     }
 

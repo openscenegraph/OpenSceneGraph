@@ -33,14 +33,17 @@ extern int yyparse();
 extern int yydebug;
 extern MyNode *getRoot();
 extern FILE *yyin;
-
 int isatty(int) { return 0; }
+extern void flush_scanner();
 
 osg::Node *readVRMLNode(const char *file) {
     yydebug=0;
     yyin=fopen(file,"r");
     std::cout << "Parsing..." << std::endl;
-    if (yyparse()!=0) return 0;
+    if (yyparse()!=0) {
+        flush_scanner();
+	return 0;
+    }
     osg::ref_ptr<MyNode> n=getRoot();
     try {
 	std::cout << "Generating OSG tree..." << std::endl;

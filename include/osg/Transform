@@ -10,27 +10,33 @@
 
 namespace osg {
 
-/** Transform - is group node which all children are transformed by 4x4 matrix 
-  * and is used for positioning objects within a scene, producing trackball functionality or for animation.
-  * Transform itself does not provide set/get functions, only the interface for
-  * defining what the 4x4 transformation is, sublcalsses, such as MatrixTransform
-  * and PositionAttitudeTransform support the use of a osg::Matrix or a osg::Vec3/osg::Quat 
-  * resprectively. The Transform node can be customized via the ComputeTransfromCallback which can be
-  * attached to the node, this might be used to convert internal representations of the transformation
-  * into generic osg::Matrix's which are used during scene grpah traversal, such as CullTraversal and IntersectionTraversal.
-  * Note, if the transformation matrix scales the subgraph then the
-  * normals of the underlying geometry will need to be renormalized to
-  * be unit vectors once more.  One can done transparently through OpenGL's 
-  * use of either GL_NORMALIZE and GL_SCALE_NORMALIZE modes.  Further
-  * background reading see the glNormalize documentation in the OpenGL Reference 
-  * Guide (the blue book). To enable it in the OSG, you simple need to
-  * attach a local osg::StateSet to the osg::Transform, and set the appropriate
-  * mode to on via stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);.
+/** A Transform is a group node for which all children are transformed by
+  * a 4x4 matrix.  It is often used for positioning objects within a scene,
+  * producing trackball functionality or for animation.
+  *
+  * Transform itself does not provide set/get functions, only the interface
+  * for defining what the 4x4 transformation is.  Subclasses, such as
+  * MatrixTransform and PositionAttitudeTransform support the use of an
+  * osg::Matrix or a osg::Vec3/osg::Quat resprectively.
+  * The Transform node can be customized via the ComputeTransfromCallback
+  * which can be attached to the node.  This might be used to convert from
+  * internal representations of the transformation into generic osg::Matrix
+  * objects which are used during scene grpah traversal, such as
+  * CullTraversal and IntersectionTraversal.
+  *
+  * Note: if the transformation matrix scales the subgraph then the normals
+  * of the underlying geometry will need to be renormalized to be unit
+  * vectors once more.  This can be done transparently through OpenGL's 
+  * use of either GL_NORMALIZE and GL_SCALE_NORMALIZE modes.  For further
+  * background reading see the glNormalize documentation in the OpenGL
+  * Reference Guide (the blue book). To enable it in the OSG, you simply
+  * need to attach a local osg::StateSet to the osg::Transform, and set
+  * the appropriate mode to ON via
+  *   stateset->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
 */
 class SG_EXPORT Transform : public Group
 {
     public :
-
 
         Transform();
 
@@ -48,32 +54,39 @@ class SG_EXPORT Transform : public Group
             RELATIVE_TO_ABSOLUTE
         };
         
-        /** Set the transform's ReferenceFrame, either to be realtive to its parent reference frame, 
-          * or relative to an absolute coordinate frame. RELATIVE_TO_PARENTS is the default.
-          * Note,  setting the RefrenceFrame to be RELATIVE_TO_ABSOLUTE will also set the CullingActive flag on the
-          * transform, and hence all its parents, to false, therby disabling culling of it and all its
-          * parents.  This is neccessary to prevent inappropriate culling, but may impact of cull times
-          * if the absolute transform is deep in the scene graph, it is therefore recommend to only use
-          * abolsoute Transforms at the top of the scene, for such things as headlight LightSource's or
-          * Head up displays.*/
+        /** Set the transform's ReferenceFrame, either to be relative to its
+          * parent reference frame, or relative to an absolute coordinate
+          * frame. RELATIVE_TO_PARENTS is the default.
+          * Note: setting the ReferenceFrame to be RELATIVE_TO_ABSOLUTE will
+          * also set the CullingActive flag on the transform, and hence all
+          * of its parents, to false, thereby disabling culling of it and
+          * all its parents.  This is neccessary to prevent inappropriate
+          * culling, but may impact cull times if the absolute transform is
+          * deep in the scene graph.  It is therefore recommend to only use
+          * absolute Transforms at the top of the scene, for such things as
+          * headlight LightSources or Heads up displays. */
         void setReferenceFrame(ReferenceFrame rf);
         
         const ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
         
-        /** Callback attached to an Transform to specifiy how to compute the modelview transformation
-          * for the transform below the Transform node.*/
+        /** Callback attached to an Transform to specify how to compute the
+          * modelview transformation for the transform below the Transform
+          * node. */
         struct ComputeTransformCallback : public osg::Referenced
         {
-            /** Get the transformation matrix which moves from local coords to world coords.*/
+            /** Get the transformation matrix which moves from local coords
+              * to world coords.*/
             virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
 
-            /** Get the transformation matrix which moves from world coords to local coords.*/
+            /** Get the transformation matrix which moves from world coords
+              * to local coords.*/
             virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
         };
 
-        /** Set the ComputerTransfromCallback which allows users to attach custom computation of the local transformation as 
-          * seen by cull traversers and alike.*/
+        /** Set the ComputerTransfromCallback which allows users to attach
+          * custom computation of the local transformation as seen by cull
+          * traversers and the like. */
         void setComputeTransformCallback(ComputeTransformCallback* ctc) { _computeTransformCallback=ctc; dirtyBound(); }
         
         /** Get the non const ComputerTransfromCallback.*/
@@ -83,9 +96,9 @@ class SG_EXPORT Transform : public Group
         const ComputeTransformCallback* getComputeTransformCallback() const { return _computeTransformCallback.get(); }
 
 
-
-        /** Get the transformation matrix which moves from local coords to world coords.
-          * Return true if Matrix passed in has been updated. */
+        /** Get the transformation matrix which moves from local coords to
+          * world coords.
+          * Returns true if the Matrix passed in has been updated. */
         inline const bool getLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
         {
             if (_computeTransformCallback.valid())
@@ -94,9 +107,9 @@ class SG_EXPORT Transform : public Group
                 return computeLocalToWorldMatrix(matrix,nv);
         }
         
-
-        /** Get the transformation matrix which moves from world coords to local coords.
-          * Return true if Matrix passed in has been updated. */
+        /** Get the transformation matrix which moves from world coords to
+          * local coords.
+          * Return true if the Matrix passed in has been updated. */
         inline const bool getWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
         {
             if (_computeTransformCallback.valid())
@@ -105,7 +118,6 @@ class SG_EXPORT Transform : public Group
                 return computeWorldToLocalMatrix(matrix,nv);
         }
         
-
 #ifndef USE_DEPRECATED_API
 
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
@@ -142,10 +154,10 @@ class SG_EXPORT Transform : public Group
         /** Get the transform's matrix. */
         inline const Matrix& getMatrix() const { return *_deprecated_matrix; }
 
-        /** preMult transform.*/
+        /** preMult transform. */
         void preMult(const Matrix& mat) { _deprecated_matrix->preMult(mat); _deprecated_inverseDirty=true; computeInverse(); dirtyBound(); }
         
-        /** postMult transform.*/
+        /** postMult transform. */
         void postMult(const Matrix& mat)  { _deprecated_matrix->postMult(mat); _deprecated_inverseDirty=true; computeInverse(); dirtyBound(); }
     
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
@@ -175,19 +187,17 @@ class SG_EXPORT Transform : public Group
         }
 #endif
 
-
     protected :
     
         virtual ~Transform();
         
-        /** Override's Group's computeBound. 
-          * There is no need to override in subclasses from osg::Transform since this computeBound() uses 
-          * the underlying matrix (calling computeMatrix if required.) */
+        /** Overrides Group's computeBound. 
+          * There is no need to override in subclasses from osg::Transform
+          * since this computeBound() uses the underlying matrix (calling
+          * computeMatrix if required.) */
         virtual const bool computeBound() const;
         
         
-
-
         ref_ptr<ComputeTransformCallback>   _computeTransformCallback;
 
         ReferenceFrame                      _referenceFrame;

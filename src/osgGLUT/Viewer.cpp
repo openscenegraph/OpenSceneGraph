@@ -672,8 +672,11 @@ void Viewer::display()
         // application traverasal.
         times[2].timeApp+=app(i);
 
+
         // cull traverasal.
         times[2].timeCull+=cull(i);
+
+        if (_printStats>=1) glFinish();
 
         // draw traverasal.
         times[2].timeDraw+=draw(i);

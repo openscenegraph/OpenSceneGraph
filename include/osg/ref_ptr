@@ -55,24 +55,15 @@ class ref_ptr
             return *this;
         }
 
+#ifndef AUTOMATIC_CAST_TO_POINTER
         inline bool operator == (const ref_ptr& rp) const
         {
             return (_ptr==rp._ptr);
         }
 
-        inline bool operator == (const T* ptr) const
-        {
-            return (_ptr==ptr);
-        }
-
         inline bool operator != (const ref_ptr& rp) const
         {
             return (_ptr!=rp._ptr);
-        }
-
-        inline bool operator != (const T* ptr) const
-        {
-            return (_ptr!=ptr);
         }
 
         inline bool operator < (const ref_ptr& rp) const
@@ -85,10 +76,27 @@ class ref_ptr
             return (_ptr>rp._ptr);
         }
 
+        inline bool operator == (const T* ptr) const
+        {
+            return (_ptr==ptr);
+        }
+
+        inline bool operator != (const T* ptr) const
+        {
+            return (_ptr!=ptr);
+        }
+        
+        inline bool operator < (const T* ptr) const
+        {
+            return (_ptr<ptr);
+        }
+        
         inline bool operator > (const T* ptr) const
         {
             return (_ptr>ptr);
         }
+#endif
+
 
         inline T& operator*()  { return *_ptr; }
 

@@ -212,6 +212,7 @@ public:
         }
         else
         {
+            osg::notify(osg::INFO)<<"   no coordinate system found, using default orientation"<<std::endl;
             return osg::Matrixd::translate(position);
         }
     }
@@ -302,6 +303,7 @@ Viewer::~Viewer()
 
 void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)
 {
+    _coordinateSystemNodePath.clear();
     std::copy(nodePath.begin(),
               nodePath.end(),
               std::back_inserter(_coordinateSystemNodePath));

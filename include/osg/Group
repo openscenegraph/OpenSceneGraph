@@ -27,6 +27,9 @@ class SG_EXPORT Group : public Node
 
         META_Node(osg, Group);
 
+        virtual Group* asGroup() { return this; }
+        virtual const Group* asGroup() const { return this; }
+
         virtual void traverse(NodeVisitor& nv);
 
         /** Add Node to Group.

@@ -17,6 +17,7 @@ namespace osg {
 
 class NodeVisitor;
 class Group;
+class Transform;
 
 /** META_Node macro define the standard clone, isSameKindAs, className
   * and accept methods.  Use when subclassing from Node to make it
@@ -59,6 +60,20 @@ class SG_EXPORT Node : public Object
 
         /** return the name of the node's class type.*/
         virtual const char* className() const { return "Node"; }
+
+        /** convert 'this' into a Group pointer if Node is a Group, otherwise return 0.
+          * Equivalent to dynamic_cast<Group*>(this).*/
+        virtual Group* asGroup() { return 0; }
+        /** convert 'const this' into a const Group pointer if Node is a Group, otherwise return 0.
+          * Equivalent to dynamic_cast<const Group*>(this).*/
+        virtual const Group* asGroup() const { return 0; }
+
+        /** convert 'this' into a Transform pointer if Node is a Transform, otherwise return 0.
+          * Equivalent to dynamic_cast<Transform*>(this).*/
+        virtual Transform* asTransform() { return 0; }
+        /** convert 'const this' into a const Transform pointer if Node is a Transform, otherwise return 0.
+          * Equivalent to dynamic_cast<const Transform*>(this).*/
+        virtual const Transform* asTransform() const { return 0; }
 
         /** Visitor Pattern : calls the apply method of a NodeVisitor with this node's type.*/
         virtual void accept(NodeVisitor& nv);

@@ -229,7 +229,7 @@ bool Group::computeBound() const
         itr!=_children.end();
         ++itr)
     {
-        const osg::Transform* transform = dynamic_cast<const osg::Transform*>(itr->get());
+        const osg::Transform* transform = (*itr)->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_TO_PARENTS)
         {
             bb.expandBy((*itr)->getBound());
@@ -244,7 +244,7 @@ bool Group::computeBound() const
         itr!=_children.end();
         ++itr)
     {
-        const osg::Transform* transform = dynamic_cast<const osg::Transform*>(itr->get());
+        const osg::Transform* transform = (*itr)->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_TO_PARENTS)
         {
             _bsphere.expandRadiusBy((*itr)->getBound());

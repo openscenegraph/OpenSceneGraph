@@ -21,6 +21,7 @@ class Vec3;
 class Vec4;
 class UByte4;
 class Node;
+class Geometry;
 
 // this is define to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
@@ -49,6 +50,12 @@ class SG_EXPORT Drawable : public Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Drawable"; }
 
+        /** convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0.
+          * Equivalent to dynamic_cast<Geometry*>(this).*/
+        virtual Geometry* asGeometry() { return 0; }
+        /** convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
+          * Equivalent to dynamic_cast<const Geometry*>(this).*/
+        virtual const Geometry* asGeometry() const { return 0; }
 
         /** A vector of osg::Node pointers which is used to store the parent(s) of drawable.*/
         typedef std::vector<Node*> ParentList;

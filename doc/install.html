@@ -88,21 +88,33 @@ For platform specific details:
 <u><a name="Compiling under Windows with Visual Studio">Compiling under Windows with Visual Studio.</a></u></h2>
 <p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
 in the VisualStudio below the OSG this root directory. The OSG will compile
-with the basic VisualC++6.0, but its recommended that you use Service Pack
-4 to fix MS compiler bugs which affect the OSG. Even Service Pack 4 does
-not completely fix MSVC bugs associated with STL, so it is recommended
-that you also use STLPort which can be downloaded from http://www.stlport.org
-since they actually know how to write a STL library and have done a rather
-good job at it. Notes on using STLport at the bottom of this file.
+with the basic VisualC++6.0, but, and this is a big but, the STL version which
+comes with VisualC++6.0 is extremely buggy and unable to handle things even
+as simple as std::mamp without crashing, even the latest severice packs (which are
+recommended won't fix the STL bugs). This is a problem for the OpenSceneGraph
+since it makes proper use of Standard C++.  One can struggle on with the MS's
+and expect crashes and optimization disabled, or adopt one of the follwing:
+
+<ol>
+<li> Visual Studio .NET </li>
+<li> Dinkumware's STL bug fix patches - <a href="http://www.dinkumware.com/vc_fixes.html">http://www.dinkumware.com/vc_fixes.html</a>.</li>
+<li> STLport - <a href="http://www.stlport.org">http://www.stlport.org</a></li>
+</ol>
+
 </p>
-<p>The OSG is composed of a number of libraries and executables, to get
-running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT, dot_osg
-and sgv. The rest of the libraries and executables are optional and can
+<p>The OSG is composed of a number of scene graph libraries (with Core in front of the project names),
+executables (with Demos in front of the project names), and plugins which read and write 3D data formats
+and 2D image formats.  To get the OSG running you'll need at least to compile Core osg,osgUtil,osgDB,osgGLUT,
+osgPlugin dot_osg and Demo sgv. The rest of the libraries and executables are optional and can
 be compiled if you need them, however for simplicity I would recommend
 doing a batch build of all the libraries and executables in the distribution,
 some of the plug-ins which support non native file formats may not compile
 due to dependencies on other libraries (such as libpng), you can ignore
-these compilation errors unless you need to load the related file types.
+these compilation errors unless you need to load the related file types. To help
+the compilationon the plugins, osgGLUT and osgText one can download .zip
+archive will all the dependancies in it.  Further details on this .zip file can
+be found in <i><a href="dependencies.html">dependencies.html</a></i>
+
 </p>
 <p>To execute the viewer the file path for the .dll's and .exe, both compiled
 into the OSG's bin directory, need to be setup, such as by adding the PATH
@@ -115,7 +127,29 @@ to help the location of datafiles. For example :
 have been zipped up for your convienice, your find these on the OSG release
 download directory.
 <h2>
-Using STLport under Windows</h2>
+Using Visual Studio .NET</h2>
+<p>
+Looks like Microsoft have eventually got their act together on the compiler front,
+the compiler looks Standard C++ compilient with a solid STL implement, so this is
+the recommend route.</p>
+<h2>
+Using Dinkumware STL</h2>
+<p>
+The basic jist is that you'll need to download their STL implementation, and follow their
+instructions of how toforce VisualStudio to pick up the new STL implementation. More details
+at <a href="http://www.dinkumware.com/vc_fixes.html">http://www.dinkumware.com/vc_fixes.html</a>.
+</p>
+<p>
+Once it is installed everything should compile fine and not crash, but you won't be running at full
+speed since the build #odef's out some important state optimizations since the basic VisualStudio
+can't handle it.  You can safely remove the #ifdef from src/osgUtil/Otimizer.cpp, Line 44.
+
+The #ifdef is smart enough to do this automatically when using VIsualStudio .NET and STLport so that
+modification by hand won't be required. Unfortunately there doesn't seem to be a special define associated
+with the Dinkumware STL for the #ifdef to pick up on.
+</p>
+<h2>
+Using STLport</h2>
 </p>
 The OSG has been tested under Windows with STLport-4.5, which allows the
 users to configure the type of STL support required for STLport itself.
@@ -135,8 +169,6 @@ in Visual Studio to pick up on STLport: Select the "Tools" menu. Select
 Then press the up array to move the entry all the way to the top of the
 list, thus overriding MS's own STL implementations.
 </p>
-
-<br>
 <hr>
 
 

@@ -128,23 +128,13 @@ int main( int argc, char **argv )
     // create a camera to use with the manipulators.
     osg::ref_ptr<osg::Camera> old_style_osg_camera = new osg::Camera;
 
-    osg::ref_ptr<osgGA::TrackballManipulator> trackballManipulator = new osgGA::TrackballManipulator;
-    trackballManipulator->setCamera(old_style_osg_camera.get());
-    trackballManipulator->setNode(loadedModel.get());
-
-    osg::ref_ptr<osgGA::FlightManipulator> flightManipulator = new osgGA::FlightManipulator;
-    flightManipulator->setCamera(old_style_osg_camera.get());
-    flightManipulator->setNode(loadedModel.get());
-
-    osg::ref_ptr<osgGA::DriveManipulator> driveManipulator = new osgGA::DriveManipulator;
-    driveManipulator->setCamera(old_style_osg_camera.get());
-    driveManipulator->setNode(loadedModel.get());
-
-
     osg::ref_ptr<osgGA::KeySwitchCameraManipulator> keyswitchManipulator = new osgGA::KeySwitchCameraManipulator;
-    keyswitchManipulator->addNumberedCameraManipulator(trackballManipulator.get());
-    keyswitchManipulator->addNumberedCameraManipulator(flightManipulator.get());
-    keyswitchManipulator->addNumberedCameraManipulator(driveManipulator.get());
+    keyswitchManipulator->addNumberedCameraManipulator(new osgGA::TrackballManipulator);
+    keyswitchManipulator->addNumberedCameraManipulator(new osgGA::FlightManipulator);
+    keyswitchManipulator->addNumberedCameraManipulator(new osgGA::DriveManipulator);
+    
+    keyswitchManipulator->setCamera(old_style_osg_camera.get());
+    keyswitchManipulator->setNode(loadedModel.get());
 
 
     osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;

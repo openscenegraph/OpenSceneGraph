@@ -9,10 +9,13 @@ using namespace osgGA;
 TerrainManipulator::TerrainManipulator()
 {
     _modelScale = 0.01f;
+    
+    _rotationMode =ELEVATION_AZIM; 
     _minimumZoomScale = 0.0005f;
+    _distance = 1.0f;
+
     _thrown = false;
 
-    _distance = 1.0f;
 }
 
 
@@ -20,6 +23,13 @@ TerrainManipulator::~TerrainManipulator()
 {
 }
 
+
+void TerrainManipulator::setRotationMode(RotationMode mode)
+{
+    _rotationMode = mode;
+
+    // need to correct rotation.
+}
 
 void TerrainManipulator::setNode(osg::Node* node)
 {
@@ -268,6 +278,8 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
         }
     }    
 
+
+    clampOrientation();
 }
 
 osg::Matrixd TerrainManipulator::getMatrix() const
@@ -326,6 +338,8 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
 
     rotation_matrix.get(_rotation);
     _rotation = _rotation.inverse();
+
+    clampOrientation();
 }
 
 
@@ -345,25 +359,50 @@ bool TerrainManipulator::calcMovement()
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
-        // rotate camera.
+        if (_rotationMode==ELEVATION_AZIM_ROLL)
+        {
+            // rotate camera.
+            osg::Vec3 axis;
+            float angle;
 
-        osg::Vec3 axis;
-        float angle;
+            float px0 = _ga_t0->getXnormalized();
+            float py0 = _ga_t0->getYnormalized();
 
-        float px0 = _ga_t0->getXnormalized();
-        float py0 = _ga_t0->getYnormalized();
+            float px1 = _ga_t1->getXnormalized();
+            float py1 = _ga_t1->getYnormalized();
+
+
+            trackball(axis,angle,px1,py1,px0,py0);
+
+            osg::Quat new_rotate;
+            new_rotate.makeRotate(angle,axis);
+
+            _rotation = _rotation*new_rotate;
+        }
+        else
+        {
+            osg::Matrix rotation_matrix;
+            rotation_matrix.set(_rotation);
+
+            osg::Vec3 lookVector = -getUpVector(rotation_matrix);
+            osg::Vec3 sideVector = getSideVector(rotation_matrix);
+            osg::Vec3 upVector = getFrontVector(rotation_matrix);
+
+            osg::Vec3 forwardVector =osg::Vec3(0.0f,0.0f,1.0f)^sideVector;
+            sideVector = forwardVector^osg::Vec3(0.0f,0.0f,1.0f);
+
+            forwardVector.normalize();
+            sideVector.normalize();
+            
+            osg::Quat rotate_elevation;
+            rotate_elevation.makeRotate(dy,sideVector);
+
+            osg::Quat rotate_azim;
+            rotate_azim.makeRotate(-dx,osg::Vec3(0.0f,0.0f,1.0f));
+            
+            _rotation = _rotation * rotate_elevation * rotate_azim;
+        }
         
-        float px1 = _ga_t1->getXnormalized();
-        float py1 = _ga_t1->getYnormalized();
-        
-
-        trackball(axis,angle,px1,py1,px0,py0);
-
-        osg::Quat new_rotate;
-        new_rotate.makeRotate(angle,axis);
-        
-        _rotation = _rotation*new_rotate;
-
         return true;
 
     }
@@ -455,6 +494,37 @@ bool TerrainManipulator::calcMovement()
     }
 
     return false;
+}
+
+void TerrainManipulator::clampOrientation()
+{
+    if (_rotationMode==ELEVATION_AZIM)
+    {
+        osg::Matrix rotation_matrix;
+        rotation_matrix.set(_rotation);
+
+        osg::Vec3 lookVector = -getUpVector(rotation_matrix);
+        osg::Vec3 upVector = getFrontVector(rotation_matrix);
+
+        osg::Vec3 sideVector = lookVector ^ osg::Vec3(0.0f,0.0f,1.0f);
+
+        if (sideVector.length()<0.1)
+        {
+            osg::notify(osg::NOTICE)<<"Side vector short "<<sideVector.length()<<std::endl;
+
+            sideVector = upVector^osg::Vec3(0.0f,0.0f,1.0f);
+            sideVector.normalize();
+        
+        }
+
+        Vec3 newUpVector = sideVector^lookVector;
+        newUpVector.normalize();
+
+        osg::Quat rotate_roll;
+        rotate_roll.makeRotate(upVector,newUpVector);
+
+        _rotation = _rotation * rotate_roll;
+    }
 }
 
 

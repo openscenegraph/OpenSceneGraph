@@ -74,7 +74,8 @@ class SG_EXPORT Array : public Object
         virtual void accept(unsigned int index,ValueVisitor&) = 0;
         virtual void accept(unsigned int index,ConstValueVisitor&) const = 0;
 
-        /** return -1 if lhs element is less than rhs element, 0 is equal, 1 if lhs element is greater than rhs element.*/
+        /** Return -1 if lhs element is less than rhs element, 0 if equal,
+          * 1 if lhs element is greater than rhs element. */
         virtual int compare(unsigned int lhs,unsigned int rhs) const = 0;
 
         Type                    getType() const { return _arrayType; }

@@ -18,7 +18,7 @@
 
 namespace osg {
 
-/** Encapsulate OpenGL glAlphaFunc.
+/** Encapsulates OpenGL glAlphaFunc.
 */     
 class SG_EXPORT AlphaFunc : public StateAttribute
 {
@@ -42,7 +42,7 @@ class SG_EXPORT AlphaFunc : public StateAttribute
             _comparisonFunc(func),
             _referenceValue(ref) {}
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         AlphaFunc(const AlphaFunc& af,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(af,copyop),
             _comparisonFunc(af._comparisonFunc),
@@ -50,18 +50,18 @@ class SG_EXPORT AlphaFunc : public StateAttribute
         
         META_StateAttribute(osg, AlphaFunc,ALPHAFUNC);
         
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macros below.
             COMPARE_StateAttribute_Types(AlphaFunc,sa)
 
-            // compare each paramter in turn against the rhs.
+            // Compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_comparisonFunc)
             COMPARE_StateAttribute_Parameter(_referenceValue)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // Passed all the above comparison macros, so must be equal.
         }
 
         virtual bool getModeUsage(ModeUsage& usage) const

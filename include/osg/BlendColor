@@ -23,7 +23,7 @@
 
 namespace osg {
 
-/** BlendColor - encapsulates the OpenGL blend/transparency state.*/
+/** Encapsulates OpenGL blend/transparency state. */
 class SG_EXPORT BlendColor : public StateAttribute
 {
     public :
@@ -37,17 +37,17 @@ class SG_EXPORT BlendColor : public StateAttribute
 
         META_StateAttribute(osg, BlendColor,BLENDCOLOR);
         
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macros below.
             COMPARE_StateAttribute_Types(BlendColor,sa)
 
-            // compare each paramter in turn against the rhs.
+            // Compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_constantColor)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // Passed all the above comparison macros, so must be equal.
         }
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -64,9 +64,9 @@ class SG_EXPORT BlendColor : public StateAttribute
 
 
 
-        /** Extensions class which encapsulates the querring of extensions and
-          * associated function pointers, and provide convinience wrappers to 
-          * check for the extensions or use the associated functions.*/        
+        /** Encapsulates queries of extension availability, obtains extension
+          * function pointers, and provides convinience wrappers for
+          * calling extension functions. */        
         class SG_EXPORT Extensions : public osg::Referenced
         {
             public:
@@ -94,17 +94,16 @@ class SG_EXPORT BlendColor : public StateAttribute
 
         };
         
-        /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created then 
-          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-          * If 'createIfNotInitalized' is true then the Extensions object is 
-          * automatically created.  However, in this case the extension object 
-          * only be created with the graphics context associated with ContextID..*/
+        /** Returns the Extensions object for the given context.
+          * If createIfNotInitalized is true and the Exentsions object doesn't
+          * exist, getExtensions() creates it on the given context.
+          * Returns NULL if createIfNotInitalized is false and the Extensions
+          * object doesn't exist. */
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
-        /** setExtensions allows users to override the extensions across graphics contexts.
-          * typically used when you have different extensions supported across graphics pipes
-          * but need to ensure that they all use the same low common denominator extensions.*/
+        /** setExtensions() allows users to override the extensions across graphics contexts.
+          * Typically used when you have different extensions supported across graphics pipes,
+          * but need to ensure that they all use the same low common denominator extensions. */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
 

@@ -69,13 +69,15 @@ class SG_EXPORT ArgumentParser
             ValueUnion      _value;
         };
 
-        /** return return true if specified string is an option in the form of -option or --option .*/
+        /** Return true if the specified string is an option in the form
+          * -option or --option. */
         static bool isOption(const char* str);
         
-        /** return return true if string is any other string apart from an option.*/
+        /** Return true if string is non-NULL and not an option in the form
+          * -option or --option. */
         static bool isString(const char* str);
         
-        /** return return true if specified parameter is an number.*/
+        /** Return true if specified parameter is a number. */
         static bool isNumber(const char* str);
 
     public:
@@ -86,44 +88,47 @@ class SG_EXPORT ArgumentParser
         ApplicationUsage* getApplicationUsage() { return _usage; }
         const ApplicationUsage* getApplicationUsage() const { return _usage; }
 
-        /** return the argument count.*/
+        /** Return the argument count. */
         int& argc() { return *_argc; }
 
-        /** return the argument array.*/
+        /** Return the argument array. */
         char** argv() { return _argv; }
 
-        /** return char* argument at specificed position.*/
+        /** Return the char* argument at the specified position. */
         char* operator [] (int pos) { return _argv[pos]; }
 
-        /** return const char* argument at specificed position.*/
+        /** Return the const char* argument at the specified position. */
         const char* operator [] (int pos) const { return _argv[pos]; }
 
-        /** return the application name, as specified by argv[0] */
+        /** Return the application name, as specified by argv[0]  */
         std::string getApplicationName() const;
 
-        /** return the position of an occurance of a string in the argument list.
-          * return -1 when no string is found.*/      
+        /** Return the position of an occurance of a string in the argument list.
+          * Return -1 if no string is found. */
         int find(const std::string& str) const;
 
-        /** return return true if specified parameter is an option in the form of -option or --option .*/
+        /** Return true if the specified parameter is an option in the form of
+          * -option or --option. */
         bool isOption(int pos) const;
         
-        /** return return true if specified parameter is an string, which can be any other string apart from an option.*/
+        /** Return true if the specified parameter is a string not in
+          * the form of an option. */
         bool isString(int pos) const;
         
-        /** return return true if specified parameter is an number.*/
+        /** Return true if the specified parameter is a number. */
         bool isNumber(int pos) const;
         
         bool containsOptions() const;
 
-        /** remove one or more arguments from the argv argument list, and decrement the argc respectively.*/
+        /** Remove one or more arguments from the argv argument list,
+          * and decrement the argc respectively. */
         void remove(int pos,int num=1);
         
-        /** return true if specified argument matches string.*/        
+        /** Return true if the specified argument matches the given string. */
         bool match(int pos, const std::string& str) const;
 
-        /** search for an occurance of a string in the argument list, on sucess
-          * remove that occurance from the list and return true, otherwise return false.*/
+        /** Search for an occurance of a string in the argument list. If found,
+          * remove that occurance and return true. Otherwise, return false. */
         bool read(const std::string& str);
         bool read(const std::string& str, Parameter value1);
         bool read(const std::string& str, Parameter value1, Parameter value2);
@@ -131,8 +136,9 @@ class SG_EXPORT ArgumentParser
         bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4);
 
 
-        /** if the argument value at the position pos matches specified string, and subsequent
-          * paramters are also matched then set the paramter values and remove the from the list of arguments.*/
+        /** If the argument value at the speciified position matches the given string,
+          * and subsequent parameters are also matched, then set the parameter values,
+          * remove the arguments from the list, and return true. Otherwise, return false. */
         bool read(int pos, const std::string& str);
         bool read(int pos, const std::string& str, Parameter value1);
         bool read(int pos, const std::string& str, Parameter value1, Parameter value2);
@@ -148,22 +154,22 @@ class SG_EXPORT ArgumentParser
 
         typedef std::map<std::string,ErrorSeverity> ErrorMessageMap;
 
-        /** return the error flag, true if an error has occured when reading arguments.*/
+        /** Return the error flag, true if an error has occured when reading arguments. */
         bool errors(ErrorSeverity severity=BENIGN) const;
 
-        /** report an error message by adding to the ErrorMessageMap.*/
+        /** Report an error message by adding to the ErrorMessageMap. */
         void reportError(const std::string& message,ErrorSeverity severity=CRITICAL);
 
-        /** for each remaining option report it as an unrecongnized.*/
+        /** For each remaining option, report it as unrecognized. */
         void reportRemainingOptionsAsUnrecognized(ErrorSeverity severity=BENIGN);
         
-        /** return the error message, if any has occured.*/
+        /** Return the error message, if any has occured. */
         ErrorMessageMap& getErrorMessageMap() { return _errorMessageMap; }
       
-        /** return the error message, if any has occured.*/
+        /** Return the error message, if any has occured. */
         const ErrorMessageMap& getErrorMessageMap() const { return _errorMessageMap; }
 
-        /** write out error messages at an above specified .*/
+        /** Write error messages to the given ostream, if at or above the given severiity. */
         void writeErrorMessages(std::ostream& output,ErrorSeverity sevrity=BENIGN);
 
   

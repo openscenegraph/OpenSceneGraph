@@ -20,8 +20,8 @@
 
 namespace osg {
 
-/** AutoTransform - is Transform the automatically scales or rotates 
-  * to keep its children relative to screen space coordinates.
+/** AutoTransform is a derived form of Transform that automatically
+  * scales or rotates to keep its children aligned with screen coordinates.
 */
 class SG_EXPORT AutoTransform : public Transform
 {
@@ -77,14 +77,14 @@ class SG_EXPORT AutoTransform : public Transform
         void setAutoRotateToScreen(bool autoRotateToScreen)
         {
             setAutoRotateMode(autoRotateToScreen?ROTATE_TO_SCREEN:NO_ROTATION);
-	}
+        }
 
         bool getAutoRotateToCamera() const { return _autoRotateMode==ROTATE_TO_SCREEN; }
 
         void setAutoRotateToCamera(bool autoRotateToCamera)
-	{
+        {
             setAutoRotateMode(autoRotateToScreen?ROTATE_TO_CAMERA:NO_ROTATION);
-	}
+        }
         
         bool getAutoRotateToCamera() const { return _autoRotateMode==ROTATE_TO_SCREEN; }
 #endif

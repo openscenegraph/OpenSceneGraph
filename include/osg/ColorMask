@@ -19,7 +19,7 @@
 
 namespace osg {
 
-/** Encapsulate OpenGL glColorMaskFunc/Op/Mask functions.
+/** Encapsulates OpenGL glColorMaskFunc/Op/Mask functions.
 */     
 class SG_EXPORT ColorMask : public StateAttribute
 {
@@ -35,7 +35,7 @@ class SG_EXPORT ColorMask : public StateAttribute
             _alpha(alpha) {}
             
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         ColorMask(const ColorMask& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(cm,copyop),
             _red(cm._red),
@@ -45,20 +45,20 @@ class SG_EXPORT ColorMask : public StateAttribute
         
         META_StateAttribute(osg, ColorMask, COLORMASK);
         
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macros below.
             COMPARE_StateAttribute_Types(ColorMask,sa)
 
-            // compare each paramter in turn against the rhs.
+            // Compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_red)
             COMPARE_StateAttribute_Parameter(_green)
             COMPARE_StateAttribute_Parameter(_blue)
             COMPARE_StateAttribute_Parameter(_alpha)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // Passed all the above comparison macros, so must be equal.
         }
 
         inline void setMask(bool red,bool green,bool blue,bool alpha)

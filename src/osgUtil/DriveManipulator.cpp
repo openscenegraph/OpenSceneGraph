@@ -353,6 +353,8 @@ bool DriveManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
+    _camera->setFusionDistanceFunction(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE,1.0f);
+
     float dt = _ga_t0->time()-_ga_t1->time();
 
     if (dt<0.0f)

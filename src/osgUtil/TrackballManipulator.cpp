@@ -175,11 +175,14 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 bool TrackballManipulator::calcMovement()
 {
+    _camera->setFusionDistanceFunction(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE,1.0f);
+
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
     float dx = _ga_t0->getX()-_ga_t1->getX();
     float dy = _ga_t0->getY()-_ga_t1->getY();
+
 
     // return if there is no movement.
     if (dx==0 && dy==0) return false;

@@ -293,9 +293,12 @@ void SceneView::draw()
 
     RenderLeaf* previous = NULL;
     
+
     if (_visualsSettings.valid() && _visualsSettings->getStereo()) 
     {
     
+        _camera->setScreenDistance(_visualsSettings->getScreenDistance());
+
         switch(_visualsSettings->getStereoMode())
         {
         case(osg::VisualsSettings::QUAD_BUFFER):
@@ -304,10 +307,9 @@ void SceneView::draw()
                 osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
                 
                 float iod = _visualsSettings->getEyeSeperation();
-                float screenDistance = _visualsSettings->getEyeSeperation();
 
-                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
-                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
+                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
+                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
 
                 glDrawBuffer(GL_BACK_LEFT);
                 _renderStage->setCamera(left_camera.get());
@@ -326,10 +328,9 @@ void SceneView::draw()
                 osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
 
                 float iod = _visualsSettings->getEyeSeperation();
-                float screenDistance = _visualsSettings->getScreenDistance();
 
-                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
-                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
+                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
+                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
                 
                 osg::ColorMask* red = new osg::ColorMask;
                 osg::ColorMask* green = new osg::ColorMask;

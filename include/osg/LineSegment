@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -20,7 +20,7 @@
 
 namespace osg {
 
-/** LineSegment class for representing a line segment.*/
+/** LineSegment class for representing a line segment. */
 class SG_EXPORT LineSegment : public Referenced
 {
     public:
@@ -41,19 +41,25 @@ class SG_EXPORT LineSegment : public Referenced
 
         inline bool valid() const { return _s.valid() && _e.valid() && _s!=_e; }
 
-        /** return true if segment intersects BoundingBox.*/
+        /** return true if segment intersects BoundingBox. */
         bool intersect(const BoundingBox& bb) const;
 
-        /** return true if segment intersects BoundingBox and return the intersection ratio's.*/
+        /** return true if segment intersects BoundingBox
+          * and return the intersection ratios.
+        */
         bool intersect(const BoundingBox& bb,float& r1,float& r2) const;
 
-        /** return true if segment intersects BoundingSphere.*/
+        /** return true if segment intersects BoundingSphere. */
         bool intersect(const BoundingSphere& bs) const;
 
-        /** return true if segment intersects BoundingSphere and return the intersection ratio's.*/
+        /** return true if segment intersects BoundingSphere and return the
+          * intersection ratio.
+        */
         bool intersect(const BoundingSphere& bs,float& r1,float& r2) const;
         
-        /** return true if segment intersects triangle and set ratio long segment. */
+        /** return true if segment intersects triangle
+          * and set ratio long segment.
+        */
         bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r);
 
         /** post multiply a segment by matrix.*/

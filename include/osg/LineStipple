@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -32,18 +32,18 @@ class SG_EXPORT LineStipple : public StateAttribute
 
         META_StateAttribute(osg, LineStipple, LINESTIPPLE);
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // check if the types are equal and then create the rhs variable.
+            // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(LineStipple,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_factor)
             COMPARE_StateAttribute_Parameter(_pattern)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
         
         virtual bool getModeUsage(ModeUsage& usage) const

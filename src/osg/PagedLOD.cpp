@@ -23,7 +23,8 @@ void PagedLOD::traverse(NodeVisitor& nv)
             float distance = nv.getDistanceToEyePoint(getCenter(),true);
             
             // first check to see if any children can be directly traversed.
-            unsigned int numChildren = osg::minimum(_children.size(),numChildren=_rangeList.size());
+            unsigned int numChildren = minimum(_children.size(),
+					_rangeList.size());
             bool childTraversed = false;
             for(unsigned int i=0;i<numChildren;++i)
             {    

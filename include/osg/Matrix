@@ -9,6 +9,8 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+#include <string.h>
+
 #include <iostream>
 
 namespace osg {

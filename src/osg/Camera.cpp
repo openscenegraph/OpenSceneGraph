@@ -433,7 +433,10 @@ void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
             {
                 _attachedTransformMode = mode;
                 if (!_modelToEyeTransform.valid()) _modelToEyeTransform = new Matrix;
-                _modelToEyeTransform->invert(*_eyeToModelTransform);
+                if (!_modelToEyeTransform->invert(*_eyeToModelTransform))
+                {
+                    notify(WARN)<<"Warning: Camera::attachTransform() failed to invert _modelToEyeTransform"<<std::endl;
+                }
             }
             else
             {
@@ -449,7 +452,10 @@ void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
             {
                 _attachedTransformMode = mode;
                 if (!_eyeToModelTransform.valid()) _eyeToModelTransform = new Matrix;
-                _eyeToModelTransform->invert(*_modelToEyeTransform);
+                if (!_eyeToModelTransform->invert(*_modelToEyeTransform))
+                {
+                    notify(WARN)<<"Warning: Camera::attachTransform() failed to invert _modelToEyeTransform"<<std::endl;
+                }
             }
             else
             {
@@ -482,12 +488,19 @@ void Camera::dirtyTransform()
     case(EYE_TO_MODEL):
         // should be safe to assume that these matrices are valid
         // as attachTransform will ensure it.
-        _modelToEyeTransform->invert(*_eyeToModelTransform);
+        if (!_modelToEyeTransform->invert(*_eyeToModelTransform))
+        {
+            notify(WARN)<<"Warning: Camera::dirtyTransform() failed to invert _modelToEyeTransform"<<std::endl;
+        }
+
         break;
     case(MODEL_TO_EYE):
         // should be safe to assume that these matrices are valid
         // as attachTransform will ensure it.
-        _eyeToModelTransform->invert(*_modelToEyeTransform);
+        if (!_eyeToModelTransform->invert(*_modelToEyeTransform))
+        {
+            notify(WARN)<<"Warning: Camera::dirtyTransform() failed to invert _eyeToModelTransform"<<std::endl;
+        }
         break;
     }
 
@@ -779,7 +792,10 @@ void Camera::calculateMatricesAndClippingVolume() const
     _mp->mult(*_modelViewMatrix,*_projectionMatrix);
     
     if (!_inversemp.valid()) _inversemp = new Matrix;
-    _inversemp->invert(*_mp);
+    if (!_inversemp->invert(*_mp))
+    {
+        notify(WARN)<<"Warning: Camera::calculateMatricesAndClippingVolume() failed to invert _mp"<<std::endl;
+    }
 
     _dirty = false;
 }

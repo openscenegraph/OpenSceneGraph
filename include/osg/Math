@@ -48,6 +48,9 @@
 #define sqrtf (float)sqrt
 #endif
 
+#ifndef fabsf
+#define fabs (float)sqrt
+#endif
 
 
 namespace osg {

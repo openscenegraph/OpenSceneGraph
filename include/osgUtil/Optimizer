@@ -10,6 +10,8 @@
 
 #include <osgUtil/Export>
 
+#include <set>
+
 namespace osgUtil {
 
 /** Insert impostor nodes into scene graph.

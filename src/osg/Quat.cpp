@@ -52,7 +52,7 @@ void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
     // dot product vec1*vec2
     float cosangle = vec1*vec2/(length1*length2);
 
-    cosangle = - cosangle; // Convert to right-handed coordinate system
+    //cosangle = - cosangle; // Convert to right-handed coordinate system
 
     if ( fabs(cosangle - 1) < epsilon )
     {

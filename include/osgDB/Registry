@@ -73,14 +73,14 @@ class OSGDB_EXPORT Registry
         bool                 writeObject(const osg::Object& obj,Output& fw);
 
         
-        osg::Object* readObject(const std::string& fileName);
-        bool         writeObject(const osg::Object& obj, const std::string& fileName);
+        ReaderWriter::ReadResult readObject(const std::string& fileName);
+        ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName);
 
-        osg::Image*  readImage(const std::string& fileName);
-        bool         writeImage(const osg::Image& obj, const std::string& fileName);
+        ReaderWriter::ReadResult readImage(const std::string& fileName);
+        ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName);
 
-        osg::Node*   readNode(const std::string& fileName);
-        bool         writeNode(const osg::Node& node, const std::string& fileName);
+        ReaderWriter::ReadResult readNode(const std::string& fileName);
+        ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName);
         
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
         bool getCreateNodeFromImage() const { return _createNodeFromImage; }

@@ -1,6 +1,7 @@
 #include <osg/Object>
 
 #include <osgDB/Registry>
+#include <osgDB/ReadFile>
 #include <osgDB/Input>
 
 using namespace osgDB;
@@ -62,15 +63,15 @@ osg::Node* Input::readNode()
 
 osg::Object* Input::readObject(const std::string& fileName)
 {
-    return Registry::instance()->readObject(fileName);
+    return readObjectFile(fileName);
 }
 
 osg::Image*  Input::readImage(const std::string& fileName)
 {
-    return Registry::instance()->readImage(fileName);
+    return readImageFile(fileName);
 }
 
 osg::Node* Input::readNode(const std::string& fileName)
 {
-    return Registry::instance()->readNode(fileName);
+    return readNodeFile(fileName);
 }

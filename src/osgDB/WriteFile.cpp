@@ -14,17 +14,23 @@ using namespace osgDB;
 
 bool osgDB::writeObjectFile(const Object& object,const std::string& filename)
 {
-    return Registry::instance()->writeObject(object,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeObject(object,filename);
+    if (wr.error()) notify(WARN) << wr.message() << endl;
+    return wr.success();
 }
 
 
 bool osgDB::writeImageFile(const Image& image,const std::string& filename)
 {
-    return Registry::instance()->writeImage(image,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeImage(image,filename);
+    if (wr.error()) notify(WARN) << wr.message() << endl;
+    return wr.success();
 }
 
 
 bool osgDB::writeNodeFile(const Node& node,const std::string& filename)
 {
-    return Registry::instance()->writeNode(node,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeNode(node,filename);
+    if (wr.error()) notify(WARN) << wr.message() << endl;
+    return wr.success();
 }

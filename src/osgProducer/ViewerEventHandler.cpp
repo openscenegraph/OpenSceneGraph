@@ -24,6 +24,11 @@ public:
         _viewport = new osg::Viewport(0,0,1280,1024);
         _stateset->setAttribute(_viewport.get());
     
+        //createHelpText();
+        createStatsText();
+        
+        //_helpInitialized = false;
+
     }
     
     void setArraySize(unsigned int size) { _fs.resize(size); }
@@ -173,6 +178,7 @@ void DrawCallback::createHelpText()
             osgText::Text* text = new osgText::Text;
             text->setFont("fonts/arial.ttf");
             text->setColor(colorDescription);
+            text->setFontSize(characterSize,characterSize);
             text->setCharacterSize(characterSize);
             text->setPosition(posDescription);
             text->setMaximumWidth(maxWidthOfDisplayRegion);
@@ -198,6 +204,7 @@ void DrawCallback::createHelpText()
             osgText::Text* text = new osgText::Text;
             text->setFont("fonts/arial.ttf");
             text->setColor(colorOption);
+            text->setFontSize(characterSize,characterSize);
             text->setCharacterSize(characterSize);
             text->setPosition(posOption);
             text->setAlignment(osgText::Text::BASE_LINE);
@@ -224,6 +231,7 @@ void DrawCallback::createHelpText()
             osgText::Text* text = new osgText::Text;
             text->setFont("fonts/arial.ttf");
             text->setColor(colorExplanation);
+            text->setFontSize(characterSize,characterSize);
             text->setCharacterSize(characterSize);
             text->setPosition(posExplanation);
             text->setMaximumWidth(maxWidth);
@@ -328,13 +336,15 @@ void DrawCallback::displayStats()
         
         _frameRateLabelText->draw(*(osh->getState()));
 
-        unsigned int lindex = (_index + 1) % _fs.size();
-        double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
-        double timePerFrame = timeForFrames/(double)(_fs.size()-1);
-        char frameRateText[128];
-        sprintf(frameRateText,"%4.2f",1.0/timePerFrame);
-
-        _frameRateCounterText->setText(frameRateText);
+        if (_fs.size()>1)
+        {
+            unsigned int lindex = (_index + 1) % _fs.size();
+            double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
+            double timePerFrame = timeForFrames/(double)(_fs.size()-1);
+            char frameRateText[128];
+            sprintf(frameRateText,"%4.2f",1.0/timePerFrame);
+            _frameRateCounterText->setText(frameRateText);
+        }
         _frameRateCounterText->draw(*(osh->getState()));
         
 
@@ -513,7 +523,7 @@ void DrawCallback::createStatsText()
     _frameRateCounterText->setCharacterSize(characterSize);
     _frameRateCounterText->setPosition(pos);
     _frameRateCounterText->setAlignment(osgText::Text::BASE_LINE);
-    _frameRateCounterText->setText("0 Hz.");
+                _frameRateCounterText->setText("01234567890");
 
 /*    _statsLabelList;
     _updateTimeText;

@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(__MINGW32__)
 #include <sys/types.h>
 #endif
 

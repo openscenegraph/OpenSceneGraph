@@ -29,6 +29,53 @@
 
 #include <sstream>
 
+#include <ogr_spatialref.h>
+
+bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const osgTerrain::CoordinateSystem* rhs)
+{
+    // if ptr's equal the return true
+    if (lhs == rhs) return true;
+    
+    // if one CS is NULL then true false
+    if (!lhs || !rhs)
+    {
+        //std::cout<<"areCoordinateSystemEquivilant lhs="<<lhs<<"  rhs="<<rhs<<std::endl;
+        return false;
+    }
+    
+    // use compare on ProjectionRef strings.
+    if (*lhs == *rhs) return true;
+    
+    char** stringList = new char* [2];
+    stringList[0] = strdup(lhs->getProjectionRef().c_str());
+    stringList[1] = 0;
+    
+    OGRSpatialReference lhsSR;
+    lhsSR.importFromWkt(stringList);
+    
+    free(stringList[0]);
+    stringList[0] = 0;
+
+    OGRSpatialReference rhsSR;
+    stringList[0] = strdup(lhs->getProjectionRef().c_str());
+    stringList[1] = 0;
+
+    rhsSR.importFromWkt(stringList);
+
+    free(stringList[0]);
+    stringList[0] = 0;
+    
+    delete stringList;
+
+    int result = lhsSR.IsSame(&rhsSR);
+
+//     std::cout<<"areCoordinateSystemEquivilant "<<std::endl
+//              <<"LHS = "<<lhs->getProjectionRef()<<std::endl
+//              <<"RHS = "<<rhs->getProjectionRef()<<std::endl
+//              <<"rsults = "<<result<<std::endl;
+    return result;
+}
+
 DataSet::SourceData* DataSet::SourceData::readData(Source* source)
 {
     if (!source) return 0;
@@ -147,14 +194,14 @@ osg::BoundingBox DataSet::SourceData::getExtents(const osgTerrain::CoordinateSys
 
 const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(const osgTerrain::CoordinateSystem* cs) const
 {
-    if (_cs==cs) return *this;
+    // check to see it exists in the _spatialPropertiesMap first.
+    SpatialPropertiesMap::const_iterator itr = _spatialPropertiesMap.find(cs);
+    if (itr!=_spatialPropertiesMap.end()) return itr->second;
+
+    if (areCoordinateSystemEquivilant(_cs.get(),cs)) return *this;
+
     if (_cs.valid() && cs)
     {
-        if (*_cs == *cs) return *this;
-        
-        // check to see it exists in the _spatialPropertiesMap first.
-        SpatialPropertiesMap::const_iterator itr = _spatialPropertiesMap.find(cs);
-        if (itr!=_spatialPropertiesMap.end()) return itr->second;
         
         if (_gdalDataSet)
         {
@@ -305,10 +352,64 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             unsigned char* imageData = destination._image->data(destX,destY+destHeight-1);
             std::cout << "reading RGB"<<std::endl;
 
-            bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-            bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-            bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+            bool directCopy = false;
+            if (directCopy)
+            {
+                bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+            }
+            else
+            {
+                unsigned char* imageCache = new unsigned char[destWidth*destHeight*3];
 
+                bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageCache+0),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
+                bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageCache+1),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
+                bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageCache+2),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
+
+                // now copy into destination image
+                unsigned char* sourceRowPtr = imageCache;
+                unsigned int sourceRowDelta = pixelSpace*destWidth;
+                unsigned char* destinationRowPtr = imageData;
+                unsigned int destinationRowDelta = lineSpace;
+                
+                for(int row=0;
+                    row<destHeight;
+                    ++row, sourceRowPtr+=sourceRowDelta, destinationRowPtr+=destinationRowDelta)
+                {
+                    unsigned char* sourceColumnPtr = sourceRowPtr;
+                    unsigned char* destinationColumnPtr = destinationRowPtr;
+
+                    for(int col=0;
+                        col<destWidth;
+                        ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=pixelSpace)
+                    {
+#if 1
+                        unsigned int sourceTotal = sourceColumnPtr[0]+sourceColumnPtr[1]+sourceColumnPtr[2];
+                        unsigned int destinationTotal = destinationColumnPtr[0]+destinationColumnPtr[1]+destinationColumnPtr[2];
+                    
+                        if (sourceTotal>destinationTotal)
+                        {
+                            // copy pixel across
+                            destinationColumnPtr[0] = sourceColumnPtr[0];
+                            destinationColumnPtr[1] = sourceColumnPtr[1];
+                            destinationColumnPtr[2] = sourceColumnPtr[2];
+                        }
+#else                    
+                        if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
+                        {
+                            // copy pixel across
+                            destinationColumnPtr[0] = sourceColumnPtr[0];
+                            destinationColumnPtr[1] = sourceColumnPtr[1];
+                            destinationColumnPtr[2] = sourceColumnPtr[2];
+                        }
+#endif                        
+                    }
+                }
+
+                delete [] imageCache;
+
+            }
         }
 
 
@@ -374,9 +475,9 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 	else if (!bandSelected && bandRed) bandSelected = bandRed;
 	else if (!bandSelected && bandGreen) bandSelected = bandGreen;
 	else if (!bandSelected && bandBlue) bandSelected = bandBlue;
-        
-        //float heightRatio = 1.0/65536;
-        float heightRatio = 1.0;
+
+        bool xyInDegrees = true;        
+        float heightRatio = xyInDegrees ? 1.0f/111319.0f : 1.0f;
 
         if (bandSelected)
         {
@@ -431,6 +532,7 @@ void DataSet::Source::loadSourceData()
     std::cout<<"DataSet::Source::loadSourceData() "<<_filename<<std::endl;
     
     _sourceData = SourceData::readData(this);
+    if (_sourceData.valid() && !_cs.valid()) _cs = _sourceData->_cs;
 }
 
 bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs) const
@@ -446,14 +548,19 @@ bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs, doub
     if (_type==MODEL) return false;
     
     // always need to reproject imagery with GCP's.
-    if (_sourceData->_hasGCPs) return true;
+    if (_sourceData->_hasGCPs)
+    {
+        std::cout<<"Need to to reproject due to presence of GCP's"<<std::endl;
+        return true;
+    }
 
-    bool csTheSame = (_sourceData->_cs == cs) ||
-                     (_sourceData->_cs.valid() && cs && (*(_sourceData->_cs) == *cs));
-                     
-                     
-    if (!csTheSame) return true;
+    if (!areCoordinateSystemEquivilant(_cs.get(),cs))
+    {
+        std::cout<<"Need to do reproject !areCoordinateSystemEquivilant(_cs.get(),cs)"<<std::endl;
 
+        return true;
+    }
+     
     if (minResolution==0.0 && maxResolution==0.0) return false;
 
     // now check resolutions.
@@ -838,6 +945,12 @@ void DataSet::DestinationTile::allocate()
                                     _extents.xMin(), _extents.yMax(),   0.0,1.0);
         _imagery->_image = new osg::Image;
         _imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,GL_RGB,GL_UNSIGNED_BYTE);
+        unsigned char* data = _imagery->_image->data();
+        unsigned int totalSize = _imagery->_image->getTotalSizeInBytesIncludingMipmaps();
+        for(unsigned int i=0;i<totalSize;++i)
+        {
+            *(data++) = 0;
+        }
     }
 
 
@@ -1261,121 +1374,64 @@ void DataSet::DestinationTile::equalizeBoundaries()
 
 osg::Node* DataSet::DestinationTile::createScene()
 {
-    if (_terrain.valid() && _terrain->_heightField.valid())
+
+    bool heightFieldPresent = _terrain.valid() && _terrain->_heightField.valid();
+    bool imagePresent = _imagery.valid() && _imagery->_image.valid();
+
+    if (!heightFieldPresent && !imagePresent)
     {
+        std::cout<<"**** No terrain or imagery to build tile from, will need to create some fallback ****"<<std::endl;
+        return 0;
+    }
+    
+    osg::Geode* geode = 0;
+    if (heightFieldPresent)
+    {
+        std::cout<<"--- Have terrain build tile ----"<<std::endl;
+
         osg::HeightField* hf = _terrain->_heightField.get();
         
-    
-        osg::Geode* geode = new osg::Geode;
+        geode = new osg::Geode;
 
         geode->addDrawable(new osg::ShapeDrawable(hf));
 
         hf->setSkirtHeight(geode->getBound().radius()*0.01f);
         
-        if (_imagery.valid() && _imagery->_image.valid())
-        {
-            std::string imageName(_name+".rgb");
-            std::cout<<"Writing out imagery to "<<imageName<<std::endl;
-            _imagery->_image->setFileName(imageName.c_str());
-            osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
-
-            osg::StateSet* stateset = geode->getOrCreateStateSet();
-            osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
-            texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
-            texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
-            stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-        }
-        
-        // create the skirt.
-        if (false)
-        {
-
-            osg::Vec3 skirtVector(0.0f,0.0f,-0.003f);
-
-            int numColumns = hf->getNumColumns();
-            int numRows = hf->getNumRows();
-
-            int numVerticesInSkirt = 2*(numColumns*2 + numRows*2 - 3);
-
-            osg::Geometry* skirt = new osg::Geometry;
-            osg::Vec3Array& v = *(new osg::Vec3Array(numVerticesInSkirt));
-            osg::Vec3Array& n = *(new osg::Vec3Array(numVerticesInSkirt));
-            osg::Vec2Array& t = *(new osg::Vec2Array(numVerticesInSkirt));
-
-            osg::DrawArrays& skirtDrawArrays = *(new osg::DrawArrays(GL_QUAD_STRIP,0,numVerticesInSkirt));
-            int vi=0;
-            int r,c;
-            // create bottom skirt vertices
-            r=0;
-            float dt_dx = 1.0f/(float)(numColumns-1);
-            float dt_dy = 1.0f/(float)(numRows-1);
-            for(c=0;c<numColumns-1;++c)
-            {
-                v[vi] = hf->getVertex(c,r);
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-
-                v[vi] = hf->getVertex(c,r)+skirtVector;
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-
-            }
-            // create right skirt vertices
-            c=numColumns-1;
-            for(r=0;r<numRows-1;++r)
-            {
-                v[vi] = hf->getVertex(c,r);
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-
-                v[vi] = hf->getVertex(c,r)+skirtVector;
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-            }
-            // create top skirt vertices
-            r=numRows-1;
-            for(c=numColumns-1;c>0;--c)
-            {
-                v[vi] = hf->getVertex(c,r);
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-
-                v[vi] = hf->getVertex(c,r)+skirtVector;
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-            }
-            // create left skirt vertices
-            c=0;
-            for(r=numRows-1;r>=0;--r)
-            {
-                v[vi] = hf->getVertex(c,r);
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-
-                v[vi] = hf->getVertex(c,r)+skirtVector;
-                n[vi] = hf->getNormal(c,r);
-                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
-            }
-
-            // pass arrays to Geometry
-            skirt->setVertexArray(&v);
-            skirt->setNormalArray(&n);
-            skirt->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-            skirt->setTexCoordArray(0,&t);
-            
-            skirt->addPrimitiveSet(&skirtDrawArrays);
-            
-            geode->addDrawable(skirt);
-            
-        }
-        
-        return geode;
     }
     else 
     {
-        std::cout<<"**** No terrain to build tile from, will need to create some fallback ****"<<std::endl;
-        return 0;
+        std::cout<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
+        // create a dummy height field to file in the gap
+        osg::HeightField* hf = new osg::HeightField;
+        hf->allocate(2,2);
+        hf->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
+        hf->setXInterval(_extents.xMax()-_extents.xMin());
+        hf->setYInterval(_extents.yMax()-_extents.yMin());
+
+        geode = new osg::Geode;
+
+        geode->addDrawable(new osg::ShapeDrawable(hf));
+
+        hf->setSkirtHeight(geode->getBound().radius()*0.01f);
     }
+
+    if (imagePresent)
+    {
+        std::string imageName(_name+".rgb");
+        std::cout<<"Writing out imagery to "<<imageName<<std::endl;
+        _imagery->_image->setFileName(imageName.c_str());
+        osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
+
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+        osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
+        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
+        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+    }
+        
+    return geode;
+
+
 }
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
@@ -1675,7 +1731,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
 
     DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination(cs,extents);
 
-    destinationGraph->_maxVisibleDistance = extents.radius()*5.0f;
+    destinationGraph->_maxVisibleDistance = extents.radius()*10.0f;
 
     // first create the topmost tile
 

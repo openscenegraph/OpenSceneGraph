@@ -115,12 +115,12 @@ int main( int argc, char **argv )
     }
 
 
-    if (false)    
+    if (false)
     {
         // set up the coordinate system
         OGRSpatialReference     oSRS;
 
-        oSRS.SetProjCS( "UTM 47 (WGS84) in southern hemisphere." );
+        oSRS.SetProjCS( "WGS 84 / UTM zone 47S" );
         oSRS.SetWellKnownGeogCS( "WGS84" );
         oSRS.SetUTM( 47, FALSE );
 

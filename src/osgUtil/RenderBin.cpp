@@ -1,6 +1,8 @@
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderStage>
 
+#include <algorithm>
+
 using namespace osg;
 using namespace osgUtil;
 
@@ -69,6 +71,23 @@ void RenderBin::sort()
         itr->second->sort();
     }
     sort_local();
+}
+
+
+struct StateSortFunctor
+{
+    const bool operator() (const RenderGraph* lhs,const RenderGraph* rhs)
+    {
+        return (*(lhs->_stateset)<*(rhs->_stateset));
+    }
+};
+
+
+
+void RenderBin::sort_local()
+{
+    // now sort the list into acending depth order.
+//    std::sort(_renderGraphList.begin(),_renderGraphList.end(),StateSortFunctor());
 }
 
 RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)

@@ -47,7 +47,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         void sort();
 
-        virtual void sort_local() {}
+        virtual void sort_local();
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 

@@ -244,8 +244,8 @@ const Array* IndexedGeometry::getTexCoordArray(unsigned int unit) const
 
 void IndexedGeometry::drawImmediateMode(State& state)
 {
-    if (!_vertexArray.valid() || _vertexArray->getNumElements()>0) return;
-    if (_vertexIndices.valid() && _vertexIndices->getNumElements()>0) return;
+    if (!_vertexArray.valid() || _vertexArray->getNumElements()==0) return;
+    if (_vertexIndices.valid() && _vertexIndices->getNumElements()==0) return;
     
     // set up extensions.
     static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
@@ -283,7 +283,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
     AttributeBinding normalBinding = _normalBinding;
     if (!_normalArray.valid() ||
         _normalArray->empty() ||
-        (_normalIndices.valid() && _normalIndices->getNumElements()>0) )
+        (_normalIndices.valid() && _normalIndices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
         normalBinding = BIND_OFF;
@@ -297,8 +297,8 @@ void IndexedGeometry::drawImmediateMode(State& state)
     unsigned int colorIndex = 0;
     AttributeBinding colorBinding = _colorBinding;
     if (!_colorArray.valid() ||
-        _colorArray->getNumElements()>0 ||
-        (_colorIndices.valid() && _colorIndices->getNumElements()>0) )
+        _colorArray->getNumElements()==0 ||
+        (_colorIndices.valid() && _colorIndices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
         colorBinding = BIND_OFF;
@@ -313,10 +313,10 @@ void IndexedGeometry::drawImmediateMode(State& state)
     unsigned int secondaryColorIndex = 0;
     AttributeBinding secondaryColorBinding = _secondaryColorBinding;
     if (!_secondaryColorArray.valid() || 
-        _secondaryColorArray->getNumElements()>0 ||
+        _secondaryColorArray->getNumElements()==0 ||
         !s_glSecondaryColor3ubv ||
         !s_glSecondaryColor3fv ||
-        (_secondaryColorIndices.valid() && _secondaryColorIndices->getNumElements()>0) )
+        (_secondaryColorIndices.valid() && _secondaryColorIndices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
         secondaryColorBinding = BIND_OFF;
@@ -330,9 +330,9 @@ void IndexedGeometry::drawImmediateMode(State& state)
     unsigned int fogCoordIndex = 0;
     AttributeBinding fogCoordBinding = _fogCoordBinding;
     if (!_fogCoordArray.valid() || 
-        _fogCoordArray->getNumElements()>0 ||
+        _fogCoordArray->getNumElements()==0 ||
         !s_glFogCoordfv ||
-        (_fogCoordIndices.valid() && _fogCoordIndices->getNumElements()>0) )
+        (_fogCoordIndices.valid() && _fogCoordIndices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
         fogCoordBinding = BIND_OFF;
@@ -344,10 +344,10 @@ void IndexedGeometry::drawImmediateMode(State& state)
     // check to see if fast path can be used.
     //
     bool fastPath = true;
-    if (normalBinding==BIND_PER_PRIMITIVE || (normalBinding!=BIND_OFF && _normalIndices.valid())) fastPath = false;
-    else if (colorBinding==BIND_PER_PRIMITIVE || (colorBinding!=BIND_OFF && _colorIndices.valid())) fastPath = false;
-    else if (secondaryColorBinding==BIND_PER_PRIMITIVE || (secondaryColorBinding!=BIND_OFF && _secondaryColorIndices.valid())) fastPath = false;
-    else if (fogCoordBinding==BIND_PER_PRIMITIVE || (fogCoordBinding!=BIND_OFF && _fogCoordIndices.valid())) fastPath = false;
+    if (normalBinding==BIND_PER_PRIMITIVE || (normalBinding==BIND_PER_VERTEX && _normalIndices.valid())) fastPath = false;
+    else if (colorBinding==BIND_PER_PRIMITIVE || (colorBinding==BIND_PER_VERTEX && _colorIndices.valid())) fastPath = false;
+    else if (secondaryColorBinding==BIND_PER_PRIMITIVE || (secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorIndices.valid())) fastPath = false;
+    else if (fogCoordBinding==BIND_PER_PRIMITIVE || (fogCoordBinding==BIND_PER_VERTEX && _fogCoordIndices.valid())) fastPath = false;
 
 
 
@@ -399,7 +399,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
         if (!_texCoordList.empty())
         {
             TexCoordArrayPair& texcoordPair = _texCoordList[0];
-            if (texcoordPair.first.valid() && !texcoordPair.first->getNumElements()>0)
+            if (texcoordPair.first.valid() && texcoordPair.first->getNumElements()>0)
             {
                 if (texcoordPair.second.valid())
                 {
@@ -477,8 +477,6 @@ void IndexedGeometry::drawImmediateMode(State& state)
     if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
 
 
-
-    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // draw the primitives themselves.
@@ -724,7 +722,7 @@ bool IndexedGeometry::verifyBindings() const
                 if (!_normalArray.valid()) return false;
                 if (_normalArray->getNumElements()!=_vertexArray->getNumElements()) return false;        
             }
-            else if (_normalArray.valid() && _normalArray->getNumElements()>0) return false;
+            else if (_normalArray.valid() && _normalArray->getNumElements()==0) return false;
             break;
     } 
     
@@ -748,7 +746,7 @@ bool IndexedGeometry::verifyBindings() const
                 if (!_colorArray.valid()) return false;
                 if (_colorArray->getNumElements()!=_vertexArray->getNumElements()) return false;
             }
-            else if (_colorArray.valid() && _colorArray->getNumElements()>0) return false;
+            else if (_colorArray.valid() && _colorArray->getNumElements()==0) return false;
             break;
     } 
 
@@ -761,7 +759,7 @@ bool IndexedGeometry::verifyBindings() const
         {
             if (array && array->getNumElements()!=_vertexArray->getNumElements()) return false;
         }
-        else if (array && array->getNumElements()>0) return false;
+        else if (array && array->getNumElements()==0) return false;
     }
 
     return true;

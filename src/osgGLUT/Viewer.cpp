@@ -1509,10 +1509,10 @@ void displaytext(int x, int y, char *s)
 
 int writePrims( const int ypos, osg::Statistics& stats)
 {
-    char clin[100]; // buffer to print
-    char ctmp[12];
+    char clin[128]; // buffer to print
+    char ctmp[32];
+    char intro[32]; // start of first line
     int npix=0; // offset from ypos
-    char intro[12]; // start of first line
     static char *prtypes[]=
     {
         "  Point", // GL_POINTS				0x0000

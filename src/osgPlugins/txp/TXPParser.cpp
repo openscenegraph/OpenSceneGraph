@@ -674,7 +674,6 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     {
         for(unsigned int i = 0; i < nvert; i++)
         {
-            std::cout<<"LightPoint node"<<std::endl;
             trpg3dPoint pt;
             light.GetVertex(i, pt);
             osg::Matrix matrix;
@@ -770,30 +769,30 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     osg::ref_ptr< osgText::Text > text = new osgText::Text;
 
     // Text
-	std::ostringstream os;
-	int nl;
-	std::string lb = *labelText;
-	while ( (nl=lb.find_first_of('\\')) != std::string::npos)
-	{
-		std::string sub = lb.substr(0,nl);
-		switch (lb[nl+1])
-		{
-		case 'n':
-			lb.erase(0,nl+2);
-			if (sub.length()) os << sub << std::endl;
-			break;
-		case 't':
-			lb.erase(0,nl+2);
-			os << sub << "     ";//'\t';
-			break;
-		default:
-			lb.erase(0,nl+1);
-			os << '\\' << sub;
-			break;
-		}
-		
-	}
-	if (lb.length()) os << lb;
+    std::ostringstream os;
+    unsigned int nl;
+    std::string lb = *labelText;
+    while ( (nl=lb.find_first_of('\\')) != std::string::npos)
+    {
+        std::string sub = lb.substr(0,nl);
+        switch (lb[nl+1])
+        {
+        case 'n':
+            lb.erase(0,nl+2);
+            if (sub.length()) os << sub << std::endl;
+            break;
+        case 't':
+            lb.erase(0,nl+2);
+            os << sub << "     ";//'\t';
+            break;
+        default:
+            lb.erase(0,nl+1);
+            os << '\\' << sub;
+            break;
+        }
+        
+    }
+    if (lb.length()) os << lb;
     text->setText(os.str());
 
     // Position
@@ -811,13 +810,13 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         text->setAlignment(osgText::Text::CENTER_BOTTOM);
     }
     // Axis alignment
-	text->setAxisAlignment(osgText::Text::XZ_PLANE);
+    text->setAxisAlignment(osgText::Text::XZ_PLANE);
 
     const trpgLabelPropertyTable *labelPropertyTable = _parse->getArchive()->GetLabelPropertyTable();
     const trpgLabelProperty *labelProperty = labelPropertyTable ? 
         labelPropertyTable->GetPropertyRef(label.GetProperty()) : 0;
     
-	bool addTextGeodeIntoSceneGraph = true;
+    bool addTextGeodeIntoSceneGraph = true;
     if (labelProperty)
     {
         const trpgTextStyleTable *textStyleTable = _parse->getArchive()->GetTextStyleTable();
@@ -833,213 +832,213 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         // Font
         text->setFont(_parse->getArchive()->getStyles()[labelProperty->GetFontStyle()].get());
 
-		// Color
-		text->setColor(_parse->getArchive()->getTextColors()[labelProperty->GetFontStyle()]);
+        // Color
+        text->setColor(_parse->getArchive()->getTextColors()[labelProperty->GetFontStyle()]);
 
-		// Cube
-		osg::ref_ptr<osg::ShapeDrawable> cube = 0;
+        // Cube
+        osg::ref_ptr<osg::ShapeDrawable> cube = 0;
 
         // Type
         switch (labelProperty->GetType())
         {
         case trpgLabelProperty::Billboard:
-			text->setAxisAlignment(osgText::Text::XY_PLANE);
+            text->setAxisAlignment(osgText::Text::XY_PLANE);
             text->setAutoRotateToScreen(true);
             break;
         case trpgLabelProperty::VertBillboard:
-			addTextGeodeIntoSceneGraph = false;
-			{
-				osg::ref_ptr< osg::Billboard > billboard = new osg::Billboard;
-				text->setPosition(osg::Vec3(0.f,0.f,0.f));
-				billboard->addDrawable(text.get());
-				billboard->setAxis(osg::Vec3(0.0f,0.0,1.0f) );
-				billboard->setNormal(osg::Vec3(0.0f,-1.0,0.0f));
-				billboard->setMode(osg::Billboard::AXIAL_ROT);
-				billboard->setPos(0,pos);
+            addTextGeodeIntoSceneGraph = false;
+            {
+                osg::ref_ptr< osg::Billboard > billboard = new osg::Billboard;
+                text->setPosition(osg::Vec3(0.f,0.f,0.f));
+                billboard->addDrawable(text.get());
+                billboard->setAxis(osg::Vec3(0.0f,0.0,1.0f) );
+                billboard->setNormal(osg::Vec3(0.0f,-1.0,0.0f));
+                billboard->setMode(osg::Billboard::AXIAL_ROT);
+                billboard->setPos(0,pos);
 
-				_parse->getCurrTop()->addChild(billboard.get());
-			}
+                _parse->getCurrTop()->addChild(billboard.get());
+            }
             break;
         case trpgLabelProperty::Cube:
-			addTextGeodeIntoSceneGraph = false;
-			{
-				osg::Group* group = new osg::Group;
+            addTextGeodeIntoSceneGraph = false;
+            {
+                osg::Group* group = new osg::Group;
 
-				osg::BoundingBox box = text->getBound();
-				float shift = box.radius()+1.f;
+                osg::BoundingBox box = text->getBound();
+                float shift = box.radius()+1.f;
 
-				// front
-				text->setAlignment(osgText::Text::CENTER_CENTER);
+                // front
+                text->setAlignment(osgText::Text::CENTER_CENTER);
 
-				// back
-				osg::ref_ptr<osgText::Text> backText = new osgText::Text(*text);
-				backText->setPosition(osg::Vec3(pos.x(),pos.y()+shift,pos.z()));
-				backText->setAxisAlignment(osgText::Text::REVERSED_XZ_PLANE);
+                // back
+                osg::ref_ptr<osgText::Text> backText = new osgText::Text(*text);
+                backText->setPosition(osg::Vec3(pos.x(),pos.y()+shift,pos.z()));
+                backText->setAxisAlignment(osgText::Text::REVERSED_XZ_PLANE);
 
-				// top
-				osg::ref_ptr<osgText::Text> topText = new osgText::Text(*text);
-				topText->setPosition(osg::Vec3(pos.x(),pos.y(),pos.z()+shift));
-				topText->setAxisAlignment(osgText::Text::XY_PLANE);
+                // top
+                osg::ref_ptr<osgText::Text> topText = new osgText::Text(*text);
+                topText->setPosition(osg::Vec3(pos.x(),pos.y(),pos.z()+shift));
+                topText->setAxisAlignment(osgText::Text::XY_PLANE);
 
-				// bottom
-				osg::ref_ptr<osgText::Text> bottomText = new osgText::Text(*text);
-				bottomText->setPosition(osg::Vec3(pos.x(),pos.y(),pos.z()-shift));
-				bottomText->setAxisAlignment(osgText::Text::REVERSED_XY_PLANE);
+                // bottom
+                osg::ref_ptr<osgText::Text> bottomText = new osgText::Text(*text);
+                bottomText->setPosition(osg::Vec3(pos.x(),pos.y(),pos.z()-shift));
+                bottomText->setAxisAlignment(osgText::Text::REVERSED_XY_PLANE);
 
-				// left
-				osg::ref_ptr<osgText::Text> leftText = new osgText::Text(*text);
-				leftText->setPosition(osg::Vec3(pos.x()-shift,pos.y(),pos.z()));
-				leftText->setAxisAlignment(osgText::Text::REVERSED_YZ_PLANE);
+                // left
+                osg::ref_ptr<osgText::Text> leftText = new osgText::Text(*text);
+                leftText->setPosition(osg::Vec3(pos.x()-shift,pos.y(),pos.z()));
+                leftText->setAxisAlignment(osgText::Text::REVERSED_YZ_PLANE);
 
-				// right
-				osg::ref_ptr<osgText::Text> rightText = new osgText::Text(*text);
-				rightText->setPosition(osg::Vec3(pos.x()+shift,pos.y(),pos.z()));
-				rightText->setAxisAlignment(osgText::Text::YZ_PLANE);
+                // right
+                osg::ref_ptr<osgText::Text> rightText = new osgText::Text(*text);
+                rightText->setPosition(osg::Vec3(pos.x()+shift,pos.y(),pos.z()));
+                rightText->setAxisAlignment(osgText::Text::YZ_PLANE);
 
-				text->setPosition(osg::Vec3(pos.x(),pos.y()-shift,pos.z()));
+                text->setPosition(osg::Vec3(pos.x(),pos.y()-shift,pos.z()));
 
-				osg::TessellationHints* hints = new osg::TessellationHints;
-				hints->setDetailRatio(0.5f);
-				cube = new osg::ShapeDrawable(new osg::Box(pos,2*shift),hints);
+                osg::TessellationHints* hints = new osg::TessellationHints;
+                hints->setDetailRatio(0.5f);
+                cube = new osg::ShapeDrawable(new osg::Box(pos,2*shift),hints);
 
-				osg::ref_ptr<osg::PolygonOffset> polyoffset = new osg::PolygonOffset;
+                osg::ref_ptr<osg::PolygonOffset> polyoffset = new osg::PolygonOffset;
                 polyoffset->setFactor(10.0f);
                 polyoffset->setUnits(10.0f);
-				osg::ref_ptr<osg::StateSet> ss = cube->getOrCreateStateSet();
-				ss->setAttributeAndModes(polyoffset.get(),osg::StateAttribute::ON);
-				cube->setStateSet(ss.get());
+                osg::ref_ptr<osg::StateSet> ss = cube->getOrCreateStateSet();
+                ss->setAttributeAndModes(polyoffset.get(),osg::StateAttribute::ON);
+                cube->setStateSet(ss.get());
 
-				textGeode->addDrawable(cube.get());
-				textGeode->addDrawable(text.get());
-				textGeode->addDrawable(backText.get());
-				textGeode->addDrawable(topText.get());
-				textGeode->addDrawable(bottomText.get());
-				textGeode->addDrawable(leftText.get());
-				textGeode->addDrawable(rightText.get());
+                textGeode->addDrawable(cube.get());
+                textGeode->addDrawable(text.get());
+                textGeode->addDrawable(backText.get());
+                textGeode->addDrawable(topText.get());
+                textGeode->addDrawable(bottomText.get());
+                textGeode->addDrawable(leftText.get());
+                textGeode->addDrawable(rightText.get());
 
-				group->addChild(textGeode.get());
+                group->addChild(textGeode.get());
 
-				_parse->getCurrTop()->addChild(group);
-			}
+                _parse->getCurrTop()->addChild(group);
+            }
             break;
         }
 
-		 const std::vector<trpg3dPoint> *supports = label.GetSupports();
-		 if (supports && supports->size())
-		 {
-			 osg::ref_ptr<osg::Geode> supGeode = new osg::Geode;
+         const std::vector<trpg3dPoint> *supports = label.GetSupports();
+         if (supports && supports->size())
+         {
+             osg::ref_ptr<osg::Geode> supGeode = new osg::Geode;
 
-			 int supId = labelProperty->GetSupport();
-			 const trpgSupportStyleTable *supTable = _parse->getArchive()->GetSupportStyleTable();
-			 const trpgSupportStyle *supStyle = supTable ? supTable->GetStyleRef(supId) : 0;
-			 if (supStyle)
-			 {
-				int matId = supStyle->GetMaterial();
+             int supId = labelProperty->GetSupport();
+             const trpgSupportStyleTable *supTable = _parse->getArchive()->GetSupportStyleTable();
+             const trpgSupportStyle *supStyle = supTable ? supTable->GetStyleRef(supId) : 0;
+             if (supStyle)
+             {
+                int matId = supStyle->GetMaterial();
 
-				osg::Vec4 supLineColor(1.f,1.f,1.f,1.f);
-				 _parse->loadMaterial(matId);
-				osg::ref_ptr<osg::StateSet>  sset = (*_parse->getMaterials())[matId];
+                osg::Vec4 supLineColor(1.f,1.f,1.f,1.f);
+                 _parse->loadMaterial(matId);
+                osg::ref_ptr<osg::StateSet>  sset = (*_parse->getMaterials())[matId];
 
-				if (cube.get())
-				{
-					osg::StateSet* ss = cube->getOrCreateStateSet();
-					ss->merge(*sset);
-				}
+                if (cube.get())
+                {
+                    osg::StateSet* ss = cube->getOrCreateStateSet();
+                    ss->merge(*sset);
+                }
 
-				const trpgMatTable* matTable = _parse->getArchive()->GetMaterialTable();
-				if (matTable)
-				{
-					const trpgMaterial* mat = matTable->GetMaterialRef(0,matId);
-					if (mat)
-					{
-						trpgColor faceColor;
-						mat->GetColor(faceColor);
+                const trpgMatTable* matTable = _parse->getArchive()->GetMaterialTable();
+                if (matTable)
+                {
+                    const trpgMaterial* mat = matTable->GetMaterialRef(0,matId);
+                    if (mat)
+                    {
+                        trpgColor faceColor;
+                        mat->GetColor(faceColor);
 
-						float64 alpha;
-						mat->GetAlpha(alpha);
+                        float64 alpha;
+                        mat->GetAlpha(alpha);
 
-						supLineColor = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
-					}
-				}
-				
-				 switch (supStyle->GetType())
-				 {
-				 case trpgSupportStyle::Line:
-					 {
-						osg::Geometry* linesGeom = new osg::Geometry();
-						osg::Vec3Array* vertices = new osg::Vec3Array(supports->size()*2);
+                        supLineColor = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
+                    }
+                }
+                
+                 switch (supStyle->GetType())
+                 {
+                 case trpgSupportStyle::Line:
+                     {
+                        osg::Geometry* linesGeom = new osg::Geometry();
+                        osg::Vec3Array* vertices = new osg::Vec3Array(supports->size()*2);
 
-						int cnt = 0;
-						for (unsigned int i = 0; i < supports->size(); i++)
-						{
-							const trpg3dPoint& supPt = (*supports)[i];
-							(*vertices)[cnt++].set(pos);
-							(*vertices)[cnt++].set(osg::Vec3(supPt.x,supPt.y,supPt.z));
-						}
+                        int cnt = 0;
+                        for (unsigned int i = 0; i < supports->size(); i++)
+                        {
+                            const trpg3dPoint& supPt = (*supports)[i];
+                            (*vertices)[cnt++].set(pos);
+                            (*vertices)[cnt++].set(osg::Vec3(supPt.x,supPt.y,supPt.z));
+                        }
 
-						linesGeom->setVertexArray(vertices);
+                        linesGeom->setVertexArray(vertices);
 
-						osg::Vec4Array* colors = new osg::Vec4Array;
-						colors->push_back(supLineColor);
-						linesGeom->setColorArray(colors);
-						linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
-				        
-						osg::Vec3Array* normals = new osg::Vec3Array;
-						normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
-						linesGeom->setNormalArray(normals);
-						linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+                        osg::Vec4Array* colors = new osg::Vec4Array;
+                        colors->push_back(supLineColor);
+                        linesGeom->setColorArray(colors);
+                        linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+                        
+                        osg::Vec3Array* normals = new osg::Vec3Array;
+                        normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
+                        linesGeom->setNormalArray(normals);
+                        linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 
-						linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,supports->size()*2));
-						supGeode->addDrawable(linesGeom);
-					 }
+                        linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,supports->size()*2));
+                        supGeode->addDrawable(linesGeom);
+                     }
 
-					 _parse->getCurrTop()->addChild(supGeode.get());
-					 break;
-				 case trpgSupportStyle::Cylinder:
-					 {
-						osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
-						hints->setDetailRatio(0.5f);
+                     _parse->getCurrTop()->addChild(supGeode.get());
+                     break;
+                 case trpgSupportStyle::Cylinder:
+                     {
+                        osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
+                        hints->setDetailRatio(0.5f);
 
-						for (unsigned int i = 0; i < supports->size(); i++)
-						{
-							const trpg3dPoint& supPt = (*supports)[i];
-							
-							osg::Vec3 supPos(supPt.x,supPt.y,supPt.z);
-							osg::Vec3 supCenter = (supPos+pos)/2.f;
-							float supHeight = (supPos-pos).length();
+                        for (unsigned int i = 0; i < supports->size(); i++)
+                        {
+                            const trpg3dPoint& supPt = (*supports)[i];
+                            
+                            osg::Vec3 supPos(supPt.x,supPt.y,supPt.z);
+                            osg::Vec3 supCenter = (supPos+pos)/2.f;
+                            float supHeight = (supPos-pos).length();
 
-							osg::Vec3 d = pos-supPos;
-							d.normalize();
-							osg::Quat r;
+                            osg::Vec3 d = pos-supPos;
+                            d.normalize();
+                            osg::Quat r;
 
-							r.makeRotate(osg::Vec3(0.f,0.f,1.f),d);
+                            r.makeRotate(osg::Vec3(0.f,0.f,1.f),d);
 
-							osg::Cylinder* cylinder = new osg::Cylinder(supCenter,10.f,supHeight);
-							cylinder->setRotation(r);
+                            osg::Cylinder* cylinder = new osg::Cylinder(supCenter,10.f,supHeight);
+                            cylinder->setRotation(r);
 
-							osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder,hints.get());
-							osg::StateSet* ss = cylinderDrawable->getOrCreateStateSet();
-							ss->merge(*sset);
+                            osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder,hints.get());
+                            osg::StateSet* ss = cylinderDrawable->getOrCreateStateSet();
+                            ss->merge(*sset);
 
-							supGeode->addDrawable(cylinderDrawable);
+                            supGeode->addDrawable(cylinderDrawable);
 
-						}
-						
-						_parse->getCurrTop()->addChild(supGeode.get());
-					 }
-					 break;
-				 }
+                        }
+                        
+                        _parse->getCurrTop()->addChild(supGeode.get());
+                     }
+                     break;
+                 }
 
-				 
-			 }
-		 }
+                 
+             }
+         }
     }
-	if (addTextGeodeIntoSceneGraph)
-	{
-		_parse->getCurrTop()->addChild(textGeode.get());
-		textGeode->addDrawable(text.get());
-	}
+    if (addTextGeodeIntoSceneGraph)
+    {
+        _parse->getCurrTop()->addChild(textGeode.get());
+        textGeode->addDrawable(text.get());
+    }
 
     return (void*)1;
 }
@@ -1388,7 +1387,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     }
     else
     {
-        std::cout<<"Detected potential memory leak in TXPParerse.cpp"<<std::endl;
+        osg::notify(osg::WARN)<<"Detected potential memory leak in TXPParerse.cpp"<<std::endl;
     }
     
 
@@ -1498,7 +1497,7 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
         // osg::Image do their own mipmaps
         if(num_mipmaps <= 1)
         {
-			int32 size = tex->CalcTotalSize();
+            int32 size = tex->CalcTotalSize();
             data = new char [size];
             image_helper.GetLocalGL(tex,data,size);
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
@@ -1570,7 +1569,7 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
         // osg::Image do their own mipmaps
         if(num_mipmaps <= 1)
         {
-			int32 size = tex->CalcTotalSize();
+            int32 size = tex->CalcTotalSize();
             data = new char [size];
             image_helper.GetNthImageForLocalMat(locmat,index, data,size);
 

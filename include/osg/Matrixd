@@ -21,7 +21,7 @@
 
 #include <string.h>
 
-#include <iostream>
+#include <ostream>
 #include <algorithm>
 
 namespace osg {

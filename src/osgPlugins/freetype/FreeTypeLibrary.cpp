@@ -12,14 +12,14 @@
 */
 
 #include "FreeTypeLibrary.h"
-
+#include <osg/Notify>
 
 FreeTypeLibrary::FreeTypeLibrary()
 {
     FT_Error error = FT_Init_FreeType( &_ftlibrary );
     if (error)
     {
-        std::cout<<"Warning: an error occured during FT_Init_FreeType(..) initialisation .. "<<std::endl;
+        osg::notify(osg::WARN)<<"Warning: an error occured during FT_Init_FreeType(..) initialisation .. "<<std::endl;
     }
 
 }
@@ -58,14 +58,14 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
     if (error == FT_Err_Unknown_File_Format)
     {
-        std::cout<<" .... the font file could be opened and read, but it appears"<<std::endl;
-        std::cout<<" .... that its font format is unsupported"<<std::endl;
+        osg::notify(osg::WARN)<<" .... the font file could be opened and read, but it appears"<<std::endl;
+        osg::notify(osg::WARN)<<" .... that its font format is unsupported"<<std::endl;
         return 0;
     }
     else if (error)
     {
-        std::cout<<" .... another error code means that the font file could notd"<<std::endl;
-        std::cout<<" .... be opened, read or simply that it is broken..d"<<std::endl;
+        osg::notify(osg::WARN)<<" .... another error code means that the font file could notd"<<std::endl;
+        osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..d"<<std::endl;
         return 0;
     }
     

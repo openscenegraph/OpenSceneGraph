@@ -16,7 +16,7 @@
 
 #include <osg/Math>
 
-#include <iostream>
+#include <ostream>
 
 namespace osg {
 

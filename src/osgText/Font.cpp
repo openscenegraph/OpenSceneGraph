@@ -691,12 +691,12 @@ void Font::Glyph::subload() const
     {
 
         osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<<std::endl;
-        std::cout << "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
-                     "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
-                     "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
-                     "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
-                     "\t                0x"<<(GLenum)getDataType()<<std::endl<<
-                     "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
+        osg::notify(osg::WARN)<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
+                                 "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
+                                 "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
+                                 "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
+                                 "\t                0x"<<(GLenum)getDataType()<<std::endl<<
+                                 "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
     }                    
 }
 

@@ -241,7 +241,7 @@ public:
 		    unsigned int n;
 		    if( (fscanf( fp, "%d", &n )) != 1 )
 		    {
-			std::cerr << "Error... Camera requires an integer argument\n";
+			osg::notify(osg::WARN) << "Error... Camera requires an integer argument\n";
 			break;
 		    }
 		    if( screen != n )

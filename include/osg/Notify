@@ -16,7 +16,7 @@
 
 #include <osg/Export>
 
-#include <iostream>
+#include <ostream>
 #include <fstream>
 #include <memory>
 

@@ -45,15 +45,12 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                 if (line[0]=='#')
                 {
                     // comment line
-                    std::cout <<"Comment: "<<line<<std::endl;
+                    osg::notify(osg::INFO) <<"Comment: "<<line<<std::endl;
                 }
                 else
                 {
                     ++num;
                 }
-                //std::cout << "["<<std::endl;
-                //std::cout <<line<<std::endl;
-                //std::cout <<"]"<<std::endl;
             }
             
             

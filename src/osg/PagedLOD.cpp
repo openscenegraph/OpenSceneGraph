@@ -64,7 +64,6 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     {
                         if (updateTimeStamp) _perRangeDataList[i]._timeStamp=timeStamp;
 
-                        //std::cout<<"PagedLOD::traverse() - Selecting child "<<i<<std::endl;
                         _children[i]->accept(nv);
                         lastChildTraversed = (int)i;
                     }
@@ -79,11 +78,9 @@ void PagedLOD::traverse(NodeVisitor& nv)
             {
                 unsigned int numChildren = _children.size();
                 
-                //std::cout<<"PagedLOD::traverse() - falling back "<<std::endl;
                 // select the last valid child.
                 if (numChildren>0 && ((int)numChildren-1)!=lastChildTraversed)
                 {
-                    //std::cout<<"    to child "<<numChildren-1<<std::endl;
                     if (updateTimeStamp) _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
                     _children[numChildren-1]->accept(nv);
                 }
@@ -97,7 +94,6 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
 
-                    //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priotity = "<<priority<<std::endl;
                     nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
                 }
                 
@@ -131,25 +127,21 @@ bool PagedLOD::computeBound() const
 void PagedLOD::childRemoved(unsigned int pos, unsigned int numChildrenToRemove)
 {
     LOD::childRemoved(pos, numChildrenToRemove);
-    //std::cout<<"PagedLOD::childRemoved("<<pos<<","<<numChildrenToRemove<<")"<<std::endl;
 }
 
 void PagedLOD::childInserted(unsigned int pos)
 {
     LOD::childInserted(pos);
-    //std::cout<<"PagedLOD::childInserted("<<pos<<")"<<std::endl;
 }
 
 void PagedLOD::rangeRemoved(unsigned int pos, unsigned int numChildrenToRemove)
 {
     LOD::rangeRemoved(pos, numChildrenToRemove);
-    std::cout<<"PagedLOD::rangeRemoved("<<pos<<","<<numChildrenToRemove<<")"<<std::endl;
 }
 
 void PagedLOD::rangeInserted(unsigned int pos)
 {
     LOD::rangeInserted(pos);
-    std::cout<<"PagedLOD::rangeInserted("<<pos<<")"<<std::endl;
     expandPerRangeDataTo(pos);
 }
 
@@ -209,6 +201,7 @@ void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren
     {
         if (!_perRangeDataList[_children.size()-1]._filename.empty() && _perRangeDataList[_children.size()-1]._timeStamp<expiryTime)
         {
+            //removedChildren.push_back(_children[_children.size()-1].get());
             Group::removeChild(_children[_children.size()-1].get());
         }
     }

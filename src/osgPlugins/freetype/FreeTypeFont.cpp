@@ -60,7 +60,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     FT_Error error = FT_Load_Char( _face, charcode, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP );
     if (error)
     {
-        std::cout << "FT_Load_Char(...) error "<<error<<std::endl;
+        osg::notify(osg::WARN) << "FT_Load_Char(...) error "<<error<<std::endl;
         return 0;
     }
 

@@ -47,7 +47,9 @@ class PrintVisitor : public NodeVisitor
 
    public:
    
-        PrintVisitor():NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN)
+        PrintVisitor(std::ostream& out):
+            NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN),
+            _out(out)
         {
             _indent = 0;
             _step = 4;
@@ -57,13 +59,13 @@ class PrintVisitor : public NodeVisitor
         inline void moveOut() { _indent -= _step; }
         inline void writeIndent() 
         {
-            for(int i=0;i<_indent;++i) std::cout << " ";
+            for(int i=0;i<_indent;++i) _out << " ";
         }
                 
         virtual void apply(Node& node)
         {
             moveIn();
-            writeIndent(); std::cout << node.className() <<std::endl;
+            writeIndent(); _out << node.className() <<std::endl;
             traverse(node);
             moveOut();
         }
@@ -82,6 +84,7 @@ class PrintVisitor : public NodeVisitor
 
    protected:
     
+        std::ostream& _out;
         int _indent;
         int _step;
 };

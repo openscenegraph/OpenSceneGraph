@@ -92,12 +92,17 @@ public:
         const osg::Vec3& vertex = point->_vertex;
         float error = 0.0f;
         
+        if (triangles.empty()) return 0.0f;
+        
         for(LocalTriangleSet::iterator itr=triangles.begin();
             itr!=triangles.end();
             ++itr)
         {
             error += fabs( (*itr)->distance(vertex) );
         }
+        
+        // use average of error
+        error /= (float)triangles.size();
         
         return error;
     }
@@ -120,6 +125,7 @@ public:
         
         
         edge->_proposedPoint = computeOptimalPoint(edge);
+        edge->updateMaxNormalDeviationOnEdgeCollapse();
         edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
         
         _edgeSet.insert(keep_local_reference_to_edge);
@@ -140,6 +146,7 @@ public:
             Edge* edge = itr->get();
 
             edge->_proposedPoint = computeOptimalPoint(edge);
+            edge->updateMaxNormalDeviationOnEdgeCollapse();
             edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
             
             _edgeSet.insert(edge);
@@ -174,6 +181,7 @@ public:
     typedef std::vector< osg::ref_ptr<Point> >              PointList;
     typedef std::list< osg::ref_ptr<Triangle> >             TriangleList;
     typedef std::set< osg::ref_ptr<Triangle> >              TriangleSet;
+    typedef std::map< osg::ref_ptr<Triangle>, unsigned int, dereference_less > TriangleMap;
 
     struct Point : public osg::Referenced
     {
@@ -213,7 +221,7 @@ public:
 
     struct Edge : public osg::Referenced
     {
-        Edge(): _errorMetric(0.0f) {}
+        Edge(): _errorMetric(0.0f), _maximumDeviation(1.0f) {}
         
         osg::ref_ptr<Point> _p1;
         osg::ref_ptr<Point> _p2;
@@ -221,6 +229,7 @@ public:
         TriangleSet _triangles;
 
         float _errorMetric;
+        float _maximumDeviation;
 
         osg::ref_ptr<Point> _proposedPoint;
 
@@ -234,7 +243,7 @@ public:
             else if (rhs.getErrorMetric()<getErrorMetric()) return false;
             
             if (_p1 < rhs._p1) return true;
-            if (rhs._p1 < _p1) return false;
+            else if (rhs._p1 < _p1) return false;
 
             return (_p2 < rhs._p2);
         }
@@ -258,7 +267,7 @@ public:
         void addTriangle(Triangle* triangle)
         {
             _triangles.insert(triangle);
-            if (_triangles.size()>2) osg::notify(osg::NOTICE)<<"Warning too many traingles ("<<_triangles.size()<<") sharing edge "<<std::endl;
+            // if (_triangles.size()>2) osg::notify(osg::NOTICE)<<"Warning too many traingles ("<<_triangles.size()<<") sharing edge "<<std::endl;
         }
         
         bool isBoundaryEdge() const
@@ -271,6 +280,33 @@ public:
             return isBoundaryEdge() || _p1->isBoundaryPoint() || _p2->isBoundaryPoint(); 
         }
         
+
+        void updateMaxNormalDeviationOnEdgeCollapse()
+        {
+            //std::cout<<"updateMaxNormalDeviationOnEdgeCollapse()"<<std::endl;
+            _maximumDeviation = 0.0f;
+            for(TriangleSet::iterator itr1=_p1->_triangles.begin();
+                itr1!=_p1->_triangles.end();
+                ++itr1)
+            {
+                if (_triangles.count(*itr1)==0)
+                {
+                    _maximumDeviation = osg::maximum(_maximumDeviation, (*itr1)->computeNormalDeviationOnEdgeCollapse(this,_proposedPoint.get()));
+                }
+            }
+            for(TriangleSet::iterator itr2=_p2->_triangles.begin();
+                itr2!=_p2->_triangles.end();
+                ++itr2)
+            {
+                if (_triangles.count(*itr2)==0)
+                {
+                    _maximumDeviation = osg::maximum(_maximumDeviation, (*itr2)->computeNormalDeviationOnEdgeCollapse(this,_proposedPoint.get()));
+                }
+            }
+        }
+        
+        float getMaxNormalDeviationOnEdgeCollapse() const { return _maximumDeviation; } 
+
     };
 
     struct Triangle : public osg::Referenced
@@ -282,27 +318,67 @@ public:
             if (_p1 < rhs._p1) return true;
             if (rhs._p1 < _p1) return false;
 
-            if (_p2 < rhs._p2) return true;
-            if (rhs._p2 < _p2) return false;
 
-            return (_p3 < rhs._p3);
+            const Point* lhs_lower = _p2<_p3 ? _p2.get() : _p3.get(); 
+            const Point* rhs_lower = rhs._p2<rhs._p3 ? rhs._p2.get() : rhs._p3.get(); 
+
+            if (lhs_lower < rhs_lower) return true;
+            if (rhs_lower < lhs_lower) return false;
+
+            const Point* lhs_upper = _p2<_p3 ? _p3.get() : _p2.get(); 
+            const Point* rhs_upper = rhs._p2<rhs._p3 ? rhs._p3.get() : rhs._p2.get(); 
+
+            return (lhs_upper < rhs_upper);
         }
 
-        osg::ref_ptr<Point> _p1;
-        osg::ref_ptr<Point> _p2;
-        osg::ref_ptr<Point> _p3;
-        
-        osg::ref_ptr<Edge> _e1;
-        osg::ref_ptr<Edge> _e2;
-        osg::ref_ptr<Edge> _e3;
-        
-        osg::Plane _plane;
+
+        void setOrderedPoints(Point* p1, Point* p2, Point* p3)
+        {
+            Point* points[3];
+            points[0] = p1;
+            points[1] = p2;
+            points[2] = p3;
+
+            // find the lowest value point in the list.
+            unsigned int lowest = 0;        
+            if (points[1]<points[lowest]) lowest = 1;
+            if (points[2]<points[lowest]) lowest = 2;
+
+
+            _p1 = points[lowest];
+            _p2 = points[(lowest+1)%3];
+            _p3 = points[(lowest+2)%3];
+        }
         
         void update()
         {
             _plane.set(_p1->_vertex,_p2->_vertex,_p3->_vertex);
+            
         }
         
+        osg::Plane computeNewPlaneOnEdgeCollapse(Edge* edge,Point* pNew) const
+        {
+            const Point* p1 = (_p1==edge->_p1 || _p1==edge->_p2) ? pNew : _p1.get();  
+            const Point* p2 = (_p2==edge->_p1 || _p2==edge->_p2) ? pNew : _p2.get();  
+            const Point* p3 = (_p3==edge->_p1 || _p3==edge->_p2) ? pNew : _p3.get();
+            
+            return osg::Plane(p1->_vertex,p2->_vertex,p3->_vertex);
+        }
+        
+        // note return 1 - dotproduct, so that deviation is in the range of 0.0 to 2.0, where 0 is coincendent, 1.0 is 90 degrees, and 2.0 is 180 degrees.
+        float computeNormalDeviationOnEdgeCollapse(Edge* edge,Point* pNew) const
+        {
+            const Point* p1 = (_p1==edge->_p1 || _p1==edge->_p2) ? pNew : _p1.get();  
+            const Point* p2 = (_p2==edge->_p1 || _p2==edge->_p2) ? pNew : _p2.get();  
+            const Point* p3 = (_p3==edge->_p1 || _p3==edge->_p2) ? pNew : _p3.get();
+            
+            osg::Vec3 new_normal = (p2->_vertex - p1->_vertex) ^ (p3->_vertex - p2->_vertex);
+            new_normal.normalize();
+            
+            float result = 1.0f - (new_normal.x() * _plane[0] + new_normal.y() * _plane[1] + new_normal.z() * _plane[2]);
+            return result;
+        }
+
         float distance(const osg::Vec3& vertex) const
         {
             return _plane.distance(vertex);
@@ -312,6 +388,18 @@ public:
         {
             return (_e1->isBoundaryEdge() || _e2->isBoundaryEdge() ||  _e3->isBoundaryEdge());
         }
+
+       
+        osg::ref_ptr<Point> _p1;
+        osg::ref_ptr<Point> _p2;
+        osg::ref_ptr<Point> _p3;
+        
+        osg::ref_ptr<Edge> _e1;
+        osg::ref_ptr<Edge> _e2;
+        osg::ref_ptr<Edge> _e3;
+        
+        osg::Plane _plane;
+
     };
 
 
@@ -512,13 +600,13 @@ public:
         EdgeSet::iterator itr = _edgeSet.find(edge);
         if (itr==_edgeSet.end())
         {
-            //std::cout<<"  addEdge("<<edge.get()<<")"<<std::endl;
+            // std::cout<<"  addEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
             _edgeSet.insert(edge);
         }
         else
         {
+            // std::cout<<"  reuseEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
             edge = *itr;
-            //std::cout<<"  reuseEdge("<<edge.get()<<")"<<std::endl;
         }
         
         edge->addTriangle(triangle);
@@ -591,6 +679,18 @@ public:
     bool collapseEdge(Edge* edge, Point* pNew)
     {
         if (edge->_triangles.size()<2) return false;
+        if (edge->_triangles.size()>2) return false;
+
+        if (edge->getMaxNormalDeviationOnEdgeCollapse()>1.0)
+        {
+            std::cout<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
+            return false;
+        }
+        else
+        {
+            //std::cout<<"collapseEdge("<<edge<<") edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
+        }
+
 
         typedef std::set< osg::ref_ptr<Edge> > LocalEdgeList;
 
@@ -599,9 +699,11 @@ public:
         osg::ref_ptr<Point> edge_p1 = edge->_p1;
         osg::ref_ptr<Point> edge_p2 = edge->_p2;
         
+        TriangleMap  triangleMap;
         TriangleList triangles_p1;
         TriangleList triangles_p2;
         LocalEdgeList oldEdges;
+        
         
         if (edge_p1 != pNew)
         {
@@ -665,47 +767,57 @@ public:
             removeTriangle(const_cast<Triangle*>(titr_p2->get()));
         }
 
+        //std::cout<<"  pNew="<<pNew<<"\tedge_p1"<<edge_p1.get()<<"\tedge_p2"<<edge_p2.get()<<std::endl;
         for(TriangleSet::iterator teitr=edge->_triangles.begin();
             teitr!=edge->_triangles.end();
             ++teitr)
         {
-            removeTriangle(const_cast<Triangle*>(teitr->get()));
+            Triangle* triangle = const_cast<Triangle*>(teitr->get());
+            //std::cout<<"  edge removed T("<<triangle->_p1.get()<<"\t"<<triangle->_p2.get()<<"\t"<<triangle->_p3.get()<<")"<<std::endl;
+            removeTriangle(triangle);
         }
 
         LocalEdgeList newEdges;
 
+ 
         for(TriangleList::iterator titr_p1 = triangles_p1.begin();
             titr_p1 != triangles_p1.end();
             ++titr_p1)
         {
             Triangle* triangle = const_cast<Triangle*>(titr_p1->get());
+
             Point* p1 = (triangle->_p1==edge_p1 || triangle->_p1==edge_p2)? pNew : triangle->_p1.get();
             Point* p2 = (triangle->_p2==edge_p1 || triangle->_p2==edge_p2)? pNew : triangle->_p2.get();
             Point* p3 = (triangle->_p3==edge_p1 || triangle->_p3==edge_p2)? pNew : triangle->_p3.get();
+
             Triangle* newTri = addTriangle(p1,p2,p3);
 
             newEdges.insert(newTri->_e1);
             newEdges.insert(newTri->_e2);
             newEdges.insert(newTri->_e3);
         }
+
 
         for(TriangleList::iterator titr_p2 = triangles_p2.begin();
             titr_p2 != triangles_p2.end();
             ++titr_p2)
         {
             Triangle* triangle = const_cast<Triangle*>(titr_p2->get());
+
             Point* p1 = (triangle->_p1==edge_p1 || triangle->_p1==edge_p2)? pNew : triangle->_p1.get();
             Point* p2 = (triangle->_p2==edge_p1 || triangle->_p2==edge_p2)? pNew : triangle->_p2.get();
             Point* p3 = (triangle->_p3==edge_p1 || triangle->_p3==edge_p2)? pNew : triangle->_p3.get();
+
             Triangle* newTri = addTriangle(p1,p2,p3);
 
             newEdges.insert(newTri->_e1);
             newEdges.insert(newTri->_e2);
             newEdges.insert(newTri->_e3);
+
         }
 
 
-#if 1
+
         // std::cout<<"Edges to recalibarate "<<newEdges.size()<<std::endl;
 
         for(LocalEdgeList::iterator itr=newEdges.begin();
@@ -715,7 +827,7 @@ public:
             //std::cout<<"updateErrorMetricForEdge("<<itr->get()<<")"<<std::endl;
             updateErrorMetricForEdge(const_cast<Edge*>(itr->get()));
         }
-#endif
+
          return true;
     }
 
@@ -1158,6 +1270,28 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
         unsigned int _index;
 };
 
+class NormalizeArrayVisitor : public osg::ArrayVisitor
+{
+    public:
+        NormalizeArrayVisitor() {}
+        
+        template<typename Itr>
+        void normalize(Itr begin, Itr end)
+        {
+            for(Itr itr = begin;
+                itr != end;
+                ++itr)
+            {
+                itr->normalize();
+            }
+        }
+        
+        virtual void apply(osg::Vec2Array& array) { normalize(array.begin(),array.end()); }
+        virtual void apply(osg::Vec3Array& array) { normalize(array.begin(),array.end()); }
+        virtual void apply(osg::Vec4Array& array) { normalize(array.begin(),array.end()); }
+        
+};
+
 class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
 {
     public:
@@ -1201,6 +1335,7 @@ class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
         
         EdgeCollapse::PointList& _pointList;
 };
+
 
 void EdgeCollapse::copyBackToGeometry()
 {
@@ -1258,7 +1393,13 @@ void EdgeCollapse::copyBackToGeometry()
     }
 
     if (_geometry->getNormalArray() && _geometry->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
+    {
         _geometry->getNormalArray()->accept(copyArrayToPoints);
+
+        // now normalize the normals.
+        NormalizeArrayVisitor nav;
+        _geometry->getNormalArray()->accept(nav);
+    }
         
     if (_geometry->getColorArray() && _geometry->getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
         _geometry->getColorArray()->accept(copyArrayToPoints);

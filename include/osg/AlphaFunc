@@ -76,8 +76,10 @@ class SG_EXPORT AlphaFunc : public StateAttribute
             _referenceValue = ref;
         }
         
+        inline void setFunction(ComparisonFunction func) { _comparisonFunc=func; }
         inline ComparisonFunction getFunction() const { return _comparisonFunc; }
         
+        inline void setReferenceValue(float value) { _referenceValue=value; }
         inline float getReferenceValue() const { return _referenceValue; }
         
         virtual void apply(State& state) const;

@@ -37,7 +37,7 @@ class OSGDB_EXPORT ReentrantMutex : public OpenThreads::Mutex
 
     private:
 
-        ReentrantMutex(const ReentrantMutex &):Mutex() {}
+        ReentrantMutex(const ReentrantMutex &):OpenThreads::Mutex() {}
 
         ReentrantMutex &operator=(const ReentrantMutex &) {return *(this);}
         

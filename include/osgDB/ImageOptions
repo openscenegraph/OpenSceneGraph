@@ -27,7 +27,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::ReaderWriter::Options
         ImageOptions(const std::string& str);
             
         ImageOptions(const ImageOptions& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
-            Options(options,copyop),
+            osgDB::ReaderWriter::Options(options,copyop),
             _sourceImageSamplingMode(options._sourceImageSamplingMode),
             _sourceImageWindowMode(options._sourceImageWindowMode),
             _sourceRatioWindow(options._sourceRatioWindow),

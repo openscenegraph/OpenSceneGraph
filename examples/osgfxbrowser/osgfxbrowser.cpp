@@ -93,7 +93,7 @@ public:
 	};
 
 	EffectPanel()
-	:	Frame(),
+	:	osgfxbrowser::Frame(),
 		selected_fx_(-1),
 		fxen_(true),
 		root_(new osg::Group),

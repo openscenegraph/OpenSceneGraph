@@ -54,9 +54,6 @@
 #endif
 #endif
 
-#ifdef __sgi
-typedef int socklen_t;
-#endif
 
 using namespace std;
 

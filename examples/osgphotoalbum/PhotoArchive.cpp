@@ -150,7 +150,7 @@ osg::Image* PhotoArchive::readImage(const std::string& filename,
     return NULL;
 }
 
-void PhotoArchive::buildArchive(const std::string& filename, const FileNameList& imageList, unsigned int thumbnailSize, unsigned int maximumSize, bool compressed)
+void PhotoArchive::buildArchive(const std::string& filename, const FileNameList& imageList, unsigned int thumbnailSize, unsigned int maximumSize, bool /*compressed*/)
 {
 
     PhotoIndexList photoIndex;

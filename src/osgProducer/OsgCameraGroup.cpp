@@ -295,7 +295,7 @@ void OsgCameraGroup::setUpSceneViewsWithData()
         
         sv->setFrameStamp( _frameStamp.get() );
         sv->setGlobalStateSet( _global_stateset.get() );
-        sv->setBackgroundColor( _background_color );
+        sv->setClearColor( _background_color );
         sv->setLODScale( _LODScale );
         sv->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
     }

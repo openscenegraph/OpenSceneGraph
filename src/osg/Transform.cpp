@@ -42,7 +42,7 @@ void Transform::setReferenceFrame(ReferenceFrame rf)
     _referenceFrame = rf;
     
     // switch off culling if transform is absolute.
-    if (_referenceFrame==ABSOLUTE) setCullingActive(false);
+    if (_referenceFrame==RELATIVE_TO_ABSOLUTE) setCullingActive(false);
     else setCullingActive(true);
 }
 

@@ -221,16 +221,16 @@ public:
     virtual void drawImplementation(osg::State& state) const;
 
     /** return false, osgText::Text does not support accept(AttributeFunctor&).*/
-    virtual bool supports(osg::Drawable::AttributeFunctor&) const { return false; }
+    virtual bool supports(const osg::Drawable::AttributeFunctor&) const { return false; }
 
     /** return true, osgText::Text does support accept(ConstAttributeFunctor&).*/
-    virtual bool supports(osg::Drawable::ConstAttributeFunctor&) const { return true; }
+    virtual bool supports(const osg::Drawable::ConstAttributeFunctor&) const { return true; }
 
     /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
     virtual void accept(osg::Drawable::ConstAttributeFunctor& af) const;
 
     /** return true, osgText::Text does support accept(PrimitiveFunctor&) .*/
-    virtual bool supports(osg::PrimitiveFunctor&) const { return true; }
+    virtual bool supports(const osg::PrimitiveFunctor&) const { return true; }
 
     /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
     virtual void accept(osg::PrimitiveFunctor& pf) const;

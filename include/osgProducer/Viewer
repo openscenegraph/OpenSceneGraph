@@ -274,6 +274,8 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         unsigned int addCameraManipulator(osgGA::MatrixManipulator* cm);
         void selectCameraManipulator(unsigned int no);
+        void getCameraManipulatorNameList( std::list<std::string> &nameList );
+        bool selectCameraManipulatorByName( const std::string &name );
 
 
         void setRecordingAnimationPath(bool on) { _recordingAnimationPath = on; }

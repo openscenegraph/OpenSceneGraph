@@ -64,10 +64,12 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgcopy
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgcube
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osghangglide
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osghud
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgimpostor
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgreflect
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgscribe
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgstereoimage
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgtext
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgtexture
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgversion
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgviews

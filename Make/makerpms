@@ -109,7 +109,7 @@ make_osg()
     mkdir $RPM_BUILD_DIR
 
     s_install $TOPDIR/lib 755 $INST_LIBS
-    s_install $TOPDIR/lib/osgPlugins 744 $INST_PLUGINS
+    s_install $TOPDIR/lib/osgPlugins 755 $INST_PLUGINS
     s_install $TOPDIR/bin 755 $INST_DEMOS
 
     make_targz OpenSceneGraph-$REV
@@ -133,14 +133,21 @@ make_osg_dev()
     for d in `ls $TOPDIR/include | grep -v CVS`
     do
         [ -d $TOPDIR/include/$d ] && \
-		s_install $TOPDIR/include/$d 644 $INST_INCLUDE/$d
+            s_install $TOPDIR/include/$d 644 $INST_INCLUDE/$d
     done
 
-    for d in `ls $TOPDIR/src/Demos | grep -v CVS`
+
+    for d in `ls -1 $INST_DEMO_SRC`
     do
-        [ -d $TOPDIR/src/Demos/$d ] && \
-		s_install $TOPDIR/src/Demos/$d 644 $INST_DEMO_SRC/$d
+        if [ -d $INST_DEMO_SRC/$d ] 
+        then
+           s_install $INST_DEMO_SRC/$d 644 $INST_DEMO_SRC/$d
+        fi
+        cd $THISDIR
     done
+
+    s_install $INST_SRC/Make 644 $INST_SRC/Make
+
 
     make_targz OpenSceneGraph_dev-$REV
     make_spec OpenSceneGraph_dev
@@ -155,6 +162,8 @@ make_osg_dev()
         print_attr $INST_DEMO_SRC/$d 755  >> $TOPDIR/dist/RPM/OpenSceneGraph_dev.spec
     done
 
+    print_attr $INST_SRC/Make 755 >>  $TOPDIR/dist/RPM/OpenSceneGraph_dev.spec
+
     rpm -bb --clean $TOPDIR/dist/RPM/OpenSceneGraph_dev.spec
 
     mv /usr/src/redhat/RPMS/i386/OpenSceneGraph_dev-$REV-$REL.i386.rpm dist/RPM
@@ -168,7 +177,7 @@ then
     exit 1
 fi
 
-if [ $# -ne 8 ] 
+if [ $# -ne 10 ] 
 then
     echo
     echo makerpm : Internal Error - Bad Usage

@@ -329,6 +329,11 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Group *top = parse->GetCurrTop();
     if (geometry)
     {
+        // added this set use display list off since terrapage will
+        // be creating and deleting these geometry leaves on the fly
+        // so we don't want to be creating short lived display lists either.
+        geometry->setUseDisplayList(false);
+
         geometry->setVertexArray(vertices);
         if (normals)
         {

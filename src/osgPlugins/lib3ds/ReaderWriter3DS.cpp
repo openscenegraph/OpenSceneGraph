@@ -1,7 +1,7 @@
 #include <osg/Notify>
 #include <osg/Group>
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/Material>
 #include <osg/TexEnv>
@@ -95,7 +95,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
 
         osg::Texture*  createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
         osg::StateSet* createStateSet(Lib3dsMaterial *materials);
-        osg::GeoSet*   createGeoSet(Lib3dsMesh *meshes,FaceList& faceList, Lib3dsMatrix* matrix);
+        osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, Lib3dsMatrix* matrix);
 
         std::string _directory;
         bool _useSmoothingGroups;
@@ -191,7 +191,7 @@ void print(Lib3dsNode *node, int level) {
 }
 
 // Transforms points by matrix if 'matrix' is not NULL
-// Creates a Geode and GeoSet (as parent,child) and adds the Geode to 'parent' parameter iff 'parent' is non-NULL
+// Creates a Geode and Geometry (as parent,child) and adds the Geode to 'parent' parameter iff 'parent' is non-NULL
 // Returns ptr to the Geode
 osg::Node* ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix) {
     typedef std::vector<int> FaceList;
@@ -235,26 +235,26 @@ osg::Node* ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* pa
                     sitr!=smoothingFaceMap.end();
                     ++sitr)
                 {
-                    // each smoothing group to have its own geoset 
+                    // each smoothing group to have its own geom 
                     // to ensure the vertices on adjacent groups
                     // don't get shared.
                     FaceList& smoothFaceMap = sitr->second;
 
-                    osg::GeoSet* geoset = createGeoSet(mesh,smoothFaceMap,matrix);
-                    if (geoset)
+                    osg::Drawable* drawable = createDrawable(mesh,smoothFaceMap,matrix);
+                    if (drawable)
                     {
-                        geoset->setStateSet(drawStateMap[itr->first]);
-                        geode->addDrawable(geoset);
+                        drawable->setStateSet(drawStateMap[itr->first]);
+                        geode->addDrawable(drawable);
                     }
                 }
             }
             else // ignore smoothing groups.
             {
-                osg::GeoSet* geoset = createGeoSet(mesh,faceList,matrix);
-                if (geoset)
+                osg::Drawable* drawable = createDrawable(mesh,faceList,matrix);
+                if (drawable)
                 {
-                    geoset->setStateSet(drawStateMap[itr->first]);
-                    geode->addDrawable(geoset);
+                    drawable->setStateSet(drawStateMap[itr->first]);
+                    geode->addDrawable(drawable);
                 }
             }
         }
@@ -467,10 +467,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
 /**
 use matrix to pretransform geometry, or NULL to do nothing
 */
-osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Lib3dsMatrix *matrix)
+osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceList,Lib3dsMatrix *matrix)
 {
 
-    osg::GeoSet* geoset = new osg::GeoSet;
+    osg::Geometry* geom = new osg::Geometry;
 
     unsigned int i;
     
@@ -497,7 +497,7 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Li
 
     }
 
-    osg::Vec3* osg_coords = new osg::Vec3[noVertex];
+    osg::Vec3Array* osg_coords = new osg::Vec3Array(noVertex);
     Lib3dsVector c;
        
     for (i=0; i<m->points; ++i)
@@ -506,25 +506,25 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Li
             if (matrix)
             {
                 lib3ds_vector_transform(c,*matrix, m->pointL[i].pos);
-                osg_coords[orig2NewMapping[i]].set(c[0],c[1],c[2]);
+                (*osg_coords)[orig2NewMapping[i]].set(c[0],c[1],c[2]);
             }
             else
             {
                 // original no transform code.
-                osg_coords[orig2NewMapping[i]].set(m->pointL[i].pos[0],m->pointL[i].pos[1],m->pointL[i].pos[2]);
+                (*osg_coords)[orig2NewMapping[i]].set(m->pointL[i].pos[0],m->pointL[i].pos[1],m->pointL[i].pos[2]);
             }
         }
     }
 
-    osg::Vec2* osg_tcoords = NULL;
+    osg::Vec2Array* osg_tcoords = NULL;
     if (m->texels>0)
     {
         if (m->texels==m->points)
         {
-            osg_tcoords = new osg::Vec2[noVertex];
+            osg_tcoords = new osg::Vec2Array(noVertex);
             for (i=0; i<m->texels; ++i)
             {
-                if (orig2NewMapping[i]>=0) osg_tcoords[orig2NewMapping[i]].set(m->texelL[i][0],m->texelL[i][1]);
+                if (orig2NewMapping[i]>=0) (*osg_tcoords)[orig2NewMapping[i]].set(m->texelL[i][0],m->texelL[i][1]);
             }
         }
         else
@@ -535,27 +535,28 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Li
 
 
     // handle normals.
-    osg::Vec3* osg_normals;
+    osg::Vec3Array* osg_normals=0;
+    osg::Vec3Array::iterator normal_itr = 0;
     if (_usePerVertexNormals)
     {
-        osg_normals = new osg::Vec3[noVertex];
+        osg_normals = new osg::Vec3Array(noVertex);
         
         // initialize normal list to zero's.
         for (i=0; i<noVertex; ++i)
         {
-            osg_normals[i].set(0.0f,0.0f,0.0f);
+            (*osg_normals)[i].set(0.0f,0.0f,0.0f);
         }
     }
     else 
     {
-        osg_normals = new osg::Vec3[faceList.size()];
+        osg_normals = new osg::Vec3Array(faceList.size());
+        normal_itr = osg_normals->begin();
     }
     
-    osg::Vec3* normal_ptr = osg_normals;
 
     int numIndices = faceList.size()*3;
-    osg::ushort* osg_indices = new osg::ushort[numIndices];
-    osg::ushort* index_ptr = osg_indices;
+    UShortDrawElements* elements = new osg::UShortDrawElements(osg::Primitive::TRIANGLES,numIndices);
+    UShortDrawElements::iterator index_itr = elements->begin();
 
     for (fitr=faceList.begin();
         fitr!=faceList.end();
@@ -563,21 +564,30 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Li
     {
         Lib3dsFace& face = m->faceL[*fitr];
 
-        *(index_ptr++) = orig2NewMapping[face.points[0]];
-        *(index_ptr++) = orig2NewMapping[face.points[1]];
-        *(index_ptr++) = orig2NewMapping[face.points[2]];
+        *(index_itr++) = orig2NewMapping[face.points[0]];
+        *(index_itr++) = orig2NewMapping[face.points[1]];
+        *(index_itr++) = orig2NewMapping[face.points[2]];
 
         if (_usePerVertexNormals)
         {
-            osg_normals[orig2NewMapping[face.points[0]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-            osg_normals[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-            osg_normals[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            (*osg_normals)[orig2NewMapping[face.points[0]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            (*osg_normals)[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            (*osg_normals)[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
         }
         else
         {
-            *(normal_ptr++) =  osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);
+            *(normal_itr++) =  osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);
         }
         
+    }
+    
+    geom->addPrimitive(elements);
+
+    geom->setVertexArray(osg_coords);
+    
+    if (osg_tcoords)
+    {
+        geom->setTexCoordArray(0,osg_tcoords);
     }
 
     if (_usePerVertexNormals)
@@ -585,33 +595,22 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Li
         // normalize the normal list to unit length normals.
         for (i=0; i<noVertex; ++i)
         {
-//            osg_normals[i].normalize();
-            float len = osg_normals[i].length();
-            if (len) osg_normals[i]/=len;
+            (*osg_normals)[i].normalize();
         }
 
-        geoset->setNormals(osg_normals,osg_indices);
-        geoset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+        geom->setNormalArray(osg_normals);
+        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
     }
     else
     {
-        geoset->setNormals(osg_normals);
-        geoset->setNormalBinding(osg::GeoSet::BIND_PERPRIM);
+        geom->setNormalArray(osg_normals);
+        geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
 
 
-    geoset->setCoords(osg_coords,osg_indices);
-    if (osg_tcoords)
-    {
-        geoset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
-        geoset->setTextureCoords(osg_tcoords,osg_indices);
-    }
 
-    geoset->setPrimType(osg::GeoSet::TRIANGLES);
-    geoset->setNumPrims(faceList.size());
-
-    return geoset;
+    return geom;
 }
 
 

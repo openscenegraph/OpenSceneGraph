@@ -498,6 +498,14 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _glEndOcclusionQuery = rhs._glEndOcclusionQuery;
     _glGetOcclusionQueryiv = rhs._glGetOcclusionQueryiv;
     _glGetOcclusionQueryuiv = rhs._glGetOcclusionQueryuiv;
+    _gl_gen_queries_arb = rhs._gl_gen_queries_arb;
+    _gl_delete_queries_arb = rhs._gl_delete_queries_arb;
+    _gl_is_query_arb = rhs._gl_is_query_arb;
+    _gl_begin_query_arb = rhs._gl_begin_query_arb;
+    _gl_end_query_arb = rhs._gl_end_query_arb;
+    _gl_get_queryiv_arb = rhs._gl_get_queryiv_arb;
+    _gl_get_query_objectiv_arb = rhs._gl_get_query_objectiv_arb;
+    _gl_get_query_objectuiv_arb = rhs._gl_get_query_objectuiv_arb;
 }
 
 
@@ -508,6 +516,7 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isFogCoordSupported) _isFogCoordSupported = false;
     if (!rhs._isMultiTexSupported) _isMultiTexSupported = false;
     if (!rhs._isOcclusionQuerySupported) _isOcclusionQuerySupported = false;
+    if (!rhs._isARBOcclusionQuerySupported) _isARBOcclusionQuerySupported = false;
 
     if (!rhs._glFogCoordfv) _glFogCoordfv = 0;
     if (!rhs._glSecondaryColor3ubv) _glSecondaryColor3ubv = 0;
@@ -538,6 +547,15 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glEndOcclusionQuery) _glEndOcclusionQuery = 0;
     if (!rhs._glGetOcclusionQueryiv) _glGetOcclusionQueryiv = 0;
     if (!rhs._glGetOcclusionQueryuiv) _glGetOcclusionQueryuiv = 0;
+
+    if (!rhs._gl_gen_queries_arb) _gl_gen_queries_arb = 0;
+    if (!rhs._gl_delete_queries_arb) _gl_delete_queries_arb = 0;
+    if (!rhs._gl_is_query_arb) _gl_is_query_arb = 0;
+    if (!rhs._gl_begin_query_arb) _gl_begin_query_arb = 0;
+    if (!rhs._gl_end_query_arb) _gl_end_query_arb = 0;
+    if (!rhs._gl_get_queryiv_arb) _gl_get_queryiv_arb = 0;
+    if (!rhs._gl_get_query_objectiv_arb) _gl_get_query_objectiv_arb = 0;
+    if (!rhs._gl_get_query_objectuiv_arb) _gl_get_query_objectuiv_arb = 0;
 }
 
 void Drawable::Extensions::setupGLExtenions()
@@ -547,6 +565,7 @@ void Drawable::Extensions::setupGLExtenions()
     _isFogCoordSupported = isGLExtensionSupported("GL_EXT_fog_coord");
     _isMultiTexSupported = isGLExtensionSupported("GL_ARB_multitexture");
     _isOcclusionQuerySupported = osg::isGLExtensionSupported( "GL_NV_occlusion_query" );
+    _isARBOcclusionQuerySupported = osg::isGLExtensionSupported( "GL_ARB_occlusion_query" );
 
     _glFogCoordfv = ((FogCoordProc)osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT"));
     _glSecondaryColor3ubv = ((SecondaryColor3ubvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT"));
@@ -577,6 +596,15 @@ void Drawable::Extensions::setupGLExtenions()
     _glEndOcclusionQuery = ((EndOcclusionQueryProc)osg::getGLExtensionFuncPtr("glEndOcclusionQuery","glEndOcclusionQueryNV"));
     _glGetOcclusionQueryiv = ((GetOcclusionQueryivProc)osg::getGLExtensionFuncPtr("glGetOcclusionQueryiv","glGetOcclusionQueryivNV"));
     _glGetOcclusionQueryuiv = ((GetOcclusionQueryuivProc)osg::getGLExtensionFuncPtr("glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV"));
+
+    _gl_gen_queries_arb = (GenQueriesProc)osg::getGLExtensionFuncPtr("glGenQueries", "glGenQueriesARB");
+    _gl_delete_queries_arb = (DeleteQueriesProc)osg::getGLExtensionFuncPtr("glDeleteQueries", "glDeleteQueriesARB");
+    _gl_is_query_arb = (IsQueryProc)osg::getGLExtensionFuncPtr("glIsQuery", "glIsQueryARB");
+    _gl_begin_query_arb = (BeginQueryProc)osg::getGLExtensionFuncPtr("glBeginQuery", "glBeginQueryARB");
+    _gl_end_query_arb = (EndQueryProc)osg::getGLExtensionFuncPtr("glEndQuery", "glEndQueryARB");
+    _gl_get_queryiv_arb = (GetQueryivProc)osg::getGLExtensionFuncPtr("glGetQueryiv", "glGetQueryivARB");
+    _gl_get_query_objectiv_arb = (GetQueryObjectivProc)osg::getGLExtensionFuncPtr("glGetQueryObjectiv","glGetQueryObjectivARB");
+    _gl_get_query_objectuiv_arb = (GetQueryObjectuivProc)osg::getGLExtensionFuncPtr("glGetQueryObjectuiv","glGetQueryObjectuivARB");
 }
 
 void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const
@@ -892,6 +920,63 @@ void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLui
         osg::notify(osg::WARN)<<"Error: glGetOcclusionQueryuiv not supported by OpenGL driver"<<std::endl;
     }    
 }
+
+void Drawable::Extensions::glGetQueryiv(GLenum target, GLenum pname, GLint *params) const
+{
+  if (_gl_get_queryiv_arb)
+    _gl_get_queryiv_arb(target, pname, params);
+  else
+    osg::notify(osg::WARN) << "Error: glGetQueryiv not supported by OpenGL driver" << std::endl;
+}
+
+void Drawable::Extensions::glGenQueries(GLsizei n, GLuint *ids) const
+{
+  if (_gl_gen_queries_arb)
+    _gl_gen_queries_arb(n, ids);
+  else
+    osg::notify(osg::WARN) << "Error: glGenQueries not supported by OpenGL driver" << std::endl;
+}
+
+void Drawable::Extensions::glBeginQuery(GLenum target, GLuint id) const
+{
+  if (_gl_begin_query_arb)
+    _gl_begin_query_arb(target, id);
+  else
+    osg::notify(osg::WARN) << "Error: glBeginQuery not supported by OpenGL driver" << std::endl;
+}
+
+void Drawable::Extensions::glEndQuery(GLenum target) const
+{
+  if (_gl_end_query_arb)
+    _gl_end_query_arb(target);
+  else
+    osg::notify(osg::WARN) << "Error: glEndQuery not supported by OpenGL driver" << std::endl;
+}
+
+GLboolean Drawable::Extensions::glIsQuery(GLuint id) const
+{
+  if (_gl_is_query_arb) return _gl_is_query_arb(id);
+
+  osg::notify(osg::WARN) << "Error: glIsQuery not supported by OpenGL driver" << std::endl;
+  return false;
+}
+
+void Drawable::Extensions::glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const
+{
+  if (_gl_get_query_objectiv_arb)
+    _gl_get_query_objectiv_arb(id, pname, params);
+  else
+    osg::notify(osg::WARN) << "Error: glGetQueryObjectiv not supported by OpenGL driver" << std::endl;
+}
+
+void Drawable::Extensions::glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const
+{
+  if (_gl_get_query_objectuiv_arb)
+    _gl_get_query_objectuiv_arb(id, pname, params);
+  else
+    osg::notify(osg::WARN) << "Error: glGetQueryObjectuiv not supported by OpenGL driver" << std::endl;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //

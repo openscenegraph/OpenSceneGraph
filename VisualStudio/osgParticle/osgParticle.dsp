@@ -103,6 +103,10 @@ SOURCE=..\..\src\osgParticle\ExplosionEffect.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgParticle\ExplosionDebriEffect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgParticle\FireEffect.cpp
 # End Source File
 # Begin Source File
@@ -184,6 +188,10 @@ SOURCE=..\..\include\osgParticle\Emitter
 # Begin Source File
 
 SOURCE=..\..\include\osgParticle\ExplosionEffect
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgParticle\ExplosionDebriEffect
 # End Source File
 # Begin Source File
 

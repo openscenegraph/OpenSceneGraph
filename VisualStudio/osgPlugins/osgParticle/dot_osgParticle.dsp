@@ -140,6 +140,26 @@ SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Particle.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ExplosionEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ExplosionDebriEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SmokeEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_FireEffect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleProcessor.cpp
 # End Source File
 # Begin Source File

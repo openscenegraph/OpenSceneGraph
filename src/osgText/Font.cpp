@@ -354,8 +354,9 @@ void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     // set up the details of where to place glyph's image in the texture.
     glyph->setTexture(this);
     glyph->setTexturePosition(posX,posY);
-    glyph->setMinTexCoord(osg::Vec2((float)(posX+_margin-1)/(float)(getTextureWidth()-1),(float)(posY+_margin-1)/(float)(getTextureHeight()-1)));
-    glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s()-_margin)/(float)(getTextureWidth()-1),(float)(posY+glyph->t()-_margin)/(float)(getTextureHeight()-1)));
+    unsigned int sizeAdjustment = 0; // was 1.
+    glyph->setMinTexCoord(osg::Vec2((float)(posX+_margin-1)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+_margin-1)/(float)(getTextureHeight()-sizeAdjustment)));
+    glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s()-_margin)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+glyph->t()-_margin)/(float)(getTextureHeight()-sizeAdjustment)));
 }
 
 void Font::GlyphTexture::apply(osg::State& state) const

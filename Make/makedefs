@@ -385,7 +385,7 @@ endif
 ifeq ($(OS),Darwin)
   C++               = c++
   INC               += -I/usr/X11R6/include
-  LDFLAGS	    += -L/usr/X11R6/lib
+  LDFLAGS	    += -L/usr/X11R6/lib -L/sw/lib
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS

@@ -52,6 +52,34 @@ void State::pushStateSet(const StateSet* dstate)
     _drawStateStack.push_back(dstate);
     if (dstate)
     {
+        // iterator through all OpenGL modes in incomming StateSet
+        // for each GLMode entry push it to the back of the appropriate
+        // mode stack, taking into consideration current override status.
+        const StateSet::ModeList& ds_modeList = dstate->getModeList();
+        for(StateSet::ModeList::const_iterator mitr=ds_modeList.begin();
+            mitr!=ds_modeList.end();
+            ++mitr)
+        {
+            // get the mode stack for incomming GLmode {mitr->first}.
+            ModeStack& ms = _modeMap[mitr->first];
+            if (ms.valueVec.empty())
+            {
+                // first pair so simply push incomming pair to back.
+                ms.valueVec.push_back(mitr->second);
+            }
+            else if (ms.valueVec.back() & StateAttribute::OVERRIDE) // check the existing override flag 
+            {
+                // push existing back since override keeps the previoius value.
+                ms.valueVec.push_back(ms.valueVec.back());
+            }
+            else 
+            {
+                // no override on so simply push incomming pair to back.
+                ms.valueVec.push_back(mitr->second);
+            }
+            ms.changed = true;
+        }
+        
         // iterator through all StateAttribute's in incomming StateSet
         // for each Type entry push it to the back of the appropriate
         // attribute stack, taking into consideration current override status.
@@ -82,34 +110,6 @@ void State::pushStateSet(const StateSet* dstate)
             as.changed = true;
         }
 
-        // iterator through all OpenGL modes in incomming StateSet
-        // for each GLMode entry push it to the back of the appropriate
-        // mode stack, taking into consideration current override status.
-        const StateSet::ModeList& ds_modeList = dstate->getModeList();
-        for(StateSet::ModeList::const_iterator mitr=ds_modeList.begin();
-            mitr!=ds_modeList.end();
-            ++mitr)
-        {
-            // get the mode stack for incomming GLmode {mitr->first}.
-            ModeStack& ms = _modeMap[mitr->first];
-            if (ms.valueVec.empty())
-            {
-                // first pair so simply push incomming pair to back.
-                ms.valueVec.push_back(mitr->second);
-            }
-            else if (ms.valueVec.back() & StateAttribute::OVERRIDE) // check the existing override flag 
-            {
-                // push existing back since override keeps the previoius value.
-                ms.valueVec.push_back(ms.valueVec.back());
-            }
-            else 
-            {
-                // no override on so simply push incomming pair to back.
-                ms.valueVec.push_back(mitr->second);
-            }
-            ms.changed = true;
-        }
-        
     }
 }
 
@@ -121,22 +121,6 @@ void State::popStateSet()
 
     if (dstate)
     {
-        // iterator through all StateAttribute's in incomming StateSet
-        // for each Type entry pop_back of the appropriate
-        // attribute stack.
-        const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
-        for(StateSet::AttributeList::const_iterator aitr=ds_attributeList.begin();
-            aitr!=ds_attributeList.end();
-            ++aitr)
-        {
-            // get the attribute stack for incomming type {aitr->first}.
-            AttributeStack& as = _attributeMap[aitr->first];
-            if (!as.attributeVec.empty())
-            {
-                as.attributeVec.pop_back();
-            }
-            as.changed = true;
-        }
 
         // iterator through all OpenGL modes in incomming StateSet
         // for each GLMode entry pop_back of the appropriate
@@ -155,6 +139,22 @@ void State::popStateSet()
             ms.changed = true;
         }
         
+        // iterator through all StateAttribute's in incomming StateSet
+        // for each Type entry pop_back of the appropriate
+        // attribute stack.
+        const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
+        for(StateSet::AttributeList::const_iterator aitr=ds_attributeList.begin();
+            aitr!=ds_attributeList.end();
+            ++aitr)
+        {
+            // get the attribute stack for incomming type {aitr->first}.
+            AttributeStack& as = _attributeMap[aitr->first];
+            if (!as.attributeVec.empty())
+            {
+                as.attributeVec.pop_back();
+            }
+            as.changed = true;
+        }
     }
     
     // remove the top draw state from the stack.
@@ -166,17 +166,6 @@ void State::captureCurrentState(StateSet& stateset) const
     // empty the stateset first.
     stateset.setAllToInherit();
     
-    for(AttributeMap::const_iterator aitr=_attributeMap.begin();
-        aitr!=_attributeMap.end();
-        ++aitr)
-    {
-        const AttributeStack& as = aitr->second;
-        if (!as.attributeVec.empty())
-        {
-            stateset.setAttribute(const_cast<StateAttribute*>(as.attributeVec.back().first));
-        }
-    }        
-
     for(ModeMap::const_iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();
         ++mitr)
@@ -186,6 +175,17 @@ void State::captureCurrentState(StateSet& stateset) const
         if (!ms.valueVec.empty())
         {
             stateset.setMode(mitr->first,ms.valueVec.back());
+        }
+    }        
+
+    for(AttributeMap::const_iterator aitr=_attributeMap.begin();
+        aitr!=_attributeMap.end();
+        ++aitr)
+    {
+        const AttributeStack& as = aitr->second;
+        if (!as.attributeVec.empty())
+        {
+            stateset.setAttribute(const_cast<StateAttribute*>(as.attributeVec.back().first));
         }
     }        
 
@@ -201,127 +201,6 @@ void State::apply(const StateSet* dstate)
 
     if (dstate)
     {
-
-        // first handle attribute changes
-        {
-            const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
-            StateSet::AttributeList::const_iterator ds_aitr=ds_attributeList.begin();
-
-            AttributeMap::iterator this_aitr=_attributeMap.begin();
-
-            while (this_aitr!=_attributeMap.end() && ds_aitr!=ds_attributeList.end())
-            {
-                if (this_aitr->first<ds_aitr->first)
-                {
-
-                    // note attribute type = this_aitr->first
-                    AttributeStack& as = this_aitr->second;
-                    if (as.changed)
-                    {
-                        as.changed = false;
-                        if (!as.attributeVec.empty())
-                        {
-                            const StateAttribute* new_attr = as.attributeVec.back().first;
-                            apply_attribute(new_attr,as);
-                        }
-                        else
-                        {
-                            apply_global_default_attribute(as);
-                        }
-                    }
-
-                    ++this_aitr;
-
-                }
-                else if (ds_aitr->first<this_aitr->first)
-                {
-
-                    // ds_mitr->first is a new attribute, therefore 
-                    // need to insert a new attribute entry for ds_aistr->first.
-                    AttributeStack& as = _attributeMap[ds_aitr->first];
-
-                    const StateAttribute* new_attr = ds_aitr->second.first.get();
-                    apply_attribute(new_attr,as);
-
-                    // will need to disable this mode on next apply so set it to changed.
-                    as.changed = true;
-
-                    ++ds_aitr;
-
-                }
-                else
-                {
-                    // this_mitr & ds_mitr refer to the same mode, check the overide
-                    // if any otherwise just apply the incomming mode.
-
-                    AttributeStack& as = this_aitr->second;
-
-                    if (!as.attributeVec.empty() && as.attributeVec.back().second)
-                    {
-                        // override is os, there just treat as a normal apply on modes.
-
-                        if (as.changed)
-                        {
-                            as.changed = false;
-                            const StateAttribute* new_attr = as.attributeVec.back().first;
-                            apply_attribute(new_attr,as);
-                        }
-                    }
-                    else
-                    {
-                        // no override on or no previous entry, therefore consider incomming mode.
-                        const StateAttribute* new_attr = ds_aitr->second.first.get();
-                        if (apply_attribute(new_attr,as))
-                        {
-                            as.changed = true;
-                        }
-                    }
-                    
-                    ++this_aitr;
-                    ++ds_aitr;
-                }
-            }
-
-            // iterator over the remaining state modes to apply any previous changes.
-            for(;
-                this_aitr!=_attributeMap.end();
-                ++this_aitr)
-            {
-                // note attribute type = this_aitr->first
-                AttributeStack& as = this_aitr->second;
-                if (as.changed)
-                {
-                    as.changed = false;
-                    if (!as.attributeVec.empty())
-                    {
-                        const StateAttribute* new_attr = as.attributeVec.back().first;
-                        apply_attribute(new_attr,as);
-                    }
-                    else
-                    {
-                        apply_global_default_attribute(as);
-                    }
-                }
-            }        
-
-            // iterator over the remaining incomming modes to apply any new mode.
-            for(;
-                ds_aitr!=ds_attributeList.end();
-                ++ds_aitr)
-            {
-                // ds_mitr->first is a new attribute, therefore 
-                // need to insert a new attribute entry for ds_aistr->first.
-                AttributeStack& as = _attributeMap[ds_aitr->first];
-
-                const StateAttribute* new_attr = ds_aitr->second.first.get();
-                apply_attribute(new_attr,as);
-
-                // will need to update this attribute on next apply so set it to changed.
-                as.changed = true;
-            }
-        }
-
-
 
         // then handle mode changes.
         {
@@ -448,6 +327,128 @@ void State::apply(const StateSet* dstate)
         }
 
 
+
+        // first handle attribute changes
+        {
+            const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
+            StateSet::AttributeList::const_iterator ds_aitr=ds_attributeList.begin();
+
+            AttributeMap::iterator this_aitr=_attributeMap.begin();
+
+            while (this_aitr!=_attributeMap.end() && ds_aitr!=ds_attributeList.end())
+            {
+                if (this_aitr->first<ds_aitr->first)
+                {
+
+                    // note attribute type = this_aitr->first
+                    AttributeStack& as = this_aitr->second;
+                    if (as.changed)
+                    {
+                        as.changed = false;
+                        if (!as.attributeVec.empty())
+                        {
+                            const StateAttribute* new_attr = as.attributeVec.back().first;
+                            apply_attribute(new_attr,as);
+                        }
+                        else
+                        {
+                            apply_global_default_attribute(as);
+                        }
+                    }
+
+                    ++this_aitr;
+
+                }
+                else if (ds_aitr->first<this_aitr->first)
+                {
+
+                    // ds_mitr->first is a new attribute, therefore 
+                    // need to insert a new attribute entry for ds_aistr->first.
+                    AttributeStack& as = _attributeMap[ds_aitr->first];
+
+                    const StateAttribute* new_attr = ds_aitr->second.first.get();
+                    apply_attribute(new_attr,as);
+
+                    // will need to disable this mode on next apply so set it to changed.
+                    as.changed = true;
+
+                    ++ds_aitr;
+
+                }
+                else
+                {
+                    // this_mitr & ds_mitr refer to the same mode, check the overide
+                    // if any otherwise just apply the incomming mode.
+
+                    AttributeStack& as = this_aitr->second;
+
+                    if (!as.attributeVec.empty() && as.attributeVec.back().second)
+                    {
+                        // override is os, there just treat as a normal apply on modes.
+
+                        if (as.changed)
+                        {
+                            as.changed = false;
+                            const StateAttribute* new_attr = as.attributeVec.back().first;
+                            apply_attribute(new_attr,as);
+                        }
+                    }
+                    else
+                    {
+                        // no override on or no previous entry, therefore consider incomming mode.
+                        const StateAttribute* new_attr = ds_aitr->second.first.get();
+                        if (apply_attribute(new_attr,as))
+                        {
+                            as.changed = true;
+                        }
+                    }
+                    
+                    ++this_aitr;
+                    ++ds_aitr;
+                }
+            }
+
+            // iterator over the remaining state modes to apply any previous changes.
+            for(;
+                this_aitr!=_attributeMap.end();
+                ++this_aitr)
+            {
+                // note attribute type = this_aitr->first
+                AttributeStack& as = this_aitr->second;
+                if (as.changed)
+                {
+                    as.changed = false;
+                    if (!as.attributeVec.empty())
+                    {
+                        const StateAttribute* new_attr = as.attributeVec.back().first;
+                        apply_attribute(new_attr,as);
+                    }
+                    else
+                    {
+                        apply_global_default_attribute(as);
+                    }
+                }
+            }        
+
+            // iterator over the remaining incomming modes to apply any new mode.
+            for(;
+                ds_aitr!=ds_attributeList.end();
+                ++ds_aitr)
+            {
+                // ds_mitr->first is a new attribute, therefore 
+                // need to insert a new attribute entry for ds_aistr->first.
+                AttributeStack& as = _attributeMap[ds_aitr->first];
+
+                const StateAttribute* new_attr = ds_aitr->second.first.get();
+                apply_attribute(new_attr,as);
+
+                // will need to update this attribute on next apply so set it to changed.
+                as.changed = true;
+            }
+        }
+
+
+
     }
     else
     {
@@ -460,28 +461,6 @@ void State::apply(const StateSet* dstate)
 void State::apply()
 {
 
-    // go through all active StateAttribute's, applying where appropriate.
-    for(AttributeMap::iterator aitr=_attributeMap.begin();
-        aitr!=_attributeMap.end();
-        ++aitr)
-    {
-        AttributeStack& as = aitr->second;
-        if (as.changed)
-        {
-            as.changed = false;
-            if (!as.attributeVec.empty())
-            {
-                const StateAttribute* new_attr = as.attributeVec.back().first;
-                apply_attribute(new_attr,as);
-            }
-            else
-            {
-                apply_global_default_attribute(as);
-            }
-            
-        }
-    }        
-    
     // go through all active OpenGL modes, enabling/disable where
     // appropriate.
     for(ModeMap::iterator mitr=_modeMap.begin();
@@ -507,6 +486,28 @@ void State::apply()
         }
     }        
 
+
+    // go through all active StateAttribute's, applying where appropriate.
+    for(AttributeMap::iterator aitr=_attributeMap.begin();
+        aitr!=_attributeMap.end();
+        ++aitr)
+    {
+        AttributeStack& as = aitr->second;
+        if (as.changed)
+        {
+            as.changed = false;
+            if (!as.attributeVec.empty())
+            {
+                const StateAttribute* new_attr = as.attributeVec.back().first;
+                apply_attribute(new_attr,as);
+            }
+            else
+            {
+                apply_global_default_attribute(as);
+            }
+            
+        }
+    }        
     
 }
 

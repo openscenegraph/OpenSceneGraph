@@ -76,7 +76,7 @@ bool Depth_writeLocalData(const Object& obj,Output& fw)
     
     fw.indent() << "writeMask ";
     if (depth.getWriteMask()) fw << "TRUE" << std::endl;
-    else fw << "TRUE" << std::endl;
+    else fw << "FALSE" << std::endl;
     
     fw.indent() << "range " << depth.getZNear() << " " << depth.getZFar() << std::endl;
 

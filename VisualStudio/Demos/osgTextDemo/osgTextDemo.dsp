@@ -1,4 +1,5 @@
-# Microsoft Developer Studio Project File - Name="osgTextDemo" - Package Owner=<4>
+
+# Microsoft Developer Studio Project File - Name="osgtext" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -10,7 +11,7 @@
 
 
 
-CFG=osgTextDemo - Win32 Debug
+CFG=osgtext - Win32 Debug
 
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 
@@ -18,7 +19,7 @@ CFG=osgTextDemo - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgTextDemo.mak".
+!MESSAGE NMAKE /f "osgtext.mak".
 
 !MESSAGE 
 
@@ -28,7 +29,7 @@ CFG=osgTextDemo - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgTextDemo.mak" CFG="osgTextDemo - Win32 Debug"
+!MESSAGE NMAKE /f "osgtext.mak" CFG="Demo osgtext - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +37,9 @@ CFG=osgTextDemo - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgTextDemo - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtext - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgTextDemo - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtext - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +59,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgTextDemo - Win32 Release"
+!IF  "$(CFG)" == "Demo osgtext - Win32 Release"
 
 
 
@@ -106,7 +107,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgTextDemo - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgtext - Win32 Debug"
 
 
 
@@ -164,9 +165,9 @@ LINK32=link.exe
 
 
 
-# Name "osgTextDemo - Win32 Release"
+# Name "Demo osgtext - Win32 Release"
 
-# Name "osgTextDemo - Win32 Debug"
+# Name "Demo osgtext - Win32 Debug"
 
 # Begin Source File
 

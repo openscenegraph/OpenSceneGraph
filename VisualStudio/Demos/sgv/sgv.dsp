@@ -28,7 +28,7 @@ CFG=sgv - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "sgv.mak" CFG="sgv - Win32 Debug"
+!MESSAGE NMAKE /f "sgv.mak" CFG="Demo sgv - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=sgv - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "sgv - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo sgv - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "sgv - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo sgv - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "sgv - Win32 Release"
+!IF  "$(CFG)" == "Demo sgv - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "sgv - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo sgv - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "sgv - Win32 Release"
+# Name "Demo sgv - Win32 Release"
 
-# Name "sgv - Win32 Debug"
+# Name "Demo sgv - Win32 Debug"
 
 # Begin Source File
 

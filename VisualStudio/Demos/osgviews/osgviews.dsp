@@ -28,7 +28,7 @@ CFG=osgviews - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgviews.mak" CFG="osgviews - Win32 Debug"
+!MESSAGE NMAKE /f "osgviews.mak" CFG="Demo osgviews - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgviews - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgviews - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgviews - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgviews - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgviews - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgviews - Win32 Release"
+!IF  "$(CFG)" == "Demo osgviews - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgviews - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgviews - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgviews - Win32 Release"
+# Name "Demo osgviews - Win32 Release"
 
-# Name "osgviews - Win32 Debug"
+# Name "Demo osgviews - Win32 Debug"
 
 # Begin Source File
 

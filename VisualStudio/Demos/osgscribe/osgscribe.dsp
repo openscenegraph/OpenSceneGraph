@@ -28,7 +28,7 @@ CFG=osgscribe - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgscribe.mak" CFG="osgscribe - Win32 Debug"
+!MESSAGE NMAKE /f "osgscribe.mak" CFG="Demo osgscribe - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgscribe - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgscribe - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgscribe - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgscribe - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgscribe - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgscribe - Win32 Release"
+!IF  "$(CFG)" == "Demo osgscribe - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgscribe - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgscribe - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgscribe - Win32 Release"
+# Name "Demo osgscribe - Win32 Release"
 
-# Name "osgscribe - Win32 Debug"
+# Name "Demo osgscribe - Win32 Debug"
 
 # Begin Source File
 

@@ -28,7 +28,7 @@ CFG=lwo - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "lwo.mak" CFG="lwo - Win32 Debug"
+!MESSAGE NMAKE /f "lwo.mak" CFG="osgPlugin lwo - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=lwo - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "lwo - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin lwo - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "lwo - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin lwo - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "lwo - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin lwo - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "lwo - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin lwo - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "lwo - Win32 Release"
+# Name "osgPlugin lwo - Win32 Release"
 
-# Name "lwo - Win32 Debug"
+# Name "osgPlugin lwo - Win32 Debug"
 
 # Begin Group "Source Files"
 

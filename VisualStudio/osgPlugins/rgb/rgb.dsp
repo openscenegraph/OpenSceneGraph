@@ -28,7 +28,7 @@ CFG=rgb - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "rgb.mak" CFG="rgb - Win32 Debug"
+!MESSAGE NMAKE /f "rgb.mak" CFG="osgPlugin rgb - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=rgb - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "rgb - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin rgb - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "rgb - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin rgb - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "rgb - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin rgb - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "rgb - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin rgb - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "rgb - Win32 Release"
+# Name "osgPlugin rgb - Win32 Release"
 
-# Name "rgb - Win32 Debug"
+# Name "osgPlugin rgb - Win32 Debug"
 
 # Begin Group "Source Files"
 

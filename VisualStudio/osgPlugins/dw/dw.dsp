@@ -28,7 +28,7 @@ CFG=dw - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "dw.mak" CFG="dw - Win32 Debug"
+!MESSAGE NMAKE /f "dw.mak" CFG="osgPlugin dw - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=dw - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "dw - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin dw - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "dw - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin dw - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "dw - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin dw - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "dw - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin dw - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "dw - Win32 Release"
+# Name "osgPlugin dw - Win32 Release"
 
-# Name "dw - Win32 Debug"
+# Name "osgPlugin dw - Win32 Debug"
 
 # Begin Group "Source Files"
 

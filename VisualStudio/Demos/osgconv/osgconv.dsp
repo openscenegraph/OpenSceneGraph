@@ -28,7 +28,7 @@ CFG=osgconv - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgconv.mak" CFG="osgconv - Win32 Debug"
+!MESSAGE NMAKE /f "osgconv.mak" CFG="Demo osgconv - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgconv - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgconv - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgconv - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgconv - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgconv - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgconv - Win32 Release"
+!IF  "$(CFG)" == "Demo osgconv - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgconv - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgconv - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgconv - Win32 Release"
+# Name "Demo osgconv - Win32 Release"
 
-# Name "osgconv - Win32 Debug"
+# Name "Demo osgconv - Win32 Debug"
 
 # Begin Source File
 

@@ -28,7 +28,7 @@ CFG=osgimpostor - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgimpostor.mak" CFG="osgimpostor - Win32 Debug"
+!MESSAGE NMAKE /f "osgimpostor.mak" CFG="Demo osgimpostor - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgimpostor - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgimpostor - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgimpostor - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgimpostor - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgimpostor - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgimpostor - Win32 Release"
+!IF  "$(CFG)" == "Demo osgimpostor - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgimpostor - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgimpostor - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgimpostor - Win32 Release"
+# Name "Demo osgimpostor - Win32 Release"
 
-# Name "osgimpostor - Win32 Debug"
+# Name "Demo osgimpostor - Win32 Debug"
 
 # Begin Source File
 

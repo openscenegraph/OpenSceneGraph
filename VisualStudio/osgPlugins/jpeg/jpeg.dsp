@@ -28,7 +28,7 @@ CFG=jpeg - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "jpeg.mak" CFG="jpeg - Win32 Debug"
+!MESSAGE NMAKE /f "jpeg.mak" CFG="osgPlugin jpeg - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=jpeg - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "jpeg - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin jpeg - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "jpeg - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin jpeg - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "jpeg - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin jpeg - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "jpeg - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin jpeg - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "jpeg - Win32 Release"
+# Name "osgPlugin jpeg - Win32 Release"
 
-# Name "jpeg - Win32 Debug"
+# Name "osgPlugin jpeg - Win32 Debug"
 
 # Begin Group "Source Files"
 

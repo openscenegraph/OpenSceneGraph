@@ -28,7 +28,7 @@ CFG=osgbillboard - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgbillboard.mak" CFG="osgbillboard - Win32 Debug"
+!MESSAGE NMAKE /f "osgbillboard.mak" CFG="Demo osgbillboard - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgbillboard - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgbillboard - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgbillboard - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgbillboard - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgbillboard - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgbillboard - Win32 Release"
+!IF  "$(CFG)" == "Demo osgbillboard - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgbillboard - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgbillboard - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgbillboard - Win32 Release"
+# Name "Demo osgbillboard - Win32 Release"
 
-# Name "osgbillboard - Win32 Debug"
+# Name "Demo osgbillboard - Win32 Debug"
 
 # Begin Source File
 

@@ -28,7 +28,7 @@ CFG=zip - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "zip.mak" CFG="zip - Win32 Debug"
+!MESSAGE NMAKE /f "zip.mak" CFG="osgPlugin zip - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=zip - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "zip - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin zip - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "zip - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin zip - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "zip - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin zip - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "zip - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin zip - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "zip - Win32 Release"
+# Name "osgPlugin zip - Win32 Release"
 
-# Name "zip - Win32 Debug"
+# Name "osgPlugin zip - Win32 Debug"
 
 # Begin Group "Source Files"
 

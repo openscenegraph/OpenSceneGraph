@@ -24,7 +24,7 @@ PLUGININST = lib/osgPlugins
 
 INST_DEMOS    = /usr/share/OpenSceneGraph/bin
 INST_LIBS     = /usr/share/OpenSceneGraph/lib
-INST_PLUGINS  =  /usr/share/OpenSceneGraph/lib/osgPlugins
+INST_PLUGINS  = /usr/share/OpenSceneGraph/lib/osgPlugins
 INST_INCLUDE  = /usr/share/OpenSceneGraph/include
 INST_DEMO_SRC = /usr/share/OpenSceneGraph/src/demos
 INST_DATA     = /usr/share/OpenSceneGraph/data
@@ -70,6 +70,9 @@ ifeq ($(OS),SunOS)
   SO_EXT            = so
   PLUGIN_EXT        = so
   TIFF_LIB	    = -ltiff
+
+INSTBIN       = cp
+INSTDEV       = cp
 
 endif
 

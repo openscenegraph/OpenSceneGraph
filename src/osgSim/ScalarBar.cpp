@@ -191,6 +191,7 @@ void ScalarBar::createDrawables()
     std::vector<osgText::Text*> texts(_numLabels);      // We'll need to collect pointers to these for later
     float labelIncr = (_stc->getMax()-_stc->getMin())/(_numLabels-1);
     float labelxIncr = (_width)/(_numLabels-1);
+    float labely = arOffset + characterSize*0.3f;
     for(i=0; i<_numLabels; ++i)
     {
         osgText::Text* text = new osgText::Text;
@@ -200,7 +201,7 @@ void ScalarBar::createDrawables()
         text->setCharacterSize(characterSize);
         text->setText(_sp->printScalar(_stc->getMin()+(i*labelIncr)));
 
-        text->setPosition(osg::Vec3((i*labelxIncr), arOffset, 0.0f)*matrix);
+        text->setPosition(osg::Vec3((i*labelxIncr), labely, 0.0f)*matrix);
         text->setAlignment(osgText::Text::CENTER_BASE_LINE);
         text->setAxisAlignment( (_orientation==HORIZONTAL) ? osgText::Text::XY_PLANE :  osgText::Text::XZ_PLANE );
 
@@ -222,7 +223,7 @@ void ScalarBar::createDrawables()
         text->setCharacterSize(characterSize);
         text->setText(_title);
 
-        float titleY = (_numLabels>0) ? arOffset + characterSize : arOffset;
+        float titleY = (_numLabels>0) ? labely + characterSize : labely;
 
         // Position the title at the middle of the bar above any labels.
         text->setPosition(osg::Vec3((_width/2.0f), titleY, 0.0f)*matrix);

@@ -39,7 +39,8 @@ bool VertexProgram_readLocalData(Object& obj, Input& fr)
 	while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry) {
 	    if (fr[0].getStr()) {
 		code.append(std::string(fr[0].getStr()));
-		code.push_back('\n');
+		code += '\n'
+			;
 	    }
 	    ++fr;
 	}

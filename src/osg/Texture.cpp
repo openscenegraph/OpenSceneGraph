@@ -45,7 +45,7 @@ Texture::Texture():
 
 }
 
-Texture::Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+Texture::Texture(const Texture& text,const CopyOp& copyop):
             StateAttribute(text,copyop),
             _handleList(),
             _modifiedTag(),

@@ -21,6 +21,7 @@
 #define LW_H
 
 #include <osg/GL>
+#include <iostream>
 
 #define LW_MAX_POINTS   200
 #define LW_MAX_NAME_LEN 500
@@ -88,7 +89,7 @@ typedef int gint;
 
 
 gint      lw_is_lwobject(const char     *lw_file);
-lwObject *lw_object_read(const char     *lw_file);
+lwObject *lw_object_read(const char     *lw_file, std::ostream& output);
 void      lw_object_free(      lwObject *lw_object);
 
 GLfloat   lw_object_radius(const lwObject *lw_object);

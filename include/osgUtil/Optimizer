@@ -134,7 +134,7 @@ class OSGUTIL_EXPORT Optimizer
             if (_isOperationPermissibleForObjectCallback.valid())
                 return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
-            return isOperationPermissibleForObjectImplementation(object,option); 
+                return isOperationPermissibleForObjectImplementation(object,option); 
         }
 
         inline bool isOperationPermissibleForObject(const osg::StateAttribute* object, unsigned int option) const
@@ -142,7 +142,7 @@ class OSGUTIL_EXPORT Optimizer
             if (_isOperationPermissibleForObjectCallback.valid())
                 return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
-            return isOperationPermissibleForObjectImplementation(object,option); 
+                return isOperationPermissibleForObjectImplementation(object,option); 
         }
 
         inline bool isOperationPermissibleForObject(const osg::Drawable* object, unsigned int option) const
@@ -150,7 +150,7 @@ class OSGUTIL_EXPORT Optimizer
             if (_isOperationPermissibleForObjectCallback.valid())
                 return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
-            return isOperationPermissibleForObjectImplementation(object,option); 
+                return isOperationPermissibleForObjectImplementation(object,option); 
         }
 
         inline bool isOperationPermissibleForObject(const osg::Node* object, unsigned int option) const
@@ -158,7 +158,7 @@ class OSGUTIL_EXPORT Optimizer
             if (_isOperationPermissibleForObjectCallback.valid())
                 return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
-            return isOperationPermissibleForObjectImplementation(object,option); 
+                return isOperationPermissibleForObjectImplementation(object,option); 
         }
 
         bool isOperationPermissibleForObjectImplementation(const osg::StateSet* stateset, unsigned int option) const

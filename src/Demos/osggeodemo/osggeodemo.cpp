@@ -17,6 +17,8 @@
 #include <osgGA/AnimationPathManipulator>
 
 #include <osgDB/WriteFile>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <osgUtil/Optimizer>
 
@@ -154,27 +156,15 @@ int main( int argc, char **argv )
     osgGLUT::Viewer viewer;
     viewer.setWindowTitle(argv[0]);
     
-    // geoff's path code.. needs replacing as it isn't cross platform.
-//     {
-//         char *gdpath=getenv("PATH");
-//         int lenpath=(gdpath ? strlen(gdpath):1) + strlen(argv[0]);
-//         char *nupath=new char[lenpath+20];
-// 
-//         strcpy(nupath,"PATH=");
-//         strcat(nupath,argv[0]);
-//         // strip the executable name (xxx.exe)
-//         char *epath=strrchr(nupath, '\\');
-//         if (epath) *epath='\0'; // remove executable
-//         else {
-//             epath=strrchr(nupath, '/');
-//             if (epath) *epath='\0'; // remove executable, UNIX style path
-//         }
-//         strcat(nupath,";");
-//         strcat(nupath,gdpath);
-//         _putenv(nupath);
-//         delete [] nupath;
-//     }
-//     std::cout << "Path " << getenv("PATH") << std::endl;
+    
+    // get the path of the executable and use it to set internal data and library paths.
+    std::string executablePath = osgDB::getFilePath(argv[0]);
+    if (!executablePath.empty())
+    {
+        std::osg::notify(osg::NOTICE) << "Adding executable path '"<<executablePath<<"' to OpenSceneGraph data and library file paths."<<std::endl;
+        osgDB::getDataFilePathList().push_front(executablePath);
+        osgDB::getLibraryFilePathList().push_front(executablePath);
+    }
 
     // configure the viewer from the commandline arguments, and eat any
     // parameters that have been matched.

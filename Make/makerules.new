@@ -10,13 +10,12 @@ debug : $(EXEC:=.dbg)\
 	$(PLUGIN:=.dbg)\
 
 clean : cleanopt cleandbg
-	rm -f $(MAKEDEPEND) 
 
 cleanopt : 
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS)
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) $(MAKEDEPEND)
 
 cleandbg : 
-	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(OBJS)
+	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(OBJS) $(MAKEDEPEND)
 
 clobberopt : 
 	rm -rf $(OPTDIR)
@@ -25,7 +24,6 @@ clobberdbg :
 	rm -rf $(DEBUGDIR)
 
 clobber : clobberdbg clobberopt
-	rm -rf $(MAKEDEPEND)
 
 
 beautify : 
@@ -35,22 +33,40 @@ beautify :
 docs:
 	[ "$(TARGET_BASENAME)" != "" ] && \
 	mkdir -p $(TOPDIR)/doc/doc++/$(TARGET_BASENAME) && \
-	doc++ -d $(TOPDIR)/doc/doc++/$(TARGET_BASENAME) -H -A $(TOPDIR)/include/$(TARGET_BASENAME)/* && \
-	echo $(TARGET_BASENAME) HTML documentation created in $(TOPDIR)/doc/doc++/$(TARGET_BASENAME)
+	doc++ -d $(TOPDIR)/doc/doc++/$(TARGET_BASENAME) -H -A \
+	    $(TOPDIR)/include/$(TARGET_BASENAME)/* && \
+	echo "$(TARGET_BASENAME) HTML documentation created in "\
+	     "$(TOPDIR)/doc/doc++/$(TARGET_BASENAME)"
 
 $(EXEC) : $(OBJS) 
 	$(C++) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
 
 
+## Mac OSX makes the distinction between -dynamiclib and -bundle
+## causing us to have to make a special case here, rather than 
+## just redefining the SHARED argument.
+
+ifeq ($(OS),MacOSX)
+
+$(LIB) : $(OBJS)
+	$(C++) $(LDFLAGS) -dynamiclib $(OBJS) $(LIBS) -o $@
+
+$(PLUGIN) : $(OBJS)
+	$(C++) $(LDFLAGS) -bundle $(OBJS) $(LIBS) -o $@
+else
+
 $(LIB) $(PLUGIN) : $(OBJS)
+	TARGET_BASENAME=`echo $@ | sed 's/.$(PLUGIN_EXT)//' | sed 's/lib//'`;\
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@
+
+endif
 
 $(EXEC:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
 	    THISDIR=../$(THISDIR)\
-	                MAKEDEPEND=../$(MAKEDEPEND) $(EXEC)
+	                MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 $(LIB:=.dbg) :
@@ -58,56 +74,62 @@ $(LIB:=.dbg) :
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
 	   THISDIR=../$(THISDIR)\
-	               MAKEDEPEND=../$(MAKEDEPEND) $(LIB)
+	               MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
-$(PLUGIN:=.dbg) :
+$(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
 	  THISDIR=../$(THISDIR)\
-	  		MAKEDEPEND=../$(MAKEDEPEND) $(PLUGIN)
+	  		MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 
-$(EXEC:=.opt) :
-	[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
-	cd $(OPTDIR); \
+$(EXEC:=.opt) : 
+	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
+	@cd $(OPTDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
 	  THISDIR=../$(THISDIR)\
-	                MAKEDEPEND=../$(MAKEDEPEND) $(EXEC)
-	$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
+	                MAKEDEPEND=Makedepend $(EXEC)
+	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 
-$(LIB:=.opt) :
+$(LIB:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	    THISDIR=../$(THISDIR)\
-	               MAKEDEPEND=../$(MAKEDEPEND) $(LIB)
+	               MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
-$(PLUGIN:=.opt) :
+$(PLUGIN:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	    THISDIR=../$(THISDIR)\
-	               MAKEDEPEND=../$(MAKEDEPEND) $(PLUGIN)
+	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 
-#
-#$(MAKEDEPEND) : $(C++FILES) $(CXXFILES)
-#	$(C++) $(INC) $(CXXDEPFLAGS) $^ > $(MAKEDEPEND)
-#
-# Handle Make dependencies in the next target
-# This improves performance drastically, by building Makedepend only for 
-# files that have changed.
-#
-# Note that with IRIX compilers the -MDupdate $(MAKEFILE) does the same
-# so there is no need to run the dependency code
-#
+
+
+Makedepend : $(CXXFILES) $(CFILES) 
+ifeq ($(OS),IRIX)   
+	touch $@
+else
+	$(C++) $(INC) $(DEPARG) $? > $(MAKEDEPEND)
+endif
+
+
+
 
 .SUFFIXES: .cpp .o
 .cpp.o:
+	$(C++) $(CXXFLAGS) -c $<
+
+## This is an attempt at updating Makedepend file for each source
+## file compiled rather than all files each time a source file changes
+## Doesn't work too well, but leave the code here for later evaulation
+ifeq (0,1)
 ifneq ($(OS),IRIX)   
 	$(C++) $(INC) $(DEPFLAGS) $< > .temp.dep
 	if [ -f $(MAKEDEPEND) ] ; \
@@ -119,26 +141,26 @@ ifneq ($(OS),IRIX)
 	cat .temp.dep1 .temp.dep > $(MAKEDEPEND)
 	rm -f .temp.dep1 .temp.dep
 endif
-	$(C++) $(CXXFLAGS) -c $<
+endif
 
 
-depend :
-	$(C++) $(INC) $(DEPFLAGS) $(CXXFILES) > $(MAKEDEPEND)
+depend : $(MAKEDEPEND)
 
 
-########################################################################################
+###############################################################################
 #
-#  Ok.. If  you are looking hard at the following lines of gnarled code, you deserve an
-#  explanation.  This target makes a link from the installed directories (Assumed to be
-#  rooted at $(TOPDIR), usually $(TOPDIR)/bin or $(TOPDIR)/lib) to a just-built target.  
-#  Both LNSRC (Link source) and LNDEST (Link destination) must be defined before calling
-#  'make __link'.  
+#  Ok.. If  you are looking hard at the following lines of gnarled code, you 
+#  deserve an explanation.  This target makes a link from the installed 
+#  directories (Assumed to be rooted at $(TOPDIR), usually $(TOPDIR)/bin or 
+#  $(TOPDIR)/lib) to a just-built target. Both LNSRC (Link source) and LNDEST 
+#  (Link destination) must be defined before calling 'make __link'.  
 #  
-#  The first four lines check to see that both LNSRC and LNDEST have been defined.
+#  The first four lines check to see that both LNSRC and LNDEST have been 
+#  defined.
 #  
 #  The (very long) following 'if' statement reads in speudo-code like this:
 #  
-##     if the current link is not pointing to the intended destination
+#     if the current link is not pointing to the intended destination
 #      then
 #          announce (echo) intentions to reset link
 #          compute the link path by the following steps
@@ -150,17 +172,19 @@ depend :
 #  	       the destination directory less the prefix of the absolute
 #  	       path of $(ROOT)
 #  	         e.g.   /root/work/thisdir/bin/ - /root/work/thisdir/ = bin/
-#              d) Run a loop, truncating the path represented by T until 'dirname' 
-#  	       returns '.'.  On each iteration increment PFX (Prefix) by '../'
-#  	       This will define the prefix for the path of the link.
+#           d) Run a loop, truncating the path represented by T until 
+#              'dirname' returns '.'.  On each iteration increment PFX 
+#              (Prefix) by '../'  This will define the prefix for the path 
+#              of the link.  
 #  	         e.g. If DESTDIR is lib/osgPlugins, PFX is ../../
-#  	    e) Define the link as a concatenation of PFX and the absolute path
-#  	       of the source directory less the absolute path of $(ROOT)
+#  	    e) Define the link as a concatenation of PFX and the absolute 
+#              path of the source directory less the absolute path of 
+#              $(ROOT)
 #  
 #          Change directories in to the link destination directory 
 #  	   run the link command
 #
-########################################################################################
+###############################################################################
 
 __link : 
 	@echo LNSRC is $(LNSRC) ... LNDEST is $(LNDEST)
@@ -170,17 +194,18 @@ __link :
 	@[ -n "$(LNDEST)" ] && echo > /dev/null
 	@if diff -s $(TOPDIR)/$(LNDEST) $(LNSRC) >/dev/null 2>&1;\
 	  then\
-	    echo "    =====> $(LNSRC) and $(TOPDIR)/$(LNDEST) are in sync";\
+	    echo "  =====> $(LNSRC) and $(TOPDIR)/$(LNDEST) are in sync";\
 	  else\
-	     echo "    =====> resetting $(TOPDIR)/$(LNDEST) to point to $(LNSRC)";\
-	     SRCDIR=`pwd`/`dirname $(LNSRC)`;\
-	     cd $(TOPDIR);\
-	     ROOTDIR=`pwd`;\
-	     DESTDIR=`dirname $$ROOTDIR/$(LNDEST)`;\
-	     T=`echo $$DESTDIR $$ROOTDIR | awk '{print substr($$1,length($$2)+2,512)}'`;\
-	     while [ "$$T" != "." ]; do T=`dirname $$T`;PFX=../"$$PFX";done;\
-	     LINK="$$PFX"`echo $$SRCDIR $$ROOTDIR  | \
-	          awk '{ print substr($$1,length($$2)+2,512) }'`/`basename $(LNDEST)`;\
+	    echo "  =====> resetting $(TOPDIR)/$(LNDEST) to point to $(LNSRC)";\
+	    SRCDIR=`pwd`/`dirname $(LNSRC)`;\
+	    cd $(TOPDIR);\
+	    ROOTDIR=`pwd`;\
+	    DESTDIR=`dirname $$ROOTDIR/$(LNDEST)`;\
+	    T=`echo $$DESTDIR $$ROOTDIR | \
+	    	awk '{print substr($$1,length($$2)+2,512)}'`;\
+	    while [ "$$T" != "." ]; do T=`dirname $$T`;PFX=../"$$PFX";done;\
+	    LINK="$$PFX"`echo $$SRCDIR $$ROOTDIR  | awk \
+	      '{ print substr($$1,length($$2)+2,512) }'`/`basename $(LNDEST)`;\
 	    cd `dirname $(LNDEST)`;\
 	    rm -f `basename $(LNDEST)`;\
 	    ln -sf $$LINK `basename $(LNDEST)`;\

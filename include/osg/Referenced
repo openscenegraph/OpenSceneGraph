@@ -25,6 +25,7 @@
 #ifdef OSG_JAVA_BUILD
 #include <NoodleGlue/Bridgable.h>
 #else
+#include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 #endif
 
@@ -55,13 +56,13 @@ class SG_EXPORT Referenced
 
         /** Increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
-        void ref() const;
+        inline void ref() const;
         
         /** Decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  If the
             reference count goes to zero, it is assumed that this object
             is no longer referenced and is automatically deleted.*/
-        void unref() const;
+        inline void unref() const;
         
         /** Decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  However, do
@@ -127,6 +128,43 @@ class DeleteHandler
           * The default implementation does a delete straight away.*/
         virtual void requestDelete(const Referenced* object) { doDelete(object); }
 };
+
+inline void Referenced::ref() const
+{
+    if (_refMutex)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
+        ++_refCount;
+    }
+    else
+    {
+        ++_refCount;
+    }
+}
+
+inline void Referenced::unref() const
+{
+    bool needDelete = false;
+    if (_refMutex)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
+        --_refCount;
+        needDelete = _refCount<=0;
+    }
+    else
+    {
+        --_refCount;
+        needDelete = _refCount<=0;
+    }
+
+    if (needDelete)
+    {
+        if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
+        else delete this;
+    }
+}
+
+
 #else 
 /** Java wrappers use the CBridgable base-class for referencing
   * and garbage collection.

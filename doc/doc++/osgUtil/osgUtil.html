@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>namespace osgUtil</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>namespace <A HREF="#DOC.DOCU">osgUtil</A></H2></H2>
+<HR>
+<P><DL>
+ <DT>
+class  OSGUTIL_EXPORT <B><A HREF="CubeMapGenerator.html">CubeMapGenerator</A></B>: public osg::Referenced
+<DD><I>This is the base class for cube map generators.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A></B>: public osg::Referenced
+<DD><I>Utility class that triangulates an irregolar network of sample points.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DisplayListVisitor.html">DisplayListVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Visitor for traversing scene graph and setting each osg::Drawable's _useDisplayList flag,  with option to immediately compile osg::Drawable OpenGL Display lists and osg::StateAttribute's</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DisplayRequirementsVisitor.html">DisplayRequirementsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A visitor for traversing a scene graph establishing the OpenGL visuals are required to support rendering of that scene graph.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="HalfWayMapGenerator.html">HalfWayMapGenerator</A></B>: public <!1><A HREF="CubeMapGenerator.html">CubeMapGenerator</A>
+<DD><I>This cube map generator produces an Half-way vector map, useful for  hardware-based specular lighting effects.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="HighlightMapGenerator.html">HighlightMapGenerator</A></B>: public <!1><A HREF="CubeMapGenerator.html">CubeMapGenerator</A>
+<DD><I>This cube map generator produces a specular highlight map.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="InsertImpostorsVisitor.html">InsertImpostorsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Insert impostor nodes into scene graph.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Hit.html">Hit</A></B>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="IntersectVisitor.html">IntersectVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Basic visitor for ray based collisions of a scene</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Optimizer.html">Optimizer</A></B>
+<DD><I>Insert impostor nodes into scene graph.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="PickIntersectVisitor.html">PickIntersectVisitor</A></B>: public <!1><A HREF="IntersectVisitor.html">IntersectVisitor</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="PickVisitor.html">PickVisitor</A></B>: public osg::NodeVisitor
+<DT>
+class  <B><A HREF="ReflectionMapGenerator.html">ReflectionMapGenerator</A></B>: public <!1><A HREF="CubeMapGenerator.html">CubeMapGenerator</A>
+<DD><I>This is the most simple cube map generator.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderBin.html">RenderBin</A></B>: public osg::Object
+<DD><I> RenderBin base class</I>
+<DT>
+class  <B><A HREF="RegisterRenderBinProxy.html">RegisterRenderBinProxy</A></B>
+<DD><I>Proxy class for automatic registration of renderbins with the RenderBin prototypelist</I>
+<DT>
+struct  <B><A HREF="LeafDepthSortFunctor.html">LeafDepthSortFunctor</A></B>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderGraph.html">RenderGraph</A></B>: public osg::Referenced
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderLeaf.html">RenderLeaf</A></B>: public osg::Referenced
+<DD><I>container class for all data required for rendering of drawables</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderStage.html">RenderStage</A></B>: public <!1><A HREF="RenderBin.html">RenderBin</A>
+<DD><I> RenderState base class.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderStageLighting.html">RenderStageLighting</A></B>: public osg::Object
+<DD><I> RenderBin base class</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderToTextureStage.html">RenderToTextureStage</A></B>: public <!1><A HREF="RenderStage.html">RenderStage</A>
+<DD><I> RenderStage which copies the final image to an attached texture or image.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="SceneView.html">SceneView</A></B>: public osg::Referenced
+<DD><I> SceneView is literally a view of a scene, encapsulating the camera, global state, lights and the scene itself.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="SmoothingVisitor.html">SmoothingVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A smoothing visitor for calculating smoothed normals for osg::GeoSet's which contains surface primitives</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Tesselator.html">Tesselator</A></B>
+<DD><I>A simple class for tessellating a single polygon boundary.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="TransformCallback.html">TransformCallback</A></B>: public osg::NodeCallback
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="TriStripVisitor.html">TriStripVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A tri stripping visitor for converting Geometry surface primitives into tri strips.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="UpdateVisitor.html">UpdateVisitor</A></B>: public osg::NodeVisitor
+<DD><I> Basic UpdateVisitor implementation for animating a scene.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="CullVisitor.html">CullVisitor</A></B>: public osg::NodeVisitor, public osg::CullStack
+<DD><I> Basic NodeVisitor implementation for rendering a scene. Basic NodeVisitor implementation for rendering a scene.</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+</DL>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

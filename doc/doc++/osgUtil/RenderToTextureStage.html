@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::RenderToTextureStage</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::RenderToTextureStage</A></H2></H2><BLOCKQUOTE> RenderStage which copies the final image to an attached texture or image.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="Mosg::Object,M,CRenderBin,MRenderBin.html,CRenderStage,MRenderStage.html,CRenderToTextureStage,MRenderToTextureStage.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.21.1">RenderToTextureStage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.21.2">cloneType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.21.3">clone</A></B>(const osg::CopyOp&amp;) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.21.4">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.21.5">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.21.6">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.7">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.8">setTexture</A></B>(osg::Texture2D* texture)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture2D* <B><A HREF="#DOC.2.21.9">getTexture</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.10">setImage</A></B>(osg::Image* image)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.21.11">getImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.12">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Texture2D&gt;  <B><A HREF="#DOC.2.21.14">_texture</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Image&gt;  <B><A HREF="#DOC.2.21.15">_image</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.21.13">~RenderToTextureStage</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="RenderStage.html">RenderStage</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_stageDrawnThisFrame</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderStage.html#DOC.2.19.32">DependencyList</A> <B>_dependencyList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::Viewport&gt;  <B>_viewport</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLbitfield <B>_clearMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::ColorMask&gt;  <B>_colorMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec4 <B>_clearColor</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec4 <B>_clearAccum</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>double <B>_clearDepth</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_clearStencil</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable osg::ref_ptr&lt;<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>&gt;  <B>_renderStageLighting</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setViewport</B>(osg::Viewport* viewport)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Viewport* <B>getViewport</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Viewport* <B>getViewport</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setClearMask</B>(GLbitfield mask)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLbitfield <B>getClearMask</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setColorMask</B>(osg::ColorMask* cm)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ColorMask* <B>getColorMask</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::ColorMask* <B>getColorMask</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setClearColor</B>(const osg::Vec4&amp; color)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Vec4&amp; <B>getClearColor</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setClearAccum</B>(const osg::Vec4&amp; color)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Vec4&amp; <B>getClearAccum</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setClearDepth</B>(double depth)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>double <B>getClearDepth</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setClearStencil</B>(int stencil)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>getClearStencil</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setRenderStageLighting</B>(<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* rsl)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* <B>getRenderStageLighting</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>addPositionedAttribute</B>(osg::RefMatrix* matrix, const osg::StateAttribute* attr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>drawPreRenderStages</B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>drawImplementation</B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addToDependencyList</B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>getStats</B>(osg::Statistics* primStats)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt; &gt; <B>DependencyList</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="RenderBin.html">RenderBin</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_binNum</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B>_parent</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B>_stage</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.3">RenderBinList</A> <B>_bins</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.2">RenderGraphList</A> <B>_renderGraphList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.1">RenderLeafList</A> <B>_renderLeafList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> <B>_sortMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>&gt;  <B>_sortCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html#DOC.2.14.49">RenderBinPrototypeList</A> <B>s_renderBinPrototypeList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html">RenderBin</A>* <B>createRenderBin</B>(const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html">RenderBin</A>* <B>getRenderBinPrototype</B>(const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>addRenderBinPrototype</B>(const std::string&amp; binName, <!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>removeRenderBinPrototype</B>(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B>find_or_insert</B>(int binNum, const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addRenderGraph</B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>sort</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortImplementation</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSortMode</B>(<!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> <B>getSortMode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortByState</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortFrontToBack</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortBackToFront</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSortCallback</B>(<!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>* sortCallback)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>* <B>getSortCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>* <B>getSortCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* drawCallback)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* <B>getDrawCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(osg::Statistics* primStats)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(osg::Statistics* primStats, int nbin)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>copyLeavesFromRenderGraphListToRenderLeafList</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&gt; <B>RenderLeafList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>*&gt; <B>RenderGraphList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B>RenderBinList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>SortMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>SortCallback</B>: public osg::Referenced
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public osg::Referenced
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B>RenderBinPrototypeList</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+RenderStage which copies the final image to an attached texture or image.
+Generally used as a pre-rendering stage.</BLOCKQUOTE>
+<DL>
+
+<A NAME="RenderToTextureStage"></A>
+<A NAME="DOC.2.21.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderToTextureStage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.21.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.21.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* clone(const osg::CopyOp&amp;) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.21.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.21.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.21.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.21.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTexture"></A>
+<A NAME="DOC.2.21.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTexture(osg::Texture2D* texture)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTexture"></A>
+<A NAME="DOC.2.21.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Texture2D* getTexture()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setImage"></A>
+<A NAME="DOC.2.21.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(osg::Image* image)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getImage"></A>
+<A NAME="DOC.2.21.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Image* getImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw"></A>
+<A NAME="DOC.2.21.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~RenderToTextureStage"></A>
+<A NAME="DOC.2.21.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderToTextureStage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texture"></A>
+<A NAME="DOC.2.21.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Texture2D&gt;  _texture</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_image"></A>
+<A NAME="DOC.2.21.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _image</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

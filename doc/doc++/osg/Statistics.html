@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osg::Statistics</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osg::Statistics</A></H2></H2><BLOCKQUOTE> Statistics base class.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CPrimitiveFunctor,MPrimitiveFunctor.html,CStatistics,MStatistics.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.177.22">numDrawables</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.177.23">nummat</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.177.24">nbins</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.177.25">nlights</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.177.26">depth</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.177.27">_binNo</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Statistics.html#DOC.2.177.4">statsType</A> <B><A HREF="#DOC.2.177.28">stattype</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.177.29">nimpostor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.177.30">_vertexCount</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Statistics.html#DOC.2.177.2">PrimtiveValueMap</A> <B><A HREF="#DOC.2.177.31">_primitiveCount</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.177.32">_currentPrimtiveFunctorMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.177.3">Statistics</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.5">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.6">setType</A></B>(<!1><A HREF="Statistics.html#DOC.2.177.4">statsType</A> <!1><A HREF="ImpostorSprite.html#DOC.2.83.25">t</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.7">setVertexArray</A></B>(unsigned int count, const <!1><A HREF="Vec3.html">Vec3</A>*)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.8">drawArrays</A></B>(GLenum mode, GLint, GLsizei count)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.9">drawElements</A></B>(GLenum mode, GLsizei count, const GLuint*)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.10">begin</A></B>(GLenum mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.11">vertex</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.12">vertex</A></B>(float, float, float)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.177.13">end</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.14">addDrawable</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.15">addMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.16">addLight</A></B>(int np)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.17">addImpostor</A></B>(int np)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.177.18">getBins</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.19">setDepth</A></B>(int d)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.20">addBins</A></B>(int np)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.177.21">setBinNo</A></B>(int n)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;unsigned int,unsigned int&gt; <B><A HREF="#DOC.2.177.1">PrimitivePair</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;GLenum,<!1><A HREF="Statistics.html#DOC.2.177.1">PrimitivePair</A>&gt; <B><A HREF="#DOC.2.177.2">PrimtiveValueMap</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.177.4">statsType</A></B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>:</H3>
+<DL>
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Statistics base class. Used to extract primitive information from 
+the renderBin(s).  Add a case of getStats(osgUtil::Statistics *stat)
+for any new drawable (or drawable derived class) that you generate 
+(eg see Geometry.cpp).  There are 20 types of drawable counted - actually only
+14 cases can occur in reality.  these represent sets of GL_POINTS, GL_LINES
+GL_LINESTRIPS, LOOPS, TRIANGLES, TRI-fans, tristrips, quads, quadstrips etc
+The number of triangles rendered is inferred:
+each triangle = 1 triangle (number of vertices/3)
+each quad = 2 triangles (nverts/2)
+each trifan or tristrip = (length-2) triangles and so on.</BLOCKQUOTE>
+<DL>
+
+<A NAME="PrimitivePair"></A>
+<A NAME="DOC.2.177.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;unsigned int,unsigned int&gt; PrimitivePair</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PrimtiveValueMap"></A>
+<A NAME="DOC.2.177.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;GLenum,<!1><A HREF="Statistics.html#DOC.2.177.1">PrimitivePair</A>&gt; PrimtiveValueMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Statistics"></A>
+<A NAME="DOC.2.177.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Statistics()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="statsType"></A>
+<A NAME="DOC.2.177.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  statsType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="STAT_NONE"></A>
+<A NAME="DOC.2.177.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_NONE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_FRAMERATE"></A>
+<A NAME="DOC.2.177.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_FRAMERATE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_GRAPHS"></A>
+<A NAME="DOC.2.177.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_GRAPHS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_PRIMS"></A>
+<A NAME="DOC.2.177.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_PRIMS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_PRIMSPERVIEW"></A>
+<A NAME="DOC.2.177.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_PRIMSPERVIEW</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_PRIMSPERBIN"></A>
+<A NAME="DOC.2.177.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_PRIMSPERBIN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_DC"></A>
+<A NAME="DOC.2.177.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_DC</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STAT_RESTART"></A>
+<A NAME="DOC.2.177.4.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STAT_RESTART</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="reset"></A>
+<A NAME="DOC.2.177.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setType"></A>
+<A NAME="DOC.2.177.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setType(<!1><A HREF="Statistics.html#DOC.2.177.4">statsType</A> <!1><A HREF="ImpostorSprite.html#DOC.2.83.25">t</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setVertexArray"></A>
+<A NAME="DOC.2.177.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setVertexArray(unsigned int count, const <!1><A HREF="Vec3.html">Vec3</A>*)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawArrays"></A>
+<A NAME="DOC.2.177.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawArrays(GLenum mode, GLint, GLsizei count)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawElements"></A>
+<A NAME="DOC.2.177.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLuint*)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="begin"></A>
+<A NAME="DOC.2.177.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void begin(GLenum mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="vertex"></A>
+<A NAME="DOC.2.177.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void vertex(const <!1><A HREF="Vec3.html">Vec3</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="vertex"></A>
+<A NAME="DOC.2.177.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void vertex(float, float, float)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="end"></A>
+<A NAME="DOC.2.177.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void end()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addDrawable"></A>
+<A NAME="DOC.2.177.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addDrawable()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addMatrix"></A>
+<A NAME="DOC.2.177.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addLight"></A>
+<A NAME="DOC.2.177.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addLight(int np)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addImpostor"></A>
+<A NAME="DOC.2.177.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addImpostor(int np)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getBins"></A>
+<A NAME="DOC.2.177.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getBins()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDepth"></A>
+<A NAME="DOC.2.177.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDepth(int d)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addBins"></A>
+<A NAME="DOC.2.177.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addBins(int np)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setBinNo"></A>
+<A NAME="DOC.2.177.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setBinNo(int n)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="numDrawables"></A>
+<A NAME="DOC.2.177.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int numDrawables</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="nummat"></A>
+<A NAME="DOC.2.177.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  nummat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="nbins"></A>
+<A NAME="DOC.2.177.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   nbins</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="nlights"></A>
+<A NAME="DOC.2.177.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int nlights</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="depth"></A>
+<A NAME="DOC.2.177.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int depth</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_binNo"></A>
+<A NAME="DOC.2.177.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _binNo</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="stattype"></A>
+<A NAME="DOC.2.177.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Statistics.html#DOC.2.177.4">statsType</A> stattype</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="nimpostor"></A>
+<A NAME="DOC.2.177.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int nimpostor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_vertexCount"></A>
+<A NAME="DOC.2.177.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _vertexCount</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_primitiveCount"></A>
+<A NAME="DOC.2.177.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Statistics.html#DOC.2.177.2">PrimtiveValueMap</A> _primitiveCount</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_currentPrimtiveFunctorMode"></A>
+<A NAME="DOC.2.177.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _currentPrimtiveFunctorMode</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

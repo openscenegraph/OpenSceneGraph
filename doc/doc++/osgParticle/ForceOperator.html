@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgParticle::ForceOperator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgParticle::ForceOperator</A></H2></H2><BLOCKQUOTE>An operator that applies a constant force to the particles.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Object,M,COperator,MOperator.html,CForceOperator,MForceOperator.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1">META_Object</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ForceOperator.html">ForceOperator</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.6.6">ForceOperator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.6.7">ForceOperator</A></B>(const <!1><A HREF="ForceOperator.html#DOC.2.6.7">ForceOperator</A> &amp;copy, const osg::CopyOp &amp;copyop)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.6.8">getForce</A></B>() const 
+<DD><I>Get the force vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.6.9">setForce</A></B>(const osg::Vec3 &amp;v)
+<DD><I>Set the force vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.6.10">operate</A></B>(<!1><A HREF="Particle.html">Particle</A>* P, double dt)
+<DD><I>Apply the force to a particle.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.6.11">beginOperate</A></B>(<!1><A HREF="Program.html">Program</A>* prg)
+<DD><I>Perform some initialization.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.6.2">~ForceOperator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ForceOperator.html">ForceOperator</A>&amp; <B><A HREF="#DOC.2.6.3">operator=</A></B>(const <!1><A HREF="ForceOperator.html">ForceOperator</A> &amp;)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Operator.html">Operator</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>endOperate</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isEnabled</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setEnabled</B>(bool v)
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>An operator that applies a constant force to the particles.
+Remember that if the mass of particles is expressed in <U>kg</U> and the lengths are
+expressed in <U>meters</U>, then the force should be expressed in <U>Newtons</U>.</BLOCKQUOTE>
+<DL>
+
+<A NAME="META_Object"></A>
+<A NAME="DOC.2.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ForceOperator.html">ForceOperator</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ForceOperator"></A>
+<A NAME="DOC.2.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ForceOperator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ForceOperator.html">ForceOperator</A>&amp; operator=(const <!1><A HREF="ForceOperator.html">ForceOperator</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ForceOperator"></A>
+<A NAME="DOC.2.6.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ForceOperator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ForceOperator"></A>
+<A NAME="DOC.2.6.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ForceOperator(const <!1><A HREF="ForceOperator.html#DOC.2.6.7">ForceOperator</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getForce"></A>
+<A NAME="DOC.2.6.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getForce() const </B></TT>
+<DD>Get the force vector
+<DL><DT><DD></DL><P>
+<A NAME="setForce"></A>
+<A NAME="DOC.2.6.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setForce(const osg::Vec3 &amp;v)</B></TT>
+<DD>Set the force vector
+<DL><DT><DD></DL><P>
+<A NAME="operate"></A>
+<A NAME="DOC.2.6.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void operate(<!1><A HREF="Particle.html">Particle</A>* P, double dt)</B></TT>
+<DD>Apply the force to a particle. Do not call this method manually.
+<DL><DT><DD></DL><P>
+<A NAME="beginOperate"></A>
+<A NAME="DOC.2.6.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void beginOperate(<!1><A HREF="Program.html">Program</A>* prg)</B></TT>
+<DD>Perform some initialization. Do not call this method manually.
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGPRODUCER_EXPORT osgProducer::KeyboardMouseCallback</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGPRODUCER_EXPORT <A HREF="#DOC.DOCU">osgProducer::KeyboardMouseCallback</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="MProducer::KeyboardMouseCallback,M,CKeyboardMouseCallback,MKeyboardMouseCallback.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.1">KeyboardMouseCallback</A></B>(Producer::KeyboardMouse* keyboardMouse, bool &amp;<!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.16">done</A>, bool escapeKeySetsDone=true)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.2">~KeyboardMouseCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.3">mouseMotion</A></B>( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.4">passiveMouseMotion</A></B>( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.5">buttonPress</A></B>( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>, unsigned int <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.19">mbutton</A> )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.6">doubleButtonPress</A></B>( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>, unsigned int <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.19">mbutton</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.7">buttonRelease</A></B>( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>, unsigned int <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.19">mbutton</A> )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.8">keyPress</A></B>( Producer::KeyCharacter key )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.9">keyRelease</A></B>( Producer::KeyCharacter key )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.10">specialKeyPress</A></B>( Producer::KeyCharacter key)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.11">specialKeyRelease</A></B>( Producer::KeyCharacter key)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.12">setEscapeSetDone</A></B>(bool esc)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.13">getEscapeSetDone</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.15">getEventQueue</A></B>(<!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.14">EventQueue</A>&amp; queue)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.16">done</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.17">mx</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.18">my</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.19">mbutton</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.20">setStartTick</A></B>(osg::Timer_t tick)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.21">getTime</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Producer::KeyboardMouse* <B><A HREF="#DOC.2.2.22">getKeyboardMouse</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const Producer::KeyboardMouse* <B><A HREF="#DOC.2.2.23">getKeyboardMouse</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="EventAdapter.html">EventAdapter</A>* <B><A HREF="#DOC.2.2.24">createEventAdapter</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="EventAdapter.html">EventAdapter</A>&gt; &gt; <B><A HREF="#DOC.2.2.14">EventQueue</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Producer::KeyboardMouse* <B><A HREF="#DOC.2.2.25">_keyboardMouse</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.26">_mx</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.2.27">_my</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.28">_mbutton</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool&amp; <B><A HREF="#DOC.2.2.29">_done</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.30">_escapeKeySetsDone</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.2.2.31">_startTick</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer <B><A HREF="#DOC.2.2.32">_timer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Producer::Mutex <B><A HREF="#DOC.2.2.33">_eventQueueMutex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.14">EventQueue</A> <B><A HREF="#DOC.2.2.34">_eventQueue</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="KeyboardMouseCallback"></A>
+<A NAME="DOC.2.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMouse, bool &amp;<!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.16">done</A>, bool escapeKeySetsDone=true)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~KeyboardMouseCallback"></A>
+<A NAME="DOC.2.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~KeyboardMouseCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mouseMotion"></A>
+<A NAME="DOC.2.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouseMotion( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="passiveMouseMotion"></A>
+<A NAME="DOC.2.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void passiveMouseMotion( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="buttonPress"></A>
+<A NAME="DOC.2.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void buttonPress( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>, unsigned int <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.19">mbutton</A> )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="doubleButtonPress"></A>
+<A NAME="DOC.2.2.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void doubleButtonPress( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>, unsigned int <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.19">mbutton</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="buttonRelease"></A>
+<A NAME="DOC.2.2.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void buttonRelease( float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.17">mx</A>, float <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.18">my</A>, unsigned int <!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.19">mbutton</A> )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="keyPress"></A>
+<A NAME="DOC.2.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void keyPress( Producer::KeyCharacter key )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="keyRelease"></A>
+<A NAME="DOC.2.2.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void keyRelease( Producer::KeyCharacter key )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="specialKeyPress"></A>
+<A NAME="DOC.2.2.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void specialKeyPress( Producer::KeyCharacter key)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="specialKeyRelease"></A>
+<A NAME="DOC.2.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void specialKeyRelease( Producer::KeyCharacter key)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setEscapeSetDone"></A>
+<A NAME="DOC.2.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEscapeSetDone(bool esc)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEscapeSetDone"></A>
+<A NAME="DOC.2.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getEscapeSetDone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="EventQueue"></A>
+<A NAME="DOC.2.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="EventAdapter.html">EventAdapter</A>&gt; &gt; EventQueue</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEventQueue"></A>
+<A NAME="DOC.2.2.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getEventQueue(<!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.14">EventQueue</A>&amp; queue)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="done"></A>
+<A NAME="DOC.2.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool done()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mx"></A>
+<A NAME="DOC.2.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float mx()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="my"></A>
+<A NAME="DOC.2.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float my()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mbutton"></A>
+<A NAME="DOC.2.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int mbutton()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setStartTick"></A>
+<A NAME="DOC.2.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStartTick(osg::Timer_t tick)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTime"></A>
+<A NAME="DOC.2.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getTime()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouse"></A>
+<A NAME="DOC.2.2.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Producer::KeyboardMouse* getKeyboardMouse()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouse"></A>
+<A NAME="DOC.2.2.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const Producer::KeyboardMouse* getKeyboardMouse() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createEventAdapter"></A>
+<A NAME="DOC.2.2.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="EventAdapter.html">EventAdapter</A>* createEventAdapter()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_keyboardMouse"></A>
+<A NAME="DOC.2.2.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Producer::KeyboardMouse* _keyboardMouse</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mx"></A>
+<A NAME="DOC.2.2.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _mx</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_my"></A>
+<A NAME="DOC.2.2.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float  _my</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mbutton"></A>
+<A NAME="DOC.2.2.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _mbutton</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_done"></A>
+<A NAME="DOC.2.2.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool&amp; _done</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_escapeKeySetsDone"></A>
+<A NAME="DOC.2.2.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _escapeKeySetsDone</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_startTick"></A>
+<A NAME="DOC.2.2.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _startTick</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_timer"></A>
+<A NAME="DOC.2.2.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer _timer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eventQueueMutex"></A>
+<A NAME="DOC.2.2.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Producer::Mutex _eventQueueMutex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eventQueue"></A>
+<A NAME="DOC.2.2.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="KeyboardMouseCallback.html#DOC.2.2.14">EventQueue</A> _eventQueue</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

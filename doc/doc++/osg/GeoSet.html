@@ -1,0 +1,1327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::GeoSet</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::GeoSet</A></H2></H2><BLOCKQUOTE>Note, osg::GeoSet is now deprecated, please use osg::Geometry instead.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CDrawable,MDrawable.html,CGeoSet,MGeoSet.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.74.5">GeoSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.74.6">GeoSet</A></B>(const <!1><A HREF="GeoSet.html#DOC.2.74.6">GeoSet</A>&amp; geoset, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.74.7">cloneType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.74.8">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.74.9">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.74.10">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.74.11">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.74.12">setNumPrims</A></B>( int n )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.13">getNumPrims</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.14">setPrimType</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.1">PrimitiveType</A> type )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.1">PrimitiveType</A> <B><A HREF="#DOC.2.74.15">getPrimType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.74.16">setPrimLengths</A></B>( int* lens )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int* <B><A HREF="#DOC.2.74.17">getPrimLengths</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.18">computeNumVerts</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.19">getNumCoords</A></B>() const 
+<DD><I>get the number of coords required by the defined primitives.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.74.20">getCoords</A></B>()
+<DD><I>get a pointer to Vec3 coord array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.74.21">getCoords</A></B>() const 
+<DD><I>get a const pointer to Vec3 coord array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.22">getNumCoordIndices</A></B>() const 
+<DD><I>get the number of indices required by the defined primitives.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.23">getCoordIndices</A></B>()
+<DD><I>get the coord index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.24">getCoordIndices</A></B>() const 
+<DD><I>get the const coord index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.25">setCoords</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* cp )
+<DD><I>set the coords (ie the geometry) of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.26">setCoords</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* cp, GLushort* ci )
+<DD><I>set the coords (ie the geometry) and ushort indices of the geoset.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.27">setCoords</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* cp, GLuint* ci )
+<DD><I>set the coords (ie the geometry) and unsigned int indices of the geoset.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.28">setCoords</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* cp, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )
+<DD><I>set the coords (ie the geometry) and indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.29">getNumNormals</A></B>() const 
+<DD><I>get the number of normals required by the defined primitives and normals binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.74.30">getNormals</A></B>()
+<DD><I>get a pointer to Vec3 normal array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.74.31">getNormals</A></B>() const 
+<DD><I>get a const pointer to Vec3 normal array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.32">getNumNormalIndices</A></B>() const 
+<DD><I>get the number of normal indices required by the defined primitives and normals binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.33">getNormalIndices</A></B>()
+<DD><I>get the normal index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.34">getNormalIndices</A></B>() const 
+<DD><I>get the const normal index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.35">setNormals</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* np )
+<DD><I>set the normals of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.36">setNormals</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* np, GLushort* ni )
+<DD><I>set the normals and normal indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.37">setNormals</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* np, GLuint* ni )
+<DD><I>set the normals and normal indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.38">setNormals</A></B>( <!1><A HREF="Vec3.html">Vec3</A>* np, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )
+<DD><I>set the normals and normal indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.39">setNormalBinding</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> binding )
+<DD><I>set the normals binding to the vertices/primitives/overall</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> <B><A HREF="#DOC.2.74.40">getNormalBinding</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.41">getNumColors</A></B>() const 
+<DD><I>get the number of colors required by the defined primitives and color binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A>* <B><A HREF="#DOC.2.74.42">getColors</A></B>()
+<DD><I>get a pointer to Vec4 color array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>* <B><A HREF="#DOC.2.74.43">getColors</A></B>() const 
+<DD><I>get a pointer to Vec4 color array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.44">getNumColorIndices</A></B>() const 
+<DD><I>get the number of colors indices required by the defined primitives and color binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.45">getColorIndices</A></B>()
+<DD><I>get the color index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.46">getColorIndices</A></B>() const 
+<DD><I>get the const color index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.47">setColors</A></B>( <!1><A HREF="Vec4.html">Vec4</A>* cp )
+<DD><I>set the colors of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.48">setColors</A></B>( <!1><A HREF="Vec4.html">Vec4</A>* cp, GLushort* li )
+<DD><I>set the colors and color indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.49">setColors</A></B>( <!1><A HREF="Vec4.html">Vec4</A>* cp, GLuint* li )
+<DD><I>set the colors and color indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.50">setColors</A></B>( <!1><A HREF="Vec4.html">Vec4</A>* cp, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )
+<DD><I>set the colors and color indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.51">setColorBinding</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> binding )
+<DD><I>set the color binding to the vertices/primitives/overall</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> <B><A HREF="#DOC.2.74.52">getColorBinding</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.53">getNumTextureCoords</A></B>() const 
+<DD><I>get the number of texture coords required by the defined primitives and textures binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.74.54">getTextureCoords</A></B>()
+<DD><I>get a pointer to Vec4 color array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.74.55">getTextureCoords</A></B>() const 
+<DD><I>get a pointer to Vec4 color array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.56">getNumTextureIndices</A></B>() const 
+<DD><I>get the number of texture coord indices required by the defined primitives and texture binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.57">getTextureIndices</A></B>()
+<DD><I>get the texture index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.58">getTextureIndices</A></B>() const 
+<DD><I>get the texture index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.59">setTextureCoords</A></B>( <!1><A HREF="Vec2.html">Vec2</A>* tc )
+<DD><I>set the texture coords of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.60">setTextureCoords</A></B>( <!1><A HREF="Vec2.html">Vec2</A>* tc, GLushort* ti )
+<DD><I>set the texture coords and texture coord indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.61">setTextureCoords</A></B>( <!1><A HREF="Vec2.html">Vec2</A>* tc, GLuint* ti )
+<DD><I>set the texture coords and texture coord indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.62">setTextureCoords</A></B>( <!1><A HREF="Vec2.html">Vec2</A>* tc, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )
+<DD><I>set the texture coords and texture indices of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.63">setTextureBinding</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> binding )
+<DD><I>set the texture coord binding to the vertices/primitives/overall</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> <B><A HREF="#DOC.2.74.64">getTextureBinding</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.65">getNumInterleavedCoords</A></B>() const 
+<DD><I>get the number of texture coords required by the defined primitives and textures binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void* <B><A HREF="#DOC.2.74.66">getInterleavedArray</A></B>()
+<DD><I>get a pointer to interleaved float array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const void* <B><A HREF="#DOC.2.74.67">getInterleavedArray</A></B>() const 
+<DD><I>get a const pointer to interleaved float array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.74.68">getNumInterleavedIndices</A></B>() const 
+<DD><I>get the number of texture coord indices required by the defined primitives and texture binding</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.69">getInterleavedIndices</A></B>()
+<DD><I>get the texture index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; <B><A HREF="#DOC.2.74.70">getInterleavedIndices</A></B>() const 
+<DD><I>get the interleaved index array.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> <B><A HREF="#DOC.2.74.71">getInterleavedFormat</A></B>() const 
+<DD><I>get the interleaved array storage format.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.72">setInterleavedArray</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia )
+<DD><I>set the interleaved arrays of the geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.73">setInterleavedArray</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia, GLushort* iai )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.74">setInterleavedArray</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia, GLuint* iai )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.75">setInterleavedArray</A></B>( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; iai )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.76">drawImplementation</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DD><I>draw geoset directly ignoring an OpenGL display list which could be attached.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.74.77">check</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.79">setAttributeDeleteFunctor</A></B>(<!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>* adf)
+<DD><I>set an alternative AttributeDeleteFunction to handle attribute arrays attached to this Geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>* <B><A HREF="#DOC.2.74.80">getAttributeDeleteFunctor</A></B>()
+<DD><I>get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>* <B><A HREF="#DOC.2.74.81">getAttributeDeleteFunctor</A></B>() const 
+<DD><I>get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.74.82">supports</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;) const 
+<DD><I>return true, osg::GeoSet does support accept(AttributeFunctor&)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.83">accept</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)
+<DD><I>accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.74.84">supports</A></B>(<!1><A HREF="ConstAttributeFunctor.html">ConstAttributeFunctor</A>&amp;) const 
+<DD><I>return true, osg::GeoSet does support accept(ConstAttributeFunctor&)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.85">accept</A></B>(<!1><A HREF="ConstAttributeFunctor.html">ConstAttributeFunctor</A>&amp; af) const 
+<DD><I>accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.74.86">supports</A></B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp;) const 
+<DD><I>return true, osg::GeoSet does support accept(PrimitiveFunctor&) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.87">accept</A></B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf) const 
+<DD><I>accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html">Geometry</A>* <B><A HREF="#DOC.2.74.88">convertToGeometry</A></B>()
+<DD><I>convinience function for converting GeoSet's to equivilant Geometry nodes</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.74.1">PrimitiveType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.74.2">BindingType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.74.3">InterleaveArrayType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  SG_EXPORT <B><A HREF="#DOC.2.74.4">IndexPointer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  SG_EXPORT <B><A HREF="#DOC.2.74.78">AttributeDeleteFunctor</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I>function object which is used to handling the clean up of attribute arrays associated with GeoSet's.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>&gt;  <B><A HREF="#DOC.2.74.92">_adf</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.74.93">_numprims</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.1">PrimitiveType</A> <B><A HREF="#DOC.2.74.94">_primtype</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.74.95">_needprimlen</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.74.96">_oglprimtype</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int* <B><A HREF="#DOC.2.74.97">_primLengths</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable unsigned char <B><A HREF="#DOC.2.74.98">_primlength</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char <B><A HREF="#DOC.2.74.99">_flat_shaded_skip</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.74.100">_numcoords</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.74.101">_coords</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> <B><A HREF="#DOC.2.74.102">_cindex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> <B><A HREF="#DOC.2.74.103">_normal_binding</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.74.104">_numnormals</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.74.105">_normals</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> <B><A HREF="#DOC.2.74.106">_nindex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> <B><A HREF="#DOC.2.74.107">_color_binding</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.74.108">_numcolors</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>* <B><A HREF="#DOC.2.74.109">_colors</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> <B><A HREF="#DOC.2.74.110">_colindex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> <B><A HREF="#DOC.2.74.111">_texture_binding</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.74.112">_numtcoords</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.74.113">_tcoords</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> <B><A HREF="#DOC.2.74.114">_tindex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.74.115">_iarray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> <B><A HREF="#DOC.2.74.116">_iaindex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> <B><A HREF="#DOC.2.74.117">_iaformat</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.74.118">_ogliaformat</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.74.119">_fast_path</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html">GeoSet</A>&amp; <B><A HREF="#DOC.2.74.89">operator = </A></B>(const <!1><A HREF="GeoSet.html">GeoSet</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.74.90">~GeoSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.74.91">computeBound</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.120">set_fast_path</A></B>( void )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.121">draw_fast_path</A></B>( <!1><A HREF="State.html">State</A>&amp; state ) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.74.122">draw_alternate_path</A></B>( <!1><A HREF="State.html">State</A>&amp; state ) const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Drawable.html">Drawable</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Geometry.html">Geometry</A>* <B>asGeometry</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Geometry.html">Geometry</A>* <B>asGeometry</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.63.8">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.63.8">ParentList</A> <B>getParents</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getParent</B>(unsigned int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getParent</B>(unsigned int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">StateSet</A>* state)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">StateSet</A>* <B>getStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">StateSet</A>* <B>getStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="StateSet.html">StateSet</A>* <B>getOrCreateStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; <B>getBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setShape</B>(<!1><A HREF="Shape.html">Shape</A>* shape)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Shape.html">Shape</A>* <B>getShape</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Shape.html">Shape</A>* <B>getShape</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSupportsDisplayList</B>(bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getSupportsDisplayList</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUseDisplayList</B>(bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getUseDisplayList</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyDisplayList</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUpdateCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>* ac)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>* <B>getUpdateCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.32">AppCallback</A>* ac)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.32">AppCallback</A>* <B>getAppCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.63.32">AppCallback</A>* <B>getAppCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>* cc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>* <B>getCullCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>* <B>getCullCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>* dc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>* <B>getDrawCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(unsigned int contextID, GLuint globj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedDisplayLists</B>(unsigned int contextID)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>draw</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Node.html">Node</A>*&gt; <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>UpdateCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>AppCallback</B>: public <!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>CullCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>AttributeType</B>
+<DT>
+class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
+<DT>
+class  <B><A HREF="ConstAttributeFunctor.html">ConstAttributeFunctor</A></B>
+<DT>
+class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.8">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingBox.html">BoundingBox</A> <B>_bbox</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bbox_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Shape.html">Shape</A>&gt;  <B>_shape</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_supportsDisplayList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_useDisplayList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Drawable.html#DOC.2.63.70">GLObjectList</A> <B>_globjList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>&gt;  <B>_updateCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>&gt;  <B>_cullCallback</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setBound</B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(<!1><A HREF="Node.html">osg::Node</A>* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(<!1><A HREF="Node.html">osg::Node</A>* node)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="buffered_value.html">osg::buffered_value</A>&lt;GLuint&gt; <B>GLObjectList</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Note, osg::GeoSet is now deprecated, please use osg::Geometry instead.
+osg::GeoSet will be kept through to the beta release for 
+backwards compatability only.
+
+<P>Encapsulates OpenGL drawing primitives, geometry and
+optional binding of normal, color and texture coordinates.  Used
+for representing the visible objects in the scene.  State attributes
+for a GeoSet are maintained in StateSet which the GeoSet maintains
+a referenced counted pointer to.  Both GeoSet's and StateSet's can 
+be shared for optimal memory usage and graphics performance.</BLOCKQUOTE>
+<DL>
+
+<A NAME="PrimitiveType"></A>
+<A NAME="DOC.2.74.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  PrimitiveType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_TYPE"></A>
+<A NAME="DOC.2.74.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_TYPE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POINTS"></A>
+<A NAME="DOC.2.74.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINES"></A>
+<A NAME="DOC.2.74.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINES</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINE_STRIP"></A>
+<A NAME="DOC.2.74.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINE_STRIP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FLAT_LINE_STRIP"></A>
+<A NAME="DOC.2.74.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FLAT_LINE_STRIP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINE_LOOP"></A>
+<A NAME="DOC.2.74.1.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINE_LOOP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRIANGLES"></A>
+<A NAME="DOC.2.74.1.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRIANGLES</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRIANGLE_STRIP"></A>
+<A NAME="DOC.2.74.1.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRIANGLE_STRIP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FLAT_TRIANGLE_STRIP"></A>
+<A NAME="DOC.2.74.1.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FLAT_TRIANGLE_STRIP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRIANGLE_FAN"></A>
+<A NAME="DOC.2.74.1.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRIANGLE_FAN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FLAT_TRIANGLE_FAN"></A>
+<A NAME="DOC.2.74.1.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FLAT_TRIANGLE_FAN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="QUADS"></A>
+<A NAME="DOC.2.74.1.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> QUADS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="QUAD_STRIP"></A>
+<A NAME="DOC.2.74.1.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> QUAD_STRIP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POLYGON"></A>
+<A NAME="DOC.2.74.1.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POLYGON</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="BindingType"></A>
+<A NAME="DOC.2.74.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  BindingType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="BIND_OFF"></A>
+<A NAME="DOC.2.74.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_OFF</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="BIND_OVERALL"></A>
+<A NAME="DOC.2.74.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_OVERALL</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="BIND_PERPRIM"></A>
+<A NAME="DOC.2.74.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_PERPRIM</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="BIND_PERVERTEX"></A>
+<A NAME="DOC.2.74.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_PERVERTEX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="BIND_DEFAULT"></A>
+<A NAME="DOC.2.74.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_DEFAULT</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="InterleaveArrayType"></A>
+<A NAME="DOC.2.74.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  InterleaveArrayType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="IA_OFF"></A>
+<A NAME="DOC.2.74.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_OFF</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_V2F"></A>
+<A NAME="DOC.2.74.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_V2F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_V3F"></A>
+<A NAME="DOC.2.74.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_C4UB_V2F"></A>
+<A NAME="DOC.2.74.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_C4UB_V2F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_C4UB_V3F"></A>
+<A NAME="DOC.2.74.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_C4UB_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_C3F_V3F"></A>
+<A NAME="DOC.2.74.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_C3F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_N3F_V3F"></A>
+<A NAME="DOC.2.74.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_N3F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_C4F_N3F_V3F"></A>
+<A NAME="DOC.2.74.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_C4F_N3F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T2F_V3F"></A>
+<A NAME="DOC.2.74.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T2F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T4F_V4F"></A>
+<A NAME="DOC.2.74.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T4F_V4F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T2F_C4UB_V3F"></A>
+<A NAME="DOC.2.74.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T2F_C4UB_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T2F_C3F_V3F"></A>
+<A NAME="DOC.2.74.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T2F_C3F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T2F_N3F_V3F"></A>
+<A NAME="DOC.2.74.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T2F_N3F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T2F_C4F_N3F_V3F"></A>
+<A NAME="DOC.2.74.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T2F_C4F_N3F_V3F</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IA_T4F_C4F_N3F_V4F"></A>
+<A NAME="DOC.2.74.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IA_T4F_C4F_N3F_V4F</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="IndexPointer"></A>
+<A NAME="DOC.2.74.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SG_EXPORT IndexPointer</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="_size"></A>
+<A NAME="DOC.2.74.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable unsigned int _size</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_is_ushort"></A>
+<A NAME="DOC.2.74.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _is_ushort</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_TPtr"></A>
+<A NAME="DOC.2.74.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>union  _TPtr</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="_ushort"></A>
+<A NAME="DOC.2.74.4.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLushort* _ushort</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_uint"></A>
+<A NAME="DOC.2.74.4.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLuint* _uint</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="IndexPointer"></A>
+<A NAME="DOC.2.74.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IndexPointer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator == "></A>
+<A NAME="DOC.2.74.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool operator == (const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="valid"></A>
+<A NAME="DOC.2.74.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool valid() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="null"></A>
+<A NAME="DOC.2.74.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool null() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setToNull"></A>
+<A NAME="DOC.2.74.4.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setToNull()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.74.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(unsigned int <!1><A HREF="fast_back_stack.html#DOC.2.217.7">size</A>, GLushort* <!1><A HREF="Image.html#DOC.2.79.33">data</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.74.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(unsigned int <!1><A HREF="fast_back_stack.html#DOC.2.217.7">size</A>, GLuint* <!1><A HREF="Image.html#DOC.2.79.33">data</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="maxIndex"></A>
+<A NAME="DOC.2.74.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int maxIndex() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator [] "></A>
+<A NAME="DOC.2.74.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   GLint operator [] (const GLuint pos) const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="GeoSet"></A>
+<A NAME="DOC.2.74.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GeoSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GeoSet"></A>
+<A NAME="DOC.2.74.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GeoSet(const <!1><A HREF="GeoSet.html#DOC.2.74.6">GeoSet</A>&amp; geoset, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.74.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.74.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.74.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.74.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.74.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNumPrims"></A>
+<A NAME="DOC.2.74.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNumPrims( int n )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumPrims"></A>
+<A NAME="DOC.2.74.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumPrims() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setPrimType"></A>
+<A NAME="DOC.2.74.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPrimType( <!1><A HREF="GeoSet.html#DOC.2.74.1">PrimitiveType</A> type )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrimType"></A>
+<A NAME="DOC.2.74.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.1">PrimitiveType</A> getPrimType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setPrimLengths"></A>
+<A NAME="DOC.2.74.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPrimLengths( int* lens )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrimLengths"></A>
+<A NAME="DOC.2.74.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int* getPrimLengths() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeNumVerts"></A>
+<A NAME="DOC.2.74.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeNumVerts() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumCoords"></A>
+<A NAME="DOC.2.74.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumCoords() const </B></TT>
+<DD>get the number of coords required by the defined primitives. 
+<DL><DT><DD></DL><P>
+<A NAME="getCoords"></A>
+<A NAME="DOC.2.74.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A>* getCoords()</B></TT>
+<DD>get a pointer to Vec3 coord array. 
+<DL><DT><DD></DL><P>
+<A NAME="getCoords"></A>
+<A NAME="DOC.2.74.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>* getCoords() const </B></TT>
+<DD>get a const pointer to Vec3 coord array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumCoordIndices"></A>
+<A NAME="DOC.2.74.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumCoordIndices() const </B></TT>
+<DD>get the number of indices required by the defined primitives. 
+<DL><DT><DD></DL><P>
+<A NAME="getCoordIndices"></A>
+<A NAME="DOC.2.74.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getCoordIndices()</B></TT>
+<DD>get the coord index array. 
+<DL><DT><DD></DL><P>
+<A NAME="getCoordIndices"></A>
+<A NAME="DOC.2.74.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getCoordIndices() const </B></TT>
+<DD>get the const coord index array. 
+<DL><DT><DD></DL><P>
+<A NAME="setCoords"></A>
+<A NAME="DOC.2.74.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoords( <!1><A HREF="Vec3.html">Vec3</A>* cp )</B></TT>
+<DD>set the coords (ie the geometry) of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setCoords"></A>
+<A NAME="DOC.2.74.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoords( <!1><A HREF="Vec3.html">Vec3</A>* cp, GLushort* ci )</B></TT>
+<DD>set the coords (ie the geometry) and ushort indices of the geoset.
+To reduce memory footprint and bandwidth for small datasets it is
+recommended the ushort indices are used instead of unit indices.
+<DL><DT><DD></DL><P>
+<A NAME="setCoords"></A>
+<A NAME="DOC.2.74.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoords( <!1><A HREF="Vec3.html">Vec3</A>* cp, GLuint* ci )</B></TT>
+<DD>set the coords (ie the geometry) and unsigned int indices of the geoset.
+Unless your data set exceeds 65536 indices prefer ushort indices
+over unsigned int indices, only use this unit indices version if necessary.
+<DL><DT><DD></DL><P>
+<A NAME="setCoords"></A>
+<A NAME="DOC.2.74.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoords( <!1><A HREF="Vec3.html">Vec3</A>* cp, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )</B></TT>
+<DD>set the coords (ie the geometry) and indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="getNumNormals"></A>
+<A NAME="DOC.2.74.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumNormals() const </B></TT>
+<DD>get the number of normals required by the defined primitives and normals binding
+<DL><DT><DD></DL><P>
+<A NAME="getNormals"></A>
+<A NAME="DOC.2.74.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A>* getNormals()</B></TT>
+<DD>get a pointer to Vec3 normal array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNormals"></A>
+<A NAME="DOC.2.74.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>* getNormals() const </B></TT>
+<DD>get a const pointer to Vec3 normal array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumNormalIndices"></A>
+<A NAME="DOC.2.74.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumNormalIndices() const </B></TT>
+<DD>get the number of normal indices required by the defined primitives and normals binding
+<DL><DT><DD></DL><P>
+<A NAME="getNormalIndices"></A>
+<A NAME="DOC.2.74.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getNormalIndices()</B></TT>
+<DD>get the normal index array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNormalIndices"></A>
+<A NAME="DOC.2.74.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getNormalIndices() const </B></TT>
+<DD>get the const normal index array. 
+<DL><DT><DD></DL><P>
+<A NAME="setNormals"></A>
+<A NAME="DOC.2.74.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormals( <!1><A HREF="Vec3.html">Vec3</A>* np )</B></TT>
+<DD>set the normals of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setNormals"></A>
+<A NAME="DOC.2.74.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormals( <!1><A HREF="Vec3.html">Vec3</A>* np, GLushort* ni )</B></TT>
+<DD>set the normals and normal indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setNormals"></A>
+<A NAME="DOC.2.74.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormals( <!1><A HREF="Vec3.html">Vec3</A>* np, GLuint* ni )</B></TT>
+<DD>set the normals and normal indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setNormals"></A>
+<A NAME="DOC.2.74.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormals( <!1><A HREF="Vec3.html">Vec3</A>* np, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )</B></TT>
+<DD>set the normals and normal indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setNormalBinding"></A>
+<A NAME="DOC.2.74.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormalBinding( <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> binding )</B></TT>
+<DD>set the normals binding to the vertices/primitives/overall
+<DL><DT><DD></DL><P>
+<A NAME="getNormalBinding"></A>
+<A NAME="DOC.2.74.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> getNormalBinding() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumColors"></A>
+<A NAME="DOC.2.74.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumColors() const </B></TT>
+<DD>get the number of colors required by the defined primitives and color binding
+<DL><DT><DD></DL><P>
+<A NAME="getColors"></A>
+<A NAME="DOC.2.74.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A>* getColors()</B></TT>
+<DD>get a pointer to Vec4 color array. 
+<DL><DT><DD></DL><P>
+<A NAME="getColors"></A>
+<A NAME="DOC.2.74.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>* getColors() const </B></TT>
+<DD>get a pointer to Vec4 color array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumColorIndices"></A>
+<A NAME="DOC.2.74.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumColorIndices() const </B></TT>
+<DD>get the number of colors indices required by the defined primitives and color binding
+<DL><DT><DD></DL><P>
+<A NAME="getColorIndices"></A>
+<A NAME="DOC.2.74.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getColorIndices()</B></TT>
+<DD>get the color index array. 
+<DL><DT><DD></DL><P>
+<A NAME="getColorIndices"></A>
+<A NAME="DOC.2.74.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getColorIndices() const </B></TT>
+<DD>get the const color index array. 
+<DL><DT><DD></DL><P>
+<A NAME="setColors"></A>
+<A NAME="DOC.2.74.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColors( <!1><A HREF="Vec4.html">Vec4</A>* cp )</B></TT>
+<DD>set the colors of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setColors"></A>
+<A NAME="DOC.2.74.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColors( <!1><A HREF="Vec4.html">Vec4</A>* cp, GLushort* li )</B></TT>
+<DD>set the colors and color indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setColors"></A>
+<A NAME="DOC.2.74.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColors( <!1><A HREF="Vec4.html">Vec4</A>* cp, GLuint* li )</B></TT>
+<DD>set the colors and color indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setColors"></A>
+<A NAME="DOC.2.74.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColors( <!1><A HREF="Vec4.html">Vec4</A>* cp, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )</B></TT>
+<DD>set the colors and color indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setColorBinding"></A>
+<A NAME="DOC.2.74.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColorBinding( <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> binding )</B></TT>
+<DD>set the color binding to the vertices/primitives/overall
+<DL><DT><DD></DL><P>
+<A NAME="getColorBinding"></A>
+<A NAME="DOC.2.74.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> getColorBinding() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumTextureCoords"></A>
+<A NAME="DOC.2.74.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumTextureCoords() const </B></TT>
+<DD>get the number of texture coords required by the defined primitives and textures binding
+<DL><DT><DD></DL><P>
+<A NAME="getTextureCoords"></A>
+<A NAME="DOC.2.74.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec2.html">Vec2</A>* getTextureCoords()</B></TT>
+<DD>get a pointer to Vec4 color array. 
+<DL><DT><DD></DL><P>
+<A NAME="getTextureCoords"></A>
+<A NAME="DOC.2.74.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec2.html">Vec2</A>* getTextureCoords() const </B></TT>
+<DD>get a pointer to Vec4 color array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumTextureIndices"></A>
+<A NAME="DOC.2.74.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumTextureIndices() const </B></TT>
+<DD>get the number of texture coord indices required by the defined primitives and texture binding
+<DL><DT><DD></DL><P>
+<A NAME="getTextureIndices"></A>
+<A NAME="DOC.2.74.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getTextureIndices()</B></TT>
+<DD>get the texture index array. 
+<DL><DT><DD></DL><P>
+<A NAME="getTextureIndices"></A>
+<A NAME="DOC.2.74.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getTextureIndices() const </B></TT>
+<DD>get the texture index array. 
+<DL><DT><DD></DL><P>
+<A NAME="setTextureCoords"></A>
+<A NAME="DOC.2.74.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureCoords( <!1><A HREF="Vec2.html">Vec2</A>* tc )</B></TT>
+<DD>set the texture coords of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setTextureCoords"></A>
+<A NAME="DOC.2.74.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureCoords( <!1><A HREF="Vec2.html">Vec2</A>* tc, GLushort* ti )</B></TT>
+<DD>set the texture coords and texture coord indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setTextureCoords"></A>
+<A NAME="DOC.2.74.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureCoords( <!1><A HREF="Vec2.html">Vec2</A>* tc, GLuint* ti )</B></TT>
+<DD>set the texture coords and texture coord indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setTextureCoords"></A>
+<A NAME="DOC.2.74.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureCoords( <!1><A HREF="Vec2.html">Vec2</A>* tc, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; ip )</B></TT>
+<DD>set the texture coords and texture indices of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setTextureBinding"></A>
+<A NAME="DOC.2.74.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureBinding( <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> binding )</B></TT>
+<DD>set the texture coord binding to the vertices/primitives/overall
+<DL><DT><DD></DL><P>
+<A NAME="getTextureBinding"></A>
+<A NAME="DOC.2.74.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> getTextureBinding() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumInterleavedCoords"></A>
+<A NAME="DOC.2.74.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumInterleavedCoords() const </B></TT>
+<DD>get the number of texture coords required by the defined primitives and textures binding
+<DL><DT><DD></DL><P>
+<A NAME="getInterleavedArray"></A>
+<A NAME="DOC.2.74.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void* getInterleavedArray()</B></TT>
+<DD>get a pointer to interleaved float array. 
+<DL><DT><DD></DL><P>
+<A NAME="getInterleavedArray"></A>
+<A NAME="DOC.2.74.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const void* getInterleavedArray() const </B></TT>
+<DD>get a const pointer to interleaved float array. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumInterleavedIndices"></A>
+<A NAME="DOC.2.74.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumInterleavedIndices() const </B></TT>
+<DD>get the number of texture coord indices required by the defined primitives and texture binding
+<DL><DT><DD></DL><P>
+<A NAME="getInterleavedIndices"></A>
+<A NAME="DOC.2.74.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getInterleavedIndices()</B></TT>
+<DD>get the texture index array. 
+<DL><DT><DD></DL><P>
+<A NAME="getInterleavedIndices"></A>
+<A NAME="DOC.2.74.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; getInterleavedIndices() const </B></TT>
+<DD>get the interleaved index array. 
+<DL><DT><DD></DL><P>
+<A NAME="getInterleavedFormat"></A>
+<A NAME="DOC.2.74.71"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> getInterleavedFormat() const </B></TT>
+<DD>get the interleaved array storage format. 
+<DL><DT><DD></DL><P>
+<A NAME="setInterleavedArray"></A>
+<A NAME="DOC.2.74.72"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterleavedArray( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia )</B></TT>
+<DD>set the interleaved arrays of the geoset
+<DL><DT><DD></DL><P>
+<A NAME="setInterleavedArray"></A>
+<A NAME="DOC.2.74.73"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterleavedArray( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia, GLushort* iai )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setInterleavedArray"></A>
+<A NAME="DOC.2.74.74"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterleavedArray( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia, GLuint* iai )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setInterleavedArray"></A>
+<A NAME="DOC.2.74.75"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterleavedArray( <!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> format, float* ia, <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A>&amp; iai )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawImplementation"></A>
+<A NAME="DOC.2.74.76"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
+<DD>draw geoset directly ignoring an OpenGL display list which could be attached.
+This is the internal draw method which does the drawing itself,
+and is the method to override when deriving from GeoSet for user-drawn objects.
+<DL><DT><DD></DL><P>
+<A NAME="check"></A>
+<A NAME="DOC.2.74.77"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool check() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AttributeDeleteFunctor"></A>
+<A NAME="DOC.2.74.78"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SG_EXPORT AttributeDeleteFunctor: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
+<DD>function object which is used to handling the clean up of attribute arrays
+associated with GeoSet's.  A default is provided which assumes that all
+momory attached to the GeoSet is owned by this GeoSet and can be deleted
+using delete [].  If this is not the cause derive your own AttributeDeleteFunctor
+a specify your own memory deletion operation.
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="operator() "></A>
+<A NAME="DOC.2.74.78.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operator() (<!1><A HREF="GeoSet.html">GeoSet</A>* gset)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setAttributeDeleteFunctor"></A>
+<A NAME="DOC.2.74.79"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAttributeDeleteFunctor(<!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>* adf)</B></TT>
+<DD>set an alternative AttributeDeleteFunction to handle attribute arrays attached to this Geoset
+<DL><DT><DD></DL><P>
+<A NAME="getAttributeDeleteFunctor"></A>
+<A NAME="DOC.2.74.80"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>* getAttributeDeleteFunctor()</B></TT>
+<DD>get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset
+<DL><DT><DD></DL><P>
+<A NAME="getAttributeDeleteFunctor"></A>
+<A NAME="DOC.2.74.81"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>* getAttributeDeleteFunctor() const </B></TT>
+<DD>get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset
+<DL><DT><DD></DL><P>
+<A NAME="supports"></A>
+<A NAME="DOC.2.74.82"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool supports(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;) const </B></TT>
+<DD>return true, osg::GeoSet does support accept(AttributeFunctor&)
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.74.83"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)</B></TT>
+<DD>accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has
+<DL><DT><DD></DL><P>
+<A NAME="supports"></A>
+<A NAME="DOC.2.74.84"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool supports(<!1><A HREF="ConstAttributeFunctor.html">ConstAttributeFunctor</A>&amp;) const </B></TT>
+<DD>return true, osg::GeoSet does support accept(ConstAttributeFunctor&)
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.74.85"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ConstAttributeFunctor.html">ConstAttributeFunctor</A>&amp; af) const </B></TT>
+<DD>accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has
+<DL><DT><DD></DL><P>
+<A NAME="supports"></A>
+<A NAME="DOC.2.74.86"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool supports(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp;) const </B></TT>
+<DD>return true, osg::GeoSet does support accept(PrimitiveFunctor&) 
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.74.87"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf) const </B></TT>
+<DD>accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has
+<DL><DT><DD></DL><P>
+<A NAME="convertToGeometry"></A>
+<A NAME="DOC.2.74.88"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html">Geometry</A>* convertToGeometry()</B></TT>
+<DD>convinience function for converting GeoSet's to equivilant Geometry nodes
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.2.74.89"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html">GeoSet</A>&amp; operator = (const <!1><A HREF="GeoSet.html">GeoSet</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~GeoSet"></A>
+<A NAME="DOC.2.74.90"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~GeoSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.74.91"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_adf"></A>
+<A NAME="DOC.2.74.92"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html#DOC.2.74.78">AttributeDeleteFunctor</A>&gt;  _adf</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numprims"></A>
+<A NAME="DOC.2.74.93"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _numprims</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_primtype"></A>
+<A NAME="DOC.2.74.94"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.1">PrimitiveType</A> _primtype</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_needprimlen"></A>
+<A NAME="DOC.2.74.95"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _needprimlen</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_oglprimtype"></A>
+<A NAME="DOC.2.74.96"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _oglprimtype</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_primLengths"></A>
+<A NAME="DOC.2.74.97"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int* _primLengths</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_primlength"></A>
+<A NAME="DOC.2.74.98"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable unsigned char _primlength</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_flat_shaded_skip"></A>
+<A NAME="DOC.2.74.99"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char _flat_shaded_skip</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numcoords"></A>
+<A NAME="DOC.2.74.100"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numcoords</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_coords"></A>
+<A NAME="DOC.2.74.101"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A>* _coords</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cindex"></A>
+<A NAME="DOC.2.74.102"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> _cindex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_normal_binding"></A>
+<A NAME="DOC.2.74.103"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> _normal_binding</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numnormals"></A>
+<A NAME="DOC.2.74.104"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numnormals</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_normals"></A>
+<A NAME="DOC.2.74.105"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A>* _normals</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_nindex"></A>
+<A NAME="DOC.2.74.106"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> _nindex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_color_binding"></A>
+<A NAME="DOC.2.74.107"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> _color_binding</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numcolors"></A>
+<A NAME="DOC.2.74.108"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numcolors</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_colors"></A>
+<A NAME="DOC.2.74.109"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>* _colors</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_colindex"></A>
+<A NAME="DOC.2.74.110"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> _colindex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texture_binding"></A>
+<A NAME="DOC.2.74.111"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.2">BindingType</A> _texture_binding</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numtcoords"></A>
+<A NAME="DOC.2.74.112"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numtcoords</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tcoords"></A>
+<A NAME="DOC.2.74.113"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec2.html">Vec2</A>* _tcoords</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tindex"></A>
+<A NAME="DOC.2.74.114"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> _tindex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_iarray"></A>
+<A NAME="DOC.2.74.115"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _iarray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_iaindex"></A>
+<A NAME="DOC.2.74.116"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.4">IndexPointer</A> _iaindex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_iaformat"></A>
+<A NAME="DOC.2.74.117"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.74.3">InterleaveArrayType</A> _iaformat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ogliaformat"></A>
+<A NAME="DOC.2.74.118"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _ogliaformat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fast_path"></A>
+<A NAME="DOC.2.74.119"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _fast_path</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set_fast_path"></A>
+<A NAME="DOC.2.74.120"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set_fast_path( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw_fast_path"></A>
+<A NAME="DOC.2.74.121"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void draw_fast_path( <!1><A HREF="State.html">State</A>&amp; state ) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw_alternate_path"></A>
+<A NAME="DOC.2.74.122"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void draw_alternate_path( <!1><A HREF="State.html">State</A>&amp; state ) const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

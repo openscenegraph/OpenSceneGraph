@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>namespace osgUtx</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>namespace <A HREF="#DOC.DOCU">osgUtx</A></H2></H2>
+<HR>
+<P><DL>
+ <DT>
+class  SG_EXPORT <B><A HREF="Test.html">Test</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I> Test, an abstract base class, is the Composite pattern's \em component class for our graph of test cases, and defines the basic interface for all Test components.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestContext.html">TestContext</A></B>
+<DD><I> TestContext wraps up information which is passed to tests as they are run, and may contain test-specific information or 'global' test objects, such as an output stream for verbose output during the running of tests.</I>
+<DT>
+class  <B><A HREF="TestVisitor.html">TestVisitor</A></B>
+<DD><I> Visits while maintaining the current hierarchical context.</I>
+<DT>
+class  <B><A HREF="TestCase.html">TestCase</A></B>: public <!1><A HREF="Test.html">Test</A>
+<DD><I> TestCase, is the supplies the interface for a Composite pattern's \em leaf class, though it is not a leaf in itself</I>
+<DT>
+class  <B><A HREF="TestX.html">TestX</A></B>
+<DD><I> Base class catchable for the exception's which may be thrown to indicate problems during the run of a TestCase</I>
+<DT>
+class  <B><A HREF="TestFailureX.html">TestFailureX</A></B>: public <!1><A HREF="TestX.html">TestX</A>
+<DD><I> A TestFailureX indicates a failure in the tested component</I>
+<DT>
+class  <B><A HREF="TestErrorX.html">TestErrorX</A></B>: public <!1><A HREF="TestX.html">TestX</A>
+<DD><I> A TestErrorX indicates an error while testing a component, which prevents the test from being run; it does not indicate a problem with the component, but rather a problem during the run which prevents the component from being tested</I>
+<DT>
+template&lt; typename FixtureT &gt; class  <B><A HREF="TestCase_.html">TestCase_</A></B>: public <!1><A HREF="TestCase.html">TestCase</A>
+<DD><I> TestCase_ is a class template for a leaf TestCase, which allows TestFixture classes to be easily collected into the tree of tests, and have their public test methods called.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestSuite.html">TestSuite</A></B>: public <!1><A HREF="Test.html">Test</A>
+<DD><I> A TestSuite is the \em composite component of the Composite pattern, and allows aggregation of Tests into hierarchies</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestGraph.html">TestGraph</A></B>
+<DD><I> TestGraph is a singleton providing central access to the tree of tests; primarily, it provides access to the root suite</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestQualifier.html">TestQualifier</A></B>: public <!1><A HREF="TestVisitor.html">TestVisitor</A>
+<DD><I> Maintains a string that when accessed in the "visit" member, returns the current qualified TestSuite path</I>
+<DT>
+class  SG_EXPORT <B><A HREF="QualifiedTestPrinter.html">QualifiedTestPrinter</A></B>: public <!1><A HREF="TestQualifier.html">TestQualifier</A>
+<DD><I> QualifiedTestPrinter prints to standard output a list of fully qualified tests</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestRecord.html">TestRecord</A></B>
+<DD><I> A TestRecord records the output of a given test case, ie.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestReport.html">TestReport</A></B>
+<DD><I> A TestReport represents the complete set of results (TestRecords) for a given test run.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TestRunner.html">TestRunner</A></B>: public <!1><A HREF="TestQualifier.html">TestQualifier</A>
+<DD><I> A TestRunner is a visitor which will run specified tests as it traverses the test graph.</I>
+<DT>
+struct  <B><A HREF="TestSuiteAutoRegistrationAgent.html">TestSuiteAutoRegistrationAgent</A></B>
+<DD><I> A helper struct to perform automatic registration at program startup; not for direct use, it should be used via the following macros.</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+</DL>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGPARTICLE_EXPORT osgParticle::ModularProgram</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGPARTICLE_EXPORT <A HREF="#DOC.DOCU">osgParticle::ModularProgram</A></H2></H2><BLOCKQUOTE>A program class for performing operations on particles using a sequence of <I>operators</I>.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="Mosg::Node,M,CParticleProcessor,MParticleProcessor.html,CProgram,MProgram.html,CModularProgram,MModularProgram.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.1">ModularProgram</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.2">ModularProgram</A></B>(const <!1><A HREF="ModularProgram.html#DOC.2.10.2">ModularProgram</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.3">META_Node</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ModularProgram.html">ModularProgram</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.10.9">numOperators</A></B>() const 
+<DD><I>Get the number of operators</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.10.10">addOperator</A></B>(<!1><A HREF="Operator.html">Operator</A>* o)
+<DD><I>Add an operator to the list.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Operator.html">Operator</A>* <B><A HREF="#DOC.2.10.11">getOperator</A></B>(int i)
+<DD><I>Get a pointer to an operator in the list</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Operator.html">Operator</A>* <B><A HREF="#DOC.2.10.12">getOperator</A></B>(int i) const 
+<DD><I>Get a const pointer to an operator in the list</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.10.13">removeOperator</A></B>(int i)
+<DD><I>Remove an operator from the list</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.10.4">~ModularProgram</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ModularProgram.html">ModularProgram</A>&amp; <B><A HREF="#DOC.2.10.5">operator=</A></B>(const <!1><A HREF="ModularProgram.html">ModularProgram</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.10.6">execute</A></B>(double dt)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Program.html">Program</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>process</B>(double dt)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="ParticleProcessor.html">ParticleProcessor</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.14.1">ReferenceFrame</A> <B>getReferenceFrame</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>traverse</B>(osg::NodeVisitor &amp;nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   ParticleProcessor::ReferenceFrame <B>getReferenceFrame</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setReferenceFrame</B>(<!1><A HREF="ParticleProcessor.html#DOC.2.14.1">ReferenceFrame</A> rf)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isEnabled</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setEnabled</B>(bool v)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B>getParticleSystem</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B>getParticleSystem</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setParticleSystem</B>(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>* ps)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>computeBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const osg::Matrix&amp; <B>getLocalToWorldMatrix</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const osg::Matrix&amp; <B>getWorldToLocalMatrix</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   osg::Vec3 <B>transformLocalToWorld</B>(const osg::Vec3 &amp;P)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   osg::Vec3 <B>transformWorldToLocal</B>(const osg::Vec3 &amp;P)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   osg::Vec3 <B>rotateLocalToWorld</B>(const osg::Vec3 &amp;P)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   osg::Vec3 <B>rotateWorldToLocal</B>(const osg::Vec3 &amp;P)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>ReferenceFrame</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A program class for performing operations on particles using a sequence of <I>operators</I>.
+To use a <CODE>ModularProgram</CODE> you have to create some <CODE>Operator</CODE> objects and 
+add them to the program.
+All operators will be applied to each particle in the same order they've been added to the program.</BLOCKQUOTE>
+<DL>
+
+<A NAME="ModularProgram"></A>
+<A NAME="DOC.2.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ModularProgram()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ModularProgram"></A>
+<A NAME="DOC.2.10.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ModularProgram(const <!1><A HREF="ModularProgram.html#DOC.2.10.2">ModularProgram</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.10.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ModularProgram.html">ModularProgram</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ModularProgram"></A>
+<A NAME="DOC.2.10.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ModularProgram()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.10.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ModularProgram.html">ModularProgram</A>&amp; operator=(const <!1><A HREF="ModularProgram.html">ModularProgram</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="execute"></A>
+<A NAME="DOC.2.10.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void execute(double dt)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="numOperators"></A>
+<A NAME="DOC.2.10.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int numOperators() const </B></TT>
+<DD>Get the number of operators
+<DL><DT><DD></DL><P>
+<A NAME="addOperator"></A>
+<A NAME="DOC.2.10.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addOperator(<!1><A HREF="Operator.html">Operator</A>* o)</B></TT>
+<DD>Add an operator to the list.        
+<DL><DT><DD></DL><P>
+<A NAME="getOperator"></A>
+<A NAME="DOC.2.10.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Operator.html">Operator</A>* getOperator(int i)</B></TT>
+<DD>Get a pointer to an operator in the list
+<DL><DT><DD></DL><P>
+<A NAME="getOperator"></A>
+<A NAME="DOC.2.10.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Operator.html">Operator</A>* getOperator(int i) const </B></TT>
+<DD>Get a const pointer to an operator in the list
+<DL><DT><DD></DL><P>
+<A NAME="removeOperator"></A>
+<A NAME="DOC.2.10.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void removeOperator(int i)</B></TT>
+<DD>Remove an operator from the list
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGPARTICLE_EXPORT osgParticle::ParticleSystem</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGPARTICLE_EXPORT <A HREF="#DOC.DOCU">osgParticle::ParticleSystem</A></H2></H2><BLOCKQUOTE>The heart of this class library; its purpose is to hold a set of particles and manage particle creation, update, rendering and destruction.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Drawable,M,CParticleSystem,MParticleSystem.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.2">ParticleSystem</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.3">ParticleSystem</A></B>(const <!1><A HREF="ParticleSystem.html#DOC.2.15.3">ParticleSystem</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.4">META_Object</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ParticleSystem.html">ParticleSystem</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ParticleSystem.html#DOC.2.15.1">Alignment</A> <B><A HREF="#DOC.2.15.5">getParticleAlignment</A></B>() const 
+<DD><I>Get the alignment type of particles</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   <!1><A HREF="Particle.html">Particle</A>* <B><A HREF="#DOC.2.15.6">createParticle</A></B>(const <!1><A HREF="Particle.html">Particle</A>* ptemplate)
+<DD><I>Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   void <B><A HREF="#DOC.2.15.7">destroyParticle</A></B>(int i)
+<DD><I>Destroy the i-th particle</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.8">setDefaultAttributes</A></B>(const std::string &amp;texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0)
+<DD><I>A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.9">update</A></B>(double dt)
+<DD><I>Update the particles.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ParticleSystem::Alignment <B><A HREF="#DOC.2.15.34">getParticleAlignment</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.35">setParticleAlignment</A></B>(<!1><A HREF="ParticleSystem.html#DOC.2.15.1">Alignment</A> a)
+<DD><I>Set the alignment type of particles</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.15.36">getAlignVectorX</A></B>() const 
+<DD><I>Get the X-axis alignment vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.37">setAlignVectorX</A></B>(const osg::Vec3 &amp;v)
+<DD><I>Set the X-axis alignment vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.15.38">getAlignVectorY</A></B>() const 
+<DD><I>Get the Y-axis alignment vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.39">setAlignVectorY</A></B>(const osg::Vec3 &amp;v)
+<DD><I>Set the Y-axis alignment vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.40">setAlignVectors</A></B>(const osg::Vec3 &amp;X, const osg::Vec3 &amp;Y)
+<DD><I>Set the alignment vectors</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.41">isFrozen</A></B>() const 
+<DD><I>Return true if the particle system is frozen</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.42">setFrozen</A></B>(bool v)
+<DD><I>Set or reset the <I>frozen</I> state.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::BoundingBox&amp; <B><A HREF="#DOC.2.15.43">getDefaultBoundingBox</A></B>() const 
+<DD><I>Get the default bounding box</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.44">setDefaultBoundingBox</A></B>(const osg::BoundingBox &amp;bbox)
+<DD><I>Set the default bounding box.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.45">getDoublePassRendering</A></B>() const 
+<DD><I>Get the double pass rendering flag</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.46">setDoublePassRendering</A></B>(bool v)
+<DD><I>Set the double pass rendering flag.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.15.47">numParticles</A></B>() const 
+<DD><I>Get the number of allocated particles (alive + dead)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.15.48">numDeadParticles</A></B>() const 
+<DD><I>Get the number of dead particles</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Particle.html">Particle</A>* <B><A HREF="#DOC.2.15.49">getParticle</A></B>(int i)
+<DD><I>Get a pointer to the i-th particle</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Particle.html">Particle</A>* <B><A HREF="#DOC.2.15.50">getParticle</A></B>(int i) const 
+<DD><I>Get a const pointer to the i-th particle</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.51">destroyParticle</A></B>(int i)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.15.52">getLastFrameNumber</A></B>() const 
+<DD><I>Get the last frame number</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.53">computeBound</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.54">update_bounds</A></B>(const osg::Vec3 &amp;p, float r)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Particle.html">Particle</A>&amp; <B><A HREF="#DOC.2.15.55">getDefaultParticleTemplate</A></B>() const 
+<DD><I>Get a reference to the default particle template</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.56">setDefaultParticleTemplate</A></B>(const <!1><A HREF="Particle.html">Particle</A> &amp;p)
+<DD><I>Set the default particle template (particle is copied)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.57">getFreezeOnCull</A></B>() const 
+<DD><I>Get whether the particle system can freeze when culled</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.58">setFreezeOnCull</A></B>(bool v)
+<DD><I>Set whether the particle system can freeze when culled (default is true)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.15.59">getLevelOfDetail</A></B>() const 
+<DD><I>(<B>EXPERIMENTAL</B>) Get the level of detail</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.60">setLevelOfDetail</A></B>(int v)
+<DD><I>(<B>EXPERIMENTAL</B>) Set the level of detail.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Particle.html">Particle</A>* <B><A HREF="#DOC.2.15.61">createParticle</A></B>(const <!1><A HREF="Particle.html">Particle</A>* ptemplate)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.15.1">Alignment</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.15.10">~ParticleSystem</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ParticleSystem.html">ParticleSystem</A>&amp; <B><A HREF="#DOC.2.15.11">operator=</A></B>(const <!1><A HREF="ParticleSystem.html">ParticleSystem</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   bool <B><A HREF="#DOC.2.15.12">computeBound</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.13">drawImplementation</A></B>(osg::State &amp;state) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.14">single_pass_render</A></B>(osg::State &amp;state, const osg::Matrix &amp;modelview) const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>The heart of this class library; its purpose is to hold a set of particles and manage particle creation, update, rendering and destruction.
+You can add this drawable to any <CODE>Geode</CODE> as you usually do with other
+<CODE>Drawable</CODE> classes. Each instance of <CODE>ParticleSystem</CODE> is a separate set of
+particles; it provides the interface for creating particles and iterating
+through them (see the <CODE>Emitter</CODE> and <CODE>Program</CODE> classes).</BLOCKQUOTE>
+<DL>
+
+<A NAME="Alignment"></A>
+<A NAME="DOC.2.15.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Alignment</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="BILLBOARD"></A>
+<A NAME="DOC.2.15.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BILLBOARD</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FIXED"></A>
+<A NAME="DOC.2.15.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FIXED</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ParticleSystem"></A>
+<A NAME="DOC.2.15.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleSystem()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ParticleSystem"></A>
+<A NAME="DOC.2.15.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleSystem(const <!1><A HREF="ParticleSystem.html#DOC.2.15.3">ParticleSystem</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="META_Object"></A>
+<A NAME="DOC.2.15.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ParticleSystem.html">ParticleSystem</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getParticleAlignment"></A>
+<A NAME="DOC.2.15.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="ParticleSystem.html#DOC.2.15.1">Alignment</A> getParticleAlignment() const </B></TT>
+<DD>Get the alignment type of particles
+<DL><DT><DD></DL><P>
+<A NAME="createParticle"></A>
+<A NAME="DOC.2.15.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline virtual   <!1><A HREF="Particle.html">Particle</A>* createParticle(const <!1><A HREF="Particle.html">Particle</A>* ptemplate)</B></TT>
+<DD>Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null)
+<DL><DT><DD></DL><P>
+<A NAME="destroyParticle"></A>
+<A NAME="DOC.2.15.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline virtual   void destroyParticle(int i)</B></TT>
+<DD>Destroy the i-th particle
+<DL><DT><DD></DL><P>
+<A NAME="setDefaultAttributes"></A>
+<A NAME="DOC.2.15.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaultAttributes(const std::string &amp;texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0)</B></TT>
+<DD>A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.
+If <CODE>texturefile</CODE> is empty, then texturing is turned off.
+<DL><DT><DD></DL><P>
+<A NAME="update"></A>
+<A NAME="DOC.2.15.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void update(double dt)</B></TT>
+<DD>Update the particles. Don't call this directly, use a <CODE>ParticleSystemUpdater</CODE> instead.
+<DL><DT><DD></DL><P>
+<A NAME="~ParticleSystem"></A>
+<A NAME="DOC.2.15.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ParticleSystem()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.15.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ParticleSystem.html">ParticleSystem</A>&amp; operator=(const <!1><A HREF="ParticleSystem.html">ParticleSystem</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.15.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline virtual   bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawImplementation"></A>
+<A NAME="DOC.2.15.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(osg::State &amp;state) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="single_pass_render"></A>
+<A NAME="DOC.2.15.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void single_pass_render(osg::State &amp;state, const osg::Matrix &amp;modelview) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getParticleAlignment"></A>
+<A NAME="DOC.2.15.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ParticleSystem::Alignment getParticleAlignment() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setParticleAlignment"></A>
+<A NAME="DOC.2.15.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setParticleAlignment(<!1><A HREF="ParticleSystem.html#DOC.2.15.1">Alignment</A> a)</B></TT>
+<DD>Set the alignment type of particles
+<DL><DT><DD></DL><P>
+<A NAME="getAlignVectorX"></A>
+<A NAME="DOC.2.15.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getAlignVectorX() const </B></TT>
+<DD>Get the X-axis alignment vector
+<DL><DT><DD></DL><P>
+<A NAME="setAlignVectorX"></A>
+<A NAME="DOC.2.15.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAlignVectorX(const osg::Vec3 &amp;v)</B></TT>
+<DD>Set the X-axis alignment vector
+<DL><DT><DD></DL><P>
+<A NAME="getAlignVectorY"></A>
+<A NAME="DOC.2.15.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getAlignVectorY() const </B></TT>
+<DD>Get the Y-axis alignment vector
+<DL><DT><DD></DL><P>
+<A NAME="setAlignVectorY"></A>
+<A NAME="DOC.2.15.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAlignVectorY(const osg::Vec3 &amp;v)</B></TT>
+<DD>Set the Y-axis alignment vector
+<DL><DT><DD></DL><P>
+<A NAME="setAlignVectors"></A>
+<A NAME="DOC.2.15.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAlignVectors(const osg::Vec3 &amp;X, const osg::Vec3 &amp;Y)</B></TT>
+<DD>Set the alignment vectors
+<DL><DT><DD></DL><P>
+<A NAME="isFrozen"></A>
+<A NAME="DOC.2.15.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isFrozen() const </B></TT>
+<DD>Return true if the particle system is frozen
+<DL><DT><DD></DL><P>
+<A NAME="setFrozen"></A>
+<A NAME="DOC.2.15.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFrozen(bool v)</B></TT>
+<DD>Set or reset the <I>frozen</I> state.
+When the particle system is frozen, emitters and programs won't do anything on it.
+<DL><DT><DD></DL><P>
+<A NAME="getDefaultBoundingBox"></A>
+<A NAME="DOC.2.15.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::BoundingBox&amp; getDefaultBoundingBox() const </B></TT>
+<DD>Get the default bounding box
+<DL><DT><DD></DL><P>
+<A NAME="setDefaultBoundingBox"></A>
+<A NAME="DOC.2.15.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDefaultBoundingBox(const osg::BoundingBox &amp;bbox)</B></TT>
+<DD>Set the default bounding box.
+The default bounding box is used when a real bounding box cannot be computed, for example
+because no particles has been updated yet.
+<DL><DT><DD></DL><P>
+<A NAME="getDoublePassRendering"></A>
+<A NAME="DOC.2.15.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getDoublePassRendering() const </B></TT>
+<DD>Get the double pass rendering flag
+<DL><DT><DD></DL><P>
+<A NAME="setDoublePassRendering"></A>
+<A NAME="DOC.2.15.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDoublePassRendering(bool v)</B></TT>
+<DD>Set the double pass rendering flag.
+Double pass rendering avoids overdraw problems between particle systems
+and other opaque objects. If you can render all the particle systems <U>after</U>
+the opaque objects, then double pass is not necessary and can be turned off (best choice).
+If you set the default attributes with <CODE>setDefaultAttributes</CODE>, then the particle
+system will fall into a transparent bin.
+<DL><DT><DD></DL><P>
+<A NAME="numParticles"></A>
+<A NAME="DOC.2.15.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int numParticles() const </B></TT>
+<DD>Get the number of allocated particles (alive + dead)
+<DL><DT><DD></DL><P>
+<A NAME="numDeadParticles"></A>
+<A NAME="DOC.2.15.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int numDeadParticles() const </B></TT>
+<DD>Get the number of dead particles
+<DL><DT><DD></DL><P>
+<A NAME="getParticle"></A>
+<A NAME="DOC.2.15.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Particle.html">Particle</A>* getParticle(int i)</B></TT>
+<DD>Get a pointer to the i-th particle
+<DL><DT><DD></DL><P>
+<A NAME="getParticle"></A>
+<A NAME="DOC.2.15.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Particle.html">Particle</A>* getParticle(int i) const </B></TT>
+<DD>Get a const pointer to the i-th particle
+<DL><DT><DD></DL><P>
+<A NAME="destroyParticle"></A>
+<A NAME="DOC.2.15.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void destroyParticle(int i)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLastFrameNumber"></A>
+<A NAME="DOC.2.15.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getLastFrameNumber() const </B></TT>
+<DD>Get the last frame number
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.15.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="update_bounds"></A>
+<A NAME="DOC.2.15.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void update_bounds(const osg::Vec3 &amp;p, float r)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDefaultParticleTemplate"></A>
+<A NAME="DOC.2.15.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Particle.html">Particle</A>&amp; getDefaultParticleTemplate() const </B></TT>
+<DD>Get a reference to the default particle template
+<DL><DT><DD></DL><P>
+<A NAME="setDefaultParticleTemplate"></A>
+<A NAME="DOC.2.15.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDefaultParticleTemplate(const <!1><A HREF="Particle.html">Particle</A> &amp;p)</B></TT>
+<DD>Set the default particle template (particle is copied)
+<DL><DT><DD></DL><P>
+<A NAME="getFreezeOnCull"></A>
+<A NAME="DOC.2.15.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getFreezeOnCull() const </B></TT>
+<DD>Get whether the particle system can freeze when culled
+<DL><DT><DD></DL><P>
+<A NAME="setFreezeOnCull"></A>
+<A NAME="DOC.2.15.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFreezeOnCull(bool v)</B></TT>
+<DD>Set whether the particle system can freeze when culled (default is true)
+<DL><DT><DD></DL><P>
+<A NAME="getLevelOfDetail"></A>
+<A NAME="DOC.2.15.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getLevelOfDetail() const </B></TT>
+<DD>(<B>EXPERIMENTAL</B>) Get the level of detail
+<DL><DT><DD></DL><P>
+<A NAME="setLevelOfDetail"></A>
+<A NAME="DOC.2.15.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLevelOfDetail(int v)</B></TT>
+<DD>(<B>EXPERIMENTAL</B>) Set the level of detail. The total number of particles is divided by the detail value to
+get the actual number of particles to be drawn. This value must be greater than zero.
+<DL><DT><DD></DL><P>
+<A NAME="createParticle"></A>
+<A NAME="DOC.2.15.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Particle.html">Particle</A>* createParticle(const <!1><A HREF="Particle.html">Particle</A>* ptemplate)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

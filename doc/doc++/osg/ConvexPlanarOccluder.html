@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::ConvexPlanarOccluder</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::ConvexPlanarOccluder</A></H2></H2><BLOCKQUOTE>A class for representing convex clipping volumes made up.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CConvexPlanarOccluder,MConvexPlanarOccluder.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.1">ConvexPlanarOccluder</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.2">ConvexPlanarOccluder</A></B>(const <!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.2">ConvexPlanarOccluder</A>&amp; cpo, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A> <B><A HREF="#DOC.2.52.3">(osg, ConvexPlanarOccluder)</A></B>(const <!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; cpp)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; <B><A HREF="#DOC.2.52.4">getOccluder</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; <B><A HREF="#DOC.2.52.5">getOccluder</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.7">addHole</A></B>(const <!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; cpp)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.6">HoleList</A>&amp; <B><A HREF="#DOC.2.52.8">getHoleList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.6">HoleList</A>&amp; <B><A HREF="#DOC.2.52.9">getHoleList</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&gt; <B><A HREF="#DOC.2.52.6">HoleList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A> <B><A HREF="#DOC.2.52.11">_occluder</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.6">HoleList</A> <B><A HREF="#DOC.2.52.12">_holeList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.10">~ConvexPlanarOccluder</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>*) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A class for representing convex clipping volumes made up.
+When adding planes, their normals should point inwards (into the volume) </BLOCKQUOTE>
+<DL>
+
+<A NAME="ConvexPlanarOccluder"></A>
+<A NAME="DOC.2.52.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ConvexPlanarOccluder()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ConvexPlanarOccluder"></A>
+<A NAME="DOC.2.52.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ConvexPlanarOccluder(const <!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.2">ConvexPlanarOccluder</A>&amp; cpo, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(osg, ConvexPlanarOccluder)"></A>
+<A NAME="DOC.2.52.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A> (osg, ConvexPlanarOccluder)(const <!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; cpp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOccluder"></A>
+<A NAME="DOC.2.52.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; getOccluder()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOccluder"></A>
+<A NAME="DOC.2.52.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; getOccluder() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="HoleList"></A>
+<A NAME="DOC.2.52.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&gt; HoleList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addHole"></A>
+<A NAME="DOC.2.52.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addHole(const <!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A>&amp; cpp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getHoleList"></A>
+<A NAME="DOC.2.52.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.6">HoleList</A>&amp; getHoleList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getHoleList"></A>
+<A NAME="DOC.2.52.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.6">HoleList</A>&amp; getHoleList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ConvexPlanarOccluder"></A>
+<A NAME="DOC.2.52.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~ConvexPlanarOccluder()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_occluder"></A>
+<A NAME="DOC.2.52.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A> _occluder</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_holeList"></A>
+<A NAME="DOC.2.52.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ConvexPlanarOccluder.html#DOC.2.52.6">HoleList</A> _holeList</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::IntersectVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::IntersectVisitor</A></H2></H2><BLOCKQUOTE>Basic visitor for ray based collisions of a scene</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::NodeVisitor,M,CIntersectVisitor,MIntersectVisitor.html,CPickIntersectVisitor,MPickIntersectVisitor.html">
+<param name=before value="M,M,M^_">
+<param name=after value="Md_,M,M">
+<param name=indent value="0,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.1">IntersectVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.9.2">~IntersectVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.3">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.4">addLineSegment</A></B>(osg::LineSegment* seg)
+<DD><I>Add a line segment to use for intersection testing during scene traversal</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="IntersectVisitor.html#DOC.2.9.5">HitList</A>&amp; <B><A HREF="#DOC.2.9.7">getHitList</A></B>(osg::LineSegment* seg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.9.8">getNumHits</A></B>(osg::LineSegment* seg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.9">hits</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.10">apply</A></B>(osg::Node&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.11">apply</A></B>(osg::Geode&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.12">apply</A></B>(osg::Billboard&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.13">apply</A></B>(osg::Group&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.14">apply</A></B>(osg::Transform&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.15">apply</A></B>(osg::Switch&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.16">apply</A></B>(osg::LOD&amp; node)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Hit.html">Hit</A>&gt; <B><A HREF="#DOC.2.9.5">HitList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;osg::LineSegment*,<!1><A HREF="IntersectVisitor.html#DOC.2.9.5">HitList</A> &gt; <B><A HREF="#DOC.2.9.6">LineSegmentHitListMap</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="IntersectVisitor.html#DOC.2.9.23">IntersectStateStack</A> <B><A HREF="#DOC.2.9.24">_intersectStateStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::NodePath <B><A HREF="#DOC.2.9.25">_nodePath</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="IntersectVisitor.html#DOC.2.9.6">LineSegmentHitListMap</A> <B><A HREF="#DOC.2.9.26">_segHitList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.18">intersect</A></B>(osg::Drawable&amp; gset)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.19">pushMatrix</A></B>(const osg::Matrix&amp; matrix)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.20">popMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.21">enterNode</A></B>(osg::Node&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.22">leaveNode</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+class  <B><A HREF="IntersectState.html">IntersectState</A></B>: public osg::Referenced
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::ref_ptr&lt;<!1><A HREF="IntersectState.html">IntersectState</A>&gt; &gt; <B><A HREF="#DOC.2.9.23">IntersectStateStack</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Basic visitor for ray based collisions of a scene</BLOCKQUOTE>
+<DL>
+
+<A NAME="IntersectVisitor"></A>
+<A NAME="DOC.2.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IntersectVisitor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~IntersectVisitor"></A>
+<A NAME="DOC.2.9.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~IntersectVisitor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.9.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addLineSegment"></A>
+<A NAME="DOC.2.9.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addLineSegment(osg::LineSegment* seg)</B></TT>
+<DD>Add a line segment to use for intersection testing during scene traversal
+<DL><DT><DD></DL><P>
+<A NAME="HitList"></A>
+<A NAME="DOC.2.9.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Hit.html">Hit</A>&gt; HitList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LineSegmentHitListMap"></A>
+<A NAME="DOC.2.9.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;osg::LineSegment*,<!1><A HREF="IntersectVisitor.html#DOC.2.9.5">HitList</A> &gt; LineSegmentHitListMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getHitList"></A>
+<A NAME="DOC.2.9.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="IntersectVisitor.html#DOC.2.9.5">HitList</A>&amp; getHitList(osg::LineSegment* seg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumHits"></A>
+<A NAME="DOC.2.9.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNumHits(osg::LineSegment* seg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="hits"></A>
+<A NAME="DOC.2.9.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool hits()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Billboard&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Group&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Transform&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Switch&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="intersect"></A>
+<A NAME="DOC.2.9.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersect(osg::Drawable&amp; gset)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushMatrix"></A>
+<A NAME="DOC.2.9.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushMatrix(const osg::Matrix&amp; matrix)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popMatrix"></A>
+<A NAME="DOC.2.9.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="enterNode"></A>
+<A NAME="DOC.2.9.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool enterNode(osg::Node&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="leaveNode"></A>
+<A NAME="DOC.2.9.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void leaveNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IntersectStateStack"></A>
+<A NAME="DOC.2.9.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::ref_ptr&lt;<!1><A HREF="IntersectState.html">IntersectState</A>&gt; &gt; IntersectStateStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_intersectStateStack"></A>
+<A NAME="DOC.2.9.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="IntersectVisitor.html#DOC.2.9.23">IntersectStateStack</A> _intersectStateStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_nodePath"></A>
+<A NAME="DOC.2.9.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::NodePath _nodePath</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_segHitList"></A>
+<A NAME="DOC.2.9.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="IntersectVisitor.html#DOC.2.9.6">LineSegmentHitListMap</A> _segHitList</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="PickIntersectVisitor.html">PickIntersectVisitor</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

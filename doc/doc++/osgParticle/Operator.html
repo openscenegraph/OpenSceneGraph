@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgParticle::Operator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgParticle::Operator</A></H2></H2><BLOCKQUOTE>An abstract base class used by <CODE>ModularProgram</CODE> to perform operations on particles before they are updated.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="Mosg::Object,M,COperator,MOperator.html,CForceOperator,MForceOperator.html,CFluidFrictionOperator,MFluidFrictionOperator.html,CAccelOperator,MAccelOperator.html">
+<param name=before value="M,M,M|_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M">
+<param name=indent value="0,1,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.12.1">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.12.2">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.12.3">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.4">operate</A></B>(<!1><A HREF="Particle.html">Particle</A>* P, double dt) = 0
+<DD><I>Do something on a particle.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.5">beginOperate</A></B>(<!1><A HREF="Program.html">Program</A>* )
+<DD><I>Do something before processing particles via the <CODE>operate()</CODE> method.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.6">endOperate</A></B>()
+<DD><I>Do something after all particles have been processed</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.12.10">Operator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.12.11">Operator</A></B>(const <!1><A HREF="Operator.html#DOC.2.12.11">Operator</A> &amp;copy, const osg::CopyOp &amp;copyop)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.12.12">isEnabled</A></B>() const 
+<DD><I>Get whether this operator is enabled</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.12.13">setEnabled</A></B>(bool v)
+<DD><I>Enable or disable this operator</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.12.7">~Operator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Operator.html">Operator</A>&amp; <B><A HREF="#DOC.2.12.8">operator=</A></B>(const <!1><A HREF="Operator.html">Operator</A> &amp;)
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>An abstract base class used by <CODE>ModularProgram</CODE> to perform operations on particles before they are updated. 
+To implement a new operator, derive from this class and override the <CODE>operate()</CODE> method.
+You should also override the <CODE>beginOperate()</CODE> method to query the calling program for the reference frame
+used, and initialize the right transformations if needed.</BLOCKQUOTE>
+<DL>
+
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.12.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.12.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.12.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operate"></A>
+<A NAME="DOC.2.12.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operate(<!1><A HREF="Particle.html">Particle</A>* P, double dt) = 0</B></TT>
+<DD>Do something on a particle. 
+This method is called by <CODE>ModularProgram</CODE> objects to perform some operations
+on the particles. You must override it in descendant classes. Common operations
+consist of modifying the particle's velocity vector. The <CODE>dt</CODE> parameter is
+the time elapsed from last operation.            
+<DL><DT><DD></DL><P>
+<A NAME="beginOperate"></A>
+<A NAME="DOC.2.12.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void beginOperate(<!1><A HREF="Program.html">Program</A>* )</B></TT>
+<DD>Do something before processing particles via the <CODE>operate()</CODE> method.
+Overriding this method could be necessary to query the calling <CODE>Program</CODE> object
+for the current reference frame. If the reference frame is RELATIVE_TO_PARENTS, then your
+class should prepare itself to do all operations in local coordinates.
+<DL><DT><DD></DL><P>
+<A NAME="endOperate"></A>
+<A NAME="DOC.2.12.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void endOperate()</B></TT>
+<DD>Do something after all particles have been processed
+<DL><DT><DD></DL><P>
+<A NAME="~Operator"></A>
+<A NAME="DOC.2.12.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Operator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.12.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Operator.html">Operator</A>&amp; operator=(const <!1><A HREF="Operator.html">Operator</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Operator"></A>
+<A NAME="DOC.2.12.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Operator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Operator"></A>
+<A NAME="DOC.2.12.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Operator(const <!1><A HREF="Operator.html#DOC.2.12.11">Operator</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isEnabled"></A>
+<A NAME="DOC.2.12.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isEnabled() const </B></TT>
+<DD>Get whether this operator is enabled
+<DL><DT><DD></DL><P>
+<A NAME="setEnabled"></A>
+<A NAME="DOC.2.12.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnabled(bool v)</B></TT>
+<DD>Enable or disable this operator
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="ForceOperator.html">ForceOperator</A><BR>
+<A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A><BR>
+<A HREF="AccelOperator.html">AccelOperator</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

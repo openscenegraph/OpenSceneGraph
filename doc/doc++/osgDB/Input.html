@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGDB_EXPORT osgDB::Input</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGDB_EXPORT <A HREF="#DOC.DOCU">osgDB::Input</A></H2></H2><BLOCKQUOTE>Class for managing the reading of ASCII osg files</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CFieldReaderIterator,MFieldReaderIterator.html,CInput,MInput.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.1">Input</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.27.2">~Input</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.3">readObjectOfType</A></B>(const osg::Object&amp; compObj)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.4">readObject</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Image* <B><A HREF="#DOC.2.27.5">readImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Drawable* <B><A HREF="#DOC.2.27.6">readDrawable</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::StateAttribute* <B><A HREF="#DOC.2.27.7">readStateAttribute</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.27.8">readNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.9">readObject</A></B>(const std::string&amp; fileName)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Image* <B><A HREF="#DOC.2.27.10">readImage</A></B>(const std::string&amp; fileName)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.27.11">readNode</A></B>(const std::string&amp; fileName)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.12">getObjectForUniqueID</A></B>(const std::string&amp; uniqueID)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.27.13">regisiterUniqueIDForObject</A></B>(const std::string&amp; uniqueID, osg::Object* obj)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="FieldReaderIterator.html">FieldReaderIterator</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; <B>operator = </B>(const <!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; ic)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>attach</B>(std::istream* input)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>detach</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>eof</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="FieldReader.html">FieldReader</A>&amp; <B>getFieldReader</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>insert</B>(int pos, <!1><A HREF="Field.html">Field</A>* <!1><A HREF="FieldReaderIterator.html#DOC.2.5.13">field</A>)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>insert</B>(int pos, const char* str)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Field.html">Field</A>&amp; <B>operator [] </B>(int pos)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Field.html">Field</A>&amp; <B>field</B>(int pos)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; <B>operator ++ </B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; <B>operator += </B>(int no)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>advanceOverCurrentFieldOrBlock</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>advanceToEndOfCurrentBlock</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>advanceToEndOfBlock</B>(int noNestBrackets)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>matchSequence</B>(const char* str)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, std::string&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, unsigned int&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, int&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, float&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, osg::Vec2&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, osg::Vec3&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(const char* keyword, osg::Vec4&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(std::string&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(unsigned int&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(int&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(float&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(osg::Vec2&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(osg::Vec3&amp; value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>readSequence</B>(osg::Vec4&amp; value)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum <B></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Class for managing the reading of ASCII osg files</BLOCKQUOTE>
+<DL>
+
+<A NAME="Input"></A>
+<A NAME="DOC.2.27.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Input()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Input"></A>
+<A NAME="DOC.2.27.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Input()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readObjectOfType"></A>
+<A NAME="DOC.2.27.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObjectOfType(const osg::Object&amp; compObj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readObject"></A>
+<A NAME="DOC.2.27.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObject()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readImage"></A>
+<A NAME="DOC.2.27.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Image* readImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readDrawable"></A>
+<A NAME="DOC.2.27.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Drawable* readDrawable()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readStateAttribute"></A>
+<A NAME="DOC.2.27.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::StateAttribute* readStateAttribute()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readNode"></A>
+<A NAME="DOC.2.27.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* readNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readObject"></A>
+<A NAME="DOC.2.27.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObject(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readImage"></A>
+<A NAME="DOC.2.27.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Image* readImage(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readNode"></A>
+<A NAME="DOC.2.27.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* readNode(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getObjectForUniqueID"></A>
+<A NAME="DOC.2.27.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* getObjectForUniqueID(const std::string&amp; uniqueID)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="regisiterUniqueIDForObject"></A>
+<A NAME="DOC.2.27.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void regisiterUniqueIDForObject(const std::string&amp; uniqueID, osg::Object* obj)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgParticle::Interpolator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgParticle::Interpolator</A></H2></H2><BLOCKQUOTE>An abstract base class for implementing interpolators</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Object,M,CInterpolator,MInterpolator.html,CLinearInterpolator,MLinearInterpolator.html">
+<param name=before value="M,M,M^_">
+<param name=after value="Md_,M,M">
+<param name=indent value="0,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.1">Interpolator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.2">Interpolator</A></B>(const <!1><A HREF="Interpolator.html#DOC.2.7.2">Interpolator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.7.3">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.7.4">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.7.5">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.7.6">interpolate</A></B>(float t, float y1, float y2) const  = 0
+<DD><I>Interpolate between floats.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.2.7.7">interpolate</A></B>(float t, const osg::Vec2 &amp;y1, const osg::Vec2 &amp;y2) const 
+<DD><I>Interpolate between 2-dimensional vectors.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec3 <B><A HREF="#DOC.2.7.8">interpolate</A></B>(float t, const osg::Vec3 &amp;y1, const osg::Vec3 &amp;y2) const 
+<DD><I>Interpolate between 3-dimensional vectors.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec4 <B><A HREF="#DOC.2.7.9">interpolate</A></B>(float t, const osg::Vec4 &amp;y1, const osg::Vec4 &amp;y2) const 
+<DD><I>Interpolate between 4-dimensional vectors.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class T_&gt;  T_ <B><A HREF="#DOC.2.7.10">interpolate</A></B>(float t, const <!1><A HREF="range.html">range</A>&lt;T_&gt; &amp;r) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.7.11">~Interpolator</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>An abstract base class for implementing interpolators</BLOCKQUOTE>
+<DL>
+
+<A NAME="Interpolator"></A>
+<A NAME="DOC.2.7.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Interpolator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Interpolator"></A>
+<A NAME="DOC.2.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Interpolator(const <!1><A HREF="Interpolator.html#DOC.2.7.2">Interpolator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.7.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.7.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.7.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="interpolate"></A>
+<A NAME="DOC.2.7.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float interpolate(float t, float y1, float y2) const  = 0</B></TT>
+<DD>Interpolate between floats. Must be overriden in descendant classes.
+<DL><DT><DD></DL><P>
+<A NAME="interpolate"></A>
+<A NAME="DOC.2.7.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec2 interpolate(float t, const osg::Vec2 &amp;y1, const osg::Vec2 &amp;y2) const </B></TT>
+<DD>Interpolate between 2-dimensional vectors. Default behavior is to interpolate each component separately.
+<DL><DT><DD></DL><P>
+<A NAME="interpolate"></A>
+<A NAME="DOC.2.7.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec3 interpolate(float t, const osg::Vec3 &amp;y1, const osg::Vec3 &amp;y2) const </B></TT>
+<DD>Interpolate between 3-dimensional vectors. Default behavior is to interpolate each component separately.
+<DL><DT><DD></DL><P>
+<A NAME="interpolate"></A>
+<A NAME="DOC.2.7.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec4 interpolate(float t, const osg::Vec4 &amp;y1, const osg::Vec4 &amp;y2) const </B></TT>
+<DD>Interpolate between 4-dimensional vectors. Default behavior is to interpolate each component separately.
+<DL><DT><DD></DL><P>
+<A NAME="interpolate"></A>
+<A NAME="DOC.2.7.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class T_&gt;  T_ interpolate(float t, const <!1><A HREF="range.html">range</A>&lt;T_&gt; &amp;r) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Interpolator"></A>
+<A NAME="DOC.2.7.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Interpolator()</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="LinearInterpolator.html">LinearInterpolator</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

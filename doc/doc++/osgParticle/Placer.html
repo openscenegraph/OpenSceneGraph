@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgParticle::Placer</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgParticle::Placer</A></H2></H2><BLOCKQUOTE>An abstract base class for implementing <I>particle placers</I>.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="Mosg::Object,M,CPlacer,MPlacer.html,CSegmentPlacer,MSegmentPlacer.html,CMultiSegmentPlacer,MMultiSegmentPlacer.html,CCenteredPlacer,MCenteredPlacer.html">
+<param name=before value="M,M,M|_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M">
+<param name=indent value="0,1,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.17.1">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.17.2">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.17.3">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.17.4">place</A></B>(<!1><A HREF="Particle.html">Particle</A>* P) const  = 0
+<DD><I>Place a particle.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.17.7">Placer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.17.8">Placer</A></B>(const <!1><A HREF="Placer.html#DOC.2.17.8">Placer</A> &amp;copy, const osg::CopyOp &amp;copyop)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.17.5">~Placer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Placer.html">Placer</A>&amp; <B><A HREF="#DOC.2.17.6">operator=</A></B>(const <!1><A HREF="Placer.html">Placer</A> &amp;)
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>An abstract base class for implementing <I>particle placers</I>. A placer is an object which take
+a particle as input, and places it somewhere by setting its position vector. Placer objects are
+used by the <CODE>ModularEmitter</CODE> class as part of the particle emission process.</BLOCKQUOTE>
+<DL>
+
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.17.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.17.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.17.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="place"></A>
+<A NAME="DOC.2.17.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void place(<!1><A HREF="Particle.html">Particle</A>* P) const  = 0</B></TT>
+<DD>Place a particle. Must be implemented in descendant classes.
+<DL><DT><DD></DL><P>
+<A NAME="~Placer"></A>
+<A NAME="DOC.2.17.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~Placer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.17.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Placer.html">Placer</A>&amp; operator=(const <!1><A HREF="Placer.html">Placer</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Placer"></A>
+<A NAME="DOC.2.17.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Placer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Placer"></A>
+<A NAME="DOC.2.17.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Placer(const <!1><A HREF="Placer.html#DOC.2.17.8">Placer</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="SegmentPlacer.html">SegmentPlacer</A><BR>
+<A HREF="MultiSegmentPlacer.html">MultiSegmentPlacer</A><BR>
+<A HREF="CenteredPlacer.html">CenteredPlacer</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -68,6 +68,14 @@
 
 using namespace flt;
 
+unsigned int mystrnlen(char *s, unsigned int maxLen)
+{
+    for (unsigned int i = 0; i < maxLen; i++)
+    {
+        if (!s[i]) return i;
+    }
+    return maxLen;
+}
 
 ConvertFromFLT::ConvertFromFLT() :
     _faceColor(1,1,1,1)
@@ -326,9 +334,8 @@ void ConvertFromFLT::visitLongID(osg::Group& osgParent, LongIDRecord* rec)
 {
     SLongID *pSLongID = (SLongID*)rec->getData();
 
-    unsigned int stingLength = strlen(pSLongID->szIdent);
-    if (stingLength>rec->getBodyLength()) stingLength=rec->getBodyLength();
-    osgParent.setName(std::string(pSLongID->szIdent,stingLength));
+    unsigned int stringLength = mystrnlen(pSLongID->szIdent,rec->getBodyLength());
+    osgParent.setName(std::string(pSLongID->szIdent,stringLength));
 }
 
 
@@ -339,7 +346,8 @@ void ConvertFromFLT::visitComment(osg::Group& osgParent, CommentRecord* rec)
     //std::cout << "ConvertFromFLT::visitComment '"<<std::string(pSComment->szComment,pSComment->RecHeader.length()-4)<<"'"<<std::endl;
     //std::cout << "ConvertFromFLT::visitComment cstyle string '"<<pSComment->szComment<<"'"<<std::endl;
 
-    std::string commentfield(pSComment->szComment);
+    unsigned int stringLength = mystrnlen(pSComment->szComment,rec->getBodyLength());
+    std::string commentfield(pSComment->szComment,stringLength);
     unsigned int front_of_line = 0;
     unsigned int end_of_line = 0;
     while (end_of_line<commentfield.size())

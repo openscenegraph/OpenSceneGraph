@@ -8,12 +8,12 @@ CFG=Demo osgtext - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "osgtext.mak".
+!MESSAGE NMAKE /f "osgtextdemo.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgtext.mak" CFG="Demo osgtext - Win32 Release"
+!MESSAGE NMAKE /f "osgtextdemo.mak" CFG="Demo osgtext - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /D "_DEBUG" /D "FL_DLL" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /D "OSG_USE_MEMORY_MANAGER" /FR /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe

@@ -132,6 +132,7 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         osg::Vec3d              _center;
         osg::Quat               _rotation;
         float                   _distance;
+        osg::Vec3d              _previousUp;
 
 };
 

@@ -452,6 +452,9 @@ void SceneView::draw()
                 osg::ref_ptr<osg::Viewport> viewportRight = osgNew osg::Viewport;
                 viewportRight->setViewport(_viewport->x()+right_half_begin,_viewport->y(),right_half_width,_viewport->height());
 
+
+                clearArea(_viewport->x()+left_half_width,_viewport->y(),seperation,_viewport->height(),_renderStageLeft->getClearColor());
+
                 if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
                 {
                     _renderStageLeft->setViewport(viewportLeft.get());
@@ -485,6 +488,8 @@ void SceneView::draw()
 
                 osg::ref_ptr<osg::Viewport> viewportBottom = osgNew osg::Viewport;
                 viewportBottom->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half_height);
+
+                clearArea(_viewport->x(),_viewport->y()+bottom_half_height,_viewport->width(),seperation,_renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
                 {
@@ -607,4 +612,19 @@ const osg::Matrix SceneView::computeMVPW() const
         osg::notify(osg::WARN)<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed inccorectly."<<std::endl;
 
     return matrix;
+}
+
+void SceneView::clearArea(int x,int y,int width,int height,const osg::Vec4& color)
+{
+    osg::ref_ptr<osg::Viewport> viewport = osgNew osg::Viewport;
+    viewport->setViewport(x,y,width,height);
+
+    viewport->apply(*_state);
+    
+    glScissor( x, y, width, height );
+    glEnable( GL_SCISSOR_TEST );
+    glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+    glClearColor( color[0], color[1], color[2], color[3]);
+    glClear( GL_COLOR_BUFFER_BIT);
+    glDisable( GL_SCISSOR_TEST );
 }

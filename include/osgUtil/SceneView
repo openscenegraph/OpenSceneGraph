@@ -250,6 +250,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         const osg::Matrix computeMVPW() const;
 
+        void clearArea(int x,int y,int width,int height,const osg::Vec4& color);
+
         osg::ref_ptr<osg::Node>                     _sceneData;
         osg::ref_ptr<osg::StateSet>                 _globalState;
         osg::ref_ptr<osg::Light>                    _light;

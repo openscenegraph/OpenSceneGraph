@@ -23,33 +23,33 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.90.1">PositionAttitudeTransform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.1">PositionAttitudeTransform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.90.2">PositionAttitudeTransform</A></B>(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.90.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.2">PositionAttitudeTransform</A></B>(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.91.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.90.3">META_Node</A></B>(<!1><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.3">META_Node</A></B>(<!1><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.90.4">setPosition</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.4">setPosition</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.90.5">getPosition</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.91.5">getPosition</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.90.6">setAttitude</A></B>(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.6">setAttitude</A></B>(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Quat.html">Quat</A>&amp; <B><A HREF="#DOC.2.90.7">getAttitude</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Quat.html">Quat</A>&amp; <B><A HREF="#DOC.2.91.7">getAttitude</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.90.10">_position</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.91.10">_position</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.90.11">_attitude</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.91.11">_attitude</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.90.8">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.91.8">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.90.9">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.91.9">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 </DL></P>
 
 </DL>
@@ -57,19 +57,23 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setType</B>(<!1><A HREF="Transform.html#DOC.2.111.5">Type</A> type)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setType</B>(<!1><A HREF="Transform.html#DOC.2.112.5">Type</A> type)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Transform.html#DOC.2.111.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Transform.html#DOC.2.112.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setMatrixMode</B>(<!1><A HREF="MatrixMode.html">MatrixMode</A> mode)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="MatrixMode.html">MatrixMode</A> <B>getMatrixMode</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setComputeTransformCallback</B>(<!1><A HREF="Transform.html#DOC.2.111.10">ComputeTransformCallback</A>* ctc)
+<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>isProjectionTransform</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.111.10">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>isModelViewTransform</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.111.10">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>void <B>setComputeTransformCallback</B>(<!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>* ctc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 <DT>
@@ -93,18 +97,24 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.111.5">Type</A> <B>_type</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.112.5">Type</A> <B>_type</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="MatrixMode.html">MatrixMode</A> <B>_mode</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.111.10">ComputeTransformCallback</A>&gt;  <B>_computeTransformCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>&gt;  <B>_computeTransformCallback</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B>_matrix</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B>_inverse</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_inverseDirty</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>computeInverse</B>() const 
 </DL></P>
 
 </DL>
@@ -161,9 +171,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.70.13">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.71.13">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.70.13">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.71.13">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
 <DT>
@@ -195,9 +205,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.70.31">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.70.31">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
 <DT>
@@ -233,7 +243,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.70.13">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.71.13">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_appCallback</B>
 <DT>
@@ -247,7 +257,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.70.31">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
 </DL></P>
@@ -295,47 +305,47 @@ up via a Vec3 position and Quat attitude</BLOCKQUOTE>
 <DL>
 
 <A NAME="PositionAttitudeTransform"></A>
-<A NAME="DOC.2.90.1"></A>
+<A NAME="DOC.2.91.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PositionAttitudeTransform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PositionAttitudeTransform"></A>
-<A NAME="DOC.2.90.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PositionAttitudeTransform(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.90.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.91.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PositionAttitudeTransform(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.91.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.90.3"></A>
+<A NAME="DOC.2.91.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setPosition"></A>
-<A NAME="DOC.2.90.4"></A>
+<A NAME="DOC.2.91.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPosition(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPosition"></A>
-<A NAME="DOC.2.90.5"></A>
+<A NAME="DOC.2.91.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getPosition() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAttitude"></A>
-<A NAME="DOC.2.90.6"></A>
+<A NAME="DOC.2.91.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAttitude(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAttitude"></A>
-<A NAME="DOC.2.90.7"></A>
+<A NAME="DOC.2.91.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Quat.html">Quat</A>&amp; getAttitude() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeLocalToWorldMatrix"></A>
-<A NAME="DOC.2.90.8"></A>
+<A NAME="DOC.2.91.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeWorldToLocalMatrix"></A>
-<A NAME="DOC.2.90.9"></A>
+<A NAME="DOC.2.91.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_position"></A>
-<A NAME="DOC.2.90.10"></A>
+<A NAME="DOC.2.91.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _position</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_attitude"></A>
-<A NAME="DOC.2.90.11"></A>
+<A NAME="DOC.2.91.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Quat.html">Quat</A> _attitude</B></TT>
 <DL><DT><DD></DL><P></DL>
 

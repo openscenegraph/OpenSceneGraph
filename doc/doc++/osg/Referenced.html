@@ -23,30 +23,30 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.1">Referenced</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.94.1">Referenced</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.2">Referenced</A></B>(const <!1><A HREF="Referenced.html#DOC.2.93.2">Referenced</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.94.2">Referenced</A></B>(const <!1><A HREF="Referenced.html#DOC.2.94.2">Referenced</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B><A HREF="#DOC.2.93.3">operator = </A></B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B><A HREF="#DOC.2.94.3">operator = </A></B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.4">ref</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.94.4">ref</A></B>() const 
 <DD><I>increment the reference count by one, indicating that  this object has another pointer which is referencing it</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.5">unref</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.94.5">unref</A></B>() const 
 <DD><I>decrement the reference count by one, indicating that  a pointer to this object is referencing it.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.93.6">referenceCount</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.94.6">referenceCount</A></B>() const 
 <DD><I>return the number pointers currently referencing this object.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.93.8">_refCount</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.94.8">_refCount</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.93.7">~Referenced</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.94.7">~Referenced</A></B>()
 </DL></P>
 
 </DL>
@@ -58,25 +58,25 @@
 <DL>
 
 <A NAME="Referenced"></A>
-<A NAME="DOC.2.93.1"></A>
+<A NAME="DOC.2.94.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Referenced"></A>
-<A NAME="DOC.2.93.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced(const <!1><A HREF="Referenced.html#DOC.2.93.2">Referenced</A>&amp;)</B></TT>
+<A NAME="DOC.2.94.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced(const <!1><A HREF="Referenced.html#DOC.2.94.2">Referenced</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.93.3"></A>
+<A NAME="DOC.2.94.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; operator = (<!1><A HREF="Referenced.html">Referenced</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ref"></A>
-<A NAME="DOC.2.93.4"></A>
+<A NAME="DOC.2.94.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void ref() const </B></TT>
 <DD>increment the reference count by one, indicating that 
 this object has another pointer which is referencing it
 <DL><DT><DD></DL><P>
 <A NAME="unref"></A>
-<A NAME="DOC.2.93.5"></A>
+<A NAME="DOC.2.94.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void unref() const </B></TT>
 <DD>decrement the reference count by one, indicating that 
 a pointer to this object is referencing it.  If the
@@ -84,16 +84,16 @@ reference count goes to zero, it is assumed that this object
 is no longer referenced and is automatically deleted.
 <DL><DT><DD></DL><P>
 <A NAME="referenceCount"></A>
-<A NAME="DOC.2.93.6"></A>
+<A NAME="DOC.2.94.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int referenceCount() const </B></TT>
 <DD>return the number pointers currently referencing this object. 
 <DL><DT><DD></DL><P>
 <A NAME="~Referenced"></A>
-<A NAME="DOC.2.93.7"></A>
+<A NAME="DOC.2.94.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Referenced()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_refCount"></A>
-<A NAME="DOC.2.93.8"></A>
+<A NAME="DOC.2.94.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _refCount</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

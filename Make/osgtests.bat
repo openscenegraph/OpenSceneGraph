@@ -16,6 +16,9 @@ sgv cessnafire.osg
 echo sgv spaceship.osg
 sgv spaceship.osg
 
+echo sgv cube_mapped_torus.osg
+sgv cube_mapped_torus.osg
+
 echo sgv Town.osg
 sgv Town.osg
 
@@ -40,8 +43,11 @@ osgcube
 echo osgclip
 osgclip cow.osg
 
-echo osghud glider.osg
-osghud glider.osg
+echo osghud dumptruck.osg
+osghud dumptruck.osg
+
+echo osglight glider.osg
+osglight glider.osg
 
 echo osgimpostor Town.osg
 osgimpostor Town.osg

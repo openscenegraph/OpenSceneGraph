@@ -43,7 +43,7 @@ virtual reality, scientific visualization and graphics research. This page
 introduces what scene graphs are, why graphics developers use them, and
 details about the OpenSceneGraph project, how to learn how to use it and
 contribute to the OpenSceneGraph community.
-<p><i>Robert Osfield, Project Lead. April 2002.</i>
+<p><i>Robert Osfield, Project Lead. July 2002.</i>
 <br>
 <hr>
 <h3>
@@ -123,7 +123,7 @@ development model to provide a development library that is legacy free
 and well focused on the solving the task. The OpenSceneGraph delivers on
 the four key benefits of scene graph technology outlined above using the
 following features:
-<ol><i>Performance</i> - supports view frustum culling, small feature culling,
+<ol><i>Performance</i> - supports view frustum culling, occlusion culling, small feature culling,
 Level Of Detail (LOD) nodes, state sorting, vertex arrays and display
 lists as part of the core scene graph. These together make the OpenSceneGraph
 one of the highest performance scene graph available. User feedback is that
@@ -179,10 +179,8 @@ core scene graph and support of public mailing list remains unpaid as are
 the contributions of the rest of the community, but this hasn't impacted
 the quality of the source or support which once you get stuck in you grow
 to appreciate.
-<p>The project is currently in alpha, which means parts of the API are still
-to be developed, or subject to change, but the vast majority of the scene
-graph is there, and a beta will be published within the next few months,
-with a 1.0 release in late summer 2002. Despite the alpha development status,
+<p>The project is currently in beta, which means the main core features are now in
+place, with a 1.0 release in fall 2002. Despite the beta development status,
 the project has already earned the reputation the leading open source scene
 graph, and is establishing itself as a viable alternative to the commercial
 scene graphs. Numerous companies, university researchers and graphics enthusiasts
@@ -220,7 +218,7 @@ page.
 <h3>
 <u>Learning how to use the OpenSceneGraph</u></h3>
 The OpenSceneGraph distribution comes with a reference guide for each of
-the component libraries - osg, osgDB, osgUtil, osgText and osgGLUT, a set
+the component libraries - osg, osgDB, osgUtil, osgText, osgParticle and osgGLUT, a set
 of demos - the source of which can be found in src/Demos. For questions
 or help which can't be easily be answered by the reference guide and demo
 source, one should join the mailing list (details below). There are also

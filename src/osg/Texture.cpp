@@ -198,11 +198,12 @@ void Texture::apply(State& state) const
         else  if (_image.valid() && _image->data())
         {
             glBindTexture( _target, handle );
+            if (_texParamtersDirty) applyTexParameters(_target,state);
+
             uint& modifiedTag = getModifiedTag(contextID);
             if (_subloadMode == AUTO ||
                 (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
             {
-                if (_texParamtersDirty) applyTexParameters(_target,state);
                 glTexSubImage2D(_target, 0,
                                 _subloadOffsX, _subloadOffsY,
                                 (_subloadWidth>0)?_subloadWidth:_image->s(), (_subloadHeight>0)?_subloadHeight:_image->t(),

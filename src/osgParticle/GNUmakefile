@@ -3,11 +3,15 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	Emitter.cpp\
+	ExplosionEffect.cpp\
+	SmokeEffect.cpp\
+	FireEffect.cpp\
 	FluidFrictionOperator.cpp\
 	ModularEmitter.cpp\
 	ModularProgram.cpp\
 	MultiSegmentPlacer.cpp\
 	Particle.cpp\
+	ParticleEffect.cpp\
 	ParticleProcessor.cpp\
 	ParticleSystem.cpp\
 	ParticleSystemUpdater.cpp\

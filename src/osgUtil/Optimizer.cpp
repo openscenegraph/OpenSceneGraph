@@ -536,9 +536,9 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
                 }
             }
 
-            for(int i=transform->getNumParents()-1;i>=0;--i)
+            for(int i2=transform->getNumParents()-1;i2>=0;--i2)
             {
-                transform->getParent(i)->replaceChild(transform.get(),group.get());
+                transform->getParent(i2)->replaceChild(transform.get(),group.get());
             }                
         }
     }

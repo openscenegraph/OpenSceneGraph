@@ -19,7 +19,6 @@
 #include <osg/GL>
 
 #include <typeinfo>
-#include <vector>
 
 namespace osg {
 
@@ -209,10 +208,17 @@ class SG_EXPORT StateAttribute : public Object
         bool operator != (const StateAttribute& rhs) const { return compare(rhs)!=0; }
         
 
-        /** return the modes associated with this StateSet*/        
-        virtual void getAssociatedModes(std::vector<GLMode>& /*modes*/) const 
+        struct ModeUsage
+        {
+            virtual void usesMode(GLMode mode) = 0;
+            virtual void usesTextureMode(GLMode mode) = 0;
+        };
+
+        /** return the modes associated with this StateAttribute.*/        
+        virtual bool getModeUsage(ModeUsage&) const
         {
             // default to no GLMode's associated with use of the StateAttribute.
+            return false;
         }
     
         /** apply the OpenGL state attributes. 

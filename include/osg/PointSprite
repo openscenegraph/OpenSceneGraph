@@ -40,7 +40,11 @@ public:
 	/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
 	virtual int compare(const StateAttribute& sa) const;
 
-	virtual void getAssociatedModes(std::vector<GLMode>& modes) const;
+        virtual bool getModeUsage(ModeUsage& usage) const
+        {
+            usage.usesMode(GL_POINT_SPRITE_ARB);
+            return true;
+        }
 
 	virtual bool isTextureAttribute() const { return true; }
 

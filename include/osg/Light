@@ -67,9 +67,10 @@ class SG_EXPORT Light : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_LIGHT0+_lightnum);
+            usage.usesMode(GL_LIGHT0+_lightnum);
+            return true;
         }
 
         /** Set which OpenGL light to operate on.*/

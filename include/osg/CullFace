@@ -54,9 +54,10 @@ class SG_EXPORT CullFace : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_CULL_FACE);
+            usage.usesMode(GL_CULL_FACE);
+            return true;
         }
 
         inline void setMode(Mode mode) { _mode = mode; }

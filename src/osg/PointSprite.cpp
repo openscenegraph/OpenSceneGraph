@@ -25,11 +25,6 @@ int PointSprite::compare(const StateAttribute& sa) const
     return 0; // passed all the above comparison macro's, must be equal.
 }
 
-void PointSprite::getAssociatedModes(std::vector<GLMode>& modes) const
-{
-    modes.push_back(GL_POINT_SPRITE_ARB);
-}
-
 void PointSprite::apply(osg::State&) const
 {
     glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, 1);

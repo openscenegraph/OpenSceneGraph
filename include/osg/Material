@@ -79,12 +79,10 @@ class SG_EXPORT Material : public StateAttribute
 
         Material& operator = (const Material& rhs);
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            // Have to think about the role of _colorMode
-            // in setting the colormaterial... also need to take the
-            // color material enable/disable out of the the apply()...
-            modes.push_back(GL_COLOR_MATERIAL);
+            usage.usesMode(GL_COLOR_MATERIAL);
+            return true;
         }
 
         virtual void apply(State& state) const;

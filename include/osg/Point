@@ -54,9 +54,10 @@ class SG_EXPORT Point : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_POINT_SMOOTH);
+            usage.usesMode(GL_POINT_SMOOTH);
+            return true;
         }
 
         void setSize(float size);

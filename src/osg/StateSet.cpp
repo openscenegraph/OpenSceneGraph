@@ -578,7 +578,7 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::G
             else
             {
                 setAttribute(_attributeList,attribute,value);
-                setAssociatedModes(_modeList,attribute,value);
+                setAssociatedModes(attribute,value);
             }
         }
         else
@@ -597,7 +597,7 @@ void StateSet::setAttributeToInherit(StateAttribute::Type type)
     AttributeList::iterator itr = _attributeList.find(type);
     if (itr!=_attributeList.end())
     {
-        setAssociatedModes(_modeList,itr->second.first.get(),StateAttribute::INHERIT);
+        setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
         _attributeList.erase(itr);
     }
 }
@@ -616,12 +616,6 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(StateAttribute::Typ
 {
     return getAttributePair(_attributeList,type);
 }
-
-void StateSet::setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value)
-{
-    setAssociatedModes(_modeList,attribute,value);
-}
-
 
 void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {
@@ -707,7 +701,7 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
             else
             {
                 setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
-                setAssociatedModes(getOrCreateTextureModeList(unit),attribute,value);
+                setAssociatedTextureModes(unit,attribute,value);
             }
         }
         else
@@ -730,7 +724,7 @@ void StateSet::setTextureAttributeToInherit(unsigned int unit,StateAttribute::Ty
     {
         if (unit<_textureModeList.size())
         {
-            setAssociatedModes(_textureModeList[unit],itr->second.first.get(),StateAttribute::INHERIT);
+            setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
         }
         attributeList.erase(itr);
     }
@@ -755,11 +749,6 @@ const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int
 {
     if (unit>=_textureAttributeList.size()) return 0;
     return getAttributePair(_textureAttributeList[unit],type);
-}
-
-void StateSet::setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value)
-{
-    setAssociatedModes(getOrCreateTextureModeList(unit),attribute,value);
 }
 
 
@@ -853,19 +842,43 @@ StateAttribute::GLModeValue StateSet::getMode(const ModeList& modeList,StateAttr
         return StateAttribute::INHERIT;
 }
 
-void StateSet::setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, StateAttribute::GLModeValue value)
+class SetAssociateModesHelper : public StateAttribute::ModeUsage
 {
-    // get the associated modes.
-    std::vector<StateAttribute::GLMode> modes;
-    attribute->getAssociatedModes(modes);
+    public:
+        SetAssociateModesHelper(StateSet* stateset, StateAttribute::GLModeValue value,unsigned int unit=0):
+            _stateset(stateset),
+            _value(value),
+            _unit(unit) {}
+            
+        virtual ~SetAssociateModesHelper() {}
+        
+        virtual void usesMode(StateAttribute::GLMode mode)
+        {
+            _stateset->setMode(mode,_value);
+        }
+        
+        virtual void usesTextureMode(StateAttribute::GLMode mode)
+        {
+            _stateset->setTextureMode(_unit,mode,_value);
+        }
+        
+       
+        
+        StateSet*                   _stateset;
+        StateAttribute::GLModeValue _value;
+        unsigned int                _unit;
+};
 
-    // set the modes on the StateSet.
-    for(std::vector<StateAttribute::GLMode>::iterator itr=modes.begin();
-        itr!=modes.end();
-        ++itr)
-    {
-        setMode(modeList,*itr,value);
-    }
+void StateSet::setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value)
+{
+    SetAssociateModesHelper helper(this,value);
+    attribute->getModeUsage(helper);
+}
+
+void StateSet::setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value)
+{
+    SetAssociateModesHelper helper(this,value,unit);
+    attribute->getModeUsage(helper);
 }
 
 void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value)

@@ -17,7 +17,6 @@
 #include <osg/GL>
 #include <osg/StateAttribute>
 #include <osg/ref_ptr>
-#include <osg/buffered_value>
 #include <osg/Vec4>
 
 
@@ -51,9 +50,10 @@ class SG_EXPORT BlendColor : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_BLEND);
+            usage.usesMode(GL_BLEND);
+            return true;
         }
 
         void setConstantColor(const osg::Vec4& color) { _constantColor = color; }

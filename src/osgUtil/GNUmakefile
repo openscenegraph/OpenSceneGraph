@@ -7,6 +7,7 @@ CXXFILES = \
 	CullVisitor.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
+	DelaunayTriangulator.cpp\
 	InsertImpostorsVisitor.cpp\
 	IntersectVisitor.cpp\
 	Optimizer.cpp\

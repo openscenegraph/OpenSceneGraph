@@ -1,0 +1,106 @@
+#ifndef OSGUTIL_DELAUNAYTRIANGULATOR_
+#define OSGUTIL_DELAUNAYTRIANGULATOR_
+
+#include <osg/ref_ptr>
+#include <osg/Array>
+#include <osg/Referenced>
+#include <osg/CopyOp>
+#include <osg/PrimitiveSet>
+
+namespace osgUtil 
+{
+
+    /** Utility class that triangulates an irregolar network of sample points.
+        Just create a DelaunayTriangulator, assign it the sample point array and call
+        its triangulate() method to start the triangulation. Then you can obtain the
+        generated primitive by calling the getTriangles() method.
+    */
+    class DelaunayTriangulator: public osg::Referenced {
+    public:
+
+        DelaunayTriangulator();
+        explicit DelaunayTriangulator(osg::Vec3Array *points, osg::Vec3Array *normals = 0);
+        DelaunayTriangulator(const DelaunayTriangulator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+
+        /// Get the const input point array.
+        inline const osg::Vec3Array *getInputPointArray() const;
+
+        /// Get the input point array.
+        inline osg::Vec3Array *getInputPointArray();
+
+        /// Set the input point array.
+        inline void setInputPointArray(osg::Vec3Array *points);
+
+        /// Get the const output normal array (optional).
+        inline const osg::Vec3Array *getOutputNormalArray() const;
+
+        /// Get the output normal array (optional).
+        inline osg::Vec3Array *getOutputNormalArray();
+
+        /// Set the output normal array (optional).
+        inline void setOutputNormalArray(osg::Vec3Array *normals);
+
+        /// Start triangulation.
+        bool triangulate();
+
+        /// Get the generated primitive (call triangulate() first).
+        inline const osg::DrawElementsUInt *getTriangles() const;
+        
+        /// Get the generated primitive (call triangulate() first).
+        inline osg::DrawElementsUInt *getTriangles();
+
+    protected:
+        virtual ~DelaunayTriangulator();
+        DelaunayTriangulator &operator=(const DelaunayTriangulator &) { return *this; }
+
+    private:
+        osg::ref_ptr<osg::Vec3Array> points_;
+        osg::ref_ptr<osg::Vec3Array> normals_;
+        osg::ref_ptr<osg::DrawElementsUInt> prim_tris_;
+    };
+
+    // INLINE METHODS
+
+    inline const osg::Vec3Array *DelaunayTriangulator::getInputPointArray() const
+    {
+        return points_.get();
+    }
+
+    inline osg::Vec3Array *DelaunayTriangulator::getInputPointArray()
+    {
+        return points_.get();
+    }
+
+    inline void DelaunayTriangulator::setInputPointArray(osg::Vec3Array *points)
+    {
+        points_ = points;
+    }
+
+    inline const osg::Vec3Array *DelaunayTriangulator::getOutputNormalArray() const
+    {
+        return normals_.get();
+    }
+
+    inline osg::Vec3Array *DelaunayTriangulator::getOutputNormalArray()
+    {
+        return normals_.get();
+    }
+
+    inline void DelaunayTriangulator::setOutputNormalArray(osg::Vec3Array *normals)
+    {
+        normals_ = normals;
+    }
+
+    inline const osg::DrawElementsUInt *DelaunayTriangulator::getTriangles() const
+    {
+        return prim_tris_.get();
+    }
+
+    inline osg::DrawElementsUInt *DelaunayTriangulator::getTriangles()
+    {
+        return prim_tris_.get();
+    }
+
+}
+
+#endif

@@ -52,6 +52,8 @@ OSG News (most significant items from ChangeLog)
     Added the option of automatic unref'ing of texture image data once the data has
     been download to OpenGL to active graphics contexts.
     
+    New osgUtil::DelaunayTriangulator utlity class for tesselating data points.
+
     New osg::ArgumentParser and osg::ApplicationUsage classes for 
     convineiently and robustly parsing command line arguments and
     report command line usage, environmental variables and

@@ -151,6 +151,8 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
         std::string libraryName = proto->libraryName();
         std::string compositeName = libraryName + "::" + name;
 
+        _objectWrapperMap[compositeName] = wrapper;
+
         if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[proto->className()] = wrapper;
 
         if (dynamic_cast<const Image*>(proto))

@@ -34,7 +34,8 @@ void MultiTextureControl::write(DataOutputStream* out){
     // Write rangelist
     unsigned int size = getNumTextureWeights();
     out->writeUInt(size);
-    for(unsigned int i=0;i<size;i++){
+    for(unsigned int i=0;i<size;i++)
+    {
         out->writeFloat(getTextureWeight(i));
     }
 }
@@ -59,7 +60,7 @@ void MultiTextureControl::read(DataInputStream* in){
         // Read rangelist
         unsigned int size = in->readUInt();
         for(unsigned int i=0;i<size;i++)
-                {
+        {
             float value = in->readFloat();
             setTextureWeight(i, value);
         }

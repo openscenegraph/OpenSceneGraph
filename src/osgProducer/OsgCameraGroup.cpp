@@ -434,9 +434,12 @@ bool OsgCameraGroup::realize()
         
         cam->setClearColor(_clear_color[0],_clear_color[1],_clear_color[2],_clear_color[3]);
         
-        // create the scene handler.
-        osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
-
+        // get or create the scene handler.
+        osgProducer::OsgSceneHandler *sh;
+        sh = dynamic_cast<osgProducer::OsgSceneHandler*>(cam->getSceneHandler());
+        if(sh == NULL)
+            sh = new osgProducer::OsgSceneHandler(_ds.get()); 
+    
         osgUtil::SceneView* sv = sh->getSceneView();
         sv->setDefaults(_realizeSceneViewOptions);
         

@@ -36,6 +36,7 @@ struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransfo
             osg::Vec3 eyePointLocal = cv->getEyeLocal();
             matrix.preMult(osg::Matrix::translate(eyePointLocal.x(),eyePointLocal.y(),0.0f));
         }
+        return true;
     }
 
     /** Get the transformation matrix which moves from world coords to local coords.*/
@@ -47,6 +48,7 @@ struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransfo
             osg::Vec3 eyePointLocal = cv->getEyeLocal();
             matrix.postMult(osg::Matrix::translate(-eyePointLocal.x(),-eyePointLocal.y(),0.0f));
         }
+        return true;
     }
 };
 

@@ -144,7 +144,7 @@ void CameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode
 void CameraGroup::advance()
 {
     if( !_initialized ) return;
-    CameraGroup::advance();        
+    Producer::CameraGroup::advance();        
 }
 
 void CameraGroup::realize( ThreadingModel thread_model)

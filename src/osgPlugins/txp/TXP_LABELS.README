@@ -11,7 +11,7 @@ interface to create fonts based on their name (or at least I was not able to fin
  - it uses the font file name instead
 
 Ex:
-Times New Roman = TIMES.TTF   
-Arial = ARIAL.TTF  
-Arial Narrow = ARIALN.TTF 
-Courier New = COUR.TTF 
+Times New Roman = times.ttf
+Arial = arial.ttf  
+Arial Narrow = arian.ttf 
+Courier New = cour.ttf 

@@ -62,7 +62,7 @@ class TemplateArray : public AttributeArray, public std::vector<T>
     
         TemplateArray() : TemplateArray(DataSize,DataType) {}
 
-        TemplateArray(const T& t,const CopyOp& copyop=CopyOp::SHALLOW_COPY) : AttributeArray(t,copyop), std::vector<T>(t) {}
+        TemplateArray(const TemplateArray& t,const CopyOp& copyop=CopyOp::SHALLOW_COPY) : AttributeArray(t,copyop), std::vector<T>(t) {}
         
         virtual Object* cloneType() const { return osgNew TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        

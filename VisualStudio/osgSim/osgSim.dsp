@@ -171,6 +171,10 @@ SOURCE=..\..\include\osgSim\LightPoint
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgSim\LightSystem
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\LightPointDrawable.h
 # End Source File
 # Begin Source File

@@ -57,8 +57,6 @@ class ReaderWriterXine : public osgDB::ReaderWriter
 
         ReaderWriterXine()
         {
-            osg::notify(osg::NOTICE)<<"I'm here"<<std::endl;
-
             _xine = xine_new();
 
             const char* user_home = xine_get_homedir();
@@ -71,7 +69,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
 
             xine_init(_xine);
             
-          register_plugin(_xine, "/usr/local/lib/osgPlugins", "osgdb_xine.so");      
+           register_plugin(_xine, "/usr/local/lib/osgPlugins", "osgdb_xine.so");      
 
         }
      
@@ -109,14 +107,20 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             visual->user_data = imageStream;
 	    visual->callback = my_render_frame;
 
-            // set up drivers
+
+            
+
+            // set up video driver
             xine_video_port_t* vo = xine_open_video_driver(_xine, "rgb", XINE_VISUAL_TYPE_RGBOUT, (void*)visual);
-            xine_audio_port_t* ao = xine_open_audio_driver(_xine, "auto", NULL);
+
+            // set up audio driver
+            char* audio_driver = getenv("OSG_XINE_AUDIO_DRIVER");
+            xine_audio_port_t* ao = audio_driver ? xine_open_audio_driver(_xine, audio_driver, NULL) : xine_open_audio_driver(_xine, "none", NULL);
 
             if (!vo)
             {
                 osg::notify(osg::NOTICE)<<"Failed to create video driver"<<std::endl;
-                exit(0);
+                return 0;
             }
             
 

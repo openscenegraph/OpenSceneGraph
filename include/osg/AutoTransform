@@ -1,0 +1,83 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_AUTOTRANSFORM
+#define OSG_AUTOTRANSFORM 1
+
+#include <osg/Group>
+#include <osg/Matrix>
+
+namespace osg {
+
+/** AutoTransform - is group which all children
+  * are transformed by a matrix which is automatically
+  * calculated during the cull traversal.  The routine to
+  * do the matrix transform is specified by the user allow
+  * them customize its behavior to their own requirements.
+*/
+class SG_EXPORT AutoTransform : public Group
+{
+    public :
+    
+        class CalcTransformCallback : public osg::Referenced
+        {
+        
+            public:
+            
+            /** Get the transformation matrix which moves from local coords to world coords.*/
+            virtual const Matrix getLocalToWorldMatrix(const osg::Matrix& modelview) const = 0;
+
+            /** Get the transformation matrix which moves from world coords to local coords.*/
+            virtual const Matrix getWorldToLocalMatrix(const osg::Matrix& modelview) const = 0;
+            
+            protected:
+            
+            virtual ~CalcTransformCallback() {}
+            
+            
+            
+        };
+
+        AutoTransform();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        AutoTransform(const AutoTransform&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        AutoTransform(const Matrix& matix);
+
+        META_Node(AutoTransform);
+
+        /** Get the transformation matrix which moves from local coords to world coords.*/
+        inline const Matrix getLocalToWorldMatrix(const osg::Matrix& modelview) const
+        {
+            if (_calcTransformCallback.valid())
+                return _calcTransformCallback->getLocalToWorldMatrix(modelview);
+            else return osg::Matrix::identity();
+        }
+        
+
+        /** Get the transformation matrix which moves from world coords to local coords.*/
+        inline const Matrix getWorldToLocalMatrix(const osg::Matrix& modelview) const
+        {
+            if (_calcTransformCallback.valid())
+                return _calcTransformCallback->getLocalToWorldMatrix(modelview);
+            else return osg::Matrix::identity();
+        }
+    
+
+    protected :
+    
+        virtual ~AutoTransform();
+        
+        /** Override's Group's computeBound. 
+          * There is no need to override in subclasses from osg::AutoTransform since this computeBound() uses 
+          * the underlying matrix (calling computeMatrix if required.) */
+        virtual const bool computeBound() const;
+        
+        ref_ptr<CalcTransformCallback> _calcTransformCallback;
+};
+
+}
+
+#endif

@@ -50,7 +50,7 @@ using namespace std;
 
 DataInputStream::DataInputStream(std::istream* istream)
 {
-    _verboseOutput = true;
+    _verboseOutput = false;
 
     _istream = istream;
     _peeking = false;
@@ -108,6 +108,7 @@ unsigned short DataInputStream::readUShort(){
 unsigned int DataInputStream::readUInt(){
     unsigned int s;
     _istream->read((char*)&s, INTSIZE);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUInt(): Failed to read unsigned int value.");
 
@@ -123,8 +124,12 @@ int DataInputStream::readInt(){
     }
     int i;
     _istream->read((char*)&i, INTSIZE);
-    if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readInt(): Failed to read int value.");
+
+    // comment out for time being as this check seems to eroneously cause a
+    // premature exit when reading .ive files under OSX!#?:!
+    // Robet Osfield, September 12th 2003.
+    // if (_istream->rdstate() & _istream->failbit)
+    //    throw Exception("DataInputStream::readInt(): Failed to read int value.");
 
     if (_verboseOutput) std::cout<<"read/writeInt() ["<<i<<"]"<<std::endl;
     

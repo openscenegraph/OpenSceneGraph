@@ -48,6 +48,19 @@ bool LOD_readLocalData(Object& obj, Input& fr)
     }
 
 
+    if(fr[0].matchWord("RangeMode")){
+      if(fr[1].matchWord("DISTANCE_FROM_EYE_POINT")){
+        lod.setRangeMode(osg::LOD::DISTANCE_FROM_EYE_POINT);
+      }
+      else {
+        lod.setRangeMode(osg::LOD::PIXEL_SIZE_ON_SCREEN);
+      }
+      fr+=2;
+      iteratorAdvanced = true;
+    }
+    
+    
+
     // For backwards compatibility with old style LOD's (pre October 2002).
     bool matchFirst = false;
     if ((matchFirst=fr.matchSequence("Ranges {")) || fr.matchSequence("Ranges %i {"))
@@ -134,6 +147,13 @@ bool LOD_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "Radius "<<lod.getRadius()<<std::endl;
 
+    if(lod.getRangeMode()==osg::LOD::DISTANCE_FROM_EYE_POINT){
+      fw.indent() << "RangeMode DISTANCE_FROM_EYE_POINT"<<std::endl;
+    }
+    else {
+      fw.indent() << "RangeMode PIXEL_SIZE_ON_SCREEN"<<std::endl;
+    }
+    
     fw.indent() << "RangeList "<<lod.getNumRanges()<<" {"<< std::endl;
     fw.moveIn();
     

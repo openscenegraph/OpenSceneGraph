@@ -65,23 +65,10 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 // Deconstructor: stop and terminate thread
 MpegImageStream::~MpegImageStream()
 {
-    setCmd(THREAD_QUIT);
 
     if( isRunning() )
     {
-
-        // cancel the thread..
-        // cancel();
-
-        //join();
-
-        // then wait for the the thread to stop running.
-        while(isRunning())
-        {
-            osg::notify(osg::INFO)<<"Waiting for MpegImageStream to cancel"<<std::endl;
-            OpenThreads::Thread::YieldCurrentThread();
-        }
-
+        quit(true);
     }
 
     mpeg3_t* mpg = (mpeg3_t*)_mpg;
@@ -95,7 +82,6 @@ MpegImageStream::~MpegImageStream()
     }
 
 }
-
 
 // Set command
 void MpegImageStream::setCmd(ThreadCommand cmd)
@@ -204,6 +190,22 @@ void MpegImageStream::load(const char* fileName)
 }
 
 
+void MpegImageStream::quit(bool wiatForThreadToExit)
+{
+    osg::notify(osg::DEBUG_INFO)<<"Sending quit"<<std::endl;
+    setCmd(THREAD_QUIT);
+
+    if (wiatForThreadToExit)
+    {
+        while(isRunning())
+        {
+            osg::notify(osg::DEBUG_INFO)<<"Waiting for MpegImageStream to quit"<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+    }
+}
+
+
 void MpegImageStream::run()
 {
     bool playing = false;
@@ -287,6 +289,7 @@ void MpegImageStream::run()
         }
         else if (!done) 
         {
+            //OpenThreads::Thread::YieldCurrentThread();
             ::usleep(IDLE_TIMEOUT);
         }
     }

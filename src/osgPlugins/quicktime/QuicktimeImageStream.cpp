@@ -42,8 +42,11 @@ static OpenThreads::Mutex s_qtMutex;
 // Constructor: setup and start thread
 QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 {
-    
-    osgQuicktime::initQuicktime(); 
+
+    {    
+    	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+    	osgQuicktime::initQuicktime(); 
+    }
         
     _len = 0;
     
@@ -66,22 +69,10 @@ QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 // Deconstructor: stop and terminate thread
 QuicktimeImageStream::~QuicktimeImageStream()
 {
-    setCmd(THREAD_QUIT);
 
     if( isRunning() )
     {
-
-        // cancel the thread..
-        // cancel();
-        //join();
-
-        // then wait for the the thread to stop running.
-        while(isRunning())
-        {
-            osg::notify(osg::DEBUG_INFO)<<"Waiting for QuicktimeImageStream to cancel"<<std::endl;
-            OpenThreads::Thread::YieldCurrentThread();
-        }
-        
+        quit(true);
     }
 
     // clean up quicktime movies.
@@ -97,10 +88,10 @@ QuicktimeImageStream::~QuicktimeImageStream()
 // Set command
 void QuicktimeImageStream::setCmd(ThreadCommand cmd)
 {
-    lock();
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
     _cmd[_wrIndex] = cmd;
     _wrIndex = (_wrIndex + 1) % NUM_CMD_INDEX;
-    unlock();
 }
 
 
@@ -108,12 +99,14 @@ void QuicktimeImageStream::setCmd(ThreadCommand cmd)
 QuicktimeImageStream::ThreadCommand QuicktimeImageStream::getCmd()
 {
     ThreadCommand cmd = THREAD_IDLE;
-    lock();
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
     if (_rdIndex != _wrIndex) {
         cmd = _cmd[_rdIndex];
         _rdIndex = (_rdIndex + 1) % NUM_CMD_INDEX;
     }
-    unlock();
+
     return cmd;
 }
 
@@ -129,6 +122,21 @@ void QuicktimeImageStream::load(std::string fileName)
     _len = _data->getMovieDuration();
    
     
+}
+
+void QuicktimeImageStream::quit(bool wiatForThreadToExit)
+{
+    osg::notify(osg::DEBUG_INFO)<<"Sending quit"<<std::endl;
+    setCmd(THREAD_QUIT);
+
+    if (wiatForThreadToExit)
+    {
+        while(isRunning())
+        {
+            osg::notify(osg::DEBUG_INFO)<<"Waiting for QuicktimeImageStream to quit"<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+    }
 }
 
 
@@ -149,13 +157,7 @@ void QuicktimeImageStream::run()
 
 	float currentTime=0.0f;
 	
-	if (cmd == THREAD_QUIT)
-	{
-            osg::notify(NOTICE) << "QT-ImageStream: quick quit" << std::endl;
-            playing = false;
-            done = true;
-	}
-	else if (cmd != THREAD_IDLE)
+        if (cmd != THREAD_IDLE)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
 
@@ -184,7 +186,7 @@ void QuicktimeImageStream::run()
                     case THREAD_QUIT: // TODO
                         SetMovieRate(_data->getMovie(),0);
                         osg::notify(NOTICE) << "QT-ImageStream: quit" << std::endl;
-                        playing = false;
+                        //playing = false;
                         done = true;
                         break;
                     default:

@@ -15,7 +15,7 @@
 #include <osgGA/DriveManipulator>
 
 #include <osgTXP/TrPageArchive.h>
-#include <osgTXP/TrPageViewer.h>
+#include "TrPageViewer.h"
 
 
 void write_usage(std::ostream& out,const std::string& name)

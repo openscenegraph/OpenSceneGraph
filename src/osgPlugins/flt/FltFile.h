@@ -51,6 +51,17 @@ class FltFile : public osg::Referenced
         void setDoUnitsConversion(bool flag) { _doUnitsConversion=flag; }
         bool getDoUnitsConversion() const { return _doUnitsConversion; }
 
+        typedef enum { 
+            ConvertToMeters, 
+            ConvertToKilometers, 
+            ConvertToFeet,
+            ConvertToInches, 
+            ConvertToNauticalMiles 
+        } ConvertUnits;
+        void setDesiredUnits( FltFile::ConvertUnits units ) { _desiredUnits=units; }
+        FltFile::ConvertUnits getDesiredUnits() const { return _desiredUnits; }
+        std::string getDesiredUnitsString() const;
+
         int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
 
@@ -70,6 +81,7 @@ class FltFile : public osg::Referenced
         bool                        _useInternalMaterialPalette;
         bool                        _useTextureAlphaForTransparancyBinning;
         bool                        _doUnitsConversion;
+        ConvertUnits                _desiredUnits;
 
         std::string                 _directory;
         

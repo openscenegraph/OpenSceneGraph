@@ -39,6 +39,21 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
         osg::notify(osg::DEBUG_INFO) << "FltFile.getUseTextureAlphaForTransparancyBinning()=" << read->getUseTextureAlphaForTransparancyBinning() << std::endl;
         read->setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.o
         osg::notify(osg::DEBUG_INFO) << "FltFile.getDoUnitsConversion()=" << read->getDoUnitsConversion() << std::endl;
+
+        if (read->getDoUnitsConversion())
+        {
+            if (options->getOptionString().find("convertToFeet")!=std::string::npos)
+                read->setDesiredUnits( FltFile::ConvertToFeet );
+            else if (options->getOptionString().find("convertToInches")!=std::string::npos)
+                read->setDesiredUnits( FltFile::ConvertToInches );
+            else if (options->getOptionString().find("convertToMeters")!=std::string::npos)
+                read->setDesiredUnits( FltFile::ConvertToMeters );
+            else if (options->getOptionString().find("convertToKilometers")!=std::string::npos)
+                read->setDesiredUnits( FltFile::ConvertToKilometers );
+            else if (options->getOptionString().find("convertToNauticalMiles")!=std::string::npos)
+                read->setDesiredUnits( FltFile::ConvertToNauticalMiles );
+            osg::notify(osg::DEBUG_INFO) << "FltFile.getDesiredUnits()=" << read->getDesiredUnitsString() << std::endl;
+        }
     }
 
     osg::Node* node = read->readNode(fileName);

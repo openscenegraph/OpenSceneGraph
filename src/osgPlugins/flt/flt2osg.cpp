@@ -169,10 +169,10 @@ osg::Group* ConvertFromFLT::visitInstanceReference(osg::Group& osgParent,Instanc
 
 osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& osgPrimary, PrimNodeRecord* rec)
 {
-	// Note: There are databases that contains nodes with both Matrix and GeneralMatrix
-	// ancillary records. We need just one of these to put into the scenegraph
-	// Nick.
-	bool mxFound  = false;
+    // Note: There are databases that contains nodes with both Matrix and GeneralMatrix
+    // ancillary records. We need just one of these to put into the scenegraph
+    // Nick.
+    bool mxFound  = false;
 
     osg::Group* parent = &osgParent;
     // Visit ancillary records
@@ -189,21 +189,21 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
             break;
 
         case GENERAL_MATRIX_OP:
-			// Note: Ancillary record creates osg node
-			if (!mxFound)
-			{
-				parent = visitGeneralMatrix(*parent, osgPrimary, (GeneralMatrixRecord*)child);
-				mxFound = true;
-			}
+            // Note: Ancillary record creates osg node
+            if (!mxFound)
+            {
+                parent = visitGeneralMatrix(*parent, osgPrimary, (GeneralMatrixRecord*)child);
+                mxFound = true;
+            }
             break;
 
         case MATRIX_OP:
             // Note: Ancillary record creates osg node
-			if (!mxFound)
-			{
-				parent = visitMatrix(*parent, osgPrimary, (MatrixRecord*)child);
-				mxFound = true;
-			}
+            if (!mxFound)
+            {
+                parent = visitMatrix(*parent, osgPrimary, (MatrixRecord*)child);
+                mxFound = true;
+            }
             break;
 
         case COMMENT_OP:
@@ -437,25 +437,126 @@ osg::Group* ConvertFromFLT::visitHeader(HeaderRecord* rec)
     // Unit scale
     if ( _doUnitsConversion ) 
     {
-        switch (pSHeader->swVertexCoordUnit)
+        switch (rec->getFltFile()->getDesiredUnits())
         {
-        case HeaderRecord::METERS:
-            _unitScale = 1.0;
+        case FltFile::ConvertToMeters:
+            switch (pSHeader->swVertexCoordUnit)
+            {
+            case HeaderRecord::METERS:
+                _unitScale = 1.0;
+                break;
+            case HeaderRecord::KILOMETERS:
+                _unitScale = 1000.0;
+                break;
+            case HeaderRecord::FEET:
+                _unitScale = 0.3048;
+                break;
+            case HeaderRecord::INCHES:
+                _unitScale = 0.02540;
+                break;
+            case HeaderRecord::NAUTICAL_MILES:
+                _unitScale = 1852.0;
+                break;
+            default:
+                _unitScale = 1.0;
+            }
             break;
-        case HeaderRecord::KILOMETERS:
-            _unitScale = 1000.0;
+
+        case FltFile::ConvertToKilometers:
+            switch (pSHeader->swVertexCoordUnit)
+            {
+            case HeaderRecord::METERS:
+                _unitScale = 0.001;
+                break;
+            case HeaderRecord::KILOMETERS:
+                _unitScale = 1.0;
+                break;
+            case HeaderRecord::FEET:
+                _unitScale = 0.0003048;
+                break;
+            case HeaderRecord::INCHES:
+                _unitScale = 0.0000254;
+                break;
+            case HeaderRecord::NAUTICAL_MILES:
+                _unitScale = 1.852;
+                break;
+            default:
+                _unitScale = 1.0;
+            }
             break;
-        case HeaderRecord::FEET:
-            _unitScale = 0.3048;
+
+        case FltFile::ConvertToFeet:
+            switch (pSHeader->swVertexCoordUnit)
+            {
+            case HeaderRecord::METERS:
+                _unitScale = 3.2808399;
+                break;
+            case HeaderRecord::KILOMETERS:
+                _unitScale = 3280.839895;
+                break;
+            case HeaderRecord::FEET:
+                _unitScale = 1.0;
+                break;
+            case HeaderRecord::INCHES:
+                _unitScale = 0.0833333;
+                break;
+            case HeaderRecord::NAUTICAL_MILES:
+                _unitScale = 6076.1154856 ;
+                break;
+            default:
+                _unitScale = 1.0;
+            }
             break;
-        case HeaderRecord::INCHES:
-            _unitScale = 0.02540;
+
+        case FltFile::ConvertToInches:
+            switch (pSHeader->swVertexCoordUnit)
+            {
+            case HeaderRecord::METERS:
+                _unitScale = 39.3700787;
+                break;
+            case HeaderRecord::KILOMETERS:
+                _unitScale = 39370.0787402;
+                break;
+            case HeaderRecord::FEET:
+                _unitScale = 12.0;
+                break;
+            case HeaderRecord::INCHES:
+                _unitScale = 1.0;
+                break;
+            case HeaderRecord::NAUTICAL_MILES:
+                _unitScale = 72913.3858268;
+                break;
+            default:
+                _unitScale = 1.0;
+            }
             break;
-        case HeaderRecord::NAUTICAL_MILES:
-            _unitScale = 1852.0;
+
+        case FltFile::ConvertToNauticalMiles:
+            switch (pSHeader->swVertexCoordUnit)
+            {
+            case HeaderRecord::METERS:
+                _unitScale = 0.0005399568;
+                break;
+            case HeaderRecord::KILOMETERS:
+                _unitScale = 0.5399568;
+                break;
+            case HeaderRecord::FEET:
+                _unitScale = 0.0001646;
+                break;
+            case HeaderRecord::INCHES:
+                _unitScale = 0.0000137;
+                break;
+            case HeaderRecord::NAUTICAL_MILES:
+                _unitScale = 1.0;
+                break;
+            default:
+                _unitScale = 1.0;
+            }
             break;
+
         default:
             _unitScale = 1.0;
+            break;
         }
     }
     else

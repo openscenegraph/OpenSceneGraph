@@ -20,8 +20,8 @@ namespace flt {
 
 struct SComment
 {
-    SRecHeader    RecHeader;
-    // TODO
+    SRecHeader  RecHeader;
+    char        szComment[1];     // (Length - 4) ASCII ID of node
 };
 
 

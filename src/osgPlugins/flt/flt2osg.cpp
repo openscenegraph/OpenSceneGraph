@@ -58,6 +58,7 @@
 #include "Input.h"
 #include "GeoSetBuilder.h"
 #include "LongIDRecord.h"
+#include "CommentRecord.h"
 #include "InstanceRecords.h"
 #include "LocalVertexPoolRecord.h"
 #include "MultiTextureRecord.h"
@@ -163,7 +164,7 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
             break;
 
         case COMMENT_OP:
-//              visitComment(osgPrimary, (CommentRecord*)child);
+              visitComment(osgPrimary, (CommentRecord*)child);
             break;
 
         case COLOR_PALETTE_OP:
@@ -330,6 +331,30 @@ void ConvertFromFLT::visitLongID(osg::Group& osgParent, LongIDRecord* rec)
     // std::cout << "ConvertFromFLT::visitLongID cstyle string '"<<pSLongID->szIdent<<"'"<<std::endl;
 
     osgParent.setName(std::string(pSLongID->szIdent,rec->getBodyLength()));
+}
+
+
+void ConvertFromFLT::visitComment(osg::Group& osgParent, CommentRecord* rec)
+{
+    SComment *pSComment = (SComment*)rec->getData();
+
+    //std::cout << "ConvertFromFLT::visitComment '"<<std::string(pSComment->szComment,pSComment->RecHeader.length()-4)<<"'"<<std::endl;
+    //std::cout << "ConvertFromFLT::visitComment cstyle string '"<<pSComment->szComment<<"'"<<std::endl;
+
+    char* commentline = pSComment->szComment;
+    char* eol;
+    int lineno = 1;
+    // add all lines followed by \n
+    while ( commentline && (eol = strchr( commentline, '\n' ) ) ) {
+        *eol = '\0';
+        osgParent.addDescription( commentline );
+        //std::cerr << "Line " << lineno << ": " << commentline << "\n";
+        ++lineno;
+        commentline = ++eol;
+    }
+    // add the last line
+    osgParent.addDescription( commentline );
+    //std::cerr << "Line " << lineno << ": " << commentline << "\n";
 }
 
 

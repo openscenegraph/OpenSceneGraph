@@ -50,6 +50,7 @@ class LightPointRecord;
 class VertexListRecord;
 class LocalVertexPoolRecord;
 class LongIDRecord;
+class CommentRecord;
 class InstanceDefinitionRecord;
 class InstanceReferenceRecord;
 class MultiTextureRecord;
@@ -119,6 +120,7 @@ class ConvertFromFLT
         // Ancillary records
         osg::Group* visitMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, MatrixRecord* rec);
         void visitLongID(osg::Group& osgParent, LongIDRecord* rec);
+        void visitComment(osg::Group& osgParent, CommentRecord* rec);
 
         // Palette records
         void visitColorPalette(osg::Group& osgParent, ColorPaletteRecord* rec);

@@ -41,6 +41,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         virtual ~KeyboardMouseCallback() {}
 
         // override KeyboardMouseCallback methods.
+        virtual void mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm );
         virtual void mouseMotion( float mx, float my);
         virtual void passiveMouseMotion( float mx, float my);
 

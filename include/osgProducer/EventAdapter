@@ -75,6 +75,9 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         /** method for adapting resize events. */
         void adaptResize(double t, float Xmin, float Ymin, float Xmax, float Ymax);
 
+        /** method for adapting mouse scroll wheel events. */
+	void adaptMouseScroll(double t, Producer::KeyboardMouseCallback::ScrollingMotion sm);
+
         /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
         void adaptMouseMotion(double t, float x, float y);
 

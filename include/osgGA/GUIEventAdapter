@@ -39,6 +39,7 @@ public:
         };
 
         enum EventType {
+            NONE=0,
             PUSH,
             RELEASE,
             DOUBLECLICK,
@@ -48,7 +49,10 @@ public:
             KEYUP,
             FRAME,
             RESIZE,
-            NONE
+            SCROLLUP,
+            SCROLLDOWN,
+            SCROLLLEFT,
+            SCROLLRIGHT
         };
 
         enum KeySymbol

@@ -56,6 +56,8 @@ SceneView::SceneView(DisplaySettings* ds)
     _cullMask = 0xffffffff;
     _cullMaskLeft = 0xffffffff;
     _cullMaskRight = 0xffffffff;
+    
+    _drawBufferValue = GL_BACK;
 
 }
 
@@ -640,6 +642,10 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::ANAGLYPHIC):
             {
+                if( _drawBufferValue !=  GL_NONE)
+                {
+                    glDrawBuffer(_drawBufferValue);
+                }
                 
                 _localStateSet->setAttribute(_viewport.get());
 
@@ -687,6 +693,11 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
             {
+                if( _drawBufferValue !=  GL_NONE)
+                {
+                    glDrawBuffer(_drawBufferValue);
+                }
+
                 // ensure that all color planes are active.
                 osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
                 if (cmask)
@@ -744,6 +755,11 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::VERTICAL_SPLIT):
             {
+                if( _drawBufferValue !=  GL_NONE)
+                {
+                    glDrawBuffer(_drawBufferValue);
+                }
+
                 // ensure that all color planes are active.
                 osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
                 if (cmask)
@@ -800,6 +816,11 @@ void SceneView::draw()
         case(osg::DisplaySettings::RIGHT_EYE):
         case(osg::DisplaySettings::LEFT_EYE):
             {
+                if( _drawBufferValue !=  GL_NONE)
+                {
+                    glDrawBuffer(_drawBufferValue);
+                }
+
                 // ensure that all color planes are active.
                 osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
                 if (cmask)
@@ -829,8 +850,11 @@ void SceneView::draw()
     else
     {
 
-	// Need to restore draw buffer when toggling Stereo off.
-	glDrawBuffer(GL_BACK);
+        // Need to restore draw buffer when toggling Stereo off.
+        if( _drawBufferValue !=  GL_NONE)
+        {
+            glDrawBuffer(_drawBufferValue);
+        }
 
         _localStateSet->setAttribute(_viewport.get());
 

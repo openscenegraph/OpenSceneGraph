@@ -136,7 +136,7 @@ bool Output::registerUniqueIDForObject(const osg::Object* obj,std::string& uniqu
     return true;
 }
 
-const std::string Output::getFileNameForOutput(const std::string& filename) const
+std::string Output::getFileNameForOutput(const std::string& filename) const
 {
     switch(_pathNameHint)
     {

@@ -333,7 +333,7 @@ SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ProceduralGeometry.cpp
+SOURCE=..\..\src\osg\ShapeDrawable.cpp
 # End Source File
 # Begin Source File
 
@@ -713,7 +713,7 @@ SOURCE=..\..\Include\Osg\Projection
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osg\ProceduralGeometry
+SOURCE=..\..\Include\osg\ShapeDrawable
 # End Source File
 # Begin Source File
 

@@ -62,13 +62,13 @@ CXXFILES =\
 	PolygonStipple.cpp\
 	PositionAttitudeTransform.cpp\
 	PrimitiveSet.cpp\
-	ProceduralGeometry.cpp\
 	Projection.cpp\
 	Quat.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
 	ShadowVolumeOccluder.cpp\
 	Shape.cpp\
+	ShapeDrawable.cpp\
 	State.cpp\
 	StateSet.cpp\
 	Stencil.cpp\

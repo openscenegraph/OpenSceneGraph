@@ -63,6 +63,13 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
             ALIGNMENT       =    1<<2,
             DEFAULT         =    TEXT,
         };
+        
+        enum AxisAlignment
+        {
+            XY_PLANE,
+            XZ_PLANE,
+            YZ_PLANE
+        };
 
         Text();
         Text(const Text& text,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -92,6 +99,9 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
 
         void setAlignment(int alignment);
         int getAlignment() const { return _alignment; }
+        
+        void setAxisAlignment(AxisAlignment axis) { _axisAlignment = axis; dirtyDisplayList(); }
+        AxisAlignment getAxisAlignment() const { return _axisAlignment; }
 
         void setFont(Font* font);
         Font* getFont() { return _font.get(); }
@@ -137,6 +147,7 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         int                 _alignment;
         int                 _drawMode;
         int                 _boundingBoxType;
+        AxisAlignment       _axisAlignment;
 
         osg::Vec3           _pos;        
         osg::Vec3           _alignmentPos;

@@ -45,6 +45,7 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
         _alignment(text._alignment),
         _drawMode(text._drawMode),
         _boundingBoxType(text._boundingBoxType),
+        _axisAlignment(text._axisAlignment),
         _pos(text._pos),
         _alignmentPos(text._alignmentPos),
         _color(text._color)
@@ -122,7 +123,10 @@ setDefaults()
     _boundingBoxType=GLYPH;
     _boundingBoxType=GEOMETRY;
 
+    _axisAlignment = XY_PLANE;
+
     _initAlignment=false;
+
 
     _useDisplayList=false;
 }
@@ -209,6 +213,8 @@ void Text::drawImplementation(State& state) const
             {
                 case POLYGON:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
+                    if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
+                    else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
                     _font->output(state,_text.c_str());
                     break;
                 case OUTLINE:

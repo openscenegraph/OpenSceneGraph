@@ -13,6 +13,7 @@ CXXFILES =\
 	DataOutputStream.cpp\
 	DrawArrayLengths.cpp\
 	DrawArrays.cpp\
+	DrawElementsUByte.cpp\
 	DrawElementsUShort.cpp\
 	DrawElementsUInt.cpp\
 	Drawable.cpp\

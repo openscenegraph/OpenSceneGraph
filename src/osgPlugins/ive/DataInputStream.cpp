@@ -94,6 +94,18 @@ char DataInputStream::readChar(){
     return c;
 }
 
+unsigned char DataInputStream::readUChar(){
+    unsigned char c;
+    _istream->read((char*)&c, CHARSIZE);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readUChar(): Failed to read unsigned char value.");
+
+    if (_verboseOutput) std::cout<<"read/writeUChar() ["<<(int)c<<"]"<<std::endl;
+    
+    return c;
+}
+
 unsigned short DataInputStream::readUShort(){
     unsigned short s;
     _istream->read((char*)&s, SHORTSIZE);

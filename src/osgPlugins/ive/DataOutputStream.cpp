@@ -74,6 +74,12 @@ void DataOutputStream::writeChar(char c){
     if (_verboseOutput) std::cout<<"read/writeChar() ["<<(int)c<<"]"<<std::endl;
 }
 
+void DataOutputStream::writeUChar(unsigned char c){
+    _ostream->write((char*)&c, CHARSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeUChar() ["<<(int)c<<"]"<<std::endl;
+}
+
 void DataOutputStream::writeUShort(unsigned short s){
     _ostream->write((char*)&s, SHORTSIZE);
     

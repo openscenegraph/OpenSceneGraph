@@ -122,6 +122,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::Camera* getCamera() { return _camera.get(); }
         const osg::Camera* getCamera() const { return _camera.get(); }
 
+        void setProjectionMatrix(osg::Matrix* matrix) { _projectionMatrix = matrix; }
+        osg::Matrix* getProjectionMatrix() { return _projectionMatrix.get(); }
+        const osg::Matrix* getProjectionMatrix() const { return _projectionMatrix.get(); }
+
+        void setModelViewMatrix(osg::Matrix* matrix) { _modelviewMatrix = matrix; }
+        osg::Matrix* getModelViewMatrix() { return _modelviewMatrix.get(); }
+        const osg::Matrix* getModelViewMatrix() const { return _modelviewMatrix.get(); }
 
         
         void setInitVisitor(osg::NodeVisitor* av) { _initVisitor = av; }
@@ -240,6 +247,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::StateSet>                 _globalState;
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::Camera>                   _camera;
+        osg::ref_ptr<osg::Matrix>                   _projectionMatrix;
+        osg::ref_ptr<osg::Matrix>                   _modelviewMatrix;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         osg::ref_ptr<osg::State>                    _state;
         

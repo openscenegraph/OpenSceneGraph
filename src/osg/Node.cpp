@@ -11,7 +11,6 @@ using namespace osg;
 Node::Node()
 {
     _bsphere_computed = false;
-    _userData = NULL;
     _nodeMask = 0xffffffff;
     
     _numChildrenRequiringAppTraversal = 0;
@@ -24,7 +23,6 @@ Node::Node()
 
 Node::~Node()
 {
-    if (_userData && _memoryAdapter.valid()) _memoryAdapter->unref_data(_userData);
 }
 
 

@@ -20,6 +20,8 @@ C++FILES = \
         FTSize.cpp \
         FTTextureGlyph.cpp \
         FTVectoriser.cpp \
+        Font.cpp \
+        Paragraph.cpp \
         Text.cpp \
         Version.cpp
 
@@ -35,8 +37,10 @@ LIB	= ../../lib/lib$(TARGET_BASENAME).so
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
 TARGET_INCLUDE_FILES = \
 	osgText/Export\
-	osgText/Version\
-	osgText/Text
+	osgText/Font\
+	osgText/Paragraph\
+	osgText/Text\
+	osgText/Version
 
 C++FLAGS += -I ../../include -I /usr/include/freetype2  -I /usr/local/include/freetype2 
 

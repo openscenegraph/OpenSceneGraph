@@ -8,7 +8,6 @@
 #include <osg/Object>
 #include <osg/StateSet>
 #include <osg/BoundingSphere>
-#include <osg/MemoryAdapter>
 #include <osg/NodeCallback>
 #include <osg/ref_ptr>
 
@@ -120,27 +119,19 @@ class SG_EXPORT Node : public Object
 
 
         /**
-         * Set user data. See MemoryAdapter documentation for details
-         * of how to specify memory management of _userData.
+         * Set user data, data must be subclased from Referenced to allow
+         * automatic memory handling.  If you own data isn't directly 
+         * subclassed from Referenced then create and adapter object
+         * which points to your own objects and handles the memory addressing.
          */
-        inline void setUserData(void* data,MemoryAdapter* ma=0L)
-        {
-            if (_userData && _memoryAdapter.valid()) _memoryAdapter->unref_data(_userData);
-            _userData = data;
-            _memoryAdapter = ma;
-            if (_userData && _memoryAdapter.valid()) _memoryAdapter->ref_data(_userData);
-        }
+        inline void setUserData(osg::Referenced* obj) { _userData = obj; }
         /** Get user data.*/
-        inline void* getUserData() { return _userData; }
+        inline Referenced* getUserData() { return _userData.get(); }
         
         /** Get const user data.*/
-        inline const void* getUserData() const { return _userData; }
+        inline const Referenced* getUserData() const { return _userData.get(); }
 
-        /** Get the memory adapter associated with _userData.*/
-        inline MemoryAdapter* getMemoryAdapter() { return _memoryAdapter.get(); }
-        
-        /** Get the const memory adapter associated with _userData.*/
-        inline const MemoryAdapter* getMemoryAdapter() const { return _memoryAdapter.get(); }
+
 
         typedef unsigned int NodeMask;
         /** Set the node mask. Note, node mask is will be replaced by TraversalMask.*/
@@ -223,8 +214,7 @@ class SG_EXPORT Node : public Object
         int _numChildrenWithCullingDisabled;        
         void setNumChildrenWithCullingDisabled(const int num);
 
-        void*                   _userData;
-        ref_ptr<MemoryAdapter>  _memoryAdapter;
+        osg::ref_ptr<Referenced> _userData;
 
         NodeMask _nodeMask;
         

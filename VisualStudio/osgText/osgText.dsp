@@ -165,6 +165,14 @@ SOURCE=..\..\src\osgText\FTVectoriser.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgText\Font.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgText\Paragraph.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgText\Text.cpp
 # End Source File
 # Begin Source File
@@ -254,6 +262,14 @@ SOURCE=..\..\src\osgText\FTTextureGlyph.h
 # Begin Source File
 
 SOURCE=..\..\src\osgText\FTVectoriser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\Font
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\Paragraph
 # End Source File
 # Begin Source File
 

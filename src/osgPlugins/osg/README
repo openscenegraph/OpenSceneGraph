@@ -1,6 +1,5 @@
 Notes
 =====
-Currently there is no read/write .osg support for osg::Lighting.
 
 The support in Image.cpp is also not full functional and should be rewritten 
 in the future to support inline images.  Currently osg::Images are supported

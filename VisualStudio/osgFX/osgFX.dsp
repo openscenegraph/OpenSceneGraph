@@ -133,10 +133,6 @@ SOURCE=..\..\src\osgFX\Validator.cpp
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\include\osgFX\
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgFX\AnisotropicLighting
 # End Source File
 # Begin Source File

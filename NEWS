@@ -29,7 +29,7 @@ OSG News (most significant items from ChangeLog)
     all supported.
 
     From Brede Johansen, support added for the ARB VertexProgram extension
-    with osgvertexprogram demo showing reflection and reflection in action, and 
+    with osgvertexprogram demo showing reflection and refraction in action, and 
     osgpbuffer demo for Win32.
     
     From Ulrich Hertlein, new DirectX .x model loader.

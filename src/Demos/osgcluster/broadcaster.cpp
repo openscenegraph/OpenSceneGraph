@@ -36,6 +36,8 @@
 #elif defined (WIN32)
     #include <winsock.h>
     #include <stdio.h>
+#elif defined (__hpux__)
+    #include <unistd.h>
 #else
     #error Teach me how to build on this system
 #endif

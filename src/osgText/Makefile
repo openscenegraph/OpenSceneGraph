@@ -32,16 +32,21 @@ CXXFILES =\
 
 LIBS  += $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS)
 
+DEF += -DOSGTEXT_LIBRARY
+
+ifneq ($(OS),HP-UX)
 INC += -I$(OSGHOME)/include \
 	-I/usr/include/freetype2 \
 	-I/usr/local/include \
 	-I/usr/local/include/freetype2  \
 	-I/usr/freeware/include \
-	-I/usr/freeware/include/freetype2 \
-
-DEF += -DOSGTEXT_LIBRARY
+	-I/usr/freeware/include/freetype2
+        
 LINKARGS += -L/usr/local/lib\
 	    -L/usr/freeware/lib$(ARCH)
+else
+INC += $(FREETYPE_INCLUDE)
+endif
 
 TARGET_BASENAME = osgText
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

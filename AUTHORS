@@ -111,6 +111,10 @@ Bob Kuehne <rpk@mac.com>
 Kristopher Bixler <kbixler@mac.com>        
         - port to OSX's native dynamic library support.
 
+Tino Schwarze <tino.schwarze@informatik.tu-chemnitz.de>
+        -port to HP-UX.
+
+
 Indirect Contributors
 ---------------------
     

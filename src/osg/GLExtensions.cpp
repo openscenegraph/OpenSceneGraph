@@ -71,6 +71,10 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
     symbol = NSLookupAndBindSymbol( temp.c_str() );
     return NSAddressOfSymbol( symbol );
 #else // all other unixes
+   // Note: although we use shl_load() etc. for Plugins on HP-UX, it's
+   // not neccessary here since we only used them because library
+   // intialization was not taking place with dlopen() which renders
+   // Plugins useless on HP-UX.
    static void *lib = dlopen("libGL.so", RTLD_LAZY);
    if (lib)
       return dlsym(lib, funcName);

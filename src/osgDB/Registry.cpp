@@ -394,6 +394,9 @@ std::string Registry::createLibraryNameForExt(const std::string& ext)
     #endif
 #elif macintosh
     return "osgdb_"+ext;
+#elif defined(__hpux__)
+    // why don't we use PLUGIN_EXT from the makefiles here?
+    return "osgdb_"+ext+".sl";
 #else
     return "osgdb_"+ext+".so";
 #endif
@@ -417,6 +420,9 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     #endif
 #elif macintosh
     return name;
+#elif defined(__hpux__)
+    // why don't we use PLUGIN_EXT from the makefiles here?
+    return "lib"+name+".sl";
 #else
     return "lib"+name+".so";
 #endif

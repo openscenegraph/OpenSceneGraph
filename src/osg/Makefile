@@ -3,6 +3,7 @@ include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	AlphaFunc.cpp\
+	AutoTransform.cpp\
 	Billboard.cpp\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
@@ -67,6 +68,7 @@ TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
 	osg/Notify\
 	osg/AlphaFunc\
+	osg/AutoTransform\
 	osg/Billboard\
 	osg/BoundingBox\
 	osg/BoundingSphere\

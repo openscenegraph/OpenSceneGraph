@@ -284,12 +284,15 @@ void TextureCubeMap::apply(State& state) const
 
         }
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && getDataVariance()==STATIC)
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {
             TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
             for (int n=0; n<6; n++)
-            {
-                non_const_this->_images[n] = 0;
+            {                
+                if (_images[n].valid() && _images[n]->getDataVariance()==STATIC)
+                {
+                    non_const_this->_images[n] = 0;
+                }
             }
         }
         

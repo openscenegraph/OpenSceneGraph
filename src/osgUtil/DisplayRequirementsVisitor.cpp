@@ -52,7 +52,7 @@ void DisplayRequirementsVisitor::apply(Geode& geode)
     osg::StateSet* geode_stateset = geode.getStateSet();
     if (geode_stateset) applyStateSet(*geode_stateset);
     
-    for(int i = 0; i < geode.getNumDrawables(); i++ )
+    for(unsigned int i = 0; i < geode.getNumDrawables(); i++ )
     {
         osg::StateSet* stateset = geode.getDrawable(i)->getStateSet();
         if (stateset) applyStateSet(*stateset);

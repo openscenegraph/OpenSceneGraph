@@ -130,7 +130,7 @@ void SmoothingVisitor::smooth(osg::Geometry& geom)
 
 void SmoothingVisitor::apply(osg::Geode& geode)
 {
-    for(int i = 0; i < geode.getNumDrawables(); i++ )
+    for(unsigned int i = 0; i < geode.getNumDrawables(); i++ )
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom) smooth(*geom);

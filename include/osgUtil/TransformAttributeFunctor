@@ -27,12 +27,12 @@ class OSGUTIL_EXPORT TransformAttributeFunctor : public osg::Drawable::Attribute
 {
     public:
     
-        /** construct a functor to transform a drawable's vertex and normal attributes by specified matrix.*/
+        /** Construct a functor to transform a drawable's vertex and normal attributes by specified matrix.*/
         TransformAttributeFunctor(const osg::Matrix& m);
             
         virtual ~TransformAttributeFunctor();
 
-        /** do the work of transforming vertex and normal attributes. */
+        /** Do the work of transforming vertex and normal attributes. */
         virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin);
 
         osg::Matrix _m;

@@ -25,7 +25,7 @@
 namespace osgUtil {
 
 /** A tri stripping visitor for converting Geometry surface primitives into tri strips.
-  * The current implemention is based up Tanguy Fautre's triangulation code.
+  * The current implemention is based upon Tanguy Fautre's triangulation code.
   */
 class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
 {
@@ -45,10 +45,10 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
           */
         void stripify(osg::Geometry& drawable);
 
-        /** Stripfy the accumulated list of Geometry drawables.*/
+        /** Stripify (make into strips of tria or quads) the accumulated list of Geometry drawables.*/
         void stripify();
 
-        /// accumulate the Geometry drawables to stripify
+        /// Accumulate the Geometry drawables to make into strips.
         virtual void apply(osg::Geode& geode);
 
         inline void setCacheSize( unsigned int size )

@@ -32,7 +32,7 @@ namespace osgUtil {
 
 /**
  * Basic UpdateVisitor implementation for animating a scene.
- * This visitor traverses the scene graph, call each nodes appCallback if
+ * This visitor traverses the scene graph, calling each nodes appCallback if
  * it exists. 
  */
 class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
@@ -44,6 +44,7 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
 
         virtual void reset();
 
+    /** During traversal each type of node calls its callbacks and its children traversed. */
         virtual void apply(osg::Node& node)         { handle_callbacks_and_traverse(node); }
         
         virtual void apply(osg::Geode& node)        { handle_geode_callbacks(node); }
@@ -62,10 +63,10 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
 
     protected:
 
-//         /** prevent unwanted copy construction.*/
+//         /** Prevent unwanted copy construction.*/
 //         UpdateVisitor(const UpdateVisitor&):osg::NodeVisitor() {}
 
-        /** prevent unwanted copy operator.*/
+        /** Prevent unwanted copy operator.*/
         UpdateVisitor& operator = (const UpdateVisitor&) { return *this; }
         
         inline void handle_callbacks_and_traverse(osg::Node& node)
@@ -79,14 +80,15 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         {
             osg::NodeCallback* callback = node.getUpdateCallback();
             if (callback) (*callback)(&node,this);
-            /*else if (node.getNumChildrenRequiringUpdateTraversal()>0)*/ traverseGeode(node);
+            /*else if (node.getNumChildrenRequiringUpdateTraversal()>0)*/ 
+            traverseGeode(node);
         }
         
         inline void traverseGeode(osg::Geode& geode)
         {
             traverse((osg::Node&)geode);
             
-            // call the app callbacks on the drawables.
+            // Call the app callbacks on the drawables.
             for(unsigned int i=0;i<geode.getNumDrawables();++i)
             {
                 osg::Drawable::UpdateCallback* callback = geode.getDrawable(i)->getUpdateCallback();

@@ -24,6 +24,7 @@ class Geode;
 class Billboard;
 class LightSource;
 class ClipNode;
+class TexGenNode;
 class Group;
 class Transform;
 class MatrixTransform;
@@ -225,6 +226,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(CoordinateSystemNode& node)      { apply((Group&)node); }
 
         virtual void apply(ClipNode& node)                  { apply((Group&)node); }
+        virtual void apply(TexGenNode& node)                { apply((Group&)node); }
         virtual void apply(LightSource& node)               { apply((Group&)node); }
 
         virtual void apply(Transform& node)                 { apply((Group&)node); }

@@ -151,6 +151,10 @@ SOURCE=..\..\src\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TexGenNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CollectOccludersVisitor.cpp
 # End Source File
 # Begin Source File
@@ -540,6 +544,10 @@ SOURCE=..\..\Include\Osg\ClipNode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ClipPlane
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TexGenNode
 # End Source File
 # Begin Source File
 

@@ -11,9 +11,17 @@
 namespace osg {
 
 /** Transform - is group which all children
-    are transformed by the the Transform's osg::Matrix.  Typical uses
-    of the Transform is for positioning objects within a scene or 
-    producing trakerball functionality or for animation.
+  * are transformed by the the Transform's osg::Matrix.  Typical uses
+  * of the Transform is for positioning objects within a scene or 
+  * producing trackball functionality or for animation.
+  * Note, if the transformation matrix scales the subgraph then the
+  * normals of the underlying geometry will need to be renormalized to
+  * be unit vectors once more.  One can done transparently through OpenGL's 
+  * use of either GL_NORMALIZE and GL_SCALE_NORMALIZE modes.  Further
+  * background reading see the glNormalize documentation in the OpenGL Reference 
+  * Guide (the blue book). To enable it in the OSG, you simple need to
+  * attach a local osg::StateSet to the osg::Transform, and set the appropriate
+  * mode to on via stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);.
 */
 class SG_EXPORT Transform : public Group
 {
@@ -30,12 +38,12 @@ class SG_EXPORT Transform : public Group
             STATIC
         };
         
-        /** Set the Transform Type, which can be DYNAMIC - the Marix
-          * value is updated duing the main loop, or STATIC - the Matrix
-          * is constant throughut the life of the main loop.  STATIC 
+        /** Set the Transform Type, which can be DYNAMIC - the Matrix
+          * value is updated during the main loop, or STATIC - the Matrix
+          * is constant throughout the life of the main loop.  STATIC 
           * Transforms can be optimized away is some instances, which
-          * can improve performanc so unless you plan to modify the
-          * Matrix explicity set the Matrix to STATIC.  The default
+          * can improve performance so unless you plan to modify the
+          * Matrix explicitly set the Matrix to STATIC.  The default
           * value is DYNAMIC.*/
         inline void setType(Type type) { _type = type; }
 

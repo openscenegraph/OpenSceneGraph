@@ -101,6 +101,10 @@ SOURCE=..\..\src\osgGL2\ProgramObject.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgGL2\UniformValue.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgGL2\Version.cpp
 # End Source File
 # End Group
@@ -118,6 +122,10 @@ SOURCE=..\..\include\osgGL2\Extensions
 # Begin Source File
 
 SOURCE=..\..\include\osgGL2\ProgramObject
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgGL2\UniformValue
 # End Source File
 # Begin Source File
 

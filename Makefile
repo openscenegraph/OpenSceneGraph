@@ -82,8 +82,8 @@ help :
 
 clean : $(MAKE_PREP)
 	for f in $(DIRS) ; do cd $$f; $(MAKE) clean; cd ..;  done
-	find lib -type f -exec rm {} \;
-	rm -f bin/*
+	rm -f `find lib -type f | grep -v .README`
+	rm -f `ls bin/* | grep -v CVS`
 
 clobber : $(MAKE_PREP) clean
 	for f in $(DIRS) ; do cd $$f; $(MAKE) clobber; cd ..;  done

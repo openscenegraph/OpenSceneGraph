@@ -241,7 +241,6 @@ void Geometry::drawImmediateMode(State& state)
         }
     }
     
-    
     static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
             (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
     static SecondaryColor3fvProc s_glSecondaryColor3fv =

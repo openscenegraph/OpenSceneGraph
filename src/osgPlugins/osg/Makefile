@@ -14,6 +14,7 @@ CXXFILES =\
         Fog.cpp\
         FrontFace.cpp\
         Geode.cpp\
+        Geometry.cpp\
         GeoSet.cpp\
         Group.cpp\
         Image.cpp\

@@ -426,9 +426,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     // when use 16 bit textures rather than 24/32bit textures.
     // internalFormat = GL_RGBA4;
     
-    // an experiment to look at the changes in performance
-    // when use 16 bit textures rather than 24/32bit textures.
-    // internalFormat = GL_RGBA4;
+
     static MyCompressedTexImage2DArbProc glCompressedTexImage2D_ptr = 
         (MyCompressedTexImage2DArbProc)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
 

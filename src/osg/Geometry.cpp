@@ -2,6 +2,49 @@
 
 using namespace osg;
 
+static char* s_ArrayNames[] =
+{
+    "AttributeArray", // 0
+    "ByteArray",     // 1
+    "ShortArray",    // 2
+    "IntArray",      // 3
+
+    "UByteArray",    // 4
+    "UShortArray",   // 5
+    "UIntArray",     // 6
+    "UByte4Array",   // 7
+
+    "FloatArray",    // 8
+    "Vec2Array",     // 9
+    "Vec3Array",     // 10
+    "Vec4Array",      // 11
+};
+
+const char* AttributeArray::className() const
+{
+    if (_arrayType>=AttributeArrayType && _arrayType<=Vec4ArrayType)
+        return s_ArrayNames[_arrayType];
+    else
+        return "UnkownAttributeArray";
+}
+
+static char* s_PrimitiveNames[] =
+{
+    "Primitive",                // 0
+    "DrawArrays",                // 1
+    "UByteDrawElements",        // 2
+    "UShortDrawElements",       // 3
+    "UIntDrawElements"          // 4
+};
+
+const char* Primitive::className() const
+{
+    if (_primitiveType>=PrimitivePrimitiveType && _primitiveType<=UIntDrawElementsPrimitiveType)
+        return s_PrimitiveNames[_primitiveType];
+    else
+        return "UnkownAttributeArray";
+}
+
 Geometry::Geometry()
 {
     _normalBinding = BIND_OFF;

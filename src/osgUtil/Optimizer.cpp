@@ -64,9 +64,9 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
-    // convert the old style GeoSet to Geometry
-    ConvertGeoSetsToGeometryVisitor cgtg;
-    node->accept(cgtg);
+//     // convert the old style GeoSet to Geometry
+//     ConvertGeoSetsToGeometryVisitor cgtg;
+//     node->accept(cgtg);
 
 
     if (options & SHARE_DUPLICATE_STATE)

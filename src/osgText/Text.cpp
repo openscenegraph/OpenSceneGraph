@@ -277,7 +277,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2 cursor, String::iter
 
             float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
             #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
-	        if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
+            if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
             #endif
 
             if (_layout==RIGHT_TO_LEFT)
@@ -354,11 +354,11 @@ void Text::computeGlyphRepresentation()
     _textureGlyphQuadMap.clear();
     
     if (_text.empty()) 
-	{
-	    _textBB.set(0,0,0,0,0,0);//no size text
-	    computePositions(); //to reset the origin
-		return;
-	}
+    {
+        _textBB.set(0,0,0,0,0,0);//no size text
+        computePositions(); //to reset the origin
+        return;
+    }
     
     osg::Vec2 startOfLine(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine);
@@ -423,8 +423,8 @@ void Text::computeGlyphRepresentation()
                     float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
                     float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
                     #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
-	                if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
-	                if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
+                    if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
+                    if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
                     #endif
                     if (_layout==RIGHT_TO_LEFT)
                     {
@@ -560,7 +560,8 @@ void Text::computeGlyphRepresentation()
 
 void Text::computePositions()
 {
-    for(unsigned int i=0;i<_autoTransformCache.size();++i)
+    unsigned int size = osg::maximum(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),_autoTransformCache.size());
+    for(unsigned int i=0;i<size;++i)
     {
         computePositions(i);
     }
@@ -782,11 +783,14 @@ void Text::drawImplementation(osg::State& state) const
 
             const GlyphQuads& glyphquad = titr->second;
 
-            state.setVertexPointer( 3, GL_FLOAT, 0, &(glyphquad._transformedCoords[contextID].front()));
-            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+            const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
+            if (!transformedCoords.empty()) 
+            {
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
+                state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
 
-            glDrawArrays(GL_QUADS,0,glyphquad._coords.size());
-
+                glDrawArrays(GL_QUADS,0,transformedCoords.size());
+            }
         }
     }
 

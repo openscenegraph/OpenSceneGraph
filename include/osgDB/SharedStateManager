@@ -1,0 +1,86 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef    OSGDB_SHAREDSTATEMANAGER
+#define OSGDB_SHAREDSTATEMANAGER 1
+ 
+
+#include <osg/NodeVisitor>
+#include <osg/Geode>
+
+#include <osgDB/Export>
+
+#include <OpenThreads/Mutex>
+
+#include <set>
+
+
+namespace osgDB {
+
+    class OSGDB_EXPORT SharedStateManager : public osg::NodeVisitor
+    {
+    public: 
+
+        enum ShareMode
+        {
+            SHARE_NONE      = 0x00,
+            SHARE_TEXTURES  = 0x01,
+            SHARE_STATESETS = 0x02,
+            SHARE_ALL       = SHARE_TEXTURES |
+                              SHARE_STATESETS
+        };
+
+        SharedStateManager();
+
+        void setShareMode(unsigned int mode) { shareMode = mode; }
+        unsigned int getShareMode() { return shareMode; }
+
+        // Call right after each unload and before Registry cache prune.
+        void prune();
+
+        // Call right after each load
+        void share(osg::Node *node, OpenThreads::Mutex *mt=0);
+        
+    protected:
+
+        void apply(osg::Node& node);
+        void apply(osg::Geode& geode);
+        void process(osg::StateSet* ss, osg::Object* parent);
+        inline osg::StateAttribute *find(osg::StateAttribute *sa);
+        inline osg::StateSet *find(osg::StateSet *ss);
+        inline void setStateSet(osg::StateSet* ss, osg::Object* object);
+        inline void shareTextures(osg::StateSet* ss);
+
+        // Lists of shared objects
+        typedef std::set< osg::ref_ptr<osg::StateAttribute> > TextureSet;
+        TextureSet _sharedTextureList;
+        typedef std::set< osg::ref_ptr<osg::StateSet> > StateSetSet;
+        StateSetSet _sharedStateSetList;
+
+        // Temporary lists just to avoid unnecesary find calls
+        typedef std::pair<osg::StateAttribute*, bool> TextureSharePair;
+        typedef std::map<osg::StateAttribute*, TextureSharePair> TextureTextureSharePairMap;
+        TextureTextureSharePairMap tmpSharedTextureList;
+        typedef std::pair<osg::StateSet*, bool> StateSetSharePair;
+        typedef std::map<osg::StateSet*, StateSetSharePair> StateSetStateSetSharePairMap;
+        StateSetStateSetSharePairMap tmpSharedStateSetList;
+
+        // Share connection mutex 
+        unsigned int shareMode;
+
+        OpenThreads::Mutex *mutex;
+    };
+
+}
+
+#endif

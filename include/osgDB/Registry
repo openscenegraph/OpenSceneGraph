@@ -221,6 +221,16 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get the DatabasePager. Return 0 if no DatabasePager has been assigned.*/
         DatabasePager* getDatabasePager() { return _databasePager.get(); }
 
+        
+        /** Set the SharedStateManager.*/
+        void setSharedStateManager(SharedStateManager* SharedStateManager) { _sharedStateManager = SharedStateManager; }
+
+        /** Get the SharedStateManager, creating one if one is not already created.*/
+        SharedStateManager* getOrCreateSharedStateManager();
+        
+        /** Get the SharedStateManager. Return 0 if no SharedStateManager has been assigned.*/
+        SharedStateManager* getSharedStateManager() { return _sharedStateManager.get(); }
+
     protected:
 
         virtual ~Registry();
@@ -276,7 +286,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         bool                _useObjectCacheHint;        
         ObjectCache         _objectCache;
         
-        osg::ref_ptr<DatabasePager> _databasePager;
+        osg::ref_ptr<DatabasePager>         _databasePager;
+        osg::ref_ptr<SharedStateManager>    _sharedStateManager;
 
 };
 

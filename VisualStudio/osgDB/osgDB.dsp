@@ -97,6 +97,10 @@ SOURCE=..\..\src\osgDB\DatabasePager.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgDB\SharedStateManager.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Src\osgDB\DotOsgWrapper.cpp
 # End Source File
 # Begin Source File
@@ -158,6 +162,10 @@ SOURCE=..\..\Src\osgDB\WriteFile.cpp
 # Begin Source File
 
 SOURCE=..\..\Include\osgDB\DatabasePager
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgDB\SharedStateManager
 # End Source File
 # Begin Source File
 

@@ -23,6 +23,7 @@
 #include <OpenThreads/Mutex>
 #include <OpenThreads/Condition>
 
+#include <osgDB/SharedStateManager>
 #include <osgDB/Export>
 
 #include <map>
@@ -45,8 +46,11 @@ class Block: public osg::Referenced {
         void release()
         {
             _mut.lock();
-            _released = true;
-            _cond.broadcast();
+            if (!_released)
+            {
+                _released = true;
+                _cond.broadcast();
+            }
             _mut.unlock();
         }
 
@@ -230,7 +234,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double                          _expiryDelay;
 
         ActiveGraphicsContexts          _activeGraphicsContexts;
-
 };
 
 }

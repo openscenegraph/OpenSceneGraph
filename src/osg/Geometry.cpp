@@ -2209,7 +2209,7 @@ bool _verifyBindings(const osg::Geometry& geom, const A& arrayData)
 }
 
 template<class A>
-void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayData, const char* arrayName)
+void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry& geom, A& arrayData, const char* arrayName)
 {
     unsigned int numVertices = geom.getVertexIndices()?geom.getVertexIndices()->getNumElements():
                                geom.getVertexArray()?geom.getVertexArray()->getNumElements():0;
@@ -2221,9 +2221,9 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
             arrayData.array = 0;
             arrayData.indices = 0;
             arrayData.binding = osg::Geometry::BIND_OFF;
-            notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() vertex array is empty but "<<std::endl
-                        <<"         vertex array is empty but"<<arrayName<<" is set"<<std::endl
-                        <<"         reseting "<<arrayName<< " binding to BIND_OFF and array & indices to 0."<<std::endl;
+            out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() vertex array is empty but "<<std::endl
+                <<"         vertex array is empty but"<<arrayName<<" is set"<<std::endl
+                <<"         reseting "<<arrayName<< " binding to BIND_OFF and array & indices to 0."<<std::endl;
         }
     }
 
@@ -2237,9 +2237,9 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
             {
                 arrayData.array = 0;
                 arrayData.indices = 0;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_OFF but "<<arrayName<< " array is attached"<<std::endl
-                            <<"         reseting array to 0."<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_OFF but "<<arrayName<< " array is attached"<<std::endl
+                   <<"         reseting array to 0."<<std::endl;
             }
             break;
         case(osg::Geometry::BIND_OVERALL):
@@ -2248,15 +2248,15 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<arrayName<< " array is empty"<<std::endl
-                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<arrayName<< " array is empty"<<std::endl
+                   <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
             }
             else if (numElements>1) 
             {
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<std::endl
-                            <<"         "<<arrayName<< " contains more than one entry"<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<std::endl
+                   <<"         "<<arrayName<< " contains more than one entry"<<std::endl;
             }
             break;
         case(osg::Geometry::BIND_PER_PRIMITIVE_SET):
@@ -2265,28 +2265,28 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
-                            <<"         "<<arrayName<< " array is not attached"<<std::endl
-                            <<"         reseting binding to BIND_OFF."<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
+                   <<"         "<<arrayName<< " array is not attached"<<std::endl
+                   <<"         reseting binding to BIND_OFF."<<std::endl;
             }
             else if (numElements<geom.getPrimitiveSetList().size()) 
             {
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too few entries"<<std::endl
-                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
+                   <<"         "<<arrayName<< " array contains too few entries"<<std::endl
+                   <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
             }
             else if (numElements>geom.getPrimitiveSetList().size()) 
             {
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries "<<std::endl
-                            <<"         number of primitive sets="<<geom.getPrimitiveSetList().size()<<std::endl
-                            <<"         numElements="<<numElements<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
+                   <<"         "<<arrayName<< " array contains too many entries "<<std::endl
+                   <<"         number of primitive sets="<<geom.getPrimitiveSetList().size()<<std::endl
+                   <<"         numElements="<<numElements<<std::endl;
             }
             break;
         case(osg::Geometry::BIND_PER_PRIMITIVE):
@@ -2297,32 +2297,32 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
-                            <<"         "<<arrayName<< " array is not attached"<<std::endl
-                            <<"         reseting binding to BIND_OFF."<<std::endl
-                            <<"         numPrimitives="<<numPrimitives<<std::endl
-                            <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
+                   <<"         "<<arrayName<< " array is not attached"<<std::endl
+                   <<"         reseting binding to BIND_OFF."<<std::endl
+                   <<"         numPrimitives="<<numPrimitives<<std::endl
+                   <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
             }
             else if (numElements<numPrimitives)
             {
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too few entries"<<std::endl
-                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl
-                            <<"         numPrimitives="<<numPrimitives<<" numElements="<<numElements<<std::endl
-                            <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
+                   <<"         "<<arrayName<< " array contains too few entries"<<std::endl
+                   <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl
+                   <<"         numPrimitives="<<numPrimitives<<" numElements="<<numElements<<std::endl
+                   <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
             }
             else if (numElements>numPrimitives)
             {
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries." <<std::endl
-                            <<"         numPrimitives="<<numPrimitives<<" numElements="<<numElements<<std::endl
-                            <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
+                   <<"         "<<arrayName<< " array contains too many entries." <<std::endl
+                   <<"         numPrimitives="<<numPrimitives<<" numElements="<<numElements<<std::endl
+                   <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
             }
             
             break;
@@ -2333,26 +2333,26 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
-                            <<"         "<<arrayName<< " array is not attached"<<std::endl
-                            <<"         reseting binding to BIND_OFF."<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
+                   <<"         "<<arrayName<< " array is not attached"<<std::endl
+                   <<"         reseting binding to BIND_OFF."<<std::endl;
             }
             else if (numElements<numVertices) 
             {
                 arrayData.array = 0;
                 arrayData.indices = 0;
                 arrayData.binding = osg::Geometry::BIND_OFF;
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes()"<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too few entries"<<std::endl
-                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes()"<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
+                   <<"         "<<arrayName<< " array contains too few entries"<<std::endl
+                   <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
             }
             else if (numElements>numVertices) 
             {
-                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
-                            <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries." <<std::endl;
+                out<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                   <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
+                   <<"         "<<arrayName<< " array contains too many entries." <<std::endl;
             }
             break;
     } 
@@ -2370,12 +2370,12 @@ bool Geometry::verifyBindings(const Vec3ArrayData& arrayData) const
 
 void Geometry::computeCorrectBindingsAndArraySizes(ArrayData& arrayData, const char* arrayName)
 {
-    _computeCorrectBindingsAndArraySizes(*this,arrayData,arrayName);
+    _computeCorrectBindingsAndArraySizes(osg::notify(osg::INFO),*this,arrayData,arrayName);
 }
 
 void Geometry::computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData, const char* arrayName)
 {
-    _computeCorrectBindingsAndArraySizes(*this,arrayData,arrayName);
+    _computeCorrectBindingsAndArraySizes(osg::notify(osg::INFO),*this,arrayData,arrayName);
 }
 
 bool Geometry::verifyBindings() const

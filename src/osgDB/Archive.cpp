@@ -12,6 +12,7 @@
 */
 
 #include <osg/Notify>
+#include <osg/Endian>
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
@@ -22,6 +23,7 @@
 using namespace osgDB;
 
 float Archive::s_currentSupportedVersion = 0.0;
+const unsigned int ENDIAN_TEST_NUMBER = 0x00000001;
 
 osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint)
 {
@@ -66,7 +68,7 @@ void Archive::IndexBlock::allocateData(unsigned int blockSize)
     }
 }
 
-Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in)
+Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in, bool doEndianSwap)
 {
     if (!in) return 0;
 
@@ -75,6 +77,14 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in)
     in.read(reinterpret_cast<char*>(&indexBlock->_blockSize), sizeof(indexBlock->_blockSize));
     in.read(reinterpret_cast<char*>(&indexBlock->_filePositionNextIndexBlock), sizeof(indexBlock->_filePositionNextIndexBlock));
     in.read(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
+    
+    if (doEndianSwap)
+    {
+        osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_blockSize), sizeof(indexBlock->_blockSize));
+        osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_blockSize), sizeof(indexBlock->_blockSize));
+        osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_filePositionNextIndexBlock), sizeof(indexBlock->_filePositionNextIndexBlock));
+        osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
+    }
 
     indexBlock->allocateData(indexBlock->_blockSize);
     if (indexBlock->_data)
@@ -217,6 +227,7 @@ Archive::~Archive()
     close();
 }
 
+
 bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSize)
 {
     if (status==READ)
@@ -230,15 +241,24 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
 
             char identifier[4];
             _input.read(identifier,4);
+
             bool validArchive = (identifier[0]=='o' && identifier[1]=='s' && identifier[2]=='g' && identifier[3]=='a');
-            
             if (validArchive) 
             {
+            
+                unsigned int endianTestWord;
+                _input.read(reinterpret_cast<char*>(&endianTestWord),4);
+                bool doEndianSwap = (endianTestWord!=ENDIAN_TEST_NUMBER);
+            
                 _input.read(reinterpret_cast<char*>(&_version),sizeof(_version));
+                if (doEndianSwap)
+                {
+                    osg::swapBytes(reinterpret_cast<char*>(&_version),sizeof(_version));
+                }
                 
                 IndexBlock *indexBlock = 0;
                 
-                while ( (indexBlock=Archive::IndexBlock::read(_input)) != 0)
+                while ( (indexBlock=Archive::IndexBlock::read(_input, doEndianSwap)) != 0)
                 {
                     _indexBlockList.push_back(indexBlock);
                     if (indexBlock->getPositionNextIndexBlock()==pos_type(0)) break;
@@ -280,7 +300,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
         _input.close();
         return false;
     }
-    else if (status==WRITE)
+    else
     {
         if (status==WRITE && open(filename,READ))
         {
@@ -288,14 +308,11 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
             _status = WRITE;
 
             _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out);
-  
-            
             
             osg::notify(osg::INFO)<<"File position after open = "<<(int)_output.tellp()<<" is_open "<<_output.is_open()<<std::endl;
 
             // place write position at end of file.
             _output.seekp(0, std::ios::end);
-            
 
             osg::notify(osg::INFO)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
 
@@ -310,6 +327,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
             _status = WRITE;
             _output.open(filename.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
             _output<<"osga";
+            _output.write(reinterpret_cast<const char*>(&ENDIAN_TEST_NUMBER),4);
             _output.write(reinterpret_cast<char*>(&s_currentSupportedVersion),sizeof(float));
 
             IndexBlock *indexBlock = new IndexBlock(indexBlockSize);
@@ -329,11 +347,6 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
             return true;
         }
         
-    }
-    else
-    {
-        osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") is a strange place!!."<<std::endl;
-        return false;
     }
 }
 
@@ -611,18 +624,18 @@ ReaderWriter::WriteResult Archive::write(const WriteFunctor& writeFunctor)
 {
     if (_status!=WRITE) 
     {
-        osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<writeFunctor._filename<<") failed, archive opened as read only."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Archive::write(obj, "<<writeFunctor._filename<<") failed, archive opened as read only."<<std::endl;
         return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(writeFunctor._filename));
     if (!rw)
     {
-        osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<writeFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Archive::write(obj, "<<writeFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
         return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
     
-    osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<writeFunctor._filename<<")"<<std::endl;
+    osg::notify(osg::NOTICE)<<"Archive::write(obj, "<<writeFunctor._filename<<")"<<std::endl;
     
     // place write position at end of file.
     _output.seekp(0,std::ios::end);
@@ -648,6 +661,7 @@ ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std:
 
 ReaderWriter::WriteResult Archive::writeImage(const osg::Image& image,const std::string& fileName,const Options* options)
 {
+    osg::notify(osg::NOTICE)<<"Archive::writeImage(obj, "<<fileName<<")"<<std::endl;
     return write(WriteImageFunctor(image, fileName, options));
 }
 

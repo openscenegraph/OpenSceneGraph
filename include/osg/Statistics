@@ -23,7 +23,7 @@ namespace osg {
  * each trifan or tristrip = (length-2) triangles and so on.
  */
 
-class SG_EXPORT Statistics : public osg::Referenced, public osg::Drawable::AttributeFunctor
+class Statistics : public osg::Referenced, public osg::Drawable::AttributeFunctor
 {
     public:
     

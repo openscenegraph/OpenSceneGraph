@@ -13,7 +13,7 @@
 	#pragma warning( disable : 4786 )
 #endif
 
-#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__) || defined( __MWERKS__)
 	#  ifdef OSGGLUT_LIBRARY
 	#    define OSGGLUT_EXPORT   __declspec(dllexport)
 	#  else

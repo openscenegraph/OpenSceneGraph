@@ -2,6 +2,9 @@
     #pragma warning( disable : 4786 )
 #endif
 
+#include <osg/GL>
+#include <osgGLUT/glut>
+
 #include <stdlib.h>
 #if (!defined(WIN32) && !defined(macintosh)) || defined(__CYGWIN__)
 #include <unistd.h>
@@ -49,12 +52,12 @@
 #define USE_GLUT
 #endif
 
-#include <osgGLUT/glut>
-
+/*
 #if defined(WIN32) && !defined(__CYGWIN__)
 #include <sys/timeb.h>
 #else
 #endif
+*/
 
 #include <osg/Timer>
 osg::Timer g_timer;
@@ -72,6 +75,7 @@ using namespace osg;
 using namespace osgUtil;
 using namespace osgGLUT;
 
+using namespace std;
 
 
 Viewer* Viewer::s_theViewer = 0;
@@ -1081,8 +1085,13 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         }
         break;
 
-        case 27 :                // Escape
+        case 27 :
+        	// Escape
+        	#ifdef __MWERKS__
+            std::exit(0); // avoid collision of std::exit(..) / exit(..) compile errors.
+            #else
             exit(0);
+            #endif
             break;
     }
 }

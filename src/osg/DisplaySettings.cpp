@@ -4,6 +4,8 @@
 
 using namespace osg;
 
+using namespace std;
+
 DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced()
 {
     copy(vs);

@@ -1,3 +1,7 @@
+#include <osg/GL>
+#include <osgGLUT/glut>
+#include <osgGLUT/Viewer>
+
 #include <osg/Transform>
 #include <osg/Billboard>
 #include <osg/Geode>
@@ -11,8 +15,6 @@
 #include <osgUtil/FlightManipulator>
 #include <osgUtil/DriveManipulator>
 
-#include <osgGLUT/glut>
-#include <osgGLUT/Viewer>
 
 #include <osgUtil/Optimizer>
 
@@ -56,7 +58,7 @@ int main( int argc, char **argv )
 
     if (argc<2)
     {
-        write_usage(osg::notify(osg::NOTICE),argv[0]);
+        write_usage(std::cout,argv[0]);
         return 0;
     }
     

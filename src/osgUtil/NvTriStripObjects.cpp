@@ -9,6 +9,8 @@
 
 #include <osg/Notify>
 
+#include <string.h>
+
 VertexCache::VertexCache()
 {
     VertexCache(16);

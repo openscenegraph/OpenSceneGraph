@@ -12,8 +12,8 @@
         #ifdef __DARWIN_OSX__
             #include <OpenGL/gl.h>
         #else
-	    #include <GL/gl.h>
-	#endif
+	        #include <GL/gl.h>
+	    #endif
     #endif
 
     // required for compatibility with glext.h sytle function definitions of 
@@ -40,7 +40,7 @@
     // to avoid name space pollution, but Win32's <GL/gl.h> 
     // needs APIENTRY and WINGDIAPI defined properly. 
     // F
-    # if 0
+    # if defined(__MWERKS__)
     #  define  WIN32_LEAN_AND_MEAN
     #  include <windows.h>
     # else

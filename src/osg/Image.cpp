@@ -11,6 +11,7 @@
 
 
 using namespace osg;
+using namespace std;
 
 Image::Image()
 {

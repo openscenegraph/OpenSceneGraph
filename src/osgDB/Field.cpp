@@ -1,6 +1,7 @@
 #include <osgDB/Field>
 
 using namespace osgDB;
+using namespace std;
 
 Field::Field()
 {

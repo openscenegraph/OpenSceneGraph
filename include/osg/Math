@@ -72,7 +72,7 @@ inline double inRadians(double angle) { return angle; }
 inline double DegreesToRadians(double angle) { return angle*PI/180.0; }
 inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MWERKS__)
     inline bool isNaN(float v) { return _isnan(v)!=0; }
     inline bool isNaN(double v) { return _isnan(v)!=0; }
 #else

@@ -2,11 +2,13 @@
 
 #if defined(__sgi)
     #include <ctype.h>
-#elif !defined(WIN32)
+#elif !defined(WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
     using std::strlen;    
 #endif
+
+using namespace std;
 
 // 
 // // mac requires std::tolower, but IRIX MipsPro doesn't like it,

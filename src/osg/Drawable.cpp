@@ -20,6 +20,7 @@
 #include <osg/Node>
 #include <osg/GLExtensions>
 #include <osg/Timer>
+#include <osg/TriangleFunctor>
 
 #include <algorithm>
 #include <map>
@@ -890,4 +891,84 @@ void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLui
     {
         osg::notify(osg::WARN)<<"Error: glGetOcclusionQueryuiv not supported by OpenGL driver"<<std::endl;
     }    
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
+//  Cluster culling callback
+//
+
+ClusterCullingCallback::ClusterCullingCallback():
+    _deviation(-1.0f)
+{
+}
+
+ClusterCullingCallback::ClusterCullingCallback(const ClusterCullingCallback& ccc,const CopyOp& copyop):
+    Drawable::CullCallback(ccc,copyop),
+    _controlPoint(ccc._controlPoint),_normal(ccc._normal),_deviation(ccc._deviation)
+{
+}
+
+ClusterCullingCallback::ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation):
+    _controlPoint(controlPoint),_normal(normal), _deviation(deviation)
+{
+}
+
+ClusterCullingCallback::ClusterCullingCallback(const osg::Drawable* drawable)
+{
+    computeFrom(drawable);
+}
+
+struct CollectNormalsFunctor
+{
+
+    CollectNormalsFunctor():
+         _x(0.0),_y(0.0),_z(0) {}
+
+    inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3, bool)
+    {
+        // calc orientation of triangle.
+        osg::Vec3 normal = (v2-v1)^(v3-v1);
+        normal.normalize();
+
+        _normals.push_back(normal);
+        
+        _x += v1.x();
+        _y += v1.y();
+        _z += v1.z();
+        
+        _x += v2.x();
+        _y += v2.y();
+        _z += v2.z();
+        
+        _x += v3.x();
+        _y += v3.y();
+        _z += v3.z();
+
+    }
+    
+    typedef std::vector<osg::Vec3> NormalList;
+    NormalList _normals;
+    double _x,_y,_z;
+};
+
+
+
+void ClusterCullingCallback::computeFrom(const osg::Drawable* drawable)
+{
+    TriangleFunctor<CollectNormalsFunctor> stf;
+    drawable->accept(stf);
+}
+
+void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation)
+{
+    _controlPoint = controlPoint;
+    _normal = normal;
+    _deviation = deviation;
+}
+
+
+bool ClusterCullingCallback::cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const
+{
+    return false;
 }

@@ -247,23 +247,38 @@ class SG_EXPORT Drawable : public Object
         virtual void compile(State& state) const;
 
 
-        struct UpdateCallback : public virtual osg::Referenced
+        struct UpdateCallback : public virtual osg::Object
         {
-                /** do customized app code.*/
-                virtual void update(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
+            UpdateCallback() {}
+
+            UpdateCallback(const UpdateCallback&,const CopyOp&) {}
+
+            META_Object(osg,UpdateCallback)
+
+            /** do customized update code.*/
+            virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
         };
         
-        /** Set the UpdateCallback which allows users to attach customize the undating of an object during the app traversal.*/
+        /** Set the UpdateCallback which allows users to attach customize the undating of an object during the update traversal.*/
         void setUpdateCallback(UpdateCallback* ac);
         
         /** Get the non const UpdateCallback.*/
         UpdateCallback* getUpdateCallback() { return _updateCallback.get(); }
 
+        /** Get the const UpdateCallback.*/
+        const UpdateCallback* getUpdateCallback() const { return _updateCallback.get(); }
+        
 
-        struct CullCallback : public virtual osg::Referenced
+        struct CullCallback : public virtual osg::Object
         {
-                /** do customized cull code.*/
-                virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State *state=NULL) const = 0;
+            CullCallback() {}
+
+            CullCallback(const CullCallback&,const CopyOp&) {}
+
+            META_Object(osg,CullCallback)
+
+            /** do customized cull code, return true if drawable should be culled.*/
+            virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
         };
 
         /** Set the CullCallback which allows users to attach customize the culling of Drawable during the cull traversal.*/
@@ -274,6 +289,8 @@ class SG_EXPORT Drawable : public Object
         
         /** Get the const CullCallback.*/
         const CullCallback* getCullCallback() const { return _cullCallback.get(); }
+        
+        
 
 
         /** Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
@@ -281,10 +298,16 @@ class SG_EXPORT Drawable : public Object
           * the user intends to decorate the exist draw code then simple call the drawable->drawImplementation() from
           * with the callbacks drawImplementation() method.  This allows the users to do both pre and post callbacks
           * without fuss and can even diable the inner draw in required.*/
-        struct DrawCallback : public virtual osg::Referenced
+        struct DrawCallback : public virtual osg::Object
         {
+            DrawCallback() {}
+
+            DrawCallback(const DrawCallback&,const CopyOp&) {}
+
+            META_Object(osg,DrawCallback)
+
             /** do customized draw code.*/
-            virtual void drawImplementation(State& state,const osg::Drawable* drawable) const = 0;
+            virtual void drawImplementation(State&,const osg::Drawable*) const {}
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
@@ -682,6 +705,44 @@ inline void Drawable::draw(State& state) const
         _drawCallback->drawImplementation(state,this);
     else 
         drawImplementation(state);
+};
+
+/** Drawable CullCallback for adding cluster culling to cull back facing
+  * drawables.*/
+class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
+{
+    public:
+
+        ClusterCullingCallback();
+        ClusterCullingCallback(const ClusterCullingCallback& ccc,const CopyOp& copyop);
+        ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation);
+        ClusterCullingCallback(const osg::Drawable* drawable);
+
+        META_Object(osg,ClusterCullingCallback)
+
+        /** compute the control point, normal and deviation from the contents of the drawable.*/
+        void computeFrom(const osg::Drawable* drawable);
+
+        void set(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation);
+
+        void setControlPoint(const osg::Vec3& controlPoint) { _controlPoint = controlPoint; }
+        const osg::Vec3& getControlPoint() const { return _controlPoint; }
+
+        void setNormal(const osg::Vec3& normal) { _normal = normal; }
+        const osg::Vec3& getNormal() const { return _normal; }
+
+        void setDeviation(float deviation) { _deviation = deviation; }
+        float getDeviation() const { return _deviation; }
+
+        virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const;
+
+    protected:
+
+        virtual ~ClusterCullingCallback() {}
+
+        osg::Vec3 _controlPoint;
+        osg::Vec3 _normal;
+        float _deviation;
 };
 
 

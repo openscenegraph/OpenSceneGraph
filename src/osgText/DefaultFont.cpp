@@ -195,8 +195,7 @@ void DefaultFont::constructGlyphs()
     unsigned int sourceWidth = 8;
     unsigned int sourceHeight = 12;
     
-//#define USE_LUMINANCE_ALPHA
-#ifdef USE_LUMINANCE_ALPHA
+#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
     _width = sourceWidth+2*_margin;
     _height = sourceHeight+2*_margin;
 

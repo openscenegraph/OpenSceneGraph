@@ -80,9 +80,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph;
     
 
-
-//#define USE_LUMINANCE_ALPHA
-#ifdef USE_LUMINANCE_ALPHA
+#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
     unsigned int dataSize = width*height*2;
     unsigned char* data = new unsigned char[dataSize];
     
@@ -97,6 +95,8 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
                     osg::Image::USE_NEW_DELETE,
                     1);
     
+    glyph->setInternalTextureFormat(GL_LUMINANCE_ALPHA);
+
     // skip the top margin        
     data += (margin*width)*2;
 

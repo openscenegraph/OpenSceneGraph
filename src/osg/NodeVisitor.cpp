@@ -98,7 +98,6 @@ class TransformVisitor : public NodeVisitor
 
 const bool NodeVisitor::getLocalToWorldMatrix(Matrix& matrix, MatrixMode mode, Node* node)
 {
-    matrix.makeIdentity();
     TransformVisitor tv(matrix,mode,TransformVisitor::LOCAL_TO_WORLD,this);
     for(NodePath::iterator itr=_nodePath.begin();
         itr!=_nodePath.end();
@@ -112,7 +111,6 @@ const bool NodeVisitor::getLocalToWorldMatrix(Matrix& matrix, MatrixMode mode, N
 
 const bool NodeVisitor::getWorldToLocalMatrix(Matrix& matrix, MatrixMode mode, Node* node)
 {
-    matrix.makeIdentity();
     TransformVisitor tv(matrix,mode,TransformVisitor::WORLD_TO_LOCAL,this);
     for(NodePath::iterator itr=_nodePath.begin();
         itr!=_nodePath.end();

@@ -24,6 +24,18 @@ using namespace osg;
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
 
+#ifndef GL_UNPACK_CLIENT_STORAGE_APPLE
+#define GL_UNPACK_CLIENT_STORAGE_APPLE    0x85B2
+#endif
+
+#ifndef GL_APPLE_vertex_array_range
+#define GL_VERTEX_ARRAY_RANGE_APPLE       0x851D
+#define GL_VERTEX_ARRAY_RANGE_LENGTH_APPLE 0x851E
+#define GL_VERTEX_ARRAY_STORAGE_HINT_APPLE 0x851F
+#define GL_VERTEX_ARRAY_RANGE_POINTER_APPLE 0x8521
+#define GL_STORAGE_CACHED_APPLE           0x85BE
+#define GL_STORAGE_SHARED_APPLE           0x85BF
+#endif
 
 Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,GLenum target)
 {
@@ -172,6 +184,7 @@ Texture::Texture():
             _maxAnisotropy(1.0f),
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
+            _clientStorageHint(false),
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
@@ -193,6 +206,7 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _maxAnisotropy(text._maxAnisotropy),
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
+            _clientStorageHint(text._clientStorageHint),
             _borderColor(text._borderColor),
             _borderWidth(text._borderWidth),
             _internalFormatMode(text._internalFormatMode),
@@ -227,6 +241,9 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_shadow_compare_func)
     COMPARE_StateAttribute_Parameter(_shadow_texture_mode)
     COMPARE_StateAttribute_Parameter(_shadow_ambient)
+
+    COMPARE_StateAttribute_Parameter(_unrefImageDataAfterApply)
+    COMPARE_StateAttribute_Parameter(_clientStorageHint)
     
     return 0;
 }
@@ -584,6 +601,18 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     
+    bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
+    if (useClientStorage)
+    {
+        glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
+        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY,0.0f);
+        
+        #ifdef GL_TEXTURE_STORAGE_HINT_APPLE    
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
+        #endif
+    }
+
+    
     unsigned char* data = (unsigned char*)image->data();
  
 
@@ -749,6 +778,10 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         delete [] data;
     }
     
+    if (useClientStorage)
+    {
+        glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_FALSE);
+    }
 }
 
 
@@ -1051,6 +1084,8 @@ Texture::Extensions::Extensions(const Extensions& rhs):
 
     _isShadowSupported = rhs._isShadowSupported;
     _isShadowAmbientSupported = rhs._isShadowAmbientSupported;
+
+    _isClientStorageSupported = rhs._isClientStorageSupported;
 }
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -1073,8 +1108,10 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glCompressedTexSubImage2D) _glCompressedTexSubImage2D = 0;
     if (!rhs._glGetCompressedTexImage) _glGetCompressedTexImage = 0;
 
-    if (!rhs._isShadowSupported) _isShadowSupported = 0;
-    if (!rhs._isShadowAmbientSupported) _isShadowAmbientSupported = 0;
+    if (!rhs._isShadowSupported) _isShadowSupported = false;
+    if (!rhs._isShadowAmbientSupported) _isShadowAmbientSupported = false;
+    
+    if (!rhs._isClientStorageSupported) _isClientStorageSupported = false;
 }
 
 void Texture::Extensions::setupGLExtenions()
@@ -1093,6 +1130,8 @@ void Texture::Extensions::setupGLExtenions()
                                   isGLExtensionSupported("GL_SGIS_generate_mipmap");
     _isShadowSupported = isGLExtensionSupported("GL_ARB_shadow");
     _isShadowAmbientSupported = isGLExtensionSupported("GL_ARB_shadow_ambient");
+
+    _isClientStorageSupported = isGLExtensionSupported("GL_APPLE_client_storage");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 

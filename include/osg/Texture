@@ -184,6 +184,13 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** Get the automatic unreference of image data after the texture has been set up in apply.*/
         inline bool getUnRefImageDataAfterApply() const { return _unrefImageDataAfterApply; }
 
+        /** Set whether to use client storage of the texture where supported by OpenGL drivers.
+          * Note, if UseClientStorageHint is set, and the OpenGL drivers support it, the osg::Image(s) associated with
+          * this texture cannot be deleted, so the UnRefImageDataAfterApply flag is then ignored.*/
+        inline void setClientStorageHint(bool flag) { _clientStorageHint = flag; }
+        
+        /** Get whether to use client storage of the texture where supported by OpenGL drivers.*/
+        inline bool getClientStorageHint() const { return _clientStorageHint; }
 
         enum InternalFormatMode {
             USE_IMAGE_DATA_FORMAT,
@@ -337,6 +344,9 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 void setGetCompressedTexImageProc(void* ptr) { _glGetCompressedTexImage = ptr; }
                 void glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const;
 
+                bool isClientStorageSupported() const { return _isClientStorageSupported; }
+              
+
             protected:
 
                 ~Extensions() {}
@@ -351,6 +361,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool    _isGenerateMipMapSupported;
                 bool    _isShadowSupported;
                 bool    _isShadowAmbientSupported;
+                bool    _isClientStorageSupported;
                 
                 GLint   _maxTextureSize;
 
@@ -414,6 +425,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         float           _maxAnisotropy;
         bool            _useHardwareMipMapGeneration;
         bool            _unrefImageDataAfterApply;
+        bool            _clientStorageHint;
 
         Vec4            _borderColor;
         GLint           _borderWidth;
@@ -425,6 +437,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         ShadowCompareFunc   _shadow_compare_func;
         ShadowTextureMode   _shadow_texture_mode;
         float               _shadow_ambient;
+
 
     public:
     

@@ -15,7 +15,10 @@
 #include <Producer/KeyboardMouse>
 #include <Producer/Trackball>
 
+#include <osg/Timer>
+
 #include <osgUtil/Optimizer>
+#include <osgUtil/UpdateVisitor>
 
 #include <osgDB/ReadFile>
 
@@ -77,7 +80,7 @@ int main( int argc, char **argv )
     // create the camera group.
     Producer::OsgCameraGroup *cg = 0;
 
-//#define USE_BUILD_CONFIG
+#define USE_BUILD_CONFIG
 #ifdef USE_BUILD_CONFIG
 
     Producer::CameraConfig *cfg = BuildConfig();
@@ -121,9 +124,9 @@ int main( int argc, char **argv )
 
 
     // set the globa state
-    osg::StateSet* globalStateSet = new osg::StateSet;
-    globalStateSet->setGlobalDefaults();
-    cg->setGlobalStateSet(globalStateSet);
+//     osg::StateSet* globalStateSet = new osg::StateSet;
+//     globalStateSet->setGlobalDefaults();
+//     cg->setGlobalStateSet(globalStateSet);
     
     // set the scene to render
     cg->setSceneData(scene.get());
@@ -134,13 +137,35 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     cg->realize(threadingModel);
 
+    osg::ref_ptr<osg::FrameStamp> frameStamp = cg->getFrameStamp();
+
+    osgUtil::UpdateVisitor update;
+    update.setFrameStamp(frameStamp.get());
+
+    // set up the time and frame counter.
+    unsigned int frameNumber = 0;
+    osg::Timer timer;
+    osg::Timer_t start_tick = timer.tick();
+
     while( !done )
     {
+        // syncronize to screen refresh.
+        cg->sync();
+
+        // set the frame stamp for the new frame.
+        double time_since_start = timer.delta_s(timer.tick(),start_tick);
+        frameStamp->setFrameNumber(frameNumber);
+        frameStamp->setReferenceTime(time_since_start);
+
         tb.input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
+        
+        scene->accept(update);
 
         cg->setView(tb.getMatrix().ptr());
                 
         cg->frame();
+        
+        ++frameNumber;
     }
     return 0;
 }

@@ -427,6 +427,17 @@ void State::dirtyAllVertexArrays()
     dirtySecondaryColorPointer();
 }
 
+void State::setInterleavedArrays( GLenum format, GLsizei stride, void* pointer)
+{
+    glInterleavedArrays( format, stride, pointer);
+    
+    // the crude way, assume that all arrays have been effected so dirty them and
+    // disable them...
+    dirtyAllVertexArrays();
+    disableAllVertexArrays();
+}
+
+
 typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
 
 bool State::setClientActiveTextureUnit( unsigned int unit )

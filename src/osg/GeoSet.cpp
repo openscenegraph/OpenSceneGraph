@@ -11,6 +11,8 @@
 #include <osg/Geometry>
 #include <osg/ShadeModel>
 
+#include <set>
+
 using namespace osg;
 
 GeoSet::GeoSet()

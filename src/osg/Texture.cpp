@@ -19,9 +19,6 @@ Texture::Texture():
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0)
 {
-//     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-//     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-//     _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
@@ -36,9 +33,6 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat)
 {
-//     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-//     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-//     _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
 }
 
 Texture::~Texture()
@@ -134,7 +128,7 @@ void Texture::dirtyTextureParameters()
 {
     for(uint i=0;i<_texParametersDirtyList.size();++i)
     {
-        _texParametersDirtyList[i] = 0;
+        _texParametersDirtyList[i] = 1;
     }
 }
 

@@ -8,15 +8,19 @@
 #include <osg/Node>
 
 #include <algorithm>
+#include <map>
+#include <set>
 
 using namespace osg;
 
-Drawable::DeletedDisplayListCache Drawable::s_deletedDisplayListCache;
+// static cache of deleted display lists which can only 
+// by completely deleted once the appropriate OpenGL context
+// is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
+typedef std::map<GLuint,std::set<GLuint> > DeletedDisplayListCache;
+static DeletedDisplayListCache s_deletedDisplayListCache;
 
 Drawable::Drawable()
 {
-    _globjList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-
     _bbox_computed = false;
 
     // Note, if your are defining a subclass from drawable which is
@@ -26,7 +30,6 @@ Drawable::Drawable()
     // dynamic updating of data.
     _supportsDisplayList = true;
     _useDisplayList = true;
-
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -38,10 +41,10 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _shape(copyop(drawable._shape.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
-    _globjList(drawable._globjList),
     _drawCallback(drawable._drawCallback),
     _cullCallback(drawable._cullCallback)
-{}
+{
+}
 
 Drawable::~Drawable()
 {
@@ -89,9 +92,6 @@ void Drawable::compile(State& state)
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     uint contextID = state.getContextID();
-
-    // fill in array if required.
-    while (_globjList.size()<=contextID) _globjList.push_back(0);
 
     // get the globj for the current contextID.
     uint& globj = _globjList[contextID];

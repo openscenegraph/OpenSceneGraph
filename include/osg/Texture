@@ -176,39 +176,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
         
         bool isCompressedInternalFormat() const;
 
-        
-//         /** Get the handle to the texture object for the current context.*/
-//         /** return the OpenGL texture object for specified context.*/
-//         inline GLuint& getTextureObject(uint contextID) const
-//         {
-//             // pad out handle list if required.
-//             if (_handleList.size()<=contextID)
-//                 _handleList.resize(contextID+1,0);
-// 
-//             // get the globj for the current contextID.
-//             return _handleList[contextID];
-//         }
-// 
-//         inline uint& getModifiedTag(uint contextID) const
-//         {
-//             // pad out handle list if required.
-//             if (_modifiedTag.size()<=contextID)
-//                 _modifiedTag.resize(contextID+1,0);
-// 
-//             // get the modified tag for the current contextID.
-//             return _modifiedTag[contextID];
-//         }
-// 
-//         inline uint& getTextureParameterDirty(uint contextID) const
-//         {
-//             // pad out handle list if required.
-//             if (_texParametersDirtyList.size()<=contextID)
-//                 _texParametersDirtyList.resize(contextID+1,0);
-// 
-//             // get the dirty flag for the current contextID.
-//             return _texParametersDirtyList[contextID];
-//         }
-
 
         /** Get the handle to the texture object for the current context.*/
         /** return the OpenGL texture object for specified context.*/
@@ -330,15 +297,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compareTexture(const Texture& rhs) const;
 
-//        typedef std::vector<GLuint> TextureNameList;
         typedef buffered_value<GLuint> TextureNameList;
         mutable TextureNameList _handleList;
 
-//        typedef std::vector<uint> ImageModifiedTag;
         typedef buffered_value<uint> ImageModifiedTag;
         mutable ImageModifiedTag _modifiedTag;
 
-//        typedef std::vector<uint> TexParameterDirtyList;
         typedef buffered_value<uint> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;
 

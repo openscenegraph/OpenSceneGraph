@@ -106,7 +106,8 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
       // selecting polygons for current layer only
       int polygon_index = 0;
       PolygonsList polygons;
-      for (IteratorPolygonsList polygon_iterator = _polygons.begin(); polygon_iterator != _polygons.end(); polygon_iterator++, polygon_index++)
+      IteratorPolygonsList polygon_iterator;
+      for (polygon_iterator = _polygons.begin(); polygon_iterator != _polygons.end(); polygon_iterator++, polygon_index++)
 	{
 	  // *polygon_iterator it's a PolygonsList
 
@@ -135,7 +136,6 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 
       // polygons of current layer
       polygon_index = 0;
-      IteratorPolygonsList polygon_iterator;
       for (polygon_iterator = polygons.begin(); polygon_iterator != polygons.end(); polygon_iterator++, polygon_index++)
 	{
 	  if ((*polygon_iterator)[0].point_index != -1)

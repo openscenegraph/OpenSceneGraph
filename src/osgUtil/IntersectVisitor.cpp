@@ -530,7 +530,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                             osg::Vec3* first = &(vertices->front());
                             if (triHit._v1) hit._vecIndexList.push_back(triHit._v1-first);
                             if (triHit._v2) hit._vecIndexList.push_back(triHit._v2-first);
-                            if (triHit._v2) hit._vecIndexList.push_back(triHit._v3-first);
+                            if (triHit._v3) hit._vecIndexList.push_back(triHit._v3-first);
                         }
                     }
                     

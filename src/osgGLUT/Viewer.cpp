@@ -161,6 +161,15 @@ void Viewer::clear()
 /** read the command line string list, removing any matched control sequences.*/
 void Viewer::readCommandLine(std::vector<std::string>& commandLine)
 {
+    std::vector<std::string>::iterator itr = commandLine.begin();
+    for(;itr!=commandLine.end();++itr)
+    {
+        if (*itr=="-f") 
+	{
+	    _fullscreen = true;
+	    break;
+	}
+    }
     _displaySettings->readCommandLine(commandLine);
 }
 
@@ -1345,6 +1354,8 @@ void Viewer::help(std::ostream& fout)
         <<"f     Toggle between fullscreen and the previous window size. Note, GLUT"<< std::endl
         <<"      fullscreen works properly on Windows and Irix, but on Linux"<< std::endl
         <<"      it just maximizes the window and leaves the window's borders."<< std::endl
+        <<"      If started in full screen mode on Linux, window will be borderless"<< std::endl
+        <<"      and will resize down, but will remain borderless."<< std::endl
         <<"Space Reset scene to the default view."<< std::endl
         <<"Esc   Exit sgv."<< std::endl;
 }

@@ -43,6 +43,7 @@ Window::~Window()
 {
 }
 
+
 void Window::clear()
 {
 }
@@ -80,6 +81,13 @@ bool Window::open()
     glutSpaceballMotionFunc( spaceballMotionCB );
     glutSpaceballRotateFunc( spaceballRotateCB );
     glutSpaceballButtonFunc( spaceballButtonCB );
+
+    if( _fullscreen )
+    {
+        _saved_ww = _ww;
+        _saved_wh = _wh;
+	glutFullScreen();
+    }
 
     _is_open = 1;
     return true;

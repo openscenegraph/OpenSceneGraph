@@ -1,194 +1,213 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.6 [en-gb]C-CCK-MCD NetscapeOnline.co.uk  (Win95; I) [Netscape]">
-   <title>OSG Documentation</title>
+  <title>stereo</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Quanta Plus">
 </head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
-<img SRC="OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
-<h1>
-<b><i><u>Stereo</u></i></b></h1>
-The OSG has support for stereo out of the box. Currently both anaglyphic
-stereo (i.e. red/green or red/cyan glasses) and quad buffered stereo (i.e.
-active stereo using shutter glasses, or passive stereo using polarized
-projectors &amp; glasses). It is planned to extend this support horizontal
-and vertical split window stereo implementations.
-<p>Almost all OSG applications have the potential for stereo support simply
-by setting the relevant environmental variables, or via command line arguments.
-Little or no code changes will be required, the support is handled transparently
-inside osgUtil::SceneView's handling of rendering.
-<p>If the user is planning to use head tracked stereo, or a cave then it
-is currently recommend to set it up via a VR toolkit such as <a href="http://www.vrjuggler.org">VRjuggler</a>,
-in this case refer to the VR toolkits handling of stereo, and do not invoke
-the OSG's native support, i.e. keep all the OSG's stereo specific environment
-varibles (below) set to OFF, or set the values to off within own your own
-applications.
-<br>
-<h3>
-The environmental variables of interest:</h3>
+<body text="#000000" bgcolor="#ffffff" link="#0000ee" vlink="#551a8b" alink="#ff0000">
 
-<table CELLSPACING=5 >
-<tr>
-<td><b>OSG_STEREO</b></td>
+<img src="OpenSceneGraphBanner_Distribution.jpg" width=640 height=77 border=0>
 
-<td><b>ON</b></td>
+<h2>Native Support for Stereo</h2>
 
-<td>turn stereo on.</td>
-</tr>
+<p>The OSG has support for anaglyphic stereo
+(i.e. red/green or red/cyan glasses), quad buffered stereo (i.e. active stereo using shutter glasses,
+or passive stereo using polarized projectors & glasses) and horizontal and vertical split window stereo implementations.
+Almost all OSG applications have the potential for stereo support simply by setting the relevant environmental variables, or via command line arguments. Little or no code changes will be required, the support is
+handled transparently inside osgUtil::SceneView's handling of rendering.It is a simple as:
+</p>
+<b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
 
-<tr>
-<td><b>OSG_STEREO</b></td>
+<p>If the user is planning to use head tracked stereo, or a cave then it is currently recommend to set it
+up via a VR toolkit such as VRjuggler, in this case refer to the VR toolkits handling of stereo, and keep
+all the OSG's stereo specific environment variables (below) set to OFF, or set the values to off within own
+your own applications.
+</p>
+<hr>
+<h3>The environmental variables of interest:</h3>
 
-<td><b>OFF</b></td>
+<table>
+  <tr>
+    <td><b>OSG_STEREO</b></td>
+    <td><b>ON</b>  </td>
+    <td>Turn stereo on  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>OFF</b></td>
+    <td>Turn stereo off (default).  </td>
+  </tr>
+  <tr>
+    <td><b>OSG_STEREO_MODE</b></td>
+    <td><b>ANAGLYPHIC</b>  </td>
+    <td>Use anaglyphic stereo when in stereo (default).  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>QUAD_BUFFER</b>  </td>
+    <td>Use quad buffered stereo when in stereo.  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>HORIZONTAL_SPLIT</b>  </td>
+    <td>Use horizontal split stereo mode when in stereo  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>VERTICAL_SPLIT</b>  </td>
+    <td>Use vertical split stereo mode when in stereo  </td>
+  </tr>
+  <tr>
+    <td><b>OSG_SCREEN_DISTANCE</b>  </td>
+    <td><b>0.50</b>  </td>
+    <td>Set the distance the viewer is from screen in metres (default shown)  </td>
+  </tr>
+  <tr>
+    <td><b>OSG_SCREEN_HEIGHT</b>  </td>
+    <td><b>0.26</b>  </td>
+    <td>Set the height if image on the screen in metres (default shown)  </td>
+  </tr>
+  <tr>
+    <td><b>OSG_EYE_SEPERATION</b>  </td>
+    <td><b>0.06</b>  </td>
+    <td>Set the eye seperation - interoccular distance (default shown.)  </td>
+  </tr>
+  <tr>
+    <td><b>OSG_SPLIT_STEREO_HORIZONTAL_SEPERATION</b>  </td>
+    <td><b>42</b>  </td>
+    <td>Set the number of pixels betweent the left and right viewports (default shown).</td>
+  </tr>
+  <tr>
+    <td><b>OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING</b>  </td>
+    <td><b>LEFT_EYE_LEFT_VIEWPORT</b>  </td>
+    <td>Set the left eye to render to left viewport, right eye to right viewport (default). </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>LEFT_EYE_RIGHT_VIEWPORT</b>  </td>
+    <td>Set the left eye to render to right viewport, right eye to left viewport.  </td>
+  </tr>
+  <tr>
+    <td><b>OSG_SPLIT_STEREO_VERTICAL_SEPERATION</b>  </td>
+    <td><b>42</b>  </td>
+    <td>Set the number of pixels betweent the top and bottom viewports (default shown).</td>
+  </tr>
+  <tr>
+    <td><b>OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING</b>  </td>
+    <td><b>LEFT_EYE_TOP_VIEWPORT</b>  </td>
+    <td>Set the left eye to render to top viewport, right eye to bottom viewport (default).  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>LEFT_EYE_BOTTOM_VIEWPORT</b>  </td>
+    <td>Set the left eye to render to bottom viewport, right eye to top viewport.  </td>
+  </tr>
+  </table>
 
-<td>turn stereo off (default)</td>
-</tr>
+  <hr>
 
-<tr>
-<td><b>OSG_STEREO_MODE</b></td>
+  <h3>Command line arguments can be used to override these settings:</h3>
 
-<td><b>ANAGLYPHIC</b></td>
-
-<td>use anaglyphic stereo when in stereo (default).</td>
-</tr>
-
-<tr>
-<td><b>OSG_STEREO_MODE</b></td>
-
-<td><b>QUAD_BUFFER</b></td>
-
-<td>use quad buffered stereo when in stereo.</td>
-</tr>
-
-<tr>
-<td><b>OSG_SCREEN_DISTANCE</b></td>
-
-<td><b>0.50</b></td>
-
-<td>set the distance the viewer is from screen in metres (default shown)</td>
-</tr>
-
-<tr>
-<td><b>OSG_SCREEN_HEIGHT</b></td>
-
-<td><b>0.26</b></td>
-
-<td>set the height if image on the screen in metres (default shown)</td>
-</tr>
-
-<tr>
-<td><b>OSG_EYE_SEPERATION</b></td>
-
-<td><b>0.05</b></td>
-
-<td>set the eye seperation - interoccular distance (default shown.)</td>
-</tr>
+  <table>
+  <tr>
+    <td><b>-stereo</b>  </td>
+    <td><b></b>  </td>
+    <td>Switch on stereo.  </td>
+  </tr>
+  <tr>
+    <td><b>-stereo</b></td>
+    <td><b>ON</b>  </td>
+    <td>Switch on stereo.  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>OFF</b>  </td>
+    <td>Switch off stereo. </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>ANAGLYPHIC</b>  </td>
+    <td>Switch on ANAGLYPHIC stereo.  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>QUAD_BUFFER</b>  </td>
+    <td>Switch on QUAD_BUFFER stereo.  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>VERTICAL_SPLIT</b>  </td>
+    <td>Switch on VERTICAL_SPLIT stereo.  </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><b>HORIZONTAL_SPLIT</b>  </td>
+    <td>Switch on VERTICAL_SPLIT stereo.  </td>
+  </tr>
 </table>
-<br>
-<h3>
-Command line arguments can be used to override these settings:</h3>
-<table CELLSPACING=5 >
-<tr>
-<td><b>-stereo</b></td>
 
-<td></td>
+<hr>
 
-<td>Switch on stereo.</td>
-</tr>
-
-<tr>
-<td><b>-stereo</b></td>
-
-<td><b>ON</b></td>
-
-<td>Switch on stereo.</td>
-</tr>
-
-<tr>
-<td><b>-stereo</b></td>
-
-<td><b>OFF</b></td>
-
-<td>Switch off stereo.</td>
-</tr>
-
-<tr>
-<td><b>-stereo</b></td>
-
-<td><b>ANAGLYPHIC</b></td>
-
-<td>Switch on ANAGLYPHIC stereo.</td>
-</tr>
-
-<tr>
-<td><b>-stereo</b></td>
-
-<td><b>QUAD_BUFFER</b></td>
-
-<td>Switch on QUAD_BUFFER stereo.</td>
-</tr>
-</table>
-<br>
-<h3>
-Examples:</h3>
-To invoke stereo from the comandline:
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
-<p>To invoke quad buffered stereo from the commandline:
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo QUAD_BUFFER cow.osg</b>
+<h3> Examples:</h3>
+     To invoke stereo from the comandline: <br>
+<b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
+<p>To invoke quad buffered stereo from the commandline: <br>
+<b>&nbsp;&nbsp;&nbsp; sgv -stereo QUAD_BUFFER cow.osg</b></p>
 <p>To force all apps to start up in quad buffered stereo (if system supports
-it)
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=ON</b>
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
-<br><b>&nbsp;&nbsp;&nbsp; sgv cow.osg</b>
-<p>To set quad buffered stereo to the default, but use the commandline
-to switch stereo on:
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=OFF</b>
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
-<br>&nbsp;
-<h3>
-Size matters:</h3>
-For appropriate depth perception the stereo code creates separate left
-and eye views, both the frustum and modelview are shifted to account for
-the separate eye views.&nbsp; To achieve the right amount of adjustment
-the OSG requires the users eye separation, the distance from the eyes to
-the screen and the height of the screen.&nbsp; The OSG will use the defaults
-of 0.05m,0.5m and 0.26m respectively which are assumed to be reasonable
-defaults for most users workstation configurations, note the OSG_SCREEN_HEIGHT
-is the image height rather than total size of your monitor/display surface.&nbsp;
-For the best stereo effects please measure these values and set them up
-via the environmental variables.&nbsp; Once set the views you get should
-give improved depth perception.&nbsp; A good way of measuring how well you are
-configured for your display is to fly away from objects (using the FlightManipulator
-for instance, but not the TrackballManipulator, see below) so that they go of
-toward infinity.  As they move away the offset between the two images should
-tend towards your eye separation, if you achieve this then the object will
-be perceived as at infinity.
-<br>&nbsp;
-<br>&nbsp;
-<h3>
-Camera Manipulator Modes:</h3>
-There are three osgUtil::CameraManipulator's which come with osgUtil, which
-operate as a Trackball, Drive and Flight modes of interaction (see sgv.html for
-how to invoke them in the scene graph viewer). The osgUtil::Trackball
-Manipulator automatically scales the fusion distance to that which will fusion on 
-center point of rotation - this will appear at the middle of the monitor at
-the monitors depth.  Whereas, the osgUtil::DriveManipualtor, osgUtil::FlightManipulator
-scale the fusion distance to the distance the viewer is from the screen, the
-results in a perception that the virtual world is scaled to physical world, this
-is clearly better for simulators and alike.  You can control the fusion of
-the image in these two modes via the osg::Camera::setFusionDistanceMode(FusionDistanceMode mode)
-where mode can be osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE (used by Trackball) or 
-osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE (used by Drive and Flight),
-and osg::Camera::setFusionDistanceRatio(float).  See include/osg/Camera for
-further details, and the camera manipulators for implementation details.  The
-fusion distance ratio defaults to 1.0 but can be biased to move objects out or 
-into screen, they will also appear to get smaller and larger respectively.  The
-camera manipulators allow the user to alter this value at runtime via the '+'
-and '-' keys. 
+  it) <br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=ON</b><br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b><br>
+<b>&nbsp;&nbsp;&nbsp; sgv cow.osg</b></p>
+<p>To set quad buffered stereo to the default, but use the commandline to
+  switch stereo on: <br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=OFF</b><br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b><br>
+<b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b><br>
+    &nbsp; </p>
 
-<br>&nbsp;
-<br>&nbsp;
+<hr>
+
+<h3> Size matters:</h3>
+<p>For appropriate depth perception the stereo code creates separate left
+and eye views, both the frustum and modelview are shifted to account for
+the separate eye views.&nbsp; To achieve the right amount of adjustment the
+OSG requires the users eye separation, the distance from the eyes to the screen
+and the height of the screen.&nbsp; The OSG will use the defaults of 0.05m,0.5m
+and 0.26m respectively which are assumed to be reasonable defaults for most
+users workstation configurations, note the OSG_SCREEN_HEIGHT is the image
+height rather than total size of your monitor/display surface.&nbsp; For
+the best stereo effects please measure these values and set them up via the
+environmental variables.&nbsp; Once set the views you get should give improved
+depth perception.&nbsp; A good way of measuring how well you are configured
+for your display is to fly away from objects (using the FlightManipulator
+for instance, but not the TrackballManipulator, see below) so that they
+go of toward infinity.  As they move away the offset between the two images
+should tend towards your eye separation, if you achieve this then the object
+will be perceived as at infinity.</p>
+
+<hr>
+
+<h3> Camera Manipulator Modes:</h3>
+<p>There are three osgUtil::CameraManipulator's which come with osgUtil,
+which  operate as a Trackball, Drive and Flight modes of interaction (see
+sgv.html  for how to invoke them in the scene graph viewer). The osgUtil::Trackball
+Manipulator automatically scales the fusion distance to that which will
+fusion on  center point of rotation - this will appear at the middle of the
+monitor at the monitors depth.  Whereas, the osgUtil::DriveManipualtor, osgUtil::FlightManipulator
+scale the fusion distance to the distance the viewer is from the screen,
+the results in a perception that the virtual world is scaled to physical
+world, this is clearly better for simulators and alike.  You can control
+the fusion of the image in these two modes via the osg::Camera::setFusionDistanceMode(FusionDistanceMode
+mode) where mode can be osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE (used
+by Trackball) or  osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE (used by
+Drive   and Flight), and osg::Camera::setFusionDistanceRatio(float).  See
+include/osg/Camera   for further details, and the camera manipulators for
+implementation details.    The fusion distance ratio defaults to 1.0 but
+can be biased to move objects   out or  into screen, they will also appear
+to get smaller and larger respectively.    The camera manipulators allow
+the user to alter this value at runtime via   the '+' and '-' keys.</p>
+
+
 </body>
 </html>

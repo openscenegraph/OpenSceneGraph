@@ -890,7 +890,6 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 
 osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec)
 {
-#if 1
     SSwitch *pSSwitch = (SSwitch*)rec->getData();
     osg::Switch* osgSwitch = new osg::Switch;
 
@@ -902,12 +901,15 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
     unsigned int totalNumChildren = (unsigned int)rec->getNumChildren();
     if (totalNumChildren!=osgSwitch->getNumChildren())
     {
-        // only convert the children we agree on.
+        // only convert the children we agree on,
+        // however, there could be a chance that ordering of children might
+        // be different if there a children that hanvn't mapped across...
         if (totalNumChildren>osgSwitch->getNumChildren()) totalNumChildren=osgSwitch->getNumChildren();
-    
-        osg::notify(osg::WARN)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
-        osg::notify(osg::WARN)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
-        osg::notify(osg::WARN)<<"         exceeds the number converted to OSG ("<<osgSwitch->getNumChildren()<<")"<<std::endl;
+
+            
+        osg::notify(osg::INFO)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
+        osg::notify(osg::INFO)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
+        osg::notify(osg::INFO)<<"         exceeds the number converted to OSG ("<<osgSwitch->getNumChildren()<<")"<<std::endl;
     }
 
     for(unsigned int nChild=0; nChild<totalNumChildren; nChild++)
@@ -922,41 +924,6 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
     }
 
     return osgSwitch;
-#else
-    // Old style osg::Switch couldn't handle the OpenFlight bit mask so had to resort to a group with masked out children.
-    SSwitch *pSSwitch = (SSwitch*)rec->getData();
-    osg::Group* group = new osg::Group;
-
-    group->setName(pSSwitch->szIdent);
-    visitAncillary(osgParent, *group, rec)->addChild( group );
-    visitPrimaryNode(*group, (PrimNodeRecord*)rec);
-
-    for(unsigned int nChild=0; nChild<(unsigned int)rec->getNumChildren(); nChild++)
-    {
-        unsigned int nMaskBit = nChild % 32;
-        unsigned int nMaskWord = pSSwitch->nCurrentMask * pSSwitch->nWordsInMask + nChild / 32;
-
-        if (!(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit)))
-        {
-            if (nChild<group->getNumChildren())
-            {
-                osg::Node* node = group->getChild(nChild);
-                if (node)
-                    node->setNodeMask(0);
-            }
-            else
-            {
-                osg::notify(osg::WARN)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
-                osg::notify(osg::WARN)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
-                osg::notify(osg::WARN)<<"         exceeds the number converted to OSG ("<<group->getNumChildren()<<")"<<std::endl;
-            }
-             
-             
-        }
-    }
-
-    return group;
-#endif
 }
 
 

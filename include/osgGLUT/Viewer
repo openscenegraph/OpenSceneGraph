@@ -19,6 +19,7 @@
 
 #include <osgGLUT/Window>
 
+#include <list>
 #include <string>
 
 namespace osgGLUT
@@ -82,13 +83,17 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         void selectCameraManipulator(unsigned int pos, 
 				     unsigned int viewport = 0);
 
-        void addEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
+        void prependEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
+        void appendEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
 
         // derived from osgGA::GUIActionAdapter
         virtual void requestRedraw() {} // redraw always by idle callback done.
         virtual void requestContinuousUpdate(bool /*needed*/) {} // continuous update always
         virtual void requestWarpPointer(int x,int y);
+	virtual void requestShutdown() { exit(1); };
 
+	/// Toggle fullscreen
+	virtual void toggleFullScreen();
         /** read the command line string list, removing any matched control sequences.*/
         void readCommandLine(std::vector<std::string>& commandLine);
 
@@ -97,7 +102,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
         typedef std::vector<osg::ref_ptr<osgGA::CameraManipulator> > CameraManipList;
-        typedef std::vector<osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
+        typedef std::list<osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
 
     protected:
 
@@ -111,7 +116,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         virtual void keyboard(unsigned char key, int x, int y);
 
         void setFocusedViewport(unsigned int pos);
-        int mapWindowXYToSceneView(int x, int y);
+        int mapWindowXYToViewport(int x, int y);
         
         void showStats(unsigned int i); // gwm 24.09.01 pass the viewport to collect sta for each viewport
 

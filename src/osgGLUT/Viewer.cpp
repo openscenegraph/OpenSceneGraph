@@ -173,6 +173,22 @@ void Viewer::readCommandLine(std::vector<std::string>& commandLine)
     _displaySettings->readCommandLine(commandLine);
 }
 
+void
+Viewer::toggleFullScreen()
+{
+    _fullscreen = !_fullscreen;
+    if (_fullscreen)
+    {
+        _saved_ww = _ww;
+        _saved_wh = _wh;
+        glutFullScreen();
+    } else
+    {
+        //glutPositionWindow(wx,wy);
+        glutReshapeWindow(_saved_ww,_saved_wh);
+    }
+}
+
 /**
   * Configure and open the GLUT window for this Viewer
   * 
@@ -317,7 +333,13 @@ unsigned int Viewer::registerCameraManipulator(osgGA::CameraManipulator* cm,
     return pos;
 }
 
-void Viewer::addEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport)
+void Viewer::prependEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport)
+{
+    ViewportDef &viewp = _viewportList[viewport];
+    viewp._eventHandlerList.push_front( handler );
+}
+
+void Viewer::appendEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport)
 {
     ViewportDef &viewp = _viewportList[viewport];
     viewp._eventHandlerList.push_back( handler );
@@ -376,6 +398,7 @@ float Viewer::app(unsigned int viewport)
         if ( eh->valid() ) {
             if ( (*eh)->handle(*ea,*this) ) {
                 handled = true;
+                break;
             }
         }
     }
@@ -421,7 +444,7 @@ float Viewer::draw(unsigned int viewport)
 }
 
 
-int Viewer::mapWindowXYToSceneView(int x, int y)
+int Viewer::mapWindowXYToViewport(int x, int y)
 {
     int ogl_y = _wh-y;
 
@@ -775,6 +798,7 @@ void Viewer::mouseMotion(int x, int y)
         if ( eh->valid() ) {
             if ( (*eh)->handle(*ea,*this) ) {
                 handled = true;
+                break;
             }
         }
     }
@@ -799,7 +823,7 @@ void Viewer::mousePassiveMotion(int x, int y)
     // Switch viewport focus if no buttons are pressed
     if (ea->getButtonMask() == 0)
     {
-        int focus = mapWindowXYToSceneView(x,y);
+        int focus = mapWindowXYToViewport(x,y);
         if (focus >= 0 && focus != int(_focusedViewport))
           setFocusedViewport(focus);
     }
@@ -812,6 +836,7 @@ void Viewer::mousePassiveMotion(int x, int y)
         if ( eh->valid() ) {
             if ( (*eh)->handle(*ea,*this) ) {
                 handled = true;
+                break;
             }
         }
     }
@@ -836,7 +861,7 @@ void Viewer::mouse(int button, int state, int x, int y)
          mask == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON || 
          mask == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
-        int focus = mapWindowXYToSceneView(x,y);
+        int focus = mapWindowXYToViewport(x,y);
         if (focus >= 0 && focus != int(_focusedViewport))
           setFocusedViewport(focus);
     }
@@ -849,6 +874,7 @@ void Viewer::mouse(int button, int state, int x, int y)
         if ( eh->valid() ) {
             if ( (*eh)->handle(*ea,*this) ) {
                 handled = true;
+                break;
             }
         }
     }
@@ -868,7 +894,6 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptKeyboard(clockSeconds(),key,x,y);
 
-    bool handled = false;
     for ( EventHandlerList::iterator eh =
             _viewportList[_focusedViewport]._eventHandlerList.begin();
             eh != _viewportList[_focusedViewport]._eventHandlerList.end();
@@ -879,11 +904,9 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             }
         }
     }
-    if ( !handled ) {
-        if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
-                    *ea,*this) ) {
-            return;
-        }
+    if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
+                *ea,*this) ) {
+        return;
     }
 
     if (key>='1' && key<='3')
@@ -1104,17 +1127,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             break;
 
         case 'f' :
-            _fullscreen = !_fullscreen;
-            if (_fullscreen)
-            {
-                _saved_ww = _ww;
-                _saved_wh = _wh;
-                glutFullScreen();
-            } else
-            {
-                //glutPositionWindow(wx,wy);
-                glutReshapeWindow(_saved_ww,_saved_wh);
-            }
+            toggleFullScreen();
             break;
 
         case 'o' :

@@ -187,7 +187,7 @@ int main( int argc, char **argv )
     viewer.addViewport(rootNode);
 
     // register additional event handler
-    viewer.addEventHandler(osgNew MyEventHandler(&seq), 0);
+    viewer.prependEventHandler(osgNew MyEventHandler(&seq), 0);
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);

@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	ReaderWriterGEO.cpp
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += -losgText $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = geo
 include $(TOPDIR)/Make/cygwin_plugin_def

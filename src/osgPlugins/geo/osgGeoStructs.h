@@ -205,6 +205,7 @@ public:
         if (gf.tokenId!=GEO_DB_LAST_FIELD) {
             output.indent() << " Field:token " << (int)gf.tokenId << " datatype " << (int)gf.TypeId
                 << " num its " << gf.numItems << " size " << gf.storeSize << std::endl;
+            if (gf.TypeId==DB_CHAR) output.indent();
             for (uint i=0; i<gf.numItems; i++) {
                 int j,k;
                 union {
@@ -221,130 +222,131 @@ public:
                 } st;
                 st.uch=gf.storage+i*gf.storeSize;
                 switch (gf.TypeId) {
-        case DB_CHAR:
-            if (st.ch[0]) output << st.ch[0];
-            break;
-        case DB_SHORT:
-            output.indent() << st.sh[0] << std::endl;
-            break;
-        case DB_INT:
-            output.indent() << st.in[0] << std::endl;
-            break;
-        case DB_FLOAT:
-            output.indent() << st.ft[0] << std::endl;
-            break;
-        case DB_LONG:
-            output.indent() << st.ln[0] << std::endl;
-            break;
-        case DB_ULONG:
-            output.indent() << st.uln[0] << std::endl;
-            break;
-        case DB_DOUBLE:
-            output.indent() << st.dbl[0] << std::endl;
-            break;
-        case DB_VEC2F:
-            output.indent() << st.ft[0] << " " << st.ft[1];
-            output << std::endl;
-            break;
-        case DB_VEC3F:
-            output.indent();
-            for (j=0; j<3; j++) output << st.ft[j] << " ";
-            output << std::endl;
-            break;
-        case DB_VEC4F:
-            output.indent();
-            for (j=0; j<4; j++) output << st.ft[j] << " ";
-            output << std::endl;
-            break;
-        case DB_VEC16F:
-            for (j=0; j<4; j++) {
-                output.indent();
-                for (k=0; k<4; k++) output << st.ch[j*4+k] << " ";
-                output << std::endl;
-            }
-            break;
-        case DB_VEC2I:
-            output.indent() << st.in[0] << " " << st.in[1] << std::endl;
-            break;
-        case DB_VEC3I:
-            output.indent();
-            for ( j=0; j<3; j++) output << " " << st.in[j];
-            output << std::endl;
-            break;
-        case DB_VEC4I:
-            output.indent();
-            for ( j=0; j<4; j++) output << st.in[j] << " ";
-            output << std::endl;
-            break;
-        case DB_VEC2D:
-            output.indent();
-            for ( j=0; j<2; j++) output << st.dbl[j] << " ";
-            output << std::endl;
-            break;
-        case DB_VEC3D:
-            output.indent();
-            for ( j=0; j<3; j++) output << st.dbl[j] << " ";
-            output << std::endl;
-            break;
-        case DB_VEC4D:
-            output.indent();
-            for ( j=0; j<4; j++) output << st.dbl[j] << " ";
-            output << std::endl;
-            break;
-        case DB_VEC16D:
-            for (j=0; j<4; j++) {
-                output.indent();
-                for (k=0; k<4; k++) output << st.dbl[j*4+k] << " ";
-                output << std::endl;
-            }
-            break;
-        case DB_VRTX_STRUCT:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_UINT:
-            output.indent() << st.uin[0] << std::endl;
-            break;
-        case DB_USHORT:
-            output.indent() << st.ush[0] << std::endl;
-            break;
-        case DB_UCHAR:
-            output.indent() << (int)st.ch[0] << std::endl;
-            break;
-        case DB_EXT_STRUCT:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_SHORT_WITH_PADDING:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_CHAR_WITH_PADDING:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_USHORT_WITH_PADDING:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_UCHAR_WITH_PADDING:
-            output.indent() << (int)st.ch[0] << std::endl;
-            break;
-        case DB_BOOL_WITH_PADDING:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_EXTENDED_FIELD_STRUCT:
-            output.indent() << st.ch[0] << std::endl;
-            break;
-        case DB_VEC4UC:
-            output.indent();
-            for ( j=0; j<4; j++) output << (int)st.uch[j] << " ";
-            output << std::endl;
-            break;
-        case DB_DISCRETE_MAPPING_STRUCT:
-            output.indent() << st.ch[i] << std::endl;
-            break;
-        case DB_BITFLAGS:
-            output.indent() << st.ch[i] << std::endl;
-            break;
+                case DB_CHAR:
+                    if (st.ch[0]) output << st.ch[0];
+                    break;
+                case DB_SHORT:
+                    output.indent() << st.sh[0] << std::endl;
+                    break;
+                case DB_INT:
+                    output.indent() << st.in[0] << std::endl;
+                    break;
+                case DB_FLOAT:
+                    output.indent() << st.ft[0] << std::endl;
+                    break;
+                case DB_LONG:
+                    output.indent() << st.ln[0] << std::endl;
+                    break;
+                case DB_ULONG:
+                    output.indent() << st.uln[0] << std::endl;
+                    break;
+                case DB_DOUBLE:
+                    output.indent() << st.dbl[0] << std::endl;
+                    break;
+                case DB_VEC2F:
+                    output.indent() << st.ft[0] << " " << st.ft[1];
+                    output << std::endl;
+                    break;
+                case DB_VEC3F:
+                    output.indent();
+                    for (j=0; j<3; j++) output << st.ft[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_VEC4F:
+                    output.indent();
+                    for (j=0; j<4; j++) output << st.ft[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_VEC16F:
+                    for (j=0; j<4; j++) {
+                        output.indent();
+                        for (k=0; k<4; k++) output << st.ft[j*4+k] << " ";
+                        output << std::endl;
+                    }
+                    break;
+                case DB_VEC2I:
+                    output.indent() << st.in[0] << " " << st.in[1] << std::endl;
+                    break;
+                case DB_VEC3I:
+                    output.indent();
+                    for ( j=0; j<3; j++) output << " " << st.in[j];
+                    output << std::endl;
+                    break;
+                case DB_VEC4I:
+                    output.indent();
+                    for ( j=0; j<4; j++) output << st.in[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_VEC2D:
+                    output.indent();
+                    for ( j=0; j<2; j++) output << st.dbl[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_VEC3D:
+                    output.indent();
+                    for ( j=0; j<3; j++) output << st.dbl[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_VEC4D:
+                    output.indent();
+                    for ( j=0; j<4; j++) output << st.dbl[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_VEC16D:
+                    for (j=0; j<4; j++) {
+                        output.indent();
+                        for (k=0; k<4; k++) output << st.dbl[j*4+k] << " ";
+                        output << std::endl;
+                    }
+                    break;
+                case DB_VRTX_STRUCT:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_UINT:
+                    output.indent() << st.uin[0] << std::endl;
+                    break;
+                case DB_USHORT:
+                    output.indent() << st.ush[0] << std::endl;
+                    break;
+                case DB_UCHAR:
+                    output.indent() << (int)st.ch[0] << std::endl;
+                    break;
+                case DB_EXT_STRUCT:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_SHORT_WITH_PADDING:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_CHAR_WITH_PADDING:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_USHORT_WITH_PADDING:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_UCHAR_WITH_PADDING:
+                    output.indent() << (int)st.ch[0] << std::endl;
+                    break;
+                case DB_BOOL_WITH_PADDING:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_EXTENDED_FIELD_STRUCT:
+                    output.indent() << st.ch[0] << std::endl;
+                    break;
+                case DB_VEC4UC:
+                    output.indent();
+                    for ( j=0; j<4; j++) output << (int)st.uch[j] << " ";
+                    output << std::endl;
+                    break;
+                case DB_DISCRETE_MAPPING_STRUCT:
+                    output.indent() << st.ch[i] << std::endl;
+                    break;
+                case DB_BITFLAGS:
+                    output.indent() << st.ch[i] << std::endl;
+                    break;
                 }
             }
         }
+        if (gf.TypeId==DB_CHAR) output << std::endl;
         return output;     // to enable cascading, monkey copy from osg\plane or \quat, Ubyte4, vec2,3,4,... 
     }
 private:
@@ -365,7 +367,7 @@ public:
     inline std::vector<georecord *> getchildren(void) const { return children;}
     void addchild(class georecord *gr) { children.push_back(gr);}
     georecord *getLastChild(void) const { return children.back();}
-    void addBehaviour(class georecord *gr) { behaviour.push_back(gr);}
+    void addBehaviourRecord(class georecord *gr) { behaviour.push_back(gr);}
     std::vector< georecord *>getBehaviour() const { return behaviour;}
     const geoFieldList getFields() const { return fields;}
     inline bool isVar(void) const {
@@ -440,60 +442,62 @@ public:
     }
     friend inline std::ostream& operator << (osgDB::Output& output, const georecord& gr)
     {
-        if (gr.id == DB_DSK_PUSH) output << "Push" << std::endl;
-        else if (gr.id == DB_DSK_POP) output << "Pop" << std::endl;
-        else if (gr.id == DB_DSK_HEADER) output << "Header" << std::endl;
-        else if (gr.id == DB_DSK_GROUP) output << "Group" << std::endl;
-        else if (gr.id == DB_DSK_BILLBOARD) output << "Billboard" << std::endl;
-        else if (gr.id == DB_DSK_SEQUENCE) output << "Sequence" << std::endl;
-        else if (gr.id == DB_DSK_LOD) output << "LOD" << std::endl;
-        else if (gr.id == DB_DSK_GEODE) output << "Geode" << std::endl;
-        else if (gr.id == DB_DSK_POLYGON) output << "Polygon" << std::endl;
-        else if (gr.id == DB_DSK_MESH) output << "Mesh" << std::endl;
-        else if (gr.id == DB_DSK_CUBE) output << "Cube" << std::endl;
-        else if (gr.id == DB_DSK_SPHERE) output << "Sphere" << std::endl;
-        else if (gr.id == DB_DSK_CONE) output << "Cone" << std::endl;
-        else if (gr.id == DB_DSK_CYLINDER) output << "Cylinder" << std::endl;
-        else if (gr.id == DB_DSK_VERTEX) output << "Vertex" << std::endl;
-        else if (gr.id == DB_DSK_TEXTURE) output << "Texture" << std::endl;
-        else if (gr.id == DB_DSK_MATERIAL) output << "Material" << std::endl;
-        else if (gr.id == DB_DSK_VIEW) output << "View" << std::endl;
-        else if (gr.id == DB_DSK_EXTENSION_LIST) output << "Extensions" << std::endl;
-        else if (gr.id == DB_DSK_COORD_POOL) output << "Coords" << std::endl;
-        else if (gr.id == DB_DSK_NORMAL_POOL) output << "Normals" << std::endl;
-        else if (gr.id == DB_DSK_SWITCH) output << "Switch" << std::endl;
-        else if (gr.id == DB_DSK_TEXT) output << "Text" << std::endl;
-        else if (gr.id == DB_DSK_BASE_GROUP) output << "Base group" << std::endl;
-        else if (gr.id == DB_DSK_BASE_SURFACE) output << "Base Surface" << std::endl;
-        else if (gr.id == DB_DSK_INSTANCE) output << "Instance" << std::endl;
-        else if (gr.id == DB_DSK_LIGHTPT) output << "Light Point" << std::endl;
-        else if (gr.id == DB_DSK_EXTERNAL) output << "External" << std::endl;
-        else if (gr.id == DB_DSK_PAGE) output << "Page" << std::endl;
-        else if (gr.id == DB_DSK_COLOR_PALETTE) output << "Colour palette" << std::endl;
-        else if (gr.id == DB_DSK_INTERNAL_VARS) output << "Internal vars" << std::endl;
-        else if (gr.id == DB_DSK_LOCAL_VARS) output << "Local vars" << std::endl;
-        else if (gr.id == DB_DSK_EXTERNAL_VARS) output << "External vars" << std::endl;
+        switch (gr.id) {
+        case DB_DSK_PUSH: output << "Push" << std::endl; break;
+        case DB_DSK_POP: output << "Pop" << std::endl; break;
+        case DB_DSK_HEADER: output << "Header" << std::endl; break;
+        case DB_DSK_GROUP: output << "Group" << std::endl; break;
+        case DB_DSK_BILLBOARD: output << "Billboard" << std::endl; break;
+        case DB_DSK_SEQUENCE: output << "Sequence" << std::endl; break;
+        case DB_DSK_LOD: output << "LOD" << std::endl; break;
+        case DB_DSK_GEODE: output << "Geode" << std::endl; break;
+        case DB_DSK_POLYGON: output << "Polygon" << std::endl; break;
+        case DB_DSK_MESH: output << "Mesh" << std::endl; break;
+        case DB_DSK_CUBE: output << "Cube" << std::endl; break;
+        case DB_DSK_SPHERE: output << "Sphere" << std::endl; break;
+        case DB_DSK_CONE: output << "Cone" << std::endl; break;
+        case DB_DSK_CYLINDER: output << "Cylinder" << std::endl; break;
+        case DB_DSK_VERTEX: output << "Vertex" << std::endl; break;
+        case DB_DSK_TEXTURE: output << "Texture" << std::endl; break;
+        case DB_DSK_MATERIAL: output << "Material" << std::endl; break;
+        case DB_DSK_VIEW: output << "View" << std::endl; break;
+        case DB_DSK_EXTENSION_LIST: output << "Extensions" << std::endl; break;
+        case DB_DSK_COORD_POOL: output << "Coords" << std::endl; break;
+        case DB_DSK_NORMAL_POOL: output << "Normals" << std::endl; break;
+        case DB_DSK_SWITCH: output << "Switch" << std::endl; break;
+        case DB_DSK_TEXT: output << "Text" << std::endl; break;
+        case DB_DSK_BASE_GROUP: output << "Base group" << std::endl; break;
+        case DB_DSK_BASE_SURFACE: output << "Base Surface" << std::endl; break;
+        case DB_DSK_INSTANCE: output << "Instance" << std::endl; break;
+        case DB_DSK_LIGHTPT: output << "Light Point" << std::endl; break;
+        case DB_DSK_EXTERNAL: output << "External" << std::endl; break;
+        case DB_DSK_PAGE: output << "Page" << std::endl; break;
+        case DB_DSK_COLOR_PALETTE: output << "Colour palette" << std::endl; break;
+        case DB_DSK_INTERNAL_VARS: output << "Internal vars" << std::endl; break;
+        case DB_DSK_LOCAL_VARS: output << "Local vars" << std::endl; break;
+        case DB_DSK_EXTERNAL_VARS: output << "External vars" << std::endl; break;
         // behaviours
-        else if (gr.id == DB_DSK_BEHAVIOR) output << "Behaviour" << std::endl;
-        else if (gr.id == DB_DSK_CLAMP_ACTION) output << "clamp action" << std::endl;
-        else if (gr.id == DB_DSK_RANGE_ACTION) output << "range action" << std::endl;
-        else if (gr.id == DB_DSK_ROTATE_ACTION) output << "rotate action" << std::endl;
-        else if (gr.id == DB_DSK_TRANSLATE_ACTION) output << "translate action" << std::endl;
-        else if (gr.id == DB_DSK_SCALE_ACTION) output << "scale action" << std::endl;
-        else if (gr.id == DB_DSK_ARITHMETIC_ACTION) output << "arithmetic action" << std::endl;
-        else if (gr.id == DB_DSK_LOGIC_ACTION) output << "logic action" << std::endl;
-        else if (gr.id == DB_DSK_CONDITIONAL_ACTION) output << "conditional action" << std::endl;
-        else if (gr.id == DB_DSK_LOOPING_ACTION) output << "looping action" << std::endl;
-        else if (gr.id == DB_DSK_COMPARE_ACTION) output << "compare action" << std::endl;
-        else if (gr.id == DB_DSK_VISIBILITY_ACTION) output << "visibility action" << std::endl;
-        else if (gr.id == DB_DSK_STRING_CONTENT_ACTION) output << "string content action" << std::endl;
+        case DB_DSK_BEHAVIOR: output << "Behaviour" << std::endl; break;
+        case DB_DSK_CLAMP_ACTION: output << "clamp action" << std::endl; break;
+        case DB_DSK_RANGE_ACTION: output << "range action" << std::endl; break;
+        case DB_DSK_ROTATE_ACTION: output << "rotate action" << std::endl; break;
+        case DB_DSK_TRANSLATE_ACTION: output << "translate action" << std::endl; break;
+        case DB_DSK_SCALE_ACTION: output << "scale action" << std::endl; break;
+        case DB_DSK_ARITHMETIC_ACTION: output << "arithmetic action" << std::endl; break;
+        case DB_DSK_LOGIC_ACTION: output << "logic action" << std::endl; break;
+        case DB_DSK_CONDITIONAL_ACTION: output << "conditional action" << std::endl; break;
+        case DB_DSK_LOOPING_ACTION: output << "looping action" << std::endl; break;
+        case DB_DSK_COMPARE_ACTION: output << "compare action" << std::endl; break;
+        case DB_DSK_VISIBILITY_ACTION: output << "visibility action" << std::endl; break;
+        case DB_DSK_STRING_CONTENT_ACTION: output << "string content action" << std::endl; break;
         // var types
-        else if (gr.id == DB_DSK_FLOAT_VAR) output << "Float var" << std::endl;
-        else if (gr.id == DB_DSK_INT_VAR) output << "Int var" << std::endl;
-        else if (gr.id == DB_DSK_LONG_VAR) output << "Long var" << std::endl;
-        else if (gr.id == DB_DSK_DOUBLE_VAR) output << "Double var" << std::endl;
-        else if (gr.id == DB_DSK_BOOL_VAR) output << "Bool var" << std::endl;
-         else output << " inp record " << gr.id << std::endl;
+        case DB_DSK_FLOAT_VAR: output << "Float var" << std::endl; break;
+        case DB_DSK_INT_VAR: output << "Int var" << std::endl; break;
+        case DB_DSK_LONG_VAR: output << "Long var" << std::endl; break;
+        case DB_DSK_DOUBLE_VAR: output << "Double var" << std::endl; break;
+        case DB_DSK_BOOL_VAR: output << "Bool var" << std::endl; break;
+        default: output << " inp record " << gr.id << std::endl; break;
+        }
  
         for (geoFieldList::const_iterator itr=gr.fields.begin();
         itr!=gr.fields.end();

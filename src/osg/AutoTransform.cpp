@@ -113,6 +113,7 @@ void AutoTransform::accept(NodeVisitor& nv)
             }
 
             osg::Vec3 eyePoint = cs->getEyeLocal(); 
+            osg::Vec3 localUp = cs->getUpLocal(); 
             osg::Vec3 position = getPosition();
 
             const osg::Matrix& projection = cs->getProjectionMatrix();
@@ -122,6 +123,13 @@ void AutoTransform::accept(NodeVisitor& nv)
             {
                 osg::Vec3 dv = _previousEyePoint-eyePoint;
                 if (dv.length2()>getAutoUpdateEyeMovementTolerance()*(eyePoint-getPosition()).length2())
+                {
+                    doUpdate = true;
+                }
+                osg::Vec3 dupv = _previousLocalUp-localUp;
+                // rotating the camera only affects ROTATE_TO_*
+                if (_autoRotateMode &&
+                    dupv.length2()>getAutoUpdateEyeMovementTolerance())
                 {
                     doUpdate = true;
                 }
@@ -159,13 +167,14 @@ void AutoTransform::accept(NodeVisitor& nv)
                 {
                     osg::Vec3 PosToEye = _position - eyePoint;
                     osg::Matrix lookto = osg::Matrix::lookAt(
-                        osg::Vec3(0,0,0), PosToEye, cs->getUpLocal());
+                        osg::Vec3(0,0,0), PosToEye, localUp);
                     Quat q;
                     q.set(osg::Matrix::inverse(lookto));
                     setRotation(q);
                 }
 
                 _previousEyePoint = eyePoint;
+                _previousLocalUp = localUp;
                 _previousWidth = width;
                 _previousHeight = height;
                 _previousProjection = projection;

@@ -17,6 +17,7 @@ SRC_DIRS = \
 	osgGL2\
 	osgFX\
 	osgProducer\
+	osgIntrospection\
 
 ifeq ($(GDAL_INSTALLED),yes)
 SRC_DIRS += osgTerrain
@@ -24,7 +25,12 @@ endif
 
 SRC_DIRS += \
 	osgPlugins\
+	osgWrappers\
 	../examples
+
+WRAPPER_DIRS = \
+	osg\
+	
 
 ################################################################
 # Directories traversed in the TOPDIR/src/osgPlugins directory
@@ -156,6 +162,7 @@ EXAMPLE_DIRS = \
 	osghangglide\
 	osghud\
 	osgimpostor\
+	osgintrospection\
 	osgkeyboard\
 	osgkeyboardmouse\
 	osglauncher\

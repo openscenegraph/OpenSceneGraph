@@ -3,10 +3,12 @@ default: opt
 
 opt: $(EXEC:=.opt)\
 	$(LIB:=.opt)\
+	$(WRAPPER:=.opt)\
 	$(PLUGIN:=.opt)\
 
 debug: $(EXEC:=.dbg)\
 	$(LIB:=.dbg)\
+	$(WRAPPER:=.dbg)\
 	$(PLUGIN:=.dbg)\
 
 cleandepend: cleandependopt cleandependdbg
@@ -20,10 +22,10 @@ cleandependdbg:
 cleantarget: cleantargetopt cleantargetdbg
 
 cleantargetopt: 
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(EXEC) $(LIB) ${WRAPPER} $(PLUGIN)
 
 cleantargetdbg: 
-	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
+	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC) $(LIB) ${WRAPPER} $(PLUGIN)
 
 clean: cleanopt cleandbg
 
@@ -68,16 +70,18 @@ ifeq ($(OS),Darwin)
 $(LIB): $(OBJS)
 	$(C++) $(LDFLAGS) $(LIBVERSION) -dynamiclib $(OBJS) $(LIBS) -o $@
 
-$(PLUGIN): $(OBJS)
+$(WRAPPER) $(PLUGIN): $(OBJS)
 	$(C++) $(LDFLAGS) -bundle $(OBJS) $(LIBS) -o $@
+
 else
 ifeq ($(OS),HP-UX)
+
 # we need to explicitly tell the linker the library name - else it will
 # include paths like ../../../libosg.sl into executables
-$(LIB) $(PLUGIN) : $(OBJS)
+$(LIB) $(PLUGIN) ${WRAPPER} : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -Wl,+h -Wl,$@ -o $@
 else
-$(LIB) $(PLUGIN) : $(OBJS)
+$(LIB) $(PLUGIN) ${WRAPPER} : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@
 
 endif # not HP-UX
@@ -91,13 +95,21 @@ $(EXEC:=.dbg) :
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC)$(EXE_EXT) LNDEST=$(BININST)/$(EXEC)$(EXE_EXT) __link
 
-$(LIB:=.dbg) : $(PLUGIN:=.dbg)
+$(LIB:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR);\
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
+
+$(WRAPPER:=.dbg) : 
+	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
+	@cd $(DEBUGDIR); \
+	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
+	      THISDIR=../$(THISDIR)\
+	      MAKEDEPEND=Makedepend $(WRAPPER)
+	@$(MAKE) LNSRC=$(DEBUGDIR)/$(WRAPPER) LNDEST=$(PLUGININST)/$(WRAPPER) __link
 
 $(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
@@ -124,6 +136,14 @@ $(LIB:=.opt) :
 	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
+$(WRAPPER:=.opt) : 
+	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
+	@cd $(OPTDIR); \
+	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
+	    THISDIR=../$(THISDIR)\
+	               MAKEDEPEND=Makedepend $(WRAPPER)
+	@$(MAKE) LNSRC=$(OPTDIR)/$(WRAPPER) LNDEST=$(PLUGININST)/$(WRAPPER) __link
+
 $(PLUGIN:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
@@ -131,7 +151,6 @@ $(PLUGIN:=.opt) :
 	    THISDIR=../$(THISDIR)\
 	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
-
 
 ## Revamped method for making Makedepend files
 ## Under this method, Makedepend simply includes

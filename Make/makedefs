@@ -109,6 +109,7 @@ INSTLINKDEVCMD = $(LINK)
 LIB_PREFIX     = lib
 LIB_EXT        = so
 PLUGIN_PREFIX  = osgdb_
+WRAPPER_PREFIX  = osgwrapper_
 PLUGIN_EXT     = so
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 INSTLOGFILE    = /tmp/.osg_inst_log

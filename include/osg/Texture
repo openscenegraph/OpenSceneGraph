@@ -55,7 +55,7 @@
 #endif
 
 #ifndef GL_CLAMP_TO_BORDER_ARB
-#define GL_CLAMP_TO_BORDER_ARB 0x812D
+#define GL_CLAMP_TO_BORDER_ARB            0x812D
 #endif
 
 #ifndef GL_GENERATE_MIPMAP_SGIS
@@ -63,6 +63,9 @@
 #define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
 #endif
 
+#ifndef GL_TEXTURE_3D
+#define GL_TEXTURE_3D                     0x806F
+#endif
 
 namespace osg {
 

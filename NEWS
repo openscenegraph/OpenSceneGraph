@@ -1,3 +1,4 @@
+
 OSG News (most significant items from ChangeLog)
 ================================================
 
@@ -30,7 +31,12 @@ OSG News (most significant items from ChangeLog)
     NodeCallback on each Node, ComputeTransformCallback on Transform
     Nodes, EvaluateLODCallback on LOD nodes, ComputeBillboardCallback
     on Billboard nodes.  These make it my easier to customize the 
-    scene graphs behavior at runtime.  
+    scene graphs behavior at runtime.
+    
+    osg::Image::readPixels() and support for writing .bmp files has been
+    added which has made it easy to add screen capture the any OpenSceneGraph
+    application.  This feature is demonstrated in the scene graph viewer
+    which comes with the distribution - just press 'O' to output a screenshot.
     
     All in all, the OpenSceneGraph is now more portable, easier to 
     customize and cleaner.  Beta release and 1.0 is now not far away!

@@ -45,7 +45,11 @@ void FTGLBitmapFont::render( const char* string,unsigned int renderContext)
     
     glPixelStorei( GL_UNPACK_LSB_FIRST, GL_FALSE);
     glPixelStorei( GL_UNPACK_ROW_LENGTH, 0);
+#if (FREETYPE_MAJOR >= 2) && (FREETYPE_MINOR>=1)
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 2);
+#else
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1);
+#endif
 
     FTFont::render( string,renderContext);
 

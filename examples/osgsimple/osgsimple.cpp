@@ -51,12 +51,12 @@ int main( int argc, char **argv )
     while( renderSurface->isRealized() )
     {
         // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
-        osg::FrameStamp* frameStamp = new osg::FrameStamp;
+        osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
         frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
         frameStamp->setFrameNumber(frameNum++);
         
         // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
-        sceneView->setFrameStamp(frameStamp);
+        sceneView->setFrameStamp(frameStamp.get());
         
         // update the viewport dimensions, incase the window has been resized.
         sceneView->setViewport(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight());

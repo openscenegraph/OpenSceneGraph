@@ -203,3 +203,9 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
     
     return ea;
 }
+
+void KeyboardMouseCallback::shutdown()
+{
+    _done = true;
+    _keyboardMouse->cancel();
+}

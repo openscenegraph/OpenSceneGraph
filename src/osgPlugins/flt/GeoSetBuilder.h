@@ -119,7 +119,7 @@ class DynGeoSet : public osg::Referenced
         void setPrimType(osg::PrimitiveSet::Mode type) { _primtype=type; }
         osg::PrimitiveSet::Mode getPrimType() const { return _primtype; }
 
-        inline void addPrimLen(const int len)           { _primLenList.push_back(len); }
+        inline void addPrimLen(int len)           { _primLenList.push_back(len); }
         inline void addCoord(const osg::Vec3& coord)    { _coordList.push_back(coord); }
         inline void addNormal(const osg::Vec3& normal)  { _normalList.push_back(normal); }
         inline void addColor(const osg::Vec4& color)    { _colorList.push_back(color); }
@@ -130,11 +130,11 @@ class DynGeoSet : public osg::Referenced
         
         void addToGeometry(osg::Geometry* geom);
 
-        inline const int primLenListSize() const { return _primLenList.size(); }
-        inline const int coordListSize() const { return _coordList.size(); }
-        inline const int normalListSize() const { return _normalList.size(); }
-        inline const int colorListSize() const { return _colorList.size(); }
-        inline const int tcoordListSize() const { return _tcoordList.size(); }
+        inline int primLenListSize() const { return _primLenList.size(); }
+        inline int coordListSize() const { return _coordList.size(); }
+        inline int normalListSize() const { return _normalList.size(); }
+        inline int colorListSize() const { return _colorList.size(); }
+        inline int tcoordListSize() const { return _tcoordList.size(); }
     inline void setDetailTextureAttrData(AttrData *attrdata) {_attrdata=attrdata; }
 
     osg::Geometry* getGeometry() {

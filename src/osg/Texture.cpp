@@ -178,7 +178,8 @@ Texture::Texture():
             _internalFormat(0),
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
-            _shadow_texture_mode(LUMINANCE)
+            _shadow_texture_mode(LUMINANCE),
+            _shadow_ambient(0)
 {
 }
 
@@ -198,7 +199,8 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _internalFormat(text._internalFormat),
             _use_shadow_comparison(text._use_shadow_comparison),
             _shadow_compare_func(text._shadow_compare_func),
-            _shadow_texture_mode(text._shadow_texture_mode)
+            _shadow_texture_mode(text._shadow_texture_mode),
+            _shadow_ambient(text._shadow_ambient)
 {
 }
 
@@ -224,6 +226,7 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_use_shadow_comparison)
     COMPARE_StateAttribute_Parameter(_shadow_compare_func)
     COMPARE_StateAttribute_Parameter(_shadow_texture_mode)
+    COMPARE_StateAttribute_Parameter(_shadow_ambient)
     
     return 0;
 }
@@ -494,6 +497,13 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
             glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC_ARB, _shadow_compare_func);
             glTexParameteri(target, GL_DEPTH_TEXTURE_MODE_ARB, _shadow_texture_mode);
+
+            // if ambient value is 0 - it is default behaviour of GL_ARB_shadow
+            // no need for GL_ARB_shadow_ambient in this case
+            if (extensions->isShadowAmbientSupported() && _shadow_ambient > 0)
+              {
+                glTexParameterf(target, TEXTURE_COMPARE_FAIL_VALUE_ARB, _shadow_ambient);
+              }
           }
         else 
           {
@@ -1038,6 +1048,9 @@ Texture::Extensions::Extensions(const Extensions& rhs):
     _maxTextureSize = rhs._maxTextureSize;
 
     _glCompressedTexImage2D = rhs._glCompressedTexImage2D;
+
+    _isShadowSupported = rhs._isShadowSupported;
+    _isShadowAmbientSupported = rhs._isShadowAmbientSupported;
 }
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -1059,6 +1072,9 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glCompressedTexImage2D) _glCompressedTexImage2D = 0;
     if (!rhs._glCompressedTexSubImage2D) _glCompressedTexSubImage2D = 0;
     if (!rhs._glGetCompressedTexImage) _glGetCompressedTexImage = 0;
+
+    if (!rhs._isShadowSupported) _isShadowSupported = 0;
+    if (!rhs._isShadowAmbientSupported) _isShadowAmbientSupported = 0;
 }
 
 void Texture::Extensions::setupGLExtenions()
@@ -1076,7 +1092,7 @@ void Texture::Extensions::setupGLExtenions()
     _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
                                   isGLExtensionSupported("GL_SGIS_generate_mipmap");
     _isShadowSupported = isGLExtensionSupported("GL_ARB_shadow");
-
+    _isShadowAmbientSupported = isGLExtensionSupported("GL_ARB_shadow_ambient");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 

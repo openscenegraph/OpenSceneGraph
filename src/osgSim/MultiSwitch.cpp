@@ -48,7 +48,7 @@ void MultiSwitch::traverse(osg::NodeVisitor& nv)
     }
 }
 
-bool MultiSwitch::addChild( Node *child)
+bool MultiSwitch::addChild( osg::Node *child)
 {
     unsigned int childPosition = _children.size();
     if (Group::addChild(child))
@@ -69,7 +69,7 @@ bool MultiSwitch::addChild( Node *child)
     return false;
 }
 
-bool MultiSwitch::insertChild( unsigned int index, Node *child)
+bool MultiSwitch::insertChild( unsigned int index, osg::Node *child)
 {
     if (Group::insertChild(index,child))
     {
@@ -94,7 +94,7 @@ bool MultiSwitch::insertChild( unsigned int index, Node *child)
     return false;
 }
 
-bool MultiSwitch::removeChild( Node *child )
+bool MultiSwitch::removeChild( osg::Node *child )
 {
     // find the child's position.
     unsigned int pos=getChildIndex(child);
@@ -120,7 +120,7 @@ void MultiSwitch::setValue(unsigned int switchSet, unsigned int pos,bool value)
     values[pos]=value;
 }
 
-void MultiSwitch::setChildValue(const Node* child,unsigned int switchSet, bool value)
+void MultiSwitch::setChildValue(const osg::Node* child,unsigned int switchSet, bool value)
 {
     expandToEncompassSwitchSet(switchSet);
 
@@ -142,7 +142,7 @@ bool MultiSwitch::getValue(unsigned int switchSet, unsigned int pos) const
     return values[pos];
 }
 
-bool MultiSwitch::getChildValue(const Node* child, unsigned int switchSet) const
+bool MultiSwitch::getChildValue(const osg::Node* child, unsigned int switchSet) const
 {
     if (switchSet>=_values.size()) return false;
 

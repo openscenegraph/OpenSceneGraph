@@ -218,6 +218,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\OccluderNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\PagedLOD.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Point.cpp
 # End Source File
 # Begin Source File

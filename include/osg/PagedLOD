@@ -1,0 +1,89 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_PagedLOD
+#define OSG_PagedLOD 1
+
+#include <osg/LOD>
+
+namespace osg {
+
+/** PagedLOD.
+*/
+class SG_EXPORT PagedLOD : public LOD
+{
+    public :
+    
+        PagedLOD() {}
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        PagedLOD(const PagedLOD&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, PagedLOD);
+        
+        
+
+        virtual void traverse(NodeVisitor& nv);
+        
+        virtual bool addChild(Node *child);
+
+        virtual bool addChild(Node *child, float min, float max);
+
+        virtual bool addChild(Node *child, float min, float max,const std::string& filename);
+
+        virtual bool removeChild(Node *child);
+
+        typedef std::vector<std::string> FileNameList;
+
+        void setFileName(unsigned int childNo, const std::string& filename);
+        
+        const std::string& getFileName(unsigned int childNo) const { return _fileNameList[childNo]; }
+        
+        /** returns the number of filenames currently set. */
+        inline unsigned int getNumFileNames() const { return _fileNameList.size(); }
+
+        /** return the list of filename.*/
+        inline FileNameList& getFileNameList() { return _fileNameList; }
+        
+        /** return the list of filename.*/
+        inline const FileNameList& getFileNameList() const { return _fileNameList; }
+
+
+        typedef std::vector<double> TimeStampList;
+
+        void setTimeStamp(unsigned int childNo, double timeStamp);
+        
+        double getTimeStamp(unsigned int childNo) const { return _timeStampList[childNo]; }
+
+        /** returns the number of filenames currently set. */
+        inline unsigned int getNumTimeStamps() const { return _fileNameList.size(); }
+
+        /** return the list of time stamps.*/
+        inline TimeStampList& getTimeStampList() { return _timeStampList; }
+        
+        /** return the list of time stamps.*/
+        inline const TimeStampList& getTimeStampList() const { return _timeStampList; }
+
+        void removeExpiredChildren(double expiryTime);
+
+    protected :
+    
+        virtual ~PagedLOD() {}
+
+        FileNameList    _fileNameList;
+        TimeStampList   _timeStampList;
+};
+
+}
+
+#endif

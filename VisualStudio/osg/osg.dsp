@@ -301,6 +301,10 @@ SOURCE=..\..\src\osg\OccluderNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\PagedLOD.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Point.cpp
 # End Source File
 # Begin Source File
@@ -690,6 +694,10 @@ SOURCE=..\..\Include\Osg\Object
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\OccluderNode
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\PagedLOD
 # End Source File
 # Begin Source File
 

@@ -352,6 +352,16 @@ void Viewer::update()
         }
     }
     
+    if (_databasePager.valid())
+    {
+        // removed any children PagedLOD children that havn't been visited in the cull traversal recently.
+        _databasePager->removeExpiredSubgraphs(_frameStamp->getReferenceTime());
+        
+        // add the newly loaded data into the scene graph.
+        _databasePager->addLoadedDataToSceneGraph();        
+    }    
+    
+    
     if (_updateVisitor.valid())
     {
         _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());

@@ -27,67 +27,79 @@
 #include "../osghangglide/terrain_coords.h"
 
 
-class MyTexGen : public osg::TexGen
-{
-    public:
-    
-        void setMatrix(const osg::Matrix& matrix)
-        {
-            _matrix = matrix;
-        }
-    
-        virtual void apply(osg::State& state) const
-        {
-            glPushMatrix();
-            glLoadMatrixf(_matrix.ptr());
-            TexGen::apply(state);
-            glPopMatrix();
-        }
-        
-        osg::Matrix _matrix;
-};
 
-class MyCullCallback : public osg::NodeCallback
+class CreateShadowTextureCullCallback : public osg::NodeCallback
 {
     public:
     
-        MyCullCallback(osg::Node* subgraph,osg::Texture2D* texture,const osg::Vec3& position):
-            _subgraph(subgraph),
-            _texture(texture),
-            _position(position) {}
+        CreateShadowTextureCullCallback(osg::Node* shadower,const osg::Vec3& position, const osg::Vec4& ambientLightColor, unsigned int textureUnit):
+            _shadower(shadower),
+            _position(position),
+            _ambientLightColor(ambientLightColor),
+            _unit(textureUnit)
+        {
+            _texture = new osg::Texture2D;
+            _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+            _texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+        }
        
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
 
             osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
-            if (cullVisitor && (_texture.valid() && _subgraph.valid()))
+            if (cullVisitor && (_texture.valid() && _shadower.valid()))
             {            
                 doPreRender(*node,*cullVisitor);
 
             }
             else
             {
-                // must traverse the subgraph            
+                // must traverse the shadower            
                 traverse(node,nv);
             }
         }
         
+    protected:
+        
         void doPreRender(osg::Node& node, osgUtil::CullVisitor& cv);
         
-        osg::ref_ptr<osg::Node>      _subgraph;
+        osg::ref_ptr<osg::Node>      _shadower;
         osg::ref_ptr<osg::Texture2D> _texture;
         osg::Vec3                    _position;
+        osg::Vec4                    _ambientLightColor;
+        unsigned int                 _unit;
 
-    
+        // we need this to get round the order dependance
+        // of eye linear tex gen...    
+        class MyTexGen : public osg::TexGen
+        {
+            public:
+
+                void setMatrix(const osg::Matrix& matrix)
+                {
+                    _matrix = matrix;
+                }
+
+                virtual void apply(osg::State& state) const
+                {
+                    glPushMatrix();
+                    glLoadMatrixf(_matrix.ptr());
+                    TexGen::apply(state);
+                    glPopMatrix();
+                }
+
+                osg::Matrix _matrix;
+        };
+
 };
 
-void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
+void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 {   
 
-    const osg::BoundingSphere& bs = _subgraph->getBound();
+    const osg::BoundingSphere& bs = _shadower->getBound();
     if (!bs.valid())
     {
-        osg::notify(osg::WARN) << "bb invalid"<<_subgraph.get()<<std::endl;
+        osg::notify(osg::WARN) << "bb invalid"<<_shadower.get()<<std::endl;
         return;
     }
     
@@ -154,7 +166,7 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 
     // make the material black for a shadow.
     osg::Material* material = new osg::Material;
-    material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    material->setAmbient(osg::Material::FRONT_AND_BACK,_ambientLightColor);
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     material->setShininess(osg::Material::FRONT_AND_BACK,0.0f);
@@ -164,8 +176,8 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 
     {
 
-        // traverse the subgraph
-        _subgraph->accept(cv);
+        // traverse the shadower
+        _shadower->accept(cv);
 
     }
 
@@ -183,7 +195,7 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 
     if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
     {
-        // getting to this point means that all the subgraph has been
+        // getting to this point means that all the shadower has been
         // culled by small feature culling or is beyond LOD ranges.
         return;
     }
@@ -216,42 +228,18 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     if (_texture.valid()) rtts->setTexture(_texture.get());
 
 
-    // set up the stateset to decorate the subgraph with the shadow texture
+    // set up the stateset to decorate the shadower with the shadow texture
     // with the appropriate tex gen coords.
     osg::StateSet* stateset = new osg::StateSet;
-
-
-    osg::Plane plane_s(MVPT(0,0),MVPT(1,0),MVPT(2,0),MVPT(3,0));
-    osg::Plane plane_t(MVPT(0,1),MVPT(1,1),MVPT(2,1),MVPT(3,1));
-    osg::Plane plane_r(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2));
-    osg::Plane plane_q(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3));
-    
-    
-//     plane_s.makeUnitLength();
-//     plane_t.makeUnitLength();
-//     plane_r.makeUnitLength();
-//     plane_q.makeUnitLength();
-    
-//     plane_s.set(inverseMV*plane_s.asVec4());
-//     plane_t.set(inverseMV*plane_t.asVec4());
-//     plane_r.set(inverseMV*plane_r.asVec4());
-//     plane_q.set(inverseMV*plane_q.asVec4());
-
-//     plane_s.transformProvidingInverse(inverseMV);
-//     plane_t.transformProvidingInverse(inverseMV);
-//     plane_r.transformProvidingInverse(inverseMV);
-//     plane_q.transformProvidingInverse(inverseMV);
 
 
     MyTexGen* texgen = new MyTexGen;
     texgen->setMatrix(MV);
     texgen->setMode(osg::TexGen::EYE_LINEAR);
-    texgen->setPlane(osg::TexGen::S,plane_s);
-    texgen->setPlane(osg::TexGen::T,plane_t);
-    texgen->setPlane(osg::TexGen::R,plane_r);
-    texgen->setPlane(osg::TexGen::Q,plane_q);
-
-    int _unit = 1;
+    texgen->setPlane(osg::TexGen::S,osg::Plane(MVPT(0,0),MVPT(1,0),MVPT(2,0),MVPT(3,0)));
+    texgen->setPlane(osg::TexGen::T,osg::Plane(MVPT(0,1),MVPT(1,1),MVPT(2,1),MVPT(3,1)));
+    texgen->setPlane(osg::TexGen::R,osg::Plane(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2)));
+    texgen->setPlane(osg::TexGen::Q,osg::Plane(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3)));
 
     stateset->setTextureAttributeAndModes(_unit,_texture.get(),osg::StateAttribute::ON);
     stateset->setTextureAttribute(_unit,texgen);
@@ -262,7 +250,7 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 
     cv.pushStateSet(stateset);
 
-        // must traverse the subgraph            
+        // must traverse the shadower            
         traverse(&node,&cv);
 
     cv.popStateSet();    
@@ -415,43 +403,52 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     return model;
 }
 
-osg::Node* createModel()
+
+// shadowed must be at least group right now as leaf nodes such as
+// osg::Geode don't get traversed so their cull callbacks don't get called.
+osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const osg::Vec3& lightPosition,float radius,unsigned int textureUnit=1)
 {
-    osg::Vec3 center(0.0f,0.0f,0.0f);
-    float radius = 100.0f;
-
-    osg::Group* root = osgNew osg::Group;
-
-    // the occluder subgraph
-    osg::Node* occluder = createMovingModel(center,radius*0.5f);
-
-    // the occludee subgraph
-    osg::Node* occludee = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
-    
-    // now add a state with a texture for the shadow
-    osg::Texture2D* texture = new osg::Texture2D;
-    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-
-    osg::Vec3 lightPosition(center+osg::Vec3(0.0f,0.0f,radius));
-
-    osg::Geode* lightgeode = new osg::Geode;
-    lightgeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(lightPosition,radius/100.0f)));
+    osg::LightSource* lightgroup = new osg::LightSource;
 
     osg::Light* light = new osg::Light;
     light->setPosition(osg::Vec4(lightPosition,1.0f));
     light->setLightNum(0);
 
-    osg::LightSource* lightsource = new osg::LightSource;
-    lightsource->setLight(light);
+    lightgroup->setLight(light);
+    
+    osg::Vec4 ambientLightColor(0.1f,0.1f,0.1f,1.0f);
 
-    occludee->setCullCallback(new MyCullCallback(occluder,texture,lightPosition));
+    // add the shadower
+    lightgroup->addChild(shadower);
 
-    root->addChild(lightgeode);
-    root->addChild(lightsource);
-    root->addChild(occluder);
-    root->addChild(occludee);
+    // add the shadowed with the callback to generate the shadow texture.
+    shadowed->setCullCallback(new CreateShadowTextureCullCallback(shadower,lightPosition,ambientLightColor,textureUnit));
+    lightgroup->addChild(shadowed);
+    
+    osg::Geode* lightgeode = new osg::Geode;
+    lightgeode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    lightgeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(lightPosition,radius)));
+    
+    lightgroup->addChild(lightgeode);
+    
+    return lightgroup;
+}
 
+
+osg::Node* createModel()
+{
+    osg::Vec3 center(0.0f,0.0f,0.0f);
+    float radius = 100.0f;
+    osg::Vec3 lightPosition(center+osg::Vec3(0.0f,0.0f,radius));
+
+    // the shadower model
+    osg::Node* shadower = createMovingModel(center,radius*0.5f);
+
+    // the shadowed model
+    osg::Node* shadowed = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
+
+    // combine the models together to create one which has the shadower and the shadowed with the required callback.
+    osg::Group* root = createShadowedScene(shadower,shadowed,lightPosition,radius/100.0f,1);
 
     return root;
 }

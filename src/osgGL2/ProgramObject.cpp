@@ -12,7 +12,7 @@
 */
 
 /* file:	src/osgGL2/ProgramObject.cpp
- * author:	Mike Weiblen 2003-09-18
+ * author:	Mike Weiblen 2003-12-27
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -32,6 +32,38 @@
 #include <list>
 
 using namespace osgGL2;
+
+
+///////////////////////////////////////////////////////////////////////////
+
+namespace {
+
+class InfoLog
+{
+public:
+    InfoLog( Extensions* ext, const GLhandleARB handle )
+    {
+	int blen = 0;	// length of buffer to allocate
+	int slen = 0;	// strlen GL actually wrote to buffer
+
+	ext->glGetObjectParameteriv(handle, GL_OBJECT_INFO_LOG_LENGTH_ARB , &blen);
+	if (blen > 1)
+	{
+	    GLcharARB* infoLog = new GLcharARB[blen];
+	    ext->glGetInfoLog( handle, blen, &slen, infoLog );
+	    _text = infoLog;
+	    delete [] infoLog;
+	}
+    }
+
+    const std::string& operator()() { return _text; }
+
+private:
+    InfoLog();
+    std::string _text;
+};
+
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -305,8 +337,8 @@ void ProgramObject::PerContextProgObj::build()
     _dirty = (linked == 0);
     if( _dirty )
     {
-	osg::notify(osg::WARN) << "glLinkProgram FAILED:" << std::endl;
-	printInfoLog(osg::WARN);
+	InfoLog log( _extensions.get(), _glProgObjHandle );
+	osg::notify(osg::WARN) << "glLinkProgram FAILED:\n" << log() << std::endl;
     }
 }
 
@@ -330,22 +362,6 @@ void ProgramObject::PerContextProgObj::applyUniformValues()
 	_univalList[i]->apply( ext, _glProgObjHandle );
     }
     _univalList.clear();
-}
-
-
-void ProgramObject::PerContextProgObj::printInfoLog(osg::NotifySeverity severity) const
-{
-    int blen = 0;	// length of buffer to allocate
-    int slen = 0;	// strlen GL actually wrote to buffer
-
-    _extensions->glGetObjectParameteriv(_glProgObjHandle, GL_OBJECT_INFO_LOG_LENGTH_ARB , &blen);
-    if (blen > 1)
-    {
-	GLcharARB* infoLog = new GLcharARB[blen];
-	_extensions->glGetInfoLog(_glProgObjHandle, blen, &slen, infoLog);
-	osg::notify(severity) << infoLog << std::endl;
-	delete infoLog;
-    }
 }
 
 
@@ -426,7 +442,7 @@ bool ShaderObject::loadShaderSourceFromFile( const char* fileName )
     text[length] = '\0';
 
     setShaderSource( text );
-    delete text;
+    delete [] text;
     return true;
 }
 
@@ -437,7 +453,7 @@ const char* ShaderObject::getTypename() const
     {
 	case VERTEX:	return "Vertex";
 	case FRAGMENT:	return "Fragment";
-        default:        return "UNKNOWN";
+	default:	return "UNKNOWN";
     }
 }
 
@@ -515,8 +531,9 @@ void ShaderObject::PerContextShaderObj::build()
     _dirty = (compiled == 0);
     if( _dirty )
     {
-	osg::notify(osg::WARN) << _shadObj->getTypename() << " glCompileShader FAILED:" << std::endl;
-	printInfoLog(osg::WARN);
+	InfoLog log( _extensions.get(), _glShaderObjHandle );
+	osg::notify(osg::WARN) << _shadObj->getTypename() <<
+		" glCompileShader FAILED:\n" << log() << std::endl;
     }
 }
 
@@ -525,20 +542,4 @@ void ShaderObject::PerContextShaderObj::attach(GLhandleARB progObj) const
     _extensions->glAttachObject( progObj, _glShaderObjHandle );
 }
 
-void ShaderObject::PerContextShaderObj::printInfoLog(osg::NotifySeverity severity) const
-{
-    int blen = 0;	// length of buffer to allocate
-    int slen = 0;	// strlen GL actually wrote to buffer
-
-    _extensions->glGetObjectParameteriv(_glShaderObjHandle, GL_OBJECT_INFO_LOG_LENGTH_ARB , &blen);
-    if (blen > 1)
-    {
-	GLcharARB* infoLog = new GLcharARB[blen];
-	_extensions->glGetInfoLog(_glShaderObjHandle, blen, &slen, infoLog);
-	osg::notify(severity) << infoLog << std::endl;
-	delete infoLog;
-    }
-}
-
 /*EOF*/
-

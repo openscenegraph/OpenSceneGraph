@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osgGL2/UniformValue
- * author:	Mike Weiblen 2003-09-12
+ * author:	Mike Weiblen 2003-12-27
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -38,13 +38,6 @@ int UniformValue::getLocation( Extensions *ext, const GLhandleARB progObj ) cons
 
 ///////////////////////////////////////////////////////////////////////////
 
-#define META_UniformValueCtor( typeName ) \
-UniformValue_##typeName::UniformValue_##typeName( const char* uniformName, typeName value ) : \
-	UniformValue( uniformName ) \
-{ _value = value; } \
-
-
-META_UniformValueCtor( int );
 void UniformValue_int::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -54,7 +47,6 @@ void UniformValue_int::apply( Extensions *ext, const GLhandleARB progObj ) const
     }
 } 
 
-META_UniformValueCtor( float );
 void UniformValue_float::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -64,7 +56,6 @@ void UniformValue_float::apply( Extensions *ext, const GLhandleARB progObj ) con
     }
 }
 
-META_UniformValueCtor( Vec2 );
 void UniformValue_Vec2::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -74,7 +65,6 @@ void UniformValue_Vec2::apply( Extensions *ext, const GLhandleARB progObj ) cons
     }
 }
 
-META_UniformValueCtor( Vec3 );
 void UniformValue_Vec3::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -84,7 +74,6 @@ void UniformValue_Vec3::apply( Extensions *ext, const GLhandleARB progObj ) cons
     }
 }
 
-META_UniformValueCtor( Vec4 );
 void UniformValue_Vec4::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -95,4 +84,3 @@ void UniformValue_Vec4::apply( Extensions *ext, const GLhandleARB progObj ) cons
 }
 
 /*EOF*/
-

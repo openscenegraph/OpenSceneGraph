@@ -11,7 +11,7 @@
 */
 
 /* file:	examples/osgshaders/GL2Scene.cpp
- * author:	Mike Weiblen 2003-10-03
+ * author:	Mike Weiblen 2003-12-28
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -138,19 +138,21 @@ make1DSineTexture( int texSize )
 
 ///////////////////////////////////////////////////////////////////////////
 
-// static osg::Node* createGlobe()
-// {
-//     osg::Geode* geode = new osg::Geode();
-//     osg::StateSet* stateset = geode->getOrCreateStateSet();
-// 
-//     osg::Texture2D* texture = new osg::Texture2D;
-//     texture->setImage( osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") );
-//     stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-//     
-//     geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0,0,0), 2.0f)));
-//     
-//     return geode;
-// }
+#if 0 //[
+static osg::Node* createGlobe()
+{
+    osg::Geode* geode = new osg::Geode();
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setImage( osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") );
+    stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0,0,0), 2.0f)));
+
+    return geode;
+}
+#endif //]
 
 ///////////////////////////////////////////////////////////////////////////
 // OpenGL Shading Language source code for the "microshader" example,
@@ -169,7 +171,7 @@ static const char *microshaderFragSource = {
     "varying vec4 color;"
     "void main(void)"
     "{"
-	"gl_FragColor = color;"
+	"gl_FragColor = clamp( color, 0.0, 1.0 );"
     "}"
 };
 
@@ -347,18 +349,20 @@ GL2Scene::buildScene()
 	ss->setAttributeAndModes(MarbleProgObj, osg::StateAttribute::ON);
     }
 
+#ifdef INTERNAL_3DLABS //[
     // regular GL 1.x texturing for comparison.
-    if( 0 ) {
-	osg::StateSet* ss = ModelInstance();
-	osg::Texture2D* tex0 = new osg::Texture2D;
-	tex0->setImage( osgDB::readImageFile( "images/3dl-ge100.png" ) );
-	ss->setTextureAttributeAndModes(0, tex0, osg::StateAttribute::ON);
-    }
+    osg::StateSet* ss = ModelInstance();
+    osg::Texture2D* tex0 = new osg::Texture2D;
+    tex0->setImage( osgDB::readImageFile( "images/3dl-ge100.png" ) );
+    ss->setTextureAttributeAndModes(0, tex0, osg::StateAttribute::ON);
+#endif //]
 
     reloadShaderSource();
 
+#ifdef INTERNAL_3DLABS //[
     // add logo overlays
-    // rootNode->addChild( osgDB::readNodeFile( "3dl_ogl.logo" ) );
+    rootNode->addChild( osgDB::readNodeFile( "3dl_ogl.logo" ) );
+#endif //]
 
     return rootNode;
 }

@@ -50,6 +50,9 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
 
         // apply the light source.
         litr->first->apply(state);
+        
+        // tell state about.
+        state.haveAppliedAttribute(litr->first);
             
     }
 

@@ -51,8 +51,6 @@
 
 #include <osgTerrain/DataSet>
 
-#include <ogr_spatialref.h>
-
 class GraphicsContext {
     public:
         GraphicsContext()
@@ -72,30 +70,6 @@ class GraphicsContext {
     private:
         Producer::ref_ptr<Producer::RenderSurface> rs;
 };
-
-char *SanitizeSRS( const char *pszUserInput )
-
-{
-    OGRSpatialReferenceH hSRS;
-    char *pszResult = NULL;
-
-    CPLErrorReset();
-    
-    hSRS = OSRNewSpatialReference( NULL );
-    if( OSRSetFromUserInput( hSRS, pszUserInput ) == OGRERR_NONE )
-        OSRExportToWkt( hSRS, &pszResult );
-    else
-    {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Translating source or target SRS failed:\n%s",
-                  pszUserInput );
-        exit( 1 );
-    }
-    
-    OSRDestroySpatialReference( hSRS );
-
-    return pszResult;
-}
 
 osg::Matrixd computeGeoTransForRange(double xMin, double xMax, double yMin, double yMax)
 {
@@ -352,7 +326,7 @@ int main( int argc, char **argv )
 
         if (arguments.read(pos, "--cs",def))
         {
-            currentCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
+            currentCS = !def.empty() ? osgTerrain::DataSet::coordinateSystemStringToWTK(def) : "";
             std::cout<<"--cs "<<currentCS<<std::endl;
         }
         else if (arguments.read(pos, "--wkt",def))
@@ -383,7 +357,7 @@ int main( int argc, char **argv )
 
         else if (arguments.read(pos, "--bluemarble-east"))
         {
-            currentCS = SanitizeSRS("WGS84");
+            currentCS = osgTerrain::DataSet::coordinateSystemStringToWTK("WGS84");
             geoTransformSet = true;
             geoTransformScale = true;
             geoTransform = computeGeoTransForRange(0.0, 180.0, -90.0, 90.0);
@@ -394,7 +368,7 @@ int main( int argc, char **argv )
 
         else if (arguments.read(pos, "--bluemarble-west"))
         {
-            currentCS = SanitizeSRS("WGS84");
+            currentCS = osgTerrain::DataSet::coordinateSystemStringToWTK("WGS84");
             geoTransformSet = true;
             geoTransformScale = true;
             geoTransform = computeGeoTransForRange(-180.0, 0.0, -90.0, 90.0);
@@ -405,7 +379,7 @@ int main( int argc, char **argv )
 
         else if (arguments.read(pos, "--whole-globe"))
         {
-            currentCS = SanitizeSRS("WGS84");
+            currentCS = osgTerrain::DataSet::coordinateSystemStringToWTK("WGS84");
             geoTransformSet = true;
             geoTransformScale = true;
             geoTransform = computeGeoTransForRange(-180.0, 180.0, -90.0, 90.0);

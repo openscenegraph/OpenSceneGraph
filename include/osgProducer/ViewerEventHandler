@@ -65,6 +65,14 @@ class ViewerEventHandler : public osgGA::GUIEventHandler
         FrameStatsMode  _frameStatsMode;
         
         bool            _firstTimeTogglingFullScreen;
+        
+        class StatsAndHelpDrawCallback;
+        StatsAndHelpDrawCallback* _statsAndHelpDrawCallback;
+
+        class SnapImageDrawCallback;
+        typedef std::vector<SnapImageDrawCallback*> SnapImageDrawCallbackList;
+        SnapImageDrawCallbackList _snapImageDrawCallbackList;
+
 };
 
 }

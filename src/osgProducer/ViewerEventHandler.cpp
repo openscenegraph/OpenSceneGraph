@@ -7,11 +7,52 @@
 
 using namespace osgProducer;
 
-class DrawCallback : public Producer::CameraGroup::StatsHandler, public Producer::Camera::Callback
+
+class ViewerEventHandler::SnapImageDrawCallback : public Producer::Camera::Callback
 {
 public:
 
-    DrawCallback(ViewerEventHandler* veh, unsigned int cameraNumber):
+    SnapImageDrawCallback(const std::string& filename):
+        _filename(filename),
+        _snapImageOnNextFrame(false)
+    {
+    }
+
+    void setSnapImageOnNextFrame(bool flag) { _snapImageOnNextFrame = flag; }
+    bool getSnapImageOnNextFrame() const { return _snapImageOnNextFrame; }
+    
+    virtual void operator()( const Producer::Camera & camera)
+    {
+        if (!_snapImageOnNextFrame) return;
+        
+        int x,y;
+        unsigned int width,height;
+        camera.getProjectionRect(x,y,width,height);
+
+        osg::ref_ptr<osg::Image> image = new osg::Image;
+        image->readPixels(x,y,width,height,
+                          GL_RGB,GL_UNSIGNED_BYTE);
+
+        osgDB::writeImageFile(*image,_filename);
+
+        osg::notify(osg::NOTICE) << "Saved screen image to `"<<_filename<<"`"<< std::endl;
+        
+        _snapImageOnNextFrame = false;
+    }
+
+protected:
+    
+    std::string _filename;
+    bool        _snapImageOnNextFrame;
+
+    
+};
+
+class ViewerEventHandler::StatsAndHelpDrawCallback : public Producer::CameraGroup::StatsHandler, public Producer::Camera::Callback
+{
+public:
+
+    StatsAndHelpDrawCallback(ViewerEventHandler* veh, unsigned int cameraNumber):
         _veh(veh),
         _cameraNumber(cameraNumber),
         _helpInitialized(false),
@@ -85,7 +126,7 @@ protected:
 };
 
 
-void DrawCallback::operator()( const Producer::Camera & camera)
+void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::Camera & camera)
 {
     if (_veh->getDisplayHelp()==false && 
         _veh->getFrameStatsMode()==ViewerEventHandler::NO_STATS) return;
@@ -110,7 +151,7 @@ void DrawCallback::operator()( const Producer::Camera & camera)
 
 }
 
-void DrawCallback::displayHelp()
+void ViewerEventHandler::StatsAndHelpDrawCallback::displayHelp()
 {
     if (!_helpInitialized) createHelpText();
 
@@ -164,7 +205,7 @@ void DrawCallback::displayHelp()
     glPopAttrib();
 }
 
-void DrawCallback::createHelpText()
+void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
 {
 
     OsgCameraGroup* ocg = _veh->getOsgCameraGroup();
@@ -313,7 +354,7 @@ void DrawCallback::createHelpText()
     _helpInitialized = true;
 }
 
-void DrawCallback::displayStats()
+void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
 {
     if (!_statsInitialized) createStatsText();
 
@@ -530,7 +571,7 @@ void DrawCallback::displayStats()
     }
 }
 
-void DrawCallback::createStatsText()
+void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 {
     _statsInitialized = true;
 
@@ -679,7 +720,30 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
 {
     Producer::CameraConfig* cfg = _cg->getCameraConfig();
     Producer::Camera *cam = cfg->getCamera(0);
-    cam->addPostDrawCallback(new DrawCallback(this,0));
+    
+    _statsAndHelpDrawCallback = new StatsAndHelpDrawCallback(this,0);
+    cam->addPostDrawCallback(_statsAndHelpDrawCallback);
+
+    if (cfg->getNumberOfCameras()==1)
+    {
+        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback("saved_image.rgb");
+        cam->addPostDrawCallback(snapImageDrawCallback);
+        _snapImageDrawCallbackList.push_back(snapImageDrawCallback);
+    }
+    else
+    {
+        std::string basename("saved_image_");
+        std::string ext(".rgb");
+        for(unsigned int i=0;i<cfg->getNumberOfCameras();++i)
+        {
+            std::string filename(basename);
+            filename += ('0'+i);
+            filename += ext;
+            SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback(filename);
+            cfg->getCamera(i)->addPostDrawCallback(snapImageDrawCallback);
+            _snapImageDrawCallbackList.push_back(snapImageDrawCallback);
+        }
+    }
 }
 
 bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
@@ -742,6 +806,19 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                     osgDB::writeNodeFile(*node,_writeNodeFileName.c_str());
                 }
 
+                return true;
+            }
+
+            case osgGA::GUIEventAdapter::KEY_Print :
+            case 'O' :
+            {
+                for(SnapImageDrawCallbackList::iterator itr=_snapImageDrawCallbackList.begin();
+                    itr!=_snapImageDrawCallbackList.end();
+                    ++itr)
+                {
+                    (*itr)->setSnapImageOnNextFrame(true);
+                }
+                
                 return true;
             }
 
@@ -839,7 +916,10 @@ void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("f","Toggle fullscreen");
     usage.addKeyboardMouseBinding("h","Display help");
-    usage.addKeyboardMouseBinding("o","Write scene graph to file");
+    usage.addKeyboardMouseBinding("o","Write scene graph to \"saved_model.osg\"");
+    usage.addKeyboardMouseBinding("O PrtSrn","Write camera images to \"saved_image*.rgb\"");
     usage.addKeyboardMouseBinding("s","Toggle intrumention");
     usage.addKeyboardMouseBinding("v","Toggle block and vsync");
+    usage.addKeyboardMouseBinding("z","Start recording camera path.");
+    usage.addKeyboardMouseBinding("Z","If recording camera path stop recording camera path, save to \"saved_animation.path\"\nThen start viewing from being on animation path");
 }

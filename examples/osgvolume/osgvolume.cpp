@@ -457,7 +457,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices)
     return billboard;
 }
 
-osg::Node* createModel(osg::Image* image_3d, bool createNormalMap)
+osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap)
 {
     unsigned int diffuse_unit = createNormalMap ? 1 : 0;
     unsigned int bumpmap_unit = 0;
@@ -546,7 +546,7 @@ osg::Node* createModel(osg::Image* image_3d, bool createNormalMap)
         texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
         texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
         texture3D->setInternalFormat(GL_INTENSITY);
-        texture3D->setImage(image_3d);
+        texture3D->setImage(image_3d.get());
 
         stateset->setTextureAttributeAndModes(diffuse_unit,texture3D,osg::StateAttribute::ON);
 
@@ -558,15 +558,15 @@ osg::Node* createModel(osg::Image* image_3d, bool createNormalMap)
     }
     else
     {
-        osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMapTexture(image_3d);
+        osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMapTexture(image_3d.get());
         osg::Texture3D* bump_texture3D = new osg::Texture3D;
         bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
         bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
         bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
         bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
         bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
-        bump_texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
-        bump_texture3D->setInternalFormat(GL_INTENSITY);
+        //bump_texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
+        //bump_texture3D->setInternalFormat(GL_INTENSITY);
         bump_texture3D->setImage(bumpmap_3d.get());
 
         stateset->setTextureAttributeAndModes(bumpmap_unit,bump_texture3D,osg::StateAttribute::ON);
@@ -591,6 +591,8 @@ osg::Node* createModel(osg::Image* image_3d, bool createNormalMap)
         stateset->setTextureMode(bumpmap_unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
         stateset->setTextureMode(bumpmap_unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
         stateset->setTextureMode(bumpmap_unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+
+        image_3d = bumpmap_3d;
     }
  
     return group;
@@ -677,7 +679,7 @@ int main( int argc, char **argv )
     if (!image_3d) return 0;
     
     // create a model from the images.
-    osg::Node* rootNode = createModel(image_3d.get(), createNormalMap);
+    osg::Node* rootNode = createModel(image_3d, createNormalMap);
 
     if (!outputFile.empty())
     {   
@@ -701,6 +703,8 @@ int main( int argc, char **argv )
         {
             std::cout<<"Extension not support for file output, not file written."<<std::endl;
         }
+        
+        return 0;
     }
 
 
@@ -710,15 +714,8 @@ int main( int argc, char **argv )
         // set the scene to render
         viewer.setSceneData(rootNode);
         
-        // the construct state uses gl commands to resize images so we are forced
-        // to only call it once a valid graphics context has been established,
-        // for that we use a realize callback.
-//        viewer.setRealizeCallback(new ConstructStateCallback(rootNode, imageList));
-
         // create the windows and run the threads.
         viewer.realize();
-
-        // osgDB::writeNodeFile(*rootNode,"test.ive");
 
         while( !viewer.done() )
         {

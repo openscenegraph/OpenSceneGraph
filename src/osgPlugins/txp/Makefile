@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 SHELL   = /bin/sh
 
 include $(OSGHOME)/Make/makedefs

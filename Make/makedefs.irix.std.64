@@ -48,7 +48,7 @@ TARGET_DIRS    = \
 
 
 TARGET_BIN     = /usr/bin
-TARGET_LIB     = /usr/lib32
+TARGET_LIB     = /usr/lib64
 TARGET_INCLUDE = /usr/include
 TARGET_DATA    = /usr/share/OpenSceneGraph/data
 TARGET_LOADER_LIB = /usr/lib/osgPlugins

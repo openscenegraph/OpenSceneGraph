@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 include $(OSGHOME)/Make/makedefs
 
 C++FILES = \

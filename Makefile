@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 SHELL=/bin/sh
 MAKE_PREP = Make/makedefs Make/makerules
 

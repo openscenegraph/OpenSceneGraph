@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 SHELL=/bin/sh
 
 DIRS = sgv osgconv osgcube osgscribe osgreflect osgtexture osgimpostor osgviews osgcopy osgbillboard hangglide 

@@ -1109,7 +1109,7 @@ void Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes()
         }
         else
         {
-            std::cout<<"failed dynamic_cast"<<std::endl;
+            osg::notify(osg::WARN)<<"Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
         }                                
     }
     _redundantNodeList.clear();
@@ -1774,7 +1774,6 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
                     std::copy(primitiveUByte->begin(),primitiveUByte->end(),std::back_inserter(*new_primitive));
                     new_primitive->offsetIndices(base);
                     (*primItr) = new_primitive;
-                    std::cout<<"Remapping to a UInt "<<(*primItr)->className()<<std::endl;
                 } else if ((base+currentMaximum)>=256)
                 {
                     // must promote to a DrawElementsUShort
@@ -1782,11 +1781,9 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
                     std::copy(primitiveUByte->begin(),primitiveUByte->end(),std::back_inserter(*new_primitive));
                     new_primitive->offsetIndices(base);
                     (*primItr) = new_primitive;
-                    std::cout<<"Remapped to a UShort"<<(*primItr)->className()<<std::endl;
                 }
                 else
                 {
-                    std::cout<<"Not Remapping to a UShort"<<std::endl;
                     primitive->offsetIndices(base);
                 }
             }
@@ -1925,7 +1922,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
     bool yAxis = (bb.yMax()-bb.yMin())>divide_distance;
     bool zAxis = (bb.zMax()-bb.zMin())>divide_distance;
 
-    std::cout<<"Dividing "<<group->className()<<"  num children = "<<group->getNumChildren()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
+    osg::notify(osg::INFO)<<"Dividing "<<group->className()<<"  num children = "<<group->getNumChildren()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
     
     unsigned int numChildrenOnEntry = group->getNumChildren();
     
@@ -2085,12 +2082,12 @@ void Optimizer::CopySharedSubgraphsVisitor::apply(osg::Node& node)
 
 void Optimizer::CopySharedSubgraphsVisitor::copySharedNodes()
 {
-    std::cout<<"Shared node "<<_sharedNodeList.size()<<std::endl;
+    osg::notify(osg::INFO)<<"Shared node "<<_sharedNodeList.size()<<std::endl;
     for(SharedNodeList::iterator itr=_sharedNodeList.begin();
         itr!=_sharedNodeList.end();
         ++itr)
     {
-        std::cout<<"   No parents "<<(*itr)->getNumParents()<<std::endl;
+        osg::notify(osg::INFO)<<"   No parents "<<(*itr)->getNumParents()<<std::endl;
         osg::Node* node = *itr;
         for(unsigned int i=node->getNumParents()-1;i>0;--i)
         {

@@ -508,7 +508,13 @@ _glmFirstPass(GLMmodel* model, FILE* file)
   /* make a default group */
   group = _glmAddGroup(model, "default");
 
+  float x,y,z;
+  int r,g,b;
+
   numvertices = numnormals = numtexcoords = numtriangles = 0;
+  
+  unsigned int numcolors = 0;
+  
   while(fscanf(file, "%s", buf) != EOF) {
     switch(buf[0]) {
     case '#':                /* comment */
@@ -518,25 +524,33 @@ _glmFirstPass(GLMmodel* model, FILE* file)
     case 'v':                /* v, vn, vt */
       switch(buf[1]) {
       case '\0':            /* vertex */
-    /* eat up rest of line */
-    fgets(buf, sizeof(buf), file);
-    numvertices++;
-    break;
+        {
+            /* eat up rest of line */
+            fgets(buf, sizeof(buf), file);
+
+            int noRead = sscanf(buf, "%f %f %f %d %d %d", 
+                                &x, &y, &z, &r,&g,&b);
+
+            numvertices++;
+            if (noRead==6) numcolors++;
+
+
+            break;
+        }
       case 'n':                /* normal */
-    /* eat up rest of line */
-    fgets(buf, sizeof(buf), file);
-    numnormals++;
-    break;
+        /* eat up rest of line */
+        fgets(buf, sizeof(buf), file);
+        numnormals++;
+        break;
       case 't':                /* texcoord */
-    /* eat up rest of line */
-    fgets(buf, sizeof(buf), file);
-    numtexcoords++;
-    break;
+        /* eat up rest of line */
+        fgets(buf, sizeof(buf), file);
+        numtexcoords++;
+        break;
       default:
-    printf("_glmFirstPass(): Unknown token \"%s\".\n", buf);
-    //exit(1);
-    return;
-    break;
+        printf("_glmFirstPass(): Unknown token \"%s\".\n", buf);
+        //exit(1);
+        return;
       }
       break;
     case 'm':
@@ -637,6 +651,11 @@ _glmFirstPass(GLMmodel* model, FILE* file)
     group->numtriangles = 0;
     group = group->next;
   }
+
+
+  // if all vertices have colours enables per vertex colors
+  if (numvertices==numcolors) model->useColors = true;
+
 }
 
 /* _glmSecondPass: second pass at a Wavefront OBJ file that gets all
@@ -675,6 +694,7 @@ _glmSecondPass(GLMmodel* model, FILE* file)
   bool firstGroup = true;
   bool previousLineWas_g = false;
 
+  int r,g,b;
   while(fscanf(file, "%s", buf) != EOF) {
     char c = buf[0];
     switch(c) {
@@ -685,25 +705,40 @@ _glmSecondPass(GLMmodel* model, FILE* file)
     case 'v':                /* v, vn, vt */
       switch(buf[1]) {
       case '\0':            /* vertex */
-    fscanf(file, "%f %f %f", 
-           &vertices[3 * numvertices + X], 
-           &vertices[3 * numvertices + Y], 
-           &vertices[3 * numvertices + Z]);
-    numvertices++;
-    break;
+        {
+            if (model->useColors)
+            {
+                fscanf(file, "%f %f %f %d %d %d", 
+                             &vertices[3 * numvertices + X], 
+                             &vertices[3 * numvertices + Y], 
+                             &vertices[3 * numvertices + Z],
+                             &r,&g,&b);
+                model->colors[numvertices].set(r,g,b,255);
+
+                numvertices++;               
+            } else
+            {
+                fscanf(file, "%f %f %f", 
+                             &vertices[3 * numvertices + X], 
+                             &vertices[3 * numvertices + Y], 
+                             &vertices[3 * numvertices + Z]);
+                numvertices++;               
+            }
+        }
+        break;
       case 'n':                /* normal */
-    fscanf(file, "%f %f %f", 
-           &normals[3 * numnormals + X],
-           &normals[3 * numnormals + Y], 
-           &normals[3 * numnormals + Z]);
-    numnormals++;
-    break;
+        fscanf(file, "%f %f %f", 
+               &normals[3 * numnormals + X],
+               &normals[3 * numnormals + Y], 
+               &normals[3 * numnormals + Z]);
+        numnormals++;
+        break;
       case 't':                /* texcoord */
-    fscanf(file, "%f %f", 
-           &texcoords[2 * numtexcoords + X],
-           &texcoords[2 * numtexcoords + Y]);
-    numtexcoords++;
-    break;
+        fscanf(file, "%f %f", 
+               &texcoords[2 * numtexcoords + X],
+               &texcoords[2 * numtexcoords + Y]);
+        numtexcoords++;
+        break;
       }
       break;
     case 'u':
@@ -733,97 +768,97 @@ _glmSecondPass(GLMmodel* model, FILE* file)
       fscanf(file, "%s", buf);
       /* can be one of %d, %d//%d, %d/%d, %d/%d/%d %d//%d */
       if (strstr(buf, "//")) {
-    /* v//n */
-    sscanf(buf, "%d//%d", &v, &n);
-    T(numtriangles).vindices[0] = v;
-    T(numtriangles).nindices[0] = n;
-    fscanf(file, "%d//%d", &v, &n);
-    T(numtriangles).vindices[1] = v;
-    T(numtriangles).nindices[1] = n;
-    fscanf(file, "%d//%d", &v, &n);
-    T(numtriangles).vindices[2] = v;
-    T(numtriangles).nindices[2] = n;
-    group->triangles[group->numtriangles++] = numtriangles;
-    numtriangles++;
-    while(fscanf(file, "%d//%d", &v, &n) > 0) {
-      T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
-      T(numtriangles).nindices[0] = T(numtriangles-1).nindices[0];
-      T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
-      T(numtriangles).nindices[1] = T(numtriangles-1).nindices[2];
-      T(numtriangles).vindices[2] = v;
-      T(numtriangles).nindices[2] = n;
-      group->triangles[group->numtriangles++] = numtriangles;
-      numtriangles++;
-    }
+        /* v//n */
+        sscanf(buf, "%d//%d", &v, &n);
+        T(numtriangles).vindices[0] = v;
+        T(numtriangles).nindices[0] = n;
+        fscanf(file, "%d//%d", &v, &n);
+        T(numtriangles).vindices[1] = v;
+        T(numtriangles).nindices[1] = n;
+        fscanf(file, "%d//%d", &v, &n);
+        T(numtriangles).vindices[2] = v;
+        T(numtriangles).nindices[2] = n;
+        group->triangles[group->numtriangles++] = numtriangles;
+        numtriangles++;
+        while(fscanf(file, "%d//%d", &v, &n) > 0) {
+          T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
+          T(numtriangles).nindices[0] = T(numtriangles-1).nindices[0];
+          T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
+          T(numtriangles).nindices[1] = T(numtriangles-1).nindices[2];
+          T(numtriangles).vindices[2] = v;
+          T(numtriangles).nindices[2] = n;
+          group->triangles[group->numtriangles++] = numtriangles;
+          numtriangles++;
+        }
       } else if (sscanf(buf, "%d/%d/%d", &v, &t, &n) == 3) {
-    /* v/t/n */
-    T(numtriangles).vindices[0] = v;
-    T(numtriangles).tindices[0] = t;
-    T(numtriangles).nindices[0] = n;
-    fscanf(file, "%d/%d/%d", &v, &t, &n);
-    T(numtriangles).vindices[1] = v;
-    T(numtriangles).tindices[1] = t;
-    T(numtriangles).nindices[1] = n;
-    fscanf(file, "%d/%d/%d", &v, &t, &n);
-    T(numtriangles).vindices[2] = v;
-    T(numtriangles).tindices[2] = t;
-    T(numtriangles).nindices[2] = n;
-    group->triangles[group->numtriangles++] = numtriangles;
-    group->hastexcoords = true;
-    numtriangles++;
-    while(fscanf(file, "%d/%d/%d", &v, &t, &n) > 0) {
-      T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
-      T(numtriangles).tindices[0] = T(numtriangles-1).tindices[0];
-      T(numtriangles).nindices[0] = T(numtriangles-1).nindices[0];
-      T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
-      T(numtriangles).tindices[1] = T(numtriangles-1).tindices[2];
-      T(numtriangles).nindices[1] = T(numtriangles-1).nindices[2];
-      T(numtriangles).vindices[2] = v;
-      T(numtriangles).tindices[2] = t;
-      T(numtriangles).nindices[2] = n;
-      group->triangles[group->numtriangles++] = numtriangles;
-      numtriangles++;
-    }
+        /* v/t/n */
+        T(numtriangles).vindices[0] = v;
+        T(numtriangles).tindices[0] = t;
+        T(numtriangles).nindices[0] = n;
+        fscanf(file, "%d/%d/%d", &v, &t, &n);
+        T(numtriangles).vindices[1] = v;
+        T(numtriangles).tindices[1] = t;
+        T(numtriangles).nindices[1] = n;
+        fscanf(file, "%d/%d/%d", &v, &t, &n);
+        T(numtriangles).vindices[2] = v;
+        T(numtriangles).tindices[2] = t;
+        T(numtriangles).nindices[2] = n;
+        group->triangles[group->numtriangles++] = numtriangles;
+        group->hastexcoords = true;
+        numtriangles++;
+        while(fscanf(file, "%d/%d/%d", &v, &t, &n) > 0) {
+          T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
+          T(numtriangles).tindices[0] = T(numtriangles-1).tindices[0];
+          T(numtriangles).nindices[0] = T(numtriangles-1).nindices[0];
+          T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
+          T(numtriangles).tindices[1] = T(numtriangles-1).tindices[2];
+          T(numtriangles).nindices[1] = T(numtriangles-1).nindices[2];
+          T(numtriangles).vindices[2] = v;
+          T(numtriangles).tindices[2] = t;
+          T(numtriangles).nindices[2] = n;
+          group->triangles[group->numtriangles++] = numtriangles;
+          numtriangles++;
+        }
       } else if (sscanf(buf, "%d/%d", &v, &t) == 2) {
-    /* v/t */
-    T(numtriangles).vindices[0] = v;
-    T(numtriangles).tindices[0] = t;
-    fscanf(file, "%d/%d", &v, &t);
-    T(numtriangles).vindices[1] = v;
-    T(numtriangles).tindices[1] = t;
-    fscanf(file, "%d/%d", &v, &t);
-    T(numtriangles).vindices[2] = v;
-    T(numtriangles).tindices[2] = t;
-    group->triangles[group->numtriangles++] = numtriangles;
-    group->hastexcoords = true;
-    numtriangles++;
-    while(fscanf(file, "%d/%d", &v, &t) > 0) {
-      T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
-      T(numtriangles).tindices[0] = T(numtriangles-1).tindices[0];
-      T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
-      T(numtriangles).tindices[1] = T(numtriangles-1).tindices[2];
-      T(numtriangles).vindices[2] = v;
-      T(numtriangles).tindices[2] = t;
-      group->triangles[group->numtriangles++] = numtriangles;
-      numtriangles++;
-    }
+        /* v/t */
+        T(numtriangles).vindices[0] = v;
+        T(numtriangles).tindices[0] = t;
+        fscanf(file, "%d/%d", &v, &t);
+        T(numtriangles).vindices[1] = v;
+        T(numtriangles).tindices[1] = t;
+        fscanf(file, "%d/%d", &v, &t);
+        T(numtriangles).vindices[2] = v;
+        T(numtriangles).tindices[2] = t;
+        group->triangles[group->numtriangles++] = numtriangles;
+        group->hastexcoords = true;
+        numtriangles++;
+        while(fscanf(file, "%d/%d", &v, &t) > 0) {
+          T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
+          T(numtriangles).tindices[0] = T(numtriangles-1).tindices[0];
+          T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
+          T(numtriangles).tindices[1] = T(numtriangles-1).tindices[2];
+          T(numtriangles).vindices[2] = v;
+          T(numtriangles).tindices[2] = t;
+          group->triangles[group->numtriangles++] = numtriangles;
+          numtriangles++;
+        }
       } else {
-    /* v */
-    sscanf(buf, "%d", &v);
-    T(numtriangles).vindices[0] = v;
-    fscanf(file, "%d", &v);
-    T(numtriangles).vindices[1] = v;
-    fscanf(file, "%d", &v);
-    T(numtriangles).vindices[2] = v;
-    group->triangles[group->numtriangles++] = numtriangles;
-    numtriangles++;
-    while(fscanf(file, "%d", &v) > 0) {
-      T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
-      T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
-      T(numtriangles).vindices[2] = v;
-      group->triangles[group->numtriangles++] = numtriangles;
-      numtriangles++;
-    }
+        /* v */
+        sscanf(buf, "%d", &v);
+        T(numtriangles).vindices[0] = v;
+        fscanf(file, "%d", &v);
+        T(numtriangles).vindices[1] = v;
+        fscanf(file, "%d", &v);
+        T(numtriangles).vindices[2] = v;
+        group->triangles[group->numtriangles++] = numtriangles;
+        numtriangles++;
+        while(fscanf(file, "%d", &v) > 0) {
+          T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
+          T(numtriangles).vindices[1] = T(numtriangles-1).vindices[2];
+          T(numtriangles).vindices[2] = v;
+          group->triangles[group->numtriangles++] = numtriangles;
+          numtriangles++;
+        }
       }
       break;
 
@@ -1380,6 +1415,7 @@ glmDelete(GLMmodel* model)
   if (model->pathname)   free(model->pathname);
   if (model->mtllibname) free(model->mtllibname);
   if (model->vertices)   free(model->vertices);
+  if (model->colors)     free(model->colors);
   if (model->normals)    free(model->normals);
   if (model->texcoords)  free(model->texcoords);
   if (model->facetnorms) free(model->facetnorms);
@@ -1435,6 +1471,8 @@ glmReadOBJ(char* filename)
   model->mtllibname    = NULL;
   model->numvertices   = 0;
   model->vertices      = NULL;
+  model->useColors     = false;
+  model->colors        = NULL;
   model->numnormals    = 0;
   model->normals       = NULL;
   model->numtexcoords  = 0;
@@ -1458,6 +1496,10 @@ glmReadOBJ(char* filename)
   /* allocate memory */
   model->vertices = (GLfloat*)malloc(sizeof(GLfloat) *
                      3 * (model->numvertices + 1));
+
+  if (model->useColors)                     
+      model->colors = (osg::UByte4*)malloc(sizeof(osg::UByte4)*(model->numvertices + 1));
+  
   model->triangles = (GLMtriangle*)malloc(sizeof(GLMtriangle) *
                       model->numtriangles);
   if (model->numnormals) {

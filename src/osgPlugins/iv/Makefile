@@ -9,6 +9,8 @@ CXXFILES =\
 	scanner.cpp\
 	parser.cpp\
 
+INC += -I$(THISDIR)
+
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = iv

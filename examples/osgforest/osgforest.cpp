@@ -142,7 +142,7 @@ public:
 
     virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
 
-    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object*, osg::NodeVisitor*);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
@@ -157,7 +157,7 @@ protected:
         
 };
 
-bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object*, osg::NodeVisitor*)
 {
     switch(ea.getEventType())
     {

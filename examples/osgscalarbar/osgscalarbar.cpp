@@ -6,6 +6,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/BlendFunc>
 #include <osg/ClearNode>
+#include <osg/Projection>
 
 #include <osgUtil/Tesselator>
 #include <osgUtil/TransformCallback>
@@ -70,6 +71,31 @@ osg::Node* createScalarBar()
 
 }
 
+osg::Node * createScalarBar_HUD()
+{
+    osgSim::ScalarBar * geode = new osgSim::ScalarBar;
+    osgSim::ScalarBar::TextProperties tp;
+    tp._fontFile = "fonts/times.ttf";
+    geode->setTextProperties(tp);
+    osg::StateSet * stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    stateset->setRenderBinDetails(11, "RenderBin");
+
+    osg::MatrixTransform * modelview = new osg::MatrixTransform;
+    modelview->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+    osg::Matrixd matrix(osg::Matrixd::scale(1000,1000,1000) * osg::Matrixd::translate(120,10,0)); // I've played with these values a lot and it seems to work, but I have no idea why
+    modelview->setMatrix(matrix);
+    modelview->addChild(geode);
+
+    osg::Projection * projection = new osg::Projection;
+    projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024)); // or whatever the OSG window res is
+    projection->addChild(modelview);
+
+    return projection; //make sure you delete the return sb line
+}
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -107,10 +133,12 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    osg::Node* node = createScalarBar();
+    osg::Group* group = new osg::Group;
+    group->addChild(createScalarBar());
+    group->addChild(createScalarBar_HUD());
 
     // add model to viewer.
-    viewer.setSceneData( node );
+    viewer.setSceneData( group );
 
     // create the windows and run the threads.
     viewer.realize();

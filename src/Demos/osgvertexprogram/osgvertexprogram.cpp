@@ -29,7 +29,7 @@
 #include <osgUtil/Optimizer>
 
 float refract = 1.01;          // ratio of indicies of refraction
-float fresnel = 2.0;           // Fresnel multiplier
+float fresnel = 1.1;           // Fresnel multiplier
 
 
 const char vpstr[] =
@@ -135,9 +135,8 @@ osg::TextureCubeMap* readCubeMap()
 {
     osg::TextureCubeMap* cubemap = new osg::TextureCubeMap;
     //#define CUBEMAP_FILENAME(face) "nvlobby_" #face ".png"
-    #define CUBEMAP_FILENAME(face) "osg_" #face ".png"
-    //#define CUBEMAP_FILENAME(face) "snow_" #face ".jpg"
-    //#define CUBEMAP_FILENAME(face) "mars_" #face ".rgb"
+    //#define CUBEMAP_FILENAME(face) "Cubemap_axis/" #face ".png"
+    #define CUBEMAP_FILENAME(face) "Cubemap_snow/" #face ".jpg"
 
     osg::Image* imagePosX = osgDB::readImageFile(CUBEMAP_FILENAME(posx));
     osg::Image* imageNegX = osgDB::readImageFile(CUBEMAP_FILENAME(negx));
@@ -183,7 +182,8 @@ public:
         if (cv)
         {
             const osg::Matrix& MV = cv->getModelViewMatrix();
-            const osg::Matrix R = osg::Matrix::rotate( osg::Vec3(0,-1,0), osg::Vec3(0,0,1) );
+            const osg::Matrix R = osg::Matrix::rotate( osg::DegreesToRadians(112.0f), 0.0f,0.0f,1.0f)*
+                                  osg::Matrix::rotate( osg::DegreesToRadians(90.0f), 1.0f,0.0f,0.0f);
 
             osg::Quat q;
             q.set(MV);

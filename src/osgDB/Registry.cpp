@@ -77,6 +77,20 @@ Registry::Registry()
     addFileExtensionAlias("lw",   "lwo");
 
     addFileExtensionAlias("wrl",   "iv");
+    
+    // add alias for the text/freetype plugin.
+    addFileExtensionAlias("ttf",   "freetype");  // true type
+    addFileExtensionAlias("ttc",   "freetype");  // true type
+    addFileExtensionAlias("cid",   "freetype");  // Postscript CID-Fonts
+    addFileExtensionAlias("cff",   "freetype");  // OpenType
+    addFileExtensionAlias("cef",   "freetype");  // OpenType
+    addFileExtensionAlias("fon",   "freetype");  // Windows bitmap fonts
+    addFileExtensionAlias("fnt",   "freetype");    // Windows bitmap fonts
+    
+    // wont't add type1 and type2 until resolve extension collision with Peformer binary and ascii files.
+    // addFileExtensionAlias("pfb",   "freetype");  // type1 binary
+    // addFileExtensionAlias("pfa",   "freetype");  // type2 ascii
+    
 }
 
 

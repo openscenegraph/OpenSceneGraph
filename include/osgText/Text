@@ -10,173 +10,203 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
-//Distributed under the terms of the GNU Library General Public License (LGPL)
-//as published by the Free Software Foundation.
-
-/* --------------------------------------------------------------------------
- *
- *    openscenegraph textLib / FTGL wrapper (http://homepages.paradise.net.nz/henryj/code/)
- *
- * --------------------------------------------------------------------------
- *    
- *    prog:    max rheiner;mrn@paus.ch
- *    date:    4/25/2001    (m/d/y)
- *
- * --------------------------------------------------------------------------
- *
- * --------------------------------------------------------------------------
- */
-
 
 #ifndef OSGTEXT_TEXT
-#define OSGTEXT_TEXT 1 
+#define OSGTEXT_TEXT 1
 
 #include <osg/Drawable>
-#include <osg/GL>
-#include <osg/Vec3>
-#include <osg/Vec2>
+#include <osg/Quat>
 
 #include <osgText/Font>
 
-#include <string>
-
 namespace osgText {
+
 
 class OSGTEXT_EXPORT Text : public osg::Drawable
 {
-    public:
+public:
 
-        enum AlignmentType
-        {    // from left to right, top to bottom
-            LEFT_TOP,
-            LEFT_CENTER,
-            LEFT_BOTTOM,
+    Text();
+    Text(const Text& text,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-            CENTER_TOP,
-            CENTER_CENTER,
-            CENTER_BOTTOM,
-
-            RIGHT_TOP,
-            RIGHT_CENTER,
-            RIGHT_BOTTOM,
-        };
-
-        enum BoundingBoxType
-        {
-            GEOMETRY,
-            GLYPH,
-        };
-
-        enum DrawModeType
-        {    // from left to right, top to bottom
-            TEXT            =    1<<0,
-            BOUNDINGBOX     =    1<<1,
-            ALIGNMENT       =    1<<2,
-            DEFAULT         =    TEXT,
-        };
-        
-        enum AxisAlignment
-        {
-            XY_PLANE,
-            XZ_PLANE,
-            YZ_PLANE
-        };
-
-        Text();
-        Text(const Text& text,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        Text(Font* font);
-
-        virtual osg::Object* cloneType() const { return new Text(); }
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Text(*this,copyop); }
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Text*>(obj)!=NULL; }
-        virtual const char* className() const { return "Text"; }
-        virtual const char* libraryName() const { return "osgText"; }        
-
-        void setPosition(const osg::Vec2& pos);
-        void setPosition(const osg::Vec3& pos);
-        const osg::Vec3& getPosition() const { return _pos; }
+    virtual osg::Object* cloneType() const { return new Text(); }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Text(*this,copyop); }
+    virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Text*>(obj)!=NULL; }
+    virtual const char* className() const { return "Text"; }
+    virtual const char* libraryName() const { return "osgText"; }
 
 
-        void setColor(const osg::Vec4& color) { _color = color; }
-        osg::Vec4& getColor() { return _color; }
-        const osg::Vec4& getColor() const { return _color; }
+    /** Set the Font to use to render the text.  
+      * setFont(0) sets the use of the default font.*/
+    void setFont(Font* font=0);
+
+    /** Set the font, loaded from the specified front file, to use to render the text,
+      * setFont("") sets the use of the default font.*/
+    void setFont(const std::string& fontfile);
+
+    /** Get the font. Return 0 if default is being used.*/    
+    const Font* getFont() const { return _font.get(); }
+
+    /** Set the Font reference width and height resolution in texels.
+      * Note, the size may not be supported by current font, 
+      * the closest supported font size will be selected.*/
+    void setFontSize(unsigned int width, unsigned int height);
+    
+    unsigned int getFontWidth() const { return _fontWidth; }
+    unsigned int getFontHeight() const { return _fontWidth; }
+    
+    
+    /** TextString is a general purpose vector of char codes (unsigned int's)
+      * which is used internally by Text to represent strings.*/
+    typedef std::vector<unsigned int> TextString;
+
+    /** Set the text using a TextString.*/
+    void setText(const TextString& text);
+
+    /** Set the text using a std::string, 
+      * which is converted to an internal TextString.*/
+    void setText(const std::string& text);
+
+    /** Set the text using a wchar_t string, 
+      * which is converted to an internal TextString.*/
+    void setText(const wchar_t* text);
+    
+    /** Get the const text string.*/
+    const TextString& getText() const { return _text; }
 
 
-        void setDrawMode(int mode) { _drawMode=mode; }
-        int getDrawMode() const { return _drawMode; }
+    /** Set the rendered character size in object coordinates.*/
+    void setCharacterSize(float height,float ascpectRatio=1.0f);
+    
+    float getCharacterHeight() const { return _characterHeight; }
+    float getCharacterAspectRatio() const { return _characterAspectRatio; }
 
-        void setBoundingBox(int mode);
-        int getBoundingBox() const { return _boundingBoxType; }
 
-        void setAlignment(int alignment);
-        int getAlignment() const { return _alignment; }
-        
-        void setAxisAlignment(AxisAlignment axis) { _axisAlignment = axis; dirtyDisplayList(); }
-        AxisAlignment getAxisAlignment() const { return _axisAlignment; }
+    /** Set the position of text.*/
+    void setPosition(const osg::Vec3& pos);
+    
+    /** Get the position of text.*/
+    const osg::Vec3& getPosition() const { return _position; }
+       
 
-        void setFont(Font* font);
-        Font* getFont() { return _font.get(); }
-        const Font* getFont() const { return _font.get(); }
+    enum AlignmentType
+    {
+        LEFT_TOP,
+        LEFT_CENTER,
+        LEFT_BOTTOM,
 
-        void setText(const char* text);
-        void setText(const std::string& text);
-        const std::string& getText() const { return _text; }
-        void setText(const wchar_t* text);
+        CENTER_TOP,
+        CENTER_CENTER,
+        CENTER_BOTTOM,
 
-        virtual bool supports(PrimitiveFunctor& pf) const;
-        virtual void accept(PrimitiveFunctor& pf) const;
+        RIGHT_TOP,
+        RIGHT_CENTER,
+        RIGHT_BOTTOM,
+        BASE_LINE /// default.
+    
+    };
+    
+    void setAlignment(AlignmentType alignment);
 
-        virtual void drawImplementation(osg::State& state) const;
-        virtual void drawBoundingBox(void) const;
-        virtual void drawAlignment(void) const;
+    AlignmentType getAlignment() const { return _alignment; }
 
-        const osg::Vec3& getAlignmentPos() const { return _alignmentPos; };
 
-        void setEncodedText(EncodedText* encodedText) { _encodedText = encodedText; }
-        const EncodedText* getEncodedText() const { return _encodedText.get(); }
+    enum AxisAlignment
+    {
+        XY_PLANE,
+        XZ_PLANE,
+        YZ_PLANE,
+        SCREEN
+    };
 
-        /// override the compile to set up the alignment etc.
-        virtual void compile(osg::State& state) const;
+    void setAxisAlignment(AxisAlignment axis);
+    
+    AxisAlignment getAxisAlignment() const { return _axisAlignment; }
 
-    protected:
 
-        enum FontType
-        {
-            UNDEF,
-            BITMAP,
-            PIXMAP,
-            OUTLINE,
-            POLYGON,
-            TEXTURE,
-        };
+    void setRotation(const osg::Quat& quat);
+    
+    const osg::Quat& getRotation() const { return _rotation; }
 
-        virtual    ~Text();
 
-        virtual void        setDefaults(void);
-        virtual bool        computeBound(void) const;
-        virtual void        calcBounds(osg::Vec3* min,osg::Vec3* max) const;
-        void                initAlignment(osg::Vec3* min,osg::Vec3* max);
-        bool                initAlignment(void);
+    enum Layout
+    {
+        LEFT_TO_RIGHT, /// default
+        RIGHT_TO_LEFT,
+        VERTICAL
+    };
+    
+    void setLayout(Layout layout);
+    
+    Layout getLayout() const { return _layout; }
 
-        osg::ref_ptr<Font>  _font;
 
-        bool                _init;
-        bool                _initAlignment;
-        std::string         _text;
-        int                 _fontType;
-        int                 _alignment;
-        int                 _drawMode;
-        int                 _boundingBoxType;
-        AxisAlignment       _axisAlignment;
+    void setColor(const osg::Vec4& color);
+    
+    const osg::Vec4& getColor() const { return _color; }
 
-        osg::ref_ptr<EncodedText>    _encodedText;
-        
-        osg::Vec3           _pos;        
-        osg::Vec3           _alignmentPos;
-        osg::Vec4           _color;
+
+    enum DrawModeMask
+    {
+        TEXT        = 1, /// default
+        BOUNDINGBOX = 2,
+        ALIGNMENT   = 4
+    };
+
+    void setDrawMode(unsigned int mode) { _drawMode=mode; }
+    
+    unsigned int getDrawMode() const { return _drawMode; }
+
+   
+    /** Draw the text.*/
+    virtual void drawImplementation(osg::State& state) const;
+
+protected:
+
+    virtual ~Text();
+
+    virtual bool computeBound() const;
+
+    Font* getActiveFont();
+    const Font* getActiveFont() const;
+
+    
+    // members which have public access.
+    osg::ref_ptr<Font>  _font;
+    unsigned int        _fontWidth;
+    unsigned int        _fontHeight;
+    float               _characterHeight;
+    float               _characterAspectRatio;
+
+    TextString          _text;
+    osg::Vec3           _position;
+    AlignmentType       _alignment;
+    AxisAlignment       _axisAlignment;
+    osg::Quat           _rotation;
+    Layout              _layout;
+    osg::Vec4           _color;
+    unsigned int        _drawMode;
+
+    // internal structures, variable and methods used for rendering of characters.
+    struct GlyphQuads
+    {
+        typedef std::vector<osg::Vec2> Coords;
+        typedef std::vector<osg::Vec2> TexCoords;
+
+        Coords      _coords;
+        TexCoords   _texcoords;
+    };
+    typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;
+
+    // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
+    TextureGlyphQuadMap         _textureGlyphQuadMap;
+    mutable osg::BoundingBox    _textBB;
+    
+    void computeGlyphRepresentation();
+
 };
 
 }
 
-#endif // OSGTEXT_TEXT
+
+#endif

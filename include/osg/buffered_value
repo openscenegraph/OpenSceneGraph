@@ -63,6 +63,47 @@ class buffered_value
         std::vector<T> _array;
 };
 
+template<class T>
+class buffered_object
+{
+    public:
+    
+        inline buffered_object():
+            _array(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts())
+            {}
+
+        buffered_object& operator = (const buffered_object& rhs)
+        {
+            _array = rhs._array;
+            return *this;
+        }
+
+        inline void clear() { _array.clear(); }
+
+        inline bool empty() const { return _array.empty(); }
+
+        inline unsigned int size() const { return _array.size(); }
+
+        inline T& operator[] (unsigned int pos)
+        {
+            // automatically resize array.
+            if (_array.size()<=pos)
+                _array.resize(pos+1);
+
+            return _array[pos];
+        }
+/* // do we implement the const version???
+        inline T operator[] (unsigned int pos) const
+        {
+            return 0;
+        }
+*/        
+
+    protected:
+    
+        std::vector<T> _array;
+};
+
 }
 
 #endif

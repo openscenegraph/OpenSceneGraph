@@ -25,14 +25,14 @@ osgDB::RegisterDotOsgWrapperProxy Text_Proxy
 
 bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
-    osgText::Text &myobj = static_cast<osgText::Text &>(obj);
+    osgText::Text &text = static_cast<osgText::Text &>(obj);
     bool itAdvanced = false;
 
     // position
     if (fr[0].matchWord("position")) {
         osg::Vec3 p;
         if (fr[1].getFloat(p.x()) && fr[2].getFloat(p.y()) && fr[3].getFloat(p.z())) {
-            myobj.setPosition(p);
+            text.setPosition(p);
             fr += 4;
             itAdvanced = true;
         }
@@ -42,7 +42,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("color")) {
         osg::Vec4 c;
         if (fr[1].getFloat(c.x()) && fr[2].getFloat(c.y()) && fr[3].getFloat(c.z()) && fr[4].getFloat(c.w())) {
-            myobj.setColor(c);
+            text.setColor(c);
             fr += 4;
             itAdvanced = true;
         }
@@ -52,17 +52,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("drawMode")) {
         int i;
         if (fr[1].getInt(i)) {
-            myobj.setDrawMode(i);
-            fr += 2;
-            itAdvanced = true;
-        }
-    }
-
-    // bounding box
-    if (fr[0].matchWord("boundingBox")) {
-        int i;
-        if (fr[1].getInt(i)) {
-            myobj.setBoundingBox(i);
+            text.setDrawMode(i);
             fr += 2;
             itAdvanced = true;
         }
@@ -72,22 +62,15 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("alignment")) {
         int i;
         if (fr[1].getInt(i)) {
-            myobj.setAlignment(i);
+            text.setAlignment((osgText::Text::AlignmentType)i);
             fr += 2;
             itAdvanced = true;
         }
     }
 
-    // font
-    osgText::Font *font = dynamic_cast<osgText::Font *>(fr.readObject());
-    if (font) {
-        myobj.setFont(font);
-        itAdvanced = true;
-    }
-
     // text
     if (fr.matchSequence("text %s")) {
-        myobj.setText(std::string(fr[1].getStr()));
+        text.setText(std::string(fr[1].getStr()));
         fr += 2;
         itAdvanced = true;
     }
@@ -97,30 +80,47 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
 bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
-    const osgText::Text &myobj = static_cast<const osgText::Text &>(obj);
+    const osgText::Text &text = static_cast<const osgText::Text &>(obj);
+
+    if (text.getFont())
+    {
+        fw.indent() << "font " << text.getFont()->getFileName() << std::endl;
+    }
+
+    fw.indent() << "fontSize " << text.getFontWidth() << " " << text.getFontHeight() << std::endl;
 
     // position
-    osg::Vec3 p = myobj.getPosition();
+    osg::Vec3 p = text.getPosition();
     fw.indent() << "position " << p.x() << " " << p.y() << " " << p.z() << std::endl;
 
     // color
-    osg::Vec4 c = myobj.getColor();
+    osg::Vec4 c = text.getColor();
     fw.indent() << "color " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
 
     // draw mode
-    fw.indent() << "drawMode " << myobj.getDrawMode() << std::endl;
-
-    // bounding box
-    fw.indent() << "boundingBox " << myobj.getBoundingBox() << std::endl;
+    fw.indent() << "drawMode " << text.getDrawMode() << std::endl;
 
     // alignment
-    fw.indent() << "alignment " << myobj.getAlignment() << std::endl;
-
-    // font
-    fw.writeObject(*myobj.getFont());
+    fw.indent() << "alignment " << text.getAlignment() << std::endl;
 
     // text
-    fw.indent() << "text " << fw.wrapString(myobj.getText()) << std::endl;
+    const osgText::Text::TextString& textstring = text.getText();
+    bool isACString = true;
+    for(osgText::Text::TextString::const_iterator itr=textstring.begin();
+        itr!=textstring.end() && isACString;
+        ++itr)
+    {
+        if (*itr==0 || *itr>256) isACString=false;
+    }
+    if (isACString)
+    {
+        std::string str(textstring.begin(),textstring.end());
+        fw.indent() << "text " << fw.wrapString(str) << std::endl;
+    }
+    else
+    {
+        // do it the hardway...
+    }
 
     return true;
 }

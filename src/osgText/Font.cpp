@@ -1,393 +1,282 @@
-/* --------------------------------------------------------------------------
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
  *
- *    openscenegraph textLib / FTGL
- *
- * --------------------------------------------------------------------------
- *    
- *    prog:    max rheiner;mrn@paus.ch
- *    date:    4/25/2001    (m/d/y)
- *
- * ----------------------------------------------------------------------------
- *
- * --------------------------------------------------------------------------
- */
-
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 
 #include <osgText/Font>
-#include <osgText/EncodedText>
 
+#include <osg/State>
 #include <osg/Notify>
-#include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
+#include <osg/GLU>
 
-#include "FTFace.h"
-#include "FTGLBitmapFont.h"
-#include "FTGLPixmapFont.h"
-#include "FTGLOutlineFont.h"
-#include "FTGLPolygonFont.h"
-#include "FTGLTextureFont.h"
-
-
-using namespace osg;
 using namespace osgText;
 
-std::string findFontFile(const std::string& str)
+osgText::Font* osgText::readFontFile(const std::string& filename)
 {
-    // try looking in OSGFILEPATH etc first for fonts.
-    std::string filename = osgDB::findDataFile(str);
-    if (!filename.empty()) return std::string(filename);
+    osg::Object* object = osgDB::readObjectFile(filename);
+    
+    // if the object is a font then return it.
+    osgText::Font* font = dynamic_cast<osgText::Font*>(object);
+    if (font) return font;
+    
+    // otherwise if the object has zero references then delete it by doing another unref().
+    if (object && object->referenceCount()==0) object->unref();
+    return 0;
+}
 
 
-    static osgDB::FilePathList s_FontFilePath;
-    static bool initialized = false;
-    if (!initialized)
+Font::Font():
+    _width(16),
+    _height(16)
+{
+}
+
+Font::~Font()
+{
+}
+
+void Font::addGlyph(unsigned int charcode, Glyph* glyph)
+{
+    _glyphMap[charcode]=glyph;
+    
+    
+    int posX=0,posY=0;
+    
+    GlyphTexture* glyphTexture = 0;
+    for(GlyphTextureList::iterator itr=_glyphTextureList.begin();
+        itr!=_glyphTextureList.end() && !glyphTexture;
+        ++itr)
     {
-        initialized = true;
-    #if defined(WIN32)
-        osgDB::Registry::convertStringPathIntoFilePathList(
-            ".;C:/winnt/fonts;C:/windows/fonts",
-            s_FontFilePath);
-
-        char *ptr;
-        if ((ptr = getenv( "windir" )))
-        {
-            s_FontFilePath.push_back(ptr);
-        }
-    #else
-        osgDB::Registry::convertStringPathIntoFilePathList(
-            ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
-            s_FontFilePath);
-    #endif
+        if ((*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
     }
-
-    filename = osgDB::findFileInPath(str,s_FontFilePath);
-    if (!filename.empty()) return filename;
-
-    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
-    return std::string();
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Font
-Font::
-Font()
-{
-    _init=false;
-    _font=NULL;
-    _created=false;
-
-    _pointSize=14;
-    _textureSize=0;
-    _res=72;
-}
-
-bool Font::
-init(const std::string& font)
-{
-    _font=NULL;
-    _created=false;
-
-    open(font);
-
-    if(_font!=NULL)
-        return true; 
-    else
-        return false;
-}
-
-Font::
-~Font()
-{
-    clear();
-}
-
-void Font::copyAndInvalidate(Font &dest)
-{
-    // delete destination's font object
-    delete dest._font;
-        
-    // copy local data to destination object
-    dest._init = _init;
-    dest._created = _created;
-    dest._font = _font;
-    dest._fontName = _fontName;
-    dest._pointSize = _pointSize;
-    dest._res = _res;
-    dest._textureSize = _textureSize;
-
-    // invalidate this object
-    _init = false;
-    _created = false;
-    _font = 0;
-    _fontName = std::string();
-}
-
-bool Font::
-open(const std::string& font)
-{
-    clear();
-        
-    std::string filename = findFontFile(font);
-    if (filename.empty()) return false;
-
-    _font=createFontObj();
-    if( _font!=NULL && _font->Open(filename.c_str()) )
+    
+    if (!glyphTexture)
     {
-        _init=true;
-        _fontName=font;
+        //std::cout<<"Creating new GlyphTexture & StateSet"<<std::endl;
+        
+        osg::StateSet* stateset = new osg::StateSet;
+        _stateSetList.push_back(stateset);
+
+        glyphTexture = new GlyphTexture;
+        
+        // reserve enough space for the glyphs.
+        glyphTexture->setTextureSize(256,256);
+        //glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+        glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+        //glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
+        //glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        glyphTexture->setMaxAnisotropy(8);
+        
+        _glyphTextureList.push_back(glyphTexture);
+        
+        glyphTexture->setStateSet(stateset);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(0,glyphTexture,osg::StateAttribute::ON);
+
+        if (!glyphTexture->getSpaceForGlyph(glyph,posX,posY))
+        {
+            osg::notify(osg::WARN)<<"Warning: unable to allocate texture big enough for glyph"<<std::endl;
+            return;
+        }
+
+    }    
+    
+    // add the glyph into the texture.
+    glyphTexture->addGlyph(glyph,posX,posY);
+    
+}
+
+
+Font::GlyphTexture::GlyphTexture():
+    _stateset(0),
+    _usedY(0),
+    _partUsedX(0),
+    _partUsedY(0)
+{
+}
+
+Font::GlyphTexture::~GlyphTexture() 
+{
+}
+
+bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
+{
+
+    int margin = 2;
+        
+    int width = glyph->s()+2*margin;
+    int height = glyph->t()+2*margin;
+
+    // first check box (_partUsedX,_usedY) to (width,height)
+    if (width <= (getTextureWidth()-_partUsedX) &&
+        height <= (getTextureHeight()-_usedY))
+    {
+        // can fit in existing row.
+
+        // record the position in which the texture will be stored.
+        posX = _partUsedX+margin;
+        posY = _usedY+margin;        
+
+        // move used markers on.
+        _partUsedX += width;
+        if (_usedY+height>_partUsedY) _partUsedY = _usedY+height;
+        
         return true;
     }
-    else
-        return false;
-}
-
-bool  Font::open(const char* font)
-{
-    return open(std::string(font));
-}
-
-bool Font::
-create(osg::State& state,int pointSize,unsigned int res)
-{
-    _pointSize=pointSize;
-    _res=res;
-
-    return create(state);
-}
-
-bool  Font::create(osg::State& state)
-{
-    if(_init)
+    
+    // start an new row.
+    if (width <= getTextureWidth() &&
+        height <= (getTextureHeight()-_partUsedY))
     {
-        if(_font->Created(state.getContextID()))
-            return true;
+        // can fit next row.
+        _partUsedX = 0;
+        _usedY = _partUsedY;
 
-        if(_font->FaceSize(_pointSize,_res,state.getContextID()))
+        posX = _partUsedX+margin;
+        posY = _usedY+margin;        
+
+        // move used markers on.
+        _partUsedX += width;
+        if (_usedY+height>_partUsedY) _partUsedY = _usedY+height;
+        
+        return true;
+    }
+
+    // doesn't fit into glyph.
+    return false;
+}
+
+void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
+{
+
+    _glyphs.push_back(glyph);
+    for(unsigned int i=0;i<_glyphsToSubload.size();++i)
+    {
+        _glyphsToSubload[i].push_back(glyph);
+    }
+
+    // set up the details of where to place glyph's image in the texture.
+    glyph->setTexture(this);
+    glyph->setTexturePosition(posX,posY);
+    glyph->setMinTexCoord(osg::Vec2((float)posX/((float)getTextureWidth()-1.0f),(float)posY/((float)getTextureHeight()-1.0f)));
+    glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s())/((float)getTextureWidth()-1.0f),(float)(posY+glyph->t())/((float)getTextureHeight()-1.0f)));
+}
+
+void Font::GlyphTexture::apply(osg::State& state) const
+{
+    // get the contextID (user defined ID of 0 upwards) for the 
+    // current OpenGL context.
+    const unsigned int contextID = state.getContextID();
+
+    if (contextID>=_glyphsToSubload.size())
+    {
+        // graphics context is beyond the number of glyphsToSubloads, so
+        // we must now copy the glyph list across, this is a potential
+        // threading issue though is multiple applies are happening the
+        // same time on this object - to avoid this condition number of
+        // graphics contexts should be set before create text.
+        for(unsigned int i=_glyphsToSubload.size();i<=contextID;++i)
         {
-            _created=true;
-            return true;
+            _glyphsToSubload[i] = _glyphs;
         }
-        else
-            return false;
+    }
+
+
+    // get the globj for the current contextID.
+    GLuint& handle = getTextureObject(contextID);
+
+    if (handle == 0)
+    {
+        // being bound for the first time, need to allocate the texture
+        glGenTextures( 1L, (GLuint *)&handle );
+        glBindTexture( GL_TEXTURE_2D, handle );
+
+        applyTexParameters(GL_TEXTURE_2D,state);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+        
+        // allocate the texture memory.
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA,
+                getTextureWidth(), getTextureHeight(), 0,
+                GL_LUMINANCE_ALPHA,
+                GL_UNSIGNED_BYTE,
+                0 );
+    
     }
     else
-        return false;
-}
+    {
+        // reuse texture by binding.
+        glBindTexture( GL_TEXTURE_2D, handle );
+        if (getTextureParameterDirty(contextID))
+            applyTexParameters(GL_TEXTURE_2D,state);
 
-void Font::output(osg::State& state, const EncodedText* text) const
-{
-    if(_created)
-        _font->render(text->begin(),text->end(),state.getContextID());
+    }
+    
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+
+    // now subload the glyphs that are outstanding for this graphics context.
+    GlyphList& glyphsWereSubloading = _glyphsToSubload[contextID];
+
+    if (!glyphsWereSubloading.empty())
+    {
+
+        for(GlyphList::iterator itr=glyphsWereSubloading.begin();
+            itr!=glyphsWereSubloading.end();
+            ++itr)
+        {
+            (*itr)->subload();
+        }
+        
+        // clear the list since we have now subloaded them.
+        glyphsWereSubloading.clear();
+    }
     else
     {
-        // ahhhh, this is bit doddy, the draw is potentially
-        // modifying the text object, this isn't thread safe.
-        Font* this_non_const = const_cast<Font*>(this);
-        this_non_const->create(state,_pointSize);
+        //std::cout << "no need to subload "<<std::endl;
     }
 }
 
-void  Font::clear()
+Font::Glyph::Glyph() {}
+Font::Glyph::~Glyph() {}
+
+void Font::Glyph::subload()
 {
-    _init=false;
-    
-    if(_font)
+    GLenum errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
     {
-        delete _font;
-        _font=NULL;
+        osg::notify(osg::WARN)<<"before: detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
     }
 
-    _fontName="";
-}
 
-float Font::
-getWidth(const EncodedText* text)  const
-{
-    if(_init && _created && text)
-        return _font->Advance(text->begin(),text->end());
-    else
-        return -1;
-}
 
-int Font::
-getHeight()  const
-{
-    if(_init && _created)
-        return _pointSize;
-    else
-        return -1;
-}
+    glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
 
-int Font::
-getDescender() const
-{
-    if(_init && _created)
-        return _font->Descender();
-    else
-        return -1;
-}
-
-int Font::
-getAscender() const
-{
-    if(_init && _created)
-        return _font->Ascender();
-    else
-        return -1;
-}
-
-// Font
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// BitmapFont
-
-BitmapFont::
-BitmapFont(const std::string&    font, 
-           int                    point_size):
-RasterFont()
-{
-    if(init(font))
+    glTexSubImage2D(GL_TEXTURE_2D,0,
+                    _texturePosX,_texturePosY,
+                    s(),t(),
+                    (GLenum)getPixelFormat(),
+                    (GLenum)getDataType(),
+                    data());
+                    
+    errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
     {
-    }
-    _pointSize=point_size;
+        std::cout << "  "<<GL_TEXTURE_2D<<"\t"<<0<<"\t"<<
+                    _texturePosX<<"\t"<<_texturePosY<<"\t"<<
+                    s()<<"\t"<<t()<<"\t"<<
+                    (GLenum)getPixelFormat()<<"\t"<<
+                    (GLenum)getDataType()<<"\t"<<
+                    (int)(*data())<<std::endl;
+
+        osg::notify(osg::WARN)<<"after: detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
+    }                    
 }
-
-FTFont*  BitmapFont::
-createFontObj(void)
-{
-    return (FTFont*)(new FTGLBitmapFont);
-}
-    
-// BitmapFont
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// PixmapFont
-
-PixmapFont::
-PixmapFont(const std::string&    font, 
-            int                    point_size):
-RasterFont(font)
-{
-    if(init(font))
-    {
-    }
-    _pointSize=point_size;
-}
-    
-
-FTFont*  PixmapFont::
-createFontObj(void)
-{
-    return (FTFont*)(new FTGLPixmapFont);
-}
-    
-// PixmapFont
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// TextureFont
-
-TextureFont::
-TextureFont(const std::string&    font, 
-            int                    point_size):
-RasterFont(font)
-{
-    _textureSize=0;
-    if(init(font))
-    {
-    }
-    _pointSize=point_size;
-}
-
-
-TextureFont::
-TextureFont(const std::string&    font, 
-            int                    point_size,
-            int textureSize ):
-RasterFont(font)
-{
-    _textureSize=textureSize;
-    if(init(font))
-    {
-    }
-    _pointSize=point_size;
-}
-    
-
-
-FTFont*  TextureFont::
-createFontObj(void)
-{
-    return (FTFont*)(new FTGLTextureFont(_textureSize));
-}
-    
-// TextureFont
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// _FTGLOutlineFont
-
-OutlineFont::
-OutlineFont(const std::string&    font, 
-            int                    point_size,
-            double                precision):
-VectorFont(font)
-{
-    if(init(font))
-    {
-    }
-    _pointSize=point_size;
-    _precision=precision;
-}
-    
-
-FTFont*  OutlineFont::
-createFontObj(void)
-{
-    return (FTFont*)(new FTGLOutlineFont);
-}
-    
-// _FTGLOutlineFont
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// PolygonFont
-
-PolygonFont::
-PolygonFont(const std::string&    font, 
-            int                    point_size,
-            double                precision):
-VectorFont(font)
-{
-    if(init(font))
-    {
-    }
-    _pointSize=point_size;
-    _precision=precision;
-}
-    
-PolygonFont::
-PolygonFont(const char*    font, 
-            int                    point_size,
-            double                precision):
-VectorFont(std::string(font))
-{
-    if(init(font))
-    {
-    }
-    _pointSize=point_size;
-    _precision=precision;
-}
-    
-FTFont*  PolygonFont::
-createFontObj(void)
-{
-    return (FTFont*)(new FTGLPolygonFont);
-}
-    
-
-// PolygonFont
-///////////////////////////////////////////////////////////////////////////////

@@ -11,26 +11,32 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTEXT_EXPORT_
-#define OSGTEXT_EXPORT_ 1
+#ifndef OSGTEXT_LIBRARY
+#define OSGTEXT_LIBRARY
 
-#if defined(_MSC_VER)
-    #pragma warning( disable : 4244 )
-    #pragma warning( disable : 4251 )
-    #pragma warning( disable : 4267 )
-    #pragma warning( disable : 4275 )
-    #pragma warning( disable : 4290 )
-    #pragma warning( disable : 4786 )
-#endif
+#include "FreeTypeFont.h"
 
-#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)
-    #  ifdef OSGTEXT_LIBRARY
-    #    define OSGTEXT_EXPORT   __declspec(dllexport)
-    #  else
-    #    define OSGTEXT_EXPORT   __declspec(dllimport)
-    #  endif /* OSGTEXT_LIBRARY */
-#else
-    #  define OSGTEXT_EXPORT
-#endif  
+class FreeTypeLibrary
+{
+public:
+
+    /** get the singleton instance.*/
+    static FreeTypeLibrary* instance();
+
+    FreeTypeFont* getFont(const std::string& fontfile,unsigned int index=0);
+
+protected:
+
+    /** protected constructor to ensure the only way to create the 
+      * library is via the singleton instance method.*/
+    FreeTypeLibrary();
+
+    /** protected destrcutor to prevent inappropriate deletion.*/
+    virtual ~FreeTypeLibrary();
+
+    FT_Library  _ftlibrary;
+
+};
+
 
 #endif

@@ -2,10 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	IO_Text.cpp \
-	IO_Font.cpp \
-	IO_Paragraph.cpp \
-
+	IO_Text.cpp
 
 LIBS   += -losgText $(OSG_LIBS) $(OTHER_LIBS)
 

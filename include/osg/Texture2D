@@ -59,7 +59,10 @@ class SG_EXPORT Texture2D : public Texture
             _textureHeight = height;
         }
 
-        /** Get the texture subload width. */
+        int getTextureWidth() const { return _textureWidth; }
+        int getTextureHeight() const { return _textureHeight; }
+
+        // deprecated.
         inline void getTextureSize(int& width, int& height) const
         {
             width = _textureWidth;

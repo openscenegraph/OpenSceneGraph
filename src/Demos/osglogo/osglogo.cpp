@@ -159,17 +159,18 @@ osg:: Node* createTextBelow(const osg::BoundingBox& bb)
 {
     osg::Geode* geode = new osg::Geode();
 
-    osgText::PolygonFont*   polygonFont= new  osgText::PolygonFont("fonts/times.ttf",20, 3);
-    osgText::Text*          text = new  osgText::Text(polygonFont);
- 
-    text->setText("OpenSceneGraph");
+    std::string font("fonts/arial.ttf");
+
+    osgText::Text* text = new  osgText::Text;
+
+    text->setFont(font);
+    text->setFontSize(64,64);
     text->setAlignment(osgText::Text::CENTER_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setPosition(bb.center()-osg::Vec3(0.0f,0.0f,(bb.zMax()-bb.zMin())));
     text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f));
-    osg::StateSet* stateset = text->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
- 
+    text->setText("OpenSceneGraph");
+
     geode->addDrawable( text );
 
     return geode;
@@ -182,34 +183,38 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 
     osg::StateSet* stateset = geode->getOrCreateStateSet();
 
-    osg::BlendFunc *transp= new osg::BlendFunc();
-    transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    osg::BlendFunc *transp= new osg::BlendFunc();
+//    transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    stateset->setAttributeAndModes(transp,osg::StateAttribute::ON);
-    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
-    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+//    stateset->setAttributeAndModes(transp,osg::StateAttribute::ON);
+//    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
+//    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
 
     //std::string font("fonts/times.ttf");
     std::string font("fonts/arial.ttf");
 
-    osgText::Text* text = new  osgText::Text(new osgText::TextureFont(font,100));
+    osgText::Text* text = new  osgText::Text;
  
-    text->setText("OpenSceneGraph");
+    text->setFont(font);
+    text->setFontSize(64,64);
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.3f));
     //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
+    text->setText("OpenSceneGraph");
 
     geode->addDrawable( text );
 
 
     if (s_ProfessionalServices)
     {
-        osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
+        //osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
 
+        osgText::Text* subscript = new osgText::Text;
+        subscript->setFont(font);
         subscript->setText("Professional Services");
         subscript->setAlignment(osgText::Text::RIGHT_CENTER);
         subscript->setAxisAlignment(osgText::Text::XZ_PLANE);

@@ -21,218 +21,109 @@
 #include <osg/Depth>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
+
 #include <osgText/Text>
 
 
 
-///////////////////////////////////////////////////////////////////////////////
-// globals
-#define        TEXT_POLYGON    "Polygon Font - jygq"
-#define        TEXT_OUTLINE    "Outline Font - jygq"
-#define        TEXT_TEXTURE    "Texture Font - jygq"
-#define        TEXT_BITMAP        "Bitmap Font - jygq"
-#define        TEXT_PIXMAP        "Pixmap Font - jygq"
-
-#define        TEXT_COL_2D        osg::Vec4(.9,.9,.9,1)
-#define        TEXT_COL_3D        osg::Vec4(.99,.3,.2,1)
-
-
-std::string    ttfPath("fonts/times.ttf");
-std::string    ttfPath1("fonts/arial.ttf");
-
-int    gFontSize=18;
-int    gFontSize1=24;
-std::vector<osg::ref_ptr<osgText::Text > >    gTextList;
-osgText::Text::AlignmentType    gAlignment=osgText::Text::LEFT_BOTTOM;
-
-osg::Group* createText()
+osg::Group* createHUDText()
 {
+
+    osg::Geode* geode  = new osg::Geode;
+
+    osgText::Text* text1 = new osgText::Text;
+    text1->setCharacterSize(12.0f);
+    text1->setText("20 GOTO 10");
+    geode->addDrawable(text1);
+
+    osgText::Text* text2 = new osgText::Text;
+    text2->setPosition(osg::Vec3(0.0f,50.0f,0.0f));
+    text2->setCharacterSize(12.0f);
+    text2->setText("10 PRINT \"Hello World\"");
+    geode->addDrawable(text2);
+
+    osgText::Text* text3 = new osgText::Text;
+    text3->setFont(osgText::readFontFile("fonts/arial.ttf"));
+    text3->setPosition(osg::Vec3(100.0f,100.0f,0.0f));
+    text3->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/arial.ttf");
+    geode->addDrawable(text3);
+
+    osgText::Text* text4 = new osgText::Text;
+    text4->setFont(osgText::readFontFile("fonts/times.ttf"));
+    text4->setFontSize(64,64);
+    text4->setPosition(osg::Vec3(200.0f,200.0f,0.0f));
+    text4->setLayout(osgText::Text::RIGHT_TO_LEFT);
+    text4->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
+    text4->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/times.ttf");
+    geode->addDrawable(text4);
+
+    osgText::Text* text5 = new osgText::Text;
+    text5->setFont(osgText::readFontFile("fonts/dirtydoz.ttf"));
+    text5->setPosition(osg::Vec3(300.0f,300.0f,0.0f));
+    text5->setColor(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
+    text5->setLayout(osgText::Text::VERTICAL);
+    text5->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
+    text5->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/dirtydoz.ttf");
+    geode->addDrawable(text5);
+
+
+//     osgText::Text::TextString string;
+//     for(int i=0;i<2048;++i)
+//         string.push_back(i);
+// 
+//     osgText::Text* text6 = new osgText::Text;
+//     text6->setFont(osgText::readFontFile("/home/robert/Documents/GuopingSun/msmincho.ttc"));
+//     text6->setFontSize(64,64);
+//     text6->setText(string);
+//     text6->setPosition(osg::Vec3(00.0f,400.0f,0.0f));
+//     geode->addDrawable(text6);
+
+    
+
+
     osg::Group* rootNode = new osg::Group;
-
-    osgText::Text*    text;
-    osg::Geode*        geode;
-    osg::Material*    textMaterial;
-    osg::StateSet*  textState;
-    double            xOffset=150;
-    double            yOffset=gFontSize+10;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // setup the texts
-
-    ///////////////////////////////////////////////////////////////////////////
-    // BitmapFont
-    osgText::BitmapFont*    bitmapFont= new  osgText::BitmapFont(ttfPath,
-                                                               gFontSize1);
-    text= new  osgText::Text(bitmapFont);
-    gTextList.push_back(text);
-    text->setText(std::string("2d ")+std::string(TEXT_BITMAP));
-    text->setPosition(osg::Vec3(xOffset,yOffset,0));
-    text->setDrawMode( osgText::Text::TEXT |
-                       osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNMENT );
-    text->setAlignment(gAlignment);
-    geode = new osg::Geode();
-    geode->setName("BitmapFont");
-    geode->addDrawable( text );
-
-    textMaterial = new osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = new osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
-
     rootNode->addChild(geode);
-
-    xOffset+=90;
-    yOffset+=120;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // PixmapFont
-    osgText::PixmapFont*    pixmapFont= new  osgText::PixmapFont(ttfPath,
-                                                               gFontSize1);
-    text= new  osgText::Text(pixmapFont);
-    gTextList.push_back(text);
-    text->setText(std::string("2d ")+std::string(TEXT_PIXMAP));
-    text->setPosition(osg::Vec3(xOffset,yOffset,0));
-    text->setDrawMode( osgText::Text::TEXT |
-                       osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNMENT );
-    text->setAlignment(gAlignment);
-    geode = new osg::Geode();
-    geode->setName("PixmapFont");
-    geode->addDrawable( text );
-
-    textMaterial = new osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_2D);
-    // to get antiaA pixmapFonts we have to draw them with blending
-    osg::BlendFunc    *transp= new  osg::BlendFunc();
-    transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-
-
-
-    textState = new osg::StateSet();
-    textState->setAttribute(textMaterial );
-    textState->setAttribute(transp);
-    textState->setMode(GL_BLEND,osg::StateAttribute::ON);
-    textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    
-    
-    geode->setStateSet( textState );
-
-    rootNode->addChild(geode);
-
-    xOffset+=90;
-    yOffset+=120;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // TextureFont
-    osgText::TextureFont*    textureFont= new  osgText::TextureFont(ttfPath1,
-                                                                 gFontSize1);
-    text= new  osgText::Text(textureFont);
-    gTextList.push_back(text);
-    text->setText(std::string("2d ")+std::string(TEXT_TEXTURE));
-    text->setPosition(osg::Vec3(xOffset,yOffset,0));
-    text->setDrawMode( osgText::Text::TEXT |
-                       osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNMENT );
-    text->setAlignment(gAlignment);
-    geode = new osg::Geode();
-    geode->setName("TextureFont");
-    geode->addDrawable( text );
-
-    textMaterial = new osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    // to get antiaA pixmapFonts we have to draw them with blending
-    transp= new  osg::BlendFunc();
-    transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    textState = new osg::StateSet();
-    textState->setAttribute(textMaterial );
-    textState->setAttribute(transp);
-
-    textState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
-    textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    geode->setStateSet( textState );
-
-    rootNode->addChild(geode);
-
-    xOffset+=90;
-    yOffset+=120;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // PolygonFont
-    osgText::PolygonFont*    polygonFont= new  osgText::PolygonFont(ttfPath,
-                                                                 gFontSize1,
-                                                                 3);
-    text= new  osgText::Text(polygonFont);
-    gTextList.push_back(text);
-    text->setText(std::string("2d ")+std::string("TEXT_POLYGON"));
-    text->setPosition(osg::Vec3(xOffset,yOffset,0));
-    text->setDrawMode( osgText::Text::TEXT |
-                       osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNMENT );
-    text->setAlignment(gAlignment);
-    geode = new osg::Geode();
-    geode->setName("PolygonFont");
-    geode->addDrawable( text );
-
-    textMaterial = new osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = new osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
-
-    rootNode->addChild(geode);
-
-    xOffset+=90;
-    yOffset+=120;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // OutlineFont
-    osgText::OutlineFont*    outlineFont= new  osgText::OutlineFont(ttfPath,
-                                                                 gFontSize1,
-                                                                 3);
-
-    text= new  osgText::Text(outlineFont);
-    gTextList.push_back(text);
-    text->setText(std::string("2d ")+std::string(TEXT_OUTLINE));
-    text->setPosition(osg::Vec3(xOffset,yOffset,0));
-    text->setDrawMode( osgText::Text::TEXT |
-                       osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNMENT );
-    text->setAlignment(gAlignment);
-    geode = new osg::Geode();
-    geode->setName("OutlineFont");
-    geode->addDrawable( text );
-
-    textMaterial = new osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = new osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
-
-    rootNode->addChild(geode);
-    
-    
-    // now add a depth attribute to the scene to force it to draw on top.
-    osg::Depth* depth = new osg::Depth;
-    depth->setRange(0.0,0.0);
-    
-    osg::StateSet* rootState = new osg::StateSet();
-    rootState->setAttribute(depth);
-    rootState->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    
-    rootNode->setStateSet(rootState);
 
     return rootNode;    
 }
 
+osg::Group* create3DText()
+{
+
+    osg::Geode* geode  = new osg::Geode;
+
+    osgText::Text* text1 = new osgText::Text;
+    text1->setFont("fonts/times.ttf");
+    text1->setAxisAlignment(osgText::Text::XY_PLANE);
+    text1->setText("XY_PLANE");
+    geode->addDrawable(text1);
+
+    osgText::Text* text2 = new osgText::Text;
+    text2->setFont("fonts/times.ttf");
+    text2->setPosition(osg::Vec3(0.0f,0.0f,0.0f));
+    text2->setAxisAlignment(osgText::Text::YZ_PLANE);
+    text2->setText("YZ_PLANE");
+    geode->addDrawable(text2);
+
+    osgText::Text* text3 = new osgText::Text;
+    text3->setFont("fonts/times.ttf");
+    text3->setPosition(osg::Vec3(00.0f,00.0f,00.0f));
+    text3->setAxisAlignment(osgText::Text::XZ_PLANE);
+    text3->setText("XZ_PLANE");
+    geode->addDrawable(text3);
+
+    osgText::Text* text4 = new osgText::Text;
+    text4->setFont("fonts/times.ttf");
+    text4->setAxisAlignment(osgText::Text::SCREEN);
+    text4->setPosition(osg::Vec3(00.0f,00.0f,00.0f));
+    text4->setText("SCREEN");
+    geode->addDrawable(text4);
+
+    osg::Group* rootNode = new osg::Group;
+    rootNode->addChild(geode);
+
+    return rootNode;    
+}
 
 int main( int argc, char **argv )
 {
@@ -296,19 +187,26 @@ int main( int argc, char **argv )
             rootNode = group;
         }
 
-        // create the hud.
-        osg::Projection* projection = new osg::Projection;
-        projection->setMatrix(osg::Matrix::ortho2D(0,1024,0,768));
+        {
+            // create the hud.
+            osg::Projection* projection = new osg::Projection;
+            projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
 
-        osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-        modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
-        modelview_abs->setMatrix(osg::Matrix::identity());
+            osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
+            modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+            modelview_abs->setMatrix(osg::Matrix::identity());
 
-        modelview_abs->addChild(createText());
+            modelview_abs->addChild(createHUDText());
 
-        projection->addChild(modelview_abs);
+            projection->addChild(modelview_abs);
 
-        group->addChild(projection);
+            group->addChild(projection);
+        }
+
+        osg::MatrixTransform* scale = new osg::MatrixTransform;
+        scale->setMatrix(osg::Matrix::scale(1.0f,1.0f,1.0f));
+        scale->addChild(create3DText());
+        group->addChild(scale);
 
     }
 

@@ -675,9 +675,11 @@ void SceneView::draw()
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
                 glDrawBuffer(GL_BACK_LEFT);
+                glReadBuffer(GL_BACK_LEFT);
                 _renderStageLeft->draw(*_state,previous);
 
                 glDrawBuffer(GL_BACK_RIGHT);
+                glReadBuffer(GL_BACK_RIGHT);
                 _renderStageRight->draw(*_state,previous);
 
             }
@@ -687,6 +689,7 @@ void SceneView::draw()
                 if( _drawBufferValue !=  GL_NONE)
                 {
                     glDrawBuffer(_drawBufferValue);
+                    glReadBuffer(_drawBufferValue);
                 }
                 
                 _localStateSet->setAttribute(_viewport.get());
@@ -743,6 +746,7 @@ void SceneView::draw()
                 if( _drawBufferValue !=  GL_NONE)
                 {
                     glDrawBuffer(_drawBufferValue);
+                    glReadBuffer(_drawBufferValue);
                 }
 
                 // ensure that all color planes are active.
@@ -805,6 +809,7 @@ void SceneView::draw()
                 if( _drawBufferValue !=  GL_NONE)
                 {
                     glDrawBuffer(_drawBufferValue);
+                    glReadBuffer(_drawBufferValue);
                 }
 
                 // ensure that all color planes are active.
@@ -866,6 +871,7 @@ void SceneView::draw()
                 if( _drawBufferValue !=  GL_NONE)
                 {
                     glDrawBuffer(_drawBufferValue);
+                    glReadBuffer(_drawBufferValue);
                 }
 
                 // ensure that all color planes are active.
@@ -901,6 +907,7 @@ void SceneView::draw()
         if( _drawBufferValue !=  GL_NONE)
         {
             glDrawBuffer(_drawBufferValue);
+            glReadBuffer(_drawBufferValue);
         }
 
         _localStateSet->setAttribute(_viewport.get());

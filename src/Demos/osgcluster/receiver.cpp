@@ -8,6 +8,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
+#include <string.h>
 
 
 #include "receiver.h"
@@ -77,7 +78,7 @@ void Receiver::sync( void )
 	return;
     }
 
-#ifdef __linux
+#if defined(__linux) || defined(__FreeBSD__)
     socklen_t 
 #else
     int

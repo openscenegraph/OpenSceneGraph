@@ -6,6 +6,9 @@ DIRS = sgv osgconv osgcube osgreflect osgtexture osgimpostor osgviews hangglide 
 # comment out if you don't have the freetype and GLU1.3 library installed.
 DIRS += osgtext 
 
+# comment out if you don't have the wxWindows installed.
+# DIRS += wxsgv
+
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
 

@@ -13,10 +13,14 @@
 #include <netdb.h>
 #include <string.h>
 
-#ifdef __linux
-#include <linux/sockios.h>
+#if defined(__linux)
+#  include <linux/sockios.h>
+#elif defined(__FreeBSD__)
+#  include <sys/sockio.h>
+#elif defined(__sgi)
+#  include <net/soioctl.h>
 #else
-#include <net/soioctl.h>
+#  error Teach me how to build on this system
 #endif
 
 #include "broadcaster.h"

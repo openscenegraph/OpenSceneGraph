@@ -14,6 +14,7 @@ SRC_DIRS = \
 	osgParticle\
 	osgGLUT\
 	osgText\
+	osgSim\
 	osgPlugins\
 	Demos
 
@@ -80,27 +81,28 @@ DEMOS_DIRS = \
 	osgcopy\
 	osgcube\
 	osgcubemap\
+	osggeodemo\
 	osggeometry\
 	osghangglide\
 	osghud\
 	osgimpostor\
 	osglight\
+	osglightpoint\
 	osgmultitexture\
 	osgoccluder\
-	osggeodemo\
 	osgparticle\
 	osgprerender\
 	osgreflect\
 	osgscribe\
-	osgstereoimage\
 	osgsequence\
 	osgshape\
+	osgstereoimage\
 	osgteapot\
 	osgtext\
 	osgtexture1D\
 	osgtexture2D\
 	osgtexture3D\
 	osgunittests\
-	osgviews\
 	osgversion\
+	osgviews\
 	sgv

@@ -1,0 +1,203 @@
+//C++ header - Open Scene Graph Simulation - Copyright (C) 1998-2002 Robert Osfield
+// Distributed under the terms of the GNU General Public License (GPL)
+// as published by the Free Software Foundation.
+//
+// All software using osgSim must be GPL'd or excempted via the 
+// purchase of the Open Scene Graph Professional License (OSGPL)
+// for further information contact robert@openscenegraph.com.
+
+#ifndef OSGSIM_SECTOR
+#define OSGSIM_SECTOR 1
+
+#include <osgSim/Export>
+
+#include <osg/Quat>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Math>
+
+namespace osgSim {
+
+class Sector : public osg::Referenced
+{
+    public:
+        virtual float operator() (const osg::Vec3& /*eyeLocal*/) const = 0;
+
+    protected:
+
+        virtual ~Sector() {}
+};
+
+class OSGSIM_EXPORT AzimRange
+{
+    public:
+
+       AzimRange():
+            _cosAzim(1.0f),
+            _sinAzim(0.0f),
+            _cosAngle(-1.0f),
+            _cosFadeAngle(-1.0f) {}
+
+        void setAzimuthRange(float minAzimuth,float maxAzimuth,float fadeAngle=0.0f);
+
+
+        inline float azimSector(const osg::Vec3& eyeLocal) const
+        {
+            float dotproduct = eyeLocal.x()*_sinAzim+eyeLocal.y()*_cosAzim;
+            float length = sqrt(osg::square(eyeLocal.x())+osg::square(eyeLocal.y()));
+            if (dotproduct<_cosFadeAngle*length) return 0.0f; // out of sector.
+            if (dotproduct>_cosAngle*length) return 1.0f; // fully in sector.
+            return (dotproduct-_cosFadeAngle*length)/((_cosAngle-_cosFadeAngle)*length);
+        }
+
+    protected:
+
+        float _cosAzim;
+        float _sinAzim;
+        float _cosAngle;
+        float _cosFadeAngle;
+};
+
+
+class OSGSIM_EXPORT ElevationRange
+{
+    public:
+    
+    
+        ElevationRange():
+            _cosMinElevation(-1.0f),
+            _cosMinFadeElevation(-1.0f),
+            _cosMaxElevation(1.0),
+            _cosMaxFadeElevation(1.0) {}
+            
+        void setElevationRange(float minElevation,float maxElevation,float fadeAngle=0.0f);
+        
+        float getMinElevation() const;
+
+        float getMaxElevation() const;
+
+        inline float elevationSector(const osg::Vec3& eyeLocal) const
+        {
+            float dotproduct = eyeLocal.z(); // against z axis - eyeLocal*(0,0,1).
+            float length = eyeLocal.length();
+            if (dotproduct>_cosMaxFadeElevation*length) return 0.0f; // out of sector
+            if (dotproduct<_cosMinFadeElevation*length) return 0.0f; // out of sector
+            if (dotproduct>_cosMaxElevation*length)
+            {
+                // in uppoer fade band.
+                return (dotproduct-_cosMaxFadeElevation*length)/((_cosMaxElevation-_cosMaxFadeElevation)*length);
+            }
+            if (dotproduct<_cosMinElevation*length)
+            {
+                // in lower fade band.
+                return (dotproduct-_cosMinFadeElevation*length)/((_cosMinElevation-_cosMinFadeElevation)*length);
+            }
+            return 1.0f; // fully in sector
+        }
+        
+    protected:
+
+        float _cosMinElevation;
+        float _cosMinFadeElevation;
+        float _cosMaxElevation;
+        float _cosMaxFadeElevation;
+};
+
+class OSGSIM_EXPORT AzimSector : public Sector, public AzimRange
+{
+    public:
+    
+        AzimSector():
+            Sector(),
+            AzimRange() {}
+    
+        AzimSector(float minAzimuth,float maxAzimuth,float fadeAngle=0.0f);
+
+        virtual float operator() (const osg::Vec3& eyeLocal) const;
+
+    protected:
+
+        virtual ~AzimSector() {}
+
+};
+
+class OSGSIM_EXPORT ElevationSector : public Sector, public ElevationRange
+{
+    public:
+    
+    
+        ElevationSector():
+            Sector(),
+            ElevationRange() {}
+            
+            
+        ElevationSector(float minElevation,float maxElevation,float fadeAngle=0.0f);
+    
+        virtual float operator() (const osg::Vec3& eyeLocal) const;
+        
+    protected:
+
+        virtual ~ElevationSector() {}
+
+        float _cosMinElevation;
+        float _cosMinFadeElevation;
+        float _cosMaxElevation;
+        float _cosMaxFadeElevation;
+};
+
+
+class OSGSIM_EXPORT AzimElevationSector : public Sector, public AzimRange, public ElevationRange
+{
+    public:
+    
+        AzimElevationSector():
+            Sector(),
+            AzimRange(),
+            ElevationRange() {}
+    
+        AzimElevationSector(float minAzimuth,float maxAzimuth,float minElevation,float maxElevation,float fadeAngle=0.0f);
+
+        virtual float operator() (const osg::Vec3& eyeLocal) const;
+
+    protected:
+
+        virtual ~AzimElevationSector() {}
+};
+
+
+class OSGSIM_EXPORT ConeSector : public Sector
+{
+    public:
+    
+        ConeSector():
+            Sector(),
+            _axis(0.0f,0.0f,1.0f),
+            _cosAngle(-1.0f),
+            _cosAngleFade(-1.0f) {}
+
+        ConeSector(const osg::Vec3& axis,float angle,float fadeangle=0.0f);
+
+        void setAxis(const osg::Vec3& axis);
+        
+        const osg::Vec3& getAxis() const;
+
+        void setAngle(float angle,float fadeangle=0.0f);
+        
+        float getAngle() const;
+    
+        float getFadeAngle() const;
+
+        virtual float operator() (const osg::Vec3& eyeLocal) const;
+
+    protected:
+
+        virtual ~ConeSector() {}
+    
+        osg::Vec3   _axis;
+        float       _cosAngle;
+        float       _cosAngleFade;
+};
+
+}
+
+#endif

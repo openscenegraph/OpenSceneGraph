@@ -1,0 +1,113 @@
+//C++ header - Open Scene Graph Simulation - Copyright (C) 1998-2002 Robert Osfield
+// Distributed under the terms of the GNU General Public License (GPL)
+// as published by the Free Software Foundation.
+//
+// All software using osgSim must be GPL'd or excempted via the 
+// purchase of the Open Scene Graph Professional License (OSGPL)
+// for further information contact robert@openscenegraph.com.
+
+#ifndef OSGSIM_LIGHTPOINTDRAWABLE
+#define OSGSIM_LIGHTPOINTDRAWABLE 1
+
+#include <osgSim/Export>
+
+#include <osg/Drawable>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Depth>
+#include <osg/BlendFunc>
+#include <osg/ColorMask>
+#include <osg/Point>
+
+#include <vector>
+
+namespace osgSim {
+
+
+class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
+{
+    public :
+
+        LightPointDrawable();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        LightPointDrawable(const LightPointDrawable&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        virtual osg::Object* cloneType() const { return osgNew LightPointDrawable(); }
+        virtual osg::Object* clone(const osg::CopyOp&) const { return osgNew LightPointDrawable(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const LightPointDrawable*>(obj)!=NULL; }
+        virtual const char* className() const { return "LightPointDrawable"; }
+
+        
+        //typedef std::pair<unsigned long,osg::Vec3> ColorPosition;
+        struct ColorPosition
+        {
+            unsigned long first;
+            osg::Vec3 second;
+            ColorPosition() {}
+            ColorPosition(unsigned long f,const osg::Vec3& s):first(f),second(s) {}
+        };
+        
+        void reset()
+        {
+            for(SizedLightPointList::iterator itr=_sizedLightPointList.begin();
+                itr!=_sizedLightPointList.end();
+                ++itr)
+            {
+                if (!itr->empty())
+                    itr->erase(itr->begin(),itr->end());
+            }
+
+        }
+
+        inline void addLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
+        {
+            if (pointSize>=_sizedLightPointList.size()) _sizedLightPointList.resize(pointSize+1);
+            _sizedLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
+        }
+        
+        /** draw LightPoints. */
+        virtual void drawImplementation(osg::State& state) const;
+
+
+        void setReferenceTime(double time)
+        {
+            _referenceTime = time;
+            _referenceTimeInterval = 0.0;
+        }
+
+        void updateReferenceTime(double time)
+        {
+            _referenceTimeInterval = osg::clampAbove(time-_referenceTime,0.0);
+            _referenceTime = time;
+        }
+        
+        double getReferenceTime() const { return _referenceTime; }
+        double getReferenceTimeInterval() const { return _referenceTimeInterval; }
+        
+    protected:
+    
+        virtual bool computeBound() const;
+
+        ~LightPointDrawable() {}
+               
+        double _referenceTime;
+        double _referenceTimeInterval;
+        
+        typedef std::vector<ColorPosition> LightPointList;
+        typedef std::vector<LightPointList> SizedLightPointList;
+
+        SizedLightPointList _sizedLightPointList;
+
+        osg::ref_ptr<osg::Depth>        _depthOff;
+        osg::ref_ptr<osg::Depth>        _depthOn;
+        osg::ref_ptr<osg::BlendFunc>    _blendOn;
+        osg::ref_ptr<osg::ColorMask>    _colorMaskOff;
+        osg::ref_ptr<osg::Point>        _point;
+
+        
+};
+
+}
+
+#endif

@@ -1,0 +1,72 @@
+//C++ header - Open Scene Graph Simulation - Copyright (C) 1998-2002 Robert Osfield
+// Distributed under the terms of the GNU General Public License (GPL)
+// as published by the Free Software Foundation.
+//
+// All software using osgSim must be GPL'd or excempted via the 
+// purchase of the Open Scene Graph Professional License (OSGPL)
+// for further information contact robert@openscenegraph.com.
+
+#ifndef OSGSIM_LIGHTPOINTNODE
+#define OSGSIM_LIGHTPOINTNODE 1
+
+#include <osgSim/Export>
+#include <osgSim/LightPoint>
+#include <osgSim/LightPointDrawable>
+
+#include <osg/Node>
+#include <osg/NodeVisitor>
+#include <osg/BoundingBox>
+#include <osg/Quat>
+#include <osg/Vec4>
+
+#include <vector>
+#include <set>
+
+namespace osgSim {
+
+
+class OSGSIM_EXPORT LightPointNode : public osg::Node
+{
+    public :
+
+        typedef std::vector< LightPoint > LightPointList;
+
+        LightPointNode();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        LightPointNode(const LightPointNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgSim,LightPointNode);
+
+        virtual void traverse(osg::NodeVisitor& nv);
+
+        
+        unsigned int addLightPoint(const LightPoint& lp);
+	
+	LightPoint& getLightPoint(unsigned int pos) { return _lightPointList[pos]; }
+
+	const LightPoint& getLightPoint(unsigned int pos) const { return _lightPointList[pos]; }
+        
+        void removeLightPoint(unsigned int pos);
+        
+        void removeLightPoints(LightPointList::iterator start,LightPointList::iterator end);
+
+        LightPointList  _lightPointList;
+
+    protected:
+    
+        ~LightPointNode() {}
+
+        // used to cache the bouding box of the lightpoints as a tighter
+        // view frustum check. 
+        mutable osg::BoundingBox _bbox;
+
+        virtual bool computeBound() const;
+
+        
+        
+};
+
+}
+
+#endif

@@ -16,9 +16,9 @@ using namespace flt;
 
 osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
-    FltFile read;
+    osg::ref_ptr<FltFile> read = new FltFile;
 
-    osg::Object* obj=read.readObject(fileName);
+    osg::Object* obj = read.get()->readObject(fileName);
     if (obj) return obj;
     else return ReadResult::FILE_NOT_HANDLED;
 }
@@ -26,10 +26,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& f
 
 osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
-    FltFile read;
+    osg::ref_ptr<FltFile> read = new FltFile;
 
-    osg::Node* obj=read.readNode(fileName);
-    if (obj) return obj;
+    osg::Node* node = read.get()->readNode(fileName);
+    if (node) return node;
     else return ReadResult::FILE_NOT_HANDLED;
 }
 

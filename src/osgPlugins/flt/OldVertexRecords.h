@@ -42,7 +42,7 @@ class OldVertexRecord : public PrimNodeRecord
         virtual Record* clone() const { return new OldVertexRecord(); }
         virtual const char* className() const { return "OldVertexRecord"; }
         virtual int classOpcode() const { return OLD_VERTEX_OP; }
-        virtual int sizeofData() const { return sizeof(SOldVertex); }
+        virtual size_t sizeofData() const { return sizeof(SOldVertex); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertex* getData() const { return (SOldVertex*)_pData; }
@@ -83,7 +83,7 @@ class OldVertexColorRecord : public PrimNodeRecord
         virtual Record* clone() const { return new OldVertexColorRecord(); }
         virtual const char* className() const { return "OldVertexColorRecord"; }
         virtual int classOpcode() const { return OLD_VERTEX_COLOR_OP; }
-        virtual int sizeofData() const { return sizeof(SOldVertexColor); }
+        virtual size_t sizeofData() const { return sizeof(SOldVertexColor); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertexColor* getData() const { return (SOldVertexColor*)_pData; }
@@ -124,7 +124,7 @@ class OldVertexColorNormalRecord : public PrimNodeRecord
         virtual Record* clone() const { return new OldVertexColorNormalRecord(); }
         virtual const char* className() const { return "OldVertexColorNormalRecord"; }
         virtual int classOpcode() const { return OLD_VERTEX_COLOR_NORMAL_OP; }
-        virtual int sizeofData() const { return sizeof(SOldVertexColorNormal); }
+        virtual size_t sizeofData() const { return sizeof(SOldVertexColorNormal); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertexColorNormal* getData() const { return (SOldVertexColorNormal*)_pData; }

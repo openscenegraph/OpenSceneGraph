@@ -44,7 +44,7 @@ class Record : public osg::Referenced
 
         virtual const char* className() const { return "Record"; } //const = 0;
         virtual int classOpcode() const { return 0; } //const = 0;
-        virtual int sizeofData() const { return 0; }  //const = 0;
+        virtual size_t sizeofData() const { return 0; }  //const = 0;
         virtual void accept(RecordVisitor& rv);
         virtual void traverse(RecordVisitor&) {}
 
@@ -60,9 +60,9 @@ class Record : public osg::Referenced
         SRecHeader*     getData() const;
         void*           getBody() const;
         int             getOpcode() const;
-        int             getSize() const;
-        int             getHeaderLength() const;
-        int             getBodyLength() const;
+        size_t          getSize() const;
+        size_t          getHeaderLength() const;
+        size_t          getBodyLength() const;
         bool            isOfType(int op) const;
         Record*         getParent() const { return _pParent; }
 
@@ -115,19 +115,19 @@ int Record::getOpcode() const
 }
 
 inline
-int Record::getSize() const
+size_t Record::getSize() const
 {
     return (_pData) ? _pData->length() : 0;
 }
 
 inline
-int Record::getHeaderLength() const
+size_t Record::getHeaderLength() const
 {
     return sizeof(SRecHeader);
 }
 
 inline
-int Record::getBodyLength() const
+size_t Record::getBodyLength() const
 {
     return getSize() - getHeaderLength();
 }

@@ -40,38 +40,38 @@ class Registry
 {
     public:
 
-        ~Registry();
+        ~Registry() {}
 
         static Registry* instance();
 
         void addPrototype(Record* rec);
-        void removePrototype(Record* rec);
-        Record* getRecordProto(const int opcode);
+        Record* getPrototype(const int opcode);
 
-        void addTexture(osg::Texture* texture);
-        void removeTexture(osg::Texture* texture);
+        void addTexture(const std::string& name, osg::Texture* texture);
         osg::Texture* getTexture(const std::string name);
 
         void addFltFile(const std::string& name, FltFile* file);
         FltFile* getFltFile(const std::string& name);
 
+        inline void setVersion(int ver) { _fltFileVersion = ver; }
+        inline int  getVersion() const  { return _fltFileVersion; }
+
     private:
 
-        typedef std::vector<osg::ref_ptr<Record> >          RecordProtoList;
-        typedef std::vector<osg::Texture*> TextureList;
-        typedef std::map<std::string,osg::ref_ptr<FltFile> > FltFileMap;
+        typedef std::map<int, osg::ref_ptr<Record> > RecordProtoMap;
+        typedef std::map<std::string, osg::ref_ptr<osg::Texture> > TextureMap;
+        typedef std::map<std::string, osg::ref_ptr<FltFile> > FltFileMap;
 
         /** constructor is private, as its a singleton, preventing
             construction other than via the instance() method and
             therefore ensuring only one copy is ever constructed*/
-        Registry();
+        Registry() {}
 
-        RecordProtoList::iterator getRecordProtoItr(const int opcode);
-        TextureList::iterator getTextureItr(const std::string name);
+        RecordProtoMap  _recordProtoMap;
+        TextureMap      _textureMap;
+        FltFileMap      _fltFileMap;
+        int             _fltFileVersion;
 
-        RecordProtoList  _recordProtoList;
-        TextureList      _textureList;
-        FltFileMap       _fltFileMap;
 };
 
 
@@ -81,22 +81,22 @@ template<class T>
 class RegisterRecordProxy
 {
     public:
+
         RegisterRecordProxy()
         {
-            _obj = new T;
-            _obj->ref();
-            Registry::instance()->addPrototype(_obj);
+            if (Registry::instance())
+            {
+                _obj = new T;
+                Registry::instance()->addPrototype(_obj.get());
+            }
         }
-        ~RegisterRecordProxy()
-        {
-            //commented out to prevent seg fault under Linux 
-            //due to the registry being previously destructed.
-            //Registry::instance()->removePrototype(_obj);
-            _obj->unref();
-        }
+
+        ~RegisterRecordProxy() {}
         
     protected:
-        T* _obj;
+
+        osg::ref_ptr<T> _obj;
+
 };
 
 
@@ -104,3 +104,4 @@ class RegisterRecordProxy
 }; // end namespace flt
 
 #endif // __FLT_REGISTRY_H
+

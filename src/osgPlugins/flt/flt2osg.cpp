@@ -9,6 +9,10 @@
 #include <osg/Switch>
 #include <osg/Geode>
 #include <osg/GeoSet>
+#include <osg/StateSet>
+#include <osg/CullFace>
+#include <osg/TexEnv>
+#include <osg/Point>
 #include <osg/Material>
 #include <osg/PolygonOffset>
 #include <osg/Vec3>
@@ -27,6 +31,7 @@
 #include "flt.h"
 #include "flt2osg.h"
 #include "FltFile.h"
+#include "Registry.h"
 #include "Record.h"
 #include "HeaderRecord.h"
 #include "ColorPaletteRecord.h"
@@ -145,7 +150,7 @@ osg::Node* ConvertFromFLT::visitAncillary(osg::Group* osgParent, PrimNodeRecord*
 osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecord* rec)
 {
     osg::Node* node = NULL;
-    GeoSetBuilder   geoSetBuilder(_pFltFile);
+    GeoSetBuilder   geoSetBuilder(_pFltFile.get());
 
     // Visit
     for(int i=0; i < rec->getNumChildren(); i++)
@@ -215,31 +220,36 @@ osg::Node* ConvertFromFLT::visitHeader(osg::Group* osgParent, HeaderRecord* rec)
                                  /*osgParent*/
 osg::Node* ConvertFromFLT::visitColorPalette(osg::Group* , ColorPaletteRecord* rec)
 {
-    ColorPool* pColorPool = _pFltFile->getColorPool();
-    if (pColorPool == NULL)
-    {
-        _pFltFile->useLocalColorPool();
-        pColorPool = _pFltFile->getColorPool();
-    }
+    if (!_pFltFile->useColorPalette()) return NULL;
 
-    if (rec->getSize() > sizeof(SOldColorPalette))
+    ColorPool* pColorPool = _pFltFile->getColorPool();
+
+    if (_diOpenFlightVersion > 13)
     {
         SColorPalette* pCol = (SColorPalette*)rec->getData();
         for (int i=0; i < 1024; i++)
-            pColorPool->addColor(i, pCol->Colors[i].get());
+        {
+            osg::Vec4 color(pCol->Colors[i].get());
+            color[3] = 1.0f;    // Force alpha to one
+            pColorPool->addColor(i, color);
+        }
     }
     else    // version 11, 12 & 13
     {
-        SOldColorPalette* pSColor = (SOldColorPalette*)rec->getData();
+        SOldColorPalette* pCol = (SOldColorPalette*)rec->getData();
         unsigned int i;
-        for (i=0; i < sizeof(pSColor->Colors)/sizeof(pSColor->Colors[0]); i++)
+        for (i=0; i < sizeof(pCol->Colors)/sizeof(pCol->Colors[0]); i++)
         {
-            pColorPool->addColor(i, pSColor->Colors[i].get());
+            osg::Vec4 color(pCol->Colors[i].get());
+            color[3] = 1.0f;    // Force alpha to one
+            pColorPool->addColor(i, color);
         }
 
-        for (i=0; i < sizeof(pSColor->FixedColors)/sizeof(pSColor->FixedColors[0]); i++)
+        for (i=0; i < sizeof(pCol->FixedColors)/sizeof(pCol->FixedColors[0]); i++)
         {
-            pColorPool->addColor(i+4096, pSColor->FixedColors[i].get());
+            osg::Vec4 color(pCol->FixedColors[i].get());
+            color[3] = 1.0f;    // Force alpha to one
+            pColorPool->addColor(i+4096, color);
         }
     }
 
@@ -250,12 +260,13 @@ osg::Node* ConvertFromFLT::visitColorPalette(osg::Group* , ColorPaletteRecord* r
                                  /*osgParent*/
 osg::Node* ConvertFromFLT::visitMaterialPalette(osg::Group* , MaterialPaletteRecord* rec)
 {
+    if (!_pFltFile->useMaterialPalette()) return NULL;
+
     SMaterial* pSMaterial = (SMaterial*)rec->getData();
     MaterialPool* pMaterialPool = _pFltFile->getMaterialPool();
-
-    if (pSMaterial && pMaterialPool )
+    if (pSMaterial && pMaterialPool)
     {
-        PoolMaterial* pPoolMat = new PoolMaterial;
+        MaterialPool::PoolMaterial* pPoolMat = new MaterialPool::PoolMaterial;
 
         pPoolMat->Ambient   = pSMaterial->Ambient;
         pPoolMat->Diffuse   = pSMaterial->Diffuse;
@@ -272,6 +283,8 @@ osg::Node* ConvertFromFLT::visitMaterialPalette(osg::Group* , MaterialPaletteRec
                                  /*osgParent*/
 osg::Node* ConvertFromFLT::visitOldMaterialPalette(osg::Group* , OldMaterialPaletteRecord* rec)
 {
+    if (!_pFltFile->useMaterialPalette()) return NULL;
+
     SOldMaterial* pSMaterial = (SOldMaterial*)rec->getData();
     MaterialPool* pMaterialPool = _pFltFile->getMaterialPool();
 
@@ -279,7 +292,7 @@ osg::Node* ConvertFromFLT::visitOldMaterialPalette(osg::Group* , OldMaterialPale
     {
         for (int i=0; i < 64; i++)
         {
-            PoolMaterial* pPoolMat = new PoolMaterial;
+            MaterialPool::PoolMaterial* pPoolMat = new MaterialPool::PoolMaterial;
 
             pPoolMat->Ambient   = pSMaterial->mat[i].Ambient;
             pPoolMat->Diffuse   = pSMaterial->mat[i].Diffuse;
@@ -297,24 +310,39 @@ osg::Node* ConvertFromFLT::visitOldMaterialPalette(osg::Group* , OldMaterialPale
                                  /*osgParent*/
 osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecord* rec)
 {
-    STexturePalette* pTexture = (STexturePalette*)rec->getData();
+    if (!_pFltFile->useTexturePalette()) return NULL;
 
-    if (pTexture)
+    STexturePalette* pTexture = (STexturePalette*)rec->getData();
+    TexturePool* pTexturePool = _pFltFile->getTexturePool();
+
+    if (pTexture && pTexturePool)
     {
-        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pTexture->szFilename);
-        if (image.valid())
+        osg::Texture *osgTexture;
+
+        osgTexture = Registry::instance()->getTexture(pTexture->szFilename);
+        if (osgTexture == NULL)
         {
-            osg::Texture *osgTexture = new osg::Texture;
-            TexturePool* pTexturePool = _pFltFile->getTexturePool();
-            if (osgTexture && pTexturePool)
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pTexture->szFilename);
+            if (image.valid())
             {
+                osgTexture = new osg::Texture;
                 osgTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
                 osgTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
                 osgTexture->setImage(image.get());
-                pTexturePool->addTexture((int)pTexture->diIndex, osgTexture);
+
+                // set up trilinear filtering.
+                osgTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+                osgTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+
+                // Add new texture to registry
+                Registry::instance()->addTexture(pTexture->szFilename, osgTexture);
             }
         }
+
+        if (osgTexture)
+            pTexturePool->addTexture((int)pTexture->diIndex, osgTexture);
     }
+
     return NULL;
 }
 
@@ -485,6 +513,7 @@ osg::Node* ConvertFromFLT::visitSwitch(osg::Group* osgParent, SwitchRecord* rec)
 osg::Node* ConvertFromFLT::visitObject(osg::Group* osgParent, ObjectRecord* rec)
 {
     osg::Group* group = new osg::Group;
+
     if (group)
     {
         osg::Node* node = visitAncillary(osgParent, rec);
@@ -505,6 +534,8 @@ osg::Node* ConvertFromFLT::visitObject(osg::Group* osgParent, ObjectRecord* rec)
 
 void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 {
+    osg::GeoSet* geoSet = pBuilder->getGeoSet();
+    osg::StateSet* stateSet = geoSet->getStateSet();
     SFace *pSFace = (SFace*)rec->getData();
     osg::Vec4 color(1,1,1,1);
 
@@ -513,16 +544,25 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     switch(drawMode)
     {
         case FaceRecord::SOLID_BACKFACED:
-            pBuilder->setCullface(true);
+            // Enable backface culling
+            {
+                osg::CullFace* cullface = new osg::CullFace;
+                cullface->setMode(osg::CullFace::BACK);
+                stateSet->setAttributeAndModes(cullface, osg::StateAttribute::ON);
+            }
             break;
+
         case FaceRecord::SOLID_NO_BACKFACE:
-            pBuilder->setCullface(false);
+            // Disable backface culling
+            stateSet->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
             break;
+
         case FaceRecord::WIREFRAME_NOT_CLOSED:
-            pBuilder->setPrimType(osg::GeoSet::LINE_STRIP);
+            geoSet->setPrimType(osg::GeoSet::LINE_STRIP);
             break;
+
         case FaceRecord::WIREFRAME_CLOSED:
-            pBuilder->setPrimType(osg::GeoSet::LINE_LOOP);
+            geoSet->setPrimType(osg::GeoSet::LINE_LOOP);
             break;
     }
     /*
@@ -540,24 +580,48 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
         }
     */
 
-    // Lighting
+
+    // Lighting and color binding
     if (_diOpenFlightVersion > 13)
     {
         switch(pSFace->swLightMode)
         {
             case FaceRecord::FACE_COLOR:
-            case FaceRecord::VERTEX_COLOR:
-                pBuilder->setLighting(false);
+                // Use face color, not illuminated
+                stateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+                geoSet->setColorBinding( osg::GeoSet::BIND_OVERALL );
                 break;
+
+            case FaceRecord::VERTEX_COLOR:
+                // Use vertex colors, not illuminated
+                stateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+                geoSet->setColorBinding( osg::GeoSet::BIND_PERVERTEX );
+                break;
+
             case FaceRecord::FACE_COLOR_LIGHTING:
+                // Use face color and vertex normal
+                stateSet->setMode( GL_LIGHTING, osg::StateAttribute::ON );
+                geoSet->setColorBinding( osg::GeoSet::BIND_OVERALL );
+                geoSet->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+                break;
+
             case FaceRecord::VERTEX_COLOR_LIGHTING:
-                pBuilder->setLighting(true);
+                // Use vertex color and vertex normal
+                stateSet->setMode( GL_LIGHTING, osg::StateAttribute::ON );
+                geoSet->setColorBinding( osg::GeoSet::BIND_PERVERTEX );
+                geoSet->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
                 break;
         }
     }
-
-    // Color
+    else // Version 11, 12 & 13
     {
+        geoSet->setColorBinding( osg::GeoSet::BIND_OVERALL );
+    }
+
+
+    // Face Color
+    {
+        float alpha = 1.0f;
         ColorPool* pColorPool = _pFltFile->getColorPool();
 
         if (_diOpenFlightVersion > 13)
@@ -577,29 +641,10 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 
                 alpha = 1.0f - (float)pSFace->wTransparency / 65535.0f;
                 color[3] = alpha;
-
-                if (alpha < 1.0f)
-                    pBuilder->setTransparency(true);
-
-                pBuilder->setFaceColor(color);
-
-                switch(pSFace->swLightMode)
-                {
-                    case FaceRecord::FACE_COLOR:
-                    case FaceRecord::FACE_COLOR_LIGHTING:
-                        pBuilder->setColorBinding(osg::GeoSet::BIND_OVERALL);
-                        break;
-
-                    case FaceRecord::VERTEX_COLOR:
-                    case FaceRecord::VERTEX_COLOR_LIGHTING:
-                        pBuilder->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
-                        break;
-                }
             }
         }
         else // Version 11, 12 & 13
         {
-            float alpha;
             bool bPackedColor = _bHdrRgbMode || (pColorPool == NULL);
 
            if (bPackedColor)
@@ -609,20 +654,24 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 
             alpha = 1.0f - (float)pSFace->wTransparency / 65535.0f;
             color[3] = alpha;
-
-            if (alpha < 1.0f)
-                pBuilder->setTransparency(true);
-
-            pBuilder->setColorBinding(osg::GeoSet::BIND_OVERALL);
-            pBuilder->setFaceColor(color);
         }
+
+        // Transparency
+        if (alpha < 1.0f)
+        {
+            stateSet->setMode(GL_BLEND,osg::StateAttribute::ON);
+            stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
+
+        if (geoSet->getColorBinding() == osg::GeoSet::BIND_OVERALL)
+            geoSet->setColors( new osg::Vec4(color) );
     }
 
     // Material
     MaterialPool* pMaterialPool = _pFltFile->getMaterialPool();
     if (pMaterialPool)
     {
-        PoolMaterial* pSMaterial = pMaterialPool->getMaterial((int)pSFace->iMaterial);
+        MaterialPool::PoolMaterial* pSMaterial = pMaterialPool->getMaterial((int)pSFace->iMaterial);
 
         if (pSMaterial)
         {
@@ -656,6 +705,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             emissiv[2] = pSMaterial->Emissive[2];
             emissiv[3] = alpha;
 
+//          osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
             osgMaterial->setAmbient(osg::Material::FRONT_AND_BACK, ambient);
             osgMaterial->setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
             osgMaterial->setSpecular(osg::Material::FRONT_AND_BACK, specular);
@@ -664,128 +714,146 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             osgMaterial->setShininess(osg::Material::FRONT_AND_BACK, pSMaterial->sfShininess/128.0f);
 
             if (alpha < 1.0f)
-                pBuilder->setTransparency(true);
-
-            switch (pSFace->swLightMode)
             {
-            case FaceRecord::VERTEX_COLOR:
-            case FaceRecord::VERTEX_COLOR_LIGHTING:
-                osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
-                break;
-
-            default:
-                osgMaterial->setColorMode(osg::Material::OFF);
+                stateSet->setMode(GL_BLEND,osg::StateAttribute::ON);
+                stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             }
 
-            pBuilder->setMaterial(osgMaterial);
+            stateSet->setAttribute(osgMaterial);
         }
     }
 
     // Subface
     if (rec->getParent()->isOfType(FACE_OP))
     {
-        pBuilder->setSubface(_nSubfaceLevel);
+        if (_nSubfaceLevel > 0)
+        {
+            osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
+            if (polyoffset)
+            {
+                polyoffset->setFactor(-1.0f*_nSubfaceLevel);
+                polyoffset->setUnits(-20.0f*_nSubfaceLevel);
+                stateSet->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
+            }
+        }
     }
 
     // Texture
-    TexturePool* pTexturePool = _pFltFile->getTexturePool();
-    if (pTexturePool)
+    if (pSFace->iTexturePattern != -1)
     {
-        osg::Texture* osgTexture = pTexturePool->getTexture((int)pSFace->iTexturePattern);
-        if (osgTexture)
+        TexturePool* pTexturePool = _pFltFile->getTexturePool();
+        if (pTexturePool)
         {
-            osg::Image* image = osgTexture->getImage();
-            if (image)
+            osg::Texture* osgTexture = pTexturePool->getTexture((int)pSFace->iTexturePattern);
+            if (osgTexture)
             {
-                switch (image->pixelFormat())
+                osg::Image* image = osgTexture->getImage();
+                if (image)
                 {
-                    case GL_LUMINANCE_ALPHA:
-                    case GL_RGBA:
-                        pBuilder->setTransparency(true);
-                        break;
+                    switch (image->pixelFormat())
+                    {
+                        case GL_LUMINANCE_ALPHA:
+                        case GL_RGBA:
+                            stateSet->setMode(GL_BLEND,osg::StateAttribute::ON);
+                            stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                            break;
+                    }
                 }
+
+                geoSet->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+
+                // TODO: Crrect when .attr loader implemented
+                osg::TexEnv* osgTexEnv = new osg::TexEnv;
+                osgTexEnv->setMode(osg::TexEnv::MODULATE);
+                stateSet->setAttribute( osgTexEnv );
+                stateSet->setAttributeAndModes( osgTexture, osg::StateAttribute::ON );
             }
-            pBuilder->setTexture(osgTexture);
         }
     }
 
     // Visit vertices
-    int i;
-    for(i=0; i < rec->getNumChildren(); i++)
+    if (_diOpenFlightVersion > 13)
     {
-        Record* child = rec->getChild(i);
-
-        if (child)
+        int i;
+        for(i=0; i < rec->getNumChildren(); i++)
         {
-            int op = child->getOpcode();
-            switch (op)
+            Record* child = rec->getChild(i);
+            if (child == NULL) break;
+
+            switch (child->getOpcode())
             {
-                case VERTEX_LIST_OP:
-                    visitVertexList(pBuilder, (VertexListRecord*)child);
-                    break;
-
-                case OLD_VERTEX_OP:
-                    pBuilder->addVertex(child);
-                    break;
-
-                case OLD_VERTEX_COLOR_OP:
-                    pBuilder->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
-                    pBuilder->addVertex(child);
-                    break;
-
-                case OLD_VERTEX_COLOR_NORMAL_OP:
-                    pBuilder->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
-                    pBuilder->addVertex(child);
-                    pBuilder->setLighting(true);
-                    break;
-            }
-        }
-    }
-
-    // Add primitive to GeoSet and prepare for next.
-    pBuilder->addPrimitive();
-
-    // Look for subfaces
-    _nSubfaceLevel++;
-    for(i=0; i < rec->getNumChildren(); i++)
-    {
-        Record* child = rec->getChild(i);
-
-        if (child && child->isOfType(FACE_OP))
-            visitFace(pBuilder, (FaceRecord*)child);
-    }
-    _nSubfaceLevel--;
-}
-
-
-void ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
-{
-    int vertices = rec->numberOfVertices();
-
-    // Add vertices to GeoSetBuilder
-    if (pBuilder->getPrimType() == osg::GeoSet::POINTS)
-    {
-        for (int i=0; i < vertices; i++)
-        {
-            Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(i));
-            if (vertex)
-            {
-                pBuilder->setPrimType(osg::GeoSet::POINTS);
-                pBuilder->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
-                pBuilder->addVertex(vertex);
-                pBuilder->addPrimitive();
+            case VERTEX_LIST_OP:
+                pBuilder->addPrimLen(
+                    visitVertexList(pBuilder, (VertexListRecord*)child));
+                break;
             }
         }
     }
     else
     {
-        for (int i=0; i < vertices; i++)
+        int i;
+        int vertices=0;
+        for(i=0; i < rec->getNumChildren(); i++)
         {
-            Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(i));
-            if (vertex)
-                pBuilder->addVertex(vertex);
+            Record* child = rec->getChild(i);
+            if (child == NULL) break;
+
+            switch (child->getOpcode())
+            {
+            case OLD_VERTEX_OP:
+                pBuilder->addVertex(child);
+                vertices++;
+                break;
+
+            case OLD_VERTEX_COLOR_OP:
+                geoSet->setColorBinding( osg::GeoSet::BIND_PERVERTEX );
+                pBuilder->addVertex(child);
+                vertices++;
+                break;
+
+            case OLD_VERTEX_COLOR_NORMAL_OP:
+                geoSet->setColorBinding( osg::GeoSet::BIND_PERVERTEX );
+                pBuilder->addVertex(child);
+                vertices++;
+                break;
+            }
         }
+        pBuilder->addPrimLen(vertices);
     }
+
+    // Add primitives to GeoSet and prepare for next.
+    pBuilder->addPrimitive();
+
+    // Look for subfaces
+    {
+        int n;
+
+        _nSubfaceLevel++;
+        for(n=0; n<rec->getNumChildren(); n++)
+        {
+            Record* child = rec->getChild(n);
+
+            if (child && child->isOfType(FACE_OP))
+                visitFace(pBuilder, (FaceRecord*)child);
+        }
+        _nSubfaceLevel--;
+    }
+}
+
+
+int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
+{
+    osg::GeoSet* geoSet = pBuilder->getGeoSet();
+    int vertices = rec->numberOfVertices();
+
+    // Add vertices to GeoSetBuilder
+    for (int i=0; i < vertices; i++)
+    {
+        Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(i));
+        if (vertex)
+            pBuilder->addVertex(vertex);
+    }
+    return vertices;
 }
 
 
@@ -815,8 +883,7 @@ osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
 
 osg::Node* ConvertFromFLT::visitExternal(osg::Group* osgParent, ExternalRecord* rec)
 {
-    //    SExternalReference *pSExternal = (SExternalReference*)rec->getData();
-
+    // SExternalReference *pSExternal = (SExternalReference*)rec->getData();
     if (osgParent)
     {
         osg::Node* node = visitAncillary(osgParent, rec);
@@ -840,7 +907,23 @@ osg::Node* ConvertFromFLT::visitExternal(osg::Group* osgParent, ExternalRecord* 
 
 void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec)
 {
-    //    SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
+    osg::GeoSet* geoSet = pBuilder->getGeoSet();
+    osg::StateSet* stateSet = geoSet->getStateSet();
+    SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
+
+    geoSet->setPrimType(osg::GeoSet::POINTS);
+    geoSet->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
+
+    osg::Point* point = new osg::Point;
+    if (point)
+    {
+        point->setSize( pSLightPoint->sfSize );
+        stateSet->setAttributeAndModes( point, osg::StateAttribute::ON );
+//      point->setFadeThresholdSize(const float fadeThresholdSize);
+//      point->setDistanceAttenuation(const Vec3& distanceAttenuation);
+//      point->setStateSetModes(*stateSet,const GLModeValue value); // GL_POINT_SMOOTH
+
+    }
 
     // Visit vertices
     for(int i=0; i < rec->getNumChildren(); i++)
@@ -853,22 +936,22 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
             switch (op)
             {
                 case VERTEX_LIST_OP:
-                    pBuilder->setPrimType(osg::GeoSet::POINTS);
-                    visitVertexList(pBuilder, (VertexListRecord*)child);
+                    {
+                    int vertices = visitVertexList(pBuilder, (VertexListRecord*)child);
+                    for (int v=0; v<vertices; v++)
+                        pBuilder->addPrimLen(1);
+                    }
                     break;
 
                 case OLD_VERTEX_OP:
-                    pBuilder->addVertex(child);
-                    pBuilder->addPrimitive();
-                    break;
-
                 case OLD_VERTEX_COLOR_OP:
                 case OLD_VERTEX_COLOR_NORMAL_OP:
-                    pBuilder->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
                     pBuilder->addVertex(child);
-                    pBuilder->addPrimitive();
+                    pBuilder->addPrimLen(1);
                     break;
             }
         }
     }
+
+    pBuilder->addPrimitive();
 }

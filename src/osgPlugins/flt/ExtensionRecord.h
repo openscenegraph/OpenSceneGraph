@@ -43,7 +43,7 @@ class ExtensionRecord : public PrimNodeRecord
         virtual Record* clone() const { return new ExtensionRecord(); }
         virtual const char* className() const { return "ExtensionRecord"; }
         virtual int classOpcode() const { return EXTENSION_OP; }
-        virtual int sizeofData() const { return sizeof(SExtension); }
+        virtual size_t sizeofData() const { return sizeof(SExtension); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

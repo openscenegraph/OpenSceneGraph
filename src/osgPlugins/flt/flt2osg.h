@@ -3,13 +3,15 @@
 #ifndef __FLT_2_OSG_H
 #define __FLT_2_OSG_H
 
-#include <map>
-#include <vector>
-#include <string>
-
+#include <osg/ref_ptr>
 #include <osg/Vec4>
 
 #include "Record.h"
+#include "FltFile.h"
+
+#include <map>
+#include <vector>
+#include <string>
 
 
 namespace osg {
@@ -51,66 +53,64 @@ class VertexListRecord;
 class LongIDRecord;
 
 class GeoSetBuilder;
-class FltFile;
 
 struct SMaterial;
 
 
 class ConvertFromFLT
 {
-public:
+    public:
 
-    ConvertFromFLT(FltFile* pFltFile);
-    virtual ~ConvertFromFLT();
+        ConvertFromFLT(FltFile* pFltFile);
+        virtual ~ConvertFromFLT();
 
-    osg::Node* convert(Record* rec);
+        osg::Node* convert(Record* rec);
 
-    osg::Node* visitNode(osg::Group* osgParent,Record* rec);
-    osg::Node* visitAncillary(osg::Group* osgParent, PrimNodeRecord* rec);
-    osg::Node* visitPrimaryNode(osg::Group* osgParent, PrimNodeRecord* rec);
+        osg::Node* visitNode(osg::Group* osgParent,Record* rec);
+        osg::Node* visitAncillary(osg::Group* osgParent, PrimNodeRecord* rec);
+        osg::Node* visitPrimaryNode(osg::Group* osgParent, PrimNodeRecord* rec);
 
-    osg::Node* visitLongID(osg::Group* osgParent, LongIDRecord* rec);
+        osg::Node* visitLongID(osg::Group* osgParent, LongIDRecord* rec);
 
-    osg::Node* visitHeader(osg::Group* osgParent, HeaderRecord* rec);
-    osg::Node* visitColorPalette(osg::Group* osgParent, ColorPaletteRecord* rec);
-    osg::Node* visitMaterialPalette(osg::Group* osgParent, MaterialPaletteRecord* rec);
-    osg::Node* visitOldMaterialPalette(osg::Group* osgParent, OldMaterialPaletteRecord* rec);
-    osg::Node* visitTexturePalette(osg::Group* osgParent, TexturePaletteRecord* rec);
-    osg::Node* visitVertexPalette(osg::Group* osgParent, VertexPaletteRecord* rec);
-    osg::Node* visitVertex(osg::Group* osgParent, VertexRecord* rec);
-    osg::Node* visitNormalVertex(osg::Group* osgParent, NormalVertexRecord* rec);
-    osg::Node* visitTextureVertex(osg::Group* osgParent, TextureVertexRecord* rec);
-    osg::Node* visitNormalTextureVertex(osg::Group* osgParent, NormalTextureVertexRecord* rec);
-    osg::Node* visitGroup(osg::Group* osgParent, GroupRecord* rec);
-    osg::Node* visitLOD(osg::Group* osgParent, LodRecord* rec);
-    osg::Node* visitOldLOD(osg::Group* osgParent, OldLodRecord* rec);
-    osg::Node* visitDOF(osg::Group* osgParent, DofRecord* rec);
-    osg::Node* visitSwitch(osg::Group* osgParent, SwitchRecord* rec);
-    osg::Node* visitObject(osg::Group* osgParent, ObjectRecord* rec);
-    osg::Node* visitMatrix(osg::Group* osgParent, MatrixRecord* rec);
-    osg::Node* visitExternal(osg::Group* osgParent, ExternalRecord* rec);
+        osg::Node* visitHeader(osg::Group* osgParent, HeaderRecord* rec);
+        osg::Node* visitColorPalette(osg::Group* osgParent, ColorPaletteRecord* rec);
+        osg::Node* visitMaterialPalette(osg::Group* osgParent, MaterialPaletteRecord* rec);
+        osg::Node* visitOldMaterialPalette(osg::Group* osgParent, OldMaterialPaletteRecord* rec);
+        osg::Node* visitTexturePalette(osg::Group* osgParent, TexturePaletteRecord* rec);
+        osg::Node* visitVertexPalette(osg::Group* osgParent, VertexPaletteRecord* rec);
+        osg::Node* visitVertex(osg::Group* osgParent, VertexRecord* rec);
+        osg::Node* visitNormalVertex(osg::Group* osgParent, NormalVertexRecord* rec);
+        osg::Node* visitTextureVertex(osg::Group* osgParent, TextureVertexRecord* rec);
+        osg::Node* visitNormalTextureVertex(osg::Group* osgParent, NormalTextureVertexRecord* rec);
+        osg::Node* visitGroup(osg::Group* osgParent, GroupRecord* rec);
+        osg::Node* visitLOD(osg::Group* osgParent, LodRecord* rec);
+        osg::Node* visitOldLOD(osg::Group* osgParent, OldLodRecord* rec);
+        osg::Node* visitDOF(osg::Group* osgParent, DofRecord* rec);
+        osg::Node* visitSwitch(osg::Group* osgParent, SwitchRecord* rec);
+        osg::Node* visitObject(osg::Group* osgParent, ObjectRecord* rec);
+        osg::Node* visitMatrix(osg::Group* osgParent, MatrixRecord* rec);
+        osg::Node* visitExternal(osg::Group* osgParent, ExternalRecord* rec);
 
-    void visitFace(GeoSetBuilder* pParent, FaceRecord* rec);
-    void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
-    void visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
+        void visitFace(GeoSetBuilder* pParent, FaceRecord* rec);
+        void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
+        int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
 
-private:
+    private:
 
-    Record* getVertexFromPool(int nOffset);
-    void regisiterVertex(int nOffset, Record* pRec);
+        Record* getVertexFromPool(int nOffset);
+        void regisiterVertex(int nOffset, Record* pRec);
 
-    typedef std::map<int,Record*> VertexPaletteOffsetMap;
-    VertexPaletteOffsetMap _VertexPaletteOffsetMap;
+        typedef std::map<int,Record*> VertexPaletteOffsetMap;
+        VertexPaletteOffsetMap _VertexPaletteOffsetMap;
 
-    FltFile*        _pFltFile;
+        osg::ref_ptr<FltFile>    _pFltFile;
 
-    int             _diOpenFlightVersion;
-    int             _diCurrentOffset;
-    unsigned short  _wObjTransparency;
-    int             _nSubfaceLevel;
-    float           _sfHdrUnitScale;       // iMultDivUnit
-    bool            _bHdrRgbMode;
-
+        int                 _diOpenFlightVersion;
+        int                 _diCurrentOffset;
+        unsigned short      _wObjTransparency;
+        int                 _nSubfaceLevel;
+        float               _sfHdrUnitScale;       // iMultDivUnit
+        bool                _bHdrRgbMode;
 };
 
     

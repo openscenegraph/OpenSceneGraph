@@ -34,7 +34,7 @@ class MatrixRecord : public AncillaryRecord
         virtual Record* clone() const { return new MatrixRecord(); }
         virtual const char* className() const { return "MatrixRecord"; }
         virtual int classOpcode() const { return MATRIX_OP; }
-        virtual int sizeofData() const { return sizeof(SMatrix); }
+        virtual size_t sizeofData() const { return sizeof(SMatrix); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -71,7 +71,7 @@ class RotatAboutEdgeRecord : public AncillaryRecord
         virtual Record* clone() const { return new RotatAboutEdgeRecord(); }
         virtual const char* className() const { return "RotatAboutEdgeRecord"; }
         virtual int classOpcode() const { return ROTATE_ABOUT_EDGE_OP; }
-        virtual int sizeofData() const { return sizeof(SRotatAboutEdge); }
+        virtual size_t sizeofData() const { return sizeof(SRotatAboutEdge); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -108,7 +108,7 @@ class TranslateRecord : public AncillaryRecord
         virtual Record* clone() const { return new TranslateRecord(); }
         virtual const char* className() const { return "TranslateRecord"; }
         virtual int classOpcode() const { return TRANSLATE_OP; }
-        virtual int sizeofData() const { return sizeof(STranslate); }
+        virtual size_t sizeofData() const { return sizeof(STranslate); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -144,7 +144,7 @@ class OldTranslateRecord : public AncillaryRecord
         virtual Record* clone() const { return new OldTranslateRecord(); }
         virtual const char* className() const { return "OldTranslateRecord"; }
         virtual int classOpcode() const { return OLD_TRANSLATE_OP; }
-        virtual int sizeofData() const { return sizeof(SOldTranslate); }
+        virtual size_t sizeofData() const { return sizeof(SOldTranslate); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -178,7 +178,7 @@ class ScaleRecord : public AncillaryRecord
         virtual Record* clone() const { return new ScaleRecord(); }
         virtual const char* className() const { return "ScaleRecord"; }
         virtual int classOpcode() const { return SCALE_OP; }
-        virtual int sizeofData() const { return sizeof(SScale); }
+        virtual size_t sizeofData() const { return sizeof(SScale); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -211,7 +211,7 @@ class RotatAboutPointRecord : public AncillaryRecord
         virtual Record* clone() const { return new RotatAboutPointRecord(); }
         virtual const char* className() const { return "RotatAboutPointRecord"; }
         virtual int classOpcode() const { return ROTATE_ABOUT_POINT_OP; }
-        virtual int sizeofData() const { return sizeof(SRotatAboutPoint); }
+        virtual size_t sizeofData() const { return sizeof(SRotatAboutPoint); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -244,7 +244,7 @@ class RotatScaleToPointRecord : public AncillaryRecord
         virtual Record* clone() const { return new RotatScaleToPointRecord(); }
         virtual const char* className() const { return "RotatScaleToPointRecord"; }
         virtual int classOpcode() const { return ROTATE_SCALE_TO_POINT_OP; }
-        virtual int sizeofData() const { return sizeof(SRotatScaleToPoint); }
+        virtual size_t sizeofData() const { return sizeof(SRotatScaleToPoint); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -284,7 +284,7 @@ class PutTransformRecord : public AncillaryRecord
         virtual Record* clone() const { return new PutTransformRecord(); }
         virtual const char* className() const { return "PutTransformRecord"; }
         virtual int classOpcode() const { return PUT_TRANSFORM_OP; }
-        virtual int sizeofData() const { return sizeof(SPutTransform); }
+        virtual size_t sizeofData() const { return sizeof(SPutTransform); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -318,7 +318,7 @@ class GeneralMatrixRecord : public AncillaryRecord
         virtual Record* clone() const { return new GeneralMatrixRecord(); }
         virtual const char* className() const { return "GeneralMatrixRecord"; }
         virtual int classOpcode() const { return GENERAL_MATRIX_OP; }
-        virtual int sizeofData() const { return sizeof(SGeneralMatrix); }
+        virtual size_t sizeofData() const { return sizeof(SGeneralMatrix); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

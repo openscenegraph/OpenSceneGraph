@@ -117,7 +117,7 @@ class FaceRecord : public PrimNodeRecord
         virtual Record* clone() const { return new FaceRecord(); }
         virtual const char* className() const { return "FaceRecord"; }
         virtual int classOpcode() const { return FACE_OP; }
-        virtual int sizeofData() const { return sizeof(SFace); }
+        virtual size_t sizeofData() const { return sizeof(SFace); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -162,7 +162,7 @@ class VertexListRecord : public PrimNodeRecord
         virtual Record* clone() const { return new VertexListRecord(); }
         virtual const char* className() const { return "VertexListRecord"; }
         virtual int classOpcode() const { return VERTEX_LIST_OP; }
-        virtual int sizeofData() const { return sizeof(SSingleVertexList); }
+        virtual size_t sizeofData() const { return sizeof(SSingleVertexList); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -200,7 +200,7 @@ class MorphVertexListRecord : public PrimNodeRecord
         virtual Record* clone() const { return new MorphVertexListRecord(); }
         virtual const char* className() const { return "MorphVertexListRecord"; }
         virtual int classOpcode() const { return MORPH_VERTEX_LIST_OP; }
-        virtual int sizeofData() const { return sizeof(SMorphVertexList); }
+        virtual size_t sizeofData() const { return sizeof(SMorphVertexList); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -240,7 +240,7 @@ class VectorRecord : public AncillaryRecord
         virtual Record* clone() const { return new VectorRecord(); }
         virtual const char* className() const { return "VectorRecord"; }
         virtual int classOpcode() const { return VECTOR_OP; }
-        virtual int sizeofData() const { return sizeof(SVector); }
+        virtual size_t sizeofData() const { return sizeof(SVector); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

@@ -1,11 +1,3 @@
-// FltFile.cpp
-
-#include <osg/Node>
-#include <osg/NodeVisitor>
-#include <osg/Notify>
-
-#include <osgDB/FileUtils>
-
 #include "FltFile.h"
 #include "Registry.h"
 #include "Record.h"
@@ -14,32 +6,63 @@
 #include "flt2osg.h"             // ConvertFromFLT
 #include "Input.h"
 
+#include <osg/Node>
+#include <osg/NodeVisitor>
+#include <osg/Notify>
+
+#include <osgDB/FileUtils>
+
+#include <string>
+
+
 using namespace flt;
 
-FltFile::FltFile(
-ColorPool* pColorPool,
-TexturePool* pTexturePool,
-MaterialPool* pMaterialPool)
 
+FltFile::FltFile(
+    ColorPool* pColorPool,
+    TexturePool* pTexturePool,
+    MaterialPool* pMaterialPool)
 {
-    _pColorPool = pColorPool;
+    _pHeaderRecord = NULL;
+
+    if (pColorPool)
+    {
+        // use external color palette, ignore internal
+        _useColorPalette = false;
+        setColorPool( pColorPool );
+    }
+    else
+    {
+        // use internal color palette
+        _useColorPalette = true;
+        setColorPool( new ColorPool );
+    }
 
     if (pTexturePool)
-        _pTexturePool = pTexturePool;
+    {
+        // use external texture palette, ignore internal
+        _useTexturePalette = false;
+        setTexturePool( pTexturePool );
+    }
     else
-        _pTexturePool = &_texturePool;
+    {
+        // use internal texture palette
+        _useTexturePalette = true;
+        setTexturePool( new TexturePool );
+    }
 
     if (pMaterialPool)
-        _pMaterialPool = pMaterialPool;
+    {
+        // use external material palette, ignore internal
+        _useMaterialPalette = false;
+        setMaterialPool( pMaterialPool );
+    }
     else
-        _pMaterialPool = &_materialPool;
-
-    _pHeaderRecord = NULL;
-}
-
-
-FltFile::~FltFile()
-{
+    {
+        // use internal material palette
+        _useMaterialPalette = true;
+        setMaterialPool( new MaterialPool );
+    }
 }
 
 
@@ -116,62 +139,63 @@ Record* FltFile::readFile(const std::string& fileName)
 }
 
 
-class ReadExternal : public RecordVisitor
-{
-public:
-    ReadExternal(FltFile* fltFile)
-    {
-        _fltFile = fltFile;
-        setTraverseMode(RecordVisitor::TRAVERSE_ALL_CHILDREN);
-    }
-
 #define REGISTER_FLT 1
 
-    virtual void apply(ExternalRecord& rec)
-    {
-        SExternalReference* pSExternal = (SExternalReference*)rec.getData();
-
-        if (pSExternal)
+class ReadExternal : public RecordVisitor
+{
+    public:
+        ReadExternal(FltFile* fltFile)
         {
-            FltFile*        flt           = NULL;
-            ColorPool*      pColorPool    = NULL;
-            TexturePool*    pTexturePool  = NULL;
-            MaterialPool*   pMaterialPool = NULL;
-            std::string filename(pSExternal->szPath);
+            _parentFltFile = fltFile;
+            setTraverseMode(RecordVisitor::TRAVERSE_ALL_CHILDREN);
+        }
 
-            osg::notify(osg::INFO) << "External=" << filename << endl;
+        virtual void apply(ExternalRecord& rec)
+        {
+            SExternalReference* pSExternal = (SExternalReference*)rec.getData();
 
-            if (_fltFile && _fltFile->getFlightVersion() > 13)
+            if (pSExternal)
             {
-                if (pSExternal->diFlags & BIT0)
-                    pColorPool = _fltFile->getColorPool();
+                FltFile*        flt           = NULL;
+                ColorPool*      pColorPool    = NULL;
+                TexturePool*    pTexturePool  = NULL;
+                MaterialPool*   pMaterialPool = NULL;
+                std::string filename(pSExternal->szPath);
 
-                if (pSExternal->diFlags & BIT2)
-                    pTexturePool = _fltFile->getTexturePool();
+                osg::notify(osg::INFO) << "External=" << filename << endl;
 
-                if (pSExternal->diFlags & BIT1)
-                    pMaterialPool = _fltFile->getMaterialPool();
-            }
+                if (_parentFltFile && (_parentFltFile->getFlightVersion() > 13))
+                {
+                    if (pSExternal->diFlags & BIT0)
+                        pColorPool = _parentFltFile->getColorPool();
+
+                    if (pSExternal->diFlags & BIT2)
+                        pTexturePool = _parentFltFile->getTexturePool();
+
+                    if (pSExternal->diFlags & BIT1)
+                        pMaterialPool = _parentFltFile->getMaterialPool();
+                }
 
 #if REGISTER_FLT
-            flt = Registry::instance()->getFltFile(filename);
-            if (flt == NULL)
-            {
+                flt = Registry::instance()->getFltFile(filename);
+                if (flt == NULL)
+                {
+                    flt = new FltFile(pColorPool, pTexturePool, pMaterialPool);
+                    flt->readModel(filename);
+                }
+                Registry::instance()->addFltFile(filename, flt);
+#else
                 flt = new FltFile(pColorPool, pTexturePool, pMaterialPool);
                 flt->readModel(filename);
-            }
-            Registry::instance()->addFltFile(filename, flt);
-#else
-            flt = new FltFile(pColorPool, pTexturePool, pMaterialPool);
-            flt->readModel(filename);
 #endif
 
-            rec.setExternal(flt);
+                rec.setExternal(flt);
+            }
         }
-    }
 
-public:
-    FltFile* _fltFile;
+    public:
+
+        FltFile* _parentFltFile;
 };
 
 

@@ -38,7 +38,7 @@ class MaterialPaletteRecord : public AncillaryRecord
         virtual Record* clone() const { return new MaterialPaletteRecord(); }
         virtual const char* className() const { return "MaterialPaletteRecord"; }
         virtual int classOpcode() const { return MATERIAL_PALETTE_OP; }
-        virtual int sizeofData() const { return sizeof(SMaterial); }
+        virtual size_t sizeofData() const { return sizeof(SMaterial); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

@@ -1,6 +1,7 @@
 #include "TXPSeamLOD.h"
 #include "TXPArchive.h"
 #include "TXPTileNode.h"
+#include "TXPPagedLOD.h"
 #include "TileMapper.h"
 
 using namespace txp;
@@ -52,8 +53,14 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR && _children.size()==2)
     {
 
-        osg::PagedLOD* pagedLOD = TileMapper::instance()->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD);
+        //osg::PagedLOD* pagedLOD = TileMapper::instance()->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD);
+        TXPPagedLOD* pagedLOD = dynamic_cast<TXPPagedLOD*>(TileMapper::instance()->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD));
 #if 1
+        if (pagedLOD && pagedLOD->getLastTraversedChild()>0)
+            getChild(1)->accept(nv);
+        else
+            getChild(0)->accept(nv);
+#else
         bool acceptLoRes = true;
         if (pagedLOD)
         {
@@ -85,29 +92,6 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
             for (int i = _nonSeamChildrenIndex; i < (int)getNumChildren(); i++ )
                 getChild(i)->accept(nv);
         }
-#else
-        float distance = nv.getDistanceToEyePoint(_center,true);
-        if (distance<=_mid)
-        {
-            // cap the lod's that can be used to what is available in the adjacent PagedLOD.
-            
-            //std::cout<<"distance to eye from center = "<<distance<<" min = "<< _min<<" mid = "<< _mid << " max = "<<_max<<std::endl;
-            if (pagedLOD)
-            {
-                //std::cout<<"   in cull pagedLOD="<<pagedLOD<<" numChildren=="<<pagedLOD->getNumChildren()<<std::endl;
-                for(unsigned int i=0;i<pagedLOD->getNumChildren();++i)
-                {
-                    //std::cout<<"   child "<<i<<" range = min "<<pagedLOD->getMinRange(i)<<" max = "<<pagedLOD->getMaxRange(i)<<std::endl;
-                }
-            }
-            
-            if (pagedLOD && pagedLOD->getNumChildren()>1) getChild(1)->accept(nv); // pick high res
-            else getChild(0)->accept(nv); // pick low res as fallback
-        }
-        else
-        {
-            getChild(0)->accept(nv); // pick low res
-        }
 #endif
     }
     else
@@ -115,4 +99,3 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
         Group::traverse(nv);
     }
 }
-

@@ -224,10 +224,19 @@ class SG_EXPORT Quat
         void slerp   ( const float t, const Quat& from, const Quat& to);
         
         /** Set quaternion to be equivalent to specified matrix.*/
-        void set( const osg::Matrix& m );
+        void set( const Matrix& m );
 
         /** Get the equivalent matrix for this quaternion.*/
-        void get( osg::Matrix& m ) const;
+        void get( Matrix& m ) const;
+
+        /** Get the equivalent matrix for this quaternion.*/
+        Matrix getMatrix() const
+        {
+            Matrix matrix;
+            get(matrix);
+            return matrix;
+        }
+
 
         friend inline std::ostream& operator << (std::ostream& output, const Quat& vec);
 

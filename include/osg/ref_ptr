@@ -14,6 +14,8 @@
 #ifndef OSG_REF_PTR
 #define OSG_REF_PTR 1
 
+#define AUTOMATIC_CAST_TO_POINTER
+
 namespace osg {
 
 /** Smart pointer for handling referenced counted objects.*/
@@ -103,6 +105,12 @@ class ref_ptr
         inline T* get() { return _ptr; }
 
         inline const T* get() const { return _ptr; }
+
+#ifdef AUTOMATIC_CAST_TO_POINTER
+        inline operator T* () { return _ptr; }
+
+        inline operator const T* () const { return _ptr; }
+#endif
 
         /** take control over the object pointed to by ref_ptr, unreference but do not delete even if ref count goes to 0,
           * return the pointer to the object.

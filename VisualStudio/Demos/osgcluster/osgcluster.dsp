@@ -134,7 +134,9 @@ LINK32=link.exe
 
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 
-# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /YX /FD /c
+
+# SUBTRACT CPP /Fr
 
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 
@@ -150,7 +152,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 glut32.lib glu32.lib opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgclusterd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgclusterd.exe" /pdbtype:sept /libpath:"../../../lib"
 
 # SUBTRACT LINK32 /incremental:no
 
@@ -164,9 +166,9 @@ LINK32=link.exe
 
 
 
-# Name "osgcluster - Win32 Release"
+# Name "Demo osgcluster - Win32 Release"
 
-# Name "osgcluster - Win32 Debug"
+# Name "Demo osgcluster - Win32 Debug"
 
 # Begin Group "Source Files"
 
@@ -178,7 +180,7 @@ LINK32=link.exe
 
 
 
-SOURCE=..\..\..\src\Demos\osgcluster\broadcaster.cpp
+SOURCE=..\..\..\Src\Demos\osgcluster\broadcaster.cpp
 
 # End Source File
 
@@ -186,7 +188,7 @@ SOURCE=..\..\..\src\Demos\osgcluster\broadcaster.cpp
 
 
 
-SOURCE=..\..\..\src\Demos\osgcluster\osgcluster.cpp
+SOURCE=..\..\..\Src\Demos\osgcluster\osgcluster.cpp
 
 # End Source File
 
@@ -194,7 +196,7 @@ SOURCE=..\..\..\src\Demos\osgcluster\osgcluster.cpp
 
 
 
-SOURCE=..\..\..\src\Demos\osgcluster\receiver.cpp
+SOURCE=..\..\..\Src\Demos\osgcluster\receiver.cpp
 
 # End Source File
 
@@ -204,13 +206,13 @@ SOURCE=..\..\..\src\Demos\osgcluster\receiver.cpp
 
 
 
-# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# PROP Default_Filter ";h;hpp;hxx;hm;inl"
 
 # Begin Source File
 
 
 
-SOURCE=..\..\..\src\Demos\osgcluster\broadcaster.h
+SOURCE=..\..\..\Src\Demos\osgcluster\broadcaster.h
 
 # End Source File
 
@@ -228,7 +230,7 @@ SOURCE=..\..\..\src\Demos\osgcluster\receiver.h
 
 
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# PROP Default_Filter ""
 
 # End Group
 

@@ -204,12 +204,17 @@ int main( int argc, char **argv )
     osgDB::readCommandLine(commandLine);
 
     // load the nodes from the commandline arguments.
-    osg::Node* rootnode = createModel();
-    if (!rootnode)
+    osg::Node* model = createModel();
+    if (!model)
     {
         return 1;
     }
     
+    // tilt the scene so the default eye position is looking down on the model.
+    osg::MatrixTransform* rootnode = new osg::MatrixTransform;
+    rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
+    rootnode->addChild(model);
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);

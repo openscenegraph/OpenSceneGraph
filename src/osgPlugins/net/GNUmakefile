@@ -5,6 +5,7 @@ CXXFILES =\
 	ReaderWriterNET.cpp\
     sockinet.cpp\
     sockstream.cpp\
+    makeDir.cpp\
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 

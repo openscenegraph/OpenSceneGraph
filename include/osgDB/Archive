@@ -50,8 +50,6 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         /** Get the full list of file names available in the archive.*/
         virtual bool getFileNames(FileNameList& fileNameList) const = 0;
 
-    protected:
-
         virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) = 0;
         virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) = 0;
         virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) = 0;

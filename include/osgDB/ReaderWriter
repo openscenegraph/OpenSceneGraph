@@ -19,10 +19,7 @@
 #include <osg/Shape>
 #include <osg/Node>
 
-#include <OpenThreads/ScopedLock>
-
 #include <osgDB/Export>
-#include <osgDB/ReentrantMutex>
 
 #include <deque>
 
@@ -217,38 +214,6 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
             WRITE,
             CREATE
         };
-        
-        #define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
-
-
-
-        /** open an archive for reading, writing or or to create an empty archive for writing to.*/ 
-        virtual ReadResult threadSafe_openArchive(const std::string& fileName,ArchiveStatus status, unsigned int indexBlockSize=4096, const Options* options=NULL) { SERIALIZER(); return openArchive(fileName,status, indexBlockSize, options); }
-
-        /** open an archive for reading.*/ 
-        virtual ReadResult threadSafe_openArchive(std::istream& fin,const Options* options=NULL)  { SERIALIZER(); return openArchive(fin, options); }
-
-        virtual ReadResult threadSafe_readObject(const std::string& fileName,const Options* options=NULL)  { SERIALIZER(); return readObject(fileName,options); }
-        virtual ReadResult threadSafe_readImage(const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return readImage(fileName,options); }
-        virtual ReadResult threadSafe_readHeightField(const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return readHeightField(fileName,options); }
-        virtual ReadResult threadSafe_readNode(const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return readNode(fileName,options); }
-
-        virtual WriteResult threadSafe_writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeObject(obj, fileName,options); }
-        virtual WriteResult threadSafe_writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeImage(image, fileName,options); }
-        virtual WriteResult threadSafe_writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeHeightField(heightField, fileName,options); }
-        virtual WriteResult threadSafe_writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeNode(node, fileName,options); }
-
-        virtual ReadResult threadSafe_readObject(std::istream& fin,const Options* options=NULL) { SERIALIZER(); return readObject(fin,options); }
-        virtual ReadResult threadSafe_readImage(std::istream& fin,const Options* options=NULL) { SERIALIZER(); return readImage(fin,options); }
-        virtual ReadResult threadSafe_readHeightField(std::istream& fin,const Options* options=NULL) { SERIALIZER(); return readHeightField(fin,options); }
-        virtual ReadResult threadSafe_readNode(std::istream& fin,const Options* options=NULL) { SERIALIZER(); return readNode(fin,options); }
-
-        virtual WriteResult threadSafe_writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL) { SERIALIZER(); return writeObject(obj, fout, options); }
-        virtual WriteResult threadSafe_writeImage(const osg::Image& image,std::ostream& fout,const Options* options=NULL) { SERIALIZER(); return writeImage(image, fout, options); }
-        virtual WriteResult threadSafe_writeHeightField(const osg::HeightField& heightField,std::ostream& fout,const Options* options=NULL) { SERIALIZER(); return writeHeightField(heightField, fout, options); }
-        virtual WriteResult threadSafe_writeNode(const osg::Node& node,std::ostream& fout,const Options* options=NULL) { SERIALIZER(); return writeNode(node, fout, options); }
-
-    protected:
 
         /** open an archive for reading, writing or or to create an empty archive for writing to.*/ 
         virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
@@ -275,12 +240,6 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-
-
-
-    protected:
-    
-        osgDB::ReentrantMutex _serializerMutex;
 
 };
 

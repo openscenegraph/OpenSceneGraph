@@ -230,6 +230,8 @@ OSGA_Archive::~OSGA_Archive()
 
 bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSize)
 {
+    SERIALIZER();
+
     if (status==READ)
     {
         _status = status;
@@ -289,9 +291,11 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
 
 bool OSGA_Archive::open(std::istream& fin)
 {
+    SERIALIZER();
+
     osg::notify(osg::NOTICE)<<"OSGA_Archive::open"<<std::endl;
-    static_cast<std::istream&>(_output).rdbuf(fin.rdbuf());
-    return false;
+    static_cast<std::istream&>(_input).rdbuf(fin.rdbuf());
+    return _open(_input);
 }
 
 bool OSGA_Archive::_open(std::istream& input)
@@ -359,6 +363,8 @@ bool OSGA_Archive::_open(std::istream& input)
 
 void OSGA_Archive::close()
 {
+    SERIALIZER();
+
     _input.close();
     
     if (_status==WRITE)
@@ -375,6 +381,8 @@ std::string OSGA_Archive::getMasterFileName() const
 
 bool OSGA_Archive::getFileNames(FileNameList& fileNameList) const
 {
+    SERIALIZER();
+
     fileNameList.clear();
     fileNameList.reserve(_indexMap.size());
     for(FileNamePositionMap::const_iterator itr=_indexMap.begin();
@@ -389,6 +397,8 @@ bool OSGA_Archive::getFileNames(FileNameList& fileNameList) const
 
 void OSGA_Archive::writeIndexBlocks()
 {
+    SERIALIZER();
+
     if (_status==WRITE)
     {
         for(IndexBlockList::iterator itr=_indexBlockList.begin();
@@ -410,6 +420,8 @@ bool OSGA_Archive::fileExists(const std::string& filename) const
 
 bool OSGA_Archive::addFileReference(pos_type position, size_type size, const std::string& fileName)
 {
+    SERIALIZER();
+
     if (_status==READ)
     {
         osg::notify(osg::INFO)<<"OSGA_Archive::getPositionForNewEntry("<<fileName<<") failed, archive opened as read only."<<std::endl;
@@ -507,29 +519,31 @@ class proxy_streambuf : public std::streambuf
 struct OSGA_Archive::ReadObjectFunctor : public OSGA_Archive::ReadFunctor
 {
     ReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.threadSafe_readObject(input, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readObject(input, _options); }    
 };
 
 struct OSGA_Archive::ReadImageFunctor : public OSGA_Archive::ReadFunctor
 {
    ReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input)const  { return rw.threadSafe_readImage(input, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input)const  { return rw.readImage(input, _options); }    
 };
 
 struct OSGA_Archive::ReadHeightFieldFunctor : public OSGA_Archive::ReadFunctor
 {
     ReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.threadSafe_readHeightField(input, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readHeightField(input, _options); }    
 };
 
 struct OSGA_Archive::ReadNodeFunctor : public OSGA_Archive::ReadFunctor
 {
     ReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.threadSafe_readNode(input, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readNode(input, _options); }    
 };
 
 ReaderWriter::ReadResult OSGA_Archive::read(const ReadFunctor& readFunctor)
 {
+    SERIALIZER();
+
     if (_status!=READ) 
     {
         osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, archive opened as read only."<<std::endl;
@@ -594,7 +608,7 @@ struct OSGA_Archive::WriteObjectFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::Object& _object;
     
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.threadSafe_writeObject(_object, output, _options); } 
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeObject(_object, output, _options); } 
 };
 
 struct OSGA_Archive::WriteImageFunctor : public OSGA_Archive::WriteFunctor
@@ -604,7 +618,7 @@ struct OSGA_Archive::WriteImageFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::Image& _object;
 
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output)const  { return rw.threadSafe_writeImage(_object, output, _options); }    
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output)const  { return rw.writeImage(_object, output, _options); }    
 };
 
 struct OSGA_Archive::WriteHeightFieldFunctor : public OSGA_Archive::WriteFunctor
@@ -614,7 +628,7 @@ struct OSGA_Archive::WriteHeightFieldFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::HeightField& _object;
 
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.threadSafe_writeHeightField(_object, output, _options); }    
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeHeightField(_object, output, _options); }    
 };
 
 struct OSGA_Archive::WriteNodeFunctor : public OSGA_Archive::WriteFunctor
@@ -624,11 +638,13 @@ struct OSGA_Archive::WriteNodeFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::Node& _object;
 
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.threadSafe_writeNode(_object, output, _options); }    
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeNode(_object, output, _options); }    
 };
 
 ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)
 {
+    SERIALIZER();
+
     if (_status!=WRITE) 
     {
         osg::notify(osg::INFO)<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<") failed, archive opened as read only."<<std::endl;

@@ -217,6 +217,14 @@ bool IntersectVisitor::hits()
 
 void IntersectVisitor::addLineSegment(LineSegment* seg)
 {
+    if (!seg) return;
+    
+    if (!seg->valid())
+    {
+        notify(WARN)<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..), segment ignored.."<<endl;
+        return;
+    }
+
     // first check to see if segment has already been added.
     for(LineSegmentHitListMap::iterator itr = _segHitList.begin();
         itr != _segHitList.end();

@@ -72,6 +72,10 @@ class Vec4
         inline float z() const { return _v[2]; }
         inline float w() const { return _v[3]; }
 
+        inline const bool valid() const { return !isNaN() && !isInfinite(); }
+        inline const bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]) || osg::isNaN(_v[3]); }
+        inline const bool isInfinite() const { return osg::isInfinite(_v[0]) || osg::isInfinite(_v[1]) || osg::isInfinite(_v[2]) || osg::isInfinite(_v[3]); }
+
         /// dot product
         inline float operator * (const Vec4& rhs) const
         {

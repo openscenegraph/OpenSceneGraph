@@ -10,6 +10,7 @@
 // #define USE_DEGREES_INTERNALLY
 
 #if defined(WIN32) || defined (macintosh)
+    #include <float.h>
     #define M_E             2.7182818284590452354
     #define M_LOG2E         1.4426950408889634074
     #define M_LOG10E        0.43429448190325182765
@@ -61,6 +62,12 @@
 #define sqrtf sqrt
 #endif
 
+#if defined(WIN32)
+    // needed for _isnan & _finite used below.
+    #include <float.h>
+#endif
+
+
 namespace osg {
 
 #ifdef USE_DEGREES_INTERNALLY
@@ -73,6 +80,18 @@ inline double inRadians(double angle) { return angle; }
 
 inline double DegreesToRadians(double angle) { return angle*M_PI/180.0; }
 inline double RadiansToDegrees(double angle) { return angle*180.0/M_PI; }
+
+#ifdef WIN32
+inline bool isNaN(float v) { return ::_isnan(v); }
+inline bool isNaN(double v) { return ::isnan(v); }
+inline bool isInfinite(float v) { return !::_finite(v); }
+inline bool isInfinite(double v) { return !::_finite(v); }
+#else
+inline bool isNaN(float v) { return ::isnan(v); }
+inline bool isNaN(double v) { return ::isnan(v); }
+inline bool isInfinite(float v) { return ::isinf(v); }
+inline bool isInfinite(double v) { return ::isinf(v); }
+#endif
 
 };
 

@@ -26,6 +26,9 @@ class SG_EXPORT BoundingSphere
         /** construct to invalid values to represent an unset bounding sphere.*/ 
         BoundingSphere() : _center(0.0f,0.0f,0.0f),_radius(-1.0f) {}
     
+        /** construct to specified bounding sphere.*/ 
+        BoundingSphere(const Vec3& center,float radius) : _center(center),_radius(radius) {}
+
         /** initialize to invalid values to represent an unset bounding sphere.*/ 
         inline void init()
         {
@@ -37,6 +40,12 @@ class SG_EXPORT BoundingSphere
             false if the bounding sphere is effectively unset.*/
         inline const bool isValid() const { return _radius>=0.0f; }
 
+        /** set bounding sphere.*/ 
+        inline void set(const Vec3& center,float radius)
+        {
+            _center = center;
+            _radius = radius;
+        }
 
         /** return the center of the bounding sphere.*/
         inline Vec3& center() { return _center; }

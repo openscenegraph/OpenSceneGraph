@@ -15,7 +15,7 @@
 
     // non windows, doesn't require nonesense as seen below :-)    
     #ifndef __gl_h_
-        #ifdef __APPLE_CC__
+        #ifdef __DARWIN_OSX__
             #include <OpenGL/gl.h>
             #include <OpenGL/glu.h>
         #else

@@ -26,7 +26,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <GL/glu.h>
+#include <osg/GLU>
 
 using namespace osg;
 

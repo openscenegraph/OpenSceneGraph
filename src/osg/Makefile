@@ -135,6 +135,7 @@ TARGET_INCLUDE_FILES = \
 
 
 LIBS    =  $(GL_LIBS)
+MACOSXLIBS =  -lm -ldl -lstdc++
 
 LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
 #LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a

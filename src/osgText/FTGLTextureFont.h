@@ -19,6 +19,7 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
 		 * Default Constructor
 		 */
 		FTGLTextureFont();
+		FTGLTextureFont(int textureSize);
 		
 		/**
 		 * Destructor

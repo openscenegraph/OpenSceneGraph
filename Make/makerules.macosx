@@ -1,14 +1,14 @@
 
-all : $(MAKEDEPEND) $(TARGET) $(LIB) $(DYLIB)
+all : $(MAKEDEPEND) $(TARGET) $(LOADABLE) $(LIB)
 
-$(TARGET) : $(OBJS) $(PLUGINLIBS) $(MACOSXLIBS)
-	$(C++) $(LDFLAGS) $(MACOSXLIBS) $(OBJS) $(PLUGINS) -o $@
+$(TARGET) : $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) $(FRAMEWORKS) $(MACOSXLIBS) -o $@
 
 $(LIB) : $(OBJS)
-	$(LIBTOOL) -static -o $@ $(OBJS)
+	$(CC) -dynamiclib -o $@ $(OBJS) $(MACOSXLIBS) $(FRAMEWORKS)
 	
-$(DYLIB) : $(OBJS)
-	$(LIBTOOL) -static -o $@ $(OBJS)
+$(LOADABLE) : $(OBJS)
+	$(CC) -bundle -o $@ $(OBJS) $(MACOSXLIBS) $(FRAMEWORKS)
 
 clean :
 	rm -f $(OBJS) core $(TARGET) $(MAKEDEPEND)

@@ -6,9 +6,15 @@
 using namespace osg;
 using namespace osgUtil;
 
-
 // register a RenderStage prototype with the RenderBin prototype list.
 RegisterRenderBinProxy<RenderBin> s_registerRenderBinProxy;
+
+#ifdef __DARWIN_OSX__
+// PJA 10/1/02 - this is a hack to get OS X to build, if this code is included in DepthSortedBin.cpp it isnt executed
+// register a RenderStage prototype with the RenderBin prototype list.
+#include <osgUtil/DepthSortedBin>
+RegisterRenderBinProxy<DepthSortedBin> s_registerDepthSortedBinProxy;
+#endif
 
 typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
 

@@ -27,6 +27,16 @@ FTGLTextureFont::FTGLTextureFont()
 	padding(1)
 {}
 
+FTGLTextureFont::FTGLTextureFont(int textureSize)
+:	maxTextSize(textureSize),
+	textureWidth(0),
+	textureHeight(0),
+	numTextures(1),
+	textMem(0),
+	glyphHeight(0),
+	glyphWidth(0),
+	padding(1)
+{}
 
 FTGLTextureFont::~FTGLTextureFont()
 {

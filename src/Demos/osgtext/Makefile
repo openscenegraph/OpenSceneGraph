@@ -13,8 +13,9 @@ TARGET_BIN_FILES = osgtext
 
 #note, standard library list. 
 LIBS = -losgGLUT -losgText -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
+MACOSXLIBS = -losgGLUT -losgText -losgUtil -losgDB -losg -lfreetype -ldl -lobjc -lstdc++
 
-C++FLAGS += -I$(OSGHOME)/include -g
+C++FLAGS += -I$(OSGHOME)/include -I. 
 LDFLAGS += -L$(OSGHOME)/lib -L/usr/freeware/lib32
 
 include $(OSGHOME)/Make/makerules

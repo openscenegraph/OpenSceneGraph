@@ -36,6 +36,7 @@ TARGET_BASENAME = osgUtil
 
 
 LIBS    = -L$(OSGHOME)/lib -losg $(GL_LIBS)
+MACOSXLIBS = -L$(OSGHOME)/lib -losg -ldl -lm -lstdc++
 
 LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
 #LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a

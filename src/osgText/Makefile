@@ -30,6 +30,7 @@ TARGET_BASENAME = osgText
 
 
 LIBS    = -L$(OSGHOME)/lib -lfreetype -losgDB -losg $(GL_LIBS)
+MACOSXLIBS    = -L$(OSGHOME)/lib -lfreetype -losgDB -losg -lstdc++
 
 LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
 #LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a

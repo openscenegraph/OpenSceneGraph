@@ -11,6 +11,8 @@ TARGET_BASENAME = osgGLUT
 
 
 LIBS    = -L$(OSGHOME)/lib -losgDB -losgUtil -losg $(GLUTLIB) $(GL_LIBS)
+MACOSXLIBS = -L../../lib -losgDB -losgUtil -losg -ldl -lm -lstdc++
+
 
 LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
 #LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a

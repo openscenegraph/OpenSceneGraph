@@ -25,7 +25,7 @@
 #include <osgUtil/DriveManipulator>
 
 #include <osgGLUT/Viewer>
-#include <GL/glut.h>
+#include <osgGLUT/glut>
 
 #include <osgText/Text>
 #include <vector>
@@ -45,8 +45,8 @@ using namespace osgGLUT;
 #define        TEXT_COL_3D        osg::Vec4(.99,.3,.2,1)
 
 
-std::string    ttfPath("fonts/dirtydoz.ttf");
-std::string    ttfPath1("fonts/fudd.ttf");
+std::string    ttfPath("fonts/times.ttf");
+std::string    ttfPath1("fonts/arial.ttf");
 
 int    gFontSize=18;
 int    gFontSize1=24;

@@ -442,7 +442,8 @@ class OSGUTIL_EXPORT Optimizer
                 Optimizer*      _optimizer;
                 bool            _changeAutoUnRef, _valueAutoUnRef;
                 bool            _changeClientImageStorage, _valueClientImageStorage;
-                bool            _changeAnisotropy, _valueAnisotropy;
+                bool            _changeAnisotropy;
+                float           _valueAnisotropy;
                                            
                 
 

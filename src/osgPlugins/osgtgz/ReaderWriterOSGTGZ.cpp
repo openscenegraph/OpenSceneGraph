@@ -1,0 +1,114 @@
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <osg/Geode>
+#include <osg/Group>
+#include <osg/Notify>
+
+#include <osgDB/Registry>
+#include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
+
+using namespace osg;
+
+class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
+{
+    public:
+        virtual const char* className() { return "OSGTGZ Database Reader/Writer"; }
+        virtual bool acceptsExtension(const std::string& extension)
+        {
+            return osgDB::equalCaseInsensitive(extension,"osgtgz");
+        }
+
+        virtual Node* readNode(const std::string& fileName)
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return NULL;
+
+            osg::notify(osg::INFO)<<"sgReaderWriterOSGTGZ::readNode( "<<fileName.c_str()<<" )\n";
+
+            char dirname[128];
+            char command[1024];
+
+        #ifdef _WIN32
+            sprintf( dirname, "C:/Windows/Temp/.osgdb_osgtgz");
+            // note, the following C option under windows does not seem to work...
+            // will pursue an better tar.exe later. RO.
+            sprintf( command,
+                "tar xfCz %s %s",
+                fileName.c_str(), dirname );
+            mkdir( dirname);
+        #endif
+
+        #ifdef __linux
+            sprintf( dirname, "/tmp/.osg%06d", getpid());
+            sprintf( command,
+                "tar xfCz %s %s",
+                fileName.c_str(), dirname );
+            mkdir( dirname, 0700 );
+        #endif
+
+        #ifdef __sgi
+            sprintf( dirname, "/tmp/.osg%06d", getpid());
+            sprintf( command,
+                "cp %s %s; cd %s;"
+                "gzcat %s | tar xf -",
+                fileName.c_str(), dirname, dirname,
+                fileName.c_str() );
+            mkdir( dirname, 0700 );
+        #endif
+
+            system( command );
+
+            osg::Group *grp = new osg::Group;
+            osgDB::setFilePath( dirname );
+
+            osgDB::DirectoryContents contents = osgDB::getDirectoryContents(dirname);
+            for(osgDB::DirectoryContents::iterator itr = contents.begin();
+                itr != contents.end();
+                ++itr)
+            {
+                std::string file_ext = osgDB::getLowerCaseFileExtension(*itr);
+                if (osgDB::equalCaseInsensitive(file_ext,"osg"))
+                {
+                    osg::Node *node = osgDB::readNodeFile( *itr );
+                    grp->addChild( node );
+                }
+            }
+
+        #ifdef _WIN32
+            // note, is this the right command for windows?
+            // is there any way of overiding the Y/N option? RO.
+            sprintf( command, "erase %s", dirname );
+            system( command );
+        #else
+
+            sprintf( command, "rm -rf %s", dirname );
+            system( command );
+        #endif
+
+            if( grp->getNumChildren() == 0 )
+            {
+                grp->unref();
+                return NULL;
+            }
+
+            return grp;
+
+        }
+
+};
+
+// now register with sgRegistry to instantiate the above
+// reader/writer.
+osgDB::RegisterReaderWriterProxy<sgReaderWriterOSGTGZ> g_readerWriter_OSGTGZ_Proxy;

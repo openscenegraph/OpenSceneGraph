@@ -1,0 +1,440 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Node</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Node</A></H2></H2><BLOCKQUOTE>Base class for all internal nodes in the scene graph.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CLightSource,MLightSource.html,CGroup,MGroup.html,CGeode,MGeode.html">
+<param name=before value="M,M,M,M|_,MR_,Mr_">
+<param name=after value="Md_SP,Md_,M,M,M,M">
+<param name=indent value="0,1,2,2,2,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.1">Node</A></B>()
+<DD><I>Construct a node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.52.2">clone</A></B>() const 
+<DD><I>return a shallow copy of a node, with Object* return type</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.52.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DD><I>return true if this and obj are of the same kind of object</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.52.4">className</A></B>() const 
+<DD><I>return the name of the node's class type</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.52.5">accept</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DD><I>Visitor Pattern : calls the apply method of a NodeVisitor with this node's type</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.52.6">ascend</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DD><I>Traverse upwards : calls parents' accept method with NodeVisitor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.52.7">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; )
+<DD><I>Traverse downwards : calls children's accept method with NodeVisitor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.52.8">setName</A></B>( const std::string&amp; name )
+<DD><I>Set the name of node using C++ style string</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.52.9">setName</A></B>( const char* name )
+<DD><I>Set the name of node using a C style string</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.52.10">getName</A></B>() const 
+<DD><I>Get the name of node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.11">ParentList</A>&amp; <B><A HREF="#DOC.2.52.12">getParents</A></B>() const 
+<DD><I>Get the parent list of node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Group.html">Group</A>* <B><A HREF="#DOC.2.52.13">getParent</A></B>(const int i)
+<DD><I>Get the a copy of parent list of node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B><A HREF="#DOC.2.52.14">getParent</A></B>(const int i) const 
+<DD><I> Get a single const parent of node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.52.15">getNumParents</A></B>() const 
+<DD><I> Get the number of parents of node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.52.16">setUserData</A></B>(void* <!1><A HREF="Image.html#DOC.2.35.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
+<DD><I> Set user data.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void* <B><A HREF="#DOC.2.52.17">getUserData</A></B>()
+<DD><I>Get user data</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const void* <B><A HREF="#DOC.2.52.18">getUserData</A></B>() const 
+<DD><I>Get const user data</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B><A HREF="#DOC.2.52.19">getMemoryAdapter</A></B>()
+<DD><I>Get the memory adapter associated with _userData</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B><A HREF="#DOC.2.52.20">getMemoryAdapter</A></B>() const 
+<DD><I>Get the const memory adapter associated with _userData</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.52.21">setNodeMask</A></B>(const NodeMask nm)
+<DD><I>Set the node mask.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const NodeMask <B><A HREF="#DOC.2.52.22">getNodeMask</A></B>() const 
+<DD><I>Get the node Mask.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B><A HREF="#DOC.2.52.24">getDescriptions</A></B>() const 
+<DD><I>Get the description list of the const node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B><A HREF="#DOC.2.52.25">getDescriptions</A></B>()
+<DD><I>Get the description list of the const node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.52.26">getDescription</A></B>(const int i) const 
+<DD><I>Get a single const description of the const node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::string&amp; <B><A HREF="#DOC.2.52.27">getDescription</A></B>(const int i)
+<DD><I>Get a single description of the node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.52.28">getNumDescriptions</A></B>() const 
+<DD><I>Get the number of descriptions of the node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.29">addDescription</A></B>(const std::string&amp; desc)
+<DD><I>Add a description string to the node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.52.30">setStateSet</A></B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
+<DD><I>set the node's StateSet</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B><A HREF="#DOC.2.52.31">getStateSet</A></B>()
+<DD><I>return the node's StateSet</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B><A HREF="#DOC.2.52.32">getStateSet</A></B>() const 
+<DD><I>return the node's const StateSet</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B><A HREF="#DOC.2.52.33">getBound</A></B>() const 
+<DD><I>get the bounding sphere of node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.34">dirtyBound</A></B>()
+<DD><I>Mark this node's bounding sphere dirty.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; <B><A HREF="#DOC.2.52.11">ParentList</A></B>
+<DD><I>A vector of osg::Group pointers which is used to store the parent(s) of node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;std::string&gt; <B><A HREF="#DOC.2.52.23">DescriptionList</A></B>
+<DD><I>A vector of std::string's which are used to describe the object</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B><A HREF="#DOC.2.52.37">_bsphere</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.52.38">_bsphere_computed</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.52.39">_name</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Node.html#DOC.2.52.11">ParentList</A> <B><A HREF="#DOC.2.52.40">_parents</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.52.41">_userData</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>&gt;  <B><A HREF="#DOC.2.52.42">_memoryAdapter</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>NodeMask <B><A HREF="#DOC.2.52.43">_nodeMask</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A> <B><A HREF="#DOC.2.52.44">_descriptions</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B><A HREF="#DOC.2.52.45">_dstate</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.52.35">~Node</A></B>()
+<DD><I>Node destructor.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.52.36">computeBound</A></B>() const 
+<DD><I>Compute the bounding sphere around Node's geometry or children.</I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Base class for all internal nodes in the scene graph.
+Provides interface for most common node operations (Composite Pattern).</BLOCKQUOTE>
+<DL>
+
+<A NAME="Node"></A>
+<A NAME="DOC.2.52.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Node()</B></TT>
+<DD>Construct a node.
+Initialize the parent list to empty, node name to "" and 
+bounding sphere dirty flag to true.
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.52.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
+<DD>return a shallow copy of a node, with Object* return type
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.52.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DD>return true if this and obj are of the same kind of object
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.52.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DD>return the name of the node's class type
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.52.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DD>Visitor Pattern : calls the apply method of a NodeVisitor with this node's type
+<DL><DT><DD></DL><P>
+<A NAME="ascend"></A>
+<A NAME="DOC.2.52.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void ascend(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DD>Traverse upwards : calls parents' accept method with NodeVisitor
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.52.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; )</B></TT>
+<DD>Traverse downwards : calls children's accept method with NodeVisitor
+<DL><DT><DD></DL><P>
+<A NAME="setName"></A>
+<A NAME="DOC.2.52.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setName( const std::string&amp; name )</B></TT>
+<DD>Set the name of node using C++ style string
+<DL><DT><DD></DL><P>
+<A NAME="setName"></A>
+<A NAME="DOC.2.52.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setName( const char* name )</B></TT>
+<DD>Set the name of node using a C style string
+<DL><DT><DD></DL><P>
+<A NAME="getName"></A>
+<A NAME="DOC.2.52.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const std::string&amp; getName() const </B></TT>
+<DD>Get the name of node
+<DL><DT><DD></DL><P>
+<A NAME="ParentList"></A>
+<A NAME="DOC.2.52.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; ParentList</B></TT>
+<DD>A vector of osg::Group pointers which is used to store the parent(s) of node
+<DL><DT><DD></DL><P>
+<A NAME="getParents"></A>
+<A NAME="DOC.2.52.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Node.html#DOC.2.52.11">ParentList</A>&amp; getParents() const </B></TT>
+<DD>Get the parent list of node. 
+<DL><DT><DD></DL><P>
+<A NAME="getParent"></A>
+<A NAME="DOC.2.52.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Group.html">Group</A>* getParent(const int i)</B></TT>
+<DD>Get the a copy of parent list of node. A copy is returned to 
+prevent modifiaction of the parent list.
+<DL><DT><DD></DL><P>
+<A NAME="getParent"></A>
+<A NAME="DOC.2.52.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Group.html">Group</A>* getParent(const int i) const </B></TT>
+<DD>
+Get a single const parent of node.
+
+<DL><DT><DT><B>Parameters:</B><DD><B>i</B> -  index of the parent to get.
+<BR><DT><B>Returns:</B><DD>  the parent i.<BR><DD></DL><P>
+<A NAME="getNumParents"></A>
+<A NAME="DOC.2.52.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumParents() const </B></TT>
+<DD>
+Get the number of parents of node.
+
+<DL><DT><DT><B>Returns:</B><DD>  the number of parents of this node.<BR><DD></DL><P>
+<A NAME="setUserData"></A>
+<A NAME="DOC.2.52.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setUserData(void* <!1><A HREF="Image.html#DOC.2.35.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)</B></TT>
+<DD>
+Set user data. See MemoryAdapter documention for details
+of how to specify memory managament of _userData.
+<DL><DT><DD></DL><P>
+<A NAME="getUserData"></A>
+<A NAME="DOC.2.52.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void* getUserData()</B></TT>
+<DD>Get user data
+<DL><DT><DD></DL><P>
+<A NAME="getUserData"></A>
+<A NAME="DOC.2.52.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const void* getUserData() const </B></TT>
+<DD>Get const user data
+<DL><DT><DD></DL><P>
+<A NAME="getMemoryAdapter"></A>
+<A NAME="DOC.2.52.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* getMemoryAdapter()</B></TT>
+<DD>Get the memory adapter associated with _userData
+<DL><DT><DD></DL><P>
+<A NAME="getMemoryAdapter"></A>
+<A NAME="DOC.2.52.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* getMemoryAdapter() const </B></TT>
+<DD>Get the const memory adapter associated with _userData
+<DL><DT><DD></DL><P>
+<A NAME="setNodeMask"></A>
+<A NAME="DOC.2.52.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNodeMask(const NodeMask nm)</B></TT>
+<DD>Set the node mask. Note, node mask is will be replaced by TraversalMask.
+<DL><DT><DD></DL><P>
+<A NAME="getNodeMask"></A>
+<A NAME="DOC.2.52.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const NodeMask getNodeMask() const </B></TT>
+<DD>Get the node Mask. Note, node mask is will be replaced by TraversalMask.
+<DL><DT><DD></DL><P>
+<A NAME="DescriptionList"></A>
+<A NAME="DOC.2.52.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;std::string&gt; DescriptionList</B></TT>
+<DD>A vector of std::string's which are used to describe the object
+<DL><DT><DD></DL><P>
+<A NAME="getDescriptions"></A>
+<A NAME="DOC.2.52.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; getDescriptions() const </B></TT>
+<DD>Get the description list of the const node
+<DL><DT><DD></DL><P>
+<A NAME="getDescriptions"></A>
+<A NAME="DOC.2.52.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; getDescriptions()</B></TT>
+<DD>Get the description list of the const node
+<DL><DT><DD></DL><P>
+<A NAME="getDescription"></A>
+<A NAME="DOC.2.52.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const std::string&amp; getDescription(const int i) const </B></TT>
+<DD>Get a single const description of the const node
+<DL><DT><DD></DL><P>
+<A NAME="getDescription"></A>
+<A NAME="DOC.2.52.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::string&amp; getDescription(const int i)</B></TT>
+<DD>Get a single description of the node
+<DL><DT><DD></DL><P>
+<A NAME="getNumDescriptions"></A>
+<A NAME="DOC.2.52.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumDescriptions() const </B></TT>
+<DD>Get the number of descriptions of the node
+<DL><DT><DD></DL><P>
+<A NAME="addDescription"></A>
+<A NAME="DOC.2.52.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addDescription(const std::string&amp; desc)</B></TT>
+<DD>Add a description string to the node
+<DL><DT><DD></DL><P>
+<A NAME="setStateSet"></A>
+<A NAME="DOC.2.52.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setStateSet(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)</B></TT>
+<DD>set the node's StateSet
+<DL><DT><DD></DL><P>
+<A NAME="getStateSet"></A>
+<A NAME="DOC.2.52.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* getStateSet()</B></TT>
+<DD>return the node's StateSet
+<DL><DT><DD></DL><P>
+<A NAME="getStateSet"></A>
+<A NAME="DOC.2.52.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* getStateSet() const </B></TT>
+<DD>return the node's const StateSet
+<DL><DT><DD></DL><P>
+<A NAME="getBound"></A>
+<A NAME="DOC.2.52.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; getBound() const </B></TT>
+<DD>get the bounding sphere of node.
+Using lazy evaluation computes the bounding sphere if it is 'dirty'.
+<DL><DT><DD></DL><P>
+<A NAME="dirtyBound"></A>
+<A NAME="DOC.2.52.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyBound()</B></TT>
+<DD>Mark this node's bounding sphere dirty.
+Forcing it to be computed on the next call to getBound().
+<DL><DT><DD></DL><P>
+<A NAME="~Node"></A>
+<A NAME="DOC.2.52.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Node()</B></TT>
+<DD>Node destructor. Note, is protected so that Nodes cannot
+be deleted other than by being dereferenced and the reference
+count being zero (see osg::Referenced), preventing the deletion
+of nodes which are still in use. This also means that
+Node's cannot be created on stack i.e Node node will not compile,
+forcing all nodes to be created on the heap i.e Node* node
+= new Node().
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.52.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
+<DD>Compute the bounding sphere around Node's geometry or children.
+This method is automatically called by getBound() when the bounding
+sphere has been marked dirty via dirtyBound().
+<DL><DT><DD></DL><P>
+<A NAME="_bsphere"></A>
+<A NAME="DOC.2.52.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> _bsphere</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bsphere_computed"></A>
+<A NAME="DOC.2.52.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _bsphere_computed</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_name"></A>
+<A NAME="DOC.2.52.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _name</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_parents"></A>
+<A NAME="DOC.2.52.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Node.html#DOC.2.52.11">ParentList</A> _parents</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_userData"></A>
+<A NAME="DOC.2.52.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _userData</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_memoryAdapter"></A>
+<A NAME="DOC.2.52.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>&gt;  _memoryAdapter</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_nodeMask"></A>
+<A NAME="DOC.2.52.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>NodeMask _nodeMask</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_descriptions"></A>
+<A NAME="DOC.2.52.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A> _descriptions</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dstate"></A>
+<A NAME="DOC.2.52.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  _dstate</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="LightSource.html">LightSource</A><BR>
+<A HREF="Group.html">Group</A><BR>
+<A HREF="Geode.html">Geode</A><BR>
+</DL>
+
+<DL><DT><DT><B>Friends:</B><DD>  <!1><A HREF="Group.html">Group</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

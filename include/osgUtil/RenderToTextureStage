@@ -1,0 +1,44 @@
+#ifndef OSGUTIL_RENDERTOTEXTURESTAGE
+#define OSGUTIL_RENDERTOTEXTURESTAGE 1
+
+#include <osg/Texture>
+
+#include <osgUtil/RenderStage>
+
+namespace osgUtil {
+
+/**
+ * RenderBin base class.
+ */
+class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
+{
+    public:
+    
+
+        RenderToTextureStage();
+        virtual osg::Object* clone() const { return new RenderToTextureStage(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RenderToTextureStage*>(obj)!=0L; }
+        virtual const char* className() const { return "RenderToTextureStage"; }
+
+        virtual void reset();
+        
+        void setTexture(osg::Texture* texture) { _texture = texture; }
+        osg::Texture* getTexture() { return _texture.get(); }
+        
+        virtual void draw(osg::State& state,RenderLeaf*& previous);
+
+    public:
+        
+        
+    protected:
+    
+        virtual ~RenderToTextureStage();
+        
+        osg::ref_ptr<osg::Texture> _texture;
+
+};
+
+};
+
+#endif
+

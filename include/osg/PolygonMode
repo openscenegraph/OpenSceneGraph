@@ -1,0 +1,54 @@
+#ifndef OSG_POLYGONMODE
+#define OSG_POLYGONMODE 1
+
+#include <osg/StateAttribute>
+#include <osg/GL>
+
+namespace osg {
+
+/** Class to for setting OpenGL's polygon culling mode.
+*/     
+class SG_EXPORT PolygonMode : public StateAttribute
+{
+    public :
+    
+        PolygonMode();
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PolygonMode*>(obj)!=0L; }
+        virtual Object* clone() const { return new PolygonMode(); }
+        virtual const char* className() const { return "PolygonMode"; }
+    
+        virtual const Type getType() const { return POLYGONMODE; }
+
+        enum Face {
+            FRONT,
+            BACK,
+            FRONT_AND_BACK
+        };
+    
+        enum Mode {
+            POINT = GL_POINT,
+            LINE = GL_LINE,
+            FILL = GL_FILL
+        };
+
+        void setMode(const Face face,const Mode mode);
+        
+        const Mode getMode(const Face face) const;
+    
+        inline const bool getFrontAndBack() const { return _frontAndBack; }
+
+        virtual void apply(State& state) const;
+        
+    protected:
+    
+        virtual ~PolygonMode();
+
+        bool _frontAndBack;
+        Mode _modeFront;
+        Mode _modeBack;
+
+};
+
+};
+
+#endif

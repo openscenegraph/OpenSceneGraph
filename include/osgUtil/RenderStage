@@ -1,0 +1,154 @@
+#ifndef OSGUTIL_RENDERSTAGE
+#define OSGUTIL_RENDERSTAGE 1
+
+#include <osg/Camera>
+
+#include <osgUtil/RenderBin>
+#include <osgUtil/RenderStageLighting>
+
+namespace osgUtil {
+
+/**
+ * RenderState base class. Used for encapsulate a complete stage in
+ * rendering - setting up of viewport, the projection and model
+ * matrices and rendering the RenderBin's enclosed with this RenderStage.
+ * RenderStage also has a dependancy list of other RenderStages, each
+ * of which must be called before the rendering of this stage.  These
+ * 'pre' rendering stages are used for advanced rendering techniques
+ * like multistage pixel shading or impostors.
+ */
+class OSGUTIL_EXPORT RenderStage : public RenderBin
+{
+    public:
+    
+
+        RenderStage();
+        virtual osg::Object* clone() const { return new RenderStage(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RenderStage*>(obj)!=0L; }
+        virtual const char* className() const { return "RenderStage"; }
+
+        virtual void reset();
+        
+        
+        /** Set the viewport of the scene view. */
+        void setViewport(int x,int y,int width,int height)
+        {
+            _view[0] = x;
+            _view[1] = y;
+            _view[2] = width;
+            _view[3] = height;
+        }
+        
+        /** Get the viewport of the scene view. */
+        void getViewport(int& x,int& y,int& width,int& height) const
+        {
+            x = _view[0];
+            y = _view[1];
+            width = _view[2];
+            height = _view[3];
+        }
+
+
+        /** Set the clear mask used in glClear(..).
+          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
+        void setClearMask(const GLbitfield mask) { _clearMask = mask; }
+
+        /** Get the clear mask.*/
+        const GLbitfield getClearMask() const { return _clearMask; }
+
+
+        /** Set the clear color used in glClearColor(..). 
+          * glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true*/
+        void setClearColor(const osg::Vec4& color) { _clearColor=color; }
+        
+        /** Get the clear color.*/
+        const osg::Vec4& getClearColor() const { return _clearColor; }
+        
+
+        /** Set the clear accum used in glClearAccum(..). 
+          * glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true*/
+        void setClearAccum(const osg::Vec4& color) { _clearAccum=color; }
+        
+        /** Get the clear accum.*/
+        const osg::Vec4& getClearAccum() const { return _clearAccum; }
+        
+
+        
+        /** Set the clear depth used in glClearDepth(..). Defaults to 1.0
+          * glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true*/
+        void setClearDepth(const double depth) { _clearDepth=depth; }
+        
+        /** Get the clear depth.*/
+        const double getClearDepth() const { return _clearDepth; }
+
+        
+        /** Set the clear stencil value used in glClearStencil(). Defaults to 1.0 
+          * glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true*/
+        void setClearStencil(const int stencil) { _clearStencil=stencil; }
+        
+        /** Get the clear color.*/
+        const int getClearStencil() const { return _clearStencil; }
+
+        
+        void setCamera(osg::Camera* camera) { _camera = camera; }
+        osg::Camera* getCamera() { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
+
+
+        void setRenderStageLighting(RenderStageLighting* rsl) { _renderStageLighting = rsl; }
+
+        RenderStageLighting* getRenderStageLighting() const
+        {
+            if (!_renderStageLighting.valid()) _renderStageLighting = new RenderStageLighting;
+            return _renderStageLighting.get();
+        }
+
+        void setLightingMode(RenderStageLighting::Mode mode) { getRenderStageLighting()->setLightingMode(mode); }
+        RenderStageLighting::Mode getLightingMode() const { return getRenderStageLighting()->getLightingMode(); }
+
+        void setLight(osg::Light* light) { getRenderStageLighting()->setLight(light); }
+        osg::Light* getLight() { return getRenderStageLighting()->getLight(); }
+        const osg::Light* getLight() const { return getRenderStageLighting()->getLight(); }
+        
+        virtual void addLight(osg::Light* light,osg::Matrix* matrix)
+        {
+            getRenderStageLighting()->addLight(light,matrix);
+        }
+
+        virtual void draw(osg::State& state,RenderLeaf*& previous);
+
+        void addToDependencyList(RenderStage* rs);
+
+        /** extract stats for current draw list. */
+        void getPrims(Statistics *primStats); 
+        
+    public:
+        
+        typedef std::vector< osg::ref_ptr<RenderStage> > DependencyList;
+
+        bool                                _stageDrawnThisFrame;
+        DependencyList                      _dependencyList;
+
+        osg::ref_ptr<osg::Camera>           _camera;
+
+        // viewport x,y,width,height.
+        GLint                               _view[4];
+        
+        GLbitfield                          _clearMask;
+        osg::Vec4                           _clearColor;
+        osg::Vec4                           _clearAccum;
+        double                              _clearDepth;
+        int                                 _clearStencil;
+
+        mutable osg::ref_ptr<RenderStageLighting>   _renderStageLighting;
+        
+    protected:
+    
+        virtual ~RenderStage();
+
+};
+
+};
+
+#endif
+

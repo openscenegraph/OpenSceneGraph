@@ -1,0 +1,23 @@
+#ifndef OSGUTIL_GUIEVENTHANDLER
+#define OSGUTIL_GUIEVENTHANDLER 1
+
+#include <osg/Referenced>
+
+#include <osgUtil/Export>
+#include <osgUtil/GUIEventAdapter>
+#include <osgUtil/GUIActionAdapter>
+
+namespace osgUtil{
+
+class OSGUTIL_EXPORT GUIEventHandler : public osg::Referenced
+{
+    public:
+
+        /** Handle events, return true if handled, false otherwise.*/
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us)=0;
+
+};
+
+};
+
+#endif

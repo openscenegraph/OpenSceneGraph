@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGDB_EXPORT osgDB::Output</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGDB_EXPORT <A HREF="#DOC.DOCU">osgDB::Output</A></H2></H2><BLOCKQUOTE>ofstream wrapper class for adding support for indenting.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mofstream,M,COutput,MOutput.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.22.1">Output</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.22.2">Output</A></B>(const char* name)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.22.3">~Output</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.4">open</A></B>(const char* name)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.5">open</A></B>(const char* name, int mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Output.html">Output</A>&amp; <B><A HREF="#DOC.2.22.6">indent</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.22.7">getIndentStep</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.22.8">setIndentStep</A></B>(int step)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.22.9">getIndent</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.22.10">setIndent</A></B>(int <!1><A HREF="Output.html#DOC.2.22.6">indent</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.22.11">getNumIndicesPerLine</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.22.12">setNumIndicesPerLine</A></B>(int num)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.13">moveIn</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.14">moveOut</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.22.15">writeObject</A></B>(const osg::Object&amp; obj)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.22.16">getUniqueIDForObject</A></B>(const osg::Object* obj, std::string&amp; uniqueID)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.22.17">createUniqueIDForObject</A></B>(const osg::Object* obj, std::string&amp; uniqueID)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.22.18">registerUniqueIDForObject</A></B>(const osg::Object* obj, std::string&amp; uniqueID)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.22.20">setPathNameHint</A></B>(const <!1><A HREF="Output.html#DOC.2.22.19">PathNameHint</A> pnh)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Output.html#DOC.2.22.19">PathNameHint</A> <B><A HREF="#DOC.2.22.21">getPathNameHint</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const std::string <B><A HREF="#DOC.2.22.22">getFileNameForOutput</A></B>(const std::string&amp; filename) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.22.19">PathNameHint</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.22.26">_indent</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.22.27">_indentStep</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.22.28">_numIndicesPerLine</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.22.30">_filename</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Output.html#DOC.2.22.19">PathNameHint</A> <B><A HREF="#DOC.2.22.31">_pathNameHint</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.22.23">Output</A></B>(const <!1><A HREF="Output.html#DOC.2.22.23">Output</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Output.html">Output</A>&amp; <B><A HREF="#DOC.2.22.24">operator = </A></B>(const <!1><A HREF="Output.html">Output</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.22.25">init</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;const osg::Object*,std::string&gt; UniqueIDToLabelMapping UniqueIDToLabelMapping <B><A HREF="#DOC.2.22.29">_objectToUniqueIDMap</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>ofstream wrapper class for adding support for indenting.
+Used in output of .osg ASCII files to improve their readability.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Output"></A>
+<A NAME="DOC.2.22.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Output()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Output"></A>
+<A NAME="DOC.2.22.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Output(const char* name)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Output"></A>
+<A NAME="DOC.2.22.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Output()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="open"></A>
+<A NAME="DOC.2.22.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void open(const char* name)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="open"></A>
+<A NAME="DOC.2.22.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void open(const char* name, int mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="indent"></A>
+<A NAME="DOC.2.22.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Output.html">Output</A>&amp; indent()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getIndentStep"></A>
+<A NAME="DOC.2.22.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getIndentStep() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setIndentStep"></A>
+<A NAME="DOC.2.22.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setIndentStep(int step)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getIndent"></A>
+<A NAME="DOC.2.22.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getIndent() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setIndent"></A>
+<A NAME="DOC.2.22.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setIndent(int <!1><A HREF="Output.html#DOC.2.22.6">indent</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumIndicesPerLine"></A>
+<A NAME="DOC.2.22.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumIndicesPerLine() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNumIndicesPerLine"></A>
+<A NAME="DOC.2.22.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNumIndicesPerLine(int num)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="moveIn"></A>
+<A NAME="DOC.2.22.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void moveIn()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="moveOut"></A>
+<A NAME="DOC.2.22.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void moveOut()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeObject"></A>
+<A NAME="DOC.2.22.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeObject(const osg::Object&amp; obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUniqueIDForObject"></A>
+<A NAME="DOC.2.22.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getUniqueIDForObject(const osg::Object* obj, std::string&amp; uniqueID)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createUniqueIDForObject"></A>
+<A NAME="DOC.2.22.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool createUniqueIDForObject(const osg::Object* obj, std::string&amp; uniqueID)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="registerUniqueIDForObject"></A>
+<A NAME="DOC.2.22.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool registerUniqueIDForObject(const osg::Object* obj, std::string&amp; uniqueID)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PathNameHint"></A>
+<A NAME="DOC.2.22.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  PathNameHint</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="AS_IS"></A>
+<A NAME="DOC.2.22.19.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AS_IS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FULL_PATH"></A>
+<A NAME="DOC.2.22.19.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FULL_PATH</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RELATIVE_PATH"></A>
+<A NAME="DOC.2.22.19.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RELATIVE_PATH</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FILENAME_ONLY"></A>
+<A NAME="DOC.2.22.19.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FILENAME_ONLY</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setPathNameHint"></A>
+<A NAME="DOC.2.22.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPathNameHint(const <!1><A HREF="Output.html#DOC.2.22.19">PathNameHint</A> pnh)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPathNameHint"></A>
+<A NAME="DOC.2.22.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Output.html#DOC.2.22.19">PathNameHint</A> getPathNameHint() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFileNameForOutput"></A>
+<A NAME="DOC.2.22.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const std::string getFileNameForOutput(const std::string&amp; filename) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Output"></A>
+<A NAME="DOC.2.22.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Output(const <!1><A HREF="Output.html#DOC.2.22.23">Output</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.2.22.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Output.html">Output</A>&amp; operator = (const <!1><A HREF="Output.html">Output</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init"></A>
+<A NAME="DOC.2.22.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_indent"></A>
+<A NAME="DOC.2.22.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _indent</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_indentStep"></A>
+<A NAME="DOC.2.22.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _indentStep</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numIndicesPerLine"></A>
+<A NAME="DOC.2.22.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _numIndicesPerLine</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_objectToUniqueIDMap"></A>
+<A NAME="DOC.2.22.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;const osg::Object*,std::string&gt; UniqueIDToLabelMapping UniqueIDToLabelMapping _objectToUniqueIDMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_filename"></A>
+<A NAME="DOC.2.22.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _filename</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pathNameHint"></A>
+<A NAME="DOC.2.22.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Output.html#DOC.2.22.19">PathNameHint</A> _pathNameHint</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

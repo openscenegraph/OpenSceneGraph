@@ -1,0 +1,114 @@
+#ifndef OSG_STENCIL
+#define OSG_STENCIL 1
+
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/Types>
+
+namespace osg {
+
+/** Encapsulte OpenGL glStencilFunc/Op/Mask functions.
+*/     
+class SG_EXPORT Stencil : public StateAttribute
+{
+    public :
+    
+    
+        Stencil();
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Stencil*>(obj)!=0L; }
+        virtual Object* clone() const { return new Stencil(); }
+        virtual const char* className() const { return "Stencil"; }
+    
+        virtual const Type getType() const { return STENCIL; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_STENCIL_TEST,value);
+        }
+
+        enum Function
+        {
+            NEVER = GL_NEVER,
+            LESS = GL_LESS,
+            EQUAL = GL_EQUAL,
+            LEQUAL = GL_LEQUAL,
+            GREATER = GL_GREATER,
+            NOTEQUAL = GL_NOTEQUAL,
+            GEQUAL = GL_GEQUAL,
+            ALWAYS = GL_ALWAYS
+        };
+
+        inline void setFunction(const Function func,int ref,uint mask)
+        {
+            _func = func;
+            _funcRef = ref;
+            _funcMask = mask;
+        }
+        
+        inline const Function getFunction() const { return _func; }
+        
+        inline const int getFunctionRef() const { return _funcRef; }
+
+        inline const uint getFunctionMask() const { return _funcMask; }
+        
+        
+        enum Operation 
+        {
+            KEEP = GL_KEEP,
+            ZERO = GL_ZERO,
+            REPLACE = GL_REPLACE,
+            INCR = GL_INCR,
+            DECR = GL_DECR,
+            INVERT = GL_INVERT
+        };
+        
+        /** set the operations to apply when the various stencil and depth 
+          * tests fail or pass.  First paramater is to control the operation
+          * when the stencil test fails.  The second paramter is to control the
+          * operatiorn when the stencil test passes, but depth test fails. The
+          * third parameter controls the operation when both the stencil test
+          * and depth pass.  Ordering of parameter is the same as if using
+          * glStencilOp(,,).*/
+        inline void setOperation(const Operation sfail, const Operation zfail, const Operation zpass)
+        {
+            _sfail = sfail;
+            _zfail = zfail;
+            _zpass = zpass;
+        }
+        
+        /** get the operation when the stencil test fails.*/
+        inline const Operation getStencilFailOperation() const { return _sfail; }
+        
+        /** get the operation when the stencil test passes but the depth test fails*/
+        inline const Operation getStencilPassAndDepthFailOperation() const { return _zfail; }
+        
+        /** get the operation when both the stencil test and the depth test pass*/
+        inline const Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
+        
+
+        inline void setWriteMask(uint mask) { _writeMask = mask; }
+        
+        inline const uint getWriteMask() const { return _writeMask; }
+
+
+        virtual void apply(State& state) const;
+
+    protected:
+    
+        virtual ~Stencil();
+
+        Function            _func;
+        int                 _funcRef;
+        uint                _funcMask;
+        
+        Operation           _sfail;
+        Operation           _zfail;
+        Operation           _zpass;
+        
+        uint                _writeMask;
+
+};
+
+};
+
+#endif

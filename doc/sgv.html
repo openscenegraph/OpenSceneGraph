@@ -1,0 +1,267 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; Linux 2.2.15-3SGI_39 i686) [Netscape]">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#3333FF" vlink="#993399" alink="#FF0000">
+
+<blockquote>&nbsp;</blockquote>
+
+<center>
+<h1>
+Scene Graph Viewer (sgv) keyboard bindings:</h1></center>
+
+<p><br>
+<table BORDER COLS=2 WIDTH="100%" NOSAVE >
+<tr NOSAVE>
+<td WIDTH="10%" NOSAVE><b><u>Key</u></b></td>
+
+<td><u>Binding</u></td>
+</tr>
+
+<tr>
+<td>
+<center><font size=+2>'1'</font></center>
+</td>
+
+<td>Select the trackball camera manipulator.
+<blockquote>Left mouse button - rotate,
+<br>Middle (or Left &amp; Right) mouse button - pan,
+<br>Right mouse button - zoom.</blockquote>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><font size=+2>'2'</font></center>
+</td>
+
+<td>Select the flight camera manipulator.
+<blockquote>Left mouse button - speed up,
+<br>Middle (or Left &amp; Right) mouse button - stop,
+<br>Right mouse button - slow down, reverse.
+<br>Move mouse left to roll left, right to roll right.
+<br>Move mouse back (down) to pitch nose up, forward to pitch down.
+<br>In mode Q, the default, selected by pressing 'q'
+<blockquote>The flight path is yawed automatically into the turn to produce
+a similar effect as flying an aircaft.</blockquote>
+In mode A, selected by pressing 'a'
+<blockquote>The flight path is not yawed automatically into the turn, producing
+a similar effect as space/marine flight.</blockquote>
+</blockquote>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><font size=+2>'3'</font></center>
+</td>
+
+<td>Select the drive camera manipulator.
+<br>&nbsp;
+<blockquote>In mode Q, the default, selected by pressing 'q'</blockquote>
+
+<blockquote>
+<blockquote>Move mouse left to turn left, right to turn right.
+<br>Move mouse back (down) to reverse, forward to drive forward.</blockquote>
+In mode A, selected by pressing 'a'
+<blockquote>Move mouse left to turn left, right to turn right.
+<br>Left mouse button - speed up,
+<br>Middle (or Left &amp; Right) mouse button - stop,
+<br>Right mouse button - slow down, reverse.</blockquote>
+</blockquote>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'+'</font></b></center>
+</td>
+
+<td>Half the frame delay which speeds up the frame rate on Linux and
+<br>Windows.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'-'</font></b></center>
+</td>
+
+<td>Double the frame delay and therefore reduce the frame rate on Linux
+and Windows.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'/'</font></b></center>
+</td>
+
+<td>Divide the Level-Of-Detail (LOD) bias by 1.5, to encourage the selection
+of more complex LOD children.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'*'</font></b></center>
+</td>
+
+<td>Multiple the Level-of-Detail (LOD) bias by 1.5, to encourage the
+<br>selection of less complex LOD children.</td>
+</tr>
+</table>
+
+<table BORDER=3 CELLSPACING=3 CELLPADDING=3 NOSAVE >
+<tr NOSAVE>
+<td WIDTH="15%" NOSAVE>
+<center><b><font size=+2>'c'&nbsp;</font></b></center>
+</td>
+
+<td>Toggle Small Feature Culling on or off.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'C'</font></b></center>
+</td>
+
+<td>Toggle View Frustum Culling on or off.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'d'</font></b></center>
+</td>
+
+<td>Toggle use of OpenGL's display lists.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'b'</font></b></center>
+</td>
+
+<td>Toggle OpenGL's backface culling.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'t'</font></b></center>
+</td>
+
+<td>Toggle OpenGL texturing on or off.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'T'</font></b></center>
+</td>
+
+<td>Toggle OpenGL two-sided lighting on or off.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'l'</font></b></center>
+</td>
+
+<td>Toggle OpenGL lighting on or off.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'L'</font></b></center>
+</td>
+
+<td>Toggle SceneView lighting mode between HEADLIGHT, SKY_LIGHT and NO_SCENEVIEW_LIGHT.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'s'</font></b></center>
+</td>
+
+<td>Toggle OpenGL shade model between flat and smooth shading.</td>
+</tr>
+
+<tr>
+<td>
+<center>'<b><font size=+2>w'</font></b></center>
+</td>
+
+<td>Toggle OpenGL polygon mode between solid, wireframe and points modes.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'i'</font></b></center>
+</td>
+
+<td>Calculate and report the intersections with the scene under thecurrent
+mouse x and mouse y position.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'r'</font></b></center>
+</td>
+
+<td>Calculate and report the intersections with the scene under the currentmouse
+x and mouse y position and delete the nearest interesected geoset.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'p'</font></b></center>
+</td>
+
+<td>Print frame rate statistics on each frame.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+1>'o'</font></b></center>
+</td>
+
+<td>Output the loaded scene to 'saved_model.osg'.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'?'/'h'</font></b></center>
+</td>
+
+<td>Print out sgv's keyboard bindings.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>'f'</font></b></center>
+</td>
+
+<td>
+<center>Toggle between fullscreen and the previous window size. Note GLUT
+fullscreen works properly on Windows and Irix, but on Linux it just maximizes
+the window and leaves the window's borders.</center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>Space</font></b></center>
+</td>
+
+<td>Reset scene to the default view.</td>
+</tr>
+
+<tr>
+<td>
+<center><b><font size=+2>Esc&nbsp;</font></b></center>
+</td>
+
+<td>&nbsp; Exit sgv.</td>
+</tr>
+</table>
+
+</body>
+</html>

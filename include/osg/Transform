@@ -1,0 +1,46 @@
+#ifndef OSG_TRANSFORM
+#define OSG_TRANSFORM 1
+
+#include <osg/Group>
+#include <osg/Matrix>
+
+namespace osg {
+
+/** Transform - is group which all children
+    are transformed by the the Transform's osg::Matrix.  Typical uses
+    of the Transform is for positioning objects within a scene or 
+    producing trakerball functionality or for animatiion.
+*/
+class SG_EXPORT Transform : public Group
+{
+    public :
+        Transform();
+        Transform(const Matrix& matix);
+
+        virtual Object* clone() const { return new Transform(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Transform*>(obj)!=NULL; }
+        virtual const char* className() const { return "Transform"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+        void setMatrix(const Matrix& mat );
+        inline Matrix& getMatrix() { return *_matrix; }
+        inline const Matrix& getMatrix() const { return *_matrix; }
+
+        void preMult( const Matrix& mat );
+        void preScale( const float sx, const float sy, const float sz );
+        void preTranslate( const float tx, const float ty, const float tz );
+        void preRotate( const float deg, const float x, const float y, const float z );
+
+    
+    protected :
+    
+        virtual ~Transform();
+        
+        virtual const bool computeBound() const;
+
+        ref_ptr<Matrix> _matrix;
+};
+
+};
+
+#endif

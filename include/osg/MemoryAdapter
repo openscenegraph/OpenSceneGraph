@@ -1,0 +1,37 @@
+#ifndef OSG_MEMORYADAPTER
+#define OSG_MEMORYADAPTER 1
+
+#include <osg/Referenced>
+
+namespace osg {
+
+/** Class for adapting the memory management of external data.
+ *  Typically used to specify the memory management of user data
+ *  which can be attached to osg::Node.
+ */
+class SG_EXPORT MemoryAdapter : public Referenced
+{
+    public:
+        MemoryAdapter() {}
+        
+        /** Increment the reference count of the userData.*/ 
+        virtual void ref_data(void* /*userData*/) = 0;
+
+        /** Decrement the reference count of the userData.
+            Is usually implemented such that if reference count 
+            is decremented to zero the userData should be
+            deleted.  However, this is entirely up to the
+            discression of the user who is extending this base class.*/ 
+        virtual void unref_data(void* /*userData*/) = 0;
+   
+        /** not current used, but will be used in future.*/ 
+        virtual void* clone_data(void* /*userData*/) { return 0L; }
+        
+    protected:
+    
+        virtual ~MemoryAdapter() {}
+};
+
+};
+
+#endif

@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>namespace osgUtil</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>namespace <A HREF="#DOC.DOCU">osgUtil</A></H2></H2>
+<HR>
+<P><DL>
+ <DT>
+class  OSGUTIL_EXPORT <B><A HREF="CameraManipulator.html">CameraManipulator</A></B>: public <!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="CullViewState.html">CullViewState</A></B>: public osg::Referenced
+<DD><I>Container class for encapsulating the viewing state in local coordinates, during the cull traversal</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="CullVisitor.html">CullVisitor</A></B>: public osg::NodeVisitor
+<DD><I> Basic NodeVisitor implementation for rendering a scene.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DepthSortedBin.html">DepthSortedBin</A></B>: public <!1><A HREF="RenderBin.html">RenderBin</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DisplayListVisitor.html">DisplayListVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag,  with option to immediately compile osg::GeoSet's OpenGL Display lists.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DriveManipulator.html">DriveManipulator</A></B>: public <!1><A HREF="CameraManipulator.html">CameraManipulator</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="FlightManipulator.html">FlightManipulator</A></B>: public <!1><A HREF="CameraManipulator.html">CameraManipulator</A>
+<DT>
+class  <B><A HREF="GUIActionAdapter.html">GUIActionAdapter</A></B>
+<DD><I>Pure virtual base class for adapting the GUI actions requested by CameraManipulators into actions which are handled by the GUI toolkit of the users application.</I>
+<DT>
+class  <B><A HREF="GUIEventAdapter.html">GUIEventAdapter</A></B>: public osg::Referenced
+<DD><I>Pure virtual base class for adapting platform specific events into generic keyboard and mouse events.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="GUIEventHandler.html">GUIEventHandler</A></B>: public osg::Referenced
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="InsertImpostorsVisitor.html">InsertImpostorsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Insert impostor nodes into scene graph.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="IntersectState.html">IntersectState</A></B>: public osg::Referenced
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Hit.html">Hit</A></B>: public osg::Referenced
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="IntersectVisitor.html">IntersectVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Basic visitor for ray based collisions of a scene.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderBin.html">RenderBin</A></B>: public osg::Object
+<DD><I> RenderBin base class</I>
+<DT>
+template&lt;class T&gt; class  <B><A HREF="RegisterRenderBinProxy.html">RegisterRenderBinProxy</A></B>
+<DD><I>Proxy class for automatic registration of renderbins with the RenderBin prototypelist</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderGraph.html">RenderGraph</A></B>: public osg::Referenced
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderLeaf.html">RenderLeaf</A></B>: public osg::Referenced
+<DD><I>container class for all data required for rendering of drawables</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderStage.html">RenderStage</A></B>: public <!1><A HREF="RenderBin.html">RenderBin</A>
+<DD><I> RenderState base class.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderStageLighting.html">RenderStageLighting</A></B>: public osg::Object
+<DD><I> RenderBin base class</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RenderToTextureStage.html">RenderToTextureStage</A></B>: public <!1><A HREF="RenderStage.html">RenderStage</A>
+<DD><I> RenderBin base class</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="SceneView.html">SceneView</A></B>: public osg::Referenced
+<DD><I> SceneView is literaly a view of a scene, encapsulating the camera, global state, lights and the scene itself.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="SceneViewManipulator.html">SceneViewManipulator</A></B>: public <!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="SmoothingVisitor.html">SmoothingVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A smoothing visitor for calculating smoothed normals for osg::GeoSet's which contains surface primitives</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="StateSetManipulator.html">StateSetManipulator</A></B>: public <!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Statistics.html">Statistics</A></B>: public osg::Object
+<DD><I> Statistics base class.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Tesselator.html">Tesselator</A></B>
+<DD><I>A simple class for tesselating a single polygon boundary.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="TrackballManipulator.html">TrackballManipulator</A></B>: public <!1><A HREF="CameraManipulator.html">CameraManipulator</A>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="TriStripVisitor.html">TriStripVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A tri stripping visitor for converting GeoSet primitives into tri strips.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="VisualsRequirementsVisitor.html">VisualsRequirementsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A visitor for traversing a scene graph establishing the OpenGL visuals are required to support rendering of that scene graph.</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+</DL>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

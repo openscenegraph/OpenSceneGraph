@@ -1,0 +1,76 @@
+#ifndef OSGUTIL_VISUALSREQUIREMENTSVISITOR
+#define OSGUTIL_VISUALSREQUIREMENTSVISITOR 1
+
+#include <osg/NodeVisitor>
+#include <osg/Geode>
+#include <osg/GeoSet>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** A visitor for traversing a scene graph establishing the OpenGL visuals are required
+  * to support rendering of that scene graph.  The results can then be used by
+  * applications to set up there windows with the corret visuals.  Have a look at
+  * src/osgGLUT/Viewer.cpp's Viewer::open() method for an example how to use it.
+  */
+class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor
+{
+    public:
+
+        /** Default to traversing all children, and reqiresDoubleBuffer,
+          * requiresRGB and requiresDepthBuffer to true and with
+          * alpha and stencil off.*/
+        VisualsRequirementsVisitor();
+        
+        
+        void setRequiresDoubleBuffer(const bool flag) { _requiresDoubleBuffer = flag; }
+
+        const bool requiresDoubleBuffer() const { return _requiresDoubleBuffer; }
+
+
+        void setRequiresRGB(const bool flag) { _requiresRBG = flag; }
+
+        const bool requiresRGB() const { return _requiresRBG; }
+
+
+        void setRequiresDepthBuffer(const bool flag) { _requiresDepthBuffer = flag; }
+
+        const bool requiresDepthBuffer() const { return _requiresDepthBuffer; }
+
+
+        void setMinumumNumAlphaBits(const unsigned int bits) { _minimumNumberAlphaBits = bits; }
+
+        const unsigned int getMinumumNumAlphaBits() const { return _minimumNumberAlphaBits; }
+
+        const bool requiresAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
+
+
+        void setMinumumNumStencilBits(const unsigned int bits) { _minimumNumberStencilBits = bits; }
+
+        const unsigned int getMinumumNumStencilBits() const { return _minimumNumberStencilBits; }
+        
+        const bool requiresStencilBuffer() const { return _minimumNumberStencilBits!=0; }
+
+
+        virtual void applyStateSet(osg::StateSet& stateset);
+
+        virtual void apply(osg::Node& node);
+
+        virtual void apply(osg::Geode& geode);
+
+        virtual void apply(osg::Impostor& impostor);
+        
+    protected:
+    
+        bool            _requiresDoubleBuffer;
+        bool            _requiresRBG;
+        bool            _requiresDepthBuffer;
+        unsigned int    _minimumNumberAlphaBits;
+        unsigned int    _minimumNumberStencilBits;
+
+};
+
+};
+
+#endif

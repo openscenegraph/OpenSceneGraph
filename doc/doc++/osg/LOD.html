@@ -1,0 +1,314 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::LOD</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::LOD</A></H2></H2><BLOCKQUOTE>LOD - Level Of Detail group node which allows switching between children depending on distance from eye point.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CLOD,MLOD.html,CImpostor,MImpostor.html">
+<param name=before value="M,M,M,M,M,M^_">
+<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M,M">
+<param name=indent value="0,1,2,3,4,4">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.44.1">LOD</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.44.2">clone</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.44.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.44.4">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.44.5">accept</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.44.6">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.44.7">setRange</A></B>(const unsigned int index, const float range)
+<DD><I>Sets the value of range list element index to range which is a floating point distance specified in world coordinates.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.44.8">getRange</A></B>(const unsigned int index) const 
+<DD><I>returns the range for specified index</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.44.9">getNumRanges</A></B>() const 
+<DD><I>returns the number of ranges currently set</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.44.10">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="BoundingSphere.html#DOC.2.4.6">center</A>)
+<DD><I>Sets the object-space point which defines the center of the osg::LOD.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.44.11">getCenter</A></B>() const 
+<DD><I>return the LOD center point.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.44.12">evaluate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const 
+<DD><I>return the child to traverse.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RangeList <B><A HREF="#DOC.2.44.15">_rangeList2</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.44.16">_center</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.44.13">~LOD</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;float&gt; RangeList RangeList <B><A HREF="#DOC.2.44.14">_rangeList</A></B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Group.html">Group</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildren</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( const int i )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( const int i ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const <!1><A HREF="Node.html">Node</A>* node )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; name )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* name )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.11">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(void* <!1><A HREF="Image.html#DOC.2.35.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const void* <B>getUserData</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(const NodeMask nm)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   std::string&amp; <B>getDescription</B>(const int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt; <B>DescriptionList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bsphere_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.52.11">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void* <B>_userData</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>&gt;  <B>_memoryAdapter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A> <B>_descriptions</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>LOD - Level Of Detail group node which allows switching between children
+depending on distance from eye point.
+Typical uses are for load balancing - objects further away from
+the eye point are rendered at a lower level of detail, and at times
+of high stress on the graphics pipeline lower levels of detail can
+also be chosen.</BLOCKQUOTE>
+<DL>
+
+<A NAME="LOD"></A>
+<A NAME="DOC.2.44.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.44.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.44.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.44.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.44.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.44.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRange"></A>
+<A NAME="DOC.2.44.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRange(const unsigned int index, const float range)</B></TT>
+<DD>Sets the value of range list element index to range which
+is a floating point distance specified in world coordinates.
+Range list automatically expands to accomodate values beyond
+the current getNumRanges().
+<DL><DT><DD></DL><P>
+<A NAME="getRange"></A>
+<A NAME="DOC.2.44.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getRange(const unsigned int index) const </B></TT>
+<DD>returns the range for specified index
+<DL><DT><DD></DL><P>
+<A NAME="getNumRanges"></A>
+<A NAME="DOC.2.44.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumRanges() const </B></TT>
+<DD>returns the number of ranges currently set
+<DL><DT><DD></DL><P>
+<A NAME="setCenter"></A>
+<A NAME="DOC.2.44.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="BoundingSphere.html#DOC.2.4.6">center</A>)</B></TT>
+<DD>Sets the object-space point which defines the center of the osg::LOD.  
+center is affected by any transforms in the hierarchy above the osg::LOD.
+<DL><DT><DD></DL><P>
+<A NAME="getCenter"></A>
+<A NAME="DOC.2.44.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenter() const </B></TT>
+<DD>return the LOD center point. 
+<DL><DT><DD></DL><P>
+<A NAME="evaluate"></A>
+<A NAME="DOC.2.44.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int evaluate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const </B></TT>
+<DD>return the child to traverse.
+Selected by the distance between the eye point in local
+coordinates and the LOD center, mutliplied by the bias.
+<DL><DT><DD></DL><P>
+<A NAME="~LOD"></A>
+<A NAME="DOC.2.44.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LOD()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_rangeList"></A>
+<A NAME="DOC.2.44.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;float&gt; RangeList RangeList _rangeList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_rangeList2"></A>
+<A NAME="DOC.2.44.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RangeList _rangeList2</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_center"></A>
+<A NAME="DOC.2.44.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _center</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="Impostor.html">Impostor</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

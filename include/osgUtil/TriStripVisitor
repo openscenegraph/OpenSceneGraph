@@ -1,0 +1,38 @@
+#ifndef OSGUTIL_TRISTRIPVISITOR
+#define OSGUTIL_TRISTRIPVISITOR 1
+
+#include <osg/NodeVisitor>
+#include <osg/Geode>
+#include <osg/GeoSet>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** A tri stripping visitor for converting GeoSet primitives into tri strips.
+  * The current implemention is based up NVidia's NvTriStrip.
+  */
+class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
+{
+    public:
+
+        /// default to traversing all children.
+        TriStripVisitor()
+        {
+            setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+        }
+
+        /** convert mesh primitives in geoset into Tri Strips using
+          * NvTriStrip.  Converts all primtive types except points
+          * and lines, linestrips which it leaves unchanged.
+          */
+        static void stripify(osg::GeoSet& gset);
+
+        /// apply stripify method to all geode geosets.
+        virtual void apply(osg::Geode& geode);
+
+};
+
+};
+
+#endif

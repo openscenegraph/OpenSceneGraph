@@ -1,0 +1,132 @@
+#ifndef OSG_STATEATTRIBUTE
+#define OSG_STATEATTRIBUTE 1
+
+#include <osg/Object>
+#include <osg/GL>
+
+namespace osg {
+
+// forward declare State & StateSet
+class State;
+class StateSet;
+
+/** Base class for state attribues.
+*/     
+class SG_EXPORT StateAttribute : public Object
+{
+    public :
+    
+        /** GLMode is the value used in glEnable/glDisable(mode) */
+        typedef GLenum          GLMode;
+        /** GLModeValue is used to specified whether an mode is enabled (ON) or disabled (OFF).
+          * GLMoveValue is also used to speficy the override behavior of modes from parent to children. 
+          * See enum Value description for more details.*/
+        typedef unsigned int    GLModeValue;
+        /** Override is used to specified the override behavior of StateAttributes
+          * from from parent to children. 
+          * See enum Value description for more details.*/
+        typedef unsigned int	OverrideValue;
+
+        /** list values which can be used in to set either GLModeValues
+          * or OverrideValues. When using in conjection with GLModeValues
+          * all Values have meaning.  When using in conjection with 
+          * StateAttribute OverrideValue only OFF,OVERRIDE and INHERIT
+          * are meaningful. However, they are useful when using GLModeValue 
+          * and OverrideValue in conjunction with each other as when using
+          * StateSet::setAttributeAndModes(..).*/
+        enum Values
+        {
+            /** means that associated GLMode and Override is disabled.*/
+            OFF          = 0x0,
+            /** means that associated GLMode is enabled and Override is disabled.*/
+            ON           = 0x1,
+            /** Overriding of GLMode's or StateAttributes is enabled.*/
+            OVERRIDE     = 0x2,
+            /** means that associated GLMode is disabled and Override is enabled.*/
+            OVERRIDE_OFF = 0x2,
+            /** means that associated GLMode and Override is enabled.*/
+            OVERRIDE_ON  = 0x3,
+            /** means that GLMode or StateAttribute should in inherited from above.*/
+            INHERIT      = 0x4
+        };
+
+        /** Values of StateAttribute::Type used to aid identification
+          * of diffenent StateAttribute subclasses. Each subclass defines
+          * it own value in the virtual Type getType() method.  When 
+          * extending the osg's StateAttribute's simply define your
+          * own Type value which is unique, using the StateAttribute::Type
+          * enum as a guide of what values to use.  If your new subclass
+          * needs to override a standard StateAttriubte then simple use 
+          * that types value. */
+        enum Type
+        {
+            ALPHAFUNC       =1,
+            ANTIALIAS       =2,
+            COLORTABLE      =3,
+            CULLFACE        =4,
+            FOG             =5,
+            FRONTFACE       =6,
+            LIGHTING        =7,
+            MATERIAL        =8,
+            POINT           =9,
+            POLYGONMODE     =10,
+            POLYGONOFFSET   =11,
+            TEXENV          =12,
+            TEXGEN          =13,
+            TEXMAT          =14,
+            TEXTURE         =15,
+            TEXTURE_0       =TEXTURE+0,
+            TEXTURE_1       =TEXTURE+1,
+            TEXTURE_2       =TEXTURE+2,
+            TEXTURE_3       =TEXTURE+3,
+            TRANSPARENCY    =19,
+            STENCIL         =20,
+            COLORMASK       =21,
+            CLIPPLANE       =23,
+            CLIPPLANE_0     =CLIPPLANE+0,
+            CLIPPLANE_1     =CLIPPLANE+1,
+            CLIPPLANE_2     =CLIPPLANE+2,
+            CLIPPLANE_3     =CLIPPLANE+3,
+            CLIPPLANE_4     =CLIPPLANE+4,
+            CLIPPLANE_5     =CLIPPLANE+5,
+            DEPTH           =29
+        };
+
+        StateAttribute() {}
+
+        /** return a shallow copy of a node, with Object* return type.*/
+        virtual Object* clone() const = 0;
+
+        /** return true if this and obj are of the same kind of object.*/
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateAttribute*>(obj)!=NULL; }
+
+        /** return the name of the attribute's class type.*/
+        virtual const char* className() const { return "StateAttribute"; }
+        
+        /** return the Type idenitifer of the attribute's class type.*/
+        virtual const Type getType() const = 0;
+        
+        virtual void setStateSetModes(StateSet&,const GLModeValue) const 
+        {
+            // default to no GLMode's assocated with use of the StateAttribute.
+        }
+    
+        /** apply the OpenGL state attributes. 
+          * The global state for the current OpenGL context is passed
+          * in to allow the StateAttribute to obtain details on the
+          * the current context and state.
+          */
+        virtual void apply(State&) const = 0 ;
+        
+        /** default to nothing to compile - all state is applied immediately. */
+        virtual void compile(State&) const {};
+
+    protected:
+    
+        virtual ~StateAttribute() {}
+
+};
+
+};
+
+#endif

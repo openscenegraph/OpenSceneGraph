@@ -1,0 +1,200 @@
+#ifndef OSGUTIL_RENDERGRAPH
+#define OSGUTIL_RENDERGRAPH 1
+
+#include <osg/Matrix>
+#include <osg/Drawable>
+#include <osg/StateSet>
+#include <osg/State>
+#include <osg/Light>
+
+#include <osgUtil/RenderLeaf>
+
+#include <set>
+#include <vector>
+
+namespace osgUtil {
+
+
+// beginings of a replacement for DrawBin.
+
+class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
+{
+    public:
+    
+
+        typedef std::map< const osg::StateSet*, osg::ref_ptr<RenderGraph> >   ChildList;
+        typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
+
+        RenderGraph*                        _parent;
+        osg::ref_ptr<const osg::StateSet>   _stateset;
+
+        int                                 _depth;
+        ChildList                           _children;
+        LeafList                            _leaves;
+
+
+        RenderGraph():
+            _parent(NULL), 
+            _stateset(NULL), 
+            _depth(0)
+        {
+        }
+
+        RenderGraph(RenderGraph* parent,const osg::StateSet* stateset):
+            _parent(parent), 
+            _stateset(stateset)
+        {
+            if (_parent) _depth = _parent->_depth + 1;
+            else _depth = 0;
+        }
+            
+        ~RenderGraph() {}
+        
+
+        /** return true if all of drawables, lights and chilren are empty.*/
+        inline const bool empty() const
+        {
+            return _leaves.empty() && _children.empty();
+        }
+        
+        inline const bool leaves_empty() const
+        {
+            return _leaves.empty();
+        }
+
+        /** reset the internal contents of a RenderGraph, including deleting all children.*/
+        void reset();
+
+        /** recursively clean the RenderGraph of all its drawables, lights and depths.
+          * Leaves children intact, and ready to be populated again.*/
+        void clean();
+
+        /** recursively prune the RenderGraph of empty children.*/
+        void prune();
+        
+        
+        inline RenderGraph* find_or_insert(const osg::StateSet* stateset)
+        {
+            // search for the appropriate state group, return it if found.
+            ChildList::iterator itr = _children.find(stateset);
+            if (itr!=_children.end()) return itr->second.get();
+            
+            // create a state group and insert it into the chilren list
+            // then return the state group.
+            RenderGraph* sg = new RenderGraph(this,stateset);
+            _children[stateset] = sg;
+            return sg;
+        }
+
+        /** add a render leaf.*/
+        inline void addLeaf(RenderLeaf* leaf)
+        {
+            if (leaf)
+            {
+                _leaves.push_back(leaf);
+                leaf->_parent = this;
+            }
+        }
+
+        static inline void moveRenderGraph(osg::State& state,RenderGraph* sg_curr,RenderGraph* sg_new)
+        {
+            if (sg_new==sg_curr || sg_new==NULL) return;
+
+            if (sg_curr==NULL)
+            {
+
+                // use return path to trace back steps to sg_new.
+                std::vector<RenderGraph*> return_path;
+
+                // need to pop back root render graph.
+                do 
+                {
+                    return_path.push_back(sg_new);
+                    sg_new = sg_new->_parent;
+                } while (sg_new);
+
+                for(std::vector<RenderGraph*>::reverse_iterator itr=return_path.rbegin();
+                    itr!=return_path.rend();
+                    ++itr)
+                {
+                    RenderGraph* rg = (*itr);
+                    if (rg->_stateset.valid()) state.pushStateSet(rg->_stateset.get());
+                }
+                return;
+            }
+        
+
+            // first handle the typical case which is two state groups
+            // are neighbours.
+            if (sg_curr->_parent==sg_new->_parent)
+            {
+                
+                // state has changed so need to pop old state.
+                if (sg_curr->_stateset.valid()) state.popStateSet();
+                // and push new state.
+                if (sg_new->_stateset.valid()) state.pushStateSet(sg_new->_stateset.get());
+                return;
+            }
+        
+
+            // need to pop back upto the same depth as the new state group.
+            while (sg_curr->_depth>sg_new->_depth)
+            {
+                if (sg_curr->_stateset.valid()) state.popStateSet();
+                sg_curr = sg_curr->_parent;
+            }
+            
+            // use return path to trace back steps to sg_new.
+            std::vector<RenderGraph*> return_path;
+
+            // need to pop back upto the same depth as the curr state group.
+            while (sg_new->_depth>sg_curr->_depth)
+            {
+                return_path.push_back(sg_new);
+                sg_new = sg_new->_parent;
+            }
+            
+            // now pop back up both parent paths until they agree.
+            while (sg_curr->_parent!=sg_new->_parent)
+            {
+                if (sg_curr->_stateset.valid()) state.popStateSet();
+                sg_curr = sg_curr->_parent;
+
+                return_path.push_back(sg_new);
+                sg_new = sg_new->_parent;
+            }
+            
+            for(std::vector<RenderGraph*>::reverse_iterator itr=return_path.rbegin();
+                itr!=return_path.rend();
+                ++itr)
+            {
+                RenderGraph* rg = (*itr);
+                if (rg->_stateset.valid()) state.pushStateSet(rg->_stateset.get());
+            }
+
+        }
+
+        inline static void moveToRootRenderGraph(osg::State& state,RenderGraph* sg_curr)
+        {
+            // need to pop back all statesets and matrices.
+            while (sg_curr)
+            {
+                if (sg_curr->_stateset.valid()) state.popStateSet();
+                sg_curr = sg_curr->_parent;
+            }
+            
+        }
+        
+    private:
+
+        /// disallow copy construction.
+        RenderGraph(const RenderGraph&):osg::Referenced() {}
+        /// disallow copy operator.
+        RenderGraph& operator = (const RenderGraph&) { return *this; }
+
+};
+
+};
+
+#endif
+

@@ -1,0 +1,56 @@
+#ifndef OSG_COLORMASK
+#define OSG_COLORMASK 1
+
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/Types>
+
+namespace osg {
+
+/** Encapsulte OpenGL glColorMaskFunc/Op/Mask functions.
+*/     
+class SG_EXPORT ColorMask : public StateAttribute
+{
+    public :
+    
+    
+        ColorMask();
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ColorMask*>(obj)!=0L; }
+        virtual Object* clone() const { return new ColorMask(); }
+        virtual const char* className() const { return "ColorMask"; }
+    
+        virtual const Type getType() const { return COLORMASK; }
+        
+        inline void setMask(bool red,bool green,bool blue,bool alpha)
+        {
+            _red = red;
+            _green = green;
+            _blue = blue;
+            _alpha = alpha;
+            
+        }
+        
+        inline const bool getRedMask() const { return _red; }
+
+        inline const bool getGreenMask() const { return _green; }
+
+        inline const bool getBlueMask() const { return _blue; }
+        
+        inline const bool getAlphaMask() const { return _alpha; }
+
+        virtual void apply(State& state) const;
+
+    protected:
+    
+        virtual ~ColorMask();
+
+        bool                _red;
+        bool                _green;
+        bool                _blue;
+        bool                _alpha;
+
+};
+
+};
+
+#endif

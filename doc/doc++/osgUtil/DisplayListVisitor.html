@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::DisplayListVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::DisplayListVisitor</A></H2></H2><BLOCKQUOTE>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag,  with option to immediately compile osg::GeoSet's OpenGL Display lists.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::NodeVisitor,M,CDisplayListVisitor,MDisplayListVisitor.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.2">DisplayListVisitor</A></B>(<!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.5.1.3">SWITCH_ON_DISPLAY_LISTS</A>)
+<DD><I>Construct a CompileGeoSetsVisior to traverse all child, with set specfied display list mode.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.3">setDisplayListMode</A></B>(<!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> mode)
+<DD><I>Set the operational mode of how the visitor should set up osg::GeoSet's</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> <B><A HREF="#DOC.2.5.4">getDisplayListMode</A></B>() const 
+<DD><I>Get the operational mode</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.5">setState</A></B>(osg::State* state)
+<DD><I>Set the State to use during traversal.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::State* <B><A HREF="#DOC.2.5.6">getState</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.7">apply</A></B>(osg::Node&amp; node)
+<DD><I>Simply traverse using standard NodeVisitor traverse method</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.8">apply</A></B>(osg::Geode&amp; node)
+<DD><I>For each Geode visited set the display list usage according to the  _displayListMode</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.1">DisplayListMode</A></B>
+<DD><I>Operation modes of the DisplayListVisitor</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> <B><A HREF="#DOC.2.5.9">_displayListMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.5.10">_localState</A></B>
+<DD><I>local state is created in constructor and used as the default state during traversal</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.5.11">_externalState</A></B>
+<DD><I>external state is used to override the default state</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.5.12">_activeState</A></B>
+<DD><I>active state is equal to _externalState when it is valid, otherwise defaults to _localState</I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag, 
+with option to immediately compile osg::GeoSet's OpenGL Display lists.
+The mode of operation
+of the vistor is controlled by setting the DisplayListMode either on visitor
+constructor or via the setDisplayListMode() method.  DisplayListMode options are:
+_displayListMode == SWITCH_ON_AND_COMPILE_DISPLAY_LISTS cals gset->compile() on
+all Geode childern. Note, the visitor must only be used within a valid 
+OpenGL context as compile uses OpenGL calls.
+_displayListMode == SWITCH_ON_DISPLAY_LISTS sets the Geode's children with 
+gset->setUseDisplayList(true), this method does not directly create display list,
+or uses OpenGL calls so if safe to use before a valid OpenGL context has been set up.
+On the next redraw of the scene, the gset's draw methods will be called
+which then will respond to their _useDisplayList being set by creating display lists
+automatically.
+_displayListMode == SWITCH_OFF_DISPLAY_LISTS sets the Geode's children with 
+gset->setUseDisplayList(false), this method does not directly create display list,
+or uses OpenGL calls so if safe to use before a valid OpenGL context has been set up.</BLOCKQUOTE>
+<DL>
+
+<A NAME="DisplayListMode"></A>
+<A NAME="DOC.2.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  DisplayListMode</B></TT>
+<DD>Operation modes of the DisplayListVisitor
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="SWITCH_ON_AND_COMPILE_DISPLAY_LISTS"></A>
+<A NAME="DOC.2.5.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWITCH_ON_AND_COMPILE_DISPLAY_LISTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COMPILE_ON_DISPLAY_LISTS"></A>
+<A NAME="DOC.2.5.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPILE_ON_DISPLAY_LISTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SWITCH_ON_DISPLAY_LISTS"></A>
+<A NAME="DOC.2.5.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWITCH_ON_DISPLAY_LISTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SWITCH_OFF_DISPLAY_LISTS"></A>
+<A NAME="DOC.2.5.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWITCH_OFF_DISPLAY_LISTS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="DisplayListVisitor"></A>
+<A NAME="DOC.2.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplayListVisitor(<!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.5.1.3">SWITCH_ON_DISPLAY_LISTS</A>)</B></TT>
+<DD>Construct a CompileGeoSetsVisior to traverse all child,
+with set specfied display list mode.  Default mode is to
+gset->setUseDisplayList(true).
+<DL><DT><DD></DL><P>
+<A NAME="setDisplayListMode"></A>
+<A NAME="DOC.2.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDisplayListMode(<!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> mode)</B></TT>
+<DD>Set the operational mode of how the visitor should set up osg::GeoSet's
+<DL><DT><DD></DL><P>
+<A NAME="getDisplayListMode"></A>
+<A NAME="DOC.2.5.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> getDisplayListMode() const </B></TT>
+<DD>Get the operational mode
+<DL><DT><DD></DL><P>
+<A NAME="setState"></A>
+<A NAME="DOC.2.5.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setState(osg::State* state)</B></TT>
+<DD>Set the State to use during traversal. 
+<DL><DT><DD></DL><P>
+<A NAME="getState"></A>
+<A NAME="DOC.2.5.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::State* getState()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.5.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp; node)</B></TT>
+<DD>Simply traverse using standard NodeVisitor traverse method
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.5.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; node)</B></TT>
+<DD>For each Geode visited set the display list usage according to the 
+_displayListMode
+<DL><DT><DD></DL><P>
+<A NAME="_displayListMode"></A>
+<A NAME="DOC.2.5.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplayListVisitor.html#DOC.2.5.1">DisplayListMode</A> _displayListMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_localState"></A>
+<A NAME="DOC.2.5.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _localState</B></TT>
+<DD>local state is created in constructor and used as the default state during traversal
+<DL><DT><DD></DL><P>
+<A NAME="_externalState"></A>
+<A NAME="DOC.2.5.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _externalState</B></TT>
+<DD>external state is used to override the default state
+<DL><DT><DD></DL><P>
+<A NAME="_activeState"></A>
+<A NAME="DOC.2.5.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _activeState</B></TT>
+<DD>active state is equal to _externalState when it is valid, otherwise defaults to _localState
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

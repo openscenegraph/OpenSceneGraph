@@ -142,63 +142,10 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
 
 osg::BoundingBox DataSet::SourceData::getExtents(const osgTerrain::CoordinateSystem* cs) const
 {
-    if (_cs==cs) return _extents;
-    if (_cs.valid() && cs)
-    {
-        if (*_cs == *cs) return _extents;
-        
-        if (_gdalDataSet)
-        {
-
-            //std::cout<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
-
-            osg::BoundingBox bb;
-            
-            /* -------------------------------------------------------------------- */
-            /*      Create a transformation object from the source to               */
-            /*      destination coordinate system.                                  */
-            /* -------------------------------------------------------------------- */
-            void *hTransformArg = 
-                GDALCreateGenImgProjTransformer( _gdalDataSet,_cs->getProjectionRef().c_str(),
-                                                 NULL, cs->getProjectionRef().c_str(),
-                                                 TRUE, 0.0, 1 );
-
-            if (!hTransformArg)
-            {
-                std::cout<<" failed to create transformer"<<std::endl;
-                return bb;
-            }
-        
-            double adfDstGeoTransform[6];
-            int nPixels=0, nLines=0;
-            if( GDALSuggestedWarpOutput( _gdalDataSet, 
-                                         GDALGenImgProjTransform, hTransformArg, 
-                                         adfDstGeoTransform, &nPixels, &nLines )
-                != CE_None )
-            {
-                std::cout<<" failed to create warp"<<std::endl;
-                return bb;
-            }
-
-            osg::Matrixd geoTransform( adfDstGeoTransform[1],    adfDstGeoTransform[4],    0.0,    0.0,
-                                       adfDstGeoTransform[2],    adfDstGeoTransform[5],    0.0,    0.0,
-                                       0.0,                0.0,                1.0,    0.0,
-                                       adfDstGeoTransform[0],    adfDstGeoTransform[3],    0.0,    1.0);
-
-            GDALDestroyGenImgProjTransformer( hTransformArg );
-
-            bb.expandBy( osg::Vec3(0.0,0.0,0.0)*geoTransform);
-            bb.expandBy( osg::Vec3(nPixels,nLines,0.0)*geoTransform);
-            
-            return bb;
-        }
-
-    }
-    std::cout<<"DataSet::DataSource::assuming compatible coordinates."<<std::endl;
-    return _extents;
+    return computeSpatialProperties(cs)._extents;
 }
 
-const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const
+const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(const osgTerrain::CoordinateSystem* cs) const
 {
     if (_cs==cs) return *this;
     if (_cs.valid() && cs)
@@ -247,7 +194,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
 
             sp._numValuesX = nPixels;
             sp._numValuesY = nLines;
-            sp._cs = cs;
+            sp._cs = const_cast<osgTerrain::CoordinateSystem*>(cs);
             sp._geoTransform.set( adfDstGeoTransform[1],    adfDstGeoTransform[4],  0.0,    0.0,
                                   adfDstGeoTransform[2],    adfDstGeoTransform[5],  0.0,    0.0,
                                   0.0,                      0.0,                    1.0,    0.0,
@@ -428,7 +375,8 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 	else if (!bandSelected && bandGreen) bandSelected = bandGreen;
 	else if (!bandSelected && bandBlue) bandSelected = bandBlue;
         
-        float heightRatio = 1.0/65536;
+        //float heightRatio = 1.0/65536;
+        float heightRatio = 1.0;
 
         if (bandSelected)
         {
@@ -1906,9 +1854,18 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             SourceData* sd = (*itr)->getSourceData();
-            if (sd) extents.expandBy(sd->getExtents(_coordinateSystem.get()));
+            if (sd)
+            {
+                osg::BoundingBox local_extents(sd->getExtents(_coordinateSystem.get()));
+                std::cout<<"local_extents = xMin()"<<local_extents.xMin()<<" "<<local_extents.xMax()<<std::endl;
+                std::cout<<"                yMin()"<<local_extents.yMin()<<" "<<local_extents.yMax()<<std::endl;
+                extents.expandBy(local_extents);
+            }
         }
     }
+
+    std::cout<<"extents = xMin()"<<extents.xMin()<<" "<<extents.xMax()<<std::endl;
+    std::cout<<"          yMin()"<<extents.yMin()<<" "<<extents.yMax()<<std::endl;
 
     // then create the destinate graph accordingly.
 

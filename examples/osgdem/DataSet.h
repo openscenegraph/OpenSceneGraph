@@ -113,7 +113,7 @@ class DataSet : public osg::Referenced
             
             osg::BoundingBox getExtents(const osgTerrain::CoordinateSystem* cs) const;
             
-            const SpatialProperties& computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const;
+            const SpatialProperties& computeSpatialProperties(const osgTerrain::CoordinateSystem* cs) const;
 
             bool intersects(const SpatialProperties& sp) const;
 
@@ -130,7 +130,7 @@ class DataSet : public osg::Referenced
             osg::ref_ptr<osg::Node>                     _model;
             GDALDataset*                                _gdalDataSet;
             
-            typedef std::map<osgTerrain::CoordinateSystem*,SpatialProperties> SpatialPropertiesMap;
+            typedef std::map<const osgTerrain::CoordinateSystem*,SpatialProperties> SpatialPropertiesMap;
             mutable SpatialPropertiesMap _spatialPropertiesMap;
             
             
@@ -769,8 +769,11 @@ class DataSet : public osg::Referenced
 
         void loadSources();
         
+        void setDestinationCoordinateSystem(const std::string& wellKnownText) { _coordinateSystem = new osgTerrain::CoordinateSystem(wellKnownText); }
         void setDestinationCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _coordinateSystem = cs; }
+        
         void setDestinationExtents(const osg::BoundingBox& extents) { _extents = extents; }
+        
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
         
         void setDestinationTileBaseName(const std::string& basename) { _tileBasename = basename; }

@@ -27,10 +27,12 @@
 #include <osgFX/BumpMapping>
 
 #include <osgProducer/Viewer>
+#include <osg/Switch>
 
 #include "DataSet.h"
 
-#include <osg/Switch>
+#include <ogr_spatialref.h>
+
 
 int main( int argc, char **argv )
 {
@@ -79,6 +81,8 @@ int main( int argc, char **argv )
     {
         dataset->setDestinationExtents(osg::BoundingBox(x,y,0.0f,x+w,y+h,0.0f));
     }
+    
+    
 
     dataset->setDestinationTileBaseName("output");
     dataset->setDestinationTileExtension(".ive");
@@ -110,6 +114,25 @@ int main( int argc, char **argv )
         return 1;
     }
 
+
+    if (false)    
+    {
+        // set up the coordinate system
+        OGRSpatialReference     oSRS;
+
+        oSRS.SetProjCS( "UTM 47 (WGS84) in southern hemisphere." );
+        oSRS.SetWellKnownGeogCS( "WGS84" );
+        oSRS.SetUTM( 47, FALSE );
+
+        // get the Well Known Text string
+        char    *pszWKT = NULL;
+        oSRS.exportToWkt( &pszWKT );
+        
+        // set the destination coordinate system
+        dataset->setDestinationCoordinateSystem(pszWKT);
+    }
+
+    
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 

@@ -101,7 +101,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             if (fileName.empty()) fileName = file; // let Peformer see if it can file the filep
 
             osg::notify(osg::INFO)<<"ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
-            initPerformer();
+            //initPerformer();
 
             pfTexture* tex = new pfTexture;
             tex->ref();
@@ -159,7 +159,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::notify(osg::INFO)<<"ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
-            initPerformer();
+            //initPerformer();
 
             pfNode* root = pfdLoadFile(fileName.c_str());
             if (root)
@@ -195,6 +195,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 ReaderWriterPFB::ReaderWriterPFB()
 {
     _performerInitialised = false;
+    initPerformer();
 }
 
 

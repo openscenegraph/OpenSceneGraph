@@ -191,7 +191,14 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Remove all objects in the cache regardless of having external references or expiry times.*/ 
         void clearObjectCache();
 
+        /** Add a filename,object,timestamp tripple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
+        
+        /** Set whether the Registry::ObjectCache should be used by default.*/
+        void setUseObjectCacheHint(bool useObjectCache) { _useObjectCacheHint = useObjectCache; }
+
+        /** Get whether the Registry::ObjectCache should be used by default.*/
+        bool getUseObjectCacheHint() const { return _useObjectCacheHint; }
 
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
@@ -247,7 +254,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         FilePathList       _dataFilePath;
         FilePathList       _libraryFilePath;
-        
+
+        bool                _useObjectCacheHint;        
         ObjectCache         _objectCache;
 
 };

@@ -5,12 +5,19 @@
 #ifndef OSGUTIL_Tesselator
 #define OSGUTIL_Tesselator
 
-#include <osg/Types>
-#include <osg/Vec3>
+#include <osg/Geometry>
 
 #include <osgUtil/Export>
 
+#include <osg/GLU>
+
 #include <vector>
+
+/* Win32 calling conventions. (or a least thats what the GLUT example tess.c uses.)*/
+#ifndef CALLBACK
+#define CALLBACK
+#endif
+
 
 namespace osgUtil {
 
@@ -31,86 +38,65 @@ class OSGUTIL_EXPORT Tesselator
             COUNTER_CLOCK_WISE
         };
         
-        void tesselate(osg::Vec3* coords,int numIndices, int* indices,InputBoundaryDirection ibd=COUNTER_CLOCK_WISE);
-        void tesselate(osg::Vec3* coords,int numIndices, osg::ushort* indices,InputBoundaryDirection ibd=COUNTER_CLOCK_WISE);
-        void tesselate(osg::Vec3* coords,int numIndices, osg::uint* indices,InputBoundaryDirection ibd=COUNTER_CLOCK_WISE);
-
-        typedef std::vector<osg::uint>       IndexVec;
-
-        const IndexVec& getResult() const { return _tesselated_indices; }
+        typedef std::vector<osg::Vec3*> VertexPointList;
         
+        struct Prim : public osg::Referenced
+        {
+            Prim(GLenum mode):_mode(mode) {}
+        
+            typedef std::vector<osg::Vec3*> VecList;
 
-        void beginPrimitive(int primitiveType);
-        void endPrimitive();
+            GLenum  _mode;
+            VecList _vertices;
+        };
+        
+        void beginTesselation();
+        
+        void beginContour();
+        void addVertex(osg::Vec3* vertex);
+        void endContour();
+        
+        void endTesselation();
 
-        int  _errorCode;
+        typedef std::vector< osg::ref_ptr<Prim> > PrimList;
+        
+        PrimList& getPrimList() { return _primList; }        
+        
+        void retesselatePolygons(osg::Geometry& geom);
+        
+        void reset();
+        
+    protected:
+        
+        void begin(GLenum mode);
+        void vertex(osg::Vec3* vertex);
+        void combine(osg::Vec3* vertex);
+        void end();
+        void error(GLenum errorCode);
 
     
-        struct VertexIndexSet
+        static void beginCallback(GLenum which, void* userData);
+        static void vertexCallback(GLvoid *data, void* userData);
+        static void combineCallback(GLdouble coords[3], void* vertex_data[4],
+                              GLfloat weight[4], void** outData,
+                              void* useData);
+        static void endCallback(void* userData);
+        static void errorCallback(GLenum errorCode, void* userData);
+        
+        
+        struct Vec3d
         {
-            VertexIndexSet() {}
-            
-            VertexIndexSet(Tesselator* tess,const osg::Vec3& vec,osg::uint index)
-            {
-                set(tess,vec,index);
-            }
-     
-            VertexIndexSet(const VertexIndexSet& vip)
-            {
-                _Tesselator = vip._Tesselator;
-                _vertex[0] = vip._vertex[0];
-                _vertex[1] = vip._vertex[1];
-                _vertex[2] = vip._vertex[2];
-                _index = vip._index;
-                
-            }
-
-            VertexIndexSet& operator = (const VertexIndexSet& vip)
-            {
-                if (&vip==this) return *this;
-                _Tesselator = vip._Tesselator;
-                _vertex[0] = vip._vertex[0];
-                _vertex[1] = vip._vertex[1];
-                _vertex[2] = vip._vertex[2];
-                _index = vip._index;
-                return *this;                
-            }
-
-            void set(Tesselator* tess,const osg::Vec3& vec,osg::uint index)
-            {
-                _Tesselator = tess;
-                _vertex[0] = vec[0];
-                _vertex[1] = vec[1];
-                _vertex[2] = vec[2];
-                _index = index;
-            }
-            
-            void accumulate()
-            {
-                _Tesselator->_acummulated_indices.push_back(_index);
-            }
-            // note,_vertex must be first so that callbacks can use a pointer
-            // to it to dereference the VertexIndexSet for it.
-            double      _vertex[3];
-            Tesselator* _Tesselator;
-            osg::uint   _index;
+            double _v[3];
         };
 
-	protected:
-    
-        friend struct VertexIndexSet;
 
-        typedef std::vector<VertexIndexSet>  CoordVec;
+        typedef std::vector<Vec3d*> Vec3dList;
 
-        void init();
-        void do_it();
-                
+        GLUtesselator*  _tobj;
+        PrimList        _primList;
+        Vec3dList       _coordData;
+        GLenum          _errorCode;
 
-        CoordVec _coordVec;
-        IndexVec _tesselated_indices;
-        int      _currentPrimtiveType;
-        IndexVec _acummulated_indices;
-        
 };
 
 }

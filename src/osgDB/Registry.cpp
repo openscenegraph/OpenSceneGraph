@@ -893,11 +893,6 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 //
 ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
 {
-    std::string file = findDataFile( fileName );
-    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
-
-    PushAndPopDataPath tmpfile(getFilePath(fileName));
-
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
     
@@ -910,8 +905,8 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
         itr!=_rwList.end();
         ++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::ReadResult rr = (*itr)->readObject(file,_options.get());
+        rwOriginal.insert(itr->get());;
+        ReaderWriter::ReadResult rr = (*itr)->readObject(fileName,_options.get());
         if (rr.validObject()) return rr;
         else if (rr.error()) results.push_back(rr);
     }
@@ -926,7 +921,7 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                ReaderWriter::ReadResult rr = (*itr)->readObject(file,_options.get());
+                ReaderWriter::ReadResult rr = (*itr)->readObject(fileName,_options.get());
                 if (rr.validObject()) return rr;
                 else if (rr.error()) results.push_back(rr);
             }
@@ -937,10 +932,57 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
     {
         return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+fileName+"\".");
     }
+    
 
     return results.front();
 }
 
+ReaderWriter::ReadResult Registry::readObject(const std::string& fileName,bool useObjectCache)
+{
+    std::string file = findDataFile( fileName );
+    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    if (useObjectCache)
+    {
+        // search for entry in the object cache.
+        ObjectCache::iterator oitr=_objectCache.find(file);
+        if (oitr!=_objectCache.end())
+        {
+            notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
+            osg::Object* object = oitr->second.first.get();
+            if (object) return object;
+            else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+        }
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readObject(file);
+        if (rr.validObject()) 
+        {
+            // update cache with new entry.
+            notify(INFO)<<"Adding to cache object "<<file<<std::endl;
+            _objectCache[file]=ObjectTimeStampPair(rr.getObject(),0.0f);
+        }
+        
+        return rr;
+
+    }
+    else
+    {
+    
+        ObjectCache tmpObjectCache;
+        tmpObjectCache.swap(_objectCache);
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readObject(file);
+
+        tmpObjectCache.swap(_objectCache);
+
+        return rr;
+
+    }
+}
 
 ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::string& fileName)
 {
@@ -987,15 +1029,8 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
     return results.front();
 }
 
-
-
 ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 {
-    std::string file = findDataFile( fileName );
-    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
-
-    PushAndPopDataPath tmpfile(getFilePath(fileName));
-
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
@@ -1009,8 +1044,8 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        ReaderWriter::ReadResult rr = (*itr)->readImage(file,_options.get());
-        if (rr.validImage()) return rr;
+        ReaderWriter::ReadResult rr = (*itr)->readImage(fileName,_options.get());
+        if (rr.validImage())  return rr;
         else if (rr.error()) results.push_back(rr);
     }
 
@@ -1024,7 +1059,7 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                ReaderWriter::ReadResult rr = (*itr)->readImage(file,_options.get());
+                ReaderWriter::ReadResult rr = (*itr)->readImage(fileName,_options.get());
                 if (rr.validImage()) return rr;
                 else if (rr.error()) results.push_back(rr);
             }
@@ -1038,6 +1073,55 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 
     return results.front();
 }
+
+
+ReaderWriter::ReadResult Registry::readImage(const std::string& fileName,bool useObjectCache)
+{
+    std::string file = findDataFile( fileName );
+    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    if (useObjectCache)
+    {
+        // search for entry in the object cache.
+        ObjectCache::iterator oitr=_objectCache.find(file);
+        if (oitr!=_objectCache.end())
+        {
+            notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
+            osg::Image* image = dynamic_cast<osg::Image*>(oitr->second.first.get());
+            if (image) return image;
+            else return ReaderWriter::ReadResult("Error file not of type osg::Image");
+        }
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readImage(file);
+        if (rr.validImage()) 
+        {
+            // update cache with new entry.
+            notify(INFO)<<"Adding to cache image "<<file<<std::endl;
+            _objectCache[file]=ObjectTimeStampPair(rr.getObject(),0.0f);
+        }
+        
+        return rr;
+
+    }
+    else
+    {
+    
+        ObjectCache tmpObjectCache;
+        tmpObjectCache.swap(_objectCache);
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readImage(file);
+
+        tmpObjectCache.swap(_objectCache);
+
+        return rr;
+
+    }
+}
+
 
 
 ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::string& fileName)
@@ -1089,11 +1173,6 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
 ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 {
 
-    std::string file = findDataFile( fileName );
-    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
-
-    PushAndPopDataPath tmpfile(getFilePath(fileName));
-
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
@@ -1107,8 +1186,8 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        ReaderWriter::ReadResult rr = (*itr)->readNode(file,_options.get());
-        if (rr.validNode()) return rr;
+        ReaderWriter::ReadResult rr = (*itr)->readNode(fileName,_options.get());
+        if (rr.validNode())  return rr;
         else if (rr.error()) results.push_back(rr);
     }
 
@@ -1123,7 +1202,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                ReaderWriter::ReadResult rr = (*itr)->readNode(file,_options.get());
+                ReaderWriter::ReadResult rr = (*itr)->readNode(fileName,_options.get());
                 if (rr.validNode()) return rr;
                 else if (rr.error()) results.push_back(rr);
             }
@@ -1131,9 +1210,12 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     }
 
 
+    // need to sort out.
+    bool useObjectCache=true;
+
     if (_createNodeFromImage)
     {
-        ReaderWriter::ReadResult rr = readImage(file);
+        ReaderWriter::ReadResult rr = readImage(fileName,useObjectCache);
         if (rr.validImage()) return createGeodeForImage(rr.takeImage());
         //else if (rr.error()) results.push_back(rr);
     }
@@ -1146,6 +1228,53 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     return results.front();
 }
 
+ReaderWriter::ReadResult Registry::readNode(const std::string& fileName,bool useObjectCache)
+{
+
+    std::string file = findDataFile( fileName );
+    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    if (useObjectCache)
+    {
+        // search for entry in the object cache.
+        ObjectCache::iterator oitr=_objectCache.find(file);
+        if (oitr!=_objectCache.end())
+        {
+            notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
+            osg::Node* node = dynamic_cast<osg::Node*>(oitr->second.first.get());
+            if (node) return node;
+            else return ReaderWriter::ReadResult("Error file not of type osg::Node");
+        }
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readNode(file);
+        if (rr.validNode()) 
+        {
+            // update cache with new entry.
+            notify(INFO)<<"Adding to cache node "<<file<<std::endl;
+            _objectCache[file]=ObjectTimeStampPair(rr.getObject(),0.0f);
+        }
+        
+        return rr;
+
+    }
+    else
+    {
+    
+        ObjectCache tmpObjectCache;
+        tmpObjectCache.swap(_objectCache);
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readNode(file);
+
+        tmpObjectCache.swap(_objectCache);
+
+        return rr;
+
+    }
+}
 
 ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string& fileName)
 {
@@ -1213,4 +1342,54 @@ void Registry::convertStringPathIntoFilePathList(const std::string& paths,FilePa
         filepath.push_back(std::string(paths,start,std::string::npos));
     }
  
+}
+
+void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime)
+{
+
+    // look for objects with external references and update their time stamp.
+    for(ObjectCache::iterator itr=_objectCache.begin();
+        itr!=_objectCache.end();
+        ++itr)
+    {
+        // if ref count is greater the 1 the object has an external reference.
+        if (itr->second.first->referenceCount()>1)
+        {
+            // so update it time stamp.
+            itr->second.second = currentTime;
+        }
+    }
+}
+
+void Registry::removeExpiredObjectsInCache(double expiryTime)
+{
+    typedef std::vector<std::string> ObjectsToRemove;
+    ObjectsToRemove objectsToRemove;
+
+    // first collect all the exprired entries in the ObjectToRemove list.
+    for(ObjectCache::iterator oitr=_objectCache.begin();
+        oitr!=_objectCache.end();
+        ++oitr)
+    {
+        if (oitr->second.second<=expiryTime)
+        {
+            // record the filename of the entry to use as key for deleting
+            // afterwards/
+            objectsToRemove.push_back(oitr->first);
+        }
+    }
+    
+    // remove the entries from the _objectCaache.
+    for(ObjectsToRemove::iterator ritr=objectsToRemove.begin();
+        ritr!=objectsToRemove.end();
+        ++ritr)
+    {
+        _objectCache.erase(*ritr);
+    }
+        
+}
+
+void Registry::clearObjectCache()
+{
+    _objectCache.clear();
 }

@@ -1,20 +1,21 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-OpenSceneGraph-0.9.6
+12th September 2003 - OpenSceneGraph-0.9.6
 
     >>> osgFX Special Effects nodekit, support for double Matrix traversals, 
     >>> improved build support, thread safety and robustness.
     
     The new osgFX nodekit, written by Marco Jez, adds a set of decorator 
     nodes that add can be conveniently added above subgraphs in your scene 
-    to add special a range of special rendering effects.  Effects include AnisotopicLight, Scribe, Specular Highlights
-    and Cartoon rendering.
+    to add special a range of special rendering effects.  Effects include 
+    AnisotopicLight, BumpMapping, Scribe, Specular Highlights and Cartoon 
+    rendering.
     
     Support for double Matrices has been added with the new Matrixd class,
     and complimented by the a Matrixf class.  The original Matrix class is
-    now a typedef which can be set to either Matrixf (the default) or
-    Matrixd,  When the Matrix typedef is set to Matrixd and the OSG and
+    now a typedef which can be set to either Matrixf or Matrixd (which is 
+    now the default),  When the Matrix typedef is set to Matrixd and the OSG and
     dependent apps are recompiled all internal operations such a cull traversals 
     will now be double with double matrices which much improved numerical
     precision, making it ideal for datasets where a large values are contained
@@ -36,8 +37,10 @@ OpenSceneGraph-0.9.6
     
     Threading problems which caused crashes in recent updates of the Terrapage
     loader have also been fixed, and additional internal changes have been made
-    to improve the Terrapage loader's ability to hit constant frame rates.
-    
+    to improve the Terrapage loader's ability to hit constant frame rates.   
+    Support has also been added for loading light points directly from the 
+    Terrapage database.
+
     A new .iv/.wrl loader plugin, written by Vivek Rajan, at Magic Earth,
     has been added to the distribution which uses with OpenInventor or Coin 
     to load model, converting them into OSG equivalents.  Coin has support 
@@ -47,6 +50,18 @@ OpenSceneGraph-0.9.6
     the environmental variable USE_INVENTOR or USE_COIN and recompile.  
     Windows .dsp project file does to current exist, but should be 
     possible to add this.
+    
+    To help handle running applications of graphics cards/drivers that exhibit
+    bugs with certain OpenGL extensions, support has been added to the GLextensions
+    code to allow extensions to be disabled via the new 
+    osg::setGLExtensionDisableString(std::string) function or by setting an 
+    OSG_GL_EXTENSION_DISABLE environmental variables.  Follows is an example of 
+    the disable string:
+    
+        set OSG_GL_EXTENSION_DISABLE =
+             "ATI:GL_SGIS_generate_mipmap;Sun:GL_EXT_texture_filter_anisotropic:"
+
+    
     
 
 23rd July 2003 - OpenSceneGraph-0.9.5

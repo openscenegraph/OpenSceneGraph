@@ -147,7 +147,7 @@ and bring in user data with a very small amount of code.
 platform speciific dependancy, requiring little more than Standard C++ and OpenGL.
 The has allowed the scene graph to be rapidly ported on wide range of platforms -
 originally developed on IRIX, then ported to Linux, then to Windows, then FreeBSD, then Mac OSX
-and most recently Solaris! Being completely windowing system independant it easy
+and most recently Solaris! Being completely windowing system independant makes it easy
 for users to add their own window specific libraries and applications on top.
 In the distribution there is aleady the osgGLUT library, and in the Bazaar found
 at openscenegrph.org/download/ once can find examples of how applications written
@@ -160,7 +160,7 @@ ontop Qt, MFC, WxWindows and SDL.  Users have also integrated it with Motif, and
 </p>
 <i>Scalability</i> - the scene graph not only runs from portables all the way up
 to Onyx Infinite Reality Monsters, it supports the multiple graphics subsystems
-found on the machines like the a mulitpipe Onyx. This is possible since the core scene
+found on machines like the a mulitpipe Onyx. This is possible since the core scene
 graph supports multiple graphics context for both OpenGL DisplayLists and texture objects,
 and the cull and draw traversals have been designed to cache rendering data locally and
 use the scene gaph almost entirely as a read only operation.  This allows multiple
@@ -199,30 +199,80 @@ already adopted their projects, and are from all over the world.
 
 <hr>
 
+<h2>Getting started</h2>
+
+<p>
+The first thing is to select the distribution which suits you, there are binary, development and
+source code distributions, these can be loaded from the
+<a href="http://www.openscenegraph.org/download">http://www.openscenegraph.org/download</a> page.
+The latest developments area available as via a nightly tarball or via cvs.
+</p>
+
+<p>
+The binary distribution contains just the libraries (.dll's /.so's) and demo executables.
+This is suitable for using the OpenSceneGraph with an application that has already been compiled
+but depends at runtime on the OpenSceneGraph.
+</p>
+
+<p>
+The development distribution contains the libraries (.dll's /.so's), demo executabls, include files, and source to
+the demos. This is suitable for using the developers using the OpenSceneGraph.
+</p>
+
+<p>
+The source distribution contains the all the source and include files required to build the OpenSceneGraph from
+sratch, and is ideal if you want to learn more about how the scene gaph works, how to extend it, and to track
+down and fix any problems that you come across.
+</p>
+
+<p>
+If you are using a source disitribution then read the <a href="install.html">installation</a> instructions
+for how to get the OpenSceneGraph compiling and installed on your system.  You may also need to download
+libraries that parts of the OpenSceneGraph is dependant upon such as glut, check the
+<a href="dependencies.html">dependencies</a> list for futher details.
+</p>
+
+
+<hr>
+
 <h2>How to learn to use the OpenSceneGraph</h2>
 
 <p>
 The OpenSceneGraph distribution comes with a reference guide for each of the componet libraries - osg, osgDB,
 osgUtil, osgText and osgGLUT, a set of demos - the source of which can be found in src/Demos/.For questions
 or help which can't be easily be answered by the reference guide and demo source, one should join the openscene
-gaph mailing list. A programming guide will be avaialbe in form of a OpenSceneGraph book which is being
+gaph mailing list (details below).There is also the beginings of <a href="http://www.c2.com/cgi/wiki?OpenSceneGraphFaq">Wiki based FAQ</a>
+which may help answer a few of the common querries.
+
+
+<p>A programming guide will be avaialbe in form of a OpenSceneGraph book which is being
 written by Don Burns and Robert Osfield, parts of it will be available.online.
 </p>
 
 <p>
 Although not directly releated to the OpenSceneGraph, once can learn about scene graph technolgy from
-such sources as the Open Inventor Mentor, and Performer Programming Guides.  The later is the closest
-in design/API structure to the OpenSceneGraph.</p>
+such sources as the <a href="http://www.sgi.com/software/inventor/manuals.html">Open Inventor Mentor</a>, and <a href="http://www.cineca.it/manuali/Performer/ProgGuide24/html"> Performer Programming Guides</a>.
+The later is the closest in design concepts to the OpenSceneGraph, although Performer manuals is in C alas.
+</p>
 
+<p>
+The OpenSceneGraph uses OpenGL and does with a deliberately thin layer, making it easy to control the underlying
+OpenGL and to extend it with OpenGL extensions.  The close tie with OpenGL is also reflected in the nameing
+of many of the OpenGL state related classes, the the parameters that they encapsulate and means that knowledge
+of OpenGL itself will go a long way to understanding how to get the best out of the OpenSceneGraph.  To this
+end it is worth obtaining a copy of the OpenGL programming guide - <a href="http://fly.cc.fer.hr/~unreal/theredbook/">`Red Book`</a>
+and OpenGL reference guide 'Blue Book'.  The main <a href="http://www.opengl.org">OpenGL website</a> is also a good source of links and further information.
+</p>
 <hr>
 
-<h2>Support and discussion - the OpenSceneGraph-news mailing list</h2>
+<h2>Support and discussion - the <i>openscenegraph-news</i> mailing list</h2>
 <p>
 For scene graph related questions, bug reports, bug fixes, and general design and development discussion one should
-join the OpenSceneGraph-news mailing list.
+join the <a href="http://lists.sourceforge.net/mailman/listinfo/openscenegraph-news">openscenegraph-news</a> mailing list,
+and check the the mailing list <a href="http://www.geocrawler.com/redir-sf.php3?list=openscenegraph-news">archives</a>.
 </p>
 <p>
 Professional support is also available in the form of confidential online, phone and onsite support and
-consultancy, for details contact robert@openscengraph.com.</p>
+consultancy, for details contact Robert Osfield at <a href="mailto:robert@openscenegraph.com">robert@openscenegraph.com</a>.</p>
 </body>
 </html>

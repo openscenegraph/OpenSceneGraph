@@ -1,0 +1,17 @@
+Labels are objects that float above the terrain (usually) and display
+some text message to the user.  They're primarily used in 3D map sort of
+application.  In other words, they're not intended to be real world objects.
+You would use one if you want to float a message such as "Natural History Museum"
+over a specific building in a visual database.
+
+They point to a font name to be used for the text displayed. The txp loader will look
+for fontmap.txt file in the txp archive directory in which font name to font file name
+map should be provided since osg uses freetype for the Text displayed and there is no
+interface to create fonts based on their name (or at least I was not able to find it :) .. )
+ - it uses the font file name instead
+
+Ex:
+Times New Roman = TIMES.TTF   
+Arial = ARIAL.TTF  
+Arial Narrow = ARIALN.TTF 
+Courier New = COUR.TTF 

@@ -224,9 +224,11 @@ bool TileMapper::canParentBeTraversed(const TileIdentifier& tid) const
     TileMap::const_iterator itr = _tileMap.find(tid);
     if (itr==_tileMap.end())
     {
+#if 0
         // not found tile in _tileMap, what should we do??
         // return true as a fallback right now.
         std::cout<<"TileMapper::canDescend() Not found tile in map"<<std::endl;
+#endif
         return true;
     }
 
@@ -393,8 +395,10 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
     {
         // not found tile in _tileMap, what should we do??
         // return true as a fallback right now.
+#if 0
         std::cout<<"TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map,"<<std::endl;
         std::cout<<"    LOD="<<tid.lod<<"  X="<<tid.x<<"  Y="<<tid.y<<std::endl;  
+#endif 
         return true;
     }
 

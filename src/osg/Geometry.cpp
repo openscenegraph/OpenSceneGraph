@@ -417,6 +417,7 @@ const Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit) const
 
 void Geometry::setTexCoordArray(unsigned int unit,Array* array)
 {
+    getTexCoordData(unit).binding = BIND_PER_VERTEX;
     getTexCoordData(unit).array = array;
 
     computeFastPathsUsed();
@@ -629,78 +630,6 @@ unsigned int Geometry::getPrimitiveSetIndex(const PrimitiveSet* primitiveset) co
 
 bool Geometry::computeFastPathsUsed()
 {
-
-/*
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // set up normals if required.
-    //
-    if (!_normalData.array.valid() ||
-        _normalData.array->empty() ||
-        (_normalData.indices.valid() && _normalData.indices->getNumElements()==0) )
-    {
-        // switch off if not supported or have a valid data.
-        _normalData.binding = BIND_OFF;
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // set up colours..
-    //
-    if (!_colorData.array.valid() ||
-        _colorData.array->getNumElements()==0 ||
-        (_colorData.indices.valid() && _colorData.indices->getNumElements()==0) )
-    {
-        // switch off if not supported or have a valid data.
-        _colorData.binding = BIND_OFF;
-    }
-
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Set up secondary color if required.
-    //
-    if (!_secondaryColorData.array.valid() || 
-        _secondaryColorData.array->getNumElements()==0 ||
-        (_secondaryColorData.indices.valid() && _secondaryColorData.indices->getNumElements()==0) )
-    {
-        // switch off if not supported or have a valid data.
-        _secondaryColorData.binding = BIND_OFF;
-    }
-
-    
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Set up fog coord if required.
-    //
-    if (!_fogCoordData.array.valid() || 
-        _fogCoordData.array->getNumElements()==0 ||
-        (_fogCoordData.indices.valid() && _fogCoordData.indices->getNumElements()==0) )
-    {
-        // switch off if not supported or have a valid data.
-        _fogCoordData.binding = BIND_OFF;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Set up vertex attrib if required.
-    //
-    for( unsigned int va = 0; va < _vertexAttribList.size(); ++va )
-    {
-        const Array * array = _vertexAttribList[va].second.first.get();
-        const IndexArray * idxArray = _vertexAttribList[va].second.second.get();
-
-        if (!array || 
-            array->getNumElements()==0 ||
-            (idxArray && idxArray->getNumElements()==0) )
-        {
-            // switch off if not supported or have a valid data.
-            _vertexAttribBindingList[va] = BIND_OFF;
-        }
-    }
-*/
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // check to see if fast path can be used.
@@ -2011,70 +1940,261 @@ void Geometry::accept(PrimitiveFunctor& functor) const
     return;
 }
 
-bool Geometry::verifyBindings() const
-{
-    switch(_normalData.binding)
-    {
-        case(BIND_OFF):
-            if (_normalData.array.valid() && _normalData.array->getNumElements()>0) return false;
-            break;
-        case(BIND_OVERALL):
-            if (!_normalData.array.valid()) return false;
-            if (_normalData.array->getNumElements()!=1) return false;
-            break;
-        case(BIND_PER_PRIMITIVE_SET):
-            if (!_normalData.array.valid()) return false;
-            if (_normalData.array->getNumElements()!=_primitives.size()) return false;
-            break;
-        case(BIND_PER_PRIMITIVE):
-            if (!_normalData.array.valid()) return false;
-            break;
-        case(BIND_PER_VERTEX):
-            if (_vertexData.array.valid())
-            {
-                if (!_normalData.array.valid()) return false;
-                if (_normalData.array->getNumElements()!=_vertexData.array->getNumElements()) return false;        
-            }
-            else if (_normalData.array.valid() && _normalData.array->getNumElements()==0) return false;
-            break;
-    } 
-    
-    switch(_colorData.binding)
-    {
-        case(BIND_OFF):
-            if (_colorData.array.valid() && _colorData.array->getNumElements()>0) return false;
-            break;
-        case(BIND_OVERALL):
-            if (!_colorData.array.valid()) return false;
-            if (_colorData.array->getNumElements()!=1) return false;
-            break;
-        case(BIND_PER_PRIMITIVE_SET):
-            if (!_colorData.array.valid()) return false;
-            if (_colorData.array->getNumElements()!=_primitives.size()) return false;
-            break;
-        case(BIND_PER_PRIMITIVE):
-            if (!_colorData.array.valid()) return false;
-            break;
-        case(BIND_PER_VERTEX):
-            if (_vertexData.array.valid())
-            {
-                if (!_colorData.array.valid()) return false;
-                if (_colorData.array->getNumElements()!=_vertexData.array->getNumElements()) return false;
-            }
-            else if (_colorData.array.valid() && _colorData.array->getNumElements()==0) return false;
-            break;
-    } 
 
-    for(ArrayList::const_iterator itr=_texCoordList.begin();
-        itr!=_texCoordList.end();
+unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
+{
+
+    unsigned int totalNumberOfPrimitives = 0;
+    
+    for(Geometry::PrimitiveSetList::const_iterator itr=geom.getPrimitiveSetList().begin();
+        itr!=geom.getPrimitiveSetList().end();
         ++itr)
     {
-        const Array* array = itr->array.get();
-        if (_vertexData.array.valid())
+        const PrimitiveSet* primitiveset = itr->get();
+        GLenum mode=primitiveset->getMode();
+
+        unsigned int primLength;
+        switch(mode)
         {
-            if (array && array->getNumElements()!=_vertexData.array->getNumElements()) return false;
+            case(GL_POINTS):    primLength=1; break;
+            case(GL_LINES):     primLength=2; break;
+            case(GL_TRIANGLES): primLength=3; break;
+            case(GL_QUADS):     primLength=4; break;
+            default:            primLength=0; break; // compute later when =0.
         }
-        else if (array && array->getNumElements()==0) return false;
+
+        // draw primtives by the more flexible "slow" path,
+        // sending OpenGL glBegin/glVertex.../glEnd().
+        switch(primitiveset->getType())
+        {
+            case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+            {
+
+                const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                    primItr!=drawArrayLengths->end();
+                    ++primItr)
+                {
+                    if (primLength==0) totalNumberOfPrimitives += 1;
+                    else totalNumberOfPrimitives = *primItr/primLength;
+                }
+                break;
+            }
+            default:
+            {
+                if (primLength==0) totalNumberOfPrimitives += 1;
+                else totalNumberOfPrimitives = primitiveset->getNumIndices()/primLength;
+
+            }
+        }
+    }
+
+    return totalNumberOfPrimitives;
+}
+
+template<class A>
+bool _verifyBindings(const osg::Geometry& geom, const A& arrayData)
+{
+    switch(arrayData.binding)
+    {
+        case(osg::Geometry::BIND_OFF):
+            if (arrayData.array.valid() && arrayData.array->getNumElements()>0) return false;
+            break;
+        case(osg::Geometry::BIND_OVERALL):
+            if (!arrayData.array.valid()) return false;
+            if (arrayData.array->getNumElements()!=1) return false;
+            break;
+        case(osg::Geometry::BIND_PER_PRIMITIVE_SET):
+            if (!arrayData.array.valid()) return false;
+            if (arrayData.array->getNumElements()!=geom.getPrimitiveSetList().size()) return false;
+            break;
+        case(osg::Geometry::BIND_PER_PRIMITIVE):
+            if (!arrayData.array.valid()) return false;
+            if (arrayData.array->getNumElements()!=_computeNumberOfPrimtives(geom)) return false;
+            break;
+        case(osg::Geometry::BIND_PER_VERTEX):
+            if (geom.getVertexArray())
+            {
+                if (!arrayData.array.valid()) return false;
+                if (arrayData.array->getNumElements()!=geom.getVertexArray()->getNumElements()) return false;        
+            }
+            else if (arrayData.array.valid() && arrayData.array->getNumElements()==0) return false;
+            break;
+    } 
+    return true;
+}
+
+template<class A>
+bool _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayData, const char* arrayName)
+{
+    if (!geom.getVertexArray() || geom.getVertexArray()==0)
+    {
+        if (arrayData.array.valid() || arrayData.array.valid() || arrayData.binding!=osg::Geometry::BIND_OFF)
+        {
+            arrayData.array = 0;
+            arrayData.indices = 0;
+            arrayData.binding = osg::Geometry::BIND_OFF;
+            notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() vertex array is empty but "<<std::endl
+                        <<"         vertex array is empty but"<<arrayName<<" is set"<<std::endl
+                        <<"         reseting "<<arrayName<< " binding to BIND_OFF and array & indices to 0."<<std::endl;
+        }
+    }
+
+    switch(arrayData.binding)
+    {
+        case(osg::Geometry::BIND_OFF):
+            if (arrayData.array.valid())
+            {
+                arrayData.array = 0;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_OFF but "<<arrayName<< " array is attached"<<std::endl
+                            <<"         reseting array to 0."<<std::endl;
+            }
+            break;
+        case(osg::Geometry::BIND_OVERALL):
+            if (!arrayData.array.valid())
+            {
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<arrayName<< " array is not attached"<<std::endl
+                            <<"         reseting binding to BIND_OFF."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()==0) 
+            {
+                arrayData.array = 0;
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<arrayName<< " array is empty"<<std::endl
+                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()>1) 
+            {
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_OVERALL but "<<std::endl
+                            <<"         "<<arrayName<< " contains more than one entry"<<std::endl;
+            }
+            break;
+        case(osg::Geometry::BIND_PER_PRIMITIVE_SET):
+            if (!arrayData.array.valid())
+            {
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
+                            <<"         "<<arrayName<< " array is not attached"<<std::endl
+                            <<"         reseting binding to BIND_OFF."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()<geom.getPrimitiveSetList().size()) 
+            {
+                arrayData.array = 0;
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
+                            <<"         "<<arrayName<< " array contains too few entries"<<std::endl
+                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()>geom.getPrimitiveSetList().size()) 
+            {
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
+                            <<"         "<<arrayName<< " array contains too many entries"<<std::endl;
+            }
+            break;
+        case(osg::Geometry::BIND_PER_PRIMITIVE):
+        {
+            unsigned int numPrimitives = _computeNumberOfPrimtives(geom);
+            if (!arrayData.array.valid())
+            {
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
+                            <<"         "<<arrayName<< " array is not attached"<<std::endl
+                            <<"         reseting binding to BIND_OFF."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()<numPrimitives)
+            {
+               arrayData.array = 0;
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
+                            <<"         "<<arrayName<< " array contains too few entries"<<std::endl
+                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()>numPrimitives)
+            {
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
+                            <<"         "<<arrayName<< " array contains too many entries"<<std::endl;
+            }
+            
+            break;
+        }
+        case(osg::Geometry::BIND_PER_VERTEX):
+            if (!arrayData.array.valid())
+            {
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
+                            <<"         "<<arrayName<< " array is not attached"<<std::endl
+                            <<"         reseting binding to BIND_OFF."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()<geom.getVertexArray()->getNumElements()) 
+            {
+                arrayData.array = 0;
+                arrayData.binding = osg::Geometry::BIND_OFF;
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes()"<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
+                            <<"         "<<arrayName<< " array contains too few entries"<<std::endl
+                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+            }
+            else if (arrayData.array->getNumElements()>geom.getVertexArray()->getNumElements()) 
+            {
+                notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
+                            <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
+                            <<"         "<<arrayName<< " array contains too many entries"<<std::endl;
+            }
+            break;
+    } 
+}        
+
+bool Geometry::verifyBindings(const ArrayData& arrayData) const
+{
+    return _verifyBindings(*this,arrayData);
+}
+
+bool Geometry::verifyBindings(const Vec3ArrayData& arrayData) const
+{
+    return _verifyBindings(*this,arrayData);
+}
+
+void Geometry::computeCorrectBindingsAndArraySizes(ArrayData& arrayData, const char* arrayName)
+{
+    _computeCorrectBindingsAndArraySizes(*this,arrayData,arrayName);
+}
+
+void Geometry::computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData, const char* arrayName)
+{
+    _computeCorrectBindingsAndArraySizes(*this,arrayData,arrayName);
+}
+
+bool Geometry::verifyBindings() const
+{
+    if (!verifyBindings(_normalData)) return false;
+    if (!verifyBindings(_colorData)) return false;
+    if (!verifyBindings(_secondaryColorData)) return false;
+    if (!verifyBindings(_fogCoordData)) return false;
+
+    for(ArrayList::const_iterator titr=_texCoordList.begin();
+        titr!=_texCoordList.end();
+        ++titr)
+    {
+        if (!verifyBindings(*titr)) return false;
+    }
+
+    for(ArrayList::const_iterator vitr=_vertexAttribList.begin();
+        vitr!=_vertexAttribList.end();
+        ++vitr)
+    {
+        if (!verifyBindings(*vitr)) return false;
     }
 
     return true;
@@ -2083,86 +2203,25 @@ bool Geometry::verifyBindings() const
 void Geometry::computeCorrectBindingsAndArraySizes()
 {
     if (verifyBindings()) return;
+    
+    computeCorrectBindingsAndArraySizes(_normalData,"_normalData");
+    computeCorrectBindingsAndArraySizes(_colorData,"_colorData");
+    computeCorrectBindingsAndArraySizes(_secondaryColorData,"_secondaryColorData");
+    computeCorrectBindingsAndArraySizes(_fogCoordData,"_fogCoordData");
 
-    if (!_vertexData.array.valid() || _vertexData.array->getNumElements()==0)
+    for(ArrayList::iterator titr=_texCoordList.begin();
+        titr!=_texCoordList.end();
+        ++titr)
     {
-        // no vertex array so switch everything off.
-        
-        _vertexData.array = 0;
-        
-        _colorData.array = 0;
-        _colorData.binding = BIND_OFF;
-
-        _normalData.array = 0;
-        _normalData.binding = BIND_OFF;
-        
-        _texCoordList.clear();
-        
-        notify(INFO)<<"Info: remove redundent attribute arrays from empty osg::Geometry"<<std::endl;
-        
-        return;
+        computeCorrectBindingsAndArraySizes(*titr,"_texCoordList[]");
     }
-    
-    
-    switch(_normalData.binding)
+
+    for(ArrayList::iterator vitr=_vertexAttribList.begin();
+        vitr!=_vertexAttribList.end();
+        ++vitr)
     {
-        case(BIND_OFF):
-            if (_normalData.array.valid()) _normalData.array = 0;
-            break;
-        case(BIND_OVERALL):
-            if (!_normalData.array.valid())
-            {
-                _normalData.binding = BIND_OFF;
-            }
-            else if (_normalData.array->getNumElements()==0) 
-            {
-                _normalData.array = 0;
-                _normalData.binding = BIND_OFF;
-            }
-            else if (_normalData.array->getNumElements()>1) 
-            {
-                // trim the array down to 1 element long.
-                _normalData.array->erase(_normalData.array->begin()+1,_normalData.array->end());
-            }
-            break;
-        case(BIND_PER_PRIMITIVE_SET):
-            if (!_normalData.array.valid())
-            {
-                _normalData.binding = BIND_OFF;
-            }
-            else if (_normalData.array->getNumElements()<_primitives.size()) 
-            {
-                _normalData.array = 0;
-                _normalData.binding = BIND_OFF;
-            }
-            else if (_normalData.array->getNumElements()>_primitives.size()) 
-            {
-                // trim the array down to size of the number of primitives.
-                _normalData.array->erase(_normalData.array->begin()+_primitives.size(),_normalData.array->end());
-            }
-            break;
-        case(BIND_PER_PRIMITIVE):
-            break;
-        case(BIND_PER_VERTEX):
-            if (!_normalData.array.valid())
-            {
-                _normalData.binding = BIND_OFF;
-            }
-            else if (_normalData.array->getNumElements()<_vertexData.array->getNumElements()) 
-            {
-                _normalData.array = 0;
-                _normalData.binding = BIND_OFF;
-            }
-            else if (_normalData.array->getNumElements()>_vertexData.array->getNumElements()) 
-            {
-                // trim the array down to size of the number of primitives.
-                _normalData.array->erase(_normalData.array->begin()+_vertexData.array->getNumElements(),_normalData.array->end());
-            }
-            break;
-    } 
-    
-    // TODO colours and tex coords.
-    
+        computeCorrectBindingsAndArraySizes(*vitr,"_vertAttribList[]");
+    }
 }
 
 class ExpandIndexedArray : public osg::ConstArrayVisitor
@@ -2430,601 +2489,601 @@ Geometry* osg::createTexturedQuadGeometry(const osg::Vec3& corner,const osg::Vec
 // Robert Osfield, August 2003.
 #if 0
 
-struct DrawAttributeArrays 
-{
-    virtual bool valid() const = 0;
-    virtual void set(osg::Geometry* geometry) = 0;
-    virtual unsigned int draw(unsigned int index, unsigned int count) const = 0;
-};
-
-struct V3
-{
-    V3():_array(0) {}
-    
-    bool valid() const { return _array!=0; }
-    
-    void set(osg::Geometry* geometry)
+    struct DrawAttributeArrays 
     {
-        _array = 0;
-        osg::Array* array = geometry->getVertexArray();
-        if (array && array->getType()==osg::Array::Vec3ArrayType)
+        virtual bool valid() const = 0;
+        virtual void set(osg::Geometry* geometry) = 0;
+        virtual unsigned int draw(unsigned int index, unsigned int count) const = 0;
+    };
+
+    struct V3
+    {
+        V3():_array(0) {}
+
+        bool valid() const { return _array!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
-            if (!vec3array->empty()) _array = &(vec3array->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glVertex3fv(_array[index].ptr());
-    }
-    
-    osg::Vec3* _array;
-};
-
-struct V3USI
-{
-    V3USI():_array(0),_indices(0) {}
-    
-    bool valid() const { return _array!=0 && _indices!=0; }
-
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getVertexArray();
-        if (array && array->getType()==osg::Array::Vec3ArrayType)
-        {
-            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
-            if (!vec3array->empty()) _array = &(vec3array->front());
+            _array = 0;
+            osg::Array* array = geometry->getVertexArray();
+            if (array && array->getType()==osg::Array::Vec3ArrayType)
+            {
+                osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+                if (!vec3array->empty()) _array = &(vec3array->front());
+            }
         }
 
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getVertexIndices();
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        inline void draw(unsigned int index) const
         {
-            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
-            if (!ushort3array->empty()) _indices = &(ushort3array->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glVertex3fv(_array[_indices[index]].ptr());
-    }
-    
-    osg::Vec3*      _array;
-    unsigned short* _indices;
-};
-
-//////////////////////////////
-
-struct N3
-{
-    N3():_array(0) {}
-    
-    bool valid() const { return _array!=0; }
-    
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getVertexArray();
-        if (array && array->getType()==osg::Array::Vec3ArrayType)
-        {
-            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
-            if (!vec3array->empty()) _array = &(vec3array->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glNormal3fv(_array[index].ptr());
-    }
-    
-    osg::Vec3* _array;
-};
-
-struct N3USI
-{
-    N3USI():_array(0),_indices(0) {}
-    
-    bool valid() const { return _array!=0 && _indices!=0; }
-
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getVertexArray();
-        if (array && array->getType()==osg::Array::Vec3ArrayType)
-        {
-            osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
-            if (!vec3array->empty()) _array = &(vec3array->front());
+            glVertex3fv(_array[index].ptr());
         }
 
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getVertexIndices();
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        osg::Vec3* _array;
+    };
+
+    struct V3USI
+    {
+        V3USI():_array(0),_indices(0) {}
+
+        bool valid() const { return _array!=0 && _indices!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
-            if (!ushortarray->empty()) _indices = &(ushortarray->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glNormal3fv(_array[_indices[index]].ptr());
-    }
-    
-    osg::Vec3*      _array;
-    unsigned short* _indices;
-};
+            _array = 0;
+            osg::Array* array = geometry->getVertexArray();
+            if (array && array->getType()==osg::Array::Vec3ArrayType)
+            {
+                osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+                if (!vec3array->empty()) _array = &(vec3array->front());
+            }
 
-//////////////////////////////
-
-struct C4
-{
-    C4():_array(0) {}
-    
-    bool valid() const { return _array!=0; }
-    
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getColorArray();
-        if (array && array->getType()==osg::Array::Vec4ArrayType)
-        {
-            osg::Vec4Array* vec4array = static_cast<osg::Vec4Array*>(array);
-            if (!vec4array->empty()) _array = &(vec4array->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glVertex3fv(_array[index].ptr());
-    }
-    
-    osg::Vec4* _array;
-};
-
-struct C4USI
-{
-    C4USI():_array(0),_indices(0) {}
-    
-    bool valid() const { return _array!=0 && _indices!=0; }
-
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getColorArray();
-        if (array && array->getType()==osg::Array::Vec4ArrayType)
-        {
-            osg::Vec4Array* vec4array = static_cast<osg::Vec4Array*>(array);
-            if (!vec4array->empty()) _array = &(vec4array->front());
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getVertexIndices();
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+                if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            }
         }
 
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getColorIndices();
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        inline void draw(unsigned int index) const
         {
-            osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
-            if (!ushortarray->empty()) _indices = &(ushortarray->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glColor4fv(_array[_indices[index]].ptr());
-    }
-    
-    osg::Vec4*      _array;
-    unsigned short* _indices;
-};
-
-//////////////////////////////
-
-struct T2
-{
-    T2():_array(0) {}
-    
-    bool valid() const { return _array!=0; }
-    
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getTexCoordArray(0);
-        if (array && array->getType()==osg::Array::Vec2ArrayType)
-        {
-            osg::Vec2Array* vec2array = static_cast<osg::Vec2Array*>(array);
-            if (!vec2array->empty()) _array = &(vec2array->front());
-        }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glTexCoord2fv(_array[index].ptr());
-    }
-    
-    osg::Vec2* _array;
-};
-
-struct T2USI
-{
-    T2USI():_array(0),_indices(0) {}
-    
-    bool valid() const { return _array!=0 && _indices!=0; }
-
-    void set(osg::Geometry* geometry)
-    {
-        _array = 0;
-        osg::Array* array = geometry->getTexCoordArray(0);
-        if (array && array->getType()==osg::Array::Vec2ArrayType)
-        {
-            osg::Vec2Array* vec2array = static_cast<osg::Vec2Array*>(array);
-            if (!vec2array->empty()) _array = &(vec2array->front());
+            glVertex3fv(_array[_indices[index]].ptr());
         }
 
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getTexCoordIndices(0);
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        osg::Vec3*      _array;
+        unsigned short* _indices;
+    };
+
+    //////////////////////////////
+
+    struct N3
+    {
+        N3():_array(0) {}
+
+        bool valid() const { return _array!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
-            if (!ushortarray->empty()) _indices = &(ushortarray->front());
+            _array = 0;
+            osg::Array* array = geometry->getVertexArray();
+            if (array && array->getType()==osg::Array::Vec3ArrayType)
+            {
+                osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+                if (!vec3array->empty()) _array = &(vec3array->front());
+            }
         }
-    }
-    
-    inline void draw(unsigned int index) const
-    {
-        glTexCoord2fv(_array[_indices[index]].ptr());
-    }
-    
-    osg::Vec2*      _array;
-    unsigned short* _indices;
-};
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template < class T1 >
-struct DrawAttributeArrays_T : public DrawAttributeArrays
-{
-    DrawAttributeArrays_T(osg::Geometry* geometry)
-    {
-        
-    }
-    
-    virtual bool valid() const { return _t1.valid(); }
-
-    virtual void set(osg::Geometry* geometry)
-    {
-        _t1.set(geometry);
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
-    {
-        for(unsigned int i=0;i<count;++i,++index)
+        inline void draw(unsigned int index) const
         {
-            _t1.draw(index);
+            glNormal3fv(_array[index].ptr());
         }
-        return index;
-    }
-    
-    T1 _t1;
-};
 
-template < class T1, class T2 >
-struct DrawAttributeArrays_TT : public DrawAttributeArrays
-{
-    DrawAttributeArrays_TT()
-    {
-    }
-    
-    virtual bool valid() const { return _t1.valid() && _t2.valid(); }
+        osg::Vec3* _array;
+    };
 
-    virtual void set(osg::Geometry* geometry)
+    struct N3USI
     {
-        _t1.set(geometry);
-        _t2.set(geometry);
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
-    {
-        for(unsigned int i=0;i<count;++i,++index)
+        N3USI():_array(0),_indices(0) {}
+
+        bool valid() const { return _array!=0 && _indices!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            _t1.draw(index);
-            _t2.draw(index);
+            _array = 0;
+            osg::Array* array = geometry->getVertexArray();
+            if (array && array->getType()==osg::Array::Vec3ArrayType)
+            {
+                osg::Vec3Array* vec3array = static_cast<osg::Vec3Array*>(array);
+                if (!vec3array->empty()) _array = &(vec3array->front());
+            }
+
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getVertexIndices();
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
+                if (!ushortarray->empty()) _indices = &(ushortarray->front());
+            }
         }
-        return index;
-    }
-    
-    T1 _t1;
-    T1 _t2;
-};
 
-template < class T1, class T2, class T3 >
-struct DrawAttributeArrays_TTT : public DrawAttributeArrays
-{
-    DrawAttributeArrays_TTT()
-    {
-    }
-    
-    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid(); }
-
-    virtual void set(osg::Geometry* geometry)
-    {
-        _t1.set(geometry);
-        _t2.set(geometry);
-        _t3.set(geometry);
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
-    {
-        for(unsigned int i=0;i<count;++i,++index)
+        inline void draw(unsigned int index) const
         {
-            _t1.draw(index);
-            _t2.draw(index);
-            _t3.draw(index);
+            glNormal3fv(_array[_indices[index]].ptr());
         }
-        return index;
-    }
-    
-    T1 _t1;
-    T2 _t2;
-    T3 _t3;
-};
 
-template < class T1, class T2, class T3, class T4 >
-struct DrawAttributeArrays_TTTT : public DrawAttributeArrays
-{
-    DrawAttributeArrays_TTTT()
-    {
-    }
-    
-    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _t4.valid(); }
+        osg::Vec3*      _array;
+        unsigned short* _indices;
+    };
 
-    virtual void set(osg::Geometry* geometry)
+    //////////////////////////////
+
+    struct C4
     {
-        _t1.set(geometry);
-        _t2.set(geometry);
-        _t3.set(geometry);
-        _t4.set(geometry);
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
-    {
-        for(unsigned int i=0;i<count;++i,++index)
+        C4():_array(0) {}
+
+        bool valid() const { return _array!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            _t1.draw(index);
-            _t2.draw(index);
-            _t3.draw(index);
-            _t4.draw(index);
+            _array = 0;
+            osg::Array* array = geometry->getColorArray();
+            if (array && array->getType()==osg::Array::Vec4ArrayType)
+            {
+                osg::Vec4Array* vec4array = static_cast<osg::Vec4Array*>(array);
+                if (!vec4array->empty()) _array = &(vec4array->front());
+            }
         }
-        return index;
-    }
-    
-    T1 _t1;
-    T2 _t2;
-    T3 _t3;
-    T4 _t4;
-};
 
-template < class T1, class T2 >
-struct DrawAttributeArrays_TT_USI : public DrawAttributeArrays
-{
-    DrawAttributeArrays_TT_USI()
-    {
-    }
-    
-    virtual bool valid() const { return _t1.valid() && _t2.valid() && _indices!=0; }
-
-    virtual void set(osg::Geometry* geometry)
-    {
-        _t1.set(geometry);
-        _t2.set(geometry);
-
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getVertexIndices();
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        inline void draw(unsigned int index) const
         {
-            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
-            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            glVertex3fv(_array[index].ptr());
         }
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
+
+        osg::Vec4* _array;
+    };
+
+    struct C4USI
     {
-        for(unsigned int i=0;i<count;++i,++index)
+        C4USI():_array(0),_indices(0) {}
+
+        bool valid() const { return _array!=0 && _indices!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            unsigned int ivalue = _indices[index];
-            _t1.draw(ivalue);
-            _t2.draw(ivalue);
+            _array = 0;
+            osg::Array* array = geometry->getColorArray();
+            if (array && array->getType()==osg::Array::Vec4ArrayType)
+            {
+                osg::Vec4Array* vec4array = static_cast<osg::Vec4Array*>(array);
+                if (!vec4array->empty()) _array = &(vec4array->front());
+            }
+
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getColorIndices();
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
+                if (!ushortarray->empty()) _indices = &(ushortarray->front());
+            }
         }
-        return index;
-    }
-    
-    T1 _t1;
-    T2 _t2;
-};
 
-template < class T1, class T2, class T3 >
-struct DrawAttributeArrays_TTT_USI : public DrawAttributeArrays
-{
-    DrawAttributeArrays_TTT_USI()
-    {
-    }
-    
-    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _indices!=0; }
-
-    virtual void set(osg::Geometry* geometry)
-    {
-        _t1.set(geometry);
-        _t2.set(geometry);
-        _t3.set(geometry);
-
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getVertexIndices();
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        inline void draw(unsigned int index) const
         {
-            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
-            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            glColor4fv(_array[_indices[index]].ptr());
         }
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
+
+        osg::Vec4*      _array;
+        unsigned short* _indices;
+    };
+
+    //////////////////////////////
+
+    struct T2
     {
-        for(unsigned int i=0;i<count;++i,++index)
+        T2():_array(0) {}
+
+        bool valid() const { return _array!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            unsigned int ivalue = _indices[index];
-            _t1.draw(ivalue);
-            _t2.draw(ivalue);
-            _t3.draw(ivalue);
+            _array = 0;
+            osg::Array* array = geometry->getTexCoordArray(0);
+            if (array && array->getType()==osg::Array::Vec2ArrayType)
+            {
+                osg::Vec2Array* vec2array = static_cast<osg::Vec2Array*>(array);
+                if (!vec2array->empty()) _array = &(vec2array->front());
+            }
         }
-        return index;
-    }
-    
-    T1 _t1;
-    T2 _t2;
-    T3 _t3;
-};
 
-template < class T1, class T2, class T3, class T4 >
-struct DrawAttributeArrays_TTTT_USI : public DrawAttributeArrays
-{
-    DrawAttributeArrays_TTTT_USI()
-    {
-    }
-    
-    virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _t4.valid() && _indices!=0; }
-
-    virtual void set(osg::Geometry* geometry)
-    {
-        _t1.set(geometry);
-        _t2.set(geometry);
-        _t3.set(geometry);
-        _t4.set(geometry);
-
-        _indices = 0;
-        osg::IndexArray* indices = geometry->getVertexIndices();
-        if (indices && indices->getType()==osg::Array::UShortArrayType)
+        inline void draw(unsigned int index) const
         {
-            osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
-            if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            glTexCoord2fv(_array[index].ptr());
         }
-    }
-    
-    virtual unsigned int draw(unsigned int index, unsigned int count) const
+
+        osg::Vec2* _array;
+    };
+
+    struct T2USI
     {
-        for(unsigned int i=0;i<count;++i,++index)
+        T2USI():_array(0),_indices(0) {}
+
+        bool valid() const { return _array!=0 && _indices!=0; }
+
+        void set(osg::Geometry* geometry)
         {
-            unsigned int ivalue = _indices[index];
-            _t1.draw(ivalue);
-            _t2.draw(ivalue);
-            _t3.draw(ivalue);
-            _t4.draw(ivalue);
+            _array = 0;
+            osg::Array* array = geometry->getTexCoordArray(0);
+            if (array && array->getType()==osg::Array::Vec2ArrayType)
+            {
+                osg::Vec2Array* vec2array = static_cast<osg::Vec2Array*>(array);
+                if (!vec2array->empty()) _array = &(vec2array->front());
+            }
+
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getTexCoordIndices(0);
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushortarray = static_cast<osg::UShortArray*>(array);
+                if (!ushortarray->empty()) _indices = &(ushortarray->front());
+            }
         }
-        return index;
-    }
-    
-    T1 _t1;
-    T2 _t2;
-    T3 _t3;
-    T4 _t4;
-};
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        inline void draw(unsigned int index) const
+        {
+            glTexCoord2fv(_array[_indices[index]].ptr());
+        }
 
-
-// One attribute x 2
-
-typedef DrawAttributeArrays_T<V3>                    DrawAttributeArrays_V3;
-typedef DrawAttributeArrays_T<V3USI>                 DrawAttributeArrays_V3i;
-
-// Two attributes x 15
-
-typedef DrawAttributeArrays_TT<N3,V3>                DrawAttributeArrays_N3V3;
-typedef DrawAttributeArrays_TT<N3USI,V3>             DrawAttributeArrays_N3iV3;
-typedef DrawAttributeArrays_TT<N3,V3USI>             DrawAttributeArrays_N3V3i;
-typedef DrawAttributeArrays_TT<N3USI,V3USI>          DrawAttributeArrays_N3iV3i;
-
-typedef DrawAttributeArrays_TT_USI<N3,V3>            DrawAttributeArrays_N3V3_i;
-
-typedef DrawAttributeArrays_TT<C4,V3>                DrawAttributeArrays_C4V3;
-typedef DrawAttributeArrays_TT<C4USI,V3>             DrawAttributeArrays_C4iV3;
-typedef DrawAttributeArrays_TT<C4,V3USI>             DrawAttributeArrays_C4V3i;
-typedef DrawAttributeArrays_TT<C4USI,V3USI>          DrawAttributeArrays_C4iV3i;
-
-typedef DrawAttributeArrays_TT_USI<C4,V3>            DrawAttributeArrays_C4V3_i;
-
-typedef DrawAttributeArrays_TT<T2,V3>                DrawAttributeArrays_T2V3;
-typedef DrawAttributeArrays_TT<T2USI,V3>             DrawAttributeArrays_T2iV3;
-typedef DrawAttributeArrays_TT<T2,V3USI>             DrawAttributeArrays_T2V3i;
-typedef DrawAttributeArrays_TT<T2USI,V3USI>          DrawAttributeArrays_T2iV3i;
-
-typedef DrawAttributeArrays_TT_USI<T2,V3>            DrawAttributeArrays_T2V3_i;
-
-// Three attributes x 27
-
-typedef DrawAttributeArrays_TTT<C4,N3,V3>            DrawAttributeArrays_C4N3V3;
-typedef DrawAttributeArrays_TTT<C4USI,N3,V3>         DrawAttributeArrays_C4iN3V3;
-typedef DrawAttributeArrays_TTT<C4,N3USI,V3>         DrawAttributeArrays_C4N3iV3;
-typedef DrawAttributeArrays_TTT<C4USI,N3USI,V3>      DrawAttributeArrays_C4iN3iV3;
-
-typedef DrawAttributeArrays_TTT<C4,N3,V3USI>         DrawAttributeArrays_C4N3V3i;
-typedef DrawAttributeArrays_TTT<C4USI,N3,V3USI>      DrawAttributeArrays_C4iN3V3i;
-typedef DrawAttributeArrays_TTT<C4,N3USI,V3USI>      DrawAttributeArrays_C4N3iV3i;
-typedef DrawAttributeArrays_TTT<C4USI,N3USI,V3USI>   DrawAttributeArrays_C4iN3iV3i;
-
-typedef DrawAttributeArrays_TTT_USI<C4,N3,V3>        DrawAttributeArrays_C4N3V3_i;
+        osg::Vec2*      _array;
+        unsigned short* _indices;
+    };
 
 
-typedef DrawAttributeArrays_TTT<T2,N3,V3>            DrawAttributeArrays_T2N3V3;
-typedef DrawAttributeArrays_TTT<T2USI,N3,V3>         DrawAttributeArrays_T2iN3V3;
-typedef DrawAttributeArrays_TTT<T2,N3USI,V3>         DrawAttributeArrays_T2iN3iV3;
-typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3>      DrawAttributeArrays_T2N3iV3;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-typedef DrawAttributeArrays_TTT<T2,N3,V3USI>         DrawAttributeArrays_T2N3V3i;
-typedef DrawAttributeArrays_TTT<T2USI,N3,V3USI>      DrawAttributeArrays_T2iN3V3i;
-typedef DrawAttributeArrays_TTT<T2,N3USI,V3USI>      DrawAttributeArrays_T2iN3iV3i;
-typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3USI>   DrawAttributeArrays_T2N3iV3i;
+    template < class T1 >
+    struct DrawAttributeArrays_T : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_T(osg::Geometry* geometry)
+        {
 
-typedef DrawAttributeArrays_TTT_USI<T2,N3,V3>        DrawAttributeArrays_T2N3V3_i;
+        }
+
+        virtual bool valid() const { return _t1.valid(); }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                _t1.draw(index);
+            }
+            return index;
+        }
+
+        T1 _t1;
+    };
+
+    template < class T1, class T2 >
+    struct DrawAttributeArrays_TT : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_TT()
+        {
+        }
+
+        virtual bool valid() const { return _t1.valid() && _t2.valid(); }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+            _t2.set(geometry);
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                _t1.draw(index);
+                _t2.draw(index);
+            }
+            return index;
+        }
+
+        T1 _t1;
+        T1 _t2;
+    };
+
+    template < class T1, class T2, class T3 >
+    struct DrawAttributeArrays_TTT : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_TTT()
+        {
+        }
+
+        virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid(); }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+            _t2.set(geometry);
+            _t3.set(geometry);
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                _t1.draw(index);
+                _t2.draw(index);
+                _t3.draw(index);
+            }
+            return index;
+        }
+
+        T1 _t1;
+        T2 _t2;
+        T3 _t3;
+    };
+
+    template < class T1, class T2, class T3, class T4 >
+    struct DrawAttributeArrays_TTTT : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_TTTT()
+        {
+        }
+
+        virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _t4.valid(); }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+            _t2.set(geometry);
+            _t3.set(geometry);
+            _t4.set(geometry);
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                _t1.draw(index);
+                _t2.draw(index);
+                _t3.draw(index);
+                _t4.draw(index);
+            }
+            return index;
+        }
+
+        T1 _t1;
+        T2 _t2;
+        T3 _t3;
+        T4 _t4;
+    };
+
+    template < class T1, class T2 >
+    struct DrawAttributeArrays_TT_USI : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_TT_USI()
+        {
+        }
+
+        virtual bool valid() const { return _t1.valid() && _t2.valid() && _indices!=0; }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+            _t2.set(geometry);
+
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getVertexIndices();
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+                if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            }
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                unsigned int ivalue = _indices[index];
+                _t1.draw(ivalue);
+                _t2.draw(ivalue);
+            }
+            return index;
+        }
+
+        T1 _t1;
+        T2 _t2;
+    };
+
+    template < class T1, class T2, class T3 >
+    struct DrawAttributeArrays_TTT_USI : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_TTT_USI()
+        {
+        }
+
+        virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _indices!=0; }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+            _t2.set(geometry);
+            _t3.set(geometry);
+
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getVertexIndices();
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+                if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            }
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                unsigned int ivalue = _indices[index];
+                _t1.draw(ivalue);
+                _t2.draw(ivalue);
+                _t3.draw(ivalue);
+            }
+            return index;
+        }
+
+        T1 _t1;
+        T2 _t2;
+        T3 _t3;
+    };
+
+    template < class T1, class T2, class T3, class T4 >
+    struct DrawAttributeArrays_TTTT_USI : public DrawAttributeArrays
+    {
+        DrawAttributeArrays_TTTT_USI()
+        {
+        }
+
+        virtual bool valid() const { return _t1.valid() && _t2.valid() && _t3.valid() && _t4.valid() && _indices!=0; }
+
+        virtual void set(osg::Geometry* geometry)
+        {
+            _t1.set(geometry);
+            _t2.set(geometry);
+            _t3.set(geometry);
+            _t4.set(geometry);
+
+            _indices = 0;
+            osg::IndexArray* indices = geometry->getVertexIndices();
+            if (indices && indices->getType()==osg::Array::UShortArrayType)
+            {
+                osg::UShortArray* ushort3array = static_cast<osg::UShortArray*>(array);
+                if (!ushort3array->empty()) _indices = &(ushort3array->front());
+            }
+        }
+
+        virtual unsigned int draw(unsigned int index, unsigned int count) const
+        {
+            for(unsigned int i=0;i<count;++i,++index)
+            {
+                unsigned int ivalue = _indices[index];
+                _t1.draw(ivalue);
+                _t2.draw(ivalue);
+                _t3.draw(ivalue);
+                _t4.draw(ivalue);
+            }
+            return index;
+        }
+
+        T1 _t1;
+        T2 _t2;
+        T3 _t3;
+        T4 _t4;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-typedef DrawAttributeArrays_TTT<T2,C4,V3>            DrawAttributeArrays_T2C4V3;
-typedef DrawAttributeArrays_TTT<T2USI,C4,V3>         DrawAttributeArrays_T2iC4V3;
-typedef DrawAttributeArrays_TTT<T2,C4USI,V3>         DrawAttributeArrays_T2C4iV3;
-typedef DrawAttributeArrays_TTT<T2USI,C4USI,V3>      DrawAttributeArrays_T2iC4iV3;
+    // One attribute x 2
 
-typedef DrawAttributeArrays_TTT<T2,C4,V3USI>         DrawAttributeArrays_T2C4V3i;
-typedef DrawAttributeArrays_TTT<T2USI,C4,V3USI>      DrawAttributeArrays_T2iC4V3i;
-typedef DrawAttributeArrays_TTT<T2,C4USI,V3USI>      DrawAttributeArrays_T2C4iV3i;
-typedef DrawAttributeArrays_TTT<T2USI,C4USI,V3USI>   DrawAttributeArrays_T2iC4iV3i;
+    typedef DrawAttributeArrays_T<V3>                    DrawAttributeArrays_V3;
+    typedef DrawAttributeArrays_T<V3USI>                 DrawAttributeArrays_V3i;
 
-typedef DrawAttributeArrays_TTT_USI<T2,C4,V3>        DrawAttributeArrays_T2C4V3_t;
+    // Two attributes x 15
+
+    typedef DrawAttributeArrays_TT<N3,V3>                DrawAttributeArrays_N3V3;
+    typedef DrawAttributeArrays_TT<N3USI,V3>             DrawAttributeArrays_N3iV3;
+    typedef DrawAttributeArrays_TT<N3,V3USI>             DrawAttributeArrays_N3V3i;
+    typedef DrawAttributeArrays_TT<N3USI,V3USI>          DrawAttributeArrays_N3iV3i;
+
+    typedef DrawAttributeArrays_TT_USI<N3,V3>            DrawAttributeArrays_N3V3_i;
+
+    typedef DrawAttributeArrays_TT<C4,V3>                DrawAttributeArrays_C4V3;
+    typedef DrawAttributeArrays_TT<C4USI,V3>             DrawAttributeArrays_C4iV3;
+    typedef DrawAttributeArrays_TT<C4,V3USI>             DrawAttributeArrays_C4V3i;
+    typedef DrawAttributeArrays_TT<C4USI,V3USI>          DrawAttributeArrays_C4iV3i;
+
+    typedef DrawAttributeArrays_TT_USI<C4,V3>            DrawAttributeArrays_C4V3_i;
+
+    typedef DrawAttributeArrays_TT<T2,V3>                DrawAttributeArrays_T2V3;
+    typedef DrawAttributeArrays_TT<T2USI,V3>             DrawAttributeArrays_T2iV3;
+    typedef DrawAttributeArrays_TT<T2,V3USI>             DrawAttributeArrays_T2V3i;
+    typedef DrawAttributeArrays_TT<T2USI,V3USI>          DrawAttributeArrays_T2iV3i;
+
+    typedef DrawAttributeArrays_TT_USI<T2,V3>            DrawAttributeArrays_T2V3_i;
+
+    // Three attributes x 27
+
+    typedef DrawAttributeArrays_TTT<C4,N3,V3>            DrawAttributeArrays_C4N3V3;
+    typedef DrawAttributeArrays_TTT<C4USI,N3,V3>         DrawAttributeArrays_C4iN3V3;
+    typedef DrawAttributeArrays_TTT<C4,N3USI,V3>         DrawAttributeArrays_C4N3iV3;
+    typedef DrawAttributeArrays_TTT<C4USI,N3USI,V3>      DrawAttributeArrays_C4iN3iV3;
+
+    typedef DrawAttributeArrays_TTT<C4,N3,V3USI>         DrawAttributeArrays_C4N3V3i;
+    typedef DrawAttributeArrays_TTT<C4USI,N3,V3USI>      DrawAttributeArrays_C4iN3V3i;
+    typedef DrawAttributeArrays_TTT<C4,N3USI,V3USI>      DrawAttributeArrays_C4N3iV3i;
+    typedef DrawAttributeArrays_TTT<C4USI,N3USI,V3USI>   DrawAttributeArrays_C4iN3iV3i;
+
+    typedef DrawAttributeArrays_TTT_USI<C4,N3,V3>        DrawAttributeArrays_C4N3V3_i;
 
 
-// Four attributes x 17
+    typedef DrawAttributeArrays_TTT<T2,N3,V3>            DrawAttributeArrays_T2N3V3;
+    typedef DrawAttributeArrays_TTT<T2USI,N3,V3>         DrawAttributeArrays_T2iN3V3;
+    typedef DrawAttributeArrays_TTT<T2,N3USI,V3>         DrawAttributeArrays_T2iN3iV3;
+    typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3>      DrawAttributeArrays_T2N3iV3;
 
-typedef DrawAttributeArrays_TTTT<T2,C4,N3,V3>                DrawAttributeArrays_T2C4N3V3;
-typedef DrawAttributeArrays_TTTT<T2USI,C4,N3,V3>             DrawAttributeArrays_T2iC4N3V3;
-typedef DrawAttributeArrays_TTTT<T2,C4USI,N3,V3>             DrawAttributeArrays_T2C4iN3V3;
-typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3,V3>          DrawAttributeArrays_T2iC4iN3V3;
+    typedef DrawAttributeArrays_TTT<T2,N3,V3USI>         DrawAttributeArrays_T2N3V3i;
+    typedef DrawAttributeArrays_TTT<T2USI,N3,V3USI>      DrawAttributeArrays_T2iN3V3i;
+    typedef DrawAttributeArrays_TTT<T2,N3USI,V3USI>      DrawAttributeArrays_T2iN3iV3i;
+    typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3USI>   DrawAttributeArrays_T2N3iV3i;
 
-typedef DrawAttributeArrays_TTTT<T2,C4,N3USI,V3>             DrawAttributeArrays_T2C4N3iV3;
-typedef DrawAttributeArrays_TTTT<T2USI,C4,N3USI,V3>          DrawAttributeArrays_T2iC4N3iV3;
-typedef DrawAttributeArrays_TTTT<T2,C4USI,N3USI,V3>           DrawAttributeArrays_T2C4iN3iV3;
-typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3USI,V3>       DrawAttributeArrays_T2iC4iN3iV3;
+    typedef DrawAttributeArrays_TTT_USI<T2,N3,V3>        DrawAttributeArrays_T2N3V3_i;
 
-typedef DrawAttributeArrays_TTTT<T2,C4,N3,V3USI>             DrawAttributeArrays_T2C4N3V3i;
-typedef DrawAttributeArrays_TTTT<T2USI,C4,N3,V3USI>          DrawAttributeArrays_T2iC4N3V3i;
-typedef DrawAttributeArrays_TTTT<T2,C4USI,N3,V3USI>          DrawAttributeArrays_T2C4iN3V3i;
-typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3,V3USI>       DrawAttributeArrays_T2iC4iN3V3i;
 
-typedef DrawAttributeArrays_TTTT<T2,C4,N3USI,V3USI>          DrawAttributeArrays_T2C4N3iV3i;
-typedef DrawAttributeArrays_TTTT<T2USI,C4,N3USI,V3USI>       DrawAttributeArrays_T2iC4N3iV3i;
-typedef DrawAttributeArrays_TTTT<T2,C4USI,N3USI,V3USI>       DrawAttributeArrays_T2C4iN3iV3i;
-typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3USI,V3USI>    DrawAttributeArrays_T2iC4iN3iV3i;
+    typedef DrawAttributeArrays_TTT<T2,C4,V3>            DrawAttributeArrays_T2C4V3;
+    typedef DrawAttributeArrays_TTT<T2USI,C4,V3>         DrawAttributeArrays_T2iC4V3;
+    typedef DrawAttributeArrays_TTT<T2,C4USI,V3>         DrawAttributeArrays_T2C4iV3;
+    typedef DrawAttributeArrays_TTT<T2USI,C4USI,V3>      DrawAttributeArrays_T2iC4iV3;
 
-typedef DrawAttributeArrays_TTTT_USI<T2,C4,N3,V3>            DrawAttributeArrays_T2C4N3V3_i;
+    typedef DrawAttributeArrays_TTT<T2,C4,V3USI>         DrawAttributeArrays_T2C4V3i;
+    typedef DrawAttributeArrays_TTT<T2USI,C4,V3USI>      DrawAttributeArrays_T2iC4V3i;
+    typedef DrawAttributeArrays_TTT<T2,C4USI,V3USI>      DrawAttributeArrays_T2C4iV3i;
+    typedef DrawAttributeArrays_TTT<T2USI,C4USI,V3USI>   DrawAttributeArrays_T2iC4iV3i;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    typedef DrawAttributeArrays_TTT_USI<T2,C4,V3>        DrawAttributeArrays_T2C4V3_t;
+
+
+    // Four attributes x 17
+
+    typedef DrawAttributeArrays_TTTT<T2,C4,N3,V3>                DrawAttributeArrays_T2C4N3V3;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4,N3,V3>             DrawAttributeArrays_T2iC4N3V3;
+    typedef DrawAttributeArrays_TTTT<T2,C4USI,N3,V3>             DrawAttributeArrays_T2C4iN3V3;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3,V3>          DrawAttributeArrays_T2iC4iN3V3;
+
+    typedef DrawAttributeArrays_TTTT<T2,C4,N3USI,V3>             DrawAttributeArrays_T2C4N3iV3;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4,N3USI,V3>          DrawAttributeArrays_T2iC4N3iV3;
+    typedef DrawAttributeArrays_TTTT<T2,C4USI,N3USI,V3>           DrawAttributeArrays_T2C4iN3iV3;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3USI,V3>       DrawAttributeArrays_T2iC4iN3iV3;
+
+    typedef DrawAttributeArrays_TTTT<T2,C4,N3,V3USI>             DrawAttributeArrays_T2C4N3V3i;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4,N3,V3USI>          DrawAttributeArrays_T2iC4N3V3i;
+    typedef DrawAttributeArrays_TTTT<T2,C4USI,N3,V3USI>          DrawAttributeArrays_T2C4iN3V3i;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3,V3USI>       DrawAttributeArrays_T2iC4iN3V3i;
+
+    typedef DrawAttributeArrays_TTTT<T2,C4,N3USI,V3USI>          DrawAttributeArrays_T2C4N3iV3i;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4,N3USI,V3USI>       DrawAttributeArrays_T2iC4N3iV3i;
+    typedef DrawAttributeArrays_TTTT<T2,C4USI,N3USI,V3USI>       DrawAttributeArrays_T2C4iN3iV3i;
+    typedef DrawAttributeArrays_TTTT<T2USI,C4USI,N3USI,V3USI>    DrawAttributeArrays_T2iC4iN3iV3i;
+
+    typedef DrawAttributeArrays_TTTT_USI<T2,C4,N3,V3>            DrawAttributeArrays_T2C4N3V3_i;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 #endif

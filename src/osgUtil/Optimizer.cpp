@@ -98,6 +98,12 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osv.optimize();
     }
     
+    if (options & CHECK_GEOMETRY)
+    {
+        CheckGeometryVisitor mgv;
+        node->accept(mgv);
+    }
+
     if (options & MERGE_GEOMETRY)
     {
         MergeGeometryVisitor mgv;
@@ -1138,6 +1144,18 @@ struct LessGeometryPrimitiveType
     }
 };
 
+void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
+{
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    {
+        osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+        if (geom)
+        {
+            geom->computeCorrectBindingsAndArraySizes();
+        }
+    }
+}
+
 bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
     if (geode.getNumDrawables()>=2)
@@ -1151,7 +1169,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         unsigned int i;
         for(i=0;i<geode.getNumDrawables();++i)
         {
-            osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
             if (geom)
             {
                 //geom->computeCorrectBindingsAndArraySizes();

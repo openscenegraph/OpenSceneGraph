@@ -32,6 +32,7 @@
 #include <osg/LightModel>
 #include <osg/ShadeModel>
 #include <osg/Notify>
+#include <osg/CollectOccludersVisitor>
 
 #include <osgDB/WriteFile>
 
@@ -1080,67 +1081,94 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 osg::notify(osg::NOTICE) << "Saved screen image to `"<<filename<<"`"<< std::endl;
             }
             break;
+        case 'v' :
+            {
+                osg::notify(osg::NOTICE) << "Creating occluders"<< std::endl;
+
+                osg::CollectOccludersVisitor cov;
+                cov.setCreateDrawablesOnOccludeNodes(true);
+
+                cov.pushViewport(sceneView->getViewport());
+                
+                if (sceneView->getProjectionMatrix()) cov.pushProjectionMatrix(sceneView->getProjectionMatrix());
+                else if (sceneView->getCamera()) cov.pushProjectionMatrix(osgNew Matrix(sceneView->getCamera()->getProjectionMatrix()));
+                else cov.pushProjectionMatrix(osgNew Matrix());
+                
+                if (sceneView->getModelViewMatrix()) cov.pushModelViewMatrix(sceneView->getModelViewMatrix());
+                else if (sceneView->getCamera()) cov.pushModelViewMatrix(osgNew Matrix(sceneView->getCamera()->getModelViewMatrix()));
+                else cov.pushModelViewMatrix(osgNew Matrix());
+                
+                sceneView->getSceneData()->accept(cov);
+
+                cov.popModelViewMatrix();
+                cov.popProjectionMatrix();
+                cov.popViewport();
+
+
+            }
+            break;
+
         case 'i' :
         case 'r' :
-        {
-            osg::notify(osg::NOTICE) << "***** Intersecting **************"<< std::endl;
-
-            osg::Vec3 near_point,far_point;
-            if (!sceneView->projectWindowXYIntoObject(x,_wh-y,near_point,far_point))
             {
-                osg::notify(osg::NOTICE) << "Failed to calculate intersection ray."<< std::endl;
-                return;
-            }
+                osg::notify(osg::NOTICE) << "***** Intersecting **************"<< std::endl;
 
-            osg::ref_ptr<osg::LineSegment> lineSegment = osgNew osg::LineSegment;
-            lineSegment->set(near_point,far_point);
-            osg::notify(osg::NOTICE) << "start("<<lineSegment->start()<<")  end("<<lineSegment->end()<<")"<< std::endl;
-
-            osgUtil::IntersectVisitor iv;
-            iv.addLineSegment(lineSegment.get());
-
-            float startTime = clockSeconds();
-
-            sceneView->getSceneData()->accept(iv);
-
-            float endTime = clockSeconds();
-
-            osg::notify(osg::NOTICE) << "Time for interesection = "<<(endTime-startTime)*1000<<"ms"<< std::endl;
-
-            if (iv.hits())
-            {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineSegment.get());
-                for(osgUtil::IntersectVisitor::HitList::iterator hitr=hitList.begin();
-                    hitr!=hitList.end();
-                    ++hitr)
+                osg::Vec3 near_point,far_point;
+                if (!sceneView->projectWindowXYIntoObject(x,_wh-y,near_point,far_point))
                 {
-                    osg::Vec3 ip = hitr->getLocalIntersectPoint();
-                    osg::Vec3 in = hitr->getLocalIntersectNormal();
-                    osg::Geode* geode = hitr->_geode.get();
-                    osg::notify(osg::NOTICE) << "  Itersection Point ("<<ip<<") Normal ("<<in<<")"<< std::endl;
-                    if (hitr->_matrix.valid())
-                    {
-                        osg::Vec3 ipEye = hitr->getWorldIntersectPoint();
-                        osg::Vec3 inEye = hitr->getWorldIntersectNormal();
-                        inEye.normalize();
-                        if (geode) osg::notify(osg::NOTICE) << "Geode '"<<geode->getName()<< std::endl;
-                        osg::notify(osg::NOTICE) << "  Eye Itersection Point ("<<ipEye<<") Normal ("<<inEye<<")"<< std::endl;
+                    osg::notify(osg::NOTICE) << "Failed to calculate intersection ray."<< std::endl;
+                    return;
+                }
 
-                    }
-                    if (key=='r' && geode)
+                osg::ref_ptr<osg::LineSegment> lineSegment = osgNew osg::LineSegment;
+                lineSegment->set(near_point,far_point);
+                osg::notify(osg::NOTICE) << "start("<<lineSegment->start()<<")  end("<<lineSegment->end()<<")"<< std::endl;
+
+                osgUtil::IntersectVisitor iv;
+                iv.addLineSegment(lineSegment.get());
+
+                float startTime = clockSeconds();
+
+                sceneView->getSceneData()->accept(iv);
+
+                float endTime = clockSeconds();
+
+                osg::notify(osg::NOTICE) << "Time for interesection = "<<(endTime-startTime)*1000<<"ms"<< std::endl;
+
+                if (iv.hits())
+                {
+                    osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineSegment.get());
+                    for(osgUtil::IntersectVisitor::HitList::iterator hitr=hitList.begin();
+                        hitr!=hitList.end();
+                        ++hitr)
                     {
-                        // remove geoset..
-                        osg::GeoSet* gset = hitr->_geoset.get();
-                        osg::notify(osg::NOTICE) << "  geoset ("<<gset<<") "<<geode->removeDrawable(gset)<<")"<< std::endl;
+                        osg::Vec3 ip = hitr->getLocalIntersectPoint();
+                        osg::Vec3 in = hitr->getLocalIntersectNormal();
+                        osg::Geode* geode = hitr->_geode.get();
+                        osg::notify(osg::NOTICE) << "  Itersection Point ("<<ip<<") Normal ("<<in<<")"<< std::endl;
+                        if (hitr->_matrix.valid())
+                        {
+                            osg::Vec3 ipEye = hitr->getWorldIntersectPoint();
+                            osg::Vec3 inEye = hitr->getWorldIntersectNormal();
+                            inEye.normalize();
+                            if (geode) osg::notify(osg::NOTICE) << "Geode '"<<geode->getName()<< std::endl;
+                            osg::notify(osg::NOTICE) << "  Eye Itersection Point ("<<ipEye<<") Normal ("<<inEye<<")"<< std::endl;
+
+                        }
+                        if (key=='r' && geode)
+                        {
+                            // remove geoset..
+                            osg::GeoSet* gset = hitr->_geoset.get();
+                            osg::notify(osg::NOTICE) << "  geoset ("<<gset<<") "<<geode->removeDrawable(gset)<<")"<< std::endl;
+                        }
+
                     }
 
                 }
 
+                osg::notify(osg::NOTICE) << std::endl << std::endl;
             }
-
-            osg::notify(osg::NOTICE) << std::endl << std::endl;
-        }
-        break;
+            break;
 
         case 27 :
             

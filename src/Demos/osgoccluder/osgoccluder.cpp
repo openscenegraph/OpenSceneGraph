@@ -82,7 +82,7 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
     occluderNode->setOccluder(cpo);
     
 
-    // create a drawable for occluder.
+   // create a drawable for occluder.
     osg::GeoSet* geoset = osgNew osg::GeoSet;
     
     osg::Vec3* coords = osgNew osg::Vec3[occluder.getVertexList().size()];

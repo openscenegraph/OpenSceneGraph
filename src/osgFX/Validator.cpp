@@ -23,7 +23,7 @@ Validator::Validator(const Validator &copy, const osg::CopyOp &copyop)
 {
 }
 
-void Validator::compile(osg::State &state) const
+void Validator::compileGLObjects(osg::State &state) const
 {
 	apply(state);
 }

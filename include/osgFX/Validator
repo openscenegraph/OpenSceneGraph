@@ -45,7 +45,7 @@ namespace osgFX
         META_StateAttribute(osgFX, Validator, VALIDATOR);
 
         void apply(osg::State &state) const;
-        void compile(osg::State &state) const;
+        void compileGLObjects(osg::State &state) const;
 
         inline int compare(const osg::StateAttribute &sa) const;
         

@@ -177,10 +177,15 @@ class SG_EXPORT Node : public Object
         /** set the node's StateSet.*/
         inline void setStateSet(osg::StateSet* dstate) { _dstate = dstate; }
 
-        /** return the node's StateSet.*/
+        /** return the node's StateSet, if one does not already exist create it
+          * set the node and return the newly created StateSet. This ensures
+          * that a valid StateSet is always returned and can be used directly.*/
+        osg::StateSet* getValidStateSet();
+
+        /** return the node's StateSet. returns NULL if a stateset is not attached.*/
         inline osg::StateSet* getStateSet() { return _dstate.get(); }
 
-        /** return the node's const StateSet.*/
+        /** return the node's const StateSet. returns NULL if a stateset is not attached.*/
         inline const osg::StateSet* getStateSet() const { return _dstate.get(); }
 
         /** get the bounding sphere of node.

@@ -170,7 +170,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
        
     state.popStateSet();
     
-    state.apply();
+    //state.apply();
 
 }
 

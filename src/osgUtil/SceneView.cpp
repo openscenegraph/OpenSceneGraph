@@ -211,7 +211,7 @@ void SceneView::cull()
     }
     
     // we in theory should be able to be able to bypass reset, but we'll call it just incase.
-    _state->reset();
+    //_state->reset();
    
     _state->setFrameStamp(_frameStamp.get());
     _state->setDisplaySettings(_displaySettings.get());
@@ -805,6 +805,9 @@ void SceneView::draw()
         _renderStage->drawPreRenderStages(*_state,previous);
         _renderStage->draw(*_state,previous);
     }
+    
+    // re apply the defalt OGL state.
+    _state->popAllStateSets();
 
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)

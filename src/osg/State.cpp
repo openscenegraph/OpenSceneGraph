@@ -148,6 +148,11 @@ void State::pushStateSet(const StateSet* dstate)
     }
 }
 
+void State::popAllStateSets()
+{
+    while (!_drawStateStack.empty()) popStateSet();
+}
+
 void State::popStateSet()
 {
     if (_drawStateStack.empty()) return;

@@ -31,9 +31,9 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
-        FlattenStaticTransformsVisitor fstv;
-        node->accept(fstv);
-        fstv.removeTransforms();
+//         FlattenStaticTransformsVisitor fstv;
+//         node->accept(fstv);
+//         fstv.removeTransforms();
 
 // the following RemoveLowestStaticTransformVisitor doesn't yet work
 // properly, will need further work.... Robert Osfield, June 2002.

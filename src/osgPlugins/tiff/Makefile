@@ -6,8 +6,12 @@ CXXFILES =\
 
 LIBS  += $(OSG_LIBS) $(TIFF_LIB) $(OTHER_LIBS)
 
+ifeq ($(OS),HP-UX)
+INC     += $(TIFF_INCLUDE)
+else
 INC     += -I/usr/local/include
 LDFLAGS += -L/usr/local/lib
+endif
 
 TARGET_BASENAME = tiff
 include $(TOPDIR)/Make/cygwin_plugin_def

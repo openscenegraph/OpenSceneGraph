@@ -6,7 +6,14 @@
 #include <mach-o/dyld.h>
 #else // all other unix
 #include <unistd.h>
+#ifdef __hpux__
+// Although HP-UX has dlopen() it is broken! We therefore need to stick
+// to shl_load()/shl_unload()/shl_findsym()
+#include <dl.h>
+#include <errno.h>
+#else
 #include <dlfcn.h>
+#endif
 #endif
 
 #include <osg/Notify>
@@ -31,6 +38,9 @@ DynamicLibrary::~DynamicLibrary()
         FreeLibrary((HMODULE)_handle);
 #elif defined(__DARWIN_OSX__)
         NSUnLinkModule(_handle, FALSE);
+#elif defined(__hpux__)
+        // fortunately, shl_t is a pointer
+        shl_unload (static_cast<shl_t>(_handle));
 #else // other unix
         dlclose(_handle);
 #endif    
@@ -58,6 +68,12 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     }
     // if (os_handle) return osgNew DynamicLibrary(libraryName,os_handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+#elif defined(__hpux__)
+    // BIND_FIRST is neccessary for some reason
+    HANDLE handle = shl_load ( fullLibraryName.c_str(), BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
+    if (handle) return osgNew DynamicLibrary(libraryName,handle);
+    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+    notify(WARN) << "DynamicLibrary::error "<<strerror(errno)<<std::endl;
 #else // other unix
     HANDLE handle = dlopen( fullLibraryName.c_str(), RTLD_LAZY );
     if (handle) return osgNew DynamicLibrary(libraryName,handle);
@@ -79,6 +95,18 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
     temp += procName;	// Mac OS X prepends an underscore on function names
     symbol = NSLookupAndBindSymbol(temp.c_str());
     return NSAddressOfSymbol(symbol);
+#elif defined(__hpux__)
+    void* result = NULL;
+    if (shl_findsym (reinterpret_cast<shl_t*>(&_handle), procName.c_str(), TYPE_PROCEDURE, result) == 0)
+    {
+        return result;
+    }
+    else
+    {
+        notify(WARN) << "DynamicLibrary::failed looking up " << procName << std::endl;
+        notify(WARN) << "DynamicLibrary::error " << strerror(errno) << std::endl;
+        return NULL;
+    }
 #else // other unix
     return dlsym( _handle,  procName.c_str() );
 #endif

@@ -65,7 +65,7 @@ bool Window::open()
 
     glutInitDisplayMode( _displayMode);
     
-    glutCreateWindow( _title.c_str() );
+    glutCreateWindow( const_cast<char*>(_title.c_str()) );
 
     glutReshapeFunc(    reshapeCB );
     glutVisibilityFunc( visibilityCB );

@@ -49,7 +49,13 @@ INST_DOC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/doc
 INST_DATA          = $(INST_SHARE_PREFIX)/OpenSceneGraph/data
 INST_DEMO_SRC      = $(INST_SRC)/demos
 
+ifneq ($(OS),HP-UX)
 LINK               = ln -sf
+else
+# HP-UX linker seems to have problems with symlinked libs -
+# somehow paths like "../../.." get into the executables
+LINK               = cp -f
+endif
 INSTBINCMD         = install -m 755
 INSTDEVCMD         = install -m 644
 INSTLINKBINCMD     = $(LINK)
@@ -121,7 +127,7 @@ endif
 ifeq ($(OS),IRIX)
 
   C++               = CC
-  DEPFLAGS          = -M
+  DEPARG            = -M
   INC               +=  -I${TOPDIR}/include -I/usr/freeware/
   DEF               += -LANG:std -OPT:Olimit=0 \
 	 	       -DEBUG:woff=1682 -DEBUG:woff=3303\
@@ -406,6 +412,67 @@ ifeq ($(OS),MINGW)
 # osgcluster
 endif
 
+#### HP-UX Specific definitions
+# contributed by tino.schwarze@informatik.tu-chemnitz.de
+
+ifeq ($(OS),HP-UX)
+
+  C++               = g++
+  DEPARG            = -M
+  INC               += -I/opt/glut/include
+  DEF               += -W -Wall -fPIC
+  OPTF              = -O2 
+  # gcc 3.1 uses DWARF as default, my GDB might not yet support this...
+  # at least I've got problems everywhere
+  DBGF              = -g -gstabs+
+  SHARED            = -shared -fPIC
+  ARCH              = 32
+ifeq ($(ARCH),64)
+	# not yet tested
+    ARCHARGS          = -march=2.0
+	# I don't have performer - just a wild guess of the directory
+    PF_XTRA_LIBS      = -L/opt/graphics/libpfdb   -Wl,-rpath -Wl,/opt/graphics/libpfdb \
+                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
+else
+    # at least my gcc 3.1 defaults to HP-PA RISC 1.1
+    ARCHARGS          = 
+	# I don't have performer - just a wild guess of the directory
+    PF_XTRA_LIBS      = -L/opt/graphics/libpfdb   -Wl,-rpath -Wl,/usr/lib64/libpfdb \
+                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
+endif
+  LINKARGS          = -lpthread
+  LIB_EXT           = sl
+  PLUGIN_EXT        = sl
+  DYNAMICLIBRARYLIB = -ldld
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  # glut delivered with HP-UX is outdated
+  GLUT_LIB          = -L/opt/glut/lib -lglut
+  GL_LIBS           = -L/opt/graphics/OpenGL/lib -lGLU -lGL 
+  X_LIBS            = -L/usr/lib/X11R6 -lXext -lXi -lX11 -L/usr/lib/X11R4 -lXmu
+  SOCKET_LIBS       = 
+  # make sure that global constructors/destructors are called upon
+  # shl_load() / shl_unload() - this is a gcc specific workaround
+  OTHER_LIBS        = -lm -Wl,+init -Wl,_GLOBAL__DI -Wl,+fini -Wl,_GLOBAL__DD
+  FREETYPE_INCLUDE  = -I/opt/freetype/include -I/opt/freetype/include/freetype2
+  FREETYPE_LIB      = -L/opt/freetype/lib -lfreetype
+  PNG_INCLUDE       = -I/opt/libpng/include
+  PNG_LIBS          = -L/opt/libpng/lib -lpng -L/opt/zlib/lib -lz
+  JPEG_INCLUDE		= -I/opt/jpeg-6/include
+  JPEG_LIBS         = -L/opt/jpeg-6/lib -ljpeg
+  TIFF_INCLUDE      = -I/opt/tiff-3.5/include
+  TIFF_LIB          = -L/opt/tiff-3.5/lib -ltiff
+  GIF_INCLUDE		= -I/opt/libungif/include
+  GIF_LIBS          = -L/opt/libungif/lib -lungif
+
+endif
 
 VPATH=..
 

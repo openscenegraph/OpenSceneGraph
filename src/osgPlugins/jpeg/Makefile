@@ -4,7 +4,11 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         ReaderWriterJPEG.cpp\
 
+ifneq ($(OS),HP-UX)
 INC += -I/usr/local/include/
+else
+INC += $(JPEG_INCLUDE)
+endif
 
 LIBS  += $(OSG_LIBS) $(JPEG_LIBS) $(OTHER_LIBS)
 

@@ -8,7 +8,11 @@
 #if defined(__DARWIN_OSX__)
     #include <GLUT/glut.h>
 #else
+    #if defined(__hpux__)
+    #include <glut.h>
+    #else
     #include <GL/glut.h>
+    #endif
 #endif
 
 #endif  // __osgGLUT_h

@@ -605,6 +605,12 @@ inline int IsNaNorInf( float f )
   return isnanf(f) || isinf(f);
 #elif defined(WIN32)
   return _isnan(f) || !_finite(f);
+#elif defined(__hpux__)
+  // this is a hack - cmath from gcc 3.1 #undef's isinf() but does not
+  // redefine it (at least for me), enabling _GLIBCPP_USE_C99 also
+  // doesn't help (loads of compilation errors), so I just repeat the
+  // definition of isinf() from math.h here.
+  return isnan(f) || (_ISINF(f));
 #else
 #  error Teach me how to find non-numbers on this platform.
 return 0;
@@ -1227,15 +1233,6 @@ void DXArrayWriter::WritePerVertexTCoords(
 }
 
 //----------------------------------------------------------------------------
-
-inline float MAX( float x, float y )
-  {  return x > y ? x : y;  }
-
-inline float MAX3( float x, float y, float z )
-  {  return MAX( MAX( x, y ), z );  }
-
-inline float MaxVecXYZ( const osg::Vec4 &v )
-  {  return MAX3( v[0], v[1], v[2] ); }
 
 inline float Luminance( const osg::Vec4 &v )
   { return 0.2122*v[0] + 0.7013*v[1] * 0.0865*v[2]; }

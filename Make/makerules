@@ -71,16 +71,22 @@ $(LIB) : $(OBJS)
 $(PLUGIN) : $(OBJS)
 	$(C++) $(LDFLAGS) -bundle $(OBJS) $(LIBS) -o $@
 else
-
+ifeq ($(OS),HP-UX)
+# we need to explicitly tell the linker the library name - else it will
+# include paths like ../../../libosg.sl into executables
+$(LIB) $(PLUGIN) : $(OBJS)
+	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -Wl,+h -Wl,$@ -Wl,-v -o $@
+else
 $(LIB) $(PLUGIN) : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@
 
-endif
+endif # not HP-UX
+endif # not Darwin
 
 $(EXEC:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
-	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
@@ -88,7 +94,7 @@ $(EXEC:=.dbg) :
 $(LIB:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR);\
-	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
@@ -96,7 +102,7 @@ $(LIB:=.dbg) :
 $(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
-	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
@@ -144,7 +150,7 @@ endif
 ## Doesn't work too well, but leave the code here for later evaulation
 ifeq (0,1)
 ifneq ($(OS),IRIX)   
-	$(C++) $(INC) $(DEPFLAGS) $< > .temp.dep
+	$(C++) $(INC) $(DEPARG) $< > .temp.dep
 	if [ -f $(MAKEDEPEND) ] ; \
 	then \
 	  grep -v $< $(MAKEDEPEND) > .temp.dep1;\

@@ -6,4 +6,4 @@ in the future to support inline images.  Currently osg::Images are supported
 via the osgDB::Registry::read/writeImage methods and plugins.
 
 Robert Osfield,
-March 20001.
+March 2001.

@@ -4,6 +4,7 @@
  * Lightwave Object loader for Open Scene Graph
  *
  * Copyright (C) 2001 Ulrich Hertlein <u.hertlein@web.de>
+ * Improved LWO2 reader is (C) 2003-2004 Marco Jez <marco.jez@poste.it>
  *
  * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
  * real-time rendering of large 3D photo-realistic models. 
@@ -15,6 +16,7 @@
 #endif
 
 #include <string>
+#include <sstream>
 #include <algorithm>
 
 #include <osg/Notify>
@@ -34,8 +36,10 @@
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tesselator>
 
-#include "lw.h"
-#include "Lwo2.h"
+#include "Converter.h"
+
+#include "old_lw.h"
+#include "old_Lwo2.h"
 
 class ReaderWriterLWO : public osgDB::ReaderWriter
 {
@@ -49,7 +53,7 @@ public:
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
     {
-        std::string ext = osgDB::getLowerCaseFileExtension(file);
+        std::string ext = osgDB::getLowerCaseFileExtension(file);		
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file );
@@ -58,10 +62,18 @@ public:
         ReadResult result = readNode_LWO1(fileName,options);
         if (result.success()) return result;
         
-        return readNode_LWO2(fileName,options);
+		if (!options || options->getOptionString() != "USE_OLD_READER") {
+			ReadResult result = readNode_LWO2(fileName, options);
+			if (result.success()) return result;
+		}
+
+		return readNode_old_LWO2(fileName, options);		
     }
 
+	lwosg::Converter::Options parse_options(const Options *options) const;
+
     virtual ReadResult readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+	virtual ReadResult readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*);
     virtual ReadResult readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
 protected:
@@ -70,12 +82,48 @@ protected:
 
 };
 
+lwosg::Converter::Options ReaderWriterLWO::parse_options(const Options *options) const
+{
+	lwosg::Converter::Options conv_options;
+
+	if (options) {
+		std::istringstream iss(options->getOptionString());
+		std::string opt;
+		while (iss >> opt) {
+			if (opt == "FORCE_ARB_COMPRESSION")    conv_options.force_arb_compression = true;
+			if (opt == "USE_OSGFX")                conv_options.use_osgfx = true;
+			if (opt == "NO_LIGHTMODEL_ATTRIBUTE")  conv_options.apply_light_model = false;
+			if (opt == "MAX_TEXTURE_UNITS") {
+				int n;
+				if (iss >> n) {
+					conv_options.max_tex_units = n;
+				}
+			}
+		}
+	}
+
+	return conv_options;
+}
+
 
 // register with Registry to instantiate the above reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
 
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string &fileName, const osgDB::ReaderWriter::Options *options)
+{
+	lwosg::Converter::Options conv_options = parse_options(options);
 
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+	lwosg::Converter converter(conv_options);
+	osg::ref_ptr<osg::Node> node = converter.convert(fileName);
+	if (node.valid()) {
+		return node.take();
+	}
+
+	return ReadResult::FILE_NOT_HANDLED;
+}
+
+
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     std::auto_ptr<Lwo2> lwo2(new Lwo2());
     if (lwo2->ReadFile(fileName))

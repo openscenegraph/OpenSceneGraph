@@ -23,7 +23,7 @@
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
-#include "Lwo2Layer.h"
+#include "old_Lwo2Layer.h"
 
 Lwo2Layer::Lwo2Layer():
   _number(0),

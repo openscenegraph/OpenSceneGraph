@@ -19,7 +19,7 @@
 
 namespace osgProducer {
 
-class ViewerEventHandler : public osgGA::GUIEventHandler
+class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
 {
     public:
     

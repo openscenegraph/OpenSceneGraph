@@ -273,7 +273,7 @@ int main(int argc, char** argv)
     }
 
     // create a model from the images.
-    osg::Node* rootNode = createModel((arguments.argc() > 1 ? arguments[1] : "lz.rgb"));
+    osg::Node* rootNode = createModel((arguments.argc() > 1 ? arguments[1] : "Images/lz.rgb"));
 
     // add model to viewer.
     viewer.setSceneData(rootNode);

@@ -16,6 +16,7 @@
 #include <osgSim/LightPointNode>
 
 
+
 #define INTERPOLATE(member) lp.member = start.member*rstart + end.member*rend;
 
 void addToLightPointNode(osgSim::LightPointNode& lpn,osgSim::LightPoint& start,osgSim::LightPoint& end,unsigned int noSteps)
@@ -52,10 +53,10 @@ osg::Node* createLightPointsDatabase()
     osgSim::LightPoint start;
     osgSim::LightPoint end;
 
-    start._position.set(0.0f,0.0f,0.0f);
+    start._position.set(-500.0f,-500.0f,0.0f);
     start._color.set(1.0f,0.0f,0.0f,1.0f);
     
-    end._position.set(1000.0f,0.0f,0.0f);
+    end._position.set(500.0f,-500.0f,0.0f);
     end._color.set(1.0f,1.0f,1.0f,1.0f);
     
     osg::Transform* transform = new osg::Transform;
@@ -107,6 +108,56 @@ osg::Node* createLightPointsDatabase()
     return group;
 }
 
+static osg::Node* CreateBlinkSequenceLightNode()
+{
+   osgSim::LightPointNode*      lightPointNode = new osgSim::LightPointNode;;
+
+   osgSim::LightPointNode::LightPointList       lpList;
+
+   osg::ref_ptr<osgSim::SequenceGroup>   seq_0;
+   seq_0 = new osgSim::SequenceGroup;
+   seq_0->_baseTime = 0.0;
+
+   osg::ref_ptr<osgSim::SequenceGroup>   seq_1;
+   seq_1 = new osgSim::SequenceGroup;
+   seq_1->_baseTime = 0.5;
+
+   const int max_points = 32;
+   for( int i = 0; i < max_points; ++i )
+   {
+      osgSim::LightPoint   lp;
+      double x = cos( (2.0*osg::PI*i)/max_points );
+      double z = sin( (2.0*osg::PI*i)/max_points );
+      lp._position.set( x, 0.0f, z + 100.0f );
+      lp._blinkSequence = new osgSim::BlinkSequence;
+      for( int j = 10; j > 0; --j )
+      {
+         float  intensity = j/10.0f;
+         lp._blinkSequence->addPulse( 1.0/max_points,
+                                     osg::Vec4( intensity, intensity, intensity, intensity ) );
+      }
+      if( max_points > 10 )
+      {
+         lp._blinkSequence->addPulse( 1.0 - 10.0/max_points,
+                                     osg::Vec4( 0.0f, 0.0f, 0.0f, 0.0f ) );
+      }
+
+      if( i & 1 )
+      {
+         lp._blinkSequence->setSequenceGroup( seq_1.get() );
+      }
+      else
+      {
+         lp._blinkSequence->setSequenceGroup( seq_0.get() );
+      }
+      lp._blinkSequence->setPhaseShift( i/(static_cast<double>(max_points)) );
+      lpList.push_back( lp );
+   }
+
+   lightPointNode->setLightPointList( lpList );
+
+   return lightPointNode;
+}
 
 int main( int argc, char **argv )
 {
@@ -150,7 +201,7 @@ int main( int argc, char **argv )
     // load the nodes from the commandline arguments.
     rootnode->addChild(osgDB::readNodeFiles(arguments));
     rootnode->addChild(createLightPointsDatabase());
-    
+    rootnode->addChild(CreateBlinkSequenceLightNode());
     
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;

@@ -26,24 +26,23 @@
 
 namespace osgSim {
 
-class OSGSIM_EXPORT BlinkSequence : public osg::Object
+/** sequence group which can be used to synchronize related blink sequences.*/
+class OSGSIM_EXPORT SequenceGroup : public osg::Object
 {
     public:
 
-        /** sequence group which can be used to synchronize related blink sequences.*/
-        class OSGSIM_EXPORT SequenceGroup : public osg::Object
-        {
-            public:
+       SequenceGroup();
+       SequenceGroup(const SequenceGroup& bs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+       SequenceGroup(double baseTime);
 
-                SequenceGroup();
-                SequenceGroup(const SequenceGroup& bs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
-                SequenceGroup(double baseTime);
+       META_Object(osgSim,SequenceGroup);
 
-                META_Object(osgSim,SequenceGroup);
+       double      _baseTime;
+};
 
-                double      _baseTime;
-        };
-
+class OSGSIM_EXPORT BlinkSequence : public osg::Object
+{
+    public:
 
         BlinkSequence();
 

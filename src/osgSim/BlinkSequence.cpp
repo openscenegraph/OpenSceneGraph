@@ -35,19 +35,19 @@ BlinkSequence::BlinkSequence(const BlinkSequence& bs, const osg::CopyOp& copyop)
 }
 
 
-BlinkSequence::SequenceGroup::SequenceGroup()
+SequenceGroup::SequenceGroup()
 {
     // set a random base time between 0 and 1000.0
     _baseTime = ((double)rand()/(double)RAND_MAX)*1000.0;
 }
 
-BlinkSequence::SequenceGroup::SequenceGroup(const BlinkSequence::SequenceGroup& sg, const osg::CopyOp& copyop):
+SequenceGroup::SequenceGroup(const SequenceGroup& sg, const osg::CopyOp& copyop):
     osg::Object(sg, copyop),
     _baseTime(sg._baseTime)
 {
 }
 
-BlinkSequence::SequenceGroup::SequenceGroup(double baseTime):
+SequenceGroup::SequenceGroup(double baseTime):
     _baseTime(baseTime)
 {
 }

@@ -138,8 +138,6 @@ Registry::Registry()
     _createNodeFromImage = false;
     _openingLibrary = false;
     
-    _useObjectCacheHint = ReaderWriter::Options::CACHE_ARCHIVES;
-
     initFilePathLists();
 
     // register file extension alias.

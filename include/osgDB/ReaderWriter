@@ -83,7 +83,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 };
             
 
-                Options():_useObjectCacheHint(CACHE_NONE) {}
+                Options():_useObjectCacheHint(CACHE_ARCHIVES) {}
                 Options(const std::string& str):_str(str) {}
                 
                 Options(const Options& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):

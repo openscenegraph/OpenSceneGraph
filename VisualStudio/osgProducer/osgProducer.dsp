@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
- Begin Source File
+# Begin Source File
 
 SOURCE=..\..\src\osgProducer\DatabasePager.cpp
 # End Source File

@@ -82,6 +82,7 @@ void SmoothingVisitor::smooth(osg::GeoSet& gset)
         case(GeoSet::TRIANGLE_FAN):
             doSmoothing = true;
             break;
+/*
         case(GeoSet::FLAT_TRIANGLE_STRIP):
             primTypeOut = GeoSet::TRIANGLE_STRIP;
             doSmoothing = true;
@@ -90,6 +91,7 @@ void SmoothingVisitor::smooth(osg::GeoSet& gset)
             primTypeOut = GeoSet::TRIANGLE_FAN;
             doSmoothing = true;
             break;
+*/
         case(GeoSet::QUADS):
         case(GeoSet::QUAD_STRIP):
         case(GeoSet::POLYGON):
@@ -138,7 +140,23 @@ void SmoothingVisitor::smooth(osg::GeoSet& gset)
         }
 
         if (primTypeIn!=primTypeOut)
+        {
+            
+            if (primTypeIn==GeoSet::FLAT_TRIANGLE_STRIP)
+            {
+                gset.setColorBinding( osg::GeoSet::BIND_OFF );
+                gset.setColors(NULL);
+            }
+            else
+            if (primTypeIn==GeoSet::FLAT_TRIANGLE_STRIP)
+            {
+                gset.setColorBinding( osg::GeoSet::BIND_OFF );
+                gset.setColors(NULL);
+            }
+            
             gset.setPrimType( primTypeOut );
+            
+        }
 
         gset.dirtyDisplayList();
 

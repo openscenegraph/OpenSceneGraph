@@ -274,7 +274,7 @@ class SG_EXPORT Texture : public StateAttribute
         {
             // pad out handle list if required.
             if (_handleList.size()<=contextID)
-                _handleList.resize(contextID,0);
+                _handleList.resize(contextID+1,0);
 
             // get the globj for the current contextID.
             return _handleList[contextID];

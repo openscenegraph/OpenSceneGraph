@@ -4,8 +4,8 @@ using namespace osg;
 
 Geometry::Geometry()
 {
-    _normalBinding = OFF;
-    _colorBinding = OFF;
+    _normalBinding = BIND_OFF;
+    _colorBinding = BIND_OFF;
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -70,17 +70,17 @@ void Geometry::drawImmediateMode(State& /*state*/)
 
     switch (_normalBinding)
     {
-        case(OFF):
+        case(BIND_OFF):
             glDisableClientState( GL_NORMAL_ARRAY );
             break;
-        case(OVERALL):
+        case(BIND_OVERALL):
+            glDisableClientState( GL_NORMAL_ARRAY );
             if (normalPointer) glNormal3fv(reinterpret_cast<const GLfloat*>(normalPointer));
+            break;
+        case(BIND_PER_PRIMITIVE):
             glDisableClientState( GL_NORMAL_ARRAY );
             break;
-        case(PER_PRIMITIVE):
-            glDisableClientState( GL_NORMAL_ARRAY );
-            break;
-        case(PER_VERTEX):
+        case(BIND_PER_VERTEX):
             glEnableClientState( GL_NORMAL_ARRAY );
             if (normalPointer) glNormalPointer(GL_FLOAT,0,normalPointer);
             break;
@@ -121,10 +121,10 @@ void Geometry::drawImmediateMode(State& /*state*/)
 
     switch (_colorBinding)
     {
-        case(OFF):
+        case(BIND_OFF):
             glDisableClientState( GL_COLOR_ARRAY );
             break;
-        case(OVERALL):
+        case(BIND_OVERALL):
             glDisableClientState( GL_COLOR_ARRAY );
             if (colorPointer)
             {
@@ -142,10 +142,10 @@ void Geometry::drawImmediateMode(State& /*state*/)
                 }
             }
             break;
-        case(PER_PRIMITIVE):
+        case(BIND_PER_PRIMITIVE):
             glDisableClientState( GL_COLOR_ARRAY );
             break;
-        case(PER_VERTEX):
+        case(BIND_PER_VERTEX):
             glEnableClientState( GL_COLOR_ARRAY );
             if (colorPointer) glColorPointer(_colorArray->dataSize(),_colorArray->dataType(),0,colorPointer);
     }
@@ -156,12 +156,12 @@ void Geometry::drawImmediateMode(State& /*state*/)
         itr!=_primitives.end();
         ++itr)
     {
-        if (_normalBinding==PER_PRIMITIVE)
+        if (_normalBinding==BIND_PER_PRIMITIVE)
         {
             glNormal3fv((const GLfloat *)normalPointer++);
         }
     
-        if (_colorBinding==PER_PRIMITIVE)
+        if (_colorBinding==BIND_PER_PRIMITIVE)
         {
             switch(colorType)
             {

@@ -9,6 +9,9 @@
 #include <osg/Notify>
 #include <osg/Statistics>
 
+#include <osg/Geometry>
+#include <osg/ShadeModel>
+
 //#include <osg/mem_ptr>
 
 using namespace osg;
@@ -975,3 +978,367 @@ bool GeoSet::getStats(Statistics &stat)
     stat.addNumPrims(type, nprimlens, numprimtypes, primverts);
     return true;
 }
+
+
+
+
+Geometry* GeoSet::convertToGeometry()
+{
+    set_fast_path();
+    computeNumVerts();
+    
+    ref_ptr<Geometry> geom = osgNew Geometry;
+    geom->setStateSet(getStateSet());
+    
+    if (_flat_shaded_skip)
+    {
+        // will need to add flat shading to primitive.
+
+        StateSet* stateset = geom->getStateSet();
+        if (!stateset)
+        {
+            stateset = osgNew StateSet;
+            geom->setStateSet(stateset);
+        }
+        ShadeModel* shademodel = dynamic_cast<ShadeModel*>(stateset->getAttribute(StateAttribute::SHADEMODEL));
+        if (!shademodel)
+        {
+            shademodel = osgNew osg::ShadeModel;
+            stateset->setAttribute(shademodel,StateAttribute::OVERRIDE);
+        }
+
+        shademodel->setMode( ShadeModel::FLAT );
+    }
+
+    switch(_normal_binding)
+    {
+        case(BIND_OFF):
+            geom->setNormalBinding(Geometry::BIND_OFF);
+            break;
+        case(BIND_OVERALL):
+            geom->setNormalBinding(Geometry::BIND_OVERALL);
+            break;
+        case(BIND_PERPRIM):
+            geom->setNormalBinding(Geometry::BIND_PER_PRIMITIVE);
+            break;
+        case(BIND_PERVERTEX):
+            geom->setNormalBinding(Geometry::BIND_PER_VERTEX);
+            break;
+        default:
+            geom->setNormalBinding(Geometry::BIND_OFF);
+            break;
+    }
+
+    switch(_color_binding)
+    {
+        case(BIND_OFF):
+            geom->setColorBinding(Geometry::BIND_OFF);
+            break;
+        case(BIND_OVERALL):
+            geom->setColorBinding(Geometry::BIND_OVERALL);
+            break;
+        case(BIND_PERPRIM):
+            geom->setColorBinding(Geometry::BIND_PER_PRIMITIVE);
+            break;
+        case(BIND_PERVERTEX):
+            geom->setColorBinding(Geometry::BIND_PER_VERTEX);
+            break;
+        default:
+            geom->setColorBinding(Geometry::BIND_OFF);
+            break;
+    }
+
+
+    if (_fast_path)
+    {
+        // will easily convert into a Geometry.
+        
+        if (_coords) geom->setVertexArray(osgNew Vec3Array(_numcoords,_coords));
+        
+        if (_normals) geom->setNormalArray(osgNew Vec3Array(_numnormals,_normals));
+        
+        if (_colors) geom->setColorArray(osgNew Vec4Array(_numcolors,_colors));
+        
+        if (_tcoords) geom->setTexCoordArray(0,osgNew Vec2Array(_numtcoords,_tcoords));
+        
+        if( _needprimlen )           // LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP,
+            // TRIANGLE_FAN, QUAD_STRIP, POLYGONS
+        {
+            int index = 0;
+            if( _primLengths == (int *)0 )
+            {
+                return 0;
+            }
+
+            for( int i = 0; i < _numprims; i++ )
+            {
+                if( _cindex.valid() )
+                {
+                    UShortDrawElements* n = new UShortDrawElements;
+                    geom->addPrimitive(n);
+                    
+                    if (_cindex._is_ushort)
+                        geom->addPrimitive(osgNew UShortDrawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] ));
+                    else
+                        geom->addPrimitive(osgNew UIntDrawElements( (GLenum)_oglprimtype, _primLengths[i], &_cindex._ptr._uint[index] ));
+                }
+                else
+                    geom->addPrimitive(osgNew DrawArrays( (GLenum)_oglprimtype, index, _primLengths[i] ));
+
+                index += _primLengths[i];
+            }
+        }
+        else                         // POINTS, LINES, TRIANGLES, QUADS
+        {
+            if( _cindex.valid())
+            {
+                if (_cindex._is_ushort)
+                    geom->addPrimitive(osgNew UShortDrawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._ushort ));
+                else
+                    geom->addPrimitive(osgNew UIntDrawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._uint ));
+            }
+            else
+                geom->addPrimitive(new DrawArrays( (GLenum)_oglprimtype, 0, _numcoords ));
+        }
+        
+        
+    }
+    else if( _needprimlen ) 
+    {
+        // slow path, and needing handling of primlen array.
+        //
+        // LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP,
+        // TRIANGLE_FAN, QUAD_STRIP, POLYGONS
+        // FLAT_LINE_STRIP, FLAT_TRIANGLE_STRIP, FLAT_TRIANGLE_FAN  
+    
+        int i, j;
+        int index = 0;
+        int ai = 0;
+        int ci = 0;
+        int ni = 0;
+        int ti = 0;
+
+        if( _primLengths == (int *)0 )
+        {
+            return 0;
+        }
+        
+        
+        Vec3Array* coords = osgNew Vec3Array;
+        Vec3Array* normals = 0;
+        Vec4Array* colors = 0;
+        Vec2Array* texcoords = 0;
+        
+        if (_colors) colors = osgNew Vec4Array;
+        if (_normals) normals = osgNew Vec3Array;
+        if (_tcoords) texcoords = osgNew Vec2Array;
+        
+        geom->setVertexArray(coords);
+        geom->setColorArray(colors);
+        geom->setNormalArray(normals);
+        geom->setTexCoordArray(0,texcoords);
+        
+        if (_color_binding == BIND_OVERALL)
+        {
+           if( _colindex.valid() )
+                colors->push_back( _colors[_colindex[0]] );
+            else
+                colors->push_back( _colors[0] );
+        }
+        
+        if (_normal_binding == BIND_OVERALL)
+        {
+           if( _nindex.valid() )
+                normals->push_back( _normals[0] );
+            else
+                normals->push_back( _normals[0] );
+        }
+
+        for( i = 0; i < _numprims; i++ )
+        {
+            if (_color_binding == BIND_PERPRIM && colors)
+            {
+               if( _colindex.valid() )
+                    colors->push_back( _colors[_colindex[ci++]] );
+                else
+                    colors->push_back( _colors[ci++] );
+            }
+
+            if (_normal_binding == BIND_PERPRIM && normals)
+            {
+               if( _nindex.valid() )
+                    normals->push_back( _normals[_nindex[ni++]] );
+                else
+                    normals->push_back( _normals[ni++] );
+            }
+
+            unsigned int first = coords->size();
+            unsigned int count = 0;
+
+            
+            for( j = 0; j < _primLengths[i]; j++ )
+            {
+                if( j >= _flat_shaded_skip )
+                {
+                    if( _color_binding == BIND_PERVERTEX && colors)
+                    {
+                        if( (_colindex.valid()) )
+                            colors->push_back( _colors[_colindex[ci++]] );
+                        else
+                            colors->push_back( _colors[ci++] );
+                    }
+
+                    if( _normal_binding == BIND_PERVERTEX && normals)
+                    {
+                        if(_nindex.valid())
+                            normals->push_back( _normals[_nindex[ni++]] );
+                        else
+                            normals->push_back( _normals[ni++] );
+                    }
+                }
+                else
+                {
+                     // note don't increment ci & ni as we want to make multiple copies it when in _flat_shaded_skip
+                    if( _color_binding == BIND_PERVERTEX && colors)
+                    {
+                        if( (_colindex.valid()) )
+                            colors->push_back( _colors[_colindex[ci]] );
+                        else
+                            colors->push_back( _colors[ci] );
+                    }
+
+                    if( _normal_binding == BIND_PERVERTEX && normals )
+                    {
+                        if(_nindex.valid())
+                            normals->push_back( _normals[_nindex[ni]] );
+                        else
+                            normals->push_back( _normals[ni] );
+                    }
+                }
+
+                if( _texture_binding == BIND_PERVERTEX && texcoords)
+                {
+                    if( _tindex.valid() )
+                        texcoords->push_back( _tcoords[_tindex[ti++]] );
+                    else
+                        texcoords->push_back( _tcoords[ti++] );
+                }
+
+                if( _cindex.valid() )
+                    coords->push_back( _coords[_cindex[ai++]] );
+                else
+                    coords->push_back( _coords[ai++] );
+                    
+                ++count;
+
+            }
+
+            geom->addPrimitive(osgNew DrawArrays(_oglprimtype,first,count));
+
+            index += _primLengths[i];
+        }
+
+    }
+    else
+    {
+    
+        Vec3Array* coords = osgNew Vec3Array;
+        Vec3Array* normals = 0;
+        Vec4Array* colors = 0;
+        Vec2Array* texcoords = 0;
+        
+        if (_colors) colors = osgNew Vec4Array;
+        if (_normals) normals = osgNew Vec3Array;
+        if (_tcoords) texcoords = osgNew Vec2Array;
+        
+        geom->setVertexArray(coords);
+        geom->setColorArray(colors);
+        geom->setNormalArray(normals);
+        geom->setTexCoordArray(0,texcoords);
+        
+        if (_color_binding == BIND_OVERALL)
+        {
+           if( _colindex.valid() )
+                colors->push_back( _colors[_colindex[0]] );
+            else
+                colors->push_back( _colors[0] );
+        }
+        
+        if (_normal_binding == BIND_OVERALL)
+        {
+           if( _nindex.valid() )
+                normals->push_back( _normals[_nindex[0]] );
+            else
+                normals->push_back( _normals[0] );
+        }
+
+        for(int i = 0; i < _numprims; i++ )
+        {
+            if (_color_binding == BIND_PERPRIM && colors)
+            {
+               if( _colindex.valid() )
+                    colors->push_back( _colors[_colindex[i]] );
+                else
+                    colors->push_back( _colors[i] );
+            }
+
+            if (_normal_binding == BIND_PERPRIM && normals)
+            {
+               if( _nindex.valid() )
+                    normals->push_back( _normals[_nindex[i]] );
+                else
+                    normals->push_back( _normals[i] );
+            }
+
+            unsigned int first = coords->size();
+            unsigned int count = 0;
+
+            for(int j = 0; j < _primlength; j++ )
+            {
+                if( _color_binding == BIND_PERVERTEX && colors)
+                {
+                    if( (_colindex.valid()) )
+                        colors->push_back( _colors[_colindex[i*_primlength+j]] );
+                    else
+                        colors->push_back( _colors[i*_primlength+j] );
+                }
+
+                if( _normal_binding == BIND_PERVERTEX && normals )
+                {
+                    if(_nindex.valid())
+                        normals->push_back( _normals[_nindex[i*_primlength+j]] );
+                    else
+                        normals->push_back( _normals[i*_primlength+j] );
+                }
+
+                if( _texture_binding == BIND_PERVERTEX && texcoords)
+                {
+                    if( _tindex.valid() )
+                        texcoords->push_back( _tcoords[_tindex[i*_primlength+j]] );
+                    else
+                        texcoords->push_back( _tcoords[i*_primlength+j] );
+                }
+
+                if( _cindex.valid() )
+                    coords->push_back( _coords[_cindex[i*_primlength+j]] );
+                else
+                    coords->push_back( _coords[i*_primlength+j] );
+                    
+                ++count;
+            }
+            
+            geom->addPrimitive(osgNew DrawArrays(_oglprimtype,first,count));
+
+        }
+
+    }
+
+        
+    return geom.take();
+    
+        
+}
+
+
+
+

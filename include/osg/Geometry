@@ -88,8 +88,18 @@ class TemplateArray : public AttributeArray, public std::vector<T>
     
         TemplateArray() : AttributeArray(ARRAYTYPE,DataSize,DataType) {}
 
-        TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY) : AttributeArray(ta,copyop), std::vector<T>(ta) {}
+        TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            AttributeArray(ta,copyop),
+            std::vector<T>(ta) {}
         
+        TemplateArray(unsigned int no,T* ptr) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(ptr,ptr+no) {}
+
+        TemplateArray(T* first,T* last) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(first,last) {}
+
         virtual Object* cloneType() const { return osgNew TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
         virtual const char* libraryName() const { return "osg"; }
@@ -115,7 +125,7 @@ typedef TemplateArray<Vec4,Vec4ArrayType,4,GL_FLOAT>                      Vec4Ar
 enum PrimitiveType
 {
     PrimitivePrimitiveType              = 0,
-    DrawArrayPrimitiveType              = 1,
+    DrawArraysPrimitiveType              = 1,
     UByteDrawElementsPrimitiveType      = 2,
     UShortDrawElementsPrimitiveType     = 3,
     UIntDrawElementsPrimitiveType       = 4,
@@ -124,7 +134,7 @@ enum PrimitiveType
 static char* s_PrimitiveNames[] =
 {
     "Primitive",                // 0
-    "DrawArray",                // 1
+    "DrawArrays",                // 1
     "UByteDrawElements",        // 2
     "UShortDrawElements",       // 3
     "UIntDrawElements"          // 4
@@ -164,31 +174,31 @@ class Primitive : public Object
         PrimitiveType _primitiveType;
 };
 
-class DrawArray : public Primitive
+class DrawArrays : public Primitive
 {
     public:
 
-        DrawArray():
-            Primitive(DrawArrayPrimitiveType)
+        DrawArrays():
+            Primitive(DrawArraysPrimitiveType)
             {}
     
-        DrawArray(GLenum mode, GLint first, GLsizei count):
-            Primitive(DrawArrayPrimitiveType),
+        DrawArrays(GLenum mode, GLint first, GLsizei count):
+            Primitive(DrawArraysPrimitiveType),
             _mode(mode),
             _first(first),
             _count(count) {}
 
-        DrawArray(const DrawArray& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        DrawArrays(const DrawArrays& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Primitive(da,copyop),
             _mode(da._mode),
             _first(da._first),
             _count(da._count) {}
 
-        virtual Object* cloneType() const { return osgNew DrawArray(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawArray(*this,copyop); }        
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArray*>(obj)!=NULL; }
+        virtual Object* cloneType() const { return osgNew DrawArrays(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawArrays(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArrays*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "DrawArray"; }
+        virtual const char* className() const { return "DrawArrays"; }
         
         virtual void draw() const 
         {
@@ -200,15 +210,33 @@ class DrawArray : public Primitive
         GLsizei _count;
 };
 
-template<typename T, int PRIMTYPE, int DataType>
+template<typename T, PrimitiveType PRIMTYPE, int DataType>
 class DrawElements : public Primitive, public std::vector<T>
 {
     public:
 
-        DrawElements():Primitive(PRIMTYPE),_dataType(_dataType) {}
+        DrawElements(GLenum mode=0):
+            Primitive(PRIMTYPE),
+            _mode(mode),
+            _dataType(DataType) {}
     
         DrawElements(const DrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Primitive(array,copyop) {}
+            Primitive(array,copyop),
+            std::vector<T>(array),
+            _mode(array._mode),
+            _dataType(array._dataType) {}
+
+        DrawElements(GLenum mode,unsigned int no,T* ptr) : 
+            Primitive(PRIMTYPE),
+            std::vector<T>(ptr,ptr+no),
+            _mode(mode),
+            _dataType(DataType) {}
+
+        DrawElements(GLenum mode, T* first,T* last) : 
+            Primitive(PRIMTYPE),
+            std::vector<T>(first,last),
+            _mode(mode),
+            _dataType(DataType) {}
 
         virtual Object* cloneType() const { return osgNew DrawElements(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElements(*this,copyop); }        
@@ -252,10 +280,10 @@ class SG_EXPORT Geometry : public Drawable
 
         enum AttributeBinding
         {
-            OFF=0,
-            OVERALL,
-            PER_PRIMITIVE,
-            PER_VERTEX,
+            BIND_OFF=0,
+            BIND_OVERALL,
+            BIND_PER_PRIMITIVE,
+            BIND_PER_VERTEX,
         };
                
         void setVertexArray(Vec3Array* array) { _vertexArray = array; }
@@ -266,7 +294,7 @@ class SG_EXPORT Geometry : public Drawable
         void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; }
         AttributeBinding getNormalBinding() const { return _normalBinding; }
 
-        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=OFF; }
+        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=BIND_OFF; }
         Vec3Array* getNormalArray() { return _normalArray.get(); }
         const Vec3Array* getNormalArray() const { return _normalArray.get(); }
 
@@ -274,7 +302,7 @@ class SG_EXPORT Geometry : public Drawable
         void setColorBinding(AttributeBinding ab) { _colorBinding = ab; }
         AttributeBinding getColorBinding() const { return _colorBinding; }
 
-        void setColorArray(AttributeArray* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=OFF; }
+        void setColorArray(AttributeArray* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; }
         AttributeArray* getColorArray() { return _colorArray.get(); }
         const AttributeArray* getColorArray() const { return _colorArray.get(); }
 
@@ -292,7 +320,7 @@ class SG_EXPORT Geometry : public Drawable
         PrimitiveList& getPrimitiveList() { return _primitives; }
         const PrimitiveList& getPrimitiveList() const { return _primitives; }
 
-        void addPrimtive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); }
+        void addPrimitive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); }
 
 
 

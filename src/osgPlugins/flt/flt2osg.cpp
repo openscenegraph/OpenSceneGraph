@@ -2865,7 +2865,7 @@ void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, Me
 }
 
 
-int ConvertFromFLT::addMeshPrimitives ( osg::Group &parent, GeoSetBuilder *, MeshRecord *rec )
+int ConvertFromFLT::addMeshPrimitives ( osg::Group &parent, GeoSetBuilder *pBuilder, MeshRecord *rec )
 {
     // The count of the mesh primitives added.
     int count = 0;
@@ -2880,7 +2880,7 @@ int ConvertFromFLT::addMeshPrimitives ( osg::Group &parent, GeoSetBuilder *, Mes
         if ( MESH_PRIMITIVE_OP == child->getOpcode() )
         {
             // Visit this mesh primitive.
-            visitMeshPrimitive ( parent, (MeshPrimitiveRecord *) child );
+            visitMeshPrimitive ( parent, pBuilder, (MeshPrimitiveRecord *) child );
             ++count;
         }
     }
@@ -2900,7 +2900,7 @@ int ConvertFromFLT::visitLocalVertexPool ( GeoSetBuilder *, LocalVertexPoolRecor
 }
 
 
-void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecord *mesh )
+void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, GeoSetBuilder *pBuilder, MeshPrimitiveRecord *mesh )
 {
     if ( !mesh )
     {
@@ -2918,8 +2918,6 @@ void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecor
         return;
     }
     
-    assert ( pool );
-
     // Set the correct primitive type.
     switch ( mesh->getData()->primitiveType )
     {
@@ -2936,14 +2934,19 @@ void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecor
         geometry->addPrimitiveSet ( new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,mesh->getNumVertices()) );
         break;
     default:
-        assert ( 0 ); // What type is this?
+        osg::notify(osg::NOTICE)<<"Warning:ConvertFromFLT::visitMeshPrimitive () unknown MeshPrimitiveRecord type."<<std::endl;
         return;
     }
 
     // Add the vertex properties.
-    setMeshCoordinates ( mesh->getNumVertices(), pool, mesh, geometry );
-    setMeshNormals     ( mesh->getNumVertices(), pool, mesh, geometry );
-    setMeshColors      ( mesh->getNumVertices(), pool, mesh, geometry );
+    setMeshCoordinates    ( mesh->getNumVertices(), pool, mesh, geometry );
+    setMeshNormals        ( mesh->getNumVertices(), pool, mesh, geometry );
+    setMeshColors         ( mesh->getNumVertices(), pool, mesh, geometry );
+    setMeshTexCoordinates ( mesh->getNumVertices(), pool, mesh, geometry );
+
+    DynGeoSet* dgset = pBuilder->getDynGeoSet();
+    osg::StateSet* osgStateSet = dgset->getStateSet();
+    geometry->setStateSet( osgStateSet );
 
     // Add the geometry to the geode.
     geode->addDrawable ( geometry );
@@ -2955,9 +2958,10 @@ void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecor
 
 uint32 ConvertFromFLT::setMeshCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
 {
-    assert ( pool );
-    assert ( mesh );
-    assert ( geometry );
+    if (!pool || !mesh || !geometry)
+    {
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshCoordinates passed null objects."<<std::endl;
+    }
 
     // If there aren't any coordinates...
     if ( false == pool->hasAttribute ( LocalVertexPoolRecord::POSITION ) )
@@ -2967,7 +2971,7 @@ uint32 ConvertFromFLT::setMeshCoordinates ( const uint32 &numVerts, const LocalV
     osg::Vec3Array *coords = new osg::Vec3Array(numVerts);
     if ( NULL == coords )
     {
-        assert ( 0 );
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshCoordinates out of memory."<<std::endl;
         return 0;
     }
 
@@ -2981,15 +2985,15 @@ uint32 ConvertFromFLT::setMeshCoordinates ( const uint32 &numVerts, const LocalV
         // Get the i'th index into the vertex pool.
         if ( !mesh->getVertexIndex ( i, index ) )
         {
-            assert ( 0 ); // We stepped out of bounds.
-            break;
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshCoordinates out of bounds."<<std::endl;
+            return 0;
         }
 
         // Get the coordinate (using "index").
         if ( !pool->getPosition ( index, px, py, pz ) )
         {
-            assert ( 0 ); // We stepped out of bounds.
-            break;
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshCoordinates out of bounds."<<std::endl;
+            return 0;
         }
 
         // Add the coordinate.
@@ -3006,9 +3010,10 @@ uint32 ConvertFromFLT::setMeshCoordinates ( const uint32 &numVerts, const LocalV
 
 uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
 {
-    assert ( pool );
-    assert ( mesh );
-    assert ( geometry );
+    if (!pool || !mesh || !geometry)
+    {
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates passed null objects."<<std::endl;
+    }
 
     // If there aren't any coordinates...
     if ( false == pool->hasAttribute ( LocalVertexPoolRecord::NORMAL ) )
@@ -3018,7 +3023,7 @@ uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVerte
     osg::Vec3Array *normals = new osg::Vec3Array(numVerts);
     if ( NULL == normals )
     {
-        assert ( 0 );
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshNormals out of memory."<<std::endl;
         return 0;
     }
 
@@ -3032,15 +3037,15 @@ uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVerte
         // Get the i'th index into the vertex pool.
         if ( !mesh->getVertexIndex ( i, index ) )
         {
-            assert ( 0 ); // We stepped out of bounds.
-            break;
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshNormals out of bounds."<<std::endl;
+            return 0;
         }
 
         // Get the normal (using "index").
         if ( !pool->getNormal ( index, x, y, z ) )
         {
-            assert ( 0 ); // We stepped out of bounds.
-            break;
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshNormals out of bounds."<<std::endl;
+            return 0;
         }
 
         // Add the normal.
@@ -3058,9 +3063,10 @@ uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVerte
 
 uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
 {
-    assert ( pool );
-    assert ( mesh );
-    assert ( geometry );
+    if (!pool || !mesh || !geometry)
+    {
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates passed null objects."<<std::endl;
+    }
 
     // If there aren't any colors...
     if ( false == pool->hasAttribute ( LocalVertexPoolRecord::RGB_COLOR ) )
@@ -3070,7 +3076,7 @@ uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertex
     osg::Vec4Array *colors = new osg::Vec4Array(numVerts);
     if ( NULL == colors )
     {
-        assert ( 0 );
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshColors out of memory."<<std::endl;
         return 0;
     }
 
@@ -3084,15 +3090,15 @@ uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertex
         // Get the i'th index into the vertex pool.
         if ( false == mesh->getVertexIndex ( i, index ) )
         {
-            assert ( 0 ); // We stepped out of bounds.
-            break;
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshColors out of bounds."<<std::endl;
+            return 0;
         }
 
         // Get the color (using "index").
         if ( false == pool->getColorRGBA ( index, red, green, blue, alpha ) )
         {
-            assert ( 0 ); // We stepped out of bounds.
-            break;
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshColors out of bounds."<<std::endl;
+            return 0;
         }
 
         // Add the coordinate.
@@ -3105,3 +3111,96 @@ uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertex
     // Return the number of colors added.
     return i;
 }
+
+void ConvertFromFLT::setMeshTexCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
+{
+    if (!pool || !mesh || !geometry)
+    {
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates passed null objects."<<std::endl;
+    }
+
+    // Don't know the best way to do this in C++ without breaking
+    // data encapsulation rules or ending up with silly cut-and-paste
+    // code
+    //
+    std::vector<LocalVertexPoolRecord::AttributeMask>  lAttrList( 8 );
+    lAttrList[0] = LocalVertexPoolRecord::BASE_UV;
+    lAttrList[1] = LocalVertexPoolRecord::UV_1;
+    lAttrList[2] = LocalVertexPoolRecord::UV_2;
+    lAttrList[3] = LocalVertexPoolRecord::UV_3;
+    lAttrList[4] = LocalVertexPoolRecord::UV_4;
+    lAttrList[5] = LocalVertexPoolRecord::UV_5;
+    lAttrList[6] = LocalVertexPoolRecord::UV_6;
+    lAttrList[7] = LocalVertexPoolRecord::UV_7;
+
+    osg::notify(osg::INFO) << "flt2osg::setMeshTexCoordinates() "
+                           << "Attribute masks in list."
+                           << std::endl;
+
+    // Check for texture coordinates for each possible texture
+    //
+    unsigned int   lAttrIdx;
+    for (lAttrIdx = 0; lAttrIdx < lAttrList.size(); ++lAttrIdx)
+    {
+       osg::notify(osg::INFO) << "flt2osg::setMeshTexCoordinates() "
+                              << "Checking texture "
+                              << lAttrIdx
+                              << std::endl;
+
+        // If there aren't any coordinates for this texture, skip to next
+        //
+        if (!pool->hasAttribute ( lAttrList[lAttrIdx] ) )
+            continue;
+
+        // Allocate the vertices.
+        osg::Vec2Array *coords = new osg::Vec2Array(numVerts);
+        if ( NULL == coords )
+        {
+            osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates out of memory."<<std::endl;
+            return;
+        }
+
+        osg::notify(osg::INFO) << "flt2osg::setMeshTexCoordinates() "
+                               << "Getting coords"
+                               << std::endl;
+
+        // Declare outside of loop.
+        uint32 i ( 0 ), index ( 0 );
+        float32 pu, pv;
+
+        // Loop through all the vertices.
+        for ( i = 0; i < numVerts; ++i )
+        {
+            // Get the i'th index into the vertex pool.
+            if ( !mesh->getVertexIndex ( i, index ) )
+            {
+                osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates out of bounds."<<std::endl;
+                return;
+            }
+
+            // Get the coordinate (using "index").
+            if ( !pool->getUV ( index, lAttrList[lAttrIdx], pu, pv ) )
+            {
+                osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates out of bounds."<<std::endl;
+                return;
+            }
+
+            // Add the coordinate.
+            (*coords)[i].set ( (float) pu, (float) pv );
+        }
+
+        osg::notify(osg::INFO) << "flt2osg::setMeshTexCoordinates() "
+                               << "Adding coords to texture unit "
+                               << lAttrIdx
+                               << std::endl;
+
+        // Set the mesh coordinates for this texture layer... use
+        // the attribute index as the texture unit.
+        //
+        geometry->setTexCoordArray ( lAttrIdx, coords );
+
+    }  // check each possible texture
+
+    return;
+}
+

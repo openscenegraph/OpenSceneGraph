@@ -161,7 +161,7 @@ class ConvertFromFLT
 
         void visitFace(GeoSetBuilder* pParent, osg::Group& osgParent, FaceRecord* rec);
         void visitMesh(osg::Group& osgParent,GeoSetBuilder* pParent, MeshRecord* rec);
-        void visitMeshPrimitive(osg::Group& osgParent, MeshPrimitiveRecord* rec);
+        void visitMeshPrimitive(osg::Group& osgParent, GeoSetBuilder* pBuilder, MeshPrimitiveRecord* rec);
         void visitLightPoint(GeoSetBuilder* pBuilder, osg::Group& osgParent, LightPointRecord* rec);
         void visitLightPoint(osg::Group& osgParent, LightPointRecord* rec);
         void visitLightPointIndex(osg::Group& osgParent, LightPointIndexRecord* rec);
@@ -187,6 +187,7 @@ class ConvertFromFLT
         uint32 setMeshCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
         uint32 setMeshNormals ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
         uint32 setMeshColors ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
+        void setMeshTexCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
 
         void setCullFaceAndWireframe ( const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset );
         void setDirectionalLight();

@@ -298,7 +298,7 @@ bool trpgReadBuffer::SkipToLimit()
 // See if the next read is going to blow the limits
 bool trpgReadBuffer::TestLimit(int len)
 {
-    for (int i=0;i<limits.size();i++)
+    for (unsigned int i=0;i<limits.size();i++)
         if (len > limits[i])
             return false;
 
@@ -309,7 +309,7 @@ bool trpgReadBuffer::TestLimit(int len)
 // We just read a few bytes.  Update the limits
 void trpgReadBuffer::UpdateLimits(int len)
 {
-    for (int i=0;i<limits.size();i++)
+    for (unsigned int i=0;i<limits.size();i++)
         limits[i] -= len;
 }
 
@@ -339,7 +339,7 @@ bool trpgMemReadBuffer::isEmpty()
         return true;
 
     // Also test the limits
-    for (int i=0;i<limits.size();i++)
+    for (unsigned int i=0;i<limits.size();i++)
         if (limits[i] == 0)  return true;
 
     return false;
@@ -483,7 +483,7 @@ bool trpgrAppFile::Read(trpgMemReadBuffer *buf,int32 offset)
         return false;
     }
 
-    if (fread(data,sizeof(char),len,fp) != len) {
+    if (fread(data,sizeof(char),len,fp) != static_cast<unsigned int>(len)) {
         valid = false;
         return false;
     }
@@ -522,7 +522,7 @@ bool trpgrAppFile::Read(char *data,int32 offset,uint32 dataSize)
         return false;
     }
     // It's all right to read less than the whol data block
-    if (dataSize > len)
+    if (dataSize > static_cast<unsigned int>(len))
         return false;
 
     // Read the raw data

@@ -254,7 +254,7 @@ bool trpgwArchive::WriteHeader()
         int32 numLod;
         header.GetNumLods(numLod);
         tileTable.SetNumLod(numLod);
-        for (unsigned int i=0;i<numLod;i++) {
+        for (int i=0;i<numLod;i++) {
             trpg2iPoint lodSize;
             header.GetLodSize(i,lodSize);
             tileTable.SetNumTiles(lodSize.x,lodSize.y,i);
@@ -320,7 +320,7 @@ bool trpgwArchive::WriteHeader()
 
     // Write the header length
     int32 headerSize = buf.length();
-    int headLen = headerSize;
+    unsigned int headLen = headerSize;
     if (ness != cpuNess)
         headerSize = trpg_byteswap_int(headerSize);
     if (fwrite(&headerSize,1,sizeof(int32),fp) != sizeof(int32)) return false;
@@ -414,7 +414,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
             return false;
 
         // Write the header first
-        int len;
+        unsigned int len;
         const char *data;
         if (head) {
             data = head->getData();
@@ -616,7 +616,7 @@ void trpgwGeomHelper::ResetPolygon()
 
 // Set the current color
 // Note: Required
-void trpgwGeomHelper::SetColor(trpgColor &col)
+void trpgwGeomHelper::SetColor(trpgColor &)
 {
 //    tmpColor = col;
 }
@@ -853,7 +853,7 @@ void trpgwGeomHelper::Optimize()
             break;
         case Fan:
             {
-                bool isFan;
+                bool isFan=false; // value shouldn't matter to the loop below, but set to false to remove warnings.
                 int primLen = 0;
 
                 // Dump A into the Fan

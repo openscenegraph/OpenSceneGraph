@@ -123,7 +123,7 @@ bool trpgr_Archive::ReadHeader()
     trpgMemReadBuffer buf(ness);
     buf.SetLength(headLen);
     char *data = buf.GetDataPtr();
-    if (fread(data,1,headLen,fp) != headLen)  return false;
+    if (fread(data,1,headLen,fp) != static_cast<unsigned int>(headLen))  return false;
 
     // Set up a parser
     // Catch the tables we need for the archive
@@ -179,10 +179,10 @@ bool trpgr_Archive::ReadTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf
     // Reality check the address
     int32 numLods;
     header.GetNumLods(numLods);
-    if (lod >= numLods) return false;
+    if (lod >= static_cast<unsigned int>(numLods)) return false;
     trpg2iPoint lodSize;
     header.GetLodSize(lod,lodSize);
-    if (x >= lodSize.x || y >= lodSize.y) return false;
+    if (x >= static_cast<unsigned int>(lodSize.x) || y >= static_cast<unsigned int>(lodSize.y)) return false;
 
     trpgTileTable::TileMode tileMode;
     tileTable.GetMode(tileMode);
@@ -275,7 +275,7 @@ bool trpgr_Archive::trpgGetTileMBR(uint32 x,uint32 y,uint32 lod,trpg3dPoint &ll,
     header.GetNumLods(numLod);
     trpg2iPoint maxXY;
     header.GetLodSize(lod,maxXY);
-    if (x >= maxXY.x || y>= maxXY.y)
+    if (x >= static_cast<unsigned int>(maxXY.x) || y>= static_cast<unsigned int>(maxXY.y))
         return false;
 
     trpg3dPoint origin;
@@ -478,7 +478,7 @@ bool trpgrImageHelper::GetImagePath(const trpgTexture *tex,char *fullPath,int pa
     tex->GetName(name,nameLen);
     nameLen = strlen(name);
 
-    if (strlen(dir) + nameLen + 2 > pathLen)
+    if (strlen(dir) + nameLen + 2 > static_cast<unsigned int>(pathLen))
         return false;
 
     sprintf(fullPath,"%s" PATHSEPERATOR "%s",dir,name);

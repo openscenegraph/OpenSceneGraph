@@ -637,7 +637,27 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
     // a Group... I will leave for other more familiar with the
     // DofRecord to create the matrix as I don't have any Open Flight
     // documentation.  RO August 2001.
-        
+
+    // below is DOF code submitted by Sasa Bistrovic
+    SDegreeOfFreedom* p_data = rec->getData();
+
+    osg::Matrix mat;
+
+    mat.makeTranslate(_unitScale*p_data->dfX._dfCurrent,
+                      _unitScale*p_data->dfY._dfCurrent,
+                      _unitScale*p_data->dfZ._dfCurrent);
+
+    float roll_rad = osg::inDegrees(p_data->dfRoll._dfCurrent);
+    float pitch_rad = osg::inDegrees(p_data->dfPitch._dfCurrent);
+    float yaw_rad = osg::inDegrees(p_data->dfYaw._dfCurrent);
+
+    osg::Matrix mat_rot = osg::Matrix::rotate(-yaw_rad, pitch_rad,roll_rad);
+
+    mat.preMult(mat_rot);
+
+    transform->setMatrix(mat);
+
+    return transform;        
 
     return transform;
 }

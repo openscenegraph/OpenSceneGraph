@@ -73,7 +73,7 @@ int main( int argc, char **argv )
 
     osg::Timer_t end_tick = timer.tick();
 
-    cout << "Time to load = "<<timer.delta_s(start_tick,end_tick);
+    std::cout << "Time to load = "<<timer.delta_s(start_tick,end_tick)<<std::endl;
 
     // optimize the scene graph, remove rendundent nodes and state etc.
     osgUtil::Optimizer optimizer;

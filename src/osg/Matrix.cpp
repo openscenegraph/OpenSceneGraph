@@ -22,102 +22,6 @@ using namespace osg;
 
 
 
-template <class T>
-inline T SGL_ABS(T a)
-{
-   return (a >= 0 ? a : -a);
-}
-
-#ifndef SGL_SWAP
-#define SGL_SWAP(a,b,temp) ((temp)=(a),(a)=(b),(b)=(temp))
-#endif
-
-bool inverse(const Matrix& mat,Matrix& m_matrix)
-{
-        unsigned int indxc[4], indxr[4], ipiv[4];
-         unsigned int i,j,k,l,ll;
-         unsigned int icol = 0;
-         unsigned int irow = 0;
-         float temp, pivinv, dum, big;
-
-         // copy in place this may be unnecessary
-         m_matrix = mat;
-
-         for (j=0; j<4; j++) ipiv[j]=0;
-
-         for(i=0;i<4;i++)
-         {
-            big=(float)0.0;
-            for (j=0; j<4; j++)
-               if (ipiv[j] != 1)
-                  for (k=0; k<4; k++)
-                  {
-                     if (ipiv[k] == 0)
-                     {
-                        if (SGL_ABS(m_matrix(j,k)) >= big)
-                        {
-                           big = SGL_ABS(m_matrix(j,k));
-                           irow=j;
-                           icol=k;
-                        }
-                     }
-                     else if (ipiv[k] > 1)
-                        return false;
-                  }
-            ++(ipiv[icol]);
-            if (irow != icol)
-               for (l=0; l<4; l++) SGL_SWAP(m_matrix(irow,l),
-                                            m_matrix(icol,l),
-                                            temp);
-
-            indxr[i]=irow;
-            indxc[i]=icol;
-            if (m_matrix(icol,icol) == 0)
-               return false;
-
-            pivinv = 1.0/m_matrix(icol,icol);
-            m_matrix(icol,icol) = 1;
-            for (l=0; l<4; l++) m_matrix(icol,l) *= pivinv;
-            for (ll=0; ll<4; ll++)
-               if (ll != icol)
-               {
-                  dum=m_matrix(ll,icol);
-                  m_matrix(ll,icol) = 0;
-                  for (l=0; l<4; l++) m_matrix(ll,l) -= m_matrix(icol,l)*dum;
-               }
-         }
-         for (int lx=4; lx>0; --lx)
-         {
-            if (indxr[lx-1] != indxc[lx-1])
-               for (k=0; k<4; k++) SGL_SWAP(m_matrix(k,indxr[lx-1]),
-                                            m_matrix(k,indxc[lx-1]),temp);
-         }
-
-         return true;
-}
-
-bool inverseAffine(const Matrix& mat,Matrix& m_matrix)
-{
- // |   R    p |'   |   R' -R'p |'
- // |          | -> |           |
- // | 0 0 0  1 |    | 0 0 0  1  |
- for (unsigned int i=0; i<3; i++)
- {
-    m_matrix(i,3) = 0;
-    m_matrix(3,i) = -(mat(i,0)*mat(3,0) +
-                           mat(i,1)*mat(3,1) +
-                           mat(i,2)*mat(3,2));
-    for (unsigned int j=0; j<3; j++)
-    {
-       m_matrix(i,j) = mat(j,i);
-    }
- }
- m_matrix(3,3) = 1;
-
- return true;
-}
-
-
 
 
 Matrix::Matrix() : Object()
@@ -339,188 +243,104 @@ void Matrix::postMult( const Matrix& other )
 #undef SET_ROW
 #undef INNER_PRODUCT
 
-bool Matrix::invert( const Matrix& invm )
+
+template <class T>
+inline T SGL_ABS(T a)
 {
-    if (&invm==this) {
-        Matrix tm(invm);
-        return invert(tm);
-    }
-/*    
-    if ( invm._mat[0][3] == 0.0 
-        && invm._mat[1][3] == 0.0 
-        && invm._mat[2][3] == 0.0 
-        && invm._mat[3][3] == 1.0 )
-    {
-        return inverseAffine( invm,*this );
-    }
-*/    
-    return inverse(invm,*this);
-
-    // code lifted from VR Juggler.
-    // not cleanly added, but seems to work.  RO.
-
-    const float*  a = reinterpret_cast<const float*>(invm._mat);
-    float*  b = reinterpret_cast<float*>(_mat);
-
-    int     n = 4;
-    int     i, j, k;
-    int     r[ 4], c[ 4], row[ 4], col[ 4];
-    float  m[ 4][ 4*2], pivot, max_m, tmp_m, fac;
-
-    /* Initialization */
-    for ( i = 0; i < n; i ++ )
-    {
-        r[ i] = c[ i] = 0;
-        row[ i] = col[ i] = 0;
-    }
-
-    /* Set working matrix */
-    for ( i = 0; i < n; i++ )
-    {
-        for ( j = 0; j < n; j++ )
-        {
-            m[ i][ j] = a[ i * n + j];
-            m[ i][ j + n] = ( i == j ) ? 1.0 : 0.0 ;
-        }
-    }
-
-    /* Begin of loop */
-    for ( k = 0; k < n; k++ )
-    {
-        /* Choosing the pivot */
-        for ( i = 0, max_m = 0; i < n; i++ )
-        {
-            if ( row[ i]  ) continue;
-            for ( j = 0; j < n; j++ )
-            {
-                if ( col[ j] ) continue;
-                tmp_m = fabs( m[ i][j]);
-                if ( tmp_m > max_m)
-                {
-                    max_m = tmp_m;
-                    r[ k] = i;
-                    c[ k] = j;
-                }
-            }
-        }
-        row[ r[k] ] = col[ c[k] ] = 1;
-        pivot = m[ r[ k] ][ c[ k] ];
-
-        if ( fabs( pivot) <= 1e-20)
-        {
-            notify(INFO) << "Warning: pivot = "<< pivot <<" in Matrix::invert(), cannot compute inverse."<<std::endl;
-            notify(INFO) << "input matrix to Matrix::invert() was = "<< invm <<std::endl;
-            //makeIdentity();
-            return false;
-        }
-
-        /* Normalization */
-        for ( j = 0; j < 2*n; j++ )
-        {
-            if ( j == c[ k] )
-                m[ r[ k]][ j] = 1.0;
-            else
-                m[ r[ k]][ j] /=pivot;
-        }
-
-        /* Reduction */
-        for ( i = 0; i < n; i++ )
-        {
-            if ( i == r[ k] )
-                continue;
-
-            for ( j=0, fac = m[ i][ c[k]];j < 2*n; j++ )
-            {
-                if ( j == c[ k] )
-                    m[ i][ j] =0.0;
-                else
-                    m[ i][ j] -=fac * m[ r[k]][ j];
-            }
-        }
-    }
-
-    /* Assign invers to a matrix */
-    for ( i = 0; i < n; i++ )
-        for ( j = 0; j < n; j++ )
-            row[ i] = ( c[ j] == i ) ? r[j] : row[ i];
-
-    for ( i = 0; i < n; i++ )
-        for ( j = 0; j < n; j++ )
-            b[ i * n +  j] = m[ row[ i]][j + n];
-
-    return true;                 // It worked
-
-
+   return (a >= 0 ? a : -a);
 }
 
-const double PRECISION_LIMIT = 1.0e-15;
+#ifndef SGL_SWAP
+#define SGL_SWAP(a,b,temp) ((temp)=(a),(a)=(b),(b)=(temp))
+#endif
 
-bool Matrix::invertAffine( const Matrix& other )
+bool Matrix::invert( const Matrix& mat )
 {
-    // adapted from Graphics Gems II.
-    // 
-    // This method treats the Matrix as a block Matrix and calculates
-    // the inverse of one subMatrix, improving performance over something
-    // that inverts any non-singular Matrix:
-    //                           -1
-    //    -1    [ A  0 ] -1    [ A    0 ]
-    //   M   =  [      ]    =  [   -1   ]
-    //          [ C  1 ]       [-CA   1 ]
-    //
-    // returns true if _m is nonsingular, and (*this) contains its inverse
-    // otherwise returns false. (*this unchanged)
-
-    // assert( this->isAffine())?
-    double det_1, pos, neg, temp;
-
-    pos = neg = 0.0;
-
-#define ACCUMULATE \
-    { \
-        if(temp >= 0.0) pos += temp; \
-        else neg += temp; \
+    if (&mat==this) {
+       Matrix tm(mat);
+       return invert(tm);
     }
 
-    temp = other._mat[0][0] * other._mat[1][1] * other._mat[2][2]; ACCUMULATE;
-    temp = other._mat[0][1] * other._mat[1][2] * other._mat[2][0]; ACCUMULATE;
-    temp = other._mat[0][2] * other._mat[1][0] * other._mat[2][1]; ACCUMULATE;
+    unsigned int indxc[4], indxr[4], ipiv[4];
+    unsigned int i,j,k,l,ll;
+    unsigned int icol = 0;
+    unsigned int irow = 0;
+    float temp, pivinv, dum, big;
 
-    temp = - other._mat[0][2] * other._mat[1][1] * other._mat[2][0]; ACCUMULATE;
-    temp = - other._mat[0][1] * other._mat[1][0] * other._mat[2][2]; ACCUMULATE;
-    temp = - other._mat[0][0] * other._mat[1][2] * other._mat[2][1]; ACCUMULATE;
+    // copy in place this may be unnecessary
+    *this = mat;
 
-    det_1 = pos + neg;
+    for (j=0; j<4; j++) ipiv[j]=0;
 
-    if( (det_1 == 0.0) || (fabs(det_1/(pos-neg)) < PRECISION_LIMIT )) {
-        // _m has no inverse
-        notify(WARN) << "Matrix::invert(): Matrix has no inverse." << std::endl;
-        return false;
+    for(i=0;i<4;i++)
+    {
+       big=(float)0.0;
+       for (j=0; j<4; j++)
+          if (ipiv[j] != 1)
+             for (k=0; k<4; k++)
+             {
+                if (ipiv[k] == 0)
+                {
+                   if (SGL_ABS(operator()(j,k)) >= big)
+                   {
+                      big = SGL_ABS(operator()(j,k));
+                      irow=j;
+                      icol=k;
+                   }
+                }
+                else if (ipiv[k] > 1)
+                   return false;
+             }
+       ++(ipiv[icol]);
+       if (irow != icol)
+          for (l=0; l<4; l++) SGL_SWAP(operator()(irow,l),
+                                       operator()(icol,l),
+                                       temp);
+
+       indxr[i]=irow;
+       indxc[i]=icol;
+       if (operator()(icol,icol) == 0)
+          return false;
+
+       pivinv = 1.0/operator()(icol,icol);
+       operator()(icol,icol) = 1;
+       for (l=0; l<4; l++) operator()(icol,l) *= pivinv;
+       for (ll=0; ll<4; ll++)
+          if (ll != icol)
+          {
+             dum=operator()(ll,icol);
+             operator()(ll,icol) = 0;
+             for (l=0; l<4; l++) operator()(ll,l) -= operator()(icol,l)*dum;
+          }
     }
-
-    // inverse is adj(A)/det(A)
-    det_1 = 1.0 / det_1;
-
-    _mat[0][0] = (other._mat[1][1] * other._mat[2][2] - other._mat[1][2] * other._mat[2][1]) * det_1;
-    _mat[1][0] = (other._mat[1][0] * other._mat[2][2] - other._mat[1][2] * other._mat[2][0]) * det_1;
-    _mat[2][0] = (other._mat[1][0] * other._mat[2][1] - other._mat[1][1] * other._mat[2][0]) * det_1;
-    _mat[0][1] = (other._mat[0][1] * other._mat[2][2] - other._mat[0][2] * other._mat[2][1]) * det_1;
-    _mat[1][1] = (other._mat[0][0] * other._mat[2][2] - other._mat[0][2] * other._mat[2][0]) * det_1;
-    _mat[2][1] = (other._mat[0][0] * other._mat[2][1] - other._mat[0][1] * other._mat[2][0]) * det_1;
-    _mat[0][2] = (other._mat[0][1] * other._mat[1][2] - other._mat[0][2] * other._mat[1][1]) * det_1;
-    _mat[1][2] = (other._mat[0][0] * other._mat[1][2] - other._mat[0][2] * other._mat[1][0]) * det_1;
-    _mat[2][2] = (other._mat[0][0] * other._mat[1][1] - other._mat[0][1] * other._mat[1][0]) * det_1;
-
-    // calculate -C * inv(A)
-    _mat[3][0] = -(other._mat[3][0] * _mat[0][0] + other._mat[3][1] * _mat[1][0] + other._mat[3][2] * _mat[2][0] );
-    _mat[3][1] = -(other._mat[3][0] * _mat[0][1] + other._mat[3][1] * _mat[1][1] + other._mat[3][2] * _mat[2][1] );
-    _mat[3][2] = -(other._mat[3][0] * _mat[0][2] + other._mat[3][1] * _mat[1][2] + other._mat[3][2] * _mat[2][2] );
-
-    _mat[0][3] = 0.0;
-    _mat[1][3] = 0.0;
-    _mat[2][3] = 0.0;
-    _mat[3][3] = 1.0;
+    for (int lx=4; lx>0; --lx)
+    {
+       if (indxr[lx-1] != indxc[lx-1])
+          for (k=0; k<4; k++) SGL_SWAP(operator()(k,indxr[lx-1]),
+                                       operator()(k,indxc[lx-1]),temp);
+    }
 
     return true;
 }
 
+bool Matrix::invertAffine( const Matrix& mat)
+{
+ // |   R    p |'   |   R' -R'p |'
+ // |          | -> |           |
+ // | 0 0 0  1 |    | 0 0 0  1  |
+ for (unsigned int i=0; i<3; i++)
+ {
+    operator()(i,3) = 0;
+    operator()(3,i) = -(mat(i,0)*mat(3,0) +
+                           mat(i,1)*mat(3,1) +
+                           mat(i,2)*mat(3,2));
+    for (unsigned int j=0; j<3; j++)
+    {
+       operator()(i,j) = mat(j,i);
+    }
+ }
+ operator()(3,3) = 1;
+
+ return true;
+}
 

@@ -481,6 +481,18 @@ void CullVisitor::setCamera(const Camera& camera)
 
 void CullVisitor::pushCullViewState(Matrix* matrix)
 {
+    if (matrix)
+    {
+        osg::Matrix* inverse = new osg::Matrix;
+        inverse->invert(*matrix);
+        pushCullViewState(matrix,inverse);
+    }
+    else
+        pushCullViewState(NULL,NULL);
+}
+
+void CullVisitor::pushCullViewState(Matrix* matrix,osg::Matrix* inverse)
+{
 
     osg::ref_ptr<CullViewState> nvs = new CullViewState;
 
@@ -494,11 +506,6 @@ void CullVisitor::pushCullViewState(Matrix* matrix)
         }
 
         nvs->_matrix = matrix;
-
-        inverse_world = createOrReuseMatrix();
-        inverse_world->invert(*(matrix));
-        
-        nvs->_inverse = inverse_world;        
         
     }
     else
@@ -506,21 +513,41 @@ void CullVisitor::pushCullViewState(Matrix* matrix)
         if (_cvs.valid())
         {
             nvs->_matrix = _cvs->_matrix;
-            nvs->_inverse = _cvs->_inverse;
-            inverse_world = nvs->_inverse.get();
 
         }
         else
         {
             nvs->_matrix = NULL;
-            nvs->_inverse = NULL;
-            inverse_world = NULL;
         }
     }
 
+    if (inverse)
+    {    
+        if (_cvs.valid() && _cvs->_inverse.valid())
+        {
+            inverse->preMult(*(_cvs->_inverse));
+        }
+
+        nvs->_inverse = inverse;
+        
+    }
+    else
+    {
+        if (_cvs.valid())
+        {
+            nvs->_inverse = _cvs->_inverse;
+        }
+        else
+        {
+            nvs->_inverse = NULL;
+        }
+    }
+    inverse_world = nvs->_inverse.get();
+    
     if (inverse_world)
     {
         nvs->_eyePoint = _tvs->_eyePoint*(*inverse_world);
+        //nvs->_eyePoint = inverse_world->getTrans();
 
         nvs->_centerPoint = _tvs->_centerPoint*(*inverse_world);
 
@@ -559,7 +586,6 @@ void CullVisitor::pushCullViewState(Matrix* matrix)
 
     _viewStateStack.push_back(nvs);
 }
-
 
 void CullVisitor::popCullViewState()
 {
@@ -706,6 +732,11 @@ void CullVisitor::updateCalculatedNearFar(osg::Drawable* pDrawable)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
+{
+    return -(coord[0]*matrix(0,2)+coord[1]*matrix(1,2)+coord[2]*matrix(2,2)+matrix(3,2));
+}
+
 
 void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
 {
@@ -715,26 +746,20 @@ void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
         osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
         return;
     }
-
-    const osg::Vec3& eyePoint = _tvs->_eyePoint; // note world eye point.
-    const osg::Vec3& lookVector = _tvs->_lookVector; // world look vector.
-
+    
     float d_near,d_far;
-
     if (_cvs->_matrix.valid())
     {
-
+    
         const osg::Matrix& matrix = *(_cvs->_matrix);
-        // calculate the offset from the eye in local coords then transform
-        // the offset into world and then compare against the world look vector.
-        d_near = ((bb.corner(_cvs->_bbCornerNear)*matrix) - eyePoint)*lookVector;
-        d_far = ((bb.corner(_cvs->_bbCornerFar)*matrix) - eyePoint)*lookVector;
+        d_near = distance(bb.corner(_cvs->_bbCornerNear),matrix);
+        d_far = distance(bb.corner(_cvs->_bbCornerFar),matrix);
 
     }
     else
     {
-        d_near = (bb.corner(_cvs->_bbCornerNear)-eyePoint)*lookVector;
-        d_far = (bb.corner(_cvs->_bbCornerFar)-eyePoint)*lookVector;
+        d_near = -(bb.corner(_cvs->_bbCornerNear)).z();
+        d_far = -(bb.corner(_cvs->_bbCornerFar)).z();
     }
 
     if (d_near<=d_far)
@@ -1049,14 +1074,27 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
-    matrix->makeIdentity();
-    node.getLocalToWorldMatrix(*matrix,this);
-    pushCullViewState(matrix.get());
+    bool isModelView = node.isModelViewTransform();
+    if (isModelView)
+    {
 
+        ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
+        ref_ptr<osg::Matrix> inverse = createOrReuseMatrix();
+        node.getLocalToWorldMatrix(*matrix,this);
+        node.getWorldToLocalMatrix(*inverse,this);
+        pushCullViewState(matrix.get(),inverse.get());
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Warning: Projection Transform in scene graph has been ignored, not fully implemented yet."<<std::endl;
+    }
+    
     traverse(node);
 
-    popCullViewState();
+    if (isModelView)
+    {
+        popCullViewState();
+    }
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();

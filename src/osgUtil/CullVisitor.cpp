@@ -29,8 +29,6 @@
 #include <osgUtil/CullVisitor>
 #include <osgUtil/RenderToTextureStage>
 
-#include <osgDB/ReadFile>
-
 #include <float.h>
 #include <algorithm>
 

@@ -12,8 +12,6 @@
 */
 #include <osgUtil/RenderToTextureStage>
 
-#include <osgDB/ReadFile>
-
 using namespace osg;
 using namespace osgUtil;
 

@@ -97,7 +97,7 @@ $(LIB:=.dbg) : $(PLUGIN:=.dbg)
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(LIB)
-	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(LIB) __link
+	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
 $(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
@@ -122,7 +122,7 @@ $(LIB:=.opt) :
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	        THISDIR=../$(THISDIR)\
 	        MAKEDEPEND=Makedepend $(LIB)
-	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(LIB) __link
+	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
 $(PLUGIN:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
@@ -179,6 +179,7 @@ endif
 depend : $(MAKEDEPEND)
 
 __link : 
+	@echo Calling dolink.sh wit LNSRC = $(LNSRC) and LNDEST = $(LNDEST)
 	@sh $(TOPDIR)/Make/dolink.sh $(TOPDIR) $(LNSRC) $(LNDEST) "$(LINK)"
 		
 __instfiles :

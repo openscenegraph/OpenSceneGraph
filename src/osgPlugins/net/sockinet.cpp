@@ -159,7 +159,10 @@ sockinetaddr sockinetbuf::localaddr() const
 {
   sockinetaddr sin;
   int len = sin.size();
-  if (::getsockname(rep->sock, sin.addr (), (socklen_t*) // LN
+  if (::getsockname(rep->sock, sin.addr (), 
+#ifndef __sgi
+          (socklen_t*) // LN
+#endif
                     &len) == -1)
     throw sockerr (errno, "sockinetbuf::localaddr");
   return sin;
@@ -183,7 +186,10 @@ sockinetaddr sockinetbuf::peeraddr() const
 {
   sockinetaddr sin;
   int len = sin.size();
-  if (::getpeername(rep->sock, sin.addr (), (socklen_t*) // LN
+  if (::getpeername(rep->sock, sin.addr (), 
+#ifndef __sgi
+          (socklen_t*) // LN
+#endif
                     &len) == -1)
     throw sockerr (errno, "sockinetbuf::peeraddr");
   return sin;

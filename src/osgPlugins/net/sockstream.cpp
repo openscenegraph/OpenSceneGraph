@@ -242,7 +242,7 @@ bool sockerr::benign () const
   case EWOULDBLOCK:
 // On FreeBSD (and probably on Linux too) 
 // EAGAIN has the same value as EWOULDBLOCK
-#if !defined(__linux__) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
+#if !defined( __sgi) && !defined(__linux__) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
   case EAGAIN:
 #endif
     return true;
@@ -493,7 +493,10 @@ sockbuf::sockdesc sockbuf::accept (sockAddr& sa)
 {
   int len = sa.size ();
   int soc = -1;
-  if ((soc = ::accept (rep->sock, sa.addr (), (socklen_t*) // LN
+  if ((soc = ::accept (rep->sock, sa.addr (), 
+#ifndef __sgi
+          (socklen_t*) // LN
+#endif
                        &len)) == -1)
     throw sockerr (errno, "sockbuf::sockdesc", sockname.c_str());
   return sockdesc (soc);
@@ -545,11 +548,14 @@ int sockbuf::recvfrom (sockAddr& sa, void* buf, int len, int msgf)
     throw sockoob ();
 
   int rval = 0;
-  int sa_len = sa.size ();
+  int __sa_len = sa.size ();
   
   if ((rval = ::recvfrom (rep->sock, (char*) buf, len,
-                          msgf, sa.addr (), (socklen_t*) // LN
-                          &sa_len)) == -1)
+                          msgf, sa.addr (), 
+#ifndef __sgi
+                          (socklen_t*) // LN
+#endif
+                          &__sa_len)) == -1)
     throw sockerr (errno, "sockbuf::recvfrom", sockname.c_str());
   return rval;
 }
@@ -715,7 +721,10 @@ void sockbuf::shutdown (shuthow sh)
 
 int sockbuf::getopt (int op, void* buf, int len, int level) const
 {
-    if (::getsockopt (rep->sock, level, op, (char*) buf, (socklen_t*) // LN
+    if (::getsockopt (rep->sock, level, op, (char*) buf, 
+#ifndef __sgi
+            (socklen_t*) // LN
+#endif
                       &len) == -1)
     throw sockerr (errno, "sockbuf::getopt", sockname.c_str());
   return len;
@@ -930,6 +939,7 @@ void sockbuf::closeonexec (bool set) const
 // if set is true, set close on exec flag
 // else clear close on exec flag
 {
+#ifndef __sgi
   if (set) {
     if (::ioctl (rep->sock, FIOCLEX, 0) == -1)
       throw sockerr (errno, "sockbuf::closeonexec", sockname.c_str());
@@ -937,6 +947,7 @@ void sockbuf::closeonexec (bool set) const
     if (::ioctl (rep->sock, FIONCLEX, 0) == -1)
       throw sockerr (errno, "sockbuf::closeonexec", sockname.c_str());
   }
+#endif
 }
 #endif // !WIN32
 

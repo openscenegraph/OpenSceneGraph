@@ -418,7 +418,7 @@ public:
 		itr!=fields.end();
 		++itr)
 		{
-			if (itr->getToken()==fieldid) return itr;
+			if (itr->getToken()==fieldid) return &(*itr);
 		}
 		return NULL;
 	}

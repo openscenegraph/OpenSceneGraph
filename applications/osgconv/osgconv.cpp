@@ -332,6 +332,34 @@ public:
     unsigned int _numStateSetRemoved;
 };
 
+/** Add missing colours to osg::Geometry.*/
+class AddMissingColoursToGeometryVisitor : public osg::NodeVisitor
+{
+public:
+
+    AddMissingColoursToGeometryVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    virtual void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+            if (geometry)
+            {
+                if (geometry->getColorArray()==0 || geometry->getColorArray()->getNumElements()==0)
+                {
+                    osg::Vec4Array* colours = new osg::Vec4Array(1);
+                    (*colours)[0].set(1.0f,1.0f,1.0f,1.0f);
+                    geometry->setColorArray(colours);
+                    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+                }
+            }
+        }
+    }
+
+    virtual void apply(osg::Node& node) { traverse(node); }
+
+};
 
 
 static void usage( const char *prog, const char *msg )
@@ -412,6 +440,9 @@ static void usage( const char *prog, const char *msg )
                               << std::endl;
     osg::notify(osg::NOTICE)<<"    --smooth           - Smooth the surface by regenerating surface normals on\n"
                               "                         all geometry"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --addMissingColors - Adding a white color value to all geometry that don't have\n"
+                              "                         their own color values (--addMissingColours also accepted)."<< std::endl;
+
 }
 
 
@@ -545,6 +576,8 @@ int main( int argc, char **argv )
     bool smooth = false;
     while(arguments.read("--smooth")) { smooth = true; }
     
+    bool addMissingColours = false;
+    while(arguments.read("--addMissingColours") || arguments.read("--addMissingColors")) { addMissingColours = true; }
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -598,6 +631,12 @@ int main( int argc, char **argv )
             root->accept(sv);
         }    
     
+        if (addMissingColours)
+        {
+            AddMissingColoursToGeometryVisitor av;
+            root->accept(av);
+        }
+
         // optimize the scene graph, remove rendundent nodes and state etc.
         osgUtil::Optimizer optimizer;
         optimizer.optimize(root.get());

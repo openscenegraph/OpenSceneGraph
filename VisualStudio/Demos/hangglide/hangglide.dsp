@@ -137,7 +137,15 @@ SOURCE=..\..\..\src\Demos\hangglide\Hat.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Demos\hangglide\terrain_data.h
+SOURCE=..\..\..\src\Demos\hangglide\terrain_coords.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Demos\hangglide\terrain_normals.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Demos\hangglide\terrain_texcoords.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -40,14 +40,9 @@ Image::Image(const Image& image,const CopyOp& copyop):
 {
     if (image._data)
     {
-        int num_components = 
-            _pixelFormat == GL_LUMINANCE ? 1 :
-            _pixelFormat == GL_LUMINANCE_ALPHA ? 2 :
-            _pixelFormat == GL_RGB ? 3 :
-            _pixelFormat == GL_RGBA ? 4 : 4;
+        unsigned int size = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing)*_t*_r;
 
-        int size = _s*_t*_r*num_components;
-        _data = (unsigned char*) malloc(size);
+        _data = (unsigned char*) osgMalloc(size);
         memcpy(_data,image._data,size);
     }
 }
@@ -117,7 +112,7 @@ const unsigned int Image::computeNumComponents(GLenum type)
         case(GL_RGBA): return 4;
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;
-        case(GL_LUMINANCE_ALPHA): return 1;
+        case(GL_LUMINANCE_ALPHA): return 2;
         default: return 0;
     }        
 }
@@ -181,7 +176,7 @@ void Image::createImage(int s,int t,int r,
         if (_data) ::free(_data);
         
         if (newTotalSize)
-            _data = (unsigned char *)malloc (newTotalSize);
+            _data = (unsigned char *)osgMalloc (newTotalSize);
         else
             _data = 0L;
     }
@@ -265,7 +260,7 @@ void Image::scaleImage(const int s,const int t,const int r)
     unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*t;
 
     // need to sort out what size to really use...
-    unsigned char* newData = (unsigned char *)malloc(newTotalSize);
+    unsigned char* newData = (unsigned char *)osgMalloc(newTotalSize);
     if (!newData)
     {
         // should we throw an exception???  Just return for time being.

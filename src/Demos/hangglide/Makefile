@@ -15,7 +15,9 @@ CXXFILES =\
 HEADERFILES = \
 	GliderManipulator.h\
 	hat.h\
-	terrain_data.h\
+	terrain_coords.h\
+	terrain_normals.h\
+	terrain_texcoords.h\
 
 LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 

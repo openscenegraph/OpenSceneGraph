@@ -7,7 +7,7 @@
 #include <osg/Math>
 #include <stdio.h>
 
-#include "terrain_data.h"
+#include "terrain_coords.h"
 #include "hat.h"
 
 static int inited = 0;

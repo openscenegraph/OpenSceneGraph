@@ -2,7 +2,7 @@
 #include <osg/Version>
 
 
-int main( int argc, char **argv )
+int main( int, char **)
 {
     printf( "%s\n", osgGetVersion() );
     return 0;

@@ -228,7 +228,7 @@ public:
         if(ic>=nv) {
             printf("Invalid vertices %d of %d. I1-3 %d %d %d.\n", ic, nv, i1, i2, i3);
         }
-        if(i1>=verts.size() || i2>=verts.size() || i3>=verts.size()) {
+        if(i1>=static_cast<int>(verts.size()) || i2>=static_cast<int>(verts.size()) || i3>=static_cast<int>(verts.size())) {
             printf("Invalid indices %d, %d, %d max allowed %d.\n", i1,i2,i3,verts.size());//, errm
         }
         s1=(verts[i2]-verts[i1]); // side 1 of face
@@ -769,7 +769,7 @@ private:
 };
 
 void _face::tesselate(const std::vector<Vec3> verts, const dwmaterial *themat, 
-               GLUtesselator *ts, _dwobj *dwob, const Matrix *tmat) const {
+               GLUtesselator *ts, _dwobj *dwob, const Matrix * /*tmat*/) const {
     int nvall=getallverts();
     int nused=0;
     avertex *poses=new avertex[2*nvall]; // passed to tesselator to redraw

@@ -255,7 +255,7 @@ texture_dump(const char *maptype, Lib3dsTextureMap *texture)
   }
   printf("  %s:\n", maptype);
   printf("    name:        %s\n", texture->name);
-  printf("    flags:       %X\n", texture->flags);
+  printf("    flags:       %ii\n", static_cast<unsigned int>(texture->flags));
   printf("    percent:     %f\n", texture->percent);
   printf("    blur:        %f\n", texture->blur);
   printf("    scale:       (%f, %f)\n", texture->scale[0], texture->scale[1]);
@@ -321,10 +321,10 @@ lib3ds_material_dump(Lib3dsMaterial *material)
   texture_dump("reflection_map", &material->reflection_map);
   texture_dump("reflection_mask", &material->reflection_mask);
   printf("  autorefl_map:\n");
-  printf("    flags        %X\n", material->autorefl_map.flags);
-  printf("    level        %d\n", material->autorefl_map.level);
-  printf("    size         %d\n", material->autorefl_map.size);
-  printf("    frame_step   %d\n", material->autorefl_map.frame_step);
+  printf("    flags        %X\n", static_cast<int>(material->autorefl_map.flags));
+  printf("    level        %X\n", static_cast<int>(material->autorefl_map.level));
+  printf("    size         %X\n", static_cast<int>(material->autorefl_map.size));
+  printf("    frame_step   %d\n", static_cast<int>(material->autorefl_map.frame_step));
   printf("\n");
 }
 

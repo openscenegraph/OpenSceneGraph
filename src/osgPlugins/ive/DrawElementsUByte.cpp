@@ -54,6 +54,7 @@ void DrawElementsUByte::read(DataInputStream* in){
         int size = in->readInt();
         resize(size);
         in->readCharArray((char*)&front(), size * CHARSIZE);
+
     }
     else{
         throw Exception("DrawElementsUByte::read(): Expected DrawElementsUByte identification.");

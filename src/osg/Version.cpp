@@ -14,7 +14,7 @@
 
 const char* osgGetVersion()
 {
-    return "0.9.4";
+    return "0.9.5";
 }
 
 

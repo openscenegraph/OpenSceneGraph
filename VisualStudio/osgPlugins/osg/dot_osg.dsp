@@ -206,6 +206,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\ReaderWriterOSG.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\ShadeModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\StateSet.cpp
 # End Source File
 # Begin Source File

@@ -42,6 +42,7 @@ C++FILES = \
 	PolygonMode.cpp\
 	PolygonOffset.cpp\
 	Quat.cpp\
+	ShadeModel.cpp\
 	State.cpp\
 	StateSet.cpp\
 	Stencil.cpp \

@@ -1,0 +1,110 @@
+#!/bin/sh
+
+OS=$1
+TOPDIR=$2
+INST_LIBS=$3
+INST_PLUGINS=$4
+INST_INCLUDE=$5
+INST_DEMOS=$6
+INST_SRC=$7
+INST_DEMO_SRC=$8
+shift; shift; shift; shift; shift; shift; shift; shift;
+INST_DOC=$1
+INST_DATA=$2
+OPTF=$3
+DEPARG=$4
+
+
+copy_demo_source()
+{
+for d in `ls $TOPDIR/src/Demos/ | grep -v CVS`
+do
+    if [ -d $TOPDIR/src/Demos/$d ]
+    then
+        THISDIR=`pwd`
+        cd $TOPDIR/src/Demos/$d
+        [ -d $INST_DEMO_SRC/$d ] || mkdir -m 0755 -p $INST_DEMO_SRC/$d
+        for f in `gmake __instfiles | grep -v make `
+        do
+            src=`echo $f | cut -f1 -d"="`
+            dst=`echo $f | cut -f2 -d"="`
+            if [ -z "$dst" ] ; then dst=$src; fi
+            echo cp $src $INST_DEMO_SRC/$d/$dst
+            cp $src $INST_DEMO_SRC/$d/$dst
+            chmod 0444 $INST_DEMO_SRC/$d/$dst
+    done
+    cd $THISDIR
+    fi
+done
+}
+
+generate_makedefs()
+{
+    cat <<-EOF > $1
+TOPDIR              ?= ../
+THISDIR             = .
+INC                 = -I$INST_INCLUDE -I./
+DEF                 = $DEF
+CXXFLAGS            = $(ARCHARGS) $OPTF $(DEF) $(INC)
+LDFLAGS             = $(ARCHARGS) $OPTF -L$INST_LIBS
+OBJS                = $(C++FILES:.cpp=.o) $(CXXFILES:.cpp=.o) $(CFILES:.c=.o) 
+C++                 = CC
+DYNAMICLIBRARYLIB   = -ldl
+OSG_LIBS            = -losgGLUT -losgDB -losgUtil -losg
+FREETYPE_LIB        = -lfreetype
+GLUT_LIB            = -lglut
+GL_LIBS             = -lGLU -lGL
+X_LIBS              = -lXext -lXmu -lXi -lX11
+SOCKET_LIBS         = -lsocket -lnsl
+OTHER_LIBS          = -lCstd
+TIFF_LIB            = -ltiff
+VPATH               = ..
+EOF
+}
+
+
+generate_makerules()
+{
+    cat <<-EOF1 | sed 's/TAB/	/' > $1
+
+all : $(EXEC) $(LIB) $(PLUGIN)
+
+$(EXEC) : Makedepend $(OBJS) 
+TAB$(C++) $(LDFLAGS) $(OBJS) $(LIBS) -o \$@
+
+$(LIB) $(PLUGIN) : $(OBJS)
+TAB$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o \$@
+
+clean : 
+TABrm -f $(OBJS) $(MAKEDEPEND)
+
+clobber : clean
+TABrm -f $(EXEC) $(LIB) $(PLUGIN)
+
+
+Makedepend : $(CXXFILES) $(CFILES) 
+TAB$(C++) $(INC) $DEPARG \$? > \$@
+
+
+.SUFFIXES: .cpp .o
+.cpp.o:
+TAB$(C++) $(CXXFLAGS) -c $<
+
+sinclude Makedepend
+
+EOF1
+}
+
+
+[ -d $INST_SRC/Make ] || mkdir -m 0755 -p $INST_SRC/Make
+
+echo =========== Installing Demo Source Code =================
+
+echo "  generaing make files ..."
+generate_makedefs $INST_SRC/Make/makedefs
+generate_makerules $INST_SRC/Make/makerules
+
+echo "  copying demo files ..."
+copy_demo_source
+
+exit 0

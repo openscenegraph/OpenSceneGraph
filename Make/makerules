@@ -215,6 +215,8 @@ __link :
 	    $(LINK) $$LINK `basename $(LNDEST)`;\
 	 fi
 		
+__instfiles :
+	@echo $(INSTFILES)
 
 sinclude $(MAKEDEPEND)
 

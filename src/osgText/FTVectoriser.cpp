@@ -27,7 +27,7 @@ void FTContour::AddPoint( const float x, const float y)
 }
 
 
-FTVectoriser::FTVectoriser( const FT_Glyph glyph)
+FTVectoriser::FTVectoriser( FT_Glyph glyph)
 :    contour(0),
     contourFlag(0),
     kBSTEPSIZE( 0.2)

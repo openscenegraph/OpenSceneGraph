@@ -176,14 +176,15 @@ then
     exit 1
 fi
 
-TOPDIR=$1
-INST_LIBS=$2
-INST_PLUGINS=$3
-INST_INCLUDE=$4
-INST_DEMOS=$5
-INST_DEMO_SRC=$6
-INST_DOC=$7
-INST_DATA=$8
+OS=$1
+TOPDIR=$2
+INST_LIBS=$3
+INST_PLUGINS=$4
+INST_INCLUDE=$5
+INST_DEMOS=$6
+INST_DEMO_SRC=$7
+INST_DOC=$8
+INST_DATA=$9
 
 REV="`$TOPDIR""/bin/osgversion`"
 [ -z "$REV" ] && die  "makerpm: requires a functional $TOPDIR/bin/osgversion"

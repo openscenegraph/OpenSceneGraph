@@ -12,7 +12,17 @@ CXXFILES =\
 	terrain.cpp\
 	trees.cpp\
 
+HEADERFILES = \
+	GliderManipulator.h\
+	hat.h\
+	terrain_data.h\
+
 LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+INSTFILES = \
+	$(CXXFILES)\
+	$(HEADERFILES)\
+	Makefile.inst=Makefile
 
 EXEC = osghangglide
 

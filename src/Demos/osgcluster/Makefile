@@ -6,7 +6,17 @@ CXXFILES =\
 	osgcluster.cpp\
 	receiver.cpp\
 
+HEADERFILES =\
+	broadcaster.h\
+	receiver.h\
+
+
 LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(SOCKET_LIBS) $(OTHER_LIBS) 
+
+INSTFILES = \
+	$(CXXFILES)\
+	$(HEADERFILES)\
+	Makefile.inst=Makefile
 
 EXEC = osgcluster
 

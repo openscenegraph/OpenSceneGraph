@@ -1,22 +1,29 @@
-install  : instbin instdev
+install  : 
+	@rm -f $(INSTLOGFILE)
+	@$(MAKE) __instbin __instdev
+	@more $(INSTLOGFILE)
 
-instbin :
+instbin instdev : 
+	@$(MAKE) __$@
+
+__instbin:
 	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
 		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
 		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
 		INSTALL?="$(INSTBINCMD)" __install
-	@echo
-	@echo "    Execution environment installation successful.  Add"
-	@echo "        $(INST_DEMOS)"
-	@echo "    to your PATH environmental variable, and "
-	@echo "        $(INST_LIBS) and $(INST_PLUGINS)"
-	@echo "    to your LD_LIBRARY_PATH if not already present."
-	@echo
+	@echo \
+	  "\n"\
+	  "    Run-time environment installation successful.  Add \n"\
+	  "        $(INST_DEMOS)\n"\
+	  "    to your PATH environmental variable, and \n"\
+	  "        $(INST_LIBS) and $(INST_PLUGINS) \n"\
+	  "    to your LD_LIBRARY_PATH if not already present.\n"\
+	  "\n" >> $(INSTLOGFILE)
+	
 
-
-instdev :
+__instdev:
 	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
 	do\
 	  if [ -d $(TOPDIR)/include/$$d ]; \
@@ -25,28 +32,44 @@ instdev :
 		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
-	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
-	do\
-	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
-	  then \
-	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
-		   INSTALL?="$(INSTDEVCMD)" __install;\
-	  fi\
-	done
-	@echo
-	@echo "    Development environment installation successful.  Add"
-	@echo "        -I/$(INST_INCLUDE)"
-	@echo "    compile flag when compiling with OSG header files."
-	@echo "    Example programs can be found at $(INST_DEMOS_SRC)."
-	@echo
+	@$(TOPDIR)/Make/instdemosrc \
+		$(OS)\
+		$(TOPDIR)\
+		$(INST_LIBS)\
+		$(INST_PLUGINS)\
+		$(INST_INCLUDE)\
+		$(INST_DEMOS)\
+		$(INST_SRC)\
+		$(INST_DEMO_SRC)\
+		$(INST_DOC)\
+		$(INST_DATA)\
+		"$(OPTF)"\
+		"$(DEPARG)"
+	@echo \
+	  "\n"\
+	  "    Development environment installation successful.  Add\n"\
+	  "        -I$(INST_INCLUDE)\n"\
+	  "    compile flag when compiling with OSG header files.\n"\
+	  "    Example programs can be found at $(INST_DEMO_SRC).\n"\
+	  "\n" >> $(INSTLOGFILE)
+	
 
-instlinks : instlinksbin instlinksdev
+instlinks : 
+	@rm -f $(INSTLOGFILE)
+	$(MAKE) INSTALL="$(INSTLINKBINCMD)" __instbin
+	$(MAKE) INSTALL="$(INSTLINKDEVCMD)" __instdev
+	@more $(INSTLOGFILE)
 
 instlinksbin :
-	$(MAKE) INSTALL="$(INSTLINKBIN)" instbin
+	@rm -f $(INSTLOGFILE)
+	$(MAKE) INSTALL="$(INSTLINKBINCMD)" __instbin
+	@more $(INSTLOGFILE)
 
 instlinksdev :
-	$(MAKE) INSTALL="$(INSTLINKDEV)" instdev
+	@rm -f $(INSTLOGFILE)
+	$(MAKE) INSTALL="$(INSTLINKDEVCMD)" __instdev
+	@more $(INSTLOGFILE)
+
 
 instclean : instcleanbin instcleandev
 
@@ -83,7 +106,6 @@ __install :
 	@[ -n "$(INSTDEST)" ] || echo "Internal error (INSTDEST definition)"
 	@[ -n "$(INSTDEST)" ] && echo > /dev/null
 	@[ -d $(INSTDEST) ] || mkdir -p $(INSTDEST)
-	@echo INSTSRC is $(INSTSRC)
 	@cd $(INSTSRC);\
 	THISDIR=`pwd`;\
 	if [ -n "`ls -1 | grep -v CVS`" ]; then\
@@ -91,8 +113,8 @@ __install :
 	  do\
 	    if [ -f $$f ] ; \
 	    then \
-	        echo $(INSTALL) $$THISDIR/$$f $(INSTDEST);\
-	        $(INSTALL) $$THISDIR/$$f $(INSTDEST);\
+	        echo $(INSTALL) $$THISDIR/$$f $(INSTDEST)/$$f;\
+	        $(INSTALL) $$THISDIR/$$f $(INSTDEST)/$$f;\
 	    fi\
 	  done\
 	fi
@@ -132,7 +154,6 @@ __instclean :
             done\
 	  fi\
 	fi
-
 
 
 

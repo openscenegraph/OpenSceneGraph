@@ -34,7 +34,10 @@ _numBillboardLevels(0),
 _underLayerSubgraph(false),
 _numLayerLevels(0),
 _layerGeode(0),
-_defaultMaxAnisotropy(1.0f)
+_defaultMaxAnisotropy(1.0f),
+_realMinRange(0.0),
+_realMaxRange(0.0),
+_usedMaxRange(0.0)
 {
     AddCallback(TRPG_GEOMETRY,new geomRead(this));
     AddCallback(TRPG_GROUP,new groupRead(this));
@@ -59,7 +62,8 @@ TXPParser::~TXPParser()
 osg::Group *TXPParser::parseScene(
     trpgReadBuffer &buf, 
     std::vector<osg::ref_ptr<osg::StateSet> > &materials,
-    std::vector<osg::ref_ptr<osg::Node> > &models)
+    std::vector<osg::ref_ptr<osg::Node> > &models,
+    double realMinRange, double realMaxRange, double usedMaxRange)
 {
     if (_archive == 0) return NULL;
 
@@ -74,6 +78,10 @@ osg::Group *TXPParser::parseScene(
     _numBillboardLevels = 0;
     _underLayerSubgraph = false;
     _numLayerLevels = 0;
+
+    _realMinRange = realMinRange;
+    _realMaxRange = realMaxRange;
+    _usedMaxRange = usedMaxRange;
 
     if (!Parse(buf))
     {
@@ -473,7 +481,12 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     osgCenter[1] = center.y;
     osgCenter[2] = center.z;
     osgLod->setCenter(osgCenter);
-    osgLod->setRange(0,minRange, maxRange );
+    //osgLod->setRange(0,minRange, maxRange );
+    osgLod->setRange(
+        0,
+        _parse->checkAndGetMinRange(minRange), 
+        _parse->checkAndGetMaxRange(maxRange)
+    );
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
     //  to that instead of the LOD

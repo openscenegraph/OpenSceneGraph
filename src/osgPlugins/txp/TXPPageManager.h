@@ -1,17 +1,17 @@
-/* **************************************************************************
-* December 2003
-*
-* This TerraPage loader was re-written in a fashion to use PagedLOD 
-* to manage paging entirely, also includes a version of Terrex's smart mesh 
-* adapted to work with PagedLOD. The basic code by Boris Bralo is still present, 
-* slight modified.
-* nick at terrex dot com
-* 
-* Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
+/*************************************************************************** 
+ * December 2003
+ *
+ * This TerraPage loader was re-written in a fashion to use PagedLOD 
+ * to manage paging entirely, also includes a version of Terrex's smart mesh 
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * slight modified.
+ * nick at terrex dot com
+ * 
+ * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
-/* **************************************************************************
- * OpenSceneGraph loader for Terrapage format database
+/***************************************************************************
+ * OpenSceneGraph loader for Terrapage format database 
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -42,15 +42,15 @@
 
 namespace txp
 {
-    class TXPPageManager : public trpgPageManager, public osg::Referenced
-    {
-    public:
-        TXPPageManager();
-
-    protected:
-        virtual ~TXPPageManager();
-
-    };
+class TXPPageManager : public trpgPageManager, public osg::Referenced
+{
+public:
+    TXPPageManager();
+    
+protected:
+    virtual ~TXPPageManager();
+    
+};
 
 } // namespace
 

@@ -147,7 +147,10 @@ bool TXPTileNode::loadTile(int x, int y, int lod)
 
     if (validTile)
     {
-        osg::Group* tileGroup = _archive->getTileContent(x,y,lod);
+        double realMinRange = info.minRange;
+        double realMaxRange = info.maxRange;
+        double usedMaxRange = osg::maximum(info.maxRange,1e7);
+        osg::Group* tileGroup = _archive->getTileContent(x,y,lod,realMinRange,realMaxRange,usedMaxRange);
 
 
         // if group has only one child, then simply use its child.        
@@ -190,7 +193,7 @@ bool TXPTileNode::loadTile(int x, int y, int lod)
                 _archive->getId()
             );
 
-            osg::PagedLOD* pagedLOD = new osg::PagedLOD;
+            osg::ref_ptr<osg::PagedLOD> pagedLOD = new osg::PagedLOD;
             // not use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
             pagedLOD->addChild(tileGroup,info.minRange,osg::maximum(info.maxRange,1e7));
             pagedLOD->setFileName(1,pagedLODfile);
@@ -199,9 +202,9 @@ bool TXPTileNode::loadTile(int x, int y, int lod)
             pagedLOD->setRadius(info.radius);
             pagedLOD->setNumChildrenThatCannotBeExpired(1);
 
-            TileMapper::instance()->insertPagedLOD(x,y,lod,pagedLOD);
+            TileMapper::instance()->insertPagedLOD(x,y,lod,pagedLOD.get());
 
-            addChild(pagedLOD);
+            addChild(pagedLOD.get());
         }
         else
         {

@@ -142,14 +142,11 @@ TXPArchive *ReaderWriterTXP::getArchive(int id, const std::string& dir)
             return NULL;
         }
 
-        /*
-        // We load the models on demand
         if (archive->loadModels() == false)
         {
             ReaderWriterTXPERROR("getArchive()") << "failed to load models from archive: \"" << archiveName << "\"" << std::endl;
             return NULL;
         }
-        */
 
         if (archive->loadLightAttributes() == false)
         {

@@ -1,17 +1,17 @@
-/* **************************************************************************
-* December 2003
-*
-* This TerraPage loader was re-written in a fashion to use PagedLOD 
-* to manage paging entirely, also includes a version of Terrex's smart mesh 
-* adapted to work with PagedLOD. The basic code by Boris Bralo is still present, 
-* slight modified.
-* nick at terrex dot com
-* 
-* Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
+/*************************************************************************** 
+ * December 2003
+ *
+ * This TerraPage loader was re-written in a fashion to use PagedLOD 
+ * to manage paging entirely, also includes a version of Terrex's smart mesh 
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * slight modified.
+ * nick at terrex dot com
+ * 
+ * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
-/* **************************************************************************
- * OpenSceneGraph loader for Terrapage format database
+/***************************************************************************
+ * OpenSceneGraph loader for Terrapage format database 
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -44,55 +44,55 @@
 
 namespace txp
 {
-    class TXPNode : public osg::Group
-    {
-    public:
+class TXPNode : public osg::Group
+{
+public:
+
+    TXPNode();
     
-        TXPNode();
-        
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        TXPNode(const TXPNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-
-        META_Node(txp, TXPNode);
-
-        virtual void traverse(osg::NodeVisitor& nv);
-
-        void setArchiveName(const std::string& archiveName);
-        void setOptions(const std::string& options);
-
-        const std::string& getOptions() const;
-        const std::string& getArchiveName() const;
-
-        bool loadArchive();
-
-        TXPArchive* getArchive();
-
-    protected:
-
-        virtual ~TXPNode();
-
-        virtual bool computeBound() const;
-
-        void updateEye(osg::NodeVisitor& nv);
-        void updateSceneGraph();
-
-        osg::Node* addPagedLODTile(int x, int y, int lod);
-
-        std::string    _archiveName;
-        std::string _options;
-
-        osg::ref_ptr<TXPArchive>        _archive;
-        osg::ref_ptr<TXPPageManager>    _pageManager;
-
-        double _originX;
-        double _originY;
-        osg::BoundingBox    _extents;
-
-        std::vector<osg::Node*> _nodesToAdd;
-        std::vector<osg::Node*> _nodesToRemove;
-
-    };
+    /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+    TXPNode(const TXPNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
     
+    META_Node(txp, TXPNode);
+    
+    virtual void traverse(osg::NodeVisitor& nv);
+    
+    void setArchiveName(const std::string& archiveName);
+    void setOptions(const std::string& options);
+    
+    const std::string& getOptions() const;
+    const std::string& getArchiveName() const;
+    
+    bool loadArchive();
+    
+    TXPArchive* getArchive();
+    
+protected:
+
+    virtual ~TXPNode();
+    
+    virtual bool computeBound() const;
+    
+    void updateEye(osg::NodeVisitor& nv);
+    void updateSceneGraph();
+    
+    osg::Node* addPagedLODTile(int x, int y, int lod);
+    
+    std::string    _archiveName;
+    std::string _options;
+    
+    osg::ref_ptr<TXPArchive>        _archive;
+    osg::ref_ptr<TXPPageManager>    _pageManager;
+    
+    double _originX;
+    double _originY;
+    osg::BoundingBox    _extents;
+    
+    std::vector<osg::Node*> _nodesToAdd;
+    std::vector<osg::Node*> _nodesToRemove;
+    
+};
+
 
 } // namespace
 

@@ -475,12 +475,20 @@ void DrawShapeVisitor::apply(const InfinitePlane& plane)
 
 void DrawShapeVisitor::apply(const TriangleMesh& mesh)
 {
-    std::cout << "draw a mesh "<<&mesh<<std::endl;
+    const Vec3Array* vertices = mesh.getVertices();
+    const IndexArray* indices = mesh.getIndices();
+    
+    if (vertices && indices)
+    {
+    	glNormal3f(0.0f,0.0f,1.0f);
+	_state.setVertexPointer(3,GL_FLOAT,0,vertices->getDataPointer());
+	glDrawElements(GL_TRIANGLES,indices->getNumElements(),indices->getDataType(),indices->getDataPointer());
+    }
 }
 
 void DrawShapeVisitor::apply(const ConvexHull& hull)
 {
-    std::cout << "draw a hull "<<&hull<<std::endl;
+    apply((const TriangleMesh&)hull);
 }
 
 void DrawShapeVisitor::apply(const HeightField& field)
@@ -758,6 +766,7 @@ bool ProceduralGeometry::computeBound() const
         ComputeBoundShapeVisitor cbsv(_bbox);
     	_shape->accept(cbsv);
         _bbox_computed = true;
+
 	return true;
     }
 

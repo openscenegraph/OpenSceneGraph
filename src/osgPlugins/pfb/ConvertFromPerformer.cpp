@@ -573,7 +573,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
             break;
 
         default:
-           std::cout << "ConvertFromPerformer::visitGeoSet: Osg can't convert primitive "
+           osg::notify(osg::INFO) << "ConvertFromPerformer::visitGeoSet: Osg can't convert primitive "
                      << geoset->getPrimType()
                      << std::endl;
             break;
@@ -665,7 +665,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
         }
         else
         {
-            std::cout<<"OSG can't handle non PER_VERTEX tex coord binding at present"<<std::endl;
+            osg::notify(osg::INFO)<<"OSG can't handle non PER_VERTEX tex coord binding at present"<<std::endl;
         }
 
     }
@@ -721,7 +721,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                 
                 if (ni!=nn) 
                 {
-                    std::cout << "1 ni!=nn"<<std::endl;
+                    osg::notify(osg::INFO) << "1 ni!=nn"<<std::endl;
                 }
                 
                 geom->setNormalIndices(osg_indices);
@@ -843,7 +843,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
                 
                 if (ni!=nn) 
                 {
-                    std::cout << "1 ni!=nn"<<std::endl;
+                    osg::notify(osg::INFO) << "1 ni!=nn"<<std::endl;
                 }
                 
                 geom->setColorIndices(osg_indices);

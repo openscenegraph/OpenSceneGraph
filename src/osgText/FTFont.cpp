@@ -3,12 +3,15 @@
 #include    "FTGlyphContainer.h"
 #include    "FTGL.h"
 
+#include <osg/DisplaySettings>
 
 // mrn@changes
 FTFont::FTFont()
 :    numFaces(0),
     err(0)
 {
+    _contextGlyphList.resize(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),NULL);
+
     pen.x = 0;
     pen.y = 0;
 }
@@ -52,8 +55,8 @@ bool FTFont::FaceSize( const unsigned int size, const unsigned int res , unsigne
     charSize = face.Size( size, res);
 
     // check the context
-    while (_contextGlyphList.size() <= renderContext) 
-        _contextGlyphList.push_back(NULL);
+    if (_contextGlyphList.size() <= renderContext) 
+        _contextGlyphList.resize(renderContext,NULL);
 
     FTGlyphContainer*& glyphList=_contextGlyphList[renderContext];
     

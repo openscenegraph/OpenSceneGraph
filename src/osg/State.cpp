@@ -247,6 +247,7 @@ void State::apply(const StateSet* dstate)
         apply();
     }
 
+    if (_reportGLErrors) checkGLErrors("end of State::apply(StateSet*)");
 }
 
 void State::apply()
@@ -271,6 +272,8 @@ void State::apply()
             if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
         }
     }
+
+    if (_reportGLErrors) checkGLErrors("end of State::apply()");
 }
 
 void State::haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value)

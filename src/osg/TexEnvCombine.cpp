@@ -31,18 +31,30 @@ TexEnvCombine::~TexEnvCombine()
 
 void TexEnvCombine::apply(State&) const
 {
-    static bool isTexEnvCombineSupported =
+    static bool s_isTexEnvCombineSupported =
         isGLExtensionSupported("GL_ARB_texture_env_combine");
 
-    static bool isTexEnvCrossbarSupported =
+    static bool s_isTexEnvCrossbarSupported =
         isGLExtensionSupported("GL_ARB_texture_env_crossbar");
 
-    if (isTexEnvCrossbarSupported || (!_needsTexEnvCrossbar && isTexEnvCombineSupported))
+    static bool s_isTexEnvDot3Supported = 
+        isGLExtensionSupported("GL_ARB_texture_env_dot3");
+
+    bool needsTexEnvDot3 = (_combine_RGB==DOT3_RGB) ||
+                           (_combine_RGB==DOT3_RGBA);
+
+    bool supported = s_isTexEnvCombineSupported;
+    if (_needsTexEnvCrossbar && !s_isTexEnvCrossbarSupported) supported = false;
+    if (needsTexEnvDot3 && !s_isTexEnvDot3Supported) supported = false;
+
+    if (supported)
     {
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
 
         glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, _combine_RGB);
-        glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, _combine_Alpha);
+        
+        if (_combine_RGB!=DOT3_RGBA)
+            glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, _combine_Alpha);
 
         glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB,_source0_RGB );
         glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, _source1_RGB);

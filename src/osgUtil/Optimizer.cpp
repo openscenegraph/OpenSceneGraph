@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -594,7 +594,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
             // disable if object is a light point node.
             if (strcmp(object->className(),"LightPointNode")==0) return false;
 
-            return _optimizer ? _optimizer->isOperationPermissibleForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true; 
+            return _optimizer ? _optimizer->isOperationPermissibleForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true;
         }
 
     protected:        
@@ -631,8 +631,9 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
                         if (_transformSet.empty()) transform->computeLocalToWorldMatrix(_firstMatrix,0);
                         else
                         {
-                            transform->computeLocalToWorldMatrix(_firstMatrix,0);
-                            if (_firstMatrix!=_identity_matrix) _moreThanOneMatrixRequired=true;
+                            osg::Matrix matrix;
+                            transform->computeLocalToWorldMatrix(matrix,0);
+                            if (_firstMatrix!=matrix) _moreThanOneMatrixRequired=true;
                         }
                     }
                 }

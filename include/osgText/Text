@@ -293,7 +293,7 @@ public:
     Font*    getFont(void);
 
     void    setText(const char* text)    { _text=text; }
-    void    setText(std::string& text)    { _text=text; }
+    void    setText(const std::string& text)    { _text=text; }
     const    std::string&    getText() const { return _text; }
 
     virtual void    drawImmediateMode(State& state);

@@ -96,8 +96,13 @@ namespace ive {
 #define IVELIGHTPOINTNODE				0x00100007
 #define IVEMULTISWITCH				        0x00100008
 
-#define IVEVISIBILITYGROUP			    0x00100009
-#define IVEDIRECTIONALSECTOR         0x0010000A
+
+#define IVEVISIBILITYGROUP			        0x00100009
+#define IVEDIRECTIONALSECTOR                            0x0010000A
+
+// osgFX classes
+#define IVEMULTITEXTURECONTROL				0x01000001
+
 
 class ReadWrite{
 

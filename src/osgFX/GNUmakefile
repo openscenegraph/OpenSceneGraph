@@ -6,6 +6,7 @@ CXXFILES =\
 	BumpMapping.cpp\
 	Cartoon.cpp\
 	Effect.cpp\
+	MultiTextureControl.cpp\
 	Registry.cpp\
 	Scribe.cpp\
 	SpecularHighlights.cpp\

@@ -12,7 +12,7 @@ DEF     += -DOSGTERRAIN_LIBRARY
 
 INC += $(GDAL_INCLUDES)
 
-LIBS  +=  -losgDB -losgUtil -losg $(GDAL_LIBS) $(GL_LIBS) $(OTHER_LIBS)
+LIBS  +=  -losgFX -losgDB -losgUtil -losg $(GDAL_LIBS) $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgTerrain
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

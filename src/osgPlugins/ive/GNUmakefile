@@ -47,6 +47,7 @@ CXXFILES =\
 	Material.cpp\
 	MatrixTransform.cpp\
 	MultiSwitch.cpp\
+	MultiTextureControl.cpp\
 	Node.cpp\
 	Object.cpp\
 	OccluderNode.cpp\
@@ -77,7 +78,7 @@ CXXFILES =\
 	VertexProgram.cpp\
 	VisibilityGroup.cpp\
 
-LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgFX -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = ive
 include $(TOPDIR)/Make/cygwin_plugin_def

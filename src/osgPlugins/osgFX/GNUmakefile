@@ -5,6 +5,7 @@ CXXFILES =\
 	IO_AnisotropicLighting.cpp\
 	IO_BumpMapping.cpp\
 	IO_Cartoon.cpp\
+	IO_MultiTextureControl.cpp\
 	IO_Scribe.cpp\
 	IO_SpecularHighlights.cpp\
 	IO_Effect.cpp\

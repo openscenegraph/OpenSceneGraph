@@ -45,7 +45,7 @@ public:
 
     virtual const char* className() { return "Wavefront OBJ Reader"; }
     virtual bool acceptsExtension(const std::string& extension) {
-        return (extension == "obj");
+        return osgDB::equalCaseInsensitive(extension,"obj");
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
@@ -62,6 +62,10 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
 // read file and convert to OSG.
 osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
+    std::string ext = osgDB::getFileExtension(fileName);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+
     GLMmodel* obj = glmReadOBJ((char*) fileName.c_str());
     if (!obj)
         return ReadResult::FILE_NOT_HANDLED;

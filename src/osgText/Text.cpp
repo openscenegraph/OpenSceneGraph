@@ -46,6 +46,7 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
         _drawMode(text._drawMode),
         _boundingBoxType(text._boundingBoxType),
         _axisAlignment(text._axisAlignment),
+        _encodedText(text._encodedText),
         _pos(text._pos),
         _alignmentPos(text._alignmentPos),
         _color(text._color)
@@ -127,8 +128,9 @@ setDefaults()
 
     _initAlignment=false;
 
-
     _useDisplayList=false;
+
+    _encodedText = new EncodedText();
 }
 
 bool Text::computeBound() const
@@ -187,8 +189,6 @@ void Text::accept(PrimitiveFunctor& functor) const
 
     functor.setVertexArray(4,boundingVertices);
     functor.drawArrays( GL_QUADS, 0, 4);
-    
-    cout << "done draw arrays"<<endl;
 }
 
 void Text::drawImplementation(State& state) const
@@ -234,27 +234,27 @@ void Text::drawImplementation(State& state) const
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
                     if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
                     else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
-                    _font->output(state,_text.c_str());
+                    _font->output(state,getEncodedText());
                     break;
                 case OUTLINE:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
                     if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
                     else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
-                    _font->output(state,_text.c_str());
+                    _font->output(state,getEncodedText());
                     break;
                 case BITMAP:
                     glRasterPos3f(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(state,_text.c_str());
+                    _font->output(state,getEncodedText());
                     break;
                 case PIXMAP:
                     glRasterPos3f(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(state,_text.c_str());
+                    _font->output(state,getEncodedText());
                     break;
                 case TEXTURE:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
                     if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
                     else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
-                    _font->output(state,_text.c_str());
+                    _font->output(state,getEncodedText());
                     break;
 
             };
@@ -320,7 +320,7 @@ calcBounds(Vec3* min,Vec3* max) const
         return;
 
     float h=_font->getHeight();
-    float w=_font->getWidth(_text.c_str());
+    float w=_font->getWidth(getEncodedText());
     float descender=_font->getDescender();
 
     min->set(0,descender,0);
@@ -369,7 +369,7 @@ initAlignment(Vec3* min,Vec3* max)
         return;
 
     float h=_font->getHeight();
-    float w=_font->getWidth(_text.c_str());
+    float w=_font->getWidth(getEncodedText());
     float descender=_font->getDescender();
 
     min->set(0,descender,0);
@@ -492,5 +492,20 @@ setBoundingBox(int mode)
     initAlignment();
 }
 
+void Text::
+setText(const char* text)
+{ 
+    _text=text; 
+    _initAlignment=false;
+    _encodedText->setText((const unsigned char*)text);
+}
+
+void Text::
+setText(const std::string& text)
+{ 
+    _text=text; 
+    _initAlignment=false;
+    _encodedText->setText((const unsigned char*)_text.data());
+}
 // Text
 ///////////////////////////////////////////////////////////////////////////////

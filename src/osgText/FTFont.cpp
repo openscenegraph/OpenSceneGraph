@@ -105,7 +105,6 @@ int    FTFont::Descender() const
     return charSize.Descender();
 }
 
-
 // mrn@changes
 float FTFont::Advance( const wchar_t* string)
 {
@@ -130,7 +129,6 @@ float FTFont::Advance( const char* string)
 {
     // all are the same, a bit a hack
     FTGlyphContainer* glyphList=_contextGlyphList[0];
-
     const unsigned char* c = (unsigned char*)string; // This is ugly, what is the c++ way?
     float width = 0;
 
@@ -143,6 +141,21 @@ float FTFont::Advance( const char* string)
     return width;
 }
 
+float FTFont::Advance( std::vector<int>::const_iterator string)
+{
+    // all are the same, a bit a hack
+    FTGlyphContainer* glyphList=_contextGlyphList[0];
+    std::vector<int>::const_iterator c = string; 
+    float width = 0;
+
+    while( *c)
+    {
+        width += glyphList->Advance( *c, *(c + 1));    
+        c++;
+    }
+
+    return width;
+}
 
 // mrn@changes
 void FTFont::render( const char* string , unsigned int renderContext)
@@ -184,3 +197,22 @@ void FTFont::render( const wchar_t* string , unsigned int renderContext)
         ++c;
     }
 }
+
+void FTFont::render( std::vector<int>::const_iterator string , unsigned int renderContext)
+{
+    FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
+ 
+    std::vector<int>::const_iterator c = string;
+    FT_Vector kernAdvance;
+    pen.x = 0; pen.y = 0;
+
+    while( *c)
+    {
+        kernAdvance = glyphList->render( *c, *(c + 1), pen);
+        pen.x += kernAdvance.x;
+        pen.y += kernAdvance.y;
+
+        c++;
+    }
+}
+

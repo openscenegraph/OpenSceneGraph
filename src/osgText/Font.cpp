@@ -14,6 +14,7 @@
 
 
 #include <osgText/Font>
+#include <osgText/EncodedText>
 
 #include <osg/Notify>
 #include <osgDB/FileUtils>
@@ -174,10 +175,10 @@ bool  Font::create(osg::State& state)
         return false;
 }
 
-void Font::output(osg::State& state,const char* text) const
+void Font::output(osg::State& state, const EncodedText* text) const
 {
     if(_created)
-        _font->render(text,state.getContextID());
+        _font->render(text->getUnicodeText(),state.getContextID());
     else
     {
         // ahhhh, this is bit doddy, the draw is potentially
@@ -201,10 +202,10 @@ void  Font::clear()
 }
 
 float Font::
-getWidth(const char* text)  const
+getWidth(const EncodedText* text)  const
 {
     if(_init && _created)
-        return _font->Advance(text);
+        return _font->Advance(text->getUnicodeText());
     else
         return -1;
 }
@@ -235,7 +236,6 @@ getAscender() const
     else
         return -1;
 }
-
 
 // Font
 ///////////////////////////////////////////////////////////////////////////////

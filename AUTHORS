@@ -131,6 +131,9 @@ Alberto Barbati <abarbati@iaanus.com>
 
 Gideon May <gideon@computer.org>
         - fixed spacing in osgText.
+        
+Tree <tree@stain.org>
+        - support for encoded text types in osgText.
 
 Indirect Contributors
 ---------------------

@@ -1,0 +1,75 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+/* --------------------------------------------------------------------------
+ *
+ *    openscenegraph textLib / FTGL wrapper (http://homepages.paradise.net.nz/henryj/code/)
+ *
+ * --------------------------------------------------------------------------
+ *    
+ *    prog:    max rheiner;mrn@paus.ch
+ *    date:    4/25/2001    (m/d/y)
+ *
+ * --------------------------------------------------------------------------
+ *
+ * --------------------------------------------------------------------------
+ */
+
+
+#ifndef OSGTEXT_ENCODEDTEXT
+#define OSGTEXT_ENCODEDTEXT 1 
+
+#include <osg/Referenced>
+
+#include <vector>
+
+#include <osgText/Export>
+
+namespace osgText {
+
+class OSGTEXT_EXPORT EncodedText : public osg::Referenced
+{
+    public:
+
+        /**
+         * Types of string encodings supported
+         */
+        enum Encoding
+        {
+            ENCODING_UNDEFINED,                 /// not using Unicode
+            ENCODING_ASCII = ENCODING_UNDEFINED,/// unsigned char ASCII
+            ENCODING_UTF8,                      /// 8-bit unicode transformation format
+            ENCODING_UTF16,                     /// 16-bit signature
+            ENCODING_UTF16_BE,                  /// 16-bit big-endian
+            ENCODING_UTF16_LE,                  /// 16-bit little-endian
+            ENCODING_UTF32,                     /// 32-bit signature
+            ENCODING_UTF32_BE,                  /// 32-bit big-endian
+            ENCODING_UTF32_LE,                  /// 32-bit little-endian
+            ENCODING_SIGNATURE,                 /// detect encoding from signature
+        };
+
+        EncodedText();
+        
+        void setOverrideEncoding(Encoding encoding);
+        Encoding getOverrideEncoding() const { return _overrideEncoding; }
+        Encoding getEncoding() const { return _encoding; }
+
+        void setText(const unsigned char* text);
+        std::vector<int>::const_iterator getUnicodeText() const { return _unicodeText.begin(); } 
+
+    protected:
+    
+        int getNextCharacter(const unsigned char*& charString) const;
+        
+        /// This method will extract any ZWNBSP signature at the start of the string
+        Encoding findEncoding(const unsigned char*& charString) const;
+
+        Encoding _encoding;
+        Encoding _overrideEncoding;
+        std::vector<int> _unicodeText; 
+};
+
+}
+
+#endif // OSGTEXT_TEXT

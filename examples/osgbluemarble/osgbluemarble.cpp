@@ -81,8 +81,8 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     
 	osg::Texture2D* texture = new osg::Texture2D;
 	texture->setImage(image);
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
         texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
         texture->setMaxAnisotropy(8);

@@ -29,7 +29,7 @@ class SG_EXPORT Quat
 	---------------------------------------------------------- */
 	Vec4 _fv;	// a four-vector
 
-	Quat() {}
+	Quat(): _fv(0.0f,0.0f,0.0f,1.0f) {}
 	Quat( float x, float y, float z, float w ):  _fv(x,y,z,w) {}
 	Quat( const Vec4& v ): _fv(v) {}
 

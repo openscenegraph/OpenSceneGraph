@@ -48,8 +48,17 @@ OSG News (most significant items from ChangeLog)
     application.  This feature is demonstrated in the scene graph viewer
     which comes with the distribution - just press 'O' to output a screenshot.
     
+    Finally, include/osg/MemoryManager has been added which overrides new
+    and delete for debug builds. The override new and delete track allocations
+    and deallocations, ensure they are matched, checked for memory under and
+    overruns, and outputs a memleaks.log file on the results of executing
+    your applications.  This help track down a number of memory leaks and
+    unmatched new and deletes within the OpenSceneGraph and should make
+    it easier to do with users applications as well.
+    
     All in all, the OpenSceneGraph is now more portable, easier to 
-    customize and cleaner.  Beta release and 1.0 is now not far away!
+    customize, cleaner and more robust.  Beta release and 1.0 is now not 
+    far away!
     
 
 24th February 2002 - osg-0.8.44.tar.gz

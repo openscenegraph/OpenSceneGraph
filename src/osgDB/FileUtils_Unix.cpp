@@ -24,14 +24,15 @@ char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
 static const char *s_default_dso_path = "/usr/lib32/:/usr/local/lib32/";
 static char *s_filePath = ".:";
+#elif defined(__CYGWIN__)
+char *PathDelimitor = ":";
+static const char *s_default_file_path = ".:";
+static const char *s_default_dso_path = "/usr/bin/:/usr/local/bin/:";
+static char *s_filePath = ".:";
 #else
 char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
-#if defined(__CYGWIN__)
 static const char *s_default_dso_path = "/usr/lib/:/usr/local/lib/:";
-#else
-static const char *s_default_dso_path = "/usr/lib/:/usr/local/lib/:";
-#endif // __CYGWIN__
 static char *s_filePath = ".:";
 #endif
 

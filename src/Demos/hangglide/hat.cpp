@@ -1,4 +1,4 @@
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <Windows.h>
 #pragma warning( disable : 4244 )
 #endif

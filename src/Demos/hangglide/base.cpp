@@ -1,7 +1,7 @@
 #include <math.h>
 
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/Depth>
@@ -15,54 +15,39 @@ Node *makeBase( void )
 {
     int i, c;
     float theta;
-    float ir, ori;
-    ir = 0.0;
-    ori = 20.0;
+    float ir = 20.0f;
 
-    Vec3 *coords = new Vec3[38];
-    Vec2 *tcoords = new Vec2[38];
-    Vec4 *colors = new Vec4[1];
+    Vec3Array *coords = new Vec3Array(19);
+    Vec2Array *tcoords = new Vec2Array(19);
+    Vec4Array *colors = new Vec4Array(1);
     int *lengths = new int[1];
 
-    colors[0][0] = colors[0][1] = colors[0][2] = colors[0][3] = 1;
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
 
     c = 0;
+    (*coords)[c].set(0.0f,0.0f,0.0f);
+    (*tcoords)[c].set(0.0f,0.0f);
+    
     for( i = 0; i <= 18; i++ )
     {
         theta = osg::DegreesToRadians((float)i * 20.0);
 
-        coords[c][0] = ir * cosf( theta );
-        coords[c][1] = ir * sinf( theta );
-        coords[c][2] = 0.0;
-        tcoords[c][0] = coords[c][0]/36.;
-        tcoords[c][1] = coords[c][1]/36.;
-
-        c++;
-
-        coords[c][0] = ori * cosf( theta );
-        coords[c][1] = ori * sinf( theta );
-        coords[c][2] = 0.0f;
-
-        tcoords[c][0] = coords[c][0]/36.;
-        tcoords[c][1] = coords[c][1]/36.;
+        (*coords)[c].set(ir * cosf( theta ), ir * sinf( theta ), 0.0f);
+        (*tcoords)[c].set((*coords)[c][0]/36.0f,(*coords)[c][1]/36.0f);
 
         c++;
     }
-    *lengths = 38;
 
-    GeoSet *gset = new GeoSet;
+    Geometry *geom = new Geometry;
 
-    gset->setCoords( coords );
+    geom->setVertexArray( coords );
 
-    gset->setTextureCoords( tcoords );
-    gset->setTextureBinding( GeoSet::BIND_PERVERTEX );
+    geom->setTexCoordArray( 0, tcoords );
 
-    gset->setColors( colors );
-    gset->setColorBinding( GeoSet::BIND_OVERALL );
+    geom->setColorArray( colors );
+    geom->setColorBinding( Geometry::BIND_OVERALL );
 
-    gset->setPrimType( GeoSet::TRIANGLE_STRIP );
-    gset->setNumPrims( 1 );
-    gset->setPrimLengths( lengths );
+    geom->addPrimitive( new DrawArrays(Primitive::TRIANGLE_FAN,0,19) );
 
     Texture *tex = new Texture;
 
@@ -75,16 +60,6 @@ Node *makeBase( void )
     dstate->setAttributeAndModes( tex, StateAttribute::ON );
 
     dstate->setAttribute( new TexEnv );
-    /*
-        pfFog *fog = new pfFog;
-
-        fog->setFogType( PFFOG_PIX_EXP2 );
-        fog->setColor(   0.1, 0.2, 0.2 );
-        fog->setRange(   16.0, 22.0 );
-
-        gstate->setMode( PFSTATE_ENFOG, PF_ON );
-        gstate->setAttr( PFSTATE_FOG, fog );
-    */
 
     // clear the depth to the far plane.
     osg::Depth* depth = new osg::Depth;
@@ -95,10 +70,10 @@ Node *makeBase( void )
     dstate->setRenderBinDetails(-1,"RenderBin");
 
 
-    gset->setStateSet( dstate );
+    geom->setStateSet( dstate );
 
     Geode *geode = new Geode;
-    geode->addDrawable( gset );
+    geode->addDrawable( geom );
 
     return geode;
 }

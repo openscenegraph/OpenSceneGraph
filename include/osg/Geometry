@@ -28,7 +28,7 @@ enum ArrayType
     Vec4ArrayType     = 11
 };
 
-class AttributeArray : public Object
+class SG_EXPORT AttributeArray : public Object
 {
 
     public:
@@ -117,7 +117,7 @@ enum PrimitiveType
     UIntDrawElementsPrimitiveType       = 4,
 };
 
-class Primitive : public Object
+class SG_EXPORT Primitive : public Object
 {
     public:
     

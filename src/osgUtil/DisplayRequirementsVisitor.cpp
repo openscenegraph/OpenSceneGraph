@@ -6,8 +6,6 @@
 #include <list>
 #include <set>
 
-#include <osg/GeoSet>
-
 #include <osgUtil/DisplayRequirementsVisitor>
 
 using namespace osg;

@@ -18,7 +18,7 @@
 #include <osgUtil/Optimizer>
 
 #include <osg/OccluderNode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 
 void write_usage(std::ostream& out,const std::string& name)
 {
@@ -94,31 +94,27 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     
 
    // create a drawable for occluder.
-    osg::GeoSet* geoset = osgNew osg::GeoSet;
+    osg::Geometry* geom = osgNew osg::Geometry;
     
-    osg::Vec3* coords = osgNew osg::Vec3[occluder.getVertexList().size()];
-    std::copy(occluder.getVertexList().begin(),occluder.getVertexList().end(),coords);
-    geoset->setCoords(coords);
+    osg::Vec3Array* coords = osgNew osg::Vec3Array(occluder.getVertexList().begin(),occluder.getVertexList().end());
+    geom->setVertexArray(coords);
     
-    osg::Vec4* color = osgNew osg::Vec4[1];
-    color[0].set(1.0f,1.0f,1.0f,0.5f);
-    geoset->setColors(color);
-    geoset->setColorBinding(osg::GeoSet::BIND_OVERALL);
+    osg::Vec4Array* colors = osgNew osg::Vec4Array(1);
+    (*colors)[0].set(1.0f,1.0f,1.0f,0.5f);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     
-    geoset->setPrimType(osg::GeoSet::QUADS);
-    geoset->setNumPrims(1);
-//     geoset->setPrimType(osg::GeoSet::POINTS);
-//     geoset->setNumPrims(4);
+    geom->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::QUADS,0,4));
     
     osg::Geode* geode = osgNew osg::Geode;
-    geode->addDrawable(geoset);
+    geode->addDrawable(geom);
     
     osg::StateSet* stateset = osgNew osg::StateSet;
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     
-    geoset->setStateSet(stateset);
+    geom->setStateSet(stateset);
     
     // add the occluder geode as a child of the occluder,
     // as the occluder can't self occlude its subgraph the

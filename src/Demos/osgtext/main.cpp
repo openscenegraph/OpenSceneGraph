@@ -12,7 +12,6 @@
 
 #include <osg/Node>
 #include <osg/StateSet>
-#include <osg/GeoSet>
 #include <osg/Material>
 #include <osg/Transparency>
 #include <osg/Transform>

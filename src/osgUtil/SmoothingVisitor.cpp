@@ -1,14 +1,9 @@
-#if defined(_MSC_VER)
-	#pragma warning( disable : 4786 )
-#endif
+#include <osgUtil/SmoothingVisitor>
 
 #include <stdio.h>
 #include <list>
 #include <set>
 
-#include <osg/GeoSet>
-
-#include <osgUtil/SmoothingVisitor>
 
 using namespace osg;
 using namespace osgUtil;
@@ -25,14 +20,21 @@ struct LessPtr
 struct SmoothTriangleFunctor
 {
 
-    osg::Vec3 *_coordBase;
-    osg::Vec3 *_normalBase;
+    osg::Vec3* _coordBase;
+    osg::Vec3* _normalBase;
 
     typedef std::multiset<const osg::Vec3*,LessPtr> CoordinateSet;
     CoordinateSet _coordSet;
 
-    SmoothTriangleFunctor(osg::Vec3 *cb,int noVertices, osg::Vec3 *nb) : _coordBase(cb),_normalBase(nb)
+    SmoothTriangleFunctor():
+         _coordBase(0),
+         _normalBase(0) {}
+    
+    void set(osg::Vec3 *cb,int noVertices, osg::Vec3 *nb)
     {
+        _coordBase=cb;
+        _normalBase=nb;
+
         osg::Vec3* vptr = cb;
         for(int i=0;i<noVertices;++i)
         {
@@ -67,100 +69,62 @@ struct SmoothTriangleFunctor
     }
 };
 
-void SmoothingVisitor::smooth(osg::GeoSet& gset)
+void SmoothingVisitor::smooth(osg::Geometry& geom)
 {
-    GeoSet::PrimitiveType primTypeIn = gset.getPrimType();
-    GeoSet::PrimitiveType primTypeOut = gset.getPrimType();
-
-    // determine whether to do smoothing or not, and if
-    // the primitive type needs to be modified enable smoothed normals.
-    bool doSmoothing;
-    switch(primTypeIn)
+    Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
+    Geometry::PrimitiveList::iterator itr;
+    unsigned int numSurfacePrimitives=0;
+    for(itr=primitives.begin();
+        itr!=primitives.end();
+        ++itr)
     {
-        case(GeoSet::TRIANGLES):
-        case(GeoSet::TRIANGLE_STRIP):
-        case(GeoSet::TRIANGLE_FAN):
-            doSmoothing = true;
-            break;
-/*
-        case(GeoSet::FLAT_TRIANGLE_STRIP):
-            primTypeOut = GeoSet::TRIANGLE_STRIP;
-            doSmoothing = true;
-            break;
-        case(GeoSet::FLAT_TRIANGLE_FAN):
-            primTypeOut = GeoSet::TRIANGLE_FAN;
-            doSmoothing = true;
-            break;
-*/
-        case(GeoSet::QUADS):
-        case(GeoSet::QUAD_STRIP):
-        case(GeoSet::POLYGON):
-            doSmoothing = true;
-            break;
-        default:                 // points and lines etc.
-            doSmoothing = false;
-            break;
+        switch((*itr)->getMode())
+        {
+            case(Primitive::TRIANGLES):
+            case(Primitive::TRIANGLE_STRIP):
+            case(Primitive::TRIANGLE_FAN):
+            case(Primitive::QUADS):
+            case(Primitive::QUAD_STRIP):
+            case(Primitive::POLYGON):
+                ++numSurfacePrimitives;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    if (!numSurfacePrimitives) return;
+
+    osg::Vec3Array *coords = geom.getVertexArray();
+    if (!coords || !coords->size()) return;
+    
+    osg::Vec3Array *normals = osgNew osg::Vec3Array(coords->size());
+
+    osg::Vec3Array::iterator nitr;
+    for(nitr = normals->begin();
+        nitr!=normals->end();
+        ++nitr)
+    {
+        nitr->set(0.0f,0.0f,0.0f);
     }
 
-    if (doSmoothing)
+    TriangleFunctor<SmoothTriangleFunctor> stf;
+    stf.set(&(coords->front()),coords->size(),&(normals->front()));
+    
+    geom.applyPrimitiveOperation(stf);
+
+    for(nitr= normals->begin();
+        nitr!=normals->end();
+        ++nitr)
     {
-        gset.computeNumVerts();
-        int ncoords = gset.getNumCoords();
-        osg::Vec3 *coords = gset.getCoords();
-        osg::GeoSet::IndexPointer cindex = gset.getCoordIndices();
-        osg::Vec3 *norms = osgNew osg::Vec3[ncoords];
-
-        int j;
-        for(j = 0; j < ncoords; j++ )
-        {
-            norms[j].set(0.0f,0.0f,0.0f);
-        }
-
-        SmoothTriangleFunctor tf(coords,ncoords,norms);
-        for_each_triangle( gset, tf );
-
-        for(j = 0; j < ncoords; j++ )
-        {
-            float len = norms[j].length();
-            if (len) norms[j]/=len;
-        }
-
-        gset.setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
-        
-        if (cindex.valid())
-        {
-            if (cindex._is_ushort)
-                gset.setNormals( norms, cindex._ptr._ushort );
-            else
-                gset.setNormals( norms, cindex._ptr._uint );
-        }
-        else
-        {
-            gset.setNormals( norms );
-        }
-
-        if (primTypeIn!=primTypeOut)
-        {
-            
-            if (primTypeIn==GeoSet::FLAT_TRIANGLE_STRIP)
-            {
-                gset.setColorBinding( osg::GeoSet::BIND_OFF );
-                gset.setColors(NULL);
-            }
-            else
-            if (primTypeIn==GeoSet::FLAT_TRIANGLE_STRIP)
-            {
-                gset.setColorBinding( osg::GeoSet::BIND_OFF );
-                gset.setColors(NULL);
-            }
-            
-            gset.setPrimType( primTypeOut );
-            
-        }
-
-        gset.dirtyDisplayList();
-
+        nitr->normalize();
     }
+
+    geom.setNormalArray( normals );
+    geom.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+
+    geom.dirtyDisplayList();
 }
 
 
@@ -168,7 +132,7 @@ void SmoothingVisitor::apply(osg::Geode& geode)
 {
     for(int i = 0; i < geode.getNumDrawables(); i++ )
     {
-        osg::GeoSet* gset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
-        if (gset) smooth(*gset);
+        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+        if (geom) smooth(*geom);
     }
 }

@@ -1,5 +1,5 @@
 #include <osg/Node>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/Transform>
 #include <osg/Texture>
@@ -101,33 +101,31 @@ ImageList getImagesFromFiles(std::vector<std::string>& commandLine)
 /** create 2,2 square with center at 0,0,0 and aligned along the XZ plan */
 osg::Drawable* createSquare(float textureCoordMax=1.0f)
 {
-    // set up the geoset.
-    osg::GeoSet* gset = new osg::GeoSet;
+    // set up the Geometry.
+    osg::Geometry* geom = new osg::Geometry;
 
-    osg::Vec3* coords = new osg::Vec3 [4];
-    coords[0].set(-1.0f,0.0f,1.0f);
-    coords[1].set(-1.0f,0.0f,-1.0f);
-    coords[2].set(1.0f,0.0f,-1.0f);
-    coords[3].set(1.0f,0.0f,1.0f);
-    gset->setCoords(coords);
+    osg::Vec3Array* coords = new osg::Vec3Array(4);
+    (*coords)[0].set(-1.0f,0.0f,1.0f);
+    (*coords)[1].set(-1.0f,0.0f,-1.0f);
+    (*coords)[2].set(1.0f,0.0f,-1.0f);
+    (*coords)[3].set(1.0f,0.0f,1.0f);
+    geom->setVertexArray(coords);
 
-    osg::Vec3* norms = new osg::Vec3 [1];
-    norms[0].set(0.0f,-1.0f,0.0f);
-    gset->setNormals(norms);
-    gset->setNormalBinding(osg::GeoSet::BIND_OVERALL);
+    osg::Vec3Array* norms = new osg::Vec3Array(1);
+    (*norms)[0].set(0.0f,-1.0f,0.0f);
+    geom->setNormalArray(norms);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
-    osg::Vec2* tcoords = new osg::Vec2 [4];
-    tcoords[0].set(0.0f,textureCoordMax);
-    tcoords[1].set(0.0f,0.0f);
-    tcoords[2].set(textureCoordMax,0.0f);
-    tcoords[3].set(textureCoordMax,textureCoordMax);
-    gset->setTextureCoords(tcoords);
-    gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+    osg::Vec2Array* tcoords = new osg::Vec2Array(4);
+    (*tcoords)[0].set(0.0f,textureCoordMax);
+    (*tcoords)[1].set(0.0f,0.0f);
+    (*tcoords)[2].set(textureCoordMax,0.0f);
+    (*tcoords)[3].set(textureCoordMax,textureCoordMax);
+    geom->setTexCoordArray(0,tcoords);
     
-    gset->setNumPrims(1);
-    gset->setPrimType(osg::GeoSet::QUADS);
+    geom->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::QUADS,0,4));
 
-    return gset;
+    return geom;
 }
 
 osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture* texture,osg::Node* geometry)

@@ -1,7 +1,7 @@
 // #include <math.h>
 
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/StateSet>
@@ -73,15 +73,11 @@ Node *makeTerrain( void )
     m = (sizeof( vertex ) /(sizeof( float[3])))/39;
     n = 39;
 
-    Vec3 *v    = new Vec3[m*n];
-    Vec2 *t    = new Vec2[m*n];
-    Vec4 *col  = new Vec4[1];
-    osg::ushort *cidx = new osg::ushort[1];
-    osg::ushort *idx = new osg::ushort[m*n*2];
-    int    *lens = new int[m];
-
-    col[0][0] = col[0][1] = col[0][2] = col[0][3] = 1;
-    *cidx = 0;
+    Vec3Array& v    = *(new Vec3Array(m*n));
+    Vec2Array& t    = *(new Vec2Array(m*n));
+    Vec4Array& col  = *(new Vec4Array(1));
+    
+    col[0][0] = col[0][1] = col[0][2] = col[0][3] = 1.0f;
 
     for( i = 0; i < m * n; i++ )
     {
@@ -93,29 +89,27 @@ Node *makeTerrain( void )
         t[i][1] = texcoord[i][1];
     }
 
+    Geometry *geom = new Geometry;
+
+    geom->setVertexArray( &v );
+    geom->setTexCoordArray( 0, &t );
+
+    geom->setColorArray( &col );
+    geom->setColorBinding( Geometry::BIND_OVERALL );
+
     c = 0;
     for( i = 0; i < m-2; i++ )
     {
+        UShortDrawElements* elements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);
+        elements->reserve(39*2);
         for( j = 0; j < n; j++ )
         {
-            idx[c++] = (i+0)*n+j;
-            idx[c++] = (i+1)*n+j;
+            elements->push_back((i+0)*n+j);
+            elements->push_back((i+1)*n+j);
         }
-        lens[i] = 39*2;
+        geom->addPrimitive(elements);
     }
 
-    GeoSet *gset = new GeoSet;
-
-    gset->setCoords( v, idx );
-    gset->setTextureCoords( t, idx );
-    gset->setTextureBinding( GeoSet::BIND_PERVERTEX );
-
-    gset->setColors( col, cidx );
-    gset->setColorBinding( GeoSet::BIND_OVERALL );
-
-    gset->setPrimType( GeoSet::TRIANGLE_STRIP );
-    gset->setNumPrims( m-2 );
-    gset->setPrimLengths( lens );
 
     Texture *tex = new Texture;
 
@@ -126,12 +120,10 @@ Node *makeTerrain( void )
     dstate->setAttributeAndModes( tex, StateAttribute::ON );
     dstate->setAttribute( new TexEnv );
 
-    gset->setStateSet( dstate );
+    geom->setStateSet( dstate );
 
     Geode *geode = new Geode;
-    geode->addDrawable( gset );
-
-    gset->check();
+    geode->addDrawable( geom );
 
     return geode;
 }

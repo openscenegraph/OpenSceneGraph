@@ -13,7 +13,7 @@
 
 namespace osgUtil {
 
-/** Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag, 
+/** Visitor for traversing scene graph and setting each osg::Drawable's _useDisplayList flag, 
   * with option to immediately compile osg::Drawable OpenGL Display lists and
   * osg::StateAttribute's.
   */
@@ -32,13 +32,13 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
         
         typedef unsigned int Mode;
 
-        /** Construct a CompileGeoSetsVisior to traverse all child,
+        /** Construct a DisplayListVisior to traverse all child,
           * with set specified display list mode.  Default mode is to
           * gset->setUseDisplayList(true).
           */
         DisplayListVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES);
         
-        /** Set the operational mode of how the visitor should set up osg::GeoSet's.*/
+        /** Set the operational mode of how the visitor should set up osg::Drawable's.*/
         void setMode(Mode mode) { _mode = mode; }
 
         /** Get the operational mode.*/

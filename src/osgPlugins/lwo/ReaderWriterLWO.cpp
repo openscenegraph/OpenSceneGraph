@@ -164,7 +164,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
         gset->setCoords(coord, cindex);
         gset->setStateSet(state);
 
-        smoother.smooth(*gset);
+        // smoother.smooth(*gset);
 
         geode->addDrawable(gset);
 

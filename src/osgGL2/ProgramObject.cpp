@@ -192,7 +192,7 @@ ProgramObject::PerContextProgObj* ProgramObject::getPCPO(unsigned int contextID)
 // PCPO : OSG abstraction of the per-context Program Object
 
 ProgramObject::PerContextProgObj::PerContextProgObj(const ProgramObject* parent, Extensions* extensions) :
-	Referenced()
+	osg::Referenced()
 {
     _parent = parent;
     _extensions = extensions;
@@ -202,7 +202,7 @@ ProgramObject::PerContextProgObj::PerContextProgObj(const ProgramObject* parent,
 }
 
 ProgramObject::PerContextProgObj::PerContextProgObj(const PerContextProgObj& rhs) :
-	Referenced()
+	osg::Referenced()
 {
     _parent = rhs._parent;
     _extensions = rhs._extensions;
@@ -334,7 +334,7 @@ void ShaderObject::attach(unsigned int contextID, GLhandleARB progObj) const
 // PCSO : OSG abstraction of the per-context Shader Object
 
 ShaderObject::PerContextShaderObj::PerContextShaderObj(const ShaderObject* parent, Extensions* extensions) :
-	Referenced()
+	osg::Referenced()
 {
     _parent = parent;
     _extensions = extensions;
@@ -343,7 +343,7 @@ ShaderObject::PerContextShaderObj::PerContextShaderObj(const ShaderObject* paren
 }
 
 ShaderObject::PerContextShaderObj::PerContextShaderObj(const PerContextShaderObj& rhs) :
-	Referenced()
+	osg::Referenced()
 {
     _parent = rhs._parent;
     _extensions = rhs._extensions;

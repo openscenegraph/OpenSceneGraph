@@ -368,6 +368,7 @@ ifeq ($(OS),CYGWIN)
   INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
   INST_INCLUDE      = $(INST_SYS_PREFIX)/include
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
+  INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_DEMOS        = $(INST_SHARE_PREFIX)/bin
   INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
@@ -434,6 +435,7 @@ ifeq ($(OS),MINGW)
   INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
   INST_INCLUDE      = $(INST_SYS_PREFIX)/include
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
+  INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_DEMOS        = $(INST_SHARE_PREFIX)/bin
   INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
@@ -441,7 +443,7 @@ ifeq ($(OS),MINGW)
 
   PLUGIN_DIRS       = osg rgb lib3ds flt obj lwo bmp pic tga osgtgz tgz zip
 # txp
-  DEMOS_DIRS        = hangglide osgbillboard osgconv osgcopy osgcube osgimpostor\
+  DEMOS_DIRS        = osghangglide osgbillboard osgconv osgcopy osgcube osgimpostor\
                        osgreflect osgscribe osgstereoimage osgtexture1D osgtexture2D osgtexture3D\
                        osgviews osgversion sgv osghud osgtext 
 # osgcluster

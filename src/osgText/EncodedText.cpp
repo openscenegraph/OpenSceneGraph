@@ -219,7 +219,6 @@ void EncodedText::setText(const unsigned char* text, int length)
             character = getNextCharacter(text);
             charCount = (int)(text-textStart);
         }
-        _unicodeText.push_back(0); //just making the null-termination explicit
     }
 }
 

@@ -6,18 +6,18 @@
  * Loader for DirectX .x files.
  * Copyright (c)2002 Ulrich Hertlein <u.hertlein@sandbox.de>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -38,6 +38,13 @@ namespace DX {
     // Vector
     typedef struct {
         float x,y,z;
+
+        inline void normalize() {
+            float lenRecip = 1.0f / sqrt(x * x + y * y + z * z);
+            x *= lenRecip;
+            y *= lenRecip;
+            z *= lenRecip;
+        }
     } Vector;
 
     // Coords2d
@@ -105,21 +112,30 @@ namespace DX {
      */
     class Object {
     public:
-        /// Constructor; loads filename if non-NULL.
-        Object(const char* filename = NULL);
+        /// Constructor.
+        Object();
 
         /// Destructor.
-        virtual ~Object();
+        virtual ~Object() {
+            clear();
+        }
 
-        /// Load from file; discards old data.
+        /**
+         * Load model from file
+         * Discards old data.
+         * @param filename Filename.
+         * @return false if the model could not be loaded, else true.
+         */
         bool load(const char* filename);
 
         /**
-         * Generate normals.
-         * This function generates face normals and binds them to
-         * every vertex of this face.
+         * Generate per-vertex normals for the entire model.
+         * Discards any previously loaded or generated normals.
+         * @param creaseAngle TODO: The angle above which two adjacent faces are no
+         * longer considered to belong to a common surface.
+         * @return false if an error occurred, else true.
          */
-        bool generateNormals();
+        bool generateNormals(float creaseAngle = 80.0f);
 
         /// Get MeshTextureCoords.
         inline const MeshTextureCoords* getMeshTextureCoords() const {
@@ -170,16 +186,16 @@ namespace DX {
         void readMeshTexCoords(std::ifstream& fin);
 
         /// Read index list.
-        void readIndexList(ifstream& fin, std::vector<unsigned int>& v, unsigned int count);
+        void readIndexList(std::ifstream& fin, std::vector<unsigned int>& v, unsigned int count);
 
         /// Parse 'MeshMaterialList'.
         void parseMeshMaterialList(std::ifstream& fin);
 
         /// Read 'Vector'.
-        void readVector(ifstream& fin, std::vector<Vector>& v, unsigned int count);
+        void readVector(std::ifstream& fin, std::vector<Vector>& v, unsigned int count);
 
         /// Read 'MeshFace'.
-        void readMeshFace(ifstream& fin, std::vector<MeshFace>& v, unsigned int count);
+        void readMeshFace(std::ifstream& fin, std::vector<MeshFace>& v, unsigned int count);
 
         /// Parse 'MeshNormals'.
         void parseMeshNormals(std::ifstream& fin);

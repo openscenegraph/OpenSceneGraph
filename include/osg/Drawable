@@ -143,7 +143,7 @@ class SG_EXPORT Drawable : public Object
         friend struct osg::Drawable::DrawCallback;
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
-        void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyBound(); }
+        void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
         
         /** Get the non const ComputerTransfromCallback.*/
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }

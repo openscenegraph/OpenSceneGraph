@@ -1,4 +1,5 @@
 #include "osg/Object"
+#include "osg/Notify"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -42,6 +43,22 @@ bool Object_readLocalData(Object& obj, Input& fr)
         }
     }    
 
+    if (fr.matchSequence("UserData {"))
+    {
+        osg::notify(osg::DEBUG_INFO) << "Matched UserData {"<< std::endl;
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            Object* object = fr.readObject();
+            if (object) obj.setUserData(object);
+            osg::notify(osg::DEBUG_INFO) << "read "<<object<< std::endl;
+            ++fr;
+        }
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -52,6 +69,19 @@ bool Object_writeLocalData(const Object& obj, Output& fw)
     {
         case(osg::Object::STATIC): fw.indent() << "DataVariance STATIC" << std::endl;break;
         default:                   fw.indent() << "DataVariance DYNAMIC" << std::endl;break;
+    }
+
+    if (obj.getUserData())
+    {
+        const Object* object = dynamic_cast<const Object*>(obj.getUserData());
+        if (object)
+        {
+            fw.indent() << "UserData {"<< std::endl;
+            fw.moveIn();
+            fw.writeObject(*object);
+            fw.moveOut();
+            fw.indent() << "}"<< std::endl;
+        }
     }
 
     return true;

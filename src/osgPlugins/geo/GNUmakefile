@@ -6,13 +6,7 @@ CXXFILES =\
 	ReaderWriterGEO.cpp
 
 
-##LIBS  += -losgText -losgSim $(OSG_LIBS) $(OTHER_LIBS)
-LIBS  = 
-
-#### MacOS X specific definitions
-ifeq ($(OS),Darwin)
-LINKARGS += -Wl,multiply_defined -Wl,suppress
-endif
+LIBS  += -losgText -losgSim $(OSG_LIBS) $(OTHER_LIBS)
 
 
 TARGET_BASENAME = geo

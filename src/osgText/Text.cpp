@@ -643,6 +643,11 @@ void Text::computePositions(unsigned int contextID) const
 
             float pixelSize = (_characterHeight*sqrtf(scale_00.length2()+scale_10.length2()))/(pixelSizeVector_w*0.701f);
 
+            // avoid nasty math by preventing a divide by zero
+            if(pixelSize == 0.0f)
+            {
+                pixelSize = 1.0f;
+            }
             if (_characterSizeMode==SCREEN_COORDS)
             {
                 float scale_font = _characterHeight/pixelSize;

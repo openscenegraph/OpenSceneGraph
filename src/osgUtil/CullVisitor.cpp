@@ -158,10 +158,10 @@ void CullVisitor::pushCullingSet()
 {
     _MVPW_Stack.push_back(0L);
     
-    const osg::Matrix& mvpw = getMVPW();
-    float scale = osg::Vec3(mvpw(0,0),mvpw(1,0),mvpw(2,0)).length();
-    Vec4 pixelSizeVector(mvpw(0,3),mvpw(1,3),mvpw(2,3),mvpw(3,3));
-    if (scale>0.0f) pixelSizeVector /= scale; 
+//     const osg::Matrix& mvpw = getMVPW();
+//     float scale = osg::Vec3(mvpw(0,0),mvpw(1,0),mvpw(2,0)).length();
+//     Vec4 pixelSizeVector(mvpw(0,3),mvpw(1,3),mvpw(2,3),mvpw(3,3));
+//     if (scale>0.0f) pixelSizeVector /= scale; 
 
 
 
@@ -173,26 +173,33 @@ void CullVisitor::pushCullingSet()
     }
     else 
     {
-// Need to account for window matrix...
-//        osg::Matrix& P = *_projectionStack.back();
-//         osg::Matrix& M = *_modelviewStack.back();
-//         
-//         float P00 = P(0,0);
-//         float P20 = P(2,0);
-//         osg::Vec3 scale(M(0,0)*P00 + M(0,2)*P20,
-//                         M(1,0)*P00 + M(1,2)*P20,
-//                         M(2,0)*P00 + M(2,2)*P20);
-//                         
-//         float P23 = P(2,3);
-//         float P33 = P(3,3);
-//         osg::Vec4 pixelSizeVector(M(0,2)*P23,
-//                                   M(1,2)*P23,
-//                                   M(2,2)*P23,
-//                                   M(3,2)*P23 + M(3,3)*P33);
-//                                   
-//         pixelSizeVector /= scale.length();
+    
+        const osg::Viewport& W = *_viewportStack.back();
+        const osg::Matrix& P = *_projectionStack.back();
+        const osg::Matrix& M = *_modelviewStack.back();
         
-        _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
+        // pre adjust P00,P20,P23,P33 by multiplying them by the viewport window matrix.
+        // here we do it in short hand with the knowledge of how the window matrix is formed
+        // note P23,P33 are multiplied by an implicit 1 which would come from the window matrix.
+        // Robert Osfield, June 2002.
+        float P00 = P(0,0)*W.width()*0.5f;
+        float P20 = P(2,0)*W.width()*0.5f + P(2,3)*W.width()*0.5f;
+        osg::Vec3 scale(M(0,0)*P00 + M(0,2)*P20,
+                        M(1,0)*P00 + M(1,2)*P20,
+                        M(2,0)*P00 + M(2,2)*P20);
+                        
+        float P23 = P(2,3);
+        float P33 = P(3,3);
+        osg::Vec4 pixelSizeVector2(M(0,2)*P23,
+                                  M(1,2)*P23,
+                                  M(2,2)*P23,
+                                  M(3,2)*P23 + M(3,3)*P33);
+                                  
+        pixelSizeVector2 /= scale.length();
+        
+        //cout << "pixelSizeVector = "<<pixelSizeVector<<" pixelSizeVector2="<<pixelSizeVector2<<endl;
+        
+        _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector2));
     }
     
 }

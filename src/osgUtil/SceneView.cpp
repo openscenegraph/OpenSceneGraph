@@ -163,7 +163,9 @@ void SceneView::init()
 
 void SceneView::update()
 {
-    if (!_initCalled) init();
+    // comment out since the init traversal by default with do OpenGL calls,
+    // which you definately don't want to call during update().
+    // if (!_initCalled) init();
 
 
     if (_sceneData.valid() && _updateVisitor.valid())

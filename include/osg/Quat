@@ -145,20 +145,20 @@ class SG_EXPORT Quat
             return *this;			// enable nesting
         }
 
-	/// Binary subtraction 
+        /// Binary subtraction 
         inline const Quat operator - (const Quat& rhs) const
         {
             return Quat( _fv - rhs._fv );
         }
 
-	/// Unary subtraction 
+        /// Unary subtraction 
         inline Quat& operator -= (const Quat& rhs)
         {
             _fv-=rhs._fv;
             return *this;			// enable nesting
         }
 
-	/** Negation operator - returns the negative of the quaternion.
+        /** Negation operator - returns the negative of the quaternion.
 	    Basically just calls operator - () on the Vec4 */
         inline const Quat operator - () const
         {
@@ -177,17 +177,17 @@ class SG_EXPORT Quat
             return _fv.length2();
         }
 
-	/// Conjugate 
-	inline const Quat conj () const
-	{ 
-	    return Quat( -_fv[0], -_fv[1], -_fv[2], _fv[3] );
-	}
+        /// Conjugate 
+        inline const Quat conj () const
+        { 
+             return Quat( -_fv[0], -_fv[1], -_fv[2], _fv[3] );
+        }
 
-	/// Multiplicative inverse method: q^(-1) = q^*/(q.q^*)
-	inline const Quat inverse () const
-	{
-	    return conj() / length2();
-	}
+        /// Multiplicative inverse method: q^(-1) = q^*/(q.q^*)
+        inline const Quat inverse () const
+        {
+             return conj() / length2();
+         }
 
       /* -------------------------------------------------------- 
 	 		  METHODS RELATED TO ROTATIONS
@@ -199,9 +199,9 @@ class SG_EXPORT Quat
 
 	Not inlined - see the Quat.cpp file for implementation
 	-------------------------------------------------------- */
-	void makeRotate ( const float angle, 
+        void makeRotate ( const float angle, 
                        const float x, const float y, const float z );
-	void makeRotate ( const float angle, const Vec3& vec );
+        void makeRotate ( const float angle, const Vec3& vec );
 
         /** Make a rotation Quat which will rotate vec1 to vec2.
             Generally take adot product to get the angle between these
@@ -210,14 +210,14 @@ class SG_EXPORT Quat
             are co-incident or opposite in direction.*/
         void makeRotate( const Vec3& vec1, const Vec3& vec2 );
 
-	/** Return the angle and vector components represented by the quaternion.*/
-	void getRot  ( float& angle, float& x, float& y, float& z ) const;
-	/** Return the angle and vector represented by the quaternion.*/
-	void getRot  ( float& angle, Vec3& vec ) const;
+        /** Return the angle and vector components represented by the quaternion.*/
+        void getRotate ( float& angle, float& x, float& y, float& z ) const;
+        /** Return the angle and vector represented by the quaternion.*/
+        void getRotate ( float& angle, Vec3& vec ) const;
 
-	/** Spherical Linear Interpolation.
+        /** Spherical Linear Interpolation.
 	    As t goes from 0 to 1, the Quat object goes from "from" to "to". */
-	void slerp   ( const float t, const Quat& from, const Quat& to);
+        void slerp   ( const float t, const Quat& from, const Quat& to);
         
         /** Set quaternion to be equivalent to specified matrix.*/
         void set( const osg::Matrix& m );
@@ -225,11 +225,11 @@ class SG_EXPORT Quat
         /** Get the equivalent matrix for this quaternion.*/
         void get( osg::Matrix& m ) const;
 
-        friend inline ostream& operator << (ostream& output, const Quat& vec);
+        friend inline std::ostream& operator << (std::ostream& output, const Quat& vec);
 
 };	// end of class prototype
 
-inline ostream& operator << (ostream& output, const Quat& vec)
+inline std::ostream& operator << (std::ostream& output, const Quat& vec)
 {
     output << vec._fv[0] << " "
 	   << vec._fv[1] << " "

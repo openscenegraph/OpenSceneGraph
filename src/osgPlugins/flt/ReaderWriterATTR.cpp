@@ -702,7 +702,7 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
 
             StateSet* stateset = attr.createOsgStateSet();
 
-            notify(INFO) << "texture attribute read ok" << endl;
+            notify(INFO) << "texture attribute read ok" << std::endl;
             return stateset;
         }
 

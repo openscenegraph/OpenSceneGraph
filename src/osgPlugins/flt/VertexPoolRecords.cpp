@@ -34,7 +34,7 @@ void VertexPaletteRecord::endian()
 }
 
 
-ostream& operator << (ostream& output, const VertexPaletteRecord& rec)
+std::ostream& operator << (std::ostream& output, const VertexPaletteRecord& rec)
 {
     output << rec.className();
     return output;               // to enable cascading
@@ -72,7 +72,7 @@ void VertexRecord::endian()
 }
 
 
-ostream& operator << (ostream& output, const VertexRecord& rec)
+std::ostream& operator << (std::ostream& output, const VertexRecord& rec)
 {
     output << rec.className() << " "
         << rec.getData()->swFlags << " "
@@ -114,7 +114,7 @@ void NormalVertexRecord::endian()
 }
 
 
-ostream& operator << (ostream& output, const NormalVertexRecord& rec)
+std::ostream& operator << (std::ostream& output, const NormalVertexRecord& rec)
 {
     output << rec.className() << " "
         << rec.getData()->swFlags << " "
@@ -156,7 +156,7 @@ void TextureVertexRecord::endian()
 }
 
 
-ostream& operator << (ostream& output, const TextureVertexRecord& rec)
+std::ostream& operator << (std::ostream& output, const TextureVertexRecord& rec)
 {
     output << rec.className() << " "
         << rec.getData()->swFlags << " "
@@ -199,7 +199,7 @@ void NormalTextureVertexRecord::endian()
 }
 
 
-ostream& operator << (ostream& output, const NormalTextureVertexRecord& rec)
+std::ostream& operator << (std::ostream& output, const NormalTextureVertexRecord& rec)
 {
     output << rec.className() << " "
         << rec.getData()->swFlags << " "

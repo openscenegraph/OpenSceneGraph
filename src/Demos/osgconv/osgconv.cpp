@@ -16,23 +16,23 @@ static bool do_convert = false;
 
 static void usage( const char *prog, const char *msg )
 {
-    osg::notify(osg::NOTICE)<<endl;
-    osg::notify(osg::NOTICE) << msg << endl;
-    osg::notify(osg::NOTICE)<<endl;
-    osg::notify(osg::NOTICE)<<"usage:"<<endl;
-    osg::notify(osg::NOTICE)<<"    " << prog << " [options] infile1 [infile2 ...] outfile"<<endl;
-    osg::notify(osg::NOTICE)<<endl;
-    osg::notify(osg::NOTICE)<<"options:"<<endl;
-    osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<<endl;
-    osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<<endl;
-    osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<<endl;
-    osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<<endl;
-    osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<<endl;
-    osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<<endl;
-    osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<<endl;
-    osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<endl;
-    osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<endl;
-    osg::notify(osg::NOTICE)<<"    -o orientation     - Convert geometry from input files to output files."<<endl;
+    osg::notify(osg::NOTICE)<< std::endl;
+    osg::notify(osg::NOTICE) << msg << std::endl;
+    osg::notify(osg::NOTICE)<< std::endl;
+    osg::notify(osg::NOTICE)<<"usage:"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    " << prog << " [options] infile1 [infile2 ...] outfile"<< std::endl;
+    osg::notify(osg::NOTICE)<< std::endl;
+    osg::notify(osg::NOTICE)<<"options:"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    -o orientation     - Convert geometry from input files to output files."<< std::endl;
     osg::notify(osg::NOTICE)<<
                               "                         Format of orientation argument must be the following:\n"
 			      "\n"
@@ -46,7 +46,7 @@ static void usage( const char *prog, const char *msg )
 			      "\n"
 			      "                             0,1,0-0,0,1"
 			      "\n"
-			      << endl;
+			      << std::endl;
     osg::notify(osg::NOTICE)<<"    -t translation     - Convert spatial position of output files.  Format of\n"
                               "                         translation argument must be the following :\n"
 			      "\n"
@@ -54,7 +54,7 @@ static void usage( const char *prog, const char *msg )
 			      "\n"
 			      "                         where X, Y, and Z represent the coordinates of the\n"
 			      "                         absolute position in world space\n"
-			      << endl;
+			      << std::endl;
     osg::notify(osg::NOTICE)<<"    -s scale           - Scale size of model.  Scale argument must be the \n"
                               "                         following :\n"
 			      "\n"
@@ -62,7 +62,7 @@ static void usage( const char *prog, const char *msg )
 			      "\n"
 			      "                         where SX, SY, and SZ represent the scale factors\n"
 			      "                         Caution: Scaling will be done in destination orientation\n"
-			      << endl;
+			      << std::endl;
 }
 
 static bool 
@@ -209,11 +209,11 @@ int main( int argc, char **argv )
         if (root)
         {
             osgDB::writeNodeFile(*root,"converted.osg");
-            osg::notify(osg::NOTICE)<<"Data written to 'converted.osg'."<<endl;
+            osg::notify(osg::NOTICE)<<"Data written to 'converted.osg'."<< std::endl;
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Error no data loaded."<<endl;
+            osg::notify(osg::NOTICE)<<"Error no data loaded."<< std::endl;
             return 1;
         }
     }
@@ -239,7 +239,7 @@ int main( int argc, char **argv )
         if (group->getNumChildren()==0)
         {
 
-            osg::notify(osg::NOTICE)<<"Error no data loaded."<<endl;
+            osg::notify(osg::NOTICE)<<"Error no data loaded."<< std::endl;
             return 1;
         }
         else if (group->getNumChildren()==1)

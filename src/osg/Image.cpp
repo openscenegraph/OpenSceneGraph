@@ -108,7 +108,7 @@ void Image::scaleImage(const int s,const int t,const int /*r*/)
     {
         ::free(newData);
 
-        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<endl;
+        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
     }
     
     ++_modifiedTag;
@@ -128,8 +128,8 @@ void Image::ensureDimensionsArePowerOfTwo()
     
     if (new_s!=_s || new_t!=_t)
     {
-        if (!_fileName.empty()) notify(NOTICE) << "Scaling image '"<<_fileName<<"' from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<endl;
-        else notify(NOTICE) << "Scaling image from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<endl;
+        if (!_fileName.empty()) notify(NOTICE) << "Scaling image '"<<_fileName<<"' from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<std::endl;
+        else notify(NOTICE) << "Scaling image from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<std::endl;
 
         scaleImage(new_s,new_t,_r);
     }

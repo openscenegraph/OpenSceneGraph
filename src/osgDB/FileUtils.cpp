@@ -74,12 +74,12 @@ void osgDB::initFilePath( void )
     char *ptr;
     if( (ptr = getenv( "OSGFILEPATH" ))  )
     {
-        notify(DEBUG_INFO) << "osgDB::Init("<<ptr<<")"<<endl;
+        notify(DEBUG_INFO) << "osgDB::Init("<<ptr<<")"<<std::endl;
         setFilePath( ptr );
     }
     else
     {
-        notify(DEBUG_INFO) << "osgDB::Init(NULL)"<<endl;
+        notify(DEBUG_INFO) << "osgDB::Init(NULL)"<<std::endl;
     }
     s_filePathInitialized = true;
 }
@@ -89,7 +89,7 @@ void osgDB::setFilePath( const char *_path )
 {
     char buff[1024];
 
-    notify(DEBUG_INFO) << "In osgDB::setFilePath("<<_path<<")"<<endl;
+    notify(DEBUG_INFO) << "In osgDB::setFilePath("<<_path<<")"<<std::endl;
 
     buff[0] = 0;
 
@@ -145,8 +145,8 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
 
     ::free(tptr);
 
-    if (path) notify( DEBUG_INFO ) << "FindFileInPath() : returning " << path << endl;
-	else notify( DEBUG_INFO ) << "FindFileInPath() : returning NULL" << endl;
+    if (path) notify( DEBUG_INFO ) << "FindFileInPath() : returning " << path << std::endl;
+	else notify( DEBUG_INFO ) << "FindFileInPath() : returning NULL" << std::endl;
 
     return path;
 #endif
@@ -263,7 +263,7 @@ char *osgDB::findDSO( const char *name )
 
     if ((ptr = getenv( "PATH" )))
     {
-        notify(DEBUG_INFO) << "PATH = "<<ptr<<endl;
+        notify(DEBUG_INFO) << "PATH = "<<ptr<<std::endl;
         strcat( path, PathDelimitor );
         strcat( path, ptr );
     }

@@ -117,12 +117,12 @@ bool FltFile::readFile(const std::string& fileName)
         if (!fin.open(newFileName)) return NULL;
     }
 
-    osg::notify(osg::INFO) << "Loading " << fileName << " ... " << endl;
+    osg::notify(osg::INFO) << "Loading " << fileName << " ... " << std::endl;
 
     Record* pRec = fin.readCreateRecord(this);
     if (pRec == NULL)
     {
-        osg::notify(osg::WARN) << "File not found " << fileName << endl;
+        osg::notify(osg::WARN) << "File not found " << fileName << std::endl;
         return false;
     }
 
@@ -161,7 +161,7 @@ void FltFile::readExternals()
                     MaterialPool*   pMaterialPool = NULL;
                     std::string filename(pSExternal->szPath);
 
-                    osg::notify(osg::INFO) << "External=" << filename << endl;
+                    osg::notify(osg::INFO) << "External=" << filename << std::endl;
 
                     if (rec.getFlightVersion() > 13)
                     {

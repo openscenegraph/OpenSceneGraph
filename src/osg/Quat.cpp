@@ -95,7 +95,7 @@ void Quat::makeRotate( const Vec3& from, const Vec3& to )
 // Get the angle of rotation and axis of this Quat object.
 // Won't give very meaningful results if the Quat is not associated
 // with a rotation!
-void Quat::getRot( float& angle, Vec3& vec ) const
+void Quat::getRotate( float& angle, Vec3& vec ) const
 {
     float sinhalfangle = sqrt( _fv[0]*_fv[0] + _fv[1]*_fv[1] + _fv[2]*_fv[2] );
     /// float coshalfangle = _fv[3];
@@ -112,7 +112,7 @@ void Quat::getRot( float& angle, Vec3& vec ) const
 }
 
 
-void Quat::getRot( float& angle, float& x, float& y, float& z ) const
+void Quat::getRotate( float& angle, float& x, float& y, float& z ) const
 {
     float sinhalfangle = sqrt( _fv[0]*_fv[0] + _fv[1]*_fv[1] + _fv[2]*_fv[2] );
 

@@ -67,14 +67,14 @@ bool EarthSky_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "requiresClear ";
     if (es.getRequiresClear())
     {
-        fw<<"TRUE"<<endl;
+        fw<<"TRUE"<< std::endl;
     }
     else
     {
-        fw<<"FALSE"<<endl;
+        fw<<"FALSE"<< std::endl;
     }
     
-    fw.indent() << "clearColor "<<es.getClearColor()<<endl;
+    fw.indent() << "clearColor "<<es.getClearColor()<< std::endl;
 
     return true;
 }

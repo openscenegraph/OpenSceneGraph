@@ -66,8 +66,8 @@ class OSGDB_EXPORT Output : public std::ofstream
     protected:
 
         // prevent copy construction and assignment.
-        Output(const Output&) : ofstream() {}
-        Output& operator = (const Output&) { return *this; }
+        Output(const Output&);
+        Output& operator = (const Output&);
 
         virtual void init();
 
@@ -88,14 +88,14 @@ class OSGDB_EXPORT Output : public std::ofstream
 template<class T>
 bool writeArrayBlock(Output& fw,T* start,T* finish)
 {
-    fw.indent() << "{" << endl;
+    fw.indent() << "{" << std::endl;
     fw.moveIn();
     int numIndicesThisLine = 0;
     for(T* itr=start;itr!=finish;++itr)
     {
         if (numIndicesThisLine>=fw.getNumIndicesPerLine()) 
         {
-            fw << endl;
+            fw << std::endl;
             numIndicesThisLine = 0;
         }
 
@@ -107,9 +107,9 @@ bool writeArrayBlock(Output& fw,T* start,T* finish)
         ++numIndicesThisLine;
 
     }
-    fw << endl;
+    fw << std::endl;
     fw.moveOut();
-    fw.indent() << "}" << endl;
+    fw.indent() << "}" << std::endl;
     return true;
 }
 

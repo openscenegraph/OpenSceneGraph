@@ -325,7 +325,7 @@ bool Matrix::invert( const Matrix& _m )
 
         if ( fabs( pivot) <= 1e-20)
         {
-            notify(WARN) << "*** pivot = %f in mat_inv. ***"<<endl;
+            notify(WARN) << "*** pivot = %f in mat_inv. ***"<<std::endl;
             //abort( 0);
             return false;
         }
@@ -409,7 +409,7 @@ bool Matrix::invertAffine( const Matrix& _m )
 
     if( (det_1 == 0.0) || (fabs(det_1/(pos-neg)) < PRECISION_LIMIT )) {
         // _m has no inverse
-        notify(WARN) << "Matrix::invert(): Matrix has no inverse." << endl;
+        notify(WARN) << "Matrix::invert(): Matrix has no inverse." << std::endl;
         return false;
     }
 

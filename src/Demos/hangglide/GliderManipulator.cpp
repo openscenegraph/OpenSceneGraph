@@ -168,7 +168,7 @@ bool GliderManipulator::calcMovement()
 
     if (dt<0.0f)
     {
-        notify(WARN) << "warning dt = "<<dt<<endl;
+        notify(WARN) << "warning dt = "<<dt<< std::endl;
         dt = 0.0f;
     }
 

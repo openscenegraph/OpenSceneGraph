@@ -69,17 +69,17 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     std::string directory = osgDB::getFilePath(fileName);
 
 
-    osg::notify(osg::INFO) << "vertices " << obj->numvertices << endl;
-    osg::notify(osg::INFO)  << "normals " << obj->numnormals << endl;
-    osg::notify(osg::INFO)  << "texcoords " << obj->numtexcoords << endl;
-    osg::notify(osg::INFO)  << "face normals " << obj->numfacetnorms << endl;
-    osg::notify(osg::INFO)  << "tris " << obj->numtriangles << endl;
-    osg::notify(osg::INFO)  << "materials " << obj->nummaterials << endl;
-    osg::notify(osg::INFO)  << "groups " << obj->numgroups << endl;
+    osg::notify(osg::INFO) << "vertices " << obj->numvertices << std::endl;
+    osg::notify(osg::INFO)  << "normals " << obj->numnormals << std::endl;
+    osg::notify(osg::INFO)  << "texcoords " << obj->numtexcoords << std::endl;
+    osg::notify(osg::INFO)  << "face normals " << obj->numfacetnorms << std::endl;
+    osg::notify(osg::INFO)  << "tris " << obj->numtriangles << std::endl;
+    osg::notify(osg::INFO)  << "materials " << obj->nummaterials << std::endl;
+    osg::notify(osg::INFO)  << "groups " << obj->numgroups << std::endl;
 
     if (obj->numnormals==0)
     {
-        osg::notify(osg::NOTICE)  << "No normals in .obj file, automatically calculating normals..."<<endl;
+        osg::notify(osg::NOTICE)  << "No normals in .obj file, automatically calculating normals..."<< std::endl;
         glmFacetNormals(obj);
         glmVertexNormals(obj,90.0f);
     }
@@ -94,7 +94,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         osg_mtl = new osg::StateSet*[obj->nummaterials];
         for (i = 0; i < obj->nummaterials; i++) {
             GLMmaterial* omtl = &(obj->materials[i]);
-            osg::notify(osg::DEBUG_INFO) << "mtl: " << omtl->name << endl;
+            osg::notify(osg::DEBUG_INFO) << "mtl: " << omtl->name << std::endl;
 
             osg::StateSet* stateset = new osg::StateSet;
             osg_mtl[i] = stateset;
@@ -139,12 +139,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                     }
                     else
                     {
-                        osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<omtl->textureName<<endl;
+                        osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<omtl->textureName<< std::endl;
                     }
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<<endl;
+                    osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<< std::endl;
                 }
             }
         }
@@ -396,7 +396,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
         gset->setStateSet(mtl[grp->material]);
     }
     else
-        osg::notify(osg::INFO) << "Group " << grp->name << " has no material" << endl;
+        osg::notify(osg::INFO) << "Group " << grp->name << " has no material" << std::endl;
 
     return gset;
 }

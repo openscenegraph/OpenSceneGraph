@@ -194,7 +194,7 @@ void GeoSet::computeNumVerts() const
                 numverts += _primLengths[i];
             break;
         default:
-            notify(WARN) << "Not supported primitive "<<(int)_primtype<<endl;
+            notify(WARN) << "Not supported primitive "<<(int)_primtype<<std::endl;
             break;
     }
 

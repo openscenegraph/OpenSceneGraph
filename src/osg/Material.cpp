@@ -55,7 +55,7 @@ void Material::setAmbient( const Face face, const Vec4& ambient )
             _ambientBack = _ambientFront;
             break;
         default:
-            notify(NOTICE)<<"Notice: invalid Face passed to Material::setAmbient()."<<endl;
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setAmbient()."<<std::endl;
     }
 }
 
@@ -71,12 +71,12 @@ const Vec4& Material::getAmbient(const Face face) const
         case(FRONT_AND_BACK):
             if (!_ambientFrontAndBack)
             {
-                notify(NOTICE)<<"Notice: Material::getAmbient(FRONT_AND_BACK) called on material "<<endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK ambient colors."<<endl;
+                notify(NOTICE)<<"Notice: Material::getAmbient(FRONT_AND_BACK) called on material "<< std::endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK ambient colors."<< std::endl;
             }
             return _ambientFront;
     }
-    notify(NOTICE)<<"Notice: invalid Face passed to Material::getAmbient()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getAmbient()."<< std::endl;
     return _ambientFront;
 }
 
@@ -102,7 +102,7 @@ void Material::setDiffuse( const Face face, const Vec4& diffuse )
             _diffuseBack = _diffuseFront;
             break;
         default:
-            notify(NOTICE)<<"Notice: invalid Face passed to Material::setDiffuse()."<<endl;
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setDiffuse()."<< std::endl;
             break;
     }
 }
@@ -119,12 +119,12 @@ const Vec4& Material::getDiffuse(const Face face) const
         case(FRONT_AND_BACK):
             if (!_diffuseFrontAndBack)
             {
-                notify(NOTICE)<<"Notice: Material::getDiffuse(FRONT_AND_BACK) called on material "<<endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK diffuse colors."<<endl;
+                notify(NOTICE)<<"Notice: Material::getDiffuse(FRONT_AND_BACK) called on material "<< std::endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK diffuse colors."<< std::endl;
             }
             return _diffuseFront;
     }
-    notify(NOTICE)<<"Notice: invalid Face passed to Material::getDiffuse()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getDiffuse()."<< std::endl;
     return _diffuseFront;
 }
 
@@ -150,7 +150,7 @@ void Material::setSpecular( const Face face, const Vec4& specular )
             _specularBack = _specularFront;
             break;
         default:
-            notify(NOTICE)<<"Notice: invalid Face passed to Material::setSpecular()."<<endl;
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setSpecular()."<< std::endl;
             break;
     }
 }
@@ -167,12 +167,12 @@ const Vec4& Material::getSpecular(const Face face) const
         case(FRONT_AND_BACK):
             if (!_specularFrontAndBack)
             {
-                notify(NOTICE)<<"Notice: Material::getSpecular(FRONT_AND_BACK) called on material "<<endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK specular colors."<<endl;
+                notify(NOTICE)<<"Notice: Material::getSpecular(FRONT_AND_BACK) called on material "<< std::endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK specular colors."<< std::endl;
             }
             return _specularFront;
     }
-    notify(NOTICE)<<"Notice: invalid Face passed to Material::getSpecular()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getSpecular()."<< std::endl;
     return _specularFront;
 }
 
@@ -198,7 +198,7 @@ void Material::setEmission( const Face face, const Vec4& emission )
             _emissionBack = _emissionFront;
             break;
         default:
-            notify(NOTICE)<<"Notice: invalid Face passed to Material::setEmission()."<<endl;
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setEmission()."<< std::endl;
             break;
     }
 }
@@ -215,12 +215,12 @@ const Vec4& Material::getEmission(const Face face) const
         case(FRONT_AND_BACK):
             if (!_emissionFrontAndBack)
             {
-                notify(NOTICE)<<"Notice: Material::getEmission(FRONT_AND_BACK) called on material "<<endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK emission colors."<<endl;
+                notify(NOTICE)<<"Notice: Material::getEmission(FRONT_AND_BACK) called on material "<< std::endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK emission colors."<< std::endl;
             }
             return _emissionFront;
     }
-    notify(NOTICE)<<"Notice: invalid Face passed to Material::getEmission()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getEmission()."<< std::endl;
     return _emissionFront;
 }
 
@@ -245,7 +245,7 @@ void Material::setShininess( const Face face, float shininess )
             _shininessBack = shininess;
             break;
         default:
-            notify(NOTICE)<<"Notice: invalid Face passed to Material::setShininess()."<<endl;
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setShininess()."<< std::endl;
             break;
     }
 }
@@ -262,12 +262,12 @@ const float Material::getShininess(const Face face) const
         case(FRONT_AND_BACK):
             if (!_shininessFrontAndBack)
             {
-                notify(NOTICE)<<"Notice: Material::getShininess(FRONT_AND_BACK) called on material "<<endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK shininess colors."<<endl;
+                notify(NOTICE)<<"Notice: Material::getShininess(FRONT_AND_BACK) called on material "<< std::endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK shininess colors."<< std::endl;
             }
             return _shininessFront;
     }
-    notify(NOTICE)<<"Notice: invalid Face passed to Material::getShininess()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getShininess()."<< std::endl;
     return _shininessFront;
 }
 

@@ -72,13 +72,13 @@ bool Depth_writeLocalData(const Object& obj,Output& fw)
 {
     const Depth& depth = static_cast<const Depth&>(obj);
 
-    fw.indent() << "function " << Depth_getFuncStr(depth.getFunction()) << endl;
+    fw.indent() << "function " << Depth_getFuncStr(depth.getFunction()) << std::endl;
     
     fw.indent() << "writeMask ";
-    if (depth.getWriteMask()) fw << "TRUE" << endl;
-    else fw << "TRUE" << endl;
+    if (depth.getWriteMask()) fw << "TRUE" << std::endl;
+    else fw << "TRUE" << std::endl;
     
-    fw.indent() << "range " << depth.getZNear() << " " << depth.getZFar() << endl;
+    fw.indent() << "range " << depth.getZNear() << " " << depth.getZFar() << std::endl;
 
     return true;
 }

@@ -45,7 +45,7 @@ bool Impostor_writeLocalData(const Object& obj, Output& fw)
 {
     const Impostor& impostor = static_cast<const Impostor&>(obj);
 
-    fw.indent() << "ImpostorThreshold "<< impostor.getImpostorThreshold() <<endl;
+    fw.indent() << "ImpostorThreshold "<< impostor.getImpostorThreshold() << std::endl;
 
     return true;
 }

@@ -60,9 +60,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
     if (!lw)
         return ReadResult::FILE_NOT_HANDLED;
 
-    osg::notify(osg::INFO) << "faces " << lw->face_cnt << endl;
-    osg::notify(osg::INFO) << "materials " << lw->material_cnt << endl;
-    osg::notify(osg::INFO) << "vertices " << lw->vertex_cnt << endl;
+    osg::notify(osg::INFO) << "faces " << lw->face_cnt << std::endl;
+    osg::notify(osg::INFO) << "materials " << lw->material_cnt << std::endl;
+    osg::notify(osg::INFO) << "vertices " << lw->vertex_cnt << std::endl;
 
     // shared coordinates
     typedef std::map<int,osgUtil::Tesselator::IndexVec> MaterialTriangles;

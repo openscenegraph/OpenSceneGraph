@@ -72,7 +72,7 @@ void Record::ascend(RecordVisitor& rv)
 }
 */
 
-ostream& operator << (ostream& output, const Record& rec)
+std::ostream& operator << (std::ostream& output, const Record& rec)
 {
     output << rec.className()
         << " op=" << rec.getOpcode()
@@ -177,7 +177,7 @@ bool PrimNodeRecord::readLevel(Input& fr)
         if (!pRec->isPrimaryNode())
         {
             osg::notify(osg::WARN) << "Non primary record found as child. op="
-                                   << pRec->getOpcode() << endl;
+                                   << pRec->getOpcode() << std::endl;
             return false;
         }
 

@@ -53,8 +53,8 @@ bool FrontFace_writeLocalData(const Object& obj, Output& fw)
 
     switch(frontface.getMode())
     {
-        case(FrontFace::CLOCKWISE):         fw.indent() << "mode CLOCKWISE" << endl; break;
-        case(FrontFace::COUNTER_CLOCKWISE): fw.indent() << "mode COUNTER_CLOCKWISE" << endl; break;
+        case(FrontFace::CLOCKWISE):         fw.indent() << "mode CLOCKWISE" << std::endl; break;
+        case(FrontFace::COUNTER_CLOCKWISE): fw.indent() << "mode COUNTER_CLOCKWISE" << std::endl; break;
     }
     return true;
 }

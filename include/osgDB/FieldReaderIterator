@@ -25,7 +25,7 @@ class OSGDB_EXPORT FieldReaderIterator
 
         virtual FieldReaderIterator& operator = (const FieldReaderIterator& ic);
 
-        void attach(istream* input);
+        void attach(std::istream* input);
         void detach();
 
         virtual bool eof() const;

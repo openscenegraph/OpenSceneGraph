@@ -26,7 +26,7 @@ void TexGen::setPlane(const Coord which, const Vec4& plane)
         case T : _plane_t = plane; break;
         case R : _plane_r = plane; break;
         case Q : _plane_q = plane; break;
-        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::setPlane("<<(unsigned int)which<<","<<plane<<")"<<endl; break;
+        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::setPlane("<<(unsigned int)which<<","<<plane<<")"<<std::endl; break;
     }
 }
 
@@ -39,7 +39,7 @@ const Vec4& TexGen::getPlane(const Coord which) const
         case T : return _plane_t;
         case R : return _plane_r;
         case Q : return _plane_q;
-        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::getPlane(which)"<<endl; return _plane_r;
+        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::getPlane(which)"<<std::endl; return _plane_r;
     }
 }
 

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 
+using namespace std;
 using namespace osgDB;
 
 Output::Output()
@@ -18,6 +19,10 @@ Output::Output(const char* name) : ofstream(name)
     init();
     _filename = name;
 }
+
+Output::Output(const Output&) : ofstream() {}
+
+Output& Output::operator = (const Output&) { return *this; }
 
 Output::~Output()
 {
@@ -104,13 +109,13 @@ const std::string Output::getFileNameForOutput(const std::string& filename) cons
     case(FULL_PATH):
         {
             // need to think about how best to implement this first...
-            osg::notify(osg::WARN)<<"Warning: Output::getFileNameForOutput() does not support FULL_PATH yet."<<endl;        
+            osg::notify(osg::WARN)<<"Warning: Output::getFileNameForOutput() does not support FULL_PATH yet."<< std::endl;        
             return filename;
         }
     case(RELATIVE_PATH):
         {
             // need to think about how best to implement this as well...
-            osg::notify(osg::WARN)<<"Warning: Output::getFileNameForOutput() does not support RELATIVE_PATH yet."<<endl;        
+            osg::notify(osg::WARN)<<"Warning: Output::getFileNameForOutput() does not support RELATIVE_PATH yet."<< std::endl;        
             return filename;
         }
     case(FILENAME_ONLY):

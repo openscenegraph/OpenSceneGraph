@@ -191,62 +191,62 @@ bool Material_writeLocalData(const Object& obj, Output& fw)
 
     switch(material.getColorMode())
     {
-        case(Material::AMBIENT): fw.indent() << "ColorMode AMBIENT" << endl; break;
-        case(Material::DIFFUSE): fw.indent() << "ColorMode DIFFUSE" << endl; break;
-        case(Material::SPECULAR): fw.indent() << "ColorMode SPECULAR" << endl; break;
-        case(Material::EMISSION): fw.indent() << "ColorMode EMISSION" << endl; break;
-        case(Material::AMBIENT_AND_DIFFUSE): fw.indent() << "ColorMode AMBIENT_AND_DIFFUSE" << endl; break;
-        case(Material::OFF): fw.indent() << "ColorMode OFF" << endl; break;
+        case(Material::AMBIENT): fw.indent() << "ColorMode AMBIENT" << std::endl; break;
+        case(Material::DIFFUSE): fw.indent() << "ColorMode DIFFUSE" << std::endl; break;
+        case(Material::SPECULAR): fw.indent() << "ColorMode SPECULAR" << std::endl; break;
+        case(Material::EMISSION): fw.indent() << "ColorMode EMISSION" << std::endl; break;
+        case(Material::AMBIENT_AND_DIFFUSE): fw.indent() << "ColorMode AMBIENT_AND_DIFFUSE" << std::endl; break;
+        case(Material::OFF): fw.indent() << "ColorMode OFF" << std::endl; break;
     }
 
     if (material.getAmbientFrontAndBack())
     {
-        fw.indent() << "ambientColor " << material.getAmbient(Material::FRONT) << endl;
+        fw.indent() << "ambientColor " << material.getAmbient(Material::FRONT) << std::endl;
     }
     else
     {
-        fw.indent() << "ambientColor FRONT " << material.getAmbient(Material::FRONT) <<  endl;
-        fw.indent() << "ambientColor BACK  " << material.getAmbient(Material::BACK)  << endl;
+        fw.indent() << "ambientColor FRONT " << material.getAmbient(Material::FRONT) << std::endl;
+        fw.indent() << "ambientColor BACK  " << material.getAmbient(Material::BACK)  << std::endl;
     }
 
     if (material.getDiffuseFrontAndBack())
     {
-        fw.indent() << "diffuseColor " << material.getDiffuse(Material::FRONT) << endl;
+        fw.indent() << "diffuseColor " << material.getDiffuse(Material::FRONT) << std::endl;
     }
     else
     {
-        fw.indent() << "diffuseColor FRONT " << material.getDiffuse(Material::FRONT) <<  endl;
-        fw.indent() << "diffuseColor BACK  " << material.getDiffuse(Material::BACK) << endl;
+        fw.indent() << "diffuseColor FRONT " << material.getDiffuse(Material::FRONT) << std::endl;
+        fw.indent() << "diffuseColor BACK  " << material.getDiffuse(Material::BACK) << std::endl;
     }
 
     if (material.getSpecularFrontAndBack())
     {
-        fw.indent() << "specularColor " << material.getSpecular(Material::FRONT) << endl;
+        fw.indent() << "specularColor " << material.getSpecular(Material::FRONT) << std::endl;
     }
     else
     {
-        fw.indent() << "specularColor FRONT " << material.getSpecular(Material::FRONT) <<  endl;
-        fw.indent() << "specularColor BACK  " << material.getSpecular(Material::BACK) << endl;
+        fw.indent() << "specularColor FRONT " << material.getSpecular(Material::FRONT) << std::endl;
+        fw.indent() << "specularColor BACK  " << material.getSpecular(Material::BACK) << std::endl;
     }
 
     if (material.getEmissionFrontAndBack())
     {
-        fw.indent() << "emissionColor " << material.getEmission(Material::FRONT) << endl;
+        fw.indent() << "emissionColor " << material.getEmission(Material::FRONT) << std::endl;
     }
     else
     {
-        fw.indent() << "emissionColor FRONT " << material.getEmission(Material::FRONT) <<  endl;
-        fw.indent() << "emissionColor BACK  " << material.getEmission(Material::BACK)  << endl;
+        fw.indent() << "emissionColor FRONT " << material.getEmission(Material::FRONT) << std::endl;
+        fw.indent() << "emissionColor BACK  " << material.getEmission(Material::BACK)  << std::endl;
     }
 
     if (material.getShininessFrontAndBack())
     {
-        fw.indent() << "shininess " << material.getShininess(Material::FRONT) << endl;
+        fw.indent() << "shininess " << material.getShininess(Material::FRONT) << std::endl;
     }
     else
     {
-        fw.indent() << "shininess FRONT " << material.getShininess(Material::FRONT) <<  endl;
-        fw.indent() << "shininess BACK  " << material.getShininess(Material::BACK) << endl;
+        fw.indent() << "shininess FRONT " << material.getShininess(Material::FRONT) << std::endl;
+        fw.indent() << "shininess BACK  " << material.getShininess(Material::BACK) << std::endl;
     }
 
     return true;

@@ -452,8 +452,8 @@ void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
         break;
     default: 
         _attachedTransformMode = NO_ATTACHED_TRANSFORM;
-        notify(WARN)<<"Warning: invalid TransformMode pass to osg::Camera::attachTransform(..)"<<endl;
-        notify(WARN)<<"         setting Camera to NO_ATTACHED_TRANSFORM."<<endl;
+        notify(WARN)<<"Warning: invalid TransformMode pass to osg::Camera::attachTransform(..)"<<std::endl;
+        notify(WARN)<<"         setting Camera to NO_ATTACHED_TRANSFORM."<<std::endl;
         break;
     }
 

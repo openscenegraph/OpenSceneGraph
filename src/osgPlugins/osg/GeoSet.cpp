@@ -661,57 +661,57 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     switch(geoset.getPrimType())
     {
         case (GeoSet::TRIANGLE_STRIP):
-            fw.indent()<<"tstrips "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"tstrips "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::FLAT_TRIANGLE_STRIP):
-            fw.indent()<<"flat_tstrips "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"flat_tstrips "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::POLYGON):
-            fw.indent()<<"polys "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"polys "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::QUAD_STRIP):
-            fw.indent()<<"quadstrip "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"quadstrip "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::LINE_LOOP):
-            fw.indent()<<"lineloops "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"lineloops "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::LINE_STRIP):
-            fw.indent()<<"linestrip "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"linestrip "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = false;
             break;
         case (GeoSet::FLAT_LINE_STRIP):
-            fw.indent()<<"flat_linestrip "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"flat_linestrip "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = false;
             break;
         case (GeoSet::TRIANGLE_FAN):
-            fw.indent()<<"tfans "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"tfans "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
         case (GeoSet::FLAT_TRIANGLE_FAN):
-            fw.indent()<<"flat_tfans "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"flat_tfans "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::LINES):
-            fw.indent()<<"lines "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"lines "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = false;
             break;
         case (GeoSet::TRIANGLES):
-            fw.indent()<<"triangles "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"triangles "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = false;
             break;
         case (GeoSet::QUADS):
-            fw.indent()<<"quads "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"quads "<< geoset.getNumPrims() << std::endl;
             writeOutPrimitiveLengths = false;
             break;
         case (GeoSet::POINTS) :
-            fw.indent()<<"points "<< geoset.getNumPrims() << endl;
+            fw.indent()<<"points "<< geoset.getNumPrims() << std::endl;
             break;
         default:
-            notify(WARN) << "GeoSet::writeLocalData() - unhandled primitive type = "<<(int)geoset.getPrimType()<<endl;
+            notify(WARN) << "GeoSet::writeLocalData() - unhandled primitive type = "<<(int)geoset.getPrimType()<< std::endl;
     }
     if (writeOutPrimitiveLengths)
     {
@@ -724,16 +724,16 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     if (geoset.getCoords())
     {
         // write out _coords.
-        fw.indent() << "Coords " << geoset.getNumCoords()<<endl;
-        fw.indent() << "{"<<endl;
+        fw.indent() << "Coords " << geoset.getNumCoords()<< std::endl;
+        fw.indent() << "{"<< std::endl;
         fw.moveIn();
         const Vec3* coords = geoset.getCoords();
         for(i=0;i<geoset.getNumCoords();++i)
         {
-            fw.indent() << coords[i][0] << ' ' << coords[i][1] << ' ' << coords[i][2] << endl;
+            fw.indent() << coords[i][0] << ' ' << coords[i][1] << ' ' << coords[i][2] << std::endl;
         }
         fw.moveOut();
-        fw.indent()<<"}"<<endl;
+        fw.indent()<<"}"<< std::endl;
     }
 
     if (geoset.getCoordIndices()._size)
@@ -744,25 +744,25 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     if (geoset.getNormals())
     {
         // write out _normals.
-        fw.indent() << "Normal_Binding "<<GeoSet_getBindingTypeStr(geoset.getNormalBinding())<<endl;
+        fw.indent() << "Normal_Binding "<<GeoSet_getBindingTypeStr(geoset.getNormalBinding())<< std::endl;
 
-        fw.indent() << "Normals " << geoset.getNumNormals()<<endl;
-        fw.indent() << "{"<<endl;
+        fw.indent() << "Normals " << geoset.getNumNormals()<< std::endl;
+        fw.indent() << "{"<< std::endl;
         fw.moveIn();
         const Vec3* norms = geoset.getNormals();
         for(i=0;i<geoset.getNumNormals();++i)
         {
-            fw.indent() << norms[i][0] << ' ' << norms[i][1] << ' ' << norms[i][2] << endl;
+            fw.indent() << norms[i][0] << ' ' << norms[i][1] << ' ' << norms[i][2] << std::endl;
         }
 
         fw.moveOut();
-        fw.indent()<<"}"<<endl;
+        fw.indent()<<"}"<< std::endl;
     }
     if (geoset.getNormalIndices()._size)
     {
         if (geoset.getNormalIndices()==geoset.getCoordIndices())
         {
-            fw.indent() << "NIndex Use_CIndex"<<endl;
+            fw.indent() << "NIndex Use_CIndex"<< std::endl;
         }
         else
         {
@@ -774,24 +774,24 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     if (geoset.getColors())
     {
         // write out _colors.
-        fw.indent() << "Color_Binding "<<GeoSet_getBindingTypeStr(geoset.getColorBinding())<<endl;
+        fw.indent() << "Color_Binding "<<GeoSet_getBindingTypeStr(geoset.getColorBinding())<< std::endl;
 
-        fw.indent() << "Colors " << geoset.getNumColors()<<endl;
-        fw.indent() << "{"<<endl;
+        fw.indent() << "Colors " << geoset.getNumColors()<< std::endl;
+        fw.indent() << "{"<< std::endl;
         fw.moveIn();
         const Vec4* colors = geoset.getColors();
         for(i=0;i<geoset.getNumColors();++i)
         {
-            fw.indent() << colors[i][0] << ' ' << colors[i][1] << ' ' << colors[i][2] << ' ' << colors[i][3] << endl;
+            fw.indent() << colors[i][0] << ' ' << colors[i][1] << ' ' << colors[i][2] << ' ' << colors[i][3] << std::endl;
         }
         fw.moveOut();
-        fw.indent()<<"}"<<endl;
+        fw.indent()<<"}"<< std::endl;
     }
     if (geoset.getColorIndices()._size)
     {
         if (geoset.getColorIndices()==geoset.getCoordIndices())
         {
-            fw.indent() << "ColIndex Use_CIndex"<<endl;
+            fw.indent() << "ColIndex Use_CIndex"<< std::endl;
         }
         else
         {
@@ -802,24 +802,24 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     if (geoset.getTextureCoords())
     {
         // write out _tcoords.
-        fw.indent() << "Texture_Binding "<<GeoSet_getBindingTypeStr(geoset.getTextureBinding())<<endl;
+        fw.indent() << "Texture_Binding "<<GeoSet_getBindingTypeStr(geoset.getTextureBinding())<< std::endl;
 
-        fw.indent() << "TCoords " << geoset.getNumTextureCoords()<<endl;
-        fw.indent() << "{"<<endl;
+        fw.indent() << "TCoords " << geoset.getNumTextureCoords()<< std::endl;
+        fw.indent() << "{"<< std::endl;
         fw.moveIn();
         const Vec2* tcoords = geoset.getTextureCoords();
         for(i=0;i<geoset.getNumTextureCoords();++i)
         {
-            fw.indent() << tcoords[i][0] << ' ' << tcoords[i][1] << endl;
+            fw.indent() << tcoords[i][0] << ' ' << tcoords[i][1] << std::endl;
         }
         fw.moveOut();
-        fw.indent()<<"}"<<endl;
+        fw.indent()<<"}"<< std::endl;
     }
     if (geoset.getTextureIndices()._size)
     {
         if (geoset.getTextureIndices()==geoset.getCoordIndices())
         {
-            fw.indent() << "TIndex Use_CIndex"<<endl;
+            fw.indent() << "TIndex Use_CIndex"<< std::endl;
         }
         else
         {
@@ -854,8 +854,8 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
             default: fw << "IA_OFF"; break;
         }
 
-        fw << " " <<  geoset.getNumInterleavedCoords()<<endl;
-        fw.indent() << "{"<<endl;
+        fw << " " <<  geoset.getNumInterleavedCoords()<< std::endl;
+        fw.indent() << "{"<< std::endl;
         fw.moveIn();
 
         const unsigned char* itrRowData = (const unsigned char*)geoset.getInterleavedArray();
@@ -878,11 +878,11 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
                 }
                 itrRowComp++;
             }
-            fw << endl;
+            fw << std::endl			;
 
         }
         fw.moveOut();
-        fw.indent()<<"}"<<endl;
+        fw.indent()<<"}"<< std::endl;
 
     }
 
@@ -1007,13 +1007,13 @@ bool GeoSet_writeIndexData(Output& fw, const char* IndexName,const GeoSet::Index
         if (ip._is_ushort)
         {
             // write our CoordIndex
-            fw.indent() << IndexName << " ushort " << ip._size<<endl;
+            fw.indent() << IndexName << " ushort " << ip._size<< std::endl;
             writeArrayBlock(fw,ip._ptr._ushort,ip._ptr._ushort+ip._size);
         }
         else
         {
             // write our CoordIndex
-            fw.indent() << IndexName << " uint " << ip._size<<endl;
+            fw.indent() << IndexName << " uint " << ip._size<< std::endl;
             writeArrayBlock(fw,ip._ptr._uint,ip._ptr._uint+ip._size);
         }
         return true;

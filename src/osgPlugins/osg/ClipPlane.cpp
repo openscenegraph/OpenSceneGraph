@@ -64,11 +64,11 @@ bool ClipPlane_writeLocalData(const Object& obj,Output& fw)
 {
     const ClipPlane& clipplane = static_cast<const ClipPlane&>(obj);
 
-    fw.indent() << "clipPlaneNum " << clipplane.getClipPlaneNum() <<endl;
+    fw.indent() << "clipPlaneNum " << clipplane.getClipPlaneNum() <<std::endl;
 
     double plane[4];
     clipplane.getClipPlane(plane);
-    fw.indent() << "plane " << plane[0] << ' ' << plane[1] << ' ' << plane[2] << ' ' << plane[3] << endl;
+    fw.indent() << "plane " << plane[0] << ' ' << plane[1] << ' ' << plane[2] << ' ' << plane[3] << std::endl;
     return true;
 }
 

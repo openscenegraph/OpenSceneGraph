@@ -111,15 +111,15 @@ bool Billboard_writeLocalData(const Object& obj, Output& fw)
 
     switch(billboard.getMode())
     {
-        case(Billboard::AXIAL_ROT): fw.indent() << "Mode AXIAL_ROT"<<endl; break;
-        case(Billboard::POINT_ROT_EYE): fw.indent() << "Mode POINT_ROT_EYE"<<endl; break;
-        case(Billboard::POINT_ROT_WORLD): fw.indent() << "Mode POINT_ROT_WORLD"<<endl; break;
+        case(Billboard::AXIAL_ROT): fw.indent() << "Mode AXIAL_ROT"<<std::endl; break;
+        case(Billboard::POINT_ROT_EYE): fw.indent() << "Mode POINT_ROT_EYE"<<std::endl; break;
+        case(Billboard::POINT_ROT_WORLD): fw.indent() << "Mode POINT_ROT_WORLD"<<std::endl; break;
     }
 
     const Vec3& axis = billboard.getAxis();
-    fw.indent() << "Axis " << axis[0] << " "<<axis[1]<<" "<<axis[2]<<endl;
+    fw.indent() << "Axis " << axis[0] << " "<<axis[1]<<" "<<axis[2]<<std::endl;
 
-    fw.indent() << "Positions {"<<endl;
+    fw.indent() << "Positions {"<<std::endl;
     fw.moveIn();
     
     Billboard::PositionList positionList = billboard.getPositionList();
@@ -127,10 +127,10 @@ bool Billboard_writeLocalData(const Object& obj, Output& fw)
         piter != positionList.end();
         ++piter)
     {
-        fw.indent() << (*piter)[0] << " "<<(*piter)[1]<<" "<<(*piter)[2]<<endl;
+        fw.indent() << (*piter)[0] << " "<<(*piter)[1]<<" "<<(*piter)[2]<<std::endl;
     }
     fw.moveOut();
-    fw.indent() << "}"<<endl;
+    fw.indent() << "}"<<std::endl;
 
     return true;
 }

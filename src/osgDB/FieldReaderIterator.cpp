@@ -96,7 +96,7 @@ void FieldReaderIterator::_copy(const FieldReaderIterator& ic)
 }
 
 
-void FieldReaderIterator::attach(istream* input)
+void FieldReaderIterator::attach(std::istream* input)
 {
     _reader.attach(input);
 }

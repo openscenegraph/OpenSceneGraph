@@ -202,7 +202,7 @@ osg::Node* ConvertFromFLT::visitHeader(osg::Group* osgParent, HeaderRecord* rec)
 
     // Version
     _diOpenFlightVersion = pSHeader->diFormatRevLev;
-    osg::notify(osg::INFO) << "Version " << _diOpenFlightVersion << endl;
+    osg::notify(osg::INFO) << "Version " << _diOpenFlightVersion << std::endl;
 
     // Unit scale
     switch (pSHeader->swVertexCoordUnit)

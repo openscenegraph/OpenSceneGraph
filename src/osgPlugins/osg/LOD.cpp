@@ -85,17 +85,17 @@ bool LOD_writeLocalData(const Object& obj, Output& fw)
 {
     const LOD& lod = static_cast<const LOD&>(obj);
 
-    fw.indent() << "Center "<< lod.getCenter() <<endl;
+    fw.indent() << "Center "<< lod.getCenter() << std::endl;
 
-    fw.indent() << "Ranges {"<<endl;
+    fw.indent() << "Ranges {"<< std::endl;
     fw.moveIn();
     
     for(int i=0; i<lod.getNumRanges();++i)
     {
-        fw.indent() << lod.getRange(i) <<endl;
+        fw.indent() << lod.getRange(i) << std::endl;
     }
     fw.moveOut();
-    fw.indent() << "}"<<endl;
+    fw.indent() << "}"<< std::endl;
 
     return true;
 }

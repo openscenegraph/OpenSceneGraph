@@ -48,7 +48,7 @@ GLUTWindow::~GLUTWindow()
 bool GLUTWindow::open()
 {
     if ( _is_open ) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::GLUTWindow::open() called with window already open."<<endl;
+        osg::notify(osg::NOTICE)<<"osgGLUT::GLUTWindow::open() called with window already open."<< std::endl;
         return false;
     }
 
@@ -176,7 +176,7 @@ void GLUTWindow::keyboard(unsigned char key, int x, int y)
 bool GLUTWindow::run()
 {
     if (!_is_open) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::GLUTWindow::run() called without window open.  Opening window."<<endl;
+        osg::notify(osg::NOTICE)<<"osgGLUT::GLUTWindow::run() called without window open.  Opening window."<< std::endl;
         if ( !open() )
             return false;
     }

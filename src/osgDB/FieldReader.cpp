@@ -76,7 +76,7 @@ void FieldReader::_copy(const FieldReader& ic)
 }
 
 
-void FieldReader::attach(istream* input)
+void FieldReader::attach(std::istream* input)
 {
     _fin = input;
 

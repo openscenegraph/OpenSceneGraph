@@ -38,12 +38,12 @@ const bool osg::isGLExtensionSupported(const char *extension)
         }
         if (*startOfWord!=0) s_extensionSet.insert(std::string(startOfWord));
         
-        osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<endl;
+        osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
         for(ExtensionSet::iterator itr=s_extensionSet.begin();
             itr!=s_extensionSet.end();
             ++itr)
         {
-            osg::notify(INFO)<<"    "<<*itr<<endl;
+            osg::notify(INFO)<<"    "<<*itr<<std::endl;
         }
             
     }
@@ -51,8 +51,8 @@ const bool osg::isGLExtensionSupported(const char *extension)
     // true if extension found in extensionSet.
     bool result = s_extensionSet.find(extension)!=s_extensionSet.end();
 
-    if (result) osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is supported."<<endl;
-    else osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is not supported."<<endl;
+    if (result) osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is supported."<<std::endl;
+    else osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is not supported."<<std::endl;
 
     return result;
 }

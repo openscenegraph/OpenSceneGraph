@@ -117,11 +117,11 @@ const bool ImpostorSprite::computeBound() const
     
     if (!_bbox.isValid())
     {
-        cout << "******* ImpostorSprite::computeBound() problem"<<endl;
-        cout << "*******  = "<<_coords[0]<<endl;
-        cout << "*******  = "<<_coords[1]<<endl;
-        cout << "*******  = "<<_coords[2]<<endl;
-        cout << "*******  = "<<_coords[3]<<endl;
+		notify(WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
+        notify(WARN) << "*******  = "<<_coords[0]<<std::endl;
+        notify(WARN) << "*******  = "<<_coords[1]<<std::endl;
+        notify(WARN) << "*******  = "<<_coords[2]<<std::endl;
+        notify(WARN) << "*******  = "<<_coords[3]<<std::endl;
     }
 
     return true;

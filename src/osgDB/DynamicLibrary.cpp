@@ -42,12 +42,12 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 #ifdef WIN32
     HANDLE handle = LoadLibrary( fullLibraryName );
     if (handle) return new DynamicLibrary(libraryName,handle);
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<endl;
+    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
 #elif !defined(macintosh)
     HANDLE handle = dlopen( fullLibraryName, RTLD_LAZY );
     if (handle) return new DynamicLibrary(libraryName,handle);
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<endl;
-    notify(WARN) << "DynamicLibrary::error "<<dlerror()<<endl;
+    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+    notify(WARN) << "DynamicLibrary::error "<<dlerror()<<std::endl;
 #endif
     return NULL;
 }

@@ -329,7 +329,7 @@ SOURCE=..\..\src\osg\PositionAttitudeTransform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Primitive.cpp
+SOURCE=..\..\src\osg\PrimitiveSet.cpp
 # End Source File
 # Begin Source File
 
@@ -709,7 +709,7 @@ SOURCE=..\..\Include\Osg\Projection
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Primitive
+SOURCE=..\..\Include\Osg\PrimitiveSet
 # End Source File
 # Begin Source File
 

@@ -87,6 +87,16 @@ class Geometry;
 
 #endif
 
+#ifndef GL_ARB_occlusion_query
+
+    #define GL_SAMPLES_PASSED_ARB               0x8914
+    #define GL_QUERY_COUNTER_BITS_ARB           0x8864
+    #define GL_CURRENT_QUERY_ARB                0x8865
+    #define GL_QUERY_RESULT_ARB                 0x8866
+    #define GL_QUERY_RESULT_AVAILABLE_ARB       0x8867
+
+#endif
+
 // this is define to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
 // to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display 
@@ -498,6 +508,9 @@ class SG_EXPORT Drawable : public Object
             void setOcclusionQuerySupported(bool flag) { _isOcclusionQuerySupported=flag; }
             bool isOcclusionQuerySupported() const { return _isOcclusionQuerySupported; }
 
+            void setARBOcclusionQuerySupported(bool flag) { _isARBOcclusionQuerySupported=flag; }
+            bool isARBOcclusionQuerySupported() const { return _isARBOcclusionQuerySupported; }
+
             void glSecondaryColor3ubv(const GLubyte* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
 
@@ -530,6 +543,14 @@ class SG_EXPORT Drawable : public Object
             void glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint *params ) const;
             void glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLuint *params ) const;
 
+            void glGetQueryiv(GLenum target, GLenum pname, GLint *params) const;
+            void glGenQueries(GLsizei n, GLuint *ids) const;
+            void glBeginQuery(GLenum target, GLuint id) const;
+            void glEndQuery(GLenum target) const;
+            GLboolean glIsQuery(GLuint id) const;
+            void glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const;
+            void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
+
         protected:
 
             typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
@@ -559,6 +580,15 @@ class SG_EXPORT Drawable : public Object
             typedef void (APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
             typedef void (APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
 
+            typedef void (APIENTRY *GenQueriesProc) (GLsizei n, GLuint *ids);
+            typedef void (APIENTRY *DeleteQueriesProc) (GLsizei n, const GLuint *ids);
+            typedef GLboolean (APIENTRY *IsQueryProc) (GLuint id);
+            typedef void (APIENTRY *BeginQueryProc) (GLenum target, GLuint id);
+            typedef void (APIENTRY *EndQueryProc) (GLenum target);
+            typedef void (APIENTRY *GetQueryivProc) (GLenum target, GLenum pname, GLint *params);
+            typedef void (APIENTRY *GetQueryObjectivProc) (GLuint id, GLenum pname, GLint *params);
+            typedef void (APIENTRY *GetQueryObjectuivProc) (GLuint id, GLenum pname, GLuint *params);
+
             ~Extensions() {}
 
             bool _isVertexProgramSupported;
@@ -566,6 +596,7 @@ class SG_EXPORT Drawable : public Object
             bool _isFogCoordSupported;
             bool _isMultiTexSupported;
             bool _isOcclusionQuerySupported;
+            bool _isARBOcclusionQuerySupported;
 
             FogCoordProc _glFogCoordfv;
 
@@ -598,6 +629,16 @@ class SG_EXPORT Drawable : public Object
             EndOcclusionQueryProc _glEndOcclusionQuery;
             GetOcclusionQueryivProc _glGetOcclusionQueryiv;
             GetOcclusionQueryuivProc _glGetOcclusionQueryuiv;
+
+            GenQueriesProc _gl_gen_queries_arb;
+            DeleteQueriesProc _gl_delete_queries_arb;
+            IsQueryProc _gl_is_query_arb;
+            BeginQueryProc _gl_begin_query_arb;
+            EndQueryProc _gl_end_query_arb;
+            GetQueryivProc _gl_get_queryiv_arb;
+            GetQueryObjectivProc _gl_get_query_objectiv_arb;
+            GetQueryObjectuivProc  _gl_get_query_objectuiv_arb;
+
         };
 
         /** Function to call to get the extension of a specified context.

@@ -48,6 +48,15 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B><A HREF="#DOC.2.87.10">getDataVariance</A></B>() const 
 <DD><I>Get the data variance of this object</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.87.11">setUserData</A></B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DD><I> Set user data, data must be subclased from Referenced to allow automatic memory handling.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B><A HREF="#DOC.2.87.12">getUserData</A></B>()
+<DD><I>Get user data</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B><A HREF="#DOC.2.87.13">getUserData</A></B>() const 
+<DD><I>Get const user data</I>
 </DL></P>
 
 <P><DL>
@@ -57,12 +66,14 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B><A HREF="#DOC.2.87.12">_dataVariance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B><A HREF="#DOC.2.87.15">_dataVariance</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B><A HREF="#DOC.2.87.16">_userData</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.87.11">~Object</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.87.14">~Object</A></B>()
 <DD><I>Object destructor.</I>
 </DL></P>
 
@@ -167,8 +178,27 @@ can be used be routines such as optimzation codes that wish to share static data
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> getDataVariance() const </B></TT>
 <DD>Get the data variance of this object
 <DL><DT><DD></DL><P>
-<A NAME="~Object"></A>
+<A NAME="setUserData"></A>
 <A NAME="DOC.2.87.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setUserData(<!1><A HREF="Referenced.html">Referenced</A>* obj)</B></TT>
+<DD>
+Set user data, data must be subclased from Referenced to allow
+automatic memory handling.  If you own data isn't directly 
+subclassed from Referenced then create and adapter object
+which points to your own objects and handles the memory addressing.
+<DL><DT><DD></DL><P>
+<A NAME="getUserData"></A>
+<A NAME="DOC.2.87.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Referenced.html">Referenced</A>* getUserData()</B></TT>
+<DD>Get user data
+<DL><DT><DD></DL><P>
+<A NAME="getUserData"></A>
+<A NAME="DOC.2.87.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Referenced.html">Referenced</A>* getUserData() const </B></TT>
+<DD>Get const user data
+<DL><DT><DD></DL><P>
+<A NAME="~Object"></A>
+<A NAME="DOC.2.87.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Object()</B></TT>
 <DD>Object destructor. Note, is protected so that Objects cannot
 be deleted other than by being dereferenced and the reference
@@ -179,8 +209,12 @@ forcing all nodes to be created on the heap i.e Node* node
 = new Node().
 <DL><DT><DD></DL><P>
 <A NAME="_dataVariance"></A>
-<A NAME="DOC.2.87.12"></A>
+<A NAME="DOC.2.87.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> _dataVariance</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_userData"></A>
+<A NAME="DOC.2.87.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  _userData</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:

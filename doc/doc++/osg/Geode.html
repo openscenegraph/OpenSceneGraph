@@ -39,13 +39,13 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.48.6">replaceDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* origDraw, <!1><A HREF="Drawable.html">Drawable</A>* newDraw )
 <DD><I>Replace specified Drawable with another Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.48.7">getNumDrawables</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.48.7">getNumDrawables</A></B>() const 
 <DD><I>return the number of geoset's</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.48.8">getDrawable</A></B>( const int i )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.48.8">getDrawable</A></B>( const unsigned int i )
 <DD><I>return geoset at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.48.9">getDrawable</A></B>( const int i ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.48.9">getDrawable</A></B>( const unsigned int i ) const 
 <DD><I>return geoset at position i</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.48.10">containsDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
@@ -126,17 +126,17 @@ not remove origGset.
 <DL><DT><DD></DL><P>
 <A NAME="getNumDrawables"></A>
 <A NAME="DOC.2.48.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumDrawables() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumDrawables() const </B></TT>
 <DD>return the number of geoset's
 <DL><DT><DD></DL><P>
 <A NAME="getDrawable"></A>
 <A NAME="DOC.2.48.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Drawable.html">Drawable</A>* getDrawable( const int i )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Drawable.html">Drawable</A>* getDrawable( const unsigned int i )</B></TT>
 <DD>return geoset at position i
 <DL><DT><DD></DL><P>
 <A NAME="getDrawable"></A>
 <A NAME="DOC.2.48.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Drawable.html">Drawable</A>* getDrawable( const int i ) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Drawable.html">Drawable</A>* getDrawable( const unsigned int i ) const </B></TT>
 <DD>return geoset at position i
 <DL><DT><DD></DL><P>
 <A NAME="containsDrawable"></A>

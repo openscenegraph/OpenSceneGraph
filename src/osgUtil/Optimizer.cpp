@@ -527,7 +527,7 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
         
             osg::ref_ptr<osg::Transform> transform = titr->first;
             osg::ref_ptr<osg::Group>     group = osgNew osg::Group;
-
+            group->setDataVariance(osg::Object::STATIC);
             for(unsigned int i=0;i<transform->getNumChildren();++i)
             {
                 for(unsigned int j=0;j<transform->getNumParents();++j)
@@ -562,7 +562,7 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
             if (!group.getUserData() &&
                 !group.getAppCallback() &&
                 !group.getStateSet() &&
-                group.getNodeMask()!=0xffffffff)
+                group.getNodeMask()==0xffffffff)
             {
                 _redundentNodeList.insert(&group);
             }

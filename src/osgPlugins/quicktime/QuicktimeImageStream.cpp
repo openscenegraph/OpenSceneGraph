@@ -36,6 +36,7 @@ using namespace osg;
 #define IDLE_TIMEOUT 150000L
 #define ERR_MSG(no,msg) osg::notify(osg::WARN) << "QT-ImageStream: " << msg << " failed with error " << no << std::endl;
 
+static OpenThreads::Mutex s_qtMutex;
 
 
 // Constructor: setup and start thread
@@ -82,8 +83,12 @@ QuicktimeImageStream::~QuicktimeImageStream()
         }
         
     }
-    
-    delete _data;
+
+    // clean up quicktime movies.
+    {    
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+        delete _data;
+    }
 
    
 }
@@ -117,6 +122,8 @@ void QuicktimeImageStream::load(std::string fileName)
 {
     osg::notify(osg::DEBUG_INFO) << "QT-ImageStream: loading quicktime movie from " << fileName << std::endl;
     
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+
     _data->load(this, fileName);
     
     _len = _data->getMovieDuration();
@@ -127,7 +134,6 @@ void QuicktimeImageStream::load(std::string fileName)
 
 void QuicktimeImageStream::run()
 {
-    static OpenThreads::Mutex s_qtMutex;
 
     bool playing = false;
     bool done = false;
@@ -141,45 +147,46 @@ void QuicktimeImageStream::run()
         // Handle commands
         ThreadCommand cmd = getCmd();
 
-	s_qtMutex.lock();
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
 
-        if (cmd != THREAD_IDLE) {
-            switch (cmd) {
-                case THREAD_START: // Start or continue stream
-                    StartMovie(_data->getMovie());
-                    playing = true;
-                    break;
-                    
-                case THREAD_STOP:
-                    SetMovieRate(_data->getMovie(),0);
-                    osg::notify(NOTICE) << "QT-ImageStream: stop at "<< std::endl;
-                    playing = false;
-                    break;
-                    
-                case THREAD_REWIND:
-                    SetMovieRate(_data->getMovie(),0);
-                    GoToBeginningOfMovie(_data->getMovie());
-                    break;
-                    
-                case THREAD_CLOSE:
-                    SetMovieRate(_data->getMovie(),0);
-                    break;
-                    
-                case THREAD_QUIT: // TODO
-                    SetMovieRate(_data->getMovie(),0);
-                    osg::notify(NOTICE) << "QT-ImageStream: quit" << std::endl;
-                    done = true;
-                    break;
-                default:
-                    osg::notify(osg::WARN) << "QT-ImageStream: Unknown command " << cmd << std::endl;
-                    break;
+            if (cmd != THREAD_IDLE) {
+                switch (cmd) {
+                    case THREAD_START: // Start or continue stream
+                        StartMovie(_data->getMovie());
+                        playing = true;
+                        break;
+
+                    case THREAD_STOP:
+                        SetMovieRate(_data->getMovie(),0);
+                        osg::notify(NOTICE) << "QT-ImageStream: stop at "<< std::endl;
+                        playing = false;
+                        break;
+
+                    case THREAD_REWIND:
+                        SetMovieRate(_data->getMovie(),0);
+                        GoToBeginningOfMovie(_data->getMovie());
+                        break;
+
+                    case THREAD_CLOSE:
+                        SetMovieRate(_data->getMovie(),0);
+                        break;
+
+                    case THREAD_QUIT: // TODO
+                        SetMovieRate(_data->getMovie(),0);
+                        osg::notify(NOTICE) << "QT-ImageStream: quit" << std::endl;
+                        done = true;
+                        break;
+                    default:
+                        osg::notify(osg::WARN) << "QT-ImageStream: Unknown command " << cmd << std::endl;
+                        break;
+                }
             }
+
+            MoviesTask(_data->getMovie(),0);
+            float currentTime = _data->getMovieTime();
         }
         
-        MoviesTask(_data->getMovie(),0);
-        float currentTime = _data->getMovieTime();
-
-	s_qtMutex.unlock();
 
         if (_lastUpdate!= currentTime) {
             dirty();
@@ -188,8 +195,6 @@ void QuicktimeImageStream::run()
         
         if (playing) {
             // TODO
-            
-            
         }
         else {
             ::usleep(IDLE_TIMEOUT);

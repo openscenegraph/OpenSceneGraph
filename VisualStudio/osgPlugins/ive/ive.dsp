@@ -258,6 +258,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Switch.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\TexEnv.cpp
 # End Source File
 # Begin Source File
@@ -483,6 +487,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Sequence.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Switch.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.h
 # End Source File
 # Begin Source File
 

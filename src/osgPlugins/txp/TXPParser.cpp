@@ -18,6 +18,7 @@
 #include <osg/Point>
 #include <osg/ShapeDrawable>
 #include <osg/ApplicationUsage>
+#include <osgText/Text>
 
 #include "TXPParser.h"
 #include "TXPArchive.h"
@@ -47,6 +48,7 @@ _usedMaxRange(0.0)
     AddCallback(TRPG_BILLBOARD,new billboardRead(this));
     AddCallback(TRPG_LIGHT,new lightRead(this));
     AddCallback(TRPG_LAYER,new layerRead(this));
+    AddCallback(TRPG_LABEL,new labelRead(this));
     AddCallback(TRPGTILEHEADER,new tileHeaderRead(this));
     
     if (getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"))
@@ -749,6 +751,91 @@ void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
 //----------------------------------------------------------------------------
 //
+// Label Reader Class
+//
+//----------------------------------------------------------------------------
+void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
+{
+    trpgLabel label;
+    if (!label.Read(buf)) return NULL;
+
+    const std::string *labelText = label.GetText();
+    if (!labelText) return (void*)1;
+
+    osg::Vec3 pos(label.GetLocation().x, label.GetLocation().y, label.GetLocation().z);
+
+    osg::ref_ptr< osg::Geode > textGeode = new osg::Geode;
+    _parse->getCurrTop()->addChild(textGeode.get());
+
+    osg::ref_ptr< osgText::Text > text = new osgText::Text;
+    textGeode->addDrawable(text.get());
+
+    // Text
+    text->setText(*labelText);
+    // Position
+    text->setPosition(pos);
+    // Alignment
+    switch (label.GetAlignment())
+    {
+    case trpgLabel::Left:
+        text->setAlignment(osgText::Text::LEFT_BOTTOM);
+        break;
+    case trpgLabel::Right:
+        text->setAlignment(osgText::Text::RIGHT_BOTTOM);
+        break;
+    default:
+        text->setAlignment(osgText::Text::CENTER_BOTTOM);
+    }
+    // Axis alignment
+    text->setAxisAlignment(osgText::Text::XY_PLANE);
+
+    const trpgLabelPropertyTable *labelPropertyTable = _parse->getArchive()->GetLabelPropertyTable();
+    const trpgLabelProperty *labelProperty = labelPropertyTable ? 
+        labelPropertyTable->GetPropertyRef(label.GetProperty()) : 0;
+    
+    if (labelProperty)
+    {
+        const trpgTextStyleTable *textStyleTable = _parse->getArchive()->GetTextStyleTable();
+        if (!textStyleTable) return (void*)1;
+
+        const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(labelProperty->GetFontStyle());
+        if (!textStyle) return (void*)1;
+
+        // Size
+        text->setCharacterSize(textStyle->GetCharacterSize()*label.GetScale());
+        text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS);
+        // Font
+        text->setFont(_parse->getArchive()->getStyles()[labelProperty->GetFontStyle()].get());
+
+        // Type
+        switch (labelProperty->GetType())
+        {
+        case trpgLabelProperty::Billboard:
+            text->setAxisAlignment(osgText::Text::SCREEN);
+            break;
+        case trpgLabelProperty::VertBillboard:
+            break;
+        case trpgLabelProperty::Panel:
+            break;
+        case trpgLabelProperty::Cube:
+            break;
+        case trpgLabelProperty::MaxLabelType:
+            break;
+        }
+    }
+
+#if 1
+    osg::TessellationHints* hints = new osg::TessellationHints;
+    hints->setDetailRatio(0.5f);
+    
+    textGeode->addDrawable(new osg::ShapeDrawable(new osg::Cone(pos,1.f,50.f),hints));
+#endif
+
+    return (void*)1;
+}
+
+//----------------------------------------------------------------------------
+//
 // Geometry Reader Class
 //
 //----------------------------------------------------------------------------
@@ -947,10 +1034,10 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             if( local )
                 tmp_ss = (*_parse->getLocalMaterials())[matId];
             else
-			{
-				_parse->loadMaterial(matId);
-				tmp_ss = (*_parse->getMaterials())[matId];
-			}
+            {
+                _parse->loadMaterial(matId);
+                tmp_ss = (*_parse->getMaterials())[matId];
+            }
             if(sset.valid()) 
             {
                 if(tmp_ss.valid()){

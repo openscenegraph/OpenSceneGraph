@@ -518,6 +518,28 @@ bool TXPArchive::loadLightAttributes()
     return true;
 }
 
+bool TXPArchive::loadTextStyles()
+{
+	const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
+	if (!textStyleTable) return false;
+
+	_fonts.resize(textStyleTable->GetNumStyle());
+	for (int i = 0; i < textStyleTable->GetNumStyle(); i++)
+	{
+		const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(i);
+		if (!textStyle) continue;
+
+		const std::string *fontName = textStyle->GetFont();
+		if (!fontName) continue;
+
+		osg::ref_ptr< osgText::Font > font = osgText::readFontFile(*fontName + ".ttf");
+
+		_fonts[i] = font;
+	}
+
+	return true;
+}
+
 void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att)
 {
     DefferedLightAttribute la;
@@ -600,17 +622,17 @@ osg::Group* TXPArchive::getTileContent(
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     tileCenter = _parser->getTileCenter();
 
-	// Prune
-	unsigned int i = 0;
-	for (i = 0; i < _gstates.size(); i++) 
-	{
-		if (_gstates[i].get() && (_gstates[i]->referenceCount()==1)) _gstates[i] = 0;
-	}
+    // Prune
+    unsigned int i = 0;
+    for (i = 0; i < _gstates.size(); i++) 
+    {
+        if (_gstates[i].valid() && (_gstates[i]->referenceCount()==1)) _gstates[i] = 0;
+    }
 
-	for (i = 0; i < _textures.size(); i++) 
-	{
-		if (_textures[i].get() && (_textures[i]->referenceCount()==1)) _textures[i] = 0;
-	}
+    for (i = 0; i < _textures.size(); i++) 
+    {
+        if (_textures[i].valid() && (_textures[i]->referenceCount()==1)) _textures[i] = 0;
+    }
 
     return tileGroup;
 }
@@ -630,4 +652,3 @@ bool TXPArchive::getLODSize(int lod, int& x, int& y)
     
     return true;
 }
-

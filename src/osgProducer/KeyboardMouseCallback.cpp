@@ -1,4 +1,4 @@
-#include "ProducerEventCallback.h"
+#include <osgProducer/KeyboardMouseCallback>
 
 #ifdef WIN32
     #include <windows.h>
@@ -7,7 +7,9 @@
 #endif
 
 
-void ProducerEventCallback::keyPress( Producer::KeySymbol key )
+using namespace osgProducer;
+
+void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
 {
 
     switch( key )
@@ -24,7 +26,7 @@ void ProducerEventCallback::keyPress( Producer::KeySymbol key )
 #endif
     }
     
-    osg::ref_ptr<ProducerEventAdapter> event = new ProducerEventAdapter;
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyPress(getTime(),key);
     
     _eventQueueMutex.lock();
@@ -32,10 +34,10 @@ void ProducerEventCallback::keyPress( Producer::KeySymbol key )
     _eventQueueMutex.unlock();
 }
 
-void ProducerEventCallback::keyRelease( Producer::KeySymbol key )
+void KeyboardMouseCallback::keyRelease( Producer::KeySymbol key )
 {
 
-    osg::ref_ptr<ProducerEventAdapter> event = new ProducerEventAdapter;
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyRelease(getTime(),key);
     
     _eventQueueMutex.lock();
@@ -43,13 +45,13 @@ void ProducerEventCallback::keyRelease( Producer::KeySymbol key )
     _eventQueueMutex.unlock();
 }
 
-void ProducerEventCallback::mouseMotion( float mx, float my) 
+void KeyboardMouseCallback::mouseMotion( float mx, float my) 
 {
     _mx = mx;
     _my = my;
     
     
-    osg::ref_ptr<ProducerEventAdapter> event = new ProducerEventAdapter;
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptMouseMotion(getTime(),mx,my);
     
     _eventQueueMutex.lock();
@@ -58,14 +60,14 @@ void ProducerEventCallback::mouseMotion( float mx, float my)
 
 }
 
-void ProducerEventCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
+void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
 {
     _mx = mx;
     _my = my;
     _mbutton |= (1<<(mbutton-1));
     
     
-    osg::ref_ptr<ProducerEventAdapter> event = new ProducerEventAdapter;
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptButtonPress(getTime(),mx,my,mbutton);
     
     _eventQueueMutex.lock();
@@ -73,14 +75,14 @@ void ProducerEventCallback::buttonPress( float mx, float my, unsigned int mbutto
     _eventQueueMutex.unlock();
 }
 
-void ProducerEventCallback::buttonRelease( float mx, float my, unsigned int mbutton ) 
+void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbutton ) 
 {
     _mx = mx;
     _my = my;
     _mbutton &= ~(1<<(mbutton-1));
     
     
-    osg::ref_ptr<ProducerEventAdapter> event = new ProducerEventAdapter;
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptButtonRelease(getTime(),mx,my,mbutton);
     
     _eventQueueMutex.lock();
@@ -88,7 +90,7 @@ void ProducerEventCallback::buttonRelease( float mx, float my, unsigned int mbut
     _eventQueueMutex.unlock();
 }
 
-void ProducerEventCallback::getEventQueue(EventQueue& queue)
+void KeyboardMouseCallback::getEventQueue(EventQueue& queue)
 {
     queue.clear();
     _eventQueueMutex.lock();

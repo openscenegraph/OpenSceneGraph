@@ -9,8 +9,6 @@
 
 #include <Producer/Camera>
 #include <Producer/CameraConfig>
-#include <Producer/OsgCameraGroup>
-#include <Producer/OsgSceneHandler>
 #include <Producer/InputArea>
 #include <Producer/KeyboardMouse>
 
@@ -27,12 +25,10 @@
 #include <osgGA/KeySwitchCameraManipulator>
 #include <osgGA/StateSetManipulator>
 
-#if USE_MY_KEYBOARD_MOUSE_CALLBACK
-    #include "MyKeyboardMouseCallback"
-#else
-    #include "ProducerEventCallback.h"
-    #include "ProducerActionAdapter.h"
-#endif
+#include <osgProducer/CameraGroup>
+#include <osgProducer/SceneHandler>
+#include <osgProducer/KeyboardMouseCallback>
+#include <osgProducer/ActionAdapter>
 
 #include <list>
 
@@ -90,19 +86,19 @@ int main( int argc, char **argv )
 
 
     // create the camera group.
-    Producer::OsgCameraGroup *cg = 0;
+    osgProducer::CameraGroup *cg = 0;
 
 #define USE_BUILD_CONFIG
 #ifdef USE_BUILD_CONFIG
 
     Producer::CameraConfig *cfg = BuildConfig();
-    cg = new Producer::OsgCameraGroup(cfg);
+    cg = new osgProducer::CameraGroup(cfg);
     
 #else
 
     cg = configFile.empty() ?
-         (new Producer::OsgCameraGroup()):
-         (new Producer::OsgCameraGroup(configFile));
+         (new osgProducer::CameraGroup()):
+         (new osgProducer::CameraGroup(configFile));
 
 #endif
 
@@ -132,7 +128,7 @@ int main( int argc, char **argv )
 
     // set the keyboard mouse callback to catch the events from the windows.
     bool done = false;
-    ProducerEventCallback kbmcb(done);
+    osgProducer::KeyboardMouseCallback kbmcb(done);
     kbmcb.setStartTick(start_tick);
     
     // register the callback with the keyboard mouse manger.
@@ -205,9 +201,9 @@ int main( int argc, char **argv )
     eventHandlerList.push_back(statesetManipulator.get());
 
     // create a dummy action adapter right now.
-    ProducerActionAdapter actionAdapter;
+    osgProducer::ActionAdapter actionAdapter;
 
-    osg::ref_ptr<ProducerEventAdapter> init_event = new ProducerEventAdapter;
+    osg::ref_ptr<osgProducer::EventAdapter> init_event = new osgProducer::EventAdapter;
     init_event->adaptFrame(0.0);
     keyswitchManipulator->getCurrentCameraManipulator()->home(*init_event,actionAdapter);
 
@@ -222,16 +218,16 @@ int main( int argc, char **argv )
         frameStamp->setReferenceTime(time_since_start);
         
         // get the event since the last frame.
-        ProducerEventCallback::EventQueue queue;
+        osgProducer::KeyboardMouseCallback::EventQueue queue;
         kbmcb.getEventQueue(queue);
         
         // create an event to signal the new frame.
-        osg::ref_ptr<ProducerEventAdapter> frame_event = new ProducerEventAdapter;
+        osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
         frame_event->adaptFrame(frameStamp->getReferenceTime());
         queue.push_back(frame_event);
 
         // dispatch the events in order of arrival.
-        for(ProducerEventCallback::EventQueue::iterator event_itr=queue.begin();
+        for(osgProducer::KeyboardMouseCallback::EventQueue::iterator event_itr=queue.begin();
             event_itr!=queue.end();
             ++event_itr)
         {
@@ -250,11 +246,7 @@ int main( int argc, char **argv )
 
 
         // update the main producer camera
-#if USE_MY_KEYBOARD_MOUSE_CALLBACK
-        cg->setView(tb.getMatrix().ptr());
-#else
         cg->setView(old_style_osg_camera->getModelViewMatrix().ptr());
-#endif
          
         // fire off the cull and draw traversals of the scene.
         cg->frame();

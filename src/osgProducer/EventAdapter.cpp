@@ -1,18 +1,20 @@
-#include "ProducerEventAdapter.h"
+#include <osgProducer/EventAdapter>
+
+using namespace osgProducer;
 
 // default to no mouse buttons being pressed.
-unsigned int ProducerEventAdapter::_s_accumulatedButtonMask = 0;
+unsigned int EventAdapter::_s_accumulatedButtonMask = 0;
 
-int ProducerEventAdapter::_s_button = 0;
-int ProducerEventAdapter::_s_modKeyMask = 0;
-int ProducerEventAdapter::_s_Xmin = 0;
-int ProducerEventAdapter::_s_Xmax = 1280;
-int ProducerEventAdapter::_s_Ymin = 0;
-int ProducerEventAdapter::_s_Ymax = 1024;
-int ProducerEventAdapter::_s_mx = 0;
-int ProducerEventAdapter::_s_my = 0;
+int EventAdapter::_s_button = 0;
+int EventAdapter::_s_modKeyMask = 0;
+int EventAdapter::_s_Xmin = 0;
+int EventAdapter::_s_Xmax = 1280;
+int EventAdapter::_s_Ymin = 0;
+int EventAdapter::_s_Ymax = 1024;
+int EventAdapter::_s_mx = 0;
+int EventAdapter::_s_my = 0;
 
-ProducerEventAdapter::ProducerEventAdapter()
+EventAdapter::EventAdapter()
 {
     _eventType = NONE;           // adaptor does not encapsulate any events.
     _key = -1;                   // set to 'invalid' key value.
@@ -28,7 +30,7 @@ ProducerEventAdapter::ProducerEventAdapter()
 }
 
 
-void ProducerEventAdapter::copyStaticVariables()
+void EventAdapter::copyStaticVariables()
 {
     _buttonMask = _s_accumulatedButtonMask;
     _modKeyMask = _s_modKeyMask;
@@ -42,7 +44,7 @@ void ProducerEventAdapter::copyStaticVariables()
 }
 
 
-void ProducerEventAdapter::setWindowSize(int Xmin, int Ymin, int Xmax, int Ymax)
+void EventAdapter::setWindowSize(int Xmin, int Ymin, int Xmax, int Ymax)
 {
     _s_Xmin = Xmin;
     _s_Xmax = Xmax;
@@ -51,13 +53,13 @@ void ProducerEventAdapter::setWindowSize(int Xmin, int Ymin, int Xmax, int Ymax)
 }
 
 
-void ProducerEventAdapter::setButtonMask(unsigned int buttonMask)
+void EventAdapter::setButtonMask(unsigned int buttonMask)
 {
     _s_accumulatedButtonMask = buttonMask;
 }
 
 
-void ProducerEventAdapter::adaptResize(double time, int Xmin, int Ymin, int Xmax, int Ymax)
+void EventAdapter::adaptResize(double time, int Xmin, int Ymin, int Xmax, int Ymax)
 {
     setWindowSize(Xmin,Ymin,Xmax,Ymax);
     _eventType = RESIZE;
@@ -65,7 +67,7 @@ void ProducerEventAdapter::adaptResize(double time, int Xmin, int Ymin, int Xmax
     copyStaticVariables();
 }
 
-void ProducerEventAdapter::adaptButtonPress(double time,float x, float y, unsigned int button)
+void EventAdapter::adaptButtonPress(double time,float x, float y, unsigned int button)
 {
     _time = time;
 
@@ -97,7 +99,7 @@ void ProducerEventAdapter::adaptButtonPress(double time,float x, float y, unsign
     copyStaticVariables();
 }
 
-void ProducerEventAdapter::adaptButtonRelease(double time,float x, float y, unsigned int button)
+void EventAdapter::adaptButtonRelease(double time,float x, float y, unsigned int button)
 {
     _time = time;
 
@@ -130,7 +132,7 @@ void ProducerEventAdapter::adaptButtonRelease(double time,float x, float y, unsi
 }
 
 /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
-void ProducerEventAdapter::adaptMouseMotion(double time, float x, float y)
+void EventAdapter::adaptMouseMotion(double time, float x, float y)
 {
     _eventType = DRAG;
     _time = time;
@@ -141,7 +143,7 @@ void ProducerEventAdapter::adaptMouseMotion(double time, float x, float y)
 
 
 /** method for adapting keyboard events.*/
-void ProducerEventAdapter::adaptKeyPress( double time, Producer::KeySymbol key)
+void EventAdapter::adaptKeyPress( double time, Producer::KeySymbol key)
 {
     _eventType = KEYDOWN;
     _time = time;
@@ -150,7 +152,7 @@ void ProducerEventAdapter::adaptKeyPress( double time, Producer::KeySymbol key)
     copyStaticVariables();
 }
 
-void ProducerEventAdapter::adaptKeyRelease( double time, Producer::KeySymbol key)
+void EventAdapter::adaptKeyRelease( double time, Producer::KeySymbol key)
 {
     // we won't handle this correctly right now.. GUIEventAdapter isn't up to it
     _eventType = KEYUP;
@@ -163,7 +165,7 @@ void ProducerEventAdapter::adaptKeyRelease( double time, Producer::KeySymbol key
 
 
 /** method for adapting frame events, i.e. iddle/display callback.*/
-void ProducerEventAdapter::adaptFrame(double time)
+void EventAdapter::adaptFrame(double time)
 {
     _eventType = FRAME;
     _time = time;

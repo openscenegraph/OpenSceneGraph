@@ -30,12 +30,13 @@
 namespace osgTerrain
 {
 
+#define MAXIMUM_NUMBER_OF_LEVELS 30
+
 class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 {
     public:
 
 
-        static const unsigned int MAXIMUM_NUMBER_OF_LEVELS = 30;
 
         class Source;
 

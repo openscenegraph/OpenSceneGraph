@@ -1,0 +1,112 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_SEQUENCE
+#define OSG_SEQUENCE 1
+
+#include <osg/Switch>
+
+namespace osg {
+
+/** Sequence is a Group node which allows automatic, time based
+    switching between children.
+*/
+class SG_EXPORT Sequence : public Group
+{
+public :
+        
+    Sequence();
+
+    /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+    Sequence(const Sequence&, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+    META_Node(osg, Sequence);
+
+    virtual void traverse(NodeVisitor& nv);
+    
+    
+    void setValue(int value) { _value = value; }
+    int getValue() const { return _value; }
+
+    /** Set time in seconds for child. */
+    void setTime(int frame, float t);
+
+    /** Get time for child. */
+    float getTime(int frame) const;
+
+    /** Interval modes. 'Loop' repeats frames 1-N; 'swing' repeats 1->N, (N-1)->1. */
+    enum LoopMode
+    {
+        LOOP,
+        SWING
+    };
+
+    /** Set sequence mode & interval (range of children to be displayed). */
+    void setInterval(LoopMode mode, int begin, int end);
+
+    /** Get sequence mode & interval. */
+    inline void getInterval(LoopMode& mode, int& begin, int& end) const
+    {
+        mode = _loopMode;
+        begin = _begin;
+        end = _end;
+    }
+
+    /** Set duration: speed-up & number of repeats */
+    void setDuration(float speed, int nreps = -1);
+
+    /** Get duration & number of repeats. */
+    inline void getDuration(float& speed, int& nreps) const
+    {
+        speed = _speed;
+        nreps = _nreps;
+    }
+
+    /** Sequence modes. */
+    enum SequenceMode
+    {
+        START,
+        STOP,
+        PAUSE,
+        RESUME
+    };
+
+    /** Set sequence mode. Start/stop & pause/resume. */
+    void setMode(SequenceMode mode);
+
+    /** Get sequence mode. */
+    inline SequenceMode getMode() const { return _mode; }
+
+protected :
+    
+    virtual ~Sequence() {}
+
+    int        _value;
+
+    float _last;
+    std::vector<float> _frameTime;
+
+    int _step;
+
+    LoopMode _loopMode;
+    int _begin, _end;
+
+    float _speed;
+    int _nreps, _nrepsremain;
+
+    SequenceMode _mode;
+};
+
+}
+
+#endif

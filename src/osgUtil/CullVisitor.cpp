@@ -787,7 +787,7 @@ void CullVisitor::apply(Billboard& node)
 
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
-        const Vec3& pos = node.getPos(i);
+        const Vec3& pos = node.getPosition(i);
 
         Drawable* drawable = node.getDrawable(i);
         // need to modify isCulled to handle the billboard offset.

@@ -85,10 +85,13 @@ class SG_EXPORT Stencil : public StateAttribute
             _funcMask = mask;
         }
         
+        inline void setFunction(Function func) { _func = func; }
         inline Function getFunction() const { return _func; }
         
+        inline void setFunctionRef(int ref) { _funcRef=ref; }
         inline int getFunctionRef() const { return _funcRef; }
 
+        inline void getFunctionMask(unsigned int mask) { _funcMask=mask; }
         inline unsigned int getFunctionMask() const { return _funcMask; }
         
         
@@ -116,12 +119,21 @@ class SG_EXPORT Stencil : public StateAttribute
             _zpass = zpass;
         }
         
+        /** set the operation when the stencil test fails.*/
+        inline void setStencilFailOperation(Operation sfail) { _sfail = sfail; }
+
         /** get the operation when the stencil test fails.*/
         inline Operation getStencilFailOperation() const { return _sfail; }
         
+        /** set the operation when the stencil test passes but the depth test fails.*/
+        inline void setStencilPassAndDepthFailOperation(Operation zfail) { _zfail=zfail; }
+        
         /** get the operation when the stencil test passes but the depth test fails.*/
         inline Operation getStencilPassAndDepthFailOperation() const { return _zfail; }
-        
+
+        /** set the operation when both the stencil test and the depth test pass.*/
+        inline void setStencilPassAndDepthPassOperation(Operation zpass) { _zpass=zpass; }
+
         /** get the operation when both the stencil test and the depth test pass.*/
         inline Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
         

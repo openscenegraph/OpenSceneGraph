@@ -104,6 +104,11 @@ void VisualsSettings::readEnvironmentalVariables()
     {
         _eyeSeperation = atof(ptr);
     }
+
+    if( (ptr = getenv("OSG_SCREEN_DISTANCE")) )
+    {
+        _screenDistance = atof(ptr);
+    }
 }
 
 void VisualsSettings::readCommandLine(std::vector<std::string>& commandLine)
@@ -131,9 +136,9 @@ void VisualsSettings::readCommandLine(std::vector<std::string>& commandLine)
             if (itr!=commandLine.end())
             {
                 if (*itr=="ANAGLYPHIC") { _stereo = true;_stereoMode = ANAGLYPHIC; ++itr; }
-                else if (*itr=="QUAD_STEREO") { _stereo = true;_stereoMode = QUAD_BUFFER; ++itr; }
+                else if (*itr=="QUAD_BUFFER") { _stereo = true;_stereoMode = QUAD_BUFFER; ++itr; }
                 else if (*itr=="HORIZONTAL_SPLIT") { _stereo = true;_stereoMode = HORIZONTAL_SPLIT; ++itr; }
-                else if (*itr=="VERITCAL_SPLIT") { _stereo = true;_stereoMode = VERTICAL_SPLIT; ++itr; }
+                else if (*itr=="VERTICAL_SPLIT") { _stereo = true;_stereoMode = VERTICAL_SPLIT; ++itr; }
                 else if (*itr=="ON") { _stereo = true; ++itr; }
                 else if (*itr=="OFF") { _stereo = false; ++itr; }
             }

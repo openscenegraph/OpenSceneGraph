@@ -1,6 +1,3 @@
-#ifdef USE_MEM_CHECK
-#include <mcheck.h>
-#endif
 
 #include <osg/Group>
 #include <osg/Notify>
@@ -17,87 +14,9 @@
 
 #include <osg/Quat>
 
-/*
- * Function to read several files (typically one) as specified on the command
- * line, and return them in an osg::Node
- */
-osg::Node* getNodeFromFiles(int argc,char **argv)
-{
-    osg::Node *rootnode = new osg::Node;
-
-    int i;
-
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodeList;
-    for( i = 1; i < argc; i++ )
-    {
-
-        if (argv[i][0]=='-')
-        {
-            switch(argv[i][1])
-            {
-                case('l'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        osgDB::Registry::instance()->loadLibrary(argv[i]);
-                    }
-                    break;
-                case('e'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
-                        osgDB::Registry::instance()->loadLibrary(libName);
-                    }
-                    break;
-            }
-        } else
-        {
-            osg::Node *node = osgDB::readNodeFile( argv[i] );
-
-            if( node != (osg::Node *)0L )
-            {
-                if (node->getName().empty()) node->setName( argv[i] );
-                nodeList.push_back(node);
-            }
-        }
-
-    }
-
-    if (nodeList.size()==0)
-    {
-        osg::notify(osg::WARN) << "No data loaded."<< std::endl;
-        exit(0);
-    }
-
-    if (nodeList.size()==1)
-    {
-        rootnode = nodeList.front();
-    }
-    else                         // size >1
-    {
-        osg::Group* group = new osg::Group();
-        for(NodeList::iterator itr=nodeList.begin();
-            itr!=nodeList.end();
-            ++itr)
-        {
-            group->addChild(*itr);
-        }
-
-        rootnode = group;
-    }
-
-    return rootnode;
-}
-
 
 int main( int argc, char **argv )
 {
-
-#ifdef USE_MEM_CHECK
-    mtrace();
-#endif
 
     // initialize the GLUT
     glutInit( &argc, argv );
@@ -122,16 +41,27 @@ int main( int argc, char **argv )
         return 0;
     }
 
-    osg::Timer timer;
-    osg::Timer_t before_load = timer.tick();
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
     
-    osg::Node* rootnode = getNodeFromFiles( argc, argv);
-    
-    osg::Timer_t after_load = timer.tick();
-    std::cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<< std::endl;
 
     // initialize the viewer.
     osgGLUT::Viewer viewer;
+    
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
+    viewer.readCommandLine(commandLine);
+    
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
+    osgDB::readCommandLine(commandLine);
+
+    // load the nodes from the commandline arguments.
+    osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
+
+    
+    // create the vewiports
     viewer.addViewport( rootnode,0.0,0.0,0.5,0.5);
     viewer.addViewport( rootnode,0.5,0.0,0.5,0.5);
     viewer.addViewport( rootnode,0.0,0.5,1.0,0.5);

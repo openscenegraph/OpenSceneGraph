@@ -42,80 +42,6 @@
 // we apply them. 
 
 
-/*
- * Function to read several files (typically one) as specified on the command
- * line, and return them in an osg::Node
- */
-osg::Node* getNodeFromFiles(int argc,char **argv)
-{
-    osg::Node *rootnode = new osg::Node;
-
-    int i;
-
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodeList;
-    for( i = 1; i < argc; i++ )
-    {
-
-        if (argv[i][0]=='-')
-        {
-            switch(argv[i][1])
-            {
-                case('l'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        osgDB::Registry::instance()->loadLibrary(argv[i]);
-                    }
-                    break;
-                case('e'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
-                        osgDB::Registry::instance()->loadLibrary(libName);
-                    }
-                    break;
-            }
-        } else
-        {
-            osg::Node *node = osgDB::readNodeFile( argv[i] );
-
-            if( node != (osg::Node *)0L )
-            {
-                if (node->getName().empty()) node->setName( argv[i] );
-                nodeList.push_back(node);
-            }
-        }
-
-    }
-
-    if (nodeList.size()==0)
-    {
-        osg::notify(osg::WARN) << "No data loaded."<< std::endl;
-        exit(0);
-    }
-
-    if (nodeList.size()==1)
-    {
-        rootnode = nodeList.front();
-    }
-    else                         // size >1
-    {
-        osg::Group* group = new osg::Group();
-        for(NodeList::iterator itr=nodeList.begin();
-            itr!=nodeList.end();
-            ++itr)
-        {
-            group->addChild(*itr);
-        }
-
-        rootnode = group;
-    }
-
-    return rootnode;
-}
-
 osg::StateSet* createMirrorTexturedState(const std::string& filename)
 {
     osg::StateSet* dstate = new osg::StateSet;
@@ -204,10 +130,26 @@ int main( int argc, char **argv )
         return 0;
     }
 
-
-    // load a model from file, and add it into the root group node.
-    osg::Node* loadedModel = getNodeFromFiles( argc, argv);
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
     
+
+    // initialize the viewer.
+    osgGLUT::Viewer viewer;
+    
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
+    viewer.readCommandLine(commandLine);
+    
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
+    osgDB::readCommandLine(commandLine);
+    
+    // load the nodes from the commandline arguments.
+    osg::Node* loadedModel = osgDB::readNodeFiles(commandLine);
+    
+
     if (!loadedModel)
     {
         write_usage();
@@ -410,8 +352,7 @@ int main( int argc, char **argv )
 
     }
 
-    // initialize the viewer.
-    osgGLUT::Viewer viewer;
+    // add model to the viewer.
     viewer.addViewport( rootNode );
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));

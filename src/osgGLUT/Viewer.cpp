@@ -239,9 +239,7 @@ bool Viewer::open()
         Node* node = itr->sceneView->getSceneData();
         if (node) node->accept(vrv);
     }
-#ifdef        _DEBUG
-    _visualsSettings->setMinimumNumStencilBits(8); //gwm 12.8.01 to force stencils available for DC test
-#endif
+
     // set up each render stage to clear the appropriate buffers.
     GLbitfield clear_mask=0;
     if (_visualsSettings->getRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;

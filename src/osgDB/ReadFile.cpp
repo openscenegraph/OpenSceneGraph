@@ -41,7 +41,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;
 
-    // note currently doesn't delete the loaded files yet...
+    // note currently doesn't delete the loaded file entries from the command line yet...
 
     for(std::vector<std::string>::iterator itr=commandLine.begin();
         itr!=commandLine.end();

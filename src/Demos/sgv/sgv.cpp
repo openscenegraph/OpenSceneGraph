@@ -51,18 +51,14 @@ int main( int argc, char **argv )
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     
-    // configure the viewer from the commandline arguments.
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
     viewer.readCommandLine(commandLine);
     
-    // configure the plguin registry from the commandline arguments.
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
     osgDB::readCommandLine(commandLine);
 
-    // comment out right now, but the following allows users to pass option data to
-    // the ReaderWriter plugins. By default the options are set to NULL. The basic
-    // osgDB::ReaderWriter::Options stucture has just a string, but this can be
-    // subclassed to extend it to handle any options that a user desires.
-    // osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("test options"));
-    
     // load the nodes from the commandline arguments.
     osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
     
@@ -70,7 +66,7 @@ int main( int argc, char **argv )
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
      
-    // add a viewport to the viewer and attah the scene graph.
+    // add a viewport to the viewer and attach the scene graph.
     viewer.addViewport( rootnode );
     
     // register trackball, flight and drive.

@@ -524,7 +524,7 @@ Array* Array_readLocalData(Input& fr)
                 fr[2].getUInt(b) &&
                 fr[3].getUInt(a))
             {
-                ++fr;
+                fr+=4;
                 array->push_back(osg::UByte4(r,g,b,a));
             }
             else ++fr;

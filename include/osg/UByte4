@@ -148,10 +148,10 @@ class UByte4
 
         friend inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
         {
-	    output << vec._v[0] << " "
-                   << vec._v[1] << " "
-                   << vec._v[2] << " "
-                   << vec._v[3];
+	    output << (int)vec._v[0] << " "
+                   << (int)vec._v[1] << " "
+                   << (int)vec._v[2] << " "
+                   << (int)vec._v[3];
 	    return output; 	// to enable cascading
 	}
 

@@ -392,6 +392,11 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(no) {}
 
+        template <class InputIterator>
+        DrawElementsUInt(GLenum mode, InputIterator first,InputIterator last) : 
+            PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
+            VectorUInt(first,last) {}
+
         virtual Object* cloneType() const { return new DrawElementsUInt(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUInt(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUInt*>(obj)!=NULL; }

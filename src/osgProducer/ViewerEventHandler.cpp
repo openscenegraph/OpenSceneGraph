@@ -58,7 +58,8 @@ public:
         _veh(veh),
         _cameraNumber(cameraNumber),
         _helpInitialized(false),
-        _statsInitialized(false)
+        _statsInitialized(false),
+        _infoInitialized(false)
     {
 	_fs.resize(10);
 	_index = 0;
@@ -120,7 +121,7 @@ protected:
     
     typedef std::vector<double> CameraTimes;
 
-    bool        _statsInitialized;
+    bool                        _statsInitialized;
     osg::ref_ptr<osgText::Text> _frameRateLabelText;
     osg::ref_ptr<osgText::Text> _frameRateCounterText;
     TextList                    _statsLabelList;
@@ -130,6 +131,15 @@ protected:
     CameraTimes                 _drawTimes;
     TextList                    _drawTimeText;
     
+    // info related methods and data.
+    void displayInfo();
+    void createInfoText();
+    
+    bool                        _infoInitialized;
+    TextList                    _infoLabelList;
+    osg::ref_ptr<osgText::Text> _positionText;
+    osg::ref_ptr<osgText::Text> _orientationText;
+    osg::ref_ptr<osgText::Text> _speedText;
 
     std::vector <Producer::CameraGroup::FrameStats> _fs;
     unsigned int _index;
@@ -168,6 +178,11 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
         displayHelp();
     }
        
+    if (_veh->getDisplayHelp())
+    {
+        displayInfo();
+    }
+
     state.popStateSet();
     
     //state.apply();
@@ -677,6 +692,14 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 
 }
 
+void ViewerEventHandler::StatsAndHelpDrawCallback::displayInfo()
+{
+}
+
+void ViewerEventHandler::StatsAndHelpDrawCallback::createInfoText()
+{
+}
+
 
 
 ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
@@ -824,7 +847,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                         // have already been recording so switch of recording.
                         viewer->setRecordingAnimationPath(false);
 
-                        osg::notify(osg::NOTICE) << "To finished recording camera animation, press 'Z' to reply."<< std::endl;
+                        osg::notify(osg::NOTICE) << "finished recording camera animation, press 'Z' to replay."<< std::endl;
 
                         if (viewer->getAnimationPath())
                         {

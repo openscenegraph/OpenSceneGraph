@@ -97,9 +97,6 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setEyeSeparation(float eyeSeparation) { _eyeSeparation = eyeSeparation; }
         float getEyeSeparation() const { return _eyeSeparation; }
 
-        void setScreenDistance(float distance) { _screenDistance = distance; }
-        float getScreenDistance() const { return _screenDistance; }
-
         enum SplitStereoHorizontalEyeMapping
         {
             LEFT_EYE_LEFT_VIEWPORT,
@@ -128,8 +125,15 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         bool getSplitStereoAutoAjustAspectRatio() const { return _splitStereoAutoAdjustAspectRatio; }
 
 
+        void setScreenWidth(float width) { _screenWidth = width; }
+        float getScreenWidth() const { return _screenWidth; }
+
         void setScreenHeight(float height) { _screenHeight = height; }
         float getScreenHeight() const { return _screenHeight; }
+
+        void setScreenDistance(float distance) { _screenDistance = distance; }
+        float getScreenDistance() const { return _screenDistance; }
+
 
 
         void setDoubleBuffer(bool flag) { _doubleBuffer = flag; }
@@ -168,8 +172,9 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         bool                            _stereo;
         StereoMode                      _stereoMode;
         float                           _eyeSeparation;
-        float                           _screenDistance;
+        float                           _screenWidth;
         float                           _screenHeight;
+        float                           _screenDistance;
 
         SplitStereoHorizontalEyeMapping _splitStereoHorizontalEyeMapping;
         int                             _splitStereoHorizontalSeparation;

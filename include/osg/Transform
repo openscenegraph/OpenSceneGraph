@@ -69,27 +69,20 @@ class SG_EXPORT Transform : public Group
 
         /** Callback attached to an Transform to specifiy how to compute the modelview or projection transformation
           * for the transform below the Transform node.*/
-        class ComputeTransformCallback : public osg::Referenced
+        struct ComputeTransformCallback : public osg::Referenced
         {
-        
-            public:
-            
-                /** Get the transformation matrix which moves from local coords to world coords.*/
-                virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
+            /** Get the transformation matrix which moves from local coords to world coords.*/
+            virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
 
-                /** Get the transformation matrix which moves from world coords to local coords.*/
-                virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
-            
-            protected:
-            
-                virtual ~ComputeTransformCallback() {}            
-            
+            /** Get the transformation matrix which moves from world coords to local coords.*/
+            virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
         };
-
+        
+        friend struct osg::Transform::ComputeTransformCallback;
 
         /** Set the ComputerTransfromCallback which allows users to attach custom computation of the local transformation as 
           * seen by cull traversers and alike.*/
-        void setComputeTransformCallback(ComputeTransformCallback* ctc) { _computeTransformCallback=ctc; }
+        void setComputeTransformCallback(ComputeTransformCallback* ctc) { _computeTransformCallback=ctc; dirtyBound(); }
         
         /** Get the non const ComputerTransfromCallback.*/
         ComputeTransformCallback* getComputeTransformCallback() { return _computeTransformCallback.get(); }
@@ -143,13 +136,13 @@ class SG_EXPORT Transform : public Group
           * the underlying matrix (calling computeMatrix if required.) */
         virtual const bool computeBound() const;
         
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
+        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
             matrix = *_matrix;
             return true;
         }
 
-        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
+        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
             matrix.invert(*_matrix);
             return true;

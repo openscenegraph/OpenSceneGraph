@@ -497,6 +497,7 @@ void CullVisitor::pushCullViewState(Matrix* matrix)
 
         inverse_world = createOrReuseMatrix();
         inverse_world->invert(*(matrix));
+        
         nvs->_inverse = inverse_world;        
         
     }
@@ -937,7 +938,7 @@ void CullVisitor::apply(Billboard& node)
         */
 
         Matrix* billboard_matrix = createOrReuseMatrix();
-        node.calcTransform(eye_local,up_local,pos,*billboard_matrix);
+        node.getMatrix(*billboard_matrix,eye_local,up_local,pos);
 
         if (matrix)
         {
@@ -1052,8 +1053,6 @@ void CullVisitor::apply(Transform& node)
     matrix->makeIdentity();
     node.getLocalToWorldMatrix(*matrix,this);
     pushCullViewState(matrix.get());
-
-//    pushCullViewState(&node.getMatrix());
 
     traverse(node);
 

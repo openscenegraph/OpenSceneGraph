@@ -554,7 +554,7 @@ void Viewer::showStats(const unsigned int /*viewport*/)
         for (int i=0; i<nbinsUsed; i++) {
             primStats[i].setType(Statistics::STAT_PRIMSPERBIN); // cuts out vertices & triangles to save space on screen
             ntop+=writePrims((int)(0.96f*vh-ntop),primStats[i]);
-             osg::notify(osg::INFO) << "ntop "<< ntop<< std::endl;
+            //osg::notify(osg::INFO) << "ntop "<< ntop<< std::endl;
         }
         maxbins=(primStats[0].getBins()>maxbins)?primStats[0].getBins():maxbins;
         delete [] primStats; // free up

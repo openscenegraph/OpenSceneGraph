@@ -368,11 +368,7 @@ void Viewer::update()
         osg::Matrix matrix = mm->getInverseMatrix();
         CameraGroup::setViewByMatrix(Producer::Matrix(matrix.ptr()));
 
-        for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
-        {
-            (*p)->setFusionDistance(mm->getFusionDistanceMode(),mm->getFusionDistanceValue());
-        }
-
+        setFusionDistance(mm->getFusionDistanceMode(),mm->getFusionDistanceValue());
 
     }
 }

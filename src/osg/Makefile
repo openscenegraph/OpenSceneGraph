@@ -39,6 +39,7 @@ CXXFILES =\
 	Image.cpp\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
+	IndexedGeometry.cpp\
 	LOD.cpp\
 	Light.cpp\
 	LightModel.cpp\
@@ -61,7 +62,7 @@ CXXFILES =\
 	PolygonOffset.cpp\
 	PolygonStipple.cpp\
 	PositionAttitudeTransform.cpp\
-	Primitive.cpp\
+	PrimitiveSet.cpp\
 	Projection.cpp\
 	Quat.cpp\
 	Sequence.cpp\

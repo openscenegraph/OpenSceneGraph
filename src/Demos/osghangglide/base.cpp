@@ -46,7 +46,7 @@ Node *makeBase( void )
     geom->setColorArray( colors );
     geom->setColorBinding( Geometry::BIND_OVERALL );
 
-    geom->addPrimitive( new DrawArrays(Primitive::TRIANGLE_FAN,0,19) );
+    geom->addPrimitive( new DrawArrays(PrimitiveSet::TRIANGLE_FAN,0,19) );
 
     Texture2D *tex = new Texture2D;
 

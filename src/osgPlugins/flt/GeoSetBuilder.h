@@ -111,8 +111,8 @@ class DynGeoSet : public osg::Referenced
         osg::Geometry::AttributeBinding getNormalBinding() const { return _normal_binding; }
         osg::Geometry::AttributeBinding getTextureBinding() const { return _texture_binding; }
 
-        void setPrimType(osg::Primitive::Mode type) { _primtype=type; }
-        osg::Primitive::Mode getPrimType() const { return _primtype; }
+        void setPrimType(osg::PrimitiveSet::Mode type) { _primtype=type; }
+        osg::PrimitiveSet::Mode getPrimType() const { return _primtype; }
 
         inline void addPrimLen(const int len)           { _primLenList.push_back(len); }
         inline void addCoord(const osg::Vec3& coord)    { _coordList.push_back(coord); }
@@ -150,7 +150,7 @@ class DynGeoSet : public osg::Referenced
         osg::ref_ptr<osg::StateSet> _stateset;
 
 
-        osg::Primitive::Mode        _primtype;
+        osg::PrimitiveSet::Mode     _primtype;
         PrimLenList                 _primLenList;
 
         CoordList                   _coordList;
@@ -194,7 +194,7 @@ class GeoSetBuilder
 
         void initPrimData();
         DynGeoSet* findMatchingGeoSet();
-        osg::Primitive::Mode findPrimType(const int nVertices);
+        osg::PrimitiveSet::Mode findPrimType(const int nVertices);
 
     private:
 

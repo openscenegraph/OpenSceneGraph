@@ -75,7 +75,7 @@ Node *makeSky( void )
 
     for( i = 0; i < nlev-1; i++ )
     {
-        UShortDrawElements* drawElements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);
+        DrawElementsUShort* drawElements = new DrawElementsUShort(PrimitiveSet::TRIANGLE_STRIP);
         drawElements->reserve(38);
 
         for( j = 0; j <= 18; j++ )

@@ -157,7 +157,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count )
               (*texcoords).push_back(uv);
             }
         }
-          geometry->addPrimitive(osgNew DrawArrays(Primitive::POLYGON, 
+          geometry->addPrimitive(osgNew DrawArrays(PrimitiveSet::POLYGON, 
                            (*coords).size() - (*pol_itr)->size(), 
                            (*pol_itr)->size()));
         }

@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_PRIMTIVE
-#define OSG_PRIMTIVE 1
+#ifndef OSG_PRIMTIVESET
+#define OSG_PRIMTIVESET 1
 
 #include <osg/Drawable>
 
@@ -75,7 +75,7 @@ public:
 #endif
 
 
-class Primitive : public Object
+class PrimitiveSet : public Object
 {
     public:
     
@@ -103,18 +103,18 @@ class Primitive : public Object
             POLYGON = GL_POLYGON
         };
 
-        Primitive(Type primType=PrimitiveType,GLenum mode=0):
+        PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0):
             _primitiveType(primType),
             _mode(mode) {}
     
-        Primitive(const Primitive& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(prim,copyop),
             _primitiveType(prim._primitiveType),
             _mode(prim._mode) {}
 
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Primitive*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PrimitiveSet*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Primitive"; }
+        virtual const char* className() const { return "PrimitiveSet"; }
         
         Type getType() const { return _primitiveType; }
         
@@ -135,22 +135,26 @@ class Primitive : public Object
         GLenum  _mode;
 };
 
-class SG_EXPORT DrawArrays : public Primitive
+// temporary addition for backwards compatiblity.
+typedef PrimitiveSet Primitive;
+
+
+class SG_EXPORT DrawArrays : public PrimitiveSet
 {
     public:
 
         DrawArrays(GLenum mode=0):
-            Primitive(DrawArraysPrimitiveType,mode),
+            PrimitiveSet(DrawArraysPrimitiveType,mode),
             _first(0),
             _count(0) {}
     
         DrawArrays(GLenum mode, GLint first, GLsizei count):
-            Primitive(DrawArraysPrimitiveType,mode),
+            PrimitiveSet(DrawArraysPrimitiveType,mode),
             _first(first),
             _count(count) {}
 
         DrawArrays(const DrawArrays& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Primitive(da,copyop),
+            PrimitiveSet(da,copyop),
             _first(da._first),
             _count(da._count) {}
 
@@ -188,32 +192,32 @@ class SG_EXPORT DrawArrays : public Primitive
         GLsizei _count;
 };
 
-class SG_EXPORT DrawArrayLengths : public Primitive, public VectorSizei
+class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
 {
     public:
 
         DrawArrayLengths(GLenum mode=0):
-            Primitive(DrawArrayLengthsPrimitiveType,mode),
+            PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             _first(0) {}
     
         DrawArrayLengths(const DrawArrayLengths& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Primitive(dal,copyop),
+            PrimitiveSet(dal,copyop),
             VectorSizei(dal),
             _first(dal._first) {}
 
         DrawArrayLengths(GLenum mode, GLint first, unsigned int no, GLsizei* ptr) : 
-            Primitive(DrawArrayLengthsPrimitiveType,mode),
+            PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             VectorSizei(ptr,ptr+no),
             _first(first) {}
 
         DrawArrayLengths(GLenum mode,GLint first, unsigned int no) : 
-            Primitive(DrawArrayLengthsPrimitiveType,mode),
+            PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             VectorSizei(no),
             _first(first) {}
 
         template <class InputIterator>
         DrawArrayLengths(GLenum mode, GLint first, InputIterator firstItr,InputIterator lastItr) : 
-            Primitive(DrawArrayLengthsPrimitiveType,mode),
+            PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             VectorSizei(firstItr,lastItr),
             _first(first) {}
 
@@ -240,28 +244,28 @@ class SG_EXPORT DrawArrayLengths : public Primitive, public VectorSizei
         GLint   _first;
 };
 
-class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
+class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
 {
     public:
 
         DrawElementsUByte(GLenum mode=0):
-            Primitive(DrawElementsUBytePrimitiveType,mode) {}
+            PrimitiveSet(DrawElementsUBytePrimitiveType,mode) {}
     
         DrawElementsUByte(const DrawElementsUByte& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Primitive(array,copyop),
+            PrimitiveSet(array,copyop),
             VectorUByte(array) {}
 
         DrawElementsUByte(GLenum mode,unsigned int no,GLubyte* ptr) : 
-            Primitive(DrawElementsUBytePrimitiveType,mode),
+            PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
             VectorUByte(ptr,ptr+no) {}
 
         DrawElementsUByte(GLenum mode,unsigned int no) : 
-            Primitive(DrawElementsUBytePrimitiveType,mode),
+            PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
             VectorUByte(no) {}
 
         template <class InputIterator>
         DrawElementsUByte(GLenum mode, InputIterator first,InputIterator last) : 
-            Primitive(DrawElementsUBytePrimitiveType,mode),
+            PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
             VectorUByte(first,last) {}
 
         virtual Object* cloneType() const { return osgNew DrawElementsUByte(); }
@@ -280,28 +284,28 @@ class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
 };
 
 
-class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
+class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
 {
     public:
 
         DrawElementsUShort(GLenum mode=0):
-            Primitive(DrawElementsUShortPrimitiveType,mode) {}
+            PrimitiveSet(DrawElementsUShortPrimitiveType,mode) {}
     
         DrawElementsUShort(const DrawElementsUShort& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Primitive(array,copyop),
+            PrimitiveSet(array,copyop),
             VectorUShort(array) {}
 
         DrawElementsUShort(GLenum mode,unsigned int no,GLushort* ptr) : 
-            Primitive(DrawElementsUShortPrimitiveType,mode),
+            PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
             VectorUShort(ptr,ptr+no) {}
 
         DrawElementsUShort(GLenum mode,unsigned int no) : 
-            Primitive(DrawElementsUShortPrimitiveType,mode),
+            PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
             VectorUShort(no) {}
 
         template <class InputIterator>
         DrawElementsUShort(GLenum mode, InputIterator first,InputIterator last) : 
-            Primitive(DrawElementsUShortPrimitiveType,mode),
+            PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
             VectorUShort(first,last) {}
 
         virtual Object* cloneType() const { return osgNew DrawElementsUShort(); }
@@ -319,28 +323,28 @@ class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
         virtual unsigned int getNumIndices() { return size(); }
 };
 
-class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
+class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
 {
     public:
 
         DrawElementsUInt(GLenum mode=0):
-            Primitive(DrawElementsUIntPrimitiveType,mode) {}
+            PrimitiveSet(DrawElementsUIntPrimitiveType,mode) {}
     
         DrawElementsUInt(const DrawElementsUInt& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Primitive(array,copyop),
+            PrimitiveSet(array,copyop),
             VectorUInt(array) {}
 
         DrawElementsUInt(GLenum mode,unsigned int no,GLuint* ptr) : 
-            Primitive(DrawElementsUIntPrimitiveType,mode),
+            PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(ptr,ptr+no) {}
 
         DrawElementsUInt(GLenum mode,unsigned int no) : 
-            Primitive(DrawElementsUIntPrimitiveType,mode),
+            PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(no) {}
 
         template <class InputIterator>
         DrawElementsUInt(GLenum mode, InputIterator first,InputIterator last) : 
-            Primitive(DrawElementsUIntPrimitiveType,mode),
+            PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(first,last) {}
 
         virtual Object* cloneType() const { return osgNew DrawElementsUInt(); }
@@ -357,11 +361,6 @@ class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
 
         virtual unsigned int getNumIndices() { return size(); }
 };
-
-// backwards compatibility with first incarnation of DrawElements nameing convention.
-typedef DrawElementsUByte UByteDrawElements;
-typedef DrawElementsUShort UShortDrawElements;
-typedef DrawElementsUInt UIntDrawElements;
 
 }
 

@@ -209,6 +209,10 @@ SOURCE=..\..\src\osg\Geometry.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\IndexedGeometry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\GeoSet.cpp
 # End Source File
 # Begin Source File
@@ -554,6 +558,10 @@ SOURCE=..\..\Include\Osg\Geode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Geometry
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\IndexedGeometry
 # End Source File
 # Begin Source File
 

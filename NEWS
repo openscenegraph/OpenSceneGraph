@@ -2,6 +2,15 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    Support added for handling different extensions on different graphics
+    contexts.
+
+    Sort callbacks added to osg::RenderStage.
+
+    Support for multitexturing added to OpenFlight loader.
+
+    Added PolygonStipple class.
+
 30th August 2002 - OpenSceneGraph-0.9.1.tar.gz
 
     >>> Support added for 1D & 3D textures, texture env combiners, secondary color and fog coords, DOFTransform and Sequence nodes. Inventor/VRML and LWO2 loaders added and the a port HP-UX!

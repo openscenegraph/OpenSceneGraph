@@ -1025,13 +1025,13 @@ Geometry* GeoSet::convertToGeometry()
 
                 for( int i = 0; i < _numprims; i++ )
                 {
-                    UShortDrawElements* n = new UShortDrawElements;
+                    DrawElementsUShort* n = new DrawElementsUShort;
                     geom->addPrimitive(n);
 
                     if (_cindex._is_ushort)
-                        geom->addPrimitive(osgNew UShortDrawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] ));
+                        geom->addPrimitive(osgNew DrawElementsUShort( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] ));
                     else
-                        geom->addPrimitive(osgNew UIntDrawElements( (GLenum)_oglprimtype, _primLengths[i], &_cindex._ptr._uint[index] ));
+                        geom->addPrimitive(osgNew DrawElementsUInt( (GLenum)_oglprimtype, _primLengths[i], &_cindex._ptr._uint[index] ));
 
                     index += _primLengths[i];
                 }
@@ -1062,9 +1062,9 @@ Geometry* GeoSet::convertToGeometry()
             if( _cindex.valid())
             {
                 if (_cindex._is_ushort)
-                    geom->addPrimitive(osgNew UShortDrawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._ushort ));
+                    geom->addPrimitive(osgNew DrawElementsUShort( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._ushort ));
                 else
-                    geom->addPrimitive(osgNew UIntDrawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._uint ));
+                    geom->addPrimitive(osgNew DrawElementsUInt( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._uint ));
             }
             else
                 geom->addPrimitive(new DrawArrays( (GLenum)_oglprimtype, 0, _numcoords ));

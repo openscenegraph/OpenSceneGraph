@@ -1,10 +1,10 @@
 #include <osg/GLExtensions>
-#include <osg/Geometry>
+#include <osg/IndexedGeometry>
 #include <osg/Notify>
 
 using namespace osg;
 
-Geometry::Geometry()
+IndexedGeometry::IndexedGeometry()
 {
     _normalBinding = BIND_OFF;
     _colorBinding = BIND_OFF;
@@ -12,7 +12,7 @@ Geometry::Geometry()
     _fogCoordBinding = BIND_OFF;
 }
 
-Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
+IndexedGeometry::IndexedGeometry(const IndexedGeometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
     _vertexArray(dynamic_cast<Vec3Array*>(copyop(geometry._vertexArray.get()))),
     _normalBinding(geometry._normalBinding),
@@ -24,7 +24,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _fogCoordBinding(geometry._fogCoordBinding),
     _fogCoordArray(dynamic_cast<FloatArray*>(copyop(geometry._fogCoordArray.get())))
 {
-    for(PrimitiveList::const_iterator pitr=geometry._primitives.begin();
+    for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
         ++pitr)
     {
@@ -36,34 +36,34 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
         titr!=geometry._texCoordList.end();
         ++titr)
     {
-        _texCoordList.push_back(copyop(titr->get()));
+        _texCoordList.push_back(*titr);
     }
 }
 
-Geometry::~Geometry()
+IndexedGeometry::~IndexedGeometry()
 {
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
-void Geometry::setTexCoordArray(unsigned int unit,Array* array)
+void IndexedGeometry::setTexCoordArray(unsigned int unit,Array* array)
 {
     if (_texCoordList.size()<=unit)
-        _texCoordList.resize(unit+1,0);
+        _texCoordList.resize(unit+1);
         
-   _texCoordList[unit] = array;
+   _texCoordList[unit].first = array;
 
     dirtyDisplayList();
 }
 
-Array* Geometry::getTexCoordArray(unsigned int unit)
+Array* IndexedGeometry::getTexCoordArray(unsigned int unit)
 {
-    if (unit<_texCoordList.size()) return _texCoordList[unit].get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].first.get();
     else return 0;
 }
 
-const Array* Geometry::getTexCoordArray(unsigned int unit) const
+const Array* IndexedGeometry::getTexCoordArray(unsigned int unit) const
 {
-    if (unit<_texCoordList.size()) return _texCoordList[unit].get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].first.get();
     else return 0;
 }
 
@@ -71,7 +71,7 @@ typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
 typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
 typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
 
-void Geometry::drawImmediateMode(State& state)
+void IndexedGeometry::drawImmediateMode(State& state)
 {
     if (!_vertexArray.valid()) return;
     
@@ -89,7 +89,7 @@ void Geometry::drawImmediateMode(State& state)
     unsigned int i;
     for(i=0;i<_texCoordList.size();++i)
     {
-        Array* array = _texCoordList[i].get();
+        Array* array = _texCoordList[i].first.get();
         if (array)
             state.setTexCoordPointer(i,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
         else
@@ -328,16 +328,16 @@ void Geometry::drawImmediateMode(State& state)
     // draw the primitives themselves.
     //
     
-    for(PrimitiveList::iterator itr=_primitives.begin();
+    for(PrimitiveSetList::iterator itr=_primitives.begin();
         itr!=_primitives.end();
         ++itr)
     {
-        if (normalBinding==BIND_PER_PRIMITIVE)
+        if (normalBinding==BIND_PER_PRIMITIVE_SET)
         {
             glNormal3fv((const GLfloat *)normalPointer++);
         }
     
-        if (colorBinding==BIND_PER_PRIMITIVE)
+        if (colorBinding==BIND_PER_PRIMITIVE_SET)
         {
             switch(colorType)
             {
@@ -356,7 +356,7 @@ void Geometry::drawImmediateMode(State& state)
             colorPointer += colorStride;
         }
 
-        if (secondaryColorBinding==BIND_PER_PRIMITIVE)
+        if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)
         {
             switch(secondaryColorType)
             {
@@ -372,18 +372,71 @@ void Geometry::drawImmediateMode(State& state)
             secondaryColorPointer += secondaryColorStride;
         }
 
-        if (fogCoordBinding==BIND_PER_PRIMITIVE)
+        if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)
         {
             s_glFogCoordfv(fogCoordPointer++);
         }
     
-        (*itr)->draw();
+        //(*itr)->draw();
+        
+        PrimitiveSet* primitiveset = itr->get();
+        switch(primitiveset->getType())
+        {
+            case(PrimitiveSet::DrawArraysPrimitiveType):
+            {
+                DrawArrays* drawArray = static_cast<DrawArrays*>(primitiveset);
+                glBegin(primitiveset->getMode());
+                
+                Vec3* vertices = &(_vertexArray->front()) + drawArray->getFirst();
+                int count = drawArray->getCount();
+                for(GLsizei ci=0;ci<count;++ci)
+                {
+                    glVertex3fv(vertices->ptr());
+                    ++vertices;
+                }
+    
+                glEnd();
+                break;
+            }
+            case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+            {
+                //* drawArray = static_cast<*>(primitiveset);
+                glBegin(primitiveset->getMode());
+                glEnd();
+                break;
+            }
+            case(PrimitiveSet::DrawElementsUBytePrimitiveType):
+            {
+                //* drawArray = static_cast<*>(primitiveset);
+                glBegin(primitiveset->getMode());
+                glEnd();
+                break;
+            }
+            case(PrimitiveSet::DrawElementsUShortPrimitiveType):
+            {
+                //* drawArray = static_cast<*>(primitiveset);
+                glBegin(primitiveset->getMode());
+                glEnd();
+                break;
+            }
+            case(PrimitiveSet::DrawElementsUIntPrimitiveType):
+            {
+                //* drawArray = static_cast<*>(primitiveset);
+                glBegin(primitiveset->getMode());
+                glEnd();
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }        
     }
 
 }
 
 
-void Geometry::accept(AttributeFunctor& af)
+void IndexedGeometry::accept(AttributeFunctor& af)
 {
     if (_vertexArray.valid() && !_vertexArray->empty())
     {
@@ -397,13 +450,13 @@ void Geometry::accept(AttributeFunctor& af)
     // need to add other attriubtes
 }
 
-void Geometry::accept(PrimitiveFunctor& functor)
+void IndexedGeometry::accept(PrimitiveFunctor& functor)
 {
     if (!_vertexArray.valid() || _vertexArray->empty()) return;
     
     functor.setVertexArray(_vertexArray->size(),&(_vertexArray->front()));
     
-    for(PrimitiveList::iterator itr=_primitives.begin();
+    for(PrimitiveSetList::iterator itr=_primitives.begin();
         itr!=_primitives.end();
         ++itr)
     {
@@ -412,27 +465,7 @@ void Geometry::accept(PrimitiveFunctor& functor)
     
 }
 
-// just use the base Drawable's PrimitiveFunctor based implementation.
-// const bool Geometry::computeBound() const
-// {
-//     _bbox.init();
-//     
-//     const Vec3Array* coords = dynamic_cast<const Vec3Array*>(_vertexArray.get());
-//     if (coords)
-//     {
-//         for(Vec3Array::const_iterator itr=coords->begin();
-//             itr!=coords->end();
-//             ++itr)
-//         {
-//             _bbox.expandBy(*itr);
-//         }
-//     }
-//     _bbox_computed = true;
-//     
-//     return _bbox.valid();
-// }
-
-bool Geometry::verifyBindings() const
+bool IndexedGeometry::verifyBindings() const
 {
     switch(_normalBinding)
     {
@@ -443,7 +476,7 @@ bool Geometry::verifyBindings() const
             if (!_normalArray.valid()) return false;
             if (_normalArray->getNumElements()!=1) return false;
             break;
-        case(BIND_PER_PRIMITIVE):
+        case(BIND_PER_PRIMITIVE_SET):
             if (!_normalArray.valid()) return false;
             if (_normalArray->getNumElements()!=_primitives.size()) return false;
             break;
@@ -466,7 +499,7 @@ bool Geometry::verifyBindings() const
             if (!_colorArray.valid()) return false;
             if (_colorArray->getNumElements()!=1) return false;
             break;
-        case(BIND_PER_PRIMITIVE):
+        case(BIND_PER_PRIMITIVE_SET):
             if (!_colorArray.valid()) return false;
             if (_colorArray->getNumElements()!=_primitives.size()) return false;
             break;
@@ -484,7 +517,7 @@ bool Geometry::verifyBindings() const
         itr!=_texCoordList.end();
         ++itr)
     {
-        const Array* array = itr->get();
+        const Array* array = itr->first.get();
         if (_vertexArray.valid())
         {
             if (array && array->getNumElements()!=_vertexArray->getNumElements()) return false;
@@ -495,7 +528,7 @@ bool Geometry::verifyBindings() const
     return true;
 }
 
-void Geometry::computeCorrectBindingsAndArraySizes()
+void IndexedGeometry::computeCorrectBindingsAndArraySizes()
 {
     if (verifyBindings()) return;
 
@@ -513,7 +546,7 @@ void Geometry::computeCorrectBindingsAndArraySizes()
         
         _texCoordList.clear();
         
-        notify(INFO)<<"Info: remove redundent attribute arrays from empty osg::Geometry"<<std::endl;
+        notify(INFO)<<"Info: remove redundent attribute arrays from empty osg::IndexedGeometry"<<std::endl;
         
         return;
     }

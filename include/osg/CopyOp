@@ -19,7 +19,7 @@ class StateAttribute;
 class Node;
 class Drawable;
 class Array;
-class Primitive;
+class PrimitiveSet;
 
 /** Copy Op(erator) used to control the whether shallow or deep copy is used
   * during copy construction and clone operation.*/
@@ -56,8 +56,8 @@ class SG_EXPORT CopyOp
         virtual StateAttribute* operator() (const StateAttribute* attr) const;
         virtual Texture*        operator() (const Texture* text) const;
         virtual Image*          operator() (const Image* image) const;
-        virtual Array*          operator() (const Array* image) const;
-        virtual Primitive*      operator() (const Primitive* image) const;
+        virtual Array*          operator() (const Array* array) const;
+        virtual PrimitiveSet*   operator() (const PrimitiveSet* primitives) const;
 
     protected:
     

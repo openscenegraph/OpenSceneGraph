@@ -345,7 +345,7 @@ void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum int
     if (_glTexImage3D)
     {
         typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-        (*((GLTexImage3DProc)_glTexImage3D))( target, level, internalFormat, width, height, depth, border, format, type, pixels);
+        ((GLTexImage3DProc)_glTexImage3D)( target, level, internalFormat, width, height, depth, border, format, type, pixels);
     }
     else
     {
@@ -358,7 +358,7 @@ void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint x
     if (_glTexSubImage3D)
     {
         typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-        (*((GLTexSubImage3DProc)_glTexSubImage3D))( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+        ((GLTexSubImage3DProc)_glTexSubImage3D)( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     }
     else
     {
@@ -371,7 +371,7 @@ void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLi
     if (_glCopyTexSubImage3D)
     {
         typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-        (*((GLCopyTexSubImageProc)_glCopyTexSubImage3D))(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+        ((GLCopyTexSubImageProc)_glCopyTexSubImage3D)(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     }
     else
     {
@@ -384,7 +384,7 @@ void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalForm
     if (_gluBuild3DMipmaps)
     {
         typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
-        (*((GLUBuild3DMipMapsProc)_gluBuild3DMipmaps))(target, internalFormat, width, height, depth, format, type, data);
+        ((GLUBuild3DMipMapsProc)_gluBuild3DMipmaps)(target, internalFormat, width, height, depth, format, type, data);
     }
     else
     {

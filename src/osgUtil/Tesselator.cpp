@@ -140,15 +140,15 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
     int noPrimitiveAtStart = geom.getPrimitiveList().size();
     for(int primNo=0;primNo<noPrimitiveAtStart;++primNo)
     {
-        osg::Primitive* primitive = geom.getPrimitiveList()[primNo].get();
-        if (primitive->getMode()==osg::Primitive::POLYGON)
+        osg::PrimitiveSet* primitive = geom.getPrimitiveList()[primNo].get();
+        if (primitive->getMode()==osg::PrimitiveSet::POLYGON)
         {
             beginTesselation();
             beginContour();
 
             switch(primitive->getType())
             {
-                case(osg::Primitive::DrawArraysPrimitiveType):
+                case(osg::PrimitiveSet::DrawArraysPrimitiveType):
                 {
                     osg::DrawArrays* drawArray = static_cast<osg::DrawArrays*>(primitive);
                     unsigned int first = drawArray->getFirst(); 
@@ -159,7 +159,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
-                case(osg::Primitive::DrawElementsUBytePrimitiveType):
+                case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
                 {
                     osg::DrawElementsUByte* drawElements = static_cast<osg::DrawElementsUByte*>(primitive);
                     for(osg::DrawElementsUByte::iterator indexItr=drawElements->begin();
@@ -170,7 +170,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
-                case(osg::Primitive::DrawElementsUShortPrimitiveType):
+                case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
                 {
                     osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>(primitive);
                     for(osg::DrawElementsUShort::iterator indexItr=drawElements->begin();
@@ -181,7 +181,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
-                case(osg::Primitive::DrawElementsUIntPrimitiveType):
+                case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
                 {
                     osg::DrawElementsUInt* drawElements = static_cast<osg::DrawElementsUInt*>(primitive);
                     for(osg::DrawElementsUInt::iterator indexItr=drawElements->begin();

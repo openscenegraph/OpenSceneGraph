@@ -158,6 +158,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Geometry.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\IndexedGeometry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Group.cpp
 # End Source File
 # Begin Source File

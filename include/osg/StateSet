@@ -190,7 +190,7 @@ class SG_EXPORT StateSet : public Object
         void setRenderBinDetails(int binNum,const std::string& binName,RenderBinMode mode=USE_RENDERBIN_DETAILS);
                 
         /** set the render bin details to inherit.*/
-        void setRendingBinToInherit();
+        void setRenderBinToInherit();
         
         /** get the render bin mode.*/
         inline RenderBinMode getRenderBinMode() const { return _binMode; }

@@ -48,12 +48,12 @@ void TriStripVisitor::stripify(Geometry& geom)
     {
         switch((*itr)->getMode())
         {
-            case(Primitive::TRIANGLES):
-            case(Primitive::TRIANGLE_STRIP):
-            case(Primitive::TRIANGLE_FAN):
-            case(Primitive::QUADS):
-            case(Primitive::QUAD_STRIP):
-            case(Primitive::POLYGON):
+            case(PrimitiveSet::TRIANGLES):
+            case(PrimitiveSet::TRIANGLE_STRIP):
+            case(PrimitiveSet::TRIANGLE_FAN):
+            case(PrimitiveSet::QUADS):
+            case(PrimitiveSet::QUAD_STRIP):
+            case(PrimitiveSet::POLYGON):
                 ++numSurfacePrimitives;
                 break;
             default:
@@ -76,12 +76,12 @@ void TriStripVisitor::stripify(Geometry& geom)
     {
         switch((*itr)->getMode())
         {
-            case(Primitive::TRIANGLES):
-            case(Primitive::TRIANGLE_STRIP):
-            case(Primitive::TRIANGLE_FAN):
-            case(Primitive::QUADS):
-            case(Primitive::QUAD_STRIP):
-            case(Primitive::POLYGON):
+            case(PrimitiveSet::TRIANGLES):
+            case(PrimitiveSet::TRIANGLE_STRIP):
+            case(PrimitiveSet::TRIANGLE_FAN):
+            case(PrimitiveSet::QUADS):
+            case(PrimitiveSet::QUAD_STRIP):
+            case(PrimitiveSet::POLYGON):
                 (*itr)->accept(taf);
                 break;
             default:
@@ -124,7 +124,7 @@ void TriStripVisitor::stripify(Geometry& geom)
             NvStripInfo *strip = strips[i];
             int nStripFaceCount = strip->m_faces.size();
 
-            osg::UShortDrawElements* elements = osgNew osg::UShortDrawElements(osg::Primitive::TRIANGLE_STRIP);
+            osg::DrawElementsUShort* elements = osgNew osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP);
             elements->reserve(nStripFaceCount+2);
             new_primitives.push_back(elements);
 
@@ -187,7 +187,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         if (leftoverFaces.size())
         {
 
-            osg::UShortDrawElements* triangles = osgNew osg::UShortDrawElements(osg::Primitive::TRIANGLES);
+            osg::DrawElementsUShort* triangles = osgNew osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
             triangles->reserve(leftoverFaces.size()*3);
             new_primitives.push_back(triangles);
 

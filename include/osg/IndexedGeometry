@@ -15,28 +15,29 @@
 namespace osg {
 
 
-class SG_EXPORT Geometry : public Drawable
+class SG_EXPORT IndexedGeometry : public Drawable
 {
     public:
 
-        Geometry();
+        IndexedGeometry();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Geometry(const Geometry& geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        IndexedGeometry(const IndexedGeometry& geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
             
-        virtual Object* cloneType() const { return osgNew Geometry(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew Geometry(*this,copyop); }        
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geometry*>(obj)!=NULL; }
+        virtual Object* cloneType() const { return osgNew IndexedGeometry(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew IndexedGeometry(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const IndexedGeometry*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Geometry"; }
+        virtual const char* className() const { return "IndexedGeometry"; }
 
-        virtual Geometry* asGeometry() { return this; }
-        virtual const Geometry* asGeometry() const { return this; }
+        virtual IndexedGeometry* asIndexedGeometry() { return this; }
+        virtual const IndexedGeometry* asIndexedGeometry() const { return this; }
 
         enum AttributeBinding
         {
             BIND_OFF=0,
             BIND_OVERALL,
+            BIND_PER_PRIMITIVE_SET,
             BIND_PER_PRIMITIVE,
             BIND_PER_VERTEX
         };
@@ -44,6 +45,10 @@ class SG_EXPORT Geometry : public Drawable
         void setVertexArray(Vec3Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound(); }
         Vec3Array* getVertexArray() { return _vertexArray.get(); }
         const Vec3Array* getVertexArray() const  { return _vertexArray.get(); }
+
+        void setVertexIndices(Array* array) { _vertexIndices = array; dirtyDisplayList(); dirtyBound(); }
+        Array* getVertexIndices() { return _vertexIndices.get(); }
+        const Array* getVertexIndices() const  { return _vertexIndices.get(); }
 
 
         void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; dirtyDisplayList(); }
@@ -53,6 +58,10 @@ class SG_EXPORT Geometry : public Drawable
         Vec3Array* getNormalArray() { return _normalArray.get(); }
         const Vec3Array* getNormalArray() const { return _normalArray.get(); }
 
+        void setNormalIndices(Array* array) { _normalIndices = array; dirtyDisplayList(); }
+        Array* getNormalIndices() { return _normalIndices.get(); }
+        const Array* getNormalIndices() const { return _normalIndices.get(); }
+
 
         void setColorBinding(AttributeBinding ab) { _colorBinding = ab; }
         AttributeBinding getColorBinding() const { return _colorBinding; }
@@ -61,6 +70,10 @@ class SG_EXPORT Geometry : public Drawable
         Array* getColorArray() { return _colorArray.get(); }
         const Array* getColorArray() const { return _colorArray.get(); }
 
+        void setColorIndices(Array* array) { _colorIndices = array;  dirtyDisplayList(); }
+        Array* getColorIndices() { return _colorIndices.get(); }
+        const Array* getColorIndices() const { return _colorIndices.get(); }
+
 
         void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorBinding = ab; }
         AttributeBinding getSecondaryColorBinding() const { return _secondaryColorBinding; }
@@ -68,6 +81,10 @@ class SG_EXPORT Geometry : public Drawable
         void setSecondaryColorArray(Array* array) { _secondaryColorArray = array;  if (!_secondaryColorArray.valid()) _secondaryColorBinding=BIND_OFF; dirtyDisplayList(); }
         Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
         const Array* getSecondaryColorArray() const { return _secondaryColorArray.get(); }
+
+        void setSecondaryColorIndices(Array* array) { _secondaryColorIndices = array;  dirtyDisplayList(); }
+        Array* getSecondaryColorIndices() { return _secondaryColorIndices.get(); }
+        const Array* getSecondaryColorIndices() const { return _secondaryColorIndices.get(); }
 
 
         void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; }
@@ -78,29 +95,40 @@ class SG_EXPORT Geometry : public Drawable
         const FloatArray* getFogCoordArray() const { return _fogCoordArray.get(); }
 
 
-        typedef std::vector< ref_ptr<Array> >  TexCoordArrayList;
+        void setFogCoordIndices(Array* array) { _fogCoordIndices = array; dirtyDisplayList(); }
+        Array* getFogCoordIndices() { return _fogCoordIndices.get(); }
+        const Array* getFogCoordIndices() const { return _fogCoordIndices.get(); }
+
+
+
+        typedef std::pair< ref_ptr<Array>, ref_ptr<Array> >  TexCoordArrayPair;
+        typedef std::vector< TexCoordArrayPair >  TexCoordArrayList;
 
 
         void setTexCoordArray(unsigned int unit,Array*);
         Array* getTexCoordArray(unsigned int unit);
         const Array* getTexCoordArray(unsigned int unit) const;
         
+        void setTexCoordIndices(unsigned int unit,Array*);
+        Array* getTexCoordIndices(unsigned int unit);
+        const Array* getTexCoordIndices(unsigned int unit) const;
+
         unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
         TexCoordArrayList& getTexCoordArrayList() { return _texCoordList; }
         const TexCoordArrayList& getTexCoordArrayList() const { return _texCoordList; }
 
 
-        typedef std::vector< ref_ptr<PrimitiveSet> > PrimitiveList;
+        typedef std::vector< ref_ptr<PrimitiveSet> > PrimitiveSetList;
 
-        void setPrimitiveList(const PrimitiveList& primitives) { _primitives = primitives; dirtyDisplayList(); }
-        PrimitiveList& getPrimitiveList() { return _primitives; }
-        const PrimitiveList& getPrimitiveList() const { return _primitives; }
+        void setPrimitiveSetList(const PrimitiveSetList& primitives) { _primitives = primitives; dirtyDisplayList(); dirtyBound(); }
+        PrimitiveSetList& getPrimitiveSetList() { return _primitives; }
+        const PrimitiveSetList& getPrimitiveSetList() const { return _primitives; }
 
-        unsigned int getNumPrimitives() const { return _primitives.size(); }
-        PrimitiveSet* getPrimitive(unsigned int pos) { return _primitives[pos].get(); }
-        const PrimitiveSet* getPrimitive(unsigned int pos) const { return _primitives[pos].get(); }
+        unsigned int getNumPrimitiveSet() const { return _primitives.size(); }
+        PrimitiveSet* getPrimitiveSet(unsigned int pos) { return _primitives[pos].get(); }
+        const PrimitiveSet* getPrimitiveSet(unsigned int pos) const { return _primitives[pos].get(); }
         
-        void addPrimitive(PrimitiveSet* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); }
+        void addPrimitiveSet(PrimitiveSet* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); dirtyBound(); }
 
 
         bool verifyBindings() const;
@@ -108,9 +136,9 @@ class SG_EXPORT Geometry : public Drawable
         void computeCorrectBindingsAndArraySizes();
 
 
-        /** draw Geometry directly ignoring an OpenGL display list which could be attached.
+        /** draw IndexedGeometry directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
-          * and is the method to override when deriving from Geometry for user-drawn objects.
+          * and is the method to override when deriving from IndexedGeometry for user-drawn objects.
           */
         virtual void drawImmediateMode(State& state);
 
@@ -122,25 +150,30 @@ class SG_EXPORT Geometry : public Drawable
 
     protected:
 
-        Geometry& operator = (const Geometry&) { return *this;}
+        IndexedGeometry& operator = (const IndexedGeometry&) { return *this;}
 
-        virtual ~Geometry();
+        virtual ~IndexedGeometry();
        
-        PrimitiveList               _primitives;
+        PrimitiveSetList            _primitives;
         
         ref_ptr<Vec3Array>          _vertexArray;
+        ref_ptr<Array>              _vertexIndices;
 
         AttributeBinding            _normalBinding;
         ref_ptr<Vec3Array>          _normalArray;
+        ref_ptr<Array>              _normalIndices;
         
         AttributeBinding            _colorBinding;
         ref_ptr<Array>              _colorArray;
+        ref_ptr<Array>              _colorIndices;
         
         AttributeBinding            _secondaryColorBinding;
         ref_ptr<Array>              _secondaryColorArray;
+        ref_ptr<Array>              _secondaryColorIndices;
 
         AttributeBinding            _fogCoordBinding;
         ref_ptr<FloatArray>         _fogCoordArray;
+        ref_ptr<Array>              _fogCoordIndices;
         
         TexCoordArrayList           _texCoordList;
 

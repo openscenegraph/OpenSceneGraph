@@ -1,6 +1,4 @@
-#if 1
-
-#include <osg/Geometry>
+#include <osg/IndexedGeometry>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -10,44 +8,55 @@ using namespace osg;
 using namespace osgDB;
 
 // forward declare functions to use later.
-bool Geometry_readLocalData(Object& obj, Input& fr);
-bool Geometry_writeLocalData(const Object& obj, Output& fw);
+bool IndexedGeometry_readLocalData(Object& obj, Input& fr);
+bool IndexedGeometry_writeLocalData(const Object& obj, Output& fw);
 
-bool Geometry_matchBindingTypeStr(const char* str,Geometry::AttributeBinding& mode);
-const char* Geometry_getBindingTypeStr(Geometry::AttributeBinding mode);
+bool IndexedGeometry_matchBindingTypeStr(const char* str,IndexedGeometry::AttributeBinding& mode);
+const char* IndexedGeometry_getBindingTypeStr(IndexedGeometry::AttributeBinding mode);
 
-bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode);
-const char* Geometry_getPrimitiveModeStr(GLenum mode);
+bool IndexedGeometry_matchPrimitiveModeStr(const char* str,GLenum& mode);
+const char* IndexedGeometry_getPrimitiveModeStr(GLenum mode);
 
-Array* Array_readLocalData(Input& fr);
+Array* IG_Array_readLocalData(Input& fr);
 
-bool Primitive_readLocalData(Input& fr,osg::Geometry& geom);
+bool IG_Primitive_readLocalData(Input& fr,osg::IndexedGeometry& geom);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_GeometryFuncProxy
+// RegisterDotOsgWrapperProxy g_GeometryFuncProxy
+// (
+//     osgNew osg::IndexedGeometry,
+//     "Geometry",
+//     "Object Drawable Geometry",
+//     &IndexedGeometry_readLocalData,
+//     &IndexedGeometry_writeLocalData,
+//     DotOsgWrapper::READ_AND_WRITE
+// );
+
+RegisterDotOsgWrapperProxy g_IndexedGeometryFuncProxy
 (
-    osgNew osg::Geometry,
-    "Geometry",
-    "Object Drawable Geometry",
-    &Geometry_readLocalData,
-    &Geometry_writeLocalData,
+    osgNew osg::IndexedGeometry,
+    "IndexedGeometry",
+    "Object Drawable IndexedGeometry",
+    &IndexedGeometry_readLocalData,
+    &IndexedGeometry_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
 );
 
-bool Geometry_readLocalData(Object& obj, Input& fr)
+bool IndexedGeometry_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
 
-    Geometry& geom = static_cast<Geometry&>(obj);
+    IndexedGeometry& geom = static_cast<IndexedGeometry&>(obj);
 
-    if (fr.matchSequence("Primitives %i {"))
+    bool matchedFirst = false;
+    if ((matchedFirst=fr.matchSequence("Primitives %i {")) || fr.matchSequence("PrimitivesSet %i {") )
     {
         int entry = fr[1].getNoNestedBrackets();
 
         int capacity;
         fr[1].getInt(capacity);
         
-        Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
+        IndexedGeometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
         if (capacity>0) primitives.reserve(capacity);
         
 
@@ -56,7 +65,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            if (!Primitive_readLocalData(fr,geom)) ++fr;
+            if (!IG_Primitive_readLocalData(fr,geom)) ++fr;
         }
 
         ++fr;
@@ -100,8 +109,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     
     }
 
-    Geometry::AttributeBinding normalBinding=Geometry::BIND_OFF;
-    if (fr[0].matchWord("NormalBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),normalBinding))
+    IndexedGeometry::AttributeBinding normalBinding=IndexedGeometry::BIND_OFF;
+    if (fr[0].matchWord("NormalBinding") && IndexedGeometry_matchBindingTypeStr(fr[1].getStr(),normalBinding))
     {
         geom.setNormalBinding(normalBinding);
         fr+=2;
@@ -140,8 +149,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         ++fr;
     }
 
-    Geometry::AttributeBinding colorBinding=Geometry::BIND_OFF;
-    if (fr[0].matchWord("ColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),colorBinding))
+    IndexedGeometry::AttributeBinding colorBinding=IndexedGeometry::BIND_OFF;
+    if (fr[0].matchWord("ColorBinding") && IndexedGeometry_matchBindingTypeStr(fr[1].getStr(),colorBinding))
     {
         geom.setColorBinding(colorBinding);
         fr+=2;
@@ -151,7 +160,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     if (fr.matchSequence("ColorArray %w %i {"))
     {
         ++fr;
-        Array* colors = Array_readLocalData(fr);
+        Array* colors = IG_Array_readLocalData(fr);
         if (colors)
         {
             geom.setColorArray(colors);
@@ -159,8 +168,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         }
     }
 
-    Geometry::AttributeBinding secondaryColorBinding=Geometry::BIND_OFF;
-    if (fr[0].matchWord("SecondaryColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),secondaryColorBinding))
+    IndexedGeometry::AttributeBinding secondaryColorBinding=IndexedGeometry::BIND_OFF;
+    if (fr[0].matchWord("SecondaryColorBinding") && IndexedGeometry_matchBindingTypeStr(fr[1].getStr(),secondaryColorBinding))
     {
         geom.setSecondaryColorBinding(secondaryColorBinding);
         fr+=2;
@@ -170,7 +179,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     if (fr.matchSequence("SecondaryColorArray %w %i {"))
     {
         ++fr;
-        Array* colors = Array_readLocalData(fr);
+        Array* colors = IG_Array_readLocalData(fr);
         if (colors)
         {
             geom.setSecondaryColorArray(colors);
@@ -180,8 +189,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
 
 
-    Geometry::AttributeBinding fogCoordBinding=Geometry::BIND_OFF;
-    if (fr[0].matchWord("FogCoordBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),fogCoordBinding))
+    IndexedGeometry::AttributeBinding fogCoordBinding=IndexedGeometry::BIND_OFF;
+    if (fr[0].matchWord("FogCoordBinding") && IndexedGeometry_matchBindingTypeStr(fr[1].getStr(),fogCoordBinding))
     {
         geom.setFogCoordBinding(fogCoordBinding);
         fr+=2;
@@ -226,7 +235,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         fr[1].getInt(unit);
     
         fr+=2;
-        Array* texcoords = Array_readLocalData(fr);
+        Array* texcoords = IG_Array_readLocalData(fr);
         if (texcoords)
         {
             geom.setTexCoordArray(unit,texcoords);
@@ -239,7 +248,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 }
 
 
-Array* Array_readLocalData(Input& fr)
+Array* IG_Array_readLocalData(Input& fr)
 {
     int entry = fr[0].getNoNestedBrackets();
 
@@ -447,7 +456,7 @@ Array* Array_readLocalData(Input& fr)
 
 
 template<class Iterator>
-void Array_writeLocalData(Output& fw, Iterator first, Iterator last,int noItemsPerLine=8)
+void IG_Array_writeLocalData(Output& fw, Iterator first, Iterator last,int noItemsPerLine=8)
 {
     fw.indent() << "{"<<std::endl;
     fw.moveIn();
@@ -480,7 +489,7 @@ void Array_writeLocalData(Output& fw, Iterator first, Iterator last,int noItemsP
     
 }
 
-bool Array_writeLocalData(const Array& array,Output& fw)
+bool IG_Array_writeLocalData(const Array& array,Output& fw)
 {
     switch(array.getType())
     {
@@ -488,7 +497,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const ByteArray& carray = static_cast<const ByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -496,7 +505,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const ShortArray& carray = static_cast<const ShortArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -504,7 +513,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const IntArray& carray = static_cast<const IntArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -512,7 +521,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UByteArray& carray = static_cast<const UByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -520,7 +529,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UShortArray& carray = static_cast<const UShortArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -528,7 +537,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UIntArray& carray = static_cast<const UIntArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -536,7 +545,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UByte4Array& carray = static_cast<const UByte4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -544,7 +553,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const FloatArray& carray = static_cast<const FloatArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -552,7 +561,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec2Array& carray = static_cast<const Vec2Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -560,7 +569,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec3Array& carray = static_cast<const Vec3Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -568,7 +577,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec4Array& carray = static_cast<const Vec4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                IG_Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -579,14 +588,14 @@ bool Array_writeLocalData(const Array& array,Output& fw)
 }
 
 
-bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
+bool IG_Primitive_readLocalData(Input& fr,osg::IndexedGeometry& geom)
 {
     bool iteratorAdvanced = false;
     if (fr.matchSequence("DrawArrays %w %i %i"))
     {
         
         GLenum mode;
-        Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
+        IndexedGeometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
 
         int first;
         fr[2].getInt(first);
@@ -594,7 +603,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int count;
         fr[3].getInt(count);
 
-        geom.addPrimitive(osgNew DrawArrays(mode,first,count));
+        geom.addPrimitiveSet(osgNew DrawArrays(mode,first,count));
 
         fr += 4;
         
@@ -606,7 +615,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int entry = fr[1].getNoNestedBrackets();
 
         GLenum mode;
-        Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
+        IndexedGeometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
 
         int first;
         fr[2].getInt(first);
@@ -632,7 +641,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -641,7 +650,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int entry = fr[1].getNoNestedBrackets();
 
         GLenum mode;
-        Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
+        IndexedGeometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
 
         int capacity;
         fr[2].getInt(capacity);
@@ -663,7 +672,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -672,7 +681,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int entry = fr[1].getNoNestedBrackets();
 
         GLenum mode;
-        Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
+        IndexedGeometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
 
         int capacity;
         fr[2].getInt(capacity);
@@ -694,7 +703,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -703,7 +712,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int entry = fr[1].getNoNestedBrackets();
 
         GLenum mode;
-        Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
+        IndexedGeometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
 
         int capacity;
         fr[2].getInt(capacity);
@@ -725,7 +734,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -733,7 +742,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
     return iteratorAdvanced;
 }
 
-bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
+bool IG_Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
 {
 
     switch(prim.getType())
@@ -741,39 +750,39 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
         case(PrimitiveSet::DrawArraysPrimitiveType):
             {
                 const DrawArrays& cprim = static_cast<const DrawArrays&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.getCount()<<std::endl;
+                fw<<cprim.className()<<" "<<IndexedGeometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.getCount()<<std::endl;
                 return true;
             }
             break;
         case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
             {
                 const DrawArrayLengths& cprim = static_cast<const DrawArrayLengths&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                fw<<cprim.className()<<" "<<IndexedGeometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.size()<<std::endl;
+                IG_Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
         case(PrimitiveSet::DrawElementsUBytePrimitiveType):
             {
                 const DrawElementsUByte& cprim = static_cast<const DrawElementsUByte&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                fw<<cprim.className()<<" "<<IndexedGeometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
+                IG_Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
         case(PrimitiveSet::DrawElementsUShortPrimitiveType):
             {
                 const DrawElementsUShort& cprim = static_cast<const DrawElementsUShort&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                fw<<cprim.className()<<" "<<IndexedGeometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
+                IG_Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
         case(PrimitiveSet::DrawElementsUIntPrimitiveType):
             {
                 const DrawElementsUInt& cprim = static_cast<const DrawElementsUInt&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                fw<<cprim.className()<<" "<<IndexedGeometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
+                IG_Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
@@ -782,22 +791,22 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
     }
 }
 
-bool Geometry_writeLocalData(const Object& obj, Output& fw)
+bool IndexedGeometry_writeLocalData(const Object& obj, Output& fw)
 {
-    const Geometry& geom = static_cast<const Geometry&>(obj);
+    const IndexedGeometry& geom = static_cast<const IndexedGeometry&>(obj);
 
-    const Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
+    const IndexedGeometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
     if (!primitives.empty())
     {
-        fw.indent() << "Primitives "<<primitives.size()<<std::endl;
+        fw.indent() << "PrimitiveSets "<<primitives.size()<<std::endl;
         fw.indent() << "{"<<std::endl;
         fw.moveIn();
-        for(Geometry::PrimitiveList::const_iterator itr=primitives.begin();
+        for(IndexedGeometry::PrimitiveSetList::const_iterator itr=primitives.begin();
             itr!=primitives.end();
             ++itr)
         {
             fw.indent();
-            Primitive_writeLocalData(**itr,fw);
+            IG_Primitive_writeLocalData(**itr,fw);
         }
         fw.moveOut();
         fw.indent() << "}"<<std::endl;
@@ -808,53 +817,53 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         const Vec3Array& vertices = *geom.getVertexArray();
         fw.indent()<<"VertexArray "<<vertices.size()<<std::endl;
         
-        Array_writeLocalData(fw,vertices.begin(),vertices.end(),1);
+        IG_Array_writeLocalData(fw,vertices.begin(),vertices.end(),1);
         
     }
 
     if (geom.getNormalArray())
     {
         
-        fw.indent()<<"NormalBinding "<<Geometry_getBindingTypeStr(geom.getNormalBinding())<<std::endl;
+        fw.indent()<<"NormalBinding "<<IndexedGeometry_getBindingTypeStr(geom.getNormalBinding())<<std::endl;
         
         const Vec3Array& normals = *geom.getNormalArray();
         fw.indent()<<"NormalArray "<<normals.size()<<std::endl;
         
-        Array_writeLocalData(fw,normals.begin(),normals.end(),1);
+        IG_Array_writeLocalData(fw,normals.begin(),normals.end(),1);
         
     }
 
     if (geom.getColorArray())
     {
-        fw.indent()<<"ColorBinding "<<Geometry_getBindingTypeStr(geom.getColorBinding())<<std::endl;
+        fw.indent()<<"ColorBinding "<<IndexedGeometry_getBindingTypeStr(geom.getColorBinding())<<std::endl;
         fw.indent()<<"ColorArray ";
-        Array_writeLocalData(*geom.getColorArray(),fw);
+        IG_Array_writeLocalData(*geom.getColorArray(),fw);
     }
 
     if (geom.getSecondaryColorArray())
     {
-        fw.indent()<<"SecondaryColorBinding "<<Geometry_getBindingTypeStr(geom.getSecondaryColorBinding())<<std::endl;
+        fw.indent()<<"SecondaryColorBinding "<<IndexedGeometry_getBindingTypeStr(geom.getSecondaryColorBinding())<<std::endl;
         fw.indent()<<"SecondaryColorArray ";
-        Array_writeLocalData(*geom.getSecondaryColorArray(),fw);
+        IG_Array_writeLocalData(*geom.getSecondaryColorArray(),fw);
     }
 
     if (geom.getFogCoordArray())
     {
-        fw.indent()<<"FogCoordBinding "<<Geometry_getBindingTypeStr(geom.getFogCoordBinding())<<std::endl;
+        fw.indent()<<"FogCoordBinding "<<IndexedGeometry_getBindingTypeStr(geom.getFogCoordBinding())<<std::endl;
 
         const FloatArray& fogcoords = *geom.getFogCoordArray();
         fw.indent()<<"FogCoordArray "<<fogcoords.size()<<std::endl;
         
-        Array_writeLocalData(fw,fogcoords.begin(),fogcoords.end());
+        IG_Array_writeLocalData(fw,fogcoords.begin(),fogcoords.end());
     }
 
-    const Geometry::TexCoordArrayList& tcal=geom.getTexCoordArrayList();
+    const IndexedGeometry::TexCoordArrayList& tcal=geom.getTexCoordArrayList();
     for(unsigned int i=0;i<tcal.size();++i)
     {
-        if (tcal[i].valid())
+        if (tcal[i].first.valid())
         {
             fw.indent()<<"TexCoordArray "<<i<<" ";
-            Array_writeLocalData(*(tcal[i]),fw);
+            IG_Array_writeLocalData(*(tcal[i].first),fw);
         }
     }
     
@@ -862,30 +871,30 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
     return true;
 }
 
-bool Geometry_matchBindingTypeStr(const char* str,Geometry::AttributeBinding& mode)
+bool IndexedGeometry_matchBindingTypeStr(const char* str,IndexedGeometry::AttributeBinding& mode)
 {
-    if (strcmp(str,"OFF")==0) mode = Geometry::BIND_OFF;
-    else if (strcmp(str,"OVERALL")==0) mode = Geometry::BIND_OVERALL;
-    else if (strcmp(str,"PER_PRIMITIVE")==0) mode = Geometry::BIND_PER_PRIMITIVE;
-    else if (strcmp(str,"PER_VERTEX")==0) mode = Geometry::BIND_PER_VERTEX;
+    if (strcmp(str,"OFF")==0) mode = IndexedGeometry::BIND_OFF;
+    else if (strcmp(str,"OVERALL")==0) mode = IndexedGeometry::BIND_OVERALL;
+    else if (strcmp(str,"PER_PRIMITIVE")==0) mode = IndexedGeometry::BIND_PER_PRIMITIVE;
+    else if (strcmp(str,"PER_VERTEX")==0) mode = IndexedGeometry::BIND_PER_VERTEX;
     else return false;
     return true;
 }
 
 
-const char* Geometry_getBindingTypeStr(Geometry::AttributeBinding mode)
+const char* IndexedGeometry_getBindingTypeStr(IndexedGeometry::AttributeBinding mode)
 {
     switch(mode)
     {
-        case (Geometry::BIND_OVERALL)       : return "OVERALL";
-        case (Geometry::BIND_PER_PRIMITIVE) : return "PER_PRIMITIVE";
-        case (Geometry::BIND_PER_VERTEX)    : return "PER_VERTEX";
-        case (Geometry::BIND_OFF)           :
+        case (IndexedGeometry::BIND_OVERALL)       : return "OVERALL";
+        case (IndexedGeometry::BIND_PER_PRIMITIVE) : return "PER_PRIMITIVE";
+        case (IndexedGeometry::BIND_PER_VERTEX)    : return "PER_VERTEX";
+        case (IndexedGeometry::BIND_OFF)           :
         default                             : return "OFF";
     }
 }
 
-bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode)
+bool IndexedGeometry_matchPrimitiveModeStr(const char* str,GLenum& mode)
 {
     if      (strcmp(str,"POINTS")==0)           mode = PrimitiveSet::POINTS;
     else if (strcmp(str,"LINES")==0)            mode = PrimitiveSet::LINES;
@@ -902,7 +911,7 @@ bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode)
 }
 
 
-const char* Geometry_getPrimitiveModeStr(GLenum mode)
+const char* IndexedGeometry_getPrimitiveModeStr(GLenum mode)
 {
     switch(mode)
     {
@@ -919,4 +928,3 @@ const char* Geometry_getPrimitiveModeStr(GLenum mode)
         default                                : return "UnknownPrimitveType";
     }
 }
-#endif

@@ -390,7 +390,7 @@ int main( int argc, char **argv )
 
     if (manuallyCreateImpostors)
     {
-        viewer.addEventHandler(new OccluderEventHandler(viewer.getViewportSceneView(0),rootnode));
+        viewer.prependEventHandler(new OccluderEventHandler(viewer.getViewportSceneView(0),rootnode));
     }
 
     // open the viewer window.

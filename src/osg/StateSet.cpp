@@ -31,26 +31,7 @@ StateSet::~StateSet()
 
 int StateSet::compare(const StateSet& rhs) const
 {
-    // check to see how the modes compare.
-    ModeList::const_iterator lhs_mode_itr = _modeList.begin();
-    ModeList::const_iterator rhs_mode_itr = rhs._modeList.begin();
-    while (lhs_mode_itr!=_modeList.end() && rhs_mode_itr!=rhs._modeList.end())
-    {
-        if      (lhs_mode_itr->first<rhs_mode_itr->first) return -1;
-        else if (rhs_mode_itr->first<lhs_mode_itr->first) return 1;
-        if      (lhs_mode_itr->second<rhs_mode_itr->second) return -1;
-        else if (rhs_mode_itr->second<lhs_mode_itr->second) return 1;
-        ++lhs_mode_itr;
-        ++rhs_mode_itr;
-    }
-    if (lhs_mode_itr==_modeList.end())
-    {
-        if (rhs_mode_itr!=rhs._modeList.end()) return -1;
-    }
-    else if (rhs_mode_itr == rhs._modeList.end()) return 1;
 
-    // we've got here so modes must be equal...
-    
     // now check to see how the attributes compare.
     AttributeList::const_iterator lhs_attr_itr = _attributeList.begin();
     AttributeList::const_iterator rhs_attr_itr = rhs._attributeList.begin();
@@ -70,6 +51,27 @@ int StateSet::compare(const StateSet& rhs) const
         if (rhs_attr_itr!=rhs._attributeList.end()) return -1;
     }
     else if (rhs_attr_itr == rhs._attributeList.end()) return 1;
+
+    // we've got here so attributes must be equal...    
+
+    // check to see how the modes compare.
+
+    ModeList::const_iterator lhs_mode_itr = _modeList.begin();
+    ModeList::const_iterator rhs_mode_itr = rhs._modeList.begin();
+    while (lhs_mode_itr!=_modeList.end() && rhs_mode_itr!=rhs._modeList.end())
+    {
+        if      (lhs_mode_itr->first<rhs_mode_itr->first) return -1;
+        else if (rhs_mode_itr->first<lhs_mode_itr->first) return 1;
+        if      (lhs_mode_itr->second<rhs_mode_itr->second) return -1;
+        else if (rhs_mode_itr->second<lhs_mode_itr->second) return 1;
+        ++lhs_mode_itr;
+        ++rhs_mode_itr;
+    }
+    if (lhs_mode_itr==_modeList.end())
+    {
+        if (rhs_mode_itr!=rhs._modeList.end()) return -1;
+    }
+    else if (rhs_mode_itr == rhs._modeList.end()) return 1;
 
     return 0;
 }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -47,9 +47,9 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
 
         void setApplicationUsage(osg::ApplicationUsage* au) { _applicationUsage = au; }
-        
+
         osg::ApplicationUsage* getApplicationUsage() { return _applicationUsage; }
-        
+
         const osg::ApplicationUsage* getApplicationUsage() const { return _applicationUsage; }
 
 
@@ -59,17 +59,25 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         const SceneHandlerList& getSceneHandlerList() const { return _shvec;}
 
-
+        /** Set the scene data to be rendered. The scene graph traversal during
+         *  rendering will start at the node passed as parameter.
+         *  @param scene The node to be used as the starting point during the
+         *         rendering traversal of the scene graph.
+         */
         void setSceneData( osg::Node *scene );
-        
+
+        /** Get the scene data being used for rendering.
+         *  @return The node being used as the starting point during the
+         *          rendering traversal of the scene graph.
+         */
         osg::Node *getSceneData() { return _scene_data.get(); }
 
         const osg::Node *getSceneData() const { return _scene_data.get(); }
 
-        
+
 
         void setSceneDecorator( osg::Group* decorator);
-        
+
         osg::Group* getSceneDecorator() { return _scene_decorator.get(); }
 
         const osg::Group* getSceneDecorator() const { return _scene_decorator.get(); }
@@ -80,25 +88,24 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         const osg::Node* getTopMostSceneData() const;
 
 
-        /** update internal structures w.r.t updated scene data.*/        
+        /** Update internal structures w.r.t updated scene data.*/
         virtual void updatedSceneData();
 
 
         void setDisplaySettings( osg::DisplaySettings *ds ) { _ds = ds; }
 
         osg::DisplaySettings *getDisplaySettings() { return _ds.get(); }
-        
+
         const osg::DisplaySettings *getDisplaySettings() const { return _ds.get(); }
-        
-        
+
         void setCullSettings( const osg::CullSettings& cs) { _cullSettings = cs; }
-        
+
         osg::CullSettings& getCullSettings() { return _cullSettings; }
-        
+
         const osg::CullSettings& getCullSettings() const { return _cullSettings; }
-        
-        
-        
+
+
+
         void setFrameStamp( osg::FrameStamp* fs );
 
         osg::FrameStamp *getFrameStamp() { return _frameStamp.get(); }
@@ -145,7 +152,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         {
         public:
             virtual void operator()( OsgCameraGroup& cg, OsgSceneHandler& sh, const Producer::RenderSurface & rs) = 0;
-            
+
         protected:
             virtual ~RealizeCallback(); // {}
         };
@@ -155,7 +162,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         /** Get the realize callback.*/
         RealizeCallback* getRealizeCallback() { return _realizeCallback.get(); }
-        
+
         /** Get the const realize callback.*/
         const RealizeCallback* getRealizeCallback() const { return _realizeCallback.get(); }
 
@@ -171,7 +178,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         /** Set the model view matrix of the camera group,
           * by individually set all the camera groups's camera.*/
         virtual void setView(const osg::Matrixd& matrix);
-        
+
         /** Get the model view martrix of the camera group,
           * taking its value for camera 0.*/
         osg::Matrixd getViewMatrix() const;
@@ -181,8 +188,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
-        
-        
+
 
     protected :
 
@@ -197,19 +203,19 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         osg::ref_ptr<osg::StateSet>             _global_stateset;
         osg::Vec4                               _clear_color;
-        
+
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
         float                                   _fusionDistanceValue;
 
         unsigned int                            _realizeSceneViewOptions;
-        
+
         SceneHandlerList                        _shvec;
-        
+
         osg::ref_ptr<RealizeCallback>           _realizeCallback;
-        
+
         osg::ref_ptr<osg::DisplaySettings>      _ds;
         bool                                    _initialized;
-        
+
         osg::CullSettings                       _cullSettings;
 
         unsigned int    _frameNumber;

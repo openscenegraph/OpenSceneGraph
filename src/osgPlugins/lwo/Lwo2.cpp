@@ -39,10 +39,12 @@
 #include "Lwo2.h"
 #include "Lwo2Layer.h"
 
-Lwo2::Lwo2()
+Lwo2::Lwo2():
+  _current_layer(0),
+  _geode(0),
+  _successfully_read(false)
 {
-  _successfully_read = false;
-};
+}
 
 Lwo2::~Lwo2()
 {
@@ -101,7 +103,7 @@ Lwo2::ReadFile( const string& filename )
       notify(INFO) << "Detected LWO2 format" << endl;
     }
 
-  _geode = new osg::Geode();
+  _geode = osgNew osg::Geode();
 
   unsigned long read_bytes = 4;
   unsigned long current_tag_name;
@@ -205,7 +207,8 @@ Lwo2::_read_string(string& str)
 {
   char c;
   do {
-    str += c = _read_char();
+    c = _read_char();
+    str += c;
   } while (c != 0);
 
   // if length of string (including \0) is odd skip another byte 
@@ -252,7 +255,7 @@ Lwo2::_read_tag_strings(unsigned long size)
       size -= name.length() + name.length() % 2; 
       _tags.push_back(name);
 
-      notify(DEBUG_INFO) << "  name   \t'" << name << "'" << endl;
+      notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
     }
 }
 
@@ -264,7 +267,7 @@ Lwo2::_read_layer(unsigned long size)
   unsigned short number = _read_short();
   size -= 2;
 
-  Lwo2Layer* layer = new Lwo2Layer();
+  Lwo2Layer* layer = osgNew Lwo2Layer();
   _layers[number] = layer;
   _current_layer = layer;
   layer->_number = number;
@@ -272,7 +275,10 @@ Lwo2::_read_layer(unsigned long size)
   layer->_flags = _read_short();
   size -= 2;
 
-  layer->_pivot.set(_read_float(), _read_float(), _read_float());
+  float x = _read_float();
+  float y = _read_float();
+  float z = _read_float();
+  layer->_pivot.set(x, y, z);
   size -= 4 * 3;
 
   _read_string(layer->_name);
@@ -296,7 +302,10 @@ Lwo2::_read_points(unsigned long size)
 
   while (count--)
     {
-      _current_layer->_points.push_back(Vec3(_read_float(), _read_float(), _read_float()));
+        float x = _read_float();
+        float y = _read_float();
+        float z = _read_float();
+      _current_layer->_points.push_back(Vec3(x, y,z));
     } 
 }
 
@@ -319,7 +328,7 @@ Lwo2::_read_polygons(unsigned long size)
       vertex_count = _read_short() & 0x03FF;
       size -= 2;
 
-          PointsList* points_list = new PointsList;
+          PointsList* points_list = osgNew PointsList;
           _current_layer->_polygons.push_back(points_list);
       
       while (vertex_count--)
@@ -356,7 +365,7 @@ Lwo2::_read_vertex_mapping(unsigned long size)
   string name;
   _read_string(name);
   size -= name.length() + name.length() % 2; 
-  notify(DEBUG_INFO) << "  name   \t'" << name << "'" << endl;
+  notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
 
   if (type == tag_TXUV && dimension == 2) 
     {
@@ -402,7 +411,7 @@ Lwo2::_read_polygons_mapping(unsigned long size)
   string name;
   _read_string(name);
   size -= name.length() + name.length() % 2; 
-  notify(DEBUG_INFO) << "  name   \t'" << name << "'" << endl;
+  notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
 
   if (type == tag_TXUV && dimension == 2) 
     {
@@ -502,7 +511,7 @@ Lwo2::_read_image_definition(unsigned long size)
         
       _images[index] = name.c_str();
         
-      notify(DEBUG_INFO) << "  name   \t'" << name << "'" << endl;
+      notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
     }
 }
 
@@ -511,18 +520,18 @@ Lwo2::_read_image_definition(unsigned long size)
 void 
 Lwo2::_read_surface(unsigned long size)
 {
-  Lwo2Surface* surface = new Lwo2Surface();
+  Lwo2Surface* surface = osgNew Lwo2Surface();
   surface->image_index = -1;
   surface->state_set = NULL;
 
   _read_string(surface->name);
   size -= surface->name.length() + surface->name.length() % 2; 
-  notify(DEBUG_INFO) << "  name   \t'" << surface->name << "'" << endl;
+  notify(DEBUG_INFO) << "  name   \t'" << surface->name.c_str() << "'" << endl;
 
   string source;
   _read_string(source);
   size -= source.length() + source.length() % 2; 
-  notify(DEBUG_INFO) << "  source   \t'" << source << "'" << endl;
+  notify(DEBUG_INFO) << "  source   \t'" << source.c_str() << "'" << endl;
 
   unsigned long current_tag_name;
   unsigned short current_tag_size;
@@ -567,7 +576,7 @@ Lwo2::_read_surface(unsigned long size)
           string ordinal;
           _read_string(ordinal);
           imap_size -= ordinal.length() + ordinal.length() % 2; 
-          notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal << "'" << endl;
+          notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal.c_str() << "'" << endl;
 
           while(imap_size > 0)
             {
@@ -591,7 +600,10 @@ Lwo2::_read_surface(unsigned long size)
     }
       else if (current_tag_name == tag_COLR)
     {
-      surface->color = Vec3(_read_float(), _read_float(), _read_float());
+        float r = _read_float();
+        float g = _read_float();
+        float b = _read_float();
+      surface->color.set(r,g,b);
           notify(DEBUG_INFO) << "  color   \t" << surface->color << endl;
       current_tag_size -= 12;
       size -= 12;
@@ -623,7 +635,7 @@ Lwo2::GenerateGroup( Group& group )
   // create geometry from all layers
   for (IteratorLayers itr = _layers.begin(); itr != _layers.end(); itr++)
     {
-      osg::Geode* geode = new osg::Geode();
+      osg::Geode* geode = osgNew osg::Geode();
       (*itr).second->GenerateGeode(*geode, _tags.size());
 
       // assign StateSet for each PTAG group
@@ -645,7 +657,7 @@ Lwo2::_generate_statesets_from_surfaces()
   for (IteratorSurfaces itr_surf = _surfaces.begin(); itr_surf != _surfaces.end(); itr_surf++)
     {
       Lwo2Surface* surface = (*itr_surf).second;
-      StateSet* state_set = new osg::StateSet;
+      StateSet* state_set = osgNew osg::StateSet;
 
       // check if exist texture image for this surface
       if (surface->image_index >= 0) 
@@ -655,14 +667,14 @@ Lwo2::_generate_statesets_from_surfaces()
       notify(DEBUG_INFO) << "\tresult - " << image << endl;
       if (image)
         {
-          Texture2D* texture = new osg::Texture2D;
+          Texture2D* texture = osgNew osg::Texture2D;
           texture->setImage(image);
           state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
         }
     }
 
       // set color
-      Material* material = new Material();
+      Material* material = osgNew Material();
       Vec4 color(surface->color[0], 
          surface->color[1], 
          surface->color[2], 
@@ -671,7 +683,7 @@ Lwo2::_generate_statesets_from_surfaces()
       state_set->setAttribute(material);
 
       // setup culling
-      CullFace* cull = new CullFace();
+      CullFace* cull = osgNew CullFace();
       cull->setMode(CullFace::BACK);
       state_set->setAttribute(cull);
       state_set->setMode(GL_CULL_FACE, StateAttribute::ON);

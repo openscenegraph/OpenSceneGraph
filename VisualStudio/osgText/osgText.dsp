@@ -105,6 +105,10 @@ SOURCE=..\..\src\osgText\Text.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgText\String.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgText\Version.cpp
 # End Source File
 # End Group
@@ -118,6 +122,10 @@ SOURCE=..\..\include\osgText\Export
 # Begin Source File
 
 SOURCE=..\..\include\osgText\Font
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\String
 # End Source File
 # Begin Source File
 

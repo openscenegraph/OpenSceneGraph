@@ -6,6 +6,7 @@ CXXFILES = \
     DefaultFont.cpp\
     Font.cpp\
     Text.cpp\
+    String.cpp\
     Version.cpp\
 
 DEF     += -DOSGTEXT_LIBRARY

@@ -3,6 +3,16 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+
+    Improved thread safety when working multipipe systems.
+
+    New OpenProducer based examples.
+
+    New MD2 plugin
+
+    New osgText implementions.  
+
+
 24th January 2003 - OpenSceneGraph-0.9.3.tar.gz
 
     >>> adds support navigational light points, multi-threaded dynamic

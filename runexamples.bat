@@ -6,6 +6,9 @@ osgunittests matrix
 osgunittests qt
 osgunittests sizeof
 
+echo osglauncher
+osglauncher
+
 echo osganimate
 osganimate
 
@@ -83,6 +86,9 @@ osgpick fountain.osg
 
 echo osgpointsprite
 osgpointsprite
+
+echo osgplanets
+osgplanets
 
 echo osgprerender
 osgprerender dumptruck.osg

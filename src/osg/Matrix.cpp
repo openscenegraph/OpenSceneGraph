@@ -105,6 +105,8 @@ void Matrix::setTrans( float tx, float ty, float tz )
 #ifdef WARN_DEPRECATED
     notify(NOTICE) << "Matrix::setTrans is deprecated."<<endl;
 #endif
+    ensureRealized();
+
     _mat[3][0] = tx;
     _mat[3][1] = ty;
     _mat[3][2] = tz;

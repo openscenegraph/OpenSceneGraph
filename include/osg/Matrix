@@ -168,19 +168,6 @@ class SG_EXPORT Matrix : public Object
             {    mult( p.A, p.B ); }
 
 
-        // Don, I've made the matrix paramter a const, and the return type
-        // a Matrix, and the removed the r stuff too.  It should now, be
-        // safe. But there is the 
-        // MatrixProduct operator * ( const Matrix& other ) const method above
-        // which is what should be used instead. There is also the 
-        // Matrix( const MatrixProduct& p ) just above this comment too,
-        // which works in conjunction with the operator * (..) method.
-        // The only reason why the below is allow to compile is that it ins't
-        // defined as const, which it really should be, but if it is then
-        // it won't compile since there already is a proper matrix multiple 
-        // operator.  I believe it should be possible to delete the below
-        // method, just need confirmation about compilation without it at 
-        // your end. Robert. Sat 29th Sep.
         Matrix operator *( const Matrix &m ) 
 	{
 	    osg::Matrix r;

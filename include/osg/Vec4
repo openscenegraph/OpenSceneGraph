@@ -207,10 +207,14 @@ class Vec4
         inline float normalize()
         {
             float norm = Vec4::length();
-            _v[0] /= norm;
-            _v[1] /= norm;
-            _v[2] /= norm;
-            _v[3] /= norm;
+            if (norm>0.0f)
+            {
+                float inv = 1.0f/norm;
+                _v[0] *= inv;
+                _v[1] *= inv;
+                _v[2] *= inv;
+                _v[3] *= inv;
+            }
             return( norm );
         }
 

@@ -314,7 +314,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     }
 
     Geometry::AttributeBinding vertexAttribBinding=Geometry::BIND_OFF;
-    if (fr.matchSequence("VertexAttribBinding %i %s") && Geometry_matchBindingTypeStr(fr[2].getStr(),vertexAttribBinding))
+    if (fr.matchSequence("VertexAttribBinding %i %w") && Geometry_matchBindingTypeStr(fr[2].getStr(),vertexAttribBinding))
     {
         int unit=0;
         fr[1].getInt(unit);
@@ -323,7 +323,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("VertexAttribNormalize %i %s"))
+    if (fr.matchSequence("VertexAttribNormalize %i %w"))
     {
         int unit=0;
         fr[1].getInt(unit);

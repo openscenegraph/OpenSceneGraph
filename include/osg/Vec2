@@ -150,8 +150,12 @@ class Vec2
 	inline float normalize()
 	{
 	    float norm = Vec2::length();
-	    _v[0] /= norm;
-	    _v[1] /= norm;
+            if (norm>0.0f)
+            {
+                float inv = 1.0f/norm;
+	        _v[0] *= inv;
+	        _v[1] *= inv;
+            }
 	    return( norm );
 	}
 

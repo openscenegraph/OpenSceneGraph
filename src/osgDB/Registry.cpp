@@ -1352,7 +1352,10 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 
 ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const ReaderWriter::Options* options)
 {
-    if (options && (options->getObjectCacheHint() & ReaderWriter::Options::CACHE_ARCHIVES))
+
+    // default to using chaching archive if no options structure provided, but if options are provided use archives
+    // only if supplied.
+    if (!options || (options && (options->getObjectCacheHint() & ReaderWriter::Options::CACHE_ARCHIVES)))
     {
         osgDB::Archive* archive = getFromArchiveCache(fileName);
         if (archive) return archive;

@@ -61,6 +61,7 @@ PLUGIN_DIRS = \
 	ive\
 	rot\
 	scale\
+	stl\
 	trans\
 
 

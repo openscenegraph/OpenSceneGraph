@@ -415,7 +415,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
             }
             else internalFormat = image.getInternalTextureFormat();
             break;
-
+        default:
+            break;
         }
     }
     
@@ -696,6 +697,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         // we require mip mapping.
         if(image->isMipmap())
         {
+
             // image is mip mapped so we take the mip map levels from the image.
         
             numMipmapLevels = image->getNumMipmapLevels();

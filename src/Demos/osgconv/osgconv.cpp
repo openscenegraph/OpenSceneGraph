@@ -206,12 +206,12 @@ int main( int argc, char **argv )
         fileNames.pop_back();
     }
 
-    osg::Node* root = osgDB::readNodeFiles(fileNames);
+    osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
     
     if( do_convert )
-	root = oc.convert( root );
+	root = oc.convert( root.get() );
 
-    if (root)
+    if (root.valid())
     {
         osgDB::writeNodeFile(*root,fileNameOut);
         osg::notify(osg::NOTICE)<<"Data written to '"<<fileNameOut<<"'."<< std::endl;

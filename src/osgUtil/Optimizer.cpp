@@ -187,6 +187,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(mgv);
     }
 
+    if (options & MERGE_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
+
+        MergeGeometryVisitor mgv(this);
+        node->accept(mgv);
+    }
+    
     if (options & TRISTRIP_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing TRISTRIP_GEOMETRY"<<std::endl;
@@ -195,19 +203,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(tsv);
         tsv.stripify();
     }
-
-    if (options & MERGE_GEOMETRY)
-    {
-#if 0
-// temporary compile out while debugging it.    
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
-
-        MergeGeometryVisitor mgv(this);
-        node->accept(mgv);
-#endif
-    }
-
-
 
 }
 
@@ -1446,6 +1441,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 
 
 #endif
+
     // convert all polygon primitives which has 3 indices into TRIANGLES, 4 indices into QUADS.
     unsigned int i;
     for(i=0;i<geode.getNumDrawables();++i)
@@ -1774,15 +1770,15 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
                 if ((base+currentMaximum)>=65536)
                 {
                     // must promote to a DrawElementsUInt
-                    osg::DrawElementsUInt* new_primitive = new osg::DrawElementsUInt();
+                    osg::DrawElementsUInt* new_primitive = new osg::DrawElementsUInt(primitive->getMode());
                     std::copy(primitiveUByte->begin(),primitiveUByte->end(),std::back_inserter(*new_primitive));
                     new_primitive->offsetIndices(base);
                     (*primItr) = new_primitive;
                     std::cout<<"Remapping to a UInt "<<(*primItr)->className()<<std::endl;
-                } else if ((base+currentMaximum)>=0)
+                } else if ((base+currentMaximum)>=256)
                 {
                     // must promote to a DrawElementsUShort
-                    osg::DrawElementsUShort* new_primitive = new osg::DrawElementsUShort();
+                    osg::DrawElementsUShort* new_primitive = new osg::DrawElementsUShort(primitive->getMode());
                     std::copy(primitiveUByte->begin(),primitiveUByte->end(),std::back_inserter(*new_primitive));
                     new_primitive->offsetIndices(base);
                     (*primItr) = new_primitive;
@@ -1809,7 +1805,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
                 if ((base+currentMaximum)>=65536)
                 {
                     // must promote to a DrawElementsUInt
-                    osg::DrawElementsUInt* new_primitive = new osg::DrawElementsUInt();
+                    osg::DrawElementsUInt* new_primitive = new osg::DrawElementsUInt(primitive->getMode());
                     std::copy(primitiveUShort->begin(),primitiveUShort->end(),std::back_inserter(*new_primitive));
                     new_primitive->offsetIndices(base);
                     (*primItr) = new_primitive;

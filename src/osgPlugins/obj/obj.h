@@ -159,6 +159,10 @@ public:
     bool readline(std::istream& fin, char* line, const int LINE_SIZE);
     void addElement(Element* element);
     
+    osg::Vec3 averageNormal(const Element& element) const;
+    osg::Vec3 computeNormal(const Element& element) const;
+    bool needReverse(const Element& element) const;
+    
     int remapVertexIndex(int vi) { return (vi<0) ? vertices.size()+vi : vi-1; }
     int remapNormalIndex(int vi) { return (vi<0) ? normals.size()+vi : vi-1; }
     int remapTexCoordIndex(int vi) { return (vi<0) ? texcoords.size()+vi : vi-1; }

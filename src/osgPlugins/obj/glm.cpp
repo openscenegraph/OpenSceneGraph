@@ -838,12 +838,9 @@ _glmSecondPass(GLMmodel* model, FILE* file)
       fgets(buf, sizeof(buf), file);
       sscanf(buf, "%s %s", buf, buf);
       
-      /*group->material =*/ material = _glmFindMaterial(model, buf);
-
-      // a hack by Robert Osfield to account for usemtl being infront
-      // or the group, or after - but only one line after.
-      // original code always assigned material to current group.
-      if (previousLineWas_g || firstGroup) group->material = material;
+      material = _glmFindMaterial(model, buf);
+      
+      group->material = material;
 
       break;
     case 'o':                /* group */

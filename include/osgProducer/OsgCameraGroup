@@ -145,7 +145,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         /** Set the model view matrix of the camera group,
           * by individually set all the camera groups's camera.*/
-        void setView(const osg::Matrix& matrix);
+        virtual void setView(const osg::Matrix& matrix);
         
         /** Get the model view martrix of the camera group,
           * taking its value for camera 0.*/

@@ -172,6 +172,23 @@ unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)
     return num;
 }
 
+bool Viewer::done() const
+{
+    return _done;
+}
+
+void Viewer::setView(const osg::Matrix& matrix)
+{
+    OsgCameraGroup::setView(matrix);
+    if (_keyswitchManipulator.valid() && _old_style_osg_camera.valid())
+    {
+        _old_style_osg_camera->home();
+        _old_style_osg_camera->transformLookAt(matrix);
+        osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
+        _keyswitchManipulator->init(*init_event,*this);
+    }
+}
+
 bool Viewer::realize( ThreadingModel thread_model )
 {
     if( _realized ) return _realized;
@@ -194,7 +211,7 @@ bool Viewer::realize()
     {
         osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
         init_event->adaptFrame(0.0);
-
+    
         _keyswitchManipulator->setCamera(_old_style_osg_camera.get());
         _keyswitchManipulator->setNode(getSceneDecorator());
         _keyswitchManipulator->home(*init_event,*this);
@@ -256,7 +273,7 @@ void Viewer::update()
     }
     
     // update the main producer camera
-    if (_old_style_osg_camera.valid()) setView(_old_style_osg_camera->getModelViewMatrix());
+    if (_old_style_osg_camera.valid()) OsgCameraGroup::setView(_old_style_osg_camera->getModelViewMatrix());
 }
 
 void Viewer::frame()
@@ -282,15 +299,13 @@ void Viewer::selectCameraManipulator(unsigned int no)
 
 void Viewer::requestWarpPointer(float x,float y)
 {
-    
     if (_kbmcb)
     {
         EventAdapter::_s_mx = x;
         EventAdapter::_s_my = y;
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);
         return;
-    }
-   
+    }   
 }
 
 void Viewer::getUsage(osg::ApplicationUsage& usage) const

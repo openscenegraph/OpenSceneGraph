@@ -34,12 +34,12 @@
 #define	_SOCKSTREAM_H
 
 #include <iostream> // must be ANSI compatible
-#include <cstddef>
+//#include <cstddef>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <string>
-#include <cstdio>
+//#include <cstdio>
 #ifndef WIN32
 #	include <sys/types.h>
 #	include <sys/uio.h>

@@ -308,9 +308,9 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         convertStringPathIntoFilePathList("/usr/lib32/:/usr/local/lib32/",filepath);
 
         // bloody mess see rld(1) man page
-        #if (_MIPS_SIM == _MIPS_SIM_ABI32)
-
         char* ptr;
+
+        #if (_MIPS_SIM == _MIPS_SIM_ABI32)
         if( (ptr = getenv( "LD_LIBRARY_PATH" )))
         {
             convertStringPathIntoFilePathList(ptr,filepath);

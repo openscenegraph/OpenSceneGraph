@@ -224,7 +224,7 @@ endif
 ifeq ($(OS),IRIX)
   CXX = CC
   ifeq ($(CXX),CC)
-	  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0  
+	  LINKARGS          = -L${TOPDIR}/$(LIBINST) -LANG:std -OPT:Olimit=0  
 	  C++               = CC
 	  DEPARG            = -M
 	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
@@ -256,7 +256,7 @@ ifeq ($(OS),IRIX)
 	  endif
   else		
 	  LIBS              = -lstdc++
-	  LINKARGS          = -L${TOPDIR}/lib  
+	  LINKARGS          = -L${TOPDIR}/$(LIBINST)
 	  C++               = g++
 	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
 	  DEF               += -fPIC -W -Wno-unused 

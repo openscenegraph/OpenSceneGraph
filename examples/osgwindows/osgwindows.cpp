@@ -18,7 +18,7 @@ static Producer::CameraConfig *BuildConfig(void)
     Producer::RenderSurface *rs1 = new Producer::RenderSurface;
     rs1->setScreenNum(0);
     //rs1->useBorder(false);
-    rs1->setWindowRect(0,0,640,480);
+    rs1->setWindowRectangle(0,0,640,480);
     Producer::Camera *camera1 = new Producer::Camera;
     camera1->setRenderSurface(rs1);
     camera1->setOffset( 1.0, 0.0 );
@@ -26,17 +26,17 @@ static Producer::CameraConfig *BuildConfig(void)
     Producer::RenderSurface *rs2 = new Producer::RenderSurface;
     rs2->setScreenNum(0);
     //rs2->useBorder(false);
-    rs2->setWindowRect(640,0,640,480);
+    rs2->setWindowRectangle(640,0,640,480);
     Producer::Camera *camera2 = new Producer::Camera;
     camera2->setRenderSurface(rs2);
     camera2->setOffset( -1.0, 0.0 );
 
-    Producer::InputArea *ia = new Producer::InputArea;
-    ia->addInputRectangle( rs1, Producer::InputRectangle(0.0,0.5,0.0,1.0));
-    ia->addInputRectangle( rs2, Producer::InputRectangle(0.5,1.0,0.0,1.0));
-//    ia->addInputRectangle( rs1, Producer::InputRectangle(-1.0,0.0,-1.0,1.0));
-//    ia->addInputRectangle( rs2, Producer::InputRectangle(0.0,1.0,-1.0,1.0));
+    rs1->setInputRectangle( Producer::RenderSurface::InputRectangle(0.0,0.5,0.0,1.0));
+    rs2->setInputRectangle( Producer::RenderSurface::InputRectangle(0.5,1.0,0.0,1.0));
 
+    Producer::InputArea *ia = new Producer::InputArea;
+    ia->addRenderSurface(rs1);
+    ia->addRenderSurface(rs2);
 
     Producer::CameraConfig *cfg = new Producer::CameraConfig;
     cfg->addCamera("Camera 1",camera1);

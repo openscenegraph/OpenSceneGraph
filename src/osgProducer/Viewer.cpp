@@ -181,7 +181,7 @@ public:
     
     virtual osg::CoordinateFrame getCoordinateFrame(double X, double Y, double Z) const
     {
-        osg::notify(osg::NOTICE)<<"getCoordinateFrame("<<X<<","<<Y<<","<<Z<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"getCoordinateFrame("<<X<<","<<Y<<","<<Z<<")"<<std::endl;
 
         const Viewer::RefNodePath& refNodePath = _viewer->getCoordindateSystemNodePath();
         

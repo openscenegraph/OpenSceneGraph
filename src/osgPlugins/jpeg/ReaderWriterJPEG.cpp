@@ -7,6 +7,8 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
+#include <sstream>
+
 /****************************************************************************
  *
  * Follows is code extracted from the simage library.  Original Authors:
@@ -410,6 +412,21 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             /* And we're done! */
             return WriteResult::FILE_SAVED;
         }
+        int getQuality(const osgDB::ReaderWriter::Options *options) {
+            if(options) {
+                std::istringstream iss(options->getOptionString());
+                std::string opt;
+                while (iss >> opt) {
+                    if(opt=="JPEG_QUALITY") {
+                        int quality;
+                        iss >> quality;
+                        return quality;
+                    }
+                }
+            }
+
+            return 100;
+        }
     public:
         virtual const char* className() { return "JPEG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension)
@@ -459,13 +476,13 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 
             return pOsgImage;
         }
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options *options)
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
             osg::ref_ptr<osg::Image> tmp_img = new osg::Image(img);
             tmp_img->flipVertical();
-            WriteResult::WriteStatus ws = write_JPEG_file(fileName.c_str(),img.s(),img.t(),(JSAMPLE*)(tmp_img->data()));
+            WriteResult::WriteStatus ws = write_JPEG_file(fileName.c_str(),img.s(),img.t(),(JSAMPLE*)(tmp_img->data()),getQuality(options));
             return ws;
         }
 };

@@ -1,5 +1,7 @@
 #include <osg/Group>
 #include <osg/Notify>
+#include <osg/Depth>
+#include <osg/StateSet>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -123,11 +125,19 @@ int main( int argc, char **argv )
         // no database loaded so automatically create Ed Levin Park..
         osg::Group* group = new osg::Group;
         rootnode = group;
-        group->addChild(makeTerrain());
-        group->addChild(makeTank());
-        group->addChild(makeSky());
-        group->addChild(makeBase());
-        group->addChild(makeTrees());
+        
+        // the base and sky subgraphs go to set the earth sky of the
+        // model and clear the color and depth buffer for us, by using
+        // osg::Depth, and setting their bin numbers to less than 0,
+        // to force them to draw before the rest of the scene.
+        
+        group->addChild(makeSky());  // bin number -2 so drawn first.
+        group->addChild(makeBase()); // bin number -1 so draw second.
+
+        // the rest of the scene drawn after the base and sky above.
+        group->addChild(makeTrees()); // will drop into a transparent, depth sorted bin (1)
+        group->addChild(makeTerrain()); // will drop into default bin - state sorted 0
+        group->addChild(makeTank()); // will drop into default bin - state sorted 0
         // add the following in the future...
         // makeGliders
         // makeClouds
@@ -139,12 +149,34 @@ int main( int argc, char **argv )
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );
 
+
+    osg::StateSet* stateset = rootnode->getStateSet();
+    if (stateset==NULL)
+    {
+        stateset = new osg::StateSet;
+        rootnode->setStateSet(stateset);
+    }
+    
+    // set up depth to be inherited by the rest of the scene unless
+    // overrideen.
+    osg::Depth* rootDepth = new osg::Depth;
+    rootDepth->setFunction(osg::Depth::LESS);
+    rootDepth->setRange(0.0,1.0);
+
+    stateset->setAttributeAndModes(rootDepth, osg::StateAttribute::ON );
+
     unsigned int pos = viewer.registerCameraManipulator(new GliderManipulator());
 
     // Open window so camera manipulator's warp pointer request will succeed
     viewer.open();
 
     viewer.selectCameraManipulator(pos);
+
+    osgUtil::SceneView* sv = viewer.getViewportSceneView(0);
+    
+    // switch off the render stages clear mask as we use the earth/sky
+    // to clear it for us, see above.
+    sv->getRenderStage()->setClearMask(0);
 
     viewer.run();
 

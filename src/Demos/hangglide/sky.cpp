@@ -4,6 +4,7 @@
 #include <osg/GeoSet>
 #include <osg/Texture>
 #include <osg/TexEnv>
+#include <osg/Depth>
 #include <osg/StateSet>
 
 #include <osgDB/ReadFile>
@@ -96,6 +97,15 @@ Node *makeSky( void )
     dstate->setAttribute( new TexEnv );
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );
     dstate->setMode( GL_CULL_FACE, StateAttribute::ON );
+    
+
+    // clear the depth to the far plane.
+    osg::Depth* depth = new osg::Depth;
+    depth->setFunction(osg::Depth::ALWAYS);
+    depth->setRange(1.0,1.0);   
+    dstate->setAttributeAndModes(depth,StateAttribute::ON );
+
+    dstate->setRenderBinDetails(-2,"RenderBin");
 
     gset->setStateSet( dstate );
 

@@ -69,7 +69,7 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
             Texture::TextureObject* textureObject = (*itr).release();
             tol.erase(itr);
             
-            //std::cout<<"reusing texture object "<<textureObject<<std::endl;
+            //notify(INFO)<<"reusing texture object "<<textureObject<<std::endl;
             
             return textureObject;
         }
@@ -283,7 +283,7 @@ void Texture::takeTextureObjects(Texture::TextureObjectListMap& toblm)
     {
         if (_textureObjectBuffer[i].valid()) 
         {
-            //std::cout << "releasing texure "<<toblm[i].size()<<std::endl;
+            //notify(INFO) << "releasing texure "<<toblm[i].size()<<std::endl;
             toblm[i].push_back(_textureObjectBuffer[i]);
         }
     }

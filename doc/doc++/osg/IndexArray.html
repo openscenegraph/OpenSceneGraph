@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::IndexArray</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,18 +22,18 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.1">IndexArray</A></B>(<!1><A HREF="Array.html#DOC.2.3.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.3.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1">IndexArray</A></B>(<!1><A HREF="Array.html#DOC.2.4.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.4.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.2">IndexArray</A></B>(const <!1><A HREF="Array.html">Array</A>&amp; array, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.2">IndexArray</A></B>(const <!1><A HREF="Array.html">Array</A>&amp; array, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.5.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.6.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.4">index</A></B>(unsigned int pos) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.6.4">index</A></B>(unsigned int pos) const  = 0
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.5.5">~IndexArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.6.5">~IndexArray</A></B>()
 </DL></P>
 
 </DL>
@@ -49,11 +49,11 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp;) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.6.14">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.7.14">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp;)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.6.14">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp;) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.7.14">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp;) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Array.html#DOC.2.3.1">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Array.html#DOC.2.4.1">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>GLint <B>getDataSize</B>() const 
 <DT>
@@ -71,7 +71,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Array.html#DOC.2.3.1">Type</A> <B>_arrayType</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Array.html#DOC.2.4.1">Type</A> <B>_arrayType</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>GLint <B>_dataSize</B>
 <DT>
@@ -87,9 +87,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.111.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.111.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -105,7 +105,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.111.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -117,26 +117,22 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline static   int <B>createdCount</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline static   int <B>deletedCount</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   int <B>_createdCount</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   int <B>_deletedCount</B>
 </DL></P>
 
 </DL>
@@ -147,23 +143,23 @@
 <DL>
 
 <A NAME="IndexArray"></A>
-<A NAME="DOC.2.5.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IndexArray(<!1><A HREF="Array.html#DOC.2.3.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.3.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)</B></TT>
+<A NAME="DOC.2.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IndexArray(<!1><A HREF="Array.html#DOC.2.4.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.4.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="IndexArray"></A>
-<A NAME="DOC.2.5.2"></A>
+<A NAME="DOC.2.6.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IndexArray(const <!1><A HREF="Array.html">Array</A>&amp; array, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.5.3"></A>
+<A NAME="DOC.2.6.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="index"></A>
-<A NAME="DOC.2.5.4"></A>
+<A NAME="DOC.2.6.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int index(unsigned int pos) const  = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~IndexArray"></A>
-<A NAME="DOC.2.5.5"></A>
+<A NAME="DOC.2.6.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~IndexArray()</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

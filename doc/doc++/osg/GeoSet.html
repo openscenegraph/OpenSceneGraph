@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::GeoSet</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -261,9 +261,9 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.68.3">InterleaveArrayType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.68.4">IndexPointer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  SG_EXPORT <B><A HREF="#DOC.2.68.4">IndexPointer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.68.78">AttributeDeleteFunctor</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  SG_EXPORT <B><A HREF="#DOC.2.68.78">AttributeDeleteFunctor</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DD><I>function object which is used to handling the clean up of attribute arrays associated with GeoSet's.</I>
 </DL></P>
 
@@ -350,13 +350,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Geometry.html">Geometry</A>* <B>asGeometry</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.59.8">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.60.8">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.59.8">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.60.8">ParentList</A> <B>getParents</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getParent</B>(unsigned int i)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getParent</B>(unsigned int i)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getParent</B>(unsigned int i) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getParent</B>(unsigned int i) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumParents</B>() const 
 <DT>
@@ -388,42 +388,48 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>dirtyDisplayList</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="Drawable.html#DOC.2.59.29">AppCallback</A>* ac)
+<IMG ALT="o" SRC=icon2.gif>void <B>setUpdateCallback</B>(<!1><A HREF="Drawable.html#DOC.2.60.29">UpdateCallback</A>* ac)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.59.29">AppCallback</A>* <B>getAppCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.60.29">UpdateCallback</A>* <B>getUpdateCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.59.29">AppCallback</A>* <B>getAppCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="Drawable.html#DOC.2.60.32">AppCallback</A>* ac)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.59.33">CullCallback</A>* cc)
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.60.32">AppCallback</A>* <B>getAppCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.59.33">CullCallback</A>* <B>getCullCallback</B>()
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.60.32">AppCallback</A>* <B>getAppCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.59.33">CullCallback</A>* <B>getCullCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.60.36">CullCallback</A>* cc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.59.37">DrawCallback</A>* dc)
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.60.36">CullCallback</A>* <B>getCullCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.59.37">DrawCallback</A>* <B>getDrawCallback</B>()
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.60.36">CullCallback</A>* <B>getCullCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.59.37">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.60.40">DrawCallback</A>* dc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(<!1><A HREF="osg.html#DOC.2.186">uint</A> contextID, <!1><A HREF="osg.html#DOC.2.186">uint</A> globj)
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.60.40">DrawCallback</A>* <B>getDrawCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedDisplayLists</B>(<!1><A HREF="osg.html#DOC.2.186">uint</A> contextID)
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.60.40">DrawCallback</A>* <B>getDrawCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>draw</B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(<!1><A HREF="osg.html#DOC.2.192">uint</A> contextID, <!1><A HREF="osg.html#DOC.2.192">uint</A> globj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedDisplayLists</B>(<!1><A HREF="osg.html#DOC.2.192">uint</A> contextID)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>draw</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;Node*&gt; <B>ParentList</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Node.html">Node</A>*&gt; <B>ParentList</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>struct  <B>AppCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>UpdateCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>struct  <B>CullCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>AppCallback</B>: public <!1><A HREF="Drawable.html#DOC.2.60.29">UpdateCallback</A>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>CullCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>AttributeType</B>
 <DT>
@@ -436,7 +442,7 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.59.8">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.60.8">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 <DT>
@@ -450,29 +456,25 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>_useDisplayList</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Drawable.html#DOC.2.59.66">GLObjectList</A> <B>_globjList</B>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Drawable.html#DOC.2.60.69">GLObjectList</A> <B>_globjList</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.59.29">AppCallback</A>&gt;  <B>_appCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.60.29">UpdateCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.59.37">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.60.40">DrawCallback</A>&gt;  <B>_drawCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.59.33">CullCallback</A>&gt;  <B>_cullCallback</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="Drawable.html#DOC.2.59.71">DeletedDisplayListCache</A> <B>s_deletedDisplayListCache</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.60.36">CullCallback</A>&gt;  <B>_cullCallback</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(osg::Node* node)
+<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(<!1><A HREF="Node.html">osg::Node</A>* node)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(osg::Node* node)
+<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(<!1><A HREF="Node.html">osg::Node</A>* node)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="osg.html#DOC.2.186">uint</A>&gt; <B>GLObjectList</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt;<!1><A HREF="osg.html#DOC.2.186">uint</A>,std::set&lt;<!1><A HREF="osg.html#DOC.2.186">uint</A>&gt; &gt; <B>DeletedDisplayListCache</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="buffered_value.html">osg::buffered_value</A>&lt;<!1><A HREF="osg.html#DOC.2.192">uint</A>&gt; <B>GLObjectList</B>
 </DL></P>
 
 </DL>
@@ -480,9 +482,9 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.111.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.111.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -498,7 +500,7 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.111.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -508,26 +510,22 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline static   int <B>createdCount</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline static   int <B>deletedCount</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   int <B>_createdCount</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   int <B>_deletedCount</B>
 </DL></P>
 
 </DL>
@@ -703,20 +701,20 @@ be shared for optimal memory usage and graphics performance.</BLOCKQUOTE>
 
 <A NAME="IndexPointer"></A>
 <A NAME="DOC.2.68.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  IndexPointer</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SG_EXPORT IndexPointer</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="_size"></A>
 <A NAME="DOC.2.68.4.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.186">uint</A> _size</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.192">uint</A> _size</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_is_ushort"></A>
 <A NAME="DOC.2.68.4.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _is_ushort</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME=""></A>
+<A NAME="_TPtr"></A>
 <A NAME="DOC.2.68.4.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>union </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>union  _TPtr</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="_ushort"></A>
@@ -750,15 +748,15 @@ be shared for optimal memory usage and graphics performance.</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
 <A NAME="DOC.2.68.4.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(<!1><A HREF="osg.html#DOC.2.186">uint</A> <!1><A HREF="fast_back_stack.html#DOC.2.62.7">size</A>, GLushort* <!1><A HREF="Image.html#DOC.2.75.28">data</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(<!1><A HREF="osg.html#DOC.2.192">uint</A> <!1><A HREF="fast_back_stack.html#DOC.2.209.7">size</A>, GLushort* <!1><A HREF="Image.html#DOC.2.73.28">data</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
 <A NAME="DOC.2.68.4.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(<!1><A HREF="osg.html#DOC.2.186">uint</A> <!1><A HREF="fast_back_stack.html#DOC.2.62.7">size</A>, GLuint* <!1><A HREF="Image.html#DOC.2.75.28">data</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(<!1><A HREF="osg.html#DOC.2.192">uint</A> <!1><A HREF="fast_back_stack.html#DOC.2.209.7">size</A>, GLuint* <!1><A HREF="Image.html#DOC.2.73.28">data</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="maxIndex"></A>
 <A NAME="DOC.2.68.4.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="osg.html#DOC.2.186">uint</A> maxIndex() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="osg.html#DOC.2.192">uint</A> maxIndex() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator [] "></A>
 <A NAME="DOC.2.68.4.12"></A>
@@ -1118,7 +1116,7 @@ and is the method to override when deriving from GeoSet for user-drawn objects.
 <DL><DT><DD></DL><P>
 <A NAME="AttributeDeleteFunctor"></A>
 <A NAME="DOC.2.68.78"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  AttributeDeleteFunctor: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SG_EXPORT AttributeDeleteFunctor: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
 <DD>function object which is used to handling the clean up of attribute arrays
 associated with GeoSet's.  A default is provided which assumes that all
 momory attached to the GeoSet is owned by this GeoSet and can be deleted

@@ -164,12 +164,12 @@ class SG_EXPORT Drawable : public Object
           * Note, draw method should *not* be overridden in subclasses as it 
           * manages the optional display list.
           */
-        inline void draw(State& state);
+        inline void draw(State& state) const;
         
         /** Immediately compile this drawable into an OpenGL Display List.
             Note I, operation is ignored if _useDisplayList to false.
             Note II, compile is not intended to be overridden in subclasses.*/
-        void compile(State& state);
+        virtual void compile(State& state) const;
 
 
         struct UpdateCallback : public virtual osg::Referenced
@@ -403,7 +403,7 @@ class SG_EXPORT Drawable : public Object
 
 };
 
-inline void Drawable::draw(State& state)
+inline void Drawable::draw(State& state) const
 {
     if (_useDisplayList)
     {

@@ -85,7 +85,7 @@ void Drawable::dirtyBound()
     }
 }
 
-void Drawable::compile(State& state)
+void Drawable::compile(State& state) const
 {
     if (!_useDisplayList) return;
 

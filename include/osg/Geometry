@@ -51,107 +51,230 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-        template<typename T>
-        struct AttributeData
+//         template<typename T>
+//         struct AttributeData
+//         {
+//             AttributeData():
+//                 binding(BIND_OFF),
+//                 normalize(GL_FALSE),
+//                 offset(0) {}
+//                 
+//             AttributeData(T* a, AttributeBinding b, GLboolean n = GL_FALSE):
+//                 array(a),
+//                 indices(0),
+//                 binding(b),
+//                 normalize(n),
+//                 offset(0) {}
+// 
+//             AttributeData(T* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
+//                 array(a),
+//                 indices(i),
+//                 binding(b),
+//                 normalize(n),
+//                 offset(0) {}
+// 
+// //             AttributeData(const AttributeData& rhs, const CopyOp& copyop=CopyOp::SHADLLOW_COPY):
+// //                 array(dynamic_cast<T*>(copyop(rhs.array)),
+// //                 indices(dynamic_cast<IndexArray*>(copyop(rhs.indices)),
+// //                 binding(ths,binding),
+// //                 normalize(GL_FALSE),
+// //                 offset(rhs.offset) {}
+// 
+//             AttributeData& operator = (const AttributeData& rhs)
+//             {
+//                 array = rhs.array;
+//                 indices = rhs.indices;
+//                 binding = rhs.binding;
+//                 normalize = rhs.normalize;
+//                 offset = rhs.offset;
+//                 return *this;
+//             }
+// 
+//             ref_ptr<T>              array;
+//             ref_ptr<IndexArray>     indices;
+//             AttributeBinding        binding;
+//             GLboolean               normalize;
+//             mutable unsigned int    offset;
+//         };
+
+//        typedef AttributeData<Array> ArrayData;
+        struct ArrayData
         {
-            AttributeData():
-                _normalize(GL_FALSE),
-                _binding(BIND_OFF),
-                _offset(0) {}
-        
-            ref_ptr<T>                      _array;
-            ref_ptr<IndexArray>             _indices;
-            AttributeBinding                _binding;
-    
-            // only used in vertex attributes            
-            GLboolean                       _normalize;
-
-            unsigned int                    _offset;
-        };
-
-
-        void setVertexArray(Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound();     }
-        Array* getVertexArray() { return _vertexArray.get(); }
-        const Array* getVertexArray() const  { return _vertexArray.get(); }
-
-        void setVertexIndices(IndexArray* array) { _vertexIndices = array; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound(); }
-        IndexArray* getVertexIndices() { return _vertexIndices.get(); }
-        const IndexArray* getVertexIndices() const  { return _vertexIndices.get(); }
-
-
-        void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; dirtyDisplayList(); computeFastPathsUsed(); }
-        AttributeBinding getNormalBinding() const { return _normalBinding; }
-
-        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
-        Vec3Array* getNormalArray() { return _normalArray.get(); }
-        const Vec3Array* getNormalArray() const { return _normalArray.get(); }
-
-        void setNormalIndices(IndexArray* array) { _normalIndices = array; computeFastPathsUsed(); dirtyDisplayList(); }
-        IndexArray* getNormalIndices() { return _normalIndices.get(); }
-        const IndexArray* getNormalIndices() const { return _normalIndices.get(); }
-
-
-        void setColorBinding(AttributeBinding ab) { _colorBinding = ab; computeFastPathsUsed();}
-        AttributeBinding getColorBinding() const { return _colorBinding; }
-
-        void setColorArray(Array* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
-        Array* getColorArray() { return _colorArray.get(); }
-        const Array* getColorArray() const { return _colorArray.get(); }
-
-        void setColorIndices(IndexArray* array) { _colorIndices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
-        IndexArray* getColorIndices() { return _colorIndices.get(); }
-        const IndexArray* getColorIndices() const { return _colorIndices.get(); }
-
-
-        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorBinding = ab; computeFastPathsUsed();}
-        AttributeBinding getSecondaryColorBinding() const { return _secondaryColorBinding; }
-
-        void setSecondaryColorArray(Array* array) { _secondaryColorArray = array;  if (!_secondaryColorArray.valid()) _secondaryColorBinding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
-        Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
-        const Array* getSecondaryColorArray() const { return _secondaryColorArray.get(); }
-
-        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorIndices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
-        IndexArray* getSecondaryColorIndices() { return _secondaryColorIndices.get(); }
-        const IndexArray* getSecondaryColorIndices() const { return _secondaryColorIndices.get(); }
-
-
-        void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; computeFastPathsUsed();}
-        AttributeBinding getFogCoordBinding() const { return _fogCoordBinding; }
-
-        void setFogCoordArray(Array* array) { _fogCoordArray = array; if (!_fogCoordArray.valid()) _fogCoordBinding=BIND_OFF; dirtyDisplayList(); }
-        Array* getFogCoordArray() { return _fogCoordArray.get(); }
-        const Array* getFogCoordArray() const { return _fogCoordArray.get(); }
-
-
-        void setFogCoordIndices(IndexArray* array) { _fogCoordIndices = array; dirtyDisplayList(); }
-        IndexArray* getFogCoordIndices() { return _fogCoordIndices.get(); }
-        const IndexArray* getFogCoordIndices() const { return _fogCoordIndices.get(); }
-
-
-        struct ArrayPair
-        {
-            ArrayPair():
+            ArrayData():
+                binding(BIND_OFF),
+                normalize(GL_FALSE),
                 offset(0) {}
                 
-            ArrayPair(const ArrayPair& rhs):
-                first(rhs.first),
-                second(rhs.second),
-                offset(rhs.offset) {}
+            ArrayData(Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
+                array(a),
+                indices(0),
+                binding(b),
+                normalize(n),
+                offset(0) {}
 
-            ArrayPair& operator = (const ArrayPair& rhs)
+            ArrayData(Array* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
+                array(a),
+                indices(i),
+                binding(b),
+                normalize(n),
+                offset(0) {}
+
+//             ArrayData(const ArrayData& rhs, const CopyOp& copyop=CopyOp::SHADLLOW_COPY):
+//                 array(dynamic_cast<T*>(copyop(rhs.array)),
+//                 indices(dynamic_cast<IndexArray*>(copyop(rhs.indices)),
+//                 binding(ths,binding),
+//                 normalize(GL_FALSE),
+//                 offset(rhs.offset) {}
+
+            ArrayData& operator = (const ArrayData& rhs)
             {
-                first = rhs.first;
-                second = rhs.second;
+                array = rhs.array;
+                indices = rhs.indices;
+                binding = rhs.binding;
+                normalize = rhs.normalize;
                 offset = rhs.offset;
                 return *this;
             }
 
-            ref_ptr<Array>          first;
-            ref_ptr<IndexArray>     second;
+            ref_ptr<Array>          array;
+            ref_ptr<IndexArray>     indices;
+            AttributeBinding        binding;
+            GLboolean               normalize;
             mutable unsigned int    offset;
         };
-        typedef std::vector< ArrayPair >  TexCoordArrayList;
+        
+        struct Vec3ArrayData
+        {
+            Vec3ArrayData():
+                binding(BIND_OFF),
+                normalize(GL_FALSE),
+                offset(0) {}
+                
+            Vec3ArrayData(Vec3Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
+                array(a),
+                indices(0),
+                binding(b),
+                normalize(n),
+                offset(0) {}
 
+            Vec3ArrayData(Vec3Array* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
+                array(a),
+                indices(i),
+                binding(b),
+                normalize(n),
+                offset(0) {}
+
+//             Vec3ArrayData(const Vec3ArrayData& rhs, const CopyOp& copyop=CopyOp::SHADLLOW_COPY):
+//                 array(dynamic_cast<T*>(copyop(rhs.array)),
+//                 indices(dynamic_cast<IndexArray*>(copyop(rhs.indices)),
+//                 binding(ths,binding),
+//                 normalize(GL_FALSE),
+//                 offset(rhs.offset) {}
+
+            Vec3ArrayData& operator = (const Vec3ArrayData& rhs)
+            {
+                array = rhs.array;
+                indices = rhs.indices;
+                binding = rhs.binding;
+                normalize = rhs.normalize;
+                offset = rhs.offset;
+                return *this;
+            }
+
+            ref_ptr<Vec3Array>          array;
+            ref_ptr<IndexArray>     indices;
+            AttributeBinding        binding;
+            GLboolean               normalize;
+            mutable unsigned int    offset;
+        };
+
+//        typedef AttributeData<Vec3Array> Vec3ArrayData;
+        
+        /** static ArrayData which is returned get getTexCoordData(i) const and getVertexAttribData(i) const 
+          * when i is out of range.*/
+        static const ArrayData s_InvalidArrayData;
+        
+        typedef std::vector< ArrayData >  ArrayList;
+               
+
+        void setVertexArray(Array* array) { _vertexData.array = array; dirtyDisplayList(); dirtyBound();     }
+        Array* getVertexArray() { return _vertexData.array.get(); }
+        const Array* getVertexArray() const  { return _vertexData.array.get(); }
+
+        void setVertexIndices(IndexArray* array) { _vertexData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound(); }
+        IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
+        const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
+
+        void setVertexData(const ArrayData& arrayData) { _vertexData = arrayData; }
+        ArrayData& getVertexData() { return _vertexData; }
+        const ArrayData& getVertexData() const { return _vertexData; }
+        
+
+        void setNormalBinding(AttributeBinding ab) { _normalData.binding = ab; dirtyDisplayList(); computeFastPathsUsed(); }
+        AttributeBinding getNormalBinding() const { return _normalData.binding; }
+
+        void setNormalArray(Vec3Array* array) { _normalData.array = array; if (!_normalData.array.valid()) _normalData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
+        Vec3Array* getNormalArray() { return _normalData.array.get(); }
+        const Vec3Array* getNormalArray() const { return _normalData.array.get(); }
+
+        void setNormalIndices(IndexArray* array) { _normalData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
+        IndexArray* getNormalIndices() { return _normalData.indices.get(); }
+        const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }
+
+        void setNormalData(const Vec3ArrayData& arrayData) { _normalData = arrayData; }
+        Vec3ArrayData& getNormalData() { return _normalData; }
+        const Vec3ArrayData& getNormalData() const { return _normalData; }
+
+
+
+        void setColorBinding(AttributeBinding ab) { _colorData.binding = ab; computeFastPathsUsed();}
+        AttributeBinding getColorBinding() const { return _colorData.binding; }
+
+        void setColorArray(Array* array) { _colorData.array = array;  if (!_colorData.array.valid()) _colorData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
+        Array* getColorArray() { return _colorData.array.get(); }
+        const Array* getColorArray() const { return _colorData.array.get(); }
+
+        void setColorIndices(IndexArray* array) { _colorData.indices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
+        IndexArray* getColorIndices() { return _colorData.indices.get(); }
+        const IndexArray* getColorIndices() const { return _colorData.indices.get(); }
+
+        void setColorData(const ArrayData& arrayData) { _colorData = arrayData; }
+        ArrayData& getColorData() { return _colorData; }
+        const ArrayData& getColorData() const { return _colorData; }
+
+
+        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorData.binding = ab; computeFastPathsUsed();}
+        AttributeBinding getSecondaryColorBinding() const { return _secondaryColorData.binding; }
+
+        void setSecondaryColorArray(Array* array) { _secondaryColorData.array = array;  if (!_secondaryColorData.array.valid()) _secondaryColorData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
+        Array* getSecondaryColorArray() { return _secondaryColorData.array.get(); }
+        const Array* getSecondaryColorArray() const { return _secondaryColorData.array.get(); }
+
+        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorData.indices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
+        IndexArray* getSecondaryColorIndices() { return _secondaryColorData.indices.get(); }
+        const IndexArray* getSecondaryColorIndices() const { return _secondaryColorData.indices.get(); }
+
+        void setSecondaryColorData(const ArrayData& arrayData) { _secondaryColorData = arrayData; }
+        ArrayData& getSecondaryColorData() { return _secondaryColorData; }
+        const ArrayData& getSecondaryColorData() const { return _secondaryColorData; }
+
+
+        void setFogCoordBinding(AttributeBinding ab) { _fogCoordData.binding = ab; computeFastPathsUsed();}
+        AttributeBinding getFogCoordBinding() const { return _fogCoordData.binding; }
+
+        void setFogCoordArray(Array* array) { _fogCoordData.array = array; if (!_fogCoordData.array.valid()) _fogCoordData.binding=BIND_OFF; dirtyDisplayList(); }
+        Array* getFogCoordArray() { return _fogCoordData.array.get(); }
+        const Array* getFogCoordArray() const { return _fogCoordData.array.get(); }
+
+        void setFogCoordIndices(IndexArray* array) { _fogCoordData.indices = array; dirtyDisplayList(); }
+        IndexArray* getFogCoordIndices() { return _fogCoordData.indices.get(); }
+        const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
+
+        void setFogCoordData(const ArrayData& arrayData) { _fogCoordData = arrayData; }
+        ArrayData& setFogCoordData() { return _fogCoordData; }
+        const ArrayData& setFogCoordData() const { return _fogCoordData; }
+        
+        
 
         void setTexCoordArray(unsigned int unit,Array*);
         Array* getTexCoordArray(unsigned int unit);
@@ -161,62 +284,37 @@ class SG_EXPORT Geometry : public Drawable
         IndexArray* getTexCoordIndices(unsigned int unit);
         const IndexArray* getTexCoordIndices(unsigned int unit) const;
 
+        void setTexCoordData(unsigned int index,const ArrayData& arrayData);
+        ArrayData& getTexCoordData(unsigned int index);
+        const ArrayData& getTexCoordData(unsigned int index) const;
+
         unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
-        TexCoordArrayList& getTexCoordArrayList() { return _texCoordList; }
-        const TexCoordArrayList& getTexCoordArrayList() const { return _texCoordList; }
+        ArrayList& getTexCoordArrayList() { return _texCoordList; }
+        const ArrayList& getTexCoordArrayList() const { return _texCoordList; }
 
 
-#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
 
-        void setArray(AttributeType type, Array* array);
-        Array* getArray(AttributeType type);
-        const Array* getArray(AttributeType type) const;
-        
-        void setIndices(AttributeType type, IndexArray* indices);
-        IndexArray* getIndices(AttributeType type);
-        const IndexArray* getIndices(AttributeType type) const;
-        
-        void setNormalize(AttributeType type, GLboolean normalize);
-        GLboolean getNormalize(AttributeType type) const;
-        
-        void setBinding(AttributeType type,AttributeBinding binding);
-        AttributeBinding getBinding(AttributeType type) const;
-        
-        
-        unsigned int getNumArrays() const { return _attributeList.size(); }
-        
-        AttributeData& getAttributeData(unsigned int type) { return _attributeList[type]; }
-        
-        const AttributeData& getAttributeData(unsigned int type) const { return _attributeList[type]; }
-
-        typedef std::vector<AttributeData> AttributeList;
-        
-        void setAttributeList(AttributeList& al) { _attributeList = al; }
-                
-        AttributeList& getAttributeList() { return _attributeList; }
-        
-        const AttributeList& getAttributeList() const { return _attributeList; }
-        
-#endif
-
-        typedef std::pair< GLboolean, ArrayPair > VertexAttribNormArrayPair;
-        typedef std::vector< VertexAttribNormArrayPair > VertexAttribArrayList;
-        typedef std::vector< AttributeBinding > VertexAttribBindingList;
-
-        void setVertexAttribArray(unsigned int index,GLboolean normalize,Array* array,AttributeBinding ab=BIND_OFF);
+        void setVertexAttribArray(unsigned int index,Array* array);
         Array *getVertexAttribArray(unsigned int index);
         const Array *getVertexAttribArray(unsigned int index) const;
-
-        bool getVertexAttribNormalize(unsigned int index, GLboolean &ret) const;
-        bool getVertexAttribBinding(unsigned int index, AttributeBinding& ab) const;
 
         void setVertexAttribIndices(unsigned int index,IndexArray* array);
         IndexArray* getVertexAttribIndices(unsigned int index);
         const IndexArray* getVertexAttribIndices(unsigned int index) const;
 
+        void setVertexAttribBinding(unsigned int index,AttributeBinding ab);
+        AttributeBinding getVertexAttribBinding(unsigned int index) const;
+
+        void setVertexAttribNormalize(unsigned int index,GLboolean norm);
+        GLboolean getVertexAttribNormalize(unsigned int index) const;
+
+        void setVertexAttribData(unsigned int index,const ArrayData& arrayData);
+        ArrayData& getVertexAttribData(unsigned int index);
+        const ArrayData& getVertexAttribData(unsigned int index) const;
+
         unsigned int getNumVertexAttribArrays() const { return _vertexAttribList.size(); }
-        VertexAttribArrayList& getVertexAttribArrayList() { return _vertexAttribList; }
-        const VertexAttribArrayList& getVertexAttribArrayList() const { return _vertexAttribList; }
+        ArrayList& getVertexAttribArrayList() { return _vertexAttribList; }
+        const ArrayList& getVertexAttribArrayList() const { return _vertexAttribList; }
 
 
 
@@ -315,38 +413,21 @@ class SG_EXPORT Geometry : public Drawable
         virtual ~Geometry();
        
         PrimitiveSetList                _primitives;
-        
-#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
-        AttributeList                   _attributeList;
-#endif
-        ref_ptr<Array>                  _vertexArray;
-        ref_ptr<IndexArray>             _vertexIndices;
-        mutable unsigned int            _vertexOffset;
 
-        mutable AttributeBinding        _normalBinding;
-        ref_ptr<Vec3Array>              _normalArray;
-        ref_ptr<IndexArray>             _normalIndices;
-        mutable unsigned int            _normalOffset;
-        
-        mutable AttributeBinding        _colorBinding;
-        ref_ptr<Array>                  _colorArray;
-        ref_ptr<IndexArray>             _colorIndices;
-        mutable unsigned int            _colorOffset;
-        
-        mutable AttributeBinding        _secondaryColorBinding;
-        ref_ptr<Array>                  _secondaryColorArray;
-        ref_ptr<IndexArray>             _secondaryColorIndices;
-        mutable unsigned int            _secondaryColorOffset;
+        ArrayData                       _vertexData;
 
-        mutable AttributeBinding        _fogCoordBinding;
-        ref_ptr<Array>                  _fogCoordArray;
-        ref_ptr<IndexArray>             _fogCoordIndices;
-        mutable unsigned int            _fogCoordOffset;
+        Vec3ArrayData                   _normalData;
+
+        ArrayData                       _colorData;
+
+        ArrayData                       _secondaryColorData;
+
+        ArrayData                       _fogCoordData;
         
-        TexCoordArrayList               _texCoordList;
+        ArrayList                       _texCoordList;
         
-        VertexAttribArrayList           _vertexAttribList;
-        mutable VertexAttribBindingList _vertexAttribBindingList; 
+        ArrayList                       _vertexAttribList;
+
 
         mutable bool                    _fastPath;
 

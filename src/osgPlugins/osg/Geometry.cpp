@@ -313,6 +313,59 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    Geometry::AttributeBinding vertexAttribBinding=Geometry::BIND_OFF;
+    if (fr.matchSequence("VertexAttribBinding %i %s") && Geometry_matchBindingTypeStr(fr[2].getStr(),vertexAttribBinding))
+    {
+        int unit=0;
+        fr[1].getInt(unit);
+        geom.setVertexAttribBinding(unit,vertexAttribBinding);
+        fr+=3;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("VertexAttribNormalize %i %s"))
+    {
+        int unit=0;
+        fr[1].getInt(unit);
+        
+        if (fr[2].matchString("TRUE"))        
+            geom.setVertexAttribNormalize(unit,GL_TRUE);
+        else
+            geom.setVertexAttribNormalize(unit,GL_FALSE);
+        
+        fr+=3;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("VertexAttribArray %i"))
+    {
+        int unit=0;
+        fr[1].getInt(unit);
+    
+        fr+=2;
+        Array* vertexattrib = Array_readLocalData(fr);
+        if (vertexattrib)
+        {
+            geom.setVertexAttribArray(unit,vertexattrib);
+        }
+        iteratorAdvanced = true;
+        
+    }
+
+    if (fr.matchSequence("VertexAttribIndices %i"))
+    {
+        int unit=0;
+        fr[1].getInt(unit);
+    
+        fr+=2;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setVertexAttribIndices(unit,indices);
+        }
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -969,21 +1022,45 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(*geom.getFogCoordIndices(),fw);        
     }
 
-    const Geometry::TexCoordArrayList& tcal=geom.getTexCoordArrayList();
-    for(unsigned int i=0;i<tcal.size();++i)
+    const Geometry::ArrayList& tcal=geom.getTexCoordArrayList();
+    unsigned int i;
+    for(i=0;i<tcal.size();++i)
     {
-        if (tcal[i].first.valid())
+        if (tcal[i].array.valid())
         {
             fw.indent()<<"TexCoordArray "<<i<<" ";
-            Array_writeLocalData(*(tcal[i].first),fw);
+            Array_writeLocalData(*(tcal[i].array),fw);
         }
-        if (tcal[i].second.valid())
+        if (tcal[i].indices.valid())
         {
             fw.indent()<<"TexCoordIndices "<<i<<" ";
-            Array_writeLocalData(*(tcal[i].second),fw);
+            Array_writeLocalData(*(tcal[i].indices),fw);
         }
     }
     
+    const Geometry::ArrayList& vaal=geom.getVertexAttribArrayList();
+    for(i=0;i<vaal.size();++i)
+    {
+        const osg::Geometry::ArrayData& arrayData = vaal[i];
+    
+        if (arrayData.array.valid())
+        {
+            fw.indent()<<"VertexAttribBinding "<<i<<" "<<Geometry_getBindingTypeStr(arrayData.binding)<<std::endl;
+            
+            if (arrayData.normalize)
+                fw.indent()<<"VertexAttribNormalize "<<i<<" TRUE"<<std::endl;
+            else
+                fw.indent()<<"VertexAttribNormalize "<<i<<" FALSE"<<std::endl;
+                
+            fw.indent()<<"VertexAttribArray "<<i<<" ";
+            Array_writeLocalData(*(arrayData.array),fw);
+        }
+        if (arrayData.indices.valid())
+        {
+            fw.indent()<<"VertexAttribIndices "<<i<<" ";
+            Array_writeLocalData(*(arrayData.indices),fw);
+        }
+    }
 
     return true;
 }

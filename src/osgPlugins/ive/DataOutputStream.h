@@ -34,30 +34,30 @@ public:
 	void writeFloat(float f);
 	void writeLong(long l);
 	void writeDouble(double d);
-	void writeString(std::string s);
-	void writeCharArray(char* data, int size);
+	void writeString(const std::string& s);
+	void writeCharArray(const char* data, int size);
 	void writeVec2(const osg::Vec2& v);
 	void writeVec3(const osg::Vec3& v);
 	void writeVec4(const osg::Vec4& v);
 	void writeUByte4(const osg::UByte4& v);
 	void writeQuat(const osg::Quat& q);
 	void writeBinding(osg::Geometry::AttributeBinding b);
-	void writeArray(osg::Array* a);
-	void writeIntArray(osg::IntArray* a);
-	void writeUByteArray(osg::UByteArray* a);
-	void writeUShortArray(osg::UShortArray* a);
-	void writeUIntArray(osg::UIntArray* a);
-	void writeUByte4Array(osg::UByte4Array* a);
-	void writeFloatArray(osg::FloatArray* a);
-	void writeVec2Array(osg::Vec2Array* a);
-	void writeVec3Array(osg::Vec3Array* a);
-	void writeVec4Array(osg::Vec4Array* a);
+	void writeArray(const osg::Array* a);
+	void writeIntArray(const osg::IntArray* a);
+	void writeUByteArray(const osg::UByteArray* a);
+	void writeUShortArray(const osg::UShortArray* a);
+	void writeUIntArray(const osg::UIntArray* a);
+	void writeUByte4Array(const osg::UByte4Array* a);
+	void writeFloatArray(const osg::FloatArray* a);
+	void writeVec2Array(const osg::Vec2Array* a);
+	void writeVec3Array(const osg::Vec3Array* a);
+	void writeVec4Array(const osg::Vec4Array* a);
 	void writeMatrix(const osg::Matrix& mat);
 
-	void writeStateSet(osg::StateSet* stateset);
-	void writeStateAttribute(osg::StateAttribute* sa);
-	void writeDrawable(osg::Drawable* sa);
-	void writeNode(osg::Node* sa);
+	void writeStateSet(const osg::StateSet* stateset);
+	void writeStateAttribute(const osg::StateAttribute* sa);
+	void writeDrawable(const osg::Drawable* sa);
+	void writeNode(const osg::Node* sa);
 
 	// Set and get include image data in stream
 	void setIncludeImageData(bool b) {_includeImageData=b;};
@@ -67,10 +67,10 @@ private:
 	std::ostream* _ostream;
 
  	// Container to map stateset uniques to their respective stateset.
-	typedef std::map<osg::StateSet*,int>        StateSetMap;
-	typedef std::map<osg::StateAttribute*,int>  StateAttributeMap;
-	typedef std::map<osg::Drawable*,int>        DrawableMap;
-	typedef std::map<osg::Node*,int>            NodeMap;
+	typedef std::map<const osg::StateSet*,int>        StateSetMap;
+	typedef std::map<const osg::StateAttribute*,int>  StateAttributeMap;
+	typedef std::map<const osg::Drawable*,int>        DrawableMap;
+	typedef std::map<const osg::Node*,int>            NodeMap;
         
         StateSetMap         _stateSetMap;
         StateAttributeMap   _stateAttributeMap;

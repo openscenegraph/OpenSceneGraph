@@ -56,7 +56,7 @@ bool BumpMapping_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
 	osg::ref_ptr<osg::Texture2D> normal_tex = static_cast<osg::Texture2D *>(fr.readObjectOfType(osgDB::type_wrapper<osg::Texture2D>()));
 	if (normal_tex.valid()) {
-		myobj.setOverrideDiffuseTexture(normal_tex.get());
+		myobj.setOverrideNormalMapTexture(normal_tex.get());
 		itAdvanced = true;
 	}
 

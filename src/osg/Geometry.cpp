@@ -15,6 +15,8 @@
 
 using namespace osg;
 
+const Geometry::ArrayData Geometry::s_InvalidArrayData;
+
 #if 1
 class DrawVertex
 {
@@ -355,35 +357,17 @@ class DrawFogCoord : public osg::ConstValueVisitor
 
 Geometry::Geometry()
 {
-    _normalBinding = BIND_OFF;
-    _colorBinding = BIND_OFF;
-    _secondaryColorBinding = BIND_OFF;
-    _fogCoordBinding = BIND_OFF;
-
     _fastPath = false;
-
     _fastPathHint = true;
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
-#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
-    _attributeList(geometry._attributeList),
-#endif    
-    _vertexArray((copyop(geometry._vertexArray.get()))),
-    _vertexIndices(dynamic_cast<IndexArray*>(copyop(geometry._vertexIndices.get()))),
-    _normalBinding(geometry._normalBinding),
-    _normalArray(dynamic_cast<Vec3Array*>(copyop(geometry._normalArray.get()))),
-    _normalIndices(dynamic_cast<IndexArray*>(copyop(geometry._normalIndices.get()))),
-    _colorBinding(geometry._colorBinding),
-    _colorArray(copyop(geometry._colorArray.get())),
-    _colorIndices(dynamic_cast<IndexArray*>(copyop(geometry._colorIndices.get()))),
-    _secondaryColorBinding(geometry._secondaryColorBinding),
-    _secondaryColorArray(copyop(geometry._secondaryColorArray.get())),
-    _secondaryColorIndices(dynamic_cast<IndexArray*>(copyop(geometry._secondaryColorIndices.get()))),
-    _fogCoordBinding(geometry._fogCoordBinding),
-    _fogCoordArray(dynamic_cast<FloatArray*>(copyop(geometry._fogCoordArray.get()))),
-    _fogCoordIndices(dynamic_cast<IndexArray*>(copyop(geometry._fogCoordIndices.get()))),
+    _vertexData(geometry._vertexData),
+    _normalData(geometry._normalData),
+    _colorData(geometry._colorData),
+    _secondaryColorData(geometry._secondaryColorData),
+    _fogCoordData(geometry._fogCoordData),
     _fastPath(geometry._fastPath),
     _fastPathHint(geometry._fastPathHint)
 {
@@ -395,14 +379,14 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
         if (primitive) _primitives.push_back(primitive);
     }
 
-    for(TexCoordArrayList::const_iterator titr=geometry._texCoordList.begin();
+    for(ArrayList::const_iterator titr=geometry._texCoordList.begin();
         titr!=geometry._texCoordList.end();
         ++titr)
     {
         _texCoordList.push_back(*titr);
     }
 
-    for(VertexAttribArrayList::const_iterator vitr=geometry._vertexAttribList.begin();
+    for(ArrayList::const_iterator vitr=geometry._vertexAttribList.begin();
         vitr!=geometry._vertexAttribList.end();
         ++vitr)
     {
@@ -415,153 +399,90 @@ Geometry::~Geometry()
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
-void Geometry::setTexCoordArray(unsigned int unit,Array* array)
+Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit)
 {
     if (_texCoordList.size()<=unit)
         _texCoordList.resize(unit+1);
         
-   _texCoordList[unit].first = array;
+    return _texCoordList[unit];
+}
 
+const Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit) const
+{
+    if (_texCoordList.size()<=unit)
+        return s_InvalidArrayData;
+        
+    return _texCoordList[unit];
+}
+
+void Geometry::setTexCoordArray(unsigned int unit,Array* array)
+{
+    getTexCoordData(unit).array = array;
+
+    computeFastPathsUsed();
     dirtyDisplayList();
 }
 
 Array* Geometry::getTexCoordArray(unsigned int unit)
 {
-    if (unit<_texCoordList.size()) return _texCoordList[unit].first.get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].array.get();
     else return 0;
 }
 
 const Array* Geometry::getTexCoordArray(unsigned int unit) const
 {
-    if (unit<_texCoordList.size()) return _texCoordList[unit].first.get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].array.get();
     else return 0;
 }
 
 void Geometry::setTexCoordIndices(unsigned int unit,IndexArray* array)
 {
-    if (_texCoordList.size()<=unit)
-        _texCoordList.resize(unit+1);
-        
-   _texCoordList[unit].second = array;
+    getTexCoordData(unit).indices = array;
 
+    computeFastPathsUsed();
     dirtyDisplayList();
 }
 
 IndexArray* Geometry::getTexCoordIndices(unsigned int unit)
 {
-    if (unit<_texCoordList.size()) return _texCoordList[unit].second.get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].indices.get();
     else return 0;
 }
 
 const IndexArray* Geometry::getTexCoordIndices(unsigned int unit) const
 {
-    if (unit<_texCoordList.size()) return _texCoordList[unit].second.get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].indices.get();
     else return 0;
 }
 
 
-#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
-
-void Geometry::setArray(AttributeType type,Array* array)
-{
-    if (_attributeList.size()<=type)
-        _attributeList.resize(type+1);
-        
-   _attributeList[type]._array = array;
-
-    dirtyDisplayList();
-}
-
-Array* Geometry::getArray(AttributeType type)
-{
-    if (type<_attributeList.size()) return _attributeList[type]._array.get();
-    else return 0;
-}
-
-const Array* Geometry::getArray(AttributeType type) const
-{
-    if (type<_attributeList.size()) return _attributeList[type]._array.get();
-    else return 0;
-}
-
-
-void Geometry::setIndices(AttributeType type,IndexArray* array)
-{
-    if (_attributeList.size()<=type)
-        _attributeList.resize(type+1);
-        
-   _attributeList[type]._indices = array;
-
-    dirtyDisplayList();
-}
-
-IndexArray* Geometry::getIndices(AttributeType type)
-{
-    if (type<_attributeList.size()) return _attributeList[type]._indices.get();
-    else return 0;
-}
-
-const IndexArray* Geometry::getIndices(AttributeType type) const
-{
-    if (type<_attributeList.size()) return _attributeList[type]._indices.get();
-    else return 0;
-}
-
-
-void Geometry::setNormalize(AttributeType type,GLboolean normalize)
-{
-    if (_attributeList.size()<=type)
-        _attributeList.resize(type+1);
-        
-   _attributeList[type]._normalize = normalize;
-
-    dirtyDisplayList();
-}
-
-GLboolean Geometry::getNormalize(AttributeType type) const
-{
-    if (type<_attributeList.size()) return _attributeList[type]._normalize;
-    else return GL_FALSE;
-}
-
-void Geometry::setBinding(AttributeType type,AttributeBinding binding)
-{
-    if (_attributeList.size()<=type)
-        _attributeList.resize(type+1);
-        
-   _attributeList[type]._binding = binding;
-
-    dirtyDisplayList();
-}
-
-Geometry::AttributeBinding Geometry::getBinding(AttributeType type) const
-{
-    if (type<_attributeList.size()) return _attributeList[type]._binding;
-    else return BIND_OFF;
-}
-
-#endif
-
-void Geometry::setVertexAttribArray(unsigned int index,GLboolean normalize,Array* array,AttributeBinding ab)
+void Geometry::setVertexAttribData(unsigned int index, const Geometry::ArrayData& attrData)
 {
     if (_vertexAttribList.size()<=index)
-    {
         _vertexAttribList.resize(index+1);
-        _vertexAttribBindingList.resize(index+1);
-    }
+        
+    _vertexAttribList[index] = attrData;
+}
 
-    _vertexAttribList[index].first = normalize;
-    _vertexAttribList[index].second.first = array;
+Geometry::ArrayData& Geometry::getVertexAttribData(unsigned int index)
+{
+    if (_vertexAttribList.size()<=index)
+        _vertexAttribList.resize(index+1);
+        
+    return _vertexAttribList[index];
+}
 
-    if( index == 0 )
-    {
-        // Force bind per vertex
-        _vertexAttribBindingList[index] = BIND_PER_VERTEX;
-    }
-    else
-    {
-        _vertexAttribBindingList[index] = ab;
-    }
+const Geometry::ArrayData& Geometry::getVertexAttribData(unsigned int index) const
+{
+    if (_vertexAttribList.size()<=_vertexAttribList.size())
+        return s_InvalidArrayData;
+        
+    return _vertexAttribList[index];
+}
+
+void Geometry::setVertexAttribArray(unsigned int index, Array* array)
+{
+    getVertexAttribData(index).array = array;
 
     computeFastPathsUsed();
     dirtyDisplayList();
@@ -569,68 +490,61 @@ void Geometry::setVertexAttribArray(unsigned int index,GLboolean normalize,Array
 
 Array *Geometry::getVertexAttribArray(unsigned int index)
 {
-    if (index<_vertexAttribList.size()) return _vertexAttribList[index].second.first.get();
+    if (index<_vertexAttribList.size()) return _vertexAttribList[index].array.get();
     else return 0;
 }
 
 const Array *Geometry::getVertexAttribArray(unsigned int index) const
 {
-    if (index<_vertexAttribList.size()) return _vertexAttribList[index].second.first.get();
+    if (index<_vertexAttribList.size()) return _vertexAttribList[index].array.get();
     else return 0;
-}
-
-bool Geometry::getVertexAttribBinding(unsigned int index, AttributeBinding& ab) const
-{
-    // AttributeBinding value goes in ab 
-    // return true if index is valid, false otherwise
-
-    if (index<_vertexAttribBindingList.size()) 
-    {
-        ab = _vertexAttribBindingList[index];
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
-}
-
-bool Geometry::getVertexAttribNormalize(unsigned int index, GLboolean &ret) const
-{
-    // normalized value goes in ret 
-    // return true if index is valid, false otherwise
-
-    if (index<_vertexAttribList.size()) 
-    {
-        ret = _vertexAttribList[index].first;
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
 }
 
 void Geometry::setVertexAttribIndices(unsigned int index,IndexArray* array)
 {
-    if (_vertexAttribList.size()<=index)
-        _vertexAttribList.resize(index+1);
+    getVertexAttribData(index).indices = array;
 
-    _vertexAttribList[index].second.second = array;
-
+    computeFastPathsUsed();
     dirtyDisplayList();
 }
 
 IndexArray* Geometry::getVertexAttribIndices(unsigned int index)
 {
-    if (index<_vertexAttribList.size()) return _vertexAttribList[index].second.second.get();
+    if (index<_vertexAttribList.size()) return _vertexAttribList[index].indices.get();
     else return 0;
 }
 
 const IndexArray* Geometry::getVertexAttribIndices(unsigned int index) const
 {
-    if (index<_vertexAttribList.size()) return _vertexAttribList[index].second.second.get();
+    if (index<_vertexAttribList.size()) return _vertexAttribList[index].indices.get();
     else return 0;
+}
+
+void Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
+{
+    getVertexAttribData(index).binding = ab;
+
+    computeFastPathsUsed();
+    dirtyDisplayList();
+}
+
+Geometry::AttributeBinding Geometry::getVertexAttribBinding(unsigned int index) const
+{
+    if (index<_vertexAttribList.size()) return _vertexAttribList[index].binding;
+    else return BIND_OFF;
+}
+
+void Geometry::setVertexAttribNormalize(unsigned int index,GLboolean norm)
+{
+    getVertexAttribData(index).normalize = norm;
+
+    dirtyDisplayList();
+}
+
+GLboolean Geometry::getVertexAttribNormalize(unsigned int index) const
+{
+    if (index<_vertexAttribList.size()) return _vertexAttribList[index].normalize;
+    else return GL_FALSE;
 }
 
 bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
@@ -721,12 +635,12 @@ bool Geometry::computeFastPathsUsed()
     //
     // set up normals if required.
     //
-    if (!_normalArray.valid() ||
-        _normalArray->empty() ||
-        (_normalIndices.valid() && _normalIndices->getNumElements()==0) )
+    if (!_normalData.array.valid() ||
+        _normalData.array->empty() ||
+        (_normalData.indices.valid() && _normalData.indices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
-        _normalBinding = BIND_OFF;
+        _normalData.binding = BIND_OFF;
     }
 
 
@@ -734,12 +648,12 @@ bool Geometry::computeFastPathsUsed()
     //
     // set up colours..
     //
-    if (!_colorArray.valid() ||
-        _colorArray->getNumElements()==0 ||
-        (_colorIndices.valid() && _colorIndices->getNumElements()==0) )
+    if (!_colorData.array.valid() ||
+        _colorData.array->getNumElements()==0 ||
+        (_colorData.indices.valid() && _colorData.indices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
-        _colorBinding = BIND_OFF;
+        _colorData.binding = BIND_OFF;
     }
 
 
@@ -748,12 +662,12 @@ bool Geometry::computeFastPathsUsed()
     //
     // Set up secondary color if required.
     //
-    if (!_secondaryColorArray.valid() || 
-        _secondaryColorArray->getNumElements()==0 ||
-        (_secondaryColorIndices.valid() && _secondaryColorIndices->getNumElements()==0) )
+    if (!_secondaryColorData.array.valid() || 
+        _secondaryColorData.array->getNumElements()==0 ||
+        (_secondaryColorData.indices.valid() && _secondaryColorData.indices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
-        _secondaryColorBinding = BIND_OFF;
+        _secondaryColorData.binding = BIND_OFF;
     }
 
     
@@ -761,12 +675,12 @@ bool Geometry::computeFastPathsUsed()
     //
     // Set up fog coord if required.
     //
-    if (!_fogCoordArray.valid() || 
-        _fogCoordArray->getNumElements()==0 ||
-        (_fogCoordIndices.valid() && _fogCoordIndices->getNumElements()==0) )
+    if (!_fogCoordData.array.valid() || 
+        _fogCoordData.array->getNumElements()==0 ||
+        (_fogCoordData.indices.valid() && _fogCoordData.indices->getNumElements()==0) )
     {
         // switch off if not supported or have a valid data.
-        _fogCoordBinding = BIND_OFF;
+        _fogCoordData.binding = BIND_OFF;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -792,26 +706,26 @@ bool Geometry::computeFastPathsUsed()
     // check to see if fast path can be used.
     //
     _fastPath = true;
-    if (_vertexIndices.valid()) _fastPath = false;
-    else if (_normalBinding==BIND_PER_PRIMITIVE || (_normalBinding==BIND_PER_VERTEX && _normalIndices.valid())) _fastPath = false;
-    else if (_colorBinding==BIND_PER_PRIMITIVE || (_colorBinding==BIND_PER_VERTEX && _colorIndices.valid())) _fastPath = false;
-    else if (_secondaryColorBinding==BIND_PER_PRIMITIVE || (_secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorIndices.valid())) _fastPath = false;
-    else if (_fogCoordBinding==BIND_PER_PRIMITIVE || (_fogCoordBinding==BIND_PER_VERTEX && _fogCoordIndices.valid())) _fastPath = false;
+    if (_vertexData.indices.valid()) _fastPath = false;
+    else if (_normalData.binding==BIND_PER_PRIMITIVE || (_normalData.binding==BIND_PER_VERTEX && _normalData.indices.valid())) _fastPath = false;
+    else if (_colorData.binding==BIND_PER_PRIMITIVE || (_colorData.binding==BIND_PER_VERTEX && _colorData.indices.valid())) _fastPath = false;
+    else if (_secondaryColorData.binding==BIND_PER_PRIMITIVE || (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.indices.valid())) _fastPath = false;
+    else if (_fogCoordData.binding==BIND_PER_PRIMITIVE || (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.indices.valid())) _fastPath = false;
     else 
     {
-        for( unsigned int va = 0; va < _vertexAttribBindingList.size(); ++va )
+        for( unsigned int va = 0; va < _vertexAttribList.size(); ++va )
         {
-            if (_vertexAttribBindingList[va]==BIND_PER_PRIMITIVE)
+            if (_vertexAttribList[va].binding==BIND_PER_PRIMITIVE)
             {
                 _fastPath = false;
                 break;
             }
             else
             {
-                const Array * array = _vertexAttribList[va].second.first.get();
-                const IndexArray * idxArray = _vertexAttribList[va].second.second.get();
+                const Array * array = _vertexAttribList[va].array.get();
+                const IndexArray * idxArray = _vertexAttribList[va].indices.get();
 
-                if( _vertexAttribBindingList[va]==BIND_PER_VERTEX && 
+                if( _vertexAttribList[va].binding==BIND_PER_VERTEX && 
                     array && array->getNumElements()>0 &&
                     idxArray && idxArray->getNumElements()>0 ) 
                 {
@@ -828,12 +742,12 @@ bool Geometry::computeFastPathsUsed()
     //
     for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
     {
-        const ArrayPair& texcoordPair = _texCoordList[unit];
-        if (texcoordPair.first.valid() && texcoordPair.first->getNumElements()>0)
+        const ArrayData& texcoordData = _texCoordList[unit];
+        if (texcoordData.array.valid() && texcoordData.array->getNumElements()>0)
         {
-            if (texcoordPair.second.valid())
+            if (texcoordData.indices.valid())
             {
-                if (texcoordPair.second->getNumElements()>0)
+                if (texcoordData.indices->getNumElements()>0)
                 {
                     _fastPath = false;         
                     break;
@@ -860,34 +774,34 @@ void Geometry::drawImplementation(State& state) const
 
     const Extensions* extensions = getExtensions(state.getContextID(),true);
 
-    if( !( ( _vertexArray.valid() && _vertexArray->getNumElements() != 0 ) ||
+    if( !( ( _vertexData.array.valid() && _vertexData.array->getNumElements() != 0 ) ||
            ( _vertexAttribList.size() > 0 && 
-             _vertexAttribList[0].second.first.valid() && 
-             _vertexAttribList[0].second.first->getNumElements() != 0 ) ) )
+             _vertexAttribList[0].array.valid() && 
+             _vertexAttribList[0].array->getNumElements() != 0 ) ) )
     {
         return;
     }
 
-    if( ( _vertexIndices.valid() && _vertexIndices->getNumElements() == 0 ) ||
+    if( ( _vertexData.indices.valid() && _vertexData.indices->getNumElements() == 0 ) ||
           ( _vertexAttribList.size() > 0 && 
-          _vertexAttribList[0].second.second.valid() && 
-          _vertexAttribList[0].second.second->getNumElements() == 0 ) )
+          _vertexAttribList[0].indices.valid() && 
+          _vertexAttribList[0].indices->getNumElements() == 0 ) )
     {
         return;
     }
 
-    DrawNormal         drawNormal(_normalArray.get(),_normalIndices.get());
-    DrawColor          drawColor(_colorArray.get(),_colorIndices.get());
-    DrawSecondaryColor drawSecondaryColor(_secondaryColorArray.get(),_secondaryColorIndices.get(),extensions);
+    DrawNormal         drawNormal(_normalData.array.get(),_normalData.indices.get());
+    DrawColor          drawColor(_colorData.array.get(),_colorData.indices.get());
+    DrawSecondaryColor drawSecondaryColor(_secondaryColorData.array.get(),_secondaryColorData.indices.get(),extensions);
 
-    DrawFogCoord       drawFogCoord(_fogCoordArray.get(),_fogCoordIndices.get(),extensions);
+    DrawFogCoord       drawFogCoord(_fogCoordData.array.get(),_fogCoordData.indices.get(),extensions);
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Set up secondary color if required.
     //
-    AttributeBinding secondaryColorBinding = _secondaryColorBinding;
+    AttributeBinding secondaryColorBinding = _secondaryColorData.binding;
     if (secondaryColorBinding!=BIND_OFF && !extensions->isSecondaryColorSupported())
     {
         // switch off if not supported or have a valid data.
@@ -899,26 +813,11 @@ void Geometry::drawImplementation(State& state) const
     //
     // Set up fog coord if required.
     //
-    AttributeBinding fogCoordBinding = _fogCoordBinding;
+    AttributeBinding fogCoordBinding = _fogCoordData.binding;
     if (fogCoordBinding!=BIND_OFF && !extensions->isFogCoordSupported())
     {
         // switch off if not supported or have a valid data.
         fogCoordBinding = BIND_OFF;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Set up vertex attrib if required.
-    //
-    if(!extensions->isVertexProgramSupported())
-    {
-        for( unsigned int va = 0; va < _vertexAttribBindingList.size(); ++va )
-        {
-            if (_vertexAttribBindingList[va]!=BIND_OFF)
-            {
-                _vertexAttribBindingList[va] = BIND_OFF;
-            }
-        }
     }
 
     unsigned int normalIndex = 0;
@@ -929,11 +828,11 @@ void Geometry::drawImplementation(State& state) const
 
 #if USE_DEFAULT_NORMAL
     // if no values are defined for normal and color provide some defaults...
-    if (_normalBinding==BIND_OFF) glNormal3f(0.0f,0.0f,1.0f);
+    if (_normalData.binding==BIND_OFF) glNormal3f(0.0f,0.0f,1.0f);
 #endif
 
 #if USE_DEFAULT_COLOUR
-    if (_colorBinding==BIND_OFF) glColor4f(1.0f,1.0f,1.0f,1.0f);
+    if (_colorData.binding==BIND_OFF) glColor4f(1.0f,1.0f,1.0f,1.0f);
 #endif
 
     typedef std::vector< ref_ptr<DrawVertexAttrib> > DrawVertexAttribList;
@@ -971,27 +870,27 @@ void Geometry::drawImplementation(State& state) const
                 // compute total size and offsets required.
                 unsigned int totalSize = 0;
                 
-                _vertexOffset = 0;
-                if (_vertexArray.valid()) totalSize += _vertexArray->getTotalDataSize();
+                _vertexData.offset = 0;
+                if (_vertexData.array.valid()) totalSize += _vertexData.array->getTotalDataSize();
                 
-                _normalOffset = totalSize; 
-                if (_normalArray.valid()) totalSize += _normalArray->getTotalDataSize();
+                _normalData.offset = totalSize; 
+                if (_normalData.array.valid()) totalSize += _normalData.array->getTotalDataSize();
                                 
-                _colorOffset = totalSize;
-                if (_colorArray.valid()) totalSize += _colorArray->getTotalDataSize();
+                _colorData.offset = totalSize;
+                if (_colorData.array.valid()) totalSize += _colorData.array->getTotalDataSize();
 
-                _secondaryColorOffset = totalSize;
-                if (_secondaryColorArray.valid()) totalSize += _secondaryColorArray->getTotalDataSize();
+                _secondaryColorData.offset = totalSize;
+                if (_secondaryColorData.array.valid()) totalSize += _secondaryColorData.array->getTotalDataSize();
 
-                _fogCoordOffset = totalSize;
-                if (_fogCoordArray.valid()) totalSize += _fogCoordArray->getTotalDataSize();
+                _fogCoordData.offset = totalSize;
+                if (_fogCoordData.array.valid()) totalSize += _fogCoordData.array->getTotalDataSize();
 
 
                 unsigned int unit;
                 for(unit=0;unit<_texCoordList.size();++unit)
                 {
                     _texCoordList[unit].offset = totalSize;
-                    const Array* array = _texCoordList[unit].first.get();
+                    const Array* array = _texCoordList[unit].array.get();
                     if (array)
                         totalSize += array->getTotalDataSize();
                         
@@ -1003,11 +902,11 @@ void Geometry::drawImplementation(State& state) const
                     for( index = 0; index < _vertexAttribList.size(); ++index )
                     {
                         _texCoordList[unit].offset = totalSize;
-                        const Array* array = _vertexAttribList[index].second.first.get();
-                        const AttributeBinding ab = _vertexAttribBindingList[index];
+                        const Array* array = _vertexAttribList[index].array.get();
+                        const AttributeBinding ab = _vertexAttribList[index].binding;
                         if( ab == BIND_PER_VERTEX && array )
                         {
-                            totalSize += array->getTotalDataSize();                            
+                            totalSize += array->getTotalDataSize();           
                         }
                     }
                 }
@@ -1020,24 +919,24 @@ void Geometry::drawImplementation(State& state) const
                 //
                 // copy the data
                 //
-                if( _vertexArray.valid() )
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _vertexOffset, _vertexArray->getTotalDataSize(),_vertexArray->getDataPointer());
+                if( _vertexData.array.valid() )
+                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _vertexData.offset, _vertexData.array->getTotalDataSize(),_vertexData.array->getDataPointer());
 
-                if (_normalBinding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _normalOffset, _normalArray->getTotalDataSize(),_normalArray->getDataPointer());
+                if (_normalData.binding==BIND_PER_VERTEX)
+                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _normalData.offset, _normalData.array->getTotalDataSize(),_normalData.array->getDataPointer());
 
-                if (_colorBinding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _colorOffset, _colorArray->getTotalDataSize(),_colorArray->getDataPointer());
+                if (_colorData.binding==BIND_PER_VERTEX)
+                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _colorData.offset, _colorData.array->getTotalDataSize(),_colorData.array->getDataPointer());
 
                 if (secondaryColorBinding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _secondaryColorOffset, _secondaryColorArray->getTotalDataSize(),_secondaryColorArray->getDataPointer());
+                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _secondaryColorData.offset, _secondaryColorData.array->getTotalDataSize(),_secondaryColorData.array->getDataPointer());
 
                 if (fogCoordBinding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _fogCoordOffset, _fogCoordArray->getTotalDataSize(),_fogCoordArray->getDataPointer());
+                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _fogCoordData.offset, _fogCoordData.array->getTotalDataSize(),_fogCoordData.array->getDataPointer());
 
                 for(unit=0;unit<_texCoordList.size();++unit)
                 {
-                    const Array* array = _texCoordList[unit].first.get();
+                    const Array* array = _texCoordList[unit].array.get();
                     if (array)
                         extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _texCoordList[unit].offset, array->getTotalDataSize(), array->getDataPointer());
                 }
@@ -1047,12 +946,12 @@ void Geometry::drawImplementation(State& state) const
                     unsigned int index;
                     for( index = 0; index < _vertexAttribList.size(); ++index )
                     {
-                        const Array* array = _vertexAttribList[index].second.first.get();
-                        const AttributeBinding ab = _vertexAttribBindingList[index];
+                        const Array* array = _vertexAttribList[index].array.get();
+                        const AttributeBinding ab = _vertexAttribList[index].binding;
 
                         if( ab == BIND_PER_VERTEX && array )
                         {
-                            extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _vertexAttribList[index].second.offset, array->getTotalDataSize(), array->getDataPointer());
+                            extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _vertexAttribList[index].offset, array->getTotalDataSize(), array->getDataPointer());
                         }
                     }
                 }
@@ -1064,35 +963,35 @@ void Geometry::drawImplementation(State& state) const
 
             extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,buffer);
                       
-            if( _vertexArray.valid() )
-                state.setVertexPointer(_vertexArray->getDataSize(),_vertexArray->getDataType(),0,(const GLvoid*)_vertexOffset);
+            if( _vertexData.array.valid() )
+                state.setVertexPointer(_vertexData.array->getDataSize(),_vertexData.array->getDataType(),0,(const GLvoid*)_vertexData.offset);
             else
                 state.disableVertexPointer();
 
-            if (_normalBinding==BIND_PER_VERTEX)
-                state.setNormalPointer(GL_FLOAT,0,(const GLvoid*)_normalOffset);
+            if (_normalData.binding==BIND_PER_VERTEX)
+                state.setNormalPointer(GL_FLOAT,0,(const GLvoid*)_normalData.offset);
             else
                 state.disableNormalPointer();
 
-            if (_colorBinding==BIND_PER_VERTEX)
-                state.setColorPointer(_colorArray->getDataSize(),_colorArray->getDataType(),0,(const GLvoid*)_colorOffset);
+            if (_colorData.binding==BIND_PER_VERTEX)
+                state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,(const GLvoid*)_colorData.offset);
             else
                 state.disableColorPointer();
 
             if (secondaryColorBinding==BIND_PER_VERTEX)
-                state.setSecondaryColorPointer(_secondaryColorArray->getDataSize(),_secondaryColorArray->getDataType(),0,(const GLvoid*)_secondaryColorOffset);
+                state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,(const GLvoid*)_secondaryColorData.offset);
             else
                 state.disableSecondaryColorPointer();
 
             if (fogCoordBinding==BIND_PER_VERTEX)
-                state.setFogCoordPointer(GL_FLOAT,0,(const GLvoid*)_fogCoordOffset);
+                state.setFogCoordPointer(GL_FLOAT,0,(const GLvoid*)_fogCoordData.offset);
             else
                 state.disableFogCoordPointer();
 
             unsigned int unit;
             for(unit=0;unit<_texCoordList.size();++unit)
             {
-                const Array* array = _texCoordList[unit].first.get();
+                const Array* array = _texCoordList[unit].array.get();
                 if (array)
                     state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,(const GLvoid*)_texCoordList[unit].offset);
                 else
@@ -1105,29 +1004,29 @@ void Geometry::drawImplementation(State& state) const
                 unsigned int index;
                 for( index = 0; index < _vertexAttribList.size(); ++index )
                 {
-                    const Array* array = _vertexAttribList[index].second.first.get();
-                    const AttributeBinding ab = _vertexAttribBindingList[index];
+                    const Array* array = _vertexAttribList[index].array.get();
+                    const AttributeBinding ab = _vertexAttribList[index].binding;
 
                     if( ab == BIND_PER_VERTEX && array )
                     {
                         state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(), 
-                            _vertexAttribList[index].first, 0, (const GLvoid*)_vertexAttribList[index].second.offset );
+                            _vertexAttribList[index].normalize, 0, (const GLvoid*)_vertexAttribList[index].offset );
                     }
                     else
                     {
                         if( array )
                         {
-                            const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
+                            const IndexArray* indexArray = _vertexAttribList[index].indices.get();
 
                             if( indexArray && indexArray->getNumElements() > 0 )
                             {
                                 drawVertexAttribMap[ab].push_back( 
-                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,indexArray) );
+                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
                             }
                             else
                             {
                                 drawVertexAttribMap[ab].push_back( 
-                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
+                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
                             }
                         }
 
@@ -1151,35 +1050,35 @@ void Geometry::drawImplementation(State& state) const
             //
             // None Vertex Buffer Object path for defining vertex arrays.
             //            
-            if( _vertexArray.valid() )
-                state.setVertexPointer(_vertexArray->getDataSize(),_vertexArray->getDataType(),0,_vertexArray->getDataPointer());
+            if( _vertexData.array.valid() )
+                state.setVertexPointer(_vertexData.array->getDataSize(),_vertexData.array->getDataType(),0,_vertexData.array->getDataPointer());
             else
                 state.disableVertexPointer();
 
-            if (_normalBinding==BIND_PER_VERTEX)
-                state.setNormalPointer(GL_FLOAT,0,_normalArray->getDataPointer());
+            if (_normalData.binding==BIND_PER_VERTEX)
+                state.setNormalPointer(GL_FLOAT,0,_normalData.array->getDataPointer());
             else
                 state.disableNormalPointer();
 
-            if (_colorBinding==BIND_PER_VERTEX)
-                state.setColorPointer(_colorArray->getDataSize(),_colorArray->getDataType(),0,_colorArray->getDataPointer());
+            if (_colorData.binding==BIND_PER_VERTEX)
+                state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,_colorData.array->getDataPointer());
             else
                 state.disableColorPointer();
 
             if (secondaryColorBinding==BIND_PER_VERTEX)
-                state.setSecondaryColorPointer(_secondaryColorArray->getDataSize(),_secondaryColorArray->getDataType(),0,_secondaryColorArray->getDataPointer());
+                state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,_secondaryColorData.array->getDataPointer());
             else
                 state.disableSecondaryColorPointer();
 
             if (fogCoordBinding==BIND_PER_VERTEX)
-                state.setFogCoordPointer(GL_FLOAT,0,_fogCoordArray->getDataPointer());
+                state.setFogCoordPointer(GL_FLOAT,0,_fogCoordData.array->getDataPointer());
             else
                 state.disableFogCoordPointer();
 
             unsigned int unit;
             for(unit=0;unit<_texCoordList.size();++unit)
             {
-                const Array* array = _texCoordList[unit].first.get();
+                const Array* array = _texCoordList[unit].array.get();
                 if (array)
                     state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
                 else
@@ -1192,29 +1091,29 @@ void Geometry::drawImplementation(State& state) const
                 unsigned int index;
                 for( index = 0; index < _vertexAttribList.size(); ++index )
                 {
-                    const Array* array = _vertexAttribList[index].second.first.get();
-                    const AttributeBinding ab = _vertexAttribBindingList[index];
+                    const Array* array = _vertexAttribList[index].array.get();
+                    const AttributeBinding ab = _vertexAttribList[index].binding;
 
                     if( ab == BIND_PER_VERTEX && array )
                     {
                         state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(), 
-                            _vertexAttribList[index].first, 0, array->getDataPointer() );
+                            _vertexAttribList[index].normalize, 0, array->getDataPointer() );
                     }
                     else
                     {
                         if( array )
                         {
-                            const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
+                            const IndexArray* indexArray = _vertexAttribList[index].indices.get();
 
                             if( indexArray && indexArray->getNumElements() > 0 )
                             {
                                 drawVertexAttribMap[ab].push_back( 
-                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,indexArray) );
+                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
                             }
                             else
                             {
                                 drawVertexAttribMap[ab].push_back( 
-                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
+                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
                             }
                         }
 
@@ -1234,8 +1133,8 @@ void Geometry::drawImplementation(State& state) const
         //
         // pass the overall binding values onto OpenGL.
         //
-        if (_normalBinding==BIND_OVERALL)           drawNormal(normalIndex++);
-        if (_colorBinding==BIND_OVERALL)            drawColor(colorIndex++);
+        if (_normalData.binding==BIND_OVERALL)           drawNormal(normalIndex++);
+        if (_colorData.binding==BIND_OVERALL)            drawColor(colorIndex++);
         if (secondaryColorBinding==BIND_OVERALL)    drawSecondaryColor(secondaryColorIndex++);
         if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
         if (handleVertexAttributes)
@@ -1257,8 +1156,8 @@ void Geometry::drawImplementation(State& state) const
             ++itr)
         {
 
-            if (_normalBinding==BIND_PER_PRIMITIVE_SET)           drawNormal(normalIndex++);
-            if (_colorBinding==BIND_PER_PRIMITIVE_SET)            drawColor(colorIndex++);
+            if (_normalData.binding==BIND_PER_PRIMITIVE_SET)           drawNormal(normalIndex++);
+            if (_colorData.binding==BIND_PER_PRIMITIVE_SET)            drawColor(colorIndex++);
             if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
             if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
             if (handleVertexAttributes)
@@ -1297,26 +1196,22 @@ void Geometry::drawImplementation(State& state) const
         // fallback if multitexturing not supported.
         ref_ptr<DrawTexCoord> drawTextCoord;
 
-        if (extensions->isMultiTexSupported())
+        if (extensions->isMultiTexSupported() && _texCoordList.size()>1)
         {
             // multitexture supported..
             for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
             {
-                const ArrayPair& texcoordPair = _texCoordList[unit];
-                if (texcoordPair.first.valid() && texcoordPair.first->getNumElements()>0)
+                const ArrayData& texcoordData = _texCoordList[unit];
+                if (texcoordData.array.valid() && texcoordData.array->getNumElements()>0)
                 {
-                    if (texcoordPair.second.valid())
+                    if (texcoordData.indices.valid() && texcoordData.indices->getNumElements()>0)
                     {
-                        if (texcoordPair.second->getNumElements()>0)
-                        {
-                            drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordPair.first.get(),texcoordPair.second.get(),
-                                                                             extensions));
-
-                        }
+                        drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordData.array.get(),texcoordData.indices.get(),
+                                                                         extensions));
                     }
                     else
                     {
-                        drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordPair.first.get(),0,
+                        drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordData.array.get(),0,
                                                                           extensions));
                     }
                 }
@@ -1326,22 +1221,21 @@ void Geometry::drawImplementation(State& state) const
         {
             if (!_texCoordList.empty())
             {
-                const ArrayPair& texcoordPair = _texCoordList[0];
-                if (texcoordPair.first.valid() && texcoordPair.first->getNumElements()>0)
+                const ArrayData& texcoordData = _texCoordList[0];
+                if (texcoordData.array.valid() && texcoordData.array->getNumElements()>0)
                 {
-                    if (texcoordPair.second.valid())
+                    if (texcoordData.indices.valid())
                     {
-                        if (texcoordPair.second->getNumElements()>0)
+                        if (texcoordData.indices->getNumElements()>0)
                         {
-                            drawTextCoord = new DrawTexCoord(texcoordPair.first.get(),texcoordPair.second.get());
+                            drawTextCoord = new DrawTexCoord(texcoordData.array.get(),texcoordData.indices.get());
                         }
                     }
                     else
                     {
-                        drawTextCoord = new DrawTexCoord(texcoordPair.first.get(),0);
+                        drawTextCoord = new DrawTexCoord(texcoordData.array.get(),0);
                     }
                 }
-
             }
         }
 
@@ -1350,21 +1244,19 @@ void Geometry::drawImplementation(State& state) const
             unsigned int index;
             for( index = 1; index < _vertexAttribList.size(); ++index )
             {
-                const Array* array = _vertexAttribList[index].second.first.get();
-
-                if( array && array->getNumElements() > 0 )
+                const ArrayData& vertAttribData = _vertexAttribList[index];
+            
+                if( vertAttribData.array.valid() && vertAttribData.array->getNumElements() > 0 )
                 {
-                    const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
-
-                    if( indexArray && indexArray->getNumElements() > 0 )
+                    if( vertAttribData.indices.valid() && vertAttribData.indices->getNumElements() > 0 )
                     {
-                        drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
-                            new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,indexArray) );
+                        drawVertexAttribMap[vertAttribData.binding].push_back( 
+                            new DrawVertexAttrib(extensions,index,vertAttribData.normalize,vertAttribData.array.get(),vertAttribData.indices.get() ));
                     }
                     else
                     {
-                        drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
-                            new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
+                        drawVertexAttribMap[vertAttribData.binding].push_back( 
+                            new DrawVertexAttrib(extensions,index,vertAttribData.normalize,vertAttribData.array.get(),0) );
                     }            
                 }
             }
@@ -1379,8 +1271,8 @@ void Geometry::drawImplementation(State& state) const
         //
         // pass the overall binding values onto OpenGL.
         //
-        if (_normalBinding==BIND_OVERALL)           drawNormal(normalIndex++);
-        if (_colorBinding==BIND_OVERALL)            drawColor(colorIndex++);
+        if (_normalData.binding==BIND_OVERALL)      drawNormal(normalIndex++);
+        if (_colorData.binding==BIND_OVERALL)       drawColor(colorIndex++);
         if (secondaryColorBinding==BIND_OVERALL)    drawSecondaryColor(secondaryColorIndex++);
         if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
         if (handleVertexAttributes)
@@ -1394,18 +1286,18 @@ void Geometry::drawImplementation(State& state) const
         }
 
         // set up vertex functor.
-        DrawVertex drawVertex(_vertexArray.get(),_vertexIndices.get());
+        DrawVertex drawVertex(_vertexData.array.get(),_vertexData.indices.get());
 
         bool useVertexAttrib =  _vertexAttribList.size() > 0 &&
-                                _vertexAttribList[0].second.first.valid() && 
-                                 _vertexAttribList[0].second.first->getNumElements();
+                                _vertexAttribList[0].array.valid() && 
+                                 _vertexAttribList[0].indices->getNumElements();
 
         ref_ptr<DrawVertexAttrib> drawVertexAttribZero;
         if( useVertexAttrib )
         {
             drawVertexAttribZero = new DrawVertexAttrib(extensions,0,
-                _vertexAttribList[0].first,_vertexAttribList[0].second.first.get(),
-                _vertexAttribList[0].second.second.get()); 
+                _vertexAttribList[0].normalize,_vertexAttribList[0].array.get(),
+                _vertexAttribList[0].indices.get()); 
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1416,8 +1308,8 @@ void Geometry::drawImplementation(State& state) const
             itr!=_primitives.end();
             ++itr)
         {
-            if (_normalBinding==BIND_PER_PRIMITIVE_SET)           drawNormal(normalIndex++);
-            if (_colorBinding==BIND_PER_PRIMITIVE_SET)            drawColor(colorIndex++);
+            if (_normalData.binding==BIND_PER_PRIMITIVE_SET)           drawNormal(normalIndex++);
+            if (_colorData.binding==BIND_PER_PRIMITIVE_SET)            drawColor(colorIndex++);
             if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
             if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
             if (handleVertexAttributes)
@@ -1464,8 +1356,8 @@ void Geometry::drawImplementation(State& state) const
 
                         if ((primCount%primLength)==0)
                         {
-                            if (_normalBinding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
-                            if (_colorBinding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
+                            if (_normalData.binding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
+                            if (_colorData.binding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
                             if (secondaryColorBinding==BIND_PER_PRIMITIVE)    drawSecondaryColor(secondaryColorIndex++);
                             if (fogCoordBinding==BIND_PER_PRIMITIVE)          drawFogCoord(fogCoordIndex++);
                             if (handleVertexAttributes)
@@ -1479,8 +1371,8 @@ void Geometry::drawImplementation(State& state) const
                             }                        
                         }
 
-                        if (_normalBinding==BIND_PER_VERTEX)           drawNormal(vindex);
-                        if (_colorBinding==BIND_PER_VERTEX)            drawColor(vindex);
+                        if (_normalData.binding==BIND_PER_VERTEX)           drawNormal(vindex);
+                        if (_colorData.binding==BIND_PER_VERTEX)            drawColor(vindex);
                         if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
                         if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
                         if (handleVertexAttributes)
@@ -1533,8 +1425,8 @@ void Geometry::drawImplementation(State& state) const
                         {
                             if ((primCount%localPrimLength)==0)
                             {
-                                if (_normalBinding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
-                                if (_colorBinding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
+                                if (_normalData.binding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
+                                if (_colorData.binding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
                                 if (secondaryColorBinding==BIND_PER_PRIMITIVE)    drawSecondaryColor(secondaryColorIndex++);
                                 if (fogCoordBinding==BIND_PER_PRIMITIVE)          drawFogCoord(fogCoordIndex++);
                                 if (handleVertexAttributes)
@@ -1548,8 +1440,8 @@ void Geometry::drawImplementation(State& state) const
                                 }  
                             }
                             
-                            if (_normalBinding==BIND_PER_VERTEX)           drawNormal(vindex);
-                            if (_colorBinding==BIND_PER_VERTEX)            drawColor(vindex);
+                            if (_normalData.binding==BIND_PER_VERTEX)           drawNormal(vindex);
+                            if (_colorData.binding==BIND_PER_VERTEX)            drawColor(vindex);
                             if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
                             if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
                             if (handleVertexAttributes)
@@ -1601,8 +1493,8 @@ void Geometry::drawImplementation(State& state) const
 
                         if ((primCount%primLength)==0)
                         {
-                            if (_normalBinding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
-                            if (_colorBinding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
+                            if (_normalData.binding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
+                            if (_colorData.binding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
                             if (secondaryColorBinding==BIND_PER_PRIMITIVE)    drawSecondaryColor(secondaryColorIndex++);
                             if (fogCoordBinding==BIND_PER_PRIMITIVE)          drawFogCoord(fogCoordIndex++);
                             if (handleVertexAttributes)
@@ -1618,8 +1510,8 @@ void Geometry::drawImplementation(State& state) const
                         
                         unsigned int vindex=*primItr;
 
-                        if (_normalBinding==BIND_PER_VERTEX)           drawNormal(vindex);
-                        if (_colorBinding==BIND_PER_VERTEX)            drawColor(vindex);
+                        if (_normalData.binding==BIND_PER_VERTEX)           drawNormal(vindex);
+                        if (_colorData.binding==BIND_PER_VERTEX)            drawColor(vindex);
                         if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
                         if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
                         if ( extensions->isVertexProgramSupported() )
@@ -1668,8 +1560,8 @@ void Geometry::drawImplementation(State& state) const
 
                         if ((primCount%primLength)==0)
                         {
-                            if (_normalBinding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
-                            if (_colorBinding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
+                            if (_normalData.binding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
+                            if (_colorData.binding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
                             if (secondaryColorBinding==BIND_PER_PRIMITIVE)    drawSecondaryColor(secondaryColorIndex++);
                             if (fogCoordBinding==BIND_PER_PRIMITIVE)          drawFogCoord(fogCoordIndex++);
                             if (handleVertexAttributes)
@@ -1685,8 +1577,8 @@ void Geometry::drawImplementation(State& state) const
                         
                         unsigned int vindex=*primItr;
 
-                        if (_normalBinding==BIND_PER_VERTEX)           drawNormal(vindex);
-                        if (_colorBinding==BIND_PER_VERTEX)            drawColor(vindex);
+                        if (_normalData.binding==BIND_PER_VERTEX)           drawNormal(vindex);
+                        if (_colorData.binding==BIND_PER_VERTEX)            drawColor(vindex);
                         if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
                         if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
                         if (handleVertexAttributes)
@@ -1735,8 +1627,8 @@ void Geometry::drawImplementation(State& state) const
 
                         if ((primCount%primLength)==0)
                         {
-                            if (_normalBinding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
-                            if (_colorBinding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
+                            if (_normalData.binding==BIND_PER_PRIMITIVE)           drawNormal(normalIndex++);
+                            if (_colorData.binding==BIND_PER_PRIMITIVE)            drawColor(colorIndex++);
                             if (secondaryColorBinding==BIND_PER_PRIMITIVE)    drawSecondaryColor(secondaryColorIndex++);
                             if (fogCoordBinding==BIND_PER_PRIMITIVE)          drawFogCoord(fogCoordIndex++);
                             if ( extensions->isVertexProgramSupported() )
@@ -1752,8 +1644,8 @@ void Geometry::drawImplementation(State& state) const
                         
                         unsigned int vindex=*primItr;
 
-                        if (_normalBinding==BIND_PER_VERTEX)           drawNormal(vindex);
-                        if (_colorBinding==BIND_PER_VERTEX)            drawColor(vindex);
+                        if (_normalData.binding==BIND_PER_VERTEX)           drawNormal(vindex);
+                        if (_colorData.binding==BIND_PER_VERTEX)            drawColor(vindex);
                         if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
                         if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
                         if ( extensions->isVertexProgramSupported() )
@@ -1836,13 +1728,13 @@ void Geometry::accept(AttributeFunctor& af)
 {
     AttrbuteFunctorArrayVisitor afav(af);
     
-    afav.applyArray(VERTICES,_vertexArray.get());
-    afav.applyArray(NORMALS,_normalArray.get());
-    afav.applyArray(COLORS,_colorArray.get());
+    afav.applyArray(VERTICES,_vertexData.array.get());
+    afav.applyArray(NORMALS,_normalData.array.get());
+    afav.applyArray(COLORS,_colorData.array.get());
     
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
-        afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
+        afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].array.get());
     }
 }
 
@@ -1885,35 +1777,35 @@ void Geometry::accept(ConstAttributeFunctor& af) const
 {
     ConstAttrbuteFunctorArrayVisitor afav(af);
     
-    afav.applyArray(VERTICES,_vertexArray.get());
-    afav.applyArray(NORMALS,_normalArray.get());
-    afav.applyArray(COLORS,_colorArray.get());
+    afav.applyArray(VERTICES,_vertexData.array.get());
+    afav.applyArray(NORMALS,_normalData.array.get());
+    afav.applyArray(COLORS,_colorData.array.get());
     
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
-        afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
+        afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].array.get());
     }
 }
 
 void Geometry::accept(PrimitiveFunctor& functor) const
 {
-    if (!_vertexArray.valid() || _vertexArray->getNumElements()==0) return;
+    if (!_vertexData.array.valid() || _vertexData.array->getNumElements()==0) return;
 
-    if (!_vertexIndices.valid())
+    if (!_vertexData.indices.valid())
     {
-        switch(_vertexArray->getType())
+        switch(_vertexData.array->getType())
         {
         case(Array::Vec2ArrayType): 
-            functor.setVertexArray(_vertexArray->getNumElements(),static_cast<const Vec2*>(_vertexArray->getDataPointer()));
+            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2*>(_vertexData.array->getDataPointer()));
             break;
         case(Array::Vec3ArrayType): 
-            functor.setVertexArray(_vertexArray->getNumElements(),static_cast<const Vec3*>(_vertexArray->getDataPointer()));
+            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3*>(_vertexData.array->getDataPointer()));
             break;
         case(Array::Vec4ArrayType): 
-            functor.setVertexArray(_vertexArray->getNumElements(),static_cast<const Vec4*>(_vertexArray->getDataPointer()));
+            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4*>(_vertexData.array->getDataPointer()));
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexArray->getType()<<std::endl;
+            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
             return;
         }
         
@@ -1929,20 +1821,20 @@ void Geometry::accept(PrimitiveFunctor& functor) const
         const Vec2Array* vec2Array = 0;
         const Vec3Array* vec3Array = 0;
         const Vec4Array* vec4Array = 0;
-        Array::Type type = _vertexArray->getType();
+        Array::Type type = _vertexData.array->getType();
         switch(type)
         {
         case(Array::Vec2ArrayType): 
-            vec2Array = static_cast<const Vec2Array*>(_vertexArray.get());
+            vec2Array = static_cast<const Vec2Array*>(_vertexData.array.get());
             break;
         case(Array::Vec3ArrayType): 
-            vec3Array = static_cast<const Vec3Array*>(_vertexArray.get());
+            vec3Array = static_cast<const Vec3Array*>(_vertexData.array.get());
             break;
         case(Array::Vec4ArrayType): 
-            vec4Array = static_cast<const Vec4Array*>(_vertexArray.get());
+            vec4Array = static_cast<const Vec4Array*>(_vertexData.array.get());
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexArray->getType()<<std::endl;
+            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
             return;
         }
 
@@ -1968,13 +1860,13 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         switch(type)
                         {
                         case(Array::Vec2ArrayType): 
-                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec3ArrayType): 
-                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec4ArrayType): 
-                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
                         default:
                             break;
@@ -2002,13 +1894,13 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                             switch(type)
                             {
                             case(Array::Vec2ArrayType): 
-                                functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                                functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
                                 break;
                             case(Array::Vec3ArrayType): 
-                                functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                                functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
                                 break;
                             case(Array::Vec4ArrayType): 
-                                functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                                functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                                 break;
                             default:
                                 break;
@@ -2035,13 +1927,13 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         switch(type)
                         {
                         case(Array::Vec2ArrayType): 
-                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec3ArrayType): 
-                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec4ArrayType): 
-                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
                         default:
                             break;
@@ -2064,13 +1956,13 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         switch(type)
                         {
                         case(Array::Vec2ArrayType): 
-                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec3ArrayType): 
-                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec4ArrayType): 
-                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
                         default:
                             break;
@@ -2093,13 +1985,13 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         switch(type)
                         {
                         case(Array::Vec2ArrayType): 
-                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec3ArrayType): 
-                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
                             break;
                         case(Array::Vec4ArrayType): 
-                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
                         default:
                             break;
@@ -2121,66 +2013,66 @@ void Geometry::accept(PrimitiveFunctor& functor) const
 
 bool Geometry::verifyBindings() const
 {
-    switch(_normalBinding)
+    switch(_normalData.binding)
     {
         case(BIND_OFF):
-            if (_normalArray.valid() && _normalArray->getNumElements()>0) return false;
+            if (_normalData.array.valid() && _normalData.array->getNumElements()>0) return false;
             break;
         case(BIND_OVERALL):
-            if (!_normalArray.valid()) return false;
-            if (_normalArray->getNumElements()!=1) return false;
+            if (!_normalData.array.valid()) return false;
+            if (_normalData.array->getNumElements()!=1) return false;
             break;
         case(BIND_PER_PRIMITIVE_SET):
-            if (!_normalArray.valid()) return false;
-            if (_normalArray->getNumElements()!=_primitives.size()) return false;
+            if (!_normalData.array.valid()) return false;
+            if (_normalData.array->getNumElements()!=_primitives.size()) return false;
             break;
         case(BIND_PER_PRIMITIVE):
-            if (!_normalArray.valid()) return false;
+            if (!_normalData.array.valid()) return false;
             break;
         case(BIND_PER_VERTEX):
-            if (_vertexArray.valid())
+            if (_vertexData.array.valid())
             {
-                if (!_normalArray.valid()) return false;
-                if (_normalArray->getNumElements()!=_vertexArray->getNumElements()) return false;        
+                if (!_normalData.array.valid()) return false;
+                if (_normalData.array->getNumElements()!=_vertexData.array->getNumElements()) return false;        
             }
-            else if (_normalArray.valid() && _normalArray->getNumElements()==0) return false;
+            else if (_normalData.array.valid() && _normalData.array->getNumElements()==0) return false;
             break;
     } 
     
-    switch(_colorBinding)
+    switch(_colorData.binding)
     {
         case(BIND_OFF):
-            if (_colorArray.valid() && _colorArray->getNumElements()>0) return false;
+            if (_colorData.array.valid() && _colorData.array->getNumElements()>0) return false;
             break;
         case(BIND_OVERALL):
-            if (!_colorArray.valid()) return false;
-            if (_colorArray->getNumElements()!=1) return false;
+            if (!_colorData.array.valid()) return false;
+            if (_colorData.array->getNumElements()!=1) return false;
             break;
         case(BIND_PER_PRIMITIVE_SET):
-            if (!_colorArray.valid()) return false;
-            if (_colorArray->getNumElements()!=_primitives.size()) return false;
+            if (!_colorData.array.valid()) return false;
+            if (_colorData.array->getNumElements()!=_primitives.size()) return false;
             break;
         case(BIND_PER_PRIMITIVE):
-            if (!_colorArray.valid()) return false;
+            if (!_colorData.array.valid()) return false;
             break;
         case(BIND_PER_VERTEX):
-            if (_vertexArray.valid())
+            if (_vertexData.array.valid())
             {
-                if (!_colorArray.valid()) return false;
-                if (_colorArray->getNumElements()!=_vertexArray->getNumElements()) return false;
+                if (!_colorData.array.valid()) return false;
+                if (_colorData.array->getNumElements()!=_vertexData.array->getNumElements()) return false;
             }
-            else if (_colorArray.valid() && _colorArray->getNumElements()==0) return false;
+            else if (_colorData.array.valid() && _colorData.array->getNumElements()==0) return false;
             break;
     } 
 
-    for(TexCoordArrayList::const_iterator itr=_texCoordList.begin();
+    for(ArrayList::const_iterator itr=_texCoordList.begin();
         itr!=_texCoordList.end();
         ++itr)
     {
-        const Array* array = itr->first.get();
-        if (_vertexArray.valid())
+        const Array* array = itr->array.get();
+        if (_vertexData.array.valid())
         {
-            if (array && array->getNumElements()!=_vertexArray->getNumElements()) return false;
+            if (array && array->getNumElements()!=_vertexData.array->getNumElements()) return false;
         }
         else if (array && array->getNumElements()==0) return false;
     }
@@ -2192,17 +2084,17 @@ void Geometry::computeCorrectBindingsAndArraySizes()
 {
     if (verifyBindings()) return;
 
-    if (!_vertexArray.valid() || _vertexArray->getNumElements()==0)
+    if (!_vertexData.array.valid() || _vertexData.array->getNumElements()==0)
     {
         // no vertex array so switch everything off.
         
-        _vertexArray = 0;
+        _vertexData.array = 0;
         
-        _colorArray = 0;
-        _colorBinding = BIND_OFF;
+        _colorData.array = 0;
+        _colorData.binding = BIND_OFF;
 
-        _normalArray = 0;
-        _normalBinding = BIND_OFF;
+        _normalData.array = 0;
+        _normalData.binding = BIND_OFF;
         
         _texCoordList.clear();
         
@@ -2212,59 +2104,59 @@ void Geometry::computeCorrectBindingsAndArraySizes()
     }
     
     
-    switch(_normalBinding)
+    switch(_normalData.binding)
     {
         case(BIND_OFF):
-            if (_normalArray.valid()) _normalArray = 0;
+            if (_normalData.array.valid()) _normalData.array = 0;
             break;
         case(BIND_OVERALL):
-            if (!_normalArray.valid())
+            if (!_normalData.array.valid())
             {
-                _normalBinding = BIND_OFF;
+                _normalData.binding = BIND_OFF;
             }
-            else if (_normalArray->getNumElements()==0) 
+            else if (_normalData.array->getNumElements()==0) 
             {
-                _normalArray = 0;
-                _normalBinding = BIND_OFF;
+                _normalData.array = 0;
+                _normalData.binding = BIND_OFF;
             }
-            else if (_normalArray->getNumElements()>1) 
+            else if (_normalData.array->getNumElements()>1) 
             {
                 // trim the array down to 1 element long.
-                _normalArray->erase(_normalArray->begin()+1,_normalArray->end());
+                _normalData.array->erase(_normalData.array->begin()+1,_normalData.array->end());
             }
             break;
         case(BIND_PER_PRIMITIVE_SET):
-            if (!_normalArray.valid())
+            if (!_normalData.array.valid())
             {
-                _normalBinding = BIND_OFF;
+                _normalData.binding = BIND_OFF;
             }
-            else if (_normalArray->getNumElements()<_primitives.size()) 
+            else if (_normalData.array->getNumElements()<_primitives.size()) 
             {
-                _normalArray = 0;
-                _normalBinding = BIND_OFF;
+                _normalData.array = 0;
+                _normalData.binding = BIND_OFF;
             }
-            else if (_normalArray->getNumElements()>_primitives.size()) 
+            else if (_normalData.array->getNumElements()>_primitives.size()) 
             {
                 // trim the array down to size of the number of primitives.
-                _normalArray->erase(_normalArray->begin()+_primitives.size(),_normalArray->end());
+                _normalData.array->erase(_normalData.array->begin()+_primitives.size(),_normalData.array->end());
             }
             break;
         case(BIND_PER_PRIMITIVE):
             break;
         case(BIND_PER_VERTEX):
-            if (!_normalArray.valid())
+            if (!_normalData.array.valid())
             {
-                _normalBinding = BIND_OFF;
+                _normalData.binding = BIND_OFF;
             }
-            else if (_normalArray->getNumElements()<_vertexArray->getNumElements()) 
+            else if (_normalData.array->getNumElements()<_vertexData.array->getNumElements()) 
             {
-                _normalArray = 0;
-                _normalBinding = BIND_OFF;
+                _normalData.array = 0;
+                _normalData.binding = BIND_OFF;
             }
-            else if (_normalArray->getNumElements()>_vertexArray->getNumElements()) 
+            else if (_normalData.array->getNumElements()>_vertexData.array->getNumElements()) 
             {
                 // trim the array down to size of the number of primitives.
-                _normalArray->erase(_normalArray->begin()+_vertexArray->getNumElements(),_normalArray->end());
+                _normalData.array->erase(_normalData.array->begin()+_vertexData.array->getNumElements(),_normalData.array->end());
             }
             break;
     } 
@@ -2460,24 +2352,18 @@ void Geometry::copyToAndOptimize(Geometry& target)
         }
     }
     
-    for(unsigned int vi=0;vi<getNumVertexAttribArrays();++vi)
+    for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
     {
-        AttributeBinding vab;
-        getVertexAttribBinding(vi,vab);
-        if (getVertexAttribIndices(vi))
+        ArrayData& arrayData = _vertexAttribList[vi];
+        if (arrayData.indices.valid())
         {
-            GLboolean normalize;
-            ExpandIndexedArray eia(*(getVertexAttribIndices(vi)),target.getVertexAttribArray(vi));
-            getVertexAttribArray(vi)->accept(eia);
-            getVertexAttribNormalize(vi,normalize);
-            target.setVertexAttribArray(vi,normalize,eia._targetArray,vab);
-            target.setVertexAttribIndices(vi,0);
+            ExpandIndexedArray eia(*arrayData.indices,target.getVertexAttribArray(vi));
+            arrayData.array->accept(eia);
+            target.setVertexAttribData(vi,ArrayData(eia._targetArray, 0, arrayData.binding, arrayData.normalize));
         }
-        else if (getVertexAttribArray(vi))
+        else if (arrayData.array.valid())
         {
-            GLboolean normalize;
-            getVertexAttribNormalize(vi,normalize);
-            target.setVertexAttribArray(vi,normalize,getVertexAttribArray(vi),vab);
+            target.setVertexAttribData(vi,arrayData);
         }
     }
 }

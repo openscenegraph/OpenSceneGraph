@@ -642,9 +642,8 @@ public:
         nverts++;
         return nverts-1;
     }
-    void settmat(const Matrix *mx) {
-        tmat= new Matrix;
-        *tmat=*mx;
+    void settmat(const Matrix& mx) {
+        tmat= new Matrix(mx);
     }
     void makeuv(Vec2 &uv, const double pos[]) {
         Vec3 p;
@@ -923,12 +922,16 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                         //nrecs=0; // a numVerts is followed by nv vetex postiions
                         if (nexpected>0) obj.readOpenings(fp, nexpected);
                     } else if( strncmp(buff,"UVW:",4)==0) { // texture application matrix
-                        Matrix mx;
-                        sscanf(buff+4,"%f %f %f%f %f %f%f %f %f", 
-                            &mx(0,0), &mx(0,1), &mx(0,2),
-                            &mx(1,0), &mx(1,1), &mx(1,2),
-                            &mx(2,0), &mx(2,1), &mx(2,2));
-                        obj.settmat(&mx);
+                        double mx[3][2];
+                        sscanf(buff+4,"%lf %lf %lf %lf %lf %lf %lf %lf %lf",
+                            &mx[0][0], &mx[0][1], &mx[0][2],
+                            &mx[1][0], &mx[1][1], &mx[1][2],
+                            &mx[2][0], &mx[2][1], &mx[2][2]);
+                        
+                        obj.settmat(Matrix(mx[0][0],mx[0][1],mx[0][2],0.0,
+                                           mx[1][0],mx[1][1],mx[1][2],0.0,
+                                           mx[2][0],mx[2][1],mx[2][2],0.0,
+                                           0.0     ,0.0     ,0.0     ,1.0));
                     }
                 }
 

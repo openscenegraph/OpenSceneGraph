@@ -64,13 +64,15 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     
     // set up the back buffer.
 
+    //state.applyAttribute(_viewport.get());
+    _viewport->apply(state);
+
 #define USE_SISSOR_TEST
 #ifdef USE_SISSOR_TEST
     glScissor( _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height() );
     glEnable( GL_SCISSOR_TEST );
 #endif
 
-    _viewport->apply(state);
 
     // glEnable( GL_DEPTH_TEST );
 

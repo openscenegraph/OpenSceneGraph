@@ -317,6 +317,10 @@ SOURCE=..\..\src\osg\PolygonOffset.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\PolygonStipple.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\PositionAttitudeTransform.cpp
 # End Source File
 # Begin Source File
@@ -678,6 +682,10 @@ SOURCE=..\..\Include\Osg\PolygonMode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\PolygonOffset
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\PolygonStipple
 # End Source File
 # Begin Source File
 

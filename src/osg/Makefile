@@ -59,6 +59,7 @@ CXXFILES =\
 	Point.cpp\
 	PolygonMode.cpp\
 	PolygonOffset.cpp\
+	PolygonStipple.cpp\
 	PositionAttitudeTransform.cpp\
 	Primitive.cpp\
 	Projection.cpp\

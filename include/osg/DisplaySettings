@@ -91,7 +91,7 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         enum SplitStereoVerticalEyeMapping
         {
             LEFT_EYE_TOP_VIEWPORT,
-            LEFT_EYE_BOTTOM_VIEWPORT,
+            LEFT_EYE_BOTTOM_VIEWPORT
         };
 
         void setSplitStereoVerticalEyeMapping(SplitStereoVerticalEyeMapping m) { _splitStereoVerticalEyeMapping = m; }

@@ -22,6 +22,8 @@
 
 #include <osgTerrain/CoordinateSystem>
 
+#include <set>
+
 #include <gdal_priv.h>
 
 class DataSet : public osg::Referenced
@@ -188,6 +190,7 @@ class DataSet : public osg::Referenced
             SourceData* getSourceData() { return _sourceData.get(); }
             
             void loadSourceData();
+
             
             bool needReproject(const osgTerrain::CoordinateSystem* cs) const;
 
@@ -196,6 +199,18 @@ class DataSet : public osg::Referenced
             Source* doReproject(const std::string& filename, osgTerrain::CoordinateSystem* cs, double targetResolution=0.0) const;
            
             void buildOverviews();
+            
+            
+            typedef std::pair<double,double> ResolutionPair;
+            typedef std::set<ResolutionPair> ResolutionList;
+            
+            void addRequiredResolution(double resX, double resY) { _requiredResolutions.insert(ResolutionPair(resX,resY)); }
+            
+            void setRequiredResolutions(ResolutionList& resolutions) { _requiredResolutions = resolutions; }
+            
+            ResolutionList& getRequiredResolutions() { return _requiredResolutions; }
+            
+            const ResolutionList& getRequiredResolutions() const { return _requiredResolutions; }
 
         protected:
         
@@ -211,6 +226,8 @@ class DataSet : public osg::Referenced
             ParameterPolicy                             _geoTransformPolicy;
             
             osg::ref_ptr<SourceData>                    _sourceData;
+            
+            ResolutionList                              _requiredResolutions;
                 
         };
         
@@ -383,13 +400,6 @@ class DataSet : public osg::Referenced
                     inline bool advance()
                     {
                         return advanceToNextChild(*_composite,_index);
-                        
-//                         if (_index+1 < (int)_composite->_children.size())
-//                         {
-//                             ++_index;
-//                             return valid();
-//                         }
-//                         return false;
                     }
 
                     inline bool isActive(const CompositeSource& composite,int index)
@@ -609,8 +619,13 @@ class DataSet : public osg::Referenced
             
             void computeMaximumSourceResolution(CompositeSource* sourceGraph);
 
+            bool computeImageResolution(double& resX, double& resY);
+            bool computeTerrainResolution(double& resX, double& resY);
+
             void allocate();
             
+            void addRequiredResolutions(CompositeSource* sourceGraph);
+
             void readFrom(CompositeSource* sourceGraph);
             
             void equalizeCorner(Position position);
@@ -647,6 +662,8 @@ class DataSet : public osg::Referenced
         class CompositeDestination : public osg::Referenced, public SpatialProperties
         {
         public:
+            
+            void addRequiredResolutions(CompositeSource* sourceGraph);
             
             void readFrom(CompositeSource* sourceGraph);
 

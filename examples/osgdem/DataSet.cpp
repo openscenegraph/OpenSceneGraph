@@ -738,6 +738,9 @@ void DataSet::Source::buildOverviews()
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 DataSet::DestinationTile::DestinationTile():
     _imagery_maxNumColumns(4096),
     _imagery_maxNumRows(4096),
@@ -754,6 +757,7 @@ DataSet::DestinationTile::DestinationTile():
         _equalized[i]=false;
     }
 }
+
 
 void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* sourceGraph)
 {
@@ -798,6 +802,43 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
             }
         }
     }
+}
+
+bool DataSet::DestinationTile::computeImageResolution(double& resX, double& resY)
+{
+    if (_imagery_maxSourceResolutionX!=0.0f && _imagery_maxSourceResolutionY!=0.0f &&
+        _imagery_maxNumColumns!=0 && _imagery_maxNumRows!=0)
+    {
+
+        unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_imagery_maxSourceResolutionX);
+        unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_imagery_maxSourceResolutionY);
+        unsigned int texture_numColumns = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
+        unsigned int texture_numRows    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
+        
+        resX = (_extents.xMax()-_extents.xMin())/(double)(texture_numColumns-1);
+        resY = (_extents.yMax()-_extents.yMin())/(double)(texture_numRows-1);
+        
+        return true;
+    }
+    return false;
+}
+
+bool DataSet::DestinationTile::computeTerrainResolution(double& resX, double& resY)
+{
+    if (_terrain_maxSourceResolutionX!=0.0f && _terrain_maxSourceResolutionY!=0.0f &&
+        _terrain_maxNumColumns!=0 && _terrain_maxNumRows!=0)
+    {
+        unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_terrain_maxSourceResolutionX);
+        unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_terrain_maxSourceResolutionY);
+        unsigned int dem_numColumns = osg::minimum(_terrain_maxNumColumns,numColumnsAtFullRes);
+        unsigned int dem_numRows    = osg::minimum(_terrain_maxNumRows,numRowsAtFullRes);
+
+        resX = (_extents.xMax()-_extents.xMin())/(double)(dem_numColumns-1);
+        resY = (_extents.yMax()-_extents.yMin())/(double)(dem_numRows-1);
+        
+        return true;
+    }
+    return false;
 }
 
 void DataSet::DestinationTile::allocate()
@@ -1281,6 +1322,50 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
     }
 }
 
+void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGraph)
+{
+    for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
+    {
+        Source* source = itr->get();
+        if (_imagery.valid() && source->getType()==Source::IMAGE)
+        {
+            double resX, resY;
+            if (computeImageResolution(resX,resY))
+            {
+                source->addRequiredResolution(resX,resY);
+            }
+        }
+        if (_terrain.valid() && source->getType()==Source::HEIGHT_FIELD)
+        {
+            double resX, resY;
+            if (computeTerrainResolution(resX,resY))
+            {
+                source->addRequiredResolution(resX,resY);
+            }
+        }
+    }
+}
+
+
+void DataSet::CompositeDestination::addRequiredResolutions(CompositeSource* sourceGraph)
+{
+    // handle leaves
+    for(TileList::iterator titr=_tiles.begin();
+        titr!=_tiles.end();
+        ++titr)
+    {
+        (*titr)->addRequiredResolutions(sourceGraph);
+    }
+    
+    // handle chilren
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        (*citr)->addRequiredResolutions(sourceGraph);
+    }
+}
+
 void DataSet::CompositeDestination::readFrom(CompositeSource* sourceGraph)
 {
     // handle leaves
@@ -1602,6 +1687,12 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         }
     }
     
+    // compute the resolutions of the source that are required.
+    {
+        _destinationGraph->addRequiredResolutions(_sourceGraph.get());
+    }
+
+
     // do sampling of data to required values.
     {
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)

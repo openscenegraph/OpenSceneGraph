@@ -24,6 +24,11 @@
 #include <list>
 #include <map>
 
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+    #include <OpenThreads/ScopedLock>
+    #include <OpenThreads/Mutex>
+#endif
+
 // if not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
 #ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
@@ -661,9 +666,10 @@ class SG_EXPORT Texture : public osg::StateAttribute
             
             TextureObjectListMap    _textureObjectListMap;
             
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
             // mutex to keep access serialized.
             OpenThreads::Mutex      _mutex;
-            
+#endif            
         };
         
         

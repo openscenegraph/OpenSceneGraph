@@ -4,38 +4,61 @@ OSG News (most significant items from ChangeLog)
 26th November 2004 - OpenSceneGraph-0.9.8
 
     >>> Support for database archives, improved pager, 3d compressed textures
-    
-    Improved pager support with better multi-processor stability and constant frame rate
-    peformance.
 
-    Documentation moved to website, and now built with Doxygen.
+    Release 0.9.8 reflects a continuation of the prior committment to release 
+    often, arriving only two short months after 0.9.7.  This contrasts sharply 
+    to the long period between 0.9.6-2 and 0.9.7.  The following set of 
+    improvements and features are part of the 0.9.8 release.
+
+    The osgDB Pager has been Improved to provide better multi-processor 
+    stability and constant frame rate peformance.
+
+    Reference documentation has been taken out of the main distribution and 
+    placed on the public website.  The documentation is also now completely 
+    built with Doxygen.
     
-    new STL plugin.
+    New Plugins added or modified this release:
+
+        o STL    - This plugin provides OSG with the capability to import 
+                   Stereolithography files, commonly used in the CAD 
+                   markets.
     
-    new NET plugin
+        o NET    - This plugin provides OSG with the ability to read data files
+                   from a web site through an http interface.
     
-    new OSGA plugin which provides database archive support.
+        o OSGA   - This plugin provides database archival support, including
+                   large file (greater than 2 GB) support.
+        
+        o OBJ    - The existing obj plugin has been re-written for clean up. 
     
-    OBJ plugin rewrite.
+
+    New support for 3d texture compression using the 
+    GL_NV_texture_compression_vtc extension has been added, providing an 
+    improvement on the S3TC compression techniques.
     
-    new support for 3d texture compression using the GL_NV_texture_compression_vtc extension.
-    
-    Spelling and typo correction blitz on osg, osgDB and osgUtil libraries.
+    The OSG Spelling Bee is making its mark in this release, with submissions
+    by the community to correct spelling and typo errors throughout the osg,
+    osgDB and osgUtil libraries.
     
     osgDB::ReaderWriter and osgDB::Registry have been refactored to allow
     multi-threading of database reading and writing.        
     
-    NodeTrackManipulator improved.    
+    The NodeTrackManipulator has been improved.    
     
-    General bug fixes.    
+    Several general bug fixes have been fixed.
     
-    New OSX CGL support in Producer/osgProducer.
-    
-    New examples:
-        osgplanets
-        osgspotlight
-        osglauncher
-        osgmotionblur
+    Producer and osgProducer now provide new Mac OSX CGL support, providing an
+    environment that is independent of X11.
+
+    A few new examples have been added as well:
+
+        o osgplanets    - A simple example that demonstrates an attempt at 
+                          accurate depiction of planetary motion.
+        o osgspotlight  - An example demonstrating a spot light using 
+                          a projected texture.
+        o osglauncher   - An example which reads a config file and displays other examples 
+                          and shows and launches them by clicking on the icons.
+        o osgmotionblur - An example of motion blur using accumulation buffers
 
 18th August 2004 - OpenSceneGraph-0.9.7-2
 

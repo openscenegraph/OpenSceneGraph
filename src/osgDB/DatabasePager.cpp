@@ -3,6 +3,7 @@
 #include <osg/Geode>
 #include <osg/Timer>
 #include <osg/Texture>
+#include <osg/Notify>
 
 #ifdef WIN32
 #include <windows.h>
@@ -32,7 +33,7 @@ DatabasePager::~DatabasePager()
         // then wait for the the thread to stop running.
         while(isRunning())
         {
-            std::cout<<"Waiting for RenderSurface to cancel"<<std::endl;
+            osg::notify(osg::DEBUG_INFO)<<"Waiting for DatabasePager to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
         
@@ -113,7 +114,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     //if (!threadIsRunning())
     if (!isRunning())
     {
-        std::cout<<"DatabasePager::startThread()"<<std::endl;
+        osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
         setSchedulePriority(PRIORITY_MIN);
         startThread();
     }
@@ -165,7 +166,7 @@ public:
             // if texture object attributes exist add the state to the list for later compilation.
             if (foundTextureState)
             {
-                //std::cout<<"Found compilable texture state"<<std::endl;
+                //osg::notify(osg::DEBUG_INFO)<<"Found compilable texture state"<<std::endl;
                 _dataToCompile.first.push_back(stateset);
             }
         }

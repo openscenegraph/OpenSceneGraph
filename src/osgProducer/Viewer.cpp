@@ -134,7 +134,6 @@ private:
 //
 Viewer::Viewer():
     _done(false),
-    _kbmcb(0),
     _recordingAnimationPath(false)
 {
 }
@@ -142,7 +141,6 @@ Viewer::Viewer():
 Viewer::Viewer(Producer::CameraConfig *cfg):
     OsgCameraGroup(cfg),
     _done(false),
-    _kbmcb(0),
     _recordingAnimationPath(false)
 {
 }
@@ -150,7 +148,6 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
 Viewer::Viewer(const std::string& configFile):
     OsgCameraGroup(configFile),
     _done(false),
-    _kbmcb(0),
     _recordingAnimationPath(false)
 {
 }
@@ -158,7 +155,6 @@ Viewer::Viewer(const std::string& configFile):
 Viewer::Viewer(osg::ArgumentParser& arguments):
     OsgCameraGroup(arguments),
     _done(false),
-    _kbmcb(0),
     _recordingAnimationPath(false)
 {
     // report the usage options.
@@ -182,27 +178,46 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     }
 }
 
+Viewer::~Viewer()
+{
+}
+
+void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)
+{
+    _kbm = kbm;
+    if (_kbm.valid() && _kbmcb.valid()) _kbm->setCallback(_kbmcb.get());
+}
+
+void Viewer::setKeyboardMouseCallback(KeyboardMouseCallback* kbmcb)
+{
+    _kbmcb = kbmcb;
+    if (_kbm.valid() && _kbmcb.valid()) _kbm->setCallback(_kbmcb.get());
+}
 
 void Viewer::setUpViewer(unsigned int options)
 {
 
     // set up the keyboard and mouse handling.
     Producer::InputArea *ia = getCameraConfig()->getInputArea();
-    Producer::KeyboardMouse *kbm = ia ?
-                                   (new Producer::KeyboardMouse(ia)) : 
-                                   (new Producer::KeyboardMouse(getCamera(0)->getRenderSurface()));
-
-
+    
+    if (!_kbm)
+    {
+        _kbm = ia ?
+                   (new Producer::KeyboardMouse(ia)) : 
+                   (new Producer::KeyboardMouse(getCamera(0)->getRenderSurface()));
+                   
+    }
+    
     // set the keyboard mouse callback to catch the events from the windows.
     if (!_kbmcb)
-        _kbmcb = new osgProducer::KeyboardMouseCallback( kbm, _done, (options & ESCAPE_SETS_DONE)!=0 );
+        _kbmcb = new osgProducer::KeyboardMouseCallback( _kbm.get(), _done, (options & ESCAPE_SETS_DONE)!=0 );
         
     _kbmcb->setStartTick(_start_tick);
     
     // register the callback with the keyboard mouse manger.
-    kbm->setCallback( _kbmcb );
+    _kbm->setCallback( _kbmcb.get() );
     //kbm->allowContinuousMouseMotionUpdate(true);
-    kbm->startThread();
+    _kbm->startThread();
 
 
 
@@ -379,7 +394,7 @@ void Viewer::update()
 {
     // get the event since the last frame.
     osgProducer::KeyboardMouseCallback::EventQueue queue;
-    if (_kbmcb) _kbmcb->getEventQueue(queue);
+    if (_kbmcb.valid()) _kbmcb->getEventQueue(queue);
 
     // create an event to signal the new frame.
     osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
@@ -566,7 +581,7 @@ void Viewer::selectCameraManipulator(unsigned int no)
 
 void Viewer::requestWarpPointer(float x,float y)
 {
-    if (_kbmcb)
+    if (_kbmcb.valid())
     {
         osg::notify(osg::INFO) << "requestWarpPointer x= "<<x<<" y="<<y<<std::endl;
     
@@ -579,7 +594,7 @@ void Viewer::requestWarpPointer(float x,float y)
 
 void Viewer::getUsage(osg::ApplicationUsage& usage) const
 {
-    if (_kbmcb && _kbmcb->getEscapeSetDone()) 
+    if (_kbmcb.valid() && _kbmcb->getEscapeSetDone()) 
     {
         usage.addKeyboardMouseBinding("Escape","Exit the application");
     }

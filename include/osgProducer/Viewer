@@ -44,7 +44,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         Viewer(osg::ArgumentParser& arguments);
 
-        virtual ~Viewer() {}
+        virtual ~Viewer();
 
 
         enum ViewerOptions
@@ -116,11 +116,13 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         bool computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits);
 
 
-        Producer::KeyboardMouse* getKeyboardMouse() { return _kbmcb==0?0:_kbmcb->getKeyboardMouse(); }
-        const Producer::KeyboardMouse* getKeyboardMouse() const { return _kbmcb==0?0:_kbmcb->getKeyboardMouse(); }
+        void setKeyboardMouse(Producer::KeyboardMouse* kbm);
+        Producer::KeyboardMouse* getKeyboardMouse() { return _kbm.get(); }
+        const Producer::KeyboardMouse* getKeyboardMouse() const { return _kbm.get(); }
 
-        KeyboardMouseCallback* getKeyboardMouseCallback() { return _kbmcb; }
-        const KeyboardMouseCallback* getKeyboardMouseCallback() const { return _kbmcb; }
+        void setKeyboardMouseCallback(KeyboardMouseCallback* kbmcb);
+        KeyboardMouseCallback* getKeyboardMouseCallback() { return _kbmcb.get(); }
+        const KeyboardMouseCallback* getKeyboardMouseCallback() const { return _kbmcb.get(); }
 
         
 
@@ -151,7 +153,10 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         bool            _done;
 
-        osgProducer::KeyboardMouseCallback* _kbmcb;
+
+        osg::ref_ptr<Producer::KeyboardMouse> _kbm;
+
+        osg::ref_ptr<osgProducer::KeyboardMouseCallback> _kbmcb;
 
         EventHandlerList _eventHandlerList;
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> _keyswitchManipulator;

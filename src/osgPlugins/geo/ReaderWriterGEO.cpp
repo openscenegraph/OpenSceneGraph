@@ -826,7 +826,7 @@ class ReaderWriterGEO : public ReaderWriter
                         float blue=cls[2]/255.0f;
                         //float alpha=1.0f; // cls[3]*frac/255.0f;
                         osg::Vec4 colour(red,green,blue,1.0f);
-                        lpn->addLightPoint(osgSim::LightPoint(true,coord_pool[idx],colour,1.0f,1.0f,30,0,0,osgSim::LightPoint::BLENDED));
+                        lpn->addLightPoint(osgSim::LightPoint(true,coord_pool[idx],colour,1.0f,1.0f,0,0,osgSim::LightPoint::BLENDED));
                     } else { // get colour from palette
                         gfd=(*itr)->getField(GEO_DB_VRTX_COLOR_INDEX); // use color pool...
                         int icp= gfd ? gfd->getInt() : 0;

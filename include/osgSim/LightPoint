@@ -45,7 +45,6 @@ class OSGSIM_EXPORT LightPoint
                    const osg::Vec4& color,
                    float            intensity=1.0f,
                    float            radius=1.0f,
-                   float            maxPixelSize=30,
                    Sector*          sector=0,
                    BlinkSequence*   blinkSequence=0,
                    BlendingMode     blendingMode=BLENDED);
@@ -61,7 +60,6 @@ class OSGSIM_EXPORT LightPoint
         osg::Vec4                   _color;
         float                       _intensity;
         float                       _radius;
-        float                       _maxPixelSize;
 
         osg::ref_ptr<Sector>        _sector;
         osg::ref_ptr<BlinkSequence> _blinkSequence;

@@ -5,6 +5,7 @@
 #include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
+#include <osg/ShapeDrawable>
 #include <osg/Notify>
 
 #include <osgDB/Registry>
@@ -32,7 +33,7 @@ void addToLightPointNode(osgSim::LightPointNode& lpn,osgSim::LightPoint& start,o
     float rend = 0.0f;
     float rdelta = 1.0f/((float)noSteps-1.0f);
     
-    lpn._lightPointList.reserve(noSteps);
+    lpn.getLightPointList().reserve(noSteps);
     
     for(unsigned int i=0;i<noSteps;++i,rend+=rdelta)
     {
@@ -42,9 +43,6 @@ void addToLightPointNode(osgSim::LightPointNode& lpn,osgSim::LightPoint& start,o
         INTERPOLATE(_intensity);
         INTERPOLATE(_color);
         INTERPOLATE(_radius);
-        //INTERPOLATE(_minPixelSize);
-        //INTERPOLATE(_maxPixelSize);
-//        INTERPOLATE(_maxVisibileDistance2);
 
         lpn.addLightPoint(lp);
         
@@ -156,10 +154,7 @@ int main( int argc, char **argv )
     // load the nodes from the commandline arguments.
     rootnode->addChild(osgDB::readNodeFiles(arguments));
     rootnode->addChild(createLightPointsDatabase());
-    if (!rootnode)
-    {
-        return 1;
-    }
+    
     
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;

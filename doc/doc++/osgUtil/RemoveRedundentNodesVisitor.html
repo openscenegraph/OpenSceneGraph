@@ -23,16 +23,18 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.5.2">RemoveRedundentNodesVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.8.2">RemoveRedundentNodesVisitor</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.5.3">apply</A></B>(osg::Group&amp; group)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.8.3">apply</A></B>(osg::Group&amp; group)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.5.4">removeRedundentNodes</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.8.4">apply</A></B>(osg::Transform&amp; transform)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.8.5">removeRedundentNodes</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::set&lt;osg::Node*&gt; NodeList NodeList <B><A HREF="#DOC.2.15.5.1">_redundentNodeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::set&lt;osg::Node*&gt; NodeList NodeList <B><A HREF="#DOC.2.9.8.1">_redundentNodeList</A></B>
 </DL></P>
 
 </DL>
@@ -44,19 +46,23 @@
 <DL>
 
 <A NAME="_redundentNodeList"></A>
-<A NAME="DOC.2.15.5.1"></A>
+<A NAME="DOC.2.9.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::set&lt;osg::Node*&gt; NodeList NodeList _redundentNodeList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RemoveRedundentNodesVisitor"></A>
-<A NAME="DOC.2.15.5.2"></A>
+<A NAME="DOC.2.9.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RemoveRedundentNodesVisitor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.15.5.3"></A>
+<A NAME="DOC.2.9.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Group&amp; group)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.9.8.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Transform&amp; transform)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="removeRedundentNodes"></A>
-<A NAME="DOC.2.15.5.4"></A>
+<A NAME="DOC.2.9.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeRedundentNodes()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

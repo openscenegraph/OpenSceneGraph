@@ -108,6 +108,9 @@ Norman Vine <nhv@cape.com>
 Bob Kuehne <rpk@mac.com>
         - assistance with MacOSX port.
         
+Kristopher Bixler <kbixler@mac.com>        
+        - port to OSX's native dynamic library support.
+
 Indirect Contributors
 ---------------------
     

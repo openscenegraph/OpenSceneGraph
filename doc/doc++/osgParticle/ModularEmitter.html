@@ -27,7 +27,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.2">ModularEmitter</A></B>(const <!1><A HREF="ModularEmitter.html#DOC.2.9.2">ModularEmitter</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.3">META_Node</A></B>(<!1><A HREF="ModularEmitter.html">ModularEmitter</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.3">META_Node</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ModularEmitter.html">ModularEmitter</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Counter.html">Counter</A>* <B><A HREF="#DOC.2.9.10">getCounter</A></B>()
 <DD><I>Get the counter object</I>
@@ -71,9 +71,11 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj)
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(osg::NodeVisitor&amp; nv)
 <DT>
@@ -154,7 +156,7 @@ You can use the predefined counter/placer/shooter classes, or you can create you
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
 <A NAME="DOC.2.9.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="ModularEmitter.html">ModularEmitter</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ModularEmitter.html">ModularEmitter</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~ModularEmitter"></A>
 <A NAME="DOC.2.9.4"></A>

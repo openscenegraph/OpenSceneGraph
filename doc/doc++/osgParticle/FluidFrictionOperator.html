@@ -27,7 +27,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.2">FluidFrictionOperator</A></B>(const <!1><A HREF="FluidFrictionOperator.html#DOC.2.5.2">FluidFrictionOperator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.3">META_Object</A></B>(<!1><A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.3">META_Object</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.4">operate</A></B>(<!1><A HREF="Particle.html">Particle</A>* P, double dt)
 <DD><I>Apply the friction forces to a particle.</I>
@@ -72,6 +72,8 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
@@ -105,7 +107,7 @@ radius or another value, by calling the <CODE>setOverrideRadius()</CODE> method.
 <DL><DT><DD></DL><P>
 <A NAME="META_Object"></A>
 <A NAME="DOC.2.5.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operate"></A>
 <A NAME="DOC.2.5.4"></A>

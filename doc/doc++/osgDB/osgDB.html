@@ -37,32 +37,39 @@ class  OSGDB_EXPORT <B><A HREF="FieldReaderIterator.html">FieldReaderIterator</A
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OSGDB_EXPORT extern bool <B><A HREF="#DOC.2.12">equalCaseInsensitive</A></B>(const std::string&amp; lhs, const char* rhs)
 <DT>
-OSGDB_EXPORT extern void <B><A HREF="initFilePath.html">initFilePath</A></B>( void )
-<DD><I>initialize the data file path, uses OSGFILEPATH environmental variable to defined</I>
+OSGDB_EXPORT extern bool <B><A HREF="fileExists.html">fileExists</A></B>(const std::string&amp; filename)
+<DD><I>return true if a file exisits.</I>
 <DT>
-OSGDB_EXPORT extern void <B><A HREF="setFilePath.html">setFilePath</A></B>( const char* _path )
-<DD><I>set the data file path</I>
-<DT>
-OSGDB_EXPORT extern const char* <B><A HREF="getFilePath.html">getFilePath</A></B>()
-<DD><I>set the data file path</I>
-<DT>
-OSGDB_EXPORT extern char* <B><A HREF="findFileInPath.html">findFileInPath</A></B>( const char* _file, const char*  filePath )
-<DD><I>find specified file if specified file path</I>
-<DT>
-OSGDB_EXPORT extern char* <B><A HREF="findFile.html">findFile</A></B>( const char* file )
-<DD><I>find specified file on the set data file path</I>
-<DT>
-OSGDB_EXPORT extern char* <B><A HREF="findDSO.html">findDSO</A></B>( const char* name )
-<DD><I>find specified dso/dll</I>
-<DT>
-typedef  std::vector&lt;std::string&gt; <B><A HREF="DirectoryContents.html">DirectoryContents</A></B>
-<DD><I>simple list of names to represent a directory's contents.</I>
+OSGDB_EXPORT extern std::string <B><A HREF="findFileInPath.html">findFileInPath</A></B>(const std::string&amp; filename, const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filePath)
+<DD><I>find specified file in specified file path</I>
 <DT>
 OSGDB_EXPORT extern std::string <B><A HREF="findFileInDirectory.html">findFileInDirectory</A></B>(const std::string&amp; fileName, const std::string&amp; dirName, bool caseInsensitive=false)
 <DD><I>return the directory/filename of a file if its is contained within specified directory.</I>
 <DT>
+typedef  std::vector&lt;std::string&gt; <B><A HREF="DirectoryContents.html">DirectoryContents</A></B>
+<DD><I>simple list of names to represent a directory's contents.</I>
+<DT>
 OSGDB_EXPORT extern <!1><A HREF="DirectoryContents.html">DirectoryContents</A> <B><A HREF="getDirectoryContents.html">getDirectoryContents</A></B>(const std::string&amp; dirName)
 <DD><I>return the contents of a directory.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18">setDataFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.19">setDataFilePathList</A></B>(const std::string&amp; paths)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.20">getDataFilePathList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OSGDB_EXPORT extern std::string <B><A HREF="#DOC.2.21">findDataFile</A></B>(const std::string&amp; filename)
+<DT>
+class  <B><A HREF="PushAndPopDataPath.html">PushAndPopDataPath</A></B>
+<DD><I>Convinience class for pushing a path on construction, and popping the path and destruction.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23">setLibraryFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepaths)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.24">setLibraryFilePathList</A></B>(const std::string&amp; paths)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.25">getLibraryFilePathList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OSGDB_EXPORT extern std::string <B><A HREF="#DOC.2.26">findLibraryFile</A></B>(const std::string&amp; filename)
 <DT>
 class  OSGDB_EXPORT <B><A HREF="Input.html">Input</A></B>: public <!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>
 <DD><I>Class for managing the reading of ASCII osg files</I>
@@ -70,7 +77,7 @@ class  OSGDB_EXPORT <B><A HREF="Input.html">Input</A></B>: public <!1><A HREF="F
 class  OSGDB_EXPORT <B><A HREF="Output.html">Output</A></B>: public std::ofstream
 <DD><I>ofstream wrapper class for adding support for indenting.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class T&gt;  bool <B><A HREF="#DOC.2.24">writeArrayBlock</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, T* start, T* finish)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class T&gt;  bool <B><A HREF="#DOC.2.29">writeArrayBlock</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, T* start, T* finish)
 <DT>
 class  OSGDB_EXPORT <B><A HREF="ReaderWriter.html">ReaderWriter</A></B>: public osg::Referenced
 <DD><I>pure virtual base class for reading and writing of non native formats.</I>
@@ -86,6 +93,9 @@ OSGDB_EXPORT extern osg::Node* <B><A HREF="readNodeFile.html">readNodeFile</A></
 <DT>
 OSGDB_EXPORT extern osg::Node* <B><A HREF="readNodeFiles.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded</I>
+<DT>
+typedef  std::deque&lt;std::string&gt; <B><A HREF="FilePathList.html">FilePathList</A></B>
+<DD><I>list of directories to search through which searching for files.</I>
 <DT>
 class  OSGDB_EXPORT <B><A HREF="Registry.html">Registry</A></B>
 <DD><I> Registry is a singleton factory which stores the reader/writers which are linked in at runtime for reading non-native file formats.</I>
@@ -143,8 +153,40 @@ OSGDB_EXPORT extern bool <B><A HREF="writeNodeFile.html">writeNodeFile</A></B>(c
 <A NAME="DOC.2.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OSGDB_EXPORT extern bool equalCaseInsensitive(const std::string&amp; lhs, const char* rhs)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="writeArrayBlock"></A>
+<A NAME="setDataFilePathList"></A>
+<A NAME="DOC.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDataFilePathList(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDataFilePathList"></A>
+<A NAME="DOC.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDataFilePathList(const std::string&amp; paths)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDataFilePathList"></A>
+<A NAME="DOC.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; getDataFilePathList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="findDataFile"></A>
+<A NAME="DOC.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OSGDB_EXPORT extern std::string findDataFile(const std::string&amp; filename)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLibraryFilePathList"></A>
+<A NAME="DOC.2.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLibraryFilePathList(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepaths)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLibraryFilePathList"></A>
 <A NAME="DOC.2.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLibraryFilePathList(const std::string&amp; paths)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLibraryFilePathList"></A>
+<A NAME="DOC.2.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; getLibraryFilePathList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="findLibraryFile"></A>
+<A NAME="DOC.2.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OSGDB_EXPORT extern std::string findLibraryFile(const std::string&amp; filename)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeArrayBlock"></A>
+<A NAME="DOC.2.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class T&gt;  bool writeArrayBlock(<!1><A HREF="Output.html">Output</A>&amp; fw, T* start, T* finish)</B></TT>
 <DL><DT><DD></DL><P></DL>
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>

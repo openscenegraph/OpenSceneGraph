@@ -223,7 +223,7 @@ class SG_EXPORT Quat
 
 	Not inlined - see the Quat.cpp file for implementation
 	-------------------------------------------------------- */
-        void makeRotate ( float angle, 
+        void makeRotate( float angle, 
                           float x, float y, float z );
         void makeRotate ( float angle, const Vec3& vec );
 

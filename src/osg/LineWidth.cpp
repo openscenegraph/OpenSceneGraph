@@ -15,7 +15,7 @@ LineWidth::~LineWidth()
 {
 }
 
-void LineWidth::setWidth( const float width )
+void LineWidth::setWidth( float width )
 {
     _width = width;
 }

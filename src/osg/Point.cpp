@@ -70,7 +70,7 @@ void Point::init_GL_EXT()
 
 }
 
-void Point::setSize( const float size )
+void Point::setSize( float size )
 {
     _size = size;
 }

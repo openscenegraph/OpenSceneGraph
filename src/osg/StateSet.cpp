@@ -771,7 +771,7 @@ void StateSet::compile(State& state) const
     }
 }
 
-void StateSet::setRenderingHint(const int hint)
+void StateSet::setRenderingHint(int hint)
 {
     _renderingHint = hint;
     // temporary hack to get new render bins working.
@@ -799,7 +799,7 @@ void StateSet::setRenderingHint(const int hint)
     }
 }
 
-void StateSet::setRenderBinDetails(const int binNum,const std::string& binName,const RenderBinMode mode)
+void StateSet::setRenderBinDetails(int binNum,const std::string& binName,RenderBinMode mode)
 {
     _binMode = mode;
     _binNum = binNum;

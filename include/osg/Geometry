@@ -23,6 +23,7 @@
 
 namespace osg {
 
+
 class SG_EXPORT Geometry : public Drawable
 {
     public:
@@ -260,6 +261,21 @@ class SG_EXPORT Geometry : public Drawable
         void computeCorrectBindingsAndArraySizes();
 
 
+        bool suitableForOptimization() const;
+
+        void copyToAndOptimize(Geometry& target);
+
+        void computeInternalOptimizedGeometry();
+
+        void removeInternalOptimizedGeometry() { _internalOptimizedGeometry = 0; }
+
+        void setInternalOptimizedGeometry(osg::Geometry* geometry) { _internalOptimizedGeometry = geometry; }
+
+        osg::Geometry* getInternalOptimizedGeometry() { return _internalOptimizedGeometry.get(); }
+
+        const osg::Geometry* getInternalOptimizedGeometry() const { return _internalOptimizedGeometry.get(); }
+
+
         /** draw Geometry directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Geometry for user-drawn objects.
@@ -327,13 +343,13 @@ class SG_EXPORT Geometry : public Drawable
         mutable VertexAttribBindingList _vertexAttribBindingList; 
 
         mutable bool                    _fastPath;
-        
+
+        ref_ptr<Geometry>               _internalOptimizedGeometry;
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
   * Tex coords go from bottom left (0,0) to top right (1,1).*/
 extern SG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec);
-
 
 
 }

@@ -98,7 +98,7 @@ class SG_EXPORT Image : public Object
                       AllocationMode mode,
                       int packing=1);
             
-        /** readPixels from screen at specified position and size, using glReadPixels.
+        /** read pixels from current frame buffer at specified position and size, using glReadPixels.
           * Create memory for storage if required, reuse existing pixel coords if possible.*/
         void readPixels(int x,int y,int width,int height,
                         GLenum pixelFormat,GLenum type);

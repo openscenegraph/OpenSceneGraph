@@ -181,10 +181,10 @@ class SG_EXPORT Image : public Object
         }
 
         /** Flip the image horizontally.*/
-        void flipHorizontal(int image=0);
+        void flipHorizontal();
         
         /** Flip the image vertically.*/
-        void flipVertical(int image=0);
+        void flipVertical();
 
 
         /** Ensure image dimensions are a power of two.
@@ -235,9 +235,6 @@ class SG_EXPORT Image : public Object
             return 0L;
         };
         
-        
-        /** converts a single image into mip mapped version image.*/
-        void computeMipMaps();
         
         /** return true of this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized).*/        
         bool isImageTranslucent() const;

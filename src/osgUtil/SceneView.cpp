@@ -174,6 +174,11 @@ void SceneView::cull()
     _cullVisitor->setViewport(_viewport.get());
     _cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
 
+	// SandB
+	//now make it compute "clipping directions" needed for detailed culling
+	if(_cullVisitor->getDetailedCulling()) 
+		_cullVisitor->calcClippingDirections();//only once pre frame
+
     _renderStage->reset();
 
     _renderStage->setViewport(_viewport.get());
@@ -251,8 +256,11 @@ void SceneView::cull()
 
             // if required clamp the near plane to prevent negative or near zero
             // near planes.
-            float min_near_plane = _far_plane*0.0005f;
-            if (_near_plane<min_near_plane) _near_plane=min_near_plane;
+            if(!_cullVisitor->getDetailedCulling())
+			{
+				float min_near_plane = _far_plane*0.0005f;
+				if (_near_plane<min_near_plane) _near_plane=min_near_plane;
+			}
         }
         else
         {

@@ -28,6 +28,7 @@ CXXFILES =\
 	FrameStamp.cpp\
 	FrontFace.cpp\
 	GLExtensions.cpp\
+	Geometry.cpp\
 	GeoSet.cpp\
 	GeoSet_ogl.cpp\
 	Geode.cpp\

@@ -197,6 +197,10 @@ SOURCE=..\..\src\osg\Geode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Geometry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\GeoSet.cpp
 # End Source File
 # Begin Source File
@@ -490,6 +494,10 @@ SOURCE=..\..\Include\Osg\FrontFace
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Geode
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Geometry
 # End Source File
 # Begin Source File
 

@@ -25,7 +25,7 @@ DatabasePager::DatabasePager()
     _fileRequestListEmptyBlock = new Block;
 
     _threadPriorityDuringFrame = PRIORITY_MIN;
-    _threadPriorityOutwithFrame = PRIORITY_NOMINAL;
+    _threadPriorityOutwithFrame = PRIORITY_MIN;
 
 #if 1
     _deleteRemovedSubgraphsInDatabaseThread = true;

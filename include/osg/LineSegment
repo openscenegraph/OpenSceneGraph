@@ -19,7 +19,6 @@ class SG_EXPORT LineSegment : public Referenced
         LineSegment() {};
         LineSegment(const LineSegment& seg) : Referenced(),_s(seg._s),_e(seg._e) {}
         LineSegment(const Vec3& s,const Vec3& e) : _s(s),_e(e) {}
-        virtual ~LineSegment() {}
 
         LineSegment& operator = (const LineSegment& seg) { _s = seg._s;  _e = seg._e; return *this; }
 
@@ -55,6 +54,8 @@ class SG_EXPORT LineSegment : public Referenced
 
     protected:
 
+        virtual ~LineSegment() {}
+        
         static const bool intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb);
 
         Vec3 _s;

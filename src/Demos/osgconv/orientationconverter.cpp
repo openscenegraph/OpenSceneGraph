@@ -32,7 +32,15 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
                     // note post mult rather than pre mult of value.
-                    (*itr) = osg::Matrix::transform3x3(_m,(*itr));
+
+		    // Yep,  I noted that post mult doesn't work.
+		    // All the normals are upside down or facing the 
+		    // wrong way
+		    // -don
+                    //(*itr) = osg::Matrix::transform3x3(_m,(*itr));
+                    //(*itr).normalize();
+
+		    (*itr) = (*itr) * _m;
                     (*itr).normalize();
                 }
                 return true;
@@ -72,7 +80,6 @@ void OrientationConverter::ConvertVisitor::apply( Geode &geode )
    
    TransformFunctor tf(_mat);
 
-   // We assume all Drawables are GeoSets ?!!?
    for( int i = 0; i < numdrawables; i++ )
    {
         geode.getDrawable(i)->applyAttributeOperation(tf);

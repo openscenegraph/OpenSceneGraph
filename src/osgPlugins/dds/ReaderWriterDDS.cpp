@@ -727,10 +727,16 @@ public:
         return rr;
     }
 
-    virtual ReadResult readImage(std::istream& fin, const Options*)
+    virtual ReadResult readImage(std::istream& fin, const Options* options)
     {
         osg::Image* osgImage = ReadDDSFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
+        
+        if (options && options->getOptionString().find("flip")!=std::string::npos)
+        {
+            osgImage->flipVertical();
+        }
+        
         return osgImage;
     }
 

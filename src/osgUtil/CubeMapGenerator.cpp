@@ -1,7 +1,12 @@
 #include <osgUtil/CubeMapGenerator>
 
 #include <memory>
+#ifndef __sgi
 #include <cstdlib>
+#else
+#include <stdlib.h>
+#endif
+
 
 using namespace osgUtil;
 

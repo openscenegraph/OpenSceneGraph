@@ -207,7 +207,7 @@ __link :
 	      '{ print substr($$1,length($$2)+2,512) }'`/`basename $(LNDEST)`;\
 	    cd `dirname $(LNDEST)`;\
 	    rm -f `basename $(LNDEST)`;\
-	    ln -sf $$LINK `basename $(LNDEST)`;\
+	    $(LINK) $$LINK `basename $(LNDEST)`;\
 	 fi
 		
 

@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         SlideShowConstructor.cpp\
         SlideEventHandler.cpp\
+        PointsEventHandler.cpp\
         DefaultPresentation.cpp\
         ReaderWriterXML.cpp\
 	slideshow3D.cpp\

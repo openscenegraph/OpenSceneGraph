@@ -1,5 +1,5 @@
 help:
-	$(TOPDIR)/Make/help.sh\
+	@$(TOPDIR)/Make/help.sh\
 		$(OS)\
 		$(TOPDIR)\
 		$(INST_LIBS)\

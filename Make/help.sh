@@ -45,8 +45,8 @@ and optimized version of targets reside in parallel.
                         builds.
 
 
-Solars and IRIX can build 64 bit targets.  These require the ARCH=64 argument.
-For example:
+Solaris, IRIX and Linux (some compilers) can build 64 bit targets.  These 
+require the ARCH=64 argument.  For example:
 
   make ARCH=64         - Same as 'make ARCH=64 opt'
   make ARCH=64 opt     - Builds 64 bit optimized targets
@@ -116,13 +116,14 @@ installation locations for $OS.
                        demo source code in <demo_src_location> and 
                        documentation in <doc_location>
 
-Note also that INST_LIBS, INST_PLUGINS, and INST_INCLUDE share a common 
-prefix by default: INST_SYS_PREFIX. Further INST_DEMOS, INST_DEMOS_SRC, 
-INST_DOC, and INST_DATA share a common prefix by default : INST_SHARE_PREFIX.
-This provides a short cut for the above 'make' usage.  For example,
+Note also that INST_LIBS, INST_PLUGINS, INST_INCLUDE, and INST_SHARE share 
+a common prefix by default: INST_LOCATION. Further INST_DEMOS, INST_DEMOS_SRC, 
+INST_DOC, and INST_DATA share a common prefix by default : INST_SHARE, which
+is located under INST_LOCATION by default.  This provides a short cut for the 
+above 'make' usage.  For example,
 
-  make INST_SYS_PREFIX=/usr/local/OpenSceneGraph \\
-       INST_SHARE_PREFIX=/usr/share/OpenSceneGraph \\
+  make INST_LOCATION=/usr/local/OpenSceneGraph \\
+       INST_SHARE=/usr/share/OpenSceneGraph \\
        install
 
 
@@ -146,9 +147,6 @@ to your LD_LIBRARY_PATH environmental variable.  When compiling programs
 using OSG headers add to your -I compile flags:
 
     $INST_INCLUDE
-
-
-
 
 EOF
 

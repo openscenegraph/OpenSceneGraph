@@ -8,7 +8,7 @@ LIBS     += -losgProducer -lProducer $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LI
 
 INSTFILES = \
 	$(CXXFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osgstereoimage
 

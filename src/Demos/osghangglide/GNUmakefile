@@ -23,7 +23,7 @@ LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
 INSTFILES = \
 	$(CXXFILES)\
 	$(HEADERFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osghangglide
 

@@ -31,12 +31,13 @@ copy_demo_source()
             THISDIR=`pwd`
             cd $TOPDIR/src/Demos/$d
             [ -d $INST_DEMO_SRC/$d ] || mkdir -m 0755 -p $INST_DEMO_SRC/$d
-            for f in `gmake __instfiles | grep -v make `
-            do
+            echo "         installing $d"
+            for f in `gmake __instfiles | grep -v gmake`
+           do
                 src=`echo $f | cut -f1 -d"="`
                 dst=`echo $f | cut -f2 -d"="`
                 if [ -z "$dst" ] ; then dst=$src; fi
-                echo $INSTALLCMD `pwd`/$src $INST_DEMO_SRC/$d/$dst
+                ###echo $INSTALLCMD `pwd`/$src $INST_DEMO_SRC/$d/$dst
                 $INSTALLCMD `pwd`/$src $INST_DEMO_SRC/$d/$dst
             done
             cd $THISDIR

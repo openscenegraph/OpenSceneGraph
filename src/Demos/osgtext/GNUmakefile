@@ -9,7 +9,7 @@ LIBS     += -losgText $(OSG_LIBS) -L/usr/local/lib $(FREETYPE_LIB) $(GLUT_LIB) $
 
 INSTFILES = \
 	$(CXXFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osgtext
 

@@ -25,41 +25,53 @@ MAKEDEPEND = ignore
 INC        = -I$(TOPDIR)/include
 DEF        = 
 
+############################################################################
+## NOTE - Semantics for the use of ARCH, ARCHARGS, and ARCHINST parameters
+## ARCH     - must be defined if the OS supports both 64 and 32 bit 
+##           architectures may remain undefined if it does not.
+## ARCHARGS - Compiler directives to indicate for which architecture 
+##           to build for
+## ARCHINST - Installation target directory.  Define if the OS supports 
+##           more than one architecture (32 and 64).
+##              for ARCH=32 - define ARCHINST only if the system uses an 
+##                            extension on 'lib' to indicate 32 bit.  e.g. 
+##                            IRIX defines /usr/lib32
+##              for ARCH=64 - Always define ARCHINST.  Even if the OS 
+##                            doesn't make a distinction, we will.
+############################################################################
+
 CXXFLAGS   = $(ARCHARGS) $(DOF) $(DEF) $(INC)
-LDFLAGS    = $(ARCHARGS) $(DOF) $(LINKARGS) -L$(TOPDIR)/lib 
+LDFLAGS    = $(ARCHARGS) $(DOF) $(LINKARGS) -L$(TOPDIR)/lib/$(OS)$(ARCH) 
 OBJS       = $(C++FILES:.cpp=.o) \
-	     $(CXXFILES:.cpp=.o) \
-	     $(CFILES:.c=.o) \
+             $(CXXFILES:.cpp=.o) \
+             $(CFILES:.c=.o) \
 
 DOF        = $(OPTF)
 DEBUGDIR   = $(OS)$(ARCH).Debug
 OPTDIR     = $(OS)$(ARCH).Opt
 BININST    = bin
 LIBINST    = lib
-PLUGININST = lib/osgPlugins
+PLUGININST = lib/$(OS)$(ARCH)/osgPlugins
 
-INST_SYS_PREFIX    = /usr/local
-INST_LIBS          = $(INST_SYS_PREFIX)/lib$(ARCH)
-INST_PLUGINS       = $(INST_SYS_PREFIX)/lib$(ARCH)/osgPlugins
-INST_INCLUDE       = $(INST_SYS_PREFIX)/include
-INST_SHARE_PREFIX  = /usr/share
-INST_DEMOS         = $(INST_SHARE_PREFIX)/OpenSceneGraph/bin
-INST_SRC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/src
-INST_DOC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/doc
-INST_DATA          = $(INST_SHARE_PREFIX)/OpenSceneGraph/data
-INST_DEMO_SRC      = $(INST_SRC)/demos
-
-LINK               = ln -sf
-INSTBINCMD         = install -m 755
-INSTDEVCMD         = install -m 644
-INSTLINKBINCMD     = $(LINK)
-INSTLINKDEVCMD     = $(LINK)
-
-LIB_PREFIX         = lib
+INST_LOCATION  = /usr/local
+INST_LIBS      = $(INST_LOCATION)/lib$(ARCHINST)
+INST_PLUGINS   = $(INST_LOCATION)/lib$(ARCHINST)/osgPlugins
+INST_INCLUDE   = $(INST_LOCATION)/include
+INST_SHARE     = $(INST_LOCATION)/share
+INST_DEMOS     = $(INST_SHARE)/OpenSceneGraph/bin
+INST_SRC       = $(INST_SHARE)/OpenSceneGraph/src
+INST_DOC       = $(INST_SHARE)/OpenSceneGraph/doc
+INST_DATA      = $(INST_SHARE)/OpenSceneGraph/data
+INST_DEMO_SRC  = $(INST_SRC)/demos
+LINK           = ln -sf
+INSTBINCMD     = install -m 755
+INSTDEVCMD     = install -m 644
+INSTLINKBINCMD = $(LINK)
+INSTLINKDEVCMD = $(LINK)
+LIB_PREFIX     = lib
 LIB_EXT        = so
 PLUGIN_PREFIX  = osgdb_
 PLUGIN_EXT     = so
-
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 INSTLOGFILE    = /tmp/.osg_inst_log
 
@@ -87,7 +99,6 @@ ifeq ($(OS),SunOS)
 
   #### if useing g++ on a sun
   ifeq ($(COMPILER),gnu)
-
     C++               = g++
     DEPARG            = -M
     INC               += -I/usr/local/glut-3.7/include
@@ -95,14 +106,16 @@ ifeq ($(OS),SunOS)
     OPTF              = -O2
     DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
     SHARED            = -shared -fPIC 
+    ARCH              = 32
   ifeq ($(ARCH),64)
-      ARCHARGS          = -m64 -DARCH64
+      ARCHARGS        = -m64 -DARCH64
+      ARCHINST        = 64 
   else
-      ARCHARGS          = 
+      ARCHARGS        = 
   endif
     GLUT_LIB          = -L/usr/local/glut-3.7/lib/glut -lglut
     GIF_LIBS          = -lgif 
-    TIFF_LIB	    = -ltiff 
+    TIFF_LIB	      = -ltiff 
     JPEG_LIBS         = -ljpeg 
     PNG_LIBS          = -lpng -lz 
     FREETYPE_LIB      = -lfreetype
@@ -110,79 +123,75 @@ ifeq ($(OS),SunOS)
 
   #### using forte compilers (default)
   else
-
     C++               = CC
     DEPARG            = -xM1
     INC               += 
-    DEF               += -features=extensions 
+    DEF               += -features=extensions -w
     OPTF              = -xO4
     DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
     SHARED            = -G
+    ARCH              = 32
   ifeq ($(ARCH),64)
-      ARCHARGS          = -xarch=v9 -DARCH64
+      ARCHARGS        = -xarch=v9 -DARCH64
+      ARCHINST        = 64
   else
-      ARCHARGS          = 
+      ARCHARGS        = 
+      ARCHINST        = 
   endif
     GLUT_LIB          = -lglut
     OTHER_LIBS        = -lCstd
     LINKARGS          =  
-
     GIF_LIBS          = /usr/local/lib/libgif.a
-    TIFF_LIB	    = /usr/local/lib/libtiff.a
+    TIFF_LIB	      = /usr/local/lib/libtiff.a
     JPEG_LIBS         = /usr/local/lib/libjpeg.a
     PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
     FREETYPE_LIB      = /usr/local/lib/libfreetype.a
-
   endif 
     DYNAMICLIBRARYLIB = -ldl
     OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-
     GL_LIBS           = -lGLU -lGL 
     X_LIBS            = -lXext -lXmu -lXi -lX11 
     SOCKET_LIBS       = -lsocket -lnsl
-
     INSTBINCMD        = cp
     INSTDEVCMD        = cp
-
-    INST_SYS_PREFIX   = /opt/OpenSceneGraph
-    INST_SHARE_PREFIX = /opt
-
+    INST_LOCATION     = /opt/OpenSceneGraph
     MAKEDIST          = $(TOPDIR)/Make/makepkg
-
 endif
 
 #### IRIX Specific definitions
 ifeq ($(OS),IRIX)
-
-  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0 
+  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0  
   C++               = CC
   DEPARG            = -M
   INC               += -I${TOPDIR}/include -I/usr/freeware/include
   DEF               += -LANG:std -OPT:Olimit=0 \
-	 	       -DEBUG:woff=1682 -DEBUG:woff=3303\
-		       -MDupdate $(MAKEDEPEND)
+                       -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
+                       -MDupdate $(MAKEDEPEND)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
   SHARED            = -shared
-  ARCH              = 32
   PFLIBS            = \
                       -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
                       -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
                       -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
                       -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
                       -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
-    FREETYPE_LIB      = -lfreetype
-ifeq ($(ARCH),64)
+  FREETYPE_LIB      = -lfreetype
+  ARCH              = 32
+  ifeq ($(ARCH),64)
     ARCHARGS          = -64 -DARCH64
+    ARCHINST          = 64
     LINKARGS          += -L/usr/freeware/lib64
     PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
-			$(PFLIBS)
-else
+                         $(PFLIBS)
+  else 
     ARCHARGS          = -n32
+    ARCHINST          = 32
     LINKARGS          += -L/usr/freeware/lib32
     PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
-			$(PFLIBS)
-endif
+                         $(PFLIBS)
+  endif
+
   DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   GLUT_LIB          = -lglut
@@ -194,38 +203,44 @@ endif
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
   GIF_LIBS          = -lungif
-
   MAKEDIST          = $(TOPDIR)/Make/makeirixdist
-
 endif
 
 #### Linux specific definitions
 
 ifeq ($(OS),Linux)
 
-ifeq (x$(CXX),x)
-  C++               = g++
-else
-  C++               = $(CXX)
-endif
+  ifeq (x$(CXX),x)
+    C++             = g++
+  else
+    C++             = $(CXX)
+  endif
+
   DEPARG            = -M
   INC               += 
-ifeq ($(COMPILER),intel)
-  C++               = ecc
-  LIBS              = -lgcc_s
-  DEF               += -KPIC
-  OPTF              = -O2 
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS 
-else
-  LIBS              = -lstdc++
-  DEF               += -W -Wall -fPIC
-  OPTF              = -O2 
-  DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
-endif
+
+  ifeq ($(COMPILER),intel)
+    C++             = ecc
+    LIBS            = -lgcc_s
+    DEF             += -KPIC
+    OPTF            = -O2 
+    DBGF            = -g -DOSG_COMPILE_UNIT_TESTS 
+  else
+    LIBS            = -lstdc++
+    DEF             += -W -Wall -fPIC
+    OPTF            = -O2 
+    DBGF            = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
+  endif
+
   SYSARCH           := $(shell arch)
-ifeq ($(SYSARCH),ia64)
-  ARCH              = 64
-endif
+  ifeq ($(SYSARCH),ia64)
+    ARCH            = 64
+    ARCHINST        = 64
+  else
+    ARCH            = 32
+    ARCHINST        = 
+  endif
+
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
@@ -243,7 +258,6 @@ endif
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
   GIF_LIBS          = -lungif
-
   MAKEDIST          = $(TOPDIR)/Make/makerpms
 endif
 
@@ -256,6 +270,8 @@ ifeq ($(OS),FreeBSD)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared
+  ARCH              = 
+  ARCHINST          = 
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
   DYNAMICLIBRARYLIB = 
@@ -266,10 +282,8 @@ ifeq ($(OS),FreeBSD)
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
-
-  INST_SYS_PREFIX   = /opt/X11R6
-  INST_SHARE_PREFIX = /usr/share/OpenSceneGraph
-
+  INST_LOCATION     = /opt/X11R6
+  INST_SHARE        = /usr/share/OpenSceneGraph
 endif
 
 #### MacOS X specific definitions
@@ -281,6 +295,8 @@ ifeq ($(OS),Darwin)
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   DEPARG            = -M $(DEF)
   SHARED            = -shared
+  ARCH              =
+  ARCHINST          = 
   ARCHARGS          = 
   LINKARGS          =
   DYNAMICLIBRARYLIB =
@@ -292,13 +308,13 @@ ifeq ($(OS),Darwin)
   X_LIBS            = 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc
-  LIB_EXT            = dylib
-  QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
-  TIFF_LIB	    = -ltiff
-  LIBVERSION	    =  -dylib_current_version 0.9.1
+  LIB_EXT           = dylib
+  QUICKTIME	        = -framework QuickTime $(CARBON_LIB)
+  TIFF_LIB	        = -ltiff
+  LIBVERSION	    = -dylib_current_version 0.9.3
 
   # Plugins which require external libs: gif jpeg png tiff osgText
-    PLUGIN_DIRS       = bmp dw flt \
+  PLUGIN_DIRS       = bmp dw flt \
                       lib3ds logos lwo obj \
                       osg osgParticle osgtgz pic \
                       quicktime rgb tga tgz \
@@ -314,14 +330,14 @@ ifeq ($(OS),CYGWIN)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared\
-		      -Wl,--export-all-symbols  \
-		      -Wl,--output-def,lib$(TARGET_BASENAME).def \
-		      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
-
+		              -Wl,--export-all-symbols  \
+		              -Wl,--output-def,lib$(TARGET_BASENAME).def \
+		              -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
+  ARCH              = 
+  ARCHINST          =
   ARCHARGS          = 
   LINKARGS          = -W -Wall
   DYNAMICLIBRARYLIB =
-
   OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
   GLUT_LIB          = -lglut32 $(GL_LIBS)
@@ -333,14 +349,10 @@ ifeq ($(OS),CYGWIN)
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
   FREETYPE_LIB      = -lfreetype2
-
-
   LIB_PREFIX        = cyg
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
-
   LINK              = cp -f
-
   INST_SYS_PREFIX   = /usr/local/OpenSceneGraph
   INST_LIBS         = $(INST_SYS_PREFIX)/bin
   INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
@@ -351,8 +363,6 @@ ifeq ($(OS),CYGWIN)
   INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
-
-
 endif
 
 #### Cygwin/Mingw specific definitions
@@ -365,14 +375,14 @@ ifeq ($(OS),MINGW)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared\
-		      -Wl,--export-all-symbols  \
-		      -Wl,--output-def,lib$(TARGET_BASENAME).def \
-		      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
-
+                      -Wl,--export-all-symbols  \
+                      -Wl,--output-def,lib$(TARGET_BASENAME).def \
+                      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
+  ARCH              = 
+  ARCHINST          =
   ARCHARGS          = 
   LINKARGS          = -W -Wall
   DYNAMICLIBRARYLIB =
-
   OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
   GLUT_LIB          = -lglut32 $(GL_LIBS)
@@ -385,14 +395,11 @@ ifeq ($(OS),MINGW)
   TIFF_LIB          = -ltiff -lz -ljpeg
   FREETYPE_LIB      = -lfreetype
 
-
 #  LIB_PREFIX        = cyg
   LIB_PREFIX        = lib
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
-
   LINK              = cp -f
-
   INST_SYS_PREFIX   = /usr/local/OpenSceneGraph
   INST_LIBS         = $(INST_SYS_PREFIX)/bin
   INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
@@ -403,7 +410,6 @@ ifeq ($(OS),MINGW)
   INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
-
 endif
 
 #### HP-UX Specific definitions
@@ -424,9 +430,11 @@ ifeq ($(OS),HP-UX)
 ifeq ($(ARCH),64)
     # not yet tested
     ARCHARGS          = -march=2.0 -DARCH64
+    ARCHINST          = 64
 else
    # at least my gcc 3.1 defaults to HP-PA RISC 1.1
   ARCHARGS          = 
+  ARCHINST          = 
 endif
   LINKARGS          = -lpthread
   LIB_EXT           = sl

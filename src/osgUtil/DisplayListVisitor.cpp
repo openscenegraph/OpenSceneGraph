@@ -4,53 +4,71 @@
 using namespace osg;
 using namespace osgUtil;
 
-DisplayListVisitor::DisplayListVisitor(DisplayListMode mode)
+DisplayListVisitor::DisplayListVisitor(Mode mode)
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    _displayListMode = mode;
     
-    _localState = new osg::State;
-    _externalState = NULL;
+    _mode = mode;
     
-    _activeState = _localState;
+    _state = NULL;
 }
 
 
+void DisplayListVisitor::apply(osg::Node& node)
+{
+    if ((_mode&COMPILE_STATE_ATTRIBUTES) && node.getStateSet() && _state.valid())
+    {
+        node.getStateSet()->compile(*_state);
+    }
+
+    traverse(node);
+}
+
 void DisplayListVisitor::apply(osg::Geode& node)
 {
-    switch(_displayListMode)
+    if (_mode&COMPILE_STATE_ATTRIBUTES && _state.valid())
     {
-        case(SWITCH_OFF_DISPLAY_LISTS):
+        if (node.getStateSet())
         {
-            for(int i=0;i<node.getNumDrawables();++i)
-            {
-                node.getDrawable(i)->setUseDisplayList(false);
-            }
+            node.getStateSet()->compile(*_state);
         }
-        break;
-        case(SWITCH_ON_DISPLAY_LISTS):
+
+        for(int i=0;i<node.getNumDrawables();++i)
         {
-            for(int i=0;i<node.getNumDrawables();++i)
+            Drawable* drawable = node.getDrawable(i);
+            if (drawable->getUseDisplayList())
             {
-                node.getDrawable(i)->setUseDisplayList(true);
-            }
-        }
-        break;
-        case(COMPILE_ON_DISPLAY_LISTS):
-        {
-            for(int i=0;i<node.getNumDrawables();++i)
-            {
-                if (node.getDrawable(i)->getUseDisplayList())
+                if (drawable->getStateSet())
                 {
-                    node.getDrawable(i)->compile(*_activeState);
+                    drawable->getStateSet()->compile(*_state);
                 }
             }
         }
-        break;
-        case(SWITCH_ON_AND_COMPILE_DISPLAY_LISTS):
+    }
+
+    if (_mode&SWITCH_OFF_DISPLAY_LISTS)
+    {
+        for(int i=0;i<node.getNumDrawables();++i)
         {
-            node.compileDrawables(*_activeState);
+            node.getDrawable(i)->setUseDisplayList(false);
         }
-        break;
+    }
+    if (_mode&SWITCH_ON_DISPLAY_LISTS)
+    {
+        for(int i=0;i<node.getNumDrawables();++i)
+        {
+            node.getDrawable(i)->setUseDisplayList(true);
+        }
+    }
+
+    if (_mode&COMPILE_DISPLAY_LISTS && _state.valid())
+    {
+        for(int i=0;i<node.getNumDrawables();++i)
+        {
+            if (node.getDrawable(i)->getUseDisplayList())
+            {
+                node.getDrawable(i)->compile(*_state);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 #include <osgUtil/SceneView>
 #include <osgUtil/AppVisitor>
+#include <osgUtil/DisplayListVisitor>
 
 #include <osg/Notify>
 #include <osg/Texture>
@@ -28,6 +29,8 @@ SceneView::SceneView()
     
     _viewport = new Viewport;
     
+    _initCalled = false;
+
 }
 
 
@@ -46,19 +49,21 @@ void SceneView::setDefaults()
     _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
     _light->setSpecular(Vec4(0.1f,0.1f,0.1f,1.0f));
 
-   
-
-    _camera = new osg::Camera;
+    _camera = new Camera;
     
-    _state = new osg::State;
+    _state = new State;
     
-    _rendergraph = new osgUtil::RenderGraph;
-    _renderStage = new osgUtil::RenderStage;
+    _rendergraph = new RenderGraph;
+    _renderStage = new RenderStage;
 
-    _appVisitor = new osgUtil::AppVisitor;
-    
 
-    _cullVisitor = new osgUtil::CullVisitor;
+    DisplayListVisitor* dlv = new DisplayListVisitor();
+    dlv->setState(_state.get());
+    _initVisitor = dlv;
+
+    _appVisitor = new AppVisitor;    
+
+    _cullVisitor = new CullVisitor;
 
     _cullVisitor->setRenderGraph(_rendergraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
@@ -85,9 +90,29 @@ void SceneView::setDefaults()
 
 }
 
+void SceneView::init()
+{
+    _initCalled = true;
+
+    if (_sceneData.valid() && _initVisitor.valid())
+    {
+        _initVisitor->reset();
+        _initVisitor->setFrameStamp(_frameStamp.get());
+        
+        if (_frameStamp.valid())
+        {
+             _initVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+        }
+        
+        _sceneData->accept(*_initVisitor.get());
+        
+    } 
+}
 
 void SceneView::app()
 {
+    if (!_initCalled) init();
+
     if (_sceneData.valid() && _appVisitor.valid())
     { 
         _appVisitor->reset();
@@ -108,7 +133,10 @@ void SceneView::app()
 
 void SceneView::cull()
 {
+
     if (!_sceneData) return;
+
+    if (!_initCalled) init();
 
     _camera->adjustAspectRatio(_viewport->aspectRatio());
     

@@ -42,7 +42,9 @@ public:
         
 };
 
-
+// add in because MipsPro can't handle no osgGA infront of TrackballManipulator
+// but VisualStudio6.0 can't handle the osgGA...
+using namespace osgGA;
 class SlideShowTrackballManipulator : public osgGA::TrackballManipulator
 {
     public:

@@ -49,9 +49,6 @@ osgvertexprogram
 echo osgviewer Town.osg
 osgviewer Town.osg
 
-echo osgviewer afterescher.geo
-osgviewer afterescher.geo
-
 echo osgshape
 osgshape
 

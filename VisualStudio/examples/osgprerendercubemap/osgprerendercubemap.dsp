@@ -187,4 +187,3 @@ SOURCE=..\..\..\examples\osgprerendercubemap\osgprerendercubemap.cpp
 # End Group
 
 # End Project
-

@@ -209,7 +209,7 @@ void DefaultFont::constructGlyphs()
         unsigned char* data = new unsigned char[dataSize];
 
         // clear the image to zeros.
-        for(unsigned char* p=data;p!=data+dataSize;++p) *p = 0;
+        for(unsigned char* p=data;p<data+dataSize;) { *p++ = 255; *p++ = 0; }
         
         glyph->setImage(_width,_height,1,
                         GL_LUMINANCE_ALPHA,
@@ -229,21 +229,37 @@ void DefaultFont::constructGlyphs()
         for(unsigned int row=0;row<sourceHeight;++row,++ptr)
         {
             data+=2*_margin; // skip the left margin
+//             (*data++)=((*ptr)&128)?value_on:value_off;
+//             (*data++)=((*ptr)&128)?value_on:value_off;
+//             (*data++)=((*ptr)&64)?value_on:value_off;
+//             (*data++)=((*ptr)&64)?value_on:value_off;
+//             (*data++)=((*ptr)&32)?value_on:value_off;
+//             (*data++)=((*ptr)&32)?value_on:value_off;
+//             (*data++)=((*ptr)&16)?value_on:value_off;            
+//             (*data++)=((*ptr)&16)?value_on:value_off;            
+//             (*data++)=((*ptr)&8)?value_on:value_off;
+//             (*data++)=((*ptr)&8)?value_on:value_off;
+//             (*data++)=((*ptr)&4)?value_on:value_off;
+//             (*data++)=((*ptr)&4)?value_on:value_off;
+//             (*data++)=((*ptr)&2)?value_on:value_off;
+//             (*data++)=((*ptr)&2)?value_on:value_off;
+//             (*data++)=((*ptr)&1)?value_on:value_off;
+//             (*data++)=((*ptr)&1)?value_on:value_off;
+            (*data++)=255;
             (*data++)=((*ptr)&128)?value_on:value_off;
-            (*data++)=((*ptr)&128)?value_on:value_off;
+            (*data++)=255;
             (*data++)=((*ptr)&64)?value_on:value_off;
-            (*data++)=((*ptr)&64)?value_on:value_off;
+            (*data++)=255;
             (*data++)=((*ptr)&32)?value_on:value_off;
-            (*data++)=((*ptr)&32)?value_on:value_off;
+            (*data++)=255;            
             (*data++)=((*ptr)&16)?value_on:value_off;            
-            (*data++)=((*ptr)&16)?value_on:value_off;            
+            (*data++)=255;
             (*data++)=((*ptr)&8)?value_on:value_off;
-            (*data++)=((*ptr)&8)?value_on:value_off;
+            (*data++)=255;
             (*data++)=((*ptr)&4)?value_on:value_off;
-            (*data++)=((*ptr)&4)?value_on:value_off;
+            (*data++)=255;
             (*data++)=((*ptr)&2)?value_on:value_off;
-            (*data++)=((*ptr)&2)?value_on:value_off;
-            (*data++)=((*ptr)&1)?value_on:value_off;
+            (*data++)=255;
             (*data++)=((*ptr)&1)?value_on:value_off;
             data+=2*_margin; // skip the right margin.
         }

@@ -48,6 +48,7 @@ void SceneView::setDefaults()
 
     _lightingMode=HEADLIGHT;
     _light = new osg::Light;
+    _light->setLightNum(0);
     _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
     _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
     _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -75,6 +76,7 @@ void SceneView::setDefaults()
     
     // enable lighting by default.
     _globalState->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    _light->setStateSetModes(*_globalState,osg::StateAttribute::ON);
     
     // enable depth testing by default.
     _globalState->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);

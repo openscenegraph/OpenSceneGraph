@@ -30,7 +30,6 @@ class SG_EXPORT Light : public StateAttribute
 
             // compare each paramter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_lightnum)
-            COMPARE_StateAttribute_Parameter(_on)
             COMPARE_StateAttribute_Parameter(_ambient)
             COMPARE_StateAttribute_Parameter(_diffuse)
             COMPARE_StateAttribute_Parameter(_specular)
@@ -45,20 +44,16 @@ class SG_EXPORT Light : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-	/**
-	 * Turn the light on.
-	 * Calling this method doesn't directly affect OpenGL's lighting mode.
-	 */
-        inline void on() { _on = true; }
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_LIGHT0+_lightnum,value);
+        }
 
-	/**
-	 * Turn the light off.
-	 * Calling this method doesn't directly affect OpenGL's lighting mode.
-	 */
-	inline void off() { _on = false; }
-
-	/** Apply the light's state to the OpenGL state machine. */
-        virtual void apply(State& state) const;
+        /** Set which OpenGL light to operate on.*/
+        void setLightNum(const int num) { _lightnum = num; }
+        
+        /** Get which OpenGL light this osg::Light operates on.*/
+        const int getLightNum() const { return _lightnum; }
 
 	/** Set the ambient component of the light. */
         inline void setAmbient( const Vec4& ambient ) { _ambient = ambient; }
@@ -126,6 +121,9 @@ class SG_EXPORT Light : public StateAttribute
 	 */
         void captureLightState();
 
+	/** Apply the light's state to the OpenGL state machine. */
+        virtual void apply(State& state) const;
+
     protected :
     
         virtual ~Light();
@@ -134,7 +132,7 @@ class SG_EXPORT Light : public StateAttribute
         void init();
 
         int _lightnum;                           // OpenGL light number
-        bool _on;                                // on/off state
+
         Vec4 _ambient;                           // r, g, b, w
         Vec4 _diffuse;                           // r, g, b, w
         Vec4 _specular;                          // r, g, b, w
@@ -145,8 +143,6 @@ class SG_EXPORT Light : public StateAttribute
         float _quadratic_attenuation;            // quadratic
         float _spot_exponent;                    // exponent
         float _spot_cutoff;                      // spread
-
-        static int _currentLightNum;             // current max. OpenGL light number
 };
 
 };

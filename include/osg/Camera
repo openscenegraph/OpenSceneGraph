@@ -12,6 +12,7 @@
 #include <osg/Quat>
 #include <osg/Viewport>
 #include <osg/DisplaySettings>
+#include <osg/Polytope>
 
 namespace osg {
 
@@ -271,8 +272,15 @@ class SG_EXPORT Camera: public osg::Referenced
         const Matrix getModelViewMatrix() const;
 
 
-
-
+        /** Get the camera view frsutm.*/
+        inline Polytope getViewFrustum() const
+        {
+            Polytope cv;
+            cv.setToUnitFrustum();
+            cv.transformProvidingInverse(getModelViewMatrix()*
+                                         getProjectionMatrix());
+            return cv;
+        }
 
 
 

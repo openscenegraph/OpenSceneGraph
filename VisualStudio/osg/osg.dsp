@@ -365,6 +365,10 @@ SOURCE=..\..\src\osg\TexEnv.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TexEnvCombine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\TexGen.cpp
 # End Source File
 # Begin Source File
@@ -730,6 +734,10 @@ SOURCE=..\..\Include\Osg\Switch
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\TexEnv
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TexEnvCombine
 # End Source File
 # Begin Source File
 

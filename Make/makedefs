@@ -474,7 +474,7 @@ ifeq ($(OS),Darwin)
   PNG_LIBS        = -lpng -lz
   JPEG_LIBS       = -ljpeg
   GIF_LIBS        = -lungif
-  TIFF_LIBS       = -ltiff -lz -ljpeg
+  TIFF_LIB       = -ltiff -lz -ljpeg
 
 #  FREETYPE_INCLUDE  = `freetype-config --cflags`
 #  FREETYPE_LIB      = `freetype-config --libs`

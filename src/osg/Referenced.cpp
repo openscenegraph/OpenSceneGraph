@@ -16,8 +16,26 @@
 #include <typeinfo>
 #include <memory>
 
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
+
+
 namespace osg
 {
+
+static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
+
+void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting)
+{
+    s_useThreadSafeReferenceCounting = enableThreadSafeReferenceCounting;
+}
+
+bool Referenced::getThreadSafeReferenceCounting()
+{
+    return s_useThreadSafeReferenceCounting;
+}
+
+
 
 static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 
@@ -31,6 +49,7 @@ DeleteHandler* Referenced::getDeleteHandler()
     return s_deleteHandler.get();
 }
 
+
 Referenced::~Referenced()
 {
     if (_refCount>0)
@@ -39,5 +58,55 @@ Referenced::~Referenced()
         notify(WARN)<<"         the final reference count was "<<_refCount<<", memory corruption possible."<<std::endl;
     }
 }
+
+void Referenced::ref() const
+{ 
+    if (s_useThreadSafeReferenceCounting)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+        ++_refCount;
+    }
+    else
+    {
+        ++_refCount;
+    }
+
+}
+
+void Referenced::unref() const
+{
+    bool needDelete = false;
+    if (s_useThreadSafeReferenceCounting)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+        --_refCount;
+        needDelete = _refCount<=0;
+    }
+    else
+    {
+        --_refCount;
+        needDelete = _refCount<=0;
+    }
+    
+    if (needDelete)
+    {
+        if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
+        else delete this;
+    }
+}
+
+void Referenced::unref_nodelete() const
+{
+    if (s_useThreadSafeReferenceCounting)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+        --_refCount;
+    }
+    else
+    {
+        --_refCount;
+    }
+}
+        
 
 }; // end of namespace osg

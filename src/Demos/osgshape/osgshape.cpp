@@ -42,13 +42,6 @@ osg::Geode* createShapes()
     geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height)));
     geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height)));
 
-//     osg::Grid* grid = new osg::Grid;
-//     grid->allocGrid(100,100,0.0f);
-//     grid->setXInterval(0.2f);
-//     grid->setYInterval(0.2f);
-//     grid->populateGrid(-0.2f,0.2f);
-//     geode->addDrawable(new osg::ProceduralGeometry(grid));
-    
     osg::Grid* grid = new osg::Grid;
     grid->allocGrid(38,39);
     grid->setXInterval(0.28f);
@@ -62,6 +55,24 @@ osg::Geode* createShapes()
 	}
     }
     geode->addDrawable(new osg::ProceduralGeometry(grid));
+    
+    osg::ConvexHull* mesh = new osg::ConvexHull;
+    osg::Vec3Array* vertices = new osg::Vec3Array(4);
+    (*vertices)[0].set(0.0f,0.0f,4.0f);
+    (*vertices)[1].set(0.0f,0.0f,0.0f);
+    (*vertices)[2].set(4.0f,0.0f,0.0f);
+    (*vertices)[3].set(4.0f,0.0f,4.0f);
+    osg::UByteArray* indices = new osg::UByteArray(6);
+    (*indices)[0]=0;
+    (*indices)[1]=1;
+    (*indices)[2]=2;
+    (*indices)[3]=0;
+    (*indices)[4]=2;
+    (*indices)[5]=3;
+    mesh->setVertices(vertices);
+    mesh->setIndices(indices);
+    geode->addDrawable(new osg::ProceduralGeometry(mesh));
+    
     
     return geode;
 }

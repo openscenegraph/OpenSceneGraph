@@ -22,6 +22,8 @@ class ref_ptr
 {
 
     public:
+        typedef T element_type;
+
         ref_ptr() :_ptr(0L) {}
         ref_ptr(T* t):_ptr(t)              { if (_ptr) _ptr->ref(); }
         ref_ptr(const ref_ptr& rp):_ptr(rp._ptr)  { if (_ptr) _ptr->ref(); }

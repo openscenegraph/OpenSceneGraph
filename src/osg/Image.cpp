@@ -297,7 +297,7 @@ void Image::scaleImage(const int s,const int t,const int r)
     if (!newData)
     {
         // should we throw an exception???  Just return for time being.
-        notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<std::endl;
+        notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<newTotalSize<<std::endl;
         return;
     }
 

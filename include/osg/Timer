@@ -8,7 +8,7 @@
 #include <osg/Export>
 
 
-#if defined(WIN32 ) && !(defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MWERKS__))
+#if defined(_MSC_VER)
 	namespace osg {
 	    typedef __int64 Timer_t;
 	}
@@ -73,41 +73,44 @@ class SG_EXPORT Timer {
 
 }
 
-#if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MWERKS__))
+#if defined(_MSC_VER)
+
     #include <time.h>
     #pragma optimize("",off)
 
-namespace osg{
+    namespace osg{
 
-    inline Timer_t Timer::tick( void ) const
-    {
-        if (_useStandardClock) return clock();
-        
-        volatile Timer_t ts;
-        volatile unsigned int HighPart;
-        volatile unsigned int LowPart;
-        _asm
+        inline Timer_t Timer::tick( void ) const
         {
-            xor eax, eax        //  Used when QueryPerformanceCounter()
-            xor edx, edx        //  not supported or minimal overhead
-            _emit 0x0f          //  desired
-            _emit 0x31          //
-            mov HighPart,edx
-            mov LowPart,eax
+            if (_useStandardClock) return clock();
+
+            volatile Timer_t ts;
+            volatile unsigned int HighPart;
+            volatile unsigned int LowPart;
+            _asm
+            {
+                xor eax, eax        //  Used when QueryPerformanceCounter()
+                xor edx, edx        //  not supported or minimal overhead
+                _emit 0x0f          //  desired
+                _emit 0x31          //
+                mov HighPart,edx
+                mov LowPart,eax
+            }
+            //ts = LowPart | HighPart >> 32;
+            *((unsigned int*)&ts) = LowPart;
+            *((unsigned int*)&ts+1) = HighPart;
+            return ts;
         }
-        //ts = LowPart | HighPart >> 32;
-        *((unsigned int*)&ts) = LowPart;
-        *((unsigned int*)&ts+1) = HighPart;
-        return ts;
+
     }
-
-}
     #pragma optimize("",on)
-#elif defined(__MINGW32__)
-#include <sys/time.h>
 
-#define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
-namespace osg{
+#elif defined(__MINGW32__)
+
+    #include <sys/time.h>
+
+    #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
+    namespace osg{
 
 	inline Timer_t Timer::tick() const
 	{
@@ -119,72 +122,73 @@ namespace osg{
 		}
 	}
 
-}
+    }
+
 #elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__)
 
     #include <sys/time.h>
 
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
 
-namespace osg{
+    namespace osg{
 
-    inline Timer_t Timer::tick() const
-    {
-        if (_useStandardClock)
+        inline Timer_t Timer::tick() const
         {
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+            if (_useStandardClock)
+            {
+                struct timeval tv;
+                gettimeofday(&tv, NULL);
+                return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+            }
+            else
+            {
+                Timer_t x;CLK(x);return x;
+            }
         }
-        else
-        {
-            Timer_t x;CLK(x);return x;
-        }
+
     }
-
-}
   
 #elif defined(__sgi)
 
     #include <sys/time.h>
 
-namespace osg{
+    namespace osg{
 
-    inline  Timer_t Timer::tick()  const
-    {
-        if (_useStandardClock)
+        inline  Timer_t Timer::tick()  const
         {
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-        }
-        else
-        {
-            return *_clockAddress;
+            if (_useStandardClock)
+            {
+                struct timeval tv;
+                gettimeofday(&tv, NULL);
+                return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+            }
+            else
+            {
+                return *_clockAddress;
+            }
         }
     }
-}
     
 #elif defined(unix)
 
     #include <sys/time.h>
 
-namespace osg{
-    inline  Timer_t Timer::tick() const
-    {
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+    namespace osg{
+        inline  Timer_t Timer::tick() const
+        {
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+        }
     }
-}
 
 #elif !defined (__DARWIN_OSX__) && !defined (macintosh)
 
     // no choice, always use std::clock()
-namespace osg{
+    namespace osg{
 
-    inline  Timer_t Timer::tick( void ) const { return std::clock(); }
-}
+        inline  Timer_t Timer::tick( void ) const { return std::clock(); }
+    }
 
 #endif
 

@@ -2,7 +2,7 @@
 #define		__FTGL__
 
 
-#ifdef WIN32
+#ifdef _MSC_VER
 	// stl stuff
 	#pragma warning( disable : 4244 )
 	#pragma warning( disable : 4251 )

@@ -34,7 +34,7 @@ using namespace osgText;
 #if defined(__linux) || defined(__FreeBSD__) || defined (__sgi) || defined (__DARWIN_OSX__)
     static char* s_FontFilePath = ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives";
 #elif defined(WIN32)
-    static char* s_FontFilePath = ".;C:/windows/fonts";
+    static char* s_FontFilePath = ".;C:/winnt/fonts;C:/windows/fonts";
 #else
     static char* s_FontFilePath = ".:";
 #endif

@@ -59,6 +59,7 @@ CXXFILES =\
 	ElevationSector.cpp\
 	LightPoint.cpp\
 	LightPointNode.cpp\
+	VisibilityGroup.cpp\
 
 LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
 

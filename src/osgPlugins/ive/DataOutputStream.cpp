@@ -46,6 +46,7 @@
 
 #include "LightPointNode.h"
 #include "MultiSwitch.h"
+#include "VisibilityGroup.h"
 
 #include "Geometry.h"
 
@@ -543,6 +544,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::Transform*>(node)){
             ((ive::Transform*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgSim::VisibilityGroup*>(node)){
+            ((ive::VisibilityGroup*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);

@@ -11,8 +11,11 @@
 #include <osg/ShapeDrawable>
 #include <osg/PositionAttitudeTransform>
 
+#include <osg/MatrixTransform>
+
 #include <osgUtil/RenderToTextureStage>
 #include <osgUtil/Optimizer>
+#include <osgUtil/TransformCallback>
 
 #include <osgDB/ReadFile>
 #include <osgDB/Registry>
@@ -27,8 +30,7 @@
 #include <string>
 #include <vector>
 
-
-//#define UPDATE_ONE_IMAGE_PER_FRAME 1
+#define UPDATE_ONE_IMAGE_PER_FRAME 1
 
 
 class PrerenderAppCallback : public osg::NodeCallback
@@ -72,6 +74,11 @@ class PrerenderCullCallback : public osg::NodeCallback
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
+            // Reset this counter to zero, otherwise it wont do the while loop down below.
+            // And the cubemap will never update the newer frames.
+            if (_updateCubemapFace > 5)
+                _updateCubemapFace = 0;
+
             osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
             if (cv && _cubemap.valid() && _subgraph.valid())
             {
@@ -94,22 +101,22 @@ class PrerenderCullCallback : public osg::NodeCallback
                 if ((_updateCubemapFace >= 0) && (_updateCubemapFace <= 5))
                 {
                     _clearColor = clearColArray[_updateCubemapFace];
-                    doPreRender(*cv, _updateCubemapFace++);
+                    doPreRender(*node, *cv, _updateCubemapFace++);
                 }
 #else
                 while (_updateCubemapFace<6)
                 {
                     _clearColor = clearColArray[_updateCubemapFace];
-                    doPreRender(*cv, _updateCubemapFace++);
-                }
+                    doPreRender(*node, *cv, _updateCubemapFace++);
+                }    
 #endif
             }
-
+                
             // must traverse the subgraph            
             traverse(node,nv);
         }
-        
-        void doPreRender(osgUtil::CullVisitor& cv, const int nFace);
+           
+        void doPreRender(osg::Node& node, osgUtil::CullVisitor& cv, const int nFace);
         
         struct ImageData
         {
@@ -127,7 +134,7 @@ class PrerenderCullCallback : public osg::NodeCallback
 };
 
 
-void PrerenderCullCallback::doPreRender(osgUtil::CullVisitor& cv, const int nFace)
+void PrerenderCullCallback::doPreRender(osg::Node& /*node*/, osgUtil::CullVisitor& cv, const int nFace)
 {
     const ImageData id[] =
     {
@@ -221,8 +228,8 @@ void PrerenderCullCallback::doPreRender(osgUtil::CullVisitor& cv, const int nFac
         return;
     }
 
-    int height = 128;
-    int width  = 128;
+    int height = 512;
+    int width  = 512;
 
     const osg::Viewport& viewport = *cv.getViewport();
 
@@ -243,7 +250,7 @@ void PrerenderCullCallback::doPreRender(osgUtil::CullVisitor& cv, const int nFac
     cv.getCurrentRenderBin()->_stage->addToDependencyList(rtts.get());
 
     // if one exist attach image to the RenderToTextureStage.
-//  if (_image.valid()) rtts->setImage(_image.get());
+    // if (image.valid()) rtts->setImage(_image.get());
     if (image) rtts->setImage(image);
 }
 
@@ -253,7 +260,6 @@ osg::Drawable* makeGeometry()
     const float radius = 20;
     return new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),radius));
 }
-
 
 osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 {
@@ -446,8 +452,25 @@ int main( int argc, char **argv )
 
 #if 1
     osg::Node* sky = osgDB::readNodeFile("skydome.osg");
-    if (sky)
-        rootNode->addChild(createPreRenderSubGraph(sky));
+
+    // Proof of concept to see if the skydome really rotates and that the cubemap gets updated.
+    // create a transform to spin the model.
+    
+    osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
+    loadedModelTransform->addChild(sky);
+
+    osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(5.0f));
+    loadedModelTransform->setUpdateCallback(nc);
+
+    // osg::Group* rootNode = new osg::Group();
+    // rootNode->addChild(loadedModelTransform);
+    // rootNode->addChild(createPreRenderSubGraph(loadedModelTransform));
+
+
+    if (loadedModelTransform)
+    {    
+        rootNode->addChild(createPreRenderSubGraph(loadedModelTransform));
+    }
 #endif
 
 #if 1
@@ -456,15 +479,14 @@ int main( int argc, char **argv )
     pat->addChild(createReferenceSphere());
     rootNode->addChild(pat);
 #endif
+
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     if (loadedModel)
         rootNode->addChild(loadedModel);
 
-
     // add model to the viewer.
     viewer.setSceneData( rootNode );
-
 
     // create the windows and run the threads.
     viewer.realize();

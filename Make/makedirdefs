@@ -189,10 +189,6 @@ ifeq ($(LIBMPEG3_INSTALLED),yes)
     EXAMPLE_DIRS += osgmovie
 endif
 
-ifeq ($(LIBXML2_INSTALLED),yes)
-    EXAMPLE_DIRS += slideshow3D
-endif
-
 ifeq ($(DEMETER_INSTALLED),yes)
     EXAMPLE_DIRS += osgdemeter
 endif

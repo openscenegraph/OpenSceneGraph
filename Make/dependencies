@@ -2,7 +2,6 @@
 # Dependency library which have been installed on this system
 
 GDAL_INSTALLED = yes
-LIBXML2_INSTALLED = yes
 JASPER_INSTALLED = yes
 
 FREETYPE_INSTALLED = yes

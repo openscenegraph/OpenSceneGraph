@@ -168,6 +168,11 @@ osg::Group* ConvertFromFLT::visitInstanceReference(osg::Group& osgParent,Instanc
 
 osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& osgPrimary, PrimNodeRecord* rec)
 {
+	// Note: There are databases that contains nodes with both Matrix and GeneralMatrix
+	// ancillary records. We need just one of these to put into the scenegraph
+	// Nick.
+	bool mxFound  = false;
+
     osg::Group* parent = &osgParent;
     // Visit ancillary records
     for(int i=0; i < rec->getNumChildren(); i++)
@@ -183,12 +188,21 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
             break;
 
         case GENERAL_MATRIX_OP:
-            parent = visitGeneralMatrix(*parent, osgPrimary, (GeneralMatrixRecord*)child);
+			// Note: Ancillary record creates osg node
+			if (!mxFound)
+			{
+				parent = visitGeneralMatrix(*parent, osgPrimary, (GeneralMatrixRecord*)child);
+				mxFound = true;
+			}
             break;
 
         case MATRIX_OP:
             // Note: Ancillary record creates osg node
-            parent = visitMatrix(*parent, osgPrimary, (MatrixRecord*)child);
+			if (!mxFound)
+			{
+				parent = visitMatrix(*parent, osgPrimary, (MatrixRecord*)child);
+				mxFound = true;
+			}
             break;
 
         case COMMENT_OP:

@@ -19,7 +19,7 @@ using namespace osgUtil;
 // comment if you are are working with vertex programs,
 // but it does break osgreflect demo and perhaps others, so keep an eye
 // out artifacts.
-// #define APPLY_MATICES_BEFORE_STATE
+// #define APPLY_MATRICES_BEFORE_STATE
 
 void RenderLeaf::render(State& state,RenderLeaf* previous)
 {
@@ -27,7 +27,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
     if (previous)
     {
 
-#ifdef APPLY_MATICES_BEFORE_STATE
+#ifdef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.
         state.applyProjectionMatrix(_projection.get());
         state.applyModelViewMatrix(_modelview.get());
@@ -52,7 +52,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
 
         }
         
-#ifndef APPLY_MATICES_BEFORE_STATE
+#ifndef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.
         state.applyProjectionMatrix(_projection.get());
         state.applyModelViewMatrix(_modelview.get());
@@ -63,7 +63,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
     }
     else
     {
-#ifdef APPLY_MATICES_BEFORE_STATE
+#ifdef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.
         state.applyProjectionMatrix(_projection.get());
         state.applyModelViewMatrix(_modelview.get());
@@ -74,7 +74,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
 
         state.apply(_parent->_stateset.get());
 
-#ifndef APPLY_MATICES_BEFORE_STATE
+#ifndef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.
         state.applyProjectionMatrix(_projection.get());
         state.applyModelViewMatrix(_modelview.get());

@@ -90,7 +90,7 @@ class SG_EXPORT Billboard : public Geode
         {
             AXIAL_ROT_X_AXIS=AXIAL_ROT+1,
             AXIAL_ROT_Y_AXIS,
-            AXIAL_ROT_Z_AXIS,
+            AXIAL_ROT_Z_AXIS
         };
 
 

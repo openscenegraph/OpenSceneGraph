@@ -1,6 +1,10 @@
 #include <osg/Notify>
 #include <string>
 
+#if defined(__BCPLUSPLUS__)
+using std::toupper;
+#endif
+
 osg::NotifySeverity osg::g_NotifyLevel = osg::NOTICE;
 std::ofstream *osg::g_NotifyNulStream; 
 bool osg::g_NotifyInit = false;

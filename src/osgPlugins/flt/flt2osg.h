@@ -129,6 +129,7 @@ class ConvertFromFLT
         // Primary records
         osg::Group* visitHeader(HeaderRecord* rec);
         osg::Group* visitGroup(osg::Group& osgParent, GroupRecord* rec);
+        osg::Group* visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec);
         osg::Group* visitLOD(osg::Group& osgParent, LodRecord* rec);
         osg::Group* visitOldLOD(osg::Group& osgParent, OldLodRecord* rec);
         osg::Group* visitDOF(osg::Group& osgParent, DofRecord* rec);

@@ -69,7 +69,8 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
         return true;
     else
     {
-        glTextureID=new unsigned long[16];    
+        glTextureID= osgNew unsigned long[16];
+        memset(glTextureID,0,sizeof(unsigned long)*16);
         glContextTextureID[renderContext]=glTextureID;
     }
 

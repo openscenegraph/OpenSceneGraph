@@ -4,10 +4,10 @@
 
 FTSize::FTSize()
 :    ftFace(0),
+    ftSize(0),
     size(0),
     err(0)
 {}
-
 
 FTSize::~FTSize()
 {}

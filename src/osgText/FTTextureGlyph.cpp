@@ -4,6 +4,7 @@
 
 FTTextureGlyph::FTTextureGlyph( FT_Glyph glyph, int id, unsigned char* data, GLsizei stride, GLsizei height, float u, float v)
 :    FTGlyph(),
+    activeTextureID(0),
     destWidth(0),
     destHeight(0),
     numGreys(0),

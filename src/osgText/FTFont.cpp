@@ -6,8 +6,9 @@
 #include <osg/DisplaySettings>
 
 // mrn@changes
-FTFont::FTFont()
-:    numFaces(0),
+FTFont::FTFont():
+    numFaces(0),
+    numGlyphs(0),
     err(0)
 {
     _contextGlyphList.resize(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),NULL);

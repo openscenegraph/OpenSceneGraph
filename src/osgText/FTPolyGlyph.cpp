@@ -58,6 +58,7 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     vectoriser(0),
     numPoints(0),
     numContours(0),
+    contourFlag(0),
     contourLength(0),
     data(0),
     glList(0)
@@ -69,7 +70,11 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     
     vectoriser->Process();
     numContours = vectoriser->contours();
+    
+    if (numContours==0) return;
+    
     contourLength = osgNew int[ numContours];
+    memset(contourLength,0,sizeof(int)*numContours);
     
     for( int c = 0; c < numContours; ++c)
     {
@@ -78,6 +83,9 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     
     numPoints = vectoriser->points();
     data = osgNew double[ numPoints * 3];
+    // initalize memory.
+    for( int pc=0;pc<numPoints*3;++pc) data[pc]=0.0;
+
     // FIXME MakeMesh
     vectoriser->MakeOutline( data);
     

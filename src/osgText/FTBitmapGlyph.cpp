@@ -22,6 +22,8 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
     int srcHeight = source->rows;
     int srcPitch = source->pitch;
     
+    if (srcPitch*srcHeight==0) return;
+    
     advance = glyph->advance.x >> 16;
 
      pos.x = bitmap->left;

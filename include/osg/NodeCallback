@@ -23,7 +23,7 @@ class SG_EXPORT NodeCallback : public Referenced {
             REQUIRES_TRAVERSAL = 0x1,
             REQUIRES_PARENT_PATH = 0x2,
             REQUIRES_ACCUMULATED_MATRIX = 0x4,
-            REQUIRES_ACCUMULATED_INVERSE = 0x8,
+            REQUIRES_ACCUMULATED_INVERSE = 0x8
         };
 
         NodeCallback(const Requirements ncr=NO_REQUIREMENTS):_requirements(ncr) {}

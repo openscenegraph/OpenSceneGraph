@@ -42,10 +42,8 @@ const PolygonMode::Mode PolygonMode::getMode(const Face face) const
     {
         case(FRONT):
             return _modeFront;
-            break;
         case(BACK):
             return _modeBack;
-            break;
         case(FRONT_AND_BACK):
             return _modeFront;
     }    

@@ -50,11 +50,11 @@ class ReaderWriterFLY : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"fly");
         }
 
-        virtual Node* readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
         {
         
             std::string ext = osgDB::getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return NULL;
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             char buff[256];
 
@@ -95,7 +95,7 @@ class ReaderWriterFLY : public osgDB::ReaderWriter
 
 };
 
-// now register with osg::Registry to instantiate the above
+// now register with osgDB::Registry to instantiate the above
 // reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterFLY> g_readerWriter_FLY_Proxy;
 

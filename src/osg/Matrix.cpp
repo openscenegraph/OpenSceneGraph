@@ -483,7 +483,7 @@ bool Matrix::invertAffine( const Matrix& _m )
 
     det_1 = pos + neg;
 
-    if( (det_1 == 0.0) || (abs(det_1/(pos-neg)) < PRECISION_LIMIT )) {
+    if( (det_1 == 0.0) || (fabs(det_1/(pos-neg)) < PRECISION_LIMIT )) {
         // _m has no inverse
         notify(WARN) << "Matrix::invert(): Matrix has no inverse." << endl;
         return false;

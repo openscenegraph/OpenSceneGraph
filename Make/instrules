@@ -13,17 +13,22 @@ __instbin:
 		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
 		INSTALL?="$(INSTBINCMD)" __install
-	@echo \
-	  "\n"\
-	  "    Run-time environment installation successful.  Add \n"\
-	  "        $(INST_DEMOS)\n"\
-	  "    to your PATH environmental variable, and \n"\
-	  "        $(INST_LIBS) and $(INST_PLUGINS) \n"\
-	  "    to your LD_LIBRARY_PATH if not already present.\n"\
-	  "\n" >> $(INSTLOGFILE)
+	@echo  >> $(INSTLOGFILE)
+	@echo "    Run-time environment installation successful.  Add "\
+	  >> $(INSTLOGFILE)
+	@echo "        $(INST_DEMOS)"\
+	  >> $(INSTLOGFILE)
+	@echo "    to your PATH environmental variable, and"\
+	  >> $(INSTLOGFILE)
+	@echo "        $(INST_LIBS) and $(INST_PLUGINS)"\
+	  >> $(INSTLOGFILE)
+	@echo "    to your LD_LIBRARY_PATH if not already present."\
+	  >> $(INSTLOGFILE)
+	@echo >> $(INSTLOGFILE)
 	
 
 __instdev:
+ifeq (0,1)
 	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
 	do\
 	  if [ -d $(TOPDIR)/include/$$d ]; \
@@ -32,42 +37,57 @@ __instdev:
 		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
+endif
 	@$(TOPDIR)/Make/instdemosrc \
-		$(OS)\
 		$(TOPDIR)\
 		$(INST_LIBS)\
-		$(INST_PLUGINS)\
 		$(INST_INCLUDE)\
-		$(INST_DEMOS)\
 		$(INST_SRC)\
 		$(INST_DEMO_SRC)\
-		$(INST_DOC)\
-		$(INST_DATA)\
+		"$(INSTDEVCMD)"\
+		"$(C++)"\
 		"$(OPTF)"\
-		"$(DEPARG)"
-	@echo \
-	  "\n"\
-	  "    Development environment installation successful.  Add\n"\
-	  "        -I$(INST_INCLUDE)\n"\
-	  "    compile flag when compiling with OSG header files.\n"\
-	  "    Example programs can be found at $(INST_DEMO_SRC).\n"\
-	  "\n" >> $(INSTLOGFILE)
+		"$(DEPARG)"\
+		"$(LINKARGS)"\
+		"$(OSG_LIBS)"\
+		"$(FREETYPE_LIB)"\
+		"$(GLUT_LIB)"\
+		"$(GL_LIBS)"\
+		"$(X_LIBS)"\
+		"$(SOCKET_LIBS)"\
+		"$(OTHER_LIBS)"\
+		"$(TIFF_LIB)"\
+
+
+	@echo\
+	  >> $(INSTLOGFILE)
+	@echo "    Development environment installation successful.  Add"\
+	  >> $(INSTLOGFILE)
+	@echo "        -I$(INST_INCLUDE)"\
+	  >> $(INSTLOGFILE)
+	@echo "    compile flag when compiling with OSG header files."\
+	  >> $(INSTLOGFILE)
+	@echo "    Example programs can be found at $(INST_DEMO_SRC)."\
+	  >> $(INSTLOGFILE)
+	@echo  >> $(INSTLOGFILE)
+	  
+	  
 	
 
 instlinks : 
 	@rm -f $(INSTLOGFILE)
-	$(MAKE) INSTALL="$(INSTLINKBINCMD)" __instbin
-	$(MAKE) INSTALL="$(INSTLINKDEVCMD)" __instdev
+	$(MAKE) INSTBINCMD="$(INSTLINKBINCMD)" __instbin
+	$(MAKE) INSTDEVCMD="$(INSTLINKDEVCMD)" __instdev
 	@more $(INSTLOGFILE)
 
 instlinksbin :
 	@rm -f $(INSTLOGFILE)
-	$(MAKE) INSTALL="$(INSTLINKBINCMD)" __instbin
+	$(MAKE) INSTBINCMD="$(INSTLINKBINCMD)" __instbin
 	@more $(INSTLOGFILE)
 
 instlinksdev :
 	@rm -f $(INSTLOGFILE)
-	$(MAKE) INSTALL="$(INSTLINKDEVCMD)" __instdev
+	@$(MAKE) INSTDEVCMD="$(INSTLINKDEVCMD)" __instdev
 	@more $(INSTLOGFILE)
 
 

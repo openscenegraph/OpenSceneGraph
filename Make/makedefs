@@ -222,7 +222,6 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -ldl -lstdc++ -lobjc
   LIBEXT            = dylib
-  PLUGINEXT         = so
   QUICKTIME_LIB	    = -framework QuickTime
   TIFF_LIB	    = -ltiff
 

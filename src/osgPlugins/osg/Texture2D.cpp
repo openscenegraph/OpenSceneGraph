@@ -72,7 +72,7 @@ bool Texture2D_writeLocalData(const Object& obj, Output& fw)
 
     if (texture.getImage() && !(texture.getImage()->getFileName().empty()))
     {
-        fw.indent() << "file \""<<fw.getFileNameForOutput(texture.getImage()->getFileName())<<"\""<< std::endl;
+        fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(texture.getImage()->getFileName()))<< std::endl;
     }
 
     return true;

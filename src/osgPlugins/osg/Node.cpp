@@ -103,7 +103,7 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
 {
     const Node& node = static_cast<const Node&>(obj);
 
-    if (!node.getName().empty()) fw.indent() << "name "<<'"'<<node.getName()<<'"'<< std::endl;
+    if (!node.getName().empty()) fw.indent() << "name "<<fw.wrapString(node.getName())<< std::endl;
 
     fw.indent() << "cullingActive ";
     if (node.getCullingActive()) fw << "TRUE"<< std::endl;
@@ -126,7 +126,7 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     {
         if (node.getDescriptions().size()==1)
         {
-            fw.indent() << "description "<<'"'<<node.getDescriptions().front()<<'"'<< std::endl;
+            fw.indent() << "description "<<fw.wrapString(node.getDescriptions().front())<< std::endl;
         }
         else
         {
@@ -136,7 +136,7 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
                 ditr!=node.getDescriptions().end();
                 ++ditr)
             {
-                fw.indent() << '"'<<*ditr<<'"'<< std::endl;
+                fw.indent() << fw.wrapString(*ditr)<< std::endl;
             }
             fw.moveOut();
             fw.indent() << "}"<< std::endl;

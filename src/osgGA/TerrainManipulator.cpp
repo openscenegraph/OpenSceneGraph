@@ -42,7 +42,7 @@ void TerrainManipulator::setNode(osg::Node* node)
             
         osg::notify(osg::INFO)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
     }
-    
+    if (getAutoComputeHomePosition()) computeHomePosition();    
 }
 
 
@@ -60,18 +60,10 @@ osg::Node* TerrainManipulator::getNode()
 
 void TerrainManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 {
-    if(_node.get())
-    {
+    if (getAutoComputeHomePosition()) computeHomePosition();
 
-        const osg::BoundingSphere& boundingSphere=_node->getBound();
-
-        computePosition(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
-                        boundingSphere._center,
-                        osg::Vec3(0.0f,0.0f,1.0f));
-
-        us.requestRedraw();
-    }
-
+    computePosition(_homeEye, _homeCenter, _homeUp);
+    us.requestRedraw();
 }
 
 
@@ -243,7 +235,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
         if (!hitList.empty())
         {
-            notify(INFO) << "Hit terrain ok"<< std::endl;
+            notify(INFO) << "Hit terrain ok A"<< std::endl;
             osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
             _center = ip;
@@ -280,7 +272,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
             if (!hitList.empty())
             {
-                notify(INFO) << "Hit terrain ok"<< std::endl;
+                notify(INFO) << "Hit terrain ok B"<< std::endl;
                 osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
                 _center = ip;
@@ -336,7 +328,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
             if (!hitList.empty())
             {
-                osg::notify(osg::INFO) << "Hit terrain ok"<< std::endl;
+                osg::notify(osg::INFO) << "Hit terrain ok C"<< std::endl;
                 osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
                 _center = ip;

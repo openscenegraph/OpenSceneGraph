@@ -52,6 +52,8 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
 
         virtual osg::Node* getNode();
 
+        virtual void computeHomePosition();
+
         virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
         virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);

@@ -51,6 +51,7 @@ void DriveManipulator::setNode(osg::Node* node)
         _height = getHeightOfDriver();
         _buffer = _height*1.3;
     }
+    if (getAutoComputeHomePosition()) computeHomePosition();    
 }
 
 
@@ -65,13 +66,10 @@ osg::Node* DriveManipulator::getNode()
     return _node.get();
 }
 
-void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
+void DriveManipulator::computeHomePosition()
 {
-
     if(_node.get())
     {
-
-
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         osg::Vec3d ep = boundingSphere._center;
@@ -110,7 +108,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 ep += getUpVector(cf)*_height;
                 osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
 
-                computePosition(ep,lv,uv);
+                setHomePosition(ep,ep+lv,uv);
 
                 positionSet = true;
 
@@ -145,7 +143,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                     ep = ip;
                     ep += getUpVector(cf)*_height;
                     osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
-                    computePosition(ep,lv,uv);
+                    setHomePosition(ep,ep+lv,uv);
 
                     positionSet = true;
 
@@ -156,14 +154,21 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         if (!positionSet)
         {
-            computePosition(
+            setHomePosition(
                 boundingSphere._center+osg::Vec3d( 0.0,-2.0 * boundingSphere._radius,0.0),
-                osg::Vec3d(0.0,1.0,0.0),
+                boundingSphere._center+osg::Vec3d( 0.0,-2.0 * boundingSphere._radius,0.0)+osg::Vec3d(0.0,1.0,0.0),
                 osg::Vec3d(0.0,0.0,1.0));
         }
 
     }
+}
 
+void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
+{
+    if (getAutoComputeHomePosition()) computeHomePosition();
+
+    computePosition(_homeEye, _homeCenter, _homeUp);
+    
     _velocity = 0.0;
 
     us.requestRedraw();
@@ -218,7 +223,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
             ep = ip+uv*_height;
             osg::Vec3d lv = uv^sv;
 
-            computePosition(ep,lv,uv);
+            computePosition(ep,ep+lv,uv);
 
             positionSet = true;
         }
@@ -252,7 +257,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 ep = ip+uv*_height;
                 osg::Vec3 lv = uv^sv;
 
-                computePosition(ep,lv,uv);
+                computePosition(ep,ep+lv,uv);
 
                 positionSet = true;
             }
@@ -386,8 +391,10 @@ osg::Matrixd DriveManipulator::getInverseMatrix() const
     return osg::Matrixd::translate(-_eye)*osg::Matrixd::rotate(_rotation.inverse());
 }
 
-void DriveManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up)
+void DriveManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
 {
+    osg::Vec3d lv = center-eye;
+
     osg::Vec3d f(lv);
     f.normalize();
     osg::Vec3d s(f^up);
@@ -532,7 +539,7 @@ bool DriveManipulator::calcMovement()
 
                 lv = up^sv;
 
-                computePosition(_eye,lv,up);
+                computePosition(_eye,_eye+lv,up);
 
                 return true;
 
@@ -570,7 +577,7 @@ bool DriveManipulator::calcMovement()
 
                 lv = up^sv;
 
-                computePosition(_eye,lv,up);
+                computePosition(_eye,_eye+lv,up);
 
                 return true;
             }

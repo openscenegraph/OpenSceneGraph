@@ -8,6 +8,12 @@ using namespace osgGA;
 MatrixManipulator::MatrixManipulator()
 {
     _minimumDistance = 0.001;
+    
+    _autoComputeHomePosition = true;
+        
+    _homeEye.set(0.0,-1.0,0.0);
+    _homeCenter.set(0.0,0.0,0.0);
+    _homeUp.set(0.0,0.0,1.0);
 }
 
 

@@ -10,7 +10,9 @@ void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name,
     _manips[key]=std::make_pair(name,osg::ref_ptr<MatrixManipulator>(cm));
     if(!_current.valid()){
         _current=cm;
-        _current->setNode(getNode());
+        _current->setAutoComputeHomePosition(_autoComputeHomePosition);
+        _current->setHomePosition(_homeEye,_homeCenter,_homeUp);
+        _current->setNode(0);
         _current->setCoordinateFrameCallback(getCoordinateFrameCallback());
         _current->setByMatrix(getMatrix());
     }
@@ -34,6 +36,9 @@ void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
     
     if (itr!=_manips.end())
     {
+        itr->second.second->setAutoComputeHomePosition(_autoComputeHomePosition);
+        itr->second.second->setHomePosition(_homeEye,_homeCenter,_homeUp);
+
         if (_current.valid())
         {
             if ( !itr->second.second->getCoordinateFrameCallback() )
@@ -61,6 +66,28 @@ void KeySwitchMatrixManipulator::setNode(osg::Node* node)
     }
 }
 
+void KeySwitchMatrixManipulator::setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up)
+{
+    MatrixManipulator::setHomePosition(eye, center, up);
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->setHomePosition(eye, center, up);
+    }
+}
+
+void KeySwitchMatrixManipulator::setAutoComputeHomePosition(bool flag)
+{
+    _autoComputeHomePosition = flag;
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->setAutoComputeHomePosition(flag);
+    }
+}
+
 void KeySwitchMatrixManipulator::setMinimumDistance(float minimumDistance)
 {
     _minimumDistance = minimumDistance;
@@ -69,6 +96,16 @@ void KeySwitchMatrixManipulator::setMinimumDistance(float minimumDistance)
         ++itr)
     {
         itr->second.second->setMinimumDistance(minimumDistance);
+    }
+}
+
+void KeySwitchMatrixManipulator::computeHomePosition()
+{
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->computeHomePosition();
     }
 }
 

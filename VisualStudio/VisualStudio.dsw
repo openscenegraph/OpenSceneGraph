@@ -1142,7 +1142,7 @@ Package=<4>
 
 
 
-Project: "Demo sgv"=.\Demos\sgv\sgv.dsp - Package Owner=<4>
+Project: "Demo osgparticle"=.\Demos\osgparticle\osgparticle.dsp - Package Owner=<4>
 
 
 

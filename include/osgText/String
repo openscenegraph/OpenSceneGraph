@@ -25,7 +25,26 @@ namespace osgText {
 
 class Text;
 
-class OSGTEXT_EXPORT String : public osg::Referenced, public std::vector<unsigned int>
+#ifndef _MSC_VER
+
+typedef std::vector<unsigned int> VectorUInt;
+
+#else // _MSC_VER
+
+class VectorUInt: public std::vector<unsigned int> {
+	typedef std::vector<value_type> inherited;
+public:
+	VectorUInt(): inherited() {}
+	explicit VectorUInt(size_type n): inherited(n) {}
+	VectorUInt(const VectorUInt &copy): inherited(copy) {}
+	//VectorUInt(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	template<class InputIterator>
+	VectorUInt(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
+};
+
+#endif
+
+class OSGTEXT_EXPORT String : public osg::Referenced, public VectorUInt
 {
 public:
 

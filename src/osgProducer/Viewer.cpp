@@ -20,39 +20,18 @@ Viewer::Viewer():
 
 Viewer::Viewer(Producer::CameraConfig *cfg):
     CameraGroup(cfg),
-    _done(0),
+    _done(false),
     _frameNumber(0),
     _kbmcb(0)
 {
-    _done = false;
 }
 
 Viewer::Viewer(const std::string& configFile):
     CameraGroup(configFile),
-    _done(0),
+    _done(false),
     _frameNumber(0),
     _kbmcb(0)
 {
-    _done = false;
-}
-
-Viewer::Viewer(int& argc, char** argv):
-    _done(0),
-    _frameNumber(0),
-    _kbmcb(0)
-{
-    _done = false;
-
-    readCommandLine(argc,argv);
-    // set up the maximum number of graphics contexts, before loading the scene graph
-    // to ensure that texture objects and display buffers are configured to the correct size.
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( getNumberOfCameras() );
-}
-
-
-bool Viewer::readCommandLine(int&, char**)
-{
-    return false;
 }
 
 void Viewer::setUpViewer(Viewer::ViewerOptions options)
@@ -113,24 +92,9 @@ void Viewer::setUpViewer(Viewer::ViewerOptions options)
     // create a camera to use with the manipulators.
     _old_style_osg_camera = new osg::Camera;
 
-    if (options&(TRACKBALL_MANIPULATOR|FLIGHT_MANIPULATOR|DRIVE_MANIPULATOR))
-    {
-
-        _keyswitchManipulator = new osgGA::KeySwitchCameraManipulator;
-        if (options&TRACKBALL_MANIPULATOR) _keyswitchManipulator->addNumberedCameraManipulator(new osgGA::TrackballManipulator);
-        if (options&FLIGHT_MANIPULATOR) _keyswitchManipulator->addNumberedCameraManipulator(new osgGA::FlightManipulator);
-        if (options&DRIVE_MANIPULATOR) _keyswitchManipulator->addNumberedCameraManipulator(new osgGA::DriveManipulator);
-
-        _keyswitchManipulator->setCamera(_old_style_osg_camera.get());
-        _keyswitchManipulator->setNode(getSceneDecorator());
-
-        _eventHandlerList.push_back(_keyswitchManipulator.get());
-
-        osg::ref_ptr<osgProducer::EventAdapter> init_event = new osgProducer::EventAdapter;
-        init_event->adaptFrame(0.0);
-        _keyswitchManipulator->getCurrentCameraManipulator()->home(*init_event,*this);
-
-    }
+    if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
+    if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
+    if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
     
     if (options&STATE_MANIPULATOR)
     {
@@ -141,13 +105,34 @@ void Viewer::setUpViewer(Viewer::ViewerOptions options)
     
 }
 
+unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)
+{
+    if (!cm) return 0xfffff;
+    
+    // create a key switch manipulator if one doesn't already exist.
+    if (!_keyswitchManipulator)
+    {
+        _keyswitchManipulator = new osgGA::KeySwitchCameraManipulator;
+        _eventHandlerList.push_back(_keyswitchManipulator.get());
+    }
+    
+    unsigned int num = _keyswitchManipulator->getNumCameraManipualtors();
+    _keyswitchManipulator->addNumberedCameraManipulator(cm);
+    
+    return num;
+}
+
+
 void Viewer::realize( ThreadingModel thread_model)
 {
-    if (_keyswitchManipulator.valid())
+    if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentCameraManipulator())
     {
         osg::ref_ptr<osgProducer::EventAdapter> init_event = new osgProducer::EventAdapter;
         init_event->adaptFrame(0.0);
-        _keyswitchManipulator->getCurrentCameraManipulator()->home(*init_event,*this);
+
+        _keyswitchManipulator->setCamera(_old_style_osg_camera.get());
+        _keyswitchManipulator->setNode(getSceneDecorator());
+        _keyswitchManipulator->home(*init_event,*this);
     }
 
     CameraGroup::realize( thread_model );
@@ -198,7 +183,14 @@ void Viewer::update()
     if (_old_style_osg_camera.valid()) setView(_old_style_osg_camera->getModelViewMatrix().ptr());
 }
 
+void Viewer::selectCameraManipulator(unsigned int no)
+{
+    if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectCameraManipulator(no);
+}
+
 void Viewer::requestWarpPointer(int x,int y)
 {
     osg::notify(osg::WARN) << "Warning: requestWarpPointer("<<x<<","<<y<<") not implemented yet."<<std::endl;
 }
+
+

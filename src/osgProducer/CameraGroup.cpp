@@ -3,7 +3,6 @@
 //as published by the Free Software Foundation.
 
 #include <osgProducer/CameraGroup>
-#include <osgProducer/ReadCameraConfigFile>
 
 using namespace osgProducer;
 
@@ -17,7 +16,7 @@ CameraGroup::CameraGroup(Producer::CameraConfig *cfg): Producer::CameraGroup(cfg
     _init();
 }
 
-CameraGroup::CameraGroup(const std::string& configFile) : Producer::CameraGroup(readCameraConfigFile(configFile)) 
+CameraGroup::CameraGroup(const std::string& configFile) : Producer::CameraGroup(configFile) 
 {
     _init();
 }

@@ -45,6 +45,11 @@ public:
 	*/
         void addNumberedCameraManipulator(CameraManipulator *cm);
 
+        unsigned int getNumCameraManipualtors() const { return _manips.size(); }
+
+        void selectCameraManipulator(unsigned int num);
+
+
         CameraManipulator* getCurrentCameraManipulator() { return _current.get(); }
 
         const CameraManipulator* getCurrentCameraManipulator() const { return _current.get(); }

@@ -6,8 +6,6 @@ CXXFILES =\
 	EventAdapter.cpp\
         KeyboardMouseCallback.cpp\
         SceneHandler.cpp\
-        ReadCameraConfigFile.cpp\
-        WriteCameraConfigFile.cpp\
         Viewer.cpp\
 
 LIBS += -lProducer $(GL_LIBS) -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)

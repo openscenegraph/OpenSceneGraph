@@ -20,8 +20,6 @@ Geode::Geode(const Geode& geode,const CopyOp& copyop):
         Drawable* drawable = copyop(itr->get());
         if (drawable) addDrawable(drawable);
     }
-    
-    _occluder = dynamic_cast<ConvexPlanerOccluder*>(copyop(geode.getOccluder()));
 }
 
 Geode::~Geode()

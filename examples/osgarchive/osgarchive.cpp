@@ -134,7 +134,7 @@ int main( int argc, char **argv )
                 if (obj.valid())
                 {
                     std::cout<<"  write to archive "<<*itr<<std::endl;
-                    archive->writeObject(*obj, *itr);
+                    archive->threadSafe_writeObject(*obj, *itr);
                 }
             }
         }
@@ -150,7 +150,7 @@ int main( int argc, char **argv )
                 ++itr)
             {
                 osg::Timer_t start = osg::Timer::instance()->tick();
-                osgDB::ReaderWriter::ReadResult result = archive->readObject(*itr);                
+                osgDB::ReaderWriter::ReadResult result = archive->threadSafe_readObject(*itr);
                 osg::ref_ptr<osg::Object> obj = result.getObject();
                 std::cout<<"readObejct time = "<<osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick())<<std::endl;
                 if (obj.valid())

@@ -3724,13 +3724,13 @@ void DataSet::_equalizeRow(Row& row)
 
 void DataSet::_writeNodeFile(const osg::Node& node,const std::string& filename)
 {
-    if (_archive.valid()) _archive->writeNode(node,filename);
+    if (_archive.valid()) _archive->threadSafe_writeNode(node,filename);
     else osgDB::writeNodeFile(node, filename);
 }
 
 void DataSet::_writeImageFile(const osg::Image& image,const std::string& filename)
 {
-    if (_archive.valid()) _archive->writeImage(image,filename);
+    if (_archive.valid()) _archive->threadSafe_writeImage(image,filename);
     else osgDB::writeImageFile(image, filename);
 }
 

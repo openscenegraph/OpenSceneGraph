@@ -245,6 +245,7 @@ bool FltFile::readFile(const std::string& fileName)
                         osg::ref_ptr<osgDB::ReaderWriter::Options> options = 
                             _pFltFile->getOptions() ? _pFltFile->getOptions() : 
                                                       new osgDB::ReaderWriter::Options;
+
                         //Path for Nested external references
                         osgDB::FilePathList& fpl = options->getDatabasePathList();
                         const std::string& filePath = osgDB::getFilePath(filename);
@@ -278,8 +279,6 @@ bool FltFile::readFile(const std::string& fileName)
                         }
 
                         pExternalFltFile->readModel(filename);
-
-                        fpl.pop_back();
                     }
 
                     rec.setExternal(pExternalFltFile);

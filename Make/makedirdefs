@@ -76,6 +76,7 @@ DEMOS_DIRS = \
 	osggeometry\
 	osghud\
 	osgimpostor\
+	osgmultitexture\
 	osgoccluder\
 	osgparticle\
 	osgprerender\

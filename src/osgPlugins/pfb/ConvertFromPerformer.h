@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iostream>
 
 // Open Scene Graph includes.
 #include <osg/Node>

@@ -90,6 +90,7 @@ public:
 protected:
 
     osg::Vec3   _slideOrigin;
+    osg::Vec3   _eyeOrigin;
     float       _slideWidth;
     float       _slideHeight;
     float       _slideDistance;

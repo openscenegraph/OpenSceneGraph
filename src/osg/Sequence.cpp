@@ -200,7 +200,7 @@ void Sequence::traverse(NodeVisitor& nv)
     // now do the traversal
     if (nv.getTraversalMode()==NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
     {
-        if (getValue()>=0) _children[getValue()]->accept(nv);
+        if (getValue()>=0 && getValue()<(int)_children.size()) _children[getValue()]->accept(nv);
     }
     else
     {

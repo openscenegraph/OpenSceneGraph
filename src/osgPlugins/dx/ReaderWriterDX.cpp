@@ -42,7 +42,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeObject(
 osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeNode( 
                                        const osg::Node   &node,
                                        const std::string &filename,
-                                       const Options     *options )
+                                       const Options     *)
 {
   dx::WriterParms parms;
   std::string     messages;

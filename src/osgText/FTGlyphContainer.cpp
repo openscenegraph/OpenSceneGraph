@@ -61,7 +61,7 @@ FT_Vector& FTGlyphContainer::render( unsigned int index, unsigned int next, FT_V
         if (left<glyphs.size()) advance = glyphs[left]->Render( pen);
     }
     
-    kernAdvance.x = advance + kernAdvance.x;
+    kernAdvance.x = static_cast<FT_Pos>(advance) + kernAdvance.x;
 //    kernAdvance.y = advance.y + kernAdvance.y;
     return kernAdvance;
 }

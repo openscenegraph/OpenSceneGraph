@@ -33,7 +33,7 @@ void CALLBACK ftglEnd()
 }
 
 
-void CALLBACK ftglCombine( GLdouble coords[3], void* vertex_data[4], GLfloat weight[4], void** outData)
+void CALLBACK ftglCombine( GLdouble coords[3], void* /*vertex_data*/[4], GLfloat /*weight*/[4], void** outData)
 {
     double* vertex = osgNew double[3]; // FIXME MEM LEAK
 

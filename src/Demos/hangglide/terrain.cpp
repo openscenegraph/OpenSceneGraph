@@ -8,7 +8,8 @@
 
 #include <osgDB/ReadFile>
 
-#include "terrain_data.h"
+#include "terrain_coords.h"
+#include "terrain_texcoords.h"
 
 using namespace osg;
 

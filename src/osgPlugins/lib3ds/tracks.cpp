@@ -1364,7 +1364,7 @@ lib3ds_morph_track_eval(Lib3dsMorphTrack *track, char *p, Lib3dsFloat t)
  * \ingroup tracks
  */
 Lib3dsBool
-lib3ds_morph_track_read(Lib3dsMorphTrack *track, FILE *f)
+lib3ds_morph_track_read(Lib3dsMorphTrack *, FILE *)
 {
   /* FIXME: */
   return(LIB3DS_TRUE);
@@ -1375,7 +1375,7 @@ lib3ds_morph_track_read(Lib3dsMorphTrack *track, FILE *f)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_morph_track_write(Lib3dsMorphTrack *track, FILE *f)
+lib3ds_morph_track_write(Lib3dsMorphTrack *, FILE *)
 {
   /* FIXME: */
   ASSERT(0);

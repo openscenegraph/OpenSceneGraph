@@ -108,7 +108,7 @@ lib3ds_light_dump(Lib3dsLight *light)
   printf("  spot_aspect:      %f\n", light->spot_aspect);
   printf("  use_projector:    %s\n", light->use_projector ? "yes" : "no");
   printf("  projector:        %s\n", light->projector);
-  printf("  spot_overshoot:   %d\n", light->spot_overshoot);
+  printf("  spot_overshoot:   %i\n", static_cast<int>(light->spot_overshoot));
   printf("  ray_shadows:      %s\n", light->ray_shadows ? "yes" : "no");
   printf("  ray_bias:         %f\n", light->ray_bias);
   printf("  hot_spot:         %f\n", light->hot_spot);

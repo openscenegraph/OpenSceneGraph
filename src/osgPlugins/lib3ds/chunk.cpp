@@ -44,14 +44,14 @@ static char lib3ds_chunk_level[128]="";
 
 
 static void
-lib3ds_chunk_debug_enter(Lib3dsChunk *c)
+lib3ds_chunk_debug_enter(Lib3dsChunk *)
 {
   strcat(lib3ds_chunk_level, "  ");
 }
 
 
 static void
-lib3ds_chunk_debug_leave(Lib3dsChunk *c)
+lib3ds_chunk_debug_leave(Lib3dsChunk *)
 {
   lib3ds_chunk_level[strlen(lib3ds_chunk_level)-2]=0;
 }
@@ -162,7 +162,7 @@ lib3ds_chunk_read_next(Lib3dsChunk *c, FILE *f)
  * \ingroup chunk
  */
 void
-lib3ds_chunk_read_reset(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_read_reset(Lib3dsChunk *, FILE *f)
 {
   fseek(f, -6, SEEK_CUR);
 }

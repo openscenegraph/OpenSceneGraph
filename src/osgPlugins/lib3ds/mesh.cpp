@@ -513,7 +513,7 @@ lib3ds_mesh_dump(Lib3dsMesh *mesh)
       mesh->faceL[i].points[0],
       mesh->faceL[i].points[1],
       mesh->faceL[i].points[2],
-      mesh->faceL[i].smoothing
+      static_cast<int>(mesh->faceL[i].smoothing)
     );
   }
 }

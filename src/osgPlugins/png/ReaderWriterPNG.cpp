@@ -114,7 +114,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             png_read_image(png, row_p);
             free(row_p);
 
-            int iBitCount;
+            int iBitCount=0;
 
             if (trans == PNG_SOLID || trans == PNG_ALPHA || color == PNG_COLOR_TYPE_RGB_ALPHA || color == PNG_COLOR_TYPE_GRAY_ALPHA)
             {
@@ -134,7 +134,9 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                         break;
 
                     default:
-                        return ReadResult::FILE_NOT_HANDLED;
+                        // error, will force return of ReadResult::FILE_NOT_HANDLED
+                        // see below.
+                        iBitCount = 0;
                 }
             }
 
@@ -145,6 +147,9 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             if (fp)
                 fclose(fp);
+
+            if (iBitCount==0) 
+                return ReadResult::FILE_NOT_HANDLED;
 
             osg::Image* pOsgImage = new osg::Image();
 

@@ -120,6 +120,7 @@ class NetReader : public osgDB::ReaderWriter
             case(NODE): return rw->readNode(fin,options);
             default: break;
             }
+			return ReadResult::FILE_NOT_HANDLED;
         }
 
         virtual ReadResult readFile(ObjectType objectType, const std::string& inFileName, const Options *options)

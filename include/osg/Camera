@@ -185,7 +185,7 @@ class SG_EXPORT Camera: public osg::Referenced
         const Vec3 getSideVector() const;
 
         /** get focal distance.*/
-        inline const float getFocalLength() const { return _focalLength; }
+        inline const double getFocalLength() const { return _focalLength; }
         
 
         enum TransformMode

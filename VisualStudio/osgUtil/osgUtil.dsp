@@ -165,6 +165,10 @@ SOURCE=..\..\src\osgUtil\SmoothingVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\TangentSpaceGenerator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\Tesselator.cpp
 # End Source File
 # Begin Source File
@@ -278,6 +282,10 @@ SOURCE=..\..\include\osgUtil\SmoothingVisitor
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\Statistics
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\TangentSpaceGenerator
 # End Source File
 # Begin Source File
 

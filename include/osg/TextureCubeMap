@@ -45,11 +45,6 @@ class SG_EXPORT TextureCubeMap : public Texture
           * texture and bind it, subsequent apply will simple bind to texture.*/
         virtual void apply(State& state) const;
 
-        /** Method which does the creation of the texture itself, and
-          * does not set or use texture binding. */
-        virtual void applyImmediateMode(State& state) const;
-        virtual void applyFaceImmediateMode(GLenum facetarget, Image* image, State& state) const;
-
     protected :
 
         virtual ~TextureCubeMap();

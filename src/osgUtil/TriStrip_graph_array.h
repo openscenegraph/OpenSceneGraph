@@ -389,7 +389,7 @@ inline void graph_array<nodetype, arctype>::swap(_mytype & Right) {
 template <class nodetype, class arctype>
 void unmark_nodes(graph_array<nodetype, arctype> & G)
 {
-    typedef graph_array<nodetype, arctype>::node_iterator node_it;
+    typedef typename graph_array<nodetype, arctype>::node_iterator node_it;
 
     for (node_it NodeIt = G.begin(); NodeIt != G.end(); ++NodeIt)
         NodeIt->unmark();
@@ -399,7 +399,7 @@ void unmark_nodes(graph_array<nodetype, arctype> & G)
 template <class nodetype, class arctype>
 void unmark_arcs_from_node(typename graph_array<nodetype, arctype>::node & N)
 {
-    typedef graph_array<nodetype, arctype>::out_arc_iterator arc_it;
+    typedef typename graph_array<nodetype, arctype>::out_arc_iterator arc_it;
 
     for (arc_it ArcIt = N.out_begin(); ArcIt != N.out_end(); ++ArcIt)
         ArcIt->unmark();
@@ -409,7 +409,7 @@ void unmark_arcs_from_node(typename graph_array<nodetype, arctype>::node & N)
 template <class nodetype, class arctype>
 void unmark_arcs(graph_array<nodetype, arctype> & G)
 {
-    typedef graph_array<nodetype, arctype>::node_iterator node_it;
+    typedef typename graph_array<nodetype, arctype>::node_iterator node_it;
 
     for (node_it NodeIt = G.begin(); NodeIt != G.end(); ++NodeIt)
         unmark_arcs_from_node(* NodeIt);

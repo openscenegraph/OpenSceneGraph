@@ -27,7 +27,7 @@ osgParticle::FluidFrictionOperator::FluidFrictionOperator(const FluidFrictionOpe
 {
 }
 
-void osgParticle::FluidFrictionOperator::operate(Particle *P, double dt)
+void osgParticle::FluidFrictionOperator::operate(Particle *P, double)
 {
     float r = (ovr_rad_ > 0)? ovr_rad_ : P->getRadius();
     osg::Vec3 v = P->getVelocity();

@@ -415,7 +415,6 @@ public:
         const _face *f1, const _face *f2, 
         const int ipr[2], const int nv) {
 		int gsidx[4];
-		int nbeg=verts.size()-4; // first vertex in vec3array
         gsidx[0]=f1->getidx(ipr[1]); // vertex position index
         gsidx[1]=f1->getidx(ipr[0]); // vertex position index
         gsidx[2]=f2->getidx(nv-ipr[0]-1); // vertex position index

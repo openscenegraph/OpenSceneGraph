@@ -1803,9 +1803,12 @@ osg::Node* DataSet::DestinationTile::createScene()
         std::string imageName(_name+".rgb");
         _imagery->_image->setFileName(imageName.c_str());
 
-        std::cout<<"Writing out imagery to "<<imageName<<std::endl;
-        osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
-
+        if (_dataSet->getDestinationTileExtension()!=".ive")
+        {
+            std::cout<<"Writing out imagery to "<<imageName<<std::endl;
+            osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
+        }
+        
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
@@ -2275,8 +2278,6 @@ osg::Node* DataSet::CompositeDestination::createScene()
 
 bool DataSet::CompositeDestination::areSubTilesComplete()
 {
-    std::cout<<"areSubTilesComplete() for "<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
-
     for(ChildList::iterator citr=_children.begin();
         citr!=_children.end();
         ++citr)
@@ -2285,17 +2286,12 @@ bool DataSet::CompositeDestination::areSubTilesComplete()
             itr!=(*citr)->_tiles.end();
             ++itr)
         {
-            std::cout<<"   subtile "<<(*itr)->_level<<"\t"<<(*itr)->_tileX<<"\t"<<(*itr)->_tileY<<std::endl;
             if (!(*itr)->getTileComplete()) 
             {
-                std::cout<<"  false!"<<std::endl;
                 return false;
             }
         }
     }
-
-    std::cout<<"  yes!"<<std::endl;
-
     return true;
 }
 
@@ -3017,20 +3013,22 @@ void DataSet::_emptyRow(Row& row)
 {
     std::cout<<"_emptyRow"<<row.size()<<std::endl;
 
-    return;
-
     for(Row::iterator citr=row.begin();
         citr!=row.end();
         ++citr)
     {
         CompositeDestination* cd = citr->second;
-        for(CompositeDestination::TileList::iterator titr=cd->_tiles.begin();
-            titr!=cd->_tiles.end();
-            ++titr)
+        CompositeDestination* parent = cd->_parent;
+        if (!parent || parent->getSubTilesGenerated())
         {
-            DestinationTile* tile = titr->get();
-            std::cout<<"   empty tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
-            tile->empty();
+            for(CompositeDestination::TileList::iterator titr=cd->_tiles.begin();
+                titr!=cd->_tiles.end();
+                ++titr)
+            {
+                DestinationTile* tile = titr->get();
+                std::cout<<"   empty tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+                tile->empty();
+            }
         }
     }
 

@@ -20,12 +20,12 @@ Texture::Texture():
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
             _borderColor(0.0, 0.0, 0.0, 0.0),
-            _texParametersDirty(true),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0)
 {
     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+    _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
@@ -37,12 +37,12 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _mag_filter(text._mag_filter),
             _maxAnisotropy(text._maxAnisotropy),
             _borderColor(text._borderColor),
-            _texParametersDirty(false),
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat)
 {
     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+    _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
 }
 
 Texture::~Texture()
@@ -70,9 +70,9 @@ void Texture::setWrap(WrapParameter which, WrapMode wrap)
 {
     switch( which )
     {
-        case WRAP_S : _wrap_s = wrap; _texParametersDirty = true; break;
-        case WRAP_T : _wrap_t = wrap; _texParametersDirty = true; break;
-        case WRAP_R : _wrap_r = wrap; _texParametersDirty = true; break;
+        case WRAP_S : _wrap_s = wrap; dirtyTextureParameters(); break;
+        case WRAP_T : _wrap_t = wrap; dirtyTextureParameters(); break;
+        case WRAP_R : _wrap_r = wrap; dirtyTextureParameters(); break;
         default : notify(WARN)<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
     
@@ -95,8 +95,8 @@ void Texture::setFilter(FilterParameter which, FilterMode filter)
 {
     switch( which )
     {
-        case MIN_FILTER : _min_filter = filter; _texParametersDirty = true; break;
-        case MAG_FILTER : _mag_filter = filter; _texParametersDirty = true; break;
+        case MIN_FILTER : _min_filter = filter; dirtyTextureParameters(); break;
+        case MAG_FILTER : _mag_filter = filter; dirtyTextureParameters(); break;
         default : notify(WARN)<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
     }
 }
@@ -117,7 +117,7 @@ void Texture::setMaxAnisotropy(float anis)
     if (_maxAnisotropy!=anis)
     {
         _maxAnisotropy = anis; 
-        _texParametersDirty = true;
+        dirtyTextureParameters();
     }
 }
 
@@ -131,6 +131,16 @@ void Texture::dirtyTextureObject()
             Texture::deleteTextureObject(i,_handleList[i]);
             _handleList[i] = 0;
         }
+    }
+}
+
+void Texture::dirtyTextureParameters()
+{
+    for(TexParameterDirtyList::iterator itr=_texParametersDirtyList.begin();
+        itr!=_texParametersDirtyList.end();
+        ++itr)
+    {
+        *itr = true;
     }
 }
 
@@ -240,7 +250,7 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat) const
     }
 }
 
-void Texture::applyTexParameters(GLenum target, State&) const
+void Texture::applyTexParameters(GLenum target, State& state) const
 {
     WrapMode ws = _wrap_s, wt = _wrap_t;
 
@@ -301,8 +311,7 @@ void Texture::applyTexParameters(GLenum target, State&) const
         glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
     }
 
-
-    _texParametersDirty=false;
+    getTextureParameterDity(state.getContextID()) = false;
 
 }
 

@@ -2,9 +2,13 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    Addition osgSim which is NodeKit designed for visual simulation
+    market, currently features high fidelity light points support.
+
+
 13th November 2002 - OpenSceneGraph-0.9.2.tar.gz
 
-    >>> New AC3D and GEO loaders, new Shape primitives, improved OpenFlight support. .
+    >>> New AC3D and GEO loaders, new Shape primitives, improved OpenFlight support.
 
     From Geoff Michel, AC3D .wc and Carbon Graphics GEO .geo loaders.
 

@@ -1,0 +1,44 @@
+//C++ header - Open Scene Graph Simulation - Copyright (C) 1998-2002 Robert Osfield
+// Distributed under the terms of the GNU General Public License (GPL)
+// as published by the Free Software Foundation.
+//
+// All software using osgSim must be GPL'd or excempted via the 
+// purchase of the Open Scene Graph Professional License (OSGPL)
+// for further information contact robert@openscenegraph.com.
+
+#ifndef OSGSIM_LGIHTPOINT
+#define OSGSIM_LIGHTPOINT 1
+
+#include <osgSim/Export>
+#include <osgSim/Sector>
+#include <osgSim/BlinkSequence>
+
+#include <osg/Quat>
+#include <osg/Vec3>
+#include <osg/Vec4>
+
+namespace osgSim {
+
+
+class OSGSIM_EXPORT LightPoint
+{
+    public:
+
+        LightPoint();
+        
+        LightPoint(const LightPoint& lp);
+
+    	bool	    	    	    _on;
+        osg::Vec3                   _position;
+        osg::Vec4                   _color;
+        float                       _intensity;
+        float                       _radius;
+        float                       _maxPixelSize;
+
+        osg::ref_ptr<Sector>        _sector;
+        osg::ref_ptr<BlinkSequence> _blinkSequence;
+};
+
+}
+
+#endif

@@ -6,6 +6,8 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
+#include <set>
+
 using namespace osg;
 using namespace osgDB;
 using namespace std;

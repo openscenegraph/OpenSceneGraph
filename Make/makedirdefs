@@ -15,6 +15,7 @@ SRC_DIRS = \
 	osgText\
 	osgSim\
 	osgGL2\
+	osgFX\
 	osgProducer\
 	osgPlugins\
 	../examples
@@ -39,6 +40,7 @@ PLUGIN_DIRS = \
 	osgParticle\
 	osgText\
 	osgSim\
+	osgFX\
 	osg\
 	osgtgz\
 	pic\
@@ -120,6 +122,7 @@ EXAMPLE_DIRS = \
 	osggeometry\
 	osghangglide\
 	osghud\
+	osgfxbrowser\
 	osgimpostor\
 	osgkeyboard\
 	osglight\

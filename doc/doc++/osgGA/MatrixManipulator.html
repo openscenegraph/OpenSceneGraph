@@ -10,11 +10,11 @@
 <H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::MatrixManipulator</A></H2></H2><HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=335>
-<param name=classes value="Mosg::Object,M,CGUIEventHandler,MGUIEventHandler.html,CMatrixManipulator,MMatrixManipulator.html,CTrackerManipulator,MTrackerManipulator.html,CTrackballManipulator,MTrackballManipulator.html,CTerrainManipulator,MTerrainManipulator.html,CKeySwitchMatrixManipulator,MKeySwitchMatrixManipulator.html,CHoverManipulator,MHoverManipulator.html,CFlightManipulator,MFlightManipulator.html,CDriveManipulator,MDriveManipulator.html,CAnimationPathManipulator,MAnimationPathManipulator.html">
-<param name=before value="M,M,M,M|_,MR_,MR_,MR_,MR_,MR_,MR_,Mr_">
-<param name=after value="Md_SP,Md_,M,M,M,M,M,M,M,M,M">
-<param name=indent value="0,1,2,2,2,2,2,2,2,2,2">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=305>
+<param name=classes value="Mosg::Object,M,CGUIEventHandler,MGUIEventHandler.html,CMatrixManipulator,MMatrixManipulator.html,CTrackerManipulator,MTrackerManipulator.html,CTrackballManipulator,MTrackballManipulator.html,CTerrainManipulator,MTerrainManipulator.html,CKeySwitchMatrixManipulator,MKeySwitchMatrixManipulator.html,CFlightManipulator,MFlightManipulator.html,CDriveManipulator,MDriveManipulator.html,CAnimationPathManipulator,MAnimationPathManipulator.html">
+<param name=before value="M,M,M,M|_,MR_,MR_,MR_,MR_,MR_,Mr_">
+<param name=after value="Md_SP,Md_,M,M,M,M,M,M,M,M">
+<param name=indent value="0,1,2,2,2,2,2,2,2,2">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -28,102 +28,102 @@ class  <B><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A></B>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.12.1">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.11.1">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.3">setMinimumDistance</A></B>(float minimumDistance)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.3">setMinimumDistance</A></B>(float minimumDistance)
 <DD><I>set the minimum distance (as ratio) the eye point can be zoomed in towards the center before the center is pushed forward</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.12.4">getMinimumDistance</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.4">getMinimumDistance</A></B>() const 
 <DD><I>get the minimum distance (as ratio) the eye point can be zoomed in </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.5">setCoordinateFrameCallback</A></B>(<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* cb)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.5">setCoordinateFrameCallback</A></B>(<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* cb)
 <DD><I>set the coordinate frame which callback tells the manipulator which way is up, east and north</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B><A HREF="#DOC.2.12.6">getCoordinateFrameCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B><A HREF="#DOC.2.11.6">getCoordinateFrameCallback</A></B>()
 <DD><I>get the coordinate frame callback which tells the manipulator which way is up, east and north</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B><A HREF="#DOC.2.12.7">getCoordinateFrameCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B><A HREF="#DOC.2.11.7">getCoordinateFrameCallback</A></B>() const 
 <DD><I>get the coordinate frame callback which tells the manipulator which way is up, east and north</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CoordinateFrame <B><A HREF="#DOC.2.12.8">getCoordinateFrame</A></B>(const osg::Vec3d&amp; position) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CoordinateFrame <B><A HREF="#DOC.2.11.8">getCoordinateFrame</A></B>(const osg::Vec3d&amp; position) const 
 <DD><I>get the coordinate frame</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.12.9">getSideVector</A></B>(const osg::CoordinateFrame&amp; cf) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.11.9">getSideVector</A></B>(const osg::CoordinateFrame&amp; cf) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.12.10">getFrontVector</A></B>(const osg::CoordinateFrame&amp; cf) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.11.10">getFrontVector</A></B>(const osg::CoordinateFrame&amp; cf) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.12.11">getUpVector</A></B>(const osg::CoordinateFrame&amp; cf) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.11.11">getUpVector</A></B>(const osg::CoordinateFrame&amp; cf) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.12">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.12">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.13">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.13">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.12.14">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.11.14">getMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.12.15">getInverseMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.11.15">getInverseMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osgUtil::SceneView::FusionDistanceMode <B><A HREF="#DOC.2.12.16">getFusionDistanceMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osgUtil::SceneView::FusionDistanceMode <B><A HREF="#DOC.2.11.16">getFusionDistanceMode</A></B>() const 
 <DD><I>Get the FusionDistanceMode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.12.17">getFusionDistanceValue</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.11.17">getFusionDistanceValue</A></B>() const 
 <DD><I>Get the FusionDistanceValue.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.18">setNode</A></B>(osg::Node*)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.18">setNode</A></B>(osg::Node*)
 <DD><I> Attach a node to the manipulator, automatically detaching any previously attached node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.12.19">getNode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.11.19">getNode</A></B>() const 
 <DD><I>Return const node if attached</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.12.20">getNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.11.20">getNode</A></B>()
 <DD><I>Return node if attached</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.21">setHomePosition</A></B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; center, const osg::Vec3d&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.21">setHomePosition</A></B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; center, const osg::Vec3d&amp; up)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.22">getHomePosition</A></B>(osg::Vec3d&amp; eye, osg::Vec3d&amp; center, osg::Vec3d&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.22">getHomePosition</A></B>(osg::Vec3d&amp; eye, osg::Vec3d&amp; center, osg::Vec3d&amp; up)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.23">setAutoComputeHomePosition</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.23">setAutoComputeHomePosition</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.12.24">getAutoComputeHomePosition</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.24">getAutoComputeHomePosition</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.25">computeHomePosition</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.25">computeHomePosition</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.26">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp;, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.26">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp;, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp;)
 <DD><I> Move the camera to the default position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.27">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp;, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.27">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp;, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp;)
 <DD><I> Start/restart the manipulator.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.12.28">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.11.28">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>Handle events, return true if handled, false otherwise.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.29">accept</A></B>(<!1><A HREF="GUIEventHandlerVisitor.html">GUIEventHandlerVisitor</A>&amp; v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.29">accept</A></B>(<!1><A HREF="GUIEventHandlerVisitor.html">GUIEventHandlerVisitor</A>&amp; v)
 <DD><I>Handle visitations </I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.12.32">_minimumDistance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.11.32">_minimumDistance</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.12.33">_autoComputeHomePosition</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.33">_autoComputeHomePosition</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.12.34">_homeEye</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.11.34">_homeEye</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.12.35">_homeCenter</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.11.35">_homeCenter</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.12.36">_homeUp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.11.36">_homeUp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>&gt;  <B><A HREF="#DOC.2.12.37">_coordinateFrameCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>&gt;  <B><A HREF="#DOC.2.11.37">_coordinateFrameCallback</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.12.30">MatrixManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.30">MatrixManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.12.31">~MatrixManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.11.31">~MatrixManipulator</A></B>()
 </DL></P>
 
 </DL>
@@ -152,84 +152,84 @@ in response to GUI events.
 <DL>
 
 <A NAME="className"></A>
-<A NAME="DOC.2.12.1"></A>
+<A NAME="DOC.2.11.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMinimumDistance"></A>
-<A NAME="DOC.2.12.3"></A>
+<A NAME="DOC.2.11.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setMinimumDistance(float minimumDistance)</B></TT>
 <DD>set the minimum distance (as ratio) the eye point can be zoomed in towards the
 center before the center is pushed forward
 <DL><DT><DD></DL><P>
 <A NAME="getMinimumDistance"></A>
-<A NAME="DOC.2.12.4"></A>
+<A NAME="DOC.2.11.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getMinimumDistance() const </B></TT>
 <DD>get the minimum distance (as ratio) the eye point can be zoomed in 
 <DL><DT><DD></DL><P>
 <A NAME="setCoordinateFrameCallback"></A>
-<A NAME="DOC.2.12.5"></A>
+<A NAME="DOC.2.11.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setCoordinateFrameCallback(<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* cb)</B></TT>
 <DD>set the coordinate frame which callback tells the manipulator which way is up, east and north
 <DL><DT><DD></DL><P>
 <A NAME="getCoordinateFrameCallback"></A>
-<A NAME="DOC.2.12.6"></A>
+<A NAME="DOC.2.11.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* getCoordinateFrameCallback()</B></TT>
 <DD>get the coordinate frame callback which tells the manipulator which way is up, east and north
 <DL><DT><DD></DL><P>
 <A NAME="getCoordinateFrameCallback"></A>
-<A NAME="DOC.2.12.7"></A>
+<A NAME="DOC.2.11.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* getCoordinateFrameCallback() const </B></TT>
 <DD>get the coordinate frame callback which tells the manipulator which way is up, east and north
 <DL><DT><DD></DL><P>
 <A NAME="getCoordinateFrame"></A>
-<A NAME="DOC.2.12.8"></A>
+<A NAME="DOC.2.11.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d&amp; position) const </B></TT>
 <DD>get the coordinate frame
 <DL><DT><DD></DL><P>
 <A NAME="getSideVector"></A>
-<A NAME="DOC.2.12.9"></A>
+<A NAME="DOC.2.11.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d getSideVector(const osg::CoordinateFrame&amp; cf) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFrontVector"></A>
-<A NAME="DOC.2.12.10"></A>
+<A NAME="DOC.2.11.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d getFrontVector(const osg::CoordinateFrame&amp; cf) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUpVector"></A>
-<A NAME="DOC.2.12.11"></A>
+<A NAME="DOC.2.11.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d getUpVector(const osg::CoordinateFrame&amp; cf) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setByMatrix"></A>
-<A NAME="DOC.2.12.12"></A>
+<A NAME="DOC.2.11.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="setByInverseMatrix"></A>
-<A NAME="DOC.2.12.13"></A>
+<A NAME="DOC.2.11.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByInverseMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.12.14"></A>
+<A NAME="DOC.2.11.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getMatrix() const </B></TT>
 <DD>get the position of the manipulator as 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getInverseMatrix"></A>
-<A NAME="DOC.2.12.15"></A>
+<A NAME="DOC.2.11.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getInverseMatrix() const </B></TT>
 <DD>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix
 <DL><DT><DD></DL><P>
 <A NAME="getFusionDistanceMode"></A>
-<A NAME="DOC.2.12.16"></A>
+<A NAME="DOC.2.11.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const </B></TT>
 <DD>Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.
 <DL><DT><DD></DL><P>
 <A NAME="getFusionDistanceValue"></A>
-<A NAME="DOC.2.12.17"></A>
+<A NAME="DOC.2.11.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getFusionDistanceValue() const </B></TT>
 <DD>Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.
 <DL><DT><DD></DL><P>
 <A NAME="setNode"></A>
-<A NAME="DOC.2.12.18"></A>
+<A NAME="DOC.2.11.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setNode(osg::Node*)</B></TT>
 <DD>
 Attach a node to the manipulator, automatically detaching any previously attached node.
@@ -237,89 +237,89 @@ setNode(NULL) detaches previous nodes.
 May be ignored by manipulators which do not require a reference model.
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
-<A NAME="DOC.2.12.19"></A>
+<A NAME="DOC.2.11.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::Node* getNode() const </B></TT>
 <DD>Return const node if attached
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
-<A NAME="DOC.2.12.20"></A>
+<A NAME="DOC.2.11.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* getNode()</B></TT>
 <DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="setHomePosition"></A>
-<A NAME="DOC.2.12.21"></A>
+<A NAME="DOC.2.11.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setHomePosition(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; center, const osg::Vec3d&amp; up)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getHomePosition"></A>
-<A NAME="DOC.2.12.22"></A>
+<A NAME="DOC.2.11.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getHomePosition(osg::Vec3d&amp; eye, osg::Vec3d&amp; center, osg::Vec3d&amp; up)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAutoComputeHomePosition"></A>
-<A NAME="DOC.2.12.23"></A>
+<A NAME="DOC.2.11.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setAutoComputeHomePosition(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAutoComputeHomePosition"></A>
-<A NAME="DOC.2.12.24"></A>
+<A NAME="DOC.2.11.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getAutoComputeHomePosition() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeHomePosition"></A>
-<A NAME="DOC.2.12.25"></A>
+<A NAME="DOC.2.11.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void computeHomePosition()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="home"></A>
-<A NAME="DOC.2.12.26"></A>
+<A NAME="DOC.2.11.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp;, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp;)</B></TT>
 <DD>
 Move the camera to the default position. 
 May be ignored by manipulators if home functionality is not appropriate.
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.12.27"></A>
+<A NAME="DOC.2.11.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp;, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp;)</B></TT>
 <DD>
 Start/restart the manipulator.
 FIXME: what does this actually mean? Provide examples.
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
-<A NAME="DOC.2.12.28"></A>
+<A NAME="DOC.2.11.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>Handle events, return true if handled, false otherwise. 
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.12.29"></A>
+<A NAME="DOC.2.11.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="GUIEventHandlerVisitor.html">GUIEventHandlerVisitor</A>&amp; v)</B></TT>
 <DD>Handle visitations 
 <DL><DT><DD></DL><P>
 <A NAME="MatrixManipulator"></A>
-<A NAME="DOC.2.12.30"></A>
+<A NAME="DOC.2.11.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~MatrixManipulator"></A>
-<A NAME="DOC.2.12.31"></A>
+<A NAME="DOC.2.11.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~MatrixManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_minimumDistance"></A>
-<A NAME="DOC.2.12.32"></A>
+<A NAME="DOC.2.11.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _minimumDistance</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_autoComputeHomePosition"></A>
-<A NAME="DOC.2.12.33"></A>
+<A NAME="DOC.2.11.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _autoComputeHomePosition</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_homeEye"></A>
-<A NAME="DOC.2.12.34"></A>
+<A NAME="DOC.2.11.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _homeEye</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_homeCenter"></A>
-<A NAME="DOC.2.12.35"></A>
+<A NAME="DOC.2.11.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _homeCenter</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_homeUp"></A>
-<A NAME="DOC.2.12.36"></A>
+<A NAME="DOC.2.11.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _homeUp</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_coordinateFrameCallback"></A>
-<A NAME="DOC.2.12.37"></A>
+<A NAME="DOC.2.11.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>&gt;  _coordinateFrameCallback</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
@@ -328,7 +328,6 @@ FIXME: what does this actually mean? Provide examples.
 <A HREF="TrackballManipulator.html">TrackballManipulator</A><BR>
 <A HREF="TerrainManipulator.html">TerrainManipulator</A><BR>
 <A HREF="KeySwitchMatrixManipulator.html">KeySwitchMatrixManipulator</A><BR>
-<A HREF="HoverManipulator.html">HoverManipulator</A><BR>
 <A HREF="FlightManipulator.html">FlightManipulator</A><BR>
 <A HREF="DriveManipulator.html">DriveManipulator</A><BR>
 <A HREF="AnimationPathManipulator.html">AnimationPathManipulator</A><BR>

@@ -22,103 +22,103 @@
 <DL>
 <P><DL>
 <DT><H3>Public Classes</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.15.3">RotationMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.14.3">RotationMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.1">TerrainManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.1">TerrainManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.15.2">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.14.2">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.4">setRotationMode</A></B>(<!1><A HREF="TerrainManipulator.html#DOC.2.15.3">RotationMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.4">setRotationMode</A></B>(<!1><A HREF="TerrainManipulator.html#DOC.2.14.3">RotationMode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TerrainManipulator.html#DOC.2.15.3">RotationMode</A> <B><A HREF="#DOC.2.15.5">getRotationMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TerrainManipulator.html#DOC.2.14.3">RotationMode</A> <B><A HREF="#DOC.2.14.5">getRotationMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.6">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.14.6">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.14.7">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.15.8">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.14.8">getMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.15.9">getInverseMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.14.9">getInverseMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osgUtil::SceneView::FusionDistanceMode <B><A HREF="#DOC.2.15.10">getFusionDistanceMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osgUtil::SceneView::FusionDistanceMode <B><A HREF="#DOC.2.14.10">getFusionDistanceMode</A></B>() const 
 <DD><I>Get the FusionDistanceMode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.15.11">getFusionDistanceValue</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.14.11">getFusionDistanceValue</A></B>() const 
 <DD><I>Get the FusionDistanceValue.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.12">setNode</A></B>(osg::Node*)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.14.12">setNode</A></B>(osg::Node*)
 <DD><I>Attach a node to the manipulator.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.15.13">getNode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.14.13">getNode</A></B>() const 
 <DD><I>Return node if attached</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.15.14">getNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.14.14">getNode</A></B>()
 <DD><I>Return node if attached</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.15">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.14.15">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>Move the camera to the default position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.16">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.14.16">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>Start/restart the manipulator</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.15.17">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.14.17">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>handle events, return true if handled, false otherwise</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.18">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.14.18">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
 <DD><I>Get the keyboard and mouse usage of this manipulator</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.15.28">_ga_t1</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.14.28">_ga_t1</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.15.29">_ga_t0</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.14.29">_ga_t0</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.15.30">_node</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.14.30">_node</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TerrainManipulator.html#DOC.2.15.3">RotationMode</A> <B><A HREF="#DOC.2.15.31">_rotationMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TerrainManipulator.html#DOC.2.14.3">RotationMode</A> <B><A HREF="#DOC.2.14.31">_rotationMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.15.32">_thrown</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.32">_thrown</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.15.33">_center</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.14.33">_center</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.15.34">_rotation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.14.34">_rotation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.15.35">_distance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.14.35">_distance</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.15.36">_previousUp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.14.36">_previousUp</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.15.19">~TerrainManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.14.19">~TerrainManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.20">flushMouseEventStack</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.20">flushMouseEventStack</A></B>()
 <DD><I>Reset the internal GUIEvent stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.21">addMouseEvent</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.21">addMouseEvent</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)
 <DD><I>Add the current mouse GUIEvent to internal stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.22">computePosition</A></B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; lv, const osg::Vec3d&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.22">computePosition</A></B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; lv, const osg::Vec3d&amp; up)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.15.23">calcMovement</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.23">calcMovement</A></B>()
 <DD><I>For the give mouse movement calculate the movement of the camera.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.24">trackball</A></B>(osg::Vec3&amp; axis, double&amp; angle, double p1x, double p1y, double p2x, double p2y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.24">trackball</A></B>(osg::Vec3&amp; axis, double&amp; angle, double p1x, double p1y, double p2x, double p2y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.15.25">tb_project_to_sphere</A></B>(double r, double x, double y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.14.25">tb_project_to_sphere</A></B>(double r, double x, double y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.15.26">isMouseMoving</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.26">isMouseMoving</A></B>()
 <DD><I>Check the speed at which the mouse is moving.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.27">clampOrientation</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.27">clampOrientation</A></B>()
 </DL></P>
 
 </DL>
@@ -196,67 +196,67 @@ class  <B><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A></B>
 <DL>
 
 <A NAME="TerrainManipulator"></A>
-<A NAME="DOC.2.15.1"></A>
+<A NAME="DOC.2.14.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TerrainManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.15.2"></A>
+<A NAME="DOC.2.14.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RotationMode"></A>
-<A NAME="DOC.2.15.3"></A>
+<A NAME="DOC.2.14.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  RotationMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ELEVATION_AZIM_ROLL"></A>
-<A NAME="DOC.2.15.3.1"></A>
+<A NAME="DOC.2.14.3.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ELEVATION_AZIM_ROLL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ELEVATION_AZIM"></A>
-<A NAME="DOC.2.15.3.2"></A>
+<A NAME="DOC.2.14.3.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ELEVATION_AZIM</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setRotationMode"></A>
-<A NAME="DOC.2.15.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRotationMode(<!1><A HREF="TerrainManipulator.html#DOC.2.15.3">RotationMode</A> mode)</B></TT>
+<A NAME="DOC.2.14.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRotationMode(<!1><A HREF="TerrainManipulator.html#DOC.2.14.3">RotationMode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRotationMode"></A>
-<A NAME="DOC.2.15.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TerrainManipulator.html#DOC.2.15.3">RotationMode</A> getRotationMode() const </B></TT>
+<A NAME="DOC.2.14.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TerrainManipulator.html#DOC.2.14.3">RotationMode</A> getRotationMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setByMatrix"></A>
-<A NAME="DOC.2.15.6"></A>
+<A NAME="DOC.2.14.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="setByInverseMatrix"></A>
-<A NAME="DOC.2.15.7"></A>
+<A NAME="DOC.2.14.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByInverseMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.15.8"></A>
+<A NAME="DOC.2.14.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getMatrix() const </B></TT>
 <DD>get the position of the manipulator as 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getInverseMatrix"></A>
-<A NAME="DOC.2.15.9"></A>
+<A NAME="DOC.2.14.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getInverseMatrix() const </B></TT>
 <DD>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix
 <DL><DT><DD></DL><P>
 <A NAME="getFusionDistanceMode"></A>
-<A NAME="DOC.2.15.10"></A>
+<A NAME="DOC.2.14.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const </B></TT>
 <DD>Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.
 <DL><DT><DD></DL><P>
 <A NAME="getFusionDistanceValue"></A>
-<A NAME="DOC.2.15.11"></A>
+<A NAME="DOC.2.14.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getFusionDistanceValue() const </B></TT>
 <DD>Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.
 <DL><DT><DD></DL><P>
 <A NAME="setNode"></A>
-<A NAME="DOC.2.15.12"></A>
+<A NAME="DOC.2.14.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setNode(osg::Node*)</B></TT>
 <DD>Attach a node to the manipulator. 
 Automatically detaches previously attached node.
@@ -264,112 +264,112 @@ setNode(NULL) detaches previously nodes.
 Is ignored by manipulators which do not require a reference model.
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
-<A NAME="DOC.2.15.13"></A>
+<A NAME="DOC.2.14.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::Node* getNode() const </B></TT>
 <DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
-<A NAME="DOC.2.15.14"></A>
+<A NAME="DOC.2.14.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* getNode()</B></TT>
 <DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="home"></A>
-<A NAME="DOC.2.15.15"></A>
+<A NAME="DOC.2.14.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>Move the camera to the default position. 
 May be ignored by manipulators if home functionality is not appropriate.
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.15.16"></A>
+<A NAME="DOC.2.14.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>Start/restart the manipulator
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
-<A NAME="DOC.2.15.17"></A>
+<A NAME="DOC.2.14.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>handle events, return true if handled, false otherwise
 <DL><DT><DD></DL><P>
 <A NAME="getUsage"></A>
-<A NAME="DOC.2.15.18"></A>
+<A NAME="DOC.2.14.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getUsage(osg::ApplicationUsage&amp; usage) const </B></TT>
 <DD>Get the keyboard and mouse usage of this manipulator
 <DL><DT><DD></DL><P>
 <A NAME="~TerrainManipulator"></A>
-<A NAME="DOC.2.15.19"></A>
+<A NAME="DOC.2.14.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TerrainManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="flushMouseEventStack"></A>
-<A NAME="DOC.2.15.20"></A>
+<A NAME="DOC.2.14.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flushMouseEventStack()</B></TT>
 <DD>Reset the internal GUIEvent stack
 <DL><DT><DD></DL><P>
 <A NAME="addMouseEvent"></A>
-<A NAME="DOC.2.15.21"></A>
+<A NAME="DOC.2.14.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addMouseEvent(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)</B></TT>
 <DD>Add the current mouse GUIEvent to internal stack
 <DL><DT><DD></DL><P>
 <A NAME="computePosition"></A>
-<A NAME="DOC.2.15.22"></A>
+<A NAME="DOC.2.14.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computePosition(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; lv, const osg::Vec3d&amp; up)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="calcMovement"></A>
-<A NAME="DOC.2.15.23"></A>
+<A NAME="DOC.2.14.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool calcMovement()</B></TT>
 <DD>For the give mouse movement calculate the movement of the camera.
 Return true is camera has moved and a redraw is required.
 <DL><DT><DD></DL><P>
 <A NAME="trackball"></A>
-<A NAME="DOC.2.15.24"></A>
+<A NAME="DOC.2.14.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void trackball(osg::Vec3&amp; axis, double&amp; angle, double p1x, double p1y, double p2x, double p2y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="tb_project_to_sphere"></A>
-<A NAME="DOC.2.15.25"></A>
+<A NAME="DOC.2.14.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double tb_project_to_sphere(double r, double x, double y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isMouseMoving"></A>
-<A NAME="DOC.2.15.26"></A>
+<A NAME="DOC.2.14.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isMouseMoving()</B></TT>
 <DD>Check the speed at which the mouse is moving.
 If speed is below a threshold then return false, otherwise return true.
 <DL><DT><DD></DL><P>
 <A NAME="clampOrientation"></A>
-<A NAME="DOC.2.15.27"></A>
+<A NAME="DOC.2.14.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void clampOrientation()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ga_t1"></A>
-<A NAME="DOC.2.15.28"></A>
+<A NAME="DOC.2.14.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  _ga_t1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ga_t0"></A>
-<A NAME="DOC.2.15.29"></A>
+<A NAME="DOC.2.14.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  _ga_t0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_node"></A>
-<A NAME="DOC.2.15.30"></A>
+<A NAME="DOC.2.14.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _node</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rotationMode"></A>
-<A NAME="DOC.2.15.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TerrainManipulator.html#DOC.2.15.3">RotationMode</A> _rotationMode</B></TT>
+<A NAME="DOC.2.14.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TerrainManipulator.html#DOC.2.14.3">RotationMode</A> _rotationMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_thrown"></A>
-<A NAME="DOC.2.15.32"></A>
+<A NAME="DOC.2.14.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _thrown</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_center"></A>
-<A NAME="DOC.2.15.33"></A>
+<A NAME="DOC.2.14.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _center</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rotation"></A>
-<A NAME="DOC.2.15.34"></A>
+<A NAME="DOC.2.14.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Quat _rotation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_distance"></A>
-<A NAME="DOC.2.15.35"></A>
+<A NAME="DOC.2.14.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _distance</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousUp"></A>
-<A NAME="DOC.2.15.36"></A>
+<A NAME="DOC.2.14.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _previousUp</B></TT>
 <DL><DT><DD></DL><P></DL>
 

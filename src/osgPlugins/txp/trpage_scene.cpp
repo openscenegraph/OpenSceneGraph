@@ -145,7 +145,7 @@ trpgReadGroupBase::~trpgReadGroupBase()
 // Delete all children
 void trpgReadGroupBase::DeleteChildren()
 {
-	for (int i=0;i<children.size();i++)
+	for (unsigned int i=0;i<children.size();i++)
 		if (children[i])
 			delete children[i];
 }
@@ -159,7 +159,7 @@ void trpgReadGroupBase::AddChild(trpgReadNode *n)
 // Unref a child (but don't delete it)
 void trpgReadGroupBase::unRefChild(int id)
 {
-	if (id < 0 || id >= children.size())
+	if (id < 0 || id >= (int)children.size())
 		return;
 	children[id] = NULL;
 }
@@ -167,7 +167,7 @@ void trpgReadGroupBase::unRefChild(int id)
 // Unref all the children (they've probably been moved elsewhere)
 void trpgReadGroupBase::unRefChildren()
 {
-	for (int i=0;i<children.size();i++)
+	for (unsigned int i=0;i<children.size();i++)
 		unRefChild(i);
 }
 
@@ -181,7 +181,7 @@ trpgMBR trpgReadGroupBase::GetMBR() const
 		trpgMBR *cmbr = const_cast<trpgMBR *>(&mbr);
 		trpgMBR kmbr;
 		// Ask the kids
-		for (int i=0;i<children.size();i++) {
+		for (unsigned int i=0;i<children.size();i++) {
 			kmbr = children[i]->GetMBR();
 			cmbr->Union(kmbr);
 		}
@@ -232,7 +232,7 @@ trpgMBR trpgReadGeometry::GetMBR() const
 class trpgReadGeometryHelper : public trpgr_Callback {
 public:
 	trpgReadGeometryHelper(trpgSceneGraphParser *in_parse) { parse = in_parse;}
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadGeometry *geom = new trpgReadGeometry();
 		trpgGeometry *data = geom->GetData();
 		if (!data->Read(buf)) {
@@ -261,7 +261,7 @@ protected:
 class trpgReadGroupHelper : public trpgr_Callback {
 public:
 	trpgReadGroupHelper(trpgSceneGraphParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadGroup *group = new trpgReadGroup();
 		trpgGroup *data = group->GetData();
 		if (!data->Read(buf)) {
@@ -286,7 +286,7 @@ protected:
 class trpgReadBillboardHelper : public trpgr_Callback {
 public:
 	trpgReadBillboardHelper(trpgSceneGraphParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadBillboard *group = new trpgReadBillboard();
 		trpgBillboard *data = group->GetData();
 		if (!data->Read(buf)) {
@@ -311,7 +311,7 @@ protected:
 class trpgReadAttachHelper : public trpgr_Callback {
 public:
 	trpgReadAttachHelper(trpgSceneGraphParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadAttach *attach = new trpgReadAttach();
 		trpgAttach *data = attach->GetData();
 		if (!data->Read(buf)) {
@@ -336,7 +336,7 @@ protected:
 class trpgReadLodHelper : public trpgr_Callback {
 public:
 	trpgReadLodHelper(trpgSceneGraphParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadLod *lod = new trpgReadLod();
 		trpgLod *data = lod->GetData();
 		if (!data->Read(buf)) {
@@ -361,7 +361,7 @@ protected:
 class trpgReadModelRefHelper : public trpgr_Callback {
 public:
 	trpgReadModelRefHelper(trpgSceneGraphParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadModelRef *mod = new trpgReadModelRef();
 		trpgModelRef *data = mod->GetData();
 		if (!data->Read(buf)) {
@@ -381,7 +381,7 @@ protected:
 class trpgReadTileHeaderHelper : public trpgr_Callback {
 public:
 	trpgReadTileHeaderHelper(trpgSceneGraphParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer &buf) {
 		trpgReadTileHeader *th = parse->GetTileHeaderRef();
 		trpgTileHeader *data = th->GetData();
 		if (!data->Read(buf))
@@ -488,12 +488,12 @@ bool trpgSceneGraphParser::StartChildren(void *in_node)
     for the parent above the current one.
    If there isn't one, we'll just stick things in our top group.
    */
-bool trpgSceneGraphParser::EndChildren(void *in_node)
+bool trpgSceneGraphParser::EndChildren(void * /*in_node*/)
 {
 	// We don't need it here, but this is the node we just
 	//  finished putting children under.  If you need to close
 	//  it out in some way, do that here
-	trpgReadNode *node = (trpgReadNode *)in_node;
+	//trpgReadNode *node = (trpgReadNode *)in_node;
 
 	// Get the parent above the current one
 	int pos = parents.size()-2;

@@ -96,8 +96,8 @@ trpgwArchive::trpgwArchive(char *inDir,char *inFile,trpg2dPoint &sw, trpg2dPoint
 		inHeader->GetTileSize(0,blockSize);
 		double dx = (oldSW.x - newSW.x)/blockSize.x + 10e-10;
 		double dy = (oldSW.y - newSW.y)/blockSize.y + 10e-10;
-		addOffset.x = dx;
-		addOffset.y = dy;
+		addOffset.x = (int)dx;
+		addOffset.y = (int)dy;
 		if (dx - addOffset.x > 10e-4 ||
 			dy - addOffset.y > 10e-4) {
 			delete inArch;
@@ -115,8 +115,8 @@ trpgwArchive::trpgwArchive(char *inDir,char *inFile,trpg2dPoint &sw, trpg2dPoint
 		trpg2dPoint tileSize;
 		inHeader->GetTileSize(i,tileSize);
 		trpg2iPoint newTileExt;
-		newTileExt.x = (newNE.x - newSW.x)/tileSize.x + 10e-5;
-		newTileExt.y = (newNE.y - newSW.y)/tileSize.y + 10e-15;
+		newTileExt.x = (int)((newNE.x - newSW.x)/tileSize.x + 10e-5);
+		newTileExt.y = (int)((newNE.y - newSW.y)/tileSize.y + 10e-15);
 		header.SetLodSize(i,newTileExt);
 	}
 
@@ -380,7 +380,7 @@ bool trpgwArchive::CheckpointHeader()
 			int32 numLod;
 			header.GetNumLods(numLod);
 			tileTable.SetNumLod(numLod);
-			for (unsigned int i=0;i<numLod;i++) {
+			for (int i=0;i<numLod;i++) {
 				trpg2iPoint lodSize;
 				header.GetLodSize(i,lodSize);
 				tileTable.SetNumTiles(lodSize.x,lodSize.y,i);
@@ -545,7 +545,7 @@ bool trpgwArchive::CheckpointHeader()
     // Write the buffer
     const char *data = buf.getData();
 
-    if (fwrite(data,sizeof(char),headLen,fp) != headLen)
+    if (fwrite(data,sizeof(char),headLen,fp) != (unsigned int)headLen)
 	{
 		strcpy(errMess, "Could not write the buffer");
 	    return false;
@@ -646,7 +646,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
 			return false;
 
 		// Write the header first
-		int len;
+		unsigned int len;
 		const char *data;
 		if (head) {
 			data = head->getData();
@@ -779,7 +779,7 @@ void trpgwGeomHelper::EndPolygon()
 	// Turn the polygon into triangles
 	// Note: Only dealing with convex here
 	matTri = matPoly;
-	int numMats=matTri.size();
+	unsigned int numMats=matTri.size();
 
 	switch (mode) {
 	case trpgGeometry::Triangles:
@@ -853,7 +853,7 @@ void trpgwGeomHelper::ResetPolygon()
 
 // Set the current color
 // Note: Required
-void trpgwGeomHelper::SetColor(trpgColor &col)
+void trpgwGeomHelper::SetColor(trpgColor& /*col*/)
 {
 //	tmpColor = col;
 }
@@ -954,8 +954,8 @@ void trpgwGeomHelper::FlushGeom()
 		break;
 	case trpgGeometry::Quads:
 		{
-			int numVert = vert.size();
-			int numMat = matTri.size();
+			unsigned int numVert = vert.size();
+			unsigned int numMat = matTri.size();
 			unsigned int loop;
 
 			// Make sure we've got quads
@@ -965,7 +965,7 @@ void trpgwGeomHelper::FlushGeom()
 				trpgGeometry quads;
 				quads.SetPrimType(trpgGeometry::Quads);
 				for (loop=0;loop<numMat;loop++) quads.AddTexCoords(trpgGeometry::PerVertex);
-				for (int i=0;i<numVert;i++) {
+				for (unsigned int i=0;i<numVert;i++) {
 					quads.AddVertex((trpgGeometry::DataType)dtype,vert[i]);
 					quads.AddNormal((trpgGeometry::DataType)dtype,norm[i]);
 					for (loop=0;loop<numMat;loop++) quads.AddTexCoord((trpgGeometry::DataType)dtype,tex[i*numMat+loop],loop);
@@ -1014,18 +1014,17 @@ optVert::optVert(int numMat, int vid, std::vector<trpg3dPoint> &iv, std::vector<
 	v=iv[vid];
 	n=in[vid];
 	tex.resize(0);
-	for (unsigned int loop=0; loop < numMat; loop++) tex.push_back(itex[vid*numMat+loop]);
+	for (unsigned int loop=0; loop < (unsigned int)numMat; loop++) tex.push_back(itex[vid*numMat+loop]);
 }
 void trpgwGeomHelper::Optimize()
 {
-	bool isStrip = false;
 	int dtype = (dataType == UseDouble ? trpgGeometry::DoubleData : trpgGeometry::FloatData);
 
 	// Potentially writing to all of these
 	strips.SetPrimType(trpgGeometry::TriStrips);
 	fans.SetPrimType(trpgGeometry::TriFans);
 	bags.SetPrimType(trpgGeometry::Triangles);
-	int numMat = matTri.size();
+	unsigned int numMat = matTri.size();
 	for (unsigned int loop =0; loop < numMat; loop++ ) {
 		strips.AddMaterial(matTri[loop]);
 		strips.AddTexCoords(trpgGeometry::PerVertex);

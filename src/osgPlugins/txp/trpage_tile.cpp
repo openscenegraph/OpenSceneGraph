@@ -66,7 +66,7 @@ void trpgTileTable::SetNumLod(int numLod)
 
 void trpgTileTable::SetNumTiles(int nx,int ny,int lod)
 {
-	if (nx <= 0 || ny <= 0 || lod < 0 || lod >= lodInfo.size())
+	if (nx <= 0 || ny <= 0 || lod < 0 || lod >= (int)lodInfo.size())
 		return;
 
 	// Got a table we need to maintain
@@ -98,7 +98,7 @@ void trpgTileTable::SetNumTiles(int nx,int ny,int lod)
 }
 void trpgTileTable::SetTile(int x,int y,int lod,trpgwAppAddress &ref,float32 zmin,float32 zmax)
 {
-	if (lod < 0 || lod >= lodInfo.size()) return;
+	if (lod < 0 || lod >= (int)lodInfo.size()) return;
 	if (mode != Local)
 		return;
 	LodInfo &li = lodInfo[lod];
@@ -130,7 +130,7 @@ bool trpgTileTable::GetTile(int x,int y,int lod,trpgwAppAddress &ref,float32 &zm
 {
 	if (!isValid()) return false;
 
-	if (lod < 0 || lod >= lodInfo.size()) return false;
+	if (lod < 0 || lod >= (int)lodInfo.size()) return false;
 	if (mode != Local)
 		return false;
 	const LodInfo &li = lodInfo[lod];
@@ -163,7 +163,7 @@ bool trpgTileTable::Write(trpgWriteBuffer &buf)
 		buf.Add(numLod);
 
 		// Write each terrain LOD set
-		for (unsigned int i=0;i<numLod;i++) {
+		for (int i=0;i<numLod;i++) {
 			LodInfo &li = lodInfo[i];
 			buf.Add(li.numX);
 			buf.Add(li.numY);
@@ -206,7 +206,7 @@ bool trpgTileTable::Read(trpgReadBuffer &buf)
 			if (numLod <= 0) throw 1;
 			lodInfo.resize(numLod);
 
-			for (unsigned int i=0;i<numLod;i++) {
+			for (int i=0;i<numLod;i++) {
 				LodInfo &li = lodInfo[i];
 				buf.Get(li.numX);
 				buf.Get(li.numY);
@@ -215,7 +215,7 @@ bool trpgTileTable::Read(trpgReadBuffer &buf)
 				li.addr.resize(numTile);
 				li.elev_min.resize(numTile);
 				li.elev_max.resize(numTile);
-				unsigned int j;
+				int j;
 				for (j=0;j<numTile;j++) {
 					trpgwAppAddress &ref = li.addr[j];
 					buf.Get(ref.file);
@@ -260,13 +260,13 @@ void trpgTileHeader::Reset()
 // Set functions
 void trpgTileHeader::SetMaterial(int no,int id)
 {
-	if (no < 0 || no >= matList.size())
+	if (no < 0 || no >= (int)matList.size())
 		return;
 	matList[no] = id;
 }
 void trpgTileHeader::SetModel(int no,int id)
 {
-	if (no < 0 || no >= modelList.size())
+	if (no < 0 || no >= (int)modelList.size())
 		return;
 	modelList[no] = id;
 }
@@ -275,7 +275,7 @@ void trpgTileHeader::SetModel(int no,int id)
 void trpgTileHeader::AddMaterial(int id)
 {
 	// Look for it first
-	for (int i=0;i<matList.size();i++)
+	for (unsigned int i=0;i<matList.size();i++)
 		if (matList[i] == id)
 			return;
 	// Didn't find it, add it.
@@ -283,7 +283,7 @@ void trpgTileHeader::AddMaterial(int id)
 }
 void trpgTileHeader::AddModel(int id)
 {
-	for (int i=0;i<modelList.size();i++)
+	for (unsigned int i=0;i<modelList.size();i++)
 		if (modelList[i] == id)
 			return;
 	modelList.push_back(id);
@@ -310,7 +310,7 @@ bool trpgTileHeader::GetNumLocalMaterial(int32 &retNum) const
 
 bool trpgTileHeader::GetLocalMaterial(int32 id,trpgLocalMaterial &retMat) const
 {
-    if (id < 0 || id >= locMats.size())
+    if (id < 0 || id >= (int)locMats.size())
 	return false;
 
     retMat = locMats[id];
@@ -334,7 +334,7 @@ bool trpgTileHeader::GetNumMaterial(int32 &no) const
 }
 bool trpgTileHeader::GetMaterial(int32 id,int32 &mat) const
 {
-	if (!isValid() || id < 0 || id >= matList.size())
+	if (!isValid() || id < 0 || id >= (int)matList.size())
 		return false;
 	mat = matList[id];
 	return true;
@@ -347,7 +347,7 @@ bool trpgTileHeader::GetNumModel(int32 &no) const
 }
 bool trpgTileHeader::GetModel(int32 id,int32 &m) const
 {
-	if (!isValid() || id < 0 || id >= modelList.size())
+	if (!isValid() || id < 0 || id >= (int)modelList.size())
 		return false;
 	m = modelList[id];
 	return true;

@@ -50,7 +50,7 @@ bool trpgMatTable1_0::Read(trpgReadBuffer &buf)
 	trpgToken matTok;
 	int32 len;
 	bool status;
-	int i,j,k;
+	unsigned int i,j,k;
 
 	std::vector<trpgShortMaterial> shortTable;
 	std::vector<trpgMaterial> baseMats;
@@ -68,12 +68,12 @@ bool trpgMatTable1_0::Read(trpgReadBuffer &buf)
 		if (matTok == TRPGSHORTMATTABLE) {
 			int32 numTex,texId;
 			buf.PushLimit(len);
-			for (i=0;i<numTable;i++)
-				for (j=0;j<numMat;j++) {
+			for (i=0;i<(unsigned int)numTable;i++)
+				for (j=0;j<(unsigned int)numMat;j++) {
 					trpgShortMaterial &smat = shortTable[i*numMat+j];
 					buf.Get(smat.baseMat);
 					buf.Get(numTex);
-					for (k=0;k<numTex;k++) {
+					for (k=0;k<(unsigned int)numTex;k++) {
 						buf.Get(texId);
 						smat.texids.push_back(texId);
 					}
@@ -85,7 +85,7 @@ bool trpgMatTable1_0::Read(trpgReadBuffer &buf)
 			buf.Get(numBaseMat);
 			if (numBaseMat < 0) throw 1;
 			baseMats.resize(numBaseMat);
-			for (i=0;i<numBaseMat;i++) {
+			for (i=0;i<(unsigned int)numBaseMat;i++) {
 				buf.GetToken(matTok,len);
 				if (matTok != TRPGMATERIAL) throw 1;
 				buf.PushLimit(len);
@@ -154,11 +154,11 @@ bool trpgMatTable1_0::Write(trpgWriteBuffer &buf)
 
     // Write the short materials
     buf.Begin(TRPGSHORTMATTABLE);
-    for (i=0;i<shortMats.size();i++) {
+    for (i=0;i<(int)shortMats.size();i++) {
 	trpgShortMaterial &sMat = shortMats[i];
 	buf.Add(sMat.baseMat);
 	buf.Add((int)(sMat.texids.size()));
-	int j;
+	unsigned int j;
 	for (j=0;j<sMat.texids.size();j++)
 	    buf.Add(sMat.texids[j]);
     }
@@ -228,7 +228,7 @@ bool trpgTexTable1_0::Read(trpgReadBuffer &buf)
 	try {
 		buf.Get(numTex);
 		texList.resize(numTex);
-		for (unsigned int i=0;i<numTex;i++) {
+		for (unsigned int i=0;i<(unsigned int)numTex;i++) {
 			trpgTexture1_0 tex1_0;
 			tex1_0.Read(buf);
 			texList[i] = tex1_0;
@@ -264,7 +264,7 @@ bool trpgTexTable1_0::Write(trpgWriteBuffer &buf)
 
 }
 
-trpgTileTable1_0::trpgTileTable1_0(const trpgTileTable &inTable)
+trpgTileTable1_0::trpgTileTable1_0(const trpgTileTable& /*inTable*/)
 {
     // Nothing to copy for now
 }

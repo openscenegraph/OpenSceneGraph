@@ -38,7 +38,7 @@ trpgManagedTile::trpgManagedTile()
 void trpgManagedTile::Reset()
 {
 	// Null out the local material data
-	for (int i=0;i<localMatData.size();i++)
+	for (unsigned int i=0;i<localMatData.size();i++)
 		localMatData[i] = NULL;
 	groupIDs.resize(0);
 
@@ -102,7 +102,7 @@ const trpgLocalMaterial *trpgManagedTile::GetLocMaterial(int id) const
     const std::vector<trpgLocalMaterial> *matList;
     matList = tileHead.GetLocalMaterialList();
 
-    if (id <0 || id >= matList->size())
+    if (id <0 || id >= (int)matList->size())
 	return NULL;
     
     return &(*matList)[id];
@@ -120,7 +120,7 @@ void *trpgManagedTile::GetLocalData() const
 
 bool trpgManagedTile::SetMatData(int id,void *info)
 {
-	if (id < 0 || id >= localMatData.size())
+	if (id < 0 || id >= (int)localMatData.size())
 		return false;
 
 	localMatData[id] = info;
@@ -130,7 +130,7 @@ bool trpgManagedTile::SetMatData(int id,void *info)
 
 void *trpgManagedTile::GetMatData(int id) const
 {
-	if (id < 0 || id >= localMatData.size())
+	if (id < 0 || id >= (int)localMatData.size())
 		return NULL;
 
 	return localMatData[id];
@@ -173,7 +173,7 @@ trpgPageManager::LodPageInfo::~LodPageInfo()
 void trpgPageManager::LodPageInfo::Clean()
 {
 	// Clean up managed tile structures
-        int i;
+        unsigned int i;
 	for (i=0;i<load.size();i++)
 	    if (load[i])
 		delete load[i];
@@ -328,7 +328,7 @@ bool trpgPageManager::LodPageInfo::isWithin(trpgManagedTile *tile,trpg2iPoint &s
 bool trpgPageManager::LodPageInfo::Stop()
 {
     // Empty the load list
-    int i;
+    unsigned int i;
     for (i=0;i<load.size();i++)
 	freeList.push_back(load[i]);
     load.resize(0);
@@ -361,7 +361,7 @@ void trpgPageManager::LodPageInfo::Update()
 	Some of the tiles we're supposed to load may now be
 	out of range.  Take them off the load list.
      */
-    int i;
+    unsigned int i;
     for (i=0;i<load.size();i++) {
 	if (load[i] && !isWithin(load[i],sw,ne)) {
 	    freeList.push_back(load[i]);
@@ -446,7 +446,7 @@ void trpgPageManager::LodPageInfo::Update()
 void trpgPageManager::LodPageInfo::Print(trpgPrintBuffer &buf)
 {
     char line[1024];
-    int i;
+    unsigned int i;
 
     sprintf(line,"lod = %d,  valid = %s",lod,(valid ? "yes" : "no")); buf.prnLine(line);
     sprintf(line,"pageDist = %f,  maxNumTiles = %d",pageDist,maxNumTiles);  buf.prnLine(line);
@@ -538,7 +538,7 @@ bool trpgPageManager::SetLocation(trpg2dPoint &pt)
     // Call each terrain LOD and let if figure out if something
     //  has changed.
     bool change = false;
-    for (int i=0;i<pageInfo.size();i++) {
+    for (unsigned int i=0;i<pageInfo.size();i++) {
 	if (pageInfo[i].SetLocation(pt))
 	    change = true;
     }
@@ -555,7 +555,7 @@ trpgManagedTile *trpgPageManager::GetNextLoad()
     // Look for anything that needs loaded
     // Start with lowest LOD, work up to highest
     trpgManagedTile *tile = NULL;
-    for (int i=0;i<pageInfo.size();i++) {
+    for (unsigned int i=0;i<pageInfo.size();i++) {
 	LodPageInfo &info = pageInfo[i];
 	if ((tile = info.GetNextLoad()))
 	    break;
@@ -631,8 +631,7 @@ void trpgPageManager::AckUnload()
 
     // Remove this tile's group IDs from the map
     const std::vector<int> *groupIDs = lastTile->GetGroupIDs();
-    int i;
-    for (i=0;i<groupIDs->size();i++) {
+    for (unsigned int i=0;i<groupIDs->size();i++) {
 	ManageGroupMap::iterator p = groupMap.find((*groupIDs)[i]);
 	if (p != groupMap.end())
 	    groupMap.erase(p);
@@ -647,8 +646,7 @@ void trpgPageManager::AckUnload()
 bool trpgPageManager::Stop()
 {
     bool res=false;
-    int i;
-    for (i=0;i<pageInfo.size();i++)
+    for (unsigned int i=0;i<pageInfo.size();i++)
 	res |= pageInfo[i].Stop();
 
     lastLoad = None;
@@ -662,8 +660,7 @@ void trpgPageManager::Print(trpgPrintBuffer &buf)
     sprintf(line,"Paging pos = (%f,%f),  scale = %f",pagePt.x,pagePt.y,scale);  buf.prnLine(line);
     buf.prnLine("Terrain LODs:");
 
-    int i;
-    for (i=0;i<pageInfo.size();i++) {
+    for (unsigned int i=0;i<pageInfo.size();i++) {
 	sprintf(line,"----Terrain lod %d---",i);  buf.prnLine(line);
         buf.IncreaseIndent();
 	pageInfo[i].Print(buf);

@@ -183,10 +183,10 @@ bool trpgr_Archive::ReadTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf
 	// Reality check the address
 	int32 numLods;
 	header.GetNumLods(numLods);
-	if (lod >= numLods) return false;
+	if (lod >= (unsigned int)numLods) return false;
 	trpg2iPoint lodSize;
 	header.GetLodSize(lod,lodSize);
-	if (x >= lodSize.x || y >= lodSize.y) return false;
+	if (x >= (unsigned int)lodSize.x || y >= (unsigned int)lodSize.y) return false;
 
 	trpgTileTable::TileMode tileMode;
 	tileTable.GetMode(tileMode);
@@ -291,7 +291,7 @@ bool trpgr_Archive::trpgGetTileMBR(uint32 x,uint32 y,uint32 lod,trpg3dPoint &ll,
 	header.GetNumLods(numLod);
 	trpg2iPoint maxXY;
 	header.GetLodSize(lod,maxXY);
-	if (x >= maxXY.x || y>= maxXY.y)
+	if (x >= (unsigned int)maxXY.x || y>= (unsigned int)maxXY.y)
 		return false;
 
 	trpg3dPoint origin;
@@ -518,7 +518,7 @@ bool trpgrImageHelper::GetImagePath(const trpgTexture *tex,char *fullPath,int pa
 	tex->GetName(name,nameLen);
 	nameLen = strlen(name);
 
-	if (strlen(dir) + nameLen + 2 > pathLen)
+	if ((int)strlen(dir) + nameLen + 2 > pathLen)
 		return false;
 
 	sprintf(fullPath,"%s" PATHSEPERATOR "%s",dir,name);

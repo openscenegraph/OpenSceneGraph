@@ -231,7 +231,7 @@ void trpgTextStyleTable::Reset()
 
 bool trpgTextStyleTable::isValid() const
 {
-	for (int i=0;i<styles.size();i++)
+	for (unsigned int i=0;i<styles.size();i++)
 		if (!styles[i].isValid())
 			return false;
 
@@ -246,7 +246,7 @@ int trpgTextStyleTable::AddStyle(const trpgTextStyle &style)
 
 int trpgTextStyleTable::FindAddStyle(const trpgTextStyle &style)
 {
-	for (int i=0;i<styles.size();i++)
+	for (unsigned int i=0;i<styles.size();i++)
 		if (styles[i] == style)
 			return i;
 
@@ -260,7 +260,7 @@ int trpgTextStyleTable::GetNumStyle() const
 
 const trpgTextStyle *trpgTextStyleTable::GetStyleRef(int id) const
 {
-	if (id < 0 || id >= styles.size())
+	if (id < 0 || id >= (int)styles.size())
 		return NULL;
 
 	return &styles[id];
@@ -268,7 +268,6 @@ const trpgTextStyle *trpgTextStyleTable::GetStyleRef(int id) const
 
 bool trpgTextStyleTable::Write(trpgWriteBuffer &buf)
 {
-	int i;
 	if (!isValid())
 		return false;
 
@@ -279,7 +278,7 @@ bool trpgTextStyleTable::Write(trpgWriteBuffer &buf)
 	buf.Add((int32)numStyle);
 
 	// Write the styles
-	for (i=0;i<styles.size();i++)
+	for (unsigned int i=0;i<styles.size();i++)
 		styles[i].Write(buf);
 
 	buf.End();
@@ -456,7 +455,7 @@ void trpgSupportStyleTable::Reset()
 
 bool trpgSupportStyleTable::isValid() const
 {
-	for (int i=0;i<styles.size();i++)
+	for (unsigned int i=0;i<styles.size();i++)
 		if (!styles[i].isValid())
 			return false;
 
@@ -471,7 +470,7 @@ int trpgSupportStyleTable::AddStyle(const trpgSupportStyle &style)
 
 int trpgSupportStyleTable::FindAddStyle(const trpgSupportStyle &style)
 {
-	for (int i=0;i<styles.size();i++)
+	for (unsigned int i=0;i<styles.size();i++)
 		if (styles[i] == style)
 			return i;
 
@@ -485,7 +484,7 @@ int trpgSupportStyleTable::GetNumStyle() const
 
 const trpgSupportStyle *trpgSupportStyleTable::GetStyleRef(int id) const
 {
-	if (id < 0 || id >= styles.size())
+	if (id < 0 || id >= (int)styles.size())
 		return NULL;
 
 	return &styles[id];
@@ -493,7 +492,6 @@ const trpgSupportStyle *trpgSupportStyleTable::GetStyleRef(int id) const
 
 bool trpgSupportStyleTable::Write(trpgWriteBuffer &buf)
 {
-	int i;
 	if (!isValid())
 		return false;
 
@@ -504,7 +502,7 @@ bool trpgSupportStyleTable::Write(trpgWriteBuffer &buf)
 	buf.Add((int32)numStyle);
 
 	// Write the styles
-	for (i=0;i<styles.size();i++)
+	for (unsigned int i=0;i<styles.size();i++)
 		styles[i].Write(buf);
 
 	buf.End();
@@ -519,7 +517,6 @@ bool trpgSupportStyleTable::Read(trpgReadBuffer &buf)
 	int32 len;
 	bool status;
 	int numStyle;
-	int i;
 
 	Reset();
 
@@ -528,7 +525,7 @@ bool trpgSupportStyleTable::Read(trpgReadBuffer &buf)
 		if (numStyle < 0)
 			throw 1;
 		styles.resize(numStyle);
-		for (i=0;i<numStyle;i++) {
+		for (int i=0;i<numStyle;i++) {
 			buf.GetToken(styleTok,len);
 			if (styleTok != TRPG_SUPPORT_STYLE) throw 1;
 			buf.PushLimit(len);
@@ -694,7 +691,7 @@ void trpgLabelPropertyTable::Reset()
 
 bool trpgLabelPropertyTable::isValid() const
 {
-	for (int i=0;i<properties.size();i++)
+	for (unsigned int i=0;i<properties.size();i++)
 		if (!properties[i].isValid())
 			return false;
 
@@ -709,7 +706,7 @@ int trpgLabelPropertyTable::AddProperty(const trpgLabelProperty &property)
 
 int trpgLabelPropertyTable::FindAddProperty(const trpgLabelProperty& property)
 {
-	for (int i=0;i<properties.size();i++)
+	for (unsigned int i=0;i<properties.size();i++)
 		if (properties[i] == property)
 			return i;
 
@@ -723,7 +720,7 @@ int trpgLabelPropertyTable::GetNumProperty() const
 
 const trpgLabelProperty *trpgLabelPropertyTable::GetPropertyRef(int id) const
 {
-	if (id < 0 || id >= properties.size())
+	if (id < 0 || id >= (int)properties.size())
 		return NULL;
 
 	return &properties[id];
@@ -731,7 +728,6 @@ const trpgLabelProperty *trpgLabelPropertyTable::GetPropertyRef(int id) const
 
 bool trpgLabelPropertyTable::Write(trpgWriteBuffer &buf)
 {
-	int i;
 	if (!isValid())
 		return false;
 
@@ -742,7 +738,7 @@ bool trpgLabelPropertyTable::Write(trpgWriteBuffer &buf)
 	buf.Add((int32)numProperty);
 
 	// Write the properties
-	for (i=0;i<properties.size();i++)
+	for (unsigned int i=0;i<properties.size();i++)
 		properties[i].Write(buf);
 
 	buf.End();
@@ -757,7 +753,6 @@ bool trpgLabelPropertyTable::Read(trpgReadBuffer &buf)
 	int32 len;
 	bool status;
 	int numProperty;
-	int i;
 
 	Reset();
 
@@ -766,7 +761,7 @@ bool trpgLabelPropertyTable::Read(trpgReadBuffer &buf)
 		if (numProperty < 0)
 			throw 1;
 		properties.resize(numProperty);
-		for (i=0;i<numProperty;i++) {
+		for (unsigned int i=0;i<(unsigned int)numProperty;i++) {
 			buf.GetToken(propertyTok,len);
 			if (propertyTok != TRPG_LABEL_PROPERTY) throw 1;
 			buf.PushLimit(len);
@@ -925,8 +920,6 @@ const std::vector<trpg3dPoint> *trpgLabel::GetSupports() const
 
 bool trpgLabel::Write(trpgWriteBuffer &buf)
 {
-	int i;
-
 	buf.Begin(TRPG_LABEL);
 	buf.Add(propertyId);
 	buf.Add(text);
@@ -938,7 +931,7 @@ bool trpgLabel::Write(trpgWriteBuffer &buf)
 	buf.Add(url);
 	buf.Add(location);
 	buf.Add((int)supports.size());
-	for (i=0;i<supports.size();i++)
+	for (unsigned i=0;i<supports.size();i++)
 		buf.Add(supports[i]);
 	buf.End();
 

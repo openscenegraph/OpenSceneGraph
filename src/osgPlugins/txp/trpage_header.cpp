@@ -91,7 +91,7 @@ void trpgHeader::SetDbVersion(int32 vmaj,int32 vmin)
 }
 void trpgHeader::SetTileSize(int id,const trpg2dPoint &pt)
 {
-	if (id < 0 || id >= tileSize.size())  return;
+	if (id < 0 || id >= (int)tileSize.size())  return;
 	tileSize[id] = pt;
 }
 void trpgHeader::SetOrigin(const trpg3dPoint &pt)
@@ -212,7 +212,7 @@ bool trpgHeader::GetDbVersion(int32 &vmaj,int32 &vmin) const
 bool trpgHeader::GetTileSize(int id,trpg2dPoint &pt) const
 {
 	if (!isValid()) return false;
-	if (id < 0 || id >= tileSize.size())  return false;
+	if (id < 0 || id >= (int)tileSize.size())  return false;
 	pt = tileSize[id];
 	return true;
 }

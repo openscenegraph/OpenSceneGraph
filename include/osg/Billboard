@@ -55,7 +55,7 @@ class SG_EXPORT Billboard : public Geode
         inline const Vec3& getNormal() const { return _normal; }
 
 
-#ifdef USE_DEPRECTATED_API
+#ifdef USE_DEPRECATED_API
         /** Set the position of specified drawable. */
         inline void setPos(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
         /** Get the position of specified drawable. */

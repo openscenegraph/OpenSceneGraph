@@ -32,6 +32,7 @@ namespace ive {
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050
 #define IVEANIMATIONPATHCALLBACK        0x00000051
+#define IVECLUSTERCULLINGCALLBACK       0x00000052
 
 // State attributes.
 #define IVESTATEATTRIBUTE				0x00000100

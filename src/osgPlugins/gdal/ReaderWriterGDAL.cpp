@@ -50,10 +50,10 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 switch(imageOptions->_sourceImageWindowMode)
                 {
                 case(osgDB::ImageOptions::RATIO_WINDOW):
-                    windowX = (unsigned int)(floor((double)dataWidth * imageOptions->_sourceRatioWindow.windowX));
-                    windowY = (unsigned int)(floor((double)dataHeight * imageOptions->_sourceRatioWindow.windowY));
-                    windowWidth = (unsigned int)(ceil((double)dataWidth * (imageOptions->_sourceRatioWindow.windowX + imageOptions->_sourceRatioWindow.windowWidth)))-windowX;
-                    windowHeight = (unsigned int)(ceil((double)dataHeight * (imageOptions->_sourceRatioWindow.windowY + imageOptions->_sourceRatioWindow.windowHeight)))-windowY;
+                    windowX = osg::maximum((int)(floor((double)dataWidth * imageOptions->_sourceRatioWindow.windowX)),0);
+                    windowY = osg::maximum((int)(floor((double)dataHeight * imageOptions->_sourceRatioWindow.windowY)),0);
+                    windowWidth = osg::minimum((int)(ceil((double)dataWidth * (imageOptions->_sourceRatioWindow.windowX + imageOptions->_sourceRatioWindow.windowWidth))),dataWidth)-windowX;
+                    windowHeight = osg::minimum((int)(ceil((double)dataHeight * (imageOptions->_sourceRatioWindow.windowY + imageOptions->_sourceRatioWindow.windowHeight))),dataHeight)-windowY;
                     break;
                 case(osgDB::ImageOptions::PIXEL_WINDOW):
                     windowX = imageOptions->_sourcePixelWindow.windowX;

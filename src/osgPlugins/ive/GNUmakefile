@@ -8,6 +8,7 @@ CXXFILES =\
 	BlendFunc.cpp\
         ConvexPlanarOccluder.cpp\
         ConvexPlanarPolygon.cpp\
+        ClusterCullingCallback.cpp\
 	CullFace.cpp\
 	DataInputStream.cpp\
 	DataOutputStream.cpp\

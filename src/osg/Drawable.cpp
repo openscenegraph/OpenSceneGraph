@@ -899,6 +899,7 @@ void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLui
 //
 
 ClusterCullingCallback::ClusterCullingCallback():
+    _radius(-1.0f),
     _deviation(-1.0f)
 {
 }
@@ -919,20 +920,24 @@ ClusterCullingCallback::ClusterCullingCallback(const osg::Drawable* drawable)
     computeFrom(drawable);
 }
 
-struct CollectNormalsFunctor
+struct ComputeAveragesFunctor
 {
 
-    CollectNormalsFunctor():
-         _x(0.0),_y(0.0),_z(0) {}
+    ComputeAveragesFunctor():
+        _num(0),
+        _x(0.0),_y(0.0),_z(0),
+        _nx(0.0),_ny(0.0),_nz(0) {}
 
     inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3, bool)
     {
         // calc orientation of triangle.
         osg::Vec3 normal = (v2-v1)^(v3-v1);
-        normal.normalize();
-
-        _normals.push_back(normal);
-        
+        if (normal.normalize()!=0.0f)
+        {
+            _nx += normal.x();
+            _ny += normal.y();
+            _nz += normal.z();
+        }        
         _x += v1.x();
         _y += v1.y();
         _z += v1.z();
@@ -944,20 +949,74 @@ struct CollectNormalsFunctor
         _x += v3.x();
         _y += v3.y();
         _z += v3.z();
+        
+        
+        ++_num;
 
     }
     
-    typedef std::vector<osg::Vec3> NormalList;
-    NormalList _normals;
+    osg::Vec3 center() const { return osg::Vec3(_x/(double)(3*_num),_y/(double)(3*_num),_z/(double)(3*_num)); }
+    osg::Vec3 normal() const { Vec3 normal(_nx/(double)_num,_ny/(double)_num,_nz/(double)_num); normal.normalize(); return normal; }
+    
+    unsigned int _num;
     double _x,_y,_z;
+    double _nx,_ny,_nz;
 };
 
+struct ComputeDeviationFunctor
+{
+
+    ComputeDeviationFunctor():
+        _deviation(1.0),
+        _radius2(0.0) {}
+        
+    void set(const osg::Vec3& center,const osg::Vec3& normal)
+    {
+        _center = center;
+        _normal = normal;
+    }
+
+    inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3, bool)
+    {
+        // calc orientation of triangle.
+        osg::Vec3 normal = (v2-v1)^(v3-v1);
+        if (normal.normalize()!=0.0f)
+        {
+            _deviation = osg::minimum(_normal*normal,_deviation);
+        }
+        _radius2 = osg::maximum((v1-_center).length2(),_radius2);
+        _radius2 = osg::maximum((v2-_center).length2(),_radius2);
+        _radius2 = osg::maximum((v3-_center).length2(),_radius2);
+
+    }
+    osg::Vec3 _center;
+    osg::Vec3 _normal;
+    float _deviation;
+    float _radius2;
+};
 
 
 void ClusterCullingCallback::computeFrom(const osg::Drawable* drawable)
 {
-    TriangleFunctor<CollectNormalsFunctor> stf;
-    drawable->accept(stf);
+    TriangleFunctor<ComputeAveragesFunctor> caf;
+    drawable->accept(caf);
+    
+    _controlPoint = caf.center();
+    _normal = caf.normal();
+    
+    TriangleFunctor<ComputeDeviationFunctor> cdf;
+    cdf.set(_controlPoint,_normal);
+    drawable->accept(cdf);
+
+    if (_normal.length2()==0.0) _deviation = -1.0f;
+    else 
+    {
+        float angle = acosf(cdf._deviation)+osg::PI*0.5f;
+        if (angle<osg::PI) _deviation = cosf(angle);
+        else _deviation = -1.0f;
+    }
+    
+    _radius = sqrtf(cdf._radius2);
 }
 
 void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation)
@@ -968,7 +1027,13 @@ void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3&
 }
 
 
-bool ClusterCullingCallback::cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const
+bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::State*) const
 {
-    return false;
+    if (_deviation<=-1.0f) return false;
+    
+    osg::Vec3 eye_cp = nv->getEyePoint() - _controlPoint;
+    
+    float deviation = (eye_cp * _normal)/eye_cp.length();
+
+    return deviation < _deviation;
 }

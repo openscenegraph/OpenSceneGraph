@@ -45,7 +45,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     options->_sourceRatioWindow.set(x,1-(y+h),w,h);
 
     options->_destinationImageWindowMode = osgDB::ImageOptions::PIXEL_WINDOW;
-    options->_destinationPixelWindow.set(0,0,512,512);
+    options->_destinationPixelWindow.set(0,0,256,256);
 
     osgDB::Registry::instance()->setOptions(options.get());
     osg::Image* image = osgDB::readImageFile(filename.c_str());
@@ -61,8 +61,8 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     
     geode->setStateSet( stateset );
 
-    unsigned int numColumns = 20;
-    unsigned int numRows = 20;
+    unsigned int numColumns = 10;
+    unsigned int numRows = 10;
     unsigned int r;
     unsigned int c;
 
@@ -142,108 +142,101 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     
     geometry->setUseVertexBufferObjects(true);
 
+
+    {
+        osg::Vec3 center = computePosition(leftHemisphere, x+w*0.5, y+h*0.5);
+        osg::Vec3 normal = center;
+        osg::Vec3 n00 = computePosition(leftHemisphere, x, y);
+        osg::Vec3 n10 = computePosition(leftHemisphere, x+w, y);
+        osg::Vec3 n11 = computePosition(leftHemisphere, x+w, y+h);
+        osg::Vec3 n01 = computePosition(leftHemisphere, x, y+h);
+
+        float radius = (center-n00).length();
+        radius = osg::maximum((center-n10).length(),radius);
+        radius = osg::maximum((center-n11).length(),radius);
+        radius = osg::maximum((center-n01).length(),radius);
+
+        float min_dot = normal*n00;
+        min_dot = osg::minimum(normal*n10,min_dot);
+        min_dot = osg::minimum(normal*n11,min_dot);
+        min_dot = osg::minimum(normal*n01,min_dot);
+
+        float angle = acosf(min_dot)+osg::PI*0.5f;
+        float deviation = (angle<osg::PI) ? deviation = cosf(angle) : -1.0f;
+
+        osg::ClusterCullingCallback* ccc = new osg::ClusterCullingCallback;
+        ccc->setControlPoint(center);
+        ccc->setNormal(normal);
+        ccc->setRadius(radius);
+        ccc->setDeviation(deviation);
+        geometry->setCullCallback(ccc);
+    }    
+    
+
     geode->addDrawable(geometry);
 
     return geode;
 }
 
-osg::Node* createTileAndRecurse(const std::string& filename, const std::string& basename, const std::string& extension, bool leftHemisphere, double x, double y, double w,double h, unsigned int numLevelsLeft)
+osg::Node* createTileAndRecurse(const std::string& filename, const std::string& basename, const std::string& extension, bool leftHemisphere, unsigned int noTilesX, unsigned int noTilesY, double x, double y, double w,double h, unsigned int numLevelsLeft)
 {
     osg::Group* group = new osg::Group;
+    
+    double dx = w / (double) noTilesX;
+    double dy = h / (double) noTilesY;
+    
     
     if (numLevelsLeft>0)
     {
     
-        std::string basename1 = basename+"_1";
-        std::string basename2 = basename+"_2";
-        std::string basename3 = basename+"_3";
-        std::string basename4 = basename+"_4";
-        
-        {
-            osg::ref_ptr<osg::Node> node = createTileAndRecurse(filename,basename1,extension,leftHemisphere,x,y,w*0.5,h*0.5,numLevelsLeft-1);
-            osgDB::writeNodeFile(*node, basename1+extension);
-        }
-
-        {
-            osg::ref_ptr<osg::Node> node = createTileAndRecurse(filename,basename2,extension,leftHemisphere,x+w*0.5,y,w*0.5,h*0.5,numLevelsLeft-1);
-            osgDB::writeNodeFile(*node, basename2+extension);
-        }
-
-        {
-            osg::ref_ptr<osg::Node> node = createTileAndRecurse(filename,basename3,extension,leftHemisphere,x,y+h*0.5,w*0.5,h*0.5,numLevelsLeft-1);
-            osgDB::writeNodeFile(*node, basename3+extension);
-        }
-
-        {
-            osg::ref_ptr<osg::Node> node = createTileAndRecurse(filename,basename4,extension,leftHemisphere,x+w*0.5,y+h*0.5,w*0.5,h*0.5,numLevelsLeft-1);
-            osgDB::writeNodeFile(*node, basename4+extension);
-        }
-
-        float cut_off_distance = h*osg::PI;
+        float cut_off_distance = 4.0f*dy*osg::PI;
         float max_visible_distance = 1e7;
     
         // create current layer, and write to disk.
+        unsigned int numTiles = 0;
+        double lx = x;
+        for(unsigned i=0;i<noTilesX;++i,lx+=dx)
         {
-
+            double ly = y;
+            for(unsigned j=0;j<noTilesY;++j,ly+=dy)
             {
+                // create name for tile.
+                char char_num = 'A'+numTiles;
+                std::string lbasename = basename+"_"+char_num;
+
+                // create the subtiles and write out to disk.
+                {
+                    osg::ref_ptr<osg::Node> node = createTileAndRecurse(filename,lbasename,extension,leftHemisphere,2,2,lx,ly,dx,dy,numLevelsLeft-1);
+                    osgDB::writeNodeFile(*node, lbasename+extension);
+                }
+                
+                // create PagedLOD for tile.
                 osg::PagedLOD* pagedlod = new osg::PagedLOD;
-                osg::Node* tile = createTile(filename,leftHemisphere,x,y,w*0.5,h*0.5);
+                osg::Node* tile = createTile(filename,leftHemisphere,lx,ly,dx,dy);
                 pagedlod->addChild(tile, cut_off_distance,max_visible_distance);
                 pagedlod->setRange(1,0.0f,cut_off_distance);
-                pagedlod->setFileName(1,basename1+extension);
-                pagedlod->setCenter(computePosition(leftHemisphere,x+w*0.25,y+h*0.25));
+                pagedlod->setFileName(1,lbasename+extension);
+                pagedlod->setCenter(computePosition(leftHemisphere,lx+dx*0.5,ly+dy*0.5));
 
                 group->addChild(pagedlod);
+                
+                // increment number of tiles.
+                ++numTiles;
             }
 
-            {
-                osg::PagedLOD* pagedlod = new osg::PagedLOD;
-
-                osg::Node* tile = createTile(filename,leftHemisphere,x+w*0.5,y,w*0.5,h*0.5);
-                pagedlod->addChild(tile, cut_off_distance,max_visible_distance);
-                pagedlod->setRange(1,0.0f,cut_off_distance);
-                pagedlod->setFileName(1,basename2+extension);
-                pagedlod->setCenter(computePosition(leftHemisphere,x+w*0.75,y+h*0.25));
-
-                group->addChild(pagedlod);
-            }
-
-            {
-                osg::PagedLOD* pagedlod = new osg::PagedLOD;
-
-                osg::Node* tile = createTile(filename,leftHemisphere,x,y+h*0.5,w*0.5,h*0.5);
-                pagedlod->addChild(tile, cut_off_distance,max_visible_distance);
-                pagedlod->setRange(1,0.0f,cut_off_distance);
-                pagedlod->setFileName(1,basename3+extension);
-                pagedlod->setCenter(computePosition(leftHemisphere,x+w*0.25,y+h*0.75));
-
-                group->addChild(pagedlod);
-            }
-
-            {
-                osg::PagedLOD* pagedlod = new osg::PagedLOD;
-
-                osg::Node* tile = createTile(filename,leftHemisphere,x+w*0.5,y+h*0.5,w*0.5,h*0.5);
-                pagedlod->addChild(tile, cut_off_distance,max_visible_distance);
-                pagedlod->setRange(1,0.0f,cut_off_distance);
-                pagedlod->setFileName(1,basename4+extension);
-                pagedlod->setCenter(computePosition(leftHemisphere,x+w*0.75,y+h*0.75));
-
-                group->addChild(pagedlod);
-            }
-        
         }
-        
         
     }
     else
     {
-        // create current layer, and write to disk.
+        double lx = x;
+        for(unsigned i=0;i<noTilesX;++i,lx+=dx)
         {
-            group->addChild(createTile(filename,leftHemisphere,x,y,w*0.5,h*0.5));
-            group->addChild(createTile(filename,leftHemisphere,x+w*0.5,y,w*0.5,h*0.5));
-            group->addChild(createTile(filename,leftHemisphere,x,y+h*0.5,w*0.5,h*0.5));
-            group->addChild(createTile(filename,leftHemisphere,x+w*0.5,y+h*0.5,w*0.5,h*0.5));
+            double ly = y;
+            for(unsigned j=0;j<noTilesY;++j,ly+=dy)
+            {
+                group->addChild(createTile(filename,leftHemisphere,lx,ly,dx,dy));
+            }
         }
     }
     
@@ -277,8 +270,8 @@ bool createWorld(const std::string& left_hemisphere, const std::string& right_he
 
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
-    group->addChild(createTileAndRecurse(left_hemisphere, base+"_west", extension, true, 0.0, 0.0, 1.0, 1.0, numLevels));
-    group->addChild(createTileAndRecurse(right_hemisphere, base+"_east", extension, false, 0.0, 0.0, 1.0, 1.0, numLevels));
+    group->addChild(createTileAndRecurse(left_hemisphere, base+"_west", extension, true, 5,5, 0.0, 0.0, 1.0, 1.0, numLevels));
+    group->addChild(createTileAndRecurse(right_hemisphere, base+"_east", extension, false, 5,5, 0.0, 0.0, 1.0, 1.0, numLevels));
    
     osg::StateSet* stateset = group->getOrCreateStateSet();
     stateset->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
@@ -331,7 +324,7 @@ int main( int argc, char **argv )
 
     std::string left_hemisphere("land_shallow_topo_west.tif");
     std::string right_hemisphere("land_shallow_topo_east.tif");
-    std::string basename("bluemarble.ive");
+    std::string basename("BlueMarble/bluemarble.ive");
     
     createWorld(left_hemisphere,right_hemisphere,basename,4);
 

@@ -35,7 +35,7 @@ class MyCopyOp : public osg::CopyOp
         {
             writeIndent(); std::cout << "copying Referenced "<<ref<<std::endl;
             moveIn();
-            osg::Referenced* ret_ref = CopyOp::operator()(ref);
+            osg::Referenced* ret_ref = osg::CopyOp::operator()(ref);
             moveOut();
             return ret_ref;
         }
@@ -46,7 +46,7 @@ class MyCopyOp : public osg::CopyOp
             if (obj) std::cout<<" "<<obj->className();
             std::cout<<std::endl;
             moveIn();
-            osg::Object* ret_obj = CopyOp::operator()(obj);
+            osg::Object* ret_obj = osg::CopyOp::operator()(obj);
             moveOut();
             return ret_obj;
         }
@@ -57,7 +57,7 @@ class MyCopyOp : public osg::CopyOp
             if (node) std::cout<<" "<<node->className()<<" '"<<node->getName()<<"'";
             std::cout<<std::endl;
             moveIn();
-            osg::Node* ret_node = CopyOp::operator()(node);
+            osg::Node* ret_node = osg::CopyOp::operator()(node);
             moveOut();
             return ret_node;
         }
@@ -68,7 +68,7 @@ class MyCopyOp : public osg::CopyOp
             if (drawable) std::cout<<" "<<drawable->className();
             std::cout<<std::endl;
             moveIn();
-            osg::Drawable* ret_drawable = CopyOp::operator()(drawable);
+            osg::Drawable* ret_drawable = osg::CopyOp::operator()(drawable);
             moveOut();
             return ret_drawable;
         }
@@ -79,7 +79,7 @@ class MyCopyOp : public osg::CopyOp
             if (stateset) std::cout<<" "<<stateset->className();
             std::cout<<std::endl;
             moveIn();
-            osg::StateSet* ret_stateset = CopyOp::operator()(stateset);
+            osg::StateSet* ret_stateset = osg::CopyOp::operator()(stateset);
             moveOut();
             return ret_stateset;
         }
@@ -90,7 +90,7 @@ class MyCopyOp : public osg::CopyOp
             if (attr) std::cout<<" "<<attr->className();
             std::cout<<std::endl;
             moveIn();
-            osg::StateAttribute* ret_attr = CopyOp::operator()(attr);
+            osg::StateAttribute* ret_attr = osg::CopyOp::operator()(attr);
             moveOut();
             return ret_attr;
         }
@@ -101,7 +101,7 @@ class MyCopyOp : public osg::CopyOp
             if (text) std::cout<<" "<<text->className();
             std::cout<<std::endl;
             moveIn();
-            osg::Texture* ret_text = CopyOp::operator()(text);
+            osg::Texture* ret_text = osg::CopyOp::operator()(text);
             moveOut();
             return ret_text;
         }
@@ -112,7 +112,7 @@ class MyCopyOp : public osg::CopyOp
             if (image) std::cout<<" "<<image->className();
             std::cout<<std::endl;
             moveIn();
-            osg::Image* ret_image = CopyOp::operator()(image);
+            osg::Image* ret_image = osg::CopyOp::operator()(image);
             moveOut();
             return ret_image;
         }

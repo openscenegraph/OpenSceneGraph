@@ -502,6 +502,11 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent)
 
             else
             {
+                char *ctmp=tokv[1]; // upate Jul 19 2004 - for texture file names in quotes
+                while (*ctmp) {
+                    ctmp++;
+                    if (*ctmp == '"') *ctmp='\0'; // latest ac3d seems toa dd more quotes than older versions.
+                }
                 osg::Image *ctx= osgDB::readImageFile(tokv[1]);
                 if (ctx)
                 { // image coukd be read
@@ -857,19 +862,19 @@ osg::Group *ac_load_ac3d(const char *fname)
 //    FILE *f = fopen(fname, "r");
 
         if (!fin.is_open())
-            {
+        {
             printf("can't open %s for loading\n", fname);
             return(NULL);
-            }
+        }
 
         read_line(fin);
 
         if (strncmp(buff, "AC3D", 4))
-            {
+        {
             printf("ac_load_ac '%s' is not a valid AC3D file.", fname);
             fin.close(); // fclose(f);
             return(0);
-            }
+        }
 
 
         startmatindex = palette.size(); //num_palette;

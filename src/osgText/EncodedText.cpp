@@ -200,21 +200,24 @@ EncodedText::Encoding EncodedText::findEncoding(const unsigned char*& charString
     return ENCODING_ASCII;
 }
 
-void EncodedText::setText(const unsigned char* text)
+void EncodedText::setText(const unsigned char* text, int length)
 {
     _unicodeText.clear();
     if (text != NULL)
     {
+        const unsigned char* textStart = text;
         if ((_overrideEncoding == ENCODING_SIGNATURE) || 
             (_overrideEncoding == ENCODING_UTF16) || 
             (_overrideEncoding == ENCODING_UTF32))
             _encoding = findEncoding(text);
 
         int character = getNextCharacter(text);
-        while (character)
+        int charCount = (int)(text-textStart);
+        while ((character) && (charCount <= length))
         {
             _unicodeText.push_back(character);
             character = getNextCharacter(text);
+            charCount = (int)(text-textStart);
         }
         _unicodeText.push_back(0); //just making the null-termination explicit
     }

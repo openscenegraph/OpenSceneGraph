@@ -505,7 +505,7 @@ setText(const std::string& text)
 { 
     _text=text; 
     _initAlignment=false;
-    _encodedText->setText((const unsigned char*)_text.data());
+    _encodedText->setText((const unsigned char*)_text.data(),_text.size());
 }
 // Text
 ///////////////////////////////////////////////////////////////////////////////

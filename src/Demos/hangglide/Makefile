@@ -1,36 +1,19 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-	hangglide.cpp\
-	ReaderWriterFLY.cpp\
-	GliderManipulator.cpp\
-	hat.cpp\
-	terrain.cpp\
-	tank.cpp\
-	sky.cpp\
+CXXFILES =\
 	base.cpp\
+	GliderManipulator.cpp\
+	hangglide.cpp\
+	hat.cpp\
+	ReaderWriterFLY.cpp\
+	sky.cpp\
+	tank.cpp\
+	terrain.cpp\
 	trees.cpp\
 
-TARGET = $(OSGHOME)/bin/hangglide
+LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
-TARGET_BIN_FILES = hangglide
+EXEC = osghangglide
 
-#note, use this library list when using the Performer osgPlugin.
-#LIBS = ${PFLIBS} -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
-
-#note, standard library list. 
-LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
-
-#under Darwin we have to use the framework stuff to get GLUT OpenGL etc.
-MACOSXLIBS = -losgGLUT -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
-
-
-# $(OSGDB_LIBS)
-C++FLAGS += -I. -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
-test :
-	hangglide
+include $(TOPDIR)/Make/makerules 

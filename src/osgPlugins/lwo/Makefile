@@ -1,19 +1,15 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = ReaderWriterLWO.cpp lw.cpp
+CXXFILES =\
+	lw.cpp\
+	ReaderWriterLWO.cpp\
 
-TARGET_BASENAME = osgdb_lwo
 
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-LIB=
+INC += -I$(THISDIR)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-LIBS    =  $(GL_LIBS) -losg -losgDB -losgUtil
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgDB -losgUtil -lstdc++
+PLUGIN = osgdb_lwo.$(PLUGIN_EXT)
 
-C++FLAGS += -I. -I$(OSGHOME)/include 
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
+include $(TOPDIR)/Make/makerules 

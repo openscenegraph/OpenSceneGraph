@@ -1,23 +1,17 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-        ReaderWriterGIF.cpp\
-
-TARGET_BASENAME = osgdb_gif
-
-LIB=
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-LIBS = $(GL_LIBS) -losg -losgDB -lungif 
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgDB -lungif -lstdc++
-
-C++FLAGS += -I. -I$(OSGHOME)/include  -I/usr/freeware/include
-LDFLAGS += -L$(OSGHOME)/lib $(FREEBSD_LOCALLIBS) -L/usr/freeware/lib32
-
-include $(OSGHOME)/Make/makerules
+CXXFILES =\
+	ReaderWriterGIF.cpp\
 
 
+INC   += -I/usr/local/include\
+	 -I/usr/freeware/include\
 
+LINKARGS += -L/usr/freeware/lib$(ARCH)
+
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+
+PLUGIN = osgdb_gif.$(PLUGIN_EXT)
+
+include $(TOPDIR)/Make/makerules 

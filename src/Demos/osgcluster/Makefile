@@ -1,27 +1,13 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-        broadcaster.cpp\
+CXXFILES =\
+	broadcaster.cpp\
+	osgcluster.cpp\
 	receiver.cpp\
-	osgcluster.cpp
 
-C++FLAGS += -g 
+LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(SOCKET_LIBS) $(OTHER_LIBS) 
 
-TARGET = $(OSGHOME)/bin/osgcluster
+EXEC = osgcluster
 
-TARGET_BIN_FILES = osgcluster
-
-#note, use this library list when using the Performer osgPlugin.
-#LIBS = ${PFLIBS} -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
-
-#note, standard library list. 
-LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
-
-C++FLAGS += -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
-test :
-	@echo no current test for osgconv:
+include $(TOPDIR)/Make/makerules 

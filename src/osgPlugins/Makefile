@@ -1,7 +1,10 @@
-#!gmake
-SHELL=/bin/sh
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
 
-DIRS = osg rgb lib3ds flt obj lwo txp dw bmp pic tga osgtgz tgz zip  
+DIRS = osg rgb lib3ds flt obj lwo dw bmp pic tga osgtgz tgz zip  
+
+# The following are giving me problems on SUN
+#DIRS += txp
 
 # comment in if you have Performer installed.
 # DIRS += pfb
@@ -27,30 +30,6 @@ DIRS += gif
 # comment in if you have libtiff installed.
 DIRS += tiff
 
-all :
-	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
 
-clean :
-	for f in $(DIRS) ; do cd $$f; $(MAKE) clean; cd ..;  done
 
-clobber : 
-	for f in $(DIRS) ; do cd $$f; $(MAKE) clobber; cd ..;  done
-
-depend : 
-	for f in $(DIRS) ; do cd $$f; $(MAKE) depend; cd ..;  done
-
-to_unix : 
-	for f in $(DIRS) ; do cd $$f; to_unix Makefile Makefile; cd ..;  done
-	for f in $(DIRS) ; do cd $$f; $(MAKE) to_unix; cd ..;  done
-
-beautify : 
-	for f in $(DIRS) ; do cd $$f; $(MAKE) beautify; cd ..;  done
-
-install :
-	for f in $(DIRS)  ; do cd $$f; $(MAKE) install; cd ..;  done
-
-instlinks :
-	for f in $(DIRS)  ; do cd $$f; $(MAKE) instlinks; cd ..;  done
-
-instclean :
-	for f in $(DIRS)  ; do cd $$f; $(MAKE) instclean; cd ..;  done
+include $(TOPDIR)/Make/makedirrules

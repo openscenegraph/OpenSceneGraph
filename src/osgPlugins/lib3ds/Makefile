@@ -1,7 +1,7 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
         atmosphere.cpp \
         chunk.cpp \
         lib3ds_float.cpp \
@@ -23,20 +23,11 @@ C++FILES = \
         vector.cpp \
         ReaderWriter3DS.cpp\
 
-TARGET_BASENAME = osgdb_3ds
 
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-LIB=
+INC += -I$(THISDIR)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-LIBS    =  $(GL_LIBS) -losg -losgDB
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgUtil -losgDB -ldl -lm -lstdc++
+PLUGIN = osgdb_3ds.$(PLUGIN_EXT)
 
-C++FLAGS += -I. -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
-
-
+include $(TOPDIR)/Make/makerules 

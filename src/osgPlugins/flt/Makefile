@@ -1,7 +1,7 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
 	BoundingVolumeRecords.cpp\
 	LongIDRecord.cpp\
 	ColorPaletteRecord.cpp\
@@ -40,21 +40,13 @@ C++FILES = \
 	ReaderWriterFLT.cpp\
 	ReaderWriterATTR.cpp\
 #	PointLight.cpp\
-	
 
 
-TARGET_BASENAME = osgdb_flt
 
-LIB = 
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
+INC += -I$(THISDIR)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-LIBS    =  $(GL_LIBS) -losg -losgDB
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgDB -lstdc++
+PLUGIN = osgdb_flt.$(PLUGIN_EXT)
 
-C++FLAGS += -I. -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
+include $(TOPDIR)/Make/makerules 

@@ -1,28 +1,12 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
+	OrientationConverter.cpp\
 	osgconv.cpp\
-	OrientationConverter.cpp
 
+LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
-TARGET = $(OSGHOME)/bin/osgconv
+EXEC = osgconv
 
-TARGET_BIN_FILES = osgconv
-
-#note, use this library list when using the Performer osgPlugin.
-#LIBS = ${PFLIBS} -losgDB -losg -lGLU -lGL  -lm -lXmu  -lX11 -lXi
-
-#note, standard library list. 
-LIBS = -losgUtil -losgDB -losg $(GL_LIBS) $(X_LIBS)
-
-#under Darwin we have to use the framework stuff to get GLUT OpenGL etc.
-MACOSXLIBS = -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
-
-C++FLAGS += -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
-test :
-	@echo no current test for osgconv:
+include $(TOPDIR)/Make/makerules 

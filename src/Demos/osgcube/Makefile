@@ -1,22 +1,11 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-	osgcube.cpp
+CXXFILES =\
+	osgcube.cpp\
 
-TARGET = $(OSGHOME)/bin/osgcube
+LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
-TARGET_BIN_FILES = osgcube
+EXEC = osgcube
 
-LIBS = -losgGLUT -losgDB -losgUtil -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
-
-#under Darwin we have to use the framework stuff to get GLUT OpenGL etc.
-MACOSXLIBS = -losgGLUT -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
-
-C++FLAGS += -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
-test :
-	osgcube
+include $(TOPDIR)/Make/makerules 

@@ -1,23 +1,15 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
         ReaderWriterPNG.cpp\
 
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+INC  += -I/usr/local/include\
+	-I/usr/freeware/include\
 
+LINKARGS += -L/usr/freeware/lib$(ARCH)
 
-TARGET_BASENAME = osgdb_png
+PLUGIN = osgdb_png.$(PLUGIN_EXT)
 
-LIB=
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-LIBS = $(GL_LIBS) -losg -losgDB -lpng 
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgDB -lpng -lstdc++
-
-
-C++FLAGS += -I. -I$(OSGHOME)/include 
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
+include $(TOPDIR)/Make/makerules 

@@ -1,7 +1,7 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
 	DynamicLibrary.cpp\
 	FileNameUtils.cpp\
 	FileUtils.cpp\
@@ -15,40 +15,11 @@ C++FILES = \
 	FieldReader.cpp\
 	FieldReaderIterator.cpp\
 	DotOsgWrapper.cpp\
-        
-
-TARGET_BASENAME = osgDB
-
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
-
-TARGET_INCLUDE_FILES = \
-	osgDB/Registry\
-	osgDB/DynamicLibrary\
-	osgDB/Export\
-	osgDB/FileNameUtils\
-	osgDB/FileUtils\
-	osgDB/ReaderWriter\
-	osgDB/ReadFile\
-	osgDB/Version\
-	osgDB/WriteFile\
-	osgDB/Input\
-	osgDB/Output\
-	osgDB/Field\
-	osgDB/FieldReader\
-	osgDB/FieldReaderIterator\
-	osgDB/DotOsgWrapper\
 
 
-#LIBS    = -L$(OSGHOME)/lib -losg -lGLU -lGL -lm -ldl
-LIBS    = -L$(OSGHOME)/lib -losg $(GL_LIBS) $(DYNAMICLIBRARYLIB)
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -ldl -lm -lstdc++ $(DYNAMICLIBRARYLIB)
+LIBS += -losg $(OTHER_LIBS) $(DYNAMICLIBRARYLIB) 
+DEF  += -DOSGDB_LIBRARY
 
-LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
+LIB = libosgDB.$(PLUGIN_EXT)
 
-C++FLAGS += -I $(OSGHOME)/include -DOSGDB_LIBRARY
-
-#LDFLAGS += -Wl,--out-implib,./../lib/lib$(TARGET_BASENAME).a
-
-include $(OSGHOME)/Make/makerules
-
+include $(TOPDIR)/Make/makerules 

@@ -1,7 +1,7 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
 	FTBitmapGlyph.cpp \
 	FTCharmap.cpp \
 	FTFace.cpp \
@@ -25,33 +25,19 @@ C++FILES = \
 	Text.cpp \
 	Version.cpp
 
+LIBS  += $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS)
 
-TARGET_BASENAME = osgText
+INC += -I$(OSGHOME)/include \
+	-I/usr/include/freetype2 \
+	-I/usr/local/include \
+	-I/usr/local/include/freetype2  \
+	-I/usr/freeware/include \
+	-I/usr/freeware/include/freetype2 \
 
+DEF += -DOSGTEXT_LIBRARY
+LINKARGS += -L/usr/local/lib\
+	    -L/usr/freeware/lib$(ARCH)
 
-LIBS    = -L$(OSGHOME)/lib -lfreetype -losgDB -losg $(GL_LIBS)
-MACOSXLIBS    = -L$(OSGHOME)/lib -lfreetype -losgDB -losg -lstdc++
+LIB = libosgText.$(SO_EXT)
 
-LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
-
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
-TARGET_INCLUDE_FILES = \
-	osgText/Export\
-	osgText/Font\
-	osgText/Paragraph\
-	osgText/Text\
-	osgText/Version
-
-C++FLAGS += -I$(OSGHOME)/include \
-		-I/usr/include/freetype2 \
-		-I/usr/local/include \
-		-I/usr/local/include/freetype2  \
-		-I/usr/freeware/include \
-		-I/usr/freeware/include/freetype2 \
-		-DOSGTEXT_LIBRARY
-
-LDFLAGS += -L/usr/local/lib -L/usr/freeware/lib32
-
-include $(OSGHOME)/Make/makerules
-
+include $(TOPDIR)/Make/makerules 

@@ -1,7 +1,7 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
         AlphaFunc.cpp\
         Billboard.cpp\
         ClipPlane.cpp\
@@ -40,25 +40,11 @@ C++FILES = \
         TexGen.cpp\
         TexMat.cpp\
         Texture.cpp\
-        TextureCubeMap.cpp\
         Transform.cpp\
         Transparency.cpp\
 
-TARGET_BASENAME = osgdb_osg
+LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
 
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-LIB=
+PLUGIN = osgdb_osg.$(PLUGIN_EXT)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-LIBS    =  $(GL_LIBS) -losg -losgDB
-MACOSXLIBS = -L../../../lib -losg -losgUtil -losgDB -ldl -lm -lstdc++
-
-
-C++FLAGS += -I. -I$(OSGHOME)/include 
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
-
-
+include $(TOPDIR)/Make/makerules 

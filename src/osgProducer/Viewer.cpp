@@ -181,7 +181,7 @@ public:
     
     virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
     {
-        osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
+        osg::notify(osg::NOTICE)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
         const Viewer::RefNodePath& refNodePath = _viewer->getCoordindateSystemNodePath();
         
@@ -189,7 +189,7 @@ public:
         {        
             osg::Matrixd coordinateFrame;
 
-            // have to crete a copy of the RefNodePath to create an osg::NodePath
+            // have to create a copy of the RefNodePath to create an osg::NodePath
             // to allow it to be used along with the computeLocalToWorld call.
             osg::NodePath tmpPath;
             for(Viewer::RefNodePath::const_iterator itr=refNodePath.begin();
@@ -202,17 +202,23 @@ public:
             osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(tmpPath.back());
             if (csn)
             {
-                coordinateFrame = csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath);
+                osg::Vec3 local_position = position*osg::computeWorldToLocal(tmpPath);
+                osg::notify(osg::NOTICE)<<"local postion "<<local_position<<std::endl;
+            
+                osg::notify(osg::NOTICE)<<"csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath)"<<std::endl;
+
+                coordinateFrame = csn->computeLocalCoordinateFrame(local_position)* osg::computeLocalToWorld(tmpPath);
             }
             else
             {
+                osg::notify(osg::NOTICE)<<"osg::computeLocalToWorld(tmpPath)"<<std::endl;
                 coordinateFrame =  osg::computeLocalToWorld(tmpPath);
             }
             return coordinateFrame;
         }
         else
         {
-            osg::notify(osg::INFO)<<"   no coordinate system found, using default orientation"<<std::endl;
+            osg::notify(osg::NOTICE)<<"   no coordinate system found, using default orientation"<<std::endl;
             return osg::Matrixd::translate(position);
         }
     }
@@ -332,8 +338,12 @@ void Viewer::computeActiveCoordindateSystemNodePath()
 void Viewer::updatedSceneData()
 {
     OsgCameraGroup::updatedSceneData();
-    
+
+    // refresh the coordinate system node path.
     computeActiveCoordindateSystemNodePath();
+
+    // refresh the camera manipulators    
+    if (_keyswitchManipulator.valid()) _keyswitchManipulator->setNode(getTopMostSceneData());
 }
 
 void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)

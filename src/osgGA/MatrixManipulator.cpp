@@ -7,6 +7,7 @@ using namespace osgGA;
 
 MatrixManipulator::MatrixManipulator()
 {
+    _minimumDistance = 0.001;
 }
 
 

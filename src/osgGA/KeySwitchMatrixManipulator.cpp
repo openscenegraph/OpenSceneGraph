@@ -61,6 +61,17 @@ void KeySwitchMatrixManipulator::setNode(osg::Node* node)
     }
 }
 
+void KeySwitchMatrixManipulator::setMinimumDistance(float minimumDistance)
+{
+    _minimumDistance = minimumDistance;
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->setMinimumDistance(minimumDistance);
+    }
+}
+
 void KeySwitchMatrixManipulator::setCoordinateFrameCallback(CoordinateFrameCallback* cb)
 {
     _coordinateFrameCallback = cb;

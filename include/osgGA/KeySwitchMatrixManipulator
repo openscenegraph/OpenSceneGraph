@@ -77,6 +77,10 @@ public:
 
         // Overrides from MatrixManipulator...
 
+        /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
+            center before the center is pushed forward.*/        
+        virtual void setMinimumDistance(float minimumDistance);
+
         /** set the coordinate frame which callback tells the manipulator which way is up, east and north.*/
         virtual void setCoordinateFrameCallback(CoordinateFrameCallback* cb);
 

@@ -35,7 +35,7 @@ class Vec2f
         value_type _v[2];
 
         Vec2f() {_v[0]=0.0; _v[1]=0.0;}
-        Vec2f(float x,float y) { _v[0]=x; _v[1]=y; }
+        Vec2f(value_type x,value_type y) { _v[0]=x; _v[1]=y; }
 
 
         inline bool operator == (const Vec2f& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
@@ -49,37 +49,37 @@ class Vec2f
             else return (_v[1]<v._v[1]);
         }
 
-        inline float* ptr() { return _v; }
-        inline const float* ptr() const { return _v; }
+        inline value_type * ptr() { return _v; }
+        inline const value_type * ptr() const { return _v; }
 
-        inline void set( float x, float y ) { _v[0]=x; _v[1]=y; }
+        inline void set( value_type x, value_type y ) { _v[0]=x; _v[1]=y; }
 
-        inline float& operator [] (int i) { return _v[i]; }
-        inline float operator [] (int i) const { return _v[i]; }
+        inline value_type & operator [] (int i) { return _v[i]; }
+        inline value_type operator [] (int i) const { return _v[i]; }
 
-        inline float& x() { return _v[0]; }
-        inline float& y() { return _v[1]; }
+        inline value_type & x() { return _v[0]; }
+        inline value_type & y() { return _v[1]; }
 
-        inline float x() const { return _v[0]; }
-        inline float y() const { return _v[1]; }
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
 
         inline bool valid() const { return !isNaN(); }
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
 
         /// dot product
-        inline float operator * (const Vec2f& rhs) const
+        inline value_type operator * (const Vec2f& rhs) const
         {
             return _v[0]*rhs._v[0]+_v[1]*rhs._v[1];
         }
 
         /// multiply by scalar
-        inline const Vec2f operator * (float rhs) const
+        inline const Vec2f operator * (value_type rhs) const
         {
             return Vec2f(_v[0]*rhs, _v[1]*rhs);
         }
 
         /// unary multiply by scalar
-        inline Vec2f& operator *= (float rhs)
+        inline Vec2f& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
 	    _v[1]*=rhs;
@@ -87,13 +87,13 @@ class Vec2f
         }
 
         /// divide by scalar
-        inline const Vec2f operator / (float rhs) const
+        inline const Vec2f operator / (value_type rhs) const
         {
             return Vec2f(_v[0]/rhs, _v[1]/rhs);
         }
 
         /// unary divide by scalar
-        inline Vec2f& operator /= (float rhs)
+        inline Vec2f& operator /= (value_type rhs)
         {
             _v[0]/=rhs;
 	    _v[1]/=rhs;
@@ -136,25 +136,25 @@ class Vec2f
 	}
 
         /// Length of the vector = sqrt( vec . vec )
-	inline float length() const
+	inline value_type length() const
 	{
 	    return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] );
 	}
 
         /// Length squared of the vector = vec . vec
-        inline float length2( void ) const
+        inline value_type length2( void ) const
         {
             return _v[0]*_v[0] + _v[1]*_v[1];
         }
 
         /** normalize the vector so that it has length unity
             returns the previous length of the vector*/
-	inline float normalize()
+	inline value_type normalize()
 	{
-	    float norm = Vec2f::length();
+	    value_type norm = Vec2f::length();
             if (norm>0.0)
             {
-                float inv = 1.0f/norm;
+                value_type inv = 1.0f/norm;
 	        _v[0] *= inv;
 	        _v[1] *= inv;
             }

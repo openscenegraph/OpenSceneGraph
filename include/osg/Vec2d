@@ -20,11 +20,11 @@
 
 namespace osg {
 
-/** General purpose float pair, uses include representation of
+/** General purpose double pair, uses include representation of
     texture coordinates.
-    No support yet added for float * Vec2d - is it necessary?
+    No support yet added for double * Vec2d - is it necessary?
     Need to define a non-member non-friend operator*  etc.
-    BTW:	     Vec2d * float is okay
+    BTW:	     Vec2d * double is okay
 */
 
 class Vec2d
@@ -72,7 +72,7 @@ class Vec2d
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
 
         /// dot product
-        inline float operator * (const Vec2d& rhs) const
+        inline value_type operator * (const Vec2d& rhs) const
         {
             return _v[0]*rhs._v[0]+_v[1]*rhs._v[1];
         }
@@ -141,13 +141,13 @@ class Vec2d
 	}
 
         /// Length of the vector = sqrt( vec . vec )
-	inline float length() const
+	inline value_type length() const
 	{
 	    return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] );
 	}
 
         /// Length squared of the vector = vec . vec
-        inline float length2( void ) const
+        inline value_type length2( void ) const
         {
             return _v[0]*_v[0] + _v[1]*_v[1];
         }

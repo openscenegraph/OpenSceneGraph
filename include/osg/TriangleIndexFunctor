@@ -32,7 +32,7 @@ public:
 
     virtual void setVertexArray(unsigned int ,const Vec3* )
     {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec4* vertex arrays"<<std::endl;
+        notify(WARN)<<"TriangleIndexFunctor does not support Vec3* vertex arrays"<<std::endl;
     }
 
     virtual void setVertexArray(unsigned int,const Vec4* ) 

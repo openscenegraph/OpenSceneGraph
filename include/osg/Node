@@ -210,6 +210,9 @@ class SG_EXPORT Node : public Object
 
         std::string _name;
 
+        void addParent(osg::Group* node);
+        void removeParent(osg::Group* node);
+
         ParentList _parents;
         friend class osg::Group;
 

@@ -24,47 +24,72 @@ Geode::Geode(const Geode& geode,const CopyOp& copyop):
 
 Geode::~Geode()
 {
-    // ref_ptr<> automactially decrements the reference count of all drawables.
+    // remove reference to this from children's parent lists.
+    for(DrawableList::iterator itr=_drawables.begin();
+        itr!=_drawables.end();
+        ++itr)
+    {
+       (*itr)->removeParent(this);
+    }
 }
 
-const bool Geode::addDrawable( Drawable *gset )
+const bool Geode::addDrawable( Drawable *drawable )
 {
-    if (gset && !containsDrawable(gset))
+    if (drawable && !containsDrawable(drawable))
     {
-        // note ref_ptr<> automatically handles incrementing gset's reference count.
-        _drawables.push_back(gset);
-        dirtyBound();
+        // note ref_ptr<> automatically handles incrementing drawable's reference count.
+        _drawables.push_back(drawable);
+        
+        // register as parent of drawable.
+        drawable->addParent(this);
+        
+        dirtyBound();        
+        
         return true;
     }
     else return false;
 }
 
 
-const bool Geode::removeDrawable( Drawable *gset )
+const bool Geode::removeDrawable( Drawable *drawable )
 {
-    DrawableList::iterator itr = findDrawable(gset);
+    DrawableList::iterator itr = findDrawable(drawable);
     if (itr!=_drawables.end())
     {
-        // note ref_ptr<> automatically handles decrementing gset's reference count.
-        _drawables.erase(itr);
+        // remove this Geode from the child parent list.
+        drawable->removeParent(this);
+
+        // note ref_ptr<> automatically handles decrementing drawable's reference count.
+        _drawables.erase(itr);        
+        
         dirtyBound();
+        
         return true;
     }
     else return false;
 }
 
 
-const bool Geode::replaceDrawable( Drawable *origGset, Drawable *newGset )
+const bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
 {
-    if (newGset==NULL || origGset==newGset) return false;
+    if (newDrawable==NULL || origDrawable==newDrawable) return false;
 
-    DrawableList::iterator itr = findDrawable(origGset);
+    DrawableList::iterator itr = findDrawable(origDrawable);
     if (itr!=_drawables.end())
     {
+        
+        // remove from origDrawable's parent list.
+        origDrawable->removeParent(this);
+        
         // note ref_ptr<> automatically handles decrementing origGset's reference count,
         // and inccrementing newGset's reference count.
-        *itr = newGset;
+        *itr = newDrawable;
+
+        // register as parent of child.
+        newDrawable->addParent(this);
+
         dirtyBound();
+        
         return true;
     }
     else return false;

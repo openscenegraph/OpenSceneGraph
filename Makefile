@@ -4,7 +4,7 @@ MAKE_PREP = Make/makedefs Make/makerules
 
 DIRS = src
 
-VERSION = osg-0.8.43
+VERSION = osg-0.8.44
 
 ifeq (IRIX|IRIX64,true)
         export OSGHOME = `pwd`

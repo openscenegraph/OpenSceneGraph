@@ -21,6 +21,7 @@ class Statistics;
 class Vec2;
 class Vec3;
 class Vec4;
+class Node;
 
 // this is define to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
@@ -60,6 +61,36 @@ class SG_EXPORT Drawable : public Object
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Drawable*>(obj)!=NULL; }
         virtual const char* className() const { return "Drawable"; }
+
+
+        /** A vector of osg::Node pointers which is used to store the parent(s) of drawable.*/
+        typedef std::vector<Node*> ParentList;
+
+        /** Get the parent list of drawable. */
+        inline const ParentList& getParents() const { return _parents; }
+
+        /** Get the a copy of parent list of node. A copy is returned to 
+          * prevent modification of the parent list.*/
+        inline ParentList getParents() { return _parents; }
+
+        /** Get a single parent of Drawable.
+          * @param i index of the parent to get.
+          * @return the parent i.
+          */
+        inline Node* getParent(const int i)  { return _parents[i]; }
+        /** Get a single const parent of Drawable.
+          * @param i index of the parent to get.
+          * @return the parent i.
+          */
+        inline const Node* getParent(const int i) const  { return _parents[i]; }
+
+        /**
+         * Get the number of parents of node.
+         * @return the number of parents of this node.
+         */
+        inline const int getNumParents() const { return _parents.size(); }
+
+
 
         /** Set the StateSet attached to the Drawable.
             Previously attached StateSet are automatically unreferenced on 
@@ -101,7 +132,7 @@ class SG_EXPORT Drawable : public Object
         /** Dirty the bounding box, forcing a computeBound() on the next call
           * to getBound(). Should be called in the internal geometry of the Drawable
           * is modified.*/        
-        inline void dirtyBound() { _bbox_computed = false; }
+        void dirtyBound();
 
         /** get bounding box of geoset. 
           * Note, now made virtual to make it possible to implement user-drawn
@@ -226,8 +257,15 @@ class SG_EXPORT Drawable : public Object
         /** compute the bounding box of the drawable. Method must be 
             implemented by subclasses.*/
         virtual const bool computeBound() const = 0;
+        
+        void addParent(osg::Node* node);
+        void removeParent(osg::Node* node);
 
-        ref_ptr<StateSet>      _dstate;
+        ParentList _parents;
+        friend class Node;
+        friend class Geode;
+
+        ref_ptr<StateSet>       _dstate;
 
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;

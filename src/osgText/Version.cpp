@@ -2,7 +2,7 @@
 
 const char* osgTextGetVersion()
 {
-    return "0.8.43";
+    return "0.8.44";
 }
 
 

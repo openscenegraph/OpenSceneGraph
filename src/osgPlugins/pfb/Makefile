@@ -9,7 +9,7 @@ C++FILES = \
         ConvertToPerformer.cpp\
         ReaderWriterPFB.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_pfb.so
+LIB = ../../../lib/osgPlugins/osgdb_pfb.$(SO_EXT)
 
 LIBS = -losg -losgDB \
 	-lpf3ds\
@@ -41,7 +41,7 @@ LIBS = -losg -losgDB \
 	-lpfvct\
 	-lpfdu -lpfutil -lpf
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.so
+TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.$(SO_EXT)
 
 C++FLAGS += -g -I../../../include 
 

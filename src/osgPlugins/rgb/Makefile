@@ -1,18 +1,21 @@
 #!smake
-include ../../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
         ReaderWriterRGB.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_rgb.so
+TARGET_BASENAME = osgdb_rgb
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_rgb.so
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-LIBS = 
-C++FLAGS += -I. -I../../../include 
-LDFLAGS += -L../../../lib
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-include ../../../Make/makerules
+LIBS    =  $(GL_LIBS) -losg -losgDB
+
+C++FLAGS += -I. -I$(TOP)/include 
+LDFLAGS += -L$(TOP)/lib
+
+include $(TOP)/Make/makerules
 
 
 

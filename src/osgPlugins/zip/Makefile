@@ -4,15 +4,18 @@ include ../../../Make/makedefs
 C++FILES = \
 	ReaderWriterZIP.cpp\
 
+TARGET_BASENAME = osgdb_zip
 
-LIB = ../../../lib/osgPlugins/osgdb_zip.so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_zip.so
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-C++FLAGS += -I../../../include
-LDFLAGS += -L../../../lib
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-include ../../../Make/makerules
+LIBS    =  $(GL_LIBS) -losg -losgDB
 
+C++FLAGS += -I. -I$(TOP)/include 
+LDFLAGS += -L$(TOP)/lib
 
+include $(TOP)/Make/makerules
 

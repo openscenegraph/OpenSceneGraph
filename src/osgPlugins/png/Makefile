@@ -1,18 +1,22 @@
 #!smake
-include ../../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
         ReaderWriterPNG.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_png.so
-
-TARGET_LOADER_FILES = osgPlugins/osgdb_png.so
-
-LIBS = -lpng
-C++FLAGS += -I../../../include -I/usr/local/include -I/usr/freeware/include
-LDFLAGS += -L../../../lib -L/usr/local/lib -L/usr/freeware/lib32
-
-include ../../../Make/makerules
 
 
+TARGET_BASENAME = osgdb_png
 
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
+
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+
+LIBS    =  $(GL_LIBS) -losg -losgDB -lpng
+
+C++FLAGS += -I. -I$(TOP)/include 
+LDFLAGS += -L$(TOP)/lib
+
+include $(TOP)/Make/makerules

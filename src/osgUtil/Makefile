@@ -1,5 +1,5 @@
 #!smake
-include ../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
 	AppVisitor.cpp\
@@ -12,7 +12,7 @@ C++FILES = \
 	DriveManipulator.cpp\
 	FlightManipulator.cpp\
 	IntersectVisitor.cpp\
-        InsertImpostorsVisitor.cpp\
+	InsertImpostorsVisitor.cpp\
 	NvTriStripObjects.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\
@@ -22,25 +22,25 @@ C++FILES = \
 	RenderStageLighting.cpp\
 	RenderToTextureStage.cpp\
 	SceneView.cpp\
-        SceneViewManipulator.cpp\
-        SmoothingVisitor.cpp\
-        StateSetManipulator.cpp\
-        Tesselator.cpp\
-        TrackballManipulator.cpp\
-        TransformCallback.cpp\
-        TriStripVisitor.cpp\
-        Version.cpp\
+	SceneViewManipulator.cpp\
+	SmoothingVisitor.cpp\
+	StateSetManipulator.cpp\
+	Tesselator.cpp\
+	TrackballManipulator.cpp\
+	TransformCallback.cpp\
+	TriStripVisitor.cpp\
+	Version.cpp\
 
 
 TARGET_BASENAME = osgUtil
 
 
-LIBS    = -L../../lib -losg -lGLU -lGL -lm
+LIBS    = -L$(TOP)/lib -losg $(GL_LIBS)
 
-LIB	= ../../lib/lib$(TARGET_BASENAME).so
-#LIB	= ../../lib/lib$(TARGET_BASENAME).a
+LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
 	osgUtil/AppVisitor\
 	osgUtil/CameraManipulator\
@@ -56,14 +56,14 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/GUIEventAdapter\
 	osgUtil/GUIEventHandler\
 	osgUtil/IntersectVisitor\
-        osgUtil/InsertImpostorsVisitor\
-        osgUtil/Optimizer\
+	osgUtil/InsertImpostorsVisitor\
+	osgUtil/Optimizer\
 	osgUtil/RenderBin\
 	osgUtil/RenderGraph\
 	osgUtil/RenderLeaf\
 	osgUtil/RenderStage\
 	osgUtil/RenderStageLighting\
-        osgUtil/RenderToTextureStage\
+	osgUtil/RenderToTextureStage\
 	osgUtil/SceneView\
 	osgUtil/SceneViewManipulator\
 	osgUtil/SmoothingVisitor\
@@ -75,7 +75,9 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/Version\
 
 
-C++FLAGS += -I ../../include
+C++FLAGS += -I $(TOP)/include -DOSGUTIL_LIBRARY
 
-include ../../Make/makerules
+#LDFLAGS += --out-implib $(TOP)/lib/lib$(TARGET_BASENAME).a
+
+include $(TOP)/Make/makerules
 

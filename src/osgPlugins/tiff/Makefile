@@ -4,15 +4,19 @@ include ../../../Make/makedefs
 C++FILES = \
         ReaderWriterTIFF.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_tiff.so
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_tiff.so
+TARGET_BASENAME = osgdb_tiff
 
-LIBS = -ltiff
-C++FLAGS += -I. -I../../../include
-LDFLAGS += -L../../../lib $(FREEBSD_LOCALLIBS)
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
-include ../../../Make/makerules
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
+LIBS    =  $(GL_LIBS) -losg -losgDB -ltiff
+
+C++FLAGS += -I. -I$(TOP)/include 
+LDFLAGS += -L$(TOP)/lib
+
+include $(TOP)/Make/makerules
 

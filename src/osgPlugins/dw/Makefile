@@ -1,15 +1,20 @@
 #!smake
-include ../../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = ReaderWriterDW.cpp
 
-LIB = ../../../lib/osgPlugins/osgdb_dw.so
+TARGET_BASENAME = osgdb_dw
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_dw.so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
-LIBS = -losg -losgDB
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-C++FLAGS += -I. -I../../../include -DGLU_VERSION_1_2
-LDFLAGS += -L../../../lib
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-include ../../../Make/makerules
+LIBS    =  $(GL_LIBS) -losg -losgDB
+
+C++FLAGS += -I. -I$(TOP)/include 
+LDFLAGS += -L$(TOP)/lib
+
+include $(TOP)/Make/makerules
+

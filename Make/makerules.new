@@ -158,7 +158,7 @@ depend : $(MAKEDEPEND)
 #  The first four lines check to see that both LNSRC and LNDEST have been 
 #  defined.
 #  
-#  The (very long) following 'if' statement reads in speudo-code like this:
+#  The (very long) following 'if' statement reads in pseudo-code like this:
 #  
 #     if the current link is not pointing to the intended destination
 #      then
@@ -166,11 +166,11 @@ depend : $(MAKEDEPEND)
 #          compute the link path by the following steps
 #  	    a) define SRCDIR as the current absolute directory 
 #  	       appended by the directory of the intended source of the link
-#  	    b) define DESTDIR as the absolute path of $(ROOT) appended by
+#  	    b) define DESTDIR as the absolute path of $(TOPDIR) appended by
 #  	       the directory of the intended destination of the link
 #  	    c) define a temproary variable T to be the absolute path of
 #  	       the destination directory less the prefix of the absolute
-#  	       path of $(ROOT)
+#  	       path of $(TOPDIR)
 #  	         e.g.   /root/work/thisdir/bin/ - /root/work/thisdir/ = bin/
 #           d) Run a loop, truncating the path represented by T until 
 #              'dirname' returns '.'.  On each iteration increment PFX 
@@ -179,7 +179,7 @@ depend : $(MAKEDEPEND)
 #  	         e.g. If DESTDIR is lib/osgPlugins, PFX is ../../
 #  	    e) Define the link as a concatenation of PFX and the absolute 
 #              path of the source directory less the absolute path of 
-#              $(ROOT)
+#              $(TOPDIR)
 #  
 #          Change directories in to the link destination directory 
 #  	   run the link command

@@ -129,6 +129,23 @@ int main(int argc, char *argv[])
     // create the windows and run the threads.
     viewer.realize();
 
+
+    // now check to see if texture cube map is supported.
+    for(unsigned int contextID = 0; 
+        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
+        ++contextID)
+    {
+        osg::TextureCubeMap::Extensions* tcmExt = osg::TextureCubeMap::getExtensions(contextID,false);
+        if (tcmExt)
+        {
+            if (!tcmExt->isCubeMapSupported())
+            {
+                cout<<"Warning: texture_cube_map not supported by OpenGL drivers, unable to run application."<<std::endl;
+                return 1;
+            }
+        }
+    }
+
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.

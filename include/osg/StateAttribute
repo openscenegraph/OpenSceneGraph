@@ -215,10 +215,10 @@ class SG_EXPORT StateAttribute : public Object
           * in to allow the StateAttribute to obtain details on the
           * the current context and state.
           */
-        virtual void apply(State&) const = 0 ;
+        virtual void apply(State&) const = 0;
         
         /** default to nothing to compile - all state is applied immediately. */
-        virtual void compile(State&) const {};
+        virtual void compile(State&) const {}
 
     protected:
     

@@ -850,6 +850,7 @@ Texture::Extensions::Extensions()
 Texture::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
+    _isMultiTexturingSupported = rhs._isMultiTexturingSupported;
     _isTextureFilterAnisotropicSupported = rhs._isTextureFilterAnisotropicSupported;
     _isTextureCompressionARBSupported = rhs._isTextureCompressionARBSupported;
     _isTextureCompressionS3TCSupported = rhs._isTextureCompressionS3TCSupported;
@@ -865,6 +866,8 @@ Texture::Extensions::Extensions(const Extensions& rhs):
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
 {
+    if (!rhs._isMultiTexturingSupported) _isMultiTexturingSupported = false;
+    
     if (!rhs._isTextureFilterAnisotropicSupported) _isTextureFilterAnisotropicSupported = false;
     if (!rhs._isTextureMirroredRepeatSupported) _isTextureMirroredRepeatSupported = false;
     if (!rhs._isTextureEdgeClampSupported) _isTextureEdgeClampSupported = false;
@@ -878,11 +881,16 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (rhs._maxTextureSize<_maxTextureSize) _maxTextureSize = rhs._maxTextureSize;
 
     if (!rhs._glCompressedTexImage2D) _glCompressedTexImage2D = 0;
+    if (!rhs._glCompressedTexSubImage2D) _glCompressedTexSubImage2D = 0;
+    if (!rhs._glGetCompressedTexImage) _glGetCompressedTexImage = 0;
 }
 
 void Texture::Extensions::setupGLExtenions()
 {
  
+    _isMultiTexturingSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0) ||
+                                 isGLExtensionSupported("GL_ARB_multitexture") ||
+                                 isGLExtensionSupported("GL_EXT_multitexture");
     _isTextureFilterAnisotropicSupported = isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
     _isTextureCompressionARBSupported = isGLExtensionSupported("GL_ARB_texture_compression");
     _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");

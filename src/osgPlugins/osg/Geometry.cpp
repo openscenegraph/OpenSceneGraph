@@ -296,11 +296,14 @@ Array* Array_readLocalData(Input& fr)
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            unsigned int uint_value;
-            if (fr[0].getUInt(uint_value))
+            unsigned int r,g,b,a;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g) &&
+                fr[2].getUInt(b) &&
+                fr[3].getUInt(a))
             {
                 ++fr;
-                array->push_back(uint_value);
+                array->push_back(osg::UByte4(r,g,b,a));
             }
             else ++fr;
         }

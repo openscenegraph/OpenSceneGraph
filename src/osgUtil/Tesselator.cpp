@@ -93,8 +93,50 @@ void Tesselator::reset()
     }
     _primList.clear();
     _coordData.clear();
+    _newVertexList.clear();
     _errorCode = 0;
 }
+
+class InsertNewVertices : public osg::ArrayVisitor
+{
+    public:
+    
+        float _f1,_f2,_f3,_f4;
+        unsigned int _i1,_i2,_i3,_i4;
+
+        InsertNewVertices(float f1,unsigned int i1,
+                          float f2,unsigned int i2,
+                          float f3,unsigned int i3,
+                          float f4,unsigned int i4):
+                            _f1(f1),_f2(f2),_f3(f3),_f4(f4),
+                            _i1(i1),_i2(i2),_i3(i3),_i4(i4){}
+
+        template <class A,class Type>
+        void apply_imp(A& array)
+        {
+            Type val;
+            if (_f1) val += static_cast<Type>(array[_i1] * _f1);
+            if (_f2) val += static_cast<Type>(array[_i2] * _f2);
+            if (_f3) val += static_cast<Type>(array[_i3] * _f3);
+            if (_f4) val += static_cast<Type>(array[_i4] * _f4);
+            
+            array.push_back(val);
+        }
+
+        virtual void apply(osg::ByteArray& ba) { apply_imp<ByteArray,ByteArray::value_type>(ba); }
+        virtual void apply(osg::ShortArray& ba) { apply_imp<ShortArray,ShortArray::value_type>(ba); }
+        virtual void apply(osg::IntArray& ba) { apply_imp<IntArray,IntArray::value_type>(ba); }
+        virtual void apply(osg::UByteArray& ba) { apply_imp<UByteArray,UByteArray::value_type>(ba); }
+        virtual void apply(osg::UShortArray& ba) { apply_imp<UShortArray,UShortArray::value_type>(ba); }
+        virtual void apply(osg::UIntArray& ba) { apply_imp<UIntArray,UIntArray::value_type>(ba); }
+        virtual void apply(osg::UByte4Array& ba) { apply_imp<UByte4Array,UByte4Array::value_type>(ba); }
+        virtual void apply(osg::FloatArray& ba) { apply_imp<FloatArray,FloatArray::value_type>(ba); }
+        virtual void apply(osg::Vec2Array& ba) { apply_imp<Vec2Array,Vec2Array::value_type>(ba); }
+        virtual void apply(osg::Vec3Array& ba) { apply_imp<Vec3Array,Vec3Array::value_type>(ba); }
+        virtual void apply(osg::Vec4Array& ba) { apply_imp<Vec4Array,Vec4Array::value_type>(ba); }
+
+};
+            
 
 void Tesselator::retesselatePolygons(osg::Geometry& geom)
 {
@@ -163,8 +205,86 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
             endContour();
             endTesselation();
             
-            Vec3* vbase = &(vertices->front());
-            Vec3* vtop = &(vertices->back());
+            typedef std::map<osg::Vec3*,unsigned int> VertexPtrToIndexMap;
+            VertexPtrToIndexMap vertexPtrToIndexMap;
+            
+            // populate the VertexPtrToIndexMap.
+            for(unsigned int vi=0;vi<vertices->size();++vi)
+            {
+                vertexPtrToIndexMap[&((*vertices)[vi])] = vi;
+            }
+            
+            if (!_newVertexList.empty())
+            {
+
+                osg::Vec3Array* normals = NULL;
+                if (geom.getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
+                {
+                    normals = geom.getNormalArray();
+                }
+
+                typedef std::vector<osg::Array*> ArrayList;
+                ArrayList arrays;
+    
+                if (geom.getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+                {
+                    arrays.push_back(geom.getColorArray());
+                }
+                
+                osg::Geometry::TexCoordArrayList& tcal = geom.getTexCoordArrayList();
+                for(osg::Geometry::TexCoordArrayList::iterator tcalItr=tcal.begin();
+                    tcalItr!=tcal.end();
+                    ++tcalItr)
+                {
+                    if (tcalItr->valid()) 
+                    {
+                        arrays.push_back(tcalItr->get());
+                    }
+                }
+
+                // now add any new vertices that are required.
+                for(NewVertexList::iterator itr=_newVertexList.begin();
+                    itr!=_newVertexList.end();
+                    ++itr)
+                {
+                    osg::Vec3* vertex = itr->first;
+                    NewVertex& newVertex = itr->second;
+
+                    // assign vertex.
+                    vertexPtrToIndexMap[vertex]=vertices->size();
+                    vertices->push_back(*vertex);
+                    
+                    // assign normals
+                    if (normals)
+                    {
+                        osg::Vec3 norm(0.0f,0.0f,0.0f);
+                        if (newVertex._v1) norm += (*normals)[vertexPtrToIndexMap[newVertex._v1]] * newVertex._f1;
+                        if (newVertex._v2) norm += (*normals)[vertexPtrToIndexMap[newVertex._v2]] * newVertex._f2;
+                        if (newVertex._v3) norm += (*normals)[vertexPtrToIndexMap[newVertex._v3]] * newVertex._f3;
+                        if (newVertex._v4) norm += (*normals)[vertexPtrToIndexMap[newVertex._v4]] * newVertex._f4;
+                        norm.normalize();
+                        normals->push_back(norm);
+                    }
+                    
+                    if (!arrays.empty())
+                    {
+                        InsertNewVertices inv(newVertex._f1,vertexPtrToIndexMap[newVertex._v1],
+                                              newVertex._f2,vertexPtrToIndexMap[newVertex._v2],
+                                              newVertex._f3,vertexPtrToIndexMap[newVertex._v3],
+                                              newVertex._f4,vertexPtrToIndexMap[newVertex._v4]);
+
+                                                  // assign the rest of the attributes.
+                        for(ArrayList::iterator aItr=arrays.begin();
+                            aItr!=arrays.end();
+                            ++aItr)
+                        {
+                            (*aItr)->accept(inv);
+                        }
+                    }
+                }
+
+            }
+            
             
             for(PrimList::iterator primItr=_primList.begin();
                 primItr!=_primList.end();
@@ -177,17 +297,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     vitr!=prim->_vertices.end();
                     ++vitr)
                 {
-                    if (*vitr<vbase || *vitr>vtop)
-                    {
-                        // new vertex.
-                        std::cout<<"Ooohhh we're getting funky, extra vertices need to be inserted"<<std::endl;
-                    }
-                    else
-                    {
-                        // old vertex.
-                        unsigned int i=*vitr-vbase;
-                        elements->push_back(i);
-                    }
+                    elements->push_back(vertexPtrToIndexMap[*vitr]);
                 }
 
                 if (primItr==_primList.begin()) 
@@ -218,16 +328,16 @@ void Tesselator::vertex(osg::Vec3* vertex)
     {
         Prim* prim = _primList.back().get();
         prim->_vertices.push_back(vertex);
+
     }
 }
 
-void Tesselator::combine(osg::Vec3* vertex)
+void Tesselator::combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4])
 {
-    if (!_primList.empty())
-    {
-        Prim* prim = _primList.back().get();
-        prim->_vertices.push_back(vertex);
-    }
+    _newVertexList[vertex]=NewVertex(weight[0],(Vec3*)vertex_data[0],
+                                     weight[1],(Vec3*)vertex_data[1],
+                                     weight[2],(Vec3*)vertex_data[2],
+                                     weight[3],(Vec3*)vertex_data[3]);
 }
 
 void Tesselator::end()
@@ -255,14 +365,14 @@ void CALLBACK Tesselator::vertexCallback(GLvoid *data, void* userData)
     ((Tesselator*)userData)->vertex((Vec3*)data);
 }
 
-void CALLBACK Tesselator::combineCallback(GLdouble coords[3], void* /*vertex_data*/[4],
-                              GLfloat /*weight*/[4], void** outData,
-                              void* userData)
+void CALLBACK Tesselator::combineCallback(GLdouble coords[3], void* vertex_data[4],
+                              GLfloat weight[4], void** outData,
+                              void* /*userData*/)
 {
-    Vec3* newData = new osg::Vec3(coords[0],coords[2],coords[3]);
+    Vec3* newData = new osg::Vec3(coords[0],coords[1],coords[2]);
     *outData = newData;
     //((Tesselator*)userData)->combine(newData);
-    s_currentTesselator->combine(newData);
+    s_currentTesselator->combine(newData,vertex_data,weight);
 }
 
 void CALLBACK Tesselator::errorCallback(GLenum errorCode, void* userData)

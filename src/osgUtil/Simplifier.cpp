@@ -24,10 +24,10 @@
 using namespace osgUtil;
 
 
-template<class T>
 struct dereference_less
 {
-    inline bool operator() (const T& lhs,const T& rhs) const
+    template<class T, class U>
+    inline bool operator() (const T& lhs,const U& rhs) const
     {
         return *lhs < *rhs;
     }
@@ -190,12 +190,12 @@ public:
     void copyBackToGeometry();
 
     typedef std::vector<float>                                                                           FloatList;
-    typedef std::set<osg::ref_ptr<Edge>,dereference_less<osg::ref_ptr<Edge> > >                          EdgeSet;
-    typedef std::set< osg::ref_ptr<Point>,dereference_less<osg::ref_ptr<Point> > >                       PointSet;
+    typedef std::set<osg::ref_ptr<Edge>,dereference_less >                          EdgeSet;
+    typedef std::set< osg::ref_ptr<Point>,dereference_less >                       PointSet;
     typedef std::vector< osg::ref_ptr<Point> >                                                           PointList;
     typedef std::list< osg::ref_ptr<Triangle> >                                                          TriangleList;
     typedef std::set< osg::ref_ptr<Triangle> >                                                           TriangleSet;
-    typedef std::map< osg::ref_ptr<Triangle>, unsigned int, dereference_less<osg::ref_ptr<Triangle> > >  TriangleMap;
+    typedef std::map< osg::ref_ptr<Triangle>, unsigned int, dereference_less >  TriangleMap;
 
     struct Point : public osg::Referenced
     {

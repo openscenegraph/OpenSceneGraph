@@ -356,6 +356,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Texture2D.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Texture3D.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.cpp
 # End Source File
 # Begin Source File
@@ -637,6 +641,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Texture1D.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Texture2D.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Texture3D.h
 # End Source File
 # Begin Source File
 

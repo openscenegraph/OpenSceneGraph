@@ -48,7 +48,7 @@ void VisibilityGroup::traverse(osg::NodeVisitor& nv)
         // now scale the segment to the segment length - if 0 use the group bounding sphere radius
         float length = _segmentLength;
         if(length == 0.f)
-            length = getBound().radius();
+            length = 2.0f*getBound().radius();
         look *= length;
         osg::Vec3 center = eye + look;
 

@@ -18,6 +18,7 @@
 
 #include <Producer/CameraGroup>
 
+#include <osg/Timer>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 #include <osg/Group>

@@ -873,7 +873,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     {
         ReaderWriter::ReadResult rr = readImage(file);
         if (rr.validImage()) return createGeodeForImage(rr.takeImage());
-        else if (rr.error()) results.push_back(rr);
+        //else if (rr.error()) results.push_back(rr);
     }
 
     if (results.empty())

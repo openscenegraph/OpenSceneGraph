@@ -193,6 +193,7 @@ EXAMPLE_DIRS = \
 	osgsimple\
 	osgsimplepager\
 	osgsimplifier\
+	osgslice\
 	osgspacewarp\
 	osgspheresegment\
 	osgspotlight\

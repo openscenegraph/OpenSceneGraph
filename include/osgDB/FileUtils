@@ -16,25 +16,25 @@ namespace osgDB {
 
 
 /** return true if a file exisits. */
-OSGDB_EXPORT extern bool fileExists(const std::string& filename);
+extern OSGDB_EXPORT bool fileExists(const std::string& filename);
 
 
 /** find specified file in specified file path.*/
-OSGDB_EXPORT extern std::string findFileInPath(const std::string& filename, const FilePathList& filePath);
+extern OSGDB_EXPORT std::string findFileInPath(const std::string& filename, const FilePathList& filePath);
 
 /** return the directory/filename of a file if its is contained within specified directory.
   * return "" if directory does not contain file.  If caseInsensitive is set to true then
   * a case insensitive comparison is used to compare fileName to directory contents.
   * This is useful when unix programs attempt read case insentive windows filenames.
   */
-OSGDB_EXPORT extern std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive=false);
+extern OSGDB_EXPORT std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive=false);
 
 /** simple list of names to represent a directory's contents. */
 typedef std::vector<std::string> DirectoryContents;
 
 /** return the contents of a directory.
   * returns an empty array on any error.*/
-OSGDB_EXPORT extern DirectoryContents getDirectoryContents(const std::string& dirName);
+extern OSGDB_EXPORT DirectoryContents getDirectoryContents(const std::string& dirName);
 
 
 
@@ -44,7 +44,7 @@ inline void setDataFilePathList(const std::string& paths) { osgDB::Registry::ins
 
 inline FilePathList& getDataFilePathList() { return osgDB::Registry::instance()->getDataFilePathList(); }
 
-OSGDB_EXPORT extern std::string findDataFile(const std::string& filename);
+extern OSGDB_EXPORT std::string findDataFile(const std::string& filename);
 
 /** Convinience class for pushing a path on construction, and popping the path
   * and destruction.  This helps keep the addition of a path local to a block
@@ -70,7 +70,7 @@ inline void setLibraryFilePathList(const std::string& paths) { osgDB::Registry::
 
 inline FilePathList& getLibraryFilePathList() { return osgDB::Registry::instance()->getLibraryFilePathList(); }
 
-OSGDB_EXPORT extern std::string findLibraryFile(const std::string& filename);
+extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename);
 
 
 }

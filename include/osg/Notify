@@ -30,24 +30,24 @@ enum NotifySeverity {
 };
 
 /** global notify level. */
-//SG_EXPORT extern NotifySeverity g_NotifyLevel;
+//extern SG_EXPORT NotifySeverity g_NotifyLevel;
 
 /** global notify nul stream. added for Mac OSX */
-//SG_EXPORT extern std::auto_ptr<std::ofstream> g_NotifyNulStream;
+//extern SG_EXPORT std::auto_ptr<std::ofstream> g_NotifyNulStream;
 
 /** global notify nul stream. added for Mac OSX */
-//SG_EXPORT extern bool g_NotifyInit;
+//extern SG_EXPORT bool g_NotifyInit;
 
 /** set the notify level, overriding the default or value set by
   * the environmental variable OSGNOTIFYLEVEL.
   */
-SG_EXPORT extern void setNotifyLevel(NotifySeverity severity);
+extern SG_EXPORT void setNotifyLevel(NotifySeverity severity);
 
 /** get the notify level. */
-SG_EXPORT extern NotifySeverity getNotifyLevel();
+extern SG_EXPORT NotifySeverity getNotifyLevel();
 
 /** initialize notify level. */
-SG_EXPORT extern bool initNotifyLevel();
+extern SG_EXPORT bool initNotifyLevel();
 
 /** notify messaging function for providing fatal through to verbose
   * debugging messages.  Level of messages sent to the console can
@@ -69,7 +69,7 @@ SG_EXPORT extern bool initNotifyLevel();
 // previous implementation was causing Mac OSX to misbehave. This version
 // places less stress on compiler and runs on Mac
 
-SG_EXPORT extern std::ostream& notify(const NotifySeverity severity);
+extern SG_EXPORT std::ostream& notify(const NotifySeverity severity);
 // {
 //     static bool initilized = false;
 //     if (!initilized) initilized = initNotifyLevel();

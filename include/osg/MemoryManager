@@ -60,63 +60,63 @@ typedef    struct
 // External constants
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern const    unsigned int    m_alloc_unknown;
-SG_EXPORT extern const    unsigned int    m_alloc_new;
-SG_EXPORT extern const    unsigned int    m_alloc_new_array;
-SG_EXPORT extern const    unsigned int    m_alloc_malloc;
-SG_EXPORT extern const    unsigned int    m_alloc_calloc;
-SG_EXPORT extern const    unsigned int    m_alloc_realloc;
-SG_EXPORT extern const    unsigned int    m_alloc_delete;
-SG_EXPORT extern const    unsigned int    m_alloc_delete_array;
-SG_EXPORT extern const    unsigned int    m_alloc_free;
+extern SG_EXPORT const    unsigned int    m_alloc_unknown;
+extern SG_EXPORT const    unsigned int    m_alloc_new;
+extern SG_EXPORT const    unsigned int    m_alloc_new_array;
+extern SG_EXPORT const    unsigned int    m_alloc_malloc;
+extern SG_EXPORT const    unsigned int    m_alloc_calloc;
+extern SG_EXPORT const    unsigned int    m_alloc_realloc;
+extern SG_EXPORT const    unsigned int    m_alloc_delete;
+extern SG_EXPORT const    unsigned int    m_alloc_delete_array;
+extern SG_EXPORT const    unsigned int    m_alloc_free;
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Used by the macros
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern void        m_setOwner(const char *file, unsigned int line);
+extern SG_EXPORT void        m_setOwner(const char *file, unsigned int line);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Allocation breakpoints
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern bool        &m_breakOnRealloc(void *reportedAddress);
-SG_EXPORT extern bool        &m_breakOnDealloc(void *reportedAddress);
-SG_EXPORT extern void         m_breakOnAllocation(unsigned int count);
+extern SG_EXPORT bool        &m_breakOnRealloc(void *reportedAddress);
+extern SG_EXPORT bool        &m_breakOnDealloc(void *reportedAddress);
+extern SG_EXPORT void         m_breakOnAllocation(unsigned int count);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // The meat of the memory tracking software
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern void  *m_allocator(const char *sourceFile, unsigned int sourceLine,
+extern SG_EXPORT void  *m_allocator(const char *sourceFile, unsigned int sourceLine,
                                      unsigned int allocationType, const size_t reportedSize);
-SG_EXPORT extern void  *m_reallocator(const char *sourceFile, unsigned int sourceLine,
+extern SG_EXPORT void  *m_reallocator(const char *sourceFile, unsigned int sourceLine,
                                       unsigned int reallocationType, const size_t reportedSize, void *reportedAddress);
-SG_EXPORT extern void  m_deallocator(const char *sourceFile, unsigned int sourceLine,
+extern SG_EXPORT void  m_deallocator(const char *sourceFile, unsigned int sourceLine,
                                      unsigned int deallocationType, const void *reportedAddress);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Utilitarian functions
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern bool m_validateAddress(const void *reportedAddress);
-SG_EXPORT extern bool m_validateAllocUnit(const sAllocUnit *allocUnit);
-SG_EXPORT extern bool m_validateAllAllocUnits();
+extern SG_EXPORT bool m_validateAddress(const void *reportedAddress);
+extern SG_EXPORT bool m_validateAllocUnit(const sAllocUnit *allocUnit);
+extern SG_EXPORT bool m_validateAllAllocUnits();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Unused RAM calculations
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern unsigned int    m_calcUnused(const sAllocUnit *allocUnit);
-SG_EXPORT extern unsigned int    m_calcAllUnused();
+extern SG_EXPORT unsigned int    m_calcUnused(const sAllocUnit *allocUnit);
+extern SG_EXPORT unsigned int    m_calcAllUnused();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Logging and reporting
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern void        m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix = "");
-SG_EXPORT extern void        m_dumpMemoryReport(const char *filename = "memreport.log", bool overwrite = true);
-SG_EXPORT extern sMStats     m_getMemoryStatistics();
+extern SG_EXPORT void        m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix = "");
+extern SG_EXPORT void        m_dumpMemoryReport(const char *filename = "memreport.log", bool overwrite = true);
+extern SG_EXPORT sMStats     m_getMemoryStatistics();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Variations of global operators new & delete

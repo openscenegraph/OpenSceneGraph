@@ -229,12 +229,12 @@ class Geode;
  * to return for readNode().  
  * Use the images s and t values scale the dimensions of the image.
  */
-SG_EXPORT extern Geode* createGeodeForImage(Image* image);
+extern SG_EXPORT Geode* createGeodeForImage(Image* image);
 /** Convenience function to be used by images loaders to generate a valid geode
  * to return for readNode().  
  * Use the specified s and t values scale the dimensions of the image.
  */
-SG_EXPORT extern Geode* createGeodeForImage(Image* image,float s,float t);
+extern SG_EXPORT Geode* createGeodeForImage(Image* image,float s,float t);
 
 }
 

@@ -29,9 +29,20 @@ class SG_EXPORT BoundingBox
 	Vec3 _max;
 
         /** construct to invalid values to represent an unset bounding box.*/ 
-        BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),
+        inline BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),
                         _max(-FLT_MAX,-FLT_MAX,-FLT_MAX) {}
     
+        /** construct to with specified min and max values.*/ 
+        inline BoundingBox(float xmin,float ymin,float zmin,
+                    float xmax,float ymax,float zmax) :
+                    _min(xmin,ymin,zmin),
+                    _max(xmax,ymax,zmax) {}
+
+        /** construct to with specified min and max values.*/ 
+        inline BoundingBox(const Vec3& min,const Vec3& max) : 
+                    _min(min),
+                    _max(max) {}
+
         /** initialize to invalid values to represent an unset bounding box.*/ 
         inline void init()
         {
@@ -46,6 +57,21 @@ class SG_EXPORT BoundingBox
             return _max.x()>=_min.x();
         }
                 
+        inline void set (float xmin,float ymin,float zmin,
+                         float xmax,float ymax,float zmax)
+        {
+            _min.set(xmin,ymin,zmin);
+            _max.set(xmax,ymax,zmax);
+        }
+
+        /** construct to with specified min and max values.*/ 
+        inline void set(const Vec3& min,const Vec3& max)
+        {
+            _min = min;
+            _max = max;
+        }
+
+
         inline float& xMin() { return _min.x(); }
         inline const float xMin() const { return _min.x(); }
  
@@ -63,6 +89,12 @@ class SG_EXPORT BoundingBox
  
         inline float& zMax() { return _max.z(); }
         inline const float zMax() const { return _max.z(); }
+
+        inline Vec3& min() {  return _min; }
+        inline const Vec3& min() const {  return _min; }
+
+        inline Vec3& max() {  return _max; }
+        inline const Vec3& max() const {  return _max; }
 
         /** Calculate and return the center of the bounding box.*/
         inline const Vec3 center() const

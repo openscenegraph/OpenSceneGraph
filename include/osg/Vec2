@@ -57,6 +57,10 @@ class Vec2
         inline const float x() const { return _v[0]; }
         inline const float y() const { return _v[1]; }
 
+        inline const bool valid() const { return !isNaN() && !isInfinite(); }
+        inline const bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
+        inline const bool isInfinite() const { return osg::isInfinite(_v[0]) || osg::isInfinite(_v[1]); }
+
         /// dot product
         inline const float operator * (const Vec2& rhs) const
         {

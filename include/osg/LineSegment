@@ -31,6 +31,8 @@ class SG_EXPORT LineSegment : public Referenced
         inline Vec3& end() { return _e; }
         inline const Vec3& end() const { return _e; }
 
+        inline const bool valid() const { return _s.valid() && _e.valid() && _s!=_e; }
+
         /** return true if segment intersects BoundingBox.*/
         const bool intersect(const BoundingBox& bb) const;
 

@@ -31,16 +31,7 @@ void ClipPlane::write(DataOutputStream* out){
 
   // write ClipPlane's properties
   
-  
-  
-  
-  double plane[4];
-  getClipPlane(plane);
-  
-  out->writeDouble(plane[0]);
-  out->writeDouble(plane[1]);
-  out->writeDouble(plane[2]);
-  out->writeDouble(plane[3]);
+  out->writeVec4d(getClipPlane());
   
   out->writeUInt(getClipPlaneNum());
 
@@ -62,15 +53,7 @@ void ClipPlane::read(DataInputStream* in){
       else
         throw Exception("ClipPlane::read(): Could not cast this osg::ClipPlane to an osg::Object.");
 
-      // Read ClipPlane's properties
-      double plane[4];
-
-      plane[0] = in->readDouble();
-      plane[1] = in->readDouble();
-      plane[2] = in->readDouble();
-      plane[3] = in->readDouble();
-
-      setClipPlane(plane);
+      setClipPlane(in->readVec4d());
 
       setClipPlaneNum(in->readUInt());
     }

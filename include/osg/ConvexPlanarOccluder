@@ -39,7 +39,7 @@ class SG_EXPORT ConvexPlanarOccluder : public Object
         void setOccluder(const ConvexPlanarPolygon& cpp) { _occluder = cpp; }
         
         ConvexPlanarPolygon& getOccluder() { return _occluder; }
-
+	
         const ConvexPlanarPolygon& getOccluder() const { return _occluder; }
         
         
@@ -48,9 +48,11 @@ class SG_EXPORT ConvexPlanarOccluder : public Object
 
         void addHole(const ConvexPlanarPolygon& cpp) { _holeList.push_back(cpp); }
 
-        HoleList& getHoleList() { return _holeList; }
+        void setHoleList(const HoleList& holeList) { _holeList=holeList; }
         
-        const HoleList& getHoleList() const { return _holeList; }
+	HoleList& getHoleList() { return _holeList; }
+        
+	const HoleList& getHoleList() const { return _holeList; }
 
     protected:
 

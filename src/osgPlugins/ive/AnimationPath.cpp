@@ -37,9 +37,9 @@ void AnimationPath::write(DataOutputStream* out){
 	out->writeInt(tcpm.size());
     for(AnimationPath::TimeControlPointMap::iterator itr=tcpm.begin(); itr!=tcpm.end(); ++itr){
 		out->writeFloat(itr->first);
-		out->writeVec3(itr->second._position);
-		out->writeQuat(itr->second._rotation);
-		out->writeVec3(itr->second._scale);
+		out->writeVec3(itr->second.getPosition());
+		out->writeQuat(itr->second.getRotation());
+		out->writeVec3(itr->second.getScale());
     }
 }
 

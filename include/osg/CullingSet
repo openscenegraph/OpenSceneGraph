@@ -123,6 +123,7 @@ class SG_EXPORT CullingSet : public Referenced
         };
         
         void setCullingMask(Mask mask) { _mask = mask; }
+        Mask getCullingMask() const { return _mask; }
 
         void setFrustum(Polytope& cv) { _frustum = cv; }
 

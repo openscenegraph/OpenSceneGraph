@@ -117,9 +117,9 @@ class SG_EXPORT ImpostorSprite : public Drawable
         float calcPixelError(const Matrix& MVPW) const;
 
         void setTexture(Texture2D* tex,int s,int t);
-
         Texture2D* getTexture() { return _texture; }
         const Texture2D* getTexture() const { return _texture; }
+	
         int s() const { return _s; }
         int t() const { return _t; }
 

@@ -46,6 +46,9 @@ public:
 	void writeVec2(const osg::Vec2& v);
 	void writeVec3(const osg::Vec3& v);
 	void writeVec4(const osg::Vec4& v);
+	void writeVec2d(const osg::Vec2d& v);
+	void writeVec3d(const osg::Vec3d& v);
+	void writeVec4d(const osg::Vec4d& v);
 	void writePlane(const osg::Plane& v);
 	void writeUByte4(const osg::UByte4& v);
 	void writeQuat(const osg::Quat& q);

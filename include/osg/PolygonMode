@@ -30,7 +30,6 @@ class SG_EXPORT PolygonMode : public StateAttribute
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PolygonMode(const PolygonMode& pm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(pm,copyop),
-            _frontAndBack(pm._frontAndBack),
             _modeFront(pm._modeFront),
             _modeBack(pm._modeBack) {}
 
@@ -44,30 +43,36 @@ class SG_EXPORT PolygonMode : public StateAttribute
             COMPARE_StateAttribute_Types(PolygonMode,sa)
 
             // compare each paramter in turn against the rhs.
-            COMPARE_StateAttribute_Parameter(_frontAndBack)
             COMPARE_StateAttribute_Parameter(_modeFront)
             COMPARE_StateAttribute_Parameter(_modeBack)
 
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-        enum Face {
-            FRONT,
-            BACK,
-            FRONT_AND_BACK
-        };
-    
         enum Mode {
             POINT = GL_POINT,
             LINE = GL_LINE,
             FILL = GL_FILL
         };
+/*
+	void setFrontAndBackFaceMode(Mode mode) { _modeFront = _modeBack = mode; }
+	
+	void setFrontFaceMode(Mode mode) { _modeFront = mode; }
+	Mode getFrontFaceMode() const { return _modeFront; }
 
-        void setMode(Face face,Mode mode);
-        
-        Mode getMode(Face face) const;
+	void setBackFaceMode(Mode mode) { _modeFront = mode; }
+	Mode getBackFaceMode() const { return _modeBack; }
+*/
+        enum Face {
+            FRONT_AND_BACK,
+            FRONT,
+            BACK,
+        };
     
-        inline bool getFrontAndBack() const { return _frontAndBack; }
+        void setMode(Face face,Mode mode);
+        Mode getMode(Face face) const;
+
+        inline bool getFrontAndBack() const { return _modeFront==_modeBack; }
 
         virtual void apply(State& state) const;
         
@@ -75,7 +80,6 @@ class SG_EXPORT PolygonMode : public StateAttribute
     
         virtual ~PolygonMode();
 
-        bool _frontAndBack;
         Mode _modeFront;
         Mode _modeBack;
 

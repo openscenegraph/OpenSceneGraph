@@ -43,8 +43,9 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
 
         META_Object(osg,AnimationPath);
 
-        struct ControlPoint
+        class ControlPoint
         {
+	public:
             ControlPoint():
                 _scale(1.0,1.0,1.0) {}
 
@@ -63,10 +64,14 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
                 _rotation(rotation),
                 _scale(scale) {}
         
-            osg::Vec3d _position;
-            osg::Quat _rotation;
-            osg::Vec3d _scale;
+    	    void setPosition(const osg::Vec3d& position) { _position = position; }
+    	    const osg::Vec3d& getPosition() const { return _position; }
 
+    	    void setRotation(const osg::Quat& rotation) { _rotation = rotation; }
+    	    const osg::Quat& getRotation() const { return _rotation; }
+
+    	    void setScale(const osg::Vec3d& scale) { _scale = scale; }
+    	    const osg::Vec3d& getScale() const { return _scale; }
 
             inline void interpolate(float ratio,const ControlPoint& first, const ControlPoint& second)
             {
@@ -103,6 +108,14 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
                 matrix.preMult(osg::Matrixd::rotate(_rotation.inverse()));
                 matrix.preMult(osg::Matrixd::translate(-_position));
             }
+	    
+ #ifdef USE_DEPRECATED_API
+    	protected:
+#endif
+            osg::Vec3d _position;
+            osg::Quat _rotation;
+            osg::Vec3d _scale;
+
         };
         
 

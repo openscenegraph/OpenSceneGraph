@@ -53,7 +53,7 @@ class SG_EXPORT FrontFace : public StateAttribute
         };
     
         inline void setMode(Mode mode) { _mode = mode; }
-        inline const Mode getMode() const    { return _mode; }
+        inline Mode getMode() const    { return _mode; }
     
         virtual void apply(State& state) const;
         

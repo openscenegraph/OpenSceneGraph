@@ -313,6 +313,39 @@ osg::Vec4 DataInputStream::readVec4(){
     
     return v;
 }
+osg::Vec2d DataInputStream::readVec2d()
+{
+    osg::Vec2d v;
+    v.x()=readDouble();
+    v.y()=readDouble();
+
+    if (_verboseOutput) std::cout<<"read/writeVec2d() ["<<v<<"]"<<std::endl;
+    
+    return v;
+}
+
+osg::Vec3d DataInputStream::readVec3d(){
+    osg::Vec3d v;
+    v.x()=readDouble();
+    v.y()=readDouble();
+    v.z()=readDouble();
+
+    if (_verboseOutput) std::cout<<"read/writeVec3d() ["<<v<<"]"<<std::endl;
+
+    return v;
+}
+
+osg::Vec4d DataInputStream::readVec4d(){
+    osg::Vec4d v;
+    v.x()=readDouble();
+    v.y()=readDouble();
+    v.z()=readDouble();
+    v.w()=readDouble();
+
+    if (_verboseOutput) std::cout<<"read/writeVec4d() ["<<v<<"]"<<std::endl;
+    
+    return v;
+}
 
 osg::Plane DataInputStream::readPlane(){
     osg::Plane v;

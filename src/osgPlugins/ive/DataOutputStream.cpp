@@ -182,6 +182,30 @@ void DataOutputStream::writeVec4(const osg::Vec4& v){
     if (_verboseOutput) std::cout<<"read/writeVec4() ["<<v<<"]"<<std::endl;
 }
 
+void DataOutputStream::writeVec2d(const osg::Vec2d& v){
+    writeDouble(v.x());
+    writeDouble(v.y());
+    
+    if (_verboseOutput) std::cout<<"read/writeVec2() ["<<v<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeVec3d(const osg::Vec3d& v){
+    writeDouble(v.x());
+    writeDouble(v.y());
+    writeDouble(v.z());
+    
+    if (_verboseOutput) std::cout<<"read/writeVec3d() ["<<v<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeVec4d(const osg::Vec4d& v){
+    writeDouble(v.x());
+    writeDouble(v.y());
+    writeDouble(v.z());
+    writeDouble(v.w());
+    
+    if (_verboseOutput) std::cout<<"read/writeVec4d() ["<<v<<"]"<<std::endl;
+}
+
 void DataOutputStream::writePlane(const osg::Plane& v)
 {
     writeFloat(v[0]);

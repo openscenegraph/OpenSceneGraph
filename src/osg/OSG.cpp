@@ -62,34 +62,14 @@ void osg::Init( void )
 
 void osg::SetFilePath( const char *_path )
 {
-    char buff[1024];
+    notify(DEBUG) << "In osg::SetFilePath("<<s_filePath<<")"<<endl;
 
-    notify(DEBUG) << "In osg::SetFilePath("<<_path<<")"<<endl;
+    if( s_filePath != s_default_file_path )
+          delete s_filePath;
 
-    buff[0] = 0;
+    s_filePath = strdup( _path );
 
-/*    notify(DEBUG) << "filePath " << s_filePath << endl;
-    notify(DEBUG) << "defPath  " << s_default_file_path << endl;
-    notify(DEBUG) << "&filePath " << &s_filePath << endl;
-    notify(DEBUG) << "&defPath  " << &s_default_file_path << endl;
-*/
-      if( s_filePath != s_default_file_path )
-      {
-          strcpy( buff, s_filePath );
-//          delete s_filePath;
-      }
-//    if (strcmp(s_filePath, s_default_file_path) != 0)
-//    {
-//        strcpy( buff, s_filePath );
-//        delete s_filePath;
-//    }
-
-    strcat( buff, PathDelimitor );
-    strcat( buff, _path );
-
-    s_filePath = strdup( buff );
-
-    notify(DEBUG) << "Out osg::SetFilePath("<<_path<<")"<<endl;
+    notify(DEBUG) << "Out osg::SetFilePath("<<s_filePath<<")"<<endl;
 }
 
 

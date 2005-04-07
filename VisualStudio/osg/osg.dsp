@@ -264,6 +264,10 @@ SOURCE=..\..\src\osg\Image.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ImageStream.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Impostor.cpp
 # End Source File
 # Begin Source File
@@ -708,8 +712,11 @@ SOURCE=..\..\src\osg\dxtctool.h
 # End Source File
 # Begin Source File
 
-
 SOURCE=..\..\Include\Osg\Image
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ImageStream
 # End Source File
 # Begin Source File
 

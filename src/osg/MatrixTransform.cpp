@@ -32,7 +32,7 @@ MatrixTransform::MatrixTransform(const Matrix& mat )
     _referenceFrame = RELATIVE_RF;
 
     _matrix = mat;
-    _inverseDirty = false;
+    _inverseDirty = true;
 }
 
 

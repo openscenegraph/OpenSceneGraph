@@ -116,6 +116,17 @@ public:
     void updateParameters()
     {
         _longitude += ((2.0*osg::PI)/360.0)/20.0;
+        _latitude = sin(_longitude);
+
+        // adjust the heading and roll to roughly look ok,
+        // but bearing no reality to physics..        
+        osg::Quat heading;
+        heading.makeRotate(osg::DegreesToRadians(90.0)+cos(_longitude),0.0,0.0,1.0);
+        
+        osg::Quat roll;
+        roll.makeRotate(-_latitude*0.5f,0.0,1.0,0.0);
+        
+        _rotation = roll*heading;
     }
 
 
@@ -203,6 +214,10 @@ int main(int argc, char **argv)
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of particle systems.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotate-model angle x y z","Rotate model");
+    arguments.getApplicationUsage()->addCommandLineOption("--flight-path","");
+    arguments.getApplicationUsage()->addCommandLineOption("--tracker-mode","NODE_CENTER_AND_ROTATION | NODE_CENTER_AND_AZIM | NODE_CENTER");
+    arguments.getApplicationUsage()->addCommandLineOption("--rotation-mode","TRACKBALL | ELEVATION_AZIM");
     
 
     // construct the viewer.

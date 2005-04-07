@@ -147,6 +147,14 @@ SOURCE=..\..\include\osgIntrospection\ConstructorInfo
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgIntrospection\Converter
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\ConverterProxy
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgIntrospection\CustomAttribute
 # End Source File
 # Begin Source File
@@ -232,4 +240,5 @@ SOURCE=..\..\include\osgIntrospection\variant_cast
 # End Group
 # End Target
 # End Project
+
 

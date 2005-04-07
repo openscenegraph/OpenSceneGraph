@@ -105,7 +105,7 @@ class SG_EXPORT PagedLOD : public LOD
           * The removed children are added to the removeChildren list passed into the method,
           * this allows the children to be deleted later at the caller's discretion.
           * Return true if children are removed, false otherwise. */
-        bool removeExpiredChildren(double expiryTime,NodeList& removedChildren);
+        virtual bool removeExpiredChildren(double expiryTime,NodeList& removedChildren);
         
         
 

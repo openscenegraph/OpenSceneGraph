@@ -1318,6 +1318,16 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
     newSource->_filename = filename;
     newSource->_temporaryFile = true;
     newSource->_cs = cs;
+
+    newSource->_coordinateSystemPolicy = _coordinateSystemPolicy;
+    newSource->_geoTransformPolicy = _geoTransformPolicy;
+
+    newSource->_minLevel = _minLevel;
+    newSource->_maxLevel = _maxLevel;
+    newSource->_layer = _layer;
+
+    newSource->_requiredResolutions = _requiredResolutions;
+
     newSource->_numValuesX = nPixels;
     newSource->_numValuesY = nLines;
     newSource->_geoTransform.set( adfDstGeoTransform[1],    adfDstGeoTransform[4],      0.0,    0.0,

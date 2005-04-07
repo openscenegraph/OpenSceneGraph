@@ -166,14 +166,24 @@ class Vec2d
 	    return( norm );
 	}
 
-	friend inline std::ostream& operator << (std::ostream& output, const Vec2d& vec)
-        {
-	    output << vec._v[0] << " "
-                   << vec._v[1];
-	    return output; 	// to enable cascading
-	}
-
 };	// end of class Vec2d
+
+
+// streaming operators
+
+inline std::ostream& operator << (std::ostream& output, const Vec2d& vec)
+{
+	output << vec._v[0] << " "
+                << vec._v[1];
+	return output; 	// to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec2d& vec)
+{
+	input >> vec._v[0] >> vec._v[1];
+	return input;
+}
+
 
 }	// end of namespace osg
 #endif

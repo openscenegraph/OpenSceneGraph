@@ -1,0 +1,22 @@
+#ifndef OSGINTROSPECTION_CONVERTERPROXY_
+#define OSGINTROSPECTION_CONVERTERPROXY_
+
+#include <osgIntrospection/Reflection>
+
+namespace osgIntrospection
+{
+
+	struct Converter;
+
+	struct ConverterProxy
+	{
+		ConverterProxy(const Type &source, const Type &dest, const Converter *cvt)
+		{
+			Reflection::registerConverter(source, dest, cvt);
+		}
+	};
+	
+}
+
+#endif
+

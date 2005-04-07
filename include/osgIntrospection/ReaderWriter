@@ -13,50 +13,6 @@
 
 #include <iostream>
 
-namespace osg
-{
-
-    /// ----------------------------------------------------------------------
-    /// TEMPORARY FIX
-    /// (currently osg::Vec? classes don't support input streaming)
-    /// (currently osg::ref_ptr<> class doesn't support I/O streaming)
-    inline std::istream& operator >> (std::istream& input, Vec2f& vec)
-    {
-        input >> vec._v[0] >> vec._v[1];
-        return input;
-    }
-
-    inline std::istream& operator >> (std::istream& input, Vec3f& vec)
-    {
-        input >> vec._v[0] >> vec._v[1] >> vec._v[2];
-        return input;
-    }
-
-    inline std::istream& operator >> (std::istream& input, Vec4& vec)
-    {
-        input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
-        return input;
-    }
-
-    template<typename T>
-    std::ostream &operator << (std::ostream &s, const osg::ref_ptr<T> &r)
-    {
-        return s << r.get();
-    }
-
-    template<typename T>
-    std::istream &operator >> (std::istream &s, osg::ref_ptr<T> &r)
-    {
-        void *ptr;
-        s >> ptr;
-        r = (T *)ptr;
-        return s;
-    }
-
-    ///
-    /// END OF TEMPORARY FIX
-    /// ----------------------------------------------------------------------
-}
 
 namespace osgIntrospection
 {

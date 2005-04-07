@@ -3,6 +3,8 @@
 #include <osgIntrospection/Exceptions>
 #include <osgIntrospection/ReaderWriter>
 #include <osgIntrospection/Comparator>
+#include <osgIntrospection/Converter>
+#include <osgIntrospection/Reflection>
 
 #include <sstream>
 #include <memory>
@@ -27,6 +29,14 @@ Value Value::tryConvertTo(const Type &outtype) const
     if (type_->isConstPointer() && outtype.isNonConstPointer())
         return Value();
 
+    // search custom converters
+    ConverterList conv;
+    if (Reflection::getConversionPath(*type_, outtype, conv))
+    {
+        std::auto_ptr<CompositeConverter> cvt(new CompositeConverter(conv));
+        return cvt->convert(*this);
+    }
+
     std::auto_ptr<ReaderWriter::Options> wopt;
 
     if (type_->isEnum() && (outtype.getQualifiedName() == "int" || outtype.getQualifiedName() == "unsigned int"))
@@ -41,12 +51,11 @@ Value Value::tryConvertTo(const Type &outtype) const
         const ReaderWriter *dst_rw = outtype.getReaderWriter();
         if (dst_rw)
         {
-            std::ostringstream oss;
-            if (src_rw->writeTextValue(oss, *this, wopt.get()))
+            std::stringstream ss;
+            if (src_rw->writeTextValue(ss, *this, wopt.get()))
             {
                 Value v;
-                std::istringstream iss(oss.str());
-                if (dst_rw->readTextValue(iss, v))
+                if (dst_rw->readTextValue(ss, v))
                 {
                     return v;
                 }
@@ -80,107 +89,107 @@ void Value::check_empty() const
 
 void Value::swap(Value &v)
 {
-	std::swap(inbox_, v.inbox_);
-	std::swap(type_, v.type_);
-	std::swap(ptype_, v.ptype_);
+    std::swap(inbox_, v.inbox_);
+    std::swap(type_, v.type_);
+    std::swap(ptype_, v.ptype_);
 }
 
 bool Value::operator ==(const Value &other) const
 {
-	if (isEmpty() && other.isEmpty())
-		return true;
+    if (isEmpty() && other.isEmpty())
+        return true;
 
-	if (isEmpty() ^ other.isEmpty())
-		return false;
+    if (isEmpty() ^ other.isEmpty())
+        return false;
 
-	const Comparator *cmp1 = type_->getComparator();
-	const Comparator *cmp2 = other.type_->getComparator();
-	
-	const Comparator *cmp = cmp1? cmp1: cmp2;
-	
-	if (!cmp)
-		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+    const Comparator *cmp1 = type_->getComparator();
+    const Comparator *cmp2 = other.type_->getComparator();
+    
+    const Comparator *cmp = cmp1? cmp1: cmp2;
+    
+    if (!cmp)
+        throw ComparisonNotPermittedException(type_->getStdTypeInfo());
 
-	if (cmp1 == cmp2)
-		return cmp->isEqualTo(*this, other);
+    if (cmp1 == cmp2)
+        return cmp->isEqualTo(*this, other);
 
-	if (cmp1)
-		return cmp1->isEqualTo(*this, other.convertTo(*type_));
+    if (cmp1)
+        return cmp1->isEqualTo(*this, other.convertTo(*type_));
 
-	return cmp2->isEqualTo(convertTo(*other.type_), other);
+    return cmp2->isEqualTo(convertTo(*other.type_), other);
 }
 
 bool Value::operator <=(const Value &other) const
 {
-	const Comparator *cmp1 = type_->getComparator();
-	const Comparator *cmp2 = other.type_->getComparator();
-	
-	const Comparator *cmp = cmp1? cmp1: cmp2;
-	
-	if (!cmp)
-		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+    const Comparator *cmp1 = type_->getComparator();
+    const Comparator *cmp2 = other.type_->getComparator();
+    
+    const Comparator *cmp = cmp1? cmp1: cmp2;
+    
+    if (!cmp)
+        throw ComparisonNotPermittedException(type_->getStdTypeInfo());
 
-	if (cmp1 == cmp2)
-		return cmp->isLessThanOrEqualTo(*this, other);
+    if (cmp1 == cmp2)
+        return cmp->isLessThanOrEqualTo(*this, other);
 
-	if (cmp1)
-		return cmp1->isLessThanOrEqualTo(*this, other.convertTo(*type_));
+    if (cmp1)
+        return cmp1->isLessThanOrEqualTo(*this, other.convertTo(*type_));
 
-	return cmp2->isLessThanOrEqualTo(convertTo(*other.type_), other);
+    return cmp2->isLessThanOrEqualTo(convertTo(*other.type_), other);
 }
 
 bool Value::operator !=(const Value &other) const
 {
-	return !operator==(other);
+    return !operator==(other);
 }
 
 bool Value::operator >(const Value &other) const
 {
-	return !operator<=(other);
+    return !operator<=(other);
 }
 
 bool Value::operator <(const Value &other) const
 {
-	const Comparator *cmp1 = type_->getComparator();
-	const Comparator *cmp2 = other.type_->getComparator();
-	
-	const Comparator *cmp = cmp1? cmp1: cmp2;
-	
-	if (!cmp)
-		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+    const Comparator *cmp1 = type_->getComparator();
+    const Comparator *cmp2 = other.type_->getComparator();
+    
+    const Comparator *cmp = cmp1? cmp1: cmp2;
+    
+    if (!cmp)
+        throw ComparisonNotPermittedException(type_->getStdTypeInfo());
 
-	if (cmp1 == cmp2)
-		return cmp->isLessThanOrEqualTo(*this, other) && !cmp->isEqualTo(*this, other);
+    if (cmp1 == cmp2)
+        return cmp->isLessThanOrEqualTo(*this, other) && !cmp->isEqualTo(*this, other);
 
-	if (cmp1)
-	{
-		Value temp(other.convertTo(*type_));
-		return cmp1->isLessThanOrEqualTo(*this, temp) && !cmp1->isEqualTo(*this, temp);
-	}
+    if (cmp1)
+    {
+        Value temp(other.convertTo(*type_));
+        return cmp1->isLessThanOrEqualTo(*this, temp) && !cmp1->isEqualTo(*this, temp);
+    }
 
-	Value temp(convertTo(*other.type_));
-	return cmp2->isLessThanOrEqualTo(temp, other) && !cmp2->isEqualTo(temp, other);
+    Value temp(convertTo(*other.type_));
+    return cmp2->isLessThanOrEqualTo(temp, other) && !cmp2->isEqualTo(temp, other);
 }
 
 bool Value::operator >=(const Value &other) const
 {
-	const Comparator *cmp1 = type_->getComparator();
-	const Comparator *cmp2 = other.type_->getComparator();
-	
-	const Comparator *cmp = cmp1? cmp1: cmp2;
-	
-	if (!cmp)
-		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+    const Comparator *cmp1 = type_->getComparator();
+    const Comparator *cmp2 = other.type_->getComparator();
+    
+    const Comparator *cmp = cmp1? cmp1: cmp2;
+    
+    if (!cmp)
+        throw ComparisonNotPermittedException(type_->getStdTypeInfo());
 
-	if (cmp1 == cmp2)
-		return !cmp->isLessThanOrEqualTo(*this, other) || cmp->isEqualTo(*this, other);
+    if (cmp1 == cmp2)
+        return !cmp->isLessThanOrEqualTo(*this, other) || cmp->isEqualTo(*this, other);
 
-	if (cmp1)
-	{
-		Value temp(other.convertTo(*type_));
-		return !cmp1->isLessThanOrEqualTo(*this, temp) || cmp1->isEqualTo(*this, temp);
-	}
+    if (cmp1)
+    {
+        Value temp(other.convertTo(*type_));
+        return !cmp1->isLessThanOrEqualTo(*this, temp) || cmp1->isEqualTo(*this, temp);
+    }
 
-	Value temp(convertTo(*other.type_));
-	return !cmp2->isLessThanOrEqualTo(temp, other) || cmp2->isEqualTo(temp, other);
+    Value temp(convertTo(*other.type_));
+    return !cmp2->isLessThanOrEqualTo(temp, other) || cmp2->isEqualTo(temp, other);
 }

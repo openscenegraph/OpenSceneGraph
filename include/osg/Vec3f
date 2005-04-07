@@ -15,6 +15,7 @@
 #define OSG_VEC3F 1
 
 #include <ostream>
+#include <istream>
 
 #include <osg/Vec2f>
 #include <osg/Math>
@@ -194,9 +195,9 @@ class Vec3f
             return( norm );
         }
 
-    friend inline std::ostream& operator << (std::ostream& output, const Vec3f& vec);
-
 };    // end of class Vec3f
+
+// streaming operators
 
 inline std::ostream& operator << (std::ostream& output, const Vec3f& vec)
 {
@@ -206,6 +207,12 @@ inline std::ostream& operator << (std::ostream& output, const Vec3f& vec)
     return output;     // to enable cascading
 }
 
+inline std::istream& operator >> (std::istream& input, Vec3f& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2];
+    return input;
+}
+
 const Vec3f X_AXIS(1.0,0.0,0.0);
 const Vec3f Y_AXIS(0.0,1.0,0.0);
 const Vec3f Z_AXIS(0.0,0.0,1.0);
@@ -213,3 +220,4 @@ const Vec3f Z_AXIS(0.0,0.0,1.0);
 }    // end of namespace osg
 
 #endif
+

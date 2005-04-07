@@ -36,7 +36,7 @@ public:
 	DataInputStream(std::istream* istream);
 	~DataInputStream();
 
-        void setOptions(const osgDB::ReaderWriter::Options* options) { _options = options; }
+        void setOptions(const osgDB::ReaderWriter::Options* options);
         const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
 	unsigned int getVersion();
@@ -83,6 +83,10 @@ public:
 	osg::Shape* readShape();
 	osg::Node* readNode();
 
+	// Set and get if must be generated external reference ive files
+	void setLoadExternalReferenceFiles(bool b) {_loadExternalReferenceFiles=b;};
+	bool getLoadExternalReferenceFiles() {return _loadExternalReferenceFiles;};
+
 	typedef std::map<std::string, osg::ref_ptr<osg::Image> >    ImageMap;
 	typedef std::map<int,osg::ref_ptr<osg::StateSet> >          StateSetMap;
 	typedef std::map<int,osg::ref_ptr<osg::StateAttribute> >    StateAttributeMap;
@@ -104,6 +108,8 @@ private:
 	DrawableMap         _drawableMap;
 	ShapeMap            _shapeMap;
 	NodeMap             _nodeMap;
+
+	bool _loadExternalReferenceFiles;
         
         osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
    

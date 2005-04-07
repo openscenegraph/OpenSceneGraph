@@ -1,8 +1,11 @@
 #ifndef OSGINTROSPECTION_REFLECTIONMACROS_
 #define OSGINTROSPECTION_REFLECTIONMACROS_
 
+#include <osgIntrospection/Type>
 #include <osgIntrospection/Reflector>
 #include <osgIntrospection/TypeNameAliasProxy>
+#include <osgIntrospection/ConverterProxy>
+#include <osgIntrospection/Converter>
 
 // --------------------------------------------------------------------------
 // "private" macros, not to be used outside this file
@@ -20,6 +23,24 @@
 
 #define TYPE_NAME_ALIAS(t, n) \
 	namespace { osgIntrospection::TypeNameAliasProxy<t > OSG_RM_LINEID(tnalias) (#n); }
+	
+
+// --------------------------------------------------------------------------
+// TYPE CONVERTERS
+// --------------------------------------------------------------------------
+
+#define Converter(s, d, c) \
+	namespace { osgIntrospection::ConverterProxy OSG_RM_LINEID(cvt) (s, d, new c); }
+
+#define StaticConverter(s, d) \
+	Converter(s, d, osgIntrospection::StaticConverter<s, d>);
+
+#define DynamicConverter(s, d) \
+	Converter(s, d, osgIntrospection::DynamicConverter<s, d>);
+	
+#define ReinterpretConverter(s, d) \
+	Converter(s, d, osgIntrospection::ReinterpretConverter<s, d>);
+
 
 // --------------------------------------------------------------------------
 // ONE-LINE REFLECTORS
@@ -110,7 +131,33 @@
 #define ReaderWriter(x)                    setReaderWriter(new x);
 #define Comparator(x)                      setComparator(new x);
 
-#define BaseType(x)                        addBaseType(typeof(x));
+#define BaseType(x) \
+	{ \
+	 addBaseType(typeof(x)); \
+	 const osgIntrospection::Type &st = typeof(reflected_type *); \
+	 const osgIntrospection::Type &cst = typeof(const reflected_type *); \
+	 const osgIntrospection::Type &dt = typeof(x *); \
+	 const osgIntrospection::Type &cdt = typeof(const x *); \
+	 osgIntrospection::ConverterProxy cp1(st, dt, new osgIntrospection::StaticConverter<reflected_type *, x *>); \
+	 osgIntrospection::ConverterProxy cp2(cst, cdt, new osgIntrospection::StaticConverter<const reflected_type *, const x *>); \
+	 osgIntrospection::ConverterProxy cp1c(st, cdt, new osgIntrospection::StaticConverter<reflected_type *, const x *>); \
+	 osgIntrospection::ConverterProxy cp3(dt, st, new osgIntrospection::StaticConverter<x *, reflected_type *>); \
+	 osgIntrospection::ConverterProxy cp4(cdt, cst, new osgIntrospection::StaticConverter<const x *, const reflected_type *>); \
+	 osgIntrospection::ConverterProxy cp3c(dt, cst, new osgIntrospection::StaticConverter<x *, const reflected_type *>); \
+	}
+
+#define VirtualBaseType(x) \
+	{ \
+	 addBaseType(typeof(x)); \
+	 const osgIntrospection::Type &st = typeof(reflected_type *); \
+	 const osgIntrospection::Type &cst = typeof(const reflected_type *); \
+	 const osgIntrospection::Type &dt = typeof(x *); \
+	 const osgIntrospection::Type &cdt = typeof(const x *); \
+	 osgIntrospection::ConverterProxy cp1(st, dt, new osgIntrospection::StaticConverter<reflected_type *, x *>); \
+	 osgIntrospection::ConverterProxy cp2(cst, cdt, new osgIntrospection::StaticConverter<const reflected_type *, const x *>); \
+	 osgIntrospection::ConverterProxy cp1c(st, cdt, new osgIntrospection::StaticConverter<reflected_type *, const x *>); \
+	}
+
 #define EnumLabel(x)                       addEnumLabel(x, #x, true);
 
 

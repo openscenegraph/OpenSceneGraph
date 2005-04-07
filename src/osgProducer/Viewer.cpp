@@ -203,11 +203,27 @@ public:
             if (csn)
             {
                 osg::Vec3 local_position = position*osg::computeWorldToLocal(tmpPath);
-                osg::notify(osg::INFO)<<"local postion "<<local_position<<std::endl;
-            
-                osg::notify(osg::INFO)<<"csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath)"<<std::endl;
-
+                
+                // get the coordinate frame in world coords.
                 coordinateFrame = csn->computeLocalCoordinateFrame(local_position)* osg::computeLocalToWorld(tmpPath);
+
+                // keep the position of the coordinate frame to reapply after rescale.
+                osg::Vec3d pos = coordinateFrame.getTrans();
+
+                // compensate for any scaling, so that the coordinate frame is a unit size
+                osg::Vec3d x(1.0,0.0,0.0);
+                osg::Vec3d y(0.0,1.0,0.0);
+                osg::Vec3d z(0.0,0.0,1.0);
+                x = osg::Matrixd::transform3x3(x,coordinateFrame);
+                y = osg::Matrixd::transform3x3(y,coordinateFrame);
+                z = osg::Matrixd::transform3x3(z,coordinateFrame);
+                coordinateFrame.preMult(osg::Matrixd::scale(1.0/x.length(),1.0/y.length(),1.0/z.length()));
+
+                // reapply the position.
+                coordinateFrame.setTrans(pos);
+
+                osg::notify(osg::INFO)<<"csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath)"<<coordinateFrame<<std::endl;
+
             }
             else
             {

@@ -3842,7 +3842,10 @@ struct DerefLessFunctor
 {
     bool operator () (const T& lhs, const T& rhs)
     {
-        return (lhs.valid() && rhs.valid()) && (lhs->getSortValue() > rhs->getSortValue());
+        if (!lhs || !rhs) return lhs<rhs;
+        if (lhs->getLayer() < rhs->getLayer()) return true;
+        if (rhs->getLayer() < lhs->getLayer()) return false;
+        return (lhs->getSortValue() > rhs->getSortValue());
     }
 };
 

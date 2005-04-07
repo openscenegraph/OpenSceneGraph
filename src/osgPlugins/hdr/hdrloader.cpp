@@ -104,7 +104,7 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
     }
 
     int w, h;
-    if (!sscanf(reso, "-Y %ld +X %ld", &h, &w)) {
+    if (!sscanf(reso, "-Y %d +X %d", &h, &w)) {
         fclose(file);
         return false;
     }
@@ -139,7 +139,7 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
 float convertComponent(int _expo, int _val)
 {
     float v = _val / 256.0f;
-    float d = powf(2, _expo);
+    float d = powf(2.0f, (float)_expo);
     return v * d;
 }
 

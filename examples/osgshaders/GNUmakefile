@@ -6,7 +6,7 @@ CXXFILES =\
 	Noise.cpp \
 	osgshaders.cpp
 
-LIBS     += -losgProducer -lProducer -losgText -losgGL2 -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgProducer -lProducer -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\

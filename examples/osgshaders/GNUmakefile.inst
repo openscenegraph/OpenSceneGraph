@@ -5,7 +5,7 @@ CXXFILES =\
 	GL2Scene.cpp \
 	osgshaders.cpp
 
-LIBS     += -losgProducer -lProducer -losgDB -losgText -losgGL2 -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgshaders
 

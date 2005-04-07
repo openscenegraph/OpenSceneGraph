@@ -1,5 +1,5 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- * Copyright (C) 2003 3Dlabs Inc. Ltd.
+ * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial applications,
@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:	examples/osgshaders/GL2Scene.h
- * author:	Mike Weiblen 2003-09-18
+/* file:	examples/osgglsl/GL2Scene.h
+ * author:	Mike Weiblen 2005-03-30
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -21,7 +21,7 @@
 #include <osg/Referenced>
 #include <osg/ref_ptr>
 
-#include <osgGL2/ProgramObject>
+#include <osg/Program>
 
 class GL2Scene : public osg::Referenced
 {
@@ -40,7 +40,7 @@ class GL2Scene : public osg::Referenced
 
     private:	/*data*/
 	osg::ref_ptr<osg::Group> _rootNode;
-	std::vector<osgGL2::ProgramObjectPtr> _progObjList;
+	std::vector< osg::ref_ptr<osg::Program> > _programList;
 	bool _shadersEnabled;
 };
 

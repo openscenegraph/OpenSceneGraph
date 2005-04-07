@@ -1,5 +1,5 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
- * Copyright (C) 2003-2004 3Dlabs Inc. Ltd.
+ * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial applications,
@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:	examples/osgshaders/GL2Scene.cpp
- * author:	Mike Weiblen 2004-11-09
+/* file:	examples/osgglsl/GL2Scene.cpp
+ * author:	Mike Weiblen 2005-03-30
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -33,7 +33,10 @@
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgUtil/Optimizer>
-#include <osgGL2/ProgramObject>
+
+#include <osg/Program>
+#include <osg/Shader>
+#include <osg/Uniform>
 
 #include "GL2Scene.h"
 #include "Noise.h"
@@ -190,12 +193,12 @@ ModelInstance()
 
 // load source from a file.
 static void
-LoadShaderSource( osgGL2::ShaderObject* obj, const std::string& fileName )
+LoadShaderSource( osg::Shader* shader, const std::string& fileName )
 {
     std::string fqFileName = osgDB::findDataFile(fileName);
     if( fqFileName.length() != 0 )
     {
-	obj->loadShaderSourceFromFile( fqFileName.c_str() );
+	shader->loadShaderSourceFromFile( fqFileName.c_str() );
     }
     else
     {
@@ -207,17 +210,22 @@ LoadShaderSource( osgGL2::ShaderObject* obj, const std::string& fileName )
 ///////////////////////////////////////////////////////////////////////////
 // rude but convenient globals
 
-static osgGL2::ProgramObject* BlockyProgObj;
-static osgGL2::ShaderObject*  BlockyVertObj;
-static osgGL2::ShaderObject*  BlockyFragObj;
+static osg::Program* BlockyProgram;
+static osg::Shader*  BlockyVertObj;
+static osg::Shader*  BlockyFragObj;
 
-static osgGL2::ProgramObject* ErodedProgObj;
-static osgGL2::ShaderObject*  ErodedVertObj;
-static osgGL2::ShaderObject*  ErodedFragObj;
+static osg::Program* ErodedProgram;
+static osg::Shader*  ErodedVertObj;
+static osg::Shader*  ErodedFragObj;
 
-static osgGL2::ProgramObject* MarbleProgObj;
-static osgGL2::ShaderObject*  MarbleVertObj;
-static osgGL2::ShaderObject*  MarbleFragObj;
+static osg::Program* MarbleProgram;
+static osg::Shader*  MarbleVertObj;
+static osg::Shader*  MarbleFragObj;
+
+static osg::Uniform* OffsetUniform;
+static osg::Uniform* SineUniform;
+static osg::Uniform* Color1Uniform;
+static osg::Uniform* Color2Uniform;
 
 ///////////////////////////////////////////////////////////////////////////
 // for demo simplicity, this one callback animates all the shaders.
@@ -236,13 +244,10 @@ class AnimateCallback: public osg::NodeCallback
 		float v01 = 0.5f * sine + 0.5f;	//  0 -> 1
 		float v10 = 1.0f - v01;		//  1 -> 0
 
-		ErodedProgObj->setUniform( "Offset", osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
-
-		MarbleProgObj->setUniform( "Offset", osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
-
-		BlockyProgObj->setUniform( "Sine", sine );
-		BlockyProgObj->setUniform( "Color1", osg::Vec3(v10, 0.0f, 0.0f) );
-		BlockyProgObj->setUniform( "Color2", osg::Vec3(v01, v01, v10) );
+		OffsetUniform->set( osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
+		SineUniform->set( sine );
+		Color1Uniform->set( osg::Vec3(v10, 0.0f, 0.0f) );
+		Color1Uniform->set( osg::Vec3(v01, v01, v10) );
 	    }
 	    traverse(node, nv);
 	}
@@ -267,41 +272,57 @@ GL2Scene::buildScene()
     rootNode = new osg::Group;
     rootNode->setUpdateCallback( new AnimateCallback );
 
+    // attach some Uniforms to the root, to be inherited by Programs.
+    {
+	OffsetUniform = new osg::Uniform( "Offset", osg::Vec3(0.0f, 0.0f, 0.0f) );
+	SineUniform   = new osg::Uniform( "Sine", 0.0f );
+	Color1Uniform = new osg::Uniform( "Color1", osg::Vec3(0.0f, 0.0f, 0.0f) );
+	Color2Uniform = new osg::Uniform( "Color2", osg::Vec3(0.0f, 0.0f, 0.0f) );
+
+	osg::StateSet* ss = rootNode->getOrCreateStateSet();
+	ss->addUniform( OffsetUniform );
+	ss->addUniform( SineUniform );
+	ss->addUniform( Color1Uniform );
+	ss->addUniform( Color2Uniform );
+    }
+
     // the simple Microshader (its source appears earlier in this file)
     {
 	osg::StateSet* ss = ModelInstance();
-	osgGL2::ProgramObject* progObj = new osgGL2::ProgramObject;
-	_progObjList.push_back( progObj );
-	progObj->addShader( new osgGL2::ShaderObject(
-		    osgGL2::ShaderObject::VERTEX, microshaderVertSource ) );
-	progObj->addShader( new osgGL2::ShaderObject(
-		    osgGL2::ShaderObject::FRAGMENT, microshaderFragSource ) );
-	ss->setAttributeAndModes( progObj, osg::StateAttribute::ON );
+	osg::Program* program = new osg::Program;
+	_programList.push_back( program );
+	program->addShader( new osg::Shader( osg::Shader::VERTEX, microshaderVertSource ) );
+	program->addShader( new osg::Shader( osg::Shader::FRAGMENT, microshaderFragSource ) );
+	ss->setAttributeAndModes( program, osg::StateAttribute::ON );
     }
 
     // the "blocky" shader, a simple animation test
     {
 	osg::StateSet* ss = ModelInstance();
-	BlockyProgObj = new osgGL2::ProgramObject;
-	_progObjList.push_back( BlockyProgObj );
-	BlockyVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
-	BlockyFragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
-	BlockyProgObj->addShader( BlockyFragObj );
-	BlockyProgObj->addShader( BlockyVertObj );
-	ss->setAttributeAndModes(BlockyProgObj, osg::StateAttribute::ON);
+	BlockyProgram = new osg::Program;
+	_programList.push_back( BlockyProgram );
+	BlockyVertObj = new osg::Shader( osg::Shader::VERTEX );
+	BlockyFragObj = new osg::Shader( osg::Shader::FRAGMENT );
+	BlockyProgram->addShader( BlockyFragObj );
+	BlockyProgram->addShader( BlockyVertObj );
+	ss->setAttributeAndModes(BlockyProgram, osg::StateAttribute::ON);
     }
 
     // the "eroded" shader, uses a noise texture to discard fragments
     {
 	osg::StateSet* ss = ModelInstance();
 	ss->setTextureAttribute(TEXUNIT_NOISE, noiseTexture);
-	ErodedProgObj = new osgGL2::ProgramObject;
-	_progObjList.push_back( ErodedProgObj );
-	ErodedVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
-	ErodedFragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
-	ErodedProgObj->addShader( ErodedFragObj );
-	ErodedProgObj->addShader( ErodedVertObj );
-	ss->setAttributeAndModes(ErodedProgObj, osg::StateAttribute::ON);
+	ErodedProgram = new osg::Program;
+	_programList.push_back( ErodedProgram );
+	ErodedVertObj = new osg::Shader( osg::Shader::VERTEX );
+	ErodedFragObj = new osg::Shader( osg::Shader::FRAGMENT );
+	ErodedProgram->addShader( ErodedFragObj );
+	ErodedProgram->addShader( ErodedVertObj );
+	ss->setAttributeAndModes(ErodedProgram, osg::StateAttribute::ON);
+
+	ss->addUniform( new osg::Uniform("LightPosition", osg::Vec3(0.0f, 0.0f, 4.0f)) );
+	ss->addUniform( new osg::Uniform("Scale", 1.0f) );
+	ss->addUniform( new osg::Uniform("sampler3d", TEXUNIT_NOISE) );
     }
 
     // the "marble" shader, uses two textures
@@ -309,13 +330,16 @@ GL2Scene::buildScene()
 	osg::StateSet* ss = ModelInstance();
 	ss->setTextureAttribute(TEXUNIT_NOISE, noiseTexture);
 	ss->setTextureAttribute(TEXUNIT_SINE, sineTexture);
-	MarbleProgObj = new osgGL2::ProgramObject;
-	_progObjList.push_back( MarbleProgObj );
-	MarbleVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
-	MarbleFragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
-	MarbleProgObj->addShader( MarbleFragObj );
-	MarbleProgObj->addShader( MarbleVertObj );
-	ss->setAttributeAndModes(MarbleProgObj, osg::StateAttribute::ON);
+	MarbleProgram = new osg::Program;
+	_programList.push_back( MarbleProgram );
+	MarbleVertObj = new osg::Shader( osg::Shader::VERTEX );
+	MarbleFragObj = new osg::Shader( osg::Shader::FRAGMENT );
+	MarbleProgram->addShader( MarbleFragObj );
+	MarbleProgram->addShader( MarbleVertObj );
+	ss->setAttributeAndModes(MarbleProgram, osg::StateAttribute::ON);
+
+	ss->addUniform( new osg::Uniform("Noise", TEXUNIT_NOISE) );
+	ss->addUniform( new osg::Uniform("Sine", TEXUNIT_SINE) );
     }
 
 #ifdef INTERNAL_3DLABS //[
@@ -349,8 +373,6 @@ GL2Scene::~GL2Scene()
 {
 }
 
-// mew 2003-09-19 : This way of configuring the shaders is temporary,
-// pending a move to an osgFX-based approach.
 void
 GL2Scene::reloadShaderSource()
 {
@@ -361,19 +383,14 @@ GL2Scene::reloadShaderSource()
 
     LoadShaderSource( ErodedVertObj, "shaders/eroded.vert" );
     LoadShaderSource( ErodedFragObj, "shaders/eroded.frag" );
-    ErodedProgObj->setUniform( "LightPosition", osg::Vec3(0.0f, 0.0f, 4.0f) );
-    ErodedProgObj->setUniform( "Scale", 1.0f );
-    ErodedProgObj->setSampler( "sampler3d", TEXUNIT_NOISE );
 
     LoadShaderSource( MarbleVertObj, "shaders/marble.vert" );
     LoadShaderSource( MarbleFragObj, "shaders/marble.frag" );
-    MarbleProgObj->setSampler( "Noise", TEXUNIT_NOISE );
-    MarbleProgObj->setSampler( "Sine", TEXUNIT_SINE );
 }
 
 
 // mew 2003-09-19 : TODO Need to revisit how to better control
-// osgGL2::ProgramObject enable state in OSG core.  glProgramObjects are
+// osg::Program enable state in OSG core.  glProgram are
 // different enough from other GL state that StateSet::setAttributeAndModes()
 // doesn't fit well, so came up with a local implementation.
 void
@@ -382,11 +399,10 @@ GL2Scene::toggleShaderEnable()
     _shadersEnabled = ! _shadersEnabled;
     osg::notify(osg::WARN) << "shader enable = " <<
 	    ((_shadersEnabled) ? "ON" : "OFF") << std::endl;
-    for( unsigned int i = 0; i < _progObjList.size(); i++ )
+    for( unsigned int i = 0; i < _programList.size(); i++ )
     {
-	_progObjList[i]->enable( _shadersEnabled );
+	//_programList[i]->enable( _shadersEnabled );
     }
 }
 
 /*EOF*/
-

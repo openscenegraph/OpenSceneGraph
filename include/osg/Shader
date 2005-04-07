@@ -12,7 +12,7 @@
 */
 
 /* file:	include/osg/Shader
- * author:	Mike Weiblen 2005-03-30
+ * author:	Mike Weiblen 2005-04-06
 */
 
 #ifndef OSG_SHADER
@@ -41,19 +41,21 @@ class SG_EXPORT Shader : public osg::Object
 
 	enum Type {
 	    VERTEX = GL_VERTEX_SHADER,
-	    FRAGMENT = GL_FRAGMENT_SHADER
+	    FRAGMENT = GL_FRAGMENT_SHADER,
+	    UNDEFINED = -1
 	};
 
+        Shader();
         Shader( Type type, const char* sourceText = 0 );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Shader(const Shader& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-	META_Object(osg, Shader);	// see note in Shader.cpp Shader()
+	META_Object(osg, Shader);
 
         int compare(const Shader& rhs) const;
 
-        // data access methods.
+	bool setType( Type t );
 
 	/** Load the Shader's source code text from a string. */
 	void setShaderSource( const char* sourceText );
@@ -97,6 +99,8 @@ class SG_EXPORT Shader : public osg::Object
           * in the OpenGL context related to contextID.*/
         static void flushDeletedGlShaders(unsigned int contextID,double currentTime, double& availableTime);
 
+	static Shader::Type getTypeId( const std::string& tname );
+
     protected:
 	/** PerContextShader (PCS) is an OSG-internal encapsulation of glShader per-GL context. */
 	class PerContextShader : public osg::Referenced
@@ -139,7 +143,6 @@ class SG_EXPORT Shader : public osg::Object
 	};
 
     protected:	/*methods*/
-        Shader();	// undesired, temporarily required by META_Object.
         virtual ~Shader();
 
         PerContextShader* getPCS(unsigned int contextID) const;
@@ -149,7 +152,7 @@ class SG_EXPORT Shader : public osg::Object
 	bool removeProgramRef( Program* program );
 
     protected:	/*data*/
-	const Type _type;
+	Type _type;
 	std::string _name;
 	std::string _shaderSource;
 	/** osg::Programs that this osg::Shader is attached to */

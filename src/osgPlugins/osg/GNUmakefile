@@ -7,13 +7,13 @@ CXXFILES =\
         AutoTransform.cpp\
         Billboard.cpp\
         BlendFunc.cpp\
-        ClipPlane.cpp\
         ClearNode.cpp\
-        ColorMask.cpp\
-        CoordinateSystemNode.cpp\
-        ConvexPlanarOccluder.cpp\
-        CullFace.cpp\
         ClipNode.cpp\
+        ClipPlane.cpp\
+        ColorMask.cpp\
+        ConvexPlanarOccluder.cpp\
+        CoordinateSystemNode.cpp\
+        CullFace.cpp\
         Depth.cpp\
         Drawable.cpp\
         EllipsoidModel.cpp\
@@ -34,8 +34,8 @@ CXXFILES =\
         Material.cpp\
         Matrix.cpp\
         MatrixTransform.cpp\
-        Node.cpp\
         NodeCallback.cpp\
+        Node.cpp\
         Object.cpp\
         OccluderNode.cpp\
         PagedLOD.cpp\
@@ -44,30 +44,33 @@ CXXFILES =\
         PolygonMode.cpp\
         PolygonOffset.cpp\
         PositionAttitudeTransform.cpp\
+        Program.cpp\
         Projection.cpp\
         ProxyNode.cpp\
         ReaderWriterOSG.cpp\
+        Sequence.cpp\
         ShadeModel.cpp\
+        Shader.cpp\
         Shape.cpp\
         ShapeDrawable.cpp\
         StateSet.cpp\
-        Sequence.cpp\
         Stencil.cpp\
         Switch.cpp\
 	TessellationHints.cpp\
-        TexEnv.cpp\
         TexEnvCombine.cpp\
+        TexEnv.cpp\
         TexEnvFilter.cpp\
         TexGen.cpp\
         TexGenNode.cpp\
         TexMat.cpp\
-        Texture.cpp\
         Texture1D.cpp\
         Texture2D.cpp\
         Texture3D.cpp\
-        TextureRectangle.cpp\
+        Texture.cpp\
         TextureCubeMap.cpp\
+        TextureRectangle.cpp\
         Transform.cpp\
+        Uniform.cpp\
         VertexProgram.cpp\
         Viewport.cpp\
 

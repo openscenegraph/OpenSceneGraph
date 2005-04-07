@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osg/Uniform.cpp
- * author:	Mike Weiblen 2005-03-30
+ * author:	Mike Weiblen 2005-04-06
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -34,10 +34,6 @@ using namespace osg;
 Uniform::Uniform() :
 	_name(""), _type(UNDEFINED)
 {
-    // do not use this constructor in application code.
-    // it exists only because META_Object requires a trivial
-    // default constructor, but that is concept is meaningless for Uniform.
-    osg::notify(osg::FATAL) << "how got here?" << std::endl;
 }
 
 
@@ -78,6 +74,29 @@ Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
 {
     copyData( rhs );
 }
+
+bool Uniform::setType( Type t )
+{
+    if( _type != UNDEFINED )
+    {
+	osg::notify(osg::WARN) << "cannot change type of Uniform" << std::endl;
+	return false;
+    }
+    _type = t;
+    return true;
+}
+
+bool Uniform::setName( const std::string& name )
+{
+    if( _name != "" )
+    {
+	osg::notify(osg::WARN) << "cannot change name of Uniform" << std::endl;
+	return false;
+    }
+    _name = name;
+    return true;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -284,6 +303,32 @@ const char* Uniform::getTypename( Type t )
 	case SAMPLER_2D_SHADOW:	return "sampler2DShadow";
 	default:		return "UNDEFINED";
     }
+}
+
+Uniform::Type Uniform::getTypeId( const std::string& tname )
+{
+    if( tname == "float" )	return FLOAT;
+    if( tname == "vec2" )	return FLOAT_VEC2;
+    if( tname == "vec3" )	return FLOAT_VEC3;
+    if( tname == "vec4" )	return FLOAT_VEC4;
+    if( tname == "int" )	return INT;
+    if( tname == "ivec2" )	return INT_VEC2;
+    if( tname == "ivec3" )	return INT_VEC3;
+    if( tname == "ivec4" )	return INT_VEC4;
+    if( tname == "bool" )	return BOOL;
+    if( tname == "bvec2" )	return BOOL_VEC2;
+    if( tname == "bvec3" )	return BOOL_VEC3;
+    if( tname == "bvec4" )	return BOOL_VEC4;
+    if( tname == "mat2" )	return FLOAT_MAT2;
+    if( tname == "mat3" )	return FLOAT_MAT3;
+    if( tname == "mat4" )	return FLOAT_MAT4;
+    if( tname == "sampler1D" )	return SAMPLER_1D;
+    if( tname == "sampler2D" )	return SAMPLER_2D;
+    if( tname == "sampler3D" )	return SAMPLER_3D;
+    if( tname == "samplerCube" )	return SAMPLER_CUBE;
+    if( tname == "sampler1DShadow" )	return SAMPLER_1D_SHADOW;
+    if( tname == "sampler2DShadow" )	return SAMPLER_2D_SHADOW;
+    return UNDEFINED;
 }
 
 Uniform::Type Uniform::repType( Type t )

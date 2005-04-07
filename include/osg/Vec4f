@@ -229,16 +229,25 @@ class Vec4f
             return( norm );
         }
 
-        friend inline std::ostream& operator << (std::ostream& output, const Vec4f& vec)
-        {
-        output << vec._v[0] << " "
-                   << vec._v[1] << " "
-                   << vec._v[2] << " "
-                   << vec._v[3];
-        return output;     // to enable cascading
-    }
-
 };    // end of class Vec4f
+
+
+// streaming operators
+
+inline std::ostream& operator << (std::ostream& output, const Vec4f& vec)
+{
+	output  << vec._v[0] << " "
+			<< vec._v[1] << " "
+			<< vec._v[2] << " "
+			<< vec._v[3];
+	return output;     // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec4f& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    return input;
+}
 
 
 /** Compute the dot product of a (Vec3,1.0) and a Vec4f. */
@@ -256,3 +265,4 @@ inline Vec4f::value_type operator * (const Vec4f& lhs,const Vec3f& rhs)
 }    // end of namespace osg
 
 #endif
+

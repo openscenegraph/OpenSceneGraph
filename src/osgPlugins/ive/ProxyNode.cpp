@@ -166,17 +166,21 @@ void ProxyNode::read(DataInputStream* in)
             fpl.pop_front();
         }
 
-        for(i=0; i<numFileNames; i++)
+        if( in->getLoadExternalReferenceFiles() )
         {
-            if(i>=numChildren && !getFileName(i).empty())
+            for(i=0; i<numFileNames; i++)
             {
-                osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)in->getOptions())->getDatabasePathList();
-                fpl.push_front( fpl.empty() ? osgDB::getFilePath(getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(getFileName(i)));
-                osg::Node *node = osgDB::readNodeFile(getFileName(i), in->getOptions());
-                fpl.pop_front();
-                if(node)
+                if(i>=numChildren && !getFileName(i).empty())
                 {
-                    insertChild(i, node);
+                    osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)in->getOptions())->getDatabasePathList();
+                    fpl.push_front( fpl.empty() ? osgDB::getFilePath(getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(getFileName(i)));
+                    osg::Node *node = osgDB::readNodeFile(getFileName(i), in->getOptions());
+                    fpl.pop_front();
+
+                    if(node)
+                    {
+                        insertChild(i, node);
+                    }
                 }
             }
         }

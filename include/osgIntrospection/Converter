@@ -1,0 +1,70 @@
+#ifndef OSGINTROSPECTION_CONVERTER_
+#define OSGINTROSPECTION_CONVERTER_
+
+#include <osgIntrospection/Value>
+#include <vector>
+
+namespace osgIntrospection
+{
+
+	struct Converter
+	{
+		virtual Value convert(const Value &) const = 0;
+		virtual ~Converter() {}
+	};
+	
+	typedef std::vector<const Converter *> ConverterList;
+	
+	class CompositeConverter: public Converter
+	{
+	public:
+		CompositeConverter(const ConverterList &cvt): cvt_(cvt) {}
+		CompositeConverter(ConverterList &cvt) { cvt_.swap(cvt); }
+		virtual ~CompositeConverter() {}
+		
+		virtual Value convert(const Value &src) const
+		{
+			Value accum(src);
+			for (ConverterList::const_iterator i=cvt_.begin(); i!=cvt_.end(); ++i)
+				accum = (*i)->convert(accum);
+			return accum;
+		}
+
+	private:
+		ConverterList cvt_;
+	};
+
+	template<typename S, typename D>
+	struct StaticConverter: Converter
+	{
+		virtual ~StaticConverter() {}
+		virtual Value convert(const Value &src) const
+		{
+			return static_cast<D>(variant_cast<S>(src));
+		}
+	};
+
+	template<typename S, typename D>
+	struct DynamicConverter: Converter
+	{
+		virtual ~DynamicConverter() {}
+		virtual Value convert(const Value &src) const
+		{
+			return dynamic_cast<D>(variant_cast<S>(src));
+		}
+	};
+
+	template<typename S, typename D>
+	struct ReinterpretConverter: Converter
+	{
+		virtual ~ReinterpretConverter() {}
+		virtual Value convert(const Value &src) const
+		{
+			return reinterpret_cast<D>(variant_cast<S>(src));
+		}
+	};
+
+}
+
+#endif
+

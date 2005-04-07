@@ -5,6 +5,7 @@
 
 #include <typeinfo>
 #include <map>
+#include <vector>
 
 /// This macro emulates the behavior of the standard typeid operator,
 /// returning the Type object associated to the type of the given
@@ -15,6 +16,9 @@ namespace osgIntrospection
 {
 
     class Type;
+    struct Converter;
+    
+    typedef std::vector<const Converter *> ConverterList;
 
     /// This predicate compares two instances of std::type_info for equality.
     /// Note that we can't rely on default pointer comparison because it is
@@ -58,22 +62,34 @@ namespace osgIntrospection
         /// This is a shortcut for typeof(void), which may be slow if
         /// the type map is large.
         static const Type &type_void();
+
+        static const Converter *getConverter(const Type &source, const Type &dest);
+        static bool getConversionPath(const Type &source, const Type &dest, ConverterList &conv);
         
     private:
         template<typename C> friend class Reflector;
         template<typename C> friend struct TypeNameAliasProxy;
+        friend struct ConverterProxy;
 
         struct StaticData
         {
             TypeMap typemap;
             const Type *type_void;
+            
+            typedef std::map<const Type *, const Converter *> ConverterMap;
+            typedef std::map<const Type *, ConverterMap> ConverterMapMap;
+            ConverterMapMap convmap;
+            
+            ~StaticData();
         };
 
         static StaticData &getOrCreateStaticData();
         static Type *registerType(const std::type_info &ti);
         static Type *getOrRegisterType(const std::type_info &ti, bool replace_if_defined = false);
+        static void registerConverter(const Type &source, const Type &dest, const Converter *cvt);
 
     private:
+		static bool accum_conv_path(const Type &source, const Type &dest, ConverterList &conv, std::vector<const Type *> &chain);
         static StaticData *staticdata__;
     };
 

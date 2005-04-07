@@ -76,9 +76,22 @@
 using namespace ive;
 using namespace std;
 
+void DataInputStream::setOptions(const osgDB::ReaderWriter::Options* options) 
+{ 
+    _options = options; 
+
+    if (_options.get())
+    {
+        setLoadExternalReferenceFiles(_options->getOptionString().find("noLoadExternalReferenceFiles")==std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataInputStream.setLoadExternalReferenceFiles()=" << getLoadExternalReferenceFiles() << std::endl;
+    }
+}
+
 DataInputStream::DataInputStream(std::istream* istream)
 {
     unsigned int endianType ;
+
+	_loadExternalReferenceFiles = false;
     
     _verboseOutput = false;
 

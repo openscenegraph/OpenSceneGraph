@@ -268,6 +268,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\PositionAttitudeTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\Program.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Projection.cpp
 # End Source File
 # Begin Source File
@@ -285,6 +289,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Sequence.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\osg\ShadeModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\Shader.cpp
 # End Source File
 # Begin Source File
 
@@ -361,6 +369,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\TextureRectangle.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\osg\Transform.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\Uniform.cpp
 # End Source File
 # Begin Source File
 

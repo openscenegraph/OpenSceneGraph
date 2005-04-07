@@ -13,7 +13,7 @@
 */
 
 /* file:	src/osg/Program.cpp
- * author:	Mike Weiblen 2005-03-30
+ * author:	Mike Weiblen 2005-04-06
 */
 
 #include <fstream>
@@ -2000,6 +2000,8 @@ void Program::releaseGLObjects(osg::State* state) const
 
 bool Program::addShader( Shader* shader )
 {
+    if( !shader ) return false;
+
     // Shader can only be added once to a Program
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
@@ -2015,6 +2017,8 @@ bool Program::addShader( Shader* shader )
 
 bool Program::removeShader( Shader* shader )
 {
+    if( !shader ) return false;
+
     // Shader must exist to be removed.
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {

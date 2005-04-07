@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osg/Uniform
- * author:	Mike Weiblen 2005-03-29
+ * author:	Mike Weiblen 2005-04-06
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -158,6 +158,7 @@ class SG_EXPORT Uniform : public Object
 	};
 
     public:
+        Uniform();
 	Uniform( const char* name, Type type );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
@@ -165,6 +166,8 @@ class SG_EXPORT Uniform : public Object
 
         META_Object(osg, Uniform);
 
+	bool setType( Type t );
+	bool setName( const std::string& name );
 
 	/** Get the name of glUniform. */
 	const std::string& getName() const { return _name; }
@@ -174,6 +177,8 @@ class SG_EXPORT Uniform : public Object
 
 	/** Return the name of a type as string. */
 	static const char* getTypename( Type t );
+
+	static Uniform::Type getTypeId( const std::string& tname );
 
 	/** convenient construction w/ assignment */
 	explicit Uniform( const char* name, float f );
@@ -243,8 +248,8 @@ class SG_EXPORT Uniform : public Object
 
 
     protected:
-	const std::string _name;
-	const Type _type;
+	std::string _name;
+	Type _type;
 	union {
 	    GLfloat f1;		// float
 	    GLfloat f2[2];	// vec2
@@ -259,7 +264,6 @@ class SG_EXPORT Uniform : public Object
 	} _data;
 
     private:
-        Uniform();	// disallowed
 	Uniform& operator=(const Uniform&);	// disallowed
 };
 

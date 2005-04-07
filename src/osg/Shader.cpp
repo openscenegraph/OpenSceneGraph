@@ -13,7 +13,7 @@
 */
 
 /* file:	src/osg/Shader.cpp
- * author:	Mike Weiblen 2005-03-30
+ * author:	Mike Weiblen 2005-04-06
 */
 
 #include <fstream>
@@ -99,11 +99,8 @@ Shader::Shader(Type type, const char* sourceText) :
 }
 
 Shader::Shader() :
-    _type(VERTEX)
+    _type(UNDEFINED)
 {
-    // TODO this default constructor is inappropriate for the Shader class.
-    // It exists for now because it is required by META_OBject
-    osg::notify(osg::FATAL) << "how got here?" << std::endl;
 }
 
 Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
@@ -118,6 +115,17 @@ Shader::~Shader()
 {
 }
 
+bool Shader::setType( Type t )
+{
+    if( _type != UNDEFINED )
+    {
+	osg::notify(osg::WARN) << "cannot change type of Shader" << std::endl;
+	return false;
+    }
+
+    _type = t;
+    return true;
+}
 
 int Shader::compare(const Shader& rhs) const
 {
@@ -172,10 +180,18 @@ const char* Shader::getTypename() const
 {
     switch( getType() )
     {
-	case VERTEX:	return "Vertex";
-	case FRAGMENT:	return "Fragment";
+	case VERTEX:	return "VERTEX";
+	case FRAGMENT:	return "FRAGMENT";
 	default:	return "UNDEFINED";
     }
+}
+
+
+/*static*/ Shader::Type Shader::getTypeId( const std::string& tname )
+{
+    if( tname == "VERTEX" )	return VERTEX;
+    if( tname == "FRAGMENT" )	return FRAGMENT;
+    return UNDEFINED;
 }
 
 

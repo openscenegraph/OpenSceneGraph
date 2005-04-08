@@ -31,7 +31,7 @@ bool Shader_readLocalData(Object& obj, Input& fr)
 
     Shader& shader = static_cast<Shader&>(obj);
 
-    if (fr.matchSequence("type %s"))
+    if (fr.matchSequence("type %w"))
     {
 	shader.setType( Shader::getTypeId(fr[1].getStr()) );
 	fr+=2;

@@ -29,7 +29,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
 
     Uniform& uniform = static_cast<Uniform&>(obj);
 
-    if (fr.matchSequence("type %s"))
+    if (fr.matchSequence("type %w"))
     {
 	uniform.setType( Uniform::getTypeId(fr[1].getStr()) );
 	fr+=2;
@@ -53,9 +53,9 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
 {
     const Uniform& uniform = static_cast<const Uniform&>(obj);
 
-    fw.indent() << "type " << uniform.getTypename( uniform.getType() ) << std::endl;
+    fw.indent() << "type " << Uniform::getTypename( uniform.getType() ) << std::endl;
 
-    fw.indent() << "name "<< uniform.getName() << std::endl;
+    fw.indent() << "name "<< fw.wrapString(uniform.getName()) << std::endl;
 
     // TODO write uniform value based on type
 

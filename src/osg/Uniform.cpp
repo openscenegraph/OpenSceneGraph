@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osg/Uniform.cpp
- * author:	Mike Weiblen 2005-04-06
+ * author:	Mike Weiblen 2005-04-07
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -64,7 +64,7 @@ Uniform::Uniform( const char* name, Type type ) :
 	case SAMPLER_1D_SHADOW:	set( 0 ); break;
 	case SAMPLER_2D_SHADOW:	set( 0 ); break;
 	default:
-	    osg::notify(osg::WARN) << "unhandled Uniform type" << std::endl;
+	    osg::notify(osg::WARN) << "UNDEFINED Uniform type" << std::endl;
 	    break;
     }
 }
@@ -79,7 +79,7 @@ bool Uniform::setType( Type t )
 {
     if( _type != UNDEFINED )
     {
-	osg::notify(osg::WARN) << "cannot change type of Uniform" << std::endl;
+	osg::notify(osg::WARN) << "cannot change Uniform type" << std::endl;
 	return false;
     }
     _type = t;
@@ -90,7 +90,7 @@ bool Uniform::setName( const std::string& name )
 {
     if( _name != "" )
     {
-	osg::notify(osg::WARN) << "cannot change name of Uniform" << std::endl;
+	osg::notify(osg::WARN) << "cannot change Uniform name" << std::endl;
 	return false;
     }
     _name = name;
@@ -191,7 +191,7 @@ int Uniform::compareData(const Uniform& rhs) const
 	    return 0;
 
 	default:
-	    osg::notify(osg::FATAL) << "how got here?" << std::endl;
+	    osg::notify(osg::WARN) << "cannot compare UNDEFINED Uniform type" << std::endl;
 	    return 0;
     }
 }
@@ -257,13 +257,14 @@ void Uniform::copyData(const Uniform& rhs)
 	    break;
 
 	default:
-	    osg::notify(osg::FATAL) << "how got here?" << std::endl;
+	    osg::notify(osg::WARN) << "cannot copy UNDEFINED Uniform type" << std::endl;
 	    break;
     }
 }
 
 bool Uniform::isCompatibleType( Type t ) const
 {
+    if( (t==UNDEFINED) || (getType()==UNDEFINED) ) return false;
     if( t == getType() ) return true;
     if( repType(t) == repType(getType()) ) return true;
 

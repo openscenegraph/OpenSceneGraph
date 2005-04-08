@@ -64,7 +64,7 @@
 #include <sstream>
 #include <string>
 
-#if defined(__APPLE__) 
+#if defined(__APPLE__) || defined(WIN32) || defined (__sgi) || defined (__hpux)
 typedef int socklen_t;
 #endif
 
@@ -127,9 +127,6 @@ extern "C" {
 #include <sys/filio.h>
 #endif
 
-#ifdef __sgi
-typedef int socklen_t;
-#endif
 
 #ifndef BUFSIZ
 #  define BUFSIZ 1024

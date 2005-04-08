@@ -207,7 +207,7 @@ class NetReader : public osgDB::ReaderWriter
 
 
             std::string fileName;
-            int index = inFileName.find(":");
+            int index = inFileName.find_last_of(":");
             // If we haven't been given a hostname as an option
             // and it hasn't been prefixed to the name, we fail
             if( index != -1 )

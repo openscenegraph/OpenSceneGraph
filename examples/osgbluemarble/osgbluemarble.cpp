@@ -13,6 +13,7 @@
 #include <osg/Geometry>
 #include <osg/State>
 #include <osg/ClusterCullingCallback>
+#include <osg/io_utils>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>

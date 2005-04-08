@@ -133,11 +133,11 @@ public:
 
         nodetype & operator = (const nodetype & Elem)    { return (m_Elem = Elem); }
 
+        node() : m_Marker(false) { }
     protected:
         friend class graph_array<nodetype, arctype>;
         friend class std::vector<node>;
 
-        node() : m_Marker(false) { }
 
         std::list<arc>    m_OutArcs;
         nodetype        m_Elem;

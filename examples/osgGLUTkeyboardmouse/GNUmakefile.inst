@@ -1,0 +1,14 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgGLUTkeyboardmouse.cpp\
+
+LIBS     += -losgDB -losgUtil -losg -lglut $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgGLUTkeyboardmouse
+
+INC += $(X_INC)
+LDFLAGS  += 
+
+include $(TOPDIR)/Make/makerules

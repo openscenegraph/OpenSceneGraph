@@ -25,6 +25,7 @@
 #include <osg/Depth>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
+#include <osg/io_utils>
 
 #include <osgText/Text>
 

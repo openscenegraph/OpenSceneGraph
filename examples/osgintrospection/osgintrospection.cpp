@@ -8,6 +8,7 @@
 #include <osgDB/DynamicLibrary>
 
 #include <iostream>
+#include <algorithm>
 
 using namespace osgIntrospection;
 
@@ -39,35 +40,53 @@ std::string createLibraryNameForWrapper(const std::string& ext)
 
 }
 
+bool type_order(const Type *v1, const Type *v2)
+{
+	if (!v1->isDefined()) return v2->isDefined();
+	if (!v2->isDefined()) return false;
+	return v1->getQualifiedName().compare(v2->getQualifiedName()) < 0;
+}
+
+typedef std::vector<const Type *> TypeList;
+
 void print_types()
 {
 	// get the map of types that have been reflected
 	const TypeMap &tm = Reflection::getTypes();
+	
+	// create a sortable list of types
+	TypeList types(tm.size());
+	TypeList::iterator j = types.begin();
+	for (TypeMap::const_iterator i=tm.begin(); i!=tm.end(); ++i, ++j)
+		*j = i->second;
+	
+	// sort the map
+	std::sort(types.begin(), types.end(), &type_order);
 
 	// iterate through the type map and display some
 	// details for each type
-	for (TypeMap::const_iterator i=tm.begin(); i!=tm.end(); ++i)
+	for (TypeList::const_iterator i=types.begin(); i!=types.end(); ++i)
 	{
 		// ignore pointer types and undefined types
-		if (!i->second->isDefined() || i->second->isPointer())
+		if (!(*i)->isDefined() || (*i)->isPointer())
 			continue;
 
 		// print the type name
-		std::cout << i->second->getQualifiedName() << "\n";
+		std::cout << (*i)->getQualifiedName() << "\n";
 
 		// check whether the type is abstract
-		if (i->second->isAbstract()) std::cout << "\t[abstract]\n";
+		if ((*i)->isAbstract()) std::cout << "\t[abstract]\n";
 
 		// check whether the type is atomic
-		if (i->second->isAtomic()) std::cout << "\t[atomic]\n";
+		if ((*i)->isAtomic()) std::cout << "\t[atomic]\n";
 
 		// check whether the type is an enumeration. If yes, display
 		// the list of enumeration labels
-		if (i->second->isEnum()) 
+		if ((*i)->isEnum()) 
 		{
 			std::cout << "\t[enum]\n";
 			std::cout << "\tenumeration values:\n";
-			const EnumLabelMap &emap = i->second->getEnumLabels();
+			const EnumLabelMap &emap = (*i)->getEnumLabels();
 			for (EnumLabelMap::const_iterator j=emap.begin(); j!=emap.end(); ++j)
 			{
 				std::cout << "\t\t" << j->second << " = " << j->first << "\n";
@@ -76,19 +95,22 @@ void print_types()
 
 		// if the type has one or more base types, then display their
 		// names
-		if (i->second->getNumBaseTypes() > 0)
+		if ((*i)->getNumBaseTypes() > 0)
 		{
 			std::cout << "\tderived from: ";
-			for (int j=0; j<i->second->getNumBaseTypes(); ++j)
+			for (int j=0; j<(*i)->getNumBaseTypes(); ++j)
 			{
-				const Type &base = i->second->getBaseType(j);
-				std::cout << base.getQualifiedName() << "    ";
+				const Type &base = (*i)->getBaseType(j);
+				if (base.isDefined())
+					std::cout << base.getQualifiedName() << "    ";
+				else
+					std::cout << "[undefined type]    ";
 			}
 			std::cout << "\n";
 		}
 
 		// display a list of methods defined for the current type
-		const MethodInfoList &mil = i->second->getMethods();
+		const MethodInfoList &mil = (*i)->getMethods();
 		if (!mil.empty())
 		{
 			std::cout << "\t* methods:\n";
@@ -126,7 +148,8 @@ void print_types()
 						std::cout << " ";
 
 					// display the parameter's type name
-					std::cout << pi.getParameterType().getQualifiedName();
+					if (pi.getParameterType().isDefined())
+						std::cout << pi.getParameterType().getQualifiedName();
 
 					// display the parameter's name if defined
 					if (!pi.getName().empty())
@@ -143,7 +166,7 @@ void print_types()
 		}
 
 		// display a list of properties defined for the current type
-		const PropertyInfoList &pil = i->second->getProperties();
+		const PropertyInfoList &pil = (*i)->getProperties();
 		if (!pil.empty())
 		{
 			std::cout << "\t* properties:\n";
@@ -225,3 +248,4 @@ int main()
 
 	return 0;
 }
+

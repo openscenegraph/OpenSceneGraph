@@ -1,6 +1,7 @@
 #include <osg/Notify>
 #include <osg/Geometry>
 #include <osg/AnimationPath>
+#include <osg/io_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

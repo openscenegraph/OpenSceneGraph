@@ -3,6 +3,7 @@
 #endif
 
 #include "osg/Light"
+#include <osg/io_utils>
 
 #include "osgDB/Registry"
 #include "osgDB/Input"

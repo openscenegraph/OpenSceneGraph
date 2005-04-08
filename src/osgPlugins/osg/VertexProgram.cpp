@@ -1,4 +1,5 @@
 #include "osg/VertexProgram"
+#include <osg/io_utils>
 
 #include <iostream>
 #include <sstream>

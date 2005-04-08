@@ -1,4 +1,5 @@
 #include "osgSim/DOFTransform"
+#include <osg/io_utils>
 
 #include "osgDB/Registry"
 #include "osgDB/Input"

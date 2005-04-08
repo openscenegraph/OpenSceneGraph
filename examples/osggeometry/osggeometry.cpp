@@ -6,6 +6,7 @@
 #include <osg/Texture2D>
 #include <osg/PolygonStipple>
 #include <osg/TriangleFunctor>
+#include <osg/io_utils>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>

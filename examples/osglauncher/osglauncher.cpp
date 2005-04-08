@@ -17,6 +17,7 @@
 #include <osg/ClearNode>
 #include <osg/Depth>
 #include <osg/Projection>
+#include <osg/io_utils>
 
 #include <osgUtil/Tesselator>
 #include <osgUtil/TransformCallback>

@@ -8,6 +8,7 @@
 #include <Producer/Trackball>
 
 #include <osg/Timer>
+#include <osg/io_utils>
 
 #include <osgUtil/SceneView>
 #include <osgUtil/IntersectVisitor>

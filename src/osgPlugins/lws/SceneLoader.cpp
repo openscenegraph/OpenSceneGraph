@@ -10,6 +10,7 @@
 #include <osg/Notify>
 #include <osg/PositionAttitudeTransform>
 #include <osg/AnimationPath>
+#include <osg/io_utils>
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>

@@ -1,5 +1,6 @@
 #include <osg/Geometry>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

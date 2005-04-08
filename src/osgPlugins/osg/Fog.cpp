@@ -2,7 +2,8 @@
 	#pragma warning( disable : 4786 )
 #endif
 
-#include "osg/Fog"
+#include <osg/Fog>
+#include <osg/io_utils>
 
 #include "osgDB/Registry"
 #include "osgDB/Input"

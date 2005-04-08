@@ -1,4 +1,6 @@
 #include <osg/Notify>
+#include <osg/io_utils>
+
 #include <osgDB/Registry>
 #include "IO_LightPoint.h"
 

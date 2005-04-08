@@ -1,8 +1,9 @@
-#include "osg/ClearNode"
+#include <osg/ClearNode>
+#include <osg/io_utils>
 
-#include "osgDB/Registry"
-#include "osgDB/Input"
-#include "osgDB/Output"
+#include <osgDB/Registry>
+#include <osgDB/Input>
+#include <osgDB/Output>
 
 using namespace osg;
 using namespace osgDB;

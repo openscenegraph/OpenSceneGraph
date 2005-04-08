@@ -3,6 +3,7 @@
 #endif
 
 #include "osg/Point"
+#include <osg/io_utils>
 
 #include "osgDB/Registry"
 #include "osgDB/Input"

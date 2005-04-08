@@ -277,14 +277,16 @@ void Registry::initDataFilePathList()
     convertStringPathIntoFilePathList(ptr, filepath);
   }
   
-  const int MAX_OSX_PATH_SIZE = 1024;
-  char buffer[MAX_OSX_PATH_SIZE];
-  char bundlePathBuffer[MAX_OSX_PATH_SIZE];
+
+  char* buffer = NULL;
+  char* bundlePathBuffer = NULL;
   CFURLRef  url;
   CFStringRef pathString;
   CFBundleRef myBundle;
   CFStringRef bundlePathString;
-
+  CFIndex strLen; 
+  CFIndex maxBufferSize;
+  
   myBundle = CFBundleGetMainBundle();
   if (myBundle != NULL) {
     // Get the URL to the bundle
@@ -292,8 +294,12 @@ void Registry::initDataFilePathList()
     
     // Convert the URL to a CFString that looks like a Unix file path
     bundlePathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
+    
     // Convert the CFString to a C string
-    CFStringGetCString( bundlePathString, bundlePathBuffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
+    strLen = CFStringGetLength( bundlePathString );
+    maxBufferSize = CFStringGetMaximumSizeForEncoding( strLen, kCFStringEncodingUTF8 );
+    bundlePathBuffer = (char*) malloc(maxBufferSize);
+    CFStringGetCString( bundlePathString, bundlePathBuffer, maxBufferSize, kCFStringEncodingUTF8 );
     
     CFRelease( url );
 
@@ -302,8 +308,12 @@ void Registry::initDataFilePathList()
     //pathString = CFURLCopyPath( url );
     // Convert the URL to a CFString that looks like a Unix file path
     pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
+    
     // Convert the CFString to a C string
-    CFStringGetCString( pathString, buffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
+    strLen = CFStringGetLength( pathString );
+    maxBufferSize = CFStringGetMaximumSizeForEncoding( strLen, kCFStringEncodingUTF8 );
+    buffer = (char*) malloc(maxBufferSize);
+    CFStringGetCString( pathString, buffer, maxBufferSize, kCFStringEncodingUTF8 );
     
     // Combine the string and copy it into the FilePath list
     filepath.push_back( std::string(bundlePathBuffer) 
@@ -314,7 +324,10 @@ void Registry::initDataFilePathList()
     CFRelease( pathString );
     CFRelease( bundlePathString );
     CFRelease( url );
-        
+    
+    if (bundlePathBuffer != NULL) free(bundlePathBuffer);
+    if (buffer != NULL) free(buffer);
+    
     pathString = NULL;
     bundlePathString = NULL;
     url = NULL;

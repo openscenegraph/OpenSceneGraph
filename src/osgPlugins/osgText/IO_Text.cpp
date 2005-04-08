@@ -87,7 +87,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         float height;
         if (fr[1].getFloat(height))
         {
-            text.setMaximumWidth(height);
+            text.setMaximumHeight(height);
             fr += 2;
             itAdvanced = true;
         }

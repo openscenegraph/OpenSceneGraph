@@ -24,7 +24,6 @@
 #include <osg/Texture2D>
 #include <osg/PositionAttitudeTransform>
 #include <osg/MatrixTransform>
-#include <osg/AutoTransform>
 #include <osg/CoordinateSystemNode>
 
 #include <osgDB/FileUtils>
@@ -117,17 +116,6 @@ public:
     void updateParameters()
     {
         _longitude += ((2.0*osg::PI)/360.0)/20.0;
-        _latitude = sin(_longitude);
-
-        // adjust the heading and roll to roughly look ok,
-        // but bearing no reality to physics..        
-        osg::Quat heading;
-        heading.makeRotate(osg::DegreesToRadians(90.0)+cos(_longitude),0.0,0.0,1.0);
-        
-        osg::Quat roll;
-        roll.makeRotate(-_latitude*0.5f,0.0,1.0,0.0);
-        
-        _rotation = roll*heading;
     }
 
 
@@ -137,7 +125,7 @@ public:
         
         osg::NodePath nodePath = nv->getNodePath();
 
-		osg::AutoTransform * mt = nodePath.empty() ? 0 : dynamic_cast<osg::AutoTransform*>(nodePath.back());
+        osg::MatrixTransform* mt = nodePath.empty() ? 0 : dynamic_cast<osg::MatrixTransform*>(nodePath.back());
         if (mt)
         {
             osg::CoordinateSystemNode* csn = 0;
@@ -163,13 +151,11 @@ public:
                         if (transform) transform->computeLocalToWorldMatrix(matrix, nv);
                     }
 
+                    //osg::Matrixd matrix;
                     ellipsoid->computeLocalToWorldTransformFromLatLongHeight(_latitude,_longitude,_height,matrix);
                     matrix.preMult(osg::Matrixd::rotate(_rotation));
                     
-                   	mt->setPosition(osg::Vec3d(matrix(3,0),matrix(3,1),matrix(3,2)));
-					osg::Quat quat;
-					quat.set(matrix);
-					mt->setRotation(quat);
+                    mt->setMatrix(matrix);
                 }
 
             }        
@@ -182,7 +168,6 @@ public:
     double                  _longitude;
     double                  _height;
     osg::Quat               _rotation;
-	bool					_useAutoTrans;
 };
 
 
@@ -218,10 +203,6 @@ int main(int argc, char **argv)
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of particle systems.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotate-model angle x y z","Rotate model");
-    arguments.getApplicationUsage()->addCommandLineOption("--flight-path","");
-    arguments.getApplicationUsage()->addCommandLineOption("--tracker-mode","NODE_CENTER_AND_ROTATION | NODE_CENTER_AND_AZIM | NODE_CENTER");
-    arguments.getApplicationUsage()->addCommandLineOption("--rotation-mode","TRACKBALL | ELEVATION_AZIM");
     
 
     // construct the viewer.
@@ -231,7 +212,7 @@ int main(int argc, char **argv)
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
     viewer.getCullSettings().setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-    viewer.getCullSettings().setNearFarRatio(0.0000000001f);
+    viewer.getCullSettings().setNearFarRatio(0.00001f);
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -308,62 +289,51 @@ int main(int argc, char **argv)
         return 1;
     }
     
-    osg::ref_ptr<osg::MatrixTransform> parent;
-    osg::ref_ptr<osg::Node> root;
-
-	osg::Matrix	mat;
-	mat.makeScale(osg::Vec3(000000.1, 000000.1, 000000.1));
-	parent = new osg::MatrixTransform(mat);
-	
-    root = createEarth();
+    osg::ref_ptr<osg::Node> root = createEarth();
     
     if (!root) return 0;
 
-	parent->addChild(root.get());
-
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData(parent.get());
+    viewer.setSceneData(root.get());
 
     osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
+    if (csn)
+    {
+        osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+        if (cessna)
+        {
+            double s = 30000.0 / cessna->getBound().radius();
+        
+            osg::MatrixTransform* scaler = new osg::MatrixTransform;
+            scaler->addChild(cessna);
+            scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
+            scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
+        
+            osg::MatrixTransform* mt = new osg::MatrixTransform;
+            mt->addChild(scaler);
 
-   	if (csn)
-   	{
-   		osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
-       	if (cessna)
-       	{
-           	double s = 30000.0 / cessna->getBound().radius();
-       	
-           	osg::MatrixTransform* scaler = new osg::MatrixTransform;
-           	scaler->addChild(cessna);
-           	scaler->setMatrix(osg::Matrixd::scale(5,5,5));
-           	scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
-			
-			osg::AutoTransform * mt;
 
-           	mt = new osg::AutoTransform;
-			mt->setAutoScaleToScreen(true);
-           	mt->addChild(scaler);
+            if (!nc) nc = new ModelPositionCallback;
 
-			if (!nc)
-				nc = new ModelPositionCallback;
+            mt->setUpdateCallback(nc);
 
-           	mt->setUpdateCallback(nc);
+            csn->addChild(mt);
 
-           	csn->addChild(mt);
+            osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm->setTrackerMode(trackerMode);
+            tm->setRotationMode(rotationMode);
+            tm->setTrackNode(scaler);
 
-   			osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
-    		tm->setTrackerMode(trackerMode);
-    		tm->setRotationMode(rotationMode);
-			tm->setTrackNode(scaler);
+            unsigned int num = viewer.addCameraManipulator(tm);
+            viewer.selectCameraManipulator(num);
+        }
+        else
+        {
+             std::cout<<"Failed to read cessna.osg"<<std::endl;
+        }
+    }    
 
-   			unsigned int num = viewer.addCameraManipulator(tm);
-    		viewer.selectCameraManipulator(num);
-       	}
-       	else
-       	{
-           	std::cout<<"Failed to read cessna.osg"<<std::endl;
-       	}
-   	}    
+        
 
     // create the windows and run the threads.
     viewer.realize();

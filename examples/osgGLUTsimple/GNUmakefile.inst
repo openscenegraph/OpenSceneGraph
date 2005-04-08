@@ -1,0 +1,14 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgGLUTsimple.cpp\
+
+LIBS     += -losgDB -losgUtil -losg -lglut $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgGLUTsimple
+
+INC += $(X_INC)
+LDFLAGS  += 
+
+include $(TOPDIR)/Make/makerules

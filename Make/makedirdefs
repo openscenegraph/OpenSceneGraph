@@ -251,3 +251,8 @@ endif
 ifeq ($(DEMETER_INSTALLED),yes)
     EXAMPLE_DIRS += osgdemeter
 endif
+
+ifeq ($(GLUT_INSTALLED),yes)
+    EXAMPLE_DIRS += osgGLUTsimple
+    EXAMPLE_DIRS += osgGLUTkeyboardmouse
+endif

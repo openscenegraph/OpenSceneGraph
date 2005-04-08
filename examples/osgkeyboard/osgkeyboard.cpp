@@ -1,4 +1,5 @@
 #include <osgProducer/Viewer>
+#include <osg/io_utils>
 
 #include <osg/MatrixTransform>
 #include <osg/Geode>

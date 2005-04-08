@@ -20,6 +20,7 @@
 #include <osg/MatrixTransform>
 #include <osg/ClusterCullingCallback>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 #include <osg/GLU>
 

@@ -5,13 +5,12 @@
 extern "C" {
 #endif
 
-unsigned char*
-LoadBufferFromDarwinPath ( const char *fname, long *origWidth, 
+unsigned char* LoadBufferFromDarwinPath ( const char *fname, long *origWidth, 
 			long *origHeight, long *origDepth,
 			long *buffWidth, long *buffHeight, long *buffDepth);
 								
-char *
-QTfailureMessage(void);
+char* QTfailureMessage(void);
+FSSpec *darwinPathToFSSpec (char *fname );
 
 #ifdef __cplusplus
 }

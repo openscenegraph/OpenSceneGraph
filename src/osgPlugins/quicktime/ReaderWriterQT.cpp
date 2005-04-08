@@ -16,11 +16,15 @@
 #ifndef SEEK_SET
 #  define SEEK_SET 0
 #endif
-
+#include <Carbon/Carbon.h>
+#include <Quicktime/Quicktime.h>
 #include "QTtexture.h"
 #include "QuicktimeImageStream.h"
 
+
 using namespace osg;
+
+
 
 class ReaderWriterQT : public osgDB::ReaderWriter
 {
@@ -32,6 +36,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"mov") ||
                    osgDB::equalCaseInsensitive(extension,"mpg") ||
                    osgDB::equalCaseInsensitive(extension,"mpv") ||
+                   osgDB::equalCaseInsensitive(extension,"mp4") ||
                    osgDB::equalCaseInsensitive(extension,"dv");
         }
         
@@ -44,13 +49,13 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"jpg") || 
                 osgDB::equalCaseInsensitive(extension,"jpeg") ||
                 osgDB::equalCaseInsensitive(extension,"tif") ||               
-                osgDB::equalCaseInsensitive(extension,"tiff") ||               
-                osgDB::equalCaseInsensitive(extension,"pict") ||
+                osgDB::equalCaseInsensitive(extension,"tiff") || 
                 osgDB::equalCaseInsensitive(extension,"gif") ||
                 osgDB::equalCaseInsensitive(extension,"png") ||
                 osgDB::equalCaseInsensitive(extension,"pict") ||
                 osgDB::equalCaseInsensitive(extension,"pct") ||
                 osgDB::equalCaseInsensitive(extension,"tga") ||
+                osgDB::equalCaseInsensitive(extension,"psd") ||
                 acceptsMovieExtension(extension);
         }
 
@@ -120,8 +125,9 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 int i, j;
           
                 // swizzle entire image in-place
+                unsigned char r, g, b, a;
                 for (i=0; i<buffHeight; i++ ) {
-                    unsigned char r, g, b, a;
+                    
                     switch (origDepth) {
                     /*
                         since 8-bit tgas will get expanded into colour, have to use RGB code for 8-bit images
@@ -175,6 +181,8 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                     }
                 }
             }
+            
+           
 
             Image* image = new Image();
             image->setFileName(fileName.c_str());
@@ -188,6 +196,199 @@ class ReaderWriterQT : public osgDB::ReaderWriter
             notify(INFO) << "image read ok "<<buffWidth<<"  "<<buffHeight<<std::endl;
             return image;
         }
+        
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+            
+            //Buidl map  of extension <-> osFileTypes
+            std::map<std::string, OSType> extmap;
+            
+            extmap.insert(std::pair<std::string, OSType>("jpg",  kQTFileTypeJPEG));
+            extmap.insert(std::pair<std::string, OSType>("jpeg", kQTFileTypeJPEG));
+            extmap.insert(std::pair<std::string, OSType>("bmp",  kQTFileTypeBMP));
+            extmap.insert(std::pair<std::string, OSType>("tif",  kQTFileTypeTIFF));
+            extmap.insert(std::pair<std::string, OSType>("tiff", kQTFileTypeTIFF));
+            extmap.insert(std::pair<std::string, OSType>("png",  kQTFileTypePNG));
+            extmap.insert(std::pair<std::string, OSType>("gif",  kQTFileTypeGIF));
+            extmap.insert(std::pair<std::string, OSType>("psd",  kQTFileTypePhotoShop));
+            // extmap.insert(std::pair<std::string, OSType>("tga",  kQTFileTypeTargaImage));
+            extmap.insert(std::pair<std::string, OSType>("sgi",  kQTFileTypeSGIImage));
+            extmap.insert(std::pair<std::string, OSType>("rgb",  kQTFileTypeSGIImage));
+            extmap.insert(std::pair<std::string, OSType>("rgba", kQTFileTypeSGIImage));
+            
+            std::map<std::string, OSType>::iterator cur = extmap.find(ext);
+            
+            // can not handle this type of file, perhaps a movie?
+            if (cur == extmap.end())
+                return WriteResult::FILE_NOT_HANDLED;
+                
+            OSType desiredType = cur->second;
+            GraphicsExportComponent 	geComp 	= NULL;
+
+            OSErr err = OpenADefaultComponent(GraphicsExporterComponentType, desiredType, &geComp);
+            
+            if (err != noErr) {
+                osg::notify(osg::WARN) << "ReaderWriterQT: could not open Graphics epxorter for type " << ext << ", Err: " << err << std::endl;
+                return WriteResult::FILE_NOT_HANDLED;
+            }
+            
+            GWorldPtr gw = NULL;
+            
+            // we are converting the images back to 32bit, it seems, that quicktime can't handle others
+                        
+            unsigned long desiredPixelFormat = k32ARGBPixelFormat;
+            
+            
+            
+            // we need to swizzle the colours again :)
+            unsigned int numBytes = img.computeNumComponents(img.getPixelFormat());
+
+            unsigned int buffWidth = img.s();
+            unsigned int buffHeight = img.t();
+            char * pixels = (char*) malloc(buffHeight * buffWidth * 4);
+            
+            
+            
+            const unsigned char *srcp = img.data();
+            char *dstp=pixels;
+            unsigned int i, j;
+            for (i=0; i<buffHeight; i++ ) {
+                
+                switch (numBytes) {
+                    case 1 : 
+                        dstp[0] = 0;
+                        dstp[1] = srcp[0];
+                        dstp[2] = srcp[0];
+                        dstp[3] = srcp[0];
+                        srcp+=1;
+                        dstp+=4;
+                        
+                        break;
+                    case 3 :
+                        for (j=0; j<buffWidth; j++ ) {
+                            dstp[0]=0;
+                            dstp[1]=srcp[0];
+                            dstp[2]=srcp[1];
+                            dstp[3]=srcp[2];
+
+                            srcp+=3;
+                            dstp+=4;
+                        }
+                        break;
+                    case 4 :
+                        for (j=0; j<buffWidth; j++ ) {
+                            dstp[0]=srcp[1];
+                            dstp[1]=srcp[2];
+                            dstp[2]=srcp[3];
+                            dstp[3]=srcp[0];
+                            
+                            srcp+=4;
+                            dstp+=4;
+                        }
+                        break;
+                    default :
+                        // osg::notify(osg::WARN) << "ERROR IN RETURNED PIXEL DEPTH, CANNOT COPE" << std::endl;
+                        return WriteResult::ERROR_IN_WRITING_FILE;
+                        break;
+                }
+            }
+            
+             // Flip the image
+            unsigned imageSize = buffWidth*buffHeight*4;
+            char *tBuffer = (char*)malloc((size_t)imageSize);
+            unsigned int rowBytes = buffWidth * 4;
+            for (i = 0, j = imageSize - rowBytes; i < imageSize; i += rowBytes, j -= rowBytes)
+                memcpy( &tBuffer[j], &pixels[i], (size_t)rowBytes );
+
+            memcpy(pixels, tBuffer, (size_t)imageSize);
+            free(tBuffer);
+            
+            FSSpec* fileSpec = NULL;
+
+            try {
+            
+                
+
+                Rect bounds;
+                SetRect(&bounds, 0,0, img.s(), img.t());
+                
+                err = NewGWorldFromPtr(&gw, desiredPixelFormat, &bounds, 0,0,0, pixels, buffWidth*4);
+                if (err != noErr) {
+                    osg::notify(osg::WARN) << "ReaderWriterQT: could not create gworld for type " << ext << ", Err: " << err << std::endl;
+                    throw err;
+                }
+                
+                // create a dummy file at location
+                FILE *fp = fopen(fileName.c_str(), "wb");
+                if (!fp) {
+                    osg::notify(osg::WARN) << "ReaderWriterQT: could not create file!" << std::endl;
+                    throw err;
+                }
+                
+                fclose(fp);
+                
+                // get an FSSpec to the file, so quicktime can handle the file.
+                fileSpec = darwinPathToFSSpec( const_cast<char*>(fileName.c_str()) );
+                if (fileSpec == NULL) {
+                    osg::notify(osg::WARN) << "ReaderWriterQT: could not get FSSpec" << std::endl;
+                    throw err;
+                }
+                       
+                err = GraphicsExportSetInputGWorld(geComp, gw);
+                if (err != noErr) {
+                    osg::notify(osg::WARN) << "ReaderWriterQT: could not set input gworld for type " << ext << ", Err: " << err << std::endl;
+                    throw err;
+                }
+                
+                err = GraphicsExportSetOutputFile(geComp, fileSpec); 
+                 if (err != noErr) {
+                    osg::notify(osg::WARN) << "ReaderWriterQT: could not set output file for type " << ext << ", Err: " << err << std::endl;
+                   throw err;
+                } 
+                
+                // Set the compression quality (needed for JPEG, not necessarily for other formats)
+                if (desiredType == kQTFileTypeJPEG) {
+                    err = GraphicsExportSetCompressionQuality(geComp, codecLosslessQuality);
+                    if (err != noErr) {
+                        osg::notify(osg::WARN) << "ReaderWriterQT: could not set compression for type " << ext << ", Err: " << err << std::endl;
+                        throw err;
+                    }
+                }
+                
+                // do the export
+                err = GraphicsExportDoExport(geComp, NULL);
+                if (err != noErr) {
+                    osg::notify(osg::WARN) << "ReaderWriterQT: could not save file for type " << ext << ", Err: " << err << std::endl;
+                    throw err;
+                } 
+                
+                if (geComp != NULL)
+                    CloseComponent(geComp);
+                    
+                DisposeGWorld (gw);
+                if (fileSpec != NULL ) free(fileSpec);   
+                if (pixels) free(pixels);
+                                    
+                return WriteResult::FILE_SAVED;
+            }
+            
+            
+            catch (...) {
+                
+                if (geComp != NULL) CloseComponent(geComp);      
+                if (gw != NULL) DisposeGWorld (gw);
+                if (fileSpec != NULL ) free(fileSpec);
+                if (pixels) free(pixels);
+                       
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
+                
+        }
+        
+            
 
 };
 

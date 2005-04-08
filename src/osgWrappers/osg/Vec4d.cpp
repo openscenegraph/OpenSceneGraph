@@ -9,6 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/io_utils>
+
 #include <osg/Vec3d>
 #include <osg/Vec4d>
 #include <osg/Vec4f>

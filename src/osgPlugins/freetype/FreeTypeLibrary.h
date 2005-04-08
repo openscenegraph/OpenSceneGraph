@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTEXT_LIBRARY
-#define OSGTEXT_LIBRARY
+#ifndef FREETYPE_LIBRARY
+#define FREETYPE_LIBRARY
 
 #include "FreeTypeFont.h"
 #include <osgText/Font>

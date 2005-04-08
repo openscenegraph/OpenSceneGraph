@@ -9,6 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/io_utils>
+
 #include <osg/Vec2f>
 
 TYPE_NAME_ALIAS(float, osg::Vec2f::value_type);

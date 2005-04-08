@@ -24,6 +24,7 @@
 #include "CullFace.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
+//#include "PolygonMode.h"
 #include "ShadeModel.h"
 #include "Point.h"
 #include "LineWidth.h"
@@ -70,6 +71,8 @@
 
 #include "Shape.h"
 
+#include "Text.h"
+
 #include <osg/Notify>
 #include <osg/io_utils>
 
@@ -103,8 +106,8 @@ DataOutputStream::DataOutputStream(std::ostream * ostream)
     _includeImageData= true;
 
     _includeExternalReferences     = false;
-    _writeExternalReferenceFiles   = true;
-    _useOriginalExternalReferences = false;
+    _writeExternalReferenceFiles   = false;
+    _useOriginalExternalReferences = true;
     
     
     _ostream = ostream;
@@ -510,6 +513,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::PolygonOffset*>(attribute)){
             ((ive::PolygonOffset*)(attribute))->write(this);
         }
+/*        // This is a PolygonMode
+        else if(dynamic_cast<const osg::PolygonMode*>(attribute)){
+            ((ive::PolygonMode*)(attribute))->write(this);
+        }*/
         else if(dynamic_cast<const osg::ShadeModel*>(attribute)){
             ((ive::ShadeModel*)(attribute))->write(this);
         }
@@ -566,8 +573,8 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::LightModel*>(attribute)){
             ((ive::LightModel*)(attribute))->write(this);
         }
-		// This is a FrontFace
-		else if(dynamic_cast<const osg::FrontFace*>(attribute)){
+        // This is a FrontFace
+        else if(dynamic_cast<const osg::FrontFace*>(attribute)){
             ((ive::FrontFace*)(attribute))->write(this);
         }
 
@@ -604,6 +611,8 @@ void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
             ((ive::Geometry*)(drawable))->write(this);
         else if(dynamic_cast<const osg::ShapeDrawable*>(drawable))
             ((ive::ShapeDrawable*)(drawable))->write(this);
+        else if(dynamic_cast<const osgText::Text*>(drawable))
+            ((ive::Text*)(drawable))->write(this);
         else
         {
             throw Exception("Unknown drawable in DataOutputStream::writeDrawable()");

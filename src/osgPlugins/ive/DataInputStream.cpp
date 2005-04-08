@@ -9,7 +9,7 @@
  *
  *    HISTORY:        Created 11.03.2003
  *                    Updated for texture1D by Don Burns, 27.1.2004
- *					  Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
+ *                      Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
  *
  *
  *    Copyright 2003 VR-C
@@ -23,6 +23,7 @@
 #include "CullFace.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
+//#include "PolygonMode.h"
 #include "ShadeModel.h"
 #include "Point.h"
 #include "LineWidth.h"
@@ -68,6 +69,8 @@
 #include "ShapeDrawable.h"
 #include "Shape.h"
 
+#include "Text.h"
+
 #include <osg/Endian>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -92,7 +95,7 @@ DataInputStream::DataInputStream(std::istream* istream)
 {
     unsigned int endianType ;
 
-	_loadExternalReferenceFiles = false;
+    _loadExternalReferenceFiles = false;
     
     _verboseOutput = false;
 
@@ -630,7 +633,7 @@ osg::Image* DataInputStream::readImage(std::string filename)
 {
     // If image is already read and in list 
     // then just return pointer to this.
-    ImageMap::iterator mitr=_imageMap.find(filename);	
+    ImageMap::iterator mitr=_imageMap.find(filename);    
     if (mitr!=_imageMap.end()) return mitr->second.get();
         
     // Image is not in list. 
@@ -708,6 +711,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::PolygonOffset();
         ((ive::PolygonOffset*)(attribute))->read(this);
     }
+/*    else if(attributeID == IVEPOLYGONMODE){
+        attribute = new osg::PolygonMode();
+        ((ive::PolygonMode*)(attribute))->read(this);
+    }*/
     else if(attributeID == IVESHADEMODEL){
         attribute = new osg::ShadeModel();
         ((ive::ShadeModel*)(attribute))->read(this);
@@ -764,7 +771,7 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::LightModel();
         ((ive::LightModel*)(attribute))->read(this);
     }
-	else if(attributeID == IVEFRONTFACE){
+    else if(attributeID == IVEFRONTFACE){
         attribute = new osg::FrontFace();
         ((ive::FrontFace*)(attribute))->read(this);
     }
@@ -804,6 +811,10 @@ osg::Drawable* DataInputStream::readDrawable()
         drawable = new osg::ShapeDrawable();                
         ((ShapeDrawable*)(drawable))->read(this);
     }
+    else if(drawableTypeID == IVETEXT){
+        drawable = new osgText::Text();
+        ((Text*)(drawable))->read(this);
+    }    
     else
         throw Exception("Unknown drawable drawableTypeIDentification in Geode::read()");
 

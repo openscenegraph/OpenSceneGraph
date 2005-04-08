@@ -102,7 +102,10 @@ namespace ive {
 #define IVEDIRECTIONALSECTOR                            0x0010000A
 
 // osgFX classes
-#define IVEMULTITEXTURECONTROL				0x01000001
+#define IVEMULTITEXTURECONTROL                0x01000001
+
+//osgText classes
+#define IVETEXT                                0x10000001
 
 
 class ReadWrite{

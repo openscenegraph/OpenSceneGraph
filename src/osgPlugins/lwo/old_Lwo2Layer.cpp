@@ -24,6 +24,7 @@
  */
 
 #include "old_Lwo2Layer.h"
+#include <osg/io_utils>
 
 Lwo2Layer::Lwo2Layer():
   _number(0),

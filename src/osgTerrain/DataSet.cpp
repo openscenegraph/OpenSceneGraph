@@ -45,6 +45,7 @@
 // standard library includes
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 
 using namespace osgTerrain;

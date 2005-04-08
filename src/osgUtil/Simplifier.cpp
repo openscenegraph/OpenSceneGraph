@@ -20,6 +20,7 @@
 
 #include <set>
 #include <list>
+#include <algorithm>
 
 using namespace osgUtil;
 

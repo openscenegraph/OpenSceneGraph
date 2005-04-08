@@ -30,6 +30,7 @@
 #include <osg/Material>
 #include <osg/CullFace>
 #include <osg/BlendFunc>
+#include <osg/io_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>

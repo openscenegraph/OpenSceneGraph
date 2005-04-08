@@ -6,6 +6,7 @@
 #include <osg/Group>
 #include <osg/Notify>
 #include <osg/LineSegment>
+#include <osg/io_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>

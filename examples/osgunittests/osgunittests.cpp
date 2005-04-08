@@ -4,6 +4,7 @@
 
 #include <osg/Vec3>
 #include <osg/Matrix>
+#include <osg/io_utils>
 
 #include <iostream>
 

@@ -14,9 +14,6 @@
 #ifndef OSG_VEC2F
 #define OSG_VEC2F 1
 
-#include <ostream>
-#include <istream>
-
 #include <osg/Math>
 
 namespace osg {
@@ -165,22 +162,6 @@ class Vec2f
         }
 		
 };    // end of class Vec2f
-
-
-// streaming operators
-
-inline std::ostream& operator << (std::ostream& output, const Vec2f& vec)
-{
-    output << vec._v[0] << " " << vec._v[1];
-    return output;     // to enable cascading
-}
-
-inline std::istream& operator >> (std::istream& input, Vec2f& vec)
-{
-	input >> vec._v[0] >> vec._v[1];
-	return input;
-}
-
 
 }    // end of namespace osg
 #endif

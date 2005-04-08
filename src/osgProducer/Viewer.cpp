@@ -1,5 +1,6 @@
 #include <osg/LightSource>
 #include <osg/ApplicationUsage>
+#include <osg/io_utils>
 
 #include <osgUtil/UpdateVisitor>
 

@@ -239,23 +239,6 @@ class Vec4d
 };    // end of class Vec4d
 
 
-// streaming operators
-
-inline std::ostream& operator << (std::ostream& output, const Vec4d& vec)
-{
-    output << vec._v[0] << " "
-           << vec._v[1] << " "
-           << vec._v[2] << " "
-           << vec._v[3];
-    return output;     // to enable cascading
-}
-
-inline std::istream& operator >> (std::istream& input, Vec4d& vec)
-{
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
-    return input;
-}
-
 
 /** Compute the dot product of a (Vec3,1.0) and a Vec4d. */
 inline Vec4d::value_type operator * (const Vec3d& lhs,const Vec4d& rhs)

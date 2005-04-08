@@ -25,7 +25,6 @@
 #include <osg/AlphaFunc>
 #include <osg/Notify>
 
-
 using namespace osg;
 
 ImpostorSprite::ImpostorSprite()
@@ -113,10 +112,6 @@ bool ImpostorSprite::computeBound() const
     if (!_bbox.valid())
     {
         notify(WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
-        notify(WARN) << "*******  = "<<_coords[0]<<std::endl;
-        notify(WARN) << "*******  = "<<_coords[1]<<std::endl;
-        notify(WARN) << "*******  = "<<_coords[2]<<std::endl;
-        notify(WARN) << "*******  = "<<_coords[3]<<std::endl;
     }
 
     return true;

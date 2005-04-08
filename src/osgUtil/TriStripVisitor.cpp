@@ -12,6 +12,7 @@
 */
 #include <osg/Notify>
 #include <osg/TriangleIndexFunctor>
+#include <osg/io_utils>
 
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>

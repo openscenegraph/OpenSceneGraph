@@ -13,6 +13,7 @@
 #include <osg/AnimationPath>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
+#include <osg/io_utils>
 
 using namespace osg;
 

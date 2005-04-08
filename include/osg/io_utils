@@ -1,0 +1,163 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_IO_UTILS
+#define OSG_IO_UTILS 1
+
+#include <ostream>
+#include <istream>
+
+#include <osg/Vec2f>
+#include <osg/Vec2d>
+#include <osg/Vec3f>
+#include <osg/Vec3d>
+#include <osg/Vec4f>
+#include <osg/Vec4d>
+#include <osg/Matrixf>
+#include <osg/Matrixd>
+
+namespace osg {
+
+
+//////////////////////////////////////////////////////////////////////////
+// Vec2f streaming operators
+inline std::ostream& operator << (std::ostream& output, const Vec2f& vec)
+{
+    output << vec._v[0] << " " << vec._v[1];
+    return output;     // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec2f& vec)
+{
+    input >> vec._v[0] >> vec._v[1];
+    return input;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Vec2d steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec2d& vec)
+{
+    output << vec._v[0] << " " << vec._v[1];
+    return output;     // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec2d& vec)
+{
+    input >> vec._v[0] >> vec._v[1];
+    return input;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Vec3f steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec3f& vec)
+{
+    output << vec._v[0] << " "
+           << vec._v[1] << " "
+           << vec._v[2];
+    return output;     // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec3f& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2];
+    return input;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Vec3d steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec3d& vec)
+{
+    output << vec._v[0] << " "
+           << vec._v[1] << " "
+           << vec._v[2];
+    return output;     // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec3d& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2];
+    return input;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Vec3f steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec4f& vec)
+{
+    output  << vec._v[0] << " "
+            << vec._v[1] << " "
+            << vec._v[2] << " "
+            << vec._v[3];
+    return output;     // to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Vec4f& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    return input;
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////
+// Vec4d steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec4d& vec)
+{
+    output << vec._v[0] << " "
+           << vec._v[1] << " "
+           << vec._v[2] << " "
+           << vec._v[3];
+    return output;     // to enable cascading
+}
+inline std::istream& operator >> (std::istream& input, Vec4d& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    return input;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Matrxf steaming operators.
+inline std::ostream& operator<< (std::ostream& os, const Matrixf& m )
+{
+    os << "{"<<std::endl;
+    for(int row=0; row<4; ++row) {
+        os << "\t";
+        for(int col=0; col<4; ++col)
+            os << m(row,col) << " ";
+        os << std::endl;
+    }
+    os << "}" << std::endl;
+    return os;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Matrxd steaming operators.
+inline std::ostream& operator<< (std::ostream& os, const Matrixd& m )
+{
+    os << "{"<<std::endl;
+    for(int row=0; row<4; ++row) {
+        os << "\t";
+        for(int col=0; col<4; ++col)
+            os << m(row,col) << " ";
+        os << std::endl;
+    }
+    os << "}" << std::endl;
+    return os;
+}
+
+
+}    // end of namespace osg
+#endif

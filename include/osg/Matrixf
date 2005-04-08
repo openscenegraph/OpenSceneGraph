@@ -15,16 +15,9 @@
 #define OSG_MATRIXF 1
 
 #include <osg/Object>
-#include <osg/Vec3f>
 #include <osg/Vec3d>
-#include <osg/Vec4f>
 #include <osg/Vec4d>
 #include <osg/Quat>
-
-#include <string.h>
-
-#include <ostream>
-#include <algorithm>
 
 namespace osg {
 
@@ -631,19 +624,6 @@ inline Vec4f Matrixf::operator* (const Vec4f& v) const
 inline Vec4d Matrixf::operator* (const Vec4d& v) const
 {
 	return postMult(v);
-}
-
-inline std::ostream& operator<< (std::ostream& os, const Matrixf& m )
-{
-    os << "{"<<std::endl;
-    for(int row=0; row<4; ++row) {
-        os << "\t";
-        for(int col=0; col<4; ++col)
-            os << m(row,col) << " ";
-        os << std::endl;
-    }
-    os << "}" << std::endl;
-    return os;
 }
 
 

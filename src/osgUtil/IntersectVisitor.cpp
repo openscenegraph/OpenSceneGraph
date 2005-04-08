@@ -18,6 +18,7 @@
 #include <osg/Notify>
 #include <osg/TriangleFunctor>
 #include <osg/Geometry>
+#include <osg/io_utils>
 
 #include <float.h>
 #include <algorithm>

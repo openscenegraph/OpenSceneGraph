@@ -876,6 +876,10 @@ SOURCE=..\..\include\osg\ref_ptr
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\io_utils
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Referenced
 # End Source File
 # Begin Source File

@@ -1,6 +1,7 @@
 #include <osgGA/TerrainManipulator>
 #include <osg/Quat>
 #include <osg/Notify>
+#include <osg/io_utils>
 #include <osgUtil/IntersectVisitor>
 
 using namespace osg;

@@ -197,21 +197,6 @@ class Vec3f
 
 };    // end of class Vec3f
 
-// streaming operators
-
-inline std::ostream& operator << (std::ostream& output, const Vec3f& vec)
-{
-    output << vec._v[0] << " "
-           << vec._v[1] << " "
-           << vec._v[2];
-    return output;     // to enable cascading
-}
-
-inline std::istream& operator >> (std::istream& input, Vec3f& vec)
-{
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2];
-    return input;
-}
 
 const Vec3f X_AXIS(1.0,0.0,0.0);
 const Vec3f Y_AXIS(0.0,1.0,0.0);

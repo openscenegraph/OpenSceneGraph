@@ -32,6 +32,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/Quat>
 #include <osg/ProxyNode>
+#include <osg/io_utils>
 
 #include <osgSim/MultiSwitch>
 #include <osgSim/DOFTransform>

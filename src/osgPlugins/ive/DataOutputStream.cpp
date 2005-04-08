@@ -71,6 +71,7 @@
 #include "Shape.h"
 
 #include <osg/Notify>
+#include <osg/io_utils>
 
 using namespace ive;
 

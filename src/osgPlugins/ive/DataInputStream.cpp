@@ -70,6 +70,7 @@
 
 #include <osg/Endian>
 #include <osg/Notify>
+#include <osg/io_utils>
 #include <osgDB/ReadFile>
 
 

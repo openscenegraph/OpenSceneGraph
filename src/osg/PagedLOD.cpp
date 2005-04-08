@@ -15,6 +15,8 @@
 #include <osg/CullStack>
 #include <osg/Notify>
 
+#include <algorithm>
+
 using namespace osg;
 
 PagedLOD::PerRangeData::PerRangeData():

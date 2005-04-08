@@ -12,6 +12,8 @@
 */
 #include <osg/ClipNode>
 
+#include <algorithm>
+
 using namespace osg;
 
 ClipNode::ClipNode()

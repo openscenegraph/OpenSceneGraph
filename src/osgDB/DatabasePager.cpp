@@ -8,6 +8,8 @@
 
 #include <OpenThreads/ScopedLock>
 
+#include <algorithm>
+
 #ifdef WIN32
 #include <windows.h>
 #else

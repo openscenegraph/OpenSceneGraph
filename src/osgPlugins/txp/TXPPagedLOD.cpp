@@ -1,5 +1,8 @@
 #include "TileMapper.h"
 #include "TXPPagedLOD.h"
+
+#include <algorithm>
+
 using namespace txp;
 
 TXPPagedLOD::TXPPagedLOD():

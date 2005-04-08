@@ -3,6 +3,8 @@
 #include <osg/CullFace>
 #include <osg/LineWidth>
 
+#include <algorithm>
+
 using namespace osgSim;
 
 // Define the collection of nested classes, all Drawables, which make

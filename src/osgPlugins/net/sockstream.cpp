@@ -77,9 +77,6 @@ extern "C" {
 #	include <errno.h>
 }
 #else
-
-typedef int socklen_t;
-
 #	define EWOULDBLOCK			WSAEWOULDBLOCK
 #	define EINPROGRESS			WSAEINPROGRESS
 #	define EALREADY					WSAEALREADY
@@ -130,7 +127,7 @@ typedef int socklen_t;
 #include <sys/filio.h>
 #endif
 
-#if defined( __sgi ) || defined (__hpux) 
+#ifdef __sgi
 typedef int socklen_t;
 #endif
 

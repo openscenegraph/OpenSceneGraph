@@ -16,8 +16,6 @@
 
 #include <osg/Vec3>
 
-#include <ostream>
-
 namespace osg {
 
 /** General purpose float quad.
@@ -147,18 +145,7 @@ class UByte4
             return *this;
         }
 
-        friend inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
-        {
-	    output << (int)vec._v[0] << " "
-                   << (int)vec._v[1] << " "
-                   << (int)vec._v[2] << " "
-                   << (int)vec._v[3];
-	    return output; 	// to enable cascading
-	}
-
 };	// end of class UByte4
-
-
 
 }	// end of namespace osg
 

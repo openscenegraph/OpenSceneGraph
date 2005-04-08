@@ -17,12 +17,8 @@
 #include <ostream>
 #include <istream>
 
-#include <osg/Vec2f>
-#include <osg/Vec2d>
-#include <osg/Vec3f>
-#include <osg/Vec3d>
-#include <osg/Vec4f>
 #include <osg/Vec4d>
+#include <osg/UByte4>
 #include <osg/Matrixf>
 #include <osg/Matrixd>
 
@@ -156,6 +152,17 @@ inline std::ostream& operator<< (std::ostream& os, const Matrixd& m )
     }
     os << "}" << std::endl;
     return os;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// UByte4 steaming operators.
+inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
+{
+    output << (int)vec._v[0] << " "
+           << (int)vec._v[1] << " "
+           << (int)vec._v[2] << " "
+           << (int)vec._v[3];
+    return output; 	// to enable cascading
 }
 
 

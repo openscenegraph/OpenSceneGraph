@@ -13,7 +13,7 @@
 */
 
 /* file:	src/osg/Shader.cpp
- * author:	Mike Weiblen 2005-04-06
+ * author:	Mike Weiblen 2005-04-07
 */
 
 #include <fstream>
@@ -197,12 +197,19 @@ const char* Shader::getTypename() const
 
 void Shader::compileShader( unsigned int contextID ) const
 {
-    getPCS( contextID )->compileShader();
+    PerContextShader* pcs = getPCS( contextID );
+    if( pcs ) pcs->compileShader();
 }
 
 
 Shader::PerContextShader* Shader::getPCS(unsigned int contextID) const
 {
+    if( getType() == UNDEFINED )
+    {
+	osg::notify(osg::WARN) << "Shader type is UNDEFINED" << std::endl;
+	return 0;
+    }
+
     if( ! _pcsList[contextID].valid() )
     {
 	_pcsList[contextID] = new PerContextShader( this, contextID );
@@ -213,13 +220,15 @@ Shader::PerContextShader* Shader::getPCS(unsigned int contextID) const
 
 void Shader::attachShader(unsigned int contextID, GLuint program) const
 {
-    getPCS( contextID )->attachShader( program );
+    PerContextShader* pcs = getPCS( contextID );
+    if( pcs ) pcs->attachShader( program );
 }
 
 
 void Shader::getGlShaderInfoLog(unsigned int contextID, std::string& log) const
 {
-    getPCS( contextID )->getInfoLog( log );
+    PerContextShader* pcs = getPCS( contextID );
+    if( pcs ) pcs->getInfoLog( log );
 }
 
 

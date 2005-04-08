@@ -159,11 +159,15 @@ Registry::Registry()
     addFileExtensionAlias("tiff", "qt");
     addFileExtensionAlias("gif",  "qt");
     addFileExtensionAlias("png",  "qt");
+    addFileExtensionAlias("psd",  "qt");
+    addFileExtensionAlias("rgb",  "qt");
+    addFileExtensionAlias("tga",  "qt");
     addFileExtensionAlias("mov",  "qt");
     addFileExtensionAlias("avi",  "qt");
     addFileExtensionAlias("mpg",  "qt");
     addFileExtensionAlias("mpv",  "qt");
     addFileExtensionAlias("dv",   "qt");
+    addFileExtensionAlias("mp4",   "qt");
 #else
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");
@@ -245,6 +249,89 @@ static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENT
 static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
 #endif
 
+#if defined(__APPLE__)
+
+//Executable packages should be able to load file resources from inside the packages.
+//These resources should be stored in YourProgram.app/Contents/Resources, and so
+//should the path list for the data files should include that path by default.
+#include <CoreServices/CoreServices.h>
+
+void Registry::initDataFilePathList()
+{
+  
+  FilePathList filepath;
+  
+  //
+  // set up data file paths
+  //
+  char *ptr;
+  
+  if( (ptr = getenv( "OSG_FILE_PATH" )) )
+  {
+    //notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
+    convertStringPathIntoFilePathList(ptr, filepath);
+  }
+  else if( (ptr = getenv( "OSGFILEPATH" )) )
+  {
+    //notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
+    convertStringPathIntoFilePathList(ptr, filepath);
+  }
+  
+  const int MAX_OSX_PATH_SIZE = 1024;
+  char buffer[MAX_OSX_PATH_SIZE];
+  char bundlePathBuffer[MAX_OSX_PATH_SIZE];
+  CFURLRef  url;
+  CFStringRef pathString;
+  CFBundleRef myBundle;
+  CFStringRef bundlePathString;
+
+  myBundle = CFBundleGetMainBundle();
+  if (myBundle != NULL) {
+    // Get the URL to the bundle
+    url = CFBundleCopyBundleURL( myBundle );
+    
+    // Convert the URL to a CFString that looks like a Unix file path
+    bundlePathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
+    // Convert the CFString to a C string
+    CFStringGetCString( bundlePathString, bundlePathBuffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
+    
+    CFRelease( url );
+
+    // Now find the resources folder
+    url = CFBundleCopyResourcesDirectoryURL( myBundle );
+    //pathString = CFURLCopyPath( url );
+    // Convert the URL to a CFString that looks like a Unix file path
+    pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
+    // Convert the CFString to a C string
+    CFStringGetCString( pathString, buffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
+    
+    // Combine the string and copy it into the FilePath list
+    filepath.push_back( std::string(bundlePathBuffer) 
+                         + std::string("/")
+                         + std::string(buffer)
+                         );
+    
+    CFRelease( pathString );
+    CFRelease( bundlePathString );
+    CFRelease( url );
+        
+    pathString = NULL;
+    bundlePathString = NULL;
+    url = NULL;
+  }
+  else
+  {
+    osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle" << std::endl;
+  }
+  
+  setDataFilePathList(filepath);
+
+  //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
+  //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
+}
+
+#else
+
 void Registry::initDataFilePathList()
 {
     //
@@ -265,6 +352,8 @@ void Registry::initDataFilePathList()
     //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
     //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
 }
+
+#endif
 
 void Registry::setDataFilePathList(const std::string& paths)
 {

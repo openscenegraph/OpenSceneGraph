@@ -65,15 +65,15 @@ namespace osgParticle
         inline const osg::Vec3& getWind() const { return _wind; }
         
         /// Set the acceleration vector.
-        inline void setAcceleration(const osg::Vec3& v) { _viscosityCoefficientcceleration = v; }
+        inline void setAcceleration(const osg::Vec3& v) { _acceleration = v; }
         
         /// Get the acceleration vector.
-        inline const osg::Vec3& getAcceleration() const { return _viscosityCoefficientcceleration; }
+        inline const osg::Vec3& getAcceleration() const { return _acceleration; }
 
         /** Set the acceleration vector to the gravity on earth (0, 0, -9.81).
             The acceleration will be multiplied by the <CODE>scale</CODE> parameter.
         */
-        inline void setToGravity(float scale = 1.0f) { _viscosityCoefficientcceleration.set(0, 0, -9.81f*scale); }
+        inline void setToGravity(float scale = 1.0f) { _acceleration.set(0, 0, -9.81f*scale); }
 
         /// Set the fluid parameters as for air (20°C temperature).
         inline void setFluidToAir()
@@ -99,7 +99,7 @@ namespace osgParticle
         
         virtual void execute(double dt);
 
-        osg::Vec3   _viscosityCoefficientcceleration;
+        osg::Vec3   _acceleration;
         float       _viscosity;
         float       _density;
         osg::Vec3   _wind;

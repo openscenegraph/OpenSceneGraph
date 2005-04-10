@@ -23,11 +23,18 @@
 #include <osg/Switch>
 #include <osg/TexMat>
 #include <osg/Texture2D>
+#include <osg/io_utils>
+
+#include <osgParticle/ExplosionEffect>
+#include <osgParticle/ExplosionDebriEffect>
+#include <osgParticle/SmokeEffect>
+#include <osgParticle/FireEffect>
 
 typedef std::vector<std::string> FileList;
 
-struct Character
+class Character : public osg::Referenced
 {
+public:
     Character();
     
     void setCharacter(const std::string& filename, const std::string& name, const osg::Vec3& orgin, const osg::Vec3& width, float positionRatio);
@@ -45,6 +52,12 @@ struct Character
     bool addCatch();
     bool looseLife();
 
+    osg::Vec3 getCurrentCenterOfBasket() const { return _character->getPosition()+_centerBasket; }
+    float getCurrentRadiusOfBasket() const { return _radiusBasket; }
+
+    osg::Vec3 getLowerLeft() const { return _character->getPosition(); }
+    osg::Vec3 getUpperRight() const { return _character->getPosition(); }
+
     osg::Vec3 _origin;
     osg::Vec3 _width;
 
@@ -56,6 +69,12 @@ struct Character
 
     unsigned int                                 _numCatches;
     osg::ref_ptr<osg::Switch>                    _catchSwitch;
+    
+    osg::ref_ptr<osg::Group>                     _objectsGroup;
+    
+    osg::Vec3                                    _centerBasket;
+    float                                        _radiusBasket;
+    
 };
 
 Character::Character():
@@ -79,13 +98,15 @@ void Character::setCharacter(const std::string& filename, const std::string& nam
     osg::Image* image = osgDB::readImageFile(filename);
     if (image)
     {
-        osg::Vec3 pos(-0.5f*_characterSize,0.0f,0.0);
-        osg::Vec3 width(_characterSize,0.0f,0.0);
-        osg::Vec3 height(0.0f,0.0f,_characterSize*((float)image->t())/(float)(image->s()));
+        osg::Vec3 pos(-0.5f*_characterSize,0.0f,0.0f);
+        osg::Vec3 width(_characterSize*((float)image->s())/(float)(image->t()),0.0f,0.0);
+        osg::Vec3 height(0.0f,0.0f,_characterSize);
 
         osg::Geometry* geometry = osg::createTexturedQuadGeometry(pos,width,height);
         osg::StateSet* stateset = geometry->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(geometry);
@@ -95,7 +116,12 @@ void Character::setCharacter(const std::string& filename, const std::string& nam
         _character->addChild(geode);
         
         moveTo(positionRatio);
+
+        _centerBasket = width*0.2 + height*0.57 + pos;
+        _radiusBasket = width.length()*0.34;
+
     }
+    
 }
 
 void Character::setLives(const std::string& filename, const osg::Vec3& origin, const osg::Vec3& delta, unsigned int numLives)
@@ -110,12 +136,14 @@ void Character::setLives(const std::string& filename, const osg::Vec3& origin, c
     {
         osg::StateSet* stateset = _livesSwitch->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
         for(unsigned int i=0; i<numLives; ++i)
         {
-            osg::Vec3 pos = origin + delta*(float)i;
-            osg::Vec3 width(characterSize,0.0f,0.0);
-            osg::Vec3 height(0.0f,0.0f,characterSize*((float)image->t())/(float)(image->s()));
+            osg::Vec3 pos = origin + delta*(float)i + osg::Vec3(0.0f,0.0f,0.0f);
+            osg::Vec3 width(characterSize*((float)image->s())/(float)(image->t()),0.0f,0.0);
+            osg::Vec3 height(0.0f,0.0f,characterSize);
 
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(pos,width,height);
 
@@ -141,10 +169,12 @@ void Character::setCatches(const std::string& filename, const osg::Vec3& origin,
     {
         osg::StateSet* stateset = _catchSwitch->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
         for(unsigned int i=0; i<numCatches; ++i)
         {
-            osg::Vec3 pos = origin + delta*(float)i;
+            osg::Vec3 pos = origin + delta*(float)i + osg::Vec3(0.0f,0.0f,0.0f);
             osg::Vec3 width(characterSize,0.0f,0.0);
             osg::Vec3 height(0.0f,0.0f,characterSize*((float)image->t())/(float)(image->s()));
 
@@ -209,13 +239,229 @@ bool Character::looseLife()
 }
 
 
-class SlideEventHandler : public osgGA::GUIEventHandler
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CatchableObject  : public osg::Referenced
+{
+    public:
+        CatchableObject();
+
+        void setObject(const std::string& filename, const std::string& name, const osg::Vec3& center, float size, const osg::Vec3& direction);
+
+        bool anyInside(const osg::Vec3& lower_left, const osg::Vec3& top_right);
+
+        bool centerInside(const osg::Vec3& center, float radius);
+        
+        void explode();
+        
+        bool dangerous() { return _dangerous; }
+
+        void stop() { _stopped = true; }
+        
+        bool stopped() { return _stopped; }
+        
+        void setTimeToRemove(double time) { _timeToRemove=time; }
+        
+        double getTimeToRemove() { return _timeToRemove; }
+        
+        bool needToRemove(double time) { return  _timeToRemove>=0.0 && time>_timeToRemove; }
+        
+        osg::ref_ptr<osg::PositionAttitudeTransform> _object;
+        osg::Vec3                                    _velocity;
+        float                                        _mass;
+        float                                        _radius;
+
+        bool                                         _stopped;
+        bool                                         _dangerous;
+
+        double                                       _timeToRemove;
+
+
+    public:
+    
+        // update position and velocity
+        void update(double dt);
+
+        /// Set the viscosity of the fluid.
+        inline void setFluidViscosity(float v)
+        {
+            _viscosity = v;
+            _viscosityCoefficient = 6 * osg::PI * _viscosity;
+        }
+       
+        /// Get the viscosity of the fluid.
+        inline float getFluidViscosity() const { return _viscosity; }
+
+        /// Set the density of the fluid.
+        inline void setFluidDensity(float d)
+        {
+            _density = d;
+            _densityCoefficeint = 0.2f * osg::PI * _density;
+        }
+
+        /// Get the density of the fluid.
+        inline float getFluidDensity() const { return _density; }
+        
+        
+        /// Set the wind vector.
+        inline void setWind(const osg::Vec3& wind) { _wind = wind; }
+        
+        /// Get the wind vector.
+        inline const osg::Vec3& getWind() const { return _wind; }
+        
+        /// Set the acceleration vector.
+        inline void setAcceleration(const osg::Vec3& v) { _acceleration = v; }
+        
+        /// Get the acceleration vector.
+        inline const osg::Vec3& getAcceleration() const { return _acceleration; }
+
+        /** Set the acceleration vector to the gravity on earth (0, 0, -9.81).
+            The acceleration will be multiplied by the <CODE>scale</CODE> parameter.
+        */
+        inline void setToGravity(float scale = 1.0f) { _acceleration.set(0, 0, -9.81f*scale); }
+
+        /// Set the fluid parameters as for air (20°C temperature).
+        inline void setFluidToAir()
+        {
+            setToGravity(1.0f);
+            setFluidDensity(1.2929f);
+            setFluidViscosity(1.8e-5f);
+        }
+        
+        /// Set the fluid parameters as for pure water (20°C temperature).
+        inline void setFluidToWater()
+        {
+            setToGravity(1.0f);
+            setFluidDensity(1.0f);
+            setFluidViscosity(1.002e-3f);
+        }
+            
+
+    protected:
+
+        osg::Vec3   _acceleration;
+        float       _viscosity;
+        float       _density;
+        osg::Vec3   _wind;
+
+        float       _viscosityCoefficient;
+        float       _densityCoefficeint;
+ 
+};
+
+CatchableObject::CatchableObject()
+{
+    _stopped = false;
+    _dangerous = false;
+    
+    _timeToRemove = -1.0; // do not remove.
+    setFluidToAir();
+}
+
+void CatchableObject::setObject(const std::string& filename, const std::string& name, const osg::Vec3& center, float characterSize, const osg::Vec3& velocity)
+{
+    _radius = 0.5f*characterSize;
+    float Area = osg::PI*_radius*_radius;
+    float Volume = Area*_radius*4.0f/3.0f;
+
+    _velocity = velocity;
+    _mass = 1000.0*Volume;
+
+    osg::Image* image = osgDB::readImageFile(filename);
+    if (image)
+    {
+        osg::Vec3 width(characterSize*((float)image->s())/(float)(image->t()),0.0f,0.0);
+        osg::Vec3 height(0.0f,0.0f,characterSize);
+        osg::Vec3 pos = (width+height)*-0.5f;
+
+        osg::Geometry* geometry = osg::createTexturedQuadGeometry(pos,width,height);
+        osg::StateSet* stateset = geometry->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+        osg::Geode* geode = new osg::Geode;
+        geode->addDrawable(geometry);
+
+        _object = new osg::PositionAttitudeTransform;
+        _object->setName(name);
+        _object->addChild(geode);
+        _object->setPosition(center);
+    }
+
+}
+
+void CatchableObject::update(double dt)
+{
+    if (_stopped) return;
+
+    float Area = osg::PI*_radius*_radius;
+    float Volume = Area*_radius*4.0f/3.0f;
+
+    // compute force due to gravity + boyancy of displacing the fluid that the particle is emersed in.
+    osg::Vec3 force = _acceleration * (_mass - _density*Volume);
+
+    // compute force due to friction
+    osg::Vec3 relative_wind = _velocity-_wind;            
+    force -= relative_wind * Area * (_viscosityCoefficient + _densityCoefficeint*relative_wind.length());            
+
+    // divide force by mass to get acceleration.
+    _velocity += force*(dt/_mass);
+    _object->setPosition(_object->getPosition()+_velocity*dt);
+}
+
+bool CatchableObject::anyInside(const osg::Vec3& lower_left, const osg::Vec3& upper_right)
+{
+    osg::Vec3 pos = _object->getPosition();
+    
+    if (pos.x()+_radius < lower_left.x()) return false;
+    if (pos.x()-_radius > upper_right.x()) return false;
+    if (pos.z()+_radius < lower_left.z()) return false;
+    if (pos.z()-_radius > upper_right.z()) return false;
+
+    return true;
+}
+
+bool CatchableObject::centerInside(const osg::Vec3& center, float radius)
+{
+    osg::Vec3 delta = _object->getPosition() - center;
+    return (delta.length()<radius);
+}
+
+
+void CatchableObject::explode()
+{
+    osg::Vec3 position(0.0f,0.0f,0.0f);
+    osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, _radius);
+    osgParticle::ExplosionDebriEffect* explosionDebri = new osgParticle::ExplosionDebriEffect(position, _radius);
+    osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, _radius);
+    osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, _radius);
+
+    explosion->setWind(_wind);
+    explosionDebri->setWind(_wind);
+    smoke->setWind(_wind);
+    fire->setWind(_wind);
+
+    _object->addChild(explosion);
+    _object->addChild(explosionDebri);
+    _object->addChild(smoke);
+    _object->addChild(fire);
+
+    _dangerous = true;
+
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class GameEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    SlideEventHandler();
+    GameEventHandler();
     
-    META_Object(osgStereImageApp,SlideEventHandler);
+    META_Object(osgStereImageApp,GameEventHandler);
 
     virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
 
@@ -231,11 +477,13 @@ public:
     float getFOVY() const { return _fovy; }
     
     void setBackground(const std::string& background) { _backgroundImageFile = background; }
+    
+    void createNewCatchable();
 
 protected:
 
-    ~SlideEventHandler() {}
-    SlideEventHandler(const SlideEventHandler&,const osg::CopyOp&) {}
+    ~GameEventHandler() {}
+    GameEventHandler(const GameEventHandler&,const osg::CopyOp&) {}
 
     osg::Vec3 _origin;
     osg::Vec3 _width;
@@ -248,11 +496,13 @@ protected:
     
     std::string _backgroundImageFile;
 
-
+    osg::ref_ptr<osg::Group> _group;
     
     Character _player1;
     Character _player2;
 
+    typedef std::list< osg::ref_ptr<CatchableObject> > CatchableObjectList;
+    CatchableObjectList _catchableObjects;
 
     bool _leftKeyPressed;
     bool _rightKeyPressed;    
@@ -262,7 +512,7 @@ protected:
 
 
 
-SlideEventHandler::SlideEventHandler()
+GameEventHandler::GameEventHandler()
 {
     _origin.set(0.0f,0.0f,0.0f);
     _width.set(1280.0f,0.0f,0.0f);
@@ -271,18 +521,19 @@ SlideEventHandler::SlideEventHandler()
     _originBaseLine = _origin+_width*0.5-_widthBaseLine*0.5f;
     _characterSize = _width.length()*0.2f;
 
-    _backgroundImageFile = "Images/land_shallow_topo_2048.jpg";
+    _backgroundImageFile = "Catch/sky1.JPG";
 
     _leftKeyPressed=false;
     _rightKeyPressed=false;
 }
 
-bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::FRAME):
         {
+            // move characters
             if (_leftKeyPressed)
             {
                 _player2.moveLeft();
@@ -292,7 +543,81 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             {
                 _player2.moveRight();
             }
+
+            static double previous_time = ea.time();
+            double dt = ea.time()-previous_time;
+            previous_time = ea.time();
             
+            // move objects
+            for(CatchableObjectList::iterator itr=_catchableObjects.begin();
+                itr!=_catchableObjects.end();
+                ++itr)
+            {
+                (*itr)->update(dt);
+                
+                bool removeEntry = false;
+
+                if ((*itr)->dangerous())
+                {
+                    if ((*itr)->anyInside(_player1.getLowerLeft(),_player1.getUpperRight()))
+                    {
+                        _player1.looseLife();
+                        removeEntry = true;
+                    }
+
+                    if ((*itr)->anyInside(_player1.getLowerLeft(),_player1.getUpperRight()))
+                    {
+                        _player2.looseLife();
+                        removeEntry = true;
+                    }
+                }
+                else
+                {
+                    if ((*itr)->centerInside(_player1.getCurrentCenterOfBasket(),_player1.getCurrentRadiusOfBasket()))
+                    {
+                        _player1.addCatch();
+                        removeEntry = true;
+                    }
+
+                    if ((*itr)->centerInside(_player2.getCurrentCenterOfBasket(),_player2.getCurrentRadiusOfBasket()))
+                    {
+                        _player2.addCatch();
+                        removeEntry = true;
+                    }
+                }
+
+
+                if (!(*itr)->anyInside(_origin, _origin+_width+_height) || 
+                    (*itr)->needToRemove(ea.time()) ||
+                    removeEntry)
+                {
+                    // need to remove
+                    // remove child from parents.
+                    osg::ref_ptr<osg::PositionAttitudeTransform> child = (*itr)->_object;
+                    osg::Node::ParentList parents = child->getParents();
+                    for(osg::Node::ParentList::iterator pitr=parents.begin();
+                        pitr!=parents.end();
+                        ++pitr)
+                    {
+                        (*pitr)->removeChild(child.get());
+                    }
+
+                    // remove child from catchable list
+                    itr = _catchableObjects.erase(itr);
+
+                    createNewCatchable();
+
+                }
+                else if ((*itr)->anyInside(_origin, _origin+_width) && !(*itr)->stopped())
+                {
+                    // hit base line
+                    (*itr)->explode();
+                    (*itr)->stop();
+                    (*itr)->setTimeToRemove(ea.time()+3.0);
+                }
+                
+            }
+                    
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
@@ -353,11 +678,11 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
     }
 }
 
-void SlideEventHandler::getUsage(osg::ApplicationUsage&) const
+void GameEventHandler::getUsage(osg::ApplicationUsage&) const
 {
 }
 
-osg::Matrix SlideEventHandler::getCameraPosition()
+osg::Matrix GameEventHandler::getCameraPosition()
 {
     osg::Matrix cameraPosition;
     osg::Vec3 center = _origin+(_width+_height)*0.5f;
@@ -368,27 +693,33 @@ osg::Matrix SlideEventHandler::getCameraPosition()
     return cameraPosition;
 }
 
-osg::Node* SlideEventHandler::createScene()
+osg::Node* GameEventHandler::createScene()
 {
-
-
-    osg::Group* group = new osg::Group;
+    _group = new osg::Group;
     
-    _player1.setCharacter("Catch/girl.png","girl", _originBaseLine, _widthBaseLine, 0.4f);
-    _player1.setLives("Catch/girl.png",_originBaseLine, osg::Vec3(0.0f,0.0f,100.0f),3);
-    _player1.setCatches("Catch/a.JPG",_originBaseLine+osg::Vec3(200.0f,0.0f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
-    group->addChild(_player1._character.get());
-    group->addChild(_player1._livesSwitch.get());
-    group->addChild(_player1._catchSwitch.get());
+//    _player1.setCharacter("Catch/girl.png","girl", _originBaseLine, _widthBaseLine, 0.4f);
+    _player1.setCharacter("Catch/gwen.png","girl", _originBaseLine + osg::Vec3(0.0f,-1.0f,0.0f), _widthBaseLine, 0.4f);
+    _player1.setLives("Catch/gwen.png",_originBaseLine+osg::Vec3(0.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
+    _player1.setCatches("Catch/broach.png",_originBaseLine+osg::Vec3(200.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
+    _group->addChild(_player1._character.get());
+    _group->addChild(_player1._livesSwitch.get());
+    _group->addChild(_player1._catchSwitch.get());
 
-    _player2.setCharacter("Catch/boy.png","boy", _originBaseLine, _widthBaseLine, 0.4f);
-    _player2.setLives("Catch/boy.png",_originBaseLine+osg::Vec3(900.0f,0.0f,000.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
-    _player2.setCatches("Catch/b.JPG",_originBaseLine+osg::Vec3(1100.0f,0.0f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
-    group->addChild(_player2._character.get());
-    group->addChild(_player2._livesSwitch.get());
-    group->addChild(_player2._catchSwitch.get());
-
+//    _player2.setCharacter("Catch/boy.png","boy", _originBaseLine, _widthBaseLine, 0.4f);
+//    _player2.setLives("Catch/boy.png",_originBaseLine+osg::Vec3(900.0f,0.0f,000.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
+    _player2.setCharacter("Catch/caitlin.png","boy", _originBaseLine + osg::Vec3(0.0f,-2.0f,0.0f), _widthBaseLine, 0.4f);
+    _player2.setLives("Catch/caitlin.png",_originBaseLine+osg::Vec3(900.0f,-0.5f,000.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
+    _player2.setCatches("Catch/broach.png",_originBaseLine+osg::Vec3(1100.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
+    _group->addChild(_player2._character.get());
+    _group->addChild(_player2._livesSwitch.get());
+    _group->addChild(_player2._catchSwitch.get());
     
+    
+    createNewCatchable();
+    createNewCatchable();
+    createNewCatchable();
+    createNewCatchable();
+
     // background
     {
         osg::Image* image = osgDB::readImageFile(_backgroundImageFile);
@@ -401,15 +732,32 @@ osg::Node* SlideEventHandler::createScene()
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(geometry);
 
-            group->addChild(geode);
+            _group->addChild(geode);
             
         }
     }
 
-
-    return group;
+    return _group.get();
 }
 
+void GameEventHandler::createNewCatchable()
+{
+    float ratio = ((float)rand() / (float)RAND_MAX);
+    float size = 100.0f*((float)rand() / (float)RAND_MAX);
+    float angle = osg::PI*0.25f + 0.5f*osg::PI*((float)rand() / (float)RAND_MAX);
+    float speed = 200.0f*((float)rand() / (float)RAND_MAX);
+
+    CatchableObject* catchableObject = new CatchableObject;
+    osg::Vec3 position = _origin+_height+_width*ratio + osg::Vec3(0.0f,-0.7f,0.0f);
+    osg::Vec3 velocity(-cosf(angle)*speed,0.0f,-sinf(angle)*speed);
+    //std::cout<<"angle = "<<angle<<" velocity="<<velocity<<std::endl;
+    catchableObject->setObject("Catch/a.png","boy",position,size,velocity);
+    _catchableObjects.push_back(catchableObject);
+
+    // catchableObject->explode();
+
+    _group->addChild(catchableObject->_object.get());
+}
 
 int main( int argc, char **argv )
 {
@@ -434,7 +782,7 @@ int main( int argc, char **argv )
     viewer.setUpViewer(osgProducer::Viewer::ESCAPE_SETS_DONE);
 
     // register the handler to add keyboard and mosue handling.
-    SlideEventHandler* seh = new SlideEventHandler();
+    GameEventHandler* seh = new GameEventHandler();
     viewer.getEventHandlerList().push_front(seh);
 
     std::string filename;

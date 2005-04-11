@@ -22,7 +22,7 @@ namespace osg {
 
 /** TexEnv encapsulates the OpenGL glTexEnv (texture environment) state.
 */
-class SG_EXPORT TexEnv : public StateAttribute
+class OSG_EXPORT TexEnv : public StateAttribute
 {
     public :
 

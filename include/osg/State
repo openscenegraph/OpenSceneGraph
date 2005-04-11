@@ -77,7 +77,7 @@ namespace osg {
   *   which typically stall the graphics pipeline (see, for instance,
   *   \c captureCurrentState() and \c getModelViewMatrix()).
   */
-class SG_EXPORT State : public Referenced
+class OSG_EXPORT State : public Referenced
 {
     public :
 

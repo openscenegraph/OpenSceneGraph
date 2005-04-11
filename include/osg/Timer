@@ -25,7 +25,7 @@ namespace osg {
 #endif
 
 /** Time stamper. */
-class SG_EXPORT Timer {
+class OSG_EXPORT Timer {
 
     public:
 

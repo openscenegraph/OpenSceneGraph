@@ -29,7 +29,7 @@ namespace osg {
 
 /** TexGen encapsulates the OpenGL glTexGen (texture coordinate generation)
   * state.*/
-class SG_EXPORT TexGen : public StateAttribute
+class OSG_EXPORT TexGen : public StateAttribute
 {
     public :
     

@@ -21,7 +21,7 @@ namespace osg {
 
 /** Projection nodes set up the frustum/orthographic projection used when rendering the scene.
 */
-class SG_EXPORT Projection : public Group
+class OSG_EXPORT Projection : public Group
 {
     public :
 

@@ -39,7 +39,7 @@ namespace osg {
     /**
      * Quicktime Image Stream class.
      */
-    class SG_EXPORT QuicktimeImageStream : public osg::ImageStream, public OpenThreads::Thread
+    class QuicktimeImageStream : public osg::ImageStream, public OpenThreads::Thread
     {
     public:
         QuicktimeImageStream(std::string fileName = "");

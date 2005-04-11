@@ -22,6 +22,7 @@
 //#define OSG_JAVA_BUILD
 
 #include <osg/Export>
+
 #ifdef OSG_JAVA_BUILD
 #include <NoodleGlue/Bridgable.h>
 #else
@@ -36,7 +37,7 @@ namespace osg {
 class DeleteHandler;
 
 /** Base class from providing referencing counted objects.*/
-class SG_EXPORT Referenced
+class OSG_EXPORT Referenced
 {
 
     public:
@@ -169,7 +170,7 @@ inline void Referenced::unref() const
 /** Java wrappers use the CBridgable base-class for referencing
   * and garbage collection.
   */
-class SG_EXPORT Referenced : public NoodleGlue::CBridgable 
+class OSG_EXPORT Referenced : public NoodleGlue::CBridgable 
 {
 	public:
 		/** Method not used in NoodleGlue referencing 

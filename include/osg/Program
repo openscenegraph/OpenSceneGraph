@@ -34,7 +34,7 @@ namespace osg {
 class State;
 class Shader;
 
-class SG_EXPORT GL2Extensions : public osg::Referenced
+class OSG_EXPORT GL2Extensions : public osg::Referenced
 {
     public:
 	GL2Extensions();
@@ -299,7 +299,7 @@ class SG_EXPORT GL2Extensions : public osg::Referenced
   * configuration.
   */
 
-class SG_EXPORT Program : public osg::StateAttribute
+class OSG_EXPORT Program : public osg::StateAttribute
 {
     public:
         Program();

@@ -23,7 +23,7 @@ namespace osg {
   * which represents a 4x4 transformation of its children from local coordinates
   * into the Transform's parent coordinates.
 */
-class SG_EXPORT MatrixTransform : public Transform
+class OSG_EXPORT MatrixTransform : public Transform
 {
     public :
 

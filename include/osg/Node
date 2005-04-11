@@ -44,7 +44,7 @@ class Transform;
 /** Base class for all internal nodes in the scene graph.
     Provides interface for most common node operations (Composite Pattern).
 */
-class SG_EXPORT Node : public Object
+class OSG_EXPORT Node : public Object
 {
     public:
 

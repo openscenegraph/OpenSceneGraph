@@ -25,7 +25,7 @@
 namespace osg {
 
 /** PointSprite base class which encapsulates enabling of point sprites .*/
-class SG_EXPORT PointSprite : public osg::StateAttribute {
+class OSG_EXPORT PointSprite : public osg::StateAttribute {
 public:
 
 	PointSprite() {}

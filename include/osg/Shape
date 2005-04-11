@@ -45,7 +45,7 @@ class ConstShapeVisitor;
   * Shapes are used to either for culling and collision detection or
   * to define the geometric shape of procedurally generate Geometry.
 */
-class SG_EXPORT Shape : public Object
+class OSG_EXPORT Shape : public Object
 {
     public:
 
@@ -474,7 +474,7 @@ class ConvexHull : public TriangleMesh
     	~ConvexHull() {}
 };
 
-class SG_EXPORT HeightField : public Shape
+class OSG_EXPORT HeightField : public Shape
 {
     public:
     

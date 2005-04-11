@@ -67,7 +67,7 @@ class StateSet;
 
 /** Base class for state attributes.
 */     
-class SG_EXPORT StateAttribute : public Object
+class OSG_EXPORT StateAttribute : public Object
 {
     public :
     

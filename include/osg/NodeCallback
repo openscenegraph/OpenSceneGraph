@@ -22,7 +22,7 @@ namespace osg {
 class Node;
 class NodeVisitor;
 
-class SG_EXPORT NodeCallback : public virtual Object {
+class OSG_EXPORT NodeCallback : public virtual Object {
 
     public :
     

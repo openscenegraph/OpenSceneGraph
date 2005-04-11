@@ -36,7 +36,7 @@ namespace osg {
     cloning and reference counting.
     Based on GOF Composite, Prototype and Template Method patterns.
 */
-class SG_EXPORT Object : public Referenced
+class OSG_EXPORT Object : public Referenced
 {
     public:
 

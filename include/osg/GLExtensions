@@ -37,7 +37,7 @@ namespace osg {
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
-extern SG_EXPORT bool isGLExtensionSupported(const char *extension);
+extern OSG_EXPORT bool isGLExtensionSupported(const char *extension);
 
 /** Return the address of the specified OpenGL function.
   * Return NULL if function not supported by OpenGL library.
@@ -88,10 +88,10 @@ inline void* getGLExtensionFuncPtr(const char *funcName)
   * The default setting of GLExtensionDisableString is obtained from the OSG_GL_EXTENSION_DISABLE
   * environmental variable.
 */
-extern SG_EXPORT void setGLExtensionDisableString(const std::string& disableString);
+extern OSG_EXPORT void setGLExtensionDisableString(const std::string& disableString);
 
 /** Get the list of extensions that are disabled for various OpenGL renderers. */
-extern SG_EXPORT std::string& getGLExtensionDisableString();
+extern OSG_EXPORT std::string& getGLExtensionDisableString();
 
 
 
@@ -111,7 +111,7 @@ inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFunc
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
 */
-extern SG_EXPORT bool isGLUExtensionSupported(const char *extension);
+extern OSG_EXPORT bool isGLUExtensionSupported(const char *extension);
 
 
 }

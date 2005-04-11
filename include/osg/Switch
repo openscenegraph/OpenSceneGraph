@@ -23,7 +23,7 @@ namespace osg {
   * differently at different times, for instance a switch could be used 
   * to represent the different states of a traffic light.
 */
-class SG_EXPORT Switch : public Group
+class OSG_EXPORT Switch : public Group
 {
     public :
         

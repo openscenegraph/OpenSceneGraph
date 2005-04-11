@@ -25,7 +25,7 @@ namespace osg {
 /** PositionAttitudeTransform - is a Transform. Sets the coordinate transform
     via a Vec3 position and Quat attitude.
 */
-class SG_EXPORT PositionAttitudeTransform : public Transform
+class OSG_EXPORT PositionAttitudeTransform : public Transform
 {
     public :
         PositionAttitudeTransform();

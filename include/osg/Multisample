@@ -39,7 +39,7 @@
 namespace osg {
 
 /** Multisample - encapsulates the OpenGL Multisample state.*/
-class SG_EXPORT Multisample : public StateAttribute
+class OSG_EXPORT Multisample : public StateAttribute
 {
     public :
 
@@ -96,7 +96,7 @@ class SG_EXPORT Multisample : public StateAttribute
         /** Extensions class which encapsulates the querying of extensions and
           * associated function pointers, and provide convenience wrappers to 
           * check for the extensions or use the associated functions.*/        
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

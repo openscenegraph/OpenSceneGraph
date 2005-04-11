@@ -24,7 +24,7 @@
 namespace osg {
 
 /** Encapsulates OpenGL blend/transparency state. */
-class SG_EXPORT BlendColor : public StateAttribute
+class OSG_EXPORT BlendColor : public StateAttribute
 {
     public :
 
@@ -67,7 +67,7 @@ class SG_EXPORT BlendColor : public StateAttribute
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convinience wrappers for
           * calling extension functions. */        
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

@@ -32,7 +32,7 @@ class ConstArrayVisitor;
 class ValueVisitor;
 class ConstValueVisitor;
 
-class SG_EXPORT Array : public Object
+class OSG_EXPORT Array : public Object
 {
 
     public:
@@ -164,7 +164,7 @@ class TemplateArray : public Array, public std::vector<T>
         virtual ~TemplateArray() {}
 };
 
-class SG_EXPORT IndexArray : public Array
+class OSG_EXPORT IndexArray : public Array
 {
 
     public:

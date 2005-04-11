@@ -25,7 +25,7 @@ class BoundingSphere;
 
 /** A class for representing components of convex clipping volumes.
   * ConvexPlanarPolygon normals should point inwards (into the volume) */
-class SG_EXPORT ConvexPlanarPolygon
+class OSG_EXPORT ConvexPlanarPolygon
 {
 
     public:

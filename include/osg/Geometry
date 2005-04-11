@@ -24,7 +24,7 @@
 namespace osg {
 
 
-class SG_EXPORT Geometry : public Drawable
+class OSG_EXPORT Geometry : public Drawable
 {
     public:
 
@@ -53,7 +53,7 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-        struct SG_EXPORT ArrayData
+        struct OSG_EXPORT ArrayData
         {
             ArrayData():
                 binding(BIND_OFF),
@@ -95,7 +95,7 @@ class SG_EXPORT Geometry : public Drawable
             mutable unsigned int    offset;
         };
         
-        struct SG_EXPORT Vec3ArrayData
+        struct OSG_EXPORT Vec3ArrayData
         {
             Vec3ArrayData():
                 binding(BIND_OFF),
@@ -396,7 +396,7 @@ class SG_EXPORT Geometry : public Drawable
 /** Convenience function to be used for creating quad geometry with texture coords.
   * Tex coords go from left bottom (l,b) to right top (r,t).
 */
-extern SG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float l, float b, float r, float t);
+extern OSG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float l, float b, float r, float t);
 
 /** Convenience function to be used for creating quad geometry with texture coords.
   * Tex coords go from bottom left (0,0) to top right (s,t).

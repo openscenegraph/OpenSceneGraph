@@ -20,7 +20,7 @@
 namespace osg
 {
 
-class SG_EXPORT PolygonStipple : public StateAttribute
+class OSG_EXPORT PolygonStipple : public StateAttribute
 {
     public :
 

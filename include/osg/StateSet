@@ -42,7 +42,7 @@ namespace osg {
   * Indeed, this practice is recommended whenever possible,
   * as this minimizes expensive state changes in the graphics pipeline.
 */
-class SG_EXPORT StateSet : public Object
+class OSG_EXPORT StateSet : public Object
 {
     public :
 

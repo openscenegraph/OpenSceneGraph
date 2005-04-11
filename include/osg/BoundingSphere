@@ -27,7 +27,7 @@ class BoundingBox;
   * culling but generally will not cull as aggressively because it encloses a
   * greater volume.
 */
-class SG_EXPORT BoundingSphere
+class OSG_EXPORT BoundingSphere
 {
     public:
         

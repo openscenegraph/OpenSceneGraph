@@ -22,7 +22,7 @@ namespace osg {
 
 /** A Polytope class for representing convex clipping volumes made up of a set of planes.
   * When adding planes, their normals should point inwards (into the volume) */
-class SG_EXPORT Polytope
+class OSG_EXPORT Polytope
 {
 
     public:

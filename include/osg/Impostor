@@ -58,7 +58,7 @@ namespace osg {
   * 4) Shrinking of the ImpostorSprite size to more closely fit the underlying
   * geometry.
   */
-class SG_EXPORT Impostor : public LOD
+class OSG_EXPORT Impostor : public LOD
 {
     public :
         Impostor();

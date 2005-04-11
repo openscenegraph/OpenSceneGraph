@@ -27,7 +27,7 @@ class ApplicationUsage;
 
 /** DisplaySettings class for encapsulating what visuals are required and
   * have been set up, and the status of stereo viewing.*/
-class SG_EXPORT DisplaySettings : public osg::Referenced
+class OSG_EXPORT DisplaySettings : public osg::Referenced
 {
 
     public:

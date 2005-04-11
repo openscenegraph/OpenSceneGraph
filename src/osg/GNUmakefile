@@ -110,7 +110,7 @@ CXXFILES =\
 	VertexProgram.cpp\
 	Viewport.cpp\
 
-DEF     += -DSG_LIBRARY
+DEF     += -DOSG_LIBRARY
 
 LIBS    += $(GL_LIBS) $(OTHER_LIBS)
 

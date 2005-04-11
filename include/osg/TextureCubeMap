@@ -23,7 +23,7 @@
 namespace osg {
 
 /** TextureCubeMap state class which encapsulates OpenGL texture cubemap functionality. */
-class SG_EXPORT TextureCubeMap : public Texture
+class OSG_EXPORT TextureCubeMap : public Texture
 {
 
     public :
@@ -88,7 +88,7 @@ class SG_EXPORT TextureCubeMap : public Texture
         }
 
 
-        class SG_EXPORT SubloadCallback : public Referenced
+        class OSG_EXPORT SubloadCallback : public Referenced
         {
             public:
                 virtual void load(const TextureCubeMap& texture,State& state) const = 0;
@@ -120,7 +120,7 @@ class SG_EXPORT TextureCubeMap : public Texture
           * associated function pointers, and provides convinience wrappers to 
           * check for the extensions or use the associated functions.
         */
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

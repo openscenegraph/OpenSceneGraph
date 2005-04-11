@@ -57,7 +57,7 @@ unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
     return s_minimumNumberOfTextureObjectsToRetainInCache;
 }
 
-class SG_EXPORT TextureObjectManager : public osg::Referenced
+class TextureObjectManager : public osg::Referenced
 {
 public:
 

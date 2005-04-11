@@ -21,7 +21,7 @@ namespace osg {
 
 /** Class which encapsulates glShadeModel(..).
 */     
-class SG_EXPORT ShadeModel : public StateAttribute
+class OSG_EXPORT ShadeModel : public StateAttribute
 {
     public :
     

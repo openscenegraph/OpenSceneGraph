@@ -112,7 +112,7 @@ namespace osg {
 
 
 /** FragmentProgram - encapsulates the OpenGL ARB fragment program state.*/
-class SG_EXPORT FragmentProgram : public StateAttribute
+class OSG_EXPORT FragmentProgram : public StateAttribute
 {
     public:
 
@@ -228,7 +228,7 @@ class SG_EXPORT FragmentProgram : public StateAttribute
         /** Extensions class which encapsulates the querying of extensions and
           * associated function pointers, and provide convenience wrappers to 
           * check for the extensions or use the associated functions.*/        
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

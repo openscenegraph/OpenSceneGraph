@@ -53,7 +53,7 @@ class CoordinateSystemNode;
     myVisitor.apply(*root).  The later method will bypass the double
     dispatch and the appropriate NodeVisitor::apply(..) method will
     not be called. */ 
-class SG_EXPORT NodeVisitor : public virtual Referenced
+class OSG_EXPORT NodeVisitor : public virtual Referenced
 {
     public:
 

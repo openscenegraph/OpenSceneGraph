@@ -27,7 +27,7 @@
 namespace osg {
 
 /** Texture state class which encapsulates OpenGL texture functionality. */
-class SG_EXPORT TextureRectangle : public Texture
+class OSG_EXPORT TextureRectangle : public Texture
 {
 
     public :

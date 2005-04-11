@@ -24,7 +24,7 @@ namespace osg {
     differently at different times, for instance a OccluderNode could be used 
     to represent the different states of a traffic light.
 */
-class SG_EXPORT OccluderNode : public Group
+class OSG_EXPORT OccluderNode : public Group
 {
     public :
         

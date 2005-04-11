@@ -30,7 +30,7 @@
 namespace osg {
 
 /** Encapsulates OpenGL blend/transparency state. */
-class SG_EXPORT BlendFunc : public StateAttribute
+class OSG_EXPORT BlendFunc : public StateAttribute
 {
     public :
 

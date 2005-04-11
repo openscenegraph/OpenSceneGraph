@@ -80,7 +80,7 @@ namespace osg
 
 class State;
 
-class SG_EXPORT BufferObject : public Object
+class OSG_EXPORT BufferObject : public Object
 {
     public:
 
@@ -141,7 +141,7 @@ class SG_EXPORT BufferObject : public Object
         /** Extensions class which encapsulates the querying of extensions and
         * associated function pointers, and provide convenience wrappers to
         * check for the extensions or use the associated functions.*/
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
         public:
             Extensions();
@@ -226,7 +226,7 @@ class SG_EXPORT BufferObject : public Object
 };
 
 class Image;
-class SG_EXPORT PixelBufferObject : public BufferObject
+class OSG_EXPORT PixelBufferObject : public BufferObject
 {
     public:
 

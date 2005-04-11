@@ -28,7 +28,7 @@ namespace osg {
 
 
 /** Fog - encapsulates OpenGL fog state. */ 
-class SG_EXPORT Fog : public StateAttribute
+class OSG_EXPORT Fog : public StateAttribute
 {
     public :
 

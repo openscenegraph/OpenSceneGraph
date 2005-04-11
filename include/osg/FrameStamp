@@ -31,7 +31,7 @@ namespace osg
   * and other machines when using a graphics cluster.  Note the calendar
   * time can be an artificial simulation time or capture the real time
   * of day etc.*/ 
-class SG_EXPORT FrameStamp : public Referenced
+class OSG_EXPORT FrameStamp : public Referenced
 {
     public:
 

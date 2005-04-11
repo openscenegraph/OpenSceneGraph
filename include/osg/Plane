@@ -26,7 +26,7 @@
 namespace osg {
 
 /** A plane class. It can be used to represent an infinite plane.*/
-class SG_EXPORT Plane
+class OSG_EXPORT Plane
 {
 
     public:

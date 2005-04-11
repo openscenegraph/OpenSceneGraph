@@ -23,7 +23,7 @@ namespace osg {
 
 class Matrixf;
 
-class SG_EXPORT Matrixf
+class OSG_EXPORT Matrixf
 {
     public:
     

@@ -233,7 +233,7 @@ class PrimitiveSet : public Object
         unsigned int    _modifiedCount;
 };
 
-class SG_EXPORT DrawArrays : public PrimitiveSet
+class OSG_EXPORT DrawArrays : public PrimitiveSet
 {
     public:
 
@@ -289,7 +289,7 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
         GLsizei _count;
 };
 
-class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
+class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
 {
     public:
 
@@ -362,7 +362,7 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
         GLint   _first;
 };
 
-class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
+class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
 {
     public:
 
@@ -409,7 +409,7 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
 };
 
 
-class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
+class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
 {
     public:
 
@@ -460,7 +460,7 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual ~DrawElementsUShort();
 };
 
-class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
+class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
 {
     public:
 

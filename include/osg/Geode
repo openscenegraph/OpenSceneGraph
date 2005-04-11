@@ -25,7 +25,7 @@ namespace osg {
   * are represented by objects from the \c Drawable class, so a \c Geode is a
   * \c Node whose purpose is grouping <tt>Drawable</tt>s.
 */
-class SG_EXPORT Geode : public Node
+class OSG_EXPORT Geode : public Node
 {
     public:
 

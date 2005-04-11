@@ -129,7 +129,7 @@ namespace osg {
 
 class GL2Extensions;
 
-class SG_EXPORT Uniform : public Object
+class OSG_EXPORT Uniform : public Object
 {
     public:
 	enum Type {

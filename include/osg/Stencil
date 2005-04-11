@@ -20,7 +20,7 @@ namespace osg {
 
 /** Encapsulate OpenGL glStencilFunc/Op/Mask functions.
 */     
-class SG_EXPORT Stencil : public StateAttribute
+class OSG_EXPORT Stencil : public StateAttribute
 {
     public :
     

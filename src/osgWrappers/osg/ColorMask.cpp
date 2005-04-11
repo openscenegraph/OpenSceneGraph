@@ -28,7 +28,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ColorMask)
 	Method0(osg::StateAttribute::Type, getType);
 	Method1(int, compare, IN, const osg::StateAttribute &, sa);
 	Method4(void, setMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
-	Method1(void, getRedMask, IN, bool, mask);
+	Method1(void, setRedMask, IN, bool, mask);
 	Method0(bool, getRedMask);
 	Method1(void, setGreenMask, IN, bool, mask);
 	Method0(bool, getGreenMask);

@@ -385,8 +385,13 @@ class SG_EXPORT Program : public osg::StateAttribute
 
 
     protected:
-	/** PerContextProgram (PCP) is an OSG-internal encapsulation of glPrograms per-GL context.  */
 
+        // make PerContextProgram a friend to allow it access Program's protected
+        // methods and member variables.
+        class PerContextProgram;
+        friend class PerContextProgram;
+
+	/** PerContextProgram (PCP) is an OSG-internal encapsulation of glPrograms per-GL context.  */
 	class PerContextProgram : public osg::Referenced
 	{
 	    public:
@@ -430,9 +435,6 @@ class SG_EXPORT Program : public osg::StateAttribute
 		PerContextProgram& operator=(const PerContextProgram&);	// disallowed
 	};
 
-        // make PerContextProgram a friend to allow it access Program's protected
-        // methods and member variables.
-        friend class PerContextProgram;
 
     protected:	/*methods*/
         virtual ~Program();

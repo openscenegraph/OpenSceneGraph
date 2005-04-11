@@ -280,7 +280,7 @@ public:
     geoBehaviourCB() { }
     ~geoBehaviourCB() { }
     void addBehaviour(geoBehaviour *gb) {gblist.push_back(gb);}
-    virtual void geoBehaviourCB::operator() (osg::Node *node, osg::NodeVisitor* nv);
+    virtual void operator() (osg::Node *node, osg::NodeVisitor* nv);
 private:
     std::vector<geoBehaviour *> gblist;
 };

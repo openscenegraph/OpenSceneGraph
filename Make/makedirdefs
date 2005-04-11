@@ -24,14 +24,14 @@ SRC_DIRS = \
 	osgFX\
 	osgProducer\
 
+ifeq ($(GDAL_INSTALLED),yes)
+SRC_DIRS += osgTerrain
+endif
+
 ifeq ($(COMPILE_INTROSPECTION),yes)
 SRC_DIRS += \
         osgIntrospection\
 	osgWrappers
-endif
-
-ifeq ($(GDAL_INSTALLED),yes)
-SRC_DIRS += osgTerrain
 endif
 
 SRC_DIRS += \

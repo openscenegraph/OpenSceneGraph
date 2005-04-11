@@ -12,6 +12,7 @@
 */
 #include <osg/PrimitiveSet>
 #include <osg/BufferObject>
+#include <osg/State>
 
 using namespace osg;
 

@@ -1992,7 +1992,7 @@ void Program::dirtyProgram()
 }
 
 
-void Program::releaseGLObjects(osg::State* state) const
+void Program::releaseGLObjects(osg::State* /*state*/) const
 {
     // TODO
 }
@@ -2108,7 +2108,7 @@ Program::ActiveUniform::ActiveUniform( const char* name, GLenum type, GLint loc 
 {
 }
 
-void Program::ActiveUniform::applyData( const GL2Extensions* ext, GLuint prog )
+void Program::ActiveUniform::applyData( const GL2Extensions* ext, GLuint /*prog*/ )
 {
     switch( repType(getType()) )
     {

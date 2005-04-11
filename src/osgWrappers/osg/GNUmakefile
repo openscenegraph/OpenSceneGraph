@@ -121,6 +121,8 @@ CXXFILES =\
 
 LIBS   += -losg -losgIntrospection $(OTHER_LIBS)
 
+OPTF = -O
+
 TARGET_BASENAME = osg
 include $(TOPDIR)/Make/cygwin_wrapper_def
 WRAPPER = $(WRAPPER_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)

@@ -30,7 +30,7 @@ namespace osg {
   * AnimationPathCallback can be attached directly to Transform nodes to
   * move subgraphs around the scene.
 */
-class SG_EXPORT AnimationPath : public virtual osg::Object
+class OSG_EXPORT AnimationPath : public virtual osg::Object
 {
     public:
     
@@ -201,7 +201,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
 };
 
 
-class SG_EXPORT AnimationPathCallback : public NodeCallback
+class OSG_EXPORT AnimationPathCallback : public NodeCallback
 {
     public:
 

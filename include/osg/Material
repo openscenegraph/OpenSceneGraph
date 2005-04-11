@@ -19,7 +19,7 @@
 
 namespace osg {
 /** Material - encapsulates OpenGL glMaterial state.*/
-class SG_EXPORT Material : public StateAttribute
+class OSG_EXPORT Material : public StateAttribute
 {
     public :
 

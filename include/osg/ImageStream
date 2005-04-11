@@ -21,7 +21,7 @@ namespace osg {
 /**
   * Image Stream class.
 */
-class SG_EXPORT ImageStream : public Image
+class OSG_EXPORT ImageStream : public Image
 {
     public:
         ImageStream();

@@ -19,7 +19,7 @@
 
 namespace osg {
 
-class SG_EXPORT LightModel : public StateAttribute
+class OSG_EXPORT LightModel : public StateAttribute
 {
     public :
 

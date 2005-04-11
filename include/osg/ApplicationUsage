@@ -22,7 +22,7 @@
 
 namespace osg {
 
-class SG_EXPORT ApplicationUsage
+class OSG_EXPORT ApplicationUsage
 {
     public:
         

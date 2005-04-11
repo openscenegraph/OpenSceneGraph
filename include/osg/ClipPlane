@@ -22,7 +22,7 @@ namespace osg {
 
 /** Encapsulates OpenGL glClipPlane().
 */
-class SG_EXPORT ClipPlane : public StateAttribute
+class OSG_EXPORT ClipPlane : public StateAttribute
 {
     public :
 

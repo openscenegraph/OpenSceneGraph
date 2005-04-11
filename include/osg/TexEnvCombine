@@ -59,7 +59,7 @@ namespace osg {
 
 /** TexEnvCombine encapsulates the OpenGL glTexEnvCombine (texture
   * environment) state. */
-class SG_EXPORT TexEnvCombine : public StateAttribute
+class OSG_EXPORT TexEnvCombine : public StateAttribute
 {
     public :
 

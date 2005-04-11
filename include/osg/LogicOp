@@ -19,7 +19,7 @@
 namespace osg {
 
 /** Encapsulates OpenGL LogicOp state. */
-class SG_EXPORT LogicOp : public StateAttribute
+class OSG_EXPORT LogicOp : public StateAttribute
 {
     public :
 

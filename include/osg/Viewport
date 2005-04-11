@@ -20,7 +20,7 @@
 namespace osg {
 
 /** Encapsulate OpenGL glViewport. */     
-class SG_EXPORT Viewport : public StateAttribute
+class OSG_EXPORT Viewport : public StateAttribute
 {
     public :
         Viewport();

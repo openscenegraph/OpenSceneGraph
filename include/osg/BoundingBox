@@ -26,7 +26,7 @@ class BoundingSphere;
   * Bounds leaf objects in a scene such as osg::Drawable objects. Used for frustum
   * culling etc.
 */
-class SG_EXPORT BoundingBox
+class OSG_EXPORT BoundingBox
 {
     public:
     

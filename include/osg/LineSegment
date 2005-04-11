@@ -21,7 +21,7 @@
 namespace osg {
 
 /** LineSegment class for representing a line segment. */
-class SG_EXPORT LineSegment : public Referenced
+class OSG_EXPORT LineSegment : public Referenced
 {
     public:
 

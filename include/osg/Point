@@ -20,7 +20,7 @@
 namespace osg {
 
 /** Point - encapsulates the OpenGL point smoothing and size state.*/
-class SG_EXPORT Point : public StateAttribute
+class OSG_EXPORT Point : public StateAttribute
 {
     public :
 

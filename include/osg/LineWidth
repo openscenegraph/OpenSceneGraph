@@ -19,7 +19,7 @@
 namespace osg {
 
 /** LineWidth - encapsulates the OpenGL glLineWidth for setting the width of lines in pixels. */
-class SG_EXPORT LineWidth : public StateAttribute
+class OSG_EXPORT LineWidth : public StateAttribute
 {
     public :
 

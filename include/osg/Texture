@@ -184,7 +184,7 @@ namespace osg {
 /** Texture pure virtual base class that encapsulates OpenGl texture
   * functionality common to the various types of OSG textures.
 */
-class SG_EXPORT Texture : public osg::StateAttribute
+class OSG_EXPORT Texture : public osg::StateAttribute
 {
 
     public :
@@ -411,7 +411,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convinience wrappers for
           * calling extension functions. */        
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

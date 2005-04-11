@@ -26,7 +26,7 @@ class Matrixf;
 class Matrixd;
 
 /** A quaternion class. It can be used to represent an orientation in 3D space.*/
-class SG_EXPORT Quat
+class OSG_EXPORT Quat
 {
 
     public:

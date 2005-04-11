@@ -21,7 +21,7 @@
 namespace osg {
 
 /** Light state class which encapsulates OpenGL glLight() functionality. */
-class SG_EXPORT Light : public StateAttribute
+class OSG_EXPORT Light : public StateAttribute
 {
     public :
 

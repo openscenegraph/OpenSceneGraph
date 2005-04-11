@@ -112,7 +112,7 @@ namespace osg {
 
 
 /** VertexProgram - encapsulates the OpenGL ARB vertex program state. */
-class SG_EXPORT VertexProgram : public StateAttribute
+class OSG_EXPORT VertexProgram : public StateAttribute
 {
     public:
 
@@ -231,7 +231,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
           * associated function pointers, and provide convenience wrappers to 
           * check for the extensions or use the associated functions.
         */
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

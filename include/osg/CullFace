@@ -21,7 +21,7 @@ namespace osg {
 
 /** Class to globally enable/disable OpenGL's polygon culling mode.
  */     
-class SG_EXPORT CullFace : public StateAttribute
+class OSG_EXPORT CullFace : public StateAttribute
 {
     public :
     

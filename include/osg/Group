@@ -25,7 +25,7 @@ typedef std::vector< ref_ptr<Node> > NodeList;
   * Children are reference counted. This allows children to be shared
   * with memory management handled automatically via osg::Referenced.
 */
-class SG_EXPORT Group : public Node
+class OSG_EXPORT Group : public Node
 {
     public :
 

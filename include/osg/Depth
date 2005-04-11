@@ -20,7 +20,7 @@ namespace osg {
 
 /** Encapsulate OpenGL glDepthFunc/Mask/Range functions.
 */     
-class SG_EXPORT Depth : public StateAttribute
+class OSG_EXPORT Depth : public StateAttribute
 {
     public :
     

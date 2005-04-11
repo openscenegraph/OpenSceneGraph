@@ -39,13 +39,13 @@ enum NotifySeverity {
 /** set the notify level, overriding the default or the value set by
   * the environmental variable OSGNOTIFYLEVEL.
   */
-extern SG_EXPORT void setNotifyLevel(NotifySeverity severity);
+extern OSG_EXPORT void setNotifyLevel(NotifySeverity severity);
 
 /** get the notify level. */
-extern SG_EXPORT NotifySeverity getNotifyLevel();
+extern OSG_EXPORT NotifySeverity getNotifyLevel();
 
 /** initialize notify level. */
-extern SG_EXPORT bool initNotifyLevel();
+extern OSG_EXPORT bool initNotifyLevel();
 
 /** notify messaging function for providing fatal through to verbose
   * debugging messages.  Level of messages sent to the console can
@@ -62,7 +62,7 @@ extern SG_EXPORT bool initNotifyLevel();
   * stream (like cout) i.e osg::notify(osg::DEBUG) << "Hello Bugs!"<<endl;
   */
   
-extern SG_EXPORT std::ostream& notify(const NotifySeverity severity);
+extern OSG_EXPORT std::ostream& notify(const NotifySeverity severity);
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 

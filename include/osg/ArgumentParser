@@ -25,11 +25,11 @@ namespace osg {
 // forward declare
 class ApplicationUsage;
 
-class SG_EXPORT ArgumentParser
+class OSG_EXPORT ArgumentParser
 {
     public:
 
-        class SG_EXPORT Parameter
+        class OSG_EXPORT Parameter
         {
         public:
             enum ParameterType

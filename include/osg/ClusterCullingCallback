@@ -22,7 +22,7 @@ namespace osg {
 /** Implements cluster culling to cull back facing drawables. Derived from
   * Drawable::CullCallback.
 */
-class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback, public NodeCallback
+class OSG_EXPORT ClusterCullingCallback : public Drawable::CullCallback, public NodeCallback
 {
     public:
 

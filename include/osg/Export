@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_EXPORT
-#define OSG_EXPORT 1
+#ifndef OSG_EXPORT_
+#define OSG_EXPORT_ 1
 
 // define USE_DEPRECATED_API is used to include in API which is being fazed out
 // if you can compile your apps with this turned off you are
@@ -30,13 +30,13 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-	#  ifdef SG_LIBRARY
-	#    define SG_EXPORT   __declspec(dllexport)
+	#  ifdef OSG_LIBRARY
+	#    define OSG_EXPORT   __declspec(dllexport)
 	#  else
-	#    define SG_EXPORT   __declspec(dllimport)
+	#    define OSG_EXPORT   __declspec(dllimport)
 	#  endif /* SG_LIBRARY */
 #else
-	#  define SG_EXPORT
+	#  define OSG_EXPORT
 #endif  
 
 // set up define for whether member templates are supported by VisualStudio compilers.

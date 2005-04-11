@@ -21,7 +21,7 @@ namespace osg {
 
 /** State Class for setting OpenGL's polygon culling mode.
 */     
-class SG_EXPORT PolygonMode : public StateAttribute
+class OSG_EXPORT PolygonMode : public StateAttribute
 {
     public :
     

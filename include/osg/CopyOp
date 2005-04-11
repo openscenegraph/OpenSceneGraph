@@ -33,7 +33,7 @@ class Shape;
 
 /** Copy Op(erator) used to control whether shallow or deep copy is used
   * during copy construction and clone operation.*/
-class SG_EXPORT CopyOp
+class OSG_EXPORT CopyOp
 {
 
     public:

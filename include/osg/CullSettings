@@ -23,7 +23,7 @@ namespace osg {
 class ArgumentParser;
 class ApplicationUsage;
 
-class SG_EXPORT CullSettings
+class OSG_EXPORT CullSettings
 {
     public:
 

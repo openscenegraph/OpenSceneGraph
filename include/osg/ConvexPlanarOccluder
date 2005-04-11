@@ -23,7 +23,7 @@ class OccluderVolume;
 
 /** A class for representing convex clipping volumes made up of several ConvexPlanarPolygon.
   * When adding polygons, their normals should point inwards (into the volume) */
-class SG_EXPORT ConvexPlanarOccluder : public Object
+class OSG_EXPORT ConvexPlanarOccluder : public Object
 {
 
     public:

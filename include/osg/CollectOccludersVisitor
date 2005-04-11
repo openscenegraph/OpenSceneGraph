@@ -21,7 +21,7 @@
 
 namespace osg {
 
-class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::CullStack
+class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::CullStack
 {
     public:
 

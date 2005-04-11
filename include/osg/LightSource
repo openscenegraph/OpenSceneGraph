@@ -21,7 +21,7 @@
 namespace osg {
 
 /** Leaf Node for defining a light in the scene. */
-class SG_EXPORT LightSource : public Group
+class OSG_EXPORT LightSource : public Group
 {
     public:
     

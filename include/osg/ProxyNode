@@ -20,7 +20,7 @@ namespace osg {
 
 /** ProxyNode.
 */
-class SG_EXPORT ProxyNode : public Group
+class OSG_EXPORT ProxyNode : public Group
 {
     public :
     

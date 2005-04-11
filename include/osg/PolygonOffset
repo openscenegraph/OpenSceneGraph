@@ -19,7 +19,7 @@
 namespace osg {
 
 /** PolygonOffset - encapsulates the OpenGL glPolygonOffset state.*/
-class SG_EXPORT PolygonOffset : public StateAttribute
+class OSG_EXPORT PolygonOffset : public StateAttribute
 {
     public :
 

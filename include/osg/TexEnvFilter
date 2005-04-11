@@ -26,7 +26,7 @@
 namespace osg {
 
 /** TexEnvFilter - encapsulates the OpenGL glTexEnv (GL_TEXTURE_FILTER_CONTROL) state.*/
-class SG_EXPORT TexEnvFilter : public StateAttribute
+class OSG_EXPORT TexEnvFilter : public StateAttribute
 {
   public:
     TexEnvFilter(float lodBias = 0.0f);

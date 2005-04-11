@@ -23,7 +23,7 @@ namespace osg {
   * children to face the eye point. Typical uses incllude trees and
   * particle explosions,
 */
-class SG_EXPORT Billboard : public Geode
+class OSG_EXPORT Billboard : public Geode
 {
     public:
 

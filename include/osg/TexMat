@@ -21,7 +21,7 @@ namespace osg {
 
 /** A texture matrix state class that encapsulates OpenGL texture matrix
   * functionality. */
-class SG_EXPORT TexMat : public StateAttribute
+class OSG_EXPORT TexMat : public StateAttribute
 {
     public :
 

@@ -27,7 +27,7 @@ namespace osg {
   * children in render bin -1 to ensure that children are rendered prior to
   * the rest of the scene graph.
 */
-class SG_EXPORT ClearNode : public Group
+class OSG_EXPORT ClearNode : public Group
 {
     public :
         

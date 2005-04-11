@@ -22,7 +22,7 @@ namespace osg {
 
 /** DrawPixels is an osg::Drawable subclass which encapsulates the drawing of
   * images using glDrawPixels.*/
-class SG_EXPORT DrawPixels : public Drawable
+class OSG_EXPORT DrawPixels : public Drawable
 {
     public:
 

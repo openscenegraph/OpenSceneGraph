@@ -21,7 +21,7 @@ namespace osg {
 /** Sequence is a Group node which allows automatic, time based
     switching between children.
 */
-class SG_EXPORT Sequence : public Group
+class OSG_EXPORT Sequence : public Group
 {
 public :
         

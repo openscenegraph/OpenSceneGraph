@@ -49,7 +49,7 @@
 namespace osg {
 
 /** Image class for encapsulating the storage texture image data. */
-class SG_EXPORT Image : public Object
+class OSG_EXPORT Image : public Object
 {
 
     public :
@@ -296,12 +296,12 @@ class Geode;
   * to return for readNode().
   * Use the image's s and t values to scale the dimensions of the image.
 */
-extern SG_EXPORT Geode* createGeodeForImage(Image* image);
+extern OSG_EXPORT Geode* createGeodeForImage(Image* image);
 /** Convenience function to be used by image loaders to generate a valid geode
   * to return for readNode().
   * Use the specified s and t values to scale the dimensions of the image.
 */
-extern SG_EXPORT Geode* createGeodeForImage(Image* image,float s,float t);
+extern OSG_EXPORT Geode* createGeodeForImage(Image* image,float s,float t);
 
 }
 

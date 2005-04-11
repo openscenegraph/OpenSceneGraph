@@ -23,7 +23,7 @@ namespace osg {
 /** AutoTransform is a derived form of Transform that automatically
   * scales or rotates to keep its children aligned with screen coordinates.
 */
-class SG_EXPORT AutoTransform : public Transform
+class OSG_EXPORT AutoTransform : public Transform
 {
     public :
         AutoTransform();

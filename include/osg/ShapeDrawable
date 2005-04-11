@@ -125,7 +125,7 @@ class TessellationHints : public Object
  *  of code.
  *  @todo \c ShapeDrawable currently doesn't render <tt>InfinitePlane</tt>s.
  */
-class SG_EXPORT ShapeDrawable : public Drawable
+class OSG_EXPORT ShapeDrawable : public Drawable
 {
     public:
 

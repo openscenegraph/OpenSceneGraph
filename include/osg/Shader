@@ -35,7 +35,7 @@ namespace osg {
   * configuration.
   */
 
-class SG_EXPORT Shader : public osg::Object
+class OSG_EXPORT Shader : public osg::Object
 {
     public:
 

@@ -80,7 +80,7 @@ typedef Matrixd CoordinateFrame;
 
 /** CoordinateSystem encapsulate the coordinate system that is associated with objects in a scene.
     For an overview of common earth bases coordinate systems see http://www.colorado.edu/geography/gcraft/notes/coordsys/coordsys_f.html */
-class SG_EXPORT CoordinateSystemNode : public Group
+class OSG_EXPORT CoordinateSystemNode : public Group
 {
     public:
 

@@ -41,7 +41,7 @@ namespace osg {
     /**
      * MPEG1/2 Image Stream class.
      */
-    class SG_EXPORT MpegImageStream : public osg::ImageStream, public OpenThreads::Thread
+    class MpegImageStream : public osg::ImageStream, public OpenThreads::Thread
     {
     public:
         MpegImageStream(const char* fileName = NULL);

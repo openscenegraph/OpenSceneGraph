@@ -78,7 +78,7 @@ class NodeVisitor;
  *  <tt>Geode</tt>s, so that the same geometry (loaded to memory just once) can
  *  be used in different parts of the scene graph.
 */
-class SG_EXPORT Drawable : public Object
+class OSG_EXPORT Drawable : public Object
 {
     public:
 
@@ -489,7 +489,7 @@ class SG_EXPORT Drawable : public Object
         /** Extensions class which encapsulates the querying of extensions and
         * associated function pointers, and provide convenience wrappers to
         * check for the extensions or use the associated functions.*/
-        class SG_EXPORT Extensions : public osg::Referenced
+        class OSG_EXPORT Extensions : public osg::Referenced
         {
         public:
             Extensions();

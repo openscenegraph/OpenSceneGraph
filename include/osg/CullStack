@@ -23,7 +23,7 @@ namespace osg {
 
 /** A CullStack class which accumulates the current project, modelview matrices
 and the CullingSet. */
-class SG_EXPORT CullStack : public osg::CullSettings
+class OSG_EXPORT CullStack : public osg::CullSettings
 {
 
     public:

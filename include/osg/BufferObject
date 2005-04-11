@@ -14,7 +14,8 @@
 #ifndef OSG_BUFFEROBJECT
 #define OSG_BUFFEROBJECT 1
 
-#include <osg/State>
+#include <osg/GL>
+#include <osg/Object>
 #include <osg/buffered_value>
 
 #ifndef GL_ARB_vertex_buffer_object
@@ -76,6 +77,8 @@
 
 namespace osg 
 {
+
+class State;
 
 class SG_EXPORT BufferObject : public Object
 {

@@ -19,6 +19,7 @@
 #include <osg/GLExtensions>
 #include <osg/Timer>
 #include <osg/Image>
+#include <osg/State>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>

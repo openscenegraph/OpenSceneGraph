@@ -192,24 +192,6 @@ class SG_EXPORT StateAttribute : public Object
         /** Simple pairing between an attribute type and the member within that attribute type group.*/
         typedef std::pair<Type,unsigned int> TypeMemberPair;
 
-/*        
-        struct TypeMember
-        {
-            inline TypeMember(Type type, unsigned int member=0):
-                _type(type),
-                _member(member) {}
-                
-            inline bool operator < (const TypeMember& tm) const
-            {
-                return (_type<tm._type) ? true : ( (tm._type<_type) ? false : (_member<tm._member) );
-            }
-        
-            Type            _type;
-            unsigned int    _member;
-        };
-*/        
-
-
         StateAttribute() { setDataVariance(STATIC); }
         
         StateAttribute(const StateAttribute& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 

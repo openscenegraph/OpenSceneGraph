@@ -353,8 +353,8 @@ ifeq ("$(COMPILE_OSG_OP_OT_WITH_SONAMES)","YES")
     LDFLAGS         += -Wl,-soname -Wl,$@.0
 endif
 
-    LDFLAGS         += `getconf LFS_LDFLAGS`
-    DEF             += `getconf LFS_CFLAGS`
+#    LDFLAGS         += `getconf LFS_LDFLAGS`
+#    DEF             += `getconf LFS_CFLAGS`
 
     LIBS            = -lstdc++
     DEF             += -W -Wall -fPIC -pipe

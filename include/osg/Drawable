@@ -15,10 +15,10 @@
 #define OSG_DRAWABLE 1
 
 #include <osg/BoundingBox>
-#include <osg/NodeVisitor>
 #include <osg/Shape>
 #include <osg/BufferObject>
 #include <osg/PrimitiveSet>
+#include <osg/State>
 
 
 #ifndef GL_NV_occlusion_query
@@ -51,6 +51,7 @@ class Vec3f;
 class Vec4f;
 class UByte4;
 class Geometry;
+class NodeVisitor;
 
 // this is defined to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely

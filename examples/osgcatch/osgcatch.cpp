@@ -565,7 +565,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         removeEntry = true;
                     }
 
-                    if ((*itr)->anyInside(_player1.getLowerLeft(),_player1.getUpperRight()))
+                    if ((*itr)->anyInside(_player2.getLowerLeft(),_player2.getUpperRight()))
                     {
                         _player2.looseLife();
                         removeEntry = true;

@@ -696,19 +696,23 @@ osg::Matrix GameEventHandler::getCameraPosition()
 osg::Node* GameEventHandler::createScene()
 {
     _group = new osg::Group;
-    
-//    _player1.setCharacter("Catch/girl.png","girl", _originBaseLine, _widthBaseLine, 0.4f);
-    _player1.setCharacter("Catch/gwen.png","girl", _originBaseLine + osg::Vec3(0.0f,-1.0f,0.0f), _widthBaseLine, 0.4f);
-    _player1.setLives("Catch/gwen.png",_originBaseLine+osg::Vec3(0.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
+
+#if 1
+    std::string player_one = "Catch/girl.png"; 
+    std::string player_two = "Catch/boy.png"; 
+#else
+    std::string player_one = "Catch/gwen.png"; 
+    std::string player_two = "Catch/caitlin.png"; 
+#endif    
+    _player1.setCharacter(player_one,"girl", _originBaseLine + osg::Vec3(0.0f,-1.0f,0.0f), _widthBaseLine, 0.4f);
+    _player1.setLives(player_one,_originBaseLine+osg::Vec3(0.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
     _player1.setCatches("Catch/broach.png",_originBaseLine+osg::Vec3(200.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
     _group->addChild(_player1._character.get());
     _group->addChild(_player1._livesSwitch.get());
     _group->addChild(_player1._catchSwitch.get());
 
-//    _player2.setCharacter("Catch/boy.png","boy", _originBaseLine, _widthBaseLine, 0.4f);
-//    _player2.setLives("Catch/boy.png",_originBaseLine+osg::Vec3(900.0f,0.0f,000.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
-    _player2.setCharacter("Catch/caitlin.png","boy", _originBaseLine + osg::Vec3(0.0f,-2.0f,0.0f), _widthBaseLine, 0.4f);
-    _player2.setLives("Catch/caitlin.png",_originBaseLine+osg::Vec3(900.0f,-0.5f,000.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
+    _player2.setCharacter(player_two,"boy", _originBaseLine + osg::Vec3(0.0f,-2.0f,0.0f), _widthBaseLine, 0.4f);
+    _player2.setLives(player_two,_originBaseLine+osg::Vec3(900.0f,-0.5f,000.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
     _player2.setCatches("Catch/broach.png",_originBaseLine+osg::Vec3(1100.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
     _group->addChild(_player2._character.get());
     _group->addChild(_player2._livesSwitch.get());

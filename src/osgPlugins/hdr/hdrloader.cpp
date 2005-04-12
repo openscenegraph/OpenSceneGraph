@@ -136,7 +136,7 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
     return true;
 }
 
-float convertComponent(int _expo, int _val)
+inline float convertComponent(int _expo, int _val)
 {
     return ldexp( (float)_val / 256.0f, _expo);
 }

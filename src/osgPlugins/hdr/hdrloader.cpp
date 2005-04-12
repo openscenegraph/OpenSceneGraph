@@ -138,9 +138,7 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
 
 float convertComponent(int _expo, int _val)
 {
-    float v = _val / 256.0f;
-    float d = powf(2.0f, (float)_expo);
-    return v * d;
+    return ldexp( (float)_val / 256.0f, _expo);
 }
 
 void workOnRGBE(RGBE *_scan, int _len, float *_cols)

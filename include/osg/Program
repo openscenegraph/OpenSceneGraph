@@ -389,6 +389,12 @@ class OSG_EXPORT Program : public osg::StateAttribute
 		void getInfoLog( std::string& infoLog ) const;
 
 		void useProgram() const;
+                
+                void apply(const Uniform& uniform) const
+                {
+                    GLint location = getUniformLocation(uniform.getName());
+                    if (location>=0) uniform.apply(_extensions.get(),location);
+                }
 
 		inline GLint getUniformLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _uniformLocationMap.find(name); return (itr!=_uniformLocationMap.end()) ? itr->second : -1; }
 		inline GLint getAttribLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _attribLocationMap.find(name); return (itr!=_attribLocationMap.end()) ? itr->second : -1; }

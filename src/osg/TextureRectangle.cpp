@@ -356,3 +356,133 @@ void TextureRectangle::computeInternalFormat() const
     if (_image.valid())
         computeInternalFormatWithImage(*_image); 
 }
+
+void TextureRectangle::copyTexImage2D(State& state, int x, int y, int width, int height )
+{
+    const unsigned int contextID = state.getContextID();
+    
+    if (_internalFormat==0) _internalFormat=GL_RGBA;
+
+    // get the globj for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject)
+    {
+        if (width==(int)_textureWidth && height==(int)_textureHeight)
+        {
+            // we have a valid texture object which is the right size
+            // so lets play clever and use copyTexSubImage2D instead.
+            // this allows use to reuse the texture object and avoid
+            // expensive memory allocations.
+            copyTexSubImage2D(state,0 ,0, x, y, width, height);
+            return;
+        }
+        // the relevent texture object is not of the right size so
+        // needs to been deleted    
+        // remove previously bound textures. 
+        dirtyTextureObject();
+        // note, dirtyTextureObject() dirties all the texture objects for
+        // this texture, is this right?  Perhaps we should dirty just the
+        // one for this context.  Note sure yet will leave till later.
+        // RO July 2001.
+    }
+    
+    
+    // remove any previously assigned images as these are nolonger valid.
+    _image = NULL;
+
+    // switch off mip-mapping.
+    //
+    _textureObjectBuffer[contextID] = textureObject =
+    generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
+
+    textureObject->bind();
+    
+    applyTexParameters(GL_TEXTURE_RECTANGLE,state);
+
+
+/*    bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
+    bool hardwareMipMapOn = false;
+    if (needHardwareMipMap)
+    {
+        const Extensions* extensions = getExtensions(contextID,true);
+        bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
+
+        hardwareMipMapOn = _useHardwareMipMapGeneration && generateMipMapSupported;
+        
+        if (!hardwareMipMapOn)
+        {
+            // have to swtich off mip mapping
+            notify(NOTICE)<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
+            _min_filter = LINEAR;
+        }
+    }
+*/    
+//    if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+
+    glCopyTexImage2D( GL_TEXTURE_RECTANGLE, 0, _internalFormat, x, y, width, height, 0 );
+
+//    if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+
+
+    _textureWidth = width;
+    _textureHeight = height;
+//    _numMipmapLevels = 1;
+    
+    textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
+
+
+    // inform state that this texture is the current one bound.
+    state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
+}
+
+void TextureRectangle::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
+{
+    const unsigned int contextID = state.getContextID();
+
+    if (_internalFormat==0) _internalFormat=GL_RGBA;
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject)
+    {
+        // we have a valid image
+        textureObject->bind();
+        
+        applyTexParameters(GL_TEXTURE_RECTANGLE,state);
+
+/*        bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
+        bool hardwareMipMapOn = false;
+        if (needHardwareMipMap)
+        {
+            const Extensions* extensions = getExtensions(contextID,true);
+            bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
+
+            hardwareMipMapOn = _useHardwareMipMapGeneration && generateMipMapSupported;
+
+            if (!hardwareMipMapOn)
+            {
+                // have to swtich off mip mapping
+                notify(NOTICE)<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
+                _min_filter = LINEAR;
+            }
+        }
+*/
+//        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+
+        glCopyTexSubImage2D( GL_TEXTURE_RECTANGLE, 0, xoffset, yoffset, x, y, width, height);
+
+//        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
+
+    }
+    else
+    {
+        // no texture object already exsits for this context so need to
+        // create it upfront - simply call copyTexImage2D.
+        copyTexImage2D(state,x,y,width,height);
+    }
+}

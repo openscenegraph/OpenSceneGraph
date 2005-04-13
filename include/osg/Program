@@ -365,26 +365,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         static void flushDeletedGlPrograms(unsigned int contextID,double currentTime, double& availableTime);
 
 
-    protected:
-	class ActiveUniform : public osg::Uniform
-	{
-	    public:
-		ActiveUniform( const char* name, GLenum type, GLint loc );
-		void applyData( const GL2Extensions* ext, GLuint prog );
-
-	    protected:
-		virtual ~ActiveUniform() {}
-		const GLint _location;
-
-	    private:
-		ActiveUniform();	// disallowed
-		ActiveUniform(ActiveUniform&);	// disallowed
-		ActiveUniform& operator=(ActiveUniform&);	// disallowed
-	};
-	typedef std::vector< osg::ref_ptr<ActiveUniform> > ActiveUniformList;
-
-
-    protected:
+    public:
 
         // make PerContextProgram a friend to allow it access Program's protected
         // methods and member variables.
@@ -395,6 +376,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
 	class PerContextProgram : public osg::Referenced
 	{
 	    public:
+
+
 		PerContextProgram(const Program* program, unsigned int contextID);
 
 		GLuint getHandle() const {return _glProgramHandle;}
@@ -406,10 +389,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
 		void getInfoLog( std::string& infoLog ) const;
 
 		void useProgram() const;
-		void applyUniforms( osg::State& state ) const;
 
-		GLint getUniformLocation( const char* name ) const;
-		GLint getAttribLocation( const char* name ) const;
+		inline GLint getUniformLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _uniformLocationMap.find(name); return (itr!=_uniformLocationMap.end()) ? itr->second : -1; }
+		inline GLint getAttribLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _attribLocationMap.find(name); return (itr!=_attribLocationMap.end()) ? itr->second : -1; }
 
 	    protected:	/*methods*/
 		~PerContextProgram();
@@ -426,8 +408,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
 		/** Is our glProgram successfully linked? */
 		bool _isLinked;
 		const unsigned int _contextID;
-		/** List of PCP's active uniforms */
-		ActiveUniformList _activeUniformList;
+                
+                typedef std::map<std::string, GLint> NameLocationMap;
+                NameLocationMap _uniformLocationMap;
+                NameLocationMap _attribLocationMap;
 
 	    private:
 		PerContextProgram();	// disallowed
@@ -435,11 +419,11 @@ class OSG_EXPORT Program : public osg::StateAttribute
 		PerContextProgram& operator=(const PerContextProgram&);	// disallowed
 	};
 
+	/** Get the PCP for a particular GL context */
+        PerContextProgram* getPCP(unsigned int contextID) const;
 
     protected:	/*methods*/
         virtual ~Program();
-	/** Get the PCP for a particular GL context */
-        PerContextProgram* getPCP(unsigned int contextID) const;
 
     protected:	/*data*/
 	std::string _name;

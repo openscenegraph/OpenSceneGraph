@@ -28,7 +28,7 @@ State::State()
     _modelView = _identity;
 
     _abortRenderingPtr = false;    
-    _reportGLErrors = false;
+    _reportGLErrors = true;
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
@@ -41,6 +41,8 @@ State::State()
 
     _isVertexBufferObjectSupportResolved = false;
     _isVertexBufferObjectSupported = false;
+    
+    _lastAppliedProgramObject = 0;
 }
 
 State::~State()
@@ -103,13 +105,29 @@ void State::reset()
         }
     }
 
-    _drawStateStack.clear();
+    _stateStateStack.clear();
     
     _modelView = _identity;
     _projection = _identity;
     
     dirtyAllVertexArrays();
     setActiveTextureUnit(0);
+    
+    _lastAppliedProgramObject = 0;
+    
+    // what about uniforms??? need to clear them too...
+    // go through all active Unfirom's, setting to change to force update,
+    // the idea is to leave only the global defaults left.
+    for(UniformMap::iterator uitr=_uniformMap.begin();
+        uitr!=_uniformMap.end();
+        ++uitr)
+    {
+        UniformStack& us = uitr->second;
+        us.uniformVec.clear();
+        us.last_applied_uniform = NULL;
+        us.changed = true;
+    }
+
 }
 
 void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
@@ -122,7 +140,7 @@ void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
 
 void State::pushStateSet(const StateSet* dstate)
 {
-    _drawStateStack.push_back(dstate);
+    _stateStateStack.push_back(dstate);
     if (dstate)
     {
 
@@ -150,7 +168,7 @@ void State::pushStateSet(const StateSet* dstate)
 
 void State::popAllStateSets()
 {
-    while (!_drawStateStack.empty()) popStateSet();
+    while (!_stateStateStack.empty()) popStateSet();
     
     applyProjectionMatrix(0);
     applyModelViewMatrix(0);
@@ -158,9 +176,9 @@ void State::popAllStateSets()
 
 void State::popStateSet()
 {
-    if (_drawStateStack.empty()) return;
+    if (_stateStateStack.empty()) return;
     
-    const StateSet* dstate = _drawStateStack.back();
+    const StateSet* dstate = _stateStateStack.back();
 
     if (dstate)
     {
@@ -186,7 +204,7 @@ void State::popStateSet()
     }
     
     // remove the top draw state from the stack.
-    _drawStateStack.pop_back();
+    _stateStateStack.pop_back();
 }
 
 void State::captureCurrentState(StateSet& stateset) const
@@ -261,6 +279,12 @@ void State::apply(const StateSet* dstate)
                 else if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
             }
         }
+        
+        if (_lastAppliedProgramObject)
+        {
+            osg::notify(osg::NOTICE)<<"Ready to apply uniforms A"<<std::endl;
+        }
+            
     
     }
     else
@@ -293,6 +317,11 @@ void State::apply()
             if (unit<_textureModeMapList.size()) applyModeMap(_textureModeMapList[unit]);
             if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
         }
+    }
+
+    if (_lastAppliedProgramObject)
+    {
+        osg::notify(osg::NOTICE)<<"Ready to apply uniforms B"<<std::endl;
     }
 
     if (_reportGLErrors) checkGLErrors("end of State::apply()");

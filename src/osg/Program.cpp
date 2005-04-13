@@ -2050,6 +2050,7 @@ void Program::apply( osg::State& state ) const
     if( isFixedFunction() )
     {
 	extensions->glUseProgram( 0 );
+        state.setLastAppliedProgramObject(0);
 	return;
     }
 
@@ -2058,12 +2059,13 @@ void Program::apply( osg::State& state ) const
     if( pcp->isLinked() )
     {
 	pcp->useProgram();
-	pcp->applyUniforms( state );
+        state.setLastAppliedProgramObject(pcp);
     }
     else
     {
 	// program not usable, fallback to fixed function.
 	extensions->glUseProgram( 0 );
+        state.setLastAppliedProgramObject(0);
     }
 }
 
@@ -2096,70 +2098,6 @@ bool Program::isFixedFunction() const
 void Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) const
 {
     getPCP( contextID )->getInfoLog( log );
-}
-
-
-///////////////////////////////////////////////////////////////////////////
-// osg::Program::ActiveUniform
-///////////////////////////////////////////////////////////////////////////
-
-Program::ActiveUniform::ActiveUniform( const char* name, GLenum type, GLint loc ) :
-	Uniform(name, static_cast<Type>(type)), _location(loc)
-{
-}
-
-void Program::ActiveUniform::applyData( const GL2Extensions* ext, GLuint /*prog*/ )
-{
-    switch( repType(getType()) )
-    {
-	case FLOAT:
-	    ext->glUniform1f( _location, _data.f1 );
-	    break;
-
-	case FLOAT_VEC2:
-	    ext->glUniform2fv( _location, 1, _data.f2 );
-	    break;
-
-	case FLOAT_VEC3:
-	    ext->glUniform3fv( _location, 1, _data.f3 );
-	    break;
-
-	case FLOAT_VEC4:
-	    ext->glUniform4fv( _location, 1, _data.f4 );
-	    break;
-
-	case FLOAT_MAT2:
-	    ext->glUniformMatrix2fv( _location, 1, GL_FALSE, _data.f4 );
-	    break;
-
-	case FLOAT_MAT3:
-	    ext->glUniformMatrix3fv( _location, 1, GL_FALSE, _data.f9 );
-	    break;
-
-	case FLOAT_MAT4:
-	    ext->glUniformMatrix4fv( _location, 1, GL_FALSE, _data.f16 );
-	    break;
-
-	case INT:
-	    ext->glUniform1i( _location, _data.i1 );
-	    break;
-
-	case INT_VEC2:
-	    ext->glUniform2iv( _location, 1, _data.i2 );
-	    break;
-
-	case INT_VEC3:
-	    ext->glUniform3iv( _location, 1, _data.i3 );
-	    break;
-
-	case INT_VEC4:
-	    ext->glUniform4iv( _location, 1, _data.i4 );
-	    break;
-
-	default:
-	    osg::notify(osg::FATAL) << "how got here?" << std::endl;
-	    break;
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2195,8 +2133,6 @@ void Program::PerContextProgram::linkProgram()
     if( ! _needsLink ) return;
     _needsLink = false;
 
-    _activeUniformList.clear();
-
     // set any explicit vertex attribute bindings
     const AttribBindingList& bindlist = _program->getAttribBindingList();
     for( AttribBindingList::const_iterator itr = bindlist.begin();
@@ -2219,6 +2155,8 @@ void Program::PerContextProgram::linkProgram()
 	return;
     }
 
+    notify(NOTICE)<<"Program "<<std::endl;
+
     // build ActiveUniformList
     GLint numUniforms = 0;
     GLsizei maxLen = 0;
@@ -2235,14 +2173,43 @@ void Program::PerContextProgram::linkProgram()
 	    _extensions->glGetActiveUniform( _glProgramHandle,
 		    i, maxLen, 0, &size, &type, name );
 	    GLint loc = getUniformLocation( name );
-
+            
 	    if( loc != -1 )
 	    {
-		_activeUniformList.push_back( new ActiveUniform( name, type, loc ) );
+                notify(NOTICE)<<"   Active uniform "<<name<<std::endl;
+                _uniformLocationMap[name] = loc;
 	    }
 	}
 	delete [] name;
     }
+
+    // build ActiveUniformList
+    GLint numAttrib = 0;
+    _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTES, &numAttrib );
+    _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLen );
+    if( (numAttrib > 0) && (maxLen > 1) )
+    {
+	GLint size = 0;
+	GLenum type = 0;
+	GLchar* name = new GLchar[maxLen];
+
+	for( GLint i = 0; i < numAttrib; ++i )
+	{
+	    _extensions->glGetActiveAttrib( _glProgramHandle,
+		    i, maxLen, 0, &size, &type, name );
+	    GLint loc = getUniformLocation( name );
+            
+	    if( loc != -1 )
+	    {
+                notify(NOTICE)<<"   Active attribute "<<name<<std::endl;
+                _attribLocationMap[name] = loc;
+	    }
+	}
+	delete [] name;
+    }
+
+    notify(NOTICE)<<"Program "<<std::endl;
+
 }
 
 void Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
@@ -2255,37 +2222,5 @@ void Program::PerContextProgram::useProgram() const
     _extensions->glUseProgram( _glProgramHandle  );
 }
 
-GLint Program::PerContextProgram::getUniformLocation( const char* name ) const
-{
-    return _extensions->glGetUniformLocation( _glProgramHandle, name );
-}
-
-GLint Program::PerContextProgram::getAttribLocation( const char* name ) const
-{
-    return _extensions->glGetAttribLocation( _glProgramHandle, name );
-}
-
-
-void Program::PerContextProgram::applyUniforms( osg::State& state ) const
-{
-    for( ActiveUniformList::const_iterator itr = _activeUniformList.begin();
-        itr != _activeUniformList.end(); ++itr )
-    {
-	ActiveUniform* au = const_cast<ActiveUniform*>( itr->get() );
-
-	// use name of active uniform to find a value uniform
-	const osg::Uniform* vu = state.findUniform( au->getName() );
-	if( ! vu ) continue;
-
-	// skip if types are not identical
-	if( au->getType() != vu->getType() ) continue;
-
-	// skip if values are already identical
-	if( au->compareData( *vu ) == 0 ) continue;
-
-	au->copyData( *vu );
-	au->applyData( _extensions.get(), _glProgramHandle );
-    }
-}
 
 /*EOF*/

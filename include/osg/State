@@ -662,6 +662,12 @@ class OSG_EXPORT State : public Referenced
         bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
 
 
+        void setLastAppliedProgramObject(const Program::PerContextProgram* program) { _lastAppliedProgramObject = program; }
+        const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
+
+	inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? getUniformLocation(name) : -1; }
+	inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? getAttribLocation(name) : -1; }
+
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to
             set up unique ID for each OpenGL context.  This value is
@@ -693,9 +699,6 @@ class OSG_EXPORT State : public Referenced
         /** Get the DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
-        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
-        typedef std::vector<AttributePair>                                      AttributeVec;
-        typedef std::vector<StateAttribute::GLModeValue>                        ValueVec;
 
 
         /** Set flag for early termination of the draw traversal.*/
@@ -711,13 +714,6 @@ class OSG_EXPORT State : public Referenced
         bool checkGLErrors(const char* str) const;
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
-
-        typedef std::map< std::string,ref_ptr<Uniform> >  UniformMap;
-        const Uniform* findUniform( const std::string& name )
-        {
-            UniformMap::const_iterator itr = _uniformMap.find( name );
-            return (itr != _uniformMap.end()) ? itr->second.get() : 0;
-        }
 
     protected:
 
@@ -740,6 +736,8 @@ class OSG_EXPORT State : public Referenced
 
         struct ModeStack
         {
+            typedef std::vector<StateAttribute::GLModeValue> ValueVec;
+
             ModeStack()
             {
                 changed = false;
@@ -753,10 +751,11 @@ class OSG_EXPORT State : public Referenced
             ValueVec    valueVec;
         };
 
-
-
         struct AttributeStack
         {
+            typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributeStack::AttributePair;
+            typedef std::vector<AttributeStack::AttributePair>                                      AttributeVec;
+
             AttributeStack()
             {
                 changed = false;
@@ -771,6 +770,44 @@ class OSG_EXPORT State : public Referenced
             AttributeVec            attributeVec;
         };
 
+
+        struct UniformStack
+        {
+            typedef std::pair<const Uniform*,StateAttribute::OverrideValue>         UniformPair;
+            typedef std::vector<UniformPair>                                        UniformVec;
+
+            UniformStack()
+            {
+                changed = false;
+                last_applied_uniform = 0L;
+                global_default_uniform = 0L;
+            }
+
+            /** apply an uniform if required */
+            bool                    changed;
+            const Uniform*          last_applied_uniform;
+            ref_ptr<const Uniform>  global_default_uniform;
+            UniformVec              uniformVec;
+        };
+
+
+        struct ProgramStack
+        {
+            typedef std::vector<const Program*> ProgramVec;
+
+            ProgramStack()
+            {
+                changed = false;
+                last_applied_program = 0L;
+                global_default_program = 0L;
+            }
+
+            /** apply an program if required */
+            bool                    changed;
+            const Program*          last_applied_program;
+            ref_ptr<const Program>  global_default_program;
+            ProgramVec              programVec;
+        };
 
         /** Apply an OpenGL mode if required, passing in mode, enable flag and
           * appropriate mode stack. This is a wrapper around \c glEnable() and
@@ -840,18 +877,22 @@ class OSG_EXPORT State : public Referenced
         typedef std::map<StateAttribute::TypeMemberPair,AttributeStack> AttributeMap;
         typedef std::vector<AttributeMap>                               TextureAttributeMapList;
 
+        typedef std::map<std::string,UniformStack>                      UniformMap;
+
         typedef std::vector<const StateSet*>                            StateSetStack;
         typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
 
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;
+        UniformMap                                                      _uniformMap;
 
         TextureModeMapList                                              _textureModeMapList;
         TextureAttributeMapList                                         _textureAttributeMapList;
 
-        UniformMap                                                      _uniformMap;
+        ProgramStack                                                    _programStack;
+        const Program::PerContextProgram*                               _lastAppliedProgramObject;
 
-        StateSetStack                                                   _drawStateStack;
+        StateSetStack                                                   _stateStateStack;
 
         struct EnabledArrayPair
         {
@@ -966,7 +1007,7 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
         {
             // first pair so simply push incoming pair to back.
             as.attributeVec.push_back(
-                AttributePair(aitr->second.first.get(),aitr->second.second));
+                AttributeStack::AttributePair(aitr->second.first.get(),aitr->second.second));
         }
         else if ((as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag
         {
@@ -977,7 +1018,7 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
         {
             // no override on so simply push incoming pair to back.
             as.attributeVec.push_back(
-                AttributePair(aitr->second.first.get(),aitr->second.second));
+                AttributeStack::AttributePair(aitr->second.first.get(),aitr->second.second));
         }
         as.changed = true;
     }
@@ -1177,7 +1218,6 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
             const StateAttribute* new_attr = ds_aitr->second.first.get();
             applyAttribute(new_attr,as);
 
-            // will need to disable this mode on next apply so set it to changed.
             as.changed = true;
 
             ++ds_aitr;
@@ -1192,7 +1232,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
 
             if (!as.attributeVec.empty() && (as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(ds_aitr->second.second & StateAttribute::PROTECTED))
             {
-                // override is on, just treat as a normal apply on modes.
+                // override is on, just treat as a normal apply on attribute.
 
                 if (as.changed)
                 {
@@ -1203,7 +1243,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
             }
             else
             {
-                // no override on or no previous entry, therefore consider incoming mode.
+                // no override on or no previous entry, therefore consider incoming attribute.
                 const StateAttribute* new_attr = ds_aitr->second.first.get();
                 if (applyAttribute(new_attr,as))
                 {
@@ -1216,7 +1256,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         }
     }
 
-    // iterator over the remaining state modes to apply any previous changes.
+    // iterator over the remaining state attributes to apply any previous changes.
     for(;
         this_aitr!=attributeMap.end();
         ++this_aitr)
@@ -1238,7 +1278,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         }
     }
 
-    // iterator over the remaining incoming modes to apply any new mode.
+    // iterator over the remaining incoming attribute to apply any new attribute.
     for(;
         ds_aitr!=attributeList.end();
         ++ds_aitr)

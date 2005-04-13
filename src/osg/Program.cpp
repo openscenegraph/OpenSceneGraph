@@ -2155,8 +2155,6 @@ void Program::PerContextProgram::linkProgram()
 	return;
     }
 
-    notify(NOTICE)<<"Program "<<std::endl;
-
     // build ActiveUniformList
     GLint numUniforms = 0;
     GLsizei maxLen = 0;
@@ -2172,11 +2170,11 @@ void Program::PerContextProgram::linkProgram()
 	{
 	    _extensions->glGetActiveUniform( _glProgramHandle,
 		    i, maxLen, 0, &size, &type, name );
-	    GLint loc = getUniformLocation( name );
+
+	    GLint loc = _extensions->glGetUniformLocation( _glProgramHandle, name );
             
 	    if( loc != -1 )
 	    {
-                notify(NOTICE)<<"   Active uniform "<<name<<std::endl;
                 _uniformLocationMap[name] = loc;
 	    }
 	}
@@ -2197,19 +2195,16 @@ void Program::PerContextProgram::linkProgram()
 	{
 	    _extensions->glGetActiveAttrib( _glProgramHandle,
 		    i, maxLen, 0, &size, &type, name );
-	    GLint loc = getUniformLocation( name );
+
+	    GLint loc = _extensions->glGetAttribLocation( _glProgramHandle, name );
             
 	    if( loc != -1 )
 	    {
-                notify(NOTICE)<<"   Active attribute "<<name<<std::endl;
                 _attribLocationMap[name] = loc;
 	    }
 	}
 	delete [] name;
     }
-
-    notify(NOTICE)<<"Program "<<std::endl;
-
 }
 
 void Program::PerContextProgram::getInfoLog( std::string& infoLog ) const

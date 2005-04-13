@@ -28,7 +28,7 @@ State::State()
     _modelView = _identity;
 
     _abortRenderingPtr = false;    
-    _reportGLErrors = true;
+    _reportGLErrors = false;
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
@@ -282,10 +282,14 @@ void State::apply(const StateSet* dstate)
         
         if (_lastAppliedProgramObject)
         {
-            osg::notify(osg::NOTICE)<<"Ready to apply uniforms A"<<std::endl;
+            const StateSet::UniformList& uniformList = dstate->getUniformList();
+            for(StateSet::UniformList::const_iterator itr=uniformList.begin();
+                itr!=uniformList.end();
+                ++itr)
+            {
+                _lastAppliedProgramObject->apply(*(itr->second.first));
+            }
         }
-            
-    
     }
     else
     {
@@ -319,9 +323,15 @@ void State::apply()
         }
     }
 
-    if (_lastAppliedProgramObject)
+    if (_lastAppliedProgramObject && !_stateStateStack.empty())
     {
-        osg::notify(osg::NOTICE)<<"Ready to apply uniforms B"<<std::endl;
+        const StateSet::UniformList& uniformList = _stateStateStack.back()->getUniformList();
+        for(StateSet::UniformList::const_iterator itr=uniformList.begin();
+            itr!=uniformList.end();
+            ++itr)
+        {
+            _lastAppliedProgramObject->apply(*(itr->second.first));
+        }
     }
 
     if (_reportGLErrors) checkGLErrors("end of State::apply()");

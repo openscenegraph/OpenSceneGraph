@@ -376,7 +376,7 @@ GL2Scene::~GL2Scene()
 void
 GL2Scene::reloadShaderSource()
 {
-    osg::notify(osg::WARN) << "reloadShaderSource()" << std::endl;
+    osg::notify(osg::INFO) << "reloadShaderSource()" << std::endl;
 
     LoadShaderSource( BlockyVertObj, "shaders/blocky.vert" );
     LoadShaderSource( BlockyFragObj, "shaders/blocky.frag" );

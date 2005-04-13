@@ -38,6 +38,8 @@
 #include <osg/Shader>
 #include <osg/Uniform>
 
+#include <iostream>
+
 #include "GL2Scene.h"
 #include "Noise.h"
 

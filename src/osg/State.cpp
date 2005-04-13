@@ -282,6 +282,21 @@ void State::apply(const StateSet* dstate)
         
         if (_lastAppliedProgramObject)
         {
+            for(StateSetStack::iterator sitr=_stateStateStack.begin();
+                sitr!=_stateStateStack.end();
+                ++sitr)
+            {
+                const StateSet* stateset = *sitr;
+                const StateSet::UniformList& uniformList = stateset->getUniformList();
+                for(StateSet::UniformList::const_iterator itr=uniformList.begin();
+                    itr!=uniformList.end();
+                    ++itr)
+                {
+                    _lastAppliedProgramObject->apply(*(itr->second.first));
+                }
+            }
+
+
             const StateSet::UniformList& uniformList = dstate->getUniformList();
             for(StateSet::UniformList::const_iterator itr=uniformList.begin();
                 itr!=uniformList.end();
@@ -325,12 +340,18 @@ void State::apply()
 
     if (_lastAppliedProgramObject && !_stateStateStack.empty())
     {
-        const StateSet::UniformList& uniformList = _stateStateStack.back()->getUniformList();
-        for(StateSet::UniformList::const_iterator itr=uniformList.begin();
-            itr!=uniformList.end();
-            ++itr)
+        for(StateSetStack::iterator sitr=_stateStateStack.begin();
+            sitr!=_stateStateStack.end();
+            ++sitr)
         {
-            _lastAppliedProgramObject->apply(*(itr->second.first));
+            const StateSet* stateset = *sitr;
+            const StateSet::UniformList& uniformList = stateset->getUniformList();
+            for(StateSet::UniformList::const_iterator itr=uniformList.begin();
+                itr!=uniformList.end();
+                ++itr)
+            {
+                _lastAppliedProgramObject->apply(*(itr->second.first));
+            }
         }
     }
 

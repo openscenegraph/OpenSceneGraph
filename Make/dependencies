@@ -8,6 +8,8 @@ COMPILE_INTROSPECTION = no
 # should we compile any of the examples?
 COMPILE_EXAMPLES ?= no
 
+# should we compile the deprecated osgGL2 library.
+COMPILE_osgGL2 ?= no
 
 # follows are dependenices on the various plugins.
 

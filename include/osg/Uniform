@@ -14,13 +14,6 @@
  * author:	Mike Weiblen 2005-04-06
 */
 
-// NOTICE: This code is CLOSED during construction and/or renovation!
-// It is in active development, so DO NOT yet use in application code.
-// This notice will be removed when the code is open for business.
-// For development plan and status see:
-// http://www.openscenegraph.org/index.php?page=Community.DevelopmentWork
-
-
 #ifndef OSG_UNIFORM
 #define OSG_UNIFORM 1
 

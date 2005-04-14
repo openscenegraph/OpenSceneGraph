@@ -10,8 +10,9 @@
 #include <osg/TexEnv>
 #include <osg/LineWidth>
 #include <osg/Material>
+#include <osg/Program>
+#include <osg/Shader>
 
-#include <osgGL2/ProgramObject>
 
 #include <sstream>
 
@@ -43,7 +44,6 @@ namespace
 
     // register a prototype for this effect
     Registry::Proxy proxy(new Cartoon);
-
 
     // default technique class
     class DefaultTechnique: public Technique {
@@ -152,12 +152,11 @@ namespace
 
 ///////////////////////////////////////////////////////////////////////////
 // A port of Marco Jez's "cartoon.cg" to the OpenGL Shading Language
-// using osgGL2 by Mike Weiblen 2003-10-03.
+// by Mike Weiblen 2003-10-03, 
 //
 // This shader is simplified due to limitations in the OGLSL implementation
 // in the current 3Dlabs driver.  As the OGLSL implementation improves,
 // need to revisit and enhance this shader.
-
 namespace
 {
     class OGLSL_Technique : public Technique {
@@ -178,7 +177,6 @@ namespace
         {
             // implement pass #1 (solid surfaces)
             {
-
 		const char * vert_source =
 		"const vec3 LightPosition = vec3( 0.0, 2.0, 4.0 );"
 		"varying float CartoonTexCoord;"
@@ -204,11 +202,13 @@ namespace
                 polyoffset->setUnits(1.0f);
                 ss->setAttributeAndModes(polyoffset.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-		osg::ref_ptr<osgGL2::ProgramObject> progObj = new osgGL2::ProgramObject;
-		progObj->addShader( new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX, vert_source ) );
-		progObj->addShader( new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT, frag_source ) );
-		progObj->setSampler( "CartoonTexUnit", 0 );
-		ss->setAttributeAndModes( progObj.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+		osg::ref_ptr<osg::Program> program = new osg::Program;
+		program->addShader( new osg::Shader( osg::Shader::VERTEX, vert_source ) );
+		program->addShader( new osg::Shader( osg::Shader::FRAGMENT, frag_source ) );
+
+                ss->addUniform( new osg::Uniform("CartoonTexUnit", 0));
+		ss->setAttributeAndModes( program.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+                
 
                 ss->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF);
 

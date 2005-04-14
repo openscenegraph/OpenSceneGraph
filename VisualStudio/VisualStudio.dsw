@@ -116,9 +116,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgDB
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -723,9 +720,6 @@ Package=<4>
     Project_Dep_Name Core osgFX
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
@@ -952,9 +946,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgFX
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
     End Project Dependency
 }}}
 
@@ -1461,9 +1452,6 @@ Package=<4>
     Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name Core osgText
     End Project Dependency
     Begin Project Dependency
@@ -1580,9 +1568,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgFX
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -1606,9 +1591,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgFX
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
     End Project Dependency
 }}}
 
@@ -2458,9 +2440,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgFX
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
     End Project Dependency
 }}}
 

@@ -50,7 +50,7 @@ typedef signed char     int8;
 typedef unsigned char   uint8;
 typedef signed short    int16;
 typedef unsigned short  uint16;
-typedef signed int	int32;
+typedef signed int      int32;
 typedef unsigned int    uint32;
 typedef float           float32;
 typedef double          float64;
@@ -765,7 +765,7 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
             {
                 // Get the character index of the FLT_VER option in the option
                 // string
-                uint optionIndex = options->getOptionString().find("FLT_VER");
+                unsigned int optionIndex = options->getOptionString().find("FLT_VER");
 
                 // Default to zero for the version if it's not found
                 if (optionIndex == std::string::npos)

@@ -124,9 +124,6 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
 	Uniform* uni = copyop(rup.first.get());
 	if( uni ) _uniformList[name] = RefUniformPair(uni, rup.second);
     }
-
-    Program* prog = copyop( rhs._program );
-    if( prog ) _program = prog;
 #endif //]
     
     _renderingHint = rhs._renderingHint;
@@ -312,19 +309,7 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     {
         if (rhs_uniform_itr!=rhs._uniformList.end()) return -1;
     }
-    else if (rhs_uniform_itr == rhs._uniformList.end()) return 1;
-
-    if (_program.valid())
-    {
-        if (rhs._program.valid())
-        {
-            int result = _program->compare(*rhs._program);
-            if (result!=0) return result;
-        }
-        else return 1;
-    }
-    else if (rhs._program.valid()) return -1;
-    
+    else if (rhs_uniform_itr == rhs._uniformList.end()) return 1;  
 
     return 0;
 }
@@ -426,8 +411,6 @@ void StateSet::clear()
     _textureAttributeList.clear();
 
     _uniformList.clear();
-    _program = 0;
-    
 }
 
 void StateSet::merge(const StateSet& rhs)

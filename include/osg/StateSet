@@ -295,17 +295,6 @@ class OSG_EXPORT StateSet : public Object
         /** return the const list of all Uniforms contained in this const StateSet.*/
         inline const UniformList& getUniformList() const { return _uniformList; }
 
-        
-        void setProgram(Program* program) { _program = program; }
-
-        Program* getProgram() { return _program.get(); }
-        
-        const Program* getProgram() const { return _program.get(); }
-
-
-
-
-
         enum RenderingHint
         {
             DEFAULT_BIN = 0,
@@ -385,7 +374,6 @@ class OSG_EXPORT StateSet : public Object
         TextureAttributeList                _textureAttributeList;
 
         UniformList                         _uniformList;
-        osg::ref_ptr<osg::Program>          _program;
 
         inline ModeList& getOrCreateTextureModeList(unsigned int unit)
         {

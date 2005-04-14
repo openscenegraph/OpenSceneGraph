@@ -10,5 +10,5 @@ Description: 3D scenegraph
 Version: 0.9,8
 Requires: openthreads
 Conflicts:
-Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgGL2 -losgParticle -losgProducer -losgSim -losgText -losgUtil
+Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgParticle -losgProducer -losgSim -losgText -losgUtil
 Cflags: -I${includedir}

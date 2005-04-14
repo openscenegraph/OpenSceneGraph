@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
  * Copyright (C) 2003 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   

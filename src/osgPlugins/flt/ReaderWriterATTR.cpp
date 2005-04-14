@@ -42,6 +42,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include "AttrData.h"
 
@@ -757,17 +758,29 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // options
-            char buf[256];
-            int version=0;
+            int version;
 
-            const osgDB::ReaderWriter::Options*  rwOptions=
-                osgDB::Registry::instance()->getOptions();
-
-            if (rwOptions)
+            // Check the options string for the OpenFlight file version
+            if (options)
             {
-                sscanf(rwOptions->getOptionString().c_str(),"%s %d", buf, &version);
-                if (strcmp(buf, "FLT_VER")) version=0;
+                // Get the character index of the FLT_VER option in the option
+                // string
+                uint optionIndex = options->getOptionString().find("FLT_VER");
+
+                // Default to zero for the version if it's not found
+                if (optionIndex == std::string::npos)
+                    version = 0;
+                else
+                {
+                    // Copy the option string, starting with the F in FLT_VER
+                    std::string fltVersionStr(options->getOptionString(), 
+                        optionIndex);
+                    std::string optionText;
+
+                    // Read the version from the string
+                    std::istringstream ins(fltVersionStr);
+                    ins >> optionText >> version;
+                }
             }
 
             Attr attr(version);
@@ -790,3 +803,4 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
 // now register with Registry to instantiate the above
 // reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterATTR> g_readerWriter_ATTR_Proxy;
+

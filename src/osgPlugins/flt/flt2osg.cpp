@@ -878,14 +878,22 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
 
     SGroup* currentGroup = (SGroup*) rec->getData();
 
-    const bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM)!=0;
+    // Check for forward animation (sequence)
+    bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM) != 0;
+
+    // For versions prior to 15.8, the swing bit can be set independently
+    // of the animation bit.  This implies forward animation (with swing)
+    if ((fltVer < 1580) && (currentGroup->dwFlags & GroupRecord::SWING_ANIM))
+        forwardAnim = true;
+    
     // OpenFlight 15.8 adds backwards animations
     const bool backwardAnim = ( (fltVer >= 1580) &&
         ((currentGroup->dwFlags & GroupRecord::BACKWARD_ANIM) != 0) );
+
     // Regardless of forwards or backwards, animation could have swing bit set
     const osg::Sequence::LoopMode loopMode = ( (currentGroup->dwFlags & GroupRecord::SWING_ANIM) == 0 ) ?
         osg::Sequence::LOOP : osg::Sequence::SWING;
-     
+
     if( forwardAnim || backwardAnim)
     {
         osg::Sequence* animSeq = new osg::Sequence;
@@ -1545,7 +1553,27 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
         if (pTexturePool)
         {
             int nIndex = (int)pSFace->iTexturePattern;
-            flt::AttrData *textureAttrData = pTexturePool->getTexture(nIndex,rec->getFltFile()->getOptions());
+
+            // Copy the current set of options
+            osg::ref_ptr<osgDB::ReaderWriter::Options> versionOptions = 
+                (osgDB::ReaderWriter::Options*)rec->getFltFile()->
+                getOptions()->clone(osg::CopyOp(osg::CopyOp::SHALLOW_COPY));
+
+            // Create a new set of ReaderWriter options, and prepend the 
+            // OpenFlight version option ("FLT_VER") and number to the current
+            // option string.  This will inform the ATTR reader what version 
+            // of OpenFlight file it's dealing with, so it knows how much data
+            // to read.  (Unfortunately, this seems to be the only way to 
+            // communicate with the ATTR reader from here).
+            char versionStr[30];
+            sprintf(versionStr, "FLT_VER %d ", rec->getFlightVersion());
+            std::string newString(versionStr);
+            newString.append(versionOptions->getOptionString());
+            versionOptions->setOptionString(newString);
+
+            // Finally, get the texture from the texture pool
+            flt::AttrData *textureAttrData = 
+                pTexturePool->getTexture(nIndex, versionOptions.get());
 
             osg::StateSet *textureStateSet;
             if (textureAttrData)
@@ -1565,7 +1593,8 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 flt::AttrData *detailTextureAttrData = NULL;                                
                 if (pSFace->iDetailTexturePattern != -1) {                 
                  int nIndex2 = (int)pSFace->iDetailTexturePattern;
-                 detailTextureAttrData = pTexturePool->getTexture(nIndex2,rec->getFltFile()->getOptions());
+                 detailTextureAttrData = 
+                     pTexturePool->getTexture(nIndex2,versionOptions.get());
                  if (detailTextureAttrData && detailTextureAttrData->stateset) {
                      osg::Texture2D *detTexture = dynamic_cast<osg::Texture2D*>(detailTextureAttrData->stateset->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
                      textureStateSet->setTextureAttributeAndModes(1,detTexture,osg::StateAttribute::ON);                    
@@ -1659,6 +1688,22 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
         return;
     }
 
+    // Copy the current set of options
+    osg::ref_ptr<osgDB::ReaderWriter::Options> versionOptions =
+        (osgDB::ReaderWriter::Options*)mtr->getFltFile()->
+        getOptions()->clone(osg::CopyOp(osg::CopyOp::SHALLOW_COPY));
+
+    // Create a new set of ReaderWriter options, and prepend the
+    // OpenFlight version option ("FLT_VER") and number to the current
+    // option string.  This will inform the ATTR reader what version
+    // of OpenFlight file it's dealing with, so it knows how much data
+    // to read.  (Unfortunately, this seems to be the only way to
+    // communicate with the ATTR reader from here).
+    char versionStr[30];
+    sprintf(versionStr, "FLT_VER %d ", mtr->getFlightVersion());
+    std::string newString(versionStr);
+    newString.append(versionOptions->getOptionString());
+    versionOptions->setOptionString(newString);
 
     CERR << "ConvertFromFLT::addMultiTexture\n";
     int l = 0;
@@ -1681,11 +1726,13 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
                 osg::notify(osg::WARN)<<"ConvertFromFLT::addMultiTexture(DynGeoSet*, MultiTextureRecord*) pTexturePool invalid."<<std::endl;
                 return;
             }
-            
-            // Get the texture attribute data from the texture pool
-            flt::AttrData *textureAttrData = dynamic_cast<flt::AttrData *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFltFile()->getOptions()));
 
-            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFltFile()->getOptions()) << "\n";
+            // Get the texture attribute data from the texture pool
+            flt::AttrData *textureAttrData = 
+                dynamic_cast<flt::AttrData *>(pTexturePool->
+                    getTexture((int)mt->data[l].texture,versionOptions.get()));
+
+            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,versionOptions.get()) << "\n";
             if (!textureAttrData)
             {
                 CERR << "unable to set up multi-texture layer." << std::endl;

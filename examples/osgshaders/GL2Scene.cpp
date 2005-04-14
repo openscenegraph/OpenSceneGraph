@@ -11,7 +11,7 @@
 */
 
 /* file:	examples/osgglsl/GL2Scene.cpp
- * author:	Mike Weiblen 2005-03-30
+ * author:	Mike Weiblen 2005-04-13
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -249,7 +249,7 @@ class AnimateCallback: public osg::NodeCallback
 		OffsetUniform->set( osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
 		SineUniform->set( sine );
 		Color1Uniform->set( osg::Vec3(v10, 0.0f, 0.0f) );
-		Color1Uniform->set( osg::Vec3(v01, v01, v10) );
+		Color2Uniform->set( osg::Vec3(v01, v01, v10) );
 	    }
 	    traverse(node, nv);
 	}

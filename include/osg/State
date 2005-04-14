@@ -665,8 +665,8 @@ class OSG_EXPORT State : public Referenced
         void setLastAppliedProgramObject(const Program::PerContextProgram* program) { _lastAppliedProgramObject = program; }
         const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
 
-	inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? getUniformLocation(name) : -1; }
-	inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? getAttribLocation(name) : -1; }
+	inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
+	inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
 
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to

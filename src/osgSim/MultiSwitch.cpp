@@ -217,3 +217,18 @@ bool MultiSwitch::setSingleChildOn(unsigned int switchSet, unsigned int pos)
     setValue(switchSet, pos,true);
     return true;
 }
+
+
+void MultiSwitch::setSwitchSetList(const SwitchSetList& switchSetList)
+{
+    expandToEncompassSwitchSet(switchSetList.size());
+
+    _values = switchSetList;
+}
+
+void MultiSwitch::setValueList(unsigned int switchSet, const ValueList& values)
+{
+    expandToEncompassSwitchSet(switchSet);
+
+    _values[switchSet] = values;
+}

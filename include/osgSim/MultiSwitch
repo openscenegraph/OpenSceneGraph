@@ -72,7 +72,16 @@ class OSGSIM_EXPORT MultiSwitch : public osg::Group
         typedef std::vector<bool>       ValueList;
         typedef std::vector<ValueList>  SwitchSetList;
         
+        /** Set the compile set of different values.*/
+        void setSwitchSetList(const SwitchSetList& switchSetList);
+
+        /** Get the compile set of different values.*/
         const SwitchSetList& getSwitchSetList() const { return _values; }
+
+        /** Set the a single set of different values for a particular switch set.*/
+        void setValueList(unsigned int switchSet, const ValueList& values);
+
+        /** Get the a single set of different values for a particular switch set.*/
         const ValueList& getValueList(unsigned int switchSet) const { return _values[switchSet]; }
 
     protected :

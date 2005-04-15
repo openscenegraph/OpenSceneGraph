@@ -21,6 +21,7 @@
 #include <osg/UByte4>
 #include <osg/Matrixf>
 #include <osg/Matrixd>
+#include <osg/Plane>
 
 namespace osg {
 
@@ -165,6 +166,29 @@ inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
     return output; 	// to enable cascading
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// Quat steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Quat& vec)
+{
+    output << vec._v[0] << " "
+       << vec._v[1] << " "
+       << vec._v[2] << " "
+       << vec._v[3];
+    return output;     // to enable cascading
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Plane steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Plane& pl)
+{
+    output << pl[0] << " "
+	   << pl[1] << " "
+	   << pl[2] << " "
+	   << pl[3];
+    return output; 	// to enable cascading
+}
 
 }    // end of namespace osg
 #endif

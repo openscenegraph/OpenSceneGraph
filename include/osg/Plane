@@ -206,9 +206,6 @@ class OSG_EXPORT Plane
             calculateUpperLowerBBCorners();
         }
 
-        friend inline std::ostream& operator << (std::ostream& output, const Plane& pl);
-
-
     protected:
 
 	Vec4                _fv;
@@ -219,15 +216,6 @@ class OSG_EXPORT Plane
 
 
 };
-
-inline std::ostream& operator << (std::ostream& output, const Plane& pl)
-{
-    output << pl._fv[0] << " "
-	   << pl._fv[1] << " "
-	   << pl._fv[2] << " "
-	   << pl._fv[3];
-    return output; 	// to enable cascading
-}
 
 }	// end of namespace
 

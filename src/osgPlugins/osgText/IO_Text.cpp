@@ -6,6 +6,7 @@
 
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/io_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

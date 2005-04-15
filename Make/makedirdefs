@@ -53,6 +53,7 @@ PLUGIN_DIRS = \
 	dds\
 	directx\
 	dw\
+	dxf\
 	flt\
 	hdr\
 	ive\

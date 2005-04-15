@@ -398,10 +398,10 @@ INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgParticle \
                          $(OSGHOME)/include/osgText \
                          $(OSGHOME)/include/osgSim \
-                         $(OSGHOME)/include/osgGL2 \
                          $(OSGHOME)/include/osgTerrain \
                          $(OSGHOME)/include/osgFX \
                          $(OSGHOME)/include/osgUtil \
+                         $(OSGHOME)/include/osgIntropsection \
                          $(OSGHOME)/doc/Doxyfiles/auto_Mainpage
 
 # If the value of the INPUT tag contains directories, you can use the 

@@ -19,14 +19,9 @@ SRC_DIRS = \
 	osgGA\
 	osgParticle\
 	osgText\
+        osgFX\
 	osgSim\
 	osgProducer
-
-ifeq ($(COMPILE_osgGL2),yes)
-SRC_DIRS += osgGL2
-endif
-
-SRC_DIRS += osgFX
 
 ifeq ($(GDAL_INSTALLED),yes)
 SRC_DIRS += osgTerrain
@@ -242,10 +237,6 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgvolume\
 	osgwindows\
-
-ifeq ($(COMPILE_osgGL2),yes)
-    EXAMPLE_DIRS += osgGL2Shaders
-endif
 
 ifeq ($(COMPILE_INTROSPECTION),yes)
     EXAMPLE_DIRS += osgintrospection

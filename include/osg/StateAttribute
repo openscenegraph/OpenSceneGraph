@@ -158,17 +158,16 @@ class OSG_EXPORT StateAttribute : public Object
             VERTEXPROGRAM,
             FRAGMENTPROGRAM,
             
-            
             POINTSPRITE,
 
-            /// osgGL2 namespace            
-            PROGRAMOBJECT,
-            
+            /// core GLSL support
+            PROGRAM,
+
             /// osgFX namespace
             VALIDATOR,
             VIEWMATRIXEXTRACTOR,
             
-            // osgNV namespace
+            /// osgNV namespace
             OSGNV_PARAMETER_BLOCK,
 
             // osgNVExt namespace
@@ -176,17 +175,15 @@ class OSG_EXPORT StateAttribute : public Object
             OSGNVEXT_VERTEX_PROGRAM,
             OSGNVEXT_REGISTER_COMBINERS,
 
-            // osgNVCg namespace
+            /// osgNVCg namespace
             OSGNVCG_PROGRAM,
 
             // osgNVSlang namespace
             OSGNVSLANG_PROGRAM,
 
             // osgNVParse
-            OSGNVPARSE_PROGRAM_PARSER,
+            OSGNVPARSE_PROGRAM_PARSER
 
-            /// core GLSL support
-            PROGRAM
         };
         
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

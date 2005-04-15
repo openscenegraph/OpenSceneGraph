@@ -383,21 +383,10 @@ class OSG_EXPORT Quat
             uuv *= 2.0f; 
             return v + uv + uuv;
         }
-               
-        friend inline std::ostream& operator << (std::ostream& output, const Quat& vec);
         
     protected:
     
 };    // end of class prototype
-
-inline std::ostream& operator << (std::ostream& output, const Quat& vec)
-{
-    output << vec._v[0] << " "
-       << vec._v[1] << " "
-       << vec._v[2] << " "
-       << vec._v[3];
-    return output;     // to enable cascading
-}
 
 }    // end of namespace
 

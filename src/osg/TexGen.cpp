@@ -12,6 +12,7 @@
 */
 #include <osg/TexGen>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 using namespace osg;
 

@@ -138,7 +138,7 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
 
 inline float convertComponent(int _expo, int _val)
 {
-    return ldexp( _val, _expo-8);
+    return ldexp( static_cast<float>(_val), _expo-8);
 }
 
 void workOnRGBE(RGBE *_scan, int _len, float *_cols)

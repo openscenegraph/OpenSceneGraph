@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:	examples/osgglsl/GL2Scene.cpp
- * author:	Mike Weiblen 2005-04-13
+/* file:	examples/osgshaders/GL2Scene.cpp
+ * author:	Mike Weiblen 2005-04-15
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -292,6 +292,7 @@ GL2Scene::buildScene()
     {
 	osg::StateSet* ss = ModelInstance();
 	osg::Program* program = new osg::Program;
+	program->setName( "microshader" );
 	_programList.push_back( program );
 	program->addShader( new osg::Shader( osg::Shader::VERTEX, microshaderVertSource ) );
 	program->addShader( new osg::Shader( osg::Shader::FRAGMENT, microshaderFragSource ) );
@@ -302,6 +303,7 @@ GL2Scene::buildScene()
     {
 	osg::StateSet* ss = ModelInstance();
 	BlockyProgram = new osg::Program;
+	BlockyProgram->setName( "blocky" );
 	_programList.push_back( BlockyProgram );
 	BlockyVertObj = new osg::Shader( osg::Shader::VERTEX );
 	BlockyFragObj = new osg::Shader( osg::Shader::FRAGMENT );
@@ -315,6 +317,7 @@ GL2Scene::buildScene()
 	osg::StateSet* ss = ModelInstance();
 	ss->setTextureAttribute(TEXUNIT_NOISE, noiseTexture);
 	ErodedProgram = new osg::Program;
+	ErodedProgram->setName( "eroded" );
 	_programList.push_back( ErodedProgram );
 	ErodedVertObj = new osg::Shader( osg::Shader::VERTEX );
 	ErodedFragObj = new osg::Shader( osg::Shader::FRAGMENT );
@@ -333,6 +336,7 @@ GL2Scene::buildScene()
 	ss->setTextureAttribute(TEXUNIT_NOISE, noiseTexture);
 	ss->setTextureAttribute(TEXUNIT_SINE, sineTexture);
 	MarbleProgram = new osg::Program;
+	MarbleProgram->setName( "marble" );
 	_programList.push_back( MarbleProgram );
 	MarbleVertObj = new osg::Shader( osg::Shader::VERTEX );
 	MarbleFragObj = new osg::Shader( osg::Shader::FRAGMENT );
@@ -340,8 +344,8 @@ GL2Scene::buildScene()
 	MarbleProgram->addShader( MarbleVertObj );
 	ss->setAttributeAndModes(MarbleProgram, osg::StateAttribute::ON);
 
-	ss->addUniform( new osg::Uniform("Noise", TEXUNIT_NOISE) );
-	ss->addUniform( new osg::Uniform("Sine", TEXUNIT_SINE) );
+	ss->addUniform( new osg::Uniform("NoiseTex", TEXUNIT_NOISE) );
+	ss->addUniform( new osg::Uniform("SineTex", TEXUNIT_SINE) );
     }
 
 #ifdef INTERNAL_3DLABS //[

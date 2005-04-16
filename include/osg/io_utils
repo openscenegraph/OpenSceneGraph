@@ -166,6 +166,12 @@ inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
     return output; 	// to enable cascading
 }
 
+inline std::istream& operator >> (std::istream& input, UByte4& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    return input;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Quat steaming operators.
@@ -178,6 +184,13 @@ inline std::ostream& operator << (std::ostream& output, const Quat& vec)
     return output;     // to enable cascading
 }
 
+inline std::istream& operator >> (std::istream& input, Quat& vec)
+{
+    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    return input;
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Plane steaming operators.
@@ -188,6 +201,12 @@ inline std::ostream& operator << (std::ostream& output, const Plane& pl)
 	   << pl[2] << " "
 	   << pl[3];
     return output; 	// to enable cascading
+}
+
+inline std::istream& operator >> (std::istream& input, Plane& vec)
+{
+    input >> vec[0] >> vec[1] >> vec[2] >> vec[3];
+    return input;
 }
 
 }    // end of namespace osg

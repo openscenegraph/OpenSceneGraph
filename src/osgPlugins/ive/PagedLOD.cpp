@@ -98,7 +98,7 @@ void PagedLOD::read(DataInputStream* in){
                     throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
 
 
-				if ( in->getVersion() > VERSION_0006 ) {
+		  if ( in->getVersion() >= VERSION_0006 ) {
                setDatabasePath(in->readString());
             }
 

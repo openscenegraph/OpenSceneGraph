@@ -373,7 +373,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         friend class PerContextProgram;
 
 	/** PerContextProgram (PCP) is an OSG-internal encapsulation of glPrograms per-GL context.  */
-	class PerContextProgram : public osg::Referenced
+	class OSG_EXPORT PerContextProgram : public osg::Referenced
 	{
 	    public:
 

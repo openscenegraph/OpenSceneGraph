@@ -13,7 +13,7 @@
 */
 
 /* file:	src/osg/Program.cpp
- * author:	Mike Weiblen 2005-04-06
+ * author:	Mike Weiblen 2005-04-15
 */
 
 #include <fstream>
@@ -2133,6 +2133,11 @@ void Program::PerContextProgram::linkProgram()
     if( ! _needsLink ) return;
     _needsLink = false;
 
+    osg::notify(osg::INFO)
+        << "Linking osg::Program \"" << _program->getName() << "\""
+        << " id=" << _glProgramHandle
+        <<  std::endl;
+
     // set any explicit vertex attribute bindings
     const AttribBindingList& bindlist = _program->getAttribBindingList();
     for( AttribBindingList::const_iterator itr = bindlist.begin();
@@ -2155,7 +2160,7 @@ void Program::PerContextProgram::linkProgram()
 	return;
     }
 
-    // build ActiveUniformList
+    // build _uniformLocationMap
     GLint numUniforms = 0;
     GLsizei maxLen = 0;
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_UNIFORMS, &numUniforms );
@@ -2176,12 +2181,18 @@ void Program::PerContextProgram::linkProgram()
 	    if( loc != -1 )
 	    {
                 _uniformLocationMap[name] = loc;
+
+                osg::notify(osg::INFO)
+                    << "\tUniform \"" << name << "\""
+                    << " loc="<< loc
+                    << " type=" << Uniform::getTypename((Uniform::Type)type)
+                    << std::endl;
 	    }
 	}
 	delete [] name;
     }
 
-    // build ActiveUniformList
+    // build _attribLocationMap
     GLint numAttrib = 0;
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTES, &numAttrib );
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLen );
@@ -2201,10 +2212,16 @@ void Program::PerContextProgram::linkProgram()
 	    if( loc != -1 )
 	    {
                 _attribLocationMap[name] = loc;
+
+                osg::notify(osg::INFO)
+                    << "\tAttrib \"" << name << "\""
+                    << " loc=" << loc
+                    << std::endl;
 	    }
 	}
 	delete [] name;
     }
+    osg::notify(osg::INFO) << std::endl;
 }
 
 void Program::PerContextProgram::getInfoLog( std::string& infoLog ) const

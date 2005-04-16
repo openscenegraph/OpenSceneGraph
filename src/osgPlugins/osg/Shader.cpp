@@ -85,7 +85,7 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
 
     std::vector<std::string>::const_iterator j;
     for (j=lines.begin(); j!=lines.end(); ++j) {
-	fw.indent() << "\"" << *j << "\"\n";
+	fw.indent() << fw.wrapString(*j) << "\n";
     }
 
     fw.moveOut();

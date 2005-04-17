@@ -14,9 +14,6 @@
 #ifndef OSG_VEC3F
 #define OSG_VEC3F 1
 
-#include <ostream>
-#include <istream>
-
 #include <osg/Vec2f>
 #include <osg/Math>
 

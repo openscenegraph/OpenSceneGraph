@@ -174,6 +174,18 @@ void Matrix_implementation::get( Quat& q ) const
     }
 }
 
+int Matrix_implementation::compare(const Matrix_implementation& m) const
+{
+    const Matrix_implementation::value_type* lhs = reinterpret_cast<const Matrix_implementation::value_type*>(_mat);
+    const Matrix_implementation::value_type* end_lhs = lhs+16;
+    const Matrix_implementation::value_type* rhs = reinterpret_cast<const Matrix_implementation::value_type*>(m._mat);
+    for(;lhs!=end_lhs;++lhs,++rhs)
+    {
+        if (*lhs < *rhs) return -1;
+        if (*rhs < *lhs) return 1;
+    }
+    return 0;
+}
 
 void Matrix_implementation::setTrans( value_type tx, value_type ty, value_type tz )
 {

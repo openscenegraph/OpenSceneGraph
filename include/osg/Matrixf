@@ -43,7 +43,7 @@ class OSG_EXPORT Matrixf
 
         ~Matrixf() {}
 
-        int compare(const Matrixf& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
+        int compare(const Matrixf& m) const;
 
         bool operator < (const Matrixf& m) const { return compare(m)<0; }
         bool operator == (const Matrixf& m) const { return compare(m)==0; }

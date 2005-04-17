@@ -31,7 +31,7 @@ RegisterEntityProxy<dxfLWPolyline> g_dxfLWPolyline;
 RegisterEntityProxy<dxfInsert> g_dxfInsert;
 
 void 
-dxfBasicEntity::assign(dxfFile* dxf, codeValue& cv)
+dxfBasicEntity::assign(dxfFile* , codeValue& cv)
 {
 	switch (cv._groupCode) {
 		case 8:
@@ -132,7 +132,7 @@ void
 dxfCircle::assign(dxfFile* dxf, codeValue& cv)
 {
 	double d = cv._double;
-	unsigned short s = cv._short;
+	//unsigned short s = cv._short;
 	switch (cv._groupCode) {
 		case 10:
 			_center.x() = d;
@@ -197,7 +197,7 @@ void
 dxfArc::assign(dxfFile* dxf, codeValue& cv)
 {
 	double d = cv._double;
-	unsigned short s = cv._short;
+	//unsigned short s = cv._short;
 	switch (cv._groupCode) {
 		case 10:
 			_center.x() = d;
@@ -249,7 +249,7 @@ dxfArc::drawScene(scene* sc)
 		end = _endAngle;
 	}
 	double angle_step = DegreesToRadians(end - start);
-	int numsteps = (end - start)/5; // hurmghf. say 5 degrees?
+	int numsteps = (int)((end - start)/5.0); // hurmghf. say 5 degrees?
 	if (numsteps * 5 < (end - start)) numsteps++;
 	angle_step /=  (double) numsteps;
 	end = DegreesToRadians((-_startAngle)+90.0);
@@ -275,7 +275,7 @@ void
 dxfLine::assign(dxfFile* dxf, codeValue& cv)
 {
 	double d = cv._double;
-	unsigned short s = cv._short;
+	//unsigned short s = cv._short;
 	switch (cv._groupCode) {
 		case 10:
 			_a.x() = d;
@@ -318,7 +318,7 @@ dxfLine::drawScene(scene* sc)
 	// don't know why this doesn't work
 //	sc->ocs(m);
 	sc->addLine(getLayer(), _color, _b, _a);
-	static long lcount = 0;
+//	static long lcount = 0;
 //	std::cout << ++lcount << " ";
 //	sc->ocs_clear();
 }
@@ -406,7 +406,7 @@ dxfPolyline::drawScene(scene* sc)
 		std::vector<Vec3d> nlist;
 		Vec3d nr;
 		bool nset = false;
-		dxfVertex* v = NULL;
+		//dxfVertex* v = NULL;
 		unsigned short ncount;
 		unsigned short mcount;
 		if (_surfacetype ==6) { 
@@ -547,7 +547,7 @@ dxfPolyline::drawScene(scene* sc)
 		for (unsigned short i = 0; i < _ncount; i++) {
 			dxfVertex* vindice = _indices[i].get();
 			if (!vindice) continue;
-			dxfVertex* v = NULL;
+			//dxfVertex* v = NULL;
 			if (vindice->getIndice4()) {
 				_facetype = 4;
 				d = _vertices[vindice->getIndice4()-1].get()->getVertex();

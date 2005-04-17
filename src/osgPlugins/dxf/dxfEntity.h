@@ -34,253 +34,254 @@ class dxfFile;
 static inline void
 getOCSMatrix(osg::Vec3d ocs, osg::Matrix &m)
 {
-	static const double one_64th = 1.0/64.0;
-	m.makeIdentity();
-	if (ocs == osg::Vec3d(0,0,1)) return;
-	osg::Vec3d ax(1,0,0), ay(0,1,0), az(0,0,1);
-	osg::Vec3d ocsaxis(ocs);
-	ocsaxis.normalize();
-	if (fabs(ocsaxis.x()) < one_64th && fabs(ocsaxis.y()) < one_64th) {
-		ax = ay ^ ocsaxis;
-	} else {
-		ax = az ^ ocsaxis;
-	}
-	ax.normalize();
-	ay = ocsaxis ^ ax;
-	ay.normalize();
-	m = osg::Matrix(	ax.x(), ax.y(), ax.z(), 0, 
-						ay.x(), ay.y(), ay.z(), 0,
-						ocsaxis.x(), ocsaxis.y(), ocsaxis.z(), 0,
-						0,0,0,1);
-//	m = m.inverse(m);
+    static const double one_64th = 1.0/64.0;
+    m.makeIdentity();
+    if (ocs == osg::Vec3d(0,0,1)) return;
+    osg::Vec3d ax(1,0,0), ay(0,1,0), az(0,0,1);
+    osg::Vec3d ocsaxis(ocs);
+    ocsaxis.normalize();
+    if (fabs(ocsaxis.x()) < one_64th && fabs(ocsaxis.y()) < one_64th) {
+        ax = ay ^ ocsaxis;
+    } else {
+        ax = az ^ ocsaxis;
+    }
+    ax.normalize();
+    ay = ocsaxis ^ ax;
+    ay.normalize();
+    m = osg::Matrix(    ax.x(), ax.y(), ax.z(), 0, 
+                        ay.x(), ay.y(), ay.z(), 0,
+                        ocsaxis.x(), ocsaxis.y(), ocsaxis.z(), 0,
+                        0,0,0,1);
+//    m = m.inverse(m);
 }
 
 class dxfBasicEntity : public osg::Referenced
 {
 public:
-	dxfBasicEntity() : _color(0) {}
-	virtual ~dxfBasicEntity() {}
-	virtual dxfBasicEntity* create() = 0;
-	virtual const char* name() = 0;
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual void drawScene(scene* sc) {}
-	const std::string getLayer() const { return _layer; }
+    dxfBasicEntity() : _color(0) {}
+    virtual ~dxfBasicEntity() {}
+    virtual dxfBasicEntity* create() = 0;
+    virtual const char* name() = 0;
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene*) {}
+    const std::string getLayer() const { return _layer; }
 protected:
-	std::string	_layer;
-	unsigned short	_color;
+    std::string    _layer;
+    unsigned short    _color;
 };
 
 
 class dxfCircle : public dxfBasicEntity
 {
 public:
-	dxfCircle() : _radius(0), _ocs(0,0,1) {}
-	virtual ~dxfCircle() {}
-	virtual dxfBasicEntity* create() { return new dxfCircle; }
-	virtual const char* name() { return "CIRCLE"; }
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual void drawScene(scene* sc);
+    dxfCircle() : _radius(0), _ocs(0,0,1) {}
+    virtual ~dxfCircle() {}
+    virtual dxfBasicEntity* create() { return new dxfCircle; }
+    virtual const char* name() { return "CIRCLE"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene* sc);
 protected:
-	osg::Vec3d	_center;
-	double	_radius;
-	osg::Vec3d	_ocs;
+    osg::Vec3d    _center;
+    double    _radius;
+    osg::Vec3d    _ocs;
 };
 
 class dxfArc : public dxfBasicEntity
 {
 public:
-	dxfArc() : _radius(0), _startAngle(0), _endAngle(360), _ocs(0,0,1) {}
-	virtual ~dxfArc() {}
-	virtual dxfBasicEntity* create() { return new dxfArc; }
-	virtual const char* name() { return "ARC"; }
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual void drawScene(scene* sc);
+    dxfArc() : _radius(0), _startAngle(0), _endAngle(360), _ocs(0,0,1) {}
+    virtual ~dxfArc() {}
+    virtual dxfBasicEntity* create() { return new dxfArc; }
+    virtual const char* name() { return "ARC"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene* sc);
 protected:
-	osg::Vec3d	_center;
-	double	_radius;
-	double	_startAngle;
-	double	_endAngle;
-	osg::Vec3d	_ocs;
+    osg::Vec3d    _center;
+    double    _radius;
+    double    _startAngle;
+    double    _endAngle;
+    osg::Vec3d    _ocs;
 };
 class dxfLine : public dxfBasicEntity
 {
 public:
-	dxfLine() : _ocs(0,0,1) {}
-	virtual ~dxfLine() {}
-	virtual dxfBasicEntity* create() { return new dxfLine; }
-	virtual const char* name() { return "LINE"; }
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual void drawScene(scene* sc);
+    dxfLine() : _ocs(0,0,1) {}
+    virtual ~dxfLine() {}
+    virtual dxfBasicEntity* create() { return new dxfLine; }
+    virtual const char* name() { return "LINE"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene* sc);
 protected:
-	osg::Vec3d	_a;
-	osg::Vec3d	_b;
-	osg::Vec3d	_ocs;
+    osg::Vec3d    _a;
+    osg::Vec3d    _b;
+    osg::Vec3d    _ocs;
 };
 
 class dxf3DFace : public dxfBasicEntity
 {
 public:
-	dxf3DFace() 
-	{
-		_vertices[0] = osg::Vec3d(0,0,0);
-		_vertices[1] = osg::Vec3d(0,0,0);
-		_vertices[2] = osg::Vec3d(0,0,0);
-		_vertices[3] = osg::Vec3d(0,0,0);
-	}
-	virtual ~dxf3DFace() {}
-	virtual dxfBasicEntity* create() { return new dxf3DFace; }
-	virtual const char* name() { return "3DFACE"; }
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual void drawScene(scene* sc);
+    dxf3DFace() 
+    {
+        _vertices[0] = osg::Vec3d(0,0,0);
+        _vertices[1] = osg::Vec3d(0,0,0);
+        _vertices[2] = osg::Vec3d(0,0,0);
+        _vertices[3] = osg::Vec3d(0,0,0);
+    }
+    virtual ~dxf3DFace() {}
+    virtual dxfBasicEntity* create() { return new dxf3DFace; }
+    virtual const char* name() { return "3DFACE"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene* sc);
 protected:
-	osg::Vec3d _vertices[4];
+    osg::Vec3d _vertices[4];
 };
 
 class dxfVertex : public dxfBasicEntity
 {
 public:
-	dxfVertex() : _vertex(osg::Vec3d(0,0,0)), _indice1(0), _indice2(0), _indice3(0), _indice4(0) {}
-	virtual ~dxfVertex() {}
-	virtual dxfBasicEntity* create() { return new dxfVertex; }
-	virtual const char* name() { return "VERTEX"; }
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	void getVertex(double &x, double &y, double &z) { x=_vertex.x();y=_vertex.y();z=_vertex.z(); }
-	const osg::Vec3d& getVertex() const { return _vertex; }
-	const unsigned short getIndice1() const { return _indice1; }
-	const unsigned short getIndice2() const { return _indice2; }
-	const unsigned short getIndice3() const { return _indice3; }
-	const unsigned short getIndice4() const { return _indice4; }
+    dxfVertex() : _vertex(osg::Vec3d(0,0,0)), _indice1(0), _indice2(0), _indice3(0), _indice4(0) {}
+    virtual ~dxfVertex() {}
+    virtual dxfBasicEntity* create() { return new dxfVertex; }
+    virtual const char* name() { return "VERTEX"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    void getVertex(double &x, double &y, double &z) { x=_vertex.x();y=_vertex.y();z=_vertex.z(); }
+    const osg::Vec3d& getVertex() const { return _vertex; }
+    const unsigned short getIndice1() const { return _indice1; }
+    const unsigned short getIndice2() const { return _indice2; }
+    const unsigned short getIndice3() const { return _indice3; }
+    const unsigned short getIndice4() const { return _indice4; }
 
 protected:
-	osg::Vec3d	_vertex;
-	unsigned short _indice1, _indice2, _indice3, _indice4;
+    osg::Vec3d    _vertex;
+    unsigned short _indice1, _indice2, _indice3, _indice4;
 };
 
 class dxfPolyline : public dxfBasicEntity
 {
 public:
-	dxfPolyline() : _currentVertex(NULL), 
-					_elevation(0.0), 
-					_flag(0), 
-					_mcount(0), 
-					_ncount(0), 
-					_nstart(0), 
-					_nend(0),
-					_ocs(osg::Vec3d(0,0,1)),
-					_mdensity(0),
-					_ndensity(0),
-					_surfacetype(0)
-					{}
-	virtual ~dxfPolyline() {}
-	virtual dxfBasicEntity*		create() { return new dxfPolyline; }
-	virtual const char*			name() { return "POLYLINE"; }
-	virtual void				assign(dxfFile* dxf, codeValue& cv);
-	virtual int					vertexCount() { return _vertices.size(); }
-	virtual void				drawScene(scene* sc);
+    dxfPolyline() : _currentVertex(NULL), 
+                    _elevation(0.0), 
+                    _flag(0), 
+                    _mcount(0), 
+                    _ncount(0), 
+                    _nstart(0), 
+                    _nend(0),
+                    _ocs(osg::Vec3d(0,0,1)),
+                    _mdensity(0),
+                    _ndensity(0),
+                    _surfacetype(0)
+                    {}
+    virtual ~dxfPolyline() {}
+    virtual dxfBasicEntity*        create() { return new dxfPolyline; }
+    virtual const char*            name() { return "POLYLINE"; }
+    virtual void                assign(dxfFile* dxf, codeValue& cv);
+    virtual int                    vertexCount() { return _vertices.size(); }
+    virtual void                drawScene(scene* sc);
 
 protected:
-	dxfVertex*					_currentVertex;
-	std::vector<osg::ref_ptr<dxfVertex> >		_vertices;
-	std::vector<osg::ref_ptr<dxfVertex> >		_indices;
-	double						_elevation;
-	unsigned short				_flag;
-	unsigned short				_mcount;
-	unsigned short				_ncount;
-	unsigned short				_nstart; // 71
-	unsigned short				_nend; //72
-	osg::Vec3d						_ocs; //210 220 230
-	unsigned short				_mdensity; // 73
-	unsigned short				_ndensity; // 74
-	unsigned short				_surfacetype; //75
+    dxfVertex*                    _currentVertex;
+    std::vector<osg::ref_ptr<dxfVertex> >        _vertices;
+    std::vector<osg::ref_ptr<dxfVertex> >        _indices;
+    double                        _elevation;
+    unsigned short                _flag;
+    unsigned short                _mcount;
+    unsigned short                _ncount;
+    unsigned short                _nstart; // 71
+    unsigned short                _nend; //72
+    osg::Vec3d                        _ocs; //210 220 230
+    unsigned short                _mdensity; // 73
+    unsigned short                _ndensity; // 74
+    unsigned short                _surfacetype; //75
 
 };
 
 class dxfLWPolyline : public dxfBasicEntity
 {
 public:
-	dxfLWPolyline() : _elevation(0.0), 
-					_flag(0), 
-					_vcount(0), 
-					_ocs(osg::Vec3d(0,0,1)),
-					_lastv(0,0,0)
-					{}
-	virtual ~dxfLWPolyline() {}
-	virtual dxfBasicEntity*		create() { return new dxfLWPolyline; }
-	virtual const char*			name() { return "LWPOLYLINE"; }
-	virtual void				assign(dxfFile* dxf, codeValue& cv);
-	virtual int					vertexCount() { return _vertices.size(); }
-	virtual void				drawScene(scene* sc);
+    dxfLWPolyline() : 
+        _elevation(0.0), 
+        _flag(0), 
+        _vcount(0), 
+        _ocs(osg::Vec3d(0,0,1)),
+        _lastv(0,0,0)
+        {}
+    virtual ~dxfLWPolyline() {}
+    virtual dxfBasicEntity*        create() { return new dxfLWPolyline; }
+    virtual const char*            name() { return "LWPOLYLINE"; }
+    virtual void                assign(dxfFile* dxf, codeValue& cv);
+    virtual int                    vertexCount() { return _vertices.size(); }
+    virtual void                drawScene(scene* sc);
 
 protected:
-	osg::Vec3d						_lastv;
-	std::vector< osg::Vec3d >		_vertices;
-	double						_elevation;
-	unsigned short				_flag;
-	unsigned short				_vcount; // 90
-	osg::Vec3d						_ocs; //210 220 230
+    double                        _elevation;
+    unsigned short                _flag;
+    unsigned short                _vcount; // 90
+    osg::Vec3d                    _ocs; //210 220 230
+    osg::Vec3d                    _lastv;
+    std::vector< osg::Vec3d >     _vertices;
 
 };
 
 class dxfInsert : public dxfBasicEntity
 {
 public:
-	dxfInsert() : _block(NULL), 
-					_done(false), 
-					_rotation(0), 
-					_scale(1,1,1),
-					_point(osg::Vec3d(0,0,0)),
-					_ocs(osg::Vec3d(0,0,1)) {}
-	virtual ~dxfInsert() {}
-	virtual dxfBasicEntity* create() { return new dxfInsert; }
-	virtual const char* name() { return "INSERT"; }
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual void drawScene(scene* sc);
+    dxfInsert() : _block(NULL), 
+                    _done(false), 
+                    _rotation(0), 
+                    _scale(1,1,1),
+                    _point(osg::Vec3d(0,0,0)),
+                    _ocs(osg::Vec3d(0,0,1)) {}
+    virtual ~dxfInsert() {}
+    virtual dxfBasicEntity* create() { return new dxfInsert; }
+    virtual const char* name() { return "INSERT"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene* sc);
 
 protected:
-	std::string _blockName;
-	osg::ref_ptr<dxfBlock> _block;
-	bool _done; // since we are on a SEQEND, we must
-				// make sure not getting values addressed to other
-				// entities (dxf garble things) in the sequence
-	double			_rotation;
-	osg::Vec3d		_scale;
-	osg::Vec3d			_point;
-	osg::Vec3d			_ocs;
+    std::string _blockName;
+    osg::ref_ptr<dxfBlock> _block;
+    bool _done; // since we are on a SEQEND, we must
+                // make sure not getting values addressed to other
+                // entities (dxf garble things) in the sequence
+    double            _rotation;
+    osg::Vec3d        _scale;
+    osg::Vec3d            _point;
+    osg::Vec3d            _ocs;
 };
 
 class dxfEntity : public osg::Referenced
 {
 public:
-	dxfEntity(std::string s) : _entity(NULL), _seqend(false) 
-	{
-		_entity = findByName(s);
-		if (_entity) {
-			_entityList.push_back(_entity);
-		//	std::cout << "entity " << s << std::endl;
-		}
-	}
-	virtual void assign(dxfFile* dxf, codeValue& cv);
-	virtual bool done() { return !_seqend; }
-	static void registerEntity(dxfBasicEntity*);
-	static void unregisterEntity(dxfBasicEntity*);
-	static dxfBasicEntity* findByName(std::string s) 
-	{
-		dxfBasicEntity* be = _registry[s].get();
-		if (be)
-			return be->create();
-		else {
-			std::cout << " no " << s << std::endl;
-			return NULL;
-		}
-	}
-	virtual void drawScene(scene* sc);
-	dxfBasicEntity* getEntity() { return _entity; }
+    dxfEntity(std::string s) : _entity(NULL), _seqend(false) 
+    {
+        _entity = findByName(s);
+        if (_entity) {
+            _entityList.push_back(_entity);
+        //    std::cout << "entity " << s << std::endl;
+        }
+    }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual bool done() { return !_seqend; }
+    static void registerEntity(dxfBasicEntity*);
+    static void unregisterEntity(dxfBasicEntity*);
+    static dxfBasicEntity* findByName(std::string s) 
+    {
+        dxfBasicEntity* be = _registry[s].get();
+        if (be)
+            return be->create();
+        else {
+            std::cout << " no " << s << std::endl;
+            return NULL;
+        }
+    }
+    virtual void drawScene(scene* sc);
+    dxfBasicEntity* getEntity() { return _entity; }
 
 protected:
-	std::vector<osg::ref_ptr<dxfBasicEntity> > _entityList;
-	static std::map<std::string, osg::ref_ptr<dxfBasicEntity> > _registry;
-	dxfBasicEntity* _entity;
-	bool	_seqend; // bypass 0 codes. needs a 0 seqend to close.
+    std::vector<osg::ref_ptr<dxfBasicEntity> > _entityList;
+    static std::map<std::string, osg::ref_ptr<dxfBasicEntity> > _registry;
+    dxfBasicEntity* _entity;
+    bool    _seqend; // bypass 0 codes. needs a 0 seqend to close.
 };
 
 /** Proxy class for automatic registration of dxf entities reader/writers.*/
@@ -291,7 +292,7 @@ class RegisterEntityProxy
         RegisterEntityProxy()
         {
             _rw = new T;
-			dxfEntity::registerEntity(_rw.get());
+            dxfEntity::registerEntity(_rw.get());
         }
 
         ~RegisterEntityProxy()

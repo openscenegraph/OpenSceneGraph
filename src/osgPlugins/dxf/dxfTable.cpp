@@ -14,7 +14,7 @@
 #include "codeValue.h"
 
 
-void dxfLayer::assign(dxfFile* dxf, codeValue& cv) 
+void dxfLayer::assign(dxfFile*, codeValue& cv) 
 {
 	switch (cv._groupCode) {
 		case 2:

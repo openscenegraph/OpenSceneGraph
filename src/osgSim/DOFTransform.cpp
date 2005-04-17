@@ -30,7 +30,7 @@ DOFTransform::DOFTransform():
     _previousTraversalNumber(-1),
     _previousTime(0.0),
     _limitationFlags(0), 
-    _animationOn(true), 
+    _animationOn(false), 
     _increasingFlags(0xffff),
     _multOrder(PRH)
 {

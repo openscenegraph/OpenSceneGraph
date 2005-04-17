@@ -754,7 +754,7 @@ class OSG_EXPORT State : public Referenced
         struct AttributeStack
         {
             typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributeStack::AttributePair;
-            typedef std::vector<AttributeStack::AttributePair>                                      AttributeVec;
+            typedef std::vector<AttributePair>                                      AttributeVec;
 
             AttributeStack()
             {

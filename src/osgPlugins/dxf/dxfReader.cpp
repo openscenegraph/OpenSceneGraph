@@ -185,8 +185,8 @@ dxfReader::openFile(std::string fileName)
 		cout << " Binary DXF not supported. For now. Come back soon." << endl;
 		return false;
 	}
-	string::size_type lf = sentinel.find('\n');
-	string::size_type cr = sentinel.find('\r');
+	//string::size_type lf = sentinel.find('\n');
+	//string::size_type cr = sentinel.find('\r');
 	// gossage. un mac peut mettre juste CR. ca fonctionne pas:
 //	if (cr > 0 && (!lf || lf > cr + 1))
 //		_reader = new readerText('\r');

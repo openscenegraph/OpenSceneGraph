@@ -29,7 +29,7 @@ class dxfTable : public osg::Referenced
 public:
 	dxfTable() {}
 	virtual ~dxfTable() {}
-	virtual void assign(dxfFile* dxf, codeValue& cv) {}
+	virtual void assign(dxfFile* , codeValue& ) { }
 };
 
 

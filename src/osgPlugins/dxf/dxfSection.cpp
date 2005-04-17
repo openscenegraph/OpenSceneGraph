@@ -14,7 +14,7 @@
 #include "dxfEntity.h"
 #include "dxfBlock.h"
 
-void dxfHeader::assign(dxfFile* dxf, codeValue& cv)
+void dxfHeader::assign(dxfFile*, codeValue& cv)
 {
 	if (cv._groupCode == 9) {
 		_inVariable = true;

@@ -9,12 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/io_utils>
-
 #include <osg/Vec3d>
 #include <osg/Vec4d>
 #include <osg/Vec4f>
 
+#include <osg/io_utils>
+	
 TYPE_NAME_ALIAS(double, osg::Vec4d::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Vec4d)

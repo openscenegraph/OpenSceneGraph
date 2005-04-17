@@ -16,7 +16,11 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+#include <osg/io_utils>
+	
 BEGIN_VALUE_REFLECTOR(osg::Plane)
+	ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
+	Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	Constructor0();
 	Constructor1(IN, const osg::Plane &, pl);
 	Constructor4(IN, float, a, IN, float, b, IN, float, c, IN, float, d);

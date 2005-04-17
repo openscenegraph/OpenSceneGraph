@@ -11,7 +11,6 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/Program>
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
@@ -100,9 +99,6 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	Method1(void, setUniformList, IN, osg::StateSet::UniformList &, al);
 	Method0(osg::StateSet::UniformList &, getUniformList);
 	Method0(const osg::StateSet::UniformList &, getUniformList);
-	Method1(void, setProgram, IN, osg::Program *, program);
-	Method0(osg::Program *, getProgram);
-	Method0(const osg::Program *, getProgram);
 	Method1(void, setRenderingHint, IN, int, hint);
 	Method0(int, getRenderingHint);
 	MethodWithDefaults3(void, setRenderBinDetails, IN, int, binNum, , IN, const std::string &, binName, , IN, osg::StateSet::RenderBinMode, mode, osg::StateSet::USE_RENDERBIN_DETAILS);
@@ -121,7 +117,6 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	Property(int, BinNumber);
 
 	Property(osg::StateSet::ModeList &, ModeList);
-	Property(osg::Program *, Program);
 	Property(osg::StateSet::RenderBinMode, RenderBinMode);
 	Property(int, RenderingHint);
 	Property(osg::StateSet::TextureAttributeList &, TextureAttributeList);
@@ -140,6 +135,18 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
 	Method0(osg::StateAttribute *, take);
 	Method0(osg::StateAttribute *, release);
 	ReadOnlyProperty(osg::StateAttribute *, );
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
+	Constructor0();
+	Constructor1(IN, osg::Uniform *, t);
+	Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp);
+	Method0(bool, valid);
+	Method0(osg::Uniform *, get);
+	Method0(const osg::Uniform *, get);
+	Method0(osg::Uniform *, take);
+	Method0(osg::Uniform *, release);
+	ReadOnlyProperty(osg::Uniform *, );
 END_REFLECTOR
 
 STD_MAP_REFLECTOR_WITH_TYPES(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateAttribute::GLMode, osg::StateAttribute::Values);

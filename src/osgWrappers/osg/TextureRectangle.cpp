@@ -42,6 +42,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle)
 	Method1(void, setSubloadCallback, IN, osg::TextureRectangle::SubloadCallback *, cb);
 	Method0(osg::TextureRectangle::SubloadCallback *, getSubloadCallback);
 	Method0(const osg::TextureRectangle::SubloadCallback *, getSubloadCallback);
+	Method5(void, copyTexImage2D, IN, osg::State &, state, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
+	Method7(void, copyTexSubImage2D, IN, osg::State &, state, IN, int, xoffset, IN, int, yoffset, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
 	Method1(void, apply, IN, osg::State &, state);
 	Property(osg::Image *, Image);
 	Property(osg::TextureRectangle::SubloadCallback *, SubloadCallback);

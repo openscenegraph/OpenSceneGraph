@@ -40,7 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ColorMask)
 	Property(bool, AlphaMask);
 	Property(bool, BlueMask);
 	Property(bool, GreenMask);
-	ReadOnlyProperty(bool, RedMask);
+	Property(bool, RedMask);
 	ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

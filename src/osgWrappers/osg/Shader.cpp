@@ -16,10 +16,12 @@
 BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
 	EnumLabel(osg::Shader::VERTEX);
 	EnumLabel(osg::Shader::FRAGMENT);
+	EnumLabel(osg::Shader::UNDEFINED);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	BaseType(osg::Object);
+	Constructor0();
 	ConstructorWithDefaults2(IN, osg::Shader::Type, type, , IN, const char *, sourceText, 0);
 	ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	Method0(osg::Object *, cloneType);
@@ -28,6 +30,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	Method0(const char *, libraryName);
 	Method0(const char *, className);
 	Method1(int, compare, IN, const osg::Shader &, rhs);
+	Method1(bool, setType, IN, osg::Shader::Type, t);
 	Method1(void, setShaderSource, IN, const char *, sourceText);
 	Method1(bool, loadShaderSourceFromFile, IN, const char *, fileName);
 	Method0(const std::string &, getShaderSource);
@@ -42,7 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	Method0(const std::string &, getName);
 	Property(const std::string &, Name);
 	ReadOnlyProperty(const std::string &, ShaderSource);
-	ReadOnlyProperty(osg::Shader::Type, Type);
+	PropertyWithReturnType(osg::Shader::Type, Type, bool);
 	ReadOnlyProperty(const char *, Typename);
 END_REFLECTOR
 

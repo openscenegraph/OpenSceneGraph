@@ -89,8 +89,8 @@ void testLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up
     
     std::cout << "testLookAt"<<std::endl;
     std::cout << "  eye "<<eye<< " compute "<<c_eye<<std::endl;
-    std::cout << "  eye "<<center<< " compute "<<c_center<<std::endl;
-    std::cout << "  eye "<<up<< " compute "<<c_up<<std::endl;
+    std::cout << "  center "<<center<< " compute "<<c_center<<std::endl;
+    std::cout << "  up "<<up<< " compute "<<c_up<<std::endl;
     
     std::cout << std::endl;
     

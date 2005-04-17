@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/io_utils>
-
 #include <osg/Vec2d>
 #include <osg/Vec2f>
 
+#include <osg/io_utils>
+	
 TYPE_NAME_ALIAS(double, osg::Vec2d::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Vec2d)

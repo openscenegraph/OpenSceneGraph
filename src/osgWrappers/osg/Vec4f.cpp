@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/io_utils>
-
 #include <osg/Vec3f>
 #include <osg/Vec4f>
 
+#include <osg/io_utils>
+	
 TYPE_NAME_ALIAS(float, osg::Vec4f::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Vec4f)

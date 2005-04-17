@@ -15,6 +15,7 @@
 #include <osg/Shader>
 #include <osg/State>
 #include <osg/StateAttribute>
+#include <osg/Uniform>
 
 BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	BaseType(osg::Referenced);
@@ -157,6 +158,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	Method0(void, dirtyProgram);
 	Method1(bool, addShader, IN, osg::Shader *, shader);
+	Method0(unsigned int, getNumShaders);
+	Method1(osg::Shader *, getShader, IN, unsigned int, i);
+	Method1(const osg::Shader *, getShader, IN, unsigned int, i);
 	Method1(bool, removeShader, IN, osg::Shader *, shader);
 	Method2(void, bindAttribLocation, IN, GLuint, index, IN, const char *, name);
 	Method0(const osg::Program::AttribBindingList &, getAttribBindingList);
@@ -165,9 +169,27 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	Method1(void, setName, IN, const std::string &, name);
 	Method1(void, setName, IN, const char *, name);
 	Method0(const std::string &, getName);
+	Method1(osg::Program::PerContextProgram *, getPCP, IN, unsigned int, contextID);
 	ReadOnlyProperty(const osg::Program::AttribBindingList &, AttribBindingList);
 	Property(const std::string &, Name);
+	ArrayProperty_GA(osg::Shader *, Shader, Shaders, unsigned int, bool);
 	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
+	BaseType(osg::Referenced);
+	Constructor2(IN, const osg::Program *, program, IN, unsigned int, contextID);
+	Method0(GLuint, getHandle);
+	Method0(void, requestLink);
+	Method0(void, linkProgram);
+	Method0(bool, needsLink);
+	Method0(bool, isLinked);
+	Method1(void, getInfoLog, IN, std::string &, infoLog);
+	Method0(void, useProgram);
+	Method1(void, apply, IN, const osg::Uniform &, uniform);
+	Method1(GLint, getUniformLocation, IN, const std::string &, name);
+	Method1(GLint, getAttribLocation, IN, const std::string &, name);
+	ReadOnlyProperty(GLuint, Handle);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >);

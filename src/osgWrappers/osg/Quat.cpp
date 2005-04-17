@@ -17,9 +17,13 @@
 #include <osg/Vec4d>
 #include <osg/Vec4f>
 
+#include <osg/io_utils>
+	
 TYPE_NAME_ALIAS(double, osg::Quat::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Quat)
+	ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
+	Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	Constructor0();
 	Constructor4(IN, osg::Quat::value_type, x, IN, osg::Quat::value_type, y, IN, osg::Quat::value_type, z, IN, osg::Quat::value_type, w);
 	Constructor1(IN, const osg::Vec4f &, v);

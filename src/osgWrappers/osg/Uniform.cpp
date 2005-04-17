@@ -12,6 +12,7 @@
 #include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/Object>
+#include <osg/Program>
 #include <osg/Uniform>
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -44,6 +45,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	BaseType(osg::Object);
+	Constructor0();
 	Constructor2(IN, const char *, name, IN, osg::Uniform::Type, type);
 	ConstructorWithDefaults2(IN, const osg::Uniform &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	Method0(osg::Object *, cloneType);
@@ -51,6 +53,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
 	Method0(const char *, libraryName);
 	Method0(const char *, className);
+	Method1(bool, setType, IN, osg::Uniform::Type, t);
+	Method1(bool, setName, IN, const std::string &, name);
 	Method0(const std::string &, getName);
 	Method0(const osg::Uniform::Type, getType);
 	Constructor2(IN, const char *, name, IN, float, f);
@@ -95,8 +99,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method2(bool, get, IN, bool &, b0, IN, bool &, b1);
 	Method3(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2);
 	Method4(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2, IN, bool &, b3);
+	Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location);
 	WriteOnlyPropertyWithReturnType(bool, , bool);
-	ReadOnlyProperty(const std::string &, Name);
-	ReadOnlyProperty(const osg::Uniform::Type, Type);
+	PropertyWithReturnType(const std::string &, Name, bool);
+	WriteOnlyPropertyWithReturnType(osg::Uniform::Type, Type, bool);
 END_REFLECTOR
 

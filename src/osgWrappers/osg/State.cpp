@@ -13,19 +13,11 @@
 #include <osg/FrameStamp>
 #include <osg/Matrix>
 #include <osg/Polytope>
+#include <osg/Program>
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
-#include <osg/Uniform>
 #include <osg/Viewport>
-
-TYPE_NAME_ALIAS(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >, osg::State::AttributePair);
-
-TYPE_NAME_ALIAS(std::vector< osg::State::AttributePair >, osg::State::AttributeVec);
-
-TYPE_NAME_ALIAS(std::vector< osg::StateAttribute::GLModeValue >, osg::State::ValueVec);
-
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ref_ptr< osg::Uniform > >, osg::State::UniformMap);
 
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	BaseType(osg::Referenced);
@@ -109,6 +101,10 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	Method1(void, disableVertexAttribPointersAboveAndIncluding, IN, unsigned int, index);
 	Method1(void, dirtyVertexAttribPointersAboveAndIncluding, IN, unsigned int, index);
 	Method0(bool, isVertexBufferObjectSupported);
+	Method1(void, setLastAppliedProgramObject, IN, const osg::Program::PerContextProgram *, program);
+	Method0(const osg::Program::PerContextProgram *, getLastAppliedProgramObject);
+	Method1(GLint, getUniformLocation, IN, const std::string &, name);
+	Method1(GLint, getAttribLocation, IN, const std::string &, name);
 	Method1(void, setContextID, IN, unsigned int, contextID);
 	Method0(unsigned int, getContextID);
 	Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
@@ -122,7 +118,6 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	Method1(bool, checkGLErrors, IN, const char *, str);
 	Method1(bool, checkGLErrors, IN, osg::StateAttribute::GLMode, mode);
 	Method1(bool, checkGLErrors, IN, const osg::StateAttribute *, attribute);
-	Method1(const osg::Uniform *, findUniform, IN, const std::string &, name);
 	ReadOnlyProperty(bool, AbortRendering);
 	WriteOnlyProperty(bool *, AbortRenderingPtr);
 	PropertyWithReturnType(unsigned int, ActiveTextureUnit, bool);
@@ -136,29 +131,10 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	IndexedProperty2(bool, GlobalDefaultTextureModeValue, unsigned int, unit, osg::StateAttribute::GLMode, mode);
 	ReadOnlyProperty(const osg::Matrix &, InitialInverseViewMatrix);
 	WriteOnlyProperty(const osg::RefMatrix *, InitialViewMatrix);
+	Property(const osg::Program::PerContextProgram *, LastAppliedProgramObject);
 	ReadOnlyProperty(const osg::Matrix &, ModelViewMatrix);
 	ReadOnlyProperty(const osg::Matrix &, ProjectionMatrix);
 	Property(bool, ReportGLErrors);
 	ReadOnlyProperty(osg::Polytope, ViewFrustum);
 END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
-	Constructor0();
-	Constructor1(IN, osg::Uniform *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp);
-	Method0(bool, valid);
-	Method0(osg::Uniform *, get);
-	Method0(const osg::Uniform *, get);
-	Method0(osg::Uniform *, take);
-	Method0(osg::Uniform *, release);
-	ReadOnlyProperty(osg::Uniform *, );
-END_REFLECTOR
-
-STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ref_ptr< osg::Uniform > >);
-
-STD_PAIR_REFLECTOR(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >);
-
-STD_VECTOR_REFLECTOR(std::vector< osg::State::AttributePair >);
-
-STD_VECTOR_REFLECTOR(std::vector< osg::StateAttribute::GLModeValue >);
 

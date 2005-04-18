@@ -72,6 +72,10 @@ osg::StateAttribute* Input::readStateAttribute()
 {
     return Registry::instance()->readStateAttribute(*this);
 }
+osg::Uniform* Input::readUniform()
+{
+    return Registry::instance()->readUniform(*this);
+}
 
 osg::Node* Input::readNode()
 {

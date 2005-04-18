@@ -479,6 +479,11 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
             _stateAttrWrapperMap[name] = wrapper;
             _stateAttrWrapperMap[compositeName] = wrapper;
         }
+        if (dynamic_cast<const Uniform*>(proto))
+        {
+            _uniformWrapperMap[name] = wrapper;
+            _uniformWrapperMap[compositeName] = wrapper;
+        }
         if (dynamic_cast<const Node*>(proto))
         {
             _nodeWrapperMap[name] = wrapper;
@@ -518,6 +523,7 @@ void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
     eraseWrapper(_classNameWrapperMap,wrapper);
     eraseWrapper(_imageWrapperMap,wrapper);
     eraseWrapper(_drawableWrapperMap,wrapper);
+    eraseWrapper(_uniformWrapperMap,wrapper);
     eraseWrapper(_stateAttrWrapperMap,wrapper);
     eraseWrapper(_nodeWrapperMap,wrapper);
 }
@@ -1073,6 +1079,27 @@ StateAttribute* Registry::readStateAttribute(Input& fr)
     }
 
     return dynamic_cast<StateAttribute*>(readObject(_stateAttrWrapperMap,fr));
+}
+
+//
+// read drawable from input iterator.
+//
+Uniform* Registry::readUniform(Input& fr)
+{
+
+    if (fr[0].matchWord("Use"))
+    {
+        if (fr[1].isString())
+        {
+            Uniform* attribute = dynamic_cast<Uniform*>(fr.getObjectForUniqueID(fr[1].getStr()));
+            if (attribute) fr+=2;
+            return attribute;
+        }
+        else return NULL;
+
+    }
+
+    return dynamic_cast<Uniform*>(readObject(_uniformWrapperMap,fr));
 }
 
 //

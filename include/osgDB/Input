@@ -47,6 +47,7 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
         virtual osg::Image*          readImage();
         virtual osg::Drawable*       readDrawable();
         virtual osg::StateAttribute* readStateAttribute();
+        virtual osg::Uniform*        readUniform();
         virtual osg::Node*           readNode();
 
         virtual osg::Object*         readObject(const std::string& fileName);

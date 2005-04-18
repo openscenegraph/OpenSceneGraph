@@ -41,10 +41,10 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
 
     // TODO read uniform value based on type
 
-    if (fr.matchSequence("type %w"))
+    if (fr[0].isWord())
     {
-	uniform.setType( Uniform::getTypeId(fr[1].getStr()) );
-	fr+=2;
+	uniform.setType( Uniform::getTypeId(fr[0].getStr()) );
+	fr+=1;
 	iteratorAdvanced = true;
     }
     
@@ -227,6 +227,10 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
             break;
         }
+        case(osg::Uniform::UNDEFINED):
+        {
+            break;
+        }
     }
 
     return iteratorAdvanced;
@@ -240,7 +244,7 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << "name "<< fw.wrapString(uniform.getName()) << std::endl;
 
-    fw.indent() << "type " << Uniform::getTypename( uniform.getType() ) << " ";
+    fw.indent() << Uniform::getTypename( uniform.getType() ) << " ";
     
     switch(uniform.getType())
     {
@@ -371,6 +375,10 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
         case(osg::Uniform::SAMPLER_2D_SHADOW):
         {
             osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
+            break;
+        }
+        case(osg::Uniform::UNDEFINED):
+        {
             break;
         }
     }

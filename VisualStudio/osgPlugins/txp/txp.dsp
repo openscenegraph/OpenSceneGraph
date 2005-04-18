@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /dv1 /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /I "../../../src/osgPlugins/txp" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D __COMP_DLL=7931 /D "WIN32" /D "_DEBUG" /D "OSGTXP_LIBRARY" /YX /FD /GZ /Zm200 /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /I "../../../src/osgPlugins/txp" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D __COMP_DLL=7931 /D "WIN32" /D "_DEBUG" /D "OSGTXP_LIBRARY" /YX /FD /GZ /Zm200 /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41a /d "_DEBUG"

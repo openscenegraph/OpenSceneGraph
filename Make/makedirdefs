@@ -121,10 +121,6 @@ ifeq ($(LIBPNG_INSTALLED),yes)
   PLUGIN_DIRS += png
 endif
 
-ifeq ($(LIBMPEG3_INSTALLED),yes)
-  PLUGIN_DIRS += mpeg
-endif
-
 ifeq ($(AVIFILE_INSTALLED),yes)
   PLUGIN_DIRS += avi
 endif

@@ -29,7 +29,6 @@ ifeq ($(DARWIN_QUICKTIME),yes)
     LIBUNGIF_INSTALLED ?= no
     LIBTIFF_INSTALLED ?= no
     LIBPNG_INSTALLED ?= no
-    LIBMPEG3_INSTALLED ?= no
 
 else
 
@@ -38,7 +37,6 @@ else
     LIBUNGIF_INSTALLED ?= yes
     LIBTIFF_INSTALLED ?= yes
     LIBPNG_INSTALLED ?= yes
-    LIBMPEG3_INSTALLED ?= no
 
 endif
 

@@ -111,6 +111,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::Object*         readObject(Input& fr);
         osg::Image*          readImage(Input& fr);
         osg::Drawable*       readDrawable(Input& fr);
+        osg::Uniform*        readUniform(Input& fr);
         osg::StateAttribute* readStateAttribute(Input& fr);
         osg::Node*           readNode(Input& fr);
         
@@ -449,6 +450,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         DotOsgWrapperMap   _imageWrapperMap;
         DotOsgWrapperMap   _drawableWrapperMap;
         DotOsgWrapperMap   _stateAttrWrapperMap;
+        DotOsgWrapperMap   _uniformWrapperMap;
         DotOsgWrapperMap   _nodeWrapperMap;
         
         DotOsgWrapperMap   _classNameWrapperMap;

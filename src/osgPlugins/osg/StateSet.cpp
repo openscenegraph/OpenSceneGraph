@@ -385,6 +385,13 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         } 
     }
 
+    // new code using osg::Registry's list of prototypes to loaded attributes.
+    Uniform* uniform = NULL;
+    while((uniform=fr.readUniform())!=NULL)
+    {
+        stateset.addUniform(uniform);
+        iteratorAdvanced = true;
+    }
 
 
     // new code using osg::Registry's list of prototypes to loaded attributes.
@@ -515,8 +522,6 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
 
 
   const StateSet::ModeList& ml = stateset.getModeList();
-  const StateSet::AttributeList& sl = stateset.getAttributeList();
-
   for(StateSet::ModeList::const_iterator mitr=ml.begin();
         mitr!=ml.end();
         ++mitr)
@@ -533,12 +538,22 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
          }
     }
     
+    const StateSet::UniformList& ul = stateset.getUniformList();
+    for(StateSet::UniformList::const_iterator uitr=ul.begin();
+        uitr!=ul.end();
+        ++uitr)
+    {
+        fw.writeObject(*(uitr->second.first));
+    }
+
+    const StateSet::AttributeList& sl = stateset.getAttributeList();
     for(StateSet::AttributeList::const_iterator sitr=sl.begin();
         sitr!=sl.end();
         ++sitr)
     {
         fw.writeObject(*(sitr->second.first));
     }
+
     
     const StateSet::TextureModeList& tml = stateset.getTextureModeList();    
     const StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();

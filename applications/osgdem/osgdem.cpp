@@ -160,7 +160,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-d <filename>","Specify the digital elevation map input file to process");
     arguments.getApplicationUsage()->addCommandLineOption("-t <filename>","Specify the texture map input file to process");
-    arguments.getApplicationUsage()->addCommandLineOption("-m <filename>","Specify the 3D database model input file to process");
+//    arguments.getApplicationUsage()->addCommandLineOption("-m <filename>","Specify the 3D database model input file to process");
     arguments.getApplicationUsage()->addCommandLineOption("-a <archivename>","Specify the archive to place the generated database");
     arguments.getApplicationUsage()->addCommandLineOption("-o <outputfile>","Specify the output master file to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
@@ -523,6 +523,7 @@ int main( int argc, char **argv )
             geoTransformScale = false;
             geoTransform.makeIdentity();            
         }
+/*        
         else if (arguments.read(pos, "-m",filename))
         {
 	    std::cout<<"-m "<<filename<<std::endl;
@@ -541,6 +542,7 @@ int main( int argc, char **argv )
             geoTransformScale = false;
             geoTransform.makeIdentity();            
         }
+*/
         else if (arguments.read(pos, "-o",filename)) 
         {
             std::cout<<"-o "<<filename<<std::endl;

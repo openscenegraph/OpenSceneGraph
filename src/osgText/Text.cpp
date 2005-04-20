@@ -261,7 +261,6 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2 cursor, String::iter
     float hr = _characterHeight/(float)activefont->getFontHeight();
     float wr = hr/_characterAspectRatio;
 
-    bool horizontal = _layout!=VERTICAL;
     bool kerning = true;
     unsigned int previous_charcode = 0;
 
@@ -311,11 +310,6 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2 cursor, String::iter
                     break; // no kerning when vertical.
                 }
             }        
-
-            osg::Vec2 bearing(horizontal?glyph->getHorizontalBearing():glyph->getVerticalBearing());
-            cursor.x() += bearing.x() * wr;
-            cursor.y() += bearing.y() * hr;
-
             // check to see if we are still within line if not move to next line.
             switch(_layout)
             {

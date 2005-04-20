@@ -87,7 +87,15 @@ LINK32=link.exe
 # Name "Example osgshaders - Win32 Debug"
 # Begin Source File
 
+SOURCE=..\..\..\examples\osgshaders\GL2Scene.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\examples\osgshaders\GL2Scene.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\osgshaders\Noise.h
 # End Source File
 # Begin Source File
 

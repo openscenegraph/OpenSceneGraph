@@ -59,7 +59,7 @@ osg::StateSet* makeStateSet(float size)
     /// Give some size to the points to be able to see the sprite
     osg::Point *point = new osg::Point();
     point->setSize(size);
-    set->setAttributeAndModes(point, osg::StateAttribute::ON);
+    set->setAttribute(point);
 
     /// Disable depth test to avoid sort problems and Lighting
     set->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);

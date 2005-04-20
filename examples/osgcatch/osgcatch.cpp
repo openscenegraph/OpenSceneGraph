@@ -697,13 +697,9 @@ osg::Node* GameEventHandler::createScene()
 {
     _group = new osg::Group;
 
-#if 1
     std::string player_one = "Catch/girl.png"; 
     std::string player_two = "Catch/boy.png"; 
-#else
-    std::string player_one = "Catch/gwen.png"; 
-    std::string player_two = "Catch/caitlin.png"; 
-#endif    
+
     _player1.setCharacter(player_one,"girl", _originBaseLine + osg::Vec3(0.0f,-1.0f,0.0f), _widthBaseLine, 0.4f);
     _player1.setLives(player_one,_originBaseLine+osg::Vec3(0.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),3);
     _player1.setCatches("Catch/broach.png",_originBaseLine+osg::Vec3(200.0f,-0.5f,0.0f), osg::Vec3(0.0f,0.0f,100.0f),10);
@@ -832,7 +828,7 @@ int main( int argc, char **argv )
     // creat the scene from the file list.
     osg::ref_ptr<osg::Node> rootNode = seh->createScene();
 
-    osgDB::writeNodeFile(*rootNode,"test.osg");
+    //osgDB::writeNodeFile(*rootNode,"test.osg");
 
     // set the scene to render
     viewer.setSceneData(rootNode.get());

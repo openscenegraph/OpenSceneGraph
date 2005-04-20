@@ -77,7 +77,48 @@ class OSG_EXPORT Point : public StateAttribute
 
         virtual void apply(State& state) const;
 
-        static void init_GL_EXT();
+        /** Encapsulates queries of extension availability, obtains extension
+          * function pointers, and provides convinience wrappers for
+          * calling extension functions. */        
+        class OSG_EXPORT Extensions : public osg::Referenced
+        {
+            public:
+                Extensions();
+
+                Extensions(const Extensions& rhs);
+                
+                void lowestCommonDenominator(const Extensions& rhs);
+                
+                void setupGLExtenions();
+
+                void setPointParametersSupported(bool flag) { _isPointParametersSupported=flag; }
+                bool isPointParametersSupported() const { return _isPointParametersSupported; }
+                
+                void glPointParameterf(GLenum pname, GLfloat param) const;
+                void glPointParameterfv(GLenum pname, const GLfloat *params) const;
+
+            protected:
+
+                ~Extensions() {}
+                
+                bool    _isPointParametersSupported;
+
+                void*   _glPointParameterf;
+                void*   _glPointParameterfv;
+
+        };
+        
+        /** Returns the Extensions object for the given context.
+          * If createIfNotInitalized is true and the Exentsions object doesn't
+          * exist, getExtensions() creates it on the given context.
+          * Returns NULL if createIfNotInitalized is false and the Extensions
+          * object doesn't exist. */
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions() allows users to override the extensions across graphics contexts.
+          * Typically used when you have different extensions supported across graphics pipes,
+          * but need to ensure that they all use the same low common denominator extensions. */
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
 
     protected :
 

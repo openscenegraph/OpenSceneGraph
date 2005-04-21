@@ -24,6 +24,11 @@ FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face):
 
 FreeTypeFont::~FreeTypeFont()
 {
+   if(_face)
+   {
+      FT_Done_Face(_face);
+      _face = 0;
+   }
 }
 
 void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)

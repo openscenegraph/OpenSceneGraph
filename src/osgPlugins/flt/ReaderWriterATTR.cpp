@@ -758,7 +758,7 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            int version;
+            int version = 0;
 
             // Check the options string for the OpenFlight file version
             if (options)

@@ -25,8 +25,8 @@
 #include <osgProducer/Viewer>
 
 
-float refract = 1.01;          // ratio of indicies of refraction
-float fresnel = 1.1;           // Fresnel multiplier
+float refract = 1.02;          // ratio of indicies of refraction
+float fresnel = 0.2;           // Fresnel multiplier
 
 
 const char vpstr[] =

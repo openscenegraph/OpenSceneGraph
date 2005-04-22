@@ -11,7 +11,7 @@
 */
 
 /* file:    src/osg/Uniform.cpp
- * author:    Mike Weiblen 2005-04-07
+ * author:    Mike Weiblen 2005-04-21
 */
 
 #include <osg/Notify>
@@ -110,7 +110,7 @@ int Uniform::compareData(const Uniform& rhs) const
 {
     // caller must ensure that _type==rhs._type
 
-    switch( repType(getType()) )
+    switch( getGlApiType(getType()) )
     {
     case FLOAT:
         if( _data.f1 < rhs._data.f1 ) return -1;
@@ -194,7 +194,7 @@ void Uniform::copyData(const Uniform& rhs)
     // caller must ensure that _type==rhs._type
 
     int i;
-    switch( repType(getType()) )
+    switch( getGlApiType(getType()) )
     {
     case FLOAT:
         _data.f1 = rhs._data.f1;
@@ -259,7 +259,7 @@ bool Uniform::isCompatibleType( Type t ) const
 {
     if( (t==UNDEFINED) || (getType()==UNDEFINED) ) return false;
     if( t == getType() ) return true;
-    if( repType(t) == repType(getType()) ) return true;
+    if( getGlApiType(t) == getGlApiType(getType()) ) return true;
 
     osg::notify(osg::WARN)
     << "Cannot assign between Uniform types " << getTypename(t)
@@ -325,7 +325,7 @@ Uniform::Type Uniform::getTypeId( const std::string& tname )
     return UNDEFINED;
 }
 
-Uniform::Type Uniform::repType( Type t )
+Uniform::Type Uniform::getGlApiType( Type t )
 {
     switch( t )
     {
@@ -686,7 +686,7 @@ bool Uniform::get( bool& b0, bool& b1, bool& b2, bool& b3 ) const
 
 void Uniform::apply(const GL2Extensions* ext, GLint location) const
 {
-    switch( _type )
+    switch( getGlApiType(getType()) )
     {
     case FLOAT:
         ext->glUniform1f( location, _data.f1 );
@@ -733,7 +733,7 @@ void Uniform::apply(const GL2Extensions* ext, GLint location) const
         break;
 
     default:
-        osg::notify(osg::FATAL) << "how got here?" << std::endl;
+        osg::notify(osg::FATAL) << "how got here? " __FILE__ ":" << __LINE__ << std::endl;
         break;
     }
 }

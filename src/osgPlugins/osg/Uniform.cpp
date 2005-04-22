@@ -6,6 +6,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include "Matrix.h"
+
 using namespace osg;
 using namespace osgDB;
 using namespace std;
@@ -39,16 +41,14 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    // TODO read uniform value based on type
-
     if (fr[0].isWord())
     {
-	uniform.setType( Uniform::getTypeId(fr[0].getStr()) );
-	fr+=1;
-	iteratorAdvanced = true;
+        uniform.setType( Uniform::getTypeId(fr[0].getStr()) );
+        fr+=1;
+        iteratorAdvanced = true;
     }
     
-    switch(uniform.getType())
+    switch( Uniform::getGlApiType(uniform.getType()) )
     {
         case(osg::Uniform::FLOAT):
         {
@@ -56,8 +56,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getFloat(value)) 
             {
                 uniform.set(value);
-	        fr+=1;
-	        iteratorAdvanced = true;
+                fr+=1;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -67,8 +67,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1])) 
             {
                 uniform.set(value);
-	        fr+=2;
-	        iteratorAdvanced = true;
+                fr+=2;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -78,8 +78,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2])) 
             {
                 uniform.set(value);
-	        fr+=3;
-	        iteratorAdvanced = true;
+                fr+=3;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -89,8 +89,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2]) && fr[3].getFloat(value[3])) 
             {
                 uniform.set(value);
-	        fr+=4;
-	        iteratorAdvanced = true;
+                fr+=4;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -100,8 +100,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getInt(value)) 
             {
                 uniform.set(value);
-	        fr+=1;
-	        iteratorAdvanced = true;
+                fr+=1;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -111,8 +111,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getInt(value[0]) && fr[1].getInt(value[1]))
             {
                 uniform.set(value[0],value[1]);
-	        fr+=2;
-	        iteratorAdvanced = true;
+                fr+=2;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -122,8 +122,8 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getInt(value[0]) && fr[1].getInt(value[1]) && fr[2].getInt(value[2]))
             {
                 uniform.set(value[0],value[1],value[2]);
-	        fr+=3;
-	        iteratorAdvanced = true;
+                fr+=3;
+                iteratorAdvanced = true;
             }
             break;
         }
@@ -133,98 +133,29 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             if (fr[0].getInt(value[0]) && fr[1].getInt(value[1]) && fr[2].getInt(value[2]) && fr[3].getInt(value[3]))
             {
                 uniform.set(value[0],value[1],value[2],value[3]);
-	        fr+=4;
-	        iteratorAdvanced = true;
-            }
-            break;
-        }
-        case(osg::Uniform::BOOL):
-        {
-            int value;
-            if (fr[0].getInt(value)) 
-            {
-                uniform.set(value!=0 ? true:false);
-	        fr+=1;
-	        iteratorAdvanced = true;
-            }
-            break;
-        }
-        case(osg::Uniform::BOOL_VEC2):
-        {
-            int value[2];
-            if (fr[0].getInt(value[0]) && fr[1].getInt(value[1]))
-            {
-                uniform.set(value[0]!=0 ? true:false, value[1]!=0 ? true:false);
-	        fr+=2;
-	        iteratorAdvanced = true;
-            }
-            break;
-        }
-        case(osg::Uniform::BOOL_VEC3):
-        {
-            int value[3];
-            if (fr[0].getInt(value[0]) && fr[1].getInt(value[1]) && fr[2].getInt(value[2]))
-            {
-                uniform.set(value[0]!=0 ? true:false, value[1]!=0 ? true:false, value[2]!=0 ? true:false);
-	        fr+=3;
-	        iteratorAdvanced = true;
-            }
-            break;
-        }
-        case(osg::Uniform::BOOL_VEC4):
-        {
-            int value[4];
-            if (fr[0].getInt(value[0]) && fr[1].getInt(value[1]) && fr[2].getInt(value[2]) && fr[3].getInt(value[3]))
-            {
-                uniform.set(value[0]!=0 ? true:false, value[1]!=0 ? true:false, value[2]!=0 ? true:false, value[3]!=0 ? true:false);
-	        fr+=4;
-	        iteratorAdvanced = true;
+                fr+=4;
+                iteratorAdvanced = true;
             }
             break;
         }
         case(osg::Uniform::FLOAT_MAT2):
         {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
+            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for reading."<<std::endl;
             break;
         }
         case(osg::Uniform::FLOAT_MAT3):
         {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
+            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for reading."<<std::endl;
             break;
         }
         case(osg::Uniform::FLOAT_MAT4):
         {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_1D):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_2D):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_3D):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_CUBE):
-        {
-             osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
-           break;
-        }
-        case(osg::Uniform::SAMPLER_1D_SHADOW):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_2D_SHADOW):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for reading."<<std::endl;
+            Matrix value;
+            if( readMatrix(value,fr) )
+            {
+                uniform.set(value);
+               iteratorAdvanced = true;
+            }
             break;
         }
         case(osg::Uniform::UNDEFINED):
@@ -246,7 +177,7 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << Uniform::getTypename( uniform.getType() ) << " ";
     
-    switch(uniform.getType())
+    switch( Uniform::getGlApiType(uniform.getType()) )
     {
         case(osg::Uniform::FLOAT):
         {
@@ -304,77 +235,21 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
             fw << value[0]<<" "<<value[1]<<" "<<value[2]<<" "<<value[3];
             break;
         }
-        case(osg::Uniform::BOOL):
-        {
-            bool value = 0;
-            uniform.get(value);
-            fw << value;            
-            break;
-        }
-        case(osg::Uniform::BOOL_VEC2):
-        {
-            bool value[2];
-            uniform.get(value[0],value[1]);
-            fw << value[0]<<" "<<value[1];
-            break;
-        }
-        case(osg::Uniform::BOOL_VEC3):
-        {
-            bool value[3];
-            uniform.get(value[0],value[1],value[2]);
-            fw << value[0]<<" "<<value[1]<<" "<<value[2];
-            break;
-        }
-        case(osg::Uniform::BOOL_VEC4):
-        {
-            bool value[4];
-            uniform.get(value[0],value[1],value[2],value[3]);
-            fw << value[0]<<" "<<value[1]<<" "<<value[2]<<" "<<value[3];
-            break;
-        }
         case(osg::Uniform::FLOAT_MAT2):
         {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
+            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for writing."<<std::endl;
             break;
         }
         case(osg::Uniform::FLOAT_MAT3):
         {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
+            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for writing."<<std::endl;
             break;
         }
         case(osg::Uniform::FLOAT_MAT4):
         {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_1D):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_2D):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_3D):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_CUBE):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_1D_SHADOW):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
-            break;
-        }
-        case(osg::Uniform::SAMPLER_2D_SHADOW):
-        {
-            osg::notify(osg::WARN)<<"Warning : type not supported for writing."<<std::endl;
+            Matrix value;
+            uniform.get(value);
+            writeMatrix(value,fw);
             break;
         }
         case(osg::Uniform::UNDEFINED):

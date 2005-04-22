@@ -113,7 +113,6 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
         }
     }
 
-#if 0 //[ TODO
     // copy uniform values
     for(UniformList::const_iterator rhs_uitr = rhs._uniformList.begin();
         rhs_uitr != rhs._uniformList.end();
@@ -122,9 +121,8 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
 	const std::string& name = rhs_uitr->first;
 	const RefUniformPair& rup = rhs_uitr->second;
 	Uniform* uni = copyop(rup.first.get());
-	if( uni ) _uniformList[name] = RefUniformPair(uni, rup.second);
+	if (uni) _uniformList[name] = RefUniformPair(uni, rup.second);
     }
-#endif //]
     
     _renderingHint = rhs._renderingHint;
 

@@ -211,8 +211,6 @@ class OSG_EXPORT BufferObject : public Object
     
         virtual ~BufferObject();
         
-        unsigned int computeRequiredTotalSize() const;
-        
         typedef osg::buffered_value<GLuint> GLObjectList;
 
         typedef std::pair< BufferEntry, ref_ptr<Array> >        BufferEntryArrayPair;
@@ -253,8 +251,6 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
     protected:
     
         virtual ~PixelBufferObject();
-        
-        unsigned int computeRequiredTotalSize() const;
         
         BufferEntryImagePair _bufferEntryImagePair;
 };

@@ -174,16 +174,13 @@ Registry::Registry()
     addFileExtensionAlias("tif",  "tiff");
 
     // really need to decide this at runtime...
-    #define USE_XINE
     #if defined(USE_XINE)
         addFileExtensionAlias("mov",  "xine");
         addFileExtensionAlias("mpg",  "xine");
         addFileExtensionAlias("mpv",  "xine");
         addFileExtensionAlias("dv",   "xine");
         addFileExtensionAlias("avi",  "xine");
-    #else
-        addFileExtensionAlias("mpg",  "mpeg");
-        addFileExtensionAlias("mpv",  "mpeg");
+        addFileExtensionAlias("wmv",  "xine");
     #endif
 
 #endif
@@ -1725,8 +1722,6 @@ void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double curre
 
 void Registry::removeExpiredObjectsInCache(double expiryTime)
 {
-    return;
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
     typedef std::vector<std::string> ObjectsToRemove;

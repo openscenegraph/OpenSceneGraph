@@ -41,7 +41,7 @@ bool Program_readLocalData(Object& obj, Input& fr)
     {
         int index;
         fr[1].getInt(index);
-	program.bindAttribLocation(index,fr[2].getStr());
+        program.bindAttribLocation(index,fr[2].getStr());
         fr += 3;
         iteratorAdvanced = true;
     }
@@ -80,9 +80,9 @@ bool Program_writeLocalData(const Object& obj,Output& fw)
     }
 
     fw.indent() << "num_shaders " << program.getNumShaders() << std::endl;
-    for(unsigned int i=0;i<program.getNumShaders();++i)
+    for(unsigned int ic=0;ic<program.getNumShaders();++ic)
     {
-        fw.writeObject(*program.getShader(i));
+        fw.writeObject(*program.getShader(ic));
     }
 
     return true;

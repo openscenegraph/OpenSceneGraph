@@ -29,6 +29,15 @@ ifeq ($(OS),Darwin)
 LIBS += ${CARBON_LIB}
 endif
 
+ifeq ($(DARWIN_QUICKTIME),yes)
+  DEF+= -DDARWIN_QUICKTIME
+endif
+
+ifeq ($(XINE_INSTALLED),yes)
+  DEF+= -DUSE_XINE
+endif
+
+
 DEF  += -DOSGDB_LIBRARY
 
 TARGET_BASENAME = osgDB

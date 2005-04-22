@@ -72,7 +72,12 @@ class XineImageStream : public osg::ImageStream
             xine_event_create_listener_thread(_event_queue, event_listener, this);
 
             int result = xine_open(_stream, filename.c_str());
-            osg::notify(osg::INFO)<<"XineImageStream::open - xine_open"<<result<<std::endl;
+            
+            if (result==0)
+            {
+                osg::notify(osg::NOTICE)<<"Error: could not ready movie file."<<std::endl;
+                close();
+            }
              
             _ready = false;
 
@@ -93,15 +98,23 @@ class XineImageStream : public osg::ImageStream
                 else
                 {
                     osg::notify(osg::INFO)<<"XineImageStream::play()"<<std::endl;
-                    xine_play(_stream, 0, 0);
-                    while (!_ready)
+                    if (xine_play(_stream, 0, 0))
                     {
-                        osg::notify(osg::INFO)<<"   waiting..."<<std::endl;
-                        usleep(10000);
+                        while (!_ready)
+                        {
+                            osg::notify(osg::INFO)<<"   waiting..."<<std::endl;
+                            usleep(10000);
+                        }
+
+                        _status=PLAYING;
+
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Error!!!"<<std::endl;
                     }
                 }
             }
-            _status=PLAYING;
         }
 
         virtual void pause()
@@ -155,7 +168,7 @@ class XineImageStream : public osg::ImageStream
 
             imageStream->dirty();
         #else
-            imageStream->setImage(width,height,1,
+             imageStream->setImage(width,height,1,
                               GL_RGB,
                               pixelFormat,GL_UNSIGNED_BYTE,
                               (unsigned char *)data,
@@ -285,8 +298,11 @@ class ReaderWriterXine : public osgDB::ReaderWriter
         virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"mpg") ||
+                   osgDB::equalCaseInsensitive(extension,"mpv") || 
+                   osgDB::equalCaseInsensitive(extension,"db") || 
                    osgDB::equalCaseInsensitive(extension,"mov") || 
                    osgDB::equalCaseInsensitive(extension,"avi") ||
+                   osgDB::equalCaseInsensitive(extension,"wmv") ||
                    osgDB::equalCaseInsensitive(extension,"xine");
         }
 

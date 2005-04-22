@@ -117,11 +117,11 @@ typedef char GLchar;
 
 namespace osg {
 
-///////////////////////////////////////////////////////////////////////////
-/** Uniform encapsulates glUniform values */
-
+// forward declare
 class GL2Extensions;
+class NodeVisitor;
 
+/** Uniform encapsulates glUniform values */
 class OSG_EXPORT Uniform : public Object
 {
     public:
@@ -236,11 +236,47 @@ class OSG_EXPORT Uniform : public Object
         bool get( bool& b0, bool& b1, bool& b2 ) const;
         bool get( bool& b0, bool& b1, bool& b2, bool& b3 ) const;
         
+
+        struct Callback : public virtual osg::Object
+        {
+            Callback() {}
+
+            Callback(const Callback&,const CopyOp&) {}
+
+            META_Object(osg,Callback);
+
+            /** do customized update code.*/
+            virtual void operator () (NodeVisitor*, Uniform*) {}
+        };
+
+        /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
+        void setUpdateCallback(Callback* uc) { _updateCallback = uc; }
+
+        /** Get the non const UpdateCallback.*/
+        Callback* getUpdateCallback() { return _updateCallback.get(); }
+
+        /** Get the const UpdateCallback.*/
+        const Callback* getUpdateCallback() const { return _updateCallback.get(); }
+
+
+        /** Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal.*/
+        void setEventCallback(Callback* ec) { _eventCallback = ec; }
+
+        /** Get the non const EventCallback.*/
+        Callback* getEventCallback() { return _eventCallback.get(); }
+
+        /** Get the const EventCallback.*/
+        const Callback* getEventCallback() const { return _eventCallback.get(); }
+
+
+
         void apply(const GL2Extensions* ext, GLint location) const;
 
 
     protected:
+    
         virtual ~Uniform() {}
+        Uniform& operator=(const Uniform&);    // disallowed
 
         bool isCompatibleType( Type t ) const;
 
@@ -259,8 +295,9 @@ class OSG_EXPORT Uniform : public Object
             GLint i4[4];        // ivec4, bvec4
         } _data;
 
-        private:
-        Uniform& operator=(const Uniform&);    // disallowed
+        ref_ptr<Callback>   _updateCallback;
+        ref_ptr<Callback>   _eventCallback;
+
 };
 
 }

@@ -131,7 +131,6 @@ class OSG_EXPORT Image : public Object
         */
         void copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source);
 
-
         /** Width of image. */
         inline int s() const { return _s; }
 
@@ -165,6 +164,9 @@ class OSG_EXPORT Image : public Object
 
         /** Return the number of bytes the whole row/image/volume of pixels occupies, including all mip maps if included. */
         unsigned int getTotalSizeInBytesIncludingMipmaps() const;
+
+        /** Return true if the Image represent a valid and usable imagery.*/
+        bool valid() const { return _s!=0 && _t!=0 && _r!=0 && _data!=0 && _dataType!=0; }
 
         /** Raw image data. */
         inline unsigned char *data() { return _data; }

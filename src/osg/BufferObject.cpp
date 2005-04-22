@@ -323,23 +323,28 @@ void PixelBufferObject::compileBuffer(State& state) const
     unsigned int contextID = state.getContextID();
     if (!needsCompile(contextID)) return;
     
-    Extensions* extensions = getExtensions(contextID,true);
-
     osg::Image* image = _bufferEntryImagePair.second;
-    
+
+    _bufferEntryImagePair.first.modifiedCount[contextID] = image->getModifiedCount();
+    if (!image->valid()) return;
+
+    Extensions* extensions = getExtensions(contextID,true);
 
     GLuint& pbo = buffer(contextID);
     if (pbo==0)
     {
         // building for the first time.
-        extensions->glGenBuffers(1, &pbo);
-
-        extensions->glBindBuffer(_target, pbo);
 
         _totalSize = image->getTotalSizeInBytes();
 
+        // don't generate buffer if size is zero.        
+        if (_totalSize==0) return;
+
+        extensions->glGenBuffers(1, &pbo);
+        extensions->glBindBuffer(_target, pbo);
         extensions->glBufferData(_target, _totalSize, NULL,
                      _usage);
+                    
     }
     else
     {
@@ -347,6 +352,7 @@ void PixelBufferObject::compileBuffer(State& state) const
 
         if (_totalSize != image->getTotalSizeInBytes())
         {
+
             _totalSize = image->getTotalSizeInBytes();
             extensions->glBufferData(_target, _totalSize, NULL,
                      _usage);

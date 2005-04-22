@@ -60,7 +60,7 @@ class XineImageStream : public osg::ImageStream
 
             if (!_vo)
             {
-                osg::notify(osg::NOTICE)<<"Failed to create video driver"<<std::endl;
+                osg::notify(osg::NOTICE)<<"XineImageStream::open() : Failed to create video driver"<<std::endl;
                 return false;
             }
             
@@ -75,8 +75,9 @@ class XineImageStream : public osg::ImageStream
             
             if (result==0)
             {
-                osg::notify(osg::NOTICE)<<"Error: could not ready movie file."<<std::endl;
+                osg::notify(osg::INFO)<<"XineImageStream::open() : Could not ready movie file."<<std::endl;
                 close();
+                return false;
             }
              
             _ready = false;

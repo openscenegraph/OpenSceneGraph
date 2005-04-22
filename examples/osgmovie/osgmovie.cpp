@@ -242,7 +242,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    osg::Geode* geode = new osg::Geode;
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     osg::Vec3 pos(0.0f,0.0f,0.0f);
     
     for(int i=1;i<arguments.argc();++i)
@@ -252,16 +252,29 @@ int main(int argc, char** argv)
             osg::Image* image = osgDB::readImageFile(arguments[i]);
             osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
             if (imagestream) imagestream->play();
-            geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image));
-            geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
             
-            pos.z() += image->t()*1.5f;
-        }
+            if (image)
+            {
+                geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image));
+                geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
+                pos.z() += image->t()*1.5f;
+            }
+            else
+            {
+                std::cout<<"Unable to read file "<<arguments[i]<<std::endl;
+            }            
+        }
+    }
+    
+    if (geode->getNumDrawables()==0)
+    {
+        // nothing loaded.
+        return 1;
     }
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
-    meh->set(geode);
+    meh->set(geode.get());
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -294,7 +307,7 @@ int main(int argc, char** argv)
     }
 
     // set the scene to render
-    viewer.setSceneData(geode);
+    viewer.setSceneData(geode.get());
 
     // create the windows and run the threads.
     viewer.realize();

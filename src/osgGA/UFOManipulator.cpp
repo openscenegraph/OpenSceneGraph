@@ -250,15 +250,15 @@ void UFOManipulator::_keyUp( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 {
     switch( ea.getKey() )
     {
-        case Producer::KeyChar_Control_L:
-        case Producer::KeyChar_Control_R:
+        case osgGA::GUIEventAdapter::KEY_Control_L:
+        case osgGA::GUIEventAdapter::KEY_Control_R:
             _ctrl = false;
             _decelerateOffsetRate = true;
             _straightenOffset = false;
             break;
 
-        case Producer::KeyChar_Shift_L:
-        case Producer::KeyChar_Shift_R:
+        case osgGA::GUIEventAdapter::KEY_Shift_L:
+        case osgGA::GUIEventAdapter::KEY_Shift_R:
             _shift = false;
             _decelerateUpSideRate = true;
             break;
@@ -269,17 +269,17 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
 {
     switch( ea.getKey() )
     {
-        case Producer::KeyChar_Control_L:
-        case Producer::KeyChar_Control_R:
+        case osgGA::GUIEventAdapter::KEY_Control_L:
+        case osgGA::GUIEventAdapter::KEY_Control_R:
             _ctrl = true;
             break;
 
-        case Producer::KeyChar_Shift_L :
-        case Producer::KeyChar_Shift_R :
+        case osgGA::GUIEventAdapter::KEY_Shift_L :
+        case osgGA::GUIEventAdapter::KEY_Shift_R :
             _shift = true;
             break;
 
-        case Producer::KeyChar_Up:
+        case osgGA::GUIEventAdapter::KEY_Up:
             if( _ctrl )
             {
                 _pitchOffsetRate -= _viewOffsetDelta;
@@ -297,7 +297,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             break;
 
-        case Producer::KeyChar_Down:
+        case osgGA::GUIEventAdapter::KEY_Down:
             if( _ctrl )
             {
                 _pitchOffsetRate += _viewOffsetDelta;
@@ -315,7 +315,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             break;
 
-        case Producer::KeyChar_Right:
+        case osgGA::GUIEventAdapter::KEY_Right:
             if( _ctrl )
             {
                 _yawOffsetRate += _viewOffsetDelta;
@@ -333,7 +333,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             break;
 
-        case Producer::KeyChar_Left:
+        case osgGA::GUIEventAdapter::KEY_Left:
             if( _ctrl )
             {
                 _yawOffsetRate -= _viewOffsetDelta;
@@ -351,7 +351,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             break;
 
-        case Producer::KeyChar_Return:
+        case osgGA::GUIEventAdapter::KEY_Return:
             if( _ctrl )
             {
                 _straightenOffset = true;

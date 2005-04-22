@@ -21,7 +21,6 @@
 #include "Billboard.h"
 #include "Sequence.h"
 #include "LOD.h"
-//#include "ViewPoint.h"
 #include "PositionAttitudeTransform.h"
 #include "Transform.h"
 

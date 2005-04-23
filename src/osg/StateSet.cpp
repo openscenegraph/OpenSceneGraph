@@ -1081,3 +1081,48 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList
 
 
 
+void StateSet::setUpdateCallback(Callback* ac)
+{
+    if (_updateCallback==ac) return;
+    
+    int delta = 0;
+    if (_updateCallback.valid()) --delta;
+    if (ac) ++delta;
+
+    _updateCallback = ac;
+    
+    if (delta!=0)
+    {
+#if 0
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+        }
+#endif
+    }
+}
+
+void StateSet::setEventCallback(Callback* ac)
+{
+    if (_eventCallback==ac) return;
+    
+    int delta = 0;
+    if (_eventCallback.valid()) --delta;
+    if (ac) ++delta;
+
+    _eventCallback = ac;
+    
+    if (delta!=0)
+    {
+#if 0
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
+        }
+#endif
+    }
+}

@@ -1493,8 +1493,6 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 
 
         // don't merge geometry if its above a maximum number of vertices.
-        unsigned int _maximumNumber = 10000;
-
         for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
             itr!=geometryDuplicateMap.end();
             ++itr)
@@ -1510,19 +1508,19 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 
                     osg::Geometry* rhs = *dupItr;
                     
-                    if (lhs->getVertexArray() && lhs->getVertexArray()->getNumElements()>=_maximumNumber)
+                    if (lhs->getVertexArray() && lhs->getVertexArray()->getNumElements()>=_targetMaximumNumberOfVertices)
                     {
                         lhs = rhs;
                         continue;
                     }
 
-                    if (rhs->getVertexArray() && rhs->getVertexArray()->getNumElements()>=_maximumNumber)
+                    if (rhs->getVertexArray() && rhs->getVertexArray()->getNumElements()>=_targetMaximumNumberOfVertices)
                     {
                         continue;
                     }
                     
                     if (lhs->getVertexArray() && rhs->getVertexArray() && 
-                        (lhs->getVertexArray()->getNumElements()+rhs->getVertexArray()->getNumElements())>=_maximumNumber)
+                        (lhs->getVertexArray()->getNumElements()+rhs->getVertexArray()->getNumElements())>=_targetMaximumNumberOfVertices)
                     {
                         continue;
                     }

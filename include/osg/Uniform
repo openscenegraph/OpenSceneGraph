@@ -198,7 +198,7 @@ class OSG_EXPORT Uniform : public Object
         virtual int compare(const Uniform& rhs) const;
         virtual int compareData(const Uniform& rhs) const;
 
-            virtual bool operator < (const Uniform& rhs) const { return (compare(rhs) == -1); }
+        virtual bool operator < (const Uniform& rhs) const { return (compare(rhs) == -1); }
 
         void copyData( const Uniform& rhs );
 
@@ -276,7 +276,7 @@ class OSG_EXPORT Uniform : public Object
     protected:
     
         virtual ~Uniform() {}
-        Uniform& operator=(const Uniform&);    // disallowed
+        Uniform& operator=(const Uniform&) { return *this; }    // disallowed
 
         bool isCompatibleType( Type t ) const;
 

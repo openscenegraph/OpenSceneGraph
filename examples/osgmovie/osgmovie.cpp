@@ -298,14 +298,14 @@ int main(int argc, char** argv)
     {
         arguments.writeErrorMessages(std::cout);
     }
-
+/*
     // set up a post swap callback to flush deleted GL objects and compile new GL objects            
     for(unsigned int cameraNum=0;cameraNum<viewer.getNumberOfCameras();++cameraNum)
     {
         Producer::Camera* camera=viewer.getCamera(cameraNum);
         camera->addPostSwapCallback(new PostSwapFinishCallback());
     }
-
+*/
     // set the scene to render
     viewer.setSceneData(geode.get());
 

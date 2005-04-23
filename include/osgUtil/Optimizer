@@ -417,7 +417,18 @@ class OSGUTIL_EXPORT Optimizer
 
                 /// default to traversing all children.
                 MergeGeometryVisitor(Optimizer* optimizer=0) :
-                    BaseOptimizerVisitor(optimizer, MERGE_GEOMETRY) {}
+                    BaseOptimizerVisitor(optimizer, MERGE_GEOMETRY),
+                    _targetMaximumNumberOfVertices(10000) {}
+
+                void setTargetMaximumNumberOfVertices(unsigned int num)
+                {
+                    _targetMaximumNumberOfVertices = num;
+                }
+                
+                unsigned int getTargetMaximumNumberOfVertices() const
+                {
+                    return _targetMaximumNumberOfVertices;
+                }
 
                 virtual void apply(osg::Geode& geode) { mergeGeode(geode); }
                 virtual void apply(osg::Billboard&) { /* don't do anything*/ }
@@ -433,6 +444,10 @@ class OSGUTIL_EXPORT Optimizer
                 static bool mergePrimitive(osg::DrawElementsUByte& lhs,osg::DrawElementsUByte& rhs);
                 static bool mergePrimitive(osg::DrawElementsUShort& lhs,osg::DrawElementsUShort& rhs);
                 static bool mergePrimitive(osg::DrawElementsUInt& lhs,osg::DrawElementsUInt& rhs);
+
+            protected:
+
+                unsigned int _targetMaximumNumberOfVertices;
 
         };
 

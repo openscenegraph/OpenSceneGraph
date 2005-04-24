@@ -221,7 +221,7 @@ class OSG_EXPORT Node : public Object
 
 
         /** Set the node's StateSet.*/
-        inline void setStateSet(osg::StateSet* dstate) { _stateset = dstate; }
+        void setStateSet(osg::StateSet* stateset);
 
         /** return the node's StateSet, if one does not already exist create it
           * set the node and return the newly created StateSet. This ensures

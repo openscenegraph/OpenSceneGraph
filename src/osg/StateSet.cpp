@@ -45,7 +45,7 @@ class TextureGLModeSet
             _textureModeSet.insert(GL_TEXTURE_3D);
 
             _textureModeSet.insert(GL_TEXTURE_CUBE_MAP);
-	    _textureModeSet.insert(GL_TEXTURE_RECTANGLE_NV);
+        _textureModeSet.insert(GL_TEXTURE_RECTANGLE_NV);
 
             _textureModeSet.insert(GL_TEXTURE_GEN_Q);
             _textureModeSet.insert(GL_TEXTURE_GEN_R);
@@ -87,7 +87,11 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
         const StateAttribute::TypeMemberPair& typemember = itr->first;
         const RefAttributePair& rap = itr->second;
         StateAttribute* attr = copyop(rap.first.get());
-        if (attr) _attributeList[typemember]=RefAttributePair(attr,rap.second);
+        if (attr)
+        {
+            _attributeList[typemember]=RefAttributePair(attr,rap.second);
+            attr->addParent(this);
+        }
     }
     
     // copy texture related modes.
@@ -109,7 +113,11 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
             const StateAttribute::TypeMemberPair& typemember = itr->first;
             const RefAttributePair& rap = itr->second;
             StateAttribute* attr = copyop(rap.first.get());
-            if (attr) lhs_attributeList[typemember]=RefAttributePair(attr,rap.second);
+            if (attr)
+            {
+                lhs_attributeList[typemember]=RefAttributePair(attr,rap.second);
+                attr->addParent(this);
+            }
         }
     }
 
@@ -118,10 +126,14 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
         rhs_uitr != rhs._uniformList.end();
         ++rhs_uitr)
     {
-	const std::string& name = rhs_uitr->first;
-	const RefUniformPair& rup = rhs_uitr->second;
-	Uniform* uni = copyop(rup.first.get());
-	if (uni) _uniformList[name] = RefUniformPair(uni, rup.second);
+    const std::string& name = rhs_uitr->first;
+    const RefUniformPair& rup = rhs_uitr->second;
+    Uniform* uni = copyop(rup.first.get());
+    if (uni)
+        {
+            _uniformList[name] = RefUniformPair(uni, rup.second);
+            uni->addParent(this);
+        }
     }
     
     _renderingHint = rhs._renderingHint;
@@ -133,9 +145,18 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
 
 StateSet::~StateSet()
 {
-    // note, all attached state attributes will be automatically
-    // unreferenced by ref_ptr<> and therefore there is no need to
-    // delete the memory manually.
+    clear();
+}
+
+void StateSet::addParent(osg::Object* object)
+{
+    _parents.push_back(object);
+}
+
+void StateSet::removeParent(osg::Object* object)
+{
+    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
+    if (pitr!=_parents.end()) _parents.erase(pitr);
 }
 
 int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
@@ -402,11 +423,41 @@ void StateSet::clear()
 
     setRenderBinToInherit();
 
+    // remove self from as attributes parent
+    for(AttributeList::iterator itr=_attributeList.begin();
+        itr!=_attributeList.end();
+        ++itr)
+    {
+        itr->second.first->removeParent(this);
+    }
+    
     _modeList.clear();
     _attributeList.clear();
     
+    
     _textureModeList.clear();
     _textureAttributeList.clear();
+
+    // remove self from as texture attributes parent
+    for(unsigned int i=0;i<_textureAttributeList.size();++i)
+    {
+        AttributeList& attributeList = _textureAttributeList[i];
+        for(AttributeList::iterator itr=attributeList.begin();
+            itr!=attributeList.end();
+            ++itr)
+        {
+            itr->second.first->removeParent(this);
+        }
+    }
+
+
+    // remove self from uniforms parent
+    for(UniformList::iterator uitr = _uniformList.begin();
+        uitr != _uniformList.end();
+        ++uitr)
+    {
+        uitr->second.first->removeParent(this);
+    }
 
     _uniformList.clear();
 }
@@ -449,13 +500,29 @@ void StateSet::merge(const StateSet& rhs)
             {
                 // override isn't on in rhs, so overrite it with incomming
                 // value.
-                lhs_aitr->second = rhs_aitr->second;
+                if (lhs_aitr->second.first!=rhs_aitr->second.first)
+                {
+                    // new attribute so need to remove self from outgoing attribute
+                    lhs_aitr->second.first->removeParent(this);
+
+                    // override isn't on in rhs, so overrite it with incomming
+                    // value.
+                    lhs_aitr->second = rhs_aitr->second;
+                    lhs_aitr->second.first->addParent(this);
+
+                }
+                else
+                {
+                    // same attribute but with override to set.
+                    lhs_aitr->second = rhs_aitr->second;
+                }
+
             }
         }
         else
         {
-            // entry doesn't exist so insert it.
-            _attributeList.insert(*rhs_aitr);
+            // entry doesn't exist so insert it, and then tell it about self by adding self as parent.
+            _attributeList.insert(*rhs_aitr).first->second.first->addParent(this);
         }
     }
 
@@ -508,13 +575,23 @@ void StateSet::merge(const StateSet& rhs)
                 {
                     // override isn't on in rhs, so overrite it with incomming
                     // value.
-                    lhs_aitr->second = rhs_aitr->second;
+                    
+                    if (lhs_aitr->second.first!=rhs_aitr->second.first)
+                    {
+                        lhs_aitr->second.first->removeParent(this);
+                        lhs_aitr->second = rhs_aitr->second;
+                        lhs_aitr->second.first->addParent(this);
+                    }
+                    else
+                    {
+                        lhs_aitr->second = rhs_aitr->second;
+                    }
                 }
             }
             else
             {
-                // entry doesn't exist so insert it.
-                lhs_attributeList.insert(*rhs_aitr);
+                // entry doesn't exist so insert it and add self as parent
+                lhs_attributeList.insert(*rhs_aitr).first->second.first->addParent(this);
             }
         }
     }
@@ -532,13 +609,24 @@ void StateSet::merge(const StateSet& rhs)
             {
                 // override isn't on in rhs, so overrite it with incomming
                 // value.
-                lhs_uitr->second = rhs_uitr->second;
+
+                if (lhs_uitr->second.first!=rhs_uitr->second.first)
+                {
+                    lhs_uitr->second.first->removeParent(this);
+                    lhs_uitr->second = rhs_uitr->second;
+                    lhs_uitr->second.first->addParent(this);
+                }
+                else
+                {
+                    lhs_uitr->second = rhs_uitr->second;
+                }
+
             }
         }
         else
         {
-            // entry doesn't exist so insert it.
-            _uniformList.insert(*rhs_uitr);
+            // entry doesn't exist so insert it and add self as parent
+            _uniformList.insert(*rhs_uitr).first->second.first->addParent(this);
         }
     }
 
@@ -649,6 +737,7 @@ void StateSet::removeAttribute(StateAttribute::Type type, unsigned int member)
     AttributeList::iterator itr = _attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=_attributeList.end())
     {
+        itr->second.first->removeParent(this);
         setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
         _attributeList.erase(itr);
     }
@@ -663,6 +752,8 @@ void StateSet::removeAttribute(StateAttribute* attribute)
     {
         if (itr->second.first != attribute) return;
         
+        itr->second.first->removeParent(this);
+
         setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
         _attributeList.erase(itr);
     }
@@ -687,9 +778,31 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
 {
     if (uniform)
     {
-        RefUniformPair& up = _uniformList[uniform->getName()];
-        up.first = uniform;
-        up.second = value;
+        UniformList::iterator itr=_uniformList.find(uniform->getName());
+        if (itr==_uniformList.end())
+        {
+            // new entry.
+            RefUniformPair& up = _uniformList[uniform->getName()];
+            up.first = uniform;
+            up.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
+            
+            uniform->addParent(this);
+        }
+        else
+        {
+            if (itr->second.first==uniform)
+            {
+                // chaning just override
+                itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
+            }
+            else
+            {
+                itr->second.first->removeParent(this);
+                uniform->addParent(this);
+                itr->second.first = uniform;
+                itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
+            }
+        }
     }
 }
 
@@ -698,6 +811,7 @@ void StateSet::removeUniform(const std::string& name)
     UniformList::iterator itr = _uniformList.find(name);
     if (itr!=_uniformList.end())
     {
+        itr->second.first->removeParent(this);
         _uniformList.erase(itr);
     }
 }
@@ -710,6 +824,8 @@ void StateSet::removeUniform(Uniform* uniform)
     if (itr!=_uniformList.end())
     {
         if (itr->second.first != uniform) return;
+
+        itr->second.first->removeParent(this);
         _uniformList.erase(itr);
     }
 }
@@ -844,24 +960,26 @@ void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type typ
         {
             setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
         }
+        itr->second.first->removeParent(this);
         attributeList.erase(itr);
     }
 }
 
 void StateSet::removeTextureAttribute(unsigned int unit, StateAttribute* attribute)
 {
-	if (!attribute) return;
-	if (unit>=_textureAttributeList.size()) return;
+    if (!attribute) return;
+    if (unit>=_textureAttributeList.size()) return;
 
-	AttributeList& attributeList = _textureAttributeList[unit];
-	AttributeList::iterator itr = attributeList.find(attribute->getTypeMemberPair());
-	if (itr!=attributeList.end())
-	{
-		if (itr->second.first != attribute) return;
+    AttributeList& attributeList = _textureAttributeList[unit];
+    AttributeList::iterator itr = attributeList.find(attribute->getTypeMemberPair());
+    if (itr!=attributeList.end())
+    {
+        if (itr->second.first != attribute) return;
 
-		setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
-		attributeList.erase(itr);
-	}
+        setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
+        itr->second.first->removeParent(this);
+        attributeList.erase(itr);
+    }
 }
 
 StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type)
@@ -1040,7 +1158,28 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
 {
     if (attribute)
     {
-        attributeList[attribute->getTypeMemberPair()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
+        AttributeList::iterator itr=attributeList.find(attribute->getTypeMemberPair());
+        if (itr==attributeList.end())
+        {
+            // new entry.
+            attributeList[attribute->getTypeMemberPair()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
+            attribute->addParent(this);
+        }
+        else
+        {
+            if (itr->second.first==attribute)
+            {
+                // changing just override
+                itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
+            }
+            else
+            {
+                itr->second.first->removeParent(this);
+                attribute->addParent(this);
+                itr->second.first = attribute;
+                itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
+            }
+        }
     }
 }
 

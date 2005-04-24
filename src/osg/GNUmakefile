@@ -86,6 +86,7 @@ CXXFILES =\
 	Shape.cpp\
 	ShapeDrawable.cpp\
 	State.cpp\
+	StateAttribute.cpp\
 	StateSet.cpp\
 	Stencil.cpp\
 	Switch.cpp\

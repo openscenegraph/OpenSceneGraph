@@ -35,8 +35,8 @@ DatabasePager::DatabasePager()
     _frameBlock = new Block;
     _databasePagerThreadBlock = new Block;
 
-    _threadPriorityDuringFrame = PRIORITY_MIN;
-    _threadPriorityOutwithFrame = PRIORITY_MIN;
+    _threadPriorityDuringFrame = THREAD_PRIORITY_MIN;
+    _threadPriorityOutwithFrame = THREAD_PRIORITY_MIN;
 
     _changeAutoUnRef = true;
     _valueAutoUnRef = true;

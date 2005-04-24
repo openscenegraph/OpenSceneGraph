@@ -306,6 +306,22 @@ void Drawable::removeParent(osg::Node* node)
     if (pitr!=_parents.end()) _parents.erase(pitr);
 }
 
+
+void Drawable::setStateSet(osg::StateSet* stateset)
+{
+    // do nothing if nothing changed.
+    if (_stateset==stateset) return;
+    
+    // remove this node from the current statesets parent list 
+    if (_stateset.valid()) _stateset->removeParent(this);
+    
+    // set the stateset.
+    _stateset = stateset;
+    
+    // add this node to the new stateset to the parent list.
+    if (_stateset.valid()) _stateset->addParent(this);
+}
+
 osg::StateSet* Drawable::getOrCreateStateSet()
 {
     if (!_stateset) _stateset = new StateSet;

@@ -68,6 +68,17 @@ Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
     copyData( rhs );
 }
 
+void Uniform::addParent(osg::StateSet* object)
+{
+    _parents.push_back(object);
+}
+
+void Uniform::removeParent(osg::StateSet* object)
+{
+    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
+    if (pitr!=_parents.end()) _parents.erase(pitr);
+}
+
 bool Uniform::setType( Type t )
 {
     if( _type != UNDEFINED )

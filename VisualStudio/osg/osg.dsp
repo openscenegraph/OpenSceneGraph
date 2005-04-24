@@ -432,6 +432,10 @@ SOURCE=..\..\src\osg\State.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\StateAttribute.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\StateSet.cpp
 # End Source File
 # Begin Source File

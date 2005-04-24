@@ -66,6 +66,32 @@ class OSG_EXPORT StateSet : public Object
         bool operator == (const StateSet& rhs) const { return compare(rhs)==0; }
         bool operator != (const StateSet& rhs) const { return compare(rhs)!=0; }
 
+
+        /** A vector of osg::Object pointers which is used to store the parent(s) of this Stateset, the parents could be osg::Node or osg::Drawable.*/
+        typedef std::vector<Object*> ParentList;
+
+        /** Get the parent list of this StateSet. */
+        inline const ParentList& getParents() const { return _parents; }
+
+        /** Get the a copy of parent list of node. A copy is returned to 
+          * prevent modification of the parent list.*/
+        inline ParentList getParents() { return _parents; }
+
+        inline Object* getParent(unsigned int i)  { return _parents[i]; }
+        /**
+         * Get a single const parent of this StateSet.
+         * @param i index of the parent to get.
+         * @return the parent i.
+         */
+        inline const Object* getParent(unsigned int i) const  { return _parents[i]; }
+
+        /**
+         * Get the number of parents of this StateSet.
+         * @return the number of parents of this StateSet.
+         */
+        inline unsigned int getNumParents() const { return _parents.size(); }
+
+
         /** Set all the modes to on or off so that it defines a
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();
@@ -410,6 +436,13 @@ class OSG_EXPORT StateSet : public Object
 
         StateSet& operator = (const StateSet&) { return *this; }
 
+        void addParent(osg::Object* object);
+        void removeParent(osg::Object* object);
+
+        ParentList _parents;
+        friend class osg::Node;
+        friend class osg::Drawable;
+    
         ModeList                            _modeList;
         AttributeList                       _attributeList;
 

@@ -135,7 +135,7 @@ class OSG_EXPORT Drawable : public Object
         /** Set the StateSet attached to the Drawable.
             Previously attached StateSet are automatically unreferenced on
             assignment of a new drawstate.*/
-        inline void setStateSet(StateSet *state) { _stateset = state; }
+        void setStateSet(StateSet* stateset);
 
         /** Get the attached StateSet.*/
         inline StateSet* getStateSet() { return _stateset.get();}

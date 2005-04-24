@@ -20,6 +20,7 @@
 
 #include <typeinfo>
 #include <utility>
+#include <vector>
 
 // define for the GL_EXT_secondary_color extension, GL_COLOR_SUM is OpenGL
 // mode to be used to enable and disable the second color.
@@ -231,7 +232,28 @@ class OSG_EXPORT StateAttribute : public Object
         bool operator <  (const StateAttribute& rhs) const { return compare(rhs)<0; }
         bool operator == (const StateAttribute& rhs) const { return compare(rhs)==0; }
         bool operator != (const StateAttribute& rhs) const { return compare(rhs)!=0; }
+
         
+        /** A vector of osg::StateSet pointers which is used to store the parent(s) of this StateAttribute.*/
+        typedef std::vector<StateSet*> ParentList;
+
+        /** Get the parent list of this StateAttribute. */
+        inline const ParentList& getParents() const { return _parents; }
+
+        inline StateSet* getParent(unsigned int i)  { return _parents[i]; }
+        /**
+         * Get a single const parent of this StateAttribute.
+         * @param i index of the parent to get.
+         * @return the parent i.
+         */
+        inline const StateSet* getParent(unsigned int i) const  { return _parents[i]; }
+
+        /**
+         * Get the number of parents of this StateAttribute.
+         * @return the number of parents of this StateAttribute.
+         */
+        inline unsigned int getNumParents() const { return _parents.size(); }
+
 
         struct ModeUsage
         {
@@ -298,6 +320,12 @@ class OSG_EXPORT StateAttribute : public Object
     protected:
     
         virtual ~StateAttribute() {}
+
+        void addParent(osg::StateSet* object);
+        void removeParent(osg::StateSet* object);
+
+        ParentList _parents;
+        friend class osg::StateSet;
 
         ref_ptr<Callback>   _updateCallback;
         ref_ptr<Callback>   _eventCallback;

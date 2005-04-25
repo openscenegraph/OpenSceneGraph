@@ -21,8 +21,8 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, osg::Shader::Type, type, , IN, const char *, sourceText, 0);
+	ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED);
+	Constructor2(IN, osg::Shader::Type, type, IN, const std::string &, source);
 	ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	Method0(osg::Object *, cloneType);
 	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
@@ -31,8 +31,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	Method0(const char *, className);
 	Method1(int, compare, IN, const osg::Shader &, rhs);
 	Method1(bool, setType, IN, osg::Shader::Type, t);
-	Method1(void, setShaderSource, IN, const char *, sourceText);
-	Method1(bool, loadShaderSourceFromFile, IN, const char *, fileName);
+	Method1(void, setShaderSource, IN, const std::string &, sourceText);
+	Method1(bool, loadShaderSourceFromFile, IN, const std::string &, fileName);
 	Method0(const std::string &, getShaderSource);
 	Method0(osg::Shader::Type, getType);
 	Method0(const char *, getTypename);
@@ -44,7 +44,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	Method1(void, setName, IN, const char *, name);
 	Method0(const std::string &, getName);
 	Property(const std::string &, Name);
-	ReadOnlyProperty(const std::string &, ShaderSource);
+	Property(const std::string &, ShaderSource);
 	PropertyWithReturnType(osg::Shader::Type, Type, bool);
 	ReadOnlyProperty(const char *, Typename);
 END_REFLECTOR

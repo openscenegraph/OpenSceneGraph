@@ -63,7 +63,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	Method1(osg::Node *, getParent, IN, unsigned int, i);
 	Method1(const osg::Node *, getParent, IN, unsigned int, i);
 	Method0(unsigned int, getNumParents);
-	Method1(void, setStateSet, IN, osg::StateSet *, state);
+	Method1(void, setStateSet, IN, osg::StateSet *, stateset);
 	Method0(osg::StateSet *, getStateSet);
 	Method0(const osg::StateSet *, getStateSet);
 	Method0(osg::StateSet *, getOrCreateStateSet);

@@ -11,12 +11,16 @@
 
 #include <osg/CopyOp>
 #include <osg/Matrix>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Program>
+#include <osg/StateSet>
 #include <osg/Uniform>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+
+TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::Uniform::ParentList);
 
 BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 	EnumLabel(osg::Uniform::FLOAT);
@@ -73,6 +77,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method1(int, compare, IN, const osg::Uniform &, rhs);
 	Method1(int, compareData, IN, const osg::Uniform &, rhs);
 	Method1(void, copyData, IN, const osg::Uniform &, rhs);
+	Method0(const osg::Uniform::ParentList &, getParents);
+	Method0(osg::Uniform::ParentList, getParents);
+	Method1(osg::StateSet *, getParent, IN, unsigned int, i);
+	Method1(const osg::StateSet *, getParent, IN, unsigned int, i);
+	Method0(unsigned int, getNumParents);
 	Method1(bool, set, IN, float, f);
 	Method1(bool, set, IN, int, i);
 	Method1(bool, set, IN, bool, b);
@@ -99,9 +108,30 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method2(bool, get, IN, bool &, b0, IN, bool &, b1);
 	Method3(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2);
 	Method4(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2, IN, bool &, b3);
+	Method1(void, setUpdateCallback, IN, osg::Uniform::Callback *, uc);
+	Method0(osg::Uniform::Callback *, getUpdateCallback);
+	Method0(const osg::Uniform::Callback *, getUpdateCallback);
+	Method1(void, setEventCallback, IN, osg::Uniform::Callback *, ec);
+	Method0(osg::Uniform::Callback *, getEventCallback);
+	Method0(const osg::Uniform::Callback *, getEventCallback);
 	Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location);
 	WriteOnlyPropertyWithReturnType(bool, , bool);
+	Property(osg::Uniform::Callback *, EventCallback);
 	PropertyWithReturnType(const std::string &, Name, bool);
+	ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
+	ReadOnlyProperty(osg::Uniform::ParentList, Parents);
 	WriteOnlyPropertyWithReturnType(osg::Uniform::Type, Type, bool);
+	Property(osg::Uniform::Callback *, UpdateCallback);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Uniform::Callback)
+	VirtualBaseType(osg::Object);
+	Constructor0();
+	Constructor2(IN, const osg::Uniform::Callback &, x, IN, const osg::CopyOp &, x);
+	Method0(osg::Object *, cloneType);
+	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	Method0(const char *, libraryName);
+	Method0(const char *, className);
 END_REFLECTOR
 

@@ -590,15 +590,18 @@ public:
     }
 };
 
+#define SINGLE_THREAD_KEYBOARDMOUSE
+
 bool Viewer::realize()
 {
     if (_realized) return _realized;
 
     OsgCameraGroup::realize();
 
+#ifndef SINGLE_THREAD_KEYBOARDMOUSE
     // kick start the keyboard mouse if needed.
     if (_kbm.valid() && !_kbm->isRunning()) _kbm->startThread();
-
+#endif
     // by default set up the DatabasePager.
     {    
         osgDB::DatabasePager* databasePager = osgDB::Registry::instance()->getOrCreateDatabasePager();
@@ -654,6 +657,10 @@ bool Viewer::realize()
 
 void Viewer::update()
 {
+#ifdef SINGLE_THREAD_KEYBOARDMOUSE
+    if (_kbm.valid() && !_kbm->isRunning()) _kbm->update(*(_kbm->getCallback()));
+#endif
+
     // get the event since the last frame.
     osgProducer::KeyboardMouseCallback::EventQueue queue;
     if (_kbmcb.valid()) _kbmcb->getEventQueue(queue);

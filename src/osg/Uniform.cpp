@@ -17,6 +17,7 @@
 #include <osg/Notify>
 #include <osg/Uniform>
 #include <osg/Program>
+#include <osg/StateSet>
 
 using namespace osg;
 
@@ -70,6 +71,8 @@ Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
 
 void Uniform::addParent(osg::StateSet* object)
 {
+    osg::notify(osg::INFO)<<"Uniform Adding parent"<<std::endl;
+
     _parents.push_back(object);
 }
 
@@ -100,6 +103,7 @@ bool Uniform::setName( const std::string& name )
     _name = name;
     return true;
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -749,4 +753,55 @@ void Uniform::apply(const GL2Extensions* ext, GLint location) const
     }
 }
 
+void Uniform::setUpdateCallback(Callback* uc)
+{
+    osg::notify(osg::INFO)<<"Uniform::Setting Update callbacks"<<std::endl;
+
+    if (_updateCallback==uc) return;
+    
+    int delta = 0;
+    if (_updateCallback.valid()) --delta;
+    if (uc) ++delta;
+
+    _updateCallback = uc;
+    
+    if (delta!=0)
+    {
+        osg::notify(osg::INFO)<<"Going to set Uniform parents"<<std::endl;
+
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            osg::notify(osg::INFO)<<"   setting Uniform parent"<<std::endl;
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+        }
+    }
+}
+
+void Uniform::setEventCallback(Callback* ec)
+{
+    osg::notify(osg::INFO)<<"Uniform::Setting Event callbacks"<<std::endl;
+
+    if (_updateCallback==ec) return;
+    
+    int delta = 0;
+    if (_updateCallback.valid()) --delta;
+    if (ec) ++delta;
+
+    _updateCallback = ec;
+    
+    if (delta!=0)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {            
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+        }
+    }
+}
+
+
 /*EOF*/
+

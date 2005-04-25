@@ -57,12 +57,12 @@ bool Geode::addDrawable( Drawable *drawable )
         // register as parent of drawable.
         drawable->addParent(this);
         
-        if (drawable->getUpdateCallback())
+        if (drawable->getUpdateCallback() && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
         }
         
-        if (drawable->getEventCallback())
+        if (drawable->getEventCallback() && !(_stateset.valid() && _stateset->requiresEventTraversal()))
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
         }
@@ -105,12 +105,12 @@ bool Geode::removeDrawable(unsigned int pos,unsigned int numDrawablesToRemove)
 
         _drawables.erase(_drawables.begin()+pos,_drawables.begin()+endOfRemoveRange);
 
-        if (updateCallbackRemoved)
+        if (updateCallbackRemoved && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
         }
         
-        if (eventCallbackRemoved)
+        if (eventCallbackRemoved && !(_stateset.valid() && _stateset->requiresEventTraversal()))
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-eventCallbackRemoved);
         }

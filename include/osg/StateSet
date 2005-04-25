@@ -454,6 +454,8 @@ class OSG_EXPORT StateSet : public Object
         ParentList _parents;
         friend class osg::Node;
         friend class osg::Drawable;
+        friend class osg::Uniform;
+        friend class osg::StateAttribute;
     
         ModeList                            _modeList;
         AttributeList                       _attributeList;

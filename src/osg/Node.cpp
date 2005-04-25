@@ -127,7 +127,7 @@ void Node::setStateSet(osg::StateSet* stateset)
 
 osg::StateSet* Node::getOrCreateStateSet()
 {
-    if (!_stateset) _stateset = new StateSet;
+    if (!_stateset) setStateSet(new StateSet);
     return _stateset.get();
 }
 

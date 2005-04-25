@@ -278,7 +278,7 @@ class OSG_EXPORT StateAttribute : public Object
             META_Object(osg,Callback);
 
             /** do customized update code.*/
-            virtual void operator () (NodeVisitor*, StateAttribute*) {}
+            virtual void operator () (StateAttribute*, NodeVisitor*) {}
         };
 
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/

@@ -73,6 +73,9 @@ StateSet::StateSet()
 
     _renderingHint = DEFAULT_BIN;
     
+    _numChildrenRequiringUpdateTraversal = 0;
+    _numChildrenRequiringEventTraversal = 0;
+
     setRenderBinToInherit();
 }
 
@@ -141,6 +144,10 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
     _binMode = rhs._binMode;
     _binNum = rhs._binNum;
     _binName = rhs._binName;
+
+    _numChildrenRequiringUpdateTraversal = rhs._numChildrenRequiringUpdateTraversal;
+    _numChildrenRequiringEventTraversal = rhs._numChildrenRequiringEventTraversal;
+
 }
 
 StateSet::~StateSet()
@@ -1243,6 +1250,47 @@ void StateSet::setUpdateCallback(Callback* ac)
     }
 }
 
+void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
+{
+    if (_updateCallback.valid()) (*_updateCallback)(this,nv);
+
+    if (_numChildrenRequiringUpdateTraversal!=0)
+    {
+        // run attribute callbacks
+        for(AttributeList::iterator itr=_attributeList.begin();
+            itr!=_attributeList.end();
+            ++itr)
+        {
+            StateAttribute::Callback* callback = itr->second.first->getUpdateCallback();
+            if (callback) (*callback)(itr->second.first.get(),nv);
+        }
+
+
+        // run texture attribute callbacks.
+        for(unsigned int i=0;i<_textureAttributeList.size();++i)
+        {
+            AttributeList& attributeList = _textureAttributeList[i];
+            for(AttributeList::iterator itr=attributeList.begin();
+                itr!=attributeList.end();
+                ++itr)
+            {
+                StateAttribute::Callback* callback = itr->second.first->getUpdateCallback();
+                if (callback) (*callback)(itr->second.first.get(),nv);
+            }
+        }
+
+
+        // run uniform callbacks.
+        for(UniformList::iterator uitr = _uniformList.begin();
+            uitr != _uniformList.end();
+            ++uitr)
+        {
+            Uniform::Callback* callback = uitr->second.first->getUpdateCallback();
+            if (callback) (*callback)(uitr->second.first.get(),nv);
+        }
+    }
+}
+
 void StateSet::setEventCallback(Callback* ac)
 {
     if (_eventCallback==ac) return;
@@ -1263,5 +1311,46 @@ void StateSet::setEventCallback(Callback* ac)
             (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
         }
 #endif
+    }
+}
+
+void StateSet::runEventCallbacks(osg::NodeVisitor* nv)
+{
+    if (_eventCallback.valid()) (*_eventCallback)(this,nv);
+
+    if (_numChildrenRequiringEventTraversal!=0)
+    {
+        // run attribute callbacks
+        for(AttributeList::iterator itr=_attributeList.begin();
+            itr!=_attributeList.end();
+            ++itr)
+        {
+            StateAttribute::Callback* callback = itr->second.first->getEventCallback();
+            if (callback) (*callback)(itr->second.first.get(),nv);
+        }
+
+
+        // run texture attribute callbacks.
+        for(unsigned int i=0;i<_textureAttributeList.size();++i)
+        {
+            AttributeList& attributeList = _textureAttributeList[i];
+            for(AttributeList::iterator itr=attributeList.begin();
+                itr!=attributeList.end();
+                ++itr)
+            {
+                StateAttribute::Callback* callback = itr->second.first->getEventCallback();
+                if (callback) (*callback)(itr->second.first.get(),nv);
+            }
+        }
+
+
+        // run uniform callbacks.
+        for(UniformList::iterator uitr = _uniformList.begin();
+            uitr != _uniformList.end();
+            ++uitr)
+        {
+            Uniform::Callback* callback = uitr->second.first->getEventCallback();
+            if (callback) (*callback)(uitr->second.first.get(),nv);
+        }
     }
 }

@@ -69,33 +69,43 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         /** Prevent unwanted copy operator.*/
         UpdateVisitor& operator = (const UpdateVisitor&) { return *this; }
         
+        inline void handle_callbacks(osg::StateSet* stateset)
+        {
+            if (stateset && stateset->requiresUpdateTraversal())
+            {
+                stateset->runUpdateCallbacks(this);
+            }
+        }
+        
         inline void handle_callbacks_and_traverse(osg::Node& node)
         {
+            handle_callbacks(node.getStateSet());
+
             osg::NodeCallback* callback = node.getUpdateCallback();
             if (callback) (*callback)(&node,this);
             else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverse(node);
         }
 
-        inline void handle_geode_callbacks(osg::Geode& node)
+        inline void handle_geode_callbacks(osg::Geode& geode)
         {
-            osg::NodeCallback* callback = node.getUpdateCallback();
-            if (callback) (*callback)(&node,this);
-            /*else if (node.getNumChildrenRequiringUpdateTraversal()>0)*/ 
-            traverseGeode(node);
-        }
-        
-        inline void traverseGeode(osg::Geode& geode)
-        {
-            traverse((osg::Node&)geode);
-            
+            handle_callbacks(geode.getStateSet());
+
+            osg::NodeCallback* callback = geode.getUpdateCallback();
+            if (callback) (*callback)(&geode,this);
+
             // Call the app callbacks on the drawables.
             for(unsigned int i=0;i<geode.getNumDrawables();++i)
             {
                 osg::Drawable::UpdateCallback* callback = geode.getDrawable(i)->getUpdateCallback();
                 if (callback) callback->update(this,geode.getDrawable(i));
+                
+                handle_callbacks(geode.getDrawable(i)->getStateSet());
             }
-        }
-    
+            
+            // should we traverse just in case a subclass of Geode adds children??  Won't for now as
+            // Geode's arn't designed to have children.
+            // traverse(geode);
+        }    
 };
 
 }

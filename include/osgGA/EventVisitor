@@ -93,8 +93,18 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
         /** Prevent unwanted copy operator.*/
         EventVisitor& operator = (const EventVisitor&) { return *this; }
         
+        inline void handle_callbacks(osg::StateSet* stateset)
+        {
+            if (stateset && stateset->requiresEventTraversal())
+            {
+                stateset->runEventCallbacks(this);
+            }
+        }
+
         inline void handle_callbacks_and_traverse(osg::Node& node)
         {
+            handle_callbacks(node.getStateSet());
+
             osg::NodeCallback* callback = node.getEventCallback();
             if (callback) (*callback)(&node,this);
             else if (node.getNumChildrenRequiringEventTraversal()>0) traverse(node);
@@ -102,6 +112,8 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
 
         inline void handle_geode_callbacks(osg::Geode& node)
         {
+            handle_callbacks(node.getStateSet());
+
             osg::NodeCallback* callback = node.getEventCallback();
             if (callback) (*callback)(&node,this);
             /*else if (node.getNumChildrenRequiringEventTraversal()>0)*/ 
@@ -117,6 +129,8 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
             {
                 osg::Drawable::EventCallback* callback = geode.getDrawable(i)->getEventCallback();
                 if (callback) callback->event(this,geode.getDrawable(i));
+
+                handle_callbacks(geode.getDrawable(i)->getStateSet());
             }
         }
         

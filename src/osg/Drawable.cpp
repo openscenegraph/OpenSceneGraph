@@ -312,14 +312,53 @@ void Drawable::setStateSet(osg::StateSet* stateset)
     // do nothing if nothing changed.
     if (_stateset==stateset) return;
     
+    // track whether we need to account for the need to do a update or event traversal.
+    int delta_update = 0;
+    int delta_event = 0;
+
     // remove this node from the current statesets parent list 
-    if (_stateset.valid()) _stateset->removeParent(this);
+    if (_stateset.valid())
+    {
+        _stateset->removeParent(this);
+        if (_stateset->requiresUpdateTraversal()) --delta_update;
+        if (_stateset->requiresEventTraversal()) --delta_event;
+    }
     
     // set the stateset.
     _stateset = stateset;
     
     // add this node to the new stateset to the parent list.
-    if (_stateset.valid()) _stateset->addParent(this);
+    if (_stateset.valid())
+    {
+        _stateset->addParent(this);
+        if (_stateset->requiresUpdateTraversal()) ++delta_update;
+        if (_stateset->requiresEventTraversal()) ++delta_event;
+    }
+    
+
+    // only inform parents if change occurs and drawable doesn't already have an update callback
+    if (delta_update!=0 && !_updateCallback)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta_update);
+        }
+    }
+
+    // only inform parents if change occurs and drawable doesn't already have an event callback
+    if (delta_event!=0 && !_eventCallback)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta_event);
+        }
+    }
+
+
 }
 
 osg::StateSet* Drawable::getOrCreateStateSet()
@@ -502,7 +541,7 @@ void Drawable::setUpdateCallback(UpdateCallback* ac)
 
     _updateCallback = ac;
     
-    if (delta!=0)
+    if (delta!=0 && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
     {
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
@@ -523,7 +562,7 @@ void Drawable::setEventCallback(EventCallback* ac)
 
     _eventCallback = ac;
     
-    if (delta!=0)
+    if (delta!=0 && !(_stateset.valid() && _stateset->requiresEventTraversal()))
     {
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();

@@ -276,7 +276,7 @@ class OSG_EXPORT Uniform : public Object
             META_Object(osg,Callback);
 
             /** do customized update code.*/
-            virtual void operator () (NodeVisitor*, Uniform*) {}
+            virtual void operator () (Uniform*, NodeVisitor*) {}
         };
 
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/

@@ -18,6 +18,8 @@
 #include <osgProducer/Viewer>
 #include <osgProducer/ViewerEventHandler>
 
+#include <stdio.h>
+
 using namespace Producer;
 using namespace osgProducer;
 using namespace osg;
@@ -327,6 +329,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
         arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Specify camera path file to animate the camera through the loaded scene");
         arguments.getApplicationUsage()->addCommandLineOption("--run-till-frame-number <integer>","Specify the number of frame to run");
         arguments.getApplicationUsage()->addCommandLineOption("--run-till-elapsed-time","Specify the about of time to run");
+        arguments.getApplicationUsage()->addCommandLineOption("--clear-color <float>,<float>,<float>[,<float>]","Specify the clear color as RGB or RGBA");
     }
 
     osg::DisplaySettings::instance()->readCommandLine(arguments);
@@ -360,6 +363,16 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     {
         setWriteImageWhenDone(true);
         setWriteImageFileName(filename);
+    }
+
+    std::string colorStr;
+    while (arguments.read("--clear-color",colorStr))
+    {
+        float r, g, b;
+        float a = 1.0f;
+        int cnt = sscanf( colorStr.c_str(), "%f,%f,%f,%f", &r, &g, &b, &a );
+        if( cnt==3 || cnt==4 ) setClearColor( osg::Vec4(r,g,b,a) );
+        else osg::notify(osg::WARN)<<"Invalid clear color \""<<colorStr<<"\""<<std::endl;
     }
 }
 

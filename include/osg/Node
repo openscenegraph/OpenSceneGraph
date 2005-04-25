@@ -276,6 +276,7 @@ class OSG_EXPORT Node : public Object
         ParentList _parents;
         friend class osg::Group;
         friend class osg::Drawable;
+        friend class osg::StateSet;
 
         ref_ptr<NodeCallback> _updateCallback;
         unsigned int _numChildrenRequiringUpdateTraversal;

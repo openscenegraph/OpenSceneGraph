@@ -363,7 +363,7 @@ void Drawable::setStateSet(osg::StateSet* stateset)
 
 osg::StateSet* Drawable::getOrCreateStateSet()
 {
-    if (!_stateset) _stateset = new StateSet;
+    if (!_stateset) setStateSet(new StateSet);
     return _stateset.get();
 }
 

@@ -45,8 +45,8 @@ class OSG_EXPORT Shader : public osg::Object
 	    UNDEFINED = -1
 	};
 
-        Shader();
-        Shader( Type type, const char* sourceText = 0 );
+        Shader( Type type = UNDEFINED);
+        Shader( Type type, const std::string& source );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Shader(const Shader& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -56,12 +56,17 @@ class OSG_EXPORT Shader : public osg::Object
         int compare(const Shader& rhs) const;
 
 	bool setType( Type t );
+        
 
 	/** Load the Shader's source code text from a string. */
-	void setShaderSource( const char* sourceText );
+	void setShaderSource( const std::string& sourceText );
+
+        /** Read shader source from file and then constructor shader of specified type.
+          * Return the resulting Shader or 0 if no valid shader source code be read.*/
+        static Shader* readShaderFile( Type type, const std::string& fileName );
 
 	/** Load the Shader's source code text from a file. */
-	bool loadShaderSourceFromFile( const char* fileName );
+	bool loadShaderSourceFromFile( const std::string& fileName );
 
 	/** Query the shader's source code text */
 	inline const std::string& getShaderSource() const { return _shaderSource; }

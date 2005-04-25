@@ -224,20 +224,26 @@ static osg::Program* MarbleProgram;
 static osg::Shader*  MarbleVertObj;
 static osg::Shader*  MarbleFragObj;
 
-static osg::Uniform* OffsetUniform;
-static osg::Uniform* SineUniform;
-static osg::Uniform* Color1Uniform;
-static osg::Uniform* Color2Uniform;
 
 ///////////////////////////////////////////////////////////////////////////
-// for demo simplicity, this one callback animates all the shaders.
+// for demo simplicity, this one callback animates all the shaders, instancing
+// for each uniform but with a specific operation each time.
 
-class AnimateCallback: public osg::NodeCallback
+class AnimateCallback: public osg::Uniform::Callback
 {
     public:
-	AnimateCallback() : osg::NodeCallback(), _enabled(true) {}
+    
+        enum Operation
+        {
+            OFFSET,
+            SIN,
+            COLOR1,
+            COLOR2            
+        };
+    
+	AnimateCallback(Operation op) : _enabled(true),_operation(op) {}
 
-	virtual void operator() ( osg::Node* node, osg::NodeVisitor* nv )
+	virtual void operator() ( osg::Uniform* uniform, osg::NodeVisitor* nv )
 	{
 	    if( _enabled )
 	    {
@@ -245,17 +251,19 @@ class AnimateCallback: public osg::NodeCallback
 		float sine = sinf( angle );	// -1 -> 1
 		float v01 = 0.5f * sine + 0.5f;	//  0 -> 1
 		float v10 = 1.0f - v01;		//  1 -> 0
-
-		OffsetUniform->set( osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
-		SineUniform->set( sine );
-		Color1Uniform->set( osg::Vec3(v10, 0.0f, 0.0f) );
-		Color2Uniform->set( osg::Vec3(v01, v01, v10) );
+                switch(_operation)
+                {
+                    case OFFSET : uniform->set( osg::Vec3(0.505f, 0.8f*v01, 0.0f) ); break;
+                    case SIN : uniform->set( sine ); break;
+                    case COLOR1 : uniform->set( osg::Vec3(v10, 0.0f, 0.0f) ); break;
+		    case COLOR2 : uniform->set( osg::Vec3(v01, v01, v10) ); break;
+                }
 	    }
-	    traverse(node, nv);
 	}
 
     private:
 	bool _enabled;
+        Operation _operation;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -272,20 +280,28 @@ GL2Scene::buildScene()
 
     // the root of our scenegraph.
     rootNode = new osg::Group;
-    rootNode->setUpdateCallback( new AnimateCallback );
+    //rootNode->setUpdateCallback( new AnimateCallback );
 
     // attach some Uniforms to the root, to be inherited by Programs.
     {
-	OffsetUniform = new osg::Uniform( "Offset", osg::Vec3(0.0f, 0.0f, 0.0f) );
-	SineUniform   = new osg::Uniform( "Sine", 0.0f );
-	Color1Uniform = new osg::Uniform( "Color1", osg::Vec3(0.0f, 0.0f, 0.0f) );
-	Color2Uniform = new osg::Uniform( "Color2", osg::Vec3(0.0f, 0.0f, 0.0f) );
+	osg::Uniform* OffsetUniform = new osg::Uniform( "Offset", osg::Vec3(0.0f, 0.0f, 0.0f) );
+	osg::Uniform* SineUniform   = new osg::Uniform( "Sine", 0.0f );
+	osg::Uniform* Color1Uniform = new osg::Uniform( "Color1", osg::Vec3(0.0f, 0.0f, 0.0f) );
+	osg::Uniform* Color2Uniform = new osg::Uniform( "Color2", osg::Vec3(0.0f, 0.0f, 0.0f) );
+
+        OffsetUniform->setUpdateCallback(new AnimateCallback(AnimateCallback::OFFSET));
+        SineUniform->setUpdateCallback(new AnimateCallback(AnimateCallback::SIN));
+        Color1Uniform->setUpdateCallback(new AnimateCallback(AnimateCallback::COLOR1));
+        Color2Uniform->setUpdateCallback(new AnimateCallback(AnimateCallback::COLOR2));
 
 	osg::StateSet* ss = rootNode->getOrCreateStateSet();
 	ss->addUniform( OffsetUniform );
 	ss->addUniform( SineUniform );
 	ss->addUniform( Color1Uniform );
 	ss->addUniform( Color2Uniform );
+        
+        
+        //ss->setUpdateCallback(new AnimateCallback2);
     }
 
     // the simple Microshader (its source appears earlier in this file)

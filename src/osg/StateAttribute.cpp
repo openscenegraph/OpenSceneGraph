@@ -10,6 +10,8 @@
 */
 
 #include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/Notify>
 
 #include <algorithm>
 
@@ -24,4 +26,53 @@ void StateAttribute::removeParent(osg::StateSet* object)
 {
     ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
     if (pitr!=_parents.end()) _parents.erase(pitr);
+}
+
+
+void StateAttribute::setUpdateCallback(Callback* uc)
+{
+    osg::notify(osg::NOTICE)<<"Uniform::Setting Update callbacks"<<std::endl;
+
+    if (_updateCallback==uc) return;
+    
+    int delta = 0;
+    if (_updateCallback.valid()) --delta;
+    if (uc) ++delta;
+
+    _updateCallback = uc;
+    
+    if (delta!=0)
+    {
+        osg::notify(osg::NOTICE)<<"Going to set StateSet parents"<<std::endl;
+
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+        }
+    }
+}
+
+void StateAttribute::setEventCallback(Callback* ec)
+{
+    osg::notify(osg::NOTICE)<<"Uniform::Setting Event callbacks"<<std::endl;
+
+    if (_updateCallback==ec) return;
+    
+    int delta = 0;
+    if (_updateCallback.valid()) --delta;
+    if (ec) ++delta;
+
+    _updateCallback = ec;
+    
+    if (delta!=0)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+        }
+    }
 }

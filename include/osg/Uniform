@@ -280,7 +280,7 @@ class OSG_EXPORT Uniform : public Object
         };
 
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
-        void setUpdateCallback(Callback* uc) { _updateCallback = uc; }
+        void setUpdateCallback(Callback* uc);
 
         /** Get the non const UpdateCallback.*/
         Callback* getUpdateCallback() { return _updateCallback.get(); }
@@ -290,7 +290,7 @@ class OSG_EXPORT Uniform : public Object
 
 
         /** Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal.*/
-        void setEventCallback(Callback* ec) { _eventCallback = ec; }
+        void setEventCallback(Callback* ec);
 
         /** Get the non const EventCallback.*/
         Callback* getEventCallback() { return _eventCallback.get(); }

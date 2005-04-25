@@ -23,6 +23,8 @@
 #include <osg/PolygonMode>
 #include <osg/BlendFunc>
 #include <osg/Depth>
+#include <osg/Drawable>
+#include <osg/Node>
 
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
@@ -157,6 +159,8 @@ StateSet::~StateSet()
 
 void StateSet::addParent(osg::Object* object)
 {
+    osg::notify(osg::INFO)<<"Adding parent"<<std::endl;
+
     _parents.push_back(object);
 }
 
@@ -744,6 +748,16 @@ void StateSet::removeAttribute(StateAttribute::Type type, unsigned int member)
     AttributeList::iterator itr = _attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=_attributeList.end())
     {
+        if (itr->second.first->getUpdateCallback()) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+        }
+
+        if (itr->second.first->getEventCallback()) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+        }
+
         itr->second.first->removeParent(this);
         setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
         _attributeList.erase(itr);
@@ -759,6 +773,16 @@ void StateSet::removeAttribute(StateAttribute* attribute)
     {
         if (itr->second.first != attribute) return;
         
+        if (itr->second.first->getUpdateCallback()) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+        }
+
+        if (itr->second.first->getEventCallback()) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+        }
+
         itr->second.first->removeParent(this);
 
         setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
@@ -785,6 +809,9 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
 {
     if (uniform)
     {
+        int delta_update = 0;
+        int delta_event = 0;
+        
         UniformList::iterator itr=_uniformList.find(uniform->getName());
         if (itr==_uniformList.end())
         {
@@ -794,6 +821,16 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
             up.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
             
             uniform->addParent(this);
+            
+            if (uniform->getUpdateCallback()) 
+            {
+                delta_update = 1;
+            }
+
+            if (uniform->getEventCallback()) 
+            {
+                delta_event = 1;
+            }
         }
         else
         {
@@ -805,11 +842,28 @@ void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
             else
             {
                 itr->second.first->removeParent(this);
+                if (itr->second.first->getUpdateCallback()) --delta_update;
+                if (itr->second.first->getEventCallback()) --delta_event;
+                
                 uniform->addParent(this);
                 itr->second.first = uniform;
+                if (itr->second.first->getUpdateCallback()) ++delta_update;
+                if (itr->second.first->getEventCallback()) ++delta_event;
+
                 itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
             }
         }
+
+        if (delta_update!=0) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta_update);
+        }
+
+        if (delta_event!=0) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+delta_event);
+        }
+
     }
 }
 
@@ -818,7 +872,18 @@ void StateSet::removeUniform(const std::string& name)
     UniformList::iterator itr = _uniformList.find(name);
     if (itr!=_uniformList.end())
     {
+        if (itr->second.first->getUpdateCallback()) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+        }
+
+        if (itr->second.first->getEventCallback()) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+        }
+
         itr->second.first->removeParent(this);
+
         _uniformList.erase(itr);
     }
 }
@@ -831,6 +896,16 @@ void StateSet::removeUniform(Uniform* uniform)
     if (itr!=_uniformList.end())
     {
         if (itr->second.first != uniform) return;
+
+        if (itr->second.first->getUpdateCallback()) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+        }
+
+        if (itr->second.first->getEventCallback()) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+        }
 
         itr->second.first->removeParent(this);
         _uniformList.erase(itr);
@@ -967,6 +1042,18 @@ void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type typ
         {
             setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
         }
+
+        if (itr->second.first->getUpdateCallback()) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+        }
+
+        if (itr->second.first->getEventCallback()) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+        }
+
+
         itr->second.first->removeParent(this);
         attributeList.erase(itr);
     }
@@ -984,6 +1071,17 @@ void StateSet::removeTextureAttribute(unsigned int unit, StateAttribute* attribu
         if (itr->second.first != attribute) return;
 
         setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
+
+        if (itr->second.first->getUpdateCallback()) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+        }
+
+        if (itr->second.first->getEventCallback()) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+        }
+
         itr->second.first->removeParent(this);
         attributeList.erase(itr);
     }
@@ -1165,12 +1263,25 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
 {
     if (attribute)
     {
+        int delta_update = 0;
+        int delta_event = 0;
+        
         AttributeList::iterator itr=attributeList.find(attribute->getTypeMemberPair());
         if (itr==attributeList.end())
         {
             // new entry.
             attributeList[attribute->getTypeMemberPair()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
             attribute->addParent(this);
+            
+            if (attribute->getUpdateCallback()) 
+            {
+                delta_update = 1;
+            }
+
+            if (attribute->getEventCallback()) 
+            {
+                delta_event = 1;
+            }
         }
         else
         {
@@ -1182,10 +1293,26 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
             else
             {
                 itr->second.first->removeParent(this);
+                if (itr->second.first->getUpdateCallback()) --delta_update;
+                if (itr->second.first->getEventCallback()) --delta_event;
+
                 attribute->addParent(this);
                 itr->second.first = attribute;
-                itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
+                if (itr->second.first->getUpdateCallback()) ++delta_update;
+                if (itr->second.first->getEventCallback()) ++delta_event;
+
+               itr->second.second = value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED);
             }
+        }
+
+        if (delta_update!=0) 
+        {
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta_update);
+        }
+
+        if (delta_event!=0) 
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+delta_event);
         }
     }
 }
@@ -1229,6 +1356,8 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList
 
 void StateSet::setUpdateCallback(Callback* ac)
 {
+    osg::notify(osg::INFO)<<"Setting StateSet callbacks"<<std::endl;
+
     if (_updateCallback==ac) return;
     
     int delta = 0;
@@ -1237,21 +1366,37 @@ void StateSet::setUpdateCallback(Callback* ac)
 
     _updateCallback = ac;
     
-    if (delta!=0)
+    if (delta!=0 && _numChildrenRequiringUpdateTraversal==0)
     {
-#if 0
+        osg::notify(osg::INFO)<<"Going to set StateSet parents"<<std::endl;
+
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+            osg::notify(osg::INFO)<<"Setting StateSet parent"<<std::endl;
+
+            osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
+            if (drawable) 
+            {
+                //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
+            }
+            else 
+            {
+                osg::Node* node = dynamic_cast<osg::Node*>(*itr);
+                if (node) 
+                {
+                    node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
+                }
+            }
         }
-#endif
     }
 }
 
 void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
 {
+    osg::notify(osg::INFO)<<"Running StateSet callbacks"<<std::endl;
+
     if (_updateCallback.valid()) (*_updateCallback)(this,nv);
 
     if (_numChildrenRequiringUpdateTraversal!=0)
@@ -1301,16 +1446,26 @@ void StateSet::setEventCallback(Callback* ac)
 
     _eventCallback = ac;
     
-    if (delta!=0)
+    if (delta!=0 && _numChildrenRequiringEventTraversal==0)
     {
-#if 0
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
+            osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
+            if (drawable) 
+            {
+                //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
+            }
+            else 
+            {
+                osg::Node* node = dynamic_cast<osg::Node*>(*itr);
+                if (node) 
+                {
+                    node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
+                }
+            }
         }
-#endif
     }
 }
 
@@ -1353,4 +1508,94 @@ void StateSet::runEventCallbacks(osg::NodeVisitor* nv)
             if (callback) (*callback)(uitr->second.first.get(),nv);
         }
     }
+}
+
+void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
+{
+    // if no changes just return.
+    if (_numChildrenRequiringUpdateTraversal==num) return;
+
+    // note, if _updateCallback is set then the
+    // parents won't be affected by any changes to
+    // _numChildrenRequiringUpdateTraversal so no need to inform them.
+    if (!_updateCallback && !_parents.empty())
+    {
+    
+        // need to pass on changes to parents.        
+        int delta = 0;
+        if (_numChildrenRequiringUpdateTraversal>0) --delta;
+        if (num>0) ++delta;
+        if (delta!=0)
+        {
+            // the number of callbacks has changed, need to pass this
+            // on to parents so they know whether app traversal is
+            // reqired on this subgraph.
+            for(ParentList::iterator itr =_parents.begin();
+                itr != _parents.end();
+                ++itr)
+            {    
+                osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
+                if (drawable) 
+                {
+                    //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
+                }
+                else 
+                {
+                    osg::Node* node = dynamic_cast<osg::Node*>(*itr);
+                    if (node) 
+                    {
+                        node->setNumChildrenRequiringUpdateTraversal(node->getNumChildrenRequiringUpdateTraversal()+delta);
+                    }
+                }
+            }
+        }
+    }
+    
+    // finally update this objects value.
+    _numChildrenRequiringUpdateTraversal=num;
+}
+
+void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
+{
+    // if no changes just return.
+    if (_numChildrenRequiringEventTraversal==num) return;
+
+    // note, if _EventCallback is set then the
+    // parents won't be affected by any changes to
+    // _numChildrenRequiringEventTraversal so no need to inform them.
+    if (!_eventCallback && !_parents.empty())
+    {
+    
+        // need to pass on changes to parents.        
+        int delta = 0;
+        if (_numChildrenRequiringEventTraversal>0) --delta;
+        if (num>0) ++delta;
+        if (delta!=0)
+        {
+            // the number of callbacks has changed, need to pass this
+            // on to parents so they know whether app traversal is
+            // reqired on this subgraph.
+            for(ParentList::iterator itr =_parents.begin();
+                itr != _parents.end();
+                ++itr)
+            {    
+                osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
+                if (drawable) 
+                {
+                    //drawable->setNumChildrenRequiringEventTraversal(drawable->getNumChildrenRequiringEventTraversal()+delta);
+                }
+                else 
+                {
+                    osg::Node* node = dynamic_cast<osg::Node*>(*itr);
+                    if (node) 
+                    {
+                        node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
+                    }
+                }
+            }
+        }
+    }
+    
+    // finally Event this objects value.
+    _numChildrenRequiringEventTraversal=num;
 }

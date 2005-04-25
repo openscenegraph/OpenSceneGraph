@@ -92,15 +92,15 @@ void Shader::flushDeletedGlShaders(unsigned int contextID,double /*currentTime*/
 // osg::Shader
 ///////////////////////////////////////////////////////////////////////////
 
-Shader::Shader(Type type, const char* sourceText) :
+Shader::Shader(Type type) :
     _type(type)
 {
-    setShaderSource( sourceText );
 }
 
-Shader::Shader() :
-    _type(UNDEFINED)
+Shader::Shader(Type type, const std::string& source) :
+    _type(type)
 {
+    setShaderSource( source);
 }
 
 Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
@@ -142,18 +142,25 @@ int Shader::compare(const Shader& rhs) const
     return 0;
 }
 
-void Shader::setShaderSource( const char* sourceText )
+void Shader::setShaderSource( const std::string& sourceText )
 {
-    _shaderSource = ( sourceText ? sourceText : "" );
+    _shaderSource = sourceText;
     dirtyShader();
 }
 
 
-bool Shader::loadShaderSourceFromFile( const char* fileName )
+Shader* Shader::readShaderFile( Type type, const std::string& fileName )
+{
+    ref_ptr<Shader> shader = new Shader(type);
+    if (shader->loadShaderSourceFromFile(fileName)) return shader.release();
+    return 0;
+}
+
+bool Shader::loadShaderSourceFromFile( const std::string& fileName )
 {
     std::ifstream sourceFile;
 
-    sourceFile.open(fileName, std::ios::binary);
+    sourceFile.open(fileName.c_str(), std::ios::binary);
     if(!sourceFile)
     {
 	osg::notify(osg::WARN)<<"Error: can't open file \""<<fileName<<"\""<<std::endl;

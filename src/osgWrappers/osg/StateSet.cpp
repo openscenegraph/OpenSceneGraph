@@ -10,11 +10,14 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/Uniform>
+
+TYPE_NAME_ALIAS(std::vector< osg::Object * >, osg::StateSet::ParentList);
 
 TYPE_NAME_ALIAS(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateSet::ModeList);
 
@@ -53,6 +56,11 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	Method0(const char *, libraryName);
 	Method0(const char *, className);
 	MethodWithDefaults2(int, compare, IN, const osg::StateSet &, rhs, , IN, bool, compareAttributeContents, false);
+	Method0(const osg::StateSet::ParentList &, getParents);
+	Method0(osg::StateSet::ParentList, getParents);
+	Method1(osg::Object *, getParent, IN, unsigned int, i);
+	Method1(const osg::Object *, getParent, IN, unsigned int, i);
+	Method0(unsigned int, getNumParents);
 	Method0(void, setGlobalDefaults);
 	Method0(void, clear);
 	Method1(void, merge, IN, const osg::StateSet &, rhs);
@@ -110,19 +118,46 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	Method0(int, getBinNumber);
 	Method1(void, setBinName, IN, const std::string &, name);
 	Method0(const std::string &, getBinName);
+	Method1(void, setUpdateCallback, IN, osg::StateSet::Callback *, ac);
+	Method0(osg::StateSet::Callback *, getUpdateCallback);
+	Method0(const osg::StateSet::Callback *, getUpdateCallback);
+	Method0(bool, requiresUpdateTraversal);
+	Method0(unsigned int, getNumChildrenRequiringUpdateTraversal);
+	Method1(void, runUpdateCallbacks, IN, osg::NodeVisitor *, nv);
+	Method1(void, setEventCallback, IN, osg::StateSet::Callback *, ac);
+	Method0(osg::StateSet::Callback *, getEventCallback);
+	Method0(const osg::StateSet::Callback *, getEventCallback);
+	Method0(bool, requiresEventTraversal);
+	Method0(unsigned int, getNumChildrenRequiringEventTraversal);
+	Method1(void, runEventCallbacks, IN, osg::NodeVisitor *, nv);
 	Method1(void, compileGLObjects, IN, osg::State &, state);
 	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	Property(osg::StateSet::AttributeList &, AttributeList);
 	Property(const std::string &, BinName);
 	Property(int, BinNumber);
+	Property(osg::StateSet::Callback *, EventCallback);
 
 	Property(osg::StateSet::ModeList &, ModeList);
+	ArrayProperty_G(osg::Object *, Parent, Parents, unsigned int, void);
+	ReadOnlyProperty(osg::StateSet::ParentList, Parents);
 	Property(osg::StateSet::RenderBinMode, RenderBinMode);
 	Property(int, RenderingHint);
 	Property(osg::StateSet::TextureAttributeList &, TextureAttributeList);
 	IndexedProperty2(osg::StateAttribute::GLModeValue, TextureMode, unsigned int, unit, osg::StateAttribute::GLMode, mode);
 	Property(osg::StateSet::TextureModeList &, TextureModeList);
 	Property(osg::StateSet::UniformList &, UniformList);
+	Property(osg::StateSet::Callback *, UpdateCallback);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::StateSet::Callback)
+	VirtualBaseType(osg::Object);
+	Constructor0();
+	Constructor2(IN, const osg::StateSet::Callback &, x, IN, const osg::CopyOp &, x);
+	Method0(osg::Object *, cloneType);
+	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	Method0(const char *, libraryName);
+	Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
@@ -157,6 +192,8 @@ STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::StateSet::RefUniformPair >);
 STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateAttribute > COMMA  osg::StateAttribute::OverrideValue >);
 
 STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribute::OverrideValue >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Object * >);
 
 STD_VECTOR_REFLECTOR(std::vector< osg::StateSet::AttributeList >);
 

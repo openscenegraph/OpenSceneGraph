@@ -57,6 +57,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	Method0(unsigned int, getImageSizeInBytes);
 	Method0(unsigned int, getTotalSizeInBytes);
 	Method0(unsigned int, getTotalSizeInBytesIncludingMipmaps);
+	Method0(bool, valid);
 	Method0(unsigned char *, data);
 	Method0(const unsigned char *, data);
 	MethodWithDefaults3(unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0);

@@ -10,9 +10,11 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateAttribute>
+#include <osg/StateSet>
 
 TYPE_NAME_ALIAS(GLenum, osg::StateAttribute::GLMode);
 
@@ -21,6 +23,8 @@ TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::GLModeValue);
 TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::OverrideValue);
 
 TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg::StateAttribute::TypeMemberPair);
+
+TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList);
 
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
 	EnumLabel(osg::StateAttribute::OFF);
@@ -92,13 +96,38 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	Method0(osg::StateAttribute::TypeMemberPair, getTypeMemberPair);
 	Method0(bool, isTextureAttribute);
 	Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	Method0(const osg::StateAttribute::ParentList &, getParents);
+	Method1(osg::StateSet *, getParent, IN, unsigned int, i);
+	Method1(const osg::StateSet *, getParent, IN, unsigned int, i);
+	Method0(unsigned int, getNumParents);
 	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x);
+	Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc);
+	Method0(osg::StateAttribute::Callback *, getUpdateCallback);
+	Method0(const osg::StateAttribute::Callback *, getUpdateCallback);
+	Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec);
+	Method0(osg::StateAttribute::Callback *, getEventCallback);
+	Method0(const osg::StateAttribute::Callback *, getEventCallback);
 	Method1(void, apply, IN, osg::State &, x);
 	Method1(void, compileGLObjects, IN, osg::State &, x);
 	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
+	Property(osg::StateAttribute::Callback *, EventCallback);
 	ReadOnlyProperty(unsigned int, Member);
+	ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
+	ReadOnlyProperty(const osg::StateAttribute::ParentList &, Parents);
 	ReadOnlyProperty(osg::StateAttribute::Type, Type);
 	ReadOnlyProperty(osg::StateAttribute::TypeMemberPair, TypeMemberPair);
+	Property(osg::StateAttribute::Callback *, UpdateCallback);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::StateAttribute::Callback)
+	VirtualBaseType(osg::Object);
+	Constructor0();
+	Constructor2(IN, const osg::StateAttribute::Callback &, x, IN, const osg::CopyOp &, x);
+	Method0(osg::Object *, cloneType);
+	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	Method0(const char *, libraryName);
+	Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
@@ -108,4 +137,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
 END_REFLECTOR
 
 STD_PAIR_REFLECTOR(std::pair< osg::StateAttribute::Type COMMA  unsigned int >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::StateSet * >);
 

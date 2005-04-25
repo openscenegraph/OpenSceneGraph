@@ -75,7 +75,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	Method1(std::string &, getDescription, IN, unsigned int, i);
 	Method0(unsigned int, getNumDescriptions);
 	Method1(void, addDescription, IN, const std::string &, desc);
-	Method1(void, setStateSet, IN, osg::StateSet *, dstate);
+	Method1(void, setStateSet, IN, osg::StateSet *, stateset);
 	Method0(osg::StateSet *, getOrCreateStateSet);
 	Method0(osg::StateSet *, getStateSet);
 	Method0(const osg::StateSet *, getStateSet);

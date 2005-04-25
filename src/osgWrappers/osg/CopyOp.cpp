@@ -21,6 +21,7 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/Texture>
+#include <osg/Uniform>
 
 TYPE_NAME_ALIAS(unsigned int, osg::CopyOp::CopyFlags);
 
@@ -36,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 	EnumLabel(osg::CopyOp::DEEP_COPY_ARRAYS);
 	EnumLabel(osg::CopyOp::DEEP_COPY_PRIMITIVES);
 	EnumLabel(osg::CopyOp::DEEP_COPY_SHAPES);
+	EnumLabel(osg::CopyOp::DEEP_COPY_UNIFORMS);
 	EnumLabel(osg::CopyOp::DEEP_COPY_ALL);
 END_REFLECTOR
 

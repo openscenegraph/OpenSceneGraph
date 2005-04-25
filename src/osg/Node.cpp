@@ -91,14 +91,38 @@ void Node::setStateSet(osg::StateSet* stateset)
     // do nothing if nothing changed.
     if (_stateset==stateset) return;
     
+    // track whether we need to account for the need to do a update or event traversal.
+    int delta_update = 0;
+    int delta_event = 0;
+
     // remove this node from the current statesets parent list 
-    if (_stateset.valid()) _stateset->removeParent(this);
+    if (_stateset.valid())
+    {
+        _stateset->removeParent(this);
+        if (_stateset->requiresUpdateTraversal()) --delta_update;
+        if (_stateset->requiresEventTraversal()) --delta_event;
+    }
     
     // set the stateset.
     _stateset = stateset;
     
     // add this node to the new stateset to the parent list.
-    if (_stateset.valid()) _stateset->addParent(this);
+    if (_stateset.valid())
+    {
+        _stateset->addParent(this);
+        if (_stateset->requiresUpdateTraversal()) ++delta_update;
+        if (_stateset->requiresEventTraversal()) ++delta_event;
+    }
+    
+    if (delta_update!=0)
+    {
+        setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta_update);
+    }
+
+    if (delta_event!=0)
+    {
+        setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+delta_event);
+    }
 }
 
 osg::StateSet* Node::getOrCreateStateSet()
@@ -113,7 +137,7 @@ void Node::setUpdateCallback(NodeCallback* nc)
     // if no changes just return.
     if (_updateCallback==nc) return;
     
-    // app callback has been changed, will need to update
+    // updated callback has been changed, will need to update
     // both _updateCallback and possibly the numChildrenRequiringAppTraversal
     // if the number of callbacks changes.
 
@@ -191,7 +215,7 @@ void Node::setEventCallback(NodeCallback* nc)
     // if no changes just return.
     if (_eventCallback==nc) return;
     
-    // app callback has been changed, will need to Event
+    // event callback has been changed, will need to Event
     // both _EventCallback and possibly the numChildrenRequiringAppTraversal
     // if the number of callbacks changes.
 

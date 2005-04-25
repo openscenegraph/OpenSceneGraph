@@ -392,7 +392,7 @@ class OSG_EXPORT StateSet : public Object
             META_Object(osg,Callback);
 
             /** do customized callback code.*/
-            virtual void operator() (NodeVisitor*, StateSet*) {}
+            virtual void operator() (StateSet*, NodeVisitor*) {}
         };
 
         /** Set the Update Callback which allows users to attach customize the updating of an object during the update traversal.*/
@@ -404,9 +404,15 @@ class OSG_EXPORT StateSet : public Object
         /** Get the const Update Callback.*/
         const Callback* getUpdateCallback() const { return _updateCallback.get(); }
 
+        /** Return whether this StateSet has update callbacks associated with it, and therefore must be traversed.*/
+        bool requiresUpdateTraversal() const { return _updateCallback.valid() || getNumChildrenRequiringUpdateTraversal()!=0; }
+
         /** Get the number of Objects of this StateSet which require Update traversal,
           * since they have an Update Callback attached to them or their children.*/
-        inline unsigned int getNumObjectsRequiringUpdateTraversal() const { return _numObjectsRequiringUpdateTraversal; }
+        inline unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
+        
+        /** Run the update callbacks attached directly to this StateSet or to its children.*/
+        void runUpdateCallbacks(osg::NodeVisitor* nv);
 
 
         /** Set the Event Callback which allows users to attach customize the updating of an object during the event traversal.*/
@@ -418,9 +424,15 @@ class OSG_EXPORT StateSet : public Object
         /** Get the const Event Callback.*/
         const Callback* getEventCallback() const { return _eventCallback.get(); }
 
+        /** Return whether this StateSet has event callbacks associated with it, and therefore must be traversed.*/
+        bool requiresEventTraversal() const { return _eventCallback.valid() || getNumChildrenRequiringEventTraversal()!=0; }
+
         /** Get the number of Objects of this StateSet which require Event traversal,
           * since they have an Eevnt Callback attached to them or their children.*/
-        inline unsigned int getNumObjectsRequiringEventTraversal() const { return _numObjectsRequiringEventTraversal; }
+        inline unsigned int getNumChildrenRequiringEventTraversal() const { return _numChildrenRequiringEventTraversal; }
+        
+        /** Run the event callbacks attached directly to this StateSet or to its children.*/
+        void runEventCallbacks(osg::NodeVisitor* nv);
 
 
         /** call compile on all StateAttributes contained within this StateSet.*/
@@ -483,11 +495,13 @@ class OSG_EXPORT StateSet : public Object
         int                                 _binNum;
         std::string                         _binName;
         
-        ref_ptr<Callback>                   _updateCallback;
-        unsigned int                        _numObjectsRequiringUpdateTraversal;
+        ref_ptr<Callback> _updateCallback;
+        unsigned int _numChildrenRequiringUpdateTraversal;
+        void setNumChildrenRequiringUpdateTraversal(unsigned int num);
 
-        ref_ptr<Callback>                   _eventCallback;
-        unsigned int                        _numObjectsRequiringEventTraversal;
+        ref_ptr<Callback> _eventCallback;
+        unsigned int _numChildrenRequiringEventTraversal;
+        void setNumChildrenRequiringEventTraversal(unsigned int num);
 
 };
 

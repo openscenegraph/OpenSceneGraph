@@ -187,10 +187,10 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::Drawable::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::Drawable::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setVertexProgramSupported, IN, bool, flag);
 	Method0(bool, isVertexProgramSupported);
 	Method1(void, setSecondaryColorSupported, IN, bool, flag);
@@ -248,6 +248,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	WriteOnlyProperty(bool, OcclusionQuerySupported);
 	WriteOnlyProperty(bool, SecondaryColorSupported);
 	WriteOnlyProperty(bool, VertexProgramSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Drawable::UpdateCallback)

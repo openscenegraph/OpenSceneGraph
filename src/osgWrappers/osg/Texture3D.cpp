@@ -53,10 +53,10 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::Texture3D::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::Texture3D::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setTexture3DSupported, IN, bool, flag);
 	Method0(bool, isTexture3DSupported);
 	Method1(void, setTexture3DFast, IN, bool, flag);
@@ -86,6 +86,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 	WriteOnlyProperty(void *, TexSubImage3DProc);
 	WriteOnlyProperty(bool, Texture3DFast);
 	WriteOnlyProperty(bool, Texture3DSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D::SubloadCallback)

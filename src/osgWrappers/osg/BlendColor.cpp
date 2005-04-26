@@ -37,15 +37,16 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::BlendColor::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::BlendColor::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setBlendColorSupported, IN, bool, flag);
 	Method0(bool, isBlendColorSupported);
 	Method1(void, setBlendColorProc, IN, void *, ptr);
 	Method4(void, glBlendColor, IN, GLclampf, red, IN, GLclampf, green, IN, GLclampf, blue, IN, GLclampf, alpha);
 	WriteOnlyProperty(void *, BlendColorProc);
 	WriteOnlyProperty(bool, BlendColorSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

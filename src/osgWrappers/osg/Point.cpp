@@ -49,14 +49,15 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::Point::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::Point::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setPointParametersSupported, IN, bool, flag);
 	Method0(bool, isPointParametersSupported);
 	Method2(void, glPointParameterf, IN, GLenum, pname, IN, GLfloat, param);
 	Method2(void, glPointParameterfv, IN, GLenum, pname, IN, const GLfloat *, params);
 	WriteOnlyProperty(bool, PointParametersSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

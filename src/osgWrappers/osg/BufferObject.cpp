@@ -39,10 +39,10 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::BufferObject::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::BufferObject::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::BufferObject::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method0(bool, isBufferObjectSupported);
 	Method2(void, glGenBuffers, IN, GLsizei, n, IN, GLuint *, buffers);
 	Method2(void, glBindBuffer, IN, GLenum, target, IN, GLuint, buffer);
@@ -55,6 +55,7 @@ BEGIN_VALUE_REFLECTOR(osg::BufferObject::Extensions)
 	Method1(GLboolean, glUnmapBuffer, IN, GLenum, target);
 	Method3(void, glGetBufferParameteriv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params);
 	Method3(void, glGetBufferPointerv, IN, GLenum, target, IN, GLenum, pname, IN, GLvoid **, params);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair);

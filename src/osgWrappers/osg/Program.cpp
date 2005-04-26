@@ -19,10 +19,10 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::GL2Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::GL2Extensions &, rhs);
-	Method0(void, setupGL2Extensions);
+	Method1(void, setupGL2Extensions, IN, unsigned int, contextID);
 	Method0(bool, isGlslSupported);
 	Method0(float, getGlVersion);
 	Method0(float, getLanguageVersion);
@@ -138,6 +138,7 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	ReadOnlyProperty(float, LanguageVersion);
 	WriteOnlyProperty(bool, ShaderObjectsSupported);
 	WriteOnlyProperty(bool, VertexShaderSupported);
+	WriteOnlyProperty(unsigned int, upGL2Extensions);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList);

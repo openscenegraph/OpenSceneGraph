@@ -58,13 +58,14 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::TextureCubeMap::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::TextureCubeMap::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setCubeMapSupported, IN, bool, flag);
 	Method0(bool, isCubeMapSupported);
 	WriteOnlyProperty(bool, CubeMapSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap::SubloadCallback)

@@ -48,15 +48,16 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::BlendEquation::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::BlendEquation::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setBlendEquationSupported, IN, bool, flag);
 	Method0(bool, isBlendEquationSupported);
 	Method1(void, setBlendEquationProc, IN, void *, ptr);
 	Method1(void, glBlendEquation, IN, GLenum, mode);
 	WriteOnlyProperty(void *, BlendEquationProc);
 	WriteOnlyProperty(bool, BlendEquationSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

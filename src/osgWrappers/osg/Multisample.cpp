@@ -48,10 +48,10 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Multisample::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::Multisample::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::Multisample::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setMultisampleSupported, IN, bool, flag);
 	Method1(void, setMultisampleFilterHintSupported, IN, bool, flag);
 	Method0(bool, isMultisampleSupported);
@@ -61,5 +61,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Multisample::Extensions)
 	WriteOnlyProperty(bool, MultisampleFilterHintSupported);
 	WriteOnlyProperty(bool, MultisampleSupported);
 	WriteOnlyProperty(void *, SampleCoverageProc);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

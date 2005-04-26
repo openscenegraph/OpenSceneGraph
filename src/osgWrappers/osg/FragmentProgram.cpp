@@ -57,10 +57,10 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::FragmentProgram::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::FragmentProgram::Extensions &, rhs);
-	Method0(void, setupGLExtenions);
+	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	Method1(void, setFragmentProgramSupported, IN, bool, flag);
 	Method0(bool, isFragmentProgramSupported);
 	Method2(void, glBindProgram, IN, GLenum, target, IN, GLuint, id);
@@ -69,6 +69,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	Method4(void, glProgramString, IN, GLenum, target, IN, GLenum, format, IN, GLsizei, len, IN, const void *, string);
 	Method3(void, glProgramLocalParameter4fv, IN, GLenum, target, IN, GLuint, index, IN, const GLfloat *, params);
 	WriteOnlyProperty(bool, FragmentProgramSupported);
+	WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::Matrix >);

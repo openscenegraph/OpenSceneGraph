@@ -143,10 +143,10 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	BaseType(osg::Referenced);
-	Constructor0();
+	Constructor1(IN, unsigned int, contextID);
 	Constructor1(IN, const osg::Texture::Extensions &, rhs);
 	Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs);
-	Method0(void, setupGLExtensions);
+	Method1(void, setupGLExtensions, IN, unsigned int, contextID);
 	Method1(void, setMultiTexturingSupported, IN, bool, flag);
 	Method0(bool, isMultiTexturingSupported);
 	Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag);
@@ -194,6 +194,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	WriteOnlyProperty(bool, TextureEdgeClampSupported);
 	WriteOnlyProperty(bool, TextureFilterAnisotropicSupported);
 	WriteOnlyProperty(bool, TextureMirroredRepeatSupported);
+	WriteOnlyProperty(unsigned int, upGLExtensions);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Texture::TextureObject)

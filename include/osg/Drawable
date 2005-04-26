@@ -702,6 +702,7 @@ class OSG_EXPORT Drawable : public Object
         ParentList _parents;
         friend class Node;
         friend class Geode;
+        friend class StateSet;
 
         ref_ptr<StateSet>       _stateset;
 
@@ -720,7 +721,15 @@ class OSG_EXPORT Drawable : public Object
         mutable GLObjectList    _vboList;
 
         ref_ptr<UpdateCallback> _updateCallback;
+        unsigned int _numChildrenRequiringUpdateTraversal;
+        void setNumChildrenRequiringUpdateTraversal(unsigned int num);
+        unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
+
         ref_ptr<EventCallback>  _eventCallback;
+        unsigned int _numChildrenRequiringEventTraversal;
+        void setNumChildrenRequiringEventTraversal(unsigned int num);
+        unsigned int getNumChildrenRequiringEventTraversal() const { return _numChildrenRequiringEventTraversal; }
+
         ref_ptr<CullCallback>   _cullCallback;
         ref_ptr<DrawCallback>   _drawCallback;
 };

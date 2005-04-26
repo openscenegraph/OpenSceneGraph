@@ -147,7 +147,10 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
     _binNum = rhs._binNum;
     _binName = rhs._binName;
 
+    _updateCallback = rhs._updateCallback;
     _numChildrenRequiringUpdateTraversal = rhs._numChildrenRequiringUpdateTraversal;
+
+    _eventCallback = rhs._eventCallback;
     _numChildrenRequiringEventTraversal = rhs._numChildrenRequiringEventTraversal;
 
 }
@@ -1537,7 +1540,7 @@ void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
                 osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
                 if (drawable) 
                 {
-                    //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
+                    drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
                 }
                 else 
                 {
@@ -1582,7 +1585,7 @@ void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
                 osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
                 if (drawable) 
                 {
-                    //drawable->setNumChildrenRequiringEventTraversal(drawable->getNumChildrenRequiringEventTraversal()+delta);
+                    drawable->setNumChildrenRequiringEventTraversal(drawable->getNumChildrenRequiringEventTraversal()+delta);
                 }
                 else 
                 {

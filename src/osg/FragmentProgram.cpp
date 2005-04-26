@@ -207,7 +207,7 @@ static BufferedExtensions s_extensions;
 
 FragmentProgram::Extensions* FragmentProgram::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -216,9 +216,9 @@ void FragmentProgram::setExtensions(unsigned int contextID,Extensions* extension
     s_extensions[contextID] = extensions;
 }
 
-FragmentProgram::Extensions::Extensions()
+FragmentProgram::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 FragmentProgram::Extensions::Extensions(const Extensions& rhs):
@@ -245,9 +245,9 @@ void FragmentProgram::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 }
 
-void FragmentProgram::Extensions::setupGLExtenions()
+void FragmentProgram::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isFragmentProgramSupported = isGLExtensionSupported("GL_ARB_fragment_program");
+    _isFragmentProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
 
     _glBindProgram = osg::getGLExtensionFuncPtr("glBindProgramARB");
     _glGenPrograms = osg::getGLExtensionFuncPtr("glGenProgramsARB");

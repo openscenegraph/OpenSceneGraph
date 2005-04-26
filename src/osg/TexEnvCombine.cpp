@@ -12,6 +12,7 @@
 */
 #include <osg/GLExtensions>
 #include <osg/TexEnvCombine>
+#include <osg/State>
 #include <osg/Notify>
 
 using namespace osg;
@@ -42,19 +43,21 @@ TexEnvCombine::~TexEnvCombine()
 {
 }
 
-void TexEnvCombine::apply(State&) const
+void TexEnvCombine::apply(State& state) const
 {
+    unsigned int contextID = state.getContextID();
+
     static bool s_isTexEnvCombineSupported =
-        isGLExtensionSupported("GL_ARB_texture_env_combine");
+        isGLExtensionSupported(contextID,"GL_ARB_texture_env_combine");
 
     static bool s_isTexEnvCrossbarSupported =
-        isGLExtensionSupported("GL_ARB_texture_env_crossbar");
+        isGLExtensionSupported(contextID,"GL_ARB_texture_env_crossbar");
 
     static bool s_isNVTexEnvCrossbarSupported =
-        isGLExtensionSupported("GL_NV_texture_env_combine4");
+        isGLExtensionSupported(contextID,"GL_NV_texture_env_combine4");
 
     static bool s_isTexEnvDot3Supported = 
-        isGLExtensionSupported("GL_ARB_texture_env_dot3");
+        isGLExtensionSupported(contextID,"GL_ARB_texture_env_dot3");
 
 
     bool needsTexEnvDot3 = (_combine_RGB==DOT3_RGB) ||

@@ -123,13 +123,13 @@ class OSG_EXPORT TextureCubeMap : public Texture
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
-                Extensions();
+                Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions();
+                void setupGLExtenions(unsigned int contextID);
 
                 void setCubeMapSupported(bool flag) { _isCubeMapSupported=flag; }
                 bool isCubeMapSupported() const { return _isCubeMapSupported; }

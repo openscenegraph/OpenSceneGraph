@@ -208,7 +208,7 @@ static BufferedExtensions s_extensions;
 
 VertexProgram::Extensions* VertexProgram::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -217,9 +217,9 @@ void VertexProgram::setExtensions(unsigned int contextID,Extensions* extensions)
     s_extensions[contextID] = extensions;
 }
 
-VertexProgram::Extensions::Extensions()
+VertexProgram::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 VertexProgram::Extensions::Extensions(const Extensions& rhs):
@@ -246,9 +246,9 @@ void VertexProgram::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 }
 
-void VertexProgram::Extensions::setupGLExtenions()
+void VertexProgram::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isVertexProgramSupported = isGLExtensionSupported("GL_ARB_vertex_program");
+    _isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
 
     _glBindProgram = osg::getGLExtensionFuncPtr("glBindProgramARB");
     _glGenPrograms = osg::getGLExtensionFuncPtr("glGenProgramsARB");

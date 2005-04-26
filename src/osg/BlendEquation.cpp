@@ -58,7 +58,7 @@ static BufferedExtensions s_extensions;
 
 BlendEquation::Extensions* BlendEquation::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -68,9 +68,9 @@ void BlendEquation::setExtensions(unsigned int contextID,Extensions* extensions)
 }
 
 
-BlendEquation::Extensions::Extensions()
+BlendEquation::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 BlendEquation::Extensions::Extensions(const Extensions& rhs):
@@ -85,9 +85,9 @@ void BlendEquation::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glBlendEquation)           _glBlendEquation = 0;
 }
 
-void BlendEquation::Extensions::setupGLExtenions()
+void BlendEquation::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isBlendEquationSupported = isGLExtensionSupported("GL_EXT_blend_equation") ||
+    _isBlendEquationSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_equation") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
 
     _glBlendEquation = getGLExtensionFuncPtr("glBlendEquation", "glBlendEquationEXT");

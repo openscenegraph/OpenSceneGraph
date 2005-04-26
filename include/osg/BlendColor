@@ -70,13 +70,13 @@ class OSG_EXPORT BlendColor : public StateAttribute
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
-                Extensions();
+                Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions();
+                void setupGLExtenions(unsigned int contextID);
 
                 void setBlendColorSupported(bool flag) { _isBlendColorSupported=flag; }
                 bool isBlendColorSupported() const { return _isBlendColorSupported; }

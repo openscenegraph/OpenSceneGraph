@@ -383,7 +383,7 @@ static BufferedExtensions s_extensions;
 
 Texture3D::Extensions* Texture3D::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -396,9 +396,9 @@ void Texture3D::setExtensions(unsigned int contextID,Extensions* extensions)
 #define GL_MAX_3D_TEXTURE_SIZE 0x8073
 #endif
 
-Texture3D::Extensions::Extensions()
+Texture3D::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 Texture3D::Extensions::Extensions(const Extensions& rhs):
@@ -428,9 +428,9 @@ void Texture3D::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._gluBuild3DMipmaps)                    _gluBuild3DMipmaps = 0;
 }
 
-void Texture3D::Extensions::setupGLExtenions()
+void Texture3D::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isTexture3DFast = isGLExtensionSupported("GL_EXT_texture3D");
+    _isTexture3DFast = isGLExtensionSupported(contextID,"GL_EXT_texture3D");
 
     if (_isTexture3DFast) _isTexture3DSupported = true;
     else _isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;

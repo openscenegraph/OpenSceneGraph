@@ -144,13 +144,13 @@ class OSG_EXPORT BufferObject : public Object
         class OSG_EXPORT Extensions : public osg::Referenced
         {
         public:
-            Extensions();
+            Extensions(unsigned int contextID);
 
             Extensions(const Extensions& rhs);
 
             void lowestCommonDenominator(const Extensions& rhs);
 
-            void setupGLExtenions();
+            void setupGLExtenions(unsigned int contextID);
 
             bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
 

@@ -12,6 +12,7 @@
 */
 #include <osg/GLExtensions>
 #include <osg/TexEnv>
+#include <osg/State>
 
 using namespace osg;
 
@@ -26,11 +27,11 @@ TexEnv::~TexEnv()
 {
 }
 
-void TexEnv::apply(State&) const
+void TexEnv::apply(State& state) const
 {
     if (_mode==ADD)
     {
-        static bool isTexEnvAddSupported = isGLExtensionSupported("GL_ARB_texture_env_add");
+        static bool isTexEnvAddSupported = isGLExtensionSupported(state.getContextID(),"GL_ARB_texture_env_add");
         if (isTexEnvAddSupported)
             glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, ADD);
         else // fallback on OpenGL default.

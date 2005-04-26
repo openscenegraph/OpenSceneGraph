@@ -99,13 +99,13 @@ class OSG_EXPORT Multisample : public StateAttribute
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
-                Extensions();
+                Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions();
+                void setupGLExtenions(unsigned int contextID);
 
                 void setMultisampleSupported(bool flag) { _isMultisampleSupported=flag; }
                 void setMultisampleFilterHintSupported(bool flag) { _isMultisampleFilterHintSupported=flag; }

@@ -39,9 +39,9 @@ using namespace osg;
 ///////////////////////////////////////////////////////////////////////////
 // Extension function pointers for OpenGL v2.0
 
-GL2Extensions::GL2Extensions()
+GL2Extensions::GL2Extensions(unsigned int contextID)
 {
-    setupGL2Extensions();
+    setupGL2Extensions(contextID);
 }
 
 
@@ -268,15 +268,15 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
 }
 
 
-void GL2Extensions::setupGL2Extensions()
+void GL2Extensions::setupGL2Extensions(unsigned int contextID)
 {
     _glVersion = atof( (const char*)glGetString( GL_VERSION ) );
     _glslLanguageVersion = 0.0f;
 
-    _isShaderObjectsSupported = osg::isGLExtensionSupported("GL_ARB_shader_objects");
-    _isVertexShaderSupported = osg::isGLExtensionSupported("GL_ARB_vertex_shader");
-    _isFragmentShaderSupported = osg::isGLExtensionSupported("GL_ARB_fragment_shader");
-    _isLanguage100Supported = osg::isGLExtensionSupported("GL_ARB_shading_language_100");
+    _isShaderObjectsSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");
+    _isVertexShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader");
+    _isFragmentShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader");
+    _isLanguage100Supported = osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100");
 
     if( isGlslSupported() )
     {
@@ -418,7 +418,7 @@ GL2Extensions*
 GL2Extensions::Get(unsigned int contextID, bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized)
-	    s_extensions[contextID] = new GL2Extensions;
+	    s_extensions[contextID] = new GL2Extensions(contextID);
 
     return s_extensions[contextID].get();
 }

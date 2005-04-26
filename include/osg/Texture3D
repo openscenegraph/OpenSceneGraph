@@ -133,13 +133,13 @@ class OSG_EXPORT Texture3D : public Texture
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
-                Extensions();
+                Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                     
-                void setupGLExtenions();
+                void setupGLExtenions(unsigned int contextID);
 
                 void setTexture3DSupported(bool flag) { _isTexture3DSupported=flag; }
                 bool isTexture3DSupported() const { return _isTexture3DSupported; }

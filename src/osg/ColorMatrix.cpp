@@ -13,6 +13,7 @@
 #include <osg/GLExtensions>
 #include <osg/ColorMatrix>
 #include <osg/GL>
+#include <osg/State>
 
 using namespace osg;
 
@@ -25,10 +26,11 @@ ColorMatrix::~ColorMatrix()
 {
 }
 
-void ColorMatrix::apply(State&) const
+void ColorMatrix::apply(State& state) const
 {
-//    std::cout<<"applying matrix"<<_matrix<<std::endl;
-    static bool s_ARB_imaging = isGLExtensionSupported("GL_ARB_imaging");
+    unsigned int contextID = state.getContextID();
+    
+    static bool s_ARB_imaging = isGLExtensionSupported(contextID,"GL_ARB_imaging");
     if (s_ARB_imaging)
     {
         glMatrixMode( GL_COLOR );

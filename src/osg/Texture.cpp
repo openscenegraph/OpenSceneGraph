@@ -1238,7 +1238,7 @@ static BufferedExtensions s_extensions;
 
 Texture::Extensions* Texture::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -1247,9 +1247,9 @@ void Texture::setExtensions(unsigned int contextID,Extensions* extensions)
     s_extensions[contextID] = extensions;
 }
 
-Texture::Extensions::Extensions()
+Texture::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtensions();
+    setupGLExtensions(contextID);
 }
 
 Texture::Extensions::Extensions(const Extensions& rhs):
@@ -1301,31 +1301,31 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isClientStorageSupported) _isClientStorageSupported = false;
 }
 
-void Texture::Extensions::setupGLExtensions()
+void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 {
     float glVersion = atof( (const char *)glGetString( GL_VERSION ) );
     
     _isMultiTexturingSupported = ( glVersion >= 1.3 ) ||
-                                 isGLExtensionSupported("GL_ARB_multitexture") ||
-                                 isGLExtensionSupported("GL_EXT_multitexture");
-    _isTextureFilterAnisotropicSupported = isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
+                                 isGLExtensionSupported(contextID,"GL_ARB_multitexture") ||
+                                 isGLExtensionSupported(contextID,"GL_EXT_multitexture");
+    _isTextureFilterAnisotropicSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
     _isTextureCompressionARBSupported = ( glVersion >= 1.3 ) ||
-                                        isGLExtensionSupported("GL_ARB_texture_compression");
-    _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
+                                        isGLExtensionSupported(contextID,"GL_ARB_texture_compression");
+    _isTextureCompressionS3TCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc");
     _isTextureMirroredRepeatSupported = ( glVersion >= 1.4 ) || 
-                                    isGLExtensionSupported("GL_IBM_texture_mirrored_repeat") ||
-                                    isGLExtensionSupported("GL_ARB_texture_mirrored_repeat");
+                                    isGLExtensionSupported(contextID,"GL_IBM_texture_mirrored_repeat") ||
+                                    isGLExtensionSupported(contextID,"GL_ARB_texture_mirrored_repeat");
     _isTextureEdgeClampSupported = ( glVersion >= 1.2 ) ||
-                                    isGLExtensionSupported("GL_EXT_texture_edge_clamp") || 
-                                    isGLExtensionSupported("GL_SGIS_texture_edge_clamp");
+                                    isGLExtensionSupported(contextID,"GL_EXT_texture_edge_clamp") || 
+                                    isGLExtensionSupported(contextID,"GL_SGIS_texture_edge_clamp");
     _isTextureBorderClampSupported = ( glVersion >= 1.3 ) ||
-                                    isGLExtensionSupported("GL_ARB_texture_border_clamp");
+                                    isGLExtensionSupported(contextID,"GL_ARB_texture_border_clamp");
     _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
-                                  isGLExtensionSupported("GL_SGIS_generate_mipmap");
-    _isShadowSupported = isGLExtensionSupported("GL_ARB_shadow");
-    _isShadowAmbientSupported = isGLExtensionSupported("GL_ARB_shadow_ambient");
+                                  isGLExtensionSupported(contextID,"GL_SGIS_generate_mipmap");
+    _isShadowSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow");
+    _isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
 
-    _isClientStorageSupported = isGLExtensionSupported("GL_APPLE_client_storage");
+    _isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 

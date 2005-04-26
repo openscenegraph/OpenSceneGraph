@@ -752,7 +752,7 @@ static BufferedExtensions s_extensions;
 
 Drawable::Extensions* Drawable::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Drawable::Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Drawable::Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -761,9 +761,9 @@ void Drawable::setExtensions(unsigned int contextID,Extensions* extensions)
     s_extensions[contextID] = extensions;
 }
 
-Drawable::Extensions::Extensions()
+Drawable::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 Drawable::Extensions::Extensions(const Extensions& rhs):
@@ -866,14 +866,14 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._gl_get_query_objectuiv_arb) _gl_get_query_objectuiv_arb = 0;
 }
 
-void Drawable::Extensions::setupGLExtenions()
+void Drawable::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isVertexProgramSupported = isGLExtensionSupported("GL_ARB_vertex_program");
-    _isSecondaryColorSupported = isGLExtensionSupported("GL_EXT_secondary_color");
-    _isFogCoordSupported = isGLExtensionSupported("GL_EXT_fog_coord");
-    _isMultiTexSupported = isGLExtensionSupported("GL_ARB_multitexture");
-    _isOcclusionQuerySupported = osg::isGLExtensionSupported( "GL_NV_occlusion_query" );
-    _isARBOcclusionQuerySupported = osg::isGLExtensionSupported( "GL_ARB_occlusion_query" );
+    _isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
+    _isSecondaryColorSupported = isGLExtensionSupported(contextID,"GL_EXT_secondary_color");
+    _isFogCoordSupported = isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
+    _isMultiTexSupported = isGLExtensionSupported(contextID,"GL_ARB_multitexture");
+    _isOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query" );
+    _isARBOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query" );
 
     _glFogCoordfv = ((FogCoordProc)osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT"));
     _glSecondaryColor3ubv = ((SecondaryColor3ubvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT"));

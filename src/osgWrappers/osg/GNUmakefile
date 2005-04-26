@@ -119,7 +119,7 @@ CXXFILES =\
 	VertexProgram.cpp\
 	Viewport.cpp\
 
-LIBS   += -losg -losgIntrospection $(OTHER_LIBS)
+LIBS   += -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

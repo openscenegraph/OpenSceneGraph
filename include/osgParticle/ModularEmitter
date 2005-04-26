@@ -79,7 +79,7 @@ namespace osgParticle
         virtual ~ModularEmitter() {}
         ModularEmitter &operator=(const ModularEmitter &) { return *this; }
         
-        void emit(double dt);
+        virtual void emit(double dt);
         
     private:
         osg::ref_ptr<Counter> counter_;

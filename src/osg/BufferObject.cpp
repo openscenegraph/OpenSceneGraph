@@ -140,7 +140,7 @@ static BufferedExtensions s_extensions;
 
 BufferObject::Extensions* BufferObject::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new BufferObject::Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new BufferObject::Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -149,9 +149,9 @@ void BufferObject::setExtensions(unsigned int contextID,Extensions* extensions)
     s_extensions[contextID] = extensions;
 }
 
-BufferObject::Extensions::Extensions()
+BufferObject::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 BufferObject::Extensions::Extensions(const Extensions& rhs):
@@ -186,7 +186,7 @@ void BufferObject::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glGetBufferParameteriv) _glGetBufferPointerv = rhs._glGetBufferPointerv;
 }
 
-void BufferObject::Extensions::setupGLExtenions()
+void BufferObject::Extensions::setupGLExtenions(unsigned int)
 {
     _glGenBuffers = ((GenBuffersProc)osg::getGLExtensionFuncPtr("glGenBuffers","glGenBuffersARB"));
     _glBindBuffer = ((BindBufferProc)osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB"));

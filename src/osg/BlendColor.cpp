@@ -55,7 +55,7 @@ static BufferedExtensions s_extensions;
 
 BlendColor::Extensions* BlendColor::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -65,9 +65,9 @@ void BlendColor::setExtensions(unsigned int contextID,Extensions* extensions)
 }
 
 
-BlendColor::Extensions::Extensions()
+BlendColor::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 BlendColor::Extensions::Extensions(const Extensions& rhs):
@@ -82,9 +82,9 @@ void BlendColor::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glBlendColor)           _glBlendColor = 0;
 }
 
-void BlendColor::Extensions::setupGLExtenions()
+void BlendColor::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isBlendColorSupported = isGLExtensionSupported("GL_EXT_blend_color") ||
+    _isBlendColorSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
 
     _glBlendColor = getGLExtensionFuncPtr("glBlendColor", "glBlendColorEXT");

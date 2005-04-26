@@ -414,13 +414,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
-                Extensions();
+                Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtensions();
+                void setupGLExtensions(unsigned int contextID);
 
                 void setMultiTexturingSupported(bool flag) { _isMultiTexturingSupported=flag; }
                 bool isMultiTexturingSupported() const { return _isMultiTexturingSupported; }

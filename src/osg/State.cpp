@@ -778,21 +778,21 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 bool State::computeSecondaryColorSupported() const
 {
     _isSecondaryColorSupportResolved = true;
-    _isSecondaryColorSupported = osg::isGLExtensionSupported("GL_EXT_secondary_color");
+    _isSecondaryColorSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_secondary_color");
     return _isSecondaryColorSupported;
 }
 
 bool State::computeFogCoordSupported() const
 {
     _isFogCoordSupportResolved = true;
-    _isFogCoordSupported = osg::isGLExtensionSupported("GL_EXT_fog_coord");
+    _isFogCoordSupported = osg::isGLExtensionSupported(_contextID,"GL_EXT_fog_coord");
     return _isFogCoordSupported;
 }
 
 bool State::computeVertexBufferObjectSupported() const
 {
     _isVertexBufferObjectSupportResolved = true;
-    _isVertexBufferObjectSupported = osg::isGLExtensionSupported("GL_ARB_vertex_buffer_object");
+    _isVertexBufferObjectSupported = osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
     return _isVertexBufferObjectSupported;
 }
 

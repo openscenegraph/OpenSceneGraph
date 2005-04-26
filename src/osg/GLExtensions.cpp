@@ -14,7 +14,7 @@
 #include <osg/GL>
 #include <osg/GLU>
 #include <osg/Notify>
-
+#include <osg/buffered_value>
 
 #include <stdlib.h>
 #include <string.h>
@@ -24,30 +24,42 @@
 #include <vector>
 #include <set>
 
-bool osg::isGLExtensionSupported(const char *extension)
+bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
 {
     typedef std::set<std::string>  ExtensionSet;
-    static ExtensionSet s_extensionSet;
-    static const char* s_extensions = NULL;
-    if (s_extensions==NULL)
+    static osg::buffered_object<ExtensionSet> s_extensionSetList;
+    static osg::buffered_object<std::string> s_rendererList;
+    static osg::buffered_value<int> s_initializedList;
+
+    ExtensionSet& extensionSet = s_extensionSetList[contextID];
+    std::string& rendererString = s_rendererList[contextID];
+
+    // if not already set up, initialize all the per graphic context values.
+    if (!s_initializedList[contextID])
     {
+        s_initializedList[contextID] = 1;
+    
+        // set up the renderer
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        rendererString = renderer ? (const char*)renderer : "";
+
         // get the extension list from OpenGL.
-        s_extensions = (const char*)glGetString(GL_EXTENSIONS);
-        if (s_extensions==NULL) return false;
+        const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
+        if (extensions==NULL) return false;
 
         // insert the ' ' delimiated extensions words into the extensionSet.
-        const char *startOfWord = s_extensions;
+        const char *startOfWord = extensions;
         const char *endOfWord;
         while ((endOfWord = strchr(startOfWord,' '))!=NULL)
         {
-            s_extensionSet.insert(std::string(startOfWord,endOfWord));
+            extensionSet.insert(std::string(startOfWord,endOfWord));
             startOfWord = endOfWord+1;
         }
-        if (*startOfWord!=0) s_extensionSet.insert(std::string(startOfWord));
+        if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
         
         osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
-        for(ExtensionSet::iterator itr=s_extensionSet.begin();
-            itr!=s_extensionSet.end();
+        for(ExtensionSet::iterator itr=extensionSet.begin();
+            itr!=extensionSet.end();
             ++itr)
         {
             osg::notify(INFO)<<"    "<<*itr<<std::endl;
@@ -56,20 +68,17 @@ bool osg::isGLExtensionSupported(const char *extension)
     }
 
     // true if extension found in extensionSet.
-    bool result = s_extensionSet.find(extension)!=s_extensionSet.end();
+    bool result = extensionSet.find(extension)!=extensionSet.end();
 
+    // now see if extension is in the extension disabled list
     bool extensionDisabled = false;
-
     if (result)
     {
 
         const std::string& disableString = getGLExtensionDisableString();
         if (!disableString.empty())
         {
-        
-            static const GLubyte* s_renderer = glGetString(GL_RENDERER);
-            static std::string s_rendererString(s_renderer?(const char*)s_renderer:"");
-            
+                    
             std::string::size_type pos=0;
             while ( pos!=std::string::npos && (pos=disableString.find(extension,pos))!=std::string::npos )
             {
@@ -103,7 +112,7 @@ bool osg::isGLExtensionSupported(const char *extension)
                     break;
                 }
                 
-                if (s_rendererString.find(renderer)!=std::string::npos)
+                if (rendererString.find(renderer)!=std::string::npos)
                 {
                     extensionDisabled = true;
                     break;
@@ -141,30 +150,42 @@ std::string& osg::getGLExtensionDisableString()
 }
 
 
-bool osg::isGLUExtensionSupported(const char *extension)
+bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
 {
     typedef std::set<std::string>  ExtensionSet;
-    static ExtensionSet s_extensionSet;
-    static const char* s_extensions = NULL;
-    if (s_extensions==NULL)
+    static osg::buffered_object<ExtensionSet> s_extensionSetList;
+    static osg::buffered_object<std::string> s_rendererList;
+    static osg::buffered_value<int> s_initializedList;
+
+    ExtensionSet& extensionSet = s_extensionSetList[contextID];
+    std::string& rendererString = s_rendererList[contextID];
+
+    // if not already set up, initialize all the per graphic context values.
+    if (!s_initializedList[contextID])
     {
+        s_initializedList[contextID] = 1;
+    
+        // set up the renderer
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        rendererString = renderer ? (const char*)renderer : "";
+
         // get the extension list from OpenGL.
-        s_extensions = (const char*)gluGetString(GLU_EXTENSIONS);
-        if (s_extensions==NULL) return false;
+        const char* extensions = (const char*)gluGetString(GLU_EXTENSIONS);
+        if (extensions==NULL) return false;
 
         // insert the ' ' delimiated extensions words into the extensionSet.
-        const char *startOfWord = s_extensions;
+        const char *startOfWord = extensions;
         const char *endOfWord;
         while ((endOfWord = strchr(startOfWord,' '))!=NULL)
         {
-            s_extensionSet.insert(std::string(startOfWord,endOfWord));
+            extensionSet.insert(std::string(startOfWord,endOfWord));
             startOfWord = endOfWord+1;
         }
-        if (*startOfWord!=0) s_extensionSet.insert(std::string(startOfWord));
+        if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
         
         osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
-        for(ExtensionSet::iterator itr=s_extensionSet.begin();
-            itr!=s_extensionSet.end();
+        for(ExtensionSet::iterator itr=extensionSet.begin();
+            itr!=extensionSet.end();
             ++itr)
         {
             osg::notify(INFO)<<"    "<<*itr<<std::endl;
@@ -173,7 +194,7 @@ bool osg::isGLUExtensionSupported(const char *extension)
     }
 
     // true if extension found in extensionSet.
-    bool result = s_extensionSet.find(extension)!=s_extensionSet.end();
+    bool result = extensionSet.find(extension)!=extensionSet.end();
 
     if (result) osg::notify(INFO)<<"OpenGL utility library extension '"<<extension<<"' is supported."<<std::endl;
     else osg::notify(INFO)<<"OpenGL utility library extension '"<<extension<<"' is not supported."<<std::endl;

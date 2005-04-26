@@ -20,7 +20,7 @@ void Technique::addPass(osg::StateSet *ss)
     }
 }
 
-bool Technique::validate(osg::State &) const
+bool Technique::validate(osg::State& state) const
 {
     typedef std::vector<std::string> String_list;
     String_list extensions;
@@ -28,7 +28,7 @@ bool Technique::validate(osg::State &) const
     getRequiredExtensions(extensions);
 
     for (String_list::const_iterator i=extensions.begin(); i!=extensions.end(); ++i) {
-        if (!osg::isGLExtensionSupported(i->c_str())) return false;
+        if (!osg::isGLExtensionSupported(state.getContextID(),i->c_str())) return false;
     }
 
     return true;

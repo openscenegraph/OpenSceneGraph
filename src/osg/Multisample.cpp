@@ -57,7 +57,7 @@ static BufferedExtensions s_extensions;
 
 Multisample::Extensions* Multisample::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -67,9 +67,9 @@ void Multisample::setExtensions(unsigned int contextID,Extensions* extensions)
 }
 
 
-Multisample::Extensions::Extensions()
+Multisample::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 Multisample::Extensions::Extensions(const Extensions& rhs):
@@ -86,10 +86,10 @@ void Multisample::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glSampleCoverage)        _glSampleCoverage = 0;
 }
 
-void Multisample::Extensions::setupGLExtenions()
+void Multisample::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isMultisampleSupported = isGLExtensionSupported("GL_ARB_multisample");
-    _isMultisampleFilterHintSupported = isGLExtensionSupported("GL_NV_multisample_filter_hint");
+    _isMultisampleSupported = isGLExtensionSupported(contextID,"GL_ARB_multisample");
+    _isMultisampleFilterHintSupported = isGLExtensionSupported(contextID,"GL_NV_multisample_filter_hint");
 
     _glSampleCoverage = getGLExtensionFuncPtr("glSampleCoverageARB");
 }

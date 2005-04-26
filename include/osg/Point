@@ -83,13 +83,13 @@ class OSG_EXPORT Point : public StateAttribute
         class OSG_EXPORT Extensions : public osg::Referenced
         {
             public:
-                Extensions();
+                Extensions(unsigned int contextID);
 
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions();
+                void setupGLExtenions(unsigned int contextID);
 
                 void setPointParametersSupported(bool flag) { _isPointParametersSupported=flag; }
                 bool isPointParametersSupported() const { return _isPointParametersSupported; }

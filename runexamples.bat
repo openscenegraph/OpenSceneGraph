@@ -64,7 +64,7 @@ echo osglight
 osglight glider.osg
 
 echo osglightpoint
-osglightpoint
+#osglightpoint
 
 echo osglogo
 osglogo

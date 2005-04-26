@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/GLExtensions>
+#include <osg/State>
 #include <osg/Fog>
 
 using namespace osg;
@@ -34,7 +35,7 @@ Fog::~Fog()
 {
 }
 
-void Fog::apply(State&) const
+void Fog::apply(State& state) const
 {
     glFogi( GL_FOG_MODE,     _mode );
     glFogf( GL_FOG_DENSITY,  _density );
@@ -42,7 +43,7 @@ void Fog::apply(State&) const
     glFogf( GL_FOG_END,      _end );
     glFogfv( GL_FOG_COLOR,    (GLfloat*)_color.ptr() );
     
-    static bool fogCoordExtensionSuppoted = osg::isGLExtensionSupported("GL_EXT_fog_coord");
+    static bool fogCoordExtensionSuppoted = osg::isGLExtensionSupported(state.getContextID(),"GL_EXT_fog_coord");
     if (fogCoordExtensionSuppoted)
     {
         glFogi(GL_FOG_COORDINATE_SOURCE,_fogCoordinateSource);

@@ -93,7 +93,7 @@ static BufferedExtensions s_extensions;
 
 Point::Extensions* Point::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -102,9 +102,9 @@ void Point::setExtensions(unsigned int contextID,Extensions* extensions)
     s_extensions[contextID] = extensions;
 }
 
-Point::Extensions::Extensions()
+Point::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 Point::Extensions::Extensions(const Extensions& rhs):
@@ -120,12 +120,12 @@ void Point::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glPointParameterfv)          _glPointParameterfv = 0;
 }
 
-void Point::Extensions::setupGLExtenions()
+void Point::Extensions::setupGLExtenions(unsigned int contextID)
 {
     _isPointParametersSupported = strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0 ||
-                                  isGLExtensionSupported("GL_ARB_point_parameters") ||
-                                  isGLExtensionSupported("GL_EXT_point_parameters") ||
-                                  isGLExtensionSupported("GL_SGIS_point_parameters");
+                                  isGLExtensionSupported(contextID,"GL_ARB_point_parameters") ||
+                                  isGLExtensionSupported(contextID,"GL_EXT_point_parameters") ||
+                                  isGLExtensionSupported(contextID,"GL_SGIS_point_parameters");
                                   
     _glPointParameterf = getGLExtensionFuncPtr("glPointParameterf", "glPointParameterfARB");
     if (!_glPointParameterf) _glPointParameterf = getGLExtensionFuncPtr("glPointParameterfEXT", "glPointParameterfSGIS");

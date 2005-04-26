@@ -492,13 +492,13 @@ class OSG_EXPORT Drawable : public Object
         class OSG_EXPORT Extensions : public osg::Referenced
         {
         public:
-            Extensions();
+            Extensions(unsigned int contextID);
 
             Extensions(const Extensions& rhs);
 
             void lowestCommonDenominator(const Extensions& rhs);
 
-            void setupGLExtenions();
+            void setupGLExtenions(unsigned int contextID);
 
             void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
             bool isVertexProgramSupported() const { return _isVertexProgramSupported; }

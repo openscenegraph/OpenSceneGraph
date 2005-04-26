@@ -37,12 +37,12 @@ class Shader;
 class OSG_EXPORT GL2Extensions : public osg::Referenced
 {
     public:
-	GL2Extensions();
+	GL2Extensions(unsigned int contextID);
 	GL2Extensions(const GL2Extensions& rhs);
 
 	void lowestCommonDenominator(const GL2Extensions& rhs);
 
-	void setupGL2Extensions();
+	void setupGL2Extensions(unsigned int contextID);
 
 	/** Does the GL driver support OpenGL Shading Language? */
 	bool isGlslSupported() const;

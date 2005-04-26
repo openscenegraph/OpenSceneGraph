@@ -308,7 +308,7 @@ static BufferedExtensions s_extensions;
 
 TextureCubeMap::Extensions* TextureCubeMap::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
-    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
     return s_extensions[contextID].get();
 }
 
@@ -317,9 +317,9 @@ void TextureCubeMap::setExtensions(unsigned int contextID,Extensions* extensions
     s_extensions[contextID] = extensions;
 }
 
-TextureCubeMap::Extensions::Extensions()
+TextureCubeMap::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions();
+    setupGLExtenions(contextID);
 }
 
 TextureCubeMap::Extensions::Extensions(const Extensions& rhs):
@@ -333,9 +333,9 @@ void TextureCubeMap::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isCubeMapSupported) _isCubeMapSupported = false;
 }
 
-void TextureCubeMap::Extensions::setupGLExtenions()
+void TextureCubeMap::Extensions::setupGLExtenions(unsigned int contextID)
 {
-    _isCubeMapSupported = isGLExtensionSupported("GL_ARB_texture_cube_map") ||
-                          isGLExtensionSupported("GL_EXT_texture_cube_map") ||
+    _isCubeMapSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
+                          isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
                           strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0;;
 }

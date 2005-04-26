@@ -19,6 +19,8 @@
 #include <osg/Program>
 #include <osg/StateSet>
 
+#include <algorithm>
+
 using namespace osg;
 
 ///////////////////////////////////////////////////////////////////////////

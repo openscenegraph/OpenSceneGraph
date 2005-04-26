@@ -30,6 +30,7 @@
 #include <osg/TextureRectangle>
 
 #include <set>
+#include <algorithm>
 
 using namespace osg;
 

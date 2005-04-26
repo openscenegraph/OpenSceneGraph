@@ -758,21 +758,27 @@ void Text::computePositions(unsigned int contextID) const
 
             float pixelSizeVector_w = M(3,2)*P23 + M(3,3)*P33;
 
-            float pixelSize = (_characterHeight*sqrtf(scale_00.length2()+scale_10.length2()))/(pixelSizeVector_w*0.701f);
+            float pixelSizeVert=(_characterHeight*sqrtf(scale_10.length2()))/(pixelSizeVector_w*0.701f);
+            float pixelSizeHori=(_characterHeight/_characterAspectRatio*sqrtf(scale_00.length2()))/(pixelSizeVector_w*0.701f);
 
             // avoid nasty math by preventing a divide by zero
-            if(pixelSize == 0.0f)
-            {
-                pixelSize = 1.0f;
-            }
+            if (pixelSizeVert == 0.0f)
+               pixelSizeVert= 1.0f;
+            if (pixelSizeHori == 0.0f)
+               pixelSizeHori= 1.0f;
+
             if (_characterSizeMode==SCREEN_COORDS)
             {
-                float scale_font = _characterHeight/pixelSize;
-                matrix.postMult(osg::Matrix::scale(scale_font, scale_font,1.0f));
+                float scale_font_vert=_characterHeight/pixelSizeVert;
+                float scale_font_hori=_characterHeight/_characterAspectRatio/pixelSizeHori;
+
+                if (P10<0)
+                   scale_font_vert=-scale_font_vert;
+                matrix.postMult(osg::Matrix::scale(scale_font_hori, scale_font_vert,1.0f));
             }
-            else if (pixelSize>_fontHeight)
+            else if (pixelSizeVert>_fontHeight)
             {
-                float scale_font = _fontHeight/pixelSize;
+                float scale_font = _fontHeight/pixelSizeVert;
                 matrix.postMult(osg::Matrix::scale(scale_font, scale_font,1.0f));
             }
 

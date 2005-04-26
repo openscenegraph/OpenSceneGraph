@@ -2625,7 +2625,11 @@ open_plugin(video_driver_class_t* vo_class, const void *vo_visual)
 	this->update_visual                  = rgbout_update_visual;
 
 
-	this->accel = xine_mm_accel();
+	this->accel = xine_mm_accel(); 
+        
+        // from Ruben,
+        // disable MMXEXT since its causing a crash at present under P4's.
+        this->accel &= ~MM_MMXEXT;
 
 	{
 		uint32_t i = (sizeof(convert_methods) /

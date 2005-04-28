@@ -12,6 +12,7 @@
 */
 
 #include "FreeTypeFont.h"
+#include "FreeTypeLibrary.h"
 
 #include <osg/Notify>  
 #include <osgDB/WriteFile>
@@ -24,11 +25,20 @@ FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face):
 
 FreeTypeFont::~FreeTypeFont()
 {
-   if(_face)
-   {
-      FT_Done_Face(_face);
-      _face = 0;
-   }
+    if(_face)
+    {
+        FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
+        if (freeTypeLibrary)
+        {
+            // remove myself from the local regsitry to ensure that
+            // not dangling pointers remain
+            freeTypeLibrary->removeFontImplmentation(this);
+        
+            // free the freetype font face itself
+            FT_Done_Face(_face);
+            _face = 0;
+        }
+    }
 }
 
 void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)

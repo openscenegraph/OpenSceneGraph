@@ -16,10 +16,9 @@
 
 #include "FreeTypeFont.h"
 #include <osgText/Font>
+#include <set>
 
-//#define USE_LOCAL_CACHE
-
-class FreeTypeLibrary
+class FreeTypeLibrary : public osg::Referenced
 {
 public:
 
@@ -30,6 +29,8 @@ public:
     static FreeTypeLibrary* instance();
 
     osgText::Font* getFont(const std::string& fontfile,unsigned int index=0);
+    
+    void removeFontImplmentation(FreeTypeFont* fontImpl) { _fontImplementationSet.erase(fontImpl); }
 
 protected:
 
@@ -37,14 +38,11 @@ protected:
       * library is via the singleton instance method.*/
     FreeTypeLibrary();
 
-    typedef std::map< std::string, osg::ref_ptr<osgText::Font> > FontMap;
+    typedef std::set< FreeTypeFont* > FontImplementationSet;
 
 
-    FT_Library  _ftlibrary;
-
-#ifdef USE_LOCAL_CACHE
-    FontMap     _fontMap;
-#endif
+    FT_Library              _ftlibrary;
+    FontImplementationSet   _fontImplementationSet;
 
 };
 

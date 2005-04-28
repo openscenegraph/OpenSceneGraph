@@ -194,17 +194,6 @@ void SceneView::update()
 
 osg::Matrixd SceneView::computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const
 {
-    double fusionDistance = _displaySettings->getScreenDistance();
-    switch(_fusionDistanceMode)
-    {
-        case(USE_FUSION_DISTANCE_VALUE):
-            fusionDistance = _fusionDistanceValue;
-            break;
-        case(PROPORTIONAL_TO_SCREEN_DISTANCE):
-            fusionDistance *= _fusionDistanceValue;
-            break;
-    }
-
     double iod = _displaySettings->getEyeSeparation();
     double sd = _displaySettings->getScreenDistance();
     double scale_x = 1.0;
@@ -270,17 +259,6 @@ osg::Matrixd SceneView::computeLeftEyeViewImplementation(const osg::Matrixd& vie
 
 osg::Matrixd SceneView::computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const
 {
-    double fusionDistance = _displaySettings->getScreenDistance();
-    switch(_fusionDistanceMode)
-    {
-        case(USE_FUSION_DISTANCE_VALUE):
-            fusionDistance = _fusionDistanceValue;
-            break;
-        case(PROPORTIONAL_TO_SCREEN_DISTANCE):
-            fusionDistance *= _fusionDistanceValue;
-            break;
-    }
-
     double iod = _displaySettings->getEyeSeparation();
     double sd = _displaySettings->getScreenDistance();
     double scale_x = 1.0;

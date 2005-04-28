@@ -608,7 +608,8 @@ ifeq ($(OS),MINGW)
 
   FREETYPE_LIB      = -lfreetype
 
-  GDAL_LIB          =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
+  GDAL_INCLUDES     = 
+  GDAL_LIBS         =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
 
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`

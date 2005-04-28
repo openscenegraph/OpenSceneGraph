@@ -1,6 +1,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
+#include <osg/Notify>
 
 #include "FreeTypeLibrary.h"
 
@@ -30,9 +31,14 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             
-            osgText::Font* font = FreeTypeLibrary::instance()->getFont(fileName,0);
-            
-            return font;
+            FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
+            if (!freeTypeLibrary) 
+            {
+                osg::notify(osg::WARN)<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
+
+            return freeTypeLibrary->getFont(fileName,0);
         }
 };
 

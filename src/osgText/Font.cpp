@@ -247,11 +247,11 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
 
         glyphTexture = new GlyphTexture;
         
-        osg::notify(osg::NOTICE)<<"    Creating new GlyphTexture "<<glyphTexture<<"& StateSet "<<stateset<<std::endl;
-
         static int numberOfTexturesAllocated = 0;
         ++numberOfTexturesAllocated;
-        osg::notify(osg::NOTICE) << "    " << this<< "  numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
+
+        osg::notify(osg::INFO)<<"    Creating new GlyphTexture "<<glyphTexture<<"& StateSet "<<stateset<<std::endl;
+        osg::notify(osg::INFO)<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);

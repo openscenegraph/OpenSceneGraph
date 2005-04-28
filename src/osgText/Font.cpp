@@ -86,8 +86,8 @@ Font::Font(FontImplementation* implementation):
     _width(16),
     _height(16),
     _margin(2),
-    _textureWidthHint(256),
-    _textureHeightHint(256),
+    _textureWidthHint(512),
+    _textureHeightHint(512),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
     _magFilterHint(osg::Texture::LINEAR)
 {
@@ -247,11 +247,11 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
 
         glyphTexture = new GlyphTexture;
         
-        //std::cout<<"    Creating new GlyphTexture "<<glyphTexture<<"& StateSet "<<stateset<<std::endl;
+        osg::notify(osg::NOTICE)<<"    Creating new GlyphTexture "<<glyphTexture<<"& StateSet "<<stateset<<std::endl;
 
         static int numberOfTexturesAllocated = 0;
         ++numberOfTexturesAllocated;
-        //std::cout << "    " << this<< "  numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
+        osg::notify(osg::NOTICE) << "    " << this<< "  numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);

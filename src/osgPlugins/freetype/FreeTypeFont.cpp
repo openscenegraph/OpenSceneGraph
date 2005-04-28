@@ -94,41 +94,6 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 
     osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph;
     
-
-#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
-    unsigned int dataSize = width*height*2;
-    unsigned char* data = new unsigned char[dataSize];
-    
-
-    // clear the image to zeros.
-    for(unsigned char* p=data;p<data+dataSize;) { *p++ = 255; *p++ = 0; }
-
-    glyph->setImage(width,height,1,
-                    GL_LUMINANCE_ALPHA,
-                    GL_LUMINANCE_ALPHA,GL_UNSIGNED_BYTE,
-                    data,
-                    osg::Image::USE_NEW_DELETE,
-                    1);
-    
-    glyph->setInternalTextureFormat(GL_LUMINANCE_ALPHA);
-
-    // skip the top margin        
-    data += (margin*width)*2;
-
-    // copy image across to osgText::Glyph image.     
-    for(int r=sourceHeight-1;r>=0;--r)
-    {
-        data+=2*margin; // skip the left margin
-
-        unsigned char* ptr = buffer+r*pitch;
-        for(unsigned int c=0;c<sourceWidth;++c,++ptr)
-        {
-            (*data++)=255;
-            (*data++)=*ptr;
-        }
-        data+=2*margin; // skip the right margin.
-    }
-#else    
     unsigned int dataSize = width*height;
     unsigned char* data = new unsigned char[dataSize];
     
@@ -160,7 +125,6 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
         }
         data+=margin; // skip the right margin.
     }
-#endif
 
 
     FT_Glyph_Metrics* metrics = &(glyphslot->metrics);

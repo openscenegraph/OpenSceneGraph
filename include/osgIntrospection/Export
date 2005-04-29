@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+//osgIntrospection - Copyright (C) 2005 Marco Jez
 
 #ifndef OSGINTROSPECTION_EXPORTHDR
 #define OSGINTROSPECTION_EXPORTHDR 1

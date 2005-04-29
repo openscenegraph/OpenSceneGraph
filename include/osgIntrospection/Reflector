@@ -626,8 +626,8 @@ namespace osgIntrospection
 
                 switch (_i)
                 {                
-                case 0: ctr.first = variant_cast<const typename T::first_Type& >(v); break;
-                case 1: ctr.second = variant_cast<const typename T::second_Type& >(v); break;
+                case 0: ctr.first = variant_cast<const typename T::first_type& >(v); break;
+                case 1: ctr.second = variant_cast<const typename T::second_type& >(v); break;
                 }
             }
 

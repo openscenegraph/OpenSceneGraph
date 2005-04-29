@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 //osgIntrospection - Copyright (C) 2005 Marco Jez
-#ifndef OSGINTROSPECTION__type
-#define OSGINTROSPECTION__type
+#ifndef OSGINTROSPECTION_TYPE
+#define OSGINTROSPECTION_TYPE
 
 #include <osgIntrospection/Export>
 #include <osgIntrospection/Exceptions>

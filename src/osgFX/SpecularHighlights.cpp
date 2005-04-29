@@ -17,22 +17,22 @@ namespace
     public:
         AutoTextureMatrix()
         :    osg::StateAttribute(),
-            lightnum_(0),
-            active_(false)
+            _lightnum(0),
+            _active(false)
         {
         }
 
-        AutoTextureMatrix(const AutoTextureMatrix &copy, const osg::CopyOp &copyop)
+        AutoTextureMatrix(const AutoTextureMatrix& copy, const osg::CopyOp& copyop)
         :    osg::StateAttribute(copy, copyop),
-            lightnum_(copy.lightnum_),
-            active_(copy.active_)
+            _lightnum(copy._lightnum),
+            _active(copy._active)
         {
         }
 
         AutoTextureMatrix(int lightnum, bool active = true)
         :    osg::StateAttribute(),
-            lightnum_(lightnum),
-            active_(active)
+            _lightnum(lightnum),
+            _active(active)
         {
         }
 
@@ -43,23 +43,23 @@ namespace
         int compare(const osg::StateAttribute &sa) const
         {
             COMPARE_StateAttribute_Types(AutoTextureMatrix, sa);
-            if (lightnum_ < rhs.lightnum_) return -1;
-            if (lightnum_ > rhs.lightnum_) return 1;
+            if (_lightnum < rhs._lightnum) return -1;
+            if (_lightnum > rhs._lightnum) return 1;
             return 0;
         }
 
-        void apply(osg::State &state) const
+        void apply(osg::State& state) const
         {
             glMatrixMode(GL_TEXTURE);
 
-            if (active_) {
+            if (_active) {
                 osg::Matrix M = state.getInitialViewMatrix();
                 M(3, 0) = 0; M(3, 1) = 0; M(3, 2) = 0;
                 M(3, 3) = 1; M(0, 3) = 0; M(1, 3) = 0;
                 M(2, 3) = 0;
 
                 osg::Vec4 lightvec;
-                glGetLightfv(GL_LIGHT0+lightnum_, GL_POSITION, lightvec._v);
+                glGetLightfv(GL_LIGHT0+_lightnum, GL_POSITION, lightvec._v);
 
                 osg::Vec3 eye_light_ref = osg::Vec3(0, 0, 1) * M;
 
@@ -77,8 +77,8 @@ namespace
         }
 
     private:
-        int lightnum_;
-        bool active_;
+        int _lightnum;
+        bool _active;
     };
 
 }
@@ -91,21 +91,21 @@ namespace
     class DefaultTechnique: public Technique {
     public:
 
-        DefaultTechnique(int lightnum, int unit, const osg::Vec4 &color, float sexp)
+        DefaultTechnique(int lightnum, int unit, const osg::Vec4& color, float sexp)
         :    Technique(),
-            lightnum_(lightnum),
-            unit_(unit),
-            color_(color),
-            sexp_(sexp)
+            _lightnum(lightnum),
+            _unit(unit),
+            _color(color),
+            _sexp(sexp)
         {
         }
 
-        void getRequiredExtensions(std::vector<std::string> &extensions)
+        void getRequiredExtensions(std::vector<std::string>& extensions)
         {
             extensions.push_back("GL_ARB_texture_env_add");
         }
 
-        bool validate(osg::State &state) const
+        bool validate(osg::State& state) const
         {
             if (!Technique::validate(state)) return false;
 
@@ -123,9 +123,9 @@ namespace
         {
             osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
 
-            ss->setTextureAttributeAndModes(unit_, new AutoTextureMatrix(lightnum_), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            ss->setTextureAttributeAndModes(_unit, new AutoTextureMatrix(_lightnum), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-            osg::ref_ptr<osgUtil::HighlightMapGenerator> hmg = new osgUtil::HighlightMapGenerator(osg::Vec3(0, 0, -1), color_, sexp_);
+            osg::ref_ptr<osgUtil::HighlightMapGenerator> hmg = new osgUtil::HighlightMapGenerator(osg::Vec3(0, 0, -1), _color, _sexp);
             hmg->generateMap(false);
 
             osg::ref_ptr<osg::TextureCubeMap> texture = new osg::TextureCubeMap;
@@ -138,24 +138,24 @@ namespace
             texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
             texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
             texture->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
-            ss->setTextureAttributeAndModes(unit_, texture.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            ss->setTextureAttributeAndModes(_unit, texture.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
             osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen;
             texgen->setMode(osg::TexGen::REFLECTION_MAP);
-            ss->setTextureAttributeAndModes(unit_, texgen.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            ss->setTextureAttributeAndModes(_unit, texgen.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
             osg::ref_ptr<osg::TexEnv> texenv = new osg::TexEnv;
             texenv->setMode(osg::TexEnv::ADD);
-            ss->setTextureAttributeAndModes(unit_, texenv.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            ss->setTextureAttributeAndModes(_unit, texenv.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
             addPass(ss.get());
         }
 
     private:
-        int lightnum_;
-        int unit_;
-        osg::Vec4 color_;
-        float sexp_;
+        int _lightnum;
+        int _unit;
+        osg::Vec4 _color;
+        float _sexp;
     };
 
 }
@@ -163,24 +163,24 @@ namespace
 
 SpecularHighlights::SpecularHighlights()
 :    Effect(),
-    lightnum_(0),
-    unit_(0),
-    color_(1, 1, 1, 1),
-    sexp_(16)
+    _lightnum(0),
+    _unit(0),
+    _color(1, 1, 1, 1),
+    _sexp(16)
 {
 }
 
-SpecularHighlights::SpecularHighlights(const SpecularHighlights &copy, const osg::CopyOp &copyop)
+SpecularHighlights::SpecularHighlights(const SpecularHighlights& copy, const osg::CopyOp& copyop)
 :    Effect(copy, copyop),
-    lightnum_(copy.lightnum_),
-    unit_(copy.unit_),
-    color_(copy.color_),
-    sexp_(copy.sexp_)
+    _lightnum(copy._lightnum),
+    _unit(copy._unit),
+    _color(copy._color),
+    _sexp(copy._sexp)
 {
 }
 
 bool SpecularHighlights::define_techniques()
 {
-    addTechnique(new DefaultTechnique(lightnum_, unit_, color_, sexp_));
+    addTechnique(new DefaultTechnique(_lightnum, _unit, _color, _sexp));
     return true;
 }

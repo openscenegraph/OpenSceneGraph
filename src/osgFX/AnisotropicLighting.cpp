@@ -24,25 +24,25 @@ namespace
     public:
         ViewMatrixExtractor()
         :    osg::StateAttribute(),
-            vp_(0),
-            param_(0),
-            first_context_(-1)
+            _vp(0),
+            _param(0),
+            _first_context(-1)
         {
         }
 
-        ViewMatrixExtractor(const ViewMatrixExtractor &copy, const osg::CopyOp &copyop)
+        ViewMatrixExtractor(const ViewMatrixExtractor& copy, const osg::CopyOp& copyop)
         :    osg::StateAttribute(copy, copyop),
-            vp_(static_cast<osg::VertexProgram *>(copyop(copy.vp_.get()))),
-            param_(copy.param_),
-            first_context_(-1)
+            _vp(static_cast<osg::VertexProgram *>(copyop(copy._vp.get()))),
+            _param(copy._param),
+            _first_context(-1)
         {
         }
 
         ViewMatrixExtractor(osg::VertexProgram *vp, int param)
         :    osg::StateAttribute(),
-            vp_(vp),
-            param_(param),
-            first_context_(-1)
+            _vp(vp),
+            _param(param),
+            _first_context(-1)
         {
         }
 
@@ -51,31 +51,31 @@ namespace
         int compare(const osg::StateAttribute &sa) const
         {
             COMPARE_StateAttribute_Types(ViewMatrixExtractor, sa);
-            if (vp_.get() != rhs.vp_.get()) return -1;
-            if (param_ < rhs.param_) return -1;
-            if (param_ > rhs.param_) return 1;
+            if (_vp.get() != rhs._vp.get()) return -1;
+            if (_param < rhs._param) return -1;
+            if (_param > rhs._param) return 1;
             return 0;
         }
 
-        void apply(osg::State &state) const
+        void apply(osg::State& state) const
         {
-            if (first_context_ == -1) {
-                first_context_ = state.getContextID();
+            if (_first_context == -1) {
+                _first_context = state.getContextID();
             }
-            if (state.getContextID() == (unsigned int)first_context_) {
-                if (vp_.valid()) {
+            if (state.getContextID() == (unsigned int)_first_context) {
+                if (_vp.valid()) {
                     osg::Matrix M = state.getInitialInverseViewMatrix();
                     for (int i=0; i<4; ++i) {
-                        vp_->setProgramLocalParameter(param_+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
+                        _vp->setProgramLocalParameter(_param+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
                     }                
                 }
             }
         }
 
     private:
-        mutable osg::ref_ptr<osg::VertexProgram> vp_;
-        int param_;
-        mutable int first_context_;
+        mutable osg::ref_ptr<osg::VertexProgram> _vp;
+        int _param;
+        mutable int _first_context;
     };
 
 }
@@ -83,15 +83,15 @@ namespace
 namespace
 {
 
-    osg::Image *create_default_image()
+    osg::Image* create_default_image()
     {
-        const int texture_size = 16;
+        const int _texturesize = 16;
         osg::ref_ptr<osg::Image> image = new osg::Image;
-        image->setImage(texture_size, texture_size, 1, 3, GL_RGB, GL_UNSIGNED_BYTE, new unsigned char[3*texture_size*texture_size], osg::Image::USE_NEW_DELETE);
-        for (int i=0; i<texture_size; ++i) {
-            for (int j=0; j<texture_size; ++j) {
-                float s = static_cast<float>(j) / (texture_size-1);
-                float t = static_cast<float>(i) / (texture_size-1);
+        image->setImage(_texturesize, _texturesize, 1, 3, GL_RGB, GL_UNSIGNED_BYTE, new unsigned char[3*_texturesize*_texturesize], osg::Image::USE_NEW_DELETE);
+        for (int i=0; i<_texturesize; ++i) {
+            for (int j=0; j<_texturesize; ++j) {
+                float s = static_cast<float>(j) / (_texturesize-1);
+                float t = static_cast<float>(i) / (_texturesize-1);
                 float lum = t * 0.75f;
                 float red = lum + 0.2f * powf(cosf(s*10), 3.0f);
                 float green = lum;
@@ -120,12 +120,12 @@ namespace
 
         DefaultTechnique(int lightnum, osg::Texture2D *texture)
         :    Technique(),
-            lightnum_(lightnum),
-            texture_(texture)
+            _lightnum(lightnum),
+            _texture(texture)
         {
         }
 
-        void getRequiredExtensions(std::vector<std::string> &extensions) const
+        void getRequiredExtensions(std::vector<std::string>& extensions) const
         {
             extensions.push_back("GL_ARB_vertex_program");
         }
@@ -143,7 +143,7 @@ namespace
                 "ATTRIB v18 = vertex.normal;"
                 "ATTRIB v16 = vertex.position;"
                 "PARAM s259[4] = { state.matrix.mvp };"
-                "PARAM s18 = state.light[" << lightnum_ << "].position;"
+                "PARAM s18 = state.light[" << _lightnum << "].position;"
                 "PARAM s223[4] = { state.matrix.modelview };"
                 "PARAM c0[4] = { program.local[0..3] };"
                 "    DP4 result.position.x, s259[0], v16;"
@@ -210,7 +210,7 @@ namespace
 
             ss->setAttributeAndModes(new ViewMatrixExtractor(vp.get(), 0), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-            ss->setTextureAttributeAndModes(0, texture_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            ss->setTextureAttributeAndModes(0, _texture.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
             osg::ref_ptr<osg::TexEnv> texenv = new osg::TexEnv;
             texenv->setMode(osg::TexEnv::DECAL);
@@ -222,8 +222,8 @@ namespace
         }
 
     private:
-        int lightnum_;
-        osg::ref_ptr<osg::Texture2D> texture_;
+        int _lightnum;
+        osg::ref_ptr<osg::Texture2D> _texture;
     };
 
 }
@@ -231,23 +231,23 @@ namespace
 
 AnisotropicLighting::AnisotropicLighting()
 :    Effect(),
-    lightnum_(0),
-    texture_(new osg::Texture2D)
+    _lightnum(0),
+    _texture(new osg::Texture2D)
 {
-    texture_->setImage(create_default_image());
-    texture_->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
-    texture_->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+    _texture->setImage(create_default_image());
+    _texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
+    _texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
 }
 
-AnisotropicLighting::AnisotropicLighting(const AnisotropicLighting &copy, const osg::CopyOp &copyop)
+AnisotropicLighting::AnisotropicLighting(const AnisotropicLighting& copy, const osg::CopyOp& copyop)
 :    Effect(copy, copyop),
-    lightnum_(copy.lightnum_),
-    texture_(static_cast<osg::Texture2D *>(copyop(copy.texture_.get())))
+    _lightnum(copy._lightnum),
+    _texture(static_cast<osg::Texture2D *>(copyop(copy._texture.get())))
 {
 }
 
 bool AnisotropicLighting::define_techniques()
 {
-    addTechnique(new DefaultTechnique(lightnum_, texture_.get()));
+    addTechnique(new DefaultTechnique(_lightnum, _texture.get()));
     return true;
 }

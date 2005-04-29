@@ -12,18 +12,18 @@ using namespace osgFX;
 
 Effect::Effect()
 :	osg::Group(),
-    enabled_(true),
-    global_sel_tech_(AUTO_DETECT),
-    techs_defined_(false)
+    _enabled(true),
+    _global_sel_tech(AUTO_DETECT),
+    _techs_defined(false)
 {
     build_dummy_node();
 }
 
-Effect::Effect(const Effect &copy, const osg::CopyOp &copyop)
+Effect::Effect(const Effect& copy, const osg::CopyOp& copyop)
 :	osg::Group(copy, copyop),
-    enabled_(copy.enabled_),
-    global_sel_tech_(copy.global_sel_tech_),
-    techs_defined_(false)
+    _enabled(copy._enabled),
+    _global_sel_tech(copy._global_sel_tech),
+    _techs_defined(false)
 {
     build_dummy_node();
 }
@@ -32,8 +32,8 @@ Effect::~Effect()
 {
 	// disable the validator for safety, so it won't try to access us
 	// even if it stays alive for some reason
-	if (dummy_for_validation_.valid()) {
-		osg::StateSet *ss = dummy_for_validation_->getStateSet();
+	if (_dummy_for_validation.valid()) {
+		osg::StateSet* ss = _dummy_for_validation->getStateSet();
 		if (ss) {
 			Validator *validator = dynamic_cast<Validator *>(ss->getAttribute(Validator::VALIDATOR));
 			if (validator) {
@@ -43,37 +43,37 @@ Effect::~Effect()
 	}
 }
 
-void Effect::traverse(osg::NodeVisitor &nv)
+void Effect::traverse(osg::NodeVisitor& nv)
 {
 	// if this effect is not enabled, then go for default traversal
-    if (!enabled_) {
+    if (!_enabled) {
         inherited_traverse(nv);
         return;
     }
 
 	// ensure that at least one technique is defined
-    if (!techs_defined_) {
+    if (!_techs_defined) {
 
         // clear existing techniques
-        techs_.clear();
+        _techs.clear();
 
 		// clear technique selection indices
-        sel_tech_.clear();
+        _sel_tech.clear();
 
 		// clear technique selection flags
-        tech_selected_.clear();
+        _tech_selected.clear();
 
         // define new techniques
-        techs_defined_ = define_techniques();
+        _techs_defined = define_techniques();
 
 		// check for errors, return on failure
-        if (!techs_defined_) {
+        if (!_techs_defined) {
             osg::notify(osg::WARN) << "Warning: osgFX::Effect: could not define techniques for effect " << className() << std::endl;
             return;
         }
 
 		// ensure that at least one technique has been defined
-        if (techs_.empty()) {
+        if (_techs.empty()) {
             osg::notify(osg::WARN) << "Warning: osgFX::Effect: no techniques defined for effect " << className() << std::endl;
             return;
         }
@@ -83,12 +83,12 @@ void Effect::traverse(osg::NodeVisitor &nv)
 
     // if the selection mode is set to AUTO_DETECT then we have to
 	// choose the active technique!
-	if (global_sel_tech_ == AUTO_DETECT) {
+	if (_global_sel_tech == AUTO_DETECT) {
 
 		// test whether at least one technique has been selected
         bool none_selected = true;
-        for (unsigned i=0; i<tech_selected_.size(); ++i) {
-            if (tech_selected_[i] != 0) {
+        for (unsigned i=0; i<_tech_selected.size(); ++i) {
+            if (_tech_selected[i] != 0) {
                 none_selected = false;
                 break;
             }
@@ -97,29 +97,29 @@ void Effect::traverse(osg::NodeVisitor &nv)
 		// no techniques selected, traverse a dummy node that
 		// contains the Validator (it will select a technique)
         if (none_selected) {
-            dummy_for_validation_->accept(nv);
+            _dummy_for_validation->accept(nv);
         }
 
         // find the highest priority technique that could be validated
 		// in all active rendering contexts
 		int max_index = -1;
-        for (unsigned j=0; j<sel_tech_.size(); ++j) {
-            if (tech_selected_[j] != 0) {
-                if (sel_tech_[j] > max_index) {
-                    max_index = sel_tech_[j];
+        for (unsigned j=0; j<_sel_tech.size(); ++j) {
+            if (_tech_selected[j] != 0) {
+                if (_sel_tech[j] > max_index) {
+                    max_index = _sel_tech[j];
                 }
             }
         }
 
         // found a valid technique?
 		if (max_index >= 0) {
-            tech = techs_[max_index].get();
+            tech = _techs[max_index].get();
         }
 
     } else {
 
 		// the active technique was selected manually
-        tech = techs_[global_sel_tech_].get();
+        tech = _techs[_global_sel_tech].get();
     }
 
     // if we could find an active technique, then continue with traversal,
@@ -137,8 +137,8 @@ void Effect::traverse(osg::NodeVisitor &nv)
 
 void Effect::build_dummy_node()
 {
-    dummy_for_validation_ = new osg::Geode;
+    _dummy_for_validation = new osg::Geode;
     osg::ref_ptr<osg::Geometry> geo = new osg::Geometry;
-    dummy_for_validation_->addDrawable(geo.get());
-    dummy_for_validation_->getOrCreateStateSet()->setAttribute(new Validator(this));
+    _dummy_for_validation->addDrawable(geo.get());
+    _dummy_for_validation->getOrCreateStateSet()->setAttribute(new Validator(this));
 }

@@ -21,7 +21,7 @@ using namespace osgFX;
 namespace
 {
 
-    osg::Image *create_sharp_lighting_map(int levels = 4, int texture_size = 16)
+    osg::Image* create_sharp_lighting_map(int levels = 4, int texture_size = 16)
     {
         osg::ref_ptr<osg::Image> image = new osg::Image;
         image->setImage(texture_size, 1, 1, 4, GL_RGBA, GL_UNSIGNED_BYTE, new unsigned char[4*texture_size], osg::Image::USE_NEW_DELETE);
@@ -48,10 +48,10 @@ namespace
     // default technique class
     class DefaultTechnique: public Technique {
     public:
-        DefaultTechnique(osg::Material *wf_mat, osg::LineWidth *wf_lw, int lightnum)
-            : Technique(), wf_mat_(wf_mat), wf_lw_(wf_lw), lightnum_(lightnum) {}
+        DefaultTechnique(osg::Material* wf_mat, osg::LineWidth *wf_lw, int lightnum)
+            : Technique(), _wf_mat(wf_mat), _wf_lw(wf_lw), _lightnum(lightnum) {}
 
-        void getRequiredExtensions(std::vector<std::string> &extensions) const
+        void getRequiredExtensions(std::vector<std::string>& extensions) const
         {
             extensions.push_back("GL_ARB_vertex_program");
         }
@@ -69,8 +69,8 @@ namespace
                     "PARAM c0 = { 0, 0, 0, 0 };"
                     "TEMP R0, R1;"
                     "ATTRIB v18 = vertex.normal;"
-                    "PARAM s18 = state.light[" << lightnum_ << "].position;"
-                    "PARAM s16 = state.light[" << lightnum_ << "].diffuse;"
+                    "PARAM s18 = state.light[" << _lightnum << "].position;"
+                    "PARAM s16 = state.light[" << _lightnum << "].diffuse;"
                     "PARAM s1 = state.material.diffuse;"
                     "PARAM s631[4] = { state.matrix.modelview.invtrans };"
                     "MOV R0, s1;"
@@ -123,15 +123,15 @@ namespace
                 cf->setMode(osg::CullFace::FRONT);
                 ss->setAttributeAndModes(cf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                wf_lw_->setWidth(2);
-                ss->setAttributeAndModes(wf_lw_.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+                _wf_lw->setWidth(2);
+                ss->setAttributeAndModes(_wf_lw.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
-                wf_mat_->setColorMode(osg::Material::OFF);
-                wf_mat_->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                ss->setAttributeAndModes(wf_mat_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                _wf_mat->setColorMode(osg::Material::OFF);
+                _wf_mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                _wf_mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                _wf_mat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                _wf_mat->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                ss->setAttributeAndModes(_wf_mat.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 ss->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
                 ss->setTextureMode(0, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
@@ -143,9 +143,9 @@ namespace
         }
 
     private:
-        osg::ref_ptr<osg::Material> wf_mat_;
-        osg::ref_ptr<osg::LineWidth> wf_lw_;
-        int lightnum_;
+        osg::ref_ptr<osg::Material> _wf_mat;
+        osg::ref_ptr<osg::LineWidth> _wf_lw;
+        int _lightnum;
     };
 
 }
@@ -161,10 +161,10 @@ namespace
 {
     class OGLSL_Technique : public Technique {
     public:
-        OGLSL_Technique(osg::Material *wf_mat, osg::LineWidth *wf_lw, int lightnum)
-            : Technique(), wf_mat_(wf_mat), wf_lw_(wf_lw), lightnum_(lightnum) {}
+        OGLSL_Technique(osg::Material* wf_mat, osg::LineWidth *wf_lw, int lightnum)
+            : Technique(), _wf_mat(wf_mat), _wf_lw(wf_lw), _lightnum(lightnum) {}
 
-        void getRequiredExtensions(std::vector<std::string> &extensions) const
+        void getRequiredExtensions(std::vector<std::string>& extensions) const
         {
             extensions.push_back( "GL_ARB_shader_objects" );
             extensions.push_back( "GL_ARB_vertex_shader" );
@@ -236,15 +236,15 @@ namespace
                 cf->setMode(osg::CullFace::FRONT);
                 ss->setAttributeAndModes(cf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                wf_lw_->setWidth(2);
-                ss->setAttributeAndModes(wf_lw_.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+                _wf_lw->setWidth(2);
+                ss->setAttributeAndModes(_wf_lw.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
-                wf_mat_->setColorMode(osg::Material::OFF);
-                wf_mat_->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                ss->setAttributeAndModes(wf_mat_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                _wf_mat->setColorMode(osg::Material::OFF);
+                _wf_mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                _wf_mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                _wf_mat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                _wf_mat->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                ss->setAttributeAndModes(_wf_mat.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 ss->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
                 ss->setTextureMode(0, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
@@ -256,9 +256,9 @@ namespace
         }
 
     private:
-        osg::ref_ptr<osg::Material> wf_mat_;
-        osg::ref_ptr<osg::LineWidth> wf_lw_;
-        int lightnum_;
+        osg::ref_ptr<osg::Material> _wf_mat;
+        osg::ref_ptr<osg::LineWidth> _wf_lw;
+        int _lightnum;
     };
 
 }
@@ -267,23 +267,23 @@ namespace
 
 Cartoon::Cartoon()
 :    Effect(),
-    wf_mat_(new osg::Material),
-    wf_lw_(new osg::LineWidth),
-    lightnum_(0)
+    _wf_mat(new osg::Material),
+    _wf_lw(new osg::LineWidth),
+    _lightnum(0)
 {
 }
 
-Cartoon::Cartoon(const Cartoon &copy, const osg::CopyOp &copyop)
+Cartoon::Cartoon(const Cartoon& copy, const osg::CopyOp& copyop)
 :    Effect(copy, copyop),
-    wf_mat_(static_cast<osg::Material *>(copyop(copy.wf_mat_.get()))),
-    wf_lw_(static_cast<osg::LineWidth *>(copyop(copy.wf_lw_.get()))),
-    lightnum_(copy.lightnum_)
+    _wf_mat(static_cast<osg::Material* >(copyop(copy._wf_mat.get()))),
+    _wf_lw(static_cast<osg::LineWidth *>(copyop(copy._wf_lw.get()))),
+    _lightnum(copy._lightnum)
 {
 }
 
 bool Cartoon::define_techniques()
 {
-    addTechnique(new DefaultTechnique(wf_mat_.get(), wf_lw_.get(), lightnum_));
-    addTechnique(new OGLSL_Technique(wf_mat_.get(), wf_lw_.get(), lightnum_));
+    addTechnique(new DefaultTechnique(_wf_mat.get(), _wf_lw.get(), _lightnum));
+    addTechnique(new OGLSL_Technique(_wf_mat.get(), _wf_lw.get(), _lightnum));
     return true;
 }

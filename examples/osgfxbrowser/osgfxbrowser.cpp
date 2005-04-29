@@ -29,7 +29,7 @@
 class RotateCallback: public osg::NodeCallback {
 public:
 	RotateCallback(): osg::NodeCallback(), enabled_(true) {}
-	void operator()(osg::Node *node, osg::NodeVisitor *nv)
+	void operator()(osg::Node* node, osg::NodeVisitor *nv)
 	{
 		osg::MatrixTransform *xform = dynamic_cast<osg::MatrixTransform *>(node);
 		if (xform && enabled_) {
@@ -53,7 +53,7 @@ public:
 
 	class KeyboardHandler: public osgGA::GUIEventHandler {
 	public:
-		KeyboardHandler(EffectPanel *ep): ep_(ep) {}
+		KeyboardHandler(EffectPanel* ep): ep_(ep) {}
 
 		bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &)
 		{
@@ -94,58 +94,58 @@ public:
 
 	EffectPanel()
 	:	osgfxbrowser::Frame(),
-		selected_fx_(-1),
-		fxen_(true),
-		root_(new osg::Group),
-		hints_color_(0.75f, 0.75f, 0.75f, 1.0f),
-		name_color_(1, 1, 1, 1),
-		desc_color_(1, 1, 0.7f, 1)
+		_selected_fx(-1),
+		_fxen(true),
+		_root(new osg::Group),
+		_hints_color(0.75f, 0.75f, 0.75f, 1.0f),
+		_name_color(1, 1, 1, 1),
+		_desc_color(1, 1, 0.7f, 1)
 	{
 		setBackgroundColor(osg::Vec4(0.3f, 0.1f, 0.15f, 0.75f));
 
 		std::cout << "INFO: available osgFX effects:\n";
-		osgFX::Registry::Effect_map emap = osgFX::Registry::instance()->getEffectMap();
-		for (osgFX::Registry::Effect_map::const_iterator i=emap.begin(); i!=emap.end(); ++i) {
+		osgFX::Registry::EffectMap emap = osgFX::Registry::instance()->getEffectMap();
+		for (osgFX::Registry::EffectMap::const_iterator i=emap.begin(); i!=emap.end(); ++i) {
 			std::cout << "INFO: \t" << i->first << "\n";
 			osg::ref_ptr<osgFX::Effect> effect = static_cast<osgFX::Effect *>(i->second->cloneType());
-			effects_.push_back(effect.get());			
+			_effects.push_back(effect.get());			
 		}
 
 		std::cout << "INFO: " << emap.size() << " effect(s) ready.\n";
 
-		if (!effects_.empty()) {
-			selected_fx_ = 0;
+		if (!_effects.empty()) {
+			_selected_fx = 0;
 		}
 	}
 
-	inline osg::Group *getRoot() { return root_.get(); }
-	inline void setRoot(osg::Group *node) { root_ = node; }
+	inline osg::Group* getRoot() { return _root.get(); }
+	inline void setRoot(osg::Group* node) { _root = node; }
 
-	inline osg::Node *getScene() { return scene_.get(); }
-	inline void setScene(osg::Node *node) { scene_ = node; }
+	inline osg::Node* getScene() { return _scene.get(); }
+	inline void setScene(osg::Node* node) { _scene = node; }
 
-	inline bool getEffectsEnabled() const { return fxen_; }
+	inline bool getEffectsEnabled() const { return _fxen; }
 	inline void setEffectsEnabled(bool v) 
 	{ 
-		fxen_ = v; 
+		_fxen = v; 
 		if (getSelectedEffect()) {
-			getSelectedEffect()->setEnabled(fxen_);
+			getSelectedEffect()->setEnabled(_fxen);
 		}
 	}
 
-	inline int getEffectIndex() const { return selected_fx_; }
+	inline int getEffectIndex() const { return _selected_fx; }
 	inline void setEffectIndex(int i)
 	{
-		if (i >= static_cast<int>(effects_.size())) i = 0;
-		if (i < 0) i = static_cast<int>(effects_.size()-1);		
-		selected_fx_ = i;
+		if (i >= static_cast<int>(_effects.size())) i = 0;
+		if (i < 0) i = static_cast<int>(_effects.size()-1);		
+		_selected_fx = i;
 		rebuild();
 	}
 
 	inline osgFX::Effect *getSelectedEffect()
 	{
-		if (selected_fx_ >= 0 && selected_fx_ < static_cast<int>(effects_.size())) {
-			return effects_[selected_fx_].get();
+		if (_selected_fx >= 0 && _selected_fx < static_cast<int>(_effects.size())) {
+			return _effects[_selected_fx].get();
 		}
 		return 0;
 	}
@@ -160,7 +160,7 @@ protected:
 
 		osg::ref_ptr<osgText::Text> hints = new osgText::Text;
 		hints->setFont(arial.get());
-		hints->setColor(hints_color_);
+		hints->setColor(_hints_color);
 		hints->setAlignment(osgText::Text::CENTER_BOTTOM);
 		hints->setCharacterSize(13);
 		hints->setFontResolution(13, 13);
@@ -171,28 +171,28 @@ protected:
 		std::string effect_name = "No Effect Selected";
 		std::string effect_description = "";
 
-		if (selected_fx_ >= 0 && selected_fx_ < static_cast<int>(effects_.size())) {
-			effect_name = effects_[selected_fx_]->effectName();
-			std::string author_name = effects_[selected_fx_]->effectAuthor();
+		if (_selected_fx >= 0 && _selected_fx < static_cast<int>(_effects.size())) {
+			effect_name = _effects[_selected_fx]->effectName();
+			std::string author_name = _effects[_selected_fx]->effectAuthor();
 			if (!author_name.empty()) {
-				effect_description = author_name = "AUTHOR: " + std::string(effects_[selected_fx_]->effectAuthor()) + std::string("\n\n");
+				effect_description = author_name = "AUTHOR: " + std::string(_effects[_selected_fx]->effectAuthor()) + std::string("\n\n");
 			}
-			effect_description += "DESCRIPTION:\n" + std::string(effects_[selected_fx_]->effectDescription());			
+			effect_description += "DESCRIPTION:\n" + std::string(_effects[_selected_fx]->effectDescription());			
 
-			if (scene_.valid() && root_.valid()) {
-				root_->removeChild(0, root_->getNumChildren());
-				osg::ref_ptr<osgFX::Effect> effect = effects_[selected_fx_].get();
-				effect->setEnabled(fxen_);
+			if (_scene.valid() && _root.valid()) {
+				_root->removeChild(0, _root->getNumChildren());
+				osg::ref_ptr<osgFX::Effect> effect = _effects[_selected_fx].get();
+				effect->setEnabled(_fxen);
 				effect->removeChild(0, effect->getNumChildren());
-				effect->addChild(scene_.get());
+				effect->addChild(_scene.get());
 				effect->setUpDemo();
-				root_->addChild(effect.get());
+				_root->addChild(effect.get());
 			}
 		}
 
 		osg::ref_ptr<osgText::Text> ename = new osgText::Text;
 		ename->setFont(arial.get());
-		ename->setColor(name_color_);
+		ename->setColor(_name_color);
 		ename->setAlignment(osgText::Text::CENTER_TOP);
 		ename->setCharacterSize(32);
 		ename->setFontResolution(32, 32);
@@ -203,7 +203,7 @@ protected:
 		osg::ref_ptr<osgText::Text> edesc = new osgText::Text;
 		edesc->setMaximumWidth(client_rect.width() - 16);
 		edesc->setFont(arial.get());
-		edesc->setColor(desc_color_);
+		edesc->setColor(_desc_color);
 		edesc->setAlignment(osgText::Text::LEFT_TOP);
 		edesc->setCharacterSize(16);
 		edesc->setFontResolution(16, 16);
@@ -213,19 +213,19 @@ protected:
 	}
 
 private:
-	int selected_fx_;
+	int _selected_fx;
 	typedef std::vector<osg::ref_ptr<osgFX::Effect> > Effect_list;
-	Effect_list effects_;
-	bool fxen_;
-	osg::ref_ptr<osg::Group> root_;
-	osg::ref_ptr<osg::Node> scene_;
-	osg::Vec4 hints_color_;
-	osg::Vec4 name_color_;
-	osg::Vec4 desc_color_;
+	Effect_list _effects;
+	bool _fxen;
+	osg::ref_ptr<osg::Group> _root;
+	osg::ref_ptr<osg::Node> _scene;
+	osg::Vec4 _hints_color;
+	osg::Vec4 _name_color;
+	osg::Vec4 _desc_color;
 };
 
 
-osg::Group *build_hud_base(osg::Group *root)
+osg::Group* build_hud_base(osg::Group* root)
 {
 	osg::ref_ptr<osg::Projection> proj = new osg::Projection(osg::Matrix::ortho2D(0, 1024, 0, 768));
 	proj->setCullingActive(false);
@@ -246,7 +246,7 @@ osg::Group *build_hud_base(osg::Group *root)
 	return xform.take();
 }
 
-EffectPanel *build_gui(osg::Group *root)
+EffectPanel* build_gui(osg::Group* root)
 {
 	osg::ref_ptr<osg::Group> hud = build_hud_base(root);
 
@@ -259,7 +259,7 @@ EffectPanel *build_gui(osg::Group *root)
 	return effect_panel.take();
 }
 
-void build_world(osg::Group *root, osg::Node *scene, osgProducer::Viewer &viewer)
+void build_world(osg::Group* root, osg::Node* scene, osgProducer::Viewer& viewer)
 {
 	osg::ref_ptr<EffectPanel> effect_panel = build_gui(root);
 	effect_panel->setScene(scene);

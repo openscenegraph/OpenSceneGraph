@@ -34,7 +34,7 @@ namespace osgFX
     class OSGFX_EXPORT Scribe: public Effect {
     public:
         Scribe();
-        Scribe(const Scribe &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        Scribe(const Scribe& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         // effect class informations
         META_Effect(
@@ -52,10 +52,10 @@ namespace osgFX
             "Marco Jez");
 
         /** get the wireframe color */
-        inline const osg::Vec4 &getWireframeColor() const;
+        inline const osg::Vec4& getWireframeColor() const;
         
         /** set the wireframe color */
-        inline void setWireframeColor(const osg::Vec4 &color);
+        inline void setWireframeColor(const osg::Vec4& color);
         
         /** get the wireframe line width */
         inline float getWireframeLineWidth() const;
@@ -65,35 +65,35 @@ namespace osgFX
 
     protected:
         virtual ~Scribe() {}
-        Scribe &operator=(const Scribe &) { return *this; }
+        Scribe& operator=(const Scribe&) { return *this; }
 
         bool define_techniques();
 
     private:
-        osg::ref_ptr<osg::Material> wf_mat_;
-        osg::ref_ptr<osg::LineWidth> wf_lw_;
+        osg::ref_ptr<osg::Material> _wf_mat;
+        osg::ref_ptr<osg::LineWidth> _wf_lw;
     };
 
     // INLINE METHODS
 
-    inline const osg::Vec4 &Scribe::getWireframeColor() const
+    inline const osg::Vec4& Scribe::getWireframeColor() const
     {
-        return wf_mat_->getEmission(osg::Material::FRONT_AND_BACK);
+        return _wf_mat->getEmission(osg::Material::FRONT_AND_BACK);
     }
 
-    inline void Scribe::setWireframeColor(const osg::Vec4 &color)
+    inline void Scribe::setWireframeColor(const osg::Vec4& color)
     {
-        wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, color);
+        _wf_mat->setEmission(osg::Material::FRONT_AND_BACK, color);
     }
     
     inline float Scribe::getWireframeLineWidth() const
     {
-        return wf_lw_->getWidth();
+        return _wf_lw->getWidth();
     }
     
     inline void Scribe::setWireframeLineWidth(float w)
     {
-        wf_lw_->setWidth(w);
+        _wf_lw->setWidth(w);
     }
 
 }

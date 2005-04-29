@@ -41,7 +41,7 @@ namespace osgFX
     class OSGFX_EXPORT AnisotropicLighting: public Effect {
     public:
         AnisotropicLighting();
-        AnisotropicLighting(const AnisotropicLighting &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        AnisotropicLighting(const AnisotropicLighting& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Effect(osgFX, AnisotropicLighting, 
         
@@ -64,13 +64,13 @@ namespace osgFX
             
         
         /** get the lighting map */
-        inline osg::Image *getLightingMap();
+        inline osg::Image* getLightingMap();
         
         /** get the const lighting map */
-        inline const osg::Image *getLightingMap() const;
+        inline const osg::Image* getLightingMap() const;
         
         /** set the lighting map */
-        inline void setLightingMap(osg::Image *image);
+        inline void setLightingMap(osg::Image* image);
 
         /** get the OpenGL light number */
         inline int getLightNumber() const;
@@ -80,40 +80,40 @@ namespace osgFX
 
     protected:
         virtual ~AnisotropicLighting() {}
-        AnisotropicLighting &operator=(const AnisotropicLighting &) { return *this; }
+        AnisotropicLighting& operator=(const AnisotropicLighting&) { return *this; }
 
         bool define_techniques();
 
     private:
-        int lightnum_;
-        osg::ref_ptr<osg::Texture2D> texture_;
+        int _lightnum;
+        osg::ref_ptr<osg::Texture2D> _texture;
     };
 
     // INLINE METHODS
     
-    inline osg::Image *AnisotropicLighting::getLightingMap()
+    inline osg::Image* AnisotropicLighting::getLightingMap()
     {
-        return texture_->getImage();
+        return _texture->getImage();
     }
     
-    inline const osg::Image *AnisotropicLighting::getLightingMap() const
+    inline const osg::Image* AnisotropicLighting::getLightingMap() const
     {
-        return texture_->getImage();
+        return _texture->getImage();
     }
     
-    inline void AnisotropicLighting::setLightingMap(osg::Image *image)
+    inline void AnisotropicLighting::setLightingMap(osg::Image* image)
     {
-        texture_->setImage(image);
+        _texture->setImage(image);
     }
     
     inline int AnisotropicLighting::getLightNumber() const
     {
-        return lightnum_;
+        return _lightnum;
     }
     
     inline void AnisotropicLighting::setLightNumber(int n)
     {
-        lightnum_ = n;
+        _lightnum = n;
         dirtyTechniques();
     }
 

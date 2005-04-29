@@ -29,19 +29,19 @@ namespace
     // basis vectors
     class TsgVisitor: public NodeVisitor {
     public:
-        TsgVisitor(BumpMapping *bm): NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN), bm_(bm) {}
-        void apply(osg::Geode &geode)
+        TsgVisitor(BumpMapping* bm): NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN), _bm(bm) {}
+        void apply(osg::Geode& geode)
         {
             for (unsigned i=0; i<geode.getNumDrawables(); ++i) {
-                osg::Geometry *geo = dynamic_cast<osg::Geometry *>(geode.getDrawable(i));
+                osg::Geometry* geo = dynamic_cast<osg::Geometry* >(geode.getDrawable(i));
                 if (geo) {
-                    bm_->prepareGeometry(geo);
+                    _bm->prepareGeometry(geo);
                 }
             }
             NodeVisitor::apply(geode);
         }
     private:
-        BumpMapping *bm_;
+        BumpMapping* _bm;
     };
 
 
@@ -50,7 +50,7 @@ namespace
     class TexCoordGenerator: public osg::NodeVisitor {
     public:
         TexCoordGenerator(int du, int nu): NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN), du_(du), nu_(nu) {}
-        void apply(osg::Geode &geode)
+        void apply(osg::Geode& geode)
         {
             const osg::BoundingSphere &bsphere = geode.getBound();
             float scale = 10;
@@ -58,7 +58,7 @@ namespace
                 scale = 5 / bsphere.radius();
             }
             for (unsigned i=0; i<geode.getNumDrawables(); ++i) {
-                osg::Geometry *geo = dynamic_cast<osg::Geometry *>(geode.getDrawable(i));
+                osg::Geometry* geo = dynamic_cast<osg::Geometry* >(geode.getDrawable(i));
                 if (geo) {
                     osg::ref_ptr<osg::Vec2Array> tc = generate_coords(geo->getVertexArray(), geo->getNormalArray(), scale);
                     geo->setTexCoordArray(du_, tc.get());
@@ -69,14 +69,14 @@ namespace
         }
 
     protected:
-        osg::Vec2Array *generate_coords(osg::Array *vx, osg::Array *nx, float scale)
+        osg::Vec2Array* generate_coords(osg::Array* vx, osg::Array* nx, float scale)
         {
-            osg::Vec2Array *v2a = dynamic_cast<osg::Vec2Array *>(vx);
-            osg::Vec3Array *v3a = dynamic_cast<osg::Vec3Array *>(vx);
-            osg::Vec4Array *v4a = dynamic_cast<osg::Vec4Array *>(vx);
-            osg::Vec2Array *n2a = dynamic_cast<osg::Vec2Array *>(nx);
-            osg::Vec3Array *n3a = dynamic_cast<osg::Vec3Array *>(nx);
-            osg::Vec4Array *n4a = dynamic_cast<osg::Vec4Array *>(nx);
+            osg::Vec2Array* v2a = dynamic_cast<osg::Vec2Array*>(vx);
+            osg::Vec3Array* v3a = dynamic_cast<osg::Vec3Array*>(vx);
+            osg::Vec4Array* v4a = dynamic_cast<osg::Vec4Array*>(vx);
+            osg::Vec2Array* n2a = dynamic_cast<osg::Vec2Array*>(nx);
+            osg::Vec3Array* n3a = dynamic_cast<osg::Vec3Array*>(nx);
+            osg::Vec4Array* n4a = dynamic_cast<osg::Vec4Array*>(nx);
 
             osg::ref_ptr<osg::Vec2Array> tc = new osg::Vec2Array;
             for (unsigned i=0; i<vx->getNumElements(); ++i) {
@@ -135,58 +135,58 @@ namespace
     
         ViewMatrixExtractor()
         :    osg::StateAttribute(),
-            vp_(0),
-            param_(0),
-            first_context_(NO_VALID_CONTEXT)
+            _vp(0),
+            _param(0),
+            _first_context(NO_VALID_CONTEXT)
         {
         }
 
-        ViewMatrixExtractor(const ViewMatrixExtractor &copy, const osg::CopyOp &copyop)
+        ViewMatrixExtractor(const ViewMatrixExtractor& copy, const osg::CopyOp& copyop)
         :    osg::StateAttribute(copy, copyop),
-            vp_(static_cast<osg::VertexProgram *>(copyop(copy.vp_.get()))),
-            param_(copy.param_),
-            first_context_(NO_VALID_CONTEXT)
+            _vp(static_cast<osg::VertexProgram* >(copyop(copy._vp.get()))),
+            _param(copy._param),
+            _first_context(NO_VALID_CONTEXT)
         {
         }
 
-        ViewMatrixExtractor(osg::VertexProgram *vp, int param)
+        ViewMatrixExtractor(osg::VertexProgram* vp, int param)
         :    osg::StateAttribute(),
-            vp_(vp),
-            param_(param),
-            first_context_(NO_VALID_CONTEXT)
+            _vp(vp),
+            _param(param),
+            _first_context(NO_VALID_CONTEXT)
         {
         }
 
         META_StateAttribute(osgFX, ViewMatrixExtractor, VIEWMATRIXEXTRACTOR);
 
-        int compare(const osg::StateAttribute &sa) const
+        int compare(const osg::StateAttribute& sa) const
         {
             COMPARE_StateAttribute_Types(ViewMatrixExtractor, sa);
-            if (vp_.get() != rhs.vp_.get()) return -1;
-            if (param_ < rhs.param_) return -1;
-            if (param_ > rhs.param_) return 1;
+            if (_vp.get() != rhs._vp.get()) return -1;
+            if (_param < rhs._param) return -1;
+            if (_param > rhs._param) return 1;
             return 0;
         }
 
-        void apply(osg::State &state) const
+        void apply(osg::State& state) const
         {
-            if (first_context_ == NO_VALID_CONTEXT) {
-                first_context_ = state.getContextID();
+            if (_first_context == NO_VALID_CONTEXT) {
+                _first_context = state.getContextID();
             }
-            if (state.getContextID() == first_context_) {
-                if (vp_.valid()) {
+            if (state.getContextID() == _first_context) {
+                if (_vp.valid()) {
                     osg::Matrix M = state.getInitialInverseViewMatrix();
                     for (int i=0; i<4; ++i) {
-                        vp_->setProgramLocalParameter(param_+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
+                        _vp->setProgramLocalParameter(_param+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
                     }                
                 }
             }
         }
 
     private:
-        mutable osg::ref_ptr<osg::VertexProgram> vp_;
-        int param_;
-        mutable unsigned int first_context_;
+        mutable osg::ref_ptr<osg::VertexProgram> _vp;
+        int _param;
+        mutable unsigned int _first_context;
     };
 
 }
@@ -208,13 +208,13 @@ namespace
     class FullArbTechnique: public Technique {
     public:
 
-        FullArbTechnique(int lightnum, int diffuseunit, int normalunit, osg::Texture2D *diffuse_tex, osg::Texture2D *normal_tex)
+        FullArbTechnique(int lightnum, int diffuseunit, int normalunit, osg::Texture2D* diffuse_tex, osg::Texture2D* normal_tex)
         :   Technique(),
-            lightnum_(lightnum),
-            diffuseunit_(diffuseunit),
-            normalunit_(normalunit),
-            diffuse_tex_(diffuse_tex),
-            normal_tex_(normal_tex)
+            _lightnum(lightnum),
+            _diffuse_unit(diffuseunit),
+            _normal_unit(normalunit),
+            _diffuse_tex(diffuse_tex),
+            _normal_tex(normal_tex)
         {
         }
 
@@ -223,7 +223,7 @@ namespace
             "Single-pass technique, requires ARB_vertex_program and ARB_fragment_program."
         );
 
-        void getRequiredExtensions(std::vector<std::string> &extensions) const
+        void getRequiredExtensions(std::vector<std::string>& extensions) const
         {
             extensions.push_back("GL_ARB_vertex_program");
             extensions.push_back("GL_ARB_fragment_program");
@@ -234,7 +234,7 @@ namespace
         void define_passes()
         {
             int freeunit;
-            for (freeunit=0; freeunit==diffuseunit_||freeunit==normalunit_; ++freeunit) {}
+            for (freeunit=0; freeunit==_diffuse_unit||freeunit==_normal_unit; ++freeunit) {}
 
             // vertex program
             std::ostringstream vp_oss;
@@ -247,8 +247,8 @@ namespace
                 "ATTRIB v5 = vertex.attrib[15];"
                 "ATTRIB v4 = vertex.attrib[7];"
                 "ATTRIB v3 = vertex.attrib[6];"
-                "ATTRIB v25 = vertex.texcoord[" << diffuseunit_ << "];"
-                "ATTRIB v24 = vertex.texcoord[" << normalunit_ << "];"
+                "ATTRIB v25 = vertex.texcoord[" << _diffuse_unit << "];"
+                "ATTRIB v24 = vertex.texcoord[" << _normal_unit << "];"
                 "ATTRIB v18 = vertex.normal;"
                 "ATTRIB v16 = vertex.position;"
                 "PARAM s259[4] = { state.matrix.mvp };"
@@ -260,10 +260,10 @@ namespace
                 "PARAM c0[4] = { program.local[0..3] };"
                 "    MOV result.texcoord[" << freeunit << "].xyz, s75.xyzx;"
                 "    MOV result.texcoord[" << freeunit << "].w, s4.x;"
-                "    MOV result.texcoord[" << normalunit_ << "].zw, s77.zwzw;"
-                "    MOV result.texcoord[" << normalunit_ << "].xy, v24;"
-                "    MOV result.texcoord[" << diffuseunit_ << "].zw, s77.xyxy;"
-                "    MOV result.texcoord[" << diffuseunit_ << "].xy, v25;"
+                "    MOV result.texcoord[" << _normal_unit << "].zw, s77.zwzw;"
+                "    MOV result.texcoord[" << _normal_unit << "].xy, v24;"
+                "    MOV result.texcoord[" << _diffuse_unit << "].zw, s77.xyxy;"
+                "    MOV result.texcoord[" << _diffuse_unit << "].xy, v25;"
                 "    MOV R5, c0[0];"
                 "    MUL R0, R5.y, s223[1];"
                 "    MAD R0, R5.x, s223[0], R0;"
@@ -341,8 +341,8 @@ namespace
                 "TEMP R0;"
                 "TEMP R1;"
                 "TEMP R2;"
-                "TEX R0, fragment.texcoord[" << normalunit_ << "], texture[" << normalunit_ << "], 2D;"
-                "TEX R1, fragment.texcoord[" << diffuseunit_ << "], texture[" << diffuseunit_ << "], 2D;"
+                "TEX R0, fragment.texcoord[" << _normal_unit << "], texture[" << _normal_unit << "], 2D;"
+                "TEX R1, fragment.texcoord[" << _diffuse_unit << "], texture[" << _diffuse_unit << "], 2D;"
                 "ADD R0, R0, -c0.z;"
                 "MUL R0.xyz, c0.y, R0;"
                 "ADD R2.xyz, fragment.color.primary, -c0.z;"
@@ -360,8 +360,8 @@ namespace
                 "MUL R1.xyz, R1, R2;"
                 "MOV_SAT R0.y, fragment.color.secondary.w;"
                 "MUL R0.xyz, R0.y, R0.x;"
-                "MOV R2.xy, fragment.texcoord[" << diffuseunit_ << "].zwzz;"
-                "MOV R2.z, fragment.texcoord[" << normalunit_ << "].z;"
+                "MOV R2.xy, fragment.texcoord[" << _diffuse_unit << "].zwzz;"
+                "MOV R2.z, fragment.texcoord[" << _normal_unit << "].z;"
                 "MUL R2.xyz, R0, R2;"
                 "ADD R2.xyz, R1, R2;"
                 "MOV result.color.xyz, R2;"
@@ -380,23 +380,23 @@ namespace
 
             ss->setAttributeAndModes(new ViewMatrixExtractor(vp.get(), 0), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-            if (diffuse_tex_.valid()) {
-                ss->setTextureAttributeAndModes(diffuseunit_, diffuse_tex_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            if (_diffuse_tex.valid()) {
+                ss->setTextureAttributeAndModes(_diffuse_unit, _diffuse_tex.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
             }
 
-            if (normal_tex_.valid()) {
-                ss->setTextureAttributeAndModes(normalunit_, normal_tex_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+            if (_normal_tex.valid()) {
+                ss->setTextureAttributeAndModes(_normal_unit, _normal_tex.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
             }
 
             addPass(ss.get());
         }
 
     private:
-        int lightnum_;
-        int diffuseunit_;
-        int normalunit_;
-        osg::ref_ptr<osg::Texture2D> diffuse_tex_;
-        osg::ref_ptr<osg::Texture2D> normal_tex_;
+        int _lightnum;
+        int _diffuse_unit;
+        int _normal_unit;
+        osg::ref_ptr<osg::Texture2D> _diffuse_tex;
+        osg::ref_ptr<osg::Texture2D> _normal_tex;
     };
 
 }
@@ -409,32 +409,32 @@ namespace
     // component is required as well as a normal map texture.
     class ArbVpTechnique: public Technique {
     public:
-        ArbVpTechnique(int lightnum, int diffuseunit, int normalunit, osg::Texture2D *diffuse_tex, osg::Texture2D *normal_tex)
+        ArbVpTechnique(int lightnum, int diffuseunit, int normalunit, osg::Texture2D* diffuse_tex, osg::Texture2D* normal_tex)
         :   Technique(),
-            lightnum_(lightnum),
-            diffuseunit_(diffuseunit),
-            normalunit_(normalunit),
-            diffuse_tex_(diffuse_tex),
-            normal_tex_(normal_tex)
+            _lightnum(lightnum),
+            _diffuse_unit(diffuseunit),
+            _normal_unit(normalunit),
+            _diffuse_tex(diffuse_tex),
+            _normal_tex(normal_tex)
         {
         }
 
         META_Technique(
             "ArbVpTechnique",
-            "Two-passes technique, requires ARB_vertex_program and ARB_texture_env_dot3."
+            "Two-passes technique, requires ARB_vertex_program and ARB__textureenv_dot3."
             "Only diffuse lighting, no ambient, no specularity."
         );
 
-        void getRequiredExtensions(std::vector<std::string> &extensions) const
+        void getRequiredExtensions(std::vector<std::string>& extensions) const
         {
             extensions.push_back("GL_ARB_vertex_program");
-            extensions.push_back("GL_ARB_texture_env_dot3");
+            extensions.push_back("GL_ARB__textureenv_dot3");
         }
 
         void define_passes()
         {
-            if (diffuseunit_ != (normalunit_ + 1)) {
-                osg::notify(osg::WARN) << "Warning: osgFX::BumpMapping: this technique (ArbVpTechnique) requires that diffuse_unit == (normal_unit + 1). Effect may not show up properly.\n";
+            if (_diffuse_unit != (_normal_unit + 1)) {
+                osg::notify(osg::WARN) << "Warning: osgFX::BumpMapping: this technique (ArbVpTechnique) requires that _diffuse_unit == (_normal_unit + 1). Effect may not show up properly.\n";
             }
 
             // first pass, diffuse bump
@@ -448,15 +448,15 @@ namespace
                     "ATTRIB v5 = vertex.attrib[15];"
                     "ATTRIB v4 = vertex.attrib[7];"
                     "ATTRIB v3 = vertex.attrib[6];"
-                    "ATTRIB v24 = vertex.texcoord[" << normalunit_ << "];"
-                    "ATTRIB v25 = vertex.texcoord[" << diffuseunit_ << "];"
+                    "ATTRIB v24 = vertex.texcoord[" << _normal_unit << "];"
+                    "ATTRIB v25 = vertex.texcoord[" << _diffuse_unit << "];"
                     "ATTRIB v18 = vertex.normal;"
                     "ATTRIB v16 = vertex.position;"
                     "PARAM s259[4] = { state.matrix.mvp };"
-                    "PARAM s18 = state.light[" << lightnum_ << "].position;"
+                    "PARAM s18 = state.light[" << _lightnum << "].position;"
                     "PARAM s223[4] = { state.matrix.modelview };"
-                    "    MOV result.texcoord[" << diffuseunit_ << "].xy, v25;"
-                    "    MOV result.texcoord[" << normalunit_ << "].xy, v24;"
+                    "    MOV result.texcoord[" << _diffuse_unit << "].xy, v25;"
+                    "    MOV result.texcoord[" << _normal_unit << "].xy, v24;"
                     "    DP3 R0.y, s223[0].xyzx, v3.xyzx;"
                     "    DP3 R0.z, s223[1].xyzx, v3.xyzx;"
                     "    DP3 R0.w, s223[2].xyzx, v3.xyzx;"
@@ -482,23 +482,23 @@ namespace
                 vp->setVertexProgram(vp_oss.str());
                 ss->setAttributeAndModes(vp.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                if (diffuse_tex_.valid()) {
-                    ss->setTextureAttributeAndModes(diffuseunit_, diffuse_tex_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                if (_diffuse_tex.valid()) {
+                    ss->setTextureAttributeAndModes(_diffuse_unit, _diffuse_tex.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
                 }
 
-                if (normal_tex_.valid()) {
-                    ss->setTextureAttributeAndModes(normalunit_, normal_tex_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                if (_normal_tex.valid()) {
+                    ss->setTextureAttributeAndModes(_normal_unit, _normal_tex.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
                 }
 
                 osg::ref_ptr<osg::TexEnvCombine> tec = new osg::TexEnvCombine;
                 tec->setCombine_RGB(osg::TexEnvCombine::DOT3_RGB);
                 tec->setSource0_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
                 tec->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
-                ss->setTextureAttributeAndModes(normalunit_, tec.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                ss->setTextureAttributeAndModes(_normal_unit, tec.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 osg::ref_ptr<osg::TexEnv> te = new osg::TexEnv;
                 te->setMode(osg::TexEnv::MODULATE);
-                ss->setTextureAttributeAndModes(diffuseunit_, te.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                ss->setTextureAttributeAndModes(_diffuse_unit, te.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 addPass(ss.get());
             }
@@ -516,7 +516,7 @@ namespace
                     "ATTRIB v18 = vertex.normal;"
                     "ATTRIB v16 = vertex.position;"
                     "PARAM s259[4] = { state.matrix.mvp };"
-                    "PARAM s18 = state.light[" << lightnum_ << "].position;"
+                    "PARAM s18 = state.light[" << _lightnum << "].position;"
                     "PARAM s631[4] = { state.matrix.modelview.invtrans };"
                     "    DP4 R0.x, s631[0], v18;"
                     "    DP4 R0.y, s631[1], v18;"
@@ -542,8 +542,8 @@ namespace
                 bf->setFunction(osg::BlendFunc::DST_COLOR, osg::BlendFunc::ZERO);                
                 ss->setAttributeAndModes(bf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                ss->setTextureMode(diffuseunit_, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
-                ss->setTextureMode(normalunit_, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+                ss->setTextureMode(_diffuse_unit, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+                ss->setTextureMode(_normal_unit, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
 
                 addPass(ss.get());
             }
@@ -551,11 +551,11 @@ namespace
         }
 
     protected:
-        int lightnum_;
-        int diffuseunit_;
-        int normalunit_;
-        osg::ref_ptr<osg::Texture2D> diffuse_tex_;
-        osg::ref_ptr<osg::Texture2D> normal_tex_;
+        int _lightnum;
+        int _diffuse_unit;
+        int _normal_unit;
+        osg::ref_ptr<osg::Texture2D> _diffuse_tex;
+        osg::ref_ptr<osg::Texture2D> _normal_tex;
     };
 
 }
@@ -563,33 +563,33 @@ namespace
 
 BumpMapping::BumpMapping()
 :   Effect(),
-    lightnum_(0),
-    diffuseunit_(1),
-    normalunit_(0)
+    _lightnum(0),
+    _diffuse_unit(1),
+    _normal_unit(0)
 {
 }
 
-BumpMapping::BumpMapping(const BumpMapping &copy, const osg::CopyOp &copyop)
+BumpMapping::BumpMapping(const BumpMapping& copy, const osg::CopyOp& copyop)
 :   Effect(copy, copyop),
-    lightnum_(copy.lightnum_),
-    diffuseunit_(copy.diffuseunit_),
-    normalunit_(copy.normalunit_),
-    diffuse_tex_(static_cast<osg::Texture2D *>(copyop(copy.diffuse_tex_.get()))),
-    normal_tex_(static_cast<osg::Texture2D *>(copyop(copy.normal_tex_.get())))
+    _lightnum(copy._lightnum),
+    _diffuse_unit(copy._diffuse_unit),
+    _normal_unit(copy._normal_unit),
+    _diffuse_tex(static_cast<osg::Texture2D* >(copyop(copy._diffuse_tex.get()))),
+    _normal_tex(static_cast<osg::Texture2D* >(copyop(copy._normal_tex.get())))
 {
 }
 
 bool BumpMapping::define_techniques()
 {
-    addTechnique(new FullArbTechnique(lightnum_, diffuseunit_, normalunit_, diffuse_tex_.get(), normal_tex_.get()));
-    addTechnique(new ArbVpTechnique(lightnum_, diffuseunit_, normalunit_, diffuse_tex_.get(), normal_tex_.get()));
+    addTechnique(new FullArbTechnique(_lightnum, _diffuse_unit, _normal_unit, _diffuse_tex.get(), _normal_tex.get()));
+    addTechnique(new ArbVpTechnique(_lightnum, _diffuse_unit, _normal_unit, _diffuse_tex.get(), _normal_tex.get()));
     return true;
 }
 
-void BumpMapping::prepareGeometry(osg::Geometry *geo)
+void BumpMapping::prepareGeometry(osg::Geometry* geo)
 {
     osg::ref_ptr<osgUtil::TangentSpaceGenerator> tsg = new osgUtil::TangentSpaceGenerator;
-    tsg->generate(geo, normalunit_);
+    tsg->generate(geo, _normal_unit);
     if (!geo->getVertexAttribArray(6))
         geo->setVertexAttribData(6, osg::Geometry::ArrayData(tsg->getTangentArray(), osg::Geometry::BIND_PER_VERTEX,GL_FALSE));
     if (!geo->getVertexAttribArray(7))
@@ -598,7 +598,7 @@ void BumpMapping::prepareGeometry(osg::Geometry *geo)
         geo->setVertexAttribData(15, osg::Geometry::ArrayData(tsg->getNormalArray(), osg::Geometry::BIND_PER_VERTEX, GL_FALSE));
 }
 
-void BumpMapping::prepareNode(osg::Node *node)
+void BumpMapping::prepareNode(osg::Node* node)
 {
     osg::ref_ptr<TsgVisitor> tv = new TsgVisitor(this);
     node->accept(*tv.get());
@@ -613,30 +613,30 @@ void BumpMapping::prepareChildren()
 void BumpMapping::setUpDemo()
 {
     // generate texture coordinates
-    TexCoordGenerator tcg(diffuseunit_, normalunit_);
+    TexCoordGenerator tcg(_diffuse_unit, _normal_unit);
     for (unsigned i=0; i<getNumChildren(); ++i)
         getChild(i)->accept(tcg);
 
     // set up diffuse texture
-    if (!diffuse_tex_.valid()) {
-        diffuse_tex_ = new osg::Texture2D;
-        diffuse_tex_->setImage(osgDB::readImageFile("Images/whitemetal_diffuse.jpg"));
-        diffuse_tex_->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-        diffuse_tex_->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-        diffuse_tex_->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
-        diffuse_tex_->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
-        diffuse_tex_->setMaxAnisotropy(8);
+    if (!_diffuse_tex.valid()) {
+        _diffuse_tex = new osg::Texture2D;
+        _diffuse_tex->setImage(osgDB::readImageFile("Images/whitemetal_diffuse.jpg"));
+        _diffuse_tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+        _diffuse_tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+        _diffuse_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+        _diffuse_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
+        _diffuse_tex->setMaxAnisotropy(8);
     }
 
     // set up normal map texture
-    if (!normal_tex_.valid()) {
-        normal_tex_ = new osg::Texture2D;
-        normal_tex_->setImage(osgDB::readImageFile("Images/whitemetal_normal.jpg"));
-        normal_tex_->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-        normal_tex_->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-        normal_tex_->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
-        normal_tex_->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
-        normal_tex_->setMaxAnisotropy(8);
+    if (!_normal_tex.valid()) {
+        _normal_tex = new osg::Texture2D;
+        _normal_tex->setImage(osgDB::readImageFile("Images/whitemetal_normal.jpg"));
+        _normal_tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+        _normal_tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+        _normal_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+        _normal_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
+        _normal_tex->setMaxAnisotropy(8);
     }
 
     // generate tangent-space basis vector

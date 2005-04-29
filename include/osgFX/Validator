@@ -36,36 +36,36 @@ namespace osgFX
     public:
         
         Validator();
-        Validator(Effect *effect);
-        Validator(const Validator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        Validator(Effect* effect);
+        Validator(const Validator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osgFX, Validator, VALIDATOR);
 
-        void apply(osg::State &state) const;
-        void compileGLObjects(osg::State &state) const;
+        void apply(osg::State& state) const;
+        void compileGLObjects(osg::State& state) const;
 
-        inline int compare(const osg::StateAttribute &sa) const;
+        inline int compare(const osg::StateAttribute& sa) const;
         
-        inline void disable() { effect_ = 0; }
+        inline void disable() { _effect = 0; }
 
     protected:
         virtual ~Validator() {}
-        Validator &operator=(const Validator &) { return *this; }
+        Validator& operator=(const Validator&) { return *this; }
 
     private:
-        mutable Effect *effect_;
+        mutable Effect* _effect;
     };
 
     // INLINE METHODS
 
-    inline int Validator::compare(const osg::StateAttribute &sa) const
+    inline int Validator::compare(const osg::StateAttribute& sa) const
     {
         // check the types are equal and then create the rhs variable
         //used by the COMPARE_StateAttribute_Paramter macro's below.
         COMPARE_StateAttribute_Types(Validator,sa)
         
         // compare parameters
-        COMPARE_StateAttribute_Parameter(effect_)
+        COMPARE_StateAttribute_Parameter(_effect)
 
         return 0;
     }

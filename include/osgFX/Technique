@@ -58,10 +58,10 @@ namespace osgFX
     public:
         Technique();
 
-        /** get the name of this technique */
+        /** get the name of this Technique */
         virtual const char *techniqueName()        { return "Default"; }
 
-        /** get a brief description of this technique */
+        /** get a brief description of this Technique */
         virtual const char *techniqueDescription() { return "This is the default technique"; }
 
         /**
@@ -69,23 +69,23 @@ namespace osgFX
          to work properly. This method is called from the default implementation
          of validate().
          */
-        virtual void getRequiredExtensions(std::vector<std::string> & /*extensions*/) const {};
+        virtual void getRequiredExtensions(std::vector<std::string>&  /*extensions*/) const {};
 
         /**
          tests whether this technique is valid for the current rendering context.
          The default behavior is to call getRequiredExtensions() and check for
          extension availability.
          */
-        virtual bool validate(osg::State &) const;
+        virtual bool validate(osg::State& ) const;
 
-        /** get the number of rendering passes defined in this technique */
+        /** get the number of rendering passes defined in this Technique */
         inline int getNumPasses() const;
 
         /** get the StateSet object associated to the i-th pass */
-        inline osg::StateSet *getPassStateSet(int i);
+        inline osg::StateSet* getPassStateSet(int i);
 
         /** get the const StateSet object associated to the i-th pass */
-        inline const osg::StateSet *getPassStateSet(int i) const;
+        inline const osg::StateSet* getPassStateSet(int i) const;
 
         /** 
          traverse children with multipass if necessary. By default this method
@@ -93,7 +93,7 @@ namespace osgFX
          override it to change the default behavior.
          Don't call this method directly as it is called by osgFX::Effect
          */
-        inline virtual void traverse(osg::NodeVisitor &nv, Effect *fx);
+        inline virtual void traverse(osg::NodeVisitor& nv, Effect* fx);
         
     protected:
         Technique(const Technique &): osg::Referenced() {}    // copying is nonsense ;)
@@ -104,10 +104,10 @@ namespace osgFX
         inline void dirtyPasses();
 
         /** create a new pass node, add it to the technique and associate a StateSet */
-        void addPass(osg::StateSet *ss = 0);
+        void addPass(osg::StateSet* ss = 0);
         
         /** optional: return a node that overrides the child node on a specified pass */
-        inline virtual osg::Node *getOverrideChild(int)  { return 0; }
+        inline virtual osg::Node* getOverrideChild(int)  { return 0; }
 
         /**
          define the rendering passes that make up this technique. You must
@@ -119,7 +119,7 @@ namespace osgFX
          traverse children with multipass if necessary. Don't call this method
          directly unless you are in a customized version of traverse().
          */
-        void traverse_implementation(osg::NodeVisitor &nv, Effect *fx);
+        void traverse_implementation(osg::NodeVisitor& nv, Effect* fx);
 
     private:
         typedef std::vector<osg::ref_ptr<osg::StateSet> > Pass_list;
@@ -133,12 +133,12 @@ namespace osgFX
         return static_cast<int>(_passes.size());
     }
 
-    inline osg::StateSet *Technique::getPassStateSet(int i)
+    inline osg::StateSet* Technique::getPassStateSet(int i)
     {
         return _passes[i].get();
     }
 
-    inline const osg::StateSet *Technique::getPassStateSet(int i) const
+    inline const osg::StateSet* Technique::getPassStateSet(int i) const
     {
         return _passes[i].get();
     }
@@ -148,7 +148,7 @@ namespace osgFX
         _passes.clear();
     }
     
-    inline void Technique::traverse(osg::NodeVisitor &nv, Effect *fx)
+    inline void Technique::traverse(osg::NodeVisitor& nv, Effect* fx)
     {
         traverse_implementation(nv, fx);
     }

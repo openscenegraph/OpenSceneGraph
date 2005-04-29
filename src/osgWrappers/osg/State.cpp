@@ -19,6 +19,12 @@
 #include <osg/StateSet>
 #include <osg/Viewport>
 
+BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
+	EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
+	EnumLabel(osg::State::ONCE_PER_FRAME);
+	EnumLabel(osg::State::ONCE_PER_ATTRIBUTE);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	BaseType(osg::Referenced);
 	Constructor0();
@@ -113,14 +119,15 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	Method0(const osg::DisplaySettings *, getDisplaySettings);
 	Method1(void, setAbortRenderingPtr, IN, bool *, abortPtr);
 	Method0(bool, getAbortRendering);
-	Method1(void, setReportGLErrors, IN, bool, flag);
-	Method0(bool, getReportGLErrors);
+	Method1(void, setCheckForGLErrors, IN, osg::State::CheckForGLErrors, check);
+	Method0(osg::State::CheckForGLErrors, getCheckForGLErrors);
 	Method1(bool, checkGLErrors, IN, const char *, str);
 	Method1(bool, checkGLErrors, IN, osg::StateAttribute::GLMode, mode);
 	Method1(bool, checkGLErrors, IN, const osg::StateAttribute *, attribute);
 	ReadOnlyProperty(bool, AbortRendering);
 	WriteOnlyProperty(bool *, AbortRenderingPtr);
 	PropertyWithReturnType(unsigned int, ActiveTextureUnit, bool);
+	Property(osg::State::CheckForGLErrors, CheckForGLErrors);
 	PropertyWithReturnType(unsigned int, ClientActiveTextureUnit, bool);
 	Property(unsigned int, ContextID);
 	ReadOnlyProperty(const osg::Viewport *, CurrentViewport);
@@ -134,7 +141,6 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	Property(const osg::Program::PerContextProgram *, LastAppliedProgramObject);
 	ReadOnlyProperty(const osg::Matrix &, ModelViewMatrix);
 	ReadOnlyProperty(const osg::Matrix &, ProjectionMatrix);
-	Property(bool, ReportGLErrors);
 	ReadOnlyProperty(osg::Polytope, ViewFrustum);
 END_REFLECTOR
 

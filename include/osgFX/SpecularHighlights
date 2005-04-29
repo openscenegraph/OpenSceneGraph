@@ -33,7 +33,7 @@ namespace osgFX
     class OSGFX_EXPORT SpecularHighlights: public Effect {
     public:
         SpecularHighlights();
-        SpecularHighlights(const SpecularHighlights &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        SpecularHighlights(const SpecularHighlights& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Effect(osgFX, SpecularHighlights, 
         
@@ -63,10 +63,10 @@ namespace osgFX
         inline void setTextureUnit(int n);
         
         /** get the specular color */
-        inline const osg::Vec4 &getSpecularColor() const;
+        inline const osg::Vec4& getSpecularColor() const;
         
         /** set the specular color */
-        inline void setSpecularColor(const osg::Vec4 &color);
+        inline void setSpecularColor(const osg::Vec4& color);
         
         /** get the specular exponent */
         inline float getSpecularExponent() const;
@@ -76,60 +76,60 @@ namespace osgFX
 
     protected:
         virtual ~SpecularHighlights() {}
-        SpecularHighlights &operator=(const SpecularHighlights &) { return *this; }
+        SpecularHighlights& operator=(const SpecularHighlights&) { return *this; }
 
         bool define_techniques();
 
     private:
-        int lightnum_;
-        int unit_;
-        osg::Vec4 color_;
-        float sexp_;
+        int _lightnum;
+        int _unit;
+        osg::Vec4 _color;
+        float _sexp;
     };
 
     // INLINE METHODS
     
     inline int SpecularHighlights::getLightNumber() const
     {
-        return lightnum_;
+        return _lightnum;
     }
     
     inline void SpecularHighlights::setLightNumber(int n)
     {
-        lightnum_ = n;
+        _lightnum = n;
         dirtyTechniques();
     }
     
     inline int SpecularHighlights::getTextureUnit() const
     {
-        return unit_;
+        return _unit;
     }
     
     inline void SpecularHighlights::setTextureUnit(int n)
     {
-        unit_ = n;
+        _unit = n;
         dirtyTechniques();
     }
 
-    inline const osg::Vec4 &SpecularHighlights::getSpecularColor() const
+    inline const osg::Vec4& SpecularHighlights::getSpecularColor() const
     {
-        return color_;
+        return _color;
     }
     
-    inline void SpecularHighlights::setSpecularColor(const osg::Vec4 &color)
+    inline void SpecularHighlights::setSpecularColor(const osg::Vec4& color)
     {
-        color_ = color;
+        _color = color;
         dirtyTechniques();
     }
 
     inline float SpecularHighlights::getSpecularExponent() const
     {
-        return sexp_;
+        return _sexp;
     }
     
     inline void SpecularHighlights::setSpecularExponent(float e)
     {
-        sexp_ = e;
+        _sexp = e;
         dirtyTechniques();
     }
 

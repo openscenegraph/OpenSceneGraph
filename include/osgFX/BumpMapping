@@ -40,7 +40,7 @@ namespace osgFX
     class OSGFX_EXPORT BumpMapping: public Effect {
     public:
         BumpMapping();
-        BumpMapping(const BumpMapping &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        BumpMapping(const BumpMapping& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Effect(osgFX, BumpMapping, 
         
@@ -80,31 +80,31 @@ namespace osgFX
         inline void setNormalMapTextureUnit(int n);
         
         /** get the diffuse color texture that overrides children's texture */
-        inline osg::Texture2D *getOverrideDiffuseTexture();
+        inline osg::Texture2D* getOverrideDiffuseTexture();
         
         /** get the const diffuse color texture that overrides children's texture */
-        inline const osg::Texture2D *getOverrideDiffuseTexture() const;
+        inline const osg::Texture2D* getOverrideDiffuseTexture() const;
         
         /** set the diffuse color texture that overrides children's texture */
-        inline void setOverrideDiffuseTexture(osg::Texture2D *texture);
+        inline void setOverrideDiffuseTexture(osg::Texture2D* texture);
         
         /** get the normal map texture that overrides children's texture */
-        inline osg::Texture2D *getOverrideNormalMapTexture();
+        inline osg::Texture2D* getOverrideNormalMapTexture();
         
         /** get the const normal map texture that overrides children's texture */
-        inline const osg::Texture2D *getOverrideNormalMapTexture() const;
+        inline const osg::Texture2D* getOverrideNormalMapTexture() const;
 
         /** set the normal map texture that overrides children's texture */
-        inline void setOverrideNormalMapTexture(osg::Texture2D *texture);
+        inline void setOverrideNormalMapTexture(osg::Texture2D* texture);
         
         /**
          prepare a Geometry for bump lighting. Tangent-space basis vectors are
          generated and attached to the geometry as vertex attribute arrays.
          */
-        void prepareGeometry(osg::Geometry *geo);
+        void prepareGeometry(osg::Geometry* geo);
         
         /** prepare a Node for bump lighting, calling prepareGeometry() for each Geometry */
-        void prepareNode(osg::Node *node);
+        void prepareNode(osg::Node* node);
         
         /** prepare children for bump lighting. Actually calls prepareNode() for each child */
         void prepareChildren();
@@ -119,77 +119,77 @@ namespace osgFX
         bool define_techniques();
 
     private:
-        int lightnum_;
-        int diffuseunit_;
-        int normalunit_;
-        osg::ref_ptr<osg::Texture2D> diffuse_tex_;
-        osg::ref_ptr<osg::Texture2D> normal_tex_;
+        int _lightnum;
+        int _diffuse_unit;
+        int _normal_unit;
+        osg::ref_ptr<osg::Texture2D> _diffuse_tex;
+        osg::ref_ptr<osg::Texture2D> _normal_tex;
     };
 
     // INLINE METHODS    
    
     inline int BumpMapping::getLightNumber() const
     {
-        return lightnum_;
+        return _lightnum;
     }
     
     inline void BumpMapping::setLightNumber(int n)
     {
-        lightnum_ = n;
+        _lightnum = n;
         dirtyTechniques();
     }
     
     inline int BumpMapping::getDiffuseTextureUnit() const
     {
-        return diffuseunit_;
+        return _diffuse_unit;
     }
     
     inline void BumpMapping::setDiffuseTextureUnit(int n)
     {
-        diffuseunit_ = n;
+        _diffuse_unit = n;
         dirtyTechniques();
     }
     
     inline int BumpMapping::getNormalMapTextureUnit() const
     {
-        return normalunit_;
+        return _normal_unit;
     }
     
     inline void BumpMapping::setNormalMapTextureUnit(int n)
     {
-        normalunit_ = n;
+        _normal_unit = n;
         dirtyTechniques();
     }
     
-    inline osg::Texture2D *BumpMapping::getOverrideDiffuseTexture()
+    inline osg::Texture2D* BumpMapping::getOverrideDiffuseTexture()
     {
-        return diffuse_tex_.get();
+        return _diffuse_tex.get();
     }
 
-    inline const osg::Texture2D *BumpMapping::getOverrideDiffuseTexture() const
+    inline const osg::Texture2D* BumpMapping::getOverrideDiffuseTexture() const
     {
-        return diffuse_tex_.get();
+        return _diffuse_tex.get();
     }
     
-    inline void BumpMapping::setOverrideDiffuseTexture(osg::Texture2D *texture)
+    inline void BumpMapping::setOverrideDiffuseTexture(osg::Texture2D* texture)
     {
-        diffuse_tex_ = texture;
+        _diffuse_tex = texture;
         dirtyTechniques();
     }
 
-    inline osg::Texture2D *BumpMapping::getOverrideNormalMapTexture()
+    inline osg::Texture2D* BumpMapping::getOverrideNormalMapTexture()
     {
-        return normal_tex_.get();
+        return _normal_tex.get();
     }
 
-    inline const osg::Texture2D *BumpMapping::getOverrideNormalMapTexture() const
+    inline const osg::Texture2D* BumpMapping::getOverrideNormalMapTexture() const
     {
-        return normal_tex_.get();
+        return _normal_tex.get();
     }
     
-    inline void BumpMapping::setOverrideNormalMapTexture(osg::Texture2D *texture)
+    inline void BumpMapping::setOverrideNormalMapTexture(osg::Texture2D* texture)
     {
-        normal_tex_ = texture;
+        _normal_tex = texture;
         dirtyTechniques();
     }
 

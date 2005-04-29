@@ -35,7 +35,7 @@ namespace osgFX
     class OSGFX_EXPORT Cartoon: public Effect {
     public:
         Cartoon();
-        Cartoon(const Cartoon &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        Cartoon(const Cartoon& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         // effect class informations
         META_Effect(
@@ -55,10 +55,10 @@ namespace osgFX
             "Marco Jez; OGLSL port by Mike Weiblen");
 
         /** get the outline color */
-        inline const osg::Vec4 &getOutlineColor() const;
+        inline const osg::Vec4& getOutlineColor() const;
         
         /** set the outline color */
-        inline void setOutlineColor(const osg::Vec4 &color);
+        inline void setOutlineColor(const osg::Vec4& color);
         
         /** get the outline line width */
         inline float getOutlineLineWidth() const;
@@ -74,46 +74,46 @@ namespace osgFX
 
     protected:
         virtual ~Cartoon() {}
-        Cartoon &operator=(const Cartoon &) { return *this; }
+        Cartoon& operator=(const Cartoon&) { return *this; }
 
         bool define_techniques();
 
     private:
-        osg::ref_ptr<osg::Material> wf_mat_;
-        osg::ref_ptr<osg::LineWidth> wf_lw_;
-        int lightnum_;
+        osg::ref_ptr<osg::Material> _wf_mat;
+        osg::ref_ptr<osg::LineWidth> _wf_lw;
+        int _lightnum;
     };
 
     // INLINE METHODS
 
-    inline const osg::Vec4 &Cartoon::getOutlineColor() const
+    inline const osg::Vec4& Cartoon::getOutlineColor() const
     {
-        return wf_mat_->getEmission(osg::Material::FRONT_AND_BACK);
+        return _wf_mat->getEmission(osg::Material::FRONT_AND_BACK);
     }
 
-    inline void Cartoon::setOutlineColor(const osg::Vec4 &color)
+    inline void Cartoon::setOutlineColor(const osg::Vec4& color)
     {
-        wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, color);
+        _wf_mat->setEmission(osg::Material::FRONT_AND_BACK, color);
     }
     
     inline float Cartoon::getOutlineLineWidth() const
     {
-        return wf_lw_->getWidth();
+        return _wf_lw->getWidth();
     }
     
     inline void Cartoon::setOutlineLineWidth(float w)
     {
-        wf_lw_->setWidth(w);
+        _wf_lw->setWidth(w);
     }
     
     inline int Cartoon::getLightNumber() const
     {
-        return lightnum_;
+        return _lightnum;
     }
     
     inline void Cartoon::setLightNumber(int n)
     {
-        lightnum_ = n;
+        _lightnum = n;
         dirtyTechniques();
     }
 

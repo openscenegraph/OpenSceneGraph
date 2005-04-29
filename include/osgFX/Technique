@@ -123,29 +123,29 @@ namespace osgFX
 
     private:
         typedef std::vector<osg::ref_ptr<osg::StateSet> > Pass_list;
-        Pass_list passes_;
+        Pass_list _passes;
     };
 
     // INLINE METHODS
 
     inline int Technique::getNumPasses() const
     {
-        return static_cast<int>(passes_.size());
+        return static_cast<int>(_passes.size());
     }
 
     inline osg::StateSet *Technique::getPassStateSet(int i)
     {
-        return passes_[i].get();
+        return _passes[i].get();
     }
 
     inline const osg::StateSet *Technique::getPassStateSet(int i) const
     {
-        return passes_[i].get();
+        return _passes[i].get();
     }
       
     inline void Technique::dirtyPasses()
     {
-        passes_.clear();
+        _passes.clear();
     }
     
     inline void Technique::traverse(osg::NodeVisitor &nv, Effect *fx)

@@ -26,23 +26,24 @@
 namespace osgFX
 {
 
-    class OSGFX_EXPORT Registry : public osg::Referenced{
+    class OSGFX_EXPORT Registry : public osg::Referenced
+    {
     public:
 
         struct Proxy {
-            Proxy(const Effect *effect)
+            Proxy(const Effect* effect)
             {
                 Registry::instance()->registerEffect(effect);
             }
         };
 
-        typedef std::map<std::string, osg::ref_ptr<const Effect> > Effect_map;
+        typedef std::map<std::string, osg::ref_ptr<const Effect> > EffectMap;
 
-        static Registry *instance();
+        static Registry* instance();
 
-        inline void registerEffect(const Effect *effect);
+        inline void registerEffect(const Effect* effect);
 
-        inline const Effect_map &getEffectMap() const;
+        inline const EffectMap& getEffectMap() const;
 
     protected:
 
@@ -51,21 +52,21 @@ namespace osgFX
         ~Registry() {}
 
     private:
-        Effect_map effects_;
+        EffectMap _effects;
     };
 
     // INLINE METHODS
 
     
 
-    inline const Registry::Effect_map &Registry::getEffectMap() const
+    inline const Registry::EffectMap& Registry::getEffectMap() const
     {
-        return effects_;
+        return _effects;
     }
 
-    inline void Registry::registerEffect(const Effect *effect)
+    inline void Registry::registerEffect(const Effect* effect)
     {
-        effects_[effect->effectName()] = effect;
+        _effects[effect->effectName()] = effect;
     }
 
 }

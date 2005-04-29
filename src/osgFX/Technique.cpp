@@ -12,11 +12,11 @@ Technique::Technique()
 {
 }
 
-void Technique::addPass(osg::StateSet *ss)
+void Technique::addPass(osg::StateSet* ss)
 {
 	if (ss) {
-        passes_.push_back(ss);
-		ss->setRenderBinDetails(static_cast<int>(passes_.size()), "RenderBin");
+        _passes.push_back(ss);
+		ss->setRenderBinDetails(static_cast<int>(_passes.size()), "RenderBin");
     }
 }
 
@@ -34,10 +34,10 @@ bool Technique::validate(osg::State& state) const
     return true;
 }
 
-void Technique::traverse_implementation(osg::NodeVisitor &nv, Effect *fx)
+void Technique::traverse_implementation(osg::NodeVisitor& nv, Effect* fx)
 {
     // define passes if necessary
-    if (passes_.empty()) {
+    if (_passes.empty()) {
         define_passes();
     }
 
@@ -49,7 +49,7 @@ void Technique::traverse_implementation(osg::NodeVisitor &nv, Effect *fx)
 
 		// push the i-th pass' StateSet if necessary
 		if (cv) {
-			cv->pushStateSet(passes_[i].get());
+			cv->pushStateSet(_passes[i].get());
 		}
 
 		// traverse the override node if defined, otherwise

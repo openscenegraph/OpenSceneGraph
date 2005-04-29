@@ -7,38 +7,38 @@ using namespace osgFX;
 
 Validator::Validator()
 :    osg::StateAttribute(),
-	effect_(0)
+	_effect(0)
 {
 }
 
-Validator::Validator(Effect *effect)
+Validator::Validator(Effect* effect)
 :    osg::StateAttribute(),
-    effect_(effect)
+    _effect(effect)
 {
 }
 
-Validator::Validator(const Validator &copy, const osg::CopyOp &copyop)
+Validator::Validator(const Validator& copy, const osg::CopyOp& copyop)
 :    osg::StateAttribute(copy, copyop),
-    effect_(static_cast<Effect *>(copyop(copy.effect_)))
+    _effect(static_cast<Effect*>(copyop(copy._effect)))
 {
 }
 
-void Validator::compileGLObjects(osg::State &state) const
+void Validator::compileGLObjects(osg::State& state) const
 {
 	apply(state);
 }
 
-void Validator::apply(osg::State &state) const
+void Validator::apply(osg::State& state) const
 {
-    if (!effect_) return;
+    if (!_effect) return;
 
-    if (effect_->tech_selected_[state.getContextID()] == 0) {
+    if (_effect->_tech_selected[state.getContextID()] == 0) {
         Effect::Technique_list::iterator i;
         int j = 0;
-        for (i=effect_->techs_.begin(); i!=effect_->techs_.end(); ++i, ++j) {
+        for (i=_effect->_techs.begin(); i!=_effect->_techs.end(); ++i, ++j) {
             if ((*i)->validate(state)) {
-                effect_->sel_tech_[state.getContextID()] = j;
-                effect_->tech_selected_[state.getContextID()] = 1;
+                _effect->_sel_tech[state.getContextID()] = j;
+                _effect->_tech_selected[state.getContextID()] = 1;
                 return;
             }
         }

@@ -12,8 +12,8 @@
 */
 //osgFX - Copyright (C) 2003 Marco Jez
 
-#ifndef OSGFX_EFFECT_
-#define OSGFX_EFFECT_
+#ifndef OSGFX__effect
+#define OSGFX__effect
 
 #include <osgFX/Export>
 #include <osgFX/Technique>
@@ -66,16 +66,16 @@ namespace osgFX
     class OSGFX_EXPORT Effect: public osg::Group {
     public:
         Effect();
-        Effect(const Effect &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        Effect(const Effect& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        virtual inline bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Effect *>(obj) != NULL; }
-        virtual inline const char *libraryName() const { return "osgFX"; }
-        virtual inline const char *className() const { return "Effect"; }
+        virtual inline bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Effect*>(obj) != NULL; }
+        virtual inline const char* libraryName() const { return "osgFX"; }
+        virtual inline const char* className() const { return "Effect"; }
 
-        /** get the name of this effect */
+        /** get the name of this Effect */
         virtual const char *effectName() const        = 0;
         
-        /** get a brief description of this effect */
+        /** get a brief description of this Effect*/
         virtual const char *effectDescription() const = 0;
 
         /** get the effect author's name */
@@ -94,16 +94,16 @@ namespace osgFX
         */
         inline virtual void setUpDemo()   {}
 
-        /** get the number of techniques defined for this effect */
+        /** get the number of techniques defined for this Effect */
         inline int getNumTechniques() const;
         
-        /** get the i-th technique */
-        inline Technique *getTechnique(int i);
+        /** get the i-th Technique */
+        inline Technique* getTechnique(int i);
 
-        /** get the i-th const technique */
-        inline const Technique *getTechnique(int i) const;
+        /** get the i-th const Technique */
+        inline const Technique* getTechnique(int i) const;
 
-        /** get the index of the currently selected technique */
+        /** get the index of the currently selected Technique */
         inline int getSelectedTechnique() const;
 
         enum TechniqueSelection {
@@ -114,10 +114,10 @@ namespace osgFX
         inline void selectTechnique(int i = AUTO_DETECT);
 
         /** custom traversal */
-        virtual void traverse(osg::NodeVisitor &nv);        
+        virtual void traverse(osg::NodeVisitor& nv);        
 
         /** default traversal */
-        inline void inherited_traverse(osg::NodeVisitor &nv);
+        inline void inherited_traverse(osg::NodeVisitor& nv);
 
     protected:
         virtual ~Effect();
@@ -126,8 +126,8 @@ namespace osgFX
         /** force rebuilding of techniques on next traversal */
         inline void dirtyTechniques();
 
-        /** add a technique to the effect */
-        inline void addTechnique(Technique *tech);
+        /** add a technique to the Effect */
+        inline void addTechnique(Technique* tech);
 
         /**
          abstract method to be implemented in derived classes; its purpose
@@ -140,21 +140,21 @@ namespace osgFX
     private:
         friend class Validator;
 
-        bool enabled_;
+        bool _enabled;
 
         typedef std::vector<osg::ref_ptr<Technique> > Technique_list;
-        Technique_list techs_;
+        Technique_list _techs;
 
-        mutable osg::buffered_value<int> sel_tech_;
+        mutable osg::buffered_value<int> _sel_tech;
 
         // use int instead of bool to avoid errors
-        mutable osg::buffered_value<int> tech_selected_;
+        mutable osg::buffered_value<int> _tech_selected;
         
-        int global_sel_tech_;
+        int _global_sel_tech;
 
-        bool techs_defined_;
+        bool _techs_defined;
 
-        osg::ref_ptr<osg::Geode> dummy_for_validation_;
+        osg::ref_ptr<osg::Geode> _dummy_for_validation;
         
         void build_dummy_node();
     };
@@ -163,50 +163,50 @@ namespace osgFX
 
     inline bool Effect::getEnabled() const
     {
-        return enabled_;
+        return _enabled;
     }
 
     inline void Effect::setEnabled(bool v)
     {
-        enabled_ = v;
+        _enabled = v;
     }
     
     inline int Effect::getNumTechniques() const
     {
-        return static_cast<int>(techs_.size());
+        return static_cast<int>(_techs.size());
     }
 
-    inline Technique *Effect::getTechnique(int i)
+    inline Technique* Effect::getTechnique(int i)
     {
-        return techs_[i].get();
+        return _techs[i].get();
     }
 
-    inline const Technique *Effect::getTechnique(int i) const
+    inline const Technique* Effect::getTechnique(int i) const
     {
-        return techs_[i].get();
+        return _techs[i].get();
     }
 
     inline int Effect::getSelectedTechnique() const
     {
-        return global_sel_tech_;
+        return _global_sel_tech;
     }
 
     inline void Effect::selectTechnique(int i)
     {
-        global_sel_tech_ = i;
+        _global_sel_tech = i;
     }
 
-    inline void Effect::addTechnique(Technique *tech)
+    inline void Effect::addTechnique(Technique* tech)
     {
-        techs_.push_back(tech);
+        _techs.push_back(tech);
     }
     
     inline void Effect::dirtyTechniques()
     {
-        techs_defined_ = false;
+        _techs_defined = false;
     }
     
-    inline void Effect::inherited_traverse(osg::NodeVisitor &nv)
+    inline void Effect::inherited_traverse(osg::NodeVisitor& nv)
     {
         typedef osg::Group inherited;
         inherited::traverse(nv);

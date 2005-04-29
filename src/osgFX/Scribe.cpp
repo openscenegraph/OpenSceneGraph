@@ -21,10 +21,10 @@ namespace
     // default technique class
     class DefaultTechnique: public Technique {
     public:
-        DefaultTechnique(osg::Material *wf_mat, osg::LineWidth *wf_lw)
-            : Technique(), wf_mat_(wf_mat), wf_lw_(wf_lw) {}
+        DefaultTechnique(osg::Material* wf_mat, osg::LineWidth* wf_lw)
+            : Technique(), _wf_mat(wf_mat), _wf_lw(wf_lw) {}
 
-            bool validate(osg::State &) const
+            bool validate(osg::State& ) const
             {
                 return strncmp((const char*)glGetString(GL_VERSION), "1.1", 3) >= 0;
             }
@@ -53,9 +53,9 @@ namespace
                 polymode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
                 ss->setAttributeAndModes(polymode.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                ss->setAttributeAndModes(wf_lw_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                ss->setAttributeAndModes(_wf_lw.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                ss->setAttributeAndModes(wf_mat_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                ss->setAttributeAndModes(_wf_mat.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 ss->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
                 ss->setTextureMode(0, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
@@ -66,35 +66,35 @@ namespace
         }
 
     private:
-        osg::ref_ptr<osg::Material> wf_mat_;
-        osg::ref_ptr<osg::LineWidth> wf_lw_;
+        osg::ref_ptr<osg::Material> _wf_mat;
+        osg::ref_ptr<osg::LineWidth> _wf_lw;
     };
 
 }
 
 Scribe::Scribe()
 :    Effect(),
-    wf_mat_(new osg::Material),
-    wf_lw_(new osg::LineWidth)
+    _wf_mat(new osg::Material),
+    _wf_lw(new osg::LineWidth)
 {
-    wf_lw_->setWidth(1.0f);
+    _wf_lw->setWidth(1.0f);
 
-    wf_mat_->setColorMode(osg::Material::OFF);
-    wf_mat_->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
-    wf_mat_->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
-    wf_mat_->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
-    wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    _wf_mat->setColorMode(osg::Material::OFF);
+    _wf_mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    _wf_mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    _wf_mat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    _wf_mat->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 }
 
-Scribe::Scribe(const Scribe &copy, const osg::CopyOp &copyop)
+Scribe::Scribe(const Scribe& copy, const osg::CopyOp& copyop)
 :    Effect(copy, copyop),
-    wf_mat_(static_cast<osg::Material *>(copyop(copy.wf_mat_.get()))),
-    wf_lw_(static_cast<osg::LineWidth *>(copyop(copy.wf_lw_.get())))
+    _wf_mat(static_cast<osg::Material*>(copyop(copy._wf_mat.get()))),
+    _wf_lw(static_cast<osg::LineWidth*>(copyop(copy._wf_lw.get())))
 {
 }
 
 bool Scribe::define_techniques()
 {
-    addTechnique(new DefaultTechnique(wf_mat_.get(), wf_lw_.get()));
+    addTechnique(new DefaultTechnique(_wf_mat.get(), _wf_lw.get()));
     return true;
 }

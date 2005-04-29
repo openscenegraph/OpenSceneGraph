@@ -30,7 +30,7 @@ using namespace osgIntrospection;
 namespace
 {
 
-	template<typename T>
+    template<typename T>
     struct ObjectMatch
     {
         int list_pos;
@@ -46,28 +46,28 @@ namespace
         }
     };
 
-	typedef ObjectMatch<MethodInfo> MethodMatch;
-	typedef ObjectMatch<ConstructorInfo> ConstructorMatch;
+    typedef ObjectMatch<MethodInfo> MethodMatch;
+    typedef ObjectMatch<ConstructorInfo> ConstructorMatch;
 
 }
 
 Type::~Type() 
 { 
-    for (PropertyInfoList::const_iterator i=props_.begin(); i!=props_.end(); ++i)
+    for (PropertyInfoList::const_iterator i=_props.begin(); i!=_props.end(); ++i)
         delete *i;
-    for (MethodInfoList::const_iterator i=methods_.begin(); i!=methods_.end(); ++i)
+    for (MethodInfoList::const_iterator i=_methods.begin(); i!=_methods.end(); ++i)
         delete *i;
-	for (ConstructorInfoList::const_iterator i=cons_.begin(); i!=cons_.end(); ++i)
-		delete *i;
+    for (ConstructorInfoList::const_iterator i=_cons.begin(); i!=_cons.end(); ++i)
+        delete *i;
 
-    delete rw_;
-	delete cmp_;
+    delete _rw;
+    delete _cmp;
 }
 
-bool Type::isSubclassOf(const Type &type) const
+bool Type::isSubclassOf(const Type& type) const
 {
     check_defined();
-    for (TypeList::const_iterator i=base_.begin(); i!=base_.end(); ++i)
+    for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
         if (**i == type.getStdTypeInfo())
             return true;
@@ -77,7 +77,7 @@ bool Type::isSubclassOf(const Type &type) const
     return false;
 }
 
-const MethodInfo *Type::getCompatibleMethod(const std::string &name, const ValueList &values, bool inherit) const
+const MethodInfo *Type::getCompatibleMethod(const std::string& name, const ValueList& values, bool inherit) const
 {
     check_defined();
 
@@ -89,7 +89,7 @@ const MethodInfo *Type::getCompatibleMethod(const std::string &name, const Value
         methods = &allmethods;
     }
     else
-        methods = &methods_;
+        methods = &_methods;
 
     typedef std::vector<MethodMatch> MatchList;
     MatchList matches;
@@ -100,15 +100,15 @@ const MethodInfo *Type::getCompatibleMethod(const std::string &name, const Value
         const MethodInfo *mi = *j;
         if (mi->getName().compare(name) == 0)
         {
-			float match;
-			if (areArgumentsCompatible(values, mi->getParameters(), match))
-			{
-				MethodMatch mm;
+            float match;
+            if (areArgumentsCompatible(values, mi->getParameters(), match))
+            {
+                MethodMatch mm;
                 mm.list_pos = pos;
                 mm.match = match;
                 mm.object = mi;
                 matches.push_back(mm);
-			}
+            }
         }
     }
 
@@ -121,24 +121,24 @@ const MethodInfo *Type::getCompatibleMethod(const std::string &name, const Value
     return 0;
 }
 
-const MethodInfo *Type::getMethod(const std::string &name, const ParameterInfoList &params, bool inherit) const
+const MethodInfo *Type::getMethod(const std::string& name, const ParameterInfoList& params, bool inherit) const
 {
     check_defined();
-    for (MethodInfoList::const_iterator j=methods_.begin(); j!=methods_.end(); ++j)
+    for (MethodInfoList::const_iterator j=_methods.begin(); j!=_methods.end(); ++j)
     {
         const MethodInfo *mi = *j;
         if (mi->getName().compare(name) == 0)
         {
-			if (areParametersCompatible(params, mi->getParameters()))
-			{
-				return mi;
-			}
+            if (areParametersCompatible(params, mi->getParameters()))
+            {
+                return mi;
+            }
         }
     }
 
     if (inherit)
     {
-        for (TypeList::const_iterator i=base_.begin(); i!=base_.end(); ++i)
+        for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
         {
             const MethodInfo *mi = (*i)->getMethod(name, params, true);
             if (mi) return mi;
@@ -148,30 +148,30 @@ const MethodInfo *Type::getMethod(const std::string &name, const ParameterInfoLi
     return 0;
 }
 
-void Type::getInheritedProviders(CustomAttributeProviderList &providers) const
+void Type::getInheritedProviders(CustomAttributeProviderList& providers) const
 {
     check_defined();
-    providers.assign(base_.begin(), base_.end());
+    providers.assign(_base.begin(), _base.end());
 }
 
-const PropertyInfo *Type::getProperty(const std::string &name, const Type &ptype, const ParameterInfoList &indices, bool inherit) const
+const PropertyInfo *Type::getProperty(const std::string& name, const Type& ptype, const ParameterInfoList& indices, bool inherit) const
 {
     check_defined();
-    for (PropertyInfoList::const_iterator i=props_.begin(); i!=props_.end(); ++i)
+    for (PropertyInfoList::const_iterator i=_props.begin(); i!=_props.end(); ++i)
     {
         const PropertyInfo *pi = *i;
         if (pi->getName() == name && pi->getPropertyType() == ptype)
         {
-			if (areParametersCompatible(indices, pi->getIndexParameters()))
-			{
-				return pi;
-			}
+            if (areParametersCompatible(indices, pi->getIndexParameters()))
+            {
+                return pi;
+            }
         }
     }
 
     if (inherit)
     {
-        for (TypeList::const_iterator i=base_.begin(); i!=base_.end(); ++i)
+        for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
         {
             const PropertyInfo *pi = (*i)->getProperty(name, ptype, indices, true);
             if (pi) return pi;
@@ -181,55 +181,55 @@ const PropertyInfo *Type::getProperty(const std::string &name, const Type &ptype
     return 0;
 }
 
-Value Type::invokeMethod(const std::string &name, const Value &instance, ValueList &args, bool inherit) const
+Value Type::invokeMethod(const std::string& name, const Value& instance, ValueList& args, bool inherit) const
 {
     check_defined();
     const MethodInfo *mi = getCompatibleMethod(name, args, inherit);
-    if (!mi) throw MethodNotFoundException(name, name_);
+    if (!mi) throw MethodNotFoundException(name, _name);
     return mi->invoke(instance, args);
 }
 
-Value Type::invokeMethod(const std::string &name, Value &instance, ValueList &args, bool inherit) const
+Value Type::invokeMethod(const std::string& name, Value& instance, ValueList& args, bool inherit) const
 {
     check_defined();
     const MethodInfo *mi = getCompatibleMethod(name, args, inherit);
-    if (!mi) throw MethodNotFoundException(name, name_);
+    if (!mi) throw MethodNotFoundException(name, _name);
     return mi->invoke(instance, args);
 }
 
-void Type::getAllProperties(PropertyInfoList &props) const
+void Type::getAllProperties(PropertyInfoList& props) const
 {
     check_defined();
-    std::copy(props_.begin(), props_.end(),    std::back_inserter(props));
-    for (TypeList::const_iterator i=base_.begin(); i!=base_.end(); ++i)
+    std::copy(_props.begin(), _props.end(),    std::back_inserter(props));
+    for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
         (*i)->getAllProperties(props);
     }
 }
 
-void Type::getAllMethods(MethodInfoList &methods) const
+void Type::getAllMethods(MethodInfoList& methods) const
 {
     check_defined();
-    std::copy(methods_.begin(), methods_.end(), std::back_inserter(methods));
-    for (TypeList::const_iterator i=base_.begin(); i!=base_.end(); ++i)
+    std::copy(_methods.begin(), _methods.end(), std::back_inserter(methods));
+    for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
         (*i)->getAllMethods(methods);
     }
 }
 
-Value Type::createInstance(ValueList &args) const
+Value Type::createInstance(ValueList& args) const
 {
-	if (isAbstract())
-		throw TypeIsAbstractException(ti_);
+    if (isAbstract())
+        throw TypeIsAbstractException(_ti);
 
-	const ConstructorInfo *ci = getCompatibleConstructor(args);
-	if (!ci)
-		throw ConstructorNotFoundException(ti_);
+    const ConstructorInfo *ci = getCompatibleConstructor(args);
+    if (!ci)
+        throw ConstructorNotFoundException(_ti);
 
-	return ci->createInstance(args);
+    return ci->createInstance(args);
 }
 
-const ConstructorInfo *Type::getCompatibleConstructor(const ValueList &values) const
+const ConstructorInfo *Type::getCompatibleConstructor(const ValueList& values) const
 {
     check_defined();
 
@@ -237,17 +237,17 @@ const ConstructorInfo *Type::getCompatibleConstructor(const ValueList &values) c
     MatchList matches;
 
     int pos = 0;
-    for (ConstructorInfoList::const_iterator j=cons_.begin(); j!=cons_.end(); ++j, ++pos)
+    for (ConstructorInfoList::const_iterator j=_cons.begin(); j!=_cons.end(); ++j, ++pos)
     {
-		float match;
-		if (areArgumentsCompatible(values, (*j)->getParameters(), match))
-		{
-			ConstructorMatch mm;
+        float match;
+        if (areArgumentsCompatible(values, (*j)->getParameters(), match))
+        {
+            ConstructorMatch mm;
             mm.list_pos = pos;
             mm.match = match;
             mm.object = *j;
             matches.push_back(mm);
-		}
+        }
     }
 
     if (!matches.empty())
@@ -259,14 +259,14 @@ const ConstructorInfo *Type::getCompatibleConstructor(const ValueList &values) c
     return 0;
 }
 
-const ConstructorInfo *Type::getConstructor(const ParameterInfoList &params) const
+const ConstructorInfo *Type::getConstructor(const ParameterInfoList& params) const
 {
     check_defined();
 
-	for (ConstructorInfoList::const_iterator j=cons_.begin(); j!=cons_.end(); ++j)
+    for (ConstructorInfoList::const_iterator j=_cons.begin(); j!=_cons.end(); ++j)
     {
-		if (areParametersCompatible(params, (*j)->getParameters()))
-			return *j;
+        if (areParametersCompatible(params, (*j)->getParameters()))
+            return *j;
     }
 
     return 0;

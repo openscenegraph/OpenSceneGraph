@@ -16,7 +16,7 @@
 
 using namespace osgIntrospection;
 
-bool osgIntrospection::areParametersCompatible(const ParameterInfoList &pl1, const ParameterInfoList &pl2)
+bool osgIntrospection::areParametersCompatible(const ParameterInfoList& pl1, const ParameterInfoList& pl2)
 {
     if (pl1.size() == pl2.size())
     {
@@ -37,20 +37,20 @@ bool osgIntrospection::areParametersCompatible(const ParameterInfoList &pl1, con
         }
     }
 
-	return false;
+    return false;
 }
 
-bool osgIntrospection::areArgumentsCompatible(const ValueList &vl, const ParameterInfoList &pl, float &match)
+bool osgIntrospection::areArgumentsCompatible(const ValueList& vl, const ParameterInfoList& pl, float &match)
 {
-	if (pl.empty())
-	{
-		if (vl.empty())
-		{
-			match = 1.0f;
-			return true;
-		}
-		return false;
-	}
+    if (pl.empty())
+    {
+        if (vl.empty())
+        {
+            match = 1.0f;
+            return true;
+        }
+        return false;
+    }
 
     ParameterInfoList::const_iterator i1 = pl.begin();
     ValueList::const_iterator i2 = vl.begin();
@@ -59,27 +59,27 @@ bool osgIntrospection::areArgumentsCompatible(const ValueList &vl, const Paramet
 
     for (; i1<pl.end(); ++i1)
     {
-		if (i2 == vl.end())
-		{
-			if ((*i1)->getDefaultValue().isEmpty())
-				return false;
-			continue;
-		}
+        if (i2 == vl.end())
+        {
+            if ((*i1)->getDefaultValue().isEmpty())
+                return false;
+            continue;
+        }
 
         if ((*i1)->getParameterType() != i2->getType())
         {
             if (i2->tryConvertTo((*i1)->getParameterType()).isEmpty())
             {
-				return false;
+                return false;
             }                        
         }
         else
             ++exact_args;
 
-		++i2;
+        ++i2;
     }
 
-	match = static_cast<float>(exact_args) / pl.size();
-	return true;
+    match = static_cast<float>(exact_args) / pl.size();
+    return true;
 }
 

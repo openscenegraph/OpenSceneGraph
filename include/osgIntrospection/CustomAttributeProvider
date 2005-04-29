@@ -30,7 +30,7 @@ namespace osgIntrospection
     class CustomAttributeProvider;
 
     // vector of attributes
-    typedef std::vector<const CustomAttribute *> CustomAttributeList;
+    typedef std::vector<const CustomAttribute* > CustomAttributeList;
 
     // vector of attribute providers
     typedef std::vector<const CustomAttributeProvider *> CustomAttributeProviderList;
@@ -44,19 +44,19 @@ namespace osgIntrospection
     {
     public:
         /// Returns the const list of custom attributes.
-        inline const CustomAttributeList &getCustomAttributes() const
+        inline const CustomAttributeList& getCustomAttributes() const
         {
             return attribs_;
         }
 
         /// Returns the list of custom attributes.
-        inline CustomAttributeList &getCustomAttributes() 
+        inline CustomAttributeList& getCustomAttributes() 
         {
             return attribs_;
         }
 
         /// Adds a new attribute to the list.
-        inline CustomAttributeProvider *addAttribute(const CustomAttribute *attr)
+        inline CustomAttributeProvider *addAttribute(const CustomAttribute* attr)
         {
             attribs_.push_back(attr);
             return this;
@@ -65,7 +65,7 @@ namespace osgIntrospection
         /// Returns whether at least one attribute of the given type is
         /// present in the attribute list. If the inherit parameter is
         /// set to true, the search is forwarded to base types.
-        bool isDefined(const Type &type, bool inherit) const;
+        bool isDefined(const Type& type, bool inherit) const;
 
         /// Returns whether at least one attribute of the given type is
         /// present in the attribute list. If the inherit parameter is
@@ -90,7 +90,7 @@ namespace osgIntrospection
         /// Searchs for an attribute of the given type and returns a pointer
         /// to it if found, a null pointer otherwise. If the inherit parameter
         /// is set to true, the search is forwarded to base types.
-        const CustomAttribute *getAttribute(const Type &type, bool inherit) const;
+        const CustomAttribute* getAttribute(const Type& type, bool inherit) const;
 
         /// Searchs for an attribute of the given type and returns a pointer
         /// to it if found, a null pointer otherwise. If the inherit parameter
@@ -114,7 +114,7 @@ namespace osgIntrospection
         }
 
     protected:
-        virtual void getInheritedProviders(CustomAttributeProviderList &providers) const = 0;
+        virtual void getInheritedProviders(CustomAttributeProviderList& providers) const = 0;
         virtual ~CustomAttributeProvider() {}
 
     private:

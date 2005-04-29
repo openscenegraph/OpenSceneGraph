@@ -63,76 +63,76 @@ namespace osgIntrospection
     protected:
         /// Direct initialization constructor. Parameter 'name' is the name
         /// of the type being reflected and 'ns' is its namespace.
-        Reflector(const std::string &name, const std::string &ns, bool abstract = false);
+        Reflector(const std::string& name, const std::string& ns, bool abstract = false);
 
         /// Direct initialization constructor. Parameter 'qname' is the 
         /// fully-qualified name of the type being reflected, i.e. containing
         /// both the namespace and the name (separated by "::"). 
-        Reflector(const std::string &qname, bool abstract = false);
+        Reflector(const std::string& qname, bool abstract = false);
 
     protected:
 
         /// Returns the Type object being described.
-        Type *getType() { return type_; }
+        Type* getType() { return _type; }
 
         /// Declares a new base type for the current type.
-        void addBaseType(const Type &type);
+        void addBaseType(const Type& type);
         
         /// Sets the comparator object for the current type.
-        void setComparator(const Comparator *cmp);
+        void setComparator(const Comparator* cmp);
 
         /// Adds a property description to the current type.
-        PropertyInfo *addProperty(PropertyInfo *pi);
+        PropertyInfo* addProperty(PropertyInfo* pi);
 
         /// Adds a method description to the current type.
-        MethodInfo *addMethod(MethodInfo *mi);
+        MethodInfo* addMethod(MethodInfo* mi);
 
         /// Adds an enumeration label to the current type.
-        void addEnumLabel(int v, const std::string &label, bool strip_namespace = true);
+        void addEnumLabel(int v, const std::string& label, bool strip_namespace = true);
 
         /// Adds a constructor description to the current type.
         /// As soon as a constructor is added through this method,
         /// the automatically-generated default constructor is
         /// removed.
-        ConstructorInfo *addConstructor(ConstructorInfo *ci);
+        ConstructorInfo* addConstructor(ConstructorInfo* ci);
 
         /// Returns a string containing the qualified version of 'name'.
-        std::string qualifyName(const std::string name) const;
+        std::string qualifyName(const std::string& name) const;
 
         /// Adds a custom attribute to the type being described.
-        CustomAttributeProvider *addAttribute(const CustomAttribute *attrib);
+        CustomAttributeProvider *addAttribute(const CustomAttribute* attrib);
 
         /// Sets the current type's ReaderWriter object.
-        void setReaderWriter(const ReaderWriter *rw);
+        void setReaderWriter(const ReaderWriter* rw);
 
     private:
-		struct PtrConstructor: ConstructorInfo
-		{
-			PtrConstructor(const Type *pt)
-			:	ConstructorInfo(*pt, ParameterInfoList())
-			{
-			}
+        struct PtrConstructor: ConstructorInfo
+        {
+            PtrConstructor(const Type* pt)
+            :    ConstructorInfo(*pt, ParameterInfoList())
+            {
+            }
 
-			Value createInstance(ValueList &) const { T* x = 0; return x; }
-		};
-		
-		struct ConstPtrConstructor: ConstructorInfo
-		{
-			ConstPtrConstructor(const Type *pt)
-			:	ConstructorInfo(*pt, ParameterInfoList())
-			{
-			}
-			
-			Value createInstance(ValueList &) const { const T *x = 0; return x; }
-		};
-		
+            Value createInstance(ValueList& ) const { T* x = 0; return x; }
+        };
+        
+        struct ConstPtrConstructor: ConstructorInfo
+        {
+            ConstPtrConstructor(const Type* pt)
+            :    ConstructorInfo(*pt, ParameterInfoList())
+            {
+            }
+            
+            Value createInstance(ValueList& ) const { const T *x = 0; return x; }
+        };
+        
         void init();
-        static std::string purify(const std::string &s);
-        static void split_qualified_name(const std::string &q, std::string &n, std::string &ns);
+        static std::string purify(const std::string& s);
+        static void split_qualified_name(const std::string& q, std::string& n, std::string& ns);
 
-		typedef std::vector<MethodInfo *> TempMethodList;
-		TempMethodList temp_methods_;
-        Type *type_;
+        typedef std::vector<MethodInfo* > TempMethodList;
+        TempMethodList _temp_methods;
+        Type* _type;
     };
 
     /// This reflector ought to be used to describe types that can be
@@ -144,14 +144,14 @@ namespace osgIntrospection
     struct ValueReflector: Reflector<T>
     {
         typedef ValueReflector<T> inherited;
-        typedef ValueInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
+        typedef ValueInstanceCreator<typename Reflector<T>::reflected_type> instance_creato_rtype;
 
-        ValueReflector(const std::string &name, const std::string &ns)
+        ValueReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, false)
         {
         }
 
-        ValueReflector(const std::string &qname)
+        ValueReflector(const std::string& qname)
         :    Reflector<T>(qname, false)
         {
         }    
@@ -164,14 +164,14 @@ namespace osgIntrospection
     struct AbstractObjectReflector: Reflector<T>
     {
         typedef AbstractObjectReflector<T> inherited;
-        typedef DummyInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
+        typedef DummyInstanceCreator<typename Reflector<T>::reflected_type> instance_creato_rtype;
 
-        AbstractObjectReflector(const std::string &name, const std::string &ns)
+        AbstractObjectReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, true)
         {
         }
 
-        AbstractObjectReflector(const std::string &qname)
+        AbstractObjectReflector(const std::string& qname)
         :    Reflector<T>(qname, true)
         {
         }
@@ -186,14 +186,14 @@ namespace osgIntrospection
     struct ObjectReflector: Reflector<T>
     {
         typedef ObjectReflector<T> inherited;
-        typedef ObjectInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
+        typedef ObjectInstanceCreator<typename Reflector<T>::reflected_type> instance_creato_rtype;
 
-        ObjectReflector(const std::string &name, const std::string &ns)
+        ObjectReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, false)
         {
         }
 
-        ObjectReflector(const std::string &qname)
+        ObjectReflector(const std::string& qname)
         :    Reflector<T>(qname, false)
         {
         }
@@ -206,22 +206,22 @@ namespace osgIntrospection
     template<typename T>
     struct AtomicValueReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-	
-        AtomicValueReflector(const std::string &name, const std::string &ns)
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+    
+        AtomicValueReflector(const std::string& name, const std::string& ns)
         :    ValueReflector<T>(name, ns)
         {
-			setReaderWriter(new StdReaderWriter<T>);
-			setComparator(new PartialOrderComparator<T>);
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
+            setReaderWriter(new StdReaderWriter<T>);
+            setComparator(new PartialOrderComparator<T>);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
         }
 
-        AtomicValueReflector(const std::string &qname)
+        AtomicValueReflector(const std::string& qname)
         :    ValueReflector<T>(qname)
         {
-			setReaderWriter(new StdReaderWriter<T>);
-			setComparator(new PartialOrderComparator<T>);
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));			
+            setReaderWriter(new StdReaderWriter<T>);
+            setComparator(new PartialOrderComparator<T>);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));            
         }
     };
 
@@ -232,22 +232,22 @@ namespace osgIntrospection
     struct EnumReflector: ValueReflector<T>
     {
         typedef EnumReflector<T> inherited;
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
 
-        EnumReflector(const std::string &name, const std::string &ns)
+        EnumReflector(const std::string& name, const std::string& ns)
         :    ValueReflector<T>(name, ns)
         {
-			setReaderWriter(new EnumReaderWriter<T>);
-			setComparator(new TotalOrderComparator<T>);
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
+            setReaderWriter(new EnumReaderWriter<T>);
+            setComparator(new TotalOrderComparator<T>);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
         }
 
-        EnumReflector(const std::string &qname)
+        EnumReflector(const std::string& qname)
         :    ValueReflector<T>(qname)
         {
-			setReaderWriter(new EnumReaderWriter<T>);
-			setComparator(new TotalOrderComparator<T>);
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
+            setReaderWriter(new EnumReaderWriter<T>);
+            setComparator(new TotalOrderComparator<T>);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
         }
     };
 
@@ -257,66 +257,66 @@ namespace osgIntrospection
     template<typename T, typename VT>
     struct StdVectorReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-	
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+    
         struct Getter: PropertyGetter
         {
-            virtual Value get(Value &instance, int i) const
+            virtual Value get(Value& instance, int i) const
             {
-                T &ctr = variant_cast<T &>(instance);
+                T& ctr = variant_cast<T& >(instance);
                 return ctr.at(i);
             }
             
-            virtual Value get(const Value &instance, int i) const
+            virtual Value get(const Value& instance, int i) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 return ctr.at(i);
             }
         };
 
         struct Setter: PropertySetter
         {
-            virtual void set(Value &instance, int i, const Value &v) const
+            virtual void set(Value& instance, int i, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
-                ctr.at(i) = variant_cast<const typename T::value_type &>(v);
+                T& ctr = variant_cast<T& >(instance);
+                ctr.at(i) = variant_cast<const typename T::value_type& >(v);
             }
         };
 
         struct Counter: PropertyCounter
         {
-            virtual int count(const Value &instance) const
+            virtual int count(const Value& instance) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 return static_cast<int>(ctr.size());
             }
         };
 
         struct Adder: PropertyAdder
         {
-            virtual void add(Value &instance, const Value &v) const
+            virtual void add(Value& instance, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
-                ctr.push_back(variant_cast<const typename T::value_type &>(v));
+                T& ctr = variant_cast<T& >(instance);
+                ctr.push_back(variant_cast<const typename T::value_type& >(v));
             }
         };
 
         struct Remover: PropertyRemover
         {
-			virtual void remove(Value &instance, int i) const
-			{
-				T &ctr = variant_cast<T &>(instance);
-				typename T::iterator j=ctr.begin();
-				std::advance(j, i);
-				ctr.erase(j);
-			}
+            virtual void remove(Value& instance, int i) const
+            {
+                T& ctr = variant_cast<T& >(instance);
+                typename T::iterator j=ctr.begin();
+                std::advance(j, i);
+                ctr.erase(j);
+            }
         };
 
-        StdVectorReflector(const std::string &name): ValueReflector<T>(name)
+        StdVectorReflector(const std::string& name): ValueReflector<T>(name)
         {
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-			
-            PropertyInfo *pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertySetAttribute(new Setter));
             pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
@@ -338,21 +338,21 @@ namespace osgIntrospection
     template<typename T, typename VT>
     struct StdSetReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-	
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+    
         struct Getter: PropertyGetter
         {
-            virtual Value get(Value &instance, int i) const
+            virtual Value get(Value& instance, int i) const
             {
-                T &ctr = variant_cast<T &>(instance);
+                T& ctr = variant_cast<T& >(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
             }
 
-            virtual Value get(const Value &instance, int i) const
+            virtual Value get(const Value& instance, int i) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 typename T::const_iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
@@ -361,38 +361,38 @@ namespace osgIntrospection
 
         struct Counter: PropertyCounter
         {
-            virtual int count(const Value &instance) const
+            virtual int count(const Value& instance) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 return static_cast<int>(ctr.size());
             }
         };
 
         struct Adder: PropertyAdder
         {
-            virtual void add(Value &instance, const Value &v) const
+            virtual void add(Value& instance, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
-                ctr.insert(variant_cast<const typename T::value_type &>(v));
+                T& ctr = variant_cast<T& >(instance);
+                ctr.insert(variant_cast<const typename T::value_type& >(v));
             }
         };
         
         struct Remover: PropertyRemover
         {
-			virtual void remove(Value &instance, int i) const
-			{
-				T &ctr = variant_cast<T &>(instance);
-				typename T::iterator j=ctr.begin();
-				std::advance(j, i);
-				ctr.erase(j);
-			}
+            virtual void remove(Value& instance, int i) const
+            {
+                T& ctr = variant_cast<T& >(instance);
+                typename T::iterator j=ctr.begin();
+                std::advance(j, i);
+                ctr.erase(j);
+            }
         };
 
-        StdSetReflector(const std::string &name): ValueReflector<T>(name)
+        StdSetReflector(const std::string& name): ValueReflector<T>(name)
         {
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-			
-            PropertyInfo *pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
             pi->addAttribute(new CustomPropertyAddAttribute(new Adder));
@@ -413,21 +413,21 @@ namespace osgIntrospection
     template<typename T, typename VT>
     struct StdListReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-	
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+    
         struct Getter: PropertyGetter
         {
-            virtual Value get(Value &instance, int i) const
+            virtual Value get(Value& instance, int i) const
             {
-                T &ctr = variant_cast<T &>(instance);
+                T& ctr = variant_cast<T& >(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
             }
 
-            virtual Value get(const Value &instance, int i) const
+            virtual Value get(const Value& instance, int i) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 typename T::const_iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
@@ -436,49 +436,49 @@ namespace osgIntrospection
 
         struct Setter: PropertySetter
         {
-            virtual void set(Value &instance, int i, const Value &v) const
+            virtual void set(Value& instance, int i, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
+                T& ctr = variant_cast<T& >(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
-                *j = variant_cast<const typename T::value_type &>(v);
+                *j = variant_cast<const typename T::value_type& >(v);
             }
         };
 
         struct Counter: PropertyCounter
         {
-            virtual int count(const Value &instance) const
+            virtual int count(const Value& instance) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 return static_cast<int>(ctr.size());
             }
         };
 
         struct Adder: PropertyAdder
         {
-            virtual void add(Value &instance, const Value &v) const
+            virtual void add(Value& instance, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
-                ctr.push_back(variant_cast<const typename T::value_type &>(v));
+                T& ctr = variant_cast<T& >(instance);
+                ctr.push_back(variant_cast<const typename T::value_type& >(v));
             }
         };
 
         struct Remover: PropertyRemover
         {
-			virtual void remove(Value &instance, int i) const
-			{
-				T &ctr = variant_cast<T &>(instance);
-				typename T::iterator j=ctr.begin();
-				std::advance(j, i);
-				ctr.erase(j);
-			}
+            virtual void remove(Value& instance, int i) const
+            {
+                T& ctr = variant_cast<T& >(instance);
+                typename T::iterator j=ctr.begin();
+                std::advance(j, i);
+                ctr.erase(j);
+            }
         };
 
-        StdListReflector(const std::string &name): ValueReflector<T>(name)
+        StdListReflector(const std::string& name): ValueReflector<T>(name)
         {
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-			
-            PropertyInfo *pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertySetAttribute(new Setter));
             pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
@@ -500,29 +500,29 @@ namespace osgIntrospection
     template<typename T, typename IT, typename VT>
     struct StdMapReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-	
-		typedef typename T::iterator iterator;
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+    
+        typedef typename T::iterator iterator;
         typedef typename T::const_iterator const_iterator;
         typedef typename T::key_type key_type;
         typedef typename T::mapped_type mapped_type;
 
         struct Getter: PropertyGetter
         {
-            virtual Value get(Value &instance, const ValueList &indices) const
+            virtual Value get(Value& instance, const ValueList& indices) const
             {
-                T& ctr = variant_cast<T &>(instance);
-                const key_type& key = variant_cast<const key_type &>(indices.front());
+                T& ctr = variant_cast<T& >(instance);
+                const key_type& key = variant_cast<const key_type& >(indices.front());
                 
                 iterator i = ctr.find(key);
                 if (i == ctr.end()) return Value();
                 return i->second;
             }
             
-            virtual Value get(const Value &instance, const ValueList &indices) const
+            virtual Value get(const Value& instance, const ValueList& indices) const
             {
-                const T& ctr = variant_cast<const T &>(instance);
-                const key_type& key = variant_cast<const key_type &>(indices.front());
+                const T& ctr = variant_cast<const T& >(instance);
+                const key_type& key = variant_cast<const key_type& >(indices.front());
                 
                 const_iterator i = ctr.find(key);
                 if (i == ctr.end()) return Value();
@@ -532,51 +532,51 @@ namespace osgIntrospection
 
         struct Setter: PropertySetter
         {
-            virtual void set(Value &instance, const ValueList &indices, const Value &v) const
+            virtual void set(Value& instance, const ValueList& indices, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
-                ctr.insert(std::make_pair(variant_cast<const key_type &>(indices.front()), variant_cast<const mapped_type &>(v)));
+                T& ctr = variant_cast<T& >(instance);
+                ctr.insert(std::make_pair(variant_cast<const key_type& >(indices.front()), variant_cast<const mapped_type& >(v)));
             }
         };
 
         struct Indexer: IndexInfo
         {
-            ParameterInfoList params_;
-            const Type &itype_;
+            ParameterInfoList _params;
+            const Type& _itype;
 
             Indexer()
-            :    itype_(typeof(IT))
+            :    _itype(typeof(IT))
             {
-                params_.push_back(new ParameterInfo("key", typeof(key_type), 0, ParameterInfo::IN));
+                _params.push_back(new ParameterInfo("key", typeof(key_type), 0, ParameterInfo::IN));
             }
 
             virtual ~Indexer()
             {
-                delete params_.front();
+                delete _params.front();
             }
 
-            virtual const ParameterInfoList &getIndexParameters() const
+            virtual const ParameterInfoList& getIndexParameters() const
             {
-                return params_;
+                return _params;
             }
 
-            virtual void getIndexValueSet(int /*whichindex*/, const Value &instance, ValueList &values) const
+            virtual void getIndexValueSet(int /*whichindex*/, const Value& instance, ValueList& values) const
             {
-                const T &ctr = variant_cast<const T &>(instance);
+                const T& ctr = variant_cast<const T& >(instance);
                 for (const_iterator i=ctr.begin(); 
                     i!=ctr.end(); 
                     ++i)
                 {
-                    values.push_back(Value(i->first).convertTo(itype_));
+                    values.push_back(Value(i->first).convertTo(_itype));
                 }
             }
         };
 
-        StdMapReflector(const std::string &name): ValueReflector<T>(name)
+        StdMapReflector(const std::string& name): ValueReflector<T>(name)
         {
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-			
-            PropertyInfo *pi = new PropertyInfo(typeof(T), typeof(typename T::mapped_type), "Items", 0, 0);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::mapped_type), "Items", 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertySetAttribute(new Setter));
             pi->addAttribute(new CustomIndexAttribute(new Indexer));
@@ -594,51 +594,51 @@ namespace osgIntrospection
     template<typename T, typename PT1, typename PT2>
     struct StdPairReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-	
+        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+    
         struct Accessor: PropertyGetter, PropertySetter
         {
-            Accessor(int i): i_(i) {}
+            Accessor(int i): _i(i) {}
             
-            virtual Value get(const Value &instance) const
+            virtual Value get(const Value& instance) const
             {
-                switch (i_)
+                switch (_i)
                 {
-                case 0: return variant_cast<T &>(instance).first;
-                case 1: return variant_cast<T &>(instance).second;
+                case 0: return variant_cast<T& >(instance).first;
+                case 1: return variant_cast<T& >(instance).second;
                 default: return Value();
                 }
             }
 
-            virtual Value get(Value &instance) const
+            virtual Value get(Value& instance) const
             {
-                switch (i_)
+                switch (_i)
                 {
-                case 0: return variant_cast<const T &>(instance).first;
-                case 1: return variant_cast<const T &>(instance).second;
+                case 0: return variant_cast<const T& >(instance).first;
+                case 1: return variant_cast<const T& >(instance).second;
                 default: return Value();
                 }
             }
 
-            virtual void set(const Value &instance, const Value &v) const
+            virtual void set(const Value& instance, const Value& v) const
             {
-                T &ctr = variant_cast<T &>(instance);
+                T& ctr = variant_cast<T& >(instance);
 
-                switch (i_)
+                switch (_i)
                 {                
-                case 0: ctr.first = variant_cast<const typename T::first_type &>(v); break;
-                case 1: ctr.second = variant_cast<const typename T::second_type &>(v); break;
+                case 0: ctr.first = variant_cast<const typename T::first_Type& >(v); break;
+                case 1: ctr.second = variant_cast<const typename T::second_Type& >(v); break;
                 }
             }
 
-            int i_;
+            int _i;
         };
 
-        StdPairReflector(const std::string &name): ValueReflector<T>(name)
+        StdPairReflector(const std::string& name): ValueReflector<T>(name)
         {
-			addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-			
-            PropertyInfo *pi1 = new PropertyInfo(typeof(T), typeof(typename T::first_type), "first", 0, 0);
+            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            
+            PropertyInfo* pi1 = new PropertyInfo(typeof(T), typeof(typename T::first_type), "first", 0, 0);
             pi1->addAttribute(new CustomPropertyGetAttribute(new Accessor(0)));
             pi1->addAttribute(new CustomPropertySetAttribute(new Accessor(0)));
 
@@ -648,7 +648,7 @@ namespace osgIntrospection
 
             this->addProperty(pi1);
 
-            PropertyInfo *pi2 = new PropertyInfo(typeof(T), typeof(typename T::second_type), "second", 0, 0);
+            PropertyInfo* pi2 = new PropertyInfo(typeof(T), typeof(typename T::second_type), "second", 0, 0);
             pi2->addAttribute(new CustomPropertyGetAttribute(new Accessor(1)));
             pi2->addAttribute(new CustomPropertySetAttribute(new Accessor(1)));
 
@@ -664,31 +664,31 @@ namespace osgIntrospection
     // TEMPLATE METHODS
 
     template<typename T>
-    Reflector<T>::Reflector(const std::string &name, const std::string &ns, bool abstract)
-    :    type_(Reflection::getOrRegisterType(typeid(T), true))
+    Reflector<T>::Reflector(const std::string& name, const std::string& ns, bool abstract)
+    :    _type(Reflection::getOrRegisterType(typeid(T), true))
     {
-		if (!type_->name_.empty())
-			type_->aliases_.push_back(ns.empty()? purify(name): purify(ns+"::"+name));
-		else
-		{
-	        type_->name_ = purify(name);
-			type_->namespace_ = purify(ns);
-		}
-        type_->is_abstract_ = abstract;
+        if (!_type->_name.empty())
+            _type->_aliases.push_back(ns.empty()? purify(name): purify(ns+"::"+name));
+        else
+        {
+            _type->_name = purify(name);
+            _type->_namespace = purify(ns);
+        }
+        _type->_is_abstract = abstract;
         init();
     }
 
     template<typename T>
-    Reflector<T>::Reflector(const std::string &qname, bool abstract)
-    :    type_(Reflection::getOrRegisterType(typeid(T), true))
+    Reflector<T>::Reflector(const std::string& qname, bool abstract)
+    :    _type(Reflection::getOrRegisterType(typeid(T), true))
     {
-		if (!type_->name_.empty())
-			type_->aliases_.push_back(purify(qname));
-		else
-		{
-			split_qualified_name(purify(qname), type_->name_, type_->namespace_);
-		}
-        type_->is_abstract_ = abstract;
+        if (!_type->_name.empty())
+            _type->_aliases.push_back(purify(qname));
+        else
+        {
+            split_qualified_name(purify(qname), _type->_name, _type->_namespace);
+        }
+        _type->_is_abstract = abstract;
         init();
     }
 
@@ -696,137 +696,137 @@ namespace osgIntrospection
     void Reflector<T>::init()
     {
         // pointer type
-        if (!type_->pointed_type_)
+        if (!_type->_pointed_type)
         {
-            Type *ptype = Reflection::getOrRegisterType(typeid(T*), true);
-            ptype->name_ = type_->name_;
-            ptype->namespace_ = type_->namespace_;
-            ptype->pointed_type_ = type_;
-            ptype->is_defined_ = true;
-            ptype->cons_.push_back(new PtrConstructor(ptype));
-            ptype->rw_ = new PtrReaderWriter<T*>();
-            ptype->cmp_ = new TotalOrderComparator<T*>();
+            Type* ptype = Reflection::getOrRegisterType(typeid(T*), true);
+            ptype->_name = _type->_name;
+            ptype->_namespace = _type->_namespace;
+            ptype->_pointed_type = _type;
+            ptype->_is_defined = true;
+            ptype->_cons.push_back(new PtrConstructor(ptype));
+            ptype->_rw = new PtrReaderWriter<T*>();
+            ptype->_cmp = new TotalOrderComparator<T*>();
         }
 
         // const pointer type
-        if (!type_->pointed_type_ || !type_->is_const_)
+        if (!_type->_pointed_type || !_type->_is_const)
         {
-            Type *cptype = Reflection::getOrRegisterType(typeid(const T*), true);
-            cptype->name_ = type_->name_;
-            cptype->namespace_ = type_->namespace_;
-            cptype->is_const_ = true;
-            cptype->pointed_type_ = type_;
-            cptype->is_defined_ = true;
-            cptype->cons_.push_back(new ConstPtrConstructor(cptype));
-            cptype->rw_ = new PtrReaderWriter<const T*>();
-            cptype->cmp_ = new TotalOrderComparator<const T*>();
+            Type* cptype = Reflection::getOrRegisterType(typeid(const T*), true);
+            cptype->_name = _type->_name;
+            cptype->_namespace = _type->_namespace;
+            cptype->_is_const = true;
+            cptype->_pointed_type = _type;
+            cptype->_is_defined = true;
+            cptype->_cons.push_back(new ConstPtrConstructor(cptype));
+            cptype->_rw = new PtrReaderWriter<const T*>();
+            cptype->_cmp = new TotalOrderComparator<const T*>();
         }
 
-        type_->is_defined_ = true;
+        _type->_is_defined = true;
     }
     
     template<typename T>
-    std::string Reflector<T>::purify(const std::string &s)
-    {		
-		std::string r(s);
-		while (true)
-		{
-			std::string::size_type p = r.find(" COMMA ");
-			if (p == std::string::npos) break;
-			r.replace(p, 7, ", ");
-		};
-		return r;
+    std::string Reflector<T>::purify(const std::string& s)
+    {        
+        std::string r(s);
+        while (true)
+        {
+            std::string::size_type p = r.find(" COMMA ");
+            if (p == std::string::npos) break;
+            r.replace(p, 7, ", ");
+        };
+        return r;
     }
     
     template<typename T>
-    void Reflector<T>::split_qualified_name(const std::string &q, std::string &n, std::string &ns)
+    void Reflector<T>::split_qualified_name(const std::string& q, std::string& n, std::string& ns)
     {
-		int templ = 0;
-		std::string::size_type split_point = std::string::npos;
-		std::string::size_type j = 0;
-		for (std::string::const_iterator i=q.begin(); i!=q.end(); ++i, ++j)
-		{
-			if (*i == '<') ++templ;
-			if (*i == '>') --templ;
-			if (templ == 0)
-			{
-				if (*i == ':' && (i+1)!=q.end() && *(i+1) == ':')
-					split_point = j;
-			}
-		}
-		if (split_point == std::string::npos)
-		{
-			ns.clear();
-			n = q;
-		}
-		else
-		{
-			n = q.substr(split_point+2);
-			ns = q.substr(0, split_point);
-		}
+        int templ = 0;
+        std::string::size_type split_point = std::string::npos;
+        std::string::size_type j = 0;
+        for (std::string::const_iterator i=q.begin(); i!=q.end(); ++i, ++j)
+        {
+            if (*i == '<') ++templ;
+            if (*i == '>') --templ;
+            if (templ == 0)
+            {
+                if (*i == ':' && (i+1)!=q.end() && *(i+1) == ':')
+                    split_point = j;
+            }
+        }
+        if (split_point == std::string::npos)
+        {
+            ns.clear();
+            n = q;
+        }
+        else
+        {
+            n = q.substr(split_point+2);
+            ns = q.substr(0, split_point);
+        }
     }
 
     template<typename T>
-    void Reflector<T>::addBaseType(const Type &type)
+    void Reflector<T>::addBaseType(const Type& type)
     {
-        type_->base_.push_back(&type);
+        _type->_base.push_back(&type);
     }
 
     template<typename T>
-    PropertyInfo *Reflector<T>::addProperty(PropertyInfo *pi)
+    PropertyInfo* Reflector<T>::addProperty(PropertyInfo* pi)
     {
-        type_->props_.push_back(pi);
+        _type->_props.push_back(pi);
         return pi;
     }
 
     template<typename T>
-    MethodInfo *Reflector<T>::addMethod(MethodInfo *mi)
+    MethodInfo* Reflector<T>::addMethod(MethodInfo* mi)
     {
-		for (TempMethodList::iterator i=temp_methods_.begin(); i!=temp_methods_.end(); ++i)
-		{
-			if (mi->overrides(*i))
-				return *i;
-		}
-		
-		temp_methods_.push_back(mi);
-        type_->methods_.push_back(mi);
+        for (TempMethodList::iterator i=_temp_methods.begin(); i!=_temp_methods.end(); ++i)
+        {
+            if (mi->overrides(*i))
+                return *i;
+        }
+        
+        _temp_methods.push_back(mi);
+        _type->_methods.push_back(mi);
         return mi;
     }
 
     template<typename T>
-    void Reflector<T>::addEnumLabel(int v, const std::string &label, bool strip_namespace)
+    void Reflector<T>::addEnumLabel(int v, const std::string& label, bool strip_namespace)
     {
         if (strip_namespace)
         {
             std::string::size_type p = label.rfind("::");
             if (p != std::string::npos)
             {
-                type_->labels_.insert(std::make_pair(v, label.substr(p+2)));
+                _type->_labels.insert(std::make_pair(v, label.substr(p+2)));
                 return;
             }
         }
-        type_->labels_.insert(std::make_pair(v, label));
+        _type->_labels.insert(std::make_pair(v, label));
     }
 
     template<typename T>
-    ConstructorInfo *Reflector<T>::addConstructor(ConstructorInfo *ci)
+    ConstructorInfo* Reflector<T>::addConstructor(ConstructorInfo* ci)
     {
-        type_->cons_.push_back(ci);
+        _type->_cons.push_back(ci);
         return ci;
     }
 
     template<typename T>
-    std::string Reflector<T>::qualifyName(const std::string name) const
+    std::string Reflector<T>::qualifyName(const std::string& name) const
     {
         std::string s;
-        if (!type_->namespace_.empty())
+        if (!_type->_namespace.empty())
         {
-            s.append(type_->namespace_);
+            s.append(_type->_namespace);
             s.append("::");
         }
-        if (!type_->name_.empty())
+        if (!_type->_name.empty())
         {
-            s.append(type_->name_);
+            s.append(_type->_name);
             s.append("::");
         }
         s.append(name);
@@ -834,21 +834,21 @@ namespace osgIntrospection
     }
 
     template<typename T>
-    CustomAttributeProvider *Reflector<T>::addAttribute(const CustomAttribute *attrib)
+    CustomAttributeProvider *Reflector<T>::addAttribute(const CustomAttribute* attrib)
     {
-        return type_->addAttribute(attrib);
+        return _type->addAttribute(attrib);
     }
 
     template<typename T>
-    void Reflector<T>::setReaderWriter(const ReaderWriter *rw)
+    void Reflector<T>::setReaderWriter(const ReaderWriter* rw)
     {
-        type_->rw_ = rw;
+        _type->_rw = rw;
     }
     
     template<typename T>
-    void Reflector<T>::setComparator(const Comparator *cmp)
+    void Reflector<T>::setComparator(const Comparator* cmp)
     {
-		type_->cmp_ = cmp;
+        _type->_cmp = cmp;
     }
 
 }

@@ -10,7 +10,7 @@
 
 using namespace osgIntrospection;
 
-Reflection::StaticData *Reflection::staticdata__ = 0;
+Reflection::StaticData* Reflection::_static_data = 0;
 
 Reflection::StaticData::~StaticData()
 {
@@ -26,29 +26,29 @@ Reflection::StaticData::~StaticData()
     }
 }
 
-const TypeMap &Reflection::getTypes()
+const TypeMap& Reflection::getTypes()
 {
     return getOrCreateStaticData().typemap;
 }
 
-Reflection::StaticData &Reflection::getOrCreateStaticData()
+Reflection::StaticData& Reflection::getOrCreateStaticData()
 {
     static OpenThreads::Mutex access_mtx;
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(access_mtx);
 
-    if (!staticdata__) 
+    if (!_static_data) 
     {                
-        staticdata__ = new StaticData;
+        _static_data = new StaticData;
         std::auto_ptr<Type> tvoid(new Type(typeid(void)));
-        staticdata__->typemap.insert(std::make_pair(&typeid(void), tvoid.get()));
-        staticdata__->type_void = tvoid.release();            
+        _static_data->typemap.insert(std::make_pair(&typeid(void), tvoid.get()));
+        _static_data->type_void = tvoid.release();            
     }
-    return *staticdata__;
+    return *_static_data;
 }
 
-const Type &Reflection::getType(const std::type_info &ti)
+const Type& Reflection::getType(const std::type_info& ti)
 {
-    const TypeMap &types = getTypes();
+    const TypeMap& types = getTypes();
 
     TypeMap::const_iterator i = types.find(&ti);
     if (i == types.end())
@@ -58,9 +58,9 @@ const Type &Reflection::getType(const std::type_info &ti)
     return *i->second;
 }
 
-const Type &Reflection::getType(const std::string &qname)
+const Type& Reflection::getType(const std::string& qname)
 {
-    const TypeMap &types = getTypes();
+    const TypeMap& types = getTypes();
 
     for (TypeMap::const_iterator i=types.begin(); i!=types.end(); ++i)
     {
@@ -74,21 +74,21 @@ const Type &Reflection::getType(const std::string &qname)
     throw TypeNotFoundException(qname);
 }
 
-const Type &Reflection::type_void()
+const Type& Reflection::type_void()
 {
     return *getOrCreateStaticData().type_void;
 }
 
-Type *Reflection::registerType(const std::type_info &ti)
+Type* Reflection::registerType(const std::type_info& ti)
 {
     std::auto_ptr<Type> type(new Type(ti));
     getOrCreateStaticData().typemap.insert(std::make_pair(&ti, type.get()));
     return type.release();
 }
 
-Type *Reflection::getOrRegisterType(const std::type_info &ti, bool replace_if_defined)
+Type* Reflection::getOrRegisterType(const std::type_info& ti, bool replace_if_defined)
 {
-    TypeMap &tm = getOrCreateStaticData().typemap;
+    TypeMap& tm = getOrCreateStaticData().typemap;
     TypeMap::iterator i = tm.find(&ti);
 
     if (i != tm.end())
@@ -97,12 +97,12 @@ Type *Reflection::getOrRegisterType(const std::type_info &ti, bool replace_if_de
         {
             std::string old_name = i->second->getName();
             std::string old_namespace = i->second->getNamespace();
-            std::vector<std::string> old_aliases = i->second->aliases_;
+            std::vector<std::string> old_aliases = i->second->_aliases;
 
-            Type *newtype = new (i->second) Type(ti);
-            newtype->name_ = old_name;
-            newtype->namespace_ = old_namespace;
-            newtype->aliases_.swap(old_aliases);
+            Type* newtype = new (i->second) Type(ti);
+            newtype->_name = old_name;
+            newtype->_namespace = old_namespace;
+            newtype->_aliases.swap(old_aliases);
 
             return newtype;
         }
@@ -112,20 +112,20 @@ Type *Reflection::getOrRegisterType(const std::type_info &ti, bool replace_if_de
     return registerType(ti);
 }
 
-void Reflection::registerConverter(const Type &source, const Type &dest, const Converter *cvt)
+void Reflection::registerConverter(const Type& source, const Type& dest, const Converter* cvt)
 {
     getOrCreateStaticData().convmap[&source][&dest] = cvt;
 }
 
-const Converter *Reflection::getConverter(const Type &source, const Type &dest)
+const Converter* Reflection::getConverter(const Type& source, const Type& dest)
 {
     return getOrCreateStaticData().convmap[&source][&dest];
 }
 
-bool Reflection::getConversionPath(const Type &source, const Type &dest, ConverterList &conv)
+bool Reflection::getConversionPath(const Type& source, const Type& dest, ConverterList& conv)
 {
     ConverterList temp;
-    std::vector<const Type *> chain;
+    std::vector<const Type* > chain;
     if (accum_conv_path(source, dest, temp, chain))
     {
         conv.swap(temp);
@@ -134,7 +134,7 @@ bool Reflection::getConversionPath(const Type &source, const Type &dest, Convert
     return false;
 }
 
-bool Reflection::accum_conv_path(const Type &source, const Type &dest, ConverterList &conv, std::vector<const Type *> &chain)
+bool Reflection::accum_conv_path(const Type& source, const Type& dest, ConverterList& conv, std::vector<const Type* > &chain)
 {
     // break unwanted loops
     if (std::find(chain.begin(), chain.end(), &source) != chain.end())
@@ -147,7 +147,7 @@ bool Reflection::accum_conv_path(const Type &source, const Type &dest, Converter
     if (i == getOrCreateStaticData().convmap.end()) 
         return false;
 
-    const StaticData::ConverterMap &cmap = i->second;
+    const StaticData::ConverterMap& cmap = i->second;
     StaticData::ConverterMap::const_iterator j = cmap.find(&dest);
     if (j != cmap.end())
     {

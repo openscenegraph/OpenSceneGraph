@@ -60,29 +60,29 @@ namespace osgIntrospection
         /// If the getter method has parameters, the property is considered
         /// to be indexed. The same is true if the getter is null and the
         /// setter has more than one parameter.
-        PropertyInfo(const Type &decltype, const Type &ptype, const std::string &name, const MethodInfo *getm, const MethodInfo *setm)
+        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm)
         :   CustomAttributeProvider(),
-            decltype_(decltype),
-            ptype_(ptype),
-            name_(name),
-            getm_(getm),
-            setm_(setm),
-            numm_(0),
-            addm_(0),
-            remm_(0),
-            is_array_(false)
+            _decltype(decltype),
+            _ptype(ptype),
+            _name(name),
+            _getm(getm),
+            _setm(setm),
+            _numm(0),
+            _addm(0),
+            _remm(0),
+            _is_array(false)
         {
-            if (getm_)
+            if (_getm)
             {
-                for (ParameterInfoList::size_type i=0; i<getm_->getParameters().size(); ++i)
-                    indices_.push_back(getm_->getParameters().at(i));
+                for (ParameterInfoList::size_type i=0; i<_getm->getParameters().size(); ++i)
+                    _indices.push_back(_getm->getParameters().at(i));
             }
             else
             {
-                if (setm_)
+                if (_setm)
                 {
-                    for (ParameterInfoList::size_type i=0; i<(setm_->getParameters().size()-1); ++i)
-                        indices_.push_back(setm_->getParameters().at(i));
+                    for (ParameterInfoList::size_type i=0; i<(_setm->getParameters().size()-1); ++i)
+                        _indices.push_back(_setm->getParameters().at(i));
                 }
             }
         }
@@ -92,17 +92,17 @@ namespace osgIntrospection
         /// declares the property, the Type object that describes the
         /// type of the property's value, the property name and the
         /// getter/setter/counter/adder/remover methods.
-        PropertyInfo(const Type &decltype, const Type &ptype, const std::string &name, const MethodInfo *getm, const MethodInfo *setm, const MethodInfo *numm, const MethodInfo *addm, const MethodInfo *remm)
+        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* numm, const MethodInfo* addm, const MethodInfo* remm)
         :   CustomAttributeProvider(),
-            decltype_(decltype),
-            ptype_(ptype),
-            name_(name),
-            getm_(getm),
-            setm_(setm),
-            numm_(numm),
-            addm_(addm),
-            remm_(remm),
-            is_array_(true)
+            _decltype(decltype),
+            _ptype(ptype),
+            _name(name),
+            _getm(getm),
+            _setm(setm),
+            _numm(numm),
+            _addm(addm),
+            _remm(remm),
+            _is_array(true)
         {
         }
 
@@ -113,83 +113,83 @@ namespace osgIntrospection
         }
 
         /// Returns the name of the property being described.
-        inline virtual const std::string &getName() const
+        inline virtual const std::string& getName() const
         {
-            return name_;
+            return _name;
         }
 
         /// Returns the type that declares the property.
-        inline virtual const Type &getDeclaringType() const
+        inline virtual const Type& getDeclaringType() const
         {
-            return decltype_;
+            return _decltype;
         }
 
         /// Returns the type of the reflected property.
-        inline const Type &getPropertyType() const
+        inline const Type& getPropertyType() const
         {
             const PropertyTypeAttribute *pta = getAttribute<PropertyTypeAttribute>(false);
             if (pta) return pta->getPropertyType();
-            return ptype_;
+            return _ptype;
         }
 
         /// Returns the getter method.
-        inline const MethodInfo *getGetMethod() const
+        inline const MethodInfo* getGetMethod() const
         {
-            return getm_;
+            return _getm;
         }
 
         /// Returns the setter method.
-        inline const MethodInfo *getSetMethod() const
+        inline const MethodInfo* getSetMethod() const
         {
-            return setm_;
+            return _setm;
         }
 
         /// Returns the counter method.
-        inline const MethodInfo *getCountMethod() const
+        inline const MethodInfo* getCountMethod() const
         {
-            return numm_;
+            return _numm;
         }
 
         /// Returns the adder method.
-        inline const MethodInfo *getAddMethod() const
+        inline const MethodInfo* getAddMethod() const
         {
-            return addm_;
+            return _addm;
         }
         
         /// Returns the remover method.
-        inline const MethodInfo *getRemoveMethod() const
+        inline const MethodInfo* getRemoveMethod() const
         {
-			return remm_;
+            return _remm;
         }
 
         /// Returns whether the property's value can be retrieved.
         inline bool canGet() const
         {
-            return (getm_ != 0) || isDefined<CustomPropertyGetAttribute>(false);
+            return (_getm != 0) || isDefined<CustomPropertyGetAttribute>(false);
         }
 
         /// Returns whether the property's value can be set.
         inline bool canSet() const
         {
-            return setm_ != 0 || isDefined<CustomPropertySetAttribute>(false);
+            return _setm != 0 || isDefined<CustomPropertySetAttribute>(false);
         }
 
         /// Returns whether the property's array of values can be counted.
         inline bool canCount() const
         {
-            return numm_ != 0 || isDefined<CustomPropertyCountAttribute>(false);
+            return _numm != 0 || isDefined<CustomPropertyCountAttribute>(false);
         }
 
         /// Returns whether items can be added to the array property.
         inline bool canAdd() const
         {
-            return addm_ != 0 || isDefined<CustomPropertyAddAttribute>(false);
+            return _addm != 0 || isDefined<CustomPropertyAddAttribute>(false);
         }
         
         /// Returns whether items can be removed from the array property.
         inline bool canRemove() const
         {
-            return remm_ != 0 || isDefined<CustomPropertyRemoveAttribute>(false);
+            return _remm != 0 || isDefined<CustomPropertyRemoveAttribute>(false);
         }
         
 
@@ -208,81 +208,81 @@ namespace osgIntrospection
         /// Returns whether the property is an array.
         inline bool isArray() const
         {
-            return is_array_;
+            return _is_array;
         }
 
         /// Returns the list of index parameters.
         /// If the property is not indexed, this list is empty. If neither
         /// the get method nor the set method are defined, this list is
         /// empty unless a custom indexing attribute is defined.
-        const ParameterInfoList &getIndexParameters() const;
+        const ParameterInfoList& getIndexParameters() const;
 
         /// Returns a list of valid values that can be used for the specified
         /// index. If a custom indexing attribute is defined for this property,
         /// then it will be queried for the index set, otherwise the index
         /// will be treated as an enumeration and the set of enumeration 
         /// values will be returned.
-        void getIndexValueSet(int whichindex, const Value &instance, ValueList &values) const;
+        void getIndexValueSet(int whichindex, const Value& instance, ValueList& values) const;
 
         /// Invokes the getter method on the given const instance and
         /// returns the property's value. If a custom getter attribute
         /// is defined, it will be invoked instead.
-        Value getValue(const Value &instance) const;
+        Value getValue(const Value& instance) const;
 
         /// Invokes the getter method on the given instance and
         /// returns the property's value. If a custom getter attribute
         /// is defined, it will be invoked instead.
-        Value getValue(Value &instance) const;
+        Value getValue(Value& instance) const;
 
         /// Invokes the setter method on the given instance and
         /// sets the property's value. If a custom setter attribute
         /// is defined, it will be invoked instead.
-        void setValue(Value &instance, const Value &value) const;
+        void setValue(Value& instance, const Value& value) const;
 
         /// Invokes the getter method on the given const instance passing a
         /// list of indices and returns the indexed property's value. If a 
         /// custom getter attribute is defined, it will be invoked instead.
-        Value getIndexedValue(Value &instance, ValueList &indices) const;
+        Value getIndexedValue(Value& instance, ValueList& indices) const;
 
         /// Invokes the getter method on the given instance passing a list
         /// of indices and returns the indexed property's value. If a custom
         /// getter attribute is defined, it will be invoked instead.
-        Value getIndexedValue(const Value &instance, ValueList &indices) const;
+        Value getIndexedValue(const Value& instance, ValueList& indices) const;
 
         /// Invokes the setter method on the given instance passing a list
         /// of indices and sets the indexed property's value. If a custom
         /// setter attribute is defined, it will be invoked instead.
-        void setIndexedValue(Value &instance, ValueList &indices, const Value &value) const;
+        void setIndexedValue(Value& instance, ValueList& indices, const Value& value) const;
 
         /// Invokes the counter method on the given instance and returns 
         /// the number of items of the array property. If a custom counter
         /// attribute is defined, it will be invoked instead.
-        int getNumArrayItems(const Value &instance) const;
+        int getNumArrayItems(const Value& instance) const;
 
         /// Invokes the getter method on the given const instance and returns 
         /// the i-th item of the array property. If a custom getter attribute
         /// us defined, it will be invoked instead.
-        Value getArrayItem(const Value &instance, int i) const;
+        Value getArrayItem(const Value& instance, int i) const;
 
         /// Invokes the getter method on the given instance and returns 
         /// the i-th item of the array property. If a custom getter attribute
         /// us defined, it will be invoked instead.
-        Value getArrayItem(Value &instance, int i) const;
+        Value getArrayItem(Value& instance, int i) const;
 
         /// Invokes the setter method on the given instance and sets
         /// the i-th item of the array property. If a custom setter attribute
         /// is defined, it will be invoked instead.
-        void setArrayItem(Value &instance, int i, const Value &value) const;
+        void setArrayItem(Value& instance, int i, const Value& value) const;
 
         /// Invokes the adder method on the given instance and adds
         /// an item to the array property. If a custom adder attribute is
         /// defined, it will be invoked instead.
-        void addArrayItem(Value &instance, const Value &value) const;
+        void addArrayItem(Value& instance, const Value& value) const;
         
         /// Invokes the remover method on the given instance and removes
         /// an item from the array property. If a custom remover attribute
         /// is defined, it will be invoked instead.
-        void removeArrayItem(Value &instance, int i) const;
+        void removeArrayItem(Value& instance, int i) const;
 
         /// Returns the default value associated to the reflected property.
         /// If no default value has been specified, this method tries to
@@ -292,19 +292,19 @@ namespace osgIntrospection
         Value getDefaultValue() const;
 
     protected:            
-        virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+        virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 
     private:
-        const Type &decltype_;
-        const Type &ptype_;
-        std::string name_;
-        const MethodInfo *getm_;
-        const MethodInfo *setm_;
-        const MethodInfo *numm_;
-        const MethodInfo *addm_;
-        const MethodInfo *remm_;
-        ParameterInfoList indices_;
-        bool is_array_;
+        const Type& _decltype;
+        const Type& _ptype;
+        std::string _name;
+        const MethodInfo* _getm;
+        const MethodInfo* _setm;
+        const MethodInfo* _numm;
+        const MethodInfo* _addm;
+        const MethodInfo* _remm;
+        ParameterInfoList _indices;
+        bool _is_array;
     };
 
 }

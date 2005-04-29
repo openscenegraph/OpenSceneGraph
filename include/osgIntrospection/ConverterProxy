@@ -20,16 +20,16 @@
 namespace osgIntrospection
 {
 
-	struct Converter;
+    struct Converter;
 
-	struct ConverterProxy
-	{
-		ConverterProxy(const Type &source, const Type &dest, const Converter *cvt)
-		{
-			Reflection::registerConverter(source, dest, cvt);
-		}
-	};
-	
+    struct ConverterProxy
+    {
+        ConverterProxy(const Type& source, const Type& dest, const Converter* cvt)
+        {
+            Reflection::registerConverter(source, dest, cvt);
+        }
+    };
+    
 }
 
 #endif

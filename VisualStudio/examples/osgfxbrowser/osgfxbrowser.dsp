@@ -44,8 +44,8 @@ RSC=rc.exe
 MTL=midl.exe
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
-# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /Zm200 /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /Zm200 /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe

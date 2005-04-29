@@ -163,7 +163,7 @@ StateSet::~StateSet()
 
 void StateSet::addParent(osg::Object* object)
 {
-    osg::notify(osg::INFO)<<"Adding parent"<<std::endl;
+    // osg::notify(osg::INFO)<<"Adding parent"<<std::endl;
 
     _parents.push_back(object);
 }
@@ -1360,7 +1360,7 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList
 
 void StateSet::setUpdateCallback(Callback* ac)
 {
-    osg::notify(osg::INFO)<<"Setting StateSet callbacks"<<std::endl;
+    //osg::notify(osg::INFO)<<"Setting StateSet callbacks"<<std::endl;
 
     if (_updateCallback==ac) return;
     
@@ -1372,13 +1372,13 @@ void StateSet::setUpdateCallback(Callback* ac)
     
     if (delta!=0 && _numChildrenRequiringUpdateTraversal==0)
     {
-        osg::notify(osg::INFO)<<"Going to set StateSet parents"<<std::endl;
+        //osg::notify(osg::INFO)<<"Going to set StateSet parents"<<std::endl;
 
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            osg::notify(osg::INFO)<<"Setting StateSet parent"<<std::endl;
+            //osg::notify(osg::INFO)<<"Setting StateSet parent"<<std::endl;
 
             osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
             if (drawable) 
@@ -1399,7 +1399,7 @@ void StateSet::setUpdateCallback(Callback* ac)
 
 void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
 {
-    osg::notify(osg::INFO)<<"Running StateSet callbacks"<<std::endl;
+    //osg::notify(osg::INFO)<<"Running StateSet callbacks"<<std::endl;
 
     if (_updateCallback.valid()) (*_updateCallback)(this,nv);
 

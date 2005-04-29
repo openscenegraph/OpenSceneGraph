@@ -327,14 +327,14 @@ public:
                 }                
                 if (numGroupsFound==parents.size() && numGroupsFound==1 && insertGroup)
                 {
-                    osg::notify(osg::NOTICE)<<"PickHandler::pick(,) hit node's parent is a single osg::Group so we can simple the insert the particle effects group here."<<std::endl;
+                    osg::notify(osg::INFO)<<"PickHandler::pick(,) hit node's parent is a single osg::Group so we can simple the insert the particle effects group here."<<std::endl;
 
                     // just reuse the existing group.
                     insertGroup->addChild(effectsGroup);
                 }
                 else
                 {            
-                    osg::notify(osg::NOTICE)<<"PickHandler::pick(,) hit node doesn't have an appropriate osg::Group node to insert particle effects into, inserting a new osg::Group."<<std::endl;
+                    osg::notify(osg::INFO)<<"PickHandler::pick(,) hit node doesn't have an appropriate osg::Group node to insert particle effects into, inserting a new osg::Group."<<std::endl;
                     insertGroup = new osg::Group;
                     for(osg::Node::ParentList::iterator itr=parents.begin();
                         itr!=parents.end();
@@ -360,7 +360,7 @@ public:
             else
             {
                 // when we don't have moving models we can simple insert the particle effect into the root of the scene graph
-                osg::notify(osg::NOTICE)<<"PickHandler::pick(,) adding particle effects to root node."<<std::endl;
+                osg::notify(osg::INFO)<<"PickHandler::pick(,) adding particle effects to root node."<<std::endl;
                 root->addChild(effectsGroup);
             }
 

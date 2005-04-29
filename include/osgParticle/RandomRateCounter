@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_RANDOMRATECOUNTER_
-#define OSGPARTICLE_RANDOMRATECOUNTER_ 1
+#ifndef OSGPARTICLE_RANDOMRATE_COUNTER
+#define OSGPARTICLE_RANDOMRATE_COUNTER 1
 
 #include <osgParticle/VariableRateCounter>
 
@@ -26,7 +26,7 @@ namespace osgParticle
     class RandomRateCounter: public VariableRateCounter {
     public:
         inline RandomRateCounter();
-        inline RandomRateCounter(const RandomRateCounter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline RandomRateCounter(const RandomRateCounter& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgParticle, RandomRateCounter);
     
@@ -36,26 +36,26 @@ namespace osgParticle
     protected:
         virtual ~RandomRateCounter() {}
         
-        mutable float np_;
+        mutable float _np;
     };
     
     // INLINE FUNCTIONS
     
     inline RandomRateCounter::RandomRateCounter()
-    : VariableRateCounter(), np_(0)
+    : VariableRateCounter(), _np(0)
     {
     }
     
-    inline RandomRateCounter::RandomRateCounter(const RandomRateCounter &copy, const osg::CopyOp &copyop)
-    : VariableRateCounter(copy, copyop), np_(copy.np_)
+    inline RandomRateCounter::RandomRateCounter(const RandomRateCounter& copy, const osg::CopyOp& copyop)
+    : VariableRateCounter(copy, copyop), _np(copy._np)
     {
     }
     
     inline int RandomRateCounter::numParticlesToCreate(double dt) const
     {
-        np_ += dt * getRateRange().get_random();
-        int n = static_cast<int>(np_);
-        np_ -= n;
+        _np += dt * getRateRange().get_random();
+        int n = static_cast<int>(_np);
+        _np -= n;
         return n;
     }    
 

@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_CENTEREDPLACER_
-#define OSGPARTICLE_CENTEREDPLACER_ 1
+#ifndef OSGPARTICLE_CENTERED_PLACER
+#define OSGPARTICLE_CENTERED_PLACER 1
 
 #include <osgParticle/Placer>
 
@@ -29,17 +29,17 @@ namespace osgParticle
     class CenteredPlacer: public Placer {
     public:
         inline CenteredPlacer();
-        inline CenteredPlacer(const CenteredPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline CenteredPlacer(const CenteredPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
-        virtual const char *libraryName() const { return "osgParticle"; }
-        virtual const char *className() const { return "CenteredPlacer"; }
-        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Placer *>(obj) != 0; }        
+        virtual const char* libraryName() const { return "osgParticle"; }
+        virtual const char* className() const { return "CenteredPlacer"; }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Placer* >(obj) != 0; }        
     
         /// Get the center point.
-        inline const osg::Vec3 &getCenter() const;
+        inline const osg::Vec3& getCenter() const;
         
         /// Set the center point.
-        inline void setCenter(const osg::Vec3 &v);
+        inline void setCenter(const osg::Vec3& v);
         
         /// Set the center point.
         inline void setCenter(float x, float y, float z);
@@ -58,17 +58,17 @@ namespace osgParticle
     {
     }
     
-    inline CenteredPlacer::CenteredPlacer(const CenteredPlacer &copy, const osg::CopyOp &copyop)
+    inline CenteredPlacer::CenteredPlacer(const CenteredPlacer& copy, const osg::CopyOp& copyop)
     : Placer(copy, copyop), center_(copy.center_)
     {
     }
     
-    inline const osg::Vec3 &CenteredPlacer::getCenter() const
+    inline const osg::Vec3& CenteredPlacer::getCenter() const
     {
         return center_;
     }
     
-    inline void CenteredPlacer::setCenter(const osg::Vec3 &v)
+    inline void CenteredPlacer::setCenter(const osg::Vec3& v)
     {
         center_ = v;
     }

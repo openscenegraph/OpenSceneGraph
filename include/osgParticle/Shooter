@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_SHOOTER_
-#define OSGPARTICLE_SHOOTER_ 1
+#ifndef OSGPARTICLE_SHOOTER
+#define OSGPARTICLE_SHOOTER 1
 
 #include <osg/CopyOp>
 #include <osg/Object>
@@ -26,20 +26,21 @@ namespace osgParticle
     /**     An abstract base class used by ModularEmitter to "shoot" the particles after they have been placed. 
         Descendants of this class must override the <CODE>shoot()</CODE> method.
     */
-    class Shooter: public osg::Object {
+    class Shooter: public osg::Object
+    {
     public:
         inline Shooter();
-        inline Shooter(const Shooter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline Shooter(const Shooter& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        virtual const char *libraryName() const { return "osgParticle"; }
-        virtual const char *className() const { return "Shooter"; }
-        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Shooter *>(obj) != 0; }
+        virtual const char* libraryName() const { return "osgParticle"; }
+        virtual const char* className() const { return "Shooter"; }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Shooter *>(obj) != 0; }
 
         /**     Shoot a particle. Must be overriden by descendants.
             This method should only set the velocity vector of particle <CODE>P</CODE>, leaving other
             attributes unchanged.
         */
-        virtual void shoot(Particle *P) const = 0;
+        virtual void shoot(Particle* P) const = 0;
 
     protected:
         virtual ~Shooter() {}
@@ -53,7 +54,7 @@ namespace osgParticle
     {
     }
     
-    inline Shooter::Shooter(const Shooter &copy, const osg::CopyOp &copyop)
+    inline Shooter::Shooter(const Shooter& copy, const osg::CopyOp& copyop)
     : osg::Object(copy, copyop)
     {
     }

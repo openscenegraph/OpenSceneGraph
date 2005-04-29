@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_OPERATOR_
-#define OSGPARTICLE_OPERATOR_ 1
+#ifndef OSGPARTICLE_OPERATOR
+#define OSGPARTICLE_OPERATOR 1
 
 #include <osgParticle/Program>
 
@@ -35,11 +35,11 @@ namespace osgParticle
     class Operator: public osg::Object {        
     public:
         inline Operator();
-        inline Operator(const Operator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline Operator(const Operator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        virtual const char *libraryName() const { return "osgParticle"; }
-        virtual const char *className() const { return "Operator"; }
-        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Operator *>(obj) != 0; }
+        virtual const char* libraryName() const { return "osgParticle"; }
+        virtual const char* className() const { return "Operator"; }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Operator* >(obj) != 0; }
         
         /// Get whether this operator is enabled.
         inline bool isEnabled() const;
@@ -53,7 +53,7 @@ namespace osgParticle
             consist of modifying the particle's velocity vector. The <CODE>dt</CODE> parameter is
             the time elapsed from last operation.            
         */
-        virtual void operate(Particle *P, double dt) = 0;
+        virtual void operate(Particle* P, double dt) = 0;
         
         /** Do something before processing particles via the <CODE>operate()</CODE> method.
             Overriding this method could be necessary to query the calling <CODE>Program</CODE> object
@@ -70,29 +70,29 @@ namespace osgParticle
         Operator &operator=(const Operator &) { return *this; }
         
     private:
-        bool enabled_;        
+        bool _enabled;        
     };
     
     // INLINE FUNCTIONS
     
     inline Operator::Operator()
-    : osg::Object(), enabled_(true)
+    : osg::Object(), _enabled(true)
     {
     }
     
-    inline Operator::Operator(const Operator &copy, const osg::CopyOp &copyop)
-    : osg::Object(copy, copyop), enabled_(copy.enabled_)
+    inline Operator::Operator(const Operator& copy, const osg::CopyOp& copyop)
+    : osg::Object(copy, copyop), _enabled(copy._enabled)
     {
     }
     
     inline bool Operator::isEnabled() const    
     {
-        return enabled_;
+        return _enabled;
     }
     
     inline void Operator::setEnabled(bool v)
     {
-        enabled_ = v;
+        _enabled = v;
     }
 
 

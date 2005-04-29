@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_RANGE_
-#define OSGPARTICLE_RANGE_ 1
+#ifndef OSGPARTICLE_RANGE
+#define OSGPARTICLE_RANGE 1
 
 // include Export simply to disable Visual Studio silly warnings.
 #include <osgParticle/Export>
@@ -35,37 +35,38 @@ namespace osgParticle
 
     /**
         A simple struct template useful to store ranges of values as min/max pairs.
-        This struct template helps storing min/max ranges for values of any kind; class <CODE>T_</CODE> is
-        the type of values to be stored, and it must support operations <CODE>T_ + T_</CODE>, <CODE>T_ - T_</CODE>, 
-        and <CODE>T_ * float</CODE>, otherwise the <CODE>get_random()</CODE> method will not compile.
+        This struct template helps storing min/max ranges for values of any kind; class <CODE>ValueType</CODE> is
+        the type of values to be stored, and it must support operations <CODE>ValueType + ValueType</CODE>, <CODE>ValueType - ValueType</CODE>, 
+        and <CODE>ValueType * float</CODE>, otherwise the <CODE>geValueTyperandom()</CODE> method will not compile.
         This struct could be extended to customize the random number generator (now it uses only 
         <CODE>std::rand()</CODE>).
     */
-    template<class T_> struct range {
+    template<class ValueType> struct range
+    {
     
         /// Lower bound.
-        T_ minimum;
+        ValueType minimum;
         
         /// Higher bound.
-        T_ maximum;
+        ValueType maximum;
 
         /// Construct the object by calling default constructors for min and max.
-        range() : minimum(T_()), maximum(T_()) {}
+        range() : minimum(ValueType()), maximum(ValueType()) {}
         
         /// Construct and initialize min and max directly.
-        range(const T_ &mn, const T_ &mx) : minimum(mn), maximum(mx) {}
+        range(const ValueType& mn, const ValueType& mx) : minimum(mn), maximum(mx) {}
 
         /// Set min and max.
-        void set(const T_ &mn, const T_ &mx) { minimum = mn; maximum = mx; }
+        void set(const ValueType& mn, const ValueType& mx) { minimum = mn; maximum = mx; }
 
         /// Get a random value between min and max.
-        T_ get_random() const
+        ValueType get_random() const
         {
             return minimum + (maximum - minimum) * rand() / RAND_MAX;
         }
 
         /// Get a random square root value between min and max.
-        T_ get_random_sqrtf() const
+        ValueType get_random_sqrtf() const
         {
             return minimum + (maximum - minimum) * sqrtf( static_cast<float>(rand()) / static_cast<float>(RAND_MAX) );
         }

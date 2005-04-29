@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_SEGMENTPLACER_
-#define OSGPARTICLE_SEGMENTPLACER_ 1
+#ifndef OSGPARTICLE_SEGMENT_PLACER
+#define OSGPARTICLE_SEGMENT_PLACER 1
 
 #include <osgParticle/Placer>
 #include <osgParticle/Particle>
@@ -32,94 +32,94 @@ namespace osgParticle {
     class SegmentPlacer: public Placer {
     public:
         inline SegmentPlacer();
-        inline SegmentPlacer(const SegmentPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline SegmentPlacer(const SegmentPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgParticle, SegmentPlacer);
 
         /// get vertex <B>A</B>.
-        inline const osg::Vec3 &getVertexA() const;
+        inline const osg::Vec3& getVertexA() const;
         
         /// Set vertex <B>A</B> of the segment as a vector.
-        inline void setVertexA(const osg::Vec3 &v);
+        inline void setVertexA(const osg::Vec3& v);
         
         /// Set vertex <B>A</B> of the segment as three floats.
         inline void setVertexA(float x, float y, float z);
         
         /// get vertex <B>B</B>.
-        inline const osg::Vec3 &getVertexB() const;
+        inline const osg::Vec3& getVertexB() const;
         
         /// Set vertex <B>B</B> of the segment as a vector.
-        inline void setVertexB(const osg::Vec3 &v);
+        inline void setVertexB(const osg::Vec3& v);
         
         /// Set vertex <B>B</B> of the segment as three floats.
         inline void setVertexB(float x, float y, float z);
         
         /// Set both vertices.
-        inline void setSegment(const osg::Vec3 &A, const osg::Vec3 &B);
+        inline void setSegment(const osg::Vec3& A, const osg::Vec3& B);
         
         /// Place a particle. This method is called by <CODE>ModularEmitter</CODE>, do not call it manually.
-        inline void place(Particle *P) const;
+        inline void place(Particle* P) const;
 
     protected:
         virtual ~SegmentPlacer() {}
-        SegmentPlacer &operator=(const SegmentPlacer &) { return *this; }        
+        SegmentPlacer& operator=(const SegmentPlacer&) { return *this; }        
 
     private:
-        osg::Vec3 A_;
-        osg::Vec3 B_;
+        osg::Vec3 _vertexA;
+        osg::Vec3 _vertexB;
     };
 
     // INLINE FUNCTIONS
     
     inline SegmentPlacer::SegmentPlacer()
-    : Placer(), A_(-1, 0, 0), B_(1, 0, 0)
+    : Placer(), _vertexA(-1, 0, 0), _vertexB(1, 0, 0)
     {
     }
     
-    inline SegmentPlacer::SegmentPlacer(const SegmentPlacer &copy, const osg::CopyOp &copyop)
-    : Placer(copy, copyop), A_(copy.A_), B_(copy.B_)
+    inline SegmentPlacer::SegmentPlacer(const SegmentPlacer& copy, const osg::CopyOp& copyop)
+    : Placer(copy, copyop), _vertexA(copy._vertexA), _vertexB(copy._vertexB)
     {
     }
 
-    inline const osg::Vec3 &SegmentPlacer::getVertexA() const
+    inline const osg::Vec3& SegmentPlacer::getVertexA() const
     {
-        return A_;
+        return _vertexA;
     }
 
-    inline const osg::Vec3 &SegmentPlacer::getVertexB() const
+    inline const osg::Vec3& SegmentPlacer::getVertexB() const
     {
-        return B_;
+        return _vertexB;
     }
 
-    inline void SegmentPlacer::setSegment(const osg::Vec3 &A, const osg::Vec3 &B)
+    inline void SegmentPlacer::setSegment(const osg::Vec3& A, const osg::Vec3& B)
     {
-        A_ = A;
-        B_ = B;
+        _vertexA = A;
+        _vertexB = B;
     }
 
-    inline void SegmentPlacer::place(Particle *P) const
+    inline void SegmentPlacer::place(Particle* P) const
     {
-        P->setPosition(rangev3(A_, B_).get_random());
+        P->setPosition(rangev3(_vertexA, _vertexB).get_random());
     }
     
-    inline void SegmentPlacer::setVertexA(const osg::Vec3 &v)
+    inline void SegmentPlacer::setVertexA(const osg::Vec3& v)
     {
-        A_ = v;
+        _vertexA = v;
     }
     
     inline void SegmentPlacer::setVertexA(float x, float y, float z)
     {
-        A_.set(x, y, z);
+        _vertexA.set(x, y, z);
     }
     
-    inline void SegmentPlacer::setVertexB(const osg::Vec3 &v)
+    inline void SegmentPlacer::setVertexB(const osg::Vec3& v)
     {
-        B_ = v;
+        _vertexB = v;
     }
 
     inline void SegmentPlacer::setVertexB(float x, float y, float z)
     {
-        B_.set(x, y, z);
+        _vertexB.set(x, y, z);
     }    
 
 }

@@ -8,7 +8,7 @@ osgParticle::Program::Program()
 {
 }
 
-osgParticle::Program::Program(const Program &copy, const osg::CopyOp &copyop)
+osgParticle::Program::Program(const Program& copy, const osg::CopyOp& copyop)
 :    ParticleProcessor(copy, copyop)
 {
 }

@@ -6,39 +6,39 @@
 
 osgParticle::FluidFrictionOperator::FluidFrictionOperator():
      Operator(),
-     A_(0),
-     B_(0),
-     density_(0),
-     viscosity_(0),
-     ovr_rad_(0),
-     current_program_(0)
+     _coeff_A(0),
+     _coeff_B(0),
+     _density(0),
+     _viscosity(0),
+     _ovr_rad(0),
+     _current_program(0)
 {
     setFluidToAir();
 }
 
-osgParticle::FluidFrictionOperator::FluidFrictionOperator(const FluidFrictionOperator &copy, const osg::CopyOp &copyop)
+osgParticle::FluidFrictionOperator::FluidFrictionOperator(const FluidFrictionOperator& copy, const osg::CopyOp& copyop)
 :    Operator(copy, copyop),
-    A_(copy.A_),
-    B_(copy.B_),
-    density_(copy.density_), 
-    viscosity_(copy.viscosity_),
-    ovr_rad_(copy.ovr_rad_),
-    current_program_(0)
+    _coeff_A(copy._coeff_A),
+    _coeff_B(copy._coeff_B),
+    _density(copy._density), 
+    _viscosity(copy._viscosity),
+    _ovr_rad(copy._ovr_rad),
+    _current_program(0)
 {
 }
 
-void osgParticle::FluidFrictionOperator::operate(Particle *P, double dt)
+void osgParticle::FluidFrictionOperator::operate(Particle* P, double dt)
 {
-    float r = (ovr_rad_ > 0)? ovr_rad_ : P->getRadius();
+    float r = (_ovr_rad > 0)? _ovr_rad : P->getRadius();
     osg::Vec3 v = P->getVelocity()-_wind;
 
     float vm = v.normalize();
-    float R = A_ * r * vm + B_ * r * r * vm * vm;
+    float R = _coeff_A * r * vm + _coeff_B * r * r * vm * vm;
     
     osg::Vec3 Fr(-R * v.x(), -R * v.y(), -R * v.z());
 
-    if (current_program_->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
-        Fr = current_program_->rotateLocalToWorld(Fr);
+    if (_current_program->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
+        Fr = _current_program->rotateLocalToWorld(Fr);
     }
 
     // correct unwanted velocity increments

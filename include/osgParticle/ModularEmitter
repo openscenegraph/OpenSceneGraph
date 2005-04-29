@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_MODULAREMITTER_
-#define OSGPARTICLE_MODULAREMITTER_ 1
+#ifndef OSGPARTICLE_MODULAREMITTER
+#define OSGPARTICLE_MODULAREMITTER 1
 
 #include <osgParticle/Export>
 #include <osgParticle/Emitter>
@@ -44,27 +44,27 @@ namespace osgParticle
     class OSGPARTICLE_EXPORT ModularEmitter: public Emitter {
     public:
         ModularEmitter();
-        ModularEmitter(const ModularEmitter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        ModularEmitter(const ModularEmitter& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Node(osgParticle,ModularEmitter);
         
         /// Get the counter object.
-        inline Counter *getCounter();
+        inline Counter* getCounter();
         
         /// Get the const Counter object.
-        inline const Counter *getCounter() const;
+        inline const Counter* getCounter() const;
         
         /// Set the Counter object.
-        inline void setCounter(Counter *c);
+        inline void setCounter(Counter* c);
         
         /// Get the Placer object.
-        inline Placer *getPlacer();
+        inline Placer* getPlacer();
         
         /// Get the const Placer object.        
-        inline const Placer *getPlacer() const;
+        inline const Placer* getPlacer() const;
         
         /// Set the Placer object.
-        inline void setPlacer(Placer *p);
+        inline void setPlacer(Placer* p);
         
         /// Get the Shooter object.
         inline Shooter *getShooter();
@@ -82,56 +82,56 @@ namespace osgParticle
         virtual void emit(double dt);
         
     private:
-        osg::ref_ptr<Counter> counter_;
-        osg::ref_ptr<Placer> placer_;
-        osg::ref_ptr<Shooter> shooter_;
+        osg::ref_ptr<Counter> _counter;
+        osg::ref_ptr<Placer> _placer;
+        osg::ref_ptr<Shooter> _shooter;
     };
     
     // INLINE FUNCTIONS
     
-    inline Counter *ModularEmitter::getCounter()
+    inline Counter* ModularEmitter::getCounter()
     {
-        return counter_.get();
+        return _counter.get();
     }
     
-    inline const Counter *ModularEmitter::getCounter() const
+    inline const Counter* ModularEmitter::getCounter() const
     {
-        return counter_.get();
+        return _counter.get();
     }
 
-    inline void ModularEmitter::setCounter(Counter *c)
+    inline void ModularEmitter::setCounter(Counter* c)
     {
-        counter_ = c;
+        _counter = c;
     }
 
-    inline Placer *ModularEmitter::getPlacer()
+    inline Placer* ModularEmitter::getPlacer()
     {
-        return placer_.get();
+        return _placer.get();
     }
 
-    inline const Placer *ModularEmitter::getPlacer() const
+    inline const Placer* ModularEmitter::getPlacer() const
     {
-        return placer_.get();
+        return _placer.get();
     }
 
-    inline void ModularEmitter::setPlacer(Placer *p)
+    inline void ModularEmitter::setPlacer(Placer* p)
     {
-        placer_ = p;
+        _placer = p;
     }
 
     inline Shooter *ModularEmitter::getShooter()
     {
-        return shooter_.get();
+        return _shooter.get();
     }
 
     inline const Shooter *ModularEmitter::getShooter() const
     {
-        return shooter_.get();
+        return _shooter.get();
     }
 
     inline void ModularEmitter::setShooter(Shooter *s)
     {
-        shooter_ = s;
+        _shooter = s;
     }
     
 }

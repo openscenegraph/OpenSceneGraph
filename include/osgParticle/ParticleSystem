@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_PARTICLESYSTEM_
-#define OSGPARTICLE_PARTICLESYSTEM_ 1
+#ifndef OSGPARTICLE_PARTICLESYSTEM
+#define OSGPARTICLE_PARTICLESYSTEM 1
 
 #include <osgParticle/Export>
 #include <osgParticle/Particle>
@@ -48,7 +48,7 @@ namespace osgParticle
         };
 
         ParticleSystem();
-        ParticleSystem(const ParticleSystem &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        ParticleSystem(const ParticleSystem& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgParticle, ParticleSystem);
         
@@ -59,28 +59,28 @@ namespace osgParticle
         inline void setParticleAlignment(Alignment a);
         
         /// Get the X-axis alignment vector.
-        inline const osg::Vec3 &getAlignVectorX() const;
+        inline const osg::Vec3& getAlignVectorX() const;
         
         /// Set the X-axis alignment vector.
-        inline void setAlignVectorX(const osg::Vec3 &v);
+        inline void setAlignVectorX(const osg::Vec3& v);
 
         /// Get the Y-axis alignment vector.
-        inline const osg::Vec3 &getAlignVectorY() const;
+        inline const osg::Vec3& getAlignVectorY() const;
         
         /// Set the Y-axis alignment vector.
-        inline void setAlignVectorY(const osg::Vec3 &v);
+        inline void setAlignVectorY(const osg::Vec3& v);
         
         /// Set the alignment vectors.
-        inline void setAlignVectors(const osg::Vec3 &X, const osg::Vec3 &Y);
+        inline void setAlignVectors(const osg::Vec3& X, const osg::Vec3& Y);
 
         /// Get the default bounding box
-        inline const osg::BoundingBox &getDefaultBoundingBox() const;        
+        inline const osg::BoundingBox& getDefaultBoundingBox() const;        
         
         /**    Set the default bounding box.
             The default bounding box is used when a real bounding box cannot be computed, for example
             because no particles has been updated yet.
         */
-        inline void setDefaultBoundingBox(const osg::BoundingBox &bbox);
+        inline void setDefaultBoundingBox(const osg::BoundingBox& bbox);
 
         /// Get the double pass rendering flag.
         inline bool getDoublePassRendering() const;
@@ -112,13 +112,13 @@ namespace osgParticle
         inline bool areAllParticlesDead() const { return numDeadParticles()==numParticles(); }
         
         /// Get a pointer to the i-th particle.
-        inline Particle *getParticle(int i);
+        inline Particle* getParticle(int i);
         
         /// Get a const pointer to the i-th particle.
-        inline const Particle *getParticle(int i) const;
+        inline const Particle* getParticle(int i) const;
         
         /// Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null).
-        inline virtual Particle *createParticle(const Particle *ptemplate);
+        inline virtual Particle* createParticle(const Particle* ptemplate);
         
         /// Destroy the i-th particle.
         inline virtual void destroyParticle(int i);
@@ -127,13 +127,13 @@ namespace osgParticle
         inline int getLastFrameNumber() const;
 
         /// Get a reference to the default particle template.
-        inline Particle &getDefaultParticleTemplate();
+        inline Particle& getDefaultParticleTemplate();
         
         /// Get a const reference to the default particle template.
-        inline const Particle &getDefaultParticleTemplate() const;
+        inline const Particle& getDefaultParticleTemplate() const;
 
         /// Set the default particle template (particle is copied).
-        inline void setDefaultParticleTemplate(const Particle &p);
+        inline void setDefaultParticleTemplate(const Particle& p);
         
         /// Get whether the particle system can freeze when culled
         inline bool getFreezeOnCull() const;
@@ -144,7 +144,7 @@ namespace osgParticle
         /** A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.
             If <CODE>texturefile</CODE> is empty, then texturing is turned off.
         */
-        void setDefaultAttributes(const std::string &texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0);
+        void setDefaultAttributes(const std::string& texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0);
         
         /// (<B>EXPERIMENTAL</B>) Get the level of detail.
         inline int getLevelOfDetail() const;
@@ -157,46 +157,46 @@ namespace osgParticle
         /// Update the particles. Don't call this directly, use a <CODE>ParticleSystemUpdater</CODE> instead.
         virtual void update(double dt);
 
-        virtual void drawImplementation(osg::State &state) const;
+        virtual void drawImplementation(osg::State& state) const;
 
     protected:
 
         virtual ~ParticleSystem();
 
-        ParticleSystem &operator=(const ParticleSystem &) { return *this; }
+        ParticleSystem& operator=(const ParticleSystem&) { return *this; }
 
         inline virtual bool computeBound() const;
-        inline void update_bounds(const osg::Vec3 &p, float r);
-        void single_pass_render(osg::State &state, const osg::Matrix &modelview) const;
+        inline void update_bounds(const osg::Vec3& p, float r);
+        void single_pass_render(osg::State& state, const osg::Matrix& modelview) const;
 
     private:
         typedef std::vector<Particle> Particle_vector;
         typedef std::stack<Particle*> Death_stack;
 
-        Particle_vector particles_;
-        Death_stack deadparts_;
+        Particle_vector _particles;
+        Death_stack _deadparts;
         
-        osg::BoundingBox def_bbox_;
+        osg::BoundingBox _def_bbox;
         
-        Alignment alignment_;
-        osg::Vec3 align_X_axis_;
-        osg::Vec3 align_Y_axis_;
+        Alignment _alignment;
+        osg::Vec3 _align_X_axis;
+        osg::Vec3 _align_Y_axis;
 
-        bool doublepass_;
-        bool frozen_;
+        bool _doublepass;
+        bool _frozen;
 
-        osg::Vec3 bmin_;
-        osg::Vec3 bmax_;
+        osg::Vec3 _bmin;
+        osg::Vec3 _bmax;
 
-        bool reset_bounds_flag_;
-        bool bounds_computed_;
+        bool _reset_bounds_flag;
+        bool _bounds_computed;
 
-        Particle def_ptemp_;
-        mutable int last_frame_;
-        bool freeze_on_cull_;
+        Particle _def_ptemp;
+        mutable int _last_frame;
+        bool _freeze_on_cull;
         
-        int detail_;
-        mutable int draw_count_;
+        int _detail;
+        mutable int _draw_count;
         
     };
     
@@ -204,189 +204,189 @@ namespace osgParticle
     
     inline ParticleSystem::Alignment ParticleSystem::getParticleAlignment() const
     {
-        return alignment_;
+        return _alignment;
     }
     
     inline void ParticleSystem::setParticleAlignment(Alignment a)
     {
-        alignment_ = a;
+        _alignment = a;
     }
     
-    inline const osg::Vec3 &ParticleSystem::getAlignVectorX() const
+    inline const osg::Vec3& ParticleSystem::getAlignVectorX() const
     {
-        return align_X_axis_;
+        return _align_X_axis;
     }
     
-    inline void ParticleSystem::setAlignVectorX(const osg::Vec3 &v)
+    inline void ParticleSystem::setAlignVectorX(const osg::Vec3& v)
     {
-        align_X_axis_ = v;
+        _align_X_axis = v;
     }
 
-    inline const osg::Vec3 &ParticleSystem::getAlignVectorY() const
+    inline const osg::Vec3& ParticleSystem::getAlignVectorY() const
     {
-        return align_Y_axis_;
+        return _align_Y_axis;
     }
     
-    inline void ParticleSystem::setAlignVectorY(const osg::Vec3 &v)
+    inline void ParticleSystem::setAlignVectorY(const osg::Vec3& v)
     {
-        align_Y_axis_ = v;
+        _align_Y_axis = v;
     }
     
-    inline void ParticleSystem::setAlignVectors(const osg::Vec3 &X, const osg::Vec3 &Y)
+    inline void ParticleSystem::setAlignVectors(const osg::Vec3& X, const osg::Vec3& Y)
     {
-        align_X_axis_ = X;
-        align_Y_axis_ = Y;
+        _align_X_axis = X;
+        _align_Y_axis = Y;
     }
 
     inline bool ParticleSystem::isFrozen() const
     {
-        return frozen_;
+        return _frozen;
     }
     
     inline void ParticleSystem::setFrozen(bool v)
     {
-        frozen_ = v;
+        _frozen = v;
     }
     
-    inline const osg::BoundingBox &ParticleSystem::getDefaultBoundingBox() const
+    inline const osg::BoundingBox& ParticleSystem::getDefaultBoundingBox() const
     {
-        return def_bbox_;
+        return _def_bbox;
     }
     
-    inline void ParticleSystem::setDefaultBoundingBox(const osg::BoundingBox &bbox)
+    inline void ParticleSystem::setDefaultBoundingBox(const osg::BoundingBox& bbox)
     {
-        def_bbox_ = bbox;
+        _def_bbox = bbox;
     }
 
     inline bool ParticleSystem::getDoublePassRendering() const
     {
-        return doublepass_;
+        return _doublepass;
     }
 
     inline void ParticleSystem::setDoublePassRendering(bool v)
     {
-        doublepass_ = v;
+        _doublepass = v;
     }
 
     inline int ParticleSystem::numParticles() const
     {
-        return static_cast<int>(particles_.size());
+        return static_cast<int>(_particles.size());
     }
 
     inline int ParticleSystem::numDeadParticles() const
     {
-        return static_cast<int>(deadparts_.size());
+        return static_cast<int>(_deadparts.size());
     }
 
-    inline Particle *ParticleSystem::getParticle(int i)
+    inline Particle* ParticleSystem::getParticle(int i)
     {
-        return &particles_[i];
+        return &_particles[i];
     }
 
-    inline const Particle *ParticleSystem::getParticle(int i) const
+    inline const Particle* ParticleSystem::getParticle(int i) const
     {
-        return &particles_[i];
+        return &_particles[i];
     }
 
     inline void ParticleSystem::destroyParticle(int i)
     {
-        particles_[i].kill();
+        _particles[i].kill();
     }
     
     inline int ParticleSystem::getLastFrameNumber() const
     {
-        return last_frame_;
+        return _last_frame;
     }
 
     inline bool ParticleSystem::computeBound() const
     {        
-        if (!bounds_computed_) {
-            _bbox = def_bbox_;
+        if (!_bounds_computed) {
+            _bbox = _def_bbox;
         } else {
-			_bbox._min = bmin_;
-			_bbox._max = bmax_;
+			_bbox._min = _bmin;
+			_bbox._max = _bmax;
         }
         _bbox_computed = true;
         return true;
     }
 
-    inline void ParticleSystem::update_bounds(const osg::Vec3 &p, float r)
+    inline void ParticleSystem::update_bounds(const osg::Vec3& p, float r)
     {
-        if (reset_bounds_flag_) {
-            reset_bounds_flag_ = false;
-            bmin_ = p;
-            bmax_ = p;
+        if (_reset_bounds_flag) {
+            _reset_bounds_flag = false;
+            _bmin = p;
+            _bmax = p;
         } else {
-            if (p.x() - r < bmin_.x()) bmin_.x() = p.x() - r;
-            if (p.y() - r < bmin_.y()) bmin_.y() = p.y() - r;
-            if (p.z() - r < bmin_.z()) bmin_.z() = p.z() - r;
-            if (p.x() + r > bmax_.x()) bmax_.x() = p.x() + r;
-            if (p.y() + r > bmax_.y()) bmax_.y() = p.y() + r;
-            if (p.z() + r > bmax_.z()) bmax_.z() = p.z() + r;
+            if (p.x() - r < _bmin.x()) _bmin.x() = p.x() - r;
+            if (p.y() - r < _bmin.y()) _bmin.y() = p.y() - r;
+            if (p.z() - r < _bmin.z()) _bmin.z() = p.z() - r;
+            if (p.x() + r > _bmax.x()) _bmax.x() = p.x() + r;
+            if (p.y() + r > _bmax.y()) _bmax.y() = p.y() + r;
+            if (p.z() + r > _bmax.z()) _bmax.z() = p.z() + r;
             
-            if (!bounds_computed_) 
-                bounds_computed_ = true;
+            if (!_bounds_computed) 
+                _bounds_computed = true;
         }
     }
 
-    inline Particle &ParticleSystem::getDefaultParticleTemplate()
+    inline Particle& ParticleSystem::getDefaultParticleTemplate()
     {
-        return def_ptemp_;
+        return _def_ptemp;
     }
 
-    inline const Particle &ParticleSystem::getDefaultParticleTemplate() const
+    inline const Particle& ParticleSystem::getDefaultParticleTemplate() const
     {
-        return def_ptemp_;
+        return _def_ptemp;
     }
 
-    inline void ParticleSystem::setDefaultParticleTemplate(const Particle &p)
+    inline void ParticleSystem::setDefaultParticleTemplate(const Particle& p)
     {
-        def_ptemp_ = p;
+        _def_ptemp = p;
     }
     
     inline bool ParticleSystem::getFreezeOnCull() const
     {
-        return freeze_on_cull_;
+        return _freeze_on_cull;
     }
     
     inline void ParticleSystem::setFreezeOnCull(bool v)
     {
-        freeze_on_cull_ = v;
+        _freeze_on_cull = v;
     }
     
     inline int ParticleSystem::getLevelOfDetail() const
     {
-        return detail_;
+        return _detail;
     }
     
     inline void ParticleSystem::setLevelOfDetail(int v)
     {
         if (v < 1) v = 1;
-        detail_ = v;
+        _detail = v;
     }
     
     // I'm not sure this function should be inlined... 
     
-    inline Particle *ParticleSystem::createParticle(const Particle *ptemplate)
+    inline Particle* ParticleSystem::createParticle(const Particle* ptemplate)
     {
         // is there any dead particle?
-        if (!deadparts_.empty()) {
+        if (!_deadparts.empty()) {
 
             // retrieve a pointer to the last dead particle
-            Particle *P = deadparts_.top();
+            Particle* P = _deadparts.top();
 
             // create a new (alive) particle in the same place
-            *P = Particle(ptemplate? *ptemplate: def_ptemp_);
+            *P = Particle(ptemplate? *ptemplate: _def_ptemp);
 
             // remove the pointer from the death stack
-            deadparts_.pop();
+            _deadparts.pop();
             return P;
 
         } else {
 
             // add a new particle to the vector
-            particles_.push_back(Particle(ptemplate? *ptemplate: def_ptemp_));
-            return &particles_.back();
+            _particles.push_back(Particle(ptemplate? *ptemplate: _def_ptemp));
+            return &_particles.back();
         }
     }
 

@@ -3,28 +3,28 @@
 
 osgParticle::ModularEmitter::ModularEmitter()
 :    Emitter(),
-    counter_(new RandomRateCounter),
-    placer_(new PointPlacer),
-    shooter_(new RadialShooter)
+    _counter(new RandomRateCounter),
+    _placer(new PointPlacer),
+    _shooter(new RadialShooter)
 {
 }
     
-osgParticle::ModularEmitter::ModularEmitter(const ModularEmitter &copy, const osg::CopyOp &copyop)
+osgParticle::ModularEmitter::ModularEmitter(const ModularEmitter& copy, const osg::CopyOp& copyop)
 :    Emitter(copy, copyop),
-    counter_(static_cast<Counter *>(copyop(copy.counter_.get()))), 
-    placer_(static_cast<Placer *>(copyop(copy.placer_.get()))), 
-    shooter_(static_cast<Shooter *>(copyop(copy.shooter_.get())))
+    _counter(static_cast<Counter *>(copyop(copy._counter.get()))), 
+    _placer(static_cast<Placer *>(copyop(copy._placer.get()))), 
+    _shooter(static_cast<Shooter *>(copyop(copy._shooter.get())))
 {
 }
 
 void osgParticle::ModularEmitter::emit(double dt) 
 {
-    int n = counter_->numParticlesToCreate(dt);
+    int n = _counter->numParticlesToCreate(dt);
     for (int i=0; i<n; ++i) {
-        Particle *P = getParticleSystem()->createParticle(getUseDefaultTemplate()? 0: &getParticleTemplate());
+        Particle* P = getParticleSystem()->createParticle(getUseDefaultTemplate()? 0: &getParticleTemplate());
         if (P) {
-            placer_->place(P);
-            shooter_->shoot(P);
+            _placer->place(P);
+            _shooter->shoot(P);
             if (getReferenceFrame() == RELATIVE_RF) {
                 P->transformPositionVelocity(getLocalToWorldMatrix());
             }

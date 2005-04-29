@@ -5,13 +5,13 @@
 
 osgParticle::Emitter::Emitter()
 :    ParticleProcessor(), 
-    usedeftemp_(true)
+    _usedeftemp(true)
 {
 }
 
-osgParticle::Emitter::Emitter(const Emitter &copy, const osg::CopyOp &copyop)
+osgParticle::Emitter::Emitter(const Emitter& copy, const osg::CopyOp& copyop)
 :     ParticleProcessor(copy, copyop),
-    usedeftemp_(copy.usedeftemp_), 
-    ptemp_(copy.ptemp_)
+    _usedeftemp(copy._usedeftemp), 
+    _ptemp(copy._ptemp)
 {
 }

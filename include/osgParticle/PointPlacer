@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_POINTPLACER_
-#define OSGPARTICLE_POINTPLACER_ 1
+#ifndef OSGPARTICLE_POINT_PLACER
+#define OSGPARTICLE_POINT_PLACER 1
 
 #include <osgParticle/CenteredPlacer>
 #include <osgParticle/Particle>
@@ -31,7 +31,7 @@ namespace osgParticle
     class PointPlacer: public CenteredPlacer {
     public:
         inline PointPlacer();
-        inline PointPlacer(const PointPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline PointPlacer(const PointPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgParticle, PointPlacer);
         
@@ -39,11 +39,11 @@ namespace osgParticle
             This method is called automatically by <CODE>ModularEmitter</CODE> and should not be called
             manually.
         */
-        inline void place(Particle *P) const;
+        inline void place(Particle* P) const;
 
     protected:
         virtual ~PointPlacer() {}
-        PointPlacer &operator=(const PointPlacer &) { return *this; }        
+        PointPlacer& operator=(const PointPlacer&) { return *this; }        
     };
 
     // INLINE FUNCTIONS
@@ -53,12 +53,12 @@ namespace osgParticle
     {
     }
     
-    inline PointPlacer::PointPlacer(const PointPlacer &copy, const osg::CopyOp &copyop)
+    inline PointPlacer::PointPlacer(const PointPlacer& copy, const osg::CopyOp& copyop)
     : CenteredPlacer(copy, copyop)
     {
     }
 
-    inline void PointPlacer::place(Particle *P) const
+    inline void PointPlacer::place(Particle* P) const
     {
         P->setPosition(getCenter());
     }

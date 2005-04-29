@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_FLUIDFRICTIONOPERATOR_
-#define OSGPARTICLE_FLUIDFRICTIONOPERATOR_ 1
+#ifndef OSGPARTICLE_FLUIDFRICTIONOPERATOR
+#define OSGPARTICLE_FLUIDFRICTIONOPERATOR 1
 
 #include <osgParticle/Export>
 #include <osgParticle/Operator>
@@ -37,7 +37,7 @@ namespace osgParticle
     public:
         
         FluidFrictionOperator();
-        FluidFrictionOperator(const FluidFrictionOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        FluidFrictionOperator(const FluidFrictionOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgParticle, FluidFrictionOperator);
                
@@ -72,47 +72,47 @@ namespace osgParticle
         inline void setFluidToWater();
         
         /// Apply the friction forces to a particle. Do not call this method manually.
-        void operate(Particle *P, double dt);
+        void operate(Particle* P, double dt);
         
         /// Perform some initializations. Do not call this method manually.
-        inline void beginOperate(Program *prg);
+        inline void beginOperate(Program* prg);
         
     protected:
         virtual ~FluidFrictionOperator() {}
         FluidFrictionOperator &operator=(const FluidFrictionOperator &) { return *this; }
         
     private:
-        float       A_;
-        float       B_;
-        float       density_;
-        float       viscosity_;
-        float       ovr_rad_;
+        float       _coeff_A;
+        float       _coeff_B;
+        float       _density;
+        float       _viscosity;
+        float       _ovr_rad;
         osg::Vec3   _wind;
-        Program *current_program_;
+        Program*    _current_program;
     };
     
     // INLINE FUNCTIONS
     
     inline float FluidFrictionOperator::getFluidDensity() const
     {
-        return density_;
+        return _density;
     }
 
     inline float FluidFrictionOperator::getFluidViscosity() const
     {
-        return viscosity_;
+        return _viscosity;
     }
     
     inline void FluidFrictionOperator::setFluidDensity(float d)
     {
-        density_ = d;
-        B_ = 0.2f * osg::PI * density_;
+        _density = d;
+        _coeff_B = 0.2f * osg::PI * _density;
     }
 
     inline void FluidFrictionOperator::setFluidViscosity(float v)
     {
-        viscosity_ = v;
-        A_ = 6 * osg::PI * viscosity_;
+        _viscosity = v;
+        _coeff_A = 6 * osg::PI * _viscosity;
     }
     
     inline void FluidFrictionOperator::setFluidToAir()
@@ -129,17 +129,17 @@ namespace osgParticle
     
     inline float FluidFrictionOperator::getOverrideRadius() const
     {
-        return ovr_rad_;
+        return _ovr_rad;
     }
     
     inline void FluidFrictionOperator::setOverrideRadius(float r)
     {
-        ovr_rad_ = r;
+        _ovr_rad = r;
     }
     
-    inline void FluidFrictionOperator::beginOperate(Program *prg)
+    inline void FluidFrictionOperator::beginOperate(Program* prg)
     {
-        current_program_ = prg;
+        _current_program = prg;
     }
 
 }

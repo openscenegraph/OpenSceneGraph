@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_VERSION_
-#define OSGPARTICLE_VERSION_ 1
+#ifndef OSGPARTICLE_VERSION
+#define OSGPARTICLE_VERSION 1
 
 #include <osgParticle/Export>
 

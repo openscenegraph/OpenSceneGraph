@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_LINEARINTERPOLATOR_
-#define OSGPARTICLE_LINEARINTERPOLATOR_
+#ifndef OSGPARTICLE_LINEARINTERPOLATOR
+#define OSGPARTICLE_LINEARINTERPOLATOR
 
 #include <osgParticle/Interpolator>
 
@@ -26,12 +26,13 @@ namespace osgParticle
 {
 
     /// A linear interpolator.
-    class LinearInterpolator: public Interpolator {
+    class LinearInterpolator: public Interpolator
+    {
     public:
         LinearInterpolator()
         : Interpolator() {}
         
-        LinearInterpolator(const LinearInterpolator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY)
+        LinearInterpolator(const LinearInterpolator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY)
         : Interpolator(copy, copyop) {}
         
         META_Object(osgParticle, LinearInterpolator);

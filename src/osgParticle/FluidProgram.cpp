@@ -20,11 +20,11 @@ osgParticle::FluidProgram::FluidProgram(const FluidProgram& copy, const osg::Cop
 void osgParticle::FluidProgram::execute(double dt)
 {
     const float four_over_three = 4.0f/3.0f;
-    ParticleSystem *ps = getParticleSystem();
+    ParticleSystem* ps = getParticleSystem();
     int n = ps->numParticles();
     for (int i=0; i<n; ++i)
     {
-        Particle *particle = ps->getParticle(i);
+        Particle* particle = ps->getParticle(i);
         if (particle->isAlive())
         {
             float radius = particle->getRadius();

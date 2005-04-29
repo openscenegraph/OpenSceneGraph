@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_MODULARPROGRAM_
-#define OSGPARTICLE_MODULARPROGRAM_ 1
+#ifndef OSGPARTICLE_MODULARPROGRAM
+#define OSGPARTICLE_MODULARPROGRAM 1
 
 #include <osgParticle/Export>
 #include <osgParticle/Program>
@@ -35,7 +35,7 @@ namespace osgParticle
     class OSGPARTICLE_EXPORT ModularProgram: public Program {
     public:
         ModularProgram();
-        ModularProgram(const ModularProgram &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        ModularProgram(const ModularProgram& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Node(osgParticle,ModularProgram);
         
@@ -43,54 +43,54 @@ namespace osgParticle
         inline int numOperators() const;
         
         /// Add an operator to the list.        
-        inline void addOperator(Operator *o);
+        inline void addOperator(Operator* o);
         
         /// Get a pointer to an operator in the list.
-        inline Operator *getOperator(int i);
+        inline Operator* getOperator(int i);
         
         /// Get a const pointer to an operator in the list.
-        inline const Operator *getOperator(int i) const;
+        inline const Operator* getOperator(int i) const;
         
         /// Remove an operator from the list.
         inline void removeOperator(int i);        
             
     protected:
         virtual ~ModularProgram() {}
-        ModularProgram &operator=(const ModularProgram &) { return *this; }
+        ModularProgram& operator=(const ModularProgram&) { return *this; }
         
         void execute(double dt);
         
     private:
         typedef std::vector<osg::ref_ptr<Operator> > Operator_vector;
 
-        Operator_vector operators_;
+        Operator_vector _operators;
     };
     
     // INLINE FUNCTIONS
     
     inline int ModularProgram::numOperators() const
     {
-        return static_cast<int>(operators_.size());
+        return static_cast<int>(_operators.size());
     }
 
-    inline void ModularProgram::addOperator(Operator *o)
+    inline void ModularProgram::addOperator(Operator* o)
     {
-        operators_.push_back(o);
+        _operators.push_back(o);
     }
 
-    inline Operator *ModularProgram::getOperator(int i)
+    inline Operator* ModularProgram::getOperator(int i)
     {
-        return operators_[i].get();
+        return _operators[i].get();
     }
 
-    inline const Operator *ModularProgram::getOperator(int i) const
+    inline const Operator* ModularProgram::getOperator(int i) const
     {
-        return operators_[i].get();
+        return _operators[i].get();
     }
 
     inline void ModularProgram::removeOperator(int i)
     {
-        operators_.erase(operators_.begin()+i);
+        _operators.erase(_operators.begin()+i);
     }
     
 

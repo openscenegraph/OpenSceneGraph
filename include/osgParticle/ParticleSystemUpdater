@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_PARTICLESYSTEMUPDATER_
-#define OSGPARTICLE_PARTICLESYSTEMUPDATER_ 1
+#ifndef OSGPARTICLE_PARTICLESYSTEMUPDATER
+#define OSGPARTICLE_PARTICLESYSTEMUPDATER 1
 
 #include <osgParticle/Export>
 #include <osgParticle/ParticleSystem>
@@ -39,21 +39,21 @@ namespace osgParticle
     class OSGPARTICLE_EXPORT ParticleSystemUpdater: public osg::Node {
     public:
         ParticleSystemUpdater();
-        ParticleSystemUpdater(const ParticleSystemUpdater &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        ParticleSystemUpdater(const ParticleSystemUpdater& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Node(osgParticle,ParticleSystemUpdater);
         
         /// Add a particle system to the list.
-        inline bool addParticleSystem(ParticleSystem *ps);
+        inline bool addParticleSystem(ParticleSystem* ps);
 
         /// Remove a particle system from the list (by pointer).
-        inline bool removeParticleSystem(ParticleSystem *ps);
+        inline bool removeParticleSystem(ParticleSystem* ps);
 
         /// Remove a particle system(s) from the list (by index).
         inline bool removeParticleSystem(unsigned int i, unsigned int numParticleSystemsToRemove=1);
         
         /// Replace ParticleSystem with another ParticleSystem.
-        inline bool replaceParticleSystem(ParticleSystem *origPS, ParticleSystem *newPS);
+        inline bool replaceParticleSystem(ParticleSystem* origPS, ParticleSystem* newPS);
 
         /// set a particle system by index.
         inline bool setParticleSystem( unsigned int i, ParticleSystem* ps );
@@ -73,7 +73,7 @@ namespace osgParticle
         /// get index number of ParticleSystem.
         inline unsigned int getParticleSystemIndex( const ParticleSystem* ps ) const;
         
-        virtual void traverse(osg::NodeVisitor &nv);
+        virtual void traverse(osg::NodeVisitor& nv);
         
     protected:
         virtual ~ParticleSystemUpdater() {}
@@ -84,8 +84,8 @@ namespace osgParticle
     private:
         typedef std::vector<osg::ref_ptr<ParticleSystem> > ParticleSystem_Vector;
         
-        ParticleSystem_Vector psv_;
-        double t0_;
+        ParticleSystem_Vector _psv;
+        double _t0;
     };
     
     // INLINE FUNCTIONS
@@ -97,43 +97,43 @@ namespace osgParticle
         return true;
     }
     
-    inline bool ParticleSystemUpdater::addParticleSystem(ParticleSystem *ps)
+    inline bool ParticleSystemUpdater::addParticleSystem(ParticleSystem* ps)
     {
-        psv_.push_back(ps);
+        _psv.push_back(ps);
         return true;
     }
     
-    inline bool ParticleSystemUpdater::removeParticleSystem(ParticleSystem *ps)
+    inline bool ParticleSystemUpdater::removeParticleSystem(ParticleSystem* ps)
     {
        unsigned int i = getParticleSystemIndex( ps );
-       if( i >= psv_.size() ) return false;
+       if( i >= _psv.size() ) return false;
        removeParticleSystem( i );
         return true;
     }
 
     inline bool ParticleSystemUpdater::removeParticleSystem(unsigned int pos, unsigned int numParticleSystemsToRemove)
     {
-       if( (pos < psv_.size()) && (numParticleSystemsToRemove > 0) )
+       if( (pos < _psv.size()) && (numParticleSystemsToRemove > 0) )
        {
           unsigned int endOfRemoveRange = pos + numParticleSystemsToRemove;
-          if( endOfRemoveRange > psv_.size() )
+          if( endOfRemoveRange > _psv.size() )
           {
              osg::notify(osg::DEBUG_INFO)<<"Warning: ParticleSystem::removeParticleSystem(i,numParticleSystemsToRemove) has been passed an excessive number"<<std::endl;
              osg::notify(osg::DEBUG_INFO)<<"         of ParticleSystems to remove, trimming just to end of ParticleSystem list."<<std::endl;
-             endOfRemoveRange = psv_.size();
+             endOfRemoveRange = _psv.size();
           }
-          psv_.erase(psv_.begin()+pos, psv_.begin()+endOfRemoveRange);
+          _psv.erase(_psv.begin()+pos, _psv.begin()+endOfRemoveRange);
           return true;
        }
        return false;
     }
 
-    inline bool ParticleSystemUpdater::replaceParticleSystem( ParticleSystem *origPS, ParticleSystem* newPS )
+    inline bool ParticleSystemUpdater::replaceParticleSystem( ParticleSystem* origPS, ParticleSystem* newPS )
     {
        if( (newPS == NULL) || (origPS == newPS) ) return false;
 
        unsigned int pos = getParticleSystemIndex( origPS );
-       if( pos < psv_.size() )
+       if( pos < _psv.size() )
        {
           return setParticleSystem( pos, newPS );
        }
@@ -142,9 +142,9 @@ namespace osgParticle
 
     inline bool ParticleSystemUpdater::setParticleSystem( unsigned int i, ParticleSystem* ps )
     {
-       if( (i < psv_.size()) && ps )
+       if( (i < _psv.size()) && ps )
        {
-          psv_[i] = ps;
+          _psv[i] = ps;
           return true;
        }
        return false;
@@ -152,23 +152,23 @@ namespace osgParticle
 
     inline unsigned int ParticleSystemUpdater::getNumParticleSystems() const
     {
-        return static_cast<int>(psv_.size());
+        return static_cast<int>(_psv.size());
     }
     
     inline ParticleSystem* ParticleSystemUpdater::getParticleSystem(unsigned int i)
     {
-        return psv_[i].get();
+        return _psv[i].get();
     }
 
     inline const ParticleSystem* ParticleSystemUpdater::getParticleSystem(unsigned int i) const
     {
-        return psv_[i].get();
+        return _psv[i].get();
     }
 
     inline bool ParticleSystemUpdater::containsParticleSystem( const ParticleSystem* ps ) const
     {
-       for( ParticleSystem_Vector::const_iterator itr=psv_.begin();
-            itr!=psv_.end();
+       for( ParticleSystem_Vector::const_iterator itr=_psv.begin();
+            itr!=_psv.end();
             ++itr )
        {
           if( itr->get() == ps ) return true;
@@ -178,11 +178,11 @@ namespace osgParticle
 
     inline unsigned int ParticleSystemUpdater::getParticleSystemIndex( const ParticleSystem* ps ) const
     {
-       for( unsigned int particleSystemNum=0; particleSystemNum<psv_.size(); ++particleSystemNum )
+       for( unsigned int particleSystemNum=0; particleSystemNum<_psv.size(); ++particleSystemNum )
        {
-          if( psv_[particleSystemNum] == ps ) return particleSystemNum;
+          if( _psv[particleSystemNum] == ps ) return particleSystemNum;
        }
-       return psv_.size(); // node not found.
+       return _psv.size(); // node not found.
     }
 
 }

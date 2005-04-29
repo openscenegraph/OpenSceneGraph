@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_FORCEOPERATOR_
-#define OSGPARTICLE_FORCEOPERATOR_ 1
+#ifndef OSGPARTICLE_FORCEOPERATOR
+#define OSGPARTICLE_FORCEOPERATOR 1
 
 #include <osgParticle/ModularProgram>
 #include <osgParticle/Operator>
@@ -33,64 +33,64 @@ namespace osgParticle
     class ForceOperator: public Operator {
     public:
         inline ForceOperator();
-        inline ForceOperator(const ForceOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline ForceOperator(const ForceOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgParticle, ForceOperator);
         
         /// Get the force vector.
-        inline const osg::Vec3 &getForce() const;
+        inline const osg::Vec3& getForce() const;
         
         /// Set the force vector.
-        inline void setForce(const osg::Vec3 &f);
+        inline void setForce(const osg::Vec3& f);
         
         /// Apply the force to a particle. Do not call this method manually.
-        inline void operate(Particle *P, double dt);
+        inline void operate(Particle* P, double dt);
         
         /// Perform some initialization. Do not call this method manually.
         inline void beginOperate(Program *prg);
         
     protected:
         virtual ~ForceOperator() {};
-        ForceOperator &operator=(const ForceOperator &) { return *this; }        
+        ForceOperator& operator=(const ForceOperator&) { return *this; }        
         
     private:
-        osg::Vec3 force_;
-        osg::Vec3 xf_force_;
+        osg::Vec3 _force;
+        osg::Vec3 _xf_force;
     };
     
     // INLINE FUNCTIONS
     
     inline ForceOperator::ForceOperator()
-    : Operator(), force_(0, 0, 0)
+    : Operator(), _force(0, 0, 0)
     {        
     }
     
-    inline ForceOperator::ForceOperator(const ForceOperator &copy, const osg::CopyOp &copyop)
-    : Operator(copy, copyop), force_(copy.force_)
+    inline ForceOperator::ForceOperator(const ForceOperator& copy, const osg::CopyOp& copyop)
+    : Operator(copy, copyop), _force(copy._force)
     {
     }
     
-    inline const osg::Vec3 &ForceOperator::getForce() const
+    inline const osg::Vec3& ForceOperator::getForce() const
     {
-        return force_;
+        return _force;
     }
     
-    inline void ForceOperator::setForce(const osg::Vec3 &v)
+    inline void ForceOperator::setForce(const osg::Vec3& v)
     {
-        force_ = v;
+        _force = v;
     }
     
-    inline void ForceOperator::operate(Particle *P, double dt)
+    inline void ForceOperator::operate(Particle* P, double dt)
     {
-        P->addVelocity(xf_force_ * (P->getMassInv() * dt));
+        P->addVelocity(_xf_force * (P->getMassInv() * dt));
     }
     
     inline void ForceOperator::beginOperate(Program *prg)
     {
         if (prg->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
-            xf_force_ = prg->rotateLocalToWorld(force_);
+            _xf_force = prg->rotateLocalToWorld(_force);
         } else {
-            xf_force_ = force_;
+            _xf_force = _force;
         }
     }
 }

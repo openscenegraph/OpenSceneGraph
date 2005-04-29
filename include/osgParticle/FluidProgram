@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGPARTICLE_FLUIDPROGRAM_
-#define OSGPARTICLE_FLUIDPROGRAM_ 1
+#ifndef OSGPARTICLE_FLUIDPROGRAM
+#define OSGPARTICLE_FLUIDPROGRAM 1
 
 #include <osgParticle/Export>
 #include <osgParticle/Program>

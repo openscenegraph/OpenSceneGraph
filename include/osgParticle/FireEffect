@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGPARTICLE_FireEffect
-#define OSGPARTICLE_FireEffect
+#ifndef OSGPARTICLE_FIREEFFECT
+#define OSGPARTICLE_FIREEFFECT
 
 #include <osgParticle/ParticleEffect>
 #include <osgParticle/ModularEmitter>

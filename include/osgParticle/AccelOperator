@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_ACCELOPERATOR_
-#define OSGPARTICLE_ACCELOPERATOR_ 1
+#ifndef OSGPARTICLE_ACCELOPERATOR
+#define OSGPARTICLE_ACCELOPERATOR 1
 
 #include <osgParticle/ModularProgram>
 #include <osgParticle/Operator>
@@ -31,15 +31,15 @@ namespace osgParticle
     class AccelOperator: public Operator {
     public:
         inline AccelOperator();
-        inline AccelOperator(const AccelOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline AccelOperator(const AccelOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgParticle, AccelOperator);
 
         /// Get the acceleration vector.
-        inline const osg::Vec3 &getAcceleration() const;
+        inline const osg::Vec3& getAcceleration() const;
         
         /// Set the acceleration vector.
-        inline void setAcceleration(const osg::Vec3 &v);
+        inline void setAcceleration(const osg::Vec3& v);
         
         /** Quickly set the acceleration vector to the gravity on earth (0, 0, -9.81).
             The acceleration will be multiplied by the <CODE>scale</CODE> parameter.
@@ -47,7 +47,7 @@ namespace osgParticle
         inline void setToGravity(float scale = 1);
         
         /// Apply the acceleration to a particle. Do not call this method manually.
-        inline void operate(Particle *P, double dt);
+        inline void operate(Particle* P, double dt);
         
         /// Perform some initializations. Do not call this method manually.
         inline void beginOperate(Program *prg);
@@ -57,48 +57,48 @@ namespace osgParticle
         AccelOperator &operator=(const AccelOperator &) { return *this; }        
 
     private:
-        osg::Vec3 accel_;
-        osg::Vec3 xf_accel_;
+        osg::Vec3 _accel;
+        osg::Vec3 _xf_accel;
     };
 
     // INLINE FUNCTIONS
     
     inline AccelOperator::AccelOperator()
-    : Operator(), accel_(0, 0, 0)
+    : Operator(), _accel(0, 0, 0)
     {
     }
     
-    inline AccelOperator::AccelOperator(const AccelOperator &copy, const osg::CopyOp &copyop)
-    : Operator(copy, copyop), accel_(copy.accel_)
+    inline AccelOperator::AccelOperator(const AccelOperator& copy, const osg::CopyOp& copyop)
+    : Operator(copy, copyop), _accel(copy._accel)
     {
     }
 
-    inline const osg::Vec3 &AccelOperator::getAcceleration() const
+    inline const osg::Vec3& AccelOperator::getAcceleration() const
     {
-        return accel_;
+        return _accel;
     }
 
-    inline void AccelOperator::setAcceleration(const osg::Vec3 &v)
+    inline void AccelOperator::setAcceleration(const osg::Vec3& v)
     {
-        accel_ = v;
+        _accel = v;
     }
     
     inline void AccelOperator::setToGravity(float scale)
     {
-        accel_.set(0, 0, -9.80665f * scale);
+        _accel.set(0, 0, -9.80665f * scale);
     }
 
-    inline void AccelOperator::operate(Particle *P, double dt)
+    inline void AccelOperator::operate(Particle* P, double dt)
     {
-        P->addVelocity(xf_accel_ * dt);
+        P->addVelocity(_xf_accel * dt);
     }
     
     inline void AccelOperator::beginOperate(Program *prg)
     {
         if (prg->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
-            xf_accel_ = prg->rotateLocalToWorld(accel_);
+            _xf_accel = prg->rotateLocalToWorld(_accel);
         } else {
-            xf_accel_ = accel_;
+            _xf_accel = _accel;
         }
     }
 

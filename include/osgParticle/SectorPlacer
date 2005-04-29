@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_SECTORPLACER_
-#define OSGPARTICLE_SECTORPLACER_ 1
+#ifndef OSGPARTICLE_SECTOR_PLACER
+#define OSGPARTICLE_SECTOR_PLACER 1
 
 #include <osgParticle/CenteredPlacer>
 #include <osgParticle/Particle>
@@ -36,22 +36,22 @@ namespace osgParticle
     class SectorPlacer: public CenteredPlacer {
     public:
         inline SectorPlacer();
-        inline SectorPlacer(const SectorPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        inline SectorPlacer(const SectorPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         /// Get the range of possible values for radius.
-        inline const rangef &getRadiusRange() const;
+        inline const rangef& getRadiusRange() const;
         
         /// Set the range of possible values for radius.
-        inline void setRadiusRange(const rangef &r);
+        inline void setRadiusRange(const rangef& r);
         
         /// Set the range of possible values for radius.
         inline void setRadiusRange(float r1, float r2);
         
         /// Get the range of possible values for the central angle.
-        inline const rangef &getPhiRange() const;        
+        inline const rangef& getPhiRange() const;        
         
         /// Set the range of possible values for the central angle.
-        inline void setPhiRange(const rangef &r);
+        inline void setPhiRange(const rangef& r);
         
         /// Set the range of possible values for the central angle.
         inline void setPhiRange(float r1, float r2);    
@@ -59,65 +59,65 @@ namespace osgParticle
         META_Object(osgParticle, SectorPlacer);
         
         /// Place a particle. Do not call it manually.
-        inline void place(Particle *P) const;
+        inline void place(Particle* P) const;
 
     protected:
         virtual ~SectorPlacer() {}
-        SectorPlacer &operator=(const SectorPlacer &) { return *this; }        
+        SectorPlacer& operator=(const SectorPlacer&) { return *this; }        
         
     private:
-        rangef rad_range_;
-        rangef phi_range_;
+        rangef _rad_range;
+        rangef _phi_range;
     };
 
     // INLINE FUNCTIONS
     
     inline SectorPlacer::SectorPlacer()
-    : CenteredPlacer(), rad_range_(0, 1), phi_range_(0, osg::PI*2)
+    : CenteredPlacer(), _rad_range(0, 1), _phi_range(0, osg::PI*2)
     {
     }
     
-    inline SectorPlacer::SectorPlacer(const SectorPlacer &copy, const osg::CopyOp &copyop)
-    : CenteredPlacer(copy, copyop), rad_range_(copy.rad_range_), phi_range_(copy.phi_range_)
+    inline SectorPlacer::SectorPlacer(const SectorPlacer& copy, const osg::CopyOp& copyop)
+    : CenteredPlacer(copy, copyop), _rad_range(copy._rad_range), _phi_range(copy._phi_range)
     {
     }
     
-    inline const rangef &SectorPlacer::getRadiusRange() const
+    inline const rangef& SectorPlacer::getRadiusRange() const
     {
-        return rad_range_;
+        return _rad_range;
     }
 
-    inline const rangef &SectorPlacer::getPhiRange() const
+    inline const rangef& SectorPlacer::getPhiRange() const
     {
-        return phi_range_;
+        return _phi_range;
     }
 
-    inline void SectorPlacer::setRadiusRange(const rangef &r)
+    inline void SectorPlacer::setRadiusRange(const rangef& r)
     {
-        rad_range_ = r;
+        _rad_range = r;
     }
     
     inline void SectorPlacer::setRadiusRange(float r1, float r2)
     {
-        rad_range_.minimum = r1;
-        rad_range_.maximum = r2;
+        _rad_range.minimum = r1;
+        _rad_range.maximum = r2;
     }
     
-    inline void SectorPlacer::setPhiRange(const rangef &r)
+    inline void SectorPlacer::setPhiRange(const rangef& r)
     {
-        phi_range_ = r;
+        _phi_range = r;
     }
     
     inline void SectorPlacer::setPhiRange(float r1, float r2)
     {
-        phi_range_.minimum = r1;
-        phi_range_.maximum = r2;
+        _phi_range.minimum = r1;
+        _phi_range.maximum = r2;
     }
 
-    inline void SectorPlacer::place(Particle *P) const
+    inline void SectorPlacer::place(Particle* P) const
     {
-        float rad = rad_range_.get_random_sqrtf();
-        float phi = phi_range_.get_random();
+        float rad = _rad_range.get_random_sqrtf();
+        float phi = _phi_range.get_random();
         
         osg::Vec3 pos(
             getCenter().x() + rad * cosf(phi), 

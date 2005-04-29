@@ -37,9 +37,9 @@ namespace osgParticle
         ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
 
-        virtual const char *libraryName() const { return "osgParticle"; }
-        virtual const char *className() const { return "ParticleEffect"; }
-        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const ParticleEffect*>(obj) != 0; }
+        virtual const char* libraryName() const { return "osgParticle"; }
+        virtual const char* className() const { return "ParticleEffect"; }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ParticleEffect*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
         void setUseLocalParticleSystem(bool local);

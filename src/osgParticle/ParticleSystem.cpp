@@ -18,44 +18,44 @@
 
 osgParticle::ParticleSystem::ParticleSystem()
 :    osg::Drawable(), 
-    def_bbox_(osg::Vec3(-10, -10, -10), osg::Vec3(10, 10, 10)),
-    alignment_(BILLBOARD),
-    align_X_axis_(1, 0, 0),
-    align_Y_axis_(0, 1, 0),
-    doublepass_(false),
-    frozen_(false),
-    bmin_(0, 0, 0), 
-    bmax_(0, 0, 0), 
-    reset_bounds_flag_(false),
-    bounds_computed_(false),
-    def_ptemp_(Particle()),
-    last_frame_(0),
-    freeze_on_cull_(false),
-    detail_(1),
-    draw_count_(0)
+    _def_bbox(osg::Vec3(-10, -10, -10), osg::Vec3(10, 10, 10)),
+    _alignment(BILLBOARD),
+    _align_X_axis(1, 0, 0),
+    _align_Y_axis(0, 1, 0),
+    _doublepass(false),
+    _frozen(false),
+    _bmin(0, 0, 0), 
+    _bmax(0, 0, 0), 
+    _reset_bounds_flag(false),
+    _bounds_computed(false),
+    _def_ptemp(Particle()),
+    _last_frame(0),
+    _freeze_on_cull(false),
+    _detail(1),
+    _draw_count(0)
 {
     // we don't support display lists because particle systems
     // are dynamic, and they always changes between frames
     setSupportsDisplayList(false);
 }
 
-osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem &copy, const osg::CopyOp &copyop)
+osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const osg::CopyOp& copyop)
 :    osg::Drawable(copy, copyop), 
-    def_bbox_(copy.def_bbox_),
-    alignment_(copy.alignment_),
-    align_X_axis_(copy.align_X_axis_),
-    align_Y_axis_(copy.align_Y_axis_),
-    doublepass_(copy.doublepass_),
-    frozen_(copy.frozen_),
-    bmin_(copy.bmin_), 
-    bmax_(copy.bmax_), 
-    reset_bounds_flag_(copy.reset_bounds_flag_),
-    bounds_computed_(copy.bounds_computed_),
-    def_ptemp_(copy.def_ptemp_),
-    last_frame_(copy.last_frame_),
-    freeze_on_cull_(copy.freeze_on_cull_),
-    detail_(copy.detail_),
-    draw_count_(0)
+    _def_bbox(copy._def_bbox),
+    _alignment(copy._alignment),
+    _align_X_axis(copy._align_X_axis),
+    _align_Y_axis(copy._align_Y_axis),
+    _doublepass(copy._doublepass),
+    _frozen(copy._frozen),
+    _bmin(copy._bmin), 
+    _bmax(copy._bmax), 
+    _reset_bounds_flag(copy._reset_bounds_flag),
+    _bounds_computed(copy._bounds_computed),
+    _def_ptemp(copy._def_ptemp),
+    _last_frame(copy._last_frame),
+    _freeze_on_cull(copy._freeze_on_cull),
+    _detail(copy._detail),
+    _draw_count(0)
 {
 }
 
@@ -66,19 +66,19 @@ osgParticle::ParticleSystem::~ParticleSystem()
 void osgParticle::ParticleSystem::update(double dt)
 {
     // reset bounds
-    reset_bounds_flag_ = true;
+    _reset_bounds_flag = true;
 
     // set up iterators for particles
     Particle_vector::iterator i;
-    Particle_vector::iterator end = particles_.end();
+    Particle_vector::iterator end = _particles.end();
 
     // update particles
-    for (i=particles_.begin(); i!=end; ++i) {
+    for (i=_particles.begin(); i!=end; ++i) {
         if (i->isAlive()) {
             if (i->update(dt)) {
                 update_bounds(i->getPosition(), i->getCurrentSize());
             } else {
-                deadparts_.push(&(*i));
+                _deadparts.push(&(*i));
             }
         }
     }
@@ -87,16 +87,16 @@ void osgParticle::ParticleSystem::update(double dt)
     dirtyBound();
 }
 
-void osgParticle::ParticleSystem::drawImplementation(osg::State &state) const
+void osgParticle::ParticleSystem::drawImplementation(osg::State& state) const
 {
     // update the frame count, so other objects can detect when
     // this particle system is culled
-    last_frame_ = state.getFrameStamp()->getFrameNumber();
+    _last_frame = state.getFrameStamp()->getFrameNumber();
 
     // get the current modelview matrix
     osg::Matrix modelview = state.getModelViewMatrix();
 
-    if (alignment_ == BILLBOARD)
+    if (_alignment == BILLBOARD)
         state.applyModelViewMatrix(0);
 
     // set up depth mask for first rendering pass
@@ -110,7 +110,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::State &state) const
     glPopAttrib();
 
     // render, second pass
-    if (doublepass_) {    
+    if (_doublepass) {    
         // set up color mask for second rendering pass
         glPushAttrib(GL_COLOR_BUFFER_BIT);
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -123,7 +123,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::State &state) const
     }
 }
 
-void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &texturefile, bool emissive_particles, bool lighting, int texture_unit)
+void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& texturefile, bool emissive_particles, bool lighting, int texture_unit)
 {
     osg::StateSet *stateset = new osg::StateSet;
 
@@ -160,33 +160,33 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &textur
 }
 
 
-void osgParticle::ParticleSystem::single_pass_render(osg::State & /*state*/, const osg::Matrix &modelview) const
+void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, const osg::Matrix& modelview) const
 {
-    draw_count_ = 0;
-    if (particles_.size() <= 0) return;
+    _draw_count = 0;
+    if (_particles.size() <= 0) return;
 
     Particle_vector::const_iterator i;
-    Particle_vector::const_iterator i0 = particles_.begin();
-    Particle_vector::const_iterator end = particles_.end();
+    Particle_vector::const_iterator i0 = _particles.begin();
+    Particle_vector::const_iterator end = _particles.end();
     
     i0->beginRender();
 
-    float scale = sqrtf(static_cast<float>(detail_));
-    for (i=i0; i<end; i+=detail_) {
+    float scale = sqrtf(static_cast<float>(_detail));
+    for (i=i0; i<end; i+=_detail) {
         if (i->isAlive()) {
             if (i->getShape() != i0->getShape()) {
                 i0->endRender();
                 i->beginRender();
                 i0 = i;
             }
-            ++draw_count_;
+            ++_draw_count;
 
-            switch (alignment_) {
+            switch (_alignment) {
                 case BILLBOARD:
                     i->render(modelview.preMult(i->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), scale);
                     break;
                 case FIXED:
-                    i->render(i->getPosition(), align_X_axis_, align_Y_axis_, scale);
+                    i->render(i->getPosition(), _align_X_axis, _align_Y_axis, scale);
                     break;
                 default: ;
             }            

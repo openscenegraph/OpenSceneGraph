@@ -12,8 +12,8 @@
 */
 //osgParticle - Copyright (C) 2002 Marco Jez
 
-#ifndef OSGPARTICLE_PROGRAM_
-#define OSGPARTICLE_PROGRAM_ 1
+#ifndef OSGPARTICLE_PROGRAM
+#define OSGPARTICLE_PROGRAM 1
 
 #include <osgParticle/Export>
 #include <osgParticle/ParticleProcessor>
@@ -32,19 +32,20 @@ namespace osgParticle
         through all particles in the linked particle system and modify them somehow 
         (usually updating their velocity vector).
     */
-    class OSGPARTICLE_EXPORT Program: public ParticleProcessor {
+    class OSGPARTICLE_EXPORT Program: public ParticleProcessor
+    {
     public:
         Program();
-        Program(const Program &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        Program(const Program& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        virtual const char *libraryName() const { return "osgParticle"; }
-        virtual const char *className() const { return "Program"; }
-        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Program*>(obj) != 0; }
+        virtual const char* libraryName() const { return "osgParticle"; }
+        virtual const char* className() const { return "Program"; }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Program*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
     protected:
         virtual ~Program() {}
-        Program &operator=(const Program &) { return *this; }
+        Program& operator=(const Program&) { return *this; }
 
         /// Implementation of <CODE>ParticleProcessor::process()</CODE>. Do not call this method by yourself.
         inline void process(double dt);

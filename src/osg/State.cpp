@@ -28,7 +28,7 @@ State::State()
     _modelView = _identity;
 
     _abortRenderingPtr = false;    
-    _reportGLErrors = false;
+    _checkGLErrors = ONCE_PER_FRAME;
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
@@ -247,7 +247,7 @@ void State::captureCurrentState(StateSet& stateset) const
 
 void State::apply(const StateSet* dstate)
 {
-    if (_reportGLErrors) checkGLErrors("start of State::apply(StateSet*)");
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
 
     // equivilant to:
     //pushStateSet(dstate);
@@ -312,13 +312,13 @@ void State::apply(const StateSet* dstate)
         apply();
     }
 
-    if (_reportGLErrors) checkGLErrors("end of State::apply(StateSet*)");
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply(StateSet*)");
 }
 
 void State::apply()
 {
 
-    if (_reportGLErrors) checkGLErrors("start of State::apply()");
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");
 
     // go through all active OpenGL modes, enabling/disable where
     // appropriate.
@@ -355,7 +355,7 @@ void State::apply()
         }
     }
 
-    if (_reportGLErrors) checkGLErrors("end of State::apply()");
+    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }
 
 void State::haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value)

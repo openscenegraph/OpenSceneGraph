@@ -708,8 +708,26 @@ class OSG_EXPORT State : public Referenced
           * if true steps should be taken to complete rendering early.*/
         bool getAbortRendering() const { return _abortRenderingPtr!=0?(*_abortRenderingPtr):false; }
 
-        void setReportGLErrors(bool flag) { _reportGLErrors = flag; }
-        bool getReportGLErrors() const { return _reportGLErrors; }
+        enum CheckForGLErrors
+        {
+            /** NEVER_CHECK_GL_ERRORS hints that OpenGL need not be checked for, this 
+                is the fastest option since checking for errors does incurr a small overhead.*/
+            NEVER_CHECK_GL_ERRORS,
+            /** ONCE_PER_FRAME means that OpenGl errors will be checked for once per
+                frame, the overhead is still small, but at least OpenGL errors that are occurring
+                will be caught, the reporting isn't fine grained enough for debugging purposes.*/
+            ONCE_PER_FRAME,
+            /** ONCE_PER_ATTRIBUTE means that OpenGL errors will be checked for after
+                every attribute is applied, allow errors to be directly associated with
+                particular operations which makes debugging much easier.*/
+            ONCE_PER_ATTRIBUTE
+        };
+
+        /** Set whether and how often OpenGL errors should be checked for.*/
+        void setCheckForGLErrors(CheckForGLErrors check) { _checkGLErrors = check; }
+
+        /** Get whether and how often OpenGL errors should be checked for.*/
+        CheckForGLErrors getCheckForGLErrors() const { return _checkGLErrors; }
 
         bool checkGLErrors(const char* str) const;
         bool checkGLErrors(StateAttribute::GLMode mode) const;
@@ -732,7 +750,7 @@ class OSG_EXPORT State : public Referenced
         ref_ptr<DisplaySettings>    _displaySettings;
 
         bool*                       _abortRenderingPtr;
-        bool                        _reportGLErrors;
+        CheckForGLErrors            _checkGLErrors;
 
         struct ModeStack
         {
@@ -827,7 +845,7 @@ class OSG_EXPORT State : public Referenced
                 if (enabled) glEnable(mode);
                 else glDisable(mode);
 
-                if (_reportGLErrors) checkGLErrors(mode);
+                if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(mode);
 
                 return true;
             }
@@ -846,7 +864,7 @@ class OSG_EXPORT State : public Referenced
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
 
-                if (_reportGLErrors) checkGLErrors(attribute);
+                if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(attribute);
 
                 return true;
             }
@@ -862,7 +880,7 @@ class OSG_EXPORT State : public Referenced
                 if (as.global_default_attribute.valid())
                 {
                     as.global_default_attribute->apply(*this);
-                    if (_reportGLErrors) checkGLErrors(as.global_default_attribute.get());
+                    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(as.global_default_attribute.get());
                 }
                 return true;
             }

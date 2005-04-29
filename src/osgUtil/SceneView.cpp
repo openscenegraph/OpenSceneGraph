@@ -938,12 +938,17 @@ void SceneView::draw()
     // re apply the defalt OGL state.
     _state->popAllStateSets();
 
-    GLenum errorNo = glGetError();
-    if (errorNo!=GL_NO_ERROR)
+    if (_state->getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
     {
-        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<< std::endl;
-        // go into debug mode of OGL errors.
-        _state->setReportGLErrors(true);
+        GLenum errorNo = glGetError();
+        if (errorNo!=GL_NO_ERROR)
+        {
+            osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<< std::endl;
+
+            // go into debug mode of OGL error in a fine grained way to help
+            // track down OpenGL errors.
+            _state->setCheckForGLErrors(osg::State::ONCE_PER_ATTRIBUTE);
+        }
     }
 }
 

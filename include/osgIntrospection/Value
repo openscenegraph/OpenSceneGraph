@@ -73,7 +73,7 @@ namespace osgIntrospection
 
         /// Copy constructor. The underlying value's type must have
         /// consistent copy semantics.
-        inline Value(const Value &copy);
+        inline Value(const Value& copy);
 
         /// Destructor. Frees internal resources but it does NOT delete
         /// the value held. For example, this function will produce a
@@ -81,7 +81,7 @@ namespace osgIntrospection
         inline ~Value();
 
         /// Assignment operator. Behaves like the copy constructor.
-        inline Value &operator=(const Value &copy);
+        inline Value& operator=(const Value& copy);
 
         /// Returns whether the value is a pointer and it points to
         /// something whose type is different than void.
@@ -94,7 +94,7 @@ namespace osgIntrospection
         inline bool isNullPointer() const;
 
         /// Returns the exact type of the value held.
-        inline const Type &getType() const;
+        inline const Type& getType() const;
 
         /// If the value is a pointer to a non-void type, this method
         /// returns the actual type of the dereferenced pointer. Please
@@ -102,25 +102,25 @@ namespace osgIntrospection
         /// because the latter would return the non-polymorphic type.
         /// If the value is not a pointer, this method behaves like
         /// getType().
-        inline const Type &getInstanceType() const;
+        inline const Type& getInstanceType() const;
 
         /// Equal to operator.
-        bool operator==(const Value &other) const;
+        bool operator==(const Value& other) const;
 
         /// Less than or equal to operator.
-        bool operator<=(const Value &other) const;
+        bool operator<=(const Value& other) const;
         
         /// Inequality test operator. Returns !operator==(other).
-        bool operator!=(const Value &other) const;
+        bool operator!=(const Value& other) const;
 
         /// Greater than operator. Returns !operator<=(other).
-        bool operator>(const Value &other) const;
+        bool operator>(const Value& other) const;
 
         /// Less than operator. Returns !operator==(other) && operator<=(other).
-        bool operator<(const Value &other) const;
+        bool operator<(const Value& other) const;
         
         /// Greater than or equal to operator. Returns operator==(other) || !operator<=(other)
-        bool operator>=(const Value &other) const;
+        bool operator>=(const Value& other) const;
 
         /// Tries to convert this instance to a Value of the given type.
         /// The conversion is performed by rendering to a temporary stream
@@ -129,7 +129,7 @@ namespace osgIntrospection
         /// types, or both, don't have a ReaderWriter object, the conversion
         /// fails and an exception is thrown. If the conversion can't be
         /// completed for other reasons, other exceptions may be thrown.
-        Value convertTo(const Type &outtype) const;
+        Value convertTo(const Type& outtype) const;
 
         /// Tries to convert this instance to a Value of the given type.
         /// The conversion is performed by rendering to a temporary stream
@@ -139,7 +139,7 @@ namespace osgIntrospection
         /// fails and an empty Value is returned.
         /// Please note that unlike convertTo(), this method does not 
         /// intentionally throw any exceptions.
-        Value tryConvertTo(const Type &outtype) const;
+        Value tryConvertTo(const Type& outtype) const;
 
         /// Tries to get a string representation of the underlying value.
         /// This requires the value's type to have a ReaderWriter object
@@ -148,15 +148,15 @@ namespace osgIntrospection
         std::string toString() const;
         
         /// Swaps the content of this Value with another Value
-        void swap(Value &v);
+        void swap(Value& v);
 
 
     private:
         // It's good to have friends!
-        template<typename T> friend T variant_cast(const Value &v);
-        template<typename T> friend bool requires_conversion(const Value &v);
-        template<typename T> friend T *extract_raw_data(Value &v);
-        template<typename T> friend const T *extract_raw_data(const Value &v);
+        template<typename T> friend T variant_cast(const Value& v);
+        template<typename T> friend bool requires_conversion(const Value& v);
+        template<typename T> friend T *extract_raw_data(Value& v);
+        template<typename T> friend const T *extract_raw_data(const Value& v);
 
         // throw an exception if the value is empty
         void check_empty() const;
@@ -174,10 +174,10 @@ namespace osgIntrospection
         template<typename T>
         struct Instance: Instance_base
         {
-            Instance(T data): data_(data) {}
+            Instance(T data): _data(data) {}
             virtual Instance_base *clone() const { return new Instance<T>(*this); }
             virtual ~Instance() {}
-            T data_;
+            T _data;
         };
 
         // Base class for storage of Instance objects. Actually three
@@ -190,30 +190,30 @@ namespace osgIntrospection
         {
             Instance_box_base()
             :    inst_(0),
-                ref_inst_(0),
-                const_ref_inst_(0)
+                _ref_inst(0),
+                _const_ref_inst(0)
             {
             }
 
             virtual ~Instance_box_base()
             {
                 delete inst_;
-                delete ref_inst_;
-                delete const_ref_inst_;
+                delete _ref_inst;
+                delete _const_ref_inst;
             }
 
             // clones the instance box
             virtual Instance_box_base *clone() const = 0;
             // returns the type of the value held
-            virtual const Type *type() const = 0;
+            virtual const Type* type() const = 0;
             // returns the actual pointed type if applicable
-            virtual const Type *ptype() const { return 0; }
+            virtual const Type* ptype() const { return 0; }
             // returns whether the data is a null pointer
             virtual bool nullptr() const = 0;
 
             Instance_base *inst_;
-            Instance_base *ref_inst_;
-            Instance_base *const_ref_inst_;
+            Instance_base *_ref_inst;
+            Instance_base *_const_ref_inst;
         };
 
         // Generic instance box for non-pointer values.
@@ -228,8 +228,8 @@ namespace osgIntrospection
             {
                 Instance<T> *vl = new Instance<T>(d);
                 inst_ = vl;
-                ref_inst_ = new Instance<T &>(vl->data_);
-                const_ref_inst_ = new Instance<const T &>(vl->data_);
+                _ref_inst = new Instance<T &>(vl->_data);
+                _const_ref_inst = new Instance<const T &>(vl->_data);
             }
 
             virtual Instance_box_base *clone() const
@@ -241,15 +241,15 @@ namespace osgIntrospection
                 Instance<T> *vl = static_cast<Instance<T> *>(inst_->clone());
                 
                 new_inbox->inst_ = vl;
-                new_inbox->ref_inst_ = new Instance<T &>(vl->data_);
-                new_inbox->const_ref_inst_ = new Instance<const T &>(vl->data_);
+                new_inbox->_ref_inst = new Instance<T &>(vl->_data);
+                new_inbox->_const_ref_inst = new Instance<const T &>(vl->_data);
                 new_inbox->nullptr_ = nullptr_;
                 return new_inbox;
             }
 
-            virtual const Type *type() const
+            virtual const Type* type() const
             {
-                return &typeof(static_cast<Instance<T> *>(inst_)->data_);
+                return &typeof(static_cast<Instance<T> *>(inst_)->_data);
             }
 
             virtual bool nullptr() const
@@ -275,8 +275,8 @@ namespace osgIntrospection
             {
                 Instance<T> *vl = new Instance<T>(d);
                 inst_ = vl;
-                ref_inst_ = new Instance<T &>(vl->data_);
-                const_ref_inst_ = new Instance<const T &>(vl->data_);
+                _ref_inst = new Instance<T &>(vl->_data);
+                _const_ref_inst = new Instance<const T &>(vl->_data);
             }
 
             virtual Instance_box_base *clone() const
@@ -288,32 +288,32 @@ namespace osgIntrospection
                 Instance<T> *vl = static_cast<Instance<T> *>(inst_->clone());
                 
                 new_inbox->inst_ = vl;
-                new_inbox->ref_inst_ = new Instance<T &>(vl->data_);
-                new_inbox->const_ref_inst_ = new Instance<const T &>(vl->data_);
+                new_inbox->_ref_inst = new Instance<T &>(vl->_data);
+                new_inbox->_const_ref_inst = new Instance<const T &>(vl->_data);
                 return new_inbox;
             }
 
-            virtual const Type *type() const
+            virtual const Type* type() const
             {
-                return &typeof(static_cast<Instance<T> *>(inst_)->data_);
+                return &typeof(static_cast<Instance<T> *>(inst_)->_data);
             }
 
-            virtual const Type *ptype() const
+            virtual const Type* ptype() const
             {
-                if (!static_cast<Instance<T> *>(inst_)->data_) return 0;
-                return &typeof(*static_cast<Instance<T> *>(inst_)->data_);
+                if (!static_cast<Instance<T> *>(inst_)->_data) return 0;
+                return &typeof(*static_cast<Instance<T> *>(inst_)->_data);
             }
 
             virtual bool nullptr() const
             {
-                return static_cast<Instance<T> *>(inst_)->data_ == 0;
+                return static_cast<Instance<T> *>(inst_)->_data == 0;
             }
 
         };
 
-        Instance_box_base *inbox_;
-        const Type *type_;
-        const Type *ptype_;
+        Instance_box_base *_inbox;
+        const Type* _type;
+        const Type* _ptype;
     };
 
     /// A vector of values.
@@ -323,94 +323,94 @@ namespace osgIntrospection
     // INLINE METHODS
 
     inline Value::Value()
-    :    inbox_(0),
-        type_(&Reflection::type_void()),
-        ptype_(0)
+    :    _inbox(0),
+        _type(&Reflection::type_void()),
+        _ptype(0)
     {
     }
 
     template<typename T> Value::Value(const T &v)
-    :    ptype_(0)
+    :    _ptype(0)
     {
-        inbox_ = new Instance_box<T>(v);
-        type_ = inbox_->type();
+        _inbox = new Instance_box<T>(v);
+        _type = _inbox->type();
     }
 
     inline Value::Value(const void *v)
-    :    ptype_(0)
+    :    _ptype(0)
     {
-        inbox_ = new Instance_box<const void *>(v, v == 0);
-        type_ = inbox_->type();
+        _inbox = new Instance_box<const void *>(v, v == 0);
+        _type = _inbox->type();
     }
 
     inline Value::Value(void *v)
-    :    ptype_(0)
+    :    _ptype(0)
     {
-        inbox_ = new Instance_box<void *>(v, v == 0);
-        type_ = inbox_->type();
+        _inbox = new Instance_box<void *>(v, v == 0);
+        _type = _inbox->type();
     }
 
     template<typename T> Value::Value(const T *v)
     {
-        inbox_ = new Ptr_instance_box<const T *>(v);
-        type_ = inbox_->type();
-        ptype_ = inbox_->ptype();
+        _inbox = new Ptr_instance_box<const T *>(v);
+        _type = _inbox->type();
+        _ptype = _inbox->ptype();
     }
 
     template<typename T> Value::Value(T *v)
     {
-        inbox_ = new Ptr_instance_box<T *>(v);
-        type_ = inbox_->type();
-        ptype_ = inbox_->ptype();
+        _inbox = new Ptr_instance_box<T *>(v);
+        _type = _inbox->type();
+        _ptype = _inbox->ptype();
     }
 
-    inline Value::Value(const Value &copy)
-    :    inbox_(copy.inbox_? copy.inbox_->clone(): 0),
-        type_(copy.type_),
-        ptype_(copy.ptype_)
+    inline Value::Value(const Value& copy)
+    :    _inbox(copy._inbox? copy._inbox->clone(): 0),
+        _type(copy._type),
+        _ptype(copy._ptype)
     {
     }
 
-    inline Value &Value::operator=(const Value &copy)
+    inline Value& Value::operator=(const Value& copy)
     {
-        std::auto_ptr<Instance_box_base> new_inbox(copy.inbox_? copy.inbox_->clone(): 0);
-        delete inbox_;
-        inbox_ = new_inbox.release();
-        type_ = copy.type_;
-        ptype_ = copy.ptype_;
+        std::auto_ptr<Instance_box_base> new_inbox(copy._inbox? copy._inbox->clone(): 0);
+        delete _inbox;
+        _inbox = new_inbox.release();
+        _type = copy._type;
+        _ptype = copy._ptype;
         return *this;
     }
 
     inline Value::~Value()
     {
-        delete inbox_;
+        delete _inbox;
     }
 
-    inline const Type &Value::getType() const 
+    inline const Type& Value::getType() const 
     { 
-        return *type_; 
+        return *_type; 
     }
 
-    inline const Type &Value::getInstanceType() const
+    inline const Type& Value::getInstanceType() const
     {
-        if (ptype_)
-            return *ptype_;
-        return *type_;
+        if (_ptype)
+            return *_ptype;
+        return *_type;
     }
 
     inline bool Value::isTypedPointer() const
     {
-        return ptype_ != 0;
+        return _ptype != 0;
     }
 
     inline bool Value::isEmpty() const
     {
-        return inbox_ == 0;
+        return _inbox == 0;
     }
 
     inline bool Value::isNullPointer() const
     {
-        return inbox_->nullptr();
+        return _inbox->nullptr();
     }
 
 }

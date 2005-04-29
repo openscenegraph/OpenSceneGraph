@@ -26,36 +26,36 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT ConstructorInfo: public CustomAttributeProvider
     {
     public:
-		ConstructorInfo(const Type &decltype, const ParameterInfoList &params)
-		:	decltype_(decltype),
-			params_(params)
-		{
-		}
+        ConstructorInfo(const Type& decltype, const ParameterInfoList& params)
+        :    _decltype(decltype),
+            _params(params)
+        {
+        }
 
-		virtual ~ConstructorInfo()
-		{
-			for (ParameterInfoList::iterator i=params_.begin(); i!=params_.end(); ++i)
-				delete *i;
-		}
-		
-		inline const Type &getDeclaringType() const
-		{
-			return decltype_;
-		}
-		
-		inline const ParameterInfoList &getParameters() const
-		{
-			return params_;
-		}
-				
-        virtual Value createInstance(ValueList &args) const = 0;
+        virtual ~ConstructorInfo()
+        {
+            for (ParameterInfoList::iterator i=_params.begin(); i!=_params.end(); ++i)
+                delete *i;
+        }
         
-	protected:
-		virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+        inline const Type& getDeclaringType() const
+        {
+            return _decltype;
+        }
+        
+        inline const ParameterInfoList& getParameters() const
+        {
+            return _params;
+        }
+                
+        virtual Value createInstance(ValueList& args) const = 0;
+        
+    protected:
+        virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
         
     private:
-		const Type &decltype_;
-		ParameterInfoList params_;
+        const Type& _decltype;
+        ParameterInfoList _params;
     };
 
 }

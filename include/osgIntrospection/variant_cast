@@ -34,19 +34,19 @@ namespace osgIntrospection
     /// with the converted value as parameter.
     /// If the conversion can't be completed, an exception is thrown.
     /// Conversions that attempt to make a const pointer non-const will fail.
-    template<typename T> T variant_cast(const Value &v)
+    template<typename T> T variant_cast(const Value& v)
     {
         // return value
-        Value::Instance<T> *i = dynamic_cast<Value::Instance<T> *>(v.inbox_->inst_);
-        if (i) return i->data_;
+        Value::Instance<T> *i = dynamic_cast<Value::Instance<T> *>(v._inbox->inst_);
+        if (i) return i->_data;
 
         // return reference to value
-        i = dynamic_cast<Value::Instance<T> *>(v.inbox_->ref_inst_);
-        if (i) return i->data_;
+        i = dynamic_cast<Value::Instance<T> *>(v._inbox->_ref_inst);
+        if (i) return i->_data;
 
         // return const reference to value
-        i = dynamic_cast<Value::Instance<T> *>(v.inbox_->const_ref_inst_);
-        if (i) return i->data_;
+        i = dynamic_cast<Value::Instance<T> *>(v._inbox->_const_ref_inst);
+        if (i) return i->_data;
 
         // try to convert v to type T and restart
         return variant_cast<T>(v.convertTo(typeof(T)));
@@ -56,18 +56,18 @@ namespace osgIntrospection
     /// Returns true if the Value passed as parameter can't be casted to
     /// the specified type without a (potentially slow) conversion.
     /// Returns false otherwise.
-    template<typename T> bool requires_conversion(const Value &v)
+    template<typename T> bool requires_conversion(const Value& v)
     {
         // direct value
-        Value::Instance<T> *i = dynamic_cast<Value::Instance<T> *>(v.inbox_->inst_);
+        Value::Instance<T> *i = dynamic_cast<Value::Instance<T> *>(v._inbox->inst_);
         if (i) return false;
 
         // reference to value
-        i = dynamic_cast<Value::Instance<T> *>(v.inbox_->ref_inst_);
+        i = dynamic_cast<Value::Instance<T> *>(v._inbox->_ref_inst);
         if (i) return false;
 
         // const reference to value
-        i = dynamic_cast<Value::Instance<T> *>(v.inbox_->const_ref_inst_);
+        i = dynamic_cast<Value::Instance<T> *>(v._inbox->_const_ref_inst);
         if (i) return false;
         
         return true;
@@ -76,20 +76,20 @@ namespace osgIntrospection
     /// Returns a typed pointer to the data contained in a Value 
     /// instance. If the value's type is not identical to type T,
     /// a null pointer is returned.
-    template<typename T> T *extract_raw_data(Value &v)
+    template<typename T> T* extract_raw_data(Value& v)
     {
-        Value::Instance<T> *i = dynamic_cast<Value::Instance<T> *>(v.inbox_->inst_);
-        if (i) return &i->data_;
+        Value::Instance<T>* i = dynamic_cast<Value::Instance<T> *>(v._inbox->inst_);
+        if (i) return &i->_data;
         return 0;
     }
 
     /// Returns a typed pointer to the data contained in a const Value 
     /// instance. If the value's type is not identical to type T, a
     /// null pointer is returned.
-    template<typename T> const T *extract_raw_data(const Value &v)
+    template<typename T> const T* extract_raw_data(const Value& v)
     {
-        Value::Instance<T> *i = dynamic_cast<Value::Instance<T> *>(v.inbox_->inst_);
-        if (i) return &i->data_;
+        Value::Instance<T>* i = dynamic_cast<Value::Instance<T> *>(v._inbox->inst_);
+        if (i) return &i->_data;
         return 0;
     }
 

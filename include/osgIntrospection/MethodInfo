@@ -38,24 +38,24 @@ namespace osgIntrospection
     {
     public:
         /// Direct initialization constructor.
-        inline MethodInfo(const std::string &qname, const Type &decltype, const Type &rtype, const ParameterInfoList &plist);
+        inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist);
         
         /// Destructor
         inline ~MethodInfo();
 
         /// Returns the Type object associated to the type that
         /// declares the reflected method.
-        inline virtual const Type &getDeclaringType() const;        
+        inline virtual const Type& getDeclaringType() const;        
 
         /// Returns the name of the reflected method.
-        inline virtual const std::string &getName() const;
+        inline virtual const std::string& getName() const;
 
         /// Returns the return type of the reflected method.
-        inline const Type &getReturnType() const;
+        inline const Type& getReturnType() const;
 
         /// Returns a list of objects that describe the reflected
         /// method's parameters.
-        inline const ParameterInfoList &getParameters() const;
+        inline const ParameterInfoList& getParameters() const;
 
         /// Returns whether the reflected method is const or not.
         virtual bool isConst() const = 0;
@@ -65,54 +65,54 @@ namespace osgIntrospection
         
         /// Returns whether this method would override the given
         /// method.
-        bool overrides(const MethodInfo *other) const;
+        bool overrides(const MethodInfo* other) const;
 
         /// Invokes the reflected method dynamically on the given const
         /// instance, passing it the arguments as a list of Value objects.
-        inline virtual Value invoke(const Value &instance, ValueList &args) const;
+        inline virtual Value invoke(const Value& instance, ValueList& args) const;
 
         /// Invokes the reflected method dynamically on the given instance,
         /// passing it the arguments as a list of Value objects.
-        inline virtual Value invoke(Value &instance, ValueList &args) const;
+        inline virtual Value invoke(Value& instance, ValueList& args) const;
 
         /// Invokes the reflected static method dynamically passing it the 
         /// arguments as a list of Value objects.
-        inline virtual Value invoke(ValueList &args) const;
+        inline virtual Value invoke(ValueList& args) const;
 
         /// Invokes the reflected method dynamically on the given const
         /// instance, without arguments.
-        inline Value invoke(const Value &instance) const;
+        inline Value invoke(const Value& instance) const;
 
         /// Invokes the reflected method dynamically on the given
         /// instance, without arguments.
-        inline Value invoke(Value &instance) const;
+        inline Value invoke(Value& instance) const;
         
         /// Invokes the reflected static method without arguments.
         inline Value invoke() const;
 
     private:
-        inline std::string strip_namespace(const std::string &s) const;
+        inline std::string strip_namespace(const std::string& s) const;
 
-        virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+        virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 
-        std::string name_;
-        const Type &decltype_;
-        const Type &rtype_;        
-        ParameterInfoList params_;
+        std::string _name;
+        const Type& _decltype;
+        const Type& _rtype;        
+        ParameterInfoList _params;
     };
 
     // INLINE METHODS
     
-    inline MethodInfo::MethodInfo(const std::string &qname, const Type &decltype, const Type &rtype, const ParameterInfoList &plist)
+    inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist)
     :   CustomAttributeProvider(),
-        decltype_(decltype), 
-        rtype_(rtype),
-        params_(plist)
+        _decltype(decltype), 
+        _rtype(rtype),
+        _params(plist)
     {
-        name_ = strip_namespace(qname);
+        _name = strip_namespace(qname);
     }
 
-    inline std::string MethodInfo::strip_namespace(const std::string &s) const
+    inline std::string MethodInfo::strip_namespace(const std::string& s) const
     {
         std::string::size_type p = s.rfind("::");
         if (p != std::string::npos)
@@ -120,64 +120,64 @@ namespace osgIntrospection
         return s;
     }
 
-    inline const std::string &MethodInfo::getName() const
+    inline const std::string& MethodInfo::getName() const
     {
-        return name_;
+        return _name;
     }
 
-    inline const Type &MethodInfo::getDeclaringType() const
+    inline const Type& MethodInfo::getDeclaringType() const
     {
-        return decltype_;
+        return _decltype;
     }
 
-    inline const Type &MethodInfo::getReturnType() const
+    inline const Type& MethodInfo::getReturnType() const
     {
-        return rtype_;
+        return _rtype;
     }
 
-    inline const ParameterInfoList &MethodInfo::getParameters() const
+    inline const ParameterInfoList& MethodInfo::getParameters() const
     {
-        return params_;
+        return _params;
     }
 
-	inline Value MethodInfo::invoke(const Value &, ValueList &) const
-	{
-		throw InvokeNotImplementedException();
-	}
+    inline Value MethodInfo::invoke(const Value& , ValueList& ) const
+    {
+        throw InvokeNotImplementedException();
+    }
 
-	inline Value MethodInfo::invoke(Value &, ValueList &) const
-	{
-		throw InvokeNotImplementedException();
-	}
+    inline Value MethodInfo::invoke(Value& , ValueList& ) const
+    {
+        throw InvokeNotImplementedException();
+    }
 
-	inline Value MethodInfo::invoke(ValueList &) const
-	{
-		throw InvokeNotImplementedException();
-	}
+    inline Value MethodInfo::invoke(ValueList& ) const
+    {
+        throw InvokeNotImplementedException();
+    }
 
-    inline Value MethodInfo::invoke(const Value &instance) const
+    inline Value MethodInfo::invoke(const Value& instance) const
     {
         ValueList args;
         return invoke(instance, args);
     }
 
-    inline Value MethodInfo::invoke(Value &instance) const
+    inline Value MethodInfo::invoke(Value& instance) const
     {
         ValueList args;
         return invoke(instance, args);
     }
     
-	inline Value MethodInfo::invoke() const
-	{
+    inline Value MethodInfo::invoke() const
+    {
         ValueList args;
-		return invoke(args);
-	}
-	
-	inline MethodInfo::~MethodInfo()
-	{
-		for (ParameterInfoList::iterator i=params_.begin(); i!=params_.end(); ++i)
-			delete *i;
-	}
+        return invoke(args);
+    }
+    
+    inline MethodInfo::~MethodInfo()
+    {
+        for (ParameterInfoList::iterator i=_params.begin(); i!=_params.end(); ++i)
+            delete *i;
+    }
 
 }
 

@@ -26,25 +26,25 @@
 namespace osgIntrospection
 {
 
-	bool OSGINTROSPECTION_EXPORT areParametersCompatible(const ParameterInfoList &pl1, const ParameterInfoList &pl2);
-	bool OSGINTROSPECTION_EXPORT areArgumentsCompatible(const ValueList &vl, const ParameterInfoList &pl, float &match);
-	
-	template<typename T>
-	void convertArgument(ValueList &src, ValueList &dest, const ParameterInfoList &pl, int index)
-	{
-		if (index >= static_cast<int>(src.size()))
-		{
-			dest[index] = pl[index]->getDefaultValue();
-		}
-		else
-		{
-			Value &sv = src[index];
-			if (requires_conversion<T>(sv))
-				dest[index] = sv.convertTo(pl[index]->getParameterType());
-			else
-				dest[index].swap(sv);
-		}
-	}
+    bool OSGINTROSPECTION_EXPORT areParametersCompatible(const ParameterInfoList& pl1, const ParameterInfoList& pl2);
+    bool OSGINTROSPECTION_EXPORT areArgumentsCompatible(const ValueList& vl, const ParameterInfoList& pl, float &match);
+    
+    template<typename T>
+    void convertArgument(ValueList& src, ValueList& dest, const ParameterInfoList& pl, int index)
+    {
+        if (index >= static_cast<int>(src.size()))
+        {
+            dest[index] = pl[index]->getDefaultValue();
+        }
+        else
+        {
+            Value& sv = src[index];
+            if (requires_conversion<T>(sv))
+                dest[index] = sv.convertTo(pl[index]->getParameterType());
+            else
+                dest[index].swap(sv);
+        }
+    }
 
 }
 

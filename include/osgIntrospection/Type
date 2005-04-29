@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 //osgIntrospection - Copyright (C) 2005 Marco Jez
-#ifndef OSGINTROSPECTION_TYPE_
-#define OSGINTROSPECTION_TYPE_
+#ifndef OSGINTROSPECTION__type
+#define OSGINTROSPECTION__type
 
 #include <osgIntrospection/Export>
 #include <osgIntrospection/Exceptions>
@@ -37,10 +37,10 @@ namespace osgIntrospection
     struct Comparator;
 
     // typedefs for member info lists
-    typedef std::vector<const MethodInfo *> MethodInfoList;    
-    typedef std::vector<const PropertyInfo *> PropertyInfoList;    
-    typedef std::vector<const ParameterInfo *> ParameterInfoList;
-    typedef std::vector<const ConstructorInfo *> ConstructorInfoList;
+    typedef std::vector<const MethodInfo* > MethodInfoList;    
+    typedef std::vector<const PropertyInfo* > PropertyInfoList;    
+    typedef std::vector<const ParameterInfo* > ParameterInfoList;
+    typedef std::vector<const ConstructorInfo* > ConstructorInfoList;
 
     // typedef for enum label map
     typedef std::map<int, std::string> EnumLabelMap;
@@ -63,17 +63,17 @@ namespace osgIntrospection
 
         /// Returns a reference to the std::type_info instance associated 
         /// to this Type.
-        inline const std::type_info &getStdTypeInfo() const;
+        inline const std::type_info& getStdTypeInfo() const;
 
         /// Returns true if this Type is defined, false if it's just 
         /// declared. See class Reflector if you want to create a new Type.
         inline bool isDefined() const;
 
         /// Returns the name of the reflected type.
-        inline const std::string &getName() const;
+        inline const std::string& getName() const;
 
         /// Returns the namespace of the reflected type.
-        inline const std::string &getNamespace() const;
+        inline const std::string& getNamespace() const;
 
         /// Returns the qualified name of the reflected type. The qualified 
         /// name is formed by the namespace, if present, plus other modifiers 
@@ -82,7 +82,7 @@ namespace osgIntrospection
         
         /// Returns true if either the fully-qualified name or one of the
         /// name aliases match the given argument
-        inline bool matchesName(const std::string &name) const;
+        inline bool matchesName(const std::string& name) const;
 
         /// Returns the number of base types.
         /// This number is zero if the type is not derived from any other 
@@ -90,13 +90,13 @@ namespace osgIntrospection
         inline int getNumBaseTypes() const;
 
         /// Returns the i-th base type.
-        inline const Type &getBaseType(int i) const;
+        inline const Type& getBaseType(int i) const;
         
         /// Returns the number of type name aliases.
         inline int getNumAliases() const;
         
         /// Returns the i-th name alias
-        const std::string &getAlias(int i) const;
+        const std::string& getAlias(int i) const;
 
         /// Returns whether the reflected type is abstract.
         inline bool isAbstract() const;
@@ -124,154 +124,154 @@ namespace osgIntrospection
 
         /// Returns the pointed type. If the reflected type is not a pointer,
         /// the object returned is typeof(void).
-        inline const Type &getPointedType() const;
+        inline const Type& getPointedType() const;
 
         /// Returns the list of properties defined for this type. The list
         /// does not include properties inherited from base types.
-        inline const PropertyInfoList &getProperties() const;
+        inline const PropertyInfoList& getProperties() const;
 
         /// Fills a list of properties that are either defined in this Type 
         /// or in inherited types.
-        void getAllProperties(PropertyInfoList &props) const;
+        void getAllProperties(PropertyInfoList& props) const;
         
         /// Returns the list of constructors defined for this type.
-        inline const ConstructorInfoList &getConstructors() const;
+        inline const ConstructorInfoList& getConstructors() const;
 
         /// Returns the list of methods defined for this type. The list
         /// does not include methods inherited from base types.
-        inline const MethodInfoList &getMethods() const;
+        inline const MethodInfoList& getMethods() const;
 
         /// Fills a list of methods that are either defined in this Type 
         /// or in inherited types.
-        void getAllMethods(MethodInfoList &methods) const;
+        void getAllMethods(MethodInfoList& methods) const;
 
         /// Returns the map of enumeration labels. If the type is not an
         /// enumeration, an empty map is returned.
-        inline const EnumLabelMap &getEnumLabels() const;
+        inline const EnumLabelMap& getEnumLabels() const;
 
         /// Searches for a constructor that can be called with the given list 
         /// of arguments without raising type conversion errors. If more than
         /// one constructors are suitable for calling, the best match is 
         /// returned.
-        const ConstructorInfo *getCompatibleConstructor(const ValueList &values) const;
+        const ConstructorInfo* getCompatibleConstructor(const ValueList& values) const;
         
         /// Searches for a constructor whose parameters match exactly the given 
         /// list of parameter descriptions.
-        const ConstructorInfo *getConstructor(const ParameterInfoList &params) const;
+        const ConstructorInfo* getConstructor(const ParameterInfoList& params) const;
 
         /// Searches for a method that can be called with the given list of 
         /// arguments without raising type conversion errors. If more than
         /// one method are suitable for calling, the best match is returned.
-        const MethodInfo *getCompatibleMethod(const std::string &name, const ValueList &values, bool inherit) const;
+        const MethodInfo* getCompatibleMethod(const std::string& name, const ValueList& values, bool inherit) const;
 
         /// Searches for a method whose parameters match exactly the given 
         /// list of parameter descriptions.
-        const MethodInfo *getMethod(const std::string &name, const ParameterInfoList &params, bool inherit) const;
+        const MethodInfo* getMethod(const std::string& name, const ParameterInfoList& params, bool inherit) const;
 
         /// Searches for a property given its name, type and list of indices.
         /// Only exact matches are returned.
-        const PropertyInfo *getProperty(const std::string &name, const Type &ptype, const ParameterInfoList &indices, bool inherit) const;
+        const PropertyInfo* getProperty(const std::string& name, const Type& ptype, const ParameterInfoList& indices, bool inherit) const;
 
         /// Searches for a suitable method and invokes it with the given list 
         /// of arguments (const instance).
-        Value invokeMethod(const std::string &name, const Value &instance, ValueList &args, bool inherit) const;
+        Value invokeMethod(const std::string& name, const Value& instance, ValueList& args, bool inherit) const;
 
         /// Searches for a suitable method and invokes it with the given list 
         /// of arguments.
-        Value invokeMethod(const std::string &name, Value &instance, ValueList &args, bool inherit) const;
+        Value invokeMethod(const std::string& name, Value& instance, ValueList& args, bool inherit) const;
 
         /// Returns whether the reflected type is derived from another type.
-        bool isSubclassOf(const Type &type) const;
+        bool isSubclassOf(const Type& type) const;
 
         /// Returns the instance of the reader/writer object assigned to 
         /// this type, if any. Otherwise it returns the null pointer.
-        inline const ReaderWriter *getReaderWriter() const;
+        inline const ReaderWriter* getReaderWriter() const;
         
         /// Returns the instance of the comparator object assigned to
         /// this type, if any. Otherwise it returns the null pointer.
-        inline const Comparator *getComparator() const;
+        inline const Comparator* getComparator() const;
 
         /// Creates an instance of the reflected type. The returned Value 
         /// can be casted to T*, where T is the reflected type. If the type 
         ///    is abstract, an exception is thrown.
-        Value createInstance(ValueList &args) const;
+        Value createInstance(ValueList& args) const;
         inline Value createInstance() const;
 
     protected:
-        Type(const std::type_info &ti)
-        :    ti_(ti), 
-            is_const_(false), 
-            is_abstract_(false),
-            pointed_type_(0), 
-            is_defined_(false), 
-            rw_(0),
-            cmp_(0)
+        Type(const std::type_info& ti)
+        :    _ti(ti), 
+            _is_const(false), 
+            _is_abstract(false),
+            _pointed_type(0), 
+            _is_defined(false), 
+            _rw(0),
+            _cmp(0)
         {
         }
 
         // throws an exception if the type is not defined.
         void check_defined() const;
 
-        virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+        virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 
     private:
         template<typename C> friend class Reflector;
         template<typename C> friend struct TypeNameAliasProxy;
         friend class Reflection;
 
-        Type(const Type &copy): CustomAttributeProvider(copy), ti_(copy.ti_) {}
+        Type(const Type& copy): CustomAttributeProvider(copy), _ti(copy._ti) {}
 
-        const std::type_info &ti_;
+        const std::type_info& _ti;
 
-        std::string name_;
-        std::string namespace_;
+        std::string _name;
+        std::string _namespace;
 
-        typedef std::vector<const Type *> TypeList;
-        TypeList base_;
+        typedef std::vector<const Type* > TypeList;
+        TypeList _base;
 
-        bool is_const_;
-        bool is_abstract_;
-        const Type *pointed_type_;
+        bool _is_const;
+        bool _is_abstract;
+        const Type* _pointed_type;
 
-        ConstructorInfoList cons_;
-        PropertyInfoList props_;
-        MethodInfoList methods_;
+        ConstructorInfoList _cons;
+        PropertyInfoList _props;
+        MethodInfoList _methods;
 
-        EnumLabelMap labels_;
-        bool is_defined_;
+        EnumLabelMap _labels;
+        bool _is_defined;
 
-        const ReaderWriter *rw_;
-        const Comparator *cmp_;
+        const ReaderWriter* _rw;
+        const Comparator* _cmp;
         
         typedef std::vector<std::string> AliasList;
-        AliasList aliases_;
+        AliasList _aliases;
     };
 
     // OPERATORS
 
     /// Equality test operator. Returns true if the two instances of Type
     /// describe the same type, false otherwise.
-    inline bool operator==(const Type &t1, const Type &t2)
+    inline bool operator==(const Type& t1, const Type& t2)
     {
         return (t1.getStdTypeInfo() == t2.getStdTypeInfo()) != 0;
     }
 
     /// Inequality test operator. Returns false if the two instances of Type
     /// describe the same type, true otherwise.
-    inline bool operator!=(const Type &t1, const Type &t2)
+    inline bool operator!=(const Type& t1, const Type& t2)
     {
         return (t1.getStdTypeInfo() != t2.getStdTypeInfo()) != 0;
     }
 
     /// Less than operator. Returns true if the first type comes before the
     /// second one. The actual ordering is implementation-dependent.
-    inline bool operator<(const Type &t1, const Type &t2)
+    inline bool operator<(const Type& t1, const Type& t2)
     {
         return (t1.getStdTypeInfo().before(t2.getStdTypeInfo())) != 0;
     }
 
     /// Greater than or equal to operator. Returns !operator<().
-    inline bool operator>=(const Type &t1, const Type &t2)
+    inline bool operator>=(const Type& t1, const Type& t2)
     {
         return !operator<(t1, t2);
     }
@@ -280,39 +280,39 @@ namespace osgIntrospection
 
     inline void Type::check_defined() const
     {
-        if (!is_defined_)
-            throw TypeNotDefinedException(ti_);
+        if (!_is_defined)
+            throw TypeNotDefinedException(_ti);
     }
 
-    inline const std::type_info &Type::getStdTypeInfo() const
+    inline const std::type_info& Type::getStdTypeInfo() const
     {
-        return ti_;
+        return _ti;
     }
 
-    inline const std::string &Type::getName() const
-    {
-        check_defined();
-        return name_;
-    }
-
-    inline const std::string &Type::getNamespace() const
+    inline const std::string& Type::getName() const
     {
         check_defined();
-        return namespace_;
+        return _name;
+    }
+
+    inline const std::string& Type::getNamespace() const
+    {
+        check_defined();
+        return _namespace;
     }
 
     inline std::string Type::getQualifiedName() const
     {
         check_defined();
         std::string qname;
-        if (is_const_) qname = "const ";
-        if (!namespace_.empty()) 
+        if (_is_const) qname = "const ";
+        if (!_namespace.empty()) 
         {
-            qname.append(namespace_);
+            qname.append(_namespace);
             qname.append("::");
         }
-        qname.append(name_);
-        if (pointed_type_)
+        qname.append(_name);
+        if (_pointed_type)
             qname.append(" *");
         return qname;
     }
@@ -320,128 +320,128 @@ namespace osgIntrospection
     inline int Type::getNumBaseTypes() const
     {
         check_defined();
-        return static_cast<int>(base_.size());
+        return static_cast<int>(_base.size());
     }
 
     inline bool Type::isConstPointer() const
     {
         check_defined();
-        return is_const_ && pointed_type_;
+        return _is_const && _pointed_type;
     }
 
     inline bool Type::isNonConstPointer() const
     {
         check_defined();
-        return !is_const_ && pointed_type_;
+        return !_is_const && _pointed_type;
     }
 
     inline bool Type::isAbstract() const
     {
         check_defined();
-        return is_abstract_;
+        return _is_abstract;
     }
 
     inline bool Type::isAtomic() const
     {
         check_defined();
-        return rw_ != 0;
+        return _rw != 0;
     }
 
-    inline const PropertyInfoList &Type::getProperties() const
+    inline const PropertyInfoList& Type::getProperties() const
     {
         check_defined();
-        return props_;
+        return _props;
     }
     
-    inline const ConstructorInfoList &Type::getConstructors() const
-    {
-		check_defined();
-		return cons_;
-    }
-
-    inline const MethodInfoList &Type::getMethods() const
+    inline const ConstructorInfoList& Type::getConstructors() const
     {
         check_defined();
-        return methods_;
+        return _cons;
+    }
+
+    inline const MethodInfoList& Type::getMethods() const
+    {
+        check_defined();
+        return _methods;
     }
 
     inline bool Type::isPointer() const
     {
         check_defined();
-        return pointed_type_ != 0;
+        return _pointed_type != 0;
     }
 
     inline bool Type::isVoid() const
     {
-        return (ti_ == typeid(void)) != 0;
+        return (_ti == typeid(void)) != 0;
     }
 
-    inline const Type &Type::getPointedType() const
+    inline const Type& Type::getPointedType() const
     {
         check_defined();
-        if (pointed_type_)
-            return *pointed_type_;
+        if (_pointed_type)
+            return *_pointed_type;
         return Reflection::type_void();
     }
 
     inline bool Type::isEnum() const
     {
         check_defined();
-        return !labels_.empty();
+        return !_labels.empty();
     }
 
-    inline const EnumLabelMap &Type::getEnumLabels() const
+    inline const EnumLabelMap& Type::getEnumLabels() const
     {
         check_defined();
-        return labels_;
+        return _labels;
     }
 
     inline bool Type::isDefined() const
     {
-        return is_defined_;
+        return _is_defined;
     }
 
-    inline const ReaderWriter *Type::getReaderWriter() const
+    inline const ReaderWriter* Type::getReaderWriter() const
     {
         check_defined();
-        return rw_;
+        return _rw;
     }
 
-    inline const Comparator *Type::getComparator() const
+    inline const Comparator* Type::getComparator() const
     {
         check_defined();
-        return cmp_;
+        return _cmp;
     }
 
-    inline const Type &Type::getBaseType(int i) const
+    inline const Type& Type::getBaseType(int i) const
     {
         check_defined();
-        return *base_.at(i);
+        return *_base.at(i);
     }
 
     inline Value Type::createInstance() const
     {
-		ValueList args;
+        ValueList args;
         return createInstance(args);
     }
     
     inline int Type::getNumAliases() const
     {
-		return static_cast<int>(aliases_.size());
+        return static_cast<int>(_aliases.size());
     }
     
-    inline const std::string &Type::getAlias(int i) const
+    inline const std::string& Type::getAlias(int i) const
     {
-		return aliases_[i];
+        return _aliases[i];
     }
     
-    inline bool Type::matchesName(const std::string &name) const
+    inline bool Type::matchesName(const std::string& name) const
     {
-		if (getQualifiedName() == name) 
-			return true;
-		if (std::find(aliases_.begin(), aliases_.end(), name) != aliases_.end()) 
-			return true;
-		return false;
+        if (getQualifiedName() == name) 
+            return true;
+        if (std::find(_aliases.begin(), _aliases.end(), name) != _aliases.end()) 
+            return true;
+        return false;
     }
 
 }

@@ -33,10 +33,10 @@ namespace osgIntrospection
     class DefaultValueAttribute: public CustomAttribute
     {
     public:
-        DefaultValueAttribute(const Value &v): v_(v) {}
-        const Value &getDefaultValue() const { return v_; }
+        DefaultValueAttribute(const Value& v): _v(v) {}
+        const Value& getDefaultValue() const { return _v; }
     private:
-        Value v_;
+        Value _v;
     };
 
     /// Base struct for custom property getters. Descendants may override
@@ -46,12 +46,12 @@ namespace osgIntrospection
     /// last one is used with array properties.
     struct PropertyGetter
     {
-        virtual Value get(Value & /*instance*/, const ValueList & /*indices*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
-        virtual Value get(Value & /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
-        virtual Value get(Value & /*instance*/, int /*i*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
-        virtual Value get(const Value & /*instance*/, const ValueList & /*indices*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
-        virtual Value get(const Value & /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
-        virtual Value get(const Value & /*instance*/, int /*i*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
+        virtual Value get(Value&  /*instance*/, const ValueList&  /*indices*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
+        virtual Value get(Value&  /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
+        virtual Value get(Value&  /*instance*/, int /*i*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
+        virtual Value get(const Value&  /*instance*/, const ValueList&  /*indices*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
+        virtual Value get(const Value&  /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
+        virtual Value get(const Value&  /*instance*/, int /*i*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
         virtual ~PropertyGetter() {}
     };
 
@@ -61,18 +61,18 @@ namespace osgIntrospection
     class CustomPropertyGetAttribute: public CustomAttribute
     {
     public:
-        CustomPropertyGetAttribute(const PropertyGetter *getter)
-        :    CustomAttribute(), getter_(getter) {}
+        CustomPropertyGetAttribute(const PropertyGetter* getter)
+        :    CustomAttribute(), _getter(getter) {}
 
-        const PropertyGetter *getGetter() const { return getter_; }
+        const PropertyGetter* getGetter() const { return _getter; }
 
         ~CustomPropertyGetAttribute()
         {
-            delete getter_;
+            delete _getter;
         }
 
     private:
-        const PropertyGetter *getter_;
+        const PropertyGetter* _getter;
     };
 
     /// Base struct for custom property setters. Descendants may override
@@ -82,9 +82,9 @@ namespace osgIntrospection
     /// last one is used with array properties.
     struct PropertySetter
     {
-        virtual void set(Value & /*instance*/, ValueList & /*indices*/, const Value & /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ISET); }
-        virtual void set(Value & /*instance*/, const Value & /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::SET); }
-        virtual void set(Value & /*instance*/, int /*i*/, const Value & /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ASET); }
+        virtual void set(Value&  /*instance*/, ValueList&  /*indices*/, const Value&  /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ISET); }
+        virtual void set(Value&  /*instance*/, const Value&  /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::SET); }
+        virtual void set(Value&  /*instance*/, int /*i*/, const Value&  /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ASET); }
         virtual ~PropertySetter() {}
     };
 
@@ -94,18 +94,18 @@ namespace osgIntrospection
     class CustomPropertySetAttribute: public CustomAttribute
     {
     public:
-        CustomPropertySetAttribute(const PropertySetter *setter)
-        :    CustomAttribute(), setter_(setter) {}
+        CustomPropertySetAttribute(const PropertySetter* setter)
+        :    CustomAttribute(), _setter(setter) {}
 
-        const PropertySetter *getSetter() const { return setter_; }
+        const PropertySetter* getSetter() const { return _setter; }
 
         ~CustomPropertySetAttribute()
         {
-            delete setter_;
+            delete _setter;
         }
 
     private:
-        const PropertySetter *setter_;
+        const PropertySetter* _setter;
     };
 
     /// Base struct for custom array property counters. Descendants should
@@ -113,7 +113,7 @@ namespace osgIntrospection
     /// in a chosen array property for the given instance.
     struct PropertyCounter
     {
-        virtual int count(const Value & /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::COUNT); }
+        virtual int count(const Value&  /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::COUNT); }
         virtual ~PropertyCounter() {}
     };
 
@@ -122,18 +122,18 @@ namespace osgIntrospection
     class CustomPropertyCountAttribute: public CustomAttribute
     {
     public:
-        CustomPropertyCountAttribute(const PropertyCounter *counter)
-        :    CustomAttribute(), counter_(counter) {}
+        CustomPropertyCountAttribute(const PropertyCounter* counter)
+        :    CustomAttribute(), _counter(counter) {}
 
-        const PropertyCounter *getCounter() const { return counter_; }
+        const PropertyCounter* getCounter() const { return _counter; }
 
         ~CustomPropertyCountAttribute()
         {
-            delete counter_;
+            delete _counter;
         }
 
     private:
-        const PropertyCounter *counter_;
+        const PropertyCounter* _counter;
     };
 
     /// Base struct for custom array property adders. Descendants should
@@ -150,18 +150,18 @@ namespace osgIntrospection
     class CustomPropertyAddAttribute: public CustomAttribute
     {
     public:
-        CustomPropertyAddAttribute(const PropertyAdder *adder)
-        :    CustomAttribute(), adder_(adder) {}
+        CustomPropertyAddAttribute(const PropertyAdder* adder)
+        :    CustomAttribute(), _adder(adder) {}
 
-        const PropertyAdder *getAdder() const { return adder_; }
+        const PropertyAdder* getAdder() const { return _adder; }
 
         ~CustomPropertyAddAttribute()
         {
-            delete adder_;
+            delete _adder;
         }
 
     private:
-        const PropertyAdder *adder_;
+        const PropertyAdder* _adder;
     };
     
 
@@ -179,18 +179,18 @@ namespace osgIntrospection
     class CustomPropertyRemoveAttribute: public CustomAttribute
     {
     public:
-        CustomPropertyRemoveAttribute(const PropertyRemover *remover)
-        :    CustomAttribute(), remover_(remover) {}
+        CustomPropertyRemoveAttribute(const PropertyRemover* remover)
+        :    CustomAttribute(), _remover(remover) {}
 
-        const PropertyRemover *getRemover() const { return remover_; }
+        const PropertyRemover* getRemover() const { return _remover; }
 
         ~CustomPropertyRemoveAttribute()
         {
-            delete remover_;
+            delete _remover;
         }
 
     private:
-        const PropertyRemover *remover_;
+        const PropertyRemover* _remover;
     };
 
 
@@ -203,8 +203,8 @@ namespace osgIntrospection
     /// See CustomIndexAttribute for details.
     struct IndexInfo
     {
-        virtual const ParameterInfoList &getIndexParameters() const = 0;
-        virtual void getIndexValueSet(int whichindex, const Value &instance, ValueList &values) const = 0;
+        virtual const ParameterInfoList& getIndexParameters() const = 0;
+        virtual void getIndexValueSet(int whichindex, const Value& instance, ValueList& values) const = 0;
         virtual ~IndexInfo() {}
     };
 
@@ -220,21 +220,21 @@ namespace osgIntrospection
     class CustomIndexAttribute: public CustomAttribute
     {
     public:
-        CustomIndexAttribute(const IndexInfo *ii)
-        :    CustomAttribute(), ii_(ii) {}
+        CustomIndexAttribute(const IndexInfo* ii)
+        :    CustomAttribute(), _ii(ii) {}
 
-        const IndexInfo *getIndexInfo() const
+        const IndexInfo* getIndexInfo() const
         {
-            return ii_;
+            return _ii;
         }
 
         ~CustomIndexAttribute()
         {
-            delete ii_;
+            delete _ii;
         }
 
     private:
-        const IndexInfo *ii_;
+        const IndexInfo* _ii;
     };
 
     /// Attribute for overriding the type of a property with a custom
@@ -249,16 +249,16 @@ namespace osgIntrospection
     class PropertyTypeAttribute: public CustomAttribute
     {
     public:
-        PropertyTypeAttribute(const Type &type)
-        :    CustomAttribute(), type_(type) {}
+        PropertyTypeAttribute(const Type& type)
+        :    CustomAttribute(), _type(type) {}
 
-        const Type &getPropertyType() const
+        const Type& getPropertyType() const
         {
-            return type_;
+            return _type;
         }
 
     private:
-        const Type &type_;
+        const Type& _type;
     };
 
     /// Attribute for overriding the type of an index (of an indexed 
@@ -270,22 +270,22 @@ namespace osgIntrospection
     class IndexTypeAttribute: public CustomAttribute
     {
     public:
-        IndexTypeAttribute(int whichindex, const Type &type)
-        :    CustomAttribute(), wi_(whichindex), type_(type) {}
+        IndexTypeAttribute(int whichindex, const Type& type)
+        :    CustomAttribute(), _wi(whichindex), _type(type) {}
 
         int getWhichIndex() const
         {
-            return wi_;
+            return _wi;
         }
 
-        const Type &getIndexType() const
+        const Type& getIndexType() const
         {
-            return type_;
+            return _type;
         }
 
     private:
-        int wi_;
-        const Type &type_;
+        int _wi;
+        const Type& _type;
     };
 
 }

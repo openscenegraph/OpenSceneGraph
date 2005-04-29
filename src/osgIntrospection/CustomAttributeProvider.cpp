@@ -17,7 +17,7 @@
 
 using namespace osgIntrospection;
 
-bool CustomAttributeProvider::isDefined(const Type &type, bool inherit) const
+bool CustomAttributeProvider::isDefined(const Type& type, bool inherit) const
 {
     for (CustomAttributeList::const_iterator i=attribs_.begin(); i!=attribs_.end(); ++i)
         if (typeid(**i) == type.getStdTypeInfo()) return true;
@@ -36,7 +36,7 @@ bool CustomAttributeProvider::isDefined(const Type &type, bool inherit) const
     return false;
 }
 
-const CustomAttribute *CustomAttributeProvider::getAttribute(const Type &type, bool inherit) const
+const CustomAttribute* CustomAttributeProvider::getAttribute(const Type& type, bool inherit) const
 {
     for (CustomAttributeList::const_iterator i=attribs_.begin(); i!=attribs_.end(); ++i)
         if (typeid(**i) == type.getStdTypeInfo()) return *i;
@@ -48,7 +48,7 @@ const CustomAttribute *CustomAttributeProvider::getAttribute(const Type &type, b
 
         for (CustomAttributeProviderList::const_iterator i=providers.begin(); i!=providers.end(); ++i)
         {
-            const CustomAttribute *ca = (*i)->getAttribute(type, true);
+            const CustomAttribute* ca = (*i)->getAttribute(type, true);
             if (ca) return ca;
         }
     }

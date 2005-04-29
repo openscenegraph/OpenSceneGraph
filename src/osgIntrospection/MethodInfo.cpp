@@ -16,11 +16,11 @@
 
 using namespace osgIntrospection;
 
-void MethodInfo::getInheritedProviders(CustomAttributeProviderList &providers) const
+void MethodInfo::getInheritedProviders(CustomAttributeProviderList& providers) const
 {
-    for (int i=0; i<decltype_.getNumBaseTypes(); ++i)
+    for (int i=0; i<_decltype.getNumBaseTypes(); ++i)
     {
-        const MethodInfo *mi = decltype_.getBaseType(i).getMethod(name_, params_, false);
+        const MethodInfo* mi = _decltype.getBaseType(i).getMethod(_name, _params, false);
         if (mi)
         {
             providers.push_back(mi);
@@ -28,47 +28,47 @@ void MethodInfo::getInheritedProviders(CustomAttributeProviderList &providers) c
     }
 }
 
-bool MethodInfo::overrides(const MethodInfo *other) const
+bool MethodInfo::overrides(const MethodInfo* other) const
 {
-	if (isConst() != other->isConst()) return false;
-	if (decltype_ != other->decltype_) return false;
-	if (rtype_ != other->rtype_) return false;
-	if (name_ != other->name_) return false;
-	if (params_.size() != other->params_.size()) return false;
+    if (isConst() != other->isConst()) return false;
+    if (_decltype != other->_decltype) return false;
+    if (_rtype != other->_rtype) return false;
+    if (_name != other->_name) return false;
+    if (_params.size() != other->_params.size()) return false;
 
-	ParameterInfoList::const_iterator i=params_.begin();
-	ParameterInfoList::const_iterator j=other->params_.begin();
-	for (; i!=params_.end(); ++i, ++j)
-	{
-		if (&(*i)->getParameterType() != &(*j)->getParameterType())
-			return false;
-	}
+    ParameterInfoList::const_iterator i=_params.begin();
+    ParameterInfoList::const_iterator j=other->_params.begin();
+    for (; i!=_params.end(); ++i, ++j)
+    {
+        if (&(*i)->getParameterType() != &(*j)->getParameterType())
+            return false;
+    }
 
-	return true;
+    return true;
 
 /*
-	std::size_t num_fixed_1 = 0;
-	std::size_t num_optional_1 = 0;
-	for (ParameterInfoList::const_iterator i=params_.begin(); i!=params_.end(); ++i)
-	{
-		if ((*i)->getDefaultValue().isEmpty())
-			++num_fixed_1;
-		else
-			++num_optional_1;
-	}
+    std::size_t num_fixed_1 = 0;
+    std::size_t num_optional_1 = 0;
+    for (ParameterInfoList::const_iterator i=_params.begin(); i!=_params.end(); ++i)
+    {
+        if ((*i)->getDefaultValue().isEmpty())
+            ++num_fixed_1;
+        else
+            ++num_optional_1;
+    }
 
-	std::size_t num_fixed_2 = 0;
-	std::size_t num_optional_2 = 0;
-	for (ParameterInfoList::const_iterator i=other->params_.begin(); i!=other->params_.end(); ++i)
-	{
-		if ((*i)->getDefaultValue().isEmpty())
-			++num_fixed_2;
-		else
-			++num_optional_2;
-	}
+    std::size_t num_fixed_2 = 0;
+    std::size_t num_optional_2 = 0;
+    for (ParameterInfoList::const_iterator i=other->_params.begin(); i!=other->_params.end(); ++i)
+    {
+        if ((*i)->getDefaultValue().isEmpty())
+            ++num_fixed_2;
+        else
+            ++num_optional_2;
+    }
 
-	if (num_fixed_1 > num_fixed_2)
-	{
-	}
+    if (num_fixed_1 > num_fixed_2)
+    {
+    }
 */
 }

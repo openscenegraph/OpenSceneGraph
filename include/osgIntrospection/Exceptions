@@ -24,8 +24,8 @@ namespace osgIntrospection
     class Exception
     {
     public:
-        Exception(const std::string &msg): msg_(msg) {}
-        const std::string &what() const throw()  { return msg_; }
+        Exception(const std::string& msg): msg_(msg) {}
+        const std::string& what() const throw()  { return msg_; }
 
     private:
         std::string msg_;
@@ -33,12 +33,12 @@ namespace osgIntrospection
 
     struct ReflectionException: public Exception 
     {
-        ReflectionException(const std::string &msg): Exception(msg) {}
+        ReflectionException(const std::string& msg): Exception(msg) {}
     };
 
     struct TypeNotDefinedException: public ReflectionException
     {
-        TypeNotDefinedException(const std::type_info &ti)
+        TypeNotDefinedException(const std::type_info& ti)
         :    ReflectionException("type `" + std::string(ti.name()) + "' is declared but not defined")
         {
         }
@@ -46,7 +46,7 @@ namespace osgIntrospection
 
     struct TypeIsAbstractException: public ReflectionException
     {
-        TypeIsAbstractException(const std::type_info &ti)
+        TypeIsAbstractException(const std::type_info& ti)
         :    ReflectionException("cannot create instances of abstract type `" + std::string(ti.name()) + "'")
         {
         }
@@ -54,18 +54,18 @@ namespace osgIntrospection
     
     struct ConstructorNotFoundException: public ReflectionException
     {
-		ConstructorNotFoundException(const std::type_info &ti)
-		:	ReflectionException("could not find a suitable constructor in type `" + std::string(ti.name()) + "'")
-		{
-		}
+        ConstructorNotFoundException(const std::type_info& ti)
+        :    ReflectionException("could not find a suitable constructor in type `" + std::string(ti.name()) + "'")
+        {
+        }
     };
     
     struct InvokeNotImplementedException: public ReflectionException
     {
-		InvokeNotImplementedException()
-		:	ReflectionException("invoke() not implemented")
-		{
-		}
+        InvokeNotImplementedException()
+        :    ReflectionException("invoke() not implemented")
+        {
+        }
     };
 
     struct InvalidFunctionPointerException: public ReflectionException
@@ -94,7 +94,7 @@ namespace osgIntrospection
     
     struct TypeNotFoundException: public ReflectionException
     {
-        TypeNotFoundException(const std::string &qname)
+        TypeNotFoundException(const std::string& qname)
         :    ReflectionException("type `" + qname + "' not found")
         {
         }
@@ -102,7 +102,7 @@ namespace osgIntrospection
 
     struct MethodNotFoundException: public ReflectionException
     {
-        MethodNotFoundException(const std::string &name, const std::string &cname)
+        MethodNotFoundException(const std::string& name, const std::string& cname)
         :    ReflectionException("could not find a suitable method of name `" + name + "' in class `" + cname + "'")
         {
         }
@@ -136,13 +136,13 @@ namespace osgIntrospection
             BINARY_READ
         };
 
-        StreamingNotSupportedException(OperationType op, const std::type_info &type)
+        StreamingNotSupportedException(OperationType op, const std::type_info& type)
         :    ReflectionException(build_msg(op, type))
         {
         }
 
     private:
-        std::string build_msg(OperationType op, const std::type_info &type)
+        std::string build_msg(OperationType op, const std::type_info& type)
         {
             std::string opstr;
             switch (op)
@@ -160,7 +160,7 @@ namespace osgIntrospection
 
     struct TypeConversionException: public ReflectionException
     {
-        TypeConversionException(const std::type_info &type1, const std::type_info &type2)
+        TypeConversionException(const std::type_info& type1, const std::type_info& type2)
         :    ReflectionException("cannot convert from type `" + std::string(type1.name()) + "' to type `" + std::string(type2.name()) + "'")
         {
         }
@@ -182,13 +182,13 @@ namespace osgIntrospection
             COUNT
         };
 
-        PropertyAccessException(const std::string &pname, AccessType denied)
+        PropertyAccessException(const std::string& pname, AccessType denied)
         :    ReflectionException(build_msg(pname, denied))
         {
         }
 
     private:
-        std::string build_msg(const std::string &pname, AccessType denied) const
+        std::string build_msg(const std::string& pname, AccessType denied) const
         {
             std::string msg;
             switch (denied)
@@ -210,7 +210,7 @@ namespace osgIntrospection
 
     struct IndexValuesNotDefinedException: ReflectionException
     {
-        IndexValuesNotDefinedException(const std::string &name, const std::string &iname)
+        IndexValuesNotDefinedException(const std::string& name, const std::string& iname)
             :    ReflectionException("couldn't determine a finite set of values for index `" + iname + "' of property `" + name + "'. Make sure that either: 1) the index is an enumeration, or 2) a valid custom indexing attribute was assigned to the property.")
         {
         }
@@ -218,18 +218,18 @@ namespace osgIntrospection
     
     struct ComparisonNotPermittedException: ReflectionException
     {
-		ComparisonNotPermittedException(const std::type_info &ti)
-		:	ReflectionException("comparison not permitted on type `" + std::string(ti.name()) + "'")
-		{
-		}
+        ComparisonNotPermittedException(const std::type_info& ti)
+        :    ReflectionException("comparison not permitted on type `" + std::string(ti.name()) + "'")
+        {
+        }
     };
     
     struct ComparisonOperatorNotSupportedException: ReflectionException
     {
-		ComparisonOperatorNotSupportedException(const std::type_info &ti, const std::string &op)
-		:	ReflectionException("comparison operator `" + op + "' is not supported on type `" + std::string(ti.name()) + "'")
-		{
-		}
+        ComparisonOperatorNotSupportedException(const std::type_info& ti, const std::string& op)
+        :    ReflectionException("comparison operator `" + op + "' is not supported on type `" + std::string(ti.name()) + "'")
+        {
+        }
     };
 
 }

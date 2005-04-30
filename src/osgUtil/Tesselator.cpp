@@ -209,7 +209,7 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     {
         osg::ref_ptr<osg::PrimitiveSet> primitive = _Contours[primNo].get();
         if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE)
-        {
+        { // this recovers the 'old' tesselation which just retesselates single polygons.
             if (primitive->getMode()==osg::PrimitiveSet::POLYGON || _ttype==TESS_TYPE_DRAWABLE)
             {
 
@@ -231,10 +231,14 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
                 }
                 else
                 {
-                    beginTesselation();
+                    if (primitive->getNumIndices()>3) { // April 2005 gwm only retesselate "complex" polygons
+                        beginTesselation();
                         addContour(primitive.get(), vertices);
-                    endTesselation();
-                    collectTesselation(geom);
+                        endTesselation();
+                        collectTesselation(geom);
+                    } else { // April 2005 gwm triangles don't need to be retesselated
+                        geom.addPrimitiveSet(primitive.get());
+                    }
                 }
 
             }

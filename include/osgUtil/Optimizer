@@ -41,17 +41,19 @@ class OSGUTIL_EXPORT Optimizer
         {
             FLATTEN_STATIC_TRANSFORMS = 0x001,
             REMOVE_REDUNDANT_NODES =    0x002,
-            COMBINE_ADJACENT_LODS =     0x004,
-            SHARE_DUPLICATE_STATE =     0x008,
-            MERGE_GEOMETRY =            0x010,
-            CHECK_GEOMETRY =            0x020,
-            SPATIALIZE_GROUPS =         0x040,
-            COPY_SHARED_NODES =         0x080,
-            TRISTRIP_GEOMETRY =         0x100,
-            TESSELATE_GEOMETRY =        0x200,
-            OPTIMIZE_TEXTURE_SETTINGS = 0x400,
+            REMOVE_LOADED_PROXY_NODES = 0x004,
+            COMBINE_ADJACENT_LODS =     0x008,
+            SHARE_DUPLICATE_STATE =     0x010,
+            MERGE_GEOMETRY =            0x020,
+            CHECK_GEOMETRY =            0x040,
+            SPATIALIZE_GROUPS =         0x080,
+            COPY_SHARED_NODES =         0x100,
+            TRISTRIP_GEOMETRY =         0x200,
+            TESSELATE_GEOMETRY =        0x400,
+            OPTIMIZE_TEXTURE_SETTINGS = 0x800,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
+                                REMOVE_LOADED_PROXY_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
@@ -59,6 +61,7 @@ class OSGUTIL_EXPORT Optimizer
                                 OPTIMIZE_TEXTURE_SETTINGS,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
+                                REMOVE_LOADED_PROXY_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
@@ -315,7 +318,7 @@ class OSGUTIL_EXPORT Optimizer
 
         };
 
-        /** Remove rendundant nodes, such as groups with one single child.*/
+        /** Remove redundant nodes, such as groups with one single child.*/
         class OSGUTIL_EXPORT RemoveRedundantNodesVisitor : public BaseOptimizerVisitor
         {
             public:
@@ -328,6 +331,23 @@ class OSGUTIL_EXPORT Optimizer
                 
                 virtual void apply(osg::Group& group);
                 virtual void apply(osg::Transform& transform);
+                
+                void removeRedundantNodes();
+
+        };
+
+        /** Remove loaded proxy nodes.*/
+        class OSGUTIL_EXPORT RemoveLoadedProxyNodesVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                typedef std::set<osg::Node*> NodeList;
+                NodeList                     _redundantNodeList;
+
+                RemoveLoadedProxyNodesVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, REMOVE_LOADED_PROXY_NODES) {}
+                
+                virtual void apply(osg::ProxyNode& group);
                 
                 void removeRedundantNodes();
 

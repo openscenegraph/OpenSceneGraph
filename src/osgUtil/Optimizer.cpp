@@ -26,6 +26,7 @@
 #include <osg/Switch>
 #include <osg/Texture>
 #include <osg/PagedLOD>
+#include <osg/ProxyNode>
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
@@ -43,7 +44,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -65,6 +66,9 @@ void Optimizer::optimize(osg::Node* node)
 
         if(str.find("~REMOVE_REDUNDANT_NODES")!=std::string::npos) options ^= REMOVE_REDUNDANT_NODES;
         else if(str.find("REMOVE_REDUNDANT_NODES")!=std::string::npos) options |= REMOVE_REDUNDANT_NODES;
+
+        if(str.find("~REMOVE_LOADED_PROXY_NODES")!=std::string::npos) options ^= REMOVE_LOADED_PROXY_NODES;
+        else if(str.find("REMOVE_LOADED_PROXY_NODES")!=std::string::npos) options |= REMOVE_LOADED_PROXY_NODES;
 
         if(str.find("~COMBINE_ADJACENT_LODS")!=std::string::npos) options ^= COMBINE_ADJACENT_LODS;
         else if(str.find("COMBINE_ADJACENT_LODS")!=std::string::npos) options |= COMBINE_ADJACENT_LODS;
@@ -112,6 +116,16 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(tsv);        
     }
     
+    if (options & REMOVE_LOADED_PROXY_NODES)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing REMOVE_LOADED_PROXY_NODES"<<std::endl;
+
+        RemoveLoadedProxyNodesVisitor rlpnv(this);
+        node->accept(rlpnv);
+        rlpnv.removeRedundantNodes();
+
+    }
+
     if (options & COMBINE_ADJACENT_LODS)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing COMBINE_ADJACENT_LODS"<<std::endl;
@@ -187,6 +201,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
+
     if (options & CHECK_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
@@ -1204,6 +1219,57 @@ void Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes()
         else
         {
             osg::notify(osg::WARN)<<"Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
+        }                                
+    }
+    _redundantNodeList.clear();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+// RemoveLoadedProxyNodesVisitor.
+////////////////////////////////////////////////////////////////////////////
+
+void Optimizer::RemoveLoadedProxyNodesVisitor::apply(osg::ProxyNode& proxyNode)
+{
+    if (proxyNode.getNumParents()>0 && proxyNode.getNumFileNames()==proxyNode.getNumChildren())
+    {
+        if (isOperationPermissibleForObject(&proxyNode))
+        {
+            _redundantNodeList.insert(&proxyNode);
+        }
+    }
+    traverse(proxyNode);
+}
+
+void Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes()
+{
+
+    for(NodeList::iterator itr=_redundantNodeList.begin();
+        itr!=_redundantNodeList.end();
+        ++itr)
+    {
+        osg::ref_ptr<osg::Group> group = dynamic_cast<osg::Group*>(*itr);
+        if (group.valid())
+        {
+            // take a copy of parents list since subsequent removes will modify the original one.
+            osg::Node::ParentList parents = group->getParents();
+
+            for(unsigned int i=0;i<group->getNumChildren();++i)
+            {
+                osg::Node* child = group->getChild(i);
+                for(osg::Node::ParentList::iterator pitr=parents.begin();
+                    pitr!=parents.end();
+                    ++pitr)
+                {
+                    (*pitr)->replaceChild(group.get(),child);
+                }
+
+            }
+
+        }
+        else
+        {
+            osg::notify(osg::WARN)<<"Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
         }                                
     }
     _redundantNodeList.clear();

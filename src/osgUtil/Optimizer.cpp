@@ -1241,7 +1241,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
     {
         osg::Group* group = *itr;
 
-        typedef std::set<osg::LOD*>                 LODSet;
+        typedef std::set<osg::LOD*>  LODSet;
 
         LODSet    lodChildren;
 

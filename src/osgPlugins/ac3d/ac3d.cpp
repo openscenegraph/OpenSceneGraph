@@ -41,6 +41,9 @@
 using namespace osg;
 using namespace osgDB;
 
+// define this if you have a recent OSG with pRegistry->getFromObjectCache method
+#define USE_TEXTURE_CACHE
+
 class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub-graph attached to 'this'
         public:
             geodeVisitor():
@@ -154,10 +157,27 @@ class ReaderWriterAC : public osgDB::ReaderWriter
 private:
 };
 
+class appearance : public osg::Referenced { // how a surface is rendered - basic copy of ACsurface
+    // except that as a ref_ptr it will automatically delete itself when the object has loaded
+        // and the list of appearances is deleted
+public:
+    appearance(const int imat=-1) {material=imat;
+        type=0x00;
+    }
+    void setMaterial(const int i) { material=i;}
+    inline int getMaterial(void) const { return material;}
+    void setSurfaceType(const int i) { type=i;}
+    inline int getSurfaceType(void) const { return type;}
+protected:
+    ~appearance() {
+    //    osg::notify(osg::WARN) << "deleting material type " << material << std::endl;
+    }
+    int material; // index in the ac3d file
+    int type; // as used in ac3d, onesided etc are held as 0x20, 0x21...
+};
+
 static int line = 0;
 static char buff[255];
-
-
 
 static std::vector<osg::Material*> palette; // change to dynamic array
 //static int num_palette = 0;
@@ -228,7 +248,7 @@ Prototype int get_tokens(char *s, int *argc, char *argv[])
                 st = p;
                 while ((c = *p) && ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13) && ( c != '\0')) )
                     p++;
-                argv[tc++] = st;
+                if (c != '"') argv[tc++] = st;
             }            
         }
         if (*p) p++;
@@ -413,10 +433,9 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
     char t[20];
     osg::Group *gp=NULL;
     osg::Geode *geode=NULL;
-    osg::Vec3Array *normals = NULL; // new osg::Vec3Array; // NULL;
 
     ACObject ob; // local storage for stuff taken from AC's loader
-    osg::Vec3Array *vertpool = new osg::Vec3Array;
+    osg::ref_ptr<osg::Vec3Array> vertpool = new osg::Vec3Array;
     initobject(&ob); // zero data for object
 
     if (parent)
@@ -499,8 +518,13 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
             {
                 printf("expected quoted name at line %d (got %d tokens)\n", line, numtok);
             }
-            else
+            else {
+                char *endquot=strrchr(tokv[1],'\"');
+                if (endquot>0) {
+                    *endquot='\0';
+                }
                 if (gp) gp->setName(tokv[1]);
+            }
         }
         else if (streq(t, "texture"))
         {
@@ -514,14 +538,48 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                     ctmp++;
                     if (*ctmp == '"') *ctmp='\0'; // latest ac3d seems toa dd more quotes than older versions.
                 }
+#ifdef USE_TEXTURE_CACHE
+                osgDB::Registry* pRegistry = osgDB::Registry::instance();
+                osg::Texture2D* pTexture = dynamic_cast<osg::Texture2D*>(pRegistry->getFromObjectCache(osgDB::findDataFile(tokv[1], options)));
+                if (NULL != pTexture)
+                {
+                    // Use cached texture
+                    ob.texture = pTexture;
+                    osg::notify(osg::INFO) << "Using cached texture "  << pTexture->getImage()->getFileName() <<std::endl;
+                }
+                else
+                {
+                    // Try to load the texture
                 osg::Image *ctx= osgDB::readImageFile(tokv[1], options);
                 if (ctx)
-                { // image coukd be read
+                { // image could be read
                     ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
                     ob.texture->setImage(ctx);
                     ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
                     ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+                        pRegistry->addEntryToObjectCache(ctx->getFileName(), ob.texture.get());
+                    }
                 }
+#else
+                typedef std::map< std::string , Texture2D *> UsedTextureMap; // what textures already used.
+
+                static    UsedTextureMap usedtextures;
+                // gwm 22.04.05 check for already loaded textures
+                osg::ref_ptr<osg::Texture2D> texture = (usedtextures)[tokv[1]];
+                if (texture.valid()) {
+                    ob.texture = texture.get();// ac_load_texture(tokv[1]);
+                } else {
+                    osg::Image *ctx= osgDB::readImageFile(tokv[1], options);
+                    if (ctx)
+                    { // image could be read
+                        ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
+                        ob.texture->setImage(ctx);
+                        ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+                        ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+                        (usedtextures)[tokv[1]]=ob.texture.get();
+                    }
+                }
+#endif
             }
         }
         else if (streq(t, "texrep"))
@@ -600,7 +658,6 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                         ctmp=strtok(NULL,"\n");
                     }
                 }
-                normals = new osg::Vec3Array;
             }
 
             sscanf(buff, "%s %d", str, &num);
@@ -631,12 +688,12 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
             //    the tx coords array for each geometry (Vec2Array list, texslist)
             // then I add a new geometry to the current Geode for each new material as it is found.
 
-            std::vector<int> ia; // list of materials required- generate one geode per material
-            typedef std::vector<osg::Geometry *> geomlist;
+            std::vector< osg::ref_ptr<appearance> > ia; // list of materials required- generate one geode per material
+             typedef std::vector<osg::ref_ptr<osg::Geometry> > geomlist;
             geomlist glist;
-            typedef std::vector<osg::Vec3Array *> vertslist;
+             typedef std::vector<osg::ref_ptr<osg::Vec3Array> > vertslist;
             vertslist vlists; // list of vertices for each glist element
-            typedef std::vector<osg::Vec2Array *> texslist;
+             typedef std::vector<osg::ref_ptr<osg::Vec2Array> > texslist;
             texslist txlists; // list of texture coords for each glist element
 
             sscanf(buff, "%s %d", str, &num);
@@ -646,14 +703,16 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                 ob.num_surf = num;
 
                 for (n = 0; n < num; n++)
-                {
-                    osg::Geometry *geom=NULL; // the surface will be addded to this geometry
-                    osg::Vec3Array *vgeom=NULL; // vertices corresponding to geom taken from vertexpool
-                    osg::Vec2Array *tgeom=NULL; // texture coords corresponding to geom taken from vertexpool
+                { // add each surface (poly, 2 sided poly, line, polyline) to a geometry suitable for its:
+                    // material index
+                    // lighting (off for line, polyline).
+                      osg::ref_ptr<osg::Geometry> geom=NULL; // the surface will be addded to this geometry
+                     osg::ref_ptr<osg::Vec3Array> vgeom=NULL; // vertices corresponding to geom taken from vertexpool
+                    osg::ref_ptr<Vec2Array> tgeom=NULL; // texture coords corresponding to geom taken from vertexpool
                     ACSurface asurf;
-                    osg::UShortArray *nusidx = new osg::UShortArray; // indices into the vertices
-                    osg::Vec2Array *tcs=new osg::Vec2Array; // texture coordinates for this object
-                    ACSurface *news = read_surface(f, &asurf, nusidx, tcs);
+                     osg::ref_ptr<UShortArray> nusidx = new osg::UShortArray; // indices into the vertices
+                    osg::ref_ptr<Vec2Array> tcs=new osg::Vec2Array; // texture coordinates for this object
+                    ACSurface *news = read_surface(f, &asurf, nusidx.get(), tcs.get());
                     if (news == NULL)
                     {
                         printf("error whilst reading surface at line: %d\n", line);
@@ -662,20 +721,27 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                     else
                     {
                         int i=0;
-                        for (std::vector<int>::iterator itr= ia.begin(); itr<ia.end(); itr++, i++)
+                        // check for shared material and texture... and lighting mode
+                        // since lines are not affected by light.
+                        for (std::vector< osg::ref_ptr<appearance> >::iterator itr= ia.begin(); itr<ia.end(); itr++, i++)
                         {
-                            if ((*itr)==asurf.mat)
-                            {
-                                geom=glist[i];
-                                vgeom=vlists[i];
-                                tgeom=txlists[i]; // what is current texture array
+                            if ((*itr)->getMaterial()==asurf.mat)
+                            { // shares material
+                                // check the line type.
+                                if ((*itr)->getSurfaceType()==asurf.flags) {
+                                    geom=glist[i];
+                                    vgeom=vlists[i];
+                                    tgeom=txlists[i]; // what is current texture array
+                                }
                             }
                         }
-                        if (!geom)
+                        if (!geom.valid())
                         { // then we need a new geometry
                             osg::Vec3Array *verts = new osg::Vec3Array;
+                            osg::Vec3Array *normals = new osg::Vec3Array; // 31.03.05 create a new array for each geometry
+//                            fprintf(stdout,"New geom in %s nrms %x are %d nrms\n",gp->getName().c_str(),normals,normals->size());
 
-                            osg::Vec2Array *tcrds=new osg::Vec2Array; // texture coordinates for this object
+                            osg::ref_ptr<Vec2Array> tcrds=new osg::Vec2Array; // texture coordinates for this object
                             vgeom=verts;
                             tgeom=tcrds; // what is current texture array
                             vlists.push_back(verts);
@@ -686,12 +752,16 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                             geom->setVertexArray(verts);
                             if (ob.texture.valid())
                             {
-                                geom->setTexCoordArray(0,tgeom); // share same set of TexCoords
+                                geom->setTexCoordArray(0,tgeom.get()); // share same set of TexCoords
                             }
                             osg::StateSet *dstate = new osg::StateSet;
                             osg::Material*mat=ac_palette_get_material(asurf.mat);
                             if (mat) {
-                                dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
+                                if (asurf.flags & SURFACE_TYPE_CLOSEDLINE || asurf.flags & SURFACE_TYPE_LINE) {
+                                    dstate->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+                                } else {
+                                    dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
+                                }
                                 dstate->setAttribute(mat);
                                 const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
                                 if (cdiff[3]<0.99)
@@ -719,8 +789,10 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
 
                             geom->setStateSet( dstate );
                             glist.push_back(geom);
-                            geode->addDrawable(geom);
-                            ia.push_back(asurf.mat);
+                            geode->addDrawable(geom.get());
+                            osg::ref_ptr<appearance> app=new appearance(asurf.mat);
+                            app->setSurfaceType(asurf.flags);
+                            ia.push_back(app.get());
                         }
 
                         osg::Vec3Array* normals = geom->getNormalArray();
@@ -734,6 +806,13 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                             osgtri_calc_normal((*vertpool)[i1], 
                             (*vertpool)[i2], 
                             (*vertpool)[i3], norm);
+                            normals->push_back(norm);
+                        //    fprintf(stdout,"New %x are %d nrms\n",normals,normals->size());
+                        }
+                        else
+                        {
+                            // Generate a dummy normal
+                            osg::Vec3 norm(0, 1, 0);
                             normals->push_back(norm);
                         }
                         int nstart=(*vgeom).size();
@@ -757,9 +836,9 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                     }
                 }
                 for (geomlist::iterator itr= glist.begin(); itr<glist.end(); itr++)
-                {
+                { // for each geometry 'bin', collection of facets sharing same state:
                     osgUtil::Tesselator tesselator;
-                    if (*itr) tesselator.retesselatePolygons(**itr);
+                    if (itr->valid()) tesselator.retesselatePolygons(**itr);
                     if (needSmooth)
                     {
                         osgUtil::SmoothingVisitor smoother;

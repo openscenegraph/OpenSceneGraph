@@ -97,6 +97,8 @@ osg::Geometry *makePolsTwo (void)
     {
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
+        texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
@@ -167,6 +169,8 @@ osg::Geometry *makeSideWall (const float xpos)
     {
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
+        texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
@@ -262,6 +266,8 @@ osg::Geometry *makeFrontWall (const float zpos) {
     {
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
+        texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );
@@ -454,6 +460,8 @@ osg::Geometry *makePols (void) {
     {
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
+        texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     gtess->setStateSet( stateset );

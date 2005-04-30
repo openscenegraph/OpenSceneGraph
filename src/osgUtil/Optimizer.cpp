@@ -1216,7 +1216,7 @@ void Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes()
 ////////////////////////////////////////////////////////////////////////////
 void Optimizer::CombineLODsVisitor::apply(osg::LOD& lod)
 {
-    if (dynamic_cast<osg::PagedLOD*>(&lod)!=0)
+    if (dynamic_cast<osg::PagedLOD*>(&lod)==0)
     {    
         for(unsigned int i=0;i<lod.getNumParents();++i)
         {

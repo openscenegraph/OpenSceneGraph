@@ -12,8 +12,8 @@
  *
 */
 
-/* file:	src/osg/Program.cpp
- * author:	Mike Weiblen 2005-04-15
+/* file:        src/osg/Program.cpp
+ * author:        Mike Weiblen 2005-04-29
 */
 
 #include <fstream>
@@ -160,7 +160,7 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
 {
     if (rhs._glVersion < _glVersion) _glVersion = rhs._glVersion;
     if (rhs._glslLanguageVersion < _glslLanguageVersion)
-       	_glslLanguageVersion = rhs._glslLanguageVersion;
+               _glslLanguageVersion = rhs._glslLanguageVersion;
 
     if (!rhs._isShaderObjectsSupported) _isShaderObjectsSupported = false;
     if (!rhs._isVertexShaderSupported) _isVertexShaderSupported = false;
@@ -280,20 +280,20 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
 
     if( isGlslSupported() )
     {
-	// If glGetString raises an error, assume initial release "1.00"
-	while(glGetError() != GL_NO_ERROR) {}	// reset error flag
-	const char* langVerStr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-	if( (glGetError() == GL_NO_ERROR) && langVerStr )
-	    _glslLanguageVersion = atof( langVerStr );
-	else
-	    _glslLanguageVersion = 1.0f;
+        // If glGetString raises an error, assume initial release "1.00"
+        while(glGetError() != GL_NO_ERROR) {}        // reset error flag
+        const char* langVerStr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+        if( (glGetError() == GL_NO_ERROR) && langVerStr )
+            _glslLanguageVersion = atof( langVerStr );
+        else
+            _glslLanguageVersion = 1.0f;
     }
 
     osg::notify(osg::INFO)
-	    << "glVersion=" << getGlVersion() << ", "
-	    << "isGlslSupported=" << (isGlslSupported() ? "YES" : "NO") << ", "
-	    << "glslLanguageVersion=" << getLanguageVersion()
-	    << std::endl;
+            << "glVersion=" << getGlVersion() << ", "
+            << "isGlslSupported=" << (isGlslSupported() ? "YES" : "NO") << ", "
+            << "glslLanguageVersion=" << getLanguageVersion()
+            << std::endl;
 
 
     _glBlendEquationSeparate = osg::getGLExtensionFuncPtr("glBlendEquationSeparate");
@@ -401,10 +401,10 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
 bool GL2Extensions::isGlslSupported() const
 {
     return ( _glVersion >= 2.0f ) ||
-	   ( _isShaderObjectsSupported &&
-	     _isVertexShaderSupported &&
-	     _isFragmentShaderSupported &&
-	     _isLanguage100Supported );
+           ( _isShaderObjectsSupported &&
+             _isVertexShaderSupported &&
+             _isFragmentShaderSupported &&
+             _isLanguage100Supported );
 }
 
 
@@ -418,7 +418,7 @@ GL2Extensions*
 GL2Extensions::Get(unsigned int contextID, bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized)
-	    s_extensions[contextID] = new GL2Extensions(contextID);
+            s_extensions[contextID] = new GL2Extensions(contextID);
 
     return s_extensions[contextID].get();
 }
@@ -434,7 +434,7 @@ void GL2Extensions::Set(unsigned int contextID, GL2Extensions* extensions)
 static void NotSupported( const char* funcName )
 {
     osg::notify(osg::WARN)
-	<<"Error: "<<funcName<<" not supported by OpenGL driver"<<std::endl;
+        <<"Error: "<<funcName<<" not supported by OpenGL driver"<<std::endl;
 }
 
 
@@ -443,12 +443,12 @@ void GL2Extensions::glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) co
 {
     if (_glBlendEquationSeparate)
     {
-	typedef void (APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
-	((BlendEquationSeparateProc)_glBlendEquationSeparate)(modeRGB, modeAlpha);
+        typedef void (APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
+        ((BlendEquationSeparateProc)_glBlendEquationSeparate)(modeRGB, modeAlpha);
     }
     else
     {
-	NotSupported( "glBlendEquationSeparate" );
+        NotSupported( "glBlendEquationSeparate" );
     }
 }
 
@@ -457,12 +457,12 @@ void GL2Extensions::glDrawBuffers(GLsizei n, const GLenum *bufs) const
 {
     if (_glDrawBuffers)
     {
-	typedef void (APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
-	((DrawBuffersProc)_glDrawBuffers)(n, bufs);
+        typedef void (APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
+        ((DrawBuffersProc)_glDrawBuffers)(n, bufs);
     }
     else
     {
-	NotSupported( "glDrawBuffers" );
+        NotSupported( "glDrawBuffers" );
     }
 }
 
@@ -471,12 +471,12 @@ void GL2Extensions::glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail
 {
     if (_glStencilOpSeparate)
     {
-	typedef void (APIENTRY * StencilOpSeparateProc)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-	((StencilOpSeparateProc)_glStencilOpSeparate)(face, sfail, dpfail, dppass);
+        typedef void (APIENTRY * StencilOpSeparateProc)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
+        ((StencilOpSeparateProc)_glStencilOpSeparate)(face, sfail, dpfail, dppass);
     }
     else
     {
-	NotSupported( "glStencilOpSeparate" );
+        NotSupported( "glStencilOpSeparate" );
     }
 }
 
@@ -485,12 +485,12 @@ void GL2Extensions::glStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLi
 {
     if (_glStencilFuncSeparate)
     {
-	typedef void (APIENTRY * StencilFuncSeparateProc)(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
-	((StencilFuncSeparateProc)_glStencilFuncSeparate)(frontfunc, backfunc, ref, mask);
+        typedef void (APIENTRY * StencilFuncSeparateProc)(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
+        ((StencilFuncSeparateProc)_glStencilFuncSeparate)(frontfunc, backfunc, ref, mask);
     }
     else
     {
-	NotSupported( "glStencilFuncSeparate" );
+        NotSupported( "glStencilFuncSeparate" );
     }
 }
 
@@ -499,12 +499,12 @@ void GL2Extensions::glStencilMaskSeparate(GLenum face, GLuint mask) const
 {
     if (_glStencilMaskSeparate)
     {
-	typedef void (APIENTRY * StencilMaskSeparateProc)(GLenum face, GLuint mask);
-	((StencilMaskSeparateProc)_glStencilMaskSeparate)(face, mask);
+        typedef void (APIENTRY * StencilMaskSeparateProc)(GLenum face, GLuint mask);
+        ((StencilMaskSeparateProc)_glStencilMaskSeparate)(face, mask);
     }
     else
     {
-	NotSupported( "glStencilMaskSeparate" );
+        NotSupported( "glStencilMaskSeparate" );
     }
 }
 
@@ -513,12 +513,12 @@ void GL2Extensions::glAttachShader(GLuint program, GLuint shader) const
 {
     if (_glAttachShader)
     {
-	typedef void (APIENTRY * AttachShaderProc)(GLuint program, GLuint shader);
-	((AttachShaderProc)_glAttachShader)(program, shader);
+        typedef void (APIENTRY * AttachShaderProc)(GLuint program, GLuint shader);
+        ((AttachShaderProc)_glAttachShader)(program, shader);
     }
     else
     {
-	NotSupported( "glAttachShader" );
+        NotSupported( "glAttachShader" );
     }
 }
 
@@ -527,12 +527,12 @@ void GL2Extensions::glBindAttribLocation(GLuint program, GLuint index, const GLc
 {
     if (_glBindAttribLocation)
     {
-	typedef void (APIENTRY * BindAttribLocationProc)(GLuint program, GLuint index, const GLchar *name);
-	((BindAttribLocationProc)_glBindAttribLocation)(program, index, name);
+        typedef void (APIENTRY * BindAttribLocationProc)(GLuint program, GLuint index, const GLchar *name);
+        ((BindAttribLocationProc)_glBindAttribLocation)(program, index, name);
     }
     else
     {
-	NotSupported( "glBindAttribLocation" );
+        NotSupported( "glBindAttribLocation" );
     }
 }
 
@@ -541,12 +541,12 @@ void GL2Extensions::glCompileShader(GLuint shader) const
 {
     if (_glCompileShader)
     {
-	typedef void (APIENTRY * CompileShaderProc)(GLuint shader);
-	((CompileShaderProc)_glCompileShader)(shader);
+        typedef void (APIENTRY * CompileShaderProc)(GLuint shader);
+        ((CompileShaderProc)_glCompileShader)(shader);
     }
     else
     {
-	NotSupported( "glCompileShader" );
+        NotSupported( "glCompileShader" );
     }
 }
 
@@ -555,13 +555,13 @@ GLuint GL2Extensions::glCreateProgram(void) const
 {
     if (_glCreateProgram)
     {
-	typedef GLuint (APIENTRY * CreateProgramProc)(void);
-	return ((CreateProgramProc)_glCreateProgram)();
+        typedef GLuint (APIENTRY * CreateProgramProc)(void);
+        return ((CreateProgramProc)_glCreateProgram)();
     }
     else
     {
-	NotSupported( "glCreateProgram" );
-	return 0;
+        NotSupported( "glCreateProgram" );
+        return 0;
     }
 }
 
@@ -570,13 +570,13 @@ GLuint GL2Extensions::glCreateShader(GLenum type) const
 {
     if (_glCreateShader)
     {
-	typedef GLuint (APIENTRY * CreateShaderProc)(GLenum type);
-	return ((CreateShaderProc)_glCreateShader)(type);
+        typedef GLuint (APIENTRY * CreateShaderProc)(GLenum type);
+        return ((CreateShaderProc)_glCreateShader)(type);
     }
     else
     {
-	NotSupported( "glCreateShader" );
-	return 0;
+        NotSupported( "glCreateShader" );
+        return 0;
     }
 }
 
@@ -585,17 +585,17 @@ void GL2Extensions::glDeleteProgram(GLuint program) const
 {
     if (_glDeleteProgram)
     {
-	typedef void (APIENTRY * DeleteProgramProc)(GLuint program);
-	((DeleteProgramProc)_glDeleteProgram)(program);
+        typedef void (APIENTRY * DeleteProgramProc)(GLuint program);
+        ((DeleteProgramProc)_glDeleteProgram)(program);
     }
     else if (_glDeleteObjectARB)
     {
-	typedef void (APIENTRY * DeleteObjectARBProc)(GLuint program);
-	((DeleteObjectARBProc)_glDeleteObjectARB)(program);
+        typedef void (APIENTRY * DeleteObjectARBProc)(GLuint program);
+        ((DeleteObjectARBProc)_glDeleteObjectARB)(program);
     }
     else
     {
-	NotSupported( "glDeleteProgram" );
+        NotSupported( "glDeleteProgram" );
     }
 }
 
@@ -604,17 +604,17 @@ void GL2Extensions::glDeleteShader(GLuint shader) const
 {
     if (_glDeleteShader)
     {
-	typedef void (APIENTRY * DeleteShaderProc)(GLuint shader);
-	((DeleteShaderProc)_glDeleteShader)(shader);
+        typedef void (APIENTRY * DeleteShaderProc)(GLuint shader);
+        ((DeleteShaderProc)_glDeleteShader)(shader);
     }
     else if (_glDeleteObjectARB)
     {
-	typedef void (APIENTRY * DeleteObjectARBProc)(GLuint shader);
-	((DeleteObjectARBProc)_glDeleteObjectARB)(shader);
+        typedef void (APIENTRY * DeleteObjectARBProc)(GLuint shader);
+        ((DeleteObjectARBProc)_glDeleteObjectARB)(shader);
     }
     else
     {
-	NotSupported( "glDeleteShader" );
+        NotSupported( "glDeleteShader" );
     }
 }
 
@@ -623,12 +623,12 @@ void GL2Extensions::glDetachShader(GLuint program, GLuint shader) const
 {
     if (_glDetachShader)
     {
-	typedef void (APIENTRY * DetachShaderProc)(GLuint program, GLuint shader);
-	((DetachShaderProc)_glDetachShader)(program, shader);
+        typedef void (APIENTRY * DetachShaderProc)(GLuint program, GLuint shader);
+        ((DetachShaderProc)_glDetachShader)(program, shader);
     }
     else
     {
-	NotSupported( "glDetachShader" );
+        NotSupported( "glDetachShader" );
     }
 }
 
@@ -637,12 +637,12 @@ void GL2Extensions::glDisableVertexAttribArray(GLuint index) const
 {
     if (_glDisableVertexAttribArray)
     {
-	typedef void (APIENTRY * DisableVertexAttribArrayProc)(GLuint index);
-	((DisableVertexAttribArrayProc)_glDisableVertexAttribArray)(index);
+        typedef void (APIENTRY * DisableVertexAttribArrayProc)(GLuint index);
+        ((DisableVertexAttribArrayProc)_glDisableVertexAttribArray)(index);
     }
     else
     {
-	NotSupported( "glDisableVertexAttribArray" );
+        NotSupported( "glDisableVertexAttribArray" );
     }
 }
 
@@ -651,12 +651,12 @@ void GL2Extensions::glEnableVertexAttribArray(GLuint index) const
 {
     if (_glEnableVertexAttribArray)
     {
-	typedef void (APIENTRY * EnableVertexAttribArrayProc)(GLuint index);
-	((EnableVertexAttribArrayProc)_glEnableVertexAttribArray)(index);
+        typedef void (APIENTRY * EnableVertexAttribArrayProc)(GLuint index);
+        ((EnableVertexAttribArrayProc)_glEnableVertexAttribArray)(index);
     }
     else
     {
-	NotSupported( "glEnableVertexAttribArray" );
+        NotSupported( "glEnableVertexAttribArray" );
     }
 }
 
@@ -665,12 +665,12 @@ void GL2Extensions::glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufS
 {
     if (_glGetActiveAttrib)
     {
-	typedef void (APIENTRY * GetActiveAttribProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-	((GetActiveAttribProc)_glGetActiveAttrib)(program, index, bufSize, length, size, type, name);
+        typedef void (APIENTRY * GetActiveAttribProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
+        ((GetActiveAttribProc)_glGetActiveAttrib)(program, index, bufSize, length, size, type, name);
     }
     else
     {
-	NotSupported( "glGetActiveAttrib" );
+        NotSupported( "glGetActiveAttrib" );
     }
 }
 
@@ -679,12 +679,12 @@ void GL2Extensions::glGetActiveUniform(GLuint program, GLuint index, GLsizei buf
 {
     if (_glGetActiveUniform)
     {
-	typedef void (APIENTRY * GetActiveUniformProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-	((GetActiveUniformProc)_glGetActiveUniform)(program, index, bufSize, length, size, type, name);
+        typedef void (APIENTRY * GetActiveUniformProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
+        ((GetActiveUniformProc)_glGetActiveUniform)(program, index, bufSize, length, size, type, name);
     }
     else
     {
-	NotSupported( "glGetActiveUniform" );
+        NotSupported( "glGetActiveUniform" );
     }
 }
 
@@ -693,12 +693,12 @@ void GL2Extensions::glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsiz
 {
     if (_glGetAttachedShaders)
     {
-	typedef void (APIENTRY * GetAttachedShadersProc)(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj);
-	((GetAttachedShadersProc)_glGetAttachedShaders)(program, maxCount, count, obj);
+        typedef void (APIENTRY * GetAttachedShadersProc)(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj);
+        ((GetAttachedShadersProc)_glGetAttachedShaders)(program, maxCount, count, obj);
     }
     else
     {
-	NotSupported( "glGetAttachedShaders" );
+        NotSupported( "glGetAttachedShaders" );
     }
 }
 
@@ -707,13 +707,13 @@ GLint GL2Extensions::glGetAttribLocation(GLuint program, const GLchar *name) con
 {
     if (_glGetAttribLocation)
     {
-	typedef GLint (APIENTRY * GetAttribLocationProc)(GLuint program, const GLchar *name);
-	return ((GetAttribLocationProc)_glGetAttribLocation)(program, name);
+        typedef GLint (APIENTRY * GetAttribLocationProc)(GLuint program, const GLchar *name);
+        return ((GetAttribLocationProc)_glGetAttribLocation)(program, name);
     }
     else
     {
-	NotSupported( "glGetAttribLocation" );
-	return 0;
+        NotSupported( "glGetAttribLocation" );
+        return 0;
     }
 }
 
@@ -722,17 +722,17 @@ void GL2Extensions::glGetProgramiv(GLuint program, GLenum pname, GLint *params) 
 {
     if (_glGetProgramiv)
     {
-	typedef void (APIENTRY * GetProgramivProc)(GLuint program, GLenum pname, GLint *params);
-	((GetProgramivProc)_glGetProgramiv)(program, pname, params);
+        typedef void (APIENTRY * GetProgramivProc)(GLuint program, GLenum pname, GLint *params);
+        ((GetProgramivProc)_glGetProgramiv)(program, pname, params);
     }
     else if (_glGetObjectParameterivARB)
     {
-	typedef void (APIENTRY * GetObjectParameterivARBProc)(GLuint program, GLenum pname, GLint *params);
-	((GetObjectParameterivARBProc)_glGetObjectParameterivARB)(program, pname, params);
+        typedef void (APIENTRY * GetObjectParameterivARBProc)(GLuint program, GLenum pname, GLint *params);
+        ((GetObjectParameterivARBProc)_glGetObjectParameterivARB)(program, pname, params);
     }
     else
     {
-	NotSupported( "glGetProgramiv" );
+        NotSupported( "glGetProgramiv" );
     }
 }
 
@@ -741,17 +741,17 @@ void GL2Extensions::glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei
 {
     if (_glGetProgramInfoLog)
     {
-	typedef void (APIENTRY * GetProgramInfoLogProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-	((GetProgramInfoLogProc)_glGetProgramInfoLog)(program, bufSize, length, infoLog);
+        typedef void (APIENTRY * GetProgramInfoLogProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        ((GetProgramInfoLogProc)_glGetProgramInfoLog)(program, bufSize, length, infoLog);
     }
     else if (_glGetInfoLogARB)
     {
-	typedef void (APIENTRY * GetInfoLogARBProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-	((GetInfoLogARBProc)_glGetInfoLogARB)(program, bufSize, length, infoLog);
+        typedef void (APIENTRY * GetInfoLogARBProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        ((GetInfoLogARBProc)_glGetInfoLogARB)(program, bufSize, length, infoLog);
     }
     else
     {
-	NotSupported( "glGetProgramInfoLog" );
+        NotSupported( "glGetProgramInfoLog" );
     }
 }
 
@@ -760,17 +760,17 @@ void GL2Extensions::glGetShaderiv(GLuint shader, GLenum pname, GLint *params) co
 {
     if (_glGetShaderiv)
     {
-	typedef void (APIENTRY * GetShaderivProc)(GLuint shader, GLenum pname, GLint *params);
-	((GetShaderivProc)_glGetShaderiv)(shader, pname, params);
+        typedef void (APIENTRY * GetShaderivProc)(GLuint shader, GLenum pname, GLint *params);
+        ((GetShaderivProc)_glGetShaderiv)(shader, pname, params);
     }
     else if (_glGetObjectParameterivARB)
     {
-	typedef void (APIENTRY * GetObjectParameterivARBProc)(GLuint shader, GLenum pname, GLint *params);
-	((GetObjectParameterivARBProc)_glGetObjectParameterivARB)(shader, pname, params);
+        typedef void (APIENTRY * GetObjectParameterivARBProc)(GLuint shader, GLenum pname, GLint *params);
+        ((GetObjectParameterivARBProc)_glGetObjectParameterivARB)(shader, pname, params);
     }
     else
     {
-	NotSupported( "glGetShaderiv" );
+        NotSupported( "glGetShaderiv" );
     }
 }
 
@@ -779,17 +779,17 @@ void GL2Extensions::glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei *
 {
     if (_glGetShaderInfoLog)
     {
-	typedef void (APIENTRY * GetShaderInfoLogProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-	((GetShaderInfoLogProc)_glGetShaderInfoLog)(shader, bufSize, length, infoLog);
+        typedef void (APIENTRY * GetShaderInfoLogProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        ((GetShaderInfoLogProc)_glGetShaderInfoLog)(shader, bufSize, length, infoLog);
     }
     else if (_glGetInfoLogARB)
     {
-	typedef void (APIENTRY * GetInfoLogARBProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-	((GetInfoLogARBProc)_glGetInfoLogARB)(shader, bufSize, length, infoLog);
+        typedef void (APIENTRY * GetInfoLogARBProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+        ((GetInfoLogARBProc)_glGetInfoLogARB)(shader, bufSize, length, infoLog);
     }
     else
     {
-	NotSupported( "glGetShaderInfoLog" );
+        NotSupported( "glGetShaderInfoLog" );
     }
 }
 
@@ -798,12 +798,12 @@ void GL2Extensions::glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei *l
 {
     if (_glGetShaderSource)
     {
-	typedef void (APIENTRY * GetShaderSourceProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
-	((GetShaderSourceProc)_glGetShaderSource)(shader, bufSize, length, source);
+        typedef void (APIENTRY * GetShaderSourceProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
+        ((GetShaderSourceProc)_glGetShaderSource)(shader, bufSize, length, source);
     }
     else
     {
-	NotSupported( "glGetShaderSource" );
+        NotSupported( "glGetShaderSource" );
     }
 }
 
@@ -812,13 +812,13 @@ GLint GL2Extensions::glGetUniformLocation(GLuint program, const GLchar *name) co
 {
     if (_glGetUniformLocation)
     {
-	typedef GLint (APIENTRY * GetUniformLocationProc)(GLuint program, const GLchar *name);
-	return ((GetUniformLocationProc)_glGetUniformLocation)(program, name);
+        typedef GLint (APIENTRY * GetUniformLocationProc)(GLuint program, const GLchar *name);
+        return ((GetUniformLocationProc)_glGetUniformLocation)(program, name);
     }
     else
     {
-	NotSupported( "glGetUniformLocation" );
-	return 0;
+        NotSupported( "glGetUniformLocation" );
+        return 0;
     }
 }
 
@@ -827,12 +827,12 @@ void GL2Extensions::glGetUniformfv(GLuint program, GLint location, GLfloat *para
 {
     if (_glGetUniformfv)
     {
-	typedef void (APIENTRY * GetUniformfvProc)(GLuint program, GLint location, GLfloat *params);
-	((GetUniformfvProc)_glGetUniformfv)(program, location, params);
+        typedef void (APIENTRY * GetUniformfvProc)(GLuint program, GLint location, GLfloat *params);
+        ((GetUniformfvProc)_glGetUniformfv)(program, location, params);
     }
     else
     {
-	NotSupported( "glGetUniformfv" );
+        NotSupported( "glGetUniformfv" );
     }
 }
 
@@ -841,12 +841,12 @@ void GL2Extensions::glGetUniformiv(GLuint program, GLint location, GLint *params
 {
     if (_glGetUniformiv)
     {
-	typedef void (APIENTRY * GetUniformivProc)(GLuint program, GLint location, GLint *params);
-	((GetUniformivProc)_glGetUniformiv)(program, location, params);
+        typedef void (APIENTRY * GetUniformivProc)(GLuint program, GLint location, GLint *params);
+        ((GetUniformivProc)_glGetUniformiv)(program, location, params);
     }
     else
     {
-	NotSupported( "glGetUniformiv" );
+        NotSupported( "glGetUniformiv" );
     }
 }
 
@@ -855,12 +855,12 @@ void GL2Extensions::glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble *pa
 {
     if (_glGetVertexAttribdv)
     {
-	typedef void (APIENTRY * GetVertexAttribdvProc)(GLuint index, GLenum pname, GLdouble *params);
-	((GetVertexAttribdvProc)_glGetVertexAttribdv)(index, pname, params);
+        typedef void (APIENTRY * GetVertexAttribdvProc)(GLuint index, GLenum pname, GLdouble *params);
+        ((GetVertexAttribdvProc)_glGetVertexAttribdv)(index, pname, params);
     }
     else
     {
-	NotSupported( "glGetVertexAttribdv" );
+        NotSupported( "glGetVertexAttribdv" );
     }
 }
 
@@ -869,12 +869,12 @@ void GL2Extensions::glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat *par
 {
     if (_glGetVertexAttribfv)
     {
-	typedef void (APIENTRY * GetVertexAttribfvProc)(GLuint index, GLenum pname, GLfloat *params);
-	((GetVertexAttribfvProc)_glGetVertexAttribfv)(index, pname, params);
+        typedef void (APIENTRY * GetVertexAttribfvProc)(GLuint index, GLenum pname, GLfloat *params);
+        ((GetVertexAttribfvProc)_glGetVertexAttribfv)(index, pname, params);
     }
     else
     {
-	NotSupported( "glGetVertexAttribfv" );
+        NotSupported( "glGetVertexAttribfv" );
     }
 }
 
@@ -883,12 +883,12 @@ void GL2Extensions::glGetVertexAttribiv(GLuint index, GLenum pname, GLint *param
 {
     if (_glGetVertexAttribiv)
     {
-	typedef void (APIENTRY * GetVertexAttribivProc)(GLuint index, GLenum pname, GLint *params);
-	((GetVertexAttribivProc)_glGetVertexAttribiv)(index, pname, params);
+        typedef void (APIENTRY * GetVertexAttribivProc)(GLuint index, GLenum pname, GLint *params);
+        ((GetVertexAttribivProc)_glGetVertexAttribiv)(index, pname, params);
     }
     else
     {
-	NotSupported( "glGetVertexAttribiv" );
+        NotSupported( "glGetVertexAttribiv" );
     }
 }
 
@@ -897,12 +897,12 @@ void GL2Extensions::glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid
 {
     if (_glGetVertexAttribPointerv)
     {
-	typedef void (APIENTRY * GetVertexAttribPointervProc)(GLuint index, GLenum pname, GLvoid* *pointer);
-	((GetVertexAttribPointervProc)_glGetVertexAttribPointerv)(index, pname, pointer);
+        typedef void (APIENTRY * GetVertexAttribPointervProc)(GLuint index, GLenum pname, GLvoid* *pointer);
+        ((GetVertexAttribPointervProc)_glGetVertexAttribPointerv)(index, pname, pointer);
     }
     else
     {
-	NotSupported( "glGetVertexAttribPointerv" );
+        NotSupported( "glGetVertexAttribPointerv" );
     }
 }
 
@@ -911,13 +911,13 @@ GLboolean GL2Extensions::glIsProgram(GLuint program) const
 {
     if (_glIsProgram)
     {
-	typedef GLboolean (APIENTRY * IsProgramProc)(GLuint program);
-	return ((IsProgramProc)_glIsProgram)(program);
+        typedef GLboolean (APIENTRY * IsProgramProc)(GLuint program);
+        return ((IsProgramProc)_glIsProgram)(program);
     }
     else
     {
-	NotSupported( "glIsProgram" );
-	return 0;
+        NotSupported( "glIsProgram" );
+        return 0;
     }
 }
 
@@ -926,13 +926,13 @@ GLboolean GL2Extensions::glIsShader(GLuint shader) const
 {
     if (_glIsShader)
     {
-	typedef GLboolean (APIENTRY * IsShaderProc)(GLuint shader);
-	return ((IsShaderProc)_glIsShader)(shader);
+        typedef GLboolean (APIENTRY * IsShaderProc)(GLuint shader);
+        return ((IsShaderProc)_glIsShader)(shader);
     }
     else
     {
-	NotSupported( "glIsShader" );
-	return 0;
+        NotSupported( "glIsShader" );
+        return 0;
     }
 }
 
@@ -941,12 +941,12 @@ void GL2Extensions::glLinkProgram(GLuint program) const
 {
     if (_glLinkProgram)
     {
-	typedef void (APIENTRY * LinkProgramProc)(GLuint program);
-	((LinkProgramProc)_glLinkProgram)(program);
+        typedef void (APIENTRY * LinkProgramProc)(GLuint program);
+        ((LinkProgramProc)_glLinkProgram)(program);
     }
     else
     {
-	NotSupported( "glLinkProgram" );
+        NotSupported( "glLinkProgram" );
     }
 }
 
@@ -955,12 +955,12 @@ void GL2Extensions::glShaderSource(GLuint shader, GLsizei count, const GLchar* *
 {
     if (_glShaderSource)
     {
-	typedef void (APIENTRY * ShaderSourceProc)(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length);
-	((ShaderSourceProc)_glShaderSource)(shader, count, string, length);
+        typedef void (APIENTRY * ShaderSourceProc)(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length);
+        ((ShaderSourceProc)_glShaderSource)(shader, count, string, length);
     }
     else
     {
-	NotSupported( "glShaderSource" );
+        NotSupported( "glShaderSource" );
     }
 }
 
@@ -969,12 +969,12 @@ void GL2Extensions::glUseProgram(GLuint program) const
 {
     if (_glUseProgram)
     {
-	typedef void (APIENTRY * UseProgramProc)(GLuint program);
-	((UseProgramProc)_glUseProgram)(program);
+        typedef void (APIENTRY * UseProgramProc)(GLuint program);
+        ((UseProgramProc)_glUseProgram)(program);
     }
     else
     {
-	NotSupported( "glUseProgram" );
+        NotSupported( "glUseProgram" );
     }
 }
 
@@ -983,12 +983,12 @@ void GL2Extensions::glUniform1f(GLint location, GLfloat v0) const
 {
     if (_glUniform1f)
     {
-	typedef void (APIENTRY * Uniform1fProc)(GLint location, GLfloat v0);
-	((Uniform1fProc)_glUniform1f)(location, v0);
+        typedef void (APIENTRY * Uniform1fProc)(GLint location, GLfloat v0);
+        ((Uniform1fProc)_glUniform1f)(location, v0);
     }
     else
     {
-	NotSupported( "glUniform1f" );
+        NotSupported( "glUniform1f" );
     }
 }
 
@@ -997,12 +997,12 @@ void GL2Extensions::glUniform2f(GLint location, GLfloat v0, GLfloat v1) const
 {
     if (_glUniform2f)
     {
-	typedef void (APIENTRY * Uniform2fProc)(GLint location, GLfloat v0, GLfloat v1);
-	((Uniform2fProc)_glUniform2f)(location, v0, v1);
+        typedef void (APIENTRY * Uniform2fProc)(GLint location, GLfloat v0, GLfloat v1);
+        ((Uniform2fProc)_glUniform2f)(location, v0, v1);
     }
     else
     {
-	NotSupported( "glUniform2f" );
+        NotSupported( "glUniform2f" );
     }
 }
 
@@ -1011,12 +1011,12 @@ void GL2Extensions::glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat 
 {
     if (_glUniform3f)
     {
-	typedef void (APIENTRY * Uniform3fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-	((Uniform3fProc)_glUniform3f)(location, v0, v1, v2);
+        typedef void (APIENTRY * Uniform3fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
+        ((Uniform3fProc)_glUniform3f)(location, v0, v1, v2);
     }
     else
     {
-	NotSupported( "glUniform3f" );
+        NotSupported( "glUniform3f" );
     }
 }
 
@@ -1025,12 +1025,12 @@ void GL2Extensions::glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat 
 {
     if (_glUniform4f)
     {
-	typedef void (APIENTRY * Uniform4fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-	((Uniform4fProc)_glUniform4f)(location, v0, v1, v2, v3);
+        typedef void (APIENTRY * Uniform4fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+        ((Uniform4fProc)_glUniform4f)(location, v0, v1, v2, v3);
     }
     else
     {
-	NotSupported( "glUniform4f" );
+        NotSupported( "glUniform4f" );
     }
 }
 
@@ -1039,12 +1039,12 @@ void GL2Extensions::glUniform1i(GLint location, GLint v0) const
 {
     if (_glUniform1i)
     {
-	typedef void (APIENTRY * Uniform1iProc)(GLint location, GLint v0);
-	((Uniform1iProc)_glUniform1i)(location, v0);
+        typedef void (APIENTRY * Uniform1iProc)(GLint location, GLint v0);
+        ((Uniform1iProc)_glUniform1i)(location, v0);
     }
     else
     {
-	NotSupported( "glUniform1i" );
+        NotSupported( "glUniform1i" );
     }
 }
 
@@ -1053,12 +1053,12 @@ void GL2Extensions::glUniform2i(GLint location, GLint v0, GLint v1) const
 {
     if (_glUniform2i)
     {
-	typedef void (APIENTRY * Uniform2iProc)(GLint location, GLint v0, GLint v1);
-	((Uniform2iProc)_glUniform2i)(location, v0, v1);
+        typedef void (APIENTRY * Uniform2iProc)(GLint location, GLint v0, GLint v1);
+        ((Uniform2iProc)_glUniform2i)(location, v0, v1);
     }
     else
     {
-	NotSupported( "glUniform2i" );
+        NotSupported( "glUniform2i" );
     }
 }
 
@@ -1067,12 +1067,12 @@ void GL2Extensions::glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) co
 {
     if (_glUniform3i)
     {
-	typedef void (APIENTRY * Uniform3iProc)(GLint location, GLint v0, GLint v1, GLint v2);
-	((Uniform3iProc)_glUniform3i)(location, v0, v1, v2);
+        typedef void (APIENTRY * Uniform3iProc)(GLint location, GLint v0, GLint v1, GLint v2);
+        ((Uniform3iProc)_glUniform3i)(location, v0, v1, v2);
     }
     else
     {
-	NotSupported( "glUniform3i" );
+        NotSupported( "glUniform3i" );
     }
 }
 
@@ -1081,12 +1081,12 @@ void GL2Extensions::glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GL
 {
     if (_glUniform4i)
     {
-	typedef void (APIENTRY * glUniform4iProc)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-	((glUniform4iProc)_glUniform4i)(location, v0, v1, v2, v3);
+        typedef void (APIENTRY * glUniform4iProc)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+        ((glUniform4iProc)_glUniform4i)(location, v0, v1, v2, v3);
     }
     else
     {
-	NotSupported( "glUniform4i" );
+        NotSupported( "glUniform4i" );
     }
 }
 
@@ -1095,12 +1095,12 @@ void GL2Extensions::glUniform1fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform1fv)
     {
-	typedef void (APIENTRY * Uniform1fvProc)(GLint location, GLsizei count, const GLfloat *value);
-	((Uniform1fvProc)_glUniform1fv)(location, count, value);
+        typedef void (APIENTRY * Uniform1fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        ((Uniform1fvProc)_glUniform1fv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform1fv" );
+        NotSupported( "glUniform1fv" );
     }
 }
 
@@ -1109,12 +1109,12 @@ void GL2Extensions::glUniform2fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform2fv)
     {
-	typedef void (APIENTRY * Uniform2fvProc)(GLint location, GLsizei count, const GLfloat *value);
-	((Uniform2fvProc)_glUniform2fv)(location, count, value);
+        typedef void (APIENTRY * Uniform2fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        ((Uniform2fvProc)_glUniform2fv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform2fv" );
+        NotSupported( "glUniform2fv" );
     }
 }
 
@@ -1123,12 +1123,12 @@ void GL2Extensions::glUniform3fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform3fv)
     {
-	typedef void (APIENTRY * Uniform3fvProc)(GLint location, GLsizei count, const GLfloat *value);
-	((Uniform3fvProc)_glUniform3fv)(location, count, value);
+        typedef void (APIENTRY * Uniform3fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        ((Uniform3fvProc)_glUniform3fv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform3fv" );
+        NotSupported( "glUniform3fv" );
     }
 }
 
@@ -1137,12 +1137,12 @@ void GL2Extensions::glUniform4fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform4fv)
     {
-	typedef void (APIENTRY * Uniform4fvProc)(GLint location, GLsizei count, const GLfloat *value);
-	((Uniform4fvProc)_glUniform4fv)(location, count, value);
+        typedef void (APIENTRY * Uniform4fvProc)(GLint location, GLsizei count, const GLfloat *value);
+        ((Uniform4fvProc)_glUniform4fv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform4fv" );
+        NotSupported( "glUniform4fv" );
     }
 }
 
@@ -1151,12 +1151,12 @@ void GL2Extensions::glUniform1iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform1iv)
     {
-	typedef void (APIENTRY * Uniform1ivProc)(GLint location, GLsizei count, const GLint *value);
-	((Uniform1ivProc)_glUniform1iv)(location, count, value);
+        typedef void (APIENTRY * Uniform1ivProc)(GLint location, GLsizei count, const GLint *value);
+        ((Uniform1ivProc)_glUniform1iv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform1iv" );
+        NotSupported( "glUniform1iv" );
     }
 }
 
@@ -1165,12 +1165,12 @@ void GL2Extensions::glUniform2iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform2iv)
     {
-	typedef void (APIENTRY * Uniform2ivProc)(GLint location, GLsizei count, const GLint *value);
-	((Uniform2ivProc)_glUniform2iv)(location, count, value);
+        typedef void (APIENTRY * Uniform2ivProc)(GLint location, GLsizei count, const GLint *value);
+        ((Uniform2ivProc)_glUniform2iv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform2iv" );
+        NotSupported( "glUniform2iv" );
     }
 }
 
@@ -1179,12 +1179,12 @@ void GL2Extensions::glUniform3iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform3iv)
     {
-	typedef void (APIENTRY * glUniform3ivProc)(GLint location, GLsizei count, const GLint *value);
-	((glUniform3ivProc)_glUniform3iv)(location, count, value);
+        typedef void (APIENTRY * glUniform3ivProc)(GLint location, GLsizei count, const GLint *value);
+        ((glUniform3ivProc)_glUniform3iv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform3iv" );
+        NotSupported( "glUniform3iv" );
     }
 }
 
@@ -1193,12 +1193,12 @@ void GL2Extensions::glUniform4iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform4iv)
     {
-	typedef void (APIENTRY * Uniform4ivProc)(GLint location, GLsizei count, const GLint *value);
-	((Uniform4ivProc)_glUniform4iv)(location, count, value);
+        typedef void (APIENTRY * Uniform4ivProc)(GLint location, GLsizei count, const GLint *value);
+        ((Uniform4ivProc)_glUniform4iv)(location, count, value);
     }
     else
     {
-	NotSupported( "glUniform4iv" );
+        NotSupported( "glUniform4iv" );
     }
 }
 
@@ -1207,12 +1207,12 @@ void GL2Extensions::glUniformMatrix2fv(GLint location, GLsizei count, GLboolean 
 {
     if (_glUniformMatrix2fv)
     {
-	typedef void (APIENTRY * UniformMatrix2fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-	((UniformMatrix2fvProc)_glUniformMatrix2fv)(location, count, transpose, value);
+        typedef void (APIENTRY * UniformMatrix2fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        ((UniformMatrix2fvProc)_glUniformMatrix2fv)(location, count, transpose, value);
     }
     else
     {
-	NotSupported( "glUniformMatrix2fv" );
+        NotSupported( "glUniformMatrix2fv" );
     }
 }
 
@@ -1221,12 +1221,12 @@ void GL2Extensions::glUniformMatrix3fv(GLint location, GLsizei count, GLboolean 
 {
     if (_glUniformMatrix3fv)
     {
-	typedef void (APIENTRY * glUniformMatrix3fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-	((glUniformMatrix3fvProc)_glUniformMatrix3fv)(location, count, transpose, value);
+        typedef void (APIENTRY * glUniformMatrix3fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        ((glUniformMatrix3fvProc)_glUniformMatrix3fv)(location, count, transpose, value);
     }
     else
     {
-	NotSupported( "glUniformMatrix3fv" );
+        NotSupported( "glUniformMatrix3fv" );
     }
 }
 
@@ -1235,12 +1235,12 @@ void GL2Extensions::glUniformMatrix4fv(GLint location, GLsizei count, GLboolean 
 {
     if (_glUniformMatrix4fv)
     {
-	typedef void (APIENTRY * UniformMatrix4fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-	((UniformMatrix4fvProc)_glUniformMatrix4fv)(location, count, transpose, value);
+        typedef void (APIENTRY * UniformMatrix4fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        ((UniformMatrix4fvProc)_glUniformMatrix4fv)(location, count, transpose, value);
     }
     else
     {
-	NotSupported( "glUniformMatrix4fv" );
+        NotSupported( "glUniformMatrix4fv" );
     }
 }
 
@@ -1249,12 +1249,12 @@ void GL2Extensions::glValidateProgram(GLuint program) const
 {
     if (_glValidateProgram)
     {
-	typedef void (APIENTRY * ValidateProgramProc)(GLuint program);
-	((ValidateProgramProc)_glValidateProgram)(program);
+        typedef void (APIENTRY * ValidateProgramProc)(GLuint program);
+        ((ValidateProgramProc)_glValidateProgram)(program);
     }
     else
     {
-	NotSupported( "glValidateProgram" );
+        NotSupported( "glValidateProgram" );
     }
 }
 
@@ -1263,12 +1263,12 @@ void GL2Extensions::glVertexAttrib1d(GLuint index, GLdouble x) const
 {
     if (_glVertexAttrib1d)
     {
-	typedef void (APIENTRY * VertexAttrib1dProc)(GLuint index, GLdouble x);
-	((VertexAttrib1dProc)_glVertexAttrib1d)(index, x);
+        typedef void (APIENTRY * VertexAttrib1dProc)(GLuint index, GLdouble x);
+        ((VertexAttrib1dProc)_glVertexAttrib1d)(index, x);
     }
     else
     {
-	NotSupported( "glVertexAttrib1d" );
+        NotSupported( "glVertexAttrib1d" );
     }
 }
 
@@ -1277,12 +1277,12 @@ void GL2Extensions::glVertexAttrib1dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib1dv)
     {
-	typedef void (APIENTRY * glVertexAttrib1dvProc)(GLuint index, const GLdouble *v);
-	((glVertexAttrib1dvProc)_glVertexAttrib1dv)(index, v);
+        typedef void (APIENTRY * glVertexAttrib1dvProc)(GLuint index, const GLdouble *v);
+        ((glVertexAttrib1dvProc)_glVertexAttrib1dv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib1dv" );
+        NotSupported( "glVertexAttrib1dv" );
     }
 }
 
@@ -1291,12 +1291,12 @@ void GL2Extensions::glVertexAttrib1f(GLuint index, GLfloat x) const
 {
     if (_glVertexAttrib1f)
     {
-	typedef void (APIENTRY * VertexAttrib1fProc)(GLuint index, GLfloat x);
-	((VertexAttrib1fProc)_glVertexAttrib1f)(index, x);
+        typedef void (APIENTRY * VertexAttrib1fProc)(GLuint index, GLfloat x);
+        ((VertexAttrib1fProc)_glVertexAttrib1f)(index, x);
     }
     else
     {
-	NotSupported( "glVertexAttrib1f" );
+        NotSupported( "glVertexAttrib1f" );
     }
 }
 
@@ -1305,12 +1305,12 @@ void GL2Extensions::glVertexAttrib1fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib1fv)
     {
-	typedef void (APIENTRY * VertexAttrib1fvProc)(GLuint index, const GLfloat *v);
-	((VertexAttrib1fvProc)_glVertexAttrib1fv)(index, v);
+        typedef void (APIENTRY * VertexAttrib1fvProc)(GLuint index, const GLfloat *v);
+        ((VertexAttrib1fvProc)_glVertexAttrib1fv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib1fv" );
+        NotSupported( "glVertexAttrib1fv" );
     }
 }
 
@@ -1319,12 +1319,12 @@ void GL2Extensions::glVertexAttrib1s(GLuint index, GLshort x) const
 {
     if (_glVertexAttrib1s)
     {
-	typedef void (APIENTRY * VertexAttrib1sProc)(GLuint index, GLshort x);
-	((VertexAttrib1sProc)_glVertexAttrib1s)(index, x);
+        typedef void (APIENTRY * VertexAttrib1sProc)(GLuint index, GLshort x);
+        ((VertexAttrib1sProc)_glVertexAttrib1s)(index, x);
     }
     else
     {
-	NotSupported( "glVertexAttrib1s" );
+        NotSupported( "glVertexAttrib1s" );
     }
 }
 
@@ -1333,12 +1333,12 @@ void GL2Extensions::glVertexAttrib1sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib1sv)
     {
-	typedef void (APIENTRY * VertexAttrib1svProc)(GLuint index, const GLshort *v);
-	((VertexAttrib1svProc)_glVertexAttrib1sv)(index, v);
+        typedef void (APIENTRY * VertexAttrib1svProc)(GLuint index, const GLshort *v);
+        ((VertexAttrib1svProc)_glVertexAttrib1sv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib1sv" );
+        NotSupported( "glVertexAttrib1sv" );
     }
 }
 
@@ -1347,12 +1347,12 @@ void GL2Extensions::glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) const
 {
     if (_glVertexAttrib2d)
     {
-	typedef void (APIENTRY * VertexAttrib2dProc)(GLuint index, GLdouble x, GLdouble y);
-	((VertexAttrib2dProc)_glVertexAttrib2d)(index, x, y);
+        typedef void (APIENTRY * VertexAttrib2dProc)(GLuint index, GLdouble x, GLdouble y);
+        ((VertexAttrib2dProc)_glVertexAttrib2d)(index, x, y);
     }
     else
     {
-	NotSupported( "glVertexAttrib2d" );
+        NotSupported( "glVertexAttrib2d" );
     }
 }
 
@@ -1361,12 +1361,12 @@ void GL2Extensions::glVertexAttrib2dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib2dv)
     {
-	typedef void (APIENTRY * VertexAttrib2dvProc)(GLuint index, const GLdouble *v);
-	((VertexAttrib2dvProc)_glVertexAttrib2dv)(index, v);
+        typedef void (APIENTRY * VertexAttrib2dvProc)(GLuint index, const GLdouble *v);
+        ((VertexAttrib2dvProc)_glVertexAttrib2dv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib2dv" );
+        NotSupported( "glVertexAttrib2dv" );
     }
 }
 
@@ -1375,12 +1375,12 @@ void GL2Extensions::glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) const
 {
     if (_glVertexAttrib2f)
     {
-	typedef void (APIENTRY * VertexAttrib2fProc)(GLuint index, GLfloat x, GLfloat y);
-	((VertexAttrib2fProc)_glVertexAttrib2f)(index, x, y);
+        typedef void (APIENTRY * VertexAttrib2fProc)(GLuint index, GLfloat x, GLfloat y);
+        ((VertexAttrib2fProc)_glVertexAttrib2f)(index, x, y);
     }
     else
     {
-	NotSupported( "glVertexAttrib2f" );
+        NotSupported( "glVertexAttrib2f" );
     }
 }
 
@@ -1389,12 +1389,12 @@ void GL2Extensions::glVertexAttrib2fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib2fv)
     {
-	typedef void (APIENTRY * VertexAttrib2fvProc)(GLuint index, const GLfloat *v);
-	((VertexAttrib2fvProc)_glVertexAttrib2fv)(index, v);
+        typedef void (APIENTRY * VertexAttrib2fvProc)(GLuint index, const GLfloat *v);
+        ((VertexAttrib2fvProc)_glVertexAttrib2fv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib2fv" );
+        NotSupported( "glVertexAttrib2fv" );
     }
 }
 
@@ -1403,12 +1403,12 @@ void GL2Extensions::glVertexAttrib2s(GLuint index, GLshort x, GLshort y) const
 {
     if (_glVertexAttrib2s)
     {
-	typedef void (APIENTRY * VertexAttrib2sProc)(GLuint index, GLshort x, GLshort y);
-	((VertexAttrib2sProc)_glVertexAttrib2s)(index, x, y);
+        typedef void (APIENTRY * VertexAttrib2sProc)(GLuint index, GLshort x, GLshort y);
+        ((VertexAttrib2sProc)_glVertexAttrib2s)(index, x, y);
     }
     else
     {
-	NotSupported( "glVertexAttrib2s" );
+        NotSupported( "glVertexAttrib2s" );
     }
 }
 
@@ -1417,12 +1417,12 @@ void GL2Extensions::glVertexAttrib2sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib2sv)
     {
-	typedef void (APIENTRY * VertexAttrib2svProc)(GLuint index, const GLshort *v);
-	((VertexAttrib2svProc)_glVertexAttrib2sv)(index, v);
+        typedef void (APIENTRY * VertexAttrib2svProc)(GLuint index, const GLshort *v);
+        ((VertexAttrib2svProc)_glVertexAttrib2sv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib2sv" );
+        NotSupported( "glVertexAttrib2sv" );
     }
 }
 
@@ -1431,12 +1431,12 @@ void GL2Extensions::glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdou
 {
     if (_glVertexAttrib3d)
     {
-	typedef void (APIENTRY * VertexAttrib3dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-	((VertexAttrib3dProc)_glVertexAttrib3d)(index, x, y, z);
+        typedef void (APIENTRY * VertexAttrib3dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
+        ((VertexAttrib3dProc)_glVertexAttrib3d)(index, x, y, z);
     }
     else
     {
-	NotSupported( "glVertexAttrib3d" );
+        NotSupported( "glVertexAttrib3d" );
     }
 }
 
@@ -1445,12 +1445,12 @@ void GL2Extensions::glVertexAttrib3dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib3dv)
     {
-	typedef void (APIENTRY * VertexAttrib3dvProc)(GLuint index, const GLdouble *v);
-	((VertexAttrib3dvProc)_glVertexAttrib3dv)(index, v);
+        typedef void (APIENTRY * VertexAttrib3dvProc)(GLuint index, const GLdouble *v);
+        ((VertexAttrib3dvProc)_glVertexAttrib3dv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib3dv" );
+        NotSupported( "glVertexAttrib3dv" );
     }
 }
 
@@ -1459,12 +1459,12 @@ void GL2Extensions::glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat
 {
     if (_glVertexAttrib3f)
     {
-	typedef void (APIENTRY * VertexAttrib3fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
-	((VertexAttrib3fProc)_glVertexAttrib3f)(index, x, y, z);
+        typedef void (APIENTRY * VertexAttrib3fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
+        ((VertexAttrib3fProc)_glVertexAttrib3f)(index, x, y, z);
     }
     else
     {
-	NotSupported( "glVertexAttrib3f" );
+        NotSupported( "glVertexAttrib3f" );
     }
 }
 
@@ -1473,12 +1473,12 @@ void GL2Extensions::glVertexAttrib3fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib3fv)
     {
-	typedef void (APIENTRY * VertexAttrib3fvProc)(GLuint index, const GLfloat *v);
-	((VertexAttrib3fvProc)_glVertexAttrib3fv)(index, v);
+        typedef void (APIENTRY * VertexAttrib3fvProc)(GLuint index, const GLfloat *v);
+        ((VertexAttrib3fvProc)_glVertexAttrib3fv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib3fv" );
+        NotSupported( "glVertexAttrib3fv" );
     }
 }
 
@@ -1487,12 +1487,12 @@ void GL2Extensions::glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort
 {
     if (_glVertexAttrib3s)
     {
-	typedef void (APIENTRY * VertexAttrib3sProc)(GLuint index, GLshort x, GLshort y, GLshort z);
-	((VertexAttrib3sProc)_glVertexAttrib3s)(index, x, y, z);
+        typedef void (APIENTRY * VertexAttrib3sProc)(GLuint index, GLshort x, GLshort y, GLshort z);
+        ((VertexAttrib3sProc)_glVertexAttrib3s)(index, x, y, z);
     }
     else
     {
-	NotSupported( "glVertexAttrib3s" );
+        NotSupported( "glVertexAttrib3s" );
     }
 }
 
@@ -1501,12 +1501,12 @@ void GL2Extensions::glVertexAttrib3sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib3sv)
     {
-	typedef void (APIENTRY * VertexAttrib3svProc)(GLuint index, const GLshort *v);
-	((VertexAttrib3svProc)_glVertexAttrib3sv)(index, v);
+        typedef void (APIENTRY * VertexAttrib3svProc)(GLuint index, const GLshort *v);
+        ((VertexAttrib3svProc)_glVertexAttrib3sv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib3sv" );
+        NotSupported( "glVertexAttrib3sv" );
     }
 }
 
@@ -1515,12 +1515,12 @@ void GL2Extensions::glVertexAttrib4Nbv(GLuint index, const GLbyte *v) const
 {
     if (_glVertexAttrib4Nbv)
     {
-	typedef void (APIENTRY * VertexAttrib4NbvProc)(GLuint index, const GLbyte *v);
-	((VertexAttrib4NbvProc)_glVertexAttrib4Nbv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4NbvProc)(GLuint index, const GLbyte *v);
+        ((VertexAttrib4NbvProc)_glVertexAttrib4Nbv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Nbv" );
+        NotSupported( "glVertexAttrib4Nbv" );
     }
 }
 
@@ -1529,12 +1529,12 @@ void GL2Extensions::glVertexAttrib4Niv(GLuint index, const GLint *v) const
 {
     if (_glVertexAttrib4Niv)
     {
-	typedef void (APIENTRY * VertexAttrib4NivProc)(GLuint index, const GLint *v);
-	((VertexAttrib4NivProc)_glVertexAttrib4Niv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4NivProc)(GLuint index, const GLint *v);
+        ((VertexAttrib4NivProc)_glVertexAttrib4Niv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Niv" );
+        NotSupported( "glVertexAttrib4Niv" );
     }
 }
 
@@ -1543,12 +1543,12 @@ void GL2Extensions::glVertexAttrib4Nsv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib4Nsv)
     {
-	typedef void (APIENTRY * VertexAttrib4NsvProc)(GLuint index, const GLshort *v);
-	((VertexAttrib4NsvProc)_glVertexAttrib4Nsv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4NsvProc)(GLuint index, const GLshort *v);
+        ((VertexAttrib4NsvProc)_glVertexAttrib4Nsv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Nsv" );
+        NotSupported( "glVertexAttrib4Nsv" );
     }
 }
 
@@ -1557,12 +1557,12 @@ void GL2Extensions::glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLuby
 {
     if (_glVertexAttrib4Nub)
     {
-	typedef void (APIENTRY * VertexAttrib4NubProc)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-	((VertexAttrib4NubProc)_glVertexAttrib4Nub)(index, x, y, z, w);
+        typedef void (APIENTRY * VertexAttrib4NubProc)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
+        ((VertexAttrib4NubProc)_glVertexAttrib4Nub)(index, x, y, z, w);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Nub" );
+        NotSupported( "glVertexAttrib4Nub" );
     }
 }
 
@@ -1571,12 +1571,12 @@ void GL2Extensions::glVertexAttrib4Nubv(GLuint index, const GLubyte *v) const
 {
     if (_glVertexAttrib4Nubv)
     {
-	typedef void (APIENTRY * VertexAttrib4NubvProc)(GLuint index, const GLubyte *v);
-	((VertexAttrib4NubvProc)_glVertexAttrib4Nubv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4NubvProc)(GLuint index, const GLubyte *v);
+        ((VertexAttrib4NubvProc)_glVertexAttrib4Nubv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Nubv" );
+        NotSupported( "glVertexAttrib4Nubv" );
     }
 }
 
@@ -1585,12 +1585,12 @@ void GL2Extensions::glVertexAttrib4Nuiv(GLuint index, const GLuint *v) const
 {
     if (_glVertexAttrib4Nuiv)
     {
-	typedef void (APIENTRY * VertexAttrib4NuivProc)(GLuint index, const GLuint *v);
-	((VertexAttrib4NuivProc)_glVertexAttrib4Nuiv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4NuivProc)(GLuint index, const GLuint *v);
+        ((VertexAttrib4NuivProc)_glVertexAttrib4Nuiv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Nuiv" );
+        NotSupported( "glVertexAttrib4Nuiv" );
     }
 }
 
@@ -1599,12 +1599,12 @@ void GL2Extensions::glVertexAttrib4Nusv(GLuint index, const GLushort *v) const
 {
     if (_glVertexAttrib4Nusv)
     {
-	typedef void (APIENTRY * VertexAttrib4NusvProc)(GLuint index, const GLushort *v);
-	((VertexAttrib4NusvProc)_glVertexAttrib4Nusv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4NusvProc)(GLuint index, const GLushort *v);
+        ((VertexAttrib4NusvProc)_glVertexAttrib4Nusv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4Nusv" );
+        NotSupported( "glVertexAttrib4Nusv" );
     }
 }
 
@@ -1613,12 +1613,12 @@ void GL2Extensions::glVertexAttrib4bv(GLuint index, const GLbyte *v) const
 {
     if (_glVertexAttrib4bv)
     {
-	typedef void (APIENTRY * VertexAttrib4bvProc)(GLuint index, const GLbyte *v);
-	((VertexAttrib4bvProc)_glVertexAttrib4bv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4bvProc)(GLuint index, const GLbyte *v);
+        ((VertexAttrib4bvProc)_glVertexAttrib4bv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4bv" );
+        NotSupported( "glVertexAttrib4bv" );
     }
 }
 
@@ -1627,12 +1627,12 @@ void GL2Extensions::glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdou
 {
     if (_glVertexAttrib4d)
     {
-	typedef void (APIENTRY * VertexAttrib4dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-	((VertexAttrib4dProc)_glVertexAttrib4d)(index, x, y, z, w);
+        typedef void (APIENTRY * VertexAttrib4dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+        ((VertexAttrib4dProc)_glVertexAttrib4d)(index, x, y, z, w);
     }
     else
     {
-	NotSupported( "glVertexAttrib4d" );
+        NotSupported( "glVertexAttrib4d" );
     }
 }
 
@@ -1641,12 +1641,12 @@ void GL2Extensions::glVertexAttrib4dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib4dv)
     {
-	typedef void (APIENTRY * VertexAttrib4dvProc)(GLuint index, const GLdouble *v);
-	((VertexAttrib4dvProc)_glVertexAttrib4dv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4dvProc)(GLuint index, const GLdouble *v);
+        ((VertexAttrib4dvProc)_glVertexAttrib4dv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4dv" );
+        NotSupported( "glVertexAttrib4dv" );
     }
 }
 
@@ -1655,12 +1655,12 @@ void GL2Extensions::glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat
 {
     if (_glVertexAttrib4f)
     {
-	typedef void (APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-	((VertexAttrib4fProc)_glVertexAttrib4f)(index, x, y, z, w);
+        typedef void (APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        ((VertexAttrib4fProc)_glVertexAttrib4f)(index, x, y, z, w);
     }
     else
     {
-	NotSupported( "glVertexAttrib4f" );
+        NotSupported( "glVertexAttrib4f" );
     }
 }
 
@@ -1669,12 +1669,12 @@ void GL2Extensions::glVertexAttrib4fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib4fv)
     {
-	typedef void (APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
-	((VertexAttrib4fvProc)_glVertexAttrib4fv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
+        ((VertexAttrib4fvProc)_glVertexAttrib4fv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4fv" );
+        NotSupported( "glVertexAttrib4fv" );
     }
 }
 
@@ -1683,12 +1683,12 @@ void GL2Extensions::glVertexAttrib4iv(GLuint index, const GLint *v) const
 {
     if (_glVertexAttrib4iv)
     {
-	typedef void (APIENTRY * VertexAttrib4ivProc)(GLuint index, const GLint *v);
-	((VertexAttrib4ivProc)_glVertexAttrib4iv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4ivProc)(GLuint index, const GLint *v);
+        ((VertexAttrib4ivProc)_glVertexAttrib4iv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4iv" );
+        NotSupported( "glVertexAttrib4iv" );
     }
 }
 
@@ -1697,12 +1697,12 @@ void GL2Extensions::glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort
 {
     if (_glVertexAttrib4s)
     {
-	typedef void (APIENTRY * VertexAttrib4sProc)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-	((VertexAttrib4sProc)_glVertexAttrib4s)(index, x, y, z, w);
+        typedef void (APIENTRY * VertexAttrib4sProc)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
+        ((VertexAttrib4sProc)_glVertexAttrib4s)(index, x, y, z, w);
     }
     else
     {
-	NotSupported( "glVertexAttrib4s" );
+        NotSupported( "glVertexAttrib4s" );
     }
 }
 
@@ -1711,12 +1711,12 @@ void GL2Extensions::glVertexAttrib4sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib4sv)
     {
-	typedef void (APIENTRY * VertexAttrib4svProc)(GLuint index, const GLshort *v);
-	((VertexAttrib4svProc)_glVertexAttrib4sv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4svProc)(GLuint index, const GLshort *v);
+        ((VertexAttrib4svProc)_glVertexAttrib4sv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4sv" );
+        NotSupported( "glVertexAttrib4sv" );
     }
 }
 
@@ -1725,12 +1725,12 @@ void GL2Extensions::glVertexAttrib4ubv(GLuint index, const GLubyte *v) const
 {
     if (_glVertexAttrib4ubv)
     {
-	typedef void (APIENTRY * VertexAttrib4ubvProc)(GLuint index, const GLubyte *v);
-	((VertexAttrib4ubvProc)_glVertexAttrib4ubv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4ubvProc)(GLuint index, const GLubyte *v);
+        ((VertexAttrib4ubvProc)_glVertexAttrib4ubv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4ubv" );
+        NotSupported( "glVertexAttrib4ubv" );
     }
 }
 
@@ -1739,12 +1739,12 @@ void GL2Extensions::glVertexAttrib4uiv(GLuint index, const GLuint *v) const
 {
     if (_glVertexAttrib4uiv)
     {
-	typedef void (APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);
-	((VertexAttrib4uivProc)_glVertexAttrib4uiv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);
+        ((VertexAttrib4uivProc)_glVertexAttrib4uiv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4uiv" );
+        NotSupported( "glVertexAttrib4uiv" );
     }
 }
 
@@ -1753,12 +1753,12 @@ void GL2Extensions::glVertexAttrib4usv(GLuint index, const GLushort *v) const
 {
     if (_glVertexAttrib4usv)
     {
-	typedef void (APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);
-	((VertexAttrib4usvProc)_glVertexAttrib4usv)(index, v);
+        typedef void (APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);
+        ((VertexAttrib4usvProc)_glVertexAttrib4usv)(index, v);
     }
     else
     {
-	NotSupported( "glVertexAttrib4usv" );
+        NotSupported( "glVertexAttrib4usv" );
     }
 }
 
@@ -1767,12 +1767,12 @@ void GL2Extensions::glVertexAttribPointer(GLuint index, GLint size, GLenum type,
 {
     if (_glVertexAttribPointer)
     {
-	typedef void (APIENTRY * VertexAttribPointerProc)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-	((VertexAttribPointerProc)_glVertexAttribPointer)(index, size, type, normalized, stride, pointer);
+        typedef void (APIENTRY * VertexAttribPointerProc)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        ((VertexAttribPointerProc)_glVertexAttribPointer)(index, size, type, normalized, stride, pointer);
     }
     else
     {
-	NotSupported( "glVertexAttribPointer" );
+        NotSupported( "glVertexAttribPointer" );
     }
 }
 
@@ -1784,40 +1784,40 @@ GLuint GL2Extensions::getCurrentProgram() const
 {
     if( _glVersion >= 2.0f )
     {
-	// GLSL as GL v2.0 core functionality
-	GLint result = 0;
-	glGetIntegerv( GL_CURRENT_PROGRAM, &result );
-	return static_cast<GLuint>(result);
+        // GLSL as GL v2.0 core functionality
+        GLint result = 0;
+        glGetIntegerv( GL_CURRENT_PROGRAM, &result );
+        return static_cast<GLuint>(result);
     }
     else if (_glGetHandleARB)
     {
-	// fallback for GLSL as GL v1.5 ARB extension
+        // fallback for GLSL as GL v1.5 ARB extension
 #ifndef GL_PROGRAM_OBJECT_ARB
 #define GL_PROGRAM_OBJECT_ARB 0x8B40
 #endif
-	typedef GLuint (APIENTRY * GetHandleProc) (GLenum pname);
-	return ((GetHandleProc)_glGetHandleARB)( GL_PROGRAM_OBJECT_ARB );
+        typedef GLuint (APIENTRY * GetHandleProc) (GLenum pname);
+        return ((GetHandleProc)_glGetHandleARB)( GL_PROGRAM_OBJECT_ARB );
     }
     else
     {
-	NotSupported( "getCurrentProgram" );
-	return 0;
+        NotSupported( "getCurrentProgram" );
+        return 0;
     }
 }
 
 
 bool GL2Extensions::getProgramInfoLog( GLuint program, std::string& result ) const
 {
-    GLsizei bufLen = 0;	// length of buffer to allocate
-    GLsizei strLen = 0;	// strlen GL actually wrote to buffer
+    GLsizei bufLen = 0;        // length of buffer to allocate
+    GLsizei strLen = 0;        // strlen GL actually wrote to buffer
 
     glGetProgramiv( program, GL_INFO_LOG_LENGTH, &bufLen );
     if( bufLen > 1 )
     {
-	GLchar* infoLog = new GLchar[bufLen];
-	glGetProgramInfoLog( program, bufLen, &strLen, infoLog );
-	if( strLen > 0 ) result = infoLog;
-	delete [] infoLog;
+        GLchar* infoLog = new GLchar[bufLen];
+        glGetProgramInfoLog( program, bufLen, &strLen, infoLog );
+        if( strLen > 0 ) result = infoLog;
+        delete [] infoLog;
     }
     return (strLen > 0);
 }
@@ -1825,16 +1825,16 @@ bool GL2Extensions::getProgramInfoLog( GLuint program, std::string& result ) con
 
 bool GL2Extensions::getShaderInfoLog( GLuint shader, std::string& result ) const
 {
-    GLsizei bufLen = 0;	// length of buffer to allocate
-    GLsizei strLen = 0;	// strlen GL actually wrote to buffer
+    GLsizei bufLen = 0;        // length of buffer to allocate
+    GLsizei strLen = 0;        // strlen GL actually wrote to buffer
 
     glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &bufLen );
     if( bufLen > 1 )
     {
-	GLchar* infoLog = new GLchar[bufLen];
-	glGetShaderInfoLog( shader, bufLen, &strLen, infoLog );
-	if( strLen > 0 ) result = infoLog;
-	delete [] infoLog;
+        GLchar* infoLog = new GLchar[bufLen];
+        glGetShaderInfoLog( shader, bufLen, &strLen, infoLog );
+        if( strLen > 0 ) result = infoLog;
+        delete [] infoLog;
     }
     return (strLen > 0);
 }
@@ -1936,7 +1936,7 @@ Program::~Program()
     // inform any attached Shaders that we're going away
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
-	_shaderList[i]->removeProgramRef( this );
+        _shaderList[i]->removeProgramRef( this );
     }
 }
 
@@ -1975,7 +1975,7 @@ void Program::compileGLObjects( osg::State& state ) const
 
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
-	_shaderList[i]->compileShader( contextID );
+        _shaderList[i]->compileShader( contextID );
     }
 
     getPCP( contextID )->linkProgram();
@@ -2005,7 +2005,7 @@ bool Program::addShader( Shader* shader )
     // Shader can only be added once to a Program
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
-	if( shader == _shaderList[i].get() ) return false;
+        if( shader == _shaderList[i].get() ) return false;
     }
 
     shader->addProgramRef( this );
@@ -2022,13 +2022,13 @@ bool Program::removeShader( Shader* shader )
     // Shader must exist to be removed.
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
-	if( shader == _shaderList[i].get() )
-	{
-	    shader->removeProgramRef( this );
-	    _shaderList[i] = 0;
-	    dirtyProgram();
-	    return true;
-	}
+        if( shader == _shaderList[i].get() )
+        {
+            shader->removeProgramRef( this );
+            _shaderList[i] = 0;
+            dirtyProgram();
+            return true;
+        }
     }
     return false;
 }
@@ -2049,22 +2049,22 @@ void Program::apply( osg::State& state ) const
 
     if( isFixedFunction() )
     {
-	extensions->glUseProgram( 0 );
+        extensions->glUseProgram( 0 );
         state.setLastAppliedProgramObject(0);
-	return;
+        return;
     }
 
     PerContextProgram* pcp = getPCP( contextID );
     if( pcp->needsLink() ) compileGLObjects( state );
     if( pcp->isLinked() )
     {
-	pcp->useProgram();
+        pcp->useProgram();
         state.setLastAppliedProgramObject(pcp);
     }
     else
     {
-	// program not usable, fallback to fixed function.
-	extensions->glUseProgram( 0 );
+        // program not usable, fallback to fixed function.
+        extensions->glUseProgram( 0 );
         state.setLastAppliedProgramObject(0);
     }
 }
@@ -2074,13 +2074,13 @@ Program::PerContextProgram* Program::getPCP(unsigned int contextID) const
 {
     if( ! _pcpList[contextID].valid() )
     {
-	_pcpList[contextID] = new PerContextProgram( this, contextID );
+        _pcpList[contextID] = new PerContextProgram( this, contextID );
 
-	// attach all PCSs to this new PCP
-	for( unsigned int i=0; i < _shaderList.size(); ++i )
-	{
-	    _shaderList[i]->attachShader( contextID, _pcpList[contextID]->getHandle() );
-	}
+        // attach all PCSs to this new PCP
+        for( unsigned int i=0; i < _shaderList.size(); ++i )
+        {
+            _shaderList[i]->attachShader( contextID, _pcpList[contextID]->getHandle() );
+        }
     }
     return _pcpList[contextID].get();
 }
@@ -2095,9 +2095,9 @@ bool Program::isFixedFunction() const
 }
 
 
-void Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) const
+bool Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) const
 {
-    getPCP( contextID )->getInfoLog( log );
+    return getPCP( contextID )->getInfoLog( log );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2106,8 +2106,8 @@ void Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) cons
 ///////////////////////////////////////////////////////////////////////////
 
 Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID ) :
-	osg::Referenced(),
-	_contextID( contextID )
+        osg::Referenced(),
+        _contextID( contextID )
 {
     _program = program;
     _extensions = GL2Extensions::Get( _contextID, true );
@@ -2138,12 +2138,15 @@ void Program::PerContextProgram::linkProgram()
         << " id=" << _glProgramHandle
         <<  std::endl;
 
+    _uniformLocationMap.clear();
+    _attribLocationMap.clear();
+
     // set any explicit vertex attribute bindings
     const AttribBindingList& bindlist = _program->getAttribBindingList();
     for( AttribBindingList::const_iterator itr = bindlist.begin();
         itr != bindlist.end(); ++itr )
     {
-	_extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+        _extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
     }
 
     // link the glProgram
@@ -2153,12 +2156,19 @@ void Program::PerContextProgram::linkProgram()
     _isLinked = (linked == GL_TRUE);
     if( ! _isLinked )
     {
-	// link failed
-	std::string infoLog;
-	getInfoLog( infoLog );
-	osg::notify(osg::WARN) << "glLinkProgram FAILED:\n" << infoLog << std::endl;
-	return;
+        osg::notify(osg::WARN) << "glLinkProgram \""
+            << _program->getName() << "\" FAILED" << std::endl;
     }
+
+    std::string infoLog;
+    if( getInfoLog(infoLog) )
+    {
+        osg::notify(osg::INFO) << "Program \""
+            << _program->getName() << "\" infolog:\n" << infoLog << std::endl;
+    }
+
+    // dont build maps if link failed
+    if( ! _isLinked ) return;
 
     // build _uniformLocationMap
     GLint numUniforms = 0;
@@ -2167,19 +2177,19 @@ void Program::PerContextProgram::linkProgram()
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLen );
     if( (numUniforms > 0) && (maxLen > 1) )
     {
-	GLint size = 0;
-	GLenum type = 0;
-	GLchar* name = new GLchar[maxLen];
+        GLint size = 0;
+        GLenum type = 0;
+        GLchar* name = new GLchar[maxLen];
 
-	for( GLint i = 0; i < numUniforms; ++i )
-	{
-	    _extensions->glGetActiveUniform( _glProgramHandle,
-		    i, maxLen, 0, &size, &type, name );
+        for( GLint i = 0; i < numUniforms; ++i )
+        {
+            _extensions->glGetActiveUniform( _glProgramHandle,
+                    i, maxLen, 0, &size, &type, name );
 
-	    GLint loc = _extensions->glGetUniformLocation( _glProgramHandle, name );
+            GLint loc = _extensions->glGetUniformLocation( _glProgramHandle, name );
             
-	    if( loc != -1 )
-	    {
+            if( loc != -1 )
+            {
                 _uniformLocationMap[name] = loc;
 
                 osg::notify(osg::INFO)
@@ -2187,9 +2197,9 @@ void Program::PerContextProgram::linkProgram()
                     << " loc="<< loc
                     << " type=" << Uniform::getTypename((Uniform::Type)type)
                     << std::endl;
-	    }
-	}
-	delete [] name;
+            }
+        }
+        delete [] name;
     }
 
     // build _attribLocationMap
@@ -2198,35 +2208,35 @@ void Program::PerContextProgram::linkProgram()
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLen );
     if( (numAttrib > 0) && (maxLen > 1) )
     {
-	GLint size = 0;
-	GLenum type = 0;
-	GLchar* name = new GLchar[maxLen];
+        GLint size = 0;
+        GLenum type = 0;
+        GLchar* name = new GLchar[maxLen];
 
-	for( GLint i = 0; i < numAttrib; ++i )
-	{
-	    _extensions->glGetActiveAttrib( _glProgramHandle,
-		    i, maxLen, 0, &size, &type, name );
+        for( GLint i = 0; i < numAttrib; ++i )
+        {
+            _extensions->glGetActiveAttrib( _glProgramHandle,
+                    i, maxLen, 0, &size, &type, name );
 
-	    GLint loc = _extensions->glGetAttribLocation( _glProgramHandle, name );
+            GLint loc = _extensions->glGetAttribLocation( _glProgramHandle, name );
             
-	    if( loc != -1 )
-	    {
+            if( loc != -1 )
+            {
                 _attribLocationMap[name] = loc;
 
                 osg::notify(osg::INFO)
                     << "\tAttrib \"" << name << "\""
                     << " loc=" << loc
                     << std::endl;
-	    }
-	}
-	delete [] name;
+            }
+        }
+        delete [] name;
     }
     osg::notify(osg::INFO) << std::endl;
 }
 
-void Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
+bool Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
 {
-    _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
+    return _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
 }
 
 void Program::PerContextProgram::useProgram() const

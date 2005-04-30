@@ -13,7 +13,7 @@
 */
 
 /* file:	src/osg/Shader.cpp
- * author:	Mike Weiblen 2005-04-07
+ * author:	Mike Weiblen 2005-04-29
 */
 
 #include <fstream>
@@ -232,10 +232,10 @@ void Shader::attachShader(unsigned int contextID, GLuint program) const
 }
 
 
-void Shader::getGlShaderInfoLog(unsigned int contextID, std::string& log) const
+bool Shader::getGlShaderInfoLog(unsigned int contextID, std::string& log) const
 {
     PerContextShader* pcs = getPCS( contextID );
-    if( pcs ) pcs->getInfoLog( log );
+    return (pcs) ? pcs->getInfoLog( log ) : false;
 }
 
 
@@ -324,17 +324,21 @@ void Shader::PerContextShader::compileShader()
     _isCompiled = (compiled == GL_TRUE);
     if( ! _isCompiled )
     {
-	// compile failed
-	std::string infoLog;
-	getInfoLog( infoLog );
-	osg::notify(osg::WARN) << _shader->getTypename() <<
-		" glCompileShader FAILED:\n" << infoLog << std::endl;
+        osg::notify(osg::WARN) << _shader->getTypename() << " glCompileShader \""
+	    << _shader->getName() << "\" FAILED" << std::endl;
+    }
+
+    std::string infoLog;
+    if( getInfoLog(infoLog) )
+    {
+        osg::notify(osg::INFO) << _shader->getTypename() << " Shader \""
+	    << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
     }
 }
 
-void Shader::PerContextShader::getInfoLog( std::string& infoLog ) const
+bool Shader::PerContextShader::getInfoLog( std::string& infoLog ) const
 {
-    _extensions->getShaderInfoLog( _glShaderHandle, infoLog );
+    return _extensions->getShaderInfoLog( _glShaderHandle, infoLog );
 }
 
 void Shader::PerContextShader::attachShader(GLuint program) const

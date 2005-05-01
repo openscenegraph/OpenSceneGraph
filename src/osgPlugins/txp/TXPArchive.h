@@ -51,7 +51,7 @@
 namespace txp
 {
 // this one handles different placement of light direction in osg and terrapage
-struct DefferedLightAttribute
+struct DeferredLightAttribute
 {
     // light point at (0,0,0) looking in (0,0,0) direction
     osg::ref_ptr<osgSim::LightPointNode> lightPoint;
@@ -72,7 +72,7 @@ public:
     // Load the materials from the archve
     bool loadMaterials();
     bool loadMaterial(int ix);
-	bool loadTexture(int i);
+    bool loadTexture(int i);
     
     // Load the models from the archive
     bool loadModels();
@@ -81,16 +81,16 @@ public:
     // Load the light attribs from the archive
     bool loadLightAttributes();
 
-	// Load the text styles from the archive
-	bool loadTextStyles();
-	inline std::vector< osg::ref_ptr<osgText::Font> >& getStyles() { return _fonts; }
-	inline std::vector< osg::Vec4 >& getTextColors() { return _fcolors; }
+    // Load the text styles from the archive
+    bool loadTextStyles();
+    inline std::vector< osg::ref_ptr<osgText::Font> >& getStyles() { return _fonts; }
+    inline std::vector< osg::Vec4 >& getTextColors() { return _fcolors; }
     
     // Add light attrib
     void addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
     
     // Get light attrib
-    inline DefferedLightAttribute& getLightAttribute(unsigned int i)
+    inline DeferredLightAttribute& getLightAttribute(unsigned int i)
     {
         return _lights[i];
     };
@@ -175,7 +175,7 @@ protected:
     osg::ref_ptr<TXPParser>    _parser;
     
     // Textures
-    std::vector< osg::ref_ptr<osg::Texture2D> >	_textures;
+    std::vector< osg::ref_ptr<osg::Texture2D> >    _textures;
     
     // States
     std::vector< osg::ref_ptr<osg::StateSet> >  _gstates;
@@ -184,13 +184,13 @@ protected:
     std::vector< osg::ref_ptr<osg::Node> >      _models;
     
     // Light attributes vector
-    std::vector<DefferedLightAttribute>         _lights;
+    std::vector<DeferredLightAttribute>         _lights;
 
-	// Text styles / Fonts
-	std::vector< osg::ref_ptr<osgText::Font> >	_fonts;
+    // Text styles / Fonts
+    std::vector< osg::ref_ptr<osgText::Font> >    _fonts;
 
-	// Text colors
-	std::vector< osg::Vec4 >					_fcolors;
+    // Text colors
+    std::vector< osg::Vec4 >                    _fcolors;
 
     //
     OpenThreads::Mutex  _mutex;

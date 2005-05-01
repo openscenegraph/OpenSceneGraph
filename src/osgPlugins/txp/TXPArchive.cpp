@@ -522,91 +522,91 @@ bool TXPArchive::loadLightAttributes()
 
 void trim(std::string& str)
 {
-	while (!str.empty() && isspace(str[str.length()-1]))
-		str.erase(str.length()-1);
-	while (!str.empty() && isspace(str[0]))
+    while (!str.empty() && isspace(str[str.length()-1]))
+        str.erase(str.length()-1);
+    while (!str.empty() && isspace(str[0]))
         str.erase(0,1);
 }
 bool TXPArchive::loadTextStyles()
 {
-	const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
-	if (!textStyleTable) return false;
-	if (textStyleTable->GetNumStyle() < 1) return true;
+    const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
+    if (!textStyleTable) return false;
+    if (textStyleTable->GetNumStyle() < 1) return true;
 
-	// try fontmap.txt
-	std::map< std::string, std::string > fontmap;
+    // try fontmap.txt
+    std::map< std::string, std::string > fontmap;
 
-	std::string fmapfname = std::string(getDir())+"\\fontmap.txt";
-	std::ifstream fmapfile;
-	fmapfile.open(fmapfname.c_str(),std::ios::in);
+    std::string fmapfname = std::string(getDir())+"\\fontmap.txt";
+    std::ifstream fmapfile;
+    fmapfile.open(fmapfname.c_str(),std::ios::in);
 
-	if (fmapfile.is_open())
-	{
-		osg::notify(osg::NOTICE) << "txp:: Font map file found: " << fmapfname << std::endl;
-		std::string line;
-		while (std::getline(fmapfile,line))
-		{
-			unsigned int ix = line.find_first_of('=');
-			if (ix != std::string::npos)
-			{
-				std::string fontname = line.substr(0,ix);
-				std::string fontfilename = line.substr(ix+1,line.length()-ix+1);
+    if (fmapfile.is_open())
+    {
+        osg::notify(osg::NOTICE) << "txp:: Font map file found: " << fmapfname << std::endl;
+        std::string line;
+        while (std::getline(fmapfile,line))
+        {
+            unsigned int ix = line.find_first_of('=');
+            if (ix != std::string::npos)
+            {
+                std::string fontname = line.substr(0,ix);
+                std::string fontfilename = line.substr(ix+1,line.length()-ix+1);
 
-				trim(fontname);
-				trim(fontfilename);
+                trim(fontname);
+                trim(fontfilename);
 
-				fontmap[fontname] = fontfilename;
+                fontmap[fontname] = fontfilename;
 
-			}
-		}
-		fmapfile.close();
-	}
-	else
-	{
-		osg::notify(osg::NOTICE) << "txp:: No font map file found: " << fmapfname << std::endl;		
-		osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to arial.ttf" << std::endl;		
-	}
+            }
+        }
+        fmapfile.close();
+    }
+    else
+    {
+        osg::notify(osg::NOTICE) << "txp:: No font map file found: " << fmapfname << std::endl;        
+        osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to arial.ttf" << std::endl;        
+    }
 
-	_fonts.resize(textStyleTable->GetNumStyle());
-	_fcolors.resize(textStyleTable->GetNumStyle());
-	for (int i = 0; i < textStyleTable->GetNumStyle(); i++)
-	{
-		const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(i);
-		if (!textStyle) continue;
+    _fonts.resize(textStyleTable->GetNumStyle());
+    _fcolors.resize(textStyleTable->GetNumStyle());
+    for (int i = 0; i < textStyleTable->GetNumStyle(); i++)
+    {
+        const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(i);
+        if (!textStyle) continue;
 
-		const std::string *fontName = textStyle->GetFont();
-		if (!fontName) continue;
+        const std::string *fontName = textStyle->GetFont();
+        if (!fontName) continue;
 
-		std::string fontfilename = fontmap[*fontName];
-		if (!fontfilename.length()) fontfilename = "arial.ttf";
-		osg::ref_ptr< osgText::Font > font = osgText::readFontFile(fontfilename);
+        std::string fontfilename = fontmap[*fontName];
+        if (!fontfilename.length()) fontfilename = "arial.ttf";
+        osg::ref_ptr< osgText::Font > font = osgText::readFontFile(fontfilename);
 
-		_fonts[i] = font;
+        _fonts[i] = font;
 
-		const trpgMatTable* matTable = GetMaterialTable();
-		if (matTable)
-		{
-			int matId = textStyle->GetMaterial();
-			const trpgMaterial* mat = matTable->GetMaterialRef(0,matId);
-			if (mat)
-			{
-				trpgColor faceColor;
-				mat->GetColor(faceColor);
+        const trpgMatTable* matTable = GetMaterialTable();
+        if (matTable)
+        {
+            int matId = textStyle->GetMaterial();
+            const trpgMaterial* mat = matTable->GetMaterialRef(0,matId);
+            if (mat)
+            {
+                trpgColor faceColor;
+                mat->GetColor(faceColor);
 
-				float64 alpha;
-				mat->GetAlpha(alpha);
+                float64 alpha;
+                mat->GetAlpha(alpha);
 
-				_fcolors[i] = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
-			}
-		}
-	}
+                _fcolors[i] = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att)
 {
-    DefferedLightAttribute la;
+    DeferredLightAttribute la;
     la.lightPoint = lpn;
     la.fallback = fallback;
     la.attitude = att;

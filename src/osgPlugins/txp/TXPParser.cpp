@@ -189,7 +189,7 @@ bool TXPParser::EndChildren(void *)
     return true;
 }
 
-DefferedLightAttribute& TXPParser::getLightAttribute(int ix)
+DeferredLightAttribute& TXPParser::getLightAttribute(int ix)
 { 
     return _archive->getLightAttribute(ix); 
 }
@@ -664,13 +664,13 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     int attr_index;
     light.GetAttrIndex(attr_index);
 
-    DefferedLightAttribute& dla = _parse->getLightAttribute(attr_index); 
+    DeferredLightAttribute& dla = _parse->getLightAttribute(attr_index); 
     osgSim::LightPointNode* node = dla.lightPoint.get();
 
     uint32 nvert;
     light.GetNumVertices(nvert);
 
-    if( node->getLightPoint(0)._sector.valid() ) // osgSim::LigthPoint is a must
+    if( node->getLightPoint(0)._sector.valid() ) // osgSim::LightPoint is a must
     {
         for(unsigned int i = 0; i < nvert; i++)
         {
@@ -1149,7 +1149,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         normals = new osg::Vec3Array(numVert);
         geom.GetNormals((float*)&(normals->front()));
     }
-    
+ 
     // Set up the primitive type
     switch (primType)
     {

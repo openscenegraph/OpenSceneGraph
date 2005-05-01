@@ -103,7 +103,7 @@ protected:
 
 
 class TXPArchive;
-struct DefferedLightAttribute;
+struct DeferredLightAttribute;
 
 class TXPParser : public trpgSceneParser, public osg::Referenced
 {
@@ -116,8 +116,8 @@ public:
         _archive = archive;
     }
 
-	// Gets the archive
-	inline TXPArchive* getArchive() { return _archive; }
+    // Gets the archive
+    inline TXPArchive* getArchive() { return _archive; }
     
     // Scene parser
     osg::Group *parseScene(
@@ -144,8 +144,8 @@ public:
         return _materials;
     }
 
-	// Ensure material is loaded
-	inline void loadMaterial(int ix) { _archive->loadMaterial(ix); }
+    // Ensure material is loaded
+    inline void loadMaterial(int ix) { _archive->loadMaterial(ix); }
     
     // New to TerraPage 2.0 - local materials
     std::vector<osg::ref_ptr<osg::StateSet> >* getLocalMaterials()
@@ -206,7 +206,7 @@ public:
     }
     
     // Gets light attrib
-    DefferedLightAttribute& getLightAttribute(int ix);
+    DeferredLightAttribute& getLightAttribute(int ix);
     
     // Returns if we are under layer subgraph
     inline const bool underLayerSubgraph() const

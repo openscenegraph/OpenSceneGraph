@@ -1,11 +1,11 @@
 #include <osg/Geometry>
-#include <osg/Impostor>
 #include <osg/Material>
 #include <osg/MatrixTransform>
 #include <osg/Quat>
 #include <osg/Geode>
 
-#include <osgUtil/InsertImpostorsVisitor>
+#include <osgSim/Impostor>
+#include <osgSim/InsertImpostorsVisitor>
 
 #include <osgDB/ReadFile>
 
@@ -196,7 +196,7 @@ void LayoutAsGrid()
 
 		if (UseImpostor)
 		{
-			osg::Impostor * impostor = new osg::Impostor();
+			osgSim::Impostor * impostor = new osgSim::Impostor();
 			impostor->setImpostorThreshold(static_cast<float> (Threshold));
 			impostor->addChild(groups[i]);
 			impostor->setRange(0, 0.0f, 1e7f);
@@ -258,7 +258,7 @@ int main( int argc, char **argv )
     osg::Node* model = osgDB::readNodeFiles(arguments);
     if (model)
     {
-        // the osgUtil::InsertImpostorsVisitor used lower down to insert impostors
+        // the osgSim::InsertImpostorsVisitor used lower down to insert impostors
         // only operators on subclass of Group's, if the model top node is not
         // a group then it won't be able to insert an impostor.  We therefore
         // manually insert an impostor above the model.
@@ -268,7 +268,7 @@ int main( int argc, char **argv )
             if (bs.valid())
             {
 
-                osg::Impostor* impostor = new osg::Impostor;
+                osgSim::Impostor* impostor = new osgSim::Impostor;
 
                 // standard LOD settings
                 impostor->addChild(model);
@@ -295,7 +295,7 @@ int main( int argc, char **argv )
 
 
         // now insert impostors in the model using the InsertImpostorsVisitor.
-        osgUtil::InsertImpostorsVisitor ov;
+        osgSim::InsertImpostorsVisitor ov;
 
         // traverse the model and collect all osg::Group's and osg::LOD's.
         // however, don't traverse the rootnode since we want to keep it as

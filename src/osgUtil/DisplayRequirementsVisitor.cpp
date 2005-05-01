@@ -56,6 +56,18 @@ void DisplayRequirementsVisitor::apply(Node& node)
     osg::StateSet* stateset = node.getStateSet();
     if (stateset) applyStateSet(*stateset);
 
+    if (strcmp(node.className(),"Impostor")==0)
+    {
+        if (!_ds) _ds = new osg::DisplaySettings;
+
+        unsigned int min = 1; // number alpha bits we need at least.
+        if (min>_ds->getMinimumNumAlphaBits())
+        {
+            // only update if new minimum exceeds previous minimum.
+            _ds->setMinimumNumAlphaBits(min);
+        }
+    }
+
     traverse(node);
 }
 
@@ -69,18 +81,4 @@ void DisplayRequirementsVisitor::apply(Geode& geode)
         osg::StateSet* stateset = geode.getDrawable(i)->getStateSet();
         if (stateset) applyStateSet(*stateset);
     }
-}
-
-void DisplayRequirementsVisitor::apply(Impostor& impostor)
-{
-    if (!_ds) _ds = new osg::DisplaySettings;
-
-    unsigned int min = 1; // number alpha bits we need at least.
-    if (min>_ds->getMinimumNumAlphaBits())
-    {
-        // only update if new minimum exceeds previous minimum.
-        _ds->setMinimumNumAlphaBits(min);
-    }
-    
-    apply((Node&)impostor);
 }

@@ -9,6 +9,7 @@
 #include <osg/ClipNode>
 #include <osg/AlphaFunc>
 #include <osg/TexGenNode>
+#include <osg/TexEnv>
 #include <osg/TexEnvCombine>
 #include <osg/Material>
 #include <osg/Endian>

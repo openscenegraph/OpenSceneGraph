@@ -24,7 +24,6 @@
 #include <osg/Drawable>
 #include <osg/StateSet>
 #include <osg/State>
-#include <osg/Impostor>
 #include <osg/ClearNode>
 #include <osg/Notify>
 
@@ -77,7 +76,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::ClearNode& node);
         virtual void apply(osg::OccluderNode& node);
-        virtual void apply(osg::Impostor& node);
 
         void setClearNode(const osg::ClearNode* earthSky) { _clearNode = earthSky; }
         const osg::ClearNode* getClearNode() const { return _clearNode.get(); }
@@ -250,11 +248,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             else acceptNode->accept(*this);
         }
 
-
-        /** Create an impostor sprite by setting up a pre-rendering stage
-          * to generate the impostor texture. */
-        osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
-
         osg::ref_ptr<const osg::ClearNode>                          _clearNode;
 
         osg::ref_ptr<RenderGraph>                                   _rootRenderGraph;
@@ -274,8 +267,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
     
         inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth=0.0f);
         
-        osg::ref_ptr<osg::ImpostorSpriteManager>    _impostorSpriteManager;
-
         osg::ref_ptr<osg::State>                    _state;
 
 

@@ -26,7 +26,6 @@ class ClipNode;
 class CoordinateSystemNode;
 class Geode;
 class Group;
-class Impostor;
 class LightSource;
 class LOD;
 class MatrixTransform;
@@ -241,7 +240,6 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(Sequence& node)                  { apply((Group&)node); }
         virtual void apply(LOD& node)                       { apply((Group&)node); }
         virtual void apply(PagedLOD& node)                  { apply((LOD&)node); }
-        virtual void apply(Impostor& node)                  { apply((LOD&)node); }
         virtual void apply(ClearNode& node)                 { apply((Group&)node); }
         virtual void apply(OccluderNode& node)              { apply((Group&)node); }
 

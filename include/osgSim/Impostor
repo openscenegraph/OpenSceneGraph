@@ -11,14 +11,15 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_IMPOSTOR
-#define OSG_IMPOSTOR 1
+#ifndef OSGSIM_IMPOSTOR
+#define OSGSIM_IMPOSTOR 1
 
 #include <osg/LOD>
-#include <osg/ImpostorSprite>
 #include <osg/buffered_value>
 
-namespace osg {
+#include <osgSim/ImpostorSprite>
+
+namespace osgSim {
 
 /** Impostor - is a form of Level Of Detail group node which allows both switching 
   * between children depending on distance from eye point and image caching.
@@ -58,18 +59,20 @@ namespace osg {
   * 4) Shrinking of the ImpostorSprite size to more closely fit the underlying
   * geometry.
   */
-class OSG_EXPORT Impostor : public LOD
+class OSGSIM_EXPORT Impostor : public osg::LOD
 {
     public :
         Impostor();
 
-        Impostor(const Impostor& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            LOD(es,copyop),
+        Impostor(const Impostor& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            osg::LOD(es,copyop),
             _impostorThreshold(es._impostorThreshold) {}
             
-        META_Node(osg, Impostor);
+        META_Node(osgSim, Impostor);
+        
+        virtual void traverse(osg::NodeVisitor& nv);
 
-        typedef std::vector< ref_ptr<ImpostorSprite> > ImpostorSpriteList;
+        typedef std::vector< osg::ref_ptr<ImpostorSprite> > ImpostorSpriteList;
 
         /** Set the Impostor threshold distance.
           * For eye points further than this threshold the Imposter is used if appropriate,
@@ -103,7 +106,8 @@ class OSG_EXPORT Impostor : public LOD
 
         virtual bool computeBound() const;
         
-        mutable buffered_object<ImpostorSpriteList>  _impostorSpriteListBuffer;
+        mutable osg::buffered_object<ImpostorSpriteList>  _impostorSpriteListBuffer;
+        
 
         float _impostorThreshold;
 

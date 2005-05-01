@@ -706,7 +706,7 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osg::Sequence*>(node)){
             ((ive::Sequence*)(node))->write(this);
         }
-        else if(dynamic_cast<const osg::Impostor*>(node)){
+        else if(dynamic_cast<const osgSim::Impostor*>(node)){
             ((ive::Impostor*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::PagedLOD*>(node)){

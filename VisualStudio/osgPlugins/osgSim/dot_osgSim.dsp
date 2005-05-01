@@ -104,6 +104,10 @@ SOURCE=..\..\..\src\osgPlugins\osgSim\IO_DOFTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgSim\IO_Impostor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgSim\IO_LightPoint.cpp
 # End Source File
 # Begin Source File

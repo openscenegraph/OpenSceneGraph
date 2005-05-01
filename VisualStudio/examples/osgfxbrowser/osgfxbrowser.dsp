@@ -171,8 +171,6 @@ DEP_CPP_OSGFX=\
 	"..\..\..\Include\Osg\Gl"\
 	"..\..\..\Include\Osg\Group"\
 	"..\..\..\Include\Osg\Image"\
-	"..\..\..\Include\Osg\Impostor"\
-	"..\..\..\Include\Osg\ImpostorSprite"\
 	"..\..\..\Include\Osg\Light"\
 	"..\..\..\Include\Osg\LightSource"\
 	"..\..\..\Include\Osg\LineSegment"\

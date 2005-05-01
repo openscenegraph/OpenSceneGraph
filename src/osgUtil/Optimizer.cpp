@@ -17,7 +17,6 @@
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/LOD>
-#include <osg/Impostor>
 #include <osg/Billboard>
 #include <osg/Geometry>
 #include <osg/Notify>

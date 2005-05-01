@@ -19,13 +19,14 @@
 #include <float.h>
 
 #include <osg/Geometry>
-#include <osg/ImpostorSprite>
 #include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
 #include <osg/Notify>
 
-using namespace osg;
+#include <osgSim/ImpostorSprite>
+
+using namespace osgSim;
 
 ImpostorSprite::ImpostorSprite()
 {
@@ -52,7 +53,7 @@ ImpostorSprite::~ImpostorSprite()
     }
 }
 
-float ImpostorSprite::calcPixelError(const Matrix& MVPW) const
+float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
 {
     // find the maximum screen space pixel error between the control coords and the quad coners.
     float max_error_sqrd = 0.0f;
@@ -60,8 +61,8 @@ float ImpostorSprite::calcPixelError(const Matrix& MVPW) const
     for(int i=0;i<4;++i)
     {
 
-        Vec3 projected_coord = _coords[i]*MVPW;
-        Vec3 projected_control = _controlcoords[i]*MVPW;
+        osg::Vec3 projected_coord = _coords[i]*MVPW;
+        osg::Vec3 projected_control = _controlcoords[i]*MVPW;
 
         float dx = (projected_coord.x()-projected_control.x());
         float dy = (projected_coord.y()-projected_control.y());
@@ -74,7 +75,7 @@ float ImpostorSprite::calcPixelError(const Matrix& MVPW) const
 
     return sqrtf(max_error_sqrd);
 }
-void ImpostorSprite::drawImplementation(State&) const
+void ImpostorSprite::drawImplementation(osg::State&) const
 {
     // when the tex env is set to REPLACE, and the 
     // texture is set up correctly the color has no effect.
@@ -111,13 +112,13 @@ bool ImpostorSprite::computeBound() const
     
     if (!_bbox.valid())
     {
-        notify(WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
+        osg::notify(osg::WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
     }
 
     return true;
 }
 
-void ImpostorSprite::setTexture(Texture2D* tex,int s,int t)
+void ImpostorSprite::setTexture(osg::Texture2D* tex,int s,int t)
 {
     _texture = tex;
     _s = s;
@@ -137,7 +138,7 @@ void ImpostorSprite::accept(ConstAttributeFunctor& af) const
     af.apply(TEXTURE_COORDS_0,4,_texcoords);
 }
 
-void ImpostorSprite::accept(PrimitiveFunctor& functor) const
+void ImpostorSprite::accept(osg::PrimitiveFunctor& functor) const
 {
     functor.setVertexArray(4,_coords);
     functor.drawArrays( GL_QUADS, 0, 4);
@@ -153,11 +154,11 @@ ImpostorSpriteManager::ImpostorSpriteManager():
     _first(NULL),
     _last(NULL)
 {
-    _texenv = new TexEnv;
-    _texenv->setMode(TexEnv::REPLACE);
+    _texenv = new osg::TexEnv;
+    _texenv->setMode(osg::TexEnv::REPLACE);
 
     _alphafunc = new osg::AlphaFunc;
-    _alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
+    _alphafunc->setFunction( osg::AlphaFunc::GREATER, 0.000f );
     
     _reuseStateSetIndex = 0;
 }
@@ -262,21 +263,21 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     // creating new impostor sprite.
     
 
-    StateSet* stateset = new StateSet;
+    osg::StateSet* stateset = new osg::StateSet;
 
     stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
 
-    stateset->setRenderingHint( StateSet::TRANSPARENT_BIN );
+    stateset->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
 
-    stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
+    stateset->setAttributeAndModes( _alphafunc.get(), osg::StateAttribute::ON );
 
-    Texture2D* texture = new Texture2D;
-    texture->setFilter(Texture2D::MIN_FILTER,Texture2D::LINEAR);
-    texture->setFilter(Texture2D::MAG_FILTER,Texture2D::LINEAR);
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
-    stateset->setTextureAttributeAndModes(0,texture,StateAttribute::ON);
+    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     stateset->setTextureAttribute(0,_texenv.get());
 
 /*
@@ -285,12 +286,12 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     stateset->setAttribute(texenv);
 
     AlphaFunc* alphafunc = new osg::AlphaFunc;
-    alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
-    stateset->setAttributeAndModes( alphafunc, StateAttribute::ON );
+    alphafunc->setFunction( osg::AlphaFunc::GREATER, 0.000f );
+    stateset->setAttributeAndModes( alphafunc, osg::StateAttribute::ON );
 */
 
 
-    //    stateset->setMode( GL_ALPHA_TEST, StateAttribute::OFF );
+    //    stateset->setMode( GL_ALPHA_TEST, osg::StateAttribute::OFF );
 
     ImpostorSprite* is = new ImpostorSprite;
     is->setStateSet(stateset);
@@ -302,13 +303,13 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
 
 }
 
-StateSet* ImpostorSpriteManager::createOrReuseStateSet()
+osg::StateSet* ImpostorSpriteManager::createOrReuseStateSet()
 {
     if (_reuseStateSetIndex<_stateSetList.size())
     {
         return _stateSetList[_reuseStateSetIndex++].get();
     }
-    _stateSetList.push_back(new StateSet);
+    _stateSetList.push_back(new osg::StateSet);
     _reuseStateSetIndex=_stateSetList.size();
     return _stateSetList.back().get();
 }

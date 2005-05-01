@@ -14,12 +14,13 @@
     #pragma warning( disable : 4786 )
 #endif
 
-#include <osgUtil/InsertImpostorsVisitor>
+#include <osgSim/InsertImpostorsVisitor>
+#include <osgSim/Impostor>
 
 #include <algorithm>
 
 using namespace osg;
-using namespace osgUtil;
+using namespace osgSim;
 
 InsertImpostorsVisitor::InsertImpostorsVisitor()
 {
@@ -55,18 +56,11 @@ void InsertImpostorsVisitor::apply(Group& node)
 
 void InsertImpostorsVisitor::apply(LOD& node)
 {
-    _lodList.push_back(&node);
-
-    ++_numNestedImpostors;
-    if (_numNestedImpostors<_maximumNumNestedImpostors)
+    if (dynamic_cast<osgSim::Impostor*>(&node)==0)
     {
-        traverse(node);
+        _lodList.push_back(&node);
     }
-    --_numNestedImpostors;
-}
-
-void InsertImpostorsVisitor::apply(Impostor& node)
-{
+    
     ++_numNestedImpostors;
     if (_numNestedImpostors<_maximumNumNestedImpostors)
     {
@@ -149,9 +143,9 @@ void InsertImpostorsVisitor::insertImpostors()
                     // take a copy of the original parent list
                     // before we change it around by adding the lod
                     // to an impostor.
-                    Node::ParentList parentList = lod->getParents();
+                    osg::Node::ParentList parentList = lod->getParents();
 
-                    osg::Impostor* impostor = new Impostor;
+                    Impostor* impostor = new Impostor;
 
                     // standard LOD settings
                     for(unsigned int ci=0;ci<lod->getNumChildren();++ci)

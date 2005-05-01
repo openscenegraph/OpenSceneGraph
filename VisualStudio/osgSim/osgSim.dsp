@@ -107,6 +107,18 @@ SOURCE=..\..\src\osgSim\DOFTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\Impostor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\ImpostorSprite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\InsertImpostorsVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\LightPoint.cpp
 # End Source File
 # Begin Source File
@@ -164,6 +176,18 @@ SOURCE=..\..\include\osgSim\DOFTransform
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgSim\Impostor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgSim\ImpostorSprite
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgSim\InsertImpostorsVisitor
 # End Source File
 # Begin Source File
 

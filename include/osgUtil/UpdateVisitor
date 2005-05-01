@@ -23,7 +23,6 @@
 #include <osg/LightSource>
 #include <osg/Transform>
 #include <osg/Projection>
-#include <osg/Impostor>
 #include <osg/OccluderNode>
 
 #include <osgUtil/Export>
@@ -57,7 +56,6 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         virtual void apply(osg::Projection& node)   { handle_callbacks_and_traverse(node); }
         virtual void apply(osg::Switch& node)       { handle_callbacks_and_traverse(node); }
         virtual void apply(osg::LOD& node)          { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Impostor& node)     { handle_callbacks_and_traverse(node); }
         virtual void apply(osg::OccluderNode& node) { handle_callbacks_and_traverse(node); }
 
 

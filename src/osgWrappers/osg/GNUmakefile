@@ -43,8 +43,6 @@ CXXFILES =\
 	Group.cpp\
 	Image.cpp\
 	ImageStream.cpp\
-	Impostor.cpp\
-	ImpostorSprite.cpp\
 	Light.cpp\
 	LightModel.cpp\
 	LightSource.cpp\

@@ -11,20 +11,18 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_INSERTIMPOSTORSVISITOR
-#define OSGUTIL_INSERTIMPOSTORSVISITOR
+#ifndef OSGSIM_INSERTIMPOSTORSVISITOR
+#define OSGSIM_INSERTIMPOSTORSVISITOR
 
 #include <osg/NodeVisitor>
-#include <osg/Impostor>
+#include <osgSim/Impostor>
 
-#include <osgUtil/Export>
-
-namespace osgUtil {
+namespace osgSim {
 
 /** Insert impostor nodes into scene graph.
   * For example of usage see examples/osgimpostor.
   */
-class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
+class OSGSIM_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
 {
     public:
 
@@ -46,8 +44,6 @@ class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
 
         virtual void apply(osg::LOD& node);
 
-        virtual void apply(osg::Impostor& node);
-        
         /* Insert the required impostors into the scene graph. */
         void insertImpostors();
         

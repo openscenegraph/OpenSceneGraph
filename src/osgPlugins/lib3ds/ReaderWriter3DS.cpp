@@ -75,7 +75,6 @@ class PrintVisitor : public NodeVisitor
         virtual void apply(Projection& node)    { apply((Group&)node); }
         virtual void apply(Switch& node)        { apply((Group&)node); }
         virtual void apply(LOD& node)           { apply((Group&)node); }
-        virtual void apply(Impostor& node)      { apply((LOD&)node); }
 
    protected:
     

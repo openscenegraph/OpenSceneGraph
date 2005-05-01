@@ -188,10 +188,6 @@ SOURCE=..\..\..\src\osgPlugins\osg\Image.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\Impostor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\osg\Light.cpp
 # End Source File
 # Begin Source File

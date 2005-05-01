@@ -259,14 +259,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\ImageStream.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Impostor.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\ImpostorSprite.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Light.cpp
 # End Source File
 

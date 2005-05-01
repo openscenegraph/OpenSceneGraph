@@ -951,7 +951,7 @@ osg::Node* DataInputStream::readNode()
         ((ive::MultiSwitch*)(node))->read(this);
     }
     else if(nodeTypeID== IVEIMPOSTOR){
-        node = new osg::Impostor();
+        node = new osgSim::Impostor();
         ((ive::Impostor*)(node))->read(this);
     }
     else if(nodeTypeID== IVEOCCLUDERNODE){

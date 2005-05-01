@@ -24,7 +24,6 @@ CXXFILES =\
         Geometry.cpp\
         Group.cpp\
         Image.cpp\
-        Impostor.cpp\
         Light.cpp\
         LightModel.cpp\
         LightSource.cpp\

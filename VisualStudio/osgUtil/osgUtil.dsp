@@ -123,10 +123,6 @@ SOURCE=..\..\src\osgUtil\HighlightMapGenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\InsertImpostorsVisitor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # End Source File
 # Begin Source File
@@ -236,10 +232,6 @@ SOURCE=..\..\include\osgUtil\HalfWayMapGenerator
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\HighlightMapGenerator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgUtil\InsertImpostorsVisitor
 # End Source File
 # Begin Source File
 

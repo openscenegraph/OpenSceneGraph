@@ -9,6 +9,7 @@ CXXFILES =\
 	IO_MultiSwitch.cpp\
 	IO_Sector.cpp\
 	IO_VisibilityGroup.cpp\
+        IO_Impostor.cpp\
 
 
 LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)

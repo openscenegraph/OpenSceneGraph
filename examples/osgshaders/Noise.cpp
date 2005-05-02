@@ -40,9 +40,9 @@ int BM;
 
 void SetNoiseFrequency(int frequency)
 {
-	start = 1;
-	B = frequency;
-	BM = B-1;
+        start = 1;
+        B = frequency;
+        BM = B-1;
 }
 
 double noise1(double arg)

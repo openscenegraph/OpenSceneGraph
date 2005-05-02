@@ -714,7 +714,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             unsigned char* destinationRowPtr = destination._image->data(destX,destY+destHeight-1);
             unsigned int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
             unsigned int destination_pixelSpace = destination._image->getPixelSizeInBits()/8;
-            bool destination_hasAlpha = osg::Image::computeNumComponents(destination._image->getPixelFormat());
+            bool destination_hasAlpha = osg::Image::computeNumComponents(destination._image->getPixelFormat())==4;
 
             // copy image to destination image
             for(int row=0;
@@ -1139,12 +1139,17 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /*    Create the file                                                    */
 /* --------------------------------------------------------------------- */
 
+    int numSourceBands = GDALGetRasterCount(_sourceData->_gdalDataSet);
+    int numDestinationBands = 4; // numSourceBands;
+
     GDALDatasetH hDstDS = GDALCreate( hDriver, filename.c_str(), nPixels, nLines, 
-                         GDALGetRasterCount(_sourceData->_gdalDataSet), eDT,
+                         numDestinationBands , eDT,
                          0 );
     
     if( hDstDS == NULL )
         return NULL;
+        
+        
 
 /* -------------------------------------------------------------------- */
 /*      Write out the projection definition.                            */
@@ -1190,9 +1195,9 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /* -------------------------------------------------------------------- */
 /*      Setup band mapping.                                             */
 /* -------------------------------------------------------------------- */
-    psWO->nBandCount = GDALGetRasterCount(_sourceData->_gdalDataSet);
-    psWO->panSrcBands = (int *) CPLMalloc(psWO->nBandCount*sizeof(int));
-    psWO->panDstBands = (int *) CPLMalloc(psWO->nBandCount*sizeof(int));
+    psWO->nBandCount = numSourceBands;//numDestinationBands;
+    psWO->panSrcBands = (int *) CPLMalloc(numDestinationBands*sizeof(int));
+    psWO->panDstBands = (int *) CPLMalloc(numDestinationBands*sizeof(int));
 
     int i;
     for(i = 0; i < psWO->nBandCount; i++ )
@@ -1206,98 +1211,55 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /*      Setup no datavalue                                              */
 /* -----------------------------------------------------`--------------- */
 
-    
-    // check to see if no value values exist in source datasets.
-    int numNoDataValues = 0;
-    for(i = 0; i < _sourceData->_gdalDataSet->GetRasterCount(); i++ )
+    psWO->padfSrcNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+    psWO->padfSrcNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+
+    psWO->padfDstNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+    psWO->padfDstNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+
+    for(i = 0; i < psWO->nBandCount; i++ )
     {
         int success = 0;
-        GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
-        band->GetNoDataValue(&success);
-        if (success) ++numNoDataValues;
-    }
-    
-    if (numNoDataValues)
-    {
-        // no data values exist, so populate the no data arrays.
-        
-        psWO->padfSrcNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        psWO->padfSrcNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        
-        psWO->padfDstNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        psWO->padfDstNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        
-        for(i = 0; i < _sourceData->_gdalDataSet->GetRasterCount(); i++ )
+        GDALRasterBand* band = (i<numSourceBands) ? _sourceData->_gdalDataSet->GetRasterBand(i+1) : 0;
+        double noDataValue = band ? band->GetNoDataValue(&success) : 0.0;
+        double new_noDataValue = 0;
+        if (success)
         {
-            int success = 0;
-            GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
-            double noDataValue = band->GetNoDataValue(&success);
-            //double new_noDataValue = noDataValue;
-            double new_noDataValue = 0;
-            if (success)
-            {
-                my_notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
-            
-                psWO->padfSrcNoDataReal[i] = noDataValue;
-                psWO->padfSrcNoDataImag[i] = 0.0;
-                psWO->padfDstNoDataReal[i] = new_noDataValue;
-                psWO->padfDstNoDataImag[i] = 0.0;
-                
-                GDALRasterBandH band = GDALGetRasterBand(hDstDS,i+1);
-                GDALSetRasterNoDataValue( band, new_noDataValue);
-            }
-        }    
+            my_notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
 
-        psWO->papszWarpOptions = (char**)CPLMalloc(2*sizeof(char*));
-        psWO->papszWarpOptions[0] = strdup("INIT_DEST=NO_DATA");
-        psWO->papszWarpOptions[1] = 0;
+            psWO->padfSrcNoDataReal[i] = noDataValue;
+            psWO->padfSrcNoDataImag[i] = 0.0;
+            psWO->padfDstNoDataReal[i] = new_noDataValue;
+            psWO->padfDstNoDataImag[i] = 0.0;
 
-    }
-    else
-    {
-        
-        psWO->padfSrcNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        psWO->padfSrcNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        
-        psWO->padfDstNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        psWO->padfDstNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
-        
-        for(i = 0; i < _sourceData->_gdalDataSet->GetRasterCount(); i++ )
+            GDALRasterBandH dest_band = GDALGetRasterBand(hDstDS,i+1);
+            GDALSetRasterNoDataValue( dest_band, new_noDataValue);
+        }
+        else
         {
-            int success = 0;
-            GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
-            double noDataValue = band->GetNoDataValue(&success);
-            double new_noDataValue = 0.0;
-            if (success)
-            {
-                my_notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
-            
-                psWO->padfSrcNoDataReal[i] = noDataValue;
-                psWO->padfSrcNoDataImag[i] = 0.0;
-                psWO->padfDstNoDataReal[i] = noDataValue;
-                psWO->padfDstNoDataImag[i] = 0.0;
-                
-                GDALRasterBandH band = GDALGetRasterBand(hDstDS,i+1);
-                GDALSetRasterNoDataValue( band, new_noDataValue);
-            }
-            else
-            {
-                psWO->padfSrcNoDataReal[i] = 0.0;
-                psWO->padfSrcNoDataImag[i] = 0.0;
-                psWO->padfDstNoDataReal[i] = new_noDataValue;
-                psWO->padfDstNoDataImag[i] = 0.0;
-                
-                GDALRasterBandH band = GDALGetRasterBand(hDstDS,i+1);
-                GDALSetRasterNoDataValue( band, new_noDataValue);
-            }
-        }    
+            psWO->padfSrcNoDataReal[i] = 0.0;
+            psWO->padfSrcNoDataImag[i] = 0.0;
+            psWO->padfDstNoDataReal[i] = new_noDataValue;
+            psWO->padfDstNoDataImag[i] = 0.0;
 
-        psWO->papszWarpOptions = (char**)CPLMalloc(2*sizeof(char*));
-        psWO->papszWarpOptions[0] = strdup("INIT_DEST=NO_DATA");
-        psWO->papszWarpOptions[1] = 0;
+            GDALRasterBandH dest_band = GDALGetRasterBand(hDstDS,i+1);
+            GDALSetRasterNoDataValue( dest_band, new_noDataValue);
+        }
+    }    
 
-    }
+    psWO->papszWarpOptions = (char**)CPLMalloc(2*sizeof(char*));
+    psWO->papszWarpOptions[0] = strdup("INIT_DEST=NO_DATA");
+    psWO->papszWarpOptions[1] = 0;
     
+    if (numDestinationBands==4)
+    {
+/*    
+        GDALSetRasterColorInterpretation( 
+            GDALGetRasterBand( hDstDS, numDestinationBands ), 
+            GCI_AlphaBand );
+*/            
+        psWO->nDstAlphaBand = numDestinationBands;
+    }
 
 /* -------------------------------------------------------------------- */
 /*      Initialize and execute the warp.                                */

@@ -30,12 +30,15 @@ using namespace osg;
 Uniform::Uniform() :
     _name(""), _type(UNDEFINED)
 {
+    setDataVariance(STATIC);
 }
 
 
 Uniform::Uniform( const char* name, Type type ) :
     _name(name), _type(type)
 {
+    setDataVariance(STATIC);
+
     switch( _type )
     {
     case FLOAT:        set( 0.0f ); break;

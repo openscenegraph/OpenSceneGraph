@@ -753,6 +753,8 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                                 destinationColumnPtr[1] = (int)(rd * (float)destinationColumnPtr[1] + rs * (float)sourceColumnPtr[1]);
                                 destinationColumnPtr[2] = (int)(rd * (float)destinationColumnPtr[2] + rs * (float)sourceColumnPtr[2]);
                                 
+                                if (destination_hasAlpha)
+                                    destinationColumnPtr[3] = osg::maximum(destinationColumnPtr[3],sourceColumnPtr[3]);
                                 
                             }
                         }
@@ -2224,7 +2226,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         
         if (compressedImageSupported && 
             image->s()>=minumCompressedTextureSize && image->t()>=minumCompressedTextureSize &&
-            _dataSet->getTextureType()==COMPRESSED_TEXTURE &&
+            (_dataSet->getTextureType()==COMPRESSED_TEXTURE || _dataSet->getTextureType()==COMPRESSED_RGBA_TEXTURE) &&
             (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA))
         {
         
@@ -2258,9 +2260,13 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         }
         else
         {
-            if (_dataSet->getTextureType()==RGB_16_BIT && image->getPixelFormat()==GL_RGB)
+            if (_dataSet->getTextureType()==RGB_16 && image->getPixelFormat()==GL_RGB)
             {
                 image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
+            }
+            else if (_dataSet->getTextureType()==RGBA_16 && image->getPixelFormat()==GL_RGBA)
+            {
+                image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_5_5_1);
             }
 
             if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
@@ -3538,6 +3544,9 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
     tile->_dataSet = this;
     tile->_cs = cs;
     tile->_extents = extents;
+    tile->_pixelFormat = (getTextureType()==COMPRESSED_RGBA_TEXTURE||
+                          getTextureType()==RGBA ||
+                          getTextureType()==RGBA_16) ? GL_RGBA : GL_RGB;
     tile->setMaximumImagerySize(maxImageSize,maxImageSize);
     tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
     tile->computeMaximumSourceResolution(_sourceGraph.get());

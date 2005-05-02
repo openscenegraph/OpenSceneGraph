@@ -997,9 +997,12 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         enum TextureType
         {
-            RGB_24_BIT,
-            RGB_16_BIT,
-            COMPRESSED_TEXTURE
+            RGB_24,
+            RGBA,
+            RGB_16,
+            RGBA_16,
+            COMPRESSED_TEXTURE,
+            COMPRESSED_RGBA_TEXTURE
         };
         void setTextureType(TextureType type) { _textureType = type; }
         TextureType getTextureType() const { return _textureType; }

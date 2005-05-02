@@ -177,9 +177,12 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--LOD","Create a LOD'd database");     
     arguments.getApplicationUsage()->addCommandLineOption("--PagedLOD","Create a PagedLOD'd database");     
     arguments.getApplicationUsage()->addCommandLineOption("-v","Set the vertical multiplier");     
-    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGBA-compressed","Use OpenGL compression on RGBA destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB-16","Use 16bit RGB destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("--RGB-24","Use 24bit RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGBA-24","Use 24bit RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGB-16","Use 16bit RGBA destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGBA","Use 32bit RGBA destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--max-visible-distance-of-top-level","Set the maximum visible distance that the top most tile can be viewed at");     
     arguments.getApplicationUsage()->addCommandLineOption("--radius-to-max-visible-distance-ratio","Set the maximum visible distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
     arguments.getApplicationUsage()->addCommandLineOption("--no-mip-mapping","Disable mip mapping of textures");     
@@ -232,8 +235,11 @@ int main( int argc, char **argv )
     }
 
     while (arguments.read("--compressed")) { dataset->setTextureType(osgTerrain::DataSet::COMPRESSED_TEXTURE); }
-    while (arguments.read("--RGB_16") || arguments.read("--RGB-16") ) { dataset->setTextureType(osgTerrain::DataSet::RGB_16_BIT); }
-    while (arguments.read("--RGB_24") || arguments.read("--RGB-24") ) { dataset->setTextureType(osgTerrain::DataSet::RGB_24_BIT); }
+    while (arguments.read("--RGBA-compressed")) { dataset->setTextureType(osgTerrain::DataSet::COMPRESSED_RGBA_TEXTURE); }
+    while (arguments.read("--RGB_16") || arguments.read("--RGB-16") ) { dataset->setTextureType(osgTerrain::DataSet::RGB_16); }
+    while (arguments.read("--RGBA_16") || arguments.read("--RGBA-16") ) { dataset->setTextureType(osgTerrain::DataSet::RGBA_16); }
+    while (arguments.read("--RGB_24") || arguments.read("--RGB-24") ) { dataset->setTextureType(osgTerrain::DataSet::RGB_24); }
+    while (arguments.read("--RGBA") || arguments.read("--RGBA") ) { dataset->setTextureType(osgTerrain::DataSet::RGBA); }
 
     while (arguments.read("--no_mip_mapping") || arguments.read("--no-mip-mapping")) { dataset->setMipMappingMode(osgTerrain::DataSet::NO_MIP_MAPPING); }
     while (arguments.read("--mip_mapping_hardware") || arguments.read("--mip-mapping-hardware")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_HARDWARE); }

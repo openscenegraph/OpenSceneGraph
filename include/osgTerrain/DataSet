@@ -760,6 +760,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             unsigned int                                _level;
             unsigned int                                _tileX;
             unsigned int                                _tileY;
+            GLenum                                      _pixelFormat;                                    
             
             struct ImageData
             {

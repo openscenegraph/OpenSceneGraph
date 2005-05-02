@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:	examples/osgglsl/osgshaders.cpp
- * author:	Mike Weiblen 2005-04-05
+/* file:        examples/osgglsl/osgshaders.cpp
+ * author:        Mike Weiblen 2005-04-05
  *
  * A demo of the OpenGL Shading Language shaders using core OSG.
  *
@@ -35,29 +35,29 @@ using namespace osg;
 class KeyHandler: public osgGA::GUIEventHandler
 {
     public:
-	KeyHandler( GL2ScenePtr gl2Scene ) :
-		_gl2Scene(gl2Scene)
-	{}
+        KeyHandler( GL2ScenePtr gl2Scene ) :
+                _gl2Scene(gl2Scene)
+        {}
 
-	bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& )
-	{
-	    if( ea.getEventType() != osgGA::GUIEventAdapter::KEYDOWN )
-		return false;
+        bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& )
+        {
+            if( ea.getEventType() != osgGA::GUIEventAdapter::KEYDOWN )
+                return false;
 
-	    switch( ea.getKey() )
-	    {
-		case 'x':
-		    _gl2Scene->reloadShaderSource();
-		    return true;
-		case 'y':
-		    _gl2Scene->toggleShaderEnable();
-		    return true;
-	    }
-	    return false;
-	}
+            switch( ea.getKey() )
+            {
+                case 'x':
+                    _gl2Scene->reloadShaderSource();
+                    return true;
+                case 'y':
+                    _gl2Scene->toggleShaderEnable();
+                    return true;
+            }
+            return false;
+        }
 
     private:
-	GL2ScenePtr _gl2Scene;
+        GL2ScenePtr _gl2Scene;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ int main( int argc, char **argv )
     // set up the usage document
     args.getApplicationUsage()->setApplicationName(args.getApplicationName());
     args.getApplicationUsage()->setDescription(args.getApplicationName() +
-	    " demonstrates the OpenGL Shading Language using core OSG");
+            " demonstrates the OpenGL Shading Language using core OSG");
     args.getApplicationUsage()->setCommandLineUsage(args.getApplicationName());
     args.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 

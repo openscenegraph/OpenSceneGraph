@@ -488,8 +488,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
         }
 
         bool hasRGB = _gdalDataSet->GetRasterCount() >= 3;
+        bool hasAlpha = _gdalDataSet->GetRasterCount() >= 4;
         bool hasColorTable = _gdalDataSet->GetRasterCount() >= 1 && _gdalDataSet->GetRasterBand(1)->GetColorTable();
         bool hasGreyScale = _gdalDataSet->GetRasterCount() == 1;
+        unsigned int numSourceComponents = hasAlpha?4:3;
 
         if (hasRGB || hasColorTable || hasGreyScale)
         {
@@ -498,7 +500,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             unsigned int numBytesPerPixel = 1;
             GDALDataType targetGDALType = GDT_Byte;
 
-            int pixelSpace=3*numBytesPerPixel;
+            int pixelSpace=numSourceComponents*numBytesPerPixel;
 
             my_notify(osg::INFO) << "reading RGB"<<std::endl;
 
@@ -511,13 +513,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             // as RGB. 
             if( hasRGB ) 
             { 
-                GDALRasterBand *bandRed, *bandGreen, *bandBlue; 
-
-
-                bandRed = _gdalDataSet->GetRasterBand(1); 
-                bandGreen = _gdalDataSet->GetRasterBand(2); 
-                bandBlue = _gdalDataSet->GetRasterBand(3); 
-
+                GDALRasterBand* bandRed = bandRed = _gdalDataSet->GetRasterBand(1); 
+                GDALRasterBand* bandGreen = _gdalDataSet->GetRasterBand(2); 
+                GDALRasterBand* bandBlue = _gdalDataSet->GetRasterBand(3); 
+                GDALRasterBand* bandAlpha = hasAlpha ? _gdalDataSet->GetRasterBand(4) : 0; 
 
                 bandRed->RasterIO(GF_Read, 
                                   windowX,_numValuesY-(windowY+windowHeight), 
@@ -534,6 +533,15 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                                    windowWidth,windowHeight, 
                                    (void*)(tempImage+2),readWidth,readHeight, 
                                    targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                                   
+                if (bandAlpha)
+                {
+                    bandAlpha->RasterIO(GF_Read, 
+                                       windowX,_numValuesY-(windowY+windowHeight), 
+                                       windowWidth,windowHeight, 
+                                       (void*)(tempImage+3),readWidth,readHeight, 
+                                       targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                }
             } 
 
             else if( hasColorTable ) 
@@ -610,24 +618,6 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             {
                 unsigned char* destImage = new unsigned char[destWidth*destHeight*pixelSpace];
 
-#if 0
-                // glu scale appears buggy...
-                glPixelStorei(GL_PACK_ALIGNMENT,1);
-                glPixelStorei(GL_PACK_ROW_LENGTH,0);
-                glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-                glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
-                GLint status = gluScaleImage(GL_RGB,
-                    readWidth,
-                    readHeight,
-                    GL_UNSIGNED_BYTE,
-                    tempImage,
-                    destWidth,
-                    destHeight,
-                    GL_UNSIGNED_BYTE,
-                    destImage);
-
-#else
-
                 // rescale image by hand as glu seem buggy....
                 for(int j=0;j<destHeight;++j)
                 {
@@ -661,6 +651,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                                 dest[0] = src[0];
                                 dest[1] = src[1];
                                 dest[2] = src[2];
+                                if (numSourceComponents==4) dest[3] = src[3];
                                 //std::cout<<"copy"<<std::endl;
                             }
                             else  // need to interpolate j axis.
@@ -673,6 +664,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                                 dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
                                 dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
                                 dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
+                                if (numSourceComponents==4) dest[3] = (unsigned char)((float)src_0[3]*r_0 + (float)src_1[3]*r_1);
                                 //std::cout<<"interpolate j axis"<<std::endl;
                             }
                         }
@@ -688,6 +680,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                                 dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
                                 dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
                                 dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
+                                if (numSourceComponents==4) dest[3] = (unsigned char)((float)src_0[3]*r_0 + (float)src_1[3]*r_1);
                                 //std::cout<<"interpolate i axis"<<std::endl;
                             }
                             else  // need to interpolate i and j axis.
@@ -703,14 +696,13 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                                 dest[0] = (unsigned char)(((float)src_0[0])*r_0 + ((float)src_1[0])*r_1 + ((float)src_2[0])*r_2 + ((float)src_3[0])*r_3);
                                 dest[1] = (unsigned char)(((float)src_0[1])*r_0 + ((float)src_1[1])*r_1 + ((float)src_2[1])*r_2 + ((float)src_3[1])*r_3);
                                 dest[2] = (unsigned char)(((float)src_0[2])*r_0 + ((float)src_1[2])*r_1 + ((float)src_2[2])*r_2 + ((float)src_3[2])*r_3);
+                                if (numSourceComponents==4) dest[3] = (unsigned char)(((float)src_0[3])*r_0 + ((float)src_1[3])*r_1 + ((float)src_2[3])*r_2 + ((float)src_3[3])*r_3);
                                 //std::cout<<"interpolate i & j axis"<<std::endl;
                             }
                         }
                         
                     }
                 }
-
-#endif
 
                 delete [] tempImage;  
                 tempImage = destImage;
@@ -721,6 +713,8 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             unsigned int sourceRowDelta = pixelSpace*destWidth;
             unsigned char* destinationRowPtr = destination._image->data(destX,destY+destHeight-1);
             unsigned int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
+            unsigned int destination_pixelSpace = destination._image->getPixelSizeInBits()/8;
+            bool destination_hasAlpha = osg::Image::computeNumComponents(destination._image->getPixelFormat());
 
             // copy image to destination image
             for(int row=0;
@@ -732,28 +726,43 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 
                 for(int col=0;
                     col<destWidth;
-                    ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=pixelSpace)
+                    ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=destination_pixelSpace)
                 {
-#if 0
-                    unsigned int sourceTotal = sourceColumnPtr[0]+sourceColumnPtr[1]+sourceColumnPtr[2];
-                    unsigned int destinationTotal = destinationColumnPtr[0]+destinationColumnPtr[1]+destinationColumnPtr[2];
+                    if (hasAlpha)
+                    {
+                        // only copy over source pixel if its alpha value is not 0
+                        if (sourceColumnPtr[3]!=0)
+                        {
+                            if (sourceColumnPtr[3]!=255)
+                            {
+                                // source alpha is full on so directly copy over.
+                                destinationColumnPtr[0] = sourceColumnPtr[0];
+                                destinationColumnPtr[1] = sourceColumnPtr[1];
+                                destinationColumnPtr[2] = sourceColumnPtr[2];
 
-                    if (sourceTotal>destinationTotal)
+                                if (destination_hasAlpha)
+                                    destinationColumnPtr[3] = sourceColumnPtr[3];
+                            }
+                            else
+                            {
+                                // source value isn't full on so blend it with destination 
+                                float rs = (float)sourceColumnPtr[3]/255.0f; 
+                                float rd = 1.0f-rs;
+
+                                destinationColumnPtr[0] = (int)(rd * (float)destinationColumnPtr[0] + rs * (float)sourceColumnPtr[0]);
+                                destinationColumnPtr[1] = (int)(rd * (float)destinationColumnPtr[1] + rs * (float)sourceColumnPtr[1]);
+                                destinationColumnPtr[2] = (int)(rd * (float)destinationColumnPtr[2] + rs * (float)sourceColumnPtr[2]);
+                                
+                                
+                            }
+                        }
+                    }
+                    else if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
                     {
-                        // copy pixel across
                         destinationColumnPtr[0] = sourceColumnPtr[0];
                         destinationColumnPtr[1] = sourceColumnPtr[1];
                         destinationColumnPtr[2] = sourceColumnPtr[2];
                     }
-#else                    
-                    if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
-                    {
-                        // copy pixel across
-                        destinationColumnPtr[0] = sourceColumnPtr[0];
-                        destinationColumnPtr[1] = sourceColumnPtr[1];
-                        destinationColumnPtr[2] = sourceColumnPtr[2];
-                    }
-#endif                        
                 }
             }
 
@@ -1402,6 +1411,7 @@ DataSet::DestinationTile::DestinationTile():
     _level(0),
     _tileX(0),
     _tileY(0),
+    _pixelFormat(GL_RGB),
     _maxSourceLevel(0),
     _imagery_maxNumColumns(4096),
     _imagery_maxNumRows(4096),
@@ -1549,7 +1559,7 @@ void DataSet::DestinationTile::allocate()
             std::string imageName(_name+imageExension);
             imageData._imagery->_image->setFileName(imageName.c_str());
 
-            imageData._imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,GL_RGB,GL_UNSIGNED_BYTE);
+            imageData._imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,_pixelFormat,GL_UNSIGNED_BYTE);
             unsigned char* data = imageData._imagery->_image->data();
             unsigned int totalSize = imageData._imagery->_image->getTotalSizeInBytesIncludingMipmaps();
             for(unsigned int i=0;i<totalSize;++i)

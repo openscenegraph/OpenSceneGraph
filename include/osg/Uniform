@@ -202,7 +202,9 @@ class OSG_EXPORT Uniform : public Object
         virtual int compare(const Uniform& rhs) const;
         virtual int compareData(const Uniform& rhs) const;
 
-        virtual bool operator < (const Uniform& rhs) const { return (compare(rhs) == -1); }
+        bool operator <  (const Uniform& rhs) const { return compare(rhs)<0; }
+        bool operator == (const Uniform& rhs) const { return compare(rhs)==0; }
+        bool operator != (const Uniform& rhs) const { return compare(rhs)!=0; }
 
         void copyData( const Uniform& rhs );
 

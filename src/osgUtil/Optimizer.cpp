@@ -259,9 +259,10 @@ void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
 // Optimize State Visitor
 ////////////////////////////////////////////////////////////////////////////
 
-struct LessAttributeFunctor
+template<typename T>
+struct LessDerefFunctor 
 {
-    bool operator () (const osg::StateAttribute* lhs,const osg::StateAttribute* rhs) const
+    bool operator () (const T* lhs,const T* rhs) const
     {
         return (*lhs<*rhs); 
     }
@@ -344,12 +345,17 @@ void Optimizer::StateVisitor::optimize()
         typedef std::pair<osg::StateSet*,unsigned int>      StateSetUnitPair;
         typedef std::set<StateSetUnitPair>                  StateSetList;
         typedef std::map<osg::StateAttribute*,StateSetList> AttributeToStateSetMap;
+        AttributeToStateSetMap attributeToStateSetMap;
+
+        // create map from uniforms to stateset when contain them.
+        typedef std::set<osg::StateSet*>                    StateSetSet;
+        typedef std::map<osg::Uniform*,StateSetSet>         UniformToStateSetMap;
         
         const unsigned int NON_TEXTURE_ATTRIBUTE = 0xffffffff;
         
-        AttributeToStateSetMap _attributeToStateSetMap;
+        UniformToStateSetMap  uniformToStateSetMap;
 
-        // NOTE will need to track state attribute override value too.
+        // NOTE - TODO will need to track state attribute override value too.
 
         for(StateSetMap::iterator sitr=_statesets.begin();
             sitr!=_statesets.end();
@@ -362,7 +368,7 @@ void Optimizer::StateVisitor::optimize()
             {
                 if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
                 {
-                    _attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,NON_TEXTURE_ATTRIBUTE));
+                    attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,NON_TEXTURE_ATTRIBUTE));
                 }
             }
 
@@ -377,92 +383,151 @@ void Optimizer::StateVisitor::optimize()
                 {
                     if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
                     {
-                        _attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,unit));
+                        attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,unit));
                     }
                 }
             }
 
-        }
 
-        if (_attributeToStateSetMap.size()<2)
-        {
-            osg::notify(osg::INFO) << "Too few state attributes to optimize."<< std::endl;
-            return;
-        }
-
-        // create unique set of state attribute pointers.
-        typedef std::vector<osg::StateAttribute*> AttributeList;
-        AttributeList _attributeList;
-
-        for(AttributeToStateSetMap::iterator aitr=_attributeToStateSetMap.begin();
-            aitr!=_attributeToStateSetMap.end();
-            ++aitr)
-        {
-            _attributeList.push_back(aitr->first);
-        }
-
-        // sort the attributes so that equal attributes sit along side each
-        // other.
-        std::sort(_attributeList.begin(),_attributeList.end(),LessAttributeFunctor());
-
-
-        osg::notify(osg::INFO) << "state attribute list"<< std::endl;
-        for(AttributeList::iterator aaitr = _attributeList.begin();
-            aaitr!=_attributeList.end();
-            ++aaitr)
-        {
-            osg::notify(osg::INFO) << "    "<<*aaitr << "  "<<(*aaitr)->className()<< std::endl;
-        }
-
-        osg::notify(osg::INFO) << "searching for duplicate attributes"<< std::endl;
-        // find the duplicates.
-        AttributeList::iterator first_unique = _attributeList.begin();
-        AttributeList::iterator current = first_unique; ++current;
-        for(; current!=_attributeList.end();++current)
-        {
-            if (**current==**first_unique)
+            osg::StateSet::UniformList& uniforms = sitr->first->getUniformList();
+            for(osg::StateSet::UniformList::iterator uitr= uniforms.begin();
+                uitr!=uniforms.end();
+                ++uitr)
             {
-                osg::notify(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
-                StateSetList& statesetlist = _attributeToStateSetMap[*current];
-                for(StateSetList::iterator sitr=statesetlist.begin();
-                    sitr!=statesetlist.end();
-                    ++sitr)
+                if (uitr->second.first->getDataVariance()==osg::Object::STATIC)
                 {
-                    osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
-                    osg::StateSet* stateset = sitr->first;
-                    unsigned int unit = sitr->second;
-                    if (unit==NON_TEXTURE_ATTRIBUTE) stateset->setAttribute(*first_unique);
-                    else stateset->setTextureAttribute(unit,*first_unique);
+                    uniformToStateSetMap[uitr->second.first.get()].insert(sitr->first);
                 }
             }
-            else first_unique = current;
+
+        }
+
+        if (attributeToStateSetMap.size()>=2)
+        {
+            // create unique set of state attribute pointers.
+            typedef std::vector<osg::StateAttribute*> AttributeList;
+            AttributeList attributeList;
+
+            for(AttributeToStateSetMap::iterator aitr=attributeToStateSetMap.begin();
+                aitr!=attributeToStateSetMap.end();
+                ++aitr)
+            {
+                attributeList.push_back(aitr->first);
+            }
+
+            // sort the attributes so that equal attributes sit along side each
+            // other.
+            std::sort(attributeList.begin(),attributeList.end(),LessDerefFunctor<osg::StateAttribute>());
+
+            osg::notify(osg::INFO) << "state attribute list"<< std::endl;
+            for(AttributeList::iterator aaitr = attributeList.begin();
+                aaitr!=attributeList.end();
+                ++aaitr)
+            {
+                osg::notify(osg::INFO) << "    "<<*aaitr << "  "<<(*aaitr)->className()<< std::endl;
+            }
+
+            osg::notify(osg::INFO) << "searching for duplicate attributes"<< std::endl;
+            // find the duplicates.
+            AttributeList::iterator first_unique = attributeList.begin();
+            AttributeList::iterator current = first_unique;
+            ++current;
+            for(; current!=attributeList.end();++current)
+            {
+                if (**current==**first_unique)
+                {
+                    osg::notify(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
+                    StateSetList& statesetlist = attributeToStateSetMap[*current];
+                    for(StateSetList::iterator sitr=statesetlist.begin();
+                        sitr!=statesetlist.end();
+                        ++sitr)
+                    {
+                        osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
+                        osg::StateSet* stateset = sitr->first;
+                        unsigned int unit = sitr->second;
+                        if (unit==NON_TEXTURE_ATTRIBUTE) stateset->setAttribute(*first_unique);
+                        else stateset->setTextureAttribute(unit,*first_unique);
+                    }
+                }
+                else first_unique = current;
+            }
         }
         
+                
+        if (uniformToStateSetMap.size()>=2)
+        {
+            // create unique set of uniform pointers.
+            typedef std::vector<osg::Uniform*> UniformList;
+            UniformList uniformList;
+
+            for(UniformToStateSetMap::iterator aitr=uniformToStateSetMap.begin();
+                aitr!=uniformToStateSetMap.end();
+                ++aitr)
+            {
+                uniformList.push_back(aitr->first);
+            }
+
+            // sort the uniforms so that equal uniforms sit along side each
+            // other.
+            std::sort(uniformList.begin(),uniformList.end(),LessDerefFunctor<osg::Uniform>());
+
+            osg::notify(osg::INFO) << "state uniform list"<< std::endl;
+            for(UniformList::iterator uuitr = uniformList.begin();
+                uuitr!=uniformList.end();
+                ++uuitr)
+            {
+                osg::notify(osg::INFO) << "    "<<*uuitr << "  "<<(*uuitr)->getName()<< std::endl;
+            }
+
+            osg::notify(osg::INFO) << "searching for duplicate uniforms"<< std::endl;
+            // find the duplicates.
+            UniformList::iterator first_unique_uniform = uniformList.begin();
+            UniformList::iterator current_uniform = first_unique_uniform; 
+            ++current_uniform;
+            for(; current_uniform!=uniformList.end();++current_uniform)
+            {
+                if ((**current_uniform)==(**first_unique_uniform))
+                {
+                    osg::notify(osg::INFO) << "    found duplicate uniform "<<(*current_uniform)->getName()<<"  first_unique_uniform="<<*first_unique_uniform<<"  current_uniform="<<*current_uniform<< std::endl;
+                    StateSetSet& statesetset = uniformToStateSetMap[*current_uniform];
+                    for(StateSetSet::iterator sitr=statesetset.begin();
+                        sitr!=statesetset.end();
+                        ++sitr)
+                    {
+                        osg::notify(osg::INFO) << "       replace duplicate "<<*current_uniform<<" with "<<*first_unique_uniform<< std::endl;
+                        osg::StateSet* stateset = *sitr;
+                        stateset->addUniform(*first_unique_uniform);
+                    }
+                }
+                else first_unique_uniform = current_uniform;
+            }
+        }
+
     }
+    
     // duplicate state attributes removed.
     // now need to look at duplicate state sets.
-    
     {
         // create the list of stateset's.
         typedef std::vector<osg::StateSet*> StateSetSortList;
-        StateSetSortList _statesetSortList;
+        StateSetSortList statesetSortList;
         for(StateSetMap::iterator ssitr=_statesets.begin();
             ssitr!=_statesets.end();
             ++ssitr)
         {
-            _statesetSortList.push_back(ssitr->first);
+            statesetSortList.push_back(ssitr->first);
         }
 
 
         // sort the StateSet's so that equal StateSet's sit along side each
         // other.
-        std::sort(_statesetSortList.begin(),_statesetSortList.end(),LessStateSetFunctor());
+        std::sort(statesetSortList.begin(),statesetSortList.end(),LessDerefFunctor<osg::StateSet>());
 
         osg::notify(osg::INFO) << "searching for duplicate attributes"<< std::endl;
         // find the duplicates.
-        StateSetSortList::iterator first_unique = _statesetSortList.begin();
+        StateSetSortList::iterator first_unique = statesetSortList.begin();
         StateSetSortList::iterator current = first_unique; ++current;
-        for(; current!=_statesetSortList.end();++current)
+        for(; current!=statesetSortList.end();++current)
         {
             if (**current==**first_unique)
             {

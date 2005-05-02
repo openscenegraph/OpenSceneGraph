@@ -265,6 +265,9 @@ class OSG_EXPORT Drawable : public Object
         /** Get the const UpdateCallback.*/
         const UpdateCallback* getUpdateCallback() const { return _updateCallback.get(); }
 
+        /** Return whether this Drawable has update callbacks associated with it, and therefore must be traversed.*/
+        bool requiresUpdateTraversal() const { return _updateCallback.valid() || (_stateset.valid() && _stateset->requiresUpdateTraversal()); }
+
 
         struct EventCallback : public virtual osg::Object
         {
@@ -286,6 +289,9 @@ class OSG_EXPORT Drawable : public Object
 
         /** Get the const EventCallback.*/
         const EventCallback* getEventCallback() const { return _eventCallback.get(); }
+
+        /** Return whether this Drawable has event callbacks associated with it, and therefore must be traversed.*/
+        bool requiresEventTraversal() const { return _eventCallback.valid() || (_stateset.valid() && _stateset->requiresEventTraversal()); }
 
 
         struct CullCallback : public virtual osg::Object

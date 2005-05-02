@@ -157,19 +157,31 @@ copy_row(unsigned char *ptr, unsigned char *data, int n, int numSamples)
 }
 
 
-static void
-interleave_row(unsigned char *ptr,
-unsigned char *red, unsigned char *blue, unsigned char *green,
-int n)
+static void interleave_row(unsigned char *ptr,
+                           unsigned char *red, unsigned char *green, unsigned char *blue,
+                           int n, int numSamples)
 {
     while (n--)
     {
         *ptr++ = *red++;
         *ptr++ = *green++;
         *ptr++ = *blue++;
+        if (numSamples==4) *ptr++ = 255;
     }
 }
 
+static void interleave_row(unsigned char *ptr,
+                           unsigned char *red, unsigned char *green, unsigned char *blue, unsigned char *alpha,
+                           int n, int numSamples)
+{
+    while (n--)
+    {
+        *ptr++ = *red++;
+        *ptr++ = *green++;
+        *ptr++ = *blue++;
+        if (numSamples==4) *ptr++ = *alpha++;
+    }
+}
 
 int
 simage_tiff_identify(const char *,
@@ -381,7 +393,6 @@ int *numComponents_ret)
             break;
 
         case pack(PHOTOMETRIC_RGB, PLANARCONFIG_SEPARATE):
-            osg::notify(osg::NOTICE)<<"case 4"<<std::endl;
             rowsize = TIFFScanlineSize(in);
             inbuf = new unsigned char [format*rowsize];
             for (row = 0; !tifferror && row < h; row++)
@@ -396,7 +407,8 @@ int *numComponents_ret)
                 }
                 if (!tifferror)
                 {
-                    interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, w);
+                    if (format==3) interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, w, format);
+                    else if (format==4) interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, inbuf+3*rowsize, w, format);
                     currPtr -= format*w;
                 }
             }
@@ -466,9 +478,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 
             unsigned int pixelFormat =
                 numComponents_ret == 1 ? GL_LUMINANCE :
-            numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
-            numComponents_ret == 3 ? GL_RGB :
-            numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
+                numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
+                numComponents_ret == 3 ? GL_RGB :
+                numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
             unsigned int dataType = GL_UNSIGNED_BYTE;
 

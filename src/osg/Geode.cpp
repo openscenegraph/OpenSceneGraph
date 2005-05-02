@@ -57,12 +57,12 @@ bool Geode::addDrawable( Drawable *drawable )
         // register as parent of drawable.
         drawable->addParent(this);
         
-        if (drawable->getUpdateCallback() && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
+        if (drawable->requiresUpdateTraversal())
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
         }
         
-        if (drawable->getEventCallback() && !(_stateset.valid() && _stateset->requiresEventTraversal()))
+        if (drawable->requiresEventTraversal())
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
         }
@@ -99,18 +99,18 @@ bool Geode::removeDrawable(unsigned int pos,unsigned int numDrawablesToRemove)
             // remove this Geode from the child parent list.
             _drawables[i]->removeParent(this);
             // update the number of app calbacks removed
-            if (_drawables[i]->getUpdateCallback()) ++updateCallbackRemoved;
-            if (_drawables[i]->getEventCallback()) ++eventCallbackRemoved;
+            if (_drawables[i]->requiresUpdateTraversal()) ++updateCallbackRemoved;
+            if (_drawables[i]->requiresEventTraversal()) ++eventCallbackRemoved;
         }
 
         _drawables.erase(_drawables.begin()+pos,_drawables.begin()+endOfRemoveRange);
 
-        if (updateCallbackRemoved && !(_stateset.valid() && _stateset->requiresUpdateTraversal()))
+        if (updateCallbackRemoved)
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
         }
         
-        if (eventCallbackRemoved && !(_stateset.valid() && _stateset->requiresEventTraversal()))
+        if (eventCallbackRemoved)
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-eventCallbackRemoved);
         }
@@ -142,16 +142,16 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
         Drawable* origDrawable = _drawables[i].get();
 
         int deltaUpdate = 0;
-        if (origDrawable->getUpdateCallback()) --deltaUpdate;
-        if (newDrawable->getUpdateCallback()) ++deltaUpdate;
+        if (origDrawable->requiresUpdateTraversal()) --deltaUpdate;
+        if (newDrawable->requiresUpdateTraversal()) ++deltaUpdate;
         if (deltaUpdate!=0)
         {
             setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+deltaUpdate);
         }
 
         int deltaEvent = 0;
-        if (origDrawable->getEventCallback()) --deltaEvent;
-        if (newDrawable->getEventCallback()) ++deltaEvent;
+        if (origDrawable->requiresEventTraversal()) --deltaEvent;
+        if (newDrawable->requiresEventTraversal()) ++deltaEvent;
         if (deltaEvent!=0)
         {
             setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+deltaEvent);

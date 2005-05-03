@@ -261,9 +261,9 @@ bool FltFile::readFile(const std::string& fileName)
                             pushAndPopPath = (fpl.empty() | fpl.back().empty() ? "." : fpl.back()) + "/" + filePath;
                         }
 
-                        char optionsString[256];
+                        /*char optionsString[256];
                         sprintf(optionsString,"FLT_VER %d",rec.getFlightVersion());
-                        options->setOptionString(optionsString);
+                        options->setOptionString(optionsString);*/
 
                         //osg::notify(osg::NOTICE)<<"Create local path"<<pushAndPopPath<<std::endl;
 
@@ -279,6 +279,8 @@ bool FltFile::readFile(const std::string& fileName)
                         }
 
                         pExternalFltFile->readModel(filename);
+
+                        fpl.pop_back();
                     }
 
                     rec.setExternal(pExternalFltFile);

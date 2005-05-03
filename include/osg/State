@@ -26,6 +26,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 
 #ifndef GL_TEXTURE0
@@ -662,7 +663,7 @@ class OSG_EXPORT State : public Referenced
         bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
 
 
-        void setLastAppliedProgramObject(const Program::PerContextProgram* program) { _lastAppliedProgramObject = program; }
+        void setLastAppliedProgramObject(const Program::PerContextProgram* program) { if (_lastAppliedProgramObject!=program) { _lastAppliedProgramObject = program; if (program) _appliedProgramObjectSet.insert(program); } }
         const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
 
 	inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
@@ -797,35 +798,15 @@ class OSG_EXPORT State : public Referenced
             UniformStack()
             {
                 changed = false;
-                last_applied_uniform = 0L;
                 global_default_uniform = 0L;
             }
 
             /** apply an uniform if required */
             bool                    changed;
-            const Uniform*          last_applied_uniform;
             ref_ptr<const Uniform>  global_default_uniform;
             UniformVec              uniformVec;
         };
 
-
-        struct ProgramStack
-        {
-            typedef std::vector<const Program*> ProgramVec;
-
-            ProgramStack()
-            {
-                changed = false;
-                last_applied_program = 0L;
-                global_default_program = 0L;
-            }
-
-            /** apply an program if required */
-            bool                    changed;
-            const Program*          last_applied_program;
-            ref_ptr<const Program>  global_default_program;
-            ProgramVec              programVec;
-        };
 
         /** Apply an OpenGL mode if required, passing in mode, enable flag and
           * appropriate mode stack. This is a wrapper around \c glEnable() and
@@ -899,6 +880,8 @@ class OSG_EXPORT State : public Referenced
 
         typedef std::vector<const StateSet*>                            StateSetStack;
         typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
+        
+        typedef std::set<osg::ref_ptr<const Program::PerContextProgram> > AppliedProgramObjectSet;
 
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;
@@ -907,7 +890,7 @@ class OSG_EXPORT State : public Referenced
         TextureModeMapList                                              _textureModeMapList;
         TextureAttributeMapList                                         _textureAttributeMapList;
 
-        ProgramStack                                                    _programStack;
+        AppliedProgramObjectSet                                         _appliedProgramObjectSet;
         const Program::PerContextProgram*                               _lastAppliedProgramObject;
 
         StateSetStack                                                   _stateStateStack;

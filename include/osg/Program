@@ -389,11 +389,41 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool getInfoLog( std::string& infoLog ) const;
 
                 void useProgram() const;
+
+                void resetAppliedUnifroms() const
+                {
+                    for(LastAppliedUniformList::iterator itr=_lastAppliedUniformList.begin();
+                        itr!=_lastAppliedUniformList.end();
+                        ++itr)
+                    {
+                        (*itr).first = 0;
+                        (*itr).second = 0;
+                    }
+                }
                 
-                void apply(const Uniform& uniform) const
+                
+                inline void apply(const Uniform& uniform) const
                 {
                     GLint location = getUniformLocation(uniform.getName());
-                    if (location>=0) uniform.apply(_extensions.get(),location);
+                    if (location>=0)
+                    {
+                        if ((unsigned int)location>=_lastAppliedUniformList.size()) _lastAppliedUniformList.resize(location+1);
+                        const Uniform* lastAppliedUniform = _lastAppliedUniformList[location].first;
+                        if (lastAppliedUniform != &uniform)
+                        {
+                            // new attribute
+                            uniform.apply(_extensions.get(),location);
+                            _lastAppliedUniformList[location].first = &uniform;
+                            _lastAppliedUniformList[location].second = uniform.getModifiedCount();
+                        }
+                        else if (_lastAppliedUniformList[location].second != uniform.getModifiedCount())
+                        {
+                            // existing attribute has been modified
+                            uniform.apply(_extensions.get(),location);
+                            _lastAppliedUniformList[location].first = &uniform;
+                            _lastAppliedUniformList[location].second = uniform.getModifiedCount();
+                        }
+                    }
                 }
 
                 inline GLint getUniformLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _uniformLocationMap.find(name); return (itr!=_uniformLocationMap.end()) ? itr->second : -1; }
@@ -418,6 +448,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 typedef std::map<std::string, GLint> NameLocationMap;
                 NameLocationMap _uniformLocationMap;
                 NameLocationMap _attribLocationMap;
+                
+                typedef std::pair<const osg::Uniform*, unsigned int> UniformModifiedCountPair;
+                typedef std::vector<UniformModifiedCountPair> LastAppliedUniformList;
+                mutable LastAppliedUniformList _lastAppliedUniformList;
 
             private:
                 PerContextProgram();        // disallowed

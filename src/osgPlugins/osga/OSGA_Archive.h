@@ -148,7 +148,7 @@ class OSGA_Archive : public osgDB::Archive
             char*           _data;
         };
     
-	public: 
+    public: 
         /** Functor used in internal implementations.*/
         struct ReadFunctor
         {

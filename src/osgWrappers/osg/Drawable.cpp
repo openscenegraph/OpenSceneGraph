@@ -86,9 +86,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	Method1(void, setUpdateCallback, IN, osg::Drawable::UpdateCallback *, ac);
 	Method0(osg::Drawable::UpdateCallback *, getUpdateCallback);
 	Method0(const osg::Drawable::UpdateCallback *, getUpdateCallback);
+	Method0(bool, requiresUpdateTraversal);
 	Method1(void, setEventCallback, IN, osg::Drawable::EventCallback *, ac);
 	Method0(osg::Drawable::EventCallback *, getEventCallback);
 	Method0(const osg::Drawable::EventCallback *, getEventCallback);
+	Method0(bool, requiresEventTraversal);
 	Method1(void, setCullCallback, IN, osg::Drawable::CullCallback *, cc);
 	Method0(osg::Drawable::CullCallback *, getCullCallback);
 	Method0(const osg::Drawable::CullCallback *, getCullCallback);

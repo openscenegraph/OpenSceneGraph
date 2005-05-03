@@ -39,7 +39,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	Method0(void, dirtyShader);
 	Method1(void, compileShader, IN, unsigned int, contextID);
 	Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program);
-	Method2(void, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
+	Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
 	Method1(void, setName, IN, const std::string &, name);
 	Method1(void, setName, IN, const char *, name);
 	Method0(const std::string &, getName);

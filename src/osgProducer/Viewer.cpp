@@ -604,7 +604,7 @@ public:
     }
 };
 
-#define SINGLE_THREAD_KEYBOARDMOUSE
+//#define SINGLE_THREAD_KEYBOARDMOUSE
 
 bool Viewer::realize()
 {

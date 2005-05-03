@@ -187,6 +187,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	Method0(bool, isLinked);
 	Method1(bool, getInfoLog, IN, std::string &, infoLog);
 	Method0(void, useProgram);
+	Method0(void, resetAppliedUnifroms);
 	Method1(void, apply, IN, const osg::Uniform &, uniform);
 	Method1(GLint, getUniformLocation, IN, const std::string &, name);
 	Method1(GLint, getAttribLocation, IN, const std::string &, name);

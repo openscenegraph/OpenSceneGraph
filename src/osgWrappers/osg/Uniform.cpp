@@ -114,9 +114,13 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method1(void, setEventCallback, IN, osg::Uniform::Callback *, ec);
 	Method0(osg::Uniform::Callback *, getEventCallback);
 	Method0(const osg::Uniform::Callback *, getEventCallback);
+	Method0(void, dirty);
+	Method1(void, setModifiedCount, IN, unsigned int, mc);
+	Method0(unsigned int, getModifiedCount);
 	Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location);
 	WriteOnlyPropertyWithReturnType(bool, , bool);
 	Property(osg::Uniform::Callback *, EventCallback);
+	Property(unsigned int, ModifiedCount);
 	PropertyWithReturnType(const std::string &, Name, bool);
 	ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
 	ReadOnlyProperty(osg::Uniform::ParentList, Parents);

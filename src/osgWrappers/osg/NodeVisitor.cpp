@@ -16,7 +16,6 @@
 #include <osg/FrameStamp>
 #include <osg/Geode>
 #include <osg/Group>
-#include <osg/Impostor>
 #include <osg/LOD>
 #include <osg/LightSource>
 #include <osg/MatrixTransform>
@@ -26,6 +25,7 @@
 #include <osg/PagedLOD>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Projection>
+#include <osg/ProxyNode>
 #include <osg/Referenced>
 #include <osg/Sequence>
 #include <osg/Switch>
@@ -85,6 +85,7 @@ BEGIN_VALUE_REFLECTOR(osg::NodeVisitor)
 	Method1(void, apply, IN, osg::Geode &, node);
 	Method1(void, apply, IN, osg::Billboard &, node);
 	Method1(void, apply, IN, osg::Group &, node);
+	Method1(void, apply, IN, osg::ProxyNode &, node);
 	Method1(void, apply, IN, osg::Projection &, node);
 	Method1(void, apply, IN, osg::CoordinateSystemNode &, node);
 	Method1(void, apply, IN, osg::ClipNode &, node);
@@ -97,7 +98,6 @@ BEGIN_VALUE_REFLECTOR(osg::NodeVisitor)
 	Method1(void, apply, IN, osg::Sequence &, node);
 	Method1(void, apply, IN, osg::LOD &, node);
 	Method1(void, apply, IN, osg::PagedLOD &, node);
-	Method1(void, apply, IN, osg::Impostor &, node);
 	Method1(void, apply, IN, osg::ClearNode &, node);
 	Method1(void, apply, IN, osg::OccluderNode &, node);
 	Method1(void, setDatabaseRequestHandler, IN, osg::NodeVisitor::DatabaseRequestHandler *, handler);

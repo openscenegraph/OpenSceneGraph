@@ -166,7 +166,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	Method2(void, bindAttribLocation, IN, GLuint, index, IN, const char *, name);
 	Method0(const osg::Program::AttribBindingList &, getAttribBindingList);
 	Method0(bool, isFixedFunction);
-	Method2(void, getGlProgramInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
+	Method2(bool, getGlProgramInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
 	Method1(void, setName, IN, const std::string &, name);
 	Method1(void, setName, IN, const char *, name);
 	Method0(const std::string &, getName);
@@ -185,7 +185,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	Method0(void, linkProgram);
 	Method0(bool, needsLink);
 	Method0(bool, isLinked);
-	Method1(void, getInfoLog, IN, std::string &, infoLog);
+	Method1(bool, getInfoLog, IN, std::string &, infoLog);
 	Method0(void, useProgram);
 	Method1(void, apply, IN, const osg::Uniform &, uniform);
 	Method1(GLint, getUniformLocation, IN, const std::string &, name);

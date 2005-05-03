@@ -2653,7 +2653,10 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
     const DynGeoSet::ColorList& colors = dgset->getColorList();
     const DynGeoSet::NormalList& norms = dgset->getNormalList();
 
-    DPRINT(stderr, "   Num Coords=%d, Num Colors=%d, Num Norms=%d\n", coords.size(), colors.size(), norms.size()) ;
+    DPRINT(stderr, "   Num Coords=%d, Num Colors=%d, Num Norms=%d\n",
+        static_cast<int>(coords.size()),
+        static_cast<int>(colors.size()),
+        static_cast<int>(norms.size())) ;
     
     bool directional = false;
     int numInternalLightPoints = 0; // Number of osgSim::LightPoint objects to add per OpenFlight light point vertex

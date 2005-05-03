@@ -344,7 +344,11 @@ FSSpec *darwinPathToFSSpec (char *fname ) {
     FSRef    ref;
     
     /* convert the POSIX path to an FSRef */
+#if defined( __APPLE__ ) && ( __GNUC__ > 3 )
+    result = FSPathMakeRef( (UInt8*)fname, &ref, false); // fname is not a directory
+#else
     result = FSPathMakeRef(fname, &ref, false); // fname is not a directory
+#endif
 
     if (result!=0) return NULL;
     
@@ -365,11 +369,11 @@ LoadBufferFromDarwinPath ( const char *fname, long *origWidth, long *origHeight,
                                 long *buffDepth)
 {
     FSSpec *fs;
-    sprintf ( errMess, "" );
     
     fs=darwinPathToFSSpec ( const_cast<char*>( fname ) );
     
     if (fs == NULL) {
+        sprintf ( errMess, "error creating path from fsspec" );
         return NULL;
     }
     else 

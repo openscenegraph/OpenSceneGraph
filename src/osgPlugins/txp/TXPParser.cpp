@@ -1169,7 +1169,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         {
             geometry = new osg::Geometry;
             osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_STRIP,0,numPrims);
-            geom.GetPrimLengths(&(dal->front()));
+            geom.GetPrimLengths(reinterpret_cast<int*>(&(dal->front())));
             geometry->addPrimitiveSet(dal);
         }
         break;
@@ -1177,7 +1177,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         {
             geometry = new osg::Geometry;
             osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_FAN,0,numPrims);
-            geom.GetPrimLengths(&(dal->front()));
+            geom.GetPrimLengths(reinterpret_cast<int*>(&(dal->front())));
             geometry->addPrimitiveSet(dal);
 
             // Need to flip the fans coords.

@@ -102,7 +102,7 @@ void Receiver::sync( void )
 	return;
     }
 
-#if defined(__linux) || defined(__FreeBSD__)
+#if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ )
     socklen_t 
 #else
     int

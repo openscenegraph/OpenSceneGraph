@@ -51,6 +51,7 @@ State::~State()
 
 void State::reset()
 {
+
 /*
     for(ModeMap::iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();
@@ -114,6 +115,16 @@ void State::reset()
     setActiveTextureUnit(0);
     
     _lastAppliedProgramObject = 0;
+
+    for(AppliedProgramObjectSet::iterator apitr=_appliedProgramObjectSet.begin();
+        apitr!=_appliedProgramObjectSet.end();
+        ++apitr)
+    {
+        (*apitr)->resetAppliedUnifroms();
+    }
+    
+    _appliedProgramObjectSet.clear();
+    
     
     // what about uniforms??? need to clear them too...
     // go through all active Unfirom's, setting to change to force update,
@@ -124,7 +135,6 @@ void State::reset()
     {
         UniformStack& us = uitr->second;
         us.uniformVec.clear();
-        us.last_applied_uniform = NULL;
         us.changed = true;
     }
 

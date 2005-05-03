@@ -28,14 +28,14 @@ using namespace osg;
 ///////////////////////////////////////////////////////////////////////////
 
 Uniform::Uniform() :
-    _name(""), _type(UNDEFINED)
+    _name(""), _type(UNDEFINED),_modifiedCount(0)
 {
     setDataVariance(STATIC);
 }
 
 
 Uniform::Uniform( const char* name, Type type ) :
-    _name(name), _type(type)
+    _name(name), _type(type),_modifiedCount(0)
 {
     setDataVariance(STATIC);
 
@@ -91,8 +91,8 @@ bool Uniform::setType( Type t )
 {
     if( _type != UNDEFINED )
     {
-    osg::notify(osg::WARN) << "cannot change Uniform type" << std::endl;
-    return false;
+        osg::notify(osg::WARN) << "cannot change Uniform type" << std::endl;
+        return false;
     }
     _type = t;
     return true;
@@ -102,8 +102,8 @@ bool Uniform::setName( const std::string& name )
 {
     if( _name != "" )
     {
-    osg::notify(osg::WARN) << "cannot change Uniform name" << std::endl;
-    return false;
+        osg::notify(osg::WARN) << "cannot change Uniform name" << std::endl;
+        return false;
     }
     _name = name;
     return true;
@@ -273,6 +273,8 @@ void Uniform::copyData(const Uniform& rhs)
         osg::notify(osg::WARN) << "cannot copy UNDEFINED Uniform type" << std::endl;
         break;
     }
+    
+    dirty();
 }
 
 bool Uniform::isCompatibleType( Type t ) const
@@ -465,6 +467,7 @@ bool Uniform::set( float f )
 {
     if( ! isCompatibleType(FLOAT) ) return false;
     _data.f1 = f;
+    dirty();
     return true;
 }
 
@@ -473,6 +476,7 @@ bool Uniform::set( const osg::Vec2& v2 )
     if( ! isCompatibleType(FLOAT_VEC2) ) return false;
     _data.f2[0] = v2.x();
     _data.f2[1] = v2.y();
+    dirty();
     return true;
 }
 
@@ -482,6 +486,7 @@ bool Uniform::set( const osg::Vec3& v3 )
     _data.f3[0] = v3.x();
     _data.f3[1] = v3.y();
     _data.f3[2] = v3.z();
+    dirty();
     return true;
 }
 
@@ -492,6 +497,7 @@ bool Uniform::set( const osg::Vec4& v4 )
     _data.f4[1] = v4.y();
     _data.f4[2] = v4.z();
     _data.f4[3] = v4.w();
+    dirty();
     return true;
 }
 
@@ -505,11 +511,12 @@ bool Uniform::set( const osg::Matrix& m4 )
     int n = 0;
     for(int row=0; row<4; ++row)
     {
-    for(int col=0; col<4; ++col)
-    {
-        _data.f16[n++] = m4(row,col);
+        for(int col=0; col<4; ++col)
+        {
+            _data.f16[n++] = m4(row,col);
+        }
     }
-    }
+    dirty();
     return true;
 }
 
@@ -517,6 +524,7 @@ bool Uniform::set( int i )
 {
     if( ! isCompatibleType(INT) ) return false;
     _data.i1 = i;
+    dirty();
     return true;
 }
 
@@ -525,6 +533,7 @@ bool Uniform::set( int i0, int i1 )
     if( ! isCompatibleType(INT_VEC2) ) return false;
     _data.i2[0] = i0;
     _data.i2[1] = i1;
+    dirty();
     return true;
 }
 
@@ -534,6 +543,7 @@ bool Uniform::set( int i0, int i1, int i2 )
     _data.i3[0] = i0;
     _data.i3[1] = i1;
     _data.i3[2] = i2;
+    dirty();
     return true;
 }
 
@@ -544,6 +554,7 @@ bool Uniform::set( int i0, int i1, int i2, int i3 )
     _data.i4[1] = i1;
     _data.i4[2] = i2;
     _data.i4[3] = i3;
+    dirty();
     return true;
 }
 
@@ -551,6 +562,7 @@ bool Uniform::set( bool b )
 {
     if( ! isCompatibleType(BOOL) ) return false;
     _data.i1 = b;
+    dirty();
     return true;
 }
 
@@ -559,6 +571,7 @@ bool Uniform::set( bool b0, bool b1 )
     if( ! isCompatibleType(BOOL_VEC2) ) return false;
     _data.i2[0] = b0;
     _data.i2[1] = b1;
+    dirty();
     return true;
 }
 
@@ -568,6 +581,7 @@ bool Uniform::set( bool b0, bool b1, bool b2 )
     _data.i3[0] = b0;
     _data.i3[1] = b1;
     _data.i3[2] = b2;
+    dirty();
     return true;
 }
 
@@ -578,6 +592,7 @@ bool Uniform::set( bool b0, bool b1, bool b2, bool b3 )
     _data.i4[1] = b1;
     _data.i4[2] = b2;
     _data.i4[3] = b3;
+    dirty();
     return true;
 }
 

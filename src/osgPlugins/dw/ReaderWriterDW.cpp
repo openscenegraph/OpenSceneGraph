@@ -754,11 +754,11 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
 			
 			
 			GLUtesselator* ts=gluNewTess();
-			gluTessCallback(ts, GLU_TESS_BEGIN, (void (CALLBACK *) ())myFaceBegin);  
-			gluTessCallback(ts, GLU_TESS_VERTEX, (GLvoid (CALLBACK *) ())myVertex);  
-			gluTessCallback(ts, GLU_TESS_END, (GLvoid (CALLBACK *) ())myFaceEnd);  
-			gluTessCallback(ts, GLU_TESS_ERROR, (GLvoid (CALLBACK *) ())error);  
-			gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLvoid (CALLBACK *) ()) &combineCallback);
+			gluTessCallback(ts, GLU_TESS_BEGIN, (GLU_TESS_CALLBACK) myFaceBegin);  
+			gluTessCallback(ts, GLU_TESS_VERTEX, (GLU_TESS_CALLBACK) myVertex);  
+			gluTessCallback(ts, GLU_TESS_END, (GLU_TESS_CALLBACK) myFaceEnd);  
+			gluTessCallback(ts, GLU_TESS_ERROR, (GLU_TESS_CALLBACK) error);  
+			gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK) combineCallback);
 			//  for (int nvf=0; nvf<6; nvf++) { // for each length of face
 			// for Geometry we dont need to collect prim types individually
 			//     prd.setmode(nvf , nfnvf); // filter out only this type of tesselated face

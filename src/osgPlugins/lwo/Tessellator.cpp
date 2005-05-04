@@ -46,10 +46,10 @@ bool Tessellator::tessellate(const Polygon &poly, const osg::Vec3Array *points, 
 
 	GLUtesselator *tess = gluNewTess();
 
-	gluTessCallback(tess, GLU_TESS_BEGIN_DATA, reinterpret_cast<void (CALLBACK *)()>(cb_begin_data));
-	gluTessCallback(tess, GLU_TESS_VERTEX_DATA, reinterpret_cast<void (CALLBACK *)()>(cb_vertex_data));
-	gluTessCallback(tess, GLU_TESS_END_DATA, reinterpret_cast<void (CALLBACK *)()>(cb_end_data));
-	gluTessCallback(tess, GLU_TESS_ERROR_DATA, reinterpret_cast<void (CALLBACK *)()>(cb_error_data));
+	gluTessCallback(tess, GLU_TESS_BEGIN_DATA, (GLU_TESS_CALLBACK) (cb_begin_data));
+	gluTessCallback(tess, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) (cb_vertex_data));
+	gluTessCallback(tess, GLU_TESS_END_DATA, (GLU_TESS_CALLBACK) (cb_end_data));
+	gluTessCallback(tess, GLU_TESS_ERROR_DATA, (GLU_TESS_CALLBACK) (cb_error_data));
 
 	gluTessBeginPolygon(tess, this);
 	gluTessBeginContour(tess);	

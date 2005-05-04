@@ -35,17 +35,19 @@ Tesselator::~Tesselator()
     reset();
 }
 
+
+
 void Tesselator::beginTesselation()
 {
     reset();
 
     if (!_tobj) _tobj = gluNewTess();
     
-    gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLvoid (CALLBACK*)()) vertexCallback);
-    gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA,  (GLvoid (CALLBACK*)()) beginCallback);
-    gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLvoid (CALLBACK*)()) endCallback);
-    gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA,(GLvoid (CALLBACK*)()) combineCallback);
-    gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLvoid (CALLBACK*)()) errorCallback);
+    gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) vertexCallback);
+    gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA,  (GLU_TESS_CALLBACK) beginCallback);
+    gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLU_TESS_CALLBACK) endCallback);
+    gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA,(GLU_TESS_CALLBACK) combineCallback);
+    gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLU_TESS_CALLBACK) errorCallback);
 
     gluTessBeginPolygon(_tobj,this);
 }    

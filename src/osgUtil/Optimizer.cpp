@@ -507,6 +507,7 @@ void Optimizer::StateVisitor::optimize()
     
     // duplicate state attributes removed.
     // now need to look at duplicate state sets.
+    if (_statesets.size()>=2)
     {
         // create the list of stateset's.
         typedef std::vector<osg::StateSet*> StateSetSortList;

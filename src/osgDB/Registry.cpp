@@ -160,7 +160,6 @@ Registry::Registry()
     addFileExtensionAlias("gif",  "qt");
     addFileExtensionAlias("png",  "qt");
     addFileExtensionAlias("psd",  "qt");
-    addFileExtensionAlias("rgb",  "qt");
     addFileExtensionAlias("tga",  "qt");
     addFileExtensionAlias("mov",  "qt");
     addFileExtensionAlias("avi",  "qt");

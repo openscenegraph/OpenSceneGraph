@@ -1272,6 +1272,8 @@ Texture::Extensions::Extensions(const Extensions& rhs):
     _isShadowAmbientSupported = rhs._isShadowAmbientSupported;
 
     _isClientStorageSupported = rhs._isClientStorageSupported;
+
+    _isNonPowerOfTwoTextureSupported = rhs._isNonPowerOfTwoTextureSupported;
 }
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -1299,6 +1301,8 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isShadowAmbientSupported) _isShadowAmbientSupported = false;
     
     if (!rhs._isClientStorageSupported) _isClientStorageSupported = false;
+
+    if (!rhs._isNonPowerOfTwoTextureSupported) _isNonPowerOfTwoTextureSupported = false;
 }
 
 void Texture::Extensions::setupGLExtensions(unsigned int contextID)
@@ -1326,6 +1330,9 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     _isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
 
     _isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
+
+    _isNonPowerOfTwoTextureSupported = ( glVersion >= 2.0 ) ||
+                                       isGLExtensionSupported(contextID,"GL_ARB_texture_non_power_of_two");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 

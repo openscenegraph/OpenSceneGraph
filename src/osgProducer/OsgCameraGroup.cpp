@@ -209,8 +209,11 @@ OsgCameraGroup::~OsgCameraGroup()
 void OsgCameraGroup::_init()
 {
     const char* str = getenv("OSG_CAMERA_THREADING");
-    if (str && strcmp(str,"SingleThreaded")==0) _thread_model = SingleThreaded;
-    else _thread_model = ThreadPerCamera;
+    if (str)
+    {
+        if (strcmp(str,"SingleThreaded")==0) _thread_model = SingleThreaded;
+        else _thread_model = ThreadPerCamera;
+    }
 
     _scene_data = NULL;
     _global_stateset = NULL;

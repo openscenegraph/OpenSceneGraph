@@ -34,7 +34,7 @@ Uniform::Uniform() :
 }
 
 
-Uniform::Uniform( const char* name, Type type ) :
+Uniform::Uniform( const std::string& name, Type type ) :
     _name(name), _type(type),_modifiedCount(0)
 {
     setDataVariance(STATIC);
@@ -89,6 +89,8 @@ void Uniform::removeParent(osg::StateSet* object)
 
 bool Uniform::setType( Type t )
 {
+    if (_type==t) return true;
+
     if( _type != UNDEFINED )
     {
         osg::notify(osg::WARN) << "cannot change Uniform type" << std::endl;
@@ -721,6 +723,7 @@ bool Uniform::get( bool& b0, bool& b1, bool& b2, bool& b3 ) const
 
 void Uniform::apply(const GL2Extensions* ext, GLint location) const
 {
+    // osg::notify(osg::NOTICE) << "uniform at "<<location<<" "<<_name<< std::endl;
     switch( getGlApiType(getType()) )
     {
     case FLOAT:

@@ -52,6 +52,8 @@ SceneView::SceneView(DisplaySettings* ds)
     _drawBufferValue = GL_BACK;
 
     _requiresFlush = true;
+    
+    _activeUniforms = DEFAULT_UNIFORMS;
 }
 
 
@@ -163,11 +165,6 @@ void SceneView::init()
 
 void SceneView::update()
 {
-    // comment out since the init traversal by default with do OpenGL calls,
-    // which you definately don't want to call during update().
-    // if (!_initCalled) init();
-
-
     if (_sceneData.valid() && _updateVisitor.valid())
     { 
         _updateVisitor->reset();
@@ -188,8 +185,41 @@ void SceneView::update()
         // multi-threaded.
         _sceneData->getBound();
     }
+}
+
+void SceneView::updateUniforms()
+{
+    if (!_localStateSet)
+    {
+        _localStateSet = new osg::StateSet;
+    }
+
+    if (!_localStateSet) return;
     
+    if ((_activeUniforms & FRAME_NUMBER_UNIFORM) && _frameStamp.valid())
+    {
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_FrameNumber",osg::Uniform::INT);
+        uniform->set(_frameStamp->getFrameNumber());        
+    }
     
+    if ((_activeUniforms & FRAME_TIME_UNIFORM) && _frameStamp.valid())
+    {
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_FrameTime",osg::Uniform::FLOAT);
+        uniform->set(static_cast<float>(_frameStamp->getReferenceTime()));
+    }
+
+    if (_activeUniforms & VIEW_MATRIX_UNIFORM)
+    {
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_ViewMatrix",osg::Uniform::FLOAT_MAT4);
+        uniform->set(_viewMatrix);      
+    }
+
+    if (_activeUniforms & INVERSE_VIEW_MATRIX_UNIFORM)
+    {
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_InverseViewMatrix",osg::Uniform::FLOAT_MAT4);
+        uniform->set(osg::Matrix::inverse(_viewMatrix));      
+    }
+
 }
 
 osg::Matrixd SceneView::computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const
@@ -324,6 +354,8 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
 
 void SceneView::cull()
 {
+    // update the active uniforms
+    updateUniforms();
 
     if (!_state)
     {

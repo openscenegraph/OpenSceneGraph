@@ -470,7 +470,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const;
 
                 bool isClientStorageSupported() const { return _isClientStorageSupported; }
-              
+
+                bool isNonPowerOfTwoTextureSupported() const { return _isNonPowerOfTwoTextureSupported; }
 
             protected:
 
@@ -487,6 +488,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isShadowSupported;
                 bool    _isShadowAmbientSupported;
                 bool    _isClientStorageSupported;
+                bool    _isNonPowerOfTwoTextureSupported;
                 
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;

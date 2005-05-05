@@ -52,7 +52,7 @@ DynamicLibrary::~DynamicLibrary()
 #if defined(WIN32) && !defined(__CYGWIN__)
         FreeLibrary((HMODULE)_handle);
 #elif defined(__APPLE__)
-        NSUnLinkModule(static_cast<__NSModule*>(_handle), FALSE);
+        NSUnLinkModule(static_cast<NSModule>(_handle), FALSE);
 #elif defined(__hpux__)
         // fortunately, shl_t is a pointer
         shl_unload (static_cast<shl_t>(_handle));

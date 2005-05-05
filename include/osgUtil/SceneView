@@ -123,7 +123,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         const osg::Vec4& getClearColor() const { return _clearColor; }
 
 
-
         void setGlobalStateSet(osg::StateSet* state) { _globalStateSet = state; }
         osg::StateSet* getGlobalStateSet() { return _globalStateSet.get(); }
         const osg::StateSet* getGlobalStateSet() const { return _globalStateSet.get(); }
@@ -131,6 +130,28 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         void setLocalStateSet(osg::StateSet* state) { _localStateSet = state; }
         osg::StateSet* getLocalStateSet() { return _localStateSet.get(); }
         const osg::StateSet* getLocalStateSet() const { return _localStateSet.get(); }
+        
+        enum ActiveUniforms
+        {
+            FRAME_NUMBER_UNIFORM            = 0x1,
+            FRAME_TIME_UNIFORM              = 0x2,
+            VIEW_MATRIX_UNIFORM             = 0x4,
+            INVERSE_VIEW_MATRIX_UNIFORM     = 0x8,
+            DEFAULT_UNIFORMS                = FRAME_NUMBER_UNIFORM |
+                                              FRAME_TIME_UNIFORM |
+                                              VIEW_MATRIX_UNIFORM |
+                                              INVERSE_VIEW_MATRIX_UNIFORM,
+            ALL_UNIFORMS                    = 0xFFFFFFFF
+        };
+
+        /** Set the uniforms that SceneView should set set up on each frame.*/        
+        void setActiveUniforms(int activeUniforms) { _activeUniforms = activeUniforms; }
+
+        /** Set the uniforms that SceneView should set set up on each frame.*/        
+        int getActiveUniforms(int activeUniforms) const { return _activeUniforms; }
+
+        void updateUniforms();
+        
 
         typedef Options LightingMode;
 
@@ -485,6 +506,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         GLenum                                      _drawBufferValue;
         
         bool                                        _requiresFlush;
+        
+        int                                         _activeUniforms;
         
 };
 

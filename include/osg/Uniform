@@ -153,7 +153,7 @@ class OSG_EXPORT Uniform : public Object
 
     public:
         Uniform();
-        Uniform( const char* name, Type type );
+        Uniform( const std::string& name, Type type );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Uniform(const Uniform& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);

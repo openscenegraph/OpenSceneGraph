@@ -923,6 +923,25 @@ Uniform* StateSet::getUniform(const std::string& name)
     else return 0;
 }
 
+Uniform* StateSet::getOrCreateUniform(const std::string& name, Uniform::Type type)
+{
+    // for look for an appropriate uniform.
+    UniformList::iterator itr = _uniformList.find(name);
+    if (itr!=_uniformList.end() && 
+        itr->second.first->getType()==type)
+    {
+        return itr->second.first.get();
+    }
+
+    // no uniform found matching name so create it..
+    
+    Uniform* uniform = new Uniform(name,type);
+    addUniform(uniform);
+    
+    return uniform;
+}
+
+
 const Uniform* StateSet::getUniform(const std::string& name) const
 {
     UniformList::const_iterator itr = _uniformList.find(name);

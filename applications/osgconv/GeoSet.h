@@ -316,7 +316,7 @@ class GeoSet : public Drawable
           */
         virtual void drawImplementation(State&) const {}
 
-        bool check() const;
+        bool checkConsistency() const;
 
 
         /** function object which is used to handling the clean up of attribute arrays

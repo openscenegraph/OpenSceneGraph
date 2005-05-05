@@ -531,7 +531,7 @@ bool GeoSet::computeBound() const
     return true;
 }
 
-bool GeoSet::check() const
+bool GeoSet::checkConsistency() const
 {
     if( _coords == (Vec3 *)0 ) return false;
 

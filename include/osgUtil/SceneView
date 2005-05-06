@@ -135,10 +135,12 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         {
             FRAME_NUMBER_UNIFORM            = 0x1,
             FRAME_TIME_UNIFORM              = 0x2,
-            VIEW_MATRIX_UNIFORM             = 0x4,
-            INVERSE_VIEW_MATRIX_UNIFORM     = 0x8,
+            DELTA_FRAME_TIME_UNIFORM        = 0x4,
+            VIEW_MATRIX_UNIFORM             = 0x8,
+            INVERSE_VIEW_MATRIX_UNIFORM     = 0x16,
             DEFAULT_UNIFORMS                = FRAME_NUMBER_UNIFORM |
                                               FRAME_TIME_UNIFORM |
+                                              DELTA_FRAME_TIME_UNIFORM |
                                               VIEW_MATRIX_UNIFORM |
                                               INVERSE_VIEW_MATRIX_UNIFORM,
             ALL_UNIFORMS                    = 0xFFFFFFFF
@@ -507,7 +509,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         
         bool                                        _requiresFlush;
         
-        int                                         _activeUniforms;
+        int                                         _activeUniforms;        
+        double                                      _previousFrameTime;
         
 };
 

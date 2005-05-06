@@ -212,8 +212,16 @@ void OsgCameraGroup::_init()
     if (str)
     {
         if (strcmp(str,"SingleThreaded")==0) _thread_model = SingleThreaded;
-        else _thread_model = ThreadPerCamera;
+        else if (strcmp(str,"ThreadPerCamera")==0) _thread_model = ThreadPerCamera;
     }
+    
+    str = getenv("OSG_SHARE_GRAPHICS_CONTEXTS");
+    if (str)
+    {
+        if (strcmp(str,"ON")==0) Producer::RenderSurface::shareAllGLContexts(true);
+        else if (strcmp(str,"OFF")==0) Producer::RenderSurface::shareAllGLContexts(false);
+    }
+    
 
     _scene_data = NULL;
     _global_stateset = NULL;
@@ -453,7 +461,11 @@ bool OsgCameraGroup::realize()
         if (_renderSurfaceStateMap.count(rs)==0)
         {
             _renderSurfaceStateMap[rs] = sv->getState();
-            sv->getState()->setContextID(contextID++);
+            sv->getState()->setContextID(contextID);
+            
+            // if we aren't share OpenGL objects between graphics contexts then need to increment the contextID
+            // to ensure that the OSG generates seperate objects for each graphics context. 
+            if (!Producer::RenderSurface::allGLContextsAreShared()) ++contextID;
         }
         else
         {

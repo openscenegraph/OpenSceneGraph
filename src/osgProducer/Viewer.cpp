@@ -25,6 +25,11 @@ using namespace Producer;
 using namespace osgProducer;
 using namespace osg;
 
+
+#ifdef __APPLE__
+#define SINGLE_THREAD_KEYBOARDMOUSE
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Picking intersection visitor.
@@ -603,8 +608,6 @@ public:
         // glFinish();
     }
 };
-
-//#define SINGLE_THREAD_KEYBOARDMOUSE
 
 bool Viewer::realize()
 {

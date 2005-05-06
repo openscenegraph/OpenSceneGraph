@@ -54,6 +54,8 @@ SceneView::SceneView(DisplaySettings* ds)
     _requiresFlush = true;
     
     _activeUniforms = DEFAULT_UNIFORMS;
+    
+    _previousFrameTime = 0;
 }
 
 
@@ -207,7 +209,16 @@ void SceneView::updateUniforms()
         osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_FrameTime",osg::Uniform::FLOAT);
         uniform->set(static_cast<float>(_frameStamp->getReferenceTime()));
     }
-
+    
+    if ((_activeUniforms & DELTA_FRAME_TIME_UNIFORM) && _frameStamp.valid())
+    {
+        float delta_frame_time = (_previousFrameTime != 0.0) ? static_cast<float>(_frameStamp->getReferenceTime()-_previousFrameTime) : 0.0f;
+        _previousFrameTime = _frameStamp->getReferenceTime();
+        
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_DeltaFrameTime",osg::Uniform::FLOAT);
+        uniform->set(delta_frame_time);
+    }
+    
     if (_activeUniforms & VIEW_MATRIX_UNIFORM)
     {
         osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_ViewMatrix",osg::Uniform::FLOAT_MAT4);

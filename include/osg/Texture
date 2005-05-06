@@ -294,6 +294,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Gets whether to use client storage for the texture. */
         inline bool getClientStorageHint() const { return _clientStorageHint; }
 
+        /** Sets whether to force the texture to resize images that have dimensions 
+          * that are not a power of two. If enabled, NPOT images will be resized,
+          * whether or not NPOT textures are supported by the hardware. If disabled,
+          * NPOT images will not be resized if supported by hardware. */
+        inline void setResizeNonPowerOfTwoHint(bool flag) { _resizeNonPowerOfTwoHint = flag; }
+
+        /** Gets whether texture will force non power to two images to be resized. */
+        inline bool getResizeNonPowerOfTwoHint() const { return _resizeNonPowerOfTwoHint; }
+
         enum InternalFormatMode {
             USE_IMAGE_DATA_FORMAT,
             USE_USER_DEFINED_FORMAT,
@@ -556,6 +565,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         bool            _useHardwareMipMapGeneration;
         bool            _unrefImageDataAfterApply;
         bool            _clientStorageHint;
+        bool            _resizeNonPowerOfTwoHint;
 
         Vec4            _borderColor;
         GLint           _borderWidth;

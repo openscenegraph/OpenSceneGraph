@@ -97,10 +97,22 @@ void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image&
 {
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
+    const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
 
-    int width = Image::computeNearestPowerOfTwo(image.s()-2*_borderWidth)+2*_borderWidth;
-    int height = Image::computeNearestPowerOfTwo(image.t()-2*_borderWidth)+2*_borderWidth;
-    int depth = Image::computeNearestPowerOfTwo(image.r()-2*_borderWidth)+2*_borderWidth;
+    int width,height,depth;
+
+    if( !_resizeNonPowerOfTwoHint && texExtensions->isNonPowerOfTwoTextureSupported() )
+    {
+        width = image.s();
+        height = image.t();
+        depth = image.r();
+    }
+    else
+    {
+        width = Image::computeNearestPowerOfTwo(image.s()-2*_borderWidth)+2*_borderWidth;
+        height = Image::computeNearestPowerOfTwo(image.t()-2*_borderWidth)+2*_borderWidth;
+        depth = Image::computeNearestPowerOfTwo(image.r()-2*_borderWidth)+2*_borderWidth;
+    }
 
     // cap the size to what the graphics hardware can handle.
     if (width>extensions->maxTexture3DSize()) width = extensions->maxTexture3DSize();
@@ -250,6 +262,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);    
+    const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();
@@ -264,7 +277,12 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         //return;
     }    
     
-    image->ensureValidSizeForTexturing(extensions->maxTexture3DSize());
+    //Rescale if resize hint is set or NPOT not supported or dimensions exceed max size
+    if( _resizeNonPowerOfTwoHint || !texExtensions->isNonPowerOfTwoTextureSupported()
+        || inwidth > extensions->maxTexture3DSize()
+        || inheight > extensions->maxTexture3DSize()
+        || indepth > extensions->maxTexture3DSize() )
+        image->ensureValidSizeForTexturing(extensions->maxTexture3DSize());
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 

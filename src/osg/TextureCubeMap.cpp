@@ -258,6 +258,12 @@ void TextureCubeMap::apply(State& state) const
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*_images[0],_textureWidth, _textureHeight, _numMipmapLevels);
 
+        // cubemap textures must have square dimensions
+        if( _textureWidth != _textureHeight )
+        {
+            _textureWidth = _textureHeight = minimum( _textureWidth , _textureHeight );
+        }
+
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
         

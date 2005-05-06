@@ -935,7 +935,7 @@ Uniform* StateSet::getOrCreateUniform(const std::string& name, Uniform::Type typ
 
     // no uniform found matching name so create it..
     
-    Uniform* uniform = new Uniform(name,type);
+    Uniform* uniform = new Uniform(type,name);
     addUniform(uniform);
     
     return uniform;

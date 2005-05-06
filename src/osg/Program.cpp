@@ -13,7 +13,7 @@
 */
 
 /* file:        src/osg/Program.cpp
- * author:        Mike Weiblen 2005-04-29
+ * author:      Mike Weiblen 2005-05-05
 */
 
 #include <fstream>
@@ -2100,6 +2100,16 @@ bool Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) cons
     return getPCP( contextID )->getInfoLog( log );
 }
 
+const Program::NameInfoMap& Program::getActiveUniforms(unsigned int contextID) const
+{
+    return getPCP( contextID )->getActiveUniforms();
+}
+
+const Program::NameInfoMap& Program::getActiveAttribs(unsigned int contextID) const
+{
+    return getPCP( contextID )->getActiveAttribs();
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // osg::Program::PerContextProgram
 // PCP is an OSG abstraction of the per-context glProgram
@@ -2138,8 +2148,8 @@ void Program::PerContextProgram::linkProgram()
         << " id=" << _glProgramHandle
         <<  std::endl;
 
-    _uniformLocationMap.clear();
-    _attribLocationMap.clear();
+    _uniformInfoMap.clear();
+    _attribInfoMap.clear();
 
     // set any explicit vertex attribute bindings
     const AttribBindingList& bindlist = _program->getAttribBindingList();
@@ -2170,7 +2180,7 @@ void Program::PerContextProgram::linkProgram()
     // dont build maps if link failed
     if( ! _isLinked ) return;
 
-    // build _uniformLocationMap
+    // build _uniformInfoMap
     GLint numUniforms = 0;
     GLsizei maxLen = 0;
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_UNIFORMS, &numUniforms );
@@ -2190,7 +2200,7 @@ void Program::PerContextProgram::linkProgram()
             
             if( loc != -1 )
             {
-                _uniformLocationMap[name] = loc;
+                _uniformInfoMap[name] = std::pair<GLint,GLenum>(loc,type);
 
                 osg::notify(osg::INFO)
                     << "\tUniform \"" << name << "\""
@@ -2202,7 +2212,7 @@ void Program::PerContextProgram::linkProgram()
         delete [] name;
     }
 
-    // build _attribLocationMap
+    // build _attribInfoMap
     GLint numAttrib = 0;
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTES, &numAttrib );
     _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLen );
@@ -2221,7 +2231,7 @@ void Program::PerContextProgram::linkProgram()
             
             if( loc != -1 )
             {
-                _attribLocationMap[name] = loc;
+                _attribInfoMap[name] = std::pair<GLint,GLenum>(loc,type);
 
                 osg::notify(osg::INFO)
                     << "\tAttrib \"" << name << "\""

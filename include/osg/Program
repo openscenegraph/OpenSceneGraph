@@ -12,7 +12,7 @@
 */
 
 /* file:        include/osg/Program
- * author:        Mike Weiblen 2005-04-29
+ * author:      Mike Weiblen 2005-05-05
 */
 
 #ifndef OSG_PROGRAM
@@ -364,6 +364,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
           * in the OpenGL context related to contextID.*/
         static void flushDeletedGlPrograms(unsigned int contextID,double currentTime, double& availableTime);
 
+        typedef std::map< std::string, std::pair<GLint,GLenum> > NameInfoMap;
+        const NameInfoMap& getActiveUniforms(unsigned int contextID) const;
+        const NameInfoMap& getActiveAttribs(unsigned int contextID) const;
 
     public:
 
@@ -390,7 +393,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 void useProgram() const;
 
-                void resetAppliedUnifroms() const
+                void resetAppliedUniforms() const
                 {
                     for(LastAppliedUniformList::iterator itr=_lastAppliedUniformList.begin();
                         itr!=_lastAppliedUniformList.end();
@@ -426,8 +429,11 @@ class OSG_EXPORT Program : public osg::StateAttribute
                     }
                 }
 
-                inline GLint getUniformLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _uniformLocationMap.find(name); return (itr!=_uniformLocationMap.end()) ? itr->second : -1; }
-                inline GLint getAttribLocation( const std::string& name ) const { NameLocationMap::const_iterator itr = _attribLocationMap.find(name); return (itr!=_attribLocationMap.end()) ? itr->second : -1; }
+                const NameInfoMap& getActiveUniforms() const {return _uniformInfoMap;}
+                const NameInfoMap& getActiveAttribs() const {return _attribInfoMap;}
+
+                inline GLint getUniformLocation( const std::string& name ) const { NameInfoMap::const_iterator itr = _uniformInfoMap.find(name); return (itr!=_uniformInfoMap.end()) ? itr->second.first : -1; }
+                inline GLint getAttribLocation( const std::string& name ) const { NameInfoMap::const_iterator itr = _attribInfoMap.find(name); return (itr!=_attribInfoMap.end()) ? itr->second.first : -1; }
 
             protected:        /*methods*/
                 ~PerContextProgram();
@@ -445,9 +451,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool _isLinked;
                 const unsigned int _contextID;
                 
-                typedef std::map<std::string, GLint> NameLocationMap;
-                NameLocationMap _uniformLocationMap;
-                NameLocationMap _attribLocationMap;
+                NameInfoMap _uniformInfoMap;
+                NameInfoMap _attribInfoMap;
                 
                 typedef std::pair<const osg::Uniform*, unsigned int> UniformModifiedCountPair;
                 typedef std::vector<UniformModifiedCountPair> LastAppliedUniformList;

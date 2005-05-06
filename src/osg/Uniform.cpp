@@ -11,7 +11,7 @@
 */
 
 /* file:    src/osg/Uniform.cpp
- * author:    Mike Weiblen 2005-04-21
+ * author:    Mike Weiblen 2005-05-05
 */
 
 #include <osg/Notify>
@@ -34,8 +34,8 @@ Uniform::Uniform() :
 }
 
 
-Uniform::Uniform( const std::string& name, Type type ) :
-    _name(name), _type(type),_modifiedCount(0)
+Uniform::Uniform( Type type, const std::string& name ) :
+    _type(type), _name(name), _modifiedCount(0)
 {
     setDataVariance(STATIC);
 

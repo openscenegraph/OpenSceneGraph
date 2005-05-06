@@ -120,7 +120,7 @@ void State::reset()
         apitr!=_appliedProgramObjectSet.end();
         ++apitr)
     {
-        (*apitr)->resetAppliedUnifroms();
+        (*apitr)->resetAppliedUniforms();
     }
     
     _appliedProgramObjectSet.clear();

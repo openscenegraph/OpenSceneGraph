@@ -188,7 +188,9 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     // select the internalFormat required for the texture.
     bool compressed = isCompressedInternalFormat(_internalFormat);
     
-    image->ensureValidSizeForTexturing(extensions->maxTextureSize());
+    //Rescale if resize hint is set or NPOT not supported or dimension exceeds max size
+    if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported() || inwidth > extensions->maxTextureSize() )
+        image->ensureValidSizeForTexturing(extensions->maxTextureSize());
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 

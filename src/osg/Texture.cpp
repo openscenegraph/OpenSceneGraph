@@ -337,6 +337,7 @@ Texture::Texture():
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
             _clientStorageHint(false),
+            _resizeNonPowerOfTwoHint(false),
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
@@ -359,6 +360,7 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
             _clientStorageHint(text._clientStorageHint),
+            _resizeNonPowerOfTwoHint(text._resizeNonPowerOfTwoHint),
             _borderColor(text._borderColor),
             _borderWidth(text._borderWidth),
             _internalFormatMode(text._internalFormatMode),
@@ -400,7 +402,8 @@ int Texture::compareTexture(const Texture& rhs) const
 
     COMPARE_StateAttribute_Parameter(_unrefImageDataAfterApply)
     COMPARE_StateAttribute_Parameter(_clientStorageHint)
-    
+    COMPARE_StateAttribute_Parameter(_resizeNonPowerOfTwoHint)
+
     return 0;
 }
 
@@ -708,13 +711,23 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
-    int width = Image::computeNearestPowerOfTwo(image.s()-2*_borderWidth)+2*_borderWidth;
-    int height = Image::computeNearestPowerOfTwo(image.t()-2*_borderWidth)+2*_borderWidth;
+    int width,height;
+
+    if( !_resizeNonPowerOfTwoHint && extensions->isNonPowerOfTwoTextureSupported() )
+    {
+        width = image.s();
+        height = image.t();
+    }
+    else
+    {
+        width = Image::computeNearestPowerOfTwo(image.s()-2*_borderWidth)+2*_borderWidth;
+        height = Image::computeNearestPowerOfTwo(image.t()-2*_borderWidth)+2*_borderWidth;
+    }
 
     // cap the size to what the graphics hardware can handle.
     if (width>extensions->maxTextureSize()) width = extensions->maxTextureSize();
     if (height>extensions->maxTextureSize()) height = extensions->maxTextureSize();
-    
+
     inwidth = width;
     inheight = height;
     

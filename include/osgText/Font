@@ -117,6 +117,10 @@ public:
     FontImplementation* getImplementation();
     const FontImplementation* getImplementation() const;
 
+     /** If State is non-zero, this function releases OpenGL objects for
+       * the specified graphics context. Otherwise, releases OpenGL objexts
+       * for all graphics contexts. */
+     virtual void releaseGLObjects(osg::State* state=0) const;
 
 protected:
 

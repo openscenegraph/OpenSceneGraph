@@ -202,6 +202,16 @@ Font::Glyph* Font::getGlyph(unsigned int charcode)
     else return 0;
 }
 
+void Font::releaseGLObjects(osg::State* state) const
+{
+  for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
+    itr!=_glyphTextureList.end();
+    ++itr)
+  {
+    (*itr)->releaseGLObjects(state);
+  }
+}
+
 osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
 {
     if (_implementation.valid()) return _implementation->getKerning(leftcharcode,rightcharcode,kerningType);

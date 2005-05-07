@@ -214,3 +214,15 @@ void Geode::compileDrawables(State& state)
         (*itr)->compileGLObjects(state);
     }
 }
+
+void Geode::releaseGLObjects(osg::State* state) const
+{
+    Node::releaseGLObjects(state);
+
+    for(DrawableList::const_iterator itr=_drawables.begin();
+        itr!=_drawables.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+}

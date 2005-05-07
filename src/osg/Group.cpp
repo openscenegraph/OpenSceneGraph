@@ -388,3 +388,15 @@ bool Group::computeBound() const
     _bsphere_computed = true;
     return true;
 }
+
+void Group::releaseGLObjects(osg::State* state) const
+{
+    Node::releaseGLObjects(state);
+
+    for(NodeList::const_iterator itr=_children.begin();
+        itr!=_children.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+}

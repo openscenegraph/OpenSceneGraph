@@ -1787,6 +1787,19 @@ void Registry::clearArchiveCache()
     _archiveCache.clear();
 }
 
+void Registry::releaseGLObjects(osg::State* state)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+
+    for(ObjectCache::iterator itr = _objectCache.begin();
+        itr != _objectCache.end();
+        ++itr)
+    {
+        osg::Object* object = itr->second.first.get();
+        object->releaseGLObjects(state);
+    }
+}
+
 DatabasePager* Registry::getOrCreateDatabasePager()
 {
     if (!_databasePager) _databasePager = new DatabasePager;

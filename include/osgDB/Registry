@@ -349,7 +349,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         /** Remove all archives from the archive cache.*/
         void clearArchiveCache();
-
+        
+         /** If State is non-zero, this function releases OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        void releaseGLObjects(osg::State* state=0);
 
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);

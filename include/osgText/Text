@@ -235,6 +235,10 @@ public:
     /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
     virtual void accept(osg::PrimitiveFunctor& pf) const;
 
+    /** If State is non-zero, this function releases OpenGL objects for
+      * the specified graphics context. Otherwise, releases OpenGL objexts
+      * for all graphics contexts. */
+    virtual void releaseGLObjects(osg::State* state=0) const;
 
     // make Font a friend to allow it set the _font to 0 if the font is 
     // forcefully unloaded.

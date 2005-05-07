@@ -427,3 +427,11 @@ void Node::dirtyBound()
 
     }
 }
+
+void Node::releaseGLObjects(osg::State* state) const
+{
+    if (_stateset.valid()) _stateset->releaseGLObjects(state);
+}
+
+
+

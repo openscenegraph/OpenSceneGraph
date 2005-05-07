@@ -120,6 +120,12 @@ class OSG_EXPORT Group : public Node
             return _children.size(); // node not found.
         }
 
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
+
     protected:
 
         virtual ~Group();

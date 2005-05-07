@@ -1008,3 +1008,12 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
     }
     
 }
+
+/** If State is non-zero, this function releases OpenGL objects for
+  * the specified graphics context. Otherwise, releases OpenGL objexts
+  * for all graphics contexts. */
+void Text::releaseGLObjects(osg::State* state) const
+{
+    Drawable::releaseGLObjects(state);
+    if (_font.valid()) _font->releaseGLObjects(state);
+}

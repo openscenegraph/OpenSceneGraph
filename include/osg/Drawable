@@ -238,10 +238,9 @@ class OSG_EXPORT Drawable : public Object
         */
         virtual void compileGLObjects(State& state) const;
 
-        /**
-            if osg::State object is supplied: release any OpenGL display lists associated with graphics context specified
-            or
-            if state pointer is NULL: release all display lists for all graphics contexts */
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
         struct UpdateCallback : public virtual osg::Object

@@ -30,14 +30,14 @@ osgclip cow.osg
 echo osgcubemap
 osgcubemap cessna.osg
 
-# echo osgdepthshadow
-# osgdepthshadow
+echo osgdepthshadow
+osgdepthshadow
 
 echo osgdistortion
 osgdistortion cow.osg
 
-#echo osgforest
-#osgforest
+echo osgforest
+osgforest
 
 echo osgfxbrowser
 osgfxbrowser dumptruck.osg
@@ -64,7 +64,7 @@ echo osglight
 osglight glider.osg
 
 echo osglightpoint
-#osglightpoint
+osglightpoint
 
 echo osglogo
 osglogo
@@ -96,8 +96,8 @@ osgplanets
 echo osgprerender
 osgprerender dumptruck.osg
 
-#echo osgprerendercubemap
-#osgprerendercubemap
+echo osgprerendercubemap
+osgprerendercubemap
 
 echo osgreflect
 osgreflect cessna.osg

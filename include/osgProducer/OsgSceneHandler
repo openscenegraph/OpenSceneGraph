@@ -79,8 +79,15 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
 
         virtual void draw(Producer::Camera& camera)
         {
+            if (_flushOfAllDeletedGLObjectsOnNextFrame && _sceneView.valid()) 
+            {
+                _sceneView->flushAllDeletedGLObjects();
+            }
+        
             if (_drawCallback.valid()) (*_drawCallback)(*this,camera);
             else drawImplementation(camera);
+            
+            _flushOfAllDeletedGLObjectsOnNextFrame = false;
         }
         
         virtual void drawImplementation(Producer::Camera& camera);
@@ -89,9 +96,11 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         Callback* getDrawCallback() { return _drawCallback.get(); }
         const Callback* getDrawCallback() const { return _drawCallback.get(); }
 
-
-
         void setContextID( int id );
+
+        void setFlushOfAllDeletedGLObjectsOnNextFrame(bool flag) { _flushOfAllDeletedGLObjectsOnNextFrame = flag; }
+        
+        bool getFlushOfAllDeletedGLObjectsOnNextFrame() const { return _flushOfAllDeletedGLObjectsOnNextFrame; }
 
     protected:
     
@@ -106,6 +115,8 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         
         osg::Timer_t           _frameStartTick;
         osg::Timer_t           _previousFrameStartTick;
+        
+        bool                   _flushOfAllDeletedGLObjectsOnNextFrame;
 };
 
 }

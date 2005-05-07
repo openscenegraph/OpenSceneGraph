@@ -641,15 +641,14 @@ void SceneView::releaseAllGLObjects()
 {
     if (!_sceneData) return;
    
-    GLObjectsVisitor globjv(GLObjectsVisitor::RELEASE_DISPLAY_LISTS|GLObjectsVisitor::RELEASE_STATE_ATTRIBUTES);
-    globjv.setNodeMaskOverride(0xffffffff);
-    globjv.setState(_state.get());
-    _sceneData->accept(globjv);
+    _sceneData->releaseGLObjects(_state.get());
 }
 
 
 void SceneView::flushAllDeletedGLObjects()
 {
+    osg::notify(osg::NOTICE)<<"SceneView::flushAllDeletedGLObjects()"<<std::endl;
+
     _requiresFlush = false;
     
     double availableTime = 100.0f;
@@ -660,7 +659,8 @@ void SceneView::flushAllDeletedGLObjects()
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
-}
+    osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
+ }
 
 void SceneView::flushDeletedGLObjects(double& availableTime)
 {
@@ -672,6 +672,7 @@ void SceneView::flushDeletedGLObjects(double& availableTime)
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
+    osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
 }
 
 void SceneView::draw()

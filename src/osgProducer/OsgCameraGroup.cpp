@@ -644,3 +644,23 @@ void OsgCameraGroup::frame()
      CameraGroup::frame();
 }
 
+void OsgCameraGroup::cleanup_frame()
+{
+    // first relase all GL objects and switch on the flush of deleted objects
+    // in the next frame.
+    for(SceneHandlerList::iterator itr = _shvec.begin();
+        itr != _shvec.end();
+        ++itr)
+    {
+        (*itr)->getSceneView()->releaseAllGLObjects();
+        (*itr)->setFlushOfAllDeletedGLObjectsOnNextFrame(true);
+    }
+    
+    // make sure that the registry all flushes all its texture objects.
+    osgDB::Registry::instance()->releaseGLObjects();
+    
+    // then run the frame to do the actuall OpenGL clean up.
+    frame();
+}
+
+

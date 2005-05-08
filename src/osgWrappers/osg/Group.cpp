@@ -14,6 +14,7 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/State>
 
 BEGIN_OBJECT_REFLECTOR(osg::Group)
 	BaseType(osg::Node);
@@ -39,6 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	Method1(const osg::Node *, getChild, IN, unsigned int, i);
 	Method1(bool, containsNode, IN, const osg::Node *, node);
 	Method1(unsigned int, getChildIndex, IN, const osg::Node *, node);
+	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	ArrayProperty_GSA(osg::Node *, Child, Children, unsigned int, bool);
 END_REFLECTOR
 

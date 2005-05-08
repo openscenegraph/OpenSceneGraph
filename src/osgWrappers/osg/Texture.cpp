@@ -96,6 +96,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	Method0(bool, getUnRefImageDataAfterApply);
 	Method1(void, setClientStorageHint, IN, bool, flag);
 	Method0(bool, getClientStorageHint);
+	Method1(void, setResizeNonPowerOfTwoHint, IN, bool, flag);
+	Method0(bool, getResizeNonPowerOfTwoHint);
 	Method1(void, setInternalFormatMode, IN, osg::Texture::InternalFormatMode, mode);
 	Method0(osg::Texture::InternalFormatMode, getInternalFormatMode);
 	Method1(void, setInternalFormat, IN, GLint, internalFormat);
@@ -131,6 +133,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	Property(GLint, InternalFormat);
 	Property(osg::Texture::InternalFormatMode, InternalFormatMode);
 	Property(float, MaxAnisotropy);
+	Property(bool, ResizeNonPowerOfTwoHint);
 	Property(float, ShadowAmbient);
 	Property(osg::Texture::ShadowCompareFunc, ShadowCompareFunc);
 	WriteOnlyProperty(bool, ShadowComparison);
@@ -179,6 +182,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	Method1(void, setGetCompressedTexImageProc, IN, void *, ptr);
 	Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data);
 	Method0(bool, isClientStorageSupported);
+	Method0(bool, isNonPowerOfTwoTextureSupported);
 	WriteOnlyProperty(void *, CompressedTexImage2DProc);
 	WriteOnlyProperty(void *, CompressedTexSubImage2DProc);
 	WriteOnlyProperty(bool, GenerateMipMapSupported);

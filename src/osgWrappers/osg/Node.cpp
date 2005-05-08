@@ -16,6 +16,7 @@
 #include <osg/NodeCallback>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/State>
 #include <osg/StateSet>
 #include <osg/Transform>
 
@@ -81,6 +82,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	Method0(const osg::StateSet *, getStateSet);
 	Method0(const osg::BoundingSphere &, getBound);
 	Method0(void, dirtyBound);
+	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	ReadOnlyProperty(const osg::BoundingSphere &, Bound);
 	Property(osg::NodeCallback *, CullCallback);
 	Property(bool, CullingActive);

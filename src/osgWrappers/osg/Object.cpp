@@ -12,6 +12,7 @@
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osg/Referenced>
+#include <osg/State>
 
 BEGIN_ENUM_REFLECTOR(osg::Object::DataVariance)
 	EnumLabel(osg::Object::DYNAMIC);
@@ -32,6 +33,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	Method1(void, setUserData, IN, osg::Referenced *, obj);
 	Method0(osg::Referenced *, getUserData);
 	Method0(const osg::Referenced *, getUserData);
+	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	Property(osg::Object::DataVariance, DataVariance);
 	Property(osg::Referenced *, UserData);
 END_REFLECTOR

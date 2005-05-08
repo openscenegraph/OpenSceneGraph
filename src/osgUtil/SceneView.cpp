@@ -647,8 +647,6 @@ void SceneView::releaseAllGLObjects()
 
 void SceneView::flushAllDeletedGLObjects()
 {
-    osg::notify(osg::NOTICE)<<"SceneView::flushAllDeletedGLObjects()"<<std::endl;
-
     _requiresFlush = false;
     
     double availableTime = 100.0f;

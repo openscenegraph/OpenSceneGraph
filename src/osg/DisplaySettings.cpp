@@ -46,6 +46,7 @@ DisplaySettings::~DisplaySettings()
 void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 {
     _displayType = vs._displayType;
+    _stereo = vs._stereo;
     _stereoMode = vs._stereoMode;
     _eyeSeparation = vs._eyeSeparation;
     _screenWidth = vs._screenWidth;

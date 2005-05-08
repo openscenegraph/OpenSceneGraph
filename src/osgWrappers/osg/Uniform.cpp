@@ -50,7 +50,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	BaseType(osg::Object);
 	Constructor0();
-	Constructor2(IN, const char *, name, IN, osg::Uniform::Type, type);
+	Constructor2(IN, osg::Uniform::Type, type, IN, const std::string &, name);
 	ConstructorWithDefaults2(IN, const osg::Uniform &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	Method0(osg::Object *, cloneType);
 	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);

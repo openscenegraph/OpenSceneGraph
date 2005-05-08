@@ -143,6 +143,8 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList);
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  std::pair< GLint COMMA  GLenum > >, osg::Program::NameInfoMap);
+
 BEGIN_OBJECT_REFLECTOR(osg::Program)
 	BaseType(osg::StateAttribute);
 	Constructor0();
@@ -170,6 +172,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	Method1(void, setName, IN, const std::string &, name);
 	Method1(void, setName, IN, const char *, name);
 	Method0(const std::string &, getName);
+	Method1(const osg::Program::NameInfoMap &, getActiveUniforms, IN, unsigned int, contextID);
+	Method1(const osg::Program::NameInfoMap &, getActiveAttribs, IN, unsigned int, contextID);
 	Method1(osg::Program::PerContextProgram *, getPCP, IN, unsigned int, contextID);
 	ReadOnlyProperty(const osg::Program::AttribBindingList &, AttribBindingList);
 	Property(const std::string &, Name);
@@ -187,12 +191,20 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	Method0(bool, isLinked);
 	Method1(bool, getInfoLog, IN, std::string &, infoLog);
 	Method0(void, useProgram);
-	Method0(void, resetAppliedUnifroms);
+	Method0(void, resetAppliedUniforms);
 	Method1(void, apply, IN, const osg::Uniform &, uniform);
+	Method0(const osg::Program::NameInfoMap &, getActiveUniforms);
+	Method0(const osg::Program::NameInfoMap &, getActiveAttribs);
 	Method1(GLint, getUniformLocation, IN, const std::string &, name);
 	Method1(GLint, getAttribLocation, IN, const std::string &, name);
+	ReadOnlyProperty(const osg::Program::NameInfoMap &, ActiveAttribs);
+	ReadOnlyProperty(const osg::Program::NameInfoMap &, ActiveUniforms);
 	ReadOnlyProperty(GLuint, Handle);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >);
+
+STD_MAP_REFLECTOR(std::map< std::string COMMA  std::pair< GLint COMMA  GLenum > >);
+
+STD_PAIR_REFLECTOR(std::pair< GLint COMMA  GLenum >);
 

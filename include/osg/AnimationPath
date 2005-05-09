@@ -109,9 +109,8 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
                 matrix.preMult(osg::Matrixd::translate(-_position));
             }
 	    
- #ifdef USE_DEPRECATED_API
     	protected:
-#endif
+
             osg::Vec3d _position;
             osg::Quat _rotation;
             osg::Vec3d _scale;

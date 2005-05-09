@@ -120,12 +120,6 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         const osg::StateSet *getGlobalStateSet() const { return _global_stateset.get(); }
 
 
-#ifdef USE_DEPRECATED_API
-        void setBackgroundColor( const osg::Vec4& backgroundColor) { setClearColor(backgroundColor); }
-
-        const osg::Vec4& getBackgroundColor() const { return getClearColor(); }
-#endif
-
         void setClearColor( const osg::Vec4& clearColor );
 
         const osg::Vec4& getClearColor() const;

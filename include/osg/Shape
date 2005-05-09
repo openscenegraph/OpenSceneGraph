@@ -504,9 +504,6 @@ class OSG_EXPORT HeightField : public Shape
 
     	void allocate(unsigned int numColumns,unsigned int numRows);
 
-	// deprecated.
-    	void allocateGrid(unsigned int numColumns,unsigned int numRows) { allocate(numColumns,numRows); }
-
 	inline unsigned int getNumColumns() const { return _columns; }
 	inline unsigned int getNumRows() const { return _rows; }
 

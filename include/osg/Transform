@@ -91,11 +91,6 @@ class OSG_EXPORT Transform : public Group
         {
             RELATIVE_RF,
             ABSOLUTE_RF
-#ifdef USE_DEPRECATED_API
-            ,
-            RELATIVE_TO_PARENTS=RELATIVE_RF,
-            RELATIVE_TO_ABSOLUTE=ABSOLUTE_RF,
-#endif
         };
         
         /** Set the transform's ReferenceFrame, either to be relative to its

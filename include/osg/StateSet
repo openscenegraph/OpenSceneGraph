@@ -96,12 +96,6 @@ class OSG_EXPORT StateSet : public Object
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();
 
-#ifdef USE_DEPRECATED_API
-        /** Set all the modes to inherit, typically used to signify
-            nodes which inherit all of their modes for the global state.*/
-        void setAllToInherit() { clear(); }
-#endif
-
         /** Clear the StateSet of all modes and attributes.*/
         void clear();
 
@@ -123,11 +117,6 @@ class OSG_EXPORT StateSet : public Object
         */
         void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
 
-#ifdef USE_DEPRECATED_API
-        /** Set this StateSet to inherit specified GLMode type from parents.
-          * Has the effect of deleting any GLMode of specified type from StateSet.*/
-        void setModeToInherit(StateAttribute::GLMode mode) { removeMode(mode); }
-#endif
         /** Remove \c mode from this \c StateSet.
           * @note Don't use this method to remove modes related to textures. For
           *       this purpose, use \c removeTextureMode(), that accepts an extra
@@ -173,11 +162,6 @@ class OSG_EXPORT StateSet : public Object
         /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
 
-#ifdef USE_DEPRECATED_API
-        /** Set this StateSet to inherit specified attribute type from parents.
-          * has the effect of deleting any state attributes of specified type from StateSet.*/
-        void setAttributeToInherit(StateAttribute::Type type) { removeAttribute(type); }
-#endif
         /** remove attribute of specified type from StateSet.*/
         void removeAttribute(StateAttribute::Type type, unsigned int member=0);
 
@@ -218,11 +202,6 @@ class OSG_EXPORT StateSet : public Object
         */
         void setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
 
-#ifdef USE_DEPRECATED_API
-        /** Set this StateSet to inherit specified GLMode type from parents.
-          * has the effect of deleting any GLMode of specified type from StateSet.*/
-        void setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode) { removeTextureMode(unit,mode); }
-#endif
         /** Remove texture mode from StateSet.*/
         void removeTextureMode(unsigned int unit,StateAttribute::GLMode mode);
 
@@ -246,12 +225,6 @@ class OSG_EXPORT StateSet : public Object
         void setTextureAttribute(unsigned int unit,StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
         /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
-
-#ifdef USE_DEPRECATED_API
-        /** Set this StateSet to inherit specified attribute type from parents.
-          * Has the effect of deleting any state attributes of specified type from StateSet.*/
-        void setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type) { removeTextureAttribute(unit,type); }
-#endif
 
         /** remove texture attribute of specified type from StateSet.*/
         void removeTextureAttribute(unsigned int unit, StateAttribute::Type type);

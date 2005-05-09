@@ -42,7 +42,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture2D)
 	Method0(int, getTextureWidth);
 	Method1(void, setTextureHeight, IN, int, height);
 	Method0(int, getTextureHeight);
-	Method2(void, getTextureSize, IN, int &, width, IN, int &, height);
 	Method1(void, setSubloadCallback, IN, osg::Texture2D::SubloadCallback *, cb);
 	Method0(osg::Texture2D::SubloadCallback *, getSubloadCallback);
 	Method0(const osg::Texture2D::SubloadCallback *, getSubloadCallback);

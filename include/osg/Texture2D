@@ -87,14 +87,6 @@ class OSG_EXPORT Texture2D : public Texture
         void setTextureHeight(int height) { _textureHeight=height; }
         int getTextureHeight() const { return _textureHeight; }
 
-        /** Deprecated. */
-        inline void getTextureSize(int& width, int& height) const
-        {
-            width = _textureWidth;
-            height = _textureHeight;
-        }
-
-
         class OSG_EXPORT SubloadCallback : public Referenced
         {
             public:

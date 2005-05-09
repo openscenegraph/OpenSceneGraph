@@ -64,13 +64,6 @@ public:
 
     virtual std::string getFileName() const;
 
-#ifdef USE_DEPRECATED_API
-    virtual void setSize(unsigned int width, unsigned int height) { setFontResolution(width,height); }
-    
-    unsigned int getWidth() const { return getFontWidth(); }
-    unsigned int getHeight() const { return getFontHeight(); }
-#endif
-
     /** Set the pixel width and height hint.*/
     virtual void setFontResolution(unsigned int width, unsigned int height);
     

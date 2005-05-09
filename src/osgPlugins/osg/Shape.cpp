@@ -473,7 +473,7 @@ bool HeightField_readLocalData(Object& obj, Input& fr)
         int numcolumns,numrows;
         fr[1].getInt(numcolumns);
         fr[2].getInt(numrows);
-        heightfield.allocateGrid(numcolumns,numrows);
+        heightfield.allocate(numcolumns,numrows);
         fr+=3;
         iteratorAdvanced = true;
     }

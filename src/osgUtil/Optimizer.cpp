@@ -675,6 +675,7 @@ class CollectLowestTransformsVisitor : public Optimizer::BaseOptimizerVisitor
         {
             // disable if object is a light point node.
             if (strcmp(node->className(),"LightPointNode")==0) return false;
+            if (dynamic_cast<const osg::ProxyNode*>(node)) return false;
             return BaseOptimizerVisitor::isOperationPermissibleForObject(node);
         }
 
@@ -1004,6 +1005,15 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Node& node)
     }
     traverse(node);
 }
+
+
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::ProxyNode& node)
+{
+    _excludedNodeSet.insert(&node);
+
+    traverse(node);
+}
+
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
 {

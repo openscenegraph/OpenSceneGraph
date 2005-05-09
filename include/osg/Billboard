@@ -57,13 +57,6 @@ class OSG_EXPORT Billboard : public Geode
         inline const Vec3& getNormal() const { return _normal; }
 
 
-#ifdef USE_DEPRECATED_API
-        /** Set the specified child Drawable's position. */
-        inline void setPos(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
-        /** Get the specified child Drawable's position. */
-        inline const Vec3& getPos(unsigned int i) const         { return _positionList[i]; }
-#endif
-
         /** Set the specified child Drawable's position. */
         inline void setPosition(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
         /** Get the specified child Drawable's position. */

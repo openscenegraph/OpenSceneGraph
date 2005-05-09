@@ -206,7 +206,6 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	Method1(void, accept, IN, osg::ShapeVisitor &, sv);
 	Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
 	Method2(void, allocate, IN, unsigned int, numColumns, IN, unsigned int, numRows);
-	Method2(void, allocateGrid, IN, unsigned int, numColumns, IN, unsigned int, numRows);
 	Method0(unsigned int, getNumColumns);
 	Method0(unsigned int, getNumRows);
 	Method1(void, setOrigin, IN, const osg::Vec3 &, origin);

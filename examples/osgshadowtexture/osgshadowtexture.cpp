@@ -69,7 +69,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
 
 
     osg::HeightField* grid = new osg::HeightField;
-    grid->allocateGrid(38,39);
+    grid->allocate(38,39);
     grid->setOrigin(center+osg::Vec3(-radius,-radius,0.0f));
     grid->setXInterval(radius*2.0f/(float)(38-1));
     grid->setYInterval(radius*2.0f/(float)(39-1));

@@ -40,11 +40,6 @@ class OSG_EXPORT LightSource : public Group
         {
             RELATIVE_RF,
             ABSOLUTE_RF
-#ifdef USE_DEPRECATED_API
-            ,
-            RELATIVE_TO_PARENTS=RELATIVE_RF,
-            RELATIVE_TO_ABSOLUTE=ABSOLUTE_RF,
-#endif
         };
         
         /** Set the light sources's ReferenceFrame, either to be relative to its

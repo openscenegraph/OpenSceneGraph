@@ -48,14 +48,6 @@ public:
     /** Get the font. Return 0 if default is being used.*/    
     const Font* getFont() const { return _font.get(); }
 
-#ifdef USE_DEPRECATED_API
-
-    /* deprecated */
-    void setFontSize(unsigned int width, unsigned int height)
-    {
-        setFontResolution(width,height);
-    }
-#endif
     
     /** Set the Font reference width and height resolution in texels.
       * Note, the size may not be supported by current font, 

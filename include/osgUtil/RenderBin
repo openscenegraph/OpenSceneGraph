@@ -130,9 +130,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         void getPrims(Statistics* primStats);
         bool getPrims(Statistics* primStats, int nbin);
 
-#ifndef USE_DEPRECATED_API
     protected:
-#endif
 
         virtual ~RenderBin();
 

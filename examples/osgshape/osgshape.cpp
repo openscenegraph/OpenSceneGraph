@@ -46,7 +46,7 @@ osg::Geode* createShapes( char* img_filename )
     geode->addDrawable(new osg::ShapeDrawable(new osg::Capsule(osg::Vec3(8.0f,0.0f,0.0f),radius,height),hints));
 
     osg::HeightField* grid = new osg::HeightField;
-    grid->allocateGrid(38,39);
+    grid->allocate(38,39);
     grid->setXInterval(0.28f);
     grid->setYInterval(0.28f);
     

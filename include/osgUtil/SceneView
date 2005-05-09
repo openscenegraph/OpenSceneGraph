@@ -108,14 +108,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         inline osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
 
 
-#ifdef USE_DEPRECATED_API
-        /** Set the background color used in glClearColor().
-            Defaults to an off blue color.*/
-        void setBackgroundColor(const osg::Vec4& color) { _clearColor=color; }
-        /** Get the background color.*/
-        const osg::Vec4& getBackgroundColor() const { return _clearColor; }
-#endif
-
         /** Set the color used in glClearColor().
             Defaults to an off blue color.*/
         void setClearColor(const osg::Vec4& color) { _clearColor=color; }

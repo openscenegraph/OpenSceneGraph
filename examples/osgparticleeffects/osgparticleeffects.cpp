@@ -161,7 +161,7 @@ void build_world(osg::Group *root)
         float z_scale = scale*3.0f;
 
         osg::HeightField* grid = new osg::HeightField;
-        grid->allocateGrid(38,39);
+        grid->allocate(38,39);
         grid->setXInterval(scale);
         grid->setYInterval(scale);
 

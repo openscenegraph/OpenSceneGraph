@@ -27,6 +27,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
     if (LINE_SIZE<1) return false;
 
     bool eatWhiteSpaceAtStart = true;
+    bool changeTabsToSpaces = true;
 
     char* ptr = line;
     char* end = line+LINE_SIZE-1;
@@ -96,6 +97,15 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
     }
 
     *ptr = 0;
+    
+    if (changeTabsToSpaces)
+    {
+        
+        for(ptr = line; *ptr != 0; ++ptr)
+        {
+            if (*ptr == '\t') *ptr=' ';
+        }
+    }
     
     return true;
 }

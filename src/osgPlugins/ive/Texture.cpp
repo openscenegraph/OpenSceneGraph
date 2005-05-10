@@ -47,6 +47,15 @@ void Texture::write(DataOutputStream* out){
     {
         out->writeInt(_internalFormat);
     }
+
+    if ( out->getVersion() >= VERSION_0009 )
+    {
+        out->writeInt(_borderWidth);
+        out->writeBool(_useHardwareMipMapGeneration);
+        out->writeBool(_unrefImageDataAfterApply);
+        out->writeBool(_clientStorageHint);
+        out->writeBool(_resizeNonPowerOfTwoHint);
+    }
 }
 
 void Texture::read(DataInputStream* in)
@@ -81,6 +90,15 @@ void Texture::read(DataInputStream* in)
         if ( in->getVersion() >= VERSION_0008 )
         {
             _internalFormat = in->readInt();
+        }
+
+        if ( in->getVersion() >= VERSION_0009 )
+        {
+            _borderWidth = in->readInt();
+            _useHardwareMipMapGeneration = in->readBool();
+            _unrefImageDataAfterApply = in->readBool();
+            _clientStorageHint = in->readBool();
+            _resizeNonPowerOfTwoHint = in->readBool();
         }
 
     }

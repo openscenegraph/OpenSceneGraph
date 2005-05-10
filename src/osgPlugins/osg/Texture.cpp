@@ -158,6 +158,22 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr[0].matchWord("resizeNonPowerOfTwo"))
+    {
+        if (fr[1].matchWord("TRUE")) 
+        {
+            texture.setResizeNonPowerOfTwoHint(true);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+        else if (fr[1].matchWord("FALSE")) 
+        {
+            texture.setResizeNonPowerOfTwoHint(false);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+    }
+
     return iteratorAdvanced;
 }
 
@@ -190,6 +206,9 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
         else fw.indent() << "internalFormat " << texture.getInternalFormat() << std::endl;
 
     }
+
+    fw.indent() << "resizeNonPowerOfTwo "<< (texture.getResizeNonPowerOfTwoHint()?"TRUE":"FALSE") << std::endl;
+
     return true;
 }
 

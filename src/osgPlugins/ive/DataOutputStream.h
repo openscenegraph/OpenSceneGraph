@@ -13,6 +13,7 @@
 #include <osg/Matrix>
 #include <osg/Geometry>
 #include <osg/Shape>
+#include <osg/Uniform>
 #include <osgDB/ReaderWriter>
 
 #include "IveVersion.h"
@@ -71,6 +72,7 @@ public:
 
 	void writeStateSet(const osg::StateSet* stateset);
 	void writeStateAttribute(const osg::StateAttribute* sa);
+	void writeUniform(const osg::Uniform* uniform);
 	void writeDrawable(const osg::Drawable* sa);
 	void writeShape(const osg::Shape* sa);
 	void writeNode(const osg::Node* sa);
@@ -99,12 +101,14 @@ private:
  	// Container to map stateset uniques to their respective stateset.
 	typedef std::map<const osg::StateSet*,int>        StateSetMap;
 	typedef std::map<const osg::StateAttribute*,int>  StateAttributeMap;
+	typedef std::map<const osg::Uniform*,int>         UniformMap;
 	typedef std::map<const osg::Drawable*,int>        DrawableMap;
-	typedef std::map<const osg::Shape*,int>        ShapeMap;
+	typedef std::map<const osg::Shape*,int>           ShapeMap;
 	typedef std::map<const osg::Node*,int>            NodeMap;
         
         StateSetMap         _stateSetMap;
         StateAttributeMap   _stateAttributeMap;
+        UniformMap          _uniformMap;
         DrawableMap         _drawableMap;
         ShapeMap            _shapeMap;
         NodeMap             _nodeMap;

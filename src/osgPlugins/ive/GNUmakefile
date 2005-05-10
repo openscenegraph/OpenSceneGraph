@@ -57,10 +57,12 @@ CXXFILES =\
 	PolygonOffset.cpp\
 	PositionAttitudeTransform.cpp\
 	PrimitiveSet.cpp\
+	Program.cpp\
 	ProxyNode.cpp\
 	ReaderWriterIVE.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
+	Shader.cpp\
 	Shape.cpp\
 	ShapeDrawable.cpp\
 	StateSet.cpp\
@@ -70,13 +72,14 @@ CXXFILES =\
 	TexGen.cpp\
 	TexGenNode.cpp\
 	TexMat.cpp\
+	Text.cpp\
 	Texture1D.cpp\
 	Texture2D.cpp\
 	Texture3D.cpp\
 	Texture.cpp\
-	Text.cpp\
 	TextureCubeMap.cpp\
 	Transform.cpp\
+	Uniform.cpp\
 	VertexProgram.cpp\
 	VisibilityGroup.cpp\
 

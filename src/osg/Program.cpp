@@ -2168,17 +2168,16 @@ void Program::PerContextProgram::linkProgram()
     {
         osg::notify(osg::WARN) << "glLinkProgram \""
             << _program->getName() << "\" FAILED" << std::endl;
-    }
 
-    std::string infoLog;
-    if( getInfoLog(infoLog) )
-    {
-        osg::notify(osg::INFO) << "Program \""
-            << _program->getName() << "\" infolog:\n" << infoLog << std::endl;
+        std::string infoLog;
+        if( getInfoLog(infoLog) )
+        {
+            osg::notify(osg::WARN) << "Program \""
+                << _program->getName() << "\" infolog:\n" << infoLog << std::endl;
+        }
+        
+        return;
     }
-
-    // dont build maps if link failed
-    if( ! _isLinked ) return;
 
     // build _uniformInfoMap
     GLint numUniforms = 0;

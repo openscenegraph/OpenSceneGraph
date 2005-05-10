@@ -372,6 +372,18 @@ SOURCE=..\..\..\src\osgPlugins\ive\Text.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Program.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Shader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Uniform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Texture.cpp
 # End Source File
 # Begin Source File
@@ -685,6 +697,18 @@ SOURCE=..\..\..\src\osgPlugins\ive\TexMat.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Text.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Program.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Shader.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Uniform.h
 # End Source File
 # Begin Source File
 

@@ -41,6 +41,8 @@
 #include "LightModel.h"
 #include "ProxyNode.h"
 #include "FrontFace.h"
+#include "Program.h"
+#include "Uniform.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -467,7 +469,6 @@ void DataOutputStream::writeStateSet(const osg::StateSet* stateset)
         if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<id<<"]"<<std::endl;
 
     }
-    
 }
 
 void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
@@ -577,12 +578,45 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::FrontFace*>(attribute)){
             ((ive::FrontFace*)(attribute))->write(this);
         }
+        // This is a FrontFace
+        else if(dynamic_cast<const osg::Program*>(attribute)){
+            ((ive::Program*)(attribute))->write(this);
+        }
 
         else{
             std::string className = attribute->className();
             throw Exception(std::string("StateSet::write(): Unknown StateAttribute: ").append(className));
         }
         if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<id<<"]"<<std::endl;
+    }
+}
+
+void DataOutputStream::writeUniform(const osg::Uniform* uniform)
+{
+    UniformMap::iterator itr = _uniformMap.find(uniform);
+    if (itr!=_uniformMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the uniform.
+
+        int id = _uniformMap.size();
+        _uniformMap[uniform] = id;
+
+        // write the id.
+        writeInt(id);
+
+        // write the stateset.
+        ((ive::Uniform*)(uniform))->write(this);
+
+        if (_verboseOutput) std::cout<<"read/writeUniform() ["<<id<<"]"<<std::endl;
+
     }
 }
 

@@ -87,6 +87,17 @@ void StateSet::write(DataOutputStream* out){
             out->writeInt(aitr->second.second);
         }
     }
+
+    if ( out->getVersion() >= VERSION_0010 )
+    {
+        // Write stateset attributes, this could for instance be alphafunctions, materials, etc.
+        StateSet::UniformList ul = getUniformList();
+        out->writeInt(ul.size());
+        for(StateSet::UniformList::iterator uitr=ul.begin(); uitr!=ul.end(); ++uitr){
+            out->writeUniform(uitr->second.first.get());
+            out->writeInt(uitr->second.second);
+        }
+    }
 }
 
 void StateSet::read(DataInputStream* in){
@@ -126,7 +137,7 @@ void StateSet::read(DataInputStream* in){
 
         // Read stateset modes.
         int size = in->readInt();
-                int i;
+        int i;
         for(i=0;i<size;i++){
             int mode = in->readInt();
             int value = in->readInt();
@@ -142,7 +153,7 @@ void StateSet::read(DataInputStream* in){
         
         // Read texture stateset mode.
         int nUnits = in->readInt();
-                int unit;
+        int unit;
         for(unit=0;unit<nUnits;unit++){
             size = in->readInt();
             for(i=0;i<size;i++){
@@ -159,6 +170,16 @@ void StateSet::read(DataInputStream* in){
             for(i=0;i<size;i++){
                 osg::StateAttribute* attribute = in->readStateAttribute();
                 setTextureAttribute(unit, attribute, (osg::StateAttribute::OverrideValue)in->readInt());
+            }
+        }
+
+        if ( in->getVersion() >= VERSION_0010 )
+        {
+            // Read uniforms 
+            size = in->readInt();
+            for(i=0;i<size;i++){
+                osg::Uniform* uniform = in->readUniform();
+                addUniform(uniform, (osg::StateAttribute::OverrideValue)in->readInt());
             }
         }
     }

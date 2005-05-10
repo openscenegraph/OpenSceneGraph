@@ -40,6 +40,7 @@
 #include "LightModel.h"
 #include "ProxyNode.h"
 #include "FrontFace.h"
+#include "Program.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -58,6 +59,7 @@
 #include "OccluderNode.h"
 #include "Impostor.h"
 #include "CoordinateSystemNode.h"
+#include "Uniform.h"
 
 #include "LightPointNode.h"
 #include "MultiSwitch.h"
@@ -775,6 +777,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::FrontFace();
         ((ive::FrontFace*)(attribute))->read(this);
     }
+    else if(attributeID == IVEPROGRAM){
+        attribute = new osg::Program();
+        ((ive::Program*)(attribute))->read(this);
+    }
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");
     }
@@ -786,6 +792,30 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<id<<"]"<<std::endl;
     
     return attribute;
+}
+
+osg::Uniform* DataInputStream::readUniform()
+{
+    // Read uniforms unique ID.
+    int id = readInt();
+    // See if uniform is already in the list.
+    UniformMap::iterator itr= _uniformMap.find(id);
+    if (itr!=_uniformMap.end()) return itr->second.get();
+
+    // Uniform is not in list.
+    // Create a new uniform,
+    osg::Uniform* uniform = new osg::Uniform();
+
+    // read its properties from stream
+    ((ive::Uniform*)(uniform))->read(this);
+        
+    // and add it to the uniform map,
+    _uniformMap[id] = uniform;
+        
+
+    if (_verboseOutput) std::cout<<"read/writeUniform() ["<<id<<"]"<<std::endl;
+    
+    return uniform;
 }
 
 osg::Drawable* DataInputStream::readDrawable()

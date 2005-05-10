@@ -795,15 +795,8 @@ class OSG_EXPORT State : public Referenced
             typedef std::pair<const Uniform*,StateAttribute::OverrideValue>         UniformPair;
             typedef std::vector<UniformPair>                                        UniformVec;
 
-            UniformStack()
-            {
-                changed = false;
-                global_default_uniform = 0L;
-            }
+            UniformStack() {}
 
-            /** apply an uniform if required */
-            bool                    changed;
-            ref_ptr<const Uniform>  global_default_uniform;
             UniformVec              uniformVec;
         };
 
@@ -937,15 +930,19 @@ class OSG_EXPORT State : public Referenced
 
         inline void pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void pushAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+        inline void pushUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
 
         inline void popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void popAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+        inline void popUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
 
         inline void applyModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+        inline void applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
 
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);
+        inline void applyUniformMap(UniformMap& uniformMap);
 
         void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
         void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode);
@@ -1025,6 +1022,35 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
     }
 }
 
+
+inline void State::pushUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)
+{
+    for(StateSet::UniformList::const_iterator aitr=uniformList.begin();
+        aitr!=uniformList.end();
+        ++aitr)
+    {
+        // get the attribute stack for incoming type {aitr->first}.
+        UniformStack& us = uniformMap[aitr->first];
+        if (us.uniformVec.empty())
+        {
+            // first pair so simply push incoming pair to back.
+            us.uniformVec.push_back(
+                UniformStack::UniformPair(aitr->second.first.get(),aitr->second.second));
+        }
+        else if ((us.uniformVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag
+        {
+            // push existing back since override keeps the previous value.
+            us.uniformVec.push_back(us.uniformVec.back());
+        }
+        else
+        {
+            // no override on so simply push incoming pair to back.
+            us.uniformVec.push_back(
+                UniformStack::UniformPair(aitr->second.first.get(),aitr->second.second));
+        }
+    }
+}
+
 inline void State::popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)
 {
     for(StateSet::ModeList::const_iterator mitr=modeList.begin();
@@ -1054,6 +1080,21 @@ inline void State::popAttributeList(AttributeMap& attributeMap,const StateSet::A
             as.attributeVec.pop_back();
         }
         as.changed = true;
+    }
+}
+
+inline void State::popUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)
+{
+    for(StateSet::UniformList::const_iterator aitr=uniformList.begin();
+        aitr!=uniformList.end();
+        ++aitr)
+    {
+        // get the attribute stack for incoming type {aitr->first}.
+        UniformStack& us = uniformMap[aitr->first];
+        if (!us.uniformVec.empty())
+        {
+            us.uniformVec.pop_back();
+        }
     }
 }
 
@@ -1297,6 +1338,80 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
 
 }
 
+inline void State::applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)
+{
+    if (!_lastAppliedProgramObject) return;
+
+    StateSet::UniformList::const_iterator ds_aitr=uniformList.begin();
+
+    UniformMap::iterator this_aitr=uniformMap.begin();
+
+    while (this_aitr!=uniformMap.end() && ds_aitr!=uniformList.end())
+    {
+        if (this_aitr->first<ds_aitr->first)
+        {
+            // note attribute type = this_aitr->first
+            UniformStack& as = this_aitr->second;
+            if (!as.uniformVec.empty())
+            {
+                _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
+            }
+
+            ++this_aitr;
+
+        }
+        else if (ds_aitr->first<this_aitr->first)
+        {
+            _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
+
+            ++ds_aitr;
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same attribute, check the override
+            // if any otherwise just apply the incoming attribute
+
+            UniformStack& as = this_aitr->second;
+
+            if (!as.uniformVec.empty() && (as.uniformVec.back().second & StateAttribute::OVERRIDE) && !(ds_aitr->second.second & StateAttribute::PROTECTED))
+            {
+                // override is on, just treat as a normal apply on uniform.
+                _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incoming attribute.
+                _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
+            }
+
+            ++this_aitr;
+            ++ds_aitr;
+        }
+    }
+
+    // iterator over the remaining state attributes to apply any previous changes.
+    for(;
+        this_aitr!=uniformMap.end();
+        ++this_aitr)
+    {
+        // note attribute type = this_aitr->first
+        UniformStack& as = this_aitr->second;
+        if (!as.uniformVec.empty())
+        {
+            _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
+        }
+    }
+
+    // iterator over the remaining incoming attribute to apply any new attribute.
+    for(;
+        ds_aitr!=uniformList.end();
+        ++ds_aitr)
+    {
+        _lastAppliedProgramObject->apply(*(ds_aitr->second.first.get()));
+    }
+
+}
+
 inline void State::applyModeMap(ModeMap& modeMap)
 {
     for(ModeMap::iterator mitr=modeMap.begin();
@@ -1343,6 +1458,22 @@ inline void State::applyAttributeMap(AttributeMap& attributeMap)
                 applyGlobalDefaultAttribute(as);
             }
 
+        }
+    }
+}
+
+inline void State::applyUniformMap(UniformMap& uniformMap)
+{
+    if (!_lastAppliedProgramObject) return;
+
+    for(UniformMap::iterator aitr=uniformMap.begin();
+        aitr!=uniformMap.end();
+        ++aitr)
+    {
+        UniformStack& as = aitr->second;
+        if (!as.uniformVec.empty())
+        {
+            _lastAppliedProgramObject->apply(*as.uniformVec.back().first);
         }
     }
 }

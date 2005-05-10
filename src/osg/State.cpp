@@ -135,7 +135,6 @@ void State::reset()
     {
         UniformStack& us = uitr->second;
         us.uniformVec.clear();
-        us.changed = true;
     }
 
 }
@@ -173,6 +172,7 @@ void State::pushStateSet(const StateSet* dstate)
             pushAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
         }
 
+        pushUniformList(_uniformMap,dstate->getUniformList());
     }
 }
 
@@ -211,6 +211,9 @@ void State::popStateSet()
         {
             popAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
         }
+
+        popUniformList(_uniformMap,dstate->getUniformList());
+
     }
     
     // remove the top draw state from the stack.
@@ -290,6 +293,9 @@ void State::apply(const StateSet* dstate)
             }
         }
         
+#if 1        
+        applyUniformList(_uniformMap,dstate->getUniformList());
+#else                
         if (_lastAppliedProgramObject)
         {
             for(StateSetStack::iterator sitr=_stateStateStack.begin();
@@ -306,7 +312,6 @@ void State::apply(const StateSet* dstate)
                 }
             }
 
-
             const StateSet::UniformList& uniformList = dstate->getUniformList();
             for(StateSet::UniformList::const_iterator itr=uniformList.begin();
                 itr!=uniformList.end();
@@ -315,6 +320,8 @@ void State::apply(const StateSet* dstate)
                 _lastAppliedProgramObject->apply(*(itr->second.first));
             }
         }
+#endif
+
     }
     else
     {
@@ -348,6 +355,9 @@ void State::apply()
         }
     }
 
+#if 1        
+    applyUniformMap(_uniformMap);
+#else        
     if (_lastAppliedProgramObject && !_stateStateStack.empty())
     {
         for(StateSetStack::iterator sitr=_stateStateStack.begin();
@@ -364,6 +374,8 @@ void State::apply()
             }
         }
     }
+#endif
+
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }

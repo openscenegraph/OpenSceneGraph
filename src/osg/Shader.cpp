@@ -326,14 +326,24 @@ void Shader::PerContextShader::compileShader()
     {
         osg::notify(osg::WARN) << _shader->getTypename() << " glCompileShader \""
 	    << _shader->getName() << "\" FAILED" << std::endl;
+
+        std::string infoLog;
+        if( getInfoLog(infoLog) )
+        {
+            osg::notify(osg::WARN) << _shader->getTypename() << " Shader \""
+	        << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
+        }
+    }
+    else
+    {
+        std::string infoLog;
+        if( getInfoLog(infoLog) )
+        {
+            osg::notify(osg::INFO) << _shader->getTypename() << " Shader \""
+	        << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
+        }
     }
 
-    std::string infoLog;
-    if( getInfoLog(infoLog) )
-    {
-        osg::notify(osg::INFO) << _shader->getTypename() << " Shader \""
-	    << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
-    }
 }
 
 bool Shader::PerContextShader::getInfoLog( std::string& infoLog ) const

@@ -55,8 +55,6 @@ void ExplosionDebriEffect::setDefaults()
     
     // set up unit particle.
     _defaultParticleTemplate.setLifeTime(1.0+0.6*_scale);   
-    _defaultParticleTemplate.setRadius(1.0f); 
-    _defaultParticleTemplate.setMass(osg::PI*4.0f/3.0f);
     _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
     _defaultParticleTemplate.setAlphaRange(osgParticle::rangef(0.0f, 1.0f));
     _defaultParticleTemplate.setColorRange(osgParticle::rangev4(
@@ -93,9 +91,8 @@ void ExplosionDebriEffect::setUpEmitterAndProgram()
         ptemplate.setColorRange(_defaultParticleTemplate.getColorRange());
 
         // these are physical properties of the particle
-        float r = _defaultParticleTemplate.getRadius()*radius;
-        ptemplate.setRadius(r); 
-        ptemplate.setMass(density*r*r*r*_defaultParticleTemplate.getMass());
+        ptemplate.setRadius(radius);
+        ptemplate.setMass(density*radius*radius*radius*osg::PI*4.0f/3.0f);
 
     }
 

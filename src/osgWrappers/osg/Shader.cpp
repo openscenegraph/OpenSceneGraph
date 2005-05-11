@@ -9,8 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/AlphaFunc>
 #include <osg/CopyOp>
+#include <osg/Object>
 #include <osg/Shader>
 
 BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
@@ -19,12 +19,16 @@ BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
 	EnumLabel(osg::Shader::UNDEFINED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shader)
+BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	BaseType(osg::Object);
 	ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED);
 	Constructor2(IN, osg::Shader::Type, type, IN, const std::string &, source);
 	ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method2(, META_Object, IN, osg, x, IN, osg::Shader, x);
+	Method0(osg::Object *, cloneType);
+	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	Method0(const char *, libraryName);
+	Method0(const char *, className);
 	Method1(int, compare, IN, const osg::Shader &, rhs);
 	Method1(bool, setType, IN, osg::Shader::Type, t);
 	Method1(void, setShaderSource, IN, const std::string &, sourceText);

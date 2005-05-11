@@ -2172,17 +2172,25 @@ void Program::PerContextProgram::linkProgram()
     _isLinked = (linked == GL_TRUE);
     if( ! _isLinked )
     {
-        osg::notify(osg::WARN) << "glLinkProgram \""
-            << _program->getName() << "\" FAILED" << std::endl;
+        osg::notify(osg::WARN) << "glLinkProgram \""<< _program->getName() << "\" FAILED" << std::endl;
 
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            osg::notify(osg::WARN) << "Program \""
-                << _program->getName() << "\" infolog:\n" << infoLog << std::endl;
+            osg::notify(osg::WARN) << "Program \""<< _program->getName() << "\" " 
+                                      "infolog:\n" << infoLog << std::endl;
         }
         
         return;
+    }
+    else
+    {
+        std::string infoLog;
+        if( getInfoLog(infoLog) )
+        {
+            osg::notify(osg::INFO) << "Program \""<< _program->getName() << "\" "<<
+                                      "link succeded, infolog:\n" << infoLog << std::endl;
+        }
     }
 
     // build _uniformInfoMap

@@ -105,13 +105,5 @@ SOURCE=..\..\..\examples\osgpbuffer\RenderToTextureStage.h
 
 SOURCE=..\..\..\examples\osgpbuffer\osgpbuffer.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgpbuffer\pbuffer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgpbuffer\RenderToTextureStage.cpp
-# End Source File
 # End Target
 # End Project

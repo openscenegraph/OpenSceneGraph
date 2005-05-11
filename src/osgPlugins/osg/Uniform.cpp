@@ -158,7 +158,7 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
             }
             break;
         }
-        case(osg::Uniform::UNDEFINED):
+        default:
         {
             break;
         }
@@ -252,7 +252,7 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
             writeMatrix(value,fw);
             break;
         }
-        case(osg::Uniform::UNDEFINED):
+        default:
         {
             break;
         }

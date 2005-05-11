@@ -43,6 +43,7 @@
 #include "FrontFace.h"
 #include "Program.h"
 #include "Uniform.h"
+#include "Shader.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -599,7 +600,7 @@ void DataOutputStream::writeUniform(const osg::Uniform* uniform)
         // Id already exists so just write ID.
         writeInt(itr->second);
 
-        if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<itr->second<<"]"<<std::endl;
+        if (_verboseOutput) std::cout<<"read/writeUniform() ["<<itr->second<<"]"<<std::endl;
     }
     else
     {
@@ -616,6 +617,35 @@ void DataOutputStream::writeUniform(const osg::Uniform* uniform)
         ((ive::Uniform*)(uniform))->write(this);
 
         if (_verboseOutput) std::cout<<"read/writeUniform() ["<<id<<"]"<<std::endl;
+
+    }
+}
+
+void DataOutputStream::writeShader(const osg::Shader* shader)
+{
+    ShaderMap::iterator itr = _shaderMap.find(shader);
+    if (itr!=_shaderMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeShader() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the shader.
+
+        int id = _shaderMap.size();
+        _shaderMap[shader] = id;
+
+        // write the id.
+        writeInt(id);
+
+        // write the stateset.
+        ((ive::Shader*)(shader))->write(this);
+
+        if (_verboseOutput) std::cout<<"read/writeShader() ["<<id<<"]"<<std::endl;
 
     }
 }

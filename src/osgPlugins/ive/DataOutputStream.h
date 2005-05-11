@@ -73,6 +73,7 @@ public:
 	void writeStateSet(const osg::StateSet* stateset);
 	void writeStateAttribute(const osg::StateAttribute* sa);
 	void writeUniform(const osg::Uniform* uniform);
+	void writeShader(const osg::Shader* shader);
 	void writeDrawable(const osg::Drawable* sa);
 	void writeShape(const osg::Shape* sa);
 	void writeNode(const osg::Node* sa);
@@ -102,6 +103,7 @@ private:
 	typedef std::map<const osg::StateSet*,int>        StateSetMap;
 	typedef std::map<const osg::StateAttribute*,int>  StateAttributeMap;
 	typedef std::map<const osg::Uniform*,int>         UniformMap;
+	typedef std::map<const osg::Shader*,int>          ShaderMap;
 	typedef std::map<const osg::Drawable*,int>        DrawableMap;
 	typedef std::map<const osg::Shape*,int>           ShapeMap;
 	typedef std::map<const osg::Node*,int>            NodeMap;
@@ -109,6 +111,7 @@ private:
         StateSetMap         _stateSetMap;
         StateAttributeMap   _stateAttributeMap;
         UniformMap          _uniformMap;
+        ShaderMap           _shaderMap;
         DrawableMap         _drawableMap;
         ShapeMap            _shapeMap;
         NodeMap             _nodeMap;

@@ -30,6 +30,22 @@ void Program::write(DataOutputStream* out){
     else
         throw Exception("Program::write(): Could not cast this osg::Program to an osg::Object.");
 
+    const AttribBindingList& abl = getAttribBindingList();
+    out->writeUInt(abl.size());
+    for(AttribBindingList::const_iterator itr = abl.begin();
+        itr != abl.end();
+        ++itr)
+    {
+        out->writeString(itr->first);
+        out->writeUInt(itr->second);
+    }
+
+    // Write 
+    out->writeUInt(getNumShaders());
+    for(unsigned int si=0; si<getNumShaders(); ++si)
+    {
+        out->writeShader(getShader(si));
+    }
 }
 
 void Program::read(DataInputStream* in)
@@ -54,4 +70,22 @@ void Program::read(DataInputStream* in)
     {
         throw Exception("Program::read(): Expected Program identification.");
     }
+
+    // reading in shaders.
+    unsigned int size = in->readUInt();
+    for(unsigned int ai=0; ai<size; ++ai)
+    {
+        std::string name = in->readString();
+        unsigned int index = in->readUInt();
+        addBindAttribLocation(name, index);
+    }
+
+    // reading in shaders.
+    size = in->readUInt();
+    for(unsigned int si=0; si<size; ++si)
+    {
+        osg::Shader* shader = in->readShader();
+        addShader(shader);
+    }
+
 }

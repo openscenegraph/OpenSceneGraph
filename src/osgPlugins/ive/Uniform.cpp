@@ -30,6 +30,8 @@ void Uniform::write(DataOutputStream* out){
     else
         throw Exception("Uniform::write(): Could not cast this osg::Uniform to an osg::Object.");
 
+    out->writeInt(getType());
+    out->writeString(getName());
 }
 
 void Uniform::read(DataInputStream* in)
@@ -54,4 +56,7 @@ void Uniform::read(DataInputStream* in)
     {
         throw Exception("Uniform::read(): Expected Uniform identification.");
     }
+    
+    setType(static_cast<Type>(in->readInt()));
+    setName(in->readString());
 }

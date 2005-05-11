@@ -21,6 +21,8 @@
 #include <osg/Referenced>
 #include <osg/GL>
 
+#include <string>
+
 namespace osg {
 
 class OSG_EXPORT GL2Extensions : public osg::Referenced

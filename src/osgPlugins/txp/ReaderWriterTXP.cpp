@@ -44,7 +44,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             {
                 int id = _archiveId++;
                 archive->setId(id);
-                getArchive(id,osgDB::getFilePath(fileName));
+                txpNode->setArchive(getArchive(id,osgDB::getFilePath(fileName)));
             }
             return txpNode.get();
         }
@@ -217,11 +217,11 @@ TXPArchive *ReaderWriterTXP::getArchive(int id, const std::string& dir)
             return NULL;
         }
 
-		if (archive->loadTextStyles() == false)
-		{
-			ReaderWriterTXPERROR("getArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
-			return NULL;
-		}
+        if (archive->loadTextStyles() == false)
+        {
+            ReaderWriterTXPERROR("getArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
+            return NULL;
+        }
 
         archive->setId(id);
 

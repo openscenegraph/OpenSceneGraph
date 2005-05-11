@@ -21,11 +21,12 @@ ParticleEffect::ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& co
     osg::Group(copy,copyop),/*,
     _particleSystem(copy._particleSystem.valid()?copy._particleSystem->clone():0)*/
     _useLocalParticleSystem(copy._useLocalParticleSystem),
+    _defaultParticleTemplate(copy._defaultParticleTemplate),
+    _position(copy._position),
     _scale(copy._scale),
     _intensity(copy._intensity),
     _startTime(copy._startTime),
     _emitterDuration(copy._emitterDuration),
-    _particleDuration(copy._particleDuration),
     _wind(copy._wind)
 {
 }
@@ -36,6 +37,12 @@ void ParticleEffect::setUseLocalParticleSystem(bool local)
     
     _useLocalParticleSystem = local;
     buildEffect();
+}
+
+void ParticleEffect::setDefaultParticleTemplate(const Particle& p)
+{
+    _defaultParticleTemplate = p;
+    setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setPosition(const osg::Vec3& position)
@@ -80,9 +87,10 @@ void ParticleEffect::setEmitterDuration(double duration)
 
 void ParticleEffect::setParticleDuration(double duration)
 {
-    if (_particleDuration==duration) return;
+    if (_defaultParticleTemplate.getLifeTime()==duration) return;
 
-    _particleDuration = duration;
+    _defaultParticleTemplate.setLifeTime(duration);
+    
     setUpEmitterAndProgram();
 }
 
@@ -109,7 +117,6 @@ void ParticleEffect::setDefaults()
     _intensity = 1.0f;
     _startTime = 0.0;
     _emitterDuration = 1.0;
-    _particleDuration = 1.0;
     _wind.set(0.0f,0.0f,0.0f);
 }
 

@@ -31,7 +31,7 @@ SmokeEffect::SmokeEffect(const osg::Vec3& position, float scale, float intensity
     _intensity = intensity;
 
     _emitterDuration = 65.0;
-    _particleDuration = 5.0*_scale;
+    _defaultParticleTemplate.setLifeTime(5.0*_scale);
         
     buildEffect();
 }
@@ -45,8 +45,20 @@ void SmokeEffect::setDefaults()
 {
     ParticleEffect::setDefaults();
     
+    _textureFileName = "Images/smoke.rgb";    
     _emitterDuration = 65.0;
-    _particleDuration = 5.0*_scale;
+
+    // set up unit particle.
+    _defaultParticleTemplate.setLifeTime(5.0*_scale);
+    _defaultParticleTemplate.setRadius(1.0f);
+    _defaultParticleTemplate.setMass(osg::PI*4.0f/3.0f);
+    _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
+    _defaultParticleTemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
+    _defaultParticleTemplate.setColorRange(osgParticle::rangev4(
+                                            osg::Vec4(1, 1.0f, 1.0f, 1.0f), 
+                                            osg::Vec4(1, 1.0f, 1.f, 0.0f)));
+
+
 }
 
 void SmokeEffect::setUpEmitterAndProgram()
@@ -59,25 +71,26 @@ void SmokeEffect::setUpEmitterAndProgram()
 
     if (_particleSystem.valid())
     {
-        _particleSystem->setDefaultAttributes("Images/smoke.rgb", false, false);
+        _particleSystem->setDefaultAttributes(_textureFileName, false, false);
 
         osgParticle::Particle& ptemplate = _particleSystem->getDefaultParticleTemplate();
-        ptemplate.setLifeTime(5*_scale);
 
         float radius = 0.5f*_scale; 
         float density = 1.0f; // 1.0kg/m^3
 
+        ptemplate.setLifeTime(_defaultParticleTemplate.getLifeTime());
+
         // the following ranges set the envelope of the respective 
         // graphical properties in time.
-        ptemplate.setSizeRange(osgParticle::rangef(radius*0.75f, radius*3.0f));
-        ptemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
-        ptemplate.setColorRange(osgParticle::rangev4(
-            osg::Vec4(1, 1.0f, 1.0f, 1.0f), 
-            osg::Vec4(1, 1.0f, 1.f, 0.0f)));
+        ptemplate.setSizeRange(osgParticle::rangef(radius*_defaultParticleTemplate.getSizeRange().minimum,
+                                                   radius*_defaultParticleTemplate.getSizeRange().maximum));
+        ptemplate.setAlphaRange(_defaultParticleTemplate.getAlphaRange());
+        ptemplate.setColorRange(_defaultParticleTemplate.getColorRange());
 
         // these are physical properties of the particle
-        ptemplate.setRadius(radius);    // 5 cm wide particles
-        ptemplate.setMass(density*osg::PI*4.0f*radius*radius*radius/3.0f);
+        float r = _defaultParticleTemplate.getRadius()*radius;
+        ptemplate.setRadius(r); 
+        ptemplate.setMass(density*r*r*r*_defaultParticleTemplate.getMass());
 
     }
 

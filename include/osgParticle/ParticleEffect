@@ -30,7 +30,6 @@ namespace osgParticle
             _intensity(1.0f),
             _startTime(0.0),
             _emitterDuration(1.0),
-            _particleDuration(1.0),
             _wind(0.0f,0.0f,0.0f)
             {}
         
@@ -44,6 +43,12 @@ namespace osgParticle
 
         void setUseLocalParticleSystem(bool local);
         bool getUseLocalParticleSystem() const { return _useLocalParticleSystem; }
+
+        void setTextureFileName(const std::string& filename);
+        const std::string& getTextureFileName() const { return _textureFileName; }
+
+        void setDefaultParticleTemplate(const Particle& p);
+        const Particle& getDefaultParticleTemplate() const { return _defaultParticleTemplate; }
 
         void setPosition(const osg::Vec3& position);
         const osg::Vec3& getPosition() const { return _position; }
@@ -61,7 +66,7 @@ namespace osgParticle
         double getEmitterDuration() const { return _emitterDuration; }
 
         void setParticleDuration(double duration);
-        double getParticleDuration() const { return _particleDuration; }
+        double getParticleDuration() const { return _defaultParticleTemplate.getLifeTime(); }
 
         void setWind(const osg::Vec3& wind);
         const osg::Vec3& getWind() const { return _wind; }
@@ -90,12 +95,13 @@ namespace osgParticle
         osg::ref_ptr<ParticleSystem>    _particleSystem;
 
         bool                            _useLocalParticleSystem;        
+        std::string                     _textureFileName;
+        Particle                        _defaultParticleTemplate;
         osg::Vec3                       _position;
         float                           _scale;
         float                           _intensity;
         double                          _startTime;
         double                          _emitterDuration;
-        double                          _particleDuration;
         osg::Vec3                       _wind;
     };
 

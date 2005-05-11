@@ -20,6 +20,8 @@
 
 
 #include <osg/GL2Extensions>
+#include <osg/Object>
+#include <osg/buffered_value>
 
 #include <set>
 #include <string>

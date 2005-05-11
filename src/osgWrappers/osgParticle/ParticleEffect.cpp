@@ -14,6 +14,7 @@
 #include <osg/Object>
 #include <osg/Vec3>
 #include <osgParticle/Emitter>
+#include <osgParticle/Particle>
 #include <osgParticle/ParticleEffect>
 #include <osgParticle/ParticleSystem>
 #include <osgParticle/Program>
@@ -28,6 +29,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
 	Method1(void, accept, IN, osg::NodeVisitor &, nv);
 	Method1(void, setUseLocalParticleSystem, IN, bool, local);
 	Method0(bool, getUseLocalParticleSystem);
+	Method1(void, setTextureFileName, IN, const std::string &, filename);
+	Method0(const std::string &, getTextureFileName);
+	Method1(void, setDefaultParticleTemplate, IN, const osgParticle::Particle &, p);
+	Method0(const osgParticle::Particle &, getDefaultParticleTemplate);
 	Method1(void, setPosition, IN, const osg::Vec3 &, position);
 	Method0(const osg::Vec3 &, getPosition);
 	Method1(void, setScale, IN, float, scale);
@@ -53,6 +58,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
 	Method0(void, setDefaults);
 	Method0(void, setUpEmitterAndProgram);
 	Method0(void, buildEffect);
+	Property(const osgParticle::Particle &, DefaultParticleTemplate);
 	ReadOnlyProperty(osgParticle::Emitter *, Emitter);
 	Property(double, EmitterDuration);
 	Property(float, Intensity);
@@ -62,6 +68,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
 	ReadOnlyProperty(osgParticle::Program *, Program);
 	Property(float, Scale);
 	Property(double, StartTime);
+	Property(const std::string &, TextureFileName);
 	Property(bool, UseLocalParticleSystem);
 	Property(const osg::Vec3 &, Wind);
 END_REFLECTOR

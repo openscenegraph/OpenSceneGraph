@@ -10,10 +10,11 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
-#include <osg/Matrix>
+#include <osg/GL2Extensions>
+#include <osg/Matrixd>
+#include <osg/Matrixf>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Program>
 #include <osg/StateSet>
 #include <osg/Uniform>
 #include <osg/Vec2>
@@ -67,7 +68,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Constructor2(IN, const char *, name, IN, const osg::Vec2 &, v2);
 	Constructor2(IN, const char *, name, IN, const osg::Vec3 &, v3);
 	Constructor2(IN, const char *, name, IN, const osg::Vec4 &, v4);
-	Constructor2(IN, const char *, name, IN, const osg::Matrix &, m4);
+	Constructor2(IN, const char *, name, IN, const osg::Matrixf &, m4);
+	Constructor2(IN, const char *, name, IN, const osg::Matrixd &, m4);
 	Constructor3(IN, const char *, name, IN, int, i0, IN, int, i1);
 	Constructor4(IN, const char *, name, IN, int, i0, IN, int, i1, IN, int, i2);
 	Constructor5(IN, const char *, name, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3);
@@ -88,7 +90,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method1(bool, set, IN, const osg::Vec2 &, v2);
 	Method1(bool, set, IN, const osg::Vec3 &, v3);
 	Method1(bool, set, IN, const osg::Vec4 &, v4);
-	Method1(bool, set, IN, const osg::Matrix &, m4);
+	Method1(bool, set, IN, const osg::Matrixf &, m4);
+	Method1(bool, set, IN, const osg::Matrixd &, m4);
 	Method2(bool, set, IN, int, i0, IN, int, i1);
 	Method3(bool, set, IN, int, i0, IN, int, i1, IN, int, i2);
 	Method4(bool, set, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3);
@@ -101,7 +104,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	Method1(bool, get, IN, osg::Vec2 &, v2);
 	Method1(bool, get, IN, osg::Vec3 &, v3);
 	Method1(bool, get, IN, osg::Vec4 &, v4);
-	Method1(bool, get, IN, osg::Matrix &, m4);
+	Method1(bool, get, IN, osg::Matrixf &, m4);
+	Method1(bool, get, IN, osg::Matrixd &, m4);
 	Method2(bool, get, IN, int &, i0, IN, int &, i1);
 	Method3(bool, get, IN, int &, i0, IN, int &, i1, IN, int &, i2);
 	Method4(bool, get, IN, int &, i0, IN, int &, i1, IN, int &, i2, IN, int &, i3);

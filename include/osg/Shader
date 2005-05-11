@@ -24,7 +24,6 @@
 #include <osg/buffered_value>
 
 #include <set>
-#include <string>
 
 namespace osg {
 

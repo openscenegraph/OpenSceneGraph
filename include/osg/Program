@@ -340,8 +340,13 @@ class OSG_EXPORT Program : public osg::StateAttribute
         bool removeShader( Shader* shader );
 
         /** Add an attribute location binding. */
-        void bindAttribLocation( GLuint index, const char* name );
+        void addBindAttribLocation( const std::string& name, GLuint index );
+        
+        /** Add an attribute location binding. */
+        void removeBindAttribLocation( const std::string& name );
+
         typedef std::map<std::string,GLuint> AttribBindingList;
+
         const AttribBindingList& getAttribBindingList() const { return _attribBindingList; }
 
         /** Return true if this Program represents "fixed-functionality" rendering */

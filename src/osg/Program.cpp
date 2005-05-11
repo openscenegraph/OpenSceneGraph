@@ -2034,9 +2034,15 @@ bool Program::removeShader( Shader* shader )
 }
 
 
-void Program::bindAttribLocation( GLuint index, const char* name )
+void Program::addBindAttribLocation( const std::string& name, GLuint index )
 {
     _attribBindingList[name] = index;
+    dirtyProgram();
+}
+
+void Program::removeBindAttribLocation( const std::string& name )
+{
+    _attribBindingList.erase(name);
     dirtyProgram();
 }
 

@@ -24,6 +24,7 @@
 #include <osg/ColorMatrix>
 #include <osg/LightModel>
 #include <osg/CollectOccludersVisitor>
+#include <osg/Shader>
 
 #include <osg/GLU>
 
@@ -658,6 +659,7 @@ void SceneView::flushAllDeletedGLObjects()
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
+    osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
  }
 
 void SceneView::flushDeletedGLObjects(double& availableTime)
@@ -671,6 +673,7 @@ void SceneView::flushDeletedGLObjects(double& availableTime)
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
+    osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
 }
 
 void SceneView::draw()

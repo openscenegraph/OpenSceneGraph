@@ -37,11 +37,21 @@ bool Program_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    while(fr[0].matchWord("AttribBindingLocation"))
+    while(fr.matchSequence("AttribBindingLocation %i %w"))
     {
-        int index;
-        fr[1].getInt(index);
-        program.bindAttribLocation(index,fr[2].getStr());
+        unsigned int index;
+        fr[1].getUInt(index);
+        program.addBindAttribLocation(fr[2].getStr(), index);
+        fr += 3;
+        iteratorAdvanced = true;
+    }
+
+
+    while(fr.matchSequence("AttribBindingLocation %w %i"))
+    {
+        unsigned int index;
+        fr[2].getUInt(index);
+        program.addBindAttribLocation(fr[1].getStr(), index);
         fr += 3;
         iteratorAdvanced = true;
     }
@@ -76,7 +86,7 @@ bool Program_writeLocalData(const Object& obj,Output& fw)
     Program::AttribBindingList::const_iterator i;
     for(i=abl.begin(); i!=abl.end(); i++)
     {
-        fw.indent() << "AttribBindingLocation " << (*i).second << " " << (*i).first << std::endl;
+        fw.indent() << "AttribBindingLocation " << (*i).first << " " << (*i).second << std::endl;
     }
 
     fw.indent() << "num_shaders " << program.getNumShaders() << std::endl;

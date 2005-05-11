@@ -89,6 +89,8 @@ public:
     // Add light attrib
     void addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
     
+    int getNumLightAttributes() { return _lights.size(); }
+
     // Get light attrib
     inline DeferredLightAttribute& getLightAttribute(unsigned int i)
     {

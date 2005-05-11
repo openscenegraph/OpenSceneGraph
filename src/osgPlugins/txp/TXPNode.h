@@ -66,6 +66,8 @@ public:
     bool loadArchive();
     
     TXPArchive* getArchive();
+
+    void setArchive(TXPArchive* archive) { _archive = archive; }
     
 protected:
 
@@ -78,7 +80,7 @@ protected:
     
     osg::Node* addPagedLODTile(int x, int y, int lod);
     
-    std::string    _archiveName;
+    std::string _archiveName;
     std::string _options;
     
     osg::ref_ptr<TXPArchive>        _archive;

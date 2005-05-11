@@ -54,13 +54,11 @@ void ExplosionEffect::setDefaults()
 
     // set up unit particle.
     _defaultParticleTemplate.setLifeTime(0.5+0.1*_scale);
-    _defaultParticleTemplate.setRadius(1.0f);
-    _defaultParticleTemplate.setMass(osg::PI*4.0f/3.0f);
     _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
     _defaultParticleTemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
     _defaultParticleTemplate.setColorRange(osgParticle::rangev4(
-        osg::Vec4(1.0f, 0.8f, 0.2f, 1.0f), 
-        osg::Vec4(1.0f, 0.4f, 0.1f, 0.0f)));
+                                            osg::Vec4(1.0f, 0.8f, 0.2f, 1.0f), 
+                                            osg::Vec4(1.0f, 0.4f, 0.1f, 0.0f)));
 
 }
 
@@ -92,9 +90,8 @@ void ExplosionEffect::setUpEmitterAndProgram()
         ptemplate.setColorRange(_defaultParticleTemplate.getColorRange());
 
         // these are physical properties of the particle
-        float r = _defaultParticleTemplate.getRadius()*radius;
-        ptemplate.setRadius(r); 
-        ptemplate.setMass(density*r*r*r*_defaultParticleTemplate.getMass());
+        ptemplate.setRadius(radius);
+        ptemplate.setMass(density*radius*radius*radius*osg::PI*4.0f/3.0f);
 
     } 
 

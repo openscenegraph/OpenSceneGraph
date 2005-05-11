@@ -29,7 +29,7 @@ void DOFTransform::write(DataOutputStream* out){
 		throw Exception("DOFTransform::write(): Could not cast this osg::DOFTransform to an osg::Transform.");
 
 	// Write DOFTransform's properties.
-  out->writeMatrix(getPutMatrix());
+  out->writeMatrixd(getPutMatrix());
 
   out->writeVec3(getMinHPR());
   out->writeVec3(getMaxHPR());
@@ -64,8 +64,8 @@ void DOFTransform::read(DataInputStream* in){
 		else
 			throw Exception("DOFTransform::read(): Could not cast this osg::DOFTransform to an osg::Transform.");
 		// Read DOFTransform's properties
-    setPutMatrix(in->readMatrix());
-    setInversePutMatrix( osg::Matrix::inverse( getPutMatrix() ) );
+    setPutMatrix(in->readMatrixd());
+    setInversePutMatrix( osg::Matrixd::inverse( getPutMatrix() ) );
 
     setMinHPR(in->readVec3());
     setMaxHPR(in->readVec3());

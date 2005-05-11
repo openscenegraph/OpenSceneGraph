@@ -429,7 +429,20 @@ void DataOutputStream::writeVec4Array(const osg::Vec4Array* a)
     if (_verboseOutput) std::cout<<"read/writeVec4Array() ["<<size<<"]"<<std::endl;
 }
 
-void DataOutputStream::writeMatrix(const osg::Matrix& mat)
+void DataOutputStream::writeMatrixf(const osg::Matrixf& mat)
+{
+    for(int r=0;r<4;r++)
+    {
+        for(int c=0;c<4;c++)
+        {
+            writeFloat(mat(r,c));
+        }
+    }
+    
+    if (_verboseOutput) std::cout<<"read/writeMatrix() ["<<mat<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeMatrixd(const osg::Matrixd& mat)
 {
     for(int r=0;r<4;r++)
     {

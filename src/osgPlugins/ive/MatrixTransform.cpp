@@ -32,7 +32,7 @@ void MatrixTransform::write(DataOutputStream* out){
 
 
 	// Write MatrixTransform's properties.
-	out->writeMatrix(getMatrix());
+	out->writeMatrixf(getMatrix());
 }
 
 void MatrixTransform::read(DataInputStream* in){
@@ -50,7 +50,7 @@ void MatrixTransform::read(DataInputStream* in){
 			throw Exception("MatrixTransform::read(): Could not cast this osg::MatrixTransform to an osg::Group.");
 
 		// Read matrix
-		setMatrix(in->readMatrix());
+		setMatrix(in->readMatrixd());
 	}
 	else{
 		throw Exception("MatrixTransform::read(): Expected MatrixTransform identification");

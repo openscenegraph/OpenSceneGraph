@@ -612,9 +612,29 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
     return a;
 }
 
-osg::Matrix DataInputStream::readMatrix()
+osg::Matrixf DataInputStream::readMatrixf()
 {
-    osg::Matrix mat;
+    osg::Matrixf mat;
+    for(int r=0;r<4;r++)
+    {
+        for(int c=0;c<4;c++)
+        {
+            mat(r,c) = readFloat();
+        }
+    }
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readMatrix(): Failed to read Matrix array.");
+
+    if (_verboseOutput) std::cout<<"read/writeMatrix() ["<<mat<<"]"<<std::endl;
+    
+
+    return mat;
+}
+
+osg::Matrixd DataInputStream::readMatrixd()
+{
+    osg::Matrixd mat;
     for(int r=0;r<4;r++)
     {
         for(int c=0;c<4;c++)

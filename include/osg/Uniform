@@ -190,7 +190,8 @@ class OSG_EXPORT Uniform : public Object
         Uniform( const char* name, const osg::Vec4& v4 );
         //TODO Uniform( const char* name, const osg::Matrix2& m2 );
         //TODO Uniform( const char* name, const osg::Matrix3& m3 );
-        Uniform( const char* name, const osg::Matrix& m4 );
+        Uniform( const char* name, const osg::Matrixf& m4 );
+        Uniform( const char* name, const osg::Matrixd& m4 );
         Uniform( const char* name, int i0, int i1 );
         Uniform( const char* name, int i0, int i1, int i2 );
         Uniform( const char* name, int i0, int i1, int i2, int i3 );
@@ -243,7 +244,8 @@ class OSG_EXPORT Uniform : public Object
         bool set( const osg::Vec4& v4 );
         //TODO bool set( const osg::Matrix2& m2 );
         //TODO bool set( const osg::Matrix3& m3 );
-        bool set( const osg::Matrix& m4 );
+        bool set( const osg::Matrixf& m4 );
+        bool set( const osg::Matrixd& m4 );
         bool set( int i0, int i1 );
         bool set( int i0, int i1, int i2 );
         bool set( int i0, int i1, int i2, int i3 );
@@ -260,7 +262,8 @@ class OSG_EXPORT Uniform : public Object
         bool get( osg::Vec4& v4 ) const;
         //TODO bool get( osg::Matrix2& m2 ) const;
         //TODO bool get( osg::Matrix3& m3 ) const;
-        bool get( osg::Matrix& m4 ) const;
+        bool get( osg::Matrixf& m4 ) const;
+        bool get( osg::Matrixd& m4 ) const;
         bool get( int& i0, int& i1 ) const;
         bool get( int& i0, int& i1, int& i2 ) const;
         bool get( int& i0, int& i1, int& i2, int& i3 ) const;
@@ -324,9 +327,11 @@ class OSG_EXPORT Uniform : public Object
         ParentList _parents;
         friend class osg::StateSet;
 
-        std::string _name;
         Type _type;
-        union {
+        std::string _name;
+
+        union
+        {
             GLfloat f1;         // float
             GLfloat f2[2];      // vec2
             GLfloat f3[3];      // vec3

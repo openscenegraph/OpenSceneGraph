@@ -110,6 +110,7 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
 	Method1(void, apply, IN, osg::Node &, geode);
 	Method1(void, apply, IN, osg::Geode &, geode);
 	Method1(void, apply, IN, osg::Billboard &, geode);
+	Method1(void, apply, IN, osg::ProxyNode &, node);
 	Method1(void, apply, IN, osg::Transform &, transform);
 	Method1(bool, removeTransforms, IN, osg::Node *, nodeWeCannotRemove);
 END_REFLECTOR

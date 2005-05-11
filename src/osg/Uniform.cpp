@@ -28,7 +28,7 @@ using namespace osg;
 ///////////////////////////////////////////////////////////////////////////
 
 Uniform::Uniform() :
-    _name(""), _type(UNDEFINED),_modifiedCount(0)
+    _type(UNDEFINED), _name(""), _modifiedCount(0)
 {
     setDataVariance(STATIC);
 }
@@ -55,7 +55,7 @@ Uniform::Uniform( Type type, const std::string& name ) :
     case BOOL_VEC4:        set( false, false, false, false ); break;
     // TODO case FLOAT_MAT2:    
     // TODO case FLOAT_MAT3:    
-    case FLOAT_MAT4:    set( osg::Matrix() ); break;
+    case FLOAT_MAT4:    set( osg::Matrixf() ); break;
     case SAMPLER_1D:    set( 0 ); break;
     case SAMPLER_2D:    set( 0 ); break;
     case SAMPLER_3D:    set( 0 ); break;
@@ -69,7 +69,7 @@ Uniform::Uniform( Type type, const std::string& name ) :
 }
 
 Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
-    Object(rhs,copyop), _name(rhs._name), _type(rhs._type)
+    Object(rhs,copyop), _type(rhs._type), _name(rhs._name)
 {
     copyData( rhs );
 }
@@ -381,25 +381,25 @@ Uniform::Type Uniform::getGlApiType( Type t )
 // value constructors
 
 Uniform::Uniform( const char* name, float f ) :
-    _name(name), _type(FLOAT)
+    _type(FLOAT), _name(name)
 {
     set( f );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec2& v2 ) :
-    _name(name), _type(FLOAT_VEC2)
+    _type(FLOAT_VEC2), _name(name)
 {
     set( v2 );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec3& v3 ) :
-    _name(name), _type(FLOAT_VEC3)
+     _type(FLOAT_VEC3), _name(name)
 {
     set( v3 );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec4& v4 ) :
-    _name(name), _type(FLOAT_VEC4)
+    _type(FLOAT_VEC4), _name(name)
 {
     set( v4 );
 }
@@ -408,56 +408,56 @@ Uniform::Uniform( const char* name, const osg::Vec4& v4 ) :
 
 //Uniform::Uniform( const char* name, const osg::Matrix3& m3 )
 
-Uniform::Uniform( const char* name, const osg::Matrix& m4 ) :
-    _name(name), _type(FLOAT_MAT4)
+Uniform::Uniform( const char* name, const osg::Matrixf& m4 ) :
+    _type(FLOAT_MAT4), _name(name)
 {
     set( m4 );
 }
 
 Uniform::Uniform( const char* name, int i ) :
-    _name(name), _type(INT)
+    _type(INT), _name(name)
 {
     set( i );
 }
 
 Uniform::Uniform( const char* name, int i0, int i1 ) :
-    _name(name), _type(INT_VEC2)
+    _type(INT_VEC2), _name(name)
 {
     set( i0, i1 );
 }
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2 ) :
-    _name(name), _type(INT_VEC3)
+    _type(INT_VEC3), _name(name)
 {
     set( i0, i1, i2 );
 }
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 ) :
-    _name(name), _type(INT_VEC4)
+    _type(INT_VEC4), _name(name)
 {
     set( i0, i1, i2, i3 );
 }
 
 Uniform::Uniform( const char* name, bool b ) :
-    _name(name), _type(BOOL)
+    _type(BOOL), _name(name)
 {
     set( b );
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1 ) :
-    _name(name), _type(BOOL_VEC2)
+     _type(BOOL_VEC2), _name(name)
 {
     set( b0, b1 );
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 ) :
-    _name(name), _type(BOOL_VEC3)
+    _type(BOOL_VEC3), _name(name) 
 {
     set( b0, b1, b2 );
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
-    _name(name), _type(BOOL_VEC4)
+    _type(BOOL_VEC4), _name(name)
 {
     set( b0, b1, b2, b3 );
 }
@@ -507,7 +507,7 @@ bool Uniform::set( const osg::Vec4& v4 )
 
 //TODO bool Uniform::set( const osg::Matrix3& m3 )
 
-bool Uniform::set( const osg::Matrix& m4 )
+bool Uniform::set( const osg::Matrixf& m4 )
 {
     if( ! isCompatibleType(FLOAT_MAT4) ) return false;
     int n = 0;
@@ -516,6 +516,21 @@ bool Uniform::set( const osg::Matrix& m4 )
         for(int col=0; col<4; ++col)
         {
             _data.f16[n++] = m4(row,col);
+        }
+    }
+    dirty();
+    return true;
+}
+
+bool Uniform::set( const osg::Matrixd& m4 )
+{
+    if( ! isCompatibleType(FLOAT_MAT4) ) return false;
+    int n = 0;
+    for(int row=0; row<4; ++row)
+    {
+        for(int col=0; col<4; ++col)
+        {
+            _data.f16[n++] = static_cast<float>(m4(row,col));
         }
     }
     dirty();
@@ -639,7 +654,21 @@ bool Uniform::get( osg::Vec4& v4 ) const
 
 //TODO bool Uniform::get( osg::Matrix3& m3 ) const
 
-bool Uniform::get( osg::Matrix& m4 ) const
+bool Uniform::get( osg::Matrixf& m4 ) const
+{
+    if( ! isCompatibleType(FLOAT_MAT4) ) return false;
+    int n = 0;
+    for(int row=0; row<4; ++row)
+    {
+    for(int col=0; col<4; ++col)
+    {
+        m4(row,col) = _data.f16[n++];
+    }
+    }
+    return true;
+}
+
+bool Uniform::get( osg::Matrixd& m4 ) const
 {
     if( ! isCompatibleType(FLOAT_MAT4) ) return false;
     int n = 0;

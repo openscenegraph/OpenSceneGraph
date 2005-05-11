@@ -68,7 +68,8 @@ public:
 	void writeVec2Array(const osg::Vec2Array* a);
 	void writeVec3Array(const osg::Vec3Array* a);
 	void writeVec4Array(const osg::Vec4Array* a);
-	void writeMatrix(const osg::Matrix& mat);
+	void writeMatrixf(const osg::Matrixf& mat);
+	void writeMatrixd(const osg::Matrixd& mat);
 
 	void writeStateSet(const osg::StateSet* stateset);
 	void writeStateAttribute(const osg::StateAttribute* sa);

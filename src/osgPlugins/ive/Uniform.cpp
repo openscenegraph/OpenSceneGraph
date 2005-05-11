@@ -15,6 +15,7 @@
 #include "Exception.h"
 #include "Uniform.h"
 #include "Object.h"
+#include <osg/Notify>
 
 using namespace ive;
 
@@ -32,6 +33,94 @@ void Uniform::write(DataOutputStream* out){
 
     out->writeInt(getType());
     out->writeString(getName());
+
+    switch( Uniform::getGlApiType(getType()) )
+    {
+        case(osg::Uniform::FLOAT):
+        {
+            float value;
+            get(value);
+            out->writeFloat(value);
+            break;
+        }
+        case(osg::Uniform::FLOAT_VEC2):
+        {
+            osg::Vec2 value;
+            get(value);
+            out->writeVec2(value);
+            break;
+        }
+        case(osg::Uniform::FLOAT_VEC3):
+        {
+            osg::Vec3 value;
+            get(value);
+            out->writeVec3(value);
+            break;
+        }
+        case(osg::Uniform::FLOAT_VEC4):
+        {
+            osg::Vec4 value;
+            get(value);
+            out->writeVec4(value);
+            break;
+        }
+        case(osg::Uniform::INT):
+        {
+            int i0;
+            get(i0);
+            out->writeInt(i0);
+            break;
+        }
+        case(osg::Uniform::INT_VEC2):
+        {
+            int i0, i1;
+            get(i0, i1);
+            out->writeInt(i0);
+            out->writeInt(i1);
+            break;
+        }
+        case(osg::Uniform::INT_VEC3):
+        {
+            int i0, i1, i2;
+            get(i0, i1, i2);
+            out->writeInt(i0);
+            out->writeInt(i1);
+            out->writeInt(i2);
+            break;
+        }
+        case(osg::Uniform::INT_VEC4):
+        {
+            int i0, i1, i2, i3;
+            get(i0, i1, i2, i3);
+            out->writeInt(i0);
+            out->writeInt(i1);
+            out->writeInt(i2);
+            out->writeInt(i3);
+            break;
+        }
+        case(osg::Uniform::FLOAT_MAT2):
+        {
+            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for reading."<<std::endl;
+            break;
+        }
+        case(osg::Uniform::FLOAT_MAT3):
+        {
+            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for reading."<<std::endl;
+            break;
+        }
+        case(osg::Uniform::FLOAT_MAT4):
+        {
+            osg::Matrixf matrix;
+            get(matrix);
+            out->writeMatrixf(matrix);
+            break;
+        }
+        default:
+        {
+            osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
+            break;
+        }
+    }
 }
 
 void Uniform::read(DataInputStream* in)
@@ -59,4 +148,78 @@ void Uniform::read(DataInputStream* in)
     
     setType(static_cast<Type>(in->readInt()));
     setName(in->readString());
+    
+    switch( Uniform::getGlApiType(getType()) )
+    {
+        case(osg::Uniform::FLOAT):
+        {
+            set(in->readFloat());
+            break;
+        }
+        case(osg::Uniform::FLOAT_VEC2):
+        {
+            set(in->readVec2());
+            break;
+        }
+        case(osg::Uniform::FLOAT_VEC3):
+        {
+            set(in->readVec3());
+            break;
+        }
+        case(osg::Uniform::FLOAT_VEC4):
+        {
+            set(in->readVec4());
+            break;
+        }
+        case(osg::Uniform::INT):
+        {
+            set(in->readInt());
+            break;
+        }
+        case(osg::Uniform::INT_VEC2):
+        {
+            int i0 = in->readInt();
+            int i1 = in->readInt();
+            set(i0,i1);
+            break;
+        }
+        case(osg::Uniform::INT_VEC3):
+        {
+            int i0 = in->readInt();
+            int i1 = in->readInt();
+            int i2 = in->readInt();
+            set(i0,i1,i2);
+            break;
+        }
+        case(osg::Uniform::INT_VEC4):
+        {
+            int i0 = in->readInt();
+            int i1 = in->readInt();
+            int i2 = in->readInt();
+            int i3 = in->readInt();
+            set(i0,i1,i2,i3);
+            break;
+        }
+        case(osg::Uniform::FLOAT_MAT2):
+        {
+            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for reading."<<std::endl;
+            break;
+        }
+        case(osg::Uniform::FLOAT_MAT3):
+        {
+            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for reading."<<std::endl;
+            break;
+        }
+        case(osg::Uniform::FLOAT_MAT4):
+        {
+            set( in->readMatrixf() );
+            break;
+        }
+        default:
+        {
+            osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
+            break;
+        }
+    }
+
 }

@@ -31,7 +31,7 @@ void TexMat::write(DataOutputStream* out){
 	// Write TexMat's properties.
 
 	// Write mode
-	out->writeMatrix(getMatrix());
+	out->writeMatrixf(getMatrix());
 }
 
 void TexMat::read(DataInputStream* in){
@@ -50,7 +50,7 @@ void TexMat::read(DataInputStream* in){
 		// Read TexMat's properties
 
 		// Read matrix
-		setMatrix(in->readMatrix());
+		setMatrix(in->readMatrixf());
 
 	}
 	else{

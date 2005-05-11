@@ -64,7 +64,8 @@ public:
     osg::Plane readPlane();
     osg::UByte4 readUByte4();
     osg::Quat readQuat();
-    osg::Matrix readMatrix();
+    osg::Matrixf readMatrixf();
+    osg::Matrixd readMatrixd();
     osg::Geometry::AttributeBinding readBinding();
     osg::Array* readArray();
     osg::IntArray* readIntArray();

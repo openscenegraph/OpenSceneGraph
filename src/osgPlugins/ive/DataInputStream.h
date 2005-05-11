@@ -81,6 +81,7 @@ public:
     osg::StateSet* readStateSet();
     osg::StateAttribute* readStateAttribute();
     osg::Uniform* readUniform();
+    osg::Shader* readShader();
     osg::Drawable* readDrawable();
     osg::Shape* readShape();
     osg::Node* readNode();
@@ -93,6 +94,7 @@ public:
     typedef std::map<int,osg::ref_ptr<osg::StateSet> >          StateSetMap;
     typedef std::map<int,osg::ref_ptr<osg::StateAttribute> >    StateAttributeMap;
     typedef std::map<int,osg::ref_ptr<osg::Uniform> >           UniformMap;
+    typedef std::map<int,osg::ref_ptr<osg::Shader> >            ShaderMap;
     typedef std::map<int,osg::ref_ptr<osg::Drawable> >          DrawableMap;
     typedef std::map<int,osg::ref_ptr<osg::Shape> >             ShapeMap;
     typedef std::map<int,osg::ref_ptr<osg::Node> >              NodeMap;
@@ -109,13 +111,14 @@ private:
     StateSetMap         _statesetMap;
     StateAttributeMap   _stateAttributeMap;
     UniformMap          _uniformMap;
+    ShaderMap           _shaderMap;
     DrawableMap         _drawableMap;
     ShapeMap            _shapeMap;
     NodeMap             _nodeMap;
 
     bool _loadExternalReferenceFiles;
         
-        osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
+    osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
    
 };
 

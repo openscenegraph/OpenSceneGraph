@@ -60,6 +60,7 @@
 #include "Impostor.h"
 #include "CoordinateSystemNode.h"
 #include "Uniform.h"
+#include "Shader.h"
 
 #include "LightPointNode.h"
 #include "MultiSwitch.h"
@@ -816,6 +817,31 @@ osg::Uniform* DataInputStream::readUniform()
     if (_verboseOutput) std::cout<<"read/writeUniform() ["<<id<<"]"<<std::endl;
     
     return uniform;
+}
+
+
+osg::Shader* DataInputStream::readShader()
+{
+    // Read shaders unique ID.
+    int id = readInt();
+    // See if shader is already in the list.
+    ShaderMap::iterator itr= _shaderMap.find(id);
+    if (itr!=_shaderMap.end()) return itr->second.get();
+
+    // Shader is not in list.
+    // Create a new shader,
+    osg::Shader* shader = new osg::Shader();
+
+    // read its properties from stream
+    ((ive::Shader*)(shader))->read(this);
+        
+    // and add it to the shader map,
+    _shaderMap[id] = shader;
+        
+
+    if (_verboseOutput) std::cout<<"read/writeShader() ["<<id<<"]"<<std::endl;
+    
+    return shader;
 }
 
 osg::Drawable* DataInputStream::readDrawable()

@@ -12,7 +12,7 @@
 */
 
 /* file:        include/osg/Shader
- * author:        Mike Weiblen 2005-04-29
+ * author:        Mike Weiblen 2005-05-12
 */
 
 #ifndef OSG_SHADER
@@ -119,6 +119,8 @@ class OSG_EXPORT Shader : public osg::Object
 
                 void requestCompile();
                 void compileShader();
+                bool needsCompile() const {return _needsCompile;}
+                bool isCompiled() const {return _isCompiled;}
                 bool getInfoLog( std::string& infoLog ) const;
 
                 /** Attach our glShader to a glProgram */

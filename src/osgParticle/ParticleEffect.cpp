@@ -39,6 +39,12 @@ void ParticleEffect::setUseLocalParticleSystem(bool local)
     buildEffect();
 }
 
+void ParticleEffect::setTextureFileName(const std::string& filename)
+{
+    _textureFileName = filename;
+    setUpEmitterAndProgram();
+}
+
 void ParticleEffect::setDefaultParticleTemplate(const Particle& p)
 {
     _defaultParticleTemplate = p;

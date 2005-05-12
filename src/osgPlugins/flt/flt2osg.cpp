@@ -1717,6 +1717,11 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             CERR << "effect: " << mt->data[l].effect << "\n";
             CERR << "mapping: " << mt->data[l].mapping << "\n";
             CERR << "data: " << mt->data[l].data << "\n";
+            int mtDataTexture = mt->data[l].texture;
+            int mtDataEffect  = mt->data[l].effect;
+            int mtDataMapping = mt->data[l].mapping;
+            int mtDataData    = mt->data[l].data;
+            mt->data[l].endian();
 
             TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
             
@@ -1730,9 +1735,9 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             // Get the texture attribute data from the texture pool
             flt::AttrData *textureAttrData = 
                 dynamic_cast<flt::AttrData *>(pTexturePool->
-                    getTexture((int)mt->data[l].texture,versionOptions.get()));
+                    getTexture(mtDataTexture,versionOptions.get()));
 
-            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,versionOptions.get()) << "\n";
+            CERR << "pTexturePool->getTexture(mtDataTexture): " << pTexturePool->getTexture(mtDataTexture,versionOptions.get()) << "\n";
             if (!textureAttrData)
             {
                 CERR << "unable to set up multi-texture layer." << std::endl;

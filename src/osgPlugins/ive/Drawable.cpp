@@ -50,6 +50,22 @@ void Drawable::write(DataOutputStream* out)
         ((ive::ClusterCullingCallback*)(ccc))->write(out);
     }
 
+
+    if (out->getVersion() >= VERSION_0010)
+    {
+        const osg::BoundingBox& bb = getInitialBound();
+        out->writeBool(bb.valid());
+        if (bb.valid())
+        {
+            out->writeFloat(bb.xMin());
+            out->writeFloat(bb.yMin());
+            out->writeFloat(bb.zMin());
+            out->writeFloat(bb.xMax());
+            out->writeFloat(bb.yMax());
+            out->writeFloat(bb.zMax());
+        }
+    }
+
     // Write support display list.
     out->writeBool(getSupportsDisplayList());
 
@@ -89,6 +105,22 @@ void Drawable::read(DataInputStream* in)
             osg::ClusterCullingCallback* ccc = new osg::ClusterCullingCallback();
             ((ive::ClusterCullingCallback*)(ccc))->read(in);
             setCullCallback(ccc);
+        }
+
+        
+        if (in->getVersion() >= VERSION_0010)
+        {
+            if (in->readBool())
+            {
+                osg::BoundingBox bb;
+                bb.xMin() = in->readFloat();
+                bb.yMin() = in->readFloat();
+                bb.zMin() = in->readFloat();
+                bb.xMax() = in->readFloat();
+                bb.yMax() = in->readFloat();
+                bb.zMax() = in->readFloat();
+                setInitialBound(bb);
+            }
         }
 
         // Read support display list

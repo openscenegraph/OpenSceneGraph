@@ -184,19 +184,25 @@ class OSG_EXPORT Drawable : public Object
         virtual BoundingBox computeBound() const;
 
         /** Callback to allow users to override the default computation of bounding volume.*/
-        struct ComputeBoundCallback : public osg::Referenced
+        struct ComputeBoundingBoxCallback : public osg::Object
         {
-            virtual BoundingBox computeBound(const osg::Drawable&) const = 0;
+            ComputeBoundingBoxCallback() {}
+
+            ComputeBoundingBoxCallback(const ComputeBoundingBoxCallback&,const CopyOp&) {}
+
+            META_Object(osg,ComputeBoundingBoxCallback);
+
+            virtual BoundingBox computeBound(const osg::Drawable&) const  { return BoundingBox(); }
         };
 
         /** Set the compute bound callback to override the default computeBound.*/
-        void setComputeBoundCallback(ComputeBoundCallback* callback) { _computeBoundCallback = callback; }
+        void setComputeBoundingBoxCallback(ComputeBoundingBoxCallback* callback) { _computeBoundCallback = callback; }
 
         /** Get the compute bound callback.*/
-        ComputeBoundCallback* getComputeBoundCallback() { return _computeBoundCallback.get(); }
+        ComputeBoundingBoxCallback* getComputeBoundingBoxCallback() { return _computeBoundCallback.get(); }
 
         /** Get the const compute bound callback.*/
-        const ComputeBoundCallback* getComputeBoundCallback() const { return _computeBoundCallback.get(); }
+        const ComputeBoundingBoxCallback* getComputeBoundingBoxCallback() const { return _computeBoundCallback.get(); }
 
 
         /** Set the Shape of the \c Drawable. The shape can be used to
@@ -741,10 +747,10 @@ class OSG_EXPORT Drawable : public Object
 
         ref_ptr<StateSet>       _stateset;
 
-        BoundingBox                     _initialBound;
-        ref_ptr<ComputeBoundCallback>   _computeBoundCallback;
-        mutable BoundingBox             _boundingBox;
-        mutable bool                    _boundingBoxComputed;
+        BoundingBox                         _initialBound;
+        ref_ptr<ComputeBoundingBoxCallback> _computeBoundCallback;
+        mutable BoundingBox                 _boundingBox;
+        mutable bool                        _boundingBoxComputed;
 
         ref_ptr<Shape>          _shape;
 

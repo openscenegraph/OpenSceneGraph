@@ -1,4 +1,5 @@
 #include "osg/Node"
+#include "osg/io_utils"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -152,6 +153,35 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
     }
 
+    if (fr.matchSequence("initialBound %f %f %f %f"))
+    {
+        BoundingSphere bs;
+        fr[1].getFloat(bs.center().x());
+        fr[2].getFloat(bs.center().y());
+        fr[3].getFloat(bs.center().z());
+        fr[4].getFloat(bs.radius());
+        node.setInitialBound(bs);
+        fr += 5;
+        iteratorAdvanced = true;
+    }
+
+    while (fr.matchSequence("ComputeBoundingSphereCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            Node::ComputeBoundingSphereCallback* callback = dynamic_cast<Node::ComputeBoundingSphereCallback*>(fr.readObjectOfType(type_wrapper<Node::ComputeBoundingSphereCallback>()));
+            if (callback) {
+                node.setComputeBoundingSphereCallback(callback);
+            }
+            else ++fr;
+        }
+        iteratorAdvanced = true;
+
+    }
+
     return iteratorAdvanced;
 }
 
@@ -218,6 +248,21 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
         fw.indent() << "CullCallbacks {" << std::endl;
         fw.moveIn();
         fw.writeObject(*node.getCullCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+
+    if (node.getInitialBound().valid())
+    {
+        const osg::BoundingSphere& bs = node.getInitialBound();
+        fw.indent()<<"initialBound "<<bs.center()<<" "<<bs.radius()<<std::endl;
+    }
+    
+    if (node.getComputeBoundingSphereCallback())
+    {
+        fw.indent() << "ComputeBoundingSphereCallback {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*node.getComputeBoundingSphereCallback());
         fw.moveOut();
         fw.indent() << "}" << std::endl;
     }

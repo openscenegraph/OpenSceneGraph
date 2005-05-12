@@ -622,7 +622,7 @@ class OSG_EXPORT State : public Referenced
 
 
         /** Set the current texture unit, return true if selected,
-		  * false if selection failed such as when multitexturing is not supported.
+          * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setActiveTextureUnit( unsigned int unit );
         
@@ -630,7 +630,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
 
         /** Set the current tex coord array texture unit, return true if selected,
-		  * false if selection failed such as when multitexturing is not supported.
+          * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
 
@@ -666,8 +666,8 @@ class OSG_EXPORT State : public Referenced
         void setLastAppliedProgramObject(const Program::PerContextProgram* program) { if (_lastAppliedProgramObject!=program) { _lastAppliedProgramObject = program; if (program) _appliedProgramObjectSet.insert(program); } }
         const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
 
-	inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
-	inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
+        inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
+        inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
 
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to
@@ -772,7 +772,7 @@ class OSG_EXPORT State : public Referenced
 
         struct AttributeStack
         {
-            typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributeStack::AttributePair;
+            typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
             typedef std::vector<AttributePair>                                      AttributeVec;
 
             AttributeStack()

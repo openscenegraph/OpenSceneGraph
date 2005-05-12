@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Object>
@@ -39,6 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
 	Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);
 	Method1(bool, supports, IN, osg::PrimitiveFunctor &, x);
 	Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
+	Method0(osg::BoundingBox, computeBound);
 	Property(const osg::Vec4 &, Color);
 	Property(osg::TessellationHints *, TessellationHints);
 END_REFLECTOR

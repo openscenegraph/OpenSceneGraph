@@ -80,21 +80,41 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	Method0(osg::StateSet *, getOrCreateStateSet);
 	Method0(osg::StateSet *, getStateSet);
 	Method0(const osg::StateSet *, getStateSet);
-	Method0(const osg::BoundingSphere &, getBound);
+	Method1(void, setInitialBound, IN, const osg::BoundingSphere &, bsphere);
+	Method0(const osg::BoundingSphere &, getInitialBound);
 	Method0(void, dirtyBound);
+	Method0(const osg::BoundingSphere &, getBound);
+	Method0(osg::BoundingSphere, computeBound);
+	Method1(void, setComputeBoundingSphereCallback, IN, osg::Node::ComputeBoundingSphereCallback *, callback);
+	Method0(osg::Node::ComputeBoundingSphereCallback *, getComputeBoundingSphereCallback);
+	Method0(const osg::Node::ComputeBoundingSphereCallback *, getComputeBoundingSphereCallback);
 	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	ReadOnlyProperty(const osg::BoundingSphere &, Bound);
+	Property(osg::Node::ComputeBoundingSphereCallback *, ComputeBoundingSphereCallback);
 	Property(osg::NodeCallback *, CullCallback);
 	Property(bool, CullingActive);
 	ArrayProperty_GA(const std::string &, Description, Descriptions, unsigned int, void);
 	Property(const osg::Node::DescriptionList &, Descriptions);
 	Property(osg::NodeCallback *, EventCallback);
+	Property(const osg::BoundingSphere &, InitialBound);
 	Property(const std::string &, Name);
 	Property(osg::Node::NodeMask, NodeMask);
 	ArrayProperty_G(osg::Group *, Parent, Parents, unsigned int, void);
 	ReadOnlyProperty(osg::Node::ParentList, Parents);
 	Property(osg::StateSet *, StateSet);
 	Property(osg::NodeCallback *, UpdateCallback);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
+	BaseType(osg::Object);
+	Constructor0();
+	Constructor2(IN, const osg::Node::ComputeBoundingSphereCallback &, x, IN, const osg::CopyOp &, x);
+	Method0(osg::Object *, cloneType);
+	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	Method0(const char *, libraryName);
+	Method0(const char *, className);
+	Method1(osg::BoundingSphere, computeBound, IN, const osg::Node &, x);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::NodePath);

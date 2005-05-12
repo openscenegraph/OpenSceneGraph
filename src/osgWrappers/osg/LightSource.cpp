@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Light>
 #include <osg/LightSource>
@@ -39,6 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LightSource)
 	Method0(const osg::Light *, getLight);
 	Method2(void, setStateSetModes, IN, osg::StateSet &, x, IN, osg::StateAttribute::GLModeValue, x);
 	MethodWithDefaults1(void, setLocalStateSetModes, IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(osg::Light *, Light);
 	WriteOnlyProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes);
 	Property(osg::LightSource::ReferenceFrame, ReferenceFrame);

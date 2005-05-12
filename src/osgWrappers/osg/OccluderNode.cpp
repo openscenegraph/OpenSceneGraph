@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/ConvexPlanarOccluder>
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
@@ -28,6 +29,7 @@ BEGIN_OBJECT_REFLECTOR(osg::OccluderNode)
 	Method1(void, setOccluder, IN, osg::ConvexPlanarOccluder *, occluder);
 	Method0(osg::ConvexPlanarOccluder *, getOccluder);
 	Method0(const osg::ConvexPlanarOccluder *, getOccluder);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(osg::ConvexPlanarOccluder *, Occluder);
 END_REFLECTOR
 

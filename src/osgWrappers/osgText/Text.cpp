@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Object>
@@ -125,6 +126,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	Method1(const osgText::Text::GlyphQuads *, getGlyphQuads, IN, osg::StateSet *, stateSet);
 	Method0(const osgText::Text::TextureGlyphQuadMap &, getTextureGlyphQuadMap);
+	Method0(osg::BoundingBox, computeBound);
 	Property(osgText::Text::AlignmentType, Alignment);
 	Property(bool, AutoRotateToScreen);
 	WriteOnlyProperty(osgText::Text::AxisAlignment, AxisAlignment);

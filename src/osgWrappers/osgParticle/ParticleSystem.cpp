@@ -62,6 +62,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	Method1(void, setLevelOfDetail, IN, int, v);
 	Method1(void, update, IN, double, dt);
 	Method1(void, drawImplementation, IN, osg::State &, state);
+	Method0(osg::BoundingBox, computeBound);
 	Property(const osg::Vec3 &, AlignVectorX);
 	Property(const osg::Vec3 &, AlignVectorY);
 	Property(const osg::BoundingBox &, DefaultBoundingBox);

@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 #include <osg/CopyOp>
@@ -42,6 +43,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	Method0(const osg::ClipNode::ClipPlaneList &, getClipPlaneList);
 	Method2(void, setStateSetModes, IN, osg::StateSet &, x, IN, osg::StateAttribute::GLModeValue, x);
 	MethodWithDefaults1(void, setLocalStateSetModes, IN, osg::StateAttribute::GLModeValue, x, osg::StateAttribute::ON);
+	Method0(osg::BoundingSphere, computeBound);
 	ArrayProperty_GA(osg::ClipPlane *, ClipPlane, ClipPlanes, unsigned int, bool);
 	ReadOnlyProperty(osg::ClipNode::ClipPlaneList &, ClipPlaneList);
 	WriteOnlyProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes);

@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Matrix>
@@ -50,6 +51,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Billboard)
 	Method2(bool, addDrawable, IN, osg::Drawable *, gset, IN, const osg::Vec3 &, pos);
 	Method1(bool, removeDrawable, IN, osg::Drawable *, gset);
 	Method3(bool, computeMatrix, IN, osg::Matrix &, modelview, IN, const osg::Vec3 &, eye_local, IN, const osg::Vec3 &, pos_local);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(const osg::Vec3 &, Axis);
 	Property(osg::Billboard::Mode, Mode);
 	Property(const osg::Vec3 &, Normal);

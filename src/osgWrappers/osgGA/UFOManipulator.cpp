@@ -17,6 +17,10 @@
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/UFOManipulator>
 
+BEGIN_VALUE_REFLECTOR(UFOManipulator)
+	Constructor0();
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgGA::UFOManipulator)
 	BaseType(osgGA::MatrixManipulator);
 	Constructor0();
@@ -40,9 +44,5 @@ BEGIN_VALUE_REFLECTOR(osgGA::UFOManipulator)
 	ReadOnlyProperty(osg::Matrixd, InverseMatrix);
 	ReadOnlyProperty(osg::Matrixd, Matrix);
 	Property(osg::Node *, Node);
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(UFOManipulator)
-	Constructor0();
 END_REFLECTOR
 

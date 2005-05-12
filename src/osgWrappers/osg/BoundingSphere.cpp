@@ -16,6 +16,8 @@
 BEGIN_VALUE_REFLECTOR(osg::BoundingSphere)
 	Constructor0();
 	Constructor2(IN, const osg::Vec3 &, center, IN, float, radius);
+	Constructor1(IN, const osg::BoundingSphere &, bs);
+	Constructor1(IN, const osg::BoundingBox &, bb);
 	Method0(void, init);
 	Method0(bool, valid);
 	Method2(void, set, IN, const osg::Vec3 &, center, IN, float, radius);

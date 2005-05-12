@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Matrix>
@@ -56,6 +57,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);
 	Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
 	Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
+	Method0(osg::BoundingBox, computeBound);
 	ReadOnlyProperty(osg::Vec3 *, ControlCoords);
 	ReadOnlyProperty(osg::Vec3 *, Coords);
 	Property(int, LastFrameUsed);

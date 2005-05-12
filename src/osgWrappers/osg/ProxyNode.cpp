@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
@@ -48,6 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	Method0(const osg::Vec3 &, getCenter);
 	Method1(void, setRadius, IN, float, radius);
 	Method0(float, getRadius);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(const osg::Vec3 &, Center);
 	Property(osg::ProxyNode::CenterMode, CenterMode);
 	Property(const std::string &, DatabasePath);

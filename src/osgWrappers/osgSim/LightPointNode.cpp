@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
@@ -45,6 +46,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	Method0(float, getMaxVisibleDistance2);
 	Method1(void, setLightPointSystem, IN, osgSim::LightPointSystem *, lps);
 	Method0(osgSim::LightPointSystem *, getLightPointSystem);
+	Method0(osg::BoundingSphere, computeBound);
 	ArrayProperty_GA(const osgSim::LightPoint &, LightPoint, LightPoints, unsigned int, unsigned int);
 	Property(const osgSim::LightPointNode::LightPointList &, LightPointList);
 	Property(osgSim::LightPointSystem *, LightPointSystem);

@@ -315,6 +315,8 @@ void Shader::PerContextShader::compileShader()
     if( ! _needsCompile ) return;
     _needsCompile = false;
 
+    osg::notify(osg::INFO)<<"Compiling source "<<_shader->getShaderSource()<<std::endl;
+
     GLint compiled = GL_FALSE;
     const char* sourceText = _shader->getShaderSource().c_str();
     _extensions->glShaderSource( _glShaderHandle, 1, &sourceText, NULL );

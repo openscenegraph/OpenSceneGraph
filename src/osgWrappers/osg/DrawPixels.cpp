@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/DrawPixels>
 #include <osg/Image>
@@ -36,6 +37,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
 	Method4(void, setSubImageDimensions, IN, unsigned int, offsetX, IN, unsigned int, offsetY, IN, unsigned int, width, IN, unsigned int, height);
 	Method4(void, getSubImageDimensions, IN, unsigned int &, offsetX, IN, unsigned int &, offsetY, IN, unsigned int &, width, IN, unsigned int &, height);
 	Method1(void, drawImplementation, IN, osg::State &, state);
+	Method0(osg::BoundingBox, computeBound);
 	Property(osg::Image *, Image);
 	Property(const osg::Vec3 &, Position);
 	Property(bool, UseSubImage);

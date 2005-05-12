@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/NodeVisitor>
@@ -55,6 +56,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P);
 	Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P);
 	Method1(osg::Vec3, rotateWorldToLocal, IN, const osg::Vec3 &, P);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(double, CurrentTime);
 	WriteOnlyProperty(bool, Enabled);
 	WriteOnlyProperty(bool, Endless);

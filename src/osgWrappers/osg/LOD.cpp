@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/LOD>
 #include <osg/Node>
@@ -58,6 +59,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	Method0(unsigned int, getNumRanges);
 	Method1(void, setRangeList, IN, const osg::LOD::RangeList &, rangeList);
 	Method0(const osg::LOD::RangeList &, getRangeList);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(const osg::Vec3 &, Center);
 	Property(osg::LOD::CenterMode, CenterMode);
 	Property(float, Radius);

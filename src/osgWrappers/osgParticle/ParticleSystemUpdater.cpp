@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
@@ -36,6 +37,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
 	Method1(bool, containsParticleSystem, IN, const osgParticle::ParticleSystem *, ps);
 	Method1(unsigned int, getParticleSystemIndex, IN, const osgParticle::ParticleSystem *, ps);
 	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	Method0(osg::BoundingSphere, computeBound);
 	ArrayProperty_GSA(osgParticle::ParticleSystem *, ParticleSystem, ParticleSystems, unsigned int, bool);
 END_REFLECTOR
 

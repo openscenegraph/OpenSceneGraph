@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
@@ -44,6 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	Method1(bool, setSingleChildOn, IN, unsigned int, pos);
 	Method1(void, setValueList, IN, const osg::Switch::ValueList &, values);
 	Method0(const osg::Switch::ValueList &, getValueList);
+	Method0(osg::BoundingSphere, computeBound);
 	IndexedProperty1(bool, ChildValue, const osg::Node *, child);
 	Property(bool, NewChildDefaultValue);
 	WriteOnlyPropertyWithReturnType(unsigned int, SingleChildOn, bool);

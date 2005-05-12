@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Geode>
@@ -41,6 +42,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	Method1(unsigned int, getDrawableIndex, IN, const osg::Drawable *, drawable);
 	Method1(void, compileDrawables, IN, osg::State &, state);
 	Method0(const osg::BoundingBox &, getBoundingBox);
+	Method0(osg::BoundingSphere, computeBound);
 	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	ReadOnlyProperty(const osg::BoundingBox &, BoundingBox);
 	ArrayProperty_GSA(osg::Drawable *, Drawable, Drawables, unsigned int, bool);

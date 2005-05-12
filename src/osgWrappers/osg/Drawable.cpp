@@ -67,8 +67,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	Method0(osg::StateSet *, getStateSet);
 	Method0(const osg::StateSet *, getStateSet);
 	Method0(osg::StateSet *, getOrCreateStateSet);
+	Method1(void, setInitialBound, IN, const osg::BoundingBox &, bbox);
+	Method0(const osg::BoundingBox &, getInitialBound);
 	Method0(void, dirtyBound);
 	Method0(const osg::BoundingBox &, getBound);
+	Method0(osg::BoundingBox, computeBound);
+	Method1(void, setComputeBoundingBoxCallback, IN, osg::Drawable::ComputeBoundingBoxCallback *, callback);
+	Method0(osg::Drawable::ComputeBoundingBoxCallback *, getComputeBoundingBoxCallback);
+	Method0(const osg::Drawable::ComputeBoundingBoxCallback *, getComputeBoundingBoxCallback);
 	Method1(void, setShape, IN, osg::Shape *, shape);
 	Method0(osg::Shape *, getShape);
 	Method0(const osg::Shape *, getShape);
@@ -107,10 +113,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x);
 	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x);
 	ReadOnlyProperty(const osg::BoundingBox &, Bound);
+	Property(osg::Drawable::ComputeBoundingBoxCallback *, ComputeBoundingBoxCallback);
 	Property(osg::Drawable::CullCallback *, CullCallback);
 	Property(osg::Drawable::DrawCallback *, DrawCallback);
 	Property(osg::Drawable::EventCallback *, EventCallback);
 	ReadOnlyProperty(unsigned int, GLObjectSizeHint);
+	Property(const osg::BoundingBox &, InitialBound);
 	ArrayProperty_G(osg::Node *, Parent, Parents, unsigned int, void);
 	ReadOnlyProperty(osg::Drawable::ParentList, Parents);
 	Property(osg::Shape *, Shape);
@@ -134,6 +142,18 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
 	Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec3 *, x);
 	Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4 *, x);
 	Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::UByte4 *, x);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
+	BaseType(osg::Object);
+	Constructor0();
+	Constructor2(IN, const osg::Drawable::ComputeBoundingBoxCallback &, x, IN, const osg::CopyOp &, x);
+	Method0(osg::Object *, cloneType);
+	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	Method0(const char *, libraryName);
+	Method0(const char *, className);
+	Method1(osg::BoundingBox, computeBound, IN, const osg::Drawable &, x);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)

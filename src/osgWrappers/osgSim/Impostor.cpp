@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
@@ -36,6 +37,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	Method2(void, addImpostorSprite, IN, unsigned int, contextID, IN, osgSim::ImpostorSprite *, is);
 	Method1(osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID);
 	Method1(const osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(float, ImpostorThreshold);
 	WriteOnlyProperty(float, ImpostorThresholdToBound);
 END_REFLECTOR

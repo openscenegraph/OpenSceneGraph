@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/MatrixTransform>
@@ -42,6 +43,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Transform)
 	Method0(osg::Transform::ReferenceFrame, getReferenceFrame);
 	Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
+	Method0(osg::BoundingSphere, computeBound);
 	Property(osg::Transform::ReferenceFrame, ReferenceFrame);
 END_REFLECTOR
 

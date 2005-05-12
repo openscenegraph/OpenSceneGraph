@@ -1718,9 +1718,9 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             CERR << "mapping: " << mt->data[l].mapping << "\n";
             CERR << "data: " << mt->data[l].data << "\n";
             int mtDataTexture = mt->data[l].texture;
-            int mtDataEffect  = mt->data[l].effect;
-            int mtDataMapping = mt->data[l].mapping;
-            int mtDataData    = mt->data[l].data;
+            //int mtDataEffect  = mt->data[l].effect;
+            //int mtDataMapping = mt->data[l].mapping;
+            //int mtDataData    = mt->data[l].data;
             mt->data[l].endian();
 
             TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();

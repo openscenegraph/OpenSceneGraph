@@ -2156,6 +2156,7 @@ void Program::PerContextProgram::linkProgram()
 
     _uniformInfoMap.clear();
     _attribInfoMap.clear();
+    _lastAppliedUniformList.clear();
 
     // set any explicit vertex attribute bindings
     const AttribBindingList& bindlist = _program->getAttribBindingList();

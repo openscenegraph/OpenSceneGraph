@@ -74,6 +74,17 @@ void Node::write(DataOutputStream* out){
         }
     }
 
+    if (out->getVersion() >= VERSION_0010)
+    {
+        const osg::BoundingSphere& bs = getInitialBound();
+        out->writeBool(bs.valid());
+        if (bs.valid())
+        {
+            out->writeVec3(bs.center());
+            out->writeFloat(bs.radius());
+        }
+    }
+
     // Write NodeMask
     out->writeUInt(getNodeMask());
 }
@@ -125,6 +136,17 @@ void Node::read(DataInputStream* in){
             }
         }
         
+        if (in->getVersion() >= VERSION_0010)
+        {
+            if (in->readBool())
+            {
+                osg::BoundingSphere bs;
+                bs.center() = in->readVec3();
+                bs.radius() = in->readFloat();
+                setInitialBound(bs);
+            }
+        }
+
         // Read NodeMask
         setNodeMask(in->readUInt());
     }

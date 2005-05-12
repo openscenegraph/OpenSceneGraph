@@ -268,19 +268,25 @@ class OSG_EXPORT Node : public Object
         virtual BoundingSphere computeBound() const;
 
         /** Callback to allow users to override the default computation of bounding volume.*/
-        struct ComputeBoundCallback : public osg::Referenced
+        struct ComputeBoundingSphereCallback : public osg::Object
         {
-            virtual BoundingSphere computeBound(const osg::Node&) const = 0;
+            ComputeBoundingSphereCallback() {}
+
+            ComputeBoundingSphereCallback(const ComputeBoundingSphereCallback&,const CopyOp&) {}
+
+            META_Object(osg,ComputeBoundingSphereCallback);
+
+           virtual BoundingSphere computeBound(const osg::Node&) const { return BoundingSphere(); }
         };
 
         /** Set the compute bound callback to override the default computeBound.*/
-        void setComputeBoundCallback(ComputeBoundCallback* callback) { _computeBoundCallback = callback; }
+        void setComputeBoundingSphereCallback(ComputeBoundingSphereCallback* callback) { _computeBoundCallback = callback; }
 
         /** Get the compute bound callback.*/
-        ComputeBoundCallback* getComputeBoundCallback() { return _computeBoundCallback.get(); }
+        ComputeBoundingSphereCallback* getComputeBoundingSphereCallback() { return _computeBoundCallback.get(); }
 
         /** Get the const compute bound callback.*/
-        const ComputeBoundCallback* getComputeBoundCallback() const { return _computeBoundCallback.get(); }
+        const ComputeBoundingSphereCallback* getComputeBoundingSphereCallback() const { return _computeBoundCallback.get(); }
 
 
         /** If State is non-zero, this function releases any associated OpenGL objects for
@@ -302,10 +308,10 @@ class OSG_EXPORT Node : public Object
 
 
 
-        BoundingSphere                  _initialBound;
-        ref_ptr<ComputeBoundCallback>   _computeBoundCallback;
-        mutable BoundingSphere          _boundingSphere;
-        mutable bool                    _boundingSphereComputed;
+        BoundingSphere                          _initialBound;
+        ref_ptr<ComputeBoundingSphereCallback>  _computeBoundCallback;
+        mutable BoundingSphere                  _boundingSphere;
+        mutable bool                            _boundingSphereComputed;
 
         std::string _name;
 

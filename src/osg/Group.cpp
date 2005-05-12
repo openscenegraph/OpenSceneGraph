@@ -337,15 +337,12 @@ bool Group::setChild( unsigned  int i, Node* newNode )
 
 }
 
-bool Group::computeBound() const
+BoundingSphere Group::computeBound() const
 {
-
-
-    _bsphere.init();
+    BoundingSphere bsphere;
     if (_children.empty()) 
     {
-        _bsphere_computed = true;
-        return false;
+        return bsphere;
     }
 
     // note, special handling of the case when a child is an Transform,
@@ -368,12 +365,11 @@ bool Group::computeBound() const
 
     if (!bb.valid()) 
     {
-        _bsphere_computed = true;
-        return false;
+        return bsphere;
     }
 
-    _bsphere._center = bb.center();
-    _bsphere._radius = 0.0f;
+    bsphere._center = bb.center();
+    bsphere._radius = 0.0f;
     for(itr=_children.begin();
         itr!=_children.end();
         ++itr)
@@ -381,12 +377,11 @@ bool Group::computeBound() const
         const osg::Transform* transform = (*itr)->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
-            _bsphere.expandRadiusBy((*itr)->getBound());
+            bsphere.expandRadiusBy((*itr)->getBound());
         }
     }
 
-    _bsphere_computed = true;
-    return true;
+    return bsphere;
 }
 
 void Group::releaseGLObjects(osg::State* state) const

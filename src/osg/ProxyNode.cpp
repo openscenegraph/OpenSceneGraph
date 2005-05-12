@@ -103,15 +103,11 @@ bool ProxyNode::removeChild( Node *child )
     return Group::removeChild(child);    
 }
 
-bool ProxyNode::computeBound() const
+BoundingSphere ProxyNode::computeBound() const
 {
     if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
     {
-        _bsphere._center = _userDefinedCenter;
-        _bsphere._radius = _radius;
-        _bsphere_computed = true;
-
-        return true;
+        return BoundingSphere(_userDefinedCenter,_radius);
     }
     else
     {

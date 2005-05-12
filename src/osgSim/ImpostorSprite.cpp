@@ -100,22 +100,20 @@ void ImpostorSprite::drawImplementation(osg::State&) const
 
 }
 
-bool ImpostorSprite::computeBound() const
+osg::BoundingBox ImpostorSprite::computeBound() const
 {
-    _bbox.init();
-    _bbox.expandBy(_coords[0]);
-    _bbox.expandBy(_coords[1]);
-    _bbox.expandBy(_coords[2]);
-    _bbox.expandBy(_coords[3]);
+    osg::BoundingBox bbox;
+    bbox.expandBy(_coords[0]);
+    bbox.expandBy(_coords[1]);
+    bbox.expandBy(_coords[2]);
+    bbox.expandBy(_coords[3]);
 
-    _bbox_computed=true;
-    
-    if (!_bbox.valid())
+    if (!bbox.valid())
     {
         osg::notify(osg::WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
     }
 
-    return true;
+    return bbox;
 }
 
 void ImpostorSprite::setTexture(osg::Texture2D* tex,int s,int t)

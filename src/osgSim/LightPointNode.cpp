@@ -80,15 +80,15 @@ void LightPointNode::removeLightPoint(unsigned int pos)
     dirtyBound();
 }
 
-bool LightPointNode::computeBound() const
+osg::BoundingSphere LightPointNode::computeBound() const
 {
-    _bsphere.init();
+    osg::BoundingSphere bsphere;
+    bsphere.init();
     _bbox.init();
 
     if (_lightPointList.empty())
     {
-        _bsphere_computed=true;
-        return false;
+        return bsphere;
     }
 
 
@@ -101,21 +101,19 @@ bool LightPointNode::computeBound() const
     }
 
 
-    _bsphere.set(_bbox.center(),0.0f);
+    bsphere.set(_bbox.center(),0.0f);
     
     for(itr=_lightPointList.begin();
         itr!=_lightPointList.end();
         ++itr)
     {
-        osg::Vec3 dv(itr->_position-_bsphere.center());
+        osg::Vec3 dv(itr->_position-bsphere.center());
         float radius = dv.length()+itr->_radius;
-        if (_bsphere.radius()<radius) _bsphere.radius()=radius;
+        if (bsphere.radius()<radius) bsphere.radius()=radius;
     }
 
-    _bsphere.radius()+=1.0f;
-
-    _bsphere_computed=true;
-    return true;
+    bsphere.radius()+=1.0f;
+    return bsphere;
 }
 
 

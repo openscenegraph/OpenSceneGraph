@@ -197,3 +197,15 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
     i0->endRender();
     
 }
+
+osg::BoundingBox osgParticle::ParticleSystem::computeBound() const
+{ 
+    if (!_bounds_computed)
+    {
+        return _def_bbox;
+    } else
+    {
+	return osg::BoundingBox(_bmin,_bmax);
+    }
+}
+

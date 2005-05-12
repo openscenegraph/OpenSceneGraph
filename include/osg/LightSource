@@ -72,11 +72,11 @@ class OSG_EXPORT LightSource : public Group
         /** Set up the local StateSet. */
         void setLocalStateSetModes(StateAttribute::GLModeValue value = StateAttribute::ON);
 
+        virtual BoundingSphere computeBound() const;
+
     protected:
 
         virtual ~LightSource();
-
-        virtual bool computeBound() const;
 
         StateAttribute::GLModeValue     _value;
         ref_ptr<Light>                  _light;

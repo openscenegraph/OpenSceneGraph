@@ -121,3 +121,9 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
     // call the inherited method
     Node::traverse(nv);
 }
+
+osg::BoundingSphere osgParticle::ParticleProcessor::computeBound() const
+{
+    return osg::BoundingSphere();
+}
+

@@ -23,7 +23,7 @@ using namespace osg;
 
 Node::Node()
 {
-    _bsphere_computed = false;
+    _boundingSphereComputed = false;
     _nodeMask = 0xffffffff;
     
     _numChildrenRequiringUpdateTraversal = 0;
@@ -38,8 +38,9 @@ Node::Node()
 
 Node::Node(const Node& node,const CopyOp& copyop):
         Object(node,copyop),
-        _bsphere(node._bsphere),
-        _bsphere_computed(node._bsphere_computed),
+        _initialBound(node._initialBound),
+        _boundingSphere(node._boundingSphere),
+        _boundingSphereComputed(node._boundingSphereComputed),
         _name(node._name),
         _parents(), // leave empty as parentList is managed by Group.
         _updateCallback(node._updateCallback),
@@ -404,18 +405,17 @@ bool Node::containsOccluderNodes() const
     return _numChildrenWithOccluderNodes>0 || dynamic_cast<const OccluderNode*>(this);
 }
 
-bool Node::computeBound() const
+BoundingSphere Node::computeBound() const
 {
-    _bsphere.init();
-    return false;
+    return BoundingSphere();
 }
 
 
 void Node::dirtyBound()
 {
-    if (_bsphere_computed)
+    if (_boundingSphereComputed)
     {
-        _bsphere_computed = false;
+        _boundingSphereComputed = false;
 
         // dirty parent bounding sphere's to ensure that all are valid.
         for(ParentList::iterator itr=_parents.begin();

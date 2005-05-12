@@ -175,13 +175,12 @@ bool Switch::setSingleChildOn(unsigned int pos)
     return true;
 }
 
-bool Switch::computeBound() const
+BoundingSphere Switch::computeBound() const
 {
-    _bsphere.init();
+    BoundingSphere bsphere;
     if (_children.empty()) 
     {
-        _bsphere_computed = true;
-        return false;
+        return bsphere;
     }
 
     // note, special handling of the case when a child is an Transform,
@@ -205,12 +204,11 @@ bool Switch::computeBound() const
 
     if (!bb.valid()) 
     {
-        _bsphere_computed = true;
-        return false;
+        return bsphere;
     }
 
-    _bsphere._center = bb.center();
-    _bsphere._radius = 0.0f;
+    bsphere._center = bb.center();
+    bsphere._radius = 0.0f;
     for(itr=_children.begin();
         itr!=_children.end();
         ++itr)
@@ -219,80 +217,9 @@ bool Switch::computeBound() const
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
             if( getChildValue((*itr).get()) == true )
-                _bsphere.expandRadiusBy((*itr)->getBound());
+                bsphere.expandRadiusBy((*itr)->getBound());
         }
     }
-
-    _bsphere_computed = true;
-    return true;
+    return bsphere;
 }
 
-#ifdef USE_DEPRECATED_API
-void Switch::setValue(int value)
-{
-    switch(value)
-    {
-        case(MULTIPLE_CHILDREN_ON):
-            // do nothing...
-            break;
-        case(ALL_CHILDREN_OFF):
-        {
-            _newChildDefaultValue = false;
-            for(ValueList::iterator itr=_values.begin();
-                itr!=_values.end();
-                ++itr)
-            {
-                *itr = false;
-            }
-            break;
-        }
-        case(ALL_CHILDREN_ON):
-        {
-            _newChildDefaultValue = true;
-            for(ValueList::iterator itr=_values.begin();
-                itr!=_values.end();
-                ++itr)
-            {
-                *itr = true;
-            }
-            break;
-        }
-        default:
-        {
-            for(ValueList::iterator itr=_values.begin();
-                itr!=_values.end();
-                ++itr)
-            {
-                *itr = false;
-            }
-            setValue(value,true);
-            break;
-        }
-    }
-}
-
-int Switch::getValue() const
-{
-    if (_values.empty()) return ALL_CHILDREN_OFF;
-    
-    unsigned int noChildrenSwitchedOn=0;
-    int firstChildSelected=ALL_CHILDREN_OFF;
-    for(unsigned int i=0; i<_values.size();++i)
-    {
-        if (_values[i])
-        {
-            ++noChildrenSwitchedOn;
-            if (firstChildSelected==ALL_CHILDREN_OFF) firstChildSelected=i;
-        }
-    }
-    
-    if (noChildrenSwitchedOn>1)
-    {
-        if (noChildrenSwitchedOn==_values.size()) return ALL_CHILDREN_ON;
-        else return MULTIPLE_CHILDREN_ON;
-    }
-    return firstChildSelected;
-
-}
-
-#endif

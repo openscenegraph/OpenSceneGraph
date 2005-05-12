@@ -148,14 +148,14 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         // for debugging purposes.
         osg::Vec4 _color;
 
+        virtual osg::BoundingBox computeBound() const;
+
     protected:
 
         ImpostorSprite(const ImpostorSprite&):Drawable() {}
         ImpostorSprite& operator = (const ImpostorSprite&) { return *this;}
 
         virtual ~ImpostorSprite();
-
-        virtual bool computeBound() const;
 
         Impostor* _parent;
 

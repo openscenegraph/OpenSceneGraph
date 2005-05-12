@@ -178,11 +178,11 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
 }
 
 
-bool Geode::computeBound() const
+BoundingSphere Geode::computeBound() const
 {
-    _bsphere.init();
+    BoundingSphere bsphere;
 
-   _bbox.init();
+    _bbox.init();
 
     DrawableList::const_iterator itr;
     for(itr=_drawables.begin();
@@ -194,15 +194,9 @@ bool Geode::computeBound() const
 
     if (_bbox.valid())
     {
-        _bsphere.expandBy(_bbox);
-        _bsphere_computed=true;
-        return true;
+        bsphere.expandBy(_bbox);
     }
-    else
-    {
-        _bsphere_computed=true;
-        return false;
-    }
+    return bsphere;
 }
 
 void Geode::compileDrawables(State& state)

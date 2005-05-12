@@ -101,14 +101,11 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
     Group::traverse(nv);
 }
 
-bool TXPNode::computeBound() const
+osg::BoundingSphere TXPNode::computeBound() const
 {
     if (getNumChildren() == 0)
     {
-        _bsphere.init();
-        _bsphere.expandBy(_extents);
-        _bsphere_computed = true;
-        return true;
+        return osg::BoundingSphere( _extents );
     }
     return Group::computeBound();
 }

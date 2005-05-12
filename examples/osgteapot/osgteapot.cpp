@@ -226,15 +226,11 @@ class Teapot : public osg::Drawable
         }
         
         
-    protected:
-    
-        virtual ~Teapot() {}
-        
         // we need to set up the bounding box of the data too, so that the scene graph knows where this
         // objects is, for both positioning the camera at start up, and most importantly for culling.
-        virtual bool computeBound() const
+        virtual osg::BoundingBox computeBound() const
         {
-            _bbox.init();
+            osg::BoundingBox bbox;
 
             // follow is some truely horrible code required to calculate the 
             // bounding box of the teapot.  Have used the original code above to do
@@ -265,13 +261,13 @@ class Teapot : public osg::Drawable
                     }
                   }
                   
-                  _bbox.expandBy(osg::Vec3(p[j][k][0],p[j][k][1],p[j][k][2]));
-                  _bbox.expandBy(osg::Vec3(q[j][k][0],q[j][k][1],q[j][k][2]));
+                  bbox.expandBy(osg::Vec3(p[j][k][0],p[j][k][1],p[j][k][2]));
+                  bbox.expandBy(osg::Vec3(q[j][k][0],q[j][k][1],q[j][k][2]));
 
                   if (i < 6)
                   {
-                    _bbox.expandBy(osg::Vec3(r[j][k][0],r[j][k][1],r[j][k][2]));
-                    _bbox.expandBy(osg::Vec3(s[j][k][0],s[j][k][1],s[j][k][2]));
+                    bbox.expandBy(osg::Vec3(r[j][k][0],r[j][k][1],r[j][k][2]));
+                    bbox.expandBy(osg::Vec3(s[j][k][0],s[j][k][1],s[j][k][2]));
                   }
                   
                   
@@ -279,9 +275,13 @@ class Teapot : public osg::Drawable
               }
             }
 
-            _bbox_computed = true;
-            return true;
+            return bbox;
         }
+
+    protected:
+    
+        virtual ~Teapot() {}
+        
 };
 
 

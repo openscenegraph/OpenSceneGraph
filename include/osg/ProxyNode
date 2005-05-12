@@ -76,11 +76,11 @@ class OSG_EXPORT ProxyNode : public Group
         /** Get the object-space radius of the volume enclosed by the ProxyNode.*/
         inline float getRadius() const { return _radius; }
 
+        virtual BoundingSphere computeBound() const;
+
     protected :
     
         virtual ~ProxyNode() {}
-
-        virtual bool computeBound() const;
 
         void expandFileNameListTo(unsigned int pos);
 

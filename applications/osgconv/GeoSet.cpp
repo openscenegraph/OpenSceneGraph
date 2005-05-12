@@ -418,11 +418,11 @@ void GeoSet::computeNumVerts() const
 
 
 // just use the base Drawable's PrimitiveFunctor based implementation.
-bool GeoSet::computeBound() const
+osg::BoundingBox GeoSet::computeBound() const
 {
-    _bbox.init();
+    osg::BoundingBox bbox;
 
-    if( _iaformat == IA_OFF && _coords == (Vec3 *)0 ) return false;
+    if( _iaformat == IA_OFF && _coords == (Vec3 *)0 ) return bbox;
 
     if( _numcoords == 0 )
     {
@@ -430,7 +430,7 @@ bool GeoSet::computeBound() const
     }
 
     if( _numcoords == 0 )
-        return false;
+        return bbox;
 
     Vec3 center(0.0f,0.0f,0.0f);
 
@@ -442,7 +442,7 @@ bool GeoSet::computeBound() const
             for( i = 0; i < int(_cindex._size); i++ )
             {
                 center += _coords[_cindex[i]];
-                _bbox.expandBy(_coords[_cindex[i]]);
+                bbox.expandBy(_coords[_cindex[i]]);
             }
 	}
 	else
@@ -450,7 +450,7 @@ bool GeoSet::computeBound() const
             for( i = 0; i < _numcoords; i++ )
             {
                 center += _coords[i];
-                _bbox.expandBy(_coords[i]);
+                bbox.expandBy(_coords[i]);
             }
         }
     }
@@ -474,7 +474,7 @@ bool GeoSet::computeBound() const
             _iaformat == IA_T4F_C4F_N3F_V4F ? 15 : -1;
 
 	if( stride == -1 ) // INTERNAL ERROR!!
-	     return false; 
+	     return bbox; 
 
 	int offset = 
 	    _iaformat == IA_V2F             ?  0 :
@@ -518,7 +518,7 @@ bool GeoSet::computeBound() const
 	    float z = ncomp >= 3 ? fptr[2] : 0.0f;
 	    Vec3  vv(x,y,z);
 	    center += vv;
-	    _bbox.expandBy(vv);
+	    bbox.expandBy(vv);
 
 	    fptr += stride;
 	}
@@ -526,9 +526,7 @@ bool GeoSet::computeBound() const
 
     center /= (float)_numcoords;
 
-    _bbox_computed=true;
-    
-    return true;
+    return bbox;
 }
 
 bool GeoSet::checkConsistency() const
@@ -653,7 +651,6 @@ void GeoSet::setNormals( Vec3 *cp, IndexPointer& ip )
 {
     _normals = cp;
     _nindex = ip;
-    _bbox_computed = false;
     if( _normal_binding == BIND_OFF )
         setNormalBinding( BIND_DEFAULT );
 }
@@ -692,7 +689,6 @@ void GeoSet::setColors( Vec4 *cp, IndexPointer& ip )
 {
     _colors = cp;
     _colindex = ip;
-    _bbox_computed = false;
     if( _color_binding == BIND_OFF )
         setColorBinding( BIND_DEFAULT );
 }
@@ -733,7 +729,6 @@ void GeoSet::setTextureCoords( Vec2 *cp, IndexPointer& ip )
 {
     _tcoords = cp;
     _tindex = ip;
-    _bbox_computed = false;
     if( _texture_binding == BIND_OFF )
         setTextureBinding( BIND_DEFAULT );
 }

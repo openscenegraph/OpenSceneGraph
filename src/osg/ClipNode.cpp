@@ -127,7 +127,7 @@ void ClipNode::setLocalStateSetModes(const StateAttribute::GLModeValue value)
     setStateSetModes(*_stateset,value);
 }
 
-bool ClipNode::computeBound() const
+BoundingSphere ClipNode::computeBound() const
 {
     return Group::computeBound();
 }

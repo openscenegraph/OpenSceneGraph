@@ -177,13 +177,13 @@ class OSG_EXPORT ShapeDrawable : public Drawable
         /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
 
+        virtual BoundingBox computeBound() const;
+
     protected:
 
         ShapeDrawable& operator = (const ShapeDrawable&) { return *this;}
 
         virtual ~ShapeDrawable();
-
-        virtual bool computeBound() const;
 
         Vec4 _color;
 

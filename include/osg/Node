@@ -231,21 +231,56 @@ class OSG_EXPORT Node : public Object
         /** Return the node's StateSet. returns NULL if a stateset is not attached.*/
         inline osg::StateSet* getStateSet() { return _stateset.get(); }
 
-        /** return the node's const StateSet. Returns NULL if a stateset is not attached.*/
+        /** Return the node's const StateSet. Returns NULL if a stateset is not attached.*/
         inline const osg::StateSet* getStateSet() const { return _stateset.get(); }
 
-        /** get the bounding sphere of node.
-           Using lazy evaluation computes the bounding sphere if it is 'dirty'.*/
-        inline const BoundingSphere& getBound() const
-        {
-            if(!_bsphere_computed) computeBound();
-            return _bsphere;
-        }
+        /** Set the intial bounding volume to use when computing the overall bounding volume.*/
+        void setInitialBound(const osg::BoundingSphere& bsphere) { _initialBound = bsphere; dirtyBound(); }
 
+        /** Set the intial bounding volume to use when computing the overall bounding volume.*/
+        const BoundingSphere& getInitialBound() const { return _initialBound; }
 
         /** Mark this node's bounding sphere dirty.
             Forcing it to be computed on the next call to getBound().*/
         void dirtyBound();
+
+        /** Get the bounding sphere of node.
+           Using lazy evaluation computes the bounding sphere if it is 'dirty'.*/
+        inline const BoundingSphere& getBound() const
+        {
+            if(!_boundingSphereComputed)
+            {
+                _boundingSphere = _initialBound;
+                if (_computeBoundCallback.valid()) 
+                    _boundingSphere.expandBy(_computeBoundCallback->computeBound(*this));
+                else
+                    _boundingSphere.expandBy(computeBound());
+                    
+                _boundingSphereComputed = true;
+            }
+            return _boundingSphere;
+        }
+
+
+        /** Compute the bounding sphere around Node's geometry or children.
+            This method is automatically called by getBound() when the bounding
+            sphere has been marked dirty via dirtyBound().*/
+        virtual BoundingSphere computeBound() const;
+
+        /** Callback to allow users to override the default computation of bounding volume.*/
+        struct ComputeBoundCallback : public osg::Referenced
+        {
+            virtual BoundingSphere computeBound(const osg::Node&) const = 0;
+        };
+
+        /** Set the compute bound callback to override the default computeBound.*/
+        void setComputeBoundCallback(ComputeBoundCallback* callback) { _computeBoundCallback = callback; }
+
+        /** Get the compute bound callback.*/
+        ComputeBoundCallback* getComputeBoundCallback() { return _computeBoundCallback.get(); }
+
+        /** Get the const compute bound callback.*/
+        const ComputeBoundCallback* getComputeBoundCallback() const { return _computeBoundCallback.get(); }
 
 
         /** If State is non-zero, this function releases any associated OpenGL objects for
@@ -266,13 +301,11 @@ class OSG_EXPORT Node : public Object
         virtual ~Node();
 
 
-        /** Compute the bounding sphere around Node's geometry or children.
-            This method is automatically called by getBound() when the bounding
-            sphere has been marked dirty via dirtyBound().*/
-        virtual bool computeBound() const;
 
-        mutable BoundingSphere _bsphere;
-        mutable bool _bsphere_computed;
+        BoundingSphere                  _initialBound;
+        ref_ptr<ComputeBoundCallback>   _computeBoundCallback;
+        mutable BoundingSphere          _boundingSphere;
+        mutable bool                    _boundingSphereComputed;
 
         std::string _name;
 

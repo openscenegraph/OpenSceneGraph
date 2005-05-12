@@ -119,10 +119,10 @@ class OSG_EXPORT LOD : public Group
         /** return the list of MinMax ranges for each child.*/
         inline const RangeList& getRangeList() const { return _rangeList; }
 
+        virtual BoundingSphere computeBound() const;
+
     protected :
         virtual ~LOD() {}
-
-        virtual bool computeBound() const;
 
         virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
         virtual void childInserted(unsigned int pos);

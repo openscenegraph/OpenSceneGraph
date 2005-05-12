@@ -121,9 +121,10 @@ void Transform::setReferenceFrame(ReferenceFrame rf)
     setCullingActive(_referenceFrame==RELATIVE_RF);
 }
 
-bool Transform::computeBound() const
+BoundingSphere Transform::computeBound() const
 {
-    if (!Group::computeBound()) return false;
+    BoundingSphere bsphere = Group::computeBound();
+    if (!bsphere.valid()) return bsphere;
     
     // note, NULL pointer for NodeVisitor, so compute's need
     // to handle this case gracefully, normally this should not be a problem.
@@ -131,33 +132,34 @@ bool Transform::computeBound() const
 
     computeLocalToWorldMatrix(l2w,NULL);
 
-    Vec3 xdash = _bsphere._center;
-    xdash.x() += _bsphere._radius;
+    Vec3 xdash = bsphere._center;
+    xdash.x() += bsphere._radius;
     xdash = xdash*l2w;
 
-    Vec3 ydash = _bsphere._center;
-    ydash.y() += _bsphere._radius;
+    Vec3 ydash = bsphere._center;
+    ydash.y() += bsphere._radius;
     ydash = ydash*l2w;
 
-    Vec3 zdash = _bsphere._center;
-    zdash.z() += _bsphere._radius;
+    Vec3 zdash = bsphere._center;
+    zdash.z() += bsphere._radius;
     zdash = zdash*l2w;
 
-    _bsphere._center = _bsphere._center*l2w;
 
-    xdash -= _bsphere._center;
+    bsphere._center = bsphere._center*l2w;
+
+    xdash -= bsphere._center;
     float len_xdash = xdash.length();
 
-    ydash -= _bsphere._center;
+    ydash -= bsphere._center;
     float len_ydash = ydash.length();
 
-    zdash -= _bsphere._center;
+    zdash -= bsphere._center;
     float len_zdash = zdash.length();
 
-    _bsphere._radius = len_xdash;
-    if (_bsphere._radius<len_ydash) _bsphere._radius = len_ydash;
-    if (_bsphere._radius<len_zdash) _bsphere._radius = len_zdash;
+    bsphere._radius = len_xdash;
+    if (bsphere._radius<len_ydash) bsphere._radius = len_ydash;
+    if (bsphere._radius<len_zdash) bsphere._radius = len_zdash;
 
-    return true;
+    return bsphere;
 
 }

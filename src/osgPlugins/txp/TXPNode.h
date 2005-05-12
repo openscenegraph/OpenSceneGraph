@@ -69,11 +69,12 @@ public:
 
     void setArchive(TXPArchive* archive) { _archive = archive; }
     
+    virtual osg::BoundingSphere computeBound() const;
+
 protected:
 
     virtual ~TXPNode();
     
-    virtual bool computeBound() const;
     
     void updateEye(osg::NodeVisitor& nv);
     void updateSceneGraph();

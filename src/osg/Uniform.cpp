@@ -414,6 +414,12 @@ Uniform::Uniform( const char* name, const osg::Matrixf& m4 ) :
     set( m4 );
 }
 
+Uniform::Uniform( const char* name, const osg::Matrixd& m4 ) :
+    _type(FLOAT_MAT4), _name(name)
+{
+    set( m4 );
+}
+
 Uniform::Uniform( const char* name, int i ) :
     _type(INT), _name(name)
 {

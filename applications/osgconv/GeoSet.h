@@ -360,14 +360,14 @@ class GeoSet : public Drawable
         /** convinience function for converting GeoSet's to equivilant Geometry nodes.*/
         Geometry* convertToGeometry();
 
+        virtual osg::BoundingBox computeBound() const;
+            
     protected:
 
         GeoSet& operator = (const GeoSet&) { return *this;}
 
         virtual ~GeoSet();
 
-        virtual bool computeBound() const;
-            
         ref_ptr<AttributeDeleteFunctor> _adf;
 
         int             _numprims;

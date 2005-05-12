@@ -77,11 +77,11 @@ class OSG_EXPORT Switch : public Group
 
         const ValueList& getValueList() const { return _values; }
 
+        virtual BoundingSphere computeBound() const;
+
     protected :
     
         virtual ~Switch() {}
-
-        virtual bool computeBound() const;
 
         // This is effectively a bit mask.
         bool        _newChildDefaultValue;

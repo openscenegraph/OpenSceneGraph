@@ -58,9 +58,9 @@ void LightSource::setLocalStateSetModes(StateAttribute::GLModeValue value)
     setStateSetModes(*_stateset,value);
 }
 
-bool LightSource::computeBound() const
+BoundingSphere LightSource::computeBound() const
 {
-    Group::computeBound();
+    BoundingSphere bsphere(Group::computeBound());
     
     if (_light.valid() && _referenceFrame==RELATIVE_RF)
     {
@@ -68,11 +68,9 @@ bool LightSource::computeBound() const
         if (pos[3]!=0.0f)
         {
             float div = 1.0f/pos[3];
-            _bsphere.expandBy(Vec3(pos[0]*div,pos[1]*div,pos[2]*div));
+            bsphere.expandBy(Vec3(pos[0]*div,pos[1]*div,pos[2]*div));
         }
     }
 
-    _bsphere_computed = true;
-
-    return true;
+    return bsphere;
 }

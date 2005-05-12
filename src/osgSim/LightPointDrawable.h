@@ -93,10 +93,10 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         double getReferenceTime() const { return _referenceTime; }
         double getReferenceTimeInterval() const { return _referenceTimeInterval; }
         
+        virtual osg::BoundingBox computeBound() const;
+
     protected:
     
-        virtual bool computeBound() const;
-
         virtual ~LightPointDrawable() {}
         
         osg::Endian                     _endian;

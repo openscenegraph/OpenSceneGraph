@@ -69,10 +69,10 @@ void DrawPixels::getSubImageDimensions(unsigned int& offsetX,unsigned int& offse
 }
 
 
-bool DrawPixels::computeBound() const
+BoundingBox DrawPixels::computeBound() const
 {
     // really needs to be dependant of view poistion and projection... will implement simple version right now.
-    _bbox.init();
+    BoundingBox bbox;
     float diagonal = 0.0f;
     if (_useSubImage)
     {
@@ -83,10 +83,9 @@ bool DrawPixels::computeBound() const
         diagonal = sqrtf(_image->s()*_image->s()+_image->t()*_image->t());
     }
     
-    _bbox.expandBy(_position-osg::Vec3(diagonal,diagonal,diagonal));
-    _bbox.expandBy(_position+osg::Vec3(diagonal,diagonal,diagonal));
-    _bbox_computed = true;
-    return true;
+    bbox.expandBy(_position-osg::Vec3(diagonal,diagonal,diagonal));
+    bbox.expandBy(_position+osg::Vec3(diagonal,diagonal,diagonal));
+    return bbox;
 }
 
 void DrawPixels::drawImplementation(State&) const

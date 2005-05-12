@@ -284,11 +284,11 @@ public:
         return _textureGlyphQuadMap;
     }
 
+    virtual osg::BoundingBox computeBound() const;
+
 protected:
 
     virtual ~Text();
-
-    virtual bool computeBound() const;
 
     Font* getActiveFont();
     const Font* getActiveFont() const;

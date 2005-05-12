@@ -169,9 +169,9 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
 
 }
 
-bool LightPointDrawable::computeBound() const
+osg::BoundingBox LightPointDrawable::computeBound() const
 {
-    _bbox.init();
+    osg::BoundingBox bbox;
 
     SizedLightPointList::const_iterator sitr;
     for(sitr=_sizedOpaqueLightPointList.begin();
@@ -183,7 +183,7 @@ bool LightPointDrawable::computeBound() const
             litr!=lpl.end();
             ++litr)
         {
-            _bbox.expandBy(litr->second);
+            bbox.expandBy(litr->second);
         }
     }
     for(sitr=_sizedAdditiveLightPointList.begin();
@@ -195,7 +195,7 @@ bool LightPointDrawable::computeBound() const
             litr!=lpl.end();
             ++litr)
         {
-            _bbox.expandBy(litr->second);
+            bbox.expandBy(litr->second);
         }
     }
     for(sitr=_sizedBlendedLightPointList.begin();
@@ -207,9 +207,9 @@ bool LightPointDrawable::computeBound() const
             litr!=lpl.end();
             ++litr)
         {
-            _bbox.expandBy(litr->second);
+            bbox.expandBy(litr->second);
         }
     }
 
-    return true;
+    return bbox;
 }

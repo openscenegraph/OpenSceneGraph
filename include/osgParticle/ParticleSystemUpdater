@@ -75,11 +75,12 @@ namespace osgParticle
         
         virtual void traverse(osg::NodeVisitor& nv);
         
+        virtual osg::BoundingSphere computeBound() const;        
+
     protected:
         virtual ~ParticleSystemUpdater() {}
         ParticleSystemUpdater &operator=(const ParticleSystemUpdater &) { return *this; }
         
-        inline virtual bool computeBound() const;        
         
     private:
         typedef std::vector<osg::ref_ptr<ParticleSystem> > ParticleSystem_Vector;
@@ -89,13 +90,6 @@ namespace osgParticle
     };
     
     // INLINE FUNCTIONS
-    
-    inline bool ParticleSystemUpdater::computeBound() const
-    {
-        _bsphere.init();
-        _bsphere_computed = true;
-        return true;
-    }
     
     inline bool ParticleSystemUpdater::addParticleSystem(ParticleSystem* ps)
     {

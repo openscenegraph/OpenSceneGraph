@@ -74,7 +74,7 @@ void Impostor::addImpostorSprite(unsigned int contextID, ImpostorSprite* is)
     }
 }
 
-bool Impostor::computeBound() const
+osg::BoundingSphere Impostor::computeBound() const
 {
     return LOD::computeBound();
 }

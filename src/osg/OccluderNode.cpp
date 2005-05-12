@@ -24,9 +24,9 @@ OccluderNode::OccluderNode(const OccluderNode& node,const CopyOp& copyop):
 {
 }
 
-bool OccluderNode::computeBound() const
+BoundingSphere OccluderNode::computeBound() const
 {
-    bool result = Group::computeBound();
+    BoundingSphere bsphere(Group::computeBound());
     
     if (getOccluder())
     {
@@ -40,10 +40,8 @@ bool OccluderNode::computeBound() const
         }
         if (bb.valid())
         {
-            _bsphere.expandBy(bb);
-            _bsphere_computed=true;            
-            result = true;
+            bsphere.expandBy(bb);
         }
     }
-    return result;
+    return bsphere;
 }

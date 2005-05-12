@@ -222,9 +222,9 @@ void Text::setDrawMode(unsigned int mode)
 }
 
 
-bool Text::computeBound() const
+osg::BoundingBox Text::computeBound() const
 {
-    _bbox.init();
+    osg::BoundingBox  bbox;
 
     if (_textBB.valid())
     {
@@ -238,16 +238,15 @@ bool Text::computeBound() const
             else
             {            
                 osg::Matrix& matrix = _autoTransformCache[i]._matrix;
-                _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-                _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
-                _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
-                _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
+                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
+                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
+                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
             }
         }
     }
     
-    _bbox_computed = true;
-    return true;
+    return bbox;
 }
 
 Font* Text::getActiveFont()

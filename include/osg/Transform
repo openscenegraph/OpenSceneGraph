@@ -135,16 +135,17 @@ class OSG_EXPORT Transform : public Group
             }
         }
 
-    protected :
-    
-        virtual ~Transform();
-        
         /** Overrides Group's computeBound. 
           * There is no need to override in subclasses from osg::Transform
           * since this computeBound() uses the underlying matrix (calling
           * computeMatrix if required).
 		*/
-        virtual bool computeBound() const;
+        virtual BoundingSphere computeBound() const;
+
+    protected :
+    
+        virtual ~Transform();
+        
         
         ReferenceFrame                      _referenceFrame;
 

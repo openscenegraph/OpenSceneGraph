@@ -128,20 +128,22 @@ class OSG_EXPORT Geode : public Node
           * bounding boxes of the geode's drawables.*/
         inline const BoundingBox& getBoundingBox() const
         {
-            if(!_bsphere_computed) computeBound();
+            if(!_boundingSphereComputed) getBound();
             return _bbox;
         }
+
+        virtual BoundingSphere computeBound() const;
 
         /** If State is non-zero, this function releases any associated OpenGL objects for
            * the specified graphics context. Otherwise, releases OpenGL objexts
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const;
 
+
     protected:
 
         virtual ~Geode();
 
-        virtual bool computeBound() const;
 
         mutable osg::BoundingBox        _bbox;
         DrawableList                    _drawables;

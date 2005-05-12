@@ -48,3 +48,9 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
     }
     Node::traverse(nv);
 }
+
+osg::BoundingSphere osgParticle::ParticleSystemUpdater::computeBound() const
+{
+    return osg::BoundingSphere();
+}
+

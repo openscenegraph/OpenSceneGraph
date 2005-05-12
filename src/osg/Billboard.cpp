@@ -123,7 +123,7 @@ bool Billboard::removeDrawable( Drawable *gset )
             // note ref_ptr<> automatically handles decrementing gset's reference count.
             _drawables.erase(itr);
             _positionList.erase(pitr);
-            _bsphere_computed = false;
+            dirtyBound();
             return true;
         }
     }
@@ -265,41 +265,40 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
 
 }
 
-bool Billboard::computeBound() const
+BoundingSphere Billboard::computeBound() const
 {
     int i;
     int ngsets = _drawables.size();
 
-    if( ngsets == 0 ) return false;
+    if( ngsets == 0 ) return BoundingSphere();
 
-    _bsphere._center.set(0.0f,0.0f,0.0f);
+    BoundingSphere bsphere;
+    bsphere._center.set(0.0f,0.0f,0.0f);
 
     for( i = 0; i < ngsets; i++ )
     {
         const Drawable *gset = _drawables[i].get();
         const BoundingBox& bbox = gset->getBound();
 
-        _bsphere._center += bbox.center();
-        _bsphere._center += _positionList[i];
+        bsphere._center += bbox.center();
+        bsphere._center += _positionList[i];
     }
 
-    _bsphere._center /= (float)(ngsets);
+    bsphere._center /= (float)(ngsets);
 
     float maxd = 0.0;
     for( i = 0; i < ngsets; ++i )
     {
         const Drawable *gset = _drawables[i].get();
         const BoundingBox& bbox = gset->getBound();
-        Vec3 local_center = _bsphere._center-_positionList[i];
+        Vec3 local_center = bsphere._center-_positionList[i];
         for(unsigned int c=0;c<8;++c)
         {
             float d = (bbox.corner(c)-local_center).length2();
             if( d > maxd ) maxd = d;
         }
     }
-    _bsphere._radius = sqrtf(maxd);
+    bsphere._radius = sqrtf(maxd);
 
-    _bsphere_computed=true;
-
-    return true;
+    return bsphere;
 }

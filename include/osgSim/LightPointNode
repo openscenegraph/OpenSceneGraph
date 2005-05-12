@@ -82,6 +82,8 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
         osgSim::LightPointSystem* getLightPointSystem() { return _lightSystem.get(); }
 
+        virtual osg::BoundingSphere computeBound() const;
+
     protected:
 
         ~LightPointNode() {}
@@ -89,8 +91,6 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         // used to cache the bouding box of the lightpoints as a tighter
         // view frustum check. 
         mutable osg::BoundingBox _bbox;
-
-        virtual bool computeBound() const;
 
         LightPointList  _lightPointList;
 

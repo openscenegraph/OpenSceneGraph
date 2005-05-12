@@ -40,6 +40,12 @@ class OSG_EXPORT BoundingSphere
         /** Creates a bounding sphere initialized to the given extents. */
         BoundingSphere(const Vec3& center,float radius) : _center(center),_radius(radius) {}
 
+        /** Creates a bounding sphere initialized to the given extents. */
+        BoundingSphere(const BoundingSphere& bs) : _center(bs._center),_radius(bs._radius) {}
+
+        /** Creates a bounding sphere initialized to the given extents. */
+        BoundingSphere(const BoundingBox& bb) : _center(0.0f,0.0f,0.0f),_radius(-1.0f) { expandBy(bb); }
+
         /** Clear the bounding sphere. Reset to default values. */
         inline void init()
         {

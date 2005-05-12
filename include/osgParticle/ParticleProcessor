@@ -131,11 +131,11 @@ namespace osgParticle
         /// Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal).
         inline osg::Vec3 rotateWorldToLocal(const osg::Vec3& P);
 
+        virtual osg::BoundingSphere computeBound() const;    
+
     protected:
         virtual ~ParticleProcessor() {}
         ParticleProcessor& operator=(const ParticleProcessor&) { return *this; }
-        
-        inline bool computeBound() const;    
         
         virtual void process(double dt) = 0;
         
@@ -249,13 +249,6 @@ namespace osgParticle
         return _resetTime;
     }
 
-    inline bool ParticleProcessor::computeBound() const
-    {
-        _bsphere.init();
-        _bsphere_computed = true;
-        return true;
-    }
-    
     inline const osg::Matrix& ParticleProcessor::getLocalToWorldMatrix()    
     {
         if (_need_ltw_matrix) {

@@ -100,12 +100,12 @@ class OSGSIM_EXPORT Impostor : public osg::LOD
         /** Get a const list of ImpostorSprites attached to this const Impostor. */
         inline const ImpostorSpriteList& getImpostorSpriteList(unsigned int contexID) const { return _impostorSpriteListBuffer[contexID]; }
 
+        virtual osg::BoundingSphere computeBound() const;
+        
     protected :
 
         virtual ~Impostor() {}
 
-        virtual bool computeBound() const;
-        
         mutable osg::buffered_object<ImpostorSpriteList>  _impostorSpriteListBuffer;
         
 

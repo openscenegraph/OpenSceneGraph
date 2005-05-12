@@ -165,15 +165,15 @@ class Logos: public osg::Drawable
 	    return (n != 0);
 	}
 
+        virtual osg::BoundingBox computeBound() const 
+	{
+	    return osg::BoundingBox( -1, -1, -1, 1, 1, 1);
+        }
+
     protected:
         Logos& operator = (const Logos&) { return *this;}
 
         virtual ~Logos() {}
-        virtual bool computeBound() const 
-	{
-	    _bbox.set( -1, -1, -1, 1, 1, 1);
-            return true;
-        }
     private :
  	std::vector <osg::Image *> logos[last_position];
 	osg::Viewport *viewport;

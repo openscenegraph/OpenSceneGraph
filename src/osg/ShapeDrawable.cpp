@@ -1787,20 +1787,14 @@ void ShapeDrawable::accept(PrimitiveFunctor& pf) const
 }
 
 
-bool ShapeDrawable::computeBound() const
+BoundingBox ShapeDrawable::computeBound() const
 {
-    _bbox.init();
-
-
+    BoundingBox bbox;
     if (_shape.valid())
     {
-        ComputeBoundShapeVisitor cbsv(_bbox);
+        ComputeBoundShapeVisitor cbsv(bbox);
     	_shape->accept(cbsv);
-        _bbox_computed = true;
-
-	return true;
     }
-
-    return false;
+    return bbox;
 }
 

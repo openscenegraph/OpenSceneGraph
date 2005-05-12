@@ -259,7 +259,7 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
 
 Drawable::Drawable()
 {
-    _bbox_computed = false;
+    _boundingBoxComputed = false;
 
     // Note, if your are defining a subclass from drawable which is
     // dynamically updated then you should set both the following to
@@ -280,8 +280,9 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     Object(drawable,copyop),
     _parents(), // leave empty as parentList is managed by Geode
     _stateset(copyop(drawable._stateset.get())),
-    _bbox(drawable._bbox),
-    _bbox_computed(drawable._bbox_computed),
+    _initialBound(drawable._initialBound),
+    _boundingBox(drawable._boundingBox),
+    _boundingBoxComputed(drawable._boundingBoxComputed),
     _shape(copyop(drawable._shape.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
@@ -444,9 +445,9 @@ osg::StateSet* Drawable::getOrCreateStateSet()
 
 void Drawable::dirtyBound()
 {
-    if (_bbox_computed)
+    if (_boundingBoxComputed)
     {
-        _bbox_computed = false;
+        _boundingBoxComputed = false;
 
         // dirty parent bounding sphere's to ensure that all are valid.
         for(ParentList::iterator itr=_parents.begin();
@@ -724,23 +725,20 @@ struct ComputeBound : public PrimitiveFunctor
         BoundingBox     _bb;
 };
 
-bool Drawable::computeBound() const
+BoundingBox Drawable::computeBound() const
 {
     ComputeBound cb;
 
     Drawable* non_const_this = const_cast<Drawable*>(this);
     non_const_this->accept(cb);
     
-    _bbox = cb._bb;
-    _bbox_computed = true;
-
-    return true;
+    return cb._bb;
 }
 
 void Drawable::setBound(const BoundingBox& bb) const
 {
-     _bbox = bb;
-     _bbox_computed = true;
+     _boundingBox = bb;
+     _boundingBoxComputed = true;
 }
 
 

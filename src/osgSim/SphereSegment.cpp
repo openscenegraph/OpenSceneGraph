@@ -35,9 +35,9 @@ public:
 
     void drawImplementation(osg::State& state) const;
 
-protected:
+    virtual osg::BoundingBox computeBound() const;
 
-    virtual bool computeBound() const;
+protected:
 
 private:
 
@@ -49,10 +49,11 @@ void SphereSegment::Surface::drawImplementation(osg::State& state) const
     _ss->Surface_drawImplementation(state);
 }
 
-bool SphereSegment::Surface::computeBound() const
+osg:: BoundingBox SphereSegment::Surface::computeBound() const
 {
-    _bbox_computed = _ss->Surface_computeBound(_bbox);
-    return _bbox_computed;
+    osg:: BoundingBox bbox;
+    _ss->Surface_computeBound(bbox);
+    return bbox;
 }
 
 
@@ -93,7 +94,7 @@ protected:
     }
 
 
-    virtual bool computeBound() const;
+    virtual osg::BoundingBox computeBound() const;
 
 private:
 
@@ -105,10 +106,11 @@ void SphereSegment::EdgeLine::drawImplementation(osg::State& state) const
     _ss->EdgeLine_drawImplementation(state);
 }
 
-bool SphereSegment::EdgeLine::computeBound() const
+osg::BoundingBox SphereSegment::EdgeLine::computeBound() const
 {
-    _bbox_computed = _ss->EdgeLine_computeBound(_bbox);
-    return _bbox_computed;
+    osg::BoundingBox bbox;
+    _ss->EdgeLine_computeBound(bbox);
+    return bbox;
 }
 
 
@@ -141,7 +143,7 @@ public:
 
 protected:
 
-    virtual bool computeBound() const;
+    virtual osg::BoundingBox computeBound() const;
 
 private:
     SphereSegment* _ss;
@@ -155,10 +157,11 @@ void SphereSegment::Side::drawImplementation(osg::State& state) const
     _ss->Side_drawImplementation(state, _planeOrientation, _BoundaryAngle);
 }
 
-bool SphereSegment::Side::computeBound() const
+osg::BoundingBox SphereSegment::Side::computeBound() const
 {
-    _bbox_computed = _ss->Side_computeBound(_bbox, _planeOrientation, _BoundaryAngle);
-    return _bbox_computed;
+    osg::BoundingBox bbox;
+    _ss->Side_computeBound(bbox, _planeOrientation, _BoundaryAngle);
+    return bbox;
 }
 
 
@@ -199,7 +202,7 @@ protected:
 	//getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
     }
     
-    virtual bool computeBound() const;
+    virtual osg::BoundingBox computeBound() const;
 
 private:
     SphereSegment* _ss;
@@ -211,10 +214,11 @@ void SphereSegment::Spoke::drawImplementation(osg::State& state) const
     _ss->Spoke_drawImplementation(state, _azAngle, _elevAngle);
 }
 
-bool SphereSegment::Spoke::computeBound() const
+osg::BoundingBox SphereSegment::Spoke::computeBound() const
 {
-    _bbox_computed = _ss->Spoke_computeBound(_bbox, _azAngle, _elevAngle);
-    return _bbox_computed;
+    osg::BoundingBox bbox;
+    _ss->Spoke_computeBound(bbox, _azAngle, _elevAngle);
+    return bbox;
 }
 
 SphereSegment::SphereSegment(const osg::Vec3& centre, float radius, const osg::Vec3& vec, float azRange,

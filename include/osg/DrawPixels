@@ -59,15 +59,14 @@ class OSG_EXPORT DrawPixels : public Drawable
 
         virtual void drawImplementation(State& state) const;
 
-
+        virtual BoundingBox computeBound() const;
+        
     protected:
 
         DrawPixels& operator = (const DrawPixels&) { return *this;}
 
         virtual ~DrawPixels();
 
-        virtual bool computeBound() const;
-        
         Vec3            _position;
         ref_ptr<Image>  _image;
         

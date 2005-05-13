@@ -14,6 +14,7 @@
 
 #include <algorithm>
 
+using namespace osg;
 using namespace osgSim;
 
 Impostor::Impostor()

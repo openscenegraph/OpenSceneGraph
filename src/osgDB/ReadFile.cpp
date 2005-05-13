@@ -112,11 +112,6 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,const ReaderWri
     
 }
 
-static osg::Geometry* createMovieTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image)
-{
-}
-
-
 Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Options* options)
 {
 

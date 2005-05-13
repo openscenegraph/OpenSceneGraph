@@ -26,6 +26,7 @@
 
 #include <osgSim/ImpostorSprite>
 
+using namespace osg;
 using namespace osgSim;
 
 ImpostorSprite::ImpostorSprite()
@@ -44,6 +45,9 @@ ImpostorSprite::ImpostorSprite()
 
     _color.set(1.0f, 1.0f, 1.0f, 1.0f );
 }
+
+ImpostorSprite::ImpostorSprite(const ImpostorSprite&): Drawable() {}
+
 
 ImpostorSprite::~ImpostorSprite()
 {

@@ -38,7 +38,7 @@ class OSG_EXPORT ArgumentParser
                 DOUBLE_PARAMETER,
                 INT_PARAMETER,
                 UNSIGNED_INT_PARAMETER,
-                STRING_PARAMETER,
+                STRING_PARAMETER
             };
         
             union ValueUnion

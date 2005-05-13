@@ -21,7 +21,6 @@
 
 #include "dxfDataTypes.h"
 #include "dxfSectionBase.h"
-#include "dxfFile.h"
 #include "dxfTable.h"
 #include "codeValue.h"
 #include "scene.h"
@@ -31,6 +30,7 @@
 #include <iostream>
 #include <string>
 
+class dxfFile;
 class dxfEntity;
 class dxfBlock;
 

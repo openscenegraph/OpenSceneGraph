@@ -25,9 +25,10 @@
 #include <osg/Node>
 #include <osg/Matrix>
 
+#include "dxfBlock.h"
+
 
 class scene;
-class dxfBlock;
 class codeValue;
 class dxfFile;
 

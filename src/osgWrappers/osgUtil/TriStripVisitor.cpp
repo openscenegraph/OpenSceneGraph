@@ -15,7 +15,7 @@
 #include <osgUtil/TriStripVisitor>
 
 BEGIN_VALUE_REFLECTOR(osgUtil::TriStripVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, stripify, IN, osg::Geometry &, drawable);
 	Method0(void, stripify);

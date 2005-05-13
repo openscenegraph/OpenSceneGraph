@@ -24,6 +24,15 @@
 #include <osg/Transform>
 #include <osgUtil/Optimizer>
 
+BEGIN_VALUE_REFLECTOR(osgUtil::BaseOptimizerVisitor)
+	BaseType(osg::NodeVisitor);
+	Constructor2(IN, osgUtil::Optimizer *, optimizer, IN, unsigned int, operation);
+	Method1(bool, isOperationPermissibleForObject, IN, const osg::StateSet *, object);
+	Method1(bool, isOperationPermissibleForObject, IN, const osg::StateAttribute *, object);
+	Method1(bool, isOperationPermissibleForObject, IN, const osg::Drawable *, object);
+	Method1(bool, isOperationPermissibleForObject, IN, const osg::Node *, object);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	EnumLabel(osgUtil::Optimizer::FLATTEN_STATIC_TRANSFORMS);
 	EnumLabel(osgUtil::Optimizer::REMOVE_REDUNDANT_NODES);
@@ -63,17 +72,8 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer)
 	IndexedProperty1(unsigned int, PermissibleOptimizationsForObject, const osg::Object *, object);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::BaseOptimizerVisitor)
-	BaseType(osg::NodeVisitor);
-	Constructor2(IN, osgUtil::Optimizer *, optimizer, IN, unsigned int, operation);
-	Method1(bool, isOperationPermissibleForObject, IN, const osg::StateSet *, object);
-	Method1(bool, isOperationPermissibleForObject, IN, const osg::StateAttribute *, object);
-	Method1(bool, isOperationPermissibleForObject, IN, const osg::Drawable *, object);
-	Method1(bool, isOperationPermissibleForObject, IN, const osg::Node *, object);
-END_REFLECTOR
-
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::CheckGeometryVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Geode &, geode);
 	Method1(void, checkGeode, IN, osg::Geode &, geode);
@@ -82,14 +82,14 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::CombineLODsVisitor::GroupList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::LOD &, lod);
 	Method0(void, combineLODs);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::MatrixTransform &, transform);
 	Method1(bool, removeTransforms, IN, osg::Node *, nodeWeCannotRemove);
@@ -98,14 +98,14 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Node &, node);
 	Method0(void, copySharedNodes);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Node &, geode);
 	Method1(void, apply, IN, osg::Geode &, geode);
@@ -125,7 +125,7 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallbac
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, setTargetMaximumNumberOfVertices, IN, unsigned int, num);
 	Method0(unsigned int, getTargetMaximumNumberOfVertices);
@@ -138,7 +138,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Geode &, geode);
 	Method1(void, apply, IN, osg::Group &, group);
@@ -148,7 +148,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::ProxyNode &, group);
 	Method0(void, removeRedundantNodes);
@@ -157,7 +157,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Group &, group);
 	Method1(void, apply, IN, osg::Transform &, transform);
@@ -167,7 +167,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Group &, group);
 	MethodWithDefaults1(bool, divide, IN, unsigned int, maxNumTreesPerCell, 8);
@@ -175,7 +175,7 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::StateVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method0(void, reset);
 	Method1(void, apply, IN, osg::Node &, node);
@@ -186,13 +186,13 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TesselateVisitor::GroupList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TesselateVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Geode &, geode);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
-	BaseType(osgUtil::Optimizer::BaseOptimizerVisitor);
+	BaseType(osgUtil::BaseOptimizerVisitor);
 	ConstructorWithDefaults7(IN, bool, changeAutoUnRef, , IN, bool, valueAutoUnRef, , IN, bool, changeClientImageStorage, , IN, bool, valueClientImageStorage, , IN, bool, changeAnisotropy, , IN, float, valueAnisotropy, , IN, osgUtil::Optimizer *, optimizer, 0);
 	Method1(void, apply, IN, osg::Geode &, node);
 	Method1(void, apply, IN, osg::Node &, node);

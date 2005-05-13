@@ -565,13 +565,13 @@ void Optimizer::StateVisitor::optimize()
 // Flatten static transforms
 ////////////////////////////////////////////////////////////////////////////
 
-class CollectLowestTransformsVisitor : public Optimizer::BaseOptimizerVisitor
+class CollectLowestTransformsVisitor : public BaseOptimizerVisitor
 {
     public:
 
 
         CollectLowestTransformsVisitor(Optimizer* optimizer=0):
-                    Optimizer::BaseOptimizerVisitor(optimizer,Optimizer::FLATTEN_STATIC_TRANSFORMS),
+                    BaseOptimizerVisitor(optimizer,Optimizer::FLATTEN_STATIC_TRANSFORMS),
                     _transformFunctor(osg::Matrix())
         {
             setTraversalMode(osg::NodeVisitor::TRAVERSE_PARENTS);

@@ -25,6 +25,30 @@
 
 namespace osgUtil {
 
+// forward declare
+class Optimizer;
+
+/** Helper base class for implementing Optimizer techniques.*/
+class OSGUTIL_EXPORT BaseOptimizerVisitor : public osg::NodeVisitor
+{
+    public:
+
+        BaseOptimizerVisitor(Optimizer* optimizer, unsigned int operation):
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+            _optimizer(optimizer),
+            _operationType(operation) {}
+
+        inline bool isOperationPermissibleForObject(const osg::StateSet* object) const;
+        inline bool isOperationPermissibleForObject(const osg::StateAttribute* object) const;
+        inline bool isOperationPermissibleForObject(const osg::Drawable* object) const;        
+        inline bool isOperationPermissibleForObject(const osg::Node* object) const;
+
+    protected:
+
+        Optimizer*      _optimizer;
+        unsigned int _operationType;
+};
+
 /** Traverses scene graph to improve efficiency. See OptimizationOptions.
   * For example of usage see examples/osgimpostor or osgviewer.
   */
@@ -211,42 +235,6 @@ class OSGUTIL_EXPORT Optimizer
         PermissibleOptimizationsMap _permissibleOptimizationsMap;    
     
     public:
-
-
-        class OSGUTIL_EXPORT BaseOptimizerVisitor : public osg::NodeVisitor
-        {
-            public:
-        
-                BaseOptimizerVisitor(Optimizer* optimizer, unsigned int operation):
-                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-                    _optimizer(optimizer),
-                    _operationType(operation) {}
-                     
-                inline bool isOperationPermissibleForObject(const osg::StateSet* object) const
-                {
-                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
-                }
-                
-                inline bool isOperationPermissibleForObject(const osg::StateAttribute* object) const
-                {
-                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
-                }
-                
-                inline bool isOperationPermissibleForObject(const osg::Drawable* object) const
-                {
-                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
-                }
-                
-                inline bool isOperationPermissibleForObject(const osg::Node* object) const
-                {
-                    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
-                }
-                
-            protected:
-            
-                Optimizer*      _optimizer;
-                unsigned int _operationType;
-        };
 
         /** Flatten Static Transform nodes by applying their transform to the
           * geometry on the leaves of the scene graph, then removing the 
@@ -537,6 +525,26 @@ class OSGUTIL_EXPORT Optimizer
         };
         
 };
+
+inline bool BaseOptimizerVisitor::isOperationPermissibleForObject(const osg::StateSet* object) const
+{
+    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
+}
+
+inline bool BaseOptimizerVisitor::isOperationPermissibleForObject(const osg::StateAttribute* object) const
+{
+    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
+}
+
+inline bool BaseOptimizerVisitor::isOperationPermissibleForObject(const osg::Drawable* object) const
+{
+    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
+}
+
+inline bool BaseOptimizerVisitor::isOperationPermissibleForObject(const osg::Node* object) const
+{
+    return _optimizer ? _optimizer->isOperationPermissibleForObject(object,_operationType) :  true; 
+}
 
 }
 

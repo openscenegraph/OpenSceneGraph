@@ -16,6 +16,7 @@
 
 #include <osgFX/MultiTextureControl>
 
+using namespace osg;
 using namespace osgFX;
 
 MultiTextureControl::MultiTextureControl()

@@ -25,7 +25,6 @@
     #include <float.h>
 #endif
 
-
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
     defined (__APPLE__)
@@ -39,39 +38,39 @@
     // where they arent in math.h
 
     #ifndef acosf
-    #define acosf (float)acos
+    inline float acosf(float value) { return static_cast<float>(acos(value)); }
     #endif
 
     #ifndef asinf
-    #define asinf (float)asin
+    inline float asinf(float value) { return static_cast<float>(asin(value)); }
     #endif
 
     #ifndef cosf
-    #define cosf (float)cos
+    inline float cosf(float value) { return static_cast<float>(cos(value)); }
     #endif
 
     #ifndef sinf
-    #define sinf (float)sin
+    inline float sinf(float value) { return static_cast<float>(sin(value)); }
     #endif
 
     #ifndef logf
-    #define logf (float)log
+    inline float logf(float value) { return static_cast<float>(log(value)); }
     #endif
 
     #ifndef powf
-    #define powf (float)pow
+    inline float powf(float value1,float value2) { return static_cast<float>(pow(value1,value2)); }
     #endif
 
     #ifndef sqrtf
-    #define sqrtf (float)sqrt
+    inline float sqrtf(float value) { return static_cast<float>(sqrt(value)); }
     #endif
     
     #ifndef fabsf
-    #define fabsf (float)fabs
+    inline float fabsf(float value) { return static_cast<float>(fabs(value)); }
     #endif
 
     #ifndef atan2f
-    #define atan2f (float)atan2
+    inline float atan2f(float value1, float value2) { return static_cast<float>(atan2(value1,value2)); }
     #endif
 
 #endif
@@ -80,7 +79,7 @@
     defined (sun)
 
     #ifndef isnanf
-    #define isnanf (float)isnan
+    inline int isnanf(float value) { return isnan(value); }
     #endif
 
 #endif
@@ -91,7 +90,7 @@
     defined (APPLE_PRE_10_2)
 
     #ifndef floorf
-    #define floorf (float)floor
+    inline float floorf(float value) { return static_cast<float>(floor(value)); }
     #endif
 
 #endif

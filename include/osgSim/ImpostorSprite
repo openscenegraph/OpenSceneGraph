@@ -152,7 +152,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
 
     protected:
 
-        ImpostorSprite(const ImpostorSprite&):Drawable() {}
+        ImpostorSprite(const ImpostorSprite&);
         ImpostorSprite& operator = (const ImpostorSprite&) { return *this;}
 
         virtual ~ImpostorSprite();

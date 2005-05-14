@@ -128,7 +128,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             ModelList                                   _models;
         };
 
-        struct SourceData : public osg::Referenced, public SpatialProperties
+        struct OSGTERRAIN_EXPORT SourceData : public osg::Referenced, public SpatialProperties
         {
         
             SourceData(Source* source=0):
@@ -166,7 +166,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         };
 
 
-        class Source : public osg::Referenced, public SpatialProperties
+        class OSGTERRAIN_EXPORT Source : public osg::Referenced, public SpatialProperties
         {
         public:
         
@@ -342,7 +342,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             PAGED_LOD
         };
         
-        class CompositeSource : public osg::Referenced, public SpatialProperties
+        class OSGTERRAIN_EXPORT CompositeSource : public osg::Referenced, public SpatialProperties
         {
         public:
             
@@ -683,7 +683,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         };
         
         
-        class DestinationTile : public osg::Referenced, public SpatialProperties
+        class OSGTERRAIN_EXPORT DestinationTile : public osg::Referenced, public SpatialProperties
         {
         public:
         
@@ -804,7 +804,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         };
 
-        class CompositeDestination : public osg::Referenced, public SpatialProperties
+        class OSGTERRAIN_EXPORT CompositeDestination : public osg::Referenced, public SpatialProperties
         {
         public:   
         

@@ -21,7 +21,7 @@
 #include <osg/Matrix>
 
     /**
-      \class UFOManipulator
+      \class osgGA::UFOManipulator
       \brief A UFO manipulator driven with keybindings.
 
       The UFOManipulator is better suited for applications that employ 

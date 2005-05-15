@@ -144,7 +144,7 @@ namespace osgIntrospection
     struct ValueReflector: Reflector<T>
     {
         typedef ValueReflector<T> inherited;
-        typedef ValueInstanceCreator<typename Reflector<T>::reflected_type> instance_creato_rtype;
+        typedef ValueInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
 
         ValueReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, false)
@@ -164,7 +164,7 @@ namespace osgIntrospection
     struct AbstractObjectReflector: Reflector<T>
     {
         typedef AbstractObjectReflector<T> inherited;
-        typedef DummyInstanceCreator<typename Reflector<T>::reflected_type> instance_creato_rtype;
+        typedef DummyInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
 
         AbstractObjectReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, true)
@@ -186,7 +186,7 @@ namespace osgIntrospection
     struct ObjectReflector: Reflector<T>
     {
         typedef ObjectReflector<T> inherited;
-        typedef ObjectInstanceCreator<typename Reflector<T>::reflected_type> instance_creato_rtype;
+        typedef ObjectInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
 
         ObjectReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, false)
@@ -206,14 +206,14 @@ namespace osgIntrospection
     template<typename T>
     struct AtomicValueReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
     
         AtomicValueReflector(const std::string& name, const std::string& ns)
         :    ValueReflector<T>(name, ns)
         {
             setReaderWriter(new StdReaderWriter<T>);
             setComparator(new PartialOrderComparator<T>);
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
         }
 
         AtomicValueReflector(const std::string& qname)
@@ -221,7 +221,7 @@ namespace osgIntrospection
         {
             setReaderWriter(new StdReaderWriter<T>);
             setComparator(new PartialOrderComparator<T>);
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));            
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));            
         }
     };
 
@@ -232,14 +232,14 @@ namespace osgIntrospection
     struct EnumReflector: ValueReflector<T>
     {
         typedef EnumReflector<T> inherited;
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
 
         EnumReflector(const std::string& name, const std::string& ns)
         :    ValueReflector<T>(name, ns)
         {
             setReaderWriter(new EnumReaderWriter<T>);
             setComparator(new TotalOrderComparator<T>);
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
         }
 
         EnumReflector(const std::string& qname)
@@ -247,7 +247,7 @@ namespace osgIntrospection
         {
             setReaderWriter(new EnumReaderWriter<T>);
             setComparator(new TotalOrderComparator<T>);
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
         }
     };
 
@@ -257,7 +257,7 @@ namespace osgIntrospection
     template<typename T, typename VT>
     struct StdVectorReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
     
         struct Getter: PropertyGetter
         {
@@ -314,7 +314,7 @@ namespace osgIntrospection
 
         StdVectorReflector(const std::string& name): ValueReflector<T>(name)
         {
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
             
             PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
@@ -338,7 +338,7 @@ namespace osgIntrospection
     template<typename T, typename VT>
     struct StdSetReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
     
         struct Getter: PropertyGetter
         {
@@ -390,7 +390,7 @@ namespace osgIntrospection
 
         StdSetReflector(const std::string& name): ValueReflector<T>(name)
         {
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
             
             PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
@@ -413,7 +413,7 @@ namespace osgIntrospection
     template<typename T, typename VT>
     struct StdListReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
     
         struct Getter: PropertyGetter
         {
@@ -476,7 +476,7 @@ namespace osgIntrospection
 
         StdListReflector(const std::string& name): ValueReflector<T>(name)
         {
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
             
             PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
@@ -500,7 +500,7 @@ namespace osgIntrospection
     template<typename T, typename IT, typename VT>
     struct StdMapReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
     
         typedef typename T::iterator iterator;
         typedef typename T::const_iterator const_iterator;
@@ -574,7 +574,7 @@ namespace osgIntrospection
 
         StdMapReflector(const std::string& name): ValueReflector<T>(name)
         {
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
             
             PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::mapped_type), "Items", 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
@@ -594,7 +594,7 @@ namespace osgIntrospection
     template<typename T, typename PT1, typename PT2>
     struct StdPairReflector: ValueReflector<T>
     {
-        typedef typename ValueReflector<T>::instance_creato_rtype instance_creato_rtype;
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
     
         struct Accessor: PropertyGetter, PropertySetter
         {
@@ -636,7 +636,7 @@ namespace osgIntrospection
 
         StdPairReflector(const std::string& name): ValueReflector<T>(name)
         {
-            addConstructor(new TypedConstructorInfo0<T, instance_creato_rtype>(ParameterInfoList()));
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
             
             PropertyInfo* pi1 = new PropertyInfo(typeof(T), typeof(typename T::first_type), "first", 0, 0);
             pi1->addAttribute(new CustomPropertyGetAttribute(new Accessor(0)));
@@ -854,3 +854,4 @@ namespace osgIntrospection
 }
 
 #endif
+

@@ -87,6 +87,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 {
     public :
 
+        typedef OpenThreads::Thread::ThreadPriority ThreadPriority;
+
         DatabasePager();
 
         /** Add a request to load a node file to end the the database request list.*/

@@ -54,6 +54,7 @@ public:
     class GlyphTexture;
     class FontImplementation;
 
+public:
     Font(FontImplementation* implementation=0);
 
     virtual osg::Object* cloneType() const { return 0; } // cloneType() not appropriate

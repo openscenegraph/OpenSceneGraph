@@ -34,6 +34,8 @@ namespace osgProducer {
 class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 {
     public :
+    
+        typedef Producer::CameraGroup::ThreadingModel ThreadingModel;
 
         OsgCameraGroup();
 

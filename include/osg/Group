@@ -125,13 +125,12 @@ class OSG_EXPORT Group : public Node
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const;
 
-
+        virtual BoundingSphere computeBound() const;
+        
     protected:
 
         virtual ~Group();
 
-        virtual BoundingSphere computeBound() const;
-        
         virtual void childRemoved(unsigned int /*pos*/, unsigned int /*numChildrenToRemove*/) {}
         virtual void childInserted(unsigned int /*pos*/) {}
 

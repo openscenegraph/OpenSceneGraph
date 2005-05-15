@@ -59,6 +59,16 @@ namespace osgIntrospection
         :    MethodInfo(qname, typeof(C), typeof(R), plist), cf_(0), f_(f)
         {
         }
+        
+        static TypedMethodInfo0 *constMethod(const std::string& qname, ConstFunctionType cf, const ParameterInfoList& plist)
+        {
+            return new TypedMethodInfo0(qname, cf, plist);
+        }
+        
+        static TypedMethodInfo0 *nonConstMethod(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
+        {
+            return new TypedMethodInfo0(qname, f, plist);
+        }
 
         bool isConst() const { return cf_; }
         bool isStatic() const { return false; }

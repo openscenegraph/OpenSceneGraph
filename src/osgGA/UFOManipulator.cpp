@@ -524,7 +524,6 @@ void UFOManipulator::_adjustPosition()
             
                 if( d < _minDistanceInFront )
                 {
-                    osg::Vec3 op = _position;
                     _position = ip + (_direction * -_minDistanceInFront);
                     _stop();
                 }

@@ -349,40 +349,24 @@ void SphereSegment::init()
     addDrawable(new Spoke(this,MAX,MAX));
 }
 
-namespace
-{
-
-struct DirtyDisplayList
-{
-    void operator()(osg::ref_ptr<osg::Drawable>& dptr)
-    {
-        dptr->dirtyDisplayList();
-    }
-};
-
-}
-
 void SphereSegment::dirtyAllDrawableDisplayLists()
 {
-    std::for_each(_drawables.begin(), _drawables.end(), DirtyDisplayList());
-}
-
-namespace
-{
-
-struct DirtyBound
-{
-    void operator()(osg::ref_ptr<osg::Drawable>& dptr)
+    for(DrawableList::iterator itr = _drawables.begin();
+        itr != _drawables.end();
+        ++itr)
     {
-        dptr->dirtyBound();
+        (*itr)->dirtyDisplayList();
     }
-};
-
 }
 
 void SphereSegment::dirtyAllDrawableBounds()
 {
-    std::for_each(_drawables.begin(), _drawables.end(), DirtyBound());
+    for(DrawableList::iterator itr = _drawables.begin();
+        itr != _drawables.end();
+        ++itr)
+    {
+        (*itr)->dirtyBound();
+    }
 }
 
 void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
@@ -898,8 +882,6 @@ void SphereSegment::setDrawMask(DrawMask dm)
     dirtyBound();
 }
 
-namespace{
-
 struct ActivateTransparencyOnType
 {
     ActivateTransparencyOnType(const std::type_info& t): _t(t) {}
@@ -938,8 +920,6 @@ struct DeactivateTransparencyOnType
 
     const std::type_info&  _t;
 };
-
-}
 
 void SphereSegment::setSurfaceColor(const osg::Vec4& c)
 {

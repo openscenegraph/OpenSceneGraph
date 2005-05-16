@@ -78,7 +78,7 @@ bool dxtc_pixels::VFlip() const
 void dxtc_pixels::VFlip_DXT1() const
 {
     // const size_t Size = ((m_Width + 3) / 4) * ((m_Height + 3) / 4) * BSIZE_DXT1;
-    dxtc_int8 * const pPixels = (dxtc_int8 * const) m_pPixels;
+    dxtc_int8 * pPixels = (dxtc_int8 * ) m_pPixels;
 
     if (m_Height == 2)
         for (size_t j = 0; j < (m_Width + 3) / 4; ++j)
@@ -105,14 +105,14 @@ void dxtc_pixels::VFlip_DXT3() const
 
     if (m_Height == 2)
         for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
-            BVF_Alpha_DXT3_H2(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT3));
-            BVF_Color_H2(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT3 + BSIZE_ALPHA_DXT3));
+            BVF_Alpha_DXT3_H2(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT3));
+            BVF_Color_H2(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT3 + BSIZE_ALPHA_DXT3));
         }
 
     if (m_Height == 4)
         for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
-            BVF_Alpha_DXT3_H4(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT3));
-            BVF_Color_H4(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT3 + BSIZE_ALPHA_DXT3));
+            BVF_Alpha_DXT3_H4(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT3));
+            BVF_Color_H4(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT3 + BSIZE_ALPHA_DXT3));
         }
 
     if (m_Height > 4)
@@ -120,8 +120,8 @@ void dxtc_pixels::VFlip_DXT3() const
             for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
                 const size_t TargetRow = ((m_Height + 3) / 4) - (i + 1);
                 BVF_Alpha_DXT3(GetBlock(i, j, BSIZE_DXT3), GetBlock(TargetRow, j, BSIZE_DXT3));
-                BVF_Color(((dxtc_int8 * const) GetBlock(i, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3, 
-                          ((dxtc_int8 * const) GetBlock(TargetRow, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3);
+                BVF_Color(((dxtc_int8 * ) GetBlock(i, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3, 
+                          ((dxtc_int8 * ) GetBlock(TargetRow, j, BSIZE_DXT3)) + BSIZE_ALPHA_DXT3);
             }
 }
 
@@ -134,14 +134,14 @@ void dxtc_pixels::VFlip_DXT5() const
 
     if (m_Height == 2)
         for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
-            BVF_Alpha_DXT5_H2(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT5));
-            BVF_Color_H2(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT5 + BSIZE_ALPHA_DXT5));
+            BVF_Alpha_DXT5_H2(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT5));
+            BVF_Color_H2(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT5 + BSIZE_ALPHA_DXT5));
         }
 
     if (m_Height == 4)
         for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
-            BVF_Alpha_DXT5_H4(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT5));
-            BVF_Color_H4(((dxtc_int8 * const) m_pPixels) + (j * BSIZE_DXT5 + BSIZE_ALPHA_DXT5));
+            BVF_Alpha_DXT5_H4(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT5));
+            BVF_Color_H4(((dxtc_int8 * ) m_pPixels) + (j * BSIZE_DXT5 + BSIZE_ALPHA_DXT5));
         }
 
     if (m_Height > 4)
@@ -149,8 +149,8 @@ void dxtc_pixels::VFlip_DXT5() const
             for (size_t j = 0; j < (m_Width + 3) / 4; ++j) {
                 const size_t TargetRow = ((m_Height + 3) / 4) - (i + 1);
                 BVF_Alpha_DXT5(GetBlock(i, j, BSIZE_DXT5), GetBlock(TargetRow, j, BSIZE_DXT5));
-                BVF_Color(((dxtc_int8 * const) GetBlock(i, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5, 
-                          ((dxtc_int8 * const) GetBlock(TargetRow, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5);
+                BVF_Color(((dxtc_int8 * ) GetBlock(i, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5, 
+                          ((dxtc_int8 * ) GetBlock(TargetRow, j, BSIZE_DXT5)) + BSIZE_ALPHA_DXT5);
             }
 }
 

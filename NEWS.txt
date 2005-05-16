@@ -41,7 +41,7 @@ OSG News (most significant items from ChangeLog)
         Donn Mielcarek
         Don Tidrow
         Farshid Lashkari
-        Fredrick Mammond
+        Frederic Marmond
         Garrat Potts
         Igor Kravtchenko
         James French

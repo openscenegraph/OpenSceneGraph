@@ -3950,7 +3950,13 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
     }
     
     my_notify(osg::INFO)<<"Using source_lod_iterator itr"<<std::endl;
-    for(CompositeSource::source_lod_iterator csitr(_sourceGraph.get(),CompositeSource::LODSourceAdvancer(0.0));csitr.valid();++csitr)
+        
+    // buggy mips compiler requires this local variable in source_lod_iterator
+    // usage below, since using _sourceGraph.get() as it should be was causing
+    // a MIPSpro compiler error "The member "osgTerrain::DataSet::_sourceGraph" is inaccessible."
+    CompositeSource* my_sourceGraph = _sourceGraph.get();
+
+    for(CompositeSource::source_lod_iterator csitr(my_sourceGraph,CompositeSource::LODSourceAdvancer(0.0));csitr.valid();++csitr)
     {
         Source* source = csitr->get();
         if (source)

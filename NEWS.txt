@@ -5,12 +5,38 @@ OSG News (most significant items from ChangeLog)
 
     >>> OpenGL Shader Language integrated into core, Introspection 
 
+    OpenGL Shader Language integration.
+    
+    Non power of two texture support.
+    
+    osgIntrospection.
+    
+    osgFX MultiTextureControl node.
+    
+    osgTerrain supports alpha'd textures and multiple texture layers
+    
+    osg::ProxyNode
+    
+    osgviewer, osgconv, osgarchive, osgversion moved to application directory
+    
+    osgpbuffer example now uses Producer's pbuffer support.
+    
+    new DXF plugin.
+    
+    AGL support under OSX.
+    
+    API clean ups.
+    
+    Bug fixes.
+    
+    Performance improvements.
+    
     Contributors:
         Alberto Farre         
         Bob Kuehne
         Brede Johansen
         Carlo Camporesi
-        Chris Xennon
+        Chris Hansen
         Don Burns
         Donn Mielcarek
         Don Tidrow
@@ -19,13 +45,17 @@ OSG News (most significant items from ChangeLog)
         Garrat Potts
         Igor Kravtchenko
         James French
+        Jan Ciger
+        John Grant
         Joran Jessurun
         Joson Daly
         Kevin Moiule
         Leandro Motta
-        Leandro Motta
+        Marco Jez
         Mason Menninger
+        Mike Weiblen
         Nathan Monteleone
+        Olaf Flebbe
         Paul Melis
         Per Fahlberg
         Rainer Oder

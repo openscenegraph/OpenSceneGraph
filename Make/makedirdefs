@@ -41,14 +41,13 @@ WRAPPER_DIRS = \
 	osg\
 	osgParticle\
 	osgSim\
-
-#	osgUtil\
-#	osgDB\
-#	osgFX\
-#	osgText\
-#	osgTerrain\
-#	osgGA\
-#	osgProducer\
+	osgUtil\
+	osgDB\
+	osgFX\
+	osgText\
+	osgTerrain\
+	osgGA\
+	osgProducer\
 	
 
 

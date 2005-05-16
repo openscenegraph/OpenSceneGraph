@@ -34,7 +34,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 
         virtual const char* className() const { return "Archive"; }
 
-        virtual bool acceptsExtension(const std::string& /*extension*/) { return true; }
+        virtual bool acceptsExtension(const std::string& /*extension*/) const { return true; }
         
         /** close the archive.*/
         virtual void close() = 0;

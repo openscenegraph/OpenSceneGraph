@@ -209,7 +209,7 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
               <<"RHS = "<<rhs->getCoordinateSystem()<<std::endl
               <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
 #endif
-	 return result ? true : false;
+         return result ? true : false;
 }
 
 DataSet::SourceData::~SourceData()
@@ -834,25 +834,16 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
         }
 
 
-	GDALRasterBand* bandSelected = 0;
-	if (!bandSelected && bandGray) bandSelected = bandGray;
-	else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
-	else if (!bandSelected && bandRed) bandSelected = bandRed;
-	else if (!bandSelected && bandGreen) bandSelected = bandGreen;
-	else if (!bandSelected && bandBlue) bandSelected = bandBlue;
+        GDALRasterBand* bandSelected = 0;
+        if (!bandSelected && bandGray) bandSelected = bandGray;
+        else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
+        else if (!bandSelected && bandRed) bandSelected = bandRed;
+        else if (!bandSelected && bandGreen) bandSelected = bandGreen;
+        else if (!bandSelected && bandBlue) bandSelected = bandBlue;
 
         if (bandSelected)
         {
         
-            bool xyInDegrees = false;
-
-            CoordinateSystemType cst = getCoordinateSystemType(_cs.get());
-            if (cst==GEOGRAPHIC)
-            {
-                xyInDegrees = true;
-            }
-
-
             if (bandSelected->GetUnitType()) my_notify(osg::INFO) << "bandSelected->GetUnitType()=" << bandSelected->GetUnitType()<<std::endl;
             else my_notify(osg::INFO) << "bandSelected->GetUnitType()= null" <<std::endl;
             
@@ -889,7 +880,6 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             {
                 scale = destination._dataSet->getVerticalScale();
                 my_notify(osg::INFO)<<"We have no Scale from file so use DataSet vertical scale of "<<scale<<std::endl;
-                //scale = (xyInDegrees /*&& !destination._dataSet->getConvertFromGeographicToGeocentric()*/) ? 1.0f/111319.0f : 1.0f;
 
             }
             
@@ -912,17 +902,17 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 
             float* heightPtr = heightData;            
 
-	    for(int r=destY+destHeight-1;r>=destY;--r)
-	    {
-		for(int c=destX;c<destX+destWidth;++c)
-		{
+            for(int r=destY+destHeight-1;r>=destY;--r)
+            {
+                for(int c=destX;c<destX+destWidth;++c)
+                {
                     float h = *heightPtr++;
                     if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
                     else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
                     
                     h = hf->getHeight(c,r);
-		}
-	    }
+                }
+            }
             
             delete [] heightData;
            
@@ -2055,12 +2045,12 @@ void DataSet::DestinationTile::optimizeResolution()
         float maxHeight = minHeight;
         for(unsigned int r=0;r<hf->getNumRows();++r)
         {
-	    for(unsigned int c=0;c<hf->getNumColumns();++c)
-	    {
+            for(unsigned int c=0;c<hf->getNumColumns();++c)
+            {
                 float h = hf->getHeight(c,r);
                 if (h<minHeight) minHeight = h;
                 if (h>maxHeight) maxHeight = h;
-	    }
+            }
         }
 
         if (minHeight==maxHeight)
@@ -2516,8 +2506,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     for(r=0;r<numRows;++r)
     {
-	for(c=0;c<numColumns;++c)
-	{
+        for(c=0;c<numColumns;++c)
+        {
             double X = orig_X + delta_X*(double)c;
             double Y = orig_Y + delta_Y*(double)r;
             double Z = orig_Z + grid->getHeight(c,r);
@@ -2535,7 +2525,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             }
             else
             {
-	        v[vi].set(X,Y,Z);
+                v[vi].set(X,Y,Z);
             }
 
 
@@ -2568,12 +2558,12 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             // note normal will need rotating.
             if (n.valid()) (*(n.get()))[vi] = grid->getNormal(c,r);
 
-	    t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
-	    t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
+            t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
+            t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
 
             ++vi;
             
-	}
+        }
     }
     
 
@@ -2619,8 +2609,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     int ei=0;
     for(r=0;r<numRows-1;++r)
     {
-	for(c=0;c<numColumns-1;++c)
-	{
+        for(c=0;c<numColumns-1;++c)
+        {
             unsigned short i00 = (r)*numColumns+c;
             unsigned short i10 = (r)*numColumns+c+1;
             unsigned short i01 = (r+1)*numColumns+c;
@@ -2631,26 +2621,26 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             if (diff_00_11<diff_01_10)
             {
                 // diagonal between 00 and 11
-	        drawElements[ei++] = i00;
-	        drawElements[ei++] = i10;
-	        drawElements[ei++] = i11;
+                drawElements[ei++] = i00;
+                drawElements[ei++] = i10;
+                drawElements[ei++] = i11;
 
-	        drawElements[ei++] = i00;
-	        drawElements[ei++] = i11;
-	        drawElements[ei++] = i01;
+                drawElements[ei++] = i00;
+                drawElements[ei++] = i11;
+                drawElements[ei++] = i01;
             }
             else
             {
                 // diagonal between 01 and 10
-	        drawElements[ei++] = i01;
-	        drawElements[ei++] = i00;
-	        drawElements[ei++] = i10;
+                drawElements[ei++] = i01;
+                drawElements[ei++] = i00;
+                drawElements[ei++] = i10;
 
-	        drawElements[ei++] = i01;
-	        drawElements[ei++] = i10;
-	        drawElements[ei++] = i11;
+                drawElements[ei++] = i01;
+                drawElements[ei++] = i10;
+                drawElements[ei++] = i11;
             }
-    	}
+            }
     }
 
 #if 1    
@@ -2688,8 +2678,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         for(c=0;c<numColumns-1;++c)
         {
             // assign indices to primitive set
-	    skirtDrawElements[ei++] = (r)*numColumns+c;
-	    skirtDrawElements[ei++] = vi;
+            skirtDrawElements[ei++] = (r)*numColumns+c;
+            skirtDrawElements[ei++] = vi;
             
             // mark these points as protected to prevent them from being removed during simplification
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
@@ -2709,8 +2699,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         for(r=0;r<numRows-1;++r)
         {
             // assign indices to primitive set
-	    skirtDrawElements[ei++] = (r)*numColumns+c;
-	    skirtDrawElements[ei++] = vi;
+            skirtDrawElements[ei++] = (r)*numColumns+c;
+            skirtDrawElements[ei++] = vi;
             
             // mark these points as protected to prevent them from being removed during simplification
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
@@ -2730,8 +2720,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         for(c=numColumns-1;c>0;--c)
         {
             // assign indices to primitive set
-	    skirtDrawElements[ei++] = (r)*numColumns+c;
-	    skirtDrawElements[ei++] = vi;
+            skirtDrawElements[ei++] = (r)*numColumns+c;
+            skirtDrawElements[ei++] = vi;
             
             // mark these points as protected to prevent them from being removed during simplification
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
@@ -2751,8 +2741,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         for(r=numRows-1;r>0;--r)
         {
             // assign indices to primitive set
-	    skirtDrawElements[ei++] = (r)*numColumns+c;
-	    skirtDrawElements[ei++] = vi;
+            skirtDrawElements[ei++] = (r)*numColumns+c;
+            skirtDrawElements[ei++] = vi;
             
             // mark these points as protected to prevent them from being removed during simplification
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);

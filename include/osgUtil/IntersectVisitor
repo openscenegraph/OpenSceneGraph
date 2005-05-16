@@ -107,9 +107,11 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         void addLineSegment(osg::LineSegment* seg);
 
         typedef std::vector<Hit> HitList;
-        typedef std::map<osg::LineSegment*,HitList > LineSegmentHitListMap;
-        HitList& getHitList(osg::LineSegment* seg) { return _segHitList[seg]; }
-        int getNumHits(osg::LineSegment* seg) { return _segHitList[seg].size(); }
+        typedef std::map<const osg::LineSegment*,HitList > LineSegmentHitListMap;
+
+        HitList& getHitList(const osg::LineSegment* seg) { return _segHitList[seg]; }
+
+        int getNumHits(const osg::LineSegment* seg) { return _segHitList[seg].size(); }
 
         bool hits();
 

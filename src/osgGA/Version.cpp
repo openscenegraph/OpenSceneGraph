@@ -2,7 +2,7 @@
 
 const char* osgGAGetVersion()
 {
-    return "0.9.8";
+    return "0.9.9";
 }
 
 

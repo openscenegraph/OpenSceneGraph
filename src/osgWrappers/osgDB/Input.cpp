@@ -19,24 +19,32 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/Registry>
 
-BEGIN_VALUE_REFLECTOR(osgDB::Input)
-	BaseType(osgDB::FieldReaderIterator);
-	Constructor0();
-	Method1(void, setOptions, IN, const osgDB::ReaderWriter::Options *, options);
-	Method0(const osgDB::ReaderWriter::Options *, getOptions);
-	Method1(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj);
-	Method1(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw);
-	Method0(osg::Object *, readObject);
-	Method0(osg::Image *, readImage);
-	Method0(osg::Drawable *, readDrawable);
-	Method0(osg::StateAttribute *, readStateAttribute);
-	Method0(osg::Uniform *, readUniform);
-	Method0(osg::Node *, readNode);
-	Method1(osg::Object *, readObject, IN, const std::string &, fileName);
-	Method1(osg::Image *, readImage, IN, const std::string &, fileName);
-	Method1(osg::Node *, readNode, IN, const std::string &, fileName);
-	Method1(osg::Object *, getObjectForUniqueID, IN, const std::string &, uniqueID);
-	Method2(void, regisiterUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj);
-	Property(const osgDB::ReaderWriter::Options *, Options);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgDB::Input)
+	I_BaseType(osgDB::FieldReaderIterator);
+	I_Constructor0();
+	I_Method1(void, setOptions, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method0(const osgDB::ReaderWriter::Options *, getOptions);
+	I_Method1(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj);
+	I_Method1(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw);
+	I_Method0(osg::Object *, readObject);
+	I_Method0(osg::Image *, readImage);
+	I_Method0(osg::Drawable *, readDrawable);
+	I_Method0(osg::StateAttribute *, readStateAttribute);
+	I_Method0(osg::Uniform *, readUniform);
+	I_Method0(osg::Node *, readNode);
+	I_Method1(osg::Object *, readObject, IN, const std::string &, fileName);
+	I_Method1(osg::Image *, readImage, IN, const std::string &, fileName);
+	I_Method1(osg::Node *, readNode, IN, const std::string &, fileName);
+	I_Method1(osg::Object *, getObjectForUniqueID, IN, const std::string &, uniqueID);
+	I_Method2(void, regisiterUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj);
+	I_Property(const osgDB::ReaderWriter::Options *, Options);
 END_REFLECTOR
 

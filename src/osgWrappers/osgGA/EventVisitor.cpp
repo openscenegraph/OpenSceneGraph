@@ -23,44 +23,52 @@
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventVisitor::EventList);
 
-BEGIN_VALUE_REFLECTOR(osgGA::EventVisitor)
-	BaseType(osg::NodeVisitor);
-	Constructor0();
-	Method1(void, setActionAdapter, IN, osgGA::GUIActionAdapter *, actionAdapter);
-	Method0(osgGA::GUIActionAdapter *, getActionAdapter);
-	Method0(const osgGA::GUIActionAdapter *, getActionAdapter);
-	Method1(void, setEventList, IN, const osgGA::EventVisitor::EventList &, events);
-	Method0(osgGA::EventVisitor::EventList &, getEventList);
-	Method0(const osgGA::EventVisitor::EventList &, getEventList);
-	Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
-	Method1(void, removeEvent, IN, osgGA::GUIEventAdapter *, event);
-	Method0(void, reset);
-	Method1(void, apply, IN, osg::Node &, node);
-	Method1(void, apply, IN, osg::Geode &, node);
-	Method1(void, apply, IN, osg::Billboard &, node);
-	Method1(void, apply, IN, osg::LightSource &, node);
-	Method1(void, apply, IN, osg::Group &, node);
-	Method1(void, apply, IN, osg::Transform &, node);
-	Method1(void, apply, IN, osg::Projection &, node);
-	Method1(void, apply, IN, osg::Switch &, node);
-	Method1(void, apply, IN, osg::LOD &, node);
-	Method1(void, apply, IN, osg::OccluderNode &, node);
-	Property(osgGA::GUIActionAdapter *, ActionAdapter);
-	Property(const osgGA::EventVisitor::EventList &, EventList);
+BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
+	I_BaseType(osg::NodeVisitor);
+	I_Constructor0();
+	I_Method1(void, setActionAdapter, IN, osgGA::GUIActionAdapter *, actionAdapter);
+	I_Method0(osgGA::GUIActionAdapter *, getActionAdapter);
+	I_Method0(const osgGA::GUIActionAdapter *, getActionAdapter);
+	I_Method1(void, setEventList, IN, const osgGA::EventVisitor::EventList &, events);
+	I_Method0(osgGA::EventVisitor::EventList &, getEventList);
+	I_Method0(const osgGA::EventVisitor::EventList &, getEventList);
+	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
+	I_Method1(void, removeEvent, IN, osgGA::GUIEventAdapter *, event);
+	I_Method0(void, reset);
+	I_Method1(void, apply, IN, osg::Node &, node);
+	I_Method1(void, apply, IN, osg::Geode &, node);
+	I_Method1(void, apply, IN, osg::Billboard &, node);
+	I_Method1(void, apply, IN, osg::LightSource &, node);
+	I_Method1(void, apply, IN, osg::Group &, node);
+	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::Projection &, node);
+	I_Method1(void, apply, IN, osg::Switch &, node);
+	I_Method1(void, apply, IN, osg::LOD &, node);
+	I_Method1(void, apply, IN, osg::OccluderNode &, node);
+	I_Property(osgGA::GUIActionAdapter *, ActionAdapter);
+	I_Property(const osgGA::EventVisitor::EventList &, EventList);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventAdapter >)
-	Constructor0();
-	Constructor1(IN, osgGA::GUIEventAdapter *, t);
-	Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventAdapter > &, rp);
-	Method0(bool, valid);
-	Method0(osgGA::GUIEventAdapter *, get);
-	Method0(const osgGA::GUIEventAdapter *, get);
-	Method0(osgGA::GUIEventAdapter *, take);
-	Method0(osgGA::GUIEventAdapter *, release);
-	ReadOnlyProperty(osgGA::GUIEventAdapter *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgGA::GUIEventAdapter *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventAdapter > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgGA::GUIEventAdapter *, get);
+	I_Method0(const osgGA::GUIEventAdapter *, get);
+	I_Method0(osgGA::GUIEventAdapter *, take);
+	I_Method0(osgGA::GUIEventAdapter *, release);
+	I_ReadOnlyProperty(osgGA::GUIEventAdapter *, );
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >);

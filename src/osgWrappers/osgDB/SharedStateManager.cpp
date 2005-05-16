@@ -13,22 +13,30 @@
 #include <osg/Node>
 #include <osgDB/SharedStateManager>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
-	EnumLabel(osgDB::SharedStateManager::SHARE_NONE);
-	EnumLabel(osgDB::SharedStateManager::SHARE_TEXTURES);
-	EnumLabel(osgDB::SharedStateManager::SHARE_STATESETS);
-	EnumLabel(osgDB::SharedStateManager::SHARE_ALL);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_NONE);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_TEXTURES);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_STATESETS);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_ALL);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgDB::SharedStateManager)
-	BaseType(osg::NodeVisitor);
-	Constructor0();
-	Method1(void, setShareMode, IN, unsigned int, mode);
-	Method0(unsigned int, getShareMode);
-	Method0(void, prune);
-	MethodWithDefaults2(void, share, IN, osg::Node *, node, , IN, OpenThreads::Mutex *, mt, 0);
-	Method1(void, apply, IN, osg::Node &, node);
-	Method1(void, apply, IN, osg::Geode &, geode);
-	Property(unsigned int, ShareMode);
+BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
+	I_BaseType(osg::NodeVisitor);
+	I_Constructor0();
+	I_Method1(void, setShareMode, IN, unsigned int, mode);
+	I_Method0(unsigned int, getShareMode);
+	I_Method0(void, prune);
+	I_MethodWithDefaults2(void, share, IN, osg::Node *, node, , IN, OpenThreads::Mutex *, mt, 0);
+	I_Method1(void, apply, IN, osg::Node &, node);
+	I_Method1(void, apply, IN, osg::Geode &, geode);
+	I_Property(unsigned int, ShareMode);
 END_REFLECTOR
 

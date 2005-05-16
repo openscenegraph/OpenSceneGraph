@@ -12,9 +12,17 @@
 #include <osg/CopyOp>
 #include <osgUtil/ReflectionMapGenerator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
-	BaseType(osgUtil::CubeMapGenerator);
-	ConstructorWithDefaults1(IN, int, texture_size, 64);
-	ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults1(IN, int, texture_size, 64);
+	I_ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 END_REFLECTOR
 

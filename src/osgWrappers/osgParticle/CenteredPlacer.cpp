@@ -14,16 +14,24 @@
 #include <osg/Vec3>
 #include <osgParticle/CenteredPlacer>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
-	BaseType(osgParticle::Placer);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::CenteredPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const osg::Vec3 &, getCenter);
-	Method1(void, setCenter, IN, const osg::Vec3 &, v);
-	Method3(void, setCenter, IN, float, x, IN, float, y, IN, float, z);
-	Property(const osg::Vec3 &, Center);
+	I_BaseType(osgParticle::Placer);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::CenteredPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, v);
+	I_Method3(void, setCenter, IN, float, x, IN, float, y, IN, float, z);
+	I_Property(const osg::Vec3 &, Center);
 END_REFLECTOR
 

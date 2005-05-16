@@ -23,47 +23,55 @@
 #include <osgUtil/RenderStageLighting>
 #include <osgUtil/Statistics>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
-	BaseType(osgUtil::RenderBin);
-	ConstructorWithDefaults1(IN, osgUtil::RenderBin::SortMode, mode, osgUtil::RenderBin::SORT_BY_STATE);
-	ConstructorWithDefaults2(IN, const osgUtil::RenderStage &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(void, reset);
-	Method1(void, setViewport, IN, osg::Viewport *, viewport);
-	Method0(const osg::Viewport *, getViewport);
-	Method0(osg::Viewport *, getViewport);
-	Method1(void, setClearMask, IN, GLbitfield, mask);
-	Method0(GLbitfield, getClearMask);
-	Method1(void, setColorMask, IN, osg::ColorMask *, cm);
-	Method0(osg::ColorMask *, getColorMask);
-	Method0(const osg::ColorMask *, getColorMask);
-	Method1(void, setClearColor, IN, const osg::Vec4 &, color);
-	Method0(const osg::Vec4 &, getClearColor);
-	Method1(void, setClearAccum, IN, const osg::Vec4 &, color);
-	Method0(const osg::Vec4 &, getClearAccum);
-	Method1(void, setClearDepth, IN, double, depth);
-	Method0(double, getClearDepth);
-	Method1(void, setClearStencil, IN, int, stencil);
-	Method0(int, getClearStencil);
-	Method1(void, setRenderStageLighting, IN, osgUtil::RenderStageLighting *, rsl);
-	Method0(osgUtil::RenderStageLighting *, getRenderStageLighting);
-	Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	Method2(void, drawPreRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	Method2(void, drawImplementation, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs);
-	Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
-	Property(const osg::Vec4 &, ClearAccum);
-	Property(const osg::Vec4 &, ClearColor);
-	Property(double, ClearDepth);
-	Property(GLbitfield, ClearMask);
-	Property(int, ClearStencil);
-	Property(osg::ColorMask *, ColorMask);
-	Property(osgUtil::RenderStageLighting *, RenderStageLighting);
-	Property(osg::Viewport *, Viewport);
+	I_BaseType(osgUtil::RenderBin);
+	I_ConstructorWithDefaults1(IN, osgUtil::RenderBin::SortMode, mode, osgUtil::RenderBin::SORT_BY_STATE);
+	I_ConstructorWithDefaults2(IN, const osgUtil::RenderStage &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(void, reset);
+	I_Method1(void, setViewport, IN, osg::Viewport *, viewport);
+	I_Method0(const osg::Viewport *, getViewport);
+	I_Method0(osg::Viewport *, getViewport);
+	I_Method1(void, setClearMask, IN, GLbitfield, mask);
+	I_Method0(GLbitfield, getClearMask);
+	I_Method1(void, setColorMask, IN, osg::ColorMask *, cm);
+	I_Method0(osg::ColorMask *, getColorMask);
+	I_Method0(const osg::ColorMask *, getColorMask);
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getClearColor);
+	I_Method1(void, setClearAccum, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getClearAccum);
+	I_Method1(void, setClearDepth, IN, double, depth);
+	I_Method0(double, getClearDepth);
+	I_Method1(void, setClearStencil, IN, int, stencil);
+	I_Method0(int, getClearStencil);
+	I_Method1(void, setRenderStageLighting, IN, osgUtil::RenderStageLighting *, rsl);
+	I_Method0(osgUtil::RenderStageLighting *, getRenderStageLighting);
+	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
+	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
+	I_Method2(void, drawPreRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, drawImplementation, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs);
+	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
+	I_Property(const osg::Vec4 &, ClearAccum);
+	I_Property(const osg::Vec4 &, ClearColor);
+	I_Property(double, ClearDepth);
+	I_Property(GLbitfield, ClearMask);
+	I_Property(int, ClearStencil);
+	I_Property(osg::ColorMask *, ColorMask);
+	I_Property(osgUtil::RenderStageLighting *, RenderStageLighting);
+	I_Property(osg::Viewport *, Viewport);
 END_REFLECTOR
 

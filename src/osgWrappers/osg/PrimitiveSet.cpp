@@ -17,210 +17,218 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrayLengths)
-	BaseType(osg::PrimitiveSet);
-	ConstructorWithDefaults1(IN, GLenum, mode, 0);
-	ConstructorWithDefaults2(IN, const osg::DrawArrayLengths &, dal, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Constructor4(IN, GLenum, mode, IN, GLint, first, IN, unsigned int, no, IN, GLsizei *, ptr);
-	Constructor3(IN, GLenum, mode, IN, GLint, first, IN, unsigned int, no);
-	Constructor2(IN, GLenum, mode, IN, GLint, first);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setFirst, IN, GLint, first);
-	Method0(GLint, getFirst);
-	Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
-	Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
-	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
-	Method0(unsigned int, getNumIndices);
-	Method1(unsigned int, index, IN, unsigned int, pos);
-	Method1(void, offsetIndices, IN, int, offset);
-	Method0(unsigned int, getNumPrimitives);
-	Property(GLint, First);
+	I_BaseType(osg::PrimitiveSet);
+	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
+	I_ConstructorWithDefaults2(IN, const osg::DrawArrayLengths &, dal, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor4(IN, GLenum, mode, IN, GLint, first, IN, unsigned int, no, IN, GLsizei *, ptr);
+	I_Constructor3(IN, GLenum, mode, IN, GLint, first, IN, unsigned int, no);
+	I_Constructor2(IN, GLenum, mode, IN, GLint, first);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setFirst, IN, GLint, first);
+	I_Method0(GLint, getFirst);
+	I_Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
+	I_Method0(unsigned int, getNumIndices);
+	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_Method1(void, offsetIndices, IN, int, offset);
+	I_Method0(unsigned int, getNumPrimitives);
+	I_Property(GLint, First);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
-	BaseType(osg::PrimitiveSet);
-	ConstructorWithDefaults1(IN, GLenum, mode, 0);
-	Constructor3(IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
-	ConstructorWithDefaults2(IN, const osg::DrawArrays &, da, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method3(void, set, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
-	Method1(void, setFirst, IN, GLint, first);
-	Method0(GLint, getFirst);
-	Method1(void, setCount, IN, GLsizei, count);
-	Method0(GLsizei, getCount);
-	Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
-	Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
-	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
-	Method0(unsigned int, getNumIndices);
-	Method1(unsigned int, index, IN, unsigned int, pos);
-	Method1(void, offsetIndices, IN, int, offset);
-	Property(GLsizei, Count);
-	Property(GLint, First);
+	I_BaseType(osg::PrimitiveSet);
+	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
+	I_Constructor3(IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
+	I_ConstructorWithDefaults2(IN, const osg::DrawArrays &, da, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method3(void, set, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
+	I_Method1(void, setFirst, IN, GLint, first);
+	I_Method0(GLint, getFirst);
+	I_Method1(void, setCount, IN, GLsizei, count);
+	I_Method0(GLsizei, getCount);
+	I_Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
+	I_Method0(unsigned int, getNumIndices);
+	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_Method1(void, offsetIndices, IN, int, offset);
+	I_Property(GLsizei, Count);
+	I_Property(GLint, First);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
-	BaseType(osg::PrimitiveSet);
-	ConstructorWithDefaults1(IN, GLenum, mode, 0);
-	ConstructorWithDefaults2(IN, const osg::DrawElementsUByte &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLubyte *, ptr);
-	Constructor2(IN, GLenum, mode, IN, unsigned int, no);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const GLvoid *, getDataPointer);
-	Method0(unsigned int, getTotalDataSize);
-	Method0(bool, supportsBufferObject);
-	Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
-	Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
-	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
-	Method0(unsigned int, getNumIndices);
-	Method1(unsigned int, index, IN, unsigned int, pos);
-	Method1(void, offsetIndices, IN, int, offset);
-	ReadOnlyProperty(const GLvoid *, DataPointer);
-	ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_BaseType(osg::PrimitiveSet);
+	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
+	I_ConstructorWithDefaults2(IN, const osg::DrawElementsUByte &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLubyte *, ptr);
+	I_Constructor2(IN, GLenum, mode, IN, unsigned int, no);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const GLvoid *, getDataPointer);
+	I_Method0(unsigned int, getTotalDataSize);
+	I_Method0(bool, supportsBufferObject);
+	I_Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
+	I_Method0(unsigned int, getNumIndices);
+	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_Method1(void, offsetIndices, IN, int, offset);
+	I_ReadOnlyProperty(const GLvoid *, DataPointer);
+	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
-	BaseType(osg::PrimitiveSet);
-	ConstructorWithDefaults1(IN, GLenum, mode, 0);
-	ConstructorWithDefaults2(IN, const osg::DrawElementsUInt &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLuint *, ptr);
-	Constructor2(IN, GLenum, mode, IN, unsigned int, no);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const GLvoid *, getDataPointer);
-	Method0(unsigned int, getTotalDataSize);
-	Method0(bool, supportsBufferObject);
-	Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
-	Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
-	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
-	Method0(unsigned int, getNumIndices);
-	Method1(unsigned int, index, IN, unsigned int, pos);
-	Method1(void, offsetIndices, IN, int, offset);
-	ReadOnlyProperty(const GLvoid *, DataPointer);
-	ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_BaseType(osg::PrimitiveSet);
+	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
+	I_ConstructorWithDefaults2(IN, const osg::DrawElementsUInt &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLuint *, ptr);
+	I_Constructor2(IN, GLenum, mode, IN, unsigned int, no);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const GLvoid *, getDataPointer);
+	I_Method0(unsigned int, getTotalDataSize);
+	I_Method0(bool, supportsBufferObject);
+	I_Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
+	I_Method0(unsigned int, getNumIndices);
+	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_Method1(void, offsetIndices, IN, int, offset);
+	I_ReadOnlyProperty(const GLvoid *, DataPointer);
+	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
-	BaseType(osg::PrimitiveSet);
-	ConstructorWithDefaults1(IN, GLenum, mode, 0);
-	ConstructorWithDefaults2(IN, const osg::DrawElementsUShort &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLushort *, ptr);
-	Constructor2(IN, GLenum, mode, IN, unsigned int, no);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const GLvoid *, getDataPointer);
-	Method0(unsigned int, getTotalDataSize);
-	Method0(bool, supportsBufferObject);
-	Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
-	Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
-	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
-	Method0(unsigned int, getNumIndices);
-	Method1(unsigned int, index, IN, unsigned int, pos);
-	Method1(void, offsetIndices, IN, int, offset);
-	ReadOnlyProperty(const GLvoid *, DataPointer);
-	ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_BaseType(osg::PrimitiveSet);
+	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
+	I_ConstructorWithDefaults2(IN, const osg::DrawElementsUShort &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLushort *, ptr);
+	I_Constructor2(IN, GLenum, mode, IN, unsigned int, no);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const GLvoid *, getDataPointer);
+	I_Method0(unsigned int, getTotalDataSize);
+	I_Method0(bool, supportsBufferObject);
+	I_Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
+	I_Method0(unsigned int, getNumIndices);
+	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_Method1(void, offsetIndices, IN, int, offset);
+	I_ReadOnlyProperty(const GLvoid *, DataPointer);
+	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveFunctor)
-	Constructor0();
-	Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, vertices);
-	Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, vertices);
-	Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, vertices);
-	Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
-	Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, indices);
-	Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, indices);
-	Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, indices);
-	Method1(void, begin, IN, GLenum, mode);
-	Method1(void, vertex, IN, const osg::Vec2 &, vert);
-	Method1(void, vertex, IN, const osg::Vec3 &, vert);
-	Method1(void, vertex, IN, const osg::Vec4 &, vert);
-	Method2(void, vertex, IN, float, x, IN, float, y);
-	Method3(void, vertex, IN, float, x, IN, float, y, IN, float, z);
-	Method4(void, vertex, IN, float, x, IN, float, y, IN, float, z, IN, float, w);
-	Method0(void, end);
+	I_Constructor0();
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, vertices);
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, vertices);
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, vertices);
+	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, indices);
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, indices);
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, indices);
+	I_Method1(void, begin, IN, GLenum, mode);
+	I_Method1(void, vertex, IN, const osg::Vec2 &, vert);
+	I_Method1(void, vertex, IN, const osg::Vec3 &, vert);
+	I_Method1(void, vertex, IN, const osg::Vec4 &, vert);
+	I_Method2(void, vertex, IN, float, x, IN, float, y);
+	I_Method3(void, vertex, IN, float, x, IN, float, y, IN, float, z);
+	I_Method4(void, vertex, IN, float, x, IN, float, y, IN, float, z, IN, float, w);
+	I_Method0(void, end);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveIndexFunctor)
-	Constructor0();
-	Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, vertices);
-	Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, vertices);
-	Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, vertices);
-	Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
-	Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, indices);
-	Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, indices);
-	Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, indices);
-	Method1(void, begin, IN, GLenum, mode);
-	Method1(void, vertex, IN, unsigned int, pos);
-	Method0(void, end);
+	I_Constructor0();
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, vertices);
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, vertices);
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, vertices);
+	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count);
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, indices);
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, indices);
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, indices);
+	I_Method1(void, begin, IN, GLenum, mode);
+	I_Method1(void, vertex, IN, unsigned int, pos);
+	I_Method0(void, end);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Type)
-	EnumLabel(osg::PrimitiveSet::PrimitiveType);
-	EnumLabel(osg::PrimitiveSet::DrawArraysPrimitiveType);
-	EnumLabel(osg::PrimitiveSet::DrawArrayLengthsPrimitiveType);
-	EnumLabel(osg::PrimitiveSet::DrawElementsUBytePrimitiveType);
-	EnumLabel(osg::PrimitiveSet::DrawElementsUShortPrimitiveType);
-	EnumLabel(osg::PrimitiveSet::DrawElementsUIntPrimitiveType);
+	I_EnumLabel(osg::PrimitiveSet::PrimitiveType);
+	I_EnumLabel(osg::PrimitiveSet::DrawArraysPrimitiveType);
+	I_EnumLabel(osg::PrimitiveSet::DrawArrayLengthsPrimitiveType);
+	I_EnumLabel(osg::PrimitiveSet::DrawElementsUBytePrimitiveType);
+	I_EnumLabel(osg::PrimitiveSet::DrawElementsUShortPrimitiveType);
+	I_EnumLabel(osg::PrimitiveSet::DrawElementsUIntPrimitiveType);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Mode)
-	EnumLabel(osg::PrimitiveSet::POINTS);
-	EnumLabel(osg::PrimitiveSet::LINES);
-	EnumLabel(osg::PrimitiveSet::LINE_STRIP);
-	EnumLabel(osg::PrimitiveSet::LINE_LOOP);
-	EnumLabel(osg::PrimitiveSet::TRIANGLES);
-	EnumLabel(osg::PrimitiveSet::TRIANGLE_STRIP);
-	EnumLabel(osg::PrimitiveSet::TRIANGLE_FAN);
-	EnumLabel(osg::PrimitiveSet::QUADS);
-	EnumLabel(osg::PrimitiveSet::QUAD_STRIP);
-	EnumLabel(osg::PrimitiveSet::POLYGON);
+	I_EnumLabel(osg::PrimitiveSet::POINTS);
+	I_EnumLabel(osg::PrimitiveSet::LINES);
+	I_EnumLabel(osg::PrimitiveSet::LINE_STRIP);
+	I_EnumLabel(osg::PrimitiveSet::LINE_LOOP);
+	I_EnumLabel(osg::PrimitiveSet::TRIANGLES);
+	I_EnumLabel(osg::PrimitiveSet::TRIANGLE_STRIP);
+	I_EnumLabel(osg::PrimitiveSet::TRIANGLE_FAN);
+	I_EnumLabel(osg::PrimitiveSet::QUADS);
+	I_EnumLabel(osg::PrimitiveSet::QUAD_STRIP);
+	I_EnumLabel(osg::PrimitiveSet::POLYGON);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
-	BaseType(osg::Object);
-	ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0);
-	ConstructorWithDefaults2(IN, const osg::PrimitiveSet &, prim, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::PrimitiveSet::Type, getType);
-	Method0(const GLvoid *, getDataPointer);
-	Method0(unsigned int, getTotalDataSize);
-	Method0(bool, supportsBufferObject);
-	Method1(void, setMode, IN, GLenum, mode);
-	Method0(GLenum, getMode);
-	Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
-	Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
-	Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
-	Method1(unsigned int, index, IN, unsigned int, pos);
-	Method0(unsigned int, getNumIndices);
-	Method1(void, offsetIndices, IN, int, offset);
-	Method0(unsigned int, getNumPrimitives);
-	Method0(void, dirty);
-	Method1(void, setModifiedCount, IN, unsigned int, value);
-	Method0(unsigned int, getModifiedCount);
-	ReadOnlyProperty(const GLvoid *, DataPointer);
-	Property(GLenum, Mode);
-	Property(unsigned int, ModifiedCount);
-	ReadOnlyProperty(unsigned int, TotalDataSize);
-	ReadOnlyProperty(osg::PrimitiveSet::Type, Type);
+	I_BaseType(osg::Object);
+	I_ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0);
+	I_ConstructorWithDefaults2(IN, const osg::PrimitiveSet &, prim, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::PrimitiveSet::Type, getType);
+	I_Method0(const GLvoid *, getDataPointer);
+	I_Method0(unsigned int, getTotalDataSize);
+	I_Method0(bool, supportsBufferObject);
+	I_Method1(void, setMode, IN, GLenum, mode);
+	I_Method0(GLenum, getMode);
+	I_Method2(void, draw, IN, osg::State &, state, IN, bool, useVertexBufferObjects);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, functor);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, functor);
+	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_Method0(unsigned int, getNumIndices);
+	I_Method1(void, offsetIndices, IN, int, offset);
+	I_Method0(unsigned int, getNumPrimitives);
+	I_Method0(void, dirty);
+	I_Method1(void, setModifiedCount, IN, unsigned int, value);
+	I_Method0(unsigned int, getModifiedCount);
+	I_ReadOnlyProperty(const GLvoid *, DataPointer);
+	I_Property(GLenum, Mode);
+	I_Property(unsigned int, ModifiedCount);
+	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_ReadOnlyProperty(osg::PrimitiveSet::Type, Type);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< GLsizei >, osg::VectorSizei);

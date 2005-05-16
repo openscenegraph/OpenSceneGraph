@@ -19,57 +19,65 @@
 #include <osgParticle/ParticleSystem>
 #include <osgParticle/Program>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::ParticleEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, setUseLocalParticleSystem, IN, bool, local);
-	Method0(bool, getUseLocalParticleSystem);
-	Method1(void, setTextureFileName, IN, const std::string &, filename);
-	Method0(const std::string &, getTextureFileName);
-	Method1(void, setDefaultParticleTemplate, IN, const osgParticle::Particle &, p);
-	Method0(const osgParticle::Particle &, getDefaultParticleTemplate);
-	Method1(void, setPosition, IN, const osg::Vec3 &, position);
-	Method0(const osg::Vec3 &, getPosition);
-	Method1(void, setScale, IN, float, scale);
-	Method0(float, getScale);
-	Method1(void, setIntensity, IN, float, intensity);
-	Method0(float, getIntensity);
-	Method1(void, setStartTime, IN, double, startTime);
-	Method0(double, getStartTime);
-	Method1(void, setEmitterDuration, IN, double, duration);
-	Method0(double, getEmitterDuration);
-	Method1(void, setParticleDuration, IN, double, duration);
-	Method0(double, getParticleDuration);
-	Method1(void, setWind, IN, const osg::Vec3 &, wind);
-	Method0(const osg::Vec3 &, getWind);
-	Method0(bool, areAllParticlesDead);
-	Method0(osgParticle::Emitter *, getEmitter);
-	Method0(const osgParticle::Emitter *, getEmitter);
-	Method0(osgParticle::Program *, getProgram);
-	Method0(const osgParticle::Program *, getProgram);
-	Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps);
-	Method0(osgParticle::ParticleSystem *, getParticleSystem);
-	Method0(const osgParticle::ParticleSystem *, getParticleSystem);
-	Method0(void, setDefaults);
-	Method0(void, setUpEmitterAndProgram);
-	Method0(void, buildEffect);
-	Property(const osgParticle::Particle &, DefaultParticleTemplate);
-	ReadOnlyProperty(osgParticle::Emitter *, Emitter);
-	Property(double, EmitterDuration);
-	Property(float, Intensity);
-	Property(double, ParticleDuration);
-	Property(osgParticle::ParticleSystem *, ParticleSystem);
-	Property(const osg::Vec3 &, Position);
-	ReadOnlyProperty(osgParticle::Program *, Program);
-	Property(float, Scale);
-	Property(double, StartTime);
-	Property(const std::string &, TextureFileName);
-	Property(bool, UseLocalParticleSystem);
-	Property(const osg::Vec3 &, Wind);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::ParticleEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setUseLocalParticleSystem, IN, bool, local);
+	I_Method0(bool, getUseLocalParticleSystem);
+	I_Method1(void, setTextureFileName, IN, const std::string &, filename);
+	I_Method0(const std::string &, getTextureFileName);
+	I_Method1(void, setDefaultParticleTemplate, IN, const osgParticle::Particle &, p);
+	I_Method0(const osgParticle::Particle &, getDefaultParticleTemplate);
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, position);
+	I_Method0(const osg::Vec3 &, getPosition);
+	I_Method1(void, setScale, IN, float, scale);
+	I_Method0(float, getScale);
+	I_Method1(void, setIntensity, IN, float, intensity);
+	I_Method0(float, getIntensity);
+	I_Method1(void, setStartTime, IN, double, startTime);
+	I_Method0(double, getStartTime);
+	I_Method1(void, setEmitterDuration, IN, double, duration);
+	I_Method0(double, getEmitterDuration);
+	I_Method1(void, setParticleDuration, IN, double, duration);
+	I_Method0(double, getParticleDuration);
+	I_Method1(void, setWind, IN, const osg::Vec3 &, wind);
+	I_Method0(const osg::Vec3 &, getWind);
+	I_Method0(bool, areAllParticlesDead);
+	I_Method0(osgParticle::Emitter *, getEmitter);
+	I_Method0(const osgParticle::Emitter *, getEmitter);
+	I_Method0(osgParticle::Program *, getProgram);
+	I_Method0(const osgParticle::Program *, getProgram);
+	I_Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps);
+	I_Method0(osgParticle::ParticleSystem *, getParticleSystem);
+	I_Method0(const osgParticle::ParticleSystem *, getParticleSystem);
+	I_Method0(void, setDefaults);
+	I_Method0(void, setUpEmitterAndProgram);
+	I_Method0(void, buildEffect);
+	I_Property(const osgParticle::Particle &, DefaultParticleTemplate);
+	I_ReadOnlyProperty(osgParticle::Emitter *, Emitter);
+	I_Property(double, EmitterDuration);
+	I_Property(float, Intensity);
+	I_Property(double, ParticleDuration);
+	I_Property(osgParticle::ParticleSystem *, ParticleSystem);
+	I_Property(const osg::Vec3 &, Position);
+	I_ReadOnlyProperty(osgParticle::Program *, Program);
+	I_Property(float, Scale);
+	I_Property(double, StartTime);
+	I_Property(const std::string &, TextureFileName);
+	I_Property(bool, UseLocalParticleSystem);
+	I_Property(const osg::Vec3 &, Wind);
 END_REFLECTOR
 

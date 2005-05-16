@@ -17,43 +17,51 @@
 #include <osg/ProxyNode>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< std::string >, osg::ProxyNode::FileNameList);
 
 BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
-	EnumLabel(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
-	EnumLabel(osg::ProxyNode::USER_DEFINED_CENTER);
+	I_EnumLabel(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+	I_EnumLabel(osg::ProxyNode::USER_DEFINED_CENTER);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::ProxyNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	Method1(bool, addChild, IN, osg::Node *, child);
-	Method2(bool, addChild, IN, osg::Node *, child, IN, const std::string &, filename);
-	Method1(bool, removeChild, IN, osg::Node *, child);
-	Method1(void, setDatabasePath, IN, const std::string &, path);
-	Method0(const std::string &, getDatabasePath);
-	Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename);
-	Method1(const std::string &, getFileName, IN, unsigned int, childNo);
-	Method0(unsigned int, getNumFileNames);
-	Method1(void, setCenterMode, IN, osg::ProxyNode::CenterMode, mode);
-	Method0(osg::ProxyNode::CenterMode, getCenterMode);
-	Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	Method0(const osg::Vec3 &, getCenter);
-	Method1(void, setRadius, IN, float, radius);
-	Method0(float, getRadius);
-	Method0(osg::BoundingSphere, computeBound);
-	Property(const osg::Vec3 &, Center);
-	Property(osg::ProxyNode::CenterMode, CenterMode);
-	Property(const std::string &, DatabasePath);
-	ArrayProperty_G(const std::string &, FileName, FileNames, unsigned int, void);
-	Property(float, Radius);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::ProxyNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(bool, addChild, IN, osg::Node *, child);
+	I_Method2(bool, addChild, IN, osg::Node *, child, IN, const std::string &, filename);
+	I_Method1(bool, removeChild, IN, osg::Node *, child);
+	I_Method1(void, setDatabasePath, IN, const std::string &, path);
+	I_Method0(const std::string &, getDatabasePath);
+	I_Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename);
+	I_Method1(const std::string &, getFileName, IN, unsigned int, childNo);
+	I_Method0(unsigned int, getNumFileNames);
+	I_Method1(void, setCenterMode, IN, osg::ProxyNode::CenterMode, mode);
+	I_Method0(osg::ProxyNode::CenterMode, getCenterMode);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setRadius, IN, float, radius);
+	I_Method0(float, getRadius);
+	I_Method0(osg::BoundingSphere, computeBound);
+	I_Property(const osg::Vec3 &, Center);
+	I_Property(osg::ProxyNode::CenterMode, CenterMode);
+	I_Property(const std::string &, DatabasePath);
+	I_ArrayProperty_G(const std::string &, FileName, FileNames, unsigned int, void);
+	I_Property(float, Radius);
 END_REFLECTOR
 

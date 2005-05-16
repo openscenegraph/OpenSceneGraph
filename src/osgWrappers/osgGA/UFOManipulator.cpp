@@ -17,32 +17,36 @@
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/UFOManipulator>
 
-BEGIN_VALUE_REFLECTOR(UFOManipulator)
-	Constructor0();
-END_REFLECTOR
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
 
-BEGIN_VALUE_REFLECTOR(osgGA::UFOManipulator)
-	BaseType(osgGA::MatrixManipulator);
-	Constructor0();
-	Method0(const char *, className);
-	Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, invmat);
-	Method0(osg::Matrixd, getMatrix);
-	Method0(osg::Matrixd, getInverseMatrix);
-	Method1(void, setNode, IN, osg::Node *, x);
-	Method0(const osg::Node *, getNode);
-	Method0(osg::Node *, getNode);
-	Method0(void, computeHomePosition);
-	Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
-	Method1(void, home, IN, double, x);
-	Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	Method3(void, getCurrentPositionAsLookAt, IN, osg::Vec3 &, eye, IN, osg::Vec3 &, center, IN, osg::Vec3 &, up);
-	WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	ReadOnlyProperty(osg::Matrixd, Matrix);
-	Property(osg::Node *, Node);
+BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
+	I_BaseType(osgGA::MatrixManipulator);
+	I_Constructor0();
+	I_Method0(const char *, className);
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, invmat);
+	I_Method0(osg::Matrixd, getMatrix);
+	I_Method0(osg::Matrixd, getInverseMatrix);
+	I_Method1(void, setNode, IN, osg::Node *, x);
+	I_Method0(const osg::Node *, getNode);
+	I_Method0(osg::Node *, getNode);
+	I_Method0(void, computeHomePosition);
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
+	I_Method1(void, home, IN, double, x);
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Method3(void, getCurrentPositionAsLookAt, IN, osg::Vec3 &, eye, IN, osg::Vec3 &, center, IN, osg::Vec3 &, up);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
+	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
+	I_ReadOnlyProperty(osg::Matrixd, Matrix);
+	I_Property(osg::Node *, Node);
 END_REFLECTOR
 

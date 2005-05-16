@@ -14,59 +14,67 @@
 #include <osgUtil/RenderGraph>
 #include <osgUtil/RenderLeaf>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osgUtil::LeafDepthSortFunctor)
-	Constructor0();
+	I_Constructor0();
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::RenderGraph > >, osgUtil::RenderGraph::ChildList);
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >, osgUtil::RenderGraph::LeafList);
 
-BEGIN_VALUE_REFLECTOR(osgUtil::RenderGraph)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Constructor2(IN, osgUtil::RenderGraph *, parent, IN, const osg::StateSet *, stateset);
-	Method0(osgUtil::RenderGraph *, cloneType);
-	Method1(void, setUserData, IN, osg::Referenced *, obj);
-	Method0(osg::Referenced *, getUserData);
-	Method0(const osg::Referenced *, getUserData);
-	Method0(bool, empty);
-	Method0(bool, leaves_empty);
-	Method0(float, getAverageDistance);
-	Method0(float, getMinimumDistance);
-	Method0(void, sortFrontToBack);
-	Method0(void, reset);
-	Method0(void, clean);
-	Method0(void, prune);
-	Method1(osgUtil::RenderGraph *, find_or_insert, IN, const osg::StateSet *, stateset);
-	Method1(void, addLeaf, IN, osgUtil::RenderLeaf *, leaf);
-	ReadOnlyProperty(float, AverageDistance);
-	ReadOnlyProperty(float, MinimumDistance);
-	Property(osg::Referenced *, UserData);
+BEGIN_OBJECT_REFLECTOR(osgUtil::RenderGraph)
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Constructor2(IN, osgUtil::RenderGraph *, parent, IN, const osg::StateSet *, stateset);
+	I_Method0(osgUtil::RenderGraph *, cloneType);
+	I_Method1(void, setUserData, IN, osg::Referenced *, obj);
+	I_Method0(osg::Referenced *, getUserData);
+	I_Method0(const osg::Referenced *, getUserData);
+	I_Method0(bool, empty);
+	I_Method0(bool, leaves_empty);
+	I_Method0(float, getAverageDistance);
+	I_Method0(float, getMinimumDistance);
+	I_Method0(void, sortFrontToBack);
+	I_Method0(void, reset);
+	I_Method0(void, clean);
+	I_Method0(void, prune);
+	I_Method1(osgUtil::RenderGraph *, find_or_insert, IN, const osg::StateSet *, stateset);
+	I_Method1(void, addLeaf, IN, osgUtil::RenderLeaf *, leaf);
+	I_ReadOnlyProperty(float, AverageDistance);
+	I_ReadOnlyProperty(float, MinimumDistance);
+	I_Property(osg::Referenced *, UserData);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderGraph >)
-	Constructor0();
-	Constructor1(IN, osgUtil::RenderGraph *, t);
-	Constructor1(IN, const osg::ref_ptr< osgUtil::RenderGraph > &, rp);
-	Method0(bool, valid);
-	Method0(osgUtil::RenderGraph *, get);
-	Method0(const osgUtil::RenderGraph *, get);
-	Method0(osgUtil::RenderGraph *, take);
-	Method0(osgUtil::RenderGraph *, release);
-	ReadOnlyProperty(osgUtil::RenderGraph *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgUtil::RenderGraph *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderGraph > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgUtil::RenderGraph *, get);
+	I_Method0(const osgUtil::RenderGraph *, get);
+	I_Method0(osgUtil::RenderGraph *, take);
+	I_Method0(osgUtil::RenderGraph *, release);
+	I_ReadOnlyProperty(osgUtil::RenderGraph *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
-	Constructor0();
-	Constructor1(IN, osgUtil::RenderLeaf *, t);
-	Constructor1(IN, const osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
-	Method0(bool, valid);
-	Method0(osgUtil::RenderLeaf *, get);
-	Method0(const osgUtil::RenderLeaf *, get);
-	Method0(osgUtil::RenderLeaf *, take);
-	Method0(osgUtil::RenderLeaf *, release);
-	ReadOnlyProperty(osgUtil::RenderLeaf *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgUtil::RenderLeaf *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgUtil::RenderLeaf *, get);
+	I_Method0(const osgUtil::RenderLeaf *, get);
+	I_Method0(osgUtil::RenderLeaf *, take);
+	I_Method0(osgUtil::RenderLeaf *, release);
+	I_ReadOnlyProperty(osgUtil::RenderLeaf *, );
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::RenderGraph > >);

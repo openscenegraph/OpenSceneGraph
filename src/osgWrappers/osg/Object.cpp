@@ -14,27 +14,35 @@
 #include <osg/Referenced>
 #include <osg/State>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::Object::DataVariance)
-	EnumLabel(osg::Object::DYNAMIC);
-	EnumLabel(osg::Object::STATIC);
+	I_EnumLabel(osg::Object::DYNAMIC);
+	I_EnumLabel(osg::Object::STATIC);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
-	BaseType(osg::Referenced);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Object &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, x);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setDataVariance, IN, osg::Object::DataVariance, dv);
-	Method0(osg::Object::DataVariance, getDataVariance);
-	Method1(void, setUserData, IN, osg::Referenced *, obj);
-	Method0(osg::Referenced *, getUserData);
-	Method0(const osg::Referenced *, getUserData);
-	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	Property(osg::Object::DataVariance, DataVariance);
-	Property(osg::Referenced *, UserData);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Object &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, x);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setDataVariance, IN, osg::Object::DataVariance, dv);
+	I_Method0(osg::Object::DataVariance, getDataVariance);
+	I_Method1(void, setUserData, IN, osg::Referenced *, obj);
+	I_Method0(osg::Referenced *, getUserData);
+	I_Method0(const osg::Referenced *, getUserData);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
+	I_Property(osg::Object::DataVariance, DataVariance);
+	I_Property(osg::Referenced *, UserData);
 END_REFLECTOR
 

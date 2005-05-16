@@ -13,36 +13,44 @@
 #include <osg/BoundingSphere>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
-	Constructor0();
-	Constructor6(IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax);
-	Constructor2(IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max);
-	Method0(void, init);
-	Method0(bool, valid);
-	Method6(void, set, IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax);
-	Method2(void, set, IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max);
-	Method0(float &, xMin);
-	Method0(float, xMin);
-	Method0(float &, yMin);
-	Method0(float, yMin);
-	Method0(float &, zMin);
-	Method0(float, zMin);
-	Method0(float &, xMax);
-	Method0(float, xMax);
-	Method0(float &, yMax);
-	Method0(float, yMax);
-	Method0(float &, zMax);
-	Method0(float, zMax);
-	Method0(const osg::Vec3, center);
-	Method0(float, radius);
-	Method0(float, radius2);
-	Method1(const osg::Vec3, corner, IN, unsigned int, pos);
-	Method1(void, expandBy, IN, const osg::Vec3 &, v);
-	Method3(void, expandBy, IN, float, x, IN, float, y, IN, float, z);
-	Method1(void, expandBy, IN, const osg::BoundingBox &, bb);
-	Method1(void, expandBy, IN, const osg::BoundingSphere &, sh);
-	Method1(osg::BoundingBox, intersect, IN, const osg::BoundingBox &, bb);
-	Method1(bool, intersects, IN, const osg::BoundingBox &, bb);
-	Method1(bool, contains, IN, const osg::Vec3 &, v);
+	I_Constructor0();
+	I_Constructor6(IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax);
+	I_Constructor2(IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max);
+	I_Method0(void, init);
+	I_Method0(bool, valid);
+	I_Method6(void, set, IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax);
+	I_Method2(void, set, IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max);
+	I_Method0(float &, xMin);
+	I_Method0(float, xMin);
+	I_Method0(float &, yMin);
+	I_Method0(float, yMin);
+	I_Method0(float &, zMin);
+	I_Method0(float, zMin);
+	I_Method0(float &, xMax);
+	I_Method0(float, xMax);
+	I_Method0(float &, yMax);
+	I_Method0(float, yMax);
+	I_Method0(float &, zMax);
+	I_Method0(float, zMax);
+	I_Method0(const osg::Vec3, center);
+	I_Method0(float, radius);
+	I_Method0(float, radius2);
+	I_Method1(const osg::Vec3, corner, IN, unsigned int, pos);
+	I_Method1(void, expandBy, IN, const osg::Vec3 &, v);
+	I_Method3(void, expandBy, IN, float, x, IN, float, y, IN, float, z);
+	I_Method1(void, expandBy, IN, const osg::BoundingBox &, bb);
+	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh);
+	I_Method1(osg::BoundingBox, intersect, IN, const osg::BoundingBox &, bb);
+	I_Method1(bool, intersects, IN, const osg::BoundingBox &, bb);
+	I_Method1(bool, contains, IN, const osg::Vec3 &, v);
 END_REFLECTOR
 

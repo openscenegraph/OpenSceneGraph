@@ -16,14 +16,22 @@
 #include <osgGA/MatrixManipulator>
 #include <osgGA/StateSetManipulator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandlerVisitor)
-	Method1(void, visit, IN, osgGA::GUIEventHandler &, x);
-	Method1(void, visit, IN, osgGA::CompositeGUIEventHandler &, x);
-	Method1(void, visit, IN, osgGA::MatrixManipulator &, x);
-	Method1(void, visit, IN, osgGA::StateSetManipulator &, x);
-	Method0(const osgGA::GUIEventAdapter *, getGUIEventAdapter);
-	Method0(osgGA::GUIActionAdapter *, getGUIActionAdapter);
-	ReadOnlyProperty(osgGA::GUIActionAdapter *, GUIActionAdapter);
-	ReadOnlyProperty(const osgGA::GUIEventAdapter *, GUIEventAdapter);
+	I_Method1(void, visit, IN, osgGA::GUIEventHandler &, x);
+	I_Method1(void, visit, IN, osgGA::CompositeGUIEventHandler &, x);
+	I_Method1(void, visit, IN, osgGA::MatrixManipulator &, x);
+	I_Method1(void, visit, IN, osgGA::StateSetManipulator &, x);
+	I_Method0(const osgGA::GUIEventAdapter *, getGUIEventAdapter);
+	I_Method0(osgGA::GUIActionAdapter *, getGUIActionAdapter);
+	I_ReadOnlyProperty(osgGA::GUIActionAdapter *, GUIActionAdapter);
+	I_ReadOnlyProperty(const osgGA::GUIEventAdapter *, GUIEventAdapter);
 END_REFLECTOR
 

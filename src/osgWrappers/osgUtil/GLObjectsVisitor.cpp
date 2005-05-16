@@ -16,31 +16,39 @@
 #include <osg/StateSet>
 #include <osgUtil/GLObjectsVisitor>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode);
 
 BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
-	EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS);
-	EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS);
-	EnumLabel(osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS);
-	EnumLabel(osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
-	EnumLabel(osgUtil::GLObjectsVisitor::RELEASE_DISPLAY_LISTS);
-	EnumLabel(osgUtil::GLObjectsVisitor::RELEASE_STATE_ATTRIBUTES);
-	EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS);
-	EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::RELEASE_DISPLAY_LISTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::RELEASE_STATE_ATTRIBUTES);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgUtil::GLObjectsVisitor)
-	BaseType(osg::NodeVisitor);
-	ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
-	Method1(void, setMode, IN, osgUtil::GLObjectsVisitor::Mode, mode);
-	Method0(osgUtil::GLObjectsVisitor::Mode, getMode);
-	Method1(void, setState, IN, osg::State *, state);
-	Method0(osg::State *, getState);
-	Method1(void, apply, IN, osg::Node &, node);
-	Method1(void, apply, IN, osg::Geode &, node);
-	Method1(void, apply, IN, osg::Drawable &, drawable);
-	Method1(void, apply, IN, osg::StateSet &, stateset);
-	Property(osgUtil::GLObjectsVisitor::Mode, Mode);
-	Property(osg::State *, State);
+BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
+	I_BaseType(osg::NodeVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
+	I_Method1(void, setMode, IN, osgUtil::GLObjectsVisitor::Mode, mode);
+	I_Method0(osgUtil::GLObjectsVisitor::Mode, getMode);
+	I_Method1(void, setState, IN, osg::State *, state);
+	I_Method0(osg::State *, getState);
+	I_Method1(void, apply, IN, osg::Node &, node);
+	I_Method1(void, apply, IN, osg::Geode &, node);
+	I_Method1(void, apply, IN, osg::Drawable &, drawable);
+	I_Method1(void, apply, IN, osg::StateSet &, stateset);
+	I_Property(osgUtil::GLObjectsVisitor::Mode, Mode);
+	I_Property(osg::State *, State);
 END_REFLECTOR
 

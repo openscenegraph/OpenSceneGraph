@@ -11,5 +11,13 @@
 
 #include <osg/Vec2>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(osg::Vec2f, osg::Vec2);
 

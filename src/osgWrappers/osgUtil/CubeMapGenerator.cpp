@@ -14,12 +14,20 @@
 #include <osg/TextureCubeMap>
 #include <osgUtil/CubeMapGenerator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CubeMapGenerator)
-	BaseType(osg::Referenced);
-	ConstructorWithDefaults1(IN, int, texture_size, 64);
-	ConstructorWithDefaults2(IN, const osgUtil::CubeMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method1(osg::Image *, getImage, IN, osg::TextureCubeMap::Face, face);
-	Method1(const osg::Image *, getImage, IN, osg::TextureCubeMap::Face, face);
-	MethodWithDefaults1(void, generateMap, IN, bool, use_osg_system, true);
+	I_BaseType(osg::Referenced);
+	I_ConstructorWithDefaults1(IN, int, texture_size, 64);
+	I_ConstructorWithDefaults2(IN, const osgUtil::CubeMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method1(osg::Image *, getImage, IN, osg::TextureCubeMap::Face, face);
+	I_Method1(const osg::Image *, getImage, IN, osg::TextureCubeMap::Face, face);
+	I_MethodWithDefaults1(void, generateMap, IN, bool, use_osg_system, true);
 END_REFLECTOR
 

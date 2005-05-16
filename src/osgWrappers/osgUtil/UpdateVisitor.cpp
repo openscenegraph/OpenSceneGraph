@@ -21,19 +21,27 @@
 #include <osg/Transform>
 #include <osgUtil/UpdateVisitor>
 
-BEGIN_VALUE_REFLECTOR(osgUtil::UpdateVisitor)
-	BaseType(osg::NodeVisitor);
-	Constructor0();
-	Method0(void, reset);
-	Method1(void, apply, IN, osg::Node &, node);
-	Method1(void, apply, IN, osg::Geode &, node);
-	Method1(void, apply, IN, osg::Billboard &, node);
-	Method1(void, apply, IN, osg::LightSource &, node);
-	Method1(void, apply, IN, osg::Group &, node);
-	Method1(void, apply, IN, osg::Transform &, node);
-	Method1(void, apply, IN, osg::Projection &, node);
-	Method1(void, apply, IN, osg::Switch &, node);
-	Method1(void, apply, IN, osg::LOD &, node);
-	Method1(void, apply, IN, osg::OccluderNode &, node);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
+	I_BaseType(osg::NodeVisitor);
+	I_Constructor0();
+	I_Method0(void, reset);
+	I_Method1(void, apply, IN, osg::Node &, node);
+	I_Method1(void, apply, IN, osg::Geode &, node);
+	I_Method1(void, apply, IN, osg::Billboard &, node);
+	I_Method1(void, apply, IN, osg::LightSource &, node);
+	I_Method1(void, apply, IN, osg::Group &, node);
+	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::Projection &, node);
+	I_Method1(void, apply, IN, osg::Switch &, node);
+	I_Method1(void, apply, IN, osg::LOD &, node);
+	I_Method1(void, apply, IN, osg::OccluderNode &, node);
 END_REFLECTOR
 

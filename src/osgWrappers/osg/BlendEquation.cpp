@@ -15,49 +15,57 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::BlendEquation::Equation)
-	EnumLabel(osg::BlendEquation::RGBA_MIN);
-	EnumLabel(osg::BlendEquation::RGBA_MAX);
-	EnumLabel(osg::BlendEquation::ALPHA_MIN);
-	EnumLabel(osg::BlendEquation::ALPHA_MAX);
-	EnumLabel(osg::BlendEquation::LOGIC_OP);
-	EnumLabel(osg::BlendEquation::FUNC_ADD);
-	EnumLabel(osg::BlendEquation::FUNC_SUBTRACT);
-	EnumLabel(osg::BlendEquation::FUNC_REVERSE_SUBTRACT);
+	I_EnumLabel(osg::BlendEquation::RGBA_MIN);
+	I_EnumLabel(osg::BlendEquation::RGBA_MAX);
+	I_EnumLabel(osg::BlendEquation::ALPHA_MIN);
+	I_EnumLabel(osg::BlendEquation::ALPHA_MAX);
+	I_EnumLabel(osg::BlendEquation::LOGIC_OP);
+	I_EnumLabel(osg::BlendEquation::FUNC_ADD);
+	I_EnumLabel(osg::BlendEquation::FUNC_SUBTRACT);
+	I_EnumLabel(osg::BlendEquation::FUNC_REVERSE_SUBTRACT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	Constructor1(IN, osg::BlendEquation::Equation, equation);
-	ConstructorWithDefaults2(IN, const osg::BlendEquation &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method1(void, setEquation, IN, osg::BlendEquation::Equation, equation);
-	Method0(osg::BlendEquation::Equation, getEquation);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(osg::BlendEquation::Equation, Equation);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_Constructor1(IN, osg::BlendEquation::Equation, equation);
+	I_ConstructorWithDefaults2(IN, const osg::BlendEquation &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(void, setEquation, IN, osg::BlendEquation::Equation, equation);
+	I_Method0(osg::BlendEquation::Equation, getEquation);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(osg::BlendEquation::Equation, Equation);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
-	BaseType(osg::Referenced);
-	Constructor1(IN, unsigned int, contextID);
-	Constructor1(IN, const osg::BlendEquation::Extensions &, rhs);
-	Method1(void, lowestCommonDenominator, IN, const osg::BlendEquation::Extensions &, rhs);
-	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
-	Method1(void, setBlendEquationSupported, IN, bool, flag);
-	Method0(bool, isBlendEquationSupported);
-	Method1(void, setBlendEquationProc, IN, void *, ptr);
-	Method1(void, glBlendEquation, IN, GLenum, mode);
-	WriteOnlyProperty(void *, BlendEquationProc);
-	WriteOnlyProperty(bool, BlendEquationSupported);
-	WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::BlendEquation::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::BlendEquation::Extensions &, rhs);
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setBlendEquationSupported, IN, bool, flag);
+	I_Method0(bool, isBlendEquationSupported);
+	I_Method1(void, setBlendEquationProc, IN, void *, ptr);
+	I_Method1(void, glBlendEquation, IN, GLenum, mode);
+	I_WriteOnlyProperty(void *, BlendEquationProc);
+	I_WriteOnlyProperty(bool, BlendEquationSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

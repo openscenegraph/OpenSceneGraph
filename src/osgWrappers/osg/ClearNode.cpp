@@ -15,21 +15,29 @@
 #include <osg/Object>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::ClearNode)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::ClearNode &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, setRequiresClear, IN, bool, requiresClear);
-	Method0(bool, getRequiresClear);
-	Method1(void, setClearColor, IN, const osg::Vec4 &, color);
-	Method0(const osg::Vec4 &, getClearColor);
-	Property(const osg::Vec4 &, ClearColor);
-	Property(bool, RequiresClear);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::ClearNode &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setRequiresClear, IN, bool, requiresClear);
+	I_Method0(bool, getRequiresClear);
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getClearColor);
+	I_Property(const osg::Vec4 &, ClearColor);
+	I_Property(bool, RequiresClear);
 END_REFLECTOR
 

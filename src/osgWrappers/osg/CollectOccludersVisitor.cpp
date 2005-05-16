@@ -18,37 +18,45 @@
 #include <osg/Transform>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::set< osg::ShadowVolumeOccluder >, osg::CollectOccludersVisitor::ShadowVolumeOccluderSet);
 
-BEGIN_VALUE_REFLECTOR(osg::CollectOccludersVisitor)
-	BaseType(osg::NodeVisitor);
-	BaseType(osg::CullStack);
-	Constructor0();
-	Method0(osg::CollectOccludersVisitor *, cloneType);
-	Method0(void, reset);
-	Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
-	Method2(float, getDistanceFromEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
-	Method1(void, apply, IN, osg::Node &, x);
-	Method1(void, apply, IN, osg::Transform &, node);
-	Method1(void, apply, IN, osg::Projection &, node);
-	Method1(void, apply, IN, osg::Switch &, node);
-	Method1(void, apply, IN, osg::LOD &, node);
-	Method1(void, apply, IN, osg::OccluderNode &, node);
-	Method1(void, setMinimumShadowOccluderVolume, IN, float, vol);
-	Method0(float, getMinimumShadowOccluderVolume);
-	Method1(void, setMaximumNumberOfActiveOccluders, IN, unsigned int, num);
-	Method0(unsigned int, getMaximumNumberOfActiveOccluders);
-	Method1(void, setCreateDrawablesOnOccludeNodes, IN, bool, flag);
-	Method0(bool, getCreateDrawablesOnOccludeNodes);
-	Method1(void, setCollectedOcculderSet, IN, const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, svol);
-	Method0(osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, getCollectedOccluderSet);
-	Method0(const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, getCollectedOccluderSet);
-	Method0(void, removeOccludedOccluders);
-	ReadOnlyProperty(osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOccluderSet);
-	WriteOnlyProperty(const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOcculderSet);
-	Property(bool, CreateDrawablesOnOccludeNodes);
-	Property(unsigned int, MaximumNumberOfActiveOccluders);
-	Property(float, MinimumShadowOccluderVolume);
+BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
+	I_BaseType(osg::NodeVisitor);
+	I_BaseType(osg::CullStack);
+	I_Constructor0();
+	I_Method0(osg::CollectOccludersVisitor *, cloneType);
+	I_Method0(void, reset);
+	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
+	I_Method2(float, getDistanceFromEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
+	I_Method1(void, apply, IN, osg::Node &, x);
+	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::Projection &, node);
+	I_Method1(void, apply, IN, osg::Switch &, node);
+	I_Method1(void, apply, IN, osg::LOD &, node);
+	I_Method1(void, apply, IN, osg::OccluderNode &, node);
+	I_Method1(void, setMinimumShadowOccluderVolume, IN, float, vol);
+	I_Method0(float, getMinimumShadowOccluderVolume);
+	I_Method1(void, setMaximumNumberOfActiveOccluders, IN, unsigned int, num);
+	I_Method0(unsigned int, getMaximumNumberOfActiveOccluders);
+	I_Method1(void, setCreateDrawablesOnOccludeNodes, IN, bool, flag);
+	I_Method0(bool, getCreateDrawablesOnOccludeNodes);
+	I_Method1(void, setCollectedOcculderSet, IN, const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, svol);
+	I_Method0(osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, getCollectedOccluderSet);
+	I_Method0(const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, getCollectedOccluderSet);
+	I_Method0(void, removeOccludedOccluders);
+	I_ReadOnlyProperty(osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOccluderSet);
+	I_WriteOnlyProperty(const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOcculderSet);
+	I_Property(bool, CreateDrawablesOnOccludeNodes);
+	I_Property(unsigned int, MaximumNumberOfActiveOccluders);
+	I_Property(float, MinimumShadowOccluderVolume);
 END_REFLECTOR
 
 STD_SET_REFLECTOR(std::set< osg::ShadowVolumeOccluder >);

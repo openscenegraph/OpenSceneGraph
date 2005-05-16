@@ -15,18 +15,24 @@
 #include <osgFX/Effect>
 #include <osgFX/Technique>
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Technique)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method0(const char *, techniqueName);
-	Method0(const char *, techniqueDescription);
-	Method1(void, getRequiredExtensions, IN, std::vector< std::string > &, x);
-	Method1(bool, validate, IN, osg::State &, x);
-	Method0(int, getNumPasses);
-	Method1(osg::StateSet *, getPassStateSet, IN, int, i);
-	Method1(const osg::StateSet *, getPassStateSet, IN, int, i);
-	Method2(void, traverse, IN, osg::NodeVisitor &, nv, IN, osgFX::Effect *, fx);
-END_REFLECTOR
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
 
-STD_VECTOR_REFLECTOR(std::vector< std::string > &);
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Technique)
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method0(const char *, techniqueName);
+	I_Method0(const char *, techniqueDescription);
+	I_Method1(void, getRequiredExtensions, IN, std::vector< std::string > &, x);
+	I_Method1(bool, validate, IN, osg::State &, x);
+	I_Method0(int, getNumPasses);
+	I_Method1(osg::StateSet *, getPassStateSet, IN, int, i);
+	I_Method1(const osg::StateSet *, getPassStateSet, IN, int, i);
+	I_Method2(void, traverse, IN, osg::NodeVisitor &, nv, IN, osgFX::Effect *, fx);
+END_REFLECTOR
 

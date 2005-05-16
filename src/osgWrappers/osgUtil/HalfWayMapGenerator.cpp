@@ -13,9 +13,17 @@
 #include <osg/Vec3>
 #include <osgUtil/HalfWayMapGenerator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::HalfWayMapGenerator)
-	BaseType(osgUtil::CubeMapGenerator);
-	ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64);
-	Constructor2(IN, const osgUtil::HalfWayMapGenerator &, copy, IN, const osg::CopyOp &, copyop);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64);
+	I_Constructor2(IN, const osgUtil::HalfWayMapGenerator &, copy, IN, const osg::CopyOp &, copyop);
 END_REFLECTOR
 

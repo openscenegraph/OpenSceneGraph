@@ -16,34 +16,42 @@
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/ViewerEventHandler>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgProducer::ViewerEventHandler::FrameStatsMode)
-	EnumLabel(osgProducer::ViewerEventHandler::NO_STATS);
-	EnumLabel(osgProducer::ViewerEventHandler::FRAME_RATE);
-	EnumLabel(osgProducer::ViewerEventHandler::CAMERA_STATS);
+	I_EnumLabel(osgProducer::ViewerEventHandler::NO_STATS);
+	I_EnumLabel(osgProducer::ViewerEventHandler::FRAME_RATE);
+	I_EnumLabel(osgProducer::ViewerEventHandler::CAMERA_STATS);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgProducer::ViewerEventHandler)
-	BaseType(osgGA::GUIEventHandler);
-	Constructor1(IN, osgProducer::OsgCameraGroup *, cg);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
-	Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, gehv);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	Method0(osgProducer::OsgCameraGroup *, getOsgCameraGroup);
-	Method0(const osgProducer::OsgCameraGroup *, getOsgCameraGroup);
-	Method1(void, setWriteNodeFileName, IN, const std::string &, filename);
-	Method0(const std::string &, getWriteNodeFileName);
-	Method1(void, setDisplayHelp, IN, bool, displayHelp);
-	Method0(bool, getDisplayHelp);
-	Method1(void, setFrameStatsMode, IN, osgProducer::ViewerEventHandler::FrameStatsMode, mode);
-	Method0(osgProducer::ViewerEventHandler::FrameStatsMode, getFrameStatsMode);
-	Method1(void, setWriteImageOnNextFrame, IN, bool, writeImageOnNextFrame);
-	Method1(void, setWriteImageFileName, IN, const std::string &, filename);
-	Method0(const std::string &, getWriteImageFileName);
-	Property(bool, DisplayHelp);
-	Property(osgProducer::ViewerEventHandler::FrameStatsMode, FrameStatsMode);
-	ReadOnlyProperty(osgProducer::OsgCameraGroup *, OsgCameraGroup);
-	Property(const std::string &, WriteImageFileName);
-	WriteOnlyProperty(bool, WriteImageOnNextFrame);
-	Property(const std::string &, WriteNodeFileName);
+BEGIN_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor1(IN, osgProducer::OsgCameraGroup *, cg);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
+	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, gehv);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Method0(osgProducer::OsgCameraGroup *, getOsgCameraGroup);
+	I_Method0(const osgProducer::OsgCameraGroup *, getOsgCameraGroup);
+	I_Method1(void, setWriteNodeFileName, IN, const std::string &, filename);
+	I_Method0(const std::string &, getWriteNodeFileName);
+	I_Method1(void, setDisplayHelp, IN, bool, displayHelp);
+	I_Method0(bool, getDisplayHelp);
+	I_Method1(void, setFrameStatsMode, IN, osgProducer::ViewerEventHandler::FrameStatsMode, mode);
+	I_Method0(osgProducer::ViewerEventHandler::FrameStatsMode, getFrameStatsMode);
+	I_Method1(void, setWriteImageOnNextFrame, IN, bool, writeImageOnNextFrame);
+	I_Method1(void, setWriteImageFileName, IN, const std::string &, filename);
+	I_Method0(const std::string &, getWriteImageFileName);
+	I_Property(bool, DisplayHelp);
+	I_Property(osgProducer::ViewerEventHandler::FrameStatsMode, FrameStatsMode);
+	I_ReadOnlyProperty(osgProducer::OsgCameraGroup *, OsgCameraGroup);
+	I_Property(const std::string &, WriteImageFileName);
+	I_WriteOnlyProperty(bool, WriteImageOnNextFrame);
+	I_Property(const std::string &, WriteNodeFileName);
 END_REFLECTOR
 

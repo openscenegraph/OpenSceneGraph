@@ -17,106 +17,114 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::CombineParam)
-	EnumLabel(osg::TexEnvCombine::REPLACE);
-	EnumLabel(osg::TexEnvCombine::MODULATE);
-	EnumLabel(osg::TexEnvCombine::ADD);
-	EnumLabel(osg::TexEnvCombine::ADD_SIGNED);
-	EnumLabel(osg::TexEnvCombine::INTERPOLATE);
-	EnumLabel(osg::TexEnvCombine::SUBTRACT);
-	EnumLabel(osg::TexEnvCombine::DOT3_RGB);
-	EnumLabel(osg::TexEnvCombine::DOT3_RGBA);
+	I_EnumLabel(osg::TexEnvCombine::REPLACE);
+	I_EnumLabel(osg::TexEnvCombine::MODULATE);
+	I_EnumLabel(osg::TexEnvCombine::ADD);
+	I_EnumLabel(osg::TexEnvCombine::ADD_SIGNED);
+	I_EnumLabel(osg::TexEnvCombine::INTERPOLATE);
+	I_EnumLabel(osg::TexEnvCombine::SUBTRACT);
+	I_EnumLabel(osg::TexEnvCombine::DOT3_RGB);
+	I_EnumLabel(osg::TexEnvCombine::DOT3_RGBA);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::SourceParam)
-	EnumLabel(osg::TexEnvCombine::CONSTANT);
-	EnumLabel(osg::TexEnvCombine::PRIMARY_COLOR);
-	EnumLabel(osg::TexEnvCombine::PREVIOUS);
-	EnumLabel(osg::TexEnvCombine::TEXTURE);
-	EnumLabel(osg::TexEnvCombine::TEXTURE0);
-	EnumLabel(osg::TexEnvCombine::TEXTURE1);
-	EnumLabel(osg::TexEnvCombine::TEXTURE2);
-	EnumLabel(osg::TexEnvCombine::TEXTURE3);
-	EnumLabel(osg::TexEnvCombine::TEXTURE4);
-	EnumLabel(osg::TexEnvCombine::TEXTURE5);
-	EnumLabel(osg::TexEnvCombine::TEXTURE6);
-	EnumLabel(osg::TexEnvCombine::TEXTURE7);
+	I_EnumLabel(osg::TexEnvCombine::CONSTANT);
+	I_EnumLabel(osg::TexEnvCombine::PRIMARY_COLOR);
+	I_EnumLabel(osg::TexEnvCombine::PREVIOUS);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE0);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE1);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE2);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE3);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE4);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE5);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE6);
+	I_EnumLabel(osg::TexEnvCombine::TEXTURE7);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::OperandParam)
-	EnumLabel(osg::TexEnvCombine::SRC_COLOR);
-	EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_COLOR);
-	EnumLabel(osg::TexEnvCombine::SRC_ALPHA);
-	EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_ALPHA);
+	I_EnumLabel(osg::TexEnvCombine::SRC_COLOR);
+	I_EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_COLOR);
+	I_EnumLabel(osg::TexEnvCombine::SRC_ALPHA);
+	I_EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_ALPHA);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::TexEnvCombine &, texenv, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method0(bool, isTextureAttribute);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(void, setCombine_RGB, IN, GLint, cm);
-	Method1(void, setCombine_Alpha, IN, GLint, cm);
-	Method0(GLint, getCombine_RGB);
-	Method0(GLint, getCombine_Alpha);
-	Method1(void, setSource0_RGB, IN, GLint, sp);
-	Method1(void, setSource1_RGB, IN, GLint, sp);
-	Method1(void, setSource2_RGB, IN, GLint, sp);
-	Method1(void, setSource0_Alpha, IN, GLint, sp);
-	Method1(void, setSource1_Alpha, IN, GLint, sp);
-	Method1(void, setSource2_Alpha, IN, GLint, sp);
-	Method0(GLint, getSource0_RGB);
-	Method0(GLint, getSource1_RGB);
-	Method0(GLint, getSource2_RGB);
-	Method0(GLint, getSource0_Alpha);
-	Method0(GLint, getSource1_Alpha);
-	Method0(GLint, getSource2_Alpha);
-	Method1(void, setOperand0_RGB, IN, GLint, op);
-	Method1(void, setOperand1_RGB, IN, GLint, op);
-	Method1(void, setOperand2_RGB, IN, GLint, op);
-	Method1(void, setOperand0_Alpha, IN, GLint, op);
-	Method1(void, setOperand1_Alpha, IN, GLint, op);
-	Method1(void, setOperand2_Alpha, IN, GLint, op);
-	Method0(GLint, getOperand0_RGB);
-	Method0(GLint, getOperand1_RGB);
-	Method0(GLint, getOperand2_RGB);
-	Method0(GLint, getOperand0_Alpha);
-	Method0(GLint, getOperand1_Alpha);
-	Method0(GLint, getOperand2_Alpha);
-	Method1(void, setScale_RGB, IN, float, scale);
-	Method1(void, setScale_Alpha, IN, float, scale);
-	Method0(float, getScale_RGB);
-	Method0(float, getScale_Alpha);
-	Method1(void, setConstantColor, IN, const osg::Vec4 &, color);
-	Method0(const osg::Vec4 &, getConstantColor);
-	Method1(void, setConstantColorAsLightDirection, IN, const osg::Vec3 &, direction);
-	Method0(osg::Vec3, getConstantColorAsLightDirection);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(GLint, Combine_Alpha);
-	Property(GLint, Combine_RGB);
-	Property(const osg::Vec4 &, ConstantColor);
-	ReadOnlyProperty(osg::Vec3, ConstantColorAsLightDirection);
-	Property(GLint, Operand0_Alpha);
-	Property(GLint, Operand0_RGB);
-	Property(GLint, Operand1_Alpha);
-	Property(GLint, Operand1_RGB);
-	Property(GLint, Operand2_Alpha);
-	Property(GLint, Operand2_RGB);
-	Property(float, Scale_Alpha);
-	Property(float, Scale_RGB);
-	Property(GLint, Source0_Alpha);
-	Property(GLint, Source0_RGB);
-	Property(GLint, Source1_Alpha);
-	Property(GLint, Source1_RGB);
-	Property(GLint, Source2_Alpha);
-	Property(GLint, Source2_RGB);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::TexEnvCombine &, texenv, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method0(bool, isTextureAttribute);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(void, setCombine_RGB, IN, GLint, cm);
+	I_Method1(void, setCombine_Alpha, IN, GLint, cm);
+	I_Method0(GLint, getCombine_RGB);
+	I_Method0(GLint, getCombine_Alpha);
+	I_Method1(void, setSource0_RGB, IN, GLint, sp);
+	I_Method1(void, setSource1_RGB, IN, GLint, sp);
+	I_Method1(void, setSource2_RGB, IN, GLint, sp);
+	I_Method1(void, setSource0_Alpha, IN, GLint, sp);
+	I_Method1(void, setSource1_Alpha, IN, GLint, sp);
+	I_Method1(void, setSource2_Alpha, IN, GLint, sp);
+	I_Method0(GLint, getSource0_RGB);
+	I_Method0(GLint, getSource1_RGB);
+	I_Method0(GLint, getSource2_RGB);
+	I_Method0(GLint, getSource0_Alpha);
+	I_Method0(GLint, getSource1_Alpha);
+	I_Method0(GLint, getSource2_Alpha);
+	I_Method1(void, setOperand0_RGB, IN, GLint, op);
+	I_Method1(void, setOperand1_RGB, IN, GLint, op);
+	I_Method1(void, setOperand2_RGB, IN, GLint, op);
+	I_Method1(void, setOperand0_Alpha, IN, GLint, op);
+	I_Method1(void, setOperand1_Alpha, IN, GLint, op);
+	I_Method1(void, setOperand2_Alpha, IN, GLint, op);
+	I_Method0(GLint, getOperand0_RGB);
+	I_Method0(GLint, getOperand1_RGB);
+	I_Method0(GLint, getOperand2_RGB);
+	I_Method0(GLint, getOperand0_Alpha);
+	I_Method0(GLint, getOperand1_Alpha);
+	I_Method0(GLint, getOperand2_Alpha);
+	I_Method1(void, setScale_RGB, IN, float, scale);
+	I_Method1(void, setScale_Alpha, IN, float, scale);
+	I_Method0(float, getScale_RGB);
+	I_Method0(float, getScale_Alpha);
+	I_Method1(void, setConstantColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getConstantColor);
+	I_Method1(void, setConstantColorAsLightDirection, IN, const osg::Vec3 &, direction);
+	I_Method0(osg::Vec3, getConstantColorAsLightDirection);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(GLint, Combine_Alpha);
+	I_Property(GLint, Combine_RGB);
+	I_Property(const osg::Vec4 &, ConstantColor);
+	I_ReadOnlyProperty(osg::Vec3, ConstantColorAsLightDirection);
+	I_Property(GLint, Operand0_Alpha);
+	I_Property(GLint, Operand0_RGB);
+	I_Property(GLint, Operand1_Alpha);
+	I_Property(GLint, Operand1_RGB);
+	I_Property(GLint, Operand2_Alpha);
+	I_Property(GLint, Operand2_RGB);
+	I_Property(float, Scale_Alpha);
+	I_Property(float, Scale_RGB);
+	I_Property(GLint, Source0_Alpha);
+	I_Property(GLint, Source0_RGB);
+	I_Property(GLint, Source1_Alpha);
+	I_Property(GLint, Source1_RGB);
+	I_Property(GLint, Source2_Alpha);
+	I_Property(GLint, Source2_RGB);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

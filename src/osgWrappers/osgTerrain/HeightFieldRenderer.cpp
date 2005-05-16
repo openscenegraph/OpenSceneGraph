@@ -15,16 +15,24 @@
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode);
-	Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode);
-	Method0(void, initialize);
-	Method0(void, heightFieldHasBeenModified);
-	Method1(void, update, IN, osgUtil::UpdateVisitor *, nv);
-	Method1(void, cull, IN, osgUtil::CullVisitor *, nv);
-	ReadOnlyProperty(osgTerrain::HeightFieldNode *, HeightFieldNode);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode);
+	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode);
+	I_Method0(void, initialize);
+	I_Method0(void, heightFieldHasBeenModified);
+	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv);
+	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv);
+	I_ReadOnlyProperty(osgTerrain::HeightFieldNode *, HeightFieldNode);
 END_REFLECTOR
 

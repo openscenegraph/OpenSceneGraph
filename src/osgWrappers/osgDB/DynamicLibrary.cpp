@@ -11,18 +11,26 @@
 
 #include <osgDB/DynamicLibrary>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::HANDLE);
 
 TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS);
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
-	BaseType(osg::Referenced);
-	Method0(const std::string &, getName);
-	Method0(const std::string &, getFullName);
-	Method0(osgDB::DynamicLibrary::HANDLE, getHandle);
-	Method1(osgDB::DynamicLibrary::PROC_ADDRESS, getProcAddress, IN, const std::string &, procName);
-	ReadOnlyProperty(const std::string &, FullName);
-	ReadOnlyProperty(osgDB::DynamicLibrary::HANDLE, Handle);
-	ReadOnlyProperty(const std::string &, Name);
+	I_BaseType(osg::Referenced);
+	I_Method0(const std::string &, getName);
+	I_Method0(const std::string &, getFullName);
+	I_Method0(osgDB::DynamicLibrary::HANDLE, getHandle);
+	I_Method1(osgDB::DynamicLibrary::PROC_ADDRESS, getProcAddress, IN, const std::string &, procName);
+	I_ReadOnlyProperty(const std::string &, FullName);
+	I_ReadOnlyProperty(osgDB::DynamicLibrary::HANDLE, Handle);
+	I_ReadOnlyProperty(const std::string &, Name);
 END_REFLECTOR
 

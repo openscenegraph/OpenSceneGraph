@@ -19,54 +19,62 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList);
 
 TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask);
 
 BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
-	EnumLabel(osg::CullingSet::NO_CULLING);
-	EnumLabel(osg::CullingSet::VIEW_FRUSTUM_SIDES_CULLING);
-	EnumLabel(osg::CullingSet::NEAR_PLANE_CULLING);
-	EnumLabel(osg::CullingSet::FAR_PLANE_CULLING);
-	EnumLabel(osg::CullingSet::VIEW_FRUSTUM_CULLING);
-	EnumLabel(osg::CullingSet::SMALL_FEATURE_CULLING);
-	EnumLabel(osg::CullingSet::SHADOW_OCCLUSION_CULLING);
-	EnumLabel(osg::CullingSet::DEFAULT_CULLING);
-	EnumLabel(osg::CullingSet::ENABLE_ALL_CULLING);
+	I_EnumLabel(osg::CullingSet::NO_CULLING);
+	I_EnumLabel(osg::CullingSet::VIEW_FRUSTUM_SIDES_CULLING);
+	I_EnumLabel(osg::CullingSet::NEAR_PLANE_CULLING);
+	I_EnumLabel(osg::CullingSet::FAR_PLANE_CULLING);
+	I_EnumLabel(osg::CullingSet::VIEW_FRUSTUM_CULLING);
+	I_EnumLabel(osg::CullingSet::SMALL_FEATURE_CULLING);
+	I_EnumLabel(osg::CullingSet::SHADOW_OCCLUSION_CULLING);
+	I_EnumLabel(osg::CullingSet::DEFAULT_CULLING);
+	I_EnumLabel(osg::CullingSet::ENABLE_ALL_CULLING);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::CullingSet)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Constructor1(IN, const osg::CullingSet &, cs);
-	Constructor3(IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector);
-	Method1(void, set, IN, const osg::CullingSet &, cs);
-	Method3(void, set, IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector);
-	Method1(void, setCullingMask, IN, osg::CullingSet::Mask, mask);
-	Method0(osg::CullingSet::Mask, getCullingMask);
-	Method1(void, setFrustum, IN, osg::Polytope &, cv);
-	Method0(osg::Polytope &, getFrustum);
-	Method0(const osg::Polytope &, getFrustum);
-	Method1(void, addOccluder, IN, osg::ShadowVolumeOccluder &, cv);
-	Method1(void, setPixelSizeVector, IN, const osg::Vec4 &, v);
-	Method0(osg::Vec4 &, getPixelSizeVector);
-	Method0(const osg::Vec4 &, getPixelSizeVector);
-	Method1(void, setSmallFeatureCullingPixelSize, IN, float, value);
-	Method0(float &, getSmallFeatureCullingPixelSize);
-	Method0(float, getSmallFeatureCullingPixelSize);
-	Method2(float, pixelSize, IN, const osg::Vec3 &, v, IN, float, radius);
-	Method1(float, pixelSize, IN, const osg::BoundingSphere &, bs);
-	Method1(bool, isCulled, IN, const std::vector< osg::Vec3 > &, vertices);
-	Method1(bool, isCulled, IN, const osg::BoundingBox &, bb);
-	Method1(bool, isCulled, IN, const osg::BoundingSphere &, bs);
-	Method0(void, pushCurrentMask);
-	Method0(void, popCurrentMask);
-	Method1(void, disableAndPushOccludersCurrentMask, IN, osg::NodePath &, nodePath);
-	Method1(void, popOccludersCurrentMask, IN, osg::NodePath &, nodePath);
-	WriteOnlyProperty(const osg::CullingSet &, );
-	Property(osg::CullingSet::Mask, CullingMask);
-	Property(osg::Polytope &, Frustum);
-	Property(const osg::Vec4 &, PixelSizeVector);
-	Property(float, SmallFeatureCullingPixelSize);
+BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Constructor1(IN, const osg::CullingSet &, cs);
+	I_Constructor3(IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector);
+	I_Method1(void, set, IN, const osg::CullingSet &, cs);
+	I_Method3(void, set, IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector);
+	I_Method1(void, setCullingMask, IN, osg::CullingSet::Mask, mask);
+	I_Method0(osg::CullingSet::Mask, getCullingMask);
+	I_Method1(void, setFrustum, IN, osg::Polytope &, cv);
+	I_Method0(osg::Polytope &, getFrustum);
+	I_Method0(const osg::Polytope &, getFrustum);
+	I_Method1(void, addOccluder, IN, osg::ShadowVolumeOccluder &, cv);
+	I_Method1(void, setPixelSizeVector, IN, const osg::Vec4 &, v);
+	I_Method0(osg::Vec4 &, getPixelSizeVector);
+	I_Method0(const osg::Vec4 &, getPixelSizeVector);
+	I_Method1(void, setSmallFeatureCullingPixelSize, IN, float, value);
+	I_Method0(float &, getSmallFeatureCullingPixelSize);
+	I_Method0(float, getSmallFeatureCullingPixelSize);
+	I_Method2(float, pixelSize, IN, const osg::Vec3 &, v, IN, float, radius);
+	I_Method1(float, pixelSize, IN, const osg::BoundingSphere &, bs);
+	I_Method1(bool, isCulled, IN, const std::vector< osg::Vec3 > &, vertices);
+	I_Method1(bool, isCulled, IN, const osg::BoundingBox &, bb);
+	I_Method1(bool, isCulled, IN, const osg::BoundingSphere &, bs);
+	I_Method0(void, pushCurrentMask);
+	I_Method0(void, popCurrentMask);
+	I_Method1(void, disableAndPushOccludersCurrentMask, IN, osg::NodePath &, nodePath);
+	I_Method1(void, popOccludersCurrentMask, IN, osg::NodePath &, nodePath);
+	I_WriteOnlyProperty(const osg::CullingSet &, );
+	I_Property(osg::CullingSet::Mask, CullingMask);
+	I_Property(osg::Polytope &, Frustum);
+	I_Property(const osg::Vec4 &, PixelSizeVector);
+	I_Property(float, SmallFeatureCullingPixelSize);
 END_REFLECTOR
 

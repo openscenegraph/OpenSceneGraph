@@ -15,19 +15,27 @@
 #include <osgParticle/Emitter>
 #include <osgParticle/Particle>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Emitter)
-	BaseType(osgParticle::ParticleProcessor);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::Emitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(const osgParticle::Particle &, getParticleTemplate);
-	Method1(void, setParticleTemplate, IN, const osgParticle::Particle &, p);
-	Method0(bool, getUseDefaultTemplate);
-	Method1(void, setUseDefaultTemplate, IN, bool, v);
-	Property(const osgParticle::Particle &, ParticleTemplate);
-	Property(bool, UseDefaultTemplate);
+	I_BaseType(osgParticle::ParticleProcessor);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::Emitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(const osgParticle::Particle &, getParticleTemplate);
+	I_Method1(void, setParticleTemplate, IN, const osgParticle::Particle &, p);
+	I_Method0(bool, getUseDefaultTemplate);
+	I_Method1(void, setUseDefaultTemplate, IN, bool, v);
+	I_Property(const osgParticle::Particle &, ParticleTemplate);
+	I_Property(bool, UseDefaultTemplate);
 END_REFLECTOR
 

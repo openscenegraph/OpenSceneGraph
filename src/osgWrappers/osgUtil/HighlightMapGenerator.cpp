@@ -14,9 +14,17 @@
 #include <osg/Vec4>
 #include <osgUtil/HighlightMapGenerator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::HighlightMapGenerator)
-	BaseType(osgUtil::CubeMapGenerator);
-	ConstructorWithDefaults4(IN, const osg::Vec3 &, light_direction, , IN, const osg::Vec4 &, light_color, , IN, float, specular_exponent, , IN, int, texture_size, 64);
-	ConstructorWithDefaults2(IN, const osgUtil::HighlightMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults4(IN, const osg::Vec3 &, light_direction, , IN, const osg::Vec4 &, light_color, , IN, float, specular_exponent, , IN, int, texture_size, 64);
+	I_ConstructorWithDefaults2(IN, const osgUtil::HighlightMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 END_REFLECTOR
 

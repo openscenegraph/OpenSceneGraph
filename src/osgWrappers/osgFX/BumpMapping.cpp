@@ -17,39 +17,47 @@
 #include <osg/Texture2D>
 #include <osgFX/BumpMapping>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
-	BaseType(osgFX::Effect);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgFX::BumpMapping &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(const char *, effectName);
-	Method0(const char *, effectDescription);
-	Method0(const char *, effectAuthor);
-	Method0(int, getLightNumber);
-	Method1(void, setLightNumber, IN, int, n);
-	Method0(int, getDiffuseTextureUnit);
-	Method1(void, setDiffuseTextureUnit, IN, int, n);
-	Method0(int, getNormalMapTextureUnit);
-	Method1(void, setNormalMapTextureUnit, IN, int, n);
-	Method0(osg::Texture2D *, getOverrideDiffuseTexture);
-	Method0(const osg::Texture2D *, getOverrideDiffuseTexture);
-	Method1(void, setOverrideDiffuseTexture, IN, osg::Texture2D *, texture);
-	Method0(osg::Texture2D *, getOverrideNormalMapTexture);
-	Method0(const osg::Texture2D *, getOverrideNormalMapTexture);
-	Method1(void, setOverrideNormalMapTexture, IN, osg::Texture2D *, texture);
-	Method1(void, prepareGeometry, IN, osg::Geometry *, geo);
-	Method1(void, prepareNode, IN, osg::Node *, node);
-	Method0(void, prepareChildren);
-	Method0(void, setUpDemo);
-	Property(int, DiffuseTextureUnit);
-	Property(int, LightNumber);
-	Property(int, NormalMapTextureUnit);
-	Property(osg::Texture2D *, OverrideDiffuseTexture);
-	Property(osg::Texture2D *, OverrideNormalMapTexture);
+	I_BaseType(osgFX::Effect);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgFX::BumpMapping &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(const char *, effectName);
+	I_Method0(const char *, effectDescription);
+	I_Method0(const char *, effectAuthor);
+	I_Method0(int, getLightNumber);
+	I_Method1(void, setLightNumber, IN, int, n);
+	I_Method0(int, getDiffuseTextureUnit);
+	I_Method1(void, setDiffuseTextureUnit, IN, int, n);
+	I_Method0(int, getNormalMapTextureUnit);
+	I_Method1(void, setNormalMapTextureUnit, IN, int, n);
+	I_Method0(osg::Texture2D *, getOverrideDiffuseTexture);
+	I_Method0(const osg::Texture2D *, getOverrideDiffuseTexture);
+	I_Method1(void, setOverrideDiffuseTexture, IN, osg::Texture2D *, texture);
+	I_Method0(osg::Texture2D *, getOverrideNormalMapTexture);
+	I_Method0(const osg::Texture2D *, getOverrideNormalMapTexture);
+	I_Method1(void, setOverrideNormalMapTexture, IN, osg::Texture2D *, texture);
+	I_Method1(void, prepareGeometry, IN, osg::Geometry *, geo);
+	I_Method1(void, prepareNode, IN, osg::Node *, node);
+	I_Method0(void, prepareChildren);
+	I_Method0(void, setUpDemo);
+	I_Property(int, DiffuseTextureUnit);
+	I_Property(int, LightNumber);
+	I_Property(int, NormalMapTextureUnit);
+	I_Property(osg::Texture2D *, OverrideDiffuseTexture);
+	I_Property(osg::Texture2D *, OverrideNormalMapTexture);
 END_REFLECTOR
 

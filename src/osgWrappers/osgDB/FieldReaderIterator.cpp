@@ -19,44 +19,48 @@
 #include <osgDB/FieldReader>
 #include <osgDB/FieldReaderIterator>
 
-BEGIN_ENUM_REFLECTOR(osgDB::FieldReaderIterator::@3)
-	EnumLabel(osgDB::FieldReaderIterator::MINIMUM_FIELD_READER_QUEUE_SIZE);
-END_REFLECTOR
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::FieldReaderIterator)
-	Constructor0();
-	Constructor1(IN, const osgDB::FieldReaderIterator &, ic);
-	Method1(void, attach, IN, std::istream *, input);
-	Method0(void, detach);
-	Method0(bool, eof);
-	Method0(osgDB::FieldReader &, getFieldReader);
-	Method2(void, insert, IN, int, pos, IN, osgDB::Field *, field);
-	Method2(void, insert, IN, int, pos, IN, const char *, str);
-	Method1(osgDB::Field &, field, IN, int, pos);
-	Method0(void, advanceOverCurrentFieldOrBlock);
-	Method0(void, advanceToEndOfCurrentBlock);
-	Method1(void, advanceToEndOfBlock, IN, int, noNestBrackets);
-	Method1(bool, matchSequence, IN, const char *, str);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, std::string &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, unsigned int &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, int &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, float &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2f &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3f &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4f &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2d &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3d &, value);
-	Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4d &, value);
-	Method1(bool, readSequence, IN, std::string &, value);
-	Method1(bool, readSequence, IN, unsigned int &, value);
-	Method1(bool, readSequence, IN, int &, value);
-	Method1(bool, readSequence, IN, float &, value);
-	Method1(bool, readSequence, IN, osg::Vec2f &, value);
-	Method1(bool, readSequence, IN, osg::Vec3f &, value);
-	Method1(bool, readSequence, IN, osg::Vec4f &, value);
-	Method1(bool, readSequence, IN, osg::Vec2d &, value);
-	Method1(bool, readSequence, IN, osg::Vec3d &, value);
-	Method1(bool, readSequence, IN, osg::Vec4d &, value);
-	ReadOnlyProperty(osgDB::FieldReader &, FieldReader);
+	I_Constructor0();
+	I_Constructor1(IN, const osgDB::FieldReaderIterator &, ic);
+	I_Method1(void, attach, IN, std::istream *, input);
+	I_Method0(void, detach);
+	I_Method0(bool, eof);
+	I_Method0(osgDB::FieldReader &, getFieldReader);
+	I_Method2(void, insert, IN, int, pos, IN, osgDB::Field *, field);
+	I_Method2(void, insert, IN, int, pos, IN, const char *, str);
+	I_Method1(osgDB::Field &, field, IN, int, pos);
+	I_Method0(void, advanceOverCurrentFieldOrBlock);
+	I_Method0(void, advanceToEndOfCurrentBlock);
+	I_Method1(void, advanceToEndOfBlock, IN, int, noNestBrackets);
+	I_Method1(bool, matchSequence, IN, const char *, str);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, std::string &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, unsigned int &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, int &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, float &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2f &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3f &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4f &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2d &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3d &, value);
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4d &, value);
+	I_Method1(bool, readSequence, IN, std::string &, value);
+	I_Method1(bool, readSequence, IN, unsigned int &, value);
+	I_Method1(bool, readSequence, IN, int &, value);
+	I_Method1(bool, readSequence, IN, float &, value);
+	I_Method1(bool, readSequence, IN, osg::Vec2f &, value);
+	I_Method1(bool, readSequence, IN, osg::Vec3f &, value);
+	I_Method1(bool, readSequence, IN, osg::Vec4f &, value);
+	I_Method1(bool, readSequence, IN, osg::Vec2d &, value);
+	I_Method1(bool, readSequence, IN, osg::Vec3d &, value);
+	I_Method1(bool, readSequence, IN, osg::Vec4d &, value);
+	I_ReadOnlyProperty(osgDB::FieldReader &, FieldReader);
 END_REFLECTOR
 

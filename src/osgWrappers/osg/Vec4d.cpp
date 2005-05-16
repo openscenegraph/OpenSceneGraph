@@ -13,42 +13,50 @@
 #include <osg/Vec4d>
 #include <osg/Vec4f>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 #include <osg/io_utils>
 	
 TYPE_NAME_ALIAS(double, osg::Vec4d::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Vec4d)
-	ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
-	Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
-	Constructor0();
-	Constructor4(IN, osg::Vec4d::value_type, x, IN, osg::Vec4d::value_type, y, IN, osg::Vec4d::value_type, z, IN, osg::Vec4d::value_type, w);
-	Constructor2(IN, const osg::Vec3d &, v3, IN, osg::Vec4d::value_type, w);
-	Constructor1(IN, const osg::Vec4f &, vec);
-	Method0(osg::Vec4d::value_type *, ptr);
-	Method0(const osg::Vec4d::value_type *, ptr);
-	Method4(void, set, IN, osg::Vec4d::value_type, x, IN, osg::Vec4d::value_type, y, IN, osg::Vec4d::value_type, z, IN, osg::Vec4d::value_type, w);
-	Method0(osg::Vec4d::value_type &, x);
-	Method0(osg::Vec4d::value_type &, y);
-	Method0(osg::Vec4d::value_type &, z);
-	Method0(osg::Vec4d::value_type &, w);
-	Method0(osg::Vec4d::value_type, x);
-	Method0(osg::Vec4d::value_type, y);
-	Method0(osg::Vec4d::value_type, z);
-	Method0(osg::Vec4d::value_type, w);
-	Method0(osg::Vec4d::value_type &, red);
-	Method0(osg::Vec4d::value_type &, green);
-	Method0(osg::Vec4d::value_type &, blue);
-	Method0(osg::Vec4d::value_type &, alpha);
-	Method0(osg::Vec4d::value_type, red);
-	Method0(osg::Vec4d::value_type, green);
-	Method0(osg::Vec4d::value_type, blue);
-	Method0(osg::Vec4d::value_type, alpha);
-	Method0(unsigned long, asABGR);
-	Method0(unsigned long, asRGBA);
-	Method0(bool, valid);
-	Method0(bool, isNaN);
-	Method0(osg::Vec4d::value_type, length);
-	Method0(osg::Vec4d::value_type, length2);
-	Method0(osg::Vec4d::value_type, normalize);
+	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
+	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_Constructor0();
+	I_Constructor4(IN, osg::Vec4d::value_type, x, IN, osg::Vec4d::value_type, y, IN, osg::Vec4d::value_type, z, IN, osg::Vec4d::value_type, w);
+	I_Constructor2(IN, const osg::Vec3d &, v3, IN, osg::Vec4d::value_type, w);
+	I_Constructor1(IN, const osg::Vec4f &, vec);
+	I_Method0(osg::Vec4d::value_type *, ptr);
+	I_Method0(const osg::Vec4d::value_type *, ptr);
+	I_Method4(void, set, IN, osg::Vec4d::value_type, x, IN, osg::Vec4d::value_type, y, IN, osg::Vec4d::value_type, z, IN, osg::Vec4d::value_type, w);
+	I_Method0(osg::Vec4d::value_type &, x);
+	I_Method0(osg::Vec4d::value_type &, y);
+	I_Method0(osg::Vec4d::value_type &, z);
+	I_Method0(osg::Vec4d::value_type &, w);
+	I_Method0(osg::Vec4d::value_type, x);
+	I_Method0(osg::Vec4d::value_type, y);
+	I_Method0(osg::Vec4d::value_type, z);
+	I_Method0(osg::Vec4d::value_type, w);
+	I_Method0(osg::Vec4d::value_type &, red);
+	I_Method0(osg::Vec4d::value_type &, green);
+	I_Method0(osg::Vec4d::value_type &, blue);
+	I_Method0(osg::Vec4d::value_type &, alpha);
+	I_Method0(osg::Vec4d::value_type, red);
+	I_Method0(osg::Vec4d::value_type, green);
+	I_Method0(osg::Vec4d::value_type, blue);
+	I_Method0(osg::Vec4d::value_type, alpha);
+	I_Method0(unsigned long, asABGR);
+	I_Method0(unsigned long, asRGBA);
+	I_Method0(bool, valid);
+	I_Method0(bool, isNaN);
+	I_Method0(osg::Vec4d::value_type, length);
+	I_Method0(osg::Vec4d::value_type, length2);
+	I_Method0(osg::Vec4d::value_type, normalize);
 END_REFLECTOR
 

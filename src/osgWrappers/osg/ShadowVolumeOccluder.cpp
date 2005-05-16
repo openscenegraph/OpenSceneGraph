@@ -19,32 +19,40 @@
 #include <osg/ShadowVolumeOccluder>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::Polytope >, osg::ShadowVolumeOccluder::HoleList);
 
 BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)
-	Constructor1(IN, const osg::ShadowVolumeOccluder &, svo);
-	Constructor0();
-	MethodWithDefaults4(bool, computeOccluder, IN, const osg::NodePath &, nodePath, , IN, const osg::ConvexPlanarOccluder &, occluder, , IN, osg::CullStack &, cullStack, , IN, bool, createDrawables, false);
-	Method0(void, disableResultMasks);
-	Method0(void, pushCurrentMask);
-	Method0(void, popCurrentMask);
-	Method1(bool, matchProjectionMatrix, IN, const osg::Matrix &, matrix);
-	Method1(void, setNodePath, IN, osg::NodePath &, nodePath);
-	Method0(osg::NodePath &, getNodePath);
-	Method0(const osg::NodePath &, getNodePath);
-	Method0(float, getVolume);
-	Method0(osg::Polytope &, getOccluder);
-	Method0(const osg::Polytope &, getOccluder);
-	Method0(osg::ShadowVolumeOccluder::HoleList &, getHoleList);
-	Method0(const osg::ShadowVolumeOccluder::HoleList &, getHoleList);
-	Method1(bool, contains, IN, const std::vector< osg::Vec3 > &, vertices);
-	Method1(bool, contains, IN, const osg::BoundingSphere &, bound);
-	Method1(bool, contains, IN, const osg::BoundingBox &, bound);
-	Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix);
-	ReadOnlyProperty(osg::ShadowVolumeOccluder::HoleList &, HoleList);
-	Property(osg::NodePath &, NodePath);
-	ReadOnlyProperty(osg::Polytope &, Occluder);
-	ReadOnlyProperty(float, Volume);
+	I_Constructor1(IN, const osg::ShadowVolumeOccluder &, svo);
+	I_Constructor0();
+	I_MethodWithDefaults4(bool, computeOccluder, IN, const osg::NodePath &, nodePath, , IN, const osg::ConvexPlanarOccluder &, occluder, , IN, osg::CullStack &, cullStack, , IN, bool, createDrawables, false);
+	I_Method0(void, disableResultMasks);
+	I_Method0(void, pushCurrentMask);
+	I_Method0(void, popCurrentMask);
+	I_Method1(bool, matchProjectionMatrix, IN, const osg::Matrix &, matrix);
+	I_Method1(void, setNodePath, IN, osg::NodePath &, nodePath);
+	I_Method0(osg::NodePath &, getNodePath);
+	I_Method0(const osg::NodePath &, getNodePath);
+	I_Method0(float, getVolume);
+	I_Method0(osg::Polytope &, getOccluder);
+	I_Method0(const osg::Polytope &, getOccluder);
+	I_Method0(osg::ShadowVolumeOccluder::HoleList &, getHoleList);
+	I_Method0(const osg::ShadowVolumeOccluder::HoleList &, getHoleList);
+	I_Method1(bool, contains, IN, const std::vector< osg::Vec3 > &, vertices);
+	I_Method1(bool, contains, IN, const osg::BoundingSphere &, bound);
+	I_Method1(bool, contains, IN, const osg::BoundingBox &, bound);
+	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix);
+	I_ReadOnlyProperty(osg::ShadowVolumeOccluder::HoleList &, HoleList);
+	I_Property(osg::NodePath &, NodePath);
+	I_ReadOnlyProperty(osg::Polytope &, Occluder);
+	I_ReadOnlyProperty(float, Volume);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::ShadowVolumeOccluderList);

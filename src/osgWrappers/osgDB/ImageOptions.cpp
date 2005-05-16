@@ -13,44 +13,52 @@
 #include <osg/Object>
 #include <osgDB/ImageOptions>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageWindowMode)
-	EnumLabel(osgDB::ImageOptions::ALL_IMAGE);
-	EnumLabel(osgDB::ImageOptions::RATIO_WINDOW);
-	EnumLabel(osgDB::ImageOptions::PIXEL_WINDOW);
+	I_EnumLabel(osgDB::ImageOptions::ALL_IMAGE);
+	I_EnumLabel(osgDB::ImageOptions::RATIO_WINDOW);
+	I_EnumLabel(osgDB::ImageOptions::PIXEL_WINDOW);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageSamplingMode)
-	EnumLabel(osgDB::ImageOptions::NEAREST);
-	EnumLabel(osgDB::ImageOptions::LINEAR);
-	EnumLabel(osgDB::ImageOptions::CUBIC);
+	I_EnumLabel(osgDB::ImageOptions::NEAREST);
+	I_EnumLabel(osgDB::ImageOptions::LINEAR);
+	I_EnumLabel(osgDB::ImageOptions::CUBIC);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions)
-	BaseType(osgDB::ReaderWriter::Options);
-	Constructor0();
-	Constructor1(IN, const std::string &, str);
-	ConstructorWithDefaults2(IN, const osgDB::ImageOptions &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(void, init);
+BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
+	I_BaseType(osgDB::ReaderWriter::Options);
+	I_Constructor0();
+	I_Constructor1(IN, const std::string &, str);
+	I_ConstructorWithDefaults2(IN, const osgDB::ImageOptions &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(void, init);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
-	Constructor0();
-	Method4(void, set, IN, unsigned int, x, IN, unsigned int, y, IN, unsigned int, w, IN, unsigned int, h);
+	I_Constructor0();
+	I_Method4(void, set, IN, unsigned int, x, IN, unsigned int, y, IN, unsigned int, w, IN, unsigned int, h);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
-	Constructor0();
-	Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
+	I_Constructor0();
+	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
+BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
 END_REFLECTOR
 

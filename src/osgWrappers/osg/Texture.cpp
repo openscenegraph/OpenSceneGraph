@@ -17,213 +17,221 @@
 #include <osg/Texture>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList);
 
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap);
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
-	EnumLabel(osg::Texture::WRAP_S);
-	EnumLabel(osg::Texture::WRAP_T);
-	EnumLabel(osg::Texture::WRAP_R);
+	I_EnumLabel(osg::Texture::WRAP_S);
+	I_EnumLabel(osg::Texture::WRAP_T);
+	I_EnumLabel(osg::Texture::WRAP_R);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapMode)
-	EnumLabel(osg::Texture::CLAMP);
-	EnumLabel(osg::Texture::CLAMP_TO_EDGE);
-	EnumLabel(osg::Texture::CLAMP_TO_BORDER);
-	EnumLabel(osg::Texture::REPEAT);
-	EnumLabel(osg::Texture::MIRROR);
+	I_EnumLabel(osg::Texture::CLAMP);
+	I_EnumLabel(osg::Texture::CLAMP_TO_EDGE);
+	I_EnumLabel(osg::Texture::CLAMP_TO_BORDER);
+	I_EnumLabel(osg::Texture::REPEAT);
+	I_EnumLabel(osg::Texture::MIRROR);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::FilterParameter)
-	EnumLabel(osg::Texture::MIN_FILTER);
-	EnumLabel(osg::Texture::MAG_FILTER);
+	I_EnumLabel(osg::Texture::MIN_FILTER);
+	I_EnumLabel(osg::Texture::MAG_FILTER);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::FilterMode)
-	EnumLabel(osg::Texture::LINEAR);
-	EnumLabel(osg::Texture::LINEAR_MIPMAP_LINEAR);
-	EnumLabel(osg::Texture::LINEAR_MIPMAP_NEAREST);
-	EnumLabel(osg::Texture::NEAREST);
-	EnumLabel(osg::Texture::NEAREST_MIPMAP_LINEAR);
-	EnumLabel(osg::Texture::NEAREST_MIPMAP_NEAREST);
+	I_EnumLabel(osg::Texture::LINEAR);
+	I_EnumLabel(osg::Texture::LINEAR_MIPMAP_LINEAR);
+	I_EnumLabel(osg::Texture::LINEAR_MIPMAP_NEAREST);
+	I_EnumLabel(osg::Texture::NEAREST);
+	I_EnumLabel(osg::Texture::NEAREST_MIPMAP_LINEAR);
+	I_EnumLabel(osg::Texture::NEAREST_MIPMAP_NEAREST);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::InternalFormatMode)
-	EnumLabel(osg::Texture::USE_IMAGE_DATA_FORMAT);
-	EnumLabel(osg::Texture::USE_USER_DEFINED_FORMAT);
-	EnumLabel(osg::Texture::USE_ARB_COMPRESSION);
-	EnumLabel(osg::Texture::USE_S3TC_DXT1_COMPRESSION);
-	EnumLabel(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
-	EnumLabel(osg::Texture::USE_S3TC_DXT5_COMPRESSION);
+	I_EnumLabel(osg::Texture::USE_IMAGE_DATA_FORMAT);
+	I_EnumLabel(osg::Texture::USE_USER_DEFINED_FORMAT);
+	I_EnumLabel(osg::Texture::USE_ARB_COMPRESSION);
+	I_EnumLabel(osg::Texture::USE_S3TC_DXT1_COMPRESSION);
+	I_EnumLabel(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+	I_EnumLabel(osg::Texture::USE_S3TC_DXT5_COMPRESSION);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowCompareFunc)
-	EnumLabel(osg::Texture::LEQUAL);
-	EnumLabel(osg::Texture::GEQUAL);
+	I_EnumLabel(osg::Texture::LEQUAL);
+	I_EnumLabel(osg::Texture::GEQUAL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowTextureMode)
-	EnumLabel(osg::Texture::LUMINANCE);
-	EnumLabel(osg::Texture::INTENSITY);
-	EnumLabel(osg::Texture::ALPHA);
+	I_EnumLabel(osg::Texture::LUMINANCE);
+	I_EnumLabel(osg::Texture::INTENSITY);
+	I_EnumLabel(osg::Texture::ALPHA);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Texture &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method0(bool, isTextureAttribute);
-	Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap);
-	Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which);
-	Method1(void, setBorderColor, IN, const osg::Vec4 &, color);
-	Method0(const osg::Vec4 &, getBorderColor);
-	Method1(void, setBorderWidth, IN, GLint, width);
-	Method0(GLint, getBorderWidth);
-	Method2(void, setFilter, IN, osg::Texture::FilterParameter, which, IN, osg::Texture::FilterMode, filter);
-	Method1(osg::Texture::FilterMode, getFilter, IN, osg::Texture::FilterParameter, which);
-	Method1(void, setMaxAnisotropy, IN, float, anis);
-	Method0(float, getMaxAnisotropy);
-	Method1(void, setUseHardwareMipMapGeneration, IN, bool, useHardwareMipMapGeneration);
-	Method0(bool, getUseHardwareMipMapGeneration);
-	Method1(void, setUnRefImageDataAfterApply, IN, bool, flag);
-	Method0(bool, getUnRefImageDataAfterApply);
-	Method1(void, setClientStorageHint, IN, bool, flag);
-	Method0(bool, getClientStorageHint);
-	Method1(void, setResizeNonPowerOfTwoHint, IN, bool, flag);
-	Method0(bool, getResizeNonPowerOfTwoHint);
-	Method1(void, setInternalFormatMode, IN, osg::Texture::InternalFormatMode, mode);
-	Method0(osg::Texture::InternalFormatMode, getInternalFormatMode);
-	Method1(void, setInternalFormat, IN, GLint, internalFormat);
-	Method0(GLint, getInternalFormat);
-	Method0(bool, isCompressedInternalFormat);
-	Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID);
-	Method0(void, dirtyTextureObject);
-	Method0(bool, areAllTextureObjectsLoaded);
-	Method1(unsigned int &, getTextureParameterDirty, IN, unsigned int, contextID);
-	Method0(void, dirtyTextureParameters);
-	Method1(void, setShadowComparison, IN, bool, flag);
-	Method1(void, setShadowCompareFunc, IN, osg::Texture::ShadowCompareFunc, func);
-	Method0(osg::Texture::ShadowCompareFunc, getShadowCompareFunc);
-	Method1(void, setShadowTextureMode, IN, osg::Texture::ShadowTextureMode, mode);
-	Method0(osg::Texture::ShadowTextureMode, getShadowTextureMode);
-	Method1(void, setShadowAmbient, IN, float, shadow_ambient);
-	Method0(float, getShadowAmbient);
-	Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image);
-	Method1(osg::Image *, getImage, IN, unsigned int, face);
-	Method1(const osg::Image *, getImage, IN, unsigned int, face);
-	Method0(unsigned int, getNumImages);
-	Method1(void, apply, IN, osg::State &, state);
-	Method1(void, compileGLObjects, IN, osg::State &, state);
-	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels);
-	Method7(void, applyTexImage2D_subload, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, inInternalFormat, IN, GLsizei, numMipmapLevels);
-	Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm);
-	Property(const osg::Vec4 &, BorderColor);
-	Property(GLint, BorderWidth);
-	Property(bool, ClientStorageHint);
-	IndexedProperty1(osg::Texture::FilterMode, Filter, osg::Texture::FilterParameter, which);
-	ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
-	Property(GLint, InternalFormat);
-	Property(osg::Texture::InternalFormatMode, InternalFormatMode);
-	Property(float, MaxAnisotropy);
-	Property(bool, ResizeNonPowerOfTwoHint);
-	Property(float, ShadowAmbient);
-	Property(osg::Texture::ShadowCompareFunc, ShadowCompareFunc);
-	WriteOnlyProperty(bool, ShadowComparison);
-	Property(osg::Texture::ShadowTextureMode, ShadowTextureMode);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	Property(bool, UnRefImageDataAfterApply);
-	Property(bool, UseHardwareMipMapGeneration);
-	IndexedProperty1(osg::Texture::WrapMode, Wrap, osg::Texture::WrapParameter, which);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Texture &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method0(bool, isTextureAttribute);
+	I_Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap);
+	I_Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which);
+	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getBorderColor);
+	I_Method1(void, setBorderWidth, IN, GLint, width);
+	I_Method0(GLint, getBorderWidth);
+	I_Method2(void, setFilter, IN, osg::Texture::FilterParameter, which, IN, osg::Texture::FilterMode, filter);
+	I_Method1(osg::Texture::FilterMode, getFilter, IN, osg::Texture::FilterParameter, which);
+	I_Method1(void, setMaxAnisotropy, IN, float, anis);
+	I_Method0(float, getMaxAnisotropy);
+	I_Method1(void, setUseHardwareMipMapGeneration, IN, bool, useHardwareMipMapGeneration);
+	I_Method0(bool, getUseHardwareMipMapGeneration);
+	I_Method1(void, setUnRefImageDataAfterApply, IN, bool, flag);
+	I_Method0(bool, getUnRefImageDataAfterApply);
+	I_Method1(void, setClientStorageHint, IN, bool, flag);
+	I_Method0(bool, getClientStorageHint);
+	I_Method1(void, setResizeNonPowerOfTwoHint, IN, bool, flag);
+	I_Method0(bool, getResizeNonPowerOfTwoHint);
+	I_Method1(void, setInternalFormatMode, IN, osg::Texture::InternalFormatMode, mode);
+	I_Method0(osg::Texture::InternalFormatMode, getInternalFormatMode);
+	I_Method1(void, setInternalFormat, IN, GLint, internalFormat);
+	I_Method0(GLint, getInternalFormat);
+	I_Method0(bool, isCompressedInternalFormat);
+	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID);
+	I_Method0(void, dirtyTextureObject);
+	I_Method0(bool, areAllTextureObjectsLoaded);
+	I_Method1(unsigned int &, getTextureParameterDirty, IN, unsigned int, contextID);
+	I_Method0(void, dirtyTextureParameters);
+	I_Method1(void, setShadowComparison, IN, bool, flag);
+	I_Method1(void, setShadowCompareFunc, IN, osg::Texture::ShadowCompareFunc, func);
+	I_Method0(osg::Texture::ShadowCompareFunc, getShadowCompareFunc);
+	I_Method1(void, setShadowTextureMode, IN, osg::Texture::ShadowTextureMode, mode);
+	I_Method0(osg::Texture::ShadowTextureMode, getShadowTextureMode);
+	I_Method1(void, setShadowAmbient, IN, float, shadow_ambient);
+	I_Method0(float, getShadowAmbient);
+	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image);
+	I_Method1(osg::Image *, getImage, IN, unsigned int, face);
+	I_Method1(const osg::Image *, getImage, IN, unsigned int, face);
+	I_Method0(unsigned int, getNumImages);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Method1(void, compileGLObjects, IN, osg::State &, state);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
+	I_Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels);
+	I_Method7(void, applyTexImage2D_subload, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, inInternalFormat, IN, GLsizei, numMipmapLevels);
+	I_Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm);
+	I_Property(const osg::Vec4 &, BorderColor);
+	I_Property(GLint, BorderWidth);
+	I_Property(bool, ClientStorageHint);
+	I_IndexedProperty1(osg::Texture::FilterMode, Filter, osg::Texture::FilterParameter, which);
+	I_ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
+	I_Property(GLint, InternalFormat);
+	I_Property(osg::Texture::InternalFormatMode, InternalFormatMode);
+	I_Property(float, MaxAnisotropy);
+	I_Property(bool, ResizeNonPowerOfTwoHint);
+	I_Property(float, ShadowAmbient);
+	I_Property(osg::Texture::ShadowCompareFunc, ShadowCompareFunc);
+	I_WriteOnlyProperty(bool, ShadowComparison);
+	I_Property(osg::Texture::ShadowTextureMode, ShadowTextureMode);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Property(bool, UnRefImageDataAfterApply);
+	I_Property(bool, UseHardwareMipMapGeneration);
+	I_IndexedProperty1(osg::Texture::WrapMode, Wrap, osg::Texture::WrapParameter, which);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
-	BaseType(osg::Referenced);
-	Constructor1(IN, unsigned int, contextID);
-	Constructor1(IN, const osg::Texture::Extensions &, rhs);
-	Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs);
-	Method1(void, setupGLExtensions, IN, unsigned int, contextID);
-	Method1(void, setMultiTexturingSupported, IN, bool, flag);
-	Method0(bool, isMultiTexturingSupported);
-	Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag);
-	Method0(bool, isTextureFilterAnisotropicSupported);
-	Method1(void, setTextureCompressionARBSupported, IN, bool, flag);
-	Method0(bool, isTextureCompressionARBSupported);
-	Method1(void, setTextureCompressionS3TCSupported, IN, bool, flag);
-	Method0(bool, isTextureCompressionS3TCSupported);
-	Method1(void, setTextureMirroredRepeatSupported, IN, bool, flag);
-	Method0(bool, isTextureMirroredRepeatSupported);
-	Method1(void, setTextureEdgeClampSupported, IN, bool, flag);
-	Method0(bool, isTextureEdgeClampSupported);
-	Method1(void, setTextureBorderClampSupported, IN, bool, flag);
-	Method0(bool, isTextureBorderClampSupported);
-	Method1(void, setGenerateMipMapSupported, IN, bool, flag);
-	Method0(bool, isGenerateMipMapSupported);
-	Method1(void, setShadowSupported, IN, bool, flag);
-	Method0(bool, isShadowSupported);
-	Method1(void, setShadowAmbientSupported, IN, bool, flag);
-	Method0(bool, isShadowAmbientSupported);
-	Method1(void, setMaxTextureSize, IN, GLint, maxsize);
-	Method0(GLint, maxTextureSize);
-	Method1(void, setNumTextureUnits, IN, GLint, nunits);
-	Method0(GLint, numTextureUnits);
-	Method0(bool, isCompressedTexImage2DSupported);
-	Method1(void, setCompressedTexImage2DProc, IN, void *, ptr);
-	Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data);
-	Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr);
-	Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data);
-	Method1(void, setGetCompressedTexImageProc, IN, void *, ptr);
-	Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data);
-	Method0(bool, isClientStorageSupported);
-	Method0(bool, isNonPowerOfTwoTextureSupported);
-	WriteOnlyProperty(void *, CompressedTexImage2DProc);
-	WriteOnlyProperty(void *, CompressedTexSubImage2DProc);
-	WriteOnlyProperty(bool, GenerateMipMapSupported);
-	WriteOnlyProperty(void *, GetCompressedTexImageProc);
-	WriteOnlyProperty(GLint, MaxTextureSize);
-	WriteOnlyProperty(bool, MultiTexturingSupported);
-	WriteOnlyProperty(GLint, NumTextureUnits);
-	WriteOnlyProperty(bool, ShadowAmbientSupported);
-	WriteOnlyProperty(bool, ShadowSupported);
-	WriteOnlyProperty(bool, TextureBorderClampSupported);
-	WriteOnlyProperty(bool, TextureCompressionARBSupported);
-	WriteOnlyProperty(bool, TextureCompressionS3TCSupported);
-	WriteOnlyProperty(bool, TextureEdgeClampSupported);
-	WriteOnlyProperty(bool, TextureFilterAnisotropicSupported);
-	WriteOnlyProperty(bool, TextureMirroredRepeatSupported);
-	WriteOnlyProperty(unsigned int, upGLExtensions);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::Texture::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs);
+	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID);
+	I_Method1(void, setMultiTexturingSupported, IN, bool, flag);
+	I_Method0(bool, isMultiTexturingSupported);
+	I_Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag);
+	I_Method0(bool, isTextureFilterAnisotropicSupported);
+	I_Method1(void, setTextureCompressionARBSupported, IN, bool, flag);
+	I_Method0(bool, isTextureCompressionARBSupported);
+	I_Method1(void, setTextureCompressionS3TCSupported, IN, bool, flag);
+	I_Method0(bool, isTextureCompressionS3TCSupported);
+	I_Method1(void, setTextureMirroredRepeatSupported, IN, bool, flag);
+	I_Method0(bool, isTextureMirroredRepeatSupported);
+	I_Method1(void, setTextureEdgeClampSupported, IN, bool, flag);
+	I_Method0(bool, isTextureEdgeClampSupported);
+	I_Method1(void, setTextureBorderClampSupported, IN, bool, flag);
+	I_Method0(bool, isTextureBorderClampSupported);
+	I_Method1(void, setGenerateMipMapSupported, IN, bool, flag);
+	I_Method0(bool, isGenerateMipMapSupported);
+	I_Method1(void, setShadowSupported, IN, bool, flag);
+	I_Method0(bool, isShadowSupported);
+	I_Method1(void, setShadowAmbientSupported, IN, bool, flag);
+	I_Method0(bool, isShadowAmbientSupported);
+	I_Method1(void, setMaxTextureSize, IN, GLint, maxsize);
+	I_Method0(GLint, maxTextureSize);
+	I_Method1(void, setNumTextureUnits, IN, GLint, nunits);
+	I_Method0(GLint, numTextureUnits);
+	I_Method0(bool, isCompressedTexImage2DSupported);
+	I_Method1(void, setCompressedTexImage2DProc, IN, void *, ptr);
+	I_Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data);
+	I_Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr);
+	I_Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data);
+	I_Method1(void, setGetCompressedTexImageProc, IN, void *, ptr);
+	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data);
+	I_Method0(bool, isClientStorageSupported);
+	I_Method0(bool, isNonPowerOfTwoTextureSupported);
+	I_WriteOnlyProperty(void *, CompressedTexImage2DProc);
+	I_WriteOnlyProperty(void *, CompressedTexSubImage2DProc);
+	I_WriteOnlyProperty(bool, GenerateMipMapSupported);
+	I_WriteOnlyProperty(void *, GetCompressedTexImageProc);
+	I_WriteOnlyProperty(GLint, MaxTextureSize);
+	I_WriteOnlyProperty(bool, MultiTexturingSupported);
+	I_WriteOnlyProperty(GLint, NumTextureUnits);
+	I_WriteOnlyProperty(bool, ShadowAmbientSupported);
+	I_WriteOnlyProperty(bool, ShadowSupported);
+	I_WriteOnlyProperty(bool, TextureBorderClampSupported);
+	I_WriteOnlyProperty(bool, TextureCompressionARBSupported);
+	I_WriteOnlyProperty(bool, TextureCompressionS3TCSupported);
+	I_WriteOnlyProperty(bool, TextureEdgeClampSupported);
+	I_WriteOnlyProperty(bool, TextureFilterAnisotropicSupported);
+	I_WriteOnlyProperty(bool, TextureMirroredRepeatSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtensions);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Texture::TextureObject)
-	BaseType(osg::Referenced);
-	Constructor2(IN, GLuint, id, IN, GLenum, target);
-	Constructor8(IN, GLuint, id, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	Method0(void, bind);
-	MethodWithDefaults1(void, setAllocated, IN, bool, allocated, true);
-	Method6(void, setAllocated, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	Method0(bool, isAllocated);
-	Method0(bool, isReusable);
-	WriteOnlyProperty(bool, Allocated);
+BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, GLuint, id, IN, GLenum, target);
+	I_Constructor8(IN, GLuint, id, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
+	I_Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
+	I_Method0(void, bind);
+	I_MethodWithDefaults1(void, setAllocated, IN, bool, allocated, true);
+	I_Method6(void, setAllocated, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
+	I_Method0(bool, isAllocated);
+	I_Method0(bool, isReusable);
+	I_WriteOnlyProperty(bool, Allocated);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
-	Constructor0();
-	Constructor1(IN, osg::Texture::TextureObject *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObject > &, rp);
-	Method0(bool, valid);
-	Method0(osg::Texture::TextureObject *, get);
-	Method0(const osg::Texture::TextureObject *, get);
-	Method0(osg::Texture::TextureObject *, take);
-	Method0(osg::Texture::TextureObject *, release);
-	ReadOnlyProperty(osg::Texture::TextureObject *, );
+	I_Constructor0();
+	I_Constructor1(IN, osg::Texture::TextureObject *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObject > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::Texture::TextureObject *, get);
+	I_Method0(const osg::Texture::TextureObject *, get);
+	I_Method0(osg::Texture::TextureObject *, take);
+	I_Method0(osg::Texture::TextureObject *, release);
+	I_ReadOnlyProperty(osg::Texture::TextureObject *, );
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Texture::TextureObject > >);

@@ -16,48 +16,56 @@
 #include <osg/StateAttribute>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::Fog::Mode)
-	EnumLabel(osg::Fog::LINEAR);
-	EnumLabel(osg::Fog::EXP);
-	EnumLabel(osg::Fog::EXP2);
+	I_EnumLabel(osg::Fog::LINEAR);
+	I_EnumLabel(osg::Fog::EXP);
+	I_EnumLabel(osg::Fog::EXP2);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Fog::FogCoordinateSource)
-	EnumLabel(osg::Fog::FOG_COORDINATE);
-	EnumLabel(osg::Fog::FRAGMENT_DEPTH);
+	I_EnumLabel(osg::Fog::FOG_COORDINATE);
+	I_EnumLabel(osg::Fog::FRAGMENT_DEPTH);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Fog)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Fog &, fog, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method1(void, setMode, IN, osg::Fog::Mode, mode);
-	Method0(osg::Fog::Mode, getMode);
-	Method1(void, setDensity, IN, float, density);
-	Method0(float, getDensity);
-	Method1(void, setStart, IN, float, start);
-	Method0(float, getStart);
-	Method1(void, setEnd, IN, float, end);
-	Method0(float, getEnd);
-	Method1(void, setColor, IN, const osg::Vec4 &, color);
-	Method0(const osg::Vec4 &, getColor);
-	Method1(void, setFogCoordinateSource, IN, GLint, source);
-	Method0(GLint, getFogCoordinateSource);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(const osg::Vec4 &, Color);
-	Property(float, Density);
-	Property(float, End);
-	Property(GLint, FogCoordinateSource);
-	Property(osg::Fog::Mode, Mode);
-	Property(float, Start);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Fog &, fog, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(void, setMode, IN, osg::Fog::Mode, mode);
+	I_Method0(osg::Fog::Mode, getMode);
+	I_Method1(void, setDensity, IN, float, density);
+	I_Method0(float, getDensity);
+	I_Method1(void, setStart, IN, float, start);
+	I_Method0(float, getStart);
+	I_Method1(void, setEnd, IN, float, end);
+	I_Method0(float, getEnd);
+	I_Method1(void, setColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getColor);
+	I_Method1(void, setFogCoordinateSource, IN, GLint, source);
+	I_Method0(GLint, getFogCoordinateSource);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(const osg::Vec4 &, Color);
+	I_Property(float, Density);
+	I_Property(float, End);
+	I_Property(GLint, FogCoordinateSource);
+	I_Property(osg::Fog::Mode, Mode);
+	I_Property(float, Start);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

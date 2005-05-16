@@ -11,58 +11,62 @@
 
 #include <osgDB/Field>
 
-BEGIN_ENUM_REFLECTOR(osgDB::Field::@2)
-	EnumLabel(osgDB::Field::MIN_CACHE_SIZE);
-END_REFLECTOR
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
 
 BEGIN_ENUM_REFLECTOR(osgDB::Field::FieldType)
-	EnumLabel(osgDB::Field::OPEN_BRACKET);
-	EnumLabel(osgDB::Field::CLOSE_BRACKET);
-	EnumLabel(osgDB::Field::STRING);
-	EnumLabel(osgDB::Field::WORD);
-	EnumLabel(osgDB::Field::REAL);
-	EnumLabel(osgDB::Field::INTEGER);
-	EnumLabel(osgDB::Field::BLANK);
-	EnumLabel(osgDB::Field::UNINITIALISED);
+	I_EnumLabel(osgDB::Field::OPEN_BRACKET);
+	I_EnumLabel(osgDB::Field::CLOSE_BRACKET);
+	I_EnumLabel(osgDB::Field::STRING);
+	I_EnumLabel(osgDB::Field::WORD);
+	I_EnumLabel(osgDB::Field::REAL);
+	I_EnumLabel(osgDB::Field::INTEGER);
+	I_EnumLabel(osgDB::Field::BLANK);
+	I_EnumLabel(osgDB::Field::UNINITIALISED);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::Field)
-	Constructor0();
-	Constructor1(IN, const osgDB::Field &, field);
-	Method0(void, reset);
-	Method1(void, addChar, IN, char, c);
-	Method0(int, getNoCharacters);
-	MethodWithDefaults1(void, setWithinQuotes, IN, bool, withinQuotes, true);
-	Method0(bool, getWithinQuotes);
-	Method1(void, setNoNestedBrackets, IN, int, no);
-	Method0(int, getNoNestedBrackets);
-	Method0(osgDB::Field::FieldType, getFieldType);
-	Method0(bool, isValid);
-	Method0(bool, isOpenBracket);
-	Method0(bool, isCloseBracket);
-	Method0(bool, isWord);
-	Method1(bool, matchWord, IN, const char *, str);
-	Method2(bool, matchWord, IN, const char *, str, IN, int, noCharacters);
-	Method0(bool, isString);
-	Method1(bool, matchString, IN, const char *, str);
-	Method2(bool, matchString, IN, const char *, str, IN, int, noCharacters);
-	Method0(bool, isQuotedString);
-	Method0(const char *, getStr);
-	Method0(char *, takeStr);
-	Method0(bool, isInt);
-	Method1(bool, matchInt, IN, int, i);
-	Method1(bool, getInt, IN, int &, i);
-	Method0(bool, isUInt);
-	Method1(bool, matchUInt, IN, unsigned int, i);
-	Method1(bool, getUInt, IN, unsigned int &, i);
-	Method0(bool, isFloat);
-	Method1(bool, matchFloat, IN, float, f);
-	Method1(bool, getFloat, IN, float &, f);
-	Method1(bool, getFloat, IN, double &, f);
-	ReadOnlyProperty(osgDB::Field::FieldType, FieldType);
-	ReadOnlyProperty(int, NoCharacters);
-	Property(int, NoNestedBrackets);
-	ReadOnlyProperty(const char *, Str);
-	Property(bool, WithinQuotes);
+	I_Constructor0();
+	I_Constructor1(IN, const osgDB::Field &, field);
+	I_Method0(void, reset);
+	I_Method1(void, addChar, IN, char, c);
+	I_Method0(int, getNoCharacters);
+	I_MethodWithDefaults1(void, setWithinQuotes, IN, bool, withinQuotes, true);
+	I_Method0(bool, getWithinQuotes);
+	I_Method1(void, setNoNestedBrackets, IN, int, no);
+	I_Method0(int, getNoNestedBrackets);
+	I_Method0(osgDB::Field::FieldType, getFieldType);
+	I_Method0(bool, isValid);
+	I_Method0(bool, isOpenBracket);
+	I_Method0(bool, isCloseBracket);
+	I_Method0(bool, isWord);
+	I_Method1(bool, matchWord, IN, const char *, str);
+	I_Method2(bool, matchWord, IN, const char *, str, IN, int, noCharacters);
+	I_Method0(bool, isString);
+	I_Method1(bool, matchString, IN, const char *, str);
+	I_Method2(bool, matchString, IN, const char *, str, IN, int, noCharacters);
+	I_Method0(bool, isQuotedString);
+	I_Method0(const char *, getStr);
+	I_Method0(char *, takeStr);
+	I_Method0(bool, isInt);
+	I_Method1(bool, matchInt, IN, int, i);
+	I_Method1(bool, getInt, IN, int &, i);
+	I_Method0(bool, isUInt);
+	I_Method1(bool, matchUInt, IN, unsigned int, i);
+	I_Method1(bool, getUInt, IN, unsigned int &, i);
+	I_Method0(bool, isFloat);
+	I_Method1(bool, matchFloat, IN, float, f);
+	I_Method1(bool, getFloat, IN, float &, f);
+	I_Method1(bool, getFloat, IN, double &, f);
+	I_ReadOnlyProperty(osgDB::Field::FieldType, FieldType);
+	I_ReadOnlyProperty(int, NoCharacters);
+	I_Property(int, NoNestedBrackets);
+	I_ReadOnlyProperty(const char *, Str);
+	I_Property(bool, WithinQuotes);
 END_REFLECTOR
 

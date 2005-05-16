@@ -14,10 +14,18 @@
 #include <osg/Vec3>
 #include <osgUtil/TransformCallback>
 
-BEGIN_VALUE_REFLECTOR(osgUtil::TransformCallback)
-	BaseType(osg::NodeCallback);
-	Constructor3(IN, const osg::Vec3 &, pivot, IN, const osg::Vec3 &, axis, IN, float, angularVelocity);
-	Method1(void, setPause, IN, bool, pause);
-	WriteOnlyProperty(bool, Pause);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::TransformCallback)
+	I_BaseType(osg::NodeCallback);
+	I_Constructor3(IN, const osg::Vec3 &, pivot, IN, const osg::Vec3 &, axis, IN, float, angularVelocity);
+	I_Method1(void, setPause, IN, bool, pause);
+	I_WriteOnlyProperty(bool, Pause);
 END_REFLECTOR
 

@@ -15,31 +15,39 @@
 #include <osg/Vec3>
 #include <osgParticle/FluidProgram>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::FluidProgram)
-	BaseType(osgParticle::Program);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::FluidProgram &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, setFluidViscosity, IN, float, v);
-	Method0(float, getFluidViscosity);
-	Method1(void, setFluidDensity, IN, float, d);
-	Method0(float, getFluidDensity);
-	Method1(void, setWind, IN, const osg::Vec3 &, wind);
-	Method0(const osg::Vec3 &, getWind);
-	Method1(void, setAcceleration, IN, const osg::Vec3 &, v);
-	Method0(const osg::Vec3 &, getAcceleration);
-	MethodWithDefaults1(void, setToGravity, IN, float, scale, 1.0f);
-	Method0(void, setFluidToAir);
-	Method0(void, setFluidToWater);
-	Property(const osg::Vec3 &, Acceleration);
-	Property(float, FluidDensity);
-	Property(float, FluidViscosity);
-	WriteOnlyProperty(float, ToGravity);
-	Property(const osg::Vec3 &, Wind);
+	I_BaseType(osgParticle::Program);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::FluidProgram &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setFluidViscosity, IN, float, v);
+	I_Method0(float, getFluidViscosity);
+	I_Method1(void, setFluidDensity, IN, float, d);
+	I_Method0(float, getFluidDensity);
+	I_Method1(void, setWind, IN, const osg::Vec3 &, wind);
+	I_Method0(const osg::Vec3 &, getWind);
+	I_Method1(void, setAcceleration, IN, const osg::Vec3 &, v);
+	I_Method0(const osg::Vec3 &, getAcceleration);
+	I_MethodWithDefaults1(void, setToGravity, IN, float, scale, 1.0f);
+	I_Method0(void, setFluidToAir);
+	I_Method0(void, setFluidToWater);
+	I_Property(const osg::Vec3 &, Acceleration);
+	I_Property(float, FluidDensity);
+	I_Property(float, FluidViscosity);
+	I_WriteOnlyProperty(float, ToGravity);
+	I_Property(const osg::Vec3 &, Wind);
 END_REFLECTOR
 

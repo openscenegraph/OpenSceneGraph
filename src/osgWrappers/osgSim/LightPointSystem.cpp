@@ -13,26 +13,34 @@
 #include <osg/Object>
 #include <osgSim/LightPointSystem>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgSim::LightPointSystem::AnimationState)
-	EnumLabel(osgSim::LightPointSystem::ANIMATION_ON);
-	EnumLabel(osgSim::LightPointSystem::ANIMATION_OFF);
-	EnumLabel(osgSim::LightPointSystem::ANIMATION_RANDOM);
+	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_ON);
+	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_OFF);
+	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_RANDOM);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::LightPointSystem)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::LightPointSystem &, lps, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setIntensity, IN, float, intensity);
-	Method0(float, getIntensity);
-	Method1(void, setAnimationState, IN, osgSim::LightPointSystem::AnimationState, state);
-	Method0(osgSim::LightPointSystem::AnimationState, getAnimationState);
-	Property(osgSim::LightPointSystem::AnimationState, AnimationState);
-	Property(float, Intensity);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::LightPointSystem &, lps, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setIntensity, IN, float, intensity);
+	I_Method0(float, getIntensity);
+	I_Method1(void, setAnimationState, IN, osgSim::LightPointSystem::AnimationState, state);
+	I_Method0(osgSim::LightPointSystem::AnimationState, getAnimationState);
+	I_Property(osgSim::LightPointSystem::AnimationState, AnimationState);
+	I_Property(float, Intensity);
 END_REFLECTOR
 

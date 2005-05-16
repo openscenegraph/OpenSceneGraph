@@ -13,66 +13,74 @@
 #include <osg/Vec3>
 #include <osgUtil/Tesselator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tesselator::VertexPointList);
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Tesselator::Prim > >, osgUtil::Tesselator::PrimList);
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Tesselator::WindingType)
-	EnumLabel(osgUtil::Tesselator::TESS_WINDING_ODD);
-	EnumLabel(osgUtil::Tesselator::TESS_WINDING_NONZERO);
-	EnumLabel(osgUtil::Tesselator::TESS_WINDING_POSITIVE);
-	EnumLabel(osgUtil::Tesselator::TESS_WINDING_NEGATIVE);
-	EnumLabel(osgUtil::Tesselator::TESS_WINDING_ABS_GEQ_TWO);
+	I_EnumLabel(osgUtil::Tesselator::TESS_WINDING_ODD);
+	I_EnumLabel(osgUtil::Tesselator::TESS_WINDING_NONZERO);
+	I_EnumLabel(osgUtil::Tesselator::TESS_WINDING_POSITIVE);
+	I_EnumLabel(osgUtil::Tesselator::TESS_WINDING_NEGATIVE);
+	I_EnumLabel(osgUtil::Tesselator::TESS_WINDING_ABS_GEQ_TWO);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Tesselator::TesselationType)
-	EnumLabel(osgUtil::Tesselator::TESS_TYPE_GEOMETRY);
-	EnumLabel(osgUtil::Tesselator::TESS_TYPE_DRAWABLE);
-	EnumLabel(osgUtil::Tesselator::TESS_TYPE_POLYGONS);
+	I_EnumLabel(osgUtil::Tesselator::TESS_TYPE_GEOMETRY);
+	I_EnumLabel(osgUtil::Tesselator::TESS_TYPE_DRAWABLE);
+	I_EnumLabel(osgUtil::Tesselator::TESS_TYPE_POLYGONS);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgUtil::Tesselator)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method1(void, setBoundaryOnly, IN, const bool, tt);
-	Method0(const bool, getBoundaryOnly);
-	Method1(void, setWindingType, IN, const osgUtil::Tesselator::WindingType, wt);
-	Method0(const osgUtil::Tesselator::WindingType, getWindingType);
-	Method1(void, setTesselationType, IN, const osgUtil::Tesselator::TesselationType, tt);
-	Method0(const osgUtil::Tesselator::TesselationType, getTesselationType);
-	Method1(void, retesselatePolygons, IN, osg::Geometry &, cxgeom);
-	Method0(osg::Geometry::PrimitiveSetList, getContours);
-	Method0(void, beginTesselation);
-	Method0(void, beginContour);
-	Method1(void, addVertex, IN, osg::Vec3 *, vertex);
-	Method0(void, endContour);
-	Method0(void, endTesselation);
-	Method0(osgUtil::Tesselator::PrimList &, getPrimList);
-	Method0(void, reset);
-	Property(const bool, BoundaryOnly);
-	ReadOnlyProperty(osg::Geometry::PrimitiveSetList, Contours);
-	ReadOnlyProperty(osgUtil::Tesselator::PrimList &, PrimList);
-	Property(const osgUtil::Tesselator::TesselationType, TesselationType);
-	Property(const osgUtil::Tesselator::WindingType, WindingType);
+BEGIN_OBJECT_REFLECTOR(osgUtil::Tesselator)
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method1(void, setBoundaryOnly, IN, const bool, tt);
+	I_Method0(const bool, getBoundaryOnly);
+	I_Method1(void, setWindingType, IN, const osgUtil::Tesselator::WindingType, wt);
+	I_Method0(const osgUtil::Tesselator::WindingType, getWindingType);
+	I_Method1(void, setTesselationType, IN, const osgUtil::Tesselator::TesselationType, tt);
+	I_Method0(const osgUtil::Tesselator::TesselationType, getTesselationType);
+	I_Method1(void, retesselatePolygons, IN, osg::Geometry &, cxgeom);
+	I_Method0(osg::Geometry::PrimitiveSetList, getContours);
+	I_Method0(void, beginTesselation);
+	I_Method0(void, beginContour);
+	I_Method1(void, addVertex, IN, osg::Vec3 *, vertex);
+	I_Method0(void, endContour);
+	I_Method0(void, endTesselation);
+	I_Method0(osgUtil::Tesselator::PrimList &, getPrimList);
+	I_Method0(void, reset);
+	I_Property(const bool, BoundaryOnly);
+	I_ReadOnlyProperty(osg::Geometry::PrimitiveSetList, Contours);
+	I_ReadOnlyProperty(osgUtil::Tesselator::PrimList &, PrimList);
+	I_Property(const osgUtil::Tesselator::TesselationType, TesselationType);
+	I_Property(const osgUtil::Tesselator::WindingType, WindingType);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tesselator::Prim::VecList);
 
-BEGIN_VALUE_REFLECTOR(osgUtil::Tesselator::Prim)
-	BaseType(osg::Referenced);
-	Constructor1(IN, GLenum, mode);
+BEGIN_OBJECT_REFLECTOR(osgUtil::Tesselator::Prim)
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, GLenum, mode);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tesselator::Prim >)
-	Constructor0();
-	Constructor1(IN, osgUtil::Tesselator::Prim *, t);
-	Constructor1(IN, const osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);
-	Method0(bool, valid);
-	Method0(osgUtil::Tesselator::Prim *, get);
-	Method0(const osgUtil::Tesselator::Prim *, get);
-	Method0(osgUtil::Tesselator::Prim *, take);
-	Method0(osgUtil::Tesselator::Prim *, release);
-	ReadOnlyProperty(osgUtil::Tesselator::Prim *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgUtil::Tesselator::Prim *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgUtil::Tesselator::Prim *, get);
+	I_Method0(const osgUtil::Tesselator::Prim *, get);
+	I_Method0(osgUtil::Tesselator::Prim *, take);
+	I_Method0(osgUtil::Tesselator::Prim *, release);
+	I_ReadOnlyProperty(osgUtil::Tesselator::Prim *, );
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Vec3 * >);

@@ -20,58 +20,66 @@
 #include <osgGA/GUIEventHandler>
 #include <osgGA/GUIEventHandlerVisitor>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgGA::GUIEventHandler > >, osgGA::CompositeGUIEventHandler::ChildList);
 
-BEGIN_VALUE_REFLECTOR(osgGA::CompositeGUIEventHandler)
-	BaseType(osgGA::GUIEventHandler);
-	Constructor0();
-	Method0(const char *, className);
-	Method0(const osgGA::CompositeGUIEventHandler *, getComposite);
-	Method0(osgGA::CompositeGUIEventHandler *, getComposite);
-	Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, object, IN, osg::NodeVisitor *, nv);
-	Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, v);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	Method1(bool, addChild, IN, osgGA::GUIEventHandler *, geh);
-	Method1(bool, removeChild, IN, osgGA::GUIEventHandler *, geh);
-	Method0(unsigned int, getNumChildren);
-	Method1(osgGA::GUIEventHandler *, getChild, IN, unsigned int, i);
-	Method1(const osgGA::GUIEventHandler *, getChild, IN, unsigned int, i);
-	Method1(bool, containsNode, IN, const osgGA::GUIEventHandler *, node);
-	Method1(ChildList::iterator, findChild, IN, const osgGA::GUIEventHandler *, node);
-	ArrayProperty_GA(osgGA::GUIEventHandler *, Child, Children, unsigned int, bool);
-	ReadOnlyProperty(osgGA::CompositeGUIEventHandler *, Composite);
+BEGIN_OBJECT_REFLECTOR(osgGA::CompositeGUIEventHandler)
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor0();
+	I_Method0(const char *, className);
+	I_Method0(const osgGA::CompositeGUIEventHandler *, getComposite);
+	I_Method0(osgGA::CompositeGUIEventHandler *, getComposite);
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, object, IN, osg::NodeVisitor *, nv);
+	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, v);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Method1(bool, addChild, IN, osgGA::GUIEventHandler *, geh);
+	I_Method1(bool, removeChild, IN, osgGA::GUIEventHandler *, geh);
+	I_Method0(unsigned int, getNumChildren);
+	I_Method1(osgGA::GUIEventHandler *, getChild, IN, unsigned int, i);
+	I_Method1(const osgGA::GUIEventHandler *, getChild, IN, unsigned int, i);
+	I_Method1(bool, containsNode, IN, const osgGA::GUIEventHandler *, node);
+	I_Method1(osgGA::CompositeGUIEventHandler::ChildList::iterator, findChild, IN, const osgGA::GUIEventHandler *, node);
+	I_ArrayProperty_GA(osgGA::GUIEventHandler *, Child, Children, unsigned int, bool);
+	I_ReadOnlyProperty(osgGA::CompositeGUIEventHandler *, Composite);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgGA::GUIEventHandler)
-	BaseType(osg::NodeCallback);
-	BaseType(osg::Drawable::EventCallback);
-	Constructor0();
-	Constructor2(IN, const osgGA::GUIEventHandler &, x, IN, const osg::CopyOp &, x);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method2(void, event, IN, osg::NodeVisitor *, nv, IN, osg::Drawable *, drawable);
-	Method0(const osgGA::CompositeGUIEventHandler *, getComposite);
-	Method0(osgGA::CompositeGUIEventHandler *, getComposite);
-	Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, x);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
-	Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, x);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, x);
-	ReadOnlyProperty(osgGA::CompositeGUIEventHandler *, Composite);
+BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
+	I_BaseType(osg::NodeCallback);
+	I_BaseType(osg::Drawable::EventCallback);
+	I_Constructor0();
+	I_Constructor2(IN, const osgGA::GUIEventHandler &, x, IN, const osg::CopyOp &, x);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method2(void, event, IN, osg::NodeVisitor *, nv, IN, osg::Drawable *, drawable);
+	I_Method0(const osgGA::CompositeGUIEventHandler *, getComposite);
+	I_Method0(osgGA::CompositeGUIEventHandler *, getComposite);
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, x);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
+	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, x);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, x);
+	I_ReadOnlyProperty(osgGA::CompositeGUIEventHandler *, Composite);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
-	Constructor0();
-	Constructor1(IN, osgGA::GUIEventHandler *, t);
-	Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
-	Method0(bool, valid);
-	Method0(osgGA::GUIEventHandler *, get);
-	Method0(const osgGA::GUIEventHandler *, get);
-	Method0(osgGA::GUIEventHandler *, take);
-	Method0(osgGA::GUIEventHandler *, release);
-	ReadOnlyProperty(osgGA::GUIEventHandler *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgGA::GUIEventHandler *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgGA::GUIEventHandler *, get);
+	I_Method0(const osgGA::GUIEventHandler *, get);
+	I_Method0(osgGA::GUIEventHandler *, take);
+	I_Method0(osgGA::GUIEventHandler *, release);
+	I_ReadOnlyProperty(osgGA::GUIEventHandler *, );
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgGA::GUIEventHandler > >);

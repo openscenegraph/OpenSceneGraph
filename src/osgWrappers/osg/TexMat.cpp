@@ -16,23 +16,31 @@
 #include <osg/StateAttribute>
 #include <osg/TexMat>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::TexMat)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::TexMat &, texmat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method0(bool, isTextureAttribute);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(void, setMatrix, IN, const osg::Matrix &, matrix);
-	Method0(osg::Matrix &, getMatrix);
-	Method0(const osg::Matrix &, getMatrix);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(const osg::Matrix &, Matrix);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::TexMat &, texmat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method0(bool, isTextureAttribute);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(void, setMatrix, IN, const osg::Matrix &, matrix);
+	I_Method0(osg::Matrix &, getMatrix);
+	I_Method0(const osg::Matrix &, getMatrix);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(const osg::Matrix &, Matrix);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

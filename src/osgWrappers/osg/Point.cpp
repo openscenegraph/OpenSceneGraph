@@ -16,48 +16,56 @@
 #include <osg/StateAttribute>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::Point)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Point &, point, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method1(void, setSize, IN, float, size);
-	Method0(float, getSize);
-	Method1(void, setFadeThresholdSize, IN, float, fadeThresholdSize);
-	Method0(float, getFadeThresholdSize);
-	Method1(void, setDistanceAttenuation, IN, const osg::Vec3 &, distanceAttenuation);
-	Method0(const osg::Vec3 &, getDistanceAttenuation);
-	Method1(void, setMinSize, IN, float, minSize);
-	Method0(float, getMinSize);
-	Method1(void, setMaxSize, IN, float, maxSize);
-	Method0(float, getMaxSize);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(const osg::Vec3 &, DistanceAttenuation);
-	Property(float, FadeThresholdSize);
-	Property(float, MaxSize);
-	Property(float, MinSize);
-	Property(float, Size);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Point &, point, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(void, setSize, IN, float, size);
+	I_Method0(float, getSize);
+	I_Method1(void, setFadeThresholdSize, IN, float, fadeThresholdSize);
+	I_Method0(float, getFadeThresholdSize);
+	I_Method1(void, setDistanceAttenuation, IN, const osg::Vec3 &, distanceAttenuation);
+	I_Method0(const osg::Vec3 &, getDistanceAttenuation);
+	I_Method1(void, setMinSize, IN, float, minSize);
+	I_Method0(float, getMinSize);
+	I_Method1(void, setMaxSize, IN, float, maxSize);
+	I_Method0(float, getMaxSize);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(const osg::Vec3 &, DistanceAttenuation);
+	I_Property(float, FadeThresholdSize);
+	I_Property(float, MaxSize);
+	I_Property(float, MinSize);
+	I_Property(float, Size);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
-	BaseType(osg::Referenced);
-	Constructor1(IN, unsigned int, contextID);
-	Constructor1(IN, const osg::Point::Extensions &, rhs);
-	Method1(void, lowestCommonDenominator, IN, const osg::Point::Extensions &, rhs);
-	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
-	Method1(void, setPointParametersSupported, IN, bool, flag);
-	Method0(bool, isPointParametersSupported);
-	Method2(void, glPointParameterf, IN, GLenum, pname, IN, GLfloat, param);
-	Method2(void, glPointParameterfv, IN, GLenum, pname, IN, const GLfloat *, params);
-	WriteOnlyProperty(bool, PointParametersSupported);
-	WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::Point::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::Point::Extensions &, rhs);
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setPointParametersSupported, IN, bool, flag);
+	I_Method0(bool, isPointParametersSupported);
+	I_Method2(void, glPointParameterf, IN, GLenum, pname, IN, GLfloat, param);
+	I_Method2(void, glPointParameterfv, IN, GLenum, pname, IN, const GLfloat *, params);
+	I_WriteOnlyProperty(bool, PointParametersSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

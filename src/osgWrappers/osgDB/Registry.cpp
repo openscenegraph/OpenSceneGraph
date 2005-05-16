@@ -28,129 +28,137 @@
 #include <osgDB/Registry>
 #include <osgDB/SharedStateManager>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::basic_type_wrapper)
-	Constructor0();
-	Method1(bool, matches, IN, const osg::Object *, proto);
+	I_Constructor0();
+	I_Method1(bool, matches, IN, const osg::Object *, proto);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
-	ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE);
+	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
-	BaseType(osg::Referenced);
-	Method1(void, readCommandLine, IN, osg::ArgumentParser &, commandLine);
-	Method2(void, addFileExtensionAlias, IN, const std::string, mapExt, IN, const std::string, toExt);
-	Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper);
-	Method1(void, removeDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper);
-	Method1(void, addReaderWriter, IN, osgDB::ReaderWriter *, rw);
-	Method1(void, removeReaderWriter, IN, osgDB::ReaderWriter *, rw);
-	Method1(std::string, createLibraryNameForFile, IN, const std::string &, fileName);
-	Method1(std::string, createLibraryNameForExtension, IN, const std::string &, ext);
-	Method1(std::string, createLibraryNameForNodeKit, IN, const std::string &, name);
-	Method1(bool, loadLibrary, IN, const std::string &, fileName);
-	Method1(bool, closeLibrary, IN, const std::string &, fileName);
-	Method0(void, closeAllLibraries);
-	Method1(osgDB::ReaderWriter *, getReaderWriterForExtension, IN, const std::string &, ext);
-	Method2(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj, IN, osgDB::Input &, fr);
-	Method2(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw, IN, osgDB::Input &, fr);
-	Method1(osg::Object *, readObject, IN, osgDB::Input &, fr);
-	Method1(osg::Image *, readImage, IN, osgDB::Input &, fr);
-	Method1(osg::Drawable *, readDrawable, IN, osgDB::Input &, fr);
-	Method1(osg::Uniform *, readUniform, IN, osgDB::Input &, fr);
-	Method1(osg::StateAttribute *, readStateAttribute, IN, osgDB::Input &, fr);
-	Method1(osg::Node *, readNode, IN, osgDB::Input &, fr);
-	Method2(bool, writeObject, IN, const osg::Object &, obj, IN, osgDB::Output &, fw);
-	Method1(void, setReadFileCallback, IN, osgDB::Registry::ReadFileCallback *, cb);
-	Method0(osgDB::Registry::ReadFileCallback *, getReadFileCallback);
-	Method0(const osgDB::Registry::ReadFileCallback *, getReadFileCallback);
-	Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, options);
-	Method4(osgDB::ReaderWriter::ReadResult, openArchiveImplementation, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readObjectImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readImageImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readHeightFieldImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readNodeImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
-	Method1(void, setWriteFileCallback, IN, osgDB::Registry::WriteFileCallback *, cb);
-	Method0(osgDB::Registry::WriteFileCallback *, getWriteFileCallback);
-	Method0(const osgDB::Registry::WriteFileCallback *, getWriteFileCallback);
-	Method2(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeObjectImplementation, IN, const osg::Object &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeImageImplementation, IN, const osg::Image &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeHeightFieldImplementation, IN, const osg::HeightField &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, node, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeNodeImplementation, IN, const osg::Node &, node, IN, const std::string &, fileName);
-	Method1(void, setCreateNodeFromImage, IN, bool, flag);
-	Method0(bool, getCreateNodeFromImage);
-	Method1(void, setOptions, IN, osgDB::ReaderWriter::Options *, opt);
-	Method0(osgDB::ReaderWriter::Options *, getOptions);
-	Method0(const osgDB::ReaderWriter::Options *, getOptions);
-	Method0(void, initFilePathLists);
-	Method0(void, initDataFilePathList);
-	Method1(void, setDataFilePathList, IN, const osgDB::FilePathList &, filepath);
-	Method1(void, setDataFilePathList, IN, const std::string &, paths);
-	Method0(osgDB::FilePathList &, getDataFilePathList);
-	Method0(const osgDB::FilePathList &, getDataFilePathList);
-	Method0(void, initLibraryFilePathList);
-	Method1(void, setLibraryFilePathList, IN, const osgDB::FilePathList &, filepath);
-	Method1(void, setLibraryFilePathList, IN, const std::string &, paths);
-	Method0(osgDB::FilePathList &, getLibraryFilePathList);
-	Method0(const osgDB::FilePathList &, getLibraryFilePathList);
-	Method1(void, updateTimeStampOfObjectsInCacheWithExtenalReferences, IN, double, currentTime);
-	Method1(void, removeExpiredObjectsInCache, IN, double, expiryTime);
-	Method0(void, clearObjectCache);
-	MethodWithDefaults3(void, addEntryToObjectCache, IN, const std::string &, filename, , IN, osg::Object *, object, , IN, double, timestamp, 0.0);
-	Method1(osg::Object *, getFromObjectCache, IN, const std::string &, fileName);
-	Method2(void, addToArchiveCache, IN, const std::string &, fileName, IN, osgDB::Archive *, archive);
-	Method1(void, removeFromArchiveCache, IN, const std::string &, fileName);
-	Method1(osgDB::Archive *, getFromArchiveCache, IN, const std::string &, fileName);
-	Method0(void, clearArchiveCache);
-	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	Method1(osgDB::DynamicLibrary *, getLibrary, IN, const std::string &, fileName);
-	Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, databasePager);
-	Method0(osgDB::DatabasePager *, getOrCreateDatabasePager);
-	Method0(osgDB::DatabasePager *, getDatabasePager);
-	Method1(void, setSharedStateManager, IN, osgDB::SharedStateManager *, SharedStateManager);
-	Method0(osgDB::SharedStateManager *, getOrCreateSharedStateManager);
-	Method0(osgDB::SharedStateManager *, getSharedStateManager);
-	Property(bool, CreateNodeFromImage);
-	Property(const osgDB::FilePathList &, DataFilePathList);
-	Property(osgDB::DatabasePager *, DatabasePager);
-	Property(const osgDB::FilePathList &, LibraryFilePathList);
-	Property(osgDB::ReaderWriter::Options *, Options);
-	Property(osgDB::Registry::ReadFileCallback *, ReadFileCallback);
-	Property(osgDB::SharedStateManager *, SharedStateManager);
-	Property(osgDB::Registry::WriteFileCallback *, WriteFileCallback);
+	I_BaseType(osg::Referenced);
+	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, commandLine);
+	I_Method2(void, addFileExtensionAlias, IN, const std::string, mapExt, IN, const std::string, toExt);
+	I_Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper);
+	I_Method1(void, removeDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper);
+	I_Method1(void, addReaderWriter, IN, osgDB::ReaderWriter *, rw);
+	I_Method1(void, removeReaderWriter, IN, osgDB::ReaderWriter *, rw);
+	I_Method1(std::string, createLibraryNameForFile, IN, const std::string &, fileName);
+	I_Method1(std::string, createLibraryNameForExtension, IN, const std::string &, ext);
+	I_Method1(std::string, createLibraryNameForNodeKit, IN, const std::string &, name);
+	I_Method1(bool, loadLibrary, IN, const std::string &, fileName);
+	I_Method1(bool, closeLibrary, IN, const std::string &, fileName);
+	I_Method0(void, closeAllLibraries);
+	I_Method1(osgDB::ReaderWriter *, getReaderWriterForExtension, IN, const std::string &, ext);
+	I_Method2(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj, IN, osgDB::Input &, fr);
+	I_Method2(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw, IN, osgDB::Input &, fr);
+	I_Method1(osg::Object *, readObject, IN, osgDB::Input &, fr);
+	I_Method1(osg::Image *, readImage, IN, osgDB::Input &, fr);
+	I_Method1(osg::Drawable *, readDrawable, IN, osgDB::Input &, fr);
+	I_Method1(osg::Uniform *, readUniform, IN, osgDB::Input &, fr);
+	I_Method1(osg::StateAttribute *, readStateAttribute, IN, osgDB::Input &, fr);
+	I_Method1(osg::Node *, readNode, IN, osgDB::Input &, fr);
+	I_Method2(bool, writeObject, IN, const osg::Object &, obj, IN, osgDB::Output &, fw);
+	I_Method1(void, setReadFileCallback, IN, osgDB::Registry::ReadFileCallback *, cb);
+	I_Method0(osgDB::Registry::ReadFileCallback *, getReadFileCallback);
+	I_Method0(const osgDB::Registry::ReadFileCallback *, getReadFileCallback);
+	I_Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method4(osgDB::ReaderWriter::ReadResult, openArchiveImplementation, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readObjectImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readImageImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightFieldImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readNodeImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method1(void, setWriteFileCallback, IN, osgDB::Registry::WriteFileCallback *, cb);
+	I_Method0(osgDB::Registry::WriteFileCallback *, getWriteFileCallback);
+	I_Method0(const osgDB::Registry::WriteFileCallback *, getWriteFileCallback);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeObjectImplementation, IN, const osg::Object &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeImageImplementation, IN, const osg::Image &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeHeightFieldImplementation, IN, const osg::HeightField &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, node, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeNodeImplementation, IN, const osg::Node &, node, IN, const std::string &, fileName);
+	I_Method1(void, setCreateNodeFromImage, IN, bool, flag);
+	I_Method0(bool, getCreateNodeFromImage);
+	I_Method1(void, setOptions, IN, osgDB::ReaderWriter::Options *, opt);
+	I_Method0(osgDB::ReaderWriter::Options *, getOptions);
+	I_Method0(const osgDB::ReaderWriter::Options *, getOptions);
+	I_Method0(void, initFilePathLists);
+	I_Method0(void, initDataFilePathList);
+	I_Method1(void, setDataFilePathList, IN, const osgDB::FilePathList &, filepath);
+	I_Method1(void, setDataFilePathList, IN, const std::string &, paths);
+	I_Method0(osgDB::FilePathList &, getDataFilePathList);
+	I_Method0(const osgDB::FilePathList &, getDataFilePathList);
+	I_Method0(void, initLibraryFilePathList);
+	I_Method1(void, setLibraryFilePathList, IN, const osgDB::FilePathList &, filepath);
+	I_Method1(void, setLibraryFilePathList, IN, const std::string &, paths);
+	I_Method0(osgDB::FilePathList &, getLibraryFilePathList);
+	I_Method0(const osgDB::FilePathList &, getLibraryFilePathList);
+	I_Method1(void, updateTimeStampOfObjectsInCacheWithExtenalReferences, IN, double, currentTime);
+	I_Method1(void, removeExpiredObjectsInCache, IN, double, expiryTime);
+	I_Method0(void, clearObjectCache);
+	I_MethodWithDefaults3(void, addEntryToObjectCache, IN, const std::string &, filename, , IN, osg::Object *, object, , IN, double, timestamp, 0.0);
+	I_Method1(osg::Object *, getFromObjectCache, IN, const std::string &, fileName);
+	I_Method2(void, addToArchiveCache, IN, const std::string &, fileName, IN, osgDB::Archive *, archive);
+	I_Method1(void, removeFromArchiveCache, IN, const std::string &, fileName);
+	I_Method1(osgDB::Archive *, getFromArchiveCache, IN, const std::string &, fileName);
+	I_Method0(void, clearArchiveCache);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
+	I_Method1(osgDB::DynamicLibrary *, getLibrary, IN, const std::string &, fileName);
+	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, databasePager);
+	I_Method0(osgDB::DatabasePager *, getOrCreateDatabasePager);
+	I_Method0(osgDB::DatabasePager *, getDatabasePager);
+	I_Method1(void, setSharedStateManager, IN, osgDB::SharedStateManager *, SharedStateManager);
+	I_Method0(osgDB::SharedStateManager *, getOrCreateSharedStateManager);
+	I_Method0(osgDB::SharedStateManager *, getSharedStateManager);
+	I_Property(bool, CreateNodeFromImage);
+	I_Property(const osgDB::FilePathList &, DataFilePathList);
+	I_Property(osgDB::DatabasePager *, DatabasePager);
+	I_Property(const osgDB::FilePathList &, LibraryFilePathList);
+	I_Property(osgDB::ReaderWriter::Options *, Options);
+	I_Property(osgDB::Registry::ReadFileCallback *, ReadFileCallback);
+	I_Property(osgDB::SharedStateManager *, SharedStateManager);
+	I_Property(osgDB::Registry::WriteFileCallback *, WriteFileCallback);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, filename, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, useObjectCache);
-	Method2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
-	Method2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, filename, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, useObjectCache);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
-	Constructor2(IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
-	Method1(osgDB::ReaderWriter::ReadResult, doRead, IN, osgDB::ReaderWriter &, rw);
-	Method1(bool, isValid, IN, osgDB::ReaderWriter::ReadResult &, readResult);
-	Method1(bool, isValid, IN, osg::Object *, object);
+	I_Constructor2(IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options);
+	I_Method1(osgDB::ReaderWriter::ReadResult, doRead, IN, osgDB::ReaderWriter &, rw);
+	I_Method1(bool, isValid, IN, osgDB::ReaderWriter::ReadResult &, readResult);
+	I_Method1(bool, isValid, IN, osg::Object *, object);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method2(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName);
-	Method2(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, obj, IN, const std::string &, fileName);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName);
+	I_Method2(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, obj, IN, const std::string &, fileName);
 END_REFLECTOR
 

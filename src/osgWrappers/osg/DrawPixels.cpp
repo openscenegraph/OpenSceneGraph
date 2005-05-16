@@ -17,29 +17,37 @@
 #include <osg/State>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
-	BaseType(osg::Drawable);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::DrawPixels &, drawimage, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setPosition, IN, const osg::Vec3 &, position);
-	Method0(osg::Vec3 &, getPosition);
-	Method0(const osg::Vec3 &, getPosition);
-	Method1(void, setImage, IN, osg::Image *, image);
-	Method0(osg::Image *, getImage);
-	Method0(const osg::Image *, getImage);
-	Method1(void, setUseSubImage, IN, bool, useSubImage);
-	Method0(bool, getUseSubImage);
-	Method4(void, setSubImageDimensions, IN, unsigned int, offsetX, IN, unsigned int, offsetY, IN, unsigned int, width, IN, unsigned int, height);
-	Method4(void, getSubImageDimensions, IN, unsigned int &, offsetX, IN, unsigned int &, offsetY, IN, unsigned int &, width, IN, unsigned int &, height);
-	Method1(void, drawImplementation, IN, osg::State &, state);
-	Method0(osg::BoundingBox, computeBound);
-	Property(osg::Image *, Image);
-	Property(const osg::Vec3 &, Position);
-	Property(bool, UseSubImage);
+	I_BaseType(osg::Drawable);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::DrawPixels &, drawimage, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, position);
+	I_Method0(osg::Vec3 &, getPosition);
+	I_Method0(const osg::Vec3 &, getPosition);
+	I_Method1(void, setImage, IN, osg::Image *, image);
+	I_Method0(osg::Image *, getImage);
+	I_Method0(const osg::Image *, getImage);
+	I_Method1(void, setUseSubImage, IN, bool, useSubImage);
+	I_Method0(bool, getUseSubImage);
+	I_Method4(void, setSubImageDimensions, IN, unsigned int, offsetX, IN, unsigned int, offsetY, IN, unsigned int, width, IN, unsigned int, height);
+	I_Method4(void, getSubImageDimensions, IN, unsigned int &, offsetX, IN, unsigned int &, offsetY, IN, unsigned int &, width, IN, unsigned int &, height);
+	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method0(osg::BoundingBox, computeBound);
+	I_Property(osg::Image *, Image);
+	I_Property(const osg::Vec3 &, Position);
+	I_Property(bool, UseSubImage);
 END_REFLECTOR
 

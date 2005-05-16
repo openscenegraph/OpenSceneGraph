@@ -14,19 +14,27 @@
 #include <osg/Object>
 #include <osgFX/MultiTextureControl>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgFX::MultiTextureControl &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method2(void, setTextureWeight, IN, unsigned int, unit, IN, float, weight);
-	Method1(float, getTextureWeight, IN, unsigned int, unit);
-	Method0(unsigned int, getNumTextureWeights);
-	ArrayProperty_G(float, TextureWeight, TextureWeights, unsigned int, void);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgFX::MultiTextureControl &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method2(void, setTextureWeight, IN, unsigned int, unit, IN, float, weight);
+	I_Method1(float, getTextureWeight, IN, unsigned int, unit);
+	I_Method0(unsigned int, getNumTextureWeights);
+	I_ArrayProperty_G(float, TextureWeight, TextureWeights, unsigned int, void);
 END_REFLECTOR
 

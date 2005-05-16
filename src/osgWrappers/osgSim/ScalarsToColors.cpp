@@ -12,13 +12,21 @@
 #include <osg/Vec4>
 #include <osgSim/ScalarsToColors>
 
-BEGIN_VALUE_REFLECTOR(osgSim::ScalarsToColors)
-	BaseType(osg::Referenced);
-	Constructor2(IN, float, scalarMin, IN, float, scalarMax);
-	Method1(osg::Vec4, getColor, IN, float, scalar);
-	Method0(float, getMin);
-	Method0(float, getMax);
-	ReadOnlyProperty(float, Max);
-	ReadOnlyProperty(float, Min);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgSim::ScalarsToColors)
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, float, scalarMin, IN, float, scalarMax);
+	I_Method1(osg::Vec4, getColor, IN, float, scalar);
+	I_Method0(float, getMin);
+	I_Method0(float, getMax);
+	I_ReadOnlyProperty(float, Max);
+	I_ReadOnlyProperty(float, Min);
 END_REFLECTOR
 

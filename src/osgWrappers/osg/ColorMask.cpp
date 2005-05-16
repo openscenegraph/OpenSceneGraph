@@ -15,32 +15,40 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::ColorMask)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	Constructor4(IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
-	ConstructorWithDefaults2(IN, const osg::ColorMask &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method4(void, setMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
-	Method1(void, setRedMask, IN, bool, mask);
-	Method0(bool, getRedMask);
-	Method1(void, setGreenMask, IN, bool, mask);
-	Method0(bool, getGreenMask);
-	Method1(void, setBlueMask, IN, bool, mask);
-	Method0(bool, getBlueMask);
-	Method1(void, setAlphaMask, IN, bool, mask);
-	Method0(bool, getAlphaMask);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(bool, AlphaMask);
-	Property(bool, BlueMask);
-	Property(bool, GreenMask);
-	Property(bool, RedMask);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_Constructor4(IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
+	I_ConstructorWithDefaults2(IN, const osg::ColorMask &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method4(void, setMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
+	I_Method1(void, setRedMask, IN, bool, mask);
+	I_Method0(bool, getRedMask);
+	I_Method1(void, setGreenMask, IN, bool, mask);
+	I_Method0(bool, getGreenMask);
+	I_Method1(void, setBlueMask, IN, bool, mask);
+	I_Method0(bool, getBlueMask);
+	I_Method1(void, setAlphaMask, IN, bool, mask);
+	I_Method0(bool, getAlphaMask);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(bool, AlphaMask);
+	I_Property(bool, BlueMask);
+	I_Property(bool, GreenMask);
+	I_Property(bool, RedMask);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

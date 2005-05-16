@@ -11,10 +11,18 @@
 
 #include <osgDB/ReentrantMutex>
 
-BEGIN_VALUE_REFLECTOR(osgDB::ReentrantMutex)
-	Constructor0();
-	Method0(int, lock);
-	Method0(int, unlock);
-	Method0(int, trylock);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
+	I_Constructor0();
+	I_Method0(int, lock);
+	I_Method0(int, unlock);
+	I_Method0(int, trylock);
 END_REFLECTOR
 

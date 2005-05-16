@@ -23,77 +23,87 @@
 #include <osgProducer/OsgSceneHandler>
 #include <osgUtil/SceneView>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+TYPE_NAME_ALIAS(Producer::CameraGroup::ThreadingModel, osgProducer::OsgCameraGroup::ThreadingModel);
+
 TYPE_NAME_ALIAS(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
 
 BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
-	Constructor0();
-	Constructor1(IN, Producer::CameraConfig *, cfg);
-	Constructor1(IN, const std::string &, configFile);
-	Constructor1(IN, osg::ArgumentParser &, arguments);
-	Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au);
-	Method0(osg::ApplicationUsage *, getApplicationUsage);
-	Method0(const osg::ApplicationUsage *, getApplicationUsage);
-	Method0(osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
-	Method0(const osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
-	Method1(void, setSceneData, IN, osg::Node *, scene);
-	Method0(osg::Node *, getSceneData);
-	Method0(const osg::Node *, getSceneData);
-	Method1(void, setSceneDecorator, IN, osg::Group *, decorator);
-	Method0(osg::Group *, getSceneDecorator);
-	Method0(const osg::Group *, getSceneDecorator);
-	Method0(osg::Node *, getTopMostSceneData);
-	Method0(const osg::Node *, getTopMostSceneData);
-	Method0(void, updatedSceneData);
-	Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds);
-	Method0(osg::DisplaySettings *, getDisplaySettings);
-	Method0(const osg::DisplaySettings *, getDisplaySettings);
-	Method1(void, setCullSettings, IN, const osg::CullSettings &, cs);
-	Method0(osg::CullSettings &, getCullSettings);
-	Method0(const osg::CullSettings &, getCullSettings);
-	Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
-	Method0(osg::FrameStamp *, getFrameStamp);
-	Method0(const osg::FrameStamp *, getFrameStamp);
-	Method1(void, setGlobalStateSet, IN, osg::StateSet *, sset);
-	Method0(osg::StateSet *, getGlobalStateSet);
-	Method0(const osg::StateSet *, getGlobalStateSet);
-	Method1(void, setClearColor, IN, const osg::Vec4 &, clearColor);
-	Method0(const osg::Vec4 &, getClearColor);
-	Method1(void, setLODScale, IN, float, scale);
-	Method0(float, getLODScale);
-	MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f);
-	Method1(void, setRealizeSceneViewOptions, IN, unsigned int, options);
-	Method0(unsigned int, getRealizeSceneViewOptions);
-	Method1(void, setRealizeCallback, IN, osgProducer::OsgCameraGroup::RealizeCallback *, cb);
-	Method0(osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
-	Method0(const osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
-	Method0(void, advance);
-	Method1(bool, realize, IN, ThreadingModel, thread_model);
-	Method0(bool, realize);
-	Method1(void, setView, IN, const osg::Matrixd &, matrix);
-	Method0(osg::Matrixd, getViewMatrix);
-	Method0(void, sync);
-	Method0(void, frame);
-	Method0(void, cleanup_frame);
-	Property(osg::ApplicationUsage *, ApplicationUsage);
-	Property(const osg::Vec4 &, ClearColor);
-	Property(const osg::CullSettings &, CullSettings);
-	Property(osg::DisplaySettings *, DisplaySettings);
-	Property(osg::FrameStamp *, FrameStamp);
-	Property(osg::StateSet *, GlobalStateSet);
-	Property(float, LODScale);
-	Property(osgProducer::OsgCameraGroup::RealizeCallback *, RealizeCallback);
-	Property(unsigned int, RealizeSceneViewOptions);
-	Property(osg::Node *, SceneData);
-	Property(osg::Group *, SceneDecorator);
-	ReadOnlyProperty(osgProducer::OsgCameraGroup::SceneHandlerList &, SceneHandlerList);
-	ReadOnlyProperty(osg::Node *, TopMostSceneData);
-	WriteOnlyProperty(const osg::Matrixd &, View);
-	ReadOnlyProperty(osg::Matrixd, ViewMatrix);
+	I_Constructor0();
+	I_Constructor1(IN, Producer::CameraConfig *, cfg);
+	I_Constructor1(IN, const std::string &, configFile);
+	I_Constructor1(IN, osg::ArgumentParser &, arguments);
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au);
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage);
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage);
+	I_Method0(osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
+	I_Method0(const osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
+	I_Method1(void, setSceneData, IN, osg::Node *, scene);
+	I_Method0(osg::Node *, getSceneData);
+	I_Method0(const osg::Node *, getSceneData);
+	I_Method1(void, setSceneDecorator, IN, osg::Group *, decorator);
+	I_Method0(osg::Group *, getSceneDecorator);
+	I_Method0(const osg::Group *, getSceneDecorator);
+	I_Method0(osg::Node *, getTopMostSceneData);
+	I_Method0(const osg::Node *, getTopMostSceneData);
+	I_Method0(void, updatedSceneData);
+	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds);
+	I_Method0(osg::DisplaySettings *, getDisplaySettings);
+	I_Method0(const osg::DisplaySettings *, getDisplaySettings);
+	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, cs);
+	I_Method0(osg::CullSettings &, getCullSettings);
+	I_Method0(const osg::CullSettings &, getCullSettings);
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
+	I_Method0(osg::FrameStamp *, getFrameStamp);
+	I_Method0(const osg::FrameStamp *, getFrameStamp);
+	I_Method1(void, setGlobalStateSet, IN, osg::StateSet *, sset);
+	I_Method0(osg::StateSet *, getGlobalStateSet);
+	I_Method0(const osg::StateSet *, getGlobalStateSet);
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, clearColor);
+	I_Method0(const osg::Vec4 &, getClearColor);
+	I_Method1(void, setLODScale, IN, float, scale);
+	I_Method0(float, getLODScale);
+	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f);
+	I_Method1(void, setRealizeSceneViewOptions, IN, unsigned int, options);
+	I_Method0(unsigned int, getRealizeSceneViewOptions);
+	I_Method1(void, setRealizeCallback, IN, osgProducer::OsgCameraGroup::RealizeCallback *, cb);
+	I_Method0(osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
+	I_Method0(const osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
+	I_Method0(void, advance);
+	I_Method1(bool, realize, IN, osgProducer::OsgCameraGroup::ThreadingModel, thread_model);
+	I_Method0(bool, realize);
+	I_Method1(void, setView, IN, const osg::Matrixd &, matrix);
+	I_Method0(osg::Matrixd, getViewMatrix);
+	I_Method0(void, sync);
+	I_Method0(void, frame);
+	I_Method0(void, cleanup_frame);
+	I_Property(osg::ApplicationUsage *, ApplicationUsage);
+	I_Property(const osg::Vec4 &, ClearColor);
+	I_Property(const osg::CullSettings &, CullSettings);
+	I_Property(osg::DisplaySettings *, DisplaySettings);
+	I_Property(osg::FrameStamp *, FrameStamp);
+	I_Property(osg::StateSet *, GlobalStateSet);
+	I_Property(float, LODScale);
+	I_Property(osgProducer::OsgCameraGroup::RealizeCallback *, RealizeCallback);
+	I_Property(unsigned int, RealizeSceneViewOptions);
+	I_Property(osg::Node *, SceneData);
+	I_Property(osg::Group *, SceneDecorator);
+	I_ReadOnlyProperty(osgProducer::OsgCameraGroup::SceneHandlerList &, SceneHandlerList);
+	I_ReadOnlyProperty(osg::Node *, TopMostSceneData);
+	I_WriteOnlyProperty(const osg::Matrixd &, View);
+	I_ReadOnlyProperty(osg::Matrixd, ViewMatrix);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgCameraGroup::RealizeCallback)
-	BaseType(osg::Referenced);
-	Constructor0();
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >);

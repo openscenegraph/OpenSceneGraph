@@ -15,35 +15,43 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Mode)
-	EnumLabel(osg::PolygonMode::POINT);
-	EnumLabel(osg::PolygonMode::LINE);
-	EnumLabel(osg::PolygonMode::FILL);
+	I_EnumLabel(osg::PolygonMode::POINT);
+	I_EnumLabel(osg::PolygonMode::LINE);
+	I_EnumLabel(osg::PolygonMode::FILL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Face)
-	EnumLabel(osg::PolygonMode::FRONT_AND_BACK);
-	EnumLabel(osg::PolygonMode::FRONT);
-	EnumLabel(osg::PolygonMode::BACK);
+	I_EnumLabel(osg::PolygonMode::FRONT_AND_BACK);
+	I_EnumLabel(osg::PolygonMode::FRONT);
+	I_EnumLabel(osg::PolygonMode::BACK);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::PolygonMode)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::PolygonMode &, pm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method2(void, setMode, IN, osg::PolygonMode::Face, face, IN, osg::PolygonMode::Mode, mode);
-	Method1(osg::PolygonMode::Mode, getMode, IN, osg::PolygonMode::Face, face);
-	Method0(bool, getFrontAndBack);
-	Method1(void, apply, IN, osg::State &, state);
-	ReadOnlyProperty(bool, FrontAndBack);
-	IndexedProperty1(osg::PolygonMode::Mode, Mode, osg::PolygonMode::Face, face);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::PolygonMode &, pm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method2(void, setMode, IN, osg::PolygonMode::Face, face, IN, osg::PolygonMode::Mode, mode);
+	I_Method1(osg::PolygonMode::Mode, getMode, IN, osg::PolygonMode::Face, face);
+	I_Method0(bool, getFrontAndBack);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_ReadOnlyProperty(bool, FrontAndBack);
+	I_IndexedProperty1(osg::PolygonMode::Mode, Mode, osg::PolygonMode::Face, face);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

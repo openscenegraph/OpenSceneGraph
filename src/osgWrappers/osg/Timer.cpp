@@ -11,15 +11,23 @@
 
 #include <osg/Timer>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osg::Timer)
-	Constructor0();
-	Method0(osg::Timer_t, tick);
-	Method2(double, delta_s, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	Method2(double, delta_m, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	Method2(double, delta_u, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	Method2(double, delta_n, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	Method0(double, getSecondsPerTick);
-	ReadOnlyProperty(double, SecondsPerTick);
+	I_Constructor0();
+	I_Method0(osg::Timer_t, tick);
+	I_Method2(double, delta_s, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
+	I_Method2(double, delta_m, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
+	I_Method2(double, delta_u, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
+	I_Method2(double, delta_n, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
+	I_Method0(double, getSecondsPerTick);
+	I_ReadOnlyProperty(double, SecondsPerTick);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(unsigned long long, osg::Timer_t);

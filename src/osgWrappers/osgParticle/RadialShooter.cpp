@@ -16,31 +16,39 @@
 #include <osgParticle/RadialShooter>
 #include <osgParticle/range>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::RadialShooter)
-	BaseType(osgParticle::Shooter);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::RadialShooter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const osgParticle::rangef &, getThetaRange);
-	Method1(void, setThetaRange, IN, const osgParticle::rangef &, r);
-	Method2(void, setThetaRange, IN, float, r1, IN, float, r2);
-	Method0(const osgParticle::rangef &, getPhiRange);
-	Method1(void, setPhiRange, IN, const osgParticle::rangef &, r);
-	Method2(void, setPhiRange, IN, float, r1, IN, float, r2);
-	Method0(const osgParticle::rangef &, getInitialSpeedRange);
-	Method1(void, setInitialSpeedRange, IN, const osgParticle::rangef &, r);
-	Method2(void, setInitialSpeedRange, IN, float, r1, IN, float, r2);
-	Method0(const osgParticle::rangev3 &, getInitialRotationalSpeedRange);
-	Method1(void, setInitialRotationalSpeedRange, IN, const osgParticle::rangev3 &, r);
-	Method2(void, setInitialRotationalSpeedRange, IN, const osg::Vec3 &, r1, IN, const osg::Vec3 &, r2);
-	Method1(void, shoot, IN, osgParticle::Particle *, P);
-	Property(const osgParticle::rangev3 &, InitialRotationalSpeedRange);
-	Property(const osgParticle::rangef &, InitialSpeedRange);
-	Property(const osgParticle::rangef &, PhiRange);
-	Property(const osgParticle::rangef &, ThetaRange);
+	I_BaseType(osgParticle::Shooter);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::RadialShooter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const osgParticle::rangef &, getThetaRange);
+	I_Method1(void, setThetaRange, IN, const osgParticle::rangef &, r);
+	I_Method2(void, setThetaRange, IN, float, r1, IN, float, r2);
+	I_Method0(const osgParticle::rangef &, getPhiRange);
+	I_Method1(void, setPhiRange, IN, const osgParticle::rangef &, r);
+	I_Method2(void, setPhiRange, IN, float, r1, IN, float, r2);
+	I_Method0(const osgParticle::rangef &, getInitialSpeedRange);
+	I_Method1(void, setInitialSpeedRange, IN, const osgParticle::rangef &, r);
+	I_Method2(void, setInitialSpeedRange, IN, float, r1, IN, float, r2);
+	I_Method0(const osgParticle::rangev3 &, getInitialRotationalSpeedRange);
+	I_Method1(void, setInitialRotationalSpeedRange, IN, const osgParticle::rangev3 &, r);
+	I_Method2(void, setInitialRotationalSpeedRange, IN, const osg::Vec3 &, r1, IN, const osg::Vec3 &, r2);
+	I_Method1(void, shoot, IN, osgParticle::Particle *, P);
+	I_Property(const osgParticle::rangev3 &, InitialRotationalSpeedRange);
+	I_Property(const osgParticle::rangef &, InitialSpeedRange);
+	I_Property(const osgParticle::rangef &, PhiRange);
+	I_Property(const osgParticle::rangef &, ThetaRange);
 END_REFLECTOR
 

@@ -17,6 +17,14 @@
 #include <osg/StateSet>
 #include <osg/Uniform>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::Object * >, osg::StateSet::ParentList);
 
 TYPE_NAME_ALIAS(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateSet::ModeList);
@@ -34,155 +42,155 @@ TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribu
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::StateSet::RefUniformPair >, osg::StateSet::UniformList);
 
 BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderingHint)
-	EnumLabel(osg::StateSet::DEFAULT_BIN);
-	EnumLabel(osg::StateSet::OPAQUE_BIN);
-	EnumLabel(osg::StateSet::TRANSPARENT_BIN);
+	I_EnumLabel(osg::StateSet::DEFAULT_BIN);
+	I_EnumLabel(osg::StateSet::OPAQUE_BIN);
+	I_EnumLabel(osg::StateSet::TRANSPARENT_BIN);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderBinMode)
-	EnumLabel(osg::StateSet::INHERIT_RENDERBIN_DETAILS);
-	EnumLabel(osg::StateSet::USE_RENDERBIN_DETAILS);
-	EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
-	EnumLabel(osg::StateSet::ENCLOSE_RENDERBIN_DETAILS);
+	I_EnumLabel(osg::StateSet::INHERIT_RENDERBIN_DETAILS);
+	I_EnumLabel(osg::StateSet::USE_RENDERBIN_DETAILS);
+	I_EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
+	I_EnumLabel(osg::StateSet::ENCLOSE_RENDERBIN_DETAILS);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateSet)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::StateSet &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	MethodWithDefaults2(int, compare, IN, const osg::StateSet &, rhs, , IN, bool, compareAttributeContents, false);
-	Method0(const osg::StateSet::ParentList &, getParents);
-	Method0(osg::StateSet::ParentList, getParents);
-	Method1(osg::Object *, getParent, IN, unsigned int, i);
-	Method1(const osg::Object *, getParent, IN, unsigned int, i);
-	Method0(unsigned int, getNumParents);
-	Method0(void, setGlobalDefaults);
-	Method0(void, clear);
-	Method1(void, merge, IN, const osg::StateSet &, rhs);
-	Method2(void, setMode, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
-	Method1(void, removeMode, IN, osg::StateAttribute::GLMode, mode);
-	Method1(osg::StateAttribute::GLModeValue, getMode, IN, osg::StateAttribute::GLMode, mode);
-	Method1(void, setModeList, IN, osg::StateSet::ModeList &, ml);
-	Method0(osg::StateSet::ModeList &, getModeList);
-	Method0(const osg::StateSet::ModeList &, getModeList);
-	MethodWithDefaults2(void, setAttribute, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF);
-	MethodWithDefaults2(void, setAttributeAndModes, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
-	MethodWithDefaults2(void, removeAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	Method1(void, removeAttribute, IN, osg::StateAttribute *, attribute);
-	MethodWithDefaults2(osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	MethodWithDefaults2(const osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	MethodWithDefaults2(const osg::StateSet::RefAttributePair *, getAttributePair, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	Method1(void, setAttributeList, IN, osg::StateSet::AttributeList &, al);
-	Method0(osg::StateSet::AttributeList &, getAttributeList);
-	Method0(const osg::StateSet::AttributeList &, getAttributeList);
-	Method3(void, setTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
-	Method2(void, removeTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	Method2(osg::StateAttribute::GLModeValue, getTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	Method1(void, setTextureModeList, IN, osg::StateSet::TextureModeList &, tml);
-	Method0(osg::StateSet::TextureModeList &, getTextureModeList);
-	Method0(const osg::StateSet::TextureModeList &, getTextureModeList);
-	MethodWithDefaults3(void, setTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF);
-	MethodWithDefaults3(void, setTextureAttributeAndModes, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
-	Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute *, attribute);
-	Method2(osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	Method2(const osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	Method2(const osg::StateSet::RefAttributePair *, getTextureAttributePair, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	Method1(void, setTextureAttributeList, IN, osg::StateSet::TextureAttributeList &, tal);
-	Method0(osg::StateSet::TextureAttributeList &, getTextureAttributeList);
-	Method0(const osg::StateSet::TextureAttributeList &, getTextureAttributeList);
-	Method2(void, setAssociatedModes, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value);
-	Method3(void, setAssociatedTextureModes, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value);
-	MethodWithDefaults2(void, addUniform, IN, osg::Uniform *, uniform, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::ON);
-	Method1(void, removeUniform, IN, const std::string &, name);
-	Method1(void, removeUniform, IN, osg::Uniform *, uniform);
-	Method1(osg::Uniform *, getUniform, IN, const std::string &, name);
-	Method2(osg::Uniform *, getOrCreateUniform, IN, const std::string &, name, IN, osg::Uniform::Type, type);
-	Method1(const osg::Uniform *, getUniform, IN, const std::string &, name);
-	Method1(const osg::StateSet::RefUniformPair *, getUniformPair, IN, const std::string &, name);
-	Method1(void, setUniformList, IN, osg::StateSet::UniformList &, al);
-	Method0(osg::StateSet::UniformList &, getUniformList);
-	Method0(const osg::StateSet::UniformList &, getUniformList);
-	Method1(void, setRenderingHint, IN, int, hint);
-	Method0(int, getRenderingHint);
-	MethodWithDefaults3(void, setRenderBinDetails, IN, int, binNum, , IN, const std::string &, binName, , IN, osg::StateSet::RenderBinMode, mode, osg::StateSet::USE_RENDERBIN_DETAILS);
-	Method0(void, setRenderBinToInherit);
-	Method0(bool, useRenderBinDetails);
-	Method1(void, setRenderBinMode, IN, osg::StateSet::RenderBinMode, mode);
-	Method0(osg::StateSet::RenderBinMode, getRenderBinMode);
-	Method1(void, setBinNumber, IN, int, num);
-	Method0(int, getBinNumber);
-	Method1(void, setBinName, IN, const std::string &, name);
-	Method0(const std::string &, getBinName);
-	Method1(void, setUpdateCallback, IN, osg::StateSet::Callback *, ac);
-	Method0(osg::StateSet::Callback *, getUpdateCallback);
-	Method0(const osg::StateSet::Callback *, getUpdateCallback);
-	Method0(bool, requiresUpdateTraversal);
-	Method0(unsigned int, getNumChildrenRequiringUpdateTraversal);
-	Method1(void, runUpdateCallbacks, IN, osg::NodeVisitor *, nv);
-	Method1(void, setEventCallback, IN, osg::StateSet::Callback *, ac);
-	Method0(osg::StateSet::Callback *, getEventCallback);
-	Method0(const osg::StateSet::Callback *, getEventCallback);
-	Method0(bool, requiresEventTraversal);
-	Method0(unsigned int, getNumChildrenRequiringEventTraversal);
-	Method1(void, runEventCallbacks, IN, osg::NodeVisitor *, nv);
-	Method1(void, compileGLObjects, IN, osg::State &, state);
-	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	Property(osg::StateSet::AttributeList &, AttributeList);
-	Property(const std::string &, BinName);
-	Property(int, BinNumber);
-	Property(osg::StateSet::Callback *, EventCallback);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::StateSet &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_MethodWithDefaults2(int, compare, IN, const osg::StateSet &, rhs, , IN, bool, compareAttributeContents, false);
+	I_Method0(const osg::StateSet::ParentList &, getParents);
+	I_Method0(osg::StateSet::ParentList, getParents);
+	I_Method1(osg::Object *, getParent, IN, unsigned int, i);
+	I_Method1(const osg::Object *, getParent, IN, unsigned int, i);
+	I_Method0(unsigned int, getNumParents);
+	I_Method0(void, setGlobalDefaults);
+	I_Method0(void, clear);
+	I_Method1(void, merge, IN, const osg::StateSet &, rhs);
+	I_Method2(void, setMode, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
+	I_Method1(void, removeMode, IN, osg::StateAttribute::GLMode, mode);
+	I_Method1(osg::StateAttribute::GLModeValue, getMode, IN, osg::StateAttribute::GLMode, mode);
+	I_Method1(void, setModeList, IN, osg::StateSet::ModeList &, ml);
+	I_Method0(osg::StateSet::ModeList &, getModeList);
+	I_Method0(const osg::StateSet::ModeList &, getModeList);
+	I_MethodWithDefaults2(void, setAttribute, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF);
+	I_MethodWithDefaults2(void, setAttributeAndModes, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
+	I_MethodWithDefaults2(void, removeAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
+	I_Method1(void, removeAttribute, IN, osg::StateAttribute *, attribute);
+	I_MethodWithDefaults2(osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
+	I_MethodWithDefaults2(const osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
+	I_MethodWithDefaults2(const osg::StateSet::RefAttributePair *, getAttributePair, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
+	I_Method1(void, setAttributeList, IN, osg::StateSet::AttributeList &, al);
+	I_Method0(osg::StateSet::AttributeList &, getAttributeList);
+	I_Method0(const osg::StateSet::AttributeList &, getAttributeList);
+	I_Method3(void, setTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
+	I_Method2(void, removeTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
+	I_Method2(osg::StateAttribute::GLModeValue, getTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
+	I_Method1(void, setTextureModeList, IN, osg::StateSet::TextureModeList &, tml);
+	I_Method0(osg::StateSet::TextureModeList &, getTextureModeList);
+	I_Method0(const osg::StateSet::TextureModeList &, getTextureModeList);
+	I_MethodWithDefaults3(void, setTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF);
+	I_MethodWithDefaults3(void, setTextureAttributeAndModes, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
+	I_Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
+	I_Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute *, attribute);
+	I_Method2(osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
+	I_Method2(const osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
+	I_Method2(const osg::StateSet::RefAttributePair *, getTextureAttributePair, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
+	I_Method1(void, setTextureAttributeList, IN, osg::StateSet::TextureAttributeList &, tal);
+	I_Method0(osg::StateSet::TextureAttributeList &, getTextureAttributeList);
+	I_Method0(const osg::StateSet::TextureAttributeList &, getTextureAttributeList);
+	I_Method2(void, setAssociatedModes, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value);
+	I_Method3(void, setAssociatedTextureModes, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value);
+	I_MethodWithDefaults2(void, addUniform, IN, osg::Uniform *, uniform, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::ON);
+	I_Method1(void, removeUniform, IN, const std::string &, name);
+	I_Method1(void, removeUniform, IN, osg::Uniform *, uniform);
+	I_Method1(osg::Uniform *, getUniform, IN, const std::string &, name);
+	I_Method2(osg::Uniform *, getOrCreateUniform, IN, const std::string &, name, IN, osg::Uniform::Type, type);
+	I_Method1(const osg::Uniform *, getUniform, IN, const std::string &, name);
+	I_Method1(const osg::StateSet::RefUniformPair *, getUniformPair, IN, const std::string &, name);
+	I_Method1(void, setUniformList, IN, osg::StateSet::UniformList &, al);
+	I_Method0(osg::StateSet::UniformList &, getUniformList);
+	I_Method0(const osg::StateSet::UniformList &, getUniformList);
+	I_Method1(void, setRenderingHint, IN, int, hint);
+	I_Method0(int, getRenderingHint);
+	I_MethodWithDefaults3(void, setRenderBinDetails, IN, int, binNum, , IN, const std::string &, binName, , IN, osg::StateSet::RenderBinMode, mode, osg::StateSet::USE_RENDERBIN_DETAILS);
+	I_Method0(void, setRenderBinToInherit);
+	I_Method0(bool, useRenderBinDetails);
+	I_Method1(void, setRenderBinMode, IN, osg::StateSet::RenderBinMode, mode);
+	I_Method0(osg::StateSet::RenderBinMode, getRenderBinMode);
+	I_Method1(void, setBinNumber, IN, int, num);
+	I_Method0(int, getBinNumber);
+	I_Method1(void, setBinName, IN, const std::string &, name);
+	I_Method0(const std::string &, getBinName);
+	I_Method1(void, setUpdateCallback, IN, osg::StateSet::Callback *, ac);
+	I_Method0(osg::StateSet::Callback *, getUpdateCallback);
+	I_Method0(const osg::StateSet::Callback *, getUpdateCallback);
+	I_Method0(bool, requiresUpdateTraversal);
+	I_Method0(unsigned int, getNumChildrenRequiringUpdateTraversal);
+	I_Method1(void, runUpdateCallbacks, IN, osg::NodeVisitor *, nv);
+	I_Method1(void, setEventCallback, IN, osg::StateSet::Callback *, ac);
+	I_Method0(osg::StateSet::Callback *, getEventCallback);
+	I_Method0(const osg::StateSet::Callback *, getEventCallback);
+	I_Method0(bool, requiresEventTraversal);
+	I_Method0(unsigned int, getNumChildrenRequiringEventTraversal);
+	I_Method1(void, runEventCallbacks, IN, osg::NodeVisitor *, nv);
+	I_Method1(void, compileGLObjects, IN, osg::State &, state);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
+	I_Property(osg::StateSet::AttributeList &, AttributeList);
+	I_Property(const std::string &, BinName);
+	I_Property(int, BinNumber);
+	I_Property(osg::StateSet::Callback *, EventCallback);
 
-	Property(osg::StateSet::ModeList &, ModeList);
-	ArrayProperty_G(osg::Object *, Parent, Parents, unsigned int, void);
-	ReadOnlyProperty(osg::StateSet::ParentList, Parents);
-	Property(osg::StateSet::RenderBinMode, RenderBinMode);
-	Property(int, RenderingHint);
-	Property(osg::StateSet::TextureAttributeList &, TextureAttributeList);
-	IndexedProperty2(osg::StateAttribute::GLModeValue, TextureMode, unsigned int, unit, osg::StateAttribute::GLMode, mode);
-	Property(osg::StateSet::TextureModeList &, TextureModeList);
-	Property(osg::StateSet::UniformList &, UniformList);
-	Property(osg::StateSet::Callback *, UpdateCallback);
+	I_Property(osg::StateSet::ModeList &, ModeList);
+	I_ArrayProperty_G(osg::Object *, Parent, Parents, unsigned int, void);
+	I_ReadOnlyProperty(osg::StateSet::ParentList, Parents);
+	I_Property(osg::StateSet::RenderBinMode, RenderBinMode);
+	I_Property(int, RenderingHint);
+	I_Property(osg::StateSet::TextureAttributeList &, TextureAttributeList);
+	I_IndexedProperty2(osg::StateAttribute::GLModeValue, TextureMode, unsigned int, unit, osg::StateAttribute::GLMode, mode);
+	I_Property(osg::StateSet::TextureModeList &, TextureModeList);
+	I_Property(osg::StateSet::UniformList &, UniformList);
+	I_Property(osg::StateSet::Callback *, UpdateCallback);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::StateSet::Callback)
-	VirtualBaseType(osg::Object);
-	Constructor0();
-	Constructor2(IN, const osg::StateSet::Callback &, x, IN, const osg::CopyOp &, x);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
+BEGIN_OBJECT_REFLECTOR(osg::StateSet::Callback)
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::StateSet::Callback &, x, IN, const osg::CopyOp &, x);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
-	Constructor0();
-	Constructor1(IN, osg::StateAttribute *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::StateAttribute > &, rp);
-	Method0(bool, valid);
-	Method0(osg::StateAttribute *, get);
-	Method0(const osg::StateAttribute *, get);
-	Method0(osg::StateAttribute *, take);
-	Method0(osg::StateAttribute *, release);
-	ReadOnlyProperty(osg::StateAttribute *, );
+	I_Constructor0();
+	I_Constructor1(IN, osg::StateAttribute *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::StateAttribute > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::StateAttribute *, get);
+	I_Method0(const osg::StateAttribute *, get);
+	I_Method0(osg::StateAttribute *, take);
+	I_Method0(osg::StateAttribute *, release);
+	I_ReadOnlyProperty(osg::StateAttribute *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
-	Constructor0();
-	Constructor1(IN, osg::Uniform *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp);
-	Method0(bool, valid);
-	Method0(osg::Uniform *, get);
-	Method0(const osg::Uniform *, get);
-	Method0(osg::Uniform *, take);
-	Method0(osg::Uniform *, release);
-	ReadOnlyProperty(osg::Uniform *, );
+	I_Constructor0();
+	I_Constructor1(IN, osg::Uniform *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::Uniform *, get);
+	I_Method0(const osg::Uniform *, get);
+	I_Method0(osg::Uniform *, take);
+	I_Method0(osg::Uniform *, release);
+	I_ReadOnlyProperty(osg::Uniform *, );
 END_REFLECTOR
 
 STD_MAP_REFLECTOR_WITH_TYPES(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateAttribute::GLMode, osg::StateAttribute::Values);

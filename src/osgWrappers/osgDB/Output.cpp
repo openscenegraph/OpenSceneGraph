@@ -12,39 +12,18 @@
 #include <osg/Object>
 #include <osgDB/Output>
 
-BEGIN_ENUM_REFLECTOR(osgDB::Output::PathNameHint)
-	EnumLabel(osgDB::Output::AS_IS);
-	EnumLabel(osgDB::Output::FULL_PATH);
-	EnumLabel(osgDB::Output::RELATIVE_PATH);
-	EnumLabel(osgDB::Output::FILENAME_ONLY);
-END_REFLECTOR
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
 
-BEGIN_VALUE_REFLECTOR(osgDB::Output)
-	Constructor0();
-	Constructor1(IN, const char *, name);
-	Method1(void, open, IN, const char *, name);
-	Method0(osgDB::Output &, indent);
-	Method1(std::string, wrapString, IN, const std::string &, str);
-	Method1(void, setIndentStep, IN, int, step);
-	Method0(int, getIndentStep);
-	Method1(void, setIndent, IN, int, indent);
-	Method0(int, getIndent);
-	Method1(void, setNumIndicesPerLine, IN, int, num);
-	Method0(int, getNumIndicesPerLine);
-	Method0(void, moveIn);
-	Method0(void, moveOut);
-	Method1(bool, writeObject, IN, const osg::Object &, obj);
-	Method2(bool, getUniqueIDForObject, IN, const osg::Object *, obj, IN, std::string &, uniqueID);
-	Method2(bool, createUniqueIDForObject, IN, const osg::Object *, obj, IN, std::string &, uniqueID);
-	Method2(bool, registerUniqueIDForObject, IN, const osg::Object *, obj, IN, std::string &, uniqueID);
-	Method1(void, setPathNameHint, IN, const osgDB::Output::PathNameHint, pnh);
-	Method0(osgDB::Output::PathNameHint, getPathNameHint);
-	Method1(std::string, getFileNameForOutput, IN, const std::string &, filename);
-	Method0(const std::string &, getFileName);
-	ReadOnlyProperty(const std::string &, FileName);
-	Property(int, Indent);
-	Property(int, IndentStep);
-	WriteOnlyProperty(int, NumIndicesPerLine);
-	ReadOnlyProperty(osgDB::Output::PathNameHint, PathNameHint);
+BEGIN_ENUM_REFLECTOR(osgDB::Output::PathNameHint)
+	I_EnumLabel(osgDB::Output::AS_IS);
+	I_EnumLabel(osgDB::Output::FULL_PATH);
+	I_EnumLabel(osgDB::Output::RELATIVE_PATH);
+	I_EnumLabel(osgDB::Output::FILENAME_ONLY);
 END_REFLECTOR
 

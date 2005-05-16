@@ -15,21 +15,29 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::NodeCallback)
-	VirtualBaseType(osg::Object);
-	Constructor0();
-	Constructor2(IN, const osg::NodeCallback &, nc, IN, const osg::CopyOp &, x);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method2(void, traverse, IN, osg::Node *, node, IN, osg::NodeVisitor *, nv);
-	Method1(void, setNestedCallback, IN, osg::NodeCallback *, nc);
-	Method0(osg::NodeCallback *, getNestedCallback);
-	Method0(const osg::NodeCallback *, getNestedCallback);
-	Method1(void, addNestedCallback, IN, osg::NodeCallback *, nc);
-	Method1(void, removeNestedCallback, IN, osg::NodeCallback *, nc);
-	Property(osg::NodeCallback *, NestedCallback);
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::NodeCallback &, nc, IN, const osg::CopyOp &, x);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method2(void, traverse, IN, osg::Node *, node, IN, osg::NodeVisitor *, nv);
+	I_Method1(void, setNestedCallback, IN, osg::NodeCallback *, nc);
+	I_Method0(osg::NodeCallback *, getNestedCallback);
+	I_Method0(const osg::NodeCallback *, getNestedCallback);
+	I_Method1(void, addNestedCallback, IN, osg::NodeCallback *, nc);
+	I_Method1(void, removeNestedCallback, IN, osg::NodeCallback *, nc);
+	I_Property(osg::NodeCallback *, NestedCallback);
 END_REFLECTOR
 

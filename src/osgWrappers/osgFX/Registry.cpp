@@ -12,29 +12,25 @@
 #include <osgFX/Effect>
 #include <osgFX/Registry>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >, osgFX::Registry::EffectMap);
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Registry)
-	BaseType(osg::Referenced);
-	Method1(void, registerEffect, IN, const osgFX::Effect *, effect);
-	Method0(const osgFX::Registry::EffectMap &, getEffectMap);
-	ReadOnlyProperty(const osgFX::Registry::EffectMap &, EffectMap);
+	I_BaseType(osg::Referenced);
+	I_Method1(void, registerEffect, IN, const osgFX::Effect *, effect);
+	I_Method0(const osgFX::Registry::EffectMap &, getEffectMap);
+	I_ReadOnlyProperty(const osgFX::Registry::EffectMap &, EffectMap);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgFX::Registry::Proxy)
-	Constructor1(IN, const osgFX::Effect *, effect);
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< const osgFX::Effect >)
-	Constructor0();
-	Constructor1(IN, const osgFX::Effect *, t);
-	Constructor1(IN, const osg::ref_ptr< const osgFX::Effect > &, rp);
-	Method0(bool, valid);
-	Method0(const osgFX::Effect *, get);
-	Method0(const const osgFX::Effect *, get);
-	Method0(const osgFX::Effect *, take);
-	Method0(const osgFX::Effect *, release);
-	ReadOnlyProperty(const osgFX::Effect *, );
+	I_Constructor1(IN, const osgFX::Effect *, effect);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >);

@@ -1,6 +1,48 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+??th May 2005 - OpenSceneGraph-0.9.9
+
+    >>> OpenGL Shader Language integrated into core, Introspection 
+
+    Contributors:
+        Alberto Farre         
+        Bob Kuehne
+        Brede Johansen
+        Carlo Camporesi
+        Chris Xennon
+        Don Burns
+        Donn Mielcarek
+        Don Tidrow
+        Farshid Lashkari
+        Fredrick Mammond
+        Garrat Potts
+        Igor Kravtchenko
+        James French
+        Joran Jessurun
+        Joson Daly
+        Kevin Moiule
+        Leandro Motta
+        Leandro Motta
+        Mason Menninger
+        Nathan Monteleone
+        Paul Melis
+        Per Fahlberg
+        Rainer Oder
+        Randall Hopper
+        Reinhard Sainitzer
+        Robert Osfield
+        Ruben
+        Sebastien Grignard
+        Stephan Huber
+        Terry Welsh
+        Tony Horrobin
+        Tree
+        Tugkan Calapoglu
+        Vivek Rajan
+        Waltice
+        Yuzhong Shen
+
 26th November 2004 - OpenSceneGraph-0.9.8
 
     >>> Support for database archives, improved pager, 3d compressed textures

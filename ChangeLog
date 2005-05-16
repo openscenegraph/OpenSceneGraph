@@ -1,3 +1,1428 @@
+2005-05-16 16:51  robert
+
+	* src/: osg/dxtctool.cpp, osg/dxtctool.h,
+	  osgFX/SpecularHighlights.cpp, osgGA/UFOManipulator.cpp,
+	  osgSim/SphereSegment.cpp: Warning fixes for IRIX
+
+2005-05-16 16:50  robert
+
+	* src/osgWrappers/osgUtil/IntersectVisitor.cpp: Updated wrappers
+
+2005-05-16 15:27  robert
+
+	* include/osgUtil/IntersectVisitor: Changed the getHitList and
+	  getNumHits methods to take const osg::LineSegment* as a
+	  parameter.
+
+2005-05-16 15:09  robert
+
+	* src/osgTerrain/DataSet.cpp: Workaround for Mipspro compiler bug.
+
+2005-05-16 12:22  robert
+
+	* src/osgWrappers/osg/ShapeDrawable.cpp: Updated wrappers.
+
+2005-05-16 12:18  robert
+
+	* include/osg/ShapeDrawable, include/osgDB/Archive,
+	  src/osgTerrain/DataSet.cpp: Fixed method signatures.
+
+2005-05-16 11:12  robert
+
+	* Make/makedirdefs: Added osgUtil osgDB osgFX osgText osgTerrain
+	  osgGA osgProducer to the list of wrapper libraries.
+
+2005-05-16 10:41  robert
+
+	* src/osgWrappers/: osg/AlphaFunc.cpp, osg/AnimationPath.cpp,
+	  osg/ApplicationUsage.cpp, osg/ArgumentParser.cpp, osg/Array.cpp,
+	  osg/AutoTransform.cpp, osg/Billboard.cpp, osg/BlendColor.cpp,
+	  osg/BlendEquation.cpp, osg/BlendFunc.cpp, osg/BoundingBox.cpp,
+	  osg/BoundingSphere.cpp, osg/BufferObject.cpp, osg/ClearNode.cpp,
+	  osg/ClipNode.cpp, osg/ClipPlane.cpp,
+	  osg/ClusterCullingCallback.cpp, osg/CollectOccludersVisitor.cpp,
+	  osg/ColorMask.cpp, osg/ColorMatrix.cpp,
+	  osg/ConvexPlanarOccluder.cpp, osg/ConvexPlanarPolygon.cpp,
+	  osg/CoordinateSystemNode.cpp, osg/CopyOp.cpp, osg/CullFace.cpp,
+	  osg/CullSettings.cpp, osg/CullStack.cpp, osg/CullingSet.cpp,
+	  osg/Depth.cpp, osg/DisplaySettings.cpp, osg/DrawPixels.cpp,
+	  osg/Drawable.cpp, osg/Fog.cpp, osg/FragmentProgram.cpp,
+	  osg/FrameStamp.cpp, osg/FrontFace.cpp, osg/Geode.cpp,
+	  osg/Geometry.cpp, osg/Group.cpp, osg/Image.cpp,
+	  osg/ImageStream.cpp, osg/LOD.cpp, osg/Light.cpp,
+	  osg/LightModel.cpp, osg/LightSource.cpp, osg/LineSegment.cpp,
+	  osg/LineStipple.cpp, osg/LineWidth.cpp, osg/LogicOp.cpp,
+	  osg/Material.cpp, osg/Matrix.cpp, osg/MatrixTransform.cpp,
+	  osg/Matrixd.cpp, osg/Matrixf.cpp, osg/Multisample.cpp,
+	  osg/Node.cpp, osg/NodeCallback.cpp, osg/NodeVisitor.cpp,
+	  osg/Object.cpp, osg/OccluderNode.cpp, osg/PagedLOD.cpp,
+	  osg/Plane.cpp, osg/Point.cpp, osg/PointSprite.cpp,
+	  osg/PolygonMode.cpp, osg/PolygonOffset.cpp,
+	  osg/PolygonStipple.cpp, osg/Polytope.cpp,
+	  osg/PositionAttitudeTransform.cpp, osg/PrimitiveSet.cpp,
+	  osg/Program.cpp, osg/Projection.cpp, osg/ProxyNode.cpp,
+	  osg/Quat.cpp, osg/RefNodePath.cpp, osg/Referenced.cpp,
+	  osg/Sequence.cpp, osg/ShadeModel.cpp, osg/Shader.cpp,
+	  osg/ShadowVolumeOccluder.cpp, osg/Shape.cpp,
+	  osg/ShapeDrawable.cpp, osg/State.cpp, osg/StateAttribute.cpp,
+	  osg/StateSet.cpp, osg/Stencil.cpp, osg/Switch.cpp,
+	  osg/TexEnv.cpp, osg/TexEnvCombine.cpp, osg/TexEnvFilter.cpp,
+	  osg/TexGen.cpp, osg/TexGenNode.cpp, osg/TexMat.cpp,
+	  osg/Texture.cpp, osg/Texture1D.cpp, osg/Texture2D.cpp,
+	  osg/Texture3D.cpp, osg/TextureCubeMap.cpp,
+	  osg/TextureRectangle.cpp, osg/Timer.cpp, osg/Transform.cpp,
+	  osg/UByte4.cpp, osg/Uniform.cpp, osg/Vec2.cpp, osg/Vec2d.cpp,
+	  osg/Vec2f.cpp, osg/Vec3.cpp, osg/Vec3d.cpp, osg/Vec3f.cpp,
+	  osg/Vec4.cpp, osg/Vec4d.cpp, osg/Vec4f.cpp,
+	  osg/VertexProgram.cpp, osg/Viewport.cpp, osgDB/Archive.cpp,
+	  osgDB/DatabasePager.cpp, osgDB/DotOsgWrapper.cpp,
+	  osgDB/DynamicLibrary.cpp, osgDB/Field.cpp, osgDB/FieldReader.cpp,
+	  osgDB/FieldReaderIterator.cpp, osgDB/FileUtils.cpp,
+	  osgDB/ImageOptions.cpp, osgDB/Input.cpp, osgDB/Output.cpp,
+	  osgDB/ParameterOutput.cpp, osgDB/ReaderWriter.cpp,
+	  osgDB/ReentrantMutex.cpp, osgDB/Registry.cpp,
+	  osgDB/SharedStateManager.cpp, osgFX/AnisotropicLighting.cpp,
+	  osgFX/BumpMapping.cpp, osgFX/Cartoon.cpp, osgFX/Effect.cpp,
+	  osgFX/MultiTextureControl.cpp, osgFX/Registry.cpp,
+	  osgFX/Scribe.cpp, osgFX/SpecularHighlights.cpp,
+	  osgFX/Technique.cpp, osgFX/Validator.cpp,
+	  osgGA/AnimationPathManipulator.cpp, osgGA/DriveManipulator.cpp,
+	  osgGA/EventVisitor.cpp, osgGA/FlightManipulator.cpp,
+	  osgGA/GUIActionAdapter.cpp, osgGA/GUIEventAdapter.cpp,
+	  osgGA/GUIEventHandler.cpp, osgGA/GUIEventHandlerVisitor.cpp,
+	  osgGA/KeySwitchMatrixManipulator.cpp,
+	  osgGA/MatrixManipulator.cpp, osgGA/NodeTrackerManipulator.cpp,
+	  osgGA/SetSceneViewVisitor.cpp, osgGA/StateSetManipulator.cpp,
+	  osgGA/TerrainManipulator.cpp, osgGA/TrackballManipulator.cpp,
+	  osgGA/UFOManipulator.cpp, osgParticle/AccelOperator.cpp,
+	  osgParticle/AngularAccelOperator.cpp,
+	  osgParticle/CenteredPlacer.cpp, osgParticle/Counter.cpp,
+	  osgParticle/Emitter.cpp, osgParticle/ExplosionDebriEffect.cpp,
+	  osgParticle/ExplosionEffect.cpp, osgParticle/FireEffect.cpp,
+	  osgParticle/FluidFrictionOperator.cpp,
+	  osgParticle/FluidProgram.cpp, osgParticle/ForceOperator.cpp,
+	  osgParticle/Interpolator.cpp, osgParticle/LinearInterpolator.cpp,
+	  osgParticle/ModularEmitter.cpp, osgParticle/ModularProgram.cpp,
+	  osgParticle/MultiSegmentPlacer.cpp, osgParticle/Operator.cpp,
+	  osgParticle/Particle.cpp, osgParticle/ParticleEffect.cpp,
+	  osgParticle/ParticleProcessor.cpp,
+	  osgParticle/ParticleSystem.cpp,
+	  osgParticle/ParticleSystemUpdater.cpp, osgParticle/Placer.cpp,
+	  osgParticle/PointPlacer.cpp, osgParticle/Program.cpp,
+	  osgParticle/RadialShooter.cpp, osgParticle/RandomRateCounter.cpp,
+	  osgParticle/SectorPlacer.cpp, osgParticle/SegmentPlacer.cpp,
+	  osgParticle/Shooter.cpp, osgParticle/SmokeEffect.cpp,
+	  osgParticle/VariableRateCounter.cpp, osgParticle/range.cpp,
+	  osgProducer/EventAdapter.cpp,
+	  osgProducer/KeyboardMouseCallback.cpp,
+	  osgProducer/OsgCameraGroup.cpp, osgProducer/OsgSceneHandler.cpp,
+	  osgProducer/Viewer.cpp, osgProducer/ViewerEventHandler.cpp,
+	  osgSim/BlinkSequence.cpp, osgSim/ColorRange.cpp,
+	  osgSim/DOFTransform.cpp, osgSim/GeographicLocation.cpp,
+	  osgSim/Impostor.cpp, osgSim/ImpostorSprite.cpp,
+	  osgSim/InsertImpostorsVisitor.cpp, osgSim/LightPoint.cpp,
+	  osgSim/LightPointNode.cpp, osgSim/LightPointSystem.cpp,
+	  osgSim/MultiSwitch.cpp, osgSim/ScalarBar.cpp,
+	  osgSim/ScalarsToColors.cpp, osgSim/Sector.cpp,
+	  osgSim/SphereSegment.cpp, osgSim/VisibilityGroup.cpp,
+	  osgTerrain/DataSet.cpp, osgTerrain/HeightFieldNode.cpp,
+	  osgTerrain/HeightFieldRenderer.cpp, osgText/Export.cpp,
+	  osgText/Font.cpp, osgText/String.cpp, osgText/Text.cpp,
+	  osgUtil/CubeMapGenerator.cpp, osgUtil/CullVisitor.cpp,
+	  osgUtil/DelaunayTriangulator.cpp,
+	  osgUtil/DisplayRequirementsVisitor.cpp,
+	  osgUtil/GLObjectsVisitor.cpp, osgUtil/HalfWayMapGenerator.cpp,
+	  osgUtil/HighlightMapGenerator.cpp, osgUtil/IntersectVisitor.cpp,
+	  osgUtil/Optimizer.cpp, osgUtil/ReflectionMapGenerator.cpp,
+	  osgUtil/RenderBin.cpp, osgUtil/RenderGraph.cpp,
+	  osgUtil/RenderLeaf.cpp, osgUtil/RenderStage.cpp,
+	  osgUtil/RenderStageLighting.cpp,
+	  osgUtil/RenderToTextureStage.cpp, osgUtil/SceneView.cpp,
+	  osgUtil/Simplifier.cpp, osgUtil/SmoothingVisitor.cpp,
+	  osgUtil/Statistics.cpp, osgUtil/TangentSpaceGenerator.cpp,
+	  osgUtil/Tesselator.cpp, osgUtil/TransformAttributeFunctor.cpp,
+	  osgUtil/TransformCallback.cpp, osgUtil/TriStripVisitor.cpp,
+	  osgUtil/UpdateVisitor.cpp: Updated wrappers
+
+2005-05-15 21:32  robert
+
+	* include/: osgDB/DatabasePager, osgIntrospection/ReflectionMacros,
+	  osgIntrospection/Reflector, osgIntrospection/TypedMethodInfo,
+	  osgProducer/OsgCameraGroup, osgText/Font: From Marco Jez, fixes
+	  to/and for osgIntrospection.
+
+2005-05-15 21:31  robert
+
+	* include/osg/Group: Moved computeBounds into public scope.
+
+2005-05-15 06:47  robert
+
+	* include/osg/Geode: From John Grant, added getDrawableList()
+	  const.
+
+2005-05-14 19:57  robert
+
+	* include/osgTerrain/DataSet: From Marco Jez, added export symbols.
+
+2005-05-14 15:31  robert
+
+	* include/osgGA/UFOManipulator: From Marco Jez, change of Doxygen
+	  docs name of class from UFOManipulator to osgGA::UFOManipulator,
+	  done to avoid automated wrapper issues.
+
+2005-05-13 22:39  robert
+
+	* src/osgSim/Impostor.cpp: Yet another using namespace osg to try
+	  and work out the spat betwen MipsPro and VS.6.0.
+
+2005-05-13 22:38  robert
+
+	* include/osg/: ArgumentParser, PolygonMode, Uniform: From Tom
+	  Jolly, removing trailing comma for last entries in enums to fix
+	  IRIX compile warnings.
+
+2005-05-13 15:54  robert
+
+	* VisualStudio/: applications/osgdem/osgdem.dsp,
+	  examples/osgGLUTkeyboardmouse/osgGLUTkeyboardmouse.dsp,
+	  examples/osgGLUTsimple/osgGLUTsimple.dsp,
+	  osgPlugins/freetype/freetype.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/tiff/tiff.dsp, osgTerrain/osgTerrain.dsp: From Mike
+	  Weiblen, updated project files to link to new 3rdParty libs
+
+2005-05-13 15:36  robert
+
+	* src/osgWrappers/osgUtil/: Optimizer.cpp, TriStripVisitor.cpp:
+	  Updated wrappers.
+
+2005-05-13 14:29  robert
+
+	* include/osgUtil/Optimizer, include/osgUtil/TriStripVisitor,
+	  src/osgUtil/Optimizer.cpp: Moved BaseOptimizerVisitor out of
+	  Optimizer into osgUtil namespace to try and get round MipsPro
+	  compile problems.
+
+2005-05-13 13:06  robert
+
+	* src/osgPlugins/dxf/: dxfFile.h, dxfSection.h: Refinement of
+	  includes to help IRIX build
+
+2005-05-13 12:11  robert
+
+	* include/osg/Math, include/osgSim/ImpostorSprite,
+	  src/osgFX/MultiTextureControl.cpp, src/osgSim/ImpostorSprite.cpp,
+	  src/osgText/Text.cpp: Cross platform build fixes.
+
+2005-05-13 10:52  robert
+
+	* src/osgPlugins/dxf/dxfEntity.h: Added #include "dxfBlock.h"
+
+2005-05-13 10:05  robert
+
+	* VisualStudio/osgPlugins/ive/ive.dsp: Added /Zm200
+
+2005-05-13 09:54  robert
+
+	* src/osgDB/ReadFile.cpp: Removed unused function.
+
+2005-05-12 21:59  robert
+
+	* include/osg/Shader: From Mike Weiblen, Added queries of
+	  compilation state to Shader (for symmetry with Program's link
+	  state queries)
+
+2005-05-12 21:46  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: fixed warning.
+
+2005-05-12 21:35  robert
+
+	* include/osg/State: From Jan Ciger, gcc 4.0 compile fix.
+
+2005-05-12 21:06  robert
+
+	* src/osgWrappers/: osg/Billboard.cpp, osg/BoundingSphere.cpp,
+	  osg/ClipNode.cpp, osg/DrawPixels.cpp, osg/Drawable.cpp,
+	  osg/Geode.cpp, osg/LOD.cpp, osg/LightSource.cpp, osg/Node.cpp,
+	  osg/OccluderNode.cpp, osg/ProxyNode.cpp, osg/ShapeDrawable.cpp,
+	  osg/Switch.cpp, osg/Transform.cpp, osgGA/UFOManipulator.cpp,
+	  osgParticle/ParticleProcessor.cpp,
+	  osgParticle/ParticleSystem.cpp,
+	  osgParticle/ParticleSystemUpdater.cpp, osgSim/Impostor.cpp,
+	  osgSim/ImpostorSprite.cpp, osgSim/LightPointNode.cpp,
+	  osgText/Text.cpp: Updated wrappers.
+
+2005-05-12 21:03  robert
+
+	* src/osgPlugins/ive/MatrixTransform.cpp: Fixed pairing of write
+	  and read of Matrixd
+
+2005-05-12 20:14  robert
+
+	* VisualStudio/examples/osgpbuffer/osgpbuffer.dsp: From Mike
+	  Weiblen, osgpbuffer now needs to link w/ Producer (fixed .dsp
+	  file attached)
+
+2005-05-12 20:05  robert
+
+	* src/osg/Uniform.cpp: Added missing Uniform(Matrixd) constructor
+	  implementation
+
+2005-05-12 16:51  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: From Alberto Farre,
+
+	  "ConvertFromFLT::addMultiTexture makes ENDIAN conversion for
+	  SMultiTexture  struct attributes.   When an flt object is
+	  multi-instantiated y should be done just first time,	 because
+	  SMultiTexture struct is always the same, currently is being done
+	  for	each instance.
+
+	   Attached file fix the problem but perhaps a more clean fix would
+	  be making
+	   ENDIAN conversion at writing attributes time instead of at
+	  reading time. "
+
+2005-05-12 15:48  robert
+
+	* include/osg/Drawable, include/osg/Node,
+	  src/osgPlugins/ive/Drawable.cpp, src/osgPlugins/ive/Node.cpp,
+	  src/osgPlugins/osg/Drawable.cpp, src/osgPlugins/osg/Node.cpp:
+	  Added IO support for new intialBound and callbacks to .osg, and
+	  initialBound to .ive
+
+2005-05-12 15:03  robert
+
+	* applications/osgconv/GeoSet.cpp, applications/osgconv/GeoSet.h,
+	  examples/osgteapot/osgteapot.cpp, include/osg/Billboard,
+	  include/osg/BoundingSphere, include/osg/ClipNode,
+	  include/osg/DrawPixels, include/osg/Drawable, include/osg/Geode,
+	  include/osg/Group, include/osg/LOD, include/osg/LightSource,
+	  include/osg/Node, include/osg/OccluderNode,
+	  include/osg/ProxyNode, include/osg/ShapeDrawable,
+	  include/osg/Switch, include/osg/Transform,
+	  include/osgParticle/ParticleProcessor,
+	  include/osgParticle/ParticleSystem,
+	  include/osgParticle/ParticleSystemUpdater,
+	  include/osgSim/Impostor, include/osgSim/ImpostorSprite,
+	  include/osgSim/LightPointNode, include/osgText/Text,
+	  src/osg/Billboard.cpp, src/osg/ClipNode.cpp,
+	  src/osg/DrawPixels.cpp, src/osg/Drawable.cpp, src/osg/Geode.cpp,
+	  src/osg/Group.cpp, src/osg/LOD.cpp, src/osg/LightSource.cpp,
+	  src/osg/Node.cpp, src/osg/OccluderNode.cpp,
+	  src/osg/ProxyNode.cpp, src/osg/ShapeDrawable.cpp,
+	  src/osg/Switch.cpp, src/osg/Transform.cpp,
+	  src/osgParticle/ParticleProcessor.cpp,
+	  src/osgParticle/ParticleSystem.cpp,
+	  src/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgPlugins/logo/ReaderWriterLOGO.cpp,
+	  src/osgPlugins/txp/TXPNode.cpp, src/osgPlugins/txp/TXPNode.h,
+	  src/osgSim/Impostor.cpp, src/osgSim/ImpostorSprite.cpp,
+	  src/osgSim/LightPointDrawable.cpp,
+	  src/osgSim/LightPointDrawable.h, src/osgSim/LightPointNode.cpp,
+	  src/osgSim/SphereSegment.cpp, src/osgText/Text.cpp: Added new
+	  Node/Drawable::s/getInitialBound and
+	  Node/Drawable::s/getComputeBoundCallback methods and reimplement
+	  computeBound so that it passes back a bounding volume rather than
+	  modifying the local one.
+
+2005-05-12 09:58  robert
+
+	* src/osgParticle/ParticleEffect.cpp: Added setTextureFileName
+	  method.
+
+2005-05-12 09:54  robert
+
+	* src/osg/: Program.cpp, Shader.cpp, State.cpp: Added clear of lazy
+	  uniform updating structure on relink, also added debug output of
+	  shader being compiled.
+
+2005-05-12 08:47  robert
+
+	* include/osg/: GL2Extensions, Uniform: Moved OpenGL2 definitions
+	  from Uniform header to GL2Extensions
+
+2005-05-11 22:36  robert
+
+	* src/osgWrappers/osg/Shader.cpp: Updated wrappers.
+
+2005-05-11 22:06  robert
+
+	* include/osg/: GL2Extensions, Shader: Added missing required
+	  includes
+
+2005-05-11 21:37  robert
+
+	* include/osg/: GL2Extensions, Shader: Compile fix.
+
+2005-05-11 21:05  robert
+
+	* src/osgWrappers/: osg/Program.cpp, osg/Shader.cpp,
+	  osg/Uniform.cpp, osgParticle/ParticleEffect.cpp,
+	  osgUtil/Optimizer.cpp: Updated wrappers
+
+2005-05-11 20:59  robert
+
+	* include/osg/: GL2Extensions, Program, Shader, Uniform: Moved
+	  GL2Extensions back out of Program and into its own header file.
+
+2005-05-11 20:34  robert
+
+	* src/osgPlugins/txp/: ReaderWriterTXP.cpp, TXPArchive.h,
+	  TXPNode.h: From Don Tidrow, "I added some code to assign the
+	  archive pointer in TXPnode with the archive that ReaderWriterTXP
+	  actually loads.  I also added a function in TXPArchive to help in
+	  manipulating the lightpoints."
+
+2005-05-11 20:32  robert
+
+	* src/osg/: Program.cpp, Shader.cpp: Changed the info log so that
+	  it output to INFO on success, to WARN when an error has occured.
+
+2005-05-11 20:14  robert
+
+	* Make/makedirdefs,
+	  VisualStudio/examples/osgpbuffer/osgpbuffer.dsp,
+	  examples/osgpbuffer/GNUmakefile,
+	  examples/osgpbuffer/GNUmakefile.inst,
+	  examples/osgpbuffer/RenderToTextureStage.cpp,
+	  examples/osgpbuffer/RenderToTextureStage.h,
+	  examples/osgpbuffer/osgpbuffer.cpp,
+	  examples/osgpbuffer/pbuffer.cpp, examples/osgpbuffer/pbuffer.h:
+	  From Nathan Monteleone, rewrote the osgpbuffer example so that it
+	  uses	   Producer xplatform support for pbuffer instead of Win32
+	  specific pathways	as support before. (with a few code tweaks
+	  to simplfy the code, by Robert Osfield).
+
+2005-05-11 17:05  robert
+
+	* src/: osgParticle/ExplosionDebriEffect.cpp,
+	  osgParticle/ExplosionEffect.cpp, osgParticle/FireEffect.cpp,
+	  osgParticle/SmokeEffect.cpp,
+	  osgPlugins/osgParticle/IO_ParticleEffect.cpp: Added .osg support
+	  for new ParticleEffect::s/getDefaultParticleTemplate.
+
+2005-05-11 16:26  robert
+
+	* include/osgParticle/ParticleEffect,
+	  src/osgParticle/ExplosionDebriEffect.cpp,
+	  src/osgParticle/ExplosionEffect.cpp,
+	  src/osgParticle/FireEffect.cpp,
+	  src/osgParticle/ParticleEffect.cpp,
+	  src/osgParticle/SmokeEffect.cpp: Added support for setting the
+	  texture filename and more fine control over the particle template
+	  used in ParticleEffects
+
+2005-05-11 14:40  robert
+
+	* src/osgPlugins/osg/Uniform.cpp: Fixed compile warning.
+
+2005-05-11 14:37  robert
+
+	* include/osg/Uniform, src/osg/Uniform.cpp,
+	  src/osgPlugins/ive/DOFTransform.cpp,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataInputStream.h,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.h,
+	  src/osgPlugins/ive/MatrixTransform.cpp,
+	  src/osgPlugins/ive/TexMat.cpp, src/osgPlugins/ive/Uniform.cpp:
+	  Completed GLSL support in .ive
+
+2005-05-11 12:42  robert
+
+	* src/osgPlugins/ive/: DataInputStream.cpp, DataInputStream.h,
+	  DataOutputStream.cpp, DataOutputStream.h, Program.cpp,
+	  Shader.cpp, StateSet.cpp, Uniform.cpp: Further work on GLSL
+	  support in .ive
+
+2005-05-11 12:41  robert
+
+	* include/osg/Program, src/osg/Program.cpp,
+	  src/osgPlugins/osg/Program.cpp, src/osgUtil/SceneView.cpp:
+	  Cleaned up API of BindAttributeLocation, added deletion of shader
+	  objects.
+
+2005-05-10 21:20  robert
+
+	* src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataInputStream.h,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.h,
+	  src/osgPlugins/ive/GNUmakefile, src/osgPlugins/ive/IveVersion.h,
+	  src/osgPlugins/ive/Program.cpp, src/osgPlugins/ive/Program.h,
+	  src/osgPlugins/ive/ReadWrite.h, src/osgPlugins/ive/Shader.cpp,
+	  src/osgPlugins/ive/Shader.h, src/osgPlugins/ive/StateSet.cpp,
+	  src/osgPlugins/ive/Uniform.cpp, src/osgPlugins/ive/Uniform.h,
+	  VisualStudio/osgPlugins/ive/ive.dsp: Put in place the class to
+	  implement GLSL support in .ive
+
+2005-05-10 19:21  robert
+
+	* src/osg/Program.cpp: Moved the infolog to the error handling
+	  block and upping its notification level to WARN to provide better
+	  feedback on failure with needing to use DEBUG notification level.
+
+2005-05-10 17:13  robert
+
+	* src/osgPlugins/obj/obj.cpp: Added tab to space converted to .obj
+	  plugin
+
+2005-05-10 14:56  robert
+
+	* include/osg/State, src/osg/State.cpp: Added support for PROTECTED
+	  and OVERRIDE to uniforms.
+
+2005-05-10 11:01  robert
+
+	* src/osgPlugins/ive/: IveVersion.h, Texture.cpp: From Farshid
+	  Lashkari, bumped IVE version number to 9, and added support in
+	  Texture for	  _borderWidth	   _useHardwareMipMapGeneration
+	  _unrefImageDataAfterApply	_clientStorageHint
+	  _resizeNonPowerOfTwoHint
+
+2005-05-10 10:07  robert
+
+	* Make/dolink.sh: Changed -ne to $LINK_ECHO_OPTION to fix cross
+	  platform compile issues
+
+2005-05-10 09:07  robert
+
+	* src/osgPlugins/osg/Texture.cpp: From Farshid Lashkari, and non
+	  power of two resize hint support to .osg ascii
+
+2005-05-09 16:29  robert
+
+	* include/osgUtil/Optimizer, src/osgUtil/Optimizer.cpp: Added code
+	  to prevent ProxyNode's from been "flattened" by
+	  osgUtil::Optimizer::FlattenStaticTransforms.
+
+2005-05-09 14:09  robert
+
+	* examples/osgforest/osgforest.cpp,
+	  examples/osgparticleeffects/osgparticleeffects.cpp,
+	  examples/osgshadowtexture/osgshadowtexture.cpp,
+	  examples/osgshape/osgshape.cpp,
+	  examples/osgspheresegment/osgspheresegment.cpp,
+	  examples/osgspotlight/osgspotlight.cpp,
+	  include/osg/AnimationPath, include/osg/Billboard,
+	  include/osg/LightSource, include/osg/Shape, include/osg/StateSet,
+	  include/osg/Texture2D, include/osg/Transform,
+	  include/osgProducer/OsgCameraGroup, include/osgText/Font,
+	  include/osgText/Text, include/osgUtil/RenderBin,
+	  include/osgUtil/RenderStage, include/osgUtil/SceneView,
+	  src/osgPlugins/osg/Shape.cpp, src/osgWrappers/osg/Shape.cpp,
+	  src/osgWrappers/osg/Texture2D.cpp: Removed deprecated API in
+	  preparation for 0.9.9 release.
+
+2005-05-09 11:17  robert
+
+	* Make/makedirdefs, src/osgWrappers/osgDB/Archive.cpp,
+	  src/osgWrappers/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/osgDB/DotOsgWrapper.cpp,
+	  src/osgWrappers/osgDB/DynamicLibrary.cpp,
+	  src/osgWrappers/osgDB/Field.cpp,
+	  src/osgWrappers/osgDB/FieldReader.cpp,
+	  src/osgWrappers/osgDB/FieldReaderIterator.cpp,
+	  src/osgWrappers/osgDB/FileUtils.cpp,
+	  src/osgWrappers/osgDB/GNUmakefile,
+	  src/osgWrappers/osgDB/ImageOptions.cpp,
+	  src/osgWrappers/osgDB/Input.cpp,
+	  src/osgWrappers/osgDB/Output.cpp,
+	  src/osgWrappers/osgDB/ParameterOutput.cpp,
+	  src/osgWrappers/osgDB/ReaderWriter.cpp,
+	  src/osgWrappers/osgDB/ReentrantMutex.cpp,
+	  src/osgWrappers/osgDB/Registry.cpp,
+	  src/osgWrappers/osgDB/SharedStateManager.cpp,
+	  src/osgWrappers/osgFX/AnisotropicLighting.cpp,
+	  src/osgWrappers/osgFX/BumpMapping.cpp,
+	  src/osgWrappers/osgFX/Cartoon.cpp,
+	  src/osgWrappers/osgFX/Effect.cpp,
+	  src/osgWrappers/osgFX/GNUmakefile,
+	  src/osgWrappers/osgFX/MultiTextureControl.cpp,
+	  src/osgWrappers/osgFX/Registry.cpp,
+	  src/osgWrappers/osgFX/Scribe.cpp,
+	  src/osgWrappers/osgFX/SpecularHighlights.cpp,
+	  src/osgWrappers/osgFX/Technique.cpp,
+	  src/osgWrappers/osgFX/Validator.cpp,
+	  src/osgWrappers/osgGA/AnimationPathManipulator.cpp,
+	  src/osgWrappers/osgGA/DriveManipulator.cpp,
+	  src/osgWrappers/osgGA/EventVisitor.cpp,
+	  src/osgWrappers/osgGA/FlightManipulator.cpp,
+	  src/osgWrappers/osgGA/GNUmakefile,
+	  src/osgWrappers/osgGA/GUIActionAdapter.cpp,
+	  src/osgWrappers/osgGA/GUIEventAdapter.cpp,
+	  src/osgWrappers/osgGA/GUIEventHandler.cpp,
+	  src/osgWrappers/osgGA/GUIEventHandlerVisitor.cpp,
+	  src/osgWrappers/osgGA/KeySwitchMatrixManipulator.cpp,
+	  src/osgWrappers/osgGA/MatrixManipulator.cpp,
+	  src/osgWrappers/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgWrappers/osgGA/SetSceneViewVisitor.cpp,
+	  src/osgWrappers/osgGA/StateSetManipulator.cpp,
+	  src/osgWrappers/osgGA/TerrainManipulator.cpp,
+	  src/osgWrappers/osgGA/TrackballManipulator.cpp,
+	  src/osgWrappers/osgGA/UFOManipulator.cpp,
+	  src/osgWrappers/osgParticle/AccelOperator.cpp,
+	  src/osgWrappers/osgParticle/AngularAccelOperator.cpp,
+	  src/osgWrappers/osgParticle/CenteredPlacer.cpp,
+	  src/osgWrappers/osgParticle/Counter.cpp,
+	  src/osgWrappers/osgParticle/Emitter.cpp,
+	  src/osgWrappers/osgParticle/ExplosionDebriEffect.cpp,
+	  src/osgWrappers/osgParticle/ExplosionEffect.cpp,
+	  src/osgWrappers/osgParticle/FireEffect.cpp,
+	  src/osgWrappers/osgParticle/FluidFrictionOperator.cpp,
+	  src/osgWrappers/osgParticle/FluidProgram.cpp,
+	  src/osgWrappers/osgParticle/ForceOperator.cpp,
+	  src/osgWrappers/osgParticle/GNUmakefile,
+	  src/osgWrappers/osgParticle/Interpolator.cpp,
+	  src/osgWrappers/osgParticle/LinearInterpolator.cpp,
+	  src/osgWrappers/osgParticle/ModularEmitter.cpp,
+	  src/osgWrappers/osgParticle/ModularProgram.cpp,
+	  src/osgWrappers/osgParticle/MultiSegmentPlacer.cpp,
+	  src/osgWrappers/osgParticle/Operator.cpp,
+	  src/osgWrappers/osgParticle/Particle.cpp,
+	  src/osgWrappers/osgParticle/ParticleEffect.cpp,
+	  src/osgWrappers/osgParticle/ParticleProcessor.cpp,
+	  src/osgWrappers/osgParticle/ParticleSystem.cpp,
+	  src/osgWrappers/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgWrappers/osgParticle/Placer.cpp,
+	  src/osgWrappers/osgParticle/PointPlacer.cpp,
+	  src/osgWrappers/osgParticle/Program.cpp,
+	  src/osgWrappers/osgParticle/RadialShooter.cpp,
+	  src/osgWrappers/osgParticle/RandomRateCounter.cpp,
+	  src/osgWrappers/osgParticle/SectorPlacer.cpp,
+	  src/osgWrappers/osgParticle/SegmentPlacer.cpp,
+	  src/osgWrappers/osgParticle/Shooter.cpp,
+	  src/osgWrappers/osgParticle/SmokeEffect.cpp,
+	  src/osgWrappers/osgParticle/VariableRateCounter.cpp,
+	  src/osgWrappers/osgParticle/range.cpp,
+	  src/osgWrappers/osgProducer/EventAdapter.cpp,
+	  src/osgWrappers/osgProducer/GNUmakefile,
+	  src/osgWrappers/osgProducer/KeyboardMouseCallback.cpp,
+	  src/osgWrappers/osgProducer/OsgCameraGroup.cpp,
+	  src/osgWrappers/osgProducer/OsgSceneHandler.cpp,
+	  src/osgWrappers/osgProducer/Viewer.cpp,
+	  src/osgWrappers/osgProducer/ViewerEventHandler.cpp,
+	  src/osgWrappers/osgSim/BlinkSequence.cpp,
+	  src/osgWrappers/osgSim/ColorRange.cpp,
+	  src/osgWrappers/osgSim/DOFTransform.cpp,
+	  src/osgWrappers/osgSim/GNUmakefile,
+	  src/osgWrappers/osgSim/GeographicLocation.cpp,
+	  src/osgWrappers/osgSim/Impostor.cpp,
+	  src/osgWrappers/osgSim/ImpostorSprite.cpp,
+	  src/osgWrappers/osgSim/InsertImpostorsVisitor.cpp,
+	  src/osgWrappers/osgSim/LightPoint.cpp,
+	  src/osgWrappers/osgSim/LightPointNode.cpp,
+	  src/osgWrappers/osgSim/LightPointSystem.cpp,
+	  src/osgWrappers/osgSim/MultiSwitch.cpp,
+	  src/osgWrappers/osgSim/ScalarBar.cpp,
+	  src/osgWrappers/osgSim/ScalarsToColors.cpp,
+	  src/osgWrappers/osgSim/Sector.cpp,
+	  src/osgWrappers/osgSim/SphereSegment.cpp,
+	  src/osgWrappers/osgSim/VisibilityGroup.cpp,
+	  src/osgWrappers/osgTerrain/DataSet.cpp,
+	  src/osgWrappers/osgTerrain/GNUmakefile,
+	  src/osgWrappers/osgTerrain/HeightFieldNode.cpp,
+	  src/osgWrappers/osgTerrain/HeightFieldRenderer.cpp,
+	  src/osgWrappers/osgText/Export.cpp,
+	  src/osgWrappers/osgText/Font.cpp,
+	  src/osgWrappers/osgText/GNUmakefile,
+	  src/osgWrappers/osgText/String.cpp,
+	  src/osgWrappers/osgText/Text.cpp,
+	  src/osgWrappers/osgUtil/CubeMapGenerator.cpp,
+	  src/osgWrappers/osgUtil/CullVisitor.cpp,
+	  src/osgWrappers/osgUtil/DelaunayTriangulator.cpp,
+	  src/osgWrappers/osgUtil/DisplayRequirementsVisitor.cpp,
+	  src/osgWrappers/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgWrappers/osgUtil/GNUmakefile,
+	  src/osgWrappers/osgUtil/HalfWayMapGenerator.cpp,
+	  src/osgWrappers/osgUtil/HighlightMapGenerator.cpp,
+	  src/osgWrappers/osgUtil/IntersectVisitor.cpp,
+	  src/osgWrappers/osgUtil/Optimizer.cpp,
+	  src/osgWrappers/osgUtil/ReflectionMapGenerator.cpp,
+	  src/osgWrappers/osgUtil/RenderBin.cpp,
+	  src/osgWrappers/osgUtil/RenderGraph.cpp,
+	  src/osgWrappers/osgUtil/RenderLeaf.cpp,
+	  src/osgWrappers/osgUtil/RenderStage.cpp,
+	  src/osgWrappers/osgUtil/RenderStageLighting.cpp,
+	  src/osgWrappers/osgUtil/RenderToTextureStage.cpp,
+	  src/osgWrappers/osgUtil/SceneView.cpp,
+	  src/osgWrappers/osgUtil/Simplifier.cpp,
+	  src/osgWrappers/osgUtil/SmoothingVisitor.cpp,
+	  src/osgWrappers/osgUtil/Statistics.cpp,
+	  src/osgWrappers/osgUtil/TangentSpaceGenerator.cpp,
+	  src/osgWrappers/osgUtil/Tesselator.cpp,
+	  src/osgWrappers/osgUtil/TransformAttributeFunctor.cpp,
+	  src/osgWrappers/osgUtil/TransformCallback.cpp,
+	  src/osgWrappers/osgUtil/TriStripVisitor.cpp,
+	  src/osgWrappers/osgUtil/UpdateVisitor.cpp: Added osgUtil, osgDB,
+	  osgFX, osgParticle, osgSim, osgTerrain, osgGA       and
+	  osgProducer to osgWrappers directory.
+
+	  Enabled the build of osgWrappers/osg, osgWrappers/osgPartile and
+	  osgWrappers/osgSim, but not osgUtil, osgDB, osgFX, osgTerrain,
+	  osgGA and osgProducer due to compile errors.	I am assuming that
+	  these compilers are fixable so I'm checked all the source code so
+	  that members of the community can help fix them.
+
+2005-05-08 20:21  robert
+
+	* src/: osgGA/DriveManipulator.cpp, osgGA/FlightManipulator.cpp,
+	  osgUtil/SceneView.cpp: Removed debug info
+
+2005-05-08 19:37  robert
+
+	* src/osgWrappers/osg/: Geode.cpp, Group.cpp, Node.cpp, Object.cpp,
+	  Program.cpp, StateSet.cpp, Texture.cpp, Uniform.cpp: Updated
+	  osgWrappers.
+
+2005-05-08 16:24  robert
+
+	* src/osg/DisplaySettings.cpp: Added missing copy of _stereo
+
+2005-05-07 21:47  robert
+
+	* runexamples.bat, applications/osgviewer/osgviewer.cpp,
+	  examples/osghangglide/osghangglide.cpp,
+	  examples/osgwindows/osgwindows.cpp, include/osg/Drawable,
+	  include/osg/Geode, include/osg/Group, include/osg/Node,
+	  include/osg/Object, include/osgDB/Registry,
+	  include/osgProducer/OsgCameraGroup,
+	  include/osgProducer/OsgSceneHandler, include/osgText/Font,
+	  include/osgText/Text, src/osg/Drawable.cpp, src/osg/Geode.cpp,
+	  src/osg/Group.cpp, src/osg/Node.cpp, src/osgDB/Registry.cpp,
+	  src/osgProducer/OsgCameraGroup.cpp,
+	  src/osgProducer/OsgSceneHandler.cpp, src/osgText/Text.cpp,
+	  src/osgUtil/SceneView.cpp: Added more comprehensive
+	  releaseGLObjects(State*=0) throughout Nodes, Drawables,StateSet,
+	  and osgDB::Registry.
+
+	  Added cleanup_frame() from to osgProducer::OsgCamerGroup to help
+	  with proper clean of OpenGL objects before exit, and modified
+	  osgviewer, osghangglider, osgwindows examples to do the extra
+	  frame call to cleanup_frame() before exit.
+
+2005-05-07 10:17  robert
+
+	* include/osgText/Font, src/osgText/Font.cpp: From Tim
+	  Daoust/Robert Osfield, added
+	  Font::releaseGLobjects(State*state=0) to facilate clean up of
+	  scene when a graphics context is deleted/reused.
+
+2005-05-06 20:44  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Added handling of sharing of
+	  graphics context data which is now supported by Producer.  You
+	  can get the osgProducer::Viewer to share graphics contexts by
+	  using the env var OSG_SHARE_GRAPHICS_CONTEXTS set to ON or OFF
+	  i.e.
+
+	     setenv OSG_SHARE_GRAPHICS_CONTEXTS ON
+
+2005-05-06 18:43  robert
+
+	* Make/makedefs: Added X11 include and lib paths to find freetype
+	  under OSX.
+
+2005-05-06 15:28  robert
+
+	* src/osgProducer/Viewer.cpp: Made OSX default to using single
+	  threaded keyboard mouse.
+
+2005-05-06 15:07  robert
+
+	* Make/makedefs: Made USE_AGL=yes the default under OSX.
+
+2005-05-06 11:32  robert
+
+	* include/osgUtil/SceneView, src/osgUtil/SceneView.cpp: Added
+	  osg_DeltaFrameTime uniform to default set.
+
+2005-05-06 10:58  robert
+
+	* include/osg/Program, include/osg/Uniform, src/osg/Program.cpp,
+	  src/osg/State.cpp, src/osg/StateSet.cpp, src/osg/Uniform.cpp:
+	  From Mike Weiblen, further work on GLSL support
+
+2005-05-06 10:04  robert
+
+	* include/osg/Texture, src/osg/Texture.cpp, src/osg/Texture1D.cpp,
+	  src/osg/Texture3D.cpp, src/osg/TextureCubeMap.cpp: From Farshid
+	  Lashkari, support for non power of two extension.
+
+2005-05-05 22:21  robert
+
+	* src/osgDB/DynamicLibrary.cpp: Fix for OSX build across both Tiger
+	  and 10.3.x
+
+2005-05-05 21:05  robert
+
+	* src/osgDB/Registry.cpp: Removed rgb alias for Quicktime mapping
+	  since the Quicktime is not reliable at loading all rgb files that
+	  the standard OSG rgb reader can read.
+
+2005-05-05 20:46  robert
+
+	* applications/osgconv/: GNUmakefile, GeoSet.cpp, GeoSet.h: Changed
+	  check() method name to checkConsistency() to avoid perculiar OSX
+	  Tiger build error.
+
+2005-05-05 15:03  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Removed the defaulting to
+	  setting the camera threading model to MultiThreaded, instead
+	  leave it to Producer's defaults.
+
+2005-05-05 13:30  robert
+
+	* include/osg/StateSet, include/osg/Uniform,
+	  include/osgUtil/SceneView, src/osg/StateSet.cpp,
+	  src/osg/Uniform.cpp, src/osgUtil/SceneView.cpp: Added support for
+	  osg_FrameNumber, osg_FrameTime, osg_ViewMatrix,
+	  osg_InverseViewMatrix into SceneView, controlled via a
+	  setActiveUniforms(.) method.
+
+2005-05-05 10:18  robert
+
+	* include/osg/Texture, src/osg/Texture.cpp: From Farshid Lashkari,
+	  added Texture::Extension support for non power of two extension.
+
+2005-05-04 12:38  robert
+
+	* include/osg/GLU, src/osgPlugins/dw/ReaderWriterDW.cpp,
+	  src/osgPlugins/lwo/Tessellator.cpp, src/osgUtil/Tesselator.cpp:
+	  Fix for Tiger build
+
+2005-05-04 10:11  robert
+
+	* src/osgUtil/Optimizer.cpp: Fixed bug where the
+	  Optimizer::StateVisitor was trying to optimize non existant
+	  StateSet's.
+
+2005-05-03 23:02  robert
+
+	* src/osgWrappers/osg/: Program.cpp, Uniform.cpp: Updated wrappers
+
+2005-05-03 22:53  robert
+
+	* src/osgPlugins/flt/FltFile.cpp: From Alberto Farre, "Missed a
+	  FilepathList pop_back line from my last submission.
+
+	  I have also commented out the option string set with FLT_VER
+	  because it overwrites other option string and I found it
+	  redundant and not needed."
+
+2005-05-03 22:49  robert
+
+	* src/osgProducer/Viewer.cpp: Removed the default compile of single
+	  threaded KeyboardMouse
+
+2005-05-03 22:46  robert
+
+	* include/osg/Program, include/osg/State, include/osg/Uniform,
+	  src/osg/State.cpp, src/osg/Uniform.cpp: Added support for lazy
+	  state updating of uniforms.
+
+2005-05-03 17:34  robert
+
+	* examples/osgcluster/receiver.cpp: From Bob Kuehne, OSX 10.4 fix.
+
+2005-05-03 15:31  robert
+
+	* src/: osgDB/DynamicLibrary.cpp, osgPlugins/flt/flt2osg.cpp,
+	  osgPlugins/net/sockinet.cpp, osgPlugins/net/sockstream.cpp,
+	  osgPlugins/osga/OSGA_Archive.h,
+	  osgPlugins/quicktime/QTtexture.cpp, osgPlugins/txp/TXPParser.cpp:
+	  From Bob Kuehne, fixes for OSX 10.4 build.
+
+2005-05-03 11:09  robert
+
+	* src/osgWrappers/osg/: Drawable.cpp, NodeVisitor.cpp, Program.cpp,
+	  Shader.cpp: Updated wrappers
+
+2005-05-03 07:23  robert
+
+	* src/osgPlugins/osg/Impostor.cpp: Removed Impostor.cpp
+
+2005-05-02 21:00  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Fixed TIFF readers
+	  handling of interleaved data
+
+2005-05-02 20:42  robert
+
+	* src/osgTerrain/DataSet.cpp: Improvements to the repojection code
+	  so that it can generate RGBA reprojected data.
+
+2005-05-02 15:16  robert
+
+	* applications/osgdem/osgdem.cpp, include/osgTerrain/DataSet,
+	  src/osgTerrain/DataSet.cpp: Added support for generating RGBA,
+	  RGBA-16 and RGBA-compressed texture databases
+
+2005-05-02 14:00  robert
+
+	* include/osgTerrain/DataSet, src/osgTerrain/DataSet.cpp: Added
+	  support for reading from RGBA source textures
+
+2005-05-02 11:18  robert
+
+	* include/osg/Uniform, src/osg/Uniform.cpp,
+	  src/osgUtil/Optimizer.cpp: Added support for optimization of
+	  Uniforms
+
+2005-05-02 10:57  robert
+
+	* include/osg/Drawable, src/osg/Geode.cpp: Improved the handling of
+	  update/event callbacks on Drawable and Geodes
+
+2005-05-02 10:34  robert
+
+	* examples/osgshaders/: GL2Scene.cpp, Noise.cpp, osgshaders.cpp:
+	  From Mike Weiblen, added \n newlines to inline shader program
+	  strings.  From Robert Osfield, changed tabs to spaces.
+
+2005-05-01 22:33  robert
+
+	* src/osgPlugins/osgSim/IO_Impostor.cpp: Moved Impostor from osg to
+	  osgSim .osg plugin
+
+2005-05-01 21:56  robert
+
+	* src/osgProducer/Viewer.cpp: Added include<osg/AlphaFunc> for OSX
+	  build
+
+2005-05-01 20:48  robert
+
+	* VisualStudio/VisualStudio.dsw,
+	  VisualStudio/examples/osgfxbrowser/osgfxbrowser.dsp,
+	  VisualStudio/osg/osg.dsp,
+	  VisualStudio/osgPlugins/osg/dot_osg.dsp,
+	  VisualStudio/osgPlugins/osgSim/dot_osgSim.dsp,
+	  VisualStudio/osgSim/osgSim.dsp, VisualStudio/osgUtil/osgUtil.dsp,
+	  VisualStudio/osgWrappers/osg/wrapper_osg.dsp,
+	  examples/osgimpostor/GNUmakefile,
+	  examples/osgimpostor/GNUmakefile.inst,
+	  examples/osgimpostor/osgimpostor.cpp,
+	  examples/osgvertexprogram/osgvertexprogram.cpp,
+	  examples/osgvolume/osgvolume.cpp, include/osg/Impostor,
+	  include/osg/ImpostorSprite, include/osg/NodeVisitor,
+	  include/osgGA/EventVisitor, include/osgSim/Impostor,
+	  include/osgSim/ImpostorSprite,
+	  include/osgSim/InsertImpostorsVisitor,
+	  include/osgUtil/CullVisitor,
+	  include/osgUtil/DisplayRequirementsVisitor,
+	  include/osgUtil/InsertImpostorsVisitor,
+	  include/osgUtil/UpdateVisitor, src/osg/GNUmakefile,
+	  src/osg/Impostor.cpp, src/osg/ImpostorSprite.cpp,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/Impostor.h,
+	  src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
+	  src/osgPlugins/osg/GNUmakefile,
+	  src/osgPlugins/osgSim/GNUmakefile, src/osgSim/GNUmakefile,
+	  src/osgSim/Impostor.cpp, src/osgSim/ImpostorSprite.cpp,
+	  src/osgSim/InsertImpostorsVisitor.cpp,
+	  src/osgUtil/CullVisitor.cpp,
+	  src/osgUtil/DisplayRequirementsVisitor.cpp,
+	  src/osgUtil/GNUmakefile, src/osgUtil/InsertImpostorsVisitor.cpp,
+	  src/osgUtil/Optimizer.cpp, src/osgUtil/RenderBin.cpp,
+	  src/osgWrappers/osg/GNUmakefile,
+	  src/osgWrappers/osg/Impostor.cpp,
+	  src/osgWrappers/osg/ImpostorSprite.cpp: Moved osg::Impostor to
+	  osgSim::Impostor, as Impostor isn't a core feature.
+
+2005-05-01 11:34  robert
+
+	* src/osgPlugins/txp/: TXPArchive.cpp, TXPArchive.h, TXPParser.cpp,
+	  TXPParser.h: From Don Tidrow, spelling fixes
+
+2005-04-30 16:16  robert
+
+	* include/osg/NodeVisitor, include/osg/ProxyNode,
+	  include/osgUtil/Optimizer, src/osgUtil/Optimizer.cpp: Added
+	  RemoveLoadedProxyNodes pass to Optimizer, set on by default at
+	  present.
+
+2005-04-30 14:54  robert
+
+	* examples/osgtesselate/osgtesselate.cpp,
+	  src/osgPlugins/ac3d/ac3d.cpp, src/osgUtil/Tesselator.cpp: From
+	  Geoff Michel :
+
+	    ac3d loader - better sharing of states between objects and
+	  Roger James' bug fix for missing normals.
+
+	    Tesselator.cpp - faster processing of polygon tesselation for
+	  single triangles (which dont need to be tesselated)
+
+	    osgtesselate.cpp - added wrap for texture so that appearance is
+	  as originally. Default texture behaviour has changed to clamp."
+
+2005-04-30 08:25  robert
+
+	* src/osgUtil/Optimizer.cpp: Combine LOD fixed properly this time
+	  :)
+
+2005-04-30 08:22  robert
+
+	* src/osgUtil/Optimizer.cpp: fixed combined LOD bug
+
+2005-04-30 08:02  robert
+
+	* include/osg/Program, include/osg/Shader, src/osg/Program.cpp,
+	  src/osg/Shader.cpp: From Mike Weiblen, Progra/Shader fixes
+
+2005-04-29 21:57  robert
+
+	* src/osgWrappers/osg/State.cpp: Updated wrappers
+
+2005-04-29 21:56  robert
+
+	* include/osg/State, src/osg/State.cpp, src/osgUtil/SceneView.cpp:
+	  Added support for controlling the frequency of checking for
+	  OpenGL errors via:
+
+		  enum CheckForGLErrors
+		  {
+		      /** NEVER_CHECK_GL_ERRORS hints that OpenGL need not
+	  be checked for, this
+			  is the fastest option since checking for errors
+	  does incurr a small overhead.*/
+		      NEVER_CHECK_GL_ERRORS,
+		      /** ONCE_PER_FRAME means that OpenGl errors will be
+	  checked for once per
+			  frame, the overhead is still small, but at least
+	  OpenGL errors that are occurring
+			  will be caught, the reporting isn't fine grained
+	  enough for debugging purposes.*/
+		      ONCE_PER_FRAME,
+		      /** ONCE_PER_ATTRIBUTE means that OpenGL errors will
+	  be checked for after
+			  every attribute is applied, allow errors to be
+	  directly associated with
+			  particular operations which makes debugging much
+	  easier.*/
+		      ONCE_PER_ATTRIBUTE
+		  };
+
+		  /** Set whether and how often OpenGL errors should be
+	  checked for.*/
+		  void setCheckForGLErrors(CheckForGLErrors check) {
+	  _checkGLErrors = check; }
+
+		  /** Get whether and how often OpenGL errors should be
+	  checked for.*/
+		  CheckForGLErrors getCheckForGLErrors() const { return
+	  _checkGLErrors; }
+
+2005-04-29 19:51  robert
+
+	* VisualStudio/examples/osgfxbrowser/osgfxbrowser.dsp: VS.7.1
+	  linker warning fix
+
+2005-04-29 14:30  robert
+
+	* src/osg/StateSet.cpp: Commented out notify messages to prevent
+	  crash under OSX at start up.
+
+2005-04-29 12:22  robert
+
+	* include/osgIntrospection/: Reflector, Type: Compile fix
+
+2005-04-29 12:19  robert
+
+	* include/osgIntrospection/Attributes,
+	  include/osgIntrospection/Comparator,
+	  include/osgIntrospection/ConstructorInfo,
+	  include/osgIntrospection/Converter,
+	  include/osgIntrospection/ConverterProxy,
+	  include/osgIntrospection/CustomAttributeProvider,
+	  include/osgIntrospection/Exceptions,
+	  include/osgIntrospection/InstanceCreator,
+	  include/osgIntrospection/MethodInfo,
+	  include/osgIntrospection/ParameterInfo,
+	  include/osgIntrospection/PropertyInfo,
+	  include/osgIntrospection/ReaderWriter,
+	  include/osgIntrospection/Reflection,
+	  include/osgIntrospection/ReflectionMacros,
+	  include/osgIntrospection/Reflector,
+	  include/osgIntrospection/StaticMethodInfo,
+	  include/osgIntrospection/Type,
+	  include/osgIntrospection/TypeNameAliasProxy,
+	  include/osgIntrospection/TypedConstructorInfo,
+	  include/osgIntrospection/TypedMethodInfo,
+	  include/osgIntrospection/Utility, include/osgIntrospection/Value,
+	  include/osgIntrospection/variant_cast,
+	  src/osgIntrospection/ConstructorInfo.cpp,
+	  src/osgIntrospection/CustomAttributeProvider.cpp,
+	  src/osgIntrospection/MethodInfo.cpp,
+	  src/osgIntrospection/PropertyInfo.cpp,
+	  src/osgIntrospection/Reflection.cpp,
+	  src/osgIntrospection/Type.cpp, src/osgIntrospection/Utility.cpp,
+	  src/osgIntrospection/Value.cpp: Moved osgIntrospection across to
+	  standard OSG coding style.
+
+2005-04-29 11:06  robert
+
+	* include/osgIntrospection/Attributes,
+	  include/osgIntrospection/Comparator,
+	  include/osgIntrospection/ConstructorInfo,
+	  include/osgIntrospection/Converter,
+	  include/osgIntrospection/ConverterProxy,
+	  include/osgIntrospection/CustomAttribute,
+	  include/osgIntrospection/CustomAttributeProvider,
+	  include/osgIntrospection/Exceptions,
+	  include/osgIntrospection/Export,
+	  include/osgIntrospection/InstanceCreator,
+	  include/osgIntrospection/MethodInfo,
+	  include/osgIntrospection/ParameterInfo,
+	  include/osgIntrospection/PropertyInfo,
+	  include/osgIntrospection/ReaderWriter,
+	  include/osgIntrospection/Reflection,
+	  include/osgIntrospection/ReflectionMacros,
+	  include/osgIntrospection/Reflector,
+	  include/osgIntrospection/StaticMethodInfo,
+	  include/osgIntrospection/Type,
+	  include/osgIntrospection/TypeNameAliasProxy,
+	  include/osgIntrospection/TypedConstructorInfo,
+	  include/osgIntrospection/TypedMethodInfo,
+	  include/osgIntrospection/Utility, include/osgIntrospection/Value,
+	  include/osgIntrospection/variant_cast,
+	  src/osgIntrospection/ConstructorInfo.cpp,
+	  src/osgIntrospection/CustomAttributeProvider.cpp,
+	  src/osgIntrospection/DefaultReflectors.cpp,
+	  src/osgIntrospection/MethodInfo.cpp,
+	  src/osgIntrospection/PropertyInfo.cpp,
+	  src/osgIntrospection/Type.cpp, src/osgIntrospection/Utility.cpp,
+	  src/osgIntrospection/Value.cpp: Added Copyright
+
+2005-04-29 10:47  robert
+
+	* examples/osgparticleeffects/osgparticleeffects.cpp,
+	  include/osgParticle/AccelOperator,
+	  include/osgParticle/AngularAccelOperator,
+	  include/osgParticle/CenteredPlacer, include/osgParticle/Counter,
+	  include/osgParticle/Emitter, include/osgParticle/FireEffect,
+	  include/osgParticle/FluidFrictionOperator,
+	  include/osgParticle/FluidProgram,
+	  include/osgParticle/ForceOperator,
+	  include/osgParticle/Interpolator,
+	  include/osgParticle/LinearInterpolator,
+	  include/osgParticle/ModularEmitter,
+	  include/osgParticle/ModularProgram,
+	  include/osgParticle/MultiSegmentPlacer,
+	  include/osgParticle/Operator, include/osgParticle/Particle,
+	  include/osgParticle/ParticleEffect,
+	  include/osgParticle/ParticleProcessor,
+	  include/osgParticle/ParticleSystem,
+	  include/osgParticle/ParticleSystemUpdater,
+	  include/osgParticle/Placer, include/osgParticle/PointPlacer,
+	  include/osgParticle/Program, include/osgParticle/RadialShooter,
+	  include/osgParticle/RandomRateCounter,
+	  include/osgParticle/SectorPlacer,
+	  include/osgParticle/SegmentPlacer, include/osgParticle/Shooter,
+	  include/osgParticle/SmokeEffect,
+	  include/osgParticle/VariableRateCounter,
+	  include/osgParticle/Version, include/osgParticle/range,
+	  src/osgParticle/Emitter.cpp,
+	  src/osgParticle/FluidFrictionOperator.cpp,
+	  src/osgParticle/FluidProgram.cpp,
+	  src/osgParticle/ModularEmitter.cpp,
+	  src/osgParticle/ModularProgram.cpp,
+	  src/osgParticle/MultiSegmentPlacer.cpp,
+	  src/osgParticle/Particle.cpp,
+	  src/osgParticle/ParticleProcessor.cpp,
+	  src/osgParticle/ParticleSystem.cpp,
+	  src/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgParticle/Program.cpp: Moved osgParticle across to standard
+	  OSG coding style.
+
+2005-04-29 07:32  robert
+
+	* include/osgFX/Technique: Coding style update
+
+2005-04-29 07:32  robert
+
+	* examples/osgfxbrowser/osgfxbrowser.cpp,
+	  include/osgFX/AnisotropicLighting, include/osgFX/BumpMapping,
+	  include/osgFX/Cartoon, include/osgFX/Effect,
+	  include/osgFX/Registry, include/osgFX/Scribe,
+	  include/osgFX/SpecularHighlights, include/osgFX/Technique,
+	  include/osgFX/Validator, src/osgFX/AnisotropicLighting.cpp,
+	  src/osgFX/BumpMapping.cpp, src/osgFX/Cartoon.cpp,
+	  src/osgFX/Effect.cpp, src/osgFX/Registry.cpp,
+	  src/osgFX/Scribe.cpp, src/osgFX/SpecularHighlights.cpp,
+	  src/osgFX/Technique.cpp, src/osgFX/Validator.cpp: Moved to
+	  standard OSG coding style.
+
+2005-04-28 20:50  robert
+
+	* src/osgText/Font.cpp: Reduced the verboseness of the notifaction
+	  messages
+
+2005-04-28 20:41  robert
+
+	* Make/makedefs: Fixed the Mingw settings for GDAL_LIBS (was
+	  written as GDAL_LIB which wasn't being picked up as the
+	  GNUmakefiles were looking for GDAL_LIBS).
+
+2005-04-28 20:24  robert
+
+	* src/osgText/Font.cpp: Changed the default texture size to 512x512
+	  to reduce the number of textures required when rendering text.
+
+2005-04-28 20:08  robert
+
+	* src/: osgPlugins/freetype/FreeTypeFont.cpp,
+	  osgText/DefaultFont.cpp: Removed old LUMINANCE_ALPHA code
+	  pathways since they are no longer used.
+
+2005-04-28 19:55  robert
+
+	* src/osgPlugins/freetype/: FreeTypeFont.cpp, FreeTypeFont.h,
+	  FreeTypeLibrary.cpp, FreeTypeLibrary.h, ReaderWriterFreeType.cpp:
+	  Added proper handling of freeing of font implememtation either
+	  when unloading the freetype plugin or deleting osgText::Font
+	  first.
+
+2005-04-28 13:45  robert
+
+	* include/osg/Version: Added version number #define's
+
+2005-04-28 06:58  robert
+
+	* src/osgText/Text.cpp: Added check to see if autoTransformCache
+	  had been initialized before using it in the computeBound.
+
+2005-04-28 06:21  robert
+
+	* src/osgUtil/SceneView.cpp: From Farshid Lashkari, removed
+	  redundent fusion distance calculations from
+	  computeRightEyeProjectionImplementation and
+	  computeLeftEyeProjectionImplementation methods.
+
+2005-04-28 06:15  robert
+
+	* Make/dependencies: From Marco Jez, changed = to ?= in
+	  COMPILE_INTROSPECTION line
+
+2005-04-28 06:12  robert
+
+	* examples/osgtesselate/GNUmakefile: From Marco Jez, converted line
+	  endings to unix.
+
+2005-04-28 06:07  robert
+
+	* Make/dolink.sh: From Marco Jez, added -ne option echo usage to
+	  fix stdout/stderr redirection error under Mingw.
+
+2005-04-26 21:35  robert
+
+	* src/osgPlugins/xine/video_out_rgb.c: From Ruben, fix for PIV
+	  executation by disabling MMXEXT selection.
+
+2005-04-26 20:34  robert
+
+	* include/osgParticle/: Emitter, ModularEmitter: From Brede
+	  Johansen, tweaks to emitter classes to make them more extensible.
+
+2005-04-26 19:55  robert
+
+	* src/osgWrappers/osg/GNUmakefile: Added $(GL_LIBS) to link line to
+	  get things linking ok under OSX.
+
+2005-04-26 15:29  robert
+
+	* src/osgWrappers/osg/: BlendColor.cpp, BlendEquation.cpp,
+	  BufferObject.cpp, Drawable.cpp, FragmentProgram.cpp,
+	  Multisample.cpp, Point.cpp, Program.cpp, Texture.cpp,
+	  Texture3D.cpp, TextureCubeMap.cpp, VertexProgram.cpp: Updated
+	  wrappers.
+
+2005-04-26 14:15  robert
+
+	* runexamples.bat, include/osg/BlendColor,
+	  include/osg/BlendEquation, include/osg/BufferObject,
+	  include/osg/Drawable, include/osg/FragmentProgram,
+	  include/osg/GLExtensions, include/osg/Multisample,
+	  include/osg/Point, include/osg/Program, include/osg/Texture,
+	  include/osg/Texture3D, include/osg/TextureCubeMap,
+	  include/osg/VertexProgram, src/osg/BlendColor.cpp,
+	  src/osg/BlendEquation.cpp, src/osg/BufferObject.cpp,
+	  src/osg/ColorMatrix.cpp, src/osg/Drawable.cpp, src/osg/Fog.cpp,
+	  src/osg/FragmentProgram.cpp, src/osg/GLExtensions.cpp,
+	  src/osg/Multisample.cpp, src/osg/Point.cpp, src/osg/Program.cpp,
+	  src/osg/State.cpp, src/osg/TexEnv.cpp, src/osg/TexEnvCombine.cpp,
+	  src/osg/TexEnvFilter.cpp, src/osg/Texture.cpp,
+	  src/osg/Texture3D.cpp, src/osg/TextureCubeMap.cpp,
+	  src/osg/TextureRectangle.cpp, src/osg/VertexProgram.cpp,
+	  src/osgFX/Technique.cpp: Added support for per context extension
+	  string.
+
+	  Note, this required adding a unsigned int context ID to the
+	  osg::isGLUExtensionSupported(,) and
+	  osg::isGLExtensionSupported(,) functions.  This may require
+	  reimplementation of end user code to accomodate the new calling
+	  convention.
+
+2005-04-26 12:20  robert
+
+	* src/osg/: StateSet.cpp, Uniform.cpp: Added #include <algorithm>
+	  for VS.NET build
+
+2005-04-26 10:58  robert
+
+	* include/osg/Drawable, src/osg/Drawable.cpp, src/osg/StateSet.cpp:
+	  Added support notification of Drawable parents of StateSet that
+	  event/update callbacks have been called.
+
+2005-04-26 08:49  robert
+
+	* src/osgText/Text.cpp: From Vivek Rajan, "osg::Text was getting
+	  stretched when the CharacterSizeMode was set to SCREEN_COORDS and
+	  the SceneView's projection matrix was set to an Ortho2D matrix
+	  (sceneView->setProjectionMatrixAsOrtho2D(-1,1,-1,1)).
+
+	  Computing the pixel size separately vertically and horizontally,
+	  and setting the scaling factors appropriately based on that fixed
+	  the problem."
+
+2005-04-25 21:46  robert
+
+	* src/osgWrappers/osg/: Array.cpp, CopyOp.cpp, Drawable.cpp,
+	  Image.cpp, Node.cpp, Plane.cpp, Point.cpp, Quat.cpp, Shader.cpp,
+	  StateAttribute.cpp, StateSet.cpp, Uniform.cpp, Vec2d.cpp,
+	  Vec2f.cpp, Vec3d.cpp, Vec3f.cpp, Vec4d.cpp, Vec4f.cpp: Updated
+	  wrappers using Marco Jez's genwrapper utility.
+
+2005-04-25 21:34  robert
+
+	* src/osgProducer/Viewer.cpp: From Mike Weiblen, added support for
+	  --clear-color r,g,b,a and --clear-color r,g,b to
+	  osgProducer::Viewer.
+
+2005-04-25 15:28  robert
+
+	* src/osg/StateAttribute.cpp: Reduced the verbosness of debugging
+	  messages
+
+2005-04-25 14:37  robert
+
+	* examples/osgshaders/GL2Scene.cpp, include/osg/Node,
+	  include/osg/Shader, include/osg/StateAttribute,
+	  include/osg/StateSet, include/osg/Uniform, src/osg/Drawable.cpp,
+	  src/osg/Geode.cpp, src/osg/Node.cpp, src/osg/Shader.cpp,
+	  src/osg/StateAttribute.cpp, src/osg/StateSet.cpp,
+	  src/osg/Uniform.cpp: Futher work on supporting update and event
+	  callbacks in StateSet, Uniform and StateAttribute
+
+2005-04-25 14:27  robert
+
+	* src/osgProducer/Viewer.cpp: Added SINGLE_THREADED_KEYBOARDMOUSE
+	  pathway as a means of testing exit issues.
+
+2005-04-25 12:05  robert
+
+	* include/osg/StateAttribute, include/osg/StateSet,
+	  include/osg/Uniform, include/osgGA/EventVisitor,
+	  include/osgUtil/UpdateVisitor, src/osg/Drawable.cpp,
+	  src/osg/Node.cpp, src/osg/StateSet.cpp: Futher work on adding
+	  event and update callbacks to StateSet, Uniform and
+	  StateAttributes
+
+2005-04-24 22:04  robert
+
+	* include/osg/Drawable, include/osg/Node,
+	  include/osg/StateAttribute, include/osg/StateSet,
+	  include/osg/Uniform, src/osg/Drawable.cpp, src/osg/GNUmakefile,
+	  src/osg/Node.cpp, VisualStudio/osg/osg.dsp,
+	  src/osg/StateAttribute.cpp, src/osg/StateSet.cpp,
+	  src/osg/Uniform.cpp: Added ParentList's into StateSet, Uniform
+	  and StateAttribute in preparation for providing update and event
+	  handling.
+
+2005-04-24 20:30  robert
+
+	* src/osgDB/DatabasePager.cpp: Added THREAD_ infront of
+	  PRIORITY_MIN settings to reflect changes to OpentThreads
+
+2005-04-23 17:09  robert
+
+	* include/osgUtil/Optimizer, src/osgUtil/Optimizer.cpp: Added
+	  MergeGeometryVisitor::setTargetMaximumNumberOfVertices(uint);
+
+2005-04-23 11:45  robert
+
+	* examples/osgmovie/osgmovie.cpp: Removed the use of the post swap
+	  callback
+
+2005-04-23 11:41  robert
+
+	* include/osg/Uniform, src/osg/StateSet.cpp: Added missing bodes of
+	  Uniform::operator =  and setEvent/UpdateCallback in StateSet.
+
+2005-04-23 11:31  robert
+
+	* src/osgDB/ReadFile.cpp: Added support for using TextureRectangle
+	  in --move support in readNodeFile
+
+2005-04-22 23:45  robert
+
+	* include/osg/CopyOp, include/osg/Node, include/osg/StateAttribute,
+	  include/osg/StateSet, include/osg/Uniform, src/osg/CopyOp.cpp,
+	  src/osg/StateSet.cpp: Preliminary steps to adding update and
+	  event callbacks to StateSet, StateAttribute and Uniform.
+
+2005-04-22 21:56  robert
+
+	* examples/osgvertexprogram/osgvertexprogram.cpp: From Brede
+	  Johansen, tweaked refraction and fresnel coefficients for a
+	  better visual effect.
+
+2005-04-22 16:44  robert
+
+	* examples/osgmovie/osgmovie.cpp: Improved handling of unsupported
+	  formats
+
+2005-04-22 16:44  robert
+
+	* src/osgPlugins/xine/ReaderWriterXine.cpp: Improved handling of
+	  unsupported file formats.
+
+2005-04-22 16:43  robert
+
+	* include/osg/Image, src/osg/BufferObject.cpp: Improved handling of
+	  invalid imagery in BufferObject
+
+2005-04-22 15:40  robert
+
+	* include/osg/BufferObject: Removed unusaged methods
+
+2005-04-22 15:40  robert
+
+	* include/osgGA/UFOManipulator, src/osgGA/UFOManipulator.cpp: From
+	  Tree, removed dependency on Producer
+
+2005-04-22 14:47  robert
+
+	* src/osgPlugins/ive/: Group.cpp, ViewPoint.cpp, ViewPoint.h:
+	  Removed ViewPoint.h and .cpp from the ive plugin
+
+2005-04-22 14:32  robert
+
+	* ChangeLog, src/osgDB/GNUmakefile, src/osgDB/Registry.cpp,
+	  src/osgPlugins/osg/Program.cpp,
+	  src/osgPlugins/xine/ReaderWriterXine.cpp: Cleaned up the xine
+	  plugin to better handle unsupported video files.
+
+2005-04-22 08:13  robert
+
+	* include/osg/Uniform, src/osg/Uniform.cpp,
+	  src/osgPlugins/osg/Uniform.cpp: From Mike Weiblen, added support
+	  for samplers and mat4 to .osg
+
 2005-04-21 22:07  robert
 
 	* src/osgPlugins/flt/ReaderWriterATTR.cpp: Added initialize of

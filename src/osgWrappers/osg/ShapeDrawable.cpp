@@ -43,10 +43,10 @@ BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
 	I_Method0(osg::TessellationHints *, getTessellationHints);
 	I_Method0(const osg::TessellationHints *, getTessellationHints);
 	I_Method1(void, drawImplementation, IN, osg::State &, state);
-	I_Method1(bool, supports, IN, osg::Drawable::AttributeFunctor &, x);
-	I_Method1(bool, supports, IN, osg::Drawable::ConstAttributeFunctor &, x);
+	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
+	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);
-	I_Method1(bool, supports, IN, osg::PrimitiveFunctor &, x);
+	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
 	I_Method0(osg::BoundingBox, computeBound);
 	I_Property(const osg::Vec4 &, Color);

@@ -70,7 +70,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList);
 
-TYPE_NAME_ALIAS(std::map< osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap);
+TYPE_NAME_ALIAS(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap);
 
 BEGIN_ENUM_REFLECTOR(osgUtil::IntersectVisitor::LODSelectionMode)
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_HEIGHEST_LEVEL_OF_DETAIL);
@@ -82,8 +82,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_Constructor0();
 	I_Method0(void, reset);
 	I_Method1(void, addLineSegment, IN, osg::LineSegment *, seg);
-	I_Method1(osgUtil::IntersectVisitor::HitList &, getHitList, IN, osg::LineSegment *, seg);
-	I_Method1(int, getNumHits, IN, osg::LineSegment *, seg);
+	I_Method1(osgUtil::IntersectVisitor::HitList &, getHitList, IN, const osg::LineSegment *, seg);
+	I_Method1(int, getNumHits, IN, const osg::LineSegment *, seg);
 	I_Method0(bool, hits);
 	I_Method1(void, setLODSelectionMode, IN, osgUtil::IntersectVisitor::LODSelectionMode, mode);
 	I_Method0(osgUtil::IntersectVisitor::LODSelectionMode, getLODSelectionMode);
@@ -101,7 +101,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_Property(osgUtil::IntersectVisitor::LODSelectionMode, LODSelectionMode);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >);
+STD_MAP_REFLECTOR(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >);
 
 STD_VECTOR_REFLECTOR(std::vector< int >);
 

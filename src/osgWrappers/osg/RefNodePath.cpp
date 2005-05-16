@@ -12,10 +12,18 @@
 #include <osg/Node>
 #include <osg/RefNodePath>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osg::RefNodePath)
-	Constructor0();
-	Constructor1(IN, const osg::RefNodePath &, refNodePath);
-	Constructor1(IN, const osg::NodePath &, nodePath);
-	Method0(bool, valid);
+	I_Constructor0();
+	I_Constructor1(IN, const osg::RefNodePath &, refNodePath);
+	I_Constructor1(IN, const osg::NodePath &, nodePath);
+	I_Method0(bool, valid);
 END_REFLECTOR
 

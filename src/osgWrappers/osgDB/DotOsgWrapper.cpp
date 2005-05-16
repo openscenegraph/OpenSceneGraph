@@ -12,31 +12,39 @@
 #include <osg/Object>
 #include <osgDB/DotOsgWrapper>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DotOsgWrapper::Associates);
 
-TYPE_NAME_ALIAS(bool(*, osgDB::DotOsgWrapper::ReadFunc);
-
-TYPE_NAME_ALIAS(bool(*, osgDB::DotOsgWrapper::WriteFunc);
-
+TYPE_NAME_ALIAS(bool (*)(osg::Object&,osgDB::Input&), osgDB::DotOsgWrapper::ReadFunc);
+	
+TYPE_NAME_ALIAS(bool (*)(const osg::Object&,osgDB::Output&), osgDB::DotOsgWrapper::WriteFunc);
+	
 BEGIN_ENUM_REFLECTOR(osgDB::DotOsgWrapper::ReadWriteMode)
-	EnumLabel(osgDB::DotOsgWrapper::READ_AND_WRITE);
-	EnumLabel(osgDB::DotOsgWrapper::READ_ONLY);
+	I_EnumLabel(osgDB::DotOsgWrapper::READ_AND_WRITE);
+	I_EnumLabel(osgDB::DotOsgWrapper::READ_ONLY);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DotOsgWrapper)
-	BaseType(osg::Referenced);
-	ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE);
-	Method0(const osg::Object *, getPrototype);
-	Method0(const std::string &, getName);
-	Method0(const osgDB::DotOsgWrapper::Associates &, getAssociates);
-	Method0(osgDB::DotOsgWrapper::ReadFunc, getReadFunc);
-	Method0(osgDB::DotOsgWrapper::WriteFunc, getWriteFunc);
-	Method0(osgDB::DotOsgWrapper::ReadWriteMode, getReadWriteMode);
-	ReadOnlyProperty(const osgDB::DotOsgWrapper::Associates &, Associates);
-	ReadOnlyProperty(const std::string &, Name);
-	ReadOnlyProperty(const osg::Object *, Prototype);
-	ReadOnlyProperty(osgDB::DotOsgWrapper::ReadFunc, ReadFunc);
-	ReadOnlyProperty(osgDB::DotOsgWrapper::ReadWriteMode, ReadWriteMode);
-	ReadOnlyProperty(osgDB::DotOsgWrapper::WriteFunc, WriteFunc);
+	I_BaseType(osg::Referenced);
+	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE);
+	I_Method0(const osg::Object *, getPrototype);
+	I_Method0(const std::string &, getName);
+	I_Method0(const osgDB::DotOsgWrapper::Associates &, getAssociates);
+	I_Method0(osgDB::DotOsgWrapper::ReadFunc, getReadFunc);
+	I_Method0(osgDB::DotOsgWrapper::WriteFunc, getWriteFunc);
+	I_Method0(osgDB::DotOsgWrapper::ReadWriteMode, getReadWriteMode);
+	I_ReadOnlyProperty(const osgDB::DotOsgWrapper::Associates &, Associates);
+	I_ReadOnlyProperty(const std::string &, Name);
+	I_ReadOnlyProperty(const osg::Object *, Prototype);
+	I_ReadOnlyProperty(osgDB::DotOsgWrapper::ReadFunc, ReadFunc);
+	I_ReadOnlyProperty(osgDB::DotOsgWrapper::ReadWriteMode, ReadWriteMode);
+	I_ReadOnlyProperty(osgDB::DotOsgWrapper::WriteFunc, WriteFunc);
 END_REFLECTOR
 

@@ -16,16 +16,24 @@
 #include <osgGA/GUIEventHandlerVisitor>
 #include <osgGA/StateSetManipulator>
 
-BEGIN_VALUE_REFLECTOR(osgGA::StateSetManipulator)
-	BaseType(osgGA::GUIEventHandler);
-	Constructor0();
-	Method0(const char *, className);
-	Method1(void, setStateSet, IN, osg::StateSet *, x);
-	Method0(osg::StateSet *, getStateSet);
-	Method0(const osg::StateSet *, getStateSet);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, x);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	Property(osg::StateSet *, StateSet);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor0();
+	I_Method0(const char *, className);
+	I_Method1(void, setStateSet, IN, osg::StateSet *, x);
+	I_Method0(osg::StateSet *, getStateSet);
+	I_Method0(const osg::StateSet *, getStateSet);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, x);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Property(osg::StateSet *, StateSet);
 END_REFLECTOR
 

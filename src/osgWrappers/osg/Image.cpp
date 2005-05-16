@@ -14,85 +14,93 @@
 #include <osg/Image>
 #include <osg/Object>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType);
 
 BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
-	EnumLabel(osg::Image::NO_DELETE);
-	EnumLabel(osg::Image::USE_NEW_DELETE);
-	EnumLabel(osg::Image::USE_MALLOC_FREE);
+	I_EnumLabel(osg::Image::NO_DELETE);
+	I_EnumLabel(osg::Image::USE_NEW_DELETE);
+	I_EnumLabel(osg::Image::USE_MALLOC_FREE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Image)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Image &, image, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(int, compare, IN, const osg::Image &, rhs);
-	Method1(void, setFileName, IN, const std::string &, fileName);
-	Method0(const std::string &, getFileName);
-	Method1(void, setAllocationMode, IN, osg::Image::AllocationMode, mode);
-	Method0(osg::Image::AllocationMode, getAllocationMode);
-	MethodWithDefaults6(void, allocateImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, int, packing, 1);
-	MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1);
-	Method6(void, readPixels, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, GLenum, pixelFormat, IN, GLenum, type);
-	Method2(void, readImageFromCurrentTexture, IN, unsigned int, contextID, IN, bool, copyMipMapsIfAvailable);
-	Method3(void, scaleImage, IN, int, s, IN, int, t, IN, int, r);
-	Method4(void, scaleImage, IN, int, s, IN, int, t, IN, int, r, IN, GLenum, newDataType);
-	Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, osg::Image *, source);
-	Method0(int, s);
-	Method0(int, t);
-	Method0(int, r);
-	Method1(void, setInternalTextureFormat, IN, GLint, internalFormat);
-	Method0(GLint, getInternalTextureFormat);
-	Method1(void, setPixelFormat, IN, GLenum, pixelFormat);
-	Method0(GLenum, getPixelFormat);
-	Method0(GLenum, getDataType);
-	Method0(unsigned int, getPacking);
-	Method0(unsigned int, getPixelSizeInBits);
-	Method0(unsigned int, getRowSizeInBytes);
-	Method0(unsigned int, getImageSizeInBytes);
-	Method0(unsigned int, getTotalSizeInBytes);
-	Method0(unsigned int, getTotalSizeInBytesIncludingMipmaps);
-	Method0(bool, valid);
-	Method0(unsigned char *, data);
-	Method0(const unsigned char *, data);
-	MethodWithDefaults3(unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0);
-	MethodWithDefaults3(const unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0);
-	Method0(void, flipHorizontal);
-	Method0(void, flipVertical);
-	Method1(void, ensureValidSizeForTexturing, IN, GLint, maxTextureSize);
-	Method0(void, dirty);
-	Method1(void, setModifiedCount, IN, unsigned int, value);
-	Method0(unsigned int, getModifiedCount);
-	Method0(bool, isMipmap);
-	Method0(unsigned int, getNumMipmapLevels);
-	Method1(void, setMipmapLevels, IN, const osg::Image::MipmapDataType &, mipmapDataVector);
-	Method0(const osg::Image::MipmapDataType &, getMipmapLevels);
-	Method1(unsigned int, getMipmapOffset, IN, unsigned int, mipmapLevel);
-	Method1(unsigned char *, getMipmapData, IN, unsigned int, mipmapLevel);
-	Method1(const unsigned char *, getMipmapData, IN, unsigned int, mipmapLevel);
-	Method0(bool, isImageTranslucent);
-	Method1(void, setPixelBufferObject, IN, osg::PixelBufferObject *, buffer);
-	Method0(osg::PixelBufferObject *, getPixelBufferObject);
-	Method0(const osg::PixelBufferObject *, getPixelBufferObject);
-	Property(osg::Image::AllocationMode, AllocationMode);
-	ReadOnlyProperty(GLenum, DataType);
-	Property(const std::string &, FileName);
-	ReadOnlyProperty(unsigned int, ImageSizeInBytes);
-	Property(GLint, InternalTextureFormat);
-	Property(const osg::Image::MipmapDataType &, MipmapLevels);
-	Property(unsigned int, ModifiedCount);
-	ReadOnlyProperty(unsigned int, Packing);
-	Property(osg::PixelBufferObject *, PixelBufferObject);
-	Property(GLenum, PixelFormat);
-	ReadOnlyProperty(unsigned int, PixelSizeInBits);
-	ReadOnlyProperty(unsigned int, RowSizeInBytes);
-	ReadOnlyProperty(unsigned int, TotalSizeInBytes);
-	ReadOnlyProperty(unsigned int, TotalSizeInBytesIncludingMipmaps);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Image &, image, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(int, compare, IN, const osg::Image &, rhs);
+	I_Method1(void, setFileName, IN, const std::string &, fileName);
+	I_Method0(const std::string &, getFileName);
+	I_Method1(void, setAllocationMode, IN, osg::Image::AllocationMode, mode);
+	I_Method0(osg::Image::AllocationMode, getAllocationMode);
+	I_MethodWithDefaults6(void, allocateImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, int, packing, 1);
+	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1);
+	I_Method6(void, readPixels, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, GLenum, pixelFormat, IN, GLenum, type);
+	I_Method2(void, readImageFromCurrentTexture, IN, unsigned int, contextID, IN, bool, copyMipMapsIfAvailable);
+	I_Method3(void, scaleImage, IN, int, s, IN, int, t, IN, int, r);
+	I_Method4(void, scaleImage, IN, int, s, IN, int, t, IN, int, r, IN, GLenum, newDataType);
+	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, osg::Image *, source);
+	I_Method0(int, s);
+	I_Method0(int, t);
+	I_Method0(int, r);
+	I_Method1(void, setInternalTextureFormat, IN, GLint, internalFormat);
+	I_Method0(GLint, getInternalTextureFormat);
+	I_Method1(void, setPixelFormat, IN, GLenum, pixelFormat);
+	I_Method0(GLenum, getPixelFormat);
+	I_Method0(GLenum, getDataType);
+	I_Method0(unsigned int, getPacking);
+	I_Method0(unsigned int, getPixelSizeInBits);
+	I_Method0(unsigned int, getRowSizeInBytes);
+	I_Method0(unsigned int, getImageSizeInBytes);
+	I_Method0(unsigned int, getTotalSizeInBytes);
+	I_Method0(unsigned int, getTotalSizeInBytesIncludingMipmaps);
+	I_Method0(bool, valid);
+	I_Method0(unsigned char *, data);
+	I_Method0(const unsigned char *, data);
+	I_MethodWithDefaults3(unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0);
+	I_MethodWithDefaults3(const unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0);
+	I_Method0(void, flipHorizontal);
+	I_Method0(void, flipVertical);
+	I_Method1(void, ensureValidSizeForTexturing, IN, GLint, maxTextureSize);
+	I_Method0(void, dirty);
+	I_Method1(void, setModifiedCount, IN, unsigned int, value);
+	I_Method0(unsigned int, getModifiedCount);
+	I_Method0(bool, isMipmap);
+	I_Method0(unsigned int, getNumMipmapLevels);
+	I_Method1(void, setMipmapLevels, IN, const osg::Image::MipmapDataType &, mipmapDataVector);
+	I_Method0(const osg::Image::MipmapDataType &, getMipmapLevels);
+	I_Method1(unsigned int, getMipmapOffset, IN, unsigned int, mipmapLevel);
+	I_Method1(unsigned char *, getMipmapData, IN, unsigned int, mipmapLevel);
+	I_Method1(const unsigned char *, getMipmapData, IN, unsigned int, mipmapLevel);
+	I_Method0(bool, isImageTranslucent);
+	I_Method1(void, setPixelBufferObject, IN, osg::PixelBufferObject *, buffer);
+	I_Method0(osg::PixelBufferObject *, getPixelBufferObject);
+	I_Method0(const osg::PixelBufferObject *, getPixelBufferObject);
+	I_Property(osg::Image::AllocationMode, AllocationMode);
+	I_ReadOnlyProperty(GLenum, DataType);
+	I_Property(const std::string &, FileName);
+	I_ReadOnlyProperty(unsigned int, ImageSizeInBytes);
+	I_Property(GLint, InternalTextureFormat);
+	I_Property(const osg::Image::MipmapDataType &, MipmapLevels);
+	I_Property(unsigned int, ModifiedCount);
+	I_ReadOnlyProperty(unsigned int, Packing);
+	I_Property(osg::PixelBufferObject *, PixelBufferObject);
+	I_Property(GLenum, PixelFormat);
+	I_ReadOnlyProperty(unsigned int, PixelSizeInBits);
+	I_ReadOnlyProperty(unsigned int, RowSizeInBytes);
+	I_ReadOnlyProperty(unsigned int, TotalSizeInBytes);
+	I_ReadOnlyProperty(unsigned int, TotalSizeInBytesIncludingMipmaps);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< unsigned int >);

@@ -17,31 +17,39 @@
 #include <osg/Quat>
 #include <osg/Vec3d>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::PositionAttitudeTransform)
-	BaseType(osg::Transform);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::PositionAttitudeTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
-	Method0(const osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
-	Method1(void, setPosition, IN, const osg::Vec3d &, pos);
-	Method0(const osg::Vec3d &, getPosition);
-	Method1(void, setAttitude, IN, const osg::Quat &, quat);
-	Method0(const osg::Quat &, getAttitude);
-	Method1(void, setScale, IN, const osg::Vec3d &, scale);
-	Method0(const osg::Vec3d &, getScale);
-	Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot);
-	Method0(const osg::Vec3d &, getPivotPoint);
-	Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	Property(const osg::Quat &, Attitude);
-	Property(const osg::Vec3d &, PivotPoint);
-	Property(const osg::Vec3d &, Position);
-	Property(const osg::Vec3d &, Scale);
+	I_BaseType(osg::Transform);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::PositionAttitudeTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
+	I_Method0(const osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
+	I_Method1(void, setPosition, IN, const osg::Vec3d &, pos);
+	I_Method0(const osg::Vec3d &, getPosition);
+	I_Method1(void, setAttitude, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getAttitude);
+	I_Method1(void, setScale, IN, const osg::Vec3d &, scale);
+	I_Method0(const osg::Vec3d &, getScale);
+	I_Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot);
+	I_Method0(const osg::Vec3d &, getPivotPoint);
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Property(const osg::Quat &, Attitude);
+	I_Property(const osg::Vec3d &, PivotPoint);
+	I_Property(const osg::Vec3d &, Position);
+	I_Property(const osg::Vec3d &, Scale);
 END_REFLECTOR
 

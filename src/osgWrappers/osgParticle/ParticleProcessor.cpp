@@ -18,54 +18,62 @@
 #include <osgParticle/ParticleProcessor>
 #include <osgParticle/ParticleSystem>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleProcessor::ReferenceFrame)
-	EnumLabel(osgParticle::ParticleProcessor::RELATIVE_RF);
-	EnumLabel(osgParticle::ParticleProcessor::ABSOLUTE_RF);
+	I_EnumLabel(osgParticle::ParticleProcessor::RELATIVE_RF);
+	I_EnumLabel(osgParticle::ParticleProcessor::ABSOLUTE_RF);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
-	BaseType(osg::Node);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::ParticleProcessor &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(osgParticle::ParticleProcessor::ReferenceFrame, getReferenceFrame);
-	Method1(void, setReferenceFrame, IN, osgParticle::ParticleProcessor::ReferenceFrame, rf);
-	Method0(bool, isEnabled);
-	Method1(void, setEnabled, IN, bool, v);
-	Method0(osgParticle::ParticleSystem *, getParticleSystem);
-	Method0(const osgParticle::ParticleSystem *, getParticleSystem);
-	Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps);
-	Method1(void, setEndless, IN, bool, type);
-	Method0(bool, isEndless);
-	Method1(void, setLifeTime, IN, double, t);
-	Method0(double, getLifeTime);
-	Method1(void, setStartTime, IN, double, t);
-	Method0(double, getStartTime);
-	Method1(void, setCurrentTime, IN, double, t);
-	Method0(double, getCurrentTime);
-	Method1(void, setResetTime, IN, double, t);
-	Method0(double, getResetTime);
-	Method0(bool, isAlive);
-	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	Method0(const osg::Matrix &, getLocalToWorldMatrix);
-	Method0(const osg::Matrix &, getWorldToLocalMatrix);
-	Method1(osg::Vec3, transformLocalToWorld, IN, const osg::Vec3 &, P);
-	Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P);
-	Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P);
-	Method1(osg::Vec3, rotateWorldToLocal, IN, const osg::Vec3 &, P);
-	Method0(osg::BoundingSphere, computeBound);
-	Property(double, CurrentTime);
-	WriteOnlyProperty(bool, Enabled);
-	WriteOnlyProperty(bool, Endless);
-	Property(double, LifeTime);
-	ReadOnlyProperty(const osg::Matrix &, LocalToWorldMatrix);
-	Property(osgParticle::ParticleSystem *, ParticleSystem);
-	Property(osgParticle::ParticleProcessor::ReferenceFrame, ReferenceFrame);
-	Property(double, ResetTime);
-	Property(double, StartTime);
-	ReadOnlyProperty(const osg::Matrix &, WorldToLocalMatrix);
+	I_BaseType(osg::Node);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::ParticleProcessor &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(osgParticle::ParticleProcessor::ReferenceFrame, getReferenceFrame);
+	I_Method1(void, setReferenceFrame, IN, osgParticle::ParticleProcessor::ReferenceFrame, rf);
+	I_Method0(bool, isEnabled);
+	I_Method1(void, setEnabled, IN, bool, v);
+	I_Method0(osgParticle::ParticleSystem *, getParticleSystem);
+	I_Method0(const osgParticle::ParticleSystem *, getParticleSystem);
+	I_Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps);
+	I_Method1(void, setEndless, IN, bool, type);
+	I_Method0(bool, isEndless);
+	I_Method1(void, setLifeTime, IN, double, t);
+	I_Method0(double, getLifeTime);
+	I_Method1(void, setStartTime, IN, double, t);
+	I_Method0(double, getStartTime);
+	I_Method1(void, setCurrentTime, IN, double, t);
+	I_Method0(double, getCurrentTime);
+	I_Method1(void, setResetTime, IN, double, t);
+	I_Method0(double, getResetTime);
+	I_Method0(bool, isAlive);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method0(const osg::Matrix &, getLocalToWorldMatrix);
+	I_Method0(const osg::Matrix &, getWorldToLocalMatrix);
+	I_Method1(osg::Vec3, transformLocalToWorld, IN, const osg::Vec3 &, P);
+	I_Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P);
+	I_Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P);
+	I_Method1(osg::Vec3, rotateWorldToLocal, IN, const osg::Vec3 &, P);
+	I_Method0(osg::BoundingSphere, computeBound);
+	I_Property(double, CurrentTime);
+	I_WriteOnlyProperty(bool, Enabled);
+	I_WriteOnlyProperty(bool, Endless);
+	I_Property(double, LifeTime);
+	I_ReadOnlyProperty(const osg::Matrix &, LocalToWorldMatrix);
+	I_Property(osgParticle::ParticleSystem *, ParticleSystem);
+	I_Property(osgParticle::ParticleProcessor::ReferenceFrame, ReferenceFrame);
+	I_Property(double, ResetTime);
+	I_Property(double, StartTime);
+	I_ReadOnlyProperty(const osg::Matrix &, WorldToLocalMatrix);
 END_REFLECTOR
 

@@ -17,37 +17,45 @@
 #include <osgGA/TerrainManipulator>
 #include <osgUtil/SceneView>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgGA::TerrainManipulator::RotationMode)
-	EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM_ROLL);
-	EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM);
+	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM_ROLL);
+	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
-	BaseType(osgGA::MatrixManipulator);
-	Constructor0();
-	Method0(const char *, className);
-	Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode);
-	Method0(osgGA::TerrainManipulator::RotationMode, getRotationMode);
-	Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	Method0(osg::Matrixd, getMatrix);
-	Method0(osg::Matrixd, getInverseMatrix);
-	Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode);
-	Method0(float, getFusionDistanceValue);
-	Method1(void, setNode, IN, osg::Node *, x);
-	Method0(const osg::Node *, getNode);
-	Method0(osg::Node *, getNode);
-	Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
-	ReadOnlyProperty(float, FusionDistanceValue);
-	ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	ReadOnlyProperty(osg::Matrixd, Matrix);
-	Property(osg::Node *, Node);
-	Property(osgGA::TerrainManipulator::RotationMode, RotationMode);
+	I_BaseType(osgGA::MatrixManipulator);
+	I_Constructor0();
+	I_Method0(const char *, className);
+	I_Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode);
+	I_Method0(osgGA::TerrainManipulator::RotationMode, getRotationMode);
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method0(osg::Matrixd, getMatrix);
+	I_Method0(osg::Matrixd, getInverseMatrix);
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode);
+	I_Method0(float, getFusionDistanceValue);
+	I_Method1(void, setNode, IN, osg::Node *, x);
+	I_Method0(const osg::Node *, getNode);
+	I_Method0(osg::Node *, getNode);
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
+	I_ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
+	I_ReadOnlyProperty(float, FusionDistanceValue);
+	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
+	I_ReadOnlyProperty(osg::Matrixd, Matrix);
+	I_Property(osg::Node *, Node);
+	I_Property(osgGA::TerrainManipulator::RotationMode, RotationMode);
 END_REFLECTOR
 

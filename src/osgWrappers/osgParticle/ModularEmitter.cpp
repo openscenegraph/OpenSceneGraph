@@ -17,27 +17,35 @@
 #include <osgParticle/Placer>
 #include <osgParticle/Shooter>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
-	BaseType(osgParticle::Emitter);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::ModularEmitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(osgParticle::Counter *, getCounter);
-	Method0(const osgParticle::Counter *, getCounter);
-	Method1(void, setCounter, IN, osgParticle::Counter *, c);
-	Method0(osgParticle::Placer *, getPlacer);
-	Method0(const osgParticle::Placer *, getPlacer);
-	Method1(void, setPlacer, IN, osgParticle::Placer *, p);
-	Method0(osgParticle::Shooter *, getShooter);
-	Method0(const osgParticle::Shooter *, getShooter);
-	Method1(void, setShooter, IN, osgParticle::Shooter *, s);
-	Property(osgParticle::Counter *, Counter);
-	Property(osgParticle::Placer *, Placer);
-	Property(osgParticle::Shooter *, Shooter);
+	I_BaseType(osgParticle::Emitter);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::ModularEmitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(osgParticle::Counter *, getCounter);
+	I_Method0(const osgParticle::Counter *, getCounter);
+	I_Method1(void, setCounter, IN, osgParticle::Counter *, c);
+	I_Method0(osgParticle::Placer *, getPlacer);
+	I_Method0(const osgParticle::Placer *, getPlacer);
+	I_Method1(void, setPlacer, IN, osgParticle::Placer *, p);
+	I_Method0(osgParticle::Shooter *, getShooter);
+	I_Method0(const osgParticle::Shooter *, getShooter);
+	I_Method1(void, setShooter, IN, osgParticle::Shooter *, s);
+	I_Property(osgParticle::Counter *, Counter);
+	I_Property(osgParticle::Placer *, Placer);
+	I_Property(osgParticle::Shooter *, Shooter);
 END_REFLECTOR
 

@@ -11,31 +11,39 @@
 
 #include <osgText/String>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
-	EnumLabel(osgText::String::ENCODING_UNDEFINED);
-	EnumLabel(osgText::String::ENCODING_ASCII);
-	EnumLabel(osgText::String::ENCODING_UTF8);
-	EnumLabel(osgText::String::ENCODING_UTF16);
-	EnumLabel(osgText::String::ENCODING_UTF16_BE);
-	EnumLabel(osgText::String::ENCODING_UTF16_LE);
-	EnumLabel(osgText::String::ENCODING_UTF32);
-	EnumLabel(osgText::String::ENCODING_UTF32_BE);
-	EnumLabel(osgText::String::ENCODING_UTF32_LE);
-	EnumLabel(osgText::String::ENCODING_SIGNATURE);
+	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);
+	I_EnumLabel(osgText::String::ENCODING_ASCII);
+	I_EnumLabel(osgText::String::ENCODING_UTF8);
+	I_EnumLabel(osgText::String::ENCODING_UTF16);
+	I_EnumLabel(osgText::String::ENCODING_UTF16_BE);
+	I_EnumLabel(osgText::String::ENCODING_UTF16_LE);
+	I_EnumLabel(osgText::String::ENCODING_UTF32);
+	I_EnumLabel(osgText::String::ENCODING_UTF32_BE);
+	I_EnumLabel(osgText::String::ENCODING_UTF32_LE);
+	I_EnumLabel(osgText::String::ENCODING_SIGNATURE);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgText::String)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Constructor1(IN, const osgText::String &, str);
-	Constructor1(IN, const std::string &, str);
-	Constructor1(IN, const wchar_t *, text);
-	Constructor2(IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
-	Method1(void, set, IN, const std::string &, str);
-	Method1(void, set, IN, const wchar_t *, text);
-	Method2(void, set, IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
-	Method0(std::string, createUTF8EncodedString);
-	WriteOnlyProperty(const wchar_t *, );
+BEGIN_OBJECT_REFLECTOR(osgText::String)
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Constructor1(IN, const osgText::String &, str);
+	I_Constructor1(IN, const std::string &, str);
+	I_Constructor1(IN, const wchar_t *, text);
+	I_Constructor2(IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
+	I_Method1(void, set, IN, const std::string &, str);
+	I_Method1(void, set, IN, const wchar_t *, text);
+	I_Method2(void, set, IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
+	I_Method0(std::string, createUTF8EncodedString);
+	I_WriteOnlyProperty(const wchar_t *, );
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::VectorUInt);

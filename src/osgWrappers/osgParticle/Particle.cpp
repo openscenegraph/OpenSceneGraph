@@ -15,78 +15,86 @@
 #include <osgParticle/Particle>
 #include <osgParticle/range>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgParticle::Particle::Shape)
-	EnumLabel(osgParticle::Particle::POINT);
-	EnumLabel(osgParticle::Particle::QUAD);
-	EnumLabel(osgParticle::Particle::QUAD_TRIANGLESTRIP);
-	EnumLabel(osgParticle::Particle::HEXAGON);
-	EnumLabel(osgParticle::Particle::LINE);
+	I_EnumLabel(osgParticle::Particle::POINT);
+	I_EnumLabel(osgParticle::Particle::QUAD);
+	I_EnumLabel(osgParticle::Particle::QUAD_TRIANGLESTRIP);
+	I_EnumLabel(osgParticle::Particle::HEXAGON);
+	I_EnumLabel(osgParticle::Particle::LINE);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
-	Constructor0();
-	Method0(osgParticle::Particle::Shape, getShape);
-	Method1(void, setShape, IN, osgParticle::Particle::Shape, s);
-	Method0(bool, isAlive);
-	Method0(double, getLifeTime);
-	Method0(double, getAge);
-	Method0(const osgParticle::rangef &, getSizeRange);
-	Method0(const osgParticle::rangef &, getAlphaRange);
-	Method0(const osgParticle::rangev4 &, getColorRange);
-	Method0(const osgParticle::Interpolator *, getSizeInterpolator);
-	Method0(const osgParticle::Interpolator *, getAlphaInterpolator);
-	Method0(const osgParticle::Interpolator *, getColorInterpolator);
-	Method0(float, getRadius);
-	Method0(float, getMass);
-	Method0(float, getMassInv);
-	Method0(const osg::Vec3 &, getPosition);
-	Method0(const osg::Vec3 &, getVelocity);
-	Method0(const osg::Vec3 &, getPreviousPosition);
-	Method0(const osg::Vec3 &, getAngle);
-	Method0(const osg::Vec3 &, getAngularVelocity);
-	Method0(const osg::Vec3 &, getPreviousAngle);
-	Method0(void, kill);
-	Method1(void, setLifeTime, IN, double, t);
-	Method1(void, setSizeRange, IN, const osgParticle::rangef &, r);
-	Method1(void, setAlphaRange, IN, const osgParticle::rangef &, r);
-	Method1(void, setColorRange, IN, const osgParticle::rangev4 &, r);
-	Method1(void, setSizeInterpolator, IN, osgParticle::Interpolator *, ri);
-	Method1(void, setAlphaInterpolator, IN, osgParticle::Interpolator *, ai);
-	Method1(void, setColorInterpolator, IN, osgParticle::Interpolator *, ci);
-	Method1(void, setRadius, IN, float, r);
-	Method1(void, setMass, IN, float, m);
-	Method1(void, setPosition, IN, const osg::Vec3 &, p);
-	Method1(void, setVelocity, IN, const osg::Vec3 &, v);
-	Method1(void, addVelocity, IN, const osg::Vec3 &, dv);
-	Method1(void, transformPositionVelocity, IN, const osg::Matrix &, xform);
-	Method1(void, setAngle, IN, const osg::Vec3 &, a);
-	Method1(void, setAngularVelocity, IN, const osg::Vec3 &, v);
-	Method1(void, addAngularVelocity, IN, const osg::Vec3 &, dv);
-	Method1(void, transformAngleVelocity, IN, const osg::Matrix &, xform);
-	Method1(bool, update, IN, double, dt);
-	Method0(void, beginRender);
-	MethodWithDefaults4(void, render, IN, const osg::Vec3 &, xpos, , IN, const osg::Vec3 &, px, , IN, const osg::Vec3 &, py, , IN, float, scale, 1.0f);
-	Method0(void, endRender);
-	Method0(float, getCurrentSize);
-	MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, numTiles, 0);
-	ReadOnlyProperty(double, Age);
-	WriteOnlyProperty(osgParticle::Interpolator *, AlphaInterpolator);
-	Property(const osgParticle::rangef &, AlphaRange);
-	Property(const osg::Vec3 &, Angle);
-	Property(const osg::Vec3 &, AngularVelocity);
-	WriteOnlyProperty(osgParticle::Interpolator *, ColorInterpolator);
-	Property(const osgParticle::rangev4 &, ColorRange);
-	ReadOnlyProperty(float, CurrentSize);
-	Property(double, LifeTime);
-	Property(float, Mass);
-	ReadOnlyProperty(float, MassInv);
-	Property(const osg::Vec3 &, Position);
-	ReadOnlyProperty(const osg::Vec3 &, PreviousAngle);
-	ReadOnlyProperty(const osg::Vec3 &, PreviousPosition);
-	Property(float, Radius);
-	Property(osgParticle::Particle::Shape, Shape);
-	WriteOnlyProperty(osgParticle::Interpolator *, SizeInterpolator);
-	Property(const osgParticle::rangef &, SizeRange);
-	Property(const osg::Vec3 &, Velocity);
+	I_Constructor0();
+	I_Method0(osgParticle::Particle::Shape, getShape);
+	I_Method1(void, setShape, IN, osgParticle::Particle::Shape, s);
+	I_Method0(bool, isAlive);
+	I_Method0(double, getLifeTime);
+	I_Method0(double, getAge);
+	I_Method0(const osgParticle::rangef &, getSizeRange);
+	I_Method0(const osgParticle::rangef &, getAlphaRange);
+	I_Method0(const osgParticle::rangev4 &, getColorRange);
+	I_Method0(const osgParticle::Interpolator *, getSizeInterpolator);
+	I_Method0(const osgParticle::Interpolator *, getAlphaInterpolator);
+	I_Method0(const osgParticle::Interpolator *, getColorInterpolator);
+	I_Method0(float, getRadius);
+	I_Method0(float, getMass);
+	I_Method0(float, getMassInv);
+	I_Method0(const osg::Vec3 &, getPosition);
+	I_Method0(const osg::Vec3 &, getVelocity);
+	I_Method0(const osg::Vec3 &, getPreviousPosition);
+	I_Method0(const osg::Vec3 &, getAngle);
+	I_Method0(const osg::Vec3 &, getAngularVelocity);
+	I_Method0(const osg::Vec3 &, getPreviousAngle);
+	I_Method0(void, kill);
+	I_Method1(void, setLifeTime, IN, double, t);
+	I_Method1(void, setSizeRange, IN, const osgParticle::rangef &, r);
+	I_Method1(void, setAlphaRange, IN, const osgParticle::rangef &, r);
+	I_Method1(void, setColorRange, IN, const osgParticle::rangev4 &, r);
+	I_Method1(void, setSizeInterpolator, IN, osgParticle::Interpolator *, ri);
+	I_Method1(void, setAlphaInterpolator, IN, osgParticle::Interpolator *, ai);
+	I_Method1(void, setColorInterpolator, IN, osgParticle::Interpolator *, ci);
+	I_Method1(void, setRadius, IN, float, r);
+	I_Method1(void, setMass, IN, float, m);
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, p);
+	I_Method1(void, setVelocity, IN, const osg::Vec3 &, v);
+	I_Method1(void, addVelocity, IN, const osg::Vec3 &, dv);
+	I_Method1(void, transformPositionVelocity, IN, const osg::Matrix &, xform);
+	I_Method1(void, setAngle, IN, const osg::Vec3 &, a);
+	I_Method1(void, setAngularVelocity, IN, const osg::Vec3 &, v);
+	I_Method1(void, addAngularVelocity, IN, const osg::Vec3 &, dv);
+	I_Method1(void, transformAngleVelocity, IN, const osg::Matrix &, xform);
+	I_Method1(bool, update, IN, double, dt);
+	I_Method0(void, beginRender);
+	I_MethodWithDefaults4(void, render, IN, const osg::Vec3 &, xpos, , IN, const osg::Vec3 &, px, , IN, const osg::Vec3 &, py, , IN, float, scale, 1.0f);
+	I_Method0(void, endRender);
+	I_Method0(float, getCurrentSize);
+	I_MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, numTiles, 0);
+	I_ReadOnlyProperty(double, Age);
+	I_WriteOnlyProperty(osgParticle::Interpolator *, AlphaInterpolator);
+	I_Property(const osgParticle::rangef &, AlphaRange);
+	I_Property(const osg::Vec3 &, Angle);
+	I_Property(const osg::Vec3 &, AngularVelocity);
+	I_WriteOnlyProperty(osgParticle::Interpolator *, ColorInterpolator);
+	I_Property(const osgParticle::rangev4 &, ColorRange);
+	I_ReadOnlyProperty(float, CurrentSize);
+	I_Property(double, LifeTime);
+	I_Property(float, Mass);
+	I_ReadOnlyProperty(float, MassInv);
+	I_Property(const osg::Vec3 &, Position);
+	I_ReadOnlyProperty(const osg::Vec3 &, PreviousAngle);
+	I_ReadOnlyProperty(const osg::Vec3 &, PreviousPosition);
+	I_Property(float, Radius);
+	I_Property(osgParticle::Particle::Shape, Shape);
+	I_WriteOnlyProperty(osgParticle::Interpolator *, SizeInterpolator);
+	I_Property(const osgParticle::rangef &, SizeRange);
+	I_Property(const osg::Vec3 &, Velocity);
 END_REFLECTOR
 

@@ -12,31 +12,39 @@
 #include <osg/Vec2f>
 #include <osg/Vec3f>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 #include <osg/io_utils>
 	
 TYPE_NAME_ALIAS(float, osg::Vec3f::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Vec3f)
-	ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
-	Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
-	Constructor0();
-	Constructor3(IN, osg::Vec3f::value_type, x, IN, osg::Vec3f::value_type, y, IN, osg::Vec3f::value_type, z);
-	Constructor2(IN, const osg::Vec2f &, v2, IN, osg::Vec3f::value_type, zz);
-	Method0(osg::Vec3f::value_type *, ptr);
-	Method0(const osg::Vec3f::value_type *, ptr);
-	Method3(void, set, IN, osg::Vec3f::value_type, x, IN, osg::Vec3f::value_type, y, IN, osg::Vec3f::value_type, z);
-	Method1(void, set, IN, const osg::Vec3f &, rhs);
-	Method0(osg::Vec3f::value_type &, x);
-	Method0(osg::Vec3f::value_type &, y);
-	Method0(osg::Vec3f::value_type &, z);
-	Method0(osg::Vec3f::value_type, x);
-	Method0(osg::Vec3f::value_type, y);
-	Method0(osg::Vec3f::value_type, z);
-	Method0(bool, valid);
-	Method0(bool, isNaN);
-	Method0(osg::Vec3f::value_type, length);
-	Method0(osg::Vec3f::value_type, length2);
-	Method0(osg::Vec3f::value_type, normalize);
-	WriteOnlyProperty(const osg::Vec3f &, );
+	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
+	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_Constructor0();
+	I_Constructor3(IN, osg::Vec3f::value_type, x, IN, osg::Vec3f::value_type, y, IN, osg::Vec3f::value_type, z);
+	I_Constructor2(IN, const osg::Vec2f &, v2, IN, osg::Vec3f::value_type, zz);
+	I_Method0(osg::Vec3f::value_type *, ptr);
+	I_Method0(const osg::Vec3f::value_type *, ptr);
+	I_Method3(void, set, IN, osg::Vec3f::value_type, x, IN, osg::Vec3f::value_type, y, IN, osg::Vec3f::value_type, z);
+	I_Method1(void, set, IN, const osg::Vec3f &, rhs);
+	I_Method0(osg::Vec3f::value_type &, x);
+	I_Method0(osg::Vec3f::value_type &, y);
+	I_Method0(osg::Vec3f::value_type &, z);
+	I_Method0(osg::Vec3f::value_type, x);
+	I_Method0(osg::Vec3f::value_type, y);
+	I_Method0(osg::Vec3f::value_type, z);
+	I_Method0(bool, valid);
+	I_Method0(bool, isNaN);
+	I_Method0(osg::Vec3f::value_type, length);
+	I_Method0(osg::Vec3f::value_type, length2);
+	I_Method0(osg::Vec3f::value_type, normalize);
+	I_WriteOnlyProperty(const osg::Vec3f &, );
 END_REFLECTOR
 

@@ -16,10 +16,18 @@
 #include <osgGA/StateSetManipulator>
 #include <osgUtil/SceneView>
 
-BEGIN_VALUE_REFLECTOR(osgGA::SetSceneViewVisitor)
-	BaseType(osgGA::GUIEventHandlerVisitor);
-	Constructor3(IN, osgGA::GUIEventAdapter *, in, IN, osgGA::GUIActionAdapter *, out, IN, osgUtil::SceneView *, sv);
-	Method1(void, visit, IN, osgGA::MatrixManipulator &, cm);
-	Method1(void, visit, IN, osgGA::StateSetManipulator &, cm);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgGA::SetSceneViewVisitor)
+	I_BaseType(osgGA::GUIEventHandlerVisitor);
+	I_Constructor3(IN, osgGA::GUIEventAdapter *, in, IN, osgGA::GUIActionAdapter *, out, IN, osgUtil::SceneView *, sv);
+	I_Method1(void, visit, IN, osgGA::MatrixManipulator &, cm);
+	I_Method1(void, visit, IN, osgGA::StateSetManipulator &, cm);
 END_REFLECTOR
 

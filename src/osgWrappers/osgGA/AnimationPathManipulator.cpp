@@ -16,31 +16,39 @@
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 
-BEGIN_VALUE_REFLECTOR(osgGA::AnimationPathManipulator)
-	BaseType(osgGA::MatrixManipulator);
-	ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0);
-	Constructor1(IN, const std::string &, filename);
-	Method0(const char *, className);
-	Method1(void, setPrintOutTimingInfo, IN, bool, printOutTiminInfo);
-	Method0(bool, getPrintOutTimingInfo);
-	Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	Method0(osg::Matrixd, getMatrix);
-	Method0(osg::Matrixd, getInverseMatrix);
-	Method1(void, setAnimationPath, IN, osg::AnimationPath *, animationPath);
-	Method0(osg::AnimationPath *, getAnimationPath);
-	Method0(const osg::AnimationPath *, getAnimationPath);
-	Method0(bool, valid);
-	Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method1(void, home, IN, double, currentTime);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	Property(osg::AnimationPath *, AnimationPath);
-	WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	ReadOnlyProperty(osg::Matrixd, Matrix);
-	Property(bool, PrintOutTimingInfo);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
+	I_BaseType(osgGA::MatrixManipulator);
+	I_ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0);
+	I_Constructor1(IN, const std::string &, filename);
+	I_Method0(const char *, className);
+	I_Method1(void, setPrintOutTimingInfo, IN, bool, printOutTiminInfo);
+	I_Method0(bool, getPrintOutTimingInfo);
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method0(osg::Matrixd, getMatrix);
+	I_Method0(osg::Matrixd, getInverseMatrix);
+	I_Method1(void, setAnimationPath, IN, osg::AnimationPath *, animationPath);
+	I_Method0(osg::AnimationPath *, getAnimationPath);
+	I_Method0(const osg::AnimationPath *, getAnimationPath);
+	I_Method0(bool, valid);
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method1(void, home, IN, double, currentTime);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Property(osg::AnimationPath *, AnimationPath);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
+	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
+	I_ReadOnlyProperty(osg::Matrixd, Matrix);
+	I_Property(bool, PrintOutTimingInfo);
 END_REFLECTOR
 

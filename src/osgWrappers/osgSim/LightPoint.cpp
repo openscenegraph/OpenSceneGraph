@@ -15,15 +15,23 @@
 #include <osgSim/LightPoint>
 #include <osgSim/Sector>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgSim::LightPoint::BlendingMode)
-	EnumLabel(osgSim::LightPoint::ADDITIVE);
-	EnumLabel(osgSim::LightPoint::BLENDED);
+	I_EnumLabel(osgSim::LightPoint::ADDITIVE);
+	I_EnumLabel(osgSim::LightPoint::BLENDED);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::LightPoint)
-	Constructor0();
-	Constructor2(IN, const osg::Vec3 &, position, IN, const osg::Vec4 &, color);
-	ConstructorWithDefaults8(IN, bool, on, , IN, const osg::Vec3 &, position, , IN, const osg::Vec4 &, color, , IN, float, intensity, 1.0f, IN, float, radius, 1.0f, IN, osgSim::Sector *, sector, 0, IN, osgSim::BlinkSequence *, blinkSequence, 0, IN, osgSim::LightPoint::BlendingMode, blendingMode, osgSim::LightPoint::BLENDED);
-	Constructor1(IN, const osgSim::LightPoint &, lp);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::Vec3 &, position, IN, const osg::Vec4 &, color);
+	I_ConstructorWithDefaults8(IN, bool, on, , IN, const osg::Vec3 &, position, , IN, const osg::Vec4 &, color, , IN, float, intensity, 1.0f, IN, float, radius, 1.0f, IN, osgSim::Sector *, sector, 0, IN, osgSim::BlinkSequence *, blinkSequence, 0, IN, osgSim::LightPoint::BlendingMode, blendingMode, osgSim::LightPoint::BLENDED);
+	I_Constructor1(IN, const osgSim::LightPoint &, lp);
 END_REFLECTOR
 

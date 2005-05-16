@@ -15,23 +15,31 @@
 #include <osgParticle/MultiSegmentPlacer>
 #include <osgParticle/Particle>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
-	BaseType(osgParticle::Placer);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::MultiSegmentPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(int, numVertices);
-	Method1(const osg::Vec3 &, getVertex, IN, int, i);
-	Method2(void, setVertex, IN, int, i, IN, const osg::Vec3 &, v);
-	Method4(void, setVertex, IN, int, i, IN, float, x, IN, float, y, IN, float, z);
-	Method1(void, addVertex, IN, const osg::Vec3 &, v);
-	Method3(void, addVertex, IN, float, x, IN, float, y, IN, float, z);
-	Method1(void, removeVertex, IN, int, i);
-	Method1(void, place, IN, osgParticle::Particle *, P);
-	IndexedProperty1(const osg::Vec3 &, Vertex, int, i);
+	I_BaseType(osgParticle::Placer);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::MultiSegmentPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(int, numVertices);
+	I_Method1(const osg::Vec3 &, getVertex, IN, int, i);
+	I_Method2(void, setVertex, IN, int, i, IN, const osg::Vec3 &, v);
+	I_Method4(void, setVertex, IN, int, i, IN, float, x, IN, float, y, IN, float, z);
+	I_Method1(void, addVertex, IN, const osg::Vec3 &, v);
+	I_Method3(void, addVertex, IN, float, x, IN, float, y, IN, float, z);
+	I_Method1(void, removeVertex, IN, int, i);
+	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_IndexedProperty1(const osg::Vec3 &, Vertex, int, i);
 END_REFLECTOR
 

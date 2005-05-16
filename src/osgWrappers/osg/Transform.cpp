@@ -18,32 +18,40 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/Transform>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::Transform::ReferenceFrame)
-	EnumLabel(osg::Transform::RELATIVE_RF);
-	EnumLabel(osg::Transform::ABSOLUTE_RF);
+	I_EnumLabel(osg::Transform::RELATIVE_RF);
+	I_EnumLabel(osg::Transform::ABSOLUTE_RF);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Transform)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Transform &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(osg::Transform *, asTransform);
-	Method0(const osg::Transform *, asTransform);
-	Method0(osg::MatrixTransform *, asMatrixTransform);
-	Method0(const osg::MatrixTransform *, asMatrixTransform);
-	Method0(osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
-	Method0(const osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
-	Method1(void, setReferenceFrame, IN, osg::Transform::ReferenceFrame, rf);
-	Method0(osg::Transform::ReferenceFrame, getReferenceFrame);
-	Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
-	Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
-	Method0(osg::BoundingSphere, computeBound);
-	Property(osg::Transform::ReferenceFrame, ReferenceFrame);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Transform &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(osg::Transform *, asTransform);
+	I_Method0(const osg::Transform *, asTransform);
+	I_Method0(osg::MatrixTransform *, asMatrixTransform);
+	I_Method0(const osg::MatrixTransform *, asMatrixTransform);
+	I_Method0(osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
+	I_Method0(const osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
+	I_Method1(void, setReferenceFrame, IN, osg::Transform::ReferenceFrame, rf);
+	I_Method0(osg::Transform::ReferenceFrame, getReferenceFrame);
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
+	I_Method0(osg::BoundingSphere, computeBound);
+	I_Property(osg::Transform::ReferenceFrame, ReferenceFrame);
 END_REFLECTOR
 

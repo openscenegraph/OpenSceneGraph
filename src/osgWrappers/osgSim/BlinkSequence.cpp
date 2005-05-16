@@ -14,40 +14,48 @@
 #include <osg/Vec4>
 #include <osgSim/BlinkSequence>
 
-BEGIN_VALUE_REFLECTOR(osgSim::BlinkSequence)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::BlinkSequence &, bs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method2(void, addPulse, IN, double, length, IN, const osg::Vec4 &, color);
-	Method0(int, getNumPulses);
-	Method3(void, getPulse, IN, unsigned int, i, IN, double &, length, IN, osg::Vec4 &, color);
-	Method0(double, getPulsePeriod);
-	Method1(void, setSequenceGroup, IN, osgSim::SequenceGroup *, sg);
-	Method0(osgSim::SequenceGroup *, getSequenceGroup);
-	Method0(const osgSim::SequenceGroup *, getSequenceGroup);
-	Method1(void, setPhaseShift, IN, double, ps);
-	Method0(double, getPhaseShift);
-	Method1(double, localTime, IN, double, time);
-	Method2(osg::Vec4, color, IN, double, time, IN, double, length);
-	Property(double, PhaseShift);
-	ReadOnlyProperty(double, PulsePeriod);
-	Property(osgSim::SequenceGroup *, SequenceGroup);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgSim::BlinkSequence)
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::BlinkSequence &, bs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method2(void, addPulse, IN, double, length, IN, const osg::Vec4 &, color);
+	I_Method0(int, getNumPulses);
+	I_Method3(void, getPulse, IN, unsigned int, i, IN, double &, length, IN, osg::Vec4 &, color);
+	I_Method0(double, getPulsePeriod);
+	I_Method1(void, setSequenceGroup, IN, osgSim::SequenceGroup *, sg);
+	I_Method0(osgSim::SequenceGroup *, getSequenceGroup);
+	I_Method0(const osgSim::SequenceGroup *, getSequenceGroup);
+	I_Method1(void, setPhaseShift, IN, double, ps);
+	I_Method0(double, getPhaseShift);
+	I_Method1(double, localTime, IN, double, time);
+	I_Method2(osg::Vec4, color, IN, double, time, IN, double, length);
+	I_Property(double, PhaseShift);
+	I_ReadOnlyProperty(double, PulsePeriod);
+	I_Property(osgSim::SequenceGroup *, SequenceGroup);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgSim::SequenceGroup)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::SequenceGroup &, bs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Constructor1(IN, double, baseTime);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
+BEGIN_OBJECT_REFLECTOR(osgSim::SequenceGroup)
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::SequenceGroup &, bs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor1(IN, double, baseTime);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 

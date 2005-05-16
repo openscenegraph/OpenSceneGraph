@@ -16,62 +16,70 @@
 #include <osg/StateAttribute>
 #include <osg/TextureCubeMap>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::TextureCubeMap::Face)
-	EnumLabel(osg::TextureCubeMap::POSITIVE_X);
-	EnumLabel(osg::TextureCubeMap::NEGATIVE_X);
-	EnumLabel(osg::TextureCubeMap::POSITIVE_Y);
-	EnumLabel(osg::TextureCubeMap::NEGATIVE_Y);
-	EnumLabel(osg::TextureCubeMap::POSITIVE_Z);
-	EnumLabel(osg::TextureCubeMap::NEGATIVE_Z);
+	I_EnumLabel(osg::TextureCubeMap::POSITIVE_X);
+	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_X);
+	I_EnumLabel(osg::TextureCubeMap::POSITIVE_Y);
+	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_Y);
+	I_EnumLabel(osg::TextureCubeMap::POSITIVE_Z);
+	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_Z);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
-	BaseType(osg::Texture);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::TextureCubeMap &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image);
-	Method1(osg::Image *, getImage, IN, unsigned int, face);
-	Method1(const osg::Image *, getImage, IN, unsigned int, face);
-	Method0(unsigned int, getNumImages);
-	Method2(unsigned int &, getModifiedCount, IN, unsigned int, face, IN, unsigned int, contextID);
-	Method2(void, setTextureSize, IN, int, width, IN, int, height);
-	Method2(void, getTextureSize, IN, int &, width, IN, int &, height);
-	Method1(void, setSubloadCallback, IN, osg::TextureCubeMap::SubloadCallback *, cb);
-	Method0(osg::TextureCubeMap::SubloadCallback *, getSubloadCallback);
-	Method0(const osg::TextureCubeMap::SubloadCallback *, getSubloadCallback);
-	Method1(void, setNumMipmapLevels, IN, unsigned int, num);
-	Method0(unsigned int, getNumMipmapLevels);
-	Method1(void, apply, IN, osg::State &, state);
-	ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
-	WriteOnlyProperty(unsigned int, NumMipmapLevels);
-	Property(osg::TextureCubeMap::SubloadCallback *, SubloadCallback);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::Texture);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::TextureCubeMap &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image);
+	I_Method1(osg::Image *, getImage, IN, unsigned int, face);
+	I_Method1(const osg::Image *, getImage, IN, unsigned int, face);
+	I_Method0(unsigned int, getNumImages);
+	I_Method2(unsigned int &, getModifiedCount, IN, unsigned int, face, IN, unsigned int, contextID);
+	I_Method2(void, setTextureSize, IN, int, width, IN, int, height);
+	I_Method2(void, getTextureSize, IN, int &, width, IN, int &, height);
+	I_Method1(void, setSubloadCallback, IN, osg::TextureCubeMap::SubloadCallback *, cb);
+	I_Method0(osg::TextureCubeMap::SubloadCallback *, getSubloadCallback);
+	I_Method0(const osg::TextureCubeMap::SubloadCallback *, getSubloadCallback);
+	I_Method1(void, setNumMipmapLevels, IN, unsigned int, num);
+	I_Method0(unsigned int, getNumMipmapLevels);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
+	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);
+	I_Property(osg::TextureCubeMap::SubloadCallback *, SubloadCallback);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
-	BaseType(osg::Referenced);
-	Constructor1(IN, unsigned int, contextID);
-	Constructor1(IN, const osg::TextureCubeMap::Extensions &, rhs);
-	Method1(void, lowestCommonDenominator, IN, const osg::TextureCubeMap::Extensions &, rhs);
-	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
-	Method1(void, setCubeMapSupported, IN, bool, flag);
-	Method0(bool, isCubeMapSupported);
-	WriteOnlyProperty(bool, CubeMapSupported);
-	WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::TextureCubeMap::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::TextureCubeMap::Extensions &, rhs);
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setCubeMapSupported, IN, bool, flag);
+	I_Method0(bool, isCubeMapSupported);
+	I_WriteOnlyProperty(bool, CubeMapSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap::SubloadCallback)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method2(void, load, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state);
-	Method2(void, subload, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method2(void, load, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state);
+	I_Method2(void, subload, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state);
 END_REFLECTOR
 

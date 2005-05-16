@@ -15,32 +15,40 @@
 #include <osgFX/Effect>
 #include <osgFX/Technique>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgFX::Effect::TechniqueSelection)
-	EnumLabel(osgFX::Effect::AUTO_DETECT);
+	I_EnumLabel(osgFX::Effect::AUTO_DETECT);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgFX::Effect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const char *, effectName);
-	Method0(const char *, effectDescription);
-	Method0(const char *, effectAuthor);
-	Method0(bool, getEnabled);
-	Method1(void, setEnabled, IN, bool, v);
-	Method0(void, setUpDemo);
-	Method0(int, getNumTechniques);
-	Method1(osgFX::Technique *, getTechnique, IN, int, i);
-	Method1(const osgFX::Technique *, getTechnique, IN, int, i);
-	Method0(int, getSelectedTechnique);
-	MethodWithDefaults1(void, selectTechnique, IN, int, i, osgFX::Effect::AUTO_DETECT);
-	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	Method1(void, inherited_traverse, IN, osg::NodeVisitor &, nv);
-	Property(bool, Enabled);
-	ReadOnlyProperty(int, SelectedTechnique);
-	ArrayProperty_G(osgFX::Technique *, Technique, Techniques, int, void);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgFX::Effect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const char *, effectName);
+	I_Method0(const char *, effectDescription);
+	I_Method0(const char *, effectAuthor);
+	I_Method0(bool, getEnabled);
+	I_Method1(void, setEnabled, IN, bool, v);
+	I_Method0(void, setUpDemo);
+	I_Method0(int, getNumTechniques);
+	I_Method1(osgFX::Technique *, getTechnique, IN, int, i);
+	I_Method1(const osgFX::Technique *, getTechnique, IN, int, i);
+	I_Method0(int, getSelectedTechnique);
+	I_MethodWithDefaults1(void, selectTechnique, IN, int, i, osgFX::Effect::AUTO_DETECT);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, inherited_traverse, IN, osg::NodeVisitor &, nv);
+	I_Property(bool, Enabled);
+	I_ReadOnlyProperty(int, SelectedTechnique);
+	I_ArrayProperty_G(osgFX::Technique *, Technique, Techniques, int, void);
 END_REFLECTOR
 

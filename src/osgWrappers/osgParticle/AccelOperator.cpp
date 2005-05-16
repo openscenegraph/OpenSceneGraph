@@ -16,21 +16,29 @@
 #include <osgParticle/Particle>
 #include <osgParticle/Program>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::AccelOperator)
-	BaseType(osgParticle::Operator);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::AccelOperator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const osg::Vec3 &, getAcceleration);
-	Method1(void, setAcceleration, IN, const osg::Vec3 &, v);
-	MethodWithDefaults1(void, setToGravity, IN, float, scale, 1);
-	Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
-	Method1(void, beginOperate, IN, osgParticle::Program *, prg);
-	Property(const osg::Vec3 &, Acceleration);
-	WriteOnlyProperty(float, ToGravity);
+	I_BaseType(osgParticle::Operator);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::AccelOperator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const osg::Vec3 &, getAcceleration);
+	I_Method1(void, setAcceleration, IN, const osg::Vec3 &, v);
+	I_MethodWithDefaults1(void, setToGravity, IN, float, scale, 1);
+	I_Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
+	I_Method1(void, beginOperate, IN, osgParticle::Program *, prg);
+	I_Property(const osg::Vec3 &, Acceleration);
+	I_WriteOnlyProperty(float, ToGravity);
 END_REFLECTOR
 

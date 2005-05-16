@@ -12,15 +12,23 @@
 #include <osgDB/Field>
 #include <osgDB/FieldReader>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osgDB::FieldReader)
-	Constructor0();
-	Constructor1(IN, const osgDB::FieldReader &, ic);
-	Method1(void, attach, IN, std::istream *, input);
-	Method0(void, detach);
-	Method0(bool, eof);
-	Method1(bool, readField, IN, osgDB::Field &, fieldPtr);
-	Method0(void, ignoreField);
-	Method0(int, getNoNestedBrackets);
-	ReadOnlyProperty(int, NoNestedBrackets);
+	I_Constructor0();
+	I_Constructor1(IN, const osgDB::FieldReader &, ic);
+	I_Method1(void, attach, IN, std::istream *, input);
+	I_Method0(void, detach);
+	I_Method0(bool, eof);
+	I_Method1(bool, readField, IN, osgDB::Field &, fieldPtr);
+	I_Method0(void, ignoreField);
+	I_Method0(int, getNoNestedBrackets);
+	I_ReadOnlyProperty(int, NoNestedBrackets);
 END_REFLECTOR
 

@@ -11,6 +11,14 @@
 
 #include <osg/Matrix>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(osg::Matrixd, osg::Matrix);
 
 TYPE_NAME_ALIAS(osg::RefMatrixd, osg::RefMatrix);

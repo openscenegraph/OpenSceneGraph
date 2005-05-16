@@ -11,19 +11,27 @@
 
 #include <osg/UByte4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osg::UByte4)
-	Constructor0();
-	Constructor4(IN, unsigned char, r, IN, unsigned char, g, IN, unsigned char, b, IN, unsigned char, a);
-	Method0(unsigned char *, ptr);
-	Method0(const unsigned char *, ptr);
-	Method4(void, set, IN, unsigned char, r, IN, unsigned char, g, IN, unsigned char, b, IN, unsigned char, a);
-	Method0(unsigned char &, r);
-	Method0(unsigned char &, g);
-	Method0(unsigned char &, b);
-	Method0(unsigned char &, a);
-	Method0(unsigned char, r);
-	Method0(unsigned char, g);
-	Method0(unsigned char, b);
-	Method0(unsigned char, a);
+	I_Constructor0();
+	I_Constructor4(IN, unsigned char, r, IN, unsigned char, g, IN, unsigned char, b, IN, unsigned char, a);
+	I_Method0(unsigned char *, ptr);
+	I_Method0(const unsigned char *, ptr);
+	I_Method4(void, set, IN, unsigned char, r, IN, unsigned char, g, IN, unsigned char, b, IN, unsigned char, a);
+	I_Method0(unsigned char &, r);
+	I_Method0(unsigned char &, g);
+	I_Method0(unsigned char &, b);
+	I_Method0(unsigned char &, a);
+	I_Method0(unsigned char, r);
+	I_Method0(unsigned char, g);
+	I_Method0(unsigned char, b);
+	I_Method0(unsigned char, a);
 END_REFLECTOR
 

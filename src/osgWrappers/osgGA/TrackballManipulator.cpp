@@ -17,36 +17,44 @@
 #include <osgGA/TrackballManipulator>
 #include <osgUtil/SceneView>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
-	BaseType(osgGA::MatrixManipulator);
-	Constructor0();
-	Method0(const char *, className);
-	Method1(void, setMinimumZoomScale, IN, float, minimumZoomScale);
-	Method0(float, getMinimumZoomScale);
-	Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	Method0(osg::Matrixd, getMatrix);
-	Method0(osg::Matrixd, getInverseMatrix);
-	Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode);
-	Method0(float, getFusionDistanceValue);
-	Method1(void, setNode, IN, osg::Node *, x);
-	Method0(const osg::Node *, getNode);
-	Method0(osg::Node *, getNode);
-	Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method1(void, home, IN, double, x);
-	Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	Method1(void, setTrackballSize, IN, float, size);
-	Method0(float, getTrackballSize);
-	WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
-	ReadOnlyProperty(float, FusionDistanceValue);
-	ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	ReadOnlyProperty(osg::Matrixd, Matrix);
-	Property(float, MinimumZoomScale);
-	Property(osg::Node *, Node);
-	Property(float, TrackballSize);
+	I_BaseType(osgGA::MatrixManipulator);
+	I_Constructor0();
+	I_Method0(const char *, className);
+	I_Method1(void, setMinimumZoomScale, IN, float, minimumZoomScale);
+	I_Method0(float, getMinimumZoomScale);
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
+	I_Method0(osg::Matrixd, getMatrix);
+	I_Method0(osg::Matrixd, getInverseMatrix);
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode);
+	I_Method0(float, getFusionDistanceValue);
+	I_Method1(void, setNode, IN, osg::Node *, x);
+	I_Method0(const osg::Node *, getNode);
+	I_Method0(osg::Node *, getNode);
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method1(void, home, IN, double, x);
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Method1(void, setTrackballSize, IN, float, size);
+	I_Method0(float, getTrackballSize);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
+	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
+	I_ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
+	I_ReadOnlyProperty(float, FusionDistanceValue);
+	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
+	I_ReadOnlyProperty(osg::Matrixd, Matrix);
+	I_Property(float, MinimumZoomScale);
+	I_Property(osg::Node *, Node);
+	I_Property(float, TrackballSize);
 END_REFLECTOR
 

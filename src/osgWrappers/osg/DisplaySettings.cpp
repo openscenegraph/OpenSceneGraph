@@ -12,100 +12,108 @@
 #include <osg/ArgumentParser>
 #include <osg/DisplaySettings>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::DisplayType)
-	EnumLabel(osg::DisplaySettings::MONITOR);
-	EnumLabel(osg::DisplaySettings::POWERWALL);
-	EnumLabel(osg::DisplaySettings::REALITY_CENTER);
-	EnumLabel(osg::DisplaySettings::HEAD_MOUNTED_DISPLAY);
+	I_EnumLabel(osg::DisplaySettings::MONITOR);
+	I_EnumLabel(osg::DisplaySettings::POWERWALL);
+	I_EnumLabel(osg::DisplaySettings::REALITY_CENTER);
+	I_EnumLabel(osg::DisplaySettings::HEAD_MOUNTED_DISPLAY);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::StereoMode)
-	EnumLabel(osg::DisplaySettings::QUAD_BUFFER);
-	EnumLabel(osg::DisplaySettings::ANAGLYPHIC);
-	EnumLabel(osg::DisplaySettings::HORIZONTAL_SPLIT);
-	EnumLabel(osg::DisplaySettings::VERTICAL_SPLIT);
-	EnumLabel(osg::DisplaySettings::LEFT_EYE);
-	EnumLabel(osg::DisplaySettings::RIGHT_EYE);
+	I_EnumLabel(osg::DisplaySettings::QUAD_BUFFER);
+	I_EnumLabel(osg::DisplaySettings::ANAGLYPHIC);
+	I_EnumLabel(osg::DisplaySettings::HORIZONTAL_SPLIT);
+	I_EnumLabel(osg::DisplaySettings::VERTICAL_SPLIT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE);
+	I_EnumLabel(osg::DisplaySettings::RIGHT_EYE);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoHorizontalEyeMapping)
-	EnumLabel(osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT);
-	EnumLabel(osg::DisplaySettings::LEFT_EYE_RIGHT_VIEWPORT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_RIGHT_VIEWPORT);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoVerticalEyeMapping)
-	EnumLabel(osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT);
-	EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Constructor1(IN, osg::ArgumentParser &, arguments);
-	Constructor1(IN, const osg::DisplaySettings &, vs);
-	Method1(void, setDisplaySettings, IN, const osg::DisplaySettings &, vs);
-	Method1(void, merge, IN, const osg::DisplaySettings &, vs);
-	Method0(void, setDefaults);
-	Method0(void, readEnvironmentalVariables);
-	Method1(void, readCommandLine, IN, osg::ArgumentParser &, arguments);
-	Method1(void, setDisplayType, IN, osg::DisplaySettings::DisplayType, type);
-	Method0(osg::DisplaySettings::DisplayType, getDisplayType);
-	Method1(void, setStereo, IN, bool, on);
-	Method0(bool, getStereo);
-	Method1(void, setStereoMode, IN, osg::DisplaySettings::StereoMode, mode);
-	Method0(osg::DisplaySettings::StereoMode, getStereoMode);
-	Method1(void, setEyeSeparation, IN, float, eyeSeparation);
-	Method0(float, getEyeSeparation);
-	Method1(void, setSplitStereoHorizontalEyeMapping, IN, osg::DisplaySettings::SplitStereoHorizontalEyeMapping, m);
-	Method0(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, getSplitStereoHorizontalEyeMapping);
-	Method1(void, setSplitStereoHorizontalSeparation, IN, int, s);
-	Method0(int, getSplitStereoHorizontalSeparation);
-	Method1(void, setSplitStereoVerticalEyeMapping, IN, osg::DisplaySettings::SplitStereoVerticalEyeMapping, m);
-	Method0(osg::DisplaySettings::SplitStereoVerticalEyeMapping, getSplitStereoVerticalEyeMapping);
-	Method1(void, setSplitStereoVerticalSeparation, IN, int, s);
-	Method0(int, getSplitStereoVerticalSeparation);
-	Method1(void, setSplitStereoAutoAjustAspectRatio, IN, bool, flag);
-	Method0(bool, getSplitStereoAutoAjustAspectRatio);
-	Method1(void, setScreenWidth, IN, float, width);
-	Method0(float, getScreenWidth);
-	Method1(void, setScreenHeight, IN, float, height);
-	Method0(float, getScreenHeight);
-	Method1(void, setScreenDistance, IN, float, distance);
-	Method0(float, getScreenDistance);
-	Method1(void, setDoubleBuffer, IN, bool, flag);
-	Method0(bool, getDoubleBuffer);
-	Method1(void, setRGB, IN, bool, flag);
-	Method0(bool, getRGB);
-	Method1(void, setDepthBuffer, IN, bool, flag);
-	Method0(bool, getDepthBuffer);
-	Method1(void, setMinimumNumAlphaBits, IN, unsigned int, bits);
-	Method0(unsigned int, getMinimumNumAlphaBits);
-	Method0(bool, getAlphaBuffer);
-	Method1(void, setMinimumNumStencilBits, IN, unsigned int, bits);
-	Method0(unsigned int, getMinimumNumStencilBits);
-	Method0(bool, getStencilBuffer);
-	Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num);
-	Method0(unsigned int, getMaxNumberOfGraphicsContexts);
-	ReadOnlyProperty(bool, AlphaBuffer);
-	Property(bool, DepthBuffer);
-	WriteOnlyProperty(const osg::DisplaySettings &, DisplaySettings);
-	Property(osg::DisplaySettings::DisplayType, DisplayType);
-	Property(bool, DoubleBuffer);
-	Property(float, EyeSeparation);
-	Property(unsigned int, MaxNumberOfGraphicsContexts);
-	Property(unsigned int, MinimumNumAlphaBits);
-	Property(unsigned int, MinimumNumStencilBits);
-	Property(bool, RGB);
-	Property(float, ScreenDistance);
-	Property(float, ScreenHeight);
-	Property(float, ScreenWidth);
-	Property(bool, SplitStereoAutoAjustAspectRatio);
-	Property(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, SplitStereoHorizontalEyeMapping);
-	Property(int, SplitStereoHorizontalSeparation);
-	Property(osg::DisplaySettings::SplitStereoVerticalEyeMapping, SplitStereoVerticalEyeMapping);
-	Property(int, SplitStereoVerticalSeparation);
-	ReadOnlyProperty(bool, StencilBuffer);
-	Property(bool, Stereo);
-	Property(osg::DisplaySettings::StereoMode, StereoMode);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Constructor1(IN, osg::ArgumentParser &, arguments);
+	I_Constructor1(IN, const osg::DisplaySettings &, vs);
+	I_Method1(void, setDisplaySettings, IN, const osg::DisplaySettings &, vs);
+	I_Method1(void, merge, IN, const osg::DisplaySettings &, vs);
+	I_Method0(void, setDefaults);
+	I_Method0(void, readEnvironmentalVariables);
+	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, arguments);
+	I_Method1(void, setDisplayType, IN, osg::DisplaySettings::DisplayType, type);
+	I_Method0(osg::DisplaySettings::DisplayType, getDisplayType);
+	I_Method1(void, setStereo, IN, bool, on);
+	I_Method0(bool, getStereo);
+	I_Method1(void, setStereoMode, IN, osg::DisplaySettings::StereoMode, mode);
+	I_Method0(osg::DisplaySettings::StereoMode, getStereoMode);
+	I_Method1(void, setEyeSeparation, IN, float, eyeSeparation);
+	I_Method0(float, getEyeSeparation);
+	I_Method1(void, setSplitStereoHorizontalEyeMapping, IN, osg::DisplaySettings::SplitStereoHorizontalEyeMapping, m);
+	I_Method0(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, getSplitStereoHorizontalEyeMapping);
+	I_Method1(void, setSplitStereoHorizontalSeparation, IN, int, s);
+	I_Method0(int, getSplitStereoHorizontalSeparation);
+	I_Method1(void, setSplitStereoVerticalEyeMapping, IN, osg::DisplaySettings::SplitStereoVerticalEyeMapping, m);
+	I_Method0(osg::DisplaySettings::SplitStereoVerticalEyeMapping, getSplitStereoVerticalEyeMapping);
+	I_Method1(void, setSplitStereoVerticalSeparation, IN, int, s);
+	I_Method0(int, getSplitStereoVerticalSeparation);
+	I_Method1(void, setSplitStereoAutoAjustAspectRatio, IN, bool, flag);
+	I_Method0(bool, getSplitStereoAutoAjustAspectRatio);
+	I_Method1(void, setScreenWidth, IN, float, width);
+	I_Method0(float, getScreenWidth);
+	I_Method1(void, setScreenHeight, IN, float, height);
+	I_Method0(float, getScreenHeight);
+	I_Method1(void, setScreenDistance, IN, float, distance);
+	I_Method0(float, getScreenDistance);
+	I_Method1(void, setDoubleBuffer, IN, bool, flag);
+	I_Method0(bool, getDoubleBuffer);
+	I_Method1(void, setRGB, IN, bool, flag);
+	I_Method0(bool, getRGB);
+	I_Method1(void, setDepthBuffer, IN, bool, flag);
+	I_Method0(bool, getDepthBuffer);
+	I_Method1(void, setMinimumNumAlphaBits, IN, unsigned int, bits);
+	I_Method0(unsigned int, getMinimumNumAlphaBits);
+	I_Method0(bool, getAlphaBuffer);
+	I_Method1(void, setMinimumNumStencilBits, IN, unsigned int, bits);
+	I_Method0(unsigned int, getMinimumNumStencilBits);
+	I_Method0(bool, getStencilBuffer);
+	I_Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num);
+	I_Method0(unsigned int, getMaxNumberOfGraphicsContexts);
+	I_ReadOnlyProperty(bool, AlphaBuffer);
+	I_Property(bool, DepthBuffer);
+	I_WriteOnlyProperty(const osg::DisplaySettings &, DisplaySettings);
+	I_Property(osg::DisplaySettings::DisplayType, DisplayType);
+	I_Property(bool, DoubleBuffer);
+	I_Property(float, EyeSeparation);
+	I_Property(unsigned int, MaxNumberOfGraphicsContexts);
+	I_Property(unsigned int, MinimumNumAlphaBits);
+	I_Property(unsigned int, MinimumNumStencilBits);
+	I_Property(bool, RGB);
+	I_Property(float, ScreenDistance);
+	I_Property(float, ScreenHeight);
+	I_Property(float, ScreenWidth);
+	I_Property(bool, SplitStereoAutoAjustAspectRatio);
+	I_Property(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, SplitStereoHorizontalEyeMapping);
+	I_Property(int, SplitStereoHorizontalSeparation);
+	I_Property(osg::DisplaySettings::SplitStereoVerticalEyeMapping, SplitStereoVerticalEyeMapping);
+	I_Property(int, SplitStereoVerticalSeparation);
+	I_ReadOnlyProperty(bool, StencilBuffer);
+	I_Property(bool, Stereo);
+	I_Property(osg::DisplaySettings::StereoMode, StereoMode);
 END_REFLECTOR
 

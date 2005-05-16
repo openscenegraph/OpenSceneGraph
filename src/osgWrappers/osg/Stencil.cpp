@@ -15,62 +15,70 @@
 #include <osg/StateAttribute>
 #include <osg/Stencil>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::Stencil::Function)
-	EnumLabel(osg::Stencil::NEVER);
-	EnumLabel(osg::Stencil::LESS);
-	EnumLabel(osg::Stencil::EQUAL);
-	EnumLabel(osg::Stencil::LEQUAL);
-	EnumLabel(osg::Stencil::GREATER);
-	EnumLabel(osg::Stencil::NOTEQUAL);
-	EnumLabel(osg::Stencil::GEQUAL);
-	EnumLabel(osg::Stencil::ALWAYS);
+	I_EnumLabel(osg::Stencil::NEVER);
+	I_EnumLabel(osg::Stencil::LESS);
+	I_EnumLabel(osg::Stencil::EQUAL);
+	I_EnumLabel(osg::Stencil::LEQUAL);
+	I_EnumLabel(osg::Stencil::GREATER);
+	I_EnumLabel(osg::Stencil::NOTEQUAL);
+	I_EnumLabel(osg::Stencil::GEQUAL);
+	I_EnumLabel(osg::Stencil::ALWAYS);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Stencil::Operation)
-	EnumLabel(osg::Stencil::KEEP);
-	EnumLabel(osg::Stencil::ZERO);
-	EnumLabel(osg::Stencil::REPLACE);
-	EnumLabel(osg::Stencil::INCR);
-	EnumLabel(osg::Stencil::DECR);
-	EnumLabel(osg::Stencil::INVERT);
+	I_EnumLabel(osg::Stencil::KEEP);
+	I_EnumLabel(osg::Stencil::ZERO);
+	I_EnumLabel(osg::Stencil::REPLACE);
+	I_EnumLabel(osg::Stencil::INCR);
+	I_EnumLabel(osg::Stencil::DECR);
+	I_EnumLabel(osg::Stencil::INVERT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Stencil)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Stencil &, stencil, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method3(void, setFunction, IN, osg::Stencil::Function, func, IN, int, ref, IN, unsigned int, mask);
-	Method1(void, setFunction, IN, osg::Stencil::Function, func);
-	Method0(osg::Stencil::Function, getFunction);
-	Method1(void, setFunctionRef, IN, int, ref);
-	Method0(int, getFunctionRef);
-	Method1(void, setFunctionMask, IN, unsigned int, mask);
-	Method0(unsigned int, getFunctionMask);
-	Method3(void, setOperation, IN, osg::Stencil::Operation, sfail, IN, osg::Stencil::Operation, zfail, IN, osg::Stencil::Operation, zpass);
-	Method1(void, setStencilFailOperation, IN, osg::Stencil::Operation, sfail);
-	Method0(osg::Stencil::Operation, getStencilFailOperation);
-	Method1(void, setStencilPassAndDepthFailOperation, IN, osg::Stencil::Operation, zfail);
-	Method0(osg::Stencil::Operation, getStencilPassAndDepthFailOperation);
-	Method1(void, setStencilPassAndDepthPassOperation, IN, osg::Stencil::Operation, zpass);
-	Method0(osg::Stencil::Operation, getStencilPassAndDepthPassOperation);
-	Method1(void, setWriteMask, IN, unsigned int, mask);
-	Method0(unsigned int, getWriteMask);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(osg::Stencil::Function, Function);
-	Property(unsigned int, FunctionMask);
-	Property(int, FunctionRef);
-	Property(osg::Stencil::Operation, StencilFailOperation);
-	Property(osg::Stencil::Operation, StencilPassAndDepthFailOperation);
-	Property(osg::Stencil::Operation, StencilPassAndDepthPassOperation);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	Property(unsigned int, WriteMask);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Stencil &, stencil, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method3(void, setFunction, IN, osg::Stencil::Function, func, IN, int, ref, IN, unsigned int, mask);
+	I_Method1(void, setFunction, IN, osg::Stencil::Function, func);
+	I_Method0(osg::Stencil::Function, getFunction);
+	I_Method1(void, setFunctionRef, IN, int, ref);
+	I_Method0(int, getFunctionRef);
+	I_Method1(void, setFunctionMask, IN, unsigned int, mask);
+	I_Method0(unsigned int, getFunctionMask);
+	I_Method3(void, setOperation, IN, osg::Stencil::Operation, sfail, IN, osg::Stencil::Operation, zfail, IN, osg::Stencil::Operation, zpass);
+	I_Method1(void, setStencilFailOperation, IN, osg::Stencil::Operation, sfail);
+	I_Method0(osg::Stencil::Operation, getStencilFailOperation);
+	I_Method1(void, setStencilPassAndDepthFailOperation, IN, osg::Stencil::Operation, zfail);
+	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthFailOperation);
+	I_Method1(void, setStencilPassAndDepthPassOperation, IN, osg::Stencil::Operation, zpass);
+	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthPassOperation);
+	I_Method1(void, setWriteMask, IN, unsigned int, mask);
+	I_Method0(unsigned int, getWriteMask);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(osg::Stencil::Function, Function);
+	I_Property(unsigned int, FunctionMask);
+	I_Property(int, FunctionRef);
+	I_Property(osg::Stencil::Operation, StencilFailOperation);
+	I_Property(osg::Stencil::Operation, StencilPassAndDepthFailOperation);
+	I_Property(osg::Stencil::Operation, StencilPassAndDepthPassOperation);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Property(unsigned int, WriteMask);
 END_REFLECTOR
 

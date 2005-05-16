@@ -17,6 +17,14 @@
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/RenderStageLighting>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >, osgUtil::RenderStageLighting::AttrMatrixPair);
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::RenderStageLighting::AttrMatrixPair >, osgUtil::RenderStageLighting::AttrMatrixList);
@@ -24,41 +32,29 @@ TYPE_NAME_ALIAS(std::vector< osgUtil::RenderStageLighting::AttrMatrixPair >, osg
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::RenderStageLighting::AttrMatrixList >, osgUtil::RenderStageLighting::TexUnitAttrMatrixListMap);
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStageLighting)
-	BaseType(osg::Object);
-	Constructor0();
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(void, reset);
-	Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< const osg::StateAttribute >)
-	Constructor0();
-	Constructor1(IN, const osg::StateAttribute *, t);
-	Constructor1(IN, const osg::ref_ptr< const osg::StateAttribute > &, rp);
-	Method0(bool, valid);
-	Method0(const osg::StateAttribute *, get);
-	Method0(const const osg::StateAttribute *, get);
-	Method0(const osg::StateAttribute *, take);
-	Method0(const osg::StateAttribute *, release);
-	ReadOnlyProperty(const osg::StateAttribute *, );
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(void, reset);
+	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
+	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
+	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
-	Constructor0();
-	Constructor1(IN, osg::RefMatrix *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp);
-	Method0(bool, valid);
-	Method0(osg::RefMatrix *, get);
-	Method0(const osg::RefMatrix *, get);
-	Method0(osg::RefMatrix *, take);
-	Method0(osg::RefMatrix *, release);
-	ReadOnlyProperty(osg::RefMatrix *, );
+	I_Constructor0();
+	I_Constructor1(IN, osg::RefMatrix *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::RefMatrix *, get);
+	I_Method0(const osg::RefMatrix *, get);
+	I_Method0(osg::RefMatrix *, take);
+	I_Method0(osg::RefMatrix *, release);
+	I_ReadOnlyProperty(osg::RefMatrix *, );
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgUtil::RenderStageLighting::AttrMatrixList >);

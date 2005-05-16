@@ -13,51 +13,59 @@
 #include <osgProducer/EventAdapter>
 #include <osgProducer/KeyboardMouseCallback>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::EventAdapter > >, osgProducer::KeyboardMouseCallback::EventQueue);
 
-BEGIN_VALUE_REFLECTOR(osgProducer::KeyboardMouseCallback)
-	ConstructorWithDefaults3(IN, Producer::KeyboardMouse *, keyboardMouse, , IN, bool &, done, , IN, bool, escapeKeySetsDone, true);
-	Method1(void, mouseScroll, IN, Producer::KeyboardMouseCallback::ScrollingMotion, sm);
-	Method2(void, mouseMotion, IN, float, mx, IN, float, my);
-	Method2(void, passiveMouseMotion, IN, float, mx, IN, float, my);
-	Method2(void, mouseWarp, IN, float, mx, IN, float, my);
-	Method3(void, buttonPress, IN, float, mx, IN, float, my, IN, unsigned int, mbutton);
-	Method3(void, doubleButtonPress, IN, float, mx, IN, float, my, IN, unsigned int, mbutton);
-	Method3(void, buttonRelease, IN, float, mx, IN, float, my, IN, unsigned int, mbutton);
-	Method1(void, keyPress, IN, Producer::KeyCharacter, key);
-	Method1(void, keyRelease, IN, Producer::KeyCharacter, key);
-	Method1(void, specialKeyPress, IN, Producer::KeyCharacter, key);
-	Method1(void, specialKeyRelease, IN, Producer::KeyCharacter, key);
-	Method4(void, windowConfig, IN, int, x, IN, int, y, IN, unsigned int, width, IN, unsigned int, height);
-	Method0(void, shutdown);
-	Method1(void, setEscapeSetDone, IN, bool, esc);
-	Method0(bool, getEscapeSetDone);
-	Method1(double, getEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
-	Method0(bool, done);
-	Method0(float, mx);
-	Method0(float, my);
-	Method0(unsigned int, mbutton);
-	Method1(void, setStartTick, IN, osg::Timer_t, tick);
-	Method0(double, getTime);
-	Method0(Producer::KeyboardMouse *, getKeyboardMouse);
-	Method0(const Producer::KeyboardMouse *, getKeyboardMouse);
-	Method0(osgProducer::EventAdapter *, createEventAdapter);
-	Property(bool, EscapeSetDone);
-	ReadOnlyProperty(Producer::KeyboardMouse *, KeyboardMouse);
-	WriteOnlyProperty(osg::Timer_t, StartTick);
-	ReadOnlyProperty(double, Time);
+BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
+	I_ConstructorWithDefaults3(IN, Producer::KeyboardMouse *, keyboardMouse, , IN, bool &, done, , IN, bool, escapeKeySetsDone, true);
+	I_Method1(void, mouseScroll, IN, Producer::KeyboardMouseCallback::ScrollingMotion, sm);
+	I_Method2(void, mouseMotion, IN, float, mx, IN, float, my);
+	I_Method2(void, passiveMouseMotion, IN, float, mx, IN, float, my);
+	I_Method2(void, mouseWarp, IN, float, mx, IN, float, my);
+	I_Method3(void, buttonPress, IN, float, mx, IN, float, my, IN, unsigned int, mbutton);
+	I_Method3(void, doubleButtonPress, IN, float, mx, IN, float, my, IN, unsigned int, mbutton);
+	I_Method3(void, buttonRelease, IN, float, mx, IN, float, my, IN, unsigned int, mbutton);
+	I_Method1(void, keyPress, IN, Producer::KeyCharacter, key);
+	I_Method1(void, keyRelease, IN, Producer::KeyCharacter, key);
+	I_Method1(void, specialKeyPress, IN, Producer::KeyCharacter, key);
+	I_Method1(void, specialKeyRelease, IN, Producer::KeyCharacter, key);
+	I_Method4(void, windowConfig, IN, int, x, IN, int, y, IN, unsigned int, width, IN, unsigned int, height);
+	I_Method0(void, shutdown);
+	I_Method1(void, setEscapeSetDone, IN, bool, esc);
+	I_Method0(bool, getEscapeSetDone);
+	I_Method1(double, getEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method0(bool, done);
+	I_Method0(float, mx);
+	I_Method0(float, my);
+	I_Method0(unsigned int, mbutton);
+	I_Method1(void, setStartTick, IN, osg::Timer_t, tick);
+	I_Method0(double, getTime);
+	I_Method0(Producer::KeyboardMouse *, getKeyboardMouse);
+	I_Method0(const Producer::KeyboardMouse *, getKeyboardMouse);
+	I_Method0(osgProducer::EventAdapter *, createEventAdapter);
+	I_Property(bool, EscapeSetDone);
+	I_ReadOnlyProperty(Producer::KeyboardMouse *, KeyboardMouse);
+	I_WriteOnlyProperty(osg::Timer_t, StartTick);
+	I_ReadOnlyProperty(double, Time);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::EventAdapter >)
-	Constructor0();
-	Constructor1(IN, osgProducer::EventAdapter *, t);
-	Constructor1(IN, const osg::ref_ptr< osgProducer::EventAdapter > &, rp);
-	Method0(bool, valid);
-	Method0(osgProducer::EventAdapter *, get);
-	Method0(const osgProducer::EventAdapter *, get);
-	Method0(osgProducer::EventAdapter *, take);
-	Method0(osgProducer::EventAdapter *, release);
-	ReadOnlyProperty(osgProducer::EventAdapter *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgProducer::EventAdapter *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgProducer::EventAdapter > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgProducer::EventAdapter *, get);
+	I_Method0(const osgProducer::EventAdapter *, get);
+	I_Method0(osgProducer::EventAdapter *, take);
+	I_Method0(osgProducer::EventAdapter *, release);
+	I_ReadOnlyProperty(osgProducer::EventAdapter *, );
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgProducer::EventAdapter > >);

@@ -14,24 +14,32 @@
 #include <osg/Geometry>
 #include <osgUtil/TangentSpaceGenerator>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
-	BaseType(osg::Referenced);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgUtil::TangentSpaceGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	MethodWithDefaults2(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0);
-	Method0(osg::Vec4Array *, getTangentArray);
-	Method0(const osg::Vec4Array *, getTangentArray);
-	Method1(void, setTangentArray, IN, osg::Vec4Array *, array);
-	Method0(osg::Vec4Array *, getNormalArray);
-	Method0(const osg::Vec4Array *, getNormalArray);
-	Method1(void, setNormalArray, IN, osg::Vec4Array *, array);
-	Method0(osg::Vec4Array *, getBinormalArray);
-	Method0(const osg::Vec4Array *, getBinormalArray);
-	Method1(void, setBinormalArray, IN, osg::Vec4Array *, array);
-	Method0(osg::IndexArray *, getIndices);
-	Property(osg::Vec4Array *, BinormalArray);
-	ReadOnlyProperty(osg::IndexArray *, Indices);
-	Property(osg::Vec4Array *, NormalArray);
-	Property(osg::Vec4Array *, TangentArray);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgUtil::TangentSpaceGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_MethodWithDefaults2(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0);
+	I_Method0(osg::Vec4Array *, getTangentArray);
+	I_Method0(const osg::Vec4Array *, getTangentArray);
+	I_Method1(void, setTangentArray, IN, osg::Vec4Array *, array);
+	I_Method0(osg::Vec4Array *, getNormalArray);
+	I_Method0(const osg::Vec4Array *, getNormalArray);
+	I_Method1(void, setNormalArray, IN, osg::Vec4Array *, array);
+	I_Method0(osg::Vec4Array *, getBinormalArray);
+	I_Method0(const osg::Vec4Array *, getBinormalArray);
+	I_Method1(void, setBinormalArray, IN, osg::Vec4Array *, array);
+	I_Method0(osg::IndexArray *, getIndices);
+	I_Property(osg::Vec4Array *, BinormalArray);
+	I_ReadOnlyProperty(osg::IndexArray *, Indices);
+	I_Property(osg::Vec4Array *, NormalArray);
+	I_Property(osg::Vec4Array *, TangentArray);
 END_REFLECTOR
 

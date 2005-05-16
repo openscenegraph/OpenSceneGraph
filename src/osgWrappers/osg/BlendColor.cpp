@@ -16,37 +16,45 @@
 #include <osg/StateAttribute>
 #include <osg/Vec4>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::BlendColor &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method1(void, setConstantColor, IN, const osg::Vec4 &, color);
-	Method0(osg::Vec4, getConstantColor);
-	Method1(void, apply, IN, osg::State &, state);
-	ReadOnlyProperty(osg::Vec4, ConstantColor);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::BlendColor &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(void, setConstantColor, IN, const osg::Vec4 &, color);
+	I_Method0(osg::Vec4, getConstantColor);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_ReadOnlyProperty(osg::Vec4, ConstantColor);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor::Extensions)
-	BaseType(osg::Referenced);
-	Constructor1(IN, unsigned int, contextID);
-	Constructor1(IN, const osg::BlendColor::Extensions &, rhs);
-	Method1(void, lowestCommonDenominator, IN, const osg::BlendColor::Extensions &, rhs);
-	Method1(void, setupGLExtenions, IN, unsigned int, contextID);
-	Method1(void, setBlendColorSupported, IN, bool, flag);
-	Method0(bool, isBlendColorSupported);
-	Method1(void, setBlendColorProc, IN, void *, ptr);
-	Method4(void, glBlendColor, IN, GLclampf, red, IN, GLclampf, green, IN, GLclampf, blue, IN, GLclampf, alpha);
-	WriteOnlyProperty(void *, BlendColorProc);
-	WriteOnlyProperty(bool, BlendColorSupported);
-	WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::BlendColor::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::BlendColor::Extensions &, rhs);
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setBlendColorSupported, IN, bool, flag);
+	I_Method0(bool, isBlendColorSupported);
+	I_Method1(void, setBlendColorProc, IN, void *, ptr);
+	I_Method4(void, glBlendColor, IN, GLclampf, red, IN, GLclampf, green, IN, GLclampf, blue, IN, GLclampf, alpha);
+	I_WriteOnlyProperty(void *, BlendColorProc);
+	I_WriteOnlyProperty(bool, BlendColorSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

@@ -15,25 +15,33 @@
 #include <osg/Object>
 #include <osgFX/AnisotropicLighting>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgFX::AnisotropicLighting)
-	BaseType(osgFX::Effect);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgFX::AnisotropicLighting &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(const char *, effectName);
-	Method0(const char *, effectDescription);
-	Method0(const char *, effectAuthor);
-	Method0(osg::Image *, getLightingMap);
-	Method0(const osg::Image *, getLightingMap);
-	Method1(void, setLightingMap, IN, osg::Image *, image);
-	Method0(int, getLightNumber);
-	Method1(void, setLightNumber, IN, int, n);
-	Property(int, LightNumber);
-	Property(osg::Image *, LightingMap);
+	I_BaseType(osgFX::Effect);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgFX::AnisotropicLighting &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(const char *, effectName);
+	I_Method0(const char *, effectDescription);
+	I_Method0(const char *, effectAuthor);
+	I_Method0(osg::Image *, getLightingMap);
+	I_Method0(const osg::Image *, getLightingMap);
+	I_Method1(void, setLightingMap, IN, osg::Image *, image);
+	I_Method0(int, getLightNumber);
+	I_Method1(void, setLightNumber, IN, int, n);
+	I_Property(int, LightNumber);
+	I_Property(osg::Image *, LightingMap);
 END_REFLECTOR
 

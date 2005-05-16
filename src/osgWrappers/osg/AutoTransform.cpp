@@ -17,47 +17,55 @@
 #include <osg/Quat>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::AutoTransform::AutoRotateMode)
-	EnumLabel(osg::AutoTransform::NO_ROTATION);
-	EnumLabel(osg::AutoTransform::ROTATE_TO_SCREEN);
-	EnumLabel(osg::AutoTransform::ROTATE_TO_CAMERA);
+	I_EnumLabel(osg::AutoTransform::NO_ROTATION);
+	I_EnumLabel(osg::AutoTransform::ROTATE_TO_SCREEN);
+	I_EnumLabel(osg::AutoTransform::ROTATE_TO_CAMERA);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
-	BaseType(osg::Transform);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::AutoTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(osg::AutoTransform *, asAutoTransform);
-	Method0(const osg::AutoTransform *, asAutoTransform);
-	Method1(void, setPosition, IN, const osg::Vec3 &, pos);
-	Method0(const osg::Vec3 &, getPosition);
-	Method1(void, setRotation, IN, const osg::Quat &, quat);
-	Method0(const osg::Quat &, getRotation);
-	Method1(void, setScale, IN, float, scale);
-	Method1(void, setScale, IN, const osg::Vec3 &, scale);
-	Method0(const osg::Vec3 &, getScale);
-	Method1(void, setPivotPoint, IN, const osg::Vec3 &, pivot);
-	Method0(const osg::Vec3 &, getPivotPoint);
-	Method1(void, setAutoUpdateEyeMovementTolerance, IN, float, tolerance);
-	Method0(float, getAutoUpdateEyeMovementTolerance);
-	Method1(void, setAutoRotateMode, IN, osg::AutoTransform::AutoRotateMode, mode);
-	Method0(osg::AutoTransform::AutoRotateMode, getAutoRotateMode);
-	Method1(void, setAutoScaleToScreen, IN, bool, autoScaleToScreen);
-	Method0(bool, getAutoScaleToScreen);
-	Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	Property(osg::AutoTransform::AutoRotateMode, AutoRotateMode);
-	Property(bool, AutoScaleToScreen);
-	Property(float, AutoUpdateEyeMovementTolerance);
-	Property(const osg::Vec3 &, PivotPoint);
-	Property(const osg::Vec3 &, Position);
-	Property(const osg::Quat &, Rotation);
-	Property(const osg::Vec3 &, Scale);
+	I_BaseType(osg::Transform);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::AutoTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(osg::AutoTransform *, asAutoTransform);
+	I_Method0(const osg::AutoTransform *, asAutoTransform);
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos);
+	I_Method0(const osg::Vec3 &, getPosition);
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method1(void, setScale, IN, float, scale);
+	I_Method1(void, setScale, IN, const osg::Vec3 &, scale);
+	I_Method0(const osg::Vec3 &, getScale);
+	I_Method1(void, setPivotPoint, IN, const osg::Vec3 &, pivot);
+	I_Method0(const osg::Vec3 &, getPivotPoint);
+	I_Method1(void, setAutoUpdateEyeMovementTolerance, IN, float, tolerance);
+	I_Method0(float, getAutoUpdateEyeMovementTolerance);
+	I_Method1(void, setAutoRotateMode, IN, osg::AutoTransform::AutoRotateMode, mode);
+	I_Method0(osg::AutoTransform::AutoRotateMode, getAutoRotateMode);
+	I_Method1(void, setAutoScaleToScreen, IN, bool, autoScaleToScreen);
+	I_Method0(bool, getAutoScaleToScreen);
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Property(osg::AutoTransform::AutoRotateMode, AutoRotateMode);
+	I_Property(bool, AutoScaleToScreen);
+	I_Property(float, AutoUpdateEyeMovementTolerance);
+	I_Property(const osg::Vec3 &, PivotPoint);
+	I_Property(const osg::Vec3 &, Position);
+	I_Property(const osg::Quat &, Rotation);
+	I_Property(const osg::Vec3 &, Scale);
 END_REFLECTOR
 

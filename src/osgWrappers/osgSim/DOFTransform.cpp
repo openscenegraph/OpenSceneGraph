@@ -16,82 +16,90 @@
 #include <osg/Vec3>
 #include <osgSim/DOFTransform>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osgSim::DOFTransform::MultOrder)
-	EnumLabel(osgSim::DOFTransform::PRH);
-	EnumLabel(osgSim::DOFTransform::PHR);
-	EnumLabel(osgSim::DOFTransform::HPR);
-	EnumLabel(osgSim::DOFTransform::HRP);
-	EnumLabel(osgSim::DOFTransform::RPH);
-	EnumLabel(osgSim::DOFTransform::RHP);
+	I_EnumLabel(osgSim::DOFTransform::PRH);
+	I_EnumLabel(osgSim::DOFTransform::PHR);
+	I_EnumLabel(osgSim::DOFTransform::HPR);
+	I_EnumLabel(osgSim::DOFTransform::HRP);
+	I_EnumLabel(osgSim::DOFTransform::RPH);
+	I_EnumLabel(osgSim::DOFTransform::RHP);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DOFTransform)
-	BaseType(osg::Transform);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::DOFTransform &, dof, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	Method1(void, setMinHPR, IN, const osg::Vec3 &, hpr);
-	Method0(const osg::Vec3 &, getMinHPR);
-	Method1(void, setMaxHPR, IN, const osg::Vec3 &, hpr);
-	Method0(const osg::Vec3 &, getMaxHPR);
-	Method1(void, setIncrementHPR, IN, const osg::Vec3 &, hpr);
-	Method0(const osg::Vec3 &, getIncrementHPR);
-	Method1(void, setCurrentHPR, IN, const osg::Vec3 &, hpr);
-	Method0(const osg::Vec3 &, getCurrentHPR);
-	Method1(void, updateCurrentHPR, IN, const osg::Vec3 &, hpr);
-	Method1(void, setMinTranslate, IN, const osg::Vec3 &, translate);
-	Method0(const osg::Vec3 &, getMinTranslate);
-	Method1(void, setMaxTranslate, IN, const osg::Vec3 &, translate);
-	Method0(const osg::Vec3 &, getMaxTranslate);
-	Method1(void, setIncrementTranslate, IN, const osg::Vec3 &, translate);
-	Method0(const osg::Vec3 &, getIncrementTranslate);
-	Method1(void, setCurrentTranslate, IN, const osg::Vec3 &, translate);
-	Method0(const osg::Vec3 &, getCurrentTranslate);
-	Method1(void, updateCurrentTranslate, IN, const osg::Vec3 &, translate);
-	Method1(void, setMinScale, IN, const osg::Vec3 &, scale);
-	Method0(const osg::Vec3 &, getMinScale);
-	Method1(void, setMaxScale, IN, const osg::Vec3 &, scale);
-	Method0(const osg::Vec3 &, getMaxScale);
-	Method1(void, setIncrementScale, IN, const osg::Vec3 &, scale);
-	Method0(const osg::Vec3 &, getIncrementScale);
-	Method1(void, setCurrentScale, IN, const osg::Vec3 &, scale);
-	Method0(const osg::Vec3 &, getCurrentScale);
-	Method1(void, updateCurrentScale, IN, const osg::Vec3 &, scale);
-	Method1(void, setPutMatrix, IN, const osg::Matrix &, put);
-	Method0(const osg::Matrix &, getPutMatrix);
-	Method1(void, setInversePutMatrix, IN, const osg::Matrix &, inversePut);
-	Method0(const osg::Matrix &, getInversePutMatrix);
-	Method1(void, setLimitationFlags, IN, unsigned long, flags);
-	Method0(unsigned long, getLimitationFlags);
-	Method1(void, setHPRMultOrder, IN, const osgSim::DOFTransform::MultOrder, order);
-	Method0(const osgSim::DOFTransform::MultOrder, getHPRMultOrder);
-	Method1(void, setAnimationOn, IN, bool, do_animate);
-	Method0(bool, getAnimationOn);
-	Method1(void, animate, IN, float, deltaTime);
-	Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	Property(bool, AnimationOn);
-	Property(const osg::Vec3 &, CurrentHPR);
-	Property(const osg::Vec3 &, CurrentScale);
-	Property(const osg::Vec3 &, CurrentTranslate);
-	Property(const osgSim::DOFTransform::MultOrder, HPRMultOrder);
-	Property(const osg::Vec3 &, IncrementHPR);
-	Property(const osg::Vec3 &, IncrementScale);
-	Property(const osg::Vec3 &, IncrementTranslate);
-	Property(const osg::Matrix &, InversePutMatrix);
-	Property(unsigned long, LimitationFlags);
-	Property(const osg::Vec3 &, MaxHPR);
-	Property(const osg::Vec3 &, MaxScale);
-	Property(const osg::Vec3 &, MaxTranslate);
-	Property(const osg::Vec3 &, MinHPR);
-	Property(const osg::Vec3 &, MinScale);
-	Property(const osg::Vec3 &, MinTranslate);
-	Property(const osg::Matrix &, PutMatrix);
+	I_BaseType(osg::Transform);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::DOFTransform &, dof, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setMinHPR, IN, const osg::Vec3 &, hpr);
+	I_Method0(const osg::Vec3 &, getMinHPR);
+	I_Method1(void, setMaxHPR, IN, const osg::Vec3 &, hpr);
+	I_Method0(const osg::Vec3 &, getMaxHPR);
+	I_Method1(void, setIncrementHPR, IN, const osg::Vec3 &, hpr);
+	I_Method0(const osg::Vec3 &, getIncrementHPR);
+	I_Method1(void, setCurrentHPR, IN, const osg::Vec3 &, hpr);
+	I_Method0(const osg::Vec3 &, getCurrentHPR);
+	I_Method1(void, updateCurrentHPR, IN, const osg::Vec3 &, hpr);
+	I_Method1(void, setMinTranslate, IN, const osg::Vec3 &, translate);
+	I_Method0(const osg::Vec3 &, getMinTranslate);
+	I_Method1(void, setMaxTranslate, IN, const osg::Vec3 &, translate);
+	I_Method0(const osg::Vec3 &, getMaxTranslate);
+	I_Method1(void, setIncrementTranslate, IN, const osg::Vec3 &, translate);
+	I_Method0(const osg::Vec3 &, getIncrementTranslate);
+	I_Method1(void, setCurrentTranslate, IN, const osg::Vec3 &, translate);
+	I_Method0(const osg::Vec3 &, getCurrentTranslate);
+	I_Method1(void, updateCurrentTranslate, IN, const osg::Vec3 &, translate);
+	I_Method1(void, setMinScale, IN, const osg::Vec3 &, scale);
+	I_Method0(const osg::Vec3 &, getMinScale);
+	I_Method1(void, setMaxScale, IN, const osg::Vec3 &, scale);
+	I_Method0(const osg::Vec3 &, getMaxScale);
+	I_Method1(void, setIncrementScale, IN, const osg::Vec3 &, scale);
+	I_Method0(const osg::Vec3 &, getIncrementScale);
+	I_Method1(void, setCurrentScale, IN, const osg::Vec3 &, scale);
+	I_Method0(const osg::Vec3 &, getCurrentScale);
+	I_Method1(void, updateCurrentScale, IN, const osg::Vec3 &, scale);
+	I_Method1(void, setPutMatrix, IN, const osg::Matrix &, put);
+	I_Method0(const osg::Matrix &, getPutMatrix);
+	I_Method1(void, setInversePutMatrix, IN, const osg::Matrix &, inversePut);
+	I_Method0(const osg::Matrix &, getInversePutMatrix);
+	I_Method1(void, setLimitationFlags, IN, unsigned long, flags);
+	I_Method0(unsigned long, getLimitationFlags);
+	I_Method1(void, setHPRMultOrder, IN, const osgSim::DOFTransform::MultOrder, order);
+	I_Method0(const osgSim::DOFTransform::MultOrder, getHPRMultOrder);
+	I_Method1(void, setAnimationOn, IN, bool, do_animate);
+	I_Method0(bool, getAnimationOn);
+	I_Method1(void, animate, IN, float, deltaTime);
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Property(bool, AnimationOn);
+	I_Property(const osg::Vec3 &, CurrentHPR);
+	I_Property(const osg::Vec3 &, CurrentScale);
+	I_Property(const osg::Vec3 &, CurrentTranslate);
+	I_Property(const osgSim::DOFTransform::MultOrder, HPRMultOrder);
+	I_Property(const osg::Vec3 &, IncrementHPR);
+	I_Property(const osg::Vec3 &, IncrementScale);
+	I_Property(const osg::Vec3 &, IncrementTranslate);
+	I_Property(const osg::Matrix &, InversePutMatrix);
+	I_Property(unsigned long, LimitationFlags);
+	I_Property(const osg::Vec3 &, MaxHPR);
+	I_Property(const osg::Vec3 &, MaxScale);
+	I_Property(const osg::Vec3 &, MaxTranslate);
+	I_Property(const osg::Vec3 &, MinHPR);
+	I_Property(const osg::Vec3 &, MinScale);
+	I_Property(const osg::Vec3 &, MinTranslate);
+	I_Property(const osg::Matrix &, PutMatrix);
 END_REFLECTOR
 

@@ -33,91 +33,99 @@
 #include <osg/Transform>
 #include <osg/Vec3>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osg::NodeAcceptOp)
-	Constructor1(IN, osg::NodeVisitor &, nv);
+	I_Constructor1(IN, osg::NodeVisitor &, nv);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::TraversalMode)
-	EnumLabel(osg::NodeVisitor::TRAVERSE_NONE);
-	EnumLabel(osg::NodeVisitor::TRAVERSE_PARENTS);
-	EnumLabel(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-	EnumLabel(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+	I_EnumLabel(osg::NodeVisitor::TRAVERSE_NONE);
+	I_EnumLabel(osg::NodeVisitor::TRAVERSE_PARENTS);
+	I_EnumLabel(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+	I_EnumLabel(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::VisitorType)
-	EnumLabel(osg::NodeVisitor::NODE_VISITOR);
-	EnumLabel(osg::NodeVisitor::UPDATE_VISITOR);
-	EnumLabel(osg::NodeVisitor::EVENT_VISITOR);
-	EnumLabel(osg::NodeVisitor::COLLECT_OCCLUDER_VISITOR);
-	EnumLabel(osg::NodeVisitor::CULL_VISITOR);
+	I_EnumLabel(osg::NodeVisitor::NODE_VISITOR);
+	I_EnumLabel(osg::NodeVisitor::UPDATE_VISITOR);
+	I_EnumLabel(osg::NodeVisitor::EVENT_VISITOR);
+	I_EnumLabel(osg::NodeVisitor::COLLECT_OCCLUDER_VISITOR);
+	I_EnumLabel(osg::NodeVisitor::CULL_VISITOR);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::NodeVisitor)
-	VirtualBaseType(osg::Referenced);
-	ConstructorWithDefaults1(IN, osg::NodeVisitor::TraversalMode, tm, osg::NodeVisitor::TRAVERSE_NONE);
-	ConstructorWithDefaults2(IN, osg::NodeVisitor::VisitorType, type, , IN, osg::NodeVisitor::TraversalMode, tm, osg::NodeVisitor::TRAVERSE_NONE);
-	Method0(void, reset);
-	Method1(void, setVisitorType, IN, osg::NodeVisitor::VisitorType, type);
-	Method0(osg::NodeVisitor::VisitorType, getVisitorType);
-	Method1(void, setTraversalNumber, IN, int, fn);
-	Method0(int, getTraversalNumber);
-	Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
-	Method0(const osg::FrameStamp *, getFrameStamp);
-	Method1(void, setTraversalMask, IN, osg::Node::NodeMask, mask);
-	Method0(osg::Node::NodeMask, getTraversalMask);
-	Method1(void, setNodeMaskOverride, IN, osg::Node::NodeMask, mask);
-	Method0(osg::Node::NodeMask, getNodeMaskOverride);
-	Method1(bool, validNodeMask, IN, const osg::Node &, node);
-	Method1(void, setTraversalMode, IN, osg::NodeVisitor::TraversalMode, mode);
-	Method0(osg::NodeVisitor::TraversalMode, getTraversalMode);
-	Method1(void, setUserData, IN, osg::Referenced *, obj);
-	Method0(osg::Referenced *, getUserData);
-	Method0(const osg::Referenced *, getUserData);
-	Method1(void, traverse, IN, osg::Node &, node);
-	Method1(void, pushOntoNodePath, IN, osg::Node *, node);
-	Method0(void, popFromNodePath);
-	Method0(osg::NodePath &, getNodePath);
-	Method0(const osg::NodePath &, getNodePath);
-	Method0(osg::Vec3, getEyePoint);
-	Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, x, IN, bool, x);
-	Method2(float, getDistanceFromEyePoint, IN, const osg::Vec3 &, x, IN, bool, x);
-	Method1(void, apply, IN, osg::Node &, node);
-	Method1(void, apply, IN, osg::Geode &, node);
-	Method1(void, apply, IN, osg::Billboard &, node);
-	Method1(void, apply, IN, osg::Group &, node);
-	Method1(void, apply, IN, osg::ProxyNode &, node);
-	Method1(void, apply, IN, osg::Projection &, node);
-	Method1(void, apply, IN, osg::CoordinateSystemNode &, node);
-	Method1(void, apply, IN, osg::ClipNode &, node);
-	Method1(void, apply, IN, osg::TexGenNode &, node);
-	Method1(void, apply, IN, osg::LightSource &, node);
-	Method1(void, apply, IN, osg::Transform &, node);
-	Method1(void, apply, IN, osg::MatrixTransform &, node);
-	Method1(void, apply, IN, osg::PositionAttitudeTransform &, node);
-	Method1(void, apply, IN, osg::Switch &, node);
-	Method1(void, apply, IN, osg::Sequence &, node);
-	Method1(void, apply, IN, osg::LOD &, node);
-	Method1(void, apply, IN, osg::PagedLOD &, node);
-	Method1(void, apply, IN, osg::ClearNode &, node);
-	Method1(void, apply, IN, osg::OccluderNode &, node);
-	Method1(void, setDatabaseRequestHandler, IN, osg::NodeVisitor::DatabaseRequestHandler *, handler);
-	Method0(osg::NodeVisitor::DatabaseRequestHandler *, getDatabaseRequestHandler);
-	Method0(const osg::NodeVisitor::DatabaseRequestHandler *, getDatabaseRequestHandler);
-	Property(osg::NodeVisitor::DatabaseRequestHandler *, DatabaseRequestHandler);
-	ReadOnlyProperty(osg::Vec3, EyePoint);
-	WriteOnlyProperty(osg::FrameStamp *, FrameStamp);
-	Property(osg::Node::NodeMask, NodeMaskOverride);
-	ReadOnlyProperty(osg::NodePath &, NodePath);
-	Property(osg::Node::NodeMask, TraversalMask);
-	Property(osg::NodeVisitor::TraversalMode, TraversalMode);
-	Property(int, TraversalNumber);
-	Property(osg::Referenced *, UserData);
-	Property(osg::NodeVisitor::VisitorType, VisitorType);
+BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
+	I_VirtualBaseType(osg::Referenced);
+	I_ConstructorWithDefaults1(IN, osg::NodeVisitor::TraversalMode, tm, osg::NodeVisitor::TRAVERSE_NONE);
+	I_ConstructorWithDefaults2(IN, osg::NodeVisitor::VisitorType, type, , IN, osg::NodeVisitor::TraversalMode, tm, osg::NodeVisitor::TRAVERSE_NONE);
+	I_Method0(void, reset);
+	I_Method1(void, setVisitorType, IN, osg::NodeVisitor::VisitorType, type);
+	I_Method0(osg::NodeVisitor::VisitorType, getVisitorType);
+	I_Method1(void, setTraversalNumber, IN, int, fn);
+	I_Method0(int, getTraversalNumber);
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
+	I_Method0(const osg::FrameStamp *, getFrameStamp);
+	I_Method1(void, setTraversalMask, IN, osg::Node::NodeMask, mask);
+	I_Method0(osg::Node::NodeMask, getTraversalMask);
+	I_Method1(void, setNodeMaskOverride, IN, osg::Node::NodeMask, mask);
+	I_Method0(osg::Node::NodeMask, getNodeMaskOverride);
+	I_Method1(bool, validNodeMask, IN, const osg::Node &, node);
+	I_Method1(void, setTraversalMode, IN, osg::NodeVisitor::TraversalMode, mode);
+	I_Method0(osg::NodeVisitor::TraversalMode, getTraversalMode);
+	I_Method1(void, setUserData, IN, osg::Referenced *, obj);
+	I_Method0(osg::Referenced *, getUserData);
+	I_Method0(const osg::Referenced *, getUserData);
+	I_Method1(void, traverse, IN, osg::Node &, node);
+	I_Method1(void, pushOntoNodePath, IN, osg::Node *, node);
+	I_Method0(void, popFromNodePath);
+	I_Method0(osg::NodePath &, getNodePath);
+	I_Method0(const osg::NodePath &, getNodePath);
+	I_Method0(osg::Vec3, getEyePoint);
+	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, x, IN, bool, x);
+	I_Method2(float, getDistanceFromEyePoint, IN, const osg::Vec3 &, x, IN, bool, x);
+	I_Method1(void, apply, IN, osg::Node &, node);
+	I_Method1(void, apply, IN, osg::Geode &, node);
+	I_Method1(void, apply, IN, osg::Billboard &, node);
+	I_Method1(void, apply, IN, osg::Group &, node);
+	I_Method1(void, apply, IN, osg::ProxyNode &, node);
+	I_Method1(void, apply, IN, osg::Projection &, node);
+	I_Method1(void, apply, IN, osg::CoordinateSystemNode &, node);
+	I_Method1(void, apply, IN, osg::ClipNode &, node);
+	I_Method1(void, apply, IN, osg::TexGenNode &, node);
+	I_Method1(void, apply, IN, osg::LightSource &, node);
+	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::MatrixTransform &, node);
+	I_Method1(void, apply, IN, osg::PositionAttitudeTransform &, node);
+	I_Method1(void, apply, IN, osg::Switch &, node);
+	I_Method1(void, apply, IN, osg::Sequence &, node);
+	I_Method1(void, apply, IN, osg::LOD &, node);
+	I_Method1(void, apply, IN, osg::PagedLOD &, node);
+	I_Method1(void, apply, IN, osg::ClearNode &, node);
+	I_Method1(void, apply, IN, osg::OccluderNode &, node);
+	I_Method1(void, setDatabaseRequestHandler, IN, osg::NodeVisitor::DatabaseRequestHandler *, handler);
+	I_Method0(osg::NodeVisitor::DatabaseRequestHandler *, getDatabaseRequestHandler);
+	I_Method0(const osg::NodeVisitor::DatabaseRequestHandler *, getDatabaseRequestHandler);
+	I_Property(osg::NodeVisitor::DatabaseRequestHandler *, DatabaseRequestHandler);
+	I_ReadOnlyProperty(osg::Vec3, EyePoint);
+	I_WriteOnlyProperty(osg::FrameStamp *, FrameStamp);
+	I_Property(osg::Node::NodeMask, NodeMaskOverride);
+	I_ReadOnlyProperty(osg::NodePath &, NodePath);
+	I_Property(osg::Node::NodeMask, TraversalMask);
+	I_Property(osg::NodeVisitor::TraversalMode, TraversalMode);
+	I_Property(int, TraversalNumber);
+	I_Property(osg::Referenced *, UserData);
+	I_Property(osg::NodeVisitor::VisitorType, VisitorType);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor::DatabaseRequestHandler)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp);
 END_REFLECTOR
 

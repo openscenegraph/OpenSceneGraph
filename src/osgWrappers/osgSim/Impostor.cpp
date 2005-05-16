@@ -17,41 +17,49 @@
 #include <osgSim/Impostor>
 #include <osgSim/ImpostorSprite>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >, osgSim::Impostor::ImpostorSpriteList);
 
 BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
-	BaseType(osg::LOD);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::Impostor &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	Method1(void, setImpostorThreshold, IN, float, distance);
-	Method0(float, getImpostorThreshold);
-	MethodWithDefaults1(void, setImpostorThresholdToBound, IN, float, ratio, 1.0f);
-	Method2(osgSim::ImpostorSprite *, findBestImpostorSprite, IN, unsigned int, contextID, IN, const osg::Vec3 &, currLocalEyePoint);
-	Method2(void, addImpostorSprite, IN, unsigned int, contextID, IN, osgSim::ImpostorSprite *, is);
-	Method1(osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID);
-	Method1(const osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID);
-	Method0(osg::BoundingSphere, computeBound);
-	Property(float, ImpostorThreshold);
-	WriteOnlyProperty(float, ImpostorThresholdToBound);
+	I_BaseType(osg::LOD);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::Impostor &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setImpostorThreshold, IN, float, distance);
+	I_Method0(float, getImpostorThreshold);
+	I_MethodWithDefaults1(void, setImpostorThresholdToBound, IN, float, ratio, 1.0f);
+	I_Method2(osgSim::ImpostorSprite *, findBestImpostorSprite, IN, unsigned int, contextID, IN, const osg::Vec3 &, currLocalEyePoint);
+	I_Method2(void, addImpostorSprite, IN, unsigned int, contextID, IN, osgSim::ImpostorSprite *, is);
+	I_Method1(osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID);
+	I_Method1(const osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID);
+	I_Method0(osg::BoundingSphere, computeBound);
+	I_Property(float, ImpostorThreshold);
+	I_WriteOnlyProperty(float, ImpostorThresholdToBound);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgSim::ImpostorSprite >)
-	Constructor0();
-	Constructor1(IN, osgSim::ImpostorSprite *, t);
-	Constructor1(IN, const osg::ref_ptr< osgSim::ImpostorSprite > &, rp);
-	Method0(bool, valid);
-	Method0(osgSim::ImpostorSprite *, get);
-	Method0(const osgSim::ImpostorSprite *, get);
-	Method0(osgSim::ImpostorSprite *, take);
-	Method0(osgSim::ImpostorSprite *, release);
-	ReadOnlyProperty(osgSim::ImpostorSprite *, );
+	I_Constructor0();
+	I_Constructor1(IN, osgSim::ImpostorSprite *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgSim::ImpostorSprite > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgSim::ImpostorSprite *, get);
+	I_Method0(const osgSim::ImpostorSprite *, get);
+	I_Method0(osgSim::ImpostorSprite *, take);
+	I_Method0(osgSim::ImpostorSprite *, release);
+	I_ReadOnlyProperty(osgSim::ImpostorSprite *, );
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >);

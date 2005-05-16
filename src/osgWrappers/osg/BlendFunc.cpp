@@ -15,45 +15,53 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
-	EnumLabel(osg::BlendFunc::DST_ALPHA);
-	EnumLabel(osg::BlendFunc::DST_COLOR);
-	EnumLabel(osg::BlendFunc::ONE);
-	EnumLabel(osg::BlendFunc::ONE_MINUS_DST_ALPHA);
-	EnumLabel(osg::BlendFunc::ONE_MINUS_DST_COLOR);
-	EnumLabel(osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
-	EnumLabel(osg::BlendFunc::ONE_MINUS_SRC_COLOR);
-	EnumLabel(osg::BlendFunc::SRC_ALPHA);
-	EnumLabel(osg::BlendFunc::SRC_ALPHA_SATURATE);
-	EnumLabel(osg::BlendFunc::SRC_COLOR);
-	EnumLabel(osg::BlendFunc::CONSTANT_COLOR);
-	EnumLabel(osg::BlendFunc::ONE_MINUS_CONSTANT_COLOR);
-	EnumLabel(osg::BlendFunc::CONSTANT_ALPHA);
-	EnumLabel(osg::BlendFunc::ONE_MINUS_CONSTANT_ALPHA);
-	EnumLabel(osg::BlendFunc::ZERO);
+	I_EnumLabel(osg::BlendFunc::DST_ALPHA);
+	I_EnumLabel(osg::BlendFunc::DST_COLOR);
+	I_EnumLabel(osg::BlendFunc::ONE);
+	I_EnumLabel(osg::BlendFunc::ONE_MINUS_DST_ALPHA);
+	I_EnumLabel(osg::BlendFunc::ONE_MINUS_DST_COLOR);
+	I_EnumLabel(osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+	I_EnumLabel(osg::BlendFunc::ONE_MINUS_SRC_COLOR);
+	I_EnumLabel(osg::BlendFunc::SRC_ALPHA);
+	I_EnumLabel(osg::BlendFunc::SRC_ALPHA_SATURATE);
+	I_EnumLabel(osg::BlendFunc::SRC_COLOR);
+	I_EnumLabel(osg::BlendFunc::CONSTANT_COLOR);
+	I_EnumLabel(osg::BlendFunc::ONE_MINUS_CONSTANT_COLOR);
+	I_EnumLabel(osg::BlendFunc::CONSTANT_ALPHA);
+	I_EnumLabel(osg::BlendFunc::ONE_MINUS_CONSTANT_ALPHA);
+	I_EnumLabel(osg::BlendFunc::ZERO);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	Constructor2(IN, GLenum, source, IN, GLenum, destination);
-	ConstructorWithDefaults2(IN, const osg::BlendFunc &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method2(void, setFunction, IN, GLenum, source, IN, GLenum, destination);
-	Method1(void, setSource, IN, GLenum, source);
-	Method0(GLenum, getSource);
-	Method1(void, setDestination, IN, GLenum, destination);
-	Method0(GLenum, getDestination);
-	Method1(void, apply, IN, osg::State &, state);
-	Property(GLenum, Destination);
-	Property(GLenum, Source);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_Constructor2(IN, GLenum, source, IN, GLenum, destination);
+	I_ConstructorWithDefaults2(IN, const osg::BlendFunc &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method2(void, setFunction, IN, GLenum, source, IN, GLenum, destination);
+	I_Method1(void, setSource, IN, GLenum, source);
+	I_Method0(GLenum, getSource);
+	I_Method1(void, setDestination, IN, GLenum, destination);
+	I_Method0(GLenum, getDestination);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(GLenum, Destination);
+	I_Property(GLenum, Source);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

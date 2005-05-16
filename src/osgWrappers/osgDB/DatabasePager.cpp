@@ -17,15 +17,25 @@
 #include <osg/StateSet>
 #include <osgDB/DatabasePager>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgDB::Block)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method0(void, block);
-	Method0(void, release);
-	Method0(void, reset);
-	Method1(void, set, IN, bool, doRelease);
-	WriteOnlyProperty(bool, );
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method0(void, block);
+	I_Method0(void, release);
+	I_Method0(void, reset);
+	I_Method1(void, set, IN, bool, doRelease);
+	I_WriteOnlyProperty(bool, );
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(OpenThreads::Thread::ThreadPriority, osgDB::DatabasePager::ThreadPriority);
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::PagedLOD > >, osgDB::DatabasePager::PagedLODList);
 
@@ -40,83 +50,83 @@ TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompil
 TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts);
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
-	BaseType(osg::NodeVisitor::DatabaseRequestHandler);
-	Constructor0();
-	Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp);
-	Method0(void, run);
-	Method0(int, cancel);
-	Method0(void, clear);
-	Method1(void, setDatabasePagerThreadPause, IN, bool, pause);
-	Method0(bool, getDatabasePagerThreadPause);
-	Method1(void, setAcceptNewDatabaseRequests, IN, bool, acceptNewRequests);
-	Method0(bool, getAcceptNewDatabaseRequests);
-	Method1(void, setUseFrameBlock, IN, bool, useFrameBlock);
-	Method0(bool, getUseFrameBlock);
-	Method0(osgDB::Block *, getFrameBlock);
-	Method1(void, setThreadPriorityDuringFrame, IN, ThreadPriority, duringFrame);
-	Method0(ThreadPriority, getThreadPriorityDuringFrame);
-	Method1(void, setThreadPriorityOutwithFrame, IN, ThreadPriority, outwithFrame);
-	Method0(ThreadPriority, getThreadPriorityOutwithFrame);
-	Method0(int, getNumFramesActive);
-	Method1(void, signalBeginFrame, IN, const osg::FrameStamp *, framestamp);
-	Method0(void, signalEndFrame);
-	Method1(void, registerPagedLODs, IN, osg::Node *, subgraph);
-	Method1(void, setTargetFrameRate, IN, double, tfr);
-	Method0(double, getTargetFrameRate);
-	Method1(void, setMinimumTimeAvailableForGLCompileAndDeletePerFrame, IN, double, ta);
-	Method0(double, getMinimumTimeAvailableForGLCompileAndDeletePerFrame);
-	Method1(void, setMaximumNumOfObjectsToCompilePerFrame, IN, unsigned int, num);
-	Method0(unsigned int, getMaximumNumOfObjectsToCompilePerFrame);
-	Method1(void, setExpiryDelay, IN, double, expiryDelay);
-	Method0(double, getExpiryDelay);
-	Method1(void, setDeleteRemovedSubgraphsInDatabaseThread, IN, bool, flag);
-	Method0(bool, getDeleteRemovedSubgraphsInDatabaseThread);
-	Method2(void, setUnrefImageDataAfterApplyPolicy, IN, bool, changeAutoUnRef, IN, bool, valueAutoUnRef);
-	Method2(void, getUnrefImageDataAfterApplyPolicy, IN, bool &, changeAutoUnRef, IN, bool &, valueAutoUnRef);
-	Method2(void, setMaxAnisotropyPolicy, IN, bool, changeAnisotropy, IN, float, valueAnisotropy);
-	Method2(void, getMaxAnisotropyPolicy, IN, bool &, changeAnisotropy, IN, float &, valueAnisotropy);
-	Method0(bool, requiresUpdateSceneGraph);
-	Method1(void, updateSceneGraph, IN, double, currentFrameTime);
-	Method2(void, setCompileGLObjectsForContextID, IN, unsigned int, contextID, IN, bool, on);
-	Method1(bool, getCompileGLObjectsForContextID, IN, unsigned int, contextID);
-	Method0(bool, requiresCompileGLObjects);
-	Method2(void, compileGLObjects, IN, osg::State &, state, IN, double &, availableTime);
-	Property(bool, AcceptNewDatabaseRequests);
-	IndexedProperty1(bool, CompileGLObjectsForContextID, unsigned int, contextID);
-	Property(bool, DatabasePagerThreadPause);
-	Property(bool, DeleteRemovedSubgraphsInDatabaseThread);
-	Property(double, ExpiryDelay);
-	ReadOnlyProperty(osgDB::Block *, FrameBlock);
-	Property(unsigned int, MaximumNumOfObjectsToCompilePerFrame);
-	Property(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame);
-	Property(double, TargetFrameRate);
-	Property(ThreadPriority, ThreadPriorityDuringFrame);
-	Property(ThreadPriority, ThreadPriorityOutwithFrame);
-	Property(bool, UseFrameBlock);
+	I_BaseType(osg::NodeVisitor::DatabaseRequestHandler);
+	I_Constructor0();
+	I_Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp);
+	I_Method0(void, run);
+	I_Method0(int, cancel);
+	I_Method0(void, clear);
+	I_Method1(void, setDatabasePagerThreadPause, IN, bool, pause);
+	I_Method0(bool, getDatabasePagerThreadPause);
+	I_Method1(void, setAcceptNewDatabaseRequests, IN, bool, acceptNewRequests);
+	I_Method0(bool, getAcceptNewDatabaseRequests);
+	I_Method1(void, setUseFrameBlock, IN, bool, useFrameBlock);
+	I_Method0(bool, getUseFrameBlock);
+	I_Method0(osgDB::Block *, getFrameBlock);
+	I_Method1(void, setThreadPriorityDuringFrame, IN, osgDB::DatabasePager::ThreadPriority, duringFrame);
+	I_Method0(osgDB::DatabasePager::ThreadPriority, getThreadPriorityDuringFrame);
+	I_Method1(void, setThreadPriorityOutwithFrame, IN, osgDB::DatabasePager::ThreadPriority, outwithFrame);
+	I_Method0(osgDB::DatabasePager::ThreadPriority, getThreadPriorityOutwithFrame);
+	I_Method0(int, getNumFramesActive);
+	I_Method1(void, signalBeginFrame, IN, const osg::FrameStamp *, framestamp);
+	I_Method0(void, signalEndFrame);
+	I_Method1(void, registerPagedLODs, IN, osg::Node *, subgraph);
+	I_Method1(void, setTargetFrameRate, IN, double, tfr);
+	I_Method0(double, getTargetFrameRate);
+	I_Method1(void, setMinimumTimeAvailableForGLCompileAndDeletePerFrame, IN, double, ta);
+	I_Method0(double, getMinimumTimeAvailableForGLCompileAndDeletePerFrame);
+	I_Method1(void, setMaximumNumOfObjectsToCompilePerFrame, IN, unsigned int, num);
+	I_Method0(unsigned int, getMaximumNumOfObjectsToCompilePerFrame);
+	I_Method1(void, setExpiryDelay, IN, double, expiryDelay);
+	I_Method0(double, getExpiryDelay);
+	I_Method1(void, setDeleteRemovedSubgraphsInDatabaseThread, IN, bool, flag);
+	I_Method0(bool, getDeleteRemovedSubgraphsInDatabaseThread);
+	I_Method2(void, setUnrefImageDataAfterApplyPolicy, IN, bool, changeAutoUnRef, IN, bool, valueAutoUnRef);
+	I_Method2(void, getUnrefImageDataAfterApplyPolicy, IN, bool &, changeAutoUnRef, IN, bool &, valueAutoUnRef);
+	I_Method2(void, setMaxAnisotropyPolicy, IN, bool, changeAnisotropy, IN, float, valueAnisotropy);
+	I_Method2(void, getMaxAnisotropyPolicy, IN, bool &, changeAnisotropy, IN, float &, valueAnisotropy);
+	I_Method0(bool, requiresUpdateSceneGraph);
+	I_Method1(void, updateSceneGraph, IN, double, currentFrameTime);
+	I_Method2(void, setCompileGLObjectsForContextID, IN, unsigned int, contextID, IN, bool, on);
+	I_Method1(bool, getCompileGLObjectsForContextID, IN, unsigned int, contextID);
+	I_Method0(bool, requiresCompileGLObjects);
+	I_Method2(void, compileGLObjects, IN, osg::State &, state, IN, double &, availableTime);
+	I_Property(bool, AcceptNewDatabaseRequests);
+	I_IndexedProperty1(bool, CompileGLObjectsForContextID, unsigned int, contextID);
+	I_Property(bool, DatabasePagerThreadPause);
+	I_Property(bool, DeleteRemovedSubgraphsInDatabaseThread);
+	I_Property(double, ExpiryDelay);
+	I_ReadOnlyProperty(osgDB::Block *, FrameBlock);
+	I_Property(unsigned int, MaximumNumOfObjectsToCompilePerFrame);
+	I_Property(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame);
+	I_Property(double, TargetFrameRate);
+	I_Property(osgDB::DatabasePager::ThreadPriority, ThreadPriorityDuringFrame);
+	I_Property(osgDB::DatabasePager::ThreadPriority, ThreadPriorityOutwithFrame);
+	I_Property(bool, UseFrameBlock);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
-	Constructor0();
-	Constructor1(IN, osg::PagedLOD *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp);
-	Method0(bool, valid);
-	Method0(osg::PagedLOD *, get);
-	Method0(const osg::PagedLOD *, get);
-	Method0(osg::PagedLOD *, take);
-	Method0(osg::PagedLOD *, release);
-	ReadOnlyProperty(osg::PagedLOD *, );
+	I_Constructor0();
+	I_Constructor1(IN, osg::PagedLOD *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::PagedLOD *, get);
+	I_Method0(const osg::PagedLOD *, get);
+	I_Method0(osg::PagedLOD *, take);
+	I_Method0(osg::PagedLOD *, release);
+	I_ReadOnlyProperty(osg::PagedLOD *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
-	Constructor0();
-	Constructor1(IN, osg::StateSet *, t);
-	Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp);
-	Method0(bool, valid);
-	Method0(osg::StateSet *, get);
-	Method0(const osg::StateSet *, get);
-	Method0(osg::StateSet *, take);
-	Method0(osg::StateSet *, release);
-	ReadOnlyProperty(osg::StateSet *, );
+	I_Constructor0();
+	I_Constructor1(IN, osg::StateSet *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::StateSet *, get);
+	I_Method0(const osg::StateSet *, get);
+	I_Method0(osg::StateSet *, take);
+	I_Method0(osg::StateSet *, release);
+	I_ReadOnlyProperty(osg::StateSet *, );
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::PagedLOD > >);

@@ -14,11 +14,19 @@
 #include <osg/State>
 #include <osgUtil/RenderLeaf>
 
-BEGIN_VALUE_REFLECTOR(osgUtil::RenderLeaf)
-	BaseType(osg::Referenced);
-	ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f);
-	MethodWithDefaults4(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f);
-	Method0(void, reset);
-	Method2(void, render, IN, osg::State &, state, IN, osgUtil::RenderLeaf *, previous);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
+	I_BaseType(osg::Referenced);
+	I_ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f);
+	I_MethodWithDefaults4(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f);
+	I_Method0(void, reset);
+	I_Method2(void, render, IN, osg::State &, state, IN, osgUtil::RenderLeaf *, previous);
 END_REFLECTOR
 

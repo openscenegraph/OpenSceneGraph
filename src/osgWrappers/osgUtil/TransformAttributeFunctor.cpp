@@ -14,9 +14,17 @@
 #include <osg/Vec3>
 #include <osgUtil/TransformAttributeFunctor>
 
-BEGIN_VALUE_REFLECTOR(osgUtil::TransformAttributeFunctor)
-	BaseType(osg::Drawable::AttributeFunctor);
-	Constructor1(IN, const osg::Matrix &, m);
-	Method3(void, apply, IN, osg::Drawable::AttributeType, type, IN, unsigned int, count, IN, osg::Vec3 *, begin);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::TransformAttributeFunctor)
+	I_BaseType(osg::Drawable::AttributeFunctor);
+	I_Constructor1(IN, const osg::Matrix &, m);
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, type, IN, unsigned int, count, IN, osg::Vec3 *, begin);
 END_REFLECTOR
 

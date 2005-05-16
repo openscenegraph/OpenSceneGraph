@@ -14,41 +14,49 @@
 #include <osg/Object>
 #include <osg/Sequence>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::Sequence::LoopMode)
-	EnumLabel(osg::Sequence::LOOP);
-	EnumLabel(osg::Sequence::SWING);
+	I_EnumLabel(osg::Sequence::LOOP);
+	I_EnumLabel(osg::Sequence::SWING);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Sequence::SequenceMode)
-	EnumLabel(osg::Sequence::START);
-	EnumLabel(osg::Sequence::STOP);
-	EnumLabel(osg::Sequence::PAUSE);
-	EnumLabel(osg::Sequence::RESUME);
+	I_EnumLabel(osg::Sequence::START);
+	I_EnumLabel(osg::Sequence::STOP);
+	I_EnumLabel(osg::Sequence::PAUSE);
+	I_EnumLabel(osg::Sequence::RESUME);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Sequence)
-	BaseType(osg::Group);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::Sequence &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	Method1(void, setValue, IN, int, value);
-	Method0(int, getValue);
-	Method2(void, setTime, IN, int, frame, IN, float, t);
-	Method1(float, getTime, IN, int, frame);
-	Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end);
-	Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end);
-	MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1);
-	Method2(void, getDuration, IN, float &, speed, IN, int &, nreps);
-	Method1(void, setMode, IN, osg::Sequence::SequenceMode, mode);
-	Method0(osg::Sequence::SequenceMode, getMode);
-	Property(osg::Sequence::SequenceMode, Mode);
-	IndexedProperty1(float, Time, int, frame);
-	Property(int, Value);
+	I_BaseType(osg::Group);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Sequence &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setValue, IN, int, value);
+	I_Method0(int, getValue);
+	I_Method2(void, setTime, IN, int, frame, IN, float, t);
+	I_Method1(float, getTime, IN, int, frame);
+	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end);
+	I_Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end);
+	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1);
+	I_Method2(void, getDuration, IN, float &, speed, IN, int &, nreps);
+	I_Method1(void, setMode, IN, osg::Sequence::SequenceMode, mode);
+	I_Method0(osg::Sequence::SequenceMode, getMode);
+	I_Property(osg::Sequence::SequenceMode, Mode);
+	I_IndexedProperty1(float, Time, int, frame);
+	I_Property(int, Value);
 END_REFLECTOR
 

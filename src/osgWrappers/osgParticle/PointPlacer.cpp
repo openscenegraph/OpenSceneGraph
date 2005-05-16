@@ -14,15 +14,23 @@
 #include <osgParticle/Particle>
 #include <osgParticle/PointPlacer>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::PointPlacer)
-	BaseType(osgParticle::CenteredPlacer);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::PointPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, place, IN, osgParticle::Particle *, P);
+	I_BaseType(osgParticle::CenteredPlacer);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::PointPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, place, IN, osgParticle::Particle *, P);
 END_REFLECTOR
 

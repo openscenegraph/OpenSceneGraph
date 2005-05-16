@@ -14,119 +14,127 @@
 #include <osg/Vec3>
 #include <osgSim/Sector>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
-	BaseType(osgSim::Sector);
-	BaseType(osgSim::AzimRange);
-	BaseType(osgSim::ElevationRange);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_BaseType(osgSim::ElevationRange);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
-	Constructor0();
-	MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f);
-	Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle);
-	Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal);
+	I_Constructor0();
+	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f);
+	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle);
+	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
-	BaseType(osgSim::Sector);
-	BaseType(osgSim::AzimRange);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
-	BaseType(osgSim::Sector);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setAxis, IN, const osg::Vec3 &, axis);
-	Method0(const osg::Vec3 &, getAxis);
-	MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f);
-	Method0(float, getAngle);
-	Method0(float, getFadeAngle);
-	ReadOnlyProperty(float, Angle);
-	Property(const osg::Vec3 &, Axis);
-	ReadOnlyProperty(float, FadeAngle);
+	I_BaseType(osgSim::Sector);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis);
+	I_Method0(const osg::Vec3 &, getAxis);
+	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f);
+	I_Method0(float, getAngle);
+	I_Method0(float, getFadeAngle);
+	I_ReadOnlyProperty(float, Angle);
+	I_Property(const osg::Vec3 &, Axis);
+	I_ReadOnlyProperty(float, FadeAngle);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
-	BaseType(osgSim::Sector);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setDirection, IN, const osg::Vec3 &, direction);
-	Method0(const osg::Vec3 &, getDirection);
-	Method1(void, setHorizLobeAngle, IN, float, angle);
-	Method0(float, getHorizLobeAngle);
-	Method1(void, setLobeRollAngle, IN, float, angle);
-	Method0(float, getLobeRollAngle);
-	Method1(void, setVertLobeAngle, IN, float, angle);
-	Method0(float, getVertLobeAngle);
-	Method1(void, setFadeAngle, IN, float, angle);
-	Method0(float, getFadeAngle);
-	Method0(void, computeMatrix);
-	Property(const osg::Vec3 &, Direction);
-	Property(float, FadeAngle);
-	Property(float, HorizLobeAngle);
-	Property(float, LobeRollAngle);
-	Property(float, VertLobeAngle);
+	I_BaseType(osgSim::Sector);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction);
+	I_Method0(const osg::Vec3 &, getDirection);
+	I_Method1(void, setHorizLobeAngle, IN, float, angle);
+	I_Method0(float, getHorizLobeAngle);
+	I_Method1(void, setLobeRollAngle, IN, float, angle);
+	I_Method0(float, getLobeRollAngle);
+	I_Method1(void, setVertLobeAngle, IN, float, angle);
+	I_Method0(float, getVertLobeAngle);
+	I_Method1(void, setFadeAngle, IN, float, angle);
+	I_Method0(float, getFadeAngle);
+	I_Method0(void, computeMatrix);
+	I_Property(const osg::Vec3 &, Direction);
+	I_Property(float, FadeAngle);
+	I_Property(float, HorizLobeAngle);
+	I_Property(float, LobeRollAngle);
+	I_Property(float, VertLobeAngle);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
-	Constructor0();
-	MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
-	Method0(float, getMinElevation);
-	Method0(float, getMaxElevation);
-	Method0(float, getFadeAngle);
-	Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal);
-	ReadOnlyProperty(float, FadeAngle);
-	ReadOnlyProperty(float, MaxElevation);
-	ReadOnlyProperty(float, MinElevation);
+	I_Constructor0();
+	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
+	I_Method0(float, getMinElevation);
+	I_Method0(float, getMaxElevation);
+	I_Method0(float, getFadeAngle);
+	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal);
+	I_ReadOnlyProperty(float, FadeAngle);
+	I_ReadOnlyProperty(float, MaxElevation);
+	I_ReadOnlyProperty(float, MinElevation);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
-	BaseType(osgSim::Sector);
-	BaseType(osgSim::ElevationRange);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::ElevationRange);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
 END_REFLECTOR
 

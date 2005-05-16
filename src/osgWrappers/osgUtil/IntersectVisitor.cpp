@@ -22,42 +22,50 @@
 #include <osg/Vec3>
 #include <osgUtil/IntersectVisitor>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< int >, osgUtil::Hit::VecIndexList);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
-	Constructor0();
-	Constructor1(IN, const osgUtil::Hit &, hit);
-	Method0(const osg::Vec3 &, getLocalIntersectPoint);
-	Method0(const osg::Vec3 &, getLocalIntersectNormal);
-	Method0(const osg::Vec3, getWorldIntersectPoint);
-	Method0(const osg::Vec3, getWorldIntersectNormal);
-	Method0(float, getRatio);
-	Method0(const osg::LineSegment *, getOriginalLineSegment);
-	Method0(const osg::LineSegment *, getLocalLineSegment);
-	Method0(osg::NodePath &, getNodePath);
-	Method0(const osg::NodePath &, getNodePath);
-	Method0(osg::Geode *, getGeode);
-	Method0(const osg::Geode *, getGeode);
-	Method0(osg::Drawable *, getDrawable);
-	Method0(const osg::Drawable *, getDrawable);
-	Method0(const osg::RefMatrix *, getMatrix);
-	Method0(const osg::RefMatrix *, getInverseMatrix);
-	Method0(const osgUtil::Hit::VecIndexList &, getVecIndexList);
-	Method0(int, getPrimitiveIndex);
-	ReadOnlyProperty(osg::Drawable *, Drawable);
-	ReadOnlyProperty(osg::Geode *, Geode);
-	ReadOnlyProperty(const osg::RefMatrix *, InverseMatrix);
-	ReadOnlyProperty(const osg::Vec3 &, LocalIntersectNormal);
-	ReadOnlyProperty(const osg::Vec3 &, LocalIntersectPoint);
-	ReadOnlyProperty(const osg::LineSegment *, LocalLineSegment);
-	ReadOnlyProperty(const osg::RefMatrix *, Matrix);
-	ReadOnlyProperty(osg::NodePath &, NodePath);
-	ReadOnlyProperty(const osg::LineSegment *, OriginalLineSegment);
-	ReadOnlyProperty(int, PrimitiveIndex);
-	ReadOnlyProperty(float, Ratio);
-	ReadOnlyProperty(const osgUtil::Hit::VecIndexList &, VecIndexList);
-	ReadOnlyProperty(const osg::Vec3, WorldIntersectNormal);
-	ReadOnlyProperty(const osg::Vec3, WorldIntersectPoint);
+	I_Constructor0();
+	I_Constructor1(IN, const osgUtil::Hit &, hit);
+	I_Method0(const osg::Vec3 &, getLocalIntersectPoint);
+	I_Method0(const osg::Vec3 &, getLocalIntersectNormal);
+	I_Method0(const osg::Vec3, getWorldIntersectPoint);
+	I_Method0(const osg::Vec3, getWorldIntersectNormal);
+	I_Method0(float, getRatio);
+	I_Method0(const osg::LineSegment *, getOriginalLineSegment);
+	I_Method0(const osg::LineSegment *, getLocalLineSegment);
+	I_Method0(osg::NodePath &, getNodePath);
+	I_Method0(const osg::NodePath &, getNodePath);
+	I_Method0(osg::Geode *, getGeode);
+	I_Method0(const osg::Geode *, getGeode);
+	I_Method0(osg::Drawable *, getDrawable);
+	I_Method0(const osg::Drawable *, getDrawable);
+	I_Method0(const osg::RefMatrix *, getMatrix);
+	I_Method0(const osg::RefMatrix *, getInverseMatrix);
+	I_Method0(const osgUtil::Hit::VecIndexList &, getVecIndexList);
+	I_Method0(int, getPrimitiveIndex);
+	I_ReadOnlyProperty(osg::Drawable *, Drawable);
+	I_ReadOnlyProperty(osg::Geode *, Geode);
+	I_ReadOnlyProperty(const osg::RefMatrix *, InverseMatrix);
+	I_ReadOnlyProperty(const osg::Vec3 &, LocalIntersectNormal);
+	I_ReadOnlyProperty(const osg::Vec3 &, LocalIntersectPoint);
+	I_ReadOnlyProperty(const osg::LineSegment *, LocalLineSegment);
+	I_ReadOnlyProperty(const osg::RefMatrix *, Matrix);
+	I_ReadOnlyProperty(osg::NodePath &, NodePath);
+	I_ReadOnlyProperty(const osg::LineSegment *, OriginalLineSegment);
+	I_ReadOnlyProperty(int, PrimitiveIndex);
+	I_ReadOnlyProperty(float, Ratio);
+	I_ReadOnlyProperty(const osgUtil::Hit::VecIndexList &, VecIndexList);
+	I_ReadOnlyProperty(const osg::Vec3, WorldIntersectNormal);
+	I_ReadOnlyProperty(const osg::Vec3, WorldIntersectPoint);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList);
@@ -65,32 +73,32 @@ TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList)
 TYPE_NAME_ALIAS(std::map< osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap);
 
 BEGIN_ENUM_REFLECTOR(osgUtil::IntersectVisitor::LODSelectionMode)
-	EnumLabel(osgUtil::IntersectVisitor::USE_HEIGHEST_LEVEL_OF_DETAIL);
-	EnumLabel(osgUtil::IntersectVisitor::USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
+	I_EnumLabel(osgUtil::IntersectVisitor::USE_HEIGHEST_LEVEL_OF_DETAIL);
+	I_EnumLabel(osgUtil::IntersectVisitor::USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgUtil::IntersectVisitor)
-	BaseType(osg::NodeVisitor);
-	Constructor0();
-	Method0(void, reset);
-	Method1(void, addLineSegment, IN, osg::LineSegment *, seg);
-	Method1(osgUtil::IntersectVisitor::HitList &, getHitList, IN, osg::LineSegment *, seg);
-	Method1(int, getNumHits, IN, osg::LineSegment *, seg);
-	Method0(bool, hits);
-	Method1(void, setLODSelectionMode, IN, osgUtil::IntersectVisitor::LODSelectionMode, mode);
-	Method0(osgUtil::IntersectVisitor::LODSelectionMode, getLODSelectionMode);
-	Method1(void, setEyePoint, IN, const osg::Vec3 &, eye);
-	Method0(osg::Vec3, getEyePoint);
-	Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
-	Method1(void, apply, IN, osg::Node &, x);
-	Method1(void, apply, IN, osg::Geode &, node);
-	Method1(void, apply, IN, osg::Billboard &, node);
-	Method1(void, apply, IN, osg::Group &, node);
-	Method1(void, apply, IN, osg::Transform &, node);
-	Method1(void, apply, IN, osg::Switch &, node);
-	Method1(void, apply, IN, osg::LOD &, node);
-	ReadOnlyProperty(osg::Vec3, EyePoint);
-	Property(osgUtil::IntersectVisitor::LODSelectionMode, LODSelectionMode);
+BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
+	I_BaseType(osg::NodeVisitor);
+	I_Constructor0();
+	I_Method0(void, reset);
+	I_Method1(void, addLineSegment, IN, osg::LineSegment *, seg);
+	I_Method1(osgUtil::IntersectVisitor::HitList &, getHitList, IN, osg::LineSegment *, seg);
+	I_Method1(int, getNumHits, IN, osg::LineSegment *, seg);
+	I_Method0(bool, hits);
+	I_Method1(void, setLODSelectionMode, IN, osgUtil::IntersectVisitor::LODSelectionMode, mode);
+	I_Method0(osgUtil::IntersectVisitor::LODSelectionMode, getLODSelectionMode);
+	I_Method1(void, setEyePoint, IN, const osg::Vec3 &, eye);
+	I_Method0(osg::Vec3, getEyePoint);
+	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
+	I_Method1(void, apply, IN, osg::Node &, x);
+	I_Method1(void, apply, IN, osg::Geode &, node);
+	I_Method1(void, apply, IN, osg::Billboard &, node);
+	I_Method1(void, apply, IN, osg::Group &, node);
+	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::Switch &, node);
+	I_Method1(void, apply, IN, osg::LOD &, node);
+	I_ReadOnlyProperty(osg::Vec3, EyePoint);
+	I_Property(osgUtil::IntersectVisitor::LODSelectionMode, LODSelectionMode);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >);

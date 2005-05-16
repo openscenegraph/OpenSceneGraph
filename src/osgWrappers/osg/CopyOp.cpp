@@ -23,25 +23,33 @@
 #include <osg/Texture>
 #include <osg/Uniform>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(unsigned int, osg::CopyOp::CopyFlags);
 
 BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
-	EnumLabel(osg::CopyOp::SHALLOW_COPY);
-	EnumLabel(osg::CopyOp::DEEP_COPY_OBJECTS);
-	EnumLabel(osg::CopyOp::DEEP_COPY_NODES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_DRAWABLES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_STATESETS);
-	EnumLabel(osg::CopyOp::DEEP_COPY_STATEATTRIBUTES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_TEXTURES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_IMAGES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_ARRAYS);
-	EnumLabel(osg::CopyOp::DEEP_COPY_PRIMITIVES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_SHAPES);
-	EnumLabel(osg::CopyOp::DEEP_COPY_UNIFORMS);
-	EnumLabel(osg::CopyOp::DEEP_COPY_ALL);
+	I_EnumLabel(osg::CopyOp::SHALLOW_COPY);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_OBJECTS);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_NODES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_DRAWABLES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_STATESETS);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_STATEATTRIBUTES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_TEXTURES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_IMAGES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_ARRAYS);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_PRIMITIVES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_SHAPES);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_UNIFORMS);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_ALL);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::CopyOp)
-	ConstructorWithDefaults1(IN, osg::CopyOp::CopyFlags, flags, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults1(IN, osg::CopyOp::CopyFlags, flags, osg::CopyOp::SHALLOW_COPY);
 END_REFLECTOR
 

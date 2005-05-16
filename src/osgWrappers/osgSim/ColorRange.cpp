@@ -12,12 +12,22 @@
 #include <osg/Vec4>
 #include <osgSim/ColorRange>
 
-BEGIN_VALUE_REFLECTOR(osgSim::ColorRange)
-	BaseType(osgSim::ScalarsToColors);
-	Constructor2(IN, float, min, IN, float, max);
-	Constructor3(IN, float, min, IN, float, max, IN, const std::vector< osg::Vec4 > &, colors);
-	Method1(void, setColors, IN, const std::vector< osg::Vec4 > &, colors);
-	Method1(osg::Vec4, getColor, IN, float, scalar);
-	WriteOnlyProperty(const std::vector< osg::Vec4 > &, Colors);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
+	I_BaseType(osgSim::ScalarsToColors);
+	I_Constructor2(IN, float, min, IN, float, max);
+	I_Constructor3(IN, float, min, IN, float, max, IN, const std::vector< osg::Vec4 > &, colors);
+	I_Method1(void, setColors, IN, const std::vector< osg::Vec4 > &, colors);
+	I_Method1(osg::Vec4, getColor, IN, float, scalar);
+	I_WriteOnlyProperty(const std::vector< osg::Vec4 > &, Colors);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec4 >);
 

@@ -15,24 +15,32 @@
 #include <osgParticle/Particle>
 #include <osgParticle/SegmentPlacer>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::SegmentPlacer)
-	BaseType(osgParticle::Placer);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::SegmentPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(const osg::Vec3 &, getVertexA);
-	Method1(void, setVertexA, IN, const osg::Vec3 &, v);
-	Method3(void, setVertexA, IN, float, x, IN, float, y, IN, float, z);
-	Method0(const osg::Vec3 &, getVertexB);
-	Method1(void, setVertexB, IN, const osg::Vec3 &, v);
-	Method3(void, setVertexB, IN, float, x, IN, float, y, IN, float, z);
-	Method2(void, setSegment, IN, const osg::Vec3 &, A, IN, const osg::Vec3 &, B);
-	Method1(void, place, IN, osgParticle::Particle *, P);
-	Property(const osg::Vec3 &, VertexA);
-	Property(const osg::Vec3 &, VertexB);
+	I_BaseType(osgParticle::Placer);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::SegmentPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(const osg::Vec3 &, getVertexA);
+	I_Method1(void, setVertexA, IN, const osg::Vec3 &, v);
+	I_Method3(void, setVertexA, IN, float, x, IN, float, y, IN, float, z);
+	I_Method0(const osg::Vec3 &, getVertexB);
+	I_Method1(void, setVertexB, IN, const osg::Vec3 &, v);
+	I_Method3(void, setVertexB, IN, float, x, IN, float, y, IN, float, z);
+	I_Method2(void, setSegment, IN, const osg::Vec3 &, A, IN, const osg::Vec3 &, B);
+	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_Property(const osg::Vec3 &, VertexA);
+	I_Property(const osg::Vec3 &, VertexB);
 END_REFLECTOR
 

@@ -12,40 +12,48 @@
 #include <osgGA/GUIEventAdapter>
 #include <osgProducer/EventAdapter>
 
-BEGIN_VALUE_REFLECTOR(osgProducer::EventAdapter)
-	BaseType(osgGA::GUIEventAdapter);
-	Constructor0();
-	Method0(osgGA::GUIEventAdapter::EventType, getEventType);
-	Method0(int, getKey);
-	Method0(int, getButton);
-	Method0(float, getXmin);
-	Method0(float, getXmax);
-	Method0(float, getYmin);
-	Method0(float, getYmax);
-	Method0(float, getX);
-	Method0(float, getY);
-	Method0(unsigned int, getButtonMask);
-	Method0(double, time);
-	Method0(unsigned int, getModKeyMask);
-	Method5(void, adaptResize, IN, double, t, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
-	Method2(void, adaptMouseScroll, IN, double, t, IN, Producer::KeyboardMouseCallback::ScrollingMotion, sm);
-	Method3(void, adaptMouseMotion, IN, double, t, IN, float, x, IN, float, y);
-	Method4(void, adaptButtonPress, IN, double, t, IN, float, x, IN, float, y, IN, unsigned int, button);
-	Method4(void, adaptButtonRelease, IN, double, t, IN, float, x, IN, float, y, IN, unsigned int, button);
-	Method2(void, adaptKeyPress, IN, double, t, IN, Producer::KeySymbol, key);
-	Method2(void, adaptKeyRelease, IN, double, t, IN, Producer::KeySymbol, key);
-	Method1(void, adaptFrame, IN, double, t);
-	Method0(void, copyStaticVariables);
-	ReadOnlyProperty(int, Button);
-	ReadOnlyProperty(unsigned int, ButtonMask);
-	ReadOnlyProperty(osgGA::GUIEventAdapter::EventType, EventType);
-	ReadOnlyProperty(int, Key);
-	ReadOnlyProperty(unsigned int, ModKeyMask);
-	ReadOnlyProperty(float, X);
-	ReadOnlyProperty(float, Xmax);
-	ReadOnlyProperty(float, Xmin);
-	ReadOnlyProperty(float, Y);
-	ReadOnlyProperty(float, Ymax);
-	ReadOnlyProperty(float, Ymin);
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
+BEGIN_OBJECT_REFLECTOR(osgProducer::EventAdapter)
+	I_BaseType(osgGA::GUIEventAdapter);
+	I_Constructor0();
+	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType);
+	I_Method0(int, getKey);
+	I_Method0(int, getButton);
+	I_Method0(float, getXmin);
+	I_Method0(float, getXmax);
+	I_Method0(float, getYmin);
+	I_Method0(float, getYmax);
+	I_Method0(float, getX);
+	I_Method0(float, getY);
+	I_Method0(unsigned int, getButtonMask);
+	I_Method0(double, time);
+	I_Method0(unsigned int, getModKeyMask);
+	I_Method5(void, adaptResize, IN, double, t, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
+	I_Method2(void, adaptMouseScroll, IN, double, t, IN, Producer::KeyboardMouseCallback::ScrollingMotion, sm);
+	I_Method3(void, adaptMouseMotion, IN, double, t, IN, float, x, IN, float, y);
+	I_Method4(void, adaptButtonPress, IN, double, t, IN, float, x, IN, float, y, IN, unsigned int, button);
+	I_Method4(void, adaptButtonRelease, IN, double, t, IN, float, x, IN, float, y, IN, unsigned int, button);
+	I_Method2(void, adaptKeyPress, IN, double, t, IN, Producer::KeySymbol, key);
+	I_Method2(void, adaptKeyRelease, IN, double, t, IN, Producer::KeySymbol, key);
+	I_Method1(void, adaptFrame, IN, double, t);
+	I_Method0(void, copyStaticVariables);
+	I_ReadOnlyProperty(int, Button);
+	I_ReadOnlyProperty(unsigned int, ButtonMask);
+	I_ReadOnlyProperty(osgGA::GUIEventAdapter::EventType, EventType);
+	I_ReadOnlyProperty(int, Key);
+	I_ReadOnlyProperty(unsigned int, ModKeyMask);
+	I_ReadOnlyProperty(float, X);
+	I_ReadOnlyProperty(float, Xmax);
+	I_ReadOnlyProperty(float, Xmin);
+	I_ReadOnlyProperty(float, Y);
+	I_ReadOnlyProperty(float, Ymax);
+	I_ReadOnlyProperty(float, Ymin);
 END_REFLECTOR
 

@@ -16,6 +16,14 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(GLenum, osg::StateAttribute::GLMode);
 
 TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::GLModeValue);
@@ -27,113 +35,113 @@ TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg:
 TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList);
 
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
-	EnumLabel(osg::StateAttribute::OFF);
-	EnumLabel(osg::StateAttribute::ON);
-	EnumLabel(osg::StateAttribute::OVERRIDE);
-	EnumLabel(osg::StateAttribute::PROTECTED);
-	EnumLabel(osg::StateAttribute::INHERIT);
+	I_EnumLabel(osg::StateAttribute::OFF);
+	I_EnumLabel(osg::StateAttribute::ON);
+	I_EnumLabel(osg::StateAttribute::OVERRIDE);
+	I_EnumLabel(osg::StateAttribute::PROTECTED);
+	I_EnumLabel(osg::StateAttribute::INHERIT);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
-	EnumLabel(osg::StateAttribute::TEXTURE);
-	EnumLabel(osg::StateAttribute::POLYGONMODE);
-	EnumLabel(osg::StateAttribute::POLYGONOFFSET);
-	EnumLabel(osg::StateAttribute::MATERIAL);
-	EnumLabel(osg::StateAttribute::ALPHAFUNC);
-	EnumLabel(osg::StateAttribute::ANTIALIAS);
-	EnumLabel(osg::StateAttribute::COLORTABLE);
-	EnumLabel(osg::StateAttribute::CULLFACE);
-	EnumLabel(osg::StateAttribute::FOG);
-	EnumLabel(osg::StateAttribute::FRONTFACE);
-	EnumLabel(osg::StateAttribute::LIGHT);
-	EnumLabel(osg::StateAttribute::POINT);
-	EnumLabel(osg::StateAttribute::LINEWIDTH);
-	EnumLabel(osg::StateAttribute::LINESTIPPLE);
-	EnumLabel(osg::StateAttribute::POLYGONSTIPPLE);
-	EnumLabel(osg::StateAttribute::SHADEMODEL);
-	EnumLabel(osg::StateAttribute::TEXENV);
-	EnumLabel(osg::StateAttribute::TEXENVFILTER);
-	EnumLabel(osg::StateAttribute::TEXGEN);
-	EnumLabel(osg::StateAttribute::TEXMAT);
-	EnumLabel(osg::StateAttribute::LIGHTMODEL);
-	EnumLabel(osg::StateAttribute::BLENDFUNC);
-	EnumLabel(osg::StateAttribute::BLENDEQUATION);
-	EnumLabel(osg::StateAttribute::LOGICOP);
-	EnumLabel(osg::StateAttribute::STENCIL);
-	EnumLabel(osg::StateAttribute::COLORMASK);
-	EnumLabel(osg::StateAttribute::DEPTH);
-	EnumLabel(osg::StateAttribute::VIEWPORT);
-	EnumLabel(osg::StateAttribute::BLENDCOLOR);
-	EnumLabel(osg::StateAttribute::MULTISAMPLE);
-	EnumLabel(osg::StateAttribute::CLIPPLANE);
-	EnumLabel(osg::StateAttribute::COLORMATRIX);
-	EnumLabel(osg::StateAttribute::VERTEXPROGRAM);
-	EnumLabel(osg::StateAttribute::FRAGMENTPROGRAM);
-	EnumLabel(osg::StateAttribute::POINTSPRITE);
-	EnumLabel(osg::StateAttribute::PROGRAM);
-	EnumLabel(osg::StateAttribute::VALIDATOR);
-	EnumLabel(osg::StateAttribute::VIEWMATRIXEXTRACTOR);
-	EnumLabel(osg::StateAttribute::OSGNV_PARAMETER_BLOCK);
-	EnumLabel(osg::StateAttribute::OSGNVEXT_TEXTURE_SHADER);
-	EnumLabel(osg::StateAttribute::OSGNVEXT_VERTEX_PROGRAM);
-	EnumLabel(osg::StateAttribute::OSGNVEXT_REGISTER_COMBINERS);
-	EnumLabel(osg::StateAttribute::OSGNVCG_PROGRAM);
-	EnumLabel(osg::StateAttribute::OSGNVSLANG_PROGRAM);
-	EnumLabel(osg::StateAttribute::OSGNVPARSE_PROGRAM_PARSER);
+	I_EnumLabel(osg::StateAttribute::TEXTURE);
+	I_EnumLabel(osg::StateAttribute::POLYGONMODE);
+	I_EnumLabel(osg::StateAttribute::POLYGONOFFSET);
+	I_EnumLabel(osg::StateAttribute::MATERIAL);
+	I_EnumLabel(osg::StateAttribute::ALPHAFUNC);
+	I_EnumLabel(osg::StateAttribute::ANTIALIAS);
+	I_EnumLabel(osg::StateAttribute::COLORTABLE);
+	I_EnumLabel(osg::StateAttribute::CULLFACE);
+	I_EnumLabel(osg::StateAttribute::FOG);
+	I_EnumLabel(osg::StateAttribute::FRONTFACE);
+	I_EnumLabel(osg::StateAttribute::LIGHT);
+	I_EnumLabel(osg::StateAttribute::POINT);
+	I_EnumLabel(osg::StateAttribute::LINEWIDTH);
+	I_EnumLabel(osg::StateAttribute::LINESTIPPLE);
+	I_EnumLabel(osg::StateAttribute::POLYGONSTIPPLE);
+	I_EnumLabel(osg::StateAttribute::SHADEMODEL);
+	I_EnumLabel(osg::StateAttribute::TEXENV);
+	I_EnumLabel(osg::StateAttribute::TEXENVFILTER);
+	I_EnumLabel(osg::StateAttribute::TEXGEN);
+	I_EnumLabel(osg::StateAttribute::TEXMAT);
+	I_EnumLabel(osg::StateAttribute::LIGHTMODEL);
+	I_EnumLabel(osg::StateAttribute::BLENDFUNC);
+	I_EnumLabel(osg::StateAttribute::BLENDEQUATION);
+	I_EnumLabel(osg::StateAttribute::LOGICOP);
+	I_EnumLabel(osg::StateAttribute::STENCIL);
+	I_EnumLabel(osg::StateAttribute::COLORMASK);
+	I_EnumLabel(osg::StateAttribute::DEPTH);
+	I_EnumLabel(osg::StateAttribute::VIEWPORT);
+	I_EnumLabel(osg::StateAttribute::BLENDCOLOR);
+	I_EnumLabel(osg::StateAttribute::MULTISAMPLE);
+	I_EnumLabel(osg::StateAttribute::CLIPPLANE);
+	I_EnumLabel(osg::StateAttribute::COLORMATRIX);
+	I_EnumLabel(osg::StateAttribute::VERTEXPROGRAM);
+	I_EnumLabel(osg::StateAttribute::FRAGMENTPROGRAM);
+	I_EnumLabel(osg::StateAttribute::POINTSPRITE);
+	I_EnumLabel(osg::StateAttribute::PROGRAM);
+	I_EnumLabel(osg::StateAttribute::VALIDATOR);
+	I_EnumLabel(osg::StateAttribute::VIEWMATRIXEXTRACTOR);
+	I_EnumLabel(osg::StateAttribute::OSGNV_PARAMETER_BLOCK);
+	I_EnumLabel(osg::StateAttribute::OSGNVEXT_TEXTURE_SHADER);
+	I_EnumLabel(osg::StateAttribute::OSGNVEXT_VERTEX_PROGRAM);
+	I_EnumLabel(osg::StateAttribute::OSGNVEXT_REGISTER_COMBINERS);
+	I_EnumLabel(osg::StateAttribute::OSGNVCG_PROGRAM);
+	I_EnumLabel(osg::StateAttribute::OSGNVSLANG_PROGRAM);
+	I_EnumLabel(osg::StateAttribute::OSGNVPARSE_PROGRAM_PARSER);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::StateAttribute &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method0(unsigned int, getMember);
-	Method0(osg::StateAttribute::TypeMemberPair, getTypeMemberPair);
-	Method0(bool, isTextureAttribute);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method0(const osg::StateAttribute::ParentList &, getParents);
-	Method1(osg::StateSet *, getParent, IN, unsigned int, i);
-	Method1(const osg::StateSet *, getParent, IN, unsigned int, i);
-	Method0(unsigned int, getNumParents);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x);
-	Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc);
-	Method0(osg::StateAttribute::Callback *, getUpdateCallback);
-	Method0(const osg::StateAttribute::Callback *, getUpdateCallback);
-	Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec);
-	Method0(osg::StateAttribute::Callback *, getEventCallback);
-	Method0(const osg::StateAttribute::Callback *, getEventCallback);
-	Method1(void, apply, IN, osg::State &, x);
-	Method1(void, compileGLObjects, IN, osg::State &, x);
-	MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	Property(osg::StateAttribute::Callback *, EventCallback);
-	ReadOnlyProperty(unsigned int, Member);
-	ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
-	ReadOnlyProperty(const osg::StateAttribute::ParentList &, Parents);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	ReadOnlyProperty(osg::StateAttribute::TypeMemberPair, TypeMemberPair);
-	Property(osg::StateAttribute::Callback *, UpdateCallback);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::StateAttribute &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method0(unsigned int, getMember);
+	I_Method0(osg::StateAttribute::TypeMemberPair, getTypeMemberPair);
+	I_Method0(bool, isTextureAttribute);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method0(const osg::StateAttribute::ParentList &, getParents);
+	I_Method1(osg::StateSet *, getParent, IN, unsigned int, i);
+	I_Method1(const osg::StateSet *, getParent, IN, unsigned int, i);
+	I_Method0(unsigned int, getNumParents);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x);
+	I_Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc);
+	I_Method0(osg::StateAttribute::Callback *, getUpdateCallback);
+	I_Method0(const osg::StateAttribute::Callback *, getUpdateCallback);
+	I_Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec);
+	I_Method0(osg::StateAttribute::Callback *, getEventCallback);
+	I_Method0(const osg::StateAttribute::Callback *, getEventCallback);
+	I_Method1(void, apply, IN, osg::State &, x);
+	I_Method1(void, compileGLObjects, IN, osg::State &, x);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
+	I_Property(osg::StateAttribute::Callback *, EventCallback);
+	I_ReadOnlyProperty(unsigned int, Member);
+	I_ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
+	I_ReadOnlyProperty(const osg::StateAttribute::ParentList &, Parents);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_ReadOnlyProperty(osg::StateAttribute::TypeMemberPair, TypeMemberPair);
+	I_Property(osg::StateAttribute::Callback *, UpdateCallback);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::StateAttribute::Callback)
-	VirtualBaseType(osg::Object);
-	Constructor0();
-	Constructor2(IN, const osg::StateAttribute::Callback &, x, IN, const osg::CopyOp &, x);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
+BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::StateAttribute::Callback &, x, IN, const osg::CopyOp &, x);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
-	Constructor0();
-	Method1(void, usesMode, IN, osg::StateAttribute::GLMode, mode);
-	Method1(void, usesTextureMode, IN, osg::StateAttribute::GLMode, mode);
+	I_Constructor0();
+	I_Method1(void, usesMode, IN, osg::StateAttribute::GLMode, mode);
+	I_Method1(void, usesTextureMode, IN, osg::StateAttribute::GLMode, mode);
 END_REFLECTOR
 
 STD_PAIR_REFLECTOR(std::pair< osg::StateAttribute::Type COMMA  unsigned int >);

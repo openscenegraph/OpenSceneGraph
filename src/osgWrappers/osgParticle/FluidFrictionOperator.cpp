@@ -16,30 +16,38 @@
 #include <osgParticle/Particle>
 #include <osgParticle/Program>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::FluidFrictionOperator)
-	BaseType(osgParticle::Operator);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::FluidFrictionOperator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(void, setFluidDensity, IN, float, d);
-	Method0(float, getFluidDensity);
-	Method1(void, setFluidViscosity, IN, float, v);
-	Method0(float, getFluidViscosity);
-	Method1(void, setWind, IN, const osg::Vec3 &, wind);
-	Method0(const osg::Vec3 &, getWind);
-	Method1(void, setOverrideRadius, IN, float, r);
-	Method0(float, getOverrideRadius);
-	Method0(void, setFluidToAir);
-	Method0(void, setFluidToWater);
-	Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
-	Method1(void, beginOperate, IN, osgParticle::Program *, prg);
-	Property(float, FluidDensity);
-	Property(float, FluidViscosity);
-	Property(float, OverrideRadius);
-	Property(const osg::Vec3 &, Wind);
+	I_BaseType(osgParticle::Operator);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::FluidFrictionOperator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setFluidDensity, IN, float, d);
+	I_Method0(float, getFluidDensity);
+	I_Method1(void, setFluidViscosity, IN, float, v);
+	I_Method0(float, getFluidViscosity);
+	I_Method1(void, setWind, IN, const osg::Vec3 &, wind);
+	I_Method0(const osg::Vec3 &, getWind);
+	I_Method1(void, setOverrideRadius, IN, float, r);
+	I_Method0(float, getOverrideRadius);
+	I_Method0(void, setFluidToAir);
+	I_Method0(void, setFluidToWater);
+	I_Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
+	I_Method1(void, beginOperate, IN, osgParticle::Program *, prg);
+	I_Property(float, FluidDensity);
+	I_Property(float, FluidViscosity);
+	I_Property(float, OverrideRadius);
+	I_Property(const osg::Vec3 &, Wind);
 END_REFLECTOR
 

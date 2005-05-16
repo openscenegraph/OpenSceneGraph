@@ -15,18 +15,26 @@
 #include <osgParticle/Particle>
 #include <osgParticle/Program>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Operator)
-	BaseType(osg::Object);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgParticle::Operator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(bool, isEnabled);
-	Method1(void, setEnabled, IN, bool, v);
-	Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
-	Method1(void, beginOperate, IN, osgParticle::Program *, x);
-	Method0(void, endOperate);
-	WriteOnlyProperty(bool, Enabled);
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::Operator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(bool, isEnabled);
+	I_Method1(void, setEnabled, IN, bool, v);
+	I_Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
+	I_Method1(void, beginOperate, IN, osgParticle::Program *, x);
+	I_Method0(void, endOperate);
+	I_WriteOnlyProperty(bool, Enabled);
 END_REFLECTOR
 

@@ -11,10 +11,18 @@
 
 #include <osgGA/GUIActionAdapter>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIActionAdapter)
-	Constructor0();
-	Method0(void, requestRedraw);
-	MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true);
-	Method2(void, requestWarpPointer, IN, float, x, IN, float, y);
+	I_Constructor0();
+	I_Method0(void, requestRedraw);
+	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true);
+	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, y);
 END_REFLECTOR
 

@@ -15,24 +15,32 @@
 #include <osg/Vec4>
 #include <osgFX/Scribe>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_OBJECT_REFLECTOR(osgFX::Scribe)
-	BaseType(osgFX::Effect);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osgFX::Scribe &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, className);
-	Method0(const char *, libraryName);
-	Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	Method0(const char *, effectName);
-	Method0(const char *, effectDescription);
-	Method0(const char *, effectAuthor);
-	Method0(const osg::Vec4 &, getWireframeColor);
-	Method1(void, setWireframeColor, IN, const osg::Vec4 &, color);
-	Method0(float, getWireframeLineWidth);
-	Method1(void, setWireframeLineWidth, IN, float, w);
-	Property(const osg::Vec4 &, WireframeColor);
-	Property(float, WireframeLineWidth);
+	I_BaseType(osgFX::Effect);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgFX::Scribe &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method0(const char *, effectName);
+	I_Method0(const char *, effectDescription);
+	I_Method0(const char *, effectAuthor);
+	I_Method0(const osg::Vec4 &, getWireframeColor);
+	I_Method1(void, setWireframeColor, IN, const osg::Vec4 &, color);
+	I_Method0(float, getWireframeLineWidth);
+	I_Method1(void, setWireframeLineWidth, IN, float, w);
+	I_Property(const osg::Vec4 &, WireframeColor);
+	I_Property(float, WireframeLineWidth);
 END_REFLECTOR
 

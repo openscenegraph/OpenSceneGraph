@@ -13,31 +13,39 @@
 #include <osg/Geometry>
 #include <osgUtil/Simplifier>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList);
 
-BEGIN_VALUE_REFLECTOR(osgUtil::Simplifier)
-	BaseType(osg::NodeVisitor);
-	ConstructorWithDefaults2(IN, float, sampleRatio, 1.0f, IN, float, maximumError, 0.0f);
-	Method1(void, setSampleRatio, IN, float, sampleRatio);
-	Method0(float, getSampleRatio);
-	Method1(void, setMaximumError, IN, float, error);
-	Method0(float, getMaximumError);
-	Method1(void, setContinueSimplificationCallback, IN, osgUtil::Simplifier::ContinueSimplificationCallback *, cb);
-	Method0(osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
-	Method0(const osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
-	Method3(bool, continueSimplification, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
-	Method3(bool, continueSimplificationImplementation, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
-	Method1(void, apply, IN, osg::Geode &, geode);
-	Method1(void, simplify, IN, osg::Geometry &, geometry);
-	Method2(void, simplify, IN, osg::Geometry &, geometry, IN, const osgUtil::Simplifier::IndexList &, protectedPoints);
-	Property(osgUtil::Simplifier::ContinueSimplificationCallback *, ContinueSimplificationCallback);
-	Property(float, MaximumError);
-	Property(float, SampleRatio);
+BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
+	I_BaseType(osg::NodeVisitor);
+	I_ConstructorWithDefaults2(IN, float, sampleRatio, 1.0f, IN, float, maximumError, 0.0f);
+	I_Method1(void, setSampleRatio, IN, float, sampleRatio);
+	I_Method0(float, getSampleRatio);
+	I_Method1(void, setMaximumError, IN, float, error);
+	I_Method0(float, getMaximumError);
+	I_Method1(void, setContinueSimplificationCallback, IN, osgUtil::Simplifier::ContinueSimplificationCallback *, cb);
+	I_Method0(osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
+	I_Method0(const osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
+	I_Method3(bool, continueSimplification, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
+	I_Method3(bool, continueSimplificationImplementation, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
+	I_Method1(void, apply, IN, osg::Geode &, geode);
+	I_Method1(void, simplify, IN, osg::Geometry &, geometry);
+	I_Method2(void, simplify, IN, osg::Geometry &, geometry, IN, const osgUtil::Simplifier::IndexList &, protectedPoints);
+	I_Property(osgUtil::Simplifier::ContinueSimplificationCallback *, ContinueSimplificationCallback);
+	I_Property(float, MaximumError);
+	I_Property(float, SampleRatio);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier::ContinueSimplificationCallback)
-	BaseType(osg::Referenced);
-	Constructor0();
-	Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
+	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
 END_REFLECTOR
 

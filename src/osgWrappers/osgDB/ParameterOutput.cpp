@@ -12,11 +12,19 @@
 #include <osgDB/Output>
 #include <osgDB/ParameterOutput>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_VALUE_REFLECTOR(osgDB::ParameterOutput)
-	Constructor1(IN, osgDB::Output &, fw);
-	Constructor2(IN, osgDB::Output &, fw, IN, int, numItemsPerLine);
-	Method0(void, begin);
-	Method0(void, newLine);
-	Method0(void, end);
+	I_Constructor1(IN, osgDB::Output &, fw);
+	I_Constructor2(IN, osgDB::Output &, fw, IN, int, numItemsPerLine);
+	I_Method0(void, begin);
+	I_Method0(void, newLine);
+	I_Method0(void, end);
 END_REFLECTOR
 

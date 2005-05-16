@@ -17,44 +17,52 @@
 #include <osg/StateAttribute>
 #include <osg/TexGen>
 
+// Must undefine IN and OUT macros defined in Windows headers
+#ifdef IN
+#undef IN
+#endif
+#ifdef OUT
+#undef OUT
+#endif
+
 BEGIN_ENUM_REFLECTOR(osg::TexGen::Mode)
-	EnumLabel(osg::TexGen::OBJECT_LINEAR);
-	EnumLabel(osg::TexGen::EYE_LINEAR);
-	EnumLabel(osg::TexGen::SPHERE_MAP);
-	EnumLabel(osg::TexGen::NORMAL_MAP);
-	EnumLabel(osg::TexGen::REFLECTION_MAP);
+	I_EnumLabel(osg::TexGen::OBJECT_LINEAR);
+	I_EnumLabel(osg::TexGen::EYE_LINEAR);
+	I_EnumLabel(osg::TexGen::SPHERE_MAP);
+	I_EnumLabel(osg::TexGen::NORMAL_MAP);
+	I_EnumLabel(osg::TexGen::REFLECTION_MAP);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TexGen::Coord)
-	EnumLabel(osg::TexGen::S);
-	EnumLabel(osg::TexGen::T);
-	EnumLabel(osg::TexGen::R);
-	EnumLabel(osg::TexGen::Q);
+	I_EnumLabel(osg::TexGen::S);
+	I_EnumLabel(osg::TexGen::T);
+	I_EnumLabel(osg::TexGen::R);
+	I_EnumLabel(osg::TexGen::Q);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexGen)
-	BaseType(osg::StateAttribute);
-	Constructor0();
-	ConstructorWithDefaults2(IN, const osg::TexGen &, texgen, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	Method0(osg::Object *, cloneType);
-	Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	Method0(const char *, libraryName);
-	Method0(const char *, className);
-	Method0(osg::StateAttribute::Type, getType);
-	Method0(bool, isTextureAttribute);
-	Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	Method1(void, apply, IN, osg::State &, state);
-	Method1(void, setMode, IN, osg::TexGen::Mode, mode);
-	Method0(osg::TexGen::Mode, getMode);
-	Method2(void, setPlane, IN, osg::TexGen::Coord, which, IN, const osg::Plane &, plane);
-	Method1(osg::Plane &, getPlane, IN, osg::TexGen::Coord, which);
-	Method1(const osg::Plane &, getPlane, IN, osg::TexGen::Coord, which);
-	Method1(void, setPlanesFromMatrix, IN, const osg::Matrixd &, matrix);
-	Property(osg::TexGen::Mode, Mode);
-	IndexedProperty1(const osg::Plane &, Plane, osg::TexGen::Coord, which);
-	WriteOnlyProperty(const osg::Matrixd &, PlanesFromMatrix);
-	ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::TexGen &, texgen, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method0(bool, isTextureAttribute);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Method1(void, setMode, IN, osg::TexGen::Mode, mode);
+	I_Method0(osg::TexGen::Mode, getMode);
+	I_Method2(void, setPlane, IN, osg::TexGen::Coord, which, IN, const osg::Plane &, plane);
+	I_Method1(osg::Plane &, getPlane, IN, osg::TexGen::Coord, which);
+	I_Method1(const osg::Plane &, getPlane, IN, osg::TexGen::Coord, which);
+	I_Method1(void, setPlanesFromMatrix, IN, const osg::Matrixd &, matrix);
+	I_Property(osg::TexGen::Mode, Mode);
+	I_IndexedProperty1(const osg::Plane &, Plane, osg::TexGen::Coord, which);
+	I_WriteOnlyProperty(const osg::Matrixd &, PlanesFromMatrix);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

@@ -85,7 +85,7 @@ bool VerticalFlip(size_t Width, size_t Height, GLenum Format, void * pPixels);
 class dxtc_pixels
 {
 public:
-    dxtc_pixels(size_t Width, size_t Height, GLenum Format, void * pPixels);
+    inline dxtc_pixels(size_t Width, size_t Height, GLenum Format, void * pPixels);
 
     // Vertically flip the whole picture
     bool VFlip() const;
@@ -93,11 +93,11 @@ public:
 protected:
 
     // Limitation check functions
-    bool DXT1() const;
-    bool DXT3() const;
-    bool DXT5() const;
-    bool OpenGLSize() const;
-    bool SupportedFormat() const;
+    inline bool DXT1() const;
+    inline bool DXT3() const;
+    inline bool DXT5() const;
+    inline bool OpenGLSize() const;
+    inline bool SupportedFormat() const;
 
     // Vertical flipping functions
     void VFlip_DXT1() const;    
@@ -105,18 +105,18 @@ protected:
     void VFlip_DXT5() const;
 
     // Block vertical flipping functions
-    void BVF_Color_H2(void * const pBlock) const;                            // V. flip one color block with its virtual height == 2
-    void BVF_Color_H4(void * const pBlock) const;                            // V. flip one color block with its virtual height == 4
-    void BVF_Color(void * const pBlock1, void * const pBlock2) const;        // V. flip and swap two color blocks, with their virtual height == 4
-    void BVF_Alpha_DXT3_H2(void * const pBlock) const;                        // V. flip one alpha (DXT3) block with its virtual height == 2
-    void BVF_Alpha_DXT3_H4(void * const pBlock) const;                        // V. flip one alpha (DXT3) block with its virtual height == 4
-    void BVF_Alpha_DXT3(void * const pBlock1, void * const pBlock2) const;    // V. flip and swap two alpha (DXT3) blocks, with their virtual height == 4
-    void BVF_Alpha_DXT5_H2(void * const pBlock) const;                        // V. flip one alpha (DXT5) block with its virtual height == 2
-    void BVF_Alpha_DXT5_H4(void * const pBlock) const;                        // V. flip one alpha (DXT5) block with its virtual height == 4
-    void BVF_Alpha_DXT5(void * const pBlock1, void * const pBlock2) const;    // V. flip and swap two alpha (DXT5) blocks, with their virtual height == 4
+    inline void BVF_Color_H2(void * const pBlock) const;                            // V. flip one color block with its virtual height == 2
+    inline void BVF_Color_H4(void * const pBlock) const;                            // V. flip one color block with its virtual height == 4
+    inline void BVF_Color(void * const pBlock1, void * const pBlock2) const;        // V. flip and swap two color blocks, with their virtual height == 4
+    inline void BVF_Alpha_DXT3_H2(void * const pBlock) const;                        // V. flip one alpha (DXT3) block with its virtual height == 2
+    inline void BVF_Alpha_DXT3_H4(void * const pBlock) const;                        // V. flip one alpha (DXT3) block with its virtual height == 4
+    inline void BVF_Alpha_DXT3(void * const pBlock1, void * const pBlock2) const;    // V. flip and swap two alpha (DXT3) blocks, with their virtual height == 4
+    inline void BVF_Alpha_DXT5_H2(void * const pBlock) const;                        // V. flip one alpha (DXT5) block with its virtual height == 2
+    inline void BVF_Alpha_DXT5_H4(void * const pBlock) const;                        // V. flip one alpha (DXT5) block with its virtual height == 4
+    inline void BVF_Alpha_DXT5(void * const pBlock1, void * const pBlock2) const;    // V. flip and swap two alpha (DXT5) blocks, with their virtual height == 4
     
     // Block localization functions
-    void * GetBlock(size_t i, size_t j, size_t BlockSize) const;
+    inline void * GetBlock(size_t i, size_t j, size_t BlockSize) const;
 
     // mighty const and var
     static const size_t BSIZE_DXT1;
@@ -174,7 +174,7 @@ inline bool dxtc_pixels::SupportedFormat() const {
 
 inline void dxtc_pixels::BVF_Color_H2(void * const pBlock) const {
     // Swap the two first row of pixels
-    dxtc_int8 * const pP = ((dxtc_int8 * const) pBlock) + 4;
+    dxtc_int8 * pP = ((dxtc_int8 *) pBlock) + 4;
 
     std::swap(pP[0], pP[1]);
 }
@@ -182,7 +182,7 @@ inline void dxtc_pixels::BVF_Color_H2(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Color_H4(void * const pBlock) const {
     // Swap the the first row of pixels with the last one, then the 2 middle row of pixels
-    dxtc_int8 * const pP = ((dxtc_int8 * const) pBlock) + 4;
+    dxtc_int8 * pP = ((dxtc_int8 *) pBlock) + 4;
 
     std::swap(pP[0], pP[3]);
     std::swap(pP[1], pP[2]);
@@ -191,14 +191,14 @@ inline void dxtc_pixels::BVF_Color_H4(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Color(void * const pBlock1, void * const pBlock2) const {
     // Swap the "2 colors" header (32bits each header)
-    dxtc_int32 * const pHdr1 = (dxtc_int32 * const) pBlock1;
-    dxtc_int32 * const pHdr2 = (dxtc_int32 * const) pBlock2;
+    dxtc_int32 * pHdr1 = (dxtc_int32 * ) pBlock1;
+    dxtc_int32 * pHdr2 = (dxtc_int32 * ) pBlock2;
 
     std::swap(* pHdr1, * pHdr2);
 
     // Now swap the pixel values
-    dxtc_int8 * const pP1 = ((dxtc_int8 * const) pBlock1) + 4;
-    dxtc_int8 * const pP2 = ((dxtc_int8 * const) pBlock2) + 4;
+    dxtc_int8 * pP1 = ((dxtc_int8 * ) pBlock1) + 4;
+    dxtc_int8 * pP2 = ((dxtc_int8 * ) pBlock2) + 4;
 
     std::swap(pP1[0], pP2[3]);
     std::swap(pP1[1], pP2[2]);
@@ -209,7 +209,7 @@ inline void dxtc_pixels::BVF_Color(void * const pBlock1, void * const pBlock2) c
 
 inline void dxtc_pixels::BVF_Alpha_DXT3_H2(void * const pBlock) const {
     // Swap the two first row of pixels
-    dxtc_int16 * const pP = (dxtc_int16 * const) pBlock;
+    dxtc_int16 * pP = (dxtc_int16 * ) pBlock;
 
     std::swap(pP[0], pP[1]);
 }
@@ -217,7 +217,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT3_H2(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT3_H4(void * const pBlock) const {
     // Swap the the first row of pixels with the last one, then the 2 middle row of pixels
-    dxtc_int16 * const pP = (dxtc_int16 * const) pBlock;
+    dxtc_int16 * pP = (dxtc_int16 * ) pBlock;
 
     std::swap(pP[0], pP[3]);
     std::swap(pP[1], pP[2]);
@@ -226,8 +226,8 @@ inline void dxtc_pixels::BVF_Alpha_DXT3_H4(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT3(void * const pBlock1, void * const pBlock2) const {
     // Swap all the pixel values
-    dxtc_int16 * const pP1 = (dxtc_int16 * const) pBlock1;
-    dxtc_int16 * const pP2 = (dxtc_int16 * const) pBlock2;
+    dxtc_int16 * pP1 = (dxtc_int16 * ) pBlock1;
+    dxtc_int16 * pP2 = (dxtc_int16 * ) pBlock2;
 
     std::swap(pP1[0], pP2[3]);
     std::swap(pP1[1], pP2[2]);
@@ -238,7 +238,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT3(void * const pBlock1, void * const pBloc
 
 inline void dxtc_pixels::BVF_Alpha_DXT5_H2(void * const pBlock) const {
     // Swap the two first row of pixels (kinda tricky with DXT5 unaligned encoding)
-    dxtc_int32 * const pP = (dxtc_int32 * const) (((dxtc_int8 * const) pBlock) + 2);
+    dxtc_int32 * pP = (dxtc_int32 * ) (((dxtc_int8 * ) pBlock) + 2);
 
     dxtc_int32 TmpDWord = (pP[0] & 0xFF000000);
     TmpDWord |=    (pP[0] & 0x00000FFF) << 12;
@@ -253,7 +253,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT5_H2(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT5_H4(void * const pBlock) const {
     // Swap the the first row of pixels with the last one, then the 2 middle row of pixels (tricky again)
-    dxtc_int64 * const pB = (dxtc_int64 * const) pBlock;
+    dxtc_int64 * pB = (dxtc_int64 * ) pBlock;
 
     dxtc_int64 TmpQWord = (pB[0] & HEX_0x000000000000FFFF);
     TmpQWord |= (pB[0] & HEX_0x000000000FFF0000) << 36;
@@ -266,8 +266,8 @@ inline void dxtc_pixels::BVF_Alpha_DXT5_H4(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT5(void * const pBlock1, void * const pBlock2) const {
     // Swap all the pixel values (same trick for DXT5)
-    dxtc_int64 * const pB1 = (dxtc_int64 * const) pBlock1;
-    dxtc_int64 * const pB2 = (dxtc_int64 * const) pBlock2;
+    dxtc_int64 * pB1 = (dxtc_int64 * ) pBlock1;
+    dxtc_int64 * pB2 = (dxtc_int64 * ) pBlock2;
 
     dxtc_int64 TmpQWord1 = (pB1[0] & HEX_0x000000000000FFFF);
     TmpQWord1 |= (pB1[0] & HEX_0x000000000FFF0000) << 36;

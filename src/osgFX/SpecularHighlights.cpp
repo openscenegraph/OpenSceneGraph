@@ -100,7 +100,7 @@ namespace
         {
         }
 
-        void getRequiredExtensions(std::vector<std::string>& extensions)
+        virtual void getRequiredExtensions(std::vector<std::string>& extensions)
         {
             extensions.push_back("GL_ARB_texture_env_add");
         }

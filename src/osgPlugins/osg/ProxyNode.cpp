@@ -146,8 +146,8 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
 bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
 {
     bool includeExternalReferences = false;
-    bool useOriginalExternalReferences = false;
-    bool writeExternalReferenceFiles = true;
+    bool useOriginalExternalReferences = true;
+    bool writeExternalReferenceFiles = false;
 
     const ProxyNode& proxyNode = static_cast<const ProxyNode&>(obj);
 

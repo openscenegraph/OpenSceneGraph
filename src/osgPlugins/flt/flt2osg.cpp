@@ -2487,19 +2487,6 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
         //Path for Nested external references
         osgDB::ReaderWriter::Options *options = pFile->getOptions();
 
-#ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
-        if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES)
-        {
-            external = dynamic_cast<osg::Group*> (osgDB::Registry::instance()->getFromObjectCache(rec->getFilename()));
-            if(external)
-            {
-                osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
-                tempParent->addChild(external);
-                return external;
-            }
-        }
-#endif
-        
         osgDB::FilePathList& fpl = options->getDatabasePathList();
         const std::string& filePath = osgDB::getFilePath(rec->getFilename());
         std::string pushAndPopPath;
@@ -2520,8 +2507,6 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
         external = pFile->convert();
         if (external)
         {
-          osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
-
           // In the situation in which only one model is required from an
           // externally referenced file, it would be more efficient to only
           // convert that one model from the FltFile records.  (This would be
@@ -2537,17 +2522,12 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
           std::string modelName = rec->getModelName();
           if ( modelName.empty() )
           {
-#ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
                // Add the entire externally referenced file
                 osg::ProxyNode *proxynode = new osg::ProxyNode;
                 proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
                 proxynode->addChild(external, rec->getFilename());
+                osg::Group *tempParent = visitAncillary(osgParent, *proxynode, rec);
                 tempParent->addChild(proxynode);
-                if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES)
-                    osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
-#else
-                tempParent->addChild(external);
-#endif
           }
           else
           {
@@ -2558,16 +2538,11 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
             osg::Node *model = findExternalModelVisitor.getModel();
             if (model)
             {
-#ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
                 osg::ProxyNode *proxynode = new osg::ProxyNode;
                 proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
                 proxynode->addChild(model, rec->getFilename());
+                osg::Group *tempParent = visitAncillary(osgParent, *proxynode, rec);
                 tempParent->addChild(proxynode);
-                if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES)
-                    osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
-#else
-                //tempParent->addChild(model);
-#endif
             }
             else
             {

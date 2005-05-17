@@ -538,6 +538,7 @@ ifeq ($(OS),CYGWIN)
   C++               = c++
   DEPARG            = -M -DWIN32
   INC               += 
+  LIB               =
   DEF               += -DWIN32 -W -Wall -DNOMINMAX
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
@@ -558,7 +559,7 @@ ifeq ($(OS),CYGWIN)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lOpenThreads
   PNG_LIBS          = -lpng -lz
-  JPEG_LIBS         = -ljpeg
+  JPEG_LIBS         = -L/usr/local/lib -ljpeg
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
 

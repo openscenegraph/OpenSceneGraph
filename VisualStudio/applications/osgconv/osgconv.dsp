@@ -87,14 +87,6 @@ LINK32=link.exe
 # Name "Application osgconv - Win32 Debug"
 # Begin Source File
 
-SOURCE=..\..\..\applications\osgconv\GeoSet.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\applications\osgconv\IO_GeoSet.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\applications\osgconv\OrientationConverter.cpp
 # End Source File
 # Begin Source File

@@ -175,7 +175,9 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
             }
             else
             {
-                std::string osgname = osgDB::getFilePath(proxyNode.getFileName(i)) +"/"+ osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
+                std::string path = osgDB::getFilePath(fw.getFileName());
+                std::string new_filename = osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
+                std::string osgname = path.empty() ? new_filename :  (path +"/"+ new_filename) ;
                 fw.indent() << osgname << std::endl;
             }
         }
@@ -209,7 +211,9 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
                 }
                 else
                 {
-                    std::string osgname = osgDB::getFilePath(proxyNode.getFileName(i)) +"/"+ osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
+                    std::string path = osgDB::getFilePath(fw.getFileName());
+                    std::string new_filename = osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
+                    std::string osgname = path.empty() ? new_filename :  (path +"/"+ new_filename) ;
                     osgDB::writeNodeFile(*proxyNode.getChild(i), osgname);
                 }
             }

@@ -189,8 +189,11 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     bool compressed = isCompressedInternalFormat(_internalFormat);
     
     //Rescale if resize hint is set or NPOT not supported or dimension exceeds max size
-    if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported() || inwidth > extensions->maxTextureSize() )
+    if( _resizeNonPowerOfTwoHint || !extensions->isNonPowerOfTwoTextureSupported(_min_filter) || inwidth > extensions->maxTextureSize() )
+    {
+        // this is not thread safe... should really create local image data and rescale to that as per Texture2D.
         image->ensureValidSizeForTexturing(extensions->maxTextureSize());
+    }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 

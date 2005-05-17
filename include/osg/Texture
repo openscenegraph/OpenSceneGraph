@@ -480,7 +480,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 bool isClientStorageSupported() const { return _isClientStorageSupported; }
 
-                bool isNonPowerOfTwoTextureSupported() const { return _isNonPowerOfTwoTextureSupported; }
+                bool isNonPowerOfTwoTextureSupported(GLenum filter) const
+                {
+                    return (filter==GL_LINEAR || filter==GL_NEAREST) ? 
+                            _isNonPowerOfTwoTextureNonMipMappedSupported :
+                            _isNonPowerOfTwoTextureMipMappedSupported;
+                }
 
             protected:
 
@@ -497,7 +502,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isShadowSupported;
                 bool    _isShadowAmbientSupported;
                 bool    _isClientStorageSupported;
-                bool    _isNonPowerOfTwoTextureSupported;
+                bool    _isNonPowerOfTwoTextureMipMappedSupported;
+                bool    _isNonPowerOfTwoTextureNonMipMappedSupported;
                 
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;

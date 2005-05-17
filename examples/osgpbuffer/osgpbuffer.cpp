@@ -116,6 +116,8 @@ class MyTextureSubloadCallback : public osg::Texture2D::SubloadCallback
     public:
     
         MyTextureSubloadCallback() {}
+        
+        virtual ~MyTextureSubloadCallback() {}
 
         virtual void load(const osg::Texture2D& texture,osg::State&) const
         {

@@ -393,15 +393,15 @@ WARN_LOGFILE           =
 
 INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgDB \
+                         $(OSGHOME)/include/osgFX \
                          $(OSGHOME)/include/osgGA \
-                         $(OSGHOME)/include/osgProducer \
+                         $(OSGHOME)/include/osgIntropsection \
                          $(OSGHOME)/include/osgParticle \
-                         $(OSGHOME)/include/osgText \
+                         $(OSGHOME)/include/osgProducer \
                          $(OSGHOME)/include/osgSim \
                          $(OSGHOME)/include/osgTerrain \
-                         $(OSGHOME)/include/osgFX \
+                         $(OSGHOME)/include/osgText \
                          $(OSGHOME)/include/osgUtil \
-                         $(OSGHOME)/include/osgIntropsection \
                          $(OSGHOME)/doc/Doxyfiles/auto_Mainpage
 
 # If the value of the INPUT tag contains directories, you can use the 

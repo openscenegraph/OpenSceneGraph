@@ -24,47 +24,9 @@
 #include <iostream>
 
 #include "OrientationConverter.h"
-#include "GeoSet.h"
 
 typedef std::vector<std::string> FileNameList;
 
-
-////////////////////////////////////////////////////////////////////////////
-// Convert GeoSet To Geometry Visitor.
-////////////////////////////////////////////////////////////////////////////
-
-/** ConvertGeoSetsToGeometryVisitor all the old GeoSet Drawables to the new Geometry Drawables.*/
-class ConvertGeoSetsToGeometryVisitor : public osg::NodeVisitor
-{
-public:
-
-    ConvertGeoSetsToGeometryVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-
-    virtual void apply(osg::Geode& geode)
-    {
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            osg::GeoSet* geoset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
-            if (geoset)
-            {
-                osg::Geometry* geom = geoset->convertToGeometry();
-                if (geom)
-                {
-                    osg::notify(osg::NOTICE)<<"Successfully converted GeoSet to Geometry"<<std::endl;
-                    geode.replaceDrawable(geoset,geom);
-                }
-                else
-                {
-                    osg::notify(osg::NOTICE)<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
-                }
-
-            }
-        }
-    }
-
-    virtual void apply(osg::Node& node) { traverse(node); }
-
-};
 
 class GraphicsContext {
     public:
@@ -621,9 +583,6 @@ int main( int argc, char **argv )
 
     if ( root.valid() )
     {
-        // convert the old style GeoSet to Geometry
-        ConvertGeoSetsToGeometryVisitor cgtg;
-        root->accept(cgtg);
     
         if (smooth)
         {

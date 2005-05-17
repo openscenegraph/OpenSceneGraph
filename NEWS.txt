@@ -7,13 +7,12 @@ OSG News (most significant items from ChangeLog)
 
     OpenGL Shader Language integration.
     
+    osgIntrospection.
+
     Non power of two texture support.
     
-    osgIntrospection.
-    
-    osgFX MultiTextureControl node.
-    
-    osgTerrain supports alpha'd textures and multiple texture layers
+    osgFX MultiTextureControl node, osgTerrain supports alpha'd 
+    textures and multiple texture layers
     
     osg::ProxyNode
     
@@ -23,6 +22,8 @@ OSG News (most significant items from ChangeLog)
     
     new DXF plugin.
     
+    Xine Movie playing plugin.
+
     AGL support under OSX.
     
     API clean ups.
@@ -36,13 +37,13 @@ OSG News (most significant items from ChangeLog)
         Bob Kuehne
         Brede Johansen
         Carlo Camporesi
-        Chris Hansen
+        Chris Hanson
         Don Burns
         Donn Mielcarek
         Don Tidrow
         Farshid Lashkari
         Frederic Marmond
-        Garrat Potts
+        Garrett Potts
         Igor Kravtchenko
         James French
         Jan Ciger
@@ -50,11 +51,12 @@ OSG News (most significant items from ChangeLog)
         Joran Jessurun
         Joson Daly
         Kevin Moiule
-        Leandro Motta
+        Leandro Motta Barros
         Marco Jez
         Mason Menninger
         Mike Weiblen
         Nathan Monteleone
+        Norman Vine
         Olaf Flebbe
         Paul Melis
         Per Fahlberg
@@ -66,6 +68,7 @@ OSG News (most significant items from ChangeLog)
         Sebastien Grignard
         Stephan Huber
         Terry Welsh
+        Thom DeCarlo
         Tony Horrobin
         Tree
         Tugkan Calapoglu

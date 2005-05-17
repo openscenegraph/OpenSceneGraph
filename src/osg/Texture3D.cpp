@@ -101,7 +101,7 @@ void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image&
 
     int width,height,depth;
 
-    if( !_resizeNonPowerOfTwoHint && texExtensions->isNonPowerOfTwoTextureSupported() )
+    if( !_resizeNonPowerOfTwoHint && texExtensions->isNonPowerOfTwoTextureSupported(_min_filter) )
     {
         width = image.s();
         height = image.t();
@@ -278,7 +278,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     }    
     
     //Rescale if resize hint is set or NPOT not supported or dimensions exceed max size
-    if( _resizeNonPowerOfTwoHint || !texExtensions->isNonPowerOfTwoTextureSupported()
+    if( _resizeNonPowerOfTwoHint || !texExtensions->isNonPowerOfTwoTextureSupported(_min_filter)
         || inwidth > extensions->maxTexture3DSize()
         || inheight > extensions->maxTexture3DSize()
         || indepth > extensions->maxTexture3DSize() )

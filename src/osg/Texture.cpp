@@ -713,7 +713,7 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
 
     int width,height;
 
-    if( !_resizeNonPowerOfTwoHint && extensions->isNonPowerOfTwoTextureSupported() )
+    if( !_resizeNonPowerOfTwoHint && extensions->isNonPowerOfTwoTextureSupported(_min_filter) )
     {
         width = image.s();
         height = image.t();
@@ -1286,7 +1286,8 @@ Texture::Extensions::Extensions(const Extensions& rhs):
 
     _isClientStorageSupported = rhs._isClientStorageSupported;
 
-    _isNonPowerOfTwoTextureSupported = rhs._isNonPowerOfTwoTextureSupported;
+    _isNonPowerOfTwoTextureMipMappedSupported = rhs._isNonPowerOfTwoTextureMipMappedSupported;
+    _isNonPowerOfTwoTextureNonMipMappedSupported = rhs._isNonPowerOfTwoTextureNonMipMappedSupported;
 }
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -1315,12 +1316,15 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     
     if (!rhs._isClientStorageSupported) _isClientStorageSupported = false;
 
-    if (!rhs._isNonPowerOfTwoTextureSupported) _isNonPowerOfTwoTextureSupported = false;
+    if (!rhs._isNonPowerOfTwoTextureMipMappedSupported) _isNonPowerOfTwoTextureMipMappedSupported = false;
+    if (!rhs._isNonPowerOfTwoTextureNonMipMappedSupported) _isNonPowerOfTwoTextureNonMipMappedSupported = false;
 }
 
 void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 {
     float glVersion = atof( (const char *)glGetString( GL_VERSION ) );
+    const char* renderer = (const char*) glGetString(GL_RENDERER);
+    std::string rendererString(renderer ? renderer : "");
     
     _isMultiTexturingSupported = ( glVersion >= 1.3 ) ||
                                  isGLExtensionSupported(contextID,"GL_ARB_multitexture") ||
@@ -1344,8 +1348,16 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 
     _isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
 
-    _isNonPowerOfTwoTextureSupported = ( glVersion >= 2.0 ) ||
+    _isNonPowerOfTwoTextureNonMipMappedSupported = ( glVersion >= 2.0 ) ||
                                        isGLExtensionSupported(contextID,"GL_ARB_texture_non_power_of_two");
+
+    _isNonPowerOfTwoTextureMipMappedSupported = _isNonPowerOfTwoTextureNonMipMappedSupported;
+    
+    if (rendererString.find("Radeon")!=std::string::npos)
+    {
+        _isNonPowerOfTwoTextureMipMappedSupported = false;
+        osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;
+    }
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 

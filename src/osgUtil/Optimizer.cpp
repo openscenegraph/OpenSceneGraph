@@ -1326,21 +1326,50 @@ void Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes()
         osg::ref_ptr<osg::Group> group = dynamic_cast<osg::Group*>(*itr);
         if (group.valid())
         {
-            // take a copy of parents list since subsequent removes will modify the original one.
-            osg::Node::ParentList parents = group->getParents();
+            
+            // first check to see if data was attached to the ProxyNode that we need to keep.
+            bool keepData = false;
+            if (!group->getName().empty()) keepData = true;
+            if (!group->getDescriptions().empty()) keepData = true;
+            if (group->getNodeMask()) keepData = true;
+            if (group->getUpdateCallback()) keepData = true;
+            if (group->getEventCallback()) keepData = true;
+            if (group->getCullCallback()) keepData = true;
 
-            for(unsigned int i=0;i<group->getNumChildren();++i)
+            if (keepData)
             {
-                osg::Node* child = group->getChild(i);
+                // create a group to store all proxy's children and data.
+                osg::ref_ptr<osg::Group> newGroup = new osg::Group(*group,osg::CopyOp::SHALLOW_COPY);
+                
+
+                // take a copy of parents list since subsequent removes will modify the original one.
+                osg::Node::ParentList parents = group->getParents();
+
                 for(osg::Node::ParentList::iterator pitr=parents.begin();
                     pitr!=parents.end();
                     ++pitr)
                 {
-                    (*pitr)->replaceChild(group.get(),child);
+                    (*pitr)->replaceChild(group.get(),newGroup.get());
                 }
 
             }
+            else
+            {
+                // take a copy of parents list since subsequent removes will modify the original one.
+                osg::Node::ParentList parents = group->getParents();
 
+                for(unsigned int i=0;i<group->getNumChildren();++i)
+                {
+                    osg::Node* child = group->getChild(i);
+                    for(osg::Node::ParentList::iterator pitr=parents.begin();
+                        pitr!=parents.end();
+                        ++pitr)
+                    {
+                        (*pitr)->replaceChild(group.get(),child);
+                    }
+
+                }
+            }
         }
         else
         {

@@ -1353,7 +1353,7 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 
     _isNonPowerOfTwoTextureMipMappedSupported = _isNonPowerOfTwoTextureNonMipMappedSupported;
     
-    if (rendererString.find("Radeon")!=std::string::npos)
+    if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos)
     {
         _isNonPowerOfTwoTextureMipMappedSupported = false;
         osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;

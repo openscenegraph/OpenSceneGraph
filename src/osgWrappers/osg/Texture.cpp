@@ -190,7 +190,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	I_Method1(void, setGetCompressedTexImageProc, IN, void *, ptr);
 	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data);
 	I_Method0(bool, isClientStorageSupported);
-	I_Method0(bool, isNonPowerOfTwoTextureSupported);
+	I_Method1(bool, isNonPowerOfTwoTextureSupported, IN, GLenum, filter);
 	I_WriteOnlyProperty(void *, CompressedTexImage2DProc);
 	I_WriteOnlyProperty(void *, CompressedTexSubImage2DProc);
 	I_WriteOnlyProperty(bool, GenerateMipMapSupported);

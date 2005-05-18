@@ -5,7 +5,7 @@ OSG News (most significant items from ChangeLog)
 
     >>> OpenGL Shader Language integrated into core, Introspection 
 
-    OpenGL Shader Language integration.
+    OpenGL Shading Language integration.
     
     osgIntrospection.
 
@@ -19,6 +19,8 @@ OSG News (most significant items from ChangeLog)
     osgviewer, osgconv, osgarchive, osgversion moved to application directory
     
     osgpbuffer example now uses Producer's pbuffer support.
+
+    osgParticle::ParticleEffects and osgpartleeffects example.
     
     new DXF plugin.
     
@@ -48,8 +50,9 @@ OSG News (most significant items from ChangeLog)
         James French
         Jan Ciger
         John Grant
+        Joakim Simonsson
         Joran Jessurun
-        Joson Daly
+        Jason Daly
         Kevin Moiule
         Leandro Motta Barros
         Marco Jez

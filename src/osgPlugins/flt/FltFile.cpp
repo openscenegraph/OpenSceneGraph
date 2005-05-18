@@ -27,11 +27,15 @@ FltFile::FltFile(
     MaterialPool* pMaterialPool,
     LtPtAppearancePool* pLtPtAppearancePool,
     LtPtAnimationPool* pLtPtAnimationPool,
-    osgDB::ReaderWriter::Options* options)
+    osgDB::ReaderWriter::Options* options):
+        _useTextureAlphaForTransparancyBinning(true),
+        _doUnitsConversion(true),
+        _defaultDOFAnimationState(false),
+        _desiredUnits(ConvertToMeters)
 {
-    _useTextureAlphaForTransparancyBinning = true;
-    _doUnitsConversion = true;
-    _desiredUnits = ConvertToMeters;
+    
+    
+    
 
     if (pColorPool)
     {

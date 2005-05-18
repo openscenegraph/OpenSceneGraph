@@ -114,6 +114,12 @@ osgsequence cow.osg dumptruck.osg cessna.osg glider.osg
 echo osgshaders
 osgshaders
 
+echo osgviewer glsl_simple.osg
+osgviewer glsl_simple.osg
+
+echo osgviewer glsl_confetti.osg
+osgviewer glsl_confetti.osg
+
 echo osgshadowtexture
 osgshadowtexture cessna.osg
 

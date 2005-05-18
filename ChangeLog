@@ -1,3 +1,126 @@
+2005-05-18 22:17  robert
+
+	* src/osgWrappers/osg/ClearNode.cpp: Updated wrappers.
+
+2005-05-18 20:55  robert
+
+	* include/osg/ClearNode, src/osg/ClearNode.cpp,
+	  src/osgPlugins/osg/ClearNode.cpp, src/osgUtil/SceneView.cpp:
+	  Added s/getClearMask() support to osg::ClearNode,
+	  osgUtil::SceneView and the .osg plugin.
+
+2005-05-18 20:04  robert
+
+	* src/osgPlugins/ive/: DOFTransform.cpp, IveVersion.h: From Joakim
+	  Simonsson, DOFTransform multiplication order support added to
+	  .ive format.	     With tweak from Robert Osfield to wrap new
+	  read and write with a new version number	 to allow old files
+	  contain DOFTransforms to continue to work.
+
+2005-05-18 19:43  robert
+
+	* src/osgPlugins/flt/: FltFile.cpp, FltFile.h, flt2osg.cpp: From
+	  Joakim Simonsson:
+
+	     "DOFAnimation's default state could now be controlled by the
+	  RW option.
+
+	      The option string is "dofAnimation"
+
+	      If the option string is omitted the default animation state
+	  is off."
+
+2005-05-18 19:31  robert
+
+	* src/osg/: StateAttribute.cpp, Uniform.cpp: Fixed copy and paste
+	  mistakes in setEventCallback methods
+
+2005-05-17 21:12  robert
+
+	* src/osg/Texture.cpp: Added RADEON as render type for disabling
+	  mipmapped NPO2T
+
+2005-05-17 16:00  robert
+
+	* doc/Doxyfiles/: auto_Doxyfile, core_Doxyfile: Cleaned up in prep
+	  for release.
+
+2005-05-17 15:25  robert
+
+	* src/osgUtil/Optimizer.cpp: Improved the handling of data attached
+	  to proxy nodes
+
+2005-05-17 14:50  robert
+
+	* src/osgPlugins/osg/ProxyNode.cpp: Changed the default behavior to
+	  not writing out proxynode children.
+
+2005-05-17 14:47  robert
+
+	* src/osgPlugins/osg/ProxyNode.cpp: Improved the handling of
+	  writing out of proxy node files.
+
+2005-05-17 14:34  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: From Daniel Sjölie, for the
+	  purpose of maintainability, made the load proxy nodes code the
+	  standard, remove the older code that remained as part of #else
+	  #endif blocks, and remove the erroneous implementation of caching
+	  of proxynodes.
+
+2005-05-17 14:24  robert
+
+	* examples/osgpbuffer/osgpbuffer.cpp: Added destructor to fix
+	  Cygwin build problem.
+
+2005-05-17 12:11  robert
+
+	* src/osgWrappers/osg/Texture.cpp: Updated wrappers.
+
+2005-05-17 12:00  robert
+
+	* include/osg/Texture, src/osg/Texture.cpp, src/osg/Texture1D.cpp,
+	  src/osg/Texture3D.cpp: Added differentiation between Non power of
+	  two textures when mip mapped vs when not mipped mapped to get
+	  round the issue of incomplete support under ATI cards.
+
+2005-05-17 10:53  robert
+
+	* NEWS.txt, VisualStudio/applications/osgconv/osgconv.dsp,
+	  applications/osgconv/GNUmakefile,
+	  applications/osgconv/GNUmakefile.inst,
+	  applications/osgconv/GeoSet.cpp, applications/osgconv/GeoSet.h,
+	  applications/osgconv/IO_GeoSet.cpp,
+	  applications/osgconv/osgconv.cpp: Removed old GeoSet backward
+	  compatibility code since its now redudent.
+
+2005-05-17 10:06  robert
+
+	* Make/makedefs, src/osgPlugins/net/sockstream.cpp: From Thom
+	  DeCarlo, build fixes for Cygwin.
+
+2005-05-16 19:24  robert
+
+	* NEWS.txt: Fixed name.
+
+2005-05-16 18:37  robert
+
+	* NEWS.txt: Update to NEWS w.r.t contributors
+
+2005-05-16 18:17  robert
+
+	* include/osg/Version, src/osg/Version.cpp, src/osgDB/Version.cpp,
+	  src/osgGA/Version.cpp, src/osgParticle/Version.cpp,
+	  src/osgProducer/Version.cpp, src/osgSim/Version.cpp,
+	  src/osgTerrain/Version.cpp, src/osgText/Version.cpp,
+	  src/osgUtil/Version.cpp: Bumped version numbers to 0.9.9 in
+	  rediness for 0.9.9 release.
+
+2005-05-16 17:50  robert
+
+	* ChangeLog, NEWS.txt: Updated NEWS and ChangeLog in prep for
+	  release
+
 2005-05-16 16:51  robert
 
 	* src/: osg/dxtctool.cpp, osg/dxtctool.h,

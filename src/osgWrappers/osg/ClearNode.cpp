@@ -26,7 +26,7 @@
 BEGIN_OBJECT_REFLECTOR(osg::ClearNode)
 	I_BaseType(osg::Group);
 	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::ClearNode &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults2(IN, const osg::ClearNode &, cs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
@@ -37,7 +37,10 @@ BEGIN_OBJECT_REFLECTOR(osg::ClearNode)
 	I_Method0(bool, getRequiresClear);
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
 	I_Method0(const osg::Vec4 &, getClearColor);
+	I_Method1(void, setClearMask, IN, GLbitfield, mask);
+	I_Method0(GLbitfield, getClearMask);
 	I_Property(const osg::Vec4 &, ClearColor);
+	I_Property(GLbitfield, ClearMask);
 	I_Property(bool, RequiresClear);
 END_REFLECTOR
 

@@ -60,13 +60,13 @@ void StateAttribute::setEventCallback(Callback* ec)
 {
     osg::notify(osg::INFO)<<"StateAttribute::Setting Event callbacks"<<std::endl;
 
-    if (_updateCallback==ec) return;
+    if (_eventCallback==ec) return;
     
     int delta = 0;
-    if (_updateCallback.valid()) --delta;
+    if (_eventCallback.valid()) --delta;
     if (ec) ++delta;
 
-    _updateCallback = ec;
+    _eventCallback = ec;
     
     if (delta!=0)
     {
@@ -74,7 +74,7 @@ void StateAttribute::setEventCallback(Callback* ec)
             itr!=_parents.end();
             ++itr)
         {
-            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
+            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
         }
     }
 }

@@ -33,10 +33,11 @@ class OSG_EXPORT ClearNode : public Group
         
         ClearNode();
 
-        ClearNode(const ClearNode& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Group(es,copyop),
-            _requiresClear(es._requiresClear),
-            _clearColor(es._clearColor) {}  
+        ClearNode(const ClearNode& cs, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Group(cs,copyop),
+            _requiresClear(cs._requiresClear),
+            _clearColor(cs._clearColor),
+            _clearMask(cs._clearMask) {}  
 
 
         META_Node(osg, ClearNode);
@@ -52,13 +53,21 @@ class OSG_EXPORT ClearNode : public Group
 
         /** Returns the clear color. */
         inline const Vec4& getClearColor() const { return _clearColor; }
+        
+        /** Set the clear mask used in glClear(..).
+          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
+        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
+
+        /** Get the clear mask.*/
+        inline GLbitfield getClearMask() const { return _clearMask; }
 
     protected :
     
         virtual ~ClearNode() {}
         
-        bool _requiresClear;
-        Vec4 _clearColor;  
+        bool        _requiresClear;
+        Vec4        _clearColor;
+        GLbitfield  _clearMask;
 };
 
 }

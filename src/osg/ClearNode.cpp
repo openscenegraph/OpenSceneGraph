@@ -21,7 +21,8 @@ using namespace osg;
  */
 ClearNode::ClearNode():
     _requiresClear(true),
-    _clearColor(0.0f,0.0f,0.0f,1.0f)
+    _clearColor(0.0f,0.0f,0.0f,1.0f),
+    _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 {
     setCullingActive(false);
     StateSet* stateset = new StateSet;

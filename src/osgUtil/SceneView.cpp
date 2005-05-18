@@ -615,10 +615,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         if (clearNode->getRequiresClear())
         {
             renderStage->setClearColor(clearNode->getClearColor());
-            renderStage->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-            // really should set clear mask here, but what to? Need
-            // to consider the stencil and accumulation buffers..
-            // will defer to later.  Robert Osfield. October 2001.
+            renderStage->setClearMask(clearNode->getClearMask());
         }
         else
         {

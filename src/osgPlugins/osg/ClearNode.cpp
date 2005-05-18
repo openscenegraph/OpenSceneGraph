@@ -67,6 +67,18 @@ bool ClearNode_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr[0].matchWord("clearMask"))
+    {
+        if (fr[1].isUInt())
+        {
+            unsigned int value=0;
+            fr[1].getUInt(value);
+            es.setClearMask(static_cast<GLbitfield>(value));
+            iteratorAdvanced = true;
+            fr+=2;
+        }
+    }
+
     return iteratorAdvanced;
 }
 
@@ -86,6 +98,7 @@ bool ClearNode_writeLocalData(const Object& obj, Output& fw)
     }
     
     fw.indent() << "clearColor "<<es.getClearColor()<< std::endl;
+    fw.indent() << "clearMask "<<static_cast<unsigned int>(es.getClearMask())<< std::endl;
 
     return true;
 }

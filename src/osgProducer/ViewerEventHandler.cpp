@@ -812,12 +812,19 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 Producer::CameraConfig* cfg = _cg->getCameraConfig();
 
                 bool shouldBeFullScreen = false;
+                bool flag = true;
                 for( unsigned int i = 0; i < cfg->getNumberOfCameras(); ++i )
                 {
                     Producer::Camera *cam = cfg->getCamera(i);
                     Producer::RenderSurface* rs = cam->getRenderSurface();
+                    if( rs->getDrawableType() != Producer::RenderSurface::DrawableType_Window )
+                        continue;
                   
-                    if(i==0) shouldBeFullScreen =! rs->isFullScreen();    // Remember the initial state of the first render surface
+                    if( flag )
+                    {
+                        shouldBeFullScreen =! rs->isFullScreen();    // Remember the initial state of the first render surface
+                        flag = false;
+                    }
 
                     if ( shouldBeFullScreen!=rs->isFullScreen() )        // If the current render surface hasn't been modified already
                     {

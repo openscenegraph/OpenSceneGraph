@@ -26,7 +26,7 @@ class FltFile : public osg::Referenced
             MaterialPool* pMaterialPool = NULL,
             LtPtAppearancePool* pLtPtAppearancePool = NULL,
             LtPtAnimationPool* pLtPtAnimationPool = NULL,
-            osgDB::ReaderWriter::Options* options =NULL);
+            osgDB::ReaderWriter::Options* options = NULL);
 
         virtual osg::Object* readObject(const std::string& fileName);
         virtual osg::Node* readNode(const std::string& fileName);
@@ -70,6 +70,9 @@ class FltFile : public osg::Referenced
         FltFile::ConvertUnits getDesiredUnits() const { return _desiredUnits; }
         std::string getDesiredUnitsString() const;
 
+        void setDefaultDOFAnimationState(bool defaultDOFAnimationState) { _defaultDOFAnimationState = defaultDOFAnimationState; }
+        bool getDefaultDOFAnimationState() const { return _defaultDOFAnimationState; }
+
         int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
         void getOrigin( double& latitude, double& longitude ) const;
@@ -95,6 +98,7 @@ class FltFile : public osg::Referenced
         bool                        _useInternalLtPtPalettes;
         bool                        _useTextureAlphaForTransparancyBinning;
         bool                        _doUnitsConversion;
+        bool                        _defaultDOFAnimationState; //< Default DOF Animation state
         ConvertUnits                _desiredUnits;
 
         std::string                 _directory;

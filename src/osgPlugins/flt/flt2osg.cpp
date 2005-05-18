@@ -91,8 +91,6 @@
 static int dprint = 0 ;
 #define DPRINT if(dprint)fprintf
 
-#define USE_PROXYNODE_FOR_EXTERNAL_FILES
-
 using namespace flt;
 
 unsigned int mystrnlen(char *s, unsigned int maxLen)
@@ -1102,6 +1100,9 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
     transform->setIncrementScale(osg::Vec3(p_data->dfXscale._dfIncrement,
                         p_data->dfYscale._dfIncrement,
                         p_data->dfZscale._dfIncrement));
+
+    // default DOF animation state
+    transform->setAnimationOn(rec->getFltFile()->getDefaultDOFAnimationState());
 
     // compute the put matrix.
     osg::Vec3 O ( p_data->OriginLocalDOF.x(),

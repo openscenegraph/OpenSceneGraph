@@ -1,30 +1,67 @@
-#include <osg/GLExtensions>
-#include <osg/Node>
-#include <osg/Geometry>
-#include <osg/Notify>
-#include <osg/MatrixTransform>
-#include <osg/Texture2D>
-#include <osg/Stencil>
-#include <osg/ColorMask>
-#include <osg/Depth>
-#include <osg/Billboard>
-#include <osg/Material>
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This application is open source and may be redistributed and/or modified   
+ * freely and without restriction, both in commericial and non commericial applications,
+ * as long as this copyright notice is maintained.
+ * 
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 
-#include <osgUtil/TransformCallback>
-#include <osgUtil/SmoothingVisitor>
-#include <osgUtil/UpdateVisitor>
-
-#include <osgDB/Registry>
 #include <osgDB/ReadFile>
-
+#include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
-#include <Producer/Camera>
-#include <Producer/CameraConfig>
+#include <osg/CoordinateSystemNode>
 
-osg::ref_ptr<Producer::Camera> gPBufferCamera;
-osg::ref_ptr<osgProducer::OsgSceneHandler> gPBufferSceneHandler;
+#include <osg/Texture2D>
+#include <osg/MatrixTransform>
 
-// call back which cretes a deformation field to oscilate the model.
+#include <osgUtil/SmoothingVisitor>
+#include <osgUtil/TransformCallback>
+
+
+class PBufferTexture2D : public osg::Texture2D
+{
+    public:
+        PBufferTexture2D( Producer::RenderSurface *pbuffer ):
+            _pbuffer(pbuffer) {}
+
+        virtual void apply(osg::State& state) const
+        {
+            const unsigned int contextID = state.getContextID();
+
+            TextureObject* textureObject = getTextureObject(contextID);
+            if( textureObject == 0 )
+            {
+                GLuint format = 
+                    _pbuffer->getRenderToTextureMode() == Producer::RenderSurface::RenderToRGBTexture ? GL_RGB:
+                    _pbuffer->getRenderToTextureMode() == Producer::RenderSurface::RenderToRGBATexture ? GL_RGBA : 0 ;
+                unsigned int width  = _pbuffer->getWindowWidth();
+                unsigned int height = _pbuffer->getWindowHeight();
+
+                _textureObjectBuffer[contextID] = textureObject = 
+                    generateTextureObject( contextID, GL_TEXTURE_2D, 1, format, width, height, 1, 0 );
+
+                textureObject->bind();
+                applyTexParameters( GL_TEXTURE_2D, state);
+
+                glTexImage2D( GL_TEXTURE_2D, 0, 
+                format, width, height, 0, format, GL_UNSIGNED_BYTE, 0 );
+                textureObject->setAllocated(true);
+            }
+            else
+            {
+                textureObject->bind();
+                _pbuffer->bindPBufferToTexture( Producer::RenderSurface::FrontBuffer );
+            }
+        }
+
+    private:
+        Producer::ref_ptr<Producer::RenderSurface> _pbuffer;
+};
+
+
 class MyGeometryCallback : 
     public osg::Drawable::UpdateCallback, 
     public osg::Drawable::AttributeFunctor
@@ -108,33 +145,7 @@ class MyGeometryCallback :
         
 };
 
-
-// Custom Texture subload callback, just acts the the standard subload modes in osg::Texture right now
-// but code be used to define your own style callbacks.
-class MyTextureSubloadCallback : public osg::Texture2D::SubloadCallback
-{
-    public:
-    
-        MyTextureSubloadCallback() {}
-        
-        virtual ~MyTextureSubloadCallback() {}
-
-        virtual void load(const osg::Texture2D& texture,osg::State&) const
-        {
-            osg::notify(osg::INFO)<<"doing load"<<std::endl;
-            glTexImage2D( GL_TEXTURE_2D, 0, texture.getInternalFormat(), texture.getTextureWidth(), texture.getTextureHeight(), 0, GL_RGB, GL_FLOAT, 0 );
-        }
-        
-        virtual void subload(const osg::Texture2D& ,osg::State&) const
-        {
-            osg::notify(osg::INFO)<<"doing subload"<<std::endl;
-            gPBufferCamera->getRenderSurface()->bindPBufferToTexture(Producer::RenderSurface::FrontBuffer);
-        }
-};
-
-
-
-osg::Node* createTexturedFlag(unsigned int width, unsigned int height)
+osg::Node* createTexturedFlag(unsigned int width, unsigned int height, Producer::RenderSurface *pbuffer)
 {
     // create the quad to visualize.
     osg::Geometry* polyGeom = new osg::Geometry();
@@ -190,15 +201,13 @@ osg::Node* createTexturedFlag(unsigned int width, unsigned int height)
     osg::StateSet* stateset = new osg::StateSet;
 
     // Dynamic texture filled with data from pbuffer.
-    osg::Texture2D* texture = new osg::Texture2D;
-    //texture->setSubloadMode(osg::Texture::IF_DIRTY);
+    osg::Texture2D* texture = new PBufferTexture2D(pbuffer);
     texture->setInternalFormat(GL_RGB);
     texture->setTextureSize(width,height);
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
     texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP);
     texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP);
-    texture->setSubloadCallback(new MyTextureSubloadCallback());
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
     polyGeom->setStateSet(stateset);
@@ -214,99 +223,165 @@ osg::Node* createTexturedFlag(unsigned int width, unsigned int height)
     return parent;
 }
 
-void InitPBufferCamera(osg::Node* subgraph, unsigned int width, unsigned int height)
+
+osg::ref_ptr<osg::Node> buildSceneGraphAndSetCameraViews(osg::Node *loadedModel, 
+        Producer::Camera *pbufferCamera,
+        Producer::Camera *mainCamera)
 {
-    if (!subgraph) return;
+    osg::ref_ptr<osg::Group> group = new osg::Group;
 
-    gPBufferCamera = new Producer::Camera;
-    gPBufferCamera->getRenderSurface()->setDrawableType( Producer::RenderSurface::DrawableType_PBuffer );
-    gPBufferCamera->getRenderSurface()->setWindowRectangle( 0, 0, width, height );
-    gPBufferCamera->getRenderSurface()->setRenderToTextureMode(Producer::RenderSurface::RenderToRGBTexture);
+    osg::ref_ptr<osg::MatrixTransform> loadedModelTransform = new osg::MatrixTransform;
+    loadedModelTransform->addChild(loadedModel);
 
-    gPBufferSceneHandler = new osgProducer::OsgSceneHandler;
-    gPBufferSceneHandler->getSceneView()->setDefaults();
-    gPBufferSceneHandler->getSceneView()->setSceneData(subgraph);
+    osg::ref_ptr<osg::NodeCallback> nc = new osgUtil::TransformCallback(
+            loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    loadedModelTransform->setUpdateCallback(nc.get());
 
-    gPBufferCamera->setSceneHandler( gPBufferSceneHandler.get());
+    loadedModelTransform->setNodeMask( 0x1 );
+    group->addChild( loadedModelTransform.get() );
+    osg::ref_ptr<osg::Node> texturedFlag = createTexturedFlag( 1024, 512, pbufferCamera->getRenderSurface() );
 
-    gPBufferCamera->setClearColor( 0.1f,0.9f,0.3f,1.0f );
+    texturedFlag->setNodeMask( 0x2 );
+    group->addChild( texturedFlag.get());
 
-    const osg::BoundingSphere& bs = subgraph->getBound();
-    if (!bs.valid())
-    {
-        osg::notify(osg::WARN) << "bb invalid"<<subgraph<<std::endl;
-        return;
-    }
+    osg::BoundingSphere  bs = loadedModel->getBound();
+    pbufferCamera->setLensFrustum( -0.5, 0.5, -0.25, 0.25, 1.0, 1000.0 );
+    pbufferCamera->setViewByLookat( 
+            bs.center()[0], bs.center()[1] - bs.radius() * 3, bs.center()[2],
+            bs.center()[0], bs.center()[1], bs.center()[2],
+            0, 0, 1 );
 
-    float znear = 1.0f*bs.radius();
-    float zfar  = 3.0f*bs.radius();
-        
-    // 2:1 aspect ratio as per flag geomtry below.
-    float top   = 0.25f*znear;
-    float right = 0.5f*znear;
+    mainCamera->getRenderSurface()->setReadDrawable( pbufferCamera->getRenderSurface());
 
-    znear *= 0.9f;
-    zfar *= 1.1f;
+    return group.get();
+}
 
-    osg::Vec3 eye(bs.center() + osg::Vec3(0.0f, 2.0f, 0.0f)*bs.radius());
+osg::ref_ptr<osg::Node> buildSceneGraph(osg::Node *loadedModel, Producer::RenderSurface *pbuffer )
+{
+    osg::ref_ptr<osg::Group> group = new osg::Group;
 
-    gPBufferCamera->setViewByLookat(
-        eye.x(), eye.y(), eye.z(),
-        bs.center().x(), bs.center().y(), bs.center().z(),
-        0.0f, 0.0f, 1.0f);
+    osg::ref_ptr<osg::MatrixTransform> loadedModelTransform = new osg::MatrixTransform;
+    loadedModelTransform->addChild(loadedModel);
+
+    osg::ref_ptr<osg::NodeCallback> nc = new osgUtil::TransformCallback(
+            loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    loadedModelTransform->setUpdateCallback(nc.get());
+
+    // Set the loaded model to render only in the PBuffer camera
+    loadedModelTransform->setNodeMask( 0x1 );
+    group->addChild( loadedModelTransform.get() );
+    osg::ref_ptr<osg::Node> texturedFlag = createTexturedFlag( 1024, 512, pbuffer );
+
+    // Set the textured flag to render only in the Main camera
+    loadedModelTransform->setNodeMask( 0x1 );
+    texturedFlag->setNodeMask( 0x2 );
+    group->addChild( texturedFlag.get());
+
+    return group.get();
+}
+
+Producer::ref_ptr<Producer::CameraConfig> buildCameraConfig( osg::Node &loadedModel )
+{
+    // Set up the PBuffer camera
+    Producer::ref_ptr<Producer::Camera> pbufferCamera = new  Producer::Camera;
+    pbufferCamera->getRenderSurface()->setWindowRectangle( 0, 0, 1024, 512 );
+    pbufferCamera->getRenderSurface()->setDrawableType( Producer::RenderSurface::DrawableType_PBuffer );
+    pbufferCamera->getRenderSurface()->setRenderToTextureMode(Producer::RenderSurface::RenderToRGBATexture);
+
+    // We will manually set the PBuffer camera's Lens and View, 
+    // so do not share with the rest of the Camera config.
+    pbufferCamera->setShareLens(false);
+    pbufferCamera->setShareView(false);
+
+    // Set the Lens and View for the  Pbuffer camera according to the loaded model's size
+    osg::BoundingSphere  bs = loadedModel.getBound();
+    pbufferCamera->setLensFrustum( -0.5, 0.5, -0.25, 0.25, 1.0, 1000.0 );
+    pbufferCamera->setViewByLookat( 
+            bs.center()[0], bs.center()[1] - bs.radius() * 3, bs.center()[2],
+            bs.center()[0], bs.center()[1], bs.center()[2],
+            0, 0, 1 );
+
+    // Set up the main camera
+    Producer::ref_ptr<Producer::Camera> mainCamera = new  Producer::Camera;
+    mainCamera->getRenderSurface()->setWindowRectangle( 0, 0, 800, 600 );
+
+    // Create the Camera config
+    Producer::ref_ptr<Producer::CameraConfig> cfg = new Producer::CameraConfig;
+
+    // Cameras added in "alphabetical" order
+    cfg->addCamera("A_PBufferCamera", pbufferCamera.get());
+    cfg->addCamera("B_MainCamera",    mainCamera.get());
+
+    // Set up the input area
+    Producer::ref_ptr<Producer::InputArea> inputArea = new Producer::InputArea;
+    inputArea->addRenderSurface( mainCamera->getRenderSurface());
+    cfg->setInputArea( inputArea.get() );
 
 
-    gPBufferCamera->setLensFrustum(-right,right,-top,top,znear,zfar);
+    // Set the main Camera's read drawable to be the pbufferCamera's drawable
+    mainCamera->getRenderSurface()->setReadDrawable( pbufferCamera->getRenderSurface());
 
-    // The Producer PBuffer example says:
-    //
-    //      "This line is not necessary on glX pbuffer examples, but Windows
-    //       seems to  not like rendering to the back buffer on pbuffers"
-    //
-    // but I've found that doing this causes a flickering texture.  Everything
-    // works fine for me (on Windows) if I just comment it out.
-
-    //gPBufferSceneHandler->getSceneView()->setDrawBufferValue( GL_FRONT );
+    return cfg;
 }
 
 int main( int argc, char **argv )
 {
+
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-
-    osg::DisplaySettings::instance()->readCommandLine(arguments);
-
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use pbuffers and render to texture..");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--width <integer>","Set the width of the pbuffer & texture");
-    arguments.getApplicationUsage()->addCommandLineOption("--height <integer>","Set the height of the pbuffer & texture");
     
-    // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
+    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line paramters");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindigs.");
+
+    /// Load models from command line and build scene graph
+    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+
+    // read the scene from the list of file specified commandline args.
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+
+    // if no model has been successfully loaded report failure.
+    if (!loadedModel) 
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        return 1;
+    }
+
+    // Create the camera config.  We use the loaded model to set the Lens and View on the PBuffer camera
+    Producer::ref_ptr<Producer::CameraConfig> cameraConfig = buildCameraConfig( *(loadedModel.get()) );
+
+    // We need to build the rest of the scene graph after the camera config has been created because we need 
+    // to pass it the PBuffer, which will be the texture for the textured flag
+    Producer::RenderSurface *pbuffer = cameraConfig->getCamera(0)->getRenderSurface();
+    osg::ref_ptr<osg::Node >root = buildSceneGraph(loadedModel.get(), pbuffer );
+    
+
+    // construct the viewer with the camera config.
+    osgProducer::Viewer viewer(cameraConfig.get());
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
-    
-    unsigned int width=1024;
-    unsigned int height=512;
-
-    while (arguments.read("--width",width)) {}
-    while (arguments.read("--height",height)) {}
 
     // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
+    bool helpAll = arguments.read("--help-all");
+    unsigned int helpType = ((helpAll || arguments.read("-h") || arguments.read("--help"))? osg::ApplicationUsage::COMMAND_LINE_OPTION : 0 ) |
+                            ((helpAll ||  arguments.read("--help-env"))? osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE : 0 ) |
+                            ((helpAll ||  arguments.read("--help-keys"))? osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING : 0 );
+    if (helpType)
     {
-        arguments.getApplicationUsage()->write(std::cout);
+        arguments.getApplicationUsage()->write(std::cout, helpType);
         return 1;
     }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -321,44 +396,50 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // load the nodes from the commandline arguments.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
 
-    if (!loadedModel)
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
     {
-//        write_usage(osg::notify(osg::NOTICE),argv[0]);
-        return 1;
+        arguments.writeErrorMessages(std::cout);
     }
 
-    // create a transform to spin the model.
-    osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
-    loadedModelTransform->addChild(loadedModel.get());
+    osg::Timer_t end_tick = osg::Timer::instance()->tick();
 
-    osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
-    loadedModelTransform->setUpdateCallback(nc);
+    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
-    osg::Group* rootNode = new osg::Group();
+    // optimize the scene graph, remove rendundent nodes and state etc.
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(root.get());
 
-    // Create a waving rectangle that will use the pbuffer as a texture.
-    rootNode->addChild(createTexturedFlag(width,height));
-
-    // Set up a camera that will render a view of the model to the pbuffer.
-    InitPBufferCamera(loadedModelTransform,width, height);
-
-    // set the scene to render
-    viewer.setSceneData(rootNode);
-
+    // pass the loaded scene graph to the viewer.
+    viewer.setSceneData(root.get());
 
     // create the windows and run the threads.
     viewer.realize();
 
-#if defined(GLX_VERSION_1_1)
-    // This determins where Pixel reads occur from.  The main Camera will
-    // set the pBuffer camera's rendersurface as the buffer to read from.
-    Producer::Camera* camera = viewer.getCamera(0);
-    camera->getRenderSurface()->setReadDrawable( gPBufferCamera->getRenderSurface());
-#endif
+    // The loaded model is to be viewed in the pbuffer camera, but 
+    // the textured flag is viewed in the main camera.  The nodes have
+    // been given node masks, now set the traversal masks on the cameras.
+    // Note that this must be done after viewer.realize().
+    {
+        osgProducer::Viewer::SceneHandlerList shl = viewer.getSceneHandlerList();
+        osgProducer::Viewer::SceneHandlerList::iterator p;
+        unsigned int n = 0;
+        for( p = shl.begin(); p != shl.end(); p++ )
+        {
+            int inheritanceMask = (*p)->getSceneView()->getInheritanceMask();
+            inheritanceMask &= ~(osg::CullSettings::CULL_MASK);
+            (*p)->getSceneView()->setInheritanceMask( inheritanceMask );
+            (*p)->getSceneView()->setCullMask( 1<<(n));
+            n++;
+        }
+    }
+
+printf( "PBuffer window: 0x%x\n", pbuffer->getWindow() );
+
+    viewer.getCamera(0)->setClearColor( 0.1f,0.9f,0.3f,1.0f );
 
     while( !viewer.done() )
     {
@@ -367,22 +448,22 @@ int main( int argc, char **argv )
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
-        loadedModelTransform->accept(*viewer.getUpdateVisitor());
         viewer.update();
-
+         
         // fire off the cull and draw traversals of the scene.
-        // first the pbuffer draw
-        gPBufferCamera->frame();
-
-        // then the main view draw.
         viewer.frame();
+        
     }
     
     // wait for all cull and draw threads to complete before exit.
     viewer.sync();
 
-    gPBufferCamera = 0;
-    gPBufferSceneHandler = 0;
+    // run a clean up frame to delete all OpenGL objects.
+    viewer.cleanup_frame();
+
+    // wait for all the clean up frame to complete.
+    viewer.sync();
 
     return 0;
 }
+

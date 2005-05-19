@@ -36,7 +36,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
     public:
     
 
-        RenderStage(SortMode mode=SORT_BY_STATE);
+        RenderStage(SortMode mode=getDefaultRenderBinSortMode());
         
         RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         

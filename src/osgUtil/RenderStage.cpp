@@ -36,8 +36,6 @@ RenderStage::RenderStage(SortMode mode):
     _clearAccum.set(0.0f,0.0f,0.0f,0.0f);
     _clearDepth = 1.0;
     _clearStencil = 0;
-
-
 }
 
 RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):

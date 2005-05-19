@@ -15,6 +15,7 @@
 #include <osgUtil/Statistics>
 
 #include <osg/Notify>
+#include <osg/ApplicationUsage>
 
 #include <algorithm>
 
@@ -30,11 +31,11 @@ class RenderBinPrototypeList : public osg::Referenced, public std::map< std::str
 };
 
 // register a RenderStage prototype with the RenderBin prototype list.
-RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",new RenderBin(RenderBin::SORT_BY_STATE));
+RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",new RenderBin(RenderBin::getDefaultRenderBinSortMode()));
 RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",new RenderBin(RenderBin::SORT_BACK_TO_FRONT));
 
 
-RenderBinPrototypeList* renderBinPrototypeList()
+static RenderBinPrototypeList* renderBinPrototypeList()
 {
     static osg::ref_ptr<RenderBinPrototypeList> s_renderBinPrototypeList = new  RenderBinPrototypeList;
     return s_renderBinPrototypeList.get();
@@ -81,6 +82,36 @@ void RenderBin::removeRenderBinPrototype(RenderBin* proto)
         RenderBinPrototypeList::iterator itr = list->find(proto->className());
         if (itr != list->end()) list->erase(itr);
     }
+}
+
+static bool s_defaultBinSortModeInitialized = false;
+static RenderBin::SortMode s_defaultBinSortMode = RenderBin::SORT_BY_STATE;
+static osg::ApplicationUsageProxy RenderBin_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DEFAULT_BIN_SORT_MODE <type>","SORT_BY_STATE | SORT_BY_STATE_THEN_FRONT_TO_BACK | SORT_FRONT_TO_BACK | SORT_BACK_TO_FRONT");
+
+void RenderBin::setDefaultRenderBinSortMode(RenderBin::SortMode mode)
+{
+    s_defaultBinSortModeInitialized = true;
+    s_defaultBinSortMode = mode;
+}
+
+
+RenderBin::SortMode RenderBin::getDefaultRenderBinSortMode()
+{
+    if (!s_defaultBinSortModeInitialized)
+    {
+        s_defaultBinSortModeInitialized = true;
+        
+        const char* str = getenv("OSG_DEFAULT_BIN_SORT_MODE");
+        if (str)
+        {
+            if (strcmp(str,"SORT_BY_STATE")==0) s_defaultBinSortMode = RenderBin::SORT_BY_STATE;
+            else if (strcmp(str,"SORT_BY_STATE_THEN_FRONT_TO_BACK")==0) s_defaultBinSortMode = RenderBin::SORT_BY_STATE_THEN_FRONT_TO_BACK;
+            else if (strcmp(str,"SORT_FRONT_TO_BACK")==0) s_defaultBinSortMode = RenderBin::SORT_FRONT_TO_BACK;
+            else if (strcmp(str,"SORT_BACK_TO_FRONT")==0) s_defaultBinSortMode = RenderBin::SORT_BACK_TO_FRONT;
+        }
+    }
+    
+    return s_defaultBinSortMode;
 }
 
 RenderBin::RenderBin(SortMode mode)
@@ -144,6 +175,9 @@ void RenderBin::sortImplementation()
         case(SORT_BY_STATE):
             sortByState();
             break;
+        case(SORT_BY_STATE_THEN_FRONT_TO_BACK):
+            sortByStateThenFrontToBack();
+            break;
         case(SORT_FRONT_TO_BACK):
             sortFrontToBack();
             break;
@@ -165,11 +199,33 @@ struct SortByStateFunctor
 
 void RenderBin::sortByState()
 {
+    //osg::notify(osg::NOTICE)<<"sortByState()"<<std::endl;
     // actually we'll do nothing right now, as fine grained sorting by state
     // appears to cost more to do than it saves in draw.  The contents of
     // the RenderGraph leaves is already coarse grained sorted, this
     // sorting is as a function of the cull traversal.
     // cout << "doing sortByState "<<this<<endl;
+}
+
+
+struct RenderGraphFrontToBackSortFunctor
+{
+    bool operator() (const RenderGraph* lhs,const RenderGraph* rhs) const
+    {
+        return (lhs->_minimumDistance<rhs->_minimumDistance);
+    }
+};
+
+void RenderBin::sortByStateThenFrontToBack()
+{
+    for(RenderGraphList::iterator itr=_renderGraphList.begin();
+        itr!=_renderGraphList.end();
+        ++itr)
+    {
+        (*itr)->sortFrontToBack();
+        (*itr)->getMinimumDistance();
+    }
+    std::sort(_renderGraphList.begin(),_renderGraphList.end(),RenderGraphFrontToBackSortFunctor());
 }
 
 struct FrontToBackSortFunctor

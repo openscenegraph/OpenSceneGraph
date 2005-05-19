@@ -141,8 +141,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Set the uniforms that SceneView should set set up on each frame.*/        
         void setActiveUniforms(int activeUniforms) { _activeUniforms = activeUniforms; }
 
-        /** Set the uniforms that SceneView should set set up on each frame.*/        
-        int getActiveUniforms(int activeUniforms) const { return _activeUniforms; }
+        /** Get the uniforms that SceneView should set set up on each frame.*/        
+        int getActiveUniforms() const { return _activeUniforms; }
 
         void updateUniforms();
         

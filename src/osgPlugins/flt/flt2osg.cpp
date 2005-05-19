@@ -2488,6 +2488,20 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
         //Path for Nested external references
         osgDB::ReaderWriter::Options *options = pFile->getOptions();
 
+        if(options && (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_NODES)!=0)
+        {
+            external = dynamic_cast<osg::Group*> (osgDB::Registry::instance()->getFromObjectCache(rec->getFilename()));
+            if(external)
+            {
+                osg::ProxyNode *proxynode = new osg::ProxyNode;
+                proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+                proxynode->addChild(external, rec->getFilename());
+                osg::Group *tempParent = visitAncillary(osgParent, *proxynode, rec);
+                tempParent->addChild(proxynode);
+                return external;
+            }
+        }
+
         osgDB::FilePathList& fpl = options->getDatabasePathList();
         const std::string& filePath = osgDB::getFilePath(rec->getFilename());
         std::string pushAndPopPath;
@@ -2529,6 +2543,9 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
                 proxynode->addChild(external, rec->getFilename());
                 osg::Group *tempParent = visitAncillary(osgParent, *proxynode, rec);
                 tempParent->addChild(proxynode);
+
+                if(options && (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_NODES)!=0)
+                    osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), external);
           }
           else
           {
@@ -2544,6 +2561,9 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
                 proxynode->addChild(model, rec->getFilename());
                 osg::Group *tempParent = visitAncillary(osgParent, *proxynode, rec);
                 tempParent->addChild(proxynode);
+
+                if(options && (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_NODES)!=0)
+                    osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), model);
             }
             else
             {

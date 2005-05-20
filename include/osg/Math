@@ -21,21 +21,13 @@
 // otherwise you'll have problems with missing floorf and __isnan*()
 // #define APPLE_PRE_10_2
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1300)
+#if defined(_MSC_VER)
     #include <float.h>
 #endif
 
-#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
-    defined (sun) || \
-    defined (__APPLE__)
-    
+#if defined (sun) || defined (__APPLE__)
 
     #include <float.h>
-
-
-    // PJA MAC OSX
-    // This appears to be the simplest way to get these defined under MACOSX
-    // where they arent in math.h
 
     #ifndef acosf
     inline float acosf(float value) { return static_cast<float>(acos(value)); }
@@ -75,17 +67,8 @@
 
 #endif
 
-#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
-    defined (sun)
 
-    #ifndef isnanf
-    inline int isnanf(float value) { return isnan(value); }
-    #endif
-
-#endif
-
-#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
-    defined (sun) || \
+#if defined (sun) || \
     defined (__hpux) || \
     defined (APPLE_PRE_10_2)
 

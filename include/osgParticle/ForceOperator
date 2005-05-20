@@ -26,9 +26,9 @@
 namespace osgParticle
 {
 
-    /**    An operator that applies a constant force to the particles.
-        Remember that if the mass of particles is expressed in <U>kg</U> and the lengths are
-        expressed in <U>meters</U>, then the force should be expressed in <U>Newtons</U>.
+    /** An operator that applies a constant force to the particles.
+      * Remember that if the mass of particles is expressed in kg and the lengths are
+      * expressed in meters, then the force should be expressed in Newtons.
     */
     class ForceOperator: public Operator {
     public:

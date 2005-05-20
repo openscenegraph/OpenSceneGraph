@@ -33,11 +33,11 @@
 namespace osgParticle
 {
 
-    /**    The heart of this class library; its purpose is to hold a set of particles and manage particle creation, update, rendering and destruction.
-        You can add this drawable to any <CODE>Geode</CODE> as you usually do with other
-        <CODE>Drawable</CODE> classes. Each instance of <CODE>ParticleSystem</CODE> is a separate set of
-        particles; it provides the interface for creating particles and iterating
-        through them (see the <CODE>Emitter</CODE> and <CODE>Program</CODE> classes).
+    /** The heart of this class library; its purpose is to hold a set of particles and manage particle creation, update, rendering and destruction.
+      * You can add this drawable to any Geode as you usually do with other
+      * Drawable classes. Each instance of ParticleSystem is a separate set of
+      * particles; it provides the interface for creating particles and iterating
+      * through them (see the Emitter and Program classes).
     */
     class OSGPARTICLE_EXPORT ParticleSystem: public osg::Drawable {
     public:
@@ -87,9 +87,9 @@ namespace osgParticle
         
         /** Set the double pass rendering flag.
             Double pass rendering avoids overdraw problems between particle systems
-            and other opaque objects. If you can render all the particle systems <U>after</U>
+            and other opaque objects. If you can render all the particle systems after
             the opaque objects, then double pass is not necessary and can be turned off (best choice).
-            If you set the default attributes with <CODE>setDefaultAttributes</CODE>, then the particle
+            If you set the default attributes with setDefaultAttributes, then the particle
             system will fall into a transparent bin.
         */
         inline void setDoublePassRendering(bool v);

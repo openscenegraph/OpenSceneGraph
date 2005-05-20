@@ -94,7 +94,7 @@ public:
     @param centre       sphere centre
     @param radius       radius of sphere
     @param azMin        azimuth minimum
-    @param azMin        azimuth maximum
+    @param azMax        azimuth maximum
     @param elevMin      elevation minimum
     @param elevMax      elevation maximum
     @param density      number of units to divide the azimuth and elevation ranges into
@@ -155,7 +155,7 @@ public:
     @param azRange      azimuth range in radians (with centre along vec)
     @param elevRange    elevation range in radians (with centre along vec)
     */
-    void setArea(const osg::Vec3& v, float azRange, float elevRange);
+    void setArea(const osg::Vec3& vec, float azRange, float elevRange);
 
     /** Get the area of the sphere segment
 
@@ -164,11 +164,11 @@ public:
     @param azRange      azimuth range in radians (with centre along vec)
     @param elevRange    elevation range in radians (with centre along vec)
     */
-    void getArea(osg::Vec3& v, float& azRange, float& elevRange) const;
+    void getArea(osg::Vec3& vec, float& azRange, float& elevRange) const;
 
     /** Set the area of the sphere segment
     @param azMin        azimuth minimum
-    @param azMin        azimuth maximum
+    @param azMax        azimuth maximum
     @param elevMin      elevation minimum
     @param elevMax      elevation maximum
     */
@@ -176,7 +176,7 @@ public:
 
     /** Get the area of the sphere segment
     @param azMin        azimuth minimum
-    @param azMin        azimuth maximum
+    @param azMax        azimuth maximum
     @param elevMin      elevation minimum
     @param elevMax      elevation maximum
     */

@@ -102,12 +102,13 @@ public:
     Construct a ScalarBar with the supplied parameters.
     @param numColors    Specify the number of colors in the scalar bar. Color
                         interpolation occurs where necessary.
+    @param numLabels    Specify the number of labels in the scalar bar.
     @param stc          The ScalarsToColors defining the range of scalars
                         and the colors they map to.
     @param title        The title to be used when displaying the ScalarBar.
                         Specify "" for no title.
     @param orientation  The orientation of the ScalarBar. @see Orientation.
-    @param apectRatio   The aspect ration (y/x) for the displayed bar. Bear in mind you
+    @param aspectRatio  The aspect ration (y/x) for the displayed bar. Bear in mind you
                         may want to change this if you change the orientation.
     @param sp           A ScalarPrinter object for the ScalarBar. For every displayed
                         ScalarBar label, the scalar value will be passed to the

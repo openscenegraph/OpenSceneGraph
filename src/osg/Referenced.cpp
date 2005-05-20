@@ -12,6 +12,7 @@
 */
 #include <osg/Referenced>
 #include <osg/Notify>
+#include <osg/ApplicationUsage>
 
 #include <typeinfo>
 #include <memory>
@@ -26,6 +27,7 @@ namespace osg
 
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
 static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
+static ApplicationUsageProxy Referenced_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREAD_SAFE_REF_UNREF","");
 
 void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting)
 {

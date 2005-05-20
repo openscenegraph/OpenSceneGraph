@@ -32,9 +32,9 @@ namespace osgParticle
 {
 
     /**    A useful node class for updating particle systems automatically.
-        When a <CODE>ParticleSystemUpdater</CODE> is traversed by a cull visitor, it calls the
-        <CODE>update()</CODE> method on the specified particle systems. You should place this updater
-        <U>AFTER</U> other nodes like emitters and programs.
+        When a ParticleSystemUpdater is traversed by a cull visitor, it calls the
+        update() method on the specified particle systems. You should place this updater
+        AFTER other nodes like emitters and programs.
     */
     class OSGPARTICLE_EXPORT ParticleSystemUpdater: public osg::Node {
     public:

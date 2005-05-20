@@ -55,7 +55,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         const osg::ApplicationUsage* getApplicationUsage() const { return _applicationUsage; }
 
 
-        typedef std::vector < Producer::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
+        typedef std::vector < osg::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
 
         SceneHandlerList& getSceneHandlerList() { return _shvec;}
 

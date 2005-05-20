@@ -71,7 +71,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
         virtual void setByMatrix( const osg::Matrixd &matrix ) ;
 
         /** Set the current position with the invers matrix
-          \param invmatrix The inverse of a viewpoint matrix
+          \param invmat The inverse of a viewpoint matrix
           */
         virtual void setByInverseMatrix( const osg::Matrixd &invmat);
 
@@ -84,7 +84,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
         /** Set the  subgraph this manipulator is driving the eye through.
             \param node     root of subgraph
          */
-        virtual void setNode(osg::Node*);
+        virtual void setNode(osg::Node* node);
 
         /** Get the root node of the subgraph this manipulator is driving the eye through (const)*/
         virtual const osg::Node* getNode() const;

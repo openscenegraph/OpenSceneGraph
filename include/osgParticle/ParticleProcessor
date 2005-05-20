@@ -29,11 +29,11 @@
 namespace osgParticle
 {
 
-    /**    A common base interface for those classes which need to do something on particles. Such classes
-        are, for example, <CODE>Emitter</CODE> (particle generation) and <CODE>Program</CODE> (particle animation).
-        This class holds some properties, like a <I>reference frame</I> and a reference to a <CODE>ParticleSystem<CODE>;
-        descendant classes should process the particles taking into account the reference frame, computing the right
-        transformations when needed.
+    /** A common base interface for those classes which need to do something on particles. Such classes
+      * are, for example, Emitter (particle generation) and Program (particle animation).
+      * This class holds some properties, like a <I>reference frame</I> and a reference to a ParticleSystem;
+      * descendant classes should process the particles taking into account the reference frame, computing the right
+      * transformations when needed.
     */
     class OSGPARTICLE_EXPORT ParticleProcessor: public osg::Node {
     public:

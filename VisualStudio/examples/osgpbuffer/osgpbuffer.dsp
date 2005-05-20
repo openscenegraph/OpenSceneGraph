@@ -88,14 +88,6 @@ LINK32=link.exe
 # Begin Group "Header Files"
 
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgpbuffer\pbuffer.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgpbuffer\RenderToTextureStage.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 

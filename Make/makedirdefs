@@ -159,9 +159,6 @@ endif
 endif
 endif
 
-# commented out while the DX plugin is converted across to use Geometry rather than GeoSet.
-#  PLUGIN_DIRS += dx
-
 
 ################################################################
 # Directories traversed in the TOPDIR/examples directory

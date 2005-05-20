@@ -42,8 +42,8 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_Method0(const osg::Vec3 &, getCentre);
 	I_Method1(void, setRadius, IN, float, r);
 	I_Method0(float, getRadius);
-	I_Method3(void, setArea, IN, const osg::Vec3 &, v, IN, float, azRange, IN, float, elevRange);
-	I_Method3(void, getArea, IN, osg::Vec3 &, v, IN, float &, azRange, IN, float &, elevRange);
+	I_Method3(void, setArea, IN, const osg::Vec3 &, vec, IN, float, azRange, IN, float, elevRange);
+	I_Method3(void, getArea, IN, osg::Vec3 &, vec, IN, float &, azRange, IN, float &, elevRange);
 	I_Method4(void, setArea, IN, float, azMin, IN, float, azMax, IN, float, elevMin, IN, float, elevMax);
 	I_Method4(void, getArea, IN, float &, azMin, IN, float &, azMax, IN, float &, elevMin, IN, float &, elevMax);
 	I_Method1(void, setDensity, IN, int, d);

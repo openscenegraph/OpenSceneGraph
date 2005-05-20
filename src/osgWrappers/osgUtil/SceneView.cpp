@@ -85,7 +85,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Method0(osg::StateSet *, getLocalStateSet);
 	I_Method0(const osg::StateSet *, getLocalStateSet);
 	I_Method1(void, setActiveUniforms, IN, int, activeUniforms);
-	I_Method1(int, getActiveUniforms, IN, int, activeUniforms);
+	I_Method0(int, getActiveUniforms);
 	I_Method0(void, updateUniforms);
 	I_Method1(void, setLightingMode, IN, osgUtil::SceneView::LightingMode, mode);
 	I_Method0(osgUtil::SceneView::LightingMode, getLightingMode);
@@ -178,7 +178,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Method0(void, releaseAllGLObjects);
 	I_Method0(void, flushAllDeletedGLObjects);
 	I_Method1(void, flushDeletedGLObjects, IN, double &, availableTime);
-	I_WriteOnlyProperty(int, ActiveUniforms);
+	I_Property(int, ActiveUniforms);
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(osg::CollectOccludersVisitor *, CollectOccludersVisitor);
 	I_Property(osgUtil::SceneView::ComputeStereoMatricesCallback *, ComputeStereoMatricesCallback);

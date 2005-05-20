@@ -28,6 +28,7 @@
 #include <osg/Timer>
 
 #include <OpenThreads/ScopedLock>
+#include <OpenThreads/Thread>
 
 #include "QTUtils.h"
 #include "MovieData.h"
@@ -225,7 +226,7 @@ void QuicktimeImageStream::run()
         }
         else if (!done)
         {
-            ::usleep(IDLE_TIMEOUT);
+            OpenThreads::Thread::microSleep(IDLE_TIMEOUT);
         }
     }
     // err = ExitMoviesOnThread();

@@ -33,7 +33,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, invmat);
 	I_Method0(osg::Matrixd, getMatrix);
 	I_Method0(osg::Matrixd, getInverseMatrix);
-	I_Method1(void, setNode, IN, osg::Node *, x);
+	I_Method1(void, setNode, IN, osg::Node *, node);
 	I_Method0(const osg::Node *, getNode);
 	I_Method0(osg::Node *, getNode);
 	I_Method0(void, computeHomePosition);

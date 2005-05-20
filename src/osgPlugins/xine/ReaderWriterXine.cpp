@@ -104,7 +104,7 @@ class XineImageStream : public osg::ImageStream
                         while (!_ready)
                         {
                             osg::notify(osg::INFO)<<"   waiting..."<<std::endl;
-                            usleep(10000);
+                            OpenThreads::Thread::microSleep(10000);
                         }
 
                         _status=PLAYING;

@@ -38,13 +38,14 @@ TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUt
 
 BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE);
+	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE_THEN_FRONT_TO_BACK);
 	I_EnumLabel(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
 	I_EnumLabel(osgUtil::RenderBin::SORT_BACK_TO_FRONT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_BaseType(osg::Object);
-	I_ConstructorWithDefaults1(IN, osgUtil::RenderBin::SortMode, mode, osgUtil::RenderBin::SORT_BY_STATE);
+	I_ConstructorWithDefaults1(IN, osgUtil::RenderBin::SortMode, mode, getDefaultRenderBinSortMode());
 	I_ConstructorWithDefaults2(IN, const osgUtil::RenderBin &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
@@ -70,6 +71,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method1(void, setSortMode, IN, osgUtil::RenderBin::SortMode, mode);
 	I_Method0(osgUtil::RenderBin::SortMode, getSortMode);
 	I_Method0(void, sortByState);
+	I_Method0(void, sortByStateThenFrontToBack);
 	I_Method0(void, sortFrontToBack);
 	I_Method0(void, sortBackToFront);
 	I_Method1(void, setSortCallback, IN, osgUtil::RenderBin::SortCallback *, sortCallback);

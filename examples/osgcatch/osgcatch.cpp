@@ -52,7 +52,10 @@ public:
 
     void reset();
 
+    void resetCatches();
+
     bool addCatch();
+    
     bool looseLife();
 
     osg::Vec3 getCurrentCenterOfBasket() const { return _character->getPosition()+_centerBasket; }
@@ -221,6 +224,12 @@ void Character::reset()
     _catchSwitch->setAllChildrenOff();
 }
 
+void Character::resetCatches()
+{
+    _numCatches = 0;
+    _catchSwitch->setAllChildrenOff();
+}
+
 bool Character::addCatch()
 {
     if (!_catchSwitch || _numCatches>=_catchSwitch->getNumChildren()) return false;
@@ -233,12 +242,12 @@ bool Character::addCatch()
 
 bool Character::looseLife()
 {
-    if (!_livesSwitch || _numLives==0) return true;
+    if (!_livesSwitch || _numLives==0) return false;
     
     --_numLives;
     _livesSwitch->setValue(_numLives,false);
     
-    return (_numLives==0);
+    return (_numLives!=0);
 }
 
 
@@ -504,9 +513,27 @@ public:
     void setFOVY(float fovy) { _fovy = fovy; }
     float getFOVY() const { return _fovy; }
     
-    void setBackground(const std::string& background) { _backgroundImageFile = background; }
-    
     void createNewCatchable();
+    
+    void resetLevel()
+    {
+        _level = 0;
+        _levelSwitch->setSingleChildOn(_level);
+    }
+    
+    void nextLevel()
+    {
+        ++_level;
+        if (_level < _levelSwitch->getNumChildren())
+        {
+            _levelSwitch->setSingleChildOn(_level);
+        }
+    }
+    
+    bool gameComplete()
+    {
+        return _level >= _levelSwitch->getNumChildren();
+    }
 
     enum Players
     {
@@ -573,10 +600,14 @@ protected:
     float     _characterSize;
     
     float _fovy;
-    
-    std::string _backgroundImageFile;
 
+    unsigned _level;
+    
+    float _chanceOfExplodingAtStart;
+    float _initialNumDropsPerSecond;
+    
     osg::ref_ptr<osg::Group> _group;
+    osg::ref_ptr<osg::Switch> _levelSwitch;
     
     unsigned int _numberOfPlayers;
     Character _players[2];
@@ -588,7 +619,8 @@ protected:
     FileList _benignCatachables;
 
     bool _leftKeyPressed;
-    bool _rightKeyPressed;    
+    bool _rightKeyPressed;
+    
         
 };
 
@@ -604,17 +636,19 @@ GameEventHandler::GameEventHandler()
     _originBaseLine = _origin+_width*0.5-_widthBaseLine*0.5f;
     _characterSize = _width.length()*0.2f;
 
-    _backgroundImageFile = "Catch/farm.JPG";
-    
     _numberOfPlayers = 0;
+    _level = 0;
+
+    _chanceOfExplodingAtStart = 0.1f;
+    _initialNumDropsPerSecond = 1.0f;
 
     _leftKeyPressed=false;
     _rightKeyPressed=false;
 
-    _backgroundFiles.push_back("Catch/farm.JPG");
     _backgroundFiles.push_back("Catch/sky1.JPG");
     _backgroundFiles.push_back("Catch/sky2.JPG");
     _backgroundFiles.push_back("Catch/sky3.JPG");
+    _backgroundFiles.push_back("Catch/farm.JPG");
 
     _benignCatachables.push_back("Catch/a.png");
     _benignCatachables.push_back("Catch/b.png");
@@ -668,7 +702,11 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     {
                         if ((*itr)->anyInside(_players[i].getLowerLeft(),_players[i].getUpperRight()))
                         {
-                            _players[i].looseLife();
+                            if (!_players[i].looseLife())
+                            {
+                                std::cout<<"Ouch you lost all your lives, Game Over!!"<<std::endl;
+                                exit(0);
+                            }
                             removeEntry = true;
                         }
                     }
@@ -676,7 +714,18 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     {
                         if ((*itr)->centerInside(_players[i].getCurrentCenterOfBasket(),_players[i].getCurrentRadiusOfBasket()))
                         {
-                            _players[i].addCatch();
+                            if (!_players[i].addCatch())
+                            {
+                                _players[i].resetCatches();
+                                nextLevel();
+                                if (gameComplete())
+                                {
+                                    std::cout<<"Congratulations you've completed the game!!"<<std::endl;
+                                    exit(0);
+                                }
+                            }
+                            
+                            
                             removeEntry = true;
                         }
                     }
@@ -700,8 +749,6 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     // remove child from catchable list
                     itr = _catchableObjects.erase(itr);
 
-                    createNewCatchable();
-
                 }
                 else if ((*itr)->anyInside(_origin, _origin+_width) && !(*itr)->stopped())
                 {
@@ -712,7 +759,22 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                 }
                 
             }
-                    
+             
+
+            // create new catchable objects
+            static double previousTime = ea.time();
+            double deltaTime = ea.time()-previousTime;
+            previousTime = ea.time();
+            
+            float numDropsPerSecond = _initialNumDropsPerSecond * (_level+1);
+            float r = (float)rand()/(float)RAND_MAX;
+            if (r < deltaTime*numDropsPerSecond)
+            { 
+                createNewCatchable();
+            }
+
+
+
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
@@ -794,26 +856,30 @@ osg::Node* GameEventHandler::createScene()
         _group->addChild(_players[i]._catchSwitch.get());
     }    
     
-    createNewCatchable();
-    createNewCatchable();
-    createNewCatchable();
-    createNewCatchable();
-
     // background
     {
-        osg::Image* image = osgDB::readImageFile(_backgroundImageFile);
-        if (image)
+        _levelSwitch = new osg::Switch;
+        
+        for(FileList::const_iterator itr = _backgroundFiles.begin();
+            itr != _backgroundFiles.end();
+            ++itr)
         {
-            osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
-            osg::StateSet* stateset = geometry->getOrCreateStateSet();
-            stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
-            
-            osg::Geode* geode = new osg::Geode;
-            geode->addDrawable(geometry);
 
-            _group->addChild(geode);
-            
+            osg::Image* image = osgDB::readImageFile(*itr);
+            if (image)
+            {
+                osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
+                osg::StateSet* stateset = geometry->getOrCreateStateSet();
+                stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+
+                osg::Geode* geode = new osg::Geode;
+                geode->addDrawable(geometry);
+
+                _levelSwitch->addChild(geode);
+            }
         }
+        _levelSwitch->setSingleChildOn(0);
+        _group->addChild(_levelSwitch.get());
     }
 
     return _group.get();
@@ -840,7 +906,11 @@ void GameEventHandler::createNewCatchable()
     catchableObject->setObject(filename,"boy",position,size,velocity);
     _catchableObjects.push_back(catchableObject);
 
-    // catchableObject->explode();
+    float r = (float)rand() / (float)RAND_MAX;
+    if (r < _chanceOfExplodingAtStart)
+    {
+       catchableObject->explode(); 
+    }
 
     _group->addChild(catchableObject->_object.get());
 }
@@ -870,13 +940,6 @@ int main( int argc, char **argv )
     // register the handler to add keyboard and mosue handling.
     GameEventHandler* seh = new GameEventHandler();
     viewer.getEventHandlerList().push_front(seh);
-
-    std::string filename;
-    if (arguments.read("-b",filename))
-    {
-        seh->setBackground(filename);
-    }
-
 
     while (arguments.read("--boy")) seh->addPlayer(GameEventHandler::PLAYER_BOY);
     while (arguments.read("--girl")) seh->addPlayer(GameEventHandler::PLAYER_GIRL);

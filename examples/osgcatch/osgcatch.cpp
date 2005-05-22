@@ -14,7 +14,11 @@
 #include <osgProducer/Viewer>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+
 #include <osgUtil/Optimizer>
+#include <osgUtil/GLObjectsVisitor>
+
+#include <osgText/Text>
 
 #include <osg/Geode>
 #include <osg/Notify>
@@ -29,6 +33,8 @@
 #include <osgParticle/ExplosionDebriEffect>
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/FireEffect>
+
+#include <sstream>
 
 typedef std::vector<std::string> FileList;
 typedef std::map<std::string, osg::ref_ptr<osg::Node> >  ObjectMap;
@@ -508,6 +514,19 @@ public:
     
     osg::Matrix getCameraPosition();
     
+    void compileGLObjects(osg::State& state)
+    {
+        osgUtil::GLObjectsVisitor compile;
+        compile.setState(&state);
+    
+        for(ObjectMap::iterator itr = s_objectMap.begin();
+            itr != s_objectMap.end();
+            ++itr)
+        {
+            itr->second->accept(compile);
+        }
+    }
+    
     osg::Node* createScene();
     
     void setFOVY(float fovy) { _fovy = fovy; }
@@ -515,10 +534,36 @@ public:
     
     void createNewCatchable();
     
+    void clearCatchables()
+    {
+        for(CatchableObjectList::iterator itr=_catchableObjects.begin();
+            itr!=_catchableObjects.end();
+            ++itr)
+        {
+            // need to remove
+            // remove child from parents.
+            osg::ref_ptr<osg::PositionAttitudeTransform> child = (*itr)->_object;
+            osg::Node::ParentList parents = child->getParents();
+            for(osg::Node::ParentList::iterator pitr=parents.begin();
+                pitr!=parents.end();
+                ++pitr)
+            {
+                (*pitr)->removeChild(child.get());
+            }
+        }
+
+        _catchableObjects.clear();
+    }
+    
     void resetLevel()
     {
         _level = 0;
         _levelSwitch->setSingleChildOn(_level);
+        clearCatchables();
+
+        updateLevelText();
+
+        _levelStartTick = osg::Timer::instance()->tick();
     }
     
     void nextLevel()
@@ -527,13 +572,34 @@ public:
         if (_level < _levelSwitch->getNumChildren())
         {
             _levelSwitch->setSingleChildOn(_level);
+            clearCatchables();
         }
+
+        updateLevelText();
+
+        _levelStartTick = osg::Timer::instance()->tick();
     }
-    
+
     bool gameComplete()
     {
         return _level >= _levelSwitch->getNumChildren();
     }
+
+    void resetGame()
+    {
+        _currentScore = 0;
+        
+        updateTextWithScore();
+
+        clearCatchables();
+        resetLevel();
+        
+        for(unsigned int i=0;i<_numberOfPlayers;++i)
+        {
+            _players[i].reset();
+        }
+    }
+
 
     enum Players
     {
@@ -548,11 +614,11 @@ public:
         if (_numberOfPlayers==0)
         {
             livesPosition = _originBaseLine+osg::Vec3(0.0f,-0.5f,0.0f);
-            catchesPosition = _originBaseLine+osg::Vec3(200.0f,-0.5f,0.0f);
+            catchesPosition = _originBaseLine+osg::Vec3(100.0f,-0.5f,0.0f);
         }
         else
         {
-            livesPosition = _originBaseLine+osg::Vec3(900.0f,-0.5f,000.0f);
+            livesPosition = _originBaseLine+osg::Vec3(1000.0f,-0.5f,000.0f);
             catchesPosition = _originBaseLine+osg::Vec3(1100.0f,-0.5f,0.0f);
         }
         
@@ -584,7 +650,50 @@ public:
             }
         }                
     }
+    
+    
+    typedef std::vector< osg::ref_ptr<osgText::Text> > TextList;
+
+    void updateScoreWithCatch()
+    {
+        _currentScore += 1;
+        updateTextWithScore();
+    }
+
+    void updateScoreWithLevel()
+    {
+        osg::Timer_t newTick = osg::Timer::instance()->tick();
+        double timeForLevel = osg::Timer::instance()->delta_s(_levelStartTick, newTick);
+
+        // a ten second level gets you 10 points, 
+        // a twenty second levels gets you 5 points.        
+        _currentScore += static_cast<unsigned int>(10000.0f/(timeForLevel*timeForLevel));
+
+        updateTextWithScore();
+
+    }
+
+    void updateTextWithScore()
+    {
+        std::ostringstream os;
+        os<<"Score: "<<_currentScore;
         
+        std::string textString = os.str();
+    
+        for(TextList::iterator itr = _scoreTextList.begin();
+            itr != _scoreTextList.end();
+            ++itr)
+        {
+            (*itr)->setText(textString);
+        }
+    }        
+    
+    void updateLevelText()
+    {
+        std::ostringstream os;
+        os<<"Level: "<<_level+1;
+        _levelText->setText(os.str());
+    }
         
 
 protected:
@@ -606,8 +715,21 @@ protected:
     float _chanceOfExplodingAtStart;
     float _initialNumDropsPerSecond;
     
-    osg::ref_ptr<osg::Group> _group;
-    osg::ref_ptr<osg::Switch> _levelSwitch;
+    osg::ref_ptr<osg::Switch>   _gameSwitch;
+    osg::ref_ptr<osg::Group>    _gameGroup;
+    osg::ref_ptr<osg::Switch>   _levelSwitch;
+    
+    unsigned int                _currentIndex;
+    unsigned int                _welcomeIndex;
+    unsigned int                _lostIndex;
+    unsigned int                _wonIndex;
+    unsigned int                _gameIndex;
+    
+    osg::Timer_t                _levelStartTick;
+    unsigned int                _currentScore;
+    
+    osg::ref_ptr<osgText::Text> _levelText;
+    TextList                    _scoreTextList;
     
     unsigned int _numberOfPlayers;
     Character _players[2];
@@ -620,6 +742,8 @@ protected:
 
     bool _leftKeyPressed;
     bool _rightKeyPressed;
+    
+    osg::ref_ptr<CatchableObject> _dummyCatchable;
     
         
 };
@@ -646,8 +770,8 @@ GameEventHandler::GameEventHandler()
     _rightKeyPressed=false;
 
     _backgroundFiles.push_back("Catch/sky1.JPG");
-    _backgroundFiles.push_back("Catch/sky2.JPG");
     _backgroundFiles.push_back("Catch/sky3.JPG");
+    _backgroundFiles.push_back("Catch/sky2.JPG");
     _backgroundFiles.push_back("Catch/farm.JPG");
 
     _benignCatachables.push_back("Catch/a.png");
@@ -662,167 +786,226 @@ GameEventHandler::GameEventHandler()
     
     CatchableObject::setUpCatchablesMap(_benignCatachables);
     
-    
+    _currentScore = 0;
 
 }
 
 bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
-    switch(ea.getEventType())
+    if (_currentIndex==_welcomeIndex)
     {
-        case(osgGA::GUIEventAdapter::FRAME):
+        // welcome screen
+        switch(ea.getEventType())
         {
-            // move characters
-            if (_leftKeyPressed)
+            case(osgGA::GUIEventAdapter::KEYDOWN):
             {
-                if (_numberOfPlayers>=2) _players[1].moveLeft();
+                _currentIndex = _gameIndex;
+                _gameSwitch->setSingleChildOn(_currentIndex);
+                resetGame();
+                return true;
             }
-            
-            if (_rightKeyPressed)
+            default:
+                return false;
+        }
+        
+    }
+    else if (_currentIndex==_lostIndex)
+    {
+        // lost screen
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
             {
-                if (_numberOfPlayers>=2) _players[1].moveRight();
+                _currentIndex = _gameIndex;
+                _gameSwitch->setSingleChildOn(_currentIndex);
+                resetGame();
+                return true;
             }
-
-            static double previous_time = ea.time();
-            double dt = ea.time()-previous_time;
-            previous_time = ea.time();
-            
-            // move objects
-            for(CatchableObjectList::iterator itr=_catchableObjects.begin();
-                itr!=_catchableObjects.end();
-                ++itr)
+            default:
+                return false;
+        }
+        
+    }
+    else if (_currentIndex==_wonIndex)
+    {
+        // won screen
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
             {
-                (*itr)->update(dt);
-                
-                bool removeEntry = false;
+                _currentIndex = _gameIndex;
+                _gameSwitch->setSingleChildOn(_currentIndex);
+                resetGame();
+                return true;
+            }
+            default:
+                return false;
+        }
+        
+    }
+    else if (_currentIndex==_gameIndex)
+    {
+        // in game.
 
-                for(unsigned int i=0;i<_numberOfPlayers;++i)
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::FRAME):
+            {
+                // move characters
+                if (_leftKeyPressed)
                 {
-                    if ((*itr)->dangerous())
+                    if (_numberOfPlayers>=2) _players[1].moveLeft();
+                }
+
+                if (_rightKeyPressed)
+                {
+                    if (_numberOfPlayers>=2) _players[1].moveRight();
+                }
+
+                static double previous_time = ea.time();
+                double dt = ea.time()-previous_time;
+                previous_time = ea.time();
+
+                // move objects
+                for(CatchableObjectList::iterator itr=_catchableObjects.begin();
+                    itr!=_catchableObjects.end();
+                    ++itr)
+                {
+                    (*itr)->update(dt);
+
+                    bool removeEntry = false;
+
+                    for(unsigned int i=0;i<_numberOfPlayers;++i)
                     {
-                        if ((*itr)->anyInside(_players[i].getLowerLeft(),_players[i].getUpperRight()))
+                        bool inBasket = ((*itr)->centerInside(_players[i].getCurrentCenterOfBasket(),_players[i].getCurrentRadiusOfBasket()));
+                    
+                        if ((*itr)->dangerous())
                         {
-                            if (!_players[i].looseLife())
+                            if ((*itr)->anyInside(_players[i].getLowerLeft(),_players[i].getUpperRight()) || inBasket)
                             {
-                                std::cout<<"Ouch you lost all your lives, Game Over!!"<<std::endl;
-                                exit(0);
+                                // player has hit or caught a dangerous object, must loose a life.
+                                if (!_players[i].looseLife())
+                                {
+                                    _currentIndex = _lostIndex;
+                                    _gameSwitch->setSingleChildOn(_currentIndex);
+
+                                    return true;
+                                }
+                                else
+                                {
+                                    clearCatchables();
+                                    return true;
+                                }
                             }
-                            removeEntry = true;
                         }
-                    }
-                    else
-                    {
-                        if ((*itr)->centerInside(_players[i].getCurrentCenterOfBasket(),_players[i].getCurrentRadiusOfBasket()))
+                        else if (inBasket)
                         {
+                            // player has caught a safe object.
+                            updateScoreWithCatch();
+                            
                             if (!_players[i].addCatch())
                             {
                                 _players[i].resetCatches();
+                                updateScoreWithLevel();
                                 nextLevel();
                                 if (gameComplete())
                                 {
-                                    std::cout<<"Congratulations you've completed the game!!"<<std::endl;
-                                    exit(0);
+                                    _currentIndex = _wonIndex;
+                                    _gameSwitch->setSingleChildOn(_currentIndex);
                                 }
+                                return true;
                             }
-                            
-                            
+
                             removeEntry = true;
                         }
                     }
-                }
 
-                if (!(*itr)->anyInside(_origin, _origin+_width+_height) || 
-                    (*itr)->needToRemove(ea.time()) ||
-                    removeEntry)
-                {
-                    // need to remove
-                    // remove child from parents.
-                    osg::ref_ptr<osg::PositionAttitudeTransform> child = (*itr)->_object;
-                    osg::Node::ParentList parents = child->getParents();
-                    for(osg::Node::ParentList::iterator pitr=parents.begin();
-                        pitr!=parents.end();
-                        ++pitr)
+                    if (!(*itr)->anyInside(_origin, _origin+_width+_height) || 
+                        (*itr)->needToRemove(ea.time()) ||
+                        removeEntry)
                     {
-                        (*pitr)->removeChild(child.get());
+                        // need to remove
+                        // remove child from parents.
+                        osg::ref_ptr<osg::PositionAttitudeTransform> child = (*itr)->_object;
+                        osg::Node::ParentList parents = child->getParents();
+                        for(osg::Node::ParentList::iterator pitr=parents.begin();
+                            pitr!=parents.end();
+                            ++pitr)
+                        {
+                            (*pitr)->removeChild(child.get());
+                        }
+
+                        // remove child from catchable list
+                        itr = _catchableObjects.erase(itr);
+
+                    }
+                    else if ((*itr)->anyInside(_origin, _origin+_width) && !(*itr)->stopped())
+                    {
+                        // hit base line
+                        (*itr)->explode();
+                        (*itr)->stop();
+                        (*itr)->setTimeToRemove(ea.time()+3.0);
                     }
 
-                    // remove child from catchable list
-                    itr = _catchableObjects.erase(itr);
-
                 }
-                else if ((*itr)->anyInside(_origin, _origin+_width) && !(*itr)->stopped())
+
+
+                // create new catchable objects
+                static double previousTime = ea.time();
+                double deltaTime = ea.time()-previousTime;
+                previousTime = ea.time();
+
+                float numDropsPerSecond = _initialNumDropsPerSecond * (_level+1);
+                float r = (float)rand()/(float)RAND_MAX;
+                if (r < deltaTime*numDropsPerSecond)
+                { 
+                    createNewCatchable();
+                }
+
+
+
+            }
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
                 {
-                    // hit base line
-                    (*itr)->explode();
-                    (*itr)->stop();
-                    (*itr)->setTimeToRemove(ea.time()+3.0);
+                    _leftKeyPressed=true;
+                    return true;
                 }
-                
-            }
-             
-
-            // create new catchable objects
-            static double previousTime = ea.time();
-            double deltaTime = ea.time()-previousTime;
-            previousTime = ea.time();
-            
-            float numDropsPerSecond = _initialNumDropsPerSecond * (_level+1);
-            float r = (float)rand()/(float)RAND_MAX;
-            if (r < deltaTime*numDropsPerSecond)
-            { 
-                createNewCatchable();
-            }
-
-
-
-        }
-        case(osgGA::GUIEventAdapter::KEYDOWN):
-        {
-            if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
-            {
-                _leftKeyPressed=true;
-                return true;
-            }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
-            {
-                _rightKeyPressed=true;
-                return true;
-            }
-            else if (ea.getKey()==' ')
-            {
-                for(unsigned int i=0;i<_numberOfPlayers;++i)
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
                 {
-                    _players[i].reset();
+                    _rightKeyPressed=true;
+                    return true;
                 }
-                return true;
             }
-        }
-        case(osgGA::GUIEventAdapter::KEYUP):
-        {
-            if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
+            case(osgGA::GUIEventAdapter::KEYUP):
             {
-                _leftKeyPressed=false;
-                return true;
+                if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)
+                {
+                    _leftKeyPressed=false;
+                    return true;
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
+                {
+                    _rightKeyPressed=false;
+                    return true;
+                }
             }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)
+            case(osgGA::GUIEventAdapter::DRAG):
+            case(osgGA::GUIEventAdapter::MOVE):
             {
-                _rightKeyPressed=false;
+                float px = (ea.getXnormalized()+1.0f)*0.5f;
+
+                if (_numberOfPlayers>=1) _players[0].moveTo(px);
+
                 return true;
             }
+
+            default:
+                return false;
         }
-        case(osgGA::GUIEventAdapter::DRAG):
-        case(osgGA::GUIEventAdapter::MOVE):
-        {
-            float px = (ea.getXnormalized()+1.0f)*0.5f;
-
-            if (_numberOfPlayers>=1) _players[0].moveTo(px);
-
-            return true;
-        }
-
-        default:
-            return false;
     }
+    return false;    
 }
 
 void GameEventHandler::getUsage(osg::ApplicationUsage&) const
@@ -842,47 +1025,298 @@ osg::Matrix GameEventHandler::getCameraPosition()
 
 osg::Node* GameEventHandler::createScene()
 {
-    _group = new osg::Group;
-
-    if (_numberOfPlayers==0)
-    {
-        addPlayer(PLAYER_GIRL);
-    }
-
-    for(unsigned int i=0;i<_numberOfPlayers;++i)
-    {
-        _group->addChild(_players[i]._character.get());
-        _group->addChild(_players[i]._livesSwitch.get());
-        _group->addChild(_players[i]._catchSwitch.get());
-    }    
+    _gameSwitch = new osg::Switch;
     
-    // background
+    // create a dummy catchable to load all the particule textures to reduce 
+    // latency later on..
+    _dummyCatchable = new CatchableObject;
+    _dummyCatchable->setObject("Catch/a.png","a",osg::Vec3(0.0f,0.0,0.0f),1.0f,osg::Vec3(0.0f,0.0,0.0f));
+    _dummyCatchable->explode();
+
+    // set up welcome subgraph
     {
-        _levelSwitch = new osg::Switch;
-        
-        for(FileList::const_iterator itr = _backgroundFiles.begin();
-            itr != _backgroundFiles.end();
-            ++itr)
+        osg::Geode* geode = new osg::Geode;
+
+        // set up the background
+        osg::Image* image = osgDB::readImageFile("Catch/Welcome.png");
+        if (image)
         {
+            osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
+            osg::StateSet* stateset = geometry->getOrCreateStateSet();
+            stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
 
-            osg::Image* image = osgDB::readImageFile(*itr);
-            if (image)
-            {
-                osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
-                osg::StateSet* stateset = geometry->getOrCreateStateSet();
-                stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
-
-                osg::Geode* geode = new osg::Geode;
-                geode->addDrawable(geometry);
-
-                _levelSwitch->addChild(geode);
-            }
+            geode->addDrawable(geometry);
         }
-        _levelSwitch->setSingleChildOn(0);
-        _group->addChild(_levelSwitch.get());
+        
+        // set up the text
+        osg::Vec3 textPosition = _origin+_width*0.5f+_height*0.8f -osg::Vec3(0.0f,0.1f,0.0f);
+        {
+            osgText::Text* text = new osgText::Text;
+            text->setText("osgcatch is a childrens catching game\nMove your character using the mouse to\ncatch falling objects in your net\nbut avoid burning objects - they kill!!");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.025f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+        
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Move mouse left and right to move character\nCatch ten objects to advance to next level\nComplete four levels to win.");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.025f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Game concept and artwork - Caitlin Osfield, aged 5!\nSoftware development - Robert Osfield");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.025f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Press any key to start game.\nPress Escape to exit game at any time.");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.025f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+
+        _welcomeIndex = _gameSwitch->getNumChildren();
+        _gameSwitch->addChild(geode);
     }
 
-    return _group.get();
+    // set up you've lost subgraph
+    {
+        osg::Geode* geode = new osg::Geode;
+
+        osg::Image* image = osgDB::readImageFile("Catch/YouLost.png");
+        if (image)
+        {
+            osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
+            osg::StateSet* stateset = geometry->getOrCreateStateSet();
+            stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+
+            geode->addDrawable(geometry);
+        }
+        
+        // set up the text
+        osg::Vec3 textPosition = _origin+_width*0.5f+_height*0.75f -osg::Vec3(0.0f,0.1f,0.0f);
+        {
+            osgText::Text* text = new osgText::Text;
+            text->setText("Game Over\nYou lost all three lives");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.04f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+        
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Score: 0");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.04f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+            _scoreTextList.push_back(text);
+        }
+
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Press any key to have another game.\nPress Escape to exit game.");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.025f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+
+        _lostIndex = _gameSwitch->getNumChildren();
+        _gameSwitch->addChild(geode);
+    }
+
+    // set up you've won subgraph
+    {
+        osg::Geode* geode = new osg::Geode;
+
+        osg::Image* image = osgDB::readImageFile("Catch/YouWon.png");
+        if (image)
+        {
+            osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
+            osg::StateSet* stateset = geometry->getOrCreateStateSet();
+            stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+
+            geode->addDrawable(geometry);
+        }
+        
+        // set up the text
+        osg::Vec3 textPosition = _origin+_width*0.5f+_height*0.75f -osg::Vec3(0.0f,0.1f,0.0f);
+        {
+            osgText::Text* text = new osgText::Text;
+            text->setText("Well done!!!\nYou completed all levels!");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.04f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+        
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Score: 0");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.04f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+            _scoreTextList.push_back(text);
+        }
+
+        {
+            textPosition -= _height*0.25f;
+            osgText::Text* text = new osgText::Text;
+            text->setText("Press any key to have another game.\nPress Escape to exit game.");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.025f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAlignment(osgText::Text::CENTER_CENTER);
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(text);
+        }
+
+        _wonIndex = _gameSwitch->getNumChildren();
+        _gameSwitch->addChild(geode);
+    }
+
+    // set up game subgraph.
+    {
+        _gameGroup = new osg::Group;
+
+        if (_numberOfPlayers==0)
+        {
+            addPlayer(PLAYER_GIRL);
+        }
+
+        for(unsigned int i=0;i<_numberOfPlayers;++i)
+        {
+            _gameGroup->addChild(_players[i]._character.get());
+            _gameGroup->addChild(_players[i]._livesSwitch.get());
+            _gameGroup->addChild(_players[i]._catchSwitch.get());
+        }    
+
+        // background
+        {
+            _levelSwitch = new osg::Switch;
+
+            for(FileList::const_iterator itr = _backgroundFiles.begin();
+                itr != _backgroundFiles.end();
+                ++itr)
+            {
+
+                osg::Image* image = osgDB::readImageFile(*itr);
+                if (image)
+                {
+                    osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
+                    osg::StateSet* stateset = geometry->getOrCreateStateSet();
+                    stateset->setTextureAttributeAndModes(0,new osg::Texture2D(image),osg::StateAttribute::ON);
+
+                    osg::Geode* geode = new osg::Geode;
+                    geode->addDrawable(geometry);
+
+                    _levelSwitch->addChild(geode);
+                }
+            }
+            _levelSwitch->setSingleChildOn(0);
+            _gameGroup->addChild(_levelSwitch.get());
+        }
+
+
+        _gameIndex = _gameSwitch->getNumChildren();
+        _gameSwitch->addChild(_gameGroup.get());
+
+        // set up the text
+        osg::Vec3 textPosition = _origin+_width*0.05f+_height*0.95f-osg::Vec3(0.0f,0.1f,0.0f);
+        {
+            osgText::Text* text = new osgText::Text;
+            text->setText("Score : 0");
+            text->setFont("fonts/dirtydoz.ttf");
+            text->setPosition(textPosition);
+            text->setCharacterSize(_width.length()*0.04f);
+            text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            osg::Geode* geode = new osg::Geode;
+            geode->addDrawable(text);
+            _scoreTextList.push_back(text);
+            
+            textPosition -= _height*0.05f;
+            _levelText = new osgText::Text;
+            _levelText->setText("Level : 0");
+            _levelText->setFont("fonts/dirtydoz.ttf");
+            _levelText->setPosition(textPosition);
+            _levelText->setCharacterSize(_width.length()*0.04f);
+            _levelText->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            _levelText->setAxisAlignment(osgText::Text::XZ_PLANE);
+
+            geode->addDrawable(_levelText.get());
+            
+
+
+            _gameGroup->addChild(geode);
+        }
+
+
+    }
+    
+    _currentIndex = _welcomeIndex;
+    _gameSwitch->setSingleChildOn(_currentIndex);
+
+    return _gameSwitch.get();
 }
 
 void GameEventHandler::createNewCatchable()
@@ -895,7 +1329,7 @@ void GameEventHandler::createNewCatchable()
     const std::string& filename = _benignCatachables[catachableIndex];
 
     float ratio = ((float)rand() / (float)RAND_MAX);
-    float size = 100.0f*((float)rand() / (float)RAND_MAX);
+    float size = 20.0f+100.0f*((float)rand() / (float)RAND_MAX);
     float angle = osg::PI*0.25f + 0.5f*osg::PI*((float)rand() / (float)RAND_MAX);
     float speed = 200.0f*((float)rand() / (float)RAND_MAX);
 
@@ -912,8 +1346,30 @@ void GameEventHandler::createNewCatchable()
        catchableObject->explode(); 
     }
 
-    _group->addChild(catchableObject->_object.get());
+    _gameGroup->addChild(catchableObject->_object.get());
 }
+
+
+class CompileStateCallback : public osgProducer::OsgCameraGroup::RealizeCallback
+{
+    public:
+        CompileStateCallback(GameEventHandler* eh):_gameEventHandler(eh) {}
+        
+        virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
+        { 
+            // now safe to construct
+            sh.init();
+                        
+            if (_gameEventHandler)
+            {
+                _gameEventHandler->compileGLObjects(*(sh.getSceneView()->getState()));
+            }
+        }
+        
+        
+        GameEventHandler*  _gameEventHandler;
+        
+};
 
 int main( int argc, char **argv )
 {
@@ -979,6 +1435,12 @@ int main( int argc, char **argv )
     
     seh->setFOVY(fovy);
     
+    // enable the image cache so we don't need to keep loading the particle files
+    osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
+    options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
+    osgDB::Registry::instance()->setOptions(options);
+
+
     // creat the scene from the file list.
     osg::ref_ptr<osg::Node> rootNode = seh->createScene();
 
@@ -986,6 +1448,8 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer.setSceneData(rootNode.get());
+
+    viewer.setRealizeCallback(new CompileStateCallback(seh));
 
     // create the windows and run the threads.
     viewer.realize();
@@ -1009,7 +1473,10 @@ int main( int argc, char **argv )
         
     }
     
-    // wait for all cull and draw threads to complete before exit.
+    // run a clean up frame to delete all OpenGL objects.
+    viewer.cleanup_frame();
+
+    // wait for all the clean up frame to complete.
     viewer.sync();
     
     return 0;

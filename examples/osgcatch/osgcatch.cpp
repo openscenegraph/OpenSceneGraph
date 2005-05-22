@@ -1038,7 +1038,7 @@ osg::Node* GameEventHandler::createScene()
         osg::Geode* geode = new osg::Geode;
 
         // set up the background
-        osg::Image* image = osgDB::readImageFile("Catch/Welcome.png");
+        osg::Image* image = osgDB::readImageFile("Catch/Welcome.jpg");
         if (image)
         {
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
@@ -1113,7 +1113,7 @@ osg::Node* GameEventHandler::createScene()
     {
         osg::Geode* geode = new osg::Geode;
 
-        osg::Image* image = osgDB::readImageFile("Catch/YouLost.png");
+        osg::Image* image = osgDB::readImageFile("Catch/YouLost.jpg");
         if (image)
         {
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);
@@ -1175,7 +1175,7 @@ osg::Node* GameEventHandler::createScene()
     {
         osg::Geode* geode = new osg::Geode;
 
-        osg::Image* image = osgDB::readImageFile("Catch/YouWon.png");
+        osg::Image* image = osgDB::readImageFile("Catch/YouWon.jpg");
         if (image)
         {
             osg::Geometry* geometry = osg::createTexturedQuadGeometry(_origin,_width,_height);

@@ -1,3 +1,113 @@
+2005-05-23 12:18  robert
+
+	* runexamples.bat: Added new examples to runexamples
+
+2005-05-23 12:00  robert
+
+	* NEWS.txt: Updated news.
+
+2005-05-22 21:30  robert
+
+	* examples/osgcatch/osgcatch.cpp: Changed .png files to .jpg to
+	  help save space in OpenSceneGraph-Data.
+
+2005-05-22 21:19  robert
+
+	* examples/osgcatch/osgcatch.cpp: Added scoring, welcome page,
+	  you've lost and you've won pages.
+
+2005-05-21 22:19  robert
+
+	* examples/osgcatch/osgcatch.cpp: Added support for multiple
+	  levels, and exit on lose of all lives or on finishng the highest
+	  level.
+
+2005-05-21 13:57  robert
+
+	* examples/osgcatch/osgcatch.cpp: Updates to osgcatch game to allow
+	  different types of falling objects
+
+2005-05-21 10:55  robert
+
+	* examples/osghangglide/GliderManipulator.cpp: Maded debugging
+	  output write out at INFO level
+
+2005-05-20 23:15  robert
+
+	* src/osgWrappers/osgUtil/: RenderBin.cpp, RenderStage.cpp: Tweaked
+	  wrappers by hand to get them to compile
+
+2005-05-20 22:12  robert
+
+	* src/: osgPlugins/quicktime/QuicktimeImageStream.cpp,
+	  osgPlugins/xine/ReaderWriterXine.cpp,
+	  osgWrappers/osgGA/UFOManipulator.cpp,
+	  osgWrappers/osgProducer/OsgCameraGroup.cpp,
+	  osgWrappers/osgSim/SphereSegment.cpp,
+	  osgWrappers/osgUtil/RenderBin.cpp,
+	  osgWrappers/osgUtil/RenderStage.cpp,
+	  osgWrappers/osgUtil/SceneView.cpp: Updated wrappers.
+
+2005-05-20 22:01  robert
+
+	* include/: osgGA/UFOManipulator, osgParticle/ForceOperator,
+	  osgParticle/ParticleProcessor, osgParticle/ParticleSystem,
+	  osgParticle/ParticleSystemUpdater, osgProducer/OsgCameraGroup,
+	  osgSim/ScalarBar, osgSim/SphereSegment: Fixed doxygen comments.
+
+2005-05-20 19:35  robert
+
+	* VisualStudio/examples/osgpbuffer/osgpbuffer.dsp: Removed
+	  references to removed files.
+
+2005-05-20 16:45  robert
+
+	* include/osg/Math: Reworking to avoid compile issues under VS6.0.
+
+2005-05-20 12:35  robert
+
+	* Make/makedirdefs: Removed remaining references to old DX writer.
+
+2005-05-20 07:39  robert
+
+	* src/osg/Referenced.cpp: Added env var report.
+
+2005-05-19 22:42  robert
+
+	* include/osgUtil/SceneView: From Martin Aumueller, fixed copy and
+	  paste error on getActiveUniforms().
+
+2005-05-19 16:17  robert
+
+	* include/osgUtil/RenderBin, include/osgUtil/RenderStage,
+	  src/osgUtil/RenderBin.cpp, src/osgUtil/RenderStage.cpp: Added
+	  support for setting the default render bin sort mode via the env
+	  OSG_DEFAULT_BIN_SORT_MODE variable or via or
+	  RenderBin::setDefaultRenderBinSortMode() method.
+
+2005-05-19 10:22  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: From Alberto Farre, added support
+	  for caching of ProxyNode children.
+
+2005-05-18 22:45  don
+
+	* src/osgProducer/ViewerEventHandler.cpp: Fixed fullscreen toggle
+	  in ViewerEventHandler that assumed the first RenderSurface was a
+	  window (not a pbuffer).
+
+2005-05-18 22:34  don
+
+	* examples/osgpbuffer/osgpbuffer.cpp: PBuffer example revamped to
+	  use a normal CameraConfig for setting up the PBuffer and main
+	  cameras, and a PBufferTexture2D for the texture, rather than a
+	  subload callback
+
+2005-05-18 22:31  robert
+
+	* ChangeLog, NEWS.txt, runexamples.bat: Updated NEWS, ChangeLog and
+	  runexamples.bat.
+
 2005-05-18 22:17  robert
 
 	* src/osgWrappers/osg/ClearNode.cpp: Updated wrappers.
@@ -1663,16 +1773,16 @@
 	  osgParticle/osgParticle.dsp, osgPlugins/3dc/3dc.dsp,
 	  osgPlugins/ac3d/ac3d.dsp, osgPlugins/bmp/bmp.dsp,
 	  osgPlugins/dds/dds.dsp, osgPlugins/directx/directx.dsp,
-	  osgPlugins/dw/dw.dsp, osgPlugins/dx/dx.dsp,
-	  osgPlugins/flt/flt.dsp, osgPlugins/freetype/freetype.dsp,
-	  osgPlugins/gdal/gdal.dsp, osgPlugins/geo/geo.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/hdr/hdr.dsp,
-	  osgPlugins/ive/ive.dsp, osgPlugins/jp2/jp2.dsp,
-	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
-	  osgPlugins/logo/logo.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/lws/lws.dsp, osgPlugins/md2/md2.dsp,
-	  osgPlugins/net/net.dsp, osgPlugins/obj/obj.dsp,
-	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgFX/dot_osgFX.dsp,
+	  osgPlugins/dw/dw.dsp, osgPlugins/flt/flt.dsp,
+	  osgPlugins/freetype/freetype.dsp, osgPlugins/gdal/gdal.dsp,
+	  osgPlugins/geo/geo.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/hdr/hdr.dsp, osgPlugins/ive/ive.dsp,
+	  osgPlugins/jp2/jp2.dsp, osgPlugins/jpeg/jpeg.dsp,
+	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/logo/logo.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/lws/lws.dsp,
+	  osgPlugins/md2/md2.dsp, osgPlugins/net/net.dsp,
+	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	  osgPlugins/osgFX/dot_osgFX.dsp,
 	  osgPlugins/osgParticle/dot_osgParticle.dsp,
 	  osgPlugins/osgSim/dot_osgSim.dsp,
 	  osgPlugins/osgText/dot_osgText.dsp, osgPlugins/osga/osga.dsp,
@@ -1914,16 +2024,16 @@
 	  osgParticle/osgParticle.dsp, osgPlugins/3dc/3dc.dsp,
 	  osgPlugins/ac3d/ac3d.dsp, osgPlugins/bmp/bmp.dsp,
 	  osgPlugins/dds/dds.dsp, osgPlugins/directx/directx.dsp,
-	  osgPlugins/dw/dw.dsp, osgPlugins/dx/dx.dsp,
-	  osgPlugins/flt/flt.dsp, osgPlugins/freetype/freetype.dsp,
-	  osgPlugins/gdal/gdal.dsp, osgPlugins/geo/geo.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/hdr/hdr.dsp,
-	  osgPlugins/ive/ive.dsp, osgPlugins/jp2/jp2.dsp,
-	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
-	  osgPlugins/logo/logo.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/lws/lws.dsp, osgPlugins/md2/md2.dsp,
-	  osgPlugins/net/net.dsp, osgPlugins/obj/obj.dsp,
-	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgFX/dot_osgFX.dsp,
+	  osgPlugins/dw/dw.dsp, osgPlugins/flt/flt.dsp,
+	  osgPlugins/freetype/freetype.dsp, osgPlugins/gdal/gdal.dsp,
+	  osgPlugins/geo/geo.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/hdr/hdr.dsp, osgPlugins/ive/ive.dsp,
+	  osgPlugins/jp2/jp2.dsp, osgPlugins/jpeg/jpeg.dsp,
+	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/logo/logo.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/lws/lws.dsp,
+	  osgPlugins/md2/md2.dsp, osgPlugins/net/net.dsp,
+	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	  osgPlugins/osgFX/dot_osgFX.dsp,
 	  osgPlugins/osgParticle/dot_osgParticle.dsp,
 	  osgPlugins/osgSim/dot_osgSim.dsp,
 	  osgPlugins/osgText/dot_osgText.dsp, osgPlugins/osga/osga.dsp,
@@ -4528,8 +4638,6 @@
 	  src/osgPlugins/dds/ReaderWriterDDS.cpp,
 	  src/osgPlugins/directx/ReaderWriterDirectX.cpp,
 	  src/osgPlugins/dw/ReaderWriterDW.cpp,
-	  src/osgPlugins/dx/ReaderWriterDX.cpp,
-	  src/osgPlugins/dx/ReaderWriterDX.h,
 	  src/osgPlugins/flt/ReaderWriterATTR.cpp,
 	  src/osgPlugins/flt/ReaderWriterFLT.cpp,
 	  src/osgPlugins/flt/ReaderWriterFLT.h,
@@ -9277,8 +9385,8 @@
 2004-04-11 22:21  robert
 
 	* include/osg/Timer, src/osg/Timer.cpp,
-	  src/osgPlugins/ac3d/ac3d.cpp, src/osgPlugins/dx/DXWriter.cpp:
-	  From Eric Wing, clean ups for OSX support.
+	  src/osgPlugins/ac3d/ac3d.cpp: From Eric Wing, clean ups for OSX
+	  support.
 
 2004-04-10 17:11  robert
 
@@ -9802,9 +9910,8 @@
 	  include/osg/GL, include/osg/GLExtensions, include/osg/GLU,
 	  include/osg/Math, include/osg/Timer, src/osg/Timer.cpp,
 	  src/osgDB/DynamicLibrary.cpp, src/osgDB/FileUtils.cpp,
-	  src/osgDB/Registry.cpp, src/osgPlugins/ac3d/ac3d.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp: From Bob Kuehne, change on
-	  __DARWIN_OSX__ define to __APPLE__
+	  src/osgDB/Registry.cpp, src/osgPlugins/ac3d/ac3d.cpp: From Bob
+	  Kuehne, change on __DARWIN_OSX__ define to __APPLE__
 
 2004-03-07 21:03  robert
 
@@ -16336,8 +16443,7 @@
 
 	* examples/osgstereoimage/osgstereoimage.cpp,
 	  src/osgPlugins/GNUmakefile, src/osgPlugins/ac3d/ac3d.cpp,
-	  src/osgPlugins/ac3d/osgac3d.h, src/osgPlugins/dx/DXWriter.cpp,
-	  src/osgPlugins/geo/GNUmakefile,
+	  src/osgPlugins/ac3d/osgac3d.h, src/osgPlugins/geo/GNUmakefile,
 	  src/osgPlugins/geo/ReaderWriterGEO.cpp,
 	  src/osgPlugins/geo/geoActions.cpp,
 	  src/osgPlugins/geo/geoFormat.h: Changes to fix compiles on Mac OS
@@ -17388,8 +17494,7 @@
 	  src/osgPlugins/bmp/GNUmakefile, src/osgPlugins/bmp/Makefile,
 	  src/osgPlugins/directx/GNUmakefile,
 	  src/osgPlugins/directx/Makefile, src/osgPlugins/dw/GNUmakefile,
-	  src/osgPlugins/dw/Makefile, src/osgPlugins/dx/GNUmakefile,
-	  src/osgPlugins/dx/Makefile, src/osgPlugins/flt/GNUmakefile,
+	  src/osgPlugins/dw/Makefile, src/osgPlugins/flt/GNUmakefile,
 	  src/osgPlugins/flt/Makefile, src/osgPlugins/freetype/GNUmakefile,
 	  src/osgPlugins/freetype/Makefile, src/osgPlugins/geo/GNUmakefile,
 	  src/osgPlugins/geo/Makefile, src/osgPlugins/gif/GNUmakefile,
@@ -18044,8 +18149,6 @@
 	  src/osgGA/TrackballManipulator.cpp, src/osgPlugins/ac3d/ac3d.cpp,
 	  src/osgPlugins/directx/directx.cpp,
 	  src/osgPlugins/dw/ReaderWriterDW.cpp,
-	  src/osgPlugins/dx/AreaGeoSetTriangulator.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp,
 	  src/osgPlugins/geo/osgGeoStructs.h,
 	  src/osgPlugins/osg/ConvexPlanarOccluder.cpp,
 	  src/osgPlugins/osg/GeoSet.cpp,
@@ -21523,7 +21626,6 @@
 	* include/osg/Texture, src/osg/CopyOp.cpp, src/osg/StateSet.cpp,
 	  src/osg/TextureCubeMap.cpp, src/osgParticle/ParticleSystem.cpp,
 	  src/osgPlugins/dw/ReaderWriterDW.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp,
 	  src/osgPlugins/flt/GeoSetBuilder.cpp,
 	  src/osgPlugins/flt/Pool.cpp, src/osgPlugins/flt/Pool.h,
 	  src/osgPlugins/flt/ReaderWriterATTR.cpp,
@@ -21581,8 +21683,8 @@
 	  src/osg/Texture.cpp, src/osg/Texture1D.cpp,
 	  src/osg/Texture2D.cpp, src/osg/Texture3D.cpp,
 	  src/osg/TextureBase.cpp, src/osg/TextureCubeMap.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/osg/Makefile,
-	  src/osgPlugins/osg/Texture.cpp, src/osgPlugins/osg/Texture2D.cpp,
+	  src/osgPlugins/osg/Makefile, src/osgPlugins/osg/Texture.cpp,
+	  src/osgPlugins/osg/Texture2D.cpp,
 	  src/osgPlugins/osg/TextureBase.cpp,
 	  src/osgPlugins/osg/TextureCubeMap.cpp,
 	  src/osgUtil/CullVisitor.cpp: Added new osg::TextureBase,
@@ -21762,7 +21864,7 @@
 	  include/osg/NodeVisitor, include/osg/Transparency,
 	  include/osgUtil/CullVisitor, src/osg/ClearNode.cpp,
 	  src/osg/EarthSky.cpp, src/osg/Makefile,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/osg/BlendFunc.cpp,
+	  src/osgPlugins/osg/BlendFunc.cpp,
 	  src/osgPlugins/osg/ClearNode.cpp,
 	  src/osgPlugins/osg/EarthSky.cpp, src/osgPlugins/osg/Makefile,
 	  src/osgUtil/CullVisitor.cpp, src/osgUtil/SceneView.cpp: Renamed
@@ -22303,18 +22405,16 @@
 
 2002-07-23 14:30  robert
 
-	* Make/makedefs, src/osgPlugins/dx/DXWriter.cpp: Support added for
-	  Gnu C++ under Solaris.
+	* Make/makedefs: Support added for Gnu C++ under Solaris.
 
 2002-07-23 11:48  robert
 
 	* AUTHORS, Make/makedefs, Make/makerules, include/osg/Math,
 	  src/osg/GLExtensions.cpp, src/osgDB/DynamicLibrary.cpp,
-	  src/osgDB/Registry.cpp, src/osgPlugins/dx/DXWriter.cpp,
-	  src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
-	  src/osgPlugins/osg/README, src/osgPlugins/png/Makefile,
-	  src/osgPlugins/tiff/Makefile, src/osgText/Makefile: Checked in
-	  Tino Schwarze's port to HP-UX.
+	  src/osgDB/Registry.cpp, src/osgPlugins/gif/Makefile,
+	  src/osgPlugins/jpeg/Makefile, src/osgPlugins/osg/README,
+	  src/osgPlugins/png/Makefile, src/osgPlugins/tiff/Makefile,
+	  src/osgText/Makefile: Checked in Tino Schwarze's port to HP-UX.
 
 2002-07-22 17:01  robert
 
@@ -22553,10 +22653,9 @@
 
 2002-07-18 11:06  robert
 
-	* src/: osgPlugins/dx/DXWriter.cpp, osgUtil/DisplayListVisitor.cpp,
-	  osgUtil/DisplayRequirementsVisitor.cpp,
-	  osgUtil/SmoothingVisitor.cpp, osgUtil/TriStripVisitor.cpp: Fixed
-	  warnings.
+	* src/osgUtil/: DisplayListVisitor.cpp,
+	  DisplayRequirementsVisitor.cpp, SmoothingVisitor.cpp,
+	  TriStripVisitor.cpp: Fixed warnings.
 
 2002-07-18 10:55  robert
 
@@ -22729,9 +22828,7 @@
 
 2002-07-16 16:13  robert
 
-	* Make/makedefs, Make/makedirdefs,
-	  src/osgPlugins/dx/AreaGeoSetTriangulator.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp: Fixes for MacOSX build from Bob
+	* Make/: makedefs, makedirdefs: Fixes for MacOSX build from Bob
 	  Kuehne.
 
 2002-07-16 16:12  robert
@@ -22875,8 +22972,6 @@
 	  include/osg/Transform, include/osg/Transparency,
 	  src/osg/BlendFunc.cpp, src/osg/Makefile, src/osg/Transform.cpp,
 	  src/osg/Transparency.cpp, src/osgPlugins/dw/ReaderWriterDW.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp,
-	  src/osgPlugins/dx/StateSetStr.cpp,
 	  src/osgPlugins/osg/BlendFunc.cpp, src/osgPlugins/osg/Makefile,
 	  src/osgPlugins/osg/Transparency.cpp,
 	  src/osgPlugins/pfb/ConvertFromPerformer.cpp:
@@ -23098,10 +23193,9 @@
 	  include/osg/Texture, include/osg/TextureCubeMap,
 	  src/osg/GeoSet.cpp, src/osg/Geometry.cpp, src/osg/Primitive.cpp,
 	  src/osg/StateSet.cpp, src/osg/Texture.cpp,
-	  src/osg/TextureCubeMap.cpp, src/osgPlugins/dx/DXWriter.cpp,
-	  src/osgPlugins/dx/StateSetStr.cpp,
-	  src/osgPlugins/osg/Geometry.cpp, src/osgUtil/SceneView.cpp,
-	  src/osgUtil/Tesselator.cpp: Work on supporting multitexturing in
+	  src/osg/TextureCubeMap.cpp, src/osgPlugins/osg/Geometry.cpp,
+	  src/osgUtil/SceneView.cpp, src/osgUtil/Tesselator.cpp: Work on
+	  supporting multitexturing in
 	  State/StateSet/StateAttribute/Geoemtry.
 
 2002-07-04 19:47  robert
@@ -23908,18 +24002,17 @@
 
 	* VisualStudio/: osg/osg.dsp, osgDB/osgDB.dsp, osgGA/osgGA.dsp,
 	  osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp,
-	  osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
-	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
-	  osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
-	  osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
-	  osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
-	  osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
-	  osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
-	  Did a to_dos on all the VisualStudio project files, and changed
-	  them to use the cvs admin -ko and each file to prevent keyword
-	  expansion.
+	  osgPlugins/flt/flt.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/obj/obj.dsp,
+	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgtgz/osgtgz.dsp,
+	  osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/rgb/rgb.dsp, osgPlugins/tga/tga.dsp,
+	  osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	  osgPlugins/txp/txp.dsp, osgPlugins/zip/zip.dsp,
+	  osgText/osgText.dsp, osgUtil/osgUtil.dsp: Did a to_dos on all the
+	  VisualStudio project files, and changed them to use the cvs admin
+	  -ko and each file to prevent keyword expansion.
 
 2002-06-03 11:44  robert
 
@@ -24037,16 +24130,16 @@
 
 	* VisualStudio/: osg/osg.dsp, osgDB/osgDB.dsp, osgGA/osgGA.dsp,
 	  osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp,
-	  osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
-	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
-	  osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
-	  osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
-	  osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
-	  osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
-	  osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
-	  Removed the usage of memory manager from the debug windows build.
+	  osgPlugins/flt/flt.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/obj/obj.dsp,
+	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgtgz/osgtgz.dsp,
+	  osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/rgb/rgb.dsp, osgPlugins/tga/tga.dsp,
+	  osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	  osgPlugins/txp/txp.dsp, osgPlugins/zip/zip.dsp,
+	  osgText/osgText.dsp, osgUtil/osgUtil.dsp: Removed the usage of
+	  memory manager from the debug windows build.
 
 2002-05-22 13:01  robert
 
@@ -24270,16 +24363,16 @@
 
 	* VisualStudio/: VisualStudio.dsw, osg/osg.dsp, osgDB/osgDB.dsp,
 	  osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp,
-	  osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
-	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
-	  osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
-	  osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
-	  osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
-	  osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
-	  osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
-	  Testing .dsp and .dsw as binary files
+	  osgPlugins/flt/flt.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/obj/obj.dsp,
+	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgtgz/osgtgz.dsp,
+	  osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/rgb/rgb.dsp, osgPlugins/tga/tga.dsp,
+	  osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	  osgPlugins/txp/txp.dsp, osgPlugins/zip/zip.dsp,
+	  osgText/osgText.dsp, osgUtil/osgUtil.dsp: Testing .dsp and .dsw
+	  as binary files
 
 2002-04-26 14:49  robert
 
@@ -24294,12 +24387,6 @@
 2002-04-26 13:06  robert
 
 	* src/osgUtil/Optimizer.cpp: Fix for CisualStudio6.0 build.
-
-2002-04-26 09:25  robert
-
-	* src/osgPlugins/dx/DXWriter.h: Fixed remaining MAX_PATH usuage,
-	  replacing it with the new DX_MAX_PATH, this should solve compile
-	  problems under VisualStudio .NET.
 
 2002-04-26 09:16  robert
 
@@ -24316,10 +24403,6 @@
 	  Fixes for IRIX build.
 
 	  Fix for a warning under VisualStudio.NET.
-
-2002-04-25 23:07  robert
-
-	* src/osgPlugins/dx/: DXWriter.cpp, DXWriter.h: Cygwin build fixes.
 
 2002-04-25 22:31  robert
 
@@ -24395,14 +24478,6 @@
 
 	* doc/introduction.html: Fixed spellings in introduction.html, and
 	  update osgtext and osgviews images.
-
-2002-04-24 21:57  robert
-
-	* src/osgPlugins/dx/Makefile: Merged Bob's changes for MacOSX
-	  build. This change is simply the addition of GLUT_LIB to the link
-	  line.  This change should be removed once we fixed the OSG_LIBS
-	  so that it doens't include osgGLUT, however, I'll leave this for
-	  another day...
 
 2002-04-24 21:36  robert
 
@@ -24481,16 +24556,16 @@
 
 	* VisualStudio/: osg/osg.dsp, osgDB/osgDB.dsp,
 	  osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp,
-	  osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
-	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
-	  osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
-	  osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
-	  osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
-	  osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
-	  osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
-	  Added OSG_USE_MEMORY_MANAGER to Windows debug build
+	  osgPlugins/flt/flt.dsp, osgPlugins/gif/gif.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/obj/obj.dsp,
+	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgtgz/osgtgz.dsp,
+	  osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/rgb/rgb.dsp, osgPlugins/tga/tga.dsp,
+	  osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	  osgPlugins/txp/txp.dsp, osgPlugins/zip/zip.dsp,
+	  osgText/osgText.dsp, osgUtil/osgUtil.dsp: Added
+	  OSG_USE_MEMORY_MANAGER to Windows debug build
 
 2002-04-23 16:01  robert
 
@@ -24681,8 +24756,7 @@
 
 2002-04-19 17:22  robert
 
-	* include/osg/Math, src/osgPlugins/dx/DXWriter.cpp: Fixes for Max
-	  OSX build from Bob Kuehne.
+	* include/osg/Math: Fixes for Max OSX build from Bob Kuehne.
 
 2002-04-19 17:21  robert
 
@@ -24826,7 +24900,7 @@
 
 	* include/osg/Image, src/osg/DrawPixels.cpp, src/osg/Image.cpp,
 	  src/osg/Texture.cpp, src/osg/TextureCubeMap.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/flt/flt2osg.cpp,
+	  src/osgPlugins/flt/flt2osg.cpp,
 	  src/osgPlugins/pfb/ConvertToPerformer.cpp: Added
 	  osg::Image::setPixelFormat(..) and setInternalTextureFormat(),
 	  and renamed osg::Image::pixelFormat(),
@@ -24840,12 +24914,11 @@
 2002-04-16 15:09  robert
 
 	* src/: osg/Image.cpp, osgPlugins/dw/ReaderWriterDW.cpp,
-	  osgPlugins/dx/ReaderWriterDX.cpp, osgPlugins/lib3ds/chunk.cpp,
-	  osgPlugins/lib3ds/light.cpp, osgPlugins/lib3ds/material.cpp,
-	  osgPlugins/lib3ds/mesh.cpp, osgPlugins/lib3ds/node.cpp,
-	  osgPlugins/lib3ds/tracks.cpp, osgPlugins/png/ReaderWriterPNG.cpp,
-	  osgText/FTGlyphContainer.cpp, osgText/FTPolyGlyph.cpp: Purge on
-	  warnings under Linux.
+	  osgPlugins/lib3ds/chunk.cpp, osgPlugins/lib3ds/light.cpp,
+	  osgPlugins/lib3ds/material.cpp, osgPlugins/lib3ds/mesh.cpp,
+	  osgPlugins/lib3ds/node.cpp, osgPlugins/lib3ds/tracks.cpp,
+	  osgPlugins/png/ReaderWriterPNG.cpp, osgText/FTGlyphContainer.cpp,
+	  osgText/FTPolyGlyph.cpp: Purge on warnings under Linux.
 
 2002-04-16 12:41  robert
 
@@ -24912,8 +24985,8 @@
 
 2002-04-15 22:03  robert
 
-	* include/osg/MemoryManager, src/osgPlugins/dx/StateSetStr.cpp:
-	  Added support for OSG_USE_MEMORY_MANAGER into Windows build.
+	* include/osg/MemoryManager: Added support for
+	  OSG_USE_MEMORY_MANAGER into Windows build.
 
 2002-04-15 15:45  don
 
@@ -24936,11 +25009,6 @@
 
 	* VisualStudio/VisualStudio.dsw: Added osghud, a head up display
 	  demo.
-
-2002-04-15 11:59  robert
-
-	* src/osgPlugins/dx/ReaderWriterDX.cpp: Fixes to warning in Win32
-	  build
 
 2002-04-15 09:51  robert
 
@@ -24998,7 +25066,6 @@
 	* VisualStudio/osg/osg.dsp, VisualStudio/osgDB/osgDB.dsp,
 	  VisualStudio/osgPlugins/bmp/bmp.dsp,
 	  VisualStudio/osgPlugins/dw/dw.dsp,
-	  VisualStudio/osgPlugins/dx/dx.dsp,
 	  VisualStudio/osgPlugins/flt/flt.dsp,
 	  VisualStudio/osgPlugins/gif/gif.dsp,
 	  VisualStudio/osgPlugins/jpeg/jpeg.dsp,
@@ -25016,9 +25083,7 @@
 	  VisualStudio/osgPlugins/zip/zip.dsp,
 	  VisualStudio/osgText/osgText.dsp,
 	  VisualStudio/osgUtil/osgUtil.dsp, include/osg/GeoSet,
-	  include/osgText/Text,
-	  src/osgPlugins/dx/AreaGeoSetTriangulator.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/flt/FltFile.h,
+	  include/osgText/Text, src/osgPlugins/flt/FltFile.h,
 	  src/osgPlugins/flt/flt.h, src/osgPlugins/txp/TrPageArchive.h:
 	  Clean up for VisualStudio build
 
@@ -25049,9 +25114,9 @@
 
 2002-04-13 11:18  robert
 
-	* VisualStudio/VisualStudio.dsw, include/osg/Camera,
-	  src/osgPlugins/dx/DXWriter.cpp: Saved workspace from VisualStudio
-	  to follow up on missing demo dependancies
+	* VisualStudio/VisualStudio.dsw, include/osg/Camera: Saved
+	  workspace from VisualStudio to follow up on missing demo
+	  dependancies
 
 2002-04-13 10:28  robert
 
@@ -25092,17 +25157,16 @@
 2002-04-12 12:56  robert
 
 	* VisualStudio/: VisualStudio.dsw, osgPlugins/bmp/bmp.dsp,
-	  osgPlugins/dw/dw.dsp, osgPlugins/dx/dx.dsp,
-	  osgPlugins/flt/flt.dsp, osgPlugins/gif/gif.dsp,
-	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
-	  osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
-	  osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
-	  osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
-	  osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
-	  osgPlugins/zip/zip.dsp: Added "Demo " and "osgPlugin " infront of
-	  all demo and plugin project names to help differentiate them
-	  within VisualStudio.
+	  osgPlugins/dw/dw.dsp, osgPlugins/flt/flt.dsp,
+	  osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/obj/obj.dsp,
+	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgtgz/osgtgz.dsp,
+	  osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/rgb/rgb.dsp, osgPlugins/tga/tga.dsp,
+	  osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	  osgPlugins/txp/txp.dsp, osgPlugins/zip/zip.dsp: Added "Demo " and
+	  "osgPlugin " infront of all demo and plugin project names to help
+	  differentiate them within VisualStudio.
 
 2002-04-12 11:24  robert
 
@@ -25332,21 +25396,21 @@
 
 	* Make/cygwin_plugin_def, Make/makedefs,
 	  src/osgPlugins/bmp/Makefile, src/osgPlugins/dw/Makefile,
-	  src/osgPlugins/dx/Makefile, src/osgPlugins/flt/Makefile,
-	  src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
-	  src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
-	  src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
-	  src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pfb/Makefile,
-	  src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
-	  src/osgPlugins/quicktime/Makefile, src/osgPlugins/rgb/Makefile,
-	  src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
-	  src/osgPlugins/tiff/Makefile, src/osgPlugins/txp/Makefile,
-	  src/osgPlugins/zip/Makefile: Added a stop gap fix for cygwin
-	  build.  Previous experiements were creating library and  plugin
-	  files that looked like system library and system files which
-	  would have deleted original files on a 'make install'.  Cygwin is
-	  not tested yet, but this needed to get fixed before a cygwin user
-	  wiped out his system library files.
+	  src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
+	  src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
+	  src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
+	  src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
+	  src/osgPlugins/pfb/Makefile, src/osgPlugins/pic/Makefile,
+	  src/osgPlugins/png/Makefile, src/osgPlugins/quicktime/Makefile,
+	  src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
+	  src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
+	  src/osgPlugins/txp/Makefile, src/osgPlugins/zip/Makefile: Added a
+	  stop gap fix for cygwin build.  Previous experiements were
+	  creating library and	plugin files that looked like system
+	  library and system files which would have deleted original files
+	  on a 'make install'.	Cygwin is not tested yet, but this needed
+	  to get fixed before a cygwin user wiped out his system library
+	  files.
 
 2002-04-06 10:24  robert
 
@@ -25372,9 +25436,9 @@
 2002-04-04 19:01  don
 
 	* Makefile, Make/distrules, Make/makedefs, Make/makerpms,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/gif/Makefile,
-	  src/osgPlugins/jpeg/Makefile, src/osgPlugins/png/Makefile: Added
-	  Norman Vine's changes for CYGWIN builds
+	  src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
+	  src/osgPlugins/png/Makefile: Added Norman Vine's changes for
+	  CYGWIN builds
 
 	  Added distrules and makerpms for building RPM distributions
 
@@ -25399,20 +25463,19 @@
 	* Make/instrules, Make/makedefs, Make/makerules, src/osg/Makefile,
 	  src/osgDB/Makefile, src/osgPlugins/Makefile,
 	  src/osgPlugins/bmp/Makefile, src/osgPlugins/dw/Makefile,
-	  src/osgPlugins/dx/Makefile, src/osgPlugins/flt/Makefile,
-	  src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
-	  src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
-	  src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
-	  src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pfb/Makefile,
-	  src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
-	  src/osgPlugins/quicktime/Makefile, src/osgPlugins/rgb/Makefile,
-	  src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
-	  src/osgPlugins/tiff/Makefile, src/osgPlugins/txp/Makefile,
-	  src/osgPlugins/zip/Makefile, src/osgText/Makefile,
-	  src/osgUtil/Makefile, src/osgUtil/RenderStage.cpp: Reinstated
-	  Norman Vine's TARGET_BASENAME variable in the makefiles and added
-	  prefixes and suffixes to libs and plugins.  ALl this to
-	  accomodate cygwin...
+	  src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
+	  src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
+	  src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
+	  src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
+	  src/osgPlugins/pfb/Makefile, src/osgPlugins/pic/Makefile,
+	  src/osgPlugins/png/Makefile, src/osgPlugins/quicktime/Makefile,
+	  src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
+	  src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
+	  src/osgPlugins/txp/Makefile, src/osgPlugins/zip/Makefile,
+	  src/osgText/Makefile, src/osgUtil/Makefile,
+	  src/osgUtil/RenderStage.cpp: Reinstated Norman Vine's
+	  TARGET_BASENAME variable in the makefiles and added prefixes and
+	  suffixes to libs and plugins.  ALl this to accomodate cygwin...
 
 	  Also added INST_SYS_PREFIX and INST_SHARE_PREFIX for
 	  installation, as well as "standardizing" the install locations
@@ -25434,20 +25497,20 @@
 	  Make/makerules.mingw, Make/makerules.new, dist/Irix/Makefile,
 	  src/Makefile, src/osg/Makefile, src/osgDB/Makefile,
 	  src/osgPlugins/Makefile, src/osgPlugins/bmp/Makefile,
-	  src/osgPlugins/dw/Makefile, src/osgPlugins/dx/Makefile,
-	  src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
-	  src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
-	  src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
-	  src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
-	  src/osgPlugins/pfb/Makefile, src/osgPlugins/pic/Makefile,
-	  src/osgPlugins/png/Makefile, src/osgPlugins/quicktime/Makefile,
-	  src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
-	  src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
-	  src/osgPlugins/txp/Makefile, src/osgPlugins/zip/Makefile,
-	  src/osgText/Makefile, src/osgUtil/Makefile: The new order for
-	  building OSG.  All Makefiles are replaced and the Make directory
-	  is left with four files only :     makedefs	  makerules
-	  makedirrules	   instrules
+	  src/osgPlugins/dw/Makefile, src/osgPlugins/flt/Makefile,
+	  src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
+	  src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
+	  src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
+	  src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pfb/Makefile,
+	  src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
+	  src/osgPlugins/quicktime/Makefile, src/osgPlugins/rgb/Makefile,
+	  src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
+	  src/osgPlugins/tiff/Makefile, src/osgPlugins/txp/Makefile,
+	  src/osgPlugins/zip/Makefile, src/osgText/Makefile,
+	  src/osgUtil/Makefile: The new order for building OSG.  All
+	  Makefiles are replaced and the Make directory is left with four
+	  files only :	   makedefs	makerules     makedirrules
+	  instrules
 
 	  These work for all platforms supported so far, which include :
 	   Linux     Irix     Solaris	  MacOSX     Cygwin	FreeBSD
@@ -25503,11 +25566,6 @@
 
 	* src/osgPlugins/obj/glm.cpp: Removed reference to malloc.h,
 	  replacing by stdlib.h instead.
-
-2002-03-30 21:20  robert
-
-	* src/osgPlugins/dx/DXWriter.cpp: Warnings fixes, submitted by
-	  Randall Hopper.
 
 2002-03-30 15:13  robert
 
@@ -25763,9 +25821,9 @@
 
 2002-03-21 07:50  don
 
-	* src/osgPlugins/: dx/AreaGeoSetTriangulator.cpp, dx/DXWriter.cpp,
-	  quicktime/ReaderWriterQT.cpp, tga/ReaderWriterTGA.cpp: Modified
-	  files reflect small changes to work with Sun OS port....
+	* src/osgPlugins/: quicktime/ReaderWriterQT.cpp,
+	  tga/ReaderWriterTGA.cpp: Modified files reflect small changes to
+	  work with Sun OS port....
 
 	  Removed redundant README file in osgviews... was a copy of
 	  sgv/README.
@@ -25973,11 +26031,6 @@
 	  setting the maximum number of graphics contexts that the OSG has
 	  to maintian.
 
-2002-02-27 22:12  robert
-
-	* src/osgPlugins/dx/DXWriter.cpp: Added an using namespace osg to
-	  fix a MipsPro7.3 build error.
-
 2002-02-27 22:04  robert
 
 	* AUTHORS: Updated AUTHORS file with Boris' email address.
@@ -26075,11 +26128,6 @@
 	  src/osgPlugins/Makefile, src/osgPlugins/pfb/Makefile,
 	  src/osgUtil/SceneView.cpp: Fixed stereo implementation.
 
-2002-02-18 21:52  robert
-
-	* src/osgPlugins/dx/: DXWriter.cpp, DXWriter.h: Fixes to Win32
-	  build of new DX writer plugin.
-
 2002-02-18 20:48  robert
 
 	* src/osgPlugins/Makefile: Comment w.r.t OpenDX plugin updated.
@@ -26087,16 +26135,8 @@
 2002-02-18 20:46  robert
 
 	* AUTHORS, NEWS, VisualStudio/VisualStudio.dsw,
-	  VisualStudio/osgPlugins/dx/dx.dsp, src/osgPlugins/Makefile,
-	  src/osgPlugins/dx/AreaGeoSetTriangulator.cpp,
-	  src/osgPlugins/dx/AreaGeoSetTriangulator.h,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/dx/DXWriter.h,
-	  src/osgPlugins/dx/Makefile, src/osgPlugins/dx/ReaderWriterDX.cpp,
-	  src/osgPlugins/dx/ReaderWriterDX.h,
-	  src/osgPlugins/dx/StateSetStr.cpp,
-	  src/osgPlugins/dx/StateSetStr.h,
-	  src/osgPlugins/osg/ReaderWriterOSG.cpp: Added OpenDX writer from
-	  Randall Hopper.
+	  src/osgPlugins/Makefile, src/osgPlugins/osg/ReaderWriterOSG.cpp:
+	  Added OpenDX writer from Randall Hopper.
 
 2002-02-14 13:26  robert
 

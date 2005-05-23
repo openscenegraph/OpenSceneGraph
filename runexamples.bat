@@ -18,11 +18,17 @@ osgautotransform
 echo osgbillboard
 osgbillboard
 
+echo osgblendequation
+osgblendequation cessnafire.osg
+
 echo osgcallback
 osgcallback cow.osg
 
 echo osgcameragroup
-osgcameragroup cessnafire.osg
+osgcameragroup dumptruck.osg
+
+echo osgcatch
+osgcatch
 
 echo osgclip
 osgclip cow.osg
@@ -68,6 +74,9 @@ osglightpoint
 
 echo osglogo
 osglogo
+
+echo osglogicop
+osglogicop glider.osg
 
 echo osgmotionblur
 osgmotionblur cow.osg

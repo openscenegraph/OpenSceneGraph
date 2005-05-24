@@ -805,6 +805,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             {
                 std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
 
+                // prune all the old entries.
                 DatabaseRequestList::iterator litr;
                 int i=0;
                 for(litr = _dataToCompileList.begin();
@@ -830,8 +831,9 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                     _dataToCompileList.erase(litr,_dataToCompileList.end());
                 }
 
-
-                databaseRequest = _dataToCompileList.front();
+                // advance to the next entry to compile if one is available.
+                databaseRequest = _dataToCompileList.empty() ? 0 : _dataToCompileList.front();
+            
             }
         };
 

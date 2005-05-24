@@ -1,4 +1,3 @@
-
 //
 // OpenFlight® loader for Open Scene Graph
 //
@@ -39,6 +38,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/ReentrantMutex>
 
 
 namespace flt {
@@ -56,6 +56,10 @@ public:
 
     virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
+
+protected:
+
+    mutable osgDB::ReentrantMutex _serializerMutex;
 };
 
 

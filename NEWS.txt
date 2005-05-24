@@ -7,26 +7,26 @@ OSG News (most significant items from ChangeLog)
 
 Introduction to the OpenSceneGraph:
 
-The OpenSceneGraph is an Open Source, high performance real-time graphics graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix.  The OpenSceneGraph is now established one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
+The OpenSceneGraph is an Open Source, high performance real-time graphics graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix.  The OpenSceneGraph is now established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
     
 The OpenSceneGraph 0.9.9 release:
     
-The latest release of the OpenSceneGraph, 0.9.9, is the culmination of 7 years development and is the final milestone before reaching 1.0. All core features for 1.0 are now in place and ready for deployment.  The development driven by technical convergence rather than usual marketing forces, this has meant that the even though the OpenSceneGraph is only now about to leave its beta status is is already highly tested and refined enough for industry luminaries such as Boeing, Nasa, Lockeed-Martin, Landmark Graphics to have embraced the toolkit us is it extensively for there own application development, with many other companies already release products based on top of the OpenSceneGraph.  In a recent industry poll the OpenSceneGraph received a 52% share, 2 1/2 times larger share than the next largest industry player.
+The latest release of the OpenSceneGraph, 0.9.9, is the culmination of 7 years development and is the final milestone before reaching 1.0. All core features for 1.0 are now in place and ready for deployment.  Since the development driven is by technical convergence rather than usual marketing forces, even though the OpenSceneGraph is only now about to leave its beta status it is already highly tested and refined enough for industry luminaries such as Boeing, NASA, Lockeed-Martin, Landmark Graphics to have embraced the toolkit and use it extensively for their own application development, with many other companies already releasing products based on top of the OpenSceneGraph.  In a recent industry poll the OpenSceneGraph received a 52% share, 2 1/2 times larger share than the next largest industry player.
     
-The 0.9.9 release includes many minor API refinements and bug fixes and optimizations, but also major new features including tight integration of OpenGL Shading Language support directly into the core osg library, new reflection/introspection support, new particle effects, movie support and DXF import.  Details follow:        
+The 0.9.9 release includes many minor API refinements and bug fixes and optimizations, but also major new features including tight integration of OpenGL Shading Language support directly into the core osg library, new reflection/introspection support, new particle effects, movie support and DXF import.  Details follow:
         
 OpenGL Shader Language support:
     
-OpenGL Shading Language support has been moved form the osgGL2 node kits directly into the core osg library, this move also involved re factoring the handling of state so that it now specifically supports OpenGL Program, Shaders and Uniforms in a convenient and flexible way. State sorting and lazy state updating are now applied in to both Program and Uniforms to maximize performance throughput.  The work was spearheaded by 3DLabs engineer Mike Wieblen, collaborating with Robert Osfield with contributions from the community. 
+OpenGL Shading Language (GLSL) support has been moved from the osgGL2 node kit directly into the core osg library.  This move also involved refactoring the handling of state so that it now specifically supports GLSL Program, Shaders and Uniforms in a convenient and flexible way. State sorting and lazy state updating are now applied to both Program and Uniforms to maximize performance throughput.  The work was spearheaded by 3Dlabs engineer Mike Weiblen, collaborating with Robert Osfield with contributions from the community. 
         
 Introspection support:
     
-The new osgIntrospection and associated library wrappers provides support for full API reflection/introspection, this facilitates integration of the OpenSceneGraph with other programming languages, development of generic editors of scene graph attributes, general purpose serialization of scene graph objects such as for reading and writing to disk, or across local networks to support systems such as graphics clusters.  The osgIntrospection is designed
-to be non intrusive, allowing 3rd Party libraries to be wrapped without these libraries needing to have explicit introspection support added into them.  The non intrusive approach also keeps introspection support a separate  module which only needs to be loaded if you require support it, this leaves the core libraries light-weight on focused on the their particular tasks.  osgIntrospection is the inspired work of Marco Jez.  Thanks also go to ANU Viz Lab for graciously funding Robert Osfield's contribution to this sub project.
+The new osgIntrospection and associated library wrappers provides support for full API reflection/introspection.  That facilitates integration of the OpenSceneGraph with other programming languages, development of generic editors of scene graph attributes, general purpose serialization of scene graph objects such as for reading and writing to disk, or across local networks to support systems such as graphics clusters.  The osgIntrospection is designed
+to be non-intrusive, allowing 3rd Party libraries to be wrapped without these libraries needing to have explicit introspection support added into them.  The-non intrusive approach also keeps introspection support a separate module which only needs to be loaded if you require it, this leaves the core libraries light-weight and focused on the their particular tasks.  osgIntrospection is the inspired work of Marco Jez.  Thanks also go to ANU Viz Lab for graciously funding Robert Osfield's contribution to this sub-project.
 
 Better support for Apple native Windowing:
 
-Thanks new support for AGL and CGL in OpenProducer, all OpenSceneGraph osgProducer based examples and application will run straight out of the box under OSX native AGL or CGL Windowing. This allows better integration of OpenSceneGraph applications with OSX, access to faster and up to date OpenGL drivers.
+Thanks to new support for AGL and CGL in OpenProducer, all OpenSceneGraph/osgProducer-based examples and application will run straight out of the box under OSX native AGL or CGL Windowing. This allows better integration of OpenSceneGraph applications with OSX, access to faster and up to date OpenGL drivers.
     
 Support for latest OpenGL extensions:
     
@@ -43,11 +43,11 @@ To make it easier to add particle effects to your application a new osgParticle:
     
 DXF and Movie plugins:
     
-A new DXF plugin has been added for reading .dxf files.  Movies support has also been enhanced with integration of the OpenSceneGraph with Xine-lib via the xine plugin, this allows you to add movie content into your applications including from dvd's and streamed across the LAN thanks to Xine-libs inbuilt streaming support.
+A new DXF plugin has been added for reading .dxf files.  Movie support has also been enhanced with integration of the OpenSceneGraph with Xine-lib via the xine plugin, this allows you to add movie content into your applications, including DVD's and streamed across the LAN, thanks to Xine-libs inbuilt streaming support.
     
 Application and examples:
     
-To facilitate faster builds and a logical division between applications that come with the OpenSceneGraph, the original example direction has now been split into two, with the new applications/ directory now comprising of osgviewer, osgconv, osgarchive, osgversion and osgdem.  Under Makefile builds by default now only the applications directory is compiled, thus avoiding the cost of recompiling the 74 example programs.  Examples can still be compiled by run make COMPILE_EXAMPLES=yes, or setting COMPILE_EXAMPLE=yes as an env var or in a custom dependencies file.
+To facilitate faster builds and a logical division between applications that come with the OpenSceneGraph, the original example directory has now been split into two, with the new applications/ directory now comprising osgviewer, osgconv, osgarchive, osgversion and osgdem.  The Makefiles now build by default only the applications directory, thus avoiding the cost of recompiling the 74 example programs.  Examples can still be compiled by run make COMPILE_EXAMPLES=yes, or setting COMPILE_EXAMPLE=yes as an env var or in a custom dependencies file.
     
 There are eight new examples, osgblendequation and osglogicop demonstrate the new osg::BlendEquation and osg::LogicOp state attributes,  osgGLUTkeyboardmouse and osgGLUTsimple are GLUT based examples, osgslice does some image reading of rendered slices, osgparticleeffects demonstrates the new osgParticle::ParticleEffects.
     
@@ -55,7 +55,7 @@ osgpbuffer also example now uses Producer's pbuffer support making it portable a
     
 API refinements, bug fixes and performance improvements:
     
-There have been many bug fixes, a number of performance improvements and API cleanups that have occur ed throughout the 0.9.9.8 - 0.9.9, too many separate items to enumerate here.  Together with the above new features they all go to making the OpenSceneGraph-0.9.9 the most robust, high performance and feature rich version in its history, and sets the stage for the upcoming 1.0.
+There have been many bug fixes, a number of performance improvements and API cleanups that have occured throughout the 0.9.8 - 0.9.9, too many separate items to enumerate here.  Together with the above new features they all go to making the OpenSceneGraph-0.9.9 the most robust, high performance and feature rich version so far, and sets the stage for the upcoming 1.0.
     
 We would like to thank the following engineers for their contributions in the 0.9.8 - 0.9.9.9 time frame (in alphabetic order):
 Alberto Farre, Bob Kuehne, Brede Johansen, Carlo Camporesi, Chris Hanson, Don Burns, Donn Mielcarek,  Don Tidrow, Farshid Lashkari, Frederic Marmond, Garrett Potts, Igor Kravtchenko, James French, Jan Ciger, John Grant, Joakim Simonsson, Joran Jessurun, Jason Daly, Kevin Moiule, Leandro Motta Barros, Marco Jez, Mason Menninger, Mike Weiblen, Nathan Monteleone, Norman Vine, Olaf Flebbe, Paul Melis, Per Fahlberg, Rainer Oder, Randall Hopper, Reinhard Sainitzer, Robert Osfield, Ruben, Sebastien Grignard, Stephan Huber, Terry Welsh, Thom DeCarlo, Tony Horrobin, Tree, Tugkan Calapoglu, Vivek Rajan, Waltice and Yuzhong Shen

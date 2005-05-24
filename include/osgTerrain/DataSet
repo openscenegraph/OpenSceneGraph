@@ -626,7 +626,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             {
                 DefaultSourceAdvancer() {}
                 
-                bool isActive(const CompositeSource& composite,int index)
+                bool isActive(const CompositeSource& /*composite*/,int /*index*/)
                 {
                     return true;
                 }

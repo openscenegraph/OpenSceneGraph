@@ -57,7 +57,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
 
 
-        RenderBin(SortMode mode=getDefaultRenderBinSortMode());
+        RenderBin();
+        
+        RenderBin(SortMode mode);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         RenderBin(const RenderBin& rhs,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);

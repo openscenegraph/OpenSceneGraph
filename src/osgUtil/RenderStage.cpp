@@ -23,6 +23,21 @@ using namespace osgUtil;
 // register a RenderStage prototype with the RenderBin prototype list.
 //RegisterRenderBinProxy<RenderStage> s_registerRenderStageProxy;
 
+RenderStage::RenderStage():
+    RenderBin(getDefaultRenderBinSortMode())
+{
+    // point RenderBin's _stage to this to ensure that references to
+    // stage don't go tempted away to any other stage.
+    _stage = this;
+    _stageDrawnThisFrame = false;
+
+    _clearMask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+    _clearColor.set(0.0f,0.0f,0.0f,0.0f);
+    _clearAccum.set(0.0f,0.0f,0.0f,0.0f);
+    _clearDepth = 1.0;
+    _clearStencil = 0;
+}
+
 RenderStage::RenderStage(SortMode mode):
     RenderBin(mode)
 {

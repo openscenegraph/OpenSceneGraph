@@ -33,7 +33,8 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_BaseType(osgUtil::RenderBin);
-	I_ConstructorWithDefaults1(IN, osgUtil::RenderBin::SortMode, mode, osgUtil::RenderBin::getDefaultRenderBinSortMode());
+	I_Constructor0();
+	I_Constructor1(IN, osgUtil::RenderBin::SortMode, mode);
 	I_ConstructorWithDefaults2(IN, const osgUtil::RenderStage &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);

@@ -114,6 +114,14 @@ RenderBin::SortMode RenderBin::getDefaultRenderBinSortMode()
     return s_defaultBinSortMode;
 }
 
+RenderBin::RenderBin()
+{
+    _binNum = 0;
+    _parent = NULL;
+    _stage = NULL;
+    _sortMode = getDefaultRenderBinSortMode();
+}
+
 RenderBin::RenderBin(SortMode mode)
 {
     _binNum = 0;

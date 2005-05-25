@@ -64,7 +64,7 @@ echo osgkeyboard
 osgkeyboard
 
 echo osgkeyboardmouse
-osgkeyboardmouse
+osgkeyboardmouse dumptruck.osg
 
 echo osglight
 osglight glider.osg

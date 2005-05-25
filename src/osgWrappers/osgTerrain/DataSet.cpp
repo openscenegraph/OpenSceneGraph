@@ -220,7 +220,7 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::DefaultSourceAdvancer)
 	I_Constructor0();
-	I_Method2(bool, isActive, IN, const osgTerrain::DataSet::CompositeSource &, composite, IN, int, index);
+	I_Method2(bool, isActive, IN, const osgTerrain::DataSet::CompositeSource &, x, IN, int, x);
 	I_Method2(bool, advanceToNextSource, IN, const osgTerrain::DataSet::CompositeSource &, composite, IN, int &, index);
 END_REFLECTOR
 

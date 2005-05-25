@@ -7,7 +7,7 @@ OSG News (most significant items from ChangeLog)
 
 Introduction to the OpenSceneGraph:
 
-The OpenSceneGraph is an Open Source, high performance real-time graphics graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix.  The OpenSceneGraph is now established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
+The OpenSceneGraph is an Open Source, high performance real-time graphics graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix, including 64 bit support on all platforms where available.  OpenGL version from 1.1 through to 2.0 are all seemlessly supported, including many of the latest extensions.  The OpenSceneGraph is now established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
     
 The OpenSceneGraph 0.9.9 release:
     

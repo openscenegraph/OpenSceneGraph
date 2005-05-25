@@ -77,6 +77,9 @@ extern "C" {
 #	include <errno.h>
 }
 #else
+#   if (_MSC_VER >= 1400)
+#      include <errno.h>
+#   endif
 #	define EWOULDBLOCK			WSAEWOULDBLOCK
 #	define EINPROGRESS			WSAEINPROGRESS
 #	define EALREADY					WSAEALREADY

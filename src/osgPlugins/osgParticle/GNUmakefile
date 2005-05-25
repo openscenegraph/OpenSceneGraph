@@ -26,7 +26,7 @@ CXXFILES =\
 	IO_SmokeEffect.cpp\
 	IO_FireEffect.cpp\
 	IO_ExplosionEffect.cpp\
-	IO_ExplosionDebriEffect.cpp\
+	IO_ExplosionDebrisEffect.cpp\
 	IO_VariableRateCounter.cpp\
 
 

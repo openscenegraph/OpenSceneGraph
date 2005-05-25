@@ -11,9 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgParticle/ExplosionDebriEffect>
-
-#include <osgParticle/ExplosionDebriEffect>
+#include <osgParticle/ExplosionDebrisEffect>
 #include <osgParticle/ModularEmitter>
 #include <osgParticle/ModularProgram>
 #include <osgParticle/RandomRateCounter>
@@ -27,7 +25,7 @@
 
 using namespace osgParticle;
 
-ExplosionDebriEffect::ExplosionDebriEffect(const osg::Vec3& position, float scale, float intensity)
+ExplosionDebrisEffect::ExplosionDebrisEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
     
@@ -41,12 +39,12 @@ ExplosionDebriEffect::ExplosionDebriEffect(const osg::Vec3& position, float scal
     buildEffect();
 }
 
-ExplosionDebriEffect::ExplosionDebriEffect(const ExplosionDebriEffect& copy, const osg::CopyOp& copyop):
+ExplosionDebrisEffect::ExplosionDebrisEffect(const ExplosionDebrisEffect& copy, const osg::CopyOp& copyop):
     ParticleEffect(copy,copyop)
 {
 }
 
-void ExplosionDebriEffect::setDefaults()
+void ExplosionDebrisEffect::setDefaults()
 {
     ParticleEffect::setDefaults();
     
@@ -64,7 +62,7 @@ void ExplosionDebriEffect::setDefaults()
 }
 
 
-void ExplosionDebriEffect::setUpEmitterAndProgram()
+void ExplosionDebrisEffect::setUpEmitterAndProgram()
 {
     // set up particle system
     if (!_particleSystem)

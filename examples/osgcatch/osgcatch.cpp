@@ -30,7 +30,7 @@
 #include <osg/io_utils>
 
 #include <osgParticle/ExplosionEffect>
-#include <osgParticle/ExplosionDebriEffect>
+#include <osgParticle/ExplosionDebrisEffect>
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/FireEffect>
 
@@ -476,7 +476,7 @@ void CatchableObject::explode()
 {
     osg::Vec3 position(0.0f,0.0f,0.0f);
     osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, _radius);
-    osgParticle::ExplosionDebriEffect* explosionDebri = new osgParticle::ExplosionDebriEffect(position, _radius);
+    osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, _radius);
     osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, _radius);
     osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, _radius);
 

@@ -39,7 +39,7 @@ The osgTerrain library, for generating whole earth, geospecific paged databases,
        
 Particle Effects:
     
-To make it easier to add particle effects to your application a new osgParticle::ParticleEffects node has been written, with five concrete implementations of SmokeEffect, FireEffect, ExplosionEffect and ExplosionDebriEffect which you can create, adjust and add to your scene graphs.
+To make it easier to add particle effects to your application a new osgParticle::ParticleEffects node has been written, with five concrete implementations of SmokeEffect, FireEffect, ExplosionEffect and ExplosionDebrisEffect which you can create, adjust and add to your scene graphs.
     
 DXF and Movie plugins:
     

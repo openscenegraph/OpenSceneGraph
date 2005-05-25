@@ -148,7 +148,7 @@ SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ExplosionEffect.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ExplosionDebriEffect.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ExplosionDebrisEffect.cpp
 # End Source File
 # Begin Source File
 

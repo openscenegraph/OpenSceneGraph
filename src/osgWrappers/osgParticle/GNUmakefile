@@ -7,7 +7,7 @@ CXXFILES =\
 	CenteredPlacer.cpp\
 	Counter.cpp\
 	Emitter.cpp\
-	ExplosionDebriEffect.cpp\
+	ExplosionDebrisEffect.cpp\
 	ExplosionEffect.cpp\
 	FireEffect.cpp\
 	FluidFrictionOperator.cpp\

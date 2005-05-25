@@ -14,7 +14,7 @@
 #include <osgText/Text>
 
 #include <osgParticle/ExplosionEffect>
-#include <osgParticle/ExplosionDebriEffect>
+#include <osgParticle/ExplosionDebrisEffect>
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/FireEffect>
 
@@ -183,7 +183,7 @@ void build_world(osg::Group *root)
         osg::Vec3 position = computeTerrainIntersection(terrainGeode,100.0f,100.0f);
 
         osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 10.0f);
-        osgParticle::ExplosionDebriEffect* explosionDebri = new osgParticle::ExplosionDebriEffect(position, 10.0f);
+        osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, 10.0f);
         osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, 10.0f);
         osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, 10.0f);
 
@@ -203,7 +203,7 @@ void build_world(osg::Group *root)
         osg::Vec3 position = computeTerrainIntersection(terrainGeode,200.0f,100.0f);
 
         osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 1.0f);
-        osgParticle::ExplosionDebriEffect* explosionDebri = new osgParticle::ExplosionDebriEffect(position, 1.0f);
+        osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, 1.0f);
         osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, 1.0f);
         osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, 1.0f);
 
@@ -275,7 +275,7 @@ public:
             float intensity = handleMovingModels ? 5.0f : 1.0f;
 
             osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, scale, intensity);
-            osgParticle::ExplosionDebriEffect* explosionDebri = new osgParticle::ExplosionDebriEffect(position, scale, intensity);
+            osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, scale, intensity);
             osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, scale, intensity);
             osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, scale, intensity);
             

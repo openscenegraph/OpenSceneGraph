@@ -99,7 +99,7 @@ class OSG_EXPORT Image : public Object
         void setImage(int s,int t,int r,
                       GLint internalTextureformat,
                       GLenum pixelFormat,GLenum type,
-                      unsigned char *data,
+                      unsigned char* data,
                       AllocationMode mode,
                       int packing=1);
             
@@ -169,10 +169,10 @@ class OSG_EXPORT Image : public Object
         bool valid() const { return _s!=0 && _t!=0 && _r!=0 && _data!=0 && _dataType!=0; }
 
         /** Raw image data. */
-        inline unsigned char *data() { return _data; }
+        inline unsigned char* data() { return _data; }
         
         /** Raw const image data. */
-        inline const unsigned char *data() const { return _data; }
+        inline const unsigned char* data() const { return _data; }
 
 
         inline unsigned char* data(int column, int row=0,int image=0)
@@ -279,11 +279,11 @@ class OSG_EXPORT Image : public Object
         unsigned int _packing;
 
         AllocationMode _allocationMode;
-        unsigned char *_data;
+        unsigned char* _data;
         
         void deallocateData();
         
-        void setData(unsigned char *data,AllocationMode allocationMode);
+        void setData(unsigned char* data,AllocationMode allocationMode);
 
         unsigned int _modifiedCount;
 

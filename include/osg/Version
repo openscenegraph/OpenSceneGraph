@@ -21,7 +21,7 @@ extern "C" {
 #define OSG_VERSION_MAJOR 0
 #define OSG_VERSION_MINOR 9
 #define OSG_VERSION_RELEASE 9
-#define OSG_VERSION_REVISION RELEASE_CANDIDATE_1
+#define OSG_VERSION_REVISION 1
 
 /**
   * osgGetVersion() returns the library version number.

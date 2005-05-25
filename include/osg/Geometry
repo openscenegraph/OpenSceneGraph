@@ -92,7 +92,7 @@ class OSG_EXPORT Geometry : public Drawable
             ref_ptr<IndexArray>     indices;
             AttributeBinding        binding;
             GLboolean               normalize;
-            mutable unsigned int    offset;
+            mutable unsigned long   offset;
         };
         
         struct OSG_EXPORT Vec3ArrayData
@@ -134,7 +134,7 @@ class OSG_EXPORT Geometry : public Drawable
             ref_ptr<IndexArray>     indices;
             AttributeBinding        binding;
             GLboolean               normalize;
-            mutable unsigned int    offset;
+            mutable unsigned long   offset;
         };
 
         /** Static ArrayData which is returned from getTexCoordData(i) const and getVertexAttribData(i) const 

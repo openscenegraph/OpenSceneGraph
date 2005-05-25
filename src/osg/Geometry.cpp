@@ -438,10 +438,10 @@ bool Geometry::empty() const
 
 void Geometry::setTexCoordData(unsigned int unit,const ArrayData& arrayData)
 {
-	if (_texCoordList.size()<=unit)
-		_texCoordList.resize(unit+1);
-	
-	_texCoordList[unit] = arrayData;
+    if (_texCoordList.size()<=unit)
+        _texCoordList.resize(unit+1);
+    
+    _texCoordList[unit] = arrayData;
 }
 
 Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit)
@@ -896,7 +896,7 @@ void Geometry::drawImplementation(State& state) const
                 //std::cout << "  gen VertexBuffer "<<buffer<<std::endl;
 
                 // compute total size and offsets required.
-                unsigned int totalSize = 0;
+                unsigned long totalSize = 0;
                 
                 _vertexData.offset = 0;
                 if (_vertexData.array.valid()) totalSize += _vertexData.array->getTotalDataSize();

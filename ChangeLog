@@ -1,3 +1,61 @@
+2005-05-25 12:45  robert
+
+	* NEWS.txt, doc/Doxyfiles/core_Doxyfile,
+	  include/osgIntrospection/Export,
+	  src/osgWrappers/osgTerrain/DataSet.cpp: Updated doxgen docs.
+
+2005-05-25 10:50  robert
+
+	* include/osg/Image, src/osg/Texture.cpp,
+	  src/osg/TextureRectangle.cpp: Changd unsigned int's to unsigned
+	  char* to fix gcc3.4 64 bit issues.
+
+2005-05-25 10:48  robert
+
+	* NEWS.txt: Updated NEWS
+
+2005-05-24 21:45  robert
+
+	* NEWS.txt: Updated NEWS
+
+2005-05-24 19:57  robert
+
+	* include/: osg/Export, osgDB/Export, osgGA/Export,
+	  osgParticle/Export, osgProducer/Export, osgSim/Export,
+	  osgTerrain/Export, osgText/Export, osgUtil/Export: Added pragma
+	  to remove warnings under VS.8.0
+
+2005-05-24 16:34  robert
+
+	* include/osgTerrain/DataSet, include/osgUtil/RenderBin,
+	  include/osgUtil/RenderStage, src/osgUtil/RenderBin.cpp,
+	  src/osgUtil/RenderStage.cpp,
+	  src/osgWrappers/osgUtil/RenderBin.cpp,
+	  src/osgWrappers/osgUtil/RenderStage.cpp: Updates to clean up
+	  wrapper generation, and to update wrappers
+
+2005-05-24 16:23  robert
+
+	* src/osgPlugins/ive/: ConvexPlanarOccluder.h,
+	  ConvexPlanarPolygon.h, CoordinateSystemNode.h, EllipsoidModel.h,
+	  Impostor.h, MultiSwitch.h, OccluderNode.h, Switch.h: Did a
+	  dos2unix on all files
+
+2005-05-24 11:46  robert
+
+	* src/osgDB/DatabasePager.cpp: Added check for an empty compile
+	  lists.
+
+2005-05-24 11:37  robert
+
+	* src/osgPlugins/flt/: ReaderWriterFLT.cpp, ReaderWriterFLT.h:
+	  Added re-entrent mutex to serialize access to OpenFlight plugin
+	  to prevent any multi-threaded issues.
+
+2005-05-23 12:27  robert
+
+	* ChangeLog: Updated changelog
+
 2005-05-23 12:18  robert
 
 	* runexamples.bat: Added new examples to runexamples

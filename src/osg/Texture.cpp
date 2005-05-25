@@ -842,17 +842,16 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         
     }    
 
-    unsigned int dataMinusOffset=0;
-    unsigned int dataPlusOffset=0;
-
+    unsigned char* dataMinusOffset = 0;
+    unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isBufferObjectSupported(contextID) && !needImageRescale)
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);
-        dataMinusOffset = (unsigned int) data;
-        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+        dataMinusOffset = data;
+        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -1082,16 +1081,16 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 
     bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && generateMipMapSupported;
     
-    unsigned int dataMinusOffset=0;
-    unsigned int dataPlusOffset=0;
+    unsigned char* dataMinusOffset=0;
+    unsigned char* dataPlusOffset=0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isBufferObjectSupported(contextID) && !needImageRescale)
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);
-        dataMinusOffset = (unsigned int) data;
-        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+        dataMinusOffset = data;
+        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif

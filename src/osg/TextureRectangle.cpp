@@ -244,16 +244,16 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
         #endif
     }
 
-    unsigned int dataMinusOffset=0;
-    unsigned int dataPlusOffset=0;
+    unsigned char* dataMinusOffset = 0;
+    unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isBufferObjectSupported(contextID))
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);
-        dataMinusOffset=(unsigned int)image->data();
-        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+        dataMinusOffset = image->data();
+        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
     }
     else
     {
@@ -265,7 +265,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
                  image->s(), image->t(), 0,
                  (GLenum)image->getPixelFormat(),
                  (GLenum)image->getDataType(),
-                 image->data() + dataPlusOffset-dataMinusOffset);
+                 image->data() - dataMinusOffset + dataPlusOffset );
     
 
     if (pbo)
@@ -311,16 +311,16 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
 #endif
-    unsigned int dataMinusOffset=0;
-    unsigned int dataPlusOffset=0;
+    unsigned char* dataMinusOffset = 0;
+    unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isBufferObjectSupported(contextID))
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);
-        dataMinusOffset=(unsigned int)image->data();
-        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+        dataMinusOffset = image->data();
+        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset()); // -dataMinusOffset+dataPlusOffset
 
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
@@ -331,14 +331,15 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     {
         pbo = 0;
     }
-
+    
+    
     // UH: ignoring compressed for now.
     glTexSubImage2D(target, 0, 
                  0,0,
                  image->s(), image->t(),
                  (GLenum)image->getPixelFormat(),
                  (GLenum)image->getDataType(),
-                 image->data() + dataPlusOffset-dataMinusOffset);
+                 image->data() - dataMinusOffset + dataPlusOffset  );
 
     if (pbo)
     {

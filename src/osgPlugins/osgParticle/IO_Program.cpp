@@ -5,24 +5,24 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
-bool  Program_readLocalData(osg::Object &obj, osgDB::Input &fr);
-bool  Program_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
+bool  IOProgram_readLocalData(osg::Object &obj, osgDB::Input &fr);
+bool  IOProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  Program_Proxy
+osgDB::RegisterDotOsgWrapperProxy  g_IOProgramProxy
 (
     0,
     "Program",
     "Object Node ParticleProcessor Program",
-    Program_readLocalData,
-    Program_writeLocalData
+    IOProgram_readLocalData,
+    IOProgram_writeLocalData
 );
 
-bool Program_readLocalData(osg::Object &, osgDB::Input &)
+bool IOProgram_readLocalData(osg::Object &, osgDB::Input &)
 {
     return false;
 }
 
-bool Program_writeLocalData(const osg::Object &, osgDB::Output &)
+bool IOProgram_writeLocalData(const osg::Object &, osgDB::Output &)
 {
     return false;
 }

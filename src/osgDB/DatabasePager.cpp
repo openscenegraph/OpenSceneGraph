@@ -5,6 +5,7 @@
 #include <osg/Timer>
 #include <osg/Texture>
 #include <osg/Notify>
+#include <osg/ApplicationUsage>
 
 #include <OpenThreads/ScopedLock>
 
@@ -18,6 +19,9 @@
 
 using namespace osgDB;
 using namespace OpenThreads;
+
+static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling GL objects per frame in database pager.");
+static osg::ApplicationUsageProxy DatabasePager_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of GL objects to compile per frame in database pager.");
 
 DatabasePager::DatabasePager()
 {
@@ -55,6 +59,17 @@ DatabasePager::DatabasePager()
     _targetFrameRate = 100.0;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
     _maximumNumOfObjectsToCompilePerFrame = 8;
+
+    const char* ptr=0;
+    if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
+    {
+        _minimumTimeAvailableForGLCompileAndDeletePerFrame = atof(ptr);
+    }
+
+    if( (ptr = getenv("OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME")) != 0)
+    {
+        _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
+    }
 
     // make sure a SharedStateManager exists.
     //osgDB::Registry::instance()->getOrCreateSharedStateManager();

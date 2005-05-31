@@ -7,13 +7,13 @@ OSG News (most significant items from ChangeLog)
 
 Introduction to the OpenSceneGraph:
 
-The OpenSceneGraph is an Open Source, high performance real-time graphics graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix, including 64 bit support on all platforms where available.  OpenGL version from 1.1 through to 2.0 are all seemlessly supported, including many of the latest extensions.  The OpenSceneGraph is now established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
+The OpenSceneGraph is an Open Source, high performance real-time graphics toolkit, written for developers of vis-sim applications, virtual reality, scientific visualisation, education through to games.  The toolkit is based on OpenGL and Standard C++ and most portable toolkit of its kind, supporting Windows, Linux, OSX, Irix, Solaris, FreeBSD and HP-UX and Aix, including 64 bit support on Windows, Linux, OSX, Irix and Solaris.  OpenGL version from 1.1 through to 2.0 are all seemlessly supported, including many of the latest extensions.  The OpenSceneGraph is now firmly established as one of the worlds most popular scene graph technologies, and is used and developed by community of over a thousand developers. 
     
 The OpenSceneGraph 0.9.9 release:
     
 The latest release of the OpenSceneGraph, 0.9.9, is the culmination of 7 years development and is the final milestone before reaching 1.0. All core features for 1.0 are now in place and ready for deployment.  Since the development driven is by technical convergence rather than usual marketing forces, even the beta releases of the OpenSceneGraph are already mature enough for major industry players to have adopted it for their own application development, with many companies already releasing products based on top of the OpenSceneGraph.
     
-The 0.9.9 release includes many minor API refinements and bug fixes and optimizations, but also major new features including tight integration of OpenGL Shading Language support directly into the core osg library, new reflection/introspection support, new particle effects, movie support and DXF import.  Details follow:
+The 0.9.9 release includes many minor API refinements, bug fixes and optimizations, but also major new features including tight integration of OpenGL Shading Language support directly into the core osg library, new reflection/introspection support, new particle effects, movie support and DXF import.  Details follow:
         
 OpenGL Shader Language support:
     

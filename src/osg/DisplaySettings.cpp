@@ -128,7 +128,7 @@ static ApplicationUsageProxy DisplaySetting_e12(ApplicationUsage::ENVIRONMENTAL_
 
 void DisplaySettings::readEnvironmentalVariables()
 {
-    char *ptr;
+    const char* ptr = 0;
     
     if ((ptr = getenv("OSG_DISPLAY_TYPE")) != 0)
     {

@@ -38,6 +38,20 @@
 #include <Performer/pr/pfMaterial.h>
 #include <Performer/pr/pfTexture.h>
 
+// Need to undefine these because Performer defines them and it causes a
+// compiler error in ConvertFromPerformer::visitBillboard.
+#ifdef   AXIAL_ROT
+#undef   AXIAL_ROT
+#endif
+
+#ifdef   POINT_ROT_EYE
+#undef   POINT_ROT_EYE
+#endif
+
+#ifdef   POINT_ROT_WORLD
+#undef   POINT_ROT_WORLD
+#endif
+
 extern "C"
 {
 
@@ -436,6 +450,19 @@ osg::Node* ConvertFromPerformer::visitBillboard(osg::Group* osgParent,pfBillboar
     pfVec3 axis;
     billboard->getAxis(axis);
     osgBillboard->setAxis(osg::Vec3(axis[0],axis[1],axis[2]));
+
+    switch( billboard->getMode( PFBB_ROT ) )
+    {
+    case PFBB_AXIAL_ROT:
+       osgBillboard->setMode( osg::Billboard::AXIAL_ROT );
+       break;
+    case PFBB_POINT_ROT_EYE:
+       osgBillboard->setMode( osg::Billboard::POINT_ROT_EYE );
+       break;
+    case PFBB_POINT_ROT_WORLD:
+       osgBillboard->setMode( osg::Billboard::POINT_ROT_WORLD );
+       break;
+    }
 
     for(int i=0;i<billboard->getNumGSets();++i)
     {

@@ -66,7 +66,7 @@ void Matrix_implementation::set(const Quat& q_in)
 {
     Quat q(q_in);
     double length2 = q.length2();
-	if (length2!=1.0 && length2!=0)
+    if (length2!=1.0 && length2!=0)
     {
         // normalize quat if required.
         q /= sqrt(length2);
@@ -386,6 +386,65 @@ void Matrix_implementation::postMult( const Matrix_implementation& other )
 
 #undef INNER_PRODUCT
 
+// orthoNormalize the 3x3 rotation matrix
+void Matrix_implementation::orthoNormalize(const Matrix_implementation& rhs)
+{
+    value_type x_colMag = (rhs._mat[0][0] * rhs._mat[0][0]) + (rhs._mat[1][0] * rhs._mat[1][0]) + (rhs._mat[2][0] * rhs._mat[2][0]);
+    value_type y_colMag = (rhs._mat[0][1] * rhs._mat[0][1]) + (rhs._mat[1][1] * rhs._mat[1][1]) + (rhs._mat[2][1] * rhs._mat[2][1]);
+    value_type z_colMag = (rhs._mat[0][2] * rhs._mat[0][2]) + (rhs._mat[1][2] * rhs._mat[1][2]) + (rhs._mat[2][2] * rhs._mat[2][2]);
+    
+    if(!equivalent((double)x_colMag, 1.0) && !equivalent((double)x_colMag, 0.0))
+    {
+      x_colMag = sqrt(x_colMag);
+      _mat[0][0] = rhs._mat[0][0] / x_colMag;
+      _mat[1][0] = rhs._mat[1][0] / x_colMag;
+      _mat[2][0] = rhs._mat[2][0] / x_colMag;
+    }
+    else
+    {
+      _mat[0][0] = rhs._mat[0][0];
+      _mat[1][0] = rhs._mat[1][0];
+      _mat[2][0] = rhs._mat[2][0];
+    }
+
+    if(!equivalent((double)y_colMag, 1.0) && !equivalent((double)y_colMag, 0.0))
+    {
+      y_colMag = sqrt(y_colMag);
+      _mat[0][1] = rhs._mat[0][1] / y_colMag;
+      _mat[1][1] = rhs._mat[1][1] / y_colMag;
+      _mat[2][1] = rhs._mat[2][1] / y_colMag;
+    }
+    else
+    {
+      _mat[0][1] = rhs._mat[0][1];
+      _mat[1][1] = rhs._mat[1][1];
+      _mat[2][1] = rhs._mat[2][1];
+    }
+
+    if(!equivalent((double)z_colMag, 1.0) && !equivalent((double)z_colMag, 0.0))
+    {
+      z_colMag = sqrt(z_colMag);
+      _mat[0][2] = rhs._mat[0][2] / z_colMag;
+      _mat[1][2] = rhs._mat[1][2] / z_colMag;
+      _mat[2][2] = rhs._mat[2][2] / z_colMag;
+    }
+    else
+    {
+      _mat[0][2] = rhs._mat[0][2];
+      _mat[1][2] = rhs._mat[1][2];
+      _mat[2][2] = rhs._mat[2][2];
+    }
+
+    _mat[3][0] = rhs._mat[3][0];
+    _mat[3][1] = rhs._mat[3][1];
+    _mat[3][2] = rhs._mat[3][2];
+
+    _mat[0][3] = rhs._mat[0][3];
+    _mat[1][3] = rhs._mat[1][3];
+    _mat[2][3] = rhs._mat[2][3];
+    _mat[3][3] = rhs._mat[3][3];
+
+}
 
 bool Matrix_implementation::invert( const Matrix_implementation& rhs)
 {

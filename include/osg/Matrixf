@@ -206,6 +206,9 @@ class OSG_EXPORT Matrixf
         /** full 4x4 matrix invert. */
         bool invert_4x4_new( const Matrixf& );
 
+        /** ortho-normalize the 3x3 rotation & scale matrix */ 
+        void orthoNormalize(const Matrixf& rhs); 
+
         //basic utility functions to create new matrices
 	inline static Matrixf identity( void );
         inline static Matrixf scale( const Vec3f& sv);
@@ -288,7 +291,12 @@ class OSG_EXPORT Matrixf
         
         inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); } 
         
-        inline Vec3d getScale() const { return Vec3d(_mat[0][0],_mat[1][1],_mat[2][2]); }
+        inline Vec3d getScale() const {
+          Vec3d x_vec(_mat[0][0],_mat[1][0],_mat[2][0]); 
+          Vec3d y_vec(_mat[0][1],_mat[1][1],_mat[2][1]); 
+          Vec3d z_vec(_mat[0][2],_mat[1][2],_mat[2][2]); 
+          return Vec3d(x_vec.length(), y_vec.length(), z_vec.length()); 
+        }
         
         /** apply a 3x3 transform of v*M[0..2,0..2]. */
         inline static Vec3f transform3x3(const Vec3f& v,const Matrixf& m);

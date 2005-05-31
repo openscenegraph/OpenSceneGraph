@@ -290,6 +290,7 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
     osg::Group* osgPrim = NULL;
     GeoSetBuilder   geoSetBuilder;
     GeoSetBuilder   billboardBuilder;
+    GeoSetBuilder   billboardBuilderPoint;
 
     // Visit
     for(int i=0; i < rec->getNumChildren(); i++)
@@ -306,6 +307,8 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
 
                 if( ((MeshRecord*)child)->getData()->swTemplateTrans == 2)  //Axis type rotate
                     visitMesh(osgParent, &billboardBuilder, (MeshRecord*)child);
+                else if( ((MeshRecord*)child)->getData()->swTemplateTrans == 4)  //Point type rotate
+                    visitMesh(osgParent, &billboardBuilderPoint, (MeshRecord*)child);
                 else
                     visitMesh(osgParent, &geoSetBuilder, (MeshRecord*)child);
                 break;
@@ -315,6 +318,8 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
                 FaceRecord* fr = (FaceRecord*)child;
                 if( fr->getData()->swTemplateTrans == 2)  //Axis type rotate
                     visitFace(&billboardBuilder, osgParent, fr);
+                else if( fr->getData()->swTemplateTrans == 4)  //Point type rotate
+                    visitFace(&billboardBuilderPoint, osgParent, fr);
                 else
                     visitFace(&geoSetBuilder, osgParent, fr);
             }
@@ -392,6 +397,16 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
     {
         osg::Billboard* billboard = new osg::Billboard;
         billboardBuilder.createOsgGeoSets(billboard );
+        
+        if (billboard->getNumDrawables() > 0)
+            osgParent.addChild( billboard );
+    }
+
+    if( !billboardBuilderPoint.empty() )
+    {
+        osg::Billboard* billboard = new osg::Billboard;
+        billboard->setMode( osg::Billboard::POINT_ROT_WORLD );
+        billboardBuilderPoint.createOsgGeoSets(billboard );
         
         if (billboard->getNumDrawables() > 0)
             osgParent.addChild( billboard );

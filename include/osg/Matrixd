@@ -206,6 +206,9 @@ class OSG_EXPORT Matrixd
         /** full 4x4 matrix invert. */
         bool invert_4x4_new( const Matrixd& );
 
+        /** ortho-normalize the 3x3 rotation & scale matrix */ 
+        void orthoNormalize(const Matrixd& rhs); 
+
         // basic utility functions to create new matrices
         inline static Matrixd identity( void );
         inline static Matrixd scale( const Vec3f& sv);
@@ -227,7 +230,7 @@ class OSG_EXPORT Matrixd
                                       value_type angle3, const Vec3d& axis3);
         inline static Matrixd rotate( const Quat& quat);
         inline static Matrixd inverse( const Matrixd& matrix);
-        
+        inline static Matrixd orthoNormal(const Matrixd& matrix); 
         /** Create an orthographic projection matrix.
           * See glOrtho for further details.
         */
@@ -288,7 +291,12 @@ class OSG_EXPORT Matrixd
         
         inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); } 
         
-        inline Vec3d getScale() const { return Vec3d(_mat[0][0],_mat[1][1],_mat[2][2]); }
+        inline Vec3d getScale() const {
+          Vec3d x_vec(_mat[0][0],_mat[1][0],_mat[2][0]); 
+          Vec3d y_vec(_mat[0][1],_mat[1][1],_mat[2][1]); 
+          Vec3d z_vec(_mat[0][2],_mat[1][2],_mat[2][2]); 
+          return Vec3d(x_vec.length(), y_vec.length(), z_vec.length()); 
+        }
         
         /** apply a 3x3 transform of v*M[0..2,0..2]. */
         inline static Vec3f transform3x3(const Vec3f& v,const Matrixd& m);
@@ -456,6 +464,13 @@ inline Matrixd Matrixd::inverse( const Matrixd& matrix)
     Matrixd m;
     m.invert(matrix);
     return m;
+}
+
+inline Matrixd orthoNormal(const Matrixd& matrix)
+{
+  Matrixd m;
+  m.orthoNormalize(matrix);
+  return m; 
 }
 
 inline Matrixd Matrixd::ortho(double left,   double right,

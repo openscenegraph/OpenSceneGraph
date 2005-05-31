@@ -157,6 +157,16 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * note, should be only be called from the update thread. */
         virtual void registerPagedLODs(osg::Node* subgraph);
 
+        /** Set whether the database pager should pre compile OpenGL objects before allowing
+          * them to be merged into the scene graph.
+          * Pre compilation helps reduce the chances of frame drops, but also slows the
+          * speed at which tiles are merged as they have to be compiled first.*/
+        void setDoPreCompile(bool flag) { _doPreCompile = flag; }
+
+        /** Get whether the database pager should pre compile OpenGL objects before allowing
+          * them to be merged into the scene graph.*/
+        bool getDoPreCompile() const { return _doPreCompile; }
+
 
         /** Set the target frame rate that the DatabasePager should assume.
           * Typically one would set this to the value refresh rate of your display system i.e. 60Hz.
@@ -367,6 +377,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         ActiveGraphicsContexts          _activeGraphicsContexts;
         
+        bool                            _doPreCompile;
         double                          _targetFrameRate;
         double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
         unsigned int                    _maximumNumOfObjectsToCompilePerFrame;

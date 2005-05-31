@@ -20,8 +20,9 @@
 using namespace osgDB;
 using namespace OpenThreads;
 
-static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling GL objects per frame in database pager.");
-static osg::ApplicationUsageProxy DatabasePager_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of GL objects to compile per frame in database pager.");
+static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DO_PRE_COMPILE <ON/OFF>","Switch on or off the pre compile of OpenGL object database pager.");
+static osg::ApplicationUsageProxy DatabasePager_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
+static osg::ApplicationUsageProxy DatabasePager_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
 
 DatabasePager::DatabasePager()
 {
@@ -56,11 +57,17 @@ DatabasePager::DatabasePager()
     
     _expiryDelay = 10;
 
+    const char* ptr=0;
+    _doPreCompile = true;
+    if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
+    {
+        _doPreCompile = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
+                        strcmp(ptr,"ON")==0 || strcmp(ptr,"ON")==0;
+    }
+
     _targetFrameRate = 100.0;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
     _maximumNumOfObjectsToCompilePerFrame = 8;
-
-    const char* ptr=0;
     if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
     {
         _minimumTimeAvailableForGLCompileAndDeletePerFrame = atof(ptr);
@@ -462,7 +469,7 @@ void DatabasePager::run()
                 
                 bool loadedObjectsNeedToBeCompiled = false;
 
-                if (databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
+                if (_doPreCompile && databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
                 {
                     // force a compute of the loaded model's bounding volume, so that when the subgraph
                     // merged with the main scene graph and large computeBound() isn't incurred.

@@ -6,7 +6,7 @@ STL implemention.
 
 The supported combinations are: 
 
-    1.Visual Studio7.0 .NET 
+    1.Visual Studio7.x .NET 
     2.Visual Studio6.0 + Dinkumware's STL bug fix patches
     3.Visual Studio6.0 + STLport
     

@@ -20,7 +20,7 @@ these can be found in doc/dependancies.html.
 
 --
 
-For syntax highlighting in VisualStudio which the stanard C++ style headers 
+For syntax highlighting in VisualStudio which the standard C++ style headers 
 found in the OSG :
 
 VisualStudio6.0   
@@ -33,3 +33,19 @@ VisualStudio7.0/.NET
     Install the syntaxhighlight.reg (just double click it). This will update 
     Extensionless file for Visual Studio.  Don't worry, it will keep the 
     current extensionless files (STL ones) intact.
+
+--
+
+How to use the Visual Studio projects:
+
+To build the OpenSceneGraph code in Visual Studio, you normally must use the VisualStudio.sln solution file provided.  The individual projects won't build as-is, because they depend on each other and only the VisualStudio.sln file provides those dependencies.
+
+To create a program based on an example, probably the easiest way is to do this:
+
+1. Copy the VisualStudio.sln project to a new file in the same directory
+2. Copy the project you want to base your new project on to a new directory in the same level of the directory tree
+3. Open the new .sln file you copied in step 1
+4. Remove unneeded projects from it, but keep the core libraries (osg, osgDB, etc.).  Shift-clicking to select a bunch of projects at once makes this easier to do
+5. Add the new project to that solution
+6. Set the dependencies for your new project.  This is most easily done by opening the Solution Properties dialog, going to Project Dependencies, and checking off the libraries your project depends on
+

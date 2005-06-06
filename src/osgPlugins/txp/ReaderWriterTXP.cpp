@@ -296,7 +296,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             }
 
             // low res seam has min/max ranges of lod+1 range/lod 0 range
-            if ((fabs(_info.minRange-lod->getMinRange(0))<0.001)&&(fabs(_info.lod0Range-lod->getMaxRange(0))<0.001))
+            if ((fabs((float)_info.minRange-lod->getMinRange(0))<0.001)&&(fabs((float)_info.lod0Range-lod->getMaxRange(0))<0.001))
             {
 
                 if (loRes==0)

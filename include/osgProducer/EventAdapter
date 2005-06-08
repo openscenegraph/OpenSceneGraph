@@ -33,6 +33,8 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const { return _eventType; }
 
+        inline void setKey(int key) { _key = key; }
+
         /** key pressed, return -1 if inappropriate for this event. */
         virtual int getKey() const { return _key; }
 
@@ -51,11 +53,17 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         /** window maximum y. */
         virtual float getYmax() const { return _Ymax; }
 
+        inline void setX(float x) { _mx = x; }
+
         /** current mouse x position.*/
         virtual float getX() const { return _mx; }
 
+        inline void setY(float y) { _my = y; }
+
         /** current mouse y position.*/
         virtual float getY() const { return _my; }
+
+        inline void setButtonMak(unsigned int mask) { _buttonMask = mask; }
 
         /** current mouse button state */
         virtual unsigned int getButtonMask() const { return _buttonMask; }

@@ -90,16 +90,7 @@ class OSG_EXPORT Node : public Object
         /** Traverse upwards : calls parents' accept method with NodeVisitor.*/
         virtual void ascend(NodeVisitor& nv);
         /** Traverse downwards : calls children's accept method with NodeVisitor.*/
-        virtual void traverse(NodeVisitor& /*nv*/) {}
-
-
-        /** Set the name of node using C++ style string.*/
-        inline void setName( const std::string& name ) { _name = name; }
-        /** Set the name of node using a C style string.*/
-        inline void setName( const char* name ) { _name = name; }
-        /** Get the name of node.*/
-        inline const std::string& getName() const { return _name; }
-        
+        virtual void traverse(NodeVisitor& /*nv*/) {}       
 
         /** A vector of osg::Group pointers which is used to store the parent(s) of node.*/
         typedef std::vector<Group*> ParentList;
@@ -312,8 +303,6 @@ class OSG_EXPORT Node : public Object
         ref_ptr<ComputeBoundingSphereCallback>  _computeBoundCallback;
         mutable BoundingSphere                  _boundingSphere;
         mutable bool                            _boundingSphereComputed;
-
-        std::string _name;
 
         void addParent(osg::Group* node);
         void removeParent(osg::Group* node);

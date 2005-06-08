@@ -28,15 +28,16 @@ using namespace osg;
 ///////////////////////////////////////////////////////////////////////////
 
 Uniform::Uniform() :
-    _type(UNDEFINED), _name(""), _modifiedCount(0)
+    _type(UNDEFINED), _modifiedCount(0)
 {
     setDataVariance(STATIC);
 }
 
 
 Uniform::Uniform( Type type, const std::string& name ) :
-    _type(type), _name(name), _modifiedCount(0)
+    _type(type), _modifiedCount(0)
 {
+    setName(name);
     setDataVariance(STATIC);
 
     switch( _type )
@@ -69,7 +70,7 @@ Uniform::Uniform( Type type, const std::string& name ) :
 }
 
 Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
-    Object(rhs,copyop), _type(rhs._type), _name(rhs._name)
+    Object(rhs,copyop), _type(rhs._type)
 {
     copyData( rhs );
 }
@@ -104,15 +105,14 @@ bool Uniform::setType( Type t )
     return true;
 }
 
-bool Uniform::setName( const std::string& name )
+void Uniform::setName( const std::string& name )
 {
     if( _name != "" )
     {
         osg::notify(osg::WARN) << "cannot change Uniform name" << std::endl;
-        return false;
+        return;
     }
     _name = name;
-    return true;
 }
 
 
@@ -385,98 +385,114 @@ Uniform::Type Uniform::getGlApiType( Type t )
 // value constructors
 
 Uniform::Uniform( const char* name, float f ) :
-    _type(FLOAT), _name(name)
+    _type(FLOAT)
 {
+    setName(name);
     set( f );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec2& v2 ) :
-    _type(FLOAT_VEC2), _name(name)
+    _type(FLOAT_VEC2)
 {
+    setName(name);
     set( v2 );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec3& v3 ) :
-     _type(FLOAT_VEC3), _name(name)
+     _type(FLOAT_VEC3)
 {
+    setName(name);
     set( v3 );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec4& v4 ) :
-    _type(FLOAT_VEC4), _name(name)
+    _type(FLOAT_VEC4)
 {
+    setName(name);
     set( v4 );
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix2& m2 ) :
-    _type(FLOAT_MAT2), _name(name)
+    _type(FLOAT_MAT2)
 {
+    setName(name);
     set( m2 );
 }
 
 Uniform::Uniform( const char* name, const osg::Matrix3& m3 ) :
-    _type(FLOAT_MAT3), _name(name)
+    _type(FLOAT_MAT3)
 {
+    setName(name);
     set( m3 );
 }
 
 Uniform::Uniform( const char* name, const osg::Matrixf& m4 ) :
-    _type(FLOAT_MAT4), _name(name)
+    _type(FLOAT_MAT4)
 {
+    setName(name);
     set( m4 );
 }
 
 Uniform::Uniform( const char* name, const osg::Matrixd& m4 ) :
-    _type(FLOAT_MAT4), _name(name)
+    _type(FLOAT_MAT4)
 {
+    setName(name);
     set( m4 );
 }
 
 Uniform::Uniform( const char* name, int i ) :
-    _type(INT), _name(name)
+    _type(INT)
 {
+    setName(name);
     set( i );
 }
 
 Uniform::Uniform( const char* name, int i0, int i1 ) :
-    _type(INT_VEC2), _name(name)
+    _type(INT_VEC2)
 {
+    setName(name);
     set( i0, i1 );
 }
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2 ) :
-    _type(INT_VEC3), _name(name)
+    _type(INT_VEC3)
 {
+    setName(name);
     set( i0, i1, i2 );
 }
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 ) :
-    _type(INT_VEC4), _name(name)
+    _type(INT_VEC4)
 {
+    setName(name);
     set( i0, i1, i2, i3 );
 }
 
 Uniform::Uniform( const char* name, bool b ) :
-    _type(BOOL), _name(name)
+    _type(BOOL)
 {
+    setName(name);
     set( b );
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1 ) :
-     _type(BOOL_VEC2), _name(name)
+     _type(BOOL_VEC2)
 {
+    setName(name);
     set( b0, b1 );
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 ) :
-    _type(BOOL_VEC3), _name(name) 
+    _type(BOOL_VEC3)
 {
+    setName(name);
     set( b0, b1, b2 );
 }
 
 Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
-    _type(BOOL_VEC4), _name(name)
+    _type(BOOL_VEC4)
 {
+    setName(name);
     set( b0, b1, b2, b3 );
 }
 

@@ -30,13 +30,6 @@ bool Program_readLocalData(Object& obj, Input& fr)
 
     Program& program = static_cast<Program&>(obj);
 
-    if (fr.matchSequence("name %s"))
-    {
-        program.setName(fr[1].getStr());
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
     while(fr.matchSequence("AttribBindingLocation %i %w"))
     {
         unsigned int index;
@@ -79,8 +72,6 @@ bool Program_readLocalData(Object& obj, Input& fr)
 bool Program_writeLocalData(const Object& obj,Output& fw)
 {
     const Program& program = static_cast<const Program&>(obj);
-
-    if (!program.getName().empty()) fw.indent() << "name "<<fw.wrapString(program.getName())<< std::endl;
 
     const Program::AttribBindingList& abl = program.getAttribBindingList();
     Program::AttribBindingList::const_iterator i;

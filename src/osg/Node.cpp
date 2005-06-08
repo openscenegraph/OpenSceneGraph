@@ -41,7 +41,6 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _initialBound(node._initialBound),
         _boundingSphere(node._boundingSphere),
         _boundingSphereComputed(node._boundingSphereComputed),
-        _name(node._name),
         _parents(), // leave empty as parentList is managed by Group.
         _updateCallback(node._updateCallback),
         _numChildrenRequiringUpdateTraversal(0), // assume no children yet.

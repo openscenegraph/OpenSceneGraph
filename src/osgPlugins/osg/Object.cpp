@@ -43,6 +43,13 @@ bool Object_readLocalData(Object& obj, Input& fr)
         }
     }    
 
+    if (fr.matchSequence("name %s"))
+    {
+        obj.setName(fr[1].getStr());
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
     if (fr.matchSequence("UserData {"))
     {
         osg::notify(osg::DEBUG_INFO) << "Matched UserData {"<< std::endl;
@@ -70,6 +77,8 @@ bool Object_writeLocalData(const Object& obj, Output& fw)
         case(osg::Object::STATIC): fw.indent() << "DataVariance STATIC" << std::endl;break;
         default:                   fw.indent() << "DataVariance DYNAMIC" << std::endl;break;
     }
+
+    if (!obj.getName().empty()) fw.indent() << "name "<<fw.wrapString(obj.getName())<< std::endl;
 
     if (obj.getUserData())
     {

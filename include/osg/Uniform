@@ -179,14 +179,14 @@ class OSG_EXPORT Uniform : public Object
 
 
 
+        /** Set the type of glUniform. */
         bool setType( Type t );
-        bool setName( const std::string& name );
-
-        /** Get the name of glUniform. */
-        const std::string& getName() const { return _name; }
 
         /** Get the type of glUniform as enum. */
         const Type getType() const { return _type; }
+
+        /** Set the name of the glUniform, checking to make sure its only set once.*/
+        void setName( const std::string& name );
 
         /** Return the name of a Type enum as string. */
         static const char* getTypename( Type t );
@@ -344,7 +344,6 @@ class OSG_EXPORT Uniform : public Object
         friend class osg::StateSet;
 
         Type _type;
-        std::string _name;
 
         union
         {

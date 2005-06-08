@@ -30,7 +30,10 @@ void Shader::write(DataOutputStream* out){
     else
         throw Exception("Shader::write(): Could not cast this osg::Shader to an osg::Object.");
 
-     out->writeString(getName());
+     if ( out->getVersion() < VERSION_0012 )
+     {
+        out->writeString(getName());
+     }
      out->writeInt(getType());
      out->writeString(getShaderSource());
 
@@ -59,8 +62,12 @@ void Shader::read(DataInputStream* in)
         throw Exception("Shader::read(): Expected Shader identification.");
     }
 
-     setName(in->readString());
-     setType(static_cast<Type>(in->readInt()));
-     setShaderSource(in->readString());
+    if ( in->getVersion() < VERSION_0012 )
+    {
+        setName(in->readString());
+    }
+    
+    setType(static_cast<Type>(in->readInt()));
+    setShaderSource(in->readString());
 
 }

@@ -178,16 +178,15 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 }
 
 
-osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image)
+osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle)
 {
-    bool useTextureRectangle = true;
     if (useTextureRectangle)
     {
         osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
                                            0.0f,image->t(), image->s(),0.0f);
-                                       
+
         pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                     new osg::TextureRectangle(image),
                     osg::StateAttribute::ON);
@@ -199,10 +198,13 @@ osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float
         osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
-                                           0.0f,0.0f, 1.0f,1.0f);
+                                           0.0f,1.0f, 1.0f,0.0f);
+                                    
+        osg::Texture2D* texture = new osg::Texture2D(image);
+        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);  
                                        
         pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
-                    new osg::Texture2D(image),
+                    texture,
                     osg::StateAttribute::ON);
 
         return pictureQuad;
@@ -220,9 +222,14 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
+    bool useTextureRectangle = true;
+    bool useShader = false;
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
+    
+    while (arguments.read("--texture2D")) useTextureRectangle=false;
+    while (arguments.read("--shader")) useShader=true;
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
@@ -244,7 +251,35 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     osg::Vec3 pos(0.0f,0.0f,0.0f);
-    
+        
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+    if (useShader)
+    {
+        //useTextureRectangle = false;
+        
+        static const char *shaderSource = {
+            "uniform vec4 cutoff_color;\n"
+            "uniform samplerRect movie_texture;"
+            "void main(void)\n"
+            "{\n"
+            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
+            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
+            "    gl_FragColor = texture_color;\n"
+            "}\n"
+        };
+        osg::Program* program = new osg::Program;
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT,shaderSource));
+
+        stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
+        stateset->addUniform(new osg::Uniform("movie_texture",0));
+
+        stateset->setAttribute(program);
+
+    }
+
+
     for(int i=1;i<arguments.argc();++i)
     {
         if (arguments.isString(i))
@@ -255,9 +290,8 @@ int main(int argc, char** argv)
             
             if (image)
             {
-                geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image));
-                geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
+                geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle));
+                
                 pos.z() += image->t()*1.5f;
             }
             else

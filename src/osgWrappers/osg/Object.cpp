@@ -36,6 +36,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, x);
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
+	I_Method1(void, setName, IN, const std::string &, name);
+	I_Method1(void, setName, IN, const char *, name);
+	I_Method0(const std::string &, getName);
 	I_Method1(void, setDataVariance, IN, osg::Object::DataVariance, dv);
 	I_Method0(osg::Object::DataVariance, getDataVariance);
 	I_Method1(void, setUserData, IN, osg::Referenced *, obj);
@@ -43,6 +46,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	I_Method0(const osg::Referenced *, getUserData);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	I_Property(osg::Object::DataVariance, DataVariance);
+	I_Property(const std::string &, Name);
 	I_Property(osg::Referenced *, UserData);
 END_REFLECTOR
 

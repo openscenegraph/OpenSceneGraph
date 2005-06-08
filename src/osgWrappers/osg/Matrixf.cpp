@@ -77,6 +77,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method1(bool, invert, IN, const osg::Matrixf &, rhs);
 	I_Method1(bool, invert_4x4_orig, IN, const osg::Matrixf &, x);
 	I_Method1(bool, invert_4x4_new, IN, const osg::Matrixf &, x);
+	I_Method1(void, orthoNormalize, IN, const osg::Matrixf &, rhs);
 	I_Method1(osg::Vec3f, preMult, IN, const osg::Vec3f &, v);
 	I_Method1(osg::Vec3d, preMult, IN, const osg::Vec3d &, v);
 	I_Method1(osg::Vec3f, postMult, IN, const osg::Vec3f &, v);

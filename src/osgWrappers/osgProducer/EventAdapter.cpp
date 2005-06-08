@@ -24,14 +24,18 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::EventAdapter)
 	I_BaseType(osgGA::GUIEventAdapter);
 	I_Constructor0();
 	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType);
+	I_Method1(void, setKey, IN, int, key);
 	I_Method0(int, getKey);
 	I_Method0(int, getButton);
 	I_Method0(float, getXmin);
 	I_Method0(float, getXmax);
 	I_Method0(float, getYmin);
 	I_Method0(float, getYmax);
+	I_Method1(void, setX, IN, float, x);
 	I_Method0(float, getX);
+	I_Method1(void, setY, IN, float, y);
 	I_Method0(float, getY);
+	I_Method1(void, setButtonMak, IN, unsigned int, mask);
 	I_Method0(unsigned int, getButtonMask);
 	I_Method0(double, time);
 	I_Method0(unsigned int, getModKeyMask);
@@ -45,14 +49,15 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::EventAdapter)
 	I_Method1(void, adaptFrame, IN, double, t);
 	I_Method0(void, copyStaticVariables);
 	I_ReadOnlyProperty(int, Button);
+	I_WriteOnlyProperty(unsigned int, ButtonMak);
 	I_ReadOnlyProperty(unsigned int, ButtonMask);
 	I_ReadOnlyProperty(osgGA::GUIEventAdapter::EventType, EventType);
-	I_ReadOnlyProperty(int, Key);
+	I_Property(int, Key);
 	I_ReadOnlyProperty(unsigned int, ModKeyMask);
-	I_ReadOnlyProperty(float, X);
+	I_Property(float, X);
 	I_ReadOnlyProperty(float, Xmax);
 	I_ReadOnlyProperty(float, Xmin);
-	I_ReadOnlyProperty(float, Y);
+	I_Property(float, Y);
 	I_ReadOnlyProperty(float, Ymax);
 	I_ReadOnlyProperty(float, Ymin);
 END_REFLECTOR

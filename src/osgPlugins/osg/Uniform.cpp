@@ -140,12 +140,27 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
         }
         case(osg::Uniform::FLOAT_MAT2):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for reading."<<std::endl;
+            osg::Matrix2 value;
+            if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) &&
+                fr[2].getFloat(value[2]) && fr[3].getFloat(value[3])) 
+            {
+                uniform.set(value);
+                fr+=4;
+                iteratorAdvanced = true;
+            }
             break;
         }
         case(osg::Uniform::FLOAT_MAT3):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for reading."<<std::endl;
+            osg::Matrix3 value;
+            if (fr[0].getFloat(value[0]) && fr[1].getFloat(value[1]) && fr[2].getFloat(value[2]) &&
+                fr[3].getFloat(value[3]) && fr[4].getFloat(value[4]) && fr[5].getFloat(value[5]) &&
+                fr[6].getFloat(value[6]) && fr[7].getFloat(value[7]) && fr[8].getFloat(value[8]))
+            {
+                uniform.set(value);
+                fr+=9;
+                iteratorAdvanced = true;
+            }
             break;
         }
         case(osg::Uniform::FLOAT_MAT4):
@@ -237,12 +252,19 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
         }
         case(osg::Uniform::FLOAT_MAT2):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for writing."<<std::endl;
+            osg::Matrix2 value;
+            uniform.get(value);
+            fw << value[0]<<" "<<value[1]<<" "
+                <<value[2]<<" "<<value[3];
             break;
         }
         case(osg::Uniform::FLOAT_MAT3):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for writing."<<std::endl;
+            osg::Matrix3 value;
+            uniform.get(value);
+            fw << value[0]<<" "<<value[1]<<" "<<value[2]<<" "
+                <<value[3]<<" "<<value[4]<<" "<<value[5]<<" "
+                <<value[6]<<" "<<value[7]<<" "<<value[8];
             break;
         }
         case(osg::Uniform::FLOAT_MAT4):

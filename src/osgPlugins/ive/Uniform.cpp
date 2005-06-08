@@ -100,12 +100,16 @@ void Uniform::write(DataOutputStream* out){
         }
         case(osg::Uniform::FLOAT_MAT2):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for reading."<<std::endl;
+            osg::Matrix2 m2;
+            get(m2);
+            for(int i=0; i<4; ++i) out->writeFloat(m2[i]);
             break;
         }
         case(osg::Uniform::FLOAT_MAT3):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for reading."<<std::endl;
+            osg::Matrix3 m3;
+            get(m3);
+            for(int i=0; i<9; ++i) out->writeFloat(m3[i]);
             break;
         }
         case(osg::Uniform::FLOAT_MAT4):
@@ -117,7 +121,7 @@ void Uniform::write(DataOutputStream* out){
         }
         default:
         {
-            osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
+            osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for writing."<<std::endl;
             break;
         }
     }
@@ -202,12 +206,16 @@ void Uniform::read(DataInputStream* in)
         }
         case(osg::Uniform::FLOAT_MAT2):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat2 not supported for reading."<<std::endl;
+            osg::Matrix2 m2;
+            for(int i=0; i<9; ++i) m2[i]=in->readFloat();
+            set(m2);
             break;
         }
         case(osg::Uniform::FLOAT_MAT3):
         {
-            osg::notify(osg::WARN)<<"Warning : type mat3 not supported for reading."<<std::endl;
+            osg::Matrix3 m3;
+            for(int i=0; i<9; ++i) m3[i]=in->readFloat();
+            set(m3);
             break;
         }
         case(osg::Uniform::FLOAT_MAT4):

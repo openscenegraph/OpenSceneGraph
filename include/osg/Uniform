@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:    include/osg/Uniform
- * author:    Mike Weiblen 2005-05-05
+/* file:   include/osg/Uniform
+ * author: Mike Weiblen 2005-06-03
 */
 
 #ifndef OSG_UNIFORM
@@ -32,6 +32,111 @@ namespace osg {
 // forward declare
 class GL2Extensions;
 class NodeVisitor;
+
+///////////////////////////////////////////////////////////////////////////
+// C++ classes to represent the GLSL-specific "mat2" & "mat3" types.
+
+class OSG_EXPORT Matrix2
+{
+    public:
+        Matrix2() { makeIdentity(); }
+        Matrix2( const Matrix2& mat ) { set(mat.ptr()); }
+        Matrix2( float a00, float a01,
+                 float a10, float a11 )
+        {
+            set( a00, a01, a10, a11 );
+        }
+        ~Matrix2() {}
+        float& operator()(int row, int col) { return _mat[row][col]; }
+        float operator()(int row, int col) const { return _mat[row][col]; }
+
+        Matrix2& operator = (const Matrix2& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
+
+        void set(const Matrix2& rhs) { set(rhs.ptr()); }
+
+        void set(float const * const ptr)
+        {
+            float* local_ptr = (float*)_mat;
+            for(int i=0;i<4;++i) local_ptr[i]=ptr[i];
+        }
+
+        void set(float a00, float a01,
+                 float a10, float a11)
+         {
+             _mat[0][0]=a00; _mat[0][1]=a01;
+             _mat[1][0]=a10; _mat[1][1]=a11;
+         }
+
+        float* ptr() { return (float*)_mat; }
+        const float* ptr() const { return (const float*)_mat; }
+
+        float& operator [] (int i) {return ptr()[i];}
+        float operator [] (int i) const {return ptr()[i];}
+
+        void makeIdentity() { set( 1, 0, 0, 1 ); }
+
+    protected:
+        float _mat[2][2];
+};
+
+
+class OSG_EXPORT Matrix3
+{
+    public:
+        Matrix3() { makeIdentity(); }
+        Matrix3( const Matrix3& mat ) { set(mat.ptr()); }
+        Matrix3( float a00, float a01, float a02,
+                 float a10, float a11, float a12,
+                 float a20, float a21, float a22 )
+        {
+            set( a00, a01, a02, a10, a11, a12, a20, a21, a22 );
+        }
+        ~Matrix3() {}
+        float& operator()(int row, int col) { return _mat[row][col]; }
+        float operator()(int row, int col) const { return _mat[row][col]; }
+
+        Matrix3& operator = (const Matrix3& rhs)
+        {
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
+            return *this;
+        }
+
+        void set(const Matrix3& rhs) { set(rhs.ptr()); }
+
+        void set(float const * const ptr)
+        {
+            float* local_ptr = (float*)_mat;
+            for(int i=0;i<9;++i) local_ptr[i]=ptr[i];
+        }
+
+        void set(float a00, float a01, float a02,
+                 float a10, float a11, float a12,
+                 float a20, float a21, float a22 )
+         {
+             _mat[0][0]=a00; _mat[0][1]=a01; _mat[0][2]=a02;
+             _mat[1][0]=a10; _mat[1][1]=a11; _mat[1][2]=a12;
+             _mat[2][0]=a20; _mat[2][1]=a21; _mat[2][2]=a22;
+         }
+
+        float* ptr() { return (float*)_mat; }
+        const float* ptr() const { return (const float*)_mat; }
+
+        float& operator [] (int i) {return ptr()[i];}
+        float operator [] (int i) const {return ptr()[i];}
+
+        void makeIdentity() { set( 1, 0, 0, 0, 1, 0, 0, 0, 1 ); }
+
+    protected:
+        float _mat[3][3];
+};
+
+///////////////////////////////////////////////////////////////////////////
 
 /** Uniform encapsulates glUniform values */
 class OSG_EXPORT Uniform : public Object
@@ -99,8 +204,8 @@ class OSG_EXPORT Uniform : public Object
         Uniform( const char* name, const osg::Vec2& v2 );
         Uniform( const char* name, const osg::Vec3& v3 );
         Uniform( const char* name, const osg::Vec4& v4 );
-        //TODO Uniform( const char* name, const osg::Matrix2& m2 );
-        //TODO Uniform( const char* name, const osg::Matrix3& m3 );
+        Uniform( const char* name, const osg::Matrix2& m2 );
+        Uniform( const char* name, const osg::Matrix3& m3 );
         Uniform( const char* name, const osg::Matrixf& m4 );
         Uniform( const char* name, const osg::Matrixd& m4 );
         Uniform( const char* name, int i0, int i1 );
@@ -153,8 +258,8 @@ class OSG_EXPORT Uniform : public Object
         bool set( const osg::Vec2& v2 );
         bool set( const osg::Vec3& v3 );
         bool set( const osg::Vec4& v4 );
-        //TODO bool set( const osg::Matrix2& m2 );
-        //TODO bool set( const osg::Matrix3& m3 );
+        bool set( const osg::Matrix2& m2 );
+        bool set( const osg::Matrix3& m3 );
         bool set( const osg::Matrixf& m4 );
         bool set( const osg::Matrixd& m4 );
         bool set( int i0, int i1 );
@@ -171,8 +276,8 @@ class OSG_EXPORT Uniform : public Object
         bool get( osg::Vec2& v2 ) const;
         bool get( osg::Vec3& v3 ) const;
         bool get( osg::Vec4& v4 ) const;
-        //TODO bool get( osg::Matrix2& m2 ) const;
-        //TODO bool get( osg::Matrix3& m3 ) const;
+        bool get( osg::Matrix2& m2 ) const;
+        bool get( osg::Matrix3& m3 ) const;
         bool get( osg::Matrixf& m4 ) const;
         bool get( osg::Matrixd& m4 ) const;
         bool get( int& i0, int& i1 ) const;
@@ -227,8 +332,8 @@ class OSG_EXPORT Uniform : public Object
 
     protected:
     
-        virtual ~Uniform() {}
-        Uniform& operator=(const Uniform&) { return *this; }    // disallowed
+        virtual ~Uniform();
+        Uniform& operator=(const Uniform&) { return *this; }
 
         bool isCompatibleType( Type t ) const;
 

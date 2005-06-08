@@ -38,9 +38,11 @@ void Node::write(DataOutputStream* out){
 
 
     // Write osg::node properties.
-
-    // Write Name
-    out->writeString(getName());
+    if ( out->getVersion() < VERSION_0012 )
+    {
+        // Write Name
+        out->writeString(getName());
+    }
     // Write culling active
     out->writeBool( getCullingActive());
     // Write Descriptions
@@ -102,8 +104,12 @@ void Node::read(DataInputStream* in){
         }
         else
             throw Exception("Node::read(): Could not cast this osg::Node to an osg::Object.");
-        // Read name
-        setName(in->readString());
+
+        if ( in->getVersion() < VERSION_0012 )
+        {
+            // Read name
+            setName(in->readString());
+        }
         // Read Culling active
         setCullingActive(in->readBool());
         // Read descriptions

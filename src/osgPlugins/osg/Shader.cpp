@@ -38,13 +38,6 @@ bool Shader_readLocalData(Object& obj, Input& fr)
 	iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("name %s"))
-    {
-        shader.setName(fr[1].getStr());
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
     if (fr.matchSequence("code {")) {
 	std::string code;
 	fr += 2;
@@ -69,8 +62,6 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
     const Shader& shader = static_cast<const Shader&>(obj);
 
     fw.indent() << "type " << shader.getTypename() << std::endl;
-
-    if (!shader.getName().empty()) fw.indent() << "name "<<fw.wrapString(shader.getName())<< std::endl;
 
     // split source text into individual lines
     std::vector<std::string> lines;

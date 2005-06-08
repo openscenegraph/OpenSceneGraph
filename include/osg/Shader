@@ -92,11 +92,6 @@ class OSG_EXPORT Shader : public osg::Object
         /** Query InfoLog from a glShader */
         bool getGlShaderInfoLog(unsigned int contextID, std::string& log) const;
 
-        /** A name for use by the application */
-        void setName( const std::string& name ) { _name = name; }
-        void setName( const char* name ) { _name = name; }
-        const std::string& getName() const { return _name; };
-
         /** Mark internal glShader for deletion.
           * Deletion requests are queued tuntil they can be executed
           * in the proper GL context. */
@@ -162,7 +157,6 @@ class OSG_EXPORT Shader : public osg::Object
 
     protected:        /*data*/
         Type _type;
-        std::string _name;
         std::string _shaderSource;
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< Program* > ProgramSet;

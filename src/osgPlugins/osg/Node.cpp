@@ -29,13 +29,6 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
     Node& node = static_cast<Node&>(obj);
 
-    if (fr.matchSequence("name %s"))
-    {
-        node.setName(fr[1].getStr());
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
     unsigned int mask = node.getNodeMask();
     if (fr[0].matchWord("nodeMask") && fr[1].getUInt(mask))
     {
@@ -189,8 +182,6 @@ bool Node_readLocalData(Object& obj, Input& fr)
 bool Node_writeLocalData(const Object& obj, Output& fw)
 {
     const Node& node = static_cast<const Node&>(obj);
-
-    if (!node.getName().empty()) fw.indent() << "name "<<fw.wrapString(node.getName())<< std::endl;
 
     fw.indent() << "nodeMask 0x" << hex << node.getNodeMask() << dec << std::endl;
 

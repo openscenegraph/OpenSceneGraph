@@ -32,7 +32,11 @@ void Uniform::write(DataOutputStream* out){
         throw Exception("Uniform::write(): Could not cast this osg::Uniform to an osg::Object.");
 
     out->writeInt(getType());
-    out->writeString(getName());
+    
+    if ( out->getVersion() < VERSION_0012 )
+    {
+        out->writeString(getName());
+    }
 
     switch( Uniform::getGlApiType(getType()) )
     {
@@ -151,7 +155,11 @@ void Uniform::read(DataInputStream* in)
     }
     
     setType(static_cast<Type>(in->readInt()));
-    setName(in->readString());
+
+    if ( in->getVersion() < VERSION_0012 )
+    {
+        setName(in->readString());
+    }
     
     switch( Uniform::getGlApiType(getType()) )
     {

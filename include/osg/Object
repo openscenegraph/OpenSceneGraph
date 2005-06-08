@@ -18,6 +18,8 @@
 #include <osg/CopyOp>
 #include <osg/ref_ptr>
 
+#include <string>
+
 namespace osg {
 
 // forward declare
@@ -74,6 +76,16 @@ class OSG_EXPORT Object : public Referenced
         virtual const char* className() const = 0;
         
 
+        /** Set the name of object using C++ style string.*/
+        inline void setName( const std::string& name ) { _name = name; }
+
+        /** Set the name of object using a C style string.*/
+        inline void setName( const char* name ) { _name = name; }
+
+        /** Get the name of object.*/
+        inline const std::string& getName() const { return _name; }
+
+
         enum DataVariance
         {
             DYNAMIC,
@@ -121,8 +133,8 @@ class OSG_EXPORT Object : public Referenced
             = new Node().*/
         virtual ~Object() {}
         
+        std::string _name;
         DataVariance _dataVariance;
-
         ref_ptr<Referenced> _userData;
 
     private:

@@ -34,13 +34,6 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     Uniform& uniform = static_cast<Uniform&>(obj);
 
 
-    if (fr.matchSequence("name %s"))
-    {
-        uniform.setName(fr[1].getStr());
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
     if (fr[0].isWord())
     {
         uniform.setType( Uniform::getTypeId(fr[0].getStr()) );
@@ -186,9 +179,6 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
 bool Uniform_writeLocalData(const Object& obj,Output& fw)
 {
     const Uniform& uniform = static_cast<const Uniform&>(obj);
-
-
-    fw.indent() << "name "<< fw.wrapString(uniform.getName()) << std::endl;
 
     fw.indent() << Uniform::getTypename( uniform.getType() ) << " ";
     

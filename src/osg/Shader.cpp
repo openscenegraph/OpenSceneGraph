@@ -106,7 +106,6 @@ Shader::Shader(Type type, const std::string& source) :
 Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
     osg::Object( rhs, copyop ),
     _type(rhs._type),
-    _name(rhs._name),
     _shaderSource(rhs._shaderSource)
 {
 }

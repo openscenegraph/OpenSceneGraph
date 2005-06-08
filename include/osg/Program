@@ -100,11 +100,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Query InfoLog from a glProgram */
         bool getGlProgramInfoLog(unsigned int contextID, std::string& log) const;
 
-        /** A name for use by the application */
-        void setName( const std::string& name ) { _name = name; }
-        void setName( const char* name ) { _name = name; }
-        const std::string& getName() const { return _name; }
-
         /** Mark internal glProgram for deletion.
           * Deletion requests are queued until they can be executed
           * in the proper GL context. */
@@ -221,7 +216,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         virtual ~Program();
 
     protected:        /*data*/
-        std::string _name;
+
         mutable osg::buffered_value< osg::ref_ptr<PerContextProgram> > _pcpList;
         AttribBindingList _attribBindingList;
 

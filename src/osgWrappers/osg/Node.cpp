@@ -50,9 +50,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
 	I_Method1(void, ascend, IN, osg::NodeVisitor &, nv);
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, x);
-	I_Method1(void, setName, IN, const std::string &, name);
-	I_Method1(void, setName, IN, const char *, name);
-	I_Method0(const std::string &, getName);
 	I_Method0(const osg::Node::ParentList &, getParents);
 	I_Method0(osg::Node::ParentList, getParents);
 	I_Method1(osg::Group *, getParent, IN, unsigned int, i);
@@ -105,7 +102,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_Property(const osg::Node::DescriptionList &, Descriptions);
 	I_Property(osg::NodeCallback *, EventCallback);
 	I_Property(const osg::BoundingSphere &, InitialBound);
-	I_Property(const std::string &, Name);
 	I_Property(osg::Node::NodeMask, NodeMask);
 	I_ArrayProperty_G(osg::Group *, Parent, Parents, unsigned int, void);
 	I_ReadOnlyProperty(osg::Node::ParentList, Parents);

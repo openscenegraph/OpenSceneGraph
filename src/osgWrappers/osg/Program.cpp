@@ -54,14 +54,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_Method0(const osg::Program::AttribBindingList &, getAttribBindingList);
 	I_Method0(bool, isFixedFunction);
 	I_Method2(bool, getGlProgramInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
-	I_Method1(void, setName, IN, const std::string &, name);
-	I_Method1(void, setName, IN, const char *, name);
-	I_Method0(const std::string &, getName);
 	I_Method1(const osg::Program::NameInfoMap &, getActiveUniforms, IN, unsigned int, contextID);
 	I_Method1(const osg::Program::NameInfoMap &, getActiveAttribs, IN, unsigned int, contextID);
 	I_Method1(osg::Program::PerContextProgram *, getPCP, IN, unsigned int, contextID);
 	I_ReadOnlyProperty(const osg::Program::AttribBindingList &, AttribBindingList);
-	I_Property(const std::string &, Name);
 	I_ArrayProperty_GA(osg::Shader *, Shader, Shaders, unsigned int, bool);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR

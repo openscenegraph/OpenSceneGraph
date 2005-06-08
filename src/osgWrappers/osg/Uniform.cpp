@@ -29,6 +29,32 @@
 #undef OUT
 #endif
 
+BEGIN_VALUE_REFLECTOR(osg::Matrix2)
+	I_Constructor0();
+	I_Constructor1(IN, const osg::Matrix2 &, mat);
+	I_Constructor4(IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11);
+	I_Method1(void, set, IN, const osg::Matrix2 &, rhs);
+	I_Method1(void, set, IN, float const *const, ptr);
+	I_Method4(void, set, IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11);
+	I_Method0(float *, ptr);
+	I_Method0(const float *, ptr);
+	I_Method0(void, makeIdentity);
+	I_WriteOnlyProperty(float const *const, );
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Matrix3)
+	I_Constructor0();
+	I_Constructor1(IN, const osg::Matrix3 &, mat);
+	I_Constructor9(IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22);
+	I_Method1(void, set, IN, const osg::Matrix3 &, rhs);
+	I_Method1(void, set, IN, float const *const, ptr);
+	I_Method9(void, set, IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22);
+	I_Method0(float *, ptr);
+	I_Method0(const float *, ptr);
+	I_Method0(void, makeIdentity);
+	I_WriteOnlyProperty(float const *const, );
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::Uniform::ParentList);
 
 BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
@@ -67,15 +93,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method1(bool, setType, IN, osg::Uniform::Type, t);
-	I_Method1(bool, setName, IN, const std::string &, name);
-	I_Method0(const std::string &, getName);
 	I_Method0(const osg::Uniform::Type, getType);
+	I_Method1(void, setName, IN, const std::string &, name);
 	I_Constructor2(IN, const char *, name, IN, float, f);
 	I_Constructor2(IN, const char *, name, IN, int, i);
 	I_Constructor2(IN, const char *, name, IN, bool, b);
 	I_Constructor2(IN, const char *, name, IN, const osg::Vec2 &, v2);
 	I_Constructor2(IN, const char *, name, IN, const osg::Vec3 &, v3);
 	I_Constructor2(IN, const char *, name, IN, const osg::Vec4 &, v4);
+	I_Constructor2(IN, const char *, name, IN, const osg::Matrix2 &, m2);
+	I_Constructor2(IN, const char *, name, IN, const osg::Matrix3 &, m3);
 	I_Constructor2(IN, const char *, name, IN, const osg::Matrixf &, m4);
 	I_Constructor2(IN, const char *, name, IN, const osg::Matrixd &, m4);
 	I_Constructor3(IN, const char *, name, IN, int, i0, IN, int, i1);
@@ -98,6 +125,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method1(bool, set, IN, const osg::Vec2 &, v2);
 	I_Method1(bool, set, IN, const osg::Vec3 &, v3);
 	I_Method1(bool, set, IN, const osg::Vec4 &, v4);
+	I_Method1(bool, set, IN, const osg::Matrix2 &, m2);
+	I_Method1(bool, set, IN, const osg::Matrix3 &, m3);
 	I_Method1(bool, set, IN, const osg::Matrixf &, m4);
 	I_Method1(bool, set, IN, const osg::Matrixd &, m4);
 	I_Method2(bool, set, IN, int, i0, IN, int, i1);
@@ -112,6 +141,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method1(bool, get, IN, osg::Vec2 &, v2);
 	I_Method1(bool, get, IN, osg::Vec3 &, v3);
 	I_Method1(bool, get, IN, osg::Vec4 &, v4);
+	I_Method1(bool, get, IN, osg::Matrix2 &, m2);
+	I_Method1(bool, get, IN, osg::Matrix3 &, m3);
 	I_Method1(bool, get, IN, osg::Matrixf &, m4);
 	I_Method1(bool, get, IN, osg::Matrixd &, m4);
 	I_Method2(bool, get, IN, int &, i0, IN, int &, i1);
@@ -133,7 +164,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_WriteOnlyPropertyWithReturnType(bool, , bool);
 	I_Property(osg::Uniform::Callback *, EventCallback);
 	I_Property(unsigned int, ModifiedCount);
-	I_PropertyWithReturnType(const std::string &, Name, bool);
+	I_WriteOnlyProperty(const std::string &, Name);
 	I_ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
 	I_ReadOnlyProperty(osg::Uniform::ParentList, Parents);
 	I_WriteOnlyPropertyWithReturnType(osg::Uniform::Type, Type, bool);

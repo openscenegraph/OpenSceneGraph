@@ -48,10 +48,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_Method1(void, compileShader, IN, unsigned int, contextID);
 	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program);
 	I_Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
-	I_Method1(void, setName, IN, const std::string &, name);
-	I_Method1(void, setName, IN, const char *, name);
-	I_Method0(const std::string &, getName);
-	I_Property(const std::string &, Name);
 	I_Property(const std::string &, ShaderSource);
 	I_PropertyWithReturnType(osg::Shader::Type, Type, bool);
 	I_ReadOnlyProperty(const char *, Typename);

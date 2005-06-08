@@ -71,6 +71,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method1(void, signalBeginFrame, IN, const osg::FrameStamp *, framestamp);
 	I_Method0(void, signalEndFrame);
 	I_Method1(void, registerPagedLODs, IN, osg::Node *, subgraph);
+	I_Method1(void, setDoPreCompile, IN, bool, flag);
+	I_Method0(bool, getDoPreCompile);
 	I_Method1(void, setTargetFrameRate, IN, double, tfr);
 	I_Method0(double, getTargetFrameRate);
 	I_Method1(void, setMinimumTimeAvailableForGLCompileAndDeletePerFrame, IN, double, ta);
@@ -95,6 +97,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_IndexedProperty1(bool, CompileGLObjectsForContextID, unsigned int, contextID);
 	I_Property(bool, DatabasePagerThreadPause);
 	I_Property(bool, DeleteRemovedSubgraphsInDatabaseThread);
+	I_Property(bool, DoPreCompile);
 	I_Property(double, ExpiryDelay);
 	I_ReadOnlyProperty(osgDB::Block *, FrameBlock);
 	I_Property(unsigned int, MaximumNumOfObjectsToCompilePerFrame);

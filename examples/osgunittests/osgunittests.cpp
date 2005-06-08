@@ -118,6 +118,8 @@ void sizeOfTest()
   std::cout<<"sizeof(std::istream::off_type)=="<<sizeof(std::istream::off_type)<<std::endl;
   std::cout<<"sizeof(OpenThreads::Mutex)=="<<sizeof(OpenThreads::Mutex)<<std::endl;
 
+  std::cout<<"sizeof(std::string)=="<<sizeof(std::string)<<std::endl;
+
 }
 
 

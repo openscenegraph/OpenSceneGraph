@@ -187,6 +187,7 @@ EXAMPLE_DIRS = \
 	osgcubemap\
 	osgdepthshadow\
 	osgdistortion\
+	osgfbo\
 	osgforest\
 	osgfxbrowser\
 	osggeodemo\

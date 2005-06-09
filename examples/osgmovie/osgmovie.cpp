@@ -259,7 +259,7 @@ int main(int argc, char** argv)
     {
         //useTextureRectangle = false;
         
-        static const char *shaderSource = {
+        static const char *shaderSourceTextureRec = {
             "uniform vec4 cutoff_color;\n"
             "uniform samplerRect movie_texture;"
             "void main(void)\n"
@@ -269,8 +269,22 @@ int main(int argc, char** argv)
             "    gl_FragColor = texture_color;\n"
             "}\n"
         };
+
+        static const char *shaderSourceTexture2D = {
+            "uniform vec4 cutoff_color;\n"
+            "uniform sampler2D movie_texture;"
+            "void main(void)\n"
+            "{\n"
+            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"
+            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
+            "    gl_FragColor = texture_color;\n"
+            "}\n"
+        };
+
         osg::Program* program = new osg::Program;
-        program->addShader(new osg::Shader(osg::Shader::FRAGMENT,shaderSource));
+        
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
+                                           useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));
 
         stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
         stateset->addUniform(new osg::Uniform("movie_texture",0));

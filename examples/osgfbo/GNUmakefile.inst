@@ -6,7 +6,7 @@ CXXFILES =\
 	FramebufferObject.cpp\
 	Renderbuffer.cpp\
 	FramebufferAttachment.cpp\
-	fbo.cpp\
+	osgfbo.cpp\
 
 LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 

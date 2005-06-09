@@ -261,7 +261,7 @@ int main(int argc, char** argv)
         
         static const char *shaderSourceTextureRec = {
             "uniform vec4 cutoff_color;\n"
-            "uniform samplerRect movie_texture;"
+            "uniform samplerRect movie_texture;\n"
             "void main(void)\n"
             "{\n"
             "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
@@ -272,7 +272,7 @@ int main(int argc, char** argv)
 
         static const char *shaderSourceTexture2D = {
             "uniform vec4 cutoff_color;\n"
-            "uniform sampler2D movie_texture;"
+            "uniform sampler2D movie_texture;\n"
             "void main(void)\n"
             "{\n"
             "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"

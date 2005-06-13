@@ -1130,7 +1130,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /* --------------------------------------------------------------------- */
 
     int numSourceBands = GDALGetRasterCount(_sourceData->_gdalDataSet);
-    int numDestinationBands = 4; // numSourceBands;
+    int numDestinationBands = (numSourceBands >= 3) ? 4 : numSourceBands; // expand RGB to RGBA, but leave other formats unchanged
 
     GDALDatasetH hDstDS = GDALCreate( hDriver, filename.c_str(), nPixels, nLines, 
                          numDestinationBands , eDT,

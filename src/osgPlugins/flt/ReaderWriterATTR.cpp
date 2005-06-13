@@ -765,7 +765,7 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
             {
                 // Get the character index of the FLT_VER option in the option
                 // string
-                unsigned int optionIndex = options->getOptionString().find("FLT_VER");
+                std::string::size_type optionIndex = options->getOptionString().find("FLT_VER");
 
                 // Default to zero for the version if it's not found
                 if (optionIndex == std::string::npos)

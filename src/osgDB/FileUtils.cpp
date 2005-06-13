@@ -592,7 +592,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         CFBundleRef myBundle;
         CFStringRef bundlePathString;
         FSRef     f;
-        OSErr	errCode;
+        OSErr    errCode;
 
         // Start with the the Bundle PlugIns directory.
         // Unlike the Cocoa API, it seems that the PlugIn path is relative
@@ -724,7 +724,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
         else
         {
-	    // had to comment out as it segfauls the OSX app otherwise
+        // had to comment out as it segfauls the OSX app otherwise
             // osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
         }
     }
@@ -750,7 +750,12 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             convertStringPathIntoFilePathList(ptr,filepath);
         }
 
+
+#if defined(__ia64__) || defined(__x86_64__)
+        convertStringPathIntoFilePathList("/usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/",filepath);
+#else
         convertStringPathIntoFilePathList("/usr/lib/:/usr/local/lib/",filepath);
+#endif
 
     }
 

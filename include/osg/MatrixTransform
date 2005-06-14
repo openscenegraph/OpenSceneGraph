@@ -15,7 +15,6 @@
 #define OSG_MATRIXTRANSFORM 1
 
 #include <osg/Transform>
-#include <osg/AnimationPath>
 
 namespace osg {
 

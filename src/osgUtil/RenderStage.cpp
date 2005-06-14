@@ -56,7 +56,8 @@ RenderStage::RenderStage(SortMode mode):
 RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         RenderBin(rhs,copyop),
         _stageDrawnThisFrame(false),
-        _dependencyList(rhs._dependencyList),
+        _preRenderList(rhs._preRenderList),
+        _postRenderList(rhs._postRenderList),
         _viewport(rhs._viewport),
         _clearMask(rhs._clearMask),
         _colorMask(rhs._colorMask),
@@ -77,7 +78,7 @@ RenderStage::~RenderStage()
 
 void RenderStage::reset()
 {
-    _dependencyList.clear();
+    _preRenderList.clear();
     _stageDrawnThisFrame = false;
     
     if (_renderStageLighting.valid()) _renderStageLighting->reset();
@@ -85,18 +86,23 @@ void RenderStage::reset()
     RenderBin::reset();
 }
 
-void RenderStage::addToDependencyList(RenderStage* rs)
+void RenderStage::addPreRenderStage(RenderStage* rs)
 {
-    if (rs) _dependencyList.push_back(rs);
+    if (rs) _preRenderList.push_back(rs);
+}
+
+void RenderStage::addPostRenderStage(RenderStage* rs)
+{
+    if (rs) _postRenderList.push_back(rs);
 }
 
 void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
 {
-    if (_dependencyList.empty()) return;
+    if (_preRenderList.empty()) return;
     
     //cout << "Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
-    for(DependencyList::iterator itr=_dependencyList.begin();
-        itr!=_dependencyList.end();
+    for(RenderStageList::iterator itr=_preRenderList.begin();
+        itr!=_preRenderList.end();
         ++itr)
     {
         (*itr)->draw(state,previous);
@@ -115,6 +121,10 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     //drawPreRenderStages(state,previous);
 
     RenderBin::draw(state,previous);
+
+    // place the post draw here temprorarily while we figure out how
+    // best to do SceneView.
+    drawPostRenderStages(state,previous);
 }
 
 void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
@@ -182,6 +192,21 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
     }
 
 }
+
+void RenderStage::drawPostRenderStages(osg::State& state,RenderLeaf*& previous)
+{
+    if (_postRenderList.empty()) return;
+    
+    //cout << "Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
+    for(RenderStageList::iterator itr=_postRenderList.begin();
+        itr!=_postRenderList.end();
+        ++itr)
+    {
+        (*itr)->draw(state,previous);
+    }
+    //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
+}
+
 // Statistics features
 bool RenderStage::getStats(Statistics* primStats)
 {

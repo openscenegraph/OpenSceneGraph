@@ -22,6 +22,7 @@
 #include <osg/Projection>
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
+#include <osg/CameraNode>
 
 #include <osgText/Text>
 
@@ -35,17 +36,6 @@ osg::Node* createHUD()
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-#if 0
-    // to ensure the hud appears on top we can either use osg::Depth to force the 
-    // depth fragments to be placed at the front of the screen.
-    stateset->setAttribute(new osg::Depth(osg::Depth::LESS,0.0,0.0001));
-#else
-    // or disable depth test, and make sure that the hud is drawn after everything 
-    // else so that it always appears ontop.
-    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-    stateset->setRenderBinDetails(11,"RenderBin");
-#endif
 
     osg::Vec3 position(150.0f,800.0f,0.0f);
     osg::Vec3 delta(0.0f,-120.0f,0.0f);
@@ -146,6 +136,42 @@ osg::Node* createHUD()
         geode->addDrawable(geom);
     }
 
+#if 1
+
+    osg::CameraNode* camera = new osg::CameraNode;
+
+    // set the projection matrix
+    camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
+
+    // set the view matrix    
+    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    camera->setViewMatrix(osg::Matrix::identity());
+
+    // only clear the depth buffer
+    camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+
+    // draw subgraph after main camera view.
+    camera->setRenderOrder(osg::CameraNode::POST_RENDER);
+
+    camera->addChild(geode);
+    
+    return camera;
+
+#else
+
+#if 0
+    // to ensure the hud appears on top we can either use osg::Depth to force the 
+    // depth fragments to be placed at the front of the screen.
+    stateset->setAttribute(new osg::Depth(osg::Depth::LESS,0.0,0.0001));
+#else
+    // or disable depth test, and make sure that the hud is drawn after everything 
+    // else so that it always appears ontop.
+    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    stateset->setRenderBinDetails(11,"RenderBin");
+#endif
+
+
+
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
     modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
@@ -157,6 +183,7 @@ osg::Node* createHUD()
     projection->addChild(modelview_abs);
 
     return projection;
+#endif
 
 }
 

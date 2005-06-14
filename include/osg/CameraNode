@@ -16,12 +16,15 @@
 
 #include <osg/Transform>
 #include <osg/Viewport>
+#include <osg/CullSettings>
+#include <osg/Texture>
+#include <osg/Image>
 
 namespace osg {
 
 /** CameraNode - is a subclass of Transform which represents encapsulates the settings of a Camera.
 */
-class OSG_EXPORT CameraNode : public Transform
+class OSG_EXPORT CameraNode : public Transform, public CullSettings
 {
     public :
 
@@ -32,20 +35,6 @@ class OSG_EXPORT CameraNode : public Transform
         CameraNode(const CameraNode&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, CameraNode);
-
-
-        /** Sets the clear color. */
-        inline void setClearColor(const Vec4& color) { _clearColor = color; }
-
-        /** Returns the clear color. */
-        inline const Vec4& getClearColor() const { return _clearColor; }
-        
-        /** Set the clear mask used in glClear(..).
-          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
-        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
-
-        /** Get the clear mask.*/
-        inline GLbitfield getClearMask() const { return _clearMask; }
 
 
 
@@ -151,7 +140,76 @@ class OSG_EXPORT CameraNode : public Transform
 
 
 
+        /** Sets the clear color. */
+        inline void setClearColor(const Vec4& color) { _clearColor = color; }
 
+        /** Returns the clear color. */
+        inline const Vec4& getClearColor() const { return _clearColor; }
+        
+        /** Set the clear mask used in glClear(..).
+          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
+        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
+
+        /** Get the clear mask.*/
+        inline GLbitfield getClearMask() const { return _clearMask; }
+
+        
+        
+        enum RenderOrder
+        {
+            PRE_RENDER,
+            NESTED_RENDER,
+            POST_RENDER
+        };
+        
+        /** Set the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.
+          * For rendering to a texture, one typically uses PRE_RENDER.
+          * For Head Up Displays, one would typically use POST_RENDER.*/
+        void setRenderOrder(RenderOrder order) { _renderOrder = order; }
+        
+        /** Get the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.*/
+        RenderOrder getRenderOrder() const { return _renderOrder; }
+
+        enum RenderTargetImplementation
+        {
+            FRAME_BUFFER_OBJECT,
+            PIXEL_BUFFER,
+            FRAME_BUFFER
+        };
+
+        void setRenderTargetImplmentation(RenderTargetImplementation impl) { _renderTargetImplementation = impl; }
+        RenderTargetImplementation getRenderTargetImplmentation() const { return _renderTargetImplementation; }
+
+        enum BufferComponent
+        {
+            COLOR_BUFFER,
+            DEPTH_BUFFER,
+            STENCIL_BUFFER
+        };
+
+        void attach(BufferComponent buffer, GLenum internalFormat);
+
+        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int face=0);
+
+        void attach(BufferComponent buffer, osg::Image* image);
+
+        void detach(BufferComponent buffer);
+        
+        struct Attachment
+        {
+            GLenum           _internalFormat;
+            ref_ptr<Image>   _image;
+            ref_ptr<Texture> _texture;
+            unsigned int     _face;
+        };
+        
+        typedef std::map< BufferComponent, Attachment> BufferAttachmentMap;
+        
+        BufferAttachmentMap& getBufferAttachmentMap() { return _bufferAttachmentMap; }
+        const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
+
+
+    public:
 
 
         /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
@@ -164,11 +222,16 @@ class OSG_EXPORT CameraNode : public Transform
     
         virtual ~CameraNode();
 
-        Vec4                _clearColor;
-        GLbitfield          _clearMask;
-        ref_ptr<Viewport>   _viewport;
-        Matrixd             _projectionMatrix;
-        Matrixd             _viewMatrix;
+        Vec4                        _clearColor;
+        GLbitfield                  _clearMask;
+        ref_ptr<Viewport>           _viewport;
+        Matrixd                     _projectionMatrix;
+        Matrixd                     _viewMatrix;
+        
+        RenderOrder                 _renderOrder;
+        
+        RenderTargetImplementation  _renderTargetImplementation;
+        BufferAttachmentMap         _bufferAttachmentMap;
 
 };
 

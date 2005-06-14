@@ -25,6 +25,7 @@
 #include <osg/StateSet>
 #include <osg/State>
 #include <osg/ClearNode>
+#include <osg/CameraNode>
 #include <osg/Notify>
 
 #include <osg/CullStack>
@@ -75,6 +76,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual void apply(osg::Switch& node);
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::ClearNode& node);
+        virtual void apply(osg::CameraNode& node);
         virtual void apply(osg::OccluderNode& node);
 
         void setClearNode(const osg::ClearNode* earthSky) { _clearNode = earthSky; }

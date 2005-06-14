@@ -18,17 +18,24 @@ using namespace osg;
 
 CameraNode::CameraNode():
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
-    _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
+    _renderOrder(POST_RENDER),
+    _renderTargetImplementation(FRAME_BUFFER)
 {
 }
 
 CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     Transform(camera,copyop),
+    CullSettings(camera),
     _clearColor(camera._clearColor),
     _clearMask(camera._clearMask),
     _viewport(camera._viewport),
     _projectionMatrix(camera._projectionMatrix),
-    _viewMatrix(camera._viewMatrix)
+    _viewMatrix(camera._viewMatrix),
+    _renderOrder(camera._renderOrder),
+    _renderTargetImplementation(camera._renderTargetImplementation),
+    _bufferAttachmentMap(camera._bufferAttachmentMap)
+    
 {    
 }
 
@@ -108,6 +115,29 @@ void CameraNode::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float loo
 {
     _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }
+
+
+void CameraNode::attach(BufferComponent buffer, GLenum internalFormat)
+{
+    _bufferAttachmentMap[buffer]._internalFormat = internalFormat;
+}
+
+void CameraNode::attach(BufferComponent buffer, osg::Texture* texture, unsigned int face)
+{
+    _bufferAttachmentMap[buffer]._texture = texture;
+    _bufferAttachmentMap[buffer]._face = face;
+}
+
+void CameraNode::attach(BufferComponent buffer, osg::Image* image)
+{
+    _bufferAttachmentMap[buffer]._image = image;
+}
+
+void CameraNode::detach(BufferComponent buffer)
+{
+    _bufferAttachmentMap.erase(buffer);
+}
+
 
 bool CameraNode::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {

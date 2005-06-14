@@ -130,10 +130,6 @@ ifeq ($(LIBPNG_INSTALLED),yes)
   PLUGIN_DIRS += png
 endif
 
-ifeq ($(AVIFILE_INSTALLED),yes)
-  PLUGIN_DIRS += avi
-endif
-
 ifeq ($(COIN_INSTALLED),yes)
     PLUGIN_DIRS += Inventor
 else

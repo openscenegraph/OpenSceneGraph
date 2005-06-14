@@ -110,6 +110,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
         }
     
         glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, 0);
+        
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     }
     else 
@@ -169,8 +170,9 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
         }
     
-        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
         glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, 0);
+
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     }
     else 
     {
@@ -230,6 +232,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
         }
     
         glDrawElements(_mode, size(), GL_UNSIGNED_INT, 0);
+        
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     }
     else 

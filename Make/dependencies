@@ -16,8 +16,6 @@ FREETYPE_INSTALLED ?= yes
 
 XINE_INSTALLED ?= no
 
-AVIFILE_INSTALLED ?= no
-
 ifeq ($(OS),Darwin)
     DARWIN_QUICKTIME ?= yes
 endif

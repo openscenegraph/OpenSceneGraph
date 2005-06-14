@@ -322,7 +322,7 @@ RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
             rs->_binNum = binNum;
             rs->_parent = NULL;
             rs->_stage = rs;
-            _stage->addToDependencyList(rs);
+            _stage->addPreRenderStage(rs);
         }
         else
         {

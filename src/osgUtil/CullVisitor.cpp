@@ -1023,6 +1023,100 @@ void CullVisitor::apply(osg::ClearNode& node)
 
 }
 
+void CullVisitor::apply(osg::CameraNode& camera)
+{
+    // push the node's state.
+    StateSet* node_state = camera.getStateSet();
+    if (node_state) pushStateSet(node_state);
+
+    // use render to texture stage.
+    {
+        // create the render to texture stage.
+        osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
+
+        // set up lighting.
+        // currently ignore lights in the scene graph itself..
+        // will do later.
+        osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
+
+        // set up the background color and clear mask.
+        rtts->setClearColor(camera.getClearColor());
+        rtts->setClearMask(camera.getClearMask());
+
+        // set up the viewport.
+        rtts->setViewport( camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport());
+        
+        // set up to charge the same RenderStageLighting is the parent previous stage.
+        rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
+
+        // record the render bin, to be restored after creation
+        // of the render to text
+        osgUtil::RenderBin* previousRenderBin = getCurrentRenderBin();
+
+        // set the current renderbin to be the newly created stage.
+        setCurrentRenderBin(rtts.get());
+
+        pushProjectionMatrix(new osg::RefMatrix(camera.getProjectionMatrix()));
+
+        pushModelViewMatrix(new osg::RefMatrix(camera.getViewMatrix()));
+
+        // traverse the subgraph
+        {
+            handle_cull_callbacks_and_traverse(camera);
+        }
+
+        // restore the previous model view matrix.
+        popModelViewMatrix();
+
+        // restore the previous model view matrix.
+        popProjectionMatrix();
+
+        // restore the previous renderbin.
+        setCurrentRenderBin(previousRenderBin);
+
+        if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
+        {
+            // getting to this point means that all the subgraph has been
+            // culled by small feature culling or is beyond LOD ranges.
+        }
+
+
+        // and the render to texture stage to the current stages
+        // dependancy list.
+        switch(camera.getRenderOrder())
+        {
+            case osg::CameraNode::PRE_RENDER :
+                getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get());
+                break;
+            case osg::CameraNode::NESTED_RENDER :
+                getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get());
+                break;
+            case osg::CameraNode::POST_RENDER :
+                getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get());
+                break;
+         }
+
+        osg::CameraNode::BufferAttachmentMap& bufferAttachements = camera.getBufferAttachmentMap();
+        for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
+            itr != bufferAttachements.end();
+            ++itr)
+        {
+            
+            // if one exist attach texture to the RenderToTextureStage.            
+            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(itr->second._texture.get());
+            if (texture2D) rtts->setTexture(texture2D);
+
+            // if one exist attach image to the RenderToTextureStage.
+            if (itr->second._image.valid()) rtts->setImage(itr->second._image.get());
+        }
+
+    }
+
+    // pop the node's state off the render graph stack.    
+    if (node_state) popStateSet();
+
+}
+
 void CullVisitor::apply(osg::OccluderNode& node)
 {
     // need to check if occlusion node is in the occluder

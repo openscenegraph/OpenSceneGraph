@@ -127,9 +127,14 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
     
+        virtual void drawPostRenderStages(osg::State& state,RenderLeaf*& previous);
+
         virtual void drawImplementation(osg::State& state,RenderLeaf*& previous);
 
-        void addToDependencyList(RenderStage* rs);
+        void addToDependencyList(RenderStage* rs) { addPreRenderStage(rs); }
+
+        void addPreRenderStage(RenderStage* rs);
+        void addPostRenderStage(RenderStage* rs);
 
         /** Extract stats for current draw list. */
         bool getStats(Statistics* primStats); 
@@ -138,10 +143,11 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         
         virtual ~RenderStage();
 
-        typedef std::vector< osg::ref_ptr<RenderStage> > DependencyList;
+        typedef std::vector< osg::ref_ptr<RenderStage> > RenderStageList;
 
         bool                                _stageDrawnThisFrame;
-        DependencyList                      _dependencyList;
+        RenderStageList                     _preRenderList;
+        RenderStageList                     _postRenderList;
 
         // viewport x,y,width,height.
         osg::ref_ptr<osg::Viewport>         _viewport;

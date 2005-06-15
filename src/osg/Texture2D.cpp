@@ -206,6 +206,22 @@ void Texture2D::apply(State& state) const
         //glBindTexture( GL_TEXTURE_2D, handle );
         
     }
+    else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
+    {
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+                contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        
+        textureObject->bind();
+
+        applyTexParameters(GL_TEXTURE_2D,state);
+
+        // no image present, but dimensions at set so less create the texture
+        glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat,
+                     _textureWidth, _textureHeight, _borderWidth,
+                     _internalFormat,
+                     GL_UNSIGNED_BYTE,
+                     0);                
+    }
     else
     {
         glBindTexture( GL_TEXTURE_2D, 0 );

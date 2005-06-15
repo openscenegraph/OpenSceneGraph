@@ -27,7 +27,7 @@ public:
     ClearBuffer() {}
     ClearBuffer(const ClearBuffer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY): osg::Drawable(copy, copyop) {}
     META_Object(example, ClearBuffer);
-    void drawImplementation(osg::State &state) const
+    void drawImplementation(osg::State&) const
     {
         glPushAttrib(GL_COLOR_BUFFER_BIT);
         glClearColor(0.5f, 0.1f, 0.1f, 1.0f);
@@ -64,25 +64,6 @@ osg::Node *build_quad(osg::Texture2D *tex)
     return geode;
 }
 
-// This class is provided because osg::Texture classes
-// don't apply texture parameters when the image pointer
-// is null. When performing render-to-texture, texture
-// data must be applied as usual but a null pointer must
-// be specified as pixel data.
-// This is another trick: it would be better to allow
-// null image pointers in osg::Texture classes.
-struct MySubload: public osg::Texture2D::SubloadCallback
-{
-    void load(const osg::Texture2D &texture, osg::State &state) const
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, texture.getInternalFormat(), texture.getTextureWidth(), texture.getTextureHeight(), texture.getBorderWidth(), GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    }
-
-    void subload(const osg::Texture2D &texture, osg::State &state) const
-    {
-    }
-};
-
 void build_world(osg::Group *root)
 {
     int width = 512;
@@ -97,7 +78,6 @@ void build_world(osg::Group *root)
     tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     tex->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
     tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-    tex->setSubloadCallback(new MySubload);
 
     // create and configure a framebuffer object.
     // We attach the texture to the first color buffer,
@@ -106,6 +86,67 @@ void build_world(osg::Group *root)
     osg::ref_ptr<osg::FramebufferObject> fbo = new osg::FramebufferObject();
     fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FramebufferAttachment(tex.get()));
     fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FramebufferAttachment(new osg::Renderbuffer(width, height, GL_DEPTH_COMPONENT24)));
+
+#if 0
+
+    osg::ref_ptr<osg::Node> subgraph = osgDB::readNodeFile("cow.osg");
+    if (!subgraph) return;
+    
+    const osg::BoundingSphere& bs = subgraph->getBound();
+    if (!bs.valid())
+    {
+        return;
+    }
+
+    osg::ref_ptr<osg::CameraNode> camera = new osg::CameraNode;
+    camera->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,1.0f));
+    camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    camera->setViewport(0, 0, width, height);
+    camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
+    
+    // set the camera to render before the main camera.
+    camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+
+    float znear = 1.0f*bs.radius();
+    float zfar  = 3.0f*bs.radius();
+
+    // 2:1 aspect ratio as per flag geomtry below.
+    float proj_top   = 0.5f*znear;
+    float proj_right = 0.5f*znear;
+
+    znear *= 0.9f;
+    zfar *= 1.1f;
+
+    // set up projection.
+    camera->setProjectionMatrixAsFrustum(-proj_right,proj_right,-proj_top,proj_top,znear,zfar);
+
+    // set view
+    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    camera->setViewMatrixAsLookAt(bs.center()+osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+
+#if 1
+    // add a ClearBuffer drawable to the offscreen subgraph
+    // in order to clear the color and depth buffers
+    osg::ref_ptr<osg::Geode> cbuf = new osg::Geode;
+    cbuf->addDrawable(new ClearBuffer);
+    cbuf->getOrCreateStateSet()->setRenderBinDetails(-2, "RenderBin");
+    camera->addChild(cbuf.get());
+
+    // attach the FBO.
+    camera->getOrCreateStateSet()->setAttribute(fbo.get());
+#else
+    // use glCopyTexSubImage    
+    camera->attach(osg::CameraNode::COLOR_BUFFER,tex.get());
+#endif
+
+
+    // attach the subgraph
+    camera->addChild(subgraph.get());
+    
+
+    root->addChild(camera.get());
+    
+#else
 
     // create a subgraph that will be rendered to texture.
     // We apply the previously created FBO and a Viewport
@@ -127,6 +168,7 @@ void build_world(osg::Group *root)
 
     // add our beloved cow the offscreen subgraph
     offscreen->addChild(osgDB::readNodeFile("cow.osg"));
+#endif
 
     // now create a simple quad that will be rendered
     // in the main framebuffers. The quad's texture

@@ -1029,8 +1029,29 @@ void CullVisitor::apply(osg::CameraNode& camera)
     StateSet* node_state = camera.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    // use render to texture stage.
+    if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
     {
+        pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()));
+        pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()));
+    }
+    else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLE)
+    {
+        pushProjectionMatrix(createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix()));
+        pushModelViewMatrix(createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix()));
+    }
+    else // pre multiple 
+    {
+        pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix()));
+        pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix()));
+    }
+
+    if (camera.getRenderOrder()==osg::CameraNode::NESTED_RENDER)
+    {
+        handle_cull_callbacks_and_traverse(camera);
+    }
+    else
+    {
+        // use render to texture stage.
         // create the render to texture stage.
         osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
 
@@ -1056,20 +1077,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // set the current renderbin to be the newly created stage.
         setCurrentRenderBin(rtts.get());
 
-        pushProjectionMatrix(new osg::RefMatrix(camera.getProjectionMatrix()));
-
-        pushModelViewMatrix(new osg::RefMatrix(camera.getViewMatrix()));
 
         // traverse the subgraph
         {
             handle_cull_callbacks_and_traverse(camera);
         }
 
-        // restore the previous model view matrix.
-        popModelViewMatrix();
-
-        // restore the previous model view matrix.
-        popProjectionMatrix();
 
         // restore the previous renderbin.
         setCurrentRenderBin(previousRenderBin);
@@ -1088,10 +1101,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
             case osg::CameraNode::PRE_RENDER :
                 getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get());
                 break;
-            case osg::CameraNode::NESTED_RENDER :
-                getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get());
-                break;
-            case osg::CameraNode::POST_RENDER :
+            default :
                 getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get());
                 break;
          }
@@ -1111,6 +1121,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
         }
 
     }
+
+    // restore the previous model view matrix.
+    popModelViewMatrix();
+
+    // restore the previous model view matrix.
+    popProjectionMatrix();
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();

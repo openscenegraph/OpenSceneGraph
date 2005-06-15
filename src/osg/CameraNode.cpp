@@ -124,9 +124,10 @@ void CameraNode::attach(BufferComponent buffer, GLenum internalFormat)
     _bufferAttachmentMap[buffer]._internalFormat = internalFormat;
 }
 
-void CameraNode::attach(BufferComponent buffer, osg::Texture* texture, unsigned int face)
+void CameraNode::attach(BufferComponent buffer, osg::Texture* texture, unsigned int level, unsigned int face)
 {
     _bufferAttachmentMap[buffer]._texture = texture;
+    _bufferAttachmentMap[buffer]._level = level;
     _bufferAttachmentMap[buffer]._face = face;
 }
 

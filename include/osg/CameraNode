@@ -191,6 +191,29 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         void setRenderTargetImplmentation(RenderTargetImplementation impl) { _renderTargetImplementation = impl; }
         RenderTargetImplementation getRenderTargetImplmentation() const { return _renderTargetImplementation; }
 
+
+        /** Set the draw buffer for a given fragment output position to specified draw buffer. */
+        void setDrawBuffer(unsigned int pos, GLenum buffer);
+
+        /** Get the draw buffer for a given fragment output position. */
+        GLenum getDrawBuffer(unsigned int pos);
+        
+        typedef std::vector<GLenum> DrawBufferList;
+
+        /** Get the list which draw buffer are active. */
+        DrawBufferList& getDrawBufferList() { return _drawBufferList; }
+        
+        /** Get the const list which draw buffer are active. */
+        const DrawBufferList& getDrawBufferList() const { return _drawBufferList; }
+
+
+        /** Set the read buffer for any required copy operations to use. */
+        void setReadBuffer(GLenum buffer) { _readBuffer = buffer; }
+
+        /** Get the read buffer for any required copy operations to use. */
+        GLenum getReadBuffer() const { return _readBuffer; }
+
+
         enum BufferComponent
         {
             COLOR_BUFFER,
@@ -200,7 +223,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
         void attach(BufferComponent buffer, GLenum internalFormat);
 
-        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int face=0);
+        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0);
 
         void attach(BufferComponent buffer, osg::Image* image);
 
@@ -208,17 +231,22 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         struct Attachment
         {
-            GLenum           _internalFormat;
-            ref_ptr<Image>   _image;
-            ref_ptr<Texture> _texture;
-            unsigned int     _face;
+            Attachment():
+                _internalFormat(GL_NONE),
+                _level(0),
+                _face(0) {}
+        
+            GLenum              _internalFormat;
+            ref_ptr<Image>      _image;
+            ref_ptr<Texture>    _texture;
+            unsigned int        _level;
+            unsigned int        _face;
         };
         
         typedef std::map< BufferComponent, Attachment> BufferAttachmentMap;
         
         BufferAttachmentMap& getBufferAttachmentMap() { return _bufferAttachmentMap; }
         const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
-
 
     public:
 
@@ -242,6 +270,9 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         Matrixd                     _viewMatrix;
         
         RenderOrder                 _renderOrder;
+        
+        DrawBufferList              _drawBufferList;
+        GLenum                      _readBuffer;
         
         RenderTargetImplementation  _renderTargetImplementation;
         BufferAttachmentMap         _bufferAttachmentMap;

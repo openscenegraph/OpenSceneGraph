@@ -153,6 +153,18 @@ ArgumentParser::ArgumentParser(int* argc,char **argv):
     _argv(argv),
     _usage(ApplicationUsage::instance())
 {
+#ifdef __APPLE__
+    //On OSX, any -psn arguments need to be removed because they will 
+    // confuse the application. -psn plus a concatenated argument are
+    // passed by the finder to application bundles
+    for(int pos=1;pos<this->argc();++pos)
+    {
+        if (std::string(_argv[pos]).compare(0, 4, std::string("-psn")) == 0) 
+        {
+            remove(pos, 1);
+        }
+    }
+#endif
 }
 
 std::string ArgumentParser::getApplicationName() const

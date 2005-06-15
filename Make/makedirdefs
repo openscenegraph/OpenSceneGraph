@@ -201,6 +201,7 @@ EXAMPLE_DIRS = \
         osgmotionblur\
         osgmovie\
 	osgmultitexture\
+	osgmultiplecameras\
 	osgoccluder\
 	osgpagedlod\
 	osgparticle\

@@ -89,22 +89,6 @@ LINK32=link.exe
 
 SOURCE=..\..\..\examples\osgfbo\osgfbo.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgfbo\FBOExtensions.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgfbo\FramebufferAttachment.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgfbo\FramebufferObject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\examples\osgfbo\Renderbuffer.cpp
-# End Source File
 # End Target
 # Begin Group "Resource Files"
 

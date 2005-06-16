@@ -245,9 +245,22 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         typedef std::map< BufferComponent, Attachment> BufferAttachmentMap;
         
+        /** Get the BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads.*/
         BufferAttachmentMap& getBufferAttachmentMap() { return _bufferAttachmentMap; }
-        const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
 
+        /** Get the const BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads.*/
+        const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
+        
+        
+        /** Set the Rendering object that is used to implement rendering of the subgraph.*/
+        void setRenderingCache(osg::Object* rc) { _renderingCache = rc; }
+
+        /** Get the Rendering object that is used to implement rendering of the subgraph.*/
+        osg::Object* getRenderingCache() { return _renderingCache.get(); }
+
+        /** Get the const Rendering object that is used to implement rendering of the subgraph.*/
+        const osg::Object* getRenderingCache() const { return _renderingCache.get(); }
+ 
     public:
 
 
@@ -277,6 +290,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         RenderTargetImplementation  _renderTargetImplementation;
         BufferAttachmentMap         _bufferAttachmentMap;
 
+        ref_ptr<Object>             _renderingCache;
 };
 
 }

@@ -15,6 +15,7 @@
 #define OSGUTIL_RENDERTOTEXTURESTAGE 1
 
 #include <osg/Texture2D>
+#include <osg/FrameBufferObject>
 
 #include <osgUtil/RenderStage>
 
@@ -51,6 +52,10 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
 
         void setImageReadPixelDataType(GLenum type) { _imageReadPixelDataType = type; }
         GLenum getImageReadPixelDataType() const { return _imageReadPixelDataType; }
+        
+        void setFrameBufferObject(osg::FrameBufferObject* fbo) { _fbo = fbo; }
+        osg::FrameBufferObject* getFrameBufferObject() { return _fbo.get(); }
+        const osg::FrameBufferObject* getFrameBufferObject() const { return _fbo.get(); }
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
@@ -61,10 +66,12 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
     
         virtual ~RenderToTextureStage();
         
-        osg::ref_ptr<osg::Texture2D> _texture;
-        osg::ref_ptr<osg::Image> _image;
-        GLenum                   _imageReadPixelFormat;
-        GLenum                   _imageReadPixelDataType;
+        osg::ref_ptr<osg::Texture2D>            _texture;
+        osg::ref_ptr<osg::Image>                _image;
+        GLenum                                  _imageReadPixelFormat;
+        GLenum                                  _imageReadPixelDataType;
+        
+        osg::ref_ptr<osg::FrameBufferObject>    _fbo;
 
 };
 

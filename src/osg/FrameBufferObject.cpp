@@ -304,7 +304,7 @@ void FrameBufferObject::apply(State &state) const
 
     if (_unsupported[contextID])
         return;
-
+        
     FBOExtensions* ext = FBOExtensions::instance(contextID);
     if (!ext->isSupported())
     {

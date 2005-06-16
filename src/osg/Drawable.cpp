@@ -1294,6 +1294,14 @@ GLboolean Drawable::Extensions::glIsQuery(GLuint id) const
   return false;
 }
 
+void Drawable::Extensions::glDeleteQueries(GLsizei n, const GLuint *ids) const
+{
+    if (_gl_delete_queries_arb) 
+        _gl_delete_queries_arb(n, ids);
+    else
+        osg::notify(osg::WARN) << "Error: glIsQuery not supported by OpenGL driver" << std::endl;
+}
+
 void Drawable::Extensions::glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const
 {
   if (_gl_get_query_objectiv_arb)

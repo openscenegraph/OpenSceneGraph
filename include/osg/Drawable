@@ -607,6 +607,7 @@ class OSG_EXPORT Drawable : public Object
             void glBeginQuery(GLenum target, GLuint id) const;
             void glEndQuery(GLenum target) const;
             GLboolean glIsQuery(GLuint id) const;
+            void glDeleteQueries(GLsizei n, const GLuint *ids) const;
             void glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const;
             void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
 

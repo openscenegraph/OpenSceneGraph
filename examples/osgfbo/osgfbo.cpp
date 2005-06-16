@@ -10,10 +10,7 @@
 
 #include <osgDB/ReadFile>
 
-#include "FramebufferObject.h"
-#include "FramebufferAttachment.h"
-#include "Renderbuffer.h"
-#include "FBOExtensions.h"
+#include <osg/FrameBufferObject>
 
 // This drawable class provides the means for clearing
 // the color and depth buffer and it is used in this
@@ -81,11 +78,11 @@ void build_world(osg::Group *root)
 
     // create and configure a framebuffer object.
     // We attach the texture to the first color buffer,
-    // and we attach a simple offscreen image (Renderbuffer)
+    // and we attach a simple offscreen image (RenderBuffer)
     // to the depth buffer in order to allow depth operations
-    osg::ref_ptr<osg::FramebufferObject> fbo = new osg::FramebufferObject();
-    fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FramebufferAttachment(tex.get()));
-    fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FramebufferAttachment(new osg::Renderbuffer(width, height, GL_DEPTH_COMPONENT24)));
+    osg::ref_ptr<osg::FrameBufferObject> fbo = new osg::FrameBufferObject();
+    fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(tex.get()));
+    fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
 
 #if 0
 

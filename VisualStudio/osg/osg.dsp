@@ -236,6 +236,10 @@ SOURCE=..\..\src\osg\FragmentProgram.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\FrameBufferObject.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\FrameStamp.cpp
 # End Source File
 # Begin Source File
@@ -677,6 +681,10 @@ SOURCE=..\..\Include\Osg\Fog
 # Begin Source File
 
 SOURCE=..\..\include\osg\FragmentProgram
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\FrameBufferObject
 # End Source File
 # Begin Source File
 

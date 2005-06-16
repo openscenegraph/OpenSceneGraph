@@ -39,6 +39,7 @@ CXXFILES =\
 	Fog.cpp\
 	FragmentProgram.cpp\
 	FrameStamp.cpp\
+	FrameBufferObject.cpp\
 	FrontFace.cpp\
 	Geode.cpp\
 	Geometry.cpp\

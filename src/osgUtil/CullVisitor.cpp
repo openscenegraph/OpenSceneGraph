@@ -1053,8 +1053,18 @@ void CullVisitor::apply(osg::CameraNode& camera)
     {
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
-
+        osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = dynamic_cast<osgUtil::RenderToTextureStage*>(camera.getRenderingCache());
+        if (!rtts)
+        {
+            rtts = new osgUtil::RenderToTextureStage;
+            camera.setRenderingCache(rtts.get());
+        }
+        else
+        {
+            // reusing render to texture stage, so need to reset it to empty it from previous frames contents.
+            rtts->reset();
+        }
+        
         // set up lighting.
         // currently ignore lights in the scene graph itself..
         // will do later.
@@ -1064,8 +1074,10 @@ void CullVisitor::apply(osg::CameraNode& camera)
         rtts->setClearColor(camera.getClearColor());
         rtts->setClearMask(camera.getClearMask());
 
+        osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
+
         // set up the viewport.
-        rtts->setViewport( camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport());
+        rtts->setViewport( viewport );
         
         // set up to charge the same RenderStageLighting is the parent previous stage.
         rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
@@ -1104,7 +1116,9 @@ void CullVisitor::apply(osg::CameraNode& camera)
             default :
                 getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get());
                 break;
-         }
+        }
+
+        osg::Texture2D* tex = 0;
 
         osg::CameraNode::BufferAttachmentMap& bufferAttachements = camera.getBufferAttachmentMap();
         for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
@@ -1114,10 +1128,30 @@ void CullVisitor::apply(osg::CameraNode& camera)
             
             // if one exist attach texture to the RenderToTextureStage.            
             osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(itr->second._texture.get());
-            if (texture2D) rtts->setTexture(texture2D);
+            if (texture2D)
+            {
+                tex = texture2D;
+                rtts->setTexture(texture2D);
+            }
+            
 
             // if one exist attach image to the RenderToTextureStage.
             if (itr->second._image.valid()) rtts->setImage(itr->second._image.get());
+        }
+        
+        if (camera.getRenderTargetImplmentation()==osg::CameraNode::FRAME_BUFFER_OBJECT)
+        {
+            osg::ref_ptr<osg::FrameBufferObject> fbo = rtts->getFrameBufferObject();
+            
+            if (!fbo)
+            {
+                fbo = new osg::FrameBufferObject;
+                rtts->setFrameBufferObject(fbo.get());
+
+                fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(tex));
+                fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(viewport->width(), viewport->height(), GL_DEPTH_COMPONENT24)));
+                
+            }
         }
 
     }

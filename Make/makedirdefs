@@ -204,6 +204,7 @@ EXAMPLE_DIRS = \
 	osgmultiplecameras\
 	osgoccluder\
 	osgpagedlod\
+	osgparametric\
 	osgparticle\
 	osgparticleeffects\
 	osgpbuffer\

@@ -12,8 +12,8 @@
  *
 */
 
-/* file:	src/osg/Shader.cpp
- * author:	Mike Weiblen 2005-04-29
+/* file:   src/osg/Shader.cpp
+ * author: Mike Weiblen 2005-06-15
 */
 
 #include <fstream>
@@ -118,8 +118,8 @@ bool Shader::setType( Type t )
 {
     if( _type != UNDEFINED )
     {
-	osg::notify(osg::WARN) << "cannot change type of Shader" << std::endl;
-	return false;
+        osg::notify(osg::WARN) << "cannot change type of Shader" << std::endl;
+        return false;
     }
 
     _type = t;
@@ -162,8 +162,8 @@ bool Shader::loadShaderSourceFromFile( const std::string& fileName )
     sourceFile.open(fileName.c_str(), std::ios::binary);
     if(!sourceFile)
     {
-	osg::notify(osg::WARN)<<"Error: can't open file \""<<fileName<<"\""<<std::endl;
-	return false;
+        osg::notify(osg::WARN)<<"Error: can't open file \""<<fileName<<"\""<<std::endl;
+        return false;
     }
 
     osg::notify(osg::INFO)<<"Loading shader source file \""<<fileName<<"\""<<std::endl;
@@ -186,17 +186,17 @@ const char* Shader::getTypename() const
 {
     switch( getType() )
     {
-	case VERTEX:	return "VERTEX";
-	case FRAGMENT:	return "FRAGMENT";
-	default:	return "UNDEFINED";
+        case VERTEX:    return "VERTEX";
+        case FRAGMENT:  return "FRAGMENT";
+        default:        return "UNDEFINED";
     }
 }
 
 
 /*static*/ Shader::Type Shader::getTypeId( const std::string& tname )
 {
-    if( tname == "VERTEX" )	return VERTEX;
-    if( tname == "FRAGMENT" )	return FRAGMENT;
+    if( tname == "VERTEX" )     return VERTEX;
+    if( tname == "FRAGMENT" )   return FRAGMENT;
     return UNDEFINED;
 }
 
@@ -212,13 +212,13 @@ Shader::PerContextShader* Shader::getPCS(unsigned int contextID) const
 {
     if( getType() == UNDEFINED )
     {
-	osg::notify(osg::WARN) << "Shader type is UNDEFINED" << std::endl;
-	return 0;
+        osg::notify(osg::WARN) << "Shader type is UNDEFINED" << std::endl;
+        return 0;
     }
 
     if( ! _pcsList[contextID].valid() )
     {
-	_pcsList[contextID] = new PerContextShader( this, contextID );
+        _pcsList[contextID] = new PerContextShader( this, contextID );
     }
     return _pcsList[contextID].get();
 }
@@ -273,9 +273,9 @@ void Shader::dirtyShader()
 
     // Also mark Programs that depend on us as needing relink.
     for( ProgramSet::iterator itr = _programSet.begin();
-	itr != _programSet.end(); ++itr )
+        itr != _programSet.end(); ++itr )
     {
-	(*itr)->dirtyProgram();
+        (*itr)->dirtyProgram();
     }
 }
 
@@ -286,8 +286,8 @@ void Shader::dirtyShader()
 ///////////////////////////////////////////////////////////////////////////
 
 Shader::PerContextShader::PerContextShader(const Shader* shader, unsigned int contextID) :
-	osg::Referenced(),
-	_contextID( contextID )
+        osg::Referenced(),
+        _contextID( contextID )
 {
     _shader = shader;
     _extensions = GL2Extensions::Get( _contextID, true );
@@ -314,7 +314,9 @@ void Shader::PerContextShader::compileShader()
     if( ! _needsCompile ) return;
     _needsCompile = false;
 
-    osg::notify(osg::INFO)<<"Compiling source "<<_shader->getShaderSource()<<std::endl;
+    osg::notify(osg::INFO)
+        << "\nCompiling " << _shader->getTypename()
+        << " source:\n" << _shader->getShaderSource() << std::endl;
 
     GLint compiled = GL_FALSE;
     const char* sourceText = _shader->getShaderSource().c_str();
@@ -326,13 +328,13 @@ void Shader::PerContextShader::compileShader()
     if( ! _isCompiled )
     {
         osg::notify(osg::WARN) << _shader->getTypename() << " glCompileShader \""
-	    << _shader->getName() << "\" FAILED" << std::endl;
+            << _shader->getName() << "\" FAILED" << std::endl;
 
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
             osg::notify(osg::WARN) << _shader->getTypename() << " Shader \""
-	        << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
+                << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
         }
     }
     else
@@ -341,7 +343,7 @@ void Shader::PerContextShader::compileShader()
         if( getInfoLog(infoLog) )
         {
             osg::notify(osg::INFO) << _shader->getTypename() << " Shader \""
-	        << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
+                << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
         }
     }
 

@@ -44,6 +44,9 @@ public :
     /** Get time for child. */
     float getTime(int frame) const;
 
+    /** Get number of frames */
+    inline unsigned int getNumFrames() const { return _frameTime.size(); }
+
     /** Interval modes. 'Loop' repeats frames 1-N; 'swing' repeats 1->N, (N-1)->1. */
     enum LoopMode
     {

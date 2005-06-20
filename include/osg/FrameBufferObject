@@ -90,7 +90,7 @@ namespace osg
  * FBOExtensions
  **************************************************************************/
 
-    class FBOExtensions
+    class OSG_EXPORT FBOExtensions
     {
     public:
         typedef void APIENTRY TglBindRenderbufferEXT(GLenum, GLuint);
@@ -142,7 +142,7 @@ namespace osg
  * RenderBuffer
  **************************************************************************/
 
-    class RenderBuffer: public Object
+    class OSG_EXPORT RenderBuffer: public Object
     {
     public:
         RenderBuffer();
@@ -244,7 +244,7 @@ namespace osg
     class TextureCubeMap;
     class TextureRectangle;
 
-    class FrameBufferAttachment
+    class OSG_EXPORT FrameBufferAttachment
     {
     public:
         FrameBufferAttachment();
@@ -274,7 +274,7 @@ namespace osg
 /**************************************************************************
  * FrameBufferObject
  **************************************************************************/
-    class FrameBufferObject: public StateAttribute
+    class OSG_EXPORT FrameBufferObject: public StateAttribute
     {
     public:
         typedef std::map<GLenum, FrameBufferAttachment> AttachmentMap;

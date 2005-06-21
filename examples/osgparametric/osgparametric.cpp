@@ -14,6 +14,8 @@
 
 #include <osgProducer/Viewer>
 
+///////////////////////////////////////////////////////////////////
+// vertex shader using just Vec4 coefficients
 char vertexShaderSource_simple[] = 
     "uniform vec4 coeff; \n"
     "\n"
@@ -25,7 +27,26 @@ char vertexShaderSource_simple[] =
     "                  gl_Vertex.y*coeff[2] + gl_Vertex.y*gl_Vertex.y* coeff[3]; \n"
     "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
     "}\n";
-    
+  
+  
+//////////////////////////////////////////////////////////////////
+// vertex shader using full Matrix4 coefficients
+char vertexShaderSource_matrix[] = 
+    "uniform vec4  origin; \n"
+    "uniform mat4  coeffMatrix; \n"
+    "\n"
+    "void main(void) \n"
+    "{ \n"
+    "\n"
+    "    gl_TexCoord[0] = gl_Vertex; \n"
+    "    vec4 v = vec4(gl_Vertex.x, gl_Vertex.x*gl_Vertex.x, gl_Vertex.y, gl_Vertex.y*gl_Vertex.y ); \n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * (origin + coeffMatrix * v);\n"
+    "}\n";
+
+
+//////////////////////////////////////////////////////////////////
+// fragment shader
+//
 char fragmentShaderSource[] = 
     "uniform sampler2D baseTexture; \n"
     "\n"
@@ -33,6 +54,7 @@ char fragmentShaderSource[] =
     "{ \n"
     "    gl_FragColor = texture2D( baseTexture, gl_TexCoord[0].xy); \n"
     "}\n";
+
 
 
 class UniformVarying : public osg::Uniform::Callback
@@ -45,7 +67,7 @@ class UniformVarying : public osg::Uniform::Callback
     }
 };
 
-osg::Node* createModel()
+osg::Node* createModel(const std::string& shader)
 {
     osg::Geode* geode = new osg::Geode;
     
@@ -97,18 +119,38 @@ osg::Node* createModel()
     osg::Program* program = new osg::Program;
     stateset->setAttribute(program);
 
-    osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_simple);
-    program->addShader(vertex_shader);
-    
+    if (shader=="simple")
+    {
+        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_simple);
+        program->addShader(vertex_shader);
+
+        osg::Uniform* coeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
+        coeff->setUpdateCallback(new UniformVarying);
+        stateset->addUniform(coeff);
+    }
+    else if (shader=="matrix")
+    {
+        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_matrix);
+        program->addShader(vertex_shader);
+
+        osg::Uniform* origin = new osg::Uniform("origin",osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+        stateset->addUniform(origin);
+
+        osg::Uniform* coeffMatrix = new osg::Uniform("coeffMatrix",
+            osg::Matrix(1.0f,0.0f,1.0f,0.0f,
+                        0.0f,0.0f,-1.0f,0.0f,
+                        0.0f,1.0f,-1.0f,0.0f,
+                        0.0f,0.0f,1.0f,0.0f));
+
+        stateset->addUniform(coeffMatrix);
+    }
+    else if (shader=="texture")
+    {
+        
+    }
 
     osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
     program->addShader(fragment_shader);
-
-
-    osg::Uniform* xCoeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
-    xCoeff->setUpdateCallback(new UniformVarying);
-    stateset->addUniform(xCoeff);
-
     
     osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile("lz.rgb"));
     texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
@@ -138,6 +180,10 @@ int main(int argc, char *argv[])
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    
+    std::string shader("simple");
+    while(arguments.read("-s",shader)) {}
+    
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -160,7 +206,7 @@ int main(int argc, char *argv[])
     }
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel();
+    osg::Node* model = createModel(shader);
     if (!model)
     {
         return 1;

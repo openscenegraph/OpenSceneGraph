@@ -17,6 +17,7 @@
 char vertexShaderSource[] = 
     "uniform vec2  xCoeff; \n"
     "uniform vec2  yCoeff; \n"
+    "//uniform sampler2D baseTexture; \n"
     "\n"
     "void main(void) \n"
     "{ \n"
@@ -24,6 +25,7 @@ char vertexShaderSource[] =
     "    gl_TexCoord[0] = gl_Vertex; \n"
     "    gl_Vertex.z = gl_Vertex.x*xCoeff[0] + gl_Vertex.x*gl_Vertex.x* xCoeff[1] + \n"
     "                  gl_Vertex.y*yCoeff[1] + gl_Vertex.y*gl_Vertex.y* yCoeff[1]; \n"
+    "    //gl_Vertex.z = texture2D( vertexTexture, gl_TexCoord[0].xy).r; \n"
     "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
     "}\n";
     
@@ -114,11 +116,15 @@ osg::Node* createModel()
     stateset->addUniform(yCoeff);
     
     
-    stateset->setTextureAttributeAndModes(0,new osg::Texture2D(osgDB::readImageFile("lz.rgb")));
-
+    osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile("lz.rgb"));
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
+    stateset->setTextureAttributeAndModes(0,texture);
+   
     osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
     stateset->addUniform(baseTextureSampler);
-    
+
+
     return geode;
 
 }

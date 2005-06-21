@@ -14,6 +14,9 @@
 
 #include <osgProducer/Viewer>
 
+// for the grid data..
+#include "../osghangglide/terrain_coords.h"
+
 ///////////////////////////////////////////////////////////////////
 // vertex shader using just Vec4 coefficients
 char vertexShaderSource_simple[] = 
@@ -43,6 +46,19 @@ char vertexShaderSource_matrix[] =
     "    gl_Position = gl_ModelViewProjectionMatrix * (origin + coeffMatrix * v);\n"
     "}\n";
 
+//////////////////////////////////////////////////////////////////
+// vertex shader using texture read
+char vertexShaderSource_texture[] = 
+    "uniform sampler2D vertexTexture; \n"
+    "\n"
+    "void main(void) \n"
+    "{ \n"
+    "\n"
+    "    gl_TexCoord[0] = gl_Vertex; \n"
+    "    gl_Vertex.z = texture2D( vertexTexture, gl_TexCoord[0].xy).x*0.0001; \n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "}\n";
+
 
 //////////////////////////////////////////////////////////////////
 // fragment shader
@@ -67,7 +83,7 @@ class UniformVarying : public osg::Uniform::Callback
     }
 };
 
-osg::Node* createModel(const std::string& shader)
+osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName)
 {
     osg::Geode* geode = new osg::Geode;
     
@@ -77,6 +93,98 @@ osg::Node* createModel(const std::string& shader)
     // dimensions for ~one million triangles :-)
     unsigned int num_x = 708;
     unsigned int num_y = 708;
+
+    // set up state
+    {
+    
+        osg::StateSet* stateset = geom->getOrCreateStateSet();
+
+        osg::Program* program = new osg::Program;
+        stateset->setAttribute(program);
+
+        if (shader=="simple")
+        {
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_simple);
+            program->addShader(vertex_shader);
+
+            osg::Uniform* coeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
+            coeff->setUpdateCallback(new UniformVarying);
+            stateset->addUniform(coeff);
+        }
+        else if (shader=="matrix")
+        {
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_matrix);
+            program->addShader(vertex_shader);
+
+            osg::Uniform* origin = new osg::Uniform("origin",osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+            stateset->addUniform(origin);
+
+            osg::Uniform* coeffMatrix = new osg::Uniform("coeffMatrix",
+                osg::Matrix(1.0f,0.0f,1.0f,0.0f,
+                            0.0f,0.0f,-1.0f,0.0f,
+                            0.0f,1.0f,-1.0f,0.0f,
+                            0.0f,0.0f,1.0f,0.0f));
+
+            stateset->addUniform(coeffMatrix);
+        }
+        else if (shader=="texture")
+        {
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_texture);
+            program->addShader(vertex_shader);
+
+            osg::Image* image = 0;
+
+            if (terrainFileName.empty())
+            {
+                image = new osg::Image;
+                unsigned int tx = 38;
+                unsigned int ty = 39;
+                image->allocateImage(tx,ty,1,GL_LUMINANCE,GL_FLOAT,1);
+                for(unsigned int r=0;r<ty;++r)
+                {
+	            for(unsigned int c=0;c<tx;++c)
+	            {
+	                *((float*)image->data(c,r)) = vertex[r+c*39][2]*0.1;
+	            }
+                }
+
+                num_x = tx;
+                num_y = tx;
+            }
+            else
+            {
+                image = osgDB::readImageFile(terrainFileName);
+
+                num_x = image->s();
+                num_y = image->t();
+            }
+
+            osg::Texture2D* vertexTexture = new osg::Texture2D(image);
+
+
+            vertexTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
+            vertexTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
+            vertexTexture->setInternalFormat(GL_LUMINANCE_FLOAT32_ATI);
+            stateset->setTextureAttributeAndModes(1,vertexTexture);
+
+            osg::Uniform* vertexTextureSampler = new osg::Uniform("vertexTexture",1);
+            stateset->addUniform(vertexTextureSampler);
+
+        }
+
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+        program->addShader(fragment_shader);
+
+        osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile(textureFileName));
+        stateset->setTextureAttributeAndModes(0,texture);
+
+        osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+        stateset->addUniform(baseTextureSampler);
+
+    }
+
+
+    // set up geometry data.
 
     osg::Vec3Array* vertices = new osg::Vec3Array( num_x * num_y );
     
@@ -114,51 +222,6 @@ osg::Node* createModel(const std::string& shader)
     geom->setUseVertexBufferObjects(true);
     
     
-    osg::StateSet* stateset = geom->getOrCreateStateSet();
-
-    osg::Program* program = new osg::Program;
-    stateset->setAttribute(program);
-
-    if (shader=="simple")
-    {
-        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_simple);
-        program->addShader(vertex_shader);
-
-        osg::Uniform* coeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
-        coeff->setUpdateCallback(new UniformVarying);
-        stateset->addUniform(coeff);
-    }
-    else if (shader=="matrix")
-    {
-        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_matrix);
-        program->addShader(vertex_shader);
-
-        osg::Uniform* origin = new osg::Uniform("origin",osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-        stateset->addUniform(origin);
-
-        osg::Uniform* coeffMatrix = new osg::Uniform("coeffMatrix",
-            osg::Matrix(1.0f,0.0f,1.0f,0.0f,
-                        0.0f,0.0f,-1.0f,0.0f,
-                        0.0f,1.0f,-1.0f,0.0f,
-                        0.0f,0.0f,1.0f,0.0f));
-
-        stateset->addUniform(coeffMatrix);
-    }
-    else if (shader=="texture")
-    {
-        
-    }
-
-    osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
-    program->addShader(fragment_shader);
-    
-    osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile("lz.rgb"));
-    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
-    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
-    stateset->setTextureAttributeAndModes(0,texture);
-   
-    osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
-    stateset->addUniform(baseTextureSampler);
 
 
     return geode;
@@ -184,6 +247,11 @@ int main(int argc, char *argv[])
     std::string shader("simple");
     while(arguments.read("-s",shader)) {}
     
+    std::string textureFileName("lz.rgb");
+    while(arguments.read("-t",textureFileName)) {}
+
+    std::string terrainFileName("");
+    while(arguments.read("-d",terrainFileName)) {}
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -206,7 +274,7 @@ int main(int argc, char *argv[])
     }
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel(shader);
+    osg::Node* model = createModel(shader,textureFileName,terrainFileName);
     if (!model)
     {
         return 1;

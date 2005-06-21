@@ -14,18 +14,15 @@
 
 #include <osgProducer/Viewer>
 
-char vertexShaderSource[] = 
-    "uniform vec2  xCoeff; \n"
-    "uniform vec2  yCoeff; \n"
-    "//uniform sampler2D baseTexture; \n"
+char vertexShaderSource_simple[] = 
+    "uniform vec4 coeff; \n"
     "\n"
     "void main(void) \n"
     "{ \n"
     "\n"
     "    gl_TexCoord[0] = gl_Vertex; \n"
-    "    gl_Vertex.z = gl_Vertex.x*xCoeff[0] + gl_Vertex.x*gl_Vertex.x* xCoeff[1] + \n"
-    "                  gl_Vertex.y*yCoeff[1] + gl_Vertex.y*gl_Vertex.y* yCoeff[1]; \n"
-    "    //gl_Vertex.z = texture2D( vertexTexture, gl_TexCoord[0].xy).r; \n"
+    "    gl_Vertex.z = gl_Vertex.x*coeff[0] + gl_Vertex.x*gl_Vertex.x* coeff[1] + \n"
+    "                  gl_Vertex.y*coeff[2] + gl_Vertex.y*gl_Vertex.y* coeff[3]; \n"
     "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
     "}\n";
     
@@ -44,7 +41,7 @@ class UniformVarying : public osg::Uniform::Callback
     {
         const osg::FrameStamp* fs = nv->getFrameStamp();
         float value = sinf(fs->getReferenceTime());
-        uniform->set(osg::Vec2(value,-value));
+        uniform->set(osg::Vec4(value,-value,-value,value));
     }
 };
 
@@ -100,7 +97,7 @@ osg::Node* createModel()
     osg::Program* program = new osg::Program;
     stateset->setAttribute(program);
 
-    osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+    osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_simple);
     program->addShader(vertex_shader);
     
 
@@ -108,13 +105,10 @@ osg::Node* createModel()
     program->addShader(fragment_shader);
 
 
-    osg::Uniform* xCoeff = new osg::Uniform("xCoeff",osg::Vec2(1.0,-1.0f));
+    osg::Uniform* xCoeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
     xCoeff->setUpdateCallback(new UniformVarying);
     stateset->addUniform(xCoeff);
 
-    osg::Uniform* yCoeff = new osg::Uniform("yCoeff",osg::Vec2(-1.0f,1.0f));
-    stateset->addUniform(yCoeff);
-    
     
     osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile("lz.rgb"));
     texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);

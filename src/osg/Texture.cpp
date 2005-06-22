@@ -1358,6 +1358,12 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
         osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;
     }
 
+    if (rendererString.find("GeForce FX")!=std::string::npos)
+    {
+        _isNonPowerOfTwoTextureMipMappedSupported = false;
+        osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
+    }
+
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 
     char *ptr;

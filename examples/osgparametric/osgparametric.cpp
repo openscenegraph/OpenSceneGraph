@@ -26,9 +26,10 @@ char vertexShaderSource_simple[] =
     "{ \n"
     "\n"
     "    gl_TexCoord[0] = gl_Vertex; \n"
-    "    gl_Vertex.z = gl_Vertex.x*coeff[0] + gl_Vertex.x*gl_Vertex.x* coeff[1] + \n"
-    "                  gl_Vertex.y*coeff[2] + gl_Vertex.y*gl_Vertex.y* coeff[3]; \n"
-    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    vec4 vert = gl_Vertex; \n"
+    "    vert.z = gl_Vertex.x*coeff[0] + gl_Vertex.x*gl_Vertex.x* coeff[1] + \n"
+    "             gl_Vertex.y*coeff[2] + gl_Vertex.y*gl_Vertex.y* coeff[3]; \n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * vert;\n"
     "}\n";
   
   
@@ -55,8 +56,9 @@ char vertexShaderSource_texture[] =
     "{ \n"
     "\n"
     "    gl_TexCoord[0] = gl_Vertex; \n"
-    "    gl_Vertex.z = texture2D( vertexTexture, gl_TexCoord[0].xy).x*0.0001; \n"
-    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "    vec4 vert = gl_Vertex; \n"
+    "    vert.z = texture2D( vertexTexture, gl_TexCoord[0].xy).x*0.0001; \n"
+    "    gl_Position = gl_ModelViewProjectionMatrix * vert;\n"
     "}\n";
 
 

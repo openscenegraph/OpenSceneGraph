@@ -18,7 +18,6 @@ namespace osgUtil
 
 // Compute the circumcircle of a triangle (only x and y coordinates are used),
 // return (Cx, Cy, r^2)
-
 inline osg::Vec3 compute_circumcircle(
     const osg::Vec3 &a, 
     const osg::Vec3 &b, 
@@ -28,23 +27,36 @@ inline osg::Vec3 compute_circumcircle(
         (a.x() - c.x()) * (b.y() - c.y()) - 
         (b.x() - c.x()) * (a.y() - c.y());
 
-    float cx = 
+    float cx, cy, r2;
+
+    if(D==0.0)
+    {
+        // (Nearly) degenerate condition - either two of the points are equal (which we discount)
+        // or the three points are colinear. In this case we just determine the average of
+        // the three points as the centre for correctness, but squirt out a zero radius.
+        // This method will produce a triangulation with zero area, so we have to check later
+        cx = (a.x()+b.x()+c.x())/3.0;
+        cy = (a.y()+b.y()+c.y())/3.0;
+        r2 = 0.0;
+    }
+    else
+    {
+        cx = 
         (((a.x() - c.x()) * (a.x() + c.x()) + 
         (a.y() - c.y()) * (a.y() + c.y())) / 2 * (b.y() - c.y()) -
         ((b.x() - c.x()) * (b.x() + c.x()) +
         (b.y() - c.y()) * (b.y() + c.y())) / 2 * (a.y() - c.y())) / D;
 
-    float cy = 
+        cy = 
         (((b.x() - c.x()) * (b.x() + c.x()) + 
         (b.y() - c.y()) * (b.y() + c.y())) / 2 * (a.x() - c.x()) -
         ((a.x() - c.x()) * (a.x() + c.x()) +
         (a.y() - c.y()) * (a.y() + c.y())) / 2 * (b.x() - c.x())) / D;
 
-    float r2 = (c.x() - cx) * (c.x() - cx) + (c.y() - cy) * (c.y() - cy);
-
+        r2 = (c.x() - cx) * (c.x() - cx) + (c.y() - cy) * (c.y() - cy);
+    }
     return osg::Vec3(cx, cy, r2);
 }
-
 
 // Test whether a point (only the x and y coordinates are used) lies inside
 // a circle; the circle is passed as a vector: (Cx, Cy, r^2).
@@ -320,7 +332,8 @@ bool DelaunayTriangulator::triangulate()
 
         // don't add this triangle to the primitive if it shares any vertex with
         // the supertriangle
-        if (ti->a() <= last_valid_index && ti->b() <= last_valid_index && ti->c() <= last_valid_index) {
+          // Also don't add degenerate (zero radius) triangles
+        if (ti->a() <= last_valid_index && ti->b() <= last_valid_index && ti->c() <= last_valid_index && ti->get_circumcircle().z()>0.0) {
 
             if (normals_.valid()) {
                 (normals_.get())->push_back(ti->compute_normal(points));

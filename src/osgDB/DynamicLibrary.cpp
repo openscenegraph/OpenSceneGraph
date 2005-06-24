@@ -123,7 +123,7 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
     std::string temp("_");
     NSSymbol symbol;
     temp += procName;	// Mac OS X prepends an underscore on function names
-    symbol = NSLookupAndBindSymbol(temp.c_str());
+    symbol = NSLookupSymbolInModule(static_cast<NSModule>(_handle), temp.c_str());
     return NSAddressOfSymbol(symbol);
 #elif defined(__hpux__)
     void* result = NULL;

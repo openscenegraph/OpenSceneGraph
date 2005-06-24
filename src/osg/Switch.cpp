@@ -50,12 +50,12 @@ bool Switch::addChild( Node *child )
     if (Group::addChild(child))
     {
         if (_children.size()>_values.size())
-	{
-	    _values.resize(_children.size(),_newChildDefaultValue);
-	}
+        {
+            _values.resize(_children.size(),_newChildDefaultValue);
+        }
         // note, we don't override any pre-existing _values[childPosition] setting
         // like in addChild(child,value) below.
-	return true;
+        return true;
     }
     return false;
 }
@@ -66,11 +66,11 @@ bool Switch::addChild( Node *child, bool value )
     if (Group::addChild(child))
     {
         if (_children.size()>_values.size())
-	{
-	    _values.resize(_children.size(),_newChildDefaultValue);
-	}
-	_values[childPosition]=value;
-	return true;
+        {
+            _values.resize(_children.size(),_newChildDefaultValue);
+        }
+        _values[childPosition]=value;
+        return true;
     }
     return false;
 }
@@ -85,15 +85,15 @@ bool Switch::insertChild( unsigned int index, Node *child, bool value )
     if (Group::insertChild(index,child))
     {
         if (index>=_values.size())
-	{
-	    _values.push_back(value);
-	}
+        {
+            _values.push_back(value);
+        }
         else
         {
-	    _values.insert(_values.begin()+index, value);
+            _values.insert(_values.begin()+index, value);
         }
         
-	return true;
+        return true;
     }
     return false;
 }
@@ -113,6 +113,7 @@ void Switch::setValue(unsigned int pos,bool value)
 {
     if (pos>=_values.size()) _values.resize(pos+1,_newChildDefaultValue);
     _values[pos]=value;
+    dirtyBound();
 }
 
 void Switch::setChildValue(const Node* child,bool value)
@@ -122,6 +123,7 @@ void Switch::setChildValue(const Node* child,bool value)
     if (pos==_children.size()) return;
     
     _values[pos]=value;
+    dirtyBound();
 }
 
 bool Switch::getValue(unsigned int pos) const
@@ -148,6 +150,7 @@ bool Switch::setAllChildrenOff()
     {
         *itr = false;
     }
+    dirtyBound();
     return true;
 }
 

@@ -2999,6 +2999,61 @@ void DataSet::CompositeDestination::equalizeBoundaries()
 }
 
 
+class CollectClusterCullingCallbacks : public osg::NodeVisitor
+{
+public:
+
+
+    struct Triple
+    {
+        Triple():
+            _drawable(0),
+            _callback(0) {}
+    
+        Triple(osg::NodePath nodePath, osg::Drawable* drawable, osg::ClusterCullingCallback* callback):
+            _nodePath(nodePath),
+            _drawable(drawable),
+            _callback(callback) {}
+
+        Triple(const Triple& t):
+            _nodePath(t._nodePath),
+            _drawable(t._drawable),
+            _callback(t._callback) {}
+
+        Triple& operator = (const Triple& t)
+        {
+            _nodePath = t._nodePath;
+            _drawable = t._drawable;
+            _callback = t._callback;
+            return *this;
+        }
+
+        osg::NodePath                   _nodePath;
+        osg::Drawable*                  _drawable;
+        osg::ClusterCullingCallback*    _callback;
+    };
+
+    typedef std::vector<Triple> ClusterCullingCallbackList;
+
+    CollectClusterCullingCallbacks():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    virtual void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0; i<geode.getNumDrawables();++i)
+        {
+            osg::ClusterCullingCallback* callback = dynamic_cast<osg::ClusterCullingCallback*>(geode.getDrawable(i)->getCullCallback());
+            if (callback) 
+            {
+                _callbackList.push_back(Triple(getNodePath(),geode.getDrawable(i),callback));
+            }
+        }
+    }
+    
+    ClusterCullingCallbackList _callbackList;
+    
+};
+
 osg::Node* DataSet::CompositeDestination::createScene()
 {
     if (_children.empty() && _tiles.empty()) return 0;
@@ -3029,6 +3084,111 @@ osg::Node* DataSet::CompositeDestination::createScene()
         return group;            
     }
 
+
+#if 1
+    typedef std::vector<osg::Node*>  NodeList;
+
+    // collect all the local tiles
+    NodeList tileNodes;
+    for(TileList::iterator titr=_tiles.begin();
+        titr!=_tiles.end();
+        ++titr)
+    {
+        osg::Node* node = (*titr)->createScene();
+        if (node) tileNodes.push_back(node);
+    }
+
+    NodeList childNodes;
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        osg::Node* node = (*citr)->createScene();
+        if (node) childNodes.push_back(node);
+    }
+
+
+    float cutOffDistance = -FLT_MAX;
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        cutOffDistance = osg::maximum(cutOffDistance,(*citr)->_maxVisibleDistance);
+    }
+
+
+    osg::LOD* myLOD = new osg::LOD;
+ 
+    float farDistance = _dataSet->getMaximumVisibleDistanceOfTopLevel();
+    if (tileNodes.size()==1)
+    {
+        myLOD->addChild(tileNodes.front());
+    }
+    else if (tileNodes.size()>1)
+    {
+        osg::Group* group = new osg::Group;
+        for(NodeList::iterator itr=tileNodes.begin();
+            itr != tileNodes.end();
+            ++itr)
+        {
+            group->addChild(*itr);
+        }
+        myLOD->addChild(group);
+    }
+    
+    if (childNodes.size()==1)
+    {
+        myLOD->addChild(childNodes.front());
+    }
+    else if (childNodes.size()>1)
+    {
+        osg::Group* group = new osg::Group;
+        for(NodeList::iterator itr=childNodes.begin();
+            itr != childNodes.end();
+            ++itr)
+        {
+            group->addChild(*itr);
+        }
+        myLOD->addChild(group);
+    }
+
+
+    // find cluster culling callbacks on drawables and move them to the myLOD level.
+    {
+        CollectClusterCullingCallbacks collect;
+        myLOD->accept(collect);
+
+        if (!collect._callbackList.empty())
+        {
+            if (collect._callbackList.size()==1)
+            {
+                CollectClusterCullingCallbacks::Triple& triple = collect._callbackList.front();
+            
+                osg::Matrixd matrix = osg::computeLocalToWorld(triple._nodePath);
+                
+                triple._callback->transform(matrix);
+                
+                osg::notify(osg::INFO)<<"cluster culling matrix "<<matrix<<std::endl;
+
+                // moving cluster culling callback myLOD node.
+                myLOD->setCullCallback(triple._callback);
+                
+                // remove it from the drawable.
+                triple._drawable->setCullCallback(0);
+            }
+        }
+    }
+        
+    cutOffDistance = osg::maximum(cutOffDistance, myLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio());
+    
+    myLOD->setRange(0,cutOffDistance,farDistance);
+    myLOD->setRange(1,0,cutOffDistance);
+    
+    if (myLOD->getNumChildren()>0)
+        myLOD->setCenter(myLOD->getBound().center());
+    
+    return myLOD;
+#else
     // must be either a LOD or a PagedLOD
 
     typedef std::vector<osg::Node*>  NodeList;
@@ -3111,6 +3271,7 @@ osg::Node* DataSet::CompositeDestination::createScene()
         }
     }
     return lod;
+#endif
 }
 
 bool DataSet::CompositeDestination::areSubTilesComplete()
@@ -3137,61 +3298,6 @@ std::string DataSet::CompositeDestination::getSubTileName()
     return _name+"_subtile"+_dataSet->getDestinationTileExtension();
 }
 
-
-class CollectClusterCullingCallbacks : public osg::NodeVisitor
-{
-public:
-
-
-    struct Triple
-    {
-        Triple():
-            _drawable(0),
-            _callback(0) {}
-    
-        Triple(osg::NodePath nodePath, osg::Drawable* drawable, osg::ClusterCullingCallback* callback):
-            _nodePath(nodePath),
-            _drawable(drawable),
-            _callback(callback) {}
-
-        Triple(const Triple& t):
-            _nodePath(t._nodePath),
-            _drawable(t._drawable),
-            _callback(t._callback) {}
-
-        Triple& operator = (const Triple& t)
-        {
-            _nodePath = t._nodePath;
-            _drawable = t._drawable;
-            _callback = t._callback;
-            return *this;
-        }
-
-        osg::NodePath                   _nodePath;
-        osg::Drawable*                  _drawable;
-        osg::ClusterCullingCallback*    _callback;
-    };
-
-    typedef std::vector<Triple> ClusterCullingCallbackList;
-
-    CollectClusterCullingCallbacks():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-
-    virtual void apply(osg::Geode& geode)
-    {
-        for(unsigned int i=0; i<geode.getNumDrawables();++i)
-        {
-            osg::ClusterCullingCallback* callback = dynamic_cast<osg::ClusterCullingCallback*>(geode.getDrawable(i)->getCullCallback());
-            if (callback) 
-            {
-                _callbackList.push_back(Triple(getNodePath(),geode.getDrawable(i),callback));
-            }
-        }
-    }
-    
-    ClusterCullingCallbackList _callbackList;
-    
-};
 
 osg::Node* DataSet::CompositeDestination::createPagedLODScene()
 {

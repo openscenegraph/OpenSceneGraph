@@ -83,7 +83,8 @@ OSGA_Archive::IndexBlock* OSGA_Archive::IndexBlock::read(std::istream& in, bool 
                 ptr += sizeof(size_type);
 
                 osg::swapBytes(ptr,sizeof(unsigned int)); 
-                unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
+                unsigned int filename_size; // = *(reinterpret_cast<unsigned int*>(ptr));
+                _read(ptr, filename_size);
                 ptr += sizeof(unsigned int);
                 ptr += filename_size;
 
@@ -113,7 +114,8 @@ std::string OSGA_Archive::IndexBlock::getFirstFileName() const
         ptr += sizeof(pos_type);
         ptr += sizeof(size_type);
 
-        unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
+        unsigned int filename_size; // = *(reinterpret_cast<unsigned int*>(ptr));
+        _read(ptr, filename_size);
         ptr += sizeof(unsigned int);
 
         return std::string(ptr, ptr+filename_size);
@@ -134,13 +136,16 @@ bool OSGA_Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap) 
     char* end_ptr = _data + _offsetOfNextAvailableSpace;
     while (ptr<end_ptr)
     {
-        pos_type position = *(reinterpret_cast<pos_type*>(ptr)); 
+        pos_type position; // = *(reinterpret_cast<pos_type*>(ptr)); 
+        _read(ptr, position);
         ptr += sizeof(pos_type);
         
-        size_type size = *(reinterpret_cast<size_type*>(ptr)); 
+        size_type size; // = *(reinterpret_cast<size_type*>(ptr)); 
+        _read(ptr, size);
         ptr += sizeof(size_type);
 
-        unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
+        unsigned int filename_size; // = *(reinterpret_cast<unsigned int*>(ptr));
+        _read(ptr, filename_size);
         ptr += sizeof(unsigned int);
         
         std::string filename(ptr, ptr+filename_size);
@@ -184,13 +189,16 @@ bool OSGA_Archive::IndexBlock::addFileReference(pos_type position, size_type siz
     {
         char* ptr = _data+_offsetOfNextAvailableSpace;
         
-        *(reinterpret_cast<pos_type*>(ptr)) = position; 
+        //*(reinterpret_cast<pos_type*>(ptr)) = position; 
+        _write(ptr, position);
         ptr += sizeof(pos_type);
         
-        *(reinterpret_cast<size_type*>(ptr)) = size; 
+        //*(reinterpret_cast<size_type*>(ptr)) = size; 
+        _write(ptr, size);
         ptr += sizeof(size_type);
         
-        *(reinterpret_cast<unsigned int*>(ptr)) = filename.size();
+        //*(reinterpret_cast<unsigned int*>(ptr)) = filename.size();
+        _write(ptr, static_cast<unsigned int>(filename.size()));
         ptr += sizeof(unsigned int);
         
         for(unsigned int i=0;i<filename.size();++i, ++ptr)
@@ -478,41 +486,36 @@ class proxy_streambuf : public std::streambuf
    
       proxy_streambuf(std::streambuf* streambuf, unsigned int numChars):
         _streambuf(streambuf),
-        _numChars(numChars),
-        value_peeked(false),
-        peek_value(0) {}
+        _numChars(numChars) {
+            setg(&oneChar, (&oneChar)+1, (&oneChar)+1);
+    }
    
       /// Destructor deallocates no buffer space.
       virtual ~proxy_streambuf()  {}
 
       std::streambuf* _streambuf;
-      unsigned int _numChars;
-      
-      bool value_peeked;
-      int_type peek_value;
 
     protected:
 
-      virtual int_type uflow ()
+      unsigned int _numChars;      
+      char_type oneChar;
+      
+      virtual int_type underflow()
       {
-         if (_numChars==0) return -1;
-         
+     if ( gptr() == &oneChar ) return traits_type::to_int_type(oneChar);
+        
+         if ( _numChars==0 ) return traits_type::eof();         
          --_numChars;
 
-         int_type val = value_peeked ? peek_value : _streambuf->sbumpc();
-         value_peeked = false;
-                  
-         return val;
-      }
-
-      virtual int_type 
-      underflow()
-      {
-        if (value_peeked) return peek_value;
-
-        value_peeked = true;
-        peek_value = _streambuf->sbumpc();
-        return peek_value;
+           int_type next_value = _streambuf->sbumpc();
+     
+         if ( !traits_type::eq_int_type(next_value,traits_type::eof()) )
+     {
+       setg(&oneChar, &oneChar, (&oneChar)+1);
+            oneChar = traits_type::to_char_type(next_value);
+     }
+    
+         return next_value;
       }
 };
 

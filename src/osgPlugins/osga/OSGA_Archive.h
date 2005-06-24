@@ -210,6 +210,18 @@ class OSGA_Archive : public osgDB::Archive
         std::string         _masterFileName;
         IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;
+        
 
+        template <typename T>
+        static inline void _write(char* ptr, const T& value)
+        {
+            std::copy(reinterpret_cast<const char*>(&value),reinterpret_cast<const char*>(&value)+sizeof(value),ptr);
+        }
+        
+        template <typename T>
+        static inline void _read(char* ptr, T& value)
+        {
+            std::copy(ptr,ptr+sizeof(value),reinterpret_cast<char*>(&value));
+        }
 
 };

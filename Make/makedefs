@@ -185,7 +185,7 @@ ifeq ($(OS),SunOS)
     C++               = CC
     DEPARG            = -xM1
     INC               += 
-    DEF               += -features=extensions -w
+    DEF               += -features=extensions -w -mt -KPIC
     OPTF              = -xO4
     DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
     SHARED            = -G
@@ -198,7 +198,7 @@ ifeq ($(OS),SunOS)
       ARCHINST        = 
   endif
     OTHER_LIBS        = -lCstd -lOpenThreads
-    LINKARGS          =  
+    LINKARGS          = -mt
     GIF_LIBS          = /usr/local/lib/libgif.a
     TIFF_LIB	      = /usr/local/lib/libtiff.a
     JPEG_INCLUDE      = -I/usr/local/include

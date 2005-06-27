@@ -24,7 +24,7 @@ public:
         {
             _point = new osg::Point;
             _point->setDistanceAttenuation(osg::Vec3(0.0,0.0005,0.0f));
-            _point->setDistanceAttenuation(osg::Vec3(0.0,0.0000,0.000005f));
+            _point->setDistanceAttenuation(osg::Vec3(0.0,0.0000,0.05f));
             _stateset->setAttribute(_point.get());
         }
     
@@ -42,6 +42,16 @@ public:
                     else if (ea.getKey()=='-' || ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Subtract)
                     {
                        changePointSize(-1.0f);
+                       return true;
+                    }
+                    else if (ea.getKey()=='*')
+                    {
+                       changePointAttenuation(1.1f);
+                       return true;
+                    }
+                    else if (ea.getKey()=='/')
+                    {
+                       changePointAttenuation(1.0f/1.1f);
                        return true;
                     }
                     break;
@@ -75,6 +85,11 @@ public:
         void changePointSize(float delta)
         {
             setPointSize(getPointSize()+delta);
+        }
+
+        void changePointAttenuation(float scale)
+        {
+            _point->setDistanceAttenuation(_point->getDistanceAttenuation()*scale);
         }
         
         osg::ref_ptr<osg::StateSet> _stateset;

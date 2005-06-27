@@ -163,6 +163,7 @@ bool Switch::setAllChildrenOn()
     {
         *itr = true;
     }
+    dirtyBound();
     return true;
 }
 

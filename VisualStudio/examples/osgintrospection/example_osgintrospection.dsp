@@ -102,5 +102,9 @@ SOURCE=..\..\..\examples\osgintrospection\osgintrospection.cpp
 
 # PROP Default_Filter ""
 # End Group
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # End Project

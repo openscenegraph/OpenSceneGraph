@@ -150,5 +150,9 @@ SOURCE=..\..\..\examples\osghangglide\terrain_texcoords.h
 
 # PROP Default_Filter ""
 # End Group
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # End Project

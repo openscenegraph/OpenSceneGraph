@@ -113,6 +113,10 @@ SOURCE=..\..\..\examples\osgcluster\broadcaster.h
 
 SOURCE=..\..\..\examples\osgcluster\receiver.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

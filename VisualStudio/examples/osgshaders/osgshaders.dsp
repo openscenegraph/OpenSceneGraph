@@ -105,6 +105,10 @@ SOURCE=..\..\..\examples\osgshaders\Noise.cpp
 
 SOURCE=..\..\..\examples\osgshaders\osgshaders.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # Begin Group "Resource Files"
 

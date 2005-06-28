@@ -276,5 +276,9 @@ NODEP_CPP_OSGFX=\
 
 # PROP Default_Filter "rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # End Project

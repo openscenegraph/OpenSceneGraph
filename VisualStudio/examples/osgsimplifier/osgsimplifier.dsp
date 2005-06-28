@@ -91,7 +91,7 @@ SOURCE=..\..\..\examples\osgsimplifier\osgsimplifier.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\resources.rc
+SOURCE=..\..\icons\osg_icon.rc
 # End Source File
 # End Target
 # Begin Group "Resource Files"

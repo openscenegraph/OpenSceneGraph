@@ -108,6 +108,10 @@ SOURCE=..\..\..\examples\osgshadowtexture\CreateShadowedScene.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Group
 # End Target
 # End Project

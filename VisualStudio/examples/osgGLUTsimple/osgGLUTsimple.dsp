@@ -87,6 +87,10 @@ LINK32=link.exe
 
 SOURCE=..\..\..\examples\osgGLUTsimple\osgGLUTsimple.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # Begin Group "Resource Files"
 

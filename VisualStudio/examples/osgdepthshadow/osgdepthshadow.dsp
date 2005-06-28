@@ -93,6 +93,10 @@ LINK32=link.exe
 
 SOURCE=..\..\..\examples\osgdepthshadow\osgdepthshadow.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

@@ -110,5 +110,9 @@ SOURCE=..\..\..\examples\osgimpostor\TestManipulator.h
 
 # PROP Default_Filter ""
 # End Group
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # End Project

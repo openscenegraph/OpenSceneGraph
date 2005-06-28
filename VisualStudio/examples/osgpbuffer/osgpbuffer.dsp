@@ -97,5 +97,9 @@ LINK32=link.exe
 
 SOURCE=..\..\..\examples\osgpbuffer\osgpbuffer.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\icons\osg_icon.rc
+# End Source File
 # End Target
 # End Project

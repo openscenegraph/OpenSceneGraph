@@ -29,6 +29,49 @@
 
 #define EXTENSION_NAME "rot"
 
+bool getFilenameAndParams(const std::string& input, std::string& filename, std::string& params)
+{
+        // find the start of the params list, accounting for nesting of [] and () brackets,
+        // note, we are working backwards.
+        int noNestedBrackets = 0;
+        std::string::size_type pos = input.size();
+        for(; pos>0; )
+        {
+            --pos;
+            char c = input[pos];
+            if (c==']') ++noNestedBrackets;
+            else if (c=='[') --noNestedBrackets;
+            else if (c==')') ++noNestedBrackets;
+            else if (c=='(') --noNestedBrackets;
+            else if (c=='.' && noNestedBrackets==0) break;
+        }
+
+	// get the next "extension", which actually contains the pseudo-loader parameters
+	params = input.substr(pos+1, std::string::npos );
+	if( params.empty() )
+	{
+	    osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
+	    return false;
+	}
+
+        // clear the params sting of any brackets.
+        std::string::size_type params_pos = params.size();
+        for(; params_pos>0; )
+        {
+            --params_pos;
+            char c = params[params_pos];
+            if (c==']' || c=='[' || c==')' || c=='(')
+            {
+                params.erase(params_pos,1);
+            }
+        }
+
+	// strip the "params extension", which must leave a sub-filename.
+	filename = input.substr(0, pos );
+
+        return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 /**
@@ -70,26 +113,27 @@ public:
         // strip the pseudo-loader extension
         std::string tmpName = osgDB::getNameLessExtension( fileName );
 
-        // get the next "extension", which actually contains the pseudo-loader parameters
-        std::string params = osgDB::getFileExtension( tmpName );
-        if( params.empty() )
-        {
-            osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
+        if (tmpName.empty())
             return ReadResult::FILE_NOT_HANDLED;
-        }
 
-        // strip the "params extension", which must leave a sub-filename.
-        std::string subFileName = osgDB::getNameLessExtension( tmpName );
-        if( subFileName == tmpName )
+
+        std::string subFileName, params;
+        if (!getFilenameAndParams(tmpName, subFileName, params))
         {
-            osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
-            return ReadResult::FILE_NOT_HANDLED;
-        }
+	    return ReadResult::FILE_NOT_HANDLED;
+	}
 
-        osg::notify(osg::INFO) << EXTENSION_NAME " params = \"" << params << "\"" << std::endl;
+	if( subFileName.empty())
+	{
+	    osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
+	    return ReadResult::FILE_NOT_HANDLED;
+	}
 
-        int rx, ry, rz;
-        int count = sscanf( params.c_str(), "%d,%d,%d", &rx, &ry, &rz );
+	osg::notify(osg::INFO) << " params = \"" << params << "\"" << std::endl;
+	osg::notify(osg::INFO) << " subFileName = \"" << subFileName << "\"" << std::endl;
+
+        float rx, ry, rz;
+        int count = sscanf( params.c_str(), "%f,%f,%f", &rx, &ry, &rz );
         if( count != 3 )
         {
             osg::notify(osg::WARN) << "Bad parameters for " EXTENSION_NAME " pseudo-loader: \"" << params << "\"" << std::endl;
@@ -108,9 +152,9 @@ public:
         osg::MatrixTransform *xform = new osg::MatrixTransform;
         xform->setDataVariance( osg::Object::STATIC );
         xform->setMatrix( osg::Matrix::rotate(
-            osg::DegreesToRadians( static_cast<float>(rx) ), osg::Vec3( 1, 0, 0 ),
-            osg::DegreesToRadians( static_cast<float>(ry) ), osg::Vec3( 0, 1, 0 ),
-            osg::DegreesToRadians( static_cast<float>(rz) ), osg::Vec3( 0, 0, 1 ) ));
+            osg::DegreesToRadians( rx ), osg::Vec3( 1, 0, 0 ),
+            osg::DegreesToRadians( ry ), osg::Vec3( 0, 1, 0 ),
+            osg::DegreesToRadians( rz ), osg::Vec3( 0, 0, 1 ) ));
         xform->addChild( node );
         return xform;
     }

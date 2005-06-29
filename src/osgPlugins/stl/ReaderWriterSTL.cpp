@@ -29,6 +29,9 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
+#include <osgUtil/TriStripVisitor>
+#include <osgUtil/SmoothingVisitor>
+
 #include <osg/Geode>
 #include <osg/Geometry>
 
@@ -190,6 +193,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
+    
+
+    osgUtil::SmoothingVisitor smooter;
+    geode->accept(smooter);
+
+    osgUtil::TriStripVisitor tristripper;
+    tristripper.stripify(*geom);
 
     return geode;
 }

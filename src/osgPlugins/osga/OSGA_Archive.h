@@ -95,7 +95,7 @@ class OSGA_Archive : public osgDB::Archive
   
         mutable osgDB::ReentrantMutex _serializerMutex;
 
-
+    	class IndexBlock;
         friend class IndexBlock;
 
         class IndexBlock : public osg::Referenced

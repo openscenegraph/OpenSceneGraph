@@ -10,8 +10,11 @@
 */
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier>
+#include <osgUtil/TriStripVisitor>
+#include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
 
 int main( int argc, char **argv )
@@ -47,6 +50,8 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+    std::string outputFileName;
+    while (arguments.read("-o",outputFileName)) {}
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -82,13 +87,36 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
     }
 
-    osg::Timer_t end_tick = osg::Timer::instance()->tick();
+    osg::Timer_t end_load_tick = osg::Timer::instance()->tick();
 
-    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
+    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_load_tick)<<std::endl;
 
     osgUtil::Simplifier simplifier(sampleRatio);
-    
     loadedModel->accept(simplifier);
+
+    osg::Timer_t end_simplifier_tick = osg::Timer::instance()->tick();
+
+    std::cout << "Time to simplify = "<<osg::Timer::instance()->delta_s(end_load_tick, end_simplifier_tick)<<std::endl;
+
+    osgUtil::TriStripVisitor tsv;
+    tsv.setMinStripSize(3);
+    loadedModel->accept(tsv);
+    tsv.stripify();
+
+    osg::Timer_t end_tristrip_tick = osg::Timer::instance()->tick();
+
+    std::cout << "Time to tri strip = "<<osg::Timer::instance()->delta_s(end_simplifier_tick, end_tristrip_tick)<<std::endl;
+
+    // run optimization over the scene graph
+    osgUtil::Optimizer optimzer;
+    optimzer.optimize(loadedModel.get());
+
+    if (!outputFileName.empty())
+    {
+        std::cout << "Writing out scene graph as '" << outputFileName << "'"<<std::endl;
+        osgDB::writeNodeFile(*loadedModel,outputFileName);
+        return 0;
+    }
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());

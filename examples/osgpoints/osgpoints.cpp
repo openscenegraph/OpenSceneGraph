@@ -14,6 +14,9 @@
 #include <osgProducer/Viewer>
 
 #include <osg/Point>
+#include <osg/BlendFunc>
+#include <osg/Texture2D>
+#include <osg/PointSprite>
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 {
@@ -23,7 +26,6 @@ public:
             _stateset(stateset)
         {
             _point = new osg::Point;
-            _point->setDistanceAttenuation(osg::Vec3(0.0,0.0005,0.0f));
             _point->setDistanceAttenuation(osg::Vec3(0.0,0.0000,0.05f));
             _stateset->setAttribute(_point.get());
         }
@@ -44,12 +46,12 @@ public:
                        changePointSize(-1.0f);
                        return true;
                     }
-                    else if (ea.getKey()=='*')
+                    else if (ea.getKey()=='<')
                     {
                        changePointAttenuation(1.1f);
                        return true;
                     }
-                    else if (ea.getKey()=='/')
+                    else if (ea.getKey()=='>')
                     {
                        changePointAttenuation(1.0f/1.1f);
                        return true;
@@ -108,6 +110,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--sprites","Point sprites.");
     
 
     // construct the viewer.
@@ -125,6 +128,9 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+    
+    bool usePointSprites = false;
+    while (arguments.read("--sprites")) { usePointSprites = true; };
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -166,6 +172,26 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
+    
+
+    if (usePointSprites)    
+    {
+        osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
+
+        /// Setup cool blending
+        osg::BlendFunc *fn = new osg::BlendFunc();
+        stateset->setAttributeAndModes(fn, osg::StateAttribute::ON);
+
+        /// Setup the point sprites
+        osg::PointSprite *sprite = new osg::PointSprite();
+        stateset->setTextureAttributeAndModes(0, sprite, osg::StateAttribute::ON);
+
+        /// The texture for the sprites
+        osg::Texture2D *tex = new osg::Texture2D();
+        tex->setImage(osgDB::readImageFile("Images/particle.rgb"));
+        stateset->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
+    }
+    
 
     // register the handler for modifying the point size
     viewer.getEventHandlerList().push_front(new KeyboardEventHandler(viewer.getGlobalStateSet()));

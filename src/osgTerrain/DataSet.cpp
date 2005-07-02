@@ -1602,6 +1602,14 @@ void DataSet::DestinationTile::checkNeighbouringTiles()
     }
 }
 
+void DataSet::DestinationTile::allocateEdgeNormals()
+{
+    osg::HeightField* hf = _terrain->_heightField.get();
+    if (!hf) return;
+    
+}
+
+
 void DataSet::DestinationTile::equalizeCorner(Position position)
 {
     // don't need to equalize if already done.
@@ -1735,7 +1743,7 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
         }
     }    
     
-    typedef std::pair<osg::HeightField*,Position> HeightFieldCornerPair;
+    typedef std::pair<osg::HeightField*,TileCornerPair> HeightFieldCornerPair;
     typedef std::vector<HeightFieldCornerPair> HeightFieldCornerList;
     HeightFieldCornerList heightFieldsToProcess;
     
@@ -1746,7 +1754,7 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
         TileCornerPair& tcp = *itr;
         if (tcp.first->_terrain.valid() && tcp.first->_terrain->_heightField.valid())
         {
-            heightFieldsToProcess.push_back(HeightFieldCornerPair(tcp.first->_terrain->_heightField.get(),tcp.second));
+            heightFieldsToProcess.push_back(HeightFieldCornerPair(tcp.first->_terrain->_heightField.get(),tcp));
         }
     }
 
@@ -1754,26 +1762,31 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
     if (heightFieldsToProcess.size()>1)
     {
         float height = 0;
-        // accumulate heights.
+        osg::Vec2 heightDelta;
+        // accumulate heights & normals
         HeightFieldCornerList::iterator hitr;
         for(hitr=heightFieldsToProcess.begin();
             hitr!=heightFieldsToProcess.end();
             ++hitr)
         {
             HeightFieldCornerPair& hfcp = *hitr;
-            switch(hfcp.second)
+            switch(hfcp.second.second)
             {
             case LEFT_BELOW:
                 height += hfcp.first->getHeight(0,0);
+                heightDelta += hfcp.first->getHeightDelta(0,0);
                 break;
             case BELOW_RIGHT:
                 height += hfcp.first->getHeight(hfcp.first->getNumColumns()-1,0);
+                heightDelta += hfcp.first->getHeightDelta(hfcp.first->getNumColumns()-1,0);
                 break;
             case RIGHT_ABOVE:
                 height += hfcp.first->getHeight(hfcp.first->getNumColumns()-1,hfcp.first->getNumRows()-1);
+                heightDelta += hfcp.first->getHeightDelta(hfcp.first->getNumColumns()-1,hfcp.first->getNumRows()-1);
                 break;
             case ABOVE_LEFT:
                 height += hfcp.first->getHeight(0,hfcp.first->getNumRows()-1);
+                heightDelta += hfcp.first->getHeightDelta(0,hfcp.first->getNumRows()-1);
                 break;
             default :
                 break;
@@ -1782,14 +1795,17 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
         
         // divide them.
         height /= heightFieldsToProcess.size();
+        heightDelta /= heightFieldsToProcess.size();
 
-        // apply height to corners.
+
+        // apply height and normals to corners.
         for(hitr=heightFieldsToProcess.begin();
             hitr!=heightFieldsToProcess.end();
             ++hitr)
         {
             HeightFieldCornerPair& hfcp = *hitr;
-            switch(hfcp.second)
+            TileCornerPair& tcp = hfcp.second;
+            switch(tcp.second)
             {
             case LEFT_BELOW:
                 hfcp.first->setHeight(0,0,height);
@@ -1806,6 +1822,8 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
             default :
                 break;
             }
+            tcp.first->_heightDeltas[tcp.second].clear();
+            tcp.first->_heightDeltas[tcp.second].push_back(heightDelta);
         }
     }
 
@@ -1967,30 +1985,68 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         unsigned int delta2 = 0;
         int num = 0;
         
+        unsigned int i1 = 0;
+        unsigned int j1 = 0;
+        unsigned int i2 = 0;
+        unsigned int j2 = 0;
+        unsigned int deltai = 0;
+        unsigned int deltaj = 0;
+
         switch(position)
         {
         case LEFT:
+            i1 = 0;
+            j1 = 1;
+            i2 = heightField2->getNumColumns()-1;
+            j2 = 1;
+            deltai = 0;
+            deltaj = 1;
+
             data1 = &(heightField1->getHeight(0,1)); // LEFT hand side
             delta1 = heightField1->getNumColumns();
             data2 = &(heightField2->getHeight(heightField2->getNumColumns()-1,1)); // RIGHT hand side
             delta2 = heightField2->getNumColumns();
             num = (heightField1->getNumRows()==heightField2->getNumRows())?heightField1->getNumRows()-2:0; // note miss out corners.
             break;
+
         case BELOW:
+            i1 = 1;
+            j1 = 0;
+            i2 = 1;
+            j2 = heightField2->getNumRows()-1;
+            deltai = 1;
+            deltaj = 0;
+
             data1 = &(heightField1->getHeight(1,0)); // BELOW hand side
             delta1 = 1;
             data2 = &(heightField2->getHeight(1,heightField2->getNumRows()-1)); // ABOVE hand side
             delta2 = 1;
             num = (heightField1->getNumColumns()==heightField2->getNumColumns())?heightField1->getNumColumns()-2:0; // note miss out corners.
             break;
+
         case RIGHT:
+            i1 = heightField1->getNumColumns()-1;
+            j1 = 1;
+            i2 = 0;
+            j2 = 1;
+            deltai = 0;
+            deltaj = 1;
+
             data1 = &(heightField1->getHeight(heightField1->getNumColumns()-1,1)); // LEFT hand side
             delta1 = heightField1->getNumColumns();
             data2 = &(heightField2->getHeight(0,1)); // LEFT hand side
             delta2 = heightField2->getNumColumns();
             num = (heightField1->getNumRows()==heightField2->getNumRows())?heightField1->getNumRows()-2:0; // note miss out corners.
             break;
+
         case ABOVE:
+            i1 = 1;
+            j1 = heightField1->getNumRows()-1;
+            i2 = 1;
+            j2 = 0;
+            deltai = 1;
+            deltaj = 0;
+
             data1 = &(heightField1->getHeight(1,heightField1->getNumRows()-1)); // ABOVE hand side
             delta1 = 1;
             data2 = &(heightField2->getHeight(1,0)); // BELOW hand side
@@ -2000,19 +2056,40 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         default :
             break;
         }
+        
+        _heightDeltas[position].clear();
+        _heightDeltas[position].reserve(num);
+        tile2->_heightDeltas[(position+4)%NUMBER_OF_POSITIONS].clear();
+        tile2->_heightDeltas[(position+4)%NUMBER_OF_POSITIONS].reserve(num);
 
         for(int i=0;i<num;++i)
         {
+            // equalize height
             float z = (*data1 + *data2)/2.0f;
-
-            //my_notify(osg::INFO)<<"    equalizing height"<<std::endl;
 
             *data1 = z;
             *data2 = z;
 
             data1 += delta1;
             data2 += delta2;
+            
+            // equailize normals
+            osg::Vec2 heightDelta = (heightField1->getHeightDelta(i1,j1) + 
+                                    heightField2->getHeightDelta(i2,j2))*0.5f;
+                               
+            // pass the normals on to the tiles.
+            _heightDeltas[position].push_back(heightDelta);
+            tile2->_heightDeltas[(position+4)%NUMBER_OF_POSITIONS].push_back(heightDelta);
+
+            i1 += deltai;
+            i2 += deltai;
+            j1 += deltaj;
+            j2 += deltaj;
+            
+            
+
         }
+
 
     }
 
@@ -2486,9 +2563,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     {
         skirtVector.set(0.0f,0.0f,-skirtLength);
     }
-
-
-
+    
     unsigned int vi=0;
     unsigned int r,c;
     
@@ -2556,7 +2631,11 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             }
 
             // note normal will need rotating.
-            if (n.valid()) (*(n.get()))[vi] = grid->getNormal(c,r);
+            if (n.valid())
+            {
+                (*n)[vi] = grid->getNormal(c,r);
+                
+            }
 
             t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
             t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
@@ -2643,7 +2722,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             }
     }
 
-#if 1    
+#if 1
     osgUtil::SmoothingVisitor sv;
     sv.smooth(*geometry);  // this will replace the normal vector with a new one
 
@@ -2651,7 +2730,144 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     n = geometry->getNormalArray();
     if (n.valid() && n->size()!=numVertices) n->resize(numVertices);
 #endif
+    // now apply the normals computed through equalization
+    for(unsigned int position=0; position<NUMBER_OF_POSITIONS; ++position)
+    {
+        if (!_heightDeltas[position].empty())
+        {
+            // we have normal to apply
+            unsigned int i=0;
+            unsigned int j=0;
+            unsigned int deltai=0;
+            unsigned int deltaj=0;
+            switch(position)
+            {
+                case LEFT:
+                    i = 0;
+                    j = 1;
+                    deltai = 0;
+                    deltaj = 1;
+                    break;
+                case LEFT_BELOW:
+                    i = 0;
+                    j = 0;
+                    deltai = 0;
+                    deltaj = 0;
+                    break;
+                case BELOW:
+                    i = 1;
+                    j = 0;
+                    deltai = 1;
+                    deltaj = 0;
+                    break;
+                case BELOW_RIGHT:
+                    i = numColumns-1;
+                    j = 0;
+                    deltai = 0;
+                    deltaj = 0;
+                    break;
+                case RIGHT:
+                    i = numColumns-1;
+                    j = 1;
+                    deltai = 0;
+                    deltaj = 1;
+                    break;
+                case RIGHT_ABOVE:
+                    i = numColumns-1;
+                    j = numRows-1;
+                    deltai = 0;
+                    deltaj = 0;
+                    break;
+                case ABOVE:
+                    i = 1;
+                    j = numRows-1;
+                    deltai = 1;
+                    deltaj = 0;
+                    break;
+                case ABOVE_LEFT:
+                    i = 0;
+                    j = numRows-1;
+                    deltai = 0;
+                    deltaj = 0;
+                    break;
+            }
+            
 
+            // need to reproject normals.
+            for(HeightDeltaList::iterator itr = _heightDeltas[position].begin();
+                itr != _heightDeltas[position].end();
+                ++itr, i += deltai, j += deltaj)
+            {
+                osg::Vec3& normal = (*n)[i + j*numColumns];
+                osg::Vec2 heightDelta = *itr;
+
+                if (mapLatLongsToXYZ)
+                {
+                
+                    double X = orig_X + delta_X*(double)i;
+                    double Y = orig_Y + delta_Y*(double)j;
+                    double Z = orig_Z + grid->getHeight(i,j);
+                    osg::Matrixd normalLocalToWorld;
+                    et->computeLocalToWorldTransformFromLatLongHeight(osg::DegreesToRadians(Y),osg::DegreesToRadians(X),Z,normalLocalToWorld);
+                    osg::Matrixd normalToLocalReferenceFrame(normalLocalToWorld*worldToLocal);
+
+                    // need to compute the x and y delta for this point in space.
+                    double X0, Y0, Z0;
+                    double X1, Y1, Z1;
+                    double X2, Y2, Z2;
+
+                    et->convertLatLongHeightToXYZ(osg::DegreesToRadians(Y),osg::DegreesToRadians(X),Z,
+                                                 X0,Y0,Z0);
+
+                    et->convertLatLongHeightToXYZ(osg::DegreesToRadians(Y),osg::DegreesToRadians(X+delta_X),Z,
+                                                 X1,Y1,Z1);
+
+                    et->convertLatLongHeightToXYZ(osg::DegreesToRadians(Y+delta_Y),osg::DegreesToRadians(X),Z,
+                                                 X2,Y2,Z2);
+                                               
+                    X1 -= X0;
+                    Y1 -= Y0;
+                    Z1 -= Z0;                          
+                                               
+                    X2 -= X0;
+                    Y2 -= Y0;
+                    Z2 -= Z0;                          
+
+                    float xInterval = sqrt(X1*X1 + Y1*Y1 + Z1*Z1);
+                    float yInterval = sqrt(X2*X2 + Y2*Y2 + Z2*Z2);
+
+                    // need to set up the normal from the scaled heightDelta.
+                    normal.x() = -heightDelta.x() / xInterval;
+                    normal.y() = -heightDelta.y() / yInterval;
+                    normal.z() = 1.0f;
+
+                    normal = osg::Matrixd::transform3x3(normal,normalToLocalReferenceFrame);
+                    normal.normalize();
+                    
+                }
+                else
+                {
+                    normal.x() = -heightDelta.x() / grid->getXInterval();
+                    normal.y() = -heightDelta.y() / grid->getYInterval();
+                    normal.z() = 1.0f;
+                    normal.normalize();
+               }
+            }
+
+        }
+
+    }
+
+#if 0
+    std::cout<<"Normals"<<std::endl;
+    for(osg::Vec3Array::iterator nitr = n->begin();
+        nitr != n->end();
+        ++nitr)
+    {
+        osg::Vec3& normal = *nitr;
+        std::cout<<"   Local normal = "<<normal<< " vs "<<transformed_center_normal<<std::endl;
+    }
+#endif
 
     if (useClusterCullingCallback)
     {
@@ -2791,13 +3007,14 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         osgDB::writeNodeFile(*geode,"NodeBeforeSimplification.osg");
     }
 
+#if 1
     unsigned int targetMaxNumVertices = 2048;
     float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
     
     osgUtil::Simplifier simplifier(sample_ratio,geometry->getBound().radius()/2000.0f);
     
     simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
-
+#endif
 
     osgUtil::TriStripVisitor tsv;
     tsv.setMinStripSize(3);

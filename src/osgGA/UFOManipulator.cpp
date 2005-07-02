@@ -163,8 +163,6 @@ void UFOManipulator::init(const GUIEventAdapter&, GUIActionAdapter&)
 {
     //home(ea.time());
 
-puts( "INIT" ) ;
-
     _stop();
 }
 

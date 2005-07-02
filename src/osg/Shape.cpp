@@ -37,8 +37,7 @@ void HeightField::allocate(unsigned int numColumns,unsigned int numRows)
 Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const 
 {
     // four point normal generation.
-
-    float dz_dx;
+   float dz_dx;
     if (c==0)
     {
     	dz_dx = (getHeight(c+1,r)-getHeight(c,r))/getXInterval();
@@ -70,6 +69,39 @@ Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const
     normal.normalize();
     
     return normal;
+}
+
+Vec2 HeightField::getHeightDelta(unsigned int c,unsigned int r) const
+{
+     // four point normal generation.
+    Vec2 heightDelta;
+    if (c==0)
+    {
+    	heightDelta.x() = (getHeight(c+1,r)-getHeight(c,r));
+    }
+    else if (c==getNumColumns()-1)
+    {
+    	heightDelta.x() = (getHeight(c,r)-getHeight(c-1,r));
+    }
+    else // assume 0<c<_numColumns-1
+    {
+    	heightDelta.x() = 0.5f*(getHeight(c+1,r)-getHeight(c-1,r));
+    }
+    
+    if (r==0)
+    {
+    	heightDelta.y() = (getHeight(c,r+1)-getHeight(c,r));
+    }
+    else if (r==getNumRows()-1)
+    {
+    	heightDelta.y() = (getHeight(c,r)-getHeight(c,r-1));
+    }
+    else // assume 0<r<_numRows-1
+    {
+    	heightDelta.y() = 0.5f*(getHeight(c,r+1)-getHeight(c,r-1));
+    }
+
+    return heightDelta;
 }
 
 

@@ -735,6 +735,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             void addRequiredResolutions(CompositeSource* sourceGraph);
 
             void readFrom(CompositeSource* sourceGraph);
+
+            void allocateEdgeNormals();
             
             void equalizeCorner(Position position);
             void equalizeEdge(Position position);
@@ -801,6 +803,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             float                                       _terrain_maxSourceResolutionY;
             
             bool                                        _complete;
+            
+            typedef std::vector<osg::Vec2> HeightDeltaList;
+            HeightDeltaList                             _heightDeltas[NUMBER_OF_POSITIONS];
 
         };
 

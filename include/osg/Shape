@@ -568,6 +568,8 @@ class OSG_EXPORT HeightField : public Shape
         
         Vec3 getNormal(unsigned int c,unsigned int r) const;
 
+        Vec2 getHeightDelta(unsigned int c,unsigned int r) const;
+
     protected:
     
     	virtual ~HeightField();

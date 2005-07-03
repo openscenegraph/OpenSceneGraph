@@ -137,8 +137,8 @@ class XineImageStream : public osg::ImageStream
             _status=REWINDING;
             if (_stream)
             {
-                osg::notify(osg::WARN)<<"Warning::XineImageStream::rewind() - rewind disabled at present."<<std::endl;
-                // xine_trick_mode(_stream,XINE_TRICK_MODE_FAST_REWIND,0);
+                osg::notify(osg::INFO)<<"Warning::XineImageStream::rewind() - rewind disabled at present."<<std::endl;
+                //xine_trick_mode(_stream,XINE_TRICK_MODE_FAST_REWIND,0);
             }
         }
 

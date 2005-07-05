@@ -67,12 +67,28 @@ void Geometry::write(DataOutputStream* out){
     if (getVertexIndices()){
         out->writeArray(getVertexIndices());
     }
+    
     // Write normal array if any
-    out->writeBool(getNormalArray()!=0);
-    if (getNormalArray()){
-        out->writeBinding(getNormalBinding());
-        out->writeVec3Array(getNormalArray());
+    if ( out->getVersion() < VERSION_0013 )
+    {
+        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(getNormalArray());
+        out->writeBool(normals!=0);
+        if (normals)
+        {
+            out->writeBinding(getNormalBinding());
+            out->writeVec3Array(normals);
+        }
     }
+    else
+    {
+        out->writeBool(getNormalArray()!=0);
+        if (getNormalArray()!=0)
+        {
+            out->writeBinding(getNormalBinding());
+            out->writeArray(getNormalArray());
+        }
+    }
+    
     // Write normal indices if any
     out->writeBool(getNormalIndices()!=0);
     if (getNormalIndices()){
@@ -213,12 +229,25 @@ void Geometry::read(DataInputStream* in){
         if (vi){
             setVertexIndices(static_cast<osg::IndexArray*>(in->readArray()));
         }
+
         // Read normal array if any
-        bool na =in->readBool();
-        if(na){
-            setNormalBinding(in->readBinding());
-            setNormalArray(in->readVec3Array());
+        if ( in->getVersion() < VERSION_0013 )
+        {
+            bool na =in->readBool();
+            if(na){
+                setNormalBinding(in->readBinding());
+                setNormalArray(in->readVec3Array());
+            }
         }
+        else
+        {
+            bool na =in->readBool();
+            if(na){
+                setNormalBinding(in->readBinding());
+                setNormalArray(in->readArray());
+            }
+        }
+
         // Read normal indices if any
         bool ni = in->readBool();
         if(ni){

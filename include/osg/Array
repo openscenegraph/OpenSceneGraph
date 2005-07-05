@@ -20,6 +20,13 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/UByte4>
+#include <osg/Short2>
+#include <osg/Short3>
+#include <osg/Short4>
+#include <osg/Byte2>
+#include <osg/Byte3>
+#include <osg/Byte4>
+
 
 #include <osg/Object>
 #include <osg/GL>
@@ -50,7 +57,14 @@ class OSG_EXPORT Array : public Object
             FloatArrayType    = 8,
             Vec2ArrayType     = 9,
             Vec3ArrayType     = 10,
-            Vec4ArrayType     = 11
+            Vec4ArrayType     = 11,
+            Short2ArrayType   = 12,
+            Short3ArrayType   = 13,
+            Short4ArrayType   = 14,
+            Byte2ArrayType    = 15,
+            Byte3ArrayType    = 16,
+            Byte4ArrayType    = 17
+            
         };
 
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
@@ -257,6 +271,14 @@ typedef TemplateArray<Vec2,Array::Vec2ArrayType,2,GL_FLOAT>                     
 typedef TemplateArray<Vec3,Array::Vec3ArrayType,3,GL_FLOAT>                     Vec3Array;
 typedef TemplateArray<Vec4,Array::Vec4ArrayType,4,GL_FLOAT>                     Vec4Array;
 
+typedef TemplateArray<Short2,Array::Short2ArrayType,2,GL_SHORT>                    Short2Array;
+typedef TemplateArray<Short3,Array::Short3ArrayType,3,GL_SHORT>                    Short3Array;
+typedef TemplateArray<Short4,Array::Short4ArrayType,4,GL_SHORT>                    Short4Array;
+typedef TemplateArray<Byte2,Array::Byte2ArrayType,2,GL_BYTE>                    Byte2Array;
+typedef TemplateArray<Byte3,Array::Byte3ArrayType,3,GL_BYTE>                    Byte3Array;
+typedef TemplateArray<Byte4,Array::Byte4ArrayType,4,GL_BYTE>                    Byte4Array;
+
+
 class ArrayVisitor
 {
     public:
@@ -274,6 +296,13 @@ class ArrayVisitor
         virtual void apply(Vec2Array&) {}
         virtual void apply(Vec3Array&) {}
         virtual void apply(Vec4Array&) {}
+        
+        virtual void apply(Short2Array&) {}
+        virtual void apply(Short3Array&) {}
+        virtual void apply(Short4Array&) {}
+        virtual void apply(Byte2Array&) {}        
+        virtual void apply(Byte3Array&) {}        
+        virtual void apply(Byte4Array&) {}        
 };
 
 class ConstArrayVisitor
@@ -293,6 +322,13 @@ class ConstArrayVisitor
         virtual void apply(const Vec2Array&) {}
         virtual void apply(const Vec3Array&) {}
         virtual void apply(const Vec4Array&) {}
+        
+        virtual void apply(const Short2Array&) {}
+        virtual void apply(const Short3Array&) {}
+        virtual void apply(const Short4Array&) {}
+        virtual void apply(const Byte2Array&) {}        
+        virtual void apply(const Byte3Array&) {}        
+        virtual void apply(const Byte4Array&) {}        
 };
 
 
@@ -312,6 +348,13 @@ class ValueVisitor
         virtual void apply(Vec2&) {}
         virtual void apply(Vec3&) {}
         virtual void apply(Vec4&) {}
+
+        virtual void apply(Short2&) {}
+        virtual void apply(Short3&) {}
+        virtual void apply(Short4&) {}
+        virtual void apply(Byte2&) {}        
+        virtual void apply(Byte3&) {}        
+        virtual void apply(Byte4&) {}        
 };
 
 class ConstValueVisitor
@@ -330,6 +373,13 @@ class ConstValueVisitor
         virtual void apply(const Vec2&) {}
         virtual void apply(const Vec3&) {}
         virtual void apply(const Vec4&) {}
+        
+        virtual void apply(const Short2&) {}
+        virtual void apply(const Short3&) {}
+        virtual void apply(const Short4&) {}
+        virtual void apply(const Byte2&) {}
+        virtual void apply(const Byte3&) {}
+        virtual void apply(const Byte4&) {}        
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

@@ -2727,7 +2727,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     sv.smooth(*geometry);  // this will replace the normal vector with a new one
 
     // now we have to reassign the normals back to the orignal pointer.
-    n = geometry->getNormalArray();
+    n = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
     if (n.valid() && n->size()!=numVertices) n->resize(numVertices);
 #endif
     // now apply the normals computed through equalization

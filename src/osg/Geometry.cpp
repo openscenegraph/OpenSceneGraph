@@ -102,18 +102,61 @@ class DrawNormal
 {
     public:
     
-        DrawNormal(const Vec3Array* normals,const IndexArray* indices):
+        DrawNormal(const Array* normals,const IndexArray* indices):
             _normals(normals),
-            _indices(indices) {}
+            _indices(indices) 
+        {
+            _normalsType = normals?normals->getType():Array::ArrayType;
+        }
     
         void operator () (unsigned int pos)
         {
-            if (_indices) glNormal3fv((*_normals)[_indices->index(pos)].ptr());
-            else glNormal3fv((*_normals)[pos].ptr());
+            switch(_normalsType)
+            {
+                case (Array::Vec3ArrayType):
+                    {
+                        const Vec3Array& normals = *static_cast<const Vec3Array*>(_normals);
+                        if (_indices) glNormal3fv(normals[_indices->index(pos)].ptr());
+                        else glNormal3fv(normals[pos].ptr());
+                    }
+                    break;
+                case (Array::Short3ArrayType):
+                    {
+                        const Short3Array& normals = *static_cast<const Short3Array*>(_normals);
+                        if (_indices) glNormal3sv(normals[_indices->index(pos)].ptr());
+                        else glNormal3sv(normals[pos].ptr());
+                    }
+                    break;
+                case (Array::Short4ArrayType):
+                    {
+                        const Short4Array& normals = *static_cast<const Short4Array*>(_normals);
+                        if (_indices) glNormal3sv(normals[_indices->index(pos)].ptr());
+                        else glNormal3sv(normals[pos].ptr());
+                    }
+                    break;
+                case (Array::Byte3ArrayType):
+                    {
+                        const Byte3Array& normals = *static_cast<const Byte3Array*>(_normals);
+                        if (_indices) glNormal3bv((const GLbyte*)normals[_indices->index(pos)].ptr());
+                        else glNormal3bv((const GLbyte*)normals[pos].ptr());
+                    }
+                    break;
+                case (Array::Byte4ArrayType):
+                    {
+                        const Byte4Array& normals = *static_cast<const Byte4Array*>(_normals);
+                        if (_indices) glNormal3bv((const GLbyte*)normals[_indices->index(pos)].ptr());
+                        else glNormal3bv((const GLbyte*)normals[pos].ptr());
+                    }
+                    break;
+                default:
+                    break;
+                    
+            }
         }
         
-        const Vec3Array*   _normals;
+        const Array*       _normals;
         const IndexArray*  _indices;
+        Array::Type        _normalsType;
 };
 
 #if 1
@@ -1084,7 +1127,7 @@ void Geometry::drawImplementation(State& state) const
                 state.disableVertexPointer();
 
             if (_normalData.binding==BIND_PER_VERTEX)
-                state.setNormalPointer(GL_FLOAT,0,_normalData.array->getDataPointer());
+                state.setNormalPointer(_normalData.array->getDataType(),0,_normalData.array->getDataPointer());
             else
                 state.disableNormalPointer();
 

@@ -30,11 +30,19 @@ static char* s_ArrayNames[] =
     "Vec2Array",     // 9
     "Vec3Array",     // 10
     "Vec4Array",      // 11
+
+    "Short2Array",    // 12
+    "Short3Array",    // 13
+    "Short4Array",    // 14
+
+    "Byte2Array",    // 15
+    "Byte3Array",    // 16
+    "Byte4Array",    // 17
 };
 
 const char* Array::className() const
 {
-    if (_arrayType>=ArrayType && _arrayType<=Vec4ArrayType)
+    if (_arrayType>=ArrayType && _arrayType<=Byte4ArrayType)
         return s_ArrayNames[_arrayType];
     else
         return "UnkownArray";

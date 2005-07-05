@@ -1,0 +1,87 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_SHORT_3
+#define OSG_SHORT_3		1
+
+namespace osg {
+
+class Short3
+{
+public:
+
+    typedef short value_type;
+
+    union
+    {
+        struct {value_type x,y,z;};
+        value_type _v[3];
+    };
+
+    Short3 (){}
+    Short3 (value_type xx, value_type yy, value_type zz)
+    { x = xx; y = yy; z = zz;}
+
+    inline value_type* ptr() { return _v; }
+    inline const value_type* ptr() const { return _v; }
+        
+    inline bool operator == (const Short3& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
+    inline bool operator != (const Short3& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2]; }
+    inline bool operator <  (const Short3& v) const
+    {
+        if (_v[0]<v._v[0])      return true;
+        else if (_v[0]>v._v[0]) return false;
+        else if (_v[1]<v._v[1]) return true;
+        else if (_v[1]>v._v[1]) return false;
+        else return (_v[2]<v._v[2]);
+    }
+    
+    inline Short3 operator * (value_type rhs) const
+    {
+        return Short3(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs);
+    }
+    
+    inline Short3 operator / (value_type rhs) const
+    {
+        return Short3(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs);
+    }
+    
+    inline Short3 operator + (value_type rhs) const
+    {
+        return Short3(_v[0]+rhs, _v[1]+rhs, _v[2]+rhs);
+    }
+    
+    inline Short3 operator - (value_type rhs) const
+    {
+        return Short3(_v[0]-rhs, _v[1]-rhs, _v[2]-rhs);
+    }
+    
+    inline Short3 operator + (const Short3& rhs) const
+    {
+        return Short3(_v[0]+rhs._v[0], _v[1]+rhs._v[1], _v[2]+rhs._v[2]);
+    }
+    
+    inline Short3 operator - (const Short3& rhs) const
+    {
+        return Short3(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2]);
+    }
+    
+    inline Short3 operator * (const Short3& rhs) const
+    {
+        return Short3(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2]);
+    }
+};
+
+};
+
+#endif

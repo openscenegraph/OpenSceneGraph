@@ -57,10 +57,10 @@ Ben Discoe <ben@vterrain.org>
        
 Mike Weiblen <mike.weiblen@3dlabs.com> <mew@mew.cx>
         - osgGL2, osgshaders example
-	- win32 binary installer package.
-	- rot, scale, trans pseudoloader plugins.
+        - win32 binary installer package.
+        - rot, scale, trans pseudoloader plugins.
         - assistance on visual studio workspace files.
-	- osg.ico windows icon
+        - osg.ico windows icon
 
 Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.
@@ -132,7 +132,8 @@ Pavel Moloshtan <pasha@moloshtan.com>
         - Support of GL_ARB_occlusion_query in osg::Drawable.
         - Support of GL_ARB_shadow in osg::Texture, osgdepthtexture example.
         - Support of GL_ARB_shadow_ambient in osg::Texture.
-        - Improvement to the ive plugin.
+        - Speed improvement to the ive plugin.
+        - Byte2, Byte3, Byte4, Short2, Short3, Short4 vectors, read/write support.
 
 Daniel Sjölie <deepone@acc.umu.se>
         - Support for multitextured flt files.
@@ -151,7 +152,7 @@ Vladimir Vukicevic <vladimir@pobox.com>
         
 Rune Schmidt Jensen <rune@schmidt-jensen.com>
         - dds loader.
-	- ive plugin.
+        - ive plugin.
         
 Romano José Magacho da Silva <rmagacho@predialnet.com.br>
         - pause/resume in osgGA::AnimationPathManipulator

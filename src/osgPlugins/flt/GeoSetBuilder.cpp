@@ -154,7 +154,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
 
     if (!_normalList.empty())
     {
-        osg::Vec3Array* normals = geom->getNormalArray();
+        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geom->getNormalArray());
         if (normals)
         {
             if (_normal_binding==osg::Geometry::BIND_PER_VERTEX || _normal_binding==osg::Geometry::BIND_PER_PRIMITIVE)

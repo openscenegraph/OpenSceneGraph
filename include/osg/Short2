@@ -1,0 +1,85 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_SHORT_2
+#define OSG_SHORT_2		1
+
+namespace osg {
+
+class Short2
+{
+public:
+
+	typedef short value_type;
+
+    union
+    {
+        struct {value_type x,y;};
+        value_type _v[2];
+    };
+    Short2() {}
+    Short2(value_type xx, value_type yy)
+    { x = xx; y = yy; }
+    
+    inline value_type* ptr() { return _v; }
+    inline const value_type* ptr() const { return _v; }
+
+    inline bool operator == (const Short2& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
+    inline bool operator != (const Short2& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
+    inline bool operator <  (const Short2& v) const
+    {
+        if (_v[0]<v._v[0])      return true;
+        else if (_v[0]>v._v[0]) return false;
+        else return (_v[1]<v._v[1]);
+    }
+    
+    inline Short2 operator * (value_type rhs) const
+    {
+        return Short2(_v[0]*rhs, _v[1]*rhs);
+    }
+    
+    inline Short2 operator / (value_type rhs) const
+    {
+        return Short2(_v[0]/rhs, _v[1]/rhs);
+    }
+    
+    inline Short2 operator + (value_type rhs) const
+    {
+        return Short2(_v[0]+rhs, _v[1]+rhs);
+    }
+    
+    inline Short2 operator - (value_type rhs) const
+    {
+        return Short2(_v[0]-rhs, _v[1]-rhs);
+    }
+    
+    inline Short2 operator + (const Short2& rhs) const
+    {
+        return Short2(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
+    }
+    
+    inline Short2 operator - (const Short2& rhs) const
+    {
+        return Short2(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
+    }
+    
+    inline Short2 operator * (const Short2& rhs) const
+    {
+        return Short2(_v[0]*rhs._v[0], _v[1]*rhs._v[1]);
+    }
+
+};
+
+}
+
+#endif

@@ -1,0 +1,152 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_BYTE4
+#define OSG_BYTE4 1
+
+namespace osg {
+
+/** General purpose float triple.
+  * Uses include representation of color coordinates.
+  * No support yet added for float * Byte4 - is it necessary?
+  * Need to define a non-member non-friend operator*  etc.
+  * Byte4 * float is okay
+*/
+class Byte4
+{
+    public:
+
+    // Methods are defined here so that they are implicitly inlined
+
+        Byte4() { _v[0]=0; _v[1]=0; _v[2]=0; _v[3]=0; }
+        
+        Byte4(char r, char g, char b, char a)
+        {
+            _v[0]=r; _v[1]=g; _v[2]=b; _v[3]=a;
+        }
+
+        char _v[4];
+
+        inline bool operator == (const Byte4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
+
+        inline bool operator != (const Byte4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
+
+        inline bool operator <  (const Byte4& v) const
+        {
+            if (_v[0]<v._v[0]) return true;
+            else if (_v[0]>v._v[0]) return false;
+            else if (_v[1]<v._v[1]) return true;
+            else if (_v[1]>v._v[1]) return false;
+            else if (_v[2]<v._v[2]) return true;
+            else if (_v[2]>v._v[2]) return false;
+            else return (_v[3]<v._v[3]);
+        }
+
+        inline char* ptr() { return _v; }
+        inline const char* ptr() const { return _v; }
+
+        inline void set(char r, char g, char b, char a)
+        {
+            _v[0]=r; _v[1]=g; _v[2]=b; _v[3]=a;
+        }
+
+        inline char& operator [] (unsigned int i) { return _v[i]; }
+        inline char operator [] (unsigned int i) const { return _v[i]; }
+
+        inline char& r() { return _v[0]; }
+        inline char& g() { return _v[1]; }
+        inline char& b() { return _v[2]; }
+        inline char& a() { return _v[3]; }
+
+        inline char r() const { return _v[0]; }
+        inline char g() const { return _v[1]; }
+        inline char b() const { return _v[2]; }
+        inline char a() const { return _v[3]; }
+
+        /** Multiply by scalar. */
+        inline Byte4 operator * (float rhs) const
+        {
+            Byte4 col(*this);
+            col *= rhs;
+            return col;
+        }
+
+        /** Unary multiply by scalar. */
+        inline Byte4& operator *= (float rhs)
+        {
+            _v[0]=(char)((float)_v[0]*rhs);
+            _v[1]=(char)((float)_v[1]*rhs);
+            _v[2]=(char)((float)_v[2]*rhs);
+            _v[3]=(char)((float)_v[3]*rhs);
+            return *this;
+        }
+
+        /** Divide by scalar. */
+        inline Byte4 operator / (float rhs) const
+        {
+            Byte4 col(*this);
+            col /= rhs;
+            return col;
+        }
+
+        /** Unary divide by scalar. */
+        inline Byte4& operator /= (float rhs)
+        {
+            float div = 1.0f/rhs;
+            *this *= div;
+            return *this;
+        }
+
+        /** Binary vector add. */
+        inline Byte4 operator + (const Byte4& rhs) const
+        {
+            return Byte4(_v[0]+rhs._v[0], _v[1]+rhs._v[1],
+                _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
+        }
+
+        /** Unary vector add. Slightly more efficient because no temporary
+          * intermediate object.
+        */
+        inline Byte4& operator += (const Byte4& rhs)
+        {
+            _v[0] += rhs._v[0];
+            _v[1] += rhs._v[1];
+            _v[2] += rhs._v[2];
+            _v[3] += rhs._v[3];
+            return *this;
+        }
+
+        /** Binary vector subtract. */
+        inline Byte4 operator - (const Byte4& rhs) const
+        {
+            return Byte4(_v[0]-rhs._v[0], _v[1]-rhs._v[1],
+                _v[2]-rhs._v[2], _v[3]-rhs._v[3]);
+        }
+
+        /** Unary vector subtract. */
+        inline Byte4& operator -= (const Byte4& rhs)
+        {
+            _v[0]-=rhs._v[0];
+            _v[1]-=rhs._v[1];
+            _v[2]-=rhs._v[2];
+            _v[3]-=rhs._v[3];
+            return *this;
+        }
+
+};    // end of class Byte4
+
+
+
+}    // end of namespace osg
+
+#endif

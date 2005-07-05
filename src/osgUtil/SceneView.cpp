@@ -534,7 +534,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         _collectOccludersVisistor->removeOccludedOccluders();
         
         
-        osg::notify(osg::INFO) << "finished searching for occluder - found "<<_collectOccludersVisistor->getCollectedOccluderSet().size()<<std::endl;
+        osg::notify(osg::DEBUG_INFO) << "finished searching for occluder - found "<<_collectOccludersVisistor->getCollectedOccluderSet().size()<<std::endl;
            
         cullVisitor->getOccluderList().clear();
         std::copy(_collectOccludersVisistor->getCollectedOccluderSet().begin(),_collectOccludersVisistor->getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));

@@ -425,7 +425,7 @@ void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vert
         osg::Vec3Array* normals = NULL;
         if (geom.getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
         {
-            normals = geom.getNormalArray();
+            normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray());
         }
         
         typedef std::vector<osg::Array*> ArrayList;
@@ -668,7 +668,7 @@ void Tesselator::collectTesselation(osg::Geometry &geom)
         if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
             geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
         {
-            normals = geom.getNormalArray(); // GWM Sep 2002
+            normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray()); // GWM Sep 2002
         }
         // GWM Dec 2003 - needed to add colours for extra facets
         osg::Vec4Array* cols4 = NULL; // GWM Dec 2003 colours are vec4

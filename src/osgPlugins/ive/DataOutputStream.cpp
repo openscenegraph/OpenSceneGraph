@@ -148,6 +148,12 @@ void DataOutputStream::writeUShort(unsigned short s){
     if (_verboseOutput) std::cout<<"read/writeUShort() ["<<s<<"]"<<std::endl;
 }
 
+void DataOutputStream::writeShort(short s){
+    _ostream->write((char*)&s, SHORTSIZE);
+
+    if (_verboseOutput) std::cout<<"read/writeShort() ["<<s<<"]"<<std::endl;
+}
+
 void DataOutputStream::writeUInt(unsigned int s){
     _ostream->write((char*)&s, INTSIZE);
     
@@ -264,6 +270,30 @@ void DataOutputStream::writeUByte4(const osg::UByte4& v){
     if (_verboseOutput) std::cout<<"read/writeUByte4() ["<<v<<"]"<<std::endl;
 }
 
+void DataOutputStream::writeByte2(const osg::Byte2& v){
+    writeChar(v.r());
+    writeChar(v.g());    
+
+    if (_verboseOutput) std::cout<<"read/writeByte2() ["<<v<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeByte3(const osg::Byte3& v){
+    writeChar(v.r());
+    writeChar(v.g());
+    writeChar(v.b());
+
+    if (_verboseOutput) std::cout<<"read/writeByte3() ["<<v<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeByte4(const osg::Byte4& v){
+    writeChar(v.r());
+    writeChar(v.g());
+    writeChar(v.b());
+    writeChar(v.a());
+
+    if (_verboseOutput) std::cout<<"read/writeByte4() ["<<v<<"]"<<std::endl;
+}
+
 void DataOutputStream::writeQuat(const osg::Quat& q){
     writeFloat(q.x());
     writeFloat(q.y());
@@ -324,6 +354,30 @@ void DataOutputStream::writeArray(const osg::Array* a){
             writeChar((char)8);
             writeVec4Array(static_cast<const osg::Vec4Array*>(a));
             break;
+         case osg::Array::Short2ArrayType:
+             writeChar((char)9);
+             writeShort2Array(static_cast<const osg::Short2Array*>(a));
+             break;
+         case osg::Array::Short3ArrayType:
+             writeChar((char)10);
+             writeShort3Array(static_cast<const osg::Short3Array*>(a));
+             break;
+         case osg::Array::Short4ArrayType:
+             writeChar((char)11);
+             writeShort4Array(static_cast<const osg::Short4Array*>(a));
+             break;
+         case osg::Array::Byte2ArrayType:
+             writeChar((char)12);
+             writeByte2Array(static_cast<const osg::Byte2Array*>(a));
+             break;
+         case osg::Array::Byte3ArrayType:
+             writeChar((char)13);
+             writeByte3Array(static_cast<const osg::Byte3Array*>(a));
+             break;
+         case osg::Array::Byte4ArrayType:
+             writeChar((char)14);
+             writeByte4Array(static_cast<const osg::Byte4Array*>(a));
+             break;            
         default: throw Exception("Unknown array type in DataOutputStream::writeArray()");
     }
 }
@@ -427,6 +481,78 @@ void DataOutputStream::writeVec4Array(const osg::Vec4Array* a)
     }
     
     if (_verboseOutput) std::cout<<"read/writeVec4Array() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeShort2Array(const osg::Short2Array* a)
+{
+    int size = a->getNumElements(); 
+    writeInt(size);
+    for(int i =0; i<size ;i++){
+        writeShort((*a)[i].x);
+        writeShort((*a)[i].y);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeShort2Array() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeShort3Array(const osg::Short3Array* a)
+{
+    int size = a->getNumElements(); 
+    writeInt(size);
+    for(int i =0; i<size ;i++){
+        writeShort((*a)[i].x);
+        writeShort((*a)[i].y);
+        writeShort((*a)[i].z);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeShort3Array() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeShort4Array(const osg::Short4Array* a)
+{
+    int size = a->getNumElements(); 
+    writeInt(size);
+    for(int i =0; i<size ;i++){
+        writeShort((*a)[i].x);
+        writeShort((*a)[i].y);
+        writeShort((*a)[i].z);
+        writeShort((*a)[i].w);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeShort4Array() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeByte2Array(const osg::Byte2Array* a)
+{
+    int size = a->getNumElements(); 
+    writeInt(size);
+    for(int i =0; i<size ;i++){
+        writeByte2((*a)[i]);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeByte2Array() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeByte3Array(const osg::Byte3Array* a)
+{
+    int size = a->getNumElements(); 
+    writeInt(size);
+    for(int i =0; i<size ;i++){
+        writeByte3((*a)[i]);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeByte3Array() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeByte4Array(const osg::Byte4Array* a)
+{
+    int size = a->getNumElements(); 
+    writeInt(size);
+    for(int i =0; i<size ;i++){
+        writeByte4((*a)[i]);
+    }
+
+    if (_verboseOutput) std::cout<<"read/writeByte4Array() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeMatrixf(const osg::Matrixf& mat)

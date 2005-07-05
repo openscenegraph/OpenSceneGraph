@@ -1,0 +1,145 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_BYTE3
+#define OSG_BYTE3 1
+
+namespace osg {
+
+/** General purpose float triple.
+  * Uses include representation of color coordinates.
+  * No support yet added for float * Byte3 - is it necessary?
+  * Need to define a non-member non-friend operator*  etc.
+  * Byte3 * float is okay
+*/
+class Byte3
+{
+    public:
+
+	// Methods are defined here so that they are implicitly inlined
+
+        Byte3() { _v[0]=0; _v[1]=0; _v[2]=0; }
+        
+        Byte3(char r, char g, char b)
+        {
+            _v[0]=r; _v[1]=g; _v[2]=b;
+        }
+
+        char _v[3];
+
+        inline bool operator == (const Byte3& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
+
+        inline bool operator != (const Byte3& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2]; }
+
+        inline bool operator <  (const Byte3& v) const
+        {
+            if (_v[0]<v._v[0]) return true;
+            else if (_v[0]>v._v[0]) return false;
+            else if (_v[1]<v._v[1]) return true;
+            else if (_v[1]>v._v[1]) return false;
+            else return (_v[2]<v._v[2]);
+        }
+
+        inline char* ptr() { return _v; }
+        inline const char* ptr() const { return _v; }
+
+        inline void set(char r, char g, char b)
+        {
+            _v[0]=r; _v[1]=g; _v[2]=b;
+        }
+
+        inline char& operator [] (unsigned int i) { return _v[i]; }
+        inline char operator [] (unsigned int i) const { return _v[i]; }
+
+        inline char& r() { return _v[0]; }
+        inline char& g() { return _v[1]; }
+        inline char& b() { return _v[2]; }
+
+        inline char r() const { return _v[0]; }
+        inline char g() const { return _v[1]; }
+        inline char b() const { return _v[2]; }
+
+        /** Multiply by scalar. */
+        inline Byte3 operator * (float rhs) const
+        {
+            Byte3 col(*this);
+            col *= rhs;
+            return col;
+        }
+
+        /** Unary multiply by scalar. */
+        inline Byte3& operator *= (float rhs)
+        {
+            _v[0]=(char)((float)_v[0]*rhs);
+            _v[1]=(char)((float)_v[1]*rhs);
+            _v[2]=(char)((float)_v[2]*rhs);
+            return *this;
+        }
+
+        /** Divide by scalar. */
+        inline Byte3 operator / (float rhs) const
+        {
+            Byte3 col(*this);
+            col /= rhs;
+            return col;
+        }
+
+        /** Unary divide by scalar. */
+        inline Byte3& operator /= (float rhs)
+        {
+            float div = 1.0f/rhs;
+            *this *= div;
+            return *this;
+        }
+
+        /** Binary vector add. */
+        inline Byte3 operator + (const Byte3& rhs) const
+        {
+            return Byte3(_v[0]+rhs._v[0], _v[1]+rhs._v[1],
+		        _v[2]+rhs._v[2]);
+        }
+
+        /** Unary vector add. Slightly more efficient because no temporary
+          * intermediate object.
+		*/
+        inline Byte3& operator += (const Byte3& rhs)
+        {
+            _v[0] += rhs._v[0];
+            _v[1] += rhs._v[1];
+            _v[2] += rhs._v[2];
+            return *this;
+        }
+
+        /** Binary vector subtract. */
+        inline Byte3 operator - (const Byte3& rhs) const
+        {
+            return Byte3(_v[0]-rhs._v[0], _v[1]-rhs._v[1],
+		        _v[2]-rhs._v[2]);
+        }
+
+        /** Unary vector subtract. */
+        inline Byte3& operator -= (const Byte3& rhs)
+        {
+            _v[0]-=rhs._v[0];
+            _v[1]-=rhs._v[1];
+            _v[2]-=rhs._v[2];
+            return *this;
+        }
+
+};	// end of class Byte3
+
+
+
+}	// end of namespace osg
+
+#endif

@@ -438,6 +438,12 @@ osg::Array* DataInputStream::readArray(){
         case 6:    return readVec2Array();
         case 7:    return readVec3Array();
         case 8:    return readVec4Array();
+        case 9:    return readShort2Array();
+        case 10:   return readShort3Array();
+        case 11:   return readShort4Array();
+        case 12:   return readByte2Array();        
+        case 13:   return readByte3Array();        
+        case 14:   return readByte4Array();        
         default: throw Exception("Unknown array type in DataInputStream::readArray()");
     }
 }
@@ -609,6 +615,96 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
           osg::swapBytes((char *)&(ptr[i]),FLOATSIZE) ;
        }
     }
+    return a;
+}
+
+osg::Byte2Array* DataInputStream::readByte2Array()
+{
+    int size = readInt();
+    osg::Byte2Array* a = new osg::Byte2Array(size);
+
+    _istream->read((char*)&((*a)[0]), CHARSIZE * 2 * size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readByte2Array(): Failed to read Byte2 array.");
+
+    if (_verboseOutput) std::cout<<"read/writeByte2Array() ["<<size<<"]"<<std::endl;
+
+    return a;
+}
+
+osg::Byte3Array* DataInputStream::readByte3Array()
+{
+    int size = readInt();
+    osg::Byte3Array* a = new osg::Byte3Array(size);
+
+    _istream->read((char*)&((*a)[0]), CHARSIZE * 3 * size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readByte3Array(): Failed to read Byte3 array.");
+
+    if (_verboseOutput) std::cout<<"read/writeByte3Array() ["<<size<<"]"<<std::endl;
+
+    return a;
+}
+
+osg::Byte4Array* DataInputStream::readByte4Array()
+{
+    int size = readInt();
+    osg::Byte4Array* a = new osg::Byte4Array(size);
+
+    _istream->read((char*)&((*a)[0]), CHARSIZE * 4 * size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readByte4Array(): Failed to read Byte4 array.");
+
+    if (_verboseOutput) std::cout<<"read/writeByte4Array() ["<<size<<"]"<<std::endl;
+
+    return a;
+}
+
+osg::Short2Array* DataInputStream::readShort2Array()
+{
+    int size = readInt();
+    osg::Short2Array* a = new osg::Short2Array(size);
+
+    _istream->read((char*)&((*a)[0]), SHORTSIZE * 2 * size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readShort2Array(): Failed to read Short2 array.");
+
+    if (_verboseOutput) std::cout<<"read/writeShort2Array() ["<<size<<"]"<<std::endl;
+
+    return a;
+}
+
+osg::Short3Array* DataInputStream::readShort3Array()
+{
+    int size = readInt();
+    osg::Short3Array* a = new osg::Short3Array(size);
+
+    _istream->read((char*)&((*a)[0]), SHORTSIZE * 3 * size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readShort3Array(): Failed to read Short3 array.");
+
+    if (_verboseOutput) std::cout<<"read/writeShort3Array() ["<<size<<"]"<<std::endl;
+
+    return a;
+}
+
+osg::Short4Array* DataInputStream::readShort4Array()
+{
+    int size = readInt();
+    osg::Short4Array* a = new osg::Short4Array(size);
+
+    _istream->read((char*)&((*a)[0]), SHORTSIZE * 4 * size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readShort4Array(): Failed to read Short4 array.");
+
+    if (_verboseOutput) std::cout<<"read/writeShort4Array() ["<<size<<"]"<<std::endl;
+
     return a;
 }
 

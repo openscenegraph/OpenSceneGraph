@@ -795,25 +795,28 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                             ia.push_back(app.get());
                         }
 
-                        osg::Vec3Array* normals = geom->getNormalArray();
-                        /** calc surface normal **/
-                        if (asurf.num_vertref >= 3)
+                        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geom->getNormalArray());
+                        if (normals)
                         {
-                            osg::Vec3 norm;
-                            unsigned short i1=(*nusidx)[0];
-                            unsigned short i2=(*nusidx)[1];
-                            unsigned short i3=(*nusidx)[2];
-                            osgtri_calc_normal((*vertpool)[i1], 
-                            (*vertpool)[i2], 
-                            (*vertpool)[i3], norm);
-                            normals->push_back(norm);
-                        //    fprintf(stdout,"New %x are %d nrms\n",normals,normals->size());
-                        }
-                        else
-                        {
-                            // Generate a dummy normal
-                            osg::Vec3 norm(0, 1, 0);
-                            normals->push_back(norm);
+                            /** calc surface normal **/
+                            if (asurf.num_vertref >= 3)
+                            {
+                                osg::Vec3 norm;
+                                unsigned short i1=(*nusidx)[0];
+                                unsigned short i2=(*nusidx)[1];
+                                unsigned short i3=(*nusidx)[2];
+                                osgtri_calc_normal((*vertpool)[i1], 
+                                (*vertpool)[i2], 
+                                (*vertpool)[i3], norm);
+                                normals->push_back(norm);
+                            //    fprintf(stdout,"New %x are %d nrms\n",normals,normals->size());
+                            }
+                            else
+                            {
+                                // Generate a dummy normal
+                                osg::Vec3 norm(0, 1, 0);
+                                normals->push_back(norm);
+                            }
                         }
                         int nstart=(*vgeom).size();
                         for (i=0; i<asurf.num_vertref; i++)

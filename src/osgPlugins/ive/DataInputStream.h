@@ -77,6 +77,12 @@ public:
     osg::Vec2Array* readVec2Array();
     osg::Vec3Array* readVec3Array();
     osg::Vec4Array* readVec4Array();
+    osg::Byte2Array* readByte2Array();
+    osg::Byte3Array* readByte3Array();
+    osg::Byte4Array* readByte4Array();
+    osg::Short2Array* readShort2Array();
+    osg::Short3Array* readShort3Array();
+    osg::Short4Array* readShort4Array();    
 
     osg::Image* readImage(std::string s);
     osg::StateSet* readStateSet();

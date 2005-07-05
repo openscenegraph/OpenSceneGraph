@@ -653,19 +653,15 @@ void Drawable::setEventCallback(EventCallback* ac)
 
 struct ComputeBound : public PrimitiveFunctor
 {
-        ComputeBound():_vertices(0) {}
-        
-        virtual void setVertexArray(unsigned int,const Vec2*) 
+   ComputeBound()  {   _vertices = 0;  _vertices4 = 0;}
+
+        virtual void setVertexArray(unsigned int,const Vec2*)
         {
             notify(WARN)<<"ComputeBound does not support Vec2* vertex arrays"<<std::endl;
         }
 
-        virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices = vertices; }
-
-        virtual void setVertexArray(unsigned int,const Vec4*) 
-        {
-            notify(WARN)<<"ComputeBound does not support Vec4* vertex arrays"<<std::endl;
-        }
+        virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices  = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec4* vertices) { _vertices4 = vertices; }
 
         virtual void drawArrays(GLenum,GLint first,GLsizei count)
         {
@@ -675,6 +671,15 @@ struct ComputeBound : public PrimitiveFunctor
                 for(;count>0;--count,++vert)
                 {
                     _bb.expandBy(*vert);
+                }
+            }
+
+            if (_vertices4)
+            {
+                const osg::Vec4* vert = _vertices4+first;
+                for(;count>0;--count,++vert)
+                {
+                    _bb.expandBy(*((Vec3*) vert));
                 }
             }
         }
@@ -688,6 +693,14 @@ struct ComputeBound : public PrimitiveFunctor
                     _bb.expandBy(_vertices[*indices]);
                 }
             }
+
+            if (_vertices4)
+            {
+                for(;count>0;--count,++indices)
+                {
+                    _bb.expandBy(*((Vec3*)&_vertices4[*indices]));
+                }
+            }
         }
 
         virtual void drawElements(GLenum,GLsizei count,const GLushort* indices)
@@ -697,6 +710,14 @@ struct ComputeBound : public PrimitiveFunctor
                 for(;count>0;--count,++indices)
                 {
                     _bb.expandBy(_vertices[*indices]);
+                }
+            }
+
+            if (_vertices4)
+            {
+                for(;count>0;--count,++indices)
+                {
+                    _bb.expandBy(*((Vec3*)&_vertices4[*indices]));
                 }
             }
         }
@@ -710,19 +731,28 @@ struct ComputeBound : public PrimitiveFunctor
                     _bb.expandBy(_vertices[*indices]);
                 }
             }
+
+            if (_vertices4)
+            {
+                for(;count>0;--count,++indices)
+                {
+                    _bb.expandBy(*((Vec3*)&_vertices4[*indices]));
+                }
+            }
         }
 
         virtual void begin(GLenum) {}
         virtual void vertex(const Vec2& vert) { _bb.expandBy(osg::Vec3(vert[0],vert[1],0.0f)); }
         virtual void vertex(const Vec3& vert) { _bb.expandBy(vert); }
         virtual void vertex(const Vec4& vert) { if (vert[3]!=0.0f) _bb.expandBy(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
-        virtual void vertex(float x,float y) { _bb.expandBy(x,y,1.0f); }
+        virtual void vertex(float x,float y)  { _bb.expandBy(x,y,1.0f); }
         virtual void vertex(float x,float y,float z) { _bb.expandBy(x,y,z); }
         virtual void vertex(float x,float y,float z,float w) { if (w!=0.0f) _bb.expandBy(x/w,y/w,z/w); }
         virtual void end() {}
-        
+       
         const Vec3*     _vertices;
-        BoundingBox     _bb;
+        const Vec4*     _vertices4;
+        BoundingBox     _bb; 
 };
 
 BoundingBox Drawable::computeBound() const

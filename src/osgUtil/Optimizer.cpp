@@ -214,6 +214,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
 
         MergeGeometryVisitor mgv(this);
+        mgv.setTargetMaximumNumberOfVertices(10000);
         node->accept(mgv);
     }
     
@@ -1561,10 +1562,27 @@ struct LessGeometry
         {
             // assumes that the bindings and arrays are set up correctly, this
             // should be the case after running computeCorrectBindingsAndArraySizes();
-            const osg::Vec3& lhs_normal = (*(lhs->getNormalArray()))[0];
-            const osg::Vec3& rhs_normal = (*(rhs->getNormalArray()))[0];
-            if (lhs_normal<rhs_normal) return true;            
-            if (rhs_normal<lhs_normal) return false;            
+            const osg::Array* lhs_normalArray = lhs->getNormalArray();
+            const osg::Array* rhs_normalArray = rhs->getNormalArray();
+            if (lhs_normalArray->getType()<rhs_normalArray->getType()) return true;
+            if (rhs_normalArray->getType()<lhs_normalArray->getType()) return false;
+            switch(lhs_normalArray->getType())
+            {
+            case(osg::Array::Byte3ArrayType):
+                if ((*static_cast<const osg::Byte3Array*>(lhs_normalArray))[0]<(*static_cast<const osg::Byte3Array*>(rhs_normalArray))[0]) return true;
+                if ((*static_cast<const osg::Byte3Array*>(rhs_normalArray))[0]<(*static_cast<const osg::Byte3Array*>(lhs_normalArray))[0]) return false;
+                break;
+            case(osg::Array::Short3ArrayType):
+                if ((*static_cast<const osg::Short3Array*>(lhs_normalArray))[0]<(*static_cast<const osg::Short3Array*>(rhs_normalArray))[0]) return true;
+                if ((*static_cast<const osg::Short3Array*>(rhs_normalArray))[0]<(*static_cast<const osg::Short3Array*>(lhs_normalArray))[0]) return false;
+                break;
+            case(osg::Array::Vec3ArrayType):
+                if ((*static_cast<const osg::Vec3Array*>(lhs_normalArray))[0]<(*static_cast<const osg::Vec3Array*>(rhs_normalArray))[0]) return true;
+                if ((*static_cast<const osg::Vec3Array*>(rhs_normalArray))[0]<(*static_cast<const osg::Vec3Array*>(lhs_normalArray))[0]) return false;
+                break;
+            default:
+                break;
+            }
         }
         
         if (lhs->getColorBinding()==osg::Geometry::BIND_OVERALL)
@@ -1888,6 +1906,13 @@ class MergeArrayVisitor : public osg::ArrayVisitor
         virtual void apply(osg::Vec2Array& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3Array& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec4Array& rhs) { _merge(rhs); }
+        
+        virtual void apply(osg::Byte2Array&  rhs) { _merge(rhs); }
+        virtual void apply(osg::Byte3Array&  rhs) { _merge(rhs); }
+        virtual void apply(osg::Byte4Array&  rhs) { _merge(rhs); }        
+        virtual void apply(osg::Short2Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::Short3Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::Short4Array& rhs) { _merge(rhs); }
 };
 
 bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs)

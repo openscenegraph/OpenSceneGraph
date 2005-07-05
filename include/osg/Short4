@@ -1,0 +1,89 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_SHORT_4
+#define OSG_SHORT_4		1
+
+namespace osg {
+
+class Short4
+{
+public:
+
+    typedef short value_type;
+
+    union
+    {
+        struct {value_type x,y,z,w;};
+        value_type _v[4];
+    };
+
+    Short4 (){}
+    Short4 (value_type xx, value_type yy, value_type zz, value_type ww)
+    {x = xx; y = yy; z = zz; w = ww;}
+
+	inline value_type* ptr() { return _v; }
+    inline const value_type* ptr() const { return _v; }
+        
+    inline bool operator == (const Short4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
+    inline bool operator != (const Short4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
+    inline bool operator <  (const Short4& v) const
+    {
+        if (_v[0]<v._v[0])      return true;
+        else if (_v[0]>v._v[0]) return false;
+        else if (_v[1]<v._v[1]) return true;
+        else if (_v[1]>v._v[1]) return false;
+        else if (_v[2]<v._v[2]) return true;
+        else if (_v[2]>v._v[2]) return false;
+        else return (_v[3]<v._v[3]);
+    }
+    
+    inline Short4 operator * (value_type rhs) const
+    {
+        return Short4(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs, _v[3]*rhs);
+    }
+    
+    inline Short4 operator / (value_type rhs) const
+    {
+        return Short4(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs, _v[3]/rhs);
+    }
+    
+    inline Short4 operator + (value_type rhs) const
+    {
+        return Short4(_v[0]+rhs, _v[1]+rhs, _v[2]+rhs, _v[3]+rhs);
+    }
+    
+    inline Short4 operator - (value_type rhs) const
+    {
+        return Short4(_v[0]-rhs, _v[1]-rhs, _v[2]-rhs, _v[3]-rhs);
+    }
+    
+    inline Short4 operator + (const Short4& rhs) const
+    {
+        return Short4(_v[0]+rhs._v[0], _v[1]+rhs._v[1], _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
+    }
+    
+    inline Short4 operator - (const Short4& rhs) const
+    {
+        return Short4(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2], _v[3]-rhs._v[3]);
+    }
+    
+    inline Short4 operator * (const Short4& rhs) const
+    {
+        return Short4(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2], _v[3]*rhs._v[3]);
+    }
+};
+
+};
+
+#endif

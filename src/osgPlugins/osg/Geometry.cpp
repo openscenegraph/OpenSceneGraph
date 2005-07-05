@@ -173,7 +173,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         {
             // post 0.9.3 releases.
             ++fr;
-            Vec3Array* normals = dynamic_cast<Vec3Array*>(Array_readLocalData(fr));
+            Array* normals = Array_readLocalData(fr);
             if (normals)
             {
                 geom.setNormalArray(normals);
@@ -601,6 +601,120 @@ Array* Array_readLocalData(Input& fr)
         ++fr;
         return_array = array;
     }
+    else if (strcmp(arrayName,"Byte2Array")==0)
+    {
+        Byte2Array* array = new Byte2Array;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int r,g;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g))
+            {
+                fr+=2;
+                array->push_back(osg::Byte2(r,g));
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Byte3Array")==0)
+    {
+        Byte3Array* array = new Byte3Array;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int r,g,b;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g) &&
+                fr[2].getUInt(b))
+            {
+                fr+=3;
+                array->push_back(osg::Byte3(r,g,b));
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Byte4Array")==0)
+    {
+        Byte4Array* array = new Byte4Array;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int r,g,b,a;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g) &&
+                fr[2].getUInt(b) &&
+                fr[3].getUInt(a))
+            {
+                fr+=4;
+                array->push_back(osg::Byte4(r,g,b,a));
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Short2Array")==0)
+    {
+        Short2Array* array = new Short2Array;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int r,g;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g))
+            {
+                fr+=2;
+                array->push_back(osg::Short2(r,g));
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Short3Array")==0)
+    {
+        Short3Array* array = new Short3Array;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int r,g,b;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g) &&
+                fr[2].getUInt(b))
+            {
+                fr+=3;
+                array->push_back(osg::Short3(r,g,b));
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Short4Array")==0)
+    {
+        Short4Array* array = new Short4Array;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int r,g,b,a;
+            if (fr[0].getUInt(r) &&
+                fr[1].getUInt(g) &&
+                fr[2].getUInt(b) &&
+                fr[3].getUInt(a))
+            {
+                fr+=4;
+                array->push_back(osg::Short4(r,g,b,a));
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
     
     if (return_array) 
     {
@@ -717,6 +831,54 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec4Array& carray = static_cast<const Vec4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(),1);
+                return true;
+            }
+            break;
+        case(Array::Short2ArrayType):
+            {
+                const Short2Array& carray = static_cast<const Short2Array&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(), 3);
+                return true;
+            }
+            break;
+        case(Array::Short3ArrayType):
+            {
+                const Short3Array& carray = static_cast<const Short3Array&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(), 2);
+                return true;
+            }
+            break;
+        case(Array::Short4ArrayType):
+            {
+                const Short4Array& carray = static_cast<const Short4Array&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(), 1);
+                return true;
+            }
+            break;
+        case(Array::Byte2ArrayType):
+            {
+                const Byte2Array& carray = static_cast<const Byte2Array&>(array);
+                fw<<array.className()<<" "<<carray.size()<<" ";
+                writeArray(fw,carray.begin(),carray.end(),1);
+                return true;
+            }
+            break;
+        case(Array::Byte3ArrayType):
+            {
+                const Byte3Array& carray = static_cast<const Byte3Array&>(array);
+                fw<<array.className()<<" "<<carray.size()<<" ";
+                writeArray(fw,carray.begin(),carray.end(),1);
+                return true;
+            }
+            break;
+        case(Array::Byte4ArrayType):
+            {
+                const Byte4Array& carray = static_cast<const Byte4Array&>(array);
+                fw<<array.className()<<" "<<carray.size()<<" ";
                 writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }

@@ -164,10 +164,7 @@ class OSG_EXPORT Geometry : public Drawable
         void setNormalArray(Array* array) { _normalData.array = array; if (!_normalData.array.valid()) _normalData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
         Array* getNormalArray() { return _normalData.array.get(); }
         const Array* getNormalArray() const { return _normalData.array.get(); }
-
-        Array* getNormalArrayEx() { return _normalData.array.get(); }
-        const Array* getNormalArrayEx() const { return _normalData.array.get(); }
-        
+     
         void setNormalIndices(IndexArray* array) { _normalData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
         IndexArray* getNormalIndices() { return _normalData.indices.get(); }
         const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }

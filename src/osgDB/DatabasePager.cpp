@@ -292,8 +292,34 @@ public:
                         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
                         _dataToCompile(dataToCompile),
                         _changeAutoUnRef(changeAutoUnRef), _valueAutoUnRef(valueAutoUnRef),
-                        _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy)
+                        _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy),
+                        _useDisplayLists(true),
+                        _useVertexBufferObjects(false)
     {
+#if __APPLE__
+    _useDisplayLists = false;
+    _useVertexBufferObjects = false;
+#endif    
+    
+        static const char* str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
+        if (str)
+        {
+            if (strcmp(str,"DisplayList")==0 || strcmp(str,"DL")==0)
+            {
+                _useDisplayLists = true;
+                _useVertexBufferObjects = false;
+            }
+            else if (strcmp(str,"VBO")==0)
+            {
+                _useDisplayLists = true;
+                _useVertexBufferObjects = true;
+            }
+            else if (strcmp(str,"VertexArrays")==0 || strcmp(str,"VA")==0 )
+            {
+                _useDisplayLists = false;
+                _useVertexBufferObjects = false;
+            }
+        }
     }
     
     virtual void apply(osg::Node& node)
@@ -345,8 +371,8 @@ public:
     {
         apply(drawable->getStateSet());
         
-        // drawable->setUseDisplayList(false);
-        // drawable->setUseVertexBufferObjects(true);
+        drawable->setUseDisplayList(_useDisplayLists);
+        drawable->setUseVertexBufferObjects(_useVertexBufferObjects);
 
         if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
         {
@@ -360,6 +386,8 @@ public:
     bool                            _valueAutoUnRef;
     bool                            _changeAnisotropy;
     float                           _valueAnisotropy;
+    bool                            _useDisplayLists;
+    bool                            _useVertexBufferObjects;
 };
 
 

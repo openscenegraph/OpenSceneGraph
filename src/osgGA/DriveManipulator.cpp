@@ -12,7 +12,7 @@
 */
 
 #if defined(_MSC_VER)
-	#pragma warning( disable : 4786 )
+    #pragma warning( disable : 4786 )
 #endif
 
 #include <osgGA/DriveManipulator>
@@ -361,13 +361,15 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             }
 #ifdef KEYBOARD_PITCH
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up ||
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up)
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up ||
+                     ea.getKey()=='9')
             {
                 _pitchUpKeyPressed = true;
                 return true;
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down ||
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Down)
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Down ||
+                     ea.getKey()=='6')
             {
                 _pitchDownKeyPressed = true;
                 return true;
@@ -380,13 +382,15 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
         {
 #ifdef KEYBOARD_PITCH
             if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up ||
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up)
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up ||
+                     ea.getKey()=='9')
             {
                 _pitchUpKeyPressed = false;
                 return true;
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down ||
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Down)
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Down ||
+                     ea.getKey()=='6')
             {
                 _pitchDownKeyPressed = false;
                 return true;

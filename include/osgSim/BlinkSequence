@@ -59,6 +59,9 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Object
         /** return the pulse data at position i. */
         inline void getPulse(unsigned int i, double& length,osg::Vec4& color) const;
 
+        /** set pulse of specified color and duration to the BlinkSequence.*/
+        inline void setPulse(unsigned int i,double length,const osg::Vec4& color);
+
         /** get the total pulse period of the blink sequence, which is equal to the sum of all the pulse periods.*/
         inline double getPulsePeriod() const { return _pulsePeriod; }
 
@@ -115,6 +118,14 @@ inline void BlinkSequence::getPulse(unsigned int i, double& length, osg::Vec4& c
     const IntervalColor& ic = _pulseData[i];
     length = ic.first;
     color = ic.second;
+}
+
+inline void BlinkSequence::setPulse(unsigned int i,double length,const osg::Vec4& color)
+{
+    if( i > _pulseData.size() ) return;
+    IntervalColor& ic = _pulseData[i];
+    ic.first = length;
+    ic.second = color;
 }
 
 inline osg::Vec4 BlinkSequence::color(double time,double length) const

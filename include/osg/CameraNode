@@ -193,10 +193,10 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
 
         /** Set the draw buffer for a given fragment output position to specified draw buffer. */
-        void setDrawBuffer(unsigned int pos, GLenum buffer);
+        void setDrawBuffer(unsigned int pos, GLenum buffer) { _drawBufferList[pos] = buffer; }
 
         /** Get the draw buffer for a given fragment output position. */
-        GLenum getDrawBuffer(unsigned int pos);
+        GLenum getDrawBuffer(unsigned int pos) const { return _drawBufferList[pos]; }
         
         typedef std::vector<GLenum> DrawBufferList;
 

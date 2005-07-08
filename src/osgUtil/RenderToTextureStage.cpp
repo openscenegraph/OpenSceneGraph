@@ -41,7 +41,9 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     //cout << "begining RTTS draw "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
     
     osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID()) : 0;
-    if (fbo_ext)
+    bool fbo_supported = fbo_ext && fbo_ext->isSupported();
+
+    if (fbo_supported)
     {
         _fbo->apply(state);
     }
@@ -50,7 +52,7 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     RenderStage::draw(state,previous);
 
     // now copy the rendered image to attached texture.
-    if (_texture.valid() && !fbo_ext)
+    if (_texture.valid() && !fbo_supported)
     {
         //cout << "        reading "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 
@@ -60,9 +62,10 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     if (_image.valid())
         _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
         
-    if (fbo_ext)
+    if (fbo_supported)
     {
         fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
 }
+

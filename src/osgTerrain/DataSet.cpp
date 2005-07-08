@@ -830,7 +830,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
             else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
             else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
-            else bandGray = band;
+            else if (bandGray == 0) bandGray = band;
         }
 
 

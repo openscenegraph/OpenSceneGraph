@@ -30,7 +30,7 @@ namespace flt {
 
  class AttrData : public osg::Object { 
   public:
-    osg::StateSet *stateset;
+    osg::ref_ptr<osg::StateSet> stateset;
 
     int32   useDetail;              // TRUE if using next 5 integers for detail texture
     int32   txDetail_j;             // J argument for TX_DETAIL

@@ -1591,13 +1591,11 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
             flt::AttrData *textureAttrData = 
                 pTexturePool->getTexture(nIndex, versionOptions.get());
 
-            osg::StateSet *textureStateSet;
+            osg::ref_ptr<osg::StateSet> textureStateSet;
             if (textureAttrData)
               textureStateSet = textureAttrData->stateset;
-            else
-              textureStateSet = NULL;
 
-            if (textureStateSet)
+            if (textureStateSet.valid())
             {
                 //We got detail texture, so we got detailTexture stateset and add a TexEnvCombine attribute
                 // To add simple detail texture we just use texture unit 1 to store detail
@@ -1611,7 +1609,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                  int nIndex2 = (int)pSFace->iDetailTexturePattern;
                  detailTextureAttrData = 
                      pTexturePool->getTexture(nIndex2,versionOptions.get());
-                 if (detailTextureAttrData && detailTextureAttrData->stateset) {
+                 if (detailTextureAttrData && detailTextureAttrData->stateset.valid()) {
                      osg::Texture2D *detTexture = dynamic_cast<osg::Texture2D*>(detailTextureAttrData->stateset->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
                      textureStateSet->setTextureAttributeAndModes(1,detTexture,osg::StateAttribute::ON);                    
                      osg::TexEnvCombine *tec1 = new osg::TexEnvCombine;
@@ -1627,7 +1625,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 // detail texture coordinates get generated later.
                 if (pSFace->iDetailTexturePattern != -1 && 
                     detailTextureAttrData && 
-                    detailTextureAttrData->stateset)
+                    detailTextureAttrData->stateset.valid())
                 {
                    // Set the texture coordinate scalars
                    dgset->setDetailTexCoords(detailTextureAttrData->txDetail_m,
@@ -1761,10 +1759,10 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             }
 
             // Get the texture state set from the attribute data structure
-            osg::StateSet *textureStateSet = textureAttrData->stateset;
-            CERR << "textureStateSet: " << textureStateSet << "\n";
+            osg::ref_ptr<osg::StateSet> textureStateSet = textureAttrData->stateset;
+            CERR << "textureStateSet: " << textureStateSet.get() << "\n";
 
-            if (!textureStateSet)
+            if (!textureStateSet.valid())
             {
                 CERR << "unable to set up multi-texture layer." << std::endl;
                 return;

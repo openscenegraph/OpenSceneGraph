@@ -13,7 +13,7 @@
 */
 
 /* file:        src/osg/Program.cpp
- * author:      Mike Weiblen 2005-05-05
+ * author:      Mike Weiblen 2005-07-01
 */
 
 #include <fstream>
@@ -2064,6 +2064,12 @@ void Program::apply( osg::State& state ) const
     if( pcp->needsLink() ) compileGLObjects( state );
     if( pcp->isLinked() )
     {
+        // for shader debugging: to minimize performance impact,
+        // optionally validate based on notify level.
+        // TODO: enable this using notify level, or perhaps its own getenv()?
+        if( osg::isNotifyEnabled(osg::INFO) )
+            pcp->validateProgram();
+
         pcp->useProgram();
         state.setLastAppliedProgramObject(pcp);
     }
@@ -2152,6 +2158,7 @@ void Program::PerContextProgram::linkProgram()
     osg::notify(osg::INFO)
         << "Linking osg::Program \"" << _program->getName() << "\""
         << " id=" << _glProgramHandle
+        << " contextID=" << _contextID
         <<  std::endl;
 
     _uniformInfoMap.clear();
@@ -2255,6 +2262,27 @@ void Program::PerContextProgram::linkProgram()
         }
         delete [] name;
     }
+    osg::notify(osg::INFO) << std::endl;
+}
+
+void Program::PerContextProgram::validateProgram()
+{
+    GLint validated = GL_FALSE;
+    _extensions->glValidateProgram( _glProgramHandle );
+    _extensions->glGetProgramiv( _glProgramHandle, GL_VALIDATE_STATUS, &validated );
+    if( validated == GL_TRUE)
+        return;
+
+    osg::notify(osg::INFO)
+        << "glValidateProgram FAILED \"" << _program->getName() << "\""
+        << " id=" << _glProgramHandle
+        << " contextID=" << _contextID
+        <<  std::endl;
+
+    std::string infoLog;
+    if( getInfoLog(infoLog) )
+        osg::notify(osg::INFO) << "infolog:\n" << infoLog << std::endl;
+
     osg::notify(osg::INFO) << std::endl;
 }
 

@@ -10,11 +10,53 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 
 #include <osgUtil/Optimizer>
 
 #include <iostream>
 #include <sstream>
+
+class NameVistor : public osg::NodeVisitor
+{
+public:
+    NameVistor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _count(0)
+    {
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        std::ostringstream os;
+        os << node.className() << "_"<<_count++;
+
+        node.setName(os.str());
+    
+        traverse(node);
+    }    
+    
+    unsigned int _count;
+};
+
+class CheckVisitor : public osg::NodeVisitor
+{
+public:
+    CheckVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+    {
+    }
+    
+    virtual void apply(osg::PagedLOD& plod)
+    {
+        std::cout<<"PagedLOD "<<plod.getName()<<"  numRanges = "<< plod.getNumRanges()<<"  numFiles = "<<plod.getNumFileNames()<<std::endl;
+        for(unsigned int i=0;i<plod.getNumFileNames();++i)
+        {
+            std::cout<<"  files = '"<<plod.getFileName(i)<<"'"<<std::endl;
+        }
+    }    
+};
+
 
 class WriteOutPagedLODSubgraphsVistor : public osg::NodeVisitor
 {
@@ -46,10 +88,11 @@ public:
 class ConvertToPageLODVistor : public osg::NodeVisitor
 {
 public:
-    ConvertToPageLODVistor(const std::string& basename, const std::string& extension):
+    ConvertToPageLODVistor(const std::string& basename, const std::string& extension, bool makeAllChildrenPaged):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _basename(basename),
-        _extension(extension)
+        _extension(extension),
+        _makeAllChildrenPaged(makeAllChildrenPaged)
     {
     }
     
@@ -85,19 +128,25 @@ public:
                 break;
             }
 
-            osg::notify(osg::NOTICE)<<"Converting LOD to PagedLOD"<<std::endl;
+            if (!_makeAllChildrenPaged && lod->getNumRanges()<2)
+            {
+                osg::notify(osg::NOTICE)<<"Leaving LOD with one child as is."<<std::endl;
+                break;
+            }
+
+            osg::notify(osg::NOTICE)<<"Converting LOD to PagedLOD."<<std::endl;
             
             osg::PagedLOD* plod = new osg::PagedLOD;
             
             const osg::LOD::RangeList& originalRangeList = lod->getRangeList();
-            typedef std::map< osg::LOD::MinMaxPair , unsigned int > MinMaxPairMap;
+            typedef std::multimap< osg::LOD::MinMaxPair , unsigned int > MinMaxPairMap;
             MinMaxPairMap rangeMap;
             unsigned int pos = 0;
             for(osg::LOD::RangeList::const_iterator ritr = originalRangeList.begin();
                 ritr != originalRangeList.end();
                 ++ritr, ++pos)
             {
-                rangeMap[*ritr] = pos;
+                rangeMap.insert(std::multimap< osg::LOD::MinMaxPair , unsigned int >::value_type(*ritr, pos));
             }
             
             pos = 0;
@@ -105,10 +154,9 @@ public:
                 mitr != rangeMap.rend();
                 ++mitr, ++pos)
             {
-                if (pos==0)
+                if (pos==0 && !_makeAllChildrenPaged)
                 {
                     plod->addChild(lod->getChild(mitr->second), mitr->first.first, mitr->first.second);
-                   osg::notify(osg::NOTICE)<<"  adding staight child"<<std::endl;
                 }
                 else
                 {
@@ -117,7 +165,6 @@ public:
                     os << _basename << "_"<<lodNum<<"_"<<pos<<_extension;
                     
                     plod->addChild(lod->getChild(mitr->second), mitr->first.first, mitr->first.second, os.str());
-                   osg::notify(osg::NOTICE)<<"  adding tiled subgraph"<<os.str()<<std::endl;
                 }
             }
             
@@ -130,7 +177,7 @@ public:
             }
 
             plod->setCenter(plod->getBound().center());
-            plod->setCenter(plod->getBound().center());
+            
 
         }
     }
@@ -140,7 +187,7 @@ public:
     LODSet _lodSet;
     std::string _basename;
     std::string _extension;
-
+    bool _makeAllChildrenPaged;
 };
 
 
@@ -155,6 +202,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" creates a hierachy of files for paging which can be later loaded by viewers.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("-o","set the output file (defaults to output.ive)");
+    arguments.getApplicationUsage()->addCommandLineOption("--makeAllChildrenPaged","Force all children of LOD to be written out as external PagedLOD children");
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -162,6 +211,13 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+    std::string outputfile("output.ive");
+    while (arguments.read("-o",outputfile)) {}
+    
+    
+    bool makeAllChildrenPaged = false;
+    while (arguments.read("--makeAllChildrenPaged")) { makeAllChildrenPaged = true; }
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -188,13 +244,22 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    ConvertToPageLODVistor converter("tile",".ive");
+    std::string basename( osgDB::getNameLessExtension(outputfile) );
+    std::string ext = '.'+ osgDB::getFileExtension(outputfile);
+    
+    ConvertToPageLODVistor converter(basename,ext, makeAllChildrenPaged);
     model->accept(converter);
     converter.convert();
     
+    NameVistor nameNodes;
+    model->accept(nameNodes);
+
+    //CheckVisitor checkNodes;
+    //model->accept(checkNodes);
+
     if (model.valid())
     {
-        osgDB::writeNodeFile(*model,"tile.ive");
+        osgDB::writeNodeFile(*model,outputfile);
         
         WriteOutPagedLODSubgraphsVistor woplsv;
         model->accept(woplsv);

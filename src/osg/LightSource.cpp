@@ -33,7 +33,6 @@ LightSource::~LightSource()
 void LightSource::setReferenceFrame(ReferenceFrame rf)
 {
     _referenceFrame = rf;
-    setCullingActive(_referenceFrame==RELATIVE_RF);
 }
 
 void LightSource::setLight(Light* light)

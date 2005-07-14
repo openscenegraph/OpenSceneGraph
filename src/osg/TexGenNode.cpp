@@ -14,8 +14,12 @@
 
 using namespace osg;
 
-TexGenNode::TexGenNode()
+TexGenNode::TexGenNode():
+    _referenceFrame(RELATIVE_RF)
 {
+    // switch off culling of tex gen nodes by default.
+    setCullingActive(false);
+    
     _textureUnit = 0;
     _value = StateAttribute::ON;
     _stateset = new StateSet;
@@ -26,7 +30,8 @@ TexGenNode::TexGenNode(const TexGenNode& cn, const CopyOp& copyop):
     Group(cn,copyop),
     _textureUnit(cn._textureUnit),
     _value(cn._value),
-    _texgen(static_cast<TexGen*>(copyop(cn._texgen.get())))
+    _texgen(static_cast<TexGen*>(copyop(cn._texgen.get()))),
+    _referenceFrame(cn._referenceFrame)
 {
 }
 
@@ -40,6 +45,11 @@ TexGenNode::TexGenNode(TexGen *texgen)
 
 TexGenNode::~TexGenNode()
 {
+}
+
+void TexGenNode::setReferenceFrame(ReferenceFrame rf)
+{
+    _referenceFrame = rf;
 }
 
 void TexGenNode::setTexGen(TexGen* texgen)

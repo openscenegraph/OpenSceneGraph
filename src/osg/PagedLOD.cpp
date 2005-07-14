@@ -232,7 +232,7 @@ bool PagedLOD::addChild( Node *child )
 {
     if (LOD::addChild(child))
     {
-        expandPerRangeDataTo(_children.size());
+        expandPerRangeDataTo(_children.size()-1);
         return true;
     }
     return false;
@@ -242,7 +242,7 @@ bool PagedLOD::addChild(Node *child, float min, float max)
 {
     if (LOD::addChild(child,min,max))
     {
-        expandPerRangeDataTo(_children.size());
+        expandPerRangeDataTo(_children.size()-1);
         return true;
     }
     return false;

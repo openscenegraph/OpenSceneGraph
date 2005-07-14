@@ -44,6 +44,9 @@ extern OSG_EXPORT void setNotifyLevel(NotifySeverity severity);
 /** get the notify level. */
 extern OSG_EXPORT NotifySeverity getNotifyLevel();
 
+/** is notification enabled, given the current setNotifyLevel() setting? */
+extern OSG_EXPORT bool isNotifyEnabled(NotifySeverity severity);
+
 /** initialize notify level. */
 extern OSG_EXPORT bool initNotifyLevel();
 

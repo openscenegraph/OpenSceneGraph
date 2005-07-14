@@ -12,7 +12,7 @@
 */
 
 /* file:        include/osg/Program
- * author:      Mike Weiblen 2005-05-05
+ * author:      Mike Weiblen 2005-07-01
 */
 
 #ifndef OSG_PROGRAM
@@ -132,6 +132,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 void requestLink();
                 void linkProgram();
+                void validateProgram();
                 bool needsLink() const {return _needsLink;}
                 bool isLinked() const {return _isLinked;}
                 bool getInfoLog( std::string& infoLog ) const;

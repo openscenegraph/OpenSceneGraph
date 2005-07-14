@@ -77,6 +77,11 @@ bool osg::initNotifyLevel()
 
 }
 
+bool osg::isNotifyEnabled( osg::NotifySeverity severity )
+{
+    return severity<=g_NotifyLevel;
+}
+
 #if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
 const char* NullStreamName = "nul";
 #else

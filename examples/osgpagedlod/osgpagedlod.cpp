@@ -14,75 +14,7 @@
 #include <osgUtil/Optimizer>
 
 #include <iostream>
-
-osg::Geode* createTile(const osg::Vec3& lb, const osg::Vec3& rb,
-                       const osg::Vec3& lt, const osg::Vec3& rt,
-                       const std::string& imageFile)
-{
-
-    // create the geometry.
-    osg::Geometry* geom = new osg::Geometry;
-
-    osg::Vec3Array* coords = new osg::Vec3Array(4);
-    (*coords)[0] = lt;
-    (*coords)[1] = lb;
-    (*coords)[2] = rb;
-    (*coords)[3] = rt;
-    geom->setVertexArray(coords);
-
-    osg::Vec2Array* tcoords = new osg::Vec2Array(4);
-    (*tcoords)[0].set(0.0f,1.0f);
-    (*tcoords)[1].set(0.0f,0.0f);
-    (*tcoords)[2].set(1.0f,0.0f);
-    (*tcoords)[3].set(1.0f,1.0f);
-    geom->setTexCoordArray(0,tcoords);
-
-    osg::Vec4Array* colours = new osg::Vec4Array(1);
-    (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
-    geom->setColorArray(colours);
-    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-    osg::Vec3Array* normals = new osg::Vec3Array(1);
-    (*normals)[0] = (rb-lb)^(lt-lb);
-    (*normals)[0].normalize();
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
-
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
-    
-    
-    // add the texture to the geometry.
-    geom->getOrCreateStateSet()->setTextureAttributeAndModes(
-        0, // texture unit 0.
-        new osg::Texture2D(osgDB::readImageFile(imageFile)),
-        osg::StateAttribute::ON);
-    
-    
-    // create the geode.
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(geom);
-    
-    return geode;
-
-}
-
-
-osg::Node* createPagedModel()
-{
-    osg::PagedLOD* level_0 = new osg::PagedLOD;
-
-    float distance = 1000.0f;
-    
-    osg::Vec3 lb(0.0f,0.0f,0.0f);
-    osg::Vec3 rb(distance,0.0f,0.0f);
-    osg::Vec3 rt(distance,0.0f,distance);
-    osg::Vec3 lt(0.0f,0.0f,distance);
-    
-    level_0->addChild(createTile(lb,rb,lt,rt,"lz.rgb"),distance,1e5,"");
-    level_0->addChild(createTile(lb,rb,lt,rt,"land_shallow_topo_2048.jpg"),0,distance,"level_1.osg");
-
-    return level_0;    
-}
+#include <sstream>
 
 class WriteOutPagedLODSubgraphsVistor : public osg::NodeVisitor
 {
@@ -94,18 +26,122 @@ public:
     
     virtual void apply(osg::PagedLOD& plod)
     {
+
         // go through all the named children and write them out to disk.
         for(unsigned int i=0;i<plod.getNumChildren();++i)
         {
             osg::Node* child = plod.getChild(i);
             std::string filename = plod.getFileName(i);
-            if (!filename.empty()) osgDB::writeNodeFile(*child,filename);
+            if (!filename.empty())
+            {
+                osg::notify(osg::NOTICE)<<"Writing out "<<filename<<std::endl;
+                osgDB::writeNodeFile(*child,filename);
+            }
         }
     
         traverse(plod);
     }    
 };
 
+class ConvertToPageLODVistor : public osg::NodeVisitor
+{
+public:
+    ConvertToPageLODVistor(const std::string& basename, const std::string& extension):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _basename(basename),
+        _extension(extension)
+    {
+    }
+    
+    virtual ~ConvertToPageLODVistor()
+    {
+    }
+
+    virtual void apply(osg::LOD& lod)
+    {
+        _lodSet.insert(&lod);
+    
+        traverse(lod);
+    }    
+
+    virtual void apply(osg::PagedLOD& plod)
+    {
+        // do thing, but want to avoid call LOD.
+        traverse(plod);
+    }
+
+    void convert()
+    {
+        unsigned int lodNum = 0;
+        for(LODSet::iterator itr = _lodSet.begin();
+            itr != _lodSet.end();
+            ++itr, ++lodNum)
+        {
+            osg::ref_ptr<osg::LOD> lod = const_cast<osg::LOD*>(itr->get());
+            
+            if (lod->getNumParents()==0)
+            {
+                osg::notify(osg::NOTICE)<<"Warning can't operator on root node."<<std::endl;
+                break;
+            }
+
+            osg::notify(osg::NOTICE)<<"Converting LOD to PagedLOD"<<std::endl;
+            
+            osg::PagedLOD* plod = new osg::PagedLOD;
+            
+            const osg::LOD::RangeList& originalRangeList = lod->getRangeList();
+            typedef std::map< osg::LOD::MinMaxPair , unsigned int > MinMaxPairMap;
+            MinMaxPairMap rangeMap;
+            unsigned int pos = 0;
+            for(osg::LOD::RangeList::const_iterator ritr = originalRangeList.begin();
+                ritr != originalRangeList.end();
+                ++ritr, ++pos)
+            {
+                rangeMap[*ritr] = pos;
+            }
+            
+            pos = 0;
+            for(MinMaxPairMap::reverse_iterator mitr = rangeMap.rbegin();
+                mitr != rangeMap.rend();
+                ++mitr, ++pos)
+            {
+                if (pos==0)
+                {
+                    plod->addChild(lod->getChild(mitr->second), mitr->first.first, mitr->first.second);
+                   osg::notify(osg::NOTICE)<<"  adding staight child"<<std::endl;
+                }
+                else
+                {
+                    std::string filename = _basename;
+                    std::ostringstream os;
+                    os << _basename << "_"<<lodNum<<"_"<<pos<<_extension;
+                    
+                    plod->addChild(lod->getChild(mitr->second), mitr->first.first, mitr->first.second, os.str());
+                   osg::notify(osg::NOTICE)<<"  adding tiled subgraph"<<os.str()<<std::endl;
+                }
+            }
+            
+            osg::Node::ParentList parents = lod->getParents();
+            for(osg::Node::ParentList::iterator pitr=parents.begin();
+                pitr!=parents.end();
+                ++pitr)
+            {
+                (*pitr)->replaceChild(lod.get(),plod);
+            }
+
+            plod->setCenter(plod->getBound().center());
+            plod->setCenter(plod->getBound().center());
+
+        }
+    }
+
+    
+    typedef std::set< osg::ref_ptr<osg::LOD> >  LODSet;
+    LODSet _lodSet;
+    std::string _basename;
+    std::string _extension;
+
+};
 
 
 int main( int argc, char **argv )
@@ -144,11 +180,21 @@ int main( int argc, char **argv )
 //     }
 
 
-    osg::ref_ptr<osg::Node> model = createPagedModel();
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+    
+    if (!model)
+    {
+        osg::notify(osg::NOTICE)<<"No model loaded."<<std::endl;
+        return 1;
+    }
+    
+    ConvertToPageLODVistor converter("tile",".ive");
+    model->accept(converter);
+    converter.convert();
     
     if (model.valid())
     {
-        osgDB::writeNodeFile(*model,"level_0.osg");
+        osgDB::writeNodeFile(*model,"tile.ive");
         
         WriteOutPagedLODSubgraphsVistor woplsv;
         model->accept(woplsv);

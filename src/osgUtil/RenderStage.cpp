@@ -118,7 +118,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     // note, SceneView does call to drawPreRenderStages explicitly
     // so there is no need to call it here.
-    //drawPreRenderStages(state,previous);
+    drawPreRenderStages(state,previous);
 
     RenderBin::draw(state,previous);
 

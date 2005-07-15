@@ -85,6 +85,7 @@ int main( int argc, char **argv )
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
+        return 1;
     }
 
     osg::Timer_t end_load_tick = osg::Timer::instance()->tick();

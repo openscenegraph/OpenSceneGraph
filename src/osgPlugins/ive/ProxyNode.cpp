@@ -70,7 +70,8 @@ void ProxyNode::write(DataOutputStream* out)
         if (getFileName(i).empty())
         {
             out->writeString("");
-            ++numChildrenToWriteOut;
+            
+            if (i<getNumChildren()) ++numChildrenToWriteOut;
         }
         else
         {
@@ -100,20 +101,23 @@ void ProxyNode::write(DataOutputStream* out)
 
         for(i=0; i<getNumFileNames(); i++)
         {
-            if (getFileName(i).empty())
+            if (i<getNumChildren())
             {
-                out->writeNode(getChild(i));
-            }
-            else if(out->getWriteExternalReferenceFiles())
-            {
-                if(out->getUseOriginalExternalReferences())
+                if (getFileName(i).empty())
                 {
-                    osgDB::writeNodeFile(*getChild(i), getFileName(i));
+                    out->writeNode(getChild(i));
                 }
-                else
+                else if(out->getWriteExternalReferenceFiles())
                 {
-                    std::string ivename = osgDB::getFilePath(getFileName(i)) +"/"+ osgDB::getStrippedName(getFileName(i)) +".ive";
-                    osgDB::writeNodeFile(*getChild(i), ivename);
+                    if(out->getUseOriginalExternalReferences())
+                    {
+                        osgDB::writeNodeFile(*getChild(i), getFileName(i));
+                    }
+                    else
+                    {
+                        std::string ivename = osgDB::getFilePath(getFileName(i)) +"/"+ osgDB::getStrippedName(getFileName(i)) +".ive";
+                        osgDB::writeNodeFile(*getChild(i), ivename);
+                    }
                 }
             }
         }

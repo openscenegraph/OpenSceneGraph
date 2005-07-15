@@ -122,7 +122,7 @@ inline void BlinkSequence::getPulse(unsigned int i, double& length, osg::Vec4& c
 
 inline void BlinkSequence::setPulse(unsigned int i,double length,const osg::Vec4& color)
 {
-    if( i > _pulseData.size() ) return;
+    if( i >= _pulseData.size() ) return;
     IntervalColor& ic = _pulseData[i];
     ic.first = length;
     ic.second = color;

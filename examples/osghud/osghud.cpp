@@ -136,8 +136,6 @@ osg::Node* createHUD()
         geode->addDrawable(geom);
     }
 
-#if 1
-
     osg::CameraNode* camera = new osg::CameraNode;
 
     // set the projection matrix
@@ -156,34 +154,6 @@ osg::Node* createHUD()
     camera->addChild(geode);
     
     return camera;
-
-#else
-
-#if 0
-    // to ensure the hud appears on top we can either use osg::Depth to force the 
-    // depth fragments to be placed at the front of the screen.
-    stateset->setAttribute(new osg::Depth(osg::Depth::LESS,0.0,0.0001));
-#else
-    // or disable depth test, and make sure that the hud is drawn after everything 
-    // else so that it always appears ontop.
-    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-    stateset->setRenderBinDetails(11,"RenderBin");
-#endif
-
-
-
-    // create the hud.
-    osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    modelview_abs->setMatrix(osg::Matrix::identity());
-    modelview_abs->addChild(geode);
-
-    osg::Projection* projection = new osg::Projection;
-    projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
-    projection->addChild(modelview_abs);
-
-    return projection;
-#endif
 
 }
 

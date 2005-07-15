@@ -62,7 +62,7 @@ public:
     osg::Vec3d readVec3d();
     osg::Vec4d readVec4d();
     osg::Plane readPlane();
-    osg::UByte4 readUByte4();
+    osg::Vec4ub readVec4ub();
     osg::Quat readQuat();
     osg::Matrixf readMatrixf();
     osg::Matrixd readMatrixd();
@@ -72,17 +72,17 @@ public:
     osg::UByteArray* readUByteArray();
     osg::UShortArray* readUShortArray();
     osg::UIntArray* readUIntArray();
-    osg::UByte4Array* readUByte4Array();
+    osg::Vec4ubArray* readVec4ubArray();
     osg::FloatArray* readFloatArray();
     osg::Vec2Array* readVec2Array();
     osg::Vec3Array* readVec3Array();
     osg::Vec4Array* readVec4Array();
-    osg::Byte2Array* readByte2Array();
-    osg::Byte3Array* readByte3Array();
-    osg::Byte4Array* readByte4Array();
-    osg::Short2Array* readShort2Array();
-    osg::Short3Array* readShort3Array();
-    osg::Short4Array* readShort4Array();    
+    osg::Vec2bArray* readVec2bArray();
+    osg::Vec3bArray* readVec3bArray();
+    osg::Vec4bArray* readVec4bArray();
+    osg::Vec2sArray* readVec2sArray();
+    osg::Vec3sArray* readVec3sArray();
+    osg::Vec4sArray* readVec4sArray();    
 
     osg::Image* readImage(std::string s);
     osg::StateSet* readStateSet();

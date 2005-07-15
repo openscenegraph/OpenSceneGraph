@@ -383,14 +383,14 @@ osg::Plane DataInputStream::readPlane(){
     return v;
 }
 
-osg::UByte4 DataInputStream::readUByte4(){
-    osg::UByte4 v;
+osg::Vec4ub DataInputStream::readVec4ub(){
+    osg::Vec4ub v;
     v.r()=readChar();
     v.g()=readChar();
     v.b()=readChar();
     v.a()=readChar();
 
-    if (_verboseOutput) std::cout<<"read/writeUByte4() ["<<v<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec4ub() ["<<v<<"]"<<std::endl;
     
     return v;
 }
@@ -433,17 +433,17 @@ osg::Array* DataInputStream::readArray(){
         case 1: return readUByteArray();
         case 2: return readUShortArray();
         case 3: return readUIntArray();
-        case 4: return readUByte4Array();
+        case 4: return readVec4ubArray();
         case 5: return readFloatArray();
         case 6:    return readVec2Array();
         case 7:    return readVec3Array();
         case 8:    return readVec4Array();
-        case 9:    return readShort2Array();
-        case 10:   return readShort3Array();
-        case 11:   return readShort4Array();
-        case 12:   return readByte2Array();        
-        case 13:   return readByte3Array();        
-        case 14:   return readByte4Array();        
+        case 9:    return readVec2sArray();
+        case 10:   return readVec3sArray();
+        case 11:   return readVec4sArray();
+        case 12:   return readVec2bArray();        
+        case 13:   return readVec3bArray();        
+        case 14:   return readVec4bArray();        
         default: throw Exception("Unknown array type in DataInputStream::readArray()");
     }
 }
@@ -517,17 +517,17 @@ osg::UIntArray* DataInputStream::readUIntArray()
     return a;
 }
 
-osg::UByte4Array* DataInputStream::readUByte4Array()
+osg::Vec4ubArray* DataInputStream::readVec4ubArray()
 {
     int size = readInt();
-    osg::UByte4Array* a = new osg::UByte4Array(size);
+    osg::Vec4ubArray* a = new osg::Vec4ubArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUbyte4Array(): Failed to read UByte4 array.");
+        throw Exception("DataInputStream::readVec4ubArray(): Failed to read Vec4ub array.");
 
-    if (_verboseOutput) std::cout<<"read/writeUByte4Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec4ubArray() ["<<size<<"]"<<std::endl;
     
     return a;
 }
@@ -618,92 +618,92 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
     return a;
 }
 
-osg::Byte2Array* DataInputStream::readByte2Array()
+osg::Vec2bArray* DataInputStream::readVec2bArray()
 {
     int size = readInt();
-    osg::Byte2Array* a = new osg::Byte2Array(size);
+    osg::Vec2bArray* a = new osg::Vec2bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 2 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readByte2Array(): Failed to read Byte2 array.");
+        throw Exception("DataInputStream::readVec2bArray(): Failed to read Vec2b array.");
 
-    if (_verboseOutput) std::cout<<"read/writeByte2Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec2bArray() ["<<size<<"]"<<std::endl;
 
     return a;
 }
 
-osg::Byte3Array* DataInputStream::readByte3Array()
+osg::Vec3bArray* DataInputStream::readVec3bArray()
 {
     int size = readInt();
-    osg::Byte3Array* a = new osg::Byte3Array(size);
+    osg::Vec3bArray* a = new osg::Vec3bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 3 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readByte3Array(): Failed to read Byte3 array.");
+        throw Exception("DataInputStream::readVec3bArray(): Failed to read Vec3b array.");
 
-    if (_verboseOutput) std::cout<<"read/writeByte3Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec3bArray() ["<<size<<"]"<<std::endl;
 
     return a;
 }
 
-osg::Byte4Array* DataInputStream::readByte4Array()
+osg::Vec4bArray* DataInputStream::readVec4bArray()
 {
     int size = readInt();
-    osg::Byte4Array* a = new osg::Byte4Array(size);
+    osg::Vec4bArray* a = new osg::Vec4bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 4 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readByte4Array(): Failed to read Byte4 array.");
+        throw Exception("DataInputStream::readVec4bArray(): Failed to read Vec4b array.");
 
-    if (_verboseOutput) std::cout<<"read/writeByte4Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec4bArray() ["<<size<<"]"<<std::endl;
 
     return a;
 }
 
-osg::Short2Array* DataInputStream::readShort2Array()
+osg::Vec2sArray* DataInputStream::readVec2sArray()
 {
     int size = readInt();
-    osg::Short2Array* a = new osg::Short2Array(size);
+    osg::Vec2sArray* a = new osg::Vec2sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 2 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readShort2Array(): Failed to read Short2 array.");
+        throw Exception("DataInputStream::readVec2sArray(): Failed to read Vec2s array.");
 
-    if (_verboseOutput) std::cout<<"read/writeShort2Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec2sArray() ["<<size<<"]"<<std::endl;
 
     return a;
 }
 
-osg::Short3Array* DataInputStream::readShort3Array()
+osg::Vec3sArray* DataInputStream::readVec3sArray()
 {
     int size = readInt();
-    osg::Short3Array* a = new osg::Short3Array(size);
+    osg::Vec3sArray* a = new osg::Vec3sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 3 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readShort3Array(): Failed to read Short3 array.");
+        throw Exception("DataInputStream::readVec3sArray(): Failed to read Vec3s array.");
 
-    if (_verboseOutput) std::cout<<"read/writeShort3Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec3sArray() ["<<size<<"]"<<std::endl;
 
     return a;
 }
 
-osg::Short4Array* DataInputStream::readShort4Array()
+osg::Vec4sArray* DataInputStream::readVec4sArray()
 {
     int size = readInt();
-    osg::Short4Array* a = new osg::Short4Array(size);
+    osg::Vec4sArray* a = new osg::Vec4sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 4 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readShort4Array(): Failed to read Short4 array.");
+        throw Exception("DataInputStream::readVec4sArray(): Failed to read Vec4s array.");
 
-    if (_verboseOutput) std::cout<<"read/writeShort4Array() ["<<size<<"]"<<std::endl;
+    if (_verboseOutput) std::cout<<"read/writeVec4sArray() ["<<size<<"]"<<std::endl;
 
     return a;
 }

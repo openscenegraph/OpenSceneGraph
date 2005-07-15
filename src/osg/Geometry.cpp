@@ -120,30 +120,30 @@ class DrawNormal
                         else glNormal3fv(normals[pos].ptr());
                     }
                     break;
-                case (Array::Short3ArrayType):
+                case (Array::Vec3sArrayType):
                     {
-                        const Short3Array& normals = *static_cast<const Short3Array*>(_normals);
+                        const Vec3sArray& normals = *static_cast<const Vec3sArray*>(_normals);
                         if (_indices) glNormal3sv(normals[_indices->index(pos)].ptr());
                         else glNormal3sv(normals[pos].ptr());
                     }
                     break;
-                case (Array::Short4ArrayType):
+                case (Array::Vec4sArrayType):
                     {
-                        const Short4Array& normals = *static_cast<const Short4Array*>(_normals);
+                        const Vec4sArray& normals = *static_cast<const Vec4sArray*>(_normals);
                         if (_indices) glNormal3sv(normals[_indices->index(pos)].ptr());
                         else glNormal3sv(normals[pos].ptr());
                     }
                     break;
-                case (Array::Byte3ArrayType):
+                case (Array::Vec3bArrayType):
                     {
-                        const Byte3Array& normals = *static_cast<const Byte3Array*>(_normals);
+                        const Vec3bArray& normals = *static_cast<const Vec3bArray*>(_normals);
                         if (_indices) glNormal3bv((const GLbyte*)normals[_indices->index(pos)].ptr());
                         else glNormal3bv((const GLbyte*)normals[pos].ptr());
                     }
                     break;
-                case (Array::Byte4ArrayType):
+                case (Array::Vec4bArrayType):
                     {
-                        const Byte4Array& normals = *static_cast<const Byte4Array*>(_normals);
+                        const Vec4bArray& normals = *static_cast<const Vec4bArray*>(_normals);
                         if (_indices) glNormal3bv((const GLbyte*)normals[_indices->index(pos)].ptr());
                         else glNormal3bv((const GLbyte*)normals[pos].ptr());
                     }
@@ -195,8 +195,8 @@ class DrawColor
             case(Array::Vec4ArrayType):
                 apply((*static_cast<const Vec4Array*>(_colors))[pos]);
                 break;
-            case(Array::UByte4ArrayType):
-                apply((*static_cast<const UByte4Array*>(_colors))[pos]);
+            case(Array::Vec4ubArrayType):
+                apply((*static_cast<const Vec4ubArray*>(_colors))[pos]);
                 break;
             case(Array::Vec3ArrayType):
                 apply((*static_cast<const Vec3Array*>(_colors))[pos]);
@@ -206,7 +206,7 @@ class DrawColor
             }
         }
 
-        inline void apply(const UByte4& v) { glColor4ubv(v.ptr()); }
+        inline void apply(const Vec4ub& v) { glColor4ubv(v.ptr()); }
         inline void apply(const Vec3& v)   { glColor3fv(v.ptr()); }
         inline void apply(const Vec4& v)   { glColor4fv(v.ptr()); }
         
@@ -230,7 +230,7 @@ class DrawColor : public osg::ConstValueVisitor
             else _colors->accept(pos,*this);
         }
 
-        virtual void apply(const UByte4& v) { glColor4ubv(v.ptr()); }
+        virtual void apply(const UVec4b& v) { glColor4ubv(v.ptr()); }
         virtual void apply(const Vec3& v)   { glColor3fv(v.ptr()); }
         virtual void apply(const Vec4& v)   { glColor4fv(v.ptr()); }
         
@@ -266,7 +266,7 @@ public:
     {
         _extensions->glVertexAttrib1f( _vertAttribIndex, f );
     }
-    virtual void apply(const UByte4& v) 
+    virtual void apply(const Vec4ub& v) 
     {
         if( _normalized )
         {
@@ -368,7 +368,7 @@ class DrawSecondaryColor : public osg::ConstValueVisitor
             else _colors->accept(pos,*this);
         }
 
-        virtual void apply(const UByte4& v) { _extensions->glSecondaryColor3ubv(v.ptr()); }
+        virtual void apply(const Vec4ub& v) { _extensions->glSecondaryColor3ubv(v.ptr()); }
         virtual void apply(const Vec3& v)   { _extensions->glSecondaryColor3fv(v.ptr()); }
         virtual void apply(const Vec4& v)   { _extensions->glSecondaryColor3fv(v.ptr()); }
 
@@ -1775,7 +1775,7 @@ class AttributeFunctorArrayVisitor : public ArrayVisitor
         virtual void apply(UByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(UShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(UIntArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
-        virtual void apply(UByte4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec4ubArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(FloatArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(Vec2Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(Vec3Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
@@ -1824,7 +1824,7 @@ class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
         virtual void apply(const UByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const UShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const UIntArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
-        virtual void apply(const UByte4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec4ubArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const FloatArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const Vec2Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const Vec3Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
@@ -2544,7 +2544,7 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
         virtual void apply(const osg::UByteArray& array) { _targetArray = create(array); }
         virtual void apply(const osg::UShortArray& array) { _targetArray = create(array); }
         virtual void apply(const osg::UIntArray& array) { _targetArray = create(array); }
-        virtual void apply(const osg::UByte4Array& array) { _targetArray = create(array); }
+        virtual void apply(const osg::Vec4ubArray& array) { _targetArray = create(array); }
         virtual void apply(const osg::FloatArray& array) { _targetArray = create(array); }
         virtual void apply(const osg::Vec2Array& array) { _targetArray = create(array); }
         virtual void apply(const osg::Vec3Array& array) { _targetArray = create(array); }

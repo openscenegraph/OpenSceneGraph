@@ -43,7 +43,7 @@ public:
             _height(1.0f),
             _type(0) {}
 
-        Tree(const osg::Vec3& position, const osg::UByte4& color, float width, float height, unsigned int type):
+        Tree(const osg::Vec3& position, const osg::Vec4ub& color, float width, float height, unsigned int type):
             _position(position),
             _color(color),
             _width(width),
@@ -51,7 +51,7 @@ public:
             _type(type) {}
 
         osg::Vec3       _position;
-        osg::UByte4     _color;
+        osg::Vec4ub     _color;
         float           _width;
         float           _height;
         unsigned int    _type;
@@ -98,9 +98,9 @@ public:
 
     void createTreeList(osg::Node* terrain,const osg::Vec3& origin, const osg::Vec3& size,unsigned int numTreesToCreate,TreeList& trees);
 
-    osg::Geometry* createSprite( float w, float h, osg::UByte4 color );
+    osg::Geometry* createSprite( float w, float h, osg::Vec4ub color );
 
-    osg::Geometry* createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::UByte4 color );
+    osg::Geometry* createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::Vec4ub color );
     osg::Geometry* createOrthogonalQuadsNoColor( const osg::Vec3& pos, float w, float h );
 
     osg::Node* createBillboardGraph(Cell* cell,osg::StateSet* stateset);
@@ -409,7 +409,7 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
         
         osg::Vec3Array& v = *(new osg::Vec3Array(numColumns*numRows));
         osg::Vec2Array& t = *(new osg::Vec2Array(numColumns*numRows));
-        osg::UByte4Array& color = *(new osg::UByte4Array(1));
+        osg::Vec4ubArray& color = *(new osg::Vec4ubArray(1));
         
         color[0].set(255,255,255,255);
 
@@ -511,12 +511,12 @@ void ForestTechniqueManager::createTreeList(osg::Node* terrain,const osg::Vec3& 
     }
 }
 
-osg::Geometry* ForestTechniqueManager::createSprite( float w, float h, osg::UByte4 color )
+osg::Geometry* ForestTechniqueManager::createSprite( float w, float h, osg::Vec4ub color )
 {
     // set up the coords
     osg::Vec3Array& v = *(new osg::Vec3Array(4));
     osg::Vec2Array& t = *(new osg::Vec2Array(4));
-    osg::UByte4Array& c = *(new osg::UByte4Array(1));
+    osg::Vec4ubArray& c = *(new osg::Vec4ubArray(1));
 
     v[0].set(-w*0.5f,0.0f,0.0f);
     v[1].set( w*0.5f,0.0f,0.0f);
@@ -544,12 +544,12 @@ osg::Geometry* ForestTechniqueManager::createSprite( float w, float h, osg::UByt
     return geom;
 }
 
-osg::Geometry* ForestTechniqueManager::createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::UByte4 color )
+osg::Geometry* ForestTechniqueManager::createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::Vec4ub color )
 {
     // set up the coords
     osg::Vec3Array& v = *(new osg::Vec3Array(8));
     osg::Vec2Array& t = *(new osg::Vec2Array(8));
-    osg::UByte4Array& c = *(new osg::UByte4Array(1));
+    osg::Vec4ubArray& c = *(new osg::Vec4ubArray(1));
     
     float rotation = random(0.0f,osg::PI/2.0f);
     float sw = sinf(rotation)*w*0.5f;
@@ -680,7 +680,7 @@ osg::Node* ForestTechniqueManager::createTransformGraph(Cell* cell,osg::StateSet
     {
         transform_group = new osg::Group;
         
-        osg::Geometry* geometry = createOrthogonalQuads(osg::Vec3(0.0f,0.0f,0.0f),1.0f,1.0f,osg::UByte4(255,255,255,255));
+        osg::Geometry* geometry = createOrthogonalQuads(osg::Vec3(0.0f,0.0f,0.0f),1.0f,1.0f,osg::Vec4ub(255,255,255,255));
         
         for(TreeList::iterator itr=cell->_trees.begin();
             itr!=cell->_trees.end();

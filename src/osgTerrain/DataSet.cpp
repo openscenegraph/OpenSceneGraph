@@ -2482,7 +2482,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     
     osg::Vec3Array& v = *(new osg::Vec3Array(numVertices));
     osg::Vec2Array& t = *(new osg::Vec2Array(numVertices));
-    osg::UByte4Array& color = *(new osg::UByte4Array(1));
+    osg::Vec4ubArray& color = *(new osg::Vec4ubArray(1));
 
     color[0].set(255,255,255,255);
 

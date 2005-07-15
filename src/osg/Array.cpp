@@ -24,25 +24,25 @@ static char* s_ArrayNames[] =
     "UByteArray",    // 4
     "UShortArray",   // 5
     "UIntArray",     // 6
-    "UByte4Array",   // 7
+    "Vec4ubArray",   // 7
 
     "FloatArray",    // 8
     "Vec2Array",     // 9
     "Vec3Array",     // 10
-    "Vec4Array",      // 11
+    "Vec4Array",     // 11
 
-    "Short2Array",    // 12
-    "Short3Array",    // 13
-    "Short4Array",    // 14
+    "Vec2sArray",    // 12
+    "Vec3sArray",    // 13
+    "Vec4sArray",    // 14
 
-    "Byte2Array",    // 15
-    "Byte3Array",    // 16
-    "Byte4Array",    // 17
+    "Vec2bArray",    // 15
+    "Vec3bArray",    // 16
+    "Vec4bArray",    // 17
 };
 
 const char* Array::className() const
 {
-    if (_arrayType>=ArrayType && _arrayType<=Byte4ArrayType)
+    if (_arrayType>=ArrayType && _arrayType<=Vec4bArrayType)
         return s_ArrayNames[_arrayType];
     else
         return "UnkownArray";

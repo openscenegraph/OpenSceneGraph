@@ -513,9 +513,9 @@ Array* Array_readLocalData(Input& fr)
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"UByte4Array")==0)
+    else if (strcmp(arrayName,"UVec4bArray")==0 || strcmp(arrayName,"Vec4ubArray")==0)
     {
-        UByte4Array* array = new UByte4Array;
+        Vec4ubArray* array = new Vec4ubArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -526,7 +526,7 @@ Array* Array_readLocalData(Input& fr)
                 fr[3].getUInt(a))
             {
                 fr+=4;
-                array->push_back(osg::UByte4(r,g,b,a));
+                array->push_back(osg::Vec4ub(r,g,b,a));
             }
             else ++fr;
         }
@@ -601,9 +601,9 @@ Array* Array_readLocalData(Input& fr)
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"Byte2Array")==0)
+    else if (strcmp(arrayName,"Vec2bArray")==0)
     {
-        Byte2Array* array = new Byte2Array;
+        Vec2bArray* array = new Vec2bArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -612,16 +612,16 @@ Array* Array_readLocalData(Input& fr)
                 fr[1].getUInt(g))
             {
                 fr+=2;
-                array->push_back(osg::Byte2(r,g));
+                array->push_back(osg::Vec2b(r,g));
             }
             else ++fr;
         }
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"Byte3Array")==0)
+    else if (strcmp(arrayName,"Vec3bArray")==0)
     {
-        Byte3Array* array = new Byte3Array;
+        Vec3bArray* array = new Vec3bArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -631,16 +631,16 @@ Array* Array_readLocalData(Input& fr)
                 fr[2].getUInt(b))
             {
                 fr+=3;
-                array->push_back(osg::Byte3(r,g,b));
+                array->push_back(osg::Vec3b(r,g,b));
             }
             else ++fr;
         }
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"Byte4Array")==0)
+    else if (strcmp(arrayName,"Vec4bArray")==0)
     {
-        Byte4Array* array = new Byte4Array;
+        Vec4bArray* array = new Vec4bArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -651,16 +651,16 @@ Array* Array_readLocalData(Input& fr)
                 fr[3].getUInt(a))
             {
                 fr+=4;
-                array->push_back(osg::Byte4(r,g,b,a));
+                array->push_back(osg::Vec4b(r,g,b,a));
             }
             else ++fr;
         }
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"Short2Array")==0)
+    else if (strcmp(arrayName,"Vec2sArray")==0)
     {
-        Short2Array* array = new Short2Array;
+        Vec2sArray* array = new Vec2sArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -669,16 +669,16 @@ Array* Array_readLocalData(Input& fr)
                 fr[1].getUInt(g))
             {
                 fr+=2;
-                array->push_back(osg::Short2(r,g));
+                array->push_back(osg::Vec2s(r,g));
             }
             else ++fr;
         }
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"Short3Array")==0)
+    else if (strcmp(arrayName,"Vec3sArray")==0)
     {
-        Short3Array* array = new Short3Array;
+        Vec3sArray* array = new Vec3sArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -688,16 +688,16 @@ Array* Array_readLocalData(Input& fr)
                 fr[2].getUInt(b))
             {
                 fr+=3;
-                array->push_back(osg::Short3(r,g,b));
+                array->push_back(osg::Vec3s(r,g,b));
             }
             else ++fr;
         }
         ++fr;
         return_array = array;
     }
-    else if (strcmp(arrayName,"Short4Array")==0)
+    else if (strcmp(arrayName,"Vec4sArray")==0)
     {
-        Short4Array* array = new Short4Array;
+        Vec4sArray* array = new Vec4sArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -708,7 +708,7 @@ Array* Array_readLocalData(Input& fr)
                 fr[3].getUInt(a))
             {
                 fr+=4;
-                array->push_back(osg::Short4(r,g,b,a));
+                array->push_back(osg::Vec4s(r,g,b,a));
             }
             else ++fr;
         }
@@ -795,9 +795,9 @@ bool Array_writeLocalData(const Array& array,Output& fw)
                 return true;
             }
             break;
-        case(Array::UByte4ArrayType):
+        case(Array::Vec4ubArrayType):
             {
-                const UByte4Array& carray = static_cast<const UByte4Array&>(array);
+                const Vec4ubArray& carray = static_cast<const Vec4ubArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
                 writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
@@ -835,49 +835,49 @@ bool Array_writeLocalData(const Array& array,Output& fw)
                 return true;
             }
             break;
-        case(Array::Short2ArrayType):
+        case(Array::Vec2sArrayType):
             {
-                const Short2Array& carray = static_cast<const Short2Array&>(array);
+                const Vec2sArray& carray = static_cast<const Vec2sArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
                 writeArray(fw,carray.begin(),carray.end(), 3);
                 return true;
             }
             break;
-        case(Array::Short3ArrayType):
+        case(Array::Vec3sArrayType):
             {
-                const Short3Array& carray = static_cast<const Short3Array&>(array);
+                const Vec3sArray& carray = static_cast<const Vec3sArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
                 writeArray(fw,carray.begin(),carray.end(), 2);
                 return true;
             }
             break;
-        case(Array::Short4ArrayType):
+        case(Array::Vec4sArrayType):
             {
-                const Short4Array& carray = static_cast<const Short4Array&>(array);
+                const Vec4sArray& carray = static_cast<const Vec4sArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
                 writeArray(fw,carray.begin(),carray.end(), 1);
                 return true;
             }
             break;
-        case(Array::Byte2ArrayType):
+        case(Array::Vec2bArrayType):
             {
-                const Byte2Array& carray = static_cast<const Byte2Array&>(array);
+                const Vec2bArray& carray = static_cast<const Vec2bArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
                 writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
-        case(Array::Byte3ArrayType):
+        case(Array::Vec3bArrayType):
             {
-                const Byte3Array& carray = static_cast<const Byte3Array&>(array);
+                const Vec3bArray& carray = static_cast<const Vec3bArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
                 writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
-        case(Array::Byte4ArrayType):
+        case(Array::Vec4bArrayType):
             {
-                const Byte4Array& carray = static_cast<const Byte4Array&>(array);
+                const Vec4bArray& carray = static_cast<const Vec4bArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
                 writeArray(fw,carray.begin(),carray.end(),1);
                 return true;

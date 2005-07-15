@@ -873,10 +873,17 @@ void CullVisitor::apply(TexGenNode& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    RefMatrix& matrix = getModelViewMatrix();
 
-    addPositionedTextureAttribute(node.getTextureUnit(), &matrix,node.getTexGen());
-
+    if (node.getReferenceFrame()==osg::TexGenNode::RELATIVE_RF)
+    {
+        RefMatrix& matrix = getModelViewMatrix();
+        addPositionedTextureAttribute(node.getTextureUnit(), &matrix ,node.getTexGen());
+    }
+    else
+    {
+        addPositionedTextureAttribute(node.getTextureUnit(), 0 ,node.getTexGen());
+    }
+    
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
@@ -1028,6 +1035,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
     // push the node's state.
     StateSet* node_state = camera.getStateSet();
     if (node_state) pushStateSet(node_state);
+    
 
     if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
     {
@@ -1080,7 +1088,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         rtts->setViewport( viewport );
         
         // set up to charge the same RenderStageLighting is the parent previous stage.
-        rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
+        //rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
 
         // record the render bin, to be restored after creation
         // of the render to text

@@ -33,6 +33,20 @@ class OSG_EXPORT TexGenNode : public Group
         META_Node(osg, TexGenNode);
 	
         
+        enum ReferenceFrame
+        {
+            RELATIVE_RF,
+            ABSOLUTE_RF
+        };
+        
+        /** Set the TexGenNode's ReferenceFrame, either to be relative to its
+          * parent reference frame. */
+        void setReferenceFrame(ReferenceFrame rf);
+        
+        /** Ge thte TexGenNode's ReferenceFrame.*/
+        ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
+
+        /** Set the texture unit that this TexGenNode is associated with.*/
         void setTextureUnit(unsigned int textureUnit) { _textureUnit = textureUnit; }
 
         unsigned int getTextureUnit() const { return _textureUnit; }
@@ -54,6 +68,8 @@ class OSG_EXPORT TexGenNode : public Group
         unsigned int _textureUnit;
         StateAttribute::GLModeValue _value;
         osg::ref_ptr<TexGen> _texgen;
+
+        ReferenceFrame                  _referenceFrame;
 };
 
 }

@@ -1000,31 +1000,31 @@ SOURCE=..\..\Include\Osg\UnitTestFramework
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Byte2
+SOURCE=..\..\Include\Osg\Vec2b
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Byte3
+SOURCE=..\..\Include\Osg\Vec3b
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Byte4
+SOURCE=..\..\Include\Osg\Vec4b
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Short2
+SOURCE=..\..\Include\Osg\Vec2s
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Short3
+SOURCE=..\..\Include\Osg\Vec3s
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Short4
+SOURCE=..\..\Include\Osg\Vec4s
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\UByte4
+SOURCE=..\..\Include\Osg\Vec4ub
 # End Source File
 # Begin Source File
 

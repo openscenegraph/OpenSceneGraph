@@ -11,12 +11,12 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_SHORT_4
-#define OSG_SHORT_4		1
+#ifndef OSG_VEC4S
+#define OSG_VEC4S		1
 
 namespace osg {
 
-class Short4
+class Vec4s
 {
 public:
 
@@ -28,16 +28,16 @@ public:
         value_type _v[4];
     };
 
-    Short4 (){}
-    Short4 (value_type xx, value_type yy, value_type zz, value_type ww)
+    Vec4s (){}
+    Vec4s (value_type xx, value_type yy, value_type zz, value_type ww)
     {x = xx; y = yy; z = zz; w = ww;}
 
 	inline value_type* ptr() { return _v; }
     inline const value_type* ptr() const { return _v; }
         
-    inline bool operator == (const Short4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
-    inline bool operator != (const Short4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
-    inline bool operator <  (const Short4& v) const
+    inline bool operator == (const Vec4s& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
+    inline bool operator != (const Vec4s& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
+    inline bool operator <  (const Vec4s& v) const
     {
         if (_v[0]<v._v[0])      return true;
         else if (_v[0]>v._v[0]) return false;
@@ -48,39 +48,39 @@ public:
         else return (_v[3]<v._v[3]);
     }
     
-    inline Short4 operator * (value_type rhs) const
+    inline Vec4s operator * (value_type rhs) const
     {
-        return Short4(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs, _v[3]*rhs);
+        return Vec4s(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs, _v[3]*rhs);
     }
     
-    inline Short4 operator / (value_type rhs) const
+    inline Vec4s operator / (value_type rhs) const
     {
-        return Short4(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs, _v[3]/rhs);
+        return Vec4s(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs, _v[3]/rhs);
     }
     
-    inline Short4 operator + (value_type rhs) const
+    inline Vec4s operator + (value_type rhs) const
     {
-        return Short4(_v[0]+rhs, _v[1]+rhs, _v[2]+rhs, _v[3]+rhs);
+        return Vec4s(_v[0]+rhs, _v[1]+rhs, _v[2]+rhs, _v[3]+rhs);
     }
     
-    inline Short4 operator - (value_type rhs) const
+    inline Vec4s operator - (value_type rhs) const
     {
-        return Short4(_v[0]-rhs, _v[1]-rhs, _v[2]-rhs, _v[3]-rhs);
+        return Vec4s(_v[0]-rhs, _v[1]-rhs, _v[2]-rhs, _v[3]-rhs);
     }
     
-    inline Short4 operator + (const Short4& rhs) const
+    inline Vec4s operator + (const Vec4s& rhs) const
     {
-        return Short4(_v[0]+rhs._v[0], _v[1]+rhs._v[1], _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
+        return Vec4s(_v[0]+rhs._v[0], _v[1]+rhs._v[1], _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
     }
     
-    inline Short4 operator - (const Short4& rhs) const
+    inline Vec4s operator - (const Vec4s& rhs) const
     {
-        return Short4(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2], _v[3]-rhs._v[3]);
+        return Vec4s(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2], _v[3]-rhs._v[3]);
     }
     
-    inline Short4 operator * (const Short4& rhs) const
+    inline Vec4s operator * (const Vec4s& rhs) const
     {
-        return Short4(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2], _v[3]*rhs._v[3]);
+        return Vec4s(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2], _v[3]*rhs._v[3]);
     }
 };
 

@@ -615,7 +615,7 @@ osg::Drawable*   ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,Fac
         geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
     
-    osg::UByte4Array* osg_colors = new osg::UByte4Array(1);
+    osg::Vec4ubArray* osg_colors = new osg::Vec4ubArray(1);
     (*osg_colors)[0].set(255,255,255,255);
     geom->setColorArray(osg_colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);

@@ -1568,13 +1568,13 @@ struct LessGeometry
             if (rhs_normalArray->getType()<lhs_normalArray->getType()) return false;
             switch(lhs_normalArray->getType())
             {
-            case(osg::Array::Byte3ArrayType):
-                if ((*static_cast<const osg::Byte3Array*>(lhs_normalArray))[0]<(*static_cast<const osg::Byte3Array*>(rhs_normalArray))[0]) return true;
-                if ((*static_cast<const osg::Byte3Array*>(rhs_normalArray))[0]<(*static_cast<const osg::Byte3Array*>(lhs_normalArray))[0]) return false;
+            case(osg::Array::Vec3bArrayType):
+                if ((*static_cast<const osg::Vec3bArray*>(lhs_normalArray))[0]<(*static_cast<const osg::Vec3bArray*>(rhs_normalArray))[0]) return true;
+                if ((*static_cast<const osg::Vec3bArray*>(rhs_normalArray))[0]<(*static_cast<const osg::Vec3bArray*>(lhs_normalArray))[0]) return false;
                 break;
-            case(osg::Array::Short3ArrayType):
-                if ((*static_cast<const osg::Short3Array*>(lhs_normalArray))[0]<(*static_cast<const osg::Short3Array*>(rhs_normalArray))[0]) return true;
-                if ((*static_cast<const osg::Short3Array*>(rhs_normalArray))[0]<(*static_cast<const osg::Short3Array*>(lhs_normalArray))[0]) return false;
+            case(osg::Array::Vec3sArrayType):
+                if ((*static_cast<const osg::Vec3sArray*>(lhs_normalArray))[0]<(*static_cast<const osg::Vec3sArray*>(rhs_normalArray))[0]) return true;
+                if ((*static_cast<const osg::Vec3sArray*>(rhs_normalArray))[0]<(*static_cast<const osg::Vec3sArray*>(lhs_normalArray))[0]) return false;
                 break;
             case(osg::Array::Vec3ArrayType):
                 if ((*static_cast<const osg::Vec3Array*>(lhs_normalArray))[0]<(*static_cast<const osg::Vec3Array*>(rhs_normalArray))[0]) return true;
@@ -1593,9 +1593,9 @@ struct LessGeometry
             if (rhs_colorArray->getType()<lhs_colorArray->getType()) return false;
             switch(lhs_colorArray->getType())
             {
-                case(osg::Array::UByte4ArrayType):
-                    if ((*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]<(*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]) return true;
-                    if ((*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]<(*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]) return false;
+                case(osg::Array::Vec4ubArrayType):
+                    if ((*static_cast<const osg::Vec4ubArray*>(lhs_colorArray))[0]<(*static_cast<const osg::Vec4ubArray*>(rhs_colorArray))[0]) return true;
+                    if ((*static_cast<const osg::Vec4ubArray*>(rhs_colorArray))[0]<(*static_cast<const osg::Vec4ubArray*>(lhs_colorArray))[0]) return false;
                     break;
                 case(osg::Array::Vec3ArrayType):
                     if ((*static_cast<const osg::Vec3Array*>(lhs_colorArray))[0]<(*static_cast<const osg::Vec3Array*>(rhs_colorArray))[0]) return true;
@@ -1901,18 +1901,18 @@ class MergeArrayVisitor : public osg::ArrayVisitor
         virtual void apply(osg::UByteArray& rhs) { _merge(rhs); }
         virtual void apply(osg::UShortArray& rhs) { _merge(rhs); }
         virtual void apply(osg::UIntArray& rhs) { _merge(rhs); }
-        virtual void apply(osg::UByte4Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec4ubArray& rhs) { _merge(rhs); }
         virtual void apply(osg::FloatArray& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec2Array& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3Array& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec4Array& rhs) { _merge(rhs); }
         
-        virtual void apply(osg::Byte2Array&  rhs) { _merge(rhs); }
-        virtual void apply(osg::Byte3Array&  rhs) { _merge(rhs); }
-        virtual void apply(osg::Byte4Array&  rhs) { _merge(rhs); }        
-        virtual void apply(osg::Short2Array& rhs) { _merge(rhs); }
-        virtual void apply(osg::Short3Array& rhs) { _merge(rhs); }
-        virtual void apply(osg::Short4Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec2bArray&  rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec3bArray&  rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec4bArray&  rhs) { _merge(rhs); }        
+        virtual void apply(osg::Vec2sArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec3sArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec4sArray& rhs) { _merge(rhs); }
 };
 
 bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs)

@@ -49,7 +49,7 @@ namespace osg {
 class Vec2f;
 class Vec3f;
 class Vec4f;
-class UByte4;
+class Vec4ub;
 class Geometry;
 class NodeVisitor;
 
@@ -467,7 +467,7 @@ class OSG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,unsigned int,Vec2*) {}
             virtual void apply(AttributeType,unsigned int,Vec3*) {}
             virtual void apply(AttributeType,unsigned int,Vec4*) {}
-            virtual void apply(AttributeType,unsigned int,UByte4*) {}
+            virtual void apply(AttributeType,unsigned int,Vec4ub*) {}
         };
 
 
@@ -498,7 +498,7 @@ class OSG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,const unsigned int,const Vec2*) {}
             virtual void apply(AttributeType,const unsigned int,const Vec3*) {}
             virtual void apply(AttributeType,const unsigned int,const Vec4*) {}
-            virtual void apply(AttributeType,const unsigned int,const UByte4*) {}
+            virtual void apply(AttributeType,const unsigned int,const Vec4ub*) {}
         };
 
         /** Return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/

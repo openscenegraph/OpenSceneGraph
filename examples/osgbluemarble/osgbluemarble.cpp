@@ -124,7 +124,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     osg::Vec3Array& v = *(new osg::Vec3Array(numColumns*numRows));
     osg::Vec3Array& n = *(new osg::Vec3Array(numColumns*numRows));
     osg::Vec2Array& t = *(new osg::Vec2Array(numColumns*numRows));
-    osg::UByte4Array& color = *(new osg::UByte4Array(1));
+    osg::Vec4ubArray& color = *(new osg::Vec4ubArray(1));
 
     color[0].set(255,255,255,255);
 

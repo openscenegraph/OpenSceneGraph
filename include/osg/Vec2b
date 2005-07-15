@@ -11,37 +11,37 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_BYTE2
-#define OSG_BYTE2 1
+#ifndef OSG_VEC2B
+#define OSG_VEC2B 1
 
 namespace osg {
 
 /** General purpose float triple.
   * Uses include representation of color coordinates.
-  * No support yet added for float * Byte2 - is it necessary?
+  * No support yet added for float * Vec2b - is it necessary?
   * Need to define a non-member non-friend operator*  etc.
-  * Byte2 * float is okay
+  * Vec2b * float is okay
 */
-class Byte2
+class Vec2b
 {
     public:
 
 	// Methods are defined here so that they are implicitly inlined
 
-        Byte2() { _v[0]=0; _v[1]=0; }
+        Vec2b() { _v[0]=0; _v[1]=0; }
         
-        Byte2(char r, char g)
+        Vec2b(char r, char g)
         {
             _v[0]=r; _v[1]=g;
         }
 
         char _v[2];
 
-        inline bool operator == (const Byte2& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
+        inline bool operator == (const Vec2b& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
 
-        inline bool operator != (const Byte2& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
+        inline bool operator != (const Vec2b& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
 
-        inline bool operator <  (const Byte2& v) const
+        inline bool operator <  (const Vec2b& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
@@ -66,15 +66,15 @@ class Byte2
         inline char g() const { return _v[1]; }        
 
         /** Multiply by scalar. */
-        inline Byte2 operator * (float rhs) const
+        inline Vec2b operator * (float rhs) const
         {
-            Byte2 col(*this);
+            Vec2b col(*this);
             col *= rhs;
             return col;
         }
 
         /** Unary multiply by scalar. */
-        inline Byte2& operator *= (float rhs)
+        inline Vec2b& operator *= (float rhs)
         {
             _v[0]=(char)((float)_v[0]*rhs);
             _v[1]=(char)((float)_v[1]*rhs);            
@@ -82,15 +82,15 @@ class Byte2
         }
 
         /** Divide by scalar. */
-        inline Byte2 operator / (float rhs) const
+        inline Vec2b operator / (float rhs) const
         {
-            Byte2 col(*this);
+            Vec2b col(*this);
             col /= rhs;
             return col;
         }
 
         /** Unary divide by scalar. */
-        inline Byte2& operator /= (float rhs)
+        inline Vec2b& operator /= (float rhs)
         {
             float div = 1.0f/rhs;
             *this *= div;
@@ -98,15 +98,15 @@ class Byte2
         }
 
         /** Binary vector add. */
-        inline Byte2 operator + (const Byte2& rhs) const
+        inline Vec2b operator + (const Vec2b& rhs) const
         {
-            return Byte2(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
+            return Vec2b(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
         }
 
         /** Unary vector add. Slightly more efficient because no temporary
           * intermediate object.
 		*/
-        inline Byte2& operator += (const Byte2& rhs)
+        inline Vec2b& operator += (const Vec2b& rhs)
         {
             _v[0] += rhs._v[0];
             _v[1] += rhs._v[1];            
@@ -114,20 +114,20 @@ class Byte2
         }
 
         /** Binary vector subtract. */
-        inline Byte2 operator - (const Byte2& rhs) const
+        inline Vec2b operator - (const Vec2b& rhs) const
         {
-            return Byte2(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
+            return Vec2b(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
         }
 
         /** Unary vector subtract. */
-        inline Byte2& operator -= (const Byte2& rhs)
+        inline Vec2b& operator -= (const Vec2b& rhs)
         {
             _v[0]-=rhs._v[0];
             _v[1]-=rhs._v[1];            
             return *this;
         }
 
-};	// end of class Byte2
+};	// end of class Vec2b
 
 
 

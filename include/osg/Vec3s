@@ -11,12 +11,12 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_SHORT_3
-#define OSG_SHORT_3		1
+#ifndef OSG_VEC3S
+#define OSG_VEC3S		1
 
 namespace osg {
 
-class Short3
+class Vec3s
 {
 public:
 
@@ -28,16 +28,16 @@ public:
         value_type _v[3];
     };
 
-    Short3 (){}
-    Short3 (value_type xx, value_type yy, value_type zz)
+    Vec3s (){}
+    Vec3s (value_type xx, value_type yy, value_type zz)
     { x = xx; y = yy; z = zz;}
 
     inline value_type* ptr() { return _v; }
     inline const value_type* ptr() const { return _v; }
         
-    inline bool operator == (const Short3& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
-    inline bool operator != (const Short3& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2]; }
-    inline bool operator <  (const Short3& v) const
+    inline bool operator == (const Vec3s& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
+    inline bool operator != (const Vec3s& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2]; }
+    inline bool operator <  (const Vec3s& v) const
     {
         if (_v[0]<v._v[0])      return true;
         else if (_v[0]>v._v[0]) return false;
@@ -46,39 +46,39 @@ public:
         else return (_v[2]<v._v[2]);
     }
     
-    inline Short3 operator * (value_type rhs) const
+    inline Vec3s operator * (value_type rhs) const
     {
-        return Short3(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs);
+        return Vec3s(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs);
     }
     
-    inline Short3 operator / (value_type rhs) const
+    inline Vec3s operator / (value_type rhs) const
     {
-        return Short3(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs);
+        return Vec3s(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs);
     }
     
-    inline Short3 operator + (value_type rhs) const
+    inline Vec3s operator + (value_type rhs) const
     {
-        return Short3(_v[0]+rhs, _v[1]+rhs, _v[2]+rhs);
+        return Vec3s(_v[0]+rhs, _v[1]+rhs, _v[2]+rhs);
     }
     
-    inline Short3 operator - (value_type rhs) const
+    inline Vec3s operator - (value_type rhs) const
     {
-        return Short3(_v[0]-rhs, _v[1]-rhs, _v[2]-rhs);
+        return Vec3s(_v[0]-rhs, _v[1]-rhs, _v[2]-rhs);
     }
     
-    inline Short3 operator + (const Short3& rhs) const
+    inline Vec3s operator + (const Vec3s& rhs) const
     {
-        return Short3(_v[0]+rhs._v[0], _v[1]+rhs._v[1], _v[2]+rhs._v[2]);
+        return Vec3s(_v[0]+rhs._v[0], _v[1]+rhs._v[1], _v[2]+rhs._v[2]);
     }
     
-    inline Short3 operator - (const Short3& rhs) const
+    inline Vec3s operator - (const Vec3s& rhs) const
     {
-        return Short3(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2]);
+        return Vec3s(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2]);
     }
     
-    inline Short3 operator * (const Short3& rhs) const
+    inline Vec3s operator * (const Vec3s& rhs) const
     {
-        return Short3(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2]);
+        return Vec3s(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2]);
     }
 };
 

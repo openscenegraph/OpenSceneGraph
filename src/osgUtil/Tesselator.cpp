@@ -145,7 +145,7 @@ class InsertNewVertices : public osg::ArrayVisitor
         virtual void apply(osg::UByteArray& ba) { apply_imp(ba,GLubyte(0)); }
         virtual void apply(osg::UShortArray& ba) { apply_imp(ba,GLushort(0)); }
         virtual void apply(osg::UIntArray& ba) { apply_imp(ba,GLuint(0)); }
-        virtual void apply(osg::UByte4Array& ba) { apply_imp(ba,UByte4()); }
+        virtual void apply(osg::Vec4ubArray& ba) { apply_imp(ba,Vec4ub()); }
         virtual void apply(osg::FloatArray& ba) { apply_imp(ba,float(0)); }
         virtual void apply(osg::Vec2Array& ba) { apply_imp(ba,Vec2()); }
         virtual void apply(osg::Vec3Array& ba) { apply_imp(ba,Vec3()); }
@@ -591,7 +591,7 @@ void Tesselator::reduceArray(osg::Array * cold, const unsigned int nnu)
                                         }
             break;
         default: // should also handle:ArrayType' ByteArrayType' ShortArrayType' IntArrayType' 
-        // `UShortArrayType'  `UIntArrayType'  `UByte4ArrayType'  `FloatArrayType' 
+        // `UShortArrayType'  `UIntArrayType'  `Vec4ubArrayType'  `FloatArrayType' 
             break;
         }
     }

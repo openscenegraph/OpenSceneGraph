@@ -65,7 +65,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             
             osg::Vec3Array* vertices = new osg::Vec3Array;
             osg::Vec3Array* normals = new osg::Vec3Array;
-            osg::UByte4Array* colours = new osg::UByte4Array;
+            osg::Vec4ubArray* colours = new osg::Vec4ubArray;
             
             vertices->reserve(targetNumVertices);
             normals->reserve(targetNumVertices);
@@ -117,7 +117,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
 
                             vertices = new osg::Vec3Array;
                             normals = new osg::Vec3Array;
-                            colours = new osg::UByte4Array;
+                            colours = new osg::Vec4ubArray;
 
                             vertices->reserve(targetNumVertices);
                             normals->reserve(targetNumVertices);
@@ -127,7 +127,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                                                         
                         vertices->push_back(pos);
                         normals->push_back(normal);
-                        colours->push_back(osg::UByte4(r,g,b,255));
+                        colours->push_back(osg::Vec4ub(r,g,b,255));
                         
                     }
                 }

@@ -1075,13 +1075,13 @@ class CopyArrayToPointsVisitor : public osg::ArrayVisitor
         virtual void apply(osg::UIntArray& array) { copy(array); }
         virtual void apply(osg::FloatArray& array) { copy(array); }
 
-        virtual void apply(osg::UByte4Array& array)
+        virtual void apply(osg::Vec4ubArray& array)
         {
             if (_pointList.size()!=array.size()) return;
         
             for(unsigned int i=0;i<_pointList.size();++i) 
             {
-                osg::UByte4& value = array[i];
+                osg::Vec4ub& value = array[i];
                 EdgeCollapse::FloatList& attributes = _pointList[i]->_attributes;
                 attributes.push_back((float)value.r());  
                 attributes.push_back((float)value.g());  
@@ -1291,7 +1291,7 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
         virtual void apply(osg::UIntArray& array) { copy(array, dummy_uint()); }
         virtual void apply(osg::FloatArray& array) { copy(array, float()); }
 
-        virtual void apply(osg::UByte4Array& array)
+        virtual void apply(osg::Vec4ubArray& array)
         {
             array.resize(_pointList.size());
         

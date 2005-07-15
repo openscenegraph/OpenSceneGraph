@@ -42,7 +42,7 @@ class WriteValue : public osg::ConstValueVisitor
         virtual void apply(const GLubyte& v) { _o << v; }
         virtual void apply(const GLuint& v) { _o << v; }
         virtual void apply(const GLfloat& v) { _o << v; }
-        virtual void apply(const UByte4& v) { _o << v; }
+        virtual void apply(const Vec4ub& v) { _o << v; }
         virtual void apply(const Vec2& v) { _o << v; }
         virtual void apply(const Vec3& v) { _o << v; }
         virtual void apply(const Vec4& v) { _o << v; }
@@ -158,7 +158,7 @@ class RemapArray : public osg::ArrayVisitor
         virtual void apply(osg::UByteArray& array) { remap(array); }
         virtual void apply(osg::UShortArray& array) { remap(array); }
         virtual void apply(osg::UIntArray& array) { remap(array); }
-        virtual void apply(osg::UByte4Array& array) { remap(array); }
+        virtual void apply(osg::Vec4ubArray& array) { remap(array); }
         virtual void apply(osg::FloatArray& array) { remap(array); }
         virtual void apply(osg::Vec2Array& array) { remap(array); }
         virtual void apply(osg::Vec3Array& array) { remap(array); }

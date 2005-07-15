@@ -18,13 +18,13 @@
 #include <istream>
 
 #include <osg/Vec4d>
-#include <osg/UByte4>
-#include <osg/Byte2>
-#include <osg/Byte3>
-#include <osg/Byte4>
-#include <osg/Short2>
-#include <osg/Short3>
-#include <osg/Short4>
+#include <osg/Vec4ub>
+#include <osg/Vec2b>
+#include <osg/Vec3b>
+#include <osg/Vec4b>
+#include <osg/Vec2s>
+#include <osg/Vec3s>
+#include <osg/Vec4s>
 #include <osg/Matrixf>
 #include <osg/Matrixd>
 #include <osg/Plane>
@@ -131,23 +131,23 @@ inline std::istream& operator >> (std::istream& input, Vec4d& vec)
 
 
 //////////////////////////////////////////////////////////////////////////
-// Byte2 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const Byte2& vec)
+// Vec2b steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec2b& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1];
 	    return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, Byte2& vec)
+inline std::istream& operator >> (std::istream& input, Vec2b& vec)
 {
     input >> vec._v[0] >> vec._v[1];
     return input;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Byte3 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const Byte3& vec)
+// Vec3b steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec3b& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
@@ -155,15 +155,15 @@ inline std::ostream& operator << (std::ostream& output, const Byte3& vec)
 	    return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, Byte3& vec)
+inline std::istream& operator >> (std::istream& input, Vec3b& vec)
 {
     input >> vec._v[0] >> vec._v[1]  >> vec._v[2];
     return input;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Byte4 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const Byte4& vec)
+// Vec4b steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec4b& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
@@ -172,7 +172,7 @@ inline std::ostream& operator << (std::ostream& output, const Byte4& vec)
 	    return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, Byte4& vec)
+inline std::istream& operator >> (std::istream& input, Vec4b& vec)
 {
     input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
     return input;
@@ -180,23 +180,23 @@ inline std::istream& operator >> (std::istream& input, Byte4& vec)
 
 
 //////////////////////////////////////////////////////////////////////////
-// Short2 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const Short2& vec)
+// Vec2s steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec2s& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1];
 	    return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, Short2& vec)
+inline std::istream& operator >> (std::istream& input, Vec2s& vec)
 {
     input >> vec._v[0] >> vec._v[1];
     return input;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Short3 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const Short3& vec)
+// Vec3s steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec3s& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
@@ -204,15 +204,15 @@ inline std::ostream& operator << (std::ostream& output, const Short3& vec)
 	    return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, Short3& vec)
+inline std::istream& operator >> (std::istream& input, Vec3s& vec)
 {
     input >> vec._v[0] >> vec._v[1]  >> vec._v[2];
     return input;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Short4 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const Short4& vec)
+// Vec4s steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec4s& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
@@ -221,7 +221,7 @@ inline std::ostream& operator << (std::ostream& output, const Short4& vec)
 	    return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, Short4& vec)
+inline std::istream& operator >> (std::istream& input, Vec4s& vec)
 {
     input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
     return input;
@@ -260,8 +260,8 @@ inline std::ostream& operator<< (std::ostream& os, const Matrixd& m )
 }
 
 //////////////////////////////////////////////////////////////////////////
-// UByte4 steaming operators.
-inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
+// Vec4ub steaming operators.
+inline std::ostream& operator << (std::ostream& output, const Vec4ub& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
@@ -270,7 +270,7 @@ inline std::ostream& operator << (std::ostream& output, const UByte4& vec)
     return output; 	// to enable cascading
 }
 
-inline std::istream& operator >> (std::istream& input, UByte4& vec)
+inline std::istream& operator >> (std::istream& input, Vec4ub& vec)
 {
     input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
     return input;

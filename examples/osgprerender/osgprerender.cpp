@@ -15,7 +15,6 @@
 #include <osgGA/DriveManipulator>
 
 #include <osgUtil/TransformCallback>
-#include <osgUtil/RenderToTextureStage>
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgDB/Registry>

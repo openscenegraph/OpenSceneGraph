@@ -150,6 +150,11 @@ public:
         LEFT_BASE_LINE,
         CENTER_BASE_LINE,
         RIGHT_BASE_LINE,
+	
+        LEFT_BOTTOM_BASE_LINE,
+        CENTER_BOTTOM_BASE_LINE,
+        RIGHT_BOTTOM_BASE_LINE,
+	
         BASE_LINE = LEFT_BASE_LINE /// default.
     
     };
@@ -209,6 +214,9 @@ public:
 
     KerningType getKerningType() const { return _kerningType; }
 
+    /** Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns -1 otherwise */
+    unsigned int getLineCount() { return _lineCount; }
+    
     /** Draw the text.*/
     virtual void drawImplementation(osg::State& state) const;
 
@@ -293,7 +301,7 @@ protected:
     Font* getActiveFont();
     const Font* getActiveFont() const;
 
-    String::iterator computeLastCharacterOnLine(osg::Vec2 cursor, String::iterator first,String::iterator last);
+    String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
     
     // members which have public access.
     osg::ref_ptr<Font>                      _font;
@@ -313,7 +321,8 @@ protected:
     Layout                                  _layout;
     osg::Vec4                               _color;
     unsigned int                            _drawMode;
-    KerningType                                _kerningType;
+    KerningType                             _kerningType;
+    unsigned int                            _lineCount;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     mutable TextureGlyphQuadMap            _textureGlyphQuadMap;

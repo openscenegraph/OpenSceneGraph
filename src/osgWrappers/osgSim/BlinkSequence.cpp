@@ -34,6 +34,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::BlinkSequence)
 	I_Method2(void, addPulse, IN, double, length, IN, const osg::Vec4 &, color);
 	I_Method0(int, getNumPulses);
 	I_Method3(void, getPulse, IN, unsigned int, i, IN, double &, length, IN, osg::Vec4 &, color);
+	I_Method3(void, setPulse, IN, unsigned int, i, IN, double, length, IN, const osg::Vec4 &, color);
 	I_Method0(double, getPulsePeriod);
 	I_Method1(void, setSequenceGroup, IN, osgSim::SequenceGroup *, sg);
 	I_Method0(osgSim::SequenceGroup *, getSequenceGroup);

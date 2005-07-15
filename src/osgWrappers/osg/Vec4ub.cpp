@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/UByte4>
+#include <osg/Vec4ub>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,7 +19,11 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::UByte4)
+#include <osg/io_utils>
+	
+BEGIN_VALUE_REFLECTOR(osg::Vec4ub)
+	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
+	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	I_Constructor0();
 	I_Constructor4(IN, unsigned char, r, IN, unsigned char, g, IN, unsigned char, b, IN, unsigned char, a);
 	I_Method0(unsigned char *, ptr);

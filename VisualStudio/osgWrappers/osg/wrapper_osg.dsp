@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 opengl32.lib OpenThreadsWin32.lib /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgwrapper_osg.dll" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 opengl32.lib OpenThreadsWin32.lib  /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgwrapper_osg.dll" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgWrapper osg - Win32 Debug"
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 opengl32.lib OpenThreadsWin32d.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgwrapper_osgd.dll" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 opengl32.lib OpenThreadsWin32d.lib  /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgwrapper_osgd.dll" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ENDIF 
@@ -94,6 +94,7 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\AlphaFunc.cpp
 # End Source File
@@ -147,6 +148,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\BufferObject.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\CameraNode.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\ClearNode.cpp
 # End Source File
 
@@ -195,15 +200,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\CullFace.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\CullingSet.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\CullSettings.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\CullStack.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\CullingSet.cpp
 # End Source File
 
 # Begin Source File
@@ -215,11 +220,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\DisplaySettings.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\DrawPixels.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Drawable.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\DrawPixels.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\Endian.cpp
 # End Source File
 
 # Begin Source File
@@ -231,11 +240,19 @@ SOURCE=..\..\..\src\osgWrappers\osg\FragmentProgram.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\FrameBufferObject.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\FrameStamp.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\FrontFace.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\GL2Extensions.cpp
 # End Source File
 
 # Begin Source File
@@ -256,6 +273,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Image.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\ImageStream.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\LOD.cpp
 # End Source File
 
 # Begin Source File
@@ -283,10 +304,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\LineWidth.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\LOD.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\LogicOp.cpp
 # End Source File
 
@@ -299,15 +316,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\Matrix.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\MatrixTransform.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Matrixd.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Matrixf.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\MatrixTransform.cpp
 # End Source File
 
 # Begin Source File
@@ -324,6 +341,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\NodeCallback.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\NodeVisitor.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Notify.cpp
 # End Source File
 
 # Begin Source File
@@ -391,11 +412,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Quat.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\RefNodePath.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\RefNodePath.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
 # End Source File
 
 # Begin Source File
@@ -499,15 +520,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\Transform.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\UByte4.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Uniform.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec2.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec2b.cpp
 # End Source File
 
 # Begin Source File
@@ -519,7 +540,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec2f.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec2s.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec3.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec3b.cpp
 # End Source File
 
 # Begin Source File
@@ -531,7 +560,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec3f.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec3s.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec4.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec4b.cpp
 # End Source File
 
 # Begin Source File
@@ -540,6 +577,14 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec4d.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec4f.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec4s.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec4ub.cpp
 # End Source File
 
 # Begin Source File

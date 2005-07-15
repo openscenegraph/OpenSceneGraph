@@ -6,8 +6,10 @@ CXXFILES =\
 	Font.cpp\
 	String.cpp\
 	Text.cpp\
-	
-LIBS   += -losgText -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
+	Text.cpp\
+	Text.cpp\
+
+LIBS   += -losgText -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

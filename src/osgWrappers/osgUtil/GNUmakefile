@@ -29,8 +29,7 @@ CXXFILES =\
 	TriStripVisitor.cpp\
 	UpdateVisitor.cpp\
 
-
-LIBS   += -losgUtil -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgUtil -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

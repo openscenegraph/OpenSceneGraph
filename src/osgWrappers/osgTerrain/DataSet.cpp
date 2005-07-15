@@ -250,6 +250,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationData)
 	I_Constructor1(IN, osgTerrain::DataSet *, dataSet);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgTerrain::DataSet::DestinationTile::HeightDeltaList);
+
 BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::DestinationTile::Position)
 	I_EnumLabel(osgTerrain::DataSet::DestinationTile::LEFT);
 	I_EnumLabel(osgTerrain::DataSet::DestinationTile::LEFT_BELOW);
@@ -277,6 +279,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationTile)
 	I_Method0(void, allocate);
 	I_Method1(void, addRequiredResolutions, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph);
 	I_Method1(void, readFrom, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph);
+	I_Method0(void, allocateEdgeNormals);
 	I_Method1(void, equalizeCorner, IN, osgTerrain::DataSet::DestinationTile::Position, position);
 	I_Method1(void, equalizeEdge, IN, osgTerrain::DataSet::DestinationTile::Position, position);
 	I_Method0(void, equalizeBoundaries);
@@ -479,6 +482,8 @@ STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgTerrain::DataSet::CompositeDe
 STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgTerrain::DataSet::Level >);
 
 STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgTerrain::DataSet::Row >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec2 >);
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Image > >);
 

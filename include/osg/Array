@@ -273,10 +273,6 @@ typedef TemplateArray<Vec4,Array::Vec4ArrayType,4,GL_FLOAT>                     
 
 typedef TemplateArray<Vec4ub,Array::Vec4ubArrayType,4,GL_UNSIGNED_BYTE>         Vec4ubArray;
 
-#ifdef USE_DEPRECATED_API
-typedef Vec4ubArray UByte4Array;
-#endif
-
 typedef TemplateArray<Vec2s,Array::Vec2sArrayType,2,GL_SHORT>                   Vec2sArray;
 typedef TemplateArray<Vec3s,Array::Vec3sArrayType,3,GL_SHORT>                   Vec3sArray;
 typedef TemplateArray<Vec4s,Array::Vec4sArrayType,4,GL_SHORT>                   Vec4sArray;
@@ -304,15 +300,15 @@ class ArrayVisitor
         virtual void apply(Vec3Array&) {}
         virtual void apply(Vec4Array&) {}
         
-        virtual void apply(Vec2sArray&) {}
-        virtual void apply(Vec3sArray&) {}
-        virtual void apply(Vec4sArray&) {}
+        virtual void apply(Vec4ubArray&) {}
 
         virtual void apply(Vec2bArray&) {}        
         virtual void apply(Vec3bArray&) {}        
         virtual void apply(Vec4bArray&) {}        
 
-        virtual void apply(Vec4ubArray&) {}
+        virtual void apply(Vec2sArray&) {}
+        virtual void apply(Vec3sArray&) {}
+        virtual void apply(Vec4sArray&) {}
 };
 
 class ConstArrayVisitor
@@ -358,19 +354,20 @@ class ValueVisitor
         virtual void apply(GLuint&) {}
         virtual void apply(GLfloat&) {}
         
-        virtual void apply(Vec4ub&) {}
         
         virtual void apply(Vec2&) {}
         virtual void apply(Vec3&) {}
         virtual void apply(Vec4&) {}
+        
+        virtual void apply(Vec4ub&) {}
+
+        virtual void apply(Vec2b&) {}        
+        virtual void apply(Vec3b&) {}        
+        virtual void apply(Vec4b&) {}        
 
         virtual void apply(Vec2s&) {}
         virtual void apply(Vec3s&) {}
         virtual void apply(Vec4s&) {}
-        
-        virtual void apply(Vec2b&) {}        
-        virtual void apply(Vec3b&) {}        
-        virtual void apply(Vec4b&) {}        
 };
 
 class ConstValueVisitor
@@ -391,13 +388,14 @@ class ConstValueVisitor
         virtual void apply(const Vec2&) {}
         virtual void apply(const Vec3&) {}
         virtual void apply(const Vec4&) {}
+
+        virtual void apply(const Vec2b&) {}
+        virtual void apply(const Vec3b&) {}
+        virtual void apply(const Vec4b&) {}        
         
         virtual void apply(const Vec2s&) {}
         virtual void apply(const Vec3s&) {}
         virtual void apply(const Vec4s&) {}
-        virtual void apply(const Vec2b&) {}
-        virtual void apply(const Vec3b&) {}
-        virtual void apply(const Vec4b&) {}        
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

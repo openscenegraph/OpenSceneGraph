@@ -2,7 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-BlinkSequence.cpp\
+	BlinkSequence.cpp\
 	ColorRange.cpp\
 	DOFTransform.cpp\
 	GeographicLocation.cpp\
@@ -19,8 +19,7 @@ BlinkSequence.cpp\
 	SphereSegment.cpp\
 	VisibilityGroup.cpp\
 
-
-LIBS   += -losgSim -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgSim -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

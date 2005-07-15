@@ -11,6 +11,7 @@
 
 #include <osg/Billboard>
 #include <osg/BoundingBox>
+#include <osg/CameraNode>
 #include <osg/ClearNode>
 #include <osg/ClipNode>
 #include <osg/Drawable>
@@ -68,6 +69,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_Method1(void, apply, IN, osg::Switch &, node);
 	I_Method1(void, apply, IN, osg::LOD &, node);
 	I_Method1(void, apply, IN, osg::ClearNode &, node);
+	I_Method1(void, apply, IN, osg::CameraNode &, node);
 	I_Method1(void, apply, IN, osg::OccluderNode &, node);
 	I_Method1(void, setClearNode, IN, const osg::ClearNode *, earthSky);
 	I_Method0(const osg::ClearNode *, getClearNode);

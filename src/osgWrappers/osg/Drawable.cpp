@@ -20,10 +20,10 @@
 #include <osg/Shape>
 #include <osg/State>
 #include <osg/StateSet>
-#include <osg/UByte4>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec4ub>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -149,7 +149,7 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec2 *, x);
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec3 *, x);
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::UByte4 *, x);
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4ub *, x);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
@@ -176,7 +176,7 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec2 *, x);
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec3 *, x);
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec4 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::UByte4 *, x);
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec4ub *, x);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
@@ -270,6 +270,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	I_Method2(void, glBeginQuery, IN, GLenum, target, IN, GLuint, id);
 	I_Method1(void, glEndQuery, IN, GLenum, target);
 	I_Method1(GLboolean, glIsQuery, IN, GLuint, id);
+	I_Method2(void, glDeleteQueries, IN, GLsizei, n, IN, const GLuint *, ids);
 	I_Method3(void, glGetQueryObjectiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params);
 	I_Method3(void, glGetQueryObjectuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params);
 	I_WriteOnlyProperty(bool, ARBOcclusionQuerySupported);

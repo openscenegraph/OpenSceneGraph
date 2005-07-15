@@ -15,6 +15,7 @@
 #include <osg/Object>
 #include <osg/Quat>
 #include <osg/Shape>
+#include <osg/Vec2>
 #include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -237,6 +238,7 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	I_Method0(const osg::HeightField::HeightList &, getHeightList);
 	I_Method2(osg::Vec3, getVertex, IN, unsigned int, c, IN, unsigned int, r);
 	I_Method2(osg::Vec3, getNormal, IN, unsigned int, c, IN, unsigned int, r);
+	I_Method2(osg::Vec2, getHeightDelta, IN, unsigned int, c, IN, unsigned int, r);
 	I_Property(unsigned int, BorderWidth);
 	I_IndexedProperty2(float, Height, unsigned int, c, unsigned int, r);
 	I_ReadOnlyProperty(osg::HeightField::HeightList &, HeightList);

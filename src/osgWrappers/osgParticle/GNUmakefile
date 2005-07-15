@@ -29,15 +29,14 @@ CXXFILES =\
 	Program.cpp\
 	RadialShooter.cpp\
 	RandomRateCounter.cpp\
-	range.cpp\
 	SectorPlacer.cpp\
 	SegmentPlacer.cpp\
 	Shooter.cpp\
 	SmokeEffect.cpp\
 	VariableRateCounter.cpp\
-	
+	range.cpp\
 
-LIBS   += -losgParticle -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgParticle -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

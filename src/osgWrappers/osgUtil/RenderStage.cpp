@@ -63,8 +63,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method2(void, drawPreRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, drawPostRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method2(void, drawImplementation, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs);
+	I_Method1(void, addPreRenderStage, IN, osgUtil::RenderStage *, rs);
+	I_Method1(void, addPostRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
 	I_Property(const osg::Vec4 &, ClearAccum);
 	I_Property(const osg::Vec4 &, ClearColor);

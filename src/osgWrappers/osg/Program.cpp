@@ -68,6 +68,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	I_Method0(GLuint, getHandle);
 	I_Method0(void, requestLink);
 	I_Method0(void, linkProgram);
+	I_Method0(void, validateProgram);
 	I_Method0(bool, needsLink);
 	I_Method0(bool, isLinked);
 	I_Method1(bool, getInfoLog, IN, std::string &, infoLog);

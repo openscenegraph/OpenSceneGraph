@@ -9,19 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingBox>
-#include <osg/CopyOp>
-#include <osg/Drawable>
-#include <osg/Object>
-#include <osg/PrimitiveSet>
-#include <osg/Quat>
-#include <osg/State>
-#include <osg/StateSet>
-#include <osg/Vec3>
-#include <osg/Vec4>
-#include <osgText/Font>
-#include <osgText/String>
-#include <osgText/Text>
+#include <osgText/Text.orig>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -77,85 +65,6 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::DrawModeMask)
 	I_EnumLabel(osgText::Text::ALIGNMENT);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgText::Text)
-	I_BaseType(osg::Drawable);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgText::Text &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_MethodWithDefaults1(void, setFont, IN, osgText::Font *, font, 0);
-	I_Method1(void, setFont, IN, const std::string &, fontfile);
-	I_Method0(const osgText::Font *, getFont);
-	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height);
-	I_Method0(unsigned int, getFontWidth);
-	I_Method0(unsigned int, getFontHeight);
-	I_Method1(void, setText, IN, const osgText::String &, text);
-	I_Method1(void, setText, IN, const std::string &, text);
-	I_Method2(void, setText, IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
-	I_Method1(void, setText, IN, const wchar_t *, text);
-	I_Method0(osgText::String &, getText);
-	I_Method0(const osgText::String &, getText);
-	I_Method0(void, update);
-	I_MethodWithDefaults2(void, setCharacterSize, IN, float, height, , IN, float, aspectRatio, 1.0f);
-	I_Method0(float, getCharacterHeight);
-	I_Method0(float, getCharacterAspectRatio);
-	I_Method1(void, setCharacterSizeMode, IN, osgText::Text::CharacterSizeMode, mode);
-	I_Method0(osgText::Text::CharacterSizeMode, getCharacterSizeMode);
-	I_Method1(void, setMaximumWidth, IN, float, maximumWidth);
-	I_Method0(float, getMaximumWidth);
-	I_Method1(void, setMaximumHeight, IN, float, maximumHeight);
-	I_Method0(float, getMaximumHeight);
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos);
-	I_Method0(const osg::Vec3 &, getPosition);
-	I_Method1(void, setAlignment, IN, osgText::Text::AlignmentType, alignment);
-	I_Method0(osgText::Text::AlignmentType, getAlignment);
-	I_Method1(void, setAxisAlignment, IN, osgText::Text::AxisAlignment, axis);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method1(void, setAutoRotateToScreen, IN, bool, autoRotateToScreen);
-	I_Method0(bool, getAutoRotateToScreen);
-	I_Method1(void, setLayout, IN, osgText::Text::Layout, layout);
-	I_Method0(osgText::Text::Layout, getLayout);
-	I_Method1(void, setColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getColor);
-	I_Method1(void, setDrawMode, IN, unsigned int, mode);
-	I_Method0(unsigned int, getDrawMode);
-	I_Method1(void, setKerningType, IN, osgText::KerningType, kerningType);
-	I_Method0(osgText::KerningType, getKerningType);
-	I_Method1(void, drawImplementation, IN, osg::State &, state);
-	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
-	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
-	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);
-	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
-	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	I_Method1(const osgText::Text::GlyphQuads *, getGlyphQuads, IN, osg::StateSet *, stateSet);
-	I_Method0(const osgText::Text::TextureGlyphQuadMap &, getTextureGlyphQuadMap);
-	I_Method0(osg::BoundingBox, computeBound);
-	I_Property(osgText::Text::AlignmentType, Alignment);
-	I_Property(bool, AutoRotateToScreen);
-	I_WriteOnlyProperty(osgText::Text::AxisAlignment, AxisAlignment);
-	I_ReadOnlyProperty(float, CharacterAspectRatio);
-	I_ReadOnlyProperty(float, CharacterHeight);
-	I_Property(osgText::Text::CharacterSizeMode, CharacterSizeMode);
-	I_Property(const osg::Vec4 &, Color);
-	I_Property(unsigned int, DrawMode);
-	I_WriteOnlyProperty(osgText::Font *, Font);
-	I_ReadOnlyProperty(unsigned int, FontHeight);
-	I_ReadOnlyProperty(unsigned int, FontWidth);
-	I_Property(osgText::KerningType, KerningType);
-	I_Property(osgText::Text::Layout, Layout);
-	I_Property(float, MaximumHeight);
-	I_Property(float, MaximumWidth);
-	I_Property(const osg::Vec3 &, Position);
-	I_Property(const osg::Quat &, Rotation);
-	I_Property(const osgText::String &, Text);
-	I_ReadOnlyProperty(const osgText::Text::TextureGlyphQuadMap &, TextureGlyphQuadMap);
-END_REFLECTOR
-
 TYPE_NAME_ALIAS(std::vector< osgText::Font::Glyph * >, osgText::Text::GlyphQuads::Glyphs);
 
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::Text::GlyphQuads::LineNumbers);
@@ -165,28 +74,4 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::Coords2);
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgText::Text::GlyphQuads::Coords3);
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::TexCoords);
-
-BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
-	I_Constructor0();
-	I_Method0(osgText::Text::GlyphQuads::Glyphs, getGlyphs);
-	I_Method0(const osgText::Text::GlyphQuads::Glyphs, getGlyphs);
-	I_Method0(osgText::Text::GlyphQuads::Coords2 &, getCoords);
-	I_Method0(const osgText::Text::GlyphQuads::Coords2 &, getCoords);
-	I_Method1(osgText::Text::GlyphQuads::Coords3 &, getTransformedCoords, IN, unsigned int, contexID);
-	I_Method1(const osgText::Text::GlyphQuads::Coords3 &, getTransformedCoords, IN, unsigned int, contexID);
-	I_Method0(osgText::Text::GlyphQuads::TexCoords &, getTexCoords);
-	I_Method0(const osgText::Text::GlyphQuads::TexCoords &, getTexCoords);
-	I_Method0(osgText::Text::GlyphQuads::LineNumbers &, getLineNumbers);
-	I_Method0(const osgText::Text::GlyphQuads::LineNumbers &, getLineNumbers);
-	I_ReadOnlyProperty(osgText::Text::GlyphQuads::Coords2 &, Coords);
-	I_ReadOnlyProperty(osgText::Text::GlyphQuads::Glyphs, Glyphs);
-	I_ReadOnlyProperty(osgText::Text::GlyphQuads::LineNumbers &, LineNumbers);
-	I_ReadOnlyProperty(osgText::Text::GlyphQuads::TexCoords &, TexCoords);
-END_REFLECTOR
-
-STD_MAP_REFLECTOR(std::map< osg::ref_ptr< osg::StateSet > COMMA  osgText::Text::GlyphQuads >);
-
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec2 >);
-
-STD_VECTOR_REFLECTOR(std::vector< osgText::Font::Glyph * >);
 

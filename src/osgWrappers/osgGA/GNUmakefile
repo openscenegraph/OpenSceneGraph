@@ -2,7 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-AnimationPathManipulator.cpp\
+	AnimationPathManipulator.cpp\
 	DriveManipulator.cpp\
 	EventVisitor.cpp\
 	FlightManipulator.cpp\
@@ -18,8 +18,8 @@ AnimationPathManipulator.cpp\
 	TerrainManipulator.cpp\
 	TrackballManipulator.cpp\
 	UFOManipulator.cpp\
-	
-LIBS   += -losgGA -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
+
+LIBS   += -losgGA -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

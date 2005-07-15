@@ -23,6 +23,11 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osg::TexGenNode::ReferenceFrame)
+	I_EnumLabel(osg::TexGenNode::RELATIVE_RF);
+	I_EnumLabel(osg::TexGenNode::ABSOLUTE_RF);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
 	I_BaseType(osg::Group);
 	I_Constructor0();
@@ -34,11 +39,14 @@ BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
 	I_Method0(const char *, className);
 	I_Method0(const char *, libraryName);
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setReferenceFrame, IN, osg::TexGenNode::ReferenceFrame, rf);
+	I_Method0(osg::TexGenNode::ReferenceFrame, getReferenceFrame);
 	I_Method1(void, setTextureUnit, IN, unsigned int, textureUnit);
 	I_Method0(unsigned int, getTextureUnit);
 	I_Method1(void, setTexGen, IN, osg::TexGen *, texgen);
 	I_Method0(osg::TexGen *, getTexGen);
 	I_Method0(const osg::TexGen *, getTexGen);
+	I_Property(osg::TexGenNode::ReferenceFrame, ReferenceFrame);
 	I_Property(osg::TexGen *, TexGen);
 	I_Property(unsigned int, TextureUnit);
 END_REFLECTOR

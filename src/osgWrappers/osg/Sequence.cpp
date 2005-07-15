@@ -49,6 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	I_Method0(int, getValue);
 	I_Method2(void, setTime, IN, int, frame, IN, float, t);
 	I_Method1(float, getTime, IN, int, frame);
+	I_Method0(unsigned int, getNumFrames);
 	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end);
 	I_Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end);
 	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1);

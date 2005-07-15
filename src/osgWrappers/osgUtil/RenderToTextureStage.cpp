@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/FrameBufferObject>
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/State>
@@ -42,7 +43,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderToTextureStage)
 	I_Method0(GLenum, getImageReadPixelFormat);
 	I_Method1(void, setImageReadPixelDataType, IN, GLenum, type);
 	I_Method0(GLenum, getImageReadPixelDataType);
+	I_Method1(void, setFrameBufferObject, IN, osg::FrameBufferObject *, fbo);
+	I_Method0(osg::FrameBufferObject *, getFrameBufferObject);
+	I_Method0(const osg::FrameBufferObject *, getFrameBufferObject);
 	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Property(osg::FrameBufferObject *, FrameBufferObject);
 	I_Property(osg::Image *, Image);
 	I_Property(GLenum, ImageReadPixelDataType);
 	I_Property(GLenum, ImageReadPixelFormat);

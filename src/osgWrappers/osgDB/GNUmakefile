@@ -19,7 +19,7 @@ CXXFILES =\
 	Registry.cpp\
 	SharedStateManager.cpp\
 
-LIBS   += -losgDB -losg -losgIntrospection $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgDB -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

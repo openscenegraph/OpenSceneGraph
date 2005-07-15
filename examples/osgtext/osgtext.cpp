@@ -76,6 +76,7 @@ osg::Group* createHUDText()
 
         // right to left layouts would be used for hebrew or arabic fonts.
         text->setLayout(osgText::Text::RIGHT_TO_LEFT);
+        text->setAlignment(osgText::Text::RIGHT_BASE_LINE);
 
         text->setText("text->setLayout(osgText::Text::RIGHT_TO_LEFT);");
         geode->addDrawable(text);
@@ -218,18 +219,22 @@ osg::Group* createHUDText()
     typedef std::pair<osgText::Text::AlignmentType,std::string> AlignmentPair;
     typedef std::vector<AlignmentPair> AlignmentList;
     AlignmentList alignmentList;
-    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_TOP,"text->setAlignment(osgText::Text::LEFT_TOP);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_CENTER,"text->setAlignment(osgText::Text::LEFT_CENTER);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_BOTTOM,"text->setAlignment(osgText::Text::LEFT_BOTTOM);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_TOP,"text->setAlignment(osgText::Text::CENTER_TOP);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_CENTER,"text->setAlignment(osgText::Text::CENTER_CENTER);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_BOTTOM,"text->setAlignment(osgText::Text::CENTER_BOTTOM);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_TOP,"text->setAlignment(osgText::Text::RIGHT_TOP);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_CENTER,"text->setAlignment(osgText::Text::RIGHT_CENTER);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BOTTOM,"text->setAlignment(osgText::Text::RIGHT_BOTTOM);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_BASE_LINE,"text->setAlignment(osgText::Text::BASE_LINE);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_BASE_LINE,"text->setAlignment(osgText::Text::CENTER_BASE_LINE);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BASE_LINE,"text->setAlignment(osgText::Text::RIGHT_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_TOP,"text->setAlignment(\nosgText::Text::LEFT_TOP);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_CENTER,"text->setAlignment(\nosgText::Text::LEFT_CENTER);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_BOTTOM,"text->setAlignment(\nosgText::Text::LEFT_BOTTOM);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_TOP,"text->setAlignment(\nosgText::Text::CENTER_TOP);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_CENTER,"text->setAlignment(\nosgText::Text::CENTER_CENTER);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_BOTTOM,"text->setAlignment(\nosgText::Text::CENTER_BOTTOM);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_TOP,"text->setAlignment(\nosgText::Text::RIGHT_TOP);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_CENTER,"text->setAlignment(\nosgText::Text::RIGHT_CENTER);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BOTTOM,"text->setAlignment(\nosgText::Text::RIGHT_BOTTOM);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_BASE_LINE,"text->setAlignment(\nosgText::Text::LEFT_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_BASE_LINE,"text->setAlignment(\nosgText::Text::CENTER_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BASE_LINE,"text->setAlignment(\nosgText::Text::RIGHT_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_BOTTOM_BASE_LINE,"text->setAlignment(\nosgText::Text::LEFT_BOTTOM_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_BOTTOM_BASE_LINE,"text->setAlignment(\nosgText::Text::CENTER_BOTTOM_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BOTTOM_BASE_LINE,"text->setAlignment(\nosgText::Text::RIGHT_BOTTOM_BASE_LINE);"));
+
 
     osg::Sequence* sequence = new osg::Sequence;
     {
@@ -558,3 +563,4 @@ int main( int argc, char **argv )
 
     return 0;
 }
+

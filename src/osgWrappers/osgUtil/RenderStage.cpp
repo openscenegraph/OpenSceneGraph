@@ -57,6 +57,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method0(double, getClearDepth);
 	I_Method1(void, setClearStencil, IN, int, stencil);
 	I_Method0(int, getClearStencil);
+	I_Method1(void, setInheritedRenderStageLightingMatrix, IN, const osg::Matrix &, matrix);
+	I_Method0(const osg::Matrix &, getInheritedRenderStageLightingMatrix);
+	I_Method1(void, setInheritedRenderStageLighting, IN, osgUtil::RenderStageLighting *, rsl);
+	I_Method0(osgUtil::RenderStageLighting *, getInheritedRenderStageLighting);
 	I_Method1(void, setRenderStageLighting, IN, osgUtil::RenderStageLighting *, rsl);
 	I_Method0(osgUtil::RenderStageLighting *, getRenderStageLighting);
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
@@ -75,6 +79,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Property(GLbitfield, ClearMask);
 	I_Property(int, ClearStencil);
 	I_Property(osg::ColorMask *, ColorMask);
+	I_Property(osgUtil::RenderStageLighting *, InheritedRenderStageLighting);
+	I_Property(const osg::Matrix &, InheritedRenderStageLightingMatrix);
 	I_Property(osgUtil::RenderStageLighting *, RenderStageLighting);
 	I_Property(osg::Viewport *, Viewport);
 END_REFLECTOR

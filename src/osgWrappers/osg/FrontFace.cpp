@@ -30,7 +30,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::FrontFace)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
+	I_ConstructorWithDefaults1(IN, osg::FrontFace::Mode, face, osg::FrontFace::COUNTER_CLOCKWISE);
 	I_ConstructorWithDefaults2(IN, const osg::FrontFace &, ff, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);

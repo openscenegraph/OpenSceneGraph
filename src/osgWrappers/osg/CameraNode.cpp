@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CameraNode>
+#include <osg/ColorMask>
 #include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/Matrix>
@@ -52,9 +53,17 @@ BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderTargetImplementation)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::CameraNode::BufferComponent)
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER);
 	I_EnumLabel(osg::CameraNode::DEPTH_BUFFER);
 	I_EnumLabel(osg::CameraNode::STENCIL_BUFFER);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER0);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER1);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER2);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER3);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER4);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER5);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER6);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER7);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
@@ -68,11 +77,18 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(const char *, className);
 	I_Method0(const char *, libraryName);
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getClearColor);
+	I_Method1(void, setClearMask, IN, GLbitfield, mask);
+	I_Method0(GLbitfield, getClearMask);
+	I_Method1(void, setColorMask, IN, osg::ColorMask *, colorMask);
+	I_Method4(void, setColorMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
+	I_Method0(const osg::ColorMask *, getColorMask);
+	I_Method0(osg::ColorMask *, getColorMask);
 	I_Method1(void, setViewport, IN, osg::Viewport *, viewport);
 	I_Method4(void, setViewport, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
 	I_Method0(const osg::Viewport *, getViewport);
 	I_Method0(osg::Viewport *, getViewport);
-	I_Method4(void, getViewport, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height);
 	I_Method1(void, setTransformOrder, IN, osg::CameraNode::TransformOrder, order);
 	I_Method0(osg::CameraNode::TransformOrder, getTransformOrder);
 	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixf &, matrix);
@@ -93,10 +109,6 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(const osg::Matrixd &, getViewMatrix);
 	I_MethodWithDefaults4(void, getViewMatrixAsLookAt, IN, osg::Vec3 &, eye, , IN, osg::Vec3 &, center, , IN, osg::Vec3 &, up, , IN, float, lookDistance, 1.0f);
 	I_Method0(osg::Matrixd, getInverseViewMatrix);
-	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getClearColor);
-	I_Method1(void, setClearMask, IN, GLbitfield, mask);
-	I_Method0(GLbitfield, getClearMask);
 	I_Method1(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order);
 	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder);
 	I_Method1(void, setRenderTargetImplmentation, IN, osg::CameraNode::RenderTargetImplementation, impl);
@@ -121,6 +133,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_ReadOnlyProperty(osg::CameraNode::BufferAttachmentMap &, BufferAttachmentMap);
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(GLbitfield, ClearMask);
+	I_Property(osg::ColorMask *, ColorMask);
 	I_IndexedProperty1(GLenum, DrawBuffer, unsigned int, pos);
 	I_ReadOnlyProperty(osg::CameraNode::DrawBufferList &, DrawBufferList);
 	I_ReadOnlyProperty(osg::Matrixd, InverseViewMatrix);

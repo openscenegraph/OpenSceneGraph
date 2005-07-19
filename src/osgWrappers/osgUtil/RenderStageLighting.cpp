@@ -42,7 +42,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStageLighting)
 	I_Method0(void, reset);
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_MethodWithDefaults3(void, draw, IN, osg::State &, state, , IN, osgUtil::RenderLeaf *&, previous, , IN, const osg::Matrix *, postMultMatrix, 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)

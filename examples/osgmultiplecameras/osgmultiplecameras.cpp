@@ -23,37 +23,42 @@
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
 #include <osg/CameraNode>
+#include <osg/FrontFace>
 
 #include <osgText/Text>
 
 
-osg::Node* createRearView(osg::Node* subgraph)
+osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
 {
-
     osg::CameraNode* camera = new osg::CameraNode;
 
-    // set the projection matrix
-    camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
-
+    // set the viewport
     camera->setViewport(420,800,400,200);
-    
-    camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
-
 
     // set the view matrix
     camera->setCullingActive(false);    
     camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
     camera->setTransformOrder(osg::CameraNode::POST_MULTIPLE);
-    camera->setProjectionMatrix(osg::Matrixd::identity());
+
+    camera->setProjectionMatrix(osg::Matrixd::scale(-1.0f,1.0f,1.0f));
     camera->setViewMatrix(osg::Matrixd::rotate(osg::inDegrees(180.0f),0.0f,1.0f,0.0f));
 
-    // only clear the depth buffer
+    // set clear the color and depth buffer
+    camera->setClearColor(clearColour);
     camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
     // draw subgraph after main camera view.
     camera->setRenderOrder(osg::CameraNode::POST_RENDER);
 
+    // add the subgraph to draw.
     camera->addChild(subgraph);
+    
+    // switch of back face culling as we've swapped over the projection matrix making back faces become front faces.
+#if 1
+    camera->getOrCreateStateSet()->setAttribute(new osg::FrontFace(osg::FrontFace::CLOCKWISE));
+#else
+    camera->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+#endif
     
     return camera;
 }
@@ -103,7 +108,7 @@ int main( int argc, char **argv )
     
     // add the HUD subgraph.    
     if (scene.valid()) group->addChild(scene.get());
-    group->addChild(createRearView(scene.get()));
+    group->addChild(createRearView(scene.get(), viewer.getClearColor()));
 
     // set the scene to render
     viewer.setSceneData(group.get());

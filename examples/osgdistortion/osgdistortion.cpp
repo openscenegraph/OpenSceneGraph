@@ -25,7 +25,7 @@
 
 using namespace osg;
 
-osg::Node* createDistortionSubgraph(osg::Node* subgraph)
+osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearColour)
 {
     osg::Group* distortionNode = new osg::Group;
     
@@ -42,6 +42,10 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph)
     {
         osg::CameraNode* camera = new osg::CameraNode;
 
+        // set clear the color and depth buffer
+        camera->setClearColor(clearColour);
+        camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
         // just inherit the main cameras view
         camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
         camera->setProjectionMatrix(osg::Matrixd::identity());
@@ -49,7 +53,6 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph)
 
         // set viewport
         camera->setViewport(0,0,tex_width,tex_height);
-        camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
 
         // set the camera to render before the main camera.
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
@@ -219,7 +222,7 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osg::Node* distortionNode = createDistortionSubgraph(loadedModel);
+    osg::Node* distortionNode = createDistortionSubgraph(loadedModel, viewer.getClearColor());
     
     // add model to the viewer.
     viewer.setSceneData( distortionNode );

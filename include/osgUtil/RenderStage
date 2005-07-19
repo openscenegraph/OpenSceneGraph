@@ -105,6 +105,12 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Get the clear color.*/
         int getClearStencil() const { return _clearStencil; }
 
+        void setInheritedRenderStageLightingMatrix(const osg::Matrix& matrix) { _inheritedRenderStageLightingMatrix = matrix; }
+        const osg::Matrix& getInheritedRenderStageLightingMatrix() const { return _inheritedRenderStageLightingMatrix; }
+
+        void setInheritedRenderStageLighting(RenderStageLighting* rsl) { _inheritedRenderStageLighting = rsl; }
+        RenderStageLighting* getInheritedRenderStageLighting() { return _inheritedRenderStageLighting.get(); }
+
         void setRenderStageLighting(RenderStageLighting* rsl) { _renderStageLighting = rsl; }
 
         RenderStageLighting* getRenderStageLighting() const
@@ -159,6 +165,8 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         double                              _clearDepth;
         int                                 _clearStencil;
 
+        mutable osg::Matrix                         _inheritedRenderStageLightingMatrix;
+        mutable osg::ref_ptr<RenderStageLighting>   _inheritedRenderStageLighting;
         mutable osg::ref_ptr<RenderStageLighting>   _renderStageLighting;
         
     

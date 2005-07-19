@@ -1036,6 +1036,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
     StateSet* node_state = camera.getStateSet();
     if (node_state) pushStateSet(node_state);
     
+    osg::RefMatrix& originalModelView = getModelViewMatrix();
 
     if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
     {
@@ -1078,17 +1079,28 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // will do later.
         osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
 
+        // set the compute near far mode.
+        ComputeNearFarMode saved_compute_near_far_mode = getComputeNearFarMode();
+        setComputeNearFarMode( camera.getComputeNearFarMode());
+
         // set up the background color and clear mask.
         rtts->setClearColor(camera.getClearColor());
         rtts->setClearMask(camera.getClearMask());
-
-        osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
+        
+        // set the color mask.
+        osg::ColorMask* colorMask = camera.getColorMask()!=0 ? camera.getColorMask() : previous_stage->getColorMask();
+        rtts->setColorMask(colorMask);
 
         // set up the viewport.
+        osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
         rtts->setViewport( viewport );
         
         // set up to charge the same RenderStageLighting is the parent previous stage.
-        //rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
+        osg::Matrix inhertiedMVtolocalMV;
+        inhertiedMVtolocalMV.invert(originalModelView);
+        inhertiedMVtolocalMV.postMult(getModelViewMatrix());
+        rtts->setInheritedRenderStageLightingMatrix(inhertiedMVtolocalMV);
+        rtts->setInheritedRenderStageLighting(previous_stage->getRenderStageLighting());
 
         // record the render bin, to be restored after creation
         // of the render to text
@@ -1106,6 +1118,10 @@ void CullVisitor::apply(osg::CameraNode& camera)
 
         // restore the previous renderbin.
         setCurrentRenderBin(previousRenderBin);
+     
+        // restore the previous compute near far mode
+        setComputeNearFarMode(saved_compute_near_far_mode);
+
 
         if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
         {
@@ -1156,9 +1172,49 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 fbo = new osg::FrameBufferObject;
                 rtts->setFrameBufferObject(fbo.get());
 
-                fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(tex));
-                fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(viewport->width(), viewport->height(), GL_DEPTH_COMPONENT24)));
+                bool colorAttached = false;
+                bool depthAttached = false;
+                bool stencilAttached = false;
+                for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
+                    itr != bufferAttachements.end();
+                    ++itr)
+                {
+
+                    osg::CameraNode::BufferComponent buffer = itr->first;
+                    osg::CameraNode::Attachment& attachment = itr->second;
+                    switch(buffer)
+                    {
+                        case(osg::CameraNode::DEPTH_BUFFER):
+                        {
+                            fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
+                            depthAttached = true;
+                            break;
+                        }
+                        case(osg::CameraNode::STENCIL_BUFFER):
+                        {
+                            fbo->setAttachment(GL_STENCIL_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
+                            stencilAttached = true;
+                            break;
+                        }
+                        default:
+                        {
+                            fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(attachment));
+                            colorAttached = true;
+                            break;
+                        }
+                        
+                    }
+                }
+
+                if (!depthAttached)
+                {                
+                    fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(viewport->width(), viewport->height(), GL_DEPTH_COMPONENT24)));
+                }
                 
+                if (!colorAttached)
+                {                
+                    fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(viewport->width(), viewport->height(), GL_RGB)));
+                }
             }
         }
 

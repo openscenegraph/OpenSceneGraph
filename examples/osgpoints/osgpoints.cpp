@@ -122,6 +122,9 @@ int main( int argc, char **argv )
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
+    bool shader = false;
+    while (arguments.read("--shader")) shader = true;
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -195,6 +198,42 @@ int main( int argc, char **argv )
 
     // register the handler for modifying the point size
     viewer.getEventHandlerList().push_front(new KeyboardEventHandler(viewer.getGlobalStateSet()));
+
+
+    if (shader)
+    {
+        osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
+    
+        ///////////////////////////////////////////////////////////////////
+        // vertex shader using just Vec4 coefficients
+        char vertexShaderSource[] = 
+            "void main(void) \n"
+            "{ \n"
+            "\n"
+            "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+            "}\n";
+
+        //////////////////////////////////////////////////////////////////
+        // fragment shader
+        //
+        char fragmentShaderSource[] = 
+            "void main(void) \n"
+            "{ \n"
+            "    gl_FragColor = gl_Color; \n"
+            "}\n";
+
+
+        osg::Program* program = new osg::Program;
+        stateset->setAttribute(program);
+
+        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+        program->addShader(vertex_shader);
+
+        //osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+        //program->addShader(fragment_shader);
+    }
+
+
 
     // create the windows and run the threads.
     viewer.realize();

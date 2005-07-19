@@ -126,7 +126,6 @@ osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const os
 
         // set viewport
         camera->setViewport(0,0,tex_width,tex_height);
-        camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
 
         // set the camera to render before the main camera.
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
@@ -190,7 +189,6 @@ osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const os
         camera->setViewMatrix(osg::Matrix::identity());
         
         camera->setViewport(50,50,100,100);
-        camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
 
         // only clear the depth buffer
         camera->setClearMask(GL_DEPTH_BUFFER_BIT);

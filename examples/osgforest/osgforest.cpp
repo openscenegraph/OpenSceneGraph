@@ -1028,8 +1028,8 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
             osg::Program* program = new osg::Program;
             stateset->setAttribute(program);
 
-            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
-            program->addShader(vertex_shader);
+            //osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+            //program->addShader(vertex_shader);
 
             osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
             program->addShader(fragment_shader);

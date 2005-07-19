@@ -177,8 +177,17 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
-    // apply the lights.
-    if (_renderStageLighting.valid()) _renderStageLighting->draw(state,previous);
+    // apply the positional state.
+    if (_inheritedRenderStageLighting.valid())
+    {
+        _inheritedRenderStageLighting->draw(state, previous, &_inheritedRenderStageLightingMatrix);
+    }
+
+    // apply the positional state.
+    if (_renderStageLighting.valid())
+    {
+        _renderStageLighting->draw(state, previous, 0);
+    }
 
     // draw the children and local.
     RenderBin::drawImplementation(state,previous);

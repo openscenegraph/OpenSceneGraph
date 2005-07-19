@@ -25,7 +25,12 @@ class OSG_EXPORT FrontFace : public StateAttribute
 {
     public :
     
-        FrontFace();
+        enum Mode {
+            CLOCKWISE = GL_CW,
+            COUNTER_CLOCKWISE = GL_CCW
+        };
+        
+        FrontFace(Mode face=COUNTER_CLOCKWISE);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         FrontFace(const FrontFace& ff,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -46,11 +51,6 @@ class OSG_EXPORT FrontFace : public StateAttribute
 
             return 0; // passed all the above comparison macro's, must be equal.
         }
-
-        enum Mode {
-            CLOCKWISE = GL_CW,
-            COUNTER_CLOCKWISE = GL_CCW
-        };
     
         inline void setMode(Mode mode) { _mode = mode; }
         inline Mode getMode() const    { return _mode; }

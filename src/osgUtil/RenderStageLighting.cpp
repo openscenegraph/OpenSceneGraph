@@ -32,7 +32,7 @@ void RenderStageLighting::reset()
     _texAttrListMap.clear();
 }
 
-void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
+void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous, const osg::Matrix* postMultMatrix)
 {
 
     if (previous)
@@ -47,7 +47,18 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
         litr!=_attrList.end();
         ++litr)
     {
-        state.applyModelViewMatrix((*litr).second.get());
+        if (postMultMatrix)
+        {
+            if ((*litr).second.valid())
+                state.applyModelViewMatrix(new osg::RefMatrix( (*((*litr).second)) * (*postMultMatrix)));
+            else
+                state.applyModelViewMatrix(new osg::RefMatrix( *postMultMatrix));
+        }
+        
+        else
+        {
+            state.applyModelViewMatrix((*litr).second.get());
+        }
 
         // apply the light source.
         litr->first->apply(state);
@@ -71,7 +82,17 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
             litr!=attrList.end();
             ++litr)
         {
-            state.applyModelViewMatrix((*litr).second.get());
+            if (postMultMatrix)
+            {
+                if ((*litr).second.valid())
+                    state.applyModelViewMatrix(new osg::RefMatrix( (*((*litr).second)) * (*postMultMatrix)));
+                else
+                    state.applyModelViewMatrix(new osg::RefMatrix( *postMultMatrix));
+            }
+            else
+            {
+                state.applyModelViewMatrix((*litr).second.get());
+            }
 
             // apply the light source.
             litr->first->apply(state);

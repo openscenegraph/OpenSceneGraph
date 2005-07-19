@@ -60,8 +60,11 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     }
     
     if (_image.valid())
+    {
         _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
-        
+
+    }
+       
     if (fbo_supported)
     {
         fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);

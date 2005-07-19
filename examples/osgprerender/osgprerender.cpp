@@ -213,12 +213,10 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 
     // set view
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    camera->setViewMatrixAsLookAt(bs.center()+osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+    camera->setViewMatrixAsLookAt(bs.center()-osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
 
     // set viewport
     camera->setViewport(0,0,tex_width,tex_height);
-    
-    camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
     
     // set the camera to render before the main camera.
     camera->setRenderOrder(osg::CameraNode::PRE_RENDER);

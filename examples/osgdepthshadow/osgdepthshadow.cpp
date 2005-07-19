@@ -8,7 +8,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/PolygonOffset>
 #include <osg/CullFace>
-#include <osg/TexEnvCombine>
+#include <osg/Texture2D>
 #include <osg/MatrixTransform>
 #include <osg/Light>
 #include <osg/LightSource>
@@ -17,17 +17,11 @@
 #include <osg/Material>
 
 #include <osgUtil/TransformCallback>
-#include <osgUtil/RenderToTextureStage>
+
+#include <osg/CameraNode>
+#include <osg/TexGenNode>
 
 using namespace osg;
-
-const int depth_texture_height = 512;
-const int depth_texture_width  = 512;
-
-ref_ptr<RefMatrix> bias = new RefMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                                        0.0f, 0.5f, 0.0f, 0.0f,
-                                        0.0f, 0.0f, 0.5f, 0.0f,
-                                        0.5f, 0.5f, 0.5f, 1.0f);
 
 class LightTransformCallback: public osg::NodeCallback
 {
@@ -91,152 +85,8 @@ LightTransformCallback::operator()(Node* node, NodeVisitor* nv)
 
 }
 
-class RenderToTextureCallback: public NodeCallback
-{
-public:
-  RenderToTextureCallback(Node* subgraph, 
-                          Texture2D* texture, 
-                          MatrixTransform* light_transform,
-                          TexGen* tex_gen):
-    _subgraph(subgraph),
-    _texture(texture),
-    _local_stateset(new StateSet),
-    _viewport(new Viewport),
-    _light_projection(new RefMatrix),
-    _light_transform(light_transform),
-    _tex_gen(tex_gen)
-  {
-    _local_stateset->setAttribute(_viewport.get());
-    _local_stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-   
-    ref_ptr<PolygonOffset> polygon_offset = new PolygonOffset;
-    polygon_offset->setFactor(1.1f);
-    polygon_offset->setUnits(4.0f);
-    _local_stateset->setAttribute(polygon_offset.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
-    _local_stateset->setMode(GL_POLYGON_OFFSET_FILL, StateAttribute::ON | StateAttribute::OVERRIDE);
 
-    ref_ptr<CullFace> cull_face = new CullFace;
-    cull_face->setMode(CullFace::FRONT);
-    _local_stateset->setAttribute(cull_face.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
-    _local_stateset->setMode(GL_CULL_FACE, StateAttribute::ON | StateAttribute::OVERRIDE);
-
-    _viewport->setViewport(0, 0, depth_texture_width, depth_texture_height);
-
-    float znear = 1.0f * _subgraph->getBound().radius();
-    float zfar  = 3.0f * _subgraph->getBound().radius();
-    float top   = 0.5f * _subgraph->getBound().radius();
-    float right = 0.5f * _subgraph->getBound().radius();
-    znear *= 0.8f;
-    zfar *= 1.2f;
-    _light_projection->makeFrustum(-right, right, -top, top, znear, zfar);
-  }
-
-  virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-  {
-
-     osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
-     if (cullVisitor && _texture.valid() && _subgraph.valid())
-      {            
-        _request_render_to_depth_texture(*node, *cullVisitor);
-      }
-
-    // must traverse the subgraph            
-    traverse(node,nv);
-  }
-        
-  void _request_render_to_depth_texture(osg::Node& node, osgUtil::CullVisitor& cv);
-        
-  ref_ptr<osg::Node>                     _subgraph;
-  ref_ptr<osg::Texture2D>                _texture;
-  ref_ptr<osg::StateSet>                 _local_stateset;
-  ref_ptr<osg::Viewport>                 _viewport;
-  ref_ptr<RefMatrix>                     _light_projection;
-  ref_ptr<MatrixTransform>               _light_transform;
-  ref_ptr<TexGen>                        _tex_gen;
-};
-
-void RenderToTextureCallback::_request_render_to_depth_texture(osg::Node&, osgUtil::CullVisitor& cv)
-{   
-  // create the render to texture stage.
-  osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
-
-  // set up lighting.
-  // currently ignore lights in the scene graph itself..
-  // will do later.
-  osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->getStage();
-
-  // set up the background color and clear mask.
-  rtts->setClearMask(GL_DEPTH_BUFFER_BIT);
-  rtts->setColorMask(new ColorMask(false, false, false, false));
-
-  // set up to charge the same RenderStageLighting is the parent previous stage.
-  rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
-
-
-  // record the render bin, to be restored after creation
-  // of the render to text
-  osgUtil::RenderBin* previousRenderBin = cv.getCurrentRenderBin();
-
-  osgUtil::CullVisitor::ComputeNearFarMode saved_compute_near_far_mode = cv.getComputeNearFarMode();
-  cv.setComputeNearFarMode(osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR);
-
-  // set the current renderbin to be the newly created stage.
-  cv.setCurrentRenderBin(rtts.get());
-
-  ref_ptr<RefMatrix> light_view = new RefMatrix;
-  light_view->makeLookAt(_light_transform->getMatrix().getTrans(), Vec3(0, 0, 0), Z_AXIS);
-  Matrix texture_matrix = (*light_view.get()) * (*_light_projection.get()) * (*bias.get());
-  _tex_gen->setPlane(TexGen::S, Vec4(texture_matrix(0, 0), 
-                                     texture_matrix(1, 0), 
-                                     texture_matrix(2, 0), 
-                                     texture_matrix(3, 0))); 
-  _tex_gen->setPlane(TexGen::T, Vec4(texture_matrix(0, 1), 
-                                     texture_matrix(1, 1), 
-                                     texture_matrix(2, 1), 
-                                     texture_matrix(3, 1))); 
-  _tex_gen->setPlane(TexGen::R, Vec4(texture_matrix(0, 2), 
-                                     texture_matrix(1, 2), 
-                                     texture_matrix(2, 2), 
-                                     texture_matrix(3, 2))); 
-  _tex_gen->setPlane(TexGen::Q, Vec4(texture_matrix(0, 3), 
-                                     texture_matrix(1, 3), 
-                                     texture_matrix(2, 3), 
-                                     texture_matrix(3, 3))); 
-
-  cv.pushProjectionMatrix(_light_projection.get());
-  cv.pushModelViewMatrix(light_view.get());
-  cv.pushStateSet(_local_stateset.get());
-
-  // traverse the subgraph
-  _subgraph->accept(cv);
-
-  cv.popStateSet();
-  cv.popModelViewMatrix();
-  cv.popProjectionMatrix();
-
-  cv.setComputeNearFarMode(saved_compute_near_far_mode);
-
-  // restore the previous renderbin.
-  cv.setCurrentRenderBin(previousRenderBin);
-
-  if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
-    {
-      // getting to this point means that all the subgraph has been
-      // culled by small feature culling or is beyond LOD ranges.
-      return;
-    }
-
-  rtts->setViewport(_viewport.get());
-    
-  // and the render to texture stage to the current stages
-  // dependancy list.
-  cv.getCurrentRenderBin()->getStage()->addToDependencyList(rtts.get());
-
-  // if one exist attach texture to the RenderToTextureStage.
-  rtts->setTexture(_texture.get());
-}
-
-ref_ptr<MatrixTransform> _create_lights(ref_ptr<StateSet> root_stateset)
+ref_ptr<MatrixTransform> _create_lights()
 {
   ref_ptr<MatrixTransform> transform_0 = new MatrixTransform;
 
@@ -256,6 +106,7 @@ ref_ptr<MatrixTransform> _create_lights(ref_ptr<StateSet> root_stateset)
   transform_0->addChild(light_source_0.get());
 
   ref_ptr<Geode> geode = new Geode;
+
   ref_ptr<ShapeDrawable> shape;
   ref_ptr<TessellationHints> hints = new TessellationHints;
   hints->setDetailRatio(0.3f);
@@ -265,11 +116,11 @@ ref_ptr<MatrixTransform> _create_lights(ref_ptr<StateSet> root_stateset)
   shape = new ShapeDrawable(new Cylinder(Vec3(0.0f, 0.0f, -0.4f), 0.05f, 0.8f), hints.get());
   shape->setColor(Vec4(1.0f, 0.5f, 0.5f, 1.0f));
   geode->addDrawable(shape.get());
+
+
   geode->getOrCreateStateSet()->setMode(GL_LIGHTING, StateAttribute::OFF);
   transform_0->addChild(geode.get());
 
-  light_source_0->setStateSetModes(*root_stateset.get(), StateAttribute::ON);
-  
   return transform_0;
 }
 
@@ -336,72 +187,220 @@ ref_ptr<Group> _create_scene()
   return scene;
 }
 
+
+class UpdateCameraAndTexGenCallback : public osg::NodeCallback
+{
+    public:
+    
+        UpdateCameraAndTexGenCallback(osg::MatrixTransform* light_transform, osg::CameraNode* cameraNode, osg::TexGenNode* texgenNode):
+            _light_transform(light_transform),
+            _cameraNode(cameraNode),
+            _texgenNode(texgenNode)
+        {
+        }
+       
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            // first update subgraph to make sure objects are all moved into postion
+            traverse(node,nv);
+            
+            // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
+            osg::BoundingSphere bs;
+            for(unsigned int i=0; i<_cameraNode->getNumChildren(); ++i)
+            {
+                bs.expandBy(_cameraNode->getChild(i)->getBound());
+            }
+            
+            if (!bs.valid())
+            {
+                osg::notify(osg::WARN) << "bb invalid"<<_cameraNode.get()<<std::endl;
+                return;
+            }
+            
+            osg::Vec3 position = _light_transform->getMatrix().getTrans();
+
+            float centerDistance = (position-bs.center()).length();
+
+            float znear = centerDistance-bs.radius();
+            float zfar  = centerDistance+bs.radius();
+            float zNearRatio = 0.001f;
+            if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+
+            float top   = (bs.radius()/centerDistance)*znear;
+            float right = top;
+
+            _cameraNode->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
+            _cameraNode->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+            _cameraNode->setViewMatrixAsLookAt(position,bs.center(),osg::Vec3(0.0f,1.0f,0.0f));
+
+            // compute the matrix which takes a vertex from local coords into tex coords
+            // will use this later to specify osg::TexGen..
+            osg::Matrix MVPT = _cameraNode->getViewMatrix() * 
+                               _cameraNode->getProjectionMatrix() *
+                               osg::Matrix::translate(1.0,1.0,1.0) *
+                               osg::Matrix::scale(0.5f,0.5f,0.5f);
+                               
+            _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
+            _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
+
+        }
+        
+    protected:
+    
+        virtual ~UpdateCameraAndTexGenCallback() {}
+        
+        osg::ref_ptr<osg::MatrixTransform>  _light_transform;
+        osg::ref_ptr<osg::CameraNode>       _cameraNode;
+        osg::ref_ptr<osg::TexGenNode>       _texgenNode;
+
+};
+
+
+osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_transform, unsigned int unit)
+{
+    osg::Group* group = new osg::Group;
+    
+    unsigned int tex_width = 1024;
+    unsigned int tex_height = 1024;
+    
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setTextureSize(tex_width, tex_height);
+
+    texture->setInternalFormat(GL_DEPTH_COMPONENT);
+    texture->setShadowComparison(true);
+    texture->setShadowTextureMode(Texture::LUMINANCE);
+    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    
+    // set up the render to texture camera.
+    {
+
+        // create the camera
+        osg::CameraNode* camera = new osg::CameraNode;
+
+        camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+        camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        camera->setComputeNearFarMode(osg::CameraNode::DO_NOT_COMPUTE_NEAR_FAR);
+
+        // set viewport
+        camera->setViewport(0,0,tex_width,tex_height);
+
+        osg::StateSet*  _local_stateset = camera->getOrCreateStateSet();
+
+        _local_stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+        ref_ptr<PolygonOffset> polygon_offset = new PolygonOffset;
+        polygon_offset->setFactor(1.1f);
+        polygon_offset->setUnits(4.0f);
+        _local_stateset->setAttribute(polygon_offset.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
+        _local_stateset->setMode(GL_POLYGON_OFFSET_FILL, StateAttribute::ON | StateAttribute::OVERRIDE);
+
+        ref_ptr<CullFace> cull_face = new CullFace;
+        cull_face->setMode(CullFace::FRONT);
+        _local_stateset->setAttribute(cull_face.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
+        _local_stateset->setMode(GL_CULL_FACE, StateAttribute::ON | StateAttribute::OVERRIDE);
+
+
+        // set the camera to render before the main camera.
+        camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+
+        // attach the texture and use it as the color buffer.
+        camera->attach(osg::CameraNode::DEPTH_BUFFER, texture);
+
+        // add subgraph to render
+        camera->addChild(shadowed);
+        
+        group->addChild(camera);
+        
+        // create the texgen node to project the tex coords onto the subgraph
+        osg::TexGenNode* texgenNode = new osg::TexGenNode;
+        texgenNode->setTextureUnit(unit);
+        group->addChild(texgenNode);
+
+        // set an update callback to keep moving the camera and tex gen in the right direction.
+        group->setUpdateCallback(new UpdateCameraAndTexGenCallback(light_transform, camera, texgenNode));
+    }
+   
+
+    // set the shadowed subgraph so that it uses the texture and tex gen settings.    
+    {
+        osg::Group* shadowedGroup = new osg::Group;
+        shadowedGroup->addChild(shadowed);
+        group->addChild(shadowedGroup);
+                
+        osg::StateSet* stateset = shadowedGroup->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(unit,texture,osg::StateAttribute::ON);
+        stateset->setTextureMode(unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+        stateset->setTextureMode(unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+        stateset->setTextureMode(unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+        stateset->setTextureMode(unit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
+    }
+    
+    // add the shadower and shadowed.
+    group->addChild(light_transform);
+    
+    return group;
+}
+
+
 int main(int argc, char** argv)
 {
-  // use an ArgumentParser object to manage the program arguments.
-  ArgumentParser arguments(&argc, argv);
+    // use an ArgumentParser object to manage the program arguments.
+    ArgumentParser arguments(&argc, argv);
 
-  // set up the usage document, in case we need to print out how to use this program.
-  arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " is the example which demonstrates using of GL_ARB_shadow extension implemented in osg::Texture class");
-  arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
-  arguments.getApplicationUsage()->addCommandLineOption("-h or --help", "Display this information");
-   
-  // construct the viewer.
-  osgProducer::Viewer viewer(arguments);
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " is the example which demonstrates using of GL_ARB_shadow extension implemented in osg::Texture class");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help", "Display this information");
 
-  // set up the value with sensible default event handlers.
-  viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-    
-  // get details on keyboard and mouse bindings used by the viewer.
-  viewer.getUsage(*arguments. getApplicationUsage());
+    // construct the viewer.
+    osgProducer::Viewer viewer(arguments);
 
-  // if user request help write it out to cout.
-  if (arguments.read("-h") || arguments.read("--help"))
+    // set up the value with sensible default event handlers.
+    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+
+    // get details on keyboard and mouse bindings used by the viewer.
+    viewer.getUsage(*arguments. getApplicationUsage());
+
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
     {
-      arguments.getApplicationUsage()->write(std::cout);
-      return 1;
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
     }
 
-  // any option left unread are converted into errors to write out later.
-  arguments.reportRemainingOptionsAsUnrecognized();
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
 
-  // report any errors if they have occured when parsing the program aguments.
-  if (arguments.errors())
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
     {
       arguments.writeErrorMessages(std::cout);
       return 1;
     }
 
-  ref_ptr<MatrixTransform> scene = new MatrixTransform;
-  scene->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(125.0),1.0,0.0,0.0));
-  
-  ref_ptr<Group> shadowed_scene = _create_scene();    
-  if (!shadowed_scene.valid()) return 1;
-  scene->addChild(shadowed_scene.get());
+    ref_ptr<MatrixTransform> scene = new MatrixTransform;
+    scene->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(125.0),1.0,0.0,0.0));
 
-  ref_ptr<MatrixTransform> light_transform = _create_lights(scene->getOrCreateStateSet());
-  if (!scene.valid()) return 1;
-  scene->addChild(light_transform.get());
+    ref_ptr<Group> shadowed_scene = _create_scene();    
+    if (!shadowed_scene.valid()) return 1;
 
-  ref_ptr<Texture2D> texture = new Texture2D;
-  texture->setInternalFormat(GL_DEPTH_COMPONENT);
-  texture->setShadowComparison(true);
-  texture->setShadowTextureMode(Texture::LUMINANCE);
+    ref_ptr<MatrixTransform> light_transform = _create_lights();
+    if (!light_transform.valid()) return 1;
 
-  ref_ptr<TexGen> tex_gen = new TexGen;
-  tex_gen->setMode(TexGen::EYE_LINEAR);
-  shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture.get(), StateAttribute::ON);
-  shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes(0, tex_gen.get(), StateAttribute::ON);
+    ref_ptr<Group> shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),0);
 
-  scene->setCullCallback(new RenderToTextureCallback(shadowed_scene.get(), texture.get(), light_transform.get(), tex_gen.get()));
+    scene->addChild(shadowedScene.get());
 
-  // add model to viewer.
-  viewer.setSceneData(scene.get()); 
+    viewer.setSceneData(scene.get());
 
-  // create the windows and run the threads.
-  viewer.realize();
+    // create the windows and run the threads.
+    viewer.realize();
 
-  while (!viewer.done())
+    while (!viewer.done())
     {
       // wait for all cull and draw threads to complete.
       viewer.sync();
@@ -414,8 +413,8 @@ int main(int argc, char** argv)
       viewer.frame();
     }
     
-  // wait for all cull and draw threads to complete before exit.
-  viewer.sync();
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
-  return 0;
+    return 0;
 }

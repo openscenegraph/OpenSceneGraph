@@ -1198,7 +1198,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
                         }
                         default:
                         {
-                            fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(attachment));
+                            fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::CameraNode::COLOR_BUFFER0), osg::FrameBufferAttachment(attachment));
                             colorAttached = true;
                             break;
                         }

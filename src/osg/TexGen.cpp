@@ -90,9 +90,6 @@ void TexGen::apply(State&) const
         glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
         glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
 
-        // note, R & Q will be disabled so R&Q settings won't
-        // have an effect, see above comment in enable(). RO.
-
     }
     else if (_mode == EYE_LINEAR)
     {
@@ -105,9 +102,6 @@ void TexGen::apply(State&) const
         glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
         glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
         glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
-
-        // note, R & Q will be disabled so R&Q settings won't
-        // have an effect, see above comment in enable(). RO.
 
     }
     else if (_mode == NORMAL_MAP)

@@ -15,6 +15,7 @@
 #include <osg/Image>
 #include <osg/State>
 #include <osg/TextureCubeMap>
+#include <osg/Notify>
 
 #include <osg/GLU>
 
@@ -300,6 +301,26 @@ void TextureCubeMap::apply(State& state) const
                     non_const_this->_images[n] = 0;
                 }
             }
+        }
+        
+    }
+    else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
+    {
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+                contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        
+        textureObject->bind();
+
+        applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
+
+        for (int n=0; n<6; n++)
+        {                
+            // no image present, but dimensions at set so less create the texture
+            glTexImage2D( faceTarget[n], 0, _internalFormat,
+                         _textureWidth, _textureHeight, _borderWidth,
+                         _internalFormat,
+                         GL_UNSIGNED_BYTE,
+                         0);                
         }
         
     }

@@ -19,6 +19,7 @@
 #include <osg/GL>
 #include <osg/Texture>
 #include <osg/buffered_value>
+#include <osg/CameraNode>
 
 #ifndef GL_EXT_framebuffer_object
 #define GL_EXT_framebuffer_object 1
@@ -256,6 +257,7 @@ namespace osg
         explicit FrameBufferAttachment(Texture3D* target, int zoffset, int level = 0);
         explicit FrameBufferAttachment(TextureCubeMap* target, int face, int level = 0);
         explicit FrameBufferAttachment(TextureRectangle* target);
+        explicit FrameBufferAttachment(CameraNode::Attachment& attachment);
         
         ~FrameBufferAttachment();
 

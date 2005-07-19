@@ -76,7 +76,6 @@ void build_world(osg::Group *root)
     camera->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,1.0f));
     camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     camera->setViewport(0, 0, width, height);
-    camera->getOrCreateStateSet()->setAttribute(camera->getViewport());
     
     // set the camera to render before the main camera.
     camera->setRenderOrder(osg::CameraNode::PRE_RENDER);

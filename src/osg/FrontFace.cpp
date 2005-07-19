@@ -15,9 +15,9 @@
 
 using namespace osg;
 
-FrontFace::FrontFace()
+FrontFace::FrontFace(Mode face)
 {
-    _mode = COUNTER_CLOCKWISE;
+    _mode = face;
 }
 
 

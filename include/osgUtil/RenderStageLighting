@@ -54,7 +54,7 @@ class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
             _texAttrListMap[textureUnit].push_back(AttrMatrixPair(attr,matrix));
         }
 
-        virtual void draw(osg::State& state,RenderLeaf*& previous);
+        virtual void draw(osg::State& state,RenderLeaf*& previous, const osg::Matrix* postMultMatrix = 0);
         
     public:
         

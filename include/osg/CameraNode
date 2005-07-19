@@ -16,6 +16,7 @@
 
 #include <osg/Transform>
 #include <osg/Viewport>
+#include <osg/ColorMask>
 #include <osg/CullSettings>
 #include <osg/Texture>
 #include <osg/Image>
@@ -37,31 +38,44 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         META_Node(osg, CameraNode);
 
 
+        /** Sets the clear color. */
+        inline void setClearColor(const Vec4& color) { _clearColor = color; }
 
-        /** Set the viewport of the scene view to use specified osg::Viewport. */
-        void setViewport(osg::Viewport* viewport)
-        {
-            _viewport = viewport;
-        }
+        /** Returns the clear color. */
+        inline const Vec4& getClearColor() const { return _clearColor; }
+        
+        /** Set the clear mask used in glClear(..).
+          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
+        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
 
-        /** Set the viewport of the scene view to specified dimensions. */
-        void setViewport(int x,int y,int width,int height)
-        {
-            if (!_viewport) _viewport = new osg::Viewport;
-            _viewport->setViewport(x,y,width,height);
-        }
+        /** Get the clear mask.*/
+        inline GLbitfield getClearMask() const { return _clearMask; }
 
+
+        /** Set the color mask of the camera to use specified osg::ColorMask. */
+        void setColorMask(osg::ColorMask* colorMask);
+
+        /** Set the color mask of the camera to specified values. */
+        void setColorMask(bool red, bool green, bool blue, bool alpha);
+        
+        /** Get the const ColorMask. */
+        const ColorMask* getColorMask() const { return _colorMask.get(); }
+
+        /** Get the ColorMask. */
+        ColorMask* getColorMask() { return _colorMask.get(); }
+
+
+        /** Set the viewport of the camera to use specified osg::Viewport. */
+        void setViewport(osg::Viewport* viewport);
+
+        /** Set the viewport of the camera to specified dimensions. */
+        void setViewport(int x,int y,int width,int height);
+        
         /** Get the const viewport. */
         const Viewport* getViewport() const { return _viewport.get(); }
 
         /** Get the viewport. */
         Viewport* getViewport() { return _viewport.get(); }
-
-        /** Get the viewport of the scene view. */
-        void getViewport(int& x,int& y,int& width,int& height) const
-        {
-            if (_viewport.valid()) _viewport->getViewport(x,y,width,height);
-        }
 
 
         enum TransformOrder
@@ -149,22 +163,6 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         /** Get the inverse view matrix.*/
         Matrixd getInverseViewMatrix() const;
 
-
-
-        /** Sets the clear color. */
-        inline void setClearColor(const Vec4& color) { _clearColor = color; }
-
-        /** Returns the clear color. */
-        inline const Vec4& getClearColor() const { return _clearColor; }
-        
-        /** Set the clear mask used in glClear(..).
-          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
-        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
-
-        /** Get the clear mask.*/
-        inline GLbitfield getClearMask() const { return _clearMask; }
-
-        
         
         enum RenderOrder
         {
@@ -276,6 +274,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
         Vec4                        _clearColor;
         GLbitfield                  _clearMask;
+        ref_ptr<ColorMask>           _colorMask;
         ref_ptr<Viewport>           _viewport;
 
         TransformOrder              _transformOrder;

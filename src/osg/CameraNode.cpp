@@ -23,6 +23,7 @@ CameraNode::CameraNode():
     _renderOrder(POST_RENDER),
     _renderTargetImplementation(FRAME_BUFFER)
 {
+    setStateSet(new StateSet);
 }
 
 CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
@@ -30,6 +31,7 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     CullSettings(camera),
     _clearColor(camera._clearColor),
     _clearMask(camera._clearMask),
+    _colorMask(camera._colorMask),
     _viewport(camera._viewport),
     _transformOrder(camera._transformOrder),
     _projectionMatrix(camera._projectionMatrix),
@@ -37,13 +39,60 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     _renderOrder(camera._renderOrder),
     _renderTargetImplementation(camera._renderTargetImplementation),
     _bufferAttachmentMap(camera._bufferAttachmentMap)
-    
-{    
+{
 }
 
 
 CameraNode::~CameraNode()
 {
+}
+
+void CameraNode::setColorMask(osg::ColorMask* colorMask)
+{
+    if (_colorMask == colorMask) return;
+
+    osg::StateSet* stateset = getOrCreateStateSet();
+    if (_colorMask.valid() && stateset)
+    {
+        stateset->removeAttribute(_colorMask.get());
+    }
+    
+    _colorMask = colorMask;
+    
+    if (_colorMask.valid() && stateset)
+    {
+        stateset->setAttribute(_colorMask.get());
+    }
+}
+
+void CameraNode::setColorMask(bool red, bool green, bool blue, bool alpha)
+{
+    if (!_colorMask) setColorMask(new osg::ColorMask);
+    if (_colorMask.valid()) _colorMask->setMask(red,green,blue,alpha);
+}
+
+void CameraNode::setViewport(osg::Viewport* viewport)
+{
+    if (_viewport == viewport) return;
+
+    osg::StateSet* stateset = getOrCreateStateSet();
+    if (_viewport.valid() && stateset)
+    {
+        stateset->removeAttribute(_viewport.get());
+    }
+    
+    _viewport = viewport;
+    
+    if (_viewport.valid() && stateset)
+    {
+        stateset->setAttribute(_viewport.get());
+    }
+}
+
+void CameraNode::setViewport(int x,int y,int width,int height)
+{
+    if (!_viewport) setViewport(new osg::Viewport);
+    if (_viewport.valid()) _viewport->setViewport(x,y,width,height);
 }
 
 Matrixd CameraNode::getInverseViewMatrix() const

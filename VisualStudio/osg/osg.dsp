@@ -260,6 +260,10 @@ SOURCE=..\..\src\osg\GLExtensions.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\GraphicsContext.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Group.cpp
 # End Source File
 # Begin Source File
@@ -717,6 +721,10 @@ SOURCE=..\..\include\osg\Glu
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Group
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\GraphicsContext
 # End Source File
 # Begin Source File
 

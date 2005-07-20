@@ -63,6 +63,10 @@ namespace osg {
         }\
     }
 
+
+// forward decalr GraphicsContext
+class GraphicsContext;
+
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,.
   * implements lazy state updating and provides accessors for querrying the current state.
   . The venerable Red Book says that "OpenGL is a state machine", and this class
@@ -83,6 +87,32 @@ class OSG_EXPORT State : public Referenced
     public :
 
         State();
+        
+
+        /** Set the graphics context associated with that owns this State object.*/        
+        void setGraphicsContext(GraphicsContext* context) { _graphicsContext = context; }
+
+        /** Get the graphics context associated with that owns this State object.*/        
+        GraphicsContext* getGraphicsContext() { return _graphicsContext; }
+
+        /** Get the const graphics context associated with that owns this State object.*/        
+        const GraphicsContext* getGraphicsContext() const { return _graphicsContext; }
+        
+
+        /** Set the current OpenGL context uniqueID.
+            Note, it is the application developers responsibility to
+            set up unique ID for each OpenGL context.  This value is
+            then used by osg::StateAttribute's and osg::Drawable's to
+            help manage OpenGL display list and texture binds appropriate
+            for each context, the contextID simply acts as an index in local
+            arrays that they maintain for the purpose.
+            Typical settings for contextID are 0,1,2,3... up to the maximum
+            number of graphics contexts you have set up.
+            By default contextID is 0.*/
+        inline void setContextID(unsigned int contextID) { _contextID=contextID; }
+
+        /** Get the current OpenGL context unique ID.*/
+        inline unsigned int getContextID() const { return _contextID; }
 
         /** Push stateset onto state stack.*/
         void pushStateSet(const StateSet* dstate);
@@ -669,21 +699,6 @@ class OSG_EXPORT State : public Referenced
         inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
         inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
 
-        /** Set the current OpenGL context uniqueID.
-            Note, it is the application developers responsibility to
-            set up unique ID for each OpenGL context.  This value is
-            then used by osg::StateAttribute's and osg::Drawable's to
-            help manage OpenGL display list and texture binds appropriate
-            for each context, the contextID simply acts as an index in local
-            arrays that they maintain for the purpose.
-            Typical settings for contextID are 0,1,2,3... up to the maximum
-            number of graphics contexts you have set up.
-            By default contextID is 0.*/
-        inline void setContextID(unsigned int contextID) { _contextID=contextID; }
-
-        /** Get the current OpenGL context unique ID.*/
-        inline unsigned int getContextID() const { return _contextID; }
-
 
         /** Set the frame stamp for the current frame.*/
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
@@ -738,6 +753,7 @@ class OSG_EXPORT State : public Referenced
 
         virtual ~State();
 
+        GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
         ref_ptr<FrameStamp>         _frameStamp;
 

@@ -49,11 +49,27 @@ class PBufferTexture2D : public osg::Texture2D
                 glTexImage2D( GL_TEXTURE_2D, 0, 
                 format, width, height, 0, format, GL_UNSIGNED_BYTE, 0 );
                 textureObject->setAllocated(true);
+                
+                std::cout<<"Created texture"<<std::endl;
             }
             else
             {
                 textureObject->bind();
-                _pbuffer->bindPBufferToTexture( Producer::RenderSurface::FrontBuffer );
+                
+                static unsigned int frameNum = 0;
+                
+                if ((frameNum % 100)==0)
+                {
+                    std::cout<<"binding texture"<<std::endl;
+                    _pbuffer->bindPBufferToTexture( Producer::RenderSurface::FrontBuffer );
+                }
+                else
+                {
+                    std::cout<<"..."<<std::endl;
+                }
+                
+                ++frameNum;
+                
             }
         }
 

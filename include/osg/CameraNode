@@ -20,6 +20,7 @@
 #include <osg/CullSettings>
 #include <osg/Texture>
 #include <osg/Image>
+#include <osg/GraphicsContext>
 
 namespace osg {
 
@@ -258,6 +259,16 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
         
         
+        /** Set the GraphicsContext that provides the mechansim for managing the OpenGL graphics context associated with this camera.*/
+        void setGraphicsContext(GraphicsContext* context) { _graphicsContext = context; }
+
+        /** Get the GraphicsContext.*/
+        GraphicsContext* getGraphicsContext() { return _graphicsContext.get(); }
+
+        /** Get the const GraphicsContext.*/
+        const GraphicsContext* getGraphicsContext() const { return _graphicsContext.get(); }
+        
+        
         /** Set the Rendering object that is used to implement rendering of the subgraph.*/
         void setRenderingCache(osg::Object* rc) { _renderingCache = rc; }
 
@@ -297,6 +308,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         RenderTargetImplementation  _renderTargetImplementation;
         BufferAttachmentMap         _bufferAttachmentMap;
 
+        ref_ptr<GraphicsContext>    _graphicsContext;
         ref_ptr<Object>             _renderingCache;
 };
 

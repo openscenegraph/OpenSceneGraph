@@ -11,6 +11,7 @@
 
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
+#include <osg/GraphicsContext>
 #include <osg/Matrix>
 #include <osg/Polytope>
 #include <osg/Program>
@@ -36,6 +37,11 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
+	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context);
+	I_Method0(osg::GraphicsContext *, getGraphicsContext);
+	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
+	I_Method1(void, setContextID, IN, unsigned int, contextID);
+	I_Method0(unsigned int, getContextID);
 	I_Method1(void, pushStateSet, IN, const osg::StateSet *, dstate);
 	I_Method0(void, popStateSet);
 	I_Method0(void, popAllStateSets);
@@ -119,8 +125,6 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method0(const osg::Program::PerContextProgram *, getLastAppliedProgramObject);
 	I_Method1(GLint, getUniformLocation, IN, const std::string &, name);
 	I_Method1(GLint, getAttribLocation, IN, const std::string &, name);
-	I_Method1(void, setContextID, IN, unsigned int, contextID);
-	I_Method0(unsigned int, getContextID);
 	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
 	I_Method0(const osg::FrameStamp *, getFrameStamp);
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, vs);
@@ -144,6 +148,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_WriteOnlyProperty(const osg::StateAttribute *, GlobalDefaultAttribute);
 	I_IndexedProperty1(bool, GlobalDefaultModeValue, osg::StateAttribute::GLMode, mode);
 	I_IndexedProperty2(bool, GlobalDefaultTextureModeValue, unsigned int, unit, osg::StateAttribute::GLMode, mode);
+	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_ReadOnlyProperty(const osg::Matrix &, InitialInverseViewMatrix);
 	I_WriteOnlyProperty(const osg::RefMatrix *, InitialViewMatrix);
 	I_Property(const osg::Program::PerContextProgram *, LastAppliedProgramObject);

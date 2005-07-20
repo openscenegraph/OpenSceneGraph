@@ -20,8 +20,7 @@
 #include <osgProducer/Viewer>
 
 #include <osg/Geode>
-#include <osg/Projection>
-#include <osg/MatrixTransform>
+#include <osg/CameraNode>
 #include <osg/ShapeDrawable>
 #include <osg/Sequence>
 
@@ -502,18 +501,15 @@ int main( int argc, char **argv )
 
         {
             // create the hud.
-            osg::Projection* projection = new osg::Projection;
-            projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
+            osg::CameraNode* camera = new osg::CameraNode;
+            camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+            camera->setProjectionMatrixAsOrtho2D(0,1280,0,1024);
+            camera->setViewMatrix(osg::Matrix::identity());
+            camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+            camera->addChild(createHUDText());
+            camera->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
-            osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-            modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-            modelview_abs->setMatrix(osg::Matrix::identity());
-
-            modelview_abs->addChild(createHUDText());
-
-            projection->addChild(modelview_abs);
-
-            group->addChild(projection);
+            group->addChild(camera);
         }
 
         group->addChild(create3DText(center,radius));

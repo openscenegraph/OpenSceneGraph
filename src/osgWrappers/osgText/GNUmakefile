@@ -6,8 +6,6 @@ CXXFILES =\
 	Font.cpp\
 	String.cpp\
 	Text.cpp\
-	Text.cpp\
-	Text.cpp\
 
 LIBS   += -losgText -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 

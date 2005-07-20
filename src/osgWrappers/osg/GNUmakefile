@@ -44,6 +44,7 @@ CXXFILES =\
 	GL2Extensions.cpp\
 	Geode.cpp\
 	Geometry.cpp\
+	GraphicsContext.cpp\
 	Group.cpp\
 	Image.cpp\
 	ImageStream.cpp\

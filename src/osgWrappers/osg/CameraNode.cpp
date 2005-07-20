@@ -12,6 +12,7 @@
 #include <osg/CameraNode>
 #include <osg/ColorMask>
 #include <osg/CopyOp>
+#include <osg/GraphicsContext>
 #include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Matrixd>
@@ -125,6 +126,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method1(void, detach, IN, osg::CameraNode::BufferComponent, buffer);
 	I_Method0(osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap);
 	I_Method0(const osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap);
+	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context);
+	I_Method0(osg::GraphicsContext *, getGraphicsContext);
+	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
 	I_Method1(void, setRenderingCache, IN, osg::Object *, rc);
 	I_Method0(osg::Object *, getRenderingCache);
 	I_Method0(const osg::Object *, getRenderingCache);
@@ -136,6 +140,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Property(osg::ColorMask *, ColorMask);
 	I_IndexedProperty1(GLenum, DrawBuffer, unsigned int, pos);
 	I_ReadOnlyProperty(osg::CameraNode::DrawBufferList &, DrawBufferList);
+	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_ReadOnlyProperty(osg::Matrixd, InverseViewMatrix);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
 	I_Property(GLenum, ReadBuffer);

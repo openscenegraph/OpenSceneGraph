@@ -74,6 +74,8 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
 	I_Property(GLint, First);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< GLubyte >, osg::DrawElementsUByte::vector_type);
+
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	I_BaseType(osg::PrimitiveSet);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
@@ -98,6 +100,8 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< GLuint >, osg::DrawElementsUInt::vector_type);
+
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	I_BaseType(osg::PrimitiveSet);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
@@ -121,6 +125,8 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	I_ReadOnlyProperty(const GLvoid *, DataPointer);
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< GLushort >, osg::DrawElementsUShort::vector_type);
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 	I_BaseType(osg::PrimitiveSet);
@@ -230,16 +236,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 	I_ReadOnlyProperty(osg::PrimitiveSet::Type, Type);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::vector< GLsizei >, osg::VectorSizei);
-
-TYPE_NAME_ALIAS(std::vector< GLubyte >, osg::VectorUByte);
-
-TYPE_NAME_ALIAS(std::vector< GLushort >, osg::VectorUShort);
-
-TYPE_NAME_ALIAS(std::vector< GLuint >, osg::VectorUInt);
-
-STD_VECTOR_REFLECTOR(std::vector< GLsizei >);
 
 STD_VECTOR_REFLECTOR(std::vector< GLubyte >);
 

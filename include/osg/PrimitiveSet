@@ -71,69 +71,16 @@ public:
     virtual void end() = 0;
 };
 
-#ifndef _MSC_VER
-
-typedef std::vector<GLsizei> VectorSizei;
-typedef std::vector<GLubyte> VectorUByte;
-typedef std::vector<GLushort> VectorUShort;
-typedef std::vector<GLuint> VectorUInt;
-
-#else // _MSC_VER
-
-// Following Vector wrapper classes are work arounds for MS linker problems with
-// multiply implemented methods.
-//
-// An alternative, sent in by Clay Fowler, is workaround in VS to prevent the problem:
-// the following changes have to be made to the project to make it compile, 
-// but NO changes are required to the actual source code:
-// In the osgUtil project, go to the project properties, select the Linker/Command Line property page, 
-// and add the following switch in the "Additional Options" field:
-// FORCE:MULTIPLE
-
-class VectorSizei: public std::vector<GLsizei> {
-	typedef std::vector<value_type> inherited;
-public:
-	VectorSizei(): inherited() {}
-	explicit VectorSizei(size_type n): inherited(n) {}
-	VectorSizei(const VectorSizei &copy): inherited(copy) {}
-	//VectorSizei(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
-	template<class InputIterator>
-	VectorSizei(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
-};
-
-class VectorUByte: public std::vector<GLubyte> {
-	typedef std::vector<value_type> inherited;
-public:
-	VectorUByte(): inherited() {}
-	explicit VectorUByte(size_type n): inherited(n) {}
-	VectorUByte(const VectorUByte &copy): inherited(copy) {}
-	//VectorUByte(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
-	template<class InputIterator>
-	VectorUByte(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
-};
-
-class VectorUShort: public std::vector<GLushort> {
-	typedef std::vector<value_type> inherited;
-public:
-	VectorUShort(): inherited() {}
-	explicit VectorUShort(size_type n): inherited(n) {}
-	VectorUShort(const VectorUShort &copy): inherited(copy) {}
-	//VectorUShort(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
-	template<class InputIterator>
-	VectorUShort(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
-};
-
-class VectorUInt: public std::vector<GLuint> {
-	typedef std::vector<value_type> inherited;
-public:
-	VectorUInt(): inherited() {}
-	explicit VectorUInt(size_type n): inherited(n) {}
-	VectorUInt(const VectorUInt &copy): inherited(copy) {}
-	//VectorUInt(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
-	template<class InputIterator>
-	VectorUInt(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
-};
-
+// export template instances that are used as base classes
+#ifdef _MSC_VER
+template class __declspec(dllexport) std::allocator<GLsizei>;
+template class __declspec(dllexport) std::vector<GLsizei, std::allocator<GLsizei> >;
+template class __declspec(dllexport) std::allocator<GLubyte>;
+template class __declspec(dllexport) std::vector<GLubyte, std::allocator<GLubyte> >;
+template class __declspec(dllexport) std::allocator<GLushort>;
+template class __declspec(dllexport) std::vector<GLushort, std::allocator<GLushort> >;
+template class __declspec(dllexport) std::allocator<GLuint>;
+template class __declspec(dllexport) std::vector<GLuint, std::allocator<GLuint> >;
 #endif
 
 
@@ -289,7 +236,7 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
         GLsizei _count;
 };
 
-class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
+class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public std::vector<GLsizei>
 {
     public:
 
@@ -299,22 +246,22 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
     
         DrawArrayLengths(const DrawArrayLengths& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(dal,copyop),
-            VectorSizei(dal),
+            std::vector<GLsizei>(dal),
             _first(dal._first) {}
 
         DrawArrayLengths(GLenum mode, GLint first, unsigned int no, GLsizei* ptr) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            VectorSizei(ptr,ptr+no),
+            std::vector<GLsizei>(ptr,ptr+no),
             _first(first) {}
 
         DrawArrayLengths(GLenum mode,GLint first, unsigned int no) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            VectorSizei(no),
+            std::vector<GLsizei>(no),
             _first(first) {}
 
         DrawArrayLengths(GLenum mode,GLint first) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            VectorSizei(),
+            std::vector<GLsizei>(),
             _first(first) {}
 
 
@@ -362,24 +309,26 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
         GLint   _first;
 };
 
-class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
+class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public std::vector<GLubyte>
 {
     public:
+    
+        typedef std::vector<GLubyte> vector_type;
 
         DrawElementsUByte(GLenum mode=0):
             PrimitiveSet(DrawElementsUBytePrimitiveType,mode) {}
     
         DrawElementsUByte(const DrawElementsUByte& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(array,copyop),
-            VectorUByte(array) {}
+            vector_type(array) {}
 
         DrawElementsUByte(GLenum mode,unsigned int no,GLubyte* ptr) : 
             PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
-            VectorUByte(ptr,ptr+no) {}
+            vector_type(ptr,ptr+no) {}
 
         DrawElementsUByte(GLenum mode,unsigned int no) : 
             PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
-            VectorUByte(no) {}
+            vector_type(no) {}
 
         virtual Object* cloneType() const { return new DrawElementsUByte(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUByte(*this,copyop); }        
@@ -409,29 +358,31 @@ class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
 };
 
 
-class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
+class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public std::vector<GLushort>
 {
     public:
+
+        typedef std::vector<GLushort> vector_type;
 
         DrawElementsUShort(GLenum mode=0):
             PrimitiveSet(DrawElementsUShortPrimitiveType,mode) {}
     
         DrawElementsUShort(const DrawElementsUShort& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(array,copyop),
-            VectorUShort(array) {}
+            vector_type(array) {}
 
         DrawElementsUShort(GLenum mode,unsigned int no,GLushort* ptr) : 
             PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
-            VectorUShort(ptr,ptr+no) {}
+            vector_type(ptr,ptr+no) {}
 
         DrawElementsUShort(GLenum mode,unsigned int no) : 
             PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
-            VectorUShort(no) {}
+            vector_type(no) {}
 
         template <class InputIterator>
         DrawElementsUShort(GLenum mode, InputIterator first,InputIterator last) : 
             PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
-            VectorUShort(first,last) {}
+            vector_type(first,last) {}
 
         virtual Object* cloneType() const { return new DrawElementsUShort(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUShort(*this,copyop); }        
@@ -460,29 +411,31 @@ class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual ~DrawElementsUShort();
 };
 
-class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
+class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public std::vector<GLuint>
 {
     public:
+
+        typedef std::vector<GLuint> vector_type;
 
         DrawElementsUInt(GLenum mode=0):
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode) {}
     
         DrawElementsUInt(const DrawElementsUInt& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(array,copyop),
-            VectorUInt(array) {}
+            vector_type(array) {}
 
         DrawElementsUInt(GLenum mode,unsigned int no,GLuint* ptr) : 
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
-            VectorUInt(ptr,ptr+no) {}
+            vector_type(ptr,ptr+no) {}
 
         DrawElementsUInt(GLenum mode,unsigned int no) : 
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
-            VectorUInt(no) {}
+            vector_type(no) {}
 
         template <class InputIterator>
         DrawElementsUInt(GLenum mode, InputIterator first,InputIterator last) : 
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
-            VectorUInt(first,last) {}
+            vector_type(first,last) {}
 
         virtual Object* cloneType() const { return new DrawElementsUInt(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUInt(*this,copyop); }        

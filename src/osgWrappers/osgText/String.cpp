@@ -19,6 +19,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::String::vector_type);
+
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);
 	I_EnumLabel(osgText::String::ENCODING_ASCII);
@@ -45,6 +47,4 @@ BEGIN_OBJECT_REFLECTOR(osgText::String)
 	I_Method0(std::string, createUTF8EncodedString);
 	I_WriteOnlyProperty(const wchar_t *, );
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::VectorUInt);
 

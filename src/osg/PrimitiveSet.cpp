@@ -34,7 +34,7 @@ void DrawArrays::accept(PrimitiveIndexFunctor& functor) const
 void DrawArrayLengths::draw(State&, bool) const
 {
     GLint first = _first;
-    for(VectorSizei::const_iterator itr=begin();
+    for(vector_type::const_iterator itr=begin();
         itr!=end();
         ++itr)
     {
@@ -46,7 +46,7 @@ void DrawArrayLengths::draw(State&, bool) const
 void DrawArrayLengths::accept(PrimitiveFunctor& functor) const
 {
     GLint first = _first;
-    for(VectorSizei::const_iterator itr=begin();
+    for(vector_type::const_iterator itr=begin();
         itr!=end();
         ++itr)
     {
@@ -58,7 +58,7 @@ void DrawArrayLengths::accept(PrimitiveFunctor& functor) const
 void DrawArrayLengths::accept(PrimitiveIndexFunctor& functor) const
 {
     GLint first = _first;
-    for(VectorSizei::const_iterator itr=begin();
+    for(vector_type::const_iterator itr=begin();
         itr!=end();
         ++itr)
     {
@@ -70,7 +70,7 @@ void DrawArrayLengths::accept(PrimitiveIndexFunctor& functor) const
 unsigned int DrawArrayLengths::getNumIndices() const
 {
     unsigned int count = 0;
-    for(VectorSizei::const_iterator itr=begin();
+    for(vector_type::const_iterator itr=begin();
         itr!=end();
         ++itr)
     {

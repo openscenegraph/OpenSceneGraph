@@ -25,71 +25,60 @@ namespace osgText {
 
 class Text;
 
-#ifndef _MSC_VER
-
-typedef std::vector<unsigned int> VectorUInt;
-
-#else // _MSC_VER
-
-class VectorUInt: public std::vector<unsigned int> {
-	typedef std::vector<value_type> inherited;
-public:
-	VectorUInt(): inherited() {}
-	explicit VectorUInt(size_type n): inherited(n) {}
-	VectorUInt(const VectorUInt &copy): inherited(copy) {}
-	//VectorUInt(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
-	template<class InputIterator>
-	VectorUInt(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
-};
-
+// export template instances that are used as base classes
+#ifdef _MSC_VER
+template class __declspec(dllexport) std::allocator<unsigned int>;
+template class __declspec(dllexport) std::vector<unsigned int, std::allocator<unsigned int> >;
 #endif
 
-class OSGTEXT_EXPORT String : public osg::Referenced, public VectorUInt
+class OSGTEXT_EXPORT String : public osg::Referenced, public std::vector<unsigned int>
 {
-public:
+    public:
 
-    /**
-     * Types of string encodings supported
-     */
-    enum Encoding
-    {
-        ENCODING_UNDEFINED,                 /// not using Unicode
-        ENCODING_ASCII = ENCODING_UNDEFINED,/// unsigned char ASCII
-        ENCODING_UTF8,                      /// 8-bit unicode transformation format
-        ENCODING_UTF16,                     /// 16-bit signature
-        ENCODING_UTF16_BE,                  /// 16-bit big-endian
-        ENCODING_UTF16_LE,                  /// 16-bit little-endian
-        ENCODING_UTF32,                     /// 32-bit signature
-        ENCODING_UTF32_BE,                  /// 32-bit big-endian
-        ENCODING_UTF32_LE,                  /// 32-bit little-endian
-        ENCODING_SIGNATURE                  /// detect encoding from signature
-    };
+        typedef std::vector<unsigned int> vector_type;
+
+        /**
+         * Types of string encodings supported
+         */
+        enum Encoding
+        {
+            ENCODING_UNDEFINED,                 /// not using Unicode
+            ENCODING_ASCII = ENCODING_UNDEFINED,/// unsigned char ASCII
+            ENCODING_UTF8,                      /// 8-bit unicode transformation format
+            ENCODING_UTF16,                     /// 16-bit signature
+            ENCODING_UTF16_BE,                  /// 16-bit big-endian
+            ENCODING_UTF16_LE,                  /// 16-bit little-endian
+            ENCODING_UTF32,                     /// 32-bit signature
+            ENCODING_UTF32_BE,                  /// 32-bit big-endian
+            ENCODING_UTF32_LE,                  /// 32-bit little-endian
+            ENCODING_SIGNATURE                  /// detect encoding from signature
+        };
 
 
-    String() {}
-    String(const String& str);
-    String(const std::string& str) { set(str); }
-    String(const wchar_t* text) { set(text); }
-    String(const std::string& text,Encoding encoding) { set(text,encoding); }
+        String() {}
+        String(const String& str);
+        String(const std::string& str) { set(str); }
+        String(const wchar_t* text) { set(text); }
+        String(const std::string& text,Encoding encoding) { set(text,encoding); }
 
-    virtual ~String() {} // public temporily while osgText is still in flux.
+        virtual ~String() {} // public temporily while osgText is still in flux.
 
-    String& operator = (const String& str);
+        String& operator = (const String& str);
 
-    void set(const std::string& str);
+        void set(const std::string& str);
 
-    /** Set the text using a wchar_t string, 
-      * which is converted to an internal TextString.*/
-    void set(const wchar_t* text);
+        /** Set the text using a wchar_t string, 
+          * which is converted to an internal TextString.*/
+        void set(const wchar_t* text);
 
-    /** Set the text using a Unicode encoded std::string, which is converted to an internal TextString.
-      * The encoding parameter specificies which Unicode encodeding is used in the std::string. */
-    void set(const std::string& text,Encoding encoding);
+        /** Set the text using a Unicode encoded std::string, which is converted to an internal TextString.
+          * The encoding parameter specificies which Unicode encodeding is used in the std::string. */
+        void set(const std::string& text,Encoding encoding);
 
-    /** returns a UTF8 encoded version of this osgText::String.*/
-    std::string createUTF8EncodedString() const;
+        /** returns a UTF8 encoded version of this osgText::String.*/
+        std::string createUTF8EncodedString() const;
 
-protected:
+    protected:
 
 };
 

@@ -237,7 +237,7 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
 
 String::String(const String& str):
     osg::Referenced(),
-    VectorUInt(str)
+    vector_type(str)
 {
 }
 

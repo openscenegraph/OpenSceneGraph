@@ -35,7 +35,7 @@ void DrawArrayLengths::write(DataOutputStream* out){
     // Write array length and its elements.
     out->writeInt(size());
     for(unsigned int i=0; i<size(); i++){
-        out->writeInt(((osg::VectorSizei)(*this))[i]);
+        out->writeInt(((*this))[i]);
     }
 
 }

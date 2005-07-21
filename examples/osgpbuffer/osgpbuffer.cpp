@@ -49,8 +49,6 @@ class PBufferTexture2D : public osg::Texture2D
                 glTexImage2D( GL_TEXTURE_2D, 0, 
                 format, width, height, 0, format, GL_UNSIGNED_BYTE, 0 );
                 textureObject->setAllocated(true);
-                
-                std::cout<<"Created texture"<<std::endl;
             }
             else
             {
@@ -58,15 +56,7 @@ class PBufferTexture2D : public osg::Texture2D
                 
                 static unsigned int frameNum = 0;
                 
-                if ((frameNum % 100)==0)
-                {
-                    std::cout<<"binding texture"<<std::endl;
-                    _pbuffer->bindPBufferToTexture( Producer::RenderSurface::FrontBuffer );
-                }
-                else
-                {
-                    std::cout<<"..."<<std::endl;
-                }
+                _pbuffer->bindPBufferToTexture( Producer::RenderSurface::FrontBuffer );
                 
                 ++frameNum;
                 
@@ -453,7 +443,7 @@ int main( int argc, char **argv )
         }
     }
 
-printf( "PBuffer window: 0x%x\n", pbuffer->getWindow() );
+    printf( "PBuffer window: 0x%x\n", pbuffer->getWindow() );
 
     viewer.getCamera(0)->setClearColor( 0.1f,0.9f,0.3f,1.0f );
 

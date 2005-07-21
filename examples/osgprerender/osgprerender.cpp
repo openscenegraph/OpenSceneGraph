@@ -107,136 +107,139 @@ class MyGeometryCallback :
         
 };
 
-osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
+osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation)
 {
     if (!subgraph) return 0;
- 
-    // create the quad to visualize.
-    osg::Geometry* polyGeom = new osg::Geometry();
 
-    polyGeom->setSupportsDisplayList(false);
+    // create a group to contain the flag and the pre rendering camera.
+    osg::Group* parent = new osg::Group;
 
-    osg::Vec3 origin(0.0f,0.0f,0.0f);
-    osg::Vec3 xAxis(1.0f,0.0f,0.0f);
-    osg::Vec3 yAxis(0.0f,0.0f,1.0f);
-    osg::Vec3 zAxis(0.0f,-1.0f,0.0f);
-    float height = 100.0f;
-    float width = 200.0f;
-    int noSteps = 20;
-    
-    osg::Vec3Array* vertices = new osg::Vec3Array;
-    osg::Vec3 bottom = origin;
-    osg::Vec3 top = origin; top.z()+= height;
-    osg::Vec3 dv = xAxis*(width/((float)(noSteps-1)));
-    
-    osg::Vec2Array* texcoords = new osg::Vec2Array;
-    osg::Vec2 bottom_texcoord(0.0f,0.0f);
-    osg::Vec2 top_texcoord(0.0f,1.0f);
-    osg::Vec2 dv_texcoord(1.0f/(float)(noSteps-1),0.0f);
-
-    for(int i=0;i<noSteps;++i)
-    {
-        vertices->push_back(top);
-        vertices->push_back(bottom);
-        top+=dv;
-        bottom+=dv;
-
-        texcoords->push_back(top_texcoord);
-        texcoords->push_back(bottom_texcoord);
-        top_texcoord+=dv_texcoord;
-        bottom_texcoord+=dv_texcoord;
-    }
-    
-
-    // pass the created vertex array to the points geometry object.
-    polyGeom->setVertexArray(vertices);
-    
-    polyGeom->setTexCoordArray(0,texcoords);
-    
-
-    osg::Vec4Array* colors = new osg::Vec4Array;
-    colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    polyGeom->setColorArray(colors);
-    polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-    polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,vertices->size()));
-
-
-
-    unsigned int tex_width = 2048;
-    unsigned int tex_height = 2048;
-
-
-    // new we need to add the texture to the Drawable, we do so by creating a 
-    // StateSet to contain the Texture StateAttribute.
-    osg::StateSet* stateset = new osg::StateSet;
-
+    // texture to render to and to use for rendering of flag.
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setTextureSize(tex_width, tex_height);
     texture->setInternalFormat(GL_RGBA);
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-    stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
-    polyGeom->setStateSet(stateset);
+    // first create the geometry of the flag of which to view.
+    { 
+        // create the to visualize.
+        osg::Geometry* polyGeom = new osg::Geometry();
 
-    polyGeom->setUpdateCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
+        polyGeom->setSupportsDisplayList(false);
 
-    osg::Geode* geode = new osg::Geode();
-    geode->addDrawable(polyGeom);
+        osg::Vec3 origin(0.0f,0.0f,0.0f);
+        osg::Vec3 xAxis(1.0f,0.0f,0.0f);
+        osg::Vec3 yAxis(0.0f,0.0f,1.0f);
+        osg::Vec3 zAxis(0.0f,-1.0f,0.0f);
+        float height = 100.0f;
+        float width = 200.0f;
+        int noSteps = 20;
+
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        osg::Vec3 bottom = origin;
+        osg::Vec3 top = origin; top.z()+= height;
+        osg::Vec3 dv = xAxis*(width/((float)(noSteps-1)));
+
+        osg::Vec2Array* texcoords = new osg::Vec2Array;
+        osg::Vec2 bottom_texcoord(0.0f,0.0f);
+        osg::Vec2 top_texcoord(0.0f,1.0f);
+        osg::Vec2 dv_texcoord(1.0f/(float)(noSteps-1),0.0f);
+
+        for(int i=0;i<noSteps;++i)
+        {
+            vertices->push_back(top);
+            vertices->push_back(bottom);
+            top+=dv;
+            bottom+=dv;
+
+            texcoords->push_back(top_texcoord);
+            texcoords->push_back(bottom_texcoord);
+            top_texcoord+=dv_texcoord;
+            bottom_texcoord+=dv_texcoord;
+        }
 
 
-    osg::CameraNode* camera = new osg::CameraNode;
-    
-    // set up the background color and clear mask.
-    camera->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,1.0f));
-    camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // pass the created vertex array to the points geometry object.
+        polyGeom->setVertexArray(vertices);
 
-    const osg::BoundingSphere& bs = subgraph->getBound();
-    if (!bs.valid())
-    {
-        return subgraph;
+        polyGeom->setTexCoordArray(0,texcoords);
+
+
+        osg::Vec4Array* colors = new osg::Vec4Array;
+        colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        polyGeom->setColorArray(colors);
+        polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,vertices->size()));
+
+        // new we need to add the texture to the Drawable, we do so by creating a 
+        // StateSet to contain the Texture StateAttribute.
+        osg::StateSet* stateset = new osg::StateSet;
+
+        stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
+
+        polyGeom->setStateSet(stateset);
+
+        polyGeom->setUpdateCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
+
+        osg::Geode* geode = new osg::Geode();
+        geode->addDrawable(polyGeom);
+        
+        parent->addChild(geode);
+
     }
 
-    float znear = 1.0f*bs.radius();
-    float zfar  = 3.0f*bs.radius();
 
-    // 2:1 aspect ratio as per flag geomtry below.
-    float proj_top   = 0.25f*znear;
-    float proj_right = 0.5f*znear;
+    // then create the camera node to do the render to texture
+    {    
+        osg::CameraNode* camera = new osg::CameraNode;
 
-    znear *= 0.9f;
-    zfar *= 1.1f;
+        // set up the background color and clear mask.
+        camera->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,1.0f));
+        camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // set up projection.
-    camera->setProjectionMatrixAsFrustum(-proj_right,proj_right,-proj_top,proj_top,znear,zfar);
+        const osg::BoundingSphere& bs = subgraph->getBound();
+        if (!bs.valid())
+        {
+            return subgraph;
+        }
 
-    // set view
-    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    camera->setViewMatrixAsLookAt(bs.center()-osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+        float znear = 1.0f*bs.radius();
+        float zfar  = 3.0f*bs.radius();
 
-    // set viewport
-    camera->setViewport(0,0,tex_width,tex_height);
-    
-    // set the camera to render before the main camera.
-    camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
-    
-    // tell the camera to use OpenGL frame buffer object where supported.
-    camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
-    
-    // attach the texture and use it as the color buffer.
-    camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+        // 2:1 aspect ratio as per flag geomtry below.
+        float proj_top   = 0.25f*znear;
+        float proj_right = 0.5f*znear;
 
-    // add subgraph to render
-    camera->addChild(subgraph);
-    
-    
-    // create a group to contain the flag and the pre rendering camera.
-    osg::Group* parent = new osg::Group;
-    
-    parent->addChild(camera);
-    parent->addChild(geode);
+        znear *= 0.9f;
+        zfar *= 1.1f;
 
+        // set up projection.
+        camera->setProjectionMatrixAsFrustum(-proj_right,proj_right,-proj_top,proj_top,znear,zfar);
+
+        // set view
+        camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+        camera->setViewMatrixAsLookAt(bs.center()-osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+
+        // set viewport
+        camera->setViewport(0,0,tex_width,tex_height);
+
+        // set the camera to render before the main camera.
+        camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplmentation(renderImplementation);
+
+        // attach the texture and use it as the color buffer.
+        camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+
+        // add subgraph to render
+        camera->addChild(subgraph);
+
+        parent->addChild(camera);
+
+    }    
 
     return parent;
 }
@@ -267,6 +270,19 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    unsigned tex_width = 1024;
+    unsigned tex_height = 512;
+    while (arguments.read("--width", tex_width)) {}
+    while (arguments.read("--height", tex_height)) {}
+
+    osg::CameraNode::RenderTargetImplementation renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT;
+    
+    while (arguments.read("--fbo")) { renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT; }
+    while (arguments.read("--pbuffer")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER; }
+    while (arguments.read("--fb")) { renderImplementation = osg::CameraNode::FRAME_BUFFER; }
+    while (arguments.read("--window")) { renderImplementation = osg::CameraNode::SEPERATE_WINDOW; }
+
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -288,7 +304,6 @@ int main( int argc, char **argv )
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel)
     {
-//        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return 1;
     }
     
@@ -300,8 +315,7 @@ int main( int argc, char **argv )
     loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
-//    rootNode->addChild(loadedModelTransform);
-    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform));
+    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation));
 
 
     // add model to the viewer.

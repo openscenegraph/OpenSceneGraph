@@ -28,6 +28,7 @@
 #include <osg/Matrixd>
 
 #include <osgProducer/OsgSceneHandler>
+#include <osgProducer/GraphicsContextImplementation>
 
 namespace osgProducer {
 
@@ -53,6 +54,15 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         osg::ApplicationUsage* getApplicationUsage() { return _applicationUsage; }
 
         const osg::ApplicationUsage* getApplicationUsage() const { return _applicationUsage; }
+
+
+        typedef std::vector< osg::ref_ptr<GraphicsContextImplementation> > GraphicsContextList;
+
+        void setGraphicsContextList(GraphicsContextList& gcList) { _gcList = gcList; }
+
+        GraphicsContextList& getGraphicsContextList() { return _gcList;}
+
+        const GraphicsContextList& getGraphicsContextList() const { return _gcList;}
 
 
         typedef std::vector < osg::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
@@ -212,6 +222,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         unsigned int                            _realizeSceneViewOptions;
 
+        GraphicsContextList                     _gcList;
         SceneHandlerList                        _shvec;
 
         osg::ref_ptr<RealizeCallback>           _realizeCallback;

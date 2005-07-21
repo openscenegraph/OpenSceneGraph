@@ -1217,6 +1217,84 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 }
             }
         }
+        else if (camera.getRenderTargetImplmentation()==osg::CameraNode::PIXEL_BUFFER ||
+                 camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW )
+        {
+            osg::ref_ptr<osg::GraphicsContext> context = rtts->getGraphicsContext();
+            if (!context)
+            {
+                // set up the traits of the graphics context that we want
+                osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+                
+                traits->_width = viewport->width();
+                traits->_height = viewport->height();
+                traits->_pbuffer = (camera.getRenderTargetImplmentation()==osg::CameraNode::PIXEL_BUFFER);
+                traits->_windowDecoration = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
+
+
+                bool colorAttached = false;
+                bool depthAttached = false;
+                bool stencilAttached = false;
+                for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
+                    itr != bufferAttachements.end();
+                    ++itr)
+                {
+
+                    osg::CameraNode::BufferComponent buffer = itr->first;
+                    osg::CameraNode::Attachment& attachment = itr->second;
+                    switch(buffer)
+                    {
+                        case(osg::CameraNode::DEPTH_BUFFER):
+                        {
+                            traits->_depth = 24;
+                            depthAttached = true;
+                            break;
+                        }
+                        case(osg::CameraNode::STENCIL_BUFFER):
+                        {
+                            traits->_stencil = 8;
+                            stencilAttached = true;
+                            break;
+                        }
+                        default:
+                        {
+                            traits->_red = 8;
+                            traits->_green = 8;
+                            traits->_blue = 8;
+                            traits->_alpha = 0; // ??? need to look at attachment, just do quick and dirty right now.
+                            colorAttached = true;
+                            break;
+                        }
+                        
+                    }
+                }
+
+                if (!depthAttached)
+                {                
+                    traits->_depth = 24;
+                }
+                
+                if (!colorAttached)
+                {                
+                    traits->_red = 8;
+                    traits->_green = 8;
+                    traits->_blue = 8;
+                    traits->_alpha = 0; // ???
+                }
+
+                // create the graphics context according to these traits.
+                context = osg::GraphicsContext::createGraphicsContext(traits.get());
+                
+                if (!context)
+                {
+                    osg::notify(osg::NOTICE)<<"Failed to aquire Graphics Context"<<std::endl;
+                }
+                
+                rtts->setGraphicsContext(context.get());
+
+            }
+        }
+        
 
     }
 

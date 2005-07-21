@@ -120,17 +120,20 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Return true if the current thread has this OpenGL graphics context.*/
         inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
 
+        /** Release the graphics context.*/
+        virtual void release() = 0;
+
         /** Make this graphics context current.*/
         virtual void makeCurrent() = 0;
         
         /** Make this graphics context current with specified read context.*/
-        virtual void makeCurrentContext(GraphicsContext* readContext) = 0;
-    
-        /** Release the graphics context.*/
-        virtual void release() = 0;
+        virtual void makeContextCurrent(GraphicsContext* readContext) = 0;
         
         /** Bind the graphics context to associated texture.*/
         virtual void bindPBufferToTexture(GLenum buffer) = 0;
+
+        /** swap the front and back buffers.*/
+        virtual void swapBuffers() = 0;
 
     protected:
         

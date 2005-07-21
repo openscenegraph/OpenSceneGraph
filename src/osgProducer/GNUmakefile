@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	EventAdapter.cpp\
         KeyboardMouseCallback.cpp\
+        GraphicsContextImplementation.cpp\
         OsgCameraGroup.cpp\
         OsgSceneHandler.cpp\
         ViewerEventHandler.cpp\

@@ -1,0 +1,150 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_GRAPHICSCONTEXT
+#define OSG_GRAPHICSCONTEXT 1
+
+#include <osg/State>
+#include <OpenThreads/Thread>
+
+namespace osg {
+
+class OSG_EXPORT GraphicsContext : public Referenced
+{
+    public:
+    
+        struct Traits : public osg::Referenced
+        {
+            Traits():
+                _displayNum(0),
+                _screenNum(0),
+                _x(0),
+                _y(0),
+                _width(0),
+                _height(0),
+                _windowDecoration(false),
+                _supportsResize(false),
+                _red(8),
+                _blue(8),
+                _green(8),
+                _alpha(0),
+                _depth(24),
+                _stencil(0),
+                _pbuffer(false),
+                _quadBufferStereo(false),
+                _doubleBuffer(false),
+                _target(0),
+                _level(0),
+                _face(0),
+                _sharedContext() {}
+                
+            // where graphic context is be hosted.                
+            std::string  _hostName;
+            unsigned int _displayNum;
+            unsigned int _screenNum;
+            
+            // graphics context orginal and size
+            unsigned int _x;
+            unsigned int _y;
+            unsigned int _width;
+            unsigned int _height;
+            
+            // window decoration and baviour
+            std::string _windowName;
+            bool        _windowDecoration;
+            bool        _supportsResize;
+            
+            // buffer depths, 0 equals off.
+            unsigned int _red;
+            unsigned int _blue;
+            unsigned int _green;
+            unsigned int _alpha;
+            unsigned int _depth;
+            unsigned int _stencil;
+            
+            // buffer configuration
+            bool _pbuffer;
+            bool _quadBufferStereo;
+            bool _doubleBuffer;
+
+            // render to texture
+            GLenum          _target;
+            unsigned int    _level;
+            unsigned int    _face;
+            
+            // shared context
+            GraphicsContext* _sharedContext;
+        };
+    
+    
+        struct CreateGraphicContexCallback : public osg::Referenced
+        {
+            virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
+            
+            virtual ~CreateGraphicContexCallback() {};
+        };
+    
+    
+        static void setCreateGraphicsContextCallback(CreateGraphicContexCallback* callback);
+        
+        static CreateGraphicContexCallback* getCreateGraphicsContextCallback();
+    
+        static GraphicsContext* createGraphicsContext(Traits* traits);
+    
+    public:
+    
+        /** Get the traits of the GraphicsContext.*/
+        inline const Traits* getTraits() const { return _traits.get(); }
+
+
+        /** Set the State object which tracks the current OpenGL state for this graphics context.*/
+        inline void setState(State* state) { _state = state; }
+        
+        /** Get the State object which tracks the current OpenGL state for this graphics context.*/
+        inline State* getState() { return _state.get(); }
+        
+        /** Get the const State object which tracks the current OpenGL state for this graphics context.*/
+        inline const State* getState() const { return _state.get(); }
+        
+        
+        /** Return true if the current thread has this OpenGL graphics context.*/
+        inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
+
+        /** Make this graphics context current.*/
+        virtual void makeCurrent() = 0;
+        
+        /** Make this graphics context current with specified read context.*/
+        virtual void makeCurrentContext(GraphicsContext* readContext) = 0;
+    
+        /** Release the graphics context.*/
+        virtual void release() = 0;
+        
+        /** Bind the graphics context to associated texture.*/
+        virtual void bindPBufferToTexture(GLenum buffer) = 0;
+
+    protected:
+        
+        GraphicsContext();
+
+        virtual ~GraphicsContext() {}
+
+        ref_ptr<Traits>         _traits;        
+        ref_ptr<State>          _state;
+        OpenThreads::Thread*    _threadOfLastMakeCurrent;
+        
+};
+
+
+}
+
+#endif

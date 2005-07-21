@@ -184,7 +184,8 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         {
             FRAME_BUFFER_OBJECT,
             PIXEL_BUFFER,
-            FRAME_BUFFER
+            FRAME_BUFFER,
+            SEPERATE_WINDOW
         };
 
         void setRenderTargetImplmentation(RenderTargetImplementation impl) { _renderTargetImplementation = impl; }

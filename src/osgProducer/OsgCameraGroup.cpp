@@ -511,6 +511,19 @@ bool OsgCameraGroup::realize()
         }        
     }
 
+    // now set up GraphicsContext wrappers for each of the render surfaces
+    // to all core OSG classes to keep track of the graphics context.
+    for(RenderSurfaceStateMap::iterator ritr = _renderSurfaceStateMap.begin();
+        ritr != _renderSurfaceStateMap.end();
+        ++ritr)
+    {
+        Producer::RenderSurface* rs = ritr->first;
+        osg::State* state = ritr->second;
+        GraphicsContextImplementation* gc = new GraphicsContextImplementation(rs);
+        gc->setState(state);
+        state->setGraphicsContext(gc);
+        _gcList.push_back(gc);
+    }
     
     if( _global_stateset == NULL && _shvec.size() > 0 )
     {

@@ -16,6 +16,7 @@
 
 #include <osg/Texture2D>
 #include <osg/FrameBufferObject>
+#include <osg/GraphicsContext>
 
 #include <osgUtil/RenderStage>
 
@@ -56,6 +57,10 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
         void setFrameBufferObject(osg::FrameBufferObject* fbo) { _fbo = fbo; }
         osg::FrameBufferObject* getFrameBufferObject() { return _fbo.get(); }
         const osg::FrameBufferObject* getFrameBufferObject() const { return _fbo.get(); }
+        
+        void setGraphicsContext(osg::GraphicsContext* context) { _graphicsContext = context; }
+        osg::GraphicsContext* getGraphicsContext() { return _graphicsContext.get(); }
+        const osg::GraphicsContext* getGraphicsContext() const { return _graphicsContext.get(); }
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
@@ -72,6 +77,7 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
         GLenum                                  _imageReadPixelDataType;
         
         osg::ref_ptr<osg::FrameBufferObject>    _fbo;
+        osg::ref_ptr<osg::GraphicsContext>      _graphicsContext;
 
 };
 

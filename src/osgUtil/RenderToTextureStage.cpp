@@ -40,35 +40,64 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
 
     //cout << "begining RTTS draw "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
     
+    osg::State* useState = &state;
+    osg::GraphicsContext* callingContext = state.getGraphicsContext();
+    osg::GraphicsContext* useContext = callingContext;
+
+    if (_graphicsContext.valid() && _graphicsContext != callingContext)
+    {
+        useState = _graphicsContext->getState();
+        useContext = _graphicsContext.get();
+        useContext->makeCurrent();
+
+        glDrawBuffer(GL_FRONT);
+        glReadBuffer(GL_FRONT);
+
+    }
+
     osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID()) : 0;
     bool fbo_supported = fbo_ext && fbo_ext->isSupported();
 
     if (fbo_supported)
     {
-        _fbo->apply(state);
+        _fbo->apply(*useState);
     }
-    
 
-    RenderStage::draw(state,previous);
+    // do the actual rendering of the scene.    
+    RenderStage::draw(*useState,previous);
 
     // now copy the rendered image to attached texture.
     if (_texture.valid() && !fbo_supported)
     {
-        //cout << "        reading "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
+        if (callingContext && useContext!= callingContext)
+        {
+            // make the calling context use the pbuffer context for reading.
+            callingContext->makeContextCurrent(useContext);
 
+            glReadBuffer(GL_FRONT);
+        }
+
+        // need to implement texture cube map etc...
         _texture->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
     }
     
     if (_image.valid())
     {
         _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
-
     }
        
     if (fbo_supported)
     {
+        // switch of the frame buffer object
         fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
+    if (callingContext && useContext != callingContext)
+    {
+        // restore the graphics context.
+        callingContext->makeCurrent();
+
+        glReadBuffer(GL_BACK);
+    }
 }
 

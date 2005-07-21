@@ -103,6 +103,10 @@ SOURCE=..\..\src\osgProducer\KeyboardMouseCallback.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgProducer\GraphicsContextImplementation.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgProducer\OsgCameraGroup.cpp
 # End Source File
 # Begin Source File
@@ -136,6 +140,10 @@ SOURCE=..\..\Include\osgProducer\Export
 # Begin Source File
 
 SOURCE=..\..\Include\osgProducer\KeyboardMouseCallback
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgProducer\GraphicsContextImplementation
 # End Source File
 # Begin Source File
 

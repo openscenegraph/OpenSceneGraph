@@ -50,7 +50,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     {
         _rs->setDrawableType( Producer::RenderSurface::DrawableType_PBuffer );
         
-        if (_trais->_alpha>0)
+        if (_traits->_alpha>0)
         {
             _rs->setRenderToTextureMode(Producer::RenderSurface::RenderToRGBATexture);
         }

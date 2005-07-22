@@ -61,6 +61,7 @@ CXXFILES =\
 	ProxyNode.cpp\
 	ReaderWriterIVE.cpp\
 	Sequence.cpp\
+	Scissor.cpp\
 	ShadeModel.cpp\
 	Shader.cpp\
 	Shape.cpp\
@@ -81,6 +82,7 @@ CXXFILES =\
 	Transform.cpp\
 	Uniform.cpp\
 	VertexProgram.cpp\
+	Viewport.cpp\
 	VisibilityGroup.cpp\
 
 LIBS   += -losgFX -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)

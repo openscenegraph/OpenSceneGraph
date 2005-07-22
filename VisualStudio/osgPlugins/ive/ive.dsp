@@ -324,6 +324,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\ReaderWriterIVE.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Scissor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Sequence.cpp
 # End Source File
 # Begin Source File
@@ -409,6 +413,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Transform.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Viewport.cpp
 # End Source File
 # Begin Source File
 
@@ -704,6 +712,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Program.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Scissor.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Shader.h
 # End Source File
 # Begin Source File
@@ -737,6 +749,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Transform.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Viewport.h
 # End Source File
 # Begin Source File
 

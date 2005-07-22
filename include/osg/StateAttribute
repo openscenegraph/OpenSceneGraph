@@ -149,6 +149,7 @@ class OSG_EXPORT StateAttribute : public Object
             COLORMASK,
             DEPTH,
             VIEWPORT,
+            SCISSOR,
             BLENDCOLOR,
             MULTISAMPLE,
 

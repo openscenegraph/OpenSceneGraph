@@ -80,6 +80,7 @@ CXXFILES =\
 	ProxyNode.cpp\
 	Quat.cpp\
 	Referenced.cpp\
+	Scissor.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
 	Shader.cpp\

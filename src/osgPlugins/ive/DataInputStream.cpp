@@ -41,6 +41,8 @@
 #include "ProxyNode.h"
 #include "FrontFace.h"
 #include "Program.h"
+#include "Viewport.h"
+#include "Scissor.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -813,6 +815,14 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEBLENDFUNC){
         attribute = new osg::BlendFunc();
         ((ive::BlendFunc*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEVIEWPORT){
+        attribute = new osg::Viewport();
+        ((ive::Viewport*)(attribute))->read(this);
+    }
+    else if(attributeID == IVESCISSOR){
+        attribute = new osg::Scissor();
+        ((ive::Scissor*)(attribute))->read(this);
     }
     else if(attributeID == IVEMATERIAL){
         attribute = new osg::Material();

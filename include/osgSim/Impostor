@@ -17,6 +17,8 @@
 #include <osg/LOD>
 #include <osg/buffered_value>
 
+#include <osgUtil/CullVisitor>
+
 #include <osgSim/ImpostorSprite>
 
 namespace osgSim {
@@ -108,6 +110,8 @@ class OSGSIM_EXPORT Impostor : public osg::LOD
 
         mutable osg::buffered_object<ImpostorSpriteList>  _impostorSpriteListBuffer;
         
+        ImpostorSprite* createImpostorSprite(osgUtil::CullVisitor* cv);
+
 
         float _impostorThreshold;
 

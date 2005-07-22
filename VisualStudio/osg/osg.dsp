@@ -408,6 +408,10 @@ SOURCE=..\..\src\osg\Referenced.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Scissor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Sequence.cpp
 # End Source File
 # Begin Source File
@@ -893,6 +897,10 @@ SOURCE=..\..\include\osg\io_utils
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Referenced
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Scissor
 # End Source File
 # Begin Source File
 

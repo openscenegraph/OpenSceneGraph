@@ -44,6 +44,8 @@
 #include "Program.h"
 #include "Uniform.h"
 #include "Shader.h"
+#include "Viewport.h"
+#include "Scissor.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -637,6 +639,12 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::Viewport*>(attribute)){
+            ((ive::Viewport*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::Scissor*>(attribute)){
+            ((ive::Scissor*)(attribute))->write(this);
         }
         // This is a Material
         else if(dynamic_cast<const osg::Material*>(attribute)){

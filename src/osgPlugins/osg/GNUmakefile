@@ -47,6 +47,7 @@ CXXFILES =\
         Projection.cpp\
         ProxyNode.cpp\
         ReaderWriterOSG.cpp\
+        Scissor.cpp\
         Sequence.cpp\
         ShadeModel.cpp\
         Shader.cpp\

@@ -280,6 +280,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\ReaderWriterOSG.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\Scissor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Sequence.cpp
 # End Source File
 # Begin Source File
@@ -297,6 +301,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Shape.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\osg\ShapeDrawable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\Scissor.cpp
 # End Source File
 # Begin Source File
 
@@ -373,6 +381,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Uniform.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\osg\VertexProgram.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\Viewport.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

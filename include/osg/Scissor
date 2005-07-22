@@ -11,21 +11,20 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_VIEWPORT
-#define OSG_VIEWPORT 1
+#ifndef OSG_Scissor
+#define OSG_Scissor 1
 
 #include <osg/StateAttribute>
-#include <osg/Matrix>
 
 namespace osg {
 
-/** Encapsulate OpenGL glViewport. */     
-class OSG_EXPORT Viewport : public StateAttribute
+/** Encapsulate OpenGL glScissor. */     
+class OSG_EXPORT Scissor : public StateAttribute
 {
     public :
-        Viewport();
+        Scissor();
         
-        Viewport(int x,int y,int width,int height):
+        Scissor(int x,int y,int width,int height):
             _x(x),
             _y(y),
             _width(width),
@@ -33,21 +32,21 @@ class OSG_EXPORT Viewport : public StateAttribute
             
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        Viewport(const Viewport& vp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        Scissor(const Scissor& vp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(vp,copyop),
             _x(vp._x),
             _y(vp._y),
             _width(vp._width),
             _height(vp._height) {}
 
-        META_StateAttribute(osg, Viewport,VIEWPORT);
+        META_StateAttribute(osg, Scissor, SCISSOR);
         
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
             // used by the COMPARE_StateAttribute_Paramter macro's below.
-            COMPARE_StateAttribute_Types(Viewport,sa)
+            COMPARE_StateAttribute_Types(Scissor,sa)
 
             // compare each paramter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_x)
@@ -58,7 +57,14 @@ class OSG_EXPORT Viewport : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        inline void setViewport(int x,int y,int width,int height)
+
+        virtual bool getModeUsage(ModeUsage& usage) const
+        {
+            usage.usesMode(GL_SCISSOR_TEST);
+            return true;
+        }
+
+        inline void setScissor(int x,int y,int width,int height)
         {
             _x = x;
             _y = y;
@@ -66,7 +72,7 @@ class OSG_EXPORT Viewport : public StateAttribute
             _height = height;
         }
         
-        void getViewport(int& x,int& y,int& width,int& height) const
+        void getScissor(int& x,int& y,int& width,int& height) const
         {
             x = _x;
             y = _y;
@@ -76,7 +82,7 @@ class OSG_EXPORT Viewport : public StateAttribute
 
         inline int& x() { return _x; }
         inline int x() const { return _x; }
-
+        
         inline int& y() { return _y; }
         inline int y() const { return _y; }
 
@@ -86,29 +92,11 @@ class OSG_EXPORT Viewport : public StateAttribute
         inline int& height() { return _height; }
         inline int height() const { return _height; }
 
-        inline bool valid() const { return _width!=0 && _height!=0; }
-
-        /** Return the aspectRatio of the viewport, which is equal to width/height.
-          * If height is zero, the potental division by zero is avoided by simply returning 1.0f.
-        */
-        inline float aspectRatio() const { if (_height!=0) return (float)_width/(float)_height; else return 1.0f; }
-        
-        /** Compute the Window Matrix which takes projected coords into Window coordinates.
-          * To convert local coordinates into window coordinates use v_window = v_local * MVPW matrix,
-          * where the MVPW matrix is ModelViewMatrix * ProjectionMatrix * WindowMatrix, the latter supplied by
-          * Viewport::computeWindowMatrix(), the ModelView and Projection Matrix can either be sourced from the
-          * current osg::State object, via osgUtil::SceneView or CullVisitor.
-        */
-        inline const osg::Matrix computeWindowMatrix() const
-        {
-            return osg::Matrix::translate(1.0f,1.0f,1.0f)*osg::Matrix::scale(0.5f*width(),0.5f*height(),0.5f);
-        }
-
         virtual void apply(State& state) const;
 
     protected:
     
-        virtual ~Viewport();
+        virtual ~Scissor();
 
         int _x;
         int _y;

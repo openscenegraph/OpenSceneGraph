@@ -240,28 +240,30 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public std::vector<GLsi
 {
     public:
 
+        typedef std::vector<GLsizei> vector_type;
+
         DrawArrayLengths(GLenum mode=0):
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
             _first(0) {}
     
         DrawArrayLengths(const DrawArrayLengths& dal,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(dal,copyop),
-            std::vector<GLsizei>(dal),
+            vector_type(dal),
             _first(dal._first) {}
 
         DrawArrayLengths(GLenum mode, GLint first, unsigned int no, GLsizei* ptr) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            std::vector<GLsizei>(ptr,ptr+no),
+            vector_type(ptr,ptr+no),
             _first(first) {}
 
         DrawArrayLengths(GLenum mode,GLint first, unsigned int no) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            std::vector<GLsizei>(no),
+            vector_type(no),
             _first(first) {}
 
         DrawArrayLengths(GLenum mode,GLint first) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            std::vector<GLsizei>(),
+            vector_type(),
             _first(first) {}
 
 

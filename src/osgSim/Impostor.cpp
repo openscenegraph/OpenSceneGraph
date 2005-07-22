@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgSim/Impostor>
+#include <osgUtil/RenderToTextureStage>
 
 #include <algorithm>
 
@@ -80,65 +81,44 @@ osg::BoundingSphere Impostor::computeBound() const
     return LOD::computeBound();
 }
 
-void Impostor::traverse(osg::NodeVisitor& nv)
+inline osgUtil::CullVisitor::value_type distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 {
-    LOD::traverse(nv);
+
+    //std::cout << "distance("<<coord<<", "<<matrix<<")"<<std::endl;
+
+    return -((osgUtil::CullVisitor::value_type)coord[0]*(osgUtil::CullVisitor::value_type)matrix(0,2)+(osgUtil::CullVisitor::value_type)coord[1]*(osgUtil::CullVisitor::value_type)matrix(1,2)+(osgUtil::CullVisitor::value_type)coord[2]*(osgUtil::CullVisitor::value_type)matrix(2,2)+matrix(3,2));
 }
 
-
-#if 0
-
-// From CullVisitor header
-
-        /** Create an impostor sprite by setting up a pre-rendering stage
-          * to generate the impostor texture. */
-        osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
-
-        osg::ref_ptr<osg::ImpostorSpriteManager>    _impostorSpriteManager;
-
-// From CullVisitor constructor
-
-    _impostorSpriteManager = new ImpostorSpriteManager;
-
-// From CullVisitor reset
-    if (_impostorSpriteManager.valid()) _impostorSpriteManager->reset();
-    
-    
-// Form CullVisitor.cpp
-
-void CullVisitor::apply(Impostor& node)
+void Impostor::traverse(osg::NodeVisitor& nv)
 {
+    if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
+    {
+        LOD::traverse(nv);
+        return;
+    }
 
-    if (isCulled(node)) return;
-
-    osg::Vec3 eyeLocal = getEyeLocal();
-
-    // push the culling mode.
-    pushCurrentMask();
-
-    // push the node's state.
-    StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
-
-    const BoundingSphere& bs = node.getBound();
+    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    if (!cv)
+    {
+        LOD::traverse(nv);
+        return;
+    }
     
-    unsigned int contextID = 0;
-    if (_state.valid()) contextID = _state->getContextID();
+
+    osg::Vec3 eyeLocal = nv.getEyePoint();
+    const BoundingSphere& bs = getBound();
+    
+    unsigned int contextID = cv->getState() ? cv->getState()->getContextID() : 0;
 
     float distance2 = (eyeLocal-bs.center()).length2();
-    if (!_impostorActive ||
-        distance2*_LODScale*_LODScale<osg::square(node.getImpostorThreshold()) ||
+    float LODScale = cv->getLODScale();
+    if (!cv->getImpostorsActive() ||
+        distance2*LODScale*LODScale<osg::square(getImpostorThreshold()) ||
         distance2<bs.radius2()*2.0f)
     {
         // outwith the impostor distance threshold therefore simple
         // traverse the appropriate child of the LOD.
-        handle_cull_callbacks_and_traverse(node);
-    }
-    else if (_viewportStack.empty())
-    {
-        // need to use impostor but no valid viewport is defined to simply
-        // default to using the LOD child as above.
-        handle_cull_callbacks_and_traverse(node);
+        LOD::traverse(nv);
     }
     else
     {    
@@ -146,17 +126,17 @@ void CullVisitor::apply(Impostor& node)
         // within the impostor distance threshold therefore attempt
         // to use impostor instead.
         
-        RefMatrix& matrix = getModelViewMatrix();
+        RefMatrix& matrix = cv->getModelViewMatrix();
 
         // search for the best fit ImpostorSprite;
-        ImpostorSprite* impostorSprite = node.findBestImpostorSprite(contextID,eyeLocal);
+        ImpostorSprite* impostorSprite = findBestImpostorSprite(contextID,eyeLocal);
         
         if (impostorSprite)
         {
             // impostor found, now check to see if it is good enough to use
-            float error = impostorSprite->calcPixelError(getMVPW());
+            float error = impostorSprite->calcPixelError(cv->getMVPW());
 
-            if (error>_impostorPixelErrorThreshold)
+            if (error>cv->getImpostorPixelErrorThreshold())
             {
                 // chosen impostor sprite pixel error is too great to use
                 // from this eye point, therefore invalidate it.
@@ -170,11 +150,11 @@ void CullVisitor::apply(Impostor& node)
         if (impostorSprite==NULL)
         {
             // no appropriate sprite has been found therefore need to create
-            // one for use.
-            
-            // create the impostor sprite.
-            impostorSprite = createImpostorSprite(node);
+            // one for use
 
+            // create the impostor sprite.
+            impostorSprite = createImpostorSprite(cv);
+            
             //if (impostorSprite) impostorSprite->_color.set(0.0f,0.0f,1.0f,1.0f);
 
         }
@@ -184,17 +164,17 @@ void CullVisitor::apply(Impostor& node)
         {
             
             // update frame number to show that impostor is in action.
-            impostorSprite->setLastFrameUsed(getTraversalNumber());
+            impostorSprite->setLastFrameUsed(cv->getTraversalNumber());
 
-            if (_computeNearFar) updateCalculatedNearFar(matrix,*impostorSprite, false);
+            if (cv->getComputeNearFarMode()) cv->updateCalculatedNearFar(matrix,*impostorSprite, false);
 
             StateSet* stateset = impostorSprite->getStateSet();
             
-            if (stateset) pushStateSet(stateset);
+            if (stateset) cv->pushStateSet(stateset);
             
-            addDrawableAndDepth(impostorSprite,&matrix,distance(node.getCenter(),matrix));
+            cv->addDrawableAndDepth(impostorSprite, &matrix, distance(getCenter(),matrix));
 
-            if (stateset) popStateSet();
+            if (stateset) cv->popStateSet();
             
             
         }
@@ -202,35 +182,29 @@ void CullVisitor::apply(Impostor& node)
         {
            // no impostor has been selected or created so default to 
            // traversing the usual LOD selected child.
-            handle_cull_callbacks_and_traverse(node);
+            LOD::traverse(nv);
         }
                 
     }
-
-    // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
-
-    // pop the culling mode.
-    popCurrentMask();
 }
 
-ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
+static osg::ref_ptr<osgSim::ImpostorSpriteManager> s_impostorSpriteManager = new osgSim::ImpostorSpriteManager;
+
+ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 {
-   
-    unsigned int contextID = 0;
-    if (_state.valid()) contextID = _state->getContextID();
+    unsigned int contextID = cv->getState() ? cv->getState()->getContextID() : 0;
 
     // default to true right now, will dertermine if perspective from the
     // projection matrix...
     bool isPerspectiveProjection = true;
 
-    const Matrix& matrix = getModelViewMatrix();
-    const BoundingSphere& bs = node.getBound();
-    osg::Vec3 eye_local = getEyeLocal();
+    const Matrix& matrix = cv->getModelViewMatrix();
+    const BoundingSphere& bs = getBound();
+    osg::Vec3 eye_local = cv->getEyeLocal();
 
     if (!bs.valid())
     {
-        osg::notify(osg::WARN) << "bb invalid"<<&node<<std::endl;
+        osg::notify(osg::WARN) << "bb invalid"<<std::endl;
         return NULL;
     }
 
@@ -242,12 +216,12 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // one for use.
 
     // create the render to texture stage.
-    ref_ptr<RenderToTextureStage> rtts = new RenderToTextureStage;
+    ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
 
     // set up lighting.
     // currently ignore lights in the scene graph itself..
     // will do later.
-    RenderStage* previous_stage = _currentRenderBin->getStage();
+    osgUtil::RenderStage* previous_stage = cv->getCurrentRenderBin()->getStage();
 
     // set up the background color and clear mask.
     osg::Vec4 clear_color = previous_stage->getClearColor();
@@ -261,15 +235,15 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     // record the render bin, to be restored after creation
     // of the render to text
-    RenderBin* previousRenderBin = _currentRenderBin;
+    osgUtil::RenderBin* previousRenderBin = cv->getCurrentRenderBin();
 
     // set the current renderbin to be the newly created stage.
-    _currentRenderBin = rtts.get();
+    cv->setCurrentRenderBin(rtts.get());
 
     // create quad coords (in local coords)
 
     Vec3 center_local = bs.center();
-    Vec3 camera_up_local = getUpLocal();
+    Vec3 camera_up_local = cv->getUpLocal();
     Vec3 lv_local = center_local-eye_local;
 
     float distance_local = lv_local.length();
@@ -336,43 +310,41 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
         projection->makeOrtho(-right,right,-top,top,znear,zfar);
     }
 
-    pushProjectionMatrix(projection);
+    cv->pushProjectionMatrix(projection);
 
     Vec3 rotate_from = bs.center()-eye_local;
-    Vec3 rotate_to   = getLookVectorLocal();
+    Vec3 rotate_to   =cv-> getLookVectorLocal();
 
     osg::RefMatrix* rotate_matrix = new osg::RefMatrix(
         osg::Matrix::translate(-eye_local)*        
         osg::Matrix::rotate(rotate_from,rotate_to)*
         osg::Matrix::translate(eye_local)*
-        getModelViewMatrix());
+        cv->getModelViewMatrix());
 
     // pushing the cull view state will update it so it takes
     // into account the new camera orientation.
-    pushModelViewMatrix(rotate_matrix);
+    cv->pushModelViewMatrix(rotate_matrix);
 
-    StateSet* localPreRenderState = _impostorSpriteManager->createOrReuseStateSet();
+    osg::StateSet* localPreRenderState = s_impostorSpriteManager->createOrReuseStateSet();
 
-    pushStateSet(localPreRenderState);
+    cv->pushStateSet(localPreRenderState);
 
     {
 
-        // traversing the usual LOD selected child.
-        handle_cull_callbacks_and_traverse(node);
+        osg::LOD::traverse(*cv);
 
     }
 
-    popStateSet();
+    cv->popStateSet();
 
     // restore the previous model view matrix.
-    popModelViewMatrix();
+    cv->popModelViewMatrix();
 
     // restore the previous model view matrix.
-    popProjectionMatrix();
+    cv->popProjectionMatrix();
 
     // restore the previous renderbin.
-    _currentRenderBin = previousRenderBin;
-
+    cv->setCurrentRenderBin(previousRenderBin);
 
 
     if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
@@ -385,14 +357,14 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
 
 
-    const osg::Viewport& viewport = *getViewport();
+    const osg::Viewport& viewport = *(cv->getViewport());
     
 
     // calc texture size for eye, bs.
 
     // convert the corners of the sprite (in world coords) into their
     // equivilant window coordinates by using the camera's project method.
-    const osg::Matrix& MVPW = getMVPW();
+    const osg::Matrix& MVPW = cv->getMVPW();
     Vec3 c00_win = c00 * MVPW;
     Vec3 c11_win = c11 * MVPW;
 
@@ -441,7 +413,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     // create the impostor sprite.
     ImpostorSprite* impostorSprite = 
-        _impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,getTraversalNumber()-_numFramesToKeepImpostorSprites);
+        s_impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,cv->getTraversalNumber()-cv->getNumberOfFrameToKeepImpostorSprites());
 
     if (impostorSprite==NULL)
     {
@@ -450,14 +422,14 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     }
 
     // update frame number to show that impostor is in action.
-    impostorSprite->setLastFrameUsed(getTraversalNumber());
+    impostorSprite->setLastFrameUsed(cv->getTraversalNumber());
 
 
     // have successfully created an impostor sprite so now need to
     // add it into the impostor.
-    node.addImpostorSprite(contextID,impostorSprite);
+    addImpostorSprite(contextID,impostorSprite);
 
-    if (_depthSortImpostorSprites)
+    if (cv->getDepthSortImpostorSprites())
     {
         // the depth sort bin should probably be user definable,
         // will look into this later. RO July 2001.
@@ -465,10 +437,10 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
         stateset->setRenderBinDetails(10,"DepthSortedBin");
     }
     
-    Texture2D* texture = impostorSprite->getTexture();
+    osg::Texture2D* texture = impostorSprite->getTexture();
 
     // update frame number to show that impostor is in action.
-    impostorSprite->setLastFrameUsed(getTraversalNumber());
+    impostorSprite->setLastFrameUsed(cv->getTraversalNumber());
 
     Vec3* coords = impostorSprite->getCoords();
     Vec2* texcoords = impostorSprite->getTexCoords();
@@ -520,7 +492,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     // and the render to texture stage to the current stages
     // dependancy list.
-    _currentRenderBin->getStage()->addToDependencyList(rtts.get());
+    cv->getCurrentRenderBin()->getStage()->addToDependencyList(rtts.get());
 
     // attach texture to the RenderToTextureStage.
     rtts->setTexture(texture);
@@ -532,6 +504,4 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     return impostorSprite;
 
 }
-
-#endif
     

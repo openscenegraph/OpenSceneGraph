@@ -112,7 +112,6 @@ class OSGSIM_EXPORT Impostor : public osg::LOD
         
         ImpostorSprite* createImpostorSprite(osgUtil::CullVisitor* cv);
 
-
         float _impostorThreshold;
 
 };

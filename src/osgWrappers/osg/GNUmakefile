@@ -84,6 +84,7 @@ CXXFILES =\
 	Quat.cpp\
 	RefNodePath.cpp\
 	Referenced.cpp\
+	Scissor.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
 	Shader.cpp\

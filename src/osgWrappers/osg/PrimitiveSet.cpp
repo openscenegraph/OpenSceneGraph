@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< GLsizei >, osg::DrawArrayLengths::vector_type);
+
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrayLengths)
 	I_BaseType(osg::PrimitiveSet);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
@@ -236,6 +238,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 	I_ReadOnlyProperty(osg::PrimitiveSet::Type, Type);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< GLsizei >);
 
 STD_VECTOR_REFLECTOR(std::vector< GLubyte >);
 

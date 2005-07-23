@@ -19,6 +19,7 @@
 #include <osg/Node>
 #include <osg/StateSet>
 #include <osg/Vec4>
+#include <osgProducer/GraphicsContextImplementation>
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/OsgSceneHandler>
 #include <osgUtil/SceneView>
@@ -33,6 +34,8 @@
 
 TYPE_NAME_ALIAS(Producer::CameraGroup::ThreadingModel, osgProducer::OsgCameraGroup::ThreadingModel);
 
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplementation > >, osgProducer::OsgCameraGroup::GraphicsContextList);
+
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
 
 BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
@@ -43,6 +46,9 @@ BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au);
 	I_Method0(osg::ApplicationUsage *, getApplicationUsage);
 	I_Method0(const osg::ApplicationUsage *, getApplicationUsage);
+	I_Method1(void, setGraphicsContextList, IN, osgProducer::OsgCameraGroup::GraphicsContextList &, gcList);
+	I_Method0(osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList);
+	I_Method0(const osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList);
 	I_Method0(osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
 	I_Method0(const osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
 	I_Method1(void, setSceneData, IN, osg::Node *, scene);
@@ -90,6 +96,7 @@ BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_Property(osg::DisplaySettings *, DisplaySettings);
 	I_Property(osg::FrameStamp *, FrameStamp);
 	I_Property(osg::StateSet *, GlobalStateSet);
+	I_Property(osgProducer::OsgCameraGroup::GraphicsContextList &, GraphicsContextList);
 	I_Property(float, LODScale);
 	I_Property(osgProducer::OsgCameraGroup::RealizeCallback *, RealizeCallback);
 	I_Property(unsigned int, RealizeSceneViewOptions);
@@ -106,6 +113,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgCameraGroup::RealizeCallback)
 	I_Constructor0();
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::GraphicsContextImplementation >)
+	I_Constructor0();
+	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osgProducer::GraphicsContextImplementation *, get);
+	I_Method0(const osgProducer::GraphicsContextImplementation *, get);
+	I_Method0(osgProducer::GraphicsContextImplementation *, take);
+	I_Method0(osgProducer::GraphicsContextImplementation *, release);
+	I_ReadOnlyProperty(osgProducer::GraphicsContextImplementation *, );
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::OsgSceneHandler >)
 	I_Constructor0();
 	I_Constructor1(IN, osgProducer::OsgSceneHandler *, t);
@@ -117,6 +136,8 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::OsgSceneHandler >)
 	I_Method0(osgProducer::OsgSceneHandler *, release);
 	I_ReadOnlyProperty(osgProducer::OsgSceneHandler *, );
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplementation > >);
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgProducer::OsgSceneHandler > >);
 

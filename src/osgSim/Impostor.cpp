@@ -188,12 +188,19 @@ void Impostor::traverse(osg::NodeVisitor& nv)
     }
 }
 
-static osg::ref_ptr<osgSim::ImpostorSpriteManager> s_impostorSpriteManager = new osgSim::ImpostorSpriteManager;
 
 ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 {
     unsigned int contextID = cv->getState() ? cv->getState()->getContextID() : 0;
 
+     osgSim::ImpostorSpriteManager* impostorSpriteManager = dynamic_cast<osgSim::ImpostorSpriteManager*>(cv->getUserData());
+     if (!impostorSpriteManager)
+     {
+     	  impostorSpriteManager = new osgSim::ImpostorSpriteManager;
+	  cv->setUserData(impostorSpriteManager);
+     }
+    
+    
     // default to true right now, will dertermine if perspective from the
     // projection matrix...
     bool isPerspectiveProjection = true;
@@ -325,7 +332,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     // into account the new camera orientation.
     cv->pushModelViewMatrix(rotate_matrix);
 
-    osg::StateSet* localPreRenderState = s_impostorSpriteManager->createOrReuseStateSet();
+    osg::StateSet* localPreRenderState = impostorSpriteManager->createOrReuseStateSet();
 
     cv->pushStateSet(localPreRenderState);
 
@@ -413,7 +420,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 
     // create the impostor sprite.
     ImpostorSprite* impostorSprite = 
-        s_impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,cv->getTraversalNumber()-cv->getNumberOfFrameToKeepImpostorSprites());
+        impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,cv->getTraversalNumber()-cv->getNumberOfFrameToKeepImpostorSprites());
 
     if (impostorSprite==NULL)
     {

@@ -38,9 +38,13 @@ BEGIN_OBJECT_REFLECTOR(osg::Viewport)
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
 	I_Method4(void, setViewport, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
 	I_Method4(void, getViewport, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height);
+	I_Method0(int &, x);
 	I_Method0(int, x);
+	I_Method0(int &, y);
 	I_Method0(int, y);
+	I_Method0(int &, width);
 	I_Method0(int, width);
+	I_Method0(int &, height);
 	I_Method0(int, height);
 	I_Method0(bool, valid);
 	I_Method0(float, aspectRatio);

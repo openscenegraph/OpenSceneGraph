@@ -71,6 +71,7 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
 	I_EnumLabel(osg::StateAttribute::COLORMASK);
 	I_EnumLabel(osg::StateAttribute::DEPTH);
 	I_EnumLabel(osg::StateAttribute::VIEWPORT);
+	I_EnumLabel(osg::StateAttribute::SCISSOR);
 	I_EnumLabel(osg::StateAttribute::BLENDCOLOR);
 	I_EnumLabel(osg::StateAttribute::MULTISAMPLE);
 	I_EnumLabel(osg::StateAttribute::CLIPPLANE);

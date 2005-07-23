@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
+#include <osg/CameraNode>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Matrix>
@@ -66,6 +67,10 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
 	I_Method0(osg::BoundingBox, computeBound);
+	I_Method1(void, setCameraNode, IN, osg::CameraNode *, camera);
+	I_Method0(osg::CameraNode *, getCameraNode);
+	I_Method0(const osg::CameraNode *, getCameraNode);
+	I_Property(osg::CameraNode *, CameraNode);
 	I_ReadOnlyProperty(osg::Vec3 *, ControlCoords);
 	I_ReadOnlyProperty(osg::Vec3 *, Coords);
 	I_Property(int, LastFrameUsed);

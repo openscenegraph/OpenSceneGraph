@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	EventAdapter.cpp\
+	GraphicsContextImplementation.cpp\
 	KeyboardMouseCallback.cpp\
 	OsgCameraGroup.cpp\
 	OsgSceneHandler.cpp\

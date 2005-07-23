@@ -11,6 +11,7 @@
 
 #include <osg/CopyOp>
 #include <osg/FrameBufferObject>
+#include <osg/GraphicsContext>
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/State>
@@ -46,8 +47,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderToTextureStage)
 	I_Method1(void, setFrameBufferObject, IN, osg::FrameBufferObject *, fbo);
 	I_Method0(osg::FrameBufferObject *, getFrameBufferObject);
 	I_Method0(const osg::FrameBufferObject *, getFrameBufferObject);
+	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context);
+	I_Method0(osg::GraphicsContext *, getGraphicsContext);
+	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
 	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Property(osg::FrameBufferObject *, FrameBufferObject);
+	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_Property(osg::Image *, Image);
 	I_Property(GLenum, ImageReadPixelDataType);
 	I_Property(GLenum, ImageReadPixelFormat);

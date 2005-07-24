@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -17,6 +17,23 @@
 
 using namespace osg;
 using namespace osgSim;
+
+// use this cull callback to allow the camera to traverse the Impostor's children without
+// actuall having them assigned as children to the camea itself.  This make the camera a
+// decorator without ever directly being assigned to it. 
+class TraverseNodeCallback : public osg::NodeCallback
+{
+public:
+
+    TraverseNodeCallback(osgSim::Impostor* node):_node(node) {}                                                       
+
+    virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
+    {
+        _node->LOD::traverse(*nv);
+    }
+    
+    osgSim::Impostor* _node;
+};
 
 Impostor::Impostor()
 {
@@ -188,7 +205,6 @@ void Impostor::traverse(osg::NodeVisitor& nv)
     }
 }
 
-
 ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 {
     unsigned int contextID = cv->getState() ? cv->getState()->getContextID() : 0;
@@ -215,40 +231,6 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
         return NULL;
     }
 
-
-    Vec3 eye_world(0.0,0.0,0.0);
-    Vec3 center_world = bs.center()*matrix;
-
-    // no appropriate sprite has been found therefore need to create
-    // one for use.
-
-    // create the render to texture stage.
-    ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
-
-    // set up lighting.
-    // currently ignore lights in the scene graph itself..
-    // will do later.
-    osgUtil::RenderStage* previous_stage = cv->getCurrentRenderBin()->getStage();
-
-    // set up the background color and clear mask.
-    osg::Vec4 clear_color = previous_stage->getClearColor();
-    clear_color[3] = 0.0f; // set the alpha to zero.
-    rtts->setClearColor(clear_color);
-    rtts->setClearMask(previous_stage->getClearMask());
-
-    // set up to charge the same RenderStageLighting is the parent previous stage.
-    rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
-
-
-    // record the render bin, to be restored after creation
-    // of the render to text
-    osgUtil::RenderBin* previousRenderBin = cv->getCurrentRenderBin();
-
-    // set the current renderbin to be the newly created stage.
-    cv->setCurrentRenderBin(rtts.get());
-
-    // create quad coords (in local coords)
-
     Vec3 center_local = bs.center();
     Vec3 camera_up_local = cv->getUpLocal();
     Vec3 lv_local = center_local-eye_local;
@@ -261,7 +243,6 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     
     Vec3 up_local = sv_local^lv_local;
     
-
     
     float width = bs.radius();
     if (isPerspectiveProjection)
@@ -279,93 +260,6 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     Vec3 c10(center_local + sv_local - up_local);
     Vec3 c01(center_local - sv_local + up_local);
     Vec3 c11(center_local + sv_local + up_local);
-    
-// adjust camera left,right,up,down to fit (in world coords)
-
-    Vec3 near_local  ( center_local-lv_local*width );
-    Vec3 far_local   ( center_local+lv_local*width );
-    Vec3 top_local   ( center_local+up_local);
-    Vec3 right_local ( center_local+sv_local);
-    
-    Vec3 near_world = near_local * matrix;
-    Vec3 far_world = far_local * matrix;
-    Vec3 top_world = top_local * matrix;
-    Vec3 right_world = right_local * matrix;
-    
-    float znear = (near_world-eye_world).length();
-    float zfar  = (far_world-eye_world).length();
-        
-    float top   = (top_world-center_world).length();
-    float right = (right_world-center_world).length();
-
-    znear *= 0.9f;
-    zfar *= 1.1f;
-
-    // set up projection.
-    osg::RefMatrix* projection = new osg::RefMatrix;
-    if (isPerspectiveProjection)
-    {
-        // deal with projection issue move the top and right points
-        // onto the near plane.
-        float ratio = znear/(center_world-eye_world).length();
-        top *= ratio;
-        right *= ratio;
-        projection->makeFrustum(-right,right,-top,top,znear,zfar);
-    }
-    else
-    {
-        projection->makeOrtho(-right,right,-top,top,znear,zfar);
-    }
-
-    cv->pushProjectionMatrix(projection);
-
-    Vec3 rotate_from = bs.center()-eye_local;
-    Vec3 rotate_to   =cv-> getLookVectorLocal();
-
-    osg::RefMatrix* rotate_matrix = new osg::RefMatrix(
-        osg::Matrix::translate(-eye_local)*        
-        osg::Matrix::rotate(rotate_from,rotate_to)*
-        osg::Matrix::translate(eye_local)*
-        cv->getModelViewMatrix());
-
-    // pushing the cull view state will update it so it takes
-    // into account the new camera orientation.
-    cv->pushModelViewMatrix(rotate_matrix);
-
-    osg::StateSet* localPreRenderState = impostorSpriteManager->createOrReuseStateSet();
-
-    cv->pushStateSet(localPreRenderState);
-
-    {
-
-        osg::LOD::traverse(*cv);
-
-    }
-
-    cv->popStateSet();
-
-    // restore the previous model view matrix.
-    cv->popModelViewMatrix();
-
-    // restore the previous model view matrix.
-    cv->popProjectionMatrix();
-
-    // restore the previous renderbin.
-    cv->setCurrentRenderBin(previousRenderBin);
-
-
-    if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
-    {
-        // getting to this point means that all the subgraph has been
-        // culled by small feature culling or is beyond LOD ranges.
-        return NULL;
-    }
-
-
-
-
-    const osg::Viewport& viewport = *(cv->getViewport());
-    
 
     // calc texture size for eye, bs.
 
@@ -375,11 +269,11 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     Vec3 c00_win = c00 * MVPW;
     Vec3 c11_win = c11 * MVPW;
 
-// adjust texture size to be nearest power of 2.
+    // adjust texture size to be nearest power of 2.
 
     float s  = c11_win.x()-c00_win.x();
     float t  = c11_win.y()-c00_win.y();
-
+ 
     // may need to reverse sign of width or height if a matrix has
     // been applied which flips the orientation of this subgraph.
     if (s<0.0f) s = -s;
@@ -399,24 +293,13 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     float rounded_tp2 = floorf(tp2+bias);
     int new_t = (int)(powf(2.0f,rounded_tp2));
 
+    const osg::Viewport& viewport = *(cv->getViewport());
+
     // if dimension is bigger than window divide it down.    
     while (new_s>viewport.width()) new_s /= 2;
 
     // if dimension is bigger than window divide it down.    
     while (new_t>viewport.height()) new_t /= 2;
-
-
-    // offset the impostor viewport from the center of the main window
-    // viewport as often the edges of the viewport might be obscured by
-    // other windows, which can cause image/reading writing problems.
-    int center_x = viewport.x()+viewport.width()/2;
-    int center_y = viewport.y()+viewport.height()/2;
-
-    Viewport* new_viewport = new Viewport;
-    new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
-    rtts->setViewport(new_viewport);
-    
-    localPreRenderState->setAttribute(new_viewport);
 
     // create the impostor sprite.
     ImpostorSprite* impostorSprite = 
@@ -445,6 +328,11 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     }
     
     osg::Texture2D* texture = impostorSprite->getTexture();
+
+    texture->setTextureSize(new_s, new_t);
+    texture->setInternalFormat(GL_RGBA);
+    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
     // update frame number to show that impostor is in action.
     impostorSprite->setLastFrameUsed(cv->getTraversalNumber());
@@ -496,19 +384,90 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 
     impostorSprite->setStoredLocalEyePoint(eye_local);
 
+    Vec3 eye_world(0.0,0.0,0.0);
+    Vec3 center_world = bs.center()*matrix;
 
-    // and the render to texture stage to the current stages
-    // dependancy list.
-    cv->getCurrentRenderBin()->getStage()->addToDependencyList(rtts.get());
+    
+    osg::CameraNode* camera = impostorSprite->getCameraNode();
+    if (!camera)
+    {
+        camera = new osg::CameraNode;
+        impostorSprite->setCameraNode(camera);
+    }
 
-    // attach texture to the RenderToTextureStage.
-    rtts->setTexture(texture);
+    camera->setCullCallback(new TraverseNodeCallback(this));
+    
+    osgUtil::RenderStage* previous_stage = cv->getRenderStage();
+    
+    // set up the background color and clear mask.
+    osg::Vec4 clear_color = previous_stage->getClearColor();
+    clear_color[3] = 0.0f; // set thae alpha to zero.
+    camera->setClearColor(clear_color);
+    camera->setClearMask(previous_stage->getClearMask());
+    
+    
+// adjust camera left,right,up,down to fit (in world coords)
 
-    // must sort the RenderToTextureStage so that all leaves are
-    // accounted correctly in all renderbins i.e depth sorted bins.    
-    rtts->sort();
+    Vec3 near_local  ( center_local-lv_local*width );
+    Vec3 far_local   ( center_local+lv_local*width );
+    Vec3 top_local   ( center_local+up_local);
+    Vec3 right_local ( center_local+sv_local);
+    
+    Vec3 near_world = near_local * matrix;
+    Vec3 far_world = far_local * matrix;
+    Vec3 top_world = top_local * matrix;
+    Vec3 right_world = right_local * matrix;
+    
+    float znear = (near_world-eye_world).length();
+    float zfar  = (far_world-eye_world).length();
+        
+    float top   = (top_world-center_world).length();
+    float right = (right_world-center_world).length();
 
+    znear *= 0.9f;
+    zfar *= 1.1f;
+
+    // set up projection.
+    if (isPerspectiveProjection)
+    {
+        // deal with projection issue move the top and right points
+        // onto the near plane.
+        float ratio = znear/(center_world-eye_world).length();
+        top *= ratio;
+        right *= ratio;
+        camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+    }
+    else
+    {
+        camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
+    }
+
+    Vec3 rotate_from = bs.center()-eye_local;
+    Vec3 rotate_to   = cv-> getLookVectorLocal();
+
+    osg::Matrix rotate_matrix = 
+        osg::Matrix::translate(-eye_local)*        
+        osg::Matrix::rotate(rotate_from,rotate_to)*
+        osg::Matrix::translate(eye_local)*
+        cv->getModelViewMatrix();
+
+    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    camera->setViewMatrix(rotate_matrix);
+    
+    camera->setViewport(0,0,new_s,new_t);
+
+    // tell the camera to use OpenGL frame buffer object where supported.
+    camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+
+    // set the camera to render before the main camera.
+    camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+
+    // attach the texture and use it as the color buffer.
+    camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+
+    // do the cull traversal on the subgraph
+    camera->accept(*cv);
+    
     return impostorSprite;
 
 }
-    

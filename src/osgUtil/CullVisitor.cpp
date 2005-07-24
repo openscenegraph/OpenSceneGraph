@@ -1142,22 +1142,13 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 break;
         }
 
-        osg::Texture2D* tex = 0;
-
         osg::CameraNode::BufferAttachmentMap& bufferAttachements = camera.getBufferAttachmentMap();
         for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
             itr != bufferAttachements.end();
             ++itr)
         {
-            
-            // if one exist attach texture to the RenderToTextureStage.            
-            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(itr->second._texture.get());
-            if (texture2D)
-            {
-                tex = texture2D;
-                rtts->setTexture(texture2D);
-            }
-            
+            // assign the texture... pro            
+            if (itr->second._texture.valid())  rtts->setTexture(itr->second._texture.get());
 
             // if one exist attach image to the RenderToTextureStage.
             if (itr->second._image.valid()) rtts->setImage(itr->second._image.get());

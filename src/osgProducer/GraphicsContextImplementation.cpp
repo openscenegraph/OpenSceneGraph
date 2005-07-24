@@ -41,6 +41,8 @@ namespace osgProducer
 
 GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
 {
+    _traits = traits;
+
     _rs = new Producer::RenderSurface;
     _rs->setWindowName(traits->_windowName);
     _rs->setWindowRectangle(traits->_x, traits->_y, traits->_width, traits->_height);
@@ -50,7 +52,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     {
         _rs->setDrawableType( Producer::RenderSurface::DrawableType_PBuffer );
         
-        if (_traits->_alpha>0)
+        if (traits->_alpha>0)
         {
             _rs->setRenderToTextureMode(Producer::RenderSurface::RenderToRGBATexture);
         }
@@ -65,7 +67,6 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     
     _rs->realize();
 
-   _traits = traits;
 }
 
 GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSurface* rs)

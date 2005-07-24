@@ -11,6 +11,11 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/RenderToTextureStage>
+#include <osg/Texture1D>
+#include <osg/Texture2D>
+#include <osg/Texture3D>
+#include <osg/TextureRectangle>
+#include <osg/TextureCubeMap>
 
 using namespace osg;
 using namespace osgUtil;
@@ -20,6 +25,11 @@ using namespace osgUtil;
 
 RenderToTextureStage::RenderToTextureStage()
 {
+    _camera = 0;
+    
+    _level = 0;
+    _face = 0;
+    
     _imageReadPixelFormat = GL_RGBA;
     _imageReadPixelDataType = GL_UNSIGNED_BYTE;
 }
@@ -78,7 +88,35 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
         }
 
         // need to implement texture cube map etc...
-        _texture->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        osg::Texture1D* texture1D = 0;
+        osg::Texture2D* texture2D = 0;
+        osg::Texture3D* texture3D = 0;
+        osg::TextureRectangle* textureRec = 0;
+        osg::TextureCubeMap* textureCubeMap = 0;
+
+        if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
+        {
+            texture2D->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        }
+        else if ((textureRec = dynamic_cast<osg::TextureRectangle*>(_texture.get())) != 0)
+        {
+            textureRec->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        }
+        else if ((texture1D = dynamic_cast<osg::Texture1D*>(_texture.get())) != 0)
+        {
+            // need to implement
+            texture1D->copyTexImage1D(state,_viewport->x(),_viewport->y(),_viewport->width());
+        }
+        else if ((texture3D = dynamic_cast<osg::Texture3D*>(_texture.get())) != 0)
+        {
+            // need to implement
+            texture3D->copyTexSubImage3D(state, 0, 0, _face, _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+        }
+        else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
+        {
+            // need to implement
+            // textureCubeMap->copyTexImageCubeMap(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        }
     }
     
     if (_image.valid())
@@ -86,6 +124,12 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
         _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
     }
        
+    if (_camera && _camera->getPostDrawCallback())
+    {
+        // if we have a camera with a post draw callback invoke it.
+        (*(_camera->getPostDrawCallback()))(*_camera);
+    }
+
     if (fbo_supported)
     {
         // switch of the frame buffer object
@@ -99,5 +143,6 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
 
         glReadBuffer(GL_BACK);
     }
+    
 }
 

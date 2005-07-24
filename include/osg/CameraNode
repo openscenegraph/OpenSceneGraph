@@ -279,8 +279,30 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         /** Get the const Rendering object that is used to implement rendering of the subgraph.*/
         const osg::Object* getRenderingCache() const { return _renderingCache.get(); }
  
-    public:
 
+        /** Draw callback for custom operations.*/
+        struct DrawCallback : public Object
+        {
+            DrawCallback() {}
+
+            DrawCallback(const DrawCallback&,const CopyOp&) {}
+
+            META_Object(osg,DrawCallback)
+        
+            virtual void operator () (const osg::CameraNode& camera) const {}
+        };
+        
+        /** Set the post draw callback for custom operations to do done after the drawing of the camera's subgraph has been completed.*/
+        void setPostDrawCallback(DrawCallback* cb) { _postDrawCallback = cb; }
+
+        /** Get the post draw callback.*/
+        DrawCallback* getPostDrawCallback() { return _postDrawCallback.get(); }
+
+        /** Get the const post draw callback.*/
+        const DrawCallback* getPostDrawCallback() const { return _postDrawCallback.get(); }
+ 
+
+    public:
 
         /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const;
@@ -311,6 +333,8 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
         ref_ptr<GraphicsContext>    _graphicsContext;
         ref_ptr<Object>             _renderingCache;
+        
+        ref_ptr<DrawCallback>       _postDrawCallback;
 };
 
 }

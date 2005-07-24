@@ -100,6 +100,10 @@ SOURCE=..\..\..\src\osgWrappers\osgProducer\EventAdapter.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgProducer\GraphicsContextImplementation.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgProducer\KeyboardMouseCallback.cpp
 # End Source File
 

@@ -14,9 +14,9 @@
 #ifndef OSGUTIL_RENDERTOTEXTURESTAGE
 #define OSGUTIL_RENDERTOTEXTURESTAGE 1
 
-#include <osg/Texture2D>
+#include <osg/Texture>
 #include <osg/FrameBufferObject>
-#include <osg/GraphicsContext>
+#include <osg/CameraNode>
 
 #include <osgUtil/RenderStage>
 
@@ -41,9 +41,12 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
         virtual const char* className() const { return "RenderToTextureStage"; }
 
         virtual void reset();
+    
+        void setCameraNode(const osg::CameraNode* camera) { _camera = camera; }
+        const osg::CameraNode* getCameraNode() const { return _camera; }
         
-        void setTexture(osg::Texture2D* texture) { _texture = texture; }
-        osg::Texture2D* getTexture() { return _texture.get(); }
+        void setTexture(osg::Texture* texture, unsigned int level = 0, unsigned int face=0) { _texture = texture; _level = level; _face = face; }
+        osg::Texture* getTexture() { return _texture.get(); }
         
         void setImage(osg::Image* image) { _image = image; }
         osg::Image* getImage() { return _image.get(); }
@@ -53,6 +56,7 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
 
         void setImageReadPixelDataType(GLenum type) { _imageReadPixelDataType = type; }
         GLenum getImageReadPixelDataType() const { return _imageReadPixelDataType; }
+
         
         void setFrameBufferObject(osg::FrameBufferObject* fbo) { _fbo = fbo; }
         osg::FrameBufferObject* getFrameBufferObject() { return _fbo.get(); }
@@ -70,8 +74,13 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
     protected:
     
         virtual ~RenderToTextureStage();
+
+        const osg::CameraNode*                  _camera;
         
-        osg::ref_ptr<osg::Texture2D>            _texture;
+        osg::ref_ptr<osg::Texture>              _texture;
+        unsigned int                            _level;
+        unsigned int                            _face;
+
         osg::ref_ptr<osg::Image>                _image;
         GLenum                                  _imageReadPixelFormat;
         GLenum                                  _imageReadPixelDataType;

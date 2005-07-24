@@ -38,7 +38,8 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     _viewMatrix(camera._viewMatrix),
     _renderOrder(camera._renderOrder),
     _renderTargetImplementation(camera._renderTargetImplementation),
-    _bufferAttachmentMap(camera._bufferAttachmentMap)
+    _bufferAttachmentMap(camera._bufferAttachmentMap),
+    _postDrawCallback(camera._postDrawCallback)
 {
 }
 

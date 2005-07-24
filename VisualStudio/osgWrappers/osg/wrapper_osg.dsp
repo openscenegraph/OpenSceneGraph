@@ -424,6 +424,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Scissor.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Sequence.cpp
 # End Source File
 

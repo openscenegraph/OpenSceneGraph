@@ -187,13 +187,10 @@ class TexMatCullCallback : public osg::NodeCallback
 };
 
 
-osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::RefNodePath reflectorNodePath, unsigned int unit, const osg::Vec4& clearColor)
+osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::RefNodePath reflectorNodePath, unsigned int unit, const osg::Vec4& clearColor, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation)
 {
 
     osg::Group* group = new osg::Group;
-    
-    unsigned int tex_width = 512;
-    unsigned int tex_height = 512;
     
     osg::TextureCubeMap* texture = new osg::TextureCubeMap;
     texture->setTextureSize(tex_width, tex_height);
@@ -220,7 +217,7 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::RefNodePath r
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplmentation(renderImplementation);
 
         // attach the texture and use it as the color buffer.
         camera->attach(osg::CameraNode::COLOR_BUFFER, texture, 0, i);
@@ -276,6 +273,12 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " is the example which demonstrates using of GL_ARB_shadow extension implemented in osg::Texture class");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help", "Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--fbo","Use Frame Buffer Object for render to texture, where supported.");
+    arguments.getApplicationUsage()->addCommandLineOption("--fb","Use FrameBuffer for render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Use Pixel Buffer for render to texture, where supported.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window","Use a seperate Window for render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture");
+    arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture");
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -292,6 +295,19 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+    
+    unsigned tex_width = 512;
+    unsigned tex_height = 512;
+    while (arguments.read("--width", tex_width)) {}
+    while (arguments.read("--height", tex_height)) {}
+
+    osg::CameraNode::RenderTargetImplementation renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT;
+    
+    while (arguments.read("--fbo")) { renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT; }
+    while (arguments.read("--pbuffer")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER; }
+    while (arguments.read("--fb")) { renderImplementation = osg::CameraNode::FRAME_BUFFER; }
+    while (arguments.read("--window")) { renderImplementation = osg::CameraNode::SEPERATE_WINDOW; }
+    
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -309,7 +325,8 @@ int main(int argc, char** argv)
     ref_ptr<Group> reflectedSubgraph = _create_scene();    
     if (!reflectedSubgraph.valid()) return 1;
 
-    ref_ptr<Group> reflectedScene = createShadowedScene(reflectedSubgraph.get(),createReflector(),0, viewer.getClearColor());
+    ref_ptr<Group> reflectedScene = createShadowedScene(reflectedSubgraph.get(), createReflector(), 0, viewer.getClearColor(),
+                                                        tex_width, tex_height, renderImplementation);
 
     scene->addChild(reflectedScene.get());
 

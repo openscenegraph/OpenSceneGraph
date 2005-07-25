@@ -1148,7 +1148,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
             ++itr)
         {
             // assign the texture... pro            
-            if (itr->second._texture.valid())  rtts->setTexture(itr->second._texture.get());
+            if (itr->second._texture.valid())  rtts->setTexture(itr->second._texture.get(), itr->second._level, itr->second._face);
 
             // if one exist attach image to the RenderToTextureStage.
             if (itr->second._image.valid()) rtts->setImage(itr->second._image.get());

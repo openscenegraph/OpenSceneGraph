@@ -48,6 +48,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
                 _target(0),
                 _level(0),
                 _face(0),
+                _mipMapGeneration(false),
                 _sharedContext() {}
                 
             // where graphic context is be hosted.                
@@ -83,6 +84,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
             GLenum          _target;
             unsigned int    _level;
             unsigned int    _face;
+            unsigned int    _mipMapGeneration;
             
             // shared context
             GraphicsContext* _sharedContext;

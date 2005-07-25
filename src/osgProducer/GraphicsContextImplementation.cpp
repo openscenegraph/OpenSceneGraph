@@ -14,6 +14,7 @@
 #include <osgProducer/GraphicsContextImplementation>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
+#include <osg/Notify>
 
 using namespace osgProducer;
 
@@ -56,7 +57,8 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         if (traits->_target)
         {
 
-            _rs->setRenderToTextureOptions(Producer::RenderSurface::RenderToTextureOptions_Default);
+            _rs->setRenderToTextureOptions(traits->_mipMapGeneration ? Producer::RenderSurface::RequestSpaceForMipMaps :
+                                                                       Producer::RenderSurface::RenderToTextureOptions_Default);
             _rs->setRenderToTextureMipMapLevel(traits->_level);
             _rs->setRenderToTextureMode(traits->_alpha>0 ? Producer::RenderSurface::RenderToRGBATexture : 
                                                            Producer::RenderSurface::RenderToRGBTexture);
@@ -70,10 +72,12 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
                     _rs->setRenderToTextureTarget(Producer::RenderSurface::Texture2D);
                     break;
                 case(GL_TEXTURE_3D) :
+                    osg::notify(osg::NOTICE)<<"PBuffer render to Texture3D not supported."<<std::endl;
                     // not supported. 
                     // _rs->setRenderToTextureTarget(Producer::RenderSurface::Texture3D);
                     break;
                 case(GL_TEXTURE_RECTANGLE) : 
+                    osg::notify(osg::NOTICE)<<"PBuffer render to TextureRectangle not supported."<<std::endl;
                     // not supported.
                     // _rs->setRenderToTextureTarget(Producer::RenderSurface::TextureRectangle);
                     break;

@@ -1066,6 +1066,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         if (!rtts)
         {
             rtts = new osgUtil::RenderToTextureStage;
+            rtts->setCameraNode(&camera);
             camera.setRenderingCache(rtts.get());
         }
         else

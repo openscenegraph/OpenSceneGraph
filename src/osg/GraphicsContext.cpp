@@ -13,6 +13,8 @@
 
 
 #include <osg/GraphicsContext>
+#include <osg/Notify>
+#include <map>
 
 using namespace osg;
 
@@ -36,8 +38,90 @@ GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
         return 0;    
 }
 
+
+typedef std::map<unsigned int, unsigned int>  ContextIDMap;
+static ContextIDMap s_contextIDMap;
+static OpenThreads::Mutex s_contextIDMapMutex;
+
+unsigned int GraphicsContext::createNewContextID()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
+    
+    // first check to see if we can reuse contextID;
+    for(ContextIDMap::iterator itr = s_contextIDMap.begin();
+        itr != s_contextIDMap.end();
+        ++itr)
+    {
+        if (itr->second == 0)
+        {
+
+            // reuse contextID;
+            itr->second = 1;
+
+            osg::notify(osg::NOTICE)<<"GraphicsContext::createNewContextID() reusing contextID="<<itr->first<<std::endl;
+
+            return itr->first;
+        }
+    }
+
+    unsigned int contextID = s_contextIDMap.size();
+    s_contextIDMap[contextID] = 1;
+    
+    osg::notify(osg::INFO)<<"GraphicsContext::createNewContextID() creating contextID="<<contextID<<std::endl;
+    
+
+    if ( (contextID+1) > osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts() )
+    {
+        osg::notify(osg::INFO)<<"Updating the MaxNumberOfGraphicsContexts to "<<contextID+1<<std::endl;
+
+        // update the the maximum number of graphics contexts, 
+        // to ensure that texture objects and display buffers are configured to the correct size.
+        osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( contextID + 1 );
+    }
+    
+
+    return contextID;    
+}
+
+void GraphicsContext::incrementContextIDUsageCount(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
+    
+    osg::notify(osg::INFO)<<"GraphicsContext::incrementContextIDUsageCount("<<contextID<<") to "<<s_contextIDMap[contextID]<<std::endl;
+
+    ++s_contextIDMap[contextID];
+}
+
+void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
+{
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
+    
+
+    if (s_contextIDMap[contextID]!=0)
+    {
+        --s_contextIDMap[contextID];
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Warning: decrementContextIDUsageCount("<<contextID<<") called on expired contextID."<<std::endl;
+    } 
+
+    osg::notify(osg::INFO)<<"GraphicsContext::decrementContextIDUsageCount("<<contextID<<") to "<<s_contextIDMap[contextID]<<std::endl;
+
+}
+
+
 GraphicsContext::GraphicsContext():
     _threadOfLastMakeCurrent(0)
 {
+}
+
+GraphicsContext::~GraphicsContext()
+{
+    if (_state.valid())
+    {
+        decrementContextIDUsageCount(_state->getContextID());
+    }
 }
 

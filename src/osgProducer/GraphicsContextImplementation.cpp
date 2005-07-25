@@ -99,18 +99,26 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         // different graphics context so we have our own state.
         setState(new osg::State);
         
+        if (sharedContext->getState())
+        {
+            getState()->setContextID( sharedContext->getState()->getContextID() );
+            incrementContextIDUsageCount( sharedContext->getState()->getContextID() );   
+        }
+        else
+        {
+            getState()->setContextID( GraphicsContext::createNewContextID() );
+        }
+        
         // but we share texture objects etc. so we also share the same contextID
-        getState()->setContextID( sharedContext->getState() ? sharedContext->getState()->getContextID() : 1 );
-    
-        _rs->realize(0, sharedContext->_rs->getGLContext());
+        _rs->realize( 0, sharedContext->_rs->getGLContext() );
+        
     }
     else
     {
-        static int count = 1;
     
         // need to do something here....    
-        setState(new osg::State);
-        getState()->setContextID(count++);
+        setState( new osg::State );
+        getState()->setContextID( GraphicsContext::createNewContextID() );
 
         _rs->realize();
     }

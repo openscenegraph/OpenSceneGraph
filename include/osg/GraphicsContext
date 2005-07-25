@@ -19,10 +19,12 @@
 
 namespace osg {
 
+/** Base class for providing Windowing API agnostic access to creating and managing graphics context.*/
 class OSG_EXPORT GraphicsContext : public Referenced
 {
     public:
     
+        /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
         struct Traits : public osg::Referenced
         {
             Traits():
@@ -87,6 +89,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
         };
     
     
+        /** Callback to be implemented to provide access to Windowing API's ability to create Windows/pbuffers.*/
         struct CreateGraphicContexCallback : public osg::Referenced
         {
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
@@ -95,11 +98,24 @@ class OSG_EXPORT GraphicsContext : public Referenced
         };
     
     
+        /** Set the create graphics context callback - this callback should be supplied by the windows toolkit. */
         static void setCreateGraphicsContextCallback(CreateGraphicContexCallback* callback);
         
+        /** Get the create graphics context callback*/
         static CreateGraphicContexCallback* getCreateGraphicsContextCallback();
     
+        /** Create a graphics context for a specified set of traits.*/
         static GraphicsContext* createGraphicsContext(Traits* traits);
+        
+        /** Create a contextID for a new graphics context, this contextID is used to set up the osg::State associate with context.
+          * Automatically increments the usage count of the contextID to 1.*/
+        static unsigned int createNewContextID();
+
+        /** Increment the usage count associate with a contextID. The usage count speficies how many graphics contexts a specific contextID is shared between.*/
+        static void incrementContextIDUsageCount(unsigned int contextID);
+
+        /** Decrement the usage count associate with a contextID. Once the contextID goes to 0 the contextID is then free to be reused.*/
+        static void decrementContextIDUsageCount(unsigned int contextID);
     
     public:
     
@@ -139,7 +155,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
         
         GraphicsContext();
 
-        virtual ~GraphicsContext() {}
+        virtual ~GraphicsContext();
 
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;

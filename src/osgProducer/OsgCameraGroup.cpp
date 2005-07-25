@@ -239,10 +239,6 @@ void OsgCameraGroup::_init()
     _start_tick = _timer.tick();
 
     if (!_frameStamp) _frameStamp = new osg::FrameStamp;
-
-    // set up the maximum number of graphics contexts, before loading the scene graph
-    // to ensure that texture objects and display buffers are configured to the correct size.
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( getNumberOfCameras() );
     
     _applicationUsage = osg::ApplicationUsage::instance();
 
@@ -410,8 +406,6 @@ bool OsgCameraGroup::realize()
 
     if (!_ds) _ds = osg::DisplaySettings::instance();
 
-    _ds->setMaxNumberOfGraphicsContexts( _cfg->getNumberOfCameras() );
-    
     _shvec.clear();
     
     osg::Node* node = getTopMostSceneData();
@@ -440,6 +434,8 @@ bool OsgCameraGroup::realize()
     // use a std::map to keep track of what render surfaces are associated with what state.
     typedef std::map<Producer::RenderSurface*,osg::State*> RenderSurfaceStateMap;
     RenderSurfaceStateMap _renderSurfaceStateMap;
+
+    bool needToCreatedNewContextID = true;
     unsigned int contextID = 0;
 
     for(unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
@@ -461,11 +457,21 @@ bool OsgCameraGroup::realize()
         if (_renderSurfaceStateMap.count(rs)==0)
         {
             _renderSurfaceStateMap[rs] = sv->getState();
+
+            if (needToCreatedNewContextID)
+            {
+                // create a unique contextID for this graphics context.
+                contextID = osg::GraphicsContext::createNewContextID();
+                
+                // if we are sharing our graphics context then when needn't create any more.
+                needToCreatedNewContextID = !Producer::RenderSurface::allGLContextsAreShared();
+            }
+            else
+            {
+                osg::GraphicsContext::incrementContextIDUsageCount(contextID);
+            }
+
             sv->getState()->setContextID(contextID);
-            
-            // if we aren't share OpenGL objects between graphics contexts then need to increment the contextID
-            // to ensure that the OSG generates seperate objects for each graphics context. 
-            if (!Producer::RenderSurface::allGLContextsAreShared()) ++contextID;
         }
         else
         {

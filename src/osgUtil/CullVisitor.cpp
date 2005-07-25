@@ -1272,6 +1272,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
                     traits->_blue = 8;
                     traits->_alpha = 0; // ???
                 }
+                
+                // share OpenGL objects if possible...
+                if (_state.valid() && _state->getGraphicsContext())
+                {
+                    traits->_sharedContext = _state->getGraphicsContext();
+                }
 
                 // create the graphics context according to these traits.
                 context = osg::GraphicsContext::createGraphicsContext(traits.get());

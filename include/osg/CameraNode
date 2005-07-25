@@ -231,7 +231,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
         void attach(BufferComponent buffer, GLenum internalFormat);
 
-        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0);
+        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0, bool mipMapGeneration=false);
 
         void attach(BufferComponent buffer, osg::Image* image);
 
@@ -242,13 +242,15 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
             Attachment():
                 _internalFormat(GL_NONE),
                 _level(0),
-                _face(0) {}
+                _face(0),
+                _mipMapGeneration(false) {}
         
             GLenum              _internalFormat;
             ref_ptr<Image>      _image;
             ref_ptr<Texture>    _texture;
             unsigned int        _level;
             unsigned int        _face;
+            bool                _mipMapGeneration;
         };
         
         typedef std::map< BufferComponent, Attachment> BufferAttachmentMap;

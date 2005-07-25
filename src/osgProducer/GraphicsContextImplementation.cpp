@@ -12,7 +12,8 @@
 */
 
 #include <osgProducer/GraphicsContextImplementation>
-#include <osg/Notify>
+#include <osg/TextureRectangle>
+#include <osg/TextureCubeMap>
 
 using namespace osgProducer;
 
@@ -50,22 +51,69 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
  
     if (traits->_pbuffer)
     {
-        _rs->setDrawableType( Producer::RenderSurface::DrawableType_PBuffer );
+        _rs->setDrawableType(Producer::RenderSurface::DrawableType_PBuffer);
+
+        if (traits->_target)
+        {
+
+            _rs->setRenderToTextureOptions(Producer::RenderSurface::RenderToTextureOptions_Default);
+            _rs->setRenderToTextureMipMapLevel(traits->_level);
+            _rs->setRenderToTextureMode(traits->_alpha>0 ? Producer::RenderSurface::RenderToRGBATexture : 
+                                                           Producer::RenderSurface::RenderToRGBTexture);
+
+            switch(traits->_target)
+            {
+                case(GL_TEXTURE_1D) : 
+                    _rs->setRenderToTextureTarget(Producer::RenderSurface::Texture1D);
+                    break;
+                case(GL_TEXTURE_2D) : 
+                    _rs->setRenderToTextureTarget(Producer::RenderSurface::Texture2D);
+                    break;
+                case(GL_TEXTURE_3D) :
+                    // not supported. 
+                    // _rs->setRenderToTextureTarget(Producer::RenderSurface::Texture3D);
+                    break;
+                case(GL_TEXTURE_RECTANGLE) : 
+                    // not supported.
+                    // _rs->setRenderToTextureTarget(Producer::RenderSurface::TextureRectangle);
+                    break;
+                case(GL_TEXTURE_CUBE_MAP_POSITIVE_X) : 
+                case(GL_TEXTURE_CUBE_MAP_NEGATIVE_X) : 
+                case(GL_TEXTURE_CUBE_MAP_POSITIVE_Y) : 
+                case(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y) : 
+                case(GL_TEXTURE_CUBE_MAP_POSITIVE_Z) : 
+                case(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z) : 
+                    _rs->setRenderToTextureTarget(Producer::RenderSurface::TextureCUBE);
+                    _rs->setRenderToTextureFace( Producer::RenderSurface::CubeMapFace(traits->_target - GL_TEXTURE_CUBE_MAP_POSITIVE_X));
+                    break;
+            }
+
+        }
         
-        if (traits->_alpha>0)
-        {
-            _rs->setRenderToTextureMode(Producer::RenderSurface::RenderToRGBATexture);
-        }
-        else
-        {
-            _rs->setRenderToTextureMode(Producer::RenderSurface::RenderToRGBTexture);
-        }
     }
     
-    setState(new osg::State);
-    getState()->setContextID(1);
+    GraphicsContextImplementation* sharedContext = dynamic_cast<GraphicsContextImplementation*>(traits->_sharedContext);
+
+    if (sharedContext)
+    {
+        // different graphics context so we have our own state.
+        setState(new osg::State);
+        
+        // but we share texture objects etc. so we also share the same contextID
+        getState()->setContextID( sharedContext->getState() ? sharedContext->getState()->getContextID() : 1 );
     
-    _rs->realize();
+        _rs->realize(0, sharedContext->_rs->getGLContext());
+    }
+    else
+    {
+        static int count = 1;
+    
+        // need to do something here....    
+        setState(new osg::State);
+        getState()->setContextID(count++);
+
+        _rs->realize();
+    }
 
 }
 

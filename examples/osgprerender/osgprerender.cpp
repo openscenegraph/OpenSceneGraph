@@ -253,6 +253,12 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates pre rendering of scene to a texture, and then apply this texture to geometry.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--fbo","Use Frame Buffer Object for render to texture, where supported.");
+    arguments.getApplicationUsage()->addCommandLineOption("--fb","Use FrameBuffer for render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Use Pixel Buffer for render to texture, where supported.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window","Use a seperate Window for render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture");
+    arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture");
    
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);

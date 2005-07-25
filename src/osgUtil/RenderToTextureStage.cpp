@@ -48,6 +48,8 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     
     if (_stageDrawnThisFrame) return;
 
+    state.checkGLErrors("beginning of RenderToTextureStage::draw()");
+
     //cout << "begining RTTS draw "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
     
     osg::State* useState = &state;
@@ -115,7 +117,7 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
         else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
         {
             // need to implement
-            // textureCubeMap->copyTexImageCubeMap(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+            textureCubeMap->copyTexSubImageCubeMap(state, _face, 0, 0, _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
         }
     }
     
@@ -143,6 +145,8 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
 
         glReadBuffer(GL_BACK);
     }
+    
+    state.checkGLErrors("end of RenderToTextureStage::draw()");
     
 }
 

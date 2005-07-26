@@ -888,13 +888,34 @@ bool Image::isImageTranslucent() const
             const unsigned char* d = data(0,it,ir);
             switch(_dataType)
             {
-                case(GL_BYTE):              return _findLowerAlphaValueInRow(s(), (char*)d +offset,            (char)127, delta);
-                case(GL_UNSIGNED_BYTE):     return _findLowerAlphaValueInRow(s(), (unsigned char*)d + offset,  (unsigned char)255, delta);
-                case(GL_SHORT):             return _findLowerAlphaValueInRow(s(), (short*)d + offset,          (short)32767, delta);
-                case(GL_UNSIGNED_SHORT):    return _findLowerAlphaValueInRow(s(), (unsigned short*)d + offset, (unsigned short)65535, delta);
-                case(GL_INT):               return _findLowerAlphaValueInRow(s(), (int*)d + offset,            (int)2147483647, delta);
-                case(GL_UNSIGNED_INT):      return _findLowerAlphaValueInRow(s(), (unsigned int*)d + offset,   4294967295u, delta);
-                case(GL_FLOAT):             return _findLowerAlphaValueInRow(s(), (float*)d + offset,          1.0f, delta);
+                case(GL_BYTE):
+                    if (_findLowerAlphaValueInRow(s(), (char*)d +offset, (char)127, delta))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_BYTE):
+                    if (_findLowerAlphaValueInRow(s(), (unsigned char*)d + offset, (unsigned char)255, delta))
+                        return true;
+                    break;
+                case(GL_SHORT):
+                    if (_findLowerAlphaValueInRow(s(), (short*)d + offset, (short)32767, delta))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_SHORT):
+                    if (_findLowerAlphaValueInRow(s(), (unsigned short*)d + offset, (unsigned short)65535, delta))
+                        return true;
+                    break;
+                case(GL_INT):
+                    if (_findLowerAlphaValueInRow(s(), (int*)d + offset, (int)2147483647, delta))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_INT):
+                    if (_findLowerAlphaValueInRow(s(), (unsigned int*)d + offset, 4294967295u, delta))
+                        return true;
+                    break;
+                case(GL_FLOAT):
+                    if (_findLowerAlphaValueInRow(s(), (float*)d + offset, 1.0f, delta))
+                        return true;
+                    break;
             }
         }
     }

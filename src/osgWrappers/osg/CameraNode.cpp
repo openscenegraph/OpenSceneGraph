@@ -122,7 +122,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method1(void, setReadBuffer, IN, GLenum, buffer);
 	I_Method0(GLenum, getReadBuffer);
 	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, GLenum, internalFormat);
-	I_MethodWithDefaults4(void, attach, IN, osg::CameraNode::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0);
+	I_MethodWithDefaults5(void, attach, IN, osg::CameraNode::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false);
 	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, osg::Image *, image);
 	I_Method1(void, detach, IN, osg::CameraNode::BufferComponent, buffer);
 	I_Method0(osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap);
@@ -133,6 +133,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method1(void, setRenderingCache, IN, osg::Object *, rc);
 	I_Method0(osg::Object *, getRenderingCache);
 	I_Method0(const osg::Object *, getRenderingCache);
+	I_Method1(void, setPostDrawCallback, IN, osg::CameraNode::DrawCallback *, cb);
+	I_Method0(osg::CameraNode::DrawCallback *, getPostDrawCallback);
+	I_Method0(const osg::CameraNode::DrawCallback *, getPostDrawCallback);
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	I_ReadOnlyProperty(osg::CameraNode::BufferAttachmentMap &, BufferAttachmentMap);
@@ -143,6 +146,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_ReadOnlyProperty(osg::CameraNode::DrawBufferList &, DrawBufferList);
 	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_ReadOnlyProperty(osg::Matrixd, InverseViewMatrix);
+	I_Property(osg::CameraNode::DrawCallback *, PostDrawCallback);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
 	I_Property(GLenum, ReadBuffer);
 	I_Property(osg::CameraNode::RenderOrder, RenderOrder);
@@ -155,6 +159,17 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
 	I_Constructor0();
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::CameraNode::DrawCallback &, x, IN, const osg::CopyOp &, x);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >);

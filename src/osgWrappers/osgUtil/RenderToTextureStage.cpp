@@ -9,13 +9,14 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CameraNode>
 #include <osg/CopyOp>
 #include <osg/FrameBufferObject>
 #include <osg/GraphicsContext>
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/State>
-#include <osg/Texture2D>
+#include <osg/Texture>
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/RenderToTextureStage>
 
@@ -36,8 +37,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderToTextureStage)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method0(void, reset);
-	I_Method1(void, setTexture, IN, osg::Texture2D *, texture);
-	I_Method0(osg::Texture2D *, getTexture);
+	I_Method1(void, setCameraNode, IN, const osg::CameraNode *, camera);
+	I_Method0(const osg::CameraNode *, getCameraNode);
+	I_MethodWithDefaults3(void, setTexture, IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0);
+	I_Method0(osg::Texture *, getTexture);
 	I_Method1(void, setImage, IN, osg::Image *, image);
 	I_Method0(osg::Image *, getImage);
 	I_Method1(void, setImageReadPixelFormat, IN, GLenum, format);
@@ -51,11 +54,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderToTextureStage)
 	I_Method0(osg::GraphicsContext *, getGraphicsContext);
 	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
 	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Property(const osg::CameraNode *, CameraNode);
 	I_Property(osg::FrameBufferObject *, FrameBufferObject);
 	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_Property(osg::Image *, Image);
 	I_Property(GLenum, ImageReadPixelDataType);
 	I_Property(GLenum, ImageReadPixelFormat);
-	I_Property(osg::Texture2D *, Texture);
+	I_ReadOnlyProperty(osg::Texture *, Texture);
 END_REFLECTOR
 

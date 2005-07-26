@@ -150,7 +150,6 @@ Registry::Registry()
     addFileExtensionAlias("ivz",   "gz");
     addFileExtensionAlias("ozg",   "gz");
     
-
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");
@@ -245,22 +244,11 @@ static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENT
 static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
 #endif
 
-#if defined(__APPLE__)
-
-//Executable packages should be able to load file resources from inside the packages.
-//These resources should be stored in YourProgram.app/Contents/Resources, and so
-//should the path list for the data files should include that path by default.
-#include <CoreServices/CoreServices.h>
+#include <iostream>
 
 void Registry::initDataFilePathList()
 {
-  
     FilePathList filepath;
-    const int MAX_OSX_PATH_SIZE = 1024;
-    char buffer[MAX_OSX_PATH_SIZE];
-    CFURLRef  url;
-    CFBundleRef myBundle;
-
     //
     // set up data file paths
     //
@@ -277,67 +265,10 @@ void Registry::initDataFilePathList()
         convertStringPathIntoFilePathList(ptr, filepath);
     }
 
-  
-    // Get the bundle first
-    myBundle = CFBundleGetMainBundle();
-    if(myBundle != NULL)
-    {
-        // Get the URL to the resource directory in the bundle
-        url = CFBundleCopyResourcesDirectoryURL(myBundle);
-
-        // Converting the CFString into a UTF8 C string is not quite correct because
-        // for files that contain special characters, the BSD C file APIs actually
-        // expect strings encoded in a special encoding. So Apple provides a 
-        // FileRepresentation function for this purpose.
-        if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
-        {
-            filepath.push_back( 
-                std::string(buffer)
-            );
-        }
-        else
-        {
-            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Resource folder in the Application Bundle" << std::endl;
-        }
-        CFRelease( url );
-        url = NULL;
-        // myBundle = NULL;
-    }
-    else
-    {
-        osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle" << std::endl;
-    }
-
+    osgDB::appendPlatformSpecificResourceFilePaths(filepath);
     setDataFilePathList(filepath);
-
-  //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
-  //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
+    
 }
-
-#else
-
-void Registry::initDataFilePathList()
-{
-    //
-    // set up data file paths
-    //
-    char *ptr;
-    if( (ptr = getenv( "OSG_FILE_PATH" )) )
-    {
-        //notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
-        setDataFilePathList(ptr);
-    }
-    else if( (ptr = getenv( "OSGFILEPATH" )) )
-    {
-        //notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
-        setDataFilePathList(ptr);
-    }
-
-    //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
-    //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
-}
-
-#endif
 
 void Registry::setDataFilePathList(const std::string& paths)
 {
@@ -372,9 +303,6 @@ void Registry::initLibraryFilePathList()
     }
     
     appendPlatformSpecificLibraryFilePaths(_libraryFilePath);
-
-    //osg::notify(INFO)<<"Library FilePathList"<<std::endl;
-    //PrintFilePathList(osg::notify(INFO),getLibraryFilePathList());
 
 }
 

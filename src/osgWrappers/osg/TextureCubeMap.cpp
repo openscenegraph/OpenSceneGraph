@@ -57,6 +57,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	I_Method0(const osg::TextureCubeMap::SubloadCallback *, getSubloadCallback);
 	I_Method1(void, setNumMipmapLevels, IN, unsigned int, num);
 	I_Method0(unsigned int, getNumMipmapLevels);
+	I_Method8(void, copyTexSubImageCubeMap, IN, osg::State &, state, IN, int, face, IN, int, xoffset, IN, int, yoffset, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
 	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);

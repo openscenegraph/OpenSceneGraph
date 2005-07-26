@@ -96,6 +96,7 @@ extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename,Case
 extern OSGDB_EXPORT void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
 
 extern OSGDB_EXPORT void appendPlatformSpecificLibraryFilePaths(FilePathList& filepath);
+extern OSGDB_EXPORT void appendPlatformSpecificResourceFilePaths(FilePathList& filepath);
 
 }
 

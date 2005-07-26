@@ -455,7 +455,79 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 
     // #define COMPILE_COCOA_VERSION
     #define COMPILE_CARBON_VERSION
+    // WARNING: Cocoa version is currently untested.
+    #ifdef COMPILE_COCOA_VERSION
+        #include <Foundation/Foundation.h>
+    #endif
+    #ifdef COMPILE_CARBON_VERSION
+        #include <CoreServices/CoreServices.h>
+        #include <CoreFoundation/CoreFoundation.h>
+        #include <Carbon/Carbon.h>
+    #endif
+    #include <iostream>
     
+    // These functions are local to FileUtils.cpp and not exposed to the API
+    // returns the path string except for numToShorten directories stripped off the end
+    std::string GetShortenedPath(std::string path, int numToShorten)
+    {
+        unsigned int i = path.length() - 1;
+        if(path[i] == '/') i--;
+        while(i > 1 && numToShorten)
+        {
+            if(path[i] == '/')
+                numToShorten--;
+            i--;
+        }
+        return path.substr(0,i + 1);
+    }
+
+    // returns an absolute (POSIX on MacOS X) path from a CFURLRef
+    std::string GetPathFromCFURLRef(CFURLRef urlRef)
+    {
+        char buffer[1024];
+        std::string path;
+        if(CFURLGetFileSystemRepresentation(urlRef, true, (UInt8*)buffer, 1024))
+            path = std::string(buffer);
+        return path;
+    }
+
+    // returns the absolute path to the main bundle
+    std::string GetApplicationBundlePath(CFBundleRef mainBundle)
+    {
+        std::string path;
+        CFURLRef urlRef = CFBundleCopyBundleURL(mainBundle);
+        if(urlRef)
+            path = GetPathFromCFURLRef(urlRef);
+        CFRelease(urlRef); // docs say we are responsible for releasing CFURLRef
+        return path;
+        
+    }
+
+    std::string GetApplicationParentPath(CFBundleRef mainBundle)
+    {
+        return GetShortenedPath(GetApplicationBundlePath(mainBundle), 1);
+    }
+
+    std::string GetApplicationPluginsPath(CFBundleRef mainBundle)
+    {
+        std::string path;
+        CFURLRef urlRef = CFBundleCopyBuiltInPlugInsURL(mainBundle);
+        if(urlRef)
+            path = GetPathFromCFURLRef(urlRef);
+        CFRelease(urlRef);
+        return path;
+        
+    }
+
+    std::string GetApplicationResourcesPath(CFBundleRef mainBundle)
+    {
+        std::string path;
+        CFURLRef urlRef = CFBundleCopyResourcesDirectoryURL(mainBundle);
+        if(urlRef)
+            path = GetPathFromCFURLRef(urlRef);
+        CFRelease(urlRef);
+        return path;
+    }
 
     // The Cocoa version is about 10 lines of code.
     // The Carbon version is noticably longer.
@@ -471,7 +543,6 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     // And of course, you will need to link against Cocoa
 
     #ifdef COMPILE_COCOA_VERSION
-    #include <Foundation/Foundation.h>
     // OS X has preferred locations for where PlugIns should be located.
     // This function will set this as the order to search:
     // YourProgram.app/Contents/PlugIns
@@ -546,18 +617,12 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 
     #elif defined(COMPILE_CARBON_VERSION)
 
-
-    #include <CoreServices/CoreServices.h>
     // OS X has preferred locations for where PlugIns should be located.
     // This function will set this as the order to search:
     // YourProgram.app/Contents/PlugIns
     // ~/Library/Application Support/OpenSceneGraph/PlugIns
     // /Library/Application Support/OpenSceneGraph/PlugIns
     // /Network/Library/Application Support/OpenSceneGraph/PlugIns
-    // 
-    // As a side effect of this function, if the application is not a 
-    // bundle, the first place searched becomes
-    // YourProgram/PlugIns
     //
     // In principle, these other directories should be searched:
     // ~/Library/Application Support/YourProgram/PlugIns
@@ -583,9 +648,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             convertStringPathIntoFilePathList(ptr, filepath);
         }
 
-        const int MAX_OSX_PATH_SIZE = 1024;
         const std::string OSG_PLUGIN_PATH("/OpenSceneGraph/PlugIns");
-        char buffer[MAX_OSX_PATH_SIZE];
         CFURLRef  url;
         CFBundleRef myBundle;
         FSRef     f;
@@ -593,30 +656,19 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 
         // Start with the the Bundle PlugIns directory.
 
-        // Get the bundle first
+        // Get the main bundle first. No need to retain or release it since
+        //  we are not keeping a reference
         myBundle = CFBundleGetMainBundle();
+        
         if(myBundle != NULL)
         {
-            // Get the URL to the plugins directory in the bundle
-            url = CFBundleCopyBuiltInPlugInsURL(myBundle);
-
-            // Converting the CFString into a UTF8 C string is not quite correct because
-            // for files that contain special characters, the BSD C file APIs actually
-            // expect strings encoded in a special encoding. So Apple provides a 
-            // FileRepresentation function for this purpose.
-            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
-            {
-                filepath.push_back( 
-                    std::string(buffer)
-                );
-            }
-            else
-            {
-                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the PlugIns folder in the Application Bundle" << std::endl;
-            }
-            CFRelease( url );
-            url = NULL;
-            // myBundle = NULL;
+            // CFBundleGetMainBundle will return a bundle ref even if 
+            //  the application isn't part of a bundle, so we need to check
+            //  if the path to the bundle ends in ".app" to see if it is a
+            //  proper application bundle. If it is, the plugins path is added
+            std::string bundlePath = GetApplicationBundlePath(myBundle);
+            if( bundlePath.substr(bundlePath.length() - 4, 4) == std::string(".app") )
+                filepath.push_back(GetApplicationPluginsPath(myBundle));
         }
         else
         {
@@ -629,21 +681,11 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            // Converting the CFString into a UTF8 C string is not quite correct because
-            // for files that contain special characters, the BSD C file APIs actually
-            // expect strings encoded in a special encoding. So Apple provides a 
-            // FileRepresentation function for this purpose.
-            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
-            {
-                filepath.push_back( 
-                    std::string(buffer)
-                    + OSG_PLUGIN_PATH
-                );
-            }
+            if(url)
+                filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
             else
-            {
-                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the User's Application Support Path" << std::endl;
-            }
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't create CFURLRef for User's application support Path" << std::endl;
+
             CFRelease( url );
             url = NULL;
         }
@@ -658,21 +700,12 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            // Converting the CFString into a UTF8 C string is not quite correct because
-            // for files that contain special characters, the BSD C file APIs actually
-            // expect strings encoded in a special encoding. So Apple provides a 
-            // FileRepresentation function for this purpose.
-            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
-            {
-                filepath.push_back( 
-                    std::string(buffer)
-                    + OSG_PLUGIN_PATH
-                );
-            }
+            
+            if(url)
+                filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
             else
-            {
-                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Local System's Application Support Path" << std::endl;
-            }
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't create CFURLRef for local System's ApplicationSupport Path" << std::endl;
+
             CFRelease( url );
             url = NULL;
         }
@@ -689,23 +722,14 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            // Converting the CFString into a UTF8 C string is not quite correct because
-            // for files that contain special characters, the BSD C file APIs actually
-            // expect strings encoded in a special encoding. So Apple provides a 
-            // FileRepresentation function for this purpose.
-            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
-            {
-                filepath.push_back( 
-                    std::string(buffer)
-                    + OSG_PLUGIN_PATH
-                );
-            }
+            
+            if(url)
+                filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
             else
-            {
-                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
-            }
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't create CFURLRef for network Application Support Path" << std::endl;
+
             CFRelease( url );
-            url = NULL;        
+            url = NULL;
         }
         else
         {
@@ -749,6 +773,39 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 
 
 
+#ifdef __APPLE__
+    void osgDB::appendPlatformSpecificResourceFilePaths(FilePathList& filepath)
+    {
+        // Get the main application bundle
+        CFBundleRef mainBundle = CFBundleGetMainBundle();
+        
+        if (mainBundle != NULL) {
+            // Get the parent directory and the resources directory
+            std::string bundlePath = GetApplicationBundlePath(mainBundle);
+            std::string resourcesPath = GetApplicationResourcesPath(mainBundle);
+            
+            // check if application is really part of a .app bundle
+            if(bundlePath.substr(bundlePath.length() - 4, 4) == std::string(".app"))
+            {
+                if(resourcesPath != std::string(""))
+                    filepath.push_back( resourcesPath );
+                
+                std::string parentPath = GetShortenedPath(bundlePath, 1);
+                if(parentPath != std::string(""))
+                    filepath.push_back( parentPath );
+            }
+        }
+        else
+        {
+            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle." << std::endl;
+        }
+    }
+#else
+    void osgDB::appendPlatformSpecificResourceFilePaths(FilePathList& filepath)
+    {
+        
+    }
+#endif
 
 
 

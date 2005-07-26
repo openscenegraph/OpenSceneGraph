@@ -255,85 +255,60 @@ static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENT
 void Registry::initDataFilePathList()
 {
   
-  FilePathList filepath;
-  
-  //
-  // set up data file paths
-  //
-  char *ptr;
-  
-  if( (ptr = getenv( "OSG_FILE_PATH" )) )
-  {
-    //notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
-    convertStringPathIntoFilePathList(ptr, filepath);
-  }
-  else if( (ptr = getenv( "OSGFILEPATH" )) )
-  {
-    //notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
-    convertStringPathIntoFilePathList(ptr, filepath);
-  }
-  
+    FilePathList filepath;
+    const int MAX_OSX_PATH_SIZE = 1024;
+    char buffer[MAX_OSX_PATH_SIZE];
+    CFURLRef  url;
+    CFBundleRef myBundle;
 
-  char* buffer = NULL;
-  char* bundlePathBuffer = NULL;
-  CFURLRef  url;
-  CFStringRef pathString;
-  CFBundleRef myBundle;
-  CFStringRef bundlePathString;
-  CFIndex strLen; 
-  CFIndex maxBufferSize;
+    //
+    // set up data file paths
+    //
+    char *ptr;
   
-  myBundle = CFBundleGetMainBundle();
-  if (myBundle != NULL) {
-    // Get the URL to the bundle
-    url = CFBundleCopyBundleURL( myBundle );
-    
-    // Convert the URL to a CFString that looks like a Unix file path
-    bundlePathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-    
-    // Convert the CFString to a C string
-    strLen = CFStringGetLength( bundlePathString );
-    maxBufferSize = CFStringGetMaximumSizeForEncoding( strLen, kCFStringEncodingUTF8 );
-    bundlePathBuffer = (char*) malloc(maxBufferSize);
-    CFStringGetCString( bundlePathString, bundlePathBuffer, maxBufferSize, kCFStringEncodingUTF8 );
-    
-    CFRelease( url );
+    if( (ptr = getenv( "OSG_FILE_PATH" )) )
+    {
+        //notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
+        convertStringPathIntoFilePathList(ptr, filepath);
+    }
+    else if( (ptr = getenv( "OSGFILEPATH" )) )
+    {
+        //notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
+        convertStringPathIntoFilePathList(ptr, filepath);
+    }
 
-    // Now find the resources folder
-    url = CFBundleCopyResourcesDirectoryURL( myBundle );
-    //pathString = CFURLCopyPath( url );
-    // Convert the URL to a CFString that looks like a Unix file path
-    pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-    
-    // Convert the CFString to a C string
-    strLen = CFStringGetLength( pathString );
-    maxBufferSize = CFStringGetMaximumSizeForEncoding( strLen, kCFStringEncodingUTF8 );
-    buffer = (char*) malloc(maxBufferSize);
-    CFStringGetCString( pathString, buffer, maxBufferSize, kCFStringEncodingUTF8 );
-    
-    // Combine the string and copy it into the FilePath list
-    filepath.push_back( std::string(bundlePathBuffer) 
-                         + std::string("/")
-                         + std::string(buffer)
-                         );
-    
-    CFRelease( pathString );
-    CFRelease( bundlePathString );
-    CFRelease( url );
-    
-    if (bundlePathBuffer != NULL) free(bundlePathBuffer);
-    if (buffer != NULL) free(buffer);
-    
-    pathString = NULL;
-    bundlePathString = NULL;
-    url = NULL;
-  }
-  else
-  {
-    osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle" << std::endl;
-  }
   
-  setDataFilePathList(filepath);
+    // Get the bundle first
+    myBundle = CFBundleGetMainBundle();
+    if(myBundle != NULL)
+    {
+        // Get the URL to the resource directory in the bundle
+        url = CFBundleCopyResourcesDirectoryURL(myBundle);
+
+        // Converting the CFString into a UTF8 C string is not quite correct because
+        // for files that contain special characters, the BSD C file APIs actually
+        // expect strings encoded in a special encoding. So Apple provides a 
+        // FileRepresentation function for this purpose.
+        if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
+        {
+            filepath.push_back( 
+                std::string(buffer)
+            );
+        }
+        else
+        {
+            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Resource folder in the Application Bundle" << std::endl;
+        }
+        CFRelease( url );
+        url = NULL;
+        // myBundle = NULL;
+    }
+    else
+    {
+        osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle" << std::endl;
+    }
+
+    setDataFilePathList(filepath);
 
   //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
   //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
@@ -569,9 +544,9 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     if (itr!=_extAliasMap.end()) return createLibraryNameForExtension(itr->second);
 
 #ifdef OSG_JAVA_BUILD
-	static std::string prepend = "java";
+    static std::string prepend = "java";
 #else
-	static std::string prepend = "";
+    static std::string prepend = "";
 #endif
 
 #if defined(WIN32)

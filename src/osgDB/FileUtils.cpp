@@ -586,62 +586,35 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         const int MAX_OSX_PATH_SIZE = 1024;
         const std::string OSG_PLUGIN_PATH("/OpenSceneGraph/PlugIns");
         char buffer[MAX_OSX_PATH_SIZE];
-        char bundlePathBuffer[MAX_OSX_PATH_SIZE];
         CFURLRef  url;
-        CFStringRef pathString;
         CFBundleRef myBundle;
-        CFStringRef bundlePathString;
         FSRef     f;
         OSErr    errCode;
 
         // Start with the the Bundle PlugIns directory.
-        // Unlike the Cocoa API, it seems that the PlugIn path is relative
-        // and not absolute. So I will need to fetch both the bundle path
-        // (which is absolute) and the PlugIn path (which is relative),
-        // and combine the two to form a full path.
 
         // Get the bundle first
         myBundle = CFBundleGetMainBundle();
         if(myBundle != NULL)
         {
-            // Get the URL to the bundle
-            url = CFBundleCopyBundleURL( myBundle );
+            // Get the URL to the plugins directory in the bundle
+            url = CFBundleCopyBuiltInPlugInsURL(myBundle);
 
-            // Convert the URL to a CFString that looks like a Unix file path
-            bundlePathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-            // Convert the CFString to a C string
-            CFStringGetCString( bundlePathString, bundlePathBuffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
-
+            // Converting the CFString into a UTF8 C string is not quite correct because
+            // for files that contain special characters, the BSD C file APIs actually
+            // expect strings encoded in a special encoding. So Apple provides a 
+            // FileRepresentation function for this purpose.
+            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
+            {
+                filepath.push_back( 
+                    std::string(buffer)
+                );
+            }
+            else
+            {
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the PlugIns folder in the Application Bundle" << std::endl;
+            }
             CFRelease( url );
-
-            // Now find the PlugIns directory
-            // Get the URL to the bundle
-            url = CFBundleCopyBuiltInPlugInsURL( myBundle );
-            //pathString = CFURLCopyPath( url );
-            // Convert the URL to a CFString that looks like a Unix file path
-            pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-            // Convert the CFString to a C string
-            CFStringGetCString( pathString, buffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
-
-            // Combine the string and copy it into the FilePath list
-            filepath.push_back( 
-                std::string(bundlePathBuffer) 
-                + std::string("/")
-                + std::string(buffer)
-            );
-
-            CFRelease( pathString );
-            CFRelease( bundlePathString );
-            CFRelease( url );
-
-            // I was getting random crashes which I believe were caused by
-            // releasing the bundle. The documentation says I'm responsible
-            // for retaining and releasing which didn't immediately register
-            // in my head. I never retain the bundle, so I don't release it.
-            // CFRelease( myBundle );
-
-            pathString = NULL;
-            bundlePathString = NULL;
             url = NULL;
             // myBundle = NULL;
         }
@@ -656,19 +629,23 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            // Convert the URL to a CFString that looks like a Unix file path
-            pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-            // Convert the CFString to a C string
-            CFStringGetCString( pathString, buffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
-
-            // Add the directory to the FilePathList
-            filepath.push_back( 
-                std::string(buffer) 
-                + OSG_PLUGIN_PATH
-            );
-
+            // Converting the CFString into a UTF8 C string is not quite correct because
+            // for files that contain special characters, the BSD C file APIs actually
+            // expect strings encoded in a special encoding. So Apple provides a 
+            // FileRepresentation function for this purpose.
+            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
+            {
+                filepath.push_back( 
+                    std::string(buffer)
+                    + OSG_PLUGIN_PATH
+                );
+            }
+            else
+            {
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the User's Application Support Path" << std::endl;
+            }
             CFRelease( url );
-            CFRelease( pathString );
+            url = NULL;
         }
         else
         {
@@ -681,19 +658,23 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            // Convert the URL to a CFString that looks like a Unix file path
-            pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-            // Convert the CFString to a C string
-            CFStringGetCString( pathString, buffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
-
-            // Add the directory to the FilePathList
-            filepath.push_back( 
-                std::string(buffer) 
-                + OSG_PLUGIN_PATH
-            );
-
+            // Converting the CFString into a UTF8 C string is not quite correct because
+            // for files that contain special characters, the BSD C file APIs actually
+            // expect strings encoded in a special encoding. So Apple provides a 
+            // FileRepresentation function for this purpose.
+            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
+            {
+                filepath.push_back( 
+                    std::string(buffer)
+                    + OSG_PLUGIN_PATH
+                );
+            }
+            else
+            {
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Local System's Application Support Path" << std::endl;
+            }
             CFRelease( url );
-            CFRelease( pathString );
+            url = NULL;
         }
         else
         {
@@ -708,19 +689,23 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
-            // Convert the URL to a CFString that looks like a Unix file path
-            pathString = CFURLCopyFileSystemPath( url, kCFURLPOSIXPathStyle );
-            // Convert the CFString to a C string
-            CFStringGetCString( pathString, buffer, MAX_OSX_PATH_SIZE, kCFStringEncodingUTF8 );
-
-            // Add the directory to the FilePathList
-            filepath.push_back( 
-                std::string(buffer) 
-                + OSG_PLUGIN_PATH
-            );
-
+            // Converting the CFString into a UTF8 C string is not quite correct because
+            // for files that contain special characters, the BSD C file APIs actually
+            // expect strings encoded in a special encoding. So Apple provides a 
+            // FileRepresentation function for this purpose.
+            if( (url != NULL) && (CFURLGetFileSystemRepresentation(url, true, buffer, MAX_OSX_PATH_SIZE)) )
+            {
+                filepath.push_back( 
+                    std::string(buffer)
+                    + OSG_PLUGIN_PATH
+                );
+            }
+            else
+            {
+                osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
+            }
             CFRelease( url );
-            CFRelease( pathString );
+            url = NULL;        
         }
         else
         {

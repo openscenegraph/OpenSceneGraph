@@ -56,14 +56,23 @@ public:
 
         float mul = 1.0f;
         bool bYFlip = false;
-        if(_opts) {
+        bool convertToRGB8 = false;
+        if(_opts)
+        {
             std::istringstream iss(_opts->getOptionString());
             std::string opt;
-            while (iss >> opt) {
-                if(opt == "RGBMUL") {
+            while (iss >> opt)
+            {
+                if(opt == "RGBMUL")
+                {
                     iss >> mul;
                 }
-                else if(opt == "YFLIP") {
+                else if(opt == "RGB8")
+                {
+                    convertToRGB8 = true;
+                }
+                else if(opt == "YFLIP")
+                {
                     bYFlip = true; // TODO
                 }
             }
@@ -74,34 +83,55 @@ public:
         if (!ret)
             return ReadResult::FILE_NOT_FOUND;
 
-        int nbPixs = res.width * res.height;
-        int nbElements = nbPixs * 3;
-        unsigned char *rgb = new unsigned char[ nbElements ];
-        unsigned char *tt = rgb;
-        float *cols = res.cols;
-
-        for (int i = 0; i < nbElements; i++) {
-            float element = *cols++;
-            element *= mul;
-            if (element < 0) element = 0;
-            else if (element > 1) element = 1;
-            int intElement = (int) (element * 255.0f);
-            *tt++ = intElement;
-        }
-
-        delete [] res.cols;
-
-        int pixelFormat = GL_RGB;
-        int dataType = GL_UNSIGNED_BYTE;
-
+        // create the osg::Image to fill in.
         osg::Image *img = new osg::Image;
-        img->setFileName(_file.c_str());
-        img->setImage(    res.width, res.height, 1,
-                        3,
-                        pixelFormat,
-                        dataType,
-                        (unsigned char*) rgb,
-                        osg::Image::USE_NEW_DELETE);
+
+        // copy across the raw data into the osg::Image
+        if (convertToRGB8)
+        {
+            int nbPixs = res.width * res.height;
+            int nbElements = nbPixs * 3;
+            unsigned char *rgb = new unsigned char[ nbElements ];
+            unsigned char *tt = rgb;
+            float *cols = res.cols;
+
+            for (int i = 0; i < nbElements; i++) {
+                float element = *cols++;
+                element *= mul;
+                if (element < 0) element = 0;
+                else if (element > 1) element = 1;
+                int intElement = (int) (element * 255.0f);
+                *tt++ = intElement;
+            }
+
+            delete [] res.cols;
+
+            int pixelFormat = GL_RGB;
+            int dataType = GL_UNSIGNED_BYTE;
+
+            img->setFileName(_file.c_str());
+            img->setImage(    res.width, res.height, 1,
+                            3,
+                            pixelFormat,
+                            dataType,
+                            (unsigned char*) rgb,
+                            osg::Image::USE_NEW_DELETE);
+        }
+        else
+        {
+            int internalFormat = GL_RGB;
+            int pixelFormat = GL_RGB;
+            int dataType = GL_FLOAT;
+
+            img->setFileName(_file.c_str());
+            img->setImage(    res.width, res.height, 1,
+                            internalFormat,
+                            pixelFormat,
+                            dataType,
+                            (unsigned char*) res.cols,
+                            osg::Image::USE_NEW_DELETE);
+
+        }
 
         return img;
     }

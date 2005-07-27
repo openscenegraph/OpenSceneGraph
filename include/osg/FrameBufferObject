@@ -263,6 +263,7 @@ namespace osg
 
         FrameBufferAttachment &operator = (const FrameBufferAttachment &copy);        
 
+        void createRequiredTexturesAndApplyGenerateMipMap(State &state, const FBOExtensions* ext) const;
         void attach(State &state, GLenum attachment_point, const FBOExtensions* ext) const;
         int compare(const FrameBufferAttachment &fa) const;
 

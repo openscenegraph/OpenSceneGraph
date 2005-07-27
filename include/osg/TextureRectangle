@@ -44,11 +44,7 @@ class OSG_EXPORT TextureRectangle : public Texture
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual bool getModeUsage(ModeUsage& usage) const
-        {
-            usage.usesTextureMode(GL_TEXTURE_RECTANGLE);
-            return true;
-        }
+        virtual GLenum getTextureTarget() const { return GL_TEXTURE_RECTANGLE; }
 
         /** Set the texture image. */
         void setImage(Image* image);

@@ -16,6 +16,7 @@
 #include <osg/Texture3D>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
@@ -43,34 +44,11 @@ void RenderToTextureStage::reset()
     RenderStage::reset();
 }
 
-class GenerateMipMapHelper : public StateAttribute::ModeUsage
-{
-    public:
-        GenerateMipMapHelper(osg::FBOExtensions* fbo_ext):
-            _fbo_ext(fbo_ext) {}
-            
-        virtual ~GenerateMipMapHelper() {}
-        
-        virtual void usesMode(StateAttribute::GLMode)
-        {
-        }
-
-        virtual void usesTextureMode(StateAttribute::GLMode mode)
-        {
-            _fbo_ext->glGenerateMipmapEXT((GLenum)mode);
-        }
-        
-        osg::FBOExtensions* _fbo_ext;
-        
-};
-
 
 void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
 {
     
     if (_stageDrawnThisFrame) return;
-
-    state.checkGLErrors("beginning of RenderToTextureStage::draw()");
 
     //cout << "begining RTTS draw "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
     
@@ -148,22 +126,6 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
         _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
     }
        
-    if (fbo_supported && _camera)
-    {
-        // now generate mipmaps if they are required.
-        const osg::CameraNode::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
-        for(osg::CameraNode::BufferAttachmentMap::const_iterator itr = bufferAttachements.begin();
-            itr != bufferAttachements.end();
-            ++itr)
-        {
-            if (itr->second._texture.valid() && itr->second._mipMapGeneration) 
-            {
-                itr->second._texture->apply(*useState);
-                GenerateMipMapHelper generateMipMap(fbo_ext);
-                itr->second._texture->getModeUsage(generateMipMap);
-            }
-        }
-    }
     
     if (_camera && _camera->getPostDrawCallback())
     {
@@ -176,6 +138,22 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
         // switch of the frame buffer object
         fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
+    
+    if (fbo_supported && _camera)
+    {
+        // now generate mipmaps if they are required.
+        const osg::CameraNode::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
+        for(osg::CameraNode::BufferAttachmentMap::const_iterator itr = bufferAttachements.begin();
+            itr != bufferAttachements.end();
+            ++itr)
+        {
+            if (itr->second._texture.valid() && itr->second._mipMapGeneration) 
+            {
+                itr->second._texture->apply(*useState);
+                // fbo_ext->glGenerateMipmapEXT(itr->second._texture->getTextureTarget());
+            }
+        }
+    }
 
     if (callingContext && useContext != callingContext)
     {
@@ -184,8 +162,5 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
 
         glReadBuffer(GL_BACK);
     }
-    
-    state.checkGLErrors("end of RenderToTextureStage::draw()");
-    
 }
 

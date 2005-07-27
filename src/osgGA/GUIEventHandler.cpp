@@ -26,7 +26,11 @@ void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
             itr != ev->getEventList().end();
             ++itr)
         {
-            handle(*(*itr), *(ev->getActionAdapter()), node, nv);
+            if (handle(*(*itr), *(ev->getActionAdapter()), node, nv))
+            {
+                ev->setEventHandled(true);
+                return;
+            }
         }
     }
     traverse(node,nv);

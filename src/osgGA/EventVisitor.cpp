@@ -17,7 +17,9 @@
 using namespace osg;
 using namespace osgGA;
 
-EventVisitor::EventVisitor():NodeVisitor(UPDATE_VISITOR,TRAVERSE_ALL_CHILDREN)
+EventVisitor::EventVisitor()
+:    NodeVisitor(UPDATE_VISITOR,TRAVERSE_ALL_CHILDREN),
+    _handled(false)
 {
 }
 
@@ -41,4 +43,5 @@ void EventVisitor::removeEvent(GUIEventAdapter* event)
 void EventVisitor::reset()
 {
     _events.clear();
+    _handled = false;
 }

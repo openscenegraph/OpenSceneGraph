@@ -81,11 +81,11 @@ public:
         _piv.setTraversalMask(traversalMask);   
     }
 
-	// Aug 2003 added to pass the nodemaskOverride to the PickIntersectVisitor
+    // Aug 2003 added to pass the nodemaskOverride to the PickIntersectVisitor
      //   may be used make the visitor override the nodemask to visit invisible actions
     inline void setNodeMaskOverride(osg::Node::NodeMask mask) {
-		_piv.setNodeMaskOverride(mask);
-		_nodeMaskOverride = mask; }
+        _piv.setNodeMaskOverride(mask);
+        _nodeMaskOverride = mask; }
 
 
     virtual void apply(osg::Projection& pr)
@@ -698,17 +698,21 @@ void Viewer::update()
         ++event_itr)
     {
         bool handled = false;
-        for(EventHandlerList::iterator handler_itr=_eventHandlerList.begin();
-            handler_itr!=_eventHandlerList.end() && !handled;
-            ++handler_itr)
-        {   
-            handled = (*handler_itr)->handle(*(*event_itr),*this,0,0);
-        }
+
         if (_eventVisitor.valid())
         {
             _eventVisitor->reset();
             _eventVisitor->addEvent(event_itr->get());
             getTopMostSceneData()->accept(*_eventVisitor);
+            if (_eventVisitor->getEventHandled())
+                handled = true;
+        }
+
+        for(EventHandlerList::iterator handler_itr=_eventHandlerList.begin();
+            handler_itr!=_eventHandlerList.end() && !handled;
+            ++handler_itr)
+        {   
+            handled = (*handler_itr)->handle(*(*event_itr),*this,0,0);
         }
         
     }
@@ -1014,3 +1018,4 @@ void Viewer::getUsage(osg::ApplicationUsage& usage) const
         (*itr)->getUsage(usage);
     }
 }
+

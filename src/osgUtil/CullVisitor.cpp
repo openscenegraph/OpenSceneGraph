@@ -1110,12 +1110,23 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // set the current renderbin to be the newly created stage.
         setCurrentRenderBin(rtts.get());
 
+        // set the cull traversal mask of camera node
+        osg::Node::NodeMask saved_mask = getCullMask();
+        if (camera.getInheritanceMask() & CULL_MASK)
+        {
+             setTraversalMask(camera.getCullMask());
+        }
 
         // traverse the subgraph
         {
             handle_cull_callbacks_and_traverse(camera);
         }
 
+        // restore the cull traversal mask of camera node
+        if (camera.getInheritanceMask() & CULL_MASK)
+        {
+            setTraversalMask(saved_mask);
+        }
 
         // restore the previous renderbin.
         setCurrentRenderBin(previousRenderBin);
@@ -1233,7 +1244,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 {
 
                     osg::CameraNode::BufferComponent buffer = itr->first;
-                    osg::CameraNode::Attachment& attachment = itr->second;
+                    // osg::CameraNode::Attachment& attachment = itr->second;
                     switch(buffer)
                     {
                         case(osg::CameraNode::DEPTH_BUFFER):

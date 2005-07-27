@@ -272,7 +272,7 @@ FrameBufferAttachment &FrameBufferAttachment::operator = (const FrameBufferAttac
     return *this;
 }
 
-void FrameBufferAttachment::attach(State &state, GLenum attachment_point, const FBOExtensions* ext) const
+void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &state, const FBOExtensions* ext) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -285,11 +285,41 @@ void FrameBufferAttachment::attach(State &state, GLenum attachment_point, const 
         {
             _ximpl->textureTarget->compileGLObjects(state);
             tobj = _ximpl->textureTarget->getTextureObject(contextID);
+
+        }
+        if (!tobj || tobj->_id == 0)
+            return;
+
+        Texture::FilterMode minFilter = _ximpl->textureTarget->getFilter(Texture::MIN_FILTER);
+        if (minFilter==Texture::LINEAR_MIPMAP_LINEAR || 
+            minFilter==Texture::LINEAR_MIPMAP_NEAREST || 
+            minFilter==Texture::NEAREST_MIPMAP_LINEAR || 
+            minFilter==Texture::NEAREST_MIPMAP_NEAREST)
+        {
+            ext->glGenerateMipmapEXT(_ximpl->textureTarget->getTextureTarget());
+        }
+
+    }
+}
+
+void FrameBufferAttachment::attach(State &state, GLenum attachment_point, const FBOExtensions* ext) const
+{
+    unsigned int contextID = state.getContextID();
+
+    Texture::TextureObject *tobj = 0;
+    if (_ximpl->textureTarget.valid())
+    {
+        tobj = _ximpl->textureTarget->getTextureObject(contextID);
+        if (!tobj || tobj->_id == 0)
+        {
+            _ximpl->textureTarget->compileGLObjects(state);
+            tobj = _ximpl->textureTarget->getTextureObject(contextID);
+
         }
         if (!tobj || tobj->_id == 0)
             return;
     }
-
+    
     switch (_ximpl->targetType)
     {
     default:
@@ -379,9 +409,22 @@ void FrameBufferObject::apply(State &state) const
             notify(WARN) << "Warning: FrameBufferObject: could not create the FBO" << std::endl;
             return;
         }
+
         dirtyAttachmentList = 1;
+
     }
 
+    if (dirtyAttachmentList)
+    {
+        // create textures and mipmaps before we bind the frame buffer object
+        for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
+        {
+            const FrameBufferAttachment &fa = i->second;
+            fa.createRequiredTexturesAndApplyGenerateMipMap(state, ext);
+        }
+
+    }
+    
     ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 
     if (dirtyAttachmentList)

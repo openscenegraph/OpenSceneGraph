@@ -47,11 +47,7 @@ class OSG_EXPORT TextureCubeMap : public Texture
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual bool getModeUsage(ModeUsage& usage) const
-        {
-            usage.usesTextureMode(GL_TEXTURE_CUBE_MAP);
-            return true;
-        }
+        virtual GLenum getTextureTarget() const { return GL_TEXTURE_CUBE_MAP; }
 
         enum Face {
             POSITIVE_X=0,

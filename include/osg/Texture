@@ -207,6 +207,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         virtual bool isTextureAttribute() const { return true; }
 
+
+        virtual GLenum getTextureTarget() const = 0;
+
+        virtual bool getModeUsage(ModeUsage& usage) const
+        {
+            usage.usesTextureMode(getTextureTarget());
+            return true;
+        }
+
         enum WrapParameter {
             WRAP_S,
             WRAP_T,

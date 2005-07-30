@@ -299,6 +299,9 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
 
 Drawable::~Drawable()
 {
+    // cleanly detatch any associated stateset (include remove parent links)
+    setStateSet(0);
+
     dirtyDisplayList();
 }
 

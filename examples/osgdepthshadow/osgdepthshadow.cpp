@@ -15,6 +15,8 @@
 #include <osg/PolygonOffset>
 #include <osg/CullFace>
 #include <osg/Material>
+#include <osg/TexEnvCombine>
+#include <osg/TexEnv>
 
 #include <osgUtil/TransformCallback>
 
@@ -226,6 +228,10 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
             float zNearRatio = 0.001f;
             if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
 
+#if 0
+            // hack to illustrate the precision problems of excessive gap between near far range.
+            znear = 0.00001*zfar;
+#endif
             float top   = (bs.radius()/centerDistance)*znear;
             float right = top;
 
@@ -254,6 +260,18 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
         osg::ref_ptr<osg::TexGenNode>       _texgenNode;
 
 };
+
+//////////////////////////////////////////////////////////////////
+// fragment shader
+//
+char fragmentShaderSource[] = 
+    "uniform sampler2DShadow baseTexture; \n"
+    "uniform vec2 ambientBias; \n"
+    "\n"
+    "void main(void) \n"
+    "{ \n"
+    "    gl_FragColor = gl_Color*(ambientBias.x + shadow2DProj( baseTexture, gl_TexCoord[0] ) * ambientBias.y); \n"
+    "}\n";
 
 
 osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_transform, unsigned int unit)
@@ -289,9 +307,13 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
 
         _local_stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
+
+        float factor = 0.0f;
+        float units = 0.0f;
+
         ref_ptr<PolygonOffset> polygon_offset = new PolygonOffset;
-        polygon_offset->setFactor(1.1f);
-        polygon_offset->setUnits(4.0f);
+        polygon_offset->setFactor(factor);
+        polygon_offset->setUnits(units);
         _local_stateset->setAttribute(polygon_offset.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
         _local_stateset->setMode(GL_POLYGON_OFFSET_FILL, StateAttribute::ON | StateAttribute::OVERRIDE);
 
@@ -336,7 +358,21 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
         stateset->setTextureMode(unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
         stateset->setTextureMode(unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
         stateset->setTextureMode(unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+
         stateset->setTextureMode(unit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
+
+        osg::Program* program = new osg::Program;
+        stateset->setAttribute(program);
+
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+        program->addShader(fragment_shader);
+
+        osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+        stateset->addUniform(baseTextureSampler);
+
+        osg::Uniform* ambientBias = new osg::Uniform("ambientBias",osg::Vec2(0.2f,0.8f));
+        stateset->addUniform(ambientBias);
+
     }
     
     // add the shadower and shadowed.

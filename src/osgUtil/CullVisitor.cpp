@@ -1036,6 +1036,11 @@ void CullVisitor::apply(osg::CameraNode& camera)
     StateSet* node_state = camera.getStateSet();
     if (node_state) pushStateSet(node_state);
     
+    // set the compute near far mode.
+    ComputeNearFarMode saved_compute_near_far_mode = getComputeNearFarMode();
+    setComputeNearFarMode( camera.getComputeNearFarMode());
+
+
     osg::RefMatrix& originalModelView = getModelViewMatrix();
 
     if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
@@ -1053,6 +1058,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix()));
         pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix()));
     }
+
 
     if (camera.getRenderOrder()==osg::CameraNode::NESTED_RENDER)
     {
@@ -1080,9 +1086,6 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // will do later.
         osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
 
-        // set the compute near far mode.
-        ComputeNearFarMode saved_compute_near_far_mode = getComputeNearFarMode();
-        setComputeNearFarMode( camera.getComputeNearFarMode());
 
         // set up the background color and clear mask.
         rtts->setClearColor(camera.getClearColor());
@@ -1131,8 +1134,6 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // restore the previous renderbin.
         setCurrentRenderBin(previousRenderBin);
      
-        // restore the previous compute near far mode
-        setComputeNearFarMode(saved_compute_near_far_mode);
 
 
         if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
@@ -1233,6 +1234,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 traits->_height = viewport->height();
                 traits->_pbuffer = (camera.getRenderTargetImplmentation()==osg::CameraNode::PIXEL_BUFFER);
                 traits->_windowDecoration = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
+                traits->_doubleBuffer = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
 
 
                 bool colorAttached = false;
@@ -1312,6 +1314,9 @@ void CullVisitor::apply(osg::CameraNode& camera)
 
     // restore the previous model view matrix.
     popProjectionMatrix();
+
+    // restore the previous compute near far mode
+    setComputeNearFarMode(saved_compute_near_far_mode);
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();

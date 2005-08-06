@@ -49,6 +49,33 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     _rs->setWindowName(traits->_windowName);
     _rs->setWindowRectangle(traits->_x, traits->_y, traits->_width, traits->_height);
     _rs->useBorder(traits->_windowDecoration);
+
+#if 1    
+    // set the visual chooser
+    Producer::VisualChooser* rs_vc = _rs->getVisualChooser();
+    if (!rs_vc)
+    {
+        rs_vc = new Producer::VisualChooser;
+        _rs->setVisualChooser(rs_vc);
+    }
+    
+    rs_vc->setRedSize(_traits->_red);
+    rs_vc->setGreenSize(_traits->_green);
+    rs_vc->setBlueSize(_traits->_blue);
+    rs_vc->setAlphaSize(_traits->_alpha);
+    
+    rs_vc->setDepthSize(_traits->_depth);
+    rs_vc->setStencilSize(_traits->_stencil);
+    
+    if (_traits->_doubleBuffer) rs_vc->useDoubleBuffer();
+
+    rs_vc->addAttribute( Producer::VisualChooser::RGBA );
+
+
+    // Always use UseGL
+    rs_vc->addAttribute( Producer::VisualChooser::UseGL );
+
+#endif    
  
     if (traits->_pbuffer)
     {

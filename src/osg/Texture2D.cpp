@@ -130,7 +130,7 @@ void Texture2D::apply(State& state) const
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
                                     _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
  
-            // update the modified tag to show that it is upto date.
+            // update the modified tag to show that it is up to date.
             getModifiedCount(contextID) = _image->getModifiedCount();
      
         }
@@ -215,7 +215,7 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
-        // no image present, but dimensions at set so less create the texture
+        // no image present, but dimensions at set so lets create the texture
         glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat,
                      _textureWidth, _textureHeight, _borderWidth,
                      _internalFormat,

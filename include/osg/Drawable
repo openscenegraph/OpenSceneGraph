@@ -241,6 +241,9 @@ class OSG_EXPORT Drawable : public Object
         /** Return whether OpenGL display lists are being used for rendering.*/
         inline bool getUseDisplayList() const { return _useDisplayList; }
 
+        /** Return OpenGL display list for specified contextID. */
+        inline GLuint& getDisplayList(unsigned int contextID) const { return _globjList[contextID]; }
+
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
             method to use OpenGL vertex buffer objects for rendering.*/
         void setUseVertexBufferObjects(bool flag);

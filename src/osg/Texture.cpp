@@ -682,9 +682,9 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     }
 
     if (extensions->isShadowSupported() && target == GL_TEXTURE_2D)
-      {
+    {
         if (_use_shadow_comparison)
-          {
+        {
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
             glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC_ARB, _shadow_compare_func);
             glTexParameteri(target, GL_DEPTH_TEXTURE_MODE_ARB, _shadow_texture_mode);
@@ -692,15 +692,15 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             // if ambient value is 0 - it is default behaviour of GL_ARB_shadow
             // no need for GL_ARB_shadow_ambient in this case
             if (extensions->isShadowAmbientSupported() && _shadow_ambient > 0)
-              {
+            {
                 glTexParameterf(target, TEXTURE_COMPARE_FAIL_VALUE_ARB, _shadow_ambient);
-              }
-          }
+            }
+        }
         else 
-          {
+        {
             glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
-          }
-      }
+        }
+    }
 
     getTextureParameterDirty(state.getContextID()) = false;
 

@@ -15,6 +15,7 @@
 #include <osg/Texture2D>
 
 #include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
 
 #include <osgUtil/IntersectVisitor>
 #include <osgUtil/SmoothingVisitor>
@@ -775,16 +776,8 @@ class ShaderGeometry : public osg::Drawable
                 itr != _trees.end();
                 ++itr)
             {
-#if 0
                 glColor4fv(itr->ptr());
-                _geometry->drawImplementation(state);
-#else
-                glPushMatrix();
-                glTranslatef((*itr)[0], (*itr)[1], (*itr)[2]);
-                glScalef( (*itr)[3],(*itr)[3],(*itr)[3] );
-                _geometry->drawImplementation(state);
-                glPopMatrix();
-#endif
+                _geometry->draw(state);
             }
         }
 
@@ -966,7 +959,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
     
 
     _techniqueSwitch = new osg::Switch;
-    
+
     {
         std::cout<<"Creating billboard based forest...";
         osg::Group* group = new osg::Group;
@@ -993,7 +986,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
-    
+
     {
         osg::Group* group = new osg::Group;
         
@@ -1004,13 +997,23 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
         stateset->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
 
         {
+            osg::Program* program = new osg::Program;
+            stateset->setAttribute(program);
+
+#if 1
+            // use inline shaders
+            
             ///////////////////////////////////////////////////////////////////
             // vertex shader using just Vec4 coefficients
             char vertexShaderSource[] = 
-                "void main(void) \n"
-                "{ \n"
+                "varying vec2 texcoord;\n"
                 "\n"
-                "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+                "void main(void)\n"
+                "{\n"
+                "    vec3 position = gl_Vertex.xyz * gl_Color.w + gl_Color.xyz;\n"
+                "    gl_Position     = gl_ModelViewProjectionMatrix * vec4(position,1.0);\n"
+                "    gl_FrontColor = vec4(1.0,1.0,1.0,1.0);\n"
+                "    texcoord = gl_MultiTexCoord0.st;\n"
                 "}\n";
 
             //////////////////////////////////////////////////////////////////
@@ -1018,21 +1021,26 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
             //
             char fragmentShaderSource[] = 
                 "uniform sampler2D baseTexture; \n"
+                "varying vec2 texcoord; \n"
                 "\n"
                 "void main(void) \n"
                 "{ \n"
-                "    gl_FragColor = texture2D( baseTexture, gl_TexCoord[0].xy); \n"
+                "    gl_FragColor = texture2D( baseTexture, texcoord); \n"
                 "}\n";
 
-
-            osg::Program* program = new osg::Program;
-            stateset->setAttribute(program);
-
-            //osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
-            //program->addShader(vertex_shader);
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+            program->addShader(vertex_shader);
 
             osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
             program->addShader(fragment_shader);
+            
+#else
+
+            // get shaders from source
+            program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("shaders/forest.vert")));
+            program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("shaders/forest.frag")));
+
+#endif
 
             osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
             stateset->addUniform(baseTextureSampler);

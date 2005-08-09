@@ -78,6 +78,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         unsigned int mbutton()  { return _mbutton; }
         
         void setStartTick(osg::Timer_t tick) { _startTick = tick; }
+        osg::Timer_t getStartTick() { return _startTick; }
         
         double getTime() { return _timer.delta_s(_startTick,_timer.tick()); }
         

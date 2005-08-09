@@ -23,6 +23,8 @@
 #include <osg/CameraNode>
 #include <osg/TexGenNode>
 
+#include <osgDB/ReadFile>
+
 using namespace osg;
 
 class LightTransformCallback: public osg::NodeCallback
@@ -264,13 +266,27 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-char fragmentShaderSource[] = 
-    "uniform sampler2DShadow baseTexture; \n"
+char fragmentShaderSource_noBaseTexture[] = 
+    "uniform sampler2DShadow shadowTexture; \n"
     "uniform vec2 ambientBias; \n"
     "\n"
     "void main(void) \n"
     "{ \n"
-    "    gl_FragColor = gl_Color*(ambientBias.x + shadow2DProj( baseTexture, gl_TexCoord[0] ) * ambientBias.y); \n"
+    "    gl_FragColor = gl_Color * (ambientBias.x + shadow2DProj( shadowTexture, gl_TexCoord[0] ) * ambientBias.y); \n"
+    "}\n";
+
+//////////////////////////////////////////////////////////////////
+// fragment shader
+//
+char fragmentShaderSource_withBaseTexture[] = 
+    "uniform sampler2D baseTexture; \n"
+    "uniform sampler2DShadow shadowTexture; \n"
+    "uniform vec2 ambientBias; \n"
+    "\n"
+    "void main(void) \n"
+    "{ \n"
+    "    vec4 color = gl_Color * texture2D( baseTexture, gl_TexCoord[0] ); \n"
+    "    gl_FragColor = color * (ambientBias.x + shadow2DProj( shadowTexture, gl_TexCoord[1] ) * ambientBias.y); \n"
     "}\n";
 
 
@@ -309,7 +325,7 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
 
 
         float factor = 0.0f;
-        float units = 0.0f;
+        float units = 1.0f;
 
         ref_ptr<PolygonOffset> polygon_offset = new PolygonOffset;
         polygon_offset->setFactor(factor);
@@ -364,12 +380,26 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
         osg::Program* program = new osg::Program;
         stateset->setAttribute(program);
 
-        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
-        program->addShader(fragment_shader);
+        if (unit==0)
+        {
+            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
+            program->addShader(fragment_shader);
 
-        osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
-        stateset->addUniform(baseTextureSampler);
+            osg::Uniform* shadowTextureSampler = new osg::Uniform("shadowTexture",(int)unit);
+            stateset->addUniform(shadowTextureSampler);
+        }
+        else
+        {
+            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
+            program->addShader(fragment_shader);
 
+            osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+            stateset->addUniform(baseTextureSampler);
+
+            osg::Uniform* shadowTextureSampler = new osg::Uniform("shadowTexture",(int)unit);
+            stateset->addUniform(shadowTextureSampler);
+        }
+        
         osg::Uniform* ambientBias = new osg::Uniform("ambientBias",osg::Vec2(0.2f,0.8f));
         stateset->addUniform(ambientBias);
 
@@ -391,6 +421,8 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " is the example which demonstrates using of GL_ARB_shadow extension implemented in osg::Texture class");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help", "Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--with-base-texture", "Adde base texture to shadowed model.");
+    arguments.getApplicationUsage()->addCommandLineOption("--no-base-texture", "Adde base texture to shadowed model.");
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -400,6 +432,10 @@ int main(int argc, char** argv)
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments. getApplicationUsage());
+
+    bool withBaseTexture = true;
+    while(arguments.read("--with-base-texture")) { withBaseTexture = true; }
+    while(arguments.read("--no-base-texture")) { withBaseTexture = false; }
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -427,8 +463,19 @@ int main(int argc, char** argv)
     ref_ptr<MatrixTransform> light_transform = _create_lights();
     if (!light_transform.valid()) return 1;
 
-    ref_ptr<Group> shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),0);
-
+    ref_ptr<Group> shadowedScene;
+    
+    
+    if (withBaseTexture)
+    {
+        shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("lz.rgb")), osg::StateAttribute::ON);
+        shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),1);
+    }
+    else
+    {
+        shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),0);
+    }
+    
     scene->addChild(shadowedScene.get());
 
     viewer.setSceneData(scene.get());

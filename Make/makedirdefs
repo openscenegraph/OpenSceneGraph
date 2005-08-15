@@ -219,6 +219,7 @@ EXAMPLE_DIRS = \
 	osgscribe\
 	osgsequence\
 	osgshaders\
+	osgshaderterrain\
 	osgshadowtexture\
 	osgshape\
 	osgsimple\

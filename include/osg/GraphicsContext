@@ -134,12 +134,16 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Get the const State object which tracks the current OpenGL state for this graphics context.*/
         inline const State* getState() const { return _state.get(); }
         
-        
-        /** Return true if the current thread has this OpenGL graphics context.*/
-        inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
+
+        /** Realise the GraphicsContext.*/
+        virtual bool realize() = 0;
+
+        /** Return true if the graphics context has been realised and is ready to use.*/
+        virtual bool isRealized() const = 0;
 
         /** Release the graphics context.*/
         virtual void release() = 0;
+
 
         /** Make this graphics context current.*/
         virtual void makeCurrent() = 0;
@@ -147,6 +151,10 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Make this graphics context current with specified read context.*/
         virtual void makeContextCurrent(GraphicsContext* readContext) = 0;
         
+        /** Return true if the current thread has this OpenGL graphics context.*/
+        inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
+
+
         /** Bind the graphics context to associated texture.*/
         virtual void bindPBufferToTexture(GLenum buffer) = 0;
 

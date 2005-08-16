@@ -50,7 +50,6 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     _rs->setWindowRectangle(traits->_x, traits->_y, traits->_width, traits->_height);
     _rs->useBorder(traits->_windowDecoration);
 
-#if 1    
     // set the visual chooser
     Producer::VisualChooser* rs_vc = _rs->getVisualChooser();
     if (!rs_vc)
@@ -71,11 +70,8 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
 
     rs_vc->addAttribute( Producer::VisualChooser::RGBA );
 
-
     // Always use UseGL
     rs_vc->addAttribute( Producer::VisualChooser::UseGL );
-
-#endif    
  
     if (traits->_pbuffer)
     {
@@ -141,7 +137,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         }
         
         // but we share texture objects etc. so we also share the same contextID
-        _rs->realize( 0, sharedContext->_rs->getGLContext() );
+        //_rs->realize( 0, sharedContext->_rs->getGLContext() );
         
     }
     else
@@ -151,7 +147,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         setState( new osg::State );
         getState()->setContextID( GraphicsContext::createNewContextID() );
 
-        _rs->realize();
+        //_rs->realize();
     }
 
 }
@@ -164,6 +160,28 @@ GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSur
 GraphicsContextImplementation::~GraphicsContextImplementation()
 {
     release();
+}
+
+bool GraphicsContextImplementation::realize()
+{
+    if (_rs.valid()) 
+    {
+        GraphicsContextImplementation* sharedContext = dynamic_cast<GraphicsContextImplementation*>(_traits->_sharedContext);
+
+        if (sharedContext)
+        {
+            _rs->realize( 0, sharedContext->_rs->getGLContext() );
+        }
+        else
+        {
+            _rs->realize();
+        }
+        return _rs->isRealized();
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void GraphicsContextImplementation::makeCurrent()

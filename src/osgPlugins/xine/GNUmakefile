@@ -11,8 +11,12 @@ INC += $(XINE_INCLUDES)
 
 LIBS  += $(OSG_LIBS) $(XINE_LIBS) $(OTHER_LIBS)
 
-CFLAGS += -fPIC
-CXXFLAGS += -fPIC
+ifeq ($(ARCH),64)
+   CFLAGS += -fPIC
+   CXXFLAGS += -fPIC
+else
+   CFLAGS += -DCOMPILE_ASSEMBLY
+endif
 
 TARGET_BASENAME = xine
 include $(TOPDIR)/Make/cygwin_plugin_def

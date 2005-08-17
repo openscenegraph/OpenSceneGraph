@@ -56,11 +56,6 @@
 
 static int s_debugMessages = 0; 
 
-#if !defined(__ia64__) && !defined(__x86_64__)
-    #define COMPILE_ASSEMBLY
-#endif
-
-
 #define EVAL(exp) \
 {\
 	if(!(exp))\

@@ -151,10 +151,6 @@ SOURCE=..\..\src\osgUtil\RenderStageLighting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\RenderToTextureStage.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\SceneView.cpp
 # End Source File
 # Begin Source File
@@ -264,10 +260,6 @@ SOURCE=..\..\include\osgUtil\RenderStage
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\RenderStageLighting
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\RenderToTextureStage
 # End Source File
 # Begin Source File
 

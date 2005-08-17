@@ -17,7 +17,6 @@ CXXFILES = \
 	RenderLeaf.cpp\
 	RenderStage.cpp\
 	RenderStageLighting.cpp\
-	RenderToTextureStage.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\

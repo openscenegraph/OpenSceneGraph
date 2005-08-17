@@ -66,6 +66,8 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         ColorMask* getColorMask() { return _colorMask.get(); }
 
 
+
+
         /** Set the viewport of the camera to use specified osg::Viewport. */
         void setViewport(osg::Viewport* viewport);
 
@@ -192,27 +194,34 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         RenderTargetImplementation getRenderTargetImplmentation() const { return _renderTargetImplementation; }
 
 
-        /** Set the draw buffer for a given fragment output position to specified draw buffer. */
-        void setDrawBuffer(unsigned int pos, GLenum buffer) { _drawBufferList[pos] = buffer; }
+        /** Set the draw buffer used at the start of each frame draw. 
+          * Note, a buffer value of GL_NONE is used to sepecify that the rendering back-end should choose the most appropriate buffer.*/
+        void setDrawBuffer(GLenum buffer) { _drawBuffer = buffer; }
 
-        /** Get the draw buffer for a given fragment output position. */
-        GLenum getDrawBuffer(unsigned int pos) const { return _drawBufferList[pos]; }
-        
-        typedef std::vector<GLenum> DrawBufferList;
+        /** Get the draw buffer used at the start of each frame draw. */
+        GLenum getDrawBuffer() const { return _drawBuffer; }
 
-        /** Get the list which draw buffer are active. */
-        DrawBufferList& getDrawBufferList() { return _drawBufferList; }
-        
-        /** Get the const list which draw buffer are active. */
-        const DrawBufferList& getDrawBufferList() const { return _drawBufferList; }
-
-
-        /** Set the read buffer for any required copy operations to use. */
+        /** Set the read buffer for any required copy operations to use.  
+          * Note, a buffer value of GL_NONE is used to sepecify that the rendering back-end should choose the most appropriate buffer.*/
         void setReadBuffer(GLenum buffer) { _readBuffer = buffer; }
 
         /** Get the read buffer for any required copy operations to use. */
         GLenum getReadBuffer() const { return _readBuffer; }
 
+
+        /** Set the render buffer for a given fragment output position to specified draw buffer. */
+        void setRenderBuffer(unsigned int pos, GLenum buffer) { _renderBufferList[pos] = buffer; }
+
+        /** Get the draw buffer for a given fragment output position. */
+        GLenum getRenderBuffer(unsigned int pos) const { return _renderBufferList[pos]; }
+        
+        typedef std::vector<GLenum> RenderBufferList;
+
+        /** Get the list which draw buffer are active. */
+        RenderBufferList& getRenderBufferList() { return _renderBufferList; }
+        
+        /** Get the const list which draw buffer are active. */
+        const RenderBufferList& getRenderBufferList() const { return _renderBufferList; }
 
         enum BufferComponent
         {
@@ -318,7 +327,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
         Vec4                        _clearColor;
         GLbitfield                  _clearMask;
-        ref_ptr<ColorMask>           _colorMask;
+        ref_ptr<ColorMask>          _colorMask;
         ref_ptr<Viewport>           _viewport;
 
         TransformOrder              _transformOrder;
@@ -327,8 +336,9 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         RenderOrder                 _renderOrder;
         
-        DrawBufferList              _drawBufferList;
+        GLenum                      _drawBuffer;
         GLenum                      _readBuffer;
+        RenderBufferList            _renderBufferList;
         
         RenderTargetImplementation  _renderTargetImplementation;
         BufferAttachmentMap         _bufferAttachmentMap;

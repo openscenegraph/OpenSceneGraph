@@ -27,7 +27,6 @@
 #include <osg/Geometry>
 
 #include <osgUtil/CullVisitor>
-#include <osgUtil/RenderToTextureStage>
 
 #include <float.h>
 #include <algorithm>
@@ -1066,13 +1065,40 @@ void CullVisitor::apply(osg::CameraNode& camera)
     }
     else
     {
+        // set up lighting.
+        // currently ignore lights in the scene graph itself..
+        // will do later.
+        osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
+
+
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = dynamic_cast<osgUtil::RenderToTextureStage*>(camera.getRenderingCache());
+        osg::ref_ptr<osgUtil::RenderStage> rtts = dynamic_cast<osgUtil::RenderStage*>(camera.getRenderingCache());
         if (!rtts)
         {
-            rtts = new osgUtil::RenderToTextureStage;
+            rtts = new osgUtil::RenderStage;
             rtts->setCameraNode(&camera);
+
+            if (camera.getDrawBuffer() != GL_NONE)
+            {
+                rtts->setDrawBuffer(camera.getDrawBuffer());
+            }
+            else
+            {
+                // inherit draw buffer from above.
+                rtts->setDrawBuffer(previous_stage->getDrawBuffer());
+            }
+
+            if (camera.getReadBuffer() != GL_NONE)
+            {
+                rtts->setReadBuffer(camera.getReadBuffer());
+            }
+            else
+            {
+                // inherit read buffer from above.
+                rtts->setReadBuffer(previous_stage->getReadBuffer());
+            }
+
             camera.setRenderingCache(rtts.get());
         }
         else
@@ -1081,10 +1107,6 @@ void CullVisitor::apply(osg::CameraNode& camera)
             rtts->reset();
         }
         
-        // set up lighting.
-        // currently ignore lights in the scene graph itself..
-        // will do later.
-        osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
 
 
         // set up the background color and clear mask.
@@ -1099,6 +1121,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
         rtts->setViewport( viewport );
         
+
         // set up to charge the same RenderStageLighting is the parent previous stage.
         osg::Matrix inhertiedMVtolocalMV;
         inhertiedMVtolocalMV.invert(originalModelView);
@@ -1176,6 +1199,9 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 fbo = new osg::FrameBufferObject;
                 rtts->setFrameBufferObject(fbo.get());
 
+                rtts->setDrawBuffer(GL_BACK);
+                rtts->setReadBuffer(GL_BACK);
+
                 bool colorAttached = false;
                 bool depthAttached = false;
                 bool stencilAttached = false;
@@ -1236,6 +1262,9 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 traits->_windowDecoration = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
                 traits->_doubleBuffer = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
 
+
+                rtts->setDrawBuffer(GL_FRONT);
+                rtts->setReadBuffer(GL_FRONT);
 
                 bool colorAttached = false;
                 bool depthAttached = false;

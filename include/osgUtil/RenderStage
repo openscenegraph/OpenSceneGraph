@@ -16,6 +16,9 @@
 
 #include <osg/ColorMask>
 #include <osg/Viewport>
+#include <osg/Texture>
+#include <osg/FrameBufferObject>
+#include <osg/CameraNode>
 
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderStageLighting>
@@ -49,6 +52,19 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         virtual void reset();
         
         
+        /** Set the draw buffer used at the start of each frame draw. */
+        void setDrawBuffer(GLenum buffer) { _drawBuffer = buffer; }
+
+        /** Get the draw buffer used at the start of each frame draw. */
+        GLenum getDrawBuffer() const { return _drawBuffer; }
+
+        /** Set the read buffer for any required copy operations to use. */
+        void setReadBuffer(GLenum buffer) { _readBuffer = buffer; }
+
+        /** Get the read buffer for any required copy operations to use. */
+        GLenum getReadBuffer() const { return _readBuffer; }
+
+
         /** Set the viewport.*/
         void setViewport(osg::Viewport* viewport) { _viewport = viewport; }
 
@@ -57,8 +73,6 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         /** Get the viewport. */
         osg::Viewport* getViewport() { return _viewport.get(); }
-
-
 
         /** Set the clear mask used in glClear(..).
           * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
@@ -104,6 +118,34 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         
         /** Get the clear color.*/
         int getClearStencil() const { return _clearStencil; }
+
+
+        void setCameraNode(const osg::CameraNode* camera) { _camera = camera; }
+        const osg::CameraNode* getCameraNode() const { return _camera; }
+        
+        void setTexture(osg::Texture* texture, unsigned int level = 0, unsigned int face=0) { _texture = texture; _level = level; _face = face; }
+        osg::Texture* getTexture() { return _texture.get(); }
+        
+        void setImage(osg::Image* image) { _image = image; }
+        osg::Image* getImage() { return _image.get(); }
+        
+        void setImageReadPixelFormat(GLenum format) { _imageReadPixelFormat = format; }
+        GLenum getImageReadPixelFormat() const { return _imageReadPixelFormat; }
+
+        void setImageReadPixelDataType(GLenum type) { _imageReadPixelDataType = type; }
+        GLenum getImageReadPixelDataType() const { return _imageReadPixelDataType; }
+
+        
+        void setFrameBufferObject(osg::FrameBufferObject* fbo) { _fbo = fbo; }
+        osg::FrameBufferObject* getFrameBufferObject() { return _fbo.get(); }
+        const osg::FrameBufferObject* getFrameBufferObject() const { return _fbo.get(); }
+        
+        void setGraphicsContext(osg::GraphicsContext* context) { _graphicsContext = context; }
+        osg::GraphicsContext* getGraphicsContext() { return _graphicsContext.get(); }
+        const osg::GraphicsContext* getGraphicsContext() const { return _graphicsContext.get(); }
+
+
+
 
         void setInheritedRenderStageLightingMatrix(const osg::Matrix& matrix) { _inheritedRenderStageLightingMatrix = matrix; }
         const osg::Matrix& getInheritedRenderStageLightingMatrix() const { return _inheritedRenderStageLightingMatrix; }
@@ -158,12 +200,27 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         // viewport x,y,width,height.
         osg::ref_ptr<osg::Viewport>         _viewport;
         
+        GLenum                              _drawBuffer;
+        GLenum                              _readBuffer;
         GLbitfield                          _clearMask;
         osg::ref_ptr<osg::ColorMask>        _colorMask;
         osg::Vec4                           _clearColor;
         osg::Vec4                           _clearAccum;
         double                              _clearDepth;
         int                                 _clearStencil;
+
+        const osg::CameraNode*                  _camera;
+        
+        osg::ref_ptr<osg::Texture>              _texture;
+        unsigned int                            _level;
+        unsigned int                            _face;
+
+        osg::ref_ptr<osg::Image>                _image;
+        GLenum                                  _imageReadPixelFormat;
+        GLenum                                  _imageReadPixelDataType;
+        
+        osg::ref_ptr<osg::FrameBufferObject>    _fbo;
+        osg::ref_ptr<osg::GraphicsContext>      _graphicsContext;
 
         mutable osg::Matrix                         _inheritedRenderStageLightingMatrix;
         mutable osg::ref_ptr<RenderStageLighting>   _inheritedRenderStageLighting;

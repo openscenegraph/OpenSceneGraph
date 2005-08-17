@@ -717,15 +717,16 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
+                _renderStageLeft->setDrawBuffer(GL_BACK_LEFT);
+                _renderStageLeft->setReadBuffer(GL_BACK_LEFT);
+                _renderStageRight->setDrawBuffer(GL_BACK_RIGHT);
+                _renderStageRight->setReadBuffer(GL_BACK_RIGHT);
+
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
-                glDrawBuffer(GL_BACK_LEFT);
-                glReadBuffer(GL_BACK_LEFT);
                 _renderStageLeft->draw(*_state,previous);
 
-                glDrawBuffer(GL_BACK_RIGHT);
-                glReadBuffer(GL_BACK_RIGHT);
                 _renderStageRight->draw(*_state,previous);
 
             }
@@ -734,12 +735,16 @@ void SceneView::draw()
             {
                 if( _drawBufferValue !=  GL_NONE)
                 {
-                    glDrawBuffer(_drawBufferValue);
-                    glReadBuffer(_drawBufferValue);
+                    _renderStageLeft->setDrawBuffer(_drawBufferValue);
+                    _renderStageLeft->setReadBuffer(_drawBufferValue);
+
+                    _renderStageRight->setDrawBuffer(_drawBufferValue);
+                    _renderStageRight->setReadBuffer(_drawBufferValue);
                 }
                 
                 _localStateSet->setAttribute(_viewport.get());
 
+                
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
@@ -791,8 +796,11 @@ void SceneView::draw()
             {
                 if( _drawBufferValue !=  GL_NONE)
                 {
-                    glDrawBuffer(_drawBufferValue);
-                    glReadBuffer(_drawBufferValue);
+                    _renderStageLeft->setDrawBuffer(_drawBufferValue);
+                    _renderStageLeft->setReadBuffer(_drawBufferValue);
+
+                    _renderStageRight->setDrawBuffer(_drawBufferValue);
+                    _renderStageRight->setReadBuffer(_drawBufferValue);
                 }
 
                 // ensure that all color planes are active.
@@ -854,8 +862,11 @@ void SceneView::draw()
             {
                 if( _drawBufferValue !=  GL_NONE)
                 {
-                    glDrawBuffer(_drawBufferValue);
-                    glReadBuffer(_drawBufferValue);
+                    _renderStageLeft->setDrawBuffer(_drawBufferValue);
+                    _renderStageLeft->setReadBuffer(_drawBufferValue);
+
+                    _renderStageRight->setDrawBuffer(_drawBufferValue);
+                    _renderStageRight->setReadBuffer(_drawBufferValue);
                 }
 
                 // ensure that all color planes are active.
@@ -916,8 +927,8 @@ void SceneView::draw()
             {
                 if( _drawBufferValue !=  GL_NONE)
                 {
-                    glDrawBuffer(_drawBufferValue);
-                    glReadBuffer(_drawBufferValue);
+                    _renderStage->setDrawBuffer(_drawBufferValue);
+                    _renderStage->setReadBuffer(_drawBufferValue);
                 }
 
                 // ensure that all color planes are active.
@@ -952,8 +963,8 @@ void SceneView::draw()
         // Need to restore draw buffer when toggling Stereo off.
         if( _drawBufferValue !=  GL_NONE)
         {
-            glDrawBuffer(_drawBufferValue);
-            glReadBuffer(_drawBufferValue);
+            _renderStage->setDrawBuffer(_drawBufferValue);
+            _renderStage->setReadBuffer(_drawBufferValue);
         }
 
         _localStateSet->setAttribute(_viewport.get());

@@ -21,6 +21,8 @@ CameraNode::CameraNode():
     _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
     _transformOrder(PRE_MULTIPLE),
     _renderOrder(POST_RENDER),
+    _drawBuffer(GL_NONE),
+    _readBuffer(GL_NONE),
     _renderTargetImplementation(FRAME_BUFFER)
 {
     setStateSet(new StateSet);
@@ -37,6 +39,8 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     _projectionMatrix(camera._projectionMatrix),
     _viewMatrix(camera._viewMatrix),
     _renderOrder(camera._renderOrder),
+    _drawBuffer(camera._drawBuffer),
+    _readBuffer(camera._readBuffer),
     _renderTargetImplementation(camera._renderTargetImplementation),
     _bufferAttachmentMap(camera._bufferAttachmentMap),
     _postDrawCallback(camera._postDrawCallback)

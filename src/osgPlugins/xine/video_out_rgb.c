@@ -56,6 +56,10 @@
 
 static int s_debugMessages = 0; 
 
+#if !defined(__ia64__) && !defined(__x86_64__)
+    #define COMPILE_ASSEMBLY
+#endif
+
 
 #define EVAL(exp) \
 {\
@@ -85,6 +89,7 @@ static int s_debugMessages = 0;
 static inline void
 clear(void* dest, uint32_t size)
 {
+#ifdef COMPILE_ASSEMBLY
 	__asm__ __volatile__(
 
 		"xorl %%eax, %%eax\n\t"
@@ -96,6 +101,7 @@ clear(void* dest, uint32_t size)
 		: "=&D" (dest)
 		: "r" (size >> 2), "r" (size & 3), "0" (dest)
 		: "eax", "ecx");
+#endif
 }
 
 #ifdef DEBUG
@@ -190,6 +196,7 @@ static const uint16_t wmask[] =
 
 
 
+#ifdef COMPILE_ASSEMBLY
 
 static void
 __3dnow_convert_yuy2(uint8_t* yuv[], rgb_planar_t* rgb,
@@ -921,7 +928,7 @@ __mmx_convert_yv12(uint8_t* yuv[], rgb_planar_t* rgb,
 	__asm__ __volatile__("emms\n\t");
 }
 
-
+#endif
 
 
 #define range(x)  ((x < 0) ? 0 : ((x > 0xff) ? 0xff : x))
@@ -1069,9 +1076,11 @@ static const rgbout_converter_t convert_methods[] =
 {
 /*        <name>   <accel>      <convert yuy2>        <convert yv12>    */
 	{    NULL,        0, __dummy_convert_yuy2, __dummy_convert_yv12},
+#ifdef COMPILE_ASSEMBLY
 	{   "MMX",   MM_MMX,   __mmx_convert_yuy2,   __mmx_convert_yv12},
 	{   "SSE",   MM_SSE,   __sse_convert_yuy2,   __sse_convert_yv12},
 	{"3DNow!", MM_3DNOW, __3dnow_convert_yuy2, __3dnow_convert_yv12}
+#endif
 /* currently 3DNow is the best function, therefore it's preferred on AMD cpus */
 };
 
@@ -1095,6 +1104,7 @@ __pack_argb(rgb_planar_t* data, void* dest,
 	uint8_t* b_data = data->b;
 	uint32_t rest = pixels;
 
+#ifdef COMPILE_ASSEMBLY
 
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
@@ -1182,7 +1192,7 @@ __pack_argb(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
-
+#endif
 
 	while(rest--)
 	{
@@ -1214,6 +1224,7 @@ __pack_argb1555(rgb_planar_t* data, void* dest,
 	uint8_t* b_data = data->b;
 	int32_t rest = pixels;
 
+#ifdef COMPILE_ASSEMBLY
 
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
@@ -1318,7 +1329,7 @@ __pack_argb1555(rgb_planar_t* data, void* dest,
 
 	}
 
-
+#endif
 	while(rest--)
 	{
 		uint16_t r5, g5, b5;
@@ -1343,6 +1354,7 @@ __pack_rgb32(rgb_planar_t* data, void* dest,
 	uint8_t* b_data = data->b;
 	uint32_t rest = pixels;
 
+#ifdef COMPILE_ASSEMBLY
 
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
@@ -1427,7 +1439,7 @@ __pack_rgb32(rgb_planar_t* data, void* dest,
 
 		__asm__ __volatile__("emms\n\t");
 	}
-
+#endif
 
 	while(rest--)
 	{
@@ -1453,6 +1465,7 @@ __pack_rgb24(rgb_planar_t* data, void* dest,
 
 
 /* MMXEXT doesn't speed up here */
+#ifdef COMPILE_ASSEMBLY
 
 	if((accel & MM_MMX) == MM_MMX)
 	{
@@ -1500,7 +1513,7 @@ __pack_rgb24(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
-
+#endif
 
 	while(rest--)
 	{
@@ -1524,6 +1537,7 @@ __pack_rgb16(rgb_planar_t* data, void* dest,
 	uint8_t* b_data = data->b;
 	uint32_t rest = pixels;
 
+#ifdef COMPILE_ASSEMBLY
 
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
@@ -1619,7 +1633,7 @@ __pack_rgb16(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
-
+#endif
 
 	while(rest--)
 	{
@@ -1651,6 +1665,7 @@ __pack_bgra(rgb_planar_t* data, void* dest,
 	uint32_t rest = pixels;
 
 
+#ifdef COMPILE_ASSEMBLY
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
 		uint32_t n = pixels >> 2; /* (width * height) / 4 */
@@ -1730,7 +1745,7 @@ __pack_bgra(rgb_planar_t* data, void* dest,
 
 	}
 
-
+#endif
 	while(rest--)
 	{
 		*(buffer)     = 0xff;
@@ -1759,6 +1774,7 @@ __pack_bgra5551(rgb_planar_t* data, void* dest,
 	uint32_t rest = pixels;
 
 
+#ifdef COMPILE_ASSEMBLY
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
 		uint32_t n = pixels >> 2; /* (width * height) / 4 */
@@ -1855,7 +1871,7 @@ __pack_bgra5551(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
-
+#endif
 
 	while(rest--)
 	{
@@ -1881,6 +1897,7 @@ __pack_bgr32(rgb_planar_t* data, void* dest,
 	uint8_t* b_data = data->b;
 	uint32_t rest = pixels;
 
+#ifdef COMPILE_ASSEMBLY
 
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
@@ -1966,7 +1983,7 @@ __pack_bgr32(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
-
+#endif
 
 	while(rest--)
 	{
@@ -1993,6 +2010,7 @@ __pack_bgr24(rgb_planar_t* data, void* dest,
 
 /* MMXEXT doesn't speed up here */
 
+#ifdef COMPILE_ASSEMBLY
 	if((accel & MM_MMX) == MM_MMX)
 	{
 		uint32_t n = pixels >> 2; /* (width * height) / 4 */
@@ -2038,6 +2056,7 @@ __pack_bgr24(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
+#endif
 
 
 	while(rest--)
@@ -2063,6 +2082,7 @@ __pack_bgr16(rgb_planar_t* data, void* dest,
 	uint32_t rest = pixels;
 
 
+#ifdef COMPILE_ASSEMBLY
 	if((accel & MM_MMXEXT) == MM_MMXEXT)
 	{
 		uint32_t n = pixels >> 2; /* (width * height) / 4 */
@@ -2157,6 +2177,7 @@ __pack_bgr16(rgb_planar_t* data, void* dest,
 		__asm__ __volatile__("emms\n\t");
 
 	}
+#endif
 
 
 	while(rest--)

@@ -13,6 +13,18 @@
 
 #include <iostream>
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//
+//  **************** THIS IS AN EXPERIMENTAL IMPLEMENTATION ***************
+//  ************************** PLEASE DO NOT COPY  ************************
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
 #if 1
 
 int main( int argc, char **argv )
@@ -53,7 +65,13 @@ int main( int argc, char **argv )
 
     // create the view of the scene.
     osg::ref_ptr<osg::CameraNode> camera = new osg::CameraNode;
+    camera->setRenderOrder(osg::CameraNode::NESTED_RENDER);
+    camera->setClearColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
+    camera->setCullingActive(false);
+    
     camera->addChild(loadedModel.get());
+    
+    
 
     // initialize the view to look at the center of the scene graph
     const osg::BoundingSphere& bs = loadedModel->getBound();
@@ -71,7 +89,8 @@ int main( int argc, char **argv )
     osg::ref_ptr<osgUtil::UpdateVisitor> updateVisitor = new osgUtil::UpdateVisitor;
     osg::ref_ptr<osgUtil::CullVisitor> cullVisitor = new osgUtil::CullVisitor;
 
-    cullVisitor->setRenderGraph(new osgUtil::RenderGraph);
+    osg::ref_ptr<osgUtil::RenderGraph> renderGraph = new osgUtil::RenderGraph;
+    cullVisitor->setRenderGraph(renderGraph.get());
 
     osg::ref_ptr<osgUtil::RenderStage> renderStage = new osgUtil::RenderStage;
     cullVisitor->setRenderStage(renderStage.get());
@@ -85,20 +104,11 @@ int main( int argc, char **argv )
         frameStamp->setFrameNumber(frameNum++);
         
         updateVisitor->reset();
-        cullVisitor->reset();
-        
+                
         // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
         updateVisitor->setFrameStamp(frameStamp.get());
         updateVisitor->setTraversalNumber(frameStamp->getFrameNumber());
 
-        cullVisitor->setFrameStamp(frameStamp.get());
-        cullVisitor->setTraversalNumber(frameStamp->getFrameNumber());
-        
-        // update the viewport dimensions, incase the window has been resized.
-        camera->setViewport(0,0,traits->_width,traits->_height);
-        renderStage->setViewport(camera->getViewport());
-        
-        cullVisitor->pushViewport(camera->getViewport());
         
         // set the view
         camera->setViewMatrix(viewMatrix);
@@ -106,17 +116,56 @@ int main( int argc, char **argv )
         // do the update traversal the scene graph - such as updating animations
         camera->accept(*updateVisitor);
         
-        // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
-        camera->accept(*cullVisitor);
+        cullVisitor->reset();
+        cullVisitor->setFrameStamp(frameStamp.get());
+        cullVisitor->setTraversalNumber(frameStamp->getFrameNumber());
+
         
+        // update the viewport dimensions, incase the window has been resized.
+        camera->setViewport(0,0,traits->_width,traits->_height);
+
+        renderGraph->clean();
+        renderStage->reset();
+        renderStage->setViewport(camera->getViewport());
+        
+        osg::ref_ptr<osg::RefMatrix> proj = new osg::RefMatrix(camera->getProjectionMatrix());
+        osg::ref_ptr<osg::RefMatrix> mv = new osg::RefMatrix(camera->getViewMatrix());
+
+        cullVisitor->pushViewport(camera->getViewport());
+        cullVisitor->pushProjectionMatrix(proj.get());
+        cullVisitor->pushModelViewMatrix(mv.get());
+
+        // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
+        //camera->accept(*cullVisitor);
+        loadedModel->accept(*cullVisitor);
+
+        cullVisitor->popModelViewMatrix();
+        cullVisitor->popProjectionMatrix();
         cullVisitor->popViewport();
         
+        renderStage->sort();
+
+        // prune out any empty RenderGraph children.
+        // note, this would be not required if the rendergraph had been
+        // reset at the start of each frame (see top of this method) but
+        // a clean has been used instead to try to minimize the amount of
+        // allocation and deleteing of the RenderGraph nodes.
+        renderGraph->prune();
+        
+        renderStage->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        
+        gfxc->getState()->setInitialViewMatrix(mv.get());
+
+        std::cout<<"before"<<std::endl;
+
         // draw traversal
         osgUtil::RenderLeaf* previous = NULL;
         renderStage->draw(*(gfxc->getState()), previous);
 
     	// Swap Buffers
     	gfxc->swapBuffers();
+        
+        std::cout<<"swap"<<std::endl;
     }
 
     return 0;

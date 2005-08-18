@@ -264,6 +264,10 @@ SOURCE=..\..\src\osg\GraphicsContext.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\GraphicsTread.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Group.cpp
 # End Source File
 # Begin Source File
@@ -729,6 +733,10 @@ SOURCE=..\..\Include\Osg\Group
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\GraphicsContext
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\GraphicsThread
 # End Source File
 # Begin Source File
 

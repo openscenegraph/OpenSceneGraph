@@ -15,7 +15,10 @@
 #define OSG_GRAPHICSCONTEXT 1
 
 #include <osg/State>
+
 #include <OpenThreads/Thread>
+
+#include <list>
 
 namespace osg {
 
@@ -151,6 +154,8 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Make this graphics context current with specified read context.*/
         virtual void makeContextCurrent(GraphicsContext* readContext) = 0;
         
+        virtual void releaseContext() = 0;
+        
         /** Return true if the current thread has this OpenGL graphics context.*/
         inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
 
@@ -161,6 +166,37 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** swap the front and back buffers.*/
         virtual void swapBuffers() = 0;
 
+    public:
+    
+    
+        struct GraphicsOperation : public Referenced
+        {
+            virtual void operator () (GraphicsContext& context) {}
+        };
+
+        class GraphicsThread : public Referenced, OpenThreads::Thread
+        {
+            public:
+                GraphicsThread() {}
+                
+                typedef std::list< ref_ptr<GraphicsOperation> > OperationList;
+
+                void add(GraphicsOperation* operation);
+                
+                virtual void run();
+
+            protected:
+                virtual ~GraphicsThread() {}
+                
+                OpenThreads::Mutex  _runListMutex;
+                OperationList       _operations;
+
+        };
+        
+        void setGraphicsThread(GraphicsThread* gt) { _graphicsThread = gt; }
+        GraphicsThread* getGraphicsThread() { return _graphicsThread.get(); }
+        const GraphicsThread* getGraphicsThread() const { return _graphicsThread.get(); }
+
     protected:
         
         GraphicsContext();
@@ -170,6 +206,8 @@ class OSG_EXPORT GraphicsContext : public Referenced
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
+        
+        ref_ptr<GraphicsThread> _graphicsThread;
         
 };
 

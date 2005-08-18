@@ -15,10 +15,7 @@
 #define OSG_GRAPHICSCONTEXT 1
 
 #include <osg/State>
-
-#include <OpenThreads/Thread>
-
-#include <list>
+#include <osg/GraphicsThread>
 
 namespace osg {
 
@@ -144,21 +141,30 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Return true if the graphics context has been realised and is ready to use.*/
         virtual bool isRealized() const = 0;
 
-        /** Release the graphics context.*/
-        virtual void release() = 0;
+        /** close the graphics context.*/
+        virtual void close() = 0;
 
 
-        /** Make this graphics context current.*/
-        virtual void makeCurrent() = 0;
+        /** Make this graphics context current.
+          * Implementated by first aquiring a lock of the GraphicsContext mutex, and then doing a call to makeCurrentImplementation(). */
+        void makeCurrent();
         
-        /** Make this graphics context current with specified read context.*/
-        virtual void makeContextCurrent(GraphicsContext* readContext) = 0;
+        /** Make this graphics context current with specified read context.
+          * Implementated by first aquiring a lock of the GraphicsContext mutex, and then doing a call to makeContextCurrentImplementation(). */
+        void makeContextCurrent(GraphicsContext* readContext);
         
-        virtual void releaseContext() = 0;
+        /** Release the graphics context by unlocking the GraphicsContext mutex.*/
+        void releaseContext();
         
         /** Return true if the current thread has this OpenGL graphics context.*/
         inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
 
+
+        /** Make this graphics context current.*/
+        virtual void makeCurrentImplementation() = 0;
+        
+        /** Make this graphics context current with specified read context.*/
+        virtual void makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
 
         /** Bind the graphics context to associated texture.*/
         virtual void bindPBufferToTexture(GLenum buffer) = 0;
@@ -166,35 +172,13 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** swap the front and back buffers.*/
         virtual void swapBuffers() = 0;
 
-    public:
-    
-    
-        struct GraphicsOperation : public Referenced
-        {
-            virtual void operator () (GraphicsContext& context) {}
-        };
-
-        class GraphicsThread : public Referenced, OpenThreads::Thread
-        {
-            public:
-                GraphicsThread() {}
-                
-                typedef std::list< ref_ptr<GraphicsOperation> > OperationList;
-
-                void add(GraphicsOperation* operation);
-                
-                virtual void run();
-
-            protected:
-                virtual ~GraphicsThread() {}
-                
-                OpenThreads::Mutex  _runListMutex;
-                OperationList       _operations;
-
-        };
-        
+        /** Assign a graphics thread to the graphics context, so that the thread handles all OpenGL operations.*/
         void setGraphicsThread(GraphicsThread* gt) { _graphicsThread = gt; }
+
+        /** Get the graphics thread assigned the graphics context.*/
         GraphicsThread* getGraphicsThread() { return _graphicsThread.get(); }
+
+        /** Get the const graphics thread assigned the graphics context.*/
         const GraphicsThread* getGraphicsThread() const { return _graphicsThread.get(); }
 
     protected:
@@ -205,6 +189,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
 
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;
+        OpenThreads::Mutex      _mutex;
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
         
         ref_ptr<GraphicsThread> _graphicsThread;

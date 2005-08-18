@@ -51,13 +51,13 @@ class OSGPRODUCER_EXPORT GraphicsContextImplementation : public osg::GraphicsCon
         virtual bool isRealized() const { return _rs.valid() && _rs->isRealized(); }
 
         /** Release the graphics context.*/
-        virtual void release();
+        virtual void close();
 
         /** Make this graphics context current.*/
-        virtual void makeCurrent();
+        virtual void makeCurrentImplementation();
 
         /** Make this graphics context current with specified read context.*/
-        virtual void makeContextCurrent(GraphicsContext* readContext);
+        virtual void makeContextCurrentImplementation(GraphicsContext* readContext);
             
         /** Bind the graphics context to associated texture.*/
         virtual void bindPBufferToTexture(GLenum buffer);

@@ -45,6 +45,7 @@ CXXFILES =\
 	Geometry.cpp\
 	GLExtensions.cpp\
 	GraphicsContext.cpp\
+	GraphicsThread.cpp\
 	Group.cpp\
 	Image.cpp\
 	ImageStream.cpp\

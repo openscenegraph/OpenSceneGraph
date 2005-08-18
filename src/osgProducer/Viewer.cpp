@@ -684,8 +684,7 @@ void Viewer::update()
 
     // create an event to signal the new frame.
     osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
-//    frame_event->adaptFrame(__frameStamp->getReferenceTime());
-    frame_event->adaptFrame(_kbmcb->getTime());
+    frame_event->adaptFrame(_frameStamp->getReferenceTime());
     queue.push_back(frame_event);
 
     if (_eventVisitor.valid())

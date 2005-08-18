@@ -1,0 +1,136 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_GRAPHICSTHREAD
+#define OSG_GRAPHICSTHREAD 1
+
+#include <osg/State>
+#include <OpenThreads/Thread>
+#include <OpenThreads/Barrier>
+#include <OpenThreads/Condition>
+
+#include <list>
+
+namespace osg {
+
+// forward declare GraphicsContext
+class GraphicsContext;    
+    
+class Block: public osg::Referenced {
+    public:
+        Block():_released(false) {}
+
+        inline void block()
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+            if( !_released )
+                _cond.wait(&_mut);
+        }
+
+        inline void release()
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+            if (!_released)
+            {
+                _released = true;
+                _cond.broadcast();
+            }
+        }
+
+        inline void reset()
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+            _released = false;
+        }
+        
+        inline void set(bool doRelease)
+        {
+            if (doRelease!=_released)
+            {
+                if (doRelease) release();
+                else reset();
+            }
+        }
+
+    protected:
+
+        ~Block()
+        {
+            release();
+        }
+
+    private:
+        OpenThreads::Mutex _mut;
+        OpenThreads::Condition _cond;
+        bool _released;
+};
+
+/** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
+class GraphicsThread : public Referenced, public OpenThreads::Thread
+{
+    public:
+        GraphicsThread(): _graphicsContext(0) {}
+
+
+        /** Base class for implementing GraphicsThread operations.*/
+        struct OSG_EXPORT Operation : public Referenced
+        {
+            virtual void operator () (GraphicsContext*) {}
+        };
+
+        /** Add operation to end of OperationQueue, this will be 
+          * executed by the graphics thread once this operation gets to the head of the queue.*/
+        void add(Operation* operation, bool waitForCompletion=false);
+        
+        virtual void run();
+
+    protected:
+    
+        virtual ~GraphicsThread();
+        
+        friend class GraphicsContext;
+        GraphicsContext*    _graphicsContext;
+
+        typedef std::list< ref_ptr<Operation> > OperationQueue;
+        OpenThreads::Mutex  _operationsMutex;
+        OperationQueue      _operations;
+
+};
+
+
+/** SwapBufferOperation calls swap buffers on the GraphicsContext.*/
+struct OSG_EXPORT SwapBufferOperation : public GraphicsThread::Operation
+{
+    virtual void operator () (GraphicsContext* context);
+};
+
+/** BarrierOperation allows one syncronize multiple GraphicsThreads with each other.*/
+struct OSG_EXPORT BarrierOperation : public GraphicsThread::Operation, public OpenThreads::Barrier
+{
+    BarrierOperation(int numThreads=0): OpenThreads::Barrier(numThreads) {}
+
+    virtual void operator () (GraphicsContext* context);
+};
+
+/** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to aquire, 
+  * then blocks waiting for context to be released, once the block is release the context is re-aqquired.*/
+struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsThread::Operation, public Block
+{
+    ReleaseContext_Block_MakeCurrentOperation() {}
+
+    virtual void operator () (GraphicsContext* context);
+};
+
+}
+
+#endif

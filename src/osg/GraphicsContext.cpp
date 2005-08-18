@@ -125,3 +125,43 @@ GraphicsContext::~GraphicsContext()
     }
 }
 
+void GraphicsContext::makeCurrent()
+{
+
+    ReleaseContext_Block_MakeCurrentOperation* rcbmco = 0;
+
+    if (_graphicsThread.valid() && 
+        _threadOfLastMakeCurrent == _graphicsThread.get())
+    {
+        // create a relase contex, block and make current operation to stop the graphics thread while we use the graphics context for ourselves
+        rcbmco = new ReleaseContext_Block_MakeCurrentOperation;
+        _graphicsThread->add(rcbmco);
+    }
+
+    if (!isCurrent()) _mutex.lock();
+
+    makeCurrentImplementation();
+    
+    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+    
+    if (rcbmco)
+    {
+        // Let the "relase contex, block and make current operation" proceed, which will now move on to trying to aquire the graphics
+        // contex itself with a makeCurrent(), this will then block on the GraphicsContext mutex till releaseContext() releases it.
+        rcbmco->release();
+    }
+}
+
+void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
+{
+    if (!isCurrent()) _mutex.lock();
+
+    makeContextCurrentImplementation(readContext);
+
+    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+}
+
+void GraphicsContext::releaseContext()
+{
+    _mutex.unlock();
+}

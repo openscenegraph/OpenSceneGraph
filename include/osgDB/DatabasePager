@@ -18,6 +18,7 @@
 #include <osg/Group>
 #include <osg/PagedLOD>
 #include <osg/Drawable>
+#include <osg/GraphicsThread>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
@@ -32,54 +33,6 @@
 
 namespace osgDB {
 
-class Block: public osg::Referenced {
-    public:
-        Block():_released(false) {}
-
-        inline void block()
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-            if( !_released )
-                _cond.wait(&_mut);
-        }
-
-        inline void release()
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-            if (!_released)
-            {
-                _released = true;
-                _cond.broadcast();
-            }
-        }
-
-        inline void reset()
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-            _released = false;
-        }
-        
-        inline void set(bool doRelease)
-        {
-            if (doRelease!=_released)
-            {
-                if (doRelease) release();
-                else reset();
-            }
-        }
-
-    protected:
-
-        ~Block()
-        {
-            release();
-        }
-
-    private:
-        OpenThreads::Mutex _mut;
-        OpenThreads::Condition _cond;
-        bool _released;
-};
 
 /** Database paging class which manages the loading of files in a background thread, 
   * and syncronizing of loaded models with the main scene graph.*/
@@ -125,7 +78,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Get the whether UseFrameBlock is on or off.*/
         bool getUseFrameBlock() const { return _useFrameBlock; }
         
-        Block* getFrameBlock() { return _frameBlock.get(); }
+        osg::Block* getFrameBlock() { return _frameBlock.get(); }
 
         /** Set the priority of the database pager thread during the frame (i.e. while cull and draw are running.)*/
         void setThreadPriorityDuringFrame(ThreadPriority duringFrame) { _threadPriorityDuringFrame = duringFrame; }
@@ -313,7 +266,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool                            _startThreadCalled;
 
         
-        osg::ref_ptr<Block>             _databasePagerThreadBlock;
+        osg::ref_ptr<osg::Block>       _databasePagerThreadBlock;
 
         inline void updateDatabasePagerThreadBlock()
         {
@@ -345,7 +298,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool                            _useFrameBlock;
         int                             _numFramesActive;
         mutable OpenThreads::Mutex      _numFramesActiveMutex;
-        osg::ref_ptr<Block>             _frameBlock;
+        osg::ref_ptr<osg::Block>        _frameBlock;
         int                             _frameNumber;
 
         ThreadPriority                  _threadPriorityDuringFrame;

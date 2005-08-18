@@ -159,7 +159,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSur
 
 GraphicsContextImplementation::~GraphicsContextImplementation()
 {
-    release();
+    close();
 }
 
 bool GraphicsContextImplementation::realize()
@@ -184,7 +184,7 @@ bool GraphicsContextImplementation::realize()
     }
 }
 
-void GraphicsContextImplementation::makeCurrent()
+void GraphicsContextImplementation::makeCurrentImplementation()
 {
     if (!_rs) return;
 
@@ -193,7 +193,7 @@ void GraphicsContextImplementation::makeCurrent()
     _rs->makeCurrent();
 }
 
-void GraphicsContextImplementation::makeContextCurrent(GraphicsContext* readContext)
+void GraphicsContextImplementation::makeContextCurrentImplementation(GraphicsContext* readContext)
 {
     if (!_rs) return;
 
@@ -207,7 +207,7 @@ void GraphicsContextImplementation::makeContextCurrent(GraphicsContext* readCont
     _rs->makeCurrent();
 }
 
-void GraphicsContextImplementation::release()
+void GraphicsContextImplementation::close()
 {
     if (!_rs) return;
     

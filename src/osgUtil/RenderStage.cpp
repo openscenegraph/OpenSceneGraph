@@ -160,6 +160,10 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
     {
+        // show we release the context so that others can use it?? will do so right
+        // now as an experiment.
+        callingContext->releaseContext();
+    
         useState = _graphicsContext->getState();
         useContext = _graphicsContext.get();
         useContext->makeCurrent();

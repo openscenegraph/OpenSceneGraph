@@ -17,15 +17,70 @@
 #include <osg/Notify>
 
 using namespace osg;
+using namespace OpenThreads;
 
+struct BlockOperation : public GraphicsThread::Operation, public Block
+{
+    BlockOperation() { reset(); }
+
+    virtual void operator () (GraphicsContext*)
+    {
+        //osg::notify(osg::NOTICE)<<"BlockOperation doing release"<<(unsigned int)this<<std::endl;
+        glFlush();
+        release();
+    }
+};
+
+
+GraphicsThread::GraphicsThread():
+    _graphicsContext(0),
+    _done(false)
+{
+    _operationsBlock = new Block;
+}
 
 GraphicsThread::~GraphicsThread()
 {
+    osg::notify(osg::NOTICE)<<"Destructing graphics thread"<<std::endl;
+
+    cancel();
+}
+
+int GraphicsThread::cancel()
+{
+    osg::notify(osg::NOTICE)<<"Cancelling graphics thread"<<std::endl;
+
+    int result = 0;
+    if( isRunning() )
+    {
+    
+        _done = true;
+
+        // cancel the thread..
+        result = Thread::cancel();
+        //join();
+
+        // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.
+        _operationsBlock->release();
+
+        // then wait for the the thread to stop running.
+        while(isRunning())
+        {
+            // commenting out debug info as it was cashing crash on exit, presumable
+            // due to osg::notify or std::cout destructing earlier than this destructor.
+            osg::notify(osg::NOTICE)<<"Waiting for GraphicsThread to cancel"<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+    }
+
+    return result;
 }
 
 void GraphicsThread::add(Operation* operation, bool waitForCompletion)
 {
-    osg::BarrierOperation* barrier = 0;
+    osg::notify(osg::NOTICE)<<"Doing add"<<std::endl;
+
+    BlockOperation* block = 0;
 
     {
         // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
@@ -36,29 +91,44 @@ void GraphicsThread::add(Operation* operation, bool waitForCompletion)
 
         if (waitForCompletion)
         {
-            barrier = new BarrierOperation(2);
-            _operations.push_back(barrier);
+            block = new BlockOperation;
+            _operations.push_back(block);
         }
+        
+        _operationsBlock->set(true);
     }
     
-    if (barrier)
+    if (block)
     {
         // now we wait till the barrier is joined by the graphics thread.
-        barrier->block();
+        block->block();
     }
 }
 
 void GraphicsThread::run()
 {
     // make the graphics context current.
-    if (_graphicsContext) _graphicsContext->makeCurrent();
+    if (_graphicsContext)
+    {
+        osg::notify(osg::NOTICE)<<"Doing make current"<<std::endl;
+        _graphicsContext->makeCurrent();
+    }
 
-    bool firstTime = false;
+    osg::notify(osg::NOTICE)<<"Doing run"<<std::endl;
 
-    bool _done = false;
+    bool firstTime = true;
 
     do
     {
+        // osg::notify(osg::NOTICE)<<"In main loop"<<std::endl;
+
+        if (_operations.empty())
+        {
+            _operationsBlock->block();
+        }
+
+        // osg::notify(osg::NOTICE)<<"get op"<<std::endl;
+
         ref_ptr<Operation> operation;
     
         // get the front of the file request list.
@@ -71,12 +141,20 @@ void GraphicsThread::run()
                 
                 // remove it from the opeations queue
                 _operations.erase(_operations.begin());
+                
+                if (_operations.empty())
+                {
+                    _operationsBlock->set(false);
+                }
+
             }
             
         }
         
         if (operation.valid())
         {
+            // osg::notify(osg::NOTICE)<<"Doing op"<<std::endl;
+
             // call the graphics operation.
             (*operation)(_graphicsContext);
         }
@@ -91,18 +169,26 @@ void GraphicsThread::run()
 
     } while (!testCancel() && !_done);
 
+    osg::notify(osg::NOTICE)<<"exit loop"<<std::endl;
+
     // release the graphics context so that others can aquire it.
     if (_graphicsContext) _graphicsContext->releaseContext();
 
 }
-
-void SwapBufferOperation::operator () (GraphicsContext* context)
+ 
+void SwapBuffersOperation::operator () (GraphicsContext* context)
 {
-    if (context) context->swapBuffers();
+    if (context)
+    {
+        context->swapBuffersImplementation();
+    }
 }
 
 void BarrierOperation::operator () (GraphicsContext*)
 {
+    if (_preBlockOp==GL_FLUSH) glFlush();
+    if (_preBlockOp==GL_FINISH) glFinish();
+    
     block();
 }
 

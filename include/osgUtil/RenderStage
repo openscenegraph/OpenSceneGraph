@@ -171,13 +171,18 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             getRenderStageLighting()->addPositionedTextureAttribute(textureUnit, matrix,attr);
         }
 
+        void copyTexture(osg::State& state);
+
         virtual void drawPreRenderStages(osg::State& state,RenderLeaf*& previous);
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
+
+        virtual void drawInner(osg::State& state,RenderLeaf*& previous, bool& doCopyTexture);
     
         virtual void drawPostRenderStages(osg::State& state,RenderLeaf*& previous);
 
         virtual void drawImplementation(osg::State& state,RenderLeaf*& previous);
+
 
         void addToDependencyList(RenderStage* rs) { addPreRenderStage(rs); }
 
@@ -187,9 +192,11 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Extract stats for current draw list. */
         bool getStats(Statistics* primStats); 
         
+        
     protected:
         
         virtual ~RenderStage();
+
 
         typedef std::vector< osg::ref_ptr<RenderStage> > RenderStageList;
 

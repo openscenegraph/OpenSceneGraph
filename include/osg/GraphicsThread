@@ -79,8 +79,7 @@ class Block: public osg::Referenced {
 class GraphicsThread : public Referenced, public OpenThreads::Thread
 {
     public:
-        GraphicsThread(): _graphicsContext(0) {}
-
+        GraphicsThread();
 
         /** Base class for implementing GraphicsThread operations.*/
         struct OSG_EXPORT Operation : public Referenced
@@ -92,7 +91,11 @@ class GraphicsThread : public Referenced, public OpenThreads::Thread
           * executed by the graphics thread once this operation gets to the head of the queue.*/
         void add(Operation* operation, bool waitForCompletion=false);
         
+        /** Run does the graphics thread run loop.*/        
         virtual void run();
+        
+        /** Cancel this graphics thread.*/        
+        virtual int cancel();
 
     protected:
     
@@ -102,14 +105,18 @@ class GraphicsThread : public Referenced, public OpenThreads::Thread
         GraphicsContext*    _graphicsContext;
 
         typedef std::list< ref_ptr<Operation> > OperationQueue;
-        OpenThreads::Mutex  _operationsMutex;
-        OperationQueue      _operations;
+
+        bool                        _done;
+
+        OpenThreads::Mutex          _operationsMutex;
+        osg::ref_ptr<osg::Block>    _operationsBlock;
+        OperationQueue              _operations;
 
 };
 
 
 /** SwapBufferOperation calls swap buffers on the GraphicsContext.*/
-struct OSG_EXPORT SwapBufferOperation : public GraphicsThread::Operation
+struct OSG_EXPORT SwapBuffersOperation : public GraphicsThread::Operation
 {
     virtual void operator () (GraphicsContext* context);
 };
@@ -117,9 +124,18 @@ struct OSG_EXPORT SwapBufferOperation : public GraphicsThread::Operation
 /** BarrierOperation allows one syncronize multiple GraphicsThreads with each other.*/
 struct OSG_EXPORT BarrierOperation : public GraphicsThread::Operation, public OpenThreads::Barrier
 {
-    BarrierOperation(int numThreads=0): OpenThreads::Barrier(numThreads) {}
+    enum PreBlockOp
+    {
+        NO_OPERATION,
+        GL_FLUSH,
+        GL_FINISH
+    };
+
+    BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION): OpenThreads::Barrier(numThreads), _preBlockOp(op) {}
 
     virtual void operator () (GraphicsContext* context);
+    
+    PreBlockOp _preBlockOp;
 };
 
 /** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to aquire, 

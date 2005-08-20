@@ -150,19 +150,20 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         //_rs->realize();
     }
 
+    _closeOnDestruction = true;
 }
 
 GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSurface* rs)
 {
     _rs = rs;
+    _closeOnDestruction = false;
 }
 
 GraphicsContextImplementation::~GraphicsContextImplementation()
 {
-    close();
 }
 
-bool GraphicsContextImplementation::realize()
+bool GraphicsContextImplementation::realizeImplementation()
 {
     if (_rs.valid()) 
     {
@@ -188,6 +189,8 @@ void GraphicsContextImplementation::makeCurrentImplementation()
 {
     if (!_rs) return;
 
+    osg::notify(osg::NOTICE)<<"GraphicsContextImplementation::makeCurrentImplementation()"<<std::endl;
+
     _rs->setReadDrawable( 0 );
 
     _rs->makeCurrent();
@@ -207,14 +210,14 @@ void GraphicsContextImplementation::makeContextCurrentImplementation(GraphicsCon
     _rs->makeCurrent();
 }
 
-void GraphicsContextImplementation::close()
+void GraphicsContextImplementation::closeImplementation()
 {
     if (!_rs) return;
     
     // need to close render surface... 
 }
 
-void GraphicsContextImplementation::bindPBufferToTexture(GLenum buffer)
+void GraphicsContextImplementation::bindPBufferToTextureImplementation(GLenum buffer)
 {
     if (!_rs) return;
  
@@ -229,7 +232,7 @@ void GraphicsContextImplementation::bindPBufferToTexture(GLenum buffer)
     _rs->bindPBufferToTexture(bufferType);
 }
 
-void GraphicsContextImplementation::swapBuffers()
+void GraphicsContextImplementation::swapBuffersImplementation()
 {
     _rs->swapBuffers();
 }

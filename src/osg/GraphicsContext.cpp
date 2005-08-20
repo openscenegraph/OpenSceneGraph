@@ -113,25 +113,62 @@ void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
 
 
 GraphicsContext::GraphicsContext():
+    _closeOnDestruction(true),
     _threadOfLastMakeCurrent(0)
 {
 }
 
 GraphicsContext::~GraphicsContext()
 {
+    // switch off the graphics thread...
+    setGraphicsThread(0);
+
     if (_state.valid())
     {
         decrementContextIDUsageCount(_state->getContextID());
     }
+
+    if (_closeOnDestruction)
+    {
+        close();
+    }
 }
+
+/** Realise the GraphicsContext.*/
+bool GraphicsContext::realize()
+{
+    if (realizeImplementation())
+    {
+        if (_graphicsThread.valid() && !_graphicsThread->isRunning())
+        {
+            _graphicsThread->startThread();
+        }
+        return true;
+    }
+    else
+    {   
+        return false;
+    }
+}
+
+void GraphicsContext::close()
+{
+    // switch off the graphics thread...
+    setGraphicsThread(0);
+    
+    closeImplementation();
+}
+
 
 void GraphicsContext::makeCurrent()
 {
+    osg::notify(osg::NOTICE)<<"Doing  GraphicsContext::makeCurrent"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 
     ReleaseContext_Block_MakeCurrentOperation* rcbmco = 0;
 
     if (_graphicsThread.valid() && 
-        _threadOfLastMakeCurrent == _graphicsThread.get())
+        _threadOfLastMakeCurrent == _graphicsThread.get() &&
+        _threadOfLastMakeCurrent != OpenThreads::Thread::CurrentThread())
     {
         // create a relase contex, block and make current operation to stop the graphics thread while we use the graphics context for ourselves
         rcbmco = new ReleaseContext_Block_MakeCurrentOperation;
@@ -139,6 +176,8 @@ void GraphicsContext::makeCurrent()
     }
 
     if (!isCurrent()) _mutex.lock();
+
+    osg::notify(osg::NOTICE)<<"Calling GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 
     makeCurrentImplementation();
     
@@ -150,6 +189,8 @@ void GraphicsContext::makeCurrent()
         // contex itself with a makeCurrent(), this will then block on the GraphicsContext mutex till releaseContext() releases it.
         rcbmco->release();
     }
+
+    osg::notify(osg::NOTICE)<<"Done GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 }
 
 void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
@@ -164,4 +205,60 @@ void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
 void GraphicsContext::releaseContext()
 {
     _mutex.unlock();
+}
+
+void GraphicsContext::swapBuffers()
+{
+    if (isCurrent())
+    {
+        osg::notify(osg::NOTICE)<<"Doing GraphicsContext::swapBuffers() call to swapBuffersImplementation() "<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+        swapBuffersImplementation();
+    }
+    else if (_graphicsThread.valid() && 
+             _threadOfLastMakeCurrent == _graphicsThread.get())
+    {
+        osg::notify(osg::NOTICE)<<"Doing GraphicsContext::swapBuffers() registering  SwapBuffersOperation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+        _graphicsThread->add(new SwapBuffersOperation);
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Doing GraphicsContext::swapBuffers() makeCurrent;swapBuffersImplementation;releaseContext"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+        makeCurrent();
+        swapBuffersImplementation();
+        releaseContext();
+    }
+}
+
+
+
+void GraphicsContext::createGraphicsThread()
+{
+    if (!_graphicsThread)
+    {
+        setGraphicsThread(new GraphicsThread);
+    }
+}
+
+void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
+{
+    if (_graphicsThread==gt) return; 
+
+    if (_graphicsThread.valid()) 
+    {
+        // need to kill the thread in some way...
+        _graphicsThread->cancel();
+        _graphicsThread->_graphicsContext = 0;
+    }
+
+    _graphicsThread = gt;
+    
+    if (_graphicsThread.valid()) 
+    {
+        _graphicsThread->_graphicsContext = this;
+        
+        if (!_graphicsThread->isRunning() && isRealized())
+        {
+            _graphicsThread->startThread();
+        }
+    }
 }

@@ -11,7 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgSim/Impostor>
-#include <osgUtil/RenderToTextureStage>
 
 #include <algorithm>
 

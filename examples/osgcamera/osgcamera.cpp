@@ -5,12 +5,16 @@
 
 #include <osg/Timer>
 #include <osg/GraphicsContext>
+#include <osg/GraphicsThread>
 
 #include <osgUtil/UpdateVisitor>
 #include <osgUtil/CullVisitor>
+#include <osgUtil/SceneView>
 
 #include <osgDB/ReadFile>
 
+#include <map>
+#include <list>
 #include <iostream>
 
 
@@ -25,7 +29,41 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-#if 1
+struct FrameOperation : public osg::GraphicsThread::Operation
+{
+    FrameOperation(osg::CameraNode* camera, osg::FrameStamp* frameStamp):
+        _camera(camera),
+        _frameStamp(frameStamp)
+    {
+        _sceneView = new osgUtil::SceneView;
+        _sceneView->setDefaults();
+        _sceneView->setFrameStamp(_frameStamp.get());
+            
+        if (camera->getNumChildren()>=1)
+        {
+            _sceneView->setSceneData(camera->getChild(0));
+        }
+    }
+    
+    virtual void operator () (osg::GraphicsContext* context)
+    {
+        std::cout<<"FrameOperation draw begin"<<context<<std::endl;
+
+        _sceneView->setState(context->getState());
+        _sceneView->setProjectionMatrix(_camera->getProjectionMatrix());
+        _sceneView->setViewMatrix(_camera->getViewMatrix());
+        _sceneView->setViewport(_camera->getViewport());
+        
+        _sceneView->cull();
+        _sceneView->draw();
+
+        std::cout<<"FrameOperation draw end"<<context<<std::endl;
+    }
+    
+    osg::ref_ptr<osg::CameraNode>    _camera;
+    osg::ref_ptr<osg::FrameStamp>    _frameStamp;
+    osg::ref_ptr<osgUtil::SceneView> _sceneView;
+};
 
 int main( int argc, char **argv )
 {
@@ -42,222 +80,165 @@ int main( int argc, char **argv )
         std::cout << argv[0] <<": No data loaded." << std::endl;
         return 1;
     }
-    
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->_windowName = "osgcamera";
-    traits->_x = 100;
-    traits->_y = 100;
-    traits->_width = 800;
-    traits->_height = 800;
-    traits->_windowDecoration = true;
-    traits->_doubleBuffer = true;
-    
-    osg::ref_ptr<osg::GraphicsContext> gfxc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    
-    if (!gfxc)
-    {
-        std::cout<<"Unable to create window."<<std::endl;
-        return 1;
-    }
-    
-    // realise the window
-    gfxc->realize();
 
-    // create the view of the scene.
-    osg::ref_ptr<osg::CameraNode> camera = new osg::CameraNode;
-    camera->setRenderOrder(osg::CameraNode::NESTED_RENDER);
-    camera->setClearColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
-    camera->setCullingActive(false);
     
-    camera->addChild(loadedModel.get());
-    
-    
+    // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
+    osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
 
-    // initialize the view to look at the center of the scene graph
-    const osg::BoundingSphere& bs = loadedModel->getBound();
-    osg::Matrix viewMatrix;
-    viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
-
-    // record the timer tick at the start of rendering.    
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    
     unsigned int frameNum = 0;
+
+    osgUtil::UpdateVisitor updateVisitor;
+    updateVisitor.setFrameStamp(frameStamp.get());
+
+
+    unsigned int numberCameras = 3;
+    unsigned int xpos = 0;
+    unsigned int ypos = 400;
+    unsigned int width = 400;
+    unsigned int height = 400;
     
-    // make the graphics context current
-    gfxc->makeCurrent();
-    
-    osg::ref_ptr<osgUtil::UpdateVisitor> updateVisitor = new osgUtil::UpdateVisitor;
-    osg::ref_ptr<osgUtil::CullVisitor> cullVisitor = new osgUtil::CullVisitor;
+    typedef std::map< osg::ref_ptr<osg::CameraNode>, osg::ref_ptr<FrameOperation> > CameraMap;
+    typedef std::set< osg::GraphicsContext* > GraphicsContextSet;
 
-    osg::ref_ptr<osgUtil::RenderGraph> renderGraph = new osgUtil::RenderGraph;
-    cullVisitor->setRenderGraph(renderGraph.get());
+    CameraMap cameraMap;
+    GraphicsContextSet graphicsContextSet;
 
-    osg::ref_ptr<osgUtil::RenderStage> renderStage = new osgUtil::RenderStage;
-    cullVisitor->setRenderStage(renderStage.get());
-
-    // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
-    while( gfxc->isRealized() )
+    for(unsigned int i=0; i< numberCameras; ++i)
     {
-        // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
-        osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
-        frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
-        frameStamp->setFrameNumber(frameNum++);
-        
-        updateVisitor->reset();
-                
-        // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
-        updateVisitor->setFrameStamp(frameStamp.get());
-        updateVisitor->setTraversalNumber(frameStamp->getFrameNumber());
+        osg::ref_ptr<osg::CameraNode> camera = new osg::CameraNode;
+        camera->addChild(loadedModel.get());
 
-        
-        // set the view
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->_windowName = "osgcamera";
+        traits->_x = xpos;
+        traits->_y = ypos;
+        traits->_width = width;
+        traits->_height = height;
+        traits->_windowDecoration = true;
+        traits->_doubleBuffer = true;
+
+        xpos += width;
+
+        osg::ref_ptr<osg::GraphicsContext> gfxc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+        if (!gfxc)
+        {
+            std::cout<<"Unable to create window."<<std::endl;
+            return 1;
+        }
+
+        // realise the window
+        gfxc->realize();
+
+        camera->setGraphicsContext(gfxc.get());
+
+        // initialize the view to look at the center of the scene graph
+        const osg::BoundingSphere& bs = loadedModel->getBound();
+        osg::Matrix viewMatrix;
+        viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+
+        camera->setViewport(0,0,traits->_width,traits->_height);
+        camera->setProjectionMatrixAsPerspective(50.0f,1.4f,1.0f,10000.0f);
         camera->setViewMatrix(viewMatrix);
 
-        // do the update traversal the scene graph - such as updating animations
-        camera->accept(*updateVisitor);
-        
-        cullVisitor->reset();
-        cullVisitor->setFrameStamp(frameStamp.get());
-        cullVisitor->setTraversalNumber(frameStamp->getFrameNumber());
 
-        
-        // update the viewport dimensions, incase the window has been resized.
-        camera->setViewport(0,0,traits->_width,traits->_height);
+        gfxc->createGraphicsThread();
 
-        renderGraph->clean();
-        renderStage->reset();
-        renderStage->setViewport(camera->getViewport());
-        
-        osg::ref_ptr<osg::RefMatrix> proj = new osg::RefMatrix(camera->getProjectionMatrix());
-        osg::ref_ptr<osg::RefMatrix> mv = new osg::RefMatrix(camera->getViewMatrix());
-
-        cullVisitor->pushViewport(camera->getViewport());
-        cullVisitor->pushProjectionMatrix(proj.get());
-        cullVisitor->pushModelViewMatrix(mv.get());
-
-        // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
-        //camera->accept(*cullVisitor);
-        loadedModel->accept(*cullVisitor);
-
-        cullVisitor->popModelViewMatrix();
-        cullVisitor->popProjectionMatrix();
-        cullVisitor->popViewport();
-        
-        renderStage->sort();
-
-        // prune out any empty RenderGraph children.
-        // note, this would be not required if the rendergraph had been
-        // reset at the start of each frame (see top of this method) but
-        // a clean has been used instead to try to minimize the amount of
-        // allocation and deleteing of the RenderGraph nodes.
-        renderGraph->prune();
-        
-        renderStage->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        
-        gfxc->getState()->setInitialViewMatrix(mv.get());
-
-        std::cout<<"before"<<std::endl;
-
-        // draw traversal
-        osgUtil::RenderLeaf* previous = NULL;
-        renderStage->draw(*(gfxc->getState()), previous);
-
-    	// Swap Buffers
-    	gfxc->swapBuffers();
-        
-        std::cout<<"swap"<<std::endl;
+        cameraMap[camera] = new FrameOperation(camera.get(), frameStamp.get());
     }
 
-    return 0;
-}
 
-#else
-
-int main( int argc, char **argv )
-{
-    if (argc<2) 
+    CameraMap::iterator citr;
+    for(citr = cameraMap.begin();
+        citr != cameraMap.end();
+        ++citr)
     {
-        std::cout << argv[0] <<": requires filename argument." << std::endl;
-        return 1;
+        graphicsContextSet.insert(const_cast<osg::GraphicsContext*>(citr->first->getGraphicsContext()));
     }
 
-    // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
-    if (!loadedModel) 
+    osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
+    osg::ref_ptr<osg::BarrierOperation> frameEndBarrierOp = new osg::BarrierOperation(graphicsContextSet.size()+1, osg::BarrierOperation::NO_OPERATION);
+    osg::ref_ptr<osg::BarrierOperation> preSwapBarrierOp = new osg::BarrierOperation(graphicsContextSet.size(), osg::BarrierOperation::GL_FLUSH);
+
+    std::cout<<"nubmer of gfx."<<graphicsContextSet.size()<<std::endl;
+
+
+    GraphicsContextSet::iterator gitr;
+    for(gitr = graphicsContextSet.begin();
+        gitr != graphicsContextSet.end();
+        ++gitr)
     {
-        std::cout << argv[0] <<": No data loaded." << std::endl;
-        return 1;
+        std::cout<<"Issue swap."<<std::endl;
+        osg::GraphicsContext* context = *gitr;
+        context->getGraphicsThread()->add(swapOp.get(), true);
     }
     
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->_windowName = "osgcamera";
-    traits->_x = 100;
-    traits->_y = 100;
-    traits->_width = 800;
-    traits->_height = 800;
-    traits->_windowDecoration = true;
-    traits->_doubleBuffer = true;
-    
-    osg::ref_ptr<osg::GraphicsContext> gfxc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    
-    if (!gfxc)
-    {
-        std::cout<<"Unable to create window."<<std::endl;
-        return 1;
-    }
-    
-    // realise the window
-    gfxc->realize();
-
-    // create the view of the scene.
-    osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
-    sceneView->setDefaults();
-    sceneView->setSceneData(loadedModel.get());
-
-    // initialize the view to look at the center of the scene graph
-    const osg::BoundingSphere& bs = loadedModel->getBound();
-    osg::Matrix viewMatrix;
-    viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
-
     // record the timer tick at the start of rendering.    
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     
-    unsigned int frameNum = 0;
-    
-    // make the graphics context current
-    gfxc->makeCurrent();
+    bool done = false;    
 
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
-    while( gfxc->isRealized() )
+    while( !done )
     {
-        // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
-        osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
+        std::cout<<"Frame "<<frameNum<<std::endl;
+
         frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
         frameStamp->setFrameNumber(frameNum++);
         
-        // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
-        sceneView->setFrameStamp(frameStamp.get());
-        
-        // update the viewport dimensions, incase the window has been resized.
-        sceneView->setViewport(0,0,traits->_width,traits->_height);
-        
-        // set the view
-        sceneView->setViewMatrix(viewMatrix);
+        std::cout<<"Frame rate "<<(double)frameNum / frameStamp->getReferenceTime()<<std::endl;
 
-        // do the update traversal the scene graph - such as updating animations
-        sceneView->update();
-        
-        // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
-        sceneView->cull();
-        
-        // draw the rendering bins.
-        sceneView->draw();
 
-    	// Swap Buffers
-    	gfxc->swapBuffers();
+        loadedModel->accept(updateVisitor);
+
+        // issue the frame for each camera.
+        for(citr = cameraMap.begin();
+            citr != cameraMap.end();
+            ++citr)
+        {
+            osg::CameraNode* camera = const_cast<osg::CameraNode*>(citr->first.get());
+            camera->getGraphicsContext()->getGraphicsThread()->add( citr->second.get(), false); 
+        }
+
+        for(gitr = graphicsContextSet.begin();
+            gitr != graphicsContextSet.end();
+            ++gitr)
+        {
+            osg::GraphicsContext* context = *gitr;
+            context->getGraphicsThread()->add(frameEndBarrierOp.get(), false);
+            context->getGraphicsThread()->add(preSwapBarrierOp.get(), false);
+        }
+
+        std::cout<<"Join frameEndBarrierOp block "<<std::endl;
+        osg::Timer_t before_tick = osg::Timer::instance()->tick();
+        frameEndBarrierOp->block();
+        osg::Timer_t after_tick = osg::Timer::instance()->tick();
+        std::cout<<"Leave frameEndBarrierOp block "<<osg::Timer::instance()->delta_s(before_tick,after_tick)<<std::endl;
+
+        std::cout<<"Join preSwapBarrierOp block "<<std::endl;
+        before_tick = osg::Timer::instance()->tick();
+//        preSwapBarrierOp->block();
+        after_tick = osg::Timer::instance()->tick();
+        std::cout<<"Leave preSwapBarrierOp block "<<osg::Timer::instance()->delta_s(before_tick,after_tick)<<std::endl;
+
+        for(gitr = graphicsContextSet.begin();
+            gitr != graphicsContextSet.end();
+            ++gitr)
+        {
+            osg::GraphicsContext* context = *gitr;
+            context->getGraphicsThread()->add(swapOp.get(), false);
+        }
+
+        // check if any of the windows are closed
+        for(gitr = graphicsContextSet.begin();
+            gitr != graphicsContextSet.end();
+            ++gitr)
+        {
+            osg::GraphicsContext* context = *gitr;
+            if (!context->isRealized()) done = true;
+        }
+
     }
 
     return 0;
 }
-
-#endif

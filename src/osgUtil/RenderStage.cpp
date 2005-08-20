@@ -143,32 +143,47 @@ void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
     //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 }
 
-void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
+void RenderStage::copyTexture(osg::State& state)
 {
-    if (_stageDrawnThisFrame) return;
-
-    _stageDrawnThisFrame = true;
-
-    // note, SceneView does call to drawPreRenderStages explicitly
-    // so there is no need to call it here.
-    drawPreRenderStages(state,previous);
-    
-
-    osg::State* useState = &state;
-    osg::GraphicsContext* callingContext = state.getGraphicsContext();
-    osg::GraphicsContext* useContext = callingContext;
-
-    if (_graphicsContext.valid() && _graphicsContext != callingContext)
+    if (_readBuffer != GL_NONE)
     {
-        // show we release the context so that others can use it?? will do so right
-        // now as an experiment.
-        callingContext->releaseContext();
-    
-        useState = _graphicsContext->getState();
-        useContext = _graphicsContext.get();
-        useContext->makeCurrent();
+        glReadBuffer(_readBuffer);
     }
 
+    // need to implement texture cube map etc...
+    osg::Texture1D* texture1D = 0;
+    osg::Texture2D* texture2D = 0;
+    osg::Texture3D* texture3D = 0;
+    osg::TextureRectangle* textureRec = 0;
+    osg::TextureCubeMap* textureCubeMap = 0;
+
+    if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
+    {
+        texture2D->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
+    else if ((textureRec = dynamic_cast<osg::TextureRectangle*>(_texture.get())) != 0)
+    {
+        textureRec->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
+    else if ((texture1D = dynamic_cast<osg::Texture1D*>(_texture.get())) != 0)
+    {
+        // need to implement
+        texture1D->copyTexImage1D(state,_viewport->x(),_viewport->y(),_viewport->width());
+    }
+    else if ((texture3D = dynamic_cast<osg::Texture3D*>(_texture.get())) != 0)
+    {
+        // need to implement
+        texture3D->copyTexSubImage3D(state, 0, 0, _face, _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+    }
+    else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
+    {
+        // need to implement
+        textureCubeMap->copyTexSubImageCubeMap(state, _face, 0, 0, _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
+}
+
+void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCopyTexture)
+{
     if (_drawBuffer != GL_NONE)
     {    
         glDrawBuffer(_drawBuffer);
@@ -184,58 +199,17 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     if (fbo_supported)
     {
-        _fbo->apply(*useState);
+        _fbo->apply(state);
     }
-
 
     // do the drawing itself.    
     RenderBin::draw(state,previous);
 
 
     // now copy the rendered image to attached texture.
-    if (_texture.valid() && !fbo_supported)
+    if (doCopyTexture)
     {
-        if (callingContext && useContext!= callingContext)
-        {
-            // make the calling context use the pbuffer context for reading.
-            callingContext->makeContextCurrent(useContext);
-
-            if (_readBuffer != GL_NONE)
-            {
-                glReadBuffer(_readBuffer);
-            }
-        }
-
-        // need to implement texture cube map etc...
-        osg::Texture1D* texture1D = 0;
-        osg::Texture2D* texture2D = 0;
-        osg::Texture3D* texture3D = 0;
-        osg::TextureRectangle* textureRec = 0;
-        osg::TextureCubeMap* textureCubeMap = 0;
-
-        if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
-        {
-            texture2D->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
-        }
-        else if ((textureRec = dynamic_cast<osg::TextureRectangle*>(_texture.get())) != 0)
-        {
-            textureRec->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
-        }
-        else if ((texture1D = dynamic_cast<osg::Texture1D*>(_texture.get())) != 0)
-        {
-            // need to implement
-            texture1D->copyTexImage1D(state,_viewport->x(),_viewport->y(),_viewport->width());
-        }
-        else if ((texture3D = dynamic_cast<osg::Texture3D*>(_texture.get())) != 0)
-        {
-            // need to implement
-            texture3D->copyTexSubImage3D(state, 0, 0, _face, _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
-        }
-        else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
-        {
-            // need to implement
-            textureCubeMap->copyTexSubImageCubeMap(state, _face, 0, 0, _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
-        }
+        copyTexture(state);
     }
     
     if (_image.valid())
@@ -260,6 +234,8 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     {
         // switch of the frame buffer object
         fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+        doCopyTexture = true;
     }
     
     if (fbo_supported && _camera)
@@ -272,10 +248,99 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
         {
             if (itr->second._texture.valid() && itr->second._mipMapGeneration) 
             {
-                itr->second._texture->apply(*useState);
+                itr->second._texture->apply(state);
                 // fbo_ext->glGenerateMipmapEXT(itr->second._texture->getTextureTarget());
             }
         }
+    }
+}
+
+struct DrawInnerOperation : public osg::GraphicsThread::Operation
+{
+    DrawInnerOperation(RenderStage* stage) : _stage(stage) {}
+
+    virtual void operator() (osg::GraphicsContext* context)
+    {
+        // osg::notify(osg::NOTICE)<<"DrawInnerOperation operator"<<std::endl;
+        if (_stage && context)
+        {
+            RenderLeaf* previous = 0;
+            bool doCopyTexture = false;
+            _stage->drawInner(*(context->getState()), previous, doCopyTexture);
+        }
+    }
+    
+    RenderStage* _stage;
+};
+
+
+void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
+{
+    if (_stageDrawnThisFrame) return;
+
+    _stageDrawnThisFrame = true;
+
+    // note, SceneView does call to drawPreRenderStages explicitly
+    // so there is no need to call it here.
+    drawPreRenderStages(state,previous);
+    
+
+    osg::State* useState = &state;
+    osg::GraphicsContext* callingContext = state.getGraphicsContext();
+    osg::GraphicsContext* useContext = callingContext;
+    osg::GraphicsThread* useThread = 0;
+
+    if (_graphicsContext.valid() && _graphicsContext != callingContext)
+    {
+        // show we release the context so that others can use it?? will do so right
+        // now as an experiment.
+        callingContext->releaseContext();
+    
+        useState = _graphicsContext->getState();
+        useContext = _graphicsContext.get();
+        
+        useThread = useContext->getGraphicsThread();
+        
+        if (!useThread) useContext->makeCurrent();
+    }
+    
+    bool doCopyTexture = _texture.valid() ? 
+                        (callingContext != useContext) :
+                        false;
+
+    if (useThread)
+    {
+        useThread->add(new DrawInnerOperation( this ), true);
+        
+        doCopyTexture = false;
+    }
+    else
+    {
+        drawInner( *useState, previous, doCopyTexture);
+    }
+
+
+    // now copy the rendered image to attached texture.
+    if (_texture.valid() && !doCopyTexture)
+    {
+        if (callingContext && useContext!= callingContext)
+        {
+            // make the calling context use the pbuffer context for reading.
+            callingContext->makeContextCurrent(useContext);
+        }
+
+        copyTexture(state);
+    }
+
+    if (_camera && _camera->getPostDrawCallback())
+    {
+        // if we have a camera with a post draw callback invoke it.
+        (*(_camera->getPostDrawCallback()))(*_camera);
+    }
+
+    if (_graphicsContext.valid() && _graphicsContext != callingContext)
+    {
+        if (!useThread) useContext->releaseContext();
     }
 
     if (callingContext && useContext != callingContext)

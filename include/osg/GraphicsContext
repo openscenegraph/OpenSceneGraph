@@ -136,13 +136,16 @@ class OSG_EXPORT GraphicsContext : public Referenced
         
 
         /** Realise the GraphicsContext.*/
-        virtual bool realize() = 0;
-
-        /** Return true if the graphics context has been realised and is ready to use.*/
-        virtual bool isRealized() const = 0;
+        bool realize();
 
         /** close the graphics context.*/
-        virtual void close() = 0;
+        void close();
+
+        /** swap the front and back buffers.*/
+        void swapBuffers();
+
+        /** Return true if the graphics context has been realised and is ready to use.*/
+        inline bool isRealized() const { return isRealizedImplementation(); }
 
 
         /** Make this graphics context current.
@@ -159,21 +162,16 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Return true if the current thread has this OpenGL graphics context.*/
         inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
 
-
-        /** Make this graphics context current.*/
-        virtual void makeCurrentImplementation() = 0;
-        
-        /** Make this graphics context current with specified read context.*/
-        virtual void makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
-
         /** Bind the graphics context to associated texture.*/
-        virtual void bindPBufferToTexture(GLenum buffer) = 0;
+        inline void bindPBufferToTexture(GLenum buffer) { bindPBufferToTextureImplementation(buffer); }
 
-        /** swap the front and back buffers.*/
-        virtual void swapBuffers() = 0;
+
+
+        /** Create a graphics thread to the graphics context, so that the thread handles all OpenGL operations.*/
+        void createGraphicsThread();
 
         /** Assign a graphics thread to the graphics context, so that the thread handles all OpenGL operations.*/
-        void setGraphicsThread(GraphicsThread* gt) { _graphicsThread = gt; }
+        void setGraphicsThread(GraphicsThread* gt);
 
         /** Get the graphics thread assigned the graphics context.*/
         GraphicsThread* getGraphicsThread() { return _graphicsThread.get(); }
@@ -181,12 +179,45 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Get the const graphics thread assigned the graphics context.*/
         const GraphicsThread* getGraphicsThread() const { return _graphicsThread.get(); }
 
+
+        /** Realise the GraphicsContext implementation, 
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool realizeImplementation() = 0;
+
+        /** Return true if the graphics context has been realised, and is ready to use, implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool isRealizedImplementation() const = 0;
+
+        /** Close the graphics context implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void closeImplementation() = 0;
+
+        /** Make this graphics context current implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void makeCurrentImplementation() = 0;
+        
+        /** Make this graphics context current with specified read context implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
+
+        /** Pure virtual, Bind the graphics context to associated texture implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void bindPBufferToTextureImplementation(GLenum buffer) = 0;
+
+        /** Swap the front and back buffers implementation.
+          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
+        virtual void swapBuffersImplementation() = 0;
+
+
     protected:
         
         GraphicsContext();
 
         virtual ~GraphicsContext();
 
+
+        bool                    _closeOnDestruction;
+                
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;
         OpenThreads::Mutex      _mutex;

@@ -76,7 +76,7 @@ class Block: public osg::Referenced {
 };
 
 /** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
-class GraphicsThread : public Referenced, public OpenThreads::Thread
+class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
 {
     public:
         GraphicsThread();

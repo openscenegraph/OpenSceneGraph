@@ -264,7 +264,7 @@ SOURCE=..\..\src\osg\GraphicsContext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\GraphicsTread.cpp
+SOURCE=..\..\src\osg\GraphicsThread.cpp
 # End Source File
 # Begin Source File
 

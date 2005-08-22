@@ -57,6 +57,7 @@ public:
         float mul = 1.0f;
         bool bYFlip = false;
         bool convertToRGB8 = false;
+        bool rawRGBE = false;
         if(_opts)
         {
             std::istringstream iss(_opts->getOptionString());
@@ -71,6 +72,22 @@ public:
                 {
                     convertToRGB8 = true;
                 }
+                /* RAW: store the RGBE values into a Image, to use this option you
+                 * need to decode the RGBE value in the fragment shader. Follow
+                 * the cube map glsl decoder:
+                 *
+                 * vec4 textureCubeRGBE( uniform samplerCube sampler, vec3 coords )
+                 * {
+                 *     ivec4 rgbe = textureCube( sampler, coords ) * 255. + 0.5;
+                 *     float e = rgbe.a - ( 128 + 8 );
+                 *     return vec4( rgbe.rgb * exp2( e ), 1.0 );
+                 * }
+                 *
+                 */
+                else if(opt == "RAW")
+                {
+                    rawRGBE = true;
+                }
                 else if(opt == "YFLIP")
                 {
                     bYFlip = true; // TODO
@@ -79,7 +96,7 @@ public:
         }
 
         HDRLoaderResult res;
-        bool ret = HDRLoader::load(_file.c_str(), res);
+        bool ret = HDRLoader::load(_file.c_str(), rawRGBE, res);
         if (!ret)
             return ReadResult::FILE_NOT_FOUND;
 
@@ -110,8 +127,8 @@ public:
             int dataType = GL_UNSIGNED_BYTE;
 
             img->setFileName(_file.c_str());
-            img->setImage(    res.width, res.height, 1,
-                            3,
+            img->setImage(  res.width, res.height, 1,
+                            3, // Why this value are here?
                             pixelFormat,
                             dataType,
                             (unsigned char*) rgb,
@@ -119,18 +136,31 @@ public:
         }
         else
         {
-            int internalFormat = GL_RGB;
-            int pixelFormat = GL_RGB;
+            int internalFormat;
+            int pixelFormat;
             int dataType = GL_FLOAT;
 
+            if (rawRGBE)
+            {
+                internalFormat = GL_RGBA8;
+                pixelFormat = GL_RGBA;
+            } else {
+                // In a perfect world it should be GL_RGB32F_ARB,
+                // but by default it works fine as GL_RGB8. You
+                // can set it as GL_RGB32F_ARB in the method
+                // setInternalFormat of osg::Texture{xD, Rectangle
+                // and CubeMap} if your GPU support it.
+                internalFormat = GL_RGB8;
+                pixelFormat = GL_RGB;
+            }
+
             img->setFileName(_file.c_str());
-            img->setImage(    res.width, res.height, 1,
+            img->setImage(  res.width, res.height, 1,
                             internalFormat,
                             pixelFormat,
                             dataType,
                             (unsigned char*) res.cols,
                             osg::Image::USE_NEW_DELETE);
-
         }
 
         return img;

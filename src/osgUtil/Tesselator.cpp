@@ -35,8 +35,6 @@ Tesselator::~Tesselator()
     reset();
 }
 
-
-
 void Tesselator::beginTesselation()
 {
     reset();
@@ -48,6 +46,7 @@ void Tesselator::beginTesselation()
     gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLU_TESS_CALLBACK) endCallback);
     gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA,(GLU_TESS_CALLBACK) combineCallback);
     gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLU_TESS_CALLBACK) errorCallback);
+    if (tessNormal.length()>0.0) gluTessNormal(_tobj, tessNormal.x(), tessNormal.y(), tessNormal.z());
 
     gluTessBeginPolygon(_tobj,this);
 }    

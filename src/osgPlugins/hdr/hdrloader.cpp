@@ -41,6 +41,7 @@ typedef unsigned char RGBE[4];
 #define  MINELEN    8                // minimum scanline length for encoding
 #define  MAXELEN    0x7fff            // maximum scanline length for encoding
 
+static void rawRGBEData(RGBE *scan, int len, float *cols);
 static void workOnRGBE(RGBE *scan, int len, float *cols);
 static bool decrunch(RGBE *scanline, int len, FILE *file);
 static bool oldDecrunch(RGBE *scanline, int len, FILE *file);
@@ -62,7 +63,7 @@ bool HDRLoader::isHDRFile(const char *_fileName)
     return true;
 }
 
-bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
+bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult &_res)
 {
     int i;
     char str[200];
@@ -112,7 +113,8 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
     _res.width = w;
     _res.height = h;
 
-    float *cols = new float[w * h * 3];
+    int components = _rawRGBE ? 4 : 3;
+    float *cols = new float[w * h * components];
     _res.cols = cols;
 
     RGBE *scanline = new RGBE[w];
@@ -122,18 +124,35 @@ bool HDRLoader::load(const char *_fileName, HDRLoaderResult &_res)
     }
 
     // convert image
-    cols += (h-1) * w * 3;
+    cols += (h-1) * w * components;
     for (int y = h - 1; y >= 0; y--) {
         if (decrunch(scanline, w, file) == false)
             break;
-        workOnRGBE(scanline, w, cols);
-        cols -= w * 3;
+        if (_rawRGBE)
+            rawRGBEData(scanline, w, cols);
+        else
+            workOnRGBE(scanline, w, cols);
+        cols -= w * components;
     }
 
     delete [] scanline;
     fclose(file);
 
     return true;
+}
+
+void rawRGBEData(RGBE *_scan, int _len, float *_cols)
+{
+    int ii = 0;
+    while (_len-- > 0) {
+        _cols[0] = _scan[0][R] / 255.0;
+        _cols[1] = _scan[0][G] / 255.0;
+        _cols[2] = _scan[0][B] / 255.0;
+        _cols[3] = _scan[0][E] / 255.0;
+        _cols += 4;
+        _scan++;
+        ii++;
+    }
 }
 
 inline float convertComponent(int _expo, int _val)

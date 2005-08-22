@@ -44,7 +44,7 @@ public:
 class HDRLoader {
 public:
     static bool isHDRFile(const char *fileName);
-    static bool load(const char *fileName, HDRLoaderResult &res);
+    static bool load(const char *fileName, const bool rawRGBE, HDRLoaderResult &res);
 };
 
 #endif

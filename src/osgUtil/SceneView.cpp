@@ -1108,7 +1108,7 @@ void SceneView::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
 
 bool SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
-                                           double& zNear, double& zFar)
+                                           double& zNear, double& zFar) const
 {
     return _projectionMatrix.getOrtho(left, right,
                                        bottom, top,
@@ -1117,7 +1117,7 @@ bool SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
 
 bool SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
                                              double& bottom, double& top,
-                                             double& zNear, double& zFar)
+                                             double& zNear, double& zFar) const
 {
     return _projectionMatrix.getFrustum(left, right,
                                          bottom, top,
@@ -1125,7 +1125,7 @@ bool SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
 }                                  
 
 bool SceneView::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
-                                                 double& zNear, double& zFar)
+                                                 double& zNear, double& zFar) const
 {
     return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
 }                                                 
@@ -1135,7 +1135,7 @@ void SceneView::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const V
     setViewMatrix(osg::Matrixd::lookAt(eye,center,up));
 }
 
-void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance) const
 {
     _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }

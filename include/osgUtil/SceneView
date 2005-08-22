@@ -197,13 +197,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
         bool getProjectionMatrixAsOrtho(double& left, double& right,
                                         double& bottom, double& top,
-                                        double& zNear, double& zFar);
+                                        double& zNear, double& zFar) const;
 
         /** Get the frustum setting of a perspective projection matrix.
           * Returns false if matrix is not a perspective matrix, where parameter values are undefined.*/
         bool getProjectionMatrixAsFrustum(double& left, double& right,
                                           double& bottom, double& top,
-                                          double& zNear, double& zFar);
+                                          double& zNear, double& zFar) const;
 
         /** Get the frustum setting of a symmetric perspective projection matrix.
           * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
@@ -211,7 +211,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
           * Asymmetric matrices occur when stereo, power walls, caves and reality center display are used.
           * In these configurations one should use the 'getProjectionMatrixAsFrustum' method instead.*/
         bool getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
-                                              double& zNear, double& zFar);
+                                              double& zNear, double& zFar) const;
 
 
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
@@ -230,7 +230,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
 
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
+        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f) const;
 
 
 

@@ -144,7 +144,7 @@ void Text::read(DataInputStream* in){
     c_height = in->readFloat();
     aspectRatio = in->readFloat();
 
-    setCharacterSize(height,aspectRatio);
+    setCharacterSize(c_height,aspectRatio);
 
     setCharacterSizeMode((osgText::Text::CharacterSizeMode) in->readUInt());
 

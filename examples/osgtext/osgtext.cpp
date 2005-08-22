@@ -170,7 +170,7 @@ osg::Group* createHUDText()
         // use text that is 20 units high.
         text->setCharacterSize(20); // small
         
-        text->setText("text->setCharacterSize(15.0f); // small");
+        text->setText("text->setCharacterSize(20.0f); // small");
         geode->addDrawable(text);
     }
     

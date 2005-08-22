@@ -264,7 +264,7 @@ bool FlightManipulator::calcMovement()
     osg::Vec3d sv = lv^up;
     sv.normalize();
 
-    double pitch = -inDegrees(dy*75.0f*dt);
+    double pitch = -inDegrees(dy*50.0f*dt);
     double roll = inDegrees(dx*50.0f*dt);
 
     osg::Quat delta_rotate;

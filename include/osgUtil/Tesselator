@@ -77,6 +77,14 @@ class OSGUTIL_EXPORT Tesselator : public osg::Referenced
           * as well as Polygons so as to not break old codes relying on this function name. */
         void retesselatePolygons(osg::Geometry &cxgeom);
 
+        /** Define the normal to the tesselated polygon - this provides a hint how to
+         *  tesselate the contours; see gluTessNormal in red book or man pages.
+         *  GWM July 2005. Can improve teselation
+         *  "For example, if you know that all polygons lie in the x-y plane, 
+         *   call gluTessNormal(tess, 0.0, 0.0, 1.0) before rendering any polygons."
+         */
+        void setTesselationNormal(const osg::Vec3 norm) { tessNormal=norm;}
+
         osg::Geometry::PrimitiveSetList  getContours() { return _Contours;}
 
         typedef std::vector<osg::Vec3*> VertexPointList;
@@ -225,6 +233,9 @@ class OSGUTIL_EXPORT Tesselator : public osg::Referenced
 
         /** count number of primitives in a geometry to get right no. of norms/colurs etc for per_primitive attributes. */
         unsigned int _index;
+
+        /** the gluTessNormal for tesselation hint */
+        osg::Vec3 tessNormal;
 };
 
 }

@@ -135,7 +135,7 @@ void swapbyte(short *i)
     vv[1]=tmp;
 }
 
-unsigned char *bmp_load(const char *filename,
+unsigned char *bmp_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
 int *numComponents_ret)
@@ -150,12 +150,10 @@ int *numComponents_ret)
     long filelen;
 
     bmperror = ERROR_NO_FILE;
-    FILE *fp = fopen(filename, "rb");
-    if (!fp) return NULL;
 
-    fseek(fp, 0, SEEK_END);
-    filelen = ftell(fp); // determine file size so we can fill it in later if FileSize == 0
-    fseek(fp, 0, SEEK_SET);
+    fin.seekg(0, std::ios::end);
+    filelen = fin.tellg(); // determine file size so we can fill it in later if FileSize == 0
+    fin.seekg(0, std::ios::beg);
 
     int ncolours;
     int ncomp=0;
@@ -165,7 +163,7 @@ int *numComponents_ret)
     struct bmpheader hd;
     struct BMPInfo inf;
     bmperror = ERROR_NO_ERROR;
-    fread((char *)&hd, sizeof(bmpheader), 1, fp);
+    fin.read((char*)&hd,sizeof(bmpheader));
     if (hd.FileType != MB) {
         swapbyte(&(hd.FileType));
         swap=true;
@@ -177,15 +175,15 @@ int *numComponents_ret)
         int32 infsize;    //size of BMPinfo in bytes
         unsigned char *cols=NULL; // dynamic colour palette
         unsigned char *imbuff; // returned to sender & as read from the disk
-        fread((char *)&infsize, sizeof(int32), 1, fp); // insert inside 'the file is bmp' clause
+        fin.read((char*)&infsize,sizeof(int32)); // insert inside 'the file is bmp' clause
         if (swap) swapbyte(&infsize);
         unsigned char *hdr=new unsigned char[infsize]; // to hold the new header
-        fread((char *)hdr, 1,infsize-sizeof(int32), fp);
+        fin.read((char*)hdr,infsize-sizeof(int32));
         int32 hsiz=sizeof(inf); // minimum of structure size & 
         if(infsize<=hsiz) hsiz=infsize;
         memcpy(&inf,hdr, hsiz/*-sizeof(long)*/); // copy only the bytes I can cope with
         delete [] hdr;
-        osg::notify(osg::INFO) << "loading "<<filename <<" "<<swap<<" "<<infsize<< " "<<sizeof(inf) << " "<<sizeof(bmpheader) << std::endl;
+        osg::notify(osg::INFO) << "loading bmp file "<<swap<<" "<<infsize<< " "<<sizeof(inf) << " "<<sizeof(bmpheader) << std::endl;
         if (swap) { // inverse the field of the header which need swapping
             swapbyte(&hd.siz[0]);
             swapbyte(&hd.siz[1]);
@@ -224,7 +222,7 @@ int *numComponents_ret)
         size -= sizeof(bmpheader)+infsize;
         if (inf.ImageSize<size) inf.ImageSize=size;
         imbuff = new unsigned char [ inf.ImageSize]; // read from disk
-        fread((char *)imbuff, sizeof(unsigned char),inf.ImageSize, fp);
+        fin.read((char*)imbuff,sizeof(unsigned char)*inf.ImageSize);
         ncolours=inf.Colorbits/8;
         switch (ncolours) {
         case 1:
@@ -287,13 +285,10 @@ int *numComponents_ret)
             }
         }
         delete [] imbuff; // free the on-disk storage
-        
-        fclose(fp);
 
     } 
     else // else error in header
     {
-        fclose(fp);
         return NULL;        
     }
     *width_ret = inf.width;
@@ -322,20 +317,14 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
         virtual const char* className() const { return "BMP Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"bmp"); }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readBMPStream(std::istream& fin) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
             int numComponents_ret;
 
-            imageData = bmp_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
+            imageData = bmp_load(fin,&width_ret,&height_ret,&numComponents_ret);
 
             if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
 
@@ -354,7 +343,6 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             unsigned int dataType = GL_UNSIGNED_BYTE;
 
             osg::Image* pOsgImage = new osg::Image;
-            pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(s,t,r,
                 internalFormat,
                 pixelFormat,
@@ -363,15 +351,30 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
                 osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
-
         }
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
-        {
-            std::string ext = osgDB::getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-            FILE *fp = fopen(fileName.c_str(), "wb");
-            if (!fp) return WriteResult::ERROR_IN_WRITING_FILE;
+        virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
+        {
+            return readBMPStream(fin);
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            ReadResult rr = readBMPStream(istream);
+            if(rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
+        }
+
+        bool WriteBMPStream(const osg::Image &img, std::ostream& fout, const std::string &fileName) const
+        {
             // its easier for me to write a binary write using stdio than streams
             struct bmpheader hd;
             uint32 nx=img.s(),ny=img.t(); //  unsigned long ndep=img.r();
@@ -392,7 +395,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             hd.siz[0]=(size&0xffff); // low word
             hd.siz[1]=(size&0xffff0000)>>16; // high word
             
-            fwrite(&hd, sizeof(hd), 1, fp);
+            fout.write((const char*)&hd, sizeof(hd));
             struct BMPInfo inf;
             osg::notify(osg::INFO) << "sizes "<<size << " "<<sizeof(inf)<< std::endl;
             inf.width=nx;   //width of the image in pixels
@@ -407,8 +410,8 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             inf.Important=0;   //number of "important" colors
             // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
             infsize=sizeof(BMPInfo)+sizeof(int32);
-            fwrite(&infsize, sizeof(int32), 1, fp);
-            fwrite(&inf, sizeof(inf), 1, fp); // one dword shorter than the structure defined by MS
+            fout.write((const char*)&infsize,sizeof(int32));
+            fout.write((const char*)&inf,sizeof(inf)); // one dword shorter than the structure defined by MS
               // the infsize value (above) completes the structure.
             osg::notify(osg::INFO) << "save screen "<<fileName <<inf.width<< " "<<inf.height << std::endl;
             osg::notify(osg::INFO) << "sizes "<<size << " "<<infsize <<" "<<sizeof(inf)<< std::endl;
@@ -453,11 +456,36 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
                     osg::notify(osg::WARN) << "Cannot write images with other number of components than 3 or 4" << std::endl;
                 break;
             }
-            fwrite(dta, sizeof(unsigned char), size, fp);
+            fout.write((const char*)dta,sizeof(unsigned char)*size);
             delete [] dta;
 
-            fclose(fp);
-            return WriteResult::FILE_SAVED;
+            return true;
+        }
+
+        virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*) const
+        {
+            bool success = WriteBMPStream(image, fout, "<output stream>");
+
+            if(success)
+                return WriteResult::FILE_SAVED;
+            else
+                return WriteResult::ERROR_IN_WRITING_FILE;
+        }
+
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            bool success = WriteBMPStream(img, fout, fileName);
+
+            if(success)
+                return WriteResult::FILE_SAVED;
+            else
+                return WriteResult::ERROR_IN_WRITING_FILE;
         }
 };
 

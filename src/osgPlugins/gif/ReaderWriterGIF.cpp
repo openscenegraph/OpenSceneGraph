@@ -133,9 +133,15 @@ int transparent)
     }
 }
 
+int gif_read_stream(GifFileType *gfile, GifByteType *gdata, int glength)
+{
+    std::istream *stream = (std::istream*)gfile->UserData; //Get pointer to istream
+    stream->read((char*)gdata,glength); //Read requested amount of data
+    return stream->gcount();
+}
 
 unsigned char *
-simage_gif_load(const char *filename,
+simage_gif_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
 int *numComponents_ret)
@@ -154,7 +160,7 @@ int *numComponents_ret)
     int interlacedoffset[] = { 0, 4, 2, 1 };
     int interlacedjumps[] = { 8, 8, 4, 2 };
 
-    giffile = DGifOpenFileName(filename);
+    giffile = DGifOpen(&fin,gif_read_stream);
     if (!giffile)
     {
         giferror = ERR_OPEN;
@@ -314,7 +320,6 @@ int *numComponents_ret)
     return buffer;
 }
 
-
 class ReaderWriterGIF : public osgDB::ReaderWriter
 {
     public:
@@ -324,20 +329,14 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"gif");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readGIFStream(std::istream& fin) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_gif_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
+            imageData = simage_gif_load(fin,&width_ret,&height_ret,&numComponents_ret);
 
             switch (giferror)
             {
@@ -366,7 +365,6 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
             unsigned int dataType = GL_UNSIGNED_BYTE;
 
             osg::Image* pOsgImage = new osg::Image;
-            pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(s,t,r,
                 internalFormat,
                 pixelFormat,
@@ -375,7 +373,26 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
                 osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
+        }
 
+        virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const
+        {
+            return readGIFStream(fin);
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            ReadResult rr = readGIFStream(istream);
+            if(rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
         }
 };
 

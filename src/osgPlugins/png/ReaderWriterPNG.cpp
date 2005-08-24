@@ -30,22 +30,21 @@ typedef struct
     unsigned int Alpha;
 } pngInfo;
 
+void png_read_istream(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+    std::istream *stream = (std::istream*)png_get_io_ptr(png_ptr); //Get pointer to istream
+    stream->read((char*)data,length); //Read requested amount of data
+}
+
 class ReaderWriterPNG : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "PNG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"png"); }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readPNGStream(std::istream& fin) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
             int trans = PNG_ALPHA;
-            FILE *fp = NULL;
             pngInfo pInfo;
             pngInfo *pinfo = &pInfo;
 
@@ -65,9 +64,9 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             info = png_create_info_struct(png);
             endinfo = png_create_info_struct(png);
 
-            fp = fopen(fileName.c_str(), "rb");
-            if (fp && fread(header, 1, 8, fp) && png_check_sig(header, 8))
-                png_init_io(png, fp);
+            fin.read((char*)header,8);
+            if (fin.gcount() == 8 && png_check_sig(header, 8))
+                png_set_read_fn(png,&fin,png_read_istream); //Use custom read function that will get data from istream
             else
             {
                 png_destroy_read_struct(&png, &info, &endinfo);
@@ -180,15 +179,11 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             //    delete [] data;
 
-            if (fp)
-                fclose(fp);
-
             if (pixelFormat==0) 
                 return ReadResult::FILE_NOT_HANDLED;
 
             osg::Image* pOsgImage = new osg::Image();
 
-            pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(width, height, 1,
                 internalFormat,
                 pixelFormat, 
@@ -197,6 +192,26 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                 osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
+        }
+
+        virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
+        {
+            return readPNGStream(fin);
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            ReadResult rr = readPNGStream(istream);
+            if(rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
         }
 };
 

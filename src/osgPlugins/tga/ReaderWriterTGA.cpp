@@ -243,12 +243,11 @@ const int rleEntrySize)
 
 
 unsigned char *
-simage_tga_load(const char *filename,
+simage_tga_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
 int *numComponents_ret)
 {
-    FILE * fp;
     unsigned char header[18];
     int type;
     int width;
@@ -269,17 +268,10 @@ int *numComponents_ret)
 
     tgaerror = ERR_NO_ERROR;     /* clear error */
 
-    fp = fopen(filename, "rb");
-    if (!fp)
-    {
-        tgaerror = ERR_OPEN;
-        return NULL;
-    }
-
-    if (fread(header, 1, 18, fp) != 18)
+    fin.read((char*)header,18);
+    if (fin.gcount() != 18)
     {
         tgaerror = ERR_READ;
-        fclose(fp);
         return NULL;
     }
 
@@ -296,12 +288,11 @@ int *numComponents_ret)
         (depth < 2 || depth > 4))
     {
         tgaerror = ERR_UNSUPPORTED;
-        fclose(fp);
         return NULL;
     }
 
     if (header[0])               /* skip identification field */
-        fseek(fp, header[0], SEEK_CUR);
+        fin.seekg(header[0],std::ios::cur);
 
     colormap = NULL;
     if (header[1] == 1)          /* there is a colormap */
@@ -309,7 +300,7 @@ int *numComponents_ret)
         int len = getInt16(&header[5]);
         indexsize = header[7]>>3;
         colormap = new unsigned char [len*indexsize];
-        fread(colormap, 1, len*indexsize, fp);
+        fin.read((char*)colormap,len*indexsize);
     }
 
     if (depth == 2)              /* 16 bits */
@@ -353,7 +344,8 @@ int *numComponents_ret)
             int x, y;
             for (y = 0; y < height; y++)
             {
-                if (fread(linebuf, 1, width*depth, fp) != (unsigned int)width*depth)
+                fin.read((char*)linebuf,width*depth);
+                if (fin.gcount() != (unsigned int)width*depth)
                 {
                     tgaerror = ERR_READ;
                     break;
@@ -380,10 +372,10 @@ int *numComponents_ret)
             int size, x, y;
             unsigned char *buf;
             unsigned char *src;
-            int pos = ftell(fp);
-            fseek(fp, 0, SEEK_END);
-            size = ftell(fp) - pos;
-            fseek(fp, pos, SEEK_SET);
+            int pos = fin.tellg();
+            fin.seekg(0,std::ios::end);
+            size = (int)fin.tellg() - pos;
+            fin.seekg(pos,std::ios::beg);
             buf = new unsigned char [size];
             if (buf == NULL)
             {
@@ -391,7 +383,8 @@ int *numComponents_ret)
                 break;
             }
             src = buf;
-            if (fread(buf, 1, size, fp) != (unsigned int) size)
+            fin.read((char*)buf,size);
+            if (fin.gcount() != (unsigned int) size)
             {
                 tgaerror = ERR_READ;
                 break;
@@ -415,7 +408,6 @@ int *numComponents_ret)
     }
 
     if (linebuf) delete [] linebuf;
-    fclose(fp);
 
     if (tgaerror)
     {
@@ -478,20 +470,14 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         virtual const char* className() const { return "TGA Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"tga"); }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readTGAStream(std::istream& fin) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_tga_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
+            imageData = simage_tga_load(fin,&width_ret,&height_ret,&numComponents_ret);
 
             if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
 
@@ -510,7 +496,6 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             unsigned int dataType = GL_UNSIGNED_BYTE;
 
             osg::Image* pOsgImage = new osg::Image;
-            pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(s,t,r,
                 internalFormat,
                 pixelFormat,
@@ -520,6 +505,26 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
             return pOsgImage;
 
+        }
+
+        virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
+        {
+            return readTGAStream(fin);
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            ReadResult rr = readTGAStream(istream);
+            if(rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
         }
 };
 

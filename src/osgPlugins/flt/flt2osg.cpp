@@ -631,18 +631,51 @@ void ConvertFromFLT::visitColorPalette(osg::Group& , ColorPaletteRecord* rec)
     ColorPool* pColorPool = rec->getFltFile()->getColorPool();
     int flightVersion = rec->getFlightVersion();
 
-    if (flightVersion > 13)
-    {
+    if ( flightVersion > 13 ) {
         SColorPalette* pCol = (SColorPalette*)rec->getData();
         int colors = (flightVersion >= 1500) ? 1024 : 512;
+    
+        // *******************************************************************    
+        // GTHACK (Gordon Tomlinson)
+        // 
+        // Some older files or converted file come through with less than
+        // the normal color palettes entries, which was cause an array over
+        // over run at times and thus a crash , chnaged the copy code to now  
+        // figure out how many color entries there are and just grab those  
+        // and fill any extras empty entries with a default white 
+        // 
+        // *******************************************************************    
+        unsigned int datalen =   pCol->RecHeader.length();
 
-        for (int i=0; i < colors; i++)
-        {
-            osg::Vec4 color(pCol->Colors[i].get());
-            color[3] = 1.0f;    // Force alpha to one
-            pColorPool->addColor(i, color);
-        }
-    }
+        int colorLen = ( datalen -( sizeof(char)*128)) /sizeof(pCol->Colors[0])-1;
+        
+        //
+        // Quick sanity check on the size
+        //
+        if( colorLen > colors ) 
+            colorLen = colors;
+        
+            for (int i = 0; i < colorLen ; i++){            
+     
+                osg::Vec4 color( pCol->Colors[i].get());
+                
+                //
+                //  Force alpha to one
+                // 
+                color[3] = 1.0f;     
+     
+                pColorPool->addColor(i, color);
+            }
+            // 
+            // Fill any remainder of the palette with white
+            // 
+            for (int i = colorLen; i < colors ; i++){            
+                osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f );
+                pColorPool->addColor( i, color );
+                }
+                          
+        } //  ( flightVersion > 13 ) 
+        
     else    // version 11, 12 & 13
     {
         SOldColorPalette* pCol = (SOldColorPalette*)rec->getData();

@@ -24,8 +24,22 @@ namespace osg {
 class OSG_EXPORT PolygonMode : public StateAttribute
 {
     public :
-    
+
+        enum Mode {
+            POINT = GL_POINT,
+            LINE = GL_LINE,
+            FILL = GL_FILL
+        };
+
+        enum Face {
+            FRONT_AND_BACK,
+            FRONT,
+            BACK
+        };
+
         PolygonMode();
+
+        PolygonMode(Face face,Mode mode) { setMode(face,mode); }
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PolygonMode(const PolygonMode& pm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -49,35 +63,25 @@ class OSG_EXPORT PolygonMode : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-        enum Mode {
-            POINT = GL_POINT,
-            LINE = GL_LINE,
-            FILL = GL_FILL
-        };
-/*
-	void setFrontAndBackFaceMode(Mode mode) { _modeFront = _modeBack = mode; }
-	
-	void setFrontFaceMode(Mode mode) { _modeFront = mode; }
-	Mode getFrontFaceMode() const { return _modeFront; }
+    /*
+    void setFrontAndBackFaceMode(Mode mode) { _modeFront = _modeBack = mode; }
 
-	void setBackFaceMode(Mode mode) { _modeFront = mode; }
-	Mode getBackFaceMode() const { return _modeBack; }
-*/
-        enum Face {
-            FRONT_AND_BACK,
-            FRONT,
-            BACK
-        };
-    
+    void setFrontFaceMode(Mode mode) { _modeFront = mode; }
+    Mode getFrontFaceMode() const { return _modeFront; }
+
+    void setBackFaceMode(Mode mode) { _modeFront = mode; }
+    Mode getBackFaceMode() const { return _modeBack; }
+    */
+
         void setMode(Face face,Mode mode);
         Mode getMode(Face face) const;
 
         inline bool getFrontAndBack() const { return _modeFront==_modeBack; }
 
         virtual void apply(State& state) const;
-        
+
     protected:
-    
+
         virtual ~PolygonMode();
 
         Mode _modeFront;

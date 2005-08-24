@@ -63,16 +63,6 @@ class OSG_EXPORT PolygonMode : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-    /*
-    void setFrontAndBackFaceMode(Mode mode) { _modeFront = _modeBack = mode; }
-
-    void setFrontFaceMode(Mode mode) { _modeFront = mode; }
-    Mode getFrontFaceMode() const { return _modeFront; }
-
-    void setBackFaceMode(Mode mode) { _modeFront = mode; }
-    Mode getBackFaceMode() const { return _modeBack; }
-    */
-
         void setMode(Face face,Mode mode);
         Mode getMode(Face face) const;
 

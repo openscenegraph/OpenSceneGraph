@@ -53,6 +53,91 @@
 #define ERR_UNSUPPORTED 4
 #define ERR_TIFFLIB     5
 
+/* Functions to read TIFF image from memory
+ *
+ */
+
+tsize_t libtiffStreamReadProc(thandle_t fd, tdata_t buf, tsize_t size)
+{
+    std::istream *fin = (std::istream*)fd;
+
+    fin->read((char*)buf,size);
+
+    if(fin->bad())
+        return -1;
+
+    if(fin->gcount() < size)
+    return 0;
+
+    return size;
+}
+
+tsize_t libtiffStreamWriteProc(thandle_t fd, tdata_t buf, tsize_t size)
+{
+    return 0;
+}
+
+toff_t libtiffStreamSeekProc(thandle_t fd, toff_t off, int i)
+{
+    std::istream *fin = (std::istream*)fd;
+
+    toff_t ret;
+    switch(i)
+    {
+        case SEEK_SET:
+            fin->seekg(off,std::ios::beg);
+            ret = fin->tellg();
+            if(fin->bad())
+                ret = -1;
+            break;
+
+        case SEEK_CUR:
+            fin->seekg(off,std::ios::cur);
+            ret = fin->tellg();
+            if(fin->bad())
+                ret = -1;
+            break;
+
+        case SEEK_END:
+            fin->seekg(off,std::ios::end);
+            ret = fin->tellg();
+            if(fin->bad())
+                ret = -1;
+            break;
+        default:
+            ret = -1;
+            break;
+    }
+    return ret;
+}
+
+int libtiffStreamCloseProc(thandle_t fd)
+{
+    return 0;
+}
+
+toff_t libtiffStreamSizeProc(thandle_t fd)
+{
+    std::istream *fin = (std::istream*)fd;
+
+    std::streampos curPos = fin->tellg();
+
+    fin->seekg(0, std::ios::end);
+    toff_t size = fin->tellg();
+    fin->seekg(curPos, std::ios::beg);
+
+    return size;
+}
+
+int libtiffStreamMapProc(thandle_t fd, tdata_t*addr, toff_t*len)
+{
+    return 0;
+}
+
+void libtiffStreamUnmapProc(thandle_t, tdata_t, toff_t)
+{
+}
+
 static int tifferror = ERR_NO_ERROR;
 
 int
@@ -203,7 +288,7 @@ int headerlen)
 #define pack(a,b)   ((a)<<8 | (b))
 
 unsigned char *
-simage_tiff_load(const char *filename,
+simage_tiff_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
 int *numComponents_ret)
@@ -229,7 +314,15 @@ int *numComponents_ret)
     TIFFSetErrorHandler(tiff_error);
     TIFFSetWarningHandler(tiff_warn);
 
-    in = TIFFOpen(filename, "r");
+    in = TIFFClientOpen("inputstream", "r", (thandle_t)&fin,
+            libtiffStreamReadProc, //Custom read function
+            libtiffStreamWriteProc, //Custom write function
+            libtiffStreamSeekProc, //Custom seek function
+            libtiffStreamCloseProc, //Custom close function
+            libtiffStreamSizeProc, //Custom size function
+            libtiffStreamMapProc, //Custom map function
+            libtiffStreamUnmapProc); //Custom unmap function
+
     if (in == NULL)
     {
         tifferror = ERR_OPEN;
@@ -447,20 +540,14 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return false;
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readTIFStream(std::istream& fin) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_tiff_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
+            imageData = simage_tiff_load(fin,&width_ret,&height_ret,&numComponents_ret);
 
             if (imageData==NULL) 
             {
@@ -485,7 +572,6 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             unsigned int dataType = GL_UNSIGNED_BYTE;
 
             osg::Image* pOsgImage = new osg::Image;
-            pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(s,t,r,
                 internalFormat,
                 pixelFormat,
@@ -494,7 +580,26 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
+        }
 
+        virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const
+        {
+            return readTIFStream(fin);
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            ReadResult rr = readTIFStream(istream);
+            if(rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
         }
 };
 

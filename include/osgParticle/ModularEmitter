@@ -57,6 +57,13 @@ namespace osgParticle
         /// Set the Counter object.
         inline void setCounter(Counter* c);
         
+        /// Get the ratio between number of particle to create in compenstation for movement of the emitter
+        inline float getNumParticlesToCreateMovementCompenstationRatio() const;
+
+        /// Set the ratio between number of particle to create in compenstation for movement of the emitter
+        inline void setNumParticlesToCreateMovementCompenstationRatio(float r);
+
+
         /// Get the Placer object.
         inline Placer* getPlacer();
         
@@ -82,6 +89,8 @@ namespace osgParticle
         virtual void emit(double dt);
         
     private:
+    
+        float _numParticleToCreateMovementCompensationRatio;
         osg::ref_ptr<Counter> _counter;
         osg::ref_ptr<Placer> _placer;
         osg::ref_ptr<Shooter> _shooter;
@@ -102,6 +111,16 @@ namespace osgParticle
     inline void ModularEmitter::setCounter(Counter* c)
     {
         _counter = c;
+    }
+
+    inline float ModularEmitter::getNumParticlesToCreateMovementCompenstationRatio() const
+    {
+        return _numParticleToCreateMovementCompensationRatio;
+    }
+
+    inline void ModularEmitter::setNumParticlesToCreateMovementCompenstationRatio(float r)
+    {
+        _numParticleToCreateMovementCompensationRatio = r;
     }
 
     inline Placer* ModularEmitter::getPlacer()

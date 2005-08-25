@@ -70,6 +70,11 @@ namespace osgParticle
         {
             return minimum + (maximum - minimum) * sqrtf( static_cast<float>(rand()) / static_cast<float>(RAND_MAX) );
         }
+        
+        ValueType mid() const
+        {
+            return (minimum+maximum)*0.5f;
+        }
 
     };
 

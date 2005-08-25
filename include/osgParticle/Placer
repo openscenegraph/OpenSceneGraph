@@ -17,6 +17,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
+#include <osg/Vec3>
 
 namespace osgParticle
 {
@@ -38,6 +39,9 @@ namespace osgParticle
 
         /// Place a particle. Must be implemented in descendant classes.
         virtual void place(Particle* P) const = 0;
+
+        /// Return the control position of particles that placer will generate. Must be implemented in descendant classes.
+        virtual osg::Vec3 getControlPosition() const = 0;
 
     protected:
         ~Placer() {}

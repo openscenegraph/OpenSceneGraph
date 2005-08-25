@@ -178,6 +178,9 @@ namespace osgParticle
         /// Transform position and velocity vectors by a matrix.
         inline void transformPositionVelocity(const osg::Matrix& xform);
 
+        /// Transform position and velocity vectors by a combination of two matrices
+        void Particle::transformPositionVelocity(const osg::Matrix& xform1, const osg::Matrix& xform2, float r);
+
         /// Set the angle vector.
         inline void setAngle(const osg::Vec3& a);
         
@@ -410,14 +413,19 @@ namespace osgParticle
 
     inline void Particle::transformPositionVelocity(const osg::Matrix& xform)
     {
-        // this should be optimized!
-
-        osg::Vec3 p1 = _position + _velocity;
-                
         _position = xform.preMult(_position);
-        p1 = xform.preMult(p1);
-        
-        _velocity = p1 - _position;
+        _velocity = osg::Matrix::transform3x3(_velocity, xform);
+    }
+    
+    inline void Particle::transformPositionVelocity(const osg::Matrix& xform1, const osg::Matrix& xform2, float r)
+    {
+        osg::Vec3 position1 = xform1.preMult(_position);
+        osg::Vec3 velocity1 = osg::Matrix::transform3x3(_velocity, xform1);
+        osg::Vec3 position2 = xform2.preMult(_position);
+        osg::Vec3 velocity2 = osg::Matrix::transform3x3(_velocity, xform2);
+        float one_minus_r = 1.0f-r;
+        _position = position1*r + position2*one_minus_r;
+        _velocity = velocity1*r + velocity2*one_minus_r;
     }
     
     inline void Particle::setAngle(const osg::Vec3& a)

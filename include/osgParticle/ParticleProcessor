@@ -119,6 +119,13 @@ namespace osgParticle
         /// Get the current world-to-local transformation matrix (valid only during cull traversal).
         inline const osg::Matrix& getWorldToLocalMatrix();
         
+        /// Get the previous local-to-world transformation matrix (valid only during cull traversal).
+        inline const osg::Matrix& getPreviousLocalToWorldMatrix();
+        
+        /// Get the previous world-to-local transformation matrix (valid only during cull traversal).
+        inline const osg::Matrix& getPreviousWorldToLocalMatrix();
+
+
         /// Transform a point from local to world coordinates (valid only during cull traversal).
         inline osg::Vec3 transformLocalToWorld(const osg::Vec3& P);
         
@@ -144,10 +151,14 @@ namespace osgParticle
         bool _enabled;
         double _t0;
         osg::ref_ptr<ParticleSystem> _ps;
+        bool _first_ltw_compute;
         bool _need_ltw_matrix;
+        bool _first_wtl_compute;
         bool _need_wtl_matrix;
         osg::Matrix _ltw_matrix;
         osg::Matrix _wtl_matrix;
+        osg::Matrix _previous_ltw_matrix;
+        osg::Matrix _previous_wtl_matrix;
         osg::NodeVisitor* _current_nodevisitor;
         
         bool _endless;
@@ -252,9 +263,13 @@ namespace osgParticle
     inline const osg::Matrix& ParticleProcessor::getLocalToWorldMatrix()    
     {
         if (_need_ltw_matrix) {
-            _ltw_matrix = osg::Matrix::identity();
-            //_current_nodevisitor->getLocalToWorldMatrix(_ltw_matrix, this);
+            _previous_ltw_matrix = _ltw_matrix;
             _ltw_matrix = osg::computeLocalToWorld(_current_nodevisitor->getNodePath());
+            if (_first_ltw_compute)
+            {
+                _previous_ltw_matrix = _ltw_matrix;
+                _first_ltw_compute = false;
+            }
             _need_ltw_matrix = false;
         }
         return _ltw_matrix;
@@ -263,14 +278,30 @@ namespace osgParticle
     inline const osg::Matrix& ParticleProcessor::getWorldToLocalMatrix()    
     {
         if (_need_wtl_matrix) {
-            _wtl_matrix = osg::Matrix::identity();
-            //_current_nodevisitor->getWorldToLocalMatrix(_wtl_matrix, this);
+            _previous_wtl_matrix = _wtl_matrix;
             _wtl_matrix = osg::computeWorldToLocal(_current_nodevisitor->getNodePath());
+            if (_first_wtl_compute)
+            {
+                _previous_wtl_matrix = _wtl_matrix;
+                _first_wtl_compute = false;
+            }
             _need_wtl_matrix = false;
         }
         return _wtl_matrix;
     }
     
+    inline const osg::Matrix& ParticleProcessor::getPreviousLocalToWorldMatrix()
+    {
+        if (_need_ltw_matrix) getLocalToWorldMatrix();
+        return _previous_ltw_matrix;
+    }
+
+    inline const osg::Matrix& ParticleProcessor::getPreviousWorldToLocalMatrix()
+    {
+        if (_need_wtl_matrix) getWorldToLocalMatrix();
+        return _previous_wtl_matrix;
+    }
+
     inline osg::Vec3 ParticleProcessor::transformLocalToWorld(const osg::Vec3& P)
     {
         return getLocalToWorldMatrix().preMult(P);

@@ -285,7 +285,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Iterate through the active PagedLOD nodes children removing 
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
-        void removeExpiredSubgraphs(double currentFrameTime);
+        virtual void removeExpiredSubgraphs(double currentFrameTime);
 
         /** Add the loaded data to the scene graph.*/
         void addLoadedDataToSceneGraph(double currentFrameTime);

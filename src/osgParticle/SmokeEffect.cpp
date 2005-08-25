@@ -50,7 +50,7 @@ void SmokeEffect::setDefaults()
 
     // set up unit particle.
     _defaultParticleTemplate.setLifeTime(5.0*_scale);
-    _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
+    _defaultParticleTemplate.setSizeRange(osgParticle::rangef(0.75f, 2.0f));
     _defaultParticleTemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
     _defaultParticleTemplate.setColorRange(osgParticle::rangev4(
                                             osg::Vec4(1, 1.0f, 1.0f, 1.0f), 
@@ -96,6 +96,7 @@ void SmokeEffect::setUpEmitterAndProgram()
     if (!_emitter)
     {
         _emitter = new osgParticle::ModularEmitter;
+        _emitter->setNumParticlesToCreateMovementCompenstationRatio(1.5f);
         _emitter->setCounter(new osgParticle::RandomRateCounter);
         _emitter->setPlacer(new osgParticle::SectorPlacer);
         _emitter->setShooter(new osgParticle::RadialShooter);

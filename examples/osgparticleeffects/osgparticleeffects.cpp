@@ -62,7 +62,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     if (glider)
     {
         const osg::BoundingSphere& bs = glider->getBound();
-        float size = radius/bs.radius()*0.3f;
+        float size = radius/bs.radius()*0.15f;
 
         osg::MatrixTransform* positioned = new osg::MatrixTransform;
         positioned->setDataVariance(osg::Object::STATIC);
@@ -84,7 +84,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     if (cessna)
     {
         const osg::BoundingSphere& bs = cessna->getBound();
-        float size = radius/bs.radius()*0.3f;
+        float size = radius/bs.radius()*0.15f;
 
         osg::MatrixTransform* positioned = new osg::MatrixTransform;
         positioned->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
@@ -220,7 +220,7 @@ void build_world(osg::Group *root)
 
     // create the moving models.
     {
-        root->addChild(createMovingModel(osg::Vec3(500.0f,500.0f,500.0f),100.0f));
+        root->addChild(createMovingModel(osg::Vec3(500.0f,500.0f,500.0f),300.0f));
     }
 }
 
@@ -271,12 +271,12 @@ public:
             }
             
             osg::Vec3 position = handleMovingModels ? hit.getLocalIntersectPoint() : hit.getWorldIntersectPoint();
-            float scale = 20.0f * ((float)rand() / (float)RAND_MAX);
-            float intensity = handleMovingModels ? 5.0f : 1.0f;
+            float scale = 10.0f * ((float)rand() / (float)RAND_MAX);
+            float intensity = 1.0f;
 
             osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, scale, intensity);
             osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, scale, intensity);
-            osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, scale, intensity);
+            osgParticle::ParticleEffect* smoke = new osgParticle::SmokeEffect(position, scale, intensity);
             osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, scale, intensity);
             
             explosion->setWind(wind);

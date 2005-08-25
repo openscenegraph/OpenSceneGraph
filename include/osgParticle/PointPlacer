@@ -41,6 +41,9 @@ namespace osgParticle
         */
         inline void place(Particle* P) const;
 
+        /// return the control position
+        inline osg::Vec3 getControlPosition() const;
+
     protected:
         virtual ~PointPlacer() {}
         PointPlacer& operator=(const PointPlacer&) { return *this; }        
@@ -63,6 +66,11 @@ namespace osgParticle
         P->setPosition(getCenter());
     }
 
+
+    inline osg::Vec3 PointPlacer::getControlPosition() const
+    {
+        return getCenter();
+    }
 
 }
 

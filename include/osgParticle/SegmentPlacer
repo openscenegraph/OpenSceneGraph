@@ -60,6 +60,9 @@ namespace osgParticle {
         /// Place a particle. This method is called by <CODE>ModularEmitter</CODE>, do not call it manually.
         inline void place(Particle* P) const;
 
+        /// return the control position
+        inline osg::Vec3 getControlPosition() const;
+
     protected:
         virtual ~SegmentPlacer() {}
         SegmentPlacer& operator=(const SegmentPlacer&) { return *this; }        
@@ -121,6 +124,12 @@ namespace osgParticle {
     {
         _vertexB.set(x, y, z);
     }    
+    
+    inline osg::Vec3 SegmentPlacer::getControlPosition() const
+    {
+        return (_vertexA+_vertexB)*0.5f;
+    }
+
 
 }
 

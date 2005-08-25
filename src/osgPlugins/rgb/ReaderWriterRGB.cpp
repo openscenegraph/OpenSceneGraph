@@ -30,7 +30,7 @@ typedef struct _rawImageRec
     unsigned long wasteBytes;
     char name[80];
     unsigned long colorMap;
-    FILE *file;
+    std::istream *file;
     unsigned char *tmp, *tmpR, *tmpG, *tmpB, *tmpA;
     unsigned long rleEnd;
     GLuint *rowStart;
@@ -117,7 +117,6 @@ static void RawImageClose(rawImageRec *raw)
 {
     if (raw)
     {
-        fclose(raw->file);
         
         if (raw->tmp) delete [] raw->tmp;
         if (raw->tmpR) delete [] raw->tmpR;
@@ -133,7 +132,7 @@ static void RawImageClose(rawImageRec *raw)
 }
 
 
-static rawImageRec *RawImageOpen(const char *fileName)
+static rawImageRec *RawImageOpen(std::istream& fin)
 {
     union
     {
@@ -150,6 +149,9 @@ static rawImageRec *RawImageOpen(const char *fileName)
         return NULL;
     }
 
+    //Set istream pointer
+    raw->file = &fin;
+
     endianTest.testWord = 1;
     if (endianTest.testByte[0] == 1)
     {
@@ -160,14 +162,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         raw->swapFlag = GL_FALSE;
     }
 
-    if ((raw->file = fopen(fileName, "rb")) == NULL)
-    {
-        delete raw;
-        perror(fileName);
-        return NULL;
-    }
-
-    fread(raw, 1, 12, raw->file);
+    fin.read((char*)raw,12);
 
     if (raw->swapFlag)
     {
@@ -242,9 +237,9 @@ static rawImageRec *RawImageOpen(const char *fileName)
         }
         x = ybyz * sizeof(GLuint);
         raw->rleEnd = 512 + (2 * x);
-        fseek(raw->file, 512, SEEK_SET);
-        fread(raw->rowStart, 1, x, raw->file);
-        fread(raw->rowSize, 1, x, raw->file);
+                fin.seekg(512,std::ios::beg);
+        fin.read((char*)raw->rowStart,x);
+        fin.read((char*)raw->rowSize,x);
         if (raw->swapFlag)
         {
             ConvertLong(raw->rowStart, (long) (x/sizeof(GLuint)));
@@ -264,25 +259,24 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
 
     if ((raw->type & 0xFF00) == 0x0100)
     {
-        fseek(raw->file, (long) raw->rowStart[y+z*raw->sizeY], SEEK_SET);
-        fread(raw->tmp, 1, (unsigned int)raw->rowSize[y+z*raw->sizeY],
-            raw->file);
+                raw->file->seekg((long) raw->rowStart[y+z*raw->sizeY], std::ios::beg);
+        raw->file->read((char*)raw->tmp, (unsigned int)raw->rowSize[y+z*raw->sizeY]);
 
         iPtr = raw->tmp;
         oPtr = buf;
         while (!done)
         {
-	    if (raw->bpc == 1)
-	        pixel = *iPtr++;
-	    else
-	    {
-	        tempShort = reinterpret_cast<unsigned short*>(iPtr);
-		pixel = *tempShort;
-		tempShort++;
-		iPtr = reinterpret_cast<unsigned char *>(tempShort);
-	    }
-	    if(raw->bpc != 1)
-	        ConvertShort(&pixel, 1);
+            if (raw->bpc == 1)
+                pixel = *iPtr++;
+            else
+            {
+                tempShort = reinterpret_cast<unsigned short*>(iPtr);
+                pixel = *tempShort;
+                tempShort++;
+                iPtr = reinterpret_cast<unsigned char *>(tempShort);
+            }
+            if(raw->bpc != 1)
+                ConvertShort(&pixel, 1);
             count = (int)(pixel & 0x7F);
             if (!count)
             {
@@ -293,61 +287,60 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
             {
                 while (count--)
                 {
-		    if(raw->bpc == 1)
-		        *oPtr++ = *iPtr++;
-		    else{
-		        tempShort = reinterpret_cast<unsigned short*>(iPtr);
-			pixel = *tempShort;
-			tempShort++;
-			iPtr = reinterpret_cast<unsigned char *>(tempShort);
-			
-			ConvertShort(&pixel, 1);
+                    if(raw->bpc == 1)
+                        *oPtr++ = *iPtr++;
+                    else{
+                        tempShort = reinterpret_cast<unsigned short*>(iPtr);
+                        pixel = *tempShort;
+                        tempShort++;
+                        iPtr = reinterpret_cast<unsigned char *>(tempShort);
+                        
+                        ConvertShort(&pixel, 1);
 
-			tempShort = reinterpret_cast<unsigned short*>(oPtr);
-			*tempShort = pixel;
-			tempShort++;
-			oPtr = reinterpret_cast<unsigned char *>(tempShort);
-		    }
+                        tempShort = reinterpret_cast<unsigned short*>(oPtr);
+                        *tempShort = pixel;
+                        tempShort++;
+                        oPtr = reinterpret_cast<unsigned char *>(tempShort);
+                    }
                 }
             }
             else
             {
-	        if (raw->bpc == 1)
-		{
-		    pixel = *iPtr++;
-		}
-		else
-		{
-		    tempShort = reinterpret_cast<unsigned short*>(iPtr);
-		    pixel = *tempShort;
-		    tempShort++;
-		    iPtr = reinterpret_cast<unsigned char *>(tempShort);
-		}
-		if(raw->bpc != 1)
-		    ConvertShort(&pixel, 1);
+                if (raw->bpc == 1)
+                {
+                    pixel = *iPtr++;
+                }
+                else
+                {
+                    tempShort = reinterpret_cast<unsigned short*>(iPtr);
+                    pixel = *tempShort;
+                    tempShort++;
+                    iPtr = reinterpret_cast<unsigned char *>(tempShort);
+                }
+                if(raw->bpc != 1)
+                    ConvertShort(&pixel, 1);
                 while (count--)
                 {
-        	    if(raw->bpc == 1)
-		        *oPtr++ = pixel;
-		    else
-		    {
-		        tempShort = reinterpret_cast<unsigned short*>(oPtr);
-			*tempShort = pixel;
-			tempShort++;
-			oPtr = reinterpret_cast<unsigned char *>(tempShort);
-		    }
+                    if(raw->bpc == 1)
+                        *oPtr++ = pixel;
+                    else
+                    {
+                        tempShort = reinterpret_cast<unsigned short*>(oPtr);
+                        *tempShort = pixel;
+                        tempShort++;
+                        oPtr = reinterpret_cast<unsigned char *>(tempShort);
+                    }
                 }
             }
         }
     }
     else
     {
-        fseek(raw->file, 512+(y*raw->sizeX*raw->bpc)+(z*raw->sizeX*raw->sizeY*raw->bpc),
-            SEEK_SET);
-        fread(buf, 1, raw->sizeX*raw->bpc, raw->file);
-	if(raw->swapFlag && raw->bpc != 1){
-	    ConvertShort(reinterpret_cast<unsigned short*>(buf), raw->sizeX);
-	}
+        raw->file->seekg(512+(y*raw->sizeX*raw->bpc)+(z*raw->sizeX*raw->sizeY*raw->bpc),std::ios::beg);
+        raw->file->read((char*)buf, raw->sizeX*raw->bpc);
+        if(raw->swapFlag && raw->bpc != 1){
+            ConvertShort(reinterpret_cast<unsigned short*>(buf), raw->sizeX);
+        }
     }
 }
 
@@ -378,7 +371,7 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
             RawImageGetRow(raw, raw->tmpA, i, 3);
         for (j = 0; j < (int)(raw->sizeX); j++)
         {
-	  if(raw->bpc == 1){
+          if(raw->bpc == 1){
             if( raw->sizeZ >= 1 )
                 *ptr++ = *(raw->tmpR + j);
             if( raw->sizeZ >= 2 )
@@ -387,36 +380,36 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
                 *ptr++ = *(raw->tmpB + j);
             if( raw->sizeZ >= 4 )
                 *ptr++ = *(raw->tmpA + j);
-	  }else{
+          }else{
             if( raw->sizeZ >= 1 )
-	    {
-	        tempShort = reinterpret_cast<unsigned short*>(ptr);
-		*tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpR) + j);
-		tempShort++;
-		ptr = reinterpret_cast<unsigned char *>(tempShort);
-	    }
+            {
+                tempShort = reinterpret_cast<unsigned short*>(ptr);
+                *tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpR) + j);
+                tempShort++;
+                ptr = reinterpret_cast<unsigned char *>(tempShort);
+            }
             if( raw->sizeZ >= 2 )
-	    {
-	        tempShort = reinterpret_cast<unsigned short*>(ptr);
-		*tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpG) + j);
-		tempShort++;
-		ptr = reinterpret_cast<unsigned char *>(tempShort);
-	    }
+            {
+                tempShort = reinterpret_cast<unsigned short*>(ptr);
+                *tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpG) + j);
+                tempShort++;
+                ptr = reinterpret_cast<unsigned char *>(tempShort);
+            }
             if( raw->sizeZ >= 3 )
-	    {
-	        tempShort = reinterpret_cast<unsigned short*>(ptr);
-		*tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpB) + j);
-		tempShort++;
-		ptr = reinterpret_cast<unsigned char *>(tempShort);
-	    }
+            {
+                tempShort = reinterpret_cast<unsigned short*>(ptr);
+                *tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpB) + j);
+                tempShort++;
+                ptr = reinterpret_cast<unsigned char *>(tempShort);
+            }
             if( raw->sizeZ >= 4 )
             {
-	        tempShort = reinterpret_cast<unsigned short*>(ptr);
-		*tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpA) + j);
-		tempShort++;
-		ptr = reinterpret_cast<unsigned char *>(tempShort);
-	    }
-	  }
+                tempShort = reinterpret_cast<unsigned short*>(ptr);
+                *tempShort = *(reinterpret_cast<unsigned short*>(raw->tmpA) + j);
+                tempShort++;
+                ptr = reinterpret_cast<unsigned char *>(tempShort);
+            }
+          }
         }
         //         // pad the image width with blanks to bring it up to the rounded width.
         //         for(;j<width;++j) *ptr++ = 0;
@@ -439,19 +432,13 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"bw");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readRGBStream(std::istream& fin) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-            
             rawImageRec *raw;
 
-            if( (raw = RawImageOpen(fileName.c_str())) == NULL )
+            if( (raw = RawImageOpen(fin)) == NULL )
             {
-                return "Unable to open \""+fileName+"\"";
+                return ReadResult::FILE_NOT_HANDLED;
             }
 
             int s = raw->sizeX;
@@ -471,14 +458,13 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 raw->sizeZ == 4 ? GL_RGBA : (GLenum)-1;
 
             unsigned int dataType = raw->bpc == 1 ? GL_UNSIGNED_BYTE :
-	      GL_UNSIGNED_SHORT;
+              GL_UNSIGNED_SHORT;
 
             unsigned char *data;
             RawImageGetData(raw, &data);
             RawImageClose(raw);
 
             Image* image = new Image();
-            image->setFileName(fileName.c_str());
             image->setImage(s,t,r,
                 internalFormat,
                 pixelFormat,
@@ -488,64 +474,78 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
             notify(INFO) << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;
-
         }
 
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+        virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const
         {
-            std::string ext = osgDB::getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-            
-            FILE *fp = fopen(fileName.c_str(), "wb");
-            if (!fp) 
-                return WriteResult::ERROR_IN_WRITING_FILE;
+            return readRGBStream(fin);
+        }
 
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            ReadResult rr = readRGBStream(istream);
+            if(rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
+        }
+
+        WriteResult writeRGBStream(const osg::Image& img, std::ostream &fout, const std::string& name) const
+        {
             rawImageRec raw;
             raw.imagic = 0732;
 
             GLenum dataType = img.getDataType();
 
             raw.type  = dataType == GL_UNSIGNED_BYTE ? 1 :
-             dataType == GL_BYTE ? 1 :
-             dataType == GL_BITMAP ? 1 :
-             dataType == GL_UNSIGNED_SHORT ? 2 :
-             dataType == GL_SHORT ? 2 :
-             dataType == GL_UNSIGNED_INT ? 4 :
-             dataType == GL_INT ? 4 :
-             dataType == GL_FLOAT ? 4 :
-             dataType == GL_UNSIGNED_BYTE_3_3_2 ? 1 :
-             dataType == GL_UNSIGNED_BYTE_2_3_3_REV ? 1 :
-             dataType == GL_UNSIGNED_SHORT_5_6_5 ? 2 :
-             dataType == GL_UNSIGNED_SHORT_5_6_5_REV ? 2 :
-             dataType == GL_UNSIGNED_SHORT_4_4_4_4 ? 2 :
-             dataType == GL_UNSIGNED_SHORT_4_4_4_4_REV ? 2 :
-             dataType == GL_UNSIGNED_SHORT_5_5_5_1 ? 2 :
-             dataType == GL_UNSIGNED_SHORT_1_5_5_5_REV ? 2 :
-             dataType == GL_UNSIGNED_INT_8_8_8_8 ? 4 :
-             dataType == GL_UNSIGNED_INT_8_8_8_8_REV ? 4 :
-             dataType == GL_UNSIGNED_INT_10_10_10_2 ? 4 :
-             dataType == GL_UNSIGNED_INT_2_10_10_10_REV ? 4 : 4;
+                dataType == GL_BYTE ? 1 :
+                dataType == GL_BITMAP ? 1 :
+                dataType == GL_UNSIGNED_SHORT ? 2 :
+                dataType == GL_SHORT ? 2 :
+                dataType == GL_UNSIGNED_INT ? 4 :
+                dataType == GL_INT ? 4 :
+                dataType == GL_FLOAT ? 4 :
+                dataType == GL_UNSIGNED_BYTE_3_3_2 ? 1 :
+                dataType == GL_UNSIGNED_BYTE_2_3_3_REV ? 1 :
+                dataType == GL_UNSIGNED_SHORT_5_6_5 ? 2 :
+                dataType == GL_UNSIGNED_SHORT_5_6_5_REV ? 2 :
+                dataType == GL_UNSIGNED_SHORT_4_4_4_4 ? 2 :
+                dataType == GL_UNSIGNED_SHORT_4_4_4_4_REV ? 2 :
+                dataType == GL_UNSIGNED_SHORT_5_5_5_1 ? 2 :
+                dataType == GL_UNSIGNED_SHORT_1_5_5_5_REV ? 2 :
+                dataType == GL_UNSIGNED_INT_8_8_8_8 ? 4 :
+                dataType == GL_UNSIGNED_INT_8_8_8_8_REV ? 4 :
+                dataType == GL_UNSIGNED_INT_10_10_10_2 ? 4 :
+                dataType == GL_UNSIGNED_INT_2_10_10_10_REV ? 4 : 4;
 
             GLenum pixelFormat = img.getPixelFormat();
+
             raw.dim    = 
-               pixelFormat == GL_COLOR_INDEX? 1 :
-               pixelFormat == GL_RED? 1 :
-               pixelFormat == GL_GREEN? 1 :
-               pixelFormat == GL_BLUE? 1 :
-               pixelFormat == GL_ALPHA? 1 :
-               pixelFormat == GL_RGB? 3 :
-               pixelFormat == GL_BGR ? 3 :
-               pixelFormat == GL_RGBA? 4 :
-               pixelFormat == GL_BGRA? 4 :
-               pixelFormat == GL_LUMINANCE? 1 :
-               pixelFormat == GL_LUMINANCE_ALPHA ? 2 : 1;
+                pixelFormat == GL_COLOR_INDEX? 1 :
+                pixelFormat == GL_RED? 1 :
+                pixelFormat == GL_GREEN? 1 :
+                pixelFormat == GL_BLUE? 1 :
+                pixelFormat == GL_ALPHA? 1 :
+                pixelFormat == GL_RGB? 3 :
+                pixelFormat == GL_BGR ? 3 :
+                pixelFormat == GL_RGBA? 4 :
+                pixelFormat == GL_BGRA? 4 :
+                pixelFormat == GL_LUMINANCE? 1 :
+                pixelFormat == GL_LUMINANCE_ALPHA ? 2 : 1;
+
             raw.sizeX = img.s();
             raw.sizeY = img.t();
             raw.sizeZ = raw.dim;
             raw.min = 0;
             raw.max = 0xFF;
             raw.wasteBytes = 0;
-            strcpy( raw.name, fileName.c_str() );
+            strncpy( raw.name, name.c_str(), 80);
             raw.colorMap = 0;
 
             int isize = img.getImageSizeInBytes();
@@ -582,14 +582,29 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             char pad[512 - sizeof(rawImageRec)];
             memset( pad, 0, sizeof(pad));
 
-            fwrite( &raw, sizeof( rawImageRec), 1, fp );
-            fwrite( pad, sizeof(pad), 1, fp );
-            fwrite( buffer, isize, 1, fp );
+            fout.write((const char*)&raw,sizeof(rawImageRec));
+            fout.write((const char*)pad,sizeof(pad));
+            fout.write((const char*)buffer,isize);
 
             delete [] buffer;
 
-            fclose(fp);
             return WriteResult::FILE_SAVED;
+        }
+
+        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options*) const
+        {
+            return writeRGBStream(img,fout,"");
+        }
+
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            return writeRGBStream(img,fout,fileName);
         }
 
 };

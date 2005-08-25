@@ -104,6 +104,7 @@ class ShapeVisitor
     public:
     
     	ShapeVisitor() {}
+        virtual ~ShapeVisitor() {}
     
     	virtual void apply(Sphere&) {}
     	virtual void apply(Box&) {}
@@ -124,6 +125,7 @@ class ConstShapeVisitor
     public:
     
     	ConstShapeVisitor() {}
+        virtual ~ConstShapeVisitor() {}
 
     	virtual void apply(const Sphere&) {}
     	virtual void apply(const Box&) {}

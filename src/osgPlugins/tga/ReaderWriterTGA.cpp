@@ -345,7 +345,7 @@ int *numComponents_ret)
             for (y = 0; y < height; y++)
             {
                 fin.read((char*)linebuf,width*depth);
-                if (fin.gcount() != (unsigned int)width*depth)
+                if (fin.gcount() != (std::streamsize) (width*depth))
                 {
                     tgaerror = ERR_READ;
                     break;
@@ -384,7 +384,7 @@ int *numComponents_ret)
             }
             src = buf;
             fin.read((char*)buf,size);
-            if (fin.gcount() != (unsigned int) size)
+            if (fin.gcount() != (std::streamsize) size)
             {
                 tgaerror = ERR_READ;
                 break;

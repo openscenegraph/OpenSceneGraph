@@ -286,6 +286,7 @@ class ArrayVisitor
 {
     public:
         ArrayVisitor() {}
+        virtual ~ArrayVisitor() {}
         
         virtual void apply(Array&) {}
         virtual void apply(ByteArray&) {}
@@ -315,6 +316,7 @@ class ConstArrayVisitor
 {
     public:
         ConstArrayVisitor() {}
+        virtual ~ConstArrayVisitor() {}
         
         virtual void apply(const Array&) {}
         virtual void apply(const ByteArray&) {}
@@ -345,6 +347,7 @@ class ValueVisitor
 {
     public:
         ValueVisitor() {}
+        virtual ~ValueVisitor() {}
         
         virtual void apply(GLbyte&) {}
         virtual void apply(GLshort&) {}
@@ -374,6 +377,7 @@ class ConstValueVisitor
 {
     public:
         ConstValueVisitor() {}
+        virtual ~ConstValueVisitor() {}
         
         virtual void apply(const GLbyte&) {}
         virtual void apply(const GLshort&) {}

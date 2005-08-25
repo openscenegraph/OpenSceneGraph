@@ -258,6 +258,7 @@ class OSG_EXPORT StateAttribute : public Object
 
         struct ModeUsage
         {
+            virtual ~ModeUsage() {}
             virtual void usesMode(GLMode mode) = 0;
             virtual void usesTextureMode(GLMode mode) = 0;
         };

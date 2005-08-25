@@ -612,6 +612,7 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
 
 struct concrete_wrapper: basic_type_wrapper 
 {
+    virtual ~concrete_wrapper() {}
     concrete_wrapper(const osg::Object *myobj) : myobj_(myobj) {}
     bool matches(const osg::Object *proto) const
     {

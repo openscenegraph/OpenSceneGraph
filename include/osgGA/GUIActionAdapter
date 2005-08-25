@@ -54,6 +54,7 @@ then you then respond the flag being set in your own leisure.
 class GUIActionAdapter
 {
 public:
+        virtual ~GUIActionAdapter() {}
         
         /**
         requestRedraw() requests a single redraw.

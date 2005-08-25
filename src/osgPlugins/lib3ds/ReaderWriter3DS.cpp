@@ -570,7 +570,7 @@ osg::Drawable*   ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,Fac
     // create normals.
     if (_usePerVertexNormals)
     {
-        osg::Vec3Array* osg_normals=osg_normals = new osg::Vec3Array(noVertex);
+        osg::Vec3Array* osg_normals = new osg::Vec3Array(noVertex);
         
         // initialize normal list to zero's.
         for (i=0; i<noVertex; ++i)
@@ -692,7 +692,8 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
 
         // what is the wrap mode of the texture.
         osg::Texture2D::WrapMode wm = ((texture->flags)&LIB3DS_NO_TILE) ?
-        osg::Texture2D::CLAMP : wm=osg::Texture2D::REPEAT;
+                osg::Texture2D::CLAMP :
+                osg::Texture2D::REPEAT;
         osg_texture->setWrap(osg::Texture2D::WRAP_S,wm);
         osg_texture->setWrap(osg::Texture2D::WRAP_T,wm);
         osg_texture->setWrap(osg::Texture2D::WRAP_R,wm);

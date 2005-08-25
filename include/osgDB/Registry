@@ -31,6 +31,7 @@ namespace osgDB {
 
 /** basic structure for custom runtime inheritance checking */
 struct basic_type_wrapper {
+    virtual ~basic_type_wrapper() {}
     virtual bool matches(const osg::Object *proto) const = 0;
 };
 
@@ -74,11 +75,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void readCommandLine(osg::ArgumentParser& commandLine);
 
         /** register an .fileextension alias to mapExt toExt, the later
-	  * should the the extension name of the readerwriter plugin library.
-	  * For example to map .tif files to the tiff loader, use
-	  * addExtAlias("tif","tiff") which will enable .tif to be read
-	  * by the libdb_tiff readerwriter plugin.*/
-	void addFileExtensionAlias(const std::string mapExt, const std::string toExt);
+          * should the the extension name of the readerwriter plugin library.
+          * For example to map .tif files to the tiff loader, use
+          * addExtAlias("tif","tiff") which will enable .tif to be read
+          * by the libdb_tiff readerwriter plugin.*/
+        void addFileExtensionAlias(const std::string mapExt, const std::string toExt);
 
         void addDotOsgWrapper(DotOsgWrapper* wrapper);
         void removeDotOsgWrapper(DotOsgWrapper* wrapper);
@@ -335,8 +336,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Add a filename,object,timestamp tripple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
 
-	/** Get an object from the object cache*/ 
-	osg::Object* getFromObjectCache(const std::string& fileName);
+        /** Get an object from the object cache*/ 
+        osg::Object* getFromObjectCache(const std::string& fileName);
         
         /** Add archive to archive cache so that future calls reference this archive.*/
         void addToArchiveCache(const std::string& fileName, osgDB::Archive* archive);

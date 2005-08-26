@@ -135,6 +135,10 @@ SOURCE=..\..\src\osgSim\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\OveralyNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\ScalarBar.cpp
 # End Source File
 # Begin Source File
@@ -208,6 +212,10 @@ SOURCE=..\..\include\osgSim\LightSystem
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\MultiSwitch
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\OverlayNode
 # End Source File
 # Begin Source File
 

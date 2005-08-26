@@ -6,17 +6,18 @@ CXXFILES = \
 	BlinkSequence.cpp\
 	ColorRange.cpp\
 	DOFTransform.cpp\
-	LightPoint.cpp\
-	LightPointDrawable.cpp\
-	LightPointNode.cpp\
         Impostor.cpp\
 	ImpostorSprite.cpp\
         InsertImpostorsVisitor.cpp\
+	LightPoint.cpp\
+	LightPointDrawable.cpp\
+	LightPointNode.cpp\
+	MultiSwitch.cpp\
+	OverlayNode.cpp\
 	ScalarBar.cpp\
 	ScalarsToColors.cpp\
 	Sector.cpp\
 	SphereSegment.cpp\
-	MultiSwitch.cpp\
 	Version.cpp\
 	VisibilityGroup.cpp\
 

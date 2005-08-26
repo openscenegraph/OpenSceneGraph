@@ -67,12 +67,12 @@ tsize_t libtiffStreamReadProc(thandle_t fd, tdata_t buf, tsize_t size)
         return -1;
 
     if(fin->gcount() < size)
-    return 0;
+        return 0;
 
     return size;
 }
 
-tsize_t libtiffStreamWriteProc(thandle_t fd, tdata_t buf, tsize_t size)
+tsize_t libtiffStreamWriteProc(thandle_t, tdata_t, tsize_t)
 {
     return 0;
 }
@@ -88,30 +88,30 @@ toff_t libtiffStreamSeekProc(thandle_t fd, toff_t off, int i)
             fin->seekg(off,std::ios::beg);
             ret = fin->tellg();
             if(fin->bad())
-                ret = -1;
+                ret = 0;
             break;
 
         case SEEK_CUR:
             fin->seekg(off,std::ios::cur);
             ret = fin->tellg();
             if(fin->bad())
-                ret = -1;
+                ret = 0;
             break;
 
         case SEEK_END:
             fin->seekg(off,std::ios::end);
             ret = fin->tellg();
             if(fin->bad())
-                ret = -1;
+                ret = 0;
             break;
         default:
-            ret = -1;
+            ret = 0;
             break;
     }
     return ret;
 }
 
-int libtiffStreamCloseProc(thandle_t fd)
+int libtiffStreamCloseProc(thandle_t)
 {
     return 0;
 }
@@ -129,7 +129,7 @@ toff_t libtiffStreamSizeProc(thandle_t fd)
     return size;
 }
 
-int libtiffStreamMapProc(thandle_t fd, tdata_t*addr, toff_t*len)
+int libtiffStreamMapProc(thandle_t, tdata_t*, toff_t*)
 {
     return 0;
 }
@@ -160,6 +160,10 @@ simage_tiff_error(char * buffer, int buflen)
     }
     return tifferror;
 }
+
+
+
+
 
 
 static void

@@ -20,11 +20,11 @@ using namespace osgSim;
 // use this cull callback to allow the camera to traverse the Impostor's children without
 // actuall having them assigned as children to the camea itself.  This make the camera a
 // decorator without ever directly being assigned to it. 
-class TraverseNodeCallback : public osg::NodeCallback
+class ImpostorTraverseNodeCallback : public osg::NodeCallback
 {
 public:
 
-    TraverseNodeCallback(osgSim::Impostor* node):_node(node) {}                                                       
+    ImpostorTraverseNodeCallback(osgSim::Impostor* node):_node(node) {}                                                       
 
     virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
     {
@@ -394,7 +394,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
         impostorSprite->setCameraNode(camera);
     }
 
-    camera->setCullCallback(new TraverseNodeCallback(this));
+    camera->setCullCallback(new ImpostorTraverseNodeCallback(this));
     
     osgUtil::RenderStage* previous_stage = cv->getRenderStage();
     

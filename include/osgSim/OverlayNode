@@ -57,9 +57,14 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
     protected :
 
         virtual ~OverlayNode() {}
+        
+        void init();
 
-        typedef osg::buffered_object< osg::ref_ptr<osg::CameraNode> > CameraList;
-        mutable CameraList  _cameras;
+        typedef osg::buffered_value< int > TextureObjectValidList;
+        
+        mutable TextureObjectValidList _textureObjectValidList;
+
+        osg::ref_ptr<osg::CameraNode>   _camera;
         
         // overaly subgraph is render to a texture
         osg::ref_ptr<osg::Node>         _overlaySubgraph;

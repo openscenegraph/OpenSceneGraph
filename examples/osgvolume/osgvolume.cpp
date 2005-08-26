@@ -1142,13 +1142,14 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--s_maxTextureSize <size>","Set the texture maximum resolution in the s (x) dimension.");
     arguments.getApplicationUsage()->addCommandLineOption("--t_maxTextureSize <size>","Set the texture maximum resolution in the t (y) dimension.");
     arguments.getApplicationUsage()->addCommandLineOption("--r_maxTextureSize <size>","Set the texture maximum resolution in the r (z) dimension.");
-    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Enable the usage of compressed textures");
-    arguments.getApplicationUsage()->addCommandLineOption("--compressed-arb","Enable the usage of OpenGL ARB compressed textures");
-    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt1","Enable the usage of S3TC DXT1 compressed textures");
-    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt3","Enable the usage of S3TC DXT3 compressed textures");
-    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt5","Enable the usage of S3TC DXT5 compressed textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Enable the usage of compressed textures.");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-arb","Enable the usage of OpenGL ARB compressed textures.");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt1","Enable the usage of S3TC DXT1 compressed textures.");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt3","Enable the usage of S3TC DXT3 compressed textures.");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt5","Enable the usage of S3TC DXT5 compressed textures.");
     arguments.getApplicationUsage()->addCommandLineOption("--modulate-alpha-by-luminance","For each pixel multiple the alpha value by the luminance.");
-    arguments.getApplicationUsage()->addCommandLineOption("--replace-alpha-with-luminance","For each pixel mSet the alpha value to the luminance");
+    arguments.getApplicationUsage()->addCommandLineOption("--replace-alpha-with-luminance","For each pixel mSet the alpha value to the luminance.");
+    arguments.getApplicationUsage()->addCommandLineOption("--num-components <num>","Set the number of components to in he target image.");
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
@@ -1225,6 +1226,10 @@ int main( int argc, char **argv )
     while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINACE; }
         
     
+    unsigned int numComponentsDesired = 0; 
+    while(arguments.read("--num-components", numComponentsDesired)) {}
+
+
     osg::ref_ptr<osg::Image> image_3d;
 
     int sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents;
@@ -1250,7 +1255,7 @@ int main( int argc, char **argv )
         
         // pack the textures into a single texture.
         ProcessRow processRow;
-        image_3d = createTexture3D(imageList, processRow, 0, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize);
+        image_3d = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize);
     }
 
 

@@ -1,0 +1,81 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGSIM_OVERLAYNODE
+#define OSGSIM_OVERLAYNODE 1
+
+#include <osg/buffered_value>
+#include <osg/CameraNode>
+#include <osg/TexGenNode>
+
+#include <osgSim/Export>
+
+namespace osgSim {
+
+/** OverlayNode is for creating texture overlays on scenes, with the overlay texture being generated
+  * by pre rendering an Overlay Subgraph to a texture, then projecting this resulting texture on the scene.*/
+class OSGSIM_EXPORT OverlayNode : public osg::Group
+{
+    public :
+        OverlayNode();
+
+        OverlayNode(const OverlayNode& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+            
+        META_Node(osgSim, OverlayNode);
+        
+        virtual void traverse(osg::NodeVisitor& nv);
+
+        /** Set the overlay subgraph which will be render to texture.*/
+        void setOverlaySubgraph(osg::Node* node);
+        
+        /** Get the overlay subgraph which will be render to texture.*/
+        osg::Node* getOverlaySubgraph() { return _overlaySubgraph.get(); }
+
+        /** Get the const overlay subgraph which will be render to texture.*/
+        const osg::Node* getOverlaySubgraph() const { return _overlaySubgraph.get(); }
+        
+        /** Inform the OveralNode that the overlay texture needs to be updated.*/
+        void dirtyOverlayTexture();
+        
+        /** Set the texture unit that the texture should be assigned to.*/
+        void setOverlayTextureUnit(unsigned int unit);
+
+        /** Get the texture unit that the texture should be assigned to.*/
+        unsigned int getOverlayTextureUnit() const { return _textureUnit; }
+        
+        
+    protected :
+
+        virtual ~OverlayNode() {}
+
+        typedef osg::buffered_object< osg::ref_ptr<osg::CameraNode> > CameraList;
+        mutable CameraList  _cameras;
+        
+        // overaly subgraph is render to a texture
+        osg::ref_ptr<osg::Node>         _overlaySubgraph;
+        
+        // texgen node to generate the tex coordinates for us
+        osg::ref_ptr<osg::TexGenNode>   _texgenNode;
+        
+        // state set to decoate the main subgraph.
+        osg::ref_ptr<osg::StateSet>     _mainSubgraphStateSet;
+        
+        // texture to render to, and to read from.
+        unsigned int                    _textureUnit;
+        osg::ref_ptr<osg::Texture>      _texture;
+
+};
+
+}
+
+#endif

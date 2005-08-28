@@ -135,7 +135,7 @@ SOURCE=..\..\src\osgSim\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgSim\OveralyNode.cpp
+SOURCE=..\..\src\osgSim\OverlayNode.cpp
 # End Source File
 # Begin Source File
 

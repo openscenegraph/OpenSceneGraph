@@ -19,95 +19,16 @@
 #include "receiver.h"
 #include "broadcaster.h"
 
-typedef unsigned char * BytePtr;
-template <class T>
-inline void swapBytes(  T &s )
-{
-    if( sizeof( T ) == 1 ) return;
-
-    T d = s;
-    BytePtr sptr = (BytePtr)&s;
-    BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]); 
-
-    for( unsigned int i = 0; i < sizeof(T); i++ )
-        *(sptr++) = *(dptr--);
-}
-
-class PackedEvent
-{
-    public:
-        PackedEvent():
-            _eventType(osgProducer::EventAdapter::NONE),
-            _key(0),
-            _button(0),
-            _Xmin(0),_Xmax(0),
-            _Ymin(0),_Ymax(0),
-            _mx(0),
-            _my(0),
-            _buttonMask(0),
-            _modKeyMask(0),
-            _time(0.0) {}
-
-
-        void set(const osgProducer::EventAdapter& event)
-        {
-            _eventType = event._eventType;
-            _key = event._key;
-            _button = event._button;
-            _Xmin = event._Xmin;
-            _Xmax = event._Xmax;
-            _Ymin = event._Ymin;
-            _Ymax = event._Ymax;
-            _mx = event._mx;
-            _my = event._my;
-            _buttonMask = event._buttonMask;
-            _modKeyMask = event._modKeyMask;
-            _time = event._time;
-        }
-
-        void get(osgProducer::EventAdapter& event)
-        {
-            event._eventType = _eventType;
-            event._key = _key;
-            event._button = _button;
-            event._Xmin = _Xmin;
-            event._Xmax = _Xmax;
-            event._Ymin = _Ymin;
-            event._Ymax = _Ymax;
-            event._mx = _mx;
-            event._my = _my;
-            event._buttonMask = _buttonMask;
-            event._modKeyMask = _modKeyMask;
-            event._time = _time;
-        }
-        
-        void swapBytes()
-        {
-        }
-
-    protected:
-    
-        osgProducer::EventAdapter::EventType _eventType;
-        int _key;
-        int _button;
-        float _Xmin,_Xmax;
-        float _Ymin,_Ymax;
-        float _mx;
-        float _my;
-        unsigned int _buttonMask;
-        unsigned int _modKeyMask;
-        double _time;
-};
 
 const unsigned int MAX_NUM_EVENTS = 10;
-
+const unsigned int SWAP_BYTES_COMPARE = 0x12345678;
 class CameraPacket {
     public:
     
     
         CameraPacket():_masterKilled(false) 
         {
-            _byte_order = 0x12345678;
+            _byte_order = SWAP_BYTES_COMPARE;
         }
         
         void setPacket(const osg::Matrix& matrix,const osg::FrameStamp* frameStamp)
@@ -128,27 +49,7 @@ class CameraPacket {
         void readEventQueue(osgProducer::Viewer& viewer);
         
         void writeEventQueue(osgProducer::Viewer& viewer);
-        
-        void checkByteOrder( void )
-        {
-            if( _byte_order == 0x78563412 )  // We're backwards
-            {
-                swapBytes( _byte_order );
-                swapBytes( _masterKilled );
-                for( int i = 0; i < 16; i++ )
-                swapBytes( _matrix.ptr()[i] );
 
-                    // umm.. we should byte swap _frameStamp too...
-                    
-                    
-                for(unsigned int ei=0; ei<_numEvents; ++ei)
-                {
-                    _events[ei].swapBytes();
-                }
-            }
-        }
-
-        
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
         
@@ -162,42 +63,304 @@ class CameraPacket {
         // us to do this, even though its a reference counted object.    
         osg::FrameStamp  _frameStamp;
         
-        unsigned int _numEvents;
-        PackedEvent  _events[MAX_NUM_EVENTS];        
+        osgProducer::KeyboardMouseCallback::EventQueue _events;
         
+};
+
+class DataConverter
+{
+    public:
+
+        DataConverter(unsigned int numBytes):
+            _startPtr(0),
+            _endPtr(0),
+            _swapBytes(false),
+            _currentPtr(0)
+        {
+            _currentPtr = _startPtr = new char[numBytes];
+            _endPtr = _startPtr+numBytes;
+            _numBytes = numBytes;
+        }
+
+        char* _startPtr;
+        char* _endPtr;
+        unsigned int _numBytes;
+        bool _swapBytes;
+
+        char* _currentPtr;
+
+        inline void write1(char* ptr)
+        {
+            if (_currentPtr+1>=_endPtr) return;
+
+            *(_currentPtr++) = *(ptr); 
+        }
+
+        inline void read1(char* ptr)
+        {
+            if (_currentPtr+1>=_endPtr) return;
+
+            *(ptr) = *(_currentPtr++); 
+        }
+
+        inline void write2(char* ptr)
+        {
+            if (_currentPtr+2>=_endPtr) return;
+
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr); 
+        }
+
+        inline void read2(char* ptr)
+        {
+            if (_currentPtr+2>=_endPtr) return;
+
+            if (_swapBytes)
+            {
+                *(ptr+1) = *(_currentPtr++); 
+                *(ptr) = *(_currentPtr++); 
+            }
+            else
+            {
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr) = *(_currentPtr++); 
+            }
+        }
+
+        inline void write4(char* ptr)
+        {
+            if (_currentPtr+4>=_endPtr) return;
+
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr); 
+        }
+
+        inline void read4(char* ptr)
+        {
+            if (_currentPtr+4>=_endPtr) return;
+
+            if (_swapBytes)
+            {
+                *(ptr+3) = *(_currentPtr++); 
+                *(ptr+2) = *(_currentPtr++); 
+                *(ptr+1) = *(_currentPtr++); 
+                *(ptr) = *(_currentPtr++); 
+            }
+            else
+            {
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr) = *(_currentPtr++); 
+            }
+        }
+
+        inline void write8(char* ptr)
+        {
+            if (_currentPtr+8>=_endPtr) return;
+
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr++); 
+            *(_currentPtr++) = *(ptr); 
+        }
+
+        inline void read8(char* ptr)
+        {
+            char* endPtr = _currentPtr+8;
+            if (endPtr>=_endPtr) return;
+
+            if (_swapBytes)
+            {
+                *(ptr+7) = *(_currentPtr++); 
+                *(ptr+6) = *(_currentPtr++); 
+                *(ptr+5) = *(_currentPtr++); 
+                *(ptr+4) = *(_currentPtr++); 
+
+                *(ptr+3) = *(_currentPtr++); 
+                *(ptr+2) = *(_currentPtr++); 
+                *(ptr+1) = *(_currentPtr++); 
+                *(ptr) = *(_currentPtr++); 
+            }
+            else
+            {
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr++) = *(_currentPtr++); 
+                *(ptr) = *(_currentPtr++); 
+            }
+        }
+
+        inline void writeChar(char c)               { write1(&c); }
+        inline void writeUChar(unsigned char c)     { write1((char*)&c); }
+        inline void writeShort(short c)             { write2((char*)&c); }
+        inline void writeUShort(unsigned short c)   { write2((char*)&c); }
+        inline void writeInt(int c)                 { write4((char*)&c); }
+        inline void writeUInt(unsigned int c)       { write4((char*)&c); }
+        inline void writeFloat(float c)             { write4((char*)&c); }
+        inline void writeDouble(double c)           { write8((char*)&c); }
+
+        inline char readChar() { char c; read1(&c); return c; }
+        inline unsigned char readUChar() { unsigned char c; read1((char*)&c); return c; }
+        inline short readShort() { short c; read2((char*)&c); return c; }
+        inline unsigned short readUShort() { unsigned short c; read2((char*)&c); return c; }
+        inline int readInt() { int c; read4((char*)&c); return c; }
+        inline unsigned int readUInt() { unsigned int c; read4((char*)&c); return c; }
+        inline float readFloat() { float c; read4((char*)&c); return c; }
+        inline double readDouble() { double c; read8((char*)&c); return c; }
+
+        void write(const osg::FrameStamp& fs)
+        {
+            writeUInt(fs.getFrameNumber());
+            return writeDouble(fs.getReferenceTime());
+        }
+
+        void read(osg::FrameStamp& fs)
+        {
+            fs.setFrameNumber(readUInt());
+            fs.setReferenceTime(readDouble());
+        }
+
+        void write(const osg::Matrix& matrix)
+        {
+            writeDouble(matrix(0,0));
+            writeDouble(matrix(0,1));
+            writeDouble(matrix(0,2));
+            writeDouble(matrix(0,3));
+
+            writeDouble(matrix(1,0));
+            writeDouble(matrix(1,1));
+            writeDouble(matrix(1,2));
+            writeDouble(matrix(1,3));
+
+            writeDouble(matrix(2,0));
+            writeDouble(matrix(2,1));
+            writeDouble(matrix(2,2));
+            writeDouble(matrix(2,3));
+
+            writeDouble(matrix(3,0));
+            writeDouble(matrix(3,1));
+            writeDouble(matrix(3,2));
+            writeDouble(matrix(3,3));
+        }
+
+        void read(osg::Matrix& matrix)
+        {
+            matrix(0,0) = readDouble();
+            matrix(0,1) = readDouble();
+            matrix(0,2) = readDouble();
+            matrix(0,3) = readDouble();
+
+            matrix(1,0) = readDouble();
+            matrix(1,1) = readDouble();
+            matrix(1,2) = readDouble();
+            matrix(1,3) = readDouble();
+
+            matrix(2,0) = readDouble();
+            matrix(2,1) = readDouble();
+            matrix(2,2) = readDouble();
+            matrix(2,3) = readDouble();
+
+            matrix(3,0) = readDouble();
+            matrix(3,1) = readDouble();
+            matrix(3,2) = readDouble();
+            matrix(3,3) = readDouble();
+        }
+
+        void write(const osgProducer::EventAdapter& event)
+        {
+            writeUInt(event._eventType);
+            writeUInt(event._key);
+            writeUInt(event._button);
+            writeFloat(event._Xmin);
+            writeFloat(event._Xmax);
+            writeFloat(event._Ymin);
+            writeFloat(event._Ymax);
+            writeFloat(event._mx);
+            writeFloat(event._my);
+            writeUInt(event._buttonMask);
+            writeUInt(event._modKeyMask);
+            writeDouble(event._time);
+        }
+
+        void read(osgProducer::EventAdapter& event)
+        {
+            event._eventType = (osgGA::GUIEventAdapter::EventType)readUInt();
+            event._key = readUInt();
+            event._button = readUInt();
+            event._Xmin = readFloat();
+            event._Xmax = readFloat();
+            event._Ymin = readFloat();
+            event._Ymax = readFloat();
+            event._mx = readFloat();
+            event._my = readFloat();
+            event._buttonMask = readUInt();
+            event._modKeyMask = readUInt();
+            event._time = readDouble();
+        }
+        
+        void write(CameraPacket& cameraPacket)
+        {
+            writeUInt(cameraPacket._byte_order);
+            
+            writeUInt(cameraPacket._masterKilled);
+            
+            write(cameraPacket._matrix);
+            write(cameraPacket._frameStamp);
+        
+            writeUInt(cameraPacket._events.size());
+            for(unsigned int i=0;i<cameraPacket._events.size();++i)
+            {
+                write(*(cameraPacket._events[i]));
+            }
+        }
+
+        void read(CameraPacket& cameraPacket)
+        {
+            cameraPacket._byte_order = readUInt();
+            if (cameraPacket._byte_order != SWAP_BYTES_COMPARE) _swapBytes = !_swapBytes;
+            
+            cameraPacket._masterKilled = readUInt();
+            
+            read(cameraPacket._matrix);
+            read(cameraPacket._frameStamp);
+        
+            cameraPacket._events.clear();
+            unsigned int numEvents = readUInt();
+            for(unsigned int i=0;i<numEvents;++i)
+            {
+                osgProducer::EventAdapter* event = new osgProducer::EventAdapter;
+                read(*(event));
+                cameraPacket._events.push_back(event);
+            }
+        }
 };
 
 void CameraPacket::readEventQueue(osgProducer::Viewer& viewer)
 {
-    osgProducer::KeyboardMouseCallback::EventQueue queue;
-    viewer.getKeyboardMouseCallback()->copyEventQueue(queue);
+    viewer.getKeyboardMouseCallback()->copyEventQueue(_events);
 
-    _numEvents = 0;
-    for(osgProducer::KeyboardMouseCallback::EventQueue::iterator itr =queue.begin();
-        itr != queue.end() && _numEvents<MAX_NUM_EVENTS;
-        ++itr, ++_numEvents)
-    {
-        osgProducer::EventAdapter* event = itr->get();
-        _events[_numEvents].set(*event);
-    }
-    osg::notify(osg::INFO)<<"written events = "<<_numEvents<<std::endl;
+    osg::notify(osg::INFO)<<"written events = "<<_events.size()<<std::endl;
 }
 
 void CameraPacket::writeEventQueue(osgProducer::Viewer& viewer)
 {
-    osg::notify(osg::INFO)<<"recieved events = "<<_numEvents<<std::endl;
+    osg::notify(osg::INFO)<<"recieved events = "<<_events.size()<<std::endl;
 
-    // copy the packed events to osgProducer style events.
-    osgProducer::KeyboardMouseCallback::EventQueue queue;
-    for(unsigned int ei=0; ei<_numEvents; ++ei)
-    {
-        osgProducer::EventAdapter* event = new osgProducer::EventAdapter;
-        _events[ei].get(*event);
-        queue.push_back(event);
-    }
-    
-    // pass them to the viewer.
-    viewer.getKeyboardMouseCallback()->appendEventQueue(queue);
+    // copy the events to osgProducer style events.
+    viewer.getKeyboardMouseCallback()->appendEventQueue(_events);
 }
 
 
@@ -211,11 +374,6 @@ enum ViewerMode
 
 int main( int argc, char **argv )
 {
-    osg::notify(osg::INFO)<<"FrameStamp "<<sizeof(osg::FrameStamp)<<std::endl;
-    osg::notify(osg::INFO)<<"osg::Matrix "<<sizeof(osg::Matrix)<<std::endl;
-    osg::notify(osg::INFO)<<"PackedEvent "<<sizeof(PackedEvent)<<std::endl;
-
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -303,6 +461,7 @@ int main( int argc, char **argv )
 
 
     CameraPacket *cp = new CameraPacket;
+
     // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;
     Receiver        rc;
@@ -311,6 +470,8 @@ int main( int argc, char **argv )
     rc.setPort(static_cast<short int>(socketNumber));
 
     bool masterKilled = false;
+    
+    DataConverter scratchPad(1024);
 
     while( !viewer.done() && !masterKilled )
     {
@@ -332,9 +493,11 @@ int main( int argc, char **argv )
                 
                 cp->readEventQueue(viewer);
 
-                bc.setBuffer(cp, sizeof( CameraPacket ));
+                scratchPad.write(*cp);
+
+                bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
                 
-                std::cout << "bc.sync()"<<sizeof( CameraPacket )<<std::endl;
+                std::cout << "bc.sync()"<<scratchPad._numBytes<<std::endl;
 
                 bc.sync();
                 
@@ -343,14 +506,14 @@ int main( int argc, char **argv )
         case(SLAVE):
             {
 
-                rc.setBuffer(cp, sizeof( CameraPacket ));
+                rc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
 
-                osg::notify(osg::INFO) << "rc.sync()"<<sizeof( CameraPacket )<<std::endl;
+                osg::notify(osg::INFO) << "rc.sync()"<<scratchPad._numBytes<<std::endl;
 
                 rc.sync();
+                
+                scratchPad.read(*cp);
     
-                cp->checkByteOrder();
-
                 cp->writeEventQueue(viewer);
 
                 if (cp->getMasterKilled()) 

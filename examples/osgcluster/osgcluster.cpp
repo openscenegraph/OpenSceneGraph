@@ -99,7 +99,7 @@ class PackedEvent
         double _time;
 };
 
-const unsigned int MAX_NUM_EVENTS = 10;
+const unsigned int MAX_NUM_EVENTS = 0;
 
 class CameraPacket {
     public:
@@ -185,7 +185,7 @@ void CameraPacket::readEventQueue(osgProducer::Viewer& viewer)
 
 void CameraPacket::writeEventQueue(osgProducer::Viewer& viewer)
 {
-    std::cout<<"recived events = "<<_numEvents<<std::endl;
+    std::cout<<"recieved events = "<<_numEvents<<std::endl;
 
     // copy the packed events to osgProducer style events.
     osgProducer::KeyboardMouseCallback::EventQueue queue;
@@ -330,6 +330,8 @@ int main( int argc, char **argv )
 
                 bc.setBuffer(cp, sizeof( CameraPacket ));
                 
+                std::cout << "bc.sync()"<<sizeof( CameraPacket )<<std::endl;
+
                 bc.sync();
                 
             }
@@ -339,11 +341,15 @@ int main( int argc, char **argv )
 
                 rc.setBuffer(cp, sizeof( CameraPacket ));
 
+                std::cout << "rc.sync()"<<sizeof( CameraPacket )<<std::endl;
+
                 rc.sync();
     
+                std::cout << "done"<<std::endl;
+
                 cp->checkByteOrder();
 
-                cp->writeEventQueue(viewer);
+                // cp->writeEventQueue(viewer);
 
                 if (cp->getMasterKilled()) 
                 {

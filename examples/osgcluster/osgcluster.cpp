@@ -33,8 +33,77 @@ inline void swapBytes(  T &s )
         *(sptr++) = *(dptr--);
 }
 
+class PackedEvent
+{
+    public:
+        PackedEvent():
+            _eventType(osgProducer::EventAdapter::NONE),
+            _key(0),
+            _button(0),
+            _Xmin(0),_Xmax(0),
+            _Ymin(0),_Ymax(0),
+            _mx(0),
+            _my(0),
+            _buttonMask(0),
+            _modKeyMask(0),
+            _time(0.0) {}
+
+
+        void set(const osgProducer::EventAdapter& event)
+        {
+            _eventType = event._eventType;
+            _key = event._key;
+            _button = event._button;
+            _Xmin = event._Xmin;
+            _Xmax = event._Xmax;
+            _Ymin = event._Ymin;
+            _Ymax = event._Ymax;
+            _mx = event._mx;
+            _my = event._my;
+            _buttonMask = event._buttonMask;
+            _modKeyMask = event._modKeyMask;
+            _time = event._time;
+        }
+
+        void get(osgProducer::EventAdapter& event)
+        {
+            event._eventType = _eventType;
+            event._key = _key;
+            event._button = _button;
+            event._Xmin = _Xmin;
+            event._Xmax = _Xmax;
+            event._Ymin = _Ymin;
+            event._Ymax = _Ymax;
+            event._mx = _mx;
+            event._my = _my;
+            event._buttonMask = _buttonMask;
+            event._modKeyMask = _modKeyMask;
+            event._time = _time;
+        }
+        
+        void swapBytes()
+        {
+        }
+
+    protected:
+    
+        osgProducer::EventAdapter::EventType _eventType;
+        int _key;
+        int _button;
+        float _Xmin,_Xmax;
+        float _Ymin,_Ymax;
+        float _mx;
+        float _my;
+        unsigned int _buttonMask;
+        unsigned int _modKeyMask;
+        double _time;
+};
+
+const unsigned int MAX_NUM_EVENTS = 10;
+
 class CameraPacket {
     public:
+    
     
         CameraPacket():_masterKilled(false) 
         {
@@ -56,6 +125,10 @@ class CameraPacket {
             matrix = _matrix * osg::Matrix::rotate(osg::DegreesToRadians(angle_offset),0.0f,1.0f,0.0f);
         }
         
+        void readEventQueue(osgProducer::Viewer& viewer);
+        
+        void writeEventQueue(osgProducer::Viewer& viewer);
+        
         void checkByteOrder( void )
         {
             if( _byte_order == 0x78563412 )  // We're backwards
@@ -66,6 +139,12 @@ class CameraPacket {
                 swapBytes( _matrix.ptr()[i] );
 
                     // umm.. we should byte swap _frameStamp too...
+                    
+                    
+                for(unsigned int ei=0; ei<_numEvents; ++ei)
+                {
+                    _events[ei].swapBytes();
+                }
             }
         }
 
@@ -83,7 +162,45 @@ class CameraPacket {
         // us to do this, even though its a reference counted object.    
         osg::FrameStamp  _frameStamp;
         
+        unsigned int _numEvents;
+        PackedEvent  _events[MAX_NUM_EVENTS];        
+        
 };
+
+void CameraPacket::readEventQueue(osgProducer::Viewer& viewer)
+{
+    osgProducer::KeyboardMouseCallback::EventQueue queue;
+    viewer.getKeyboardMouseCallback()->copyEventQueue(queue);
+
+    _numEvents = 0;
+    for(osgProducer::KeyboardMouseCallback::EventQueue::iterator itr =queue.begin();
+        itr != queue.end() && _numEvents<MAX_NUM_EVENTS;
+        ++itr, ++_numEvents)
+    {
+        osgProducer::EventAdapter* event = itr->get();
+        _events[_numEvents].set(*event);
+    }
+    std::cout<<"written events = "<<_numEvents<<std::endl;
+}
+
+void CameraPacket::writeEventQueue(osgProducer::Viewer& viewer)
+{
+    std::cout<<"recived events = "<<_numEvents<<std::endl;
+
+    // copy the packed events to osgProducer style events.
+    osgProducer::KeyboardMouseCallback::EventQueue queue;
+    for(unsigned int ei=0; ei<_numEvents; ++ei)
+    {
+        osgProducer::EventAdapter* event = new osgProducer::EventAdapter;
+        _events[ei].get(*event);
+        queue.push_back(event);
+    }
+    
+    // pass them to the viewer.
+    viewer.getKeyboardMouseCallback()->appendEventQueue(queue);
+}
+
+
 
 enum ViewerMode
 {
@@ -123,7 +240,7 @@ int main( int argc, char **argv )
     while (arguments.read("-m")) viewerMode = MASTER;
     while (arguments.read("-s")) viewerMode = SLAVE;
     
-    float socketNumber=8100.0f;
+    int socketNumber=8100;
     while (arguments.read("-n",socketNumber)) ;
 
     float camera_fov=-1.0f;
@@ -187,7 +304,7 @@ int main( int argc, char **argv )
     Receiver        rc;
 
     bc.setPort(static_cast<short int>(socketNumber));
-    rc.setPort(static_cast<short int>(socketNumber));
+    rc.setPort(static_cast<short int>(socketNumber+1));
 
     bool masterKilled = false;
 
@@ -196,11 +313,8 @@ int main( int argc, char **argv )
         // wait for all cull and draw threads to complete.
         viewer.sync();
 
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-         
+        osg::Timer_t startTick = osg::Timer::instance()->tick();
+                 
         // special handling for working as a cluster.
         switch (viewerMode)
         {
@@ -211,11 +325,13 @@ int main( int argc, char **argv )
                 osg::Matrix modelview(viewer.getCameraConfig()->getCamera(0)->getViewMatrix());
                 
                 cp->setPacket(modelview,viewer.getFrameStamp());
+                
+                cp->readEventQueue(viewer);
 
                 bc.setBuffer(cp, sizeof( CameraPacket ));
                 
                 bc.sync();
-
+                
             }
             break;
         case(SLAVE):
@@ -227,10 +343,7 @@ int main( int argc, char **argv )
     
                 cp->checkByteOrder();
 
-                osg::Matrix modelview;
-                cp->getModelView(modelview,camera_offset);
-                
-                viewer.setView(modelview);
+                cp->writeEventQueue(viewer);
 
                 if (cp->getMasterKilled()) 
                 {
@@ -245,6 +358,22 @@ int main( int argc, char **argv )
             break;
         }
          
+        osg::Timer_t endTick = osg::Timer::instance()->tick();
+        
+        osg::notify(osg::NOTICE)<<"Time to do sync "<<osg::Timer::instance()->delta_m(startTick,endTick)<<std::endl;
+
+        // update the scene by traversing it with the the update visitor which will
+        // call all node update callbacks and animations.
+        viewer.update();
+
+        if (viewerMode==SLAVE)
+        {
+            osg::Matrix modelview;
+            cp->getModelView(modelview,camera_offset);
+        
+            viewer.setView(modelview);
+        }
+
         // fire off the cull and draw traversals of the scene.
         if(!masterKilled)
             viewer.frame();

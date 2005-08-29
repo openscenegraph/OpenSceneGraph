@@ -173,6 +173,45 @@ double KeyboardMouseCallback::getEventQueue(EventQueue& queue)
     return swapTime;
 }
 
+double KeyboardMouseCallback::copyEventQueue(EventQueue& queue) const
+{
+    double swapTime;
+
+    queue.clear();
+    _eventQueueMutex.lock();
+    queue = _eventQueue;
+    swapTime = getTime();
+    _eventQueueMutex.unlock();
+    
+    return swapTime;
+}
+
+double KeyboardMouseCallback::setEventQueue(EventQueue& queue)
+{
+    double swapTime;
+
+    queue.clear();
+    _eventQueueMutex.lock();
+    _eventQueue = queue;
+    swapTime = getTime();
+    _eventQueueMutex.unlock();
+    
+    return swapTime;
+}
+
+double KeyboardMouseCallback::appendEventQueue(EventQueue& queue)
+{
+    double swapTime;
+
+    queue.clear();
+    _eventQueueMutex.lock();
+    _eventQueue.insert(_eventQueue.end(),queue.begin(),queue.end());
+    swapTime = getTime();
+    _eventQueueMutex.unlock();
+    
+    return swapTime;
+}
+
 EventAdapter* KeyboardMouseCallback::createEventAdapter()
 {
     EventAdapter* ea = new EventAdapter;

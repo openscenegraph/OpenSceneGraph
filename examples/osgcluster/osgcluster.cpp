@@ -88,6 +88,11 @@ class DataConverter
         bool _swapBytes;
 
         char* _currentPtr;
+        
+        void reset()
+        {
+            _currentPtr = _startPtr;
+        }
 
         inline void write1(char* ptr)
         {
@@ -330,7 +335,11 @@ class DataConverter
         void read(CameraPacket& cameraPacket)
         {
             cameraPacket._byte_order = readUInt();
-            if (cameraPacket._byte_order != SWAP_BYTES_COMPARE) _swapBytes = !_swapBytes;
+            if (cameraPacket._byte_order != SWAP_BYTES_COMPARE)
+            {
+                std::cout<<"Need to do swap bytes"<<std::endl;
+                _swapBytes = !_swapBytes;
+            }
             
             cameraPacket._masterKilled = readUInt();
             
@@ -350,6 +359,8 @@ class DataConverter
 
 void CameraPacket::readEventQueue(osgProducer::Viewer& viewer)
 {
+    _events.clear();
+
     viewer.getKeyboardMouseCallback()->copyEventQueue(_events);
 
     osg::notify(osg::INFO)<<"written events = "<<_events.size()<<std::endl;
@@ -493,6 +504,7 @@ int main( int argc, char **argv )
                 
                 cp->readEventQueue(viewer);
 
+                scratchPad.reset();
                 scratchPad.write(*cp);
 
                 bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
@@ -508,10 +520,13 @@ int main( int argc, char **argv )
 
                 rc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
 
-                osg::notify(osg::INFO) << "rc.sync()"<<scratchPad._numBytes<<std::endl;
+                osg::notify(osg::NOTICE ) << "rc.sync()"<<scratchPad._numBytes<<std::endl;
 
                 rc.sync();
                 
+                osg::notify(osg::NOTICE) << "done rc.sync()"<<scratchPad._numBytes<<std::endl;
+
+                scratchPad.reset();
                 scratchPad.read(*cp);
     
                 cp->writeEventQueue(viewer);

@@ -71,16 +71,19 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         typedef std::vector< osg::ref_ptr<EventAdapter> > EventQueue;
 
         double getEventQueue(EventQueue& queue);
+        double copyEventQueue(EventQueue& queue) const;
+        double setEventQueue(EventQueue& queue);
+        double appendEventQueue(EventQueue& queue);
 
-        bool done() { return _done; }
-        float mx()  { return _mx; }
-        float my()  { return _my; }
-        unsigned int mbutton()  { return _mbutton; }
+        bool done() const { return _done; }
+        float mx() const { return _mx; }
+        float my() const  { return _my; }
+        unsigned int mbutton() const { return _mbutton; }
         
         void setStartTick(osg::Timer_t tick) { _startTick = tick; }
-        osg::Timer_t getStartTick() { return _startTick; }
+        osg::Timer_t getStartTick() const { return _startTick; }
         
-        double getTime() { return _timer.delta_s(_startTick,_timer.tick()); }
+        double getTime() const { return _timer.delta_s(_startTick,_timer.tick()); }
         
         Producer::KeyboardMouse* getKeyboardMouse() { return _keyboardMouse; }
         const Producer::KeyboardMouse* getKeyboardMouse() const { return _keyboardMouse; }
@@ -98,7 +101,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 
         osg::Timer_t    _startTick;
         osg::Timer      _timer;
-        OpenThreads::Mutex _eventQueueMutex;
+        mutable OpenThreads::Mutex _eventQueueMutex;
         EventQueue      _eventQueue;
         
 };

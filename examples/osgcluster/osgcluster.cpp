@@ -99,7 +99,7 @@ class PackedEvent
         double _time;
 };
 
-const unsigned int MAX_NUM_EVENTS = 0;
+const unsigned int MAX_NUM_EVENTS = 10;
 
 class CameraPacket {
     public:
@@ -180,12 +180,12 @@ void CameraPacket::readEventQueue(osgProducer::Viewer& viewer)
         osgProducer::EventAdapter* event = itr->get();
         _events[_numEvents].set(*event);
     }
-    std::cout<<"written events = "<<_numEvents<<std::endl;
+    osg::notify(osg::INFO)<<"written events = "<<_numEvents<<std::endl;
 }
 
 void CameraPacket::writeEventQueue(osgProducer::Viewer& viewer)
 {
-    std::cout<<"recieved events = "<<_numEvents<<std::endl;
+    osg::notify(osg::INFO)<<"recieved events = "<<_numEvents<<std::endl;
 
     // copy the packed events to osgProducer style events.
     osgProducer::KeyboardMouseCallback::EventQueue queue;
@@ -211,6 +211,10 @@ enum ViewerMode
 
 int main( int argc, char **argv )
 {
+    osg::notify(osg::INFO)<<"FrameStamp "<<sizeof(osg::FrameStamp)<<std::endl;
+    osg::notify(osg::INFO)<<"osg::Matrix "<<sizeof(osg::Matrix)<<std::endl;
+    osg::notify(osg::INFO)<<"PackedEvent "<<sizeof(PackedEvent)<<std::endl;
+
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
@@ -304,7 +308,7 @@ int main( int argc, char **argv )
     Receiver        rc;
 
     bc.setPort(static_cast<short int>(socketNumber));
-    rc.setPort(static_cast<short int>(socketNumber+1));
+    rc.setPort(static_cast<short int>(socketNumber));
 
     bool masterKilled = false;
 
@@ -341,19 +345,17 @@ int main( int argc, char **argv )
 
                 rc.setBuffer(cp, sizeof( CameraPacket ));
 
-                std::cout << "rc.sync()"<<sizeof( CameraPacket )<<std::endl;
+                osg::notify(osg::INFO) << "rc.sync()"<<sizeof( CameraPacket )<<std::endl;
 
                 rc.sync();
     
-                std::cout << "done"<<std::endl;
-
                 cp->checkByteOrder();
 
-                // cp->writeEventQueue(viewer);
+                cp->writeEventQueue(viewer);
 
                 if (cp->getMasterKilled()) 
                 {
-                    std::cout << "received master killed"<<std::endl;
+                    std::cout << "Received master killed."<<std::endl;
                     // break out of while (!done) loop since we've now want to shut down.
                     masterKilled = true;
                 }
@@ -366,7 +368,7 @@ int main( int argc, char **argv )
          
         osg::Timer_t endTick = osg::Timer::instance()->tick();
         
-        osg::notify(osg::NOTICE)<<"Time to do sync "<<osg::Timer::instance()->delta_m(startTick,endTick)<<std::endl;
+        osg::notify(osg::INFO)<<"Time to do cluster sync "<<osg::Timer::instance()->delta_m(startTick,endTick)<<std::endl;
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
@@ -399,7 +401,7 @@ int main( int argc, char **argv )
         bc.setBuffer(cp, sizeof( CameraPacket ));
         bc.sync();
 
-        std::cout << "broadcasting death"<<std::endl;
+        std::cout << "Broadcasting death."<<std::endl;
 
     }
 

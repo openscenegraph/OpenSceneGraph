@@ -190,7 +190,6 @@ double KeyboardMouseCallback::setEventQueue(EventQueue& queue)
 {
     double swapTime;
 
-    queue.clear();
     _eventQueueMutex.lock();
     _eventQueue = queue;
     swapTime = getTime();
@@ -203,7 +202,6 @@ double KeyboardMouseCallback::appendEventQueue(EventQueue& queue)
 {
     double swapTime;
 
-    queue.clear();
     _eventQueueMutex.lock();
     _eventQueue.insert(_eventQueue.end(),queue.begin(),queue.end());
     swapTime = getTime();

@@ -134,21 +134,14 @@ void Receiver::sync( void )
         }
     }
 #else
-    std::cout<<"A"<<std::endl;
     recvfrom( _so, (caddr_t)_buffer, _buffer_size, 0, 0, &size );
-    std::cout<<" B"<<std::endl;
     while( select( _so+1, &fdset, 0L, 0L, &tv ) )
     {
-        std::cout<<"  C"<<std::endl;
-    
         if( FD_ISSET( _so, &fdset ) )
         {
-            std::cout<<"   D"<<std::endl;
-
             recvfrom( _so, (caddr_t)_buffer, _buffer_size, 0, 0, &size );
         }
     }
-    std::cout<<"  E"<<std::endl;
 #endif
 }
 

@@ -11,6 +11,7 @@
 #include <osgProducer/Viewer>
 
 #include <osg/Quat>
+#include <osg/io_utils>
 
 #if defined (WIN32) && !defined(__CYGWIN__)
 #include <winsock.h>
@@ -230,6 +231,7 @@ class DataConverter
         {
             writeUInt(fs.getFrameNumber());
             return writeDouble(fs.getReferenceTime());
+
         }
 
         void read(osg::FrameStamp& fs)
@@ -337,7 +339,6 @@ class DataConverter
             cameraPacket._byte_order = readUInt();
             if (cameraPacket._byte_order != SWAP_BYTES_COMPARE)
             {
-                std::cout<<"Need to do swap bytes"<<std::endl;
                 _swapBytes = !_swapBytes;
             }
             
@@ -507,6 +508,9 @@ int main( int argc, char **argv )
                 scratchPad.reset();
                 scratchPad.write(*cp);
 
+                scratchPad.reset();
+                scratchPad.read(*cp);
+
                 bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
                 
                 std::cout << "bc.sync()"<<scratchPad._numBytes<<std::endl;
@@ -520,12 +524,8 @@ int main( int argc, char **argv )
 
                 rc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
 
-                osg::notify(osg::NOTICE ) << "rc.sync()"<<scratchPad._numBytes<<std::endl;
-
                 rc.sync();
                 
-                osg::notify(osg::NOTICE) << "done rc.sync()"<<scratchPad._numBytes<<std::endl;
-
                 scratchPad.reset();
                 scratchPad.read(*cp);
     

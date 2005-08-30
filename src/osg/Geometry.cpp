@@ -838,6 +838,9 @@ unsigned int Geometry::getGLObjectSizeHint() const
 
 void Geometry::drawImplementation(State& state) const
 {
+
+    // osg::notify(osg::NOTICE)<<"Geometry::drawImplementation"<<std::endl;
+
     if (_internalOptimizedGeometry.valid())
     {
         _internalOptimizedGeometry->drawImplementation(state);

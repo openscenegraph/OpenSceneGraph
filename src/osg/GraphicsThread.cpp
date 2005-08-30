@@ -83,7 +83,7 @@ void GraphicsThread::add(Operation* operation, bool waitForCompletion)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
-    BlockOperation* block = 0;
+    ref_ptr<BlockOperation> block = 0;
 
     {
         // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
@@ -95,13 +95,13 @@ void GraphicsThread::add(Operation* operation, bool waitForCompletion)
         if (waitForCompletion)
         {
             block = new BlockOperation;
-            _operations.push_back(block);
+            _operations.push_back(block.get());
         }
         
         _operationsBlock->set(true);
     }
     
-    if (block)
+    if (block.valid())
     {
         // now we wait till the barrier is joined by the graphics thread.
         block->block();
@@ -126,16 +126,24 @@ void GraphicsThread::run()
 
     bool firstTime = true;
 
+    OperationQueue::iterator itr = _operations.begin();
+
     do
     {
-        // osg::notify(osg::NOTICE)<<"In main loop"<<std::endl;
+        osg::notify(osg::INFO)<<"In main loop"<<std::endl;
 
         if (_operations.empty())
         {
             _operationsBlock->block();
+            
+            itr = _operations.begin();
+        }
+        else
+        {
+            if  (itr == _operations.end()) itr = _operations.begin();
         }
 
-        // osg::notify(osg::NOTICE)<<"get op"<<std::endl;
+        osg::notify(osg::INFO)<<"get op"<<std::endl;
 
         ref_ptr<Operation> operation;
     
@@ -144,16 +152,32 @@ void GraphicsThread::run()
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
             if (!_operations.empty())
             {
-                // get the front the queue
-                operation = _operations.front();
+                // get the next item
+                operation = *itr;
                 
-                // remove it from the opeations queue
-                _operations.erase(_operations.begin());
-                
-                if (_operations.empty())
+                if (!operation->getKeep())
                 {
-                    _operationsBlock->set(false);
+                    osg::notify(osg::INFO)<<"removing "<<operation->getName()<<std::endl;
+
+                    // remove it from the opeations queue
+                    itr = _operations.erase(itr);
+
+                    osg::notify(osg::INFO)<<"size "<<_operations.size()<<std::endl;
+
+                    if (_operations.empty())
+                    {
+                       osg::notify(osg::INFO)<<"setting block "<<_operations.size()<<std::endl;
+                       _operationsBlock->set(false);
+                    }
                 }
+                else
+                {
+                    osg::notify(osg::INFO)<<"increment "<<operation->getName()<<std::endl;
+
+                    // move on to the next operation in the list.
+                    ++itr;
+                }
+                
 
             }
             
@@ -161,7 +185,7 @@ void GraphicsThread::run()
         
         if (operation.valid())
         {
-            // osg::notify(osg::NOTICE)<<"Doing op"<<std::endl;
+            osg::notify(osg::INFO)<<"Doing op "<<operation->getName()<<std::endl;
 
             // call the graphics operation.
             (*operation)(_graphicsContext);

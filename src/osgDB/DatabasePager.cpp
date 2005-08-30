@@ -62,7 +62,7 @@ DatabasePager::DatabasePager()
     if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
     {
         _doPreCompile = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
-                        strcmp(ptr,"ON")==0 || strcmp(ptr,"ON")==0;
+                        strcmp(ptr,"on")==0 || strcmp(ptr,"ON")==0;
     }
 
     _targetFrameRate = 100.0;

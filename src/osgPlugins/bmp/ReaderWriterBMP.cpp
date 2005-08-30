@@ -191,6 +191,7 @@ int *numComponents_ret)
             swapbyte(&inf.width);
             swapbyte(&inf.height);
             swapbyte(&inf.ImageSize);
+            swapbyte(&inf.ColorUsed);
         }
         if (infsize==12) { // os2, protect us from our friends ? || infsize==64
             int wd = inf.width&0xffff; // shorts replace longs

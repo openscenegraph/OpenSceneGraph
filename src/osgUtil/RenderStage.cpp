@@ -257,7 +257,9 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
 
 struct DrawInnerOperation : public osg::GraphicsThread::Operation
 {
-    DrawInnerOperation(RenderStage* stage) : _stage(stage) {}
+    DrawInnerOperation(RenderStage* stage) : 
+        osg::GraphicsThread::Operation("DrawInnerStage",false),
+        _stage(stage) {}
 
     virtual void operator() (osg::GraphicsContext* context)
     {

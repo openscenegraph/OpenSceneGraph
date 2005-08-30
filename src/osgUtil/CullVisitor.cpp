@@ -1332,9 +1332,11 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 
                 rtts->setGraphicsContext(context.get());
                 
-                // context->createGraphicsThread();
-
+#if 0
+                context->createGraphicsThread();
+#else
                 context->realize();
+#endif
             }
         }
         

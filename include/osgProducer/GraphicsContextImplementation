@@ -70,6 +70,7 @@ class OSGPRODUCER_EXPORT GraphicsContextImplementation : public osg::GraphicsCon
     
         virtual ~GraphicsContextImplementation();
         
+        bool                                  _closeOnDestruction;
         osg::ref_ptr<Producer::RenderSurface> _rs;
 };
 

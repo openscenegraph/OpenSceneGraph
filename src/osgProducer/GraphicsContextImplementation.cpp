@@ -161,6 +161,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSur
 
 GraphicsContextImplementation::~GraphicsContextImplementation()
 {
+    if (_closeOnDestruction) close();
 }
 
 bool GraphicsContextImplementation::realizeImplementation()
@@ -187,13 +188,24 @@ bool GraphicsContextImplementation::realizeImplementation()
 
 void GraphicsContextImplementation::makeCurrentImplementation()
 {
-    if (!_rs) return;
+    if (!_rs)
+    {
+        osg::notify(osg::NOTICE)<<"Error: GraphicsContextImplementation::makeCurrentImplementation() no RenderSurface."<<std::endl;
+        return;
+    }
 
-    osg::notify(osg::NOTICE)<<"GraphicsContextImplementation::makeCurrentImplementation()"<<std::endl;
+    if (!isRealized())
+    {
+        osg::notify(osg::NOTICE)<<"Error: GraphicsContextImplementation::makeCurrentImplementation() not Realized."<<std::endl;
+        return;
+    }
+
+    osg::notify(osg::INFO)<<"GraphicsContextImplementation::makeCurrentImplementation()"<<std::endl;
 
     _rs->setReadDrawable( 0 );
 
-    _rs->makeCurrent();
+    // comment out right now, as Producer's setReadDrawable() is doing a call for us.
+    // _rs->makeCurrent();
 }
 
 void GraphicsContextImplementation::makeContextCurrentImplementation(GraphicsContext* readContext)
@@ -206,8 +218,13 @@ void GraphicsContextImplementation::makeContextCurrentImplementation(GraphicsCon
     {
         _rs->setReadDrawable( readContextImplemention->getRenderSurface() );
     }
+    else
+    {
+        _rs->setReadDrawable( 0 );
+    }
 
-    _rs->makeCurrent();
+    // comment out right now, as Producer's setReadDrawable() is doing a call for us.
+    // _rs->makeCurrent();
 }
 
 void GraphicsContextImplementation::closeImplementation()

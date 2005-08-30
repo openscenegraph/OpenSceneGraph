@@ -47,8 +47,6 @@ struct FrameOperation : public osg::GraphicsThread::Operation
     
     virtual void operator () (osg::GraphicsContext* context)
     {
-        std::cout<<"FrameOperation draw begin"<<context<<std::endl;
-
         _sceneView->setState(context->getState());
         _sceneView->setProjectionMatrix(_camera->getProjectionMatrix());
         _sceneView->setViewMatrix(_camera->getViewMatrix());
@@ -56,8 +54,6 @@ struct FrameOperation : public osg::GraphicsThread::Operation
         
         _sceneView->cull();
         _sceneView->draw();
-
-        std::cout<<"FrameOperation draw end"<<context<<std::endl;
     }
     
     osg::ref_ptr<osg::CameraNode>    _camera;
@@ -127,9 +123,6 @@ int main( int argc, char **argv )
             return 1;
         }
 
-        // realise the window
-        gfxc->realize();
-
         camera->setGraphicsContext(gfxc.get());
 
         // initialize the view to look at the center of the scene graph
@@ -141,7 +134,7 @@ int main( int argc, char **argv )
         camera->setProjectionMatrixAsPerspective(50.0f,1.4f,1.0f,10000.0f);
         camera->setViewMatrix(viewMatrix);
 
-
+        // graphics thread will realize the window.
         gfxc->createGraphicsThread();
 
         cameraMap[camera] = new FrameOperation(camera.get(), frameStamp.get());
@@ -162,31 +155,23 @@ int main( int argc, char **argv )
 
     std::cout<<"nubmer of gfx."<<graphicsContextSet.size()<<std::endl;
 
-
-    GraphicsContextSet::iterator gitr;
-    for(gitr = graphicsContextSet.begin();
-        gitr != graphicsContextSet.end();
-        ++gitr)
-    {
-        std::cout<<"Issue swap."<<std::endl;
-        osg::GraphicsContext* context = *gitr;
-        context->getGraphicsThread()->add(swapOp.get(), true);
-    }
-    
     // record the timer tick at the start of rendering.    
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
+    osg::Timer_t previous_tick = start_tick;
     
     bool done = false;    
 
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
     while( !done )
     {
-        std::cout<<"Frame "<<frameNum<<std::endl;
 
-        frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
+        osg::Timer_t current_tick = osg::Timer::instance()->tick();
+
+        frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,current_tick));
         frameStamp->setFrameNumber(frameNum++);
         
-        std::cout<<"Frame rate "<<(double)frameNum / frameStamp->getReferenceTime()<<std::endl;
+        std::cout<<"Frame rate "<<1.0/osg::Timer::instance()->delta_s(previous_tick,current_tick)<<std::endl;
+        previous_tick = current_tick;
 
 
         loadedModel->accept(updateVisitor);
@@ -200,6 +185,7 @@ int main( int argc, char **argv )
             camera->getGraphicsContext()->getGraphicsThread()->add( citr->second.get(), false); 
         }
 
+        GraphicsContextSet::iterator gitr;
         for(gitr = graphicsContextSet.begin();
             gitr != graphicsContextSet.end();
             ++gitr)
@@ -209,24 +195,23 @@ int main( int argc, char **argv )
             context->getGraphicsThread()->add(preSwapBarrierOp.get(), false);
         }
 
-        std::cout<<"Join frameEndBarrierOp block "<<std::endl;
+        osg::notify(osg::INFO)<<"Join frameEndBarrierOp block "<<std::endl;
         osg::Timer_t before_tick = osg::Timer::instance()->tick();
         frameEndBarrierOp->block();
         osg::Timer_t after_tick = osg::Timer::instance()->tick();
-        std::cout<<"Leave frameEndBarrierOp block "<<osg::Timer::instance()->delta_s(before_tick,after_tick)<<std::endl;
+        osg::notify(osg::INFO)<<"Leave frameEndBarrierOp block "<<osg::Timer::instance()->delta_s(before_tick,after_tick)<<std::endl;
 
-        std::cout<<"Join preSwapBarrierOp block "<<std::endl;
+        osg::notify(osg::INFO)<<"Join preSwapBarrierOp block "<<std::endl;
         before_tick = osg::Timer::instance()->tick();
-//        preSwapBarrierOp->block();
         after_tick = osg::Timer::instance()->tick();
-        std::cout<<"Leave preSwapBarrierOp block "<<osg::Timer::instance()->delta_s(before_tick,after_tick)<<std::endl;
+        osg::notify(osg::INFO)<<"Leave preSwapBarrierOp block "<<osg::Timer::instance()->delta_s(before_tick,after_tick)<<std::endl;
 
         for(gitr = graphicsContextSet.begin();
             gitr != graphicsContextSet.end();
             ++gitr)
         {
             osg::GraphicsContext* context = *gitr;
-            context->getGraphicsThread()->add(swapOp.get(), false);
+            context->getGraphicsThread()->add(swapOp.get(), true);
         }
 
         // check if any of the windows are closed

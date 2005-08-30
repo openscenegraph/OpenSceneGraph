@@ -25,7 +25,6 @@ struct BlockOperation : public GraphicsThread::Operation, public Block
 
     virtual void operator () (GraphicsContext*)
     {
-        //osg::notify(osg::NOTICE)<<"BlockOperation doing release"<<(unsigned int)this<<std::endl;
         glFlush();
         release();
     }
@@ -41,14 +40,14 @@ GraphicsThread::GraphicsThread():
 
 GraphicsThread::~GraphicsThread()
 {
-    osg::notify(osg::NOTICE)<<"Destructing graphics thread"<<std::endl;
+    osg::notify(osg::INFO)<<"Destructing graphics thread"<<std::endl;
 
     cancel();
 }
 
 int GraphicsThread::cancel()
 {
-    osg::notify(osg::NOTICE)<<"Cancelling graphics thread"<<std::endl;
+    osg::notify(osg::INFO)<<"Cancelling graphics thread"<<std::endl;
 
     int result = 0;
     if( isRunning() )
@@ -68,7 +67,7 @@ int GraphicsThread::cancel()
         {
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
-            osg::notify(osg::NOTICE)<<"Waiting for GraphicsThread to cancel"<<std::endl;
+            osg::notify(osg::INFO)<<"Waiting for GraphicsThread to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
     }
@@ -78,7 +77,7 @@ int GraphicsThread::cancel()
 
 void GraphicsThread::add(Operation* operation, bool waitForCompletion)
 {
-    osg::notify(osg::NOTICE)<<"Doing add"<<std::endl;
+    osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
     BlockOperation* block = 0;
 
@@ -110,11 +109,16 @@ void GraphicsThread::run()
     // make the graphics context current.
     if (_graphicsContext)
     {
-        osg::notify(osg::NOTICE)<<"Doing make current"<<std::endl;
+        if (!_graphicsContext->isRealized())
+        {
+            _graphicsContext->realize();
+        }
+    
+        osg::notify(osg::INFO)<<"Doing make current"<<std::endl;
         _graphicsContext->makeCurrent();
     }
 
-    osg::notify(osg::NOTICE)<<"Doing run"<<std::endl;
+    osg::notify(osg::INFO)<<"Doing run"<<std::endl;
 
     bool firstTime = true;
 

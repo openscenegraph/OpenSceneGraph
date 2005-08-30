@@ -113,25 +113,13 @@ void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
 
 
 GraphicsContext::GraphicsContext():
-    _closeOnDestruction(true),
     _threadOfLastMakeCurrent(0)
 {
 }
 
 GraphicsContext::~GraphicsContext()
 {
-    // switch off the graphics thread...
-    setGraphicsThread(0);
-
-    if (_state.valid())
-    {
-        decrementContextIDUsageCount(_state->getContextID());
-    }
-
-    if (_closeOnDestruction)
-    {
-        close();
-    }
+    close(false);
 }
 
 /** Realise the GraphicsContext.*/
@@ -151,18 +139,25 @@ bool GraphicsContext::realize()
     }
 }
 
-void GraphicsContext::close()
+void GraphicsContext::close(bool callCloseImplementation)
 {
     // switch off the graphics thread...
     setGraphicsThread(0);
     
-    closeImplementation();
+    if (callCloseImplementation) closeImplementation();
+
+    if (_state.valid())
+    {
+        decrementContextIDUsageCount(_state->getContextID());
+        
+        _state = 0;
+    }
 }
 
 
 void GraphicsContext::makeCurrent()
 {
-    osg::notify(osg::NOTICE)<<"Doing  GraphicsContext::makeCurrent"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+    osg::notify(osg::INFO)<<"Doing  GraphicsContext::makeCurrent"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 
     ReleaseContext_Block_MakeCurrentOperation* rcbmco = 0;
 
@@ -177,7 +172,7 @@ void GraphicsContext::makeCurrent()
 
     if (!isCurrent()) _mutex.lock();
 
-    osg::notify(osg::NOTICE)<<"Calling GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+    osg::notify(osg::INFO)<<"Calling GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 
     makeCurrentImplementation();
     
@@ -190,7 +185,7 @@ void GraphicsContext::makeCurrent()
         rcbmco->release();
     }
 
-    osg::notify(osg::NOTICE)<<"Done GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+    osg::notify(osg::INFO)<<"Done GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 }
 
 void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
@@ -211,18 +206,18 @@ void GraphicsContext::swapBuffers()
 {
     if (isCurrent())
     {
-        osg::notify(osg::NOTICE)<<"Doing GraphicsContext::swapBuffers() call to swapBuffersImplementation() "<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+        osg::notify(osg::INFO)<<"Doing GraphicsContext::swapBuffers() call to swapBuffersImplementation() "<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
         swapBuffersImplementation();
     }
     else if (_graphicsThread.valid() && 
              _threadOfLastMakeCurrent == _graphicsThread.get())
     {
-        osg::notify(osg::NOTICE)<<"Doing GraphicsContext::swapBuffers() registering  SwapBuffersOperation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+        osg::notify(osg::INFO)<<"Doing GraphicsContext::swapBuffers() registering  SwapBuffersOperation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
         _graphicsThread->add(new SwapBuffersOperation);
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Doing GraphicsContext::swapBuffers() makeCurrent;swapBuffersImplementation;releaseContext"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
+        osg::notify(osg::INFO)<<"Doing GraphicsContext::swapBuffers() makeCurrent;swapBuffersImplementation;releaseContext"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
         makeCurrent();
         swapBuffersImplementation();
         releaseContext();
@@ -256,7 +251,7 @@ void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
     {
         _graphicsThread->_graphicsContext = this;
         
-        if (!_graphicsThread->isRunning() && isRealized())
+        if (!_graphicsThread->isRunning())
         {
             _graphicsThread->startThread();
         }

@@ -138,8 +138,12 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Realise the GraphicsContext.*/
         bool realize();
 
-        /** close the graphics context.*/
-        void close();
+        /** close the graphics context.
+          * close(bool) stops any associated graphics threads, releases the contextID for the GraphicsContext then
+          * optional calls closeImplementation() to do the actual deletion of the graphics.  This call is made optional
+          * as there are times when the graphics context has already been deleted externally and only the OSG side
+          * of the its data need to be closed down. */
+        void close(bool callCloseImplementation=true);
 
         /** swap the front and back buffers.*/
         void swapBuffers();
@@ -216,8 +220,6 @@ class OSG_EXPORT GraphicsContext : public Referenced
         virtual ~GraphicsContext();
 
 
-        bool                    _closeOnDestruction;
-                
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;
         OpenThreads::Mutex      _mutex;

@@ -229,6 +229,8 @@ class DataConverter
 
         void write(const osg::FrameStamp& fs)
         {
+            osg::notify(osg::NOTICE)<<"writeFramestamp = "<<fs.getFrameNumber()<<" "<<fs.getReferenceTime()<<std::endl;
+
             writeUInt(fs.getFrameNumber());
             return writeDouble(fs.getReferenceTime());
 
@@ -238,6 +240,8 @@ class DataConverter
         {
             fs.setFrameNumber(readUInt());
             fs.setReferenceTime(readDouble());
+
+            osg::notify(osg::NOTICE)<<"readFramestamp = "<<fs.getFrameNumber()<<" "<<fs.getReferenceTime()<<std::endl;
         }
 
         void write(const osg::Matrix& matrix)
@@ -261,6 +265,9 @@ class DataConverter
             writeDouble(matrix(3,1));
             writeDouble(matrix(3,2));
             writeDouble(matrix(3,3));
+
+            osg::notify(osg::NOTICE)<<"writeMatrix = "<<matrix<<std::endl;
+
         }
 
         void read(osg::Matrix& matrix)
@@ -284,6 +291,9 @@ class DataConverter
             matrix(3,1) = readDouble();
             matrix(3,2) = readDouble();
             matrix(3,3) = readDouble();
+
+            osg::notify(osg::NOTICE)<<"readMatrix = "<<matrix<<std::endl;
+
         }
 
         void write(const osgProducer::EventAdapter& event)

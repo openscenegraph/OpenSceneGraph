@@ -26,7 +26,7 @@ namespace osg {
 // forward declare GraphicsContext
 class GraphicsContext;    
     
-class Block: public osg::Referenced {
+class Block: virtual public osg::Referenced {
     public:
         Block():_released(false) {}
 
@@ -82,17 +82,17 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
         GraphicsThread();
 
         /** Base class for implementing GraphicsThread operations.*/
-        struct OSG_EXPORT Operation : public Referenced
+        struct OSG_EXPORT Operation : virtual public Referenced
         {
             Operation(const std::string& name, bool keep):
                 _name(name),
-                _keep(true) {}
+                _keep(keep) {}
                 
             /** Set the human readable name of the operation.*/
             void setName(const std::string& name) { _name = name; }
 
             /** Get the human readable name of the operation.*/
-            const std::string& gtName() const { return _name; }
+            const std::string& getName() const { return _name; }
         
             /** Set whether the operation should be kept once its been applied.*/ 
             void setKeep(bool keep) { _keep = keep; }

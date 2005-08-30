@@ -84,7 +84,27 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
         /** Base class for implementing GraphicsThread operations.*/
         struct OSG_EXPORT Operation : public Referenced
         {
+            Operation(const std::string& name, bool keep):
+                _name(name),
+                _keep(true) {}
+                
+            /** Set the human readable name of the operation.*/
+            void setName(const std::string& name) { _name = name; }
+
+            /** Get the human readable name of the operation.*/
+            const std::string& gtName() const { return _name; }
+        
+            /** Set whether the operation should be kept once its been applied.*/ 
+            void setKeep(bool keep) { _keep = keep; }
+
+            /** Get whether the operation should be kept once its been applied.*/ 
+            bool getKeep() const { return _keep; }
+
+            /** Do the actual task of this operation.*/ 
             virtual void operator () (GraphicsContext*) {}
+            
+            std::string _name;
+            bool        _keep;
         };
 
         /** Add operation to end of OperationQueue, this will be 
@@ -118,10 +138,13 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
 /** SwapBufferOperation calls swap buffers on the GraphicsContext.*/
 struct OSG_EXPORT SwapBuffersOperation : public GraphicsThread::Operation
 {
+    SwapBuffersOperation():
+        GraphicsThread::Operation("SwapBuffers",true) {}
+
     virtual void operator () (GraphicsContext* context);
 };
 
-/** BarrierOperation allows one syncronize multiple GraphicsThreads with each other.*/
+/** BarrierOperation allows one to syncronize multiple GraphicsThreads with each other.*/
 struct OSG_EXPORT BarrierOperation : public GraphicsThread::Operation, public OpenThreads::Barrier
 {
     enum PreBlockOp
@@ -131,7 +154,10 @@ struct OSG_EXPORT BarrierOperation : public GraphicsThread::Operation, public Op
         GL_FINISH
     };
 
-    BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION): OpenThreads::Barrier(numThreads), _preBlockOp(op) {}
+    BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION):
+        GraphicsThread::Operation("Barrier", true),
+        OpenThreads::Barrier(numThreads),
+        _preBlockOp(op) {}
 
     virtual void operator () (GraphicsContext* context);
     
@@ -142,7 +168,8 @@ struct OSG_EXPORT BarrierOperation : public GraphicsThread::Operation, public Op
   * then blocks waiting for context to be released, once the block is release the context is re-aqquired.*/
 struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsThread::Operation, public Block
 {
-    ReleaseContext_Block_MakeCurrentOperation() {}
+    ReleaseContext_Block_MakeCurrentOperation():
+        GraphicsThread::Operation("ReleaseContext_Block_MakeCurrent", false) {}
 
     virtual void operator () (GraphicsContext* context);
 };

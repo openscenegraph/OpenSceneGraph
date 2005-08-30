@@ -32,6 +32,7 @@
 struct FrameOperation : public osg::GraphicsThread::Operation
 {
     FrameOperation(osg::CameraNode* camera, osg::FrameStamp* frameStamp):
+        osg::GraphicsThread::Operation("Frame",true),
         _camera(camera),
         _frameStamp(frameStamp)
     {
@@ -174,6 +175,7 @@ int main( int argc, char **argv )
         previous_tick = current_tick;
 
 
+        // do the update traversal.
         loadedModel->accept(updateVisitor);
 
         // issue the frame for each camera.

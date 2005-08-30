@@ -21,7 +21,11 @@ using namespace OpenThreads;
 
 struct BlockOperation : public GraphicsThread::Operation, public Block
 {
-    BlockOperation() { reset(); }
+    BlockOperation():
+        GraphicsThread::Operation("Block",false)
+    {
+        reset();
+    }
 
     virtual void operator () (GraphicsContext*)
     {

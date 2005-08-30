@@ -50,7 +50,7 @@ class OSGPRODUCER_EXPORT GraphicsContextImplementation : public osg::GraphicsCon
         /** Return true if the graphics context has been realised and is ready to use.*/
         virtual bool isRealizedImplementation() const { return _rs.valid() && _rs->isRealized(); }
 
-        /** Release the graphics context.*/
+        /** Close the graphics context.*/
         virtual void closeImplementation();
 
         /** Make this graphics context current.*/

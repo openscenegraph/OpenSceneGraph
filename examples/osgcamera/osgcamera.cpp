@@ -13,6 +13,8 @@
 #include <osgUtil/GLObjectsVisitor>
 
 #include <osgDB/ReadFile>
+#include <osgDB/DynamicLibrary>
+#include <osgDB/Registry>
 
 #include <map>
 #include <list>
@@ -73,7 +75,7 @@ struct CullOperation : public osg::GraphicsThread::Operation
         _sceneView->cull();
     }
     
-    osg::ref_ptr<osg::CameraNode>    _camera;
+    osg::CameraNode*                 _camera;
     osg::ref_ptr<osgUtil::SceneView> _sceneView;
 };
 
@@ -118,11 +120,17 @@ struct DrawOperation : public osg::GraphicsThread::Operation
 //
 int main( int argc, char **argv )
 {
+
     if (argc<2) 
     {
         std::cout << argv[0] <<": requires filename argument." << std::endl;
         return 1;
     }
+
+    // load the osgProducer library manually.
+    osg::ref_ptr<osgDB::DynamicLibrary> osgProducerLib =
+	    osgDB::DynamicLibrary::loadLibrary(osgDB::Registry::instance()->createLibraryNameForNodeKit("osgProducer"));
+
 
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
@@ -300,10 +308,11 @@ int main( int argc, char **argv )
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     osg::Timer_t previous_tick = start_tick;
     
-    bool done = false;    
+    bool done = false;
+    unsigned int maxNumFrames = 500;
 
     // main loop -  update scene graph, dispatch frame, wait for frame done.
-    while( !done )
+    while( !done && frameNum<maxNumFrames)
     {
 
         osg::Timer_t current_tick = osg::Timer::instance()->tick();
@@ -334,5 +343,11 @@ int main( int argc, char **argv )
         }
 
     }
+
+    // delete the cameras, associated contexts and threads.
+    cameraList.clear();
+    
+    std::cout<<"Exiting application"<<std::endl;
+
     return 0;
 }

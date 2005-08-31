@@ -142,7 +142,7 @@ int main( int argc, char **argv )
     updateVisitor.setFrameStamp(frameStamp.get());
 
 
-    unsigned int numberCameras = 3;
+    unsigned int numberCameras = 1;
     unsigned int xpos = 0;
     unsigned int ypos = 400;
     unsigned int width = 400;
@@ -242,7 +242,8 @@ int main( int argc, char **argv )
 
     // we can put a finish in to gate rendering throughput, so that each new frame starts with a clean sheet.
     // you should only enable one of these, doFinishBeforeNewDraw will allow for the better parallism of the two finish approaches
-    bool doFinishBeforeNewDraw = true;
+    // note, both are disabled right now, as glFinish is spin locking the CPU, not something that we want...
+    bool doFinishBeforeNewDraw = false;
     bool doFinishAfterSwap = false;
 
     // third add the frame for each camera.
@@ -287,7 +288,7 @@ int main( int argc, char **argv )
         osg::GraphicsContext* context = *gitr;
 
         context->getGraphicsThread()->add(frameEndBarrierOp.get(), false);
-        context->getGraphicsThread()->add(preSwapBarrierOp.get(), false);
+        // context->getGraphicsThread()->add(preSwapBarrierOp.get(), false);
         context->getGraphicsThread()->add(swapOp.get(), false);
         
         // optionally add finish barrier to ensure that we don't do any other graphics work till the current OpenGL commands are complete.
@@ -310,7 +311,7 @@ int main( int argc, char **argv )
         frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,current_tick));
         frameStamp->setFrameNumber(frameNum++);
         
-        std::cout<<"Frame rate "<<1.0/osg::Timer::instance()->delta_s(previous_tick,current_tick)<<std::endl;
+        //std::cout<<"Frame rate "<<1.0/osg::Timer::instance()->delta_s(previous_tick,current_tick)<<std::endl;
         previous_tick = current_tick;
 
 

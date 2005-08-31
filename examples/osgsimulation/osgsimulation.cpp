@@ -33,6 +33,8 @@
 
 #include <osgTerrain/DataSet>
 
+#include <osgSim/OverlayNode>
+
 #include <osgGA/NodeTrackerManipulator>
 
 class GraphicsContext {
@@ -289,7 +291,10 @@ int main(int argc, char **argv)
         return 1;
     }
     
-    osg::ref_ptr<osg::Node> root = createEarth();
+    // read the scene from the list of file specified commandline args.
+    osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(arguments);
+
+    if (!root) root = createEarth();
     
     if (!root) return 0;
 
@@ -299,6 +304,22 @@ int main(int argc, char **argv)
     osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
     if (csn)
     {
+
+        bool insertOverlayNode = true;
+        osg::ref_ptr<osgSim::OverlayNode> overlayNode;
+        if (insertOverlayNode)
+        {
+            overlayNode = new osgSim::OverlayNode;
+            for(unsigned int i=0; i<csn->getNumChildren(); ++i)
+            {
+                overlayNode->addChild( csn->getChild(i) );
+            }
+
+            csn->removeChild(0, csn->getNumChildren());
+            csn->addChild(overlayNode.get());
+        }
+        
+        
         osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
         if (cessna)
         {
@@ -318,6 +339,12 @@ int main(int argc, char **argv)
             mt->setUpdateCallback(nc);
 
             csn->addChild(mt);
+            
+            // if we are using an overaly node, use the cessna subgraph as the overlay subgraph
+            if (overlayNode.valid())
+            {
+                overlayNode->setOverlaySubgraph(mt);
+            }
 
             osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
             tm->setTrackerMode(trackerMode);
@@ -331,6 +358,7 @@ int main(int argc, char **argv)
         {
              std::cout<<"Failed to read cessna.osg"<<std::endl;
         }
+        
     }    
 
         

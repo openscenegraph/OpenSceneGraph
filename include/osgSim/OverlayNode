@@ -35,10 +35,10 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         
         virtual void traverse(osg::NodeVisitor& nv);
 
-        /** Set the overlay subgraph which will be render to texture.*/
+        /** Set the overlay subgraph which will be rendered to texture.*/
         void setOverlaySubgraph(osg::Node* node);
         
-        /** Get the overlay subgraph which will be render to texture.*/
+        /** Get the overlay subgraph which will be rendered to texture.*/
         osg::Node* getOverlaySubgraph() { return _overlaySubgraph.get(); }
 
         /** Get the const overlay subgraph which will be render to texture.*/

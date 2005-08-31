@@ -134,6 +134,10 @@ void Texture2D::apply(State& state) const
             getModifiedCount(contextID) = _image->getModifiedCount();
      
         }
+        else if (_readPBuffer.valid())
+        {
+            _readPBuffer->bindPBufferToTexture(GL_FRONT);
+        }
 
     }
     else if (_subloadCallback.valid())
@@ -221,6 +225,12 @@ void Texture2D::apply(State& state) const
                      _internalFormat,
                      GL_UNSIGNED_BYTE,
                      0);                
+                     
+        if (_readPBuffer.valid())
+        {
+            _readPBuffer->bindPBufferToTexture(GL_FRONT);
+        }
+        
     }
     else
     {

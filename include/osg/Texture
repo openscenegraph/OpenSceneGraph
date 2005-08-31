@@ -17,6 +17,7 @@
 #include <osg/GL>
 #include <osg/Image>
 #include <osg/StateAttribute>
+#include <osg/GraphicsContext>
 #include <osg/ref_ptr>
 #include <osg/Vec4>
 #include <osg/buffered_value>
@@ -415,6 +416,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         virtual unsigned int getNumImages() const = 0;
 
 
+        /** Set the PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
+        void setReadPBuffer(GraphicsContext* context) { _readPBuffer = context; }
+
+        /** Get the PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
+        GraphicsContext* getReadPBuffer() { return _readPBuffer.get(); }
+
         /** Texture is a pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;
 
@@ -725,8 +732,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
     protected:
 
         typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
-        mutable TextureObjectBuffer _textureObjectBuffer;
-
+        mutable TextureObjectBuffer         _textureObjectBuffer;
+        mutable ref_ptr<GraphicsContext>    _readPBuffer;
 
 };
 

@@ -142,7 +142,7 @@ int main( int argc, char **argv )
     updateVisitor.setFrameStamp(frameStamp.get());
 
 
-    unsigned int numberCameras = 1;
+    unsigned int numberCameras = 3;
     unsigned int xpos = 0;
     unsigned int ypos = 400;
     unsigned int width = 400;

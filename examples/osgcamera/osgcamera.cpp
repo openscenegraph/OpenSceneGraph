@@ -53,22 +53,14 @@ struct CompileOperation : public osg::GraphicsThread::Operation
     osg::ref_ptr<osg::Node> _scene;
 };
 
-// Frame operation, that does a cull and draw on the scene graph.
-struct FrameOperation : public osg::GraphicsThread::Operation
+// Cull operation, that does a cull on the scene graph.
+struct CullOperation : public osg::GraphicsThread::Operation
 {
-    FrameOperation(osg::CameraNode* camera, osg::FrameStamp* frameStamp):
-        osg::GraphicsThread::Operation("Frame",true),
+    CullOperation(osg::CameraNode* camera, osgUtil::SceneView* sceneView):
+        osg::GraphicsThread::Operation("Cull",true),
         _camera(camera),
-        _frameStamp(frameStamp)
+        _sceneView(sceneView)
     {
-        _sceneView = new osgUtil::SceneView;
-        _sceneView->setDefaults();
-        _sceneView->setFrameStamp(_frameStamp.get());
-            
-        if (camera->getNumChildren()>=1)
-        {
-            _sceneView->setSceneData(camera->getChild(0));
-        }
     }
     
     virtual void operator () (osg::GraphicsContext* context)
@@ -79,11 +71,26 @@ struct FrameOperation : public osg::GraphicsThread::Operation
         _sceneView->setViewport(_camera->getViewport());
         
         _sceneView->cull();
-        _sceneView->draw();
     }
     
     osg::ref_ptr<osg::CameraNode>    _camera;
-    osg::ref_ptr<osg::FrameStamp>    _frameStamp;
+    osg::ref_ptr<osgUtil::SceneView> _sceneView;
+};
+
+// Draw operation, that does a draw on the scene graph.
+struct DrawOperation : public osg::GraphicsThread::Operation
+{
+    DrawOperation(osgUtil::SceneView* sceneView):
+        osg::GraphicsThread::Operation("Draw",true),
+        _sceneView(sceneView)
+    {
+    }
+    
+    virtual void operator () (osg::GraphicsContext*)
+    {
+        _sceneView->draw();
+    }
+    
     osg::ref_ptr<osgUtil::SceneView> _sceneView;
 };
 
@@ -217,7 +224,7 @@ int main( int argc, char **argv )
         ++gitr)
     {
         osg::GraphicsContext* context = *gitr;
-        context->getGraphicsThread()->add(compileOp.get(), true);
+        context->getGraphicsThread()->add(compileOp.get(), false);
     }
 
 
@@ -231,13 +238,38 @@ int main( int argc, char **argv )
         context->getGraphicsThread()->add(frameBeginBarrierOp.get(), false);
     }
 
+    osg::ref_ptr<osg::BarrierOperation> glFinishBarrierOp = new osg::BarrierOperation(graphicsContextSet.size(), osg::BarrierOperation::GL_FINISH);
+
+    // we can put a finish in to gate rendering throughput, so that each new frame starts with a clean sheet.
+    // you should only enable one of these, doFinishBeforeNewDraw will allow for the better parallism of the two finish approaches
+    bool doFinishBeforeNewDraw = true;
+    bool doFinishAfterSwap = false;
+
     // third add the frame for each camera.
     for(citr = cameraList.begin();
         citr != cameraList.end();
         ++citr)
     {
         osg::CameraNode* camera = citr->get();
-        camera->getGraphicsContext()->getGraphicsThread()->add( new FrameOperation(camera, frameStamp.get()), false); 
+        
+        // create a scene view to do the cull and draw
+        osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+        sceneView->setDefaults();
+        sceneView->setFrameStamp(frameStamp.get());
+            
+        if (camera->getNumChildren()>=1)
+        {
+            sceneView->setSceneData(camera->getChild(0));
+        }
+
+        // cull traversal operation
+        camera->getGraphicsContext()->getGraphicsThread()->add( new CullOperation(camera, sceneView), false); 
+
+        // optionally add glFinish barrier to ensure that all OpenGL commands are completed before we start dispatching a new frame
+        if (doFinishBeforeNewDraw) camera->getGraphicsContext()->getGraphicsThread()->add( glFinishBarrierOp.get(), false); 
+
+        // draw traversal operation.
+        camera->getGraphicsContext()->getGraphicsThread()->add( new DrawOperation(sceneView), false); 
     }
 
     // fourth add the frame end barrier, the pre swap barrier and finally the swap buffers to each graphics thread.
@@ -245,21 +277,21 @@ int main( int argc, char **argv )
     // The pre swap barrier is an optional extra, which does a flush before joining the barrier, using this all graphics threads
     // are held back until they have all dispatched their fifo to the graphics hardware.  
     // The swapOp just issues a swap buffers for each of the graphics contexts.
-    // The post swap barrier is an optional extra which does a glFinish after the swap buffers.
     osg::ref_ptr<osg::BarrierOperation> frameEndBarrierOp = new osg::BarrierOperation(graphicsContextSet.size()+1, osg::BarrierOperation::NO_OPERATION);
     osg::ref_ptr<osg::BarrierOperation> preSwapBarrierOp = new osg::BarrierOperation(graphicsContextSet.size(), osg::BarrierOperation::GL_FLUSH);
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
-    osg::ref_ptr<osg::BarrierOperation> postSwapBarrierOp = new osg::BarrierOperation(graphicsContextSet.size(), osg::BarrierOperation::GL_FINISH);
-    bool waitTillSwapBufferFinished = false;
     for(gitr = graphicsContextSet.begin();
         gitr != graphicsContextSet.end();
         ++gitr)
     {
         osg::GraphicsContext* context = *gitr;
+
         context->getGraphicsThread()->add(frameEndBarrierOp.get(), false);
         context->getGraphicsThread()->add(preSwapBarrierOp.get(), false);
         context->getGraphicsThread()->add(swapOp.get(), false);
-        if (waitTillSwapBufferFinished) context->getGraphicsThread()->add(postSwapBarrierOp.get(), false);
+        
+        // optionally add finish barrier to ensure that we don't do any other graphics work till the current OpenGL commands are complete.
+        if (doFinishAfterSwap) context->getGraphicsThread()->add(glFinishBarrierOp.get(), false);
     }
 
 

@@ -19,6 +19,20 @@
 using namespace osg;
 using namespace OpenThreads;
 
+struct MyTest
+{
+    MyTest()
+    {
+        osg::notify(osg::NOTICE)<<"MyTest Constructor"<<std::endl;
+    }
+    ~MyTest()
+    {
+        osg::notify(osg::NOTICE)<<"MyTest Constructor"<<std::endl;
+    }
+    
+    
+};
+
 struct BlockOperation : public GraphicsThread::Operation, public Block
 {
     BlockOperation():
@@ -60,7 +74,7 @@ int GraphicsThread::cancel()
         _done = true;
 
         // cancel the thread..
-        result = Thread::cancel();
+        // result = Thread::cancel();
         //join();
 
         // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.
@@ -123,6 +137,8 @@ void GraphicsThread::run()
     }
 
     osg::notify(osg::INFO)<<"Doing run"<<std::endl;
+
+    MyTest test;
 
     bool firstTime = true;
 

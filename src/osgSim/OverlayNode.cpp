@@ -17,24 +17,6 @@
 
 using namespace osgSim;
 
-// use this cull callback to allow the camera to traverse the OverlaySubgraph's children without
-// actuall having them assigned as children to the camea itself.  This make the camera a
-// decorator without ever directly being assigned to it. 
-class OverlayTraverseNodeCallback : public osg::NodeCallback
-{
-public:
-
-    OverlayTraverseNodeCallback(osg::Node* node):_node(node) {}                                                       
-
-    virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
-    {
-        osg::notify(osg::NOTICE)<<"Oddddd stuff"<<std::endl;
-        _node->accept(*nv);
-    }
-    
-    osg::Node* _node;
-};
-
 OverlayNode::OverlayNode():
     _textureUnit(1)
 {

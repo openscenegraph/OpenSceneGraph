@@ -20,7 +20,7 @@ using namespace osgProducer;
 
 namespace osgProducer
 {
-    struct MyCreateGraphicContexCallback : public osg::GraphicsContext::CreateGraphicContexCallback
+    struct MyCreateGraphicContexCallback : public osg::GraphicsContext::CreateGraphicContextCallback
     {
         virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
         {

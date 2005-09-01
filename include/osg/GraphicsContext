@@ -92,19 +92,19 @@ class OSG_EXPORT GraphicsContext : public Referenced
     
     
         /** Callback to be implemented to provide access to Windowing API's ability to create Windows/pbuffers.*/
-        struct CreateGraphicContexCallback : public osg::Referenced
+        struct CreateGraphicContextCallback : public osg::Referenced
         {
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
             
-            virtual ~CreateGraphicContexCallback() {};
+            virtual ~CreateGraphicContextCallback() {};
         };
     
     
         /** Set the create graphics context callback - this callback should be supplied by the windows toolkit. */
-        static void setCreateGraphicsContextCallback(CreateGraphicContexCallback* callback);
+        static void setCreateGraphicsContextCallback(CreateGraphicContextCallback* callback);
         
         /** Get the create graphics context callback*/
-        static CreateGraphicContexCallback* getCreateGraphicsContextCallback();
+        static CreateGraphicContextCallback* getCreateGraphicsContextCallback();
     
         /** Create a graphics context for a specified set of traits.*/
         static GraphicsContext* createGraphicsContext(Traits* traits);

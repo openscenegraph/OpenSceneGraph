@@ -18,14 +18,14 @@
 
 using namespace osg;
 
-static ref_ptr<GraphicsContext::CreateGraphicContexCallback> s_createGraphicsContextCallback;
+static ref_ptr<GraphicsContext::CreateGraphicContextCallback> s_createGraphicsContextCallback;
 
-void GraphicsContext::setCreateGraphicsContextCallback(CreateGraphicContexCallback* callback)
+void GraphicsContext::setCreateGraphicsContextCallback(CreateGraphicContextCallback* callback)
 {
     s_createGraphicsContextCallback = callback;
 }
 
-GraphicsContext::CreateGraphicContexCallback* GraphicsContext::getCreateGraphicsContextCallback()
+GraphicsContext::CreateGraphicContextCallback* GraphicsContext::getCreateGraphicsContextCallback()
 {
     return s_createGraphicsContextCallback.get();
 }

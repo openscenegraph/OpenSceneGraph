@@ -147,7 +147,7 @@ SOURCE=..\..\src\osgUtil\RenderStage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\RenderStageLighting.cpp
+SOURCE=..\..\src\osgUtil\PositionalStateContainer.cpp
 # End Source File
 # Begin Source File
 
@@ -259,7 +259,7 @@ SOURCE=..\..\include\osgUtil\RenderStage
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\RenderStageLighting
+SOURCE=..\..\include\osgUtil\PositionalStateContainer
 # End Source File
 # Begin Source File
 

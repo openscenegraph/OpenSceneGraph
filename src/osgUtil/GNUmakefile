@@ -16,7 +16,7 @@ CXXFILES = \
 	RenderGraph.cpp\
 	RenderLeaf.cpp\
 	RenderStage.cpp\
-	RenderStageLighting.cpp\
+	PositionalStateContainer.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\

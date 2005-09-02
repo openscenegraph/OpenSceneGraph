@@ -10,29 +10,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osgUtil/RenderStageLighting>
+#include <osgUtil/PositionalStateContainer>
 
 using namespace osg;
 using namespace osgUtil;
 
-// register a RenderStageLighting prototype with the RenderBin prototype list.
-//RegisterRenderBinProxy<RenderStageLighting> s_registerRenderStageLightingProxy;
+// register a PositionalStateContainer prototype with the RenderBin prototype list.
+//RegisterRenderBinProxy<PositionalStateContainer> s_registerPositionalStateContainerProxy;
 
-RenderStageLighting::RenderStageLighting()
+PositionalStateContainer::PositionalStateContainer()
 {
 }
 
-RenderStageLighting::~RenderStageLighting()
+PositionalStateContainer::~PositionalStateContainer()
 {
 }
 
-void RenderStageLighting::reset()
+void PositionalStateContainer::reset()
 {
     _attrList.clear();
     _texAttrListMap.clear();
 }
 
-void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous, const osg::Matrix* postMultMatrix)
+void PositionalStateContainer::draw(osg::State& state,RenderLeaf*& previous, const osg::Matrix* postMultMatrix)
 {
 
     if (previous)

@@ -406,9 +406,9 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
     glLoadIdentity();
 
     // apply the positional state.
-    if (_inheritedRenderStageLighting.valid())
+    if (_inheritedPositionalStateContainer.valid())
     {
-        _inheritedRenderStageLighting->draw(state, previous, &_inheritedRenderStageLightingMatrix);
+        _inheritedPositionalStateContainer->draw(state, previous, &_inheritedPositionalStateContainerMatrix);
     }
 
     // apply the positional state.

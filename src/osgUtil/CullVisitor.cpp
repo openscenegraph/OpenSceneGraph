@@ -1122,12 +1122,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
         rtts->setViewport( viewport );
         
 
-        // set up to charge the same RenderStageLighting is the parent previous stage.
+        // set up to charge the same PositionalStateContainer is the parent previous stage.
         osg::Matrix inhertiedMVtolocalMV;
         inhertiedMVtolocalMV.invert(originalModelView);
         inhertiedMVtolocalMV.postMult(getModelViewMatrix());
-        rtts->setInheritedRenderStageLightingMatrix(inhertiedMVtolocalMV);
-        rtts->setInheritedRenderStageLighting(previous_stage->getRenderStageLighting());
+        rtts->setInheritedPositionalStateContainerMatrix(inhertiedMVtolocalMV);
+        rtts->setInheritedPositionalStateContainer(previous_stage->getPositionalStateContainer());
 
         // record the render bin, to be restored after creation
         // of the render to text

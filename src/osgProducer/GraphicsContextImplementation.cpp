@@ -231,7 +231,8 @@ void GraphicsContextImplementation::closeImplementation()
 {
     if (!_rs) return;
     
-    // need to close render surface... 
+    // close render surface by deleting it 
+    _rs = 0;
 }
 
 void GraphicsContextImplementation::bindPBufferToTextureImplementation(GLenum buffer)

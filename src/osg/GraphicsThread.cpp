@@ -19,16 +19,39 @@
 using namespace osg;
 using namespace OpenThreads;
 
-struct MyTest
+struct ThreadExitTidyUp
 {
-    MyTest()
+    ThreadExitTidyUp(osg::GraphicsContext* context, bool closeContextOnExit):
+        _context(context),
+        _closeContextOnExit(closeContextOnExit)
     {
-        osg::notify(osg::NOTICE)<<"MyTest Constructor"<<std::endl;
+        osg::notify(osg::NOTICE)<<"starting thread context "<<_context<<std::endl;
     }
-    ~MyTest()
+
+    ~ThreadExitTidyUp()
     {
-        osg::notify(osg::NOTICE)<<"MyTest Constructor"<<std::endl;
+        osg::notify(osg::NOTICE)<<"exit thread"<<std::endl;
+        if (_context)
+        {
+            if (_closeContextOnExit)
+            {
+                osg::notify(osg::NOTICE)<<"    - close context "<<_context<<std::endl;
+
+                _context->closeImplementation();
+
+                osg::notify(osg::NOTICE)<<"    - done close context "<<_context<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"    - releaseContext "<<_context<<std::endl;
+
+                //_context->releaseContext();
+            }
+        }
     }
+    
+    osg::GraphicsContext* _context;
+    bool _closeContextOnExit;
     
     
 };
@@ -65,7 +88,7 @@ GraphicsThread::~GraphicsThread()
 
 int GraphicsThread::cancel()
 {
-    osg::notify(osg::INFO)<<"Cancelling graphics thread"<<std::endl;
+    osg::notify(osg::INFO)<<"Cancelling graphics thread "<<this<<std::endl;
 
     int result = 0;
     if( isRunning() )
@@ -73,10 +96,26 @@ int GraphicsThread::cancel()
     
         _done = true;
 
-        // cancel the thread..
-        // result = Thread::cancel();
-        //join();
+        osg::notify(osg::INFO)<<"   Doing cancel "<<this<<std::endl;
 
+        for(OperationQueue::iterator itr = _operations.begin();
+            itr != _operations.end();
+            ++itr)
+        {
+            BarrierOperation* barrier = dynamic_cast<BarrierOperation*>(itr->get());
+            if (barrier)
+            {
+                barrier->release();
+                //barrier->invalidate();
+                osg::notify(osg::INFO)<<"   Invalidating barrier "<<this<<std::endl;
+            }
+        }
+
+/*
+        // cancel the thread..
+        result = Thread::cancel();
+        //join();
+*/
         // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.
         _operationsBlock->release();
 
@@ -85,7 +124,7 @@ int GraphicsThread::cancel()
         {
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
-            osg::notify(osg::INFO)<<"Waiting for GraphicsThread to cancel"<<std::endl;
+            osg::notify(osg::INFO)<<"   Waiting for GraphicsThread to cancel "<<this<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
     }
@@ -124,21 +163,25 @@ void GraphicsThread::add(Operation* operation, bool waitForCompletion)
 
 void GraphicsThread::run()
 {
+    bool contextRealizedInThisThread = false;
+
     // make the graphics context current.
     if (_graphicsContext)
     {
         if (!_graphicsContext->isRealized())
         {
             _graphicsContext->realize();
+            contextRealizedInThisThread = true;
         }
     
         osg::notify(osg::INFO)<<"Doing make current"<<std::endl;
         _graphicsContext->makeCurrent();
     }
 
-    osg::notify(osg::INFO)<<"Doing run"<<std::endl;
+    // create a local object to clean up once the thread is cancelled.
+    ThreadExitTidyUp threadExitTypeUp(_graphicsContext, contextRealizedInThisThread);
 
-    MyTest test;
+    osg::notify(osg::INFO)<<"Doing run"<<std::endl;
 
     bool firstTime = true;
 
@@ -201,7 +244,7 @@ void GraphicsThread::run()
         
         if (operation.valid())
         {
-            osg::notify(osg::INFO)<<"Doing op "<<operation->getName()<<std::endl;
+            osg::notify(osg::INFO)<<"Doing op "<<operation->getName()<<" "<<this<<std::endl;
 
             // call the graphics operation.
             (*operation)(_graphicsContext);
@@ -218,9 +261,6 @@ void GraphicsThread::run()
     } while (!testCancel() && !_done);
 
     osg::notify(osg::NOTICE)<<"exit loop"<<std::endl;
-
-    // release the graphics context so that others can aquire it.
-    if (_graphicsContext) _graphicsContext->releaseContext();
 
 }
  

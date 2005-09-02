@@ -120,20 +120,40 @@ struct DrawOperation : public osg::GraphicsThread::Operation
 //
 int main( int argc, char **argv )
 {
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
 
-    if (argc<2) 
-    {
-        std::cout << argv[0] <<": requires filename argument." << std::endl;
-        return 1;
-    }
+    std::string windowingLibrary("osgProducer");
+    while (arguments.read("--windowing",windowingLibrary)) {}
 
     // load the osgProducer library manually.
-    osg::ref_ptr<osgDB::DynamicLibrary> osgProducerLib =
-	    osgDB::DynamicLibrary::loadLibrary(osgDB::Registry::instance()->createLibraryNameForNodeKit("osgProducer"));
+    osg::ref_ptr<osgDB::DynamicLibrary> windowingLib =
+	    osgDB::DynamicLibrary::loadLibrary(osgDB::Registry::instance()->createLibraryNameForNodeKit(windowingLibrary));
 
+
+    if (!windowingLib)
+    {
+        std::cout<<"Error: failed to loading windowing library: "<<windowingLibrary<<std::endl;
+    }
+
+    unsigned int numberCameras = 3;
+    while (arguments.read("--cameras",numberCameras)) {}
+
+    unsigned int xpos = 0;
+    unsigned int ypos = 400;
+    unsigned int width = 400;
+    unsigned int height = 400;
+
+    while (arguments.read("--xpos",xpos)) {}
+    while (arguments.read("--ypos",ypos)) {}
+    while (arguments.read("--height",height)) {}
+    while (arguments.read("--width",width)) {}
+
+    unsigned int maxNumFrames = 1000;
+    while (arguments.read("--max-num-frames",maxNumFrames)) {}
 
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel) 
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;
@@ -148,13 +168,6 @@ int main( int argc, char **argv )
 
     osgUtil::UpdateVisitor updateVisitor;
     updateVisitor.setFrameStamp(frameStamp.get());
-
-
-    unsigned int numberCameras = 3;
-    unsigned int xpos = 0;
-    unsigned int ypos = 400;
-    unsigned int width = 400;
-    unsigned int height = 400;
     
     typedef std::list< osg::ref_ptr<osg::CameraNode> > CameraList;
     typedef std::set< osg::GraphicsContext* > GraphicsContextSet;
@@ -309,7 +322,6 @@ int main( int argc, char **argv )
     osg::Timer_t previous_tick = start_tick;
     
     bool done = false;
-    unsigned int maxNumFrames = 50;
 
     // main loop -  update scene graph, dispatch frame, wait for frame done.
     while( !done && frameNum<maxNumFrames)
@@ -343,9 +355,6 @@ int main( int argc, char **argv )
         }
 
     }
-
-    // delete the cameras, associated contexts and threads.
-    cameraList.clear();
     
     std::cout<<"Exiting application"<<std::endl;
 

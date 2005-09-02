@@ -309,7 +309,7 @@ int main( int argc, char **argv )
     osg::Timer_t previous_tick = start_tick;
     
     bool done = false;
-    unsigned int maxNumFrames = 500;
+    unsigned int maxNumFrames = 50;
 
     // main loop -  update scene graph, dispatch frame, wait for frame done.
     while( !done && frameNum<maxNumFrames)

@@ -122,6 +122,19 @@ int GraphicsThread::cancel()
         // then wait for the the thread to stop running.
         while(isRunning())
         {
+            for(OperationQueue::iterator itr = _operations.begin();
+                itr != _operations.end();
+                ++itr)
+            {
+                BarrierOperation* barrier = dynamic_cast<BarrierOperation*>(itr->get());
+                if (barrier)
+                {
+                    barrier->release();
+                    //barrier->invalidate();
+                    osg::notify(osg::INFO)<<"   Invalidating barrier "<<this<<std::endl;
+                }
+            }
+
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
             osg::notify(osg::INFO)<<"   Waiting for GraphicsThread to cancel "<<this<<std::endl;

@@ -149,6 +149,8 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
 
         //_rs->realize();
     }
+    
+    // _rs->useConfigEventThread(false);
 
     _closeOnDestruction = true;
 }

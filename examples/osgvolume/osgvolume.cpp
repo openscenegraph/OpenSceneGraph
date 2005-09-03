@@ -928,11 +928,11 @@ struct WriteRowOperator
     std::vector<osg::Vec4>  _colours;
     mutable unsigned int    _pos;
     
-    inline void luminance(float& l) const { l = _colours[_pos++].red(); } 
-    inline void alpha(float& a) const { a = _colours[_pos++].alpha(); } 
-    inline void luminance_alpha(float& l,float& a) const { l = _colours[_pos].red(); a = _colours[_pos++].alpha(); } 
-    inline void rgb(float& r,float& g,float& b) const { r = _colours[_pos].red(); g = _colours[_pos].green(); b = _colours[_pos].blue(); }
-    inline void rgba(float& r,float& g,float& b,float& a) const {  r = _colours[_pos].red(); g = _colours[_pos].green(); b = _colours[_pos].blue(); a = _colours[_pos++].alpha(); }
+    inline void luminance(float& l) const { l = _colours[_pos++].r(); } 
+    inline void alpha(float& a) const { a = _colours[_pos++].a(); } 
+    inline void luminance_alpha(float& l,float& a) const { l = _colours[_pos].r(); a = _colours[_pos++].a(); } 
+    inline void rgb(float& r,float& g,float& b) const { r = _colours[_pos].r(); g = _colours[_pos].g(); b = _colours[_pos].b(); }
+    inline void rgba(float& r,float& g,float& b,float& a) const {  r = _colours[_pos].r(); g = _colours[_pos].g(); b = _colours[_pos].b(); a = _colours[_pos++].a(); }
 };
 
 osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent, int numberOfComponents, const std::string& endian, const std::string& raw_filename)
@@ -1063,9 +1063,9 @@ enum ColourSpaceOperation
     REPLACE_ALPHA_WITH_LUMINACE
 };
 
-struct ModulatAlphaByLuminanceOperator
+struct ModulateAlphaByLuminanceOperator
 {
-    ModulatAlphaByLuminanceOperator() {}
+    ModulateAlphaByLuminanceOperator() {}
 
     inline void luminance(float&) const {} 
     inline void alpha(float&) const {} 
@@ -1074,9 +1074,9 @@ struct ModulatAlphaByLuminanceOperator
     inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a *= l;}
 };
 
-struct ModulatAlphaByColourOperator
+struct ModulateAlphaByColourOperator
 {
-    ModulatAlphaByColourOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
+    ModulateAlphaByColourOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
     
     osg::Vec4 _colour;
     float _lum;
@@ -1085,7 +1085,7 @@ struct ModulatAlphaByColourOperator
     inline void alpha(float&) const {} 
     inline void luminance_alpha(float& l,float& a) const { a*= l*_lum; } 
     inline void rgb(float&,float&,float&) const {}
-    inline void rgba(float& r,float& g,float& b,float& a) const { a = (r*_colour.red()+g*_colour.green()+b*_colour.blue()+a*_colour.alpha()); }
+    inline void rgba(float& r,float& g,float& b,float& a) const { a = (r*_colour.r()+g*_colour.g()+b*_colour.b()+a*_colour.a()); }
 };
 
 struct ReplaceAlphaWithLuminanceOperator
@@ -1105,11 +1105,11 @@ void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Ve
     {
         case (MODULATE_ALPHA_BY_LUMINANCE):
             std::cout<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
-            modifyImage(image,ModulatAlphaByLuminanceOperator()); 
+            modifyImage(image,ModulateAlphaByLuminanceOperator()); 
             break;
         case (MODULATE_ALPHA_BY_COLOUR):
             std::cout<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
-            modifyImage(image,ModulatAlphaByColourOperator(colour)); 
+            modifyImage(image,ModulateAlphaByColourOperator(colour)); 
             break;
         case (REPLACE_ALPHA_WITH_LUMINACE):
             std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINACE"<<std::endl;

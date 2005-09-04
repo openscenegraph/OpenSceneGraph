@@ -1508,9 +1508,7 @@ void DataSet::DestinationTile::allocate()
 
             imageData._imagery->_image = new osg::Image;
 
-            std::string imageExension(".dds"); // ".rgb"
-            //std::string imageExension(".jp2"); // ".rgb"
-            std::string imageName(_name+imageExension);
+            std::string imageName(_name+_dataSet->getDestinationImageExtension());
             imageData._imagery->_image->setFileName(imageName.c_str());
 
             imageData._imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,_pixelFormat,GL_UNSIGNED_BYTE);
@@ -3704,6 +3702,11 @@ DataSet::DataSet()
     _skirtRatio = 0.02f;
 
     _convertFromGeographicToGeocentric = false;
+    
+    _tileBasename = "output";
+    _tileExtension = ".ive";
+    _imageExtension = ".dds";
+
     
     _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
     _databaseType = PagedLOD_DATABASE;

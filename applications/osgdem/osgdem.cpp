@@ -164,6 +164,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-a <archivename>","Specify the archive to place the generated database");
     arguments.getApplicationUsage()->addCommandLineOption("-o <outputfile>","Specify the output master file to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
+    arguments.getApplicationUsage()->addCommandLineOption("--image-ext <ext>","Specify the Image format to output to via its plugin name, i.e. rgb, dds, jp2, jpeg.");
     arguments.getApplicationUsage()->addCommandLineOption("--levels <begin_level> <end_level>","Specify the range of lavels that the next source Texture or DEM will contribute to.");
     arguments.getApplicationUsage()->addCommandLineOption("--layer <layer_num>","Specify the layer that the next source Texture will contribute to..");
     arguments.getApplicationUsage()->addCommandLineOption("-e <x> <y> <w> <h>","Extents of the model to generate");
@@ -294,6 +295,26 @@ int main( int argc, char **argv )
            arguments.read("--radius-to-max-visible-distance-ratio",radiusToMaxVisibleDistanceRatio))
     {
         dataset->setRadiusToMaxVisibleDistanceRatio(radiusToMaxVisibleDistanceRatio);
+    }
+
+    std::string image_ext;
+    while (arguments.read("--image-ext",image_ext))
+    {
+        std::string::size_type dot = image_ext.find_last_of('.');
+        if (dot!=std::string::npos) image_ext.erase(0,dot+1);
+
+        osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(image_ext);
+        if (rw) 
+        {
+            image_ext.insert(0,".");
+            dataset->setDestinationImageExtension(image_ext);
+            return 1;
+        }
+        else
+        {
+            std::cout<<"Error: can not find plugin to write out image with extension '"<<image_ext<<"'"<<std::endl;
+            return 1;
+        }
     }
 
 

@@ -982,6 +982,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         
         void setDestinationTileExtension(const std::string& extension) { _tileExtension = extension; }
         const std::string& getDestinationTileExtension() const { return _tileExtension; }
+
+        void setDestinationImageExtension(const std::string& extension) { _imageExtension = extension; }
+        const std::string& getDestinationImageExtension() const { return _imageExtension; }
         
         enum DatabaseType
         {
@@ -1125,6 +1128,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         osg::ref_ptr<osgDB::Archive>                _archive;
         std::string                                 _tileBasename;
         std::string                                 _tileExtension;
+        std::string                                 _imageExtension;
         osg::Vec4                                   _defaultColor;
         DatabaseType                                _databaseType;
         GeometryType                                _geometryType;

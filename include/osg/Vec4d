@@ -29,14 +29,17 @@ class Vec4d
 {
     public:
 
+        /** Type of Vec class.*/
         typedef double value_type;
 
+        /** Number of vector components. */
+        enum { num_components = 4 };
+        
+        /** Vec member varaible. */
         value_type _v[4];
 
-        // Methods are defined here so that they are implicitly inlined
+        Vec4d() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=0.0; }
 
-        Vec4d() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=0.0;}
-        
         Vec4d(value_type x, value_type y, value_type z, value_type w)
         {
             _v[0]=x;

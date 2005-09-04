@@ -30,7 +30,13 @@ class Vec3d
 {
     public:
 
+        /** Type of Vec class.*/
         typedef double value_type;
+
+        /** Number of vector components. */
+        enum { num_components = 3 };
+        
+        /** Vec member varaible. */
         value_type _v[3];
 
         Vec3d() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0;}

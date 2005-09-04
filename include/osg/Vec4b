@@ -26,16 +26,24 @@ class Vec4b
 {
     public:
 
-    // Methods are defined here so that they are implicitly inlined
+        /** Type of Vec class.*/
+        typedef char value_type;
+
+        /** Number of vector components. */
+        enum { num_components = 4 };
+        
+        /** Vec member varaible. */
+        value_type _v[4];
 
         Vec4b() { _v[0]=0; _v[1]=0; _v[2]=0; _v[3]=0; }
-        
-        Vec4b(char r, char g, char b, char a)
-        {
-            _v[0]=r; _v[1]=g; _v[2]=b; _v[3]=a;
-        }
 
-        char _v[4];
+        Vec4b(value_type x, value_type y, value_type z, value_type w)
+        {
+            _v[0]=x;
+            _v[1]=y;
+            _v[2]=z;
+            _v[3]=w;
+        }
 
         inline bool operator == (const Vec4b& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
 
@@ -52,26 +60,36 @@ class Vec4b
             else return (_v[3]<v._v[3]);
         }
 
-        inline char* ptr() { return _v; }
-        inline const char* ptr() const { return _v; }
+        inline value_type* ptr() { return _v; }
+        inline const value_type* ptr() const { return _v; }
 
-        inline void set(char r, char g, char b, char a)
+        inline void set( value_type x, value_type y, value_type z, value_type w)
         {
-            _v[0]=r; _v[1]=g; _v[2]=b; _v[3]=a;
+            _v[0]=x; _v[1]=y; _v[2]=z; _v[3]=w;
         }
 
-        inline char& operator [] (unsigned int i) { return _v[i]; }
-        inline char operator [] (unsigned int i) const { return _v[i]; }
+        inline value_type& operator [] (unsigned int i) { return _v[i]; }
+        inline value_type  operator [] (unsigned int i) const { return _v[i]; }
 
-        inline char& r() { return _v[0]; }
-        inline char& g() { return _v[1]; }
-        inline char& b() { return _v[2]; }
-        inline char& a() { return _v[3]; }
+        inline value_type& x() { return _v[0]; }
+        inline value_type& y() { return _v[1]; }
+        inline value_type& z() { return _v[2]; }
+        inline value_type& w() { return _v[3]; }
 
-        inline char r() const { return _v[0]; }
-        inline char g() const { return _v[1]; }
-        inline char b() const { return _v[2]; }
-        inline char a() const { return _v[3]; }
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
+        inline value_type z() const { return _v[2]; }
+        inline value_type w() const { return _v[3]; }
+
+        inline value_type& r() { return _v[0]; }
+        inline value_type& g() { return _v[1]; }
+        inline value_type& b() { return _v[2]; }
+        inline value_type& a() { return _v[3]; }
+
+        inline value_type r() const { return _v[0]; }
+        inline value_type g() const { return _v[1]; }
+        inline value_type b() const { return _v[2]; }
+        inline value_type a() const { return _v[3]; }
 
         /** Multiply by scalar. */
         inline Vec4b operator * (float rhs) const

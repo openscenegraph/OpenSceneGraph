@@ -28,14 +28,21 @@ class Vec2b
 
 	// Methods are defined here so that they are implicitly inlined
 
+        /** Type of Vec class.*/
+        typedef char value_type;
+
+        /** Number of vector components. */
+        enum { num_components = 2 };
+        
+        /** Vec member varaible. */
+        value_type _v[2];
+
         Vec2b() { _v[0]=0; _v[1]=0; }
         
         Vec2b(char r, char g)
         {
             _v[0]=r; _v[1]=g;
         }
-
-        char _v[2];
 
         inline bool operator == (const Vec2b& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
 
@@ -48,22 +55,33 @@ class Vec2b
             else return (_v[1]<v._v[1]);
         }
 
-        inline char* ptr() { return _v; }
-        inline const char* ptr() const { return _v; }
+        inline value_type* ptr() { return _v; }
+        inline const value_type* ptr() const { return _v; }
 
-        inline void set(char r, char g)
+        inline void set( value_type x, value_type y)
         {
-            _v[0]=r; _v[1]=g;
+            _v[0]=x; _v[1]=y;
         }
 
-        inline char& operator [] (unsigned int i) { return _v[i]; }
-        inline char operator [] (unsigned int i) const { return _v[i]; }
+        inline void set( const Vec2b& rhs)
+        {
+            _v[0]=rhs._v[0]; _v[1]=rhs._v[1];
+        }
 
-        inline char& r() { return _v[0]; }
-        inline char& g() { return _v[1]; }        
+        inline value_type& operator [] (int i) { return _v[i]; }
+        inline value_type operator [] (int i) const { return _v[i]; }
 
-        inline char r() const { return _v[0]; }
-        inline char g() const { return _v[1]; }        
+        inline value_type& x() { return _v[0]; }
+        inline value_type& y() { return _v[1]; }
+
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
+
+        inline value_type& r() { return _v[0]; }
+        inline value_type& g() { return _v[1]; }
+
+        inline value_type r() const { return _v[0]; }
+        inline value_type g() const { return _v[1]; }
 
         /** Multiply by scalar. */
         inline Vec2b operator * (float rhs) const

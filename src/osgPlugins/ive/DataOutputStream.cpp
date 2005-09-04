@@ -490,8 +490,8 @@ void DataOutputStream::writeVec2sArray(const osg::Vec2sArray* a)
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
-        writeShort((*a)[i].x);
-        writeShort((*a)[i].y);
+        writeShort((*a)[i].x());
+        writeShort((*a)[i].y());
     }
 
     if (_verboseOutput) std::cout<<"read/writeVec2sArray() ["<<size<<"]"<<std::endl;
@@ -502,9 +502,9 @@ void DataOutputStream::writeVec3sArray(const osg::Vec3sArray* a)
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
-        writeShort((*a)[i].x);
-        writeShort((*a)[i].y);
-        writeShort((*a)[i].z);
+        writeShort((*a)[i].x());
+        writeShort((*a)[i].y());
+        writeShort((*a)[i].z());
     }
 
     if (_verboseOutput) std::cout<<"read/writeVec3sArray() ["<<size<<"]"<<std::endl;
@@ -515,10 +515,10 @@ void DataOutputStream::writeVec4sArray(const osg::Vec4sArray* a)
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
-        writeShort((*a)[i].x);
-        writeShort((*a)[i].y);
-        writeShort((*a)[i].z);
-        writeShort((*a)[i].w);
+        writeShort((*a)[i].x());
+        writeShort((*a)[i].y());
+        writeShort((*a)[i].z());
+        writeShort((*a)[i].w());
     }
 
     if (_verboseOutput) std::cout<<"read/writeVec4sArray() ["<<size<<"]"<<std::endl;

@@ -26,16 +26,18 @@ class Vec3b
 {
     public:
 
-	// Methods are defined here so that they are implicitly inlined
+        /** Type of Vec class.*/
+        typedef char value_type;
+
+        /** Number of vector components. */
+        enum { num_components = 3 };
+        
+        /** Vec member varaible. */
+        value_type _v[3];
 
         Vec3b() { _v[0]=0; _v[1]=0; _v[2]=0; }
         
-        Vec3b(char r, char g, char b)
-        {
-            _v[0]=r; _v[1]=g; _v[2]=b;
-        }
-
-        char _v[3];
+        Vec3b(value_type r, value_type g, value_type b) { _v[0]=r; _v[1]=g; _v[2]=b;  }
 
         inline bool operator == (const Vec3b& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
 
@@ -50,24 +52,37 @@ class Vec3b
             else return (_v[2]<v._v[2]);
         }
 
-        inline char* ptr() { return _v; }
-        inline const char* ptr() const { return _v; }
+        inline value_type* ptr() { return _v; }
+        inline const value_type* ptr() const { return _v; }
 
-        inline void set(char r, char g, char b)
+        inline void set(value_type r, value_type g, value_type b)
         {
             _v[0]=r; _v[1]=g; _v[2]=b;
         }
 
-        inline char& operator [] (unsigned int i) { return _v[i]; }
-        inline char operator [] (unsigned int i) const { return _v[i]; }
+        inline void set( const Vec3b& rhs)
+        {
+            _v[0]=rhs._v[0]; _v[1]=rhs._v[1]; _v[2]=rhs._v[2];
+        }
 
-        inline char& r() { return _v[0]; }
-        inline char& g() { return _v[1]; }
-        inline char& b() { return _v[2]; }
+        inline value_type& operator [] (unsigned int i) { return _v[i]; }
+        inline value_type operator [] (unsigned int i) const { return _v[i]; }
 
-        inline char r() const { return _v[0]; }
-        inline char g() const { return _v[1]; }
-        inline char b() const { return _v[2]; }
+        inline value_type& x() { return _v[0]; }
+        inline value_type& y() { return _v[1]; }
+        inline value_type& z() { return _v[2]; }
+
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
+        inline value_type z() const { return _v[2]; }
+
+        inline value_type& r() { return _v[0]; }
+        inline value_type& g() { return _v[1]; }
+        inline value_type& b() { return _v[2]; }
+
+        inline value_type r() const { return _v[0]; }
+        inline value_type g() const { return _v[1]; }
+        inline value_type b() const { return _v[2]; }
 
         /** Multiply by scalar. */
         inline Vec3b operator * (float rhs) const

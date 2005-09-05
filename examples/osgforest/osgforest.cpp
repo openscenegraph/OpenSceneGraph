@@ -1000,7 +1000,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
             osg::Program* program = new osg::Program;
             stateset->setAttribute(program);
 
-#if 0
+#if 1
             // use inline shaders
             
             ///////////////////////////////////////////////////////////////////

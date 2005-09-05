@@ -17,6 +17,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
 #include <osgUtil/CullVisitor>
@@ -638,6 +639,60 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     return billboard;
 }
 
+osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
+                       osg::Texture::InternalFormatMode internalFormatMode,
+                       float xSize, float ySize, float zSize,
+                       float xMultiplier, float yMultiplier, float zMultiplier,
+                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
+{
+    osg::Geode* geode = new osg::Geode;
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    
+    // set up the 3d texture itself,
+    // note, well set the filtering up so that mip mapping is disabled,
+    // gluBuild3DMipsmaps doesn't do a very good job of handled the
+    // inbalanced dimensions of the 256x256x4 texture.
+    osg::Texture3D* texture3D = new osg::Texture3D;
+    texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
+    texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
+    texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
+    texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
+    texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
+    if (image_3d->getPixelFormat()==GL_ALPHA || 
+        image_3d->getPixelFormat()==GL_LUMINANCE)
+    {
+        texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
+        texture3D->setInternalFormat(GL_INTENSITY);
+    }
+    else
+    {
+        texture3D->setInternalFormatMode(internalFormatMode);
+    }
+
+    texture3D->setImage(image_3d.get());
+
+    stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
+
+    osg::Program* program = new osg::Program;
+    stateset->setAttribute(program);
+
+    // get shaders from source
+    program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("volume.vert")));
+    program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("volume.frag")));
+
+    osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+    stateset->addUniform(baseTextureSampler);
+
+    osg::Uniform* deltaTexCoord = new osg::Uniform("deltaTexCoord",osg::Vec3(0.0f,0.0f,1.0f/256.0f));
+    stateset->addUniform(deltaTexCoord);
+
+    {
+        geode->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0,0,0),osg::Vec3(1.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0)));
+    } 
+
+    return geode;
+}
+
 osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
@@ -1229,6 +1284,8 @@ int main( int argc, char **argv )
     unsigned int numComponentsDesired = 0; 
     while(arguments.read("--num-components", numComponentsDesired)) {}
 
+    bool useShader = false; 
+    while(arguments.read("--shader")) { useShader = true; }
 
     osg::ref_ptr<osg::Image> image_3d;
 
@@ -1291,12 +1348,25 @@ int main( int argc, char **argv )
 
 
     // create a model from the images.
-    osg::Node* rootNode = createModel(image_3d, normalmap_3d, 
-                                      internalFormatMode,
-                                      xSize, ySize, zSize,
-                                      xMultiplier, yMultiplier, zMultiplier,
-                                      numSlices, sliceEnd, alphaFunc);
-
+    osg::Node* rootNode = 0;
+    
+    if (useShader)
+    {
+        rootNode = createShaderModel(image_3d, normalmap_3d, 
+                               internalFormatMode,
+                               xSize, ySize, zSize,
+                               xMultiplier, yMultiplier, zMultiplier,
+                               numSlices, sliceEnd, alphaFunc);
+    }
+    else
+    {
+        rootNode = createModel(image_3d, normalmap_3d, 
+                               internalFormatMode,
+                               xSize, ySize, zSize,
+                               xMultiplier, yMultiplier, zMultiplier,
+                               numSlices, sliceEnd, alphaFunc);
+    }
+    
     if (!outputFile.empty())
     {   
         std::string ext = osgDB::getFileExtension(outputFile);

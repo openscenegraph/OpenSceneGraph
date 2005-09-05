@@ -678,16 +678,87 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     stateset->setAttribute(program);
 
     // get shaders from source
-    program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("volume.vert")));
-    program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("volume.frag")));
+    std::string vertexShaderFile = osgDB::findDataFile("volume.vert");
+    if (!vertexShaderFile.empty())
+    {
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
+    }
+    else
+    {
+        char vertexShaderSource[] = 
+            "varying vec3 texcoord;\n"
+            "varying vec3 deltaTexCoord;\n"
+            "\n"
+            "void main(void)\n"
+            "{\n"
+            "    texcoord = gl_MultiTexCoord0.xyz;\n"
+            "    gl_Position     = ftransform();  \n"
+            "    deltaTexCoord = normalize(gl_ModelViewMatrixInverse * vec4(0,0,0,1) - gl_Vertex);\n"
+            "}\n";
+
+        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+        program->addShader(vertex_shader);
+
+    }
+    
+    std::string fragmentShaderFile = osgDB::findDataFile("volume.frag");
+    if (!fragmentShaderFile.empty())
+    {
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
+    }
+    else
+    {
+        //////////////////////////////////////////////////////////////////
+        // fragment shader
+        //
+        char fragmentShaderSource[] = 
+            "uniform sampler3D baseTexture;\n"
+            "uniform float sampleDensity;\n"
+            "uniform float transparency;\n"
+            "uniform float alphaCutOff;\n"
+            "\n"
+            "varying vec3 deltaTexCoord;\n"
+            "varying vec3 texcoord;\n"
+            "void main(void) \n"
+            "{ \n"
+            "    vec3 deltaTexCoord2 = normalize(deltaTexCoord)*sampleDensity; \n"
+            "\n"
+            "    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
+            "    \n"
+            "    while (texcoord.x>=0.0 && texcoord.x<=1.0 &&\n"
+            "           texcoord.y>=0.0 && texcoord.y<=1.0 &&\n"
+            "           texcoord.z>=0.0 && texcoord.z<=1.0)\n"
+            "    {\n"
+            "       vec4 color = texture3D( baseTexture, texcoord);\n"
+            "       float r = color[3]*transparency;\n"
+            "       if (r>alphaCutOff)\n"
+            "       {\n"
+            "         gl_FragColor.xyz = gl_FragColor.xyz*(1.0-r)+color.xyz*r;\n"
+            "         gl_FragColor.w += r;\n"
+            "       }\n"
+            "       texcoord += deltaTexCoord2; \n"
+            "    }\n"
+            "    if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
+            "}\n";
+
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+        program->addShader(fragment_shader);
+    }
 
     osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
     stateset->addUniform(baseTextureSampler);
 
-    osg::Uniform* deltaTexCoord = new osg::Uniform("deltaTexCoord",osg::Vec3(0.0f,0.0f,1.0f/256.0f));
-    stateset->addUniform(deltaTexCoord);
+    osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 1.0f/(float)numSlices);
+    stateset->addUniform(sampleDensity);
 
-#if 1
+    osg::Uniform* transpancy = new osg::Uniform("transparency",0.5f);
+    stateset->addUniform(transpancy);
+
+    osg::Uniform* alphaCutOff = new osg::Uniform("alphaCutOff",alphaFuncValue);
+    stateset->addUniform(alphaCutOff);
+
+    stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
+
     {
         osg::Geometry* geom = new osg::Geometry;
 
@@ -738,31 +809,29 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
         drawElements->push_back(4);
 
         // right
+        drawElements->push_back(5);
+        drawElements->push_back(6);
         drawElements->push_back(2);
         drawElements->push_back(1);
-        drawElements->push_back(5);
-        drawElements->push_back(6);
 
         // front
-        drawElements->push_back(0);
         drawElements->push_back(1);
-        drawElements->push_back(5);
+        drawElements->push_back(0);
         drawElements->push_back(4);
+        drawElements->push_back(5);
 
         // top
-        drawElements->push_back(6);
         drawElements->push_back(7);
-        drawElements->push_back(4);
+        drawElements->push_back(6);
         drawElements->push_back(5);
+        drawElements->push_back(4);
 
         geom->addPrimitiveSet(drawElements);
 
         geode->addDrawable(geom);
 
     } 
-#else
-        geode->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0,0,0),osg::Vec3(1.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0)));
-#endif
+
     return geode;
 }
 

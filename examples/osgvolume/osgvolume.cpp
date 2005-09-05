@@ -12,6 +12,7 @@
 #include <osg/TexEnv>
 #include <osg/TexEnvCombine>
 #include <osg/Material>
+#include <osg/PrimitiveSet>
 #include <osg/Endian>
 
 #include <osgDB/Registry>
@@ -686,10 +687,82 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     osg::Uniform* deltaTexCoord = new osg::Uniform("deltaTexCoord",osg::Vec3(0.0f,0.0f,1.0f/256.0f));
     stateset->addUniform(deltaTexCoord);
 
+#if 1
     {
-        geode->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0,0,0),osg::Vec3(1.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0)));
-    } 
+        osg::Geometry* geom = new osg::Geometry;
 
+        osg::Vec3Array* coords = new osg::Vec3Array(8);
+        (*coords)[0].set(0,0,0);
+        (*coords)[1].set(1,0,0);
+        (*coords)[2].set(1,1,0);
+        (*coords)[3].set(0,1,0);
+        (*coords)[4].set(0,0,1);
+        (*coords)[5].set(1,0,1);
+        (*coords)[6].set(1,1,1);
+        (*coords)[7].set(0,1,1);
+        geom->setVertexArray(coords);
+
+        osg::Vec3Array* tcoords = new osg::Vec3Array(8);
+        (*tcoords)[0].set(0,0,0);
+        (*tcoords)[1].set(1,0,0);
+        (*tcoords)[2].set(1,1,0);
+        (*tcoords)[3].set(0,1,0);
+        (*tcoords)[4].set(0,0,1);
+        (*tcoords)[5].set(1,0,1);
+        (*tcoords)[6].set(1,1,1);
+        (*tcoords)[7].set(0,1,1);
+        geom->setTexCoordArray(0,tcoords);
+
+        osg::Vec4Array* colours = new osg::Vec4Array(1);
+        (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
+        geom->setColorArray(colours);
+        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+        osg::DrawElementsUShort* drawElements = new osg::DrawElementsUShort(GL_QUADS);
+        // bottom
+        drawElements->push_back(0);
+        drawElements->push_back(1);
+        drawElements->push_back(2);
+        drawElements->push_back(3);
+        
+        // bottom
+        drawElements->push_back(3);
+        drawElements->push_back(2);
+        drawElements->push_back(6);
+        drawElements->push_back(7);
+
+        // left
+        drawElements->push_back(0);
+        drawElements->push_back(3);
+        drawElements->push_back(7);
+        drawElements->push_back(4);
+
+        // right
+        drawElements->push_back(2);
+        drawElements->push_back(1);
+        drawElements->push_back(5);
+        drawElements->push_back(6);
+
+        // front
+        drawElements->push_back(0);
+        drawElements->push_back(1);
+        drawElements->push_back(5);
+        drawElements->push_back(4);
+
+        // top
+        drawElements->push_back(6);
+        drawElements->push_back(7);
+        drawElements->push_back(4);
+        drawElements->push_back(5);
+
+        geom->addPrimitiveSet(drawElements);
+
+        geode->addDrawable(geom);
+
+    } 
+#else
+        geode->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0,0,0),osg::Vec3(1.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0)));
+#endif
     return geode;
 }
 

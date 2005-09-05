@@ -659,9 +659,9 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
         virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* nv)
         {
-            osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
-            if (nv->getVisitorType()==osg::NodeVisitor::EVENT_VISITOR || ev)
+            if (nv->getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
             {
+                osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
                 if (ev)
                 {
                     osgGA::GUIActionAdapter* aa = ev->getActionAdapter();

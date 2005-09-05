@@ -21,6 +21,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
+#include <osgGA/EventVisitor>
+
 #include <osgUtil/CullVisitor>
 
 #include <osgProducer/Viewer>
@@ -640,6 +642,88 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     return billboard;
 }
 
+class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
+{
+    public:
+    
+        FollowMouseCallback()
+        {
+            _updateTransparency = false;
+            _updateAlphaCutOff = false;
+            _updateSampleDensity = false;
+        }
+
+        FollowMouseCallback(const FollowMouseCallback&,const osg::CopyOp&) {}
+
+        META_Object(osg,FollowMouseCallback);
+
+        virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* nv)
+        {
+            osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+            if (nv->getVisitorType()==osg::NodeVisitor::EVENT_VISITOR || ev)
+            {
+                if (ev)
+                {
+                    osgGA::GUIActionAdapter* aa = ev->getActionAdapter();
+                    osgGA::EventVisitor::EventList& events = ev->getEventList();
+                    for(osgGA::EventVisitor::EventList::iterator itr=events.begin();
+                        itr!=events.end();
+                        ++itr)
+                    {
+                        handle(*(*itr), *aa, stateset, ev);
+                    }
+                }
+            }
+        }
+        
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
+        {
+            osg::StateSet* stateset = dynamic_cast<osg::StateSet*>(object);
+            if (!stateset) return false;
+            
+            switch(ea.getEventType())
+            {
+                case(osgGA::GUIEventAdapter::MOVE):
+                case(osgGA::GUIEventAdapter::DRAG):
+                {
+                    float v = ea.getY()*0.5f+0.5f;
+                    osg::Uniform* uniform = 0;
+                    if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
+                    if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
+                    if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) uniform->set(powf(v,5));
+                    break;
+                }
+                case(osgGA::GUIEventAdapter::KEYDOWN):
+                {
+                    if (ea.getKey()=='t') _updateTransparency = true;
+                    if (ea.getKey()=='a') _updateAlphaCutOff = true;
+                    if (ea.getKey()=='d') _updateSampleDensity = true;
+                    break;
+                }
+                case(osgGA::GUIEventAdapter::KEYUP):
+                {
+                    if (ea.getKey()=='t') _updateTransparency = false;
+                    if (ea.getKey()=='a') _updateAlphaCutOff = false;
+                    if (ea.getKey()=='d') _updateSampleDensity = false;
+                    break;
+                }
+                default:
+                    break;
+            }
+            return false;
+        }
+                
+        virtual void accept(osgGA::GUIEventHandlerVisitor& v)
+        {
+            v.visit(*this);
+        }
+        
+        bool _updateTransparency;
+        bool _updateAlphaCutOff;
+        bool _updateSampleDensity;
+
+};
+
 osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
@@ -649,6 +733,8 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     osg::Geode* geode = new osg::Geode;
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     
+    stateset->setEventCallback(new FollowMouseCallback);
+
     // set up the 3d texture itself,
     // note, well set the filtering up so that mip mapping is disabled,
     // gluBuild3DMipsmaps doesn't do a very good job of handled the
@@ -748,7 +834,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
     stateset->addUniform(baseTextureSampler);
 
-    osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 1.0f/(float)numSlices);
+    osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 0.01f);
     stateset->addUniform(sampleDensity);
 
     osg::Uniform* transpancy = new osg::Uniform("transparency",0.5f);

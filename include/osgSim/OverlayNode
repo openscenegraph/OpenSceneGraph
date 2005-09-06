@@ -53,6 +53,11 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Get the texture unit that the texture should be assigned to.*/
         unsigned int getOverlayTextureUnit() const { return _textureUnit; }
         
+        /** Set the texture size hint. The size hint is used to request a texture of specified size.*/
+        void setOverlayTextureSizeHint(unsigned int size);
+
+        /** Get the texture size hint.*/
+        unsigned int getOverlayTextureSizeHint() const { return _textureSizeHint; }
         
     protected :
 
@@ -77,7 +82,8 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         
         // texture to render to, and to read from.
         unsigned int                    _textureUnit;
-        osg::ref_ptr<osg::Texture>      _texture;
+        unsigned int                    _textureSizeHint;
+        osg::ref_ptr<osg::Texture2D>    _texture;
 
 };
 

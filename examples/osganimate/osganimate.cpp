@@ -13,6 +13,8 @@
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 
+#include <osgSim/OverlayNode>
+
 #include <osgProducer/Viewer>
 
 
@@ -179,9 +181,19 @@ osg::Node* createModel()
 
     osg::Group* root = new osg::Group;
 
-    root->addChild(createMovingModel(center,radius*0.8f));
+    osg::Node* baseModel = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius);
+    osg::Node* movingModel = createMovingModel(center,radius*0.8f);
 
-    root->addChild(createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius));
+#if 1
+    osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
+    overlayNode->setOverlaySubgraph(movingModel);
+    overlayNode->addChild(baseModel);
+    root->addChild(overlayNode);
+#else
+    root->addChild(baseModel);
+#endif
+
+    root->addChild(movingModel);
 
     return root;
 }

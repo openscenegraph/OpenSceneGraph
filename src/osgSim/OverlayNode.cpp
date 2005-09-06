@@ -12,13 +12,16 @@
 */
 
 #include <osg/Texture2D>
+#include <osg/CoordinateSystemNode>
+
 #include <osgUtil/CullVisitor>
 #include <osgSim/OverlayNode>
 
 using namespace osgSim;
 
 OverlayNode::OverlayNode():
-    _textureUnit(1)
+    _textureUnit(1),
+    _textureSizeHint(1024)
 {
     init();
 }
@@ -26,34 +29,38 @@ OverlayNode::OverlayNode():
 OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     Group(copy,copyop),
     _overlaySubgraph(copy._overlaySubgraph),
-    _textureUnit(copy._textureUnit)
+    _textureUnit(copy._textureUnit),
+    _textureSizeHint(copy._textureSizeHint)
 {
     init();
 }
 
 void OverlayNode::init()
 {
-    unsigned int tex_width = 1024;
-    unsigned int tex_height = 1024;
+
+    unsigned int tex_width = _textureSizeHint;
+    unsigned int tex_height = _textureSizeHint;
     
-    osg::Texture2D* texture = new osg::Texture2D;
-    texture->setTextureSize(tex_width, tex_height);
-    texture->setInternalFormat(GL_RGBA);
-    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-    texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
-    texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-    texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-   
-    _texture = texture;
+    if (!_texture) 
+    { 
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setTextureSize(tex_width, tex_height);
+        texture->setInternalFormat(GL_RGBA);
+        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+        texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        _texture = texture;
+    }   
 
     // set up the render to texture camera.
+    if (!_camera)
     {
-
         // create the camera
-        _camera = new osg::CameraNode;
-
-        _camera->setClearColor(osg::Vec4(1.0f,0.5f,0.5f,1.0f));
+         _camera = new osg::CameraNode;
+         
+        _camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
         // set viewport
         _camera->setViewport(0,0,tex_width,tex_height);
@@ -68,11 +75,11 @@ void OverlayNode::init()
         _camera->attach(osg::CameraNode::COLOR_BUFFER, _texture.get());
     }
 
-    _texgenNode = new osg::TexGenNode;
+    if (!_texgenNode) _texgenNode = new osg::TexGenNode;
 
-    _mainSubgraphStateSet = new osg::StateSet;
+    if (!_mainSubgraphStateSet) _mainSubgraphStateSet = new osg::StateSet;
 
-    setOverlayTextureUnit(1);
+    setOverlayTextureUnit(_textureUnit);
 }
 
 
@@ -97,8 +104,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
     // if we need to redraw then do cull traversal on camera.
     if (!_textureObjectValidList[contextID])
     {
-        osg::Vec3 _position(0,0,0);
-
+    
         // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
         osg::BoundingSphere bs;
         for(unsigned int i=0; i<_camera->getNumChildren(); ++i)
@@ -108,30 +114,66 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
         if (!bs.valid())
         {
-            osg::notify(osg::WARN) << "bb invalid"<<_camera.get()<<std::endl;
+            osg::notify(osg::WARN) << "OverlayNode::traverse() - bb invalid"<<_camera.get()<<std::endl;
             return;
         }
 
-        float centerDistance = (_position-bs.center()).length();
 
-        float znear = centerDistance-bs.radius();
-        float zfar  = centerDistance+bs.radius();
-        float zNearRatio = 0.001f;
-        if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
-
-        float top   = (bs.radius()/centerDistance)*znear;
-        float right = top;
-
+        // see if we are within a coordinate system node.
+        osg::CoordinateSystemNode* csn = 0;
+        osg::NodePath& nodePath = nv.getNodePath();
+        for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+            itr != nodePath.rend() && csn==0;
+            ++itr)
+        {
+            csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
+        }
+        
         _camera->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
-        _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-        _camera->setViewMatrixAsLookAt(_position,bs.center(),osg::Vec3(0.0f,1.0f,0.0f));
+
+        if (csn)
+        {
+            osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
+            double centerDistance = (eyePoint-osg::Vec3d(bs.center())).length();
+
+            double znear = centerDistance-bs.radius();
+            double zfar  = centerDistance+bs.radius();
+            double zNearRatio = 0.001f;
+            if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+
+            double top   = (bs.radius()/centerDistance)*znear;
+            double right = top;
+
+            _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+            _camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
+        }
+        else
+        {
+            osg::Vec3d upDirection(0.0,1.0,0.0);
+            osg::Vec3d viewDirection(0.0,0.0,1.0);
+            
+            double viewDistance = 2.0*bs.radius();
+            osg::Vec3d center = bs.center();
+            osg::Vec3d eyePoint = center+viewDirection*viewDistance;
+
+            double znear = viewDistance-bs.radius();
+            double zfar  = viewDistance+bs.radius();
+
+            float top   = bs.radius();
+            float right = top;
+
+            _camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
+            _camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
+
+        }
+    
 
         // compute the matrix which takes a vertex from local coords into tex coords
         // will use this later to specify osg::TexGen..
         osg::Matrix MVPT = _camera->getViewMatrix() * 
                            _camera->getProjectionMatrix() *
                            osg::Matrix::translate(1.0,1.0,1.0) *
-                           osg::Matrix::scale(0.5f,0.5f,0.5f);
+                           osg::Matrix::scale(0.5,0.5,0.5);
 
         _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
         _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
@@ -139,7 +181,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
         _camera->accept(*cv);
         
-//        _textureObjectValidList[contextID] = 1;
+        _textureObjectValidList[contextID] = 1;
     }
     
     
@@ -186,3 +228,14 @@ void OverlayNode::setOverlayTextureUnit(unsigned int unit)
     _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
     _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
 }
+
+void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
+{
+    if (_textureSizeHint == size) return;
+
+    _textureSizeHint = size;    
+    //_texture->dirtyTextureObject();
+    _texture->setTextureSize(_textureSizeHint, _textureSizeHint);
+    _camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
+}
+

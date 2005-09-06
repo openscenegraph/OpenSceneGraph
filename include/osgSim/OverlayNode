@@ -44,9 +44,15 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Get the const overlay subgraph which will be render to texture.*/
         const osg::Node* getOverlaySubgraph() const { return _overlaySubgraph.get(); }
         
-        /** Inform the OveralNode that the overlay texture needs to be updated.*/
+        /** Inform the OverlayNode that the overlay texture needs to be updated.*/
         void dirtyOverlayTexture();
         
+        /** Set whether the OverlayNode should update the overlay texture on every frame.*/
+        void setContinousUpdate(bool update) { _continousUpdate = update; }
+
+        /** Get whether the OverlayNode should update the overlay texture on every frame.*/
+        bool getContinousUpdate() const { return _continousUpdate; }
+
         /** Set the texture unit that the texture should be assigned to.*/
         void setOverlayTextureUnit(unsigned int unit);
 
@@ -85,6 +91,8 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         unsigned int                    _textureSizeHint;
         osg::ref_ptr<osg::Texture2D>    _texture;
 
+        bool                            _continousUpdate;
+        osg::BoundingSphere             _overlaySubgraphBound;
 };
 
 }

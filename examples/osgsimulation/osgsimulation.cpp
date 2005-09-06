@@ -309,7 +309,10 @@ int main(int argc, char **argv)
         osg::ref_ptr<osgSim::OverlayNode> overlayNode;
         if (insertOverlayNode)
         {
+        
             overlayNode = new osgSim::OverlayNode;
+            
+            // insert the OverlayNode between the coordinate system node and its children.
             for(unsigned int i=0; i<csn->getNumChildren(); ++i)
             {
                 overlayNode->addChild( csn->getChild(i) );
@@ -317,6 +320,10 @@ int main(int argc, char **argv)
 
             csn->removeChild(0, csn->getNumChildren());
             csn->addChild(overlayNode.get());
+            
+            // tell the overlay node to continously update its overlay texture
+            // as we know we'll be tracking a moving target.
+            overlayNode->setContinousUpdate(true);
         }
         
         

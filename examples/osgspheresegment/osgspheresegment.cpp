@@ -12,6 +12,7 @@
 #include <osgText/Text>
 
 #include <osgSim/SphereSegment>
+#include <osgSim/OverlayNode>
 
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/SmokeEffect>
@@ -173,9 +174,11 @@ osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
 void build_world(osg::Group *root)
 {
 
-    osg::Geode* terrainGeode = new osg::Geode;
     // create terrain
+    osg::ref_ptr<osg::Geode> terrainGeode = 0;
     {
+        terrainGeode = new osg::Geode;
+
         osg::StateSet* stateset = new osg::StateSet();
         osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
         if (image)
@@ -205,13 +208,15 @@ void build_world(osg::Group *root)
         }
         terrainGeode->addDrawable(new osg::ShapeDrawable(grid));
         
-        root->addChild(terrainGeode);
+        
     }    
 
+
     // create sphere segment
+    osg::ref_ptr<osgSim::SphereSegment> ss = 0;
     {
-        osgSim::SphereSegment* ss = new osgSim::SphereSegment(
-                        computeTerrainIntersection(terrainGeode,550.0f,780.0f), // center
+        ss = new osgSim::SphereSegment(
+                        computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
                         500.0f, // radius
                         osg::DegreesToRadians(135.0f),
                         osg::DegreesToRadians(245.0f),
@@ -221,13 +226,24 @@ void build_world(osg::Group *root)
         ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
         ss->setSideColor(osg::Vec4(0.0f,1.0f,1.0f,0.1f));
 
-        root->addChild(ss);        
+        root->addChild(ss.get());
     }
+
+#if 1
+    osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
+    overlayNode->setOverlaySubgraph(ss.get());
+    overlayNode->setOverlayTextureSizeHint(2048);
+    overlayNode->addChild(terrainGeode.get());
+
+    root->addChild(overlayNode);
+#else
+    root->addChild(terrainGeode);
+#endif
 
 
     // create particle effects
     {    
-        osg::Vec3 position = computeTerrainIntersection(terrainGeode,100.0f,100.0f);
+        osg::Vec3 position = computeTerrainIntersection(terrainGeode.get(),100.0f,100.0f);
 
         osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 10.0f);
         osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, 10.0f);
@@ -240,7 +256,7 @@ void build_world(osg::Group *root)
     
     // create particle effects
     {    
-        osg::Vec3 position = computeTerrainIntersection(terrainGeode,200.0f,100.0f);
+        osg::Vec3 position = computeTerrainIntersection(terrainGeode.get(),200.0f,100.0f);
 
         osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 1.0f);
         osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, 1.0f);

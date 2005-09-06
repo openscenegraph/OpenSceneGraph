@@ -21,7 +21,8 @@ using namespace osgSim;
 
 OverlayNode::OverlayNode():
     _textureUnit(1),
-    _textureSizeHint(1024)
+    _textureSizeHint(1024),
+    _continousUpdate(false)
 {
     init();
 }
@@ -30,7 +31,8 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     Group(copy,copyop),
     _overlaySubgraph(copy._overlaySubgraph),
     _textureUnit(copy._textureUnit),
-    _textureSizeHint(copy._textureSizeHint)
+    _textureSizeHint(copy._textureSizeHint),
+    _continousUpdate(copy._continousUpdate)
 {
     init();
 }
@@ -102,7 +104,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
     unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 
     // if we need to redraw then do cull traversal on camera.
-    if (!_textureObjectValidList[contextID])
+    if (!_textureObjectValidList[contextID] || _continousUpdate)
     {
     
         // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
@@ -112,83 +114,96 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
             bs.expandBy(_camera->getChild(i)->getBound());
         }
 
-        if (!bs.valid())
+        if (bs.valid())
         {
-            osg::notify(osg::WARN) << "OverlayNode::traverse() - bb invalid"<<_camera.get()<<std::endl;
-            return;
+            // update the bounding volume for later testing
+            // whether the overlay can be seen or not.
+            _overlaySubgraphBound = bs;
+
+            // see if we are within a coordinate system node.
+            osg::CoordinateSystemNode* csn = 0;
+            osg::NodePath& nodePath = nv.getNodePath();
+            for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+                itr != nodePath.rend() && csn==0;
+                ++itr)
+            {
+                csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
+            }
+
+            _camera->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
+
+            if (csn)
+            {
+                osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
+                double centerDistance = (eyePoint-osg::Vec3d(bs.center())).length();
+
+                double znear = centerDistance-bs.radius();
+                double zfar  = centerDistance+bs.radius();
+                double zNearRatio = 0.001f;
+                if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+
+                double top   = (bs.radius()/centerDistance)*znear;
+                double right = top;
+
+                _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+                _camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
+            }
+            else
+            {
+                osg::Vec3d upDirection(0.0,1.0,0.0);
+                osg::Vec3d viewDirection(0.0,0.0,1.0);
+
+                double viewDistance = 2.0*bs.radius();
+                osg::Vec3d center = bs.center();
+                osg::Vec3d eyePoint = center+viewDirection*viewDistance;
+
+                double znear = viewDistance-bs.radius();
+                double zfar  = viewDistance+bs.radius();
+
+                float top   = bs.radius();
+                float right = top;
+
+                _camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
+                _camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
+
+            }
+
+
+            // compute the matrix which takes a vertex from local coords into tex coords
+            // will use this later to specify osg::TexGen..
+            osg::Matrix MVPT = _camera->getViewMatrix() * 
+                               _camera->getProjectionMatrix() *
+                               osg::Matrix::translate(1.0,1.0,1.0) *
+                               osg::Matrix::scale(0.5,0.5,0.5);
+
+            _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
+            _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
+
+
+            _camera->accept(*cv);
+
+            _textureObjectValidList[contextID] = 1;
         }
-
-
-        // see if we are within a coordinate system node.
-        osg::CoordinateSystemNode* csn = 0;
-        osg::NodePath& nodePath = nv.getNodePath();
-        for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
-            itr != nodePath.rend() && csn==0;
-            ++itr)
-        {
-            csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
-        }
-        
-        _camera->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
-
-        if (csn)
-        {
-            osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
-            double centerDistance = (eyePoint-osg::Vec3d(bs.center())).length();
-
-            double znear = centerDistance-bs.radius();
-            double zfar  = centerDistance+bs.radius();
-            double zNearRatio = 0.001f;
-            if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
-
-            double top   = (bs.radius()/centerDistance)*znear;
-            double right = top;
-
-            _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-            _camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
-        }
-        else
-        {
-            osg::Vec3d upDirection(0.0,1.0,0.0);
-            osg::Vec3d viewDirection(0.0,0.0,1.0);
-            
-            double viewDistance = 2.0*bs.radius();
-            osg::Vec3d center = bs.center();
-            osg::Vec3d eyePoint = center+viewDirection*viewDistance;
-
-            double znear = viewDistance-bs.radius();
-            double zfar  = viewDistance+bs.radius();
-
-            float top   = bs.radius();
-            float right = top;
-
-            _camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
-            _camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
-
-        }
-    
-
-        // compute the matrix which takes a vertex from local coords into tex coords
-        // will use this later to specify osg::TexGen..
-        osg::Matrix MVPT = _camera->getViewMatrix() * 
-                           _camera->getProjectionMatrix() *
-                           osg::Matrix::translate(1.0,1.0,1.0) *
-                           osg::Matrix::scale(0.5,0.5,0.5);
-
-        _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-        _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
-
-
-        _camera->accept(*cv);
-        
-        _textureObjectValidList[contextID] = 1;
     }
     
     
     // now set up the drawing of the main scene.
+#if 0 
+    // Disable for time being as _overlaySubgraphBound isn't accurate for
+    // detecting whether the overaly texture will sit over affect the rendering
+    // of the children of the OverlayNode.  Frustrum intersection may prove more
+    // fruitful.
+
+    // note needs to use bound when captured not current bound.
+    if (!_overlaySubgraphBound.valid() || cv->isCulled(_overlaySubgraphBound))
+    {
+        Group::traverse(nv);
+    }
+    else
+#endif
     {
         _texgenNode->accept(*cv);
-    
+
         // push the stateset.
         cv->pushStateSet(_mainSubgraphStateSet.get());
 

@@ -6,6 +6,7 @@
 #include <osg/Texture2D>
 #include <osg/PositionAttitudeTransform>
 #include <osg/MatrixTransform>
+#include <osg/Geometry>
 
 #include <osgDB/ReadFile>
 
@@ -138,6 +139,48 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     return model;
 }
 
+osg::Group* createOverlay(const osg::Vec3& center, float radius)
+{
+    osg::Group* group = new osg::Group;
+    
+    // create a grid of lines.
+    {
+        osg::Geometry* geom = new osg::Geometry;
+        
+        unsigned int num_rows = 10;
+
+        osg::Vec3 left = center+osg::Vec3(-radius,-radius,0.0f);
+        osg::Vec3 right = center+osg::Vec3(radius,-radius,0.0f);
+        osg::Vec3 delta_row = osg::Vec3(0.0f,2.0f*radius/float(num_rows-1),0.0f);
+
+        osg::Vec3 top = center+osg::Vec3(-radius,radius,0.0f);
+        osg::Vec3 bottom = center+osg::Vec3(-radius,-radius,0.0f);
+        osg::Vec3 delta_column = osg::Vec3(2.0f*radius/float(num_rows-1),0.0f,0.0f);
+
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        for(unsigned int i=0; i<num_rows; ++i)
+        {
+            vertices->push_back(left);
+            vertices->push_back(right);
+            left += delta_row;
+            right += delta_row;
+
+            vertices->push_back(top);
+            vertices->push_back(bottom);
+            top += delta_column;
+            bottom += delta_column;
+        }
+        
+        geom->setVertexArray(vertices);
+        geom->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,vertices->getNumElements())); 
+
+        osg::Geode* geode = new osg::Geode;
+        geode->addDrawable(geom);
+        group->addChild(geode);        
+    }
+    
+    return group;
+}
 
 osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
 {
@@ -230,8 +273,14 @@ void build_world(osg::Group *root)
     }
 
 #if 1
+
+
     osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
-    overlayNode->setOverlaySubgraph(ss.get());
+
+    const osg::BoundingSphere& bs = terrainGeode->getBound();
+    osg::Group* overlaySubgraph = createOverlay(bs.center(), bs.radius()*0.5f);
+    overlaySubgraph->addChild(ss.get());
+    overlayNode->setOverlaySubgraph(overlaySubgraph);
     overlayNode->setOverlayTextureSizeHint(2048);
     overlayNode->addChild(terrainGeode.get());
 

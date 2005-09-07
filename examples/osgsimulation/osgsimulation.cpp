@@ -323,14 +323,14 @@ int main(int argc, char **argv)
             
             // tell the overlay node to continously update its overlay texture
             // as we know we'll be tracking a moving target.
-            overlayNode->setContinousUpdate(true);
+            // overlayNode->setContinousUpdate(true);
         }
         
         
         osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
         if (cessna)
         {
-            double s = 30000.0 / cessna->getBound().radius();
+            double s = 600000.0 / cessna->getBound().radius();
         
             osg::MatrixTransform* scaler = new osg::MatrixTransform;
             scaler->addChild(cessna);

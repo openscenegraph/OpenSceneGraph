@@ -25,6 +25,7 @@
 #include <osg/LineSegment>
 #include <osg/TriangleFunctor>
 #include <osg/Geometry>
+#include <osg/io_utils>
 
 #include <osgUtil/CullVisitor>
 
@@ -745,14 +746,40 @@ void CullVisitor::apply(Geode& node)
             if (!updateCalculatedNearFar(matrix,*drawable,false)) continue;
         }
 
+        // need to track how push/pops there are, so we can unravel the stack correctly.
+        unsigned int numPopStateSetRequired = 0;
+
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
-        if (stateset) pushStateSet(stateset);
+        if (stateset)
+        {
+            ++numPopStateSetRequired;
+            pushStateSet(stateset);
+        }
+
+        CullingSet& cs = getCurrentCullingSet();
+        if (!cs.getStateFrustumList().empty())
+        {
+            osg::CullingSet::StateFrustumList& sfl = cs.getStateFrustumList();
+            for(osg::CullingSet::StateFrustumList::iterator itr = sfl.begin();
+                itr != sfl.end();
+                ++itr)
+            {
+                if (itr->second.contains(bb))
+                {
+                    ++numPopStateSetRequired;
+                    pushStateSet(itr->first.get());
+                }
+            }
+        }
 
         if (bb.valid()) addDrawableAndDepth(drawable,&matrix,distance(bb.center(),matrix));
 	else addDrawableAndDepth(drawable,&matrix,0.0f);
 
-        if (stateset) popStateSet();
+        for(unsigned int i=0;i< numPopStateSetRequired; ++i)
+        {
+            popStateSet();
+        }
 
     }
 

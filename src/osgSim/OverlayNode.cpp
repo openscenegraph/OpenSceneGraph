@@ -13,6 +13,7 @@
 
 #include <osg/Texture2D>
 #include <osg/CoordinateSystemNode>
+#include <osg/io_utils>
 
 #include <osgUtil/CullVisitor>
 #include <osgSim/OverlayNode>
@@ -116,10 +117,6 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
         if (bs.valid())
         {
-            // update the bounding volume for later testing
-            // whether the overlay can be seen or not.
-            _overlaySubgraphBound = bs;
-
             // see if we are within a coordinate system node.
             osg::CoordinateSystemNode* csn = 0;
             osg::NodePath& nodePath = nv.getNodePath();
@@ -171,14 +168,21 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
             // compute the matrix which takes a vertex from local coords into tex coords
             // will use this later to specify osg::TexGen..
-            osg::Matrix MVPT = _camera->getViewMatrix() * 
-                               _camera->getProjectionMatrix() *
+            osg::Matrix MVP = _camera->getViewMatrix() * 
+                              _camera->getProjectionMatrix();
+
+            osg::Matrix MVPT = MVP *
                                osg::Matrix::translate(1.0,1.0,1.0) *
                                osg::Matrix::scale(0.5,0.5,0.5);
 
             _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
             _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
 
+
+            _textureFrustum.setToUnitFrustum(false,false);
+//            const osg::Matrix modelView = (cv->getModelViewMatrix());
+//            _textureFrustum.transformProvidingInverse(osg::Matrix::inverse(modelView)*MVP);
+            _textureFrustum.transformProvidingInverse(MVP);
 
             _camera->accept(*cv);
 
@@ -202,14 +206,28 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
     else
 #endif
     {
+
         _texgenNode->accept(*cv);
+        
+        osg::CullingSet& pcs = cv->getProjectionCullingStack().back();
+        osg::CullingSet& ccs = cv->getCurrentCullingSet();
+
+        const osg::Matrix modelView = (cv->getModelViewMatrix());
+        osg::Polytope viewTextureFrustum;
+        viewTextureFrustum.setAndTransformProvidingInverse(_textureFrustum, osg::Matrix::inverse(modelView));
+
+        pcs.addStateFrustum(_mainSubgraphStateSet.get(), viewTextureFrustum);
+        ccs.addStateFrustum(_mainSubgraphStateSet.get(), _textureFrustum);
 
         // push the stateset.
-        cv->pushStateSet(_mainSubgraphStateSet.get());
+        // cv->pushStateSet(_mainSubgraphStateSet.get());
 
         Group::traverse(nv);
 
-        cv->popStateSet();
+        // cv->popStateSet();
+        
+        ccs.getStateFrustumList().pop_back();
+        pcs.getStateFrustumList().pop_back();
     }
 }
 

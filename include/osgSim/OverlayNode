@@ -16,6 +16,7 @@
 
 #include <osg/buffered_value>
 #include <osg/CameraNode>
+#include <osg/Texture2D>
 #include <osg/TexGenNode>
 
 #include <osgSim/Export>
@@ -92,7 +93,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         osg::ref_ptr<osg::Texture2D>    _texture;
 
         bool                            _continousUpdate;
-        osg::BoundingSphere             _overlaySubgraphBound;
+        osg::Polytope                   _textureFrustum;
 };
 
 }

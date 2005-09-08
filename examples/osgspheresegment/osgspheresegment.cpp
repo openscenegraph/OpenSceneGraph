@@ -272,6 +272,16 @@ void build_world(osg::Group *root)
         root->addChild(ss.get());
     }
 
+    osgSim::SphereSegment::LineList lines = ss->computeIntersection(terrainGeode.get(), osg::Matrixd::identity());
+    if (!lines.empty())
+    {
+       osg::notify(osg::NOTICE)<<"We've found intersections!!!!"<<std::endl;
+    }
+    else
+    {
+       osg::notify(osg::NOTICE)<<"No intersections found"<<std::endl;
+    }
+
 #if 1
 
 
@@ -285,6 +295,8 @@ void build_world(osg::Group *root)
     overlayNode->addChild(terrainGeode.get());
 
     root->addChild(overlayNode);
+    
+    
 #else
     root->addChild(terrainGeode);
 #endif

@@ -19,6 +19,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Geode>
+#include <osg/Matrixd>
 #include <osg/BlendFunc>
 
 namespace osgSim{
@@ -226,6 +227,12 @@ public:
     void setAllColors(const osg::Vec4& c);
 
     META_Node(osgSim, SphereSegment);
+    
+    /** A list of vertex arrays representing a list of lines.*/
+    typedef std::vector< osg::ref_ptr<osg::Vec3Array> > LineList;
+    
+    /** Compute the interesection lines between specified geometry and this sphere segment.*/
+    LineList computeIntersection(osg::Node* subgraph, const osg::Matrixd& transform);
 
 private:
 

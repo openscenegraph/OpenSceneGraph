@@ -960,3 +960,10 @@ void SphereSegment::setAllColors(const osg::Vec4& c)
     setEdgeLineColor(c);
     setSideColor(c);
 }
+
+SphereSegment::LineList SphereSegment::computeIntersection(osg::Node* subgraph, const osg::Matrixd& transform)
+{
+    osg::notify(osg::NOTICE)<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
+    SphereSegment::LineList lines;
+    return lines;
+}

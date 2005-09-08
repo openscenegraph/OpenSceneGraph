@@ -323,7 +323,7 @@ int main(int argc, char **argv)
             
             // tell the overlay node to continously update its overlay texture
             // as we know we'll be tracking a moving target.
-            // overlayNode->setContinousUpdate(true);
+            overlayNode->setContinousUpdate(true);
         }
         
         

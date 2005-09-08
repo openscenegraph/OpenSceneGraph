@@ -2,6 +2,8 @@
 #include <osg/Notify>
 #include <osg/CullFace>
 #include <osg/LineWidth>
+#include <osg/Transform>
+#include <osg/io_utils>
 
 #include <algorithm>
 
@@ -961,9 +963,129 @@ void SphereSegment::setAllColors(const osg::Vec4& c)
     setSideColor(c);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// SphereSegment interesection code.
+
+class PolytopeVisitor : public osg::NodeVisitor
+{
+    public:
+    
+        typedef std::pair<osg::Matrix, osg::Polytope> MatrixPolytopePair;
+        typedef std::vector<MatrixPolytopePair> PolytopeStack;
+    
+        struct Hit
+        {
+            Hit(const osg::Matrix& matrix, osg::NodePath& nodePath, osg::Drawable* drawable):
+                _matrix(matrix),
+                _nodePath(nodePath),
+                _drawable(drawable) {}
+
+            osg::Matrix                 _matrix;
+            osg::NodePath               _nodePath;
+            osg::ref_ptr<osg::Drawable> _drawable;
+        };
+    
+        typedef std::vector<Hit> HitList;
+
+
+        PolytopeVisitor(const osg::Matrix& matrix, const osg::Polytope& polytope):
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
+        {
+            _polytopeStack.push_back(MatrixPolytopePair());
+            _polytopeStack.back().first = matrix;
+            _polytopeStack.back().second.setAndTransformProvidingInverse(polytope, _polytopeStack.back().first);
+        }
+        
+        void reset()
+        {
+            _polytopeStack.clear();
+            _hits.clear();
+        }
+            
+        void apply(osg::Node& node)
+        {
+            if (_polytopeStack.back().second.contains(node.getBound()))
+            {
+                traverse(node);
+            }
+        }
+
+        void apply(osg::Transform& transform)
+        {
+            if (_polytopeStack.back().second.contains(transform.getBound()))
+            {
+                const osg::Polytope& polytope = _polytopeStack.front().second;
+
+                osg::Matrix matrix = _polytopeStack.back().first;
+                transform.computeLocalToWorldMatrix(matrix, this);
+                
+                _polytopeStack.push_back(MatrixPolytopePair());
+                _polytopeStack.back().first = matrix;
+                _polytopeStack.back().second.setAndTransformProvidingInverse(polytope, matrix);
+
+                traverse(transform);
+                
+                _polytopeStack.back();
+            }
+        }
+
+        void apply(osg::Geode& node)
+        {
+            if (_polytopeStack.back().second.contains(node.getBound()))
+            {
+                for(unsigned int i=0; i<node.getNumDrawables(); ++i)
+                {
+                    if (_polytopeStack.back().second.contains(node.getDrawable(i)->getBound()))
+                    {
+                        _hits.push_back(Hit(_polytopeStack.back().first,getNodePath(),node.getDrawable(i)));
+                    }
+
+                }
+            
+                traverse(node);
+            }
+        }
+
+        HitList& getHits() { return _hits; }
+
+    protected:
+        
+        PolytopeStack   _polytopeStack;
+        HitList         _hits;
+
+};
+
+
 SphereSegment::LineList SphereSegment::computeIntersection(osg::Node* subgraph, const osg::Matrixd& transform)
 {
     osg::notify(osg::NOTICE)<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
     SphereSegment::LineList lines;
+    
+    osg::BoundingBox bb = getBoundingBox();
+
+    osg::Polytope polytope;
+    polytope.add(osg::Plane(1.0,0.0,0.0,-bb.xMin())); 
+    polytope.add(osg::Plane(-1.0,0.0,0.0,bb.xMax())); 
+    polytope.add(osg::Plane(0.0,1.0,0.0,-bb.yMin())); 
+    polytope.add(osg::Plane(0.0,-1.0,0.0,bb.yMax())); 
+    polytope.add(osg::Plane(0.0,0.0,1.0,-bb.zMin())); 
+    polytope.add(osg::Plane(0.0,0.0,-1.0,bb.zMax())); 
+    
+    osg::Plane pl;
+    pl.set(osg::Vec3(-1.0,0.0,0.0), bb.corner(0));
+    PolytopeVisitor polytopeVisitor(transform, polytope);
+    
+    subgraph->accept(polytopeVisitor);
+
+    if (polytopeVisitor.getHits().empty())
+    {
+        osg::notify(osg::NOTICE)<<"No hits found."<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
+    }
+
     return lines;
 }

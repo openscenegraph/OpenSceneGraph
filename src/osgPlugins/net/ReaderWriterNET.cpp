@@ -136,7 +136,7 @@ class NetReader : public osgDB::ReaderWriter
         {
             osg::Timer_t start = osg::Timer::instance()->tick();
 
-            osg::notify(osg::NOTICE) << "osgPlugin .net: start load" << inFileName << std::endl;
+            //osg::notify(osg::NOTICE) << "osgPlugin .net: start load" << inFileName << std::endl;
 
             std::string hostname;
             std::string serverPrefix;
@@ -234,8 +234,8 @@ class NetReader : public osgDB::ReaderWriter
             if( !serverPrefix.empty() )
                 fileName = serverPrefix + '/' + fileName;
 
-            osg::notify(osg::WARN) << "hostname " << hostname << std::endl;
-            osg::notify(osg::WARN) << "filename " << fileName << std::endl;
+            //osg::notify(osg::WARN) << "hostname " << hostname << std::endl;
+            //osg::notify(osg::WARN) << "filename " << fileName << std::endl;
 
 
             // Invoke the reader corresponding to the extension

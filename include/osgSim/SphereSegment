@@ -231,8 +231,11 @@ public:
     /** A list of vertex arrays representing a list of lines.*/
     typedef std::vector< osg::ref_ptr<osg::Vec3Array> > LineList;
     
-    /** Compute the interesection lines between specified geometry and this sphere segment.*/
-    LineList computeIntersection(osg::Node* subgraph, const osg::Matrixd& transform);
+    /** Compute the interesection lines between subgraph and this sphere segment.*/
+    LineList computeIntersection(const osg::Matrixd& matrix, osg::Node* subgraph);
+
+    /** Compute the interesection lines between specified drawable and this sphere segment.*/
+    LineList computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable);
 
 private:
 

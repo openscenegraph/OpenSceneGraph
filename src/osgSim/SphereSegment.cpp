@@ -1,8 +1,24 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
 #include <osgSim/SphereSegment>
+
 #include <osg/Notify>
 #include <osg/CullFace>
 #include <osg/LineWidth>
 #include <osg/Transform>
+#include <osg/Geometry>
+#include <osg/TriangleIndexFunctor>
 #include <osg/io_utils>
 
 #include <algorithm>
@@ -1057,10 +1073,9 @@ class PolytopeVisitor : public osg::NodeVisitor
 };
 
 
-SphereSegment::LineList SphereSegment::computeIntersection(osg::Node* subgraph, const osg::Matrixd& transform)
+SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& transform, osg::Node* subgraph)
 {
     osg::notify(osg::NOTICE)<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
-    SphereSegment::LineList lines;
     
     osg::BoundingBox bb = getBoundingBox();
 
@@ -1081,11 +1096,103 @@ SphereSegment::LineList SphereSegment::computeIntersection(osg::Node* subgraph, 
     if (polytopeVisitor.getHits().empty())
     {
         osg::notify(osg::NOTICE)<<"No hits found."<<std::endl;
-    }
-    else
-    {
-        osg::notify(osg::NOTICE)<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
+        return LineList();
     }
 
-    return lines;
+    // create a LineList to store all the compute line segments
+    LineList all_lines;
+
+    // compute the line intersections with each of the hit drawables
+    osg::notify(osg::NOTICE)<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
+    PolytopeVisitor::HitList& hits = polytopeVisitor.getHits();
+    for(PolytopeVisitor::HitList::iterator itr = hits.begin();
+        itr != hits.end();
+        ++itr)
+    {
+        SphereSegment::LineList lines = computeIntersection(itr->_matrix, itr->_drawable.get());
+        all_lines.insert(all_lines.end(), lines.begin(), lines.end());
+    }
+    
+    // join all the lines that have ends that are close together..
+
+    return all_lines;
+}
+
+struct TriangleIntersectOperator
+{
+
+    TriangleIntersectOperator():
+        _radius(-1.0f),
+        _azMin(0.0f),
+        _azMax(0.0f),
+        _elevMin(0.0f),
+        _elevMax(0.0f),
+        _numOutside(0),
+        _numInside(0),
+        _numIntersecting(0) {}
+
+    typedef osg::ref_ptr<osg::Vec3Array>    PositionArray;
+    typedef std::vector<int>                RegionArray;
+    
+    PositionArray _positions;
+    RegionArray   _regions;
+    float         _radius; 
+    float         _azMin, _azMax, _elevMin, _elevMax;
+    
+    unsigned int _numOutside;
+    unsigned int _numInside;
+    unsigned int _numIntersecting;
+
+    inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
+    {
+        // reject if outside.
+        if (_regions[p1]==1 && _regions[p2]==1 && _regions[p3]==1)
+        {
+            ++_numOutside;
+            return; 
+        }
+    
+        if (_regions[p1]==-1 && _regions[p2]==-1 && _regions[p3]==-1)
+        {
+            ++_numInside;
+            return; 
+        }
+
+        ++_numIntersecting;
+    
+    }
+
+};
+
+
+SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& transform, osg::Drawable* drawable)
+{
+    // cast to Geometry, return empty handed if Drawable not a Geometry.
+    osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
+    if (!geometry) return LineList();
+    
+    // get vertices from geometry, return empty handed if a Vec3Array not present.
+    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+    if (!vertices) return LineList();
+    
+    typedef osg::TriangleIndexFunctor<TriangleIntersectOperator> TriangleIntersectFunctor;
+    TriangleIntersectFunctor tif;
+ 
+    tif._radius = _radius;
+    tif._azMin = _azMin;
+    tif._azMax = _azMax;
+    tif._elevMin = _elevMin;
+    tif._elevMax = _elevMax;
+
+    tif._positions = vertices;
+    tif._regions.resize(vertices->size(), 1);
+ 
+    // traverse the triangles in the Geometry dedicating intersections
+    geometry->accept(tif);
+    
+    osg::notify(osg::NOTICE)<<"_numOutside = "<<tif._numOutside<<std::endl;
+    osg::notify(osg::NOTICE)<<"_numInside = "<<tif._numInside<<std::endl;
+    osg::notify(osg::NOTICE)<<"_numIntersecting = "<<tif._numIntersecting<<std::endl;
+ 
+    return LineList();
 }

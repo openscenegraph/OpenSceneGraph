@@ -29,8 +29,6 @@ class Vec3s
         /** Vec member varaible. */
         value_type _v[3];
 
-        typedef short value_type;
-
         Vec3s() { _v[0]=0; _v[1]=0; _v[2]=0; }
         
         Vec3s(value_type r, value_type g, value_type b) { _v[0]=r; _v[1]=g; _v[2]=b;  }

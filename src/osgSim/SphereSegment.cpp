@@ -1131,17 +1131,68 @@ struct TriangleIntersectOperator
         _numInside(0),
         _numIntersecting(0) {}
 
-    typedef osg::ref_ptr<osg::Vec3Array>    PositionArray;
-    typedef std::vector<int>                RegionArray;
+    typedef std::vector<osg::Vec3>  PositionArray;
+    typedef std::vector<int>        RegionArray;
     
     PositionArray _positions;
     RegionArray   _regions;
+    osg::Vec3     _centre;
     float         _radius; 
     float         _azMin, _azMax, _elevMin, _elevMax;
     
     unsigned int _numOutside;
     unsigned int _numInside;
     unsigned int _numIntersecting;
+    
+    void computePositionAndRegions(const osg::Matrixd& matrix, osg::Vec3Array& array)
+    {
+        _positions.resize(array.size());
+        _regions.resize(array.size(), 1);
+        
+        for(unsigned int i=0; i<array.size(); ++i)
+        {
+            osg::Vec3 vertex = array[i]*matrix - _centre;
+            float radius = vertex.length();
+            _positions[i] = vertex;
+            if (radius>_radius) 
+            {
+                _regions[i] = 1;
+            }
+            else
+            {
+                float inv_length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());
+                float elevation = atan2(vertex.z(),inv_length_xy);
+                if (elevation<_elevMin || elevation>_elevMax)
+                {
+                    _regions[i] = 1;
+                }
+                else
+                {
+                    float azim = atan2(vertex.x(),vertex.y());
+                    if (azim<0.0) azim += 2.0f*osg::PI;
+                    if (azim<_azMin || azim>_azMax)
+                    {
+                        _regions[i] = 1;
+                    }
+                    else
+                    {
+                        if (radius==_radius || elevation==_elevMin || elevation==_elevMax || azim==_azMin || azim==_azMax)
+                        {
+                            _regions[i] = 0;
+                        }
+                        else
+                        {
+                            _regions[i] = -1;
+                        }
+                    
+                    }
+                }
+                
+                
+            }
+        }
+        
+    }
 
     inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
     {
@@ -1165,7 +1216,7 @@ struct TriangleIntersectOperator
 };
 
 
-SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& transform, osg::Drawable* drawable)
+SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable)
 {
     // cast to Geometry, return empty handed if Drawable not a Geometry.
     osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
@@ -1178,14 +1229,14 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& t
     typedef osg::TriangleIndexFunctor<TriangleIntersectOperator> TriangleIntersectFunctor;
     TriangleIntersectFunctor tif;
  
+    tif._centre = _centre;
     tif._radius = _radius;
     tif._azMin = _azMin;
     tif._azMax = _azMax;
     tif._elevMin = _elevMin;
     tif._elevMax = _elevMax;
 
-    tif._positions = vertices;
-    tif._regions.resize(vertices->size(), 1);
+    tif.computePositionAndRegions(matrix, *vertices);
  
     // traverse the triangles in the Geometry dedicating intersections
     geometry->accept(tif);

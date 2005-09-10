@@ -157,8 +157,6 @@ void GraphicsContext::close(bool callCloseImplementation)
 
 void GraphicsContext::makeCurrent()
 {
-    osg::notify(osg::INFO)<<"Doing  GraphicsContext::makeCurrent"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
-
     ReleaseContext_Block_MakeCurrentOperation* rcbmco = 0;
 
     if (_graphicsThread.valid() && 
@@ -172,8 +170,6 @@ void GraphicsContext::makeCurrent()
 
     if (!isCurrent()) _mutex.lock();
 
-    osg::notify(osg::INFO)<<"Calling GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
-
     makeCurrentImplementation();
     
     _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
@@ -184,8 +180,6 @@ void GraphicsContext::makeCurrent()
         // contex itself with a makeCurrent(), this will then block on the GraphicsContext mutex till releaseContext() releases it.
         rcbmco->release();
     }
-
-    osg::notify(osg::INFO)<<"Done GraphicsContext::makeCurrentImplementation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
 }
 
 void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
@@ -206,18 +200,15 @@ void GraphicsContext::swapBuffers()
 {
     if (isCurrent())
     {
-        osg::notify(osg::INFO)<<"Doing GraphicsContext::swapBuffers() call to swapBuffersImplementation() "<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
         swapBuffersImplementation();
     }
     else if (_graphicsThread.valid() && 
              _threadOfLastMakeCurrent == _graphicsThread.get())
     {
-        osg::notify(osg::INFO)<<"Doing GraphicsContext::swapBuffers() registering  SwapBuffersOperation"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
         _graphicsThread->add(new SwapBuffersOperation);
     }
     else
     {
-        osg::notify(osg::INFO)<<"Doing GraphicsContext::swapBuffers() makeCurrent;swapBuffersImplementation;releaseContext"<<(unsigned int)OpenThreads::Thread::CurrentThread()<<std::endl;
         makeCurrent();
         swapBuffersImplementation();
         releaseContext();

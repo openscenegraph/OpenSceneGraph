@@ -155,10 +155,33 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             }
             else if (ea.getKey()=='r')
             {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    std::cout<<"Restart"<<std::endl;
+                    (*itr)->rewind();
+                    (*itr)->play();
+                }
                 return true;
             }
             else if (ea.getKey()=='l')
             {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    if ( (*itr)->getLoopingMode() == osg::ImageStream::LOOPING)
+                    {
+                        std::cout<<"Toggle Looping Off"<<std::endl;
+                        (*itr)->setLoopingMode( osg::ImageStream::NO_LOOPING );
+                    }
+                    else
+                    {
+                        std::cout<<"Toggle Looping On"<<std::endl;
+                        (*itr)->setLoopingMode( osg::ImageStream::LOOPING );
+                    }
+                }
                 return true;
             }
             return false;
@@ -173,7 +196,7 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("p","Pause movie");
     usage.addKeyboardMouseBinding("s","Play movie");
-    usage.addKeyboardMouseBinding("r","Start movie");
+    usage.addKeyboardMouseBinding("r","Restart movie");
     usage.addKeyboardMouseBinding("l","Toggle looping of movie");
 }
 

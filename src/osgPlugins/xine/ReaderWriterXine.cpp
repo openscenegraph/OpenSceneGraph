@@ -95,6 +95,7 @@ class XineImageStream : public osg::ImageStream
                 if (_status==PAUSED)
                 {
                     xine_set_param (_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+                    _status=PLAYING;
                 }
                 else
                 {

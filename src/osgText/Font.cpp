@@ -46,7 +46,9 @@ std::string findFontFile(const std::string& str)
         char *ptr;
         if ((ptr = getenv( "windir" )))
         {
-            s_FontFilePath.push_back(ptr);
+            std::string winFontPath = ptr;
+            winFontPath += "\\fonts";
+            s_FontFilePath.push_back(winFontPath);
         }
     #else
         osgDB::convertStringPathIntoFilePathList(

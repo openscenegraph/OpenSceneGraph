@@ -46,10 +46,10 @@ class XineImageStream : public osg::ImageStream
         
             // create visual
             rgbout_visual_info_t* visual = new rgbout_visual_info_t;
-	    visual->levels = PXLEVEL_ALL;
+            visual->levels = PXLEVEL_ALL;
             visual->format = PX_RGB32;
             visual->user_data = this;
-	    visual->callback = my_render_frame;
+            visual->callback = my_render_frame;
 
             // set up video driver
             _vo = xine_open_video_driver(_xine, "rgb", XINE_VISUAL_TYPE_RGBOUT, (void*)visual);
@@ -278,8 +278,8 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             if(user_home)
             {
                 char* cfgfile = NULL;
-	        asprintf(&(cfgfile), "%s/.xine/config", user_home);
-	        xine_config_load(_xine, cfgfile);
+                asprintf(&(cfgfile), "%s/.xine/config", user_home);
+                xine_config_load(_xine, cfgfile);
             }
 
             xine_init(_xine);

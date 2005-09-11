@@ -995,6 +995,8 @@ osg::Group* ConvertFromFLT::visitLightSource(osg::Group& osgParent, LightSourceR
     osg::LightSource* lightSource = new osg::LightSource();
 
     osg::Light* pLight = pLightPool->getLight( pLSource->diIndex );
+    if ( pLight==NULL ) return NULL;
+    
     osg::Light* light = new osg::Light( *pLight );
 
     light->setPosition( osg::Vec4(

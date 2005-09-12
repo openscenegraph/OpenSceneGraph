@@ -79,8 +79,15 @@ class XineImageStream : public osg::ImageStream
                 close();
                 return false;
             }
-             
+            
+            
             _ready = false;
+            
+            int width = xine_get_stream_info(_stream,XINE_STREAM_INFO_VIDEO_WIDTH);
+            int height = xine_get_stream_info(_stream,XINE_STREAM_INFO_VIDEO_HEIGHT);
+            allocateImage(width,height,1,GL_RGB,GL_UNSIGNED_BYTE,1);
+
+            osg::notify(osg::INFO)<<"XineImageStream::open() size "<<width<<" "<<height<<std::endl;
 
             // play();
             
@@ -165,7 +172,7 @@ class XineImageStream : public osg::ImageStream
 
             memcpy(imageStream->data(),data,imageStream->getTotalSizeInBytes());
 
-            osg::notify(osg::NOTICE)<<"image memcpy size="<<imageStream->getTotalSizeInBytes()<<" time="<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+            osg::notify(osg::INFO)<<"image memcpy size="<<imageStream->getTotalSizeInBytes()<<" time="<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 
 
             imageStream->dirty();

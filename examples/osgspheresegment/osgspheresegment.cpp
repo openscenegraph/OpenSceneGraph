@@ -337,7 +337,24 @@ void build_world(osg::Group *root)
     osgSim::SphereSegment::LineList lines = ss->computeIntersection(osg::Matrixd::identity(), terrainGeode.get());
     if (!lines.empty())
     {
-       osg::notify(osg::NOTICE)<<"We've found intersections!!!!"<<std::endl;
+        osg::notify(osg::NOTICE)<<"We've found intersections!!!!"<<std::endl;
+
+        osg::Geode* geode = new osg::Geode;
+        root->addChild(geode);
+
+        geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+        for(osgSim::SphereSegment::LineList::iterator itr=lines.begin();
+           itr!=lines.end();
+           ++itr)
+        {
+            osg::Geometry* geom = new osg::Geometry;
+            geode->addDrawable(geom);
+            
+            osg::Vec3Array* vertices = itr->get();
+            geom->setVertexArray(vertices);
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, vertices->getNumElements()));
+        }
     }
     else
     {

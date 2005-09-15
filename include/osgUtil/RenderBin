@@ -138,11 +138,11 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         void getPrims(Statistics* primStats);
         bool getPrims(Statistics* primStats, int nbin);
 
+        void copyLeavesFromRenderGraphListToRenderLeafList();
+
     protected:
 
         virtual ~RenderBin();
-
-        void copyLeavesFromRenderGraphListToRenderLeafList();
    
         int                             _binNum;
         RenderBin*                      _parent;

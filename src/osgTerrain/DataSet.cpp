@@ -710,10 +710,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 
             // now copy into destination image
             unsigned char* sourceRowPtr = tempImage;
-            unsigned int sourceRowDelta = pixelSpace*destWidth;
+            int sourceRowDelta = pixelSpace*destWidth;
             unsigned char* destinationRowPtr = destination._image->data(destX,destY+destHeight-1);
-            unsigned int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
-            unsigned int destination_pixelSpace = destination._image->getPixelSizeInBits()/8;
+            int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
+            int destination_pixelSpace = destination._image->getPixelSizeInBits()/8;
             bool destination_hasAlpha = osg::Image::computeNumComponents(destination._image->getPixelFormat())==4;
 
             // copy image to destination image

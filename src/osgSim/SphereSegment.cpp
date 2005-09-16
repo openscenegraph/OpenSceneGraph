@@ -1294,8 +1294,8 @@ struct TriangleIntersectOperator
     EdgeSet         _edges;
     
     osg::Vec3       _centre;
-    float           _radius; 
-    float           _azMin, _azMax, _elevMin, _elevMax;
+    double          _radius; 
+    double          _azMin, _azMax, _elevMin, _elevMax;
     
     unsigned int    _numOutside;
     unsigned int    _numInside;
@@ -1310,31 +1310,29 @@ struct TriangleIntersectOperator
         _vertexInIntersectionSet.resize(array.size(), false);
         _candidateVertexIndices.clear();
         
-        float radius2 = _radius*_radius;
+        double radius2 = _radius*_radius;
         
         for(unsigned int i=0; i<array.size(); ++i)
         {
             osg::Vec3 vertex = array[i]*matrix - _centre;
             _originalVertices[i] = vertex;
-            float rad2 = vertex.length2();
+            double rad2 = vertex.length2();
             if (rad2 > radius2) 
             {
                 _regions[i] = 1;
             }
             else
             {
-                _regions[i] = -1;
-#if 0                
-                float length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());
-                float elevation = atan2(vertex.z(),length_xy);
+                double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());
+                double elevation = atan2(vertex.z(),length_xy);
                 if (elevation<_elevMin || elevation>_elevMax)
                 {
                     _regions[i] = 1;
                 }
                 else
                 {
-                    float azim = atan2(vertex.x(),vertex.y());
-                    if (azim<0.0) azim += 2.0f*osg::PI;
+                    double azim = atan2(vertex.x(),vertex.y());
+                    if (azim<0.0) azim += 2.0*osg::PI;
                     if (azim<_azMin || azim>_azMax)
                     {
                         _regions[i] = 1;
@@ -1352,7 +1350,6 @@ struct TriangleIntersectOperator
                     
                     }
                 }
-#endif                
                 
             }
         }
@@ -1414,9 +1411,11 @@ struct TriangleIntersectOperator
         
         bool verticesRemapped = false;
         IndexArray::iterator itr = _candidateVertexIndices.begin();
-        unsigned int lastUniqueIndex = _candidateVertexIndices[*(itr++)];
+        unsigned int lastUniqueIndex = *(itr++);
         for(; itr != _candidateVertexIndices.end(); ++itr)
         {
+            //unsigned int i = *itr;
+            // osg::notify(osg::NOTICE)<<"  i="<<i<<" lastUniqueIndex="<<lastUniqueIndex<<std::endl;
             if (_originalVertices[*itr]==_originalVertices[lastUniqueIndex])
             {
                 osg::notify(osg::NOTICE)<<"Combining vertex "<<*itr<<" with "<<lastUniqueIndex<<std::endl;
@@ -1563,7 +1562,7 @@ struct TriangleIntersectOperator
         {
             Edge* edge = hitr->get();
             edge->_toTraverse.clear();
-            osg::notify(osg::NOTICE)<<"edge= "<<edge<<std::endl;
+            //osg::notify(osg::NOTICE)<<"edge= "<<edge<<std::endl;
             for(Edge::TriangleList::iterator titr = edge->_triangles.begin();
                 titr != edge->_triangles.end();
                 ++titr)
@@ -1584,7 +1583,7 @@ struct TriangleIntersectOperator
                 // if we have one or more then add it into the edges to traverse list
                 if (numActiveEdges>1)
                 {
-                    osg::notify(osg::NOTICE)<<"   adding tri="<<tri<<std::endl;
+                    //osg::notify(osg::NOTICE)<<"   adding tri="<<tri<<std::endl;
                     edge->_toTraverse.push_back(tri);
                 }
                 
@@ -1592,6 +1591,7 @@ struct TriangleIntersectOperator
             }
         }
         
+#if 0        
         for(hitr = hitEdges.begin();
             hitr != hitEdges.end();
             ++hitr)
@@ -1606,7 +1606,7 @@ struct TriangleIntersectOperator
                 osg::notify(osg::NOTICE)<<"   "<<tri<<std::endl;
             }
         }
-        
+#endif        
         while(!hitEdges.empty())
         {
             // find the an open edge
@@ -1623,7 +1623,7 @@ struct TriangleIntersectOperator
                 hitr = hitEdges.begin();
             }
         
-            osg::notify(osg::NOTICE)<<"New line "<<std::endl;
+            // osg::notify(osg::NOTICE)<<"New line "<<std::endl;
 
             
             osg::Vec3Array* newLine = new osg::Vec3Array;
@@ -1632,7 +1632,7 @@ struct TriangleIntersectOperator
             Edge* edge = hitr->get();
             while (edge)
             {
-                osg::notify(osg::NOTICE)<<"   vertex "<<edge->_intersectionVertex<<std::endl;
+                // osg::notify(osg::NOTICE)<<"   vertex "<<edge->_intersectionVertex<<std::endl;
                 newLine->push_back(edge->_intersectionVertex+_centre/*+osg::Vec3(0.0f,0.0f,200.0f)*/);
             
                 Edge* newEdge = 0;
@@ -1646,7 +1646,7 @@ struct TriangleIntersectOperator
                     edge->removeFromToTraverseList(tri);
                     newEdge->removeFromToTraverseList(tri);
 
-                    osg::notify(osg::NOTICE)<<"   tri="<<tri<<" edge="<<edge<<" newEdge="<<newEdge<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"   tri="<<tri<<" edge="<<edge<<" newEdge="<<newEdge<<std::endl;
 
                     if (edge==newEdge)
                     {
@@ -1676,6 +1676,116 @@ struct TriangleIntersectOperator
     }
 };
 
+struct AzimIntersector
+{
+    AzimIntersector(TriangleIntersectOperator& tif, double azim):
+        _tif(tif),
+        _azim(azim) {}
+        
+    TriangleIntersectOperator& _tif;
+    double _azim;
+
+    inline bool operator() (TriangleIntersectOperator::Edge* edge)
+    {
+        edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+
+        osg::Vec3& v1 = _tif._originalVertices[edge->_p1];
+        osg::Vec3& v2 = _tif._originalVertices[edge->_p2];
+
+        double azim1 = atan2(v1.x(),v1.y());
+        if (azim1<0.0) azim1 += 2.0*osg::PI;
+
+        double azim2 = atan2(v2.x(),v2.y());
+        if (azim2<0.0) azim2 += 2.0*osg::PI;
+
+        // if both points inside then disgard
+        if (azim1<_azim && azim2<_azim) return false;
+        
+        // if both points outside then disgard
+        if (azim1>_azim && azim2>_azim) return false;
+        
+        if (azim1==_azim)
+        {
+            if (azim2==_azim)
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::BOTH_ENDS;
+            }
+            else
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::POINT_1;
+            }
+        }
+        else if (azim2==_azim)
+        {
+            edge->_intersectionType = TriangleIntersectOperator::Edge::POINT_2;
+        }
+        else
+        {
+            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
+            double r = (_azim-azim1)/(azim2-azim1);
+            double one_minus_r = 1.0f-r;
+            edge->_intersectionVertex = v1*one_minus_r + v2*r;
+        }
+        
+        return true;
+    }
+};
+
+struct ElevationIntersector
+{
+    ElevationIntersector(TriangleIntersectOperator& tif, double elev):
+        _tif(tif),
+        _elev(elev) {}
+        
+    TriangleIntersectOperator& _tif;
+    double _elev;
+
+    inline bool operator() (TriangleIntersectOperator::Edge* edge)
+    {
+        edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+
+        osg::Vec3& v1 = _tif._originalVertices[edge->_p1];
+        osg::Vec3& v2 = _tif._originalVertices[edge->_p2];
+
+        double length_xy1 = sqrt(v1.x()*v1.x() + v1.y()*v1.y());
+        double elev1 = atan2(v1.z(),length_xy1);
+
+        double length_xy2 = sqrt(v2.x()*v2.x() + v2.y()*v2.y());
+        double elev2 = atan2(v2.z(),length_xy2);
+
+        // if both points inside then disgard
+        if (elev1<_elev && elev2<_elev) return false;
+        
+        // if both points outside then disgard
+        if (elev1>_elev && elev2>_elev) return false;
+        
+        if (elev1==_elev)
+        {
+            if (elev2==_elev)
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::BOTH_ENDS;
+            }
+            else
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::POINT_1;
+            }
+        }
+        else if (elev2==_elev)
+        {
+            edge->_intersectionType = TriangleIntersectOperator::Edge::POINT_2;
+        }
+        else
+        {
+            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
+            double r = (_elev-elev1)/(elev2-elev1);
+            double one_minus_r = 1.0-r;
+            edge->_intersectionVertex = v1*one_minus_r + v2*r;
+        }
+        
+        return true;
+    }
+};
+
 struct RadiusIntersector
 {
     RadiusIntersector(TriangleIntersectOperator& tif):
@@ -1689,8 +1799,8 @@ struct RadiusIntersector
 
         osg::Vec3& v1 = _tif._originalVertices[edge->_p1];
         osg::Vec3& v2 = _tif._originalVertices[edge->_p2];
-        float radius1 = v1.length();
-        float radius2 = v2.length();
+        double radius1 = v1.length();
+        double radius2 = v2.length();
 
         // if both points inside then disgard
         if (radius1<_tif._radius && radius2<_tif._radius) return false;
@@ -1716,14 +1826,15 @@ struct RadiusIntersector
         else
         {
             edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
-            float r = (_tif._radius-radius1)/(radius2-radius1);
-            float one_minus_r = 1.0f-r;
+            double r = (_tif._radius-radius1)/(radius2-radius1);
+            double one_minus_r = 1.0-r;
             edge->_intersectionVertex = v1*one_minus_r + v2*r;
         }
         
         return true;
     }
 };
+
 
 SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable)
 {
@@ -1759,6 +1870,10 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif.buildEdges();
 
     tif.computeIntersections(RadiusIntersector(tif));
+    tif.computeIntersections(AzimIntersector(tif,_azMin));
+    tif.computeIntersections(AzimIntersector(tif,_azMax));
+    tif.computeIntersections(ElevationIntersector(tif,_elevMin));
+    tif.computeIntersections(ElevationIntersector(tif,_elevMax));
  
     return tif._generatedLines;
 }

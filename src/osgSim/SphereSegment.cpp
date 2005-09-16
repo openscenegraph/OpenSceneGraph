@@ -1676,6 +1676,23 @@ struct TriangleIntersectOperator
     }
 };
 
+bool computeQuadraticSolution(double a, double b, double c, double& s1, double& s2)
+{
+    // avoid division by zero.
+    if (a==0.0) return false;
+    
+    double inside_sqrt = b*b - 4.0*a*c;
+
+    // avoid sqrt of negative number
+    if (inside_sqrt<0.0) return false;
+    
+    double rhs = sqrt(inside_sqrt);
+    s1 = (-b + rhs)/(2.0*a);
+    s2 = (-b - rhs)/(2.0*a);
+    
+    return true;
+}
+
 struct AzimIntersector
 {
     AzimIntersector(TriangleIntersectOperator& tif, double azim):
@@ -1721,9 +1738,21 @@ struct AzimIntersector
         }
         else
         {
-            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
-            double r = (_azim-azim1)/(azim2-azim1);
+
+            double dx = v2.x()-v1.x();
+            double dy = v2.y()-v1.y();
+            double t = tan(_azim);
+            double div = dx - t*dy;
+            if (div==0.0) 
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+
+            double r = (t*v1.y()-v1.x()) / div;
             double one_minus_r = 1.0f-r;
+
+            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
             edge->_intersectionVertex = v1*one_minus_r + v2*r;
         }
         
@@ -1776,9 +1805,40 @@ struct ElevationIntersector
         }
         else
         {
-            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
-            double r = (_elev-elev1)/(elev2-elev1);
+            double dx = v2.x()-v1.x();
+            double dy = v2.y()-v1.y();
+            double dz = v2.z()-v1.z();
+            double t = tan(_elev);
+            double tt = t*t;
+            double a = dz*dz-tt*(dx*dx + dy*dy);
+            double b = 2.0*(v1.z()*dz - tt*(v1.x()*dx + v1.y()*dy));
+            double c = v1.z()*v1.z() - tt*(v1.x()*v1.x() + v1.y()*v1.y());
+            
+            double s1, s2;
+            if (!computeQuadraticSolution(a,b,c,s1,s2))
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+            double r = 0.0;
+            if (s1>=0.0 && s1<=1.0)
+            {
+                r = s1;
+            }
+            else if (s2>=0.0 && s2<=1.0)
+            {
+                r = s2;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+
             double one_minus_r = 1.0-r;
+            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
             edge->_intersectionVertex = v1*one_minus_r + v2*r;
         }
         
@@ -1825,9 +1885,38 @@ struct RadiusIntersector
         }
         else
         {
-            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
-            double r = (_tif._radius-radius1)/(radius2-radius1);
+            double dx = v2.x()-v1.x();
+            double dy = v2.y()-v1.y();
+            double dz = v2.z()-v1.z();
+            double a = dx*dx + dy*dy + dz*dz;
+            double b = 2.0*(v1.x()*dx + v1.y()*dy + v1.z()*dz);
+            double c = v1.x()*v1.x() +  v1.y()*v1.y() + v1.z()*v1.z() - _tif._radius*_tif._radius;
+            
+            double s1, s2;
+            if (!computeQuadraticSolution(a,b,c,s1,s2))
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+            double r = 0.0;
+            if (s1>=0.0 && s1<=1.0)
+            {
+                r = s1;
+            }
+            else if (s2>=0.0 && s2<=1.0)
+            {
+                r = s2;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+
             double one_minus_r = 1.0-r;
+            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
             edge->_intersectionVertex = v1*one_minus_r + v2*r;
         }
         

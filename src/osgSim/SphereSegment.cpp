@@ -1276,9 +1276,158 @@ struct TriangleIntersectOperator
         Edge* _e2;
         Edge* _e3;
     };
+    
+    struct Region
+    {
+        enum Classification
+        {
+            INSIDE = -1,
+            INTERSECTS = 0,
+            OUTSIDE = 1
+        };
+    
+        Region():
+            _radiusSurface(OUTSIDE),
+            _leftSurface(OUTSIDE),
+            _rightSurface(OUTSIDE),
+            _bottomSurface(OUTSIDE),
+            _topSurface(OUTSIDE) {}
+            
+        
+            
+        void classify(const osg::Vec3& vertex, double radius2, double azimMin, double azimMax, double elevMin, double elevMax)
+        {
+            
+            double rad2 = vertex.length2();
+            double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());        
+            double elevation = atan2(vertex.z(),length_xy);
+            double azim = atan2(vertex.x(),vertex.y());
+            if (azim<0.0) azim += 2.0*osg::PI;
+
+            // radius surface
+            if      (rad2 > radius2) _radiusSurface = OUTSIDE;
+            else if (rad2 < radius2) _radiusSurface = INSIDE;
+            else                     _radiusSurface = INTERSECTS;
+
+            // bottom surface
+            if      (elevation<elevMin) _bottomSurface = OUTSIDE;
+            else if (elevation>elevMin) _bottomSurface = INSIDE;
+            else                        _bottomSurface = INTERSECTS;
+
+            // top surface
+            if      (elevation>elevMax) _topSurface = OUTSIDE;
+            else if (elevation<elevMax) _topSurface = INSIDE;
+            else                        _topSurface = INTERSECTS;
+
+            // left surface
+            if      (azim<azimMin)  _leftSurface = OUTSIDE;
+            else if (azim>azimMin)  _leftSurface = INSIDE;
+            else                    _leftSurface = INTERSECTS;
+
+            // right surface
+            if      (azim>azimMax)  _rightSurface = OUTSIDE;
+            else if (azim<azimMax)  _rightSurface = INSIDE;
+            else                    _rightSurface = INTERSECTS;
+        }
+    
+        Classification _radiusSurface;
+        Classification _leftSurface;
+        Classification _rightSurface;
+        Classification _bottomSurface;
+        Classification _topSurface;
+    };
+    
+    struct RegionCounter
+    {
+        RegionCounter():
+            _numVertices(0),
+            _outside_radiusSurface(0),
+            _inside_radiusSurface(0),
+            _intersects_radiusSurface(0),
+            _outside_leftSurface(0),
+            _inside_leftSurface(0),
+            _intersects_leftSurface(0),
+            _outside_rightSurface(0),
+            _inside_rightSurface(0),
+            _intersects_rightSurface(0),
+            _outside_bottomSurface(0),
+            _inside_bottomSurface(0),
+            _intersects_bottomSurface(0),
+            _outside_topSurface(0),
+            _inside_topSurface(0),
+            _intersects_topSurface(0) {}
+
+
+        void add(const Region& region)
+        {
+            ++_numVertices;
+        
+            if (region._radiusSurface == Region::OUTSIDE)       ++_outside_radiusSurface;
+            if (region._radiusSurface == Region::INSIDE)        ++_inside_radiusSurface;
+            if (region._radiusSurface == Region::INTERSECTS)    ++_intersects_radiusSurface;
+
+            if (region._leftSurface == Region::OUTSIDE)         ++_outside_leftSurface;
+            if (region._leftSurface == Region::INSIDE)          ++_inside_leftSurface;
+            if (region._leftSurface == Region::INTERSECTS)      ++_intersects_leftSurface;
+
+            if (region._rightSurface == Region::OUTSIDE)        ++_outside_rightSurface;
+            if (region._rightSurface == Region::INSIDE)         ++_inside_rightSurface;
+            if (region._rightSurface == Region::INTERSECTS)     ++_intersects_rightSurface;
+
+            if (region._bottomSurface == Region::OUTSIDE)       ++_outside_bottomSurface;
+            if (region._bottomSurface == Region::INSIDE)        ++_inside_bottomSurface;
+            if (region._bottomSurface == Region::INTERSECTS)    ++_intersects_bottomSurface;
+
+            if (region._topSurface == Region::OUTSIDE)          ++_outside_topSurface;
+            if (region._topSurface == Region::INSIDE)           ++_inside_topSurface;
+            if (region._topSurface == Region::INTERSECTS)       ++_intersects_topSurface;
+        }
+        
+        Region::Classification overallClassification()
+        {
+            // if all vertices are outside any of the surfaces then we are completely outside
+            if (_outside_radiusSurface==_numVertices ||
+                _outside_leftSurface==_numVertices ||
+                _outside_rightSurface==_numVertices ||
+                _outside_topSurface==_numVertices ||
+                _outside_bottomSurface==_numVertices) return Region::OUTSIDE;
+
+            // if all the vertices on all the sides and inside then we are completely inside
+            if (_inside_radiusSurface==_numVertices &&
+                _inside_leftSurface==_numVertices &&
+                _inside_rightSurface==_numVertices && 
+                _inside_topSurface==_numVertices && 
+                _inside_bottomSurface==_numVertices) return Region::INSIDE;
+            
+            return Region::INTERSECTS;
+        }
+    
+        unsigned int _numVertices;
+        unsigned int _outside_radiusSurface;
+        unsigned int _inside_radiusSurface;
+        unsigned int _intersects_radiusSurface;
+
+        unsigned int _outside_leftSurface;
+        unsigned int _inside_leftSurface;
+        unsigned int _intersects_leftSurface;
+
+        unsigned int _outside_rightSurface;
+        unsigned int _inside_rightSurface;
+        unsigned int _intersects_rightSurface;
+
+        unsigned int _outside_bottomSurface;
+        unsigned int _inside_bottomSurface;
+        unsigned int _intersects_bottomSurface;
+
+        unsigned int _outside_topSurface;
+        unsigned int _inside_topSurface;
+        unsigned int _intersects_topSurface;
+
+    };
+    
 
     typedef std::vector< osg::Vec3 >                            VertexArray;
-    typedef std::vector< int >                                  RegionArray;
+    typedef std::vector< Region >                               RegionArray;
     typedef std::vector< bool >                                 BoolArray;
     typedef std::vector< unsigned int >                         IndexArray;
     typedef std::vector< osg::ref_ptr<Triangle> >               TriangleArray;
@@ -1306,7 +1455,7 @@ struct TriangleIntersectOperator
     void computePositionAndRegions(const osg::Matrixd& matrix, osg::Vec3Array& array)
     {
         _originalVertices.resize(array.size());
-        _regions.resize(array.size(), 1);
+        _regions.resize(array.size());
         _vertexInIntersectionSet.resize(array.size(), false);
         _candidateVertexIndices.clear();
         
@@ -1316,56 +1465,28 @@ struct TriangleIntersectOperator
         {
             osg::Vec3 vertex = array[i]*matrix - _centre;
             _originalVertices[i] = vertex;
-            double rad2 = vertex.length2();
-            if (rad2 > radius2) 
-            {
-                _regions[i] = 1;
-            }
-            else
-            {
-                double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());
-                double elevation = atan2(vertex.z(),length_xy);
-                if (elevation<_elevMin || elevation>_elevMax)
-                {
-                    _regions[i] = 1;
-                }
-                else
-                {
-                    double azim = atan2(vertex.x(),vertex.y());
-                    if (azim<0.0) azim += 2.0*osg::PI;
-                    if (azim<_azMin || azim>_azMax)
-                    {
-                        _regions[i] = 1;
-                    }
-                    else
-                    {
-                        if (rad2==radius2 || elevation==_elevMin || elevation==_elevMax || azim==_azMin || azim==_azMax)
-                        {
-                            _regions[i] = 0;
-                        }
-                        else
-                        {
-                            _regions[i] = -1;
-                        }
-                    
-                    }
-                }
-                
-            }
+            _regions[i].classify(vertex, radius2, _azMin, _azMax, _elevMin, _elevMax);
         }
         
     }
 
     inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
     {
+        RegionCounter rc;
+        rc.add(_regions[p1]);
+        rc.add(_regions[p2]);
+        rc.add(_regions[p3]);
+        
+        Region::Classification classification = rc.overallClassification();
+
         // reject if outside.
-        if (_regions[p1]==1 && _regions[p2]==1 && _regions[p3]==1)
+        if (classification==Region::OUTSIDE)
         {
             ++_numOutside;
             return; 
         }
     
-        if (_regions[p1]==-1 && _regions[p2]==-1 && _regions[p3]==-1)
+        if (classification==Region::INSIDE)
         {
             ++_numInside;
             return; 
@@ -1516,8 +1637,15 @@ struct TriangleIntersectOperator
     
     Edge* addEdge(unsigned int p1, unsigned int p2, Triangle* tri)
     {
-        if ((_regions[p1]==_regions[p2]) && _regions[p1]!=0) return 0;
-    
+        RegionCounter rc;
+        rc.add(_regions[p1]);
+        rc.add(_regions[p2]);
+
+#if 0 
+// the fact I have to comment this check out suggest that there is a problem elsewhere...       
+        Region::Classification classification = rc.overallClassification();
+        if (classification==Region::OUTSIDE || classification==Region::INSIDE) return 0;
+#endif        
         osg::ref_ptr<Edge> edge = new Edge(p1, p2);
         EdgeSet::iterator itr = _edges.find(edge);
         if (itr==_edges.end())
@@ -1534,21 +1662,8 @@ struct TriangleIntersectOperator
         }
     }
     
-    template<class I>
-    void computeIntersections(I intersector)
+    void connectIntersections(EdgeList& hitEdges)
     {
-        // collect all the intersecting edges
-        EdgeList hitEdges;
-        for(EdgeSet::iterator itr = _edges.begin();
-            itr != _edges.end();
-            ++itr)
-        {
-            Edge* edge = const_cast<Edge*>(itr->get());
-            if (intersector(edge))
-            {
-                hitEdges.push_back(edge);
-            }
-        }
         osg::notify(osg::NOTICE)<<"Number of edge intersections "<<hitEdges.size()<<std::endl;
         
         if (hitEdges.empty()) return;
@@ -1674,6 +1789,25 @@ struct TriangleIntersectOperator
         
         }
     }
+    
+    template<class I>
+    void computeIntersections(I intersector)
+    {
+        // collect all the intersecting edges
+        EdgeList hitEdges;
+        for(EdgeSet::iterator itr = _edges.begin();
+            itr != _edges.end();
+            ++itr)
+        {
+            Edge* edge = const_cast<Edge*>(itr->get());
+            if (intersector(edge))
+            {
+                hitEdges.push_back(edge);
+            }
+        }
+        
+        connectIntersections(hitEdges);
+    }
 };
 
 bool computeQuadraticSolution(double a, double b, double c, double& s1, double& s2)
@@ -1750,6 +1884,13 @@ struct AzimIntersector
             }
 
             double r = (t*v1.y()-v1.x()) / div;
+            if (r<0.0 || r>1.0)
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+            
+            
             double one_minus_r = 1.0f-r;
 
             edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;

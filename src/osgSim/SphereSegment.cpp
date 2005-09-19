@@ -1383,7 +1383,7 @@ struct TriangleIntersectOperator
             if (region._topSurface == Region::INTERSECTS)       ++_intersects_topSurface;
         }
         
-        Region::Classification overallClassification()
+        Region::Classification overallClassification() const
         {
             // if all vertices are outside any of the surfaces then we are completely outside
             if (_outside_radiusSurface==_numVertices ||
@@ -1400,6 +1400,17 @@ struct TriangleIntersectOperator
                 _inside_bottomSurface==_numVertices) return Region::INSIDE;
             
             return Region::INTERSECTS;
+        }
+        
+        int numberOfIntersectingSurfaces() const
+        {
+            int sidesThatIntersect = 0;
+            if (_outside_radiusSurface!=_numVertices && _inside_radiusSurface!=_numVertices) ++sidesThatIntersect;
+            if (_outside_leftSurface!=_numVertices && _inside_leftSurface!=_numVertices) ++sidesThatIntersect;
+            if (_outside_rightSurface!=_numVertices && _inside_rightSurface!=_numVertices) ++sidesThatIntersect;
+            if (_outside_topSurface!=_numVertices && _inside_topSurface!=_numVertices) ++sidesThatIntersect;
+            if (_outside_bottomSurface!=_numVertices && _inside_bottomSurface!=_numVertices) ++sidesThatIntersect;
+            return sidesThatIntersect;
         }
     
         unsigned int _numVertices;
@@ -1661,7 +1672,36 @@ struct TriangleIntersectOperator
             return edge;
         }
     }
-    
+
+    void countMultipleIntersections() const
+    {
+        osg::notify(osg::NOTICE)<<"countMultipleIntersections("<<std::endl;
+        int numZero = 0;
+        int numOne = 0;
+        int numTwo = 0;
+        int numMore = 0;
+        
+        for(TriangleArray::const_iterator itr = _triangles.begin();
+            itr != _triangles.end();
+            ++itr)
+        {
+            const Triangle* tri = itr->get();
+            RegionCounter rc;
+            rc.add(_regions[tri->_p1]);
+            rc.add(_regions[tri->_p2]);
+            rc.add(_regions[tri->_p3]);
+            int numIntersections = rc.numberOfIntersectingSurfaces();
+            if (numIntersections==0) ++numZero;
+            else if (numIntersections==1) ++numOne;
+            else if (numIntersections==2) ++numTwo;
+            else if (numIntersections>=3) ++numMore;
+        }
+        osg::notify(osg::NOTICE)<<"  numZero "<<numZero<<std::endl;
+        osg::notify(osg::NOTICE)<<"  numOne "<<numOne<<std::endl;
+        osg::notify(osg::NOTICE)<<"  numTwo "<<numTwo<<std::endl;
+        osg::notify(osg::NOTICE)<<"  numMore "<<numMore<<std::endl;
+    }
+        
     void connectIntersections(EdgeList& hitEdges)
     {
         osg::notify(osg::NOTICE)<<"Number of edge intersections "<<hitEdges.size()<<std::endl;
@@ -2104,6 +2144,8 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif.computeIntersections(AzimIntersector(tif,_azMax));
     tif.computeIntersections(ElevationIntersector(tif,_elevMin));
     tif.computeIntersections(ElevationIntersector(tif,_elevMax));
+ 
+    tif.countMultipleIntersections();
  
     return tif._generatedLines;
 }

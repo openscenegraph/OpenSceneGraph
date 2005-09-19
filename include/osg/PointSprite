@@ -50,6 +50,8 @@ public:
 
 	virtual void apply(osg::State& state) const;
 
+	static bool isPointSpriteSupported(unsigned int context);
+
 protected:
 	virtual ~PointSprite( void ) {}
 };

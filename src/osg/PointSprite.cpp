@@ -14,6 +14,8 @@
 #include <osg/GLExtensions>
 #include <osg/GL>
 #include <osg/PointSprite>
+#include <osg/State>
+#include <osg/buffered_value>
 
 using namespace osg;
 
@@ -28,7 +30,33 @@ int PointSprite::compare(const StateAttribute& sa) const
     return 0; // passed all the above comparison macro's, must be equal.
 }
 
-void PointSprite::apply(osg::State&) const
+void PointSprite::apply(osg::State& state) const
 {
+    if(!isPointSpriteSupported(state.getContextID())) return;
+
     glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, 1);
+}
+
+struct IntializedSupportedPair
+{
+    IntializedSupportedPair():
+        initialized(false),
+        supported(false) {}
+
+    bool initialized;
+    bool supported;
+};
+
+typedef osg::buffered_object< IntializedSupportedPair > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
+bool PointSprite::isPointSpriteSupported(unsigned int contextID)
+{
+    if (!s_extensions[contextID].initialized)
+    {
+        s_extensions[contextID].initialized = true;
+        s_extensions[contextID].supported = isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite");
+    }
+
+    return s_extensions[contextID].supported;
 }

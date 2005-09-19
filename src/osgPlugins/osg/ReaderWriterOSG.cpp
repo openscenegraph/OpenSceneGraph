@@ -101,6 +101,10 @@ class OSGReaderWriter : public ReaderWriter
                         iss >> prec;
                         fout.precision(prec);
                     }
+                    if (opt=="OutputTextureFiles")
+                    {
+                        fout.setOutputTextureFiles(false);
+                    }
                 }
             }
         }            
@@ -111,6 +115,7 @@ class OSGReaderWriter : public ReaderWriter
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
             Output fout(fileName.c_str());
+            fout.setOptions(options);
             if (fout)
             {
                 setPrecision(fout,options);
@@ -125,6 +130,7 @@ class OSGReaderWriter : public ReaderWriter
         virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             Output foutput;
+            foutput.setOptions(options);
 
 	    std::ios &fios = foutput;
 	    fios.rdbuf(fout.rdbuf());
@@ -147,6 +153,7 @@ class OSGReaderWriter : public ReaderWriter
 
 
             Output fout(fileName.c_str());
+            fout.setOptions(options);
             if (fout)
             {
                 setPrecision(fout,options);
@@ -161,6 +168,7 @@ class OSGReaderWriter : public ReaderWriter
         virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             Output foutput;
+            foutput.setOptions(options);
 
 	    std::ios &fios = foutput;
 	    fios.rdbuf(fout.rdbuf());

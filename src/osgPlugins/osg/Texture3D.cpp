@@ -3,6 +3,7 @@
 #include "osgDB/Registry"
 #include "osgDB/Input"
 #include "osgDB/Output"
+#include "osgDB/WriteFile"
 
 using namespace osg;
 using namespace osgDB;
@@ -56,14 +57,26 @@ bool Texture3D_readLocalData(Object& obj, Input& fr)
     return iteratorAdvanced;
 }
 
-
 bool Texture3D_writeLocalData(const Object& obj, Output& fw)
 {
     const Texture3D& texture = static_cast<const Texture3D&>(obj);
 
-    if (texture.getImage() && !(texture.getImage()->getFileName().empty()))
+    if (texture.getImage())
     {
-        fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(texture.getImage()->getFileName()))<< std::endl;
+        std::string fileName = texture.getImage()->getFileName();
+        if (fw.getOutputTextureFiles())
+        {
+            if (fileName.empty())
+            {
+                fileName = fw.getTextureFileNameForOutput();
+            }
+            osgDB::writeImageFile(*texture.getImage(), fileName);
+        }
+        
+        if (!fileName.empty())
+        {    
+            fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;
+        }
     }
 
     return true;

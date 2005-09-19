@@ -3,6 +3,7 @@
 #include "osgDB/Registry"
 #include "osgDB/Input"
 #include "osgDB/Output"
+#include "osgDB/WriteFile"
 
 using namespace osg;
 using namespace osgDB;
@@ -60,9 +61,21 @@ bool TextureCubeMap_readLocalData(Object& obj, Input& fr)
 #define WRITE_IMAGE(FACE) \
     {\
         const osg::Image* image = texture.getImage(osg::TextureCubeMap::FACE);\
-        if (image && !(image->getFileName().empty())) \
+        if (image)\
         {\
-            fw.indent() << "image "<<#FACE<<" "<<image->getFileName()<<std::endl;\
+            std::string fileName = image->getFileName();\
+            if (fw.getOutputTextureFiles())\
+            {\
+                if (fileName.empty())\
+                {\
+                    fileName = fw.getTextureFileNameForOutput();\
+                }\
+                osgDB::writeImageFile(*image, fileName);\
+            }\
+            if (!fileName.empty())\
+            {\
+                fw.indent() << "image "<<#FACE<<" "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;\
+            }\
         }\
     }
 

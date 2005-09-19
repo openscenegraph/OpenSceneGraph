@@ -16,11 +16,10 @@
 
 #include <osg/Object>
 
-#include <osgDB/Export>
+#include <osgDB/ReaderWriter>
 
 #include <string>
 #include <map>
-
 #include <fstream>
 
 namespace osgDB {
@@ -35,6 +34,10 @@ class OSGDB_EXPORT Output : public std::ofstream
         Output(const char* name);
         
         virtual ~Output();
+
+       
+        void setOptions(const ReaderWriter::Options* options) { _options = options; }
+        const ReaderWriter::Options* getOptions() const { return _options.get(); }
 
         void open(const char *name);
         
@@ -79,11 +82,17 @@ class OSGDB_EXPORT Output : public std::ofstream
         virtual std::string getFileNameForOutput(const std::string& filename) const;
         const std::string& getFileName() const { return _filename; }
 
+        void setOutputTextureFiles(bool flag) { _outputTextureFiles = true; }
+        bool getOutputTextureFiles() const { return _outputTextureFiles; }
+
+        virtual std::string getTextureFileNameForOutput();
         
     protected:
 
 
         virtual void init();
+
+        osg::ref_ptr<const ReaderWriter::Options> _options;
 
         int _indent;
         int _indentStep;
@@ -96,6 +105,8 @@ class OSGDB_EXPORT Output : public std::ofstream
         std::string _filename;
         
         PathNameHint _pathNameHint;
+        bool _outputTextureFiles;
+        unsigned int _textureFileNameNumber;
 
 };
 

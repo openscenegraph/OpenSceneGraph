@@ -16,6 +16,7 @@
 
 #include <osg/Notify>
 
+#include <sstream>
 #include <stdio.h>
 
 using namespace std;
@@ -43,6 +44,8 @@ void Output::init()
     _indentStep = 2;
     _numIndicesPerLine = 10;
     _pathNameHint = AS_IS;
+    _outputTextureFiles = false;
+    _textureFileNameNumber = 0;
 }
 
 void Output::open(const char *name)
@@ -157,3 +160,20 @@ std::string Output::getFileNameForOutput(const std::string& filename) const
         return filename;
     }
 }
+
+std::string Output::getTextureFileNameForOutput()
+{
+    std::string fileName = osgDB::getNameLessExtension(_filename);
+    if (_textureFileNameNumber>0)
+    {
+        std::ostringstream o;
+        o << '_' << _textureFileNameNumber;
+        fileName += o.str();
+    }
+    
+    fileName += ".dds";
+    ++_textureFileNameNumber;
+    
+    return fileName;
+}
+

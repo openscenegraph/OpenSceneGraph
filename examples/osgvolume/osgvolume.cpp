@@ -607,7 +607,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
 
     float halfSize = size*0.5f;
     float y = halfSize;
-    float dy =-size/(float)(numSlices-1)*sliceEnd;
+    float dy =-size*1.4/(float)(numSlices-1)*sliceEnd;
 
     //y = -halfSize;
     //dy *= 0.5;

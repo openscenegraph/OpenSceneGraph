@@ -260,6 +260,12 @@ bool GliderManipulator::calcMovement()
     float dx = _ga_t0->getXnormalized();
     float dy = _ga_t0->getYnormalized();
 
+    // mew - flag to reverse mouse-control mapping
+    if( getenv( "OSGHANGGLIDE_REVERSE_CONTROLS" ) )
+    {
+        dx = -dx;
+        dy = -dy;
+    }
 
     osg::Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);

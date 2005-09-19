@@ -1617,9 +1617,23 @@ struct TriangleIntersectOperator
             ++itr)
         {
             Triangle* tri = itr->get();
+#if 1
+            RegionCounter rc;
+            rc.add(_regions[tri->_p1]);
+            rc.add(_regions[tri->_p2]);
+            rc.add(_regions[tri->_p3]);
+            int numIntersections = rc.numberOfIntersectingSurfaces();
+            if (numIntersections==1)
+            {
+                tri->_e1 = addEdge(tri->_p1, tri->_p2, tri);
+                tri->_e2 = addEdge(tri->_p2, tri->_p3, tri);
+                tri->_e3 = addEdge(tri->_p1, tri->_p3, tri);
+            }
+#else
             tri->_e1 = addEdge(tri->_p1, tri->_p2, tri);
             tri->_e2 = addEdge(tri->_p2, tri->_p3, tri);
             tri->_e3 = addEdge(tri->_p1, tri->_p3, tri);
+#endif
         }
         osg::notify(osg::NOTICE)<<"Number of edges "<<_edges.size()<<std::endl;
         
@@ -1673,7 +1687,7 @@ struct TriangleIntersectOperator
         }
     }
 
-    void countMultipleIntersections() const
+    void countMultipleIntersections()
     {
         osg::notify(osg::NOTICE)<<"countMultipleIntersections("<<std::endl;
         int numZero = 0;
@@ -1695,6 +1709,17 @@ struct TriangleIntersectOperator
             else if (numIntersections==1) ++numOne;
             else if (numIntersections==2) ++numTwo;
             else if (numIntersections>=3) ++numMore;
+
+            if (numIntersections>=2)
+            {
+                osg::Vec3Array* newLine = new osg::Vec3Array;
+                newLine->push_back(_originalVertices[tri->_p1]+_centre);
+                newLine->push_back(_originalVertices[tri->_p2]+_centre);
+                newLine->push_back(_originalVertices[tri->_p3]+_centre);
+                newLine->push_back(_originalVertices[tri->_p1]+_centre);
+                _generatedLines.push_back(newLine);
+            }
+
         }
         osg::notify(osg::NOTICE)<<"  numZero "<<numZero<<std::endl;
         osg::notify(osg::NOTICE)<<"  numOne "<<numOne<<std::endl;

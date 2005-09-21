@@ -1217,6 +1217,8 @@ struct TriangleIntersectOperator
         TriangleList        _toTraverse;
     };
 
+    typedef std::list< osg::ref_ptr<Edge> >                     EdgeList;
+
     struct Triangle : public osg::Referenced
     {
     
@@ -1275,6 +1277,39 @@ struct TriangleIntersectOperator
         Edge* _e1;
         Edge* _e2;
         Edge* _e3;
+    };
+
+    struct Polygon
+    {
+        Polygon(Triangle* tri)
+        {
+            if (tri->_e1) _edges.push_back(tri->_e1);
+            if (tri->_e2) _edges.push_back(tri->_e2);
+            if (tri->_e3) _edges.push_back(tri->_e3);
+        }
+
+        template<class I>
+        unsigned int computeIntersections(I intersector)
+        {
+            // collect all the intersecting edges
+            EdgeList hitEdges;
+            for(EdgeList::iterator itr = _edges.begin();
+                itr != _edges.end();
+                ++itr)
+            {
+                Edge* edge = const_cast<Edge*>(itr->get());
+                if (intersector(edge))
+                {
+                    hitEdges.push_back(edge);
+                }
+            }
+            osg::notify(osg::NOTICE)<<"Got intersection with edges "<<hitEdges.size()<<" out of "<<_edges.size()<<std::endl;
+            
+            return hitEdges.size();
+        }
+
+        EdgeList _edges;
+
     };
     
     struct Region
@@ -1443,7 +1478,6 @@ struct TriangleIntersectOperator
     typedef std::vector< unsigned int >                         IndexArray;
     typedef std::vector< osg::ref_ptr<Triangle> >               TriangleArray;
     typedef std::set< osg::ref_ptr<Edge>, dereference_less >    EdgeSet;
-    typedef std::list< osg::ref_ptr<Edge> >                     EdgeList;
     
     VertexArray     _originalVertices;
     RegionArray     _regions;
@@ -1609,6 +1643,13 @@ struct TriangleIntersectOperator
         osg::notify(osg::NOTICE)<<"Removed duplicate triangles : num triangles out "<<_triangles.size()<<std::endl;
     }
     
+    void buildEdges(Triangle* tri)
+    {
+        tri->_e1 = addEdge(tri->_p1, tri->_p2, tri);
+        tri->_e2 = addEdge(tri->_p2, tri->_p3, tri);
+        tri->_e3 = addEdge(tri->_p1, tri->_p3, tri);
+    }
+
     void buildEdges()
     {
         _edges.clear();
@@ -1625,14 +1666,10 @@ struct TriangleIntersectOperator
             int numIntersections = rc.numberOfIntersectingSurfaces();
             if (numIntersections==1)
             {
-                tri->_e1 = addEdge(tri->_p1, tri->_p2, tri);
-                tri->_e2 = addEdge(tri->_p2, tri->_p3, tri);
-                tri->_e3 = addEdge(tri->_p1, tri->_p3, tri);
+                buildEdges(tri);
             }
 #else
-            tri->_e1 = addEdge(tri->_p1, tri->_p2, tri);
-            tri->_e2 = addEdge(tri->_p2, tri->_p3, tri);
-            tri->_e3 = addEdge(tri->_p1, tri->_p3, tri);
+            buildEdges(tri);
 #endif
         }
         osg::notify(osg::NOTICE)<<"Number of edges "<<_edges.size()<<std::endl;
@@ -1687,45 +1724,7 @@ struct TriangleIntersectOperator
         }
     }
 
-    void countMultipleIntersections()
-    {
-        osg::notify(osg::NOTICE)<<"countMultipleIntersections("<<std::endl;
-        int numZero = 0;
-        int numOne = 0;
-        int numTwo = 0;
-        int numMore = 0;
-        
-        for(TriangleArray::const_iterator itr = _triangles.begin();
-            itr != _triangles.end();
-            ++itr)
-        {
-            const Triangle* tri = itr->get();
-            RegionCounter rc;
-            rc.add(_regions[tri->_p1]);
-            rc.add(_regions[tri->_p2]);
-            rc.add(_regions[tri->_p3]);
-            int numIntersections = rc.numberOfIntersectingSurfaces();
-            if (numIntersections==0) ++numZero;
-            else if (numIntersections==1) ++numOne;
-            else if (numIntersections==2) ++numTwo;
-            else if (numIntersections>=3) ++numMore;
-
-            if (numIntersections>=2)
-            {
-                osg::Vec3Array* newLine = new osg::Vec3Array;
-                newLine->push_back(_originalVertices[tri->_p1]+_centre);
-                newLine->push_back(_originalVertices[tri->_p2]+_centre);
-                newLine->push_back(_originalVertices[tri->_p3]+_centre);
-                newLine->push_back(_originalVertices[tri->_p1]+_centre);
-                _generatedLines.push_back(newLine);
-            }
-
-        }
-        osg::notify(osg::NOTICE)<<"  numZero "<<numZero<<std::endl;
-        osg::notify(osg::NOTICE)<<"  numOne "<<numOne<<std::endl;
-        osg::notify(osg::NOTICE)<<"  numTwo "<<numTwo<<std::endl;
-        osg::notify(osg::NOTICE)<<"  numMore "<<numMore<<std::endl;
-    }
+    void countMultipleIntersections();
         
     void connectIntersections(EdgeList& hitEdges)
     {
@@ -1956,7 +1955,78 @@ struct AzimIntersector
             }
             
             
-            double one_minus_r = 1.0f-r;
+            double one_minus_r = 1.0-r;
+
+            edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
+            edge->_intersectionVertex = v1*one_minus_r + v2*r;
+        }
+        
+        return true;
+    }
+};
+
+struct AzimPlaneIntersector
+{
+    AzimPlaneIntersector(TriangleIntersectOperator& tif, double azim):
+        _tif(tif)
+    {
+        _plane.set(cos(azim),-sin(azim),0.0,0.0);
+    }
+        
+    TriangleIntersectOperator& _tif;
+    osg::Plane _plane;
+
+    inline bool operator() (TriangleIntersectOperator::Edge* edge)
+    {
+        edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+
+        osg::Vec3& v1 = _tif._originalVertices[edge->_p1];
+        osg::Vec3& v2 = _tif._originalVertices[edge->_p2];
+
+        double d1 = _plane.distance(v1);
+        double d2 = _plane.distance(v2);
+
+        // if both points inside then disgard
+        if (d1<0.0 && d2<0.0) return false;
+        
+        // if both points outside then disgard
+        if (d1>0.0 && d2>0.0) return false;
+        
+        if (d1==0.0)
+        {
+            if (d2==0.0)
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::BOTH_ENDS;
+            }
+            else
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::POINT_1;
+            }
+        }
+        else if (d2==0.0)
+        {
+            edge->_intersectionType = TriangleIntersectOperator::Edge::POINT_2;
+        }
+        else
+        {
+
+            double div = d2-d1;
+            if (div==0.0) 
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+
+            double r =  -d1 / div;
+            if (r<0.0 || r>1.0)
+            {
+                edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
+                return false;
+            }
+
+            osg::notify(osg::NOTICE)<<"r = "<<r<<std::endl;
+            
+            double one_minus_r = 1.0-r;
 
             edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
             edge->_intersectionVertex = v1*one_minus_r + v2*r;
@@ -2130,6 +2200,73 @@ struct RadiusIntersector
     }
 };
 
+
+void TriangleIntersectOperator::countMultipleIntersections()
+{
+    osg::notify(osg::NOTICE)<<"countMultipleIntersections("<<std::endl;
+    int numZero = 0;
+    int numOne = 0;
+    int numTwo = 0;
+    int numMore = 0;
+
+    for(TriangleArray::iterator itr = _triangles.begin();
+        itr != _triangles.end();
+        ++itr)
+    {
+        Triangle* tri = itr->get();
+        RegionCounter rc;
+        rc.add(_regions[tri->_p1]);
+        rc.add(_regions[tri->_p2]);
+        rc.add(_regions[tri->_p3]);
+        int numIntersections = rc.numberOfIntersectingSurfaces();
+        if (numIntersections==0) ++numZero;
+        else if (numIntersections==1) ++numOne;
+        else if (numIntersections==2) ++numTwo;
+        else if (numIntersections>=3) ++numMore;
+
+        if (numIntersections>=2)
+        {
+            buildEdges(tri);
+
+            osg::notify(osg::NOTICE)<<"Testing Polygon with numIntersections = "<<numIntersections<<std::endl;
+            Polygon polygon(tri);
+            unsigned int numIntersections=0;
+            unsigned int localIntersections=0;
+            bool singleIntersectFound = false;
+            localIntersections = polygon.computeIntersections(RadiusIntersector(*this));
+            numIntersections += localIntersections;
+            if (localIntersections==1)  singleIntersectFound = true;
+            localIntersections = polygon.computeIntersections(AzimPlaneIntersector(*this,_azMin));
+            numIntersections += localIntersections;
+            if (localIntersections==1)  singleIntersectFound = true;
+            localIntersections = polygon.computeIntersections(AzimPlaneIntersector(*this,_azMax));
+            numIntersections += localIntersections;
+            if (localIntersections==1)  singleIntersectFound = true;
+            localIntersections = polygon.computeIntersections(ElevationIntersector(*this,_elevMin));
+            numIntersections += localIntersections;
+            if (localIntersections==1)  singleIntersectFound = true;
+            localIntersections = polygon.computeIntersections(ElevationIntersector(*this,_elevMax));
+            numIntersections += localIntersections;
+            if (localIntersections==1)  singleIntersectFound = true;
+
+            if (numIntersections>0 && !singleIntersectFound)
+            {
+                osg::Vec3Array* newLine = new osg::Vec3Array;
+                newLine->push_back(_originalVertices[tri->_p1]+_centre);
+                newLine->push_back(_originalVertices[tri->_p2]+_centre);
+                newLine->push_back(_originalVertices[tri->_p3]+_centre);
+                newLine->push_back(_originalVertices[tri->_p1]+_centre);
+                _generatedLines.push_back(newLine);
+            }
+        }
+
+    }
+    osg::notify(osg::NOTICE)<<"  numZero "<<numZero<<std::endl;
+    osg::notify(osg::NOTICE)<<"  numOne "<<numOne<<std::endl;
+    osg::notify(osg::NOTICE)<<"  numTwo "<<numTwo<<std::endl;
+    osg::notify(osg::NOTICE)<<"  numMore "<<numMore<<std::endl;
+
+}
 
 SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable)
 {

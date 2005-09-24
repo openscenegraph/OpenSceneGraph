@@ -187,9 +187,14 @@ class VertexListRecord : public PrimNodeRecord
 
 typedef struct     MorphVertexListTag
 {
+    struct VertexPair
+    {
+        uint32      dwOffset0;      // Byte offset into vertex palette of the 0% vertex
+        uint32      dwOffset100;    // Byte offset into vertex palette of the 100% vertex
+    };
+
     SRecHeader    RecHeader;
-    uint32      dwOffset0;      // Byte offset into vertex palette of the 0% vertex
-    uint32      dwOffset100;    // Byte offset into vertex palette of the 100% vertex
+    VertexPair list[1];
 } SMorphVertexList;
 
 
@@ -209,6 +214,7 @@ class MorphVertexListRecord : public PrimNodeRecord
         virtual SMorphVertexList* getData() const { return (SMorphVertexList*)_pData; }
 
         int numberOfVertices();
+        int getVertexPoolOffset(int index);
 
     protected:
         virtual ~MorphVertexListRecord();

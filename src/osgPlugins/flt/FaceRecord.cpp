@@ -30,9 +30,18 @@ int FaceRecord::numberOfVertices()
 {
     for (int n=0; n < getNumChildren(); n++)
     {
-        VertexListRecord* pSVertexList = (VertexListRecord*)getChild(n);
-        if (pSVertexList && pSVertexList->isOfType(VERTEX_LIST_OP))
-            return pSVertexList->numberOfVertices();
+        Record* child = getChild(n);
+        if (!child) continue;
+
+        if (child->isOfType(VERTEX_LIST_OP))
+        {
+            return ((VertexListRecord*)child)->numberOfVertices();
+        }
+        else if (child->isOfType(MORPH_VERTEX_LIST_OP))
+        {
+            return ((MorphVertexListRecord*)child)->numberOfVertices();
+        }
+
     }
 
     return 0;
@@ -43,9 +52,17 @@ int FaceRecord::getVertexPoolOffset(int index)
 {
     for (int n=0; n < getNumChildren(); n++)
     {
-        VertexListRecord* pSVertexList = (VertexListRecord*)getChild(n);
-        if (pSVertexList && pSVertexList->isOfType(VERTEX_LIST_OP))
-            return pSVertexList->getVertexPoolOffset(index);
+        Record* child = getChild(n);
+        if (!child) continue;
+
+        if (child->isOfType(VERTEX_LIST_OP))
+        {
+            return ((VertexListRecord*)child)->getVertexPoolOffset(index);
+        }
+        else if (child->isOfType(MORPH_VERTEX_LIST_OP))
+        {
+            return ((MorphVertexListRecord*)child)->getVertexPoolOffset(index);
+        }
     }
 
     return 0;
@@ -188,9 +205,29 @@ int MorphVertexListRecord::numberOfVertices()
 }
 
 
+int MorphVertexListRecord::getVertexPoolOffset(int index)
+{
+    MorphVertexListTag *pSMorphVertexList = (MorphVertexListTag*)getData();
+
+    if ((index >= 0) && (index < numberOfVertices()))
+    {
+        return pSMorphVertexList->list[index].dwOffset0;
+    }
+
+    return 0;
+}
+
+
 void MorphVertexListRecord::endian()
 {
-    //    SMorphVertexList *pSMorpVertexList = (SMorphVertexList*)getData();
+    SMorphVertexList *pSMorpVertexList = (SMorphVertexList*)getData();
+    int  nNumberOfVertices = numberOfVertices();
+
+    for(int i=0; i < nNumberOfVertices; i++)
+    {
+        ENDIAN( pSMorpVertexList->list[i].dwOffset0 );
+        ENDIAN( pSMorpVertexList->list[i].dwOffset100 );
+    }
 }
 
 

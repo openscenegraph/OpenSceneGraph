@@ -995,8 +995,6 @@ osg::Group* ConvertFromFLT::visitLightSource(osg::Group& osgParent, LightSourceR
     osg::LightSource* lightSource = new osg::LightSource();
 
     osg::Light* pLight = pLightPool->getLight( pLSource->diIndex );
-    if ( pLight==NULL ) return NULL;
-    
     osg::Light* light = new osg::Light( *pLight );
 
     light->setPosition( osg::Vec4(
@@ -2037,6 +2035,10 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, osg::Group& osgParent, 
             vertices += visitVertexList(pBuilder, (VertexListRecord*)child);
             break;
         
+        case MORPH_VERTEX_LIST_OP:
+            vertices += visitMorphVertexList(pBuilder, (MorphVertexListRecord*)child);
+            break;
+        
         case LOCAL_VERTEX_POOL_OP:
             vertices += visitLocalVertexPool(pBuilder, (LocalVertexPoolRecord *)child);
             break;
@@ -2142,6 +2144,66 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, osg::Group& osgParent, 
 
 
 int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
+{
+    DynGeoSet* dgset = pBuilder->getDynGeoSet();
+    int vertices = rec->numberOfVertices();
+
+    DPRINT(stderr, ">>> visitVertexList...%d vertices\n", vertices) ;
+    // Add vertices to GeoSetBuilder
+    for (int j=0; j < vertices; j++)
+    {
+        Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(j));
+        if (vertex)
+            addVertex(pBuilder, vertex);
+    }
+
+    // Visit ancillary records
+    for(int i=0; i < rec->getNumChildren(); i++)
+    {
+        Record* child = rec->getChild(i);
+    CERR << "OPCODE: " << child->getOpcode() << "\n";
+        
+        if (!child->isAncillaryRecord())
+            break;
+
+    switch (child->getOpcode())
+    {
+        case UV_LIST_OP:
+        {
+            UVListRecord* uvr =
+            dynamic_cast<UVListRecord*>(child);
+            assert( uvr );
+            addUVList( dgset, uvr );
+        }
+        break;
+        case MULTI_TEXTURE_OP:
+        {
+            CERR2 << "MULTI_TEXTURE_OP in visitVertexList\n";
+            MultiTextureRecord* mtr =
+            dynamic_cast<MultiTextureRecord*>(child);
+            assert( mtr );
+            addMultiTexture( dgset, mtr );
+        }
+        break;
+        default:
+
+        #ifdef _DEBUG
+
+        osg::notify( osg::NOTICE )
+            << "flt::ConvertFromFLT::visitVertexList: "
+            << "Unhandled opcode: " << child->getOpcode() << "\n";
+
+        #endif
+
+        break;
+    }
+    }
+
+    return vertices;
+}
+
+
+int ConvertFromFLT::visitMorphVertexList(GeoSetBuilder* pBuilder, MorphVertexListRecord* rec)
 {
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
     int vertices = rec->numberOfVertices();

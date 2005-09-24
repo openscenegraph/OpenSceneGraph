@@ -52,6 +52,7 @@ class LightPointRecord;
 class LightPointIndexRecord;
 class LightPointSystemRecord;
 class VertexListRecord;
+class MorphVertexListRecord;
 class LocalVertexPoolRecord;
 class LongIDRecord;
 class CommentRecord;
@@ -167,6 +168,7 @@ class ConvertFromFLT
         void visitLightPointIndex(osg::Group& osgParent, LightPointIndexRecord* rec);
         osg::Group* visitLightPointSystem(osg::Group& osgParent, LightPointSystemRecord* rec);
         int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
+        int  visitMorphVertexList(GeoSetBuilder* pParent, MorphVertexListRecord* rec);
         int  visitLocalVertexPool(GeoSetBuilder* pBuilder, LocalVertexPoolRecord* rec);
 
 

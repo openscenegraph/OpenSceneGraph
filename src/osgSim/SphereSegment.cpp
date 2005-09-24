@@ -1173,7 +1173,12 @@ struct TriangleIntersectOperator
             BOTH_ENDS
         };
 
-        Edge(unsigned int p1, unsigned int p2)
+        Edge(unsigned int p1, unsigned int p2, bool intersectionEdge=false):
+            _intersectionType(NO_INTERSECTION),
+            _intersectionVertexIndex(0),
+            _p1Outside(false),
+            _p2Outside(false),
+            _intersectionEdge(intersectionEdge)
         {
             if (p1>p2)
             {
@@ -1206,15 +1211,22 @@ struct TriangleIntersectOperator
             if (itr!=_toTraverse.end()) _toTraverse.erase(itr);
         }
 
+
+        bool completlyOutside() const { return _p1Outside && _p2Outside; }
+        
         unsigned int _p1;
         unsigned int _p2;
         
         TriangleList _triangles;
 
-        // intersection information        
+        // intersection information
         IntersectionType    _intersectionType;
         osg::Vec3           _intersectionVertex;
+        unsigned int        _intersectionVertexIndex;
+        bool                _p1Outside;
+        bool                _p2Outside;
         TriangleList        _toTraverse;
+        bool                _intersectionEdge;
     };
 
     typedef std::list< osg::ref_ptr<Edge> >                     EdgeList;
@@ -1283,13 +1295,17 @@ struct TriangleIntersectOperator
     {
         Polygon(Triangle* tri)
         {
+            osg::notify(osg::NOTICE)<<"Polgyon"<<std::endl;
             if (tri->_e1) _edges.push_back(tri->_e1);
+            else osg::notify(osg::NOTICE)<<"  Missing edge"<<std::endl;
             if (tri->_e2) _edges.push_back(tri->_e2);
+            else osg::notify(osg::NOTICE)<<"  Missing edge"<<std::endl;
             if (tri->_e3) _edges.push_back(tri->_e3);
+            else osg::notify(osg::NOTICE)<<"  Missing edge"<<std::endl;
         }
 
         template<class I>
-        unsigned int computeIntersections(I intersector)
+        unsigned int computeHitEdges(TriangleIntersectOperator& tio, I intersector)
         {
             // collect all the intersecting edges
             EdgeList hitEdges;
@@ -1298,16 +1314,189 @@ struct TriangleIntersectOperator
                 ++itr)
             {
                 Edge* edge = const_cast<Edge*>(itr->get());
-                if (intersector(edge))
+                if (intersector(edge)) hitEdges.push_back(edge);
+            }
+            
+            if (hitEdges.empty()) return 0;
+            
+            
+            unsigned int numHitEdges = hitEdges.size();
+            
+            EdgeList newEdgeList;
+            
+            osg::notify(osg::NOTICE)<<"Num Hit edges"<<hitEdges.size()<<std::endl;
+            while (hitEdges.size()>=2)
+            {
+                Edge* edge1 = hitEdges.front().get(); hitEdges.pop_front();
+                int p1 = tio._originalVertices.size();
+                edge1->_intersectionVertexIndex = p1;
+                tio._originalVertices.push_back(edge1->_intersectionVertex);
+                
+                Edge* edge2 = hitEdges.front().get(); hitEdges.pop_front();
+                int p2 = tio._originalVertices.size();
+                edge2->_intersectionVertexIndex = p2;
+                tio._originalVertices.push_back(edge2->_intersectionVertex);
+                
+                newEdgeList.push_back(new Edge(p1,p2,true));
+            }
+            
+            for(EdgeList::iterator itr = _edges.begin();
+                itr != _edges.end();
+                ++itr)
+            {
+                Edge* edge = const_cast<Edge*>(itr->get());
+                if (!(edge->completlyOutside()))
                 {
-                    hitEdges.push_back(edge);
+                    if (edge->_intersectionType==Edge::NO_INTERSECTION)
+                    {
+                        newEdgeList.push_back(edge);
+                    }
+                    else
+                    {
+                        if (!edge->_p1Outside)
+                        {
+                            newEdgeList.push_back(new Edge(edge->_intersectionVertexIndex, edge->_p1, edge->_intersectionEdge));
+                        }
+                        else if (!edge->_p2Outside)
+                        {
+                            newEdgeList.push_back(new Edge(edge->_intersectionVertexIndex, edge->_p2, edge->_intersectionEdge));
+                        }
+                        else
+                        {
+                            osg::notify(osg::NOTICE)<<"Problem"<<std::endl;
+                        }
+                        
+                    }
+                    
                 }
             }
-            osg::notify(osg::NOTICE)<<"Got intersection with edges "<<hitEdges.size()<<" out of "<<_edges.size()<<std::endl;
             
-            return hitEdges.size();
+            _edges.swap(newEdgeList);
+            
+            return numHitEdges;
         }
 
+        bool createLine(TriangleIntersectOperator& tio, SphereSegment::LineList& generatedLines) const
+        {
+            
+            osg::notify(osg::NOTICE)<<"createLine "<<_edges.size()<<std::endl;
+            typedef std::vector< osg::ref_ptr<Edge> > EdgeVector;
+            EdgeVector edges;
+            for(EdgeList::const_iterator itr = _edges.begin();
+                itr != _edges.end();
+                ++itr)
+            {
+                if ((*itr)->_intersectionEdge)
+                {
+                    osg::notify(osg::NOTICE)<<"  accepting edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
+                    edges.push_back(*itr);
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"  disgarding edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
+                }
+            
+            
+            }
+            
+            if (edges.empty()) return false;
+            
+            // find open edge.
+            unsigned int i=0;
+            unsigned int numMatchesFor_p1=0;
+            unsigned int numMatchesFor_p2=0;
+            for(i=0; i<edges.size()-1; ++i)
+            {
+                numMatchesFor_p1=0;
+                numMatchesFor_p2=0;
+                for(unsigned j=i+1; j<edges.size(); ++j)
+                {
+                    if ((edges[i]->_p1 == edges[j]->_p1) || (edges[i]->_p1 == edges[j]->_p2))
+                    {
+                        ++numMatchesFor_p1;
+                    }
+                    
+                    if ((edges[i]->_p2 == edges[j]->_p1) || (edges[i]->_p2 == edges[j]->_p2))
+                    {
+                        ++numMatchesFor_p2;
+                    }
+                }
+                if (numMatchesFor_p1==0) break;
+                if (numMatchesFor_p2==0) break;
+            }
+
+            // get first edge.
+            osg::ref_ptr<Edge> edge = edges[i];
+            edges.erase(edges.begin()+i);
+
+            // start a new line, add it to the list of lines.            
+            osg::Vec3Array* newLine = new osg::Vec3Array;
+            generatedLines.push_back(newLine);
+
+            unsigned int activePoint = 0;
+            if (numMatchesFor_p1==0)
+            {
+                newLine->push_back(tio._originalVertices[edge->_p1]+tio._centre);
+                newLine->push_back(tio._originalVertices[edge->_p2]+tio._centre);
+                activePoint = edge->_p2;
+            }
+            else
+            {
+                newLine->push_back(tio._originalVertices[edge->_p2]+tio._centre);
+                newLine->push_back(tio._originalVertices[edge->_p1]+tio._centre);
+                activePoint = edge->_p1;
+            }
+
+            osg::notify(osg::NOTICE)<<"Start with "<<edge->_p1<<" "<<edge->_p2<<"  activePoint="<<activePoint<<std::endl;
+
+            while (!edges.empty())
+            {
+                
+                bool intersectionFound = false;
+                for(EdgeVector::iterator itr = edges.begin();
+                    itr != edges.end() && !intersectionFound;
+                    ++itr)
+                {
+                    if ((*itr)->_p1 == activePoint)
+                    {
+
+                        activePoint = (*itr)->_p2;
+                        newLine->push_back(tio._originalVertices[activePoint]+tio._centre);
+
+                        osg::notify(osg::NOTICE)<<"A Found "<<(*itr)->_p1<<" "<<(*itr)->_p2<<"  activePoint="<<activePoint<<std::endl;
+
+                        edges.erase(itr);
+                        intersectionFound = true;
+                    }
+                    else if ((*itr)->_p2 == activePoint)
+                    {
+                        activePoint = (*itr)->_p1;
+                        newLine->push_back(tio._originalVertices[activePoint]+tio._centre);
+                        osg::notify(osg::NOTICE)<<"B Found "<<(*itr)->_p1<<" "<<(*itr)->_p2<<"  activePoint="<<activePoint<<std::endl;
+                        edges.erase(itr);
+                        intersectionFound = true;
+                    }
+                }
+                if (!intersectionFound)
+                {
+                    // start a new line, add it to the list of lines.            
+                    newLine = new osg::Vec3Array;
+                    generatedLines.push_back(newLine);
+
+                    osg::ref_ptr<Edge> edge = edges.front();
+                    edges.erase(edges.begin());
+
+                    newLine->push_back(tio._originalVertices[edge->_p1]+tio._centre);
+                    newLine->push_back(tio._originalVertices[edge->_p2]+tio._centre);
+                    activePoint = edge->_p2;
+
+                    osg::notify(osg::NOTICE)<<"*********** Problem 2 with "<<edge->_p1<<" "<<edge->_p2<<"  activePoint="<<activePoint<<std::endl;
+                }
+            }
+            
+            return true;
+        }        
+        
         EdgeList _edges;
 
     };
@@ -1699,15 +1888,7 @@ struct TriangleIntersectOperator
     
     Edge* addEdge(unsigned int p1, unsigned int p2, Triangle* tri)
     {
-        RegionCounter rc;
-        rc.add(_regions[p1]);
-        rc.add(_regions[p2]);
-
-#if 0 
-// the fact I have to comment this check out suggest that there is a problem elsewhere...       
-        Region::Classification classification = rc.overallClassification();
-        if (classification==Region::OUTSIDE || classification==Region::INSIDE) return 0;
-#endif        
+    
         osg::ref_ptr<Edge> edge = new Edge(p1, p2);
         EdgeSet::iterator itr = _edges.find(edge);
         if (itr==_edges.end())
@@ -1893,12 +2074,14 @@ bool computeQuadraticSolution(double a, double b, double c, double& s1, double& 
 
 struct AzimIntersector
 {
-    AzimIntersector(TriangleIntersectOperator& tif, double azim):
+    AzimIntersector(TriangleIntersectOperator& tif, double azim, bool lowerOutside):
         _tif(tif),
-        _azim(azim) {}
+        _azim(azim),
+        _lowerOutside(lowerOutside) {}
         
     TriangleIntersectOperator& _tif;
     double _azim;
+    bool _lowerOutside;
 
     inline bool operator() (TriangleIntersectOperator::Edge* edge)
     {
@@ -1912,6 +2095,9 @@ struct AzimIntersector
 
         double azim2 = atan2(v2.x(),v2.y());
         if (azim2<0.0) azim2 += 2.0*osg::PI;
+
+        edge->_p1Outside = _lowerOutside ? (azim1<_azim) : (azim1>_azim);
+        edge->_p2Outside = _lowerOutside ? (azim2<_azim) : (azim2>_azim);
 
         // if both points inside then disgard
         if (azim1<_azim && azim2<_azim) return false;
@@ -1967,14 +2153,16 @@ struct AzimIntersector
 
 struct AzimPlaneIntersector
 {
-    AzimPlaneIntersector(TriangleIntersectOperator& tif, double azim):
-        _tif(tif)
+    AzimPlaneIntersector(TriangleIntersectOperator& tif, double azim, bool lowerOutside):
+        _tif(tif),
+        _lowerOutside(lowerOutside)
     {
         _plane.set(cos(azim),-sin(azim),0.0,0.0);
     }
         
     TriangleIntersectOperator& _tif;
     osg::Plane _plane;
+    bool _lowerOutside;
 
     inline bool operator() (TriangleIntersectOperator::Edge* edge)
     {
@@ -1985,6 +2173,9 @@ struct AzimPlaneIntersector
 
         double d1 = _plane.distance(v1);
         double d2 = _plane.distance(v2);
+
+        edge->_p1Outside = _lowerOutside ? (d1<0.0) : (d1>0.0);
+        edge->_p2Outside = _lowerOutside ? (d2<0.0) : (d2>0.0);
 
         // if both points inside then disgard
         if (d1<0.0 && d2<0.0) return false;
@@ -2038,12 +2229,14 @@ struct AzimPlaneIntersector
 
 struct ElevationIntersector
 {
-    ElevationIntersector(TriangleIntersectOperator& tif, double elev):
+    ElevationIntersector(TriangleIntersectOperator& tif, double elev, bool lowerOutside):
         _tif(tif),
-        _elev(elev) {}
+        _elev(elev),
+        _lowerOutside(lowerOutside) {}
         
     TriangleIntersectOperator& _tif;
     double _elev;
+    bool _lowerOutside;
 
     inline bool operator() (TriangleIntersectOperator::Edge* edge)
     {
@@ -2057,6 +2250,9 @@ struct ElevationIntersector
 
         double length_xy2 = sqrt(v2.x()*v2.x() + v2.y()*v2.y());
         double elev2 = atan2(v2.z(),length_xy2);
+
+        edge->_p1Outside = _lowerOutside ? (elev1<_elev) : (elev1>_elev);
+        edge->_p2Outside = _lowerOutside ? (elev2<_elev) : (elev2>_elev);
 
         // if both points inside then disgard
         if (elev1<_elev && elev2<_elev) return false;
@@ -2138,6 +2334,9 @@ struct RadiusIntersector
         double radius1 = v1.length();
         double radius2 = v2.length();
 
+        edge->_p1Outside = radius1>_tif._radius;
+        edge->_p2Outside = radius2>_tif._radius;
+
         // if both points inside then disgard
         if (radius1<_tif._radius && radius2<_tif._radius) return false;
         
@@ -2194,6 +2393,7 @@ struct RadiusIntersector
             double one_minus_r = 1.0-r;
             edge->_intersectionType = TriangleIntersectOperator::Edge::MID_POINT;
             edge->_intersectionVertex = v1*one_minus_r + v2*r;
+            
         }
         
         return true;
@@ -2230,33 +2430,26 @@ void TriangleIntersectOperator::countMultipleIntersections()
 
             osg::notify(osg::NOTICE)<<"Testing Polygon with numIntersections = "<<numIntersections<<std::endl;
             Polygon polygon(tri);
-            unsigned int numIntersections=0;
-            unsigned int localIntersections=0;
-            bool singleIntersectFound = false;
-            localIntersections = polygon.computeIntersections(RadiusIntersector(*this));
-            numIntersections += localIntersections;
-            if (localIntersections==1)  singleIntersectFound = true;
-            localIntersections = polygon.computeIntersections(AzimPlaneIntersector(*this,_azMin));
-            numIntersections += localIntersections;
-            if (localIntersections==1)  singleIntersectFound = true;
-            localIntersections = polygon.computeIntersections(AzimPlaneIntersector(*this,_azMax));
-            numIntersections += localIntersections;
-            if (localIntersections==1)  singleIntersectFound = true;
-            localIntersections = polygon.computeIntersections(ElevationIntersector(*this,_elevMin));
-            numIntersections += localIntersections;
-            if (localIntersections==1)  singleIntersectFound = true;
-            localIntersections = polygon.computeIntersections(ElevationIntersector(*this,_elevMax));
-            numIntersections += localIntersections;
-            if (localIntersections==1)  singleIntersectFound = true;
+            numIntersections=0;
+            numIntersections += polygon.computeHitEdges(*this, RadiusIntersector(*this));
+            numIntersections += polygon.computeHitEdges(*this, AzimPlaneIntersector(*this,_azMin, true));
+            numIntersections += polygon.computeHitEdges(*this, AzimPlaneIntersector(*this,_azMax, false));
+            numIntersections += polygon.computeHitEdges(*this, ElevationIntersector(*this,_elevMin, true));
+            numIntersections += polygon.computeHitEdges(*this, ElevationIntersector(*this,_elevMax, false));
 
-            if (numIntersections>0 && !singleIntersectFound)
+            if (numIntersections>0)
             {
+#if 1           
+                polygon.createLine(*this, _generatedLines);
+#else            
+                osg::notify(osg::NOTICE)<<"Testing Polygon with numIntersections = "<<numIntersections<<std::endl;
                 osg::Vec3Array* newLine = new osg::Vec3Array;
                 newLine->push_back(_originalVertices[tri->_p1]+_centre);
                 newLine->push_back(_originalVertices[tri->_p2]+_centre);
                 newLine->push_back(_originalVertices[tri->_p3]+_centre);
                 newLine->push_back(_originalVertices[tri->_p1]+_centre);
                 _generatedLines.push_back(newLine);
+#endif                
             }
         }
 
@@ -2302,10 +2495,10 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif.buildEdges();
 
     tif.computeIntersections(RadiusIntersector(tif));
-    tif.computeIntersections(AzimIntersector(tif,_azMin));
-    tif.computeIntersections(AzimIntersector(tif,_azMax));
-    tif.computeIntersections(ElevationIntersector(tif,_elevMin));
-    tif.computeIntersections(ElevationIntersector(tif,_elevMax));
+    tif.computeIntersections(AzimIntersector(tif,_azMin, true));
+    tif.computeIntersections(AzimIntersector(tif,_azMax, false));
+    tif.computeIntersections(ElevationIntersector(tif,_elevMin, true));
+    tif.computeIntersections(ElevationIntersector(tif,_elevMax, false));
  
     tif.countMultipleIntersections();
  

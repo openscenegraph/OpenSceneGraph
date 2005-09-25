@@ -1158,7 +1158,7 @@ struct TriangleIntersectOperator
         _numInside(0),
         _numIntersecting(0) {}
 
-    class Triangle;
+    struct Triangle;
 
     struct Edge : public osg::Referenced
     {
@@ -1524,7 +1524,7 @@ struct TriangleIntersectOperator
             
             double rad2 = vertex.length2();
             double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());        
-            double elevation = atan2(vertex.z(),length_xy);
+            double elevation = atan2((double)vertex.z(),length_xy);
             double azim = atan2(vertex.x(),vertex.y());
             if (azim<0.0) azim += 2.0*osg::PI;
 

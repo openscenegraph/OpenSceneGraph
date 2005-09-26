@@ -53,7 +53,7 @@ void OverlayNode::init()
         texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
         texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-        texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,0.0f));
         _texture = texture;
     }   
 
@@ -63,7 +63,7 @@ void OverlayNode::init()
         // create the camera
          _camera = new osg::CameraNode;
          
-        _camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
         // set viewport
         _camera->setViewport(0,0,tex_width,tex_height);

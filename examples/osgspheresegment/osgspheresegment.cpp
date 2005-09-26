@@ -174,7 +174,15 @@ osg::Group* createOverlay(const osg::Vec3& center, float radius)
         }
         
         geom->setVertexArray(vertices);
+
+        osg::Vec4ubArray& color = *(new osg::Vec4ubArray(1));
+        color[0].set(0,0,0,255);
+        geom->setColorArray(&color);
+        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
         geom->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,vertices->getNumElements())); 
+
+        geom->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(geom);
@@ -365,6 +373,8 @@ void build_world(osg::Group *root)
 
 
     osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
+    
+    overlayNode->getOrCreateStateSet()->setTextureAttribute(1, new osg::TexEnv(osg::TexEnv::DECAL));
 
     const osg::BoundingSphere& bs = terrainGeode->getBound();
     osg::Group* overlaySubgraph = createOverlay(bs.center(), bs.radius()*0.5f);

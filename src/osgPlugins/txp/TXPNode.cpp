@@ -2,6 +2,7 @@
 #include <osg/BoundingBox>
 #include <osg/PagedLOD>
 #include <osg/Timer>
+#include <osg/MatrixTransform>
 #include <osgUtil/CullVisitor>
 
 #include <iostream>
@@ -51,8 +52,8 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
 {
     switch(nv.getVisitorType())
     {
-    case osg::NodeVisitor::CULL_VISITOR:
-    {
+      case osg::NodeVisitor::CULL_VISITOR:
+      {
                 
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (cv)
@@ -91,11 +92,11 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
     
         updateEye(nv);
         break;
-    }
-    case osg::NodeVisitor::UPDATE_VISITOR:
+      }
+      case osg::NodeVisitor::UPDATE_VISITOR:
         updateSceneGraph();
         break;
-    default:
+      default:
         break;
     }
     Group::traverse(nv);
@@ -244,9 +245,28 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
     pagedLOD->setRadius(info.radius);
     pagedLOD->setNumChildrenThatCannotBeExpired(1);
 
-    _nodesToAdd.push_back(pagedLOD);
-    
-    return pagedLOD;
+    const trpgHeader* header = _archive->GetHeader();
+    trpgHeader::trpgTileType tileType;
+    header->GetTileOriginType(tileType);
+    if(tileType == trpgHeader::TileLocal)
+    {
+        // add in MatrixTransform node with Matrixd offsets
+        // get offsets from tile.bbox
+        osg::Vec3d sw(info.bbox._min);
+        sw[2] = 0.0;
+        osg::Matrix offset;
+        offset.setTrans(sw);
+        osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
+        pagedLOD->setCenter(info.center - sw);
+        tform->addChild(pagedLOD);
+        _nodesToAdd.push_back(tform);
+        return tform;
+    }
+    else
+    {
+        _nodesToAdd.push_back(pagedLOD);
+        return pagedLOD;
+    }
 }
 
 void TXPNode::updateSceneGraph()

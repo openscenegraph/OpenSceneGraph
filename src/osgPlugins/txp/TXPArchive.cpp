@@ -49,6 +49,18 @@ TXPArchive::~TXPArchive()
 }
 
 
+void  TXPArchive::getExtents(osg::BoundingBox& extents)
+{
+    TileInfo sw, ne;
+    trpg2iPoint tileExtents;
+
+    this->GetHeader()->GetLodSize(0, tileExtents);
+    this->getTileInfo(0, 0, 0, sw);
+    this->getTileInfo(tileExtents.x-1, tileExtents.y-1, 0, ne);
+    extents.set(sw.bbox._min, sw.bbox._max);
+    extents.expandBy(ne.bbox);
+}
+    
 
 bool TXPArchive::openFile(const std::string& archiveName)
 {

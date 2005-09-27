@@ -103,9 +103,9 @@ public:
         osg::Vec3           center;
         double              minRange;
         double              maxRange;
-        double                lod0Range;
+        double              lod0Range;
         float               radius;
-        osg::Vec3            size;
+        osg::Vec3           size;
         osg::BoundingBox    bbox;
     };
     bool getTileInfo(int x, int y, int lod, TileInfo& info);
@@ -127,10 +127,11 @@ public:
     }
     
     // Returns the extents of the archive
-    inline void getExtents(osg::BoundingBox& extents)
-    {
-        extents.set(_swExtents.x,_swExtents.y,0.0f,_neExtents.x,_neExtents.y,0.0f);
-    }
+    // FIXME - Needs to change for databases that aren't flat-earth
+    void getExtents(osg::BoundingBox& extents);
+//     {
+//         extents.set(_swExtents.x,_swExtents.y,0.0f,_neExtents.x,_neExtents.y,0.0f);
+//     }
     
     // Returns the origin of the archive
     inline void getOrigin(double& x, double& y)

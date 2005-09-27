@@ -1122,7 +1122,6 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     osg::ref_ptr<osg::Geometry> geometry;
     
     // Get texture coordinates
-    ;
     int num_tex;
     geom.GetNumTexCoordSets(num_tex);
     std::vector< osg::ref_ptr<osg::Vec2Array> > tex_coords(num_tex);

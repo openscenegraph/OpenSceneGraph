@@ -237,6 +237,13 @@ public:
     /** Compute the interesection lines between specified drawable and this sphere segment.*/
     LineList computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable);
 
+    /** Compute the interesection lines between subgraph and this sphere segment.*/
+    osg::Node* computeIntersectionSubgraph(const osg::Matrixd& matrix, osg::Node* subgraph);
+
+    /** Compute the interesection lines between specified drawable and this sphere segment.*/
+    osg::Node* computeIntersectionSubgraph(const osg::Matrixd& matrix, osg::Drawable* drawable);
+
+
 private:
 
     void init();    // Shared constructor code, generates the drawables

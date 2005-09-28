@@ -55,17 +55,17 @@ class OSG_EXPORT LOD : public Group
         typedef std::pair<float,float>  MinMaxPair;
         typedef std::vector<MinMaxPair> RangeList;
       
-        /** Modes which control how the center of object should be determined when computed which child is active.*/
+        /** Modes which control how the center of object should be determined when computing which child is active.*/
         enum CenterMode
         {
             USE_BOUNDING_SPHERE_CENTER,
             USER_DEFINED_CENTER
         };
 
-        /** Set how the center of object should be determined when computed which child is active.*/
+        /** Set how the center of object should be determined when computing which child is active.*/
         void setCenterMode(CenterMode mode) { _centerMode=mode; }
 
-        /** Get how the center of object should be determined when computed which child is active.*/
+        /** Get how the center of object should be determined when computing which child is active.*/
         CenterMode getCenterMode() const { return _centerMode; }
 
         /** Sets the object-space point which defines the center of the osg::LOD.  

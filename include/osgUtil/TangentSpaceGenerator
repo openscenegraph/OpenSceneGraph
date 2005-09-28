@@ -40,7 +40,7 @@ public:
     TangentSpaceGenerator();
     TangentSpaceGenerator(const TangentSpaceGenerator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-    void generate(osg::Geometry *geo, int normal_map_tex_unit = 0);
+    void generate(osg::Geometry *geo, int normal_map_tex_unit = 0, bool use_indices = false);
 
     inline osg::Vec4Array *getTangentArray()               { return T_.get(); }
     inline const osg::Vec4Array *getTangentArray() const   { return T_.get(); }
@@ -55,18 +55,71 @@ public:
     inline void setBinormalArray(osg::Vec4Array *array)    { B_ = array; }
 
     inline osg::IndexArray *getIndices() { return indices_.get(); }
+
 protected:
+
     virtual ~TangentSpaceGenerator() {}
     TangentSpaceGenerator &operator=(const TangentSpaceGenerator &) { return *this; }
 
-    void compute_basis_vectors(osg::PrimitiveSet *pset,
-                               const osg::Array *vx,
-                               const osg::Array *nx,
-                               const osg::Array *tx,
-                               const osg::IndexArray *vix,
-                               const osg::IndexArray *nix,
-                               const osg::IndexArray *tix,
-                               int iA, int iB, int iC);
+    // Base class for computing basis vectors
+    class BasisVectorsComputer : public osg::Referenced
+    {
+    public:
+        explicit BasisVectorsComputer(TangentSpaceGenerator* base) : base_( base ) {}
+
+        virtual void compute(osg::PrimitiveSet *pset,
+                             const osg::Array *vx,
+                             const osg::Array *nx,
+                             const osg::Array *tx,
+                             const osg::IndexArray *vix,
+                             const osg::IndexArray *nix,
+                             const osg::IndexArray *tix,
+                             int iA, int iB, int iC) = 0;
+
+    protected:
+        virtual ~BasisVectorsComputer() {}
+        BasisVectorsComputer(const TangentSpaceGenerator &copy, const osg::CopyOp &copyop);
+
+        TangentSpaceGenerator*  base_;                    
+    };
+
+    // Class for computing basis vectors without using indices
+    class VectorsComputerNoIndices : public BasisVectorsComputer
+    {
+    public:
+        explicit VectorsComputerNoIndices(TangentSpaceGenerator* base) : BasisVectorsComputer( base ) {}
+
+        void compute(osg::PrimitiveSet *pset,
+                     const osg::Array *vx,
+                     const osg::Array *nx,
+                     const osg::Array *tx,
+                     const osg::IndexArray *vix,
+                     const osg::IndexArray *nix,
+                     const osg::IndexArray *tix,
+                     int iA, int iB, int iC);
+
+    protected:
+        virtual ~VectorsComputerNoIndices() {}
+    };
+
+    // Class for computing basis vectors using indices
+    class VectorsComputerUsingIndices : public BasisVectorsComputer
+    {
+    public:
+        explicit VectorsComputerUsingIndices(TangentSpaceGenerator* base) : BasisVectorsComputer( base ) {}
+
+        void compute(osg::PrimitiveSet *pset,
+                     const osg::Array *vx,
+                     const osg::Array *nx,
+                     const osg::Array *tx,
+                     const osg::IndexArray *vix,
+                     const osg::IndexArray *nix,
+                     const osg::IndexArray *tix,
+                     int iA, int iB, int iC);
+
+    protected:
+        virtual ~VectorsComputerUsingIndices() {}
+    };
 
 private:
     osg::ref_ptr<osg::Vec4Array> T_;

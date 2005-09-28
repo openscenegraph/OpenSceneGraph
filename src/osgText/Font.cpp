@@ -21,6 +21,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 #include <osg/GLU>
 
 using namespace osgText;
@@ -60,6 +61,15 @@ std::string findFontFile(const std::string& str)
     filename = osgDB::findFileInPath(str,s_FontFilePath);
     if (!filename.empty()) return filename;
 
+    // Try filename without pathname, if it has a path
+    filename = osgDB::getSimpleFileName(str);
+    if(filename!=str)
+    {
+        filename = osgDB::findFileInPath(filename,s_FontFilePath);
+        if (!filename.empty()) return filename;
+    }
+
+    // Not found, return empty string
     osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
     return std::string();
 }

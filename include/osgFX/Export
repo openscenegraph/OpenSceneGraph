@@ -16,7 +16,9 @@
 #define OSGFX_EXPORT_
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-    #  ifdef OSGFX_LIBRARY
+    #  if defined( _LIB ) || defined( USE_STATIC )
+    #    define OSGFX_EXPORT
+    #  elif defined( OSGFX_LIBRARY )
     #    define OSGFX_EXPORT   __declspec(dllexport)
     #  else
     #    define OSGFX_EXPORT   __declspec(dllimport)

@@ -10,12 +10,52 @@
 */
 
 #include <osgDB/ReadFile>
-#include <osgDB/WriteFile>
 #include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier>
-#include <osgUtil/TriStripVisitor>
-#include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
+
+
+class KeyboardEventHandler : public osgGA::GUIEventHandler
+{
+public:
+    
+    KeyboardEventHandler(unsigned int& flag) : _flag(flag)
+    {}
+    
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+    {
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                if (ea.getKey()=='n')
+                {
+                    _flag = 1;
+                    return true;
+                }
+                if (ea.getKey()=='p')
+                {
+                    _flag = 2;
+                    return true;
+                }
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+
+    virtual void accept(osgGA::GUIEventHandlerVisitor& v)
+    {
+        v.visit(*this);
+    }
+
+private:
+
+    unsigned int& _flag;
+};
+
 
 int main( int argc, char **argv )
 {
@@ -50,8 +90,6 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    std::string outputFileName;
-    while (arguments.read("-o",outputFileName)) {}
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -85,45 +123,30 @@ int main( int argc, char **argv )
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
-        return 1;
     }
 
-    osg::Timer_t end_load_tick = osg::Timer::instance()->tick();
+    osg::Timer_t end_tick = osg::Timer::instance()->tick();
 
-    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_load_tick)<<std::endl;
+    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
     osgUtil::Simplifier simplifier(sampleRatio);
-    loadedModel->accept(simplifier);
+    simplifier.setSampleRatio(1.0f);
+    simplifier.setMaximumError(0.4f);
+    
+    //loadedModel->accept(simplifier);
 
-    osg::Timer_t end_simplifier_tick = osg::Timer::instance()->tick();
-
-    std::cout << "Time to simplify = "<<osg::Timer::instance()->delta_s(end_load_tick, end_simplifier_tick)<<std::endl;
-
-    osgUtil::TriStripVisitor tsv;
-    tsv.setMinStripSize(3);
-    loadedModel->accept(tsv);
-    tsv.stripify();
-
-    osg::Timer_t end_tristrip_tick = osg::Timer::instance()->tick();
-
-    std::cout << "Time to tri strip = "<<osg::Timer::instance()->delta_s(end_simplifier_tick, end_tristrip_tick)<<std::endl;
-
-    // run optimization over the scene graph
-    osgUtil::Optimizer optimzer;
-    optimzer.optimize(loadedModel.get());
-
-    if (!outputFileName.empty())
-    {
-        std::cout << "Writing out scene graph as '" << outputFileName << "'"<<std::endl;
-        osgDB::writeNodeFile(*loadedModel,outputFileName);
-        return 0;
-    }
+    unsigned int keyFlag = 0;
+    viewer.getEventHandlerList().push_front(new KeyboardEventHandler(keyFlag));
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
 
     // create the windows and run the threads.
     viewer.realize();
+
+    float multiplier = 0.99f;
+    float minRatio = 0.00f;
+    float ratio = 0.5f;
 
     while( !viewer.done() )
     {
@@ -136,7 +159,20 @@ int main( int argc, char **argv )
          
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
-        
+    
+        if (keyFlag == 1 || keyFlag == 2)
+        {
+            if (keyFlag == 1) ratio *= multiplier;
+            if (keyFlag == 2) ratio /= multiplier;
+            if (ratio>1.0f) ratio=1.0f;
+            if (ratio<minRatio) ratio=minRatio;
+            
+            simplifier.setSampleRatio(ratio);
+            osg::ref_ptr<osg::Node> root = (osg::Node*)loadedModel->clone(osg::CopyOp::DEEP_COPY_ALL);
+            root->accept(simplifier);
+            viewer.setSceneData(root.get());
+            keyFlag = 0;
+        }
     }
     
     // wait for all cull and draw threads to complete before exit.

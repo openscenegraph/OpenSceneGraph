@@ -36,8 +36,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
         void setMaximumError(float error) { _maximumError = error; }
         float getMaximumError() const { return _maximumError; }
-            
-
+        
         class ContinueSimplificationCallback : public osg::Referenced
         {
             public:

@@ -24,7 +24,6 @@
 
 using namespace osgUtil;
 
-
 struct dereference_less
 {
     template<class T, class U>
@@ -417,7 +416,7 @@ public:
             
             osg::Vec3 new_normal = (p2->_vertex - p1->_vertex) ^ (p3->_vertex - p2->_vertex);
             new_normal.normalize();
-            
+
             float result = 1.0f - (new_normal.x() * _plane[0] + new_normal.y() * _plane[1] + new_normal.z() * _plane[2]);
             return result;
         }
@@ -724,16 +723,17 @@ public:
         //if (edge->_triangles.size()<2) return false;
         //if (edge->_triangles.size()>2) return false;
 
+#ifdef ORIGIANAL_CODE
         if (edge->getMaxNormalDeviationOnEdgeCollapse()>1.0)
         {
-//            osg::notify(osg::NOTICE)<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
-            return false;
+            osg::notify(osg::NOTICE)<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
+           return false;
         }
         else
         {
             //osg::notify(osg::NOTICE)<<"collapseEdge("<<edge<<") edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
         }
-
+#endif
 
         typedef std::set< osg::ref_ptr<Edge> > LocalEdgeList;
 
@@ -868,19 +868,47 @@ public:
             }
         }
 
+        LocalEdgeList edges2UpdateErrorMetric;
 
+        LocalEdgeList::const_iterator newEdgeIt(newEdges.begin());
+        while (newEdgeIt != newEdges.end())
+        {
+            const Point* p = 0;
+            if (newEdgeIt->get()->_p1.get() != pNew)
+                p = newEdgeIt->get()->_p1.get();
+            else
+                p = newEdgeIt->get()->_p2.get();
 
-        // osg::notify(osg::NOTICE)<<"Edges to recalibarate "<<newEdges.size()<<std::endl;
+            TriangleSet::const_iterator triangleIt(p->_triangles.begin());
+            while (triangleIt != p->_triangles.end())
+            {
+                const Triangle* triangle = triangleIt->get();
+                if (triangle->_e1->_p1 == p || triangle->_e1->_p2 == p)
+                    edges2UpdateErrorMetric.insert(triangle->_e1);
+                if (triangle->_e2->_p1 == p || triangle->_e2->_p2 == p)
+                    edges2UpdateErrorMetric.insert(triangle->_e2);
+                if (triangle->_e3->_p1 == p || triangle->_e3->_p2 == p)
+                    edges2UpdateErrorMetric.insert(triangle->_e3);
 
-        for(LocalEdgeList::iterator itr=newEdges.begin();
-            itr!=newEdges.end();
+                ++triangleIt;
+            }
+
+            ++newEdgeIt;
+        }
+
+        edges2UpdateErrorMetric.insert(newEdges.begin(), newEdges.end());
+
+        // osg::notify(osg::NOTICE)<<"Edges to recalibarate "<<edges2UpdateErrorMetric.size()<<std::endl;
+
+        for(LocalEdgeList::iterator itr=edges2UpdateErrorMetric.begin();
+            itr!=edges2UpdateErrorMetric.end();
             ++itr)
         {
             //osg::notify(osg::NOTICE)<<"updateErrorMetricForEdge("<<itr->get()<<")"<<std::endl;
             updateErrorMetricForEdge(const_cast<Edge*>(itr->get()));
         }
 
-         return true;
+        return true;
     }
 
     unsigned int testEdge(Edge* edge)

@@ -37,7 +37,25 @@ enum KerningType
     KERNING_NONE        //no kerning
 };
 
-/** read a font from specified file.*/
+/** Read a font from specified file. The filename may contain a path.
+  * It will search for the font file in the following places in this order: 
+  * - In the current directory
+  * - All paths defined in OSG_FILE_PATH or OSGFILEPATH environment variable
+  * - Filename with path stripped: In the current directory
+  * - Filename with path stripped: All paths defined in OSG_FILE_PATH or OSGFILEPATH
+  *
+  * Then the file will be searched in OS specific directories in the following order:
+  * - Again in the current directory
+  * - Windows: In C:/winnt/fonts
+  * - Windows: In C:/windows/fonts
+  * - Windows: In the fonts directory of the windows install directory
+  * - Other OS: In /usr/share/fonts/ttf
+  * - Other OS: In /usr/share/fonts/ttf/western
+  * - Other OS: In /usr/share/fonts/ttf/decoratives
+  * 
+  * If the given file could not be found, the path part will be stripped and
+  * the file will be searched again in the OS specific directories.
+  */
 extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
 
 

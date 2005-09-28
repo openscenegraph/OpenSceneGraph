@@ -42,7 +42,8 @@ public:
     void setFont(Font* font=0);
 
     /** Set the font, loaded from the specified front file, to use to render the text,
-      * setFont("") sets the use of the default font.*/
+      * setFont("") sets the use of the default font.
+      * See the osgText::readFontFile function for how the font file will be located. */
     void setFont(const std::string& fontfile);
 
     /** Get the font. Return 0 if default is being used.*/    

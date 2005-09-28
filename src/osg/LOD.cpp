@@ -54,7 +54,7 @@ void LOD::traverse(NodeVisitor& nv)
                 osg::CullStack* cullStack = dynamic_cast<osg::CullStack*>(&nv);
                 if (cullStack)
                 {
-                    required_range = cullStack->pixelSize(getBound());
+                    required_range = cullStack->clampedPixelSize(getBound());
                 }
                 else
                 {
@@ -104,7 +104,7 @@ bool LOD::addChild( Node *child )
         if (_children.size()>_rangeList.size()) 
         {
             float maxRange = !_rangeList.empty()?
-                 _rangeList.back().second : 0.0f;
+                 maxRange=_rangeList.back().second : 0.0f;
 
             _rangeList.resize(_children.size(),MinMaxPair(maxRange,maxRange));
         }

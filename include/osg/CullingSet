@@ -18,6 +18,8 @@
 #include <osg/ShadowVolumeOccluder>
 #include <osg/Referenced>
 
+#include <math.h>
+
 
 namespace osg {
 
@@ -171,6 +173,12 @@ class OSG_EXPORT CullingSet : public Referenced
 
         /** Compute the pixel of a bounding sphere.*/
         float pixelSize(const BoundingSphere& bs) const { return bs.radius()/(bs.center()*_pixelSizeVector); }
+
+        /** Compute the pixel of an object at position v, with specified radius. fabs()ed to always be positive. */
+        float clampedPixelSize(const Vec3& v,float radius) const { return fabs(pixelSize(v, radius)); }
+
+        /** Compute the pixel of a bounding sphere. fabs()ed to always be positive. */
+        float clampedPixelSize(const BoundingSphere& bs) const { return fabs(pixelSize(bs)); }
 
 
         inline bool isCulled(const std::vector<Vec3>& vertices)

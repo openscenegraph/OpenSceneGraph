@@ -126,7 +126,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 osg::CullStack* cullStack = dynamic_cast<osg::CullStack*>(&nv);
                 if (cullStack)
                 {
-                    required_range = cullStack->pixelSize(getBound());
+                    required_range = cullStack->clampedPixelSize(getBound());
                 }
                 else
                 {
@@ -170,11 +170,17 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     _children[numChildren-1]->accept(nv);
                 }
                 
-                // now request the loading of the next unload child.
+                // now request the loading of the next unloaded child.
                 if (nv.getDatabaseRequestHandler() && numChildren<_perRangeDataList.size())
                 {
                     // compute priority from where abouts in the required range the distance falls.
                     float priority = (_rangeList[numChildren].second-required_range)/(_rangeList[numChildren].second-_rangeList[numChildren].first);
+                    
+                    // invert priority for PIXEL_SIZE_ON_SCREEN mode
+                    if(_rangeMode==PIXEL_SIZE_ON_SCREEN)
+                    {
+                        priority = -priority;
+                    }
                     
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
@@ -185,7 +191,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     }
                     else
                     {
-                        // prepend the databasePath to the childs filename.
+                        // prepend the databasePath to the child's filename.
                         nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
                     }
                 }

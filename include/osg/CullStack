@@ -65,6 +65,18 @@ class OSG_EXPORT CullStack : public osg::CullSettings
             return pixelSize(bs.center(),bs.radius());
         }
 
+        /** Compute the pixel size of an object at position v, with specified radius. fabs()ed to always be positive. */
+        float clampedPixelSize(const Vec3& v,float radius) const
+        {
+            return getCurrentCullingSet().clampedPixelSize(v,radius);
+        }
+        
+        /** Compute the pixel size of the bounding sphere. fabs()ed to always be positive. */
+        float clampedPixelSize(const BoundingSphere& bs) const
+        {
+            return clampedPixelSize(bs.center(),bs.radius());
+        }
+
         inline void disableAndPushOccludersCurrentMask(NodePath& nodePath)
         {
             getCurrentCullingSet().disableAndPushOccludersCurrentMask(nodePath);

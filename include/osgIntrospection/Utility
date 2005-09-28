@@ -46,6 +46,18 @@ namespace osgIntrospection
         }
     }
 
+    template<typename T> const T &getInstance(const Value &instance)
+    {
+        return instance.isTypedPointer() ?
+            *variant_cast<const T*>(instance) : variant_cast<const T&>(instance);
+    }
+    
+    template<typename T> T &getInstance(Value &instance)
+    {
+        return instance.isTypedPointer() ?
+            *variant_cast<T*>(instance) : variant_cast<T&>(instance);
+    }
+
 }
 
 #endif

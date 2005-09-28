@@ -25,6 +25,7 @@
 #include <osgIntrospection/ReaderWriter>
 #include <osgIntrospection/TypedConstructorInfo>
 #include <osgIntrospection/Comparator>
+#include <osgIntrospection/Utility>
 
 #include <string>
 #include <sstream>
@@ -104,7 +105,7 @@ namespace osgIntrospection
 
         /// Sets the current type's ReaderWriter object.
         void setReaderWriter(const ReaderWriter* rw);
-
+        
     private:
         struct PtrConstructor: ConstructorInfo
         {
@@ -263,14 +264,12 @@ namespace osgIntrospection
         {
             virtual Value get(Value& instance, int i) const
             {
-                T& ctr = variant_cast<T& >(instance);
-                return ctr.at(i);
+                return getInstance<T>(instance).at(i);
             }
             
             virtual Value get(const Value& instance, int i) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
-                return ctr.at(i);
+                return getInstance<T>(instance).at(i);
             }
         };
 
@@ -278,8 +277,7 @@ namespace osgIntrospection
         {
             virtual void set(Value& instance, int i, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
-                ctr.at(i) = variant_cast<const typename T::value_type& >(v);
+                getInstance<T>(instance).at(i) = variant_cast<const typename T::value_type& >(v);
             }
         };
 
@@ -287,8 +285,7 @@ namespace osgIntrospection
         {
             virtual int count(const Value& instance) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
-                return static_cast<int>(ctr.size());
+                return static_cast<int>(getInstance<T>(instance).size());
             }
         };
 
@@ -296,8 +293,7 @@ namespace osgIntrospection
         {
             virtual void add(Value& instance, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
-                ctr.push_back(variant_cast<const typename T::value_type& >(v));
+                getInstance<T>(instance).push_back(variant_cast<const typename T::value_type& >(v));
             }
         };
 
@@ -305,7 +301,7 @@ namespace osgIntrospection
         {
             virtual void remove(Value& instance, int i) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 ctr.erase(j);
@@ -344,7 +340,7 @@ namespace osgIntrospection
         {
             virtual Value get(Value& instance, int i) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
@@ -352,7 +348,7 @@ namespace osgIntrospection
 
             virtual Value get(const Value& instance, int i) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
+                const T& ctr = getInstance<T>(instance);
                 typename T::const_iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
@@ -363,8 +359,7 @@ namespace osgIntrospection
         {
             virtual int count(const Value& instance) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
-                return static_cast<int>(ctr.size());
+                return static_cast<int>(getInstance<T>(instance).size());
             }
         };
 
@@ -372,8 +367,7 @@ namespace osgIntrospection
         {
             virtual void add(Value& instance, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
-                ctr.insert(variant_cast<const typename T::value_type& >(v));
+                getInstance<T>(instance).insert(variant_cast<const typename T::value_type& >(v));
             }
         };
         
@@ -381,7 +375,7 @@ namespace osgIntrospection
         {
             virtual void remove(Value& instance, int i) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 ctr.erase(j);
@@ -419,7 +413,7 @@ namespace osgIntrospection
         {
             virtual Value get(Value& instance, int i) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
@@ -427,7 +421,7 @@ namespace osgIntrospection
 
             virtual Value get(const Value& instance, int i) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
+                const T& ctr = getInstance<T>(instance);
                 typename T::const_iterator j=ctr.begin();
                 std::advance(j, i);
                 return *j;
@@ -438,7 +432,7 @@ namespace osgIntrospection
         {
             virtual void set(Value& instance, int i, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 *j = variant_cast<const typename T::value_type& >(v);
@@ -449,8 +443,7 @@ namespace osgIntrospection
         {
             virtual int count(const Value& instance) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
-                return static_cast<int>(ctr.size());
+                return static_cast<int>(getInstance<T>(instance).size());
             }
         };
 
@@ -458,8 +451,7 @@ namespace osgIntrospection
         {
             virtual void add(Value& instance, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
-                ctr.push_back(variant_cast<const typename T::value_type& >(v));
+                getInstance<T>(instance).push_back(variant_cast<const typename T::value_type& >(v));
             }
         };
 
@@ -467,7 +459,7 @@ namespace osgIntrospection
         {
             virtual void remove(Value& instance, int i) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 typename T::iterator j=ctr.begin();
                 std::advance(j, i);
                 ctr.erase(j);
@@ -511,7 +503,7 @@ namespace osgIntrospection
         {
             virtual Value get(Value& instance, const ValueList& indices) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
                 const key_type& key = variant_cast<const key_type& >(indices.front());
                 
                 iterator i = ctr.find(key);
@@ -521,7 +513,7 @@ namespace osgIntrospection
             
             virtual Value get(const Value& instance, const ValueList& indices) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
+                const T& ctr = getInstance<T>(instance);
                 const key_type& key = variant_cast<const key_type& >(indices.front());
                 
                 const_iterator i = ctr.find(key);
@@ -534,8 +526,8 @@ namespace osgIntrospection
         {
             virtual void set(Value& instance, const ValueList& indices, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
-                ctr.insert(std::make_pair(variant_cast<const key_type& >(indices.front()), variant_cast<const mapped_type& >(v)));
+                getInstance<T>(instance).insert(std::make_pair(variant_cast<const key_type& >(indices.front()), 
+                    variant_cast<const mapped_type& >(v)));
             }
         };
 
@@ -562,7 +554,7 @@ namespace osgIntrospection
 
             virtual void getIndexValueSet(int /*whichindex*/, const Value& instance, ValueList& values) const
             {
-                const T& ctr = variant_cast<const T& >(instance);
+                const T& ctr = getInstance<T>(instance);
                 for (const_iterator i=ctr.begin(); 
                     i!=ctr.end(); 
                     ++i)
@@ -604,8 +596,8 @@ namespace osgIntrospection
             {
                 switch (_i)
                 {
-                case 0: return variant_cast<T& >(instance).first;
-                case 1: return variant_cast<T& >(instance).second;
+                case 0: return getInstance<T>(instance).first;
+                case 1: return getInstance<T>(instance).second;
                 default: return Value();
                 }
             }
@@ -614,15 +606,15 @@ namespace osgIntrospection
             {
                 switch (_i)
                 {
-                case 0: return variant_cast<const T& >(instance).first;
-                case 1: return variant_cast<const T& >(instance).second;
+                case 0: return getInstance<T>(instance).first;
+                case 1: return getInstance<T>(instance).second;
                 default: return Value();
                 }
             }
 
-            virtual void set(const Value& instance, const Value& v) const
+            virtual void set(Value& instance, const Value& v) const
             {
-                T& ctr = variant_cast<T& >(instance);
+                T& ctr = getInstance<T>(instance);
 
                 switch (_i)
                 {                

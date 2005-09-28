@@ -26,7 +26,9 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__) || defined( __MWERKS__)
-	#  ifdef OSGDB_LIBRARY
+    #  if defined( _LIB ) || defined( USE_STATIC )
+    #    define OSGDB_EXPORT
+    #  elif defined( OSGDB_LIBRARY )
 	#    define OSGDB_EXPORT   __declspec(dllexport)
 	#  else
 	#    define OSGDB_EXPORT   __declspec(dllimport)

@@ -26,7 +26,9 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)
-    #  ifdef OSGTERRAIN_LIBRARY
+    #  if defined( _LIB ) || defined( USE_STATIC )
+    #    define OSGTERRAIN_EXPORT
+    #  elif defined( OSGTERRAIN_LIBRARY )
     #    define OSGTERRAIN_EXPORT   __declspec(dllexport)
     #  else
     #    define OSGTERRAIN_EXPORT   __declspec(dllimport)

@@ -27,7 +27,9 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__) || defined( __MWERKS__)
-	#  ifdef OSGPRODUCER_LIBRARY
+    #  if defined( _LIB ) || defined( USE_STATIC )
+    #    define OSGPRODUCER_EXPORT
+    #  elif defined( OSGPRODUCER_LIBRARY )
 	#    define OSGPRODUCER_EXPORT   __declspec(dllexport)
 	#  else
 	#    define OSGPRODUCER_EXPORT   __declspec(dllimport)

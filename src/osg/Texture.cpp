@@ -1197,7 +1197,9 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         }
         else
         {
-            notify(WARN)<<"Warning:: cannot subload mip mapped texture from non mipmapped image."<<std::endl;
+            //notify(WARN)<<"Warning:: cannot subload mip mapped texture from non mipmapped image."<<std::endl;
+            applyTexImage2D_load(state, target, image, inwidth, inheight,numMipmapLevels); 
+            return;
         }
     }
     
@@ -1431,3 +1433,4 @@ void Texture::Extensions::glGetCompressedTexImage(GLenum target, GLint level, GL
         notify(WARN)<<"Error: glGetCompressedTexImage not supported by OpenGL driver"<<std::endl;
     }
 }
+

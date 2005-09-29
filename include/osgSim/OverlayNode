@@ -45,6 +45,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Get the const overlay subgraph which will be render to texture.*/
         const osg::Node* getOverlaySubgraph() const { return _overlaySubgraph.get(); }
         
+
         /** Inform the OverlayNode that the overlay texture needs to be updated.*/
         void dirtyOverlayTexture();
         
@@ -53,6 +54,19 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         /** Get whether the OverlayNode should update the overlay texture on every frame.*/
         bool getContinousUpdate() const { return _continousUpdate; }
+
+
+        /** Set the clear color to use when rendering the overlay subgraph.*/
+        void setOverlayClearColor(const osg::Vec4& color);
+
+        /** Get the clear color to use when rendering the overlay subgraph.*/
+        const osg::Vec4& getOverlayClearColor() const;
+
+        /** Set the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
+        void setTexEnvMode(GLenum mode);
+        
+        /** Get the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
+        GLenum getTexEnvMode() { return _texEnvMode; }
 
         /** Set the texture unit that the texture should be assigned to.*/
         void setOverlayTextureUnit(unsigned int unit);
@@ -66,11 +80,20 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Get the texture size hint.*/
         unsigned int getOverlayTextureSizeHint() const { return _textureSizeHint; }
         
+
+        /** Get the camera used to implement the render to texture of the overlay subgraph.*/
+        osg::CameraNode* getCamera() { return _camera.get(); }
+
+        /** Get the const camera used to implement the render to texture of the overlay subgraph.*/
+        const osg::CameraNode* getCamera() const { return _camera.get(); }
+        
     protected :
 
         virtual ~OverlayNode() {}
         
         void init();
+        
+        void updateMainSubgraphStateSet();
 
         typedef osg::buffered_value< int > TextureObjectValidList;
         
@@ -88,6 +111,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         osg::ref_ptr<osg::StateSet>     _mainSubgraphStateSet;
         
         // texture to render to, and to read from.
+        GLenum                          _texEnvMode;
         unsigned int                    _textureUnit;
         unsigned int                    _textureSizeHint;
         osg::ref_ptr<osg::Texture2D>    _texture;

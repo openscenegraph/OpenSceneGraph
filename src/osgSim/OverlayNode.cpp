@@ -13,6 +13,7 @@
 
 #include <osg/Texture2D>
 #include <osg/CoordinateSystemNode>
+#include <osg/TexEnv>
 #include <osg/io_utils>
 
 #include <osgUtil/CullVisitor>
@@ -21,6 +22,7 @@
 using namespace osgSim;
 
 OverlayNode::OverlayNode():
+    _texEnvMode(GL_DECAL),
     _textureUnit(1),
     _textureSizeHint(1024),
     _continousUpdate(false)
@@ -31,6 +33,7 @@ OverlayNode::OverlayNode():
 OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     Group(copy,copyop),
     _overlaySubgraph(copy._overlaySubgraph),
+    _texEnvMode(copy._texEnvMode),
     _textureUnit(copy._textureUnit),
     _textureSizeHint(copy._textureSizeHint),
     _continousUpdate(copy._continousUpdate)
@@ -61,7 +64,7 @@ void OverlayNode::init()
     if (!_camera)
     {
         // create the camera
-         _camera = new osg::CameraNode;
+        _camera = new osg::CameraNode;
          
         _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
@@ -248,18 +251,31 @@ void OverlayNode::dirtyOverlayTexture()
     _textureObjectValidList.setAllElementsTo(0);
 }
 
+void OverlayNode::setOverlayClearColor(const osg::Vec4& color)
+{
+    _camera->setClearColor(color);
+}
+
+const osg::Vec4& OverlayNode::getOverlayClearColor() const
+{
+    return _camera->getClearColor();
+}
+
+
+void OverlayNode::setTexEnvMode(GLenum mode)
+{
+    _texEnvMode = mode;
+    updateMainSubgraphStateSet();
+}
+
+
 void OverlayNode::setOverlayTextureUnit(unsigned int unit)
 {
     _textureUnit = unit;
 
     _texgenNode->setTextureUnit(_textureUnit);
     
-    _mainSubgraphStateSet->clear();
-    _mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, _texture.get(), osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
+    updateMainSubgraphStateSet();
 }
 
 void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
@@ -272,3 +288,17 @@ void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
     _camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
 }
 
+void OverlayNode::updateMainSubgraphStateSet()
+{
+    _mainSubgraphStateSet->clear();
+    _mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, _texture.get(), osg::StateAttribute::ON);
+    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
+    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
+    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
+    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
+
+    if (_texEnvMode!=GL_NONE) 
+    {
+        _mainSubgraphStateSet->setTextureAttribute(_textureUnit, new osg::TexEnv((osg::TexEnv::Mode)_texEnvMode));
+    }
+}

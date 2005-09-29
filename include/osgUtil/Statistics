@@ -39,8 +39,8 @@ class Statistics : public osg::PrimitiveFunctor
     public:
 
         typedef std::pair<unsigned int,unsigned int>    PrimitivePair;
-        typedef std::map<GLenum,PrimitivePair>          PrimtiveValueMap;
-        typedef std::map<GLenum, unsigned int>          PrimtiveCountMap;
+        typedef std::map<GLenum,PrimitivePair>          PrimitiveValueMap;
+        typedef std::map<GLenum, unsigned int>          PrimitiveCountMap;
 
 
         Statistics()
@@ -68,7 +68,7 @@ class Statistics : public osg::PrimitiveFunctor
             _vertexCount=0;
             _primitiveCount.clear();            
             
-            _currentPrimtiveFunctorMode=0;
+            _currentPrimitiveFunctorMode=0;
         }
 
         void setType(statsType t) {stattype=t;}
@@ -108,7 +108,7 @@ class Statistics : public osg::PrimitiveFunctor
 
         virtual void begin(GLenum mode) 
         { 
-            _currentPrimtiveFunctorMode=mode; 
+            _currentPrimitiveFunctorMode=mode; 
             PrimitivePair& prim = _primitiveCount[mode]; 
             ++prim.first; 
             _number_of_vertexes = 0;
@@ -116,7 +116,7 @@ class Statistics : public osg::PrimitiveFunctor
 
         inline void vertex() 
         { 
-            PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; 
+            PrimitivePair& prim = _primitiveCount[_currentPrimitiveFunctorMode]; 
             ++prim.second; 
            _number_of_vertexes++;
         }
@@ -129,8 +129,8 @@ class Statistics : public osg::PrimitiveFunctor
 
         virtual void end() 
         {
-          _primitives_count[_currentPrimtiveFunctorMode] += 
-            _calculate_primitives_number_by_mode(_currentPrimtiveFunctorMode, _number_of_vertexes);
+          _primitives_count[_currentPrimitiveFunctorMode] += 
+            _calculate_primitives_number_by_mode(_currentPrimitiveFunctorMode, _number_of_vertexes);
         }
         
         void addDrawable() { numDrawables++;}
@@ -145,8 +145,8 @@ class Statistics : public osg::PrimitiveFunctor
                 
     public:
                 
-        PrimtiveCountMap::iterator GetPrimitivesBegin() { return _primitives_count.begin(); }
-        PrimtiveCountMap::iterator GetPrimitivesEnd() { return _primitives_count.end(); }
+        PrimitiveCountMap::iterator GetPrimitivesBegin() { return _primitives_count.begin(); }
+        PrimitiveCountMap::iterator GetPrimitivesEnd() { return _primitives_count.end(); }
 
         int numDrawables, nummat, nbins;
         int nlights;
@@ -156,11 +156,11 @@ class Statistics : public osg::PrimitiveFunctor
         int nimpostor; // number of impostors rendered
         
         unsigned int        _vertexCount;
-        PrimtiveValueMap    _primitiveCount;
-        GLenum              _currentPrimtiveFunctorMode;
+        PrimitiveValueMap    _primitiveCount;
+        GLenum              _currentPrimitiveFunctorMode;
 
     private:
-        PrimtiveCountMap                     _primitives_count;
+        PrimitiveCountMap                     _primitives_count;
 
         unsigned int                         _total_primitives_count;
         unsigned int                         _number_of_vertexes;

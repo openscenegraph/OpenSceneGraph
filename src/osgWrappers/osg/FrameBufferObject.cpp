@@ -65,6 +65,7 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	I_ConstructorWithDefaults3(IN, osg::TextureCubeMap *, target, , IN, int, face, , IN, int, level, 0);
 	I_Constructor1(IN, osg::TextureRectangle *, target);
 	I_Constructor1(IN, osg::CameraNode::Attachment &, attachment);
+	I_Method2(void, createRequiredTexturesAndApplyGenerateMipMap, IN, osg::State &, state, IN, const osg::FBOExtensions *, ext);
 	I_Method3(void, attach, IN, osg::State &, state, IN, GLenum, attachment_point, IN, const osg::FBOExtensions *, ext);
 	I_Method1(int, compare, IN, const osg::FrameBufferAttachment &, fa);
 END_REFLECTOR

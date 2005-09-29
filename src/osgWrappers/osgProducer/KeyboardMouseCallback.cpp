@@ -41,18 +41,23 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
 	I_Method1(void, setEscapeSetDone, IN, bool, esc);
 	I_Method0(bool, getEscapeSetDone);
 	I_Method1(double, getEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method1(double, copyEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method1(double, setEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method1(double, appendEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
 	I_Method0(bool, done);
 	I_Method0(float, mx);
 	I_Method0(float, my);
 	I_Method0(unsigned int, mbutton);
 	I_Method1(void, setStartTick, IN, osg::Timer_t, tick);
+	I_Method0(osg::Timer_t, getStartTick);
 	I_Method0(double, getTime);
 	I_Method0(Producer::KeyboardMouse *, getKeyboardMouse);
 	I_Method0(const Producer::KeyboardMouse *, getKeyboardMouse);
 	I_Method0(osgProducer::EventAdapter *, createEventAdapter);
 	I_Property(bool, EscapeSetDone);
+	I_WriteOnlyPropertyWithReturnType(osgProducer::KeyboardMouseCallback::EventQueue &, EventQueue, double);
 	I_ReadOnlyProperty(Producer::KeyboardMouse *, KeyboardMouse);
-	I_WriteOnlyProperty(osg::Timer_t, StartTick);
+	I_Property(osg::Timer_t, StartTick);
 	I_ReadOnlyProperty(double, Time);
 END_REFLECTOR
 

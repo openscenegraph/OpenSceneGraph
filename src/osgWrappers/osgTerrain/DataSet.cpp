@@ -111,6 +111,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method0(const std::string &, getDestinationTileBaseName);
 	I_Method1(void, setDestinationTileExtension, IN, const std::string &, extension);
 	I_Method0(const std::string &, getDestinationTileExtension);
+	I_Method1(void, setDestinationImageExtension, IN, const std::string &, extension);
+	I_Method0(const std::string &, getDestinationImageExtension);
 	I_Method1(void, setDatabaseType, IN, osgTerrain::DataSet::DatabaseType, type);
 	I_Method0(osgTerrain::DataSet::DatabaseType, getDatabaseType);
 	I_Method1(void, setGeometryType, IN, osgTerrain::DataSet::GeometryType, type);
@@ -153,6 +155,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Property(osg::CoordinateSystemNode *, DestinationCoordinateSystem);
 	I_WriteOnlyProperty(const osg::BoundingBox &, DestinationExtents);
 	I_WriteOnlyProperty(const osg::Matrixd &, DestinationGeoTransform);
+	I_Property(const std::string &, DestinationImageExtension);
 	I_WriteOnlyProperty(const std::string &, DestinationName);
 	I_ReadOnlyProperty(osg::Node *, DestinationRootNode);
 	I_Property(const std::string &, DestinationTileBaseName);

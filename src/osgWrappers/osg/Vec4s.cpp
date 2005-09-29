@@ -23,8 +23,25 @@ TYPE_NAME_ALIAS(short, osg::Vec4s::value_type);
 
 BEGIN_VALUE_REFLECTOR(osg::Vec4s)
 	I_Constructor0();
-	I_Constructor4(IN, osg::Vec4s::value_type, xx, IN, osg::Vec4s::value_type, yy, IN, osg::Vec4s::value_type, zz, IN, osg::Vec4s::value_type, ww);
+	I_Constructor4(IN, osg::Vec4s::value_type, x, IN, osg::Vec4s::value_type, y, IN, osg::Vec4s::value_type, z, IN, osg::Vec4s::value_type, w);
 	I_Method0(osg::Vec4s::value_type *, ptr);
 	I_Method0(const osg::Vec4s::value_type *, ptr);
+	I_Method4(void, set, IN, osg::Vec4s::value_type, x, IN, osg::Vec4s::value_type, y, IN, osg::Vec4s::value_type, z, IN, osg::Vec4s::value_type, w);
+	I_Method0(osg::Vec4s::value_type &, x);
+	I_Method0(osg::Vec4s::value_type &, y);
+	I_Method0(osg::Vec4s::value_type &, z);
+	I_Method0(osg::Vec4s::value_type &, w);
+	I_Method0(osg::Vec4s::value_type, x);
+	I_Method0(osg::Vec4s::value_type, y);
+	I_Method0(osg::Vec4s::value_type, z);
+	I_Method0(osg::Vec4s::value_type, w);
+	I_Method0(osg::Vec4s::value_type &, r);
+	I_Method0(osg::Vec4s::value_type &, g);
+	I_Method0(osg::Vec4s::value_type &, b);
+	I_Method0(osg::Vec4s::value_type &, a);
+	I_Method0(osg::Vec4s::value_type, r);
+	I_Method0(osg::Vec4s::value_type, g);
+	I_Method0(osg::Vec4s::value_type, b);
+	I_Method0(osg::Vec4s::value_type, a);
 END_REFLECTOR
 

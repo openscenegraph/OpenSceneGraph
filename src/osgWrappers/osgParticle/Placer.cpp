@@ -11,6 +11,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
+#include <osg/Vec3>
 #include <osgParticle/Particle>
 #include <osgParticle/Placer>
 
@@ -30,5 +31,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Placer)
 	I_Method0(const char *, className);
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
 	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_Method0(osg::Vec3, getControlPosition);
+	I_ReadOnlyProperty(osg::Vec3, ControlPosition);
 END_REFLECTOR
 

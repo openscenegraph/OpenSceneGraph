@@ -67,6 +67,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_Method1(void, setVelocity, IN, const osg::Vec3 &, v);
 	I_Method1(void, addVelocity, IN, const osg::Vec3 &, dv);
 	I_Method1(void, transformPositionVelocity, IN, const osg::Matrix &, xform);
+	I_Method3(void, transformPositionVelocity, IN, const osg::Matrix &, xform1, IN, const osg::Matrix &, xform2, IN, float, r);
 	I_Method1(void, setAngle, IN, const osg::Vec3 &, a);
 	I_Method1(void, setAngularVelocity, IN, const osg::Vec3 &, v);
 	I_Method1(void, addAngularVelocity, IN, const osg::Vec3 &, dv);

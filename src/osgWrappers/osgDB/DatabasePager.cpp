@@ -10,11 +10,11 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/FrameStamp>
+#include <osg/GraphicsThread>
 #include <osg/Group>
 #include <osg/Node>
 #include <osg/PagedLOD>
 #include <osg/State>
-#include <osg/StateSet>
 #include <osgDB/DatabasePager>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,16 +24,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_OBJECT_REFLECTOR(osgDB::Block)
-	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method0(void, block);
-	I_Method0(void, release);
-	I_Method0(void, reset);
-	I_Method1(void, set, IN, bool, doRelease);
-	I_WriteOnlyProperty(bool, );
-END_REFLECTOR
 
 TYPE_NAME_ALIAS(OpenThreads::Thread::ThreadPriority, osgDB::DatabasePager::ThreadPriority);
 
@@ -62,7 +52,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method0(bool, getAcceptNewDatabaseRequests);
 	I_Method1(void, setUseFrameBlock, IN, bool, useFrameBlock);
 	I_Method0(bool, getUseFrameBlock);
-	I_Method0(osgDB::Block *, getFrameBlock);
+	I_Method0(osg::Block *, getFrameBlock);
 	I_Method1(void, setThreadPriorityDuringFrame, IN, osgDB::DatabasePager::ThreadPriority, duringFrame);
 	I_Method0(osgDB::DatabasePager::ThreadPriority, getThreadPriorityDuringFrame);
 	I_Method1(void, setThreadPriorityOutwithFrame, IN, osgDB::DatabasePager::ThreadPriority, outwithFrame);
@@ -99,7 +89,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Property(bool, DeleteRemovedSubgraphsInDatabaseThread);
 	I_Property(bool, DoPreCompile);
 	I_Property(double, ExpiryDelay);
-	I_ReadOnlyProperty(osgDB::Block *, FrameBlock);
+	I_ReadOnlyProperty(osg::Block *, FrameBlock);
 	I_Property(unsigned int, MaximumNumOfObjectsToCompilePerFrame);
 	I_Property(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame);
 	I_Property(double, TargetFrameRate);
@@ -118,18 +108,6 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
 	I_Method0(osg::PagedLOD *, take);
 	I_Method0(osg::PagedLOD *, release);
 	I_ReadOnlyProperty(osg::PagedLOD *, );
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::StateSet *, t);
-	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp);
-	I_Method0(bool, valid);
-	I_Method0(osg::StateSet *, get);
-	I_Method0(const osg::StateSet *, get);
-	I_Method0(osg::StateSet *, take);
-	I_Method0(osg::StateSet *, release);
-	I_ReadOnlyProperty(osg::StateSet *, );
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::PagedLOD > >);

@@ -16,6 +16,7 @@
 #include <osg/Node>
 #include <osg/Polytope>
 #include <osg/ShadowVolumeOccluder>
+#include <osg/StateSet>
 #include <osg/Vec3>
 #include <osg/Vec4>
 
@@ -26,6 +27,10 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >, osg::CullingSet::StateFrustumPair);
+
+TYPE_NAME_ALIAS(std::vector< osg::CullingSet::StateFrustumPair >, osg::CullingSet::StateFrustumList);
 
 TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList);
 
@@ -55,6 +60,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_Method1(void, setFrustum, IN, osg::Polytope &, cv);
 	I_Method0(osg::Polytope &, getFrustum);
 	I_Method0(const osg::Polytope &, getFrustum);
+	I_Method2(void, addStateFrustum, IN, osg::StateSet *, stateset, IN, osg::Polytope &, polytope);
+	I_Method1(void, getStateFrustumList, IN, osg::CullingSet::StateFrustumList &, sfl);
+	I_Method0(osg::CullingSet::StateFrustumList &, getStateFrustumList);
 	I_Method1(void, addOccluder, IN, osg::ShadowVolumeOccluder &, cv);
 	I_Method1(void, setPixelSizeVector, IN, const osg::Vec4 &, v);
 	I_Method0(osg::Vec4 &, getPixelSizeVector);
@@ -64,6 +72,8 @@ BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_Method0(float, getSmallFeatureCullingPixelSize);
 	I_Method2(float, pixelSize, IN, const osg::Vec3 &, v, IN, float, radius);
 	I_Method1(float, pixelSize, IN, const osg::BoundingSphere &, bs);
+	I_Method2(float, clampedPixelSize, IN, const osg::Vec3 &, v, IN, float, radius);
+	I_Method1(float, clampedPixelSize, IN, const osg::BoundingSphere &, bs);
 	I_Method1(bool, isCulled, IN, const std::vector< osg::Vec3 > &, vertices);
 	I_Method1(bool, isCulled, IN, const osg::BoundingBox &, bb);
 	I_Method1(bool, isCulled, IN, const osg::BoundingSphere &, bs);
@@ -76,5 +86,22 @@ BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_Property(osg::Polytope &, Frustum);
 	I_Property(const osg::Vec4 &, PixelSizeVector);
 	I_Property(float, SmallFeatureCullingPixelSize);
+	I_ReadOnlyProperty(osg::CullingSet::StateFrustumList &, StateFrustumList);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
+	I_Constructor0();
+	I_Constructor1(IN, osg::StateSet *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::StateSet *, get);
+	I_Method0(const osg::StateSet *, get);
+	I_Method0(osg::StateSet *, take);
+	I_Method0(osg::StateSet *, release);
+	I_ReadOnlyProperty(osg::StateSet *, );
+END_REFLECTOR
+
+STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::CullingSet::StateFrustumPair >);
 

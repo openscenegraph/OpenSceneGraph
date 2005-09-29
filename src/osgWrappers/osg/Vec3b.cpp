@@ -21,19 +21,29 @@
 
 #include <osg/io_utils>
 	
+TYPE_NAME_ALIAS(char, osg::Vec3b::value_type);
+
 BEGIN_VALUE_REFLECTOR(osg::Vec3b)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	I_Constructor0();
-	I_Constructor3(IN, char, r, IN, char, g, IN, char, b);
-	I_Method0(char *, ptr);
-	I_Method0(const char *, ptr);
-	I_Method3(void, set, IN, char, r, IN, char, g, IN, char, b);
-	I_Method0(char &, r);
-	I_Method0(char &, g);
-	I_Method0(char &, b);
-	I_Method0(char, r);
-	I_Method0(char, g);
-	I_Method0(char, b);
+	I_Constructor3(IN, osg::Vec3b::value_type, r, IN, osg::Vec3b::value_type, g, IN, osg::Vec3b::value_type, b);
+	I_Method0(osg::Vec3b::value_type *, ptr);
+	I_Method0(const osg::Vec3b::value_type *, ptr);
+	I_Method3(void, set, IN, osg::Vec3b::value_type, r, IN, osg::Vec3b::value_type, g, IN, osg::Vec3b::value_type, b);
+	I_Method1(void, set, IN, const osg::Vec3b &, rhs);
+	I_Method0(osg::Vec3b::value_type &, x);
+	I_Method0(osg::Vec3b::value_type &, y);
+	I_Method0(osg::Vec3b::value_type &, z);
+	I_Method0(osg::Vec3b::value_type, x);
+	I_Method0(osg::Vec3b::value_type, y);
+	I_Method0(osg::Vec3b::value_type, z);
+	I_Method0(osg::Vec3b::value_type &, r);
+	I_Method0(osg::Vec3b::value_type &, g);
+	I_Method0(osg::Vec3b::value_type &, b);
+	I_Method0(osg::Vec3b::value_type, r);
+	I_Method0(osg::Vec3b::value_type, g);
+	I_Method0(osg::Vec3b::value_type, b);
+	I_WriteOnlyProperty(const osg::Vec3b &, );
 END_REFLECTOR
 

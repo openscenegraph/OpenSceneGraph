@@ -40,6 +40,8 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::SegmentPlacer)
 	I_Method3(void, setVertexB, IN, float, x, IN, float, y, IN, float, z);
 	I_Method2(void, setSegment, IN, const osg::Vec3 &, A, IN, const osg::Vec3 &, B);
 	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_Method0(osg::Vec3, getControlPosition);
+	I_ReadOnlyProperty(osg::Vec3, ControlPosition);
 	I_Property(const osg::Vec3 &, VertexA);
 	I_Property(const osg::Vec3 &, VertexB);
 END_REFLECTOR

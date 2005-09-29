@@ -11,7 +11,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/PolygonMode>
+#include <osg/Scissor>
 #include <osg/State>
 #include <osg/StateAttribute>
 
@@ -23,23 +23,11 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Mode)
-	I_EnumLabel(osg::PolygonMode::POINT);
-	I_EnumLabel(osg::PolygonMode::LINE);
-	I_EnumLabel(osg::PolygonMode::FILL);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Face)
-	I_EnumLabel(osg::PolygonMode::FRONT_AND_BACK);
-	I_EnumLabel(osg::PolygonMode::FRONT);
-	I_EnumLabel(osg::PolygonMode::BACK);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::PolygonMode)
+BEGIN_OBJECT_REFLECTOR(osg::Scissor)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0();
-	I_Constructor2(IN, osg::PolygonMode::Face, face, IN, osg::PolygonMode::Mode, mode);
-	I_ConstructorWithDefaults2(IN, const osg::PolygonMode &, pm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor4(IN, int, x, IN, int, y, IN, int, width, IN, int, height);
+	I_ConstructorWithDefaults2(IN, const osg::Scissor &, vp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
@@ -47,12 +35,18 @@ BEGIN_OBJECT_REFLECTOR(osg::PolygonMode)
 	I_Method0(const char *, className);
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method2(void, setMode, IN, osg::PolygonMode::Face, face, IN, osg::PolygonMode::Mode, mode);
-	I_Method1(osg::PolygonMode::Mode, getMode, IN, osg::PolygonMode::Face, face);
-	I_Method0(bool, getFrontAndBack);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method4(void, setScissor, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
+	I_Method4(void, getScissor, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height);
+	I_Method0(int &, x);
+	I_Method0(int, x);
+	I_Method0(int &, y);
+	I_Method0(int, y);
+	I_Method0(int &, width);
+	I_Method0(int, width);
+	I_Method0(int &, height);
+	I_Method0(int, height);
 	I_Method1(void, apply, IN, osg::State &, state);
-	I_ReadOnlyProperty(bool, FrontAndBack);
-	I_IndexedProperty1(osg::PolygonMode::Mode, Mode, osg::PolygonMode::Face, face);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

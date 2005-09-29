@@ -44,6 +44,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_Method0(const osgGA::EventVisitor::EventList &, getEventList);
 	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
 	I_Method1(void, removeEvent, IN, osgGA::GUIEventAdapter *, event);
+	I_Method0(bool, getEventHandled);
+	I_Method1(void, setEventHandled, IN, bool, handled);
 	I_Method0(void, reset);
 	I_Method1(void, apply, IN, osg::Node &, node);
 	I_Method1(void, apply, IN, osg::Geode &, node);
@@ -56,6 +58,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_Method1(void, apply, IN, osg::LOD &, node);
 	I_Method1(void, apply, IN, osg::OccluderNode &, node);
 	I_Property(osgGA::GUIActionAdapter *, ActionAdapter);
+	I_Property(bool, EventHandled);
 	I_Property(const osgGA::EventVisitor::EventList &, EventList);
 END_REFLECTOR
 

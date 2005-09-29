@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/GraphicsContext>
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/State>
@@ -88,6 +89,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method0(const char *, className);
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method0(bool, isTextureAttribute);
+	I_Method0(GLenum, getTextureTarget);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
 	I_Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap);
 	I_Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which);
 	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color);
@@ -127,6 +130,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method1(osg::Image *, getImage, IN, unsigned int, face);
 	I_Method1(const osg::Image *, getImage, IN, unsigned int, face);
 	I_Method0(unsigned int, getNumImages);
+	I_Method1(void, setReadPBuffer, IN, osg::GraphicsContext *, context);
+	I_Method0(osg::GraphicsContext *, getReadPBuffer);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Method1(void, compileGLObjects, IN, osg::State &, state);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
@@ -141,11 +146,13 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Property(GLint, InternalFormat);
 	I_Property(osg::Texture::InternalFormatMode, InternalFormatMode);
 	I_Property(float, MaxAnisotropy);
+	I_Property(osg::GraphicsContext *, ReadPBuffer);
 	I_Property(bool, ResizeNonPowerOfTwoHint);
 	I_Property(float, ShadowAmbient);
 	I_Property(osg::Texture::ShadowCompareFunc, ShadowCompareFunc);
 	I_WriteOnlyProperty(bool, ShadowComparison);
 	I_Property(osg::Texture::ShadowTextureMode, ShadowTextureMode);
+	I_ReadOnlyProperty(GLenum, TextureTarget);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 	I_Property(bool, UnRefImageDataAfterApply);
 	I_Property(bool, UseHardwareMipMapGeneration);

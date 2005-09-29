@@ -11,6 +11,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
+#include <osg/Vec3>
 #include <osgParticle/Particle>
 #include <osgParticle/PointPlacer>
 
@@ -32,5 +33,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PointPlacer)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_Method0(osg::Vec3, getControlPosition);
+	I_ReadOnlyProperty(osg::Vec3, ControlPosition);
 END_REFLECTOR
 

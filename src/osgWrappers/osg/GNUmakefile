@@ -45,6 +45,7 @@ CXXFILES =\
 	Geode.cpp\
 	Geometry.cpp\
 	GraphicsContext.cpp\
+	GraphicsThread.cpp\
 	Group.cpp\
 	Image.cpp\
 	ImageStream.cpp\

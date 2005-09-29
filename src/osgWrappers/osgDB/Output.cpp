@@ -11,6 +11,7 @@
 
 #include <osg/Object>
 #include <osgDB/Output>
+#include <osgDB/ReaderWriter>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

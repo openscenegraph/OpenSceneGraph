@@ -32,7 +32,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< GLenum >, osg::CameraNode::DrawBufferList);
+TYPE_NAME_ALIAS(std::vector< GLenum >, osg::CameraNode::RenderBufferList);
 
 TYPE_NAME_ALIAS(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >, osg::CameraNode::BufferAttachmentMap);
 
@@ -113,14 +113,16 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(osg::Matrixd, getInverseViewMatrix);
 	I_Method1(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order);
 	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder);
-	I_Method1(void, setRenderTargetImplmentation, IN, osg::CameraNode::RenderTargetImplementation, impl);
-	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetImplmentation);
-	I_Method2(void, setDrawBuffer, IN, unsigned int, pos, IN, GLenum, buffer);
-	I_Method1(GLenum, getDrawBuffer, IN, unsigned int, pos);
-	I_Method0(osg::CameraNode::DrawBufferList &, getDrawBufferList);
-	I_Method0(const osg::CameraNode::DrawBufferList &, getDrawBufferList);
+	I_Method1(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl);
+	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetImplementation);
+	I_Method1(void, setDrawBuffer, IN, GLenum, buffer);
+	I_Method0(GLenum, getDrawBuffer);
 	I_Method1(void, setReadBuffer, IN, GLenum, buffer);
 	I_Method0(GLenum, getReadBuffer);
+	I_Method2(void, setRenderBuffer, IN, unsigned int, pos, IN, GLenum, buffer);
+	I_Method1(GLenum, getRenderBuffer, IN, unsigned int, pos);
+	I_Method0(osg::CameraNode::RenderBufferList &, getRenderBufferList);
+	I_Method0(const osg::CameraNode::RenderBufferList &, getRenderBufferList);
 	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, GLenum, internalFormat);
 	I_MethodWithDefaults5(void, attach, IN, osg::CameraNode::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false);
 	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, osg::Image *, image);
@@ -142,15 +144,16 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(GLbitfield, ClearMask);
 	I_Property(osg::ColorMask *, ColorMask);
-	I_IndexedProperty1(GLenum, DrawBuffer, unsigned int, pos);
-	I_ReadOnlyProperty(osg::CameraNode::DrawBufferList &, DrawBufferList);
+	I_Property(GLenum, DrawBuffer);
 	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_ReadOnlyProperty(osg::Matrixd, InverseViewMatrix);
 	I_Property(osg::CameraNode::DrawCallback *, PostDrawCallback);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
 	I_Property(GLenum, ReadBuffer);
+	I_IndexedProperty1(GLenum, RenderBuffer, unsigned int, pos);
+	I_ReadOnlyProperty(osg::CameraNode::RenderBufferList &, RenderBufferList);
 	I_Property(osg::CameraNode::RenderOrder, RenderOrder);
-	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplmentation);
+	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation);
 	I_Property(osg::Object *, RenderingCache);
 	I_Property(osg::CameraNode::TransformOrder, TransformOrder);
 	I_Property(const osg::Matrixd &, ViewMatrix);

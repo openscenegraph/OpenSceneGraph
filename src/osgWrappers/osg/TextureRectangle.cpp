@@ -36,7 +36,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle)
 	I_Method0(const char *, className);
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method0(GLenum, getTextureTarget);
 	I_Method1(void, setImage, IN, osg::Image *, image);
 	I_Method0(osg::Image *, getImage);
 	I_Method0(const osg::Image *, getImage);
@@ -55,6 +55,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle)
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Property(osg::Image *, Image);
 	I_Property(osg::TextureRectangle::SubloadCallback *, SubloadCallback);
+	I_ReadOnlyProperty(GLenum, TextureTarget);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

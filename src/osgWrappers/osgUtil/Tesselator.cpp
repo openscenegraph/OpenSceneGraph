@@ -49,6 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tesselator)
 	I_Method1(void, setTesselationType, IN, const osgUtil::Tesselator::TesselationType, tt);
 	I_Method0(const osgUtil::Tesselator::TesselationType, getTesselationType);
 	I_Method1(void, retesselatePolygons, IN, osg::Geometry &, cxgeom);
+	I_Method1(void, setTesselationNormal, IN, const osg::Vec3, norm);
 	I_Method0(osg::Geometry::PrimitiveSetList, getContours);
 	I_Method0(void, beginTesselation);
 	I_Method0(void, beginContour);
@@ -60,6 +61,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tesselator)
 	I_Property(const bool, BoundaryOnly);
 	I_ReadOnlyProperty(osg::Geometry::PrimitiveSetList, Contours);
 	I_ReadOnlyProperty(osgUtil::Tesselator::PrimList &, PrimList);
+	I_WriteOnlyProperty(const osg::Vec3, TesselationNormal);
 	I_Property(const osgUtil::Tesselator::TesselationType, TesselationType);
 	I_Property(const osgUtil::Tesselator::WindingType, WindingType);
 END_REFLECTOR

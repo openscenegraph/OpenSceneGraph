@@ -36,7 +36,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture2D)
 	I_Method0(const char *, className);
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method0(GLenum, getTextureTarget);
 	I_Method1(void, setImage, IN, osg::Image *, image);
 	I_Method0(osg::Image *, getImage);
 	I_Method0(const osg::Image *, getImage);
@@ -62,6 +62,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture2D)
 	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);
 	I_Property(osg::Texture2D::SubloadCallback *, SubloadCallback);
 	I_Property(int, TextureHeight);
+	I_ReadOnlyProperty(GLenum, TextureTarget);
 	I_Property(int, TextureWidth);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR

@@ -11,13 +11,12 @@ CXXFILES =\
 	HighlightMapGenerator.cpp\
 	IntersectVisitor.cpp\
 	Optimizer.cpp\
+	PositionalStateContainer.cpp\
 	ReflectionMapGenerator.cpp\
 	RenderBin.cpp\
 	RenderGraph.cpp\
 	RenderLeaf.cpp\
 	RenderStage.cpp\
-	RenderStageLighting.cpp\
-	RenderToTextureStage.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\

@@ -11,6 +11,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
+#include <osg/Vec3>
 #include <osgParticle/Particle>
 #include <osgParticle/SectorPlacer>
 #include <osgParticle/range>
@@ -39,6 +40,8 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::SectorPlacer)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_Method0(osg::Vec3, getControlPosition);
+	I_ReadOnlyProperty(osg::Vec3, ControlPosition);
 	I_Property(const osgParticle::rangef &, PhiRange);
 	I_Property(const osgParticle::rangef &, RadiusRange);
 END_REFLECTOR

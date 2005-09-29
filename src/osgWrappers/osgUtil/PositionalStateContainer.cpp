@@ -14,8 +14,8 @@
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateAttribute>
+#include <osgUtil/PositionalStateContainer>
 #include <osgUtil/RenderLeaf>
-#include <osgUtil/RenderStageLighting>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -25,13 +25,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >, osgUtil::RenderStageLighting::AttrMatrixPair);
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >, osgUtil::PositionalStateContainer::AttrMatrixPair);
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::RenderStageLighting::AttrMatrixPair >, osgUtil::RenderStageLighting::AttrMatrixList);
+TYPE_NAME_ALIAS(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >, osgUtil::PositionalStateContainer::AttrMatrixList);
 
-TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::RenderStageLighting::AttrMatrixList >, osgUtil::RenderStageLighting::TexUnitAttrMatrixListMap);
+TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >, osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStageLighting)
+BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	I_BaseType(osg::Object);
 	I_Constructor0();
 	I_Method0(osg::Object *, cloneType);
@@ -57,9 +57,9 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
 	I_ReadOnlyProperty(osg::RefMatrix *, );
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgUtil::RenderStageLighting::AttrMatrixList >);
+STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >);
 
 STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >);
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::RenderStageLighting::AttrMatrixPair >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >);
 

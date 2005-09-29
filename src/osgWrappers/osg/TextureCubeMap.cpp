@@ -44,7 +44,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	I_Method0(const char *, className);
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method0(GLenum, getTextureTarget);
 	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image);
 	I_Method1(osg::Image *, getImage, IN, unsigned int, face);
 	I_Method1(const osg::Image *, getImage, IN, unsigned int, face);
@@ -62,6 +62,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	I_ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
 	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);
 	I_Property(osg::TextureCubeMap::SubloadCallback *, SubloadCallback);
+	I_ReadOnlyProperty(GLenum, TextureTarget);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

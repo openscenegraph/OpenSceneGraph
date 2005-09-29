@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/GraphicsContext>
+#include <osg/GraphicsThread>
 #include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -26,17 +27,32 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method1(void, setState, IN, osg::State *, state);
 	I_Method0(osg::State *, getState);
 	I_Method0(const osg::State *, getState);
-	I_Method0(bool, isCurrent);
-	I_Method0(void, release);
+	I_Method0(bool, realize);
+	I_MethodWithDefaults1(void, close, IN, bool, callCloseImplementation, true);
+	I_Method0(void, swapBuffers);
+	I_Method0(bool, isRealized);
 	I_Method0(void, makeCurrent);
 	I_Method1(void, makeContextCurrent, IN, osg::GraphicsContext *, readContext);
+	I_Method0(void, releaseContext);
+	I_Method0(bool, isCurrent);
 	I_Method1(void, bindPBufferToTexture, IN, GLenum, buffer);
-	I_Method0(void, swapBuffers);
+	I_Method0(void, createGraphicsThread);
+	I_Method1(void, setGraphicsThread, IN, osg::GraphicsThread *, gt);
+	I_Method0(osg::GraphicsThread *, getGraphicsThread);
+	I_Method0(const osg::GraphicsThread *, getGraphicsThread);
+	I_Method0(bool, realizeImplementation);
+	I_Method0(bool, isRealizedImplementation);
+	I_Method0(void, closeImplementation);
+	I_Method0(void, makeCurrentImplementation);
+	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext);
+	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer);
+	I_Method0(void, swapBuffersImplementation);
+	I_Property(osg::GraphicsThread *, GraphicsThread);
 	I_Property(osg::State *, State);
 	I_ReadOnlyProperty(const osg::GraphicsContext::Traits *, Traits);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::CreateGraphicContexCallback)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::CreateGraphicContextCallback)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
 	I_Method1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits);

@@ -9,7 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
 #include <osg/CopyOp>
+#include <osg/Drawable>
+#include <osg/Matrixd>
+#include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Vec3>
@@ -23,6 +27,8 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec3Array > >, osgSim::SphereSegment::LineList);
 
 BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
 	I_EnumLabel(osgSim::SphereSegment::SURFACE);
@@ -65,6 +71,10 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_Method0(const char *, className);
 	I_Method0(const char *, libraryName);
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method2(osgSim::SphereSegment::LineList, computeIntersection, IN, const osg::Matrixd &, matrix, IN, osg::Node *, subgraph);
+	I_Method2(osgSim::SphereSegment::LineList, computeIntersection, IN, const osg::Matrixd &, matrix, IN, osg::Drawable *, drawable);
+	I_Method2(osg::Node *, computeIntersectionSubgraph, IN, const osg::Matrixd &, matrix, IN, osg::Node *, subgraph);
+	I_Method2(osg::Node *, computeIntersectionSubgraph, IN, const osg::Matrixd &, matrix, IN, osg::Drawable *, drawable);
 	I_WriteOnlyProperty(const osg::Vec4 &, AllColors);
 	I_Property(const osg::Vec3 &, Centre);
 	I_Property(int, Density);
@@ -75,4 +85,18 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_ReadOnlyProperty(osg::Vec4, SpokeColor);
 	I_ReadOnlyProperty(osg::Vec4, SurfaceColor);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Vec3Array >)
+	I_Constructor0();
+	I_Constructor1(IN, osg::Vec3Array *, t);
+	I_Constructor1(IN, const osg::ref_ptr< osg::Vec3Array > &, rp);
+	I_Method0(bool, valid);
+	I_Method0(osg::Vec3Array *, get);
+	I_Method0(const osg::Vec3Array *, get);
+	I_Method0(osg::Vec3Array *, take);
+	I_Method0(osg::Vec3Array *, release);
+	I_ReadOnlyProperty(osg::Vec3Array *, );
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Vec3Array > >);
 

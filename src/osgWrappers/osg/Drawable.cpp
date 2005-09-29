@@ -44,8 +44,8 @@ BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_EnumLabel(osg::Drawable::COLORS);
 	I_EnumLabel(osg::Drawable::SECONDARY_COLORS);
 	I_EnumLabel(osg::Drawable::FOG_COORDS);
-	I_EnumLabel(osg::Drawable::ATTIBUTE_6);
-	I_EnumLabel(osg::Drawable::ATTIBUTE_7);
+	I_EnumLabel(osg::Drawable::ATTRIBUTE_6);
+	I_EnumLabel(osg::Drawable::ATTRIBUTE_7);
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS);
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS_0);
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS_1);
@@ -90,6 +90,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_Method0(bool, getSupportsDisplayList);
 	I_Method1(void, setUseDisplayList, IN, bool, flag);
 	I_Method0(bool, getUseDisplayList);
+	I_Method1(GLuint &, getDisplayList, IN, unsigned int, contextID);
 	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag);
 	I_Method0(bool, getUseVertexBufferObjects);
 	I_Method0(void, dirtyDisplayList);

@@ -9,18 +9,23 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CameraNode>
 #include <osg/ColorMask>
 #include <osg/CopyOp>
+#include <osg/FrameBufferObject>
+#include <osg/GraphicsContext>
+#include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateAttribute>
+#include <osg/Texture>
 #include <osg/Vec4>
 #include <osg/Viewport>
+#include <osgUtil/PositionalStateContainer>
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/RenderStage>
-#include <osgUtil/RenderStageLighting>
 #include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -41,6 +46,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
 	I_Method0(const char *, className);
 	I_Method0(void, reset);
+	I_Method1(void, setDrawBuffer, IN, GLenum, buffer);
+	I_Method0(GLenum, getDrawBuffer);
+	I_Method1(void, setReadBuffer, IN, GLenum, buffer);
+	I_Method0(GLenum, getReadBuffer);
 	I_Method1(void, setViewport, IN, osg::Viewport *, viewport);
 	I_Method0(const osg::Viewport *, getViewport);
 	I_Method0(osg::Viewport *, getViewport);
@@ -57,31 +66,58 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method0(double, getClearDepth);
 	I_Method1(void, setClearStencil, IN, int, stencil);
 	I_Method0(int, getClearStencil);
-	I_Method1(void, setInheritedRenderStageLightingMatrix, IN, const osg::Matrix &, matrix);
-	I_Method0(const osg::Matrix &, getInheritedRenderStageLightingMatrix);
-	I_Method1(void, setInheritedRenderStageLighting, IN, osgUtil::RenderStageLighting *, rsl);
-	I_Method0(osgUtil::RenderStageLighting *, getInheritedRenderStageLighting);
-	I_Method1(void, setRenderStageLighting, IN, osgUtil::RenderStageLighting *, rsl);
-	I_Method0(osgUtil::RenderStageLighting *, getRenderStageLighting);
+	I_Method1(void, setCameraNode, IN, const osg::CameraNode *, camera);
+	I_Method0(const osg::CameraNode *, getCameraNode);
+	I_MethodWithDefaults3(void, setTexture, IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0);
+	I_Method0(osg::Texture *, getTexture);
+	I_Method1(void, setImage, IN, osg::Image *, image);
+	I_Method0(osg::Image *, getImage);
+	I_Method1(void, setImageReadPixelFormat, IN, GLenum, format);
+	I_Method0(GLenum, getImageReadPixelFormat);
+	I_Method1(void, setImageReadPixelDataType, IN, GLenum, type);
+	I_Method0(GLenum, getImageReadPixelDataType);
+	I_Method1(void, setFrameBufferObject, IN, osg::FrameBufferObject *, fbo);
+	I_Method0(osg::FrameBufferObject *, getFrameBufferObject);
+	I_Method0(const osg::FrameBufferObject *, getFrameBufferObject);
+	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context);
+	I_Method0(osg::GraphicsContext *, getGraphicsContext);
+	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
+	I_Method1(void, setInheritedPositionalStateContainerMatrix, IN, const osg::Matrix &, matrix);
+	I_Method0(const osg::Matrix &, getInheritedPositionalStateContainerMatrix);
+	I_Method1(void, setInheritedPositionalStateContainer, IN, osgUtil::PositionalStateContainer *, rsl);
+	I_Method0(osgUtil::PositionalStateContainer *, getInheritedPositionalStateContainer);
+	I_Method1(void, setPositionalStateContainer, IN, osgUtil::PositionalStateContainer *, rsl);
+	I_Method0(osgUtil::PositionalStateContainer *, getPositionalStateContainer);
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
+	I_Method1(void, copyTexture, IN, osg::State &, state);
 	I_Method2(void, drawPreRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method3(void, drawInner, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous, IN, bool &, doCopyTexture);
 	I_Method2(void, drawPostRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method2(void, drawImplementation, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs);
 	I_Method1(void, addPreRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method1(void, addPostRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
+	I_Property(const osg::CameraNode *, CameraNode);
 	I_Property(const osg::Vec4 &, ClearAccum);
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(double, ClearDepth);
 	I_Property(GLbitfield, ClearMask);
 	I_Property(int, ClearStencil);
 	I_Property(osg::ColorMask *, ColorMask);
-	I_Property(osgUtil::RenderStageLighting *, InheritedRenderStageLighting);
-	I_Property(const osg::Matrix &, InheritedRenderStageLightingMatrix);
-	I_Property(osgUtil::RenderStageLighting *, RenderStageLighting);
+	I_Property(GLenum, DrawBuffer);
+	I_Property(osg::FrameBufferObject *, FrameBufferObject);
+	I_Property(osg::GraphicsContext *, GraphicsContext);
+	I_Property(osg::Image *, Image);
+	I_Property(GLenum, ImageReadPixelDataType);
+	I_Property(GLenum, ImageReadPixelFormat);
+	I_Property(osgUtil::PositionalStateContainer *, InheritedPositionalStateContainer);
+	I_Property(const osg::Matrix &, InheritedPositionalStateContainerMatrix);
+	I_Property(osgUtil::PositionalStateContainer *, PositionalStateContainer);
+	I_Property(GLenum, ReadBuffer);
+	I_ReadOnlyProperty(osg::Texture *, Texture);
 	I_Property(osg::Viewport *, Viewport);
 END_REFLECTOR
 

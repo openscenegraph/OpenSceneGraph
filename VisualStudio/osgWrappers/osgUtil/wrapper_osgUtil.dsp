@@ -132,6 +132,10 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\Optimizer.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\PositionalStateContainer.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\ReflectionMapGenerator.cpp
 # End Source File
 
@@ -149,14 +153,6 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderLeaf.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderStage.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderStageLighting.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderToTextureStage.cpp
 # End Source File
 
 # Begin Source File

@@ -21,21 +21,31 @@
 
 #include <osg/io_utils>
 	
+TYPE_NAME_ALIAS(char, osg::Vec4b::value_type);
+
 BEGIN_VALUE_REFLECTOR(osg::Vec4b)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	I_Constructor0();
-	I_Constructor4(IN, char, r, IN, char, g, IN, char, b, IN, char, a);
-	I_Method0(char *, ptr);
-	I_Method0(const char *, ptr);
-	I_Method4(void, set, IN, char, r, IN, char, g, IN, char, b, IN, char, a);
-	I_Method0(char &, r);
-	I_Method0(char &, g);
-	I_Method0(char &, b);
-	I_Method0(char &, a);
-	I_Method0(char, r);
-	I_Method0(char, g);
-	I_Method0(char, b);
-	I_Method0(char, a);
+	I_Constructor4(IN, osg::Vec4b::value_type, x, IN, osg::Vec4b::value_type, y, IN, osg::Vec4b::value_type, z, IN, osg::Vec4b::value_type, w);
+	I_Method0(osg::Vec4b::value_type *, ptr);
+	I_Method0(const osg::Vec4b::value_type *, ptr);
+	I_Method4(void, set, IN, osg::Vec4b::value_type, x, IN, osg::Vec4b::value_type, y, IN, osg::Vec4b::value_type, z, IN, osg::Vec4b::value_type, w);
+	I_Method0(osg::Vec4b::value_type &, x);
+	I_Method0(osg::Vec4b::value_type &, y);
+	I_Method0(osg::Vec4b::value_type &, z);
+	I_Method0(osg::Vec4b::value_type &, w);
+	I_Method0(osg::Vec4b::value_type, x);
+	I_Method0(osg::Vec4b::value_type, y);
+	I_Method0(osg::Vec4b::value_type, z);
+	I_Method0(osg::Vec4b::value_type, w);
+	I_Method0(osg::Vec4b::value_type &, r);
+	I_Method0(osg::Vec4b::value_type &, g);
+	I_Method0(osg::Vec4b::value_type &, b);
+	I_Method0(osg::Vec4b::value_type &, a);
+	I_Method0(osg::Vec4b::value_type, r);
+	I_Method0(osg::Vec4b::value_type, g);
+	I_Method0(osg::Vec4b::value_type, b);
+	I_Method0(osg::Vec4b::value_type, a);
 END_REFLECTOR
 

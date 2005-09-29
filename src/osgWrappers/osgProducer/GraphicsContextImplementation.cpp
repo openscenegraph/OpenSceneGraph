@@ -24,14 +24,15 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::GraphicsContextImplementation)
 	I_BaseType(osg::GraphicsContext);
 	I_Constructor1(IN, osg::GraphicsContext::Traits *, traits);
 	I_Constructor1(IN, Producer::RenderSurface *, rs);
-	I_Method0(bool, isRealized);
 	I_Method0(Producer::RenderSurface *, getRenderSurface);
 	I_Method0(const Producer::RenderSurface *, getRenderSurface);
-	I_Method0(void, release);
-	I_Method0(void, makeCurrent);
-	I_Method1(void, makeContextCurrent, IN, osg::GraphicsContext *, readContext);
-	I_Method1(void, bindPBufferToTexture, IN, GLenum, buffer);
-	I_Method0(void, swapBuffers);
+	I_Method0(bool, realizeImplementation);
+	I_Method0(bool, isRealizedImplementation);
+	I_Method0(void, closeImplementation);
+	I_Method0(void, makeCurrentImplementation);
+	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext);
+	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer);
+	I_Method0(void, swapBuffersImplementation);
 	I_ReadOnlyProperty(Producer::RenderSurface *, RenderSurface);
 END_REFLECTOR
 

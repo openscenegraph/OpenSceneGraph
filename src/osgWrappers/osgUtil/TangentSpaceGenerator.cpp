@@ -26,7 +26,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
 	I_ConstructorWithDefaults2(IN, const osgUtil::TangentSpaceGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_MethodWithDefaults2(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0);
+	I_MethodWithDefaults3(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0, IN, bool, use_indices, false);
 	I_Method0(osg::Vec4Array *, getTangentArray);
 	I_Method0(const osg::Vec4Array *, getTangentArray);
 	I_Method1(void, setTangentArray, IN, osg::Vec4Array *, array);

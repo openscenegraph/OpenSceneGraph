@@ -24,9 +24,9 @@
 
 TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgUtil::Statistics::PrimitivePair);
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, osgUtil::Statistics::PrimtiveValueMap);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, osgUtil::Statistics::PrimitiveValueMap);
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimtiveCountMap);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap);
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::statsType)
 	I_EnumLabel(osgUtil::Statistics::STAT_NONE);
@@ -68,8 +68,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_Method1(void, setDepth, IN, int, d);
 	I_Method1(void, addBins, IN, int, np);
 	I_Method1(void, setBinNo, IN, int, n);
-	I_Method0(osgUtil::Statistics::PrimtiveCountMap::iterator, GetPrimitivesBegin);
-	I_Method0(osgUtil::Statistics::PrimtiveCountMap::iterator, GetPrimitivesEnd);
+	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesBegin);
+	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesEnd);
 	I_WriteOnlyProperty(int, BinNo);
 	I_ReadOnlyProperty(int, Bins);
 	I_WriteOnlyProperty(int, Depth);

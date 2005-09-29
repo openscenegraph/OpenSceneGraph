@@ -268,6 +268,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\GraphicsContext.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\GraphicsThread.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Group.cpp
 # End Source File
 

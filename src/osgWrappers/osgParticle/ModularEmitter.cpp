@@ -38,6 +38,8 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	I_Method0(osgParticle::Counter *, getCounter);
 	I_Method0(const osgParticle::Counter *, getCounter);
 	I_Method1(void, setCounter, IN, osgParticle::Counter *, c);
+	I_Method0(float, getNumParticlesToCreateMovementCompenstationRatio);
+	I_Method1(void, setNumParticlesToCreateMovementCompenstationRatio, IN, float, r);
 	I_Method0(osgParticle::Placer *, getPlacer);
 	I_Method0(const osgParticle::Placer *, getPlacer);
 	I_Method1(void, setPlacer, IN, osgParticle::Placer *, p);
@@ -45,6 +47,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	I_Method0(const osgParticle::Shooter *, getShooter);
 	I_Method1(void, setShooter, IN, osgParticle::Shooter *, s);
 	I_Property(osgParticle::Counter *, Counter);
+	I_WriteOnlyProperty(float, NumParticlesToCreateMovementCompenstationRatio);
 	I_Property(osgParticle::Placer *, Placer);
 	I_Property(osgParticle::Shooter *, Shooter);
 END_REFLECTOR

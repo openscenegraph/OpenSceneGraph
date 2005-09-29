@@ -40,6 +40,8 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
 	I_Method3(void, addVertex, IN, float, x, IN, float, y, IN, float, z);
 	I_Method1(void, removeVertex, IN, int, i);
 	I_Method1(void, place, IN, osgParticle::Particle *, P);
+	I_Method0(osg::Vec3, getControlPosition);
+	I_ReadOnlyProperty(osg::Vec3, ControlPosition);
 	I_IndexedProperty1(const osg::Vec3 &, Vertex, int, i);
 END_REFLECTOR
 

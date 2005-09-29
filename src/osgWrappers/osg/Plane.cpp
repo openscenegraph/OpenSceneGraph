@@ -35,6 +35,7 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_Constructor1(IN, const osg::Vec4 &, vec);
 	I_Constructor2(IN, const osg::Vec3 &, norm, IN, float, d);
 	I_Constructor3(IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3);
+	I_Constructor2(IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point);
 	I_Method1(void, set, IN, const osg::Plane &, pl);
 	I_Method4(void, set, IN, float, a, IN, float, b, IN, float, c, IN, float, d);
 	I_Method1(void, set, IN, const osg::Vec4 &, vec);

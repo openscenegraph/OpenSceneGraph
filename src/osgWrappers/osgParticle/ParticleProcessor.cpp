@@ -60,6 +60,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
 	I_Method0(const osg::Matrix &, getLocalToWorldMatrix);
 	I_Method0(const osg::Matrix &, getWorldToLocalMatrix);
+	I_Method0(const osg::Matrix &, getPreviousLocalToWorldMatrix);
+	I_Method0(const osg::Matrix &, getPreviousWorldToLocalMatrix);
 	I_Method1(osg::Vec3, transformLocalToWorld, IN, const osg::Vec3 &, P);
 	I_Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P);
 	I_Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P);
@@ -71,6 +73,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	I_Property(double, LifeTime);
 	I_ReadOnlyProperty(const osg::Matrix &, LocalToWorldMatrix);
 	I_Property(osgParticle::ParticleSystem *, ParticleSystem);
+	I_ReadOnlyProperty(const osg::Matrix &, PreviousLocalToWorldMatrix);
+	I_ReadOnlyProperty(const osg::Matrix &, PreviousWorldToLocalMatrix);
 	I_Property(osgParticle::ParticleProcessor::ReferenceFrame, ReferenceFrame);
 	I_Property(double, ResetTime);
 	I_Property(double, StartTime);

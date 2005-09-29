@@ -2324,6 +2324,7 @@ template<class I>
 unsigned int TriangleIntersectOperator::Polygon::computeHitEdges(TriangleIntersectOperator& tio, I intersector, SurfaceType surfaceType)
 {
     // collect all the intersecting edges
+    bool needToDisgardEdges = false;
     EdgeList hitEdges;
     for(EdgeList::iterator itr = _edges.begin();
         itr != _edges.end();
@@ -2331,10 +2332,10 @@ unsigned int TriangleIntersectOperator::Polygon::computeHitEdges(TriangleInterse
     {
         Edge* edge = const_cast<Edge*>(itr->get());
         if (intersector(edge)) hitEdges.push_back(edge);
+        if (edge->completlyOutside()) needToDisgardEdges = true;
     }
 
-    if (hitEdges.empty()) return 0;
-
+    if (hitEdges.empty() && !needToDisgardEdges) return 0;
 
     unsigned int numHitEdges = hitEdges.size();
 
@@ -2371,16 +2372,19 @@ unsigned int TriangleIntersectOperator::Polygon::computeHitEdges(TriangleInterse
         {
             if (edge->_intersectionType==Edge::NO_INTERSECTION)
             {
+                osg::notify(osg::NOTICE)<<"accept A"<<std::endl;
                 newEdgeList.push_back(edge);
             }
             else
             {
                 if (!edge->_p1Outside)
                 {
+                    osg::notify(osg::NOTICE)<<"accept B"<<std::endl;
                     newEdgeList.push_back(new Edge(edge->_intersectionVertexIndex, edge->_p1, edge->_intersectionEdge));
                 }
                 else if (!edge->_p2Outside)
                 {
+                    osg::notify(osg::NOTICE)<<"accept C"<<std::endl;
                     newEdgeList.push_back(new Edge(edge->_intersectionVertexIndex, edge->_p2, edge->_intersectionEdge));
                 }
                 else
@@ -2390,6 +2394,10 @@ unsigned int TriangleIntersectOperator::Polygon::computeHitEdges(TriangleInterse
 
             }
 
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<">>>>>>>>>>>>>>> disgarding Edge. <<<<<<<<<<<<<<<"<<std::endl;
         }
     }
 
@@ -2419,8 +2427,8 @@ bool TriangleIntersectOperator::Polygon::createLine(TriangleIntersectOperator& t
         ++itr)
     {
 
-#if 0
-//        if ((*itr)->_intersectionEdge)
+#if 1
+        if ((*itr)->_intersectionEdge)
         {
             edges.push_back(*itr);
         }
@@ -2432,7 +2440,7 @@ bool TriangleIntersectOperator::Polygon::createLine(TriangleIntersectOperator& t
             rc.add(tio._regions[(*itr)->_p1]);
             rc.add(tio._regions[(*itr)->_p2]);
 
-#if 1
+    #if 1
 
             Region::Classification classification = rc.overallClassification((*itr)->_intersectionEdge, adjacentEdge[(*itr)->_intersectionEdge]);
 
@@ -2441,12 +2449,12 @@ bool TriangleIntersectOperator::Polygon::createLine(TriangleIntersectOperator& t
             // reject if outside.
             if (classification==Region::OUTSIDE)
             {
-                osg::notify(osg::NOTICE)<<"  disgarding outside edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
+                osg::notify(osg::NOTICE)<<"*********************************  disgarding outside edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
                 edges.push_back(*itr);
             }
             else if (classification==Region::INSIDE)
             {
-                osg::notify(osg::NOTICE)<<"  disgarding inside edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
+                osg::notify(osg::NOTICE)<<"----------------------------------  disgarding inside edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
 //                edges.push_back(*itr);
             }
             else
@@ -2454,7 +2462,7 @@ bool TriangleIntersectOperator::Polygon::createLine(TriangleIntersectOperator& t
                 osg::notify(osg::NOTICE)<<"  accepting edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
                 edges.push_back(*itr);
             }
-#else
+    #else
             if (rc.intersecting((*itr)->_intersectionEdge))
             {
                 osg::notify(osg::NOTICE)<<"  accepting edge "<<(*itr)->_p1<<" "<<(*itr)->_p2<<std::endl;
@@ -2598,25 +2606,25 @@ void TriangleIntersectOperator::countMultipleIntersections()
             osg::notify(osg::NOTICE)<<"Testing Polygon with numIntersections = "<<numIntersections<<std::endl;
             Polygon polygon(tri);
             numIntersections=0;
-            numIntersections += polygon.computeHitEdges(*this, RadiusIntersector(*this), RADIUS_SURFACE);
+
+            osg::notify(osg::NOTICE)<<".......LEFT_SURFACE......"<<std::endl;
             numIntersections += polygon.computeHitEdges(*this, AzimPlaneIntersector(*this,_azMin, true), LEFT_SURFACE);
+
+            osg::notify(osg::NOTICE)<<".......RIGHT_SURFACE......"<<std::endl;
             numIntersections += polygon.computeHitEdges(*this, AzimPlaneIntersector(*this,_azMax, false), RIGHT_SURFACE);
+
+            osg::notify(osg::NOTICE)<<".......BOTTOM_SURFACE......"<<std::endl;
             numIntersections += polygon.computeHitEdges(*this, ElevationIntersector(*this,_elevMin, true), BOTTOM_SURFACE);
+
+            osg::notify(osg::NOTICE)<<".......TOP_SURFACE......"<<std::endl;
             numIntersections += polygon.computeHitEdges(*this, ElevationIntersector(*this,_elevMax, false), TOP_SURFACE);
+
+            osg::notify(osg::NOTICE)<<".......RADIUS_SURFACE......"<<std::endl;
+            numIntersections += polygon.computeHitEdges(*this, RadiusIntersector(*this), RADIUS_SURFACE);
 
             if (numIntersections>0)
             {
-#if 1           
                 polygon.createLine(*this, _generatedLines);
-#else            
-                osg::notify(osg::NOTICE)<<"Testing Polygon with numIntersections = "<<numIntersections<<std::endl;
-                osg::Vec3Array* newLine = new osg::Vec3Array;
-                newLine->push_back(_originalVertices[tri->_p1]+_centre);
-                newLine->push_back(_originalVertices[tri->_p2]+_centre);
-                newLine->push_back(_originalVertices[tri->_p3]+_centre);
-                newLine->push_back(_originalVertices[tri->_p1]+_centre);
-                _generatedLines.push_back(newLine);
-#endif                
             }
         }
 

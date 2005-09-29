@@ -33,8 +33,8 @@ namespace osgIntrospection
     template<typename T>
     struct is_polymorphic
     {
-        class dummy1: public T { ~dummy1(); };
-        class dummy2: public T { virtual ~dummy2(); };
+        struct dummy1: T { dummy1(); ~dummy1(); };
+        struct dummy2: T { dummy2(); virtual ~dummy2(); };
         enum { value = sizeof(dummy1) == sizeof(dummy2) };
     };
 
@@ -1595,4 +1595,5 @@ struct BaseTypeConverters<x, reflected_type, true>
     addMethod(new osgIntrospection::StaticMethodInfo16<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15>(qualifyName(#fn), &reflected_type::fn, params))) 
 
 #endif
+
 

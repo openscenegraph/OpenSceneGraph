@@ -343,7 +343,7 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
         camera->attach(osg::CameraNode::DEPTH_BUFFER, texture);

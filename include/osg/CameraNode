@@ -190,8 +190,8 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
             SEPERATE_WINDOW
         };
 
-        void setRenderTargetImplmentation(RenderTargetImplementation impl) { _renderTargetImplementation = impl; }
-        RenderTargetImplementation getRenderTargetImplmentation() const { return _renderTargetImplementation; }
+        void setRenderTargetImplementation(RenderTargetImplementation impl) { _renderTargetImplementation = impl; }
+        RenderTargetImplementation getRenderTargetImplementation() const { return _renderTargetImplementation; }
 
 
         /** Set the draw buffer used at the start of each frame draw. 

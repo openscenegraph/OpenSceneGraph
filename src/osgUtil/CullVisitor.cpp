@@ -1217,7 +1217,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
             if (itr->second._image.valid()) rtts->setImage(itr->second._image.get());
         }
         
-        if (camera.getRenderTargetImplmentation()==osg::CameraNode::FRAME_BUFFER_OBJECT)
+        if (camera.getRenderTargetImplementation()==osg::CameraNode::FRAME_BUFFER_OBJECT)
         {
             osg::ref_ptr<osg::FrameBufferObject> fbo = rtts->getFrameBufferObject();
             
@@ -1274,8 +1274,8 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 }
             }
         }
-        else if (camera.getRenderTargetImplmentation()==osg::CameraNode::PIXEL_BUFFER ||
-                 camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW )
+        else if (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER ||
+                 camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW )
         {
             osg::ref_ptr<osg::GraphicsContext> context = rtts->getGraphicsContext();
             if (!context)
@@ -1285,9 +1285,9 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 
                 traits->_width = viewport->width();
                 traits->_height = viewport->height();
-                traits->_pbuffer = (camera.getRenderTargetImplmentation()==osg::CameraNode::PIXEL_BUFFER);
-                traits->_windowDecoration = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
-                traits->_doubleBuffer = (camera.getRenderTargetImplmentation()==osg::CameraNode::SEPERATE_WINDOW);
+                traits->_pbuffer = (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER);
+                traits->_windowDecoration = (camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW);
+                traits->_doubleBuffer = (camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW);
 
 
                 rtts->setDrawBuffer(GL_FRONT);

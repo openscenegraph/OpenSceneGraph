@@ -72,7 +72,7 @@ void OverlayNode::init()
         _camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        _camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        _camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
         _camera->attach(osg::CameraNode::COLOR_BUFFER, _texture.get());

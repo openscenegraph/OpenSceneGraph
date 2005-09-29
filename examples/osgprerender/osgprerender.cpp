@@ -229,7 +229,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplmentation(renderImplementation);
+        camera->setRenderTargetImplementation(renderImplementation);
 
         // attach the texture and use it as the color buffer.
         camera->attach(osg::CameraNode::COLOR_BUFFER, texture);

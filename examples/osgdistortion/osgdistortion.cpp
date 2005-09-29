@@ -58,7 +58,7 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
         camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
@@ -157,7 +157,7 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         camera->setRenderOrder(osg::CameraNode::NESTED_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplmentation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
         camera->attach(osg::CameraNode::COLOR_BUFFER, texture);

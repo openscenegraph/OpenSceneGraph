@@ -1393,10 +1393,6 @@ struct TriangleIntersectOperator
             double rad2 = vertex.length2();
             double length_xy = sqrtf(vertex.x()*vertex.x() + vertex.y()*vertex.y());        
             double elevation = atan2((double)vertex.z(),length_xy);
-            double azim = atan2(vertex.x(),vertex.y());
-            double azimDelta1 = azim-azimCenter;
-            double azimDelta2 = 2.0*osg::PI + azim-azimCenter;
-            double azimDelta = std::min(fabs(azimDelta1), fabs(azimDelta2));
             
             // radius surface
             if      (rad2 > radius2) _radiusSurface = OUTSIDE;
@@ -1413,29 +1409,37 @@ struct TriangleIntersectOperator
             else if (elevation<elevMax) _topSurface = INSIDE;
             else                        _topSurface = INTERSECTS;
 
-            if (fabs(azimDelta)>azimRange)
+
+            double dot_alphaMin = cos(azimMin)*vertex.x() - sin(azimMin)*vertex.y();
+            if (dot_alphaMin<0.0) _leftSurface = OUTSIDE;
+            else if (dot_alphaMin>0.0) _leftSurface = INSIDE;
+            else _leftSurface = INTERSECTS;
+                        
+            double dot_alphaMax = cos(azimMax)*vertex.x() - sin(azimMax)*vertex.y();
+            if (dot_alphaMax>0.0) _rightSurface = OUTSIDE;
+            else if (dot_alphaMax<0.0) _rightSurface = INSIDE;
+            else _rightSurface = INTERSECTS;
+                        
+            double azim = atan2(vertex.x(),vertex.y());
+            double azimDelta1 = azim-azimCenter;
+            double azimDelta2 = 2.0*osg::PI + azim-azimCenter;
+            double azimDelta = std::min(fabs(azimDelta1), fabs(azimDelta2));
+            if (azimDelta>azimRange)
             {
-                _leftSurface = (azimDelta<-azimRange || azimDelta>(osg::PI-azimRange)) ? OUTSIDE : INSIDE;
-                _rightSurface = (azimDelta>azimRange || azimDelta<(azimRange-osg::PI)) ? OUTSIDE : INSIDE;
+                _leftRightSurfaces = OUTSIDE;
             }
-            else if (azimDelta==-azimRange)
+            else if (azimDelta<azimRange)
             {
-                _leftSurface = INTERSECTS;
-                _rightSurface = INSIDE;
+                _leftRightSurfaces = INSIDE;
             }
             else if (azimDelta==azimRange)
             {
-                _leftSurface = INSIDE;
-                _rightSurface = INTERSECTS;
-            }
-            else
-            {
-                _leftSurface = INSIDE;
-                _rightSurface = INSIDE;
+                _leftRightSurfaces = INTERSECTS;
             }
         }
     
         Classification _radiusSurface;
+        Classification _leftRightSurfaces;
         Classification _leftSurface;
         Classification _rightSurface;
         Classification _bottomSurface;
@@ -1449,6 +1453,9 @@ struct TriangleIntersectOperator
             _outside_radiusSurface(0),
             _inside_radiusSurface(0),
             _intersects_radiusSurface(0),
+            _outside_leftRightSurfaces(0),
+            _inside_leftRightSurfaces(0),
+            _intersects_leftRightSurfaces(0),
             _outside_leftSurface(0),
             _inside_leftSurface(0),
             _intersects_leftSurface(0),
@@ -1471,6 +1478,10 @@ struct TriangleIntersectOperator
             if (region._radiusSurface == Region::INSIDE)        ++_inside_radiusSurface;
             if (region._radiusSurface == Region::INTERSECTS)    ++_intersects_radiusSurface;
 
+            if (region._leftRightSurfaces == Region::OUTSIDE)    ++_outside_leftRightSurfaces;
+            if (region._leftRightSurfaces == Region::INSIDE)     ++_inside_leftRightSurfaces;
+            if (region._leftRightSurfaces == Region::INTERSECTS) ++_intersects_leftRightSurfaces;
+
             if (region._leftSurface == Region::OUTSIDE)         ++_outside_leftSurface;
             if (region._leftSurface == Region::INSIDE)          ++_inside_leftSurface;
             if (region._leftSurface == Region::INTERSECTS)      ++_intersects_leftSurface;
@@ -1492,15 +1503,13 @@ struct TriangleIntersectOperator
         {
             // if all vertices are outside any of the surfaces then we are completely outside
             if (_outside_radiusSurface==_numVertices ||
-                _outside_leftSurface==_numVertices ||
-                _outside_rightSurface==_numVertices ||
+                _outside_leftRightSurfaces==_numVertices ||
                 _outside_topSurface==_numVertices ||
                 _outside_bottomSurface==_numVertices) return Region::OUTSIDE;
 
             // if all the vertices on all the sides and inside then we are completely inside
             if (_inside_radiusSurface==_numVertices &&
-                _inside_leftSurface==_numVertices &&
-                _inside_rightSurface==_numVertices && 
+                _inside_leftRightSurfaces==_numVertices &&
                 _inside_topSurface==_numVertices && 
                 _inside_bottomSurface==_numVertices) return Region::INSIDE;
             
@@ -1560,6 +1569,10 @@ struct TriangleIntersectOperator
         unsigned int _outside_radiusSurface;
         unsigned int _inside_radiusSurface;
         unsigned int _intersects_radiusSurface;
+
+        unsigned int _outside_leftRightSurfaces;
+        unsigned int _inside_leftRightSurfaces;
+        unsigned int _intersects_leftRightSurfaces;
 
         unsigned int _outside_leftSurface;
         unsigned int _inside_leftSurface;
@@ -1639,10 +1652,10 @@ struct TriangleIntersectOperator
             return; 
         }
     
-        if (classification==Region::INSIDE)
+        if (rc.numberOfIntersectingSurfaces()==0)
         {
             ++_numInside;
-            return; 
+            return;
         }
 
         ++_numIntersecting;
@@ -1772,10 +1785,18 @@ struct TriangleIntersectOperator
             rc.add(_regions[tri->_p2]);
             rc.add(_regions[tri->_p3]);
             int numIntersections = rc.numberOfIntersectingSurfaces();
+    #if 0
             if (numIntersections==1)
             {
                 buildEdges(tri);
             }
+    #else
+            if (numIntersections>=1)
+            {
+                buildEdges(tri);
+            }
+    #endif
+        
 #else
             buildEdges(tri);
 #endif
@@ -1826,11 +1847,13 @@ struct TriangleIntersectOperator
 
     void countMultipleIntersections();
         
-    void connectIntersections(EdgeList& hitEdges)
+    SphereSegment::LineList connectIntersections(EdgeList& hitEdges)
     {
+        SphereSegment::LineList lineList;
+        
         osg::notify(osg::NOTICE)<<"Number of edge intersections "<<hitEdges.size()<<std::endl;
         
-        if (hitEdges.empty()) return;
+        if (hitEdges.empty()) return lineList;
         
         // now need to build the toTraverse list for each hit edge,
         // but should only contain traingles that actually hit the intersection surface
@@ -1906,7 +1929,7 @@ struct TriangleIntersectOperator
 
             
             osg::Vec3Array* newLine = new osg::Vec3Array;
-            _generatedLines.push_back(newLine);
+            lineList.push_back(newLine);
 
             Edge* edge = hitr->get();
             while (edge)
@@ -1950,12 +1973,12 @@ struct TriangleIntersectOperator
                 edge = newEdge;
                 
             }
-        
         }
+        return lineList;
     }
     
     template<class I>
-    void computeIntersections(I intersector)
+    SphereSegment::LineList computeIntersections(I intersector)
     {
         // collect all the intersecting edges
         EdgeList hitEdges;
@@ -1970,8 +1993,86 @@ struct TriangleIntersectOperator
             }
         }
         
-        connectIntersections(hitEdges);
+        return connectIntersections(hitEdges);
     }
+    
+    template<class I>
+    void trim(SphereSegment::LineList& lineList, osg::Vec3Array* sourceLine, I intersector)
+    {
+        if (sourceLine->empty()) return;
+        
+        osg::notify(osg::NOTICE)<<"Testing line of "<<sourceLine->size()<<std::endl;
+
+        unsigned int first=0;
+        while (first<sourceLine->size())
+        {
+            // find first valid vertex.
+            for(; first<sourceLine->size(); ++first)
+            {
+                if (intersector.distance((*sourceLine)[first]-_centre)>=0.0) break;
+            }
+            
+            if (first==sourceLine->size())
+            {
+                osg::notify(osg::NOTICE)<<"No valid points found"<<std::endl;
+                return;
+            }
+
+            // find last valid vertex.
+            unsigned int last = first+1;
+            for(; last<sourceLine->size(); ++last)
+            {
+                if (intersector.distance((*sourceLine)[last]-_centre)<0.0) break;
+            }
+            
+            if (first==0 && last==sourceLine->size())
+            {
+                osg::notify(osg::NOTICE)<<"Copying complete line"<<std::endl;
+                lineList.push_back(sourceLine);
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Copying partial line line"<<first<<" "<<last<<std::endl;
+
+                osg::Vec3Array* newLine = new osg::Vec3Array;
+                
+                if (first>0)
+                {
+                    newLine->push_back(intersector.intersectionPoint((*sourceLine)[first-1]-_centre, (*sourceLine)[first]-_centre)+_centre);
+                }
+                
+                for(unsigned int i=first; i<last; ++i)
+                {
+                    newLine->push_back((*sourceLine)[i]);
+                }
+                if (last<sourceLine->size())
+                {
+                    newLine->push_back(intersector.intersectionPoint((*sourceLine)[last-1]-_centre, (*sourceLine)[last]-_centre)+_centre);
+                }
+
+                lineList.push_back(newLine);
+            }
+            
+            first = last;
+        }
+    }
+
+    template<class I>
+    void trim(SphereSegment::LineList& lineList, I intersector)
+    {
+        SphereSegment::LineList newLines;
+    
+        // collect all the intersecting edges
+        for(SphereSegment::LineList::iterator itr = lineList.begin();
+            itr != lineList.end();
+            ++itr)
+        {
+            osg::Vec3Array* line = itr->get();
+            trim(newLines, line, intersector);
+        }
+        lineList.swap(newLines);
+    }
+
 };
 
 bool computeQuadraticSolution(double a, double b, double c, double& s1, double& s2)
@@ -2077,10 +2178,12 @@ struct AzimPlaneIntersector
         _lowerOutside(lowerOutside)
     {
         _plane.set(cos(azim),-sin(azim),0.0,0.0);
+        _endPlane.set(sin(azim),cos(azim),0.0,0.0);
     }
         
     TriangleIntersectOperator& _tif;
     osg::Plane _plane;
+    osg::Plane _endPlane;
     bool _lowerOutside;
 
     inline bool operator() (TriangleIntersectOperator::Edge* edge)
@@ -2102,6 +2205,12 @@ struct AzimPlaneIntersector
         // if both points outside then disgard
         if (d1>0.0 && d2>0.0) return false;
         
+#if 0        
+        double e1 = _endPlane.distance(v1);
+        double e2 = _endPlane.distance(v2);
+        if (e1<0.0 && e2<0.0) return false;
+#endif
+
         if (d1==0.0)
         {
             if (d2==0.0)
@@ -2143,6 +2252,30 @@ struct AzimPlaneIntersector
         }
         
         return true;
+    }
+
+    // compute the intersection between line segment and surface
+    osg::Vec3 intersectionPoint(const osg::Vec3& v1, const osg::Vec3& v2)
+    {
+        double d1 = _plane.distance(v1);
+        double d2 = _plane.distance(v2);
+
+        double div = d2-d1;
+        if (div==0.0) 
+        {
+            return v1;
+        }
+
+        double r =  -d1 / div;
+        double one_minus_r = 1.0-r;
+
+        return v1*one_minus_r + v2*r;
+    }
+
+    // positive distance to the inside.
+    double distance(const osg::Vec3& v)
+    {
+        return _lowerOutside ? _plane.distance(v) : -_plane.distance(v) ;
     }
 };
 
@@ -2235,6 +2368,53 @@ struct ElevationIntersector
         
         return true;
     }
+
+    // compute the intersection between line segment and surface
+    osg::Vec3 intersectionPoint(const osg::Vec3& v1, const osg::Vec3& v2)
+    {
+        double dx = v2.x()-v1.x();
+        double dy = v2.y()-v1.y();
+        double dz = v2.z()-v1.z();
+        double t = tan(_elev);
+        double tt = t*t;
+        double a = dz*dz-tt*(dx*dx + dy*dy);
+        double b = 2.0*(v1.z()*dz - tt*(v1.x()*dx + v1.y()*dy));
+        double c = v1.z()*v1.z() - tt*(v1.x()*v1.x() + v1.y()*v1.y());
+
+        double s1, s2;
+        if (!computeQuadraticSolution(a,b,c,s1,s2))
+        {
+            osg::notify(osg::NOTICE)<<"Warning::neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+            return v1;
+        }
+        double r = 0.0;
+        if (s1>=0.0 && s1<=1.0)
+        {
+            r = s1;
+        }
+        else if (s2>=0.0 && s2<=1.0)
+        {
+            r = s2;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Warning::neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+            return v1;
+        }
+
+        double one_minus_r = 1.0-r;
+        return v1*one_minus_r + v2*r;
+    }
+
+    // positive distance to the inside.
+    double distance(const osg::Vec3& v)
+    {
+        double length_xy = sqrt(v.x()*v.x() + v.y()*v.y());
+        double computedElev = atan2(v.z(),length_xy);
+
+        return _lowerOutside ? computedElev-_elev : _elev-computedElev ;
+    }
+
 };
 
 struct RadiusIntersector
@@ -2317,6 +2497,50 @@ struct RadiusIntersector
         
         return true;
     }
+
+    // compute the intersection between line segment and surface
+    osg::Vec3 intersectionPoint(const osg::Vec3& v1, const osg::Vec3& v2)
+    {
+        double dx = v2.x()-v1.x();
+        double dy = v2.y()-v1.y();
+        double dz = v2.z()-v1.z();
+        double a = dx*dx + dy*dy + dz*dz;
+        double b = 2.0*(v1.x()*dx + v1.y()*dy + v1.z()*dz);
+        double c = v1.x()*v1.x() +  v1.y()*v1.y() + v1.z()*v1.z() - _tif._radius*_tif._radius;
+            
+        double s1, s2;
+        if (!computeQuadraticSolution(a,b,c,s1,s2))
+        {
+            osg::notify(osg::NOTICE)<<"Warning: neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+            return v1;
+        }
+        double r = 0.0;
+        if (s1>=0.0 && s1<=1.0)
+        {
+            r = s1;
+        }
+        else if (s2>=0.0 && s2<=1.0)
+        {
+            r = s2;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Warning: neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+            return v1;
+        }
+
+        double one_minus_r = 1.0-r;
+        return v1*one_minus_r + v2*r;
+            
+    }
+
+    // positive distance to the inside.
+    double distance(const osg::Vec3& v)
+    {
+        return _tif._radius-v.length();
+    }
+
+
 };
 
 
@@ -2669,13 +2893,19 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif.removeDuplicateTriangles();
     tif.buildEdges();
 
-    tif.computeIntersections(RadiusIntersector(tif));
-    tif.computeIntersections(AzimIntersector(tif,_azMin, true));
-    tif.computeIntersections(AzimIntersector(tif,_azMax, false));
-    tif.computeIntersections(ElevationIntersector(tif,_elevMin, true));
-    tif.computeIntersections(ElevationIntersector(tif,_elevMax, false));
+    SphereSegment::LineList radiusLines = tif.computeIntersections(RadiusIntersector(tif));
+    SphereSegment::LineList azMinLines = tif.computeIntersections(AzimPlaneIntersector(tif,_azMin, true));
+    SphereSegment::LineList azMaxLines = tif.computeIntersections(AzimPlaneIntersector(tif,_azMax, false));
+    SphereSegment::LineList elevMinLines = tif.computeIntersections(ElevationIntersector(tif,_elevMin, true));
+    SphereSegment::LineList elevMaxLines = tif.computeIntersections(ElevationIntersector(tif,_elevMax, false));
  
-    tif.countMultipleIntersections();
+    tif._generatedLines.insert(tif._generatedLines.end(), radiusLines.begin(), radiusLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), azMinLines.begin(), azMinLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), azMaxLines.begin(), azMaxLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), elevMinLines.begin(), elevMinLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), elevMaxLines.begin(), elevMaxLines.end());
+ 
+   //  tif.countMultipleIntersections();
  
     return tif._generatedLines;
 }
@@ -2712,14 +2942,59 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
     tif.removeDuplicateVertices();
     tif.removeDuplicateTriangles();
     tif.buildEdges();
+    
+    RadiusIntersector radiusIntersector(tif);
+    AzimPlaneIntersector azMinIntersector(tif,_azMin, true);
+    AzimPlaneIntersector azMinEndIntersector(tif,_azMin-osg::PI*0.5, true);
+    AzimPlaneIntersector azMaxIntersector(tif,_azMax, false);
+    AzimPlaneIntersector azMaxEndIntersector(tif,_azMax-osg::PI*0.5, true);
+    ElevationIntersector elevMinIntersector(tif,_elevMin, true);
+    ElevationIntersector elevMaxIntersector(tif,_elevMax, false);
 
-    tif.computeIntersections(RadiusIntersector(tif));
-    tif.computeIntersections(AzimIntersector(tif,_azMin, true));
-    tif.computeIntersections(AzimIntersector(tif,_azMax, false));
-    tif.computeIntersections(ElevationIntersector(tif,_elevMin, true));
-    tif.computeIntersections(ElevationIntersector(tif,_elevMax, false));
+    // create the line intersections with the terrain
+    SphereSegment::LineList radiusLines = tif.computeIntersections(radiusIntersector);
+    SphereSegment::LineList azMinLines = tif.computeIntersections(azMinIntersector);
+    SphereSegment::LineList azMaxLines = tif.computeIntersections(azMaxIntersector);
+    SphereSegment::LineList elevMinLines = tif.computeIntersections(elevMinIntersector);
+    SphereSegment::LineList elevMaxLines = tif.computeIntersections(elevMaxIntersector);
+    
+    // trim the azimuth and elevation intersection lines by the radius
+    tif.trim(azMinLines,radiusIntersector);
+    tif.trim(azMaxLines,radiusIntersector);
+    tif.trim(elevMinLines,radiusIntersector);
+    tif.trim(elevMaxLines,radiusIntersector);
+
+    // trim the radius and elevation intersection lines by the azimMin 
+    tif.trim(radiusLines, azMinIntersector);
+    tif.trim(elevMinLines, azMinIntersector);
+    tif.trim(elevMaxLines, azMinIntersector);
+
+    // trim the radius and elevation intersection lines by the azimMax 
+    tif.trim(radiusLines, azMaxIntersector);
+    tif.trim(elevMinLines, azMaxIntersector);
+    tif.trim(elevMaxLines, azMaxIntersector);
+
+    // trim the radius and elevation intersection lines by the elevMin 
+    tif.trim(radiusLines, elevMinIntersector);
+    tif.trim(azMinLines, elevMinIntersector);
+    tif.trim(azMaxLines, elevMinIntersector);
+
+    // trim the radius and elevation intersection lines by the elevMax 
+    tif.trim(radiusLines, elevMaxIntersector);
+    tif.trim(azMinLines, elevMaxIntersector);
+    tif.trim(azMaxLines, elevMaxIntersector);
+
+    // trim the centeral ends of the azim lines
+    tif.trim(azMinLines,azMinEndIntersector);
+    tif.trim(azMaxLines,azMaxEndIntersector);
+
+    tif._generatedLines.insert(tif._generatedLines.end(), radiusLines.begin(), radiusLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), azMinLines.begin(), azMinLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), azMaxLines.begin(), azMaxLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), elevMinLines.begin(), elevMinLines.end());
+    tif._generatedLines.insert(tif._generatedLines.end(), elevMaxLines.begin(), elevMaxLines.end());
  
-    tif.countMultipleIntersections();
+    // tif.countMultipleIntersections();
  
     osg::Geode* geode = new osg::Geode;
 
@@ -2737,7 +3012,7 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
         geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, vertices->getNumElements()));
     }
 
-
+#if 0
     float radius = 0.1f;
     for(unsigned int i=0; i<tif._originalVertices.size(); ++i)
     {
@@ -2746,15 +3021,6 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
         TriangleIntersectFunctor::RegionCounter rc;
         rc.add(tif._regions[i]);
 
-#if 0
-        unsigned int _outside_leftSurface;
-        unsigned int _inside_leftSurface;
-        unsigned int _intersects_leftSurface;
-
-        unsigned int _outside_rightSurface;
-        unsigned int _inside_rightSurface;
-        unsigned int _intersects_rightSurface;
-#else
         TriangleIntersectFunctor::Region::Classification region = rc.overallClassification();
         if (region==TriangleIntersectFunctor::Region::OUTSIDE)
         {
@@ -2768,10 +3034,10 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
         {
             sd->setColor(osg::Vec4(1.0,1.0,1.0,1.0));
         }
-#endif        
         
         geode->addDrawable(sd);
     }
+#endif
 
     return geode;
 }

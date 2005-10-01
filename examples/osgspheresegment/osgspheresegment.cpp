@@ -224,7 +224,7 @@ osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
 // MAIN SCENE GRAPH BUILDING FUNCTION
 //////////////////////////////////////////////////////////////////////////////
 
-void build_world(osg::Group *root)
+void build_world(osg::Group *root, unsigned int testCase)
 {
 
     // create terrain
@@ -328,20 +328,61 @@ void build_world(osg::Group *root)
     // create sphere segment
     osg::ref_ptr<osgSim::SphereSegment> ss = 0;
     {
-        ss = new osgSim::SphereSegment(
-                        computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
-                        500.0f, // radius
-                        osg::DegreesToRadians(135.0f),
-                        osg::DegreesToRadians(245.0f),
-                        osg::DegreesToRadians(-10.0f),
-                        osg::DegreesToRadians(30.0f),
-                        60);
+
+        switch(testCase)
+        {
+            case(0):        
+                ss = new osgSim::SphereSegment(
+                                computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
+                                510.0f, // radius
+                                osg::DegreesToRadians(135.0f),
+                                osg::DegreesToRadians(240.0f),
+                                osg::DegreesToRadians(-10.0f),
+                                osg::DegreesToRadians(30.0f),
+                                60);
+                break;
+            case(1):        
+                ss = new osgSim::SphereSegment(
+                                computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
+                                510.0f, // radius
+                                osg::DegreesToRadians(45.0f),
+                                osg::DegreesToRadians(240.0f),
+                                osg::DegreesToRadians(-10.0f),
+                                osg::DegreesToRadians(30.0f),
+                                60);
+                break;
+            case(2):        
+                ss = new osgSim::SphereSegment(
+                                computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
+                                510.0f, // radius
+                                osg::DegreesToRadians(5.0f),
+                                osg::DegreesToRadians(355.0f),
+                                osg::DegreesToRadians(-10.0f),
+                                osg::DegreesToRadians(30.0f),
+                                60);
+                break;
+            case(3):        
+                ss = new osgSim::SphereSegment(
+                                computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
+                                510.0f, // radius
+                                osg::DegreesToRadians(0.0f),
+                                osg::DegreesToRadians(360.0f),
+                                osg::DegreesToRadians(-10.0f),
+                                osg::DegreesToRadians(30.0f),
+                                60);
+                break;
+        };
+        
         ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
         ss->setSideColor(osg::Vec4(0.0f,1.0f,1.0f,0.1f));
-
+#if 1
         root->addChild(ss.get());
+#endif
     }
-
+    
+#if 1    
+    root->addChild(ss->computeIntersectionSubgraph(osg::Matrixd::identity(), terrainGeode.get()));
+#else
     osgSim::SphereSegment::LineList lines = ss->computeIntersection(osg::Matrixd::identity(), terrainGeode.get());
     if (!lines.empty())
     {
@@ -368,8 +409,9 @@ void build_world(osg::Group *root)
     {
        osg::notify(osg::NOTICE)<<"No intersections found"<<std::endl;
     }
+#endif
 
-#if 1
+#if 0
 
 
     osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
@@ -385,9 +427,8 @@ void build_world(osg::Group *root)
 
     root->addChild(overlayNode);
     
-    
 #else
-    root->addChild(terrainGeode);
+    root->addChild(terrainGeode.get());
 #endif
 
 
@@ -450,6 +491,11 @@ int main(int argc, char **argv)
     viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
+    unsigned int testCase = 0;
+    if (arguments.read("-t", testCase)) {}
+
+
+    // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
@@ -467,7 +513,7 @@ int main(int argc, char **argv)
     }
     
     osg::Group *root = new osg::Group;
-    build_world(root);
+    build_world(root, testCase);
    
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);

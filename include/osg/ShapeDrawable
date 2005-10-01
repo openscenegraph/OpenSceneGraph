@@ -143,12 +143,12 @@ class OSG_EXPORT ShapeDrawable : public Drawable
         virtual const char* className() const { return "ShapeDrawable"; }
 
         /** Set the color of the shape.*/
-        void setColor(const Vec4& color) { _color = color; }
+        void setColor(const Vec4& color);
 
         /** Get the color of the shape.*/
         const Vec4& getColor() const { return _color; }
 
-        void setTessellationHints(TessellationHints* hints) { _tessellationHints = hints; }
+        void setTessellationHints(TessellationHints* hints);
 
         TessellationHints* getTessellationHints() { return _tessellationHints.get(); }
         const TessellationHints* getTessellationHints() const { return _tessellationHints.get(); }

@@ -2057,6 +2057,102 @@ struct TriangleIntersectOperator
         }
     }
 
+    
+    // handle a paird of surfaces that work to enclose a convex region, which means that 
+    // points can be inside either surface to be valid, and be outside both surfaces to be invalid.
+    template<class I>
+    void trim(SphereSegment::LineList& lineList, osg::Vec3Array* sourceLine, I intersector1, I intersector2)
+    {
+        if (sourceLine->empty()) return;
+        
+        osg::notify(osg::NOTICE)<<"Testing line of "<<sourceLine->size()<<std::endl;
+
+        unsigned int first=0;
+        while (first<sourceLine->size())
+        {
+            // find first valid vertex.
+            for(; first<sourceLine->size(); ++first)
+            {
+                osg::Vec3 v = (*sourceLine)[first]-_centre;
+                if (intersector1.distance(v)>=0.0 || intersector2.distance(v)>=0.0 ) break;
+            }
+            
+            if (first==sourceLine->size())
+            {
+                osg::notify(osg::NOTICE)<<"No valid points found"<<std::endl;
+                return;
+            }
+
+            // find last valid vertex.
+            unsigned int last = first+1;
+            for(; last<sourceLine->size(); ++last)
+            {
+                osg::Vec3 v = (*sourceLine)[last]-_centre;
+                if (intersector1.distance(v)<0.0 && intersector2.distance(v)<0.0 ) break;
+            }
+            
+            if (first==0 && last==sourceLine->size())
+            {
+                osg::notify(osg::NOTICE)<<"Copying complete line"<<std::endl;
+                lineList.push_back(sourceLine);
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Copying partial line line"<<first<<" "<<last<<std::endl;
+
+                osg::Vec3Array* newLine = new osg::Vec3Array;
+                
+                if (first>0)
+                {
+                    osg::Vec3 start = (*sourceLine)[first-1]-_centre;
+                    osg::Vec3 end = (*sourceLine)[first]-_centre;
+                    
+                    float end1 = intersector1.distance(end);
+                    float end2 = intersector2.distance(end);
+                    
+                    if (end1>=0.0 && (end2<0.0 || end1<=end2))
+                    {
+                        newLine->push_back(intersector1.intersectionPoint(start, end)+_centre);
+                    }
+                    else
+                    {
+                        // end2 must be >= 0.0 therefore use for intersection point
+                        newLine->push_back(intersector2.intersectionPoint(start, end)+_centre);
+                    } 
+                }
+                
+                for(unsigned int i=first; i<last; ++i)
+                {
+                    newLine->push_back((*sourceLine)[i]);
+                }
+                
+                if (last<sourceLine->size())
+                {
+                    osg::Vec3 start = (*sourceLine)[last-1]-_centre;
+                    osg::Vec3 end = (*sourceLine)[last]-_centre;
+                    
+                    float start1 = intersector1.distance(start);
+                    float end1 = intersector1.distance(end);
+                    float start2 = intersector2.distance(start);
+                    float end2 = intersector2.distance(end);
+                    
+                    if (start2<0.0)
+                    {
+                        newLine->push_back(intersector1.intersectionPoint(start, end)+_centre);
+                    }
+                    else
+                    {
+                        newLine->push_back(intersector2.intersectionPoint(start, end)+_centre);
+                    } 
+                }
+
+                lineList.push_back(newLine);
+            }
+            
+            first = last;
+        }
+    }
+
     template<class I>
     void trim(SphereSegment::LineList& lineList, I intersector)
     {
@@ -2073,6 +2169,22 @@ struct TriangleIntersectOperator
         lineList.swap(newLines);
     }
 
+
+    template<class I>
+    void trim(SphereSegment::LineList& lineList, I intersector1, I intersector2)
+    {
+        SphereSegment::LineList newLines;
+    
+        // collect all the intersecting edges
+        for(SphereSegment::LineList::iterator itr = lineList.begin();
+            itr != lineList.end();
+            ++itr)
+        {
+            osg::Vec3Array* line = itr->get();
+            trim(newLines, line, intersector1, intersector2);
+        }
+        lineList.swap(newLines);
+    }
 };
 
 bool computeQuadraticSolution(double a, double b, double c, double& s1, double& s2)
@@ -2964,15 +3076,25 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
     tif.trim(elevMinLines,radiusIntersector);
     tif.trim(elevMaxLines,radiusIntersector);
 
-    // trim the radius and elevation intersection lines by the azimMin 
-    tif.trim(radiusLines, azMinIntersector);
-    tif.trim(elevMinLines, azMinIntersector);
-    tif.trim(elevMaxLines, azMinIntersector);
+    if ((_azMax-_azMin)<=osg::PI)
+    {
+        // trim the radius and elevation intersection lines by the azimMin 
+        tif.trim(radiusLines, azMinIntersector);
+        tif.trim(elevMinLines, azMinIntersector);
+        tif.trim(elevMaxLines, azMinIntersector);
 
-    // trim the radius and elevation intersection lines by the azimMax 
-    tif.trim(radiusLines, azMaxIntersector);
-    tif.trim(elevMinLines, azMaxIntersector);
-    tif.trim(elevMaxLines, azMaxIntersector);
+        // trim the radius and elevation intersection lines by the azimMax 
+        tif.trim(radiusLines, azMaxIntersector);
+        tif.trim(elevMinLines, azMaxIntersector);
+        tif.trim(elevMaxLines, azMaxIntersector);
+    }
+    else
+    {
+        // need to have new intersector which handles convex azim planes
+        tif.trim(radiusLines, azMinIntersector, azMaxIntersector);
+        tif.trim(elevMinLines, azMinIntersector, azMaxIntersector);
+        tif.trim(elevMaxLines, azMinIntersector, azMaxIntersector);
+    }
 
     // trim the radius and elevation intersection lines by the elevMin 
     tif.trim(radiusLines, elevMinIntersector);

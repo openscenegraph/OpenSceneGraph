@@ -1761,6 +1761,23 @@ ShapeDrawable::~ShapeDrawable()
 {
 }
 
+void ShapeDrawable::setColor(const Vec4& color)
+{
+    if (_color!=color)
+    {
+        _color = color; dirtyDisplayList();
+    }
+}
+
+void ShapeDrawable::setTessellationHints(TessellationHints* hints)
+{
+    if (_tessellationHints!=hints) 
+    {
+        _tessellationHints = hints; 
+        dirtyDisplayList();
+    }
+}
+
 void ShapeDrawable::drawImplementation(State& state) const
 {
     if (_shape.valid())

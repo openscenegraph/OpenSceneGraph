@@ -2209,6 +2209,255 @@ struct TriangleIntersectOperator
         }
         lineList.swap(newLines);
     }
+
+    struct LinePair
+    {
+        LinePair(osg::Vec3Array* line):
+            _line(line),
+            _lineEnd(0),
+            _neighbourLine(0),
+            _neighbourLineEnd(0) {}
+            
+        bool operator < (const LinePair& linePair) const
+        {
+            return _distance < linePair._distance;
+        }
+        
+        void consider(osg::Vec3Array* testline)
+        {
+            if (_neighbourLine.valid())
+            {
+                float distance = ((*_line)[0]-(*testline)[0]).length();
+                if (distance<_distance)
+                {
+                    _lineEnd = 0;
+                    _neighbourLine = testline;
+                    _neighbourLineEnd = 0;
+                    _distance = distance;
+                }
+
+                distance = ((*_line)[0]-(*testline)[testline->size()-1]).length();
+                if (distance<_distance)
+                {
+                    _lineEnd = 0;
+                    _neighbourLine = testline;
+                    _neighbourLineEnd = testline->size()-1;
+                    _distance = distance;
+                }
+
+                distance = ((*_line)[_line->size()-1]-(*testline)[0]).length();
+                if (distance<_distance)
+                {
+                    _lineEnd = _line->size()-1;
+                    _neighbourLine = testline;
+                    _neighbourLineEnd = 0;
+                    _distance = distance;
+                }
+
+                distance = ((*_line)[_line->size()-1]-(*testline)[testline->size()-1]).length();
+                if (distance<_distance)
+                {
+                    _lineEnd = _line->size()-1;
+                    _neighbourLine = testline;
+                    _neighbourLineEnd = testline->size()-1;
+                    _distance = distance;
+                }
+            
+            }
+            else
+            {
+                _neighbourLine = testline;
+                if (_neighbourLine==_line)
+                {
+                    _lineEnd = 0;
+                    _neighbourLineEnd = _neighbourLine->size()-1;
+                    _distance = ((*_line)[_lineEnd]-(*_neighbourLine)[_neighbourLineEnd]).length();
+                }
+                else
+                {
+                    _distance = ((*_line)[0]-(*_neighbourLine)[0]).length();
+                    _lineEnd = 0;
+                    _neighbourLineEnd = 0;
+                    
+                    float distance = ((*_line)[0]-(*_neighbourLine)[_neighbourLine->size()-1]).length();
+                    if (distance<_distance)
+                    {
+                        _lineEnd = 0;
+                        _neighbourLineEnd = _neighbourLine->size()-1;
+                        _distance = distance;
+                    }
+
+                    distance = ((*_line)[_line->size()-1]-(*_neighbourLine)[0]).length();
+                    if (distance<_distance)
+                    {
+                        _lineEnd = _line->size()-1;
+                        _neighbourLineEnd = 0;
+                        _distance = distance;
+                    }
+
+                    distance = ((*_line)[_line->size()-1]-(*_neighbourLine)[_neighbourLine->size()-1]).length();
+                    if (distance<_distance)
+                    {
+                        _lineEnd = _line->size()-1;
+                        _neighbourLineEnd = _neighbourLine->size()-1;
+                        _distance = distance;
+                    }
+                }               
+            }
+        };
+        
+        bool contains(osg::Vec3Array* line) const
+        {
+            return _line==line || _neighbourLine==line;
+        }
+    
+    
+        osg::ref_ptr<osg::Vec3Array>    _line;
+        unsigned int                    _lineEnd;
+        osg::ref_ptr<osg::Vec3Array>    _neighbourLine;
+        unsigned int                    _neighbourLineEnd;
+        float                           _distance;
+    };
+
+    void fuseEnds(float fuseDistance)
+    {
+        SphereSegment::LineList fusedLines;
+        SphereSegment::LineList unfusedLines;
+        
+        // first seperat the already fused lines from the unfused ones.
+        for(SphereSegment::LineList::iterator itr = _generatedLines.begin();
+            itr != _generatedLines.end();
+            ++itr)
+        {
+            osg::Vec3Array* line = itr->get();
+            if (line->size()>=2)
+            {
+                if ((*line)[0]==(*line)[line->size()-1])
+                {
+                    fusedLines.push_back(line);
+                }
+                else
+                {
+                    unfusedLines.push_back(line);
+                }
+            }
+        }
+    
+        while (unfusedLines.size()>=1)
+        {
+            // generate a set of line pairs to establish which 
+            // line pair has the minimum distance.
+            typedef std::multiset<LinePair> LinePairSet;
+            LinePairSet linePairs;
+            for(unsigned int i=0; i<unfusedLines.size(); ++i)
+            {
+                LinePair linePair(unfusedLines[i].get());
+                for(unsigned int j=i; j<unfusedLines.size(); ++j)
+                {
+                    linePair.consider(unfusedLines[j].get());
+                }
+                linePairs.insert(linePair);
+            }
+
+            for(LinePairSet::iterator itr = linePairs.begin();
+                itr != linePairs.end();
+                ++itr)
+            {
+                osg::notify(osg::NOTICE)<<"Line "<<itr->_line.get()<<" "<<itr->_lineEnd<<"  neighbour "<<itr->_neighbourLine.get()<<" "<<itr->_neighbourLineEnd<<" distance="<<itr->_distance<<std::endl;
+            }
+
+            LinePair linePair = *linePairs.begin();
+            if (linePair._distance > fuseDistance)
+            {
+                osg::notify(osg::NOTICE)<<"Completed work, shortest distance left is "<<linePair._distance<<std::endl;
+                break;
+            }
+            
+            if (linePair._line == linePair._neighbourLine)
+            {
+                osg::notify(osg::NOTICE)<<"Fusing line to itself"<<std::endl;
+                osg::Vec3Array* line = linePair._line.get();
+                osg::Vec3 average = ((*line)[0]+(*line)[line->size()-1])*0.5f;
+                (*line)[0] = average;
+                (*line)[line->size()-1] = average;
+                fusedLines.push_back(line);
+                
+                SphereSegment::LineList::iterator fitr = std::find(unfusedLines.begin(), unfusedLines.end(), line);
+                if (fitr != unfusedLines.end())
+                {
+                    unfusedLines.erase(fitr);
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"Error couldn't find line in unfused list, exiting fusing loop."<<std::endl;
+                    break;
+                }
+            }
+            else
+            {
+
+                osg::Vec3Array* line1 = linePair._line.get();
+                int fuseEnd1 =  linePair._lineEnd;
+                int openEnd1 = fuseEnd1==0 ? line1->size()-1 : 0;
+                int direction1 = openEnd1<fuseEnd1 ? 1 : -1;
+
+                osg::Vec3Array* line2 = linePair._neighbourLine.get();
+                int fuseEnd2 =  linePair._neighbourLineEnd;
+                int openEnd2 = fuseEnd2==0 ? line2->size()-1 : 0;
+                int direction2 = fuseEnd2<openEnd2 ? 1 : -1;
+
+                osg::Vec3Array* newline = new osg::Vec3Array;
+                
+                // copy across all but fuse end of line1
+                for(int i=openEnd1;
+                    i != fuseEnd1; 
+                    i += direction1)
+                {
+                    newline->push_back((*line1)[i]);
+                }
+                
+                // add the average of the two fused ends
+                osg::Vec3 average = ((*line1)[fuseEnd1] + (*line2)[fuseEnd2])*0.5f;
+                newline->push_back(average);
+
+                // copy across from the next point in from fuseEnd2 to the openEnd2.
+                for(int j=fuseEnd2 + direction2;
+                    j != openEnd2 + direction2; 
+                    j += direction2)
+                {
+                    newline->push_back((*line2)[j]);
+                }
+                
+                // remove line1 from unfused list.
+                SphereSegment::LineList::iterator fitr = std::find(unfusedLines.begin(), unfusedLines.end(), line1);
+                if (fitr != unfusedLines.end())
+                {
+                    unfusedLines.erase(fitr);
+                }
+
+                // remove line2 from unfused list.
+                fitr = std::find(unfusedLines.begin(), unfusedLines.end(), line2);
+                if (fitr != unfusedLines.end())
+                {
+                    unfusedLines.erase(fitr);
+                }
+
+                // add the newline into the unfused for further processing.
+                unfusedLines.push_back(newline);
+
+                osg::notify(osg::NOTICE)<<"Fusing two seperate lines "<<newline<<std::endl;
+            }
+            
+            _generatedLines = fusedLines;
+            _generatedLines.insert(_generatedLines.end(), unfusedLines.begin(), unfusedLines.end());
+            
+        }        
+    }
+
+    void joinEnds(float joinDistance)
+    {
+    }
+
 };
 
 bool computeQuadraticSolution(double a, double b, double c, double& s1, double& s2)
@@ -2836,6 +3085,17 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& matrix
     tif._generatedLines.insert(tif._generatedLines.end(), elevMinLines.begin(), elevMinLines.end());
     tif._generatedLines.insert(tif._generatedLines.end(), elevMaxLines.begin(), elevMaxLines.end());
  
+    osg::notify(osg::NOTICE)<<"number of seperate lines = "<<tif._generatedLines.size()<<std::endl;
+
+    float fuseDistance = 1.0;
+    tif.fuseEnds(fuseDistance);
+
+    osg::notify(osg::NOTICE)<<"number of seperate lines after fuse = "<<tif._generatedLines.size()<<std::endl;
+
+    float joinDistance = 1e8;
+    tif.joinEnds(joinDistance);
+    osg::notify(osg::NOTICE)<<"number of seperate lines after join = "<<tif._generatedLines.size()<<std::endl;
+
     osg::Geode* geode = new osg::Geode;
 
     geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);

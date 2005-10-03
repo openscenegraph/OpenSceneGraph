@@ -73,6 +73,10 @@ inline void* getGLExtensionFuncPtr(const char *funcName)
      static void *handle = dlopen((const char *)0L, RTLD_LAZY);
      return dlsym(handle, funcName);
 
+#elif defined (__FreeBSD__)
+
+    return dlsym( RTLD_DEFAULT, funcName );
+
 #else // all other unixes
 
     return dlsym(0, funcName);

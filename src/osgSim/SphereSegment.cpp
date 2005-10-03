@@ -2610,10 +2610,10 @@ namespace SphereSegmentIntersector
             osg::Vec3& v2 = _tif._originalVertices[edge->_p2];
 
             double length_xy1 = sqrt(v1.x()*v1.x() + v1.y()*v1.y());
-            double elev1 = atan2(v1.z(),length_xy1);
+            double elev1 = atan2((double)v1.z(),length_xy1);
 
             double length_xy2 = sqrt(v2.x()*v2.x() + v2.y()*v2.y());
-            double elev2 = atan2(v2.z(),length_xy2);
+            double elev2 = atan2((double)v2.z(),length_xy2);
 
             edge->_p1Outside = _lowerOutside ? (elev1<_elev) : (elev1>_elev);
             edge->_p2Outside = _lowerOutside ? (elev2<_elev) : (elev2>_elev);
@@ -2722,7 +2722,7 @@ namespace SphereSegmentIntersector
         double distance(const osg::Vec3& v)
         {
             double length_xy = sqrt(v.x()*v.x() + v.y()*v.y());
-            double computedElev = atan2(v.z(),length_xy);
+            double computedElev = atan2((double)v.z(),length_xy);
 
             return _lowerOutside ? computedElev-_elev : _elev-computedElev ;
         }

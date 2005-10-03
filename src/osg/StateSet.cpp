@@ -438,6 +438,7 @@ void StateSet::clear()
 
     setRenderBinToInherit();
 
+
     // remove self from as attributes parent
     for(AttributeList::iterator itr=_attributeList.begin();
         itr!=_attributeList.end();
@@ -449,9 +450,6 @@ void StateSet::clear()
     _modeList.clear();
     _attributeList.clear();
     
-    
-    _textureModeList.clear();
-    _textureAttributeList.clear();
 
     // remove self from as texture attributes parent
     for(unsigned int i=0;i<_textureAttributeList.size();++i)
@@ -464,6 +462,9 @@ void StateSet::clear()
             itr->second.first->removeParent(this);
         }
     }
+
+    _textureModeList.clear();
+    _textureAttributeList.clear();
 
 
     // remove self from uniforms parent

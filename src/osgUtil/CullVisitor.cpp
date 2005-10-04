@@ -1274,24 +1274,28 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 }
             }
         }
-        else if (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER ||
+        else if (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER_RTT ||
+                 camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER ||
                  camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW )
         {
             osg::ref_ptr<osg::GraphicsContext> context = rtts->getGraphicsContext();
             if (!context)
             {
+                osg::Texture* pBufferTexture = 0;
+            
                 // set up the traits of the graphics context that we want
                 osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
                 
                 traits->_width = viewport->width();
                 traits->_height = viewport->height();
-                traits->_pbuffer = (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER);
+                traits->_pbuffer = (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER || camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER_RTT);
                 traits->_windowDecoration = (camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW);
                 traits->_doubleBuffer = (camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW);
 
-
                 rtts->setDrawBuffer(GL_FRONT);
                 rtts->setReadBuffer(GL_FRONT);
+                
+                GLenum bufferFormat = GL_NONE;
 
                 bool colorAttached = false;
                 bool depthAttached = false;
@@ -1302,7 +1306,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 {
 
                     osg::CameraNode::BufferComponent buffer = itr->first;
-                    // osg::CameraNode::Attachment& attachment = itr->second;
+                    osg::CameraNode::Attachment& attachment = itr->second;
                     switch(buffer)
                     {
                         case(osg::CameraNode::DEPTH_BUFFER):
@@ -1317,13 +1321,46 @@ void CullVisitor::apply(osg::CameraNode& camera)
                             stencilAttached = true;
                             break;
                         }
+                        case(osg::CameraNode::COLOR_BUFFER):
+                        {
+                            if (attachment._internalFormat!=GL_NONE)
+                            {
+                                bufferFormat = attachment._internalFormat;
+                            }
+                            else
+                            {
+                                if (attachment._texture.valid())
+                                {
+                                    pBufferTexture = attachment._texture.get();
+                                    bufferFormat = attachment._texture->getInternalFormat();
+                                }
+                                else if (attachment._image.valid())
+                                {
+                                    bufferFormat = attachment._image->getInternalTextureFormat();
+                                }
+                                else
+                                {
+                                    bufferFormat = GL_RGBA;
+                                }
+                            }
+
+                            if (camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER_RTT)
+                            {
+                                traits->_target = bufferFormat;
+                                traits->_level = attachment._level;
+                                traits->_face = attachment._face;
+                                traits->_mipMapGeneration = attachment._mipMapGeneration;
+                            }
+                            break;
+                        }
                         default:
                         {
-                            traits->_red = 8;
-                            traits->_green = 8;
-                            traits->_blue = 8;
-                            traits->_alpha = 0; // ??? need to look at attachment, just do quick and dirty right now.
-                            colorAttached = true;
+                            if (camera.getRenderTargetImplementation()==osg::CameraNode::SEPERATE_WINDOW)
+                                osg::notify(osg::NOTICE)<<"Warning: Window ";
+                            else
+                                osg::notify(osg::NOTICE)<<"Warning: Pbuffer ";
+                                
+                            osg::notify(osg::NOTICE)<<"does not support multiple color outputs."<<std::endl;
                             break;
                         }
                         
@@ -1337,10 +1374,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 
                 if (!colorAttached)
                 {                
+                    if (bufferFormat == GL_NONE) bufferFormat = GL_RGB;
+
                     traits->_red = 8;
                     traits->_green = 8;
                     traits->_blue = 8;
-                    traits->_alpha = 0; // ???
+                    traits->_alpha = (bufferFormat==GL_RGBA) ? 8 : 0;
                 }
                 
                 // share OpenGL objects if possible...
@@ -1358,7 +1397,11 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 }
                 
                 rtts->setGraphicsContext(context.get());
-                
+
+                if (pBufferTexture && camera.getRenderTargetImplementation()==osg::CameraNode::PIXEL_BUFFER_RTT)
+                {
+                    pBufferTexture->setReadPBuffer(context.get());
+                }
 #if 0
                 context->createGraphicsThread();
 #else

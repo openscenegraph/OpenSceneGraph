@@ -152,6 +152,10 @@ SOURCE=..\..\src\osg\CameraNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CameraView.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ClearNode.cpp
 # End Source File
 # Begin Source File
@@ -601,6 +605,10 @@ SOURCE=..\..\include\osg\BufferObject
 # Begin Source File
 
 SOURCE=..\..\include\osg\CameraNode
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\CameraView
 # End Source File
 # Begin Source File
 

@@ -185,6 +185,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         enum RenderTargetImplementation
         {
             FRAME_BUFFER_OBJECT,
+            PIXEL_BUFFER_RTT,
             PIXEL_BUFFER,
             FRAME_BUFFER,
             SEPERATE_WINDOW

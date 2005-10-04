@@ -285,6 +285,7 @@ int main( int argc, char **argv )
     
     while (arguments.read("--fbo")) { renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT; }
     while (arguments.read("--pbuffer")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER; }
+    while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER_RTT; }
     while (arguments.read("--fb")) { renderImplementation = osg::CameraNode::FRAME_BUFFER; }
     while (arguments.read("--window")) { renderImplementation = osg::CameraNode::SEPERATE_WINDOW; }
 

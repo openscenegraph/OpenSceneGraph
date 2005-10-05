@@ -13,6 +13,8 @@
 #include <osg/AnimationPath>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
+#include <osg/CameraNode>
+#include <osg/CameraView>
 #include <osg/io_utils>
 
 using namespace osg;
@@ -121,6 +123,37 @@ class AnimationPathCallbackVisitor : public NodeVisitor
             _cp(cp),
             _pivotPoint(pivotPoint),
             _useInverseMatrix(useInverseMatrix) {}
+
+        virtual void apply(CameraNode& camera)
+        {
+            Matrix matrix;
+            if (_useInverseMatrix)
+                _cp.getInverse(matrix);
+            else
+                _cp.getMatrix(matrix);
+                
+            camera.setViewMatrix(osg::Matrix::translate(-_pivotPoint)*matrix);
+        }
+        
+
+        virtual void apply(CameraView& cv)
+        {
+            if (_useInverseMatrix)
+            {
+                Matrix matrix;
+                _cp.getInverse(matrix);
+                cv.setPosition(matrix.getTrans());
+                cv.setAttitude(_cp.getRotation().inverse());
+                cv.setFocalLength(1.0f/_cp.getScale().x());
+                
+            }
+            else
+            {
+                cv.setPosition(_cp.getPosition());
+                cv.setAttitude(_cp.getRotation());
+                cv.setFocalLength(_cp.getScale().x());
+            }
+        }
 
         virtual void apply(MatrixTransform& mt)
         {

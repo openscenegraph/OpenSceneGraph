@@ -17,6 +17,7 @@
 #include <osg/CullFace>
 #include <osg/Material>
 #include <osg/RefNodePath>
+#include <osg/PositionAttitudeTransform>
 
 #include <osgUtil/TransformCallback>
 
@@ -88,9 +89,12 @@ ref_ptr<Group> _create_scene()
 
 osg::RefNodePath createReflector()
 {
-  ref_ptr<Group> scene = new Group;
+  ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+  pat->setPosition(osg::Vec3(0.0f,0.0f,0.0f));
+  pat->setAttitude(osg::Quat(osg::inDegrees(0.0f),osg::Vec3(0.0f,0.0f,1.0f)));
+  
   ref_ptr<Geode> geode_1 = new Geode;
-  scene->addChild(geode_1.get());
+  pat->addChild(geode_1.get());
 
   const float radius = 0.8f;
   ref_ptr<TessellationHints> hints = new TessellationHints;
@@ -100,7 +104,7 @@ osg::RefNodePath createReflector()
   geode_1->addDrawable(shape.get());
   
   osg::RefNodePath refNodeList;
-  refNodeList.push_back(scene.get());
+  refNodeList.push_back(pat.get());
   refNodeList.push_back(geode_1.get());
   
   return refNodeList;
@@ -122,11 +126,11 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
         {
             // first update subgraph to make sure objects are all moved into postion
             traverse(node,nv);
-            
+
             // compute the position of the center of the reflector subgraph
-            osg::Matrixd matrix = osg::computeLocalToWorld(_reflectorNodePath);
+            osg::Matrixd worldToLocal = osg::computeWorldToLocal(_reflectorNodePath);
             osg::BoundingSphere bs = _reflectorNodePath.back()->getBound();
-            osg::Vec3 position = bs.center() * matrix;
+            osg::Vec3 position = bs.center();
 
             typedef std::pair<osg::Vec3, osg::Vec3> ImageData;
             const ImageData id[] =
@@ -143,11 +147,15 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
                 i<6 && i<_cameraNodes.size();
                 ++i)
             {
+                osg::Matrix localOffset;
+                localOffset.makeLookAt(position,position+id[i].first,id[i].second);
+                
+                osg::Matrix viewMatrix = worldToLocal*localOffset;
+            
                 _cameraNodes[i]->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
                 _cameraNodes[i]->setProjectionMatrixAsFrustum(-1.0,1.0,-1.0,1.0,1.0,10000.0);
-                _cameraNodes[i]->setViewMatrixAsLookAt(position,position+id[i].first,id[i].second);
+                _cameraNodes[i]->setViewMatrix(viewMatrix);
             }
-            
         }
         
     protected:
@@ -203,7 +211,6 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::RefNodePath r
     UpdateCameraAndTexGenCallback::CameraList cameraNodes;
     for(unsigned int i=0; i<6; ++i)
     {
-
         // create the camera
         osg::CameraNode* camera = new osg::CameraNode;
 

@@ -153,17 +153,16 @@ void RenderStage::runCameraSetUp(osg::State& state)
     osg::CameraNode::RenderTargetImplementation renderTargetImplemntation = _camera->getRenderTargetImplementation();
 
     osg::CameraNode::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
+
+    // attach an images that need to be copied after the stage is drawn.
     for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
         itr != bufferAttachements.end();
         ++itr)
     {
-        // assign the texture... pro            
-        if (itr->second._texture.valid()) setTexture(itr->second._texture.get(), itr->second._level, itr->second._face);
-
         // if one exist attach image to the RenderToTextureStage.
         if (itr->second._image.valid()) setImage(itr->second._image.get());
     }
-
+    
     if (renderTargetImplemntation==osg::CameraNode::FRAME_BUFFER_OBJECT)
     {
         osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID());
@@ -172,8 +171,15 @@ void RenderStage::runCameraSetUp(osg::State& state)
         if (!fbo_supported)
         {
             // fallback to using pbuffer
-            osg::notify(osg::NOTICE)<<"Using fallback to Pbuffer"<<std::endl;
-            renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER;
+            #ifdef _WIN32    
+                // Only Win32 currently support PBuffer RTT.
+                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&): Using fallback to PIXEL_BUFFER_RTT"<<std::endl;
+                renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER_RTT;
+            #else
+                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&): Using fallback to PIXEL_BUFFER"<<std::endl;
+                renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER;
+            #endif
+
         }
         else if (!_fbo)
         {
@@ -228,14 +234,17 @@ void RenderStage::runCameraSetUp(osg::State& state)
         }
     }
     
-    if (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT ||
-        renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER ||
-        renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW )
+
+    // if any of the renderTargetImplementations require a seperate graphics context such as with pbuffer try in turn to
+    // set up, but if each level fails then resort to the next level down.    
+    while (!getGraphicsContext() &&
+           (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT ||
+            renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER ||
+            renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW) )
     {
         osg::ref_ptr<osg::GraphicsContext> context = getGraphicsContext();
         if (!context)
         {
-            osg::Texture* pBufferTexture = 0;
 
             // set up the traits of the graphics context that we want
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
@@ -246,10 +255,10 @@ void RenderStage::runCameraSetUp(osg::State& state)
             traits->_windowDecoration = (renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW);
             traits->_doubleBuffer = (renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW);
 
-            setDrawBuffer(GL_FRONT);
-            setReadBuffer(GL_FRONT);
-
+            osg::Texture* pBufferTexture = 0;
             GLenum bufferFormat = GL_NONE;
+            unsigned int level = 0; 
+            unsigned int face = 0; 
 
             bool colorAttached = false;
             bool depthAttached = false;
@@ -298,11 +307,14 @@ void RenderStage::runCameraSetUp(osg::State& state)
                             }
                         }
 
+                        level = attachment._level;
+                        face = attachment._face;
+
                         if (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT)
                         {
                             traits->_target = bufferFormat;
-                            traits->_level = attachment._level;
-                            traits->_face = attachment._face;
+                            traits->_level = level;
+                            traits->_face = face;
                             traits->_mipMapGeneration = attachment._mipMapGeneration;
                         }
                         break;
@@ -310,9 +322,9 @@ void RenderStage::runCameraSetUp(osg::State& state)
                     default:
                     {
                         if (renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW)
-                            osg::notify(osg::NOTICE)<<"Warning: Window ";
+                            osg::notify(osg::NOTICE)<<"Warning: RenderStage::runCameraSetUp(State&) Window ";
                         else
-                            osg::notify(osg::NOTICE)<<"Warning: Pbuffer ";
+                            osg::notify(osg::NOTICE)<<"Warning: RenderStage::runCameraSetUp(State&) Pbuffer ";
 
                         osg::notify(osg::NOTICE)<<"does not support multiple color outputs."<<std::endl;
                         break;
@@ -345,27 +357,74 @@ void RenderStage::runCameraSetUp(osg::State& state)
             // create the graphics context according to these traits.
             context = osg::GraphicsContext::createGraphicsContext(traits.get());
 
-            if (!context)
+            if (context.valid())
             {
-                osg::notify(osg::NOTICE)<<"Failed to aquire Graphics Context"<<std::endl;
+                // successfully set up graphics context as requested,
+                // will assign this graphics context to the RenderStage and 
+                // associated parameters.  Setting the graphics context will
+                // single this while loop to exit successful.
+                setGraphicsContext(context.get());
+                
+                // how to do we detect that an attempt to set up RTT has failed??
+
+                setDrawBuffer(GL_FRONT);
+                setReadBuffer(GL_FRONT);
+
+                if (pBufferTexture && renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT)
+                {
+                   osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assign graphis context to Texture"<<std::endl;
+                   pBufferTexture->setReadPBuffer(context.get());
+                }
+                else
+                {
+                    osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assigning texture to RenderStage so that it does the copy"<<std::endl;
+                    setTexture(pBufferTexture, level, face);
+                }
+
+                bool useGraphicsThread = false;
+                if (useGraphicsThread)
+                {
+                    context->createGraphicsThread();
+                }
+                else
+                {
+                    bool result = context->realize();
+                    osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Context has been realized "<<result<<std::endl;
+                }
+            }
+            else
+            {
+                osg::notify(osg::INFO)<<"Failed to aquire Graphics Context"<<std::endl;
+                
+                if (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT)
+                {
+                    // fallback to using standard PBuffer, this will allow this while loop to continue
+                    renderTargetImplemntation=osg::CameraNode::PIXEL_BUFFER;
+                }
+                else 
+                {
+                    // fallback to using the frame buffer, this while loop will now exit.
+                    renderTargetImplemntation=osg::CameraNode::FRAME_BUFFER;
+                }
             }
 
-            setGraphicsContext(context.get());
-
-            if (pBufferTexture && renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT)
-            {
-                pBufferTexture->setReadPBuffer(context.get());
-            }
-#if 0
-            context->createGraphicsThread();
-#else
-            bool result = context.valid() ? context->realize() : false;
-
-            osg::notify(osg::NOTICE)<<"Context has been realized "<<result<<std::endl;
-#endif
         }
     }
     
+    // finally if all else has failed, then the frame buffer fallback will come in to play.
+    if (renderTargetImplemntation==osg::CameraNode::FRAME_BUFFER)
+    {
+        osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER"<<std::endl;
+
+        for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
+            itr != bufferAttachements.end();
+            ++itr)
+        {
+            // assign the texture... 
+            if (itr->second._texture.valid()) setTexture(itr->second._texture.get(), itr->second._level, itr->second._face);
+        }
+    }
+
 }
 
 void RenderStage::copyTexture(osg::State& state)

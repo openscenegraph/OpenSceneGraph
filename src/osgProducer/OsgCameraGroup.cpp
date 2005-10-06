@@ -206,6 +206,9 @@ OsgCameraGroup::~OsgCameraGroup()
 }
 
 
+static osg::ApplicationUsageProxy OsgCameraGroup_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CAMERA_THREADING <value>","Set the threading model using by osgProducer::Viewer/OsgCameraGroup based apps. <value> can be SingleThreaded or ThreadPerCamera");
+static osg::ApplicationUsageProxy OsgCameraGroup_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SHARE_GRAPHICS_CONTEXTS <value>","Set the threading model using by osgProducer::Viewer/OsgCameraGroup based apps. <value> can be ON or OFF");
+
 void OsgCameraGroup::_init()
 {
     const char* str = getenv("OSG_CAMERA_THREADING");

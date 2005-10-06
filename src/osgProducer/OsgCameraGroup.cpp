@@ -538,39 +538,63 @@ bool OsgCameraGroup::realize()
     }
 
     setUpSceneViewsWithData();
-    
-    if (getTopMostSceneData())
+
+    // if we are multi-threaded check to see if particle exists in the scene
+    // if so we need to disable multi-threading of cameras.
+    if (_thread_model == Producer::CameraGroup::ThreadPerCamera)
     {
-        SearchForSpecialNodes sfsn;
-        getTopMostSceneData()->accept(sfsn);
-        if (sfsn._foundParticles)
+        if (getTopMostSceneData())
         {
-            osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
-            osg::notify(osg::INFO)<<"         to avoid threading problems in osgParticle."<<std::endl;
-            _thread_model = Producer::CameraGroup::SingleThreaded;
-        }
-        else
-        {
-            std::set<RenderSurface*> renderSurfaceSet;
-            for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+            SearchForSpecialNodes sfsn;
+            getTopMostSceneData()->accept(sfsn);
+            if (sfsn._foundParticles)
             {
-                Producer::Camera *cam = _cfg->getCamera(i);
-                renderSurfaceSet.insert(cam->getRenderSurface());
-            }
-            if (renderSurfaceSet.size()!=_cfg->getNumberOfCameras())
-            {
-                // camera's must be sharing a RenderSurface, so we need to ensure that we're
-                // running single threaded, to avoid OpenGL threading issues.
-                osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw to avoid"<<std::endl;
-                osg::notify(osg::INFO)<<"         threading problems when camera's share a RenderSurface."<<std::endl;
+                osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
+                osg::notify(osg::INFO)<<"         to avoid threading problems in osgParticle."<<std::endl;
                 _thread_model = Producer::CameraGroup::SingleThreaded;
             }
-            
-            
         }
         
     }
+
+    // if we are still multi-thread check to make sure that no render surfaces
+    // are shared and don't use shared contexts, if they do we need to 
+    // disable multi-threading of cameras.
+    if (_thread_model == Producer::CameraGroup::ThreadPerCamera)
+    {
+        std::set<RenderSurface*> renderSurfaceSet;
+        for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+        {
+            Producer::Camera *cam = _cfg->getCamera(i);
+            renderSurfaceSet.insert(cam->getRenderSurface());
+        }
+        if (renderSurfaceSet.size()!=_cfg->getNumberOfCameras())
+        {
+            // camera's must be sharing a RenderSurface, so we need to ensure that we're
+            // running single threaded, to avoid OpenGL threading issues.
+            osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw to avoid"<<std::endl;
+            osg::notify(osg::INFO)<<"         threading problems when camera's share a RenderSurface."<<std::endl;
+            _thread_model = Producer::CameraGroup::SingleThreaded;
+        }
+        else if (renderSurfaceSet.size()>1 && RenderSurface::allGLContextsAreShared())
+        {
+            // we have multiple RenderSurface, but with share contexts, which is dangerous for multi-threaded usage,
+            // so need to disable multi-threading to prevent problems.
+            osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw to avoid"<<std::endl;
+            osg::notify(osg::INFO)<<"         threading problems when sharing graphics contexts within RenderSurface."<<std::endl;
+            _thread_model = Producer::CameraGroup::SingleThreaded;
+        }
+
+    }
     
+    if (_thread_model==Producer::CameraGroup::SingleThreaded)
+    {
+        osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _thread_model==Producer::CameraGroup::SingleThreaded"<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _thread_model==Producer::CameraGroup::ThreadPerCamera"<<std::endl;
+    }
 
     _initialized = CameraGroup::realize();
     

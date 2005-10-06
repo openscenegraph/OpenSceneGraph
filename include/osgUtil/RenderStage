@@ -126,6 +126,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         void setCameraRequiresSetUp(bool flag) { _cameraRequiresSetUp = true; }
         bool getCameraRequiresSetUp() const { return _cameraRequiresSetUp; }
         
+        /** Attempt the set the RenderStage from the Camera settings.*/
         void runCameraSetUp(osg::State& state);
         
         void setTexture(osg::Texture* texture, unsigned int level = 0, unsigned int face=0) { _texture = texture; _level = level; _face = face; }

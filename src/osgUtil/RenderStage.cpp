@@ -357,8 +357,10 @@ void RenderStage::runCameraSetUp(osg::State& state)
             // create the graphics context according to these traits.
             context = osg::GraphicsContext::createGraphicsContext(traits.get());
 
-            if (context.valid())
+            if (context.valid() && context->realize())
             {
+                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Context has been realized "<<std::endl;
+
                 // successfully set up graphics context as requested,
                 // will assign this graphics context to the RenderStage and 
                 // associated parameters.  Setting the graphics context will
@@ -379,17 +381,6 @@ void RenderStage::runCameraSetUp(osg::State& state)
                 {
                     osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assigning texture to RenderStage so that it does the copy"<<std::endl;
                     setTexture(pBufferTexture, level, face);
-                }
-
-                bool useGraphicsThread = false;
-                if (useGraphicsThread)
-                {
-                    context->createGraphicsThread();
-                }
-                else
-                {
-                    bool result = context->realize();
-                    osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Context has been realized "<<result<<std::endl;
                 }
             }
             else

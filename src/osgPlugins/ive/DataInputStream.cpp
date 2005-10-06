@@ -23,7 +23,7 @@
 #include "CullFace.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
-//#include "PolygonMode.h"
+#include "PolygonMode.h"
 #include "ShadeModel.h"
 #include "Point.h"
 #include "LineWidth.h"
@@ -840,10 +840,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::PolygonOffset();
         ((ive::PolygonOffset*)(attribute))->read(this);
     }
-/*    else if(attributeID == IVEPOLYGONMODE){
+    else if(attributeID == IVEPOLYGONMODE){
         attribute = new osg::PolygonMode();
         ((ive::PolygonMode*)(attribute))->read(this);
-    }*/
+    }
     else if(attributeID == IVESHADEMODEL){
         attribute = new osg::ShadeModel();
         ((ive::ShadeModel*)(attribute))->read(this);
@@ -1180,3 +1180,5 @@ osg::Node* DataInputStream::readNode()
     
     return node;
 }
+
+

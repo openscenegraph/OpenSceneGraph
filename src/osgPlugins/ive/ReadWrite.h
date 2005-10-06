@@ -69,6 +69,7 @@ namespace ive {
 #define IVEUNIFORM				        0x00001126
 #define IVEVIEWPORT				        0x00001127
 #define IVESCISSOR				        0x00001128
+#define IVEPOLYGONMODE				        0x00001129
 
 // Drawables
 #define IVEDRAWABLE					0x00001000

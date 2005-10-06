@@ -54,6 +54,7 @@ CXXFILES =\
 	OccluderNode.cpp\
 	PagedLOD.cpp\
 	Point.cpp\
+	PolygonMode.cpp\
 	PolygonOffset.cpp\
 	PositionAttitudeTransform.cpp\
 	PrimitiveSet.cpp\

@@ -24,7 +24,7 @@
 #include "CullFace.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
-//#include "PolygonMode.h"
+#include "PolygonMode.h"
 #include "ShadeModel.h"
 #include "Point.h"
 #include "LineWidth.h"
@@ -662,10 +662,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::PolygonOffset*>(attribute)){
             ((ive::PolygonOffset*)(attribute))->write(this);
         }
-/*        // This is a PolygonMode
+        // This is a PolygonMode
         else if(dynamic_cast<const osg::PolygonMode*>(attribute)){
             ((ive::PolygonMode*)(attribute))->write(this);
-        }*/
+        }
         else if(dynamic_cast<const osg::ShadeModel*>(attribute)){
             ((ive::ShadeModel*)(attribute))->write(this);
         }

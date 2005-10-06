@@ -304,6 +304,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Point.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\PolygonMode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.cpp
 # End Source File
 # Begin Source File
@@ -637,6 +641,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Point.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PolygonMode.h
 # End Source File
 # Begin Source File
 

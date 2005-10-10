@@ -81,6 +81,14 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
                 _scale = first._scale*one_minus_ratio + second._scale*ratio;
             }
             
+            inline void interpolate(double ratio,const ControlPoint& first, const ControlPoint& second)
+            {
+                double one_minus_ratio = 1.0f-ratio;
+                _position = first._position*one_minus_ratio + second._position*ratio;
+                _rotation.slerp(ratio,first._rotation,second._rotation);
+                _scale = first._scale*one_minus_ratio + second._scale*ratio;
+            }
+
             inline void getMatrix(Matrixf& matrix) const
             {
                 matrix.makeScale(_scale);

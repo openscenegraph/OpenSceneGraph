@@ -183,6 +183,7 @@ EXAMPLE_DIRS = \
 	osgcopy\
 	osgcubemap\
 	osgdepthshadow\
+	osgdepthpartition\
 	osgdistortion\
 	osgfbo\
 	osgforest\

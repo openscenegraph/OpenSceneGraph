@@ -16,6 +16,7 @@ CXXFILES =\
 	ParticleEffect.cpp\
 	ParticleProcessor.cpp\
 	ParticleSystem.cpp\
+	ConnectedParticleSystem.cpp\
 	ParticleSystemUpdater.cpp\
 	Program.cpp\
 	Version.cpp\

@@ -147,6 +147,10 @@ SOURCE=..\..\src\osgParticle\ParticleSystem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgParticle\ConnectedParticleSystem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgParticle\ParticleSystemUpdater.cpp
 # End Source File
 # Begin Source File
@@ -252,6 +256,10 @@ SOURCE=..\..\include\osgParticle\ParticleProcessor
 # Begin Source File
 
 SOURCE=..\..\include\osgParticle\ParticleSystem
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgParticle\ConnectedParticleSystem
 # End Source File
 # Begin Source File
 

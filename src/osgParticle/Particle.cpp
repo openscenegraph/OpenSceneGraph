@@ -47,7 +47,9 @@ osgParticle::Particle::Particle()
     _num_tile(1),
     _cur_tile(-1),
     _s_coord(0.0f),
-    _t_coord(0.0f)
+    _t_coord(0.0f),
+    _previousParticle(0),
+    _nextParticle(0)
 {
 }
 

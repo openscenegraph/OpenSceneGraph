@@ -1,0 +1,58 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGPARTICLE_CONNECTEDPARTICLESYSTEM
+#define OSGPARTICLE_CONNECTEDPARTICLESYSTEM 1
+
+#include <osgParticle/ParticleSystem>
+
+namespace osgParticle
+{
+
+    /** ConnectConnectedParticleSystem is a specialise ConnectedParticleSystem for effects 
+      * like missle trails, where the individual particles are rendered as
+      * single ribbon. 
+    */
+    class OSGPARTICLE_EXPORT ConnectedParticleSystem: public osgParticle::ParticleSystem
+    {
+    public:
+    
+        ConnectedParticleSystem();
+        ConnectedParticleSystem(const ConnectedParticleSystem& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgParticle, ConnectedParticleSystem);
+        
+        /// Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null).
+        virtual Particle* createParticle(const Particle* ptemplate);
+        
+        /// Destroy the i-th particle.
+        virtual void destroyParticle(int i);
+        
+        /// Update the particles. Don't call this directly, use a <CODE>ConnectedParticleSystemUpdater</CODE> instead.
+        virtual void update(double dt);
+
+        virtual void drawImplementation(osg::State& state) const;
+
+    protected:
+
+        virtual ~ConnectedParticleSystem();
+
+        ConnectedParticleSystem& operator=(const ConnectedParticleSystem&) { return *this; }
+
+        Particle* _startParticle;
+        Particle* _lastParticleCreated;
+    };
+
+}
+
+#endif

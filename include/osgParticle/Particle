@@ -257,6 +257,10 @@ namespace osgParticle
         int _cur_tile;
         float _s_coord;
         float _t_coord;
+        
+        // previous and next Particles are only used in ConnectedParticleSystems
+        Particle* _previousParticle;
+        Particle* _nextParticle;
     };
 
     // INLINE FUNCTIONS

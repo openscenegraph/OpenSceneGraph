@@ -68,17 +68,19 @@ void osgParticle::ParticleSystem::update(double dt)
     // reset bounds
     _reset_bounds_flag = true;
 
-    // set up iterators for particles
-    Particle_vector::iterator i;
-    Particle_vector::iterator end = _particles.end();
 
-    // update particles
-    for (i=_particles.begin(); i!=end; ++i) {
-        if (i->isAlive()) {
-            if (i->update(dt)) {
-                update_bounds(i->getPosition(), i->getCurrentSize());
-            } else {
-                _deadparts.push(&(*i));
+    for(unsigned int i=0; i<_particles.size(); ++i)
+    {
+        Particle& particle = _particles[i];
+        if (particle.isAlive())
+        {
+            if (particle.update(dt))
+            {
+                update_bounds(particle.getPosition(), particle.getCurrentSize());
+            }
+            else
+            {
+                reuseParticle(i);
             }
         }
     }
@@ -141,6 +143,8 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& textur
         texture->setImage(osgDB::readImageFile(texturefile));
         texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
         texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
+        texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::MIRROR);
+        texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::MIRROR);        
         stateset->setTextureAttributeAndModes(texture_unit, texture, osg::StateAttribute::ON);
 
         osg::TexEnv *texenv = new osg::TexEnv;

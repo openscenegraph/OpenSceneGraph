@@ -12,24 +12,23 @@
 */
 
 #include <osg/Notify>
+#include <osg/CullingSet>
+#include <osg/io_utils>
 #include <osgParticle/ConnectedParticleSystem>
 
 using namespace osgParticle;
 
 ConnectedParticleSystem::ConnectedParticleSystem():
-    _startParticle(0),
-    _lastParticleCreated(0)
+    _startParticle(Particle::INVALID_INDEX),
+    _lastParticleCreated(Particle::INVALID_INDEX)
 {
 }
 
 ConnectedParticleSystem::ConnectedParticleSystem(const ConnectedParticleSystem& copy, const osg::CopyOp& copyop):
     ParticleSystem(copy,copyop),
-    _startParticle(0),
-    _lastParticleCreated(0)
+    _startParticle(copy._startParticle),
+    _lastParticleCreated(copy._lastParticleCreated)
 {
-    // need to think about how to copy _startParticle and _lastParticleCreated...
-    // should we just use indices?  Should we compute offsets into the particle system?
-    osg::notify(osg::NOTICE)<<"Warning: ConnectedParticleSystem copy constructor incomplete."<<std::endl;
 }
 
 ConnectedParticleSystem::~ConnectedParticleSystem()
@@ -38,20 +37,184 @@ ConnectedParticleSystem::~ConnectedParticleSystem()
 
 Particle* ConnectedParticleSystem::createParticle(const Particle* ptemplate)
 {
-    return ParticleSystem::createParticle(ptemplate);
+    // osg::notify(osg::NOTICE)<<this<< " Creating particle "<<std::endl;
+
+    Particle* particle = ParticleSystem::createParticle(ptemplate);
+    int particleIndex = (int)(particle - &_particles[0]);
+    
+    if (particle)
+    {
+    
+        if (_startParticle == Particle::INVALID_INDEX)
+        {
+            // we are the fisrt particle create, so start the connect particle list 
+            _startParticle = particleIndex;
+        }
+
+        if (_lastParticleCreated != Particle::INVALID_INDEX)
+        {
+            // osg::notify(osg::NOTICE)<<this<< " Connecting "<<_lastParticleCreated<<" to "<<particleIndex<<std::endl;
+
+            // write up the last created particle to this new particle
+            _particles[_lastParticleCreated].setNextParticle(particleIndex);
+            particle->setPreviousParticle(_lastParticleCreated);
+        }
+
+        // set the new particle as the last particle created.
+        _lastParticleCreated = particleIndex;
+        
+    }
+    
+    return particle;
 }
         
-void ConnectedParticleSystem::destroyParticle(int i)
+void ConnectedParticleSystem::reuseParticle(int particleIndex)
 {
-    return ParticleSystem::destroyParticle(i);
-}
-        
-void ConnectedParticleSystem::update(double dt)
-{
-    ParticleSystem::update(dt);
+    // osg::notify(osg::NOTICE)<<this<< " Reusing particle "<<particleIndex<<std::endl;
+
+    if (particleIndex<0 || particleIndex>=(int)_particles.size()) return;
+    
+    Particle* particle = &_particles[particleIndex];
+    int previous = particle->getPreviousParticle();
+    int next = particle->getNextParticle();
+
+    // update start and last entries
+    if (_startParticle == particleIndex)
+    {
+        _startParticle = particle->getNextParticle();
+    }
+    
+    if (_lastParticleCreated == particleIndex)
+    {
+        _lastParticleCreated = Particle::INVALID_INDEX;
+    }
+    
+    // join up the previous and next particles to account for
+    // the deletion of the this particle
+    if (previous != Particle::INVALID_INDEX)
+    {
+        _particles[previous].setNextParticle(next);
+    }
+    
+    if (next != Particle::INVALID_INDEX)
+    {
+        _particles[next].setPreviousParticle(previous);
+    }
+
+    // reset the next and previous particle entries of this particle
+    particle->setPreviousParticle(Particle::INVALID_INDEX);
+    particle->setNextParticle(Particle::INVALID_INDEX);
+    
+    // do the actual destroy of the particle
+    ParticleSystem::destroyParticle(particleIndex);
 }
 
 void ConnectedParticleSystem::drawImplementation(osg::State& state) const
 {
-    ParticleSystem::drawImplementation(state);
+    const Particle* particle = (_startParticle != Particle::INVALID_INDEX) ? &_particles[_startParticle] : 0;
+    if (!particle) return;
+    
+    osg::Vec4 pixelSizeVector = osg::CullingSet::computePixelSizeVector(*state.getCurrentViewport(),state.getProjectionMatrix(),state.getModelViewMatrix());
+    float unitPixelSize = fabs(1.0/(particle->getPosition()*pixelSizeVector));
+    float pixelSizeOfFirstParticle = unitPixelSize * particle->getCurrentSize();
+    float desiredGapBetweenDrawnParticles = 50.0f/unitPixelSize;
+    float desiredGapBetweenDrawnParticles2 = desiredGapBetweenDrawnParticles*desiredGapBetweenDrawnParticles;
+    unsigned int maxNumParticlesToSkip = 200;
+    float maxPixelError2 = osg::square(1.0f/unitPixelSize);
+    
+    if (pixelSizeOfFirstParticle<1.0)
+    {
+        // draw the connected particles as a line
+        glBegin(GL_LINE_STRIP);
+        while(particle != 0)
+        {
+
+            const osg::Vec4& color = particle->getCurrentColor();
+            const osg::Vec3& pos = particle->getPosition();
+            glColor4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
+            glTexCoord2f( particle->getSTexCoord(), 0.5f );
+            glVertex3fv(pos.ptr());
+
+            const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
+            if (nextParticle)
+            {
+                const osg::Vec3& nextPos = nextParticle->getPosition();
+                osg::Vec3 startDelta = nextPos-pos;
+                startDelta.normalize();
+                float distance2 = 0.0;
+
+                // now skip particles of required
+                for(unsigned int i=0;
+                    i<maxNumParticlesToSkip && ((distance2<maxPixelError2) && (nextParticle->getNextParticle()!=Particle::INVALID_INDEX));
+                    ++i)
+                {
+                    nextParticle = &_particles[nextParticle->getNextParticle()];
+                    const osg::Vec3& nextPos = nextParticle->getPosition();
+                    osg::Vec3 delta = nextPos-pos;
+                    distance2 = (delta^startDelta).length2();
+                }
+            }
+            particle = nextParticle;
+        }
+        glEnd();
+    }
+    else
+    {
+
+        // draw the connected particles as a quad stripped aligned to be orthogonal to the eye 
+        osg::Matrix eyeToLocalTransform;
+        eyeToLocalTransform.invert(state.getModelViewMatrix());
+        osg::Vec3 eyeLocal = osg::Vec3(0.0f,0.0,0.0f)*eyeToLocalTransform;
+
+        osg::Vec3 delta(0.0f,0.0f,1.0f);
+        
+        glBegin(GL_QUAD_STRIP);
+        while(particle != 0)
+        {
+            const osg::Vec4& color = particle->getCurrentColor();
+            const osg::Vec3& pos = particle->getPosition();
+
+            const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
+                        
+            if (nextParticle)
+            {
+                const osg::Vec3& nextPos = nextParticle->getPosition();
+                osg::Vec3 startDelta = nextPos-pos;
+                startDelta.normalize();
+                float distance2 = 0.0;
+
+                // now skip particles of required
+                for(unsigned int i=0;
+                    i<maxNumParticlesToSkip && ((distance2<maxPixelError2) && (nextParticle->getNextParticle()!=Particle::INVALID_INDEX));
+                    ++i)
+                {
+                    nextParticle = &_particles[nextParticle->getNextParticle()];
+                    const osg::Vec3& nextPos = nextParticle->getPosition();
+                    delta = nextPos-pos;
+                    distance2 = (delta^startDelta).length2();
+                }
+
+                delta = nextPos-pos;
+            }
+            
+            osg::Vec3 normal( delta ^ (pos-eyeLocal));
+            normal.normalize();
+            normal *= particle->getCurrentSize();
+
+            osg::Vec3 bottom(pos-normal);
+            osg::Vec3 top(pos+normal);
+            
+            glColor4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
+            
+            glTexCoord2f( particle->getSTexCoord(), 0.0f );
+            glVertex3fv(bottom.ptr());
+
+            glTexCoord2f( particle->getSTexCoord(), 1.0f );
+            glVertex3fv(top.ptr());
+
+            particle = nextParticle;
+        }
+        glEnd();
+    }
+
 }

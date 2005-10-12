@@ -6,6 +6,7 @@ CXXFILES =\
 	ExplosionEffect.cpp\
 	ExplosionDebrisEffect.cpp\
 	SmokeEffect.cpp\
+	SmokeTrailEffect.cpp\
 	FireEffect.cpp\
 	FluidFrictionOperator.cpp\
 	FluidProgram.cpp\

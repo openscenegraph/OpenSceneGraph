@@ -28,6 +28,9 @@
 namespace osgParticle
 {
 
+    // forward declare so we can reference it
+    class ParticleSystem;
+
     /**    Implementation of a <B>particle</B>.
         Objects of this class are particles, they have some graphical properties
         and some physical properties. Particles are created by emitters and then placed
@@ -44,6 +47,11 @@ namespace osgParticle
     */
     class OSGPARTICLE_EXPORT Particle {
     public:
+        
+        enum
+        {
+            INVALID_INDEX = -1
+        };
 
         /**
          Shape of particles.
@@ -125,6 +133,18 @@ namespace osgParticle
         
         /// Get the previous angle vector.
         inline const osg::Vec3& getPreviousAngle() const;
+        
+        /// Get the current color
+        inline const osg::Vec4& getCurrentColor() const { return _current_color; }
+
+        /// Get the current alpha
+        inline float getCurrentAlpha() const { return _current_alpha; }
+        
+        /// Get the s texture coordinate of the bottom left of the particle
+        inline const float getSTexCoord() const { return _s_coord; }
+
+        /// Get the t texture coordinate of the bottom left of the particle
+        inline float getTCoord() const { return _t_coord; }
 
         /** Kill the particle on next update
             NOTE: after calling this function, the <CODE>isAlive()</CODE> method will still 
@@ -216,10 +236,26 @@ namespace osgParticle
         /// Get the current (interpolated) polygon size. Valid only after the first call to update().
         inline float getCurrentSize() const;
         
-        // Specify how the particle texture is tiled
+        /// Specify how the particle texture is tiled
         inline void setTextureTile(int sTile, int tTile, int numTiles = 0);
 
-    private:
+        /// Set the previous particle
+        inline void setPreviousParticle(int previous) { _previousParticle = previous; }
+
+        /// Get the previous particle
+        inline int getPreviousParticle() const { return _previousParticle; }
+
+        /// Set the next particle
+        inline void setNextParticle(int next) { _nextParticle = next; }
+
+        /// Get the const next particle
+        inline int getNextParticle() const { return _nextParticle; }
+
+        /// Method for initializing a particles texture coords as part of a connected particle system.
+        void setUpTexCoordsAsPartOfConnectedParticleSystem(ParticleSystem* ps);
+
+    protected:
+    
         Shape _shape;
 
         rangef _sr;
@@ -259,8 +295,8 @@ namespace osgParticle
         float _t_coord;
         
         // previous and next Particles are only used in ConnectedParticleSystems
-        Particle* _previousParticle;
-        Particle* _nextParticle;
+        int _previousParticle;
+        int _nextParticle;
     };
 
     // INLINE FUNCTIONS

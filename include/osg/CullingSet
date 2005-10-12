@@ -16,7 +16,7 @@
 
 #include <osg/Polytope>
 #include <osg/ShadowVolumeOccluder>
-#include <osg/Referenced>
+#include <osg/Viewport>
 
 #include <math.h>
 
@@ -328,7 +328,10 @@ class OSG_EXPORT CullingSet : public Referenced
 
         void popOccludersCurrentMask(NodePath& nodePath);
         
+        static osg::Vec4 computePixelSizeVector(const Viewport& W, const Matrix& P, const Matrix& M);
+
         virtual ~CullingSet();
+        
 
     protected:
     

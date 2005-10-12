@@ -1,5 +1,6 @@
 #include <osgParticle/ModularEmitter>
 #include <osgParticle/Emitter>
+#include <osgParticle/ConnectedParticleSystem>
 #include <osg/Notify>
 
 osgParticle::ModularEmitter::ModularEmitter()
@@ -22,6 +23,8 @@ osgParticle::ModularEmitter::ModularEmitter(const ModularEmitter& copy, const os
 
 void osgParticle::ModularEmitter::emit(double dt) 
 {
+    ConnectedParticleSystem* cps = dynamic_cast<ConnectedParticleSystem*>(getParticleSystem());
+
     if (getReferenceFrame() == RELATIVE_RF)
     {
         const osg::Matrix& ltw = getLocalToWorldMatrix();
@@ -60,6 +63,9 @@ void osgParticle::ModularEmitter::emit(double dt)
                 float r = ((float)rand()/(float)RAND_MAX);
                 P->transformPositionVelocity(ltw, previous_ltw, r);
                 //P->transformPositionVelocity(ltw);
+                
+                if (cps) P->setUpTexCoordsAsPartOfConnectedParticleSystem(cps);
+                
             }
             else
             {
@@ -77,6 +83,8 @@ void osgParticle::ModularEmitter::emit(double dt)
             {
                 _placer->place(P);
                 _shooter->shoot(P);
+
+                if (cps) P->setUpTexCoordsAsPartOfConnectedParticleSystem(cps);
             }
         }
     }

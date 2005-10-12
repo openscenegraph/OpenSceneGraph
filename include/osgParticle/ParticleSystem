@@ -123,6 +123,9 @@ namespace osgParticle
         /// Destroy the i-th particle.
         inline virtual void destroyParticle(int i);
         
+        /// Reuse the i-th particle.
+        inline virtual void reuseParticle(int i) { _deadparts.push(&(_particles[i])); }
+
         /// Get the last frame number.
         inline int getLastFrameNumber() const;
 
@@ -170,7 +173,6 @@ namespace osgParticle
         inline void update_bounds(const osg::Vec3& p, float r);
         void single_pass_render(osg::State& state, const osg::Matrix& modelview) const;
 
-    private:
         typedef std::vector<Particle> Particle_vector;
         typedef std::stack<Particle*> Death_stack;
 

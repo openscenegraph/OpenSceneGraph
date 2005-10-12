@@ -1,5 +1,6 @@
 #include <osgParticle/Particle>
 #include <osgParticle/LinearInterpolator>
+#include <osgParticle/ParticleSystem>
 
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -48,8 +49,8 @@ osgParticle::Particle::Particle()
     _cur_tile(-1),
     _s_coord(0.0f),
     _t_coord(0.0f),
-    _previousParticle(0),
-    _nextParticle(0)
+    _previousParticle(INVALID_INDEX),
+    _nextParticle(INVALID_INDEX)
 {
 }
 
@@ -81,10 +82,14 @@ bool osgParticle::Particle::update(double dt)
     int currentTile = static_cast<int>(x * _num_tile);
     
     //If the current texture tile is different from previous, then compute new texture coords
-    if(currentTile != _cur_tile) {
+    if(currentTile != _cur_tile)
+    {
+    
         _cur_tile = currentTile;
         _s_coord = _s_tile * fmod(_cur_tile , 1.0 / _s_tile);
         _t_coord = 1.0 - _t_tile * (static_cast<int>(_cur_tile * _t_tile) + 1);
+
+        // osg::notify(osg::NOTICE)<<this<<" setting tex coords "<<_s_coord<<" "<<_t_coord<<std::endl;
     }
     
     // compute the current values for size, alpha and color.
@@ -213,5 +218,25 @@ void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, c
 
     default:
         osg::notify(osg::WARN) << "Invalid shape for particles\n";
+    }
+}
+
+void osgParticle::Particle::setUpTexCoordsAsPartOfConnectedParticleSystem(ParticleSystem* ps)
+{
+    if (getPreviousParticle()!=Particle::INVALID_INDEX)
+    {
+        update(0.0);
+
+        Particle* previousParticle = ps->getParticle(getPreviousParticle());
+        const osg::Vec3& previousPosition = previousParticle->getPosition();
+        const osg::Vec3& newPosition = getPosition();
+        float distance = (newPosition-previousPosition).length();
+        float s_coord_delta = 0.5f*distance/getCurrentSize();
+        float s_coord = previousParticle->_s_coord + s_coord_delta;
+
+        setTextureTile(0,0,0);
+        _cur_tile = 0;
+        _s_coord = s_coord;
+        _t_coord = 0.0f;
     }
 }

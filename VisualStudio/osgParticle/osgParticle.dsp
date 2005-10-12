@@ -163,6 +163,10 @@ SOURCE=..\..\src\osgParticle\SmokeEffect.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgParticle\SmokeTrailEffect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgParticle\Version.cpp
 # End Source File
 # End Group
@@ -184,6 +188,10 @@ SOURCE=..\..\include\osgParticle\CenteredPlacer
 # Begin Source File
 
 SOURCE=..\..\include\osgParticle\Counter
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgParticle\ConstantRateCounter
 # End Source File
 # Begin Source File
 
@@ -304,6 +312,10 @@ SOURCE=..\..\include\osgParticle\Shooter
 # Begin Source File
 
 SOURCE=..\..\include\osgParticle\SmokeEffect
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgParticle\SmokeTrailEffect
 # End Source File
 # Begin Source File
 

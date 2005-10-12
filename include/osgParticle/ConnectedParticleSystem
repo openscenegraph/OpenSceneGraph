@@ -35,12 +35,10 @@ namespace osgParticle
         /// Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null).
         virtual Particle* createParticle(const Particle* ptemplate);
         
-        /// Destroy the i-th particle.
-        virtual void destroyParticle(int i);
+        /// Reuse the i-th particle.
+        virtual void reuseParticle(int i);
         
-        /// Update the particles. Don't call this directly, use a <CODE>ConnectedParticleSystemUpdater</CODE> instead.
-        virtual void update(double dt);
-
+        /// Draw the connected particles as either a line or a quad strip, depending upon viewing distance. .
         virtual void drawImplementation(osg::State& state) const;
 
     protected:
@@ -49,8 +47,8 @@ namespace osgParticle
 
         ConnectedParticleSystem& operator=(const ConnectedParticleSystem&) { return *this; }
 
-        Particle* _startParticle;
-        Particle* _lastParticleCreated;
+        int _startParticle;
+        int _lastParticleCreated;
     };
 
 }

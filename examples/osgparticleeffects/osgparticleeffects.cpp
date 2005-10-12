@@ -16,6 +16,7 @@
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgParticle/SmokeEffect>
+#include <osgParticle/SmokeTrailEffect>
 #include <osgParticle/FireEffect>
 
 // for the grid data..
@@ -276,8 +277,12 @@ public:
 
             osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, scale, intensity);
             osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, scale, intensity);
-            osgParticle::ParticleEffect* smoke = new osgParticle::SmokeEffect(position, scale, intensity);
             osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, scale, intensity);
+            osgParticle::ParticleEffect* smoke = 0;
+            if (handleMovingModels)
+                smoke =  new osgParticle::SmokeTrailEffect(position, scale, intensity);
+            else
+                smoke =  new osgParticle::SmokeEffect(position, scale, intensity);
             
             explosion->setWind(wind);
             explosionDebri->setWind(wind);

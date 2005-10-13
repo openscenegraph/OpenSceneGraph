@@ -91,7 +91,7 @@ class PrintVisitor : public NodeVisitor
 
 CullVisitor::CullVisitor():
     NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
-    _currentRenderGraph(NULL),
+    _currentStateGraph(NULL),
     _currentRenderBin(NULL),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
@@ -1185,8 +1185,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         setCurrentRenderBin(previousRenderBin);
      
 
-
-        if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
+        if (rtts->getStateGraphList().size()==0 && rtts->getRenderBinList().size()==0)
         {
             // getting to this point means that all the subgraph has been
             // culled by small feature culling or is beyond LOD ranges.

@@ -14,12 +14,12 @@ CXXFILES =\
 	PositionalStateContainer.cpp\
 	ReflectionMapGenerator.cpp\
 	RenderBin.cpp\
-	RenderGraph.cpp\
 	RenderLeaf.cpp\
 	RenderStage.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\
+	StateGraph.cpp\
 	Statistics.cpp\
 	TangentSpaceGenerator.cpp\
 	Tesselator.cpp\

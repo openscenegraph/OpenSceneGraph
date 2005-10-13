@@ -23,9 +23,9 @@
 #include <osg/Vec4>
 #include <osg/Viewport>
 #include <osgUtil/CullVisitor>
-#include <osgUtil/RenderGraph>
 #include <osgUtil/RenderStage>
 #include <osgUtil/SceneView>
+#include <osgUtil/StateGraph>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -130,15 +130,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Method1(void, setCollectOccludersVisitor, IN, osg::CollectOccludersVisitor *, cov);
 	I_Method0(osg::CollectOccludersVisitor *, getCollectOccludersVisitor);
 	I_Method0(const osg::CollectOccludersVisitor *, getCollectOccludersVisitor);
-	I_Method1(void, setRenderGraph, IN, osgUtil::RenderGraph *, rg);
-	I_Method0(osgUtil::RenderGraph *, getRenderGraph);
-	I_Method0(const osgUtil::RenderGraph *, getRenderGraph);
-	I_Method1(void, setRenderGraphLeft, IN, osgUtil::RenderGraph *, rg);
-	I_Method0(osgUtil::RenderGraph *, getRenderGraphLeft);
-	I_Method0(const osgUtil::RenderGraph *, getRenderGraphLeft);
-	I_Method1(void, setRenderGraphRight, IN, osgUtil::RenderGraph *, rg);
-	I_Method0(osgUtil::RenderGraph *, getRenderGraphRight);
-	I_Method0(const osgUtil::RenderGraph *, getRenderGraphRight);
+	I_Method1(void, setStateGraph, IN, osgUtil::StateGraph *, rg);
+	I_Method0(osgUtil::StateGraph *, getStateGraph);
+	I_Method0(const osgUtil::StateGraph *, getStateGraph);
+	I_Method1(void, setStateGraphLeft, IN, osgUtil::StateGraph *, rg);
+	I_Method0(osgUtil::StateGraph *, getStateGraphLeft);
+	I_Method0(const osgUtil::StateGraph *, getStateGraphLeft);
+	I_Method1(void, setStateGraphRight, IN, osgUtil::StateGraph *, rg);
+	I_Method0(osgUtil::StateGraph *, getStateGraphRight);
+	I_Method0(const osgUtil::StateGraph *, getStateGraphRight);
 	I_Method1(void, setRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method0(osgUtil::RenderStage *, getRenderStage);
 	I_Method0(const osgUtil::RenderStage *, getRenderStage);
@@ -198,14 +198,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Property(osg::StateSet *, LocalStateSet);
 	I_Property(bool, PrioritizeTextures);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
-	I_Property(osgUtil::RenderGraph *, RenderGraph);
-	I_Property(osgUtil::RenderGraph *, RenderGraphLeft);
-	I_Property(osgUtil::RenderGraph *, RenderGraphRight);
 	I_Property(osgUtil::RenderStage *, RenderStage);
 	I_Property(osgUtil::RenderStage *, RenderStageLeft);
 	I_Property(osgUtil::RenderStage *, RenderStageRight);
 	I_Property(osg::Node *, SceneData);
 	I_Property(osg::State *, State);
+	I_Property(osgUtil::StateGraph *, StateGraph);
+	I_Property(osgUtil::StateGraph *, StateGraphLeft);
+	I_Property(osgUtil::StateGraph *, StateGraphRight);
 	I_Property(osg::NodeVisitor *, UpdateVisitor);
 	I_Property(const osg::Matrixd &, ViewMatrix);
 	I_Property(osg::Viewport *, Viewport);

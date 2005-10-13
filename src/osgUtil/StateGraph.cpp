@@ -10,14 +10,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osgUtil/RenderGraph>
+#include <osgUtil/StateGraph>
 
 #include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
 
-void RenderGraph::reset()
+void StateGraph::reset()
 {
     _parent = NULL;
     _stateset = NULL;
@@ -28,9 +28,9 @@ void RenderGraph::reset()
     _leaves.clear();
 }
 
-/** recursively clean the RenderGraph of all its drawables, lights and depths.
+/** recursively clean the StateGraph of all its drawables, lights and depths.
   * Leaves children intact, and ready to be populated again.*/
-void RenderGraph::clean()
+void StateGraph::clean()
 {
 
     // clean local drawables etc.
@@ -46,8 +46,8 @@ void RenderGraph::clean()
 
 }
 
-/** recursively prune the RenderGraph of empty children.*/
-void RenderGraph::prune()
+/** recursively prune the StateGraph of empty children.*/
+void StateGraph::prune()
 {
     std::vector<const osg::StateSet*> toEraseList;
 

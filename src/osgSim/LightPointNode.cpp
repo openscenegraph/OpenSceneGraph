@@ -153,14 +153,14 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
     
         osg::Matrix matrix = cv->getModelViewMatrix();
         osg::RefMatrix& projection = cv->getProjectionMatrix();
-        osgUtil::RenderGraph* rg = cv->getCurrentRenderGraph();
+        osgUtil::StateGraph* rg = cv->getCurrentStateGraph();
 
         if (rg->leaves_empty())
         {
-            // this is first leaf to be added to RenderGraph
+            // this is first leaf to be added to StateGraph
             // and therefore should not already know to current render bin,
             // so need to add it.
-            cv->getCurrentRenderBin()->addRenderGraph(rg);
+            cv->getCurrentRenderBin()->addStateGraph(rg);
         }
         
 #ifdef USE_TIMER
@@ -181,7 +181,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             else
             {
                 // will need to replace UserData.
-                osg::notify(osg::WARN) << "Warning: Replacing osgUtil::RenderGraph::_userData to support osgSim::LightPointNode, may have undefined results."<<std::endl;
+                osg::notify(osg::WARN) << "Warning: Replacing osgUtil::StateGraph::_userData to support osgSim::LightPointNode, may have undefined results."<<std::endl;
             }
         }
 
@@ -197,9 +197,9 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             }
         }
 
-        // search for a drawable in the RenderLead list equal to the attached the one attached to RenderGraph user data
+        // search for a drawable in the RenderLead list equal to the attached the one attached to StateGraph user data
         // as this will be our special light point drawable.
-        osgUtil::RenderGraph::LeafList::iterator litr;
+        osgUtil::StateGraph::LeafList::iterator litr;
         for(litr = rg->_leaves.begin();
             litr != rg->_leaves.end() && (*litr)->_drawable!=drawable;
             ++litr)
@@ -208,7 +208,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         if (litr == rg->_leaves.end())
         {
             // havn't found the drawable added in the RenderLeaf list, there this my be the 
-            // first time through LightPointNode in this frame, so need to add drawable into the RenderGraph RenderLeaf list
+            // first time through LightPointNode in this frame, so need to add drawable into the StateGraph RenderLeaf list
             // and update its time signatures.
 
             drawable->reset();

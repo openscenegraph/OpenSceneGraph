@@ -13,9 +13,9 @@
 #include <osg/Object>
 #include <osg/State>
 #include <osgUtil/RenderBin>
-#include <osgUtil/RenderGraph>
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/RenderStage>
+#include <osgUtil/StateGraph>
 #include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -32,7 +32,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::RenderLeaf * >, osgUtil::RenderBin::RenderLeafList);
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::RenderGraph * >, osgUtil::RenderBin::RenderGraphList);
+TYPE_NAME_ALIAS(std::vector< osgUtil::StateGraph * >, osgUtil::RenderBin::StateGraphList);
 
 TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUtil::RenderBin::RenderBinList);
 
@@ -59,14 +59,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method0(osgUtil::RenderStage *, getStage);
 	I_Method0(const osgUtil::RenderStage *, getStage);
 	I_Method0(int, getBinNum);
-	I_Method0(osgUtil::RenderBin::RenderGraphList &, getRenderGraphList);
-	I_Method0(const osgUtil::RenderBin::RenderGraphList &, getRenderGraphList);
+	I_Method0(osgUtil::RenderBin::StateGraphList &, getStateGraphList);
+	I_Method0(const osgUtil::RenderBin::StateGraphList &, getStateGraphList);
 	I_Method0(osgUtil::RenderBin::RenderBinList &, getRenderBinList);
 	I_Method0(const osgUtil::RenderBin::RenderBinList &, getRenderBinList);
 	I_Method0(osgUtil::RenderBin::RenderLeafList &, getRenderLeafList);
 	I_Method0(const osgUtil::RenderBin::RenderLeafList &, getRenderLeafList);
 	I_Method2(osgUtil::RenderBin *, find_or_insert, IN, int, binNum, IN, const std::string &, binName);
-	I_Method1(void, addRenderGraph, IN, osgUtil::RenderGraph *, rg);
+	I_Method1(void, addStateGraph, IN, osgUtil::StateGraph *, rg);
 	I_Method0(void, sort);
 	I_Method0(void, sortImplementation);
 	I_Method1(void, setSortMode, IN, osgUtil::RenderBin::SortMode, mode);
@@ -86,16 +86,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
 	I_Method1(void, getPrims, IN, osgUtil::Statistics *, primStats);
 	I_Method2(bool, getPrims, IN, osgUtil::Statistics *, primStats, IN, int, nbin);
-	I_Method0(void, copyLeavesFromRenderGraphListToRenderLeafList);
+	I_Method0(void, copyLeavesFromStateGraphListToRenderLeafList);
 	I_ReadOnlyProperty(int, BinNum);
 	I_Property(osgUtil::RenderBin::DrawCallback *, DrawCallback);
 	I_ReadOnlyProperty(osgUtil::RenderBin *, Parent);
 	I_ReadOnlyProperty(osgUtil::RenderBin::RenderBinList &, RenderBinList);
-	I_ReadOnlyProperty(osgUtil::RenderBin::RenderGraphList &, RenderGraphList);
 	I_ReadOnlyProperty(osgUtil::RenderBin::RenderLeafList &, RenderLeafList);
 	I_Property(osgUtil::RenderBin::SortCallback *, SortCallback);
 	I_Property(osgUtil::RenderBin::SortMode, SortMode);
 	I_ReadOnlyProperty(osgUtil::RenderStage *, Stage);
+	I_ReadOnlyProperty(osgUtil::RenderBin::StateGraphList &, StateGraphList);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::DrawCallback)
@@ -124,7 +124,7 @@ END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >);
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::RenderGraph * >);
-
 STD_VECTOR_REFLECTOR(std::vector< osgUtil::RenderLeaf * >);
+
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::StateGraph * >);
 

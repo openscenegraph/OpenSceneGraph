@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_RENDERGRAPH
-#define OSGUTIL_RENDERGRAPH 1
+#ifndef OSGUTIL_STATEGRAPH
+#define OSGUTIL_STATEGRAPH 1
 
 #include <osg/Matrix>
 #include <osg/Drawable>
@@ -36,17 +36,17 @@ struct LeafDepthSortFunctor
     }
 };
 
-/** RenderGraph - contained in a renderBin, defines the scene to be drawn.
+/** StateGraph - contained in a renderBin, defines the scene to be drawn.
   */
-class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
+class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 {
     public:
     
 
-        typedef std::map< const osg::StateSet*, osg::ref_ptr<RenderGraph> >   ChildList;
+        typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >   ChildList;
         typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
 
-        RenderGraph*                        _parent;
+        StateGraph*                        _parent;
         const osg::StateSet*                _stateset;
 
         int                                 _depth;
@@ -59,7 +59,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         osg::ref_ptr<osg::Referenced>       _userData;
 
 
-        RenderGraph():
+        StateGraph():
             _parent(NULL), 
             _stateset(NULL), 
             _depth(0),
@@ -69,7 +69,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         {
         }
 
-        RenderGraph(RenderGraph* parent,const osg::StateSet* stateset):
+        StateGraph(StateGraph* parent,const osg::StateSet* stateset):
             _parent(parent), 
             _stateset(stateset),
             _depth(0),
@@ -80,9 +80,9 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             if (_parent) _depth = _parent->_depth + 1;
         }
             
-        ~RenderGraph() {}
+        ~StateGraph() {}
         
-        RenderGraph* cloneType() const { return new RenderGraph; }
+        StateGraph* cloneType() const { return new StateGraph; }
         
         void setUserData(osg::Referenced* obj) { _userData = obj; }
         osg::Referenced* getUserData() { return _userData.get(); }
@@ -141,18 +141,18 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             std::sort(_leaves.begin(),_leaves.end(),LeafDepthSortFunctor());
         }
 
-        /** Reset the internal contents of a RenderGraph, including deleting all children.*/
+        /** Reset the internal contents of a StateGraph, including deleting all children.*/
         void reset();
 
-        /** Recursively clean the RenderGraph of all its drawables, lights and depths.
+        /** Recursively clean the StateGraph of all its drawables, lights and depths.
           * Leaves children intact, and ready to be populated again.*/
         void clean();
 
-        /** Recursively prune the RenderGraph of empty children.*/
+        /** Recursively prune the StateGraph of empty children.*/
         void prune();
         
         
-        inline RenderGraph* find_or_insert(const osg::StateSet* stateset)
+        inline StateGraph* find_or_insert(const osg::StateSet* stateset)
         {
             // search for the appropriate state group, return it if found.
             ChildList::iterator itr = _children.find(stateset);
@@ -160,7 +160,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             
             // create a state group and insert it into the children list
             // then return the state group.
-            RenderGraph* sg = new RenderGraph(this,stateset);
+            StateGraph* sg = new StateGraph(this,stateset);
             _children[stateset] = sg;
             return sg;
         }
@@ -177,7 +177,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             }
         }
 
-        static inline void moveRenderGraph(osg::State& state,RenderGraph* sg_curr,RenderGraph* sg_new)
+        static inline void moveStateGraph(osg::State& state,StateGraph* sg_curr,StateGraph* sg_new)
         {
             if (sg_new==sg_curr || sg_new==NULL) return;
 
@@ -185,7 +185,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             {
 
                 // use return path to trace back steps to sg_new.
-                std::vector<RenderGraph*> return_path;
+                std::vector<StateGraph*> return_path;
 
                 // need to pop back root render graph.
                 do 
@@ -194,11 +194,11 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
                     sg_new = sg_new->_parent;
                 } while (sg_new);
 
-                for(std::vector<RenderGraph*>::reverse_iterator itr=return_path.rbegin();
+                for(std::vector<StateGraph*>::reverse_iterator itr=return_path.rbegin();
                     itr!=return_path.rend();
                     ++itr)
                 {
-                    RenderGraph* rg = (*itr);
+                    StateGraph* rg = (*itr);
                     if (rg->_stateset) state.pushStateSet(rg->_stateset);
                 }
                 return;
@@ -226,7 +226,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             }
             
             // use return path to trace back steps to sg_new.
-            std::vector<RenderGraph*> return_path;
+            std::vector<StateGraph*> return_path;
 
             // need to pop back up to the same depth as the curr state group.
             while (sg_new->_depth>sg_curr->_depth)
@@ -238,7 +238,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             // now pop back up both parent paths until they agree.
 
             // DRT - 10/22/02
-            // should be this to conform with above case where two RenderGraph
+            // should be this to conform with above case where two StateGraph
             // nodes have the same parent
             while (sg_curr != sg_new)
             {
@@ -249,17 +249,17 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
                 sg_new = sg_new->_parent;
             }
             
-            for(std::vector<RenderGraph*>::reverse_iterator itr=return_path.rbegin();
+            for(std::vector<StateGraph*>::reverse_iterator itr=return_path.rbegin();
                 itr!=return_path.rend();
                 ++itr)
             {
-                RenderGraph* rg = (*itr);
+                StateGraph* rg = (*itr);
                 if (rg->_stateset) state.pushStateSet(rg->_stateset);
             }
 
         }
 
-        inline static void moveToRootRenderGraph(osg::State& state,RenderGraph* sg_curr)
+        inline static void moveToRootStateGraph(osg::State& state,StateGraph* sg_curr)
         {
             // need to pop back all statesets and matrices.
             while (sg_curr)
@@ -273,9 +273,9 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
     private:
 
         /// disallow copy construction.
-        RenderGraph(const RenderGraph&):osg::Referenced() {}
+        StateGraph(const StateGraph&):osg::Referenced() {}
         /// disallow copy operator.
-        RenderGraph& operator = (const RenderGraph&) { return *this; }
+        StateGraph& operator = (const StateGraph&) { return *this; }
 
 };
 

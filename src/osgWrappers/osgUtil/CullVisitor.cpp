@@ -35,8 +35,8 @@
 #include <osg/Vec3>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/RenderBin>
-#include <osgUtil/RenderGraph>
 #include <osgUtil/RenderStage>
+#include <osgUtil/StateGraph>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -75,9 +75,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_Method0(const osg::ClearNode *, getClearNode);
 	I_Method1(void, pushStateSet, IN, const osg::StateSet *, ss);
 	I_Method0(void, popStateSet);
-	I_Method1(void, setRenderGraph, IN, osgUtil::RenderGraph *, rg);
-	I_Method0(osgUtil::RenderGraph *, getRootRenderGraph);
-	I_Method0(osgUtil::RenderGraph *, getCurrentRenderGraph);
+	I_Method1(void, setStateGraph, IN, osgUtil::StateGraph *, rg);
+	I_Method0(osgUtil::StateGraph *, getRootStateGraph);
+	I_Method0(osgUtil::StateGraph *, getCurrentStateGraph);
 	I_Method1(void, setRenderStage, IN, osgUtil::RenderStage *, rg);
 	I_Method0(osgUtil::RenderStage *, getRenderStage);
 	I_Method0(osgUtil::RenderBin *, getCurrentRenderBin);
@@ -104,11 +104,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_ReadOnlyProperty(osgUtil::CullVisitor::value_type, CalculatedNearPlane);
 	I_Property(const osg::ClearNode *, ClearNode);
 	I_Property(osgUtil::RenderBin *, CurrentRenderBin);
-	I_ReadOnlyProperty(osgUtil::RenderGraph *, CurrentRenderGraph);
+	I_ReadOnlyProperty(osgUtil::StateGraph *, CurrentStateGraph);
 	I_ReadOnlyProperty(osg::Vec3, EyePoint);
-	I_WriteOnlyProperty(osgUtil::RenderGraph *, RenderGraph);
 	I_Property(osgUtil::RenderStage *, RenderStage);
-	I_ReadOnlyProperty(osgUtil::RenderGraph *, RootRenderGraph);
+	I_ReadOnlyProperty(osgUtil::StateGraph *, RootStateGraph);
 	I_Property(osg::State *, State);
+	I_WriteOnlyProperty(osgUtil::StateGraph *, StateGraph);
 END_REFLECTOR
 

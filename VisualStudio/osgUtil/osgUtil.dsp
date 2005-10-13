@@ -135,7 +135,7 @@ SOURCE=..\..\src\osgUtil\RenderBin.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\RenderGraph.cpp
+SOURCE=..\..\src\osgUtil\StateGraph.cpp
 # End Source File
 # Begin Source File
 
@@ -247,7 +247,7 @@ SOURCE=..\..\include\osgUtil\RenderBin
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\RenderGraph
+SOURCE=..\..\include\osgUtil\StateGraph
 # End Source File
 # Begin Source File
 

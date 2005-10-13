@@ -703,7 +703,7 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
     // now reset the state so its back in its default state.
     if (previous)
     {
-        RenderGraph::moveToRootRenderGraph(state,previous->_parent);
+        StateGraph::moveToRootStateGraph(state,previous->_parent);
         state.apply();
         previous = NULL;
     }

@@ -14,7 +14,7 @@
 #ifndef OSGUTIL_RENDERBIN
 #define OSGUTIL_RENDERBIN 1
 
-#include <osgUtil/RenderGraph>
+#include <osgUtil/StateGraph>
 
 #include <map>
 #include <vector>
@@ -35,7 +35,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
     public:
     
         typedef std::vector<RenderLeaf*>                    RenderLeafList; 
-        typedef std::vector<RenderGraph*>                   RenderGraphList;
+        typedef std::vector<StateGraph*>                    StateGraphList;
         typedef std::map< int, osg::ref_ptr<RenderBin> >    RenderBinList; 
 
         enum SortMode
@@ -80,8 +80,8 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         int getBinNum() const { return _binNum; }
 
-        RenderGraphList& getRenderGraphList() { return _renderGraphList; }
-        const RenderGraphList& getRenderGraphList() const { return _renderGraphList; }
+        StateGraphList& getStateGraphList() { return _stateGraphList; }
+        const StateGraphList& getStateGraphList() const { return _stateGraphList; }
 
         RenderBinList& getRenderBinList() { return _bins; }
         const RenderBinList& getRenderBinList() const { return _bins; }
@@ -92,9 +92,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         RenderBin* find_or_insert(int binNum,const std::string& binName);
 
-        void addRenderGraph(RenderGraph* rg)
+        void addStateGraph(StateGraph* rg)
         {
-            _renderGraphList.push_back(rg);
+            _stateGraphList.push_back(rg);
         }
 
         void sort();
@@ -138,7 +138,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         void getPrims(Statistics* primStats);
         bool getPrims(Statistics* primStats, int nbin);
 
-        void copyLeavesFromRenderGraphListToRenderLeafList();
+        void copyLeavesFromStateGraphListToRenderLeafList();
 
     protected:
 
@@ -148,7 +148,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         RenderBin*                      _parent;
         RenderStage*                    _stage;
         RenderBinList                   _bins;
-        RenderGraphList                 _renderGraphList;
+        StateGraphList                  _stateGraphList;
         RenderLeafList                  _renderLeafList;
            
 

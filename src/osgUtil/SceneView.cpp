@@ -94,7 +94,7 @@ void SceneView::setDefaults(unsigned int options)
     
     _state = new State;
     
-    _rendergraph = new RenderGraph;
+    _rendergraph = new StateGraph;
     _renderStage = new RenderStage;
 
 
@@ -120,7 +120,7 @@ void SceneView::setDefaults(unsigned int options)
 
     _cullVisitor = new CullVisitor;
 
-    _cullVisitor->setRenderGraph(_rendergraph.get());
+    _cullVisitor->setStateGraph(_rendergraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
 
     _globalStateSet->setGlobalDefaults();
@@ -397,8 +397,8 @@ void SceneView::cull()
     }
     if (!_rendergraph)
     {
-        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default RenderGraph automatically."<< std::endl;
-        _rendergraph = new RenderGraph;
+        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default StateGraph automatically."<< std::endl;
+        _rendergraph = new StateGraph;
     }
     if (!_renderStage)
     {
@@ -441,11 +441,11 @@ void SceneView::cull()
         {
 
             if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
-            if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
+            if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<StateGraph*>(_rendergraph->cloneType());
             if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 
             if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
-            if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
+            if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<StateGraph*>(_rendergraph->cloneType());
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
             
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
@@ -488,7 +488,7 @@ void SceneView::cull()
     
 }
 
-void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
+void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
     if (!_sceneData || !_viewport->valid()) return;
@@ -556,7 +556,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
     cullVisitor->setClearNode(NULL); // reset earth sky on each frame.
     
-    cullVisitor->setRenderGraph(rendergraph);
+    cullVisitor->setStateGraph(rendergraph);
     cullVisitor->setRenderStage(renderStage);
 
     cullVisitor->setState( _state.get() );
@@ -627,11 +627,11 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
     renderStage->sort();
 
-    // prune out any empty RenderGraph children.
+    // prune out any empty StateGraph children.
     // note, this would be not required if the rendergraph had been
     // reset at the start of each frame (see top of this method) but
     // a clean has been used instead to try to minimize the amount of
-    // allocation and deleteing of the RenderGraph nodes.
+    // allocation and deleteing of the StateGraph nodes.
     rendergraph->prune();
 }
 

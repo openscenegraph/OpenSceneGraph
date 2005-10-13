@@ -30,7 +30,7 @@
 
 #include <osg/CullStack>
 
-#include <osgUtil/RenderGraph>
+#include <osgUtil/StateGraph>
 #include <osgUtil/RenderStage>
 
 #include <osg/Vec3>
@@ -91,7 +91,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           */
         inline void pushStateSet(const osg::StateSet* ss)
         {
-            _currentRenderGraph = _currentRenderGraph->find_or_insert(ss);
+            _currentStateGraph = _currentStateGraph->find_or_insert(ss);
             if (ss->useRenderBinDetails())
             {
                 _currentRenderBin = _currentRenderBin->find_or_insert(ss->getBinNumber(),ss->getBinName());
@@ -104,27 +104,27 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           */
         inline void popStateSet()
         {
-            if (_currentRenderGraph->_stateset->useRenderBinDetails())
+            if (_currentStateGraph->_stateset->useRenderBinDetails())
             {
                 _currentRenderBin = _currentRenderBin->getParent();
             }
-            _currentRenderGraph = _currentRenderGraph->_parent;
+            _currentStateGraph = _currentStateGraph->_parent;
         }
         
-        inline void setRenderGraph(RenderGraph* rg)
+        inline void setStateGraph(StateGraph* rg)
         {
-            _rootRenderGraph = rg;
-            _currentRenderGraph = rg;
+            _rootStateGraph = rg;
+            _currentStateGraph = rg;
         }
 
-        inline RenderGraph* getRootRenderGraph()
+        inline StateGraph* getRootStateGraph()
         {
-            return _rootRenderGraph.get();
+            return _rootStateGraph.get();
         }
 
-        inline RenderGraph* getCurrentRenderGraph()
+        inline StateGraph* getCurrentStateGraph()
         {
-            return _currentRenderGraph;
+            return _currentStateGraph;
         }
 
         inline void setRenderStage(RenderStage* rg)
@@ -252,8 +252,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         osg::ref_ptr<const osg::ClearNode>                          _clearNode;
 
-        osg::ref_ptr<RenderGraph>                                   _rootRenderGraph;
-        RenderGraph*                                                _currentRenderGraph;
+        osg::ref_ptr<StateGraph>                                   _rootStateGraph;
+        StateGraph*                                                _currentStateGraph;
 
         osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
         RenderBin*                                                  _currentRenderBin;
@@ -315,29 +315,29 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
 inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::RefMatrix* matrix)
 {
-    if (_currentRenderGraph->leaves_empty())
+    if (_currentStateGraph->leaves_empty())
     {
-        // this is first leaf to be added to RenderGraph
+        // this is first leaf to be added to StateGraph
         // and therefore should not already know to current render bin,
         // so need to add it.
-        _currentRenderBin->addRenderGraph(_currentRenderGraph);
+        _currentRenderBin->addStateGraph(_currentStateGraph);
     }
-    //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix));
-    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
+    //_currentStateGraph->addLeaf(new RenderLeaf(drawable,matrix));
+    _currentStateGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
 }
 
 /** Add a drawable and depth to current render graph.*/
 inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::RefMatrix* matrix,float depth)
 {
-    if (_currentRenderGraph->leaves_empty())
+    if (_currentStateGraph->leaves_empty())
     {
-        // this is first leaf to be added to RenderGraph
+        // this is first leaf to be added to StateGraph
         // and therefore should not already know to current render bin,
         // so need to add it.
-        _currentRenderBin->addRenderGraph(_currentRenderGraph);
+        _currentRenderBin->addStateGraph(_currentStateGraph);
     }
-    //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
-    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
+    //_currentStateGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
+    _currentStateGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
 }
 
 /** Add an attribute which is positioned relative to the modelview matrix.*/

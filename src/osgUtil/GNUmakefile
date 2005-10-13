@@ -13,7 +13,7 @@ CXXFILES = \
 	IntersectVisitor.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\
-	RenderGraph.cpp\
+	StateGraph.cpp\
 	RenderLeaf.cpp\
 	RenderStage.cpp\
 	PositionalStateContainer.cpp\

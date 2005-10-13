@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/RenderLeaf>
-#include <osgUtil/RenderGraph>
+#include <osgUtil/StateGraph>
 
 using namespace osg;
 using namespace osgUtil;
@@ -33,12 +33,12 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         state.applyModelViewMatrix(_modelview.get());
 
         // apply state if required.
-        RenderGraph* prev_rg = previous->_parent;
-        RenderGraph* prev_rg_parent = prev_rg->_parent;
-        RenderGraph* rg = _parent;
+        StateGraph* prev_rg = previous->_parent;
+        StateGraph* prev_rg_parent = prev_rg->_parent;
+        StateGraph* rg = _parent;
         if (prev_rg_parent!=rg->_parent)
         {
-            RenderGraph::moveRenderGraph(state,prev_rg_parent,rg->_parent);
+            StateGraph::moveStateGraph(state,prev_rg_parent,rg->_parent);
 
             // send state changes and matrix changes to OpenGL.
             state.apply(rg->_stateset);
@@ -63,7 +63,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         state.applyModelViewMatrix(_modelview.get());
 
         // apply state if required.
-         RenderGraph::moveRenderGraph(state,NULL,_parent->_parent);
+         StateGraph::moveStateGraph(state,NULL,_parent->_parent);
 
         state.apply(_parent->_stateset);
 

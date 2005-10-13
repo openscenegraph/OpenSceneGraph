@@ -37,7 +37,7 @@ void PositionalStateContainer::draw(osg::State& state,RenderLeaf*& previous, con
 
     if (previous)
     {
-        RenderGraph::moveToRootRenderGraph(state,previous->_parent);
+        StateGraph::moveToRootStateGraph(state,previous->_parent);
         state.apply();
         previous = NULL;
     }

@@ -19,7 +19,7 @@
 #include <osg/State>
 
 #include <osgUtil/RenderLeaf>
-#include <osgUtil/RenderGraph>
+#include <osgUtil/StateGraph>
 
 namespace osgUtil {
 

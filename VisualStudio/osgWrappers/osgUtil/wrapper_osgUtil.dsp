@@ -144,10 +144,6 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderBin.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderGraph.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderLeaf.cpp
 # End Source File
 
@@ -165,6 +161,10 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\Simplifier.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\SmoothingVisitor.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\StateGraph.cpp
 # End Source File
 
 # Begin Source File

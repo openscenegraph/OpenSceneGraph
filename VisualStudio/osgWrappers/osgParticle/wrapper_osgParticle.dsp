@@ -108,6 +108,14 @@ SOURCE=..\..\..\src\osgWrappers\osgParticle\CenteredPlacer.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgParticle\ConnectedParticleSystem.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgParticle\ConstantRateCounter.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgParticle\Counter.cpp
 # End Source File
 
@@ -217,6 +225,10 @@ SOURCE=..\..\..\src\osgWrappers\osgParticle\Shooter.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgParticle\SmokeEffect.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgParticle\SmokeTrailEffect.cpp
 # End Source File
 
 # Begin Source File

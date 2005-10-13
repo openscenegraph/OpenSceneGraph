@@ -136,7 +136,7 @@ RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
         _parent(rhs._parent),
         _stage(rhs._stage),
         _bins(rhs._bins),
-        _renderGraphList(rhs._renderGraphList),
+        _stateGraphList(rhs._stateGraphList),
         _renderLeafList(rhs._renderLeafList),
         _sortMode(rhs._sortMode),
         _sortCallback(rhs._sortCallback),
@@ -151,7 +151,7 @@ RenderBin::~RenderBin()
 
 void RenderBin::reset()
 {
-    _renderGraphList.clear();
+    _stateGraphList.clear();
     _bins.clear();
 }
 
@@ -199,7 +199,7 @@ void RenderBin::sortImplementation()
 
 struct SortByStateFunctor
 {
-    bool operator() (const RenderGraph* lhs,const RenderGraph* rhs) const
+    bool operator() (const StateGraph* lhs,const StateGraph* rhs) const
     {
         return (*(lhs->_stateset)<*(rhs->_stateset));
     }
@@ -210,15 +210,15 @@ void RenderBin::sortByState()
     //osg::notify(osg::NOTICE)<<"sortByState()"<<std::endl;
     // actually we'll do nothing right now, as fine grained sorting by state
     // appears to cost more to do than it saves in draw.  The contents of
-    // the RenderGraph leaves is already coarse grained sorted, this
+    // the StateGraph leaves is already coarse grained sorted, this
     // sorting is as a function of the cull traversal.
     // cout << "doing sortByState "<<this<<endl;
 }
 
 
-struct RenderGraphFrontToBackSortFunctor
+struct StateGraphFrontToBackSortFunctor
 {
-    bool operator() (const RenderGraph* lhs,const RenderGraph* rhs) const
+    bool operator() (const StateGraph* lhs,const StateGraph* rhs) const
     {
         return (lhs->_minimumDistance<rhs->_minimumDistance);
     }
@@ -226,14 +226,14 @@ struct RenderGraphFrontToBackSortFunctor
 
 void RenderBin::sortByStateThenFrontToBack()
 {
-    for(RenderGraphList::iterator itr=_renderGraphList.begin();
-        itr!=_renderGraphList.end();
+    for(StateGraphList::iterator itr=_stateGraphList.begin();
+        itr!=_stateGraphList.end();
         ++itr)
     {
         (*itr)->sortFrontToBack();
         (*itr)->getMinimumDistance();
     }
-    std::sort(_renderGraphList.begin(),_renderGraphList.end(),RenderGraphFrontToBackSortFunctor());
+    std::sort(_stateGraphList.begin(),_stateGraphList.end(),StateGraphFrontToBackSortFunctor());
 }
 
 struct FrontToBackSortFunctor
@@ -247,7 +247,7 @@ struct FrontToBackSortFunctor
     
 void RenderBin::sortFrontToBack()
 {
-    copyLeavesFromRenderGraphListToRenderLeafList();
+    copyLeavesFromStateGraphListToRenderLeafList();
 
     // now sort the list into acending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),FrontToBackSortFunctor());
@@ -265,7 +265,7 @@ struct BackToFrontSortFunctor
 
 void RenderBin::sortBackToFront()
 {
-    copyLeavesFromRenderGraphListToRenderLeafList();
+    copyLeavesFromStateGraphListToRenderLeafList();
 
     // now sort the list into acending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),BackToFrontSortFunctor());
@@ -273,14 +273,14 @@ void RenderBin::sortBackToFront()
 //    cout << "sort back to front"<<endl;
 }
 
-void RenderBin::copyLeavesFromRenderGraphListToRenderLeafList()
+void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
 {
     _renderLeafList.clear();
 
     int totalsize=0;
-    RenderGraphList::iterator itr;
-    for(itr=_renderGraphList.begin();
-        itr!=_renderGraphList.end();
+    StateGraphList::iterator itr;
+    for(itr=_stateGraphList.begin();
+        itr!=_stateGraphList.end();
         ++itr)
     {
         totalsize += (*itr)->_leaves.size();
@@ -289,11 +289,11 @@ void RenderBin::copyLeavesFromRenderGraphListToRenderLeafList()
     _renderLeafList.reserve(totalsize);
     
     // first copy all the leaves from the render graphs into the leaf list.
-    for(itr=_renderGraphList.begin();
-        itr!=_renderGraphList.end();
+    for(itr=_stateGraphList.begin();
+        itr!=_stateGraphList.end();
         ++itr)
     {
-        for(RenderGraph::LeafList::iterator dw_itr = (*itr)->_leaves.begin();
+        for(StateGraph::LeafList::iterator dw_itr = (*itr)->_leaves.begin();
             dw_itr != (*itr)->_leaves.end();
             ++dw_itr)
         {
@@ -302,7 +302,7 @@ void RenderBin::copyLeavesFromRenderGraphListToRenderLeafList()
     }
     
     // empty the render graph list to prevent it being drawn along side the render leaf list (see drawImplementation.)
-    _renderGraphList.clear();
+    _stateGraphList.clear();
 }
 
 RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
@@ -368,12 +368,12 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 
 
     // draw coarse grained ordering.
-    for(RenderGraphList::iterator oitr=_renderGraphList.begin();
-        oitr!=_renderGraphList.end();
+    for(StateGraphList::iterator oitr=_stateGraphList.begin();
+        oitr!=_stateGraphList.end();
         ++oitr)
     {
 
-        for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+        for(StateGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
             dw_itr != (*oitr)->_leaves.end();
             ++dw_itr)
         {
@@ -419,12 +419,12 @@ bool RenderBin::getStats(Statistics* primStats)
 
     }
 
-  for(RenderGraphList::iterator oitr=_renderGraphList.begin();
-        oitr!=_renderGraphList.end();
+  for(StateGraphList::iterator oitr=_stateGraphList.begin();
+        oitr!=_stateGraphList.end();
         ++oitr)
     {
         
-        for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+        for(StateGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
             dw_itr != (*oitr)->_leaves.end();
             ++dw_itr)
         {

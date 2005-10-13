@@ -23,8 +23,8 @@
 
 namespace osgUtil {
 
-// Forward declare RenderGraph
-class RenderGraph;
+// Forward declare StateGraph
+class StateGraph;
 
 /** Container class for all data required for rendering of drawables.
   */
@@ -61,12 +61,12 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     
         virtual void render(osg::State& state,RenderLeaf* previous);
         
-        /// Allow RenderGraph to change the RenderLeaf's _parent.
-        friend class osgUtil::RenderGraph;
+        /// Allow StateGraph to change the RenderLeaf's _parent.
+        friend class osgUtil::StateGraph;
 
     public:
     
-        RenderGraph*                    _parent;
+        StateGraph*                    _parent;
         osg::Drawable*                  _drawable;
         osg::ref_ptr<osg::RefMatrix>    _projection;
         osg::ref_ptr<osg::RefMatrix>    _modelview;

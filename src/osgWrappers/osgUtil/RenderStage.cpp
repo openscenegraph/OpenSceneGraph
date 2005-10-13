@@ -66,8 +66,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method0(double, getClearDepth);
 	I_Method1(void, setClearStencil, IN, int, stencil);
 	I_Method0(int, getClearStencil);
-	I_Method1(void, setCameraNode, IN, const osg::CameraNode *, camera);
+	I_Method1(void, setCameraNode, IN, osg::CameraNode *, camera);
+	I_Method0(osg::CameraNode *, getCameraNode);
 	I_Method0(const osg::CameraNode *, getCameraNode);
+	I_Method1(void, setCameraRequiresSetUp, IN, bool, flag);
+	I_Method0(bool, getCameraRequiresSetUp);
+	I_Method1(void, runCameraSetUp, IN, osg::State &, state);
 	I_MethodWithDefaults3(void, setTexture, IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0);
 	I_Method0(osg::Texture *, getTexture);
 	I_Method1(void, setImage, IN, osg::Image *, image);
@@ -100,7 +104,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method1(void, addPreRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method1(void, addPostRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
-	I_Property(const osg::CameraNode *, CameraNode);
+	I_Property(osg::CameraNode *, CameraNode);
+	I_Property(bool, CameraRequiresSetUp);
 	I_Property(const osg::Vec4 &, ClearAccum);
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(double, ClearDepth);

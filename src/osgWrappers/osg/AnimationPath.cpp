@@ -80,6 +80,7 @@ BEGIN_VALUE_REFLECTOR(osg::AnimationPath::ControlPoint)
 	I_Method1(void, setScale, IN, const osg::Vec3d &, scale);
 	I_Method0(const osg::Vec3d &, getScale);
 	I_Method3(void, interpolate, IN, float, ratio, IN, const osg::AnimationPath::ControlPoint &, first, IN, const osg::AnimationPath::ControlPoint &, second);
+	I_Method3(void, interpolate, IN, double, ratio, IN, const osg::AnimationPath::ControlPoint &, first, IN, const osg::AnimationPath::ControlPoint &, second);
 	I_Method1(void, getMatrix, IN, osg::Matrixf &, matrix);
 	I_Method1(void, getMatrix, IN, osg::Matrixd &, matrix);
 	I_Method1(void, getInverse, IN, osg::Matrixf &, matrix);

@@ -11,8 +11,10 @@
 
 #include <osg/Matrix>
 #include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgParticle/Interpolator>
 #include <osgParticle/Particle>
+#include <osgParticle/ParticleSystem>
 #include <osgParticle/range>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -53,6 +55,10 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_Method0(const osg::Vec3 &, getAngle);
 	I_Method0(const osg::Vec3 &, getAngularVelocity);
 	I_Method0(const osg::Vec3 &, getPreviousAngle);
+	I_Method0(const osg::Vec4 &, getCurrentColor);
+	I_Method0(float, getCurrentAlpha);
+	I_Method0(const float, getSTexCoord);
+	I_Method0(float, getTCoord);
 	I_Method0(void, kill);
 	I_Method1(void, setLifeTime, IN, double, t);
 	I_Method1(void, setSizeRange, IN, const osgParticle::rangef &, r);
@@ -78,6 +84,11 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_Method0(void, endRender);
 	I_Method0(float, getCurrentSize);
 	I_MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, numTiles, 0);
+	I_Method1(void, setPreviousParticle, IN, int, previous);
+	I_Method0(int, getPreviousParticle);
+	I_Method1(void, setNextParticle, IN, int, next);
+	I_Method0(int, getNextParticle);
+	I_Method1(void, setUpTexCoordsAsPartOfConnectedParticleSystem, IN, osgParticle::ParticleSystem *, ps);
 	I_ReadOnlyProperty(double, Age);
 	I_WriteOnlyProperty(osgParticle::Interpolator *, AlphaInterpolator);
 	I_Property(const osgParticle::rangef &, AlphaRange);
@@ -85,17 +96,24 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_Property(const osg::Vec3 &, AngularVelocity);
 	I_WriteOnlyProperty(osgParticle::Interpolator *, ColorInterpolator);
 	I_Property(const osgParticle::rangev4 &, ColorRange);
+	I_ReadOnlyProperty(float, CurrentAlpha);
+	I_ReadOnlyProperty(const osg::Vec4 &, CurrentColor);
 	I_ReadOnlyProperty(float, CurrentSize);
 	I_Property(double, LifeTime);
 	I_Property(float, Mass);
 	I_ReadOnlyProperty(float, MassInv);
+	I_Property(int, NextParticle);
 	I_Property(const osg::Vec3 &, Position);
 	I_ReadOnlyProperty(const osg::Vec3 &, PreviousAngle);
+	I_Property(int, PreviousParticle);
 	I_ReadOnlyProperty(const osg::Vec3 &, PreviousPosition);
 	I_Property(float, Radius);
+	I_ReadOnlyProperty(const float, STexCoord);
 	I_Property(osgParticle::Particle::Shape, Shape);
 	I_WriteOnlyProperty(osgParticle::Interpolator *, SizeInterpolator);
 	I_Property(const osgParticle::rangef &, SizeRange);
+	I_ReadOnlyProperty(float, TCoord);
+	I_WriteOnlyProperty(osgParticle::ParticleSystem *, UpTexCoordsAsPartOfConnectedParticleSystem);
 	I_Property(const osg::Vec3 &, Velocity);
 END_REFLECTOR
 

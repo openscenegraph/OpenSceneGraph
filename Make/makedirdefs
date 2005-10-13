@@ -20,8 +20,11 @@ SRC_DIRS = \
 	osgParticle\
 	osgText\
         osgFX\
-	osgSim\
-	osgProducer
+	osgSim
+        
+ifeq ($(PRODUCER_INSTALLED),yes)
+SRC_DIRS += osgProducer
+endif
 
 ifeq ($(GDAL_INSTALLED),yes)
 SRC_DIRS += osgTerrain
@@ -45,11 +48,15 @@ WRAPPER_DIRS = \
 	osgDB\
 	osgFX\
 	osgText\
-	osgTerrain\
-	osgGA\
-	osgProducer\
-	
+	osgGA
 
+ifeq ($(PRODUCER_INSTALLED),yes)
+    WRAPPER_DIRS += osgProducer
+endif	
+
+ifeq ($(GDAL_INSTALLED),yes)
+    WRAPPER_DIRS += osgTerrain
+endif
 
 
 ################################################################
@@ -160,17 +167,27 @@ endif
 # Directories traversed in the TOPDIR/examples directory
 
 APPLICATION_DIRS = \
-    osgarchive\
-    osgconv\
-    osgversion\
-    osgviewer\
+    osgversion
 
-ifeq ($(GDAL_INSTALLED),yes)
-    APPLICATION_DIRS += osgdem
+ifeq ($(PRODUCER_INSTALLED),yes)
+
+    APPLICATION_DIRS += osgarchive\
+        osgconv\
+        osgviewer\
+
+    ifeq ($(GDAL_INSTALLED),yes)
+        APPLICATION_DIRS += osgdem
+    endif
+
 endif
 
-EXAMPLE_DIRS = \
-	osganimate\
+
+EXAMPLE_DIRS = 
+
+
+ifeq ($(PRODUCER_INSTALLED),yes)
+
+    EXAMPLE_DIRS += osganimate\
 	osgautotransform\
 	osgbillboard\
 	osgblendequation\
@@ -244,21 +261,25 @@ EXAMPLE_DIRS = \
 	osgvolume\
 	osgwindows\
 
-ifeq ($(COMPILE_INTROSPECTION),yes)
-    EXAMPLE_DIRS += osgintrospection
-endif
+    ifeq ($(COMPILE_INTROSPECTION),yes)
+        EXAMPLE_DIRS += osgintrospection
+    endif
 
-ifeq ($(GDAL_INSTALLED),yes)
-    EXAMPLE_DIRS += osgphotoalbum
-    EXAMPLE_DIRS += osgbluemarble
-    EXAMPLE_DIRS += osgsimulation
-endif
+    ifeq ($(GDAL_INSTALLED),yes)
+        EXAMPLE_DIRS += osgphotoalbum
+        EXAMPLE_DIRS += osgbluemarble
+        EXAMPLE_DIRS += osgsimulation
+    endif
 
-ifeq ($(DEMETER_INSTALLED),yes)
-    EXAMPLE_DIRS += osgdemeter
+    ifeq ($(DEMETER_INSTALLED),yes)
+        EXAMPLE_DIRS += osgdemeter
+    endif
+
 endif
 
 ifeq ($(GLUT_INSTALLED),yes)
+
     EXAMPLE_DIRS += osgGLUTsimple
     EXAMPLE_DIRS += osgGLUTkeyboardmouse
+
 endif

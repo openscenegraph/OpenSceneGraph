@@ -95,7 +95,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         text->setAlignment(osgText::Text::CENTER_CENTER);
         text->setAxisAlignment(osgText::Text::SCREEN);
         text->setCharacterSize(40.0f);
-        text->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
+        text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS);
         
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(text);

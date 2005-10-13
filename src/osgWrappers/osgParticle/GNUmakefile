@@ -5,6 +5,8 @@ CXXFILES =\
 	AccelOperator.cpp\
 	AngularAccelOperator.cpp\
 	CenteredPlacer.cpp\
+	ConnectedParticleSystem.cpp\
+	ConstantRateCounter.cpp\
 	Counter.cpp\
 	Emitter.cpp\
 	ExplosionDebrisEffect.cpp\
@@ -33,6 +35,7 @@ CXXFILES =\
 	SegmentPlacer.cpp\
 	Shooter.cpp\
 	SmokeEffect.cpp\
+	SmokeTrailEffect.cpp\
 	VariableRateCounter.cpp\
 	range.cpp\
 

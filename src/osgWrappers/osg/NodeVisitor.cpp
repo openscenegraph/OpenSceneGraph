@@ -11,6 +11,7 @@
 
 #include <osg/Billboard>
 #include <osg/CameraNode>
+#include <osg/CameraView>
 #include <osg/ClearNode>
 #include <osg/ClipNode>
 #include <osg/CoordinateSystemNode>
@@ -102,6 +103,7 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	I_Method1(void, apply, IN, osg::LightSource &, node);
 	I_Method1(void, apply, IN, osg::Transform &, node);
 	I_Method1(void, apply, IN, osg::CameraNode &, node);
+	I_Method1(void, apply, IN, osg::CameraView &, node);
 	I_Method1(void, apply, IN, osg::MatrixTransform &, node);
 	I_Method1(void, apply, IN, osg::PositionAttitudeTransform &, node);
 	I_Method1(void, apply, IN, osg::Switch &, node);

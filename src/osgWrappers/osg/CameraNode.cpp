@@ -49,6 +49,7 @@ END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderTargetImplementation)
 	I_EnumLabel(osg::CameraNode::FRAME_BUFFER_OBJECT);
+	I_EnumLabel(osg::CameraNode::PIXEL_BUFFER_RTT);
 	I_EnumLabel(osg::CameraNode::PIXEL_BUFFER);
 	I_EnumLabel(osg::CameraNode::FRAME_BUFFER);
 	I_EnumLabel(osg::CameraNode::SEPERATE_WINDOW);

@@ -59,6 +59,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_Method1(const osgParticle::Particle *, getParticle, IN, int, i);
 	I_Method1(osgParticle::Particle *, createParticle, IN, const osgParticle::Particle *, ptemplate);
 	I_Method1(void, destroyParticle, IN, int, i);
+	I_Method1(void, reuseParticle, IN, int, i);
 	I_Method0(int, getLastFrameNumber);
 	I_Method0(osgParticle::Particle &, getDefaultParticleTemplate);
 	I_Method0(const osgParticle::Particle &, getDefaultParticleTemplate);

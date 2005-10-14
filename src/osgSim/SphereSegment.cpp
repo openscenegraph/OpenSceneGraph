@@ -1258,13 +1258,13 @@ namespace SphereSegmentIntersector
 
             inline void addTriangle(Triangle* tri)
             {
-                TriangleList::iterator itr = find(_triangles.begin(), _triangles.end(), tri);
+                TriangleList::iterator itr = std::find(_triangles.begin(), _triangles.end(), tri);
                 if (itr==_triangles.end()) _triangles.push_back(tri);
             }
 
             void removeFromToTraverseList(Triangle* tri)
             {
-                TriangleList::iterator itr = find(_toTraverse.begin(), _toTraverse.end(), tri);
+                TriangleList::iterator itr = std::find(_toTraverse.begin(), _toTraverse.end(), tri);
                 if (itr!=_toTraverse.end()) _toTraverse.erase(itr);
             }
 
@@ -1901,7 +1901,7 @@ namespace SphereSegmentIntersector
                         edge->_intersectionType = Edge::NO_INTERSECTION;
 
                         // remove edge for the hitEdges.
-                        hitr = find(hitEdges.begin(), hitEdges.end(), edge);
+                        hitr = std::find(hitEdges.begin(), hitEdges.end(), edge);
                         if (hitr!=hitEdges.end()) hitEdges.erase(hitr);
                     }
 

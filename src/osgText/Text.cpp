@@ -402,7 +402,10 @@ void Text::computeGlyphRepresentation()
         computePositions(); //to reset the origin
         return;
     }
-    
+
+    // initialize bounding box, it will be expanded during glyph position calculation
+    _textBB.init();
+
     osg::Vec2 startOfLine_coords(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine_coords);
     osg::Vec2 local(0.0f,0.0f);
@@ -605,11 +608,23 @@ void Text::computeGlyphRepresentation()
                     glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),maxtc.y()));
 
                     // move the cursor onto the next character.
+                    // also expand bounding box
                     switch(_layout)
                     {
-                      case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
-                      case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance() *hr; break;
-                      case RIGHT_TO_LEFT: break; // nop.
+                      case LEFT_TO_RIGHT:
+                          cursor.x() += glyph->getHorizontalAdvance() * wr;
+                          _textBB.expandBy(osg::Vec3(local.x(),local.y(),0.0f)); //lower left corner
+                          _textBB.expandBy(osg::Vec3(cursor.x(),local.y()+height,0.0f)); //upper right corner
+                          break;
+                      case VERTICAL:
+                          cursor.y() -= glyph->getVerticalAdvance() *hr;
+                          _textBB.expandBy(osg::Vec3(local.x(),local.y()+height,0.0f)); //upper left corner
+                          _textBB.expandBy(osg::Vec3(local.x()+width,cursor.y(),0.0f)); //lower right corner
+                          break;
+                      case RIGHT_TO_LEFT:
+                          _textBB.expandBy(osg::Vec3(local.x()+width,local.y(),0.0f)); //lower right corner
+                          _textBB.expandBy(osg::Vec3(cursor.x(),local.y()+height,0.0f)); //upper left corner
+                          break;
                     }
 
                     previous_charcode = charcode;
@@ -660,21 +675,6 @@ void Text::computeGlyphRepresentation()
         
         ++lineNumber;
 
-    }
-
-    // compute the bounding box
-    _textBB.init();
-    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
-    {
-        const GlyphQuads& glyphquad = titr->second;
-        for(GlyphQuads::Coords2::const_iterator citr = glyphquad._coords.begin();
-            citr != glyphquad._coords.end();
-            ++citr)
-        {
-            _textBB.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f));
-        }
     }
    
     setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));

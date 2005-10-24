@@ -352,6 +352,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\NodeCallback.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\NodeTrackerCallback.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\NodeVisitor.cpp
 # End Source File
 

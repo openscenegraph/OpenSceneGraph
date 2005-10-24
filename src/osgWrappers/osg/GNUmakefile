@@ -66,6 +66,7 @@ CXXFILES =\
 	Multisample.cpp\
 	Node.cpp\
 	NodeCallback.cpp\
+	NodeTrackerCallback.cpp\
 	NodeVisitor.cpp\
 	Notify.cpp\
 	Object.cpp\

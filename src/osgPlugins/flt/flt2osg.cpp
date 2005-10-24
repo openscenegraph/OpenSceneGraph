@@ -370,6 +370,10 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
                 // treat road construction record as a group record for now
                 osgPrim = visitRoadConstruction(osgParent, (GroupRecord*)child);
                 break;
+            case ROAD_SEGMENT_OP:
+                // treat road segment record as a group record for now
+                osgPrim = visitRoadSegment(osgParent, (GroupRecord*)child);
+                break;
         
             default:
 
@@ -1027,6 +1031,17 @@ osg::Group* ConvertFromFLT::visitRoadConstruction(osg::Group& osgParent, GroupRe
 
     group->setName(rec->getData()->szIdent);
     //cout<<"Converted a road construction node of ID "<<group->getName()<<" to group node."<<endl;
+    visitAncillary(osgParent, *group, rec)->addChild( group );
+    visitPrimaryNode(*group, rec);
+    return group;
+}
+
+osg::Group* ConvertFromFLT::visitRoadSegment(osg::Group& osgParent, GroupRecord* rec)
+{
+    osg::Group* group = new osg::Group;
+
+    group->setName(rec->getData()->szIdent);
+    //cout<<"Converted a road segment node of ID "<<group->getName()<<" to group node."<<endl;
     visitAncillary(osgParent, *group, rec)->addChild( group );
     visitPrimaryNode(*group, rec);
     return group;

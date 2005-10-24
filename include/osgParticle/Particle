@@ -548,8 +548,8 @@ namespace osgParticle
     
     inline void Particle::setTextureTile(int sTile, int tTile, int numTiles)
     {
-        _s_tile = 1.0f / static_cast<float>(sTile);
-        _t_tile = 1.0f / static_cast<float>(tTile);
+        _s_tile = (sTile>0) ? 1.0f / static_cast<float>(sTile) : 1.0f;
+        _t_tile = (tTile>0) ? 1.0f / static_cast<float>(tTile) : 1.0f;
         if (numTiles <= 0)
         {
             _num_tile = sTile * tTile;

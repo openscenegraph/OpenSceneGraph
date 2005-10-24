@@ -127,7 +127,7 @@ class ConvertFromFLT
 
         // Ancillary records
         osg::Group* visitMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, MatrixRecord* rec);
-		osg::Group* visitGeneralMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, GeneralMatrixRecord* rec);
+        osg::Group* visitGeneralMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, GeneralMatrixRecord* rec);
         void visitLongID(osg::Group& osgParent, LongIDRecord* rec);
         void visitComment(osg::Node& osgParent, CommentRecord* rec);
 
@@ -151,6 +151,7 @@ class ConvertFromFLT
         osg::Group* visitBSP(osg::Group& osgParent, BSPRecord* rec);
         osg::Group* visitLightSource(osg::Group& osgParent, LightSourceRecord* rec);
         osg::Group* visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec);
+        osg::Group* visitRoadSegment(osg::Group& osgParent, GroupRecord* rec);
         osg::Group* visitLOD(osg::Group& osgParent, LodRecord* rec);
         osg::Group* visitOldLOD(osg::Group& osgParent, OldLodRecord* rec);
         osg::Group* visitDOF(osg::Group& osgParent, DofRecord* rec);

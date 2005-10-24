@@ -117,8 +117,8 @@ void ConnectedParticleSystem::drawImplementation(osg::State& state) const
     osg::Vec4 pixelSizeVector = osg::CullingSet::computePixelSizeVector(*state.getCurrentViewport(),state.getProjectionMatrix(),state.getModelViewMatrix());
     float unitPixelSize = fabs(1.0/(particle->getPosition()*pixelSizeVector));
     float pixelSizeOfFirstParticle = unitPixelSize * particle->getCurrentSize();
-    float desiredGapBetweenDrawnParticles = 50.0f/unitPixelSize;
-    float desiredGapBetweenDrawnParticles2 = desiredGapBetweenDrawnParticles*desiredGapBetweenDrawnParticles;
+    //float desiredGapBetweenDrawnParticles = 50.0f/unitPixelSize;
+    //float desiredGapBetweenDrawnParticles2 = desiredGapBetweenDrawnParticles*desiredGapBetweenDrawnParticles;
     unsigned int maxNumParticlesToSkip = 200;
     float maxPixelError2 = osg::square(1.0f/unitPixelSize);
     

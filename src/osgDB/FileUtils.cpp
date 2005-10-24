@@ -801,9 +801,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
     }
 #else
-    void osgDB::appendPlatformSpecificResourceFilePaths(FilePathList& filepath)
+    void osgDB::appendPlatformSpecificResourceFilePaths(FilePathList& /*filepath*/)
     {
-        
     }
 #endif
 

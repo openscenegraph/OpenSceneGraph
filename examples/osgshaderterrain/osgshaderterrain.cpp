@@ -462,7 +462,7 @@ osg::Node* ForestTechniqueManager::createShaderGraph(Cell* cell,osg::StateSet* s
     else return geode;
 }
 
-osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
+osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*/)
 {
     osg::Group* scene = new osg::Group;
     

@@ -145,10 +145,10 @@ void rawRGBEData(RGBE *_scan, int _len, float *_cols)
 {
     int ii = 0;
     while (_len-- > 0) {
-        _cols[0] = _scan[0][R] / 255.0;
-        _cols[1] = _scan[0][G] / 255.0;
-        _cols[2] = _scan[0][B] / 255.0;
-        _cols[3] = _scan[0][E] / 255.0;
+        _cols[0] = _scan[0][R] / 255.0f;
+        _cols[1] = _scan[0][G] / 255.0f;
+        _cols[2] = _scan[0][B] / 255.0f;
+        _cols[3] = _scan[0][E] / 255.0f;
         _cols += 4;
         _scan++;
         ii++;

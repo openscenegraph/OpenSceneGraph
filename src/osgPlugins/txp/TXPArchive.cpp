@@ -12,6 +12,7 @@
 #include <osg/StateSet>
 #include <osg/Point>
 #include <osg/BlendFunc>
+#include <osg/MatrixTransform>
 #include <osgDB/FileUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
@@ -27,6 +28,7 @@
 
 #include "TXPArchive.h"
 #include "TXPParser.h"
+#include "TileMapper.h"
 
 #include <OpenThreads/ScopedLock>
 
@@ -676,6 +678,56 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
     return true;
 }
 
+class ModelVisitor : public osg::NodeVisitor
+{
+    TXPArchive* _archive;
+    int _x;
+    int _y;
+    int _lod;
+
+public:
+    ModelVisitor(TXPArchive* archive, int x, int y, int lod):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    _archive(archive), _x(x), _y(y), _lod(lod)
+    {
+    }
+    
+    virtual void apply(osg::MatrixTransform& xform)
+    {
+        const trpgHeader* header = _archive->GetHeader();
+        trpgHeader::trpgTileType tileType;
+        header->GetTileOriginType(tileType);
+        const osg::Referenced* ref = xform.getUserData();
+        const TileIdentifier* tileID = dynamic_cast<const txp::TileIdentifier*>(ref);
+
+        if(!tileID) return; // bail early - this isn't a loaded model
+
+        if(tileType == trpgHeader::TileLocal && tileID->lod == 9999)
+        {
+            trpg2dPoint tileExtents;
+            header->GetTileSize(0, tileExtents);
+            osg::BoundingBox bbox;
+            _archive->getExtents(bbox);
+            osg::Vec3 offset(xform.getMatrix().getTrans());
+            offset[0] -= bbox._min[0];
+            offset[1] -= bbox._min[1];
+
+            trpg2dPoint offsetXY, tileID(_x,_y);
+            int divider = (0x01 << _lod);
+            // calculate which tile model is located in
+            tileExtents.x /= divider;
+            tileExtents.y /= divider;
+            offset[0] -= tileID.x*tileExtents.x;
+            offset[1] -= tileID.y*tileExtents.y;
+
+            osg::Matrix mat(xform.getMatrix());
+            mat.setTrans(offset);
+            xform.setMatrix(mat);
+        }
+    }
+};
+
+
 osg::Group* TXPArchive::getTileContent(
     int x, int y, int lod,
     double realMinRange, 
@@ -697,6 +749,10 @@ osg::Group* TXPArchive::getTileContent(
 
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     tileCenter = _parser->getTileCenter();
+
+    // Fix up model MatrixTransform
+    ModelVisitor mv(this, x, y, lod);
+    tileGroup->accept(mv);
 
     // Prune
     unsigned int i = 0;

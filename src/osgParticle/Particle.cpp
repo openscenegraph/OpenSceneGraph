@@ -234,7 +234,7 @@ void osgParticle::Particle::setUpTexCoordsAsPartOfConnectedParticleSystem(Partic
         float s_coord_delta = 0.5f*distance/getCurrentSize();
         float s_coord = previousParticle->_s_coord + s_coord_delta;
 
-        setTextureTile(0,0,0);
+        setTextureTile(1,1,0);
         _cur_tile = 0;
         _s_coord = s_coord;
         _t_coord = 0.0f;

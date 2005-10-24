@@ -22,9 +22,13 @@
 
 #include "TXPParser.h"
 #include "TXPArchive.h"
+#include "TileMapper.h"
+
 using namespace txp;
 
+#include <iostream>
 #include <sstream>
+#include <osg/io_utils>
 
 static osg::ApplicationUsageProxy TXP_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TXP_DEFAULT_MAX_ANISOTROPY \"<value> [<value>]\"","1.0 | 2.0 | 4.0 | 8.0 | 16.0");
 
@@ -574,6 +578,7 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             osg::MatrixTransform *scs = new osg::MatrixTransform();
             scs->setMatrix(osg_Mat);
             scs->addChild(osg_Model);
+            scs->setUserData(new TileIdentifier(99,99,9999)); // tag to indicate a model
 
             // Add the SCS to the hierarchy
             _parse->setCurrentNode(scs);

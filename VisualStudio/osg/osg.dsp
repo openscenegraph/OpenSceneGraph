@@ -348,6 +348,10 @@ SOURCE=..\..\src\osg\NodeCallback.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\NodeTrackerCallback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\NodeVisitor.cpp
 # End Source File
 # Begin Source File
@@ -829,6 +833,10 @@ SOURCE=..\..\Include\Osg\Node
 # Begin Source File
 
 SOURCE=..\..\include\osg\NodeCallback
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\NodeTrackerCallback
 # End Source File
 # Begin Source File
 

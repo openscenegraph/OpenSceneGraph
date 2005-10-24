@@ -1,0 +1,56 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_NODETRACKERCALLBACK
+#define OSG_NODETRACKERCALLBACK 1
+
+#include <osg/Node>
+#include <osg/NodeCallback>
+#include <osg/RefNodePath>
+
+namespace osg
+{
+
+class OSG_EXPORT NodeTrackerCallback : public NodeCallback
+{
+    public:
+
+
+        void setTrackNodePath(const osg::RefNodePath& nodePath) { _trackNodePath = nodePath; }
+        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath = nodePath; }
+
+        osg::RefNodePath& getTrackNodePath() { return _trackNodePath; }
+        const osg::RefNodePath& getTrackNodePath() const { return _trackNodePath; }
+
+        void setTrackNode(osg::Node* node);
+        osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
+        const osg::Node* getTrackNode() const { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
+
+
+        /** Implements the callback. */
+        virtual void operator()(Node* node, NodeVisitor* nv);
+
+        /** update the node to track the nodepath.*/
+        void update(osg::Node& node);
+
+        inline bool validateNodePath() const;
+
+    protected:
+
+        osg::RefNodePath        _trackNodePath;
+
+};
+
+}
+
+#endif

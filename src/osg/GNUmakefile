@@ -64,6 +64,7 @@ CXXFILES =\
 	MatrixTransform.cpp\
 	Multisample.cpp\
 	NodeCallback.cpp\
+	NodeTrackerCallback.cpp\
 	Node.cpp\
 	NodeVisitor.cpp\
 	Notify.cpp\

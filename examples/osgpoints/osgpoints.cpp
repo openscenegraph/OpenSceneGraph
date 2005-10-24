@@ -213,6 +213,15 @@ int main( int argc, char **argv )
             "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
             "}\n";
 
+
+
+        osg::Program* program = new osg::Program;
+        stateset->setAttribute(program);
+
+        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+        program->addShader(vertex_shader);
+
+#if 0
         //////////////////////////////////////////////////////////////////
         // fragment shader
         //
@@ -222,15 +231,9 @@ int main( int argc, char **argv )
             "    gl_FragColor = gl_Color; \n"
             "}\n";
 
-
-        osg::Program* program = new osg::Program;
-        stateset->setAttribute(program);
-
-        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
-        program->addShader(vertex_shader);
-
-        //osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
-        //program->addShader(fragment_shader);
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+        program->addShader(fragment_shader);
+#endif
     }
 
 

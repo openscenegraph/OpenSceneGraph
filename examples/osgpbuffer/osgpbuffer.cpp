@@ -443,7 +443,7 @@ int main( int argc, char **argv )
         }
     }
 
-    printf( "PBuffer window: 0x%x\n", pbuffer->getWindow() );
+    // printf( "PBuffer window: 0x%x\n", pbuffer->getWindow() );
 
     viewer.getCamera(0)->setClearColor( 0.1f,0.9f,0.3f,1.0f );
 

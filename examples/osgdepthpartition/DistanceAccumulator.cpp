@@ -53,7 +53,7 @@ void CURRENT_CLASS::pushLocalFrustum()
 	_bbCorners.push_back(corner);
 }
 
-void CURRENT_CLASS::apply(osg::CameraNode &camera)
+void CURRENT_CLASS::apply(osg::CameraNode& /*camera*/)
 {
 	// We don't support scenes with CameraNodes in them
 	return;

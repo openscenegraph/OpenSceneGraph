@@ -724,11 +724,11 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
 };
 
-osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
+osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& /*normalmap_3d*/,
                        osg::Texture::InternalFormatMode internalFormatMode,
-                       float xSize, float ySize, float zSize,
-                       float xMultiplier, float yMultiplier, float zMultiplier,
-                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
+                       float /*xSize*/, float /*ySize*/, float /*zSize*/,
+                       float /*xMultiplier*/, float /*yMultiplier*/, float /*zMultiplier*/,
+                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f)
 {
     osg::Geode* geode = new osg::Geode;
     osg::StateSet* stateset = geode->getOrCreateStateSet();

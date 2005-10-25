@@ -113,7 +113,7 @@ void DisplaySettings::setDefaults()
 }
 
 static ApplicationUsageProxy DisplaySetting_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DISPLAY_TYPE <type>","MONITOR | POWERWALL | REALITY_CENTER | HEAD_MOUNTED_DISPLAY");
-static ApplicationUsageProxy DisplaySetting_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO_MODE <mode>","QUAD_BUFFER | ANAGLYPHIC | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE");
+static ApplicationUsageProxy DisplaySetting_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO_MODE <mode>","QUAD_BUFFER | ANAGLYPHIC | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | VERTICAL_INTERLACE | HORIZONTAL_INTERLACE");
 static ApplicationUsageProxy DisplaySetting_e2(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO <mode>","OFF | ON");
 static ApplicationUsageProxy DisplaySetting_e3(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EYE_SEPARATION <float>","physical distance between eyes");
 static ApplicationUsageProxy DisplaySetting_e4(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_DISTANCE <float>","physical distance between eyes and screen");
@@ -159,30 +159,33 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             _stereoMode = QUAD_BUFFER;
         }
-        else
-        if (strcmp(ptr,"ANAGLYPHIC")==0)
+        else if (strcmp(ptr,"ANAGLYPHIC")==0)
         {
             _stereoMode = ANAGLYPHIC;
         }
-        else
-        if (strcmp(ptr,"HORIZONTAL_SPLIT")==0)
+        else if (strcmp(ptr,"HORIZONTAL_SPLIT")==0)
         {
             _stereoMode = HORIZONTAL_SPLIT;
         }
-        else
-        if (strcmp(ptr,"VERTICAL_SPLIT")==0)
+        else if (strcmp(ptr,"VERTICAL_SPLIT")==0)
         {
             _stereoMode = VERTICAL_SPLIT;
         }
-        else
-        if (strcmp(ptr,"LEFT_EYE")==0)
+        else if (strcmp(ptr,"LEFT_EYE")==0)
         {
             _stereoMode = LEFT_EYE;
         }
-        else
-        if (strcmp(ptr,"RIGHT_EYE")==0)
+        else if (strcmp(ptr,"RIGHT_EYE")==0)
         {
             _stereoMode = RIGHT_EYE;
+        }
+        else if (strcmp(ptr,"HORIZONTAL_INTERLACE")==0)
+        {
+            _stereoMode = HORIZONTAL_INTERLACE;
+        }
+        else if (strcmp(ptr,"VERTICAL_INTERLACE")==0)
+        {
+            _stereoMode = VERTICAL_INTERLACE;
         }
     }
 

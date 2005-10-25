@@ -31,6 +31,60 @@
 using namespace osg;
 using namespace osgUtil;
 
+static const GLubyte patternVertEven[] = {
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+    0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55};
+
+static const GLubyte patternVertOdd[] = {
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
+
+static const GLubyte patternHorzEven[] = {
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
+    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
+
 SceneView::SceneView(DisplaySettings* ds)
 {
     _displaySettings = ds;
@@ -57,6 +111,10 @@ SceneView::SceneView(DisplaySettings* ds)
     _activeUniforms = DEFAULT_UNIFORMS;
     
     _previousFrameTime = 0;
+    
+    _redrawInterlacedStereoStencilMask = true;
+    _interlacedStereoStencilWidth = 0;
+    _interlacedStereoStencilHeight = 0;
 }
 
 
@@ -948,6 +1006,136 @@ void SceneView::draw()
                 _localStateSet->setAttribute(_viewport.get());
                 _renderStage->drawPreRenderStages(*_state,previous);
                 _renderStage->draw(*_state,previous);
+            }
+            break;
+        case(osg::DisplaySettings::VERTICAL_INTERLACE):
+            {
+                _localStateSet->setAttribute(_viewport.get());
+
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
+
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageRight->drawPreRenderStages(*_state,previous);
+
+                glEnable(GL_STENCIL_TEST);
+
+                if(_redrawInterlacedStereoStencilMask ||
+                   _interlacedStereoStencilWidth != _viewport->width() ||
+                  _interlacedStereoStencilHeight != _viewport->height() )
+                {
+                    _viewport->apply(*_state);
+                    glMatrixMode(GL_PROJECTION);
+                    glLoadIdentity();
+                    glOrtho(_viewport->x(), _viewport->width(), _viewport->y(), _viewport->height(), -1.0, 1.0);
+                    glMatrixMode(GL_MODELVIEW);
+                    glLoadIdentity();    
+                    glDisable(GL_LIGHTING);
+                    glDisable(GL_DEPTH_TEST);
+                    glStencilMask(~0);
+                    glClear(GL_STENCIL_BUFFER_BIT);
+                    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+                    glStencilFunc(GL_ALWAYS, 1, ~0);
+                    glPolygonStipple(patternVertEven);
+                    glEnable(GL_POLYGON_STIPPLE);
+                    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+                    glRecti(_viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+                    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+                    glDisable(GL_POLYGON_STIPPLE);
+                    glEnable(GL_LIGHTING);
+                    glEnable(GL_DEPTH_TEST);
+                    
+                    _redrawInterlacedStereoStencilMask = false;
+                    _interlacedStereoStencilWidth = _viewport->width();
+                    _interlacedStereoStencilHeight = _viewport->height();
+                }
+
+                _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));
+                _renderStageRight->setClearMask(_renderStageRight->getClearMask() & ~(GL_STENCIL_BUFFER_BIT|GL_COLOR_BUFFER_BIT));
+
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                glStencilFunc(GL_EQUAL, 0, ~0);    
+                _renderStageLeft->draw(*_state,previous);
+                
+                glStencilFunc(GL_NOTEQUAL, 0, ~0);
+                _renderStageRight->draw(*_state,previous);
+                glDisable(GL_STENCIL_TEST);
+            }
+            break;
+        case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
+            {
+                _localStateSet->setAttribute(_viewport.get());
+
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
+
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageRight->drawPreRenderStages(*_state,previous);
+
+                glEnable(GL_STENCIL_TEST);
+
+                if(_redrawInterlacedStereoStencilMask ||
+                   _interlacedStereoStencilWidth != _viewport->width() ||
+                  _interlacedStereoStencilHeight != _viewport->height() )
+                {
+                    _viewport->apply(*_state);
+                    glMatrixMode(GL_PROJECTION);
+                    glLoadIdentity();
+                    glOrtho(_viewport->x(), _viewport->width(), _viewport->y(), _viewport->height(), -1.0, 1.0);
+                    glMatrixMode(GL_MODELVIEW);
+                    glLoadIdentity();
+                    glDisable(GL_LIGHTING);
+                    glDisable(GL_DEPTH_TEST);
+                    glStencilMask(~0);
+                    glClear(GL_STENCIL_BUFFER_BIT);
+                    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+                    glStencilFunc(GL_ALWAYS, 1, ~0);
+                    glPolygonStipple(patternHorzEven);
+                    glEnable(GL_POLYGON_STIPPLE);
+                    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+                    glRecti(_viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+                    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+                    glDisable(GL_POLYGON_STIPPLE);
+                    glEnable(GL_LIGHTING);
+                    glEnable(GL_DEPTH_TEST);
+                    
+                    _redrawInterlacedStereoStencilMask = false;
+                    _interlacedStereoStencilWidth = _viewport->width();
+                    _interlacedStereoStencilHeight = _viewport->height();
+                }
+
+                _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));
+                _renderStageRight->setClearMask(_renderStageRight->getClearMask() & ~(GL_STENCIL_BUFFER_BIT|GL_COLOR_BUFFER_BIT));
+
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                glStencilFunc(GL_EQUAL, 0, ~0);    
+                _renderStageLeft->draw(*_state,previous);
+                
+                glStencilFunc(GL_NOTEQUAL, 0, ~0);
+                _renderStageRight->draw(*_state,previous);
+                glDisable(GL_STENCIL_TEST);
             }
             break;
         default:

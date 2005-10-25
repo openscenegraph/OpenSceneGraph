@@ -113,6 +113,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         void setClearColor(const osg::Vec4& color) { _clearColor=color; }
         /** Get the color used in glClearColor.*/
         const osg::Vec4& getClearColor() const { return _clearColor; }
+        
+        
+        /** Mannually set the redraw interlaced stereo stencil mask request flag to control whether to redraw the stencil buffer on the next frame.*/  
+        void setRedrawInterlacedStereoStencilMask(bool flag) { _redrawInterlacedStereoStencilMask = flag; }
+
+        /** Get the redraw interlaced stereo stencil mask request flag.*/  
+        bool getRedrawInterlacedStereoStencilMask() const { return _redrawInterlacedStereoStencilMask; }
 
 
         void setGlobalStateSet(osg::StateSet* state) { _globalStateSet = state; }
@@ -503,6 +510,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         
         int                                         _activeUniforms;        
         double                                      _previousFrameTime;
+        
+        bool                                        _redrawInterlacedStereoStencilMask;
+        int                                         _interlacedStereoStencilWidth;
+        int                                         _interlacedStereoStencilHeight;
+
         
 };
 

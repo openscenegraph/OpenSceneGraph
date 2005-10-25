@@ -270,7 +270,14 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
 
 void GL2Extensions::setupGL2Extensions(unsigned int contextID)
 {
-    _glVersion = atof( (const char*)glGetString( GL_VERSION ) );
+    const char* version = (const char*) glGetString( GL_VERSION );
+    if (!version)
+    {
+        osg::notify(osg::FATAL)<<"Error: OpenGL version test failed, requires valid graphics context."<<std::endl;
+        return;
+    }
+    
+    _glVersion = atof( version );
     _glslLanguageVersion = 0.0f;
 
     _isShaderObjectsSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");

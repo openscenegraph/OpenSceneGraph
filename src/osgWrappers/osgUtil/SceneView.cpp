@@ -50,7 +50,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::ActiveUniforms)
 	I_EnumLabel(osgUtil::SceneView::FRAME_TIME_UNIFORM);
 	I_EnumLabel(osgUtil::SceneView::DELTA_FRAME_TIME_UNIFORM);
 	I_EnumLabel(osgUtil::SceneView::VIEW_MATRIX_UNIFORM);
-	I_EnumLabel(osgUtil::SceneView::INVERSE_VIEW_MATRIX_UNIFORM);
+	I_EnumLabel(osgUtil::SceneView::VIEW_MATRIX_INVERSE_UNIFORM);
 	I_EnumLabel(osgUtil::SceneView::DEFAULT_UNIFORMS);
 	I_EnumLabel(osgUtil::SceneView::ALL_UNIFORMS);
 END_REFLECTOR

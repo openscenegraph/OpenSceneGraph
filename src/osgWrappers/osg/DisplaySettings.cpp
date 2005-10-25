@@ -34,6 +34,8 @@ BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::StereoMode)
 	I_EnumLabel(osg::DisplaySettings::VERTICAL_SPLIT);
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE);
 	I_EnumLabel(osg::DisplaySettings::RIGHT_EYE);
+	I_EnumLabel(osg::DisplaySettings::HORIZONTAL_INTERLACE);
+	I_EnumLabel(osg::DisplaySettings::VERTICAL_INTERLACE);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoHorizontalEyeMapping)

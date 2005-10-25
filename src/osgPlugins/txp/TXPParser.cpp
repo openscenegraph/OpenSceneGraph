@@ -12,7 +12,6 @@
 #include <osg/Light>
 #include <osg/Notify>
 #include <osg/PolygonOffset>
-#include <osg/MatrixTransform>
 #include <osg/PagedLOD>
 #include <osgSim/LightPointNode>
 #include <osg/Point>
@@ -24,11 +23,9 @@
 #include "TXPArchive.h"
 #include "TileMapper.h"
 
-using namespace txp;
-
-#include <iostream>
 #include <sstream>
-#include <osg/io_utils>
+
+using namespace txp;
 
 static osg::ApplicationUsageProxy TXP_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TXP_DEFAULT_MAX_ANISOTROPY \"<value> [<value>]\"","1.0 | 2.0 | 4.0 | 8.0 | 16.0");
 

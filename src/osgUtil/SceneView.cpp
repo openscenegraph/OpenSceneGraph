@@ -226,9 +226,9 @@ void SceneView::updateUniforms()
         uniform->set(_viewMatrix);      
     }
 
-    if (_activeUniforms & INVERSE_VIEW_MATRIX_UNIFORM)
+    if (_activeUniforms & VIEW_MATRIX_INVERSE_UNIFORM)
     {
-        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_InverseViewMatrix",osg::Uniform::FLOAT_MAT4);
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_ViewMatrixInverse",osg::Uniform::FLOAT_MAT4);
         uniform->set(osg::Matrix::inverse(_viewMatrix));      
     }
 

@@ -43,6 +43,8 @@ namespace osgParticle
     
     protected:
 
+        virtual ~SmokeEffect() {}
+        
         osg::ref_ptr<ModularEmitter> _emitter;
         osg::ref_ptr<FluidProgram> _program;
 

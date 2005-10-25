@@ -92,6 +92,8 @@ namespace osgParticle
 
     protected:
     
+        virtual ~ParticleEffect() {}
+
         osg::ref_ptr<ParticleSystem>    _particleSystem;
 
         bool                            _useLocalParticleSystem;        

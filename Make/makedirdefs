@@ -199,6 +199,7 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgcluster\
 	osgcopy\
 	osgcubemap\
+	osgdelaunay\
 	osgdepthshadow\
 	osgdepthpartition\
 	osgdistortion\

@@ -502,8 +502,31 @@ bool OsgCameraGroup::realize()
                 rs_vc->setSimpleConfiguration();
                 rs->setVisualChooser(rs_vc);
             }
-            if (_ds->getStereo() && _ds->getStereoMode()==osg::DisplaySettings::QUAD_BUFFER) rs_vc->useStereo();
-            if (_ds->getStencilBuffer()) rs_vc->setStencilSize(_ds->getMinimumNumStencilBits());
+
+            unsigned int numStencilBits = 0;
+            if (_ds->getStereo())
+            {
+                switch(_ds->getStereoMode())
+                {
+                    case(osg::DisplaySettings::QUAD_BUFFER): 
+                        rs_vc->useStereo();
+                        break;
+                    case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
+                    case(osg::DisplaySettings::VERTICAL_INTERLACE):
+                        numStencilBits = 8;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            // set up stencil buffer if required.            
+            numStencilBits = osg::maximum(numStencilBits,_ds->getMinimumNumStencilBits());
+            if (numStencilBits > 0)
+            {
+                rs_vc->setStencilSize(numStencilBits);
+            }
+            
             if (_ds->getAlphaBuffer()) rs_vc->setAlphaSize(_ds->getMinimumNumAlphaBits());
 
             rs_vc->setDepthSize(24);

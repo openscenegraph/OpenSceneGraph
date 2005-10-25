@@ -1,0 +1,13 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgdelaunay.cpp\
+
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgdelaunay
+
+INC += $(X_INC)
+
+include $(TOPDIR)/Make/makerules

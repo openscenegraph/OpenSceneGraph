@@ -1314,12 +1314,12 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             if (num_ERROR_IN_READING_FILE)
             {
                 osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
-                return NULL;
+                return ReaderWriter::ReadResult(ReaderWriter::ReadResult::ERROR_IN_READING_FILE);
             }
             else if (num_FILE_NOT_FOUND)
             {
                 osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
-                return NULL;
+                return ReaderWriter::ReadResult(ReaderWriter::ReadResult::FILE_NOT_FOUND);
             }
         }
     }

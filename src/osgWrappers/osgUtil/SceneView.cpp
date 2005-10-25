@@ -78,6 +78,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Method0(osg::DisplaySettings *, getDisplaySettings);
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
 	I_Method0(const osg::Vec4 &, getClearColor);
+	I_Method1(void, setRedrawInterlacedStereoStencilMask, IN, bool, flag);
+	I_Method0(bool, getRedrawInterlacedStereoStencilMask);
 	I_Method1(void, setGlobalStateSet, IN, osg::StateSet *, state);
 	I_Method0(osg::StateSet *, getGlobalStateSet);
 	I_Method0(const osg::StateSet *, getGlobalStateSet);
@@ -198,6 +200,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Property(osg::StateSet *, LocalStateSet);
 	I_Property(bool, PrioritizeTextures);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
+	I_Property(bool, RedrawInterlacedStereoStencilMask);
 	I_Property(osgUtil::RenderStage *, RenderStage);
 	I_Property(osgUtil::RenderStage *, RenderStageLeft);
 	I_Property(osgUtil::RenderStage *, RenderStageRight);

@@ -42,6 +42,8 @@ namespace osgParticle
         virtual const Program* getProgram() const { return _program.get(); }
     
     protected:
+    
+        virtual ~FireEffect() {}
 
         osg::ref_ptr<ModularEmitter> _emitter;
         osg::ref_ptr<FluidProgram> _program;

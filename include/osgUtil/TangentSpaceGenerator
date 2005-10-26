@@ -121,7 +121,11 @@ protected:
         virtual ~VectorsComputerUsingIndices() {}
     };
 
-private:
+    // declare as friends so that may operator on TangentSpaceGenerator protected member variables.
+    friend class BasisVectorsComputer;
+    friend class VectorsComputerNoIndices;
+    friend class VectorsComputerUsingIndices;
+
     osg::ref_ptr<osg::Vec4Array> T_;
     osg::ref_ptr<osg::Vec4Array> B_;
     osg::ref_ptr<osg::Vec4Array> N_;

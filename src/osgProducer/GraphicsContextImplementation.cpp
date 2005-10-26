@@ -210,7 +210,7 @@ void GraphicsContextImplementation::makeCurrentImplementation()
     // _rs->makeCurrent();
 }
 
-void GraphicsContextImplementation::makeContextCurrentImplementation(GraphicsContext* readContext)
+void GraphicsContextImplementation::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
 {
     if (!_rs) return;
 

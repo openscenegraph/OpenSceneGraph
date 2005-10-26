@@ -57,7 +57,7 @@ class OSGPRODUCER_EXPORT GraphicsContextImplementation : public osg::GraphicsCon
         virtual void makeCurrentImplementation();
 
         /** Make this graphics context current with specified read context.*/
-        virtual void makeContextCurrentImplementation(GraphicsContext* readContext);
+        virtual void makeContextCurrentImplementation(osg::GraphicsContext* readContext);
             
         /** Bind the graphics context to associated texture.*/
         virtual void bindPBufferToTextureImplementation(GLenum buffer);

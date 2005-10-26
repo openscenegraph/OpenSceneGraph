@@ -73,6 +73,7 @@ public:
 
 // export template instances that are used as base classes
 #ifdef _MSC_VER
+#if (_MSC_VER>1300) // VS6 doesnt need these
 template class __declspec(dllexport) std::allocator<GLsizei>;
 template class __declspec(dllexport) std::vector<GLsizei, std::allocator<GLsizei> >;
 template class __declspec(dllexport) std::allocator<GLubyte>;
@@ -81,6 +82,7 @@ template class __declspec(dllexport) std::allocator<GLushort>;
 template class __declspec(dllexport) std::vector<GLushort, std::allocator<GLushort> >;
 template class __declspec(dllexport) std::allocator<GLuint>;
 template class __declspec(dllexport) std::vector<GLuint, std::allocator<GLuint> >;
+#endif
 #endif
 
 

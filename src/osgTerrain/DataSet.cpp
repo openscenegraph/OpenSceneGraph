@@ -1451,8 +1451,10 @@ bool DataSet::DestinationTile::computeImageResolution(unsigned int layer, unsign
         unsigned int numColumnsRequired = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
         unsigned int numRowsRequired    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
 
-        numColumns = 1;
-        numRows = 1;
+        // use a minimum image size of 4x4 to avoid mipmap generation problems in OpenGL at sizes at 2x2. 
+        numColumns = 4;
+        numRows = 4;
+        
         // round to nearest power of two above or equal to the required resolution
         while (numColumns<numColumnsRequired) numColumns *= 2;
         while (numRows<numRowsRequired) numRows *= 2;
@@ -2246,7 +2248,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
         bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
         bool compressedImageSupported = inlineImageFile || imageExension==".dds";
-        bool mipmapImageSupported = inlineImageFile;
+        bool mipmapImageSupported = compressedImageSupported; // inlineImageFile;
         
         int minumCompressedTextureSize = 64;
         int minumDXT3CompressedTextureSize = 256;

@@ -82,7 +82,7 @@ class OSGDB_EXPORT Output : public std::ofstream
         virtual std::string getFileNameForOutput(const std::string& filename) const;
         const std::string& getFileName() const { return _filename; }
 
-        void setOutputTextureFiles(bool flag) { _outputTextureFiles = true; }
+        void setOutputTextureFiles(bool flag) { _outputTextureFiles = flag; }
         bool getOutputTextureFiles() const { return _outputTextureFiles; }
 
         virtual std::string getTextureFileNameForOutput();

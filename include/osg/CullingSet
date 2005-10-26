@@ -102,18 +102,18 @@ class OSG_EXPORT CullingSet : public Referenced
             
             _frustum.setAndTransformProvidingInverse(cs._frustum,matrix);
             
-            for(StateFrustumList::iterator itr=_stateFrustumList.begin();
-                itr!=_stateFrustumList.end();
-                ++itr)
+            for(StateFrustumList::iterator sitr=_stateFrustumList.begin();
+                sitr!=_stateFrustumList.end();
+                ++sitr)
             {
-                itr->second.transformProvidingInverse(matrix);
+                sitr->second.transformProvidingInverse(matrix);
             }
 
-            for(OccluderList::iterator itr=_occluderList.begin();
-                itr!=_occluderList.end();
-                ++itr)
+            for(OccluderList::iterator oitr=_occluderList.begin();
+                oitr!=_occluderList.end();
+                ++oitr)
             {
-                itr->transformProvidingInverse(matrix);
+                oitr->transformProvidingInverse(matrix);
             }
         
         }

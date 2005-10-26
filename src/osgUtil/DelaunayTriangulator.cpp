@@ -261,7 +261,7 @@ public:
         return ip==a_ || ip==b_ || ip==c_;
     }
 
-    int lineBisectTest(const osg::Vec3 apt,const osg::Vec3 bpt,const osg::Vec3 cpt, const unsigned int ip1, const osg::Vec2 p2) const
+    int lineBisectTest(const osg::Vec3 apt,const osg::Vec3 bpt,const osg::Vec3 cpt, const osg::Vec2 p2) const
     { 
         osg::Vec2 vp2tp=p2-osg::Vec2(apt.x(), apt.y()); // vector from p1 to a.
         // test is: cross product (z component) with ab,ac is opposite signs
@@ -270,7 +270,7 @@ public:
         osg::Vec2 vecca=osg::Vec2(cpt.x(), cpt.y())-osg::Vec2(apt.x(), apt.y());
         float cprodzba=vp2tp.x()*vecba.y() - vp2tp.y()*vecba.x();
         float cprodzca=vp2tp.x()*vecca.y() - vp2tp.y()*vecca.x();
-    //    osg::notify(osg::WARN) << "linebisect test " << ip1 << " tri " << a_<<","<< b_<<","<< c_<<std::endl;
+    //    osg::notify(osg::WARN) << "linebisect test " << " tri " << a_<<","<< b_<<","<< c_<<std::endl;
         if (cprodzba*cprodzca<0)
         {
             // more tests - check dot products are at least partly parallel to test line.
@@ -295,7 +295,7 @@ public:
             osg::Vec3 apt=(*points)[a_];
             osg::Vec3 bpt=(*points)[b_];
             osg::Vec3 cpt=(*points)[c_];
-            return lineBisectTest(apt,bpt,cpt,ip1,p2)?1:0;
+            return lineBisectTest(apt,bpt,cpt,p2)?1:0;
         }
         else if (b_==ip1)
         {
@@ -303,7 +303,7 @@ public:
             osg::Vec3 apt=(*points)[b_];
             osg::Vec3 bpt=(*points)[c_];
             osg::Vec3 cpt=(*points)[a_];
-            return lineBisectTest(apt,bpt,cpt,ip1,p2)?2:0;
+            return lineBisectTest(apt,bpt,cpt,p2)?2:0;
         }
         else if (c_==ip1)
         {
@@ -311,7 +311,7 @@ public:
             osg::Vec3 apt=(*points)[c_];
             osg::Vec3 bpt=(*points)[a_];
             osg::Vec3 cpt=(*points)[b_];
-            return lineBisectTest(apt,bpt,cpt,ip1,p2)?3:0;
+            return lineBisectTest(apt,bpt,cpt,p2)?3:0;
         }
         return 0;
     }

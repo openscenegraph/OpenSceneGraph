@@ -27,8 +27,10 @@ class Text;
 
 // export template instances that are used as base classes
 #ifdef _MSC_VER
+#if (_MSC_VER>1300)
 template class __declspec(dllexport) std::allocator<unsigned int>;
 template class __declspec(dllexport) std::vector<unsigned int, std::allocator<unsigned int> >;
+#endif
 #endif
 
 class OSGTEXT_EXPORT String : public osg::Referenced, public std::vector<unsigned int>

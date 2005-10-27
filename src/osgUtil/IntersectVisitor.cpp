@@ -219,9 +219,16 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
         notify(WARN)<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
         return;
     }
-
+    
     IntersectState* cis = _intersectStateStack.back().get();
     
+    if (cis->_segList.size()>=32)
+    {
+        notify(WARN)<<"Warning: excessive number of line segmenets passed to IntersectVisitor::addLineSegment(..), maximum permitted is 32 line segments."<<std::endl;
+        notify(WARN)<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
+        return;
+    }
+
     setEyePoint(seg->start()); // set start of line segment to be pseudo EyePoint for billboarding and LOD purposes
 
     // first check to see if segment has already been added.

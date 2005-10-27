@@ -8,7 +8,7 @@ CXXFILES =\
 
 LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
-EXEC = osgdepthpartion
+EXEC = osgdepthpartition
 
 INC += $(X_INC)
 

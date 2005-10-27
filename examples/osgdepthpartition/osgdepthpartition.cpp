@@ -6,16 +6,6 @@
 // The myGraphics class is a simple sample of how one would implement
 // graphics drawing with Producer::RenderSurface
 
-#include <stdio.h>
-
-#include <Producer/Camera>
-#include <Producer/CameraConfig>
-#include <Producer/InputArea>
-#include <Producer/KeyboardMouse>
-#include <Producer/Trackball>
-
-#include <osg/Timer>
-
 #include <osgUtil/UpdateVisitor>
 
 #include <osgDB/ReadFile>
@@ -23,65 +13,9 @@
 #include <osg/ShapeDrawable>
 #include <osg/PositionAttitudeTransform>
 
-#include <osgProducer/OsgCameraGroup>
-#include <osgProducer/OsgSceneHandler>
+#include <osgProducer/Viewer>
 
 #include "DepthPartitionNode.h"
-
-class MyKeyboardMouseCallback : public Producer::KeyboardMouseCallback
-{
-    public:
-
-	MyKeyboardMouseCallback() :
-		Producer::KeyboardMouseCallback(),
-		_mx(0.0f),_my(0.0f),_mbutton(0),
-		_done(false)	
-		{}
-
-	virtual void specialKeyPress( Producer::KeyCharacter key )
-	{
-		if (key==Producer::KeyChar_Escape)
-                    shutdown();
-	}
-
-        virtual void shutdown()
-        {
-            _done = true; 
-        }
-
-	virtual void keyPress( Producer::KeyCharacter )
-	{
-	}
-
-	virtual void mouseMotion( float mx, float my ) 
-	{
-		_mx = mx;
-		_my = my;
-	}
-	virtual void buttonPress( float mx, float my, unsigned int mbutton ) 
-	{
-		_mx = mx;
-		_my = my;
-		_mbutton |= (1<<(mbutton-1));
-	}
-	virtual void buttonRelease( float mx, float my, unsigned int mbutton ) 
-	{
-		_mx = mx;
-		_my = my;
-		_mbutton &= ~(1<<(mbutton-1));
-	}
-
-	bool done() { return _done; }
-	float mx()  { return _mx; }
-	float my()  { return _my; }
-	unsigned int mbutton()  { return _mbutton; }
-
-    private:
-
-	float _mx, _my;
-	unsigned int _mbutton;
-	bool _done;
-};
 
 const double r_earth = 6378.137;
 const double r_sun = 695990.0;
@@ -135,8 +69,11 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 
-    // create the camera group.
-    osgProducer::OsgCameraGroup cg(arguments);
+    // construct the viewer.
+    osgProducer::Viewer viewer(arguments);
+
+    // set up the value with sensible default event handlers.
+    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -155,62 +92,57 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // set up the keyboard and mouse handling.
-    Producer::InputArea *ia = cg.getCameraConfig()->getInputArea();
-    Producer::KeyboardMouse *kbm = ia ?
-                                   (new Producer::KeyboardMouse(ia)) : 
-                                   (new Producer::KeyboardMouse(cg.getCamera(0)->getRenderSurface()));
 
+    bool needToSetHomePosition = false;
 
-    osg::ref_ptr<MyKeyboardMouseCallback> kbmcb = new MyKeyboardMouseCallback;
+    // read the scene from the list of file specified commandline args.
+    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
+
+    // if one hasn't been loaded create an earth and sun test model.
+    if (!scene) 
+    {
+        scene = createScene(); 
+        needToSetHomePosition = true;
+    }
     
-    // register the callback with the keyboard mouse manger.
-    kbm->setCallback( kbmcb.get() );
-    kbm->startThread();
-
     // Create a DepthPartitionNode to manage partitioning of the scene
-    DepthPartitionNode *dpn = new DepthPartitionNode;
-    osg::Node* scene = createScene();
-    dpn->addChild(scene);
+    osg::ref_ptr<DepthPartitionNode> dpn = new DepthPartitionNode;
+    dpn->addChild(scene.get());
     dpn->setActive(true); // Control whether the node analyzes the scene
         
-    // set the scene to render
-    cg.setSceneData(dpn);
+    // pass the loaded scene graph to the viewer.
+    viewer.setSceneData(dpn.get());
 
-    // Set the view to be looking at the earth
-    osg::BoundingSphere bs;
-    bs._radius = r_earth;
-
-    osg::ref_ptr<Producer::Trackball> tb = new Producer::Trackball;
-    tb->setOrientation( Producer::Trackball::Z_UP );
-    tb->setDistance(bs.radius()*10.0f);
-    tb->translate(-bs.center().x(),-bs.center().y(),-bs.center().z());
+    if (needToSetHomePosition)
+    {
+        viewer.getKeySwitchMatrixManipulator()->setHomePosition(osg::Vec3d(0.0,-5.0*r_earth,0.0),osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,0.0,1.0));
+    }
 
     // create the windows and run the threads.
-    cg.realize();
+    viewer.realize();
 
-    osgUtil::UpdateVisitor update;
-
-    while( !kbmcb->done() )
+    while( !viewer.done() )
     {
-        // syncronize to the when cull and draw threads have completed.
-        cg.sync();
+        // wait for all cull and draw threads to complete.
+        viewer.sync();
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
-        cg.getSceneData()->accept(update);
-
-	tb->input( kbmcb->mx(), kbmcb->my(), kbmcb->mbutton() );
-
-        // update the main producer camera
-        cg.setViewByMatrix(tb->getMatrix());
+        viewer.update();
          
         // fire off the cull and draw traversals of the scene.
-        cg.frame();
+        viewer.frame();
+        
     }
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
-    // syncronize to the when cull and draw threads have completed.
-    cg.sync();
+    // run a clean up frame to delete all OpenGL objects.
+    viewer.cleanup_frame();
+
+    // wait for all the clean up frame to complete.
+    viewer.sync();
 
     return 0;
 }

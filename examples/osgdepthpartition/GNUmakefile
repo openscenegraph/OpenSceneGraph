@@ -12,7 +12,7 @@ INSTFILES = \
 	$(CXXFILES)\
 	GNUmakefile.inst=GNUmakefile
 
-EXEC = osgdepthpartion
+EXEC = osgdepthpartition
 
 INC +=  $(X_INC) 
 

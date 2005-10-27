@@ -264,8 +264,7 @@ int main( int argc, char **argv )
     std::string archiveName;
     while (arguments.read("-a",archiveName)) { dataset->setArchiveName(archiveName); }
 
-    dataset->setDestinationTileBaseName("output");
-    dataset->setDestinationTileExtension(".ive");
+    dataset->setDestinationName("output.ive");
 
 
     unsigned int numLevels = 10;
@@ -573,14 +572,7 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "-o",filename)) 
         {
             std::cout<<"-o "<<filename<<std::endl;
-
-            std::string path = osgDB::getFilePath(filename);
-            std::string base = path.empty()?osgDB::getStrippedName(filename):
-                                            path +'/'+ osgDB::getStrippedName(filename);
-            std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
-
-            dataset->setDestinationTileBaseName(base);
-            dataset->setDestinationTileExtension(extension);
+            dataset->setDestinationName(filename);
             
             if (!currentCS.empty()) dataset->setDestinationCoordinateSystem(currentCS);
 

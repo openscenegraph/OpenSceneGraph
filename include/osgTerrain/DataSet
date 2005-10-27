@@ -974,8 +974,11 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         /** Get the Archive if one is to being used.*/
         osgDB::Archive* getArchive() { return _archive.get(); }
 
-        /** Set the DestinationTileBaseName and DestinationTileExtension from the passed in filename.*/
+        /** Set the Directory, DestinationTileBaseName and DestinationTileExtension from the passed in filename.*/
         void setDestinationName(const std::string& filename);
+
+        void setDirectory(const std::string& directory);
+        const std::string& getDirectory() const { return _directory; }
 
         void setDestinationTileBaseName(const std::string& basename) { _tileBasename = basename; }
         const std::string& getDestinationTileBaseName() const { return _tileBasename; }
@@ -1126,6 +1129,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         osg::BoundingBox                            _extents;
         std::string                                 _archiveName;
         osg::ref_ptr<osgDB::Archive>                _archive;
+        std::string                                 _directory;
         std::string                                 _tileBasename;
         std::string                                 _tileExtension;
         std::string                                 _imageExtension;

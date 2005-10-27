@@ -3742,14 +3742,41 @@ void DataSet::init()
 void DataSet::setDestinationName(const std::string& filename)
 {
     std::string path = osgDB::getFilePath(filename);
-    std::string base = path.empty()?osgDB::getStrippedName(filename):
-                                    path +'/'+ osgDB::getStrippedName(filename);
+    std::string base = osgDB::getStrippedName(filename);
     std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
 
+    osg::notify(osg::NOTICE)<<"setDestinationName("<<filename<<")"<<std::endl;
+    osg::notify(osg::NOTICE)<<"   path "<<path<<std::endl;
+    osg::notify(osg::NOTICE)<<"   base "<<base<<std::endl;
+    osg::notify(osg::NOTICE)<<"   extension "<<extension<<std::endl;
+
+    setDirectory(path);
     setDestinationTileBaseName(base);
     setDestinationTileExtension(extension);
 } 
 
+void DataSet::setDirectory(const std::string& directory)
+{
+    _directory = directory;
+    
+    if (_directory.empty()) return;
+    
+#ifdef WIN32    
+    // convert trailing forward slash if any to back slash.
+    if (_directory[_directory.size()-1]=='/') _directory[_directory.size()-1] = '\\';
+
+    // if no trailing back slash exists add one.
+    if (_directory[_directory.size()-1]!='\\') _directory.push_back('\\');
+#else
+    // convert trailing back slash if any to forward slash.
+    if (_directory[_directory.size()-1]=='\\') _directory[_directory.size()-1] = '/';
+
+    // if no trailing forward slash exists add one.
+    if (_directory[_directory.size()-1]!='/') _directory.push_back('/');
+#endif    
+    osg::notify(osg::NOTICE)<<"directory name set "<<_directory<<std::endl;
+}
+ 
 void DataSet::addSource(Source* source)
 {
     if (!source) return;
@@ -4414,7 +4441,7 @@ public:
             
             if (image)
             {
-                _dataSet->_writeImageFile(*image,image->getFileName().c_str());
+                _dataSet->_writeImageFile(*image,(_dataSet->getDirectory()+image->getFileName()).c_str());
             }
         }
     }
@@ -4435,7 +4462,7 @@ void DataSet::_writeRow(Row& row)
             if (!parent->getSubTilesGenerated() && parent->areSubTilesComplete())
             {
                 osg::ref_ptr<osg::Node> node = parent->createSubTileScene();
-                std::string filename = parent->getSubTileName();
+                std::string filename = _directory+parent->getSubTileName();
                 if (node.valid())
                 {
                     my_notify(osg::NOTICE)<<"   writeSubTile filename="<<filename<<std::endl;
@@ -4475,8 +4502,7 @@ void DataSet::_writeRow(Row& row)
                 node->addDescription(_comment);
             }
 
-            //std::string filename = cd->_name + _tileExtension;
-            std::string filename = _tileBasename+_tileExtension;
+            std::string filename = _directory+_tileBasename+_tileExtension;
 
             if (node.valid())
             {
@@ -4566,7 +4592,7 @@ void DataSet::_buildDestination(bool writeToDisk)
 
     if (_destinationGraph.valid())
     {
-        std::string filename = _tileBasename+_tileExtension;
+        std::string filename = _directory+_tileBasename+_tileExtension;
         
         if (_archive.valid())
         {

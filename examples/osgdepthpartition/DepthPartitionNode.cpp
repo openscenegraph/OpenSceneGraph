@@ -1,6 +1,5 @@
 #include "DepthPartitionNode.h"
 #include <osgUtil/CullVisitor>
-#include <iostream>
 
 #define CURRENT_CLASS DepthPartitionNode
 CURRENT_CLASS::CURRENT_CLASS()
@@ -10,8 +9,7 @@ CURRENT_CLASS::CURRENT_CLASS()
 }
 
 CURRENT_CLASS::CURRENT_CLASS(const CURRENT_CLASS& dpn, const osg::CopyOp& copyop)
-	: osg::Group(dpn,copyop),
-          _active(dpn._active),
+	: _active(dpn._active),
 	  _renderOrder(dpn._renderOrder),
 	  _clearColorBuffer(dpn._clearColorBuffer)
 {
@@ -116,25 +114,16 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
 	  osg::CameraNode *currCam;
 	  DistanceAccumulator::DistancePair currPair;
 
-	  for(unsigned int j = 0; j < _numCameras; j++)
+	  for(i = 0; i < _numCameras; i++)
 	  {
 	    // Create the camera, and clamp it's projection matrix
-	    currPair = camPairs[j];  // (near,far) pair for current camera
+	    currPair = camPairs[i];  // (near,far) pair for current camera
 	    currCam = createOrReuseCamera(projection, currPair.first, 
-	                                  currPair.second, j);
+	                                  currPair.second, i);
 
 	    // Set the modelview matrix and viewport of the camera
 	    currCam->setViewMatrix(modelview);
 	    currCam->setViewport(viewport);
-
-/*
-	    // Set our children as the camera's children
-	    currCam->removeChild(0, currCam->getNumChildren());
-	    for(i = 0; i < numChildren; i++)
-	    {
-	      currCam->addChild(_children[i].get());
-	    }
-*/
 
 	    // Redirect the CullVisitor to the current camera
 	    currCam->accept(nv);

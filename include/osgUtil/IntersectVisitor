@@ -103,7 +103,10 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         void reset();
         
-        /** Add a line segment to use for intersection testing during scene traversal.*/
+        /** Add a line segment to use for intersection testing during scene traversal.
+          * Note, a maximum of 32 line segments can be added to a IntersectVistor,
+          * adding more than this will result in warning being emitted to the console
+          * and the excess segments being ignored.*/
         void addLineSegment(osg::LineSegment* seg);
 
         typedef std::vector<Hit> HitList;

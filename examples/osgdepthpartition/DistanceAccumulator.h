@@ -22,7 +22,7 @@ class CURRENT_CLASS : public osg::NodeVisitor
 
 	CURRENT_CLASS();
 
-	virtual void apply(osg::CameraNode &camera);
+	virtual void apply(osg::Node &node);
 	virtual void apply(osg::Projection &proj);
 	virtual void apply(osg::Transform &transform);
 	virtual void apply(osg::Geode &geode);
@@ -51,10 +51,15 @@ class CURRENT_CLASS : public osg::NodeVisitor
 	void setNearFarRatio(double ratio);
 	inline double getNearFarRatio() const { return _nearFarRatio; }
 
+	inline void setMaxDepth(unsigned int depth) { _maxDepth = depth; }
+	inline unsigned int getMaxDepth() const { return _maxDepth; }
+
   protected:
 	virtual ~CURRENT_CLASS();
 
 	void pushLocalFrustum();
+	void pushDistancePair(double zNear, double zFar);
+	bool shouldContinueTraversal(osg::Node &node);
 
 	// Stack of matrices accumulated during traversal
 	osg::fast_back_stack<osg::Matrix> _viewMatrices;
@@ -81,6 +86,9 @@ class CURRENT_CLASS : public osg::NodeVisitor
 
 	// Ratio of nearest/farthest clip plane for each section of the scene
 	double _nearFarRatio;
+
+	// Maximum depth to traverse to
+	unsigned int _maxDepth, _currentDepth;
 };
 #undef CURRENT_CLASS
 

@@ -24,11 +24,11 @@ double distance(const osg::Vec3 &coord, const osg::Matrix& matrix)
 
 #define CURRENT_CLASS DistanceAccumulator
 CURRENT_CLASS::CURRENT_CLASS()
-	: osg::NodeVisitor(TRAVERSE_ALL_CHILDREN), _nearFarRatio(0.0)
+	: osg::NodeVisitor(TRAVERSE_ALL_CHILDREN), 
+	  _nearFarRatio(0.0005), _maxDepth(UINT_MAX)
 {
 	setMatrices(osg::Matrix::identity(), osg::Matrix::identity());
 	reset();
-	setNearFarRatio(0.0005);
 }
 
 CURRENT_CLASS::~CURRENT_CLASS() {}
@@ -44,97 +44,155 @@ void CURRENT_CLASS::pushLocalFrustum()
 	_localFrusta.push_back(localFrustum);
 
 	// Compute new bounding box corners
-	osg::Vec3d lookVector(-currMatrix(0,2), -currMatrix(1,2), -currMatrix(2,2));
 	bbCornerPair corner;
-	corner.second = (lookVector.x()>=0?1:0) |
-	                (lookVector.y()>=0?2:0) |
-	                (lookVector.z()>=0?4:0);
+	corner.second = (currMatrix(0,2)<=0?1:0) |
+	                (currMatrix(1,2)<=0?2:0) |
+			(currMatrix(2,2)<=0?4:0);
 	corner.first = (~corner.second)&7;
 	_bbCorners.push_back(corner);
 }
 
-void CURRENT_CLASS::apply(osg::CameraNode& /*camera*/)
+void CURRENT_CLASS::pushDistancePair(double zNear, double zFar)
 {
-	// We don't support scenes with CameraNodes in them
-	return;
+	if(zFar > 0.0) // Make sure some of drawable is visible
+	{
+	  // Make sure near plane is in front of viewpoint.
+	  if(zNear <= 0.0)
+	  {
+	    zNear = zFar*_nearFarRatio;
+	    if(zNear >= 1.0) zNear = 1.0; // 1.0 limit chosen arbitrarily!
+	  }
+
+	  // Add distance pair for current drawable
+	  _distancePairs.push_back(DistancePair(zNear, zFar));
+
+	  // Override the current nearest/farthest planes if necessary
+	  if(zNear < _limits.first) _limits.first = zNear;
+	  if(zFar > _limits.second) _limits.second = zFar;
+	}
+}
+
+/** Return true if the node should be traversed, and false if the bounding sphere
+    of the node is small enough to be rendered by one CameraNode. If the latter
+    is true, then store the node's near & far plane distances. */
+bool CURRENT_CLASS::shouldContinueTraversal(osg::Node &node)
+{
+	// Allow traversal to continue if we haven't reached maximum depth.
+	bool keepTraversing = (_currentDepth < _maxDepth);
+
+	const osg::BoundingSphere &bs = node.getBound();
+	double zNear = 0.0, zFar = 0.0;
+
+	// Make sure bounding sphere is valid and within viewing volume
+	if(bs.valid())
+	{
+	  if(!_localFrusta.back().contains(bs)) keepTraversing = false;
+	  else
+	  {
+	    // Compute near and far planes for this node
+	    zNear = distance(bs._center, _viewMatrices.back());
+	    zFar = zNear + bs._radius;
+	    zNear -= bs._radius;
+
+	    // If near/far ratio is big enough, then we don't need to keep
+	    // traversing children of this node.
+	    if(zNear >= zFar*_nearFarRatio) keepTraversing = false;
+	  }
+	}
+
+	// If traversal should stop, then store this node's (near,far) pair
+	if(!keepTraversing) pushDistancePair(zNear, zFar);
+
+	return keepTraversing;
+}
+
+void CURRENT_CLASS::apply(osg::Node &node)
+{
+	if(shouldContinueTraversal(node))
+	{
+	  // Traverse this node
+	  _currentDepth++;
+	  traverse(node);
+	  _currentDepth--;
+	}
 }
 
 void CURRENT_CLASS::apply(osg::Projection &proj)
 {
-	// Push the new projection matrix view frustum
-	_projectionMatrices.push_back(proj.getMatrix());
-	pushLocalFrustum();
+	if(shouldContinueTraversal(proj))
+	{
+	  // Push the new projection matrix view frustum
+	  _projectionMatrices.push_back(proj.getMatrix());
+	  pushLocalFrustum();
 
-	traverse(proj); // Traverse the rest of the scene graph
+	  // Traverse the group
+	  _currentDepth++;
+	  traverse(proj);
+	  _currentDepth--;
 
-	// Reload original matrix and frustum
-	_localFrusta.pop_back();
-	_bbCorners.pop_back();
-	_projectionMatrices.pop_back();
+	  // Reload original matrix and frustum
+	  _localFrusta.pop_back();
+	  _bbCorners.pop_back();
+	  _projectionMatrices.pop_back();
+	}
 }
 
 void CURRENT_CLASS::apply(osg::Transform &transform)
 {
-	// Compute transform for current node
-	osg::Matrix currMatrix = _viewMatrices.back();
-	bool pushMatrix = transform.computeLocalToWorldMatrix(currMatrix, this);
-
-	if(pushMatrix) 
+	if(shouldContinueTraversal(transform))
 	{
-	  // Store the new modelview matrix and view frustum
-	  _viewMatrices.push_back(currMatrix);
-	  pushLocalFrustum();
-	}
+	  // Compute transform for current node
+	  osg::Matrix currMatrix = _viewMatrices.back();
+	  bool pushMatrix = transform.computeLocalToWorldMatrix(currMatrix, this);
 
-	traverse(transform); // Traverse the rest of the scene graph
+	  if(pushMatrix) 
+	  {
+	    // Store the new modelview matrix and view frustum
+	    _viewMatrices.push_back(currMatrix);
+	    pushLocalFrustum();
+	  }
 
-	if(pushMatrix) 
-	{
-	  // Restore the old modelview matrix and view frustum
-	  _localFrusta.pop_back();
-	  _bbCorners.pop_back();
-	  _viewMatrices.pop_back();
+	  _currentDepth++;
+	  traverse(transform);
+	  _currentDepth--;
+
+	  if(pushMatrix) 
+	  {
+	    // Restore the old modelview matrix and view frustum
+	    _localFrusta.pop_back();
+	    _bbCorners.pop_back();
+	    _viewMatrices.pop_back();
+	  }
 	}
 }
 
 void CURRENT_CLASS::apply(osg::Geode &geode)
 {
-	osg::Drawable *drawable;
-	double zNear, zFar;
-
-	// Handle each drawable in this geode
-	for(unsigned int i = 0; i < geode.getNumDrawables(); i++)
+	// Contained drawables will only be individually considered if we are
+	// allowed to continue traversing.
+	if(shouldContinueTraversal(geode))
 	{
-	  drawable = geode.getDrawable(i);
+	  osg::Drawable *drawable;
+	  double zNear, zFar;
 
-	  const osg::BoundingBox &bb = drawable->getBound();
-	  if(bb.valid())
+	  // Handle each drawable in this geode
+	  for(unsigned int i = 0; i < geode.getNumDrawables(); i++)
 	  {
-	    // Make sure drawable will be visible in the scene
-	    if(!_localFrusta.back().contains(bb)) continue;
+	    drawable = geode.getDrawable(i);
 
-	    // Compute near/far distances for current drawable
-	    zNear = distance(bb.corner(_bbCorners.back().first), 
-	                     _viewMatrices.back());
-	    zFar = distance(bb.corner(_bbCorners.back().second), 
-	                    _viewMatrices.back());
-	    if(zNear > zFar) std::swap(zNear, zFar);
-
-	    if(zFar > 0.0) // Make sure some of drawable is visible
+	    const osg::BoundingBox &bb = drawable->getBound();
+	    if(bb.valid())
 	    {
-	      // Make sure near plane is in front of viewpoint.
-	      if(zNear <= 0.0)
-	      {
-		zNear = zFar*_nearFarRatio;
-		if(zNear >= 1.0) zNear = 1.0; // 1.0 limit chosen arbitrarily!
-	      }
+	      // Make sure drawable will be visible in the scene
+	      if(!_localFrusta.back().contains(bb)) continue;
 
-	      // Add distance pair for current drawable and current rendering mode
-	      _distancePairs.push_back(DistancePair(zNear, zFar));
-
-	      // Override the current nearest/farthest planes if necessary
-	      if(zNear < _limits.first) _limits.first = zNear;
-	      if(zFar > _limits.second) _limits.second = zFar;
+	      // Compute near/far distances for current drawable
+	      zNear = distance(bb.corner(_bbCorners.back().first), 
+                               _viewMatrices.back());
+	      zFar = distance(bb.corner(_bbCorners.back().second), 
+	                      _viewMatrices.back());
+	      if(zNear > zFar) std::swap(zNear, zFar);
+	      pushDistancePair(zNear, zFar);
 	    }
 	  }
 	}
@@ -154,6 +212,7 @@ void CURRENT_CLASS::reset()
 	_cameraPairs.clear();
 	_limits.first = DBL_MAX;
 	_limits.second = 0.0;
+	_currentDepth = 0;
 
 	// Initial transform matrix is the modelview matrix
 	_viewMatrices.clear();
@@ -276,7 +335,7 @@ void CURRENT_CLASS::computeCameraPairs()
 
 void CURRENT_CLASS::setNearFarRatio(double ratio)
 {
-	if(_nearFarRatio == ratio || ratio <= 0.0 || ratio >= 1.0) return;
+	if(ratio <= 0.0 || ratio >= 1.0) return;
 	_nearFarRatio = ratio;
 }
 #undef CURRENT_CLASS

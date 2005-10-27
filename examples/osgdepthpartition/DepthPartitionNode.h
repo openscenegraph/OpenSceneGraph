@@ -37,11 +37,19 @@ class CURRENT_CLASS : public osg::Group
 	inline osg::CameraNode::RenderOrder getRenderOrder() const
 	{ return _renderOrder; }
 
+	/** Set/get the maximum depth that the scene will be traversed to.
+	    Defaults to UINT_MAX. */
+	void setMaxTraversalDepth(unsigned int depth) 
+	{ _distAccumulator->setMaxDepth(depth); }
+
+	inline unsigned int getMaxTraversalDepth() const
+	{ return _distAccumulator->getMaxDepth(); }
+
 	/** Override update and cull traversals */
 	virtual void traverse(osg::NodeVisitor &nv);
 
 	/** Catch child management functions so the CameraNodes can be informed
-	    of new/removed children */
+	    of added or removed children. */
 	virtual bool addChild(osg::Node *child);
 	virtual bool insertChild(unsigned int index, osg::Node *child);
 	virtual bool removeChild(osg::Node *child);

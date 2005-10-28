@@ -124,6 +124,7 @@ int main( int argc, char **argv )
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel)
     {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
   

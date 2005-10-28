@@ -48,6 +48,21 @@ void BlendEquation::apply(State& state) const
         return;
     }
 
+    GLenum eqn = static_cast<GLenum>(_equation);
+
+    if((eqn == ALPHA_MIN || eqn == ALPHA_MAX) && 
+       !extensions->isSGIXMinMaxSupported())
+    {
+    notify(WARN)<<"Warning: BlendEquation::apply(..) failed, SGIX_blend_alpha_minmax extension is not supported by OpenGL driver." << std::endl;
+    return;
+    }
+
+    if(eqn == LOGIC_OP && !extensions->isLogicOpSupported())
+    {
+    notify(WARN)<<"Warning: BlendEquation::apply(..) failed, EXT_blend_logic_op extension is not supported by OpenGL driver." << std::endl;
+    return;
+    }
+    
     extensions->glBlendEquation(static_cast<GLenum>(_equation));
     
 }
@@ -77,6 +92,9 @@ BlendEquation::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
     _isBlendEquationSupported = rhs._isBlendEquationSupported;
+    _isSGIXMinMaxSupported = rhs._isSGIXMinMaxSupported;
+    _isLogicOpSupported = rhs._isLogicOpSupported;
+    _glBlendEquation = rhs._glBlendEquation;
 }
 
 void BlendEquation::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -89,6 +107,9 @@ void BlendEquation::Extensions::setupGLExtenions(unsigned int contextID)
 {
     _isBlendEquationSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_equation") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
+    
+    _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "SGIX_blend_alpha_minmax");
+    _isLogicOpSupported = isGLExtensionSupported(contextID, "EXT_blend_logic_op");
 
     _glBlendEquation = getGLExtensionFuncPtr("glBlendEquation", "glBlendEquationEXT");
 }

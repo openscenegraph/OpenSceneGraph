@@ -1050,11 +1050,6 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
     // try composite name first
     DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(compositeName);
 
-    // composite name not found, try simple class name
-    if (itr == _classNameWrapperMap.end()) {
-        itr = _classNameWrapperMap.find(classname);
-    }
-
     if (itr==_classNameWrapperMap.end())
     {
         // first try the standard nodekit library.
@@ -1064,11 +1059,14 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         // otherwise try the osgdb_ plugin library.
         std::string pluginLibraryName = createLibraryNameForExtension(obj.libraryName());
         if (loadLibrary(pluginLibraryName)) return writeObject(obj,fw);
+
+        // otherwise try simple class name
+        if (itr == _classNameWrapperMap.end()) 
+            itr = _classNameWrapperMap.find(classname);
     }
-    else
-    {
-    
-    
+
+    if (itr!=_classNameWrapperMap.end())
+    { 
         DotOsgWrapper* wrapper = itr->second.get();
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
 

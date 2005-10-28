@@ -21,6 +21,7 @@
 #include <osg/DisplaySettings>
 #include <osg/CollectOccludersVisitor>
 #include <osg/CullSettings>
+#include <osg/CameraNode>
 
 #include <osgUtil/CullVisitor>
 
@@ -54,48 +55,50 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
          */
         void setDefaults(unsigned int options = STANDARD_SETTINGS);
 
+        /** Set the camera used to represent the camera view of this SceneView.*/
+        void setCamera(osg::CameraNode* camera);
+
+        /** Get the camera used to represent the camera view of this SceneView.*/
+        osg::CameraNode* getCamera() { return _camera.get(); }
+
+        /** Get the const camera used to represent the camera view of this SceneView.*/
+        const osg::CameraNode* getCamera() const { return _camera.get(); }
+
         /** Set the data to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
-        void setSceneData(osg::Node* node) { _sceneData = node; }
+        void setSceneData(osg::Node* node);
+        
         /** Get the scene data to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
-        osg::Node* getSceneData() { return _sceneData.get(); }
+        osg::Node* getSceneData(unsigned int childNo=0) { return (_camera->getNumChildren()>childNo) ? _camera->getChild(childNo) : 0; }
 
         /** Get the const scene data which to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
-        const osg::Node* getSceneData() const { return _sceneData.get(); }
+        const osg::Node* getSceneData(unsigned int childNo=0) const { return (_camera->getNumChildren()>childNo) ? _camera->getChild(childNo) : 0; }
+        
+        /** Get the number of scene data subgraphs added to the SceneView's camera.*/
+        unsigned int getNumSceneData() const { return _camera->getNumChildren(); }
 
         /** Set the viewport of the scene view to use specified osg::Viewport. */
-        void setViewport(osg::Viewport* viewport)
-        {
-            if (viewport) _viewport = viewport;
-            else
-            {
-                // ensure that _viewport is always valid.
-                _viewport = new osg::Viewport;
-            }
-        }
+        void setViewport(osg::Viewport* viewport) { _camera->setViewport(viewport); }
 
         /** Set the viewport of the scene view to specified dimensions. */
-        void setViewport(int x,int y,int width,int height)
-        {
-            _viewport->setViewport(x,y,width,height);
-        }
-        
+        void setViewport(int x,int y,int width,int height) { _camera->setViewport(x,y,width,height); }
 
-        /** Get the const viewport. */
-        const osg::Viewport* getViewport() const { return _viewport.get(); }
 
         /** Get the viewport. */
-        osg::Viewport* getViewport() { return _viewport.get(); }
+        osg::Viewport* getViewport() { return (_camera->getViewport()!=0) ? _camera->getViewport() : 0; }
 
-        /** Get the viewport of the scene view. */
+        /** Get the const viewport. */
+        const osg::Viewport* getViewport() const { return (_camera->getViewport()!=0) ? _camera->getViewport() : 0; }
+        
+         /** Get the viewport of the scene view. */
         void getViewport(int& x,int& y,int& width,int& height) const
         {
-            _viewport->getViewport(x,y,width,height);
+            if (_camera->getViewport()!=0) _camera->getViewport()->getViewport(x,y,width,height);
         }
 
         /** Set the DisplaySettings. */
@@ -110,9 +113,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
 
         /** Set the color used in glClearColor().
             Defaults to an off blue color.*/
-        void setClearColor(const osg::Vec4& color) { _clearColor=color; }
+        void setClearColor(const osg::Vec4& color) { _camera->setClearColor(color); }
         /** Get the color used in glClearColor.*/
-        const osg::Vec4& getClearColor() const { return _clearColor; }
+        const osg::Vec4& getClearColor() const { return _camera->getClearColor(); }
         
         
         /** Mannually set the redraw interlaced stereo stencil mask request flag to control whether to redraw the stencil buffer on the next frame.*/  
@@ -170,10 +173,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
 
 
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
-        inline void setProjectionMatrix(const osg::Matrixf& matrix) { _projectionMatrix.set(matrix); }
+        inline void setProjectionMatrix(const osg::Matrixf& matrix) { _camera->setProjectionMatrix(matrix); }
 
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
-        inline void setProjectionMatrix(const osg::Matrixd& matrix) { _projectionMatrix.set(matrix); }
+        inline void setProjectionMatrix(const osg::Matrixd& matrix) { _camera->setProjectionMatrix(matrix); }
 
         /** Set to an orthographic projection. See OpenGL glOrtho for documentation further details.*/
         void setProjectionMatrixAsOrtho(double left, double right,
@@ -195,10 +198,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
                                               double zNear, double zFar);
 
         /** Get the projection matrix.*/
-        osg::Matrixd& getProjectionMatrix() { return _projectionMatrix; }
+        osg::Matrixd& getProjectionMatrix() { return _camera->getProjectionMatrix(); }
 
         /** Get the const projection matrix.*/
-        const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
+        const osg::Matrixd& getProjectionMatrix() const { return _camera->getProjectionMatrix(); }
 
         /** Get the othographic settings of the orthographic projection matrix. 
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
@@ -222,19 +225,19 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
 
 
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
-        inline void setViewMatrix(const osg::Matrixf& matrix) { _viewMatrix.set(matrix); }
+        inline void setViewMatrix(const osg::Matrixf& matrix) { _camera->setViewMatrix(matrix); }
         
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
-        inline void setViewMatrix(const osg::Matrixd& matrix) { _viewMatrix.set(matrix); }
+        inline void setViewMatrix(const osg::Matrixd& matrix) { _camera->setViewMatrix(matrix); }
 
         /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
         void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
 
         /** Get the view matrix. */
-        osg::Matrixd& getViewMatrix() { return _viewMatrix; }
+        osg::Matrixd& getViewMatrix() { return _camera->getViewMatrix(); }
 
         /** Get the const view matrix. */
-        const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
+        const osg::Matrixd& getViewMatrix() const { return _camera->getViewMatrix(); }
 
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
         void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f) const;
@@ -462,43 +465,35 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         osg::ref_ptr<osg::StateSet>                 _localStateSet;
         osg::ref_ptr<osg::State>                    _state;
         
-        osg::Matrixd                                _projectionMatrix;
-        osg::Matrixd                                _viewMatrix;
-        
         bool                                        _initCalled;
         osg::ref_ptr<osg::NodeVisitor>              _initVisitor;
         osg::ref_ptr<osg::NodeVisitor>              _updateVisitor;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitor;
-        osg::ref_ptr<osgUtil::StateGraph>          _rendergraph;
+        osg::ref_ptr<osgUtil::StateGraph>           _rendergraph;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
 
         osg::ref_ptr<ComputeStereoMatricesCallback> _computeStereoMatricesCallback;
 
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;
-        osg::ref_ptr<osgUtil::StateGraph>          _rendergraphLeft;
+        osg::ref_ptr<osgUtil::StateGraph>           _rendergraphLeft;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageLeft;
 
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorRight;
-        osg::ref_ptr<osgUtil::StateGraph>          _rendergraphRight;
+        osg::ref_ptr<osgUtil::StateGraph>           _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
 
         osg::ref_ptr<osg::CollectOccludersVisitor>  _collectOccludersVisistor;
         
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
         
-
-        osg::ref_ptr<osg::Node>                     _sceneData;
+        osg::ref_ptr<osg::CameraNode>               _camera;
+        
         osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         
-        osg::Vec4                                   _clearColor;
-
-
         FusionDistanceMode                          _fusionDistanceMode;
         float                                       _fusionDistanceValue;
-
-        osg::ref_ptr<osg::Viewport>                 _viewport;
 
         LightingMode                                _lightingMode;
         

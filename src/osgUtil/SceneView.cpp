@@ -89,7 +89,6 @@ SceneView::SceneView(DisplaySettings* ds)
 {
     _displaySettings = ds;
 
-    _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
 
     _fusionDistanceMode = PROPORTIONAL_TO_SCREEN_DISTANCE;
@@ -99,7 +98,9 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _prioritizeTextures = false;
     
-    _viewport = new Viewport;
+    _camera = new CameraNode;
+    _camera->setViewport(new Viewport);
+    _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
     
     _initCalled = false;
 
@@ -125,8 +126,8 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults(unsigned int options)
 {
-    _projectionMatrix.makePerspective(50.0f,1.4f,1.0f,10000.0f);
-    _viewMatrix.makeIdentity();
+    _camera->getProjectionMatrix().makePerspective(50.0f,1.4f,1.0f,10000.0f);
+    _camera->getViewMatrix().makeIdentity();
 
     _globalStateSet = new osg::StateSet;
 
@@ -197,8 +198,32 @@ void SceneView::setDefaults(unsigned int options)
      texenv->setMode(osg::TexEnv::MODULATE);
      _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
 
+    _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
+}
 
-    _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
+void SceneView::setCamera(osg::CameraNode* camera)
+{
+    if (camera)
+    {
+        _camera = camera;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Warning: attempt to assign a NULL camera to SceneView not permitted."<<std::endl;
+    }
+}
+
+void SceneView::setSceneData(osg::Node* node)
+{
+    // take a temporary reference to node to prevent the possibility
+    // of it getting deleted when when we do the camera clear of children. 
+    osg::ref_ptr<osg::Node> temporaryRefernce = node;
+    
+    // remove pre existing children
+    _camera->removeChild(0, _camera->getNumChildren());
+    
+    // add the new one in.
+    _camera->addChild(node);
 }
 
 void SceneView::init()
@@ -206,7 +231,7 @@ void SceneView::init()
 
     _initCalled = true;
 
-    if (_sceneData.valid() && _initVisitor.valid())
+    if (_camera.valid() && _initVisitor.valid())
     {
         _initVisitor->reset();
         _initVisitor->setFrameStamp(_frameStamp.get());
@@ -219,14 +244,14 @@ void SceneView::init()
              _initVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
         
-        _sceneData->accept(*_initVisitor.get());
+        _camera->accept(*_initVisitor.get());
         
     } 
 }
 
 void SceneView::update()
 {
-    if (_sceneData.valid() && _updateVisitor.valid())
+    if (_camera.valid() && _updateVisitor.valid())
     { 
         _updateVisitor->reset();
 
@@ -238,13 +263,13 @@ void SceneView::update()
              _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
         
-        _sceneData->accept(*_updateVisitor.get());
+        _camera->accept(*_updateVisitor.get());
         
         // now force a recompute of the bounding volume while we are still in
         // the read/write app phase, this should prevent the need to recompute
         // the bounding volumes from within the cull traversal which may be
         // multi-threaded.
-        _sceneData->getBound();
+        _camera->getBound();
     }
 }
 
@@ -281,13 +306,13 @@ void SceneView::updateUniforms()
     if (_activeUniforms & VIEW_MATRIX_UNIFORM)
     {
         osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_ViewMatrix",osg::Uniform::FLOAT_MAT4);
-        uniform->set(_viewMatrix);      
+        uniform->set(getViewMatrix());
     }
 
     if (_activeUniforms & VIEW_MATRIX_INVERSE_UNIFORM)
     {
         osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_ViewMatrixInverse",osg::Uniform::FLOAT_MAT4);
-        uniform->set(osg::Matrix::inverse(_viewMatrix));      
+        uniform->set(osg::Matrix::inverse(getViewMatrix()));
     }
 
 }
@@ -471,13 +496,13 @@ void SceneView::cull()
         {
             // set up the left eye.
             _cullVisitor->setTraversalMask(_cullMaskLeft);
-            cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
             if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
             {
                 CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
                 CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
-                _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+                _cullVisitor->clampProjectionMatrix(getProjectionMatrix(),zNear,zFar);
             }
 
         }
@@ -485,13 +510,13 @@ void SceneView::cull()
         {
             // set up the right eye.
             _cullVisitor->setTraversalMask(_cullMaskRight);
-            cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
             if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
             {
                 CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
                 CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
-                _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+                _cullVisitor->clampProjectionMatrix(getProjectionMatrix(),zNear,zFar);
             }
 
         }
@@ -509,21 +534,21 @@ void SceneView::cull()
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorLeft->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-            cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+            cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
 
 
             // set up the right eye.
             _cullVisitorRight->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorRight->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
-            cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+            cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
            
             if (_cullVisitorLeft->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR &&
                 _cullVisitorRight->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
             {
                 CullVisitor::value_type zNear = osg::minimum(_cullVisitorLeft->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedNearPlane());
                 CullVisitor::value_type zFar =  osg::maximum(_cullVisitorLeft->getCalculatedFarPlane(),_cullVisitorRight->getCalculatedFarPlane());
-                _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+                _cullVisitor->clampProjectionMatrix(getProjectionMatrix(),zNear,zFar);
             }
 
         }
@@ -533,13 +558,13 @@ void SceneView::cull()
     {
 
         _cullVisitor->setTraversalMask(_cullMask);
-        cullStage(_projectionMatrix,_viewMatrix,_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+        cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
         if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
         {
             CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
             CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
-            _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+            _cullVisitor->clampProjectionMatrix(getProjectionMatrix(),zNear,zFar);
         }
     }
     
@@ -549,7 +574,7 @@ void SceneView::cull()
 void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
-    if (!_sceneData || !_viewport->valid()) return;
+    if (!_camera || !getViewport()) return;
 
     if (!_initCalled) init();
 
@@ -558,7 +583,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
 
     // collect any occluder in the view frustum.
-    if (_sceneData->containsOccluderNodes())
+    if (_camera->containsOccluderNodes())
     {
         //std::cout << "Scene graph contains occluder nodes, searching for them"<<std::endl;
         
@@ -577,12 +602,12 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
              _collectOccludersVisistor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
 
-        _collectOccludersVisistor->pushViewport(_viewport.get());
+        _collectOccludersVisistor->pushViewport(getViewport());
         _collectOccludersVisistor->pushProjectionMatrix(proj.get());
         _collectOccludersVisistor->pushModelViewMatrix(mv.get());
 
         // traverse the scene graph to search for occluder in there new positions.
-        _sceneData->accept(*_collectOccludersVisistor);
+        _camera->accept(*_collectOccludersVisistor);
 
         _collectOccludersVisistor->popModelViewMatrix();
         _collectOccludersVisistor->popProjectionMatrix();
@@ -629,8 +654,8 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     // achieves a certain amount of frame cohereancy of memory allocation.
     rendergraph->clean();
 
-    renderStage->setViewport(_viewport.get());
-    renderStage->setClearColor(_clearColor);
+    renderStage->setViewport(getViewport());
+    renderStage->setClearColor(getClearColor());
 
 
     switch(_lightingMode)
@@ -651,13 +676,18 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     if (_localStateSet.valid()) cullVisitor->pushStateSet(_localStateSet.get());
 
 
-    cullVisitor->pushViewport(_viewport.get());
+    cullVisitor->pushViewport(getViewport());
     cullVisitor->pushProjectionMatrix(proj.get());
     cullVisitor->pushModelViewMatrix(mv.get());
     
 
     // traverse the scene graph to generate the rendergraph.
-    _sceneData->accept(*cullVisitor);
+    for(unsigned int childNo=0;
+        childNo<_camera->getNumChildren();
+        ++childNo)
+    {
+        _camera->getChild(childNo)->accept(*cullVisitor);
+    }
 
     cullVisitor->popModelViewMatrix();
     cullVisitor->popProjectionMatrix();
@@ -695,9 +725,9 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
 void SceneView::releaseAllGLObjects()
 {
-    if (!_sceneData) return;
+    if (!_camera) return;
    
-    _sceneData->releaseGLObjects(_state.get());
+    _camera->releaseGLObjects(_state.get());
 }
 
 
@@ -748,7 +778,7 @@ void SceneView::draw()
     // assume the the draw which is about to happen could generate GL objects that need flushing in the next frame.
     _requiresFlush = true;
 
-    _state->setInitialViewMatrix(new osg::RefMatrix(_viewMatrix));
+    _state->setInitialViewMatrix(new osg::RefMatrix(getViewMatrix()));
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
@@ -759,7 +789,7 @@ void SceneView::draw()
         case(osg::DisplaySettings::QUAD_BUFFER):
             {
 
-                _localStateSet->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(getViewport());
 
                 // ensure that all color planes are active.
                 osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
@@ -800,7 +830,7 @@ void SceneView::draw()
                     _renderStageRight->setReadBuffer(_drawBufferValue);
                 }
                 
-                _localStateSet->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(getViewport());
 
                 
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
@@ -880,18 +910,18 @@ void SceneView::draw()
 
                 int separation = _displaySettings->getSplitStereoHorizontalSeparation();
 
-                int left_half_width = (_viewport->width()-separation)/2;
-                int right_half_begin = (_viewport->width()+separation)/2;
-                int right_half_width = _viewport->width()-right_half_begin;
+                int left_half_width = (getViewport()->width()-separation)/2;
+                int right_half_begin = (getViewport()->width()+separation)/2;
+                int right_half_width = getViewport()->width()-right_half_begin;
 
                 osg::ref_ptr<osg::Viewport> viewportLeft = new osg::Viewport;
-                viewportLeft->setViewport(_viewport->x(),_viewport->y(),left_half_width,_viewport->height());
+                viewportLeft->setViewport(getViewport()->x(),getViewport()->y(),left_half_width,getViewport()->height());
 
                 osg::ref_ptr<osg::Viewport> viewportRight = new osg::Viewport;
-                viewportRight->setViewport(_viewport->x()+right_half_begin,_viewport->y(),right_half_width,_viewport->height());
+                viewportRight->setViewport(getViewport()->x()+right_half_begin,getViewport()->y(),right_half_width,getViewport()->height());
 
 
-                clearArea(_viewport->x()+left_half_width,_viewport->y(),separation,_viewport->height(),_renderStageLeft->getClearColor());
+                clearArea(getViewport()->x()+left_half_width,getViewport()->y(),separation,getViewport()->height(),_renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
                 {
@@ -946,17 +976,17 @@ void SceneView::draw()
 
                 int separation = _displaySettings->getSplitStereoVerticalSeparation();
 
-                int bottom_half_height = (_viewport->height()-separation)/2;
-                int top_half_begin = (_viewport->height()+separation)/2;
-                int top_half_height = _viewport->height()-top_half_begin;
+                int bottom_half_height = (getViewport()->height()-separation)/2;
+                int top_half_begin = (getViewport()->height()+separation)/2;
+                int top_half_height = getViewport()->height()-top_half_begin;
 
                 osg::ref_ptr<osg::Viewport> viewportTop = new osg::Viewport;
-                viewportTop->setViewport(_viewport->x(),_viewport->y()+top_half_begin,_viewport->width(),top_half_height);
+                viewportTop->setViewport(getViewport()->x(),getViewport()->y()+top_half_begin,getViewport()->width(),top_half_height);
 
                 osg::ref_ptr<osg::Viewport> viewportBottom = new osg::Viewport;
-                viewportBottom->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half_height);
+                viewportBottom->setViewport(getViewport()->x(),getViewport()->y(),getViewport()->width(),bottom_half_height);
 
-                clearArea(_viewport->x(),_viewport->y()+bottom_half_height,_viewport->width(),separation,_renderStageLeft->getClearColor());
+                clearArea(getViewport()->x(),getViewport()->y()+bottom_half_height,getViewport()->width(),separation,_renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
                 {
@@ -1003,14 +1033,14 @@ void SceneView::draw()
                 _renderStage->setColorMask(cmask);
                 _renderStage->setColorMask(cmask);
 
-                _localStateSet->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(getViewport());
                 _renderStage->drawPreRenderStages(*_state,previous);
                 _renderStage->draw(*_state,previous);
             }
             break;
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
             {
-                _localStateSet->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(getViewport());
 
                 // ensure that all color planes are active.
                 osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
@@ -1032,13 +1062,13 @@ void SceneView::draw()
                 glEnable(GL_STENCIL_TEST);
 
                 if(_redrawInterlacedStereoStencilMask ||
-                   _interlacedStereoStencilWidth != _viewport->width() ||
-                  _interlacedStereoStencilHeight != _viewport->height() )
+                   _interlacedStereoStencilWidth != getViewport()->width() ||
+                  _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    _viewport->apply(*_state);
+                    getViewport()->apply(*_state);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
-                    glOrtho(_viewport->x(), _viewport->width(), _viewport->y(), _viewport->height(), -1.0, 1.0);
+                    glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
                     glMatrixMode(GL_MODELVIEW);
                     glLoadIdentity();    
                     glDisable(GL_LIGHTING);
@@ -1050,15 +1080,15 @@ void SceneView::draw()
                     glPolygonStipple(patternVertEven);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-                    glRecti(_viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+                    glRecti(getViewport()->x(), getViewport()->y(), getViewport()->width(), getViewport()->height());
                     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
                     glDisable(GL_POLYGON_STIPPLE);
                     glEnable(GL_LIGHTING);
                     glEnable(GL_DEPTH_TEST);
                     
                     _redrawInterlacedStereoStencilMask = false;
-                    _interlacedStereoStencilWidth = _viewport->width();
-                    _interlacedStereoStencilHeight = _viewport->height();
+                    _interlacedStereoStencilWidth = getViewport()->width();
+                    _interlacedStereoStencilHeight = getViewport()->height();
                 }
 
                 _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));
@@ -1075,7 +1105,7 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
             {
-                _localStateSet->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(getViewport());
 
                 // ensure that all color planes are active.
                 osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
@@ -1097,13 +1127,13 @@ void SceneView::draw()
                 glEnable(GL_STENCIL_TEST);
 
                 if(_redrawInterlacedStereoStencilMask ||
-                   _interlacedStereoStencilWidth != _viewport->width() ||
-                  _interlacedStereoStencilHeight != _viewport->height() )
+                   _interlacedStereoStencilWidth != getViewport()->width() ||
+                  _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    _viewport->apply(*_state);
+                    getViewport()->apply(*_state);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
-                    glOrtho(_viewport->x(), _viewport->width(), _viewport->y(), _viewport->height(), -1.0, 1.0);
+                    glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
                     glMatrixMode(GL_MODELVIEW);
                     glLoadIdentity();
                     glDisable(GL_LIGHTING);
@@ -1115,15 +1145,15 @@ void SceneView::draw()
                     glPolygonStipple(patternHorzEven);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-                    glRecti(_viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+                    glRecti(getViewport()->x(), getViewport()->y(), getViewport()->width(), getViewport()->height());
                     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
                     glDisable(GL_POLYGON_STIPPLE);
                     glEnable(GL_LIGHTING);
                     glEnable(GL_DEPTH_TEST);
                     
                     _redrawInterlacedStereoStencilMask = false;
-                    _interlacedStereoStencilWidth = _viewport->width();
-                    _interlacedStereoStencilHeight = _viewport->height();
+                    _interlacedStereoStencilWidth = getViewport()->width();
+                    _interlacedStereoStencilHeight = getViewport()->height();
                 }
 
                 _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));
@@ -1155,7 +1185,7 @@ void SceneView::draw()
             _renderStage->setReadBuffer(_drawBufferValue);
         }
 
-        _localStateSet->setAttribute(_viewport.get());
+        _localStateSet->setAttribute(getViewport());
 
 
         // ensure that all color planes are active.
@@ -1237,10 +1267,10 @@ bool SceneView::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& windo
 
 const osg::Matrix SceneView::computeMVPW() const
 {
-    osg::Matrix matrix( _viewMatrix * _projectionMatrix);
+    osg::Matrix matrix( getViewMatrix() * getProjectionMatrix());
         
-    if (_viewport.valid())
-        matrix.postMult(_viewport->computeWindowMatrix());
+    if (getViewport())
+        matrix.postMult(getViewport()->computeWindowMatrix());
     else
         osg::notify(osg::WARN)<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed inccorectly."<<std::endl;
 
@@ -1298,7 +1328,7 @@ bool SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
                                            double& zNear, double& zFar) const
 {
-    return _projectionMatrix.getOrtho(left, right,
+    return getProjectionMatrix().getOrtho(left, right,
                                        bottom, top,
                                        zNear, zFar);
 }
@@ -1307,7 +1337,7 @@ bool SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
                                              double& bottom, double& top,
                                              double& zNear, double& zFar) const
 {
-    return _projectionMatrix.getFrustum(left, right,
+    return getProjectionMatrix().getFrustum(left, right,
                                          bottom, top,
                                          zNear, zFar);
 }                                  
@@ -1315,7 +1345,7 @@ bool SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
 bool SceneView::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
                                                  double& zNear, double& zFar) const
 {
-    return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
+    return getProjectionMatrix().getPerspective(fovy, aspectRatio, zNear, zFar);
 }                                                 
 
 void SceneView::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
@@ -1325,5 +1355,5 @@ void SceneView::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const V
 
 void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance) const
 {
-    _viewMatrix.getLookAt(eye,center,up,lookDistance);
+    getViewMatrix().getLookAt(eye,center,up,lookDistance);
 }

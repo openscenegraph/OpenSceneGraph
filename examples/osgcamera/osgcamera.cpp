@@ -58,9 +58,8 @@ struct CompileOperation : public osg::GraphicsThread::Operation
 // Cull operation, that does a cull on the scene graph.
 struct CullOperation : public osg::GraphicsThread::Operation
 {
-    CullOperation(osg::CameraNode* camera, osgUtil::SceneView* sceneView):
+    CullOperation(osgUtil::SceneView* sceneView):
         osg::GraphicsThread::Operation("Cull",true),
-        _camera(camera),
         _sceneView(sceneView)
     {
     }
@@ -68,14 +67,9 @@ struct CullOperation : public osg::GraphicsThread::Operation
     virtual void operator () (osg::GraphicsContext* context)
     {
         _sceneView->setState(context->getState());
-        _sceneView->setProjectionMatrix(_camera->getProjectionMatrix());
-        _sceneView->setViewMatrix(_camera->getViewMatrix());
-        _sceneView->setViewport(_camera->getViewport());
-        
         _sceneView->cull();
     }
     
-    osg::CameraNode*                 _camera;
     osg::ref_ptr<osgUtil::SceneView> _sceneView;
 };
 
@@ -273,25 +267,22 @@ int main( int argc, char **argv )
         ++citr)
     {
         osg::CameraNode* camera = citr->get();
+        osg::GraphicsThread* graphicsThread = camera->getGraphicsContext()->getGraphicsThread();
         
         // create a scene view to do the cull and draw
         osgUtil::SceneView* sceneView = new osgUtil::SceneView;
         sceneView->setDefaults();
         sceneView->setFrameStamp(frameStamp.get());
-            
-        if (camera->getNumChildren()>=1)
-        {
-            sceneView->setSceneData(camera->getChild(0));
-        }
+        sceneView->setCamera(camera);    
 
         // cull traversal operation
-        camera->getGraphicsContext()->getGraphicsThread()->add( new CullOperation(camera, sceneView), false); 
+        graphicsThread->add( new CullOperation(sceneView), false); 
 
         // optionally add glFinish barrier to ensure that all OpenGL commands are completed before we start dispatching a new frame
-        if (doFinishBeforeNewDraw) camera->getGraphicsContext()->getGraphicsThread()->add( glFinishBarrierOp.get(), false); 
+        if (doFinishBeforeNewDraw) graphicsThread->add( glFinishBarrierOp.get(), false); 
 
         // draw traversal operation.
-        camera->getGraphicsContext()->getGraphicsThread()->add( new DrawOperation(sceneView), false); 
+        graphicsThread->add( new DrawOperation(sceneView), false); 
     }
 
     // fourth add the frame end barrier, the pre swap barrier and finally the swap buffers to each graphics thread.

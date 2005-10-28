@@ -174,7 +174,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     return model;
 }
 
-osg::Node* createModel()
+osg::Node* createModel(bool overlay)
 {
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 100.0f;
@@ -184,15 +184,20 @@ osg::Node* createModel()
     osg::Node* baseModel = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius);
     osg::Node* movingModel = createMovingModel(center,radius*0.8f);
 
-#if 1
-    osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
-    overlayNode->setOverlaySubgraph(movingModel);
-    overlayNode->addChild(baseModel);
-    root->addChild(overlayNode);
-#else
-    root->addChild(baseModel);
-#endif
-
+    if (overlay)
+    {
+        osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
+        overlayNode->setContinousUpdate(true);
+        overlayNode->setOverlaySubgraph(movingModel);
+        overlayNode->addChild(baseModel);
+        root->addChild(overlayNode);
+    }
+    else
+    {
+    
+        root->addChild(baseModel);
+    }
+    
     root->addChild(movingModel);
 
     return root;
@@ -224,6 +229,9 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+    
+    bool overlay = false;
+    while (arguments.read("--overlay")) overlay = true;
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -236,7 +244,7 @@ int main( int argc, char **argv )
     }
     
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel();
+    osg::Node* model = createModel(overlay);
     if (!model)
     {
         return 1;

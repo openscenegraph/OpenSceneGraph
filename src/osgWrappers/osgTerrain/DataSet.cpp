@@ -107,6 +107,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method1(void, setArchive, IN, osgDB::Archive *, archive);
 	I_Method0(osgDB::Archive *, getArchive);
 	I_Method1(void, setDestinationName, IN, const std::string &, filename);
+	I_Method1(void, setDirectory, IN, const std::string &, directory);
+	I_Method0(const std::string &, getDirectory);
 	I_Method1(void, setDestinationTileBaseName, IN, const std::string &, basename);
 	I_Method0(const std::string &, getDestinationTileBaseName);
 	I_Method1(void, setDestinationTileExtension, IN, const std::string &, extension);
@@ -160,6 +162,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_ReadOnlyProperty(osg::Node *, DestinationRootNode);
 	I_Property(const std::string &, DestinationTileBaseName);
 	I_Property(const std::string &, DestinationTileExtension);
+	I_Property(const std::string &, Directory);
 	I_Property(osg::EllipsoidModel *, EllipsoidModel);
 	I_Property(osgTerrain::DataSet::GeometryType, GeometryType);
 	I_Property(osg::CoordinateSystemNode *, IntermediateCoordinateSystem);

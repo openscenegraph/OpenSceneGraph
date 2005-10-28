@@ -49,7 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraView)
 	I_Method0(double, getFieldOfView);
 	I_Method1(void, setFieldOfViewMode, IN, osg::CameraView::FieldOfViewMode, mode);
 	I_Method0(osg::CameraView::FieldOfViewMode, getFieldOfViewMode);
-	I_Method1(void, setFocalLength, IN, double, FocalLength);
+	I_Method1(void, setFocalLength, IN, double, focalLength);
 	I_Method0(double, getFocalLength);
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
 	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);

@@ -3745,10 +3745,10 @@ void DataSet::setDestinationName(const std::string& filename)
     std::string base = osgDB::getStrippedName(filename);
     std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
 
-    osg::notify(osg::NOTICE)<<"setDestinationName("<<filename<<")"<<std::endl;
-    osg::notify(osg::NOTICE)<<"   path "<<path<<std::endl;
-    osg::notify(osg::NOTICE)<<"   base "<<base<<std::endl;
-    osg::notify(osg::NOTICE)<<"   extension "<<extension<<std::endl;
+    osg::notify(osg::INFO)<<"setDestinationName("<<filename<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"   path "<<path<<std::endl;
+    osg::notify(osg::INFO)<<"   base "<<base<<std::endl;
+    osg::notify(osg::INFO)<<"   extension "<<extension<<std::endl;
 
     setDirectory(path);
     setDestinationTileBaseName(base);

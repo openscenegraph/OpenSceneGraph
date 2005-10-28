@@ -4,15 +4,19 @@
 #include <osg/Depth>
 #include <osg/Geode>
 #include <osg/Geometry>
+#include <osg/GL2Extensions>
 #include <osg/Material>
 #include <osg/Math>
 #include <osg/MatrixTransform>
 #include <osg/PolygonOffset>
+#include <osg/Program>
 #include <osg/Projection>
+#include <osg/Shader>
 #include <osg/ShapeDrawable>
 #include <osg/StateSet>
 #include <osg/Switch>
 #include <osg/Texture2D>
+#include <osg/Uniform>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -505,11 +509,11 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     float max_z = -FLT_MAX;
     for(r=0;r<numRows;++r)
     {
-	for(c=0;c<numColumns;++c)
-	{
-	    min_z = osg::minimum(min_z,vertex[r+c*numRows][2]);
-	    max_z = osg::maximum(max_z,vertex[r+c*numRows][2]);
-	}
+        for(c=0;c<numColumns;++c)
+        {
+            min_z = osg::minimum(min_z,vertex[r+c*numRows][2]);
+            max_z = osg::maximum(max_z,vertex[r+c*numRows][2]);
+        }
     }
         
     float scale_z = size.z()/(max_z-min_z);
@@ -519,10 +523,10 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     terrainImage->setInternalTextureFormat(GL_LUMINANCE_FLOAT32_ATI);
     for(r=0;r<numRows;++r)
     {
-	for(c=0;c<numColumns;++c)
-	{
-	    *((float*)(terrainImage->data(c,r))) = (vertex[r+c*numRows][2]-min_z)*scale_z;
-	}
+        for(c=0;c<numColumns;++c)
+        {
+            *((float*)(terrainImage->data(c,r))) = (vertex[r+c*numRows][2]-min_z)*scale_z;
+        }
     }
     
     osg::Texture2D* terrainTexture = new osg::Texture2D;
@@ -536,10 +540,10 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {
-	osg::Texture2D* texture = new osg::Texture2D;
+        osg::Texture2D* texture = new osg::Texture2D;
         
-	texture->setImage(image);
-	stateset->setTextureAttributeAndModes(1,texture,osg::StateAttribute::ON);
+        texture->setImage(image);
+        stateset->setTextureAttributeAndModes(1,texture,osg::StateAttribute::ON);
     }
 
     {    
@@ -629,13 +633,13 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
             {
                 pos.x() = origin.x();
                 tex.x() = 0.0f;
-	        for(c=0;c<numColumns;++c)
-	        {
-	            v[vi].set(pos.x(),pos.y(),pos.z());
+                for(c=0;c<numColumns;++c)
+                {
+                    v[vi].set(pos.x(),pos.y(),pos.z());
                     pos.x()+=columnCoordDelta;
                     tex.x()+=columnTexDelta;
                     ++vi;
-	        }
+                }
                 pos.y() += rowCoordDelta;
                 tex.y() += rowTexDelta;
             }
@@ -649,11 +653,11 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
                 osg::DrawElementsUShort& drawElements = *(new osg::DrawElementsUShort(GL_QUAD_STRIP,2*numColumns));
                 geometry->addPrimitiveSet(&drawElements);
                 int ei=0;
-	        for(c=0;c<numColumns;++c)
-	        {
-	            drawElements[ei++] = (r+1)*numColumns+c;
-	            drawElements[ei++] = (r)*numColumns+c;
-	        }
+                for(c=0;c<numColumns;++c)
+                {
+                    drawElements[ei++] = (r+1)*numColumns+c;
+                    drawElements[ei++] = (r)*numColumns+c;
+                }
             }
             
             geometry->setInitialBound(osg::BoundingBox(origin, origin+size));
@@ -773,6 +777,30 @@ int main( int argc, char **argv )
 
     // create the windows and run the threads.
     viewer.realize();
+
+    // not all hardware can support vertex texturing, so check first.
+    for(unsigned int contextID = 0; 
+        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
+        ++contextID)
+    {
+        osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,false);
+        if( gl2ext )
+        {
+            if( !gl2ext->isGlslSupported() )
+            {
+                std::cout<<"ERROR: GLSL not supported by OpenGL driver."<<std::endl;
+                return 1;
+            }
+
+            GLint numVertexTexUnits = 0;
+            glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
+            if( numVertexTexUnits <= 0 )
+            {
+                std::cout<<"ERROR: vertex texturing not supported by OpenGL driver."<<std::endl;
+                return 1;
+            }
+        }
+    }
 
     while( !viewer.done() )
     {

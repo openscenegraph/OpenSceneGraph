@@ -1323,7 +1323,15 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    float glVersion = atof( (const char *)glGetString( GL_VERSION ) );
+    const char* version = (const char*) glGetString( GL_VERSION );
+    if (!version)
+    {
+        osg::notify(osg::FATAL)<<"Error: In Texture::Extensions::setupGLExtensions(..) OpenGL version test failed, requires valid graphics context."<<std::endl;
+        return;
+    }
+    
+
+    float glVersion = atof( (const char *)version );
     const char* renderer = (const char*) glGetString(GL_RENDERER);
     std::string rendererString(renderer ? renderer : "");
     

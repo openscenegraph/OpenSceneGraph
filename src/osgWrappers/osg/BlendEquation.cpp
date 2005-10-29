@@ -62,6 +62,8 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
 	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	I_Method1(void, setBlendEquationSupported, IN, bool, flag);
 	I_Method0(bool, isBlendEquationSupported);
+	I_Method0(bool, isSGIXMinMaxSupported);
+	I_Method0(bool, isLogicOpSupported);
 	I_Method1(void, setBlendEquationProc, IN, void *, ptr);
 	I_Method1(void, glBlendEquation, IN, GLenum, mode);
 	I_WriteOnlyProperty(void *, BlendEquationProc);

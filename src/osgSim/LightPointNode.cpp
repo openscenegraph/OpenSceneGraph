@@ -267,12 +267,14 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // slip light point if it is intensity is 0.0 or negative.
             if (intensity<=minimumIntensity) continue;
 
-
+            // (SIB) Clip on distance, if close to limit, add transparancy
+            float distanceFactor = 1.0f;
             if (_maxVisibleDistance2!=FLT_MAX)
             {
                 if (dv.length2()>_maxVisibleDistance2) continue;
+                else if (_maxVisibleDistance2 > 0)
+                    distanceFactor = 1.0f - osg::square(dv.length2() / _maxVisibleDistance2);
             }
-
 
             osg::Vec4 color = lp._color;
 
@@ -309,13 +311,17 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             float pixelSize = cv->pixelSize(position,lp._radius);
 
 //            cout << "pixelsize = "<<pixelSize<<endl;
-            
+
             // adjust pixel size to account for intensity.
             if (intensity!=1.0) pixelSize *= sqrt(intensity);
 
+            // adjust alfa to account for max range (Fade on distance)
+            color[3] *= distanceFactor;
+
             // round up to the minimum pixel size if required.
+            float orgPixelSize = pixelSize;
             if (pixelSize<_minPixelSize) pixelSize = _minPixelSize;
-            
+
             osg::Vec3 xpos(position*matrix);
 
             if (lp._blendingMode==LightPoint::BLENDED)
@@ -323,8 +329,8 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 if (pixelSize<1.0f)
                 {
                     // need to use alpha blending...
-                    //color[3] = pixelSize;
-                    color[3] *= osg::square(pixelSize);
+                    color[3] *= pixelSize;
+                    // color[3] *= osg::square(pixelSize);
 
                     if (color[3]<=minimumIntensity) continue;
 
@@ -334,12 +340,14 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 {
 
                     unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
-                    //float remainder = pixelSize-(float)lowerBoundPixelSize;
                     float remainder = osg::square(pixelSize-(float)lowerBoundPixelSize);
-                    float alpha = color[3];
-                    drawable->addBlendedLightPoint(lowerBoundPixelSize-1, xpos,color);
 
-                    color[3] = alpha*remainder;
+                    // (SIB) Add transparency if pixel is clamped to minpixelsize
+                    if (orgPixelSize<_minPixelSize)
+                        color[3] *= (2.0/3.0) + (1.0/3.0) * sqrt(orgPixelSize / pixelSize);
+
+                    drawable->addBlendedLightPoint(lowerBoundPixelSize-1, xpos,color);
+                    color[3] *= remainder;
                     drawable->addBlendedLightPoint(lowerBoundPixelSize, xpos,color);
                 }
                 else // use a billboard geometry.
@@ -352,8 +360,8 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 if (pixelSize<1.0f)
                 {
                     // need to use alpha blending...
-                    //color[3] = pixelSize;
-                    color[3] *= osg::square(pixelSize);
+                    color[3] *= pixelSize;
+                    // color[3] *= osg::square(pixelSize);
 
                     if (color[3]<=minimumIntensity) continue;
 
@@ -363,12 +371,15 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 {
 
                     unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
-                    //float remainder = pixelSize-(float)lowerBoundPixelSize;
                     float remainder = osg::square(pixelSize-(float)lowerBoundPixelSize);
+
+                    // (SIB) Add transparency if pixel is clamped to minpixelsize
+                    if (orgPixelSize<_minPixelSize)
+                        color[3] *= (2.0/3.0) + (1.0/3.0) * sqrt(orgPixelSize / pixelSize);
+
                     float alpha = color[3];
                     color[3] = alpha*(1.0f-remainder);
                     drawable->addAdditiveLightPoint(lowerBoundPixelSize-1, xpos,color);
-
                     color[3] = alpha*remainder;
                     drawable->addAdditiveLightPoint(lowerBoundPixelSize, xpos,color);
                 }

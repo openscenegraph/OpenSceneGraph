@@ -104,11 +104,21 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
 
 osg::BoundingSphere TXPNode::computeBound() const
 {
+#if 1
+
+    // Steve Lunsford 10/28/05 : - Had to avoid using the child group nodes for bounds calculation
+    // because apparently the loader doesn't load all the sub-tiles for this node, resulting in a Group::computeBounds
+    // call which returns a size smaller than the actual size represented by this node so consequently this node gets culled out.
+    // note, submission merged and rearranged by Robert Osfield as an #if #else just in case we need to revert.
+    return osg::BoundingSphere( _extents );
+#else
+    // original code which uses the extents of the children when one is available.
     if (getNumChildren() == 0)
     {
         return osg::BoundingSphere( _extents );
     }
     return Group::computeBound();
+#endif
 }
 
 void TXPNode::setArchiveName(const std::string& archiveName)

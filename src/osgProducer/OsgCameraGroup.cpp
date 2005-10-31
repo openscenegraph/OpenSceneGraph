@@ -211,6 +211,12 @@ static osg::ApplicationUsageProxy OsgCameraGroup_e3(osg::ApplicationUsage::ENVIR
 
 void OsgCameraGroup::_init()
 {
+    if (_cfg.valid())
+    {
+        // By default select ThreadPerCamera when we have multiple cameras.
+        _thread_model = (_cfg->getNumberOfCameras()>1) ? ThreadPerCamera : SingleThreaded;
+    }
+
     const char* str = getenv("OSG_CAMERA_THREADING");
     if (str)
     {

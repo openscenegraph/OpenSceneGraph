@@ -4,6 +4,7 @@
 #include <osg/Notify>
 #include <osg/MatrixTransform>
 #include <osg/Texture2D>
+#include <osg/TextureRectangle>
 #include <osg/Stencil>
 #include <osg/ColorMask>
 #include <osg/Depth>
@@ -107,7 +108,52 @@ class MyGeometryCallback :
         
 };
 
-osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation)
+struct MyCameraPostDrawCallback : public osg::CameraNode::DrawCallback
+{
+    MyCameraPostDrawCallback(osg::Image* image):
+        _image(image)
+    {
+    }
+
+    virtual void operator () (const osg::CameraNode& /*camera*/) const
+    {
+        if (_image && _image->getPixelFormat()==GL_RGBA && _image->getDataType()==GL_UNSIGNED_BYTE)
+        {
+            
+            // we'll pick out the center 1/2 of the whole image,
+            int column_start = _image->s()/4;
+            int column_end = 3*column_start;
+            
+            int row_start = _image->t()/4;
+            int row_end = 3*row_start;
+            
+
+            // and then invert these pixels
+            for(int r=row_start; r<row_end; ++r)
+            {
+                unsigned char* data = _image->data(column_start, r);
+                for(int c=column_start; c<column_end; ++c)
+                {
+                    (*data) = 255; ++data;
+                    (*data) = (*data); ++data;
+                    (*data) = (*data); ++data;
+                    (*data) = 255; ++data;
+                }
+            }
+
+
+            // dirty the image (increments the modified count) so that any textures
+            // using the image can be informed that they need to update.
+            _image->dirty();
+        }
+        
+    }
+    
+    osg::Image* _image;
+};
+
+
+osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation, bool useImage, bool useTextureRectangle)
 {
     if (!subgraph) return 0;
 
@@ -115,11 +161,27 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
     osg::Group* parent = new osg::Group;
 
     // texture to render to and to use for rendering of flag.
-    osg::Texture2D* texture = new osg::Texture2D;
-    texture->setTextureSize(tex_width, tex_height);
-    texture->setInternalFormat(GL_RGBA);
-    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    osg::Texture* texture = 0;
+    if (useTextureRectangle)
+    {
+        osg::TextureRectangle* textureRect = new osg::TextureRectangle;
+        textureRect->setTextureSize(tex_width, tex_height);
+        textureRect->setInternalFormat(GL_RGBA);
+        textureRect->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+        textureRect->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+        
+        texture = textureRect;
+    }
+    else
+    {
+        osg::Texture2D* texture2D = new osg::Texture2D;
+        texture2D->setTextureSize(tex_width, tex_height);
+        texture2D->setInternalFormat(GL_RGBA);
+        texture2D->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+        texture2D->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+        
+        texture = texture2D;
+    } 
 
     // first create the geometry of the flag of which to view.
     { 
@@ -142,9 +204,11 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         osg::Vec3 dv = xAxis*(width/((float)(noSteps-1)));
 
         osg::Vec2Array* texcoords = new osg::Vec2Array;
+        
+        // note, when we use TextureRectangle we have to scale the tex coords up to compensate.
         osg::Vec2 bottom_texcoord(0.0f,0.0f);
-        osg::Vec2 top_texcoord(0.0f,1.0f);
-        osg::Vec2 dv_texcoord(1.0f/(float)(noSteps-1),0.0f);
+        osg::Vec2 top_texcoord(0.0f, useTextureRectangle ? tex_height : 1.0f);
+        osg::Vec2 dv_texcoord((useTextureRectangle ? tex_width : 1.0f)/(float)(noSteps-1),0.0f);
 
         for(int i=0;i<noSteps;++i)
         {
@@ -231,8 +295,33 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderImplementation);
 
-        // attach the texture and use it as the color buffer.
-        camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+        
+        if (useImage)
+        {
+            osg::Image* image = new osg::Image;
+            image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+
+            // attach the image so its copied on each frame.
+            camera->attach(osg::CameraNode::COLOR_BUFFER, image);
+            
+            camera->setPostDrawCallback(new MyCameraPostDrawCallback(image));
+            
+            // Rather than attach the texture directly to illustrate the texture's ability to
+            // detect an image update and to subload the image onto the texture.  You needn't
+            // do this when using an Image for copying to, as a seperate camera->attach(..)
+            // would suffice as well, but we'll do it the long way round here just for demonstation
+            // purposes (long way round meaning we'll need to copy image to main memory, then
+            // copy it back to the graphics card to the texture in one frame).
+            // The long way round allows us to mannually modify the copied image via the callback
+            // and then let this modified image by reloaded back.
+            texture->setImage(0, image);
+        }
+        else
+        {
+            // attach the texture and use it as the color buffer.
+            camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+        }
+
 
         // add subgraph to render
         camera->addChild(subgraph);
@@ -289,6 +378,12 @@ int main( int argc, char **argv )
     while (arguments.read("--fb")) { renderImplementation = osg::CameraNode::FRAME_BUFFER; }
     while (arguments.read("--window")) { renderImplementation = osg::CameraNode::SEPERATE_WINDOW; }
 
+    bool useImage = false;
+    while (arguments.read("--image")) { useImage = true; }
+    
+    bool useTextureRectangle = false;
+    while (arguments.read("--texture-rectangle")) { useTextureRectangle = true; }
+    
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -322,7 +417,7 @@ int main( int argc, char **argv )
     loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
-    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation));
+    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation, useImage, useTextureRectangle));
 
 
     // add model to the viewer.

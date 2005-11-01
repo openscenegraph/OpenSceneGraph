@@ -115,7 +115,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method1(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order);
 	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder);
 	I_Method1(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl);
+	I_Method2(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl, IN, osg::CameraNode::RenderTargetImplementation, fallback);
 	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetImplementation);
+	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetFallback);
 	I_Method1(void, setDrawBuffer, IN, GLenum, buffer);
 	I_Method0(GLenum, getDrawBuffer);
 	I_Method1(void, setReadBuffer, IN, GLenum, buffer);
@@ -154,6 +156,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_IndexedProperty1(GLenum, RenderBuffer, unsigned int, pos);
 	I_ReadOnlyProperty(osg::CameraNode::RenderBufferList &, RenderBufferList);
 	I_Property(osg::CameraNode::RenderOrder, RenderOrder);
+	I_ReadOnlyProperty(osg::CameraNode::RenderTargetImplementation, RenderTargetFallback);
 	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation);
 	I_Property(osg::Object *, RenderingCache);
 	I_Property(osg::CameraNode::TransformOrder, TransformOrder);

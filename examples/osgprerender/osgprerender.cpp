@@ -119,7 +119,6 @@ struct MyCameraPostDrawCallback : public osg::CameraNode::DrawCallback
     {
         if (_image && _image->getPixelFormat()==GL_RGBA && _image->getDataType()==GL_UNSIGNED_BYTE)
         {
-            
             // we'll pick out the center 1/2 of the whole image,
             int column_start = _image->s()/4;
             int column_end = 3*column_start;
@@ -134,9 +133,9 @@ struct MyCameraPostDrawCallback : public osg::CameraNode::DrawCallback
                 unsigned char* data = _image->data(column_start, r);
                 for(int c=column_start; c<column_end; ++c)
                 {
-                    (*data) = 255; ++data;
-                    (*data) = (*data); ++data;
-                    (*data) = (*data); ++data;
+                    (*data) = 255-(*data); ++data;
+                    (*data) = 255-(*data); ++data;
+                    (*data) = 255-(*data); ++data;
                     (*data) = 255; ++data;
                 }
             }
@@ -346,8 +345,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--fb","Use FrameBuffer for render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Use Pixel Buffer for render to texture, where supported.");
     arguments.getApplicationUsage()->addCommandLineOption("--window","Use a seperate Window for render to texture.");
-    arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture");
-    arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture");
+    arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--image","Render to an image, then apply a post draw callback to it, and use this image to update a texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--texture-rectangle","Use osg::TextureRectangle for doing the render to texure to.");
    
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);

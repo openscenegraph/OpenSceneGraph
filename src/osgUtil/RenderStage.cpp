@@ -205,9 +205,9 @@ void RenderStage::runCameraSetUp(osg::State& state)
             osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER_OBJECT"<<std::endl;
 
             _fbo = new osg::FrameBufferObject;
-            
-            setDrawBuffer(GL_BACK);
-            setReadBuffer(GL_BACK);
+
+            setDrawBuffer(GL_NONE);
+            setReadBuffer(GL_NONE);
 
             bool colorAttached = false;
             bool depthAttached = false;
@@ -520,8 +520,6 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         copyTexture(state);
     }
     
-    state.checkGLErrors("before readPixel;");
-
     if (_image.valid())
     {
 
@@ -541,6 +539,7 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         _image->readPixels(_viewport->x(), _viewport->y(),
                            _viewport->width(), _viewport->height(), 
                            pixelFormat, dataType);
+
     }
        
     
@@ -550,8 +549,6 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         (*(_camera->getPostDrawCallback()))(*_camera);
     }
 
-    state.checkGLErrors("before glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);");
-
     if (fbo_supported)
     {
         // switch of the frame buffer object
@@ -559,9 +556,6 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
 
         doCopyTexture = true;
     }
-    
-    state.checkGLErrors("after glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);");
-
     
     if (fbo_supported && _camera)
     {

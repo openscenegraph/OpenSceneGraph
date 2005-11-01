@@ -191,8 +191,13 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
             SEPERATE_WINDOW
         };
 
-        void setRenderTargetImplementation(RenderTargetImplementation impl) { _renderTargetImplementation = impl; }
+        void setRenderTargetImplementation(RenderTargetImplementation impl);
+
+        void setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback);
+
         RenderTargetImplementation getRenderTargetImplementation() const { return _renderTargetImplementation; }
+
+        RenderTargetImplementation getRenderTargetFallback() const { return _renderTargetFallback; }
 
 
         /** Set the draw buffer used at the start of each frame draw. 
@@ -342,6 +347,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         RenderBufferList            _renderBufferList;
         
         RenderTargetImplementation  _renderTargetImplementation;
+        RenderTargetImplementation  _renderTargetFallback;
         BufferAttachmentMap         _bufferAttachmentMap;
 
         ref_ptr<GraphicsContext>    _graphicsContext;

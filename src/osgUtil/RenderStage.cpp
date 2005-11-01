@@ -18,6 +18,7 @@
 #include <osg/Texture3D>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
+#include <osg/GLExtensions>
 
 #include <osgUtil/Statistics>
 
@@ -151,6 +152,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
     if (!_camera) return;
     
     osg::CameraNode::RenderTargetImplementation renderTargetImplemntation = _camera->getRenderTargetImplementation();
+    osg::CameraNode::RenderTargetImplementation renderTargetFallback = _camera->getRenderTargetFallback();
 
     osg::CameraNode::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
 
@@ -170,19 +172,15 @@ void RenderStage::runCameraSetUp(osg::State& state)
 
         if (!fbo_supported)
         {
-            // fallback to using pbuffer
-            #ifdef _WIN32    
-                // Only Win32 currently support PBuffer RTT.
-                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&): Using fallback to PIXEL_BUFFER_RTT"<<std::endl;
+            if (renderTargetImplemntation<renderTargetFallback)
+                renderTargetImplemntation = renderTargetFallback;
+            else
                 renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER_RTT;
-            #else
-                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&): Using fallback to PIXEL_BUFFER"<<std::endl;
-                renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER;
-            #endif
-
         }
         else if (!_fbo)
         {
+            osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER_OBJECT"<<std::endl;
+
             _fbo = new osg::FrameBufferObject;
 
             setDrawBuffer(GL_BACK);
@@ -234,6 +232,15 @@ void RenderStage::runCameraSetUp(osg::State& state)
         }
     }
     
+    // check whether PBuffer-RTT is supported or not
+    if (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT && 
+        !osg::isGLExtensionSupported(state.getContextID(), "ARB_render_texture"))
+    {    
+        if (renderTargetImplemntation<renderTargetFallback)
+            renderTargetImplemntation = renderTargetFallback;
+        else
+            renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER;
+    }
 
     // if any of the renderTargetImplementations require a seperate graphics context such as with pbuffer try in turn to
     // set up, but if each level fails then resort to the next level down.    
@@ -390,12 +397,14 @@ void RenderStage::runCameraSetUp(osg::State& state)
                 if (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT)
                 {
                     // fallback to using standard PBuffer, this will allow this while loop to continue
-                    renderTargetImplemntation=osg::CameraNode::PIXEL_BUFFER;
+                    if (renderTargetImplemntation<renderTargetFallback)
+                        renderTargetImplemntation = renderTargetFallback;
+                    else
+                        renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER;
                 }
                 else 
                 {
-                    // fallback to using the frame buffer, this while loop will now exit.
-                    renderTargetImplemntation=osg::CameraNode::FRAME_BUFFER;
+                    renderTargetImplemntation = osg::CameraNode::FRAME_BUFFER;
                 }
             }
 

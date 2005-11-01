@@ -456,7 +456,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     camera->setViewport(0,0,new_s,new_t);
 
     // tell the camera to use OpenGL frame buffer object where supported.
-    camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+    camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT, osg::CameraNode::FRAME_BUFFER);
 
     // set the camera to render before the main camera.
     camera->setRenderOrder(osg::CameraNode::PRE_RENDER);

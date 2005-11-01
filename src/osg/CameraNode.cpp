@@ -11,10 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/CameraNode>
+#include <osg/Notify>
 
 using namespace osg;
-
-
 
 CameraNode::CameraNode():
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
@@ -23,7 +22,8 @@ CameraNode::CameraNode():
     _renderOrder(POST_RENDER),
     _drawBuffer(GL_NONE),
     _readBuffer(GL_NONE),
-    _renderTargetImplementation(FRAME_BUFFER)
+    _renderTargetImplementation(FRAME_BUFFER),
+    _renderTargetFallback(FRAME_BUFFER)
 {
     setStateSet(new StateSet);
 }
@@ -42,6 +42,7 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     _drawBuffer(camera._drawBuffer),
     _readBuffer(camera._readBuffer),
     _renderTargetImplementation(camera._renderTargetImplementation),
+    _renderTargetFallback(camera._renderTargetFallback),
     _bufferAttachmentMap(camera._bufferAttachmentMap),
     _postDrawCallback(camera._postDrawCallback)
 {
@@ -50,6 +51,27 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
 
 CameraNode::~CameraNode()
 {
+}
+
+void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl)
+{
+    _renderTargetImplementation = impl;
+    if (impl<FRAME_BUFFER) _renderTargetFallback = (RenderTargetImplementation)(impl+1);
+    else _renderTargetFallback = impl;
+}   
+
+void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback)
+{
+    if (impl<fallback)
+    {
+        _renderTargetImplementation = impl;
+        _renderTargetFallback = fallback;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Warning: CameraNode::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
+        setRenderTargetImplementation(impl);
+    }
 }
 
 void CameraNode::setColorMask(osg::ColorMask* colorMask)

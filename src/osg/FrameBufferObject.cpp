@@ -214,45 +214,64 @@ FrameBufferAttachment::FrameBufferAttachment(TextureRectangle* target)
 FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment& attachment)
 {
     osg::Texture* texture = attachment._texture.get();
-    osg::Texture1D* texture1D = dynamic_cast<osg::Texture1D*>(texture);
-    if (texture1D)
-    {
-        _ximpl = new Pimpl(Pimpl::TEXTURE1D, attachment._level);
-        _ximpl->textureTarget = texture1D;
-        return;
-    }
     
-    osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
-    if (texture2D)
+    if (texture)
     {
-        _ximpl = new Pimpl(Pimpl::TEXTURE2D, attachment._level);
-        _ximpl->textureTarget = texture2D;
-        return;
+        osg::Texture1D* texture1D = dynamic_cast<osg::Texture1D*>(texture);
+        if (texture1D)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURE1D, attachment._level);
+            _ximpl->textureTarget = texture1D;
+            return;
+        }
+
+        osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
+        if (texture2D)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURE2D, attachment._level);
+            _ximpl->textureTarget = texture2D;
+            return;
+        }
+
+        osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
+        if (texture3D)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURE3D, attachment._level);
+            _ximpl->textureTarget = texture3D;
+            _ximpl->zoffset = attachment._face;
+            return;
+        }
+
+        osg::TextureCubeMap* textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(texture);
+        if (textureCubeMap)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURECUBE, attachment._level);
+            _ximpl->textureTarget = textureCubeMap;
+            _ximpl->cubeMapFace = attachment._face;
+            return;
+        }
+
+        osg::TextureRectangle* textureRectangle = dynamic_cast<osg::TextureRectangle*>(texture);
+        if (textureRectangle)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURERECT);
+            _ximpl->textureTarget = textureRectangle;
+            return;
+        }
     }
 
-    osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
-    if (texture3D)
+    osg::Image* image = attachment._image.get();
+    if (image)
     {
-        _ximpl = new Pimpl(Pimpl::TEXTURE3D, attachment._level);
-        _ximpl->textureTarget = texture3D;
-        _ximpl->zoffset = attachment._face;
-        return;
-    }
-
-    osg::TextureCubeMap* textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(texture);
-    if (textureCubeMap)
-    {
-        _ximpl = new Pimpl(Pimpl::TEXTURECUBE, attachment._level);
-        _ximpl->textureTarget = textureCubeMap;
-        _ximpl->cubeMapFace = attachment._face;
-        return;
-    }
-
-    osg::TextureRectangle* textureRectangle = dynamic_cast<osg::TextureRectangle*>(texture);
-    if (textureRectangle)
-    {
-        _ximpl = new Pimpl(Pimpl::TEXTURERECT);
-        _ximpl->textureTarget = textureRectangle;
+        if (image->s()>0 && image->t()>0 && image->getPixelFormat()>0)
+        {
+            _ximpl = new Pimpl(Pimpl::RENDERBUFFER);
+            _ximpl->renderbufferTarget = new osg::RenderBuffer(image->s(), image->t(), image->getPixelFormat());
+        }
+        else
+        {
+            osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
+        }
         return;
     }
 

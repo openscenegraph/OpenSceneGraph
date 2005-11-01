@@ -161,8 +161,31 @@ void RenderStage::runCameraSetUp(osg::State& state)
         itr != bufferAttachements.end();
         ++itr)
     {
-        // if one exist attach image to the RenderToTextureStage.
-        if (itr->second._image.valid()) setImage(itr->second._image.get());
+        // if one exist attach image to the RenderStage.
+        if (itr->second._image.valid())
+        {
+            osg::Image* image = itr->second._image.get();
+            GLenum pixelFormat = image->getPixelFormat();
+            GLenum dataType = image->getDataType();
+
+            if (image->data()==0)
+            {
+                if (pixelFormat==0) pixelFormat = itr->second._internalFormat;
+                if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
+                if (pixelFormat==0) pixelFormat = GL_RGBA;
+
+                if (dataType==0) dataType = _imageReadPixelDataType;
+                if (dataType==0) dataType = GL_UNSIGNED_BYTE;
+
+                image->allocateImage(_viewport->width(), _viewport->height(), 1, pixelFormat, dataType);
+
+            }
+
+            _imageReadPixelFormat = pixelFormat;
+            _imageReadPixelDataType = dataType;
+
+           setImage(itr->second._image.get());
+        }
     }
     
     if (renderTargetImplemntation==osg::CameraNode::FRAME_BUFFER_OBJECT)
@@ -182,7 +205,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
             osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER_OBJECT"<<std::endl;
 
             _fbo = new osg::FrameBufferObject;
-
+            
             setDrawBuffer(GL_BACK);
             setReadBuffer(GL_BACK);
 
@@ -196,6 +219,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
 
                 osg::CameraNode::BufferComponent buffer = itr->first;
                 osg::CameraNode::Attachment& attachment = itr->second;
+                
                 switch(buffer)
                 {
                     case(osg::CameraNode::DEPTH_BUFFER):
@@ -496,6 +520,8 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         copyTexture(state);
     }
     
+    state.checkGLErrors("before readPixel;");
+
     if (_image.valid())
     {
 
@@ -504,7 +530,17 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
             glReadBuffer(_readBuffer);
         }
 
-        _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
+        GLenum pixelFormat = _image->getPixelFormat();
+        if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
+        if (pixelFormat==0) pixelFormat = GL_RGB;
+
+        GLenum dataType = _image->getDataType();
+        if (dataType==0) dataType =  _imageReadPixelDataType;
+        if (dataType==0) dataType = GL_UNSIGNED_BYTE;       
+        
+        _image->readPixels(_viewport->x(), _viewport->y(),
+                           _viewport->width(), _viewport->height(), 
+                           pixelFormat, dataType);
     }
        
     
@@ -514,6 +550,8 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         (*(_camera->getPostDrawCallback()))(*_camera);
     }
 
+    state.checkGLErrors("before glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);");
+
     if (fbo_supported)
     {
         // switch of the frame buffer object
@@ -521,6 +559,9 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
 
         doCopyTexture = true;
     }
+    
+    state.checkGLErrors("after glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);");
+
     
     if (fbo_supported && _camera)
     {

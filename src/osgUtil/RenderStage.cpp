@@ -543,12 +543,6 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
     }
        
     
-    if (_camera && _camera->getPostDrawCallback())
-    {
-        // if we have a camera with a post draw callback invoke it.
-        (*(_camera->getPostDrawCallback()))(*_camera);
-    }
-
     if (fbo_supported)
     {
         // switch of the frame buffer object

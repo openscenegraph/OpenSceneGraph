@@ -27,7 +27,7 @@
 using namespace osgText;
 using namespace std;
 
-std::string findFontFile(const std::string& str)
+std::string osgText::findFontFile(const std::string& str)
 {
     // try looking in OSGFILEPATH etc first for fonts.
     std::string filename = osgDB::findDataFile(str);

@@ -57,7 +57,7 @@ enum KerningType
   * the file will be searched again in the OS specific directories.
   */
 extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
-
+extern OSGTEXT_EXPORT std::string findFontFile(const std::string& str);
 
 /** Pure virtual base class for fonts.
   * Concrete implementation are the DefaultFont found in src/osgText/DefaultFont.cpp

@@ -15,6 +15,17 @@
 
 #define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
 
+// From easyrgb.com
+float Hue_2_RGB( float v1, float v2, float vH )
+{
+   if ( vH < 0 ) vH += 1;
+   if ( vH > 1 ) vH -= 1;
+   if ( ( 6 * vH ) < 1 ) return ( v1 + ( v2 - v1 ) * 6 * vH );
+   if ( ( 2 * vH ) < 1 ) return ( v2 );
+   if ( ( 3 * vH ) < 2 ) return ( v1 + ( v2 - v1 ) * ( ( 2 / 3 ) - vH ) * 6 );
+   return ( v1 );
+}
+
 class ReaderWriterGDAL : public osgDB::ReaderWriter
 {
     public:
@@ -180,6 +191,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             GDALRasterBand* bandGreen = 0;
             GDALRasterBand* bandBlue = 0;
             GDALRasterBand* bandAlpha = 0;
+            GDALRasterBand* bandPalette = 0;
             
             int internalFormat = GL_LUMINANCE;
             unsigned int pixelFormat = GL_LUMINANCE;
@@ -227,7 +239,13 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
                     else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
                     else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
+                    else if (band->GetColorInterpretation()==GCI_PaletteIndex) bandPalette = band;
                     else bandGray = band;
+                }
+
+                if (bandPalette)
+                {
+                    osg::notify(osg::INFO) << "        Palette Interpretation: " << GDALGetPaletteInterpretationName(band->GetColorTable()->GetPaletteInterpretation()) << std::endl;
                 }
                 
 //                 int gotMin,gotMax;
@@ -362,6 +380,103 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
                 bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 
+            }
+            else if (bandPalette)
+            {
+                // Paletted map
+                int pixelSpace=1*numBytesPerPixel;
+                int lineSpace=destWidth * pixelSpace;
+
+                unsigned char *rawImageData;
+                rawImageData = new unsigned char[destWidth * destHeight * pixelSpace];
+                imageData = new unsigned char[destWidth * destHeight * 4/*RGBA*/];
+                pixelFormat = GL_RGBA;
+                internalFormat = GL_RGBA;
+
+                osg::notify(osg::INFO) << "reading palette"<<std::endl;
+                osg::notify(osg::INFO) << "numBytesPerPixel: " << numBytesPerPixel << std::endl;
+
+                bandPalette->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(rawImageData),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
+                
+                // Map the indexes to an actual RGBA Value.
+                for (int i = 0; i < destWidth * destHeight; i++)
+                {
+                    const GDALColorEntry *colorEntry = bandPalette->GetColorTable()->GetColorEntry(rawImageData[i]);
+                    GDALPaletteInterp interp = bandPalette->GetColorTable()->GetPaletteInterpretation();
+                    if (!colorEntry)
+                    {
+                        //FIXME: What to do here?
+
+                        //osg::notify(osg::INFO) << "NO COLOR ENTRY FOR COLOR " << rawImageData[i] << std::endl;
+                        imageData[4*i+0] = 255;
+                        imageData[4*i+1] = 0;
+                        imageData[4*i+2] = 0;
+                        imageData[4*i+3] = 1;
+
+                    }
+                    else
+                    {
+                        if (interp == GPI_RGB)
+                        {
+                            imageData[4*i+0] = colorEntry->c1;
+                            imageData[4*i+1] = colorEntry->c2;
+                            imageData[4*i+2] = colorEntry->c3;
+                            imageData[4*i+3] = colorEntry->c4;
+                        }
+                        else if (interp == GPI_CMYK)
+                        {
+                            // from wikipedia.org
+                            short C = colorEntry->c1;
+                            short M = colorEntry->c2;
+                            short Y = colorEntry->c3;
+                            short K = colorEntry->c4;
+                            imageData[4*i+0] = 255 - C*(255 - K) - K;
+                            imageData[4*i+1] = 255 - M*(255 - K) - K;
+                            imageData[4*i+2] = 255 - Y*(255 - K) - K;
+                            imageData[4*i+3] = 255;
+                        }
+                        else if (interp == GPI_HLS)
+                        {
+                            // from easyrgb.com
+                            float H = colorEntry->c1;
+                            float S = colorEntry->c3;
+                            float L = colorEntry->c2;
+                            float R, G, B;
+                            if ( S == 0 )                       //HSL values = 0 - 1
+                            {
+                                R = L;                      //RGB results = 0 - 1 
+                                G = L;
+                                B = L;
+                            }
+                            else
+                            {
+                                float var_2, var_1;
+                                if ( L < 0.5 )
+                                    var_2 = L * ( 1 + S );
+                                else
+                                    var_2 = ( L + S ) - ( S * L );
+
+                                var_1 = 2 * L - var_2;
+
+                                R = Hue_2_RGB( var_1, var_2, H + ( 1 / 3 ) );
+                                G = Hue_2_RGB( var_1, var_2, H );
+                                B = Hue_2_RGB( var_1, var_2, H - ( 1 / 3 ) );                                
+                            } 
+                            imageData[4*i+0] = R;
+                            imageData[4*i+1] = G;
+                            imageData[4*i+2] = B;
+                            imageData[4*i+3] = 1.0f;
+                        }
+                        else if (interp == GPI_Gray)
+                        {
+                            imageData[4*i+0] = colorEntry->c1;
+                            imageData[4*i+1] = colorEntry->c1;
+                            imageData[4*i+2] = colorEntry->c1;
+                            imageData[4*i+3] = 1.0f;
+                        }
+                    }
+                }
+                delete [] rawImageData;
             }
             else
             {

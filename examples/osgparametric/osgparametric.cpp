@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
     std::string shader("simple");
     while(arguments.read("-s",shader)) {}
     
-    std::string textureFileName("lz.rgb");
+    std::string textureFileName("Images/lz.rgb");
     while(arguments.read("-t",textureFileName)) {}
 
     std::string terrainFileName("");

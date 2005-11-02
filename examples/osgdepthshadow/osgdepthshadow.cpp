@@ -468,7 +468,7 @@ int main(int argc, char** argv)
     
     if (withBaseTexture)
     {
-        shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("lz.rgb")), osg::StateAttribute::ON);
+        shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
         shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),1);
     }
     else

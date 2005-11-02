@@ -88,17 +88,16 @@ public:
         _nodeMaskOverride = mask; }
 
 
-    virtual void apply(osg::Projection& pr)
-    { // stack the intersect rays, transform to new projection, traverse
-        // Assumes that the Projection is an absolute projection
+    void handleProjectionMatrix(const osg::Matrixd& matrix, osg::Group& node)
+    {
         osg::Matrixd mt;
-        mt.invert(pr.getMatrix());
+        mt.invert(matrix);
         osg::Vec3 npt=osg::Vec3(xp,yp,-1.0f) * mt, farpt=osg::Vec3(xp,yp,1.0f) * mt;
 
         // traversing the nodes children, using the projection direction
-        for (unsigned int i=0; i<pr.getNumChildren(); i++) 
+        for (unsigned int i=0; i<node.getNumChildren(); i++) 
         {
-            osg::Node *nodech=pr.getChild(i);
+            osg::Node *nodech=node.getChild(i);
             osgUtil::IntersectVisitor::HitList &hli=_piv.getIntersections(nodech,npt, farpt);
             for(osgUtil::IntersectVisitor::HitList::iterator hitr=hli.begin();
                 hitr!=hli.end();
@@ -109,6 +108,19 @@ public:
             }
             traverse(*nodech);
         }
+    }
+
+
+    virtual void apply(osg::Projection& pr)
+    {  
+        handleProjectionMatrix(pr.getMatrix(), pr);
+    }
+
+    virtual void apply(osg::CameraNode& camera)
+    {
+        // just handling the projection matrix here, this leaves the question about non identity view matrices....
+        // we need to think about the effects of this.  Robert Osfield, Novemenber 2005. 
+        handleProjectionMatrix(camera.getProjectionMatrix(), camera);
     }
 
     osgUtil::IntersectVisitor::HitList& getHits(osg::Node *node, const osg::Vec3& near_point, const osg::Vec3& far_point)

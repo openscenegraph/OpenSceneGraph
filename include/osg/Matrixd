@@ -466,7 +466,7 @@ inline Matrixd Matrixd::inverse( const Matrixd& matrix)
     return m;
 }
 
-inline Matrixd orthoNormal(const Matrixd& matrix)
+inline Matrixd Matrixd::orthoNormal(const Matrixd& matrix)
 {
   Matrixd m;
   m.orthoNormalize(matrix);

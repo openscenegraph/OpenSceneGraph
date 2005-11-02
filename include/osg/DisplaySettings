@@ -156,10 +156,16 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int getMinimumNumAlphaBits() const { return _minimumNumberAlphaBits; }
         bool getAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
 
-
         void setMinimumNumStencilBits(unsigned int bits) { _minimumNumberStencilBits = bits; }
         unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
         bool getStencilBuffer() const { return _minimumNumberStencilBits!=0; }
+
+        void setMinimumNumAccumBits(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha);
+        unsigned int getMinimumNumAccumRedBits() const { return _minimumNumberAccumRedBits; }
+        unsigned int getMinimumNumAccumGreenBits() const { return _minimumNumberAccumGreenBits; }
+        unsigned int getMinimumNumAccumBlueBits() const { return _minimumNumberAccumBlueBits; }
+        unsigned int getMinimumNumAccumAlphaBits() const { return _minimumNumberAccumAlphaBits; }
+        bool getAccumBuffer() const { return (_minimumNumberAccumRedBits+_minimumNumberAccumGreenBits+_minimumNumberAccumBlueBits+_minimumNumberAccumAlphaBits)!=0; }
 
 
         void setMaxNumberOfGraphicsContexts(unsigned int num) { _maxNumOfGraphicsContexts = num; }
@@ -190,6 +196,10 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         bool                            _depthBuffer;
         unsigned int                    _minimumNumberAlphaBits;
         unsigned int                    _minimumNumberStencilBits;
+        unsigned int                    _minimumNumberAccumRedBits;
+        unsigned int                    _minimumNumberAccumGreenBits;
+        unsigned int                    _minimumNumberAccumBlueBits;
+        unsigned int                    _minimumNumberAccumAlphaBits;
 
         unsigned int                    _maxNumOfGraphicsContexts;
 

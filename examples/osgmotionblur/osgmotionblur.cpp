@@ -128,6 +128,9 @@ int main( int argc, char **argv )
 
     std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
+    // set the display settings we can to request, OsgCameraGroup will read this.
+    osg::DisplaySettings::instance()->setMinimumNumAccumBits(8,8,8,8);
+
     // optimize the scene graph, remove rendundent nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());

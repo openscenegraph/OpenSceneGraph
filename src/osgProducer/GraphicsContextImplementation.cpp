@@ -202,7 +202,7 @@ void GraphicsContextImplementation::makeCurrentImplementation()
         return;
     }
 
-    osg::notify(osg::INFO)<<"GraphicsContextImplementation::makeCurrentImplementation()"<<std::endl;
+//    osg::notify(osg::INFO)<<"GraphicsContextImplementation::makeCurrentImplementation()"<<std::endl;
 
     _rs->setReadDrawable( 0 );
 

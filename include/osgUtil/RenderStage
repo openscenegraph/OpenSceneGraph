@@ -123,7 +123,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         osg::CameraNode* getCameraNode() { return _camera; }
         const osg::CameraNode* getCameraNode() const { return _camera; }
 
-        void setCameraRequiresSetUp(bool flag) { _cameraRequiresSetUp = true; }
+        void setCameraRequiresSetUp(bool flag) { _cameraRequiresSetUp = flag; }
         bool getCameraRequiresSetUp() const { return _cameraRequiresSetUp; }
         
         /** Attempt the set the RenderStage from the Camera settings.*/

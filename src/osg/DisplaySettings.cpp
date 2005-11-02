@@ -108,8 +108,20 @@ void DisplaySettings::setDefaults()
     _depthBuffer = true;
     _minimumNumberAlphaBits = 0;
     _minimumNumberStencilBits = 0;
+    _minimumNumberAccumRedBits = 0;
+    _minimumNumberAccumGreenBits = 0;
+    _minimumNumberAccumBlueBits = 0;
+    _minimumNumberAccumAlphaBits = 0;
     
     _maxNumOfGraphicsContexts = 3;
+}
+
+void DisplaySettings::setMinimumNumAccumBits(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha)
+{
+    _minimumNumberAccumRedBits = red;
+    _minimumNumberAccumGreenBits = green;
+    _minimumNumberAccumBlueBits = blue;
+    _minimumNumberAccumAlphaBits = alpha;
 }
 
 static ApplicationUsageProxy DisplaySetting_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DISPLAY_TYPE <type>","MONITOR | POWERWALL | REALITY_CENTER | HEAD_MOUNTED_DISPLAY");
@@ -289,6 +301,8 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | ON | OFF ");
         arguments.getApplicationUsage()->addCommandLineOption("--rgba","Request a RGBA color buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--accum-rgb","Request a rgb acummulator buffer visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--accum-rgba","Request a rgb acummulator buffer visual");
     }
 
     std::string str;
@@ -325,5 +339,15 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while (arguments.read("--stencil"))
     {
         _minimumNumberStencilBits = 1;
+    }
+
+    while (arguments.read("--accum-rgb"))
+    {
+        setMinimumNumAccumBits(8,8,8,0);
+    }
+
+    while (arguments.read("--accum-rgba"))
+    {
+        setMinimumNumAccumBits(8,8,8,8);
     }
 }

@@ -537,6 +537,14 @@ bool OsgCameraGroup::realize()
 
             rs_vc->setDepthSize(24);
 
+            if (_ds->getAccumBuffer())
+            {
+                rs_vc->setAccumRedSize(_ds->getMinimumNumAccumRedBits());
+                rs_vc->setAccumGreenSize(_ds->getMinimumNumAccumGreenBits());
+                rs_vc->setAccumBlueSize(_ds->getMinimumNumAccumBlueBits());
+                rs_vc->setAccumAlphaSize(_ds->getMinimumNumAccumAlphaBits());
+            }
+            
             if (numMultiSamples)
             {
                 #if defined( GLX_SAMPLES_SGIS )

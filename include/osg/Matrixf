@@ -230,6 +230,7 @@ class OSG_EXPORT Matrixf
                                       value_type angle3, const Vec3d& axis3);
         inline static Matrixf rotate( const Quat& quat);
         inline static Matrixf inverse( const Matrixf& matrix);
+        inline static Matrixf orthoNormal(const Matrixf& matrix); 
         
         /** Create an orthographic projection matrix.
           * See glOrtho for further details.
@@ -464,6 +465,13 @@ inline Matrixf Matrixf::inverse( const Matrixf& matrix)
     Matrixf m;
     m.invert(matrix);
     return m;
+}
+
+inline Matrixf Matrixf::orthoNormal(const Matrixf& matrix)
+{
+  Matrixf m;
+  m.orthoNormalize(matrix);
+  return m; 
 }
 
 inline Matrixf Matrixf::ortho(double left, double right,

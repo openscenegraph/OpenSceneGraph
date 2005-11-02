@@ -12,7 +12,7 @@ using namespace flt;
 //
 ////////////////////////////////////////////////////////////////////
 
-RegisterRecordProxy<SwitchRecord> g_SwitchProxy;
+RegisterRecordProxy<SwitchRecord> g_fltSwitchProxy;
 
 SwitchRecord::SwitchRecord()
 {

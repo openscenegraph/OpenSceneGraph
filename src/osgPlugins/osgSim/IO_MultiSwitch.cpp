@@ -13,7 +13,7 @@ bool MultiSwitch_readLocalData(Object& obj, Input& fr);
 bool MultiSwitch_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_SwitchProxy
+RegisterDotOsgWrapperProxy g_simSwitchProxy
 (
     new osgSim::MultiSwitch,
     "MultiSwitch",

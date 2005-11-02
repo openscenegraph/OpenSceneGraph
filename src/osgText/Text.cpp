@@ -45,6 +45,7 @@ Text::Text():
     _lineCount(0)
 {
     setUseDisplayList(false);
+    setSupportsDisplayList(false);
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):

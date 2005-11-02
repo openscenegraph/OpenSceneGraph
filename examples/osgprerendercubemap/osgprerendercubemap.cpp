@@ -204,6 +204,9 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::RefNodePath r
     texture->setTextureSize(tex_width, tex_height);
 
     texture->setInternalFormat(GL_RGB);
+    texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
     texture->setFilter(osg::TextureCubeMap::MIN_FILTER,osg::TextureCubeMap::LINEAR);
     texture->setFilter(osg::TextureCubeMap::MAG_FILTER,osg::TextureCubeMap::LINEAR);
     

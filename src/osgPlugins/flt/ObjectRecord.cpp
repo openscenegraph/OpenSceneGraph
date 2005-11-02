@@ -12,7 +12,7 @@ using namespace flt;
 //
 ////////////////////////////////////////////////////////////////////
 
-RegisterRecordProxy<ObjectRecord> g_ObjectProxy;
+RegisterRecordProxy<ObjectRecord> g_fltObjectProxy;
 
 ObjectRecord::ObjectRecord()
 {

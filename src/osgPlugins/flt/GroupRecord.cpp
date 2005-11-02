@@ -12,7 +12,7 @@ using namespace flt;
 //
 ////////////////////////////////////////////////////////////////////
 
-RegisterRecordProxy<GroupRecord> g_GroupProxy;
+RegisterRecordProxy<GroupRecord> g_fltGroupProxy;
 
 GroupRecord::GroupRecord()
 {

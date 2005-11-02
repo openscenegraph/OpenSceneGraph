@@ -403,6 +403,10 @@ void FrameBufferObject::apply(State &state) const
     if (_unsupported[contextID])
         return;
         
+        
+        
+    state.checkGLErrors("A");
+        
     FBOExtensions* ext = FBOExtensions::instance(contextID);
     if (!ext->isSupported())
     {
@@ -416,6 +420,8 @@ void FrameBufferObject::apply(State &state) const
         ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         return;
     }
+
+    state.checkGLErrors("B");
 
     int &dirtyAttachmentList = _dirtyAttachmentList[contextID];
 
@@ -433,6 +439,8 @@ void FrameBufferObject::apply(State &state) const
 
     }
 
+    state.checkGLErrors("C");
+
     if (dirtyAttachmentList)
     {
         // create textures and mipmaps before we bind the frame buffer object
@@ -444,7 +452,11 @@ void FrameBufferObject::apply(State &state) const
 
     }
     
+    state.checkGLErrors("D");
+
     ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
+
+    state.checkGLErrors("E");
 
     if (dirtyAttachmentList)
     {
@@ -455,6 +467,7 @@ void FrameBufferObject::apply(State &state) const
         }        
         dirtyAttachmentList = 0;
     }
+    state.checkGLErrors("F");
 }
 
 int FrameBufferObject::compare(const StateAttribute &sa) const

@@ -29,7 +29,7 @@
 
 #define EXTENSION_NAME "rot"
 
-bool getFilenameAndParams(const std::string& input, std::string& filename, std::string& params)
+static bool getFilenameAndParams(const std::string& input, std::string& filename, std::string& params)
 {
         // find the start of the params list, accounting for nesting of [] and () brackets,
         // note, we are working backwards.

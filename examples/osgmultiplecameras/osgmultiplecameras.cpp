@@ -33,7 +33,7 @@ osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
     osg::CameraNode* camera = new osg::CameraNode;
 
     // set the viewport
-    camera->setViewport(420,800,400,200);
+    camera->setViewport(10,10,400,200);
 
     // set the view matrix
     camera->setCullingActive(false);    
@@ -54,11 +54,7 @@ osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
     camera->addChild(subgraph);
     
     // switch of back face culling as we've swapped over the projection matrix making back faces become front faces.
-#if 1
     camera->getOrCreateStateSet()->setAttribute(new osg::FrontFace(osg::FrontFace::CLOCKWISE));
-#else
-    camera->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
-#endif
     
     return camera;
 }
@@ -108,7 +104,14 @@ int main( int argc, char **argv )
     
     // add the HUD subgraph.    
     if (scene.valid()) group->addChild(scene.get());
-    group->addChild(createRearView(scene.get(), viewer.getClearColor()));
+
+    osg::Vec4 colour =  viewer.getClearColor();
+    colour.r() *= 0.5f;
+    colour.g() *= 0.5f;
+    colour.b() *= 0.5f;
+
+    // note tone down the normal back ground colour to make it obvious that there is a seperate camera inserted.
+    group->addChild(createRearView(scene.get(), colour));
 
     // set the scene to render
     viewer.setSceneData(group.get());

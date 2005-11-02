@@ -40,10 +40,11 @@ class OSG_EXPORT NodeTrackerCallback : public NodeCallback
         /** Implements the callback. */
         virtual void operator()(Node* node, NodeVisitor* nv);
 
-        /** update the node to track the nodepath.*/
+        /** Update the node to track the nodepath.*/
         void update(osg::Node& node);
 
-        inline bool validateNodePath() const;
+        /** Validate the NodePath by removing any unref'd nodes.*/
+        bool validateNodePath() const;
 
     protected:
 

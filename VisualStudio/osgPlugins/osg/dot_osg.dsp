@@ -116,6 +116,14 @@ SOURCE=..\..\..\src\osgPlugins\osg\BlendFunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\CameraNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\CameraView.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\ClearNode.cpp
 # End Source File
 # Begin Source File

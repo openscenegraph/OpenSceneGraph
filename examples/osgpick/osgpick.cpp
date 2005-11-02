@@ -25,6 +25,7 @@
 #include <osg/Depth>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
+#include <osg/CameraNode>
 #include <osg/io_utils>
 
 #include <osgText/Text>
@@ -108,18 +109,19 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
 }
 
 osg::Node* createHUD(osgText::Text* updateText)
-{    // create the hud. derived from osgHud.cpp
+{
+
+    // create the hud. derived from osgHud.cpp
     // adds a set of quads, each in a separate Geode - which can be picked individually
     // eg to be used as a menuing/help system!
     // Can pick texts too!
-    osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-    modelview_abs->setMatrix(osg::Matrix::identity());
-    
-    osg::Projection* projection = new osg::Projection;
-    projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
-    projection->addChild(modelview_abs);
-    
+
+    osg::CameraNode* hudCamera = new osg::CameraNode;
+    hudCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    hudCamera->setProjectionMatrixAsOrtho2D(0,1280,0,1024);
+    hudCamera->setViewMatrix(osg::Matrix::identity());
+    hudCamera->setRenderOrder(osg::CameraNode::POST_RENDER);
+    hudCamera->setClearMask(GL_DEPTH_BUFFER_BIT);
     
     std::string timesFont("fonts/times.ttf");
     
@@ -133,7 +135,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         geode->setName("simple");
-        modelview_abs->addChild(geode);
+        hudCamera->addChild(geode);
         
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
@@ -172,7 +174,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         quad->setVertexArray(vertices);
         quad->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
         geode->addDrawable(quad);
-        modelview_abs->addChild(geode);
+        hudCamera->addChild(geode);
         
         position += delta;
     }    
@@ -186,7 +188,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         geode->setName("The text label");
         geode->addDrawable( updateText );
-        modelview_abs->addChild(geode);
+        hudCamera->addChild(geode);
         
         updateText->setCharacterSize(20.0f);
         updateText->setFont(timesFont);
@@ -197,7 +199,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         position += delta;
     }    
     
-    return projection;
+    return hudCamera;
 
 }
 

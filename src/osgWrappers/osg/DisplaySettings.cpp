@@ -94,8 +94,15 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_Method1(void, setMinimumNumStencilBits, IN, unsigned int, bits);
 	I_Method0(unsigned int, getMinimumNumStencilBits);
 	I_Method0(bool, getStencilBuffer);
+	I_Method4(void, setMinimumNumAccumBits, IN, unsigned int, red, IN, unsigned int, green, IN, unsigned int, blue, IN, unsigned int, alpha);
+	I_Method0(unsigned int, getMinimumNumAccumRedBits);
+	I_Method0(unsigned int, getMinimumNumAccumGreenBits);
+	I_Method0(unsigned int, getMinimumNumAccumBlueBits);
+	I_Method0(unsigned int, getMinimumNumAccumAlphaBits);
+	I_Method0(bool, getAccumBuffer);
 	I_Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num);
 	I_Method0(unsigned int, getMaxNumberOfGraphicsContexts);
+	I_ReadOnlyProperty(bool, AccumBuffer);
 	I_ReadOnlyProperty(bool, AlphaBuffer);
 	I_Property(bool, DepthBuffer);
 	I_WriteOnlyProperty(const osg::DisplaySettings &, DisplaySettings);
@@ -103,6 +110,10 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_Property(bool, DoubleBuffer);
 	I_Property(float, EyeSeparation);
 	I_Property(unsigned int, MaxNumberOfGraphicsContexts);
+	I_ReadOnlyProperty(unsigned int, MinimumNumAccumAlphaBits);
+	I_ReadOnlyProperty(unsigned int, MinimumNumAccumBlueBits);
+	I_ReadOnlyProperty(unsigned int, MinimumNumAccumGreenBits);
+	I_ReadOnlyProperty(unsigned int, MinimumNumAccumRedBits);
 	I_Property(unsigned int, MinimumNumAlphaBits);
 	I_Property(unsigned int, MinimumNumStencilBits);
 	I_Property(bool, RGB);

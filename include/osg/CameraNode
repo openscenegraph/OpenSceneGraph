@@ -306,7 +306,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
             META_Object(osg,DrawCallback)
         
-            virtual void operator () (const osg::CameraNode& camera) const {}
+            virtual void operator () (const osg::CameraNode& /*camera*/) const {}
         };
         
         /** Set the post draw callback for custom operations to do done after the drawing of the camera's subgraph has been completed.*/

@@ -15,6 +15,10 @@ using namespace osgDB;
 bool CameraNode_readLocalData(Object& obj, Input& fr);
 bool CameraNode_writeLocalData(const Object& obj, Output& fw);
 
+bool CameraNode_matchBufferComponentStr(const char* str,CameraNode::BufferComponent& buffer);
+const char* CameraNode_getBufferComponentStr(CameraNode::BufferComponent buffer);
+
+
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_CameraNodeProxy
 (
@@ -97,6 +101,111 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr.matchSequence("renderTargetImplementation %w"))
+    {
+        osg::CameraNode::RenderTargetImplementation implementation = osg::CameraNode::FRAME_BUFFER;
+
+        if      (fr[1].matchWord("FRAME_BUFFER_OBJECT")) implementation = osg::CameraNode::FRAME_BUFFER_OBJECT;
+        else if (fr[1].matchWord("PIXEL_BUFFER_RTT")) implementation = osg::CameraNode::PIXEL_BUFFER_RTT;
+        else if (fr[1].matchWord("PIXEL_BUFFER")) implementation = osg::CameraNode::PIXEL_BUFFER;
+        else if (fr[1].matchWord("FRAME_BUFFER")) implementation = osg::CameraNode::FRAME_BUFFER;
+        else if (fr[1].matchWord("SEPERATE_WINDOW")) implementation = osg::CameraNode::SEPERATE_WINDOW;
+
+        camera.setRenderTargetImplementation(implementation);
+
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("renderTargetImplementation %w"))
+    {
+        osg::CameraNode::RenderTargetImplementation fallback = camera.getRenderTargetFallback();
+
+        if      (fr[1].matchWord("FRAME_BUFFER_OBJECT")) fallback = osg::CameraNode::FRAME_BUFFER_OBJECT;
+        else if (fr[1].matchWord("PIXEL_BUFFER_RTT")) fallback = osg::CameraNode::PIXEL_BUFFER_RTT;
+        else if (fr[1].matchWord("PIXEL_BUFFER")) fallback = osg::CameraNode::PIXEL_BUFFER;
+        else if (fr[1].matchWord("FRAME_BUFFER")) fallback = osg::CameraNode::FRAME_BUFFER;
+        else if (fr[1].matchWord("SEPERATE_WINDOW")) fallback = osg::CameraNode::SEPERATE_WINDOW;
+
+        camera.setRenderTargetImplementation(camera.getRenderTargetImplementation(), fallback);
+
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+    
+
+    if (fr.matchSequence("bufferComponent %w {"))
+    {
+        int entry = fr[1].getNoNestedBrackets();
+
+        CameraNode::BufferComponent buffer;
+        CameraNode_matchBufferComponentStr(fr[1].getStr(),buffer);
+        
+        fr += 3;
+        
+        CameraNode::Attachment& attachment = camera.getBufferAttachmentMap()[buffer];
+        
+        // read attachment data.
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            bool localAdvance = false;
+
+            if (fr.matchSequence("internalFormat %i")) 
+            {
+                fr[1].getUInt(attachment._internalFormat);
+                fr += 2;
+                localAdvance = true;
+            }
+
+            osg::ref_ptr<osg::Object> attribute;
+            while((attribute=fr.readObject())!=NULL)
+            {
+                localAdvance = true;
+
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(attribute.get());
+                if (texture) attachment._texture = texture;
+                else
+                {
+                    osg::Image* image = dynamic_cast<osg::Image*>(attribute.get());
+                    attachment._image = image;
+                }
+                
+            }
+
+            if (fr.matchSequence("level %i")) 
+            {
+                fr[1].getUInt(attachment._level);
+                fr += 2;
+                localAdvance = true;
+            }
+
+            if (fr.matchSequence("face %i")) 
+            {
+                fr[1].getUInt(attachment._face);
+                fr += 2;
+                localAdvance = true;
+            }
+
+            if (fr.matchSequence("mipMapGeneration TRUE")) 
+            {
+                attachment._mipMapGeneration = true;
+                fr += 2;
+                localAdvance = true;
+            }
+
+            if (fr.matchSequence("mipMapGeneration FALSE")) 
+            {
+                attachment._mipMapGeneration = false;
+                fr += 2;
+                localAdvance = true;
+            }
+
+            if (!localAdvance) ++fr;
+        }
+        
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -136,5 +245,124 @@ bool CameraNode_writeLocalData(const Object& obj, Output& fw)
         case(osg::CameraNode::POST_RENDER): fw <<"POST_RENDER"<<std::endl; break;
     }
 
+    fw.indent()<<"renderTargetImplementation ";
+    switch(camera.getRenderTargetImplementation())
+    {
+        case(osg::CameraNode::FRAME_BUFFER_OBJECT): fw <<"FRAME_BUFFER_OBJECT"<<std::endl; break;
+        case(osg::CameraNode::PIXEL_BUFFER_RTT): fw <<"PIXEL_BUFFER_RTT"<<std::endl; break;
+        case(osg::CameraNode::PIXEL_BUFFER): fw <<"PIXEL_BUFFER"<<std::endl; break;
+        case(osg::CameraNode::FRAME_BUFFER): fw <<"FRAME_BUFFER"<<std::endl; break;
+        case(osg::CameraNode::SEPERATE_WINDOW): fw <<"SEPERATE_WINDOW"<<std::endl; break;
+    }
+
+    fw.indent()<<"renderTargetFallback ";
+    switch(camera.getRenderTargetFallback())
+    {
+        case(osg::CameraNode::FRAME_BUFFER_OBJECT): fw <<"FRAME_BUFFER_OBJECT"<<std::endl; break;
+        case(osg::CameraNode::PIXEL_BUFFER_RTT): fw <<"PIXEL_BUFFER_RTT"<<std::endl; break;
+        case(osg::CameraNode::PIXEL_BUFFER): fw <<"PIXEL_BUFFER"<<std::endl; break;
+        case(osg::CameraNode::FRAME_BUFFER): fw <<"FRAME_BUFFER"<<std::endl; break;
+        case(osg::CameraNode::SEPERATE_WINDOW): fw <<"SEPERATE_WINDOW"<<std::endl; break;
+    }
+
+    fw.indent()<<"drawBuffer "<<std::hex<<camera.getDrawBuffer()<<std::endl;
+    fw.indent()<<"readBuffer "<<std::hex<<camera.getReadBuffer()<<std::endl;
+
+    const osg::CameraNode::BufferAttachmentMap& bam = camera.getBufferAttachmentMap();
+    if (!bam.empty())
+    {
+        for(osg::CameraNode::BufferAttachmentMap::const_iterator itr=bam.begin();
+            itr!=bam.end();
+            ++itr)
+        {
+            const osg::CameraNode::Attachment& attachment = itr->second;
+            fw.indent()<<"bufferComponent "<<CameraNode_getBufferComponentStr(itr->first)<<" {"<<std::endl;
+            fw.moveIn();
+
+            fw.indent()<<"internalFormat "<<attachment._internalFormat<<std::endl;
+            if (attachment._texture.valid())
+            {
+                fw.writeObject(*attachment._texture.get());
+            }
+            fw.indent()<<"level "<<attachment._level<<std::endl;
+            fw.indent()<<"face "<<attachment._face<<std::endl;
+            fw.indent()<<"mipMapGeneration "<<(attachment._mipMapGeneration ? "TRUE" : "FALSE")<<std::endl;
+
+            fw.moveOut();
+            fw.indent()<<"}"<<std::endl;
+        }
+    }
+
     return true;
 }
+
+bool CameraNode_matchBufferComponentStr(const char* str,CameraNode::BufferComponent& buffer)
+{
+    if      (strcmp(str,"DEPTH_BUFFER")==0)             buffer = osg::CameraNode::DEPTH_BUFFER;
+    else if (strcmp(str,"STENCIL_BUFFER")==0)           buffer = osg::CameraNode::STENCIL_BUFFER;
+    else if (strcmp(str,"COLOR_BUFFER")==0)             buffer = osg::CameraNode::COLOR_BUFFER;
+    else if (strcmp(str,"COLOR_BUFFER0")==0)            buffer = osg::CameraNode::COLOR_BUFFER0;
+    else if (strcmp(str,"COLOR_BUFFER1")==0)            buffer = osg::CameraNode::COLOR_BUFFER1;
+    else if (strcmp(str,"COLOR_BUFFER2")==0)            buffer = osg::CameraNode::COLOR_BUFFER2;
+    else if (strcmp(str,"COLOR_BUFFER3")==0)            buffer = osg::CameraNode::COLOR_BUFFER3;
+    else if (strcmp(str,"COLOR_BUFFER4")==0)            buffer = osg::CameraNode::COLOR_BUFFER4;
+    else if (strcmp(str,"COLOR_BUFFER5")==0)            buffer = osg::CameraNode::COLOR_BUFFER5;
+    else if (strcmp(str,"COLOR_BUFFER6")==0)            buffer = osg::CameraNode::COLOR_BUFFER6;
+    else if (strcmp(str,"COLOR_BUFFER7")==0)            buffer = osg::CameraNode::COLOR_BUFFER7;
+    else return false;
+    return true;
+}
+const char* CameraNode_getBufferComponentStr(CameraNode::BufferComponent buffer)
+{
+    switch(buffer)
+    {
+        case (osg::CameraNode::DEPTH_BUFFER)             : return "DEPTH_BUFFER";
+        case (osg::CameraNode::STENCIL_BUFFER)           : return "STENCIL_BUFFER";
+        case (osg::CameraNode::COLOR_BUFFER)             : return "COLOR_BUFFER";
+        case (osg::CameraNode::COLOR_BUFFER1)            : return "COLOR_BUFFER1";
+        case (osg::CameraNode::COLOR_BUFFER2)            : return "COLOR_BUFFER2";
+        case (osg::CameraNode::COLOR_BUFFER3)            : return "COLOR_BUFFER3";
+        case (osg::CameraNode::COLOR_BUFFER4)            : return "COLOR_BUFFER4";
+        case (osg::CameraNode::COLOR_BUFFER5)            : return "COLOR_BUFFER5";
+        case (osg::CameraNode::COLOR_BUFFER6)            : return "COLOR_BUFFER6";
+        case (osg::CameraNode::COLOR_BUFFER7)            : return "COLOR_BUFFER7";
+        default                                          : return "UnknownBufferComponent";
+    }
+}
+
+/*
+bool CameraNode_matchBufferComponentStr(const char* str,CameraNode::BufferComponent buffer)
+{
+    if      (strcmp(str,"")==0)           mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else if (strcmp(str,"")==0)            mode = osg::CameraNode::;
+    else return false;
+    return true;
+}
+const char* CameraNode_getBufferComponentStr(CameraNode::BufferComponent buffer)
+{
+    switch(mode)
+    {
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        case (osg::CameraNode::)            : return "";
+        default                                : return "UnknownBufferComponent";
+    }
+}
+*/

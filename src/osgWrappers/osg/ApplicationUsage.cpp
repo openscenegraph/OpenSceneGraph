@@ -53,6 +53,7 @@ BEGIN_VALUE_REFLECTOR(osg::ApplicationUsage)
 	I_MethodWithDefaults5(void, getFormattedString, IN, std::string &, str, , IN, const osg::ApplicationUsage::UsageMap &, um, , IN, unsigned int, widthOfOutput, 80, IN, bool, showDefaults, false, IN, const osg::ApplicationUsage::UsageMap &, ud, osg::ApplicationUsage::UsageMap());
 	I_MethodWithDefaults5(void, write, IN, std::ostream &, output, , IN, const osg::ApplicationUsage::UsageMap &, um, , IN, unsigned int, widthOfOutput, 80, IN, bool, showDefaults, false, IN, const osg::ApplicationUsage::UsageMap &, ud, osg::ApplicationUsage::UsageMap());
 	I_MethodWithDefaults4(void, write, IN, std::ostream &, output, , IN, unsigned int, type, osg::ApplicationUsage::COMMAND_LINE_OPTION, IN, unsigned int, widthOfOutput, 80, IN, bool, showDefaults, false);
+	I_Method1(void, writeEnvironmentSettings, IN, std::ostream &, output);
 	I_Property(const std::string &, ApplicationName);
 	I_Property(const osg::ApplicationUsage::UsageMap &, CommandLineOptions);
 	I_Property(const osg::ApplicationUsage::UsageMap &, CommandLineOptionsDefaults);

@@ -14,7 +14,7 @@
 
 #include "Exception.h"
 #include "CameraNode.h"
-#include "Group.h"
+#include "Transform.h"
 #include "Image.h"
 
 using namespace ive;
@@ -24,9 +24,9 @@ void CameraNode::write(DataOutputStream* out){
     out->writeInt(IVECAMERANODE);
 
     // If the osg class is inherited by any other class we should also write this to file.
-    osg::Group*  group = dynamic_cast<osg::Group*>(this);
-    if(group){
-        ((ive::Group*)(group))->write(out);
+    osg::Transform* transform = dynamic_cast<osg::Transform*>(this);
+    if(transform){
+        ((ive::Transform*)(transform))->write(out);
     }
     else
         throw Exception("CameraNode::write(): Could not cast this osg::CameraNode to an osg::Group.");
@@ -97,10 +97,10 @@ void CameraNode::read(DataInputStream* in)
         // Code to read CameraNode's properties.
         id = in->readInt();
         // If the osg class is inherited by any other class we should also read this from file.
-        osg::Group*  group = dynamic_cast<osg::Group*>(this);
-        if(group)
+        osg::Transform*  transform = dynamic_cast<osg::Transform*>(this);
+        if(transform)
         {
-            ((ive::Group*)(group))->read(in);
+            ((ive::Transform*)(transform))->read(in);
         }
         else
             throw Exception("CameraNode::read(): Could not cast this osg::CameraNode to an osg::Group.");

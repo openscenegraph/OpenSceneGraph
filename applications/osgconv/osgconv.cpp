@@ -417,6 +417,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line paramters");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
 
 
     // if user request help write it out to cout.
@@ -426,6 +428,13 @@ int main( int argc, char **argv )
         //arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+    
+    if (arguments.read("--help-env"))
+    { 
+        arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE);
+        return 1;
+    }
+    
 
     
     if (arguments.argc()<=1)

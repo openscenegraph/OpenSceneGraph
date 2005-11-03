@@ -1,5 +1,4 @@
 #include "Matrix.h"
-#include <osg/Notify>
 
 
 bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keyword)
@@ -8,9 +7,6 @@ bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keyword)
     
     if (fr[0].matchWord(keyword) && fr[1].isOpenBracket())
     {
-
-         osg::notify(osg::NOTICE)<<"found keyword "<<fr[0].getStr()<<" looking for "<<keyword<<std::endl;
-
         int entry = fr[0].getNoNestedBrackets();
 
         fr += 2;

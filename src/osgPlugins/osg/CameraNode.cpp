@@ -1,5 +1,6 @@
 #include <osg/CameraNode>
 #include <osg/io_utils>
+#include <osg/Notify>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -64,6 +65,15 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr.matchSequence("transformOrder %w"))
+    {
+        if      (fr[1].matchWord("PRE_MULTIPLE")) camera.setTransformOrder(osg::CameraNode::PRE_MULTIPLE);
+        else if (fr[1].matchWord("POST_MULTIPLE")) camera.setTransformOrder(osg::CameraNode::POST_MULTIPLE);
+
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+
     Matrix matrix; 
     if (readMatrix(matrix,fr,"ProjectionMatrix"))
     {
@@ -74,6 +84,16 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
     if (readMatrix(matrix,fr,"ViewMatrix"))
     {
         camera.setViewMatrix(matrix);
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("renderOrder %w"))
+    {
+        if      (fr[1].matchWord("PRE_RENDER")) camera.setRenderOrder(osg::CameraNode::PRE_RENDER);
+        else if (fr[1].matchWord("NESTED_RENDER")) camera.setRenderOrder(osg::CameraNode::NESTED_RENDER);
+        else if (fr[1].matchWord("POST_RENDER")) camera.setRenderOrder(osg::CameraNode::POST_RENDER);
+
+        fr += 2;
         iteratorAdvanced = true;
     }
 
@@ -98,8 +118,23 @@ bool CameraNode_writeLocalData(const Object& obj, Output& fw)
         fw.writeObject(*camera.getViewport());
     }
 
+    fw.indent()<<"transformOrder ";
+    switch(camera.getTransformOrder())
+    {
+        case(osg::CameraNode::PRE_MULTIPLE): fw <<"PRE_MULTIPLE"<<std::endl; break;
+        case(osg::CameraNode::POST_MULTIPLE): fw <<"POST_MULTIPLE"<<std::endl; break;
+    }
+
     writeMatrix(camera.getProjectionMatrix(),fw,"ProjectionMatrix");
     writeMatrix(camera.getViewMatrix(),fw,"ViewMatrix");
+
+    fw.indent()<<"renderOrder ";
+    switch(camera.getRenderOrder())
+    {
+        case(osg::CameraNode::PRE_RENDER): fw <<"PRE_RENDER"<<std::endl; break;
+        case(osg::CameraNode::NESTED_RENDER): fw <<"NESTED_RENDER"<<std::endl; break;
+        case(osg::CameraNode::POST_RENDER): fw <<"POST_RENDER"<<std::endl; break;
+    }
 
     return true;
 }

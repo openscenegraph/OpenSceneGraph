@@ -1,4 +1,5 @@
 #include <osg/CameraNode>
+#include <osg/io_utils>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -30,23 +31,39 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
 
     CameraNode& camera = static_cast<CameraNode&>(obj);
 
-    if (fr[0].matchWord("Type"))
+    if (fr.matchSequence("clearColor %f %f %f %f"))
     {
-        if (fr[1].matchWord("DYNAMIC"))
-        {
-            camera.setDataVariance(osg::Object::DYNAMIC);
-            fr +=2 ;
-            iteratorAdvanced = true;
-        }
-        else if (fr[1].matchWord("STATIC"))
-        {
-            camera.setDataVariance(osg::Object::STATIC);
-            fr +=2 ;
-            iteratorAdvanced = true;
-        }
-        
-    }
+        Vec4 color;
+        fr[1].getFloat(color[0]);
+        fr[2].getFloat(color[1]);
+        fr[3].getFloat(color[2]);
+        fr[4].getFloat(color[3]);
+        camera.setClearColor(color);
+        fr +=5 ;
+        iteratorAdvanced = true;
+    };
     
+    if (fr.matchSequence("clearMask %i"))
+    {
+        unsigned int value;
+        fr[1].getUInt(value);
+        camera.setClearMask(value);
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+
+    osg::ref_ptr<osg::StateAttribute> attribute;
+    while((attribute=fr.readStateAttribute())!=NULL)
+    {
+        osg::Viewport* viewport = dynamic_cast<osg::Viewport*>(attribute.get());
+        if (viewport) camera.setViewport(viewport);
+        else
+        {
+            osg::ColorMask* colormask = dynamic_cast<osg::ColorMask*>(attribute.get());
+            camera.setColorMask(colormask);
+        }
+    }
+
     Matrix matrix; 
     if (readMatrix(matrix,fr,"ProjectionMatrix"))
     {
@@ -67,6 +84,19 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
 bool CameraNode_writeLocalData(const Object& obj, Output& fw)
 {
     const CameraNode& camera = static_cast<const CameraNode&>(obj);
+
+    fw.indent()<<"clearColor "<<camera.getClearColor()<<std::endl;
+    fw.indent()<<"clearMask 0x"<<std::hex<<camera.getClearMask()<<std::endl;
+
+    if (camera.getColorMask())
+    {
+        fw.writeObject(*camera.getColorMask());
+    }
+
+    if (camera.getViewport())
+    {
+        fw.writeObject(*camera.getViewport());
+    }
 
     writeMatrix(camera.getProjectionMatrix(),fw,"ProjectionMatrix");
     writeMatrix(camera.getViewMatrix(),fw,"ViewMatrix");

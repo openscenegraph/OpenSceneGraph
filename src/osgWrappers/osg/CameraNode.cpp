@@ -32,8 +32,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< GLenum >, osg::CameraNode::RenderBufferList);
-
 TYPE_NAME_ALIAS(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >, osg::CameraNode::BufferAttachmentMap);
 
 BEGIN_ENUM_REFLECTOR(osg::CameraNode::TransformOrder)
@@ -122,10 +120,6 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(GLenum, getDrawBuffer);
 	I_Method1(void, setReadBuffer, IN, GLenum, buffer);
 	I_Method0(GLenum, getReadBuffer);
-	I_Method2(void, setRenderBuffer, IN, unsigned int, pos, IN, GLenum, buffer);
-	I_Method1(GLenum, getRenderBuffer, IN, unsigned int, pos);
-	I_Method0(osg::CameraNode::RenderBufferList &, getRenderBufferList);
-	I_Method0(const osg::CameraNode::RenderBufferList &, getRenderBufferList);
 	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, GLenum, internalFormat);
 	I_MethodWithDefaults5(void, attach, IN, osg::CameraNode::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false);
 	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, osg::Image *, image);
@@ -153,8 +147,6 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Property(osg::CameraNode::DrawCallback *, PostDrawCallback);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
 	I_Property(GLenum, ReadBuffer);
-	I_IndexedProperty1(GLenum, RenderBuffer, unsigned int, pos);
-	I_ReadOnlyProperty(osg::CameraNode::RenderBufferList &, RenderBufferList);
 	I_Property(osg::CameraNode::RenderOrder, RenderOrder);
 	I_ReadOnlyProperty(osg::CameraNode::RenderTargetImplementation, RenderTargetFallback);
 	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation);
@@ -180,6 +172,4 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >);
-
-STD_VECTOR_REFLECTOR(std::vector< GLenum >);
 

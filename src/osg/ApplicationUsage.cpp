@@ -209,3 +209,39 @@ void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned i
 
 }
 
+
+void ApplicationUsage::writeEnvironmentSettings(std::ostream& output)
+{
+    output << "Current Environment Settings:"<<std::endl;
+
+    unsigned int maxNumCharsInOptions = 0;
+    ApplicationUsage::UsageMap::const_iterator citr;
+    for(citr=getEnvironmentalVariables().begin();
+        citr!=getEnvironmentalVariables().end();
+        ++citr)
+    {
+        std::string::size_type len = citr->first.find_first_of("\n\r\t ");
+        if (len == std::string::npos) len = citr->first.size();
+        maxNumCharsInOptions = maximum(maxNumCharsInOptions,len);
+    }
+    
+    unsigned int optionPos = 2;
+    std::string line;
+    
+    for(citr=getEnvironmentalVariables().begin();
+        citr!=getEnvironmentalVariables().end();
+        ++citr)
+    {
+        line.assign(optionPos+maxNumCharsInOptions+2,' ');
+        std::string::size_type len = citr->first.find_first_of("\n\r\t ");
+        if (len == std::string::npos) len = citr->first.size();
+        line.replace(optionPos,len,citr->first.substr(0,len));
+        char *cp = getenv(citr->first.substr(0, len).c_str());
+        if (!cp) cp = "[not set]";
+        else if (!*cp) cp = "[set]";
+        line += std::string(cp) + "\n";
+
+        output << line;
+    }
+    output << std::endl;
+}

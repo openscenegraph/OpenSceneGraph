@@ -46,6 +46,8 @@
 
 #include "Group.h"
 #include "MatrixTransform.h"
+#include "CameraNode.h"
+#include "CameraView.h"
 #include "Geode.h"
 #include "LightSource.h"
 #include "TexGenNode.h"
@@ -1083,6 +1085,14 @@ osg::Node* DataInputStream::readNode()
     if(nodeTypeID== IVEMATRIXTRANSFORM){
         node = new osg::MatrixTransform();
         ((ive::MatrixTransform*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVECAMERANODE){
+        node = new osg::CameraNode();
+        ((ive::CameraNode*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVECAMERAVIEW){
+        node = new osg::CameraView();
+        ((ive::CameraView*)(node))->read(this);
     }
     else if(nodeTypeID== IVEPOSITIONATTITUDETRANSFORM){
         node = new osg::PositionAttitudeTransform();

@@ -49,6 +49,8 @@
 
 #include "Group.h"
 #include "MatrixTransform.h"
+#include "CameraNode.h"
+#include "CameraView.h"
 #include "Geode.h"
 #include "LightSource.h"
 #include "TexGenNode.h"
@@ -898,6 +900,12 @@ void DataOutputStream::writeNode(const osg::Node* node)
 
         if(dynamic_cast<const osg::MatrixTransform*>(node)){
             ((ive::MatrixTransform*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::CameraNode*>(node)){
+            ((ive::CameraNode*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::CameraView*>(node)){
+            ((ive::CameraView*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::PositionAttitudeTransform*>(node)){
             ((ive::PositionAttitudeTransform*)(node))->write(this);

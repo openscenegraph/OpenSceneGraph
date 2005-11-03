@@ -128,6 +128,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\CameraNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\CameraView.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ClipPlane.cpp
 # End Source File
 # Begin Source File
@@ -461,6 +469,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\CameraNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\CameraView.h
 # End Source File
 # Begin Source File
 

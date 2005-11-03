@@ -13,6 +13,8 @@ CXXFILES =\
 	ClipNode.cpp\
 	ClipPlane.cpp\
         ClusterCullingCallback.cpp\
+        CameraNode.cpp\
+        CameraView.cpp\
 	ConeSector.cpp\
         ConvexPlanarOccluder.cpp\
         ConvexPlanarPolygon.cpp\

@@ -15,6 +15,7 @@
 #include "Exception.h"
 #include "CameraNode.h"
 #include "Group.h"
+#include "Image.h"
 
 using namespace ive;
 
@@ -31,28 +32,138 @@ void CameraNode::write(DataOutputStream* out){
         throw Exception("CameraNode::write(): Could not cast this osg::CameraNode to an osg::Group.");
 
 
+    out->writeVec4(getClearColor());
+    out->writeUInt(getClearMask());
+
+    out->writeBool(getColorMask()!=0);
+    if (getColorMask()!=0)
+    {
+        out->writeStateAttribute(getColorMask());
+    }
+
+    out->writeBool(getViewport()!=0);
+    if (getViewport()!=0)
+    {
+        out->writeStateAttribute(getViewport());
+    }
+    
+    out->writeInt(getTransformOrder());
+
     // Write CameraNode's properties.
     out->writeMatrixd(getProjectionMatrix());
     out->writeMatrixd(getViewMatrix());
+    
+    out->writeInt(getRenderOrder());
+    out->writeInt(getRenderTargetImplementation());
+    out->writeInt(getRenderTargetFallback());
+ 
+    out->writeUInt(getDrawBuffer());
+    out->writeUInt(getReadBuffer());
+     
+    const BufferAttachmentMap& baf = getBufferAttachmentMap();
+    out->writeUInt(baf.size());
+    for(BufferAttachmentMap::const_iterator itr = baf.begin();
+        itr != baf.end();
+        ++itr)
+    {
+        BufferComponent buffer = itr->first;
+        const Attachment& attachment = itr->second;
+
+        out->writeInt( buffer );
+        out->writeUInt( attachment._internalFormat);
+
+        // this ain't right... what if we need to share images????
+        out->writeBool(attachment._image.valid());
+        if(attachment._image.valid())
+            ((ive::Image*)attachment._image.get())->write(out);
+
+        out->writeBool(attachment._texture.valid());
+        if(attachment._texture.valid())
+            out->writeStateAttribute(attachment._texture.get());
+            
+        out->writeUInt(attachment._level);
+        out->writeUInt(attachment._face);
+        out->writeBool(attachment._mipMapGeneration);
+    }
+     
 }
 
-void CameraNode::read(DataInputStream* in){
+void CameraNode::read(DataInputStream* in)
+{
     // Read CameraNode's identification.
     int id = in->peekInt();
-    if(id == IVECAMERANODE){
+    if(id == IVECAMERANODE)
+    {
         // Code to read CameraNode's properties.
         id = in->readInt();
         // If the osg class is inherited by any other class we should also read this from file.
         osg::Group*  group = dynamic_cast<osg::Group*>(this);
-        if(group){
+        if(group)
+        {
             ((ive::Group*)(group))->read(in);
         }
         else
             throw Exception("CameraNode::read(): Could not cast this osg::CameraNode to an osg::Group.");
 
+        setClearColor(in->readVec4());
+        setClearMask(in->readUInt());
+
+        if (in->readBool())
+        {
+            osg::ref_ptr<osg::StateAttribute> attribute = in->readStateAttribute();
+            osg::ColorMask* cm = dynamic_cast<osg::ColorMask*>(attribute.get());
+            if (cm) setColorMask(cm);
+        }
+
+        if (in->readBool())
+        {
+            osg::ref_ptr<osg::StateAttribute> attribute = in->readStateAttribute();
+            osg::Viewport* vp = dynamic_cast<osg::Viewport*>(attribute.get());
+            if (vp) setViewport(vp);
+        }
+    
+        setTransformOrder((TransformOrder)in->readInt());
+
         // Read matrix
         setProjectionMatrix(in->readMatrixd());
         setViewMatrix(in->readMatrixd());
+
+    
+        setRenderOrder((RenderOrder)in->readInt());
+    
+        RenderTargetImplementation impl = (RenderTargetImplementation)in->readInt();
+        RenderTargetImplementation fallback = (RenderTargetImplementation)in->readInt();
+        setRenderTargetImplementation(impl, fallback);
+ 
+        setDrawBuffer((GLenum)in->readUInt());
+        setReadBuffer((GLenum)in->readUInt());
+     
+        _bufferAttachmentMap.clear();
+        
+        unsigned int numAttachments = in->readUInt();
+        for(unsigned int i=0; i<numAttachments; ++i)
+        {
+            Attachment& attachment = _bufferAttachmentMap[(BufferComponent)in->readInt()];
+            attachment._internalFormat = (GLenum)in->readUInt();
+            
+            if (in->readBool())
+            {
+                // this ain't right... what if we need to share images????
+                attachment._image = new osg::Image;
+               ((ive::Image*)attachment._image.get())->read(in);
+            }
+
+            if (in->readBool())
+            {
+                osg::ref_ptr<osg::StateAttribute> attribute = in->readStateAttribute();
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(attribute.get());
+                if (texture) attachment._texture = texture;
+            }
+
+            attachment._level = in->readUInt();
+            attachment._face = in->readUInt();
+            attachment._mipMapGeneration = in->readBool();
+        }
     }
     else{
         throw Exception("CameraNode::read(): Expected CameraNode identification");

@@ -214,21 +214,6 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         /** Get the read buffer for any required copy operations to use. */
         GLenum getReadBuffer() const { return _readBuffer; }
 
-
-        /** Set the render buffer for a given fragment output position to specified draw buffer. */
-        void setRenderBuffer(unsigned int pos, GLenum buffer) { _renderBufferList[pos] = buffer; }
-
-        /** Get the draw buffer for a given fragment output position. */
-        GLenum getRenderBuffer(unsigned int pos) const { return _renderBufferList[pos]; }
-        
-        typedef std::vector<GLenum> RenderBufferList;
-
-        /** Get the list which draw buffer are active. */
-        RenderBufferList& getRenderBufferList() { return _renderBufferList; }
-        
-        /** Get the const list which draw buffer are active. */
-        const RenderBufferList& getRenderBufferList() const { return _renderBufferList; }
-
         enum BufferComponent
         {
             DEPTH_BUFFER,
@@ -344,7 +329,6 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         GLenum                      _drawBuffer;
         GLenum                      _readBuffer;
-        RenderBufferList            _renderBufferList;
         
         RenderTargetImplementation  _renderTargetImplementation;
         RenderTargetImplementation  _renderTargetFallback;

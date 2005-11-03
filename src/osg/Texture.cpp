@@ -17,6 +17,7 @@
 #include <osg/Notify>
 #include <osg/GLU>
 #include <osg/Timer>
+#include <osg/ApplicationUsage>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -41,6 +42,8 @@ using namespace osg;
 #endif
 
 // #define DO_TIMING
+
+ApplicationUsageProxy Texture_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_TEXTURE_SIZE","Set the maximum size of textures.");
 
 unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
 unsigned int Texture::s_numberNewTextureInLastFrame = 0;

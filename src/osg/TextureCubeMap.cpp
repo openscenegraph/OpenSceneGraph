@@ -291,6 +291,10 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
 
     if (!textureObject)
     {
+
+        if (_textureWidth==0) _textureWidth = width;
+        if (_textureHeight==0) _textureHeight = height;
+
         // create texture object.
         apply(state);
         

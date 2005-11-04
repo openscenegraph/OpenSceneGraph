@@ -184,7 +184,54 @@ void RenderStage::runCameraSetUp(osg::State& state)
             _imageReadPixelFormat = pixelFormat;
             _imageReadPixelDataType = dataType;
 
-           setImage(itr->second._image.get());
+            setImage(itr->second._image.get());
+        }
+        
+        if (itr->second._texture.valid())
+        {
+            osg::Texture* texture = itr->second._texture.get();
+            osg::Texture1D* texture1D = 0;
+            osg::Texture2D* texture2D = 0;
+            osg::Texture3D* texture3D = 0;
+            osg::TextureCubeMap* textureCubeMap = 0;
+            osg::TextureRectangle* textureRectangle = 0;
+            if (0 != (texture1D=dynamic_cast<osg::Texture1D*>(texture)))
+            {
+                if (texture1D->getTextureWidth()==0)
+                {
+                    texture1D->setTextureWidth(_viewport->width());
+                }
+            }
+            else if (0 != (texture2D = dynamic_cast<osg::Texture2D*>(texture)))
+            {
+                if (texture2D->getTextureWidth()==0 || texture2D->getTextureHeight()==0)
+                {
+                    texture2D->setTextureSize(_viewport->width(),_viewport->height());
+                }
+            }
+            else if (0 != (texture3D = dynamic_cast<osg::Texture3D*>(texture)))
+            {
+                if (texture3D->getTextureWidth()==0 || texture3D->getTextureHeight()==0 || texture3D->getTextureDepth()==0 )
+                {
+                    // note we dont' have the depth here, so we'll heave to assume that height and depth are the same..
+                    texture3D->setTextureSize(_viewport->width(),_viewport->height(),_viewport->height());
+                }
+            }
+            else if (0 != (textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(texture)))
+            {
+                if (textureCubeMap->getTextureWidth()==0 || textureCubeMap->getTextureHeight()==0)
+                {
+                    textureCubeMap->setTextureSize(_viewport->width(),_viewport->height());
+                }
+            }
+            else if (0 != (textureRectangle = dynamic_cast<osg::TextureRectangle*>(texture)))
+            {
+                if (textureRectangle->getTextureWidth()==0 || textureRectangle->getTextureHeight()==0)
+                {
+                    textureRectangle->setTextureSize(_viewport->width(),_viewport->height());
+                }
+            }
+
         }
     }
     

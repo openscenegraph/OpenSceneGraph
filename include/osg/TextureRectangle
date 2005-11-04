@@ -84,12 +84,11 @@ class OSG_EXPORT TextureRectangle : public Texture
             _textureHeight = height;
         }
 
-        /** Get the texture subload width. */
-        inline void getTextureSize(int& width, int& height) const
-        {
-            width = _textureWidth;
-            height = _textureHeight;
-        }
+        void setTextureWidth(int width) { _textureWidth=width; }
+        int getTextureWidth() const { return _textureWidth; }
+
+        void setTextureHeight(int height) { _textureHeight=height; }
+        int getTextureHeight() const { return _textureHeight; }
 
         class SubloadCallback : public Referenced
         {

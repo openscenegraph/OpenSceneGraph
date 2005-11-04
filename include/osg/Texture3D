@@ -84,6 +84,15 @@ class OSG_EXPORT Texture3D : public Texture
             depth = _textureDepth;
         }
 
+        void setTextureWidth(int width) { _textureWidth=width; }
+        int getTextureWidth() const { return _textureWidth; }
+
+        void setTextureHeight(int height) { _textureHeight=height; }
+        int getTextureHeight() const { return _textureHeight; }
+
+        void setTextureDepth(int depth) { _textureDepth=depth; }
+        int getTextureDepth() const { return _textureDepth; }
+
 
         class OSG_EXPORT SubloadCallback : public Referenced
         {

@@ -561,6 +561,14 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
     RenderBin::draw(state,previous);
 
 
+    GLenum errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
+    {
+        osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) OpenGL errorNo= 0x"<<std::hex<<errorNo<<std::endl;
+        if (fbo_ext) osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status= 0x"<<std::hex<<fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)<<std::endl;
+    }
+    // state.checkGLErrors("After RenderBin::draw");
+
     // now copy the rendered image to attached texture.
     if (doCopyTexture)
     {

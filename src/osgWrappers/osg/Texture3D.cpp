@@ -46,6 +46,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D)
 	I_Method0(unsigned int, getNumImages);
 	I_Method3(void, setTextureSize, IN, int, width, IN, int, height, IN, int, depth);
 	I_Method3(void, getTextureSize, IN, int &, width, IN, int &, height, IN, int &, depth);
+	I_Method1(void, setTextureWidth, IN, int, width);
+	I_Method0(int, getTextureWidth);
+	I_Method1(void, setTextureHeight, IN, int, height);
+	I_Method0(int, getTextureHeight);
+	I_Method1(void, setTextureDepth, IN, int, depth);
+	I_Method0(int, getTextureDepth);
 	I_Method1(void, setSubloadCallback, IN, osg::Texture3D::SubloadCallback *, cb);
 	I_Method0(osg::Texture3D::SubloadCallback *, getSubloadCallback);
 	I_Method0(const osg::Texture3D::SubloadCallback *, getSubloadCallback);
@@ -56,7 +62,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D)
 	I_Property(osg::Image *, Image);
 	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);
 	I_Property(osg::Texture3D::SubloadCallback *, SubloadCallback);
+	I_Property(int, TextureDepth);
+	I_Property(int, TextureHeight);
 	I_ReadOnlyProperty(GLenum, TextureTarget);
+	I_Property(int, TextureWidth);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

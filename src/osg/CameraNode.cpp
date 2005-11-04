@@ -62,12 +62,12 @@ void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl)
 
 void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback)
 {
-    if (impl<fallback)
+    if (impl<fallback || (impl==FRAME_BUFFER && fallback==FRAME_BUFFER))
     {
         _renderTargetImplementation = impl;
         _renderTargetFallback = fallback;
     }
-    else
+    else 
     {
         osg::notify(osg::NOTICE)<<"Warning: CameraNode::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
         setRenderTargetImplementation(impl);

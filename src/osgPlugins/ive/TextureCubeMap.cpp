@@ -32,10 +32,8 @@ void TextureCubeMap::write(DataOutputStream* out){
     // Write TextureCubeMap's properties.
 
     // Write texture size
-    int width,height;
-    getTextureSize(width, height);
-    out->writeInt(width);
-    out->writeInt(height);
+    out->writeInt(getTextureWidth());
+    out->writeInt(getTextureHeight());
 
     // Write number of mipmap levels
     out->writeInt(getNumMipmapLevels());

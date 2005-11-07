@@ -68,9 +68,12 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--ratio <ratio>","Specify the sample ratio","0.5]");
+    arguments.getApplicationUsage()->addCommandLineOption("--max-error <error>","Specify the maximum error","4.0");
     
 
     float sampleRatio = 0.5f;
+    float maxError = 4.0f;
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -82,7 +85,8 @@ int main( int argc, char **argv )
     viewer.getUsage(*arguments.getApplicationUsage());
 
     // read the sample ratio if one is supplied
-    while (arguments.read("-s",sampleRatio)) {}
+    while (arguments.read("--ratio",sampleRatio)) {}
+    while (arguments.read("--max-error",maxError)) {}
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -129,9 +133,7 @@ int main( int argc, char **argv )
 
     std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
-    osgUtil::Simplifier simplifier(sampleRatio);
-    simplifier.setSampleRatio(1.0f);
-    simplifier.setMaximumError(0.4f);
+    osgUtil::Simplifier simplifier(sampleRatio, maxError);
     
     //loadedModel->accept(simplifier);
 
@@ -145,8 +147,8 @@ int main( int argc, char **argv )
     viewer.realize();
 
     float multiplier = 0.99f;
-    float minRatio = 0.00f;
-    float ratio = 0.5f;
+    float minRatio = 0.001f;
+    float ratio = sampleRatio;
 
     while( !viewer.done() )
     {
@@ -168,8 +170,16 @@ int main( int argc, char **argv )
             if (ratio<minRatio) ratio=minRatio;
             
             simplifier.setSampleRatio(ratio);
+
+            std::cout<<"Runing osgUtil::Simplifier with SampleRatio="<<ratio<<" maxError="<<maxError<<" ...";
+            std::cout.flush();
+            
             osg::ref_ptr<osg::Node> root = (osg::Node*)loadedModel->clone(osg::CopyOp::DEEP_COPY_ALL);
+
             root->accept(simplifier);
+            
+            std::cout<<"done"<<std::endl;
+            
             viewer.setSceneData(root.get());
             keyFlag = 0;
         }

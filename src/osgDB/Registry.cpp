@@ -238,7 +238,7 @@ Registry::~Registry()
     closeAllLibraries();
 }
 
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
 static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
 #else
 static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");

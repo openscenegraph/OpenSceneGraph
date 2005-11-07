@@ -15,6 +15,7 @@
 #define OSGTEXT_FONT 1
 
 #include <string>
+#include <istream>
 
 #include <osg/Vec2>
 #include <osg/Image>
@@ -57,6 +58,10 @@ enum KerningType
   * the file will be searched again in the OS specific directories.
   */
 extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
+
+/** read a font from specified stream.*/
+extern OSGTEXT_EXPORT Font* readFontStream(std::istream& stream);
+
 extern OSGTEXT_EXPORT std::string findFontFile(const std::string& str);
 
 /** Pure virtual base class for fonts.

@@ -19,6 +19,14 @@
 
 FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face):
     _filename(filename),
+    _buffer(0),
+    _face(face)
+{
+}
+
+FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face):
+    _filename(""),
+    _buffer(buffer),
     _face(face)
 {
 }
@@ -37,6 +45,13 @@ FreeTypeFont::~FreeTypeFont()
             // free the freetype font face itself
             FT_Done_Face(_face);
             _face = 0;
+
+            // release memory held for FT_Face to work
+            if (_buffer)
+            {
+                delete [] _buffer;
+                _buffer = 0;
+            }
         }
     }
 }

@@ -17,6 +17,7 @@
 #include "FreeTypeFont.h"
 #include <osgText/Font>
 #include <set>
+#include <istream>
 
 class FreeTypeLibrary : public osg::Referenced
 {
@@ -29,6 +30,7 @@ public:
     static FreeTypeLibrary* instance();
 
     osgText::Font* getFont(const std::string& fontfile,unsigned int index=0);
+    osgText::Font* getFont(std::istream& fontstream, unsigned int index=0);
     
     void removeFontImplmentation(FreeTypeFont* fontImpl) { _fontImplementationSet.erase(fontImpl); }
 

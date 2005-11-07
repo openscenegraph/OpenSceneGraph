@@ -17,7 +17,7 @@
 #  define SEEK_SET 0
 #endif
 #include <Carbon/Carbon.h>
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 #include "QTtexture.h"
 #include "QuicktimeImageStream.h"
 

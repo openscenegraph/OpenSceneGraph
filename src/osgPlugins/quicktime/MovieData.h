@@ -13,7 +13,7 @@
 #include <osg/Notify>
 #include <osg/Image>
 #include <string>
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 
 namespace osg {
     

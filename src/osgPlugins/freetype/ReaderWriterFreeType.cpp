@@ -40,6 +40,18 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
             return freeTypeLibrary->getFont(fileName,0);
         }
+
+        virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options*) const
+        {
+            FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
+            if (!freeTypeLibrary) 
+            {
+                osg::notify(osg::WARN)<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
+                return ReadResult::ERROR_IN_READING_FILE;
+            }
+
+            return freeTypeLibrary->getFont(stream, 0);
+        }
 };
 
 // now register with Registry to instantiate the above

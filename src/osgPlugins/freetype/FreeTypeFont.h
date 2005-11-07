@@ -25,6 +25,7 @@ class FreeTypeFont : public osgText::Font::FontImplementation
 public:
 
     FreeTypeFont(const std::string& filename, FT_Face face);
+    FreeTypeFont(FT_Byte* buffer, FT_Face face);
 
     virtual ~FreeTypeFont();
 
@@ -41,6 +42,7 @@ public:
 protected:
 
     std::string     _filename;
+    FT_Byte*        _buffer;
     FT_Face         _face;
 
 };

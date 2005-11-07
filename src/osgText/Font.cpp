@@ -93,6 +93,33 @@ osgText::Font* osgText::readFontFile(const std::string& filename)
     return 0;
 }
 
+osgText::Font* osgText::readFontStream(std::istream& stream)
+{
+    osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
+    options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+
+    // there should be a better way to get the FreeType ReaderWriter by name...
+    osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
+    if (reader == 0) return 0;
+    osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, options.get());
+    if (rr.error())
+    {
+        osg::notify(osg::WARN) << rr.message() << std::endl;
+        return 0;
+    }
+    if (!rr.validObject()) return 0;
+    
+    osg::Object *object = rr.takeObject();
+
+    // if the object is a font then return it.
+    osgText::Font* font = dynamic_cast<osgText::Font*>(object);
+    if (font) return font;
+
+    // otherwise if the object has zero references then delete it by doing another unref().
+    if (object && object->referenceCount()==0) object->unref();
+    return 0;
+}
+
 
 Font::Font(FontImplementation* implementation):
     _width(16),

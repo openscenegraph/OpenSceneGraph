@@ -74,3 +74,49 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
     return font;
 
 }
+
+osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int index)
+{
+    FT_Face face;    /* handle to face object */
+    FT_Open_Args args;
+
+    std::streampos start = fontstream.tellg();
+    fontstream.seekg(0, std::ios::end);
+    std::streampos end = fontstream.tellg();
+    fontstream.seekg(start, std::ios::beg);
+    std::streampos length = end - start;
+
+    /* empty stream into memory, open that, and keep the pointer in a FreeTypeFont for cleanup */
+    FT_Byte *buffer = new FT_Byte[length];
+    fontstream.read(reinterpret_cast<char*>(buffer), length);
+    if (!fontstream || (fontstream.gcount() != length))
+    {
+        osg::notify(osg::WARN)<<" .... the font file could not be read from its stream"<<std::endl;
+        return 0;
+    }
+    args.flags = FT_OPEN_MEMORY;
+    args.memory_base = buffer;
+    args.memory_size = length;
+
+    FT_Error error = FT_Open_Face( _ftlibrary, &args, index, &face );
+
+    if (error == FT_Err_Unknown_File_Format)
+    {
+        osg::notify(osg::WARN)<<" .... the font file could be opened and read, but it appears"<<std::endl;
+        osg::notify(osg::WARN)<<" .... that its font format is unsupported"<<std::endl;
+        return 0;
+    }
+    else if (error)
+    {
+        osg::notify(osg::WARN)<<" .... another error code means that the font file could not"<<std::endl;
+        osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..."<<std::endl;
+        return 0;
+    }
+    
+    FreeTypeFont* fontImp = new FreeTypeFont(buffer,face);
+    osgText::Font* font = new osgText::Font(fontImp);
+    
+    _fontImplementationSet.insert(fontImp);
+
+    return font;
+}

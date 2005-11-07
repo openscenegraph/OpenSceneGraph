@@ -66,14 +66,38 @@ protected:
     
     void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMap) const;
     
-    osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList) const;
+    osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, bool& rotate) const;
     
-    osg::Node* convertModelToSceneGraph(obj::Model& model) const;
+    osg::Node* convertModelToSceneGraph(obj::Model& model, bool& rotate) const;
 
-    inline osg::Vec3 transformVertex(const osg::Vec3& vec) const { return osg::Vec3(vec.x(),-vec.z(),vec.y()); }
-    inline osg::Vec3 transformNormal(const osg::Vec3& vec) const { return osg::Vec3(vec.x(),-vec.z(),vec.y()); }
-    
+    inline osg::Vec3 transformVertex(const osg::Vec3& vec, const bool rotate) const ;
+    inline osg::Vec3 transformNormal(const osg::Vec3& vec, const bool rotate) const ;
+
 };
+
+inline osg::Vec3 ReaderWriterOBJ::transformVertex(const osg::Vec3& vec, const bool rotate) const
+{
+    if(rotate==true)
+    {
+        return osg::Vec3(vec.x(),-vec.z(),vec.y());
+    }
+    else
+    {
+        return vec;
+    }
+}
+
+inline osg::Vec3 ReaderWriterOBJ::transformNormal(const osg::Vec3& vec, const bool rotate) const
+{
+    if(rotate==true)
+    {
+        return osg::Vec3(vec.x(),-vec.z(),vec.y());
+    }
+    else
+    {
+        return vec;
+    }
+}
 
 
 // register with Registry to instantiate the above reader/writer.
@@ -157,7 +181,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
     }
 }
 
-osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList) const
+osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, bool& rotate) const
 {
     
     unsigned int numVertexIndices = 0;
@@ -235,7 +259,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                     index_itr != element.vertexIndices.end();
                     ++index_itr)
                 {
-                    vertices->push_back(transformVertex(model.vertices[*index_itr]));
+                    vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
                     ++numPoints;
                 }
                 if (numNormalIndices)
@@ -244,7 +268,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.normalIndices.end();
                         ++index_itr)
                     {
-                        normals->push_back(transformNormal(model.normals[*index_itr]));
+                        normals->push_back(transformNormal(model.normals[*index_itr],rotate));
                     }
                 }
                 if (numTexCoordIndices)
@@ -281,7 +305,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                     index_itr != element.vertexIndices.end();
                     ++index_itr)
                 {
-                    vertices->push_back(transformVertex(model.vertices[*index_itr]));
+                    vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
                 }
                 if (numNormalIndices)
                 {
@@ -289,7 +313,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.normalIndices.end();
                         ++index_itr)
                     {
-                        normals->push_back(transformNormal(model.normals[*index_itr]));
+                        normals->push_back(transformNormal(model.normals[*index_itr],rotate));
                     }
                 }
                 if (numTexCoordIndices)
@@ -352,7 +376,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.vertexIndices.rend();
                         ++index_itr)
                     {
-                        vertices->push_back(transformVertex(model.vertices[*index_itr]));
+                        vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
                     }
                     if (numNormalIndices)
                     {
@@ -360,7 +384,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                             index_itr != element.normalIndices.rend();
                             ++index_itr)
                         {
-                            normals->push_back(transformNormal(model.normals[*index_itr]));
+                            normals->push_back(transformNormal(model.normals[*index_itr],rotate));
                         }
                     }
                     if (numTexCoordIndices)
@@ -380,7 +404,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.vertexIndices.end();
                         ++index_itr)
                     {
-                        vertices->push_back(transformVertex(model.vertices[*index_itr]));
+                        vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
                     }
                     if (numNormalIndices)
                     {
@@ -388,7 +412,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                             index_itr != element.normalIndices.end();
                             ++index_itr)
                         {
-                            normals->push_back(transformNormal(model.normals[*index_itr]));
+                            normals->push_back(transformNormal(model.normals[*index_itr],rotate));
                         }
                     }
                     if (numTexCoordIndices)
@@ -410,7 +434,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     return geometry;
 }
 
-osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model) const
+osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, bool& rotate) const
 {
 
     if (model.elementStateMap.empty()) return 0;
@@ -430,7 +454,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model) const
         const obj::ElementState& es = itr->first;
         obj::Model::ElementList& el = itr->second;
 
-        osg::Geometry* geometry = convertElementListToGeometry(model,el);
+        osg::Geometry* geometry = convertElementListToGeometry(model,el,rotate);
 
         if (geometry)
         {
@@ -452,6 +476,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model) const
                 osgUtil::SmoothingVisitor tsv;
                 tsv.smooth(*geometry);
             }
+
 
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(geometry);
@@ -484,12 +509,18 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
-
         obj::Model model;
         model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
         model.readOBJ(fin, local_opt.get());
         
-        osg::Node* node = convertModelToSceneGraph(model);
+        // code for checking the nonRotation
+        bool rotate = true;
+        if ((options!=NULL) && (options->getOptionString() == "noRotation"))
+        {
+            rotate = false;
+        }
+
+        osg::Node* node = convertModelToSceneGraph(model,rotate);
         return node;
     }
     
@@ -503,7 +534,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
         obj::Model model;
         model.readOBJ(fin, options);
         
-        osg::Node* node = convertModelToSceneGraph(model);
+        // code for checking the nonRotation
+        bool rotate = true;
+        if ((options!=NULL) && (options->getOptionString() == "noRotation"))
+        {
+            rotate = false;
+        }
+
+        osg::Node* node = convertModelToSceneGraph(model,rotate);
         return node;
     }
     

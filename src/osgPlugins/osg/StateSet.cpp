@@ -641,7 +641,7 @@ bool StateSet_matchRenderBinModeStr(const char* str,StateSet::RenderBinMode& mod
 {
     if (strcmp(str,"INHERIT")==0) mode = StateSet::INHERIT_RENDERBIN_DETAILS;
     else if (strcmp(str,"USE")==0) mode = StateSet::USE_RENDERBIN_DETAILS;
-    else if (strcmp(str,"OVERRID")==0) mode = StateSet::OVERRIDE_RENDERBIN_DETAILS;
+    else if (strcmp(str,"OVERRIDE")==0) mode = StateSet::OVERRIDE_RENDERBIN_DETAILS;
     else if (strcmp(str,"ENCLOSE")==0) mode = StateSet::ENCLOSE_RENDERBIN_DETAILS;
     else return false;
     return true;

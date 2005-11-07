@@ -71,9 +71,11 @@ public:
     PickVisitor()
     { 
         xp=yp=0;    
-        setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+        setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     }
-    ~PickVisitor() {}
+    ~PickVisitor()
+    {
+    }
 
     void setTraversalMask(osg::Node::NodeMask traversalMask)
     {
@@ -82,22 +84,24 @@ public:
     }
 
     // Aug 2003 added to pass the nodemaskOverride to the PickIntersectVisitor
-     //   may be used make the visitor override the nodemask to visit invisible actions
-    inline void setNodeMaskOverride(osg::Node::NodeMask mask) {
-        _piv.setNodeMaskOverride(mask);
-        _nodeMaskOverride = mask; }
-
-
-    void handleProjectionMatrix(const osg::Matrixd& matrix, osg::Group& node)
+    //   may be used make the visitor override the nodemask to visit invisible actions
+    inline void setNodeMaskOverride(osg::Node::NodeMask mask)
     {
+        _piv.setNodeMaskOverride(mask);
+        _nodeMaskOverride = mask;
+    }
+
+
+    virtual void apply(osg::Projection& pr)
+    {  
         osg::Matrixd mt;
-        mt.invert(matrix);
+        mt.invert(pr.getMatrix());
         osg::Vec3 npt=osg::Vec3(xp,yp,-1.0f) * mt, farpt=osg::Vec3(xp,yp,1.0f) * mt;
 
         // traversing the nodes children, using the projection direction
-        for (unsigned int i=0; i<node.getNumChildren(); i++) 
+        for (unsigned int i=0; i<pr.getNumChildren(); i++) 
         {
-            osg::Node *nodech=node.getChild(i);
+            osg::Node *nodech=pr.getChild(i);
             osgUtil::IntersectVisitor::HitList &hli=_piv.getIntersections(nodech,npt, farpt);
             for(osgUtil::IntersectVisitor::HitList::iterator hitr=hli.begin();
                 hitr!=hli.end();
@@ -110,34 +114,34 @@ public:
         }
     }
 
-
-    virtual void apply(osg::Projection& pr)
-    {  
-        handleProjectionMatrix(pr.getMatrix(), pr);
-    }
-
     virtual void apply(osg::CameraNode& camera)
     {
-        // just handling the projection matrix here, this leaves the question about non identity view matrices....
-        // we need to think about the effects of this.  Robert Osfield, Novemenber 2005. 
-        handleProjectionMatrix(camera.getProjectionMatrix(), camera);
-    }
+        // partial fix for CameraNode... current code 
+        // assumes CameraNode has an absolute projection matrix, rather than an acculated one,
+        // will need to think about how to handle relative project matrices. RO November 2005.
 
-    osgUtil::IntersectVisitor::HitList& getHits(osg::Node *node, const osg::Vec3& near_point, const osg::Vec3& far_point)
-    {
-        // High level get intersection with sceneview using a ray from x,y on the screen
-        // sets xp,yp as pixels scaled to a mapping of (-1,1, -1,1); needed for Projection from x,y pixels
+        osg::Matrixd mt;
+        mt.invert(camera.getProjectionMatrix());
+        osg::Vec3 npt=osg::Vec3(xp,yp,-1.0f) * mt, farpt=osg::Vec3(xp,yp,1.0f) * mt;
 
-        // first get the standard hits in un-projected nodes
-        _PIVsegHitList=_piv.getIntersections(node,near_point,far_point); // fill hitlist
+        osgUtil::IntersectVisitor::HitList &hli=_piv.getIntersections(&camera,npt, farpt);
+        for(osgUtil::IntersectVisitor::HitList::iterator hitr=hli.begin();
+            hitr!=hli.end();
+            ++hitr)
+        {
+            // add the projection hits to the scene hits.
+            // This is why _lineSegment is retained as a member of PickIntersectVisitor
+            _PIVsegHitList.push_back(*hitr);
+        }
 
-        // then get hits in projection nodes
-        traverse(*node); // check for projection nodes
-        return _PIVsegHitList;
     }
 
     osgUtil::IntersectVisitor::HitList& getHits(osg::Node *node, const osg::Matrixd &projm, const float x, const float y)
     { 
+        setxy(x,y);    
+        
+        _PIVsegHitList.clear();
+
         // utility for non=sceneview viewers
         // x,y are values returned by 
         osg::Matrixd inverseMVPW;
@@ -145,14 +149,14 @@ public:
         osg::Vec3 near_point = osg::Vec3(x,y,-1.0f)*inverseMVPW;
         osg::Vec3 far_point = osg::Vec3(x,y,1.0f)*inverseMVPW;
         
-        if (!near_point.valid() || !far_point.valid())
+        if (near_point.valid() && far_point.valid())
         {
-            osg::notify(osg::INFO)<<"Warning: PickVisitor caught invalid nea/far poiints."<<std::endl;
-            return _PIVsegHitList;
+            _PIVsegHitList = _piv.getIntersections(node,near_point,far_point); // fill hitlist
         }
-        
-        setxy(x,y);    
-        getHits(node,near_point,far_point);
+
+        // traverse for any projection/camera nodes.        
+        node->accept(*this);
+
         return _PIVsegHitList;
     }
 

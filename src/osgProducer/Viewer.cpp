@@ -944,7 +944,17 @@ bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::Hit
 
 void Viewer::selectCameraManipulator(unsigned int no)
 {
-    if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectMatrixManipulator(no);
+   if (_keyswitchManipulator.valid())
+   {
+      _keyswitchManipulator->selectMatrixManipulator(no);
+      
+      // keyswitch manipulator doesn't yet force manipulators to init themselves
+      // so we'll do this mannually.  Note pretty, and needs replacing by a refactor
+      // of MatrixMinpulators in the longer term.
+      osg::ref_ptr<EventAdapter> ea = new EventAdapter;
+      ea->adaptKeyPress(_kbmcb->getTime(), osgGA::GUIEventAdapter::KEY_KP_1+no);
+      _keyswitchManipulator->init(*ea, *this);
+   }
 }
 
 void Viewer::getCameraManipulatorNameList( std::list<std::string> &nameList )

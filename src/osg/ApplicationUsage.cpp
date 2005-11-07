@@ -222,7 +222,7 @@ void ApplicationUsage::writeEnvironmentSettings(std::ostream& output)
     {
         std::string::size_type len = citr->first.find_first_of("\n\r\t ");
         if (len == std::string::npos) len = citr->first.size();
-        maxNumCharsInOptions = maximum(maxNumCharsInOptions,(unsigned int) len);
+        maxNumCharsInOptions = maximum( maxNumCharsInOptions,static_cast<unsigned int>(len));
     }
     
     unsigned int optionPos = 2;

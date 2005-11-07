@@ -34,6 +34,11 @@ namespace osgProducer
         {
             osg::GraphicsContext::setCreateGraphicsContextCallback(new MyCreateGraphicContexCallback);
         }
+        
+        ~RegisterCreateGraphicsContextCallbackProxy()
+        {
+            osg::GraphicsContext::setCreateGraphicsContextCallback(0);
+        }
     };
     
     RegisterCreateGraphicsContextCallbackProxy createGraphicsContextCallbackProxy;

@@ -8,7 +8,7 @@
  */
 
 #include <osg/Notify>
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 #include <Carbon/Carbon.h>
 #include "QTUtils.h"
 

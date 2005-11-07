@@ -152,7 +152,12 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
 
             if (fr.matchSequence("internalFormat %i")) 
             {
-                fr[1].getUInt(attachment._internalFormat);
+                // In their infinite wisdom, the Apple engineers changed the type
+                // of GLenum from 'unsigned int' to 'unsigned long', thus breaking
+                // the call by reference of getUInt.
+                unsigned int format;
+                fr[1].getUInt(format);
+                attachment._internalFormat = format;
                 fr += 2;
                 localAdvance = true;
             }

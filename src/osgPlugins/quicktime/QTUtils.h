@@ -8,7 +8,7 @@
  */
 
 #include <Carbon/Carbon.h>
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 
 namespace osgQuicktime {
 

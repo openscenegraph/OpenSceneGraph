@@ -607,7 +607,10 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         _collectOccludersVisistor->pushModelViewMatrix(mv.get());
 
         // traverse the scene graph to search for occluder in there new positions.
-        _camera->accept(*_collectOccludersVisistor);
+        for(unsigned int i=0; i< _camera->getNumChildren(); ++i)
+        {
+            _camera->getChild(i)->accept(*_collectOccludersVisistor);
+        }
 
         _collectOccludersVisistor->popModelViewMatrix();
         _collectOccludersVisistor->popProjectionMatrix();

@@ -21,6 +21,8 @@ bool Texture_matchInternalFormatModeStr(const char* str,Texture::InternalFormatM
 const char* Texture_getInternalFormatModeStr(Texture::InternalFormatMode mode);
 bool Texture_matchInternalFormatStr(const char* str,int& value);
 const char* Texture_getInternalFormatStr(int value);
+bool Texture_matchSourceTypeStr(const char* str,int& value);
+const char* Texture_getSourceTypeStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TextureProxy
@@ -158,6 +160,28 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr[0].matchWord("sourceFormat"))
+    {
+        int value;
+        if (Texture_matchInternalFormatStr(fr[1].getStr(),value) || fr[1].getInt(value))
+        {
+            texture.setSourceFormat(value);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("sourceType"))
+    {
+        int value;
+        if (Texture_matchInternalFormatStr(fr[1].getStr(),value) || fr[1].getInt(value))
+        {
+            texture.setSourceType(value);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
     if (fr[0].matchWord("resizeNonPowerOfTwo"))
     {
         if (fr[1].matchWord("TRUE")) 
@@ -205,6 +229,24 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
         if (str) fw.indent() << "internalFormat " << str << std::endl;
         else fw.indent() << "internalFormat " << texture.getInternalFormat() << std::endl;
 
+    }
+    
+    if (texture.getSourceFormat())
+    {
+        const char* str = Texture_getInternalFormatStr(texture.getSourceFormat());
+
+        if (str) fw.indent() << "sourceFormat " << str << std::endl;
+        else fw.indent() << "sourceFormat " << texture.getSourceFormat() << std::endl;
+        
+    }
+
+    if (texture.getSourceType())
+    {
+        const char* str = Texture_getSourceTypeStr(texture.getSourceType());
+
+        if (str) fw.indent() << "sourceType " << str << std::endl;
+        else fw.indent() << "sourceType " << texture.getSourceType() << std::endl;
+        
     }
 
     fw.indent() << "resizeNonPowerOfTwo "<< (texture.getResizeNonPowerOfTwoHint()?"TRUE":"FALSE") << std::endl;
@@ -313,7 +355,20 @@ bool Texture_matchInternalFormatStr(const char* str,int& value)
     else if (strcmp(str,"GL_COMPRESSED_RGBA_S3TC_DXT1_EXT")==0) value = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
     else if (strcmp(str,"GL_COMPRESSED_RGBA_S3TC_DXT3_EXT")==0) value = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
     else if (strcmp(str,"GL_COMPRESSED_RGBA_S3TC_DXT5_EXT")==0) value = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-    else return false;
+    else
+    {
+        osgDB::Field::FieldType type = osgDB::Field::calculateFieldType(str);
+        if (type==osgDB::Field::INTEGER)
+        {
+            value = atoi(str);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -338,6 +393,48 @@ const char* Texture_getInternalFormatStr(int value)
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return "GL_COMPRESSED_RGBA_S3TC_DXT1_EXT";
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return "GL_COMPRESSED_RGBA_S3TC_DXT3_EXT";
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return "GL_COMPRESSED_RGBA_S3TC_DXT5_EXT";
+    }
+    return NULL;
+}
+
+bool Texture_matchSourceTypeStr(const char* str,int& value)
+{
+    if (     strcmp(str,"GL_BYTE")==0) value = GL_BYTE;
+    else if (strcmp(str,"GL_SHORT")==0) value = GL_SHORT;
+    else if (strcmp(str,"GL_INT")==0) value = GL_INT;
+    else if (strcmp(str,"GL_UNSIGNED_BYTE")==0) value = GL_UNSIGNED_BYTE;
+    else if (strcmp(str,"GL_UNSIGNED_SHORT")==0) value = GL_UNSIGNED_SHORT;
+    else if (strcmp(str,"GL_UNSIGNED_INT")==0) value = GL_UNSIGNED_INT;
+    else if (strcmp(str,"GL_FLOAT")==0) value = GL_FLOAT;
+    else
+    {
+        osgDB::Field::FieldType type = osgDB::Field::calculateFieldType(str);
+        if (type==osgDB::Field::INTEGER)
+        {
+            value = atoi(str);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+const char* Texture_getSourceTypeStr(int value)
+{
+    switch(value)
+    {
+        case(GL_BYTE): return "GL_BYTE";
+        case(GL_SHORT): return "GL_SHORT";
+        case(GL_INT): return "GL_INT";
+        case(GL_FLOAT): return "GL_FLOAT";
+        case(GL_UNSIGNED_BYTE): return "GL_UNSIGNED_BYTE";
+        case(GL_UNSIGNED_SHORT): return "GL_UNSIGNED_SHORT";
+        case(GL_UNSIGNED_INT): return "GL_UNSIGNED_INT";
     }
     return NULL;
 }

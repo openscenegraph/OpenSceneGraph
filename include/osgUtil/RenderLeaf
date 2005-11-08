@@ -66,7 +66,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 
     public:
     
-        StateGraph*                    _parent;
+        StateGraph*                     _parent;
         osg::Drawable*                  _drawable;
         osg::ref_ptr<osg::RefMatrix>    _projection;
         osg::ref_ptr<osg::RefMatrix>    _modelview;

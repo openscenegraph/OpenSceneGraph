@@ -179,6 +179,8 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         void copyTexture(osg::State& state);
 
+        virtual void sort();
+        
         virtual void drawPreRenderStages(osg::State& state,RenderLeaf*& previous);
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);

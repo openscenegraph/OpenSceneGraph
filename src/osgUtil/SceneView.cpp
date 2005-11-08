@@ -582,6 +582,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
 
+
     // collect any occluder in the view frustum.
     if (_camera->containsOccluderNodes())
     {

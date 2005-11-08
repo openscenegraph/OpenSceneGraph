@@ -112,12 +112,47 @@ RenderStage::~RenderStage()
 
 void RenderStage::reset()
 {
-    _preRenderList.clear();
     _stageDrawnThisFrame = false;
     
     if (_renderStageLighting.valid()) _renderStageLighting->reset();
 
+    for(RenderStageList::iterator pre_itr = _preRenderList.begin();
+        pre_itr != _preRenderList.end();
+        ++pre_itr)
+    {
+        (*pre_itr)->reset();
+    }
+
     RenderBin::reset();
+
+    for(RenderStageList::iterator post_itr = _postRenderList.begin();
+        post_itr != _postRenderList.end();
+        ++post_itr)
+    {
+        (*post_itr)->reset();
+    }
+
+    _preRenderList.clear();
+    _postRenderList.clear();
+}
+
+void RenderStage::sort()
+{
+    for(RenderStageList::iterator pre_itr = _preRenderList.begin();
+        pre_itr != _preRenderList.end();
+        ++pre_itr)
+    {
+        (*pre_itr)->sort();
+    }
+
+    RenderBin::sort();
+
+    for(RenderStageList::iterator post_itr = _postRenderList.begin();
+        post_itr != _postRenderList.end();
+        ++post_itr)
+    {
+        (*post_itr)->sort();
+    }
 }
 
 void RenderStage::addPreRenderStage(RenderStage* rs)

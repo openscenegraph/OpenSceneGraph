@@ -27,7 +27,7 @@ using namespace osgDB;
 bool osgDB::writeObjectFile(const Object& object,const std::string& filename)
 {
     ReaderWriter::WriteResult wr = Registry::instance()->writeObject(object,filename);
-    if (wr.error()) notify(WARN) << wr.message() << std::endl;
+    if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
 
@@ -35,7 +35,7 @@ bool osgDB::writeObjectFile(const Object& object,const std::string& filename)
 bool osgDB::writeImageFile(const Image& image,const std::string& filename)
 {
     ReaderWriter::WriteResult wr = Registry::instance()->writeImage(image,filename);
-    if (wr.error()) notify(WARN) << wr.message() << std::endl;
+    if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
 
@@ -43,13 +43,13 @@ bool osgDB::writeImageFile(const Image& image,const std::string& filename)
 bool osgDB::writeHeightFieldFile(const HeightField& HeightField,const std::string& filename)
 {
     ReaderWriter::WriteResult wr = Registry::instance()->writeHeightField(HeightField,filename);
-    if (wr.error()) notify(WARN) << wr.message() << std::endl;
+    if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
 
 bool osgDB::writeNodeFile(const Node& node,const std::string& filename)
 {
     ReaderWriter::WriteResult wr = Registry::instance()->writeNode(node,filename);
-    if (wr.error()) notify(WARN) << wr.message() << std::endl;
+    if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }

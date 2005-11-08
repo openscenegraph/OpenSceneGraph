@@ -7,7 +7,7 @@ CXXFILES =\
 	String.cpp\
 	Text.cpp\
 
-LIBS   += -losgText -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgText -losg -losgIntrospection -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

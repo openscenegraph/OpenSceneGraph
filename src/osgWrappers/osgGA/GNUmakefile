@@ -19,7 +19,7 @@ CXXFILES =\
 	TrackballManipulator.cpp\
 	UFOManipulator.cpp\
 
-LIBS   += -losgGA -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgGA -losg -losgIntrospection -losgUtil  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

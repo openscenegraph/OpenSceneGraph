@@ -6,7 +6,7 @@ CXXFILES =\
 	HeightFieldNode.cpp\
 	HeightFieldRenderer.cpp\
 
-LIBS   += -losgTerrain -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgTerrain -losg -losgIntrospection -losgDB -losgUtil -losgFX  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

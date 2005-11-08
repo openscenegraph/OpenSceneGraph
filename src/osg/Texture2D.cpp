@@ -222,8 +222,8 @@ void Texture2D::apply(State& state) const
         // no image present, but dimensions at set so lets create the texture
         glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat,
                      _textureWidth, _textureHeight, _borderWidth,
-                     _internalFormat,
-                     GL_UNSIGNED_BYTE,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                      0);                
                      
         if (_readPBuffer.valid())

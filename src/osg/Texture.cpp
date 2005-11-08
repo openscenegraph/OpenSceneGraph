@@ -345,6 +345,8 @@ Texture::Texture():
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0),
+            _sourceFormat(0),
+            _sourceType(GL_UNSIGNED_BYTE),
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
             _shadow_texture_mode(LUMINANCE),
@@ -368,6 +370,8 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _borderWidth(text._borderWidth),
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat),
+            _sourceFormat(text._sourceFormat),
+            _sourceType(text._sourceType),
             _use_shadow_comparison(text._use_shadow_comparison),
             _shadow_compare_func(text._shadow_compare_func),
             _shadow_texture_mode(text._shadow_texture_mode),
@@ -397,6 +401,9 @@ int Texture::compareTexture(const Texture& rhs) const
     {
         COMPARE_StateAttribute_Parameter(_internalFormat)
     }
+
+    COMPARE_StateAttribute_Parameter(_sourceFormat)
+    COMPARE_StateAttribute_Parameter(_sourceType)
 
     COMPARE_StateAttribute_Parameter(_use_shadow_comparison)
     COMPARE_StateAttribute_Parameter(_shadow_compare_func)

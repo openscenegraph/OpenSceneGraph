@@ -95,6 +95,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method1(void, copyTexture, IN, osg::State &, state);
+	I_Method0(void, sort);
 	I_Method2(void, drawPreRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method3(void, drawInner, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous, IN, bool &, doCopyTexture);

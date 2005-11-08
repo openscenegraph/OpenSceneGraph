@@ -39,7 +39,7 @@ CXXFILES =\
 	VariableRateCounter.cpp\
 	range.cpp\
 
-LIBS   += -losgParticle -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgParticle -losg -losgIntrospection -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

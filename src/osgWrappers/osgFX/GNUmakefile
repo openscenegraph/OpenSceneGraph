@@ -13,7 +13,7 @@ CXXFILES =\
 	Technique.cpp\
 	Validator.cpp\
 
-LIBS   += -losgFX -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgFX -losg -losgIntrospection -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

@@ -20,7 +20,7 @@ CXXFILES =\
 	SphereSegment.cpp\
 	VisibilityGroup.cpp\
 
-LIBS   += -losgSim -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgSim -losg -losgIntrospection -losgUtil -losgText -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

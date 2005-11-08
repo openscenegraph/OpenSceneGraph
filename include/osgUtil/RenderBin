@@ -97,7 +97,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
             _stateGraphList.push_back(rg);
         }
 
-        void sort();
+        virtual void sort();
 
         virtual void sortImplementation();
     

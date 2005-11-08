@@ -12,6 +12,7 @@
 */
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/StateGraph>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
@@ -63,11 +64,13 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         state.applyModelViewMatrix(_modelview.get());
 
         // apply state if required.
-         StateGraph::moveStateGraph(state,NULL,_parent->_parent);
+        StateGraph::moveStateGraph(state,NULL,_parent->_parent);
 
         state.apply(_parent->_stateset);
 
         // draw the drawable
         _drawable->draw(state);
     }
+    
+    // osg::notify(osg::NOTICE)<<"RenderLeaf "<<_drawable->getName()<<" "<<_depth<<std::endl;
 }

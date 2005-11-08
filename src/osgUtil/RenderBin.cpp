@@ -346,6 +346,8 @@ void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
 
 void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 {
+    // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
+
     // draw first set of draw bins.
     RenderBinList::iterator rbitr;
     for(rbitr = _bins.begin();
@@ -393,7 +395,7 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
         rbitr->second->draw(state,previous);
     }
 
-
+    //osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;
 }
 
 // stats

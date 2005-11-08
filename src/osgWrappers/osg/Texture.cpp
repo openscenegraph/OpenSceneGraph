@@ -114,6 +114,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method1(void, setInternalFormat, IN, GLint, internalFormat);
 	I_Method0(GLint, getInternalFormat);
 	I_Method0(bool, isCompressedInternalFormat);
+	I_Method1(void, setSourceFormat, IN, GLenum, sourceFormat);
+	I_Method0(GLenum, getSourceFormat);
+	I_Method1(void, setSourceType, IN, GLenum, sourceType);
+	I_Method0(GLenum, getSourceType);
 	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID);
 	I_Method0(void, dirtyTextureObject);
 	I_Method0(bool, areAllTextureObjectsLoaded);
@@ -152,6 +156,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Property(osg::Texture::ShadowCompareFunc, ShadowCompareFunc);
 	I_WriteOnlyProperty(bool, ShadowComparison);
 	I_Property(osg::Texture::ShadowTextureMode, ShadowTextureMode);
+	I_Property(GLenum, SourceFormat);
+	I_Property(GLenum, SourceType);
 	I_ReadOnlyProperty(GLenum, TextureTarget);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 	I_Property(bool, UnRefImageDataAfterApply);

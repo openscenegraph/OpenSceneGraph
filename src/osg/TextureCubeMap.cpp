@@ -264,8 +264,8 @@ void TextureCubeMap::apply(State& state) const
             // no image present, but dimensions at set so less create the texture
             glTexImage2D( faceTarget[n], 0, _internalFormat,
                          _textureWidth, _textureHeight, _borderWidth,
-                         _internalFormat,
-                         GL_UNSIGNED_BYTE,
+                         _sourceFormat ? _sourceFormat : _internalFormat,
+                         _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
                          0);                
         }
         

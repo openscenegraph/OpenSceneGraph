@@ -145,14 +145,40 @@ struct MyCameraPostDrawCallback : public osg::CameraNode::DrawCallback
             // using the image can be informed that they need to update.
             _image->dirty();
         }
-        
+        else if (_image && _image->getPixelFormat()==GL_RGBA && _image->getDataType()==GL_FLOAT)
+        {
+            // we'll pick out the center 1/2 of the whole image,
+            int column_start = _image->s()/4;
+            int column_end = 3*column_start;
+            
+            int row_start = _image->t()/4;
+            int row_end = 3*row_start;
+            
+            // and then invert these pixels
+            for(int r=row_start; r<row_end; ++r)
+            {
+                float* data = (float*)_image->data(column_start, r);
+                for(int c=column_start; c<column_end; ++c)
+                {
+                    (*data) = 1.0f-(*data); ++data;
+                    (*data) = 1.0f-(*data); ++data;
+                    (*data) = 1.0f-(*data); ++data;
+                    (*data) = 1.0f; ++data;
+                }
+            }
+
+            // dirty the image (increments the modified count) so that any textures
+            // using the image can be informed that they need to update.
+            _image->dirty();
+        }
+       
     }
     
     osg::Image* _image;
 };
 
 
-osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation, bool useImage, bool useTextureRectangle)
+osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation, bool useImage, bool useTextureRectangle, bool useHDR)
 {
     if (!subgraph) return 0;
 
@@ -181,6 +207,13 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         
         texture = texture2D;
     } 
+
+    if (useHDR)
+    {
+        texture->setInternalFormat(GL_RGBA16F_ARB);
+        texture->setSourceFormat(GL_RGBA);
+        texture->setSourceType(GL_FLOAT);
+    }
 
     // first create the geometry of the flag of which to view.
     { 
@@ -298,7 +331,8 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         if (useImage)
         {
             osg::Image* image = new osg::Image;
-            image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+            //image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+            image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_FLOAT);
 
             // attach the image so its copied on each frame.
             camera->attach(osg::CameraNode::COLOR_BUFFER, image);
@@ -385,6 +419,8 @@ int main( int argc, char **argv )
     bool useTextureRectangle = false;
     while (arguments.read("--texture-rectangle")) { useTextureRectangle = true; }
     
+    bool useHDR = false;
+    while (arguments.read("--hdr")) { useHDR = true; }
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -418,7 +454,7 @@ int main( int argc, char **argv )
     loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
-    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation, useImage, useTextureRectangle));
+    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation, useImage, useTextureRectangle, useHDR));
 
 
     // add model to the viewer.
@@ -447,3 +483,4 @@ int main( int argc, char **argv )
 
     return 0;
 }
+

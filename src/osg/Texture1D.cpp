@@ -159,6 +159,28 @@ void Texture1D::apply(State& state) const
         }
         
     }
+    else if ( (_textureWidth!=0) && (_internalFormat!=0) )
+    {
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+                contextID,GL_TEXTURE_1D,_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
+        
+        textureObject->bind();
+
+        applyTexParameters(GL_TEXTURE_1D,state);
+
+        // no image present, but dimensions at set so lets create the texture
+        glTexImage1D( GL_TEXTURE_1D, 0, _internalFormat,
+                     _textureWidth, _borderWidth,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
+                     0);                
+                     
+        if (_readPBuffer.valid())
+        {
+            _readPBuffer->bindPBufferToTexture(GL_FRONT);
+        }
+        
+    }
     else
     {
         glBindTexture( GL_TEXTURE_1D, 0 );

@@ -342,7 +342,20 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Gets the internal texture format. */
         inline GLint getInternalFormat() const { if (_internalFormat==0) computeInternalFormat(); return _internalFormat; }
         
+        /** Return true if the internal format is one of the compressed formats.*/
         bool isCompressedInternalFormat() const;
+
+        /** Sets the external source image format, used as a fallback when no osg::Image is attached to provide the source image format. */
+        inline void setSourceFormat(GLenum sourceFormat) { _sourceFormat = sourceFormat; }
+
+        /** Gets the external source image format. */
+        inline GLenum getSourceFormat() const { return _sourceFormat; }
+
+        /** Sets the external source data type, used as a fallback when no osg::Image is attached to provide the source image format.*/
+        inline void setSourceType(GLenum sourceType) { _sourceType = sourceType; }
+
+        /** Gets the external source data type.*/
+        inline GLenum getSourceType() const { return _sourceType; }
 
 
         class TextureObject;
@@ -594,6 +607,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         InternalFormatMode  _internalFormatMode;
         mutable GLint       _internalFormat;
+        mutable GLenum      _sourceFormat;
+        mutable GLenum      _sourceType;
       
         bool                _use_shadow_comparison;
         ShadowCompareFunc   _shadow_compare_func;

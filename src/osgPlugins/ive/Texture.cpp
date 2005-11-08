@@ -56,6 +56,12 @@ void Texture::write(DataOutputStream* out){
         out->writeBool(_clientStorageHint);
         out->writeBool(_resizeNonPowerOfTwoHint);
     }
+    
+    if ( out->getVersion() >= VERSION_0014 )
+    {
+        out->writeInt(_sourceFormat);
+        out->writeInt(_sourceType);
+    }
 }
 
 void Texture::read(DataInputStream* in)
@@ -101,6 +107,11 @@ void Texture::read(DataInputStream* in)
             _resizeNonPowerOfTwoHint = in->readBool();
         }
 
+        if ( in->getVersion() >= VERSION_0014 )
+        {
+            _sourceFormat = in->readInt();
+            _sourceType = in->readInt();
+        }
     }
     else
     {

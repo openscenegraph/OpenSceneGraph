@@ -131,7 +131,7 @@ static osg::Node* CreateBlinkSequenceLightNode()
       osgSim::LightPoint   lp;
       double x = cos( (2.0*osg::PI*i)/max_points );
       double z = sin( (2.0*osg::PI*i)/max_points );
-      lp._position.set( x, 0.0f, z + 100.0f );
+      lp._position.set( x, 0.0f, z + 30.0f );
       lp._blinkSequence = new osgSim::BlinkSequence;
       for( int j = 10; j > 0; --j )
       {

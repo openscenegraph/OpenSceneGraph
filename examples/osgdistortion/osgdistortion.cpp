@@ -15,7 +15,6 @@
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 
-#include <osgUtil/TransformCallback>
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgDB/Registry>

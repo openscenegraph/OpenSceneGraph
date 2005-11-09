@@ -18,7 +18,6 @@
 #include <osg/MatrixTransform>
 
 #include <osgUtil/SmoothingVisitor>
-#include <osgUtil/TransformCallback>
 
 
 class PBufferTexture2D : public osg::Texture2D
@@ -239,7 +238,7 @@ osg::ref_ptr<osg::Node> buildSceneGraphAndSetCameraViews(osg::Node *loadedModel,
     osg::ref_ptr<osg::MatrixTransform> loadedModelTransform = new osg::MatrixTransform;
     loadedModelTransform->addChild(loadedModel);
 
-    osg::ref_ptr<osg::NodeCallback> nc = new osgUtil::TransformCallback(
+    osg::ref_ptr<osg::NodeCallback> nc = new osg::AnimationPathCallback(
             loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     loadedModelTransform->setUpdateCallback(nc.get());
 
@@ -269,7 +268,7 @@ osg::ref_ptr<osg::Node> buildSceneGraph(osg::Node *loadedModel, Producer::Render
     osg::ref_ptr<osg::MatrixTransform> loadedModelTransform = new osg::MatrixTransform;
     loadedModelTransform->addChild(loadedModel);
 
-    osg::ref_ptr<osg::NodeCallback> nc = new osgUtil::TransformCallback(
+    osg::ref_ptr<osg::NodeCallback> nc = new osg::AnimationPathCallback(
             loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     loadedModelTransform->setUpdateCallback(nc.get());
 

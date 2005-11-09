@@ -115,6 +115,38 @@ void AnimationPath::write(std::ostream& fout) const
     fout.precision(prec);
 }
 
+AnimationPathCallback::AnimationPathCallback(const osg::Vec3d& pivot,const osg::Vec3d& axis,float angularVelocity):
+            _pivotPoint(pivot),
+            _useInverseMatrix(false),
+            _timeOffset(0.0),
+            _timeMultiplier(1.0),
+            _firstTime(DBL_MAX),
+            _latestTime(0.0),
+            _pause(false),
+            _pauseTime(0.0)
+{
+    _animationPath = new AnimationPath;
+    _animationPath->setLoopMode(osg::AnimationPath::LOOP);
+
+    double time0 = 0.0;
+    double time1 = osg::PI*0.5/angularVelocity;
+    double time2 = osg::PI*1.0/angularVelocity;
+    double time3 = osg::PI*1.5/angularVelocity;
+    double time4 = osg::PI*2.0/angularVelocity;
+    
+    osg::Quat rotation0(0.0, axis);
+    osg::Quat rotation1(osg::PI*0.5, axis);
+    osg::Quat rotation2(osg::PI*1.0, axis);
+    osg::Quat rotation3(osg::PI*1.5, axis);
+    
+    
+    _animationPath->insert(time0,osg::AnimationPath::ControlPoint(pivot,rotation0));
+    _animationPath->insert(time1,osg::AnimationPath::ControlPoint(pivot,rotation1));
+    _animationPath->insert(time2,osg::AnimationPath::ControlPoint(pivot,rotation2));
+    _animationPath->insert(time3,osg::AnimationPath::ControlPoint(pivot,rotation3));
+    _animationPath->insert(time4,osg::AnimationPath::ControlPoint(pivot,rotation0));
+}
+
 class AnimationPathCallbackVisitor : public NodeVisitor
 {
     public:

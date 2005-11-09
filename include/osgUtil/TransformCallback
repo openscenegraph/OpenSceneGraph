@@ -21,6 +21,7 @@
 namespace osgUtil
 {
 
+/** TransformCallback is now deprecated, use osg::AnimationPathCallback instead.*/
 class OSGUTIL_EXPORT TransformCallback : public osg::NodeCallback
 {
 

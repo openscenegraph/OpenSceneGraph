@@ -15,7 +15,6 @@
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 
-#include <osgUtil/TransformCallback>
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgDB/Registry>
@@ -450,7 +449,7 @@ int main( int argc, char **argv )
     osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
     loadedModelTransform->addChild(loadedModel);
 
-    osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    osg::NodeCallback* nc = new osg::AnimationPathCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();

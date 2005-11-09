@@ -9,7 +9,6 @@
 #include <osg/Projection>
 
 #include <osgUtil/Tesselator>
-#include <osgUtil/TransformCallback>
 #include <osgUtil/CullVisitor>
 
 

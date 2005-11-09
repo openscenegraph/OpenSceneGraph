@@ -9,7 +9,6 @@
 #include <osg/ClearNode>
 
 #include <osgUtil/Tesselator>
-#include <osgUtil/TransformCallback>
 #include <osgUtil/CullVisitor>
 
 #include <osgText/Text>
@@ -190,7 +189,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::string& filename)
 {
     osg::MatrixTransform* xform = new osg::MatrixTransform;
-    xform->setUpdateCallback(new osgUtil::TransformCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(10.0f)));
+    xform->setUpdateCallback(new osg::AnimationPathCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(10.0f)));
 
     osg::Node* bluemarble = osgDB::readNodeFile(filename.c_str());
     if (bluemarble)

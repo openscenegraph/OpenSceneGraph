@@ -19,8 +19,6 @@
 #include <osg/RefNodePath>
 #include <osg/PositionAttitudeTransform>
 
-#include <osgUtil/TransformCallback>
-
 #include <osg/CameraNode>
 #include <osg/TexGenNode>
 
@@ -36,13 +34,13 @@ ref_ptr<Group> _create_scene()
   ref_ptr<Geode> geode_2 = new Geode;
   ref_ptr<MatrixTransform> transform_2 = new MatrixTransform;
   transform_2->addChild(geode_2.get());
-  transform_2->setUpdateCallback(new osgUtil::TransformCallback(Vec3(0, 0, 0), Y_AXIS, inDegrees(45.0f)));
+  transform_2->setUpdateCallback(new osg::AnimationPathCallback(Vec3(0, 0, 0), Y_AXIS, inDegrees(45.0f)));
   scene->addChild(transform_2.get());
 
   ref_ptr<Geode> geode_3 = new Geode;
   ref_ptr<MatrixTransform> transform_3 = new MatrixTransform;
   transform_3->addChild(geode_3.get());
-  transform_3->setUpdateCallback(new osgUtil::TransformCallback(Vec3(0, 0, 0), Y_AXIS, inDegrees(-22.5f)));
+  transform_3->setUpdateCallback(new osg::AnimationPathCallback(Vec3(0, 0, 0), Y_AXIS, inDegrees(-22.5f)));
   scene->addChild(transform_3.get());
 
   const float radius = 0.8f;

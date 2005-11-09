@@ -15,7 +15,6 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
-#include <osgUtil/TransformCallback>
 
 #include <osgProducer/Viewer>
 
@@ -65,7 +64,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     
     osg::MatrixTransform* transform= new osg::MatrixTransform;
 
-    osg::NodeCallback* nc = new osgUtil::TransformCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    osg::NodeCallback* nc = new osg::AnimationPathCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     transform->setUpdateCallback(nc);
 
     osg::ClipNode* clipnode = new osg::ClipNode;

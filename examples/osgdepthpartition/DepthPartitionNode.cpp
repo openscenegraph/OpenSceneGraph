@@ -9,7 +9,8 @@ CURRENT_CLASS::CURRENT_CLASS()
 }
 
 CURRENT_CLASS::CURRENT_CLASS(const CURRENT_CLASS& dpn, const osg::CopyOp& copyop)
-	: _active(dpn._active),
+	: Group(dpn, copyop),
+          _active(dpn._active),
 	  _renderOrder(dpn._renderOrder),
 	  _clearColorBuffer(dpn._clearColorBuffer)
 {

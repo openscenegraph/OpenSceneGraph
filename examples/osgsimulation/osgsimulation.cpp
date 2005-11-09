@@ -330,7 +330,7 @@ int main(int argc, char **argv)
         osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
         if (cessna)
         {
-            double s = 600000.0 / cessna->getBound().radius();
+            double s = 200000.0 / cessna->getBound().radius();
         
             osg::MatrixTransform* scaler = new osg::MatrixTransform;
             scaler->addChild(cessna);

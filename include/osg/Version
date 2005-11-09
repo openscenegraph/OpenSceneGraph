@@ -18,14 +18,14 @@
 
 extern "C" {
 
-#define OSG_VERSION_MAJOR 0
-#define OSG_VERSION_MINOR 9
-#define OSG_VERSION_RELEASE 9
-#define OSG_VERSION_REVISION 1
+#define OSG_VERSION_MAJOR 1
+#define OSG_VERSION_MINOR 0
+#define OSG_VERSION_RELEASE 0
+#define OSG_VERSION_REVISION 0
 
 /**
   * osgGetVersion() returns the library version number.
-  * Numbering convention : OpenSceneGraph-0.9.9 will return 0.9.9 from osgGetVersion.
+ * Numbering convention : OpenSceneGraph-1.0 will return 1.0 from osgGetVersion.
   *
   * This C function can be also used to check for the existence of the OpenSceneGraph
   * library using autoconf and its m4 macro AC_CHECK_LIB.

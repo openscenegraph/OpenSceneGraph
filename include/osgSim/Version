@@ -20,7 +20,7 @@ extern "C" {
 
 /**
  * osgSimGetVersion() returns the library version number.
- * Numbering convention : OpenSceneGraph-Sim-0.1 will return 0.1 from osgSimgetVersion.
+ * Numbering convention : OpenSceneGraph-1.0 will return 1.0 from osgSimGetVersion.
  *
  * This C function can be also used to check for the existence of the OpenSceneGraph
  * library using autoconf and its m4 macro AC_CHECK_LIB.

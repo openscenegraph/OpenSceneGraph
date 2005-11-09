@@ -2,7 +2,7 @@
 
 const char* osgTerrainGetVersion()
 {
-    return "0.9.9";
+    return "1.0";
 }
 
 

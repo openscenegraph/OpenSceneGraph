@@ -67,7 +67,12 @@ class Logos: public osg::Drawable
             sset->setMode( GL_BLEND, osg::StateAttribute::ON );
             sset->setMode( GL_DEPTH_TEST, osg::StateAttribute::OFF );
             sset->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF );
+#if 1            
+            // for now we'll crudely set the bin number to 100 to force it to draw later and ontop of the scene
+            sset->setRenderBinDetails( 100 , "RenderBin" );
+#else
             sset->setRenderBinDetails( StateSet::TRANSPARENT_BIN + 1 , "RenderBin" );
+#endif
             setStateSet( sset );
             viewport = new osg::Viewport;
             setCullCallback( new logosCullCallback );

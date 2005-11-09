@@ -31,6 +31,7 @@
 #include <osg/Image>
 #include <osg/Shape>
 #include <osg/CoordinateSystemNode>
+#include <osg/State>
 
 #include <osgDB/Archive>
 
@@ -1085,7 +1086,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void _writeNodeFile(const osg::Node& node,const std::string& filename);
         void _writeImageFile(const osg::Image& image,const std::string& filename);
         
-        
+        void setState(osg::State* state) { _state = state; }
+        osg::State* getState() { return _state.get(); }
 
     protected:
 
@@ -1152,6 +1154,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         bool                                        _writeNodeBeforeSimplification;
 
         osg::ref_ptr<osg::Node>                     _rootNode;
+        osg::ref_ptr<osg::State>                    _state;
+
         
 };
 

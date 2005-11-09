@@ -101,69 +101,74 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
         std::string::size_type pos = 0;
         std::string::size_type offset = 0;
         bool firstInLine = true;
-        while (pos<explanation.length())
+        if (!explanation.empty())
         {
-            if (firstInLine) offset = 0;
-                    
-            // skip any leading white space.
-            while (pos<explanation.length() && explanation[pos]==' ')
+            while (pos<explanation.length())
             {
-                if (firstInLine) ++offset;
-                ++pos;
-            }
-            
-            firstInLine = false;
-        
-            std::string::size_type width = minimum((std::string::size_type)(explanation.length()-pos),(std::string::size_type)(explanationWidth-offset));
-            std::string::size_type slashn_pos = explanation.find('\n',pos);
-            
-            unsigned int extraSkip = 0;
-            bool concatinated = false;
-            if (slashn_pos!=std::string::npos)
-            {
-                if (slashn_pos<pos+width)
-                {
-                    width = slashn_pos-pos;
-                    ++extraSkip;
-                    firstInLine = true;
-                }
-                else if (slashn_pos==pos+width) 
-                {
-                    ++extraSkip;
-                    firstInLine = true;
-                }
-            }
-            
-            if (pos+width<explanation.length())
-            {
-                // now reduce width until we get a space or a return
-                // so that we ensure that whole words are printed.
-                while (width>0 && 
-                       explanation[pos+width]!=' ' && 
-                       explanation[pos+width]!='\n') --width;
-                       
-                if (width==0)
-                {
-                    // word must be longer than a whole line so will need
-                    // to concatinate it.
-                    width = explanationWidth-1;
-                    concatinated = true;
-                }
-            }
+                if (firstInLine) offset = 0;
 
-            line.replace(explanationPos+offset,explanationWidth, explanation, pos, width);
+                // skip any leading white space.
+                while (pos<explanation.length() && explanation[pos]==' ')
+                {
+                    if (firstInLine) ++offset;
+                    ++pos;
+                }
 
-            if (concatinated) { str += line; str += "-\n"; }
-            else { str += line; str += "\n"; }
-            
-            // move to the next line of output.
-            line.assign(fullWidth,' ');
-            
-            pos += width+extraSkip;
+                firstInLine = false;
 
-            
+                std::string::size_type width = minimum((std::string::size_type)(explanation.length()-pos),(std::string::size_type)(explanationWidth-offset));
+                std::string::size_type slashn_pos = explanation.find('\n',pos);
+
+                unsigned int extraSkip = 0;
+                bool concatinated = false;
+                if (slashn_pos!=std::string::npos)
+                {
+                    if (slashn_pos<pos+width)
+                    {
+                        width = slashn_pos-pos;
+                        ++extraSkip;
+                        firstInLine = true;
+                    }
+                    else if (slashn_pos==pos+width) 
+                    {
+                        ++extraSkip;
+                        firstInLine = true;
+                    }
+                }
+
+                if (pos+width<explanation.length())
+                {
+                    // now reduce width until we get a space or a return
+                    // so that we ensure that whole words are printed.
+                    while (width>0 && 
+                           explanation[pos+width]!=' ' && 
+                           explanation[pos+width]!='\n') --width;
+
+                    if (width==0)
+                    {
+                        // word must be longer than a whole line so will need
+                        // to concatinate it.
+                        width = explanationWidth-1;
+                        concatinated = true;
+                    }
+                }
+
+                line.replace(explanationPos+offset,explanationWidth, explanation, pos, width);
+
+                if (concatinated) { str += line; str += "-\n"; }
+                else { str += line; str += "\n"; }
+
+                // move to the next line of output.
+                line.assign(fullWidth,' ');
+
+                pos += width+extraSkip;
+
+            }
         }
-                
+        else
+        {
+            str += line; str += "\n";
+        }
     }
 }
 

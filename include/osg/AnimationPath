@@ -237,6 +237,7 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
         
         META_Object(osg,AnimationPathCallback);
 
+        /** Construct an AnimationPathCallback with a specified animation path.*/
         AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0,double timeMultiplier=1.0):
             _animationPath(ap),
             _pivotPoint(0.0,0.0,0.0),
@@ -248,6 +249,9 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
             _pause(false),
             _pauseTime(0.0) {}
 
+        /** Construct an AnimationPathCallback and automatical create an animation path to produce a rotation about a point.*/
+        AnimationPathCallback(const osg::Vec3d& pivot,const osg::Vec3d& axis,float angularVelocity);
+ 
             
         void setAnimationPath(AnimationPath* path) { _animationPath = path; }
         AnimationPath* getAnimationPath() { return _animationPath.get(); }

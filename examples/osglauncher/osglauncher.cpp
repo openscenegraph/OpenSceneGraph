@@ -20,7 +20,6 @@
 #include <osg/io_utils>
 
 #include <osgUtil/Tesselator>
-#include <osgUtil/TransformCallback>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/Optimizer>
 

@@ -20,8 +20,7 @@
 #include <osg/ColorMask>
 #include <osg/Depth>
 #include <osg/ClipNode>
-
-#include <osgUtil/TransformCallback>
+#include <osg/AnimationPath>
 
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
@@ -382,7 +381,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::MatrixTransform> loadedModelTransform = new osg::MatrixTransform;
     loadedModelTransform->addChild(loadedModel.get());
 
-    osg::ref_ptr<osg::NodeCallback> nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    osg::ref_ptr<osg::NodeCallback> nc = new osg::AnimationPathCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     loadedModelTransform->setUpdateCallback(nc.get());
 
 

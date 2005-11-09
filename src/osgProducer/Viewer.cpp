@@ -1022,7 +1022,7 @@ void Viewer::requestContinuousUpdate(bool)
 
 void Viewer::requestWarpPointer(float x,float y)
 {
-    if (_kbmcb.valid())
+    if (_kbmcb.valid() && isRealized())
     {
         osg::notify(osg::INFO) << "requestWarpPointer x= "<<x<<" y="<<y<<std::endl;
     

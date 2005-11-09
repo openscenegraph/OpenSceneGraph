@@ -346,7 +346,7 @@ Texture::Texture():
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0),
             _sourceFormat(0),
-            _sourceType(GL_UNSIGNED_BYTE),
+            _sourceType(0),
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
             _shadow_texture_mode(LUMINANCE),

@@ -1125,7 +1125,7 @@ osg::DrawArrays* LinearConstraint::makeRoad(void ) const
     
 }
 
-osg::Vec3Array *LinearConstraint::getRoadNormals(const osg::Vec3Array *points) const
+osg::Vec3Array *LinearConstraint::getRoadNormals(const osg::Vec3Array*) const
 {
     osg::Vec3Array *nrms=new osg::Vec3Array;
     for(unsigned int i=0;i<_midline->size();i++) {

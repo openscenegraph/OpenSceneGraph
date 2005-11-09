@@ -20,7 +20,7 @@ extern "C" {
 
 /**
  * osgDBGetVersion() returns the library version number.
- * Numbering convention : osg_src-0.8.31 will return 0.8.31 from getVersion_osg.
+ * Numbering convention : OpenSceneGraph-1.0 will return 1.0 from osgDBGetVersion.
  *
  * This C function can be also used to check for the existence of the OpenSceneGraph
  * library using autoconf and its m4 macro AC_CHECK_LIB.

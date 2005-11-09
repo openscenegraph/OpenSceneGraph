@@ -462,17 +462,17 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                                 G = Hue_2_RGB( var_1, var_2, H );
                                 B = Hue_2_RGB( var_1, var_2, H - ( 1 / 3 ) );                                
                             } 
-                            imageData[4*i+0] = R;
-                            imageData[4*i+1] = G;
-                            imageData[4*i+2] = B;
-                            imageData[4*i+3] = 1.0f;
+                            imageData[4*i+0] = static_cast<unsigned char>(R*255.0f);
+                            imageData[4*i+1] = static_cast<unsigned char>(G*255.0f);
+                            imageData[4*i+2] = static_cast<unsigned char>(B*255.0f);
+                            imageData[4*i+3] = static_cast<unsigned char>(255.0f);
                         }
                         else if (interp == GPI_Gray)
                         {
-                            imageData[4*i+0] = colorEntry->c1;
-                            imageData[4*i+1] = colorEntry->c1;
-                            imageData[4*i+2] = colorEntry->c1;
-                            imageData[4*i+3] = 1.0f;
+                            imageData[4*i+0] = static_cast<unsigned char>(colorEntry->c1*255.0f);
+                            imageData[4*i+1] = static_cast<unsigned char>(colorEntry->c1*255.0f);
+                            imageData[4*i+2] = static_cast<unsigned char>(colorEntry->c1*255.0f);
+                            imageData[4*i+3] = static_cast<unsigned char>(255.0f);
                         }
                     }
                 }

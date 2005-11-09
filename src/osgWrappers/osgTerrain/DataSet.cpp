@@ -14,6 +14,7 @@
 #include <osg/Image>
 #include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/State>
 #include <osg/StateSet>
 #include <osg/Vec4>
 #include <osgDB/Archive>
@@ -146,6 +147,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method0(osg::Node *, getDestinationRootNode);
 	I_Method2(void, _writeNodeFile, IN, const osg::Node &, node, IN, const std::string &, filename);
 	I_Method2(void, _writeImageFile, IN, const osg::Image &, image, IN, const std::string &, filename);
+	I_Method1(void, setState, IN, osg::State *, state);
+	I_Method0(osg::State *, getState);
 	I_Property(osgDB::Archive *, Archive);
 	I_Property(const std::string &, ArchiveName);
 	I_Property(const std::string &, CommentString);
@@ -173,6 +176,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Property(osgTerrain::DataSet::MipMappingMode, MipMappingMode);
 	I_Property(float, RadiusToMaxVisibleDistanceRatio);
 	I_Property(float, SkirtRatio);
+	I_Property(osg::State *, State);
 	I_Property(osgTerrain::DataSet::TextureType, TextureType);
 	I_Property(bool, UseLocalTileTransform);
 	I_Property(float, VerticalScale);

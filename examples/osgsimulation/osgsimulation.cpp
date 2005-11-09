@@ -96,6 +96,12 @@ osg::Node* createEarth()
         else dataSet->writeDestination();
         
         scene = dataSet->getDestinationRootNode();
+        
+        // now we must get rid of all the old OpenGL objects before we start using the scene graph again 
+        // otherwise it'll end up in an inconsistent state.
+        scene->releaseGLObjects(dataSet->getState());
+        osg::Texture::flushAllDeletedTextureObjects(0);
+        osg::Drawable::flushAllDeletedDisplayLists(0);
     }
         
     return scene.release();

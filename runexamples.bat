@@ -129,6 +129,12 @@ osgviewer glsl_simple.osg
 echo osgviewer glsl_confetti.osg
 osgviewer glsl_confetti.osg
 
+echo osgviewer glsl_mandelbrot.osg
+osgviewer glsl_mandelbrot.osg
+
+echo osgviewer glsl_julia.osg
+osgviewer glsl_julia.osg
+
 echo osgshadowtexture
 osgshadowtexture cessna.osg
 
@@ -136,7 +142,7 @@ echo osgshape
 osgshape
 
 echo osgsimplifier
-osgsimplifier -s 0.1 cessna.osg
+osgsimplifier --ratio 0.1 cessna.osg
 
 echo osgsimulation
 osgsimulation

@@ -139,7 +139,7 @@ protected:
 };
 
 class LinearConstraint: public osgUtil::DelaunayConstraint { 
-/** forces edges of a "road" to fit triangles
+/** forces edges of a "Images/road" to fit triangles
 *  if 2 roads cross, then the overlap will be replaced by a 'cross road'
     *  and the roads built up to the cross roads with a texture along its length. */
 public:
@@ -215,7 +215,7 @@ public:
         osg::StateSet *dstate=   gm->getOrCreateStateSet(  );
         dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
         
-        osg::Image* image = osgDB::readImageFile("stoneWall.jpg");
+        osg::Image* image = osgDB::readImageFile("Images/Brick-Std-Orange.TGA");
         if (image)
         {
             osg::Texture2D* txt = new osg::Texture2D;
@@ -344,7 +344,7 @@ osg::Group *makedelaunay(const int ndcs)
     
     osg::Vec3Array *points=new osg::Vec3Array;
     
-    osg::Image* image = osgDB::readImageFile("Lands-Flowers-Small_Purple.png");
+    osg::Image* image = osgDB::readImageFile("Images/blueFlowers.png");
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
@@ -630,17 +630,17 @@ osg::Group *makedelaunay(const int ndcs)
         if (ndcs>2) {
             trig->removeInternalTriangles(dc.get());
             
-            wc->setTexture("Brick-Norman-Brown.TGA"); // wall looks like brick
+            wc->setTexture("Images/Brick-Norman-Brown.TGA"); // wall looks like brick
             geode->addDrawable(wc->makeWallGeometry()); // this creates wall at wc drawarrays
             if (ndcs>3) {
                 trig->removeInternalTriangles(dc2.get());
                 osg::ref_ptr<osg::Vec3Array> arpts=dc2->getPoints(points);
-                dc2->setTexture("Lands-Needles_2.png");
+                dc2->setTexture("Images/purpleFlowers.png");
                 geode->addDrawable(dc2->makeAreal(arpts.get())); // this creates fill in geometry
                 
-                if (ndcs>4) { // a simple "road"
+                if (ndcs>4) { // a simple "Images/road"
                     trig->removeInternalTriangles(dc3.get());
-                    dc3->setTexture ("road.png");
+                    dc3->setTexture ("Images/road.png");
                     dc3->setTexrep(40,9.5); // texture is repeated at this frequency
                     geode->addDrawable(dc3->makeGeometry(points)); // this creates road geometry
                     
@@ -651,40 +651,40 @@ osg::Group *makedelaunay(const int ndcs)
                             trig->removeInternalTriangles(forestroad3.get());
                         }
                         trig->removeInternalTriangles(forest.get());
-                        forest->setTexture("forestRoof.png"); 
+                        forest->setTexture("Images/forestRoof.png"); 
                         osg::ref_ptr<osg::Vec3Array> locpts=forest->getPoints(points);
                         geode->addDrawable(forest->makeAreal(locpts.get()));
 
-                        forest->setWallTexture("forestEdge.png"); 
+                        forest->setWallTexture("Images/forestWall.png"); 
                         geode->addDrawable(forest->makeWallGeometry(locpts.get()) );
                         for (osg::Vec3Array::iterator vit=(*locpts).begin(); vit!=(*locpts).end(); vit++) {
                             (*vit)+=osg::Vec3(0,0,30);
                         }
 
                         if (ndcs>6) {//  road & forest overlap
-                            forestroad->setTexture ("road.png");
+                            forestroad->setTexture ("Images/road.png");
                             forestroad->setTexrep(40,22); // texture is repeated at this frequency
                             geode->addDrawable(forestroad->makeGeometry(points)); // this creates road geometry
-                            forestroad2->setTexture ("road.png");
+                            forestroad2->setTexture ("Images/road.png");
                             forestroad2->setTexrep(40,22); // texture is repeated at this frequency
                             geode->addDrawable(forestroad2->makeGeometry(points)); // this creates road geometry
-                            forestroad3->setTexture ("road.png");
+                            forestroad3->setTexture ("Images/road.png");
                             forestroad3->setTexrep(40,22); // texture is repeated at this frequency
                             geode->addDrawable(forestroad3->makeGeometry(points)); // this creates road geometry
                             if (ndcs>7) {//  several overlapping DC's - add geom
                                 trig->removeInternalTriangles(dc6.get());
                                 //                            dc6->makeDrawable();
                                 //                            dc6a->makeDrawable();
-                                dc6->setTexture ("road.png");
+                                dc6->setTexture ("Images/road.png");
                                 dc6->setTexrep(40,22); // texture is repeated at this frequency
                                 geode->addDrawable(dc6->makeGeometry(points)); // this creates road geometry
                                 trig->removeInternalTriangles(dc6a.get());
-                                dc6a->setTexture ("road.png");
+                                dc6a->setTexture ("Images/road.png");
                                 dc6a->setTexrep(40,22); // texture is repeated at this frequency
                                 geode->addDrawable(dc6a->makeGeometry(points)); // this creates road geometry
                                 if (dc8.valid()) {
                                     trig->removeInternalTriangles(dc8.get());
-                                    dc8->setTexture ("road.png");
+                                    dc8->setTexture ("Images/road.png");
                                     dc8->setTexrep(40,16); // texture is repeated at this frequency
                                     geode->addDrawable(dc8->makeGeometry(points)); // this creates road geometry
                                 }

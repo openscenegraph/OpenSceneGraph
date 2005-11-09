@@ -190,9 +190,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
     arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
     arguments.getApplicationUsage()->addCommandLineOption("--max-anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
-    arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-east","");     
-    arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-west","");     
-    arguments.getApplicationUsage()->addCommandLineOption("--whole-globe","");
+    arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-east","Set the coordinates system for next texture or dem to represent the eastern hemisphere of the earth.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-west","Set the coordinates system for next texture or dem to represent the western hemisphere of the earth.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--whole-globe","Set the coordinates system for next texture or dem to represent the whole hemisphere of the earth.");
     arguments.getApplicationUsage()->addCommandLineOption("--geocentric","");
     arguments.getApplicationUsage()->addCommandLineOption("--range","");     
     arguments.getApplicationUsage()->addCommandLineOption("--xx","");     

@@ -2264,14 +2264,12 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
             else
                 texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT5_COMPRESSION);
 
-            osg::ref_ptr<osg::State> state = new osg::State;
-
             // force the mip mapping off temporay if we intend the graphics hardware to do the mipmapping.
             if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
                 texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
 
             // get OpenGL driver to create texture from image.
-            texture->apply(*state);
+            texture->apply(*(_dataSet->getState()));
 
             image->readImageFromCurrentTexture(0,true);
 
@@ -2304,7 +2302,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
                 osg::ref_ptr<osg::State> state = new osg::State;
 
                 // get OpenGL driver to create texture from image.
-                texture->apply(*state);
+                texture->apply(*(_dataSet->getState()));
 
                 image->readImageFromCurrentTexture(0,true);
 
@@ -4581,6 +4579,8 @@ osg::Node* DataSet::decorateWithMultiTextureControl(osg::Node* subgraph)
 
 void DataSet::_buildDestination(bool writeToDisk)
 {
+    if (!_state) _state = new osg::State;
+
     osg::ref_ptr<osgDB::ReaderWriter::Options> previous_options = osgDB::Registry::instance()->getOptions();
     osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("precision 16"));
 

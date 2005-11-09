@@ -100,6 +100,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_ConstructorWithDefaults3(IN, osg::AnimationPath *, ap, , IN, double, timeOffset, 0.0, IN, double, timeMultiplier, 1.0);
+	I_Constructor3(IN, const osg::Vec3d &, pivot, IN, const osg::Vec3d &, axis, IN, float, angularVelocity);
 	I_Method1(void, setAnimationPath, IN, osg::AnimationPath *, path);
 	I_Method0(osg::AnimationPath *, getAnimationPath);
 	I_Method0(const osg::AnimationPath *, getAnimationPath);

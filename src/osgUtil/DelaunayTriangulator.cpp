@@ -592,42 +592,45 @@ void DelaunayConstraint::removeVerticesInside(const DelaunayConstraint *dco)
     */
     int nrem=0;
     osg::Vec3Array *vertices= dynamic_cast< osg::Vec3Array*>(getVertexArray()); 
-    for (osg::Vec3Array::iterator vitr=vertices->begin(); vitr!=vertices->end(); )
+    if (vertices)
     {
-        if (dco->contains(*vitr))
+        for (osg::Vec3Array::iterator vitr=vertices->begin(); vitr!=vertices->end(); )
         {
-            unsigned int idx=vitr-vertices->begin(); // index of vertex
-            // remove vertex index from all the primitives
-            for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++)
+            if (dco->contains(*vitr))
             {
-                osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
-                osg::DrawElementsUShort *dsup=dynamic_cast<osg::DrawElementsUShort *>(prset);
-                if (dsup) {
-                    for (osg::DrawElementsUShort::iterator usitr=dsup->begin(); usitr!=dsup->end(); )
-                    {
-                        if ((*usitr)==idx)
-                        { // remove entirely
-                            usitr=dsup->erase(usitr);
-                        }
-                        else
+                unsigned int idx=vitr-vertices->begin(); // index of vertex
+                // remove vertex index from all the primitives
+                for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++)
+                {
+                    osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
+                    osg::DrawElementsUShort *dsup=dynamic_cast<osg::DrawElementsUShort *>(prset);
+                    if (dsup) {
+                        for (osg::DrawElementsUShort::iterator usitr=dsup->begin(); usitr!=dsup->end(); )
                         {
-                            if ((*usitr)>idx) (*usitr)--; // move indices down 1
-                            usitr++; // next index
+                            if ((*usitr)==idx)
+                            { // remove entirely
+                                usitr=dsup->erase(usitr);
+                            }
+                            else
+                            {
+                                if ((*usitr)>idx) (*usitr)--; // move indices down 1
+                                usitr++; // next index
+                            }
                         }
                     }
+                    else
+                    {
+                        osg::notify(osg::WARN) << "Invalid prset " <<ipr<< " tp " << prset->getType() << " types PrimitiveType,DrawArraysPrimitiveType=1 etc" << std::endl;
+                    }
                 }
-                else
-                {
-                    osg::notify(osg::WARN) << "Invalid prset " <<ipr<< " tp " << prset->getType() << " types PrimitiveType,DrawArraysPrimitiveType=1 etc" << std::endl;
-                }
+                vitr=vertices->erase(vitr);
+                nrem++;
+
             }
-            vitr=vertices->erase(vitr);
-            nrem++;
-            
-        }
-        else
-        {
-            vitr++;
+            else
+            {
+                vitr++;
+            }
         }
     }
 }
@@ -635,8 +638,7 @@ void DelaunayConstraint::removeVerticesInside(const DelaunayConstraint *dco)
 void DelaunayConstraint::merge(DelaunayConstraint *dco)
 {
     unsigned int ipr;
-    osg::Vec3Array *vmerge=dynamic_cast<osg::Vec3Array*>(getVertexArray());
-    osg::Vec3Array * varr=dynamic_cast<osg::Vec3Array*>(dco->getVertexArray());
+    osg::Vec3Array* vmerge=dynamic_cast<osg::Vec3Array*>(getVertexArray());
     if (!vmerge) vmerge=new osg::Vec3Array;
     setVertexArray(vmerge);
     for ( ipr=0; ipr<dco->getNumPrimitiveSets(); ipr++)
@@ -652,7 +654,8 @@ void DelaunayConstraint::merge(DelaunayConstraint *dco)
             addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,n1+noff,numv));
         }
     }
-    vmerge->insert(vmerge->end(),varr->begin(),varr->end());
+    osg::Vec3Array* varr=dynamic_cast<osg::Vec3Array*>(dco->getVertexArray());
+    if (varr) vmerge->insert(vmerge->end(),varr->begin(),varr->end());
 }
 
 
@@ -681,21 +684,24 @@ bool DelaunayTriangulator::triangulate()
     linelist::iterator linitr;
     for (linitr=constraint_lines.begin();linitr!=constraint_lines.end();linitr++)
     {
-        DelaunayConstraint *dc=(*linitr).get();
-        const osg::Vec3Array *vercon= dynamic_cast<const osg::Vec3Array*>(dc->getVertexArray());
-        int nadded=0;
-        for (unsigned int icon=0;icon<vercon->size();icon++)
+        DelaunayConstraint* dc=(*linitr).get();
+        const osg::Vec3Array* vercon= dynamic_cast<const osg::Vec3Array*>(dc->getVertexArray());
+        if (vercon)
         {
-            osg::Vec3 p1=(*vercon)[icon];
-            int idx=getindex(p1,points_.get());
-            if (idx<0)
-            { // only unique vertices are permitted.
-                points_->push_back(p1); // add non-unique constraint points to triangulation
-                nadded++;
-            }
-            else
+            int nadded=0;
+            for (unsigned int icon=0;icon<vercon->size();icon++)
             {
-                osg::notify(osg::WARN) << "DelaunayTriangulator: ignore a duplicate point at "<< p1.x()<< " " << p1.y() << std::endl;;
+                osg::Vec3 p1=(*vercon)[icon];
+                int idx=getindex(p1,points_.get());
+                if (idx<0)
+                { // only unique vertices are permitted.
+                    points_->push_back(p1); // add non-unique constraint points to triangulation
+                    nadded++;
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "DelaunayTriangulator: ignore a duplicate point at "<< p1.x()<< " " << p1.y() << std::endl;;
+                }
             }
         }
     //    osg::notify(osg::WARN)<< "constraint size "<<vercon->size()<<" " <<nadded<< std::endl;
@@ -828,142 +834,145 @@ bool DelaunayTriangulator::triangulate()
     for (linelist::iterator dcitr=constraint_lines.begin();dcitr!=constraint_lines.end();dcitr++)
     {
         //DelaunayConstraint *dc=(*dcitr).get();
-        const osg::Vec3Array *vercon= dynamic_cast<const osg::Vec3Array*>((*dcitr)->getVertexArray());
-        for (unsigned int ipr=0; ipr<(*dcitr)->getNumPrimitiveSets(); ipr++)
+        const osg::Vec3Array* vercon = dynamic_cast<const osg::Vec3Array*>((*dcitr)->getVertexArray());
+        if (vercon)
         {
-            const osg::PrimitiveSet* prset=(*dcitr)->getPrimitiveSet(ipr);
-            if (prset->getMode()==osg::PrimitiveSet::LINE_LOOP ||
-                prset->getMode()==osg::PrimitiveSet::LINE_STRIP)
+            for (unsigned int ipr=0; ipr<(*dcitr)->getNumPrimitiveSets(); ipr++)
             {
-                // loops or strips
-                // start with the last point on the loop
-                unsigned int ip1=getindex((*vercon)[prset->index (prset->getNumIndices()-1)],points_.get());
-                for (unsigned int i=0; i<prset->getNumIndices(); i++)
+                const osg::PrimitiveSet* prset=(*dcitr)->getPrimitiveSet(ipr);
+                if (prset->getMode()==osg::PrimitiveSet::LINE_LOOP ||
+                    prset->getMode()==osg::PrimitiveSet::LINE_STRIP)
                 {
-                    unsigned int ip2=getindex((*vercon)[prset->index(i)],points_.get());
-                    if (i>0 || prset->getMode()==osg::PrimitiveSet::LINE_LOOP)
+                    // loops or strips
+                    // start with the last point on the loop
+                    unsigned int ip1=getindex((*vercon)[prset->index (prset->getNumIndices()-1)],points_.get());
+                    for (unsigned int i=0; i<prset->getNumIndices(); i++)
                     {
-                        // dont check edge from end to start
-                        // for strips
-                        // 2 points on the constraint
-                        bool edgused=false;// first check for exact edge indices are used.
-                        Triangle_list::iterator titr;
-                        const osg::Vec3 curp=(*vercon)[prset->index(i)];
-                        int it=0;
-                        for (titr=triangles.begin(); titr!=triangles.end() && !edgused; ++titr)
+                        unsigned int ip2=getindex((*vercon)[prset->index(i)],points_.get());
+                        if (i>0 || prset->getMode()==osg::PrimitiveSet::LINE_LOOP)
                         {
-                            //check that the edge ip1-ip2 is not already part of the triangulation.
-                            if (titr->isedge(ip1,ip2)) edgused=true;
-                            if (titr->isedge(ip2,ip1)) edgused=true;
-                            //        if (edgused) osg::notify(osg::WARN) << "Edge used in triangle " << it << " " << 
-                            //            titr->a()<<","<< titr->b()<<","<< titr->c()<<  std::endl;
-                            it++;
-                        }
-                        if (!edgused)
-                        {
-                            // then check for intermediate triangles, erase them and replace with constrained triangles.
-                            // find triangle with point ip1 where the 2 edges from ip1 contain the line p1-p2.
-                            osg::Vec2 p1((*points_)[ip1].x(),(*points_)[ip1].y()); // a constraint line joins p1-p2
-                            osg::Vec2 p2((*points_)[ip2].x(),(*points_)[ip2].y());
-                            int ntr=0;
-                            std::vector<const Triangle *> trisToDelete; // array of triangles to delete from terrain.
-                            // form 2 lists of vertices for the edges of the hole created.
-                            // The hole joins vertex ip1 to ip2, and one list of edges lies to the left
-                            // of the line ip1-ip2m the other to the right.
-                            // a list of vertices forming 2 halves of the removed triangles.
-                            // which in turn are filled in with the tesselator.
-                            for (titr=triangles.begin(); titr!=triangles.end(); )
+                            // dont check edge from end to start
+                            // for strips
+                            // 2 points on the constraint
+                            bool edgused=false;// first check for exact edge indices are used.
+                            Triangle_list::iterator titr;
+                            const osg::Vec3 curp=(*vercon)[prset->index(i)];
+                            int it=0;
+                            for (titr=triangles.begin(); titr!=triangles.end() && !edgused; ++titr)
                             {
-                                int icut=titr->lineBisects(points_.get(),ip1,p2);
-                                //    osg::notify(osg::WARN) << "Testing triangle " << ntr << " "<< ip1 << " ti " <<
-                                //        titr->a()<< ","<<titr->b() <<"," <<titr->c() << std::endl;
-                                if (icut>0)
+                                //check that the edge ip1-ip2 is not already part of the triangulation.
+                                if (titr->isedge(ip1,ip2)) edgused=true;
+                                if (titr->isedge(ip2,ip1)) edgused=true;
+                                //        if (edgused) osg::notify(osg::WARN) << "Edge used in triangle " << it << " " << 
+                                //            titr->a()<<","<< titr->b()<<","<< titr->c()<<  std::endl;
+                                it++;
+                            }
+                            if (!edgused)
+                            {
+                                // then check for intermediate triangles, erase them and replace with constrained triangles.
+                                // find triangle with point ip1 where the 2 edges from ip1 contain the line p1-p2.
+                                osg::Vec2 p1((*points_)[ip1].x(),(*points_)[ip1].y()); // a constraint line joins p1-p2
+                                osg::Vec2 p2((*points_)[ip2].x(),(*points_)[ip2].y());
+                                int ntr=0;
+                                std::vector<const Triangle *> trisToDelete; // array of triangles to delete from terrain.
+                                // form 2 lists of vertices for the edges of the hole created.
+                                // The hole joins vertex ip1 to ip2, and one list of edges lies to the left
+                                // of the line ip1-ip2m the other to the right.
+                                // a list of vertices forming 2 halves of the removed triangles.
+                                // which in turn are filled in with the tesselator.
+                                for (titr=triangles.begin(); titr!=triangles.end(); )
                                 {
-                                    // triangle titr starts the constraint edge
-                                    std::vector<unsigned int> edgeRight, edgeLeft; 
-                                    edgeRight.push_back(ip1);
-                                    edgeLeft.push_back(ip1);
-                                    //        osg::notify(osg::WARN) << "hole first " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
-                                    trisToDelete.push_back(&(*titr));
-                                    // now find the unique triangle that shares the defined edge
-                                    unsigned int e1, e2; // indices of ends of test triangle titr
-                                    if    (icut==1)
+                                    int icut=titr->lineBisects(points_.get(),ip1,p2);
+                                    //    osg::notify(osg::WARN) << "Testing triangle " << ntr << " "<< ip1 << " ti " <<
+                                    //        titr->a()<< ","<<titr->b() <<"," <<titr->c() << std::endl;
+                                    if (icut>0)
                                     {
-                                        // icut=1 implies vertex a is not involved
-                                        e1=titr->b(); e2=titr->c();
-                                    }
-                                    else if (icut==2)
-                                    {
-                                        e1=titr->c(); e2=titr->a();
-                                    }
-                                    else if (icut==3)
-                                    {
-                                        e1=titr->a(); e2=titr->b();
-                                    }
-                                    edgeRight.push_back(e2);
-                                    edgeLeft.push_back(e1);
-                                    //        osg::notify(osg::WARN) << icut << "hole edges " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
-                                    const Triangle *tradj=getTriangleWithEdge(e2,e1, &triangles);
-                                    if (tradj)
-                                    {
-                                        while (tradj && !tradj->usesVertex(ip2) && trisToDelete.size()<999)
+                                        // triangle titr starts the constraint edge
+                                        std::vector<unsigned int> edgeRight, edgeLeft; 
+                                        edgeRight.push_back(ip1);
+                                        edgeLeft.push_back(ip1);
+                                        //        osg::notify(osg::WARN) << "hole first " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
+                                        trisToDelete.push_back(&(*titr));
+                                        // now find the unique triangle that shares the defined edge
+                                        unsigned int e1, e2; // indices of ends of test triangle titr
+                                        if    (icut==1)
                                         {
-                                            trisToDelete.push_back(tradj);
-                                            icut=tradj->whichEdge(points_.get(),p1,p2,e1,e2);
-                                            //    osg::notify(osg::WARN)  << ntr << " cur triedge " << icut << " " << ip1 <<
-                                            //        " to " << ip2 << " tadj " << tradj->a()<< ","<<tradj->b() <<"," 
-                                            //        <<tradj->c() <<std::endl;
-                                            if        (icut==1) {e1=tradj->b(); e2=tradj->c();} // icut=1 implies vertex a is not involved
-                                            else if (icut==2) {e1=tradj->c(); e2=tradj->a();}
-                                            else if (icut==3) {e1=tradj->a(); e2=tradj->b();}
-                                            if (edgeLeft.back()!=e1 && edgeRight.back()==e2 && e1!=ip2) {
-                                                edgeLeft.push_back(e1);
-                                            } else if(edgeRight.back()!=e2 && edgeLeft.back()==e1 && e2!=ip2) {
-                                                edgeRight.push_back(e2);
-                                            } else {
-                                                if (!tradj->usesVertex(ip2)) osg::notify(osg::WARN) << "tradj error " << tradj->a()<<  " , " << tradj->b()<<  " , " << tradj->c()<< std::endl;
+                                            // icut=1 implies vertex a is not involved
+                                            e1=titr->b(); e2=titr->c();
+                                        }
+                                        else if (icut==2)
+                                        {
+                                            e1=titr->c(); e2=titr->a();
+                                        }
+                                        else if (icut==3)
+                                        {
+                                            e1=titr->a(); e2=titr->b();
+                                        }
+                                        edgeRight.push_back(e2);
+                                        edgeLeft.push_back(e1);
+                                        //        osg::notify(osg::WARN) << icut << "hole edges " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
+                                        const Triangle *tradj=getTriangleWithEdge(e2,e1, &triangles);
+                                        if (tradj)
+                                        {
+                                            while (tradj && !tradj->usesVertex(ip2) && trisToDelete.size()<999)
+                                            {
+                                                trisToDelete.push_back(tradj);
+                                                icut=tradj->whichEdge(points_.get(),p1,p2,e1,e2);
+                                                //    osg::notify(osg::WARN)  << ntr << " cur triedge " << icut << " " << ip1 <<
+                                                //        " to " << ip2 << " tadj " << tradj->a()<< ","<<tradj->b() <<"," 
+                                                //        <<tradj->c() <<std::endl;
+                                                if        (icut==1) {e1=tradj->b(); e2=tradj->c();} // icut=1 implies vertex a is not involved
+                                                else if (icut==2) {e1=tradj->c(); e2=tradj->a();}
+                                                else if (icut==3) {e1=tradj->a(); e2=tradj->b();}
+                                                if (edgeLeft.back()!=e1 && edgeRight.back()==e2 && e1!=ip2) {
+                                                    edgeLeft.push_back(e1);
+                                                } else if(edgeRight.back()!=e2 && edgeLeft.back()==e1 && e2!=ip2) {
+                                                    edgeRight.push_back(e2);
+                                                } else {
+                                                    if (!tradj->usesVertex(ip2)) osg::notify(osg::WARN) << "tradj error " << tradj->a()<<  " , " << tradj->b()<<  " , " << tradj->c()<< std::endl;
+                                                }
+                                                tradj=getTriangleWithEdge(e2,e1, &triangles);
                                             }
-                                            tradj=getTriangleWithEdge(e2,e1, &triangles);
+                                            if (trisToDelete.size()>=900) {
+                                                osg::notify(osg::WARN) << " found " << trisToDelete.size() << " adjacent tris " <<std::endl;
+                                            }
                                         }
-                                        if (trisToDelete.size()>=900) {
-                                            osg::notify(osg::WARN) << " found " << trisToDelete.size() << " adjacent tris " <<std::endl;
-                                        }
+
+                                        // both lines end at ip2 point.
+                                        edgeLeft.push_back(ip2);
+                                        edgeRight.push_back(ip2);
+                                        if (tradj) trisToDelete.push_back(tradj);
+                                        //        osg::notify(osg::WARN) << icut << "hole last " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
+                                        Triangle_list constrainedtris=fillHole(points_.get(),edgeLeft);
+                                        triangles.insert(triangles.begin(), constrainedtris.begin(), constrainedtris.end());
+                                        constrainedtris=fillHole(points_.get(),edgeRight);
+                                        triangles.insert(triangles.begin(), constrainedtris.begin(), constrainedtris.end());
+
                                     }
-                                    
-                                    // both lines end at ip2 point.
-                                    edgeLeft.push_back(ip2);
-                                    edgeRight.push_back(ip2);
-                                    if (tradj) trisToDelete.push_back(tradj);
-                                    //        osg::notify(osg::WARN) << icut << "hole last " << edgeLeft.back()<<  " rt " << edgeRight.back()<< std::endl;
-                                    Triangle_list constrainedtris=fillHole(points_.get(),edgeLeft);
-                                    triangles.insert(triangles.begin(), constrainedtris.begin(), constrainedtris.end());
-                                    constrainedtris=fillHole(points_.get(),edgeRight);
-                                    triangles.insert(triangles.begin(), constrainedtris.begin(), constrainedtris.end());
-                                    
+                                    ++titr;
+                                    ntr++;
                                 }
-                                ++titr;
-                                ntr++;
-                            }
-                            // remove the triangles list
-                            Triangle_list::iterator tri; // counts through triangles
-                            for (tri=triangles.begin(); tri!=triangles.end(); )
-                            {
-                                bool deleted=false;
-                                for (std::vector<const Triangle *>::const_iterator deleteTri=trisToDelete.begin(); 
-                                deleteTri!=trisToDelete.end(); deleteTri++)
+                                // remove the triangles list
+                                Triangle_list::iterator tri; // counts through triangles
+                                for (tri=triangles.begin(); tri!=triangles.end(); )
                                 {
-                                    if (&(*tri)==*deleteTri)
+                                    bool deleted=false;
+                                    for (std::vector<const Triangle *>::const_iterator deleteTri=trisToDelete.begin(); 
+                                    deleteTri!=trisToDelete.end(); deleteTri++)
                                     {
-                                        deleted=true;
-                                        tri=triangles.erase(tri);
+                                        if (&(*tri)==*deleteTri)
+                                        {
+                                            deleted=true;
+                                            tri=triangles.erase(tri);
+                                        }
                                     }
+                                    if (!deleted) ++tri;
                                 }
-                                if (!deleted) ++tri;
                             }
-                        }
-                    } // strip test
-                
-                    ip1=ip2; // next edge of line
+                        } // strip test
+
+                        ip1=ip2; // next edge of line
+                    }
                 }
             }
         }
@@ -1064,42 +1073,45 @@ float DelaunayConstraint::windingNumber(const osg::Vec3 testpoint) const
     // return winding number of loop around testpoint. Only in 2D, x-y coordinates assumed!
     float theta=0; // sum of angles subtended by the line array - the winding number
     const osg::Vec3Array *vertices= dynamic_cast<const osg::Vec3Array*>(getVertexArray());
-    for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++)
+    if (vertices)
     {
-        const osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
-        if (prset->getMode()==osg::PrimitiveSet::LINE_LOOP)
+        for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++)
         {
-            // nothing else loops
-            // start with the last point on the loop
-            const osg::Vec3 prev=(*vertices)[prset->index (prset->getNumIndices()-1)];
-            osg::Vec3 pi(prev.x()-testpoint.x(),prev.y()-testpoint.y(),0);
-            pi.normalize();
-            for (unsigned int i=0; i<prset->getNumIndices(); i++)
+            const osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
+            if (prset->getMode()==osg::PrimitiveSet::LINE_LOOP)
             {
-                const osg::Vec3 curp=(*vertices)[prset->index (i)];
-                osg::Vec3 edge(curp.x()-testpoint.x(),curp.y()-testpoint.y(),0);
-                edge.normalize();
-                double cth=edge*pi;
-                if (cth<=-0.99999 )
+                // nothing else loops
+                // start with the last point on the loop
+                const osg::Vec3 prev=(*vertices)[prset->index (prset->getNumIndices()-1)];
+                osg::Vec3 pi(prev.x()-testpoint.x(),prev.y()-testpoint.y(),0);
+                pi.normalize();
+                for (unsigned int i=0; i<prset->getNumIndices(); i++)
                 {
-                    // testpoint is on edge and between 2 points
-                    return 0; //
-                }
-                else
-                {
-                    if (cth<0.99999)
+                    const osg::Vec3 curp=(*vertices)[prset->index (i)];
+                    osg::Vec3 edge(curp.x()-testpoint.x(),curp.y()-testpoint.y(),0);
+                    edge.normalize();
+                    double cth=edge*pi;
+                    if (cth<=-0.99999 )
                     {
-                        float dang=(cth<1 && cth>-1)?acos(edge*pi):0; // this is unsigned angle
-                        float zsign=edge.x()*pi.y()-pi.x()*edge.y(); // z component of..(edge^pi).z();
-                        if (zsign>0) theta+=dang; // add the angle subtended appropriately
-                        else if (zsign<0) theta-=dang;
+                        // testpoint is on edge and between 2 points
+                        return 0; //
                     }
+                    else
+                    {
+                        if (cth<0.99999)
+                        {
+                            float dang=(cth<1 && cth>-1)?acos(edge*pi):0; // this is unsigned angle
+                            float zsign=edge.x()*pi.y()-pi.x()*edge.y(); // z component of..(edge^pi).z();
+                            if (zsign>0) theta+=dang; // add the angle subtended appropriately
+                            else if (zsign<0) theta-=dang;
+                        }
+                    }
+                    pi=edge;
                 }
-                pi=edge;
             }
         }
     }
-
+    
     return theta/osg::PI/2.0; // should be 0 or 2 pi.
 }
 osg::DrawElementsUInt *DelaunayConstraint::makeDrawable()

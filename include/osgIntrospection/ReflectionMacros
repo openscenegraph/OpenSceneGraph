@@ -780,7 +780,7 @@ struct BaseTypeConverters<x, reflected_type, true>
 
 #define I_Method0(ret, fn) (\
     params.clear(), \
-    addMethod(new osgIntrospection::TypedMethodInfo0<reflected_type, ret>(qualifyName(#fn), &reflected_type::fn, params))) 
+    addMethod(new osgIntrospection::TypedMethodInfo0<reflected_type, ret >(qualifyName(#fn), &reflected_type::fn, params))) 
 
 #define I_Method1(ret, fn, A0, P0, N0) (\
     params.clear(), \

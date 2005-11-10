@@ -10,6 +10,31 @@
 
 #include <osgUtil/Optimizer>
 
+const int _eq_nb=8;
+const osg::BlendEquation::Equation _equations[_eq_nb]=
+{
+	osg::BlendEquation::FUNC_ADD,
+	osg::BlendEquation::FUNC_SUBTRACT,
+	osg::BlendEquation::FUNC_REVERSE_SUBTRACT,
+	osg::BlendEquation::RGBA_MIN,
+	osg::BlendEquation::RGBA_MAX,
+	osg::BlendEquation::ALPHA_MIN,
+	osg::BlendEquation::ALPHA_MAX,
+	osg::BlendEquation::LOGIC_OP
+};
+
+const char* _equations_name[_eq_nb]=
+{
+	"osg::BlendEquation::FUNC_ADD",
+	"osg::BlendEquation::FUNC_SUBTRACT",
+	"osg::BlendEquation::FUNC_REVERSE_SUBTRACT",
+	"osg::BlendEquation::RGBA_MIN",
+	"osg::BlendEquation::RGBA_MAX",
+	"osg::BlendEquation::ALPHA_MIN",
+	"osg::BlendEquation::ALPHA_MAX",
+	"osg::BlendEquation::LOGIC_OP"
+};
+
 
 class TechniqueEventHandler : public osgGA::GUIEventHandler
 {
@@ -34,32 +59,9 @@ protected:
 
     osg::BlendEquation*	_blendEq;
 
-    static const int 	_eq_nb=8;
     int 		_eq_index;
-    static const osg::BlendEquation::Equation _equations[_eq_nb];
-    static const char* _equations_name[_eq_nb];
 };
-const osg::BlendEquation::Equation TechniqueEventHandler::_equations[_eq_nb]={
-				osg::BlendEquation::FUNC_ADD,
-				osg::BlendEquation::FUNC_SUBTRACT,
-				osg::BlendEquation::FUNC_REVERSE_SUBTRACT,
-				osg::BlendEquation::RGBA_MIN,
-				osg::BlendEquation::RGBA_MAX,
-				osg::BlendEquation::ALPHA_MIN,
-				osg::BlendEquation::ALPHA_MAX,
-				osg::BlendEquation::LOGIC_OP
-			};
 
-const char* TechniqueEventHandler::_equations_name[_eq_nb]={
-				"osg::BlendEquation::FUNC_ADD",
-				"osg::BlendEquation::FUNC_SUBTRACT",
-				"osg::BlendEquation::FUNC_REVERSE_SUBTRACT",
-				"osg::BlendEquation::RGBA_MIN",
-				"osg::BlendEquation::RGBA_MAX",
-				"osg::BlendEquation::ALPHA_MIN",
-				"osg::BlendEquation::ALPHA_MAX",
-				"osg::BlendEquation::LOGIC_OP"
-			};
 
 
 	

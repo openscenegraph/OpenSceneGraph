@@ -10,6 +10,46 @@
 
 #include <osgUtil/Optimizer>
 
+const int _ops_nb=16;
+const osg::LogicOp::Opcode _operations[_ops_nb]=
+{	
+	osg::LogicOp::CLEAR,
+	osg::LogicOp::SET,
+	osg::LogicOp::COPY,
+	osg::LogicOp::COPY_INVERTED,
+	osg::LogicOp::NOOP,
+	osg::LogicOp::INVERT,
+	osg::LogicOp::AND,
+	osg::LogicOp::NAND,
+	osg::LogicOp::OR,
+	osg::LogicOp::NOR,
+	osg::LogicOp::XOR,
+	osg::LogicOp::EQUIV,
+	osg::LogicOp::AND_REVERSE,
+	osg::LogicOp::AND_INVERTED,
+	osg::LogicOp::OR_REVERSE,
+	osg::LogicOp::OR_INVERTED
+};
+
+const char* _ops_name[_ops_nb]=
+{	
+	"osg::LogicOp::CLEAR",
+	"osg::LogicOp::SET",
+	"osg::LogicOp::COPY",
+	"osg::LogicOp::COPY_INVERTED",
+	"osg::LogicOp::NOOP",
+	"osg::LogicOp::INVERT",
+	"osg::LogicOp::AND",
+	"osg::LogicOp::NAND",
+	"osg::LogicOp::OR",
+	"osg::LogicOp::NOR",
+	"osg::LogicOp::XOR",
+	"osg::LogicOp::EQUIV",
+	"osg::LogicOp::AND_REVERSE",
+	"osg::LogicOp::AND_INVERTED",
+	"osg::LogicOp::OR_REVERSE",
+	"osg::LogicOp::OR_INVERTED"
+};
 
 class TechniqueEventHandler : public osgGA::GUIEventHandler
 {
@@ -34,49 +74,9 @@ protected:
 
     osg::LogicOp* 	_logicOp;
 
-    static const int 	_ops_nb=16;
     int 		_ops_index;
-    static const osg::LogicOp::Opcode _operations[_ops_nb];
-    static const char* _ops_name[_ops_nb];
 
 };
-const osg::LogicOp::Opcode TechniqueEventHandler::_operations[_ops_nb]={	
-				osg::LogicOp::CLEAR,
-	    			osg::LogicOp::SET,
-	    			osg::LogicOp::COPY,
-	    			osg::LogicOp::COPY_INVERTED,
-	    			osg::LogicOp::NOOP,
-	    			osg::LogicOp::INVERT,
-	    			osg::LogicOp::AND,
-	    			osg::LogicOp::NAND,
-	    			osg::LogicOp::OR,
-	    			osg::LogicOp::NOR,
-	    			osg::LogicOp::XOR,
-	    			osg::LogicOp::EQUIV,
-	    			osg::LogicOp::AND_REVERSE,
-	    			osg::LogicOp::AND_INVERTED,
-	    			osg::LogicOp::OR_REVERSE,
-	    			osg::LogicOp::OR_INVERTED
-			};
-
-const char* TechniqueEventHandler::_ops_name[_ops_nb]={	
-				"osg::LogicOp::CLEAR",
-	    			"osg::LogicOp::SET",
-	    			"osg::LogicOp::COPY",
-	    			"osg::LogicOp::COPY_INVERTED",
-	    			"osg::LogicOp::NOOP",
-	    			"osg::LogicOp::INVERT",
-	    			"osg::LogicOp::AND",
-	    			"osg::LogicOp::NAND",
-	    			"osg::LogicOp::OR",
-	    			"osg::LogicOp::NOR",
-	    			"osg::LogicOp::XOR",
-	    			"osg::LogicOp::EQUIV",
-	    			"osg::LogicOp::AND_REVERSE",
-	    			"osg::LogicOp::AND_INVERTED",
-	    			"osg::LogicOp::OR_REVERSE",
-	    			"osg::LogicOp::OR_INVERTED"
-			};
 
 bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {

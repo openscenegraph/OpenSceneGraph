@@ -46,10 +46,11 @@ private:
 	std::string name;
 	bool constrained; // are values limited by min,max
 }; // a numerical value, may be one of several types
+
 class internalVars { // holds internal variables for whole model
 public:
 	internalVars() {   }
-	internalVars(const internalVars &iv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY ) {
+	internalVars(const internalVars &iv) {
 		vars=iv.vars; }
 	~internalVars() { 
 		}

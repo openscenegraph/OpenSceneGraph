@@ -624,7 +624,8 @@ ifeq ($(OS),MINGW)
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
 
-  FREETYPE_LIB      = -lfreetype
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
 
   GDAL_INCLUDES     = 
   GDAL_LIBS         =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz

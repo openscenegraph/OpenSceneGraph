@@ -201,7 +201,7 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 }
 
 
-osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle)
+osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle)
 {
     if (useTextureRectangle)
     {
@@ -327,7 +327,7 @@ int main(int argc, char** argv)
             
             if (image)
             {
-                geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle));
+                geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle));
                 
                 pos.z() += image->t()*1.5f;
             }

@@ -100,6 +100,9 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
             /** Get whether the operation should be kept once its been applied.*/ 
             bool getKeep() const { return _keep; }
 
+            /** if this operation is a barrier then release it.*/
+            virtual void release() {}
+
             /** Do the actual task of this operation.*/ 
             virtual void operator () (GraphicsContext*) {}
             
@@ -111,9 +114,24 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
           * executed by the graphics thread once this operation gets to the head of the queue.*/
         void add(Operation* operation, bool waitForCompletion=false);
         
+        /** Remove operation from OperationQueue.*/
+        void remove(Operation* operation);
+
+        /** Remove named operation from OperationQueue.*/
+        void remove(const std::string& name);
+
+        /** Remove all operations from OperationQueue.*/
+        void removeAllOperations();
+        
+        /** Get the operation currently being run.*/
+        osg::ref_ptr<Operation> getCurrentOperation() { return _currentOperation; }
+
         /** Run does the graphics thread run loop.*/        
         virtual void run();
         
+        void setDone(bool done);
+        bool getDone() const { return _done; }
+
         /** Cancel this graphics thread.*/        
         virtual int cancel();
 
@@ -131,6 +149,7 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
         OpenThreads::Mutex          _operationsMutex;
         osg::ref_ptr<osg::Block>    _operationsBlock;
         OperationQueue              _operations;
+        osg::ref_ptr<Operation>     _currentOperation;
 
 };
 
@@ -159,6 +178,8 @@ struct OSG_EXPORT BarrierOperation : public GraphicsThread::Operation, public Op
         OpenThreads::Barrier(numThreads),
         _preBlockOp(op) {}
 
+    virtual void release();
+
     virtual void operator () (GraphicsContext* context);
     
     PreBlockOp _preBlockOp;
@@ -170,6 +191,8 @@ struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsThr
 {
     ReleaseContext_Block_MakeCurrentOperation():
         GraphicsThread::Operation("ReleaseContext_Block_MakeCurrent", false) {}
+
+    virtual void release();
 
     virtual void operator () (GraphicsContext* context);
 };

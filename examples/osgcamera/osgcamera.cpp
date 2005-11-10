@@ -90,6 +90,22 @@ struct DrawOperation : public osg::GraphicsThread::Operation
     osg::ref_ptr<osgUtil::SceneView> _sceneView;
 };
 
+struct CleanUpOperation : public osg::GraphicsThread::Operation
+{
+    CleanUpOperation(osgUtil::SceneView* sceneView):
+        osg::GraphicsThread::Operation("CleanUp",false),
+        _sceneView(sceneView)
+    {
+    }
+    
+    virtual void operator () (osg::GraphicsContext*)
+    {
+        _sceneView->releaseAllGLObjects();
+        _sceneView->flushAllDeletedGLObjects();
+    }
+    
+    osg::ref_ptr<osgUtil::SceneView> _sceneView;
+};
 
 // main does the following steps to create a multi-thread, multiple camera/graphics context view of a scene graph.
 //
@@ -346,8 +362,25 @@ int main( int argc, char **argv )
         }
 
     }
+
     
     std::cout<<"Exiting application"<<std::endl;
+
+    // start clean up.
+    for(gitr = graphicsContextSet.begin();
+        gitr != graphicsContextSet.end();
+        ++gitr)
+    {
+        osg::GraphicsContext* context = *gitr;
+        osg::GraphicsThread* thread = context->getGraphicsThread();
+        if (thread)
+        {
+            thread->removeAllOperations();
+            thread->setDone(true);
+        }
+    }
+
+    std::cout<<"Removed all operations"<<std::endl;
 
     return 0;
 }

@@ -3314,7 +3314,8 @@ osg::Node* DataSet::CompositeDestination::createScene()
     }
 
     NodeList childNodes;
-    for(ChildList::iterator citr=_children.begin();
+    ChildList::iterator citr;
+    for(citr=_children.begin();
         citr!=_children.end();
         ++citr)
     {
@@ -3324,7 +3325,7 @@ osg::Node* DataSet::CompositeDestination::createScene()
 
 
     float cutOffDistance = -FLT_MAX;
-    for(ChildList::iterator citr=_children.begin();
+    for(citr=_children.begin();
         citr!=_children.end();
         ++citr)
     {

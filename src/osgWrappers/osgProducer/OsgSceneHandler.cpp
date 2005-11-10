@@ -45,6 +45,9 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
 	I_Method1(void, setContextID, IN, int, id);
 	I_Method1(void, setFlushOfAllDeletedGLObjectsOnNextFrame, IN, bool, flag);
 	I_Method0(bool, getFlushOfAllDeletedGLObjectsOnNextFrame);
+	I_Method1(void, setCleanUpOnNextFrame, IN, bool, flag);
+	I_Method0(bool, getCleanUpOnNextFrame);
+	I_Property(bool, CleanUpOnNextFrame);
 	I_Property(osgProducer::OsgSceneHandler::Callback *, ClearCallback);
 	I_WriteOnlyProperty(int, ContextID);
 	I_Property(osgProducer::OsgSceneHandler::Callback *, CullCallback);

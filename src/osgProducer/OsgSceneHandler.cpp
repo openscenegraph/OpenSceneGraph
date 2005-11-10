@@ -26,6 +26,7 @@ OsgSceneHandler::OsgSceneHandler( osg::DisplaySettings *ds) :
     _frameStartTick = 0;
     _previousFrameStartTick = 0;
     _flushOfAllDeletedGLObjectsOnNextFrame = false;
+    _cleanUpOnNextFrame = false;
 }
 
 void OsgSceneHandler::init()

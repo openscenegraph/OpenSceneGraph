@@ -736,7 +736,7 @@ void OsgCameraGroup::cleanup_frame()
         ++itr)
     {
         (*itr)->getSceneView()->releaseAllGLObjects();
-        (*itr)->setFlushOfAllDeletedGLObjectsOnNextFrame(true);
+        (*itr)->setCleanUpOnNextFrame(true);
     }
     
     // make sure that the registry all flushes all its texture objects.

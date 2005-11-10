@@ -195,7 +195,8 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
     osg::Vec3 row(0.0f,0.0f,0.0);
     
     unsigned int vert_no = 0;
-    for(unsigned int iy=0; iy<num_y; ++iy)
+    unsigned int iy;
+    for(iy=0; iy<num_y; ++iy)
     {
         osg::Vec3 column = row;
         for(unsigned int ix=0;ix<num_x;++ix)
@@ -208,7 +209,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
 
     geom->setVertexArray(vertices);
 
-    for(unsigned int iy=0; iy<num_y-1; ++iy)
+    for(iy=0; iy<num_y-1; ++iy)
     {
         unsigned int element_no = 0;
         osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, num_x*2);
@@ -222,12 +223,8 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
     }
     
     geom->setUseVertexBufferObjects(true);
-    
-    
-
 
     return geode;
-
 }
 
 int main(int argc, char *argv[])

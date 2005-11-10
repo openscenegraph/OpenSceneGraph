@@ -635,7 +635,8 @@ void ConvertFromFLT::visitColorPalette(osg::Group& , ColorPaletteRecord* rec)
     ColorPool* pColorPool = rec->getFltFile()->getColorPool();
     int flightVersion = rec->getFlightVersion();
 
-    if ( flightVersion > 13 ) {
+    if ( flightVersion > 13 )
+    {
         SColorPalette* pCol = (SColorPalette*)rec->getData();
         int colors = (flightVersion >= 1500) ? 1024 : 512;
     
@@ -659,26 +660,28 @@ void ConvertFromFLT::visitColorPalette(osg::Group& , ColorPaletteRecord* rec)
         if( colorLen > colors ) 
             colorLen = colors;
         
-            for (int i = 0; i < colorLen ; i++){            
-     
-                osg::Vec4 color( pCol->Colors[i].get());
-                
-                //
-                //  Force alpha to one
-                // 
-                color[3] = 1.0f;     
-     
-                pColorPool->addColor(i, color);
-            }
+        int i;
+        for (i = 0; i < colorLen ; i++)
+        {
+            osg::Vec4 color( pCol->Colors[i].get());
+
+            //
+            //  Force alpha to one
             // 
-            // Fill any remainder of the palette with white
-            // 
-            for (int i = colorLen; i < colors ; i++){            
-                osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f );
-                pColorPool->addColor( i, color );
-                }
+            color[3] = 1.0f;     
+
+            pColorPool->addColor(i, color);
+        }
+        // 
+        // Fill any remainder of the palette with white
+        // 
+        for (i = colorLen; i < colors ; i++)
+        {
+            osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f );
+            pColorPool->addColor( i, color );
+        }
                           
-        } //  ( flightVersion > 13 ) 
+    } //  ( flightVersion > 13 ) 
         
     else    // version 11, 12 & 13
     {

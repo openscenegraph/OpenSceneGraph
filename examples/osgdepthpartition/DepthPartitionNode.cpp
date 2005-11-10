@@ -177,15 +177,16 @@ bool CURRENT_CLASS::setChild(unsigned int i, osg::Node *node)
 
 	// Set child for each CameraNode
 	unsigned int totalCameras = _cameraList.size();
-	for(unsigned int i = 0; i < totalCameras; i++)
+	for(unsigned int j = 0; j < totalCameras; j++)
 	{
-	  _cameraList[i]->setChild(i, node);
+	  _cameraList[j]->setChild(i, node);
 	}
 	return true;
 }
 
 osg::CameraNode* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj, 
-                            double near, double far, const unsigned int &camNum)
+                            double znear, double zfar, 
+                            const unsigned int &camNum)
 {
 	if(_cameraList.size() <= camNum) _cameraList.resize(camNum+1);
 	osg::CameraNode *camera = _cameraList[camNum].get();
@@ -221,8 +222,8 @@ osg::CameraNode* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
 
 	// Slightly inflate the near & far planes to avoid objects at the
 	// extremes being clipped out.
-	near *= 0.999;
-	far *= 1.001;
+	znear *= 0.999;
+	zfar *= 1.001;
 
 	// Clamp the projection matrix z values to the range (near, far)
 	double epsilon = 1.0e-6;
@@ -230,16 +231,16 @@ osg::CameraNode* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
 	   fabs(projection(1,3)) < epsilon &&
 	   fabs(projection(2,3)) < epsilon ) // Projection is Orthographic
 	{
-	  epsilon = -1.0/(far - near); // Used as a temp variable
+	  epsilon = -1.0/(zfar - znear); // Used as a temp variable
 	  projection(2,2) = 2.0*epsilon;
-	  projection(3,2) = (far + near)*epsilon;
+	  projection(3,2) = (zfar + znear)*epsilon;
 	}
 	else // Projection is Perspective
 	{
-	  double trans_near = (-near*projection(2,2) + projection(3,2)) /
-	                      (-near*projection(2,3) + projection(3,3));
-	  double trans_far = (-far*projection(2,2) + projection(3,2)) /
-	                     (-far*projection(2,3) + projection(3,3));
+	  double trans_near = (-znear*projection(2,2) + projection(3,2)) /
+	                      (-znear*projection(2,3) + projection(3,3));
+	  double trans_far = (-zfar*projection(2,2) + projection(3,2)) /
+	                     (-zfar*projection(2,3) + projection(3,3));
 	  double ratio = fabs(2.0/(trans_near - trans_far));
 	  double center = -0.5*(trans_near + trans_far);
 

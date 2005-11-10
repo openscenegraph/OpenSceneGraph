@@ -64,8 +64,9 @@ class CURRENT_CLASS : public osg::Group
 	void init();
 
 	// Creates a new CameraNode object with default settings
-	osg::CameraNode* createOrReuseCamera(const osg::Matrix& proj, double near, 
-	                         double far, const unsigned int &camNum);
+	osg::CameraNode* createOrReuseCamera(const osg::Matrix& proj, 
+                                double znear, double zfar, 
+                                const unsigned int &camNum);
 
 	bool _active; // Whether partitioning is active on the scene
 

@@ -218,7 +218,7 @@ public:
         osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
         // do automatic conversion between RefNodePath and NodePath.
-        osg::NodePath tmpPath = _viewer->getCoordindateSystemNodePath();
+        osg::NodePath tmpPath = _viewer->getCoordinateSystemNodePath();
         
         if (!tmpPath.empty())
         {        
@@ -423,7 +423,7 @@ const std::string& Viewer::getWriteImageFileName() const
 }
 
 
-void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)
+void Viewer::setCoordinateSystemNodePath(const osg::NodePath& nodePath)
 {
     _coordinateSystemNodePath.clear();
     std::copy(nodePath.begin(),
@@ -431,7 +431,7 @@ void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)
               std::back_inserter(_coordinateSystemNodePath));
 }
 
-void Viewer::computeActiveCoordindateSystemNodePath()
+void Viewer::computeActiveCoordinateSystemNodePath()
 {
     // now search for CoordinateSystemNode's for which we want to track.
     osg::Node* subgraph = getTopMostSceneData();
@@ -443,12 +443,12 @@ void Viewer::computeActiveCoordindateSystemNodePath()
 
         if (!ccsnv._pathToCoordinateSystemNode.empty())
         {
-           setCoordindateSystemNodePath(ccsnv._pathToCoordinateSystemNode);
+           setCoordinateSystemNodePath(ccsnv._pathToCoordinateSystemNode);
            return;
         }
     }  
     // otherwise no node path found so reset to empty.
-    setCoordindateSystemNodePath(osg::NodePath());
+    setCoordinateSystemNodePath(osg::NodePath());
 }
 
 void Viewer::updatedSceneData()
@@ -456,7 +456,7 @@ void Viewer::updatedSceneData()
     OsgCameraGroup::updatedSceneData();
 
     // refresh the coordinate system node path.
-    computeActiveCoordindateSystemNodePath();
+    computeActiveCoordinateSystemNodePath();
 
     // refresh the camera manipulators    
     if (_keyswitchManipulator.valid()) _keyswitchManipulator->setNode(getTopMostSceneData());

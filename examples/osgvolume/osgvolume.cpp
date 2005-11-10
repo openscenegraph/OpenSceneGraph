@@ -149,6 +149,8 @@ struct PassThroughTransformFunction
 
 struct ProcessRow
 {
+    virtual ~ProcessRow() {}
+
     virtual void operator() (unsigned int num,
                     GLenum source_pixelFormat, unsigned char* source, 
                     GLenum dest_pixelFormat, unsigned char* dest) const 

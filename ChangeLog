@@ -1,3 +1,50 @@
+2005-11-09 20:30  robert
+
+	* src/osgWrappers/osgTerrain/DataSet.cpp: Updated wrappers
+
+2005-11-09 20:26  robert
+
+	* examples/osgsimulation/osgsimulation.cpp: Added release and flush
+	  of OpenGL objects after build of the terrain database to prevent
+	  the build graphics context state leaking into the viewers
+	  graphics context set.
+
+2005-11-09 20:24  robert
+
+	* include/osgTerrain/DataSet, src/osgTerrain/DataSet.cpp: Added a
+	  s/getState() to osgTerrain::DataSet to allow better integration
+	  with applications.
+
+2005-11-09 17:20  robert
+
+	* applications/osgdem/osgdem.cpp: Added some docs on command line
+	  options.
+
+2005-11-09 17:19  robert
+
+	* src/osg/ApplicationUsage.cpp: Added writing of commandline
+	  options in getFormatedString when there is no description string.
+
+2005-11-09 17:08  robert
+
+	* examples/osglightpoint/osglightpoint.cpp: Moved the blink
+	  sequence light points down so they are visible in the default
+	  camera position.
+
+2005-11-09 17:06  robert
+
+	* examples/osgautotransform/osgautotransform.cpp: Changed the
+	  NO_ROTATION label so it is aligned with the XZ plane to make it
+	  easier to see.
+
+2005-11-09 15:27  robert
+
+	* NEWS.txt: Quick updates to NEWS.
+
+2005-11-09 15:19  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2005-11-09 15:14  robert
 
 	* src/osgWrappers/osg/AnimationPath.cpp: Updated wrappers.

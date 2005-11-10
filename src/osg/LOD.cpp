@@ -103,8 +103,7 @@ bool LOD::addChild( Node *child )
 
         if (_children.size()>_rangeList.size()) 
         {
-            float maxRange = !_rangeList.empty()?
-                 maxRange=_rangeList.back().second : 0.0f;
+            float maxRange = !_rangeList.empty() ? _rangeList.back().second : 0.0f;
 
             _rangeList.resize(_children.size(),MinMaxPair(maxRange,maxRange));
         }

@@ -98,7 +98,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
          /** Get the viewport of the scene view. */
         void getViewport(int& x,int& y,int& width,int& height) const
         {
-            if (_camera->getViewport()!=0) _camera->getViewport()->getViewport(x,y,width,height);
+            if (_camera->getViewport()!=0) 
+                _camera->getViewport()->getViewport(x,y,width,height);
+            else
+                x = y = width = height = 0;
+            
         }
 
         /** Set the DisplaySettings. */

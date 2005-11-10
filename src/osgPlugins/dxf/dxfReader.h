@@ -76,13 +76,13 @@ public:
 	readerBinary() : readerBase() {}
 	virtual ~readerBinary() {}
 protected:
-	virtual bool readGroupCode(std::ifstream& f, int &groupcode) { return false; }
-	virtual bool readValue(std::ifstream& f, std::string &s) { return false; }
-	virtual bool readValue(std::ifstream& f, bool &b) { return false; }
-	virtual bool readValue(std::ifstream& f, unsigned short &s) { return false; }
-	virtual bool readValue(std::ifstream& f, int &i) { return false; }
-	virtual bool readValue(std::ifstream& f, long &l) { return false; }
-	virtual bool readValue(std::ifstream& f, double &d) { return false; }
+	virtual bool readGroupCode(std::ifstream& /*f*/, int& /*groupcode*/) { return false; }
+	virtual bool readValue(std::ifstream& /*f*/, std::string& /*s*/) { return false; }
+	virtual bool readValue(std::ifstream& /*f*/, bool& /*b*/) { return false; }
+	virtual bool readValue(std::ifstream& /*f*/, unsigned short& /*s*/) { return false; }
+	virtual bool readValue(std::ifstream& /*f*/, int& /*i*/) { return false; }
+	virtual bool readValue(std::ifstream& /*f*/, long& /*l*/) { return false; }
+	virtual bool readValue(std::ifstream& /*f*/, double& /*d*/) { return false; }
 };
 
 /// dxfReader. gets you through the dxf file, one group code/value pair at a time.

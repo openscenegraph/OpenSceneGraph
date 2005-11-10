@@ -312,10 +312,6 @@ SOURCE=..\..\..\src\osgPlugins\osg\ShapeDrawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\Scissor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\osg\StateSet.cpp
 # End Source File
 # Begin Source File

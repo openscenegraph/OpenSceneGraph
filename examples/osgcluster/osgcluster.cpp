@@ -232,8 +232,7 @@ class DataConverter
             osg::notify(osg::NOTICE)<<"writeFramestamp = "<<fs.getFrameNumber()<<" "<<fs.getReferenceTime()<<std::endl;
 
             writeUInt(fs.getFrameNumber());
-            return writeDouble(fs.getReferenceTime());
-
+            writeDouble(fs.getReferenceTime());
         }
 
         void read(osg::FrameStamp& fs)

@@ -123,6 +123,12 @@ osgsequence cow.osg dumptruck.osg cessna.osg glider.osg
 echo osgshaders
 osgshaders
 
+echo osgshaderterrain
+osgshaderterrain
+
+echo osgparametric
+osgparametric
+
 echo osgviewer glsl_simple.osg
 osgviewer glsl_simple.osg
 

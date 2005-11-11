@@ -1,3 +1,141 @@
+2005-11-11 17:00  robert
+
+	* include/osgProducer/ViewerEventHandler,
+	  include/osgUtil/SceneView,
+	  src/osgProducer/ViewerEventHandler.cpp,
+	  src/osgUtil/SceneView.cpp,
+	  src/osgWrappers/osgProducer/ViewerEventHandler.cpp,
+	  src/osgWrappers/osgUtil/SceneView.cpp: Added scene stats support
+	  to osgProducer::ViewerEventHandler.
+
+2005-11-11 14:22  robert
+
+	* include/osgGA/StateSetManipulator,
+	  src/osgGA/StateSetManipulator.cpp,
+	  src/osgWrappers/osgGA/StateSetManipulator.cpp: Added
+	  s/getMaxNumOfTextureUnits control to osgGA::StateSetManipulator,
+	  and set the default to 4.
+
+2005-11-11 12:45  robert
+
+	* VisualStudio/examples/osgcluster/osgcluster.dsp,
+	  examples/osgmovie/osgmovie.cpp, src/osgPlugins/dxf/scene.h,
+	  src/osgPlugins/hdr/hdrloader.cpp: Fixes for VS6.0 build.
+
+2005-11-11 08:45  robert
+
+	* Make/makedefs: From Markus Trenkwalder, fix for Mingw build
+
+2005-11-10 20:56  robert
+
+	* include/osgIntrospection/ReflectionMacros: From Marco Jez,
+	  compile for a syntax error problem.
+
+2005-11-10 20:20  robert
+
+	* VisualStudio/: applications/osgviewer/osgviewer.dsp,
+	  examples/osgGLUTkeyboardmouse/osgGLUTkeyboardmouse.dsp,
+	  examples/osgGLUTsimple/osgGLUTsimple.dsp,
+	  examples/osgdepthshadow/osgdepthshadow.dsp,
+	  examples/osghangglide/osghangglide.dsp,
+	  examples/osgkeyboardmouse/osgkeyboardmouse.dsp,
+	  examples/osgparticle/osgparticledemo.dsp,
+	  examples/osgsimple/osgsimple.dsp,
+	  examples/osgsimplepager/osgsimplepager.dsp,
+	  examples/osgteapot/osgteapot.dsp,
+	  examples/osgtexture1D/osgtexture1D.dsp, osgPlugins/flt/flt.dsp,
+	  osgPlugins/geo/geo.dsp, osgPlugins/logo/logo.dsp,
+	  osgPlugins/osgParticle/dot_osgParticle.dsp,
+	  osgPlugins/osgSim/dot_osgSim.dsp, osgPlugins/txp/txp.dsp: Added
+	  /Zm200 to loads of project to try and salavage something from
+	  VS6.0 being such a bog awful compiler.
+
+2005-11-10 20:04  robert
+
+	* examples/: osgblendequation/osgblendequation.cpp,
+	  osglogicop/osglogicop.cpp: Fixes for VS6.0
+
+2005-11-10 19:32  robert
+
+	* examples/osgmovie/osgmovie.cpp,
+	  examples/osgparametric/osgparametric.cpp,
+	  src/osgPlugins/dxf/scene.h, src/osgPlugins/flt/flt2osg.cpp: Fixes
+	  for dumb VS6.0 compiler
+
+2005-11-10 19:16  robert
+
+	* examples/osgdepthpartition/: DepthPartitionNode.cpp,
+	  DepthPartitionNode.h: Fixes for VS6.0
+
+2005-11-10 17:24  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp,
+	  examples/osgcluster/osgcluster.cpp, src/osgTerrain/DataSet.cpp:
+	  Compile fixes for VS6.0.
+
+2005-11-10 16:47  robert
+
+	* Make/makedefs: From Markus Trenkwalder, added freetype-config
+	  support to Mingw section.
+
+2005-11-10 15:52  robert
+
+	* runexamples.bat: Added osgshaderterrain and osgparametric to
+	  runexamples.bat
+
+2005-11-10 15:27  robert
+
+	* src/osgWrappers/osg/GraphicsThread.cpp: Updated wrappers
+
+2005-11-10 15:25  robert
+
+	* examples/osgcamera/osgcamera.cpp, include/osg/GraphicsThread,
+	  src/osg/GraphicsThread.cpp: Added better control for cancel
+	  GraphicsThreads.
+
+2005-11-10 14:41  robert
+
+	* VisualStudio/OpenSceneGraph.dsw: Ran unix2dos on
+	  OpenSceneGraph.dsw
+
+2005-11-10 11:56  robert
+
+	* include/osgProducer/Viewer, src/osgProducer/Viewer.cpp,
+	  src/osgWrappers/osgProducer/Viewer.cpp: Fixed typo of
+	  CoordinateSystem.
+
+2005-11-10 11:39  robert
+
+	* include/osgProducer/OsgSceneHandler,
+	  src/osgProducer/OsgCameraGroup.cpp,
+	  src/osgProducer/OsgSceneHandler.cpp,
+	  src/osgWrappers/osgProducer/OsgSceneHandler.cpp: Addd
+	  OsgSceneHandler::s/getCleanUpOnNextFrame() and support for it in
+	  the draw() method, when CleanUpOnNextFrame is enabled the next
+	  frame simple deleted OpenGL objects without doing any draw
+	  traversal.
+
+2005-11-10 10:29  robert
+
+	* src/osgUtil/DelaunayTriangulator.cpp: Added checks against the
+	  values returned from dynamic_cast<>'s.
+
+2005-11-10 09:42  robert
+
+	* ChangeLog, examples/osgvolume/osgvolume.cpp,
+	  include/osgUtil/SceneView, src/osg/LOD.cpp,
+	  src/osgPlugins/dxf/dxfReader.h, src/osgPlugins/geo/osgGeoNodes.h:
+	  Compile fixes for VS7.1
+
+2005-11-09 22:09  don
+
+	* README.txt: small change to test osg-cvs....
+
+2005-11-09 22:07  don
+
+	* README.txt: Small modification to change 2004 to 2005 in
+	  README.txt  (this is mostly	      a test of osg-cvs)
+
 2005-11-09 20:30  robert
 
 	* src/osgWrappers/osgTerrain/DataSet.cpp: Updated wrappers

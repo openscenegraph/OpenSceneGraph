@@ -604,7 +604,7 @@ ifeq ($(OS),MINGW)
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -mthreads \
-                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a \
+                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).a \
                       -Wl,--export-all-symbols
 
   EXE_EXT           =.exe

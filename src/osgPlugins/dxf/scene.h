@@ -219,14 +219,15 @@ protected:
             for (MapVList::iterator mitr = _quads.begin();
                 mitr != _quads.end(); ++mitr) {
                 osg::Vec3Array *coords = new osg::Vec3Array;
-                for (VList::iterator itr = mitr->second.begin();
+                VList::iterator itr;
+                for (itr = mitr->second.begin();
                     itr != mitr->second.end(); ++itr) {
                     osg::Vec3 v(itr->x() - b._min.x(), itr->y() - b._min.y(), itr->z() - b._min.z());
                     coords->push_back(v);
                 }
                 osg::Vec3Array *norms = new osg::Vec3Array;
                 VList normlist = _quadnorms[mitr->first];
-                for (VList::iterator itr = normlist.begin();
+                for (itr = normlist.begin();
                     itr != normlist.end(); ++itr) {
                     norms->push_back(osg::Vec3(itr->x(), itr->y(), itr->z()));
                 }

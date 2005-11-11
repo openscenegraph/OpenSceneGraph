@@ -27,6 +27,7 @@
 #include <osgUtil/RenderStage>
 #include <osgUtil/SceneView>
 #include <osgUtil/StateGraph>
+#include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -185,6 +186,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Method0(void, releaseAllGLObjects);
 	I_Method0(void, flushAllDeletedGLObjects);
 	I_Method1(void, flushDeletedGLObjects, IN, double &, availableTime);
+	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
 	I_Property(int, ActiveUniforms);
 	I_Property(osg::CameraNode *, Camera);
 	I_Property(const osg::Vec4 &, ClearColor);

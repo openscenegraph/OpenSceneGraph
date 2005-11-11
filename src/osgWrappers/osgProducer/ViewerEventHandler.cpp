@@ -28,6 +28,7 @@ BEGIN_ENUM_REFLECTOR(osgProducer::ViewerEventHandler::FrameStatsMode)
 	I_EnumLabel(osgProducer::ViewerEventHandler::NO_STATS);
 	I_EnumLabel(osgProducer::ViewerEventHandler::FRAME_RATE);
 	I_EnumLabel(osgProducer::ViewerEventHandler::CAMERA_STATS);
+	I_EnumLabel(osgProducer::ViewerEventHandler::SCENE_STATS);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)

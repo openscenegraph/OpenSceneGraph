@@ -34,6 +34,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
 	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, x);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Method1(void, setMaximumNumOfTextureUnits, IN, unsigned int, i);
+	I_Method0(unsigned int, getMaximumNumOfTextureUnits);
+	I_Property(unsigned int, MaximumNumOfTextureUnits);
 	I_Property(osg::StateSet *, StateSet);
 END_REFLECTOR
 

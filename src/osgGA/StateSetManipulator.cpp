@@ -16,7 +16,11 @@
 using namespace osg;
 using namespace osgGA;
 
-StateSetManipulator::StateSetManipulator(): _drawState(NULL)
+StateSetManipulator::StateSetManipulator():
+    _backface(false),
+    _lighting(false),
+    _texture(false),
+    _maxNumOfTextureUnits(4)
 {
 }
 
@@ -83,10 +87,9 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 //                    ( _drawState->getAttribute( osg::StateAttribute::TEXTURE ) );
 //                cout << tex->numTextureUnits() << endl;
 
-                unsigned int nunit = 8; // should actually use the _real_ num units here, but how? 
                 unsigned int mode = osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF;
                 if ( _texture ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
-                for( unsigned int ii=0; ii<nunit; ii++ )
+                for( unsigned int ii=0; ii<_maxNumOfTextureUnits; ii++ )
                 {
                         _drawState->setTextureMode( ii, GL_TEXTURE_1D, mode );
                         _drawState->setTextureMode( ii, GL_TEXTURE_2D, mode );

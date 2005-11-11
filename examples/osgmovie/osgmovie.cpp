@@ -205,7 +205,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
 {
     if (useTextureRectangle)
     {
-        osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos,
+        osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
                                            0.0f,image->t(), image->s(),0.0f);
@@ -218,7 +218,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
     else
     {
-        osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos,
+        osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
                                            0.0f,1.0f, 1.0f,0.0f);

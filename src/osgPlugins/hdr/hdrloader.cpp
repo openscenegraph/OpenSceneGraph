@@ -157,7 +157,7 @@ void rawRGBEData(RGBE *_scan, int _len, float *_cols)
 
 inline float convertComponent(int _expo, int _val)
 {
-    return ldexp( static_cast<float>(_val), _expo-8);
+    return static_cast<float>(ldexp( static_cast<float>(_val), _expo-8));
 }
 
 void workOnRGBE(RGBE *_scan, int _len, float *_cols)

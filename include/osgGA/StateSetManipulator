@@ -53,6 +53,9 @@ public:
 
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
+        
+        void setMaximumNumOfTextureUnits(unsigned int i) { _maxNumOfTextureUnits = i; }
+        unsigned int getMaximumNumOfTextureUnits() const { return _maxNumOfTextureUnits; }
 
 protected:
 
@@ -62,6 +65,7 @@ protected:
         bool _backface;
         bool _lighting;
         bool _texture;
+        unsigned int _maxNumOfTextureUnits;
 };
 
 }

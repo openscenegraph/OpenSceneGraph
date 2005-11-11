@@ -1361,3 +1361,32 @@ void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float look
 {
     getViewMatrix().getLookAt(eye,center,up,lookDistance);
 }
+
+bool SceneView::getStats(Statistics* primStats)
+{
+    if (_displaySettings.valid() && _displaySettings->getStereo()) 
+    {
+        switch(_displaySettings->getStereoMode())
+        {
+        case(osg::DisplaySettings::QUAD_BUFFER):
+        case(osg::DisplaySettings::ANAGLYPHIC):
+        case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+        case(osg::DisplaySettings::VERTICAL_SPLIT):
+        case(osg::DisplaySettings::VERTICAL_INTERLACE):
+        case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
+        {
+            bool resultLeft = _renderStageLeft->getStats(primStats);
+            bool resultRight = _renderStageRight->getStats(primStats);
+            return resultLeft && resultRight;
+        }
+        case(osg::DisplaySettings::RIGHT_EYE):
+        case(osg::DisplaySettings::LEFT_EYE):
+        default:
+            return _renderStage->getStats(primStats);
+        }
+    }
+    else
+    {
+        return _renderStage->getStats(primStats);
+    }
+}

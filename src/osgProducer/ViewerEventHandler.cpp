@@ -4,6 +4,8 @@
 #include <osgDB/FileNameUtils>
 #include <osgText/Text>
 #include <osg/BlendFunc>
+#include <osgUtil/Statistics>
+
 
 #include <algorithm>
 #include <fstream>
@@ -144,6 +146,12 @@ protected:
     osg::ref_ptr<osgText::Text> _positionText;
     osg::ref_ptr<osgText::Text> _orientationText;
     osg::ref_ptr<osgText::Text> _speedText;
+    
+    TextList                    _sceneStatsLabelList;
+    osg::ref_ptr<osgText::Text> _numVerticesText;
+    osg::ref_ptr<osgText::Text> _numPrimitivesText;
+    osg::ref_ptr<osgText::Text> _numDrawablesText;
+    
 
     std::vector <Producer::CameraGroup::FrameStats> _fs;
     unsigned int _index;
@@ -164,7 +172,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
     osgUtil::SceneView* sv = osh->getSceneView();
     osg::State& state = *(sv->getState());
-    
     
     state.applyProjectionMatrix(_projection.get());
     state.applyModelViewMatrix(_modelview.get());
@@ -379,6 +386,8 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
     osgUtil::SceneView* sv = osh->getSceneView();
 
+    char tmpText[128];
+
     // render graphs
     if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
     {
@@ -387,7 +396,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         glMatrixMode( GL_PROJECTION );
         glPushMatrix();
         glLoadIdentity();
-        glOrtho( -.025, .128, 600.0, -10.0, -1.0, 1.0 ); 
+        glOrtho( -.03, .128, 600.0, -20.0, -1.0, 1.0 ); 
 
 
         unsigned int lindex = (_index + 1) % _fs.size();
@@ -486,10 +495,8 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
     {
         // update and draw the frame rate text.
         
-        char tmpText[128];
 
         _frameRateLabelText->draw(*(sv->getState()));
-
         if (_fs.size()>1)
         {
             unsigned int lindex = (_index + 1) % _fs.size();
@@ -554,6 +561,44 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             }
         }
         
+        if (_veh->getFrameStatsMode()>=ViewerEventHandler::SCENE_STATS)
+        {
+            osgUtil::Statistics stats;
+
+            for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator shitr = _veh->getOsgCameraGroup()->getSceneHandlerList().begin();
+                shitr != _veh->getOsgCameraGroup()->getSceneHandlerList().end();
+                ++shitr)
+            {
+                (*shitr)->getSceneView()->getStats(&stats); 
+            }
+
+            unsigned int primitives = 0;
+            for(osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr = stats.GetPrimitivesBegin();
+                pcmitr != stats.GetPrimitivesEnd();
+                ++pcmitr)
+            {
+                primitives += pcmitr->second;
+            }
+            
+            for(TextList::iterator itr = _sceneStatsLabelList.begin();
+                itr != _sceneStatsLabelList.end();
+                ++itr)
+            {
+                (*itr)->draw(*(sv->getState()));
+            }
+            
+            sprintf(tmpText,"%d",stats._vertexCount);
+            _numVerticesText->setText(tmpText);
+            _numVerticesText->draw(*(sv->getState()));
+
+            sprintf(tmpText,"%d",primitives);
+            _numPrimitivesText->setText(tmpText);
+            _numPrimitivesText->draw(*(sv->getState()));
+
+            sprintf(tmpText,"%d",stats.numDrawables);
+            _numDrawablesText->setText(tmpText);
+            _numDrawablesText->draw(*(sv->getState()));
+        } 
     }
 
 }
@@ -593,7 +638,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 
 
     pos.x() = leftPos;
-    pos.y() -= characterSize;
+    pos.y() -= characterSize*1.5f;
 
     {
         osgText::Text* text = new osgText::Text;
@@ -693,7 +738,91 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
         pos.y() -= characterSize;
     }
 
+    pos.y() -= characterSize*0.5f;
 
+    // scene stats section
+    {
+        pos.x() = leftPos;
+
+        // num drawables
+        osgText::Text* drawLabel = new osgText::Text;
+        drawLabel->setFont("fonts/arial.ttf");
+        drawLabel->setColor(colorDraw);
+        drawLabel->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        drawLabel->setCharacterSize(characterSize);
+        drawLabel->setPosition(pos);
+        drawLabel->setAlignment(osgText::Text::BASE_LINE);
+        drawLabel->setText("Number of Drawables: ");
+
+        _sceneStatsLabelList.push_back(drawLabel);
+        
+        pos.x() = drawLabel->getBound().xMax();
+
+        _numDrawablesText = new osgText::Text;
+        _numDrawablesText->setFont("fonts/arial.ttf");
+        _numDrawablesText->setColor(colorDraw);
+        _numDrawablesText->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        _numDrawablesText->setCharacterSize(characterSize);
+        _numDrawablesText->setPosition(pos);
+        _numDrawablesText->setAlignment(osgText::Text::BASE_LINE);
+        _numDrawablesText->setText("100000  ");
+        
+        pos.x() = _numDrawablesText->getBound().xMax();
+
+        // num vertices
+        drawLabel = new osgText::Text;
+        drawLabel->setFont("fonts/arial.ttf");
+        drawLabel->setColor(colorDraw);
+        drawLabel->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        drawLabel->setCharacterSize(characterSize);
+        drawLabel->setPosition(pos);
+        drawLabel->setAlignment(osgText::Text::BASE_LINE);
+        drawLabel->setText("Number of Vertices: ");
+
+        _sceneStatsLabelList.push_back(drawLabel);
+        
+        pos.x() = drawLabel->getBound().xMax();
+
+        _numVerticesText = new osgText::Text;
+        _numVerticesText->setFont("fonts/arial.ttf");
+        _numVerticesText->setColor(colorDraw);
+        _numVerticesText->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        _numVerticesText->setCharacterSize(characterSize);
+        _numVerticesText->setPosition(pos);
+        _numVerticesText->setAlignment(osgText::Text::BASE_LINE);
+        _numVerticesText->setText("1000000  ");
+        
+        pos.x() = _numVerticesText->getBound().xMax();
+
+    
+        // num primitives
+        drawLabel = new osgText::Text;
+        drawLabel->setFont("fonts/arial.ttf");
+        drawLabel->setColor(colorDraw);
+        drawLabel->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        drawLabel->setCharacterSize(characterSize);
+        drawLabel->setPosition(pos);
+        drawLabel->setAlignment(osgText::Text::BASE_LINE);
+        drawLabel->setText("Number of Primitives: ");
+
+        _sceneStatsLabelList.push_back(drawLabel);
+        
+        pos.x() = drawLabel->getBound().xMax();
+
+        _numPrimitivesText = new osgText::Text;
+        _numPrimitivesText->setFont("fonts/arial.ttf");
+        _numPrimitivesText->setColor(colorDraw);
+        _numPrimitivesText->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        _numPrimitivesText->setCharacterSize(characterSize);
+        _numPrimitivesText->setPosition(pos);
+        _numPrimitivesText->setAlignment(osgText::Text::BASE_LINE);
+        _numPrimitivesText->setText("1000000  ");
+        
+        pos.x() = _numPrimitivesText->getBound().xMax();
+        
+
+
+    }
 }
 
 void ViewerEventHandler::StatsAndHelpDrawCallback::displayInfo()
@@ -792,7 +921,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
         {
             case 's' :
             {
-                FrameStatsMode newFrameStatsMode = (FrameStatsMode)((_frameStatsMode+1)%3);
+                FrameStatsMode newFrameStatsMode = (FrameStatsMode)((_frameStatsMode+1)%4);
                 setFrameStatsMode(newFrameStatsMode);
                 return true;
             }

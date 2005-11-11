@@ -455,6 +455,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Flush deleted OpenGL objects, such as texture objects, display lists etc within specified available time.*/
         virtual void flushDeletedGLObjects(double& availableTime);
         
+        /** Extract stats for current draw list. */
+        bool getStats(Statistics* primStats); 
+
     protected:
 
         virtual ~SceneView();

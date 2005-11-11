@@ -49,7 +49,8 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
         {
             NO_STATS = 0,
             FRAME_RATE = 1,
-            CAMERA_STATS = 2
+            CAMERA_STATS = 2,
+            SCENE_STATS = 3
         };
         
         void setFrameStatsMode(FrameStatsMode mode);

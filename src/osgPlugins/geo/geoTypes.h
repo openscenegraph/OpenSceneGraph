@@ -71,7 +71,10 @@ const uint GEO_PLUGIN_TYPE_LAST					= GEO_PLUGIN_TYPE_TASK;
 
 
 
-	
+
+/** put nowhere */
+const uint GEO_TOOL_TYPE_NONE					= 0;
+
 /** user tool constant - put in favorites menu & toolbar */
 const uint GEO_TOOL_TYPE_USER					= 1;
 
@@ -90,11 +93,26 @@ const uint GEO_TOOL_TYPE_APPEARANCE				= 5;
 /** behavior tool constant - put in plugins menu & toolbar */
 const uint GEO_TOOL_TYPE_BEHAVIOR				= 6;
 
-/** behavior tool constant - put in plugins menu & toolbar */
+/** optimize tool constant - put in plugins menu & toolbar */
 const uint GEO_TOOL_TYPE_OPTIMIZE				= 7;
 
+/** scenegraph tool constant - put in scenegraph menu & toolbar */
+const uint GEO_TOOL_TYPE_SCENEGRAPH				= 8;
+
+const uint GEO_TOOL_TYPE_FILE					= 9;
+
+const uint GEO_TOOL_TYPE_EDIT					= 10;
+
+const uint GEO_TOOL_TYPE_VIEW					= 11;
+
+const uint GEO_TOOL_TYPE_LOD					= 12;
+
+const uint GEO_TOOL_TYPE_SELECT					= 13;
+
+const uint GEO_TOOL_TYPE_GRID					= 14;
+
 /** convenience constant */
-const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_OPTIMIZE;
+const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_GRID;
 
 
 
@@ -123,6 +141,9 @@ const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_OPTIMIZE;
  *					GEO_DB_FADE_GROUP
  *					GEO_DB_TERRAIN
  *					GEO_DB_BSP
+ *					GEO_DB_DECAL_GROUP
+ *					GEO_DB_LIGHT_GROUP
+ *					GEO_DB_DCS
  *			GEO_DB_GEOMETRY
  *					GEO_DB_SURFACE
  *							GEO_DB_POLYGON
@@ -131,13 +152,17 @@ const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_OPTIMIZE;
  *							GEO_DB_BASE_SURFACE (*)
  *					GEO_DB_TEXT
  *					GEO_DB_VERTEX
+ *						GEO_DB_FAT_VERTEX	
+ *						GEO_DB_SLIM_VERTEX	
  *			GEO_DB_HEADER
  *
  * (*) Not available in Geo Version 1.0
  */
 
 
-//------------
+//--------------------------------------------------------------------
+// Geo Node type Identifiers
+//--------------------------------------------------------------------
 //
 const uint GEO_DB_BASE					=  0x00000003;
 const uint GEO_DB_GROUP					= (0x00000004 | GEO_DB_BASE);
@@ -174,10 +199,18 @@ const uint GEO_DB_INSTANCE				= (0x04000000 | GEO_DB_GROUP);
 const uint GEO_DB_LIGHTPT				= (0x08000000 | GEO_DB_POLYGON);
 //------------
 const uint GEO_DB_FADE_GROUP			= (0x10000000 | GEO_DB_GROUP);	
-//
-//
-//
+const uint GEO_DB_DECAL_GROUP			= (0x20000000 | GEO_DB_GROUP);	
+const uint GEO_DB_LIGHT_GROUP			= (0x40000000 | GEO_DB_GROUP);	
+const uint GEO_DB_FAT_VERTEX			= (0x80000000 | GEO_DB_VERTEX);	
 //------------
+
+//--------------------------------------------------------------------
+// Geo Extended Node type Identifiers
+//--------------------------------------------------------------------
+const uint GEO_DB_SLIM_VERTEX			= (0x00000010 | GEO_DB_VERTEX);
+const uint GEO_DB_DCS					= (0x00001000 | GEO_DB_GROUP);
+
+
 
 
 // older version types for Compatability & convenience
@@ -224,24 +257,36 @@ const unsigned char GEO_DB_DATATYPE_INT						= 3;
 const unsigned char GEO_DB_DATATYPE_FLOAT					= 4;
 const unsigned char GEO_DB_DATATYPE_LONG					= 5;
 const unsigned char GEO_DB_DATATYPE_DOUBLE					= 6;
+const unsigned char GEO_DB_DATATYPE_VEC3F					= 8;
+const unsigned char GEO_DB_DATATYPE_VEC4F					= 9;
 const unsigned char GEO_DB_DATATYPE_BOOL					= 28;
 
 ///////////////////////////////////////////////////////////////////
 // VARIABLE TYPES
 ///////////////////////////////////////////////////////////////////
 
-const uint GEO_VAR_TYPE_FLOAT			= 1;
-const uint GEO_VAR_TYPE_INT				= 2;
-const uint GEO_VAR_TYPE_LONG			= 3;
-const uint GEO_VAR_TYPE_DOUBLE			= 4;
-const uint GEO_VAR_TYPE_BOOL			= 5;
-const uint GEO_VAR_TYPE_2FV				= 6;
-const uint GEO_VAR_TYPE_3FV				= 7;
-const uint GEO_VAR_TYPE_4FV				= 8;
-const uint GEO_VAR_TYPE_STRING			= 9;
-const uint GEO_VAR_TYPE_2IV				= 10;
-const uint GEO_VAR_TYPE_3IV				= 11;
-const uint GEO_VAR_TYPE_4IV				= 12;
+const uint GEO_VAR_TYPE_FLOAT								= 1;
+const uint GEO_VAR_TYPE_INT									= 2;
+const uint GEO_VAR_TYPE_LONG								= 3;
+const uint GEO_VAR_TYPE_DOUBLE								= 4;
+const uint GEO_VAR_TYPE_BOOL								= 5;
+const uint GEO_VAR_TYPE_2FV									= 6;
+const uint GEO_VAR_TYPE_3FV									= 7;
+const uint GEO_VAR_TYPE_4FV									= 8;
+const uint GEO_VAR_TYPE_STRING								= 9;
+const uint GEO_VAR_TYPE_2IV									= 10;
+const uint GEO_VAR_TYPE_3IV									= 11;
+const uint GEO_VAR_TYPE_4IV									= 12;
+const uint GEO_VAR_TYPE_16FV								= 13;
+const uint GEO_VAR_TYPE_2BV									= 14;
+const uint GEO_VAR_TYPE_3BV									= 15;
+const uint GEO_VAR_TYPE_4BV									= 16;
+const uint GEO_VAR_TYPE_SAMPLER_1D							= 17;
+const uint GEO_VAR_TYPE_SAMPLER_2D							= 18;
+const uint GEO_VAR_TYPE_SAMPLER_3D							= 19;
+const uint GEO_VAR_TYPE_SAMPLER_CUBE						= 20;
+const uint GEO_VAR_TYPE_SAMPLER_1D_SHADOW					= 21;
+const uint GEO_VAR_TYPE_SAMPLER_2D_SHADOW					= 22;
 
 
 
@@ -281,6 +326,31 @@ const int GEO_DB_UP_AXIS_Y				= 2; // the default
 const int GEO_DB_UP_AXIS_Z				= 3;
 
 
+const short GEO_DB_PROJ_TYPE_FLAT_EARTH		= 0;
+const short GEO_DB_PROJ_TYPE_TRAPEZOIDAL	= 1;
+const short GEO_DB_PROJ_TYPE_ROUND_EARTH	= 2;
+const short GEO_DB_PROJ_TYPE_LAMBERT		= 3;
+const short GEO_DB_PROJ_TYPE_UTM			= 4;
+const short GEO_DB_PROJ_TYPE_GEODETIC		= 5;
+const short GEO_DB_PROJ_TYPE_GEOCENTRIC		= 6;
+const short GEO_DB_PROJ_TYPE_LAST			= GEO_DB_PROJ_TYPE_GEOCENTRIC;
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// DB_HDR_ELLIPSOID - defines
+// Constants to define the ellipsoid model used for the projection
+//		
+const short GEO_DB_ELLIPSOID_USER_DEFINED	= -1;
+const short GEO_DB_ELLIPSOID_WGS_1984		= 0;
+const short GEO_DB_ELLIPSOID_WGS_1972		= 1;
+const short GEO_DB_ELLIPSOID_BESSEL			= 2;
+const short GEO_DB_ELLIPSOID_CLARKE_1866	= 3;
+const short GEO_DB_ELLIPSOID_NAD_1927		= 4;
+const short GEO_DB_ELLIPSOID_LAST			= GEO_DB_ELLIPSOID_NAD_1927;
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////////		
@@ -294,12 +364,15 @@ const uint GEO_DB_WIRE					=  0x00000002;
 const uint GEO_DB_OUTLINED				=  (GEO_DB_SOLID | GEO_DB_WIRE);
 const uint GEO_DB_WIRE_ON_MOVE			=  0x00000004;
 const uint GEO_DB_DETEXTURE_ON_MOVE		=  0x00000008;
+const uint GEO_DB_PROXY_ON_MOVE			=  0x00000010;
 
 const uint GEO_DB_SHRINK				=  0x00000080;
 
 const uint GEO_DB_ZBUFFER				=  0x00000100;
+const uint GEO_DB_BBOX_HIGHLIGHT		=  0x00000200;
 const uint GEO_DB_BACKFACE				=  0x00000400;
 const uint GEO_DB_SELECTIVE_CULLFACE	=  0x00000800;
+
 
 const uint GEO_DB_DRAW_FACE_NORMALS		=  0x00001000;
 const uint GEO_DB_DRAW_VERTEX_NORMALS	=  0x00002000;
@@ -307,10 +380,11 @@ const uint GEO_DB_SELECTIVE_BLENDING	=  0x00008000;
 
 const uint GEO_DB_TEXTURE				=  0x00010000;
 const uint GEO_DB_HIGHLIGHT				=  0x00020000;
-const uint GEO_DB_PICKING				=  0x00040000;
-const uint GEO_DB_HIGHLIGHT_DASHED		=  0x00080000;
+const uint GEO_DB_USE_VERTEX_ARRAYS		=  0x00040000;
+const uint GEO_DB_REBUILD_VERTEX_ARRAYS =  0x00080000;
 
 const uint GEO_DB_SELECTIVE_SHADING		=  0x00100000;
+const uint GEO_DB_DRAW_SIMPLE			=  0x00200000;
 
 const uint GEO_DB_ILLUMINATED			=  0x01000000;
 const uint GEO_DB_NORMAL_PER_PRIM		=  0x04000000;
@@ -336,6 +410,30 @@ const uint GEO_GROUP_TYPE_MULTI_SAMPLE_AA		= 4;
 const uint GEO_GROUP_TYPE_LINE_AA				= 5;
 const uint GEO_GROUP_TYPE_FADE					= 6;
 const uint GEO_GROUP_TYPE_TERRAIN				= 7;
+const uint GEO_GROUP_TYPE_DECAL					= 8;
+
+
+///////////////////////////////////////////////////////////////////////////////	
+/** Constants to control the display of a Group based on time-of-day
+* 
+*/
+const uint GEO_DB_GROUP_TOD_DISPLAY_NIGHT		= 0x00000001;
+const uint GEO_DB_GROUP_TOD_DISPLAY_DAWN		= 0x00000002;
+const uint GEO_DB_GROUP_TOD_DISPLAY_DAY			= 0x00000004;
+const uint GEO_DB_GROUP_TOD_DISPLAY_DUSK		= 0x00000008;
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////	
+/** Constants to control the intersection testing of this Group at runtime
+* 
+*/
+const uint GEO_DB_GROUP_ISECT_IG_DEFINED		= 0;
+const uint GEO_DB_GROUP_ISECT_YES				= 1;
+const uint GEO_DB_GROUP_ISECT_NO				= 2;
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////////	
@@ -350,6 +448,38 @@ const uint GEO_GROUP_TYPE_TERRAIN				= 7;
 const uint GEO_SWITCH_TYPE_ADDATIVE		=  1;
 const uint GEO_SWITCH_TYPE_SELECTIVE	=  2;
 
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////	
+/** Constants to identify special behavior int ZOffset GRoups
+ */
+const uint GEO_DB_ZOFFSET_GROUP_TYPE_UNDEFINED		= 0;
+const uint GEO_DB_ZOFFSET_GROUP_TYPE_RUNWAY			= 1;
+const uint GEO_DB_ZOFFSET_GROUP_TYPE_MARKINGS		= 2;
+
+
+
+///////////////////////////////////////////////////////////////////////////////	
+/** Constants to control the Light Group behavior 
+* 
+*  Light Groups are Groups with the Light-Group flag set. Any Light pt children
+*  are effected by these settings
+*/
+const uint GEO_LIGHT_GROUP_ANIM_OFF  	=  0;
+const uint GEO_LIGHT_GROUP_ANIM_ON  	=  1;
+const uint GEO_LIGHT_GROUP_ANIM_RANDOM  =  2;
+
+
+///////////////////////////////////////////////////////////////////////////////	
+/** Constants that specify the type of Light Group 
+* 
+*  FIXED is for airfields etc.
+*  MOVING is for aircraft/ships etc.
+*/
+const uint GEO_LIGHT_GROUP_TYPE_FIXED	=  0;
+const uint GEO_LIGHT_GROUP_TYPE_MOVING	=  1;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -422,6 +552,7 @@ const int GEO_DB_TEXTURE_UNIT_FUNC_COMBINE		= 5;
 //
 const int GEO_TEXT_RASTER			= 0;
 const int GEO_TEXT_STROKE			= 1;
+const int GEO_TEXT_POLY				= 2;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Justification constants

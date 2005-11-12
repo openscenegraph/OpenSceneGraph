@@ -199,7 +199,9 @@ public:
     { // this must only be called with a vertex georecord.
         // gr is tha vertex; gface is the face containing the vertex
         bool hbeh=false; // true if this vertex has a behaviour
-        if (gr->getType()==DB_DSK_VERTEX) {
+        if (gr->getType()==DB_DSK_VERTEX || 
+			gr->getType()==DB_DSK_FAT_VERTEX || 
+			gr->getType()==DB_DSK_SLIM_VERTEX) {
             const geoField *gfshade=gface->getField(GEO_DB_POLY_SHADEMODEL); // shaded gouraud, flat...
             int shademodel=gfshade ? gfshade->getInt() : -1;
             if (shademodel!=GEO_POLY_SHADEMODEL_LIT && shademodel!=GEO_POLY_SHADEMODEL_FLAT) {
@@ -570,7 +572,9 @@ class ReaderGEO
                 case DB_DSK_LINEAR_ACTION:
                 case DB_DSK_TASK_ACTION:
                 case DB_DSK_PERIODIC_ACTION:
+#ifdef DB_DSK_PERIODIC2_ACTION
                 case DB_DSK_PERIODIC2_ACTION:
+#endif
                 case DB_DSK_TRIG_ACTION:
                 case DB_DSK_DISCRETE_ACTION:
                 case DB_DSK_INVERSE_ACTION:
@@ -889,7 +893,9 @@ class ReaderGEO
                 itr!=gr.end();
                 ++itr)
             {
-                if ((*itr)->getType()==DB_DSK_VERTEX)
+                if ((*itr)->getType()==DB_DSK_VERTEX || 
+					(*itr)->getType()==DB_DSK_FAT_VERTEX || 
+					(*itr)->getType()==DB_DSK_SLIM_VERTEX)
                 { // light point vertices
                     const geoField *gfd=(*itr)->getField(GEO_DB_VRTX_COORD);
                     osg::Vec3 pos;
@@ -1637,6 +1643,7 @@ class ReaderGEO
                         else delete vb;
                                                  }
                         break;
+#ifdef DB_DSK_PERIODIC2_ACTION
                     case DB_DSK_PERIODIC2_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
                         ok=vb->makeBehave((*rcitr), theHeader.get());
@@ -1644,6 +1651,7 @@ class ReaderGEO
                         else delete vb;
                                                   }
                         break;
+#endif
                     case DB_DSK_TRUNCATE_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
                         ok=vb->makeBehave((*rcitr), theHeader.get());

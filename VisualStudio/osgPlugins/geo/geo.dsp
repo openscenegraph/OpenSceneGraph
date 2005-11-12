@@ -120,7 +120,15 @@ SOURCE=..\..\..\src\osgPlugins\geo\geoFormat.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\geo\geoCore.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\geo\geoTypes.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\geo\geoVersion.h
 # End Source File
 # Begin Source File
 

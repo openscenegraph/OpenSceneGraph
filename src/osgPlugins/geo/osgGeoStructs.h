@@ -495,7 +495,7 @@ public:
 		case DB_DSK_LINEAR_ACTION			:
 		case DB_DSK_TASK_ACTION			:
 		case DB_DSK_PERIODIC_ACTION		:
-		case DB_DSK_PERIODIC2_ACTION		:
+	//deprecated in 1,2,1	case DB_DSK_PERIODIC2_ACTION		:
 		case DB_DSK_TRIG_ACTION			:
 		case DB_DSK_INVERSE_ACTION		:
 		case DB_DSK_TRUNCATE_ACTION		:

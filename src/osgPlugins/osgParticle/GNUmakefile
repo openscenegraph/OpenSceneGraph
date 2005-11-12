@@ -24,6 +24,7 @@ CXXFILES =\
 	IO_SectorPlacer.cpp\
 	IO_SegmentPlacer.cpp\
 	IO_SmokeEffect.cpp\
+	IO_SmokeTrailEffect.cpp\
 	IO_FireEffect.cpp\
 	IO_ExplosionEffect.cpp\
 	IO_ExplosionDebrisEffect.cpp\

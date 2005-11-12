@@ -108,6 +108,10 @@ SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_CenteredPlacer.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ConnectedParticleSystem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Emitter.cpp
 # End Source File
 # Begin Source File

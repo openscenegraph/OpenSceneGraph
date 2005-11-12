@@ -156,6 +156,10 @@ SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SmokeEffect.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SmokeTrailEffect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_FireEffect.cpp
 # End Source File
 # Begin Source File

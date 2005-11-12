@@ -5,6 +5,7 @@ CXXFILES =\
 	IO_AccelOperator.cpp\
         IO_AngularAccelOperator.cpp\
 	IO_CenteredPlacer.cpp\
+	IO_ConnectedParticleSystem.cpp\
 	IO_Emitter.cpp\
 	IO_FluidFrictionOperator.cpp\
 	IO_ForceOperator.cpp\

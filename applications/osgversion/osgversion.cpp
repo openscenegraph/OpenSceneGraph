@@ -19,7 +19,7 @@ bool validName(const std::string& first)
     if (first.empty()) return false;
     if (first[0]<'A' || first[0]>'Z') return false;
     
-    if (first.size()>=2 && (first[1]<'a' || first[1]>'z')) return false; 
+    if (first.size()>=2 && (first[1]<'a' || first[1]>'z') && (first[1]!='.')  && (first[1]!=',')) return false; 
 
     if (first=="Added") return false;
     if (first=="CameraNode") return false;
@@ -254,6 +254,16 @@ void nameCorrection(NamePair& name)
         name.first = "Romano";
         name.second = "José Magacho da Silva";
     }
+    if (name.first=="Leandro" && name.second=="Motta")
+    {
+        name.first = "Leandro";
+        name.second = "Motta Barros";
+    }
+    if (name.first=="A" && name.second=="Botorabi")
+    {
+        name.first = "Ali";
+        name.second = "Botorabi";
+    }
 }
 
 void lastValidCharacter(const std::string& name, unsigned int& pos,char c)
@@ -287,7 +297,6 @@ NamePair createName(const std::string& first, const std::string& second)
     if (first.empty()) return EmptyNamePair;
     
     unsigned int last = first.size();
-    
     lastValidCharacter(first, last);
     
     if (last==0) return EmptyNamePair;
@@ -358,7 +367,7 @@ bool submissionsSequence(const Words& words, unsigned int& i)
         i+=2;
         return true;
     }
-    
+
     return false;
 }
 

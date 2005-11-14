@@ -305,8 +305,8 @@ namespace osgParticle
     {
         if (_reset_bounds_flag) {
             _reset_bounds_flag = false;
-            _bmin = p;
-            _bmax = p;
+            _bmin = p - osg::Vec3(r,r,r);
+            _bmax = p + osg::Vec3(r,r,r);
         } else {
             if (p.x() - r < _bmin.x()) _bmin.x() = p.x() - r;
             if (p.y() - r < _bmin.y()) _bmin.y() = p.y() - r;

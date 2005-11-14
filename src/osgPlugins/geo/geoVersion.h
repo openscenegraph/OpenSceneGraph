@@ -78,4 +78,4 @@ extern GEO_DB_API int	GetGeoLibraryVersion(void);
 
 
 
-#endif __GEO_VERSION_H__
+#endif // __GEO_VERSION_H__

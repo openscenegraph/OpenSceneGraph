@@ -9,6 +9,7 @@
 
 typedef std::pair<std::string, std::string> NamePair;
 typedef std::set<NamePair> NameSet;
+typedef std::vector< std::string > Words;
 
 NamePair EmptyNamePair;
 
@@ -62,6 +63,89 @@ bool validName(const std::string& first)
     if (first=="Fixes") return false;
     if (first=="FontImplementation") return false;
     if (first=="DisplaySettings") return false;
+    if (first=="AnimationPath") return false;
+    if (first=="AnimationPathCallback") return false;
+    if (first=="AnimationPathManipulator") return false;
+    if (first=="ArgumentParser") return false;
+    if (first=="AttrData") return false;
+    if (first=="Azimuth") return false;
+    if (first=="CluserCullingCallback") return false;
+    if (first=="ClusterCullingCallback") return false;
+    if (first=="CoordinateSystem") return false;
+    if (first=="CoordinateSystemNode") return false;
+    if (first=="CoordinateSystemNode&") return false;
+    if (first=="Copyright") return false;
+    if (first=="Cygwin") return false;
+    if (first=="CullCallbacks") return false;
+    if (first=="CullingSettngs") return false;
+    if (first=="DataVariance") return false;
+    if (first=="DatabasePager") return false;
+    if (first=="DrawElementsUByte") return false;
+    if (first=="Escape") return false;
+    if (first=="FluidProgram") return false;
+    if (first=="FrameStats") return false;
+    if (first=="FreeBSD") return false;
+    if (first=="GraphicsContextImplementation") return false;
+    if (first=="GraphicsThread") return false;
+    if (first=="Images") return false;
+    if (first=="IndexBlock") return false;
+    if (first=="Inventor") return false;
+    if (first=="Make") return false;
+    if (first=="Material") return false;
+    if (first=="MergeGeometryVisitor") return false;
+    if (first=="Mode") return false;
+    if (first=="Prodcuer") return false;
+    if (first=="ProxyNode") return false;
+    if (first=="ReentrantMutex") return false;
+    if (first=="ReferenceFrame") return false;
+    if (first=="RemoveLoadedProxyNodes") return false;
+    if (first=="RenderTargetFallback") return false;
+    if (first=="RenderToTextureStage") return false;
+    if (first=="Sequence") return false;
+    if (first=="Shape") return false;
+    if (first=="TessellationHints") return false;
+    if (first=="Support") return false;
+    if (first=="State") return false;
+    if (first=="SmokeTrailEffect") return false;
+    if (first=="TexEnv") return false;
+    if (first=="Texture3D") return false;
+    if (first=="TextureCubeMap") return false;
+    if (first=="TextureObjectManager") return false;
+    if (first=="TextureRectangle(Image*") return false;
+    if (first=="TextureType") return false;
+    if (first=="Texuture") return false;
+    if (first=="TriStripVisitor") return false;
+    if (first=="UserData") return false;
+    if (first=="Viewport") return false;
+    if (first=="Visual") return false;
+    if (first=="Studio") return false;
+    if (first=="Vec2d") return false;
+    if (first=="Vec3d") return false;
+    if (first=="Windows") return false;
+    if (first=="Version") return false;
+    if (first=="Viewport") return false;
+    if (first=="Core") return false;
+    if (first=="DataSet") return false;
+    if (first=="Endian") return false;
+    if (first=="ImageOptions") return false;
+    if (first=="ImageStream") return false;
+    if (first=="KeyboardMouse") return false;
+    if (first=="KeyboardMouseCallback") return false;
+    if (first=="AutoTransform") return false;
+    if (first=="LightModel") return false;
+    if (first=="MatrixManipulator") return false;
+    if (first=="MatrixTransform") return false;
+    if (first=="OpenDX") return false;
+    if (first=="ParentList") return false;
+    if (first=="TerraPage") return false;
+    if (first=="OveralyNode") return false;
+    if (first=="OpenThreads") return false;
+    if (first=="PolygonStipple") return false;
+    if (first=="SceneView") return false;
+    if (first=="PrimitiveIndexFunctor") return false;
+    if (first=="PolytopeVisitor") return false;
+    if (first=="Performer") return false;
+    if (first=="Paging") return false;
     return true;
 }
 
@@ -72,6 +156,14 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
+    if (name=="Micheal") return "Michael";
+    if (name=="Heirtlein") return "Hertlein";
+    if (name=="Yefrei") return "Yefei";
+    if (name=="Randal") return "Randall";
+    if (name=="Hooper") return "Hopper";
+    if (name=="Molishtan") return "Moloshtan";
+    if (name=="Vines") return "Vine";
+    if (name=="Connel") return "Connell";
     if (name=="Bistroviae") return "Bistrovic";
     if (name=="Christaiansen") return "Christiansen";
     if (name=="Daust") return "Daoust";
@@ -126,6 +218,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Xennon") return "Hanson";
     if (name=="Yfei") return "Yefei";
     if (name=="Oritz") return "Ortiz";
+    if (name=="Cobin") return "Corbin";
     return name;
 }
 
@@ -145,6 +238,21 @@ void nameCorrection(NamePair& name)
     {
         name.first = "Julian";
         name.second = "Ortiz";
+    }
+    if (name.first=="Rune" && name.second=="Schmidt")
+    {
+        name.first = "Rune";
+        name.second = "Schmidt Jensen";
+    }
+    if (name.first=="Romano" && name.second=="José")
+    {
+        name.first = "Romano";
+        name.second = "José Magacho da Silva";
+    }
+    if (name.first=="Rommano" && name.second=="Silva")
+    {
+        name.first = "Romano";
+        name.second = "José Magacho da Silva";
     }
 }
 
@@ -211,13 +319,53 @@ NamePair createName(const std::string& first, const std::string& second)
     return NamePair(name,"");
 }
 
+bool submissionsSequence(const Words& words, unsigned int& i)
+{
+    if (i+1>=words.size()) return false;
+    
+    if (words[i]=="From" || 
+        words[i]=="from" || 
+        words[i]=="From:" || 
+        words[i]=="from:" || 
+        words[i]=="Added" || 
+        words[i]=="Merged" || 
+        words[i]=="Integrated") return true;
+        
+    if (i+2>=words.size()) return false;
+    
+    if (words[i]=="submitted" && words[i+1]=="by")
+    {
+        i+=1;
+        return true;
+    }
+        
+    if (words[i]=="Folded" && words[i+1]=="in")
+    {
+        i+=1;
+        return true;
+    }
+
+    if (words[i]=="Checked" && words[i+1]=="in")
+    {
+        i+=1;
+        return true;
+    }
+
+    if (i+3>=words.size()) return false;
+
+    if (words[i]=="sent" && words[i+1]=="in" && words[i+2]=="by")
+    {
+        i+=2;
+        return true;
+    }
+    
+    return false;
+}
+
 void readContributors(NameSet& names, const std::string& file)
 {
-    std::cout<<"readContributions(names,"<<file<<")"<<std::endl;
-
     std::ifstream fin(file.c_str());
     
-    typedef std::vector< std::string > Words;
     Words words;
     while(fin)
     {
@@ -230,10 +378,7 @@ void readContributors(NameSet& names, const std::string& file)
     
     for(unsigned int i=0; i< words.size(); ++i)
     {
-        if (words[i]=="From" || 
-            words[i]=="from" || 
-            words[i]=="From:" || 
-            words[i]=="from:") 
+        if (submissionsSequence(words,i)) 
         {
             if (i+2<words.size() && validName(words[i+1]))
             {
@@ -286,6 +431,13 @@ void buildContributors(NameSet& names)
     names.insert(NamePair("Robert","Osfield"));
     names.insert(NamePair("Don","Burns"));
     names.insert(NamePair("Marco","Jez"));
+    names.insert(NamePair("Karsten","Weiss"));
+    names.insert(NamePair("Graeme","Harkness"));
+    names.insert(NamePair("Axel","Volley"));
+    names.insert(NamePair("Nikolaus","Hanekamp"));
+    names.insert(NamePair("Kristopher","Bixler"));
+    names.insert(NamePair("Tanguy","Fautré"));
+    names.insert(NamePair("J.E.","Hoffmann"));
 }
 
 int main( int argc, char **argv)
@@ -296,7 +448,7 @@ int main( int argc, char **argv)
     arguments.getApplicationUsage()->addCommandLineOption("-c or --contributors","Print out the contributors list.");
     arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the changelog to generate an estimated contributors list.");
 
-    printf( "%s\n", osgGetVersion() );
+    std::cout<<osgGetLibraryName()<< " "<< osgGetVersion()<<std::endl<<std::endl;
 
     bool printContributors = false;
     while ( arguments.read("-c") || arguments.read("--contributors")) printContributors = true;
@@ -321,7 +473,7 @@ int main( int argc, char **argv)
             readContributors(names, changeLog);
         }
         
-        std::cout<<names.size()<<" Contributors:"<<std::endl;
+        std::cout<<names.size()<<" Contributors:"<<std::endl<<std::endl;
         for(NameSet::iterator itr = names.begin();
             itr != names.end();
             ++itr)

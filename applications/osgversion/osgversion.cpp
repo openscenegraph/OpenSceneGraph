@@ -68,11 +68,13 @@ bool validName(const std::string& first)
 std::string typoCorrection(const std::string& name)
 {
 #if 0
-    if (name=="") return "Tarantilils";
     if (name=="") return "";
     if (name=="") return "";
     if (name=="") return "";
 #endif
+    if (name=="Sjolie") return "Sjölie";
+    if (name=="Jose") return "José";
+    if (name=="Tarantilils") return "Tarantilis";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Fredric") return "Frederic";
     if (name=="Geof") return "Geoff";
@@ -101,7 +103,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Johhansen") return "Johansen";
     if (name=="Johnansen") return "Johansen";
     if (name=="Jolley") return "Jolly";
-    if (name=="J") return "Jose";
+    if (name=="J") return "José";
     if (name=="Keuhne") return "Kuehne";
     if (name=="Kheune") return "Kuehne";
     if (name=="Lashari") return "Lashkari";

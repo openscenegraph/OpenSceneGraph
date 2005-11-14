@@ -118,16 +118,40 @@ void KeySwitchMatrixManipulator::setCoordinateFrameCallback(CoordinateFrameCallb
     }
 }
 
-MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulator(unsigned int num)
+MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(unsigned int index)
 {
-    KeyManipMap::iterator itr = _manips.find(num); 
+    unsigned i=0;
+    for(KeyManipMap::iterator itr = _manips.begin();
+         itr != _manips.end();
+         ++itr, ++i)
+    {
+        if (i==index) return itr->second.second.get(); 
+    }
+    return 0;
+}
+
+const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(unsigned int index) const
+{
+    unsigned i=0;
+    for(KeyManipMap::const_iterator itr = _manips.begin();
+         itr != _manips.end();
+         ++itr, ++i)
+    {
+        if (i==index) return itr->second.second.get(); 
+    }
+    return 0;
+}
+
+MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key)
+{
+    KeyManipMap::iterator itr = _manips.find(key); 
     if (itr!=_manips.end()) return itr->second.second.get(); 
     else return 0;
 }
 
-const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulator(unsigned int num) const
+const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key) const
 {
-    KeyManipMap::const_iterator itr = _manips.find(num); 
+    KeyManipMap::const_iterator itr = _manips.find(key); 
     if (itr!=_manips.end()) return itr->second.second.get(); 
     else return 0;
 }

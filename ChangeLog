@@ -1,3 +1,70 @@
+2005-11-14 12:49  robert
+
+	* src/osgPlugins/geo/: geoFormat.h, geoVersion.h: Fixed warnings in
+	  geo plugin
+
+2005-11-14 11:14  robert
+
+	* Make/openscenegraph.pc: Updated package version to 1.0,0
+
+2005-11-14 11:08  robert
+
+	* include/osgGA/NodeTrackerManipulator,
+	  src/osgWrappers/osgGA/NodeTrackerManipulator.cpp: From Toshiyuki
+	  Takehei, typo fix of getTrackerMode().
+
+2005-11-14 11:00  robert
+
+	* include/osgGA/KeySwitchMatrixManipulator,
+	  src/osgGA/KeySwitchMatrixManipulator.cpp,
+	  src/osgProducer/ViewerEventHandler.cpp,
+	  src/osgWrappers/osgGA/KeySwitchMatrixManipulator.cpp: Change the
+	  KeySwitchMatrixManipulator so that it two sets of
+	  getMatrixManipulator methods, two that takes an index,two that
+	  takes a key value.  Updated the ViewEventHandler so the it now
+	  uses the getMatrixManipulatorWithIndex() method to avoid previous
+	  ambiguity.
+
+2005-11-14 09:31  robert
+
+	* include/osgParticle/ParticleSystem: From Farshid Lashkari : "I
+	  reported earlier about a problem with a custom emitter I was
+	  using.  I spent some more time debugging and it turns out there
+	  was a bug in the ParticleSystem::update_bounds function. When the
+	  bound is being reset, both the min and max are being set to the
+	  same postion without the radius being subtracted/added to it.
+	  When there is only one particle alive in the system this causes
+	  it to be culled by small feature culling. I've modifed the
+	  function so that when the bound is reset, the radius is
+	  subtracted/added to the position. This fixes my problem."
+
+2005-11-12 21:29  robert
+
+	* VisualStudio/osgPlugins/geo/geo.dsp,
+	  src/osgPlugins/geo/ReaderWriterGEO.cpp,
+	  src/osgPlugins/geo/geoCore.h, src/osgPlugins/geo/geoFormat.h,
+	  src/osgPlugins/geo/geoTypes.h, src/osgPlugins/geo/geoVersion.h,
+	  src/osgPlugins/geo/osgGeoStructs.h: From Geoff Michel, geo plugin
+	  updated to for latest updates in .geo format.
+
+2005-11-12 13:38  robert
+
+	* VisualStudio/osgPlugins/osgParticle/dot_osgParticle.dsp,
+	  src/osgPlugins/osgParticle/GNUmakefile,
+	  src/osgPlugins/osgParticle/IO_ConnectedParticleSystem.cpp: Added
+	  support for ConnectedParticleSystem.
+
+2005-11-12 13:27  robert
+
+	* VisualStudio/osgPlugins/osgParticle/dot_osgParticle.dsp,
+	  src/osgPlugins/osgParticle/GNUmakefile,
+	  src/osgPlugins/osgParticle/IO_SmokeTrailEffect.cpp: Added .osg
+	  support for osgParticle::SmokeTrailEffect
+
+2005-11-11 19:29  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2005-11-11 17:00  robert
 
 	* include/osgProducer/ViewerEventHandler,

@@ -49,7 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_Method0(osg::Node *, getTrackNode);
 	I_Method0(const osg::Node *, getTrackNode);
 	I_Method1(void, setTrackerMode, IN, osgGA::NodeTrackerManipulator::TrackerMode, mode);
-	I_Method0(osgGA::NodeTrackerManipulator::TrackerMode, getTrackerNode);
+	I_Method0(osgGA::NodeTrackerManipulator::TrackerMode, getTrackerMode);
 	I_Method1(void, setRotationMode, IN, osgGA::NodeTrackerManipulator::RotationMode, mode);
 	I_Method0(osgGA::NodeTrackerManipulator::RotationMode, getRotationMode);
 	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
@@ -76,7 +76,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_Property(osgGA::NodeTrackerManipulator::RotationMode, RotationMode);
 	I_Property(osg::Node *, TrackNode);
 	I_Property(const osg::RefNodePath &, TrackNodePath);
-	I_WriteOnlyProperty(osgGA::NodeTrackerManipulator::TrackerMode, TrackerMode);
-	I_ReadOnlyProperty(osgGA::NodeTrackerManipulator::TrackerMode, TrackerNode);
+	I_Property(osgGA::NodeTrackerManipulator::TrackerMode, TrackerMode);
 END_REFLECTOR
 

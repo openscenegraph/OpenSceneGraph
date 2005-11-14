@@ -55,7 +55,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         };
         
         void setTrackerMode(TrackerMode mode);
-        TrackerMode getTrackerNode() const { return _trackerMode; }
+        TrackerMode getTrackerMode() const { return _trackerMode; }
 
 
         enum RotationMode 

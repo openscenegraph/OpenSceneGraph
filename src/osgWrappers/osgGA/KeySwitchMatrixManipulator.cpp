@@ -43,8 +43,10 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_Method0(const osgGA::KeySwitchMatrixManipulator::KeyManipMap &, getKeyManipMap);
 	I_Method0(osgGA::MatrixManipulator *, getCurrentMatrixManipulator);
 	I_Method0(const osgGA::MatrixManipulator *, getCurrentMatrixManipulator);
-	I_Method1(osgGA::MatrixManipulator *, getMatrixManipulator, IN, unsigned int, key);
-	I_Method1(const osgGA::MatrixManipulator *, getMatrixManipulator, IN, unsigned int, key);
+	I_Method1(osgGA::MatrixManipulator *, getMatrixManipulatorWithIndex, IN, unsigned int, key);
+	I_Method1(const osgGA::MatrixManipulator *, getMatrixManipulatorWithIndex, IN, unsigned int, key);
+	I_Method1(osgGA::MatrixManipulator *, getMatrixManipulatorWithKey, IN, unsigned int, key);
+	I_Method1(const osgGA::MatrixManipulator *, getMatrixManipulatorWithKey, IN, unsigned int, key);
 	I_Method1(void, setMinimumDistance, IN, float, minimumDistance);
 	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::MatrixManipulator::CoordinateFrameCallback *, cb);
 	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
@@ -73,7 +75,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
 	I_ReadOnlyProperty(osgGA::KeySwitchMatrixManipulator::KeyManipMap &, KeyManipMap);
 	I_ReadOnlyProperty(osg::Matrixd, Matrix);
-	I_ArrayProperty_G(osgGA::MatrixManipulator *, MatrixManipulator, MatrixManipulators, unsigned int, void);
 	I_WriteOnlyProperty(float, MinimumDistance);
 	I_Property(osg::Node *, Node);
 END_REFLECTOR

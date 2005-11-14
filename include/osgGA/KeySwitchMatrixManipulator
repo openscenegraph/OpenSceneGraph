@@ -68,11 +68,17 @@ public:
         const MatrixManipulator* getCurrentMatrixManipulator() const { return _current.get(); }
 
 
+        /** Get manipulator assigned to a specified index.*/
+        MatrixManipulator* getMatrixManipulatorWithIndex(unsigned int key);
+
+        /** Get const manipulator assigned to a specified index.*/
+        const MatrixManipulator* getMatrixManipulatorWithIndex(unsigned int key) const;
+
         /** Get manipulator assigned to a specified key.*/
-        MatrixManipulator* getMatrixManipulator(unsigned int key);
+        MatrixManipulator* getMatrixManipulatorWithKey(unsigned int key);
 
         /** Get const manipulator assigned to a specified key.*/
-        const MatrixManipulator* getMatrixManipulator(unsigned int key) const;
+        const MatrixManipulator* getMatrixManipulatorWithKey(unsigned int key) const;
 
 
         // Overrides from MatrixManipulator...

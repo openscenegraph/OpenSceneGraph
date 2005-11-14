@@ -72,59 +72,60 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
-    if (name=="Sjolie") return "Sjölie";
-    if (name=="Jose") return "José";
-    if (name=="Tarantilils") return "Tarantilis";
-    if (name=="Heirtlein") return "Hertlein";
-    if (name=="Fredric") return "Frederic";
-    if (name=="Geof") return "Geoff";
-    if (name=="Sewel") return "Sewell";
-    if (name=="Moule") return "Moiule";
-    if (name=="Macro") return "Marco";
-    if (name=="March") return "Marco";
-    if (name=="Gronenger") return "Gronager";
-    if (name=="Gronger") return "Gronager";
-    if (name=="Wieblen") return "Weiblen";
-    if (name=="Molishtan") return "Moloshtan";
     if (name=="Bistroviae") return "Bistrovic";
     if (name=="Christaiansen") return "Christiansen";
     if (name=="Daust") return "Daoust";
     if (name=="Daved") return "David";
     if (name=="Fred") return "Frederic";
     if (name=="Fredrick") return "Frederic";
+    if (name=="Fredric") return "Frederic";
     if (name=="Garrat") return "Garret";
+    if (name=="Geof") return "Geoff";
+    if (name=="Gronenger") return "Gronager";
+    if (name=="Gronger") return "Gronager";
     if (name=="Heirtlein") return "Heirtlein";
+    if (name=="Heirtlein") return "Hertlein";
     if (name=="Hertlien") return "Hertlein";
     if (name=="Hi") return "He";
     if (name=="Inverson") return "Iverson";
     if (name=="Iversion") return "Iverson";
     if (name=="Jeoen") return "Joran";
-    if (name=="Johnasen") return "Johansen";
     if (name=="Johhansen") return "Johansen";
     if (name=="Johnansen") return "Johansen";
+    if (name=="Johnasen") return "Johansen";
     if (name=="Jolley") return "Jolly";
+    if (name=="Jose") return "José";
     if (name=="J") return "José";
     if (name=="Keuhne") return "Kuehne";
     if (name=="Kheune") return "Kuehne";
     if (name=="Lashari") return "Lashkari";
     if (name=="Laskari") return "Lashkari";
+    if (name=="Macro") return "Marco";
     if (name=="Mammond") return "Marmond";
+    if (name=="March") return "Marco";
     if (name=="Marz") return "Martz";
     if (name=="Molishtan") return "Molishtan";
+    if (name=="Molishtan") return "Moloshtan";
     if (name=="Moloshton") return "Moloshtan";
     if (name=="Moloshton") return "Moloshtan";
+    if (name=="Moule") return "Moiule";
     if (name=="Nicklov") return "Nikolov";
     if (name=="Olad") return "Olaf";
     if (name=="Osfied") return "Osfield";
     if (name=="Pail") return "Paul";
+    if (name=="Sewel") return "Sewell";
+    if (name=="Sjolie") return "Sjölie";
     if (name=="Sokolosky") return "Sokolowsky";
     if (name=="Sokolsky") return "Sokolowsky";
     if (name=="Sonda") return "Sondra";
     if (name=="Stansilav") return "Stanislav";
     if (name=="Stefan") return "Stephan";
     if (name=="Stell") return "Steel";
+    if (name=="Tarantilils") return "Tarantilis";
+    if (name=="Wieblen") return "Weiblen";
     if (name=="Xennon") return "Hanson";
     if (name=="Yfei") return "Yefei";
+    if (name=="Oritz") return "Ortiz";
     return name;
 }
 
@@ -134,6 +135,16 @@ void nameCorrection(NamePair& name)
     {
         name.first = "Chris";
         name.second = "Hanson";
+    }
+    if (name.first=="Nick" && name.second=="")
+    {
+        name.first = "Trajce";
+        name.second = "Nikolov";
+    }
+    if (name.first=="Julia" && name.second=="Ortiz")
+    {
+        name.first = "Julian";
+        name.second = "Ortiz";
     }
 }
 

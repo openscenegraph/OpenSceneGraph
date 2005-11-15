@@ -204,13 +204,22 @@ inline void heap_array<T, CmpT>::erase(size_t i) {
     m_Locked = true;
 
     // Debug check to ensure element is still present
-    // assert(! removed(i));
     if (removed(i)) throw "heap_array<T, CmpT>::erase(size_t i) error";
 
     size_t j = m_Finder[i];
-    Swap(j, size() - 1);
-    m_Heap.pop_back();
-    Adjust(j);
+
+    if (j==m_Heap.size()-1)
+    {
+        m_Heap.pop_back();
+    }
+    else
+    {
+        Swap(j, size() - 1);
+        m_Heap.pop_back();
+        Adjust(j);
+    }
+
+
 }
 
 

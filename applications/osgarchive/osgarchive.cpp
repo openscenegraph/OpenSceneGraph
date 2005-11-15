@@ -29,7 +29,7 @@ int main( int argc, char **argv )
     
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of seperate files into a single archive file that can be later read in OSG applications..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
         
     // if user request help write it out to cout.

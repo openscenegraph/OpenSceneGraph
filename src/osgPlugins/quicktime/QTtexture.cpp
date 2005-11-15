@@ -191,7 +191,6 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
         long *pBufferWidth, long *pBufferHeight, long *pBufferDepth)
 {
     unsigned char * pImageBuffer = NULL;
-        int scalefac;
     GWorldPtr pGWorld = NULL;
     OSType pixelFormat;
     long rowStride; // length, in bytes, of a pixel row in the image
@@ -219,50 +218,56 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
     }
     
     // Create GWorld
-        err = GraphicsImportGetNaturalBounds (giComp, &rectImage); // get the image bounds
-        if (err != noErr) {
-            sprintf ( errMess, "failed to GraphicsImportGetNaturalBounds");
+    err = GraphicsImportGetNaturalBounds (giComp, &rectImage); // get the image bounds
+    if (err != noErr) {
+        sprintf ( errMess, "failed to GraphicsImportGetNaturalBounds");
 
-            return NULL; // go away if error
-        }
-        // create a handle for the image description
-        hImageDesc = (ImageDescriptionHandle) NewHandle (sizeof (ImageDescriptionHandle)); 
-        HLock ((Handle) hImageDesc); // lock said handle
-        err = GraphicsImportGetImageDescription (giComp, &hImageDesc); // retrieve the image description
-        if (err != noErr) {
-            sprintf ( errMess, "failed to GraphicsImportGetImageDescription");
+        return NULL; // go away if error
+    }
+    // create a handle for the image description
+    hImageDesc = (ImageDescriptionHandle) NewHandle (sizeof (ImageDescriptionHandle)); 
+    HLock ((Handle) hImageDesc); // lock said handle
+    err = GraphicsImportGetImageDescription (giComp, &hImageDesc); // retrieve the image description
+    if (err != noErr) {
+        sprintf ( errMess, "failed to GraphicsImportGetImageDescription");
 
-            return NULL; // go away if error
-        }
-        *pOrigImageWidth = (long) (rectImage.right - rectImage.left); // find width from right side - left side bounds
-        *pOrigImageHeight = (long) (rectImage.bottom - rectImage.top); // same for height
-    
-        // we will use a 24-bit rgb texture or a 32-bit rgba
-        if ((**hImageDesc).depth == 32) *pOrigImageDepth=4;
-        else *pOrigImageDepth=3;
-        
-        *pBufferDepth = 32; // we will use a 32 bbit texture (this includes 24 bit images)
-        pixelFormat = k32ARGBPixelFormat;
-    
-#define NO_SCALING
-#ifdef NO_SCALING
-        // NOTE: scaling of the image removed, this is already done inside osg::Image
+        return NULL; // go away if error
+    }
+    *pOrigImageWidth = (long) (rectImage.right - rectImage.left); // find width from right side - left side bounds
+    *pOrigImageHeight = (long) (rectImage.bottom - rectImage.top); // same for height
 
-        *pBufferWidth = *pOrigImageWidth;
-        *pBufferHeight= *pOrigImageHeight;
-#else        
+    // we will use a 24-bit rgb texture or a 32-bit rgba
+    if ((**hImageDesc).depth == 32) *pOrigImageDepth=4;
+    else *pOrigImageDepth=3;
+
+    *pBufferDepth = 32; // we will use a 32 bbit texture (this includes 24 bit images)
+    pixelFormat = k32ARGBPixelFormat;
+
+    bool doScaling = false;
+    if (doScaling)
+    {
+        int scalefac;
         // note - we want texels to stay square, so 
-        if ((*pOrigImageWidth) > (*pOrigImageHeight)) {
+        if ((*pOrigImageWidth) > (*pOrigImageHeight))
+        {
             *pBufferWidth = GetScaledTextureDimFromImageDim ( *pOrigImageWidth,  imageScale ) ; 
             *pBufferHeight=*pBufferWidth;
             scalefac = X2Fix ((float) (*pBufferWidth) / (float) *pOrigImageWidth);
         }
-        else {
+        else
+        {
             *pBufferHeight = GetScaledTextureDimFromImageDim (*pOrigImageHeight, imageScale ); 
             *pBufferWidth = *pBufferHeight;
             scalefac = X2Fix ((float) (*pBufferHeight) / (float) *pOrigImageHeight);
         }
-#endif        
+    }
+    else
+    {
+        // NOTE: scaling of the image removed, this is already done inside osg::Image
+        *pBufferWidth = *pOrigImageWidth;
+        *pBufferHeight= *pOrigImageHeight;
+    }
+    
     SetRect (&rectImage, 0, 0, (short) *pBufferWidth, (short) *pBufferHeight); // l, t, r. b  set image rectangle for creation of GWorld
     rowStride = *pBufferWidth * *pBufferDepth >> 3; // set stride in bytes width of image * pixel depth in bytes
 

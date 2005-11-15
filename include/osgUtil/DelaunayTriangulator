@@ -91,7 +91,7 @@ public:
 
     /** Tesselate the constraint loops so that the crossing points are interpolated
      * and added to the contraints for the triangulation. */
-    void DelaunayConstraint::handleOverlaps(void);
+    void handleOverlaps(void);
 
 protected:
     virtual ~DelaunayConstraint() {}

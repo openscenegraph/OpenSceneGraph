@@ -333,11 +333,12 @@ ifeq ($(OS),Linux)
   INC               += 
 
   ifeq ($(COMPILER),intel)
-    C++             = ecc
+    C++             = icpc
     LIBS            = -lgcc_s
-    DEF             += -KPIC
+    DEF             += -fPIC -x c++ -cxxlib-gcc -gcc-version=323
     OPTF            = -O2 
     DBGF            = -g -DOSG_COMPILE_UNIT_TESTS 
+    LDFLAGS         += -L/usr/X11R6/lib64
     ifeq ($(SYSARCH),ia64)
       ARCHARGS        = 
       ARCH            = IA64

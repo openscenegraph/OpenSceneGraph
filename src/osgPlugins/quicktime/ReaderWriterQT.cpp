@@ -37,6 +37,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                    osgDB::equalCaseInsensitive(extension,"mpg") ||
                    osgDB::equalCaseInsensitive(extension,"mpv") ||
                    osgDB::equalCaseInsensitive(extension,"mp4") ||
+                   osgDB::equalCaseInsensitive(extension,"m4v") ||
                    osgDB::equalCaseInsensitive(extension,"dv");
         }
         

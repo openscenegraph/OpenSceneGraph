@@ -103,6 +103,7 @@ osg::Node* createScene(unsigned int noStars)
     
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);
+    geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
     osg::Group* group = new osg::Group;
     group->addChild(geode);        

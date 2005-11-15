@@ -320,8 +320,3 @@ LtPtAnimationPool::add(int nIndex, PoolLtPtAnimation* anim)
 {
     _animationMap[nIndex] = anim;
 }
-
-
-
-
-

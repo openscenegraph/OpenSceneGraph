@@ -1302,7 +1302,7 @@ bool trpgwImageHelper::IncrementTextureFile()
 
     // Open the next one
     char filename[1024];
-    sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,texFileIDs.size());
+    sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,static_cast<int>(texFileIDs.size()));
     texFile = new trpgwAppFile(ness,filename);
     if (!texFile->isValid())
         return false;

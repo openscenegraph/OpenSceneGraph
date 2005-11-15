@@ -1,191 +1,172 @@
-# $Id$
-#
-# The is a list of authors and contributors to the project.
-# Feel free to add your name and change list.
+168 Contributors, in order of number of entries in ChangeLog:
 
-Robert Osfield <robert@openscenegraph.com>
-        - osg, osgUtil, osgText, osgSim and osgDB.
-        - osg, osgText, pfb, 3ds, gif, jpeg, tiff, tga, pic, tgz & zip plugins.
-        - sgv, various revisions, now most of code is in osgGLUT.
-        - 2nd iteration of impostor implemtentation.
-        - 2nd iteration of shadow occlusion culling.
-        - documentation?!
-        - visual studio workspace files/unix makefiles.
-        - project admin & lead.
-
-Don Burns <don@andesengineering.com>
-        - Open Producer
-        - unix makefiles.
-        - osg (particularily OpenGL)
-        - first version of sgv.
-        - osghangglide database & osgtgz plugins.
-        
-Marco Jez <marco.jez@arsenal.it>
-        - osgParticle
-        - osgFX
-        - IO support for osgText.
-
-Brede Johansen <bredej@email.com>
-        - flt loader.
-        - osg::Point.
-        - osg::TextureCubeMap
-        - osg::VertexProgram
-        - assistance on visual studio workspace files.
-
-Neil Salter <neil@nackle.org>
-        - osgGA
-        - unit test framework
-        - osgSim::SphereSegment and osgSim::ScalarBar
-        - web site.
-
-Karsten Weiss <knweiss@gmx.de>
-        - 1st iteration of impostor implemtentation.
-        - rpm spec file.
-        - documentation.
-        - bug fixes.
-
-Graeme Harkness <graeme@phys.strath.ac.uk>
-        - osg::Vec2,Vec3,Vec4 & osg::Quat classes.
-        - reworking of old sgv into osgGLUT and a slim line Demos/sgv.
-        - Demos/cube.
-
-
-Ben Discoe <ben@vterrain.org>
-        - osgWX and wxsgv demos for integration of OSG with wxWindows.
-        - png plugin.
-        - fixes to OBJ plugin.
-       
-Mike Weiblen <mike.weiblen@3dlabs.com> <mew@mew.cx>
-        - osgGL2, osgshaders example
-        - win32 binary installer package.
-        - rot, scale, trans pseudoloader plugins.
-        - assistance on visual studio workspace files.
-        - osg.ico windows icon
-
-Randall Hopper <aa8vb@yahoo.com>
-        - port to FreeBSD.
-        - warning fixes to IRIX compilation.
-        - Open DX writer.
-
-Ulrich Hertlein <u.hertlein@bit-side.com>
-        - support for IBM Mirror Repeat extension in osg::Texture
-        - support for texture subloading in osg::Texture
-        - osg::Sequence support.
-        - improvements to the pfb loader.
-        - .lwo, .obj and .x (DirectX model) plugins.
-        - osg::TextureRectangle * osgtexturerectangle example.
-
-Axel Volley <volley@acm.org>
-        - support for OBJECT_LINEAR and EYE_LINEAR TexGen modes.
-        - support for the Anistropic texture filter extension.
-
+Firstname Surname
+-----------------
+Robert Osfield
+Don Burns
+Marco Jez
+Mike Weiblen
 Geoff Michel
-        - .dw (design workshop) loader plugin.
-        - .bmp (Windows Bitmap file) loader plugin.
-        - .geo (Carbon Graphics GEO) loader plugin.
-        - OpenGL based stats reporting added to osgGLUT::Viewer.
-        
-Mike Connell <mikec@vsect.chalmers.se>
-        - First implementation of shadow occlusion culling.
-        - improvements to 3ds plugin.
-
-Michael Gronager <Michael.Gronager@uni-c.dk>
-        - jp2 plugin - for reading and writing JPEG2000 image files
-
-Phil Atkin <philatkin@philatkin.com>
-        - MacOS X port.
-
-Boris Bralo <boris.bralo@zg.tel.hr>
-        - txp TerraPage loader.
-
-Sasa Bistrovic <sasa.bistrovic@zg.hinet.hr>
-        - option for detailed calculation of the near clipping plane during cull traversal.
-        - osg::DOFTransform
-
-Vivek Rajan <vrajan@magic-earth.com>
-        - Inventor based .iv/.wrl plugin.
-
-Nikolaus Hanekamp <hanekamp@stn-atlas.de>
-        - added support billboards to Open Flight loader.
- 
-Yefei He <yhe@nads-sc.uiowa.edu>
-        - added support for nested extension, instance defination and reference
-          to the Open Flight loader.
-          
-Norman Vine <nhv@cape.com>
-        - Cygwin and Mingw ports.
-
-Bob Kuehne <rpk@mac.com>
-        - assistance with MacOSX port.
-        
-Kristopher Bixler <kbixler@mac.com>        
-        - port to OSX's native dynamic library support.
-
-Tino Schwarze <tino.schwarze@informatik.tu-chemnitz.de>
-        -port to HP-UX.
-
-Ruben Lopez <ryu@gpul.org>
-        - Inventor ascii/VRML 1.0 loader.
-
-Pavel Moloshtan <pasha@moloshtan.com>
-        - First version of LightWave LWO2 format in lwo plugin.
-        - Support of GL_ARB_occlusion_query in osg::Drawable.
-        - Support of GL_ARB_shadow in osg::Texture, osgdepthtexture example.
-        - Support of GL_ARB_shadow_ambient in osg::Texture.
-        - Speed improvement to the ive plugin.
-        - Byte2, Byte3, Byte4, Short2, Short3, Short4 vectors, read/write support.
-
-Daniel Sjölie <deepone@acc.umu.se>
-        - Support for multitextured flt files.
-           
-Alberto Barbati <abarbati@iaanus.com>
-        - lazy evaluation of the inverse in the MatrixTransform.
-
-Gideon May <gideon@computer.org>
-        - Fixed spacing in osgText.
-        
-Tree <tree@stain.org>
-        - Support for encoded text types in osgText.
-
-Vladimir Vukicevic <vladimir@pobox.com>
-        - md2 loader.
-        
-Rune Schmidt Jensen <rune@schmidt-jensen.com>
-        - dds loader.
-        - ive plugin.
-        
-Romano José Magacho da Silva <rmagacho@predialnet.com.br>
-        - pause/resume in osgGA::AnimationPathManipulator
-        - support for managing deleted vertex programs in osg::VertexProgram.
-        - osg::FragmentProgram.
-
-Eric Sokolowsky <esok@cosimo.gsfc.nasa.gov>
-        - pbm/pgm/ppm reader.
-
-        
-Indirect Contributors
----------------------
-    
-J.E. Hoffmann <je-h@gmx.net>
-    - lib3ds library.
-    
-Systems in Motion <http://www.sim.no>
-    Peder Blekken <pederb@sim.no>
-    Morten Eriksen <mortene@sim.no>
-    Marius Bugge Monsen <mariusbu@sim.no>
-    - simage library which provide base for gif,jpg,pic,tga,tiff image loaders.
-    
-Janne Löf <jlof@mail.student.oulu.fi>
-    - lw is a LightWave mesh reader, used to develop osgPlugins/lwo.
-
-Nate Robins - http://www.pobox.com/~ndr/
-    - glm file format reader, usedf to develop osgPlugin/obj. 
-
-Bryan Walsh
-    - original txp loader for sgl (scene graph library)
- 
-Terrex
-    - the original base source for txp loader.
-
-Tanguy Fautré <softdev@pandora.be>
-    - tri_stripper code utilized in the src/osgUtil/TriStipVisitor.cpp.
+Bob Kuehne
+Brede Johansen
+Tree 
+Ulrich Hertlein
+Pavel Moloshtan
+Paul Martz
+Norman Vine
+Farshid Lashkari
+Eric Sokolowsky
+Trajce Nikolov
+Tom Jolley
+Alberto Farre
+Don Tidrow
+Ruben Lopez
+Romano José Magacho da Silva
+Randall Hopper
+Stephan Huber
+Michael Gronager
+Neil Salter
+Gideon May
+Frederic Marmond
+Chris Hanson
+Boris Bralo
+Sondra Iverson
+Rune Schmidt Jensen
+Rainer Oder
+Mike Connell
+Joran Jessurun
+David Fries
+Daniel Sjölie
+Colin McDonald
+Yefei He
+Sasa Bistrovic
+Olaf Flebbe
+Ben Discoe
+Stephane Simon
+Ravi Mathur
+Joseph Steel
+David Spilling
+Corbin Holtz
+Sean Spicer
+Nikolaus Hanekamp
+Loic Dachary
+Geoff Michael
+Bruce Clay
+Brad Christiansen
+Alberto Barbati
+Terry Welsh
+Sebastien Grignard
+Romano Magacho
+Phil Atkin
+Markus Trenkwalder
+Leandro Motta Barros
+Ken Sewell
+Julian Ortiz
+Joakim Simonsson
+Jeremy Bell
+Jason Daly
+James French
+Gabor Dorka
+Eric Wing
+Domenico Mangieri
+David Guthrie
+Carlo Camporesi
+Yuzhong Shen
+Vivek Rajan
+Tugkan Calapoglu
+Tony Horrobin
+Tim Daoust
+Thom DeCarlo
+Steve Lunsford
+Stanislav Blinov
+Sohey Yamamoto
+Perry Miller
+Per Fahlberg
+Paul Melis
+Paul Fredrikson
+Max Behensky
+Martin Aumueller
+Kevin Moiule
+Joseph Winston
+John Shue
+Johan Nouvel
+Igor Kravtchenko
+George Tarantilis
+Garret Potts
+Fabio Mierlo
+David Ergo
+Brad Colbert
+Yuri Vilmanis
+Warren Macchi
+Wang Lam
+Walter J. Altice
+Volker Walkiewicz
+Vladimir Vukicevic
+Vasily Radostev
+Uwe Woessner
+Troy Yee
+Toshiyuki Takehei
+Tino Schwarze
+Tanguy Fautré
+Shane Arnott
+Sebastien Kuntz
+Ronny Krueger
+Roger James
+Reinhard Sainitzer
+Qing Shen
+Nikolov Trajce
+Nicolas Brodu
+Nathan Monteleone
+Nathan Cournia
+Morné Pistorius
+Michael Morrison
+Michael Logan
+Max Rhiener
+Matt Burke
+Mathia Walker
+Mason Menninger
+Martijn Kragtwijk
+Lewis Harmon
+Kristopher Bixler
+Keith Steffen
+Karsten Weiss
+Joson Daly
+Josh Portway
+John Tan
+John Grant
+John Davis
+Jay Zuckerman
+Jason Beverage
+Jason Ballenger
+Jan Ciger
+J.E. Hoffmann
+Henrique Bucher
+Graeme Harkness
+Gordon Tomlinson
+George Papagiannakis
+Frank Warmerdam
+Frank Lindeman
+Frank Lichtenheld
+Ferdinand Cornelissen
+Fabien Dachicourt
+Duvan Cope
+Drew Whitehouse
+Douglas A
+Donny Cipperly
+Donn Mielcarek
+Dean Iverson
+David Jung
+Clay Fowler
+Bora Utka
+Blake Williams
+Bart Gallet
+Axel Volley
+Andreas Jochens
+Andreas Ekstrand
+Anders Backman
+Allen Bierbaum
+Ali Botorabi
+Alberto Jaspe
+Alan Purvis
+Alan Ott
+Adam Richard

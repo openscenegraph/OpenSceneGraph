@@ -2475,12 +2475,22 @@ namespace SphereSegmentIntersector
     bool computeQuadraticSolution(double a, double b, double c, double& s1, double& s2)
     {
         // avoid division by zero.
-        if (a==0.0) return false;
+        if (a==0.0)
+        {
+            s1 = 0.0;
+            s2 = 0.0;
+            return false;
+        }
 
         double inside_sqrt = b*b - 4.0*a*c;
 
         // avoid sqrt of negative number
-        if (inside_sqrt<0.0) return false;
+        if (inside_sqrt<0.0)
+        {
+            s1 = 0.0;
+            s2 = 0.0;
+            return false;
+        }
 
         double rhs = sqrt(inside_sqrt);
         s1 = (-b + rhs)/(2.0*a);

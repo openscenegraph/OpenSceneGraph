@@ -305,7 +305,7 @@ bool trpgTileHeader::Print(trpgPrintBuffer &buf) const
     buf.prnLine("----Tile Header----");
     buf.IncreaseIndent();
 
-    sprintf(ls,"matList size = %d",matList.size()); buf.prnLine(ls);
+    sprintf(ls,"matList size = %d",static_cast<int>(matList.size())); buf.prnLine(ls);
     buf.IncreaseIndent();
     unsigned int i;
     for (i=0;i<matList.size();i++) {
@@ -313,14 +313,14 @@ bool trpgTileHeader::Print(trpgPrintBuffer &buf) const
     }
     buf.DecreaseIndent();
 
-    sprintf(ls,"modelList size = %d",modelList.size());  buf.prnLine(ls);
+    sprintf(ls,"modelList size = %d",static_cast<int>(modelList.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     for (i=0;i<modelList.size();i++) {
         sprintf(ls,"modelList[%d] = %d",i,modelList[i]); buf.prnLine(ls);
     }
     buf.DecreaseIndent();
 
-    sprintf(ls,"local material list size = %d",locMats.size());  buf.prnLine(ls);
+    sprintf(ls,"local material list size = %d",static_cast<int>(locMats.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     for (i=0;i<locMats.size();i++)
         locMats[i].Print(buf);
@@ -342,7 +342,7 @@ bool trpgColorInfo::Print(trpgPrintBuffer &buf) const
     buf.IncreaseIndent();
 
     sprintf(ls,"type = %d, bind = %d",type,bind);  buf.prnLine(ls);
-    sprintf(ls,"colorData size = %d",data.size());
+    sprintf(ls,"colorData size = %d",static_cast<int>(data.size()));
     buf.IncreaseIndent();
     for (unsigned int i=0;i<data.size();i++) {
         sprintf(ls,"color[%d] = (%f,%f,%f)",i,data[i].red,data[i].blue,data[i].green); buf.prnLine(ls);
@@ -364,7 +364,7 @@ bool trpgTexData::Print(trpgPrintBuffer &buf) const
 
     sprintf(ls,"bind = %d",bind);  buf.prnLine(ls);
     if (floatData.size()) {
-        sprintf(ls,"tex coords (float) = %d",floatData.size()); buf.prnLine(ls);
+        sprintf(ls,"tex coords (float) = %d",static_cast<int>(floatData.size())); buf.prnLine(ls);
         buf.IncreaseIndent();
         for (unsigned int i=0;i<floatData.size()/2;i++) {
             sprintf(ls,"tex coord[%d] = (%f,%f)",i,floatData[i*2+0],floatData[i*2+1]);  buf.prnLine(ls);
@@ -372,7 +372,7 @@ bool trpgTexData::Print(trpgPrintBuffer &buf) const
         buf.DecreaseIndent();
     } else {
         if (doubleData.size()) {
-            sprintf(ls,"tex coords (double) = %d",doubleData.size());
+            sprintf(ls,"tex coords (double) = %d",static_cast<int>(doubleData.size()));
             buf.IncreaseIndent();
             for (unsigned int i=0;i<doubleData.size()/2;i++) {
                 sprintf(ls,"tex coord[%d] = (%f,%f)",i,doubleData[i*2+0],doubleData[i*2+1]),  buf.prnLine(ls);
@@ -396,7 +396,7 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
     buf.prnLine("----Geometry Node----");
     buf.IncreaseIndent();
 
-    sprintf(ls,"Material size = %d",materials.size());  buf.prnLine(ls);
+    sprintf(ls,"Material size = %d",static_cast<int>(materials.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     ls[0] = 0;
     unsigned int i;
@@ -409,7 +409,7 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
     buf.DecreaseIndent();
 
     sprintf(ls,"primType = %d, numPrim = %d",primType,numPrim);  buf.prnLine(ls);
-    sprintf(ls,"primLength size = %d",primLength.size());  buf.prnLine(ls);
+    sprintf(ls,"primLength size = %d",static_cast<int>(primLength.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     ls[0] = 0;
     for (i=0;i<primLength.size();i++) {
@@ -421,7 +421,7 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
     buf.DecreaseIndent();
 
     if (vertDataFloat.size()) {
-        sprintf(ls,"vert data (float) length = %d",vertDataFloat.size());
+        sprintf(ls,"vert data (float) length = %d",static_cast<int>(vertDataFloat.size()));
         buf.prnLine(ls);
         buf.IncreaseIndent();
         for (i=0;i<vertDataFloat.size()/3;i++) {
@@ -431,7 +431,7 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
         buf.DecreaseIndent();
     } else {
         if (vertDataDouble.size()) {
-            sprintf(ls,"vert data (double) length = %d",vertDataDouble.size());
+            sprintf(ls,"vert data (double) length = %d",static_cast<int>(vertDataDouble.size()));
             buf.prnLine(ls);
             buf.IncreaseIndent();
             for (i=0;i<vertDataDouble.size()/3;i++) {
@@ -445,7 +445,7 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
     sprintf(ls,"normBind = %d",normBind);  buf.prnLine(ls);
 
     if (normDataFloat.size()) {
-        sprintf(ls,"norm data (float) length = %d",normDataFloat.size());
+        sprintf(ls,"norm data (float) length = %d",static_cast<int>(normDataFloat.size()));
         buf.prnLine(ls);
         buf.IncreaseIndent();
         for (i=0;i<normDataFloat.size()/3;i++) {
@@ -455,7 +455,7 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
         buf.DecreaseIndent();
     } else {
         if (normDataDouble.size()) {
-            sprintf(ls,"norm data (double) length = %d",normDataDouble.size());
+            sprintf(ls,"norm data (double) length = %d",static_cast<int>(normDataDouble.size()));
             buf.prnLine(ls);
             buf.IncreaseIndent();
             for (i=0;i<normDataDouble.size()/3;i++) {
@@ -466,14 +466,14 @@ bool trpgGeometry::Print(trpgPrintBuffer &buf) const
         }
     }
 
-    sprintf(ls,"color info size = %d",colors.size()); buf.prnLine(ls);
+    sprintf(ls,"color info size = %d",static_cast<int>(colors.size())); buf.prnLine(ls);
     buf.IncreaseIndent();
     for (i=0;i<colors.size();i++) {
         colors[i].Print(buf);
     }
     buf.DecreaseIndent();
 
-    sprintf(ls,"tex data size = %d",texData.size());
+    sprintf(ls,"tex data size = %d",static_cast<int>(texData.size()));
     buf.IncreaseIndent();
     for (i=0;i<texData.size();i++) {
         texData[i].Print(buf);
@@ -632,7 +632,7 @@ bool trpgTileTable::Print(trpgPrintBuffer &buf) const
     buf.prnLine("----Tile Table----");
     buf.IncreaseIndent();
     sprintf(ls,"mode = %d",mode);  buf.prnLine(ls);
-    sprintf(ls,"numLod = %d",lodInfo.size());  buf.prnLine(ls);
+    sprintf(ls,"numLod = %d",static_cast<int>(lodInfo.size()));  buf.prnLine(ls);
     for (unsigned int i=0;i<lodInfo.size();i++) {
         const LodInfo &li = lodInfo[i];
         sprintf(ls,"LOD %d, numX = %d, numY = %d",i,li.numX,li.numY);  buf.prnLine(ls);
@@ -798,7 +798,7 @@ bool trpgLight::Print(trpgPrintBuffer &buf) const
     buf.IncreaseIndent();
 
     sprintf(ls,"Light Index = %d",index);                        buf.prnLine(ls);
-    sprintf(ls,"# Light Locations = %d",lightPoints.size() );    buf.prnLine(ls);
+    sprintf(ls,"# Light Locations = %d",static_cast<int>(lightPoints.size()) );    buf.prnLine(ls);
 
     buf.DecreaseIndent();
 
@@ -861,7 +861,7 @@ bool trpgLabel::Print(trpgPrintBuffer &buf) const
     sprintf(ls,"desc = %s",desc.c_str());  buf.prnLine(ls);
     sprintf(ls,"url = %s",url.c_str());  buf.prnLine(ls);
     sprintf(ls,"location: (%f %f %f)",location.x,location.y,location.z); buf.prnLine(ls);
-    sprintf(ls,"%d support points",supports.size());  buf.prnLine(ls);
+    sprintf(ls,"%d support points",static_cast<int>(supports.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     for (unsigned int i=0;i<supports.size();i++) {
         sprintf(ls,"%f %f %f",supports[i].x,supports[i].y,supports[i].z); buf.prnLine(ls);    
@@ -899,7 +899,7 @@ bool trpgTextStyleTable::Print(trpgPrintBuffer &buf) const
     buf.prnLine();
     buf.prnLine("----Text Style Table----");
     buf.IncreaseIndent();
-    sprintf(ls,"numStyle = %d",styles.size());  buf.prnLine(ls);
+    sprintf(ls,"numStyle = %d",static_cast<int>(styles.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     for (unsigned int i=0;i<styles.size();i++) {
         sprintf(ls,"Style %d",i);  buf.prnLine(ls);
@@ -935,7 +935,7 @@ bool trpgSupportStyleTable::Print(trpgPrintBuffer &buf) const
     buf.prnLine();
     buf.prnLine("----Support Style Table----");
     buf.IncreaseIndent();
-    sprintf(ls,"numStyle = %d",styles.size());  buf.prnLine(ls);
+    sprintf(ls,"numStyle = %d",static_cast<int>(styles.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     for (unsigned int i=0;i<styles.size();i++) {
         sprintf(ls,"Style %d",i);  buf.prnLine(ls);
@@ -973,7 +973,7 @@ bool trpgLabelPropertyTable::Print(trpgPrintBuffer &buf) const
     buf.prnLine();
     buf.prnLine("----Label Property Table----");
     buf.IncreaseIndent();
-    sprintf(ls,"numProperty = %d",properties.size());  buf.prnLine(ls);
+    sprintf(ls,"numProperty = %d",static_cast<int>(properties.size()));  buf.prnLine(ls);
     buf.IncreaseIndent();
     for (unsigned int i=0;i<properties.size();i++) {
         sprintf(ls,"Property %d",i);  buf.prnLine(ls);

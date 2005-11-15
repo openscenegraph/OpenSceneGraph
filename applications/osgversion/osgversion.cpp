@@ -264,6 +264,18 @@ void nameCorrection(NamePair& name)
         name.first = "Ali";
         name.second = "Botorabi";
     }
+
+    if (name.first=="Waltice" && name.second=="")
+    {
+        name.first = "Walter";
+        name.second = "J. Altice";
+    }
+
+    if (name.first=="Drew" && name.second=="")
+    {
+        name.first = "Drew";
+        name.second = "Whitehouse";
+    }
 }
 
 void lastValidCharacter(const std::string& name, unsigned int& pos,char c)
@@ -309,9 +321,14 @@ NamePair createName(const std::string& first, const std::string& second)
 
     name = typoCorrection(name);
     
-    if (second.empty()) return NamePair(name,"");
-    
-    if (!validName(second)) return NamePair(name,"");
+    if (second.empty() ||
+        !validName(second)) 
+    {
+        // filter any single or two letter words as unlike to be names.
+        if (name.size()<=2) return EmptyNamePair;
+
+        return NamePair(name,"");
+    }
 
     last = second.size();
     
@@ -324,6 +341,9 @@ NamePair createName(const std::string& first, const std::string& second)
     
         return NamePair(name, surname);
     }
+    
+    // filter any single or two letter words as unlike to be names.
+    if (name.size()<=2) return EmptyNamePair;
     
     return NamePair(name,"");
 }

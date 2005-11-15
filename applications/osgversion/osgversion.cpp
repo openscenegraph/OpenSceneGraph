@@ -8,11 +8,12 @@
 #include <fstream>
 
 typedef std::pair<std::string, std::string> NamePair;
-typedef std::set<NamePair> NameSet;
+typedef std::map<NamePair,unsigned int> NameMap;
 typedef std::vector< std::string > Words;
 
 NamePair EmptyNamePair;
-
+NamePair NameRobertOsfield("Robert","Osfield");
+NamePair NameDonBurns("Don","Burns");
 
 bool validName(const std::string& first)
 {
@@ -132,6 +133,7 @@ bool validName(const std::string& first)
     if (first=="KeyboardMouse") return false;
     if (first=="KeyboardMouseCallback") return false;
     if (first=="AutoTransform") return false;
+    if (first=="AutoTransform.") return false;
     if (first=="LightModel") return false;
     if (first=="MatrixManipulator") return false;
     if (first=="MatrixTransform") return false;
@@ -337,9 +339,12 @@ NamePair createName(const std::string& first, const std::string& second)
     if (last>0)
     {
         std::string surname(second.begin(), second.begin()+last);
-        surname = typoCorrection(surname);
-    
-        return NamePair(name, surname);
+        
+        if (validName(surname))
+        {
+            surname = typoCorrection(surname);
+            return NamePair(name, surname);
+        }
     }
     
     // filter any single or two letter words as unlike to be names.
@@ -374,6 +379,12 @@ bool submissionsSequence(const Words& words, unsigned int& i)
         return true;
     }
 
+    if (words[i]=="Rolled" && words[i+1]=="in")
+    {
+        i+=1;
+        return true;
+    }
+
     if (words[i]=="Checked" && words[i+1]=="in")
     {
         i+=1;
@@ -391,7 +402,7 @@ bool submissionsSequence(const Words& words, unsigned int& i)
     return false;
 }
 
-void readContributors(NameSet& names, const std::string& file)
+void readContributors(NameMap& names, const std::string& file)
 {
     std::ifstream fin(file.c_str());
     
@@ -413,32 +424,45 @@ void readContributors(NameSet& names, const std::string& file)
             {
                 NamePair name = createName(words[i+1], words[i+2]);
                 nameCorrection(name);
-                if (!name.first.empty()) names.insert(name);
+                if (!name.first.empty()) ++names[name];
                 i+=2;
             }
             else if (i+1<words.size() && validName(words[i+1]))
             {
                 NamePair name = createName(words[i+1], blank_string);
                 nameCorrection(name);
-                if (!name.first.empty()) names.insert(name);
+                if (!name.first.empty()) ++names[name];
                 i+=1;
+            }
+        }
+        else
+        {
+            if (words[i]=="robert") 
+            {
+                ++names[NameRobertOsfield];
+            }
+            else if (words[i]=="don")
+            {
+                ++names[NameDonBurns];
             }
         }
     }
 
+    // reassign fisrt name entries to their full names entries
     if (names.size()>1)
     {
-        for(NameSet::iterator itr = names.begin();
+        for(NameMap::iterator itr = names.begin();
             itr != names.end();
             )
         {
-            if (itr->second.empty()) 
+            if (itr->first.second.empty()) 
             {
-                NameSet::iterator next_itr = itr;
+                NameMap::iterator next_itr = itr;
                 ++next_itr;
                 
-                if (next_itr!=names.end() && itr->first==next_itr->first)
+                if (next_itr!=names.end() && itr->first.first==next_itr->first.first)
                 {
+                    next_itr->second += itr->second;
                     names.erase(itr);
                     itr = next_itr;
                 }
@@ -453,20 +477,42 @@ void readContributors(NameSet& names, const std::string& file)
             }
         }
     }
+    
+    // remove the double entries from Robert's contributions
+    if (names.size()>1)
+    {        
+        for(NameMap::iterator itr = names.begin();
+            itr != names.end();
+            ++itr)
+        {
+            if (itr->first != NameRobertOsfield && itr->first != NameDonBurns ) 
+            {
+                names[NameRobertOsfield] -= itr->second;
+            }
+        }
+    }
+    
+    
 }
 
-void buildContributors(NameSet& names)
+void buildContributors(NameMap& names)
 {
-    names.insert(NamePair("Robert","Osfield"));
-    names.insert(NamePair("Don","Burns"));
-    names.insert(NamePair("Marco","Jez"));
-    names.insert(NamePair("Karsten","Weiss"));
-    names.insert(NamePair("Graeme","Harkness"));
-    names.insert(NamePair("Axel","Volley"));
-    names.insert(NamePair("Nikolaus","Hanekamp"));
-    names.insert(NamePair("Kristopher","Bixler"));
-    names.insert(NamePair("Tanguy","Fautré"));
-    names.insert(NamePair("J.E.","Hoffmann"));
+    // top five contributors
+    ++names[NamePair("Robert","Osfield")];
+    ++names[NamePair("Don","Burns")];
+    ++names[NamePair("Marco","Jez")];
+    ++names[NamePair("Mike","Weiblen")];
+    ++names[NamePair("Geoff","Michael")];
+    
+    // contributors that don't appear in the ChangeLog due to their contributions
+    // being before CVS started for the OSG, or before the name logging began.
+    ++names[NamePair("Karsten","Weiss")];
+    ++names[NamePair("Graeme","Harkness")];
+    ++names[NamePair("Axel","Volley")];
+    ++names[NamePair("Nikolaus","Hanekamp")];
+    ++names[NamePair("Kristopher","Bixler")];
+    ++names[NamePair("Tanguy","Fautré")];
+    ++names[NamePair("J.E.","Hoffmann")];
 }
 
 int main( int argc, char **argv)
@@ -474,13 +520,18 @@ int main( int argc, char **argv)
     osg::ArgumentParser arguments(&argc,argv);
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("-c or --contributors","Print out the contributors list.");
-    arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the changelog to generate an estimated contributors list.");
+    arguments.getApplicationUsage()->addCommandLineOption("--entries","Print out number of entries into the ChangeLog file for each contributor.");
+    arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the ChangeLog to generate an estimated contributors list.");
 
     std::cout<<osgGetLibraryName()<< " "<< osgGetVersion()<<std::endl<<std::endl;
 
     bool printContributors = false;
-    while ( arguments.read("-c") || arguments.read("--contributors")) printContributors = true;
+    bool printNumEntries = false;
+    while ( arguments.read("--entries"))
+    {
+        printContributors = true;
+        printNumEntries = true;
+    }
 
     std::string changeLog;
     while ( arguments.read("-r",changeLog) || arguments.read("--read",changeLog)) printContributors = true;
@@ -495,19 +546,46 @@ int main( int argc, char **argv)
 
     if (printContributors)
     {
-        NameSet names;
+        NameMap names;
         buildContributors(names);
         if (!changeLog.empty())
         {
             readContributors(names, changeLog);
         }
         
-        std::cout<<names.size()<<" Contributors:"<<std::endl<<std::endl;
-        for(NameSet::iterator itr = names.begin();
+        typedef std::multimap<unsigned int, NamePair> SortedNameMap;
+
+        SortedNameMap sortedNames;        
+        for(NameMap::iterator itr = names.begin();
             itr != names.end();
             ++itr)
         {
-            std::cout<<"  "<<itr->first<<" "<<itr->second<<std::endl;
+            sortedNames.insert(SortedNameMap::value_type(itr->second, itr->first));
+        }
+
+        std::cout<<names.size()<<" Contributors:"<<std::endl<<std::endl;
+        
+        if (printNumEntries)
+        {
+            std::cout<<"Entries Firstname Surname"<<std::endl;
+            std::cout<<"-------------------------"<<std::endl;
+            for(SortedNameMap::reverse_iterator sitr = sortedNames.rbegin();
+                sitr != sortedNames.rend();
+                ++sitr)
+            {
+                std::cout<<sitr->first<<"\t"<<sitr->second.first<<" "<<sitr->second.second<<std::endl;
+            }
+        }
+        else
+        {
+            std::cout<<"Firstname Surname"<<std::endl;
+            std::cout<<"-----------------"<<std::endl;
+            for(SortedNameMap::reverse_iterator sitr = sortedNames.rbegin();
+                sitr != sortedNames.rend();
+                ++sitr)
+            {
+                std::cout<<sitr->second.first<<" "<<sitr->second.second<<std::endl;
+            }
         }
     }
 

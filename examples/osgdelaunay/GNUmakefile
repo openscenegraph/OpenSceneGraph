@@ -15,5 +15,3 @@ EXEC = osgdelaunay
 INC      += $(X_INC)
 
 include $(TOPDIR)/Make/makerules 
-
-

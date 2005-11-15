@@ -513,7 +513,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             // as RGB. 
             if( hasRGB ) 
             { 
-                GDALRasterBand* bandRed = bandRed = _gdalDataSet->GetRasterBand(1); 
+                GDALRasterBand* bandRed = _gdalDataSet->GetRasterBand(1); 
                 GDALRasterBand* bandGreen = _gdalDataSet->GetRasterBand(2); 
                 GDALRasterBand* bandBlue = _gdalDataSet->GetRasterBand(3); 
                 GDALRasterBand* bandAlpha = hasAlpha ? _gdalDataSet->GetRasterBand(4) : 0; 

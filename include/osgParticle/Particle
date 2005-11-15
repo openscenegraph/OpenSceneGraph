@@ -199,7 +199,7 @@ namespace osgParticle
         inline void transformPositionVelocity(const osg::Matrix& xform);
 
         /// Transform position and velocity vectors by a combination of two matrices
-        void Particle::transformPositionVelocity(const osg::Matrix& xform1, const osg::Matrix& xform2, float r);
+        void transformPositionVelocity(const osg::Matrix& xform1, const osg::Matrix& xform2, float r);
 
         /// Set the angle vector.
         inline void setAngle(const osg::Vec3& a);

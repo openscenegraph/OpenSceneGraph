@@ -166,6 +166,7 @@ Registry::Registry()
     addFileExtensionAlias("mpv",  "qt");
     addFileExtensionAlias("dv",   "qt");
     addFileExtensionAlias("mp4",   "qt");
+    addFileExtensionAlias("m4v",   "qt");
 #else
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");

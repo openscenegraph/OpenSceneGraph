@@ -19,7 +19,7 @@
 #ifndef DXF_SCENE
 #define DXF_SCENE 1
 
-#include <osg/Matrix>
+#include <osg/Matrixd>
 #include <osg/Group>
 #include <osg/MatrixTransform>
 #include <osg/Geometry>
@@ -243,7 +243,7 @@ public:
     scene(dxfLayerTable* lt = NULL);
     virtual ~scene() {}
     void setLayerTable(dxfLayerTable* lt);
-    void pushMatrix(osg::Matrixd m, bool protect = false)
+    void pushMatrix(const osg::Matrixd& m, bool protect = false)
     {
         _mStack.push_back(_m);
         if (protect) // equivalent to setMatrix
@@ -259,11 +259,11 @@ public:
         else
             _m.makeIdentity();
     }
-    void ocs(osg::Matrixd r)
+    void ocs(const osg::Matrixd& r)
     {
         _r = r;
     }
-    void blockOffset(osg::Vec3d t)
+    void blockOffset(const osg::Vec3d& t)
     {
         _t = t;
     }
@@ -300,10 +300,10 @@ public:
         double x = _b._min.x() - (double)v.x();
         double y = _b._min.y() - (double)v.y();
         double z = _b._min.z() - (double)v.z();
-        osg::Matrix m = osg::Matrix::translate(v);
+        osg::Matrixd m = osg::Matrixd::translate(v);
         root = new osg::MatrixTransform(m);
         if (x || y || z) {
-            m = osg::Matrix::translate(x,y,z);
+            m = osg::Matrixd::translate(x,y,z);
             child = new osg::MatrixTransform(m);
             root->addChild(child);
         } else {

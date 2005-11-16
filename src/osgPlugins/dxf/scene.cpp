@@ -38,7 +38,7 @@ Vec3d scene::addVertex(Vec3d v)
 {
 	v += _t;
 	v = preMultd(_r, v);
-	osg::Matrixd m = osg::Matrix::translate(v.x(), v.y(), v.z());
+	osg::Matrixd m = osg::Matrixd::translate(v.x(), v.y(), v.z());
 	m = m * _m;
 	Vec3d a = preMultd(m, Vec3d(0,0,0));
 	_b.expandBy(a);

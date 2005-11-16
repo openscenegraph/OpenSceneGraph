@@ -1,4 +1,6 @@
-168 Contributors, in order of number of entries in ChangeLog:
+OpenSceneGraph Library 1.0
+
+166 Contributors:
 
 Firstname Surname
 -----------------
@@ -25,8 +27,8 @@ Romano José Magacho da Silva
 Randall Hopper
 Stephan Huber
 Michael Gronager
-Neil Salter
 Gideon May
+Neil Salter
 Frederic Marmond
 Chris Hanson
 Boris Bralo
@@ -43,14 +45,16 @@ Sasa Bistrovic
 Olaf Flebbe
 Ben Discoe
 Stephane Simon
+Sean Spicer
 Ravi Mathur
 Joseph Steel
+Joakim Simonsson
 David Spilling
 Corbin Holtz
-Sean Spicer
 Nikolaus Hanekamp
 Loic Dachary
-Geoff Michael
+Jason Daly
+Eric Wing
 Bruce Clay
 Brad Christiansen
 Alberto Barbati
@@ -62,12 +66,9 @@ Markus Trenkwalder
 Leandro Motta Barros
 Ken Sewell
 Julian Ortiz
-Joakim Simonsson
 Jeremy Bell
-Jason Daly
 James French
 Gabor Dorka
-Eric Wing
 Domenico Mangieri
 David Guthrie
 Carlo Camporesi
@@ -130,7 +131,6 @@ Lewis Harmon
 Kristopher Bixler
 Keith Steffen
 Karsten Weiss
-Joson Daly
 Josh Portway
 John Tan
 John Grant
@@ -151,7 +151,7 @@ Ferdinand Cornelissen
 Fabien Dachicourt
 Duvan Cope
 Drew Whitehouse
-Douglas A
+Douglas A. Pouk
 Donny Cipperly
 Donn Mielcarek
 Dean Iverson

@@ -1,3 +1,138 @@
+2005-11-16 09:28  robert
+
+	* src/osg/TextureRectangle.cpp: From Mike Weiblen, support for
+	  ARB_texture_rectangle extension name.
+
+2005-11-15 22:18  robert
+
+	* examples/: osgdelaunay/GNUmakefile,
+	  osgprerender/osgprerender.cpp: From Joakim Simonsson/Robert
+	  Osfield. Fixed line endings.
+
+2005-11-15 22:14  robert
+
+	* src/osgPlugins/flt/Pool.cpp: Did a unix2dos and trimmed end of
+	  file of rendundent newlines.
+
+2005-11-15 22:07  robert
+
+	* applications/osgarchive/osgarchive.cpp,
+	  applications/osgconv/osgconv.cpp, applications/osgdem/osgdem.cpp,
+	  examples/osgbluemarble/osgbluemarble.cpp,
+	  examples/osgdelaunay/osgdelaunay.cpp,
+	  examples/osgdemeter/osgdemeter.cpp,
+	  examples/osgmovie/osgmovie.cpp,
+	  examples/osgpbuffer/osgpbuffer.cpp,
+	  examples/osgpoints/osgpoints.cpp,
+	  examples/osgsimplifier/osgsimplifier.cpp,
+	  examples/osgspacewarp/osgspacewarp.cpp,
+	  examples/osgtesselate/osgtesselate.cpp: Added proper descriptions
+	  of examples in place of the copy and paste description.
+
+2005-11-15 21:47  robert
+
+	* include/osgParticle/Particle,
+	  include/osgUtil/DelaunayTriangulator, src/osgTerrain/DataSet.cpp:
+	  From Eric Wing, compile fixes.
+
+2005-11-15 21:24  robert
+
+	* src/: osgDB/Registry.cpp,
+	  osgPlugins/quicktime/ReaderWriterQT.cpp: From Gideon May, "I've
+	  added an alias for the new mpeg 4 format used by quicktime and
+	  podcasts."
+
+2005-11-15 18:31  robert
+
+	* Make/makedefs: From Sean Spicer, compile fixes for Intel
+	  compiler.
+
+2005-11-15 16:15  robert
+
+	* VisualStudio/: highlight70.reg, highlight71.reg: From Joakim
+	  Simonsson, updated VS handling of extensionless headers to be
+	  consistent with 1.0 release of OSG
+
+2005-11-15 16:06  robert
+
+	* applications/osgversion/osgversion.cpp: Fixed typo of Jason.
+
+2005-11-15 15:07  robert
+
+	* AUTHORS.txt: Updated authors list from osgversion -r ChangeLog
+	  output.
+
+2005-11-15 15:07  robert
+
+	* applications/osgversion/: GNUmakefile, osgversion.cpp: Updated
+	  the output of the contributors list.
+
+2005-11-15 14:25  robert
+
+	* src/osgUtil/TriStrip_heap_array.h: Added catch of erase of the
+	  last element of heap.
+
+2005-11-15 11:43  robert
+
+	* include/osgIntrospection/Comparator: From Marco Jez, warning
+	  fixes.
+
+2005-11-15 11:39  robert
+
+	* src/osgPlugins/txp/: trpage_print.cpp, trpage_warchive.cpp:
+	  Warning fixes.
+
+2005-11-15 11:23  robert
+
+	* src/osgPlugins/quicktime/QTtexture.cpp: Warning fix.
+
+2005-11-15 10:05  robert
+
+	* applications/osgversion/osgversion.cpp: Added remapping of Drew's
+	  fullname.
+
+2005-11-15 08:56  robert
+
+	* examples/osgspacewarp/osgspacewarp.cpp: From Mike Weiblen,
+	  switched off lighting of points to make them clearer
+
+2005-11-15 08:43  robert
+
+	* src/osgSim/SphereSegment.cpp: Warning fix.
+
+2005-11-14 21:40  robert
+
+	* applications/osgversion/osgversion.cpp: Fixed handling of
+	  initials.
+
+2005-11-14 20:54  robert
+
+	* applications/osgversion/osgversion.cpp: Added typo correction for
+	  "Jolley".
+
+2005-11-14 20:51  robert
+
+	* applications/osgversion/osgversion.cpp: Added more typo catches.
+
+2005-11-14 17:21  robert
+
+	* applications/osgversion/osgversion.cpp: Further improvements to
+	  the name filtering.
+
+2005-11-14 17:15  robert
+
+	* applications/osgversion/osgversion.cpp: Improved handling on
+	  special characters in names
+
+2005-11-14 17:07  robert
+
+	* applications/osgversion/osgversion.cpp: Added support for mining
+	  the ChangeLog for a list of contributors.
+
+2005-11-14 13:34  robert
+
+	* ChangeLog: Updated changelog.
+
 2005-11-14 12:49  robert
 
 	* src/osgPlugins/geo/: geoFormat.h, geoVersion.h: Fixed warnings in

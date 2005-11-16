@@ -85,8 +85,10 @@ private:
 class userVars {
 public:
 	userVars() {}
-	userVars(const userVars &iv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY ) {
-		vars=iv.vars; }
+	userVars(const userVars &iv)
+        {
+		vars=iv.vars;
+        }
 	~userVars() {}
 	unsigned int number() { return vars.size();}
 	std::vector<geoValue> *getvars() { return &vars;}

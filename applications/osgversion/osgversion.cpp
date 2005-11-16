@@ -279,6 +279,11 @@ void nameCorrection(NamePair& name)
         name.first = "Drew";
         name.second = "Whitehouse";
     }
+    if (name.first=="Douglas" && name.second=="A")
+    {
+        name.first = "Douglas";
+        name.second = "A. Pouk";
+    }
 }
 
 void lastValidCharacter(const std::string& name, unsigned int& pos,char c)
@@ -503,7 +508,7 @@ void buildContributors(NameMap& names)
     ++names[NamePair("Don","Burns")];
     ++names[NamePair("Marco","Jez")];
     ++names[NamePair("Mike","Weiblen")];
-    ++names[NamePair("Geoff","Michael")];
+    ++names[NamePair("Geoff","Michel")];
     
     // contributors that don't appear in the ChangeLog due to their contributions
     // being before CVS started for the OSG, or before the name logging began.

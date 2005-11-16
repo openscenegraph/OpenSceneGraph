@@ -23,7 +23,7 @@
 #include <osg/Array>
 #include <osg/Vec3d>
 #include <osg/Node>
-#include <osg/Matrix>
+#include <osg/Matrixd>
 
 #include "dxfBlock.h"
 
@@ -33,7 +33,7 @@ class codeValue;
 class dxfFile;
 
 static inline void
-getOCSMatrix(osg::Vec3d ocs, osg::Matrix &m)
+getOCSMatrix(const osg::Vec3d& ocs, osg::Matrixd& m)
 {
     static const double one_64th = 1.0/64.0;
     m.makeIdentity();
@@ -49,7 +49,7 @@ getOCSMatrix(osg::Vec3d ocs, osg::Matrix &m)
     ax.normalize();
     ay = ocsaxis ^ ax;
     ay.normalize();
-    m = osg::Matrix(    ax.x(), ax.y(), ax.z(), 0, 
+    m = osg::Matrixd(    ax.x(), ax.y(), ax.z(), 0, 
                         ay.x(), ay.y(), ay.z(), 0,
                         ocsaxis.x(), ocsaxis.y(), ocsaxis.z(), 0,
                         0,0,0,1);

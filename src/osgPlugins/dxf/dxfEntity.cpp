@@ -164,7 +164,7 @@ dxfCircle::assign(dxfFile* dxf, codeValue& cv)
 void
 dxfCircle::drawScene(scene* sc)
 {
-	Matrix m;
+	Matrixd m;
 	getOCSMatrix(_ocs, m);
 	sc->ocs(m);
 	std::vector<Vec3d> vlist;
@@ -235,7 +235,7 @@ dxfArc::assign(dxfFile* dxf, codeValue& cv)
 void
 dxfArc::drawScene(scene* sc)
 {
-	Matrix m;
+	Matrixd m;
 	getOCSMatrix(_ocs, m);
 	sc->ocs(m);
 	std::vector<Vec3d> vlist;
@@ -313,7 +313,7 @@ dxfLine::assign(dxfFile* dxf, codeValue& cv)
 void
 dxfLine::drawScene(scene* sc)
 {
-	Matrix m;
+	Matrixd m;
 	getOCSMatrix(_ocs, m);
 	// don't know why this doesn't work
 //	sc->ocs(m);
@@ -395,7 +395,7 @@ dxfPolyline::drawScene(scene* sc)
 {
 //	if (getLayer() != "UDF2" && getLayer() != "ENGINES") return;
 //	if (!(_flag & 16)) return;
-	Matrix m;
+	Matrixd m;
 	getOCSMatrix(_ocs, m);
 	sc->ocs(m);
 	std::vector<Vec3d> vlist;
@@ -648,7 +648,7 @@ dxfLWPolyline::drawScene(scene* sc)
 {
 //	if (getLayer() != "UDF2" && getLayer() != "ENGINES") return;
 //	if (!(_flag & 16)) return;
-	Matrix m;
+	Matrixd m;
 	getOCSMatrix(_ocs, m);
 	sc->ocs(m);
 	if (_flag & 1) {
@@ -732,7 +732,7 @@ dxfInsert::drawScene(scene* sc)
 		sc->pushMatrix(Matrixd::rotate(osg::DegreesToRadians(_rotation), 0,0,1));
 	}
 	sc->pushMatrix(Matrixd::scale(_scale.x(), _scale.y(), _scale.z()));
-	sc->pushMatrix(Matrix::translate(_point.x(), _point.y(), _point.z()));
+	sc->pushMatrix(Matrixd::translate(_point.x(), _point.y(), _point.z()));
 	getOCSMatrix(_ocs, m);
 	sc->pushMatrix(m);
 	sc->pushMatrix(back);

@@ -152,16 +152,18 @@ public:
                 osg::EllipsoidModel* ellipsoid = csn->getEllipsoidModel();
                 if (ellipsoid)
                 {
-                    osg::Matrixd matrix;
+                    osg::Matrix inheritedMatrix;
                     for(i+=1; i<nodePath.size()-1; ++i)
                     {
                         osg::Transform* transform = nodePath[i]->asTransform();
-                        if (transform) transform->computeLocalToWorldMatrix(matrix, nv);
+                        if (transform) transform->computeLocalToWorldMatrix(inheritedMatrix, nv);
                     }
+                    
+                    osg::Matrixd matrix(inheritedMatrix);
 
                     //osg::Matrixd matrix;
                     ellipsoid->computeLocalToWorldTransformFromLatLongHeight(_latitude,_longitude,_height,matrix);
-                    matrix.preMult(osg::Matrixd::rotate(_rotation));
+                    matrix.preMult(osg::Matrix::rotate(_rotation));
                     
                     mt->setMatrix(matrix);
                 }

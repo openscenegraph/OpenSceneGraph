@@ -96,7 +96,7 @@ INST_LIBS      = $(INST_LOCATION)/lib$(ARCHINST)
 INST_PLUGINS   = $(INST_LOCATION)/lib$(ARCHINST)/osgPlugins
 INST_INCLUDE   = $(INST_LOCATION)/include
 INST_SHARE     = $(INST_LOCATION)/share
-INST_EXAMPLES     = $(INST_SHARE)/OpenSceneGraph/bin
+INST_EXAMPLES  = $(INST_SHARE)/OpenSceneGraph/bin
 INST_SRC       = $(INST_SHARE)/OpenSceneGraph/src
 INST_DOC       = $(INST_SHARE)/OpenSceneGraph/doc
 INST_DATA      = $(INST_SHARE)/OpenSceneGraph/data
@@ -132,25 +132,25 @@ endif
 
 
 RECURSIVE_TARGETS = \
-	  opt\
-	  debug\
+      opt\
+      debug\
       static\
       staticdebug\
-	  clean\
-	  cleandepend\
-	  cleandependopt\
-	  cleandependdbg\
-	  cleandbg\
-	  cleanopt\
-	  cleantarget\
-	  cleantargetopt\
-	  cleantargetdbg\
-	  clobber\
-	  clobberdbg\
-	  clobberopt\
-	  beautify\
-	  docs\
-	  depend\
+      clean\
+      cleandepend\
+      cleandependopt\
+      cleandependdbg\
+      cleandbg\
+      cleanopt\
+      cleantarget\
+      cleantargetopt\
+      cleantargetdbg\
+      clobber\
+      clobberdbg\
+      clobberopt\
+      beautify\
+      docs\
+      depend\
 
 STATICLIB    = $(LIB:.$(LIB_EXT)=.a)
 STATICPLUGIN = $(PLUGIN:.$(PLUGIN_EXT)=.a)
@@ -175,7 +175,7 @@ ifeq ($(OS),SunOS)
       ARCHARGS        = 
   endif
     GIF_LIBS          = -lgif 
-    TIFF_LIB	      = -ltiff 
+    TIFF_LIB          = -ltiff 
     JPEG_LIBS         = -ljpeg 
     PNG_LIBS          = -lpng -lz 
     OTHER_LIBS        = -lOpenThreads
@@ -200,7 +200,7 @@ ifeq ($(OS),SunOS)
     OTHER_LIBS        = -lCstd -lOpenThreads
     LINKARGS          = -mt
     GIF_LIBS          = /usr/local/lib/libgif.a
-    TIFF_LIB	      = /usr/local/lib/libtiff.a
+    TIFF_LIB          = /usr/local/lib/libtiff.a
     JPEG_INCLUDE      = -I/usr/local/include
     JPEG_LIBS         = /usr/local/lib/libjpeg.a
     PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
@@ -233,66 +233,66 @@ endif
 ifeq ($(OS),IRIX)
   CXX = CC
   ifeq ($(CXX),CC)
-	  LINKARGS          = -L${TOPDIR}/$(LIBINST) -LANG:std -OPT:Olimit=0  
-	  C++               = CC
-	  DEPARG            = -M
-	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
-	  LDFLAGS	        += -L/usr/local/lib
-	  DEF               += -LANG:std -OPT:Olimit=0 \
-		                    -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
-		                    -MDupdate $(MAKEDEPEND)
-	  OPTF              = -O2 
-	  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
-	  SHARED            = -shared
-	  PFLIBS            = \
-		            -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-		            -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-		            -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-		            -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-		            -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
-	  ARCH              = 32
-	  ifeq ($(ARCH),64)
-		  ARCHARGS          = -64 -DARCH64
-		  ARCHINST          = 64
-		  LINKARGS          += -L/usr/freeware/lib64
-		  PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
-			               $(PFLIBS)
-	  else 
-		  ARCHARGS          = -n32
-		  ARCHINST          = 32
-		  LINKARGS          += -L/usr/freeware/lib32
-		  PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
-			               $(PFLIBS)
-	  endif
-  else		
-	  LIBS              = -lstdc++
-	  LINKARGS          = -L${TOPDIR}/$(LIBINST)
-	  C++               = g++
-	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
-	  DEF               += -fPIC -W -Wno-unused 
-	  OPTF              = -O2 
-	  DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS  
-	  SHARED            = -shared
-	  PFLIBS            = \
-		            -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-		            -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-		            -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-		            -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-		            -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
-	  ARCH              = 32
-	  ifeq ($(ARCH),64)
-		  ARCHARGS          = -mabi=64 -mips4 -DARCH64
-		  ARCHINST          = 64
-		  LINKARGS          += -L/usr/freeware/lib64
-		  PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
-			               $(PFLIBS)
-	  else 
-		  ARCHARGS          = -mabi=n32 -mips4
-		  ARCHINST          = 32
-		  LINKARGS          += -L/usr/freeware/lib32
-		  PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
-			               $(PFLIBS)
-	  endif	
+      LINKARGS          = -L${TOPDIR}/$(LIBINST) -LANG:std -OPT:Olimit=0  
+      C++               = CC
+      DEPARG            = -M
+      INC               += -I${TOPDIR}/include -I/usr/freeware/include
+      LDFLAGS           += -L/usr/local/lib
+      DEF               += -LANG:std -OPT:Olimit=0 \
+                            -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
+                            -MDupdate $(MAKEDEPEND)
+      OPTF              = -O2 
+      DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
+      SHARED            = -shared
+      PFLIBS            = \
+                    -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+                    -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+                    -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+                    -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+                    -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
+      ARCH              = 32
+      ifeq ($(ARCH),64)
+          ARCHARGS          = -64 -DARCH64
+          ARCHINST          = 64
+          LINKARGS          += -L/usr/freeware/lib64
+          PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
+                           $(PFLIBS)
+      else 
+          ARCHARGS          = -n32
+          ARCHINST          = 32
+          LINKARGS          += -L/usr/freeware/lib32
+          PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
+                           $(PFLIBS)
+      endif
+  else      
+      LIBS              = -lstdc++
+      LINKARGS          = -L${TOPDIR}/$(LIBINST)
+      C++               = g++
+      INC               += -I${TOPDIR}/include -I/usr/freeware/include
+      DEF               += -fPIC -W -Wno-unused 
+      OPTF              = -O2 
+      DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS  
+      SHARED            = -shared
+      PFLIBS            = \
+                    -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+                    -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+                    -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+                    -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+                    -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
+      ARCH              = 32
+      ifeq ($(ARCH),64)
+          ARCHARGS          = -mabi=64 -mips4 -DARCH64
+          ARCHINST          = 64
+          LINKARGS          += -L/usr/freeware/lib64
+          PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
+                           $(PFLIBS)
+      else 
+          ARCHARGS          = -mabi=n32 -mips4
+          ARCHINST          = 32
+          LINKARGS          += -L/usr/freeware/lib32
+          PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
+                           $(PFLIBS)
+      endif 
   endif
 
   DYNAMICLIBRARYLIB = 
@@ -467,23 +467,23 @@ ifeq ($(OS),Darwin)
 
       DEF            += -D__USE_OSX_AGL_IMPLEMENTATION__
       INC            += $(FINC) 
-      LDFLAGS	     += $(FINC) 
+      LDFLAGS        += $(FINC) 
       X_INC          = 
       X_LIBS         = 
 
   else
       ifeq ($(USE_CGL),yes)
 
-	 DEF            += -D__USE_OSX_CGL_IMPLEMENTATION__
+         DEF            += -D__USE_OSX_CGL_IMPLEMENTATION__
          INC            += $(FINC) 
-         LDFLAGS	+= $(FINC) 
+         LDFLAGS        += $(FINC) 
          X_INC          = 
          X_LIBS         = 
 
       else
 
          INC            += $(FINC) -I$(SDKPATH)/usr/X11R6/include
-         LDFLAGS	    += $(FINC) -L$(SDKPATH)/usr/include -L$(SDKPATH)/usr/X11R6/lib -L/sw/lib
+         LDFLAGS        += $(FINC) -L$(SDKPATH)/usr/include -L$(SDKPATH)/usr/X11R6/lib -L/sw/lib
          X_INC          = -I$(SDKPATH)/usr/X11R6/include
          X_LIBS         = -lX11 
 
@@ -506,7 +506,7 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
-  LIBVERSION	    = -current_version $(VERSION) \
+  LIBVERSION        = -current_version $(VERSION) \
                         -compatibility_version \
                         $(VERSION_MAJOR).$(VERSION_MINOR).0
 
@@ -514,7 +514,7 @@ ifeq ($(OS),Darwin)
     DEF             += -DDARWIN_QUICKTIME
   endif
 
-  QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
+  QUICKTIME       = -framework QuickTime $(CARBON_LIB)
   PNG_LIBS        = -lpng -lz
   JPEG_LIBS       = -ljpeg
   GIF_LIBS        = -lungif
@@ -587,8 +587,8 @@ ifeq ($(OS),CYGWIN)
   INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
   INST_SRC          = $(INST_SHARE_PREFIX)/src
-  INST_EXAMPLES        = $(INST_SHARE_PREFIX)/bin
-  INST_EXAMPLE_SRC     = $(INST_SHARE_PREFIX)/src/demos
+  INST_EXAMPLES     = $(INST_SHARE_PREFIX)/bin
+  INST_EXAMPLE_SRC  = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
   MAKEDIST          = $(TOPDIR)/Make/makeinnosetup
@@ -658,8 +658,8 @@ endif
 # replaced by Olaf Flebb for use with aCC compiler
 
 ifeq ($(OS),HP-UX)
-  CXX 		    = aCC -AA -mt
-  C++  		    = $(CXX)
+  CXX               = aCC -AA -mt
+  C++               = $(CXX)
   DEPARG            = -w +make -E
   INC               += -I/opt/graphics/OpenGL/include -I/usr/contrib/X11R6/include -D_LARGEFILE64_SOURCE -D_XOPEN_SOURCE_EXTENDED
   DEF               += +Z -z
@@ -667,7 +667,7 @@ ifeq ($(OS),HP-UX)
   DBGF              = -g 
   SHARED            = -b +Z -z -Wl,+s
   ARCH              = 32
-  LDFLAGS	    += -L/opt/graphics/OpenGL/lib -L/usr/contrib/X11R6/lib/
+  LDFLAGS           += -L/opt/graphics/OpenGL/lib -L/usr/contrib/X11R6/lib/
   LINKARGS          = -lpthread
   LIB_EXT           = sl
   PLUGIN_EXT        = sl
@@ -682,11 +682,11 @@ ifeq ($(OS),HP-UX)
   OTHER_LIBS        = -lm -lOpenThreads
   PNG_INCLUDE       = -I/usr/local/include/libpng -I/usr/local/include/
   PNG_LIBS          = -L/usr/local/lib -lpng  -lz
-  JPEG_INCLUDE		= -I/usr/local/include
+  JPEG_INCLUDE      = -I/usr/local/include
   JPEG_LIBS         = -L/usr/local/lib  -ljpeg
   TIFF_INCLUDE      = -I/usr/local/include
   TIFF_LIB          = -L/usr/local/lib -ltiff
-  GIF_INCLUDE		= -I/opt/libungif/include
+  GIF_INCLUDE       = -I/opt/libungif/include
   GIF_LIBS          = -L/opt/libungif/lib -lungif
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`

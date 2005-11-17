@@ -283,7 +283,7 @@ char fragmentShaderSource_withBaseTexture[] =
     "\n"
     "void main(void) \n"
     "{ \n"
-    "    vec4 color = gl_Color * texture2D( baseTexture, gl_TexCoord[0] ); \n"
+    "    vec4 color = gl_Color * texture2D( baseTexture, gl_TexCoord[0].xy ); \n"
     "    gl_FragColor = color * (ambientBias.x + shadow2DProj( shadowTexture, gl_TexCoord[1] ) * ambientBias.y); \n"
     "}\n";
 

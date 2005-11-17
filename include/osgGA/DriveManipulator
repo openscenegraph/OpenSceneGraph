@@ -63,6 +63,15 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
+	void setModelScale( double in_ms ) { _modelScale = in_ms; }
+	double getModelScale() const { return _modelScale; }
+
+	void setVelocity( double in_vel ) { _velocity = in_vel; }
+	double getVelocity() const { return _velocity; }
+
+	void setHeight( double in_h ) { _height = in_h; }
+	double getHeight() const { return _height; }
+
     protected:
 
         virtual ~DriveManipulator();

@@ -74,7 +74,7 @@ void Matrix_implementation::set(const Quat& q_in)
 
     // Source: Gamasutra, Rotating Objects Using Quaternions
     //
-    //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
+    //http://www.gamasutra.com/features/19980703/quaternions_01.htm
 
     double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 

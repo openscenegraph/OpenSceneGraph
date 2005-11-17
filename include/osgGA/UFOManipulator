@@ -111,9 +111,24 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
         /** Report the current position as LookAt vectors */
         void getCurrentPositionAsLookAt( osg::Vec3 &eye, osg::Vec3 &center, osg::Vec3 &up );
 
-        protected:
 
-    private:
+        void setMinHeight( double in_min_height ) { _minHeightAboveGround = in_min_height; }
+        double getMinHeight() const { return _minHeightAboveGround; }
+
+        void setMinDistance( double in_min_dist ) { _minDistanceInFront = in_min_dist; }
+        double getMinDistance() const { return _minDistanceInFront; }
+
+        void setForwardSpeed( double in_fs ) { _forwardSpeed = in_fs; }
+        double getForwardSpeed() const { return _forwardSpeed; }
+
+        void setSideSpeed( double in_ss ) { _sideSpeed = in_ss; }
+        double getSideSpeed() const { return _sideSpeed; }
+
+        void setRotationSpeed( double in_rot_speed ) { _directionRotationRate = in_rot_speed; }
+        double getRotationSpeed() const { return _directionRotationRate; }
+
+
+    protected:
         osg::ref_ptr<osg::Node> _node;
         float       _viewAngle;
         osg::Matrixd _matrix;

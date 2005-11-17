@@ -956,7 +956,8 @@ void Viewer::selectCameraManipulator(unsigned int no)
       // so we'll do this mannually.  Note pretty, and needs replacing by a refactor
       // of MatrixMinpulators in the longer term.
       osg::ref_ptr<EventAdapter> ea = new EventAdapter;
-      ea->adaptKeyPress(_kbmcb->getTime(), osgGA::GUIEventAdapter::KEY_KP_1+no);
+      double time = _kbmcb.valid() ? _kbmcb->getTime() : 0.0;
+      ea->adaptKeyPress(time, osgGA::GUIEventAdapter::KEY_KP_1+no);
       _keyswitchManipulator->init(*ea, *this);
    }
 }

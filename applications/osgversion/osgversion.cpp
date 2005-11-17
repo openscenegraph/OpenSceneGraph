@@ -7,6 +7,14 @@
 #include <iostream>
 #include <fstream>
 
+// the majority of the application is dedicated to building the
+// current contribitors list by parsing the ChangeLog, it just takes
+// one line in the main itself to report the version number.
+
+#if defined(_MSC_VER)
+    #pragma setlocale("C")
+#endif
+
 typedef std::pair<std::string, std::string> NamePair;
 typedef std::map<NamePair,unsigned int> NameMap;
 typedef std::vector< std::string > Words;

@@ -61,12 +61,12 @@ bool MultiSwitch::addChild( osg::Node *child)
         {
             ValueList& values = *itr;
             if (_children.size()>_values.size())
-	    {
-	        values.resize(_children.size(),_newChildDefaultValue);
-	        values[childPosition]=_newChildDefaultValue;
-	    }
+            {
+                values.resize(_children.size(),_newChildDefaultValue);
+                values[childPosition]=_newChildDefaultValue;
+            }
         }
-	return true;
+        return true;
     }
     return false;
 }
@@ -81,17 +81,17 @@ bool MultiSwitch::insertChild( unsigned int index, osg::Node *child)
         {
             ValueList& values = *itr;
             if (index>=_values.size())
-	    {
-	        values.push_back(_newChildDefaultValue);
-	    }
+            {
+                values.push_back(_newChildDefaultValue);
+            }
             else
             {
-	        values.insert(values.begin()+index, _newChildDefaultValue);
+                values.insert(values.begin()+index, _newChildDefaultValue);
             }
         }
 
         
-	return true;
+        return true;
     }
     return false;
 }

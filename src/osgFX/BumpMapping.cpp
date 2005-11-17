@@ -504,8 +504,8 @@ namespace
             }
 
             // second pass, self-shadowing
-	    bool selfShadowing = false; 
-	    if (selfShadowing)
+            bool selfShadowing = false; 
+            if (selfShadowing)
             {
                 std::ostringstream vp_oss;
                 vp_oss <<

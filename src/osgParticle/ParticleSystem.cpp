@@ -209,7 +209,7 @@ osg::BoundingBox osgParticle::ParticleSystem::computeBound() const
         return _def_bbox;
     } else
     {
-	return osg::BoundingBox(_bmin,_bmax);
+        return osg::BoundingBox(_bmin,_bmax);
     }
 }
 

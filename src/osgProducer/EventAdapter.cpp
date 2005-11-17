@@ -73,11 +73,11 @@ void EventAdapter::adaptMouseScroll(double time, Producer::KeyboardMouseCallback
     _time = time;
 
     if (sm == Producer::KeyboardMouseCallback::ScrollUp)
-	_eventType = SCROLLUP;
+        _eventType = SCROLLUP;
     else if (sm == Producer::KeyboardMouseCallback::ScrollDown)
-	_eventType = SCROLLDOWN;
+        _eventType = SCROLLDOWN;
     else
-	_eventType = NONE;
+        _eventType = NONE;
 
     copyStaticVariables();
 }
@@ -92,20 +92,17 @@ void EventAdapter::adaptButtonPress(double time,float x, float y, unsigned int b
     switch(_button)
     {
         case(0): 
-	    _s_accumulatedButtonMask = 
-		_s_accumulatedButtonMask | LEFT_MOUSE_BUTTON; 
-	    _s_button = LEFT_MOUSE_BUTTON;
-	    break;
+            _s_accumulatedButtonMask = _s_accumulatedButtonMask | LEFT_MOUSE_BUTTON; 
+            _s_button = LEFT_MOUSE_BUTTON;
+            break;
         case(1): 
-	    _s_accumulatedButtonMask = 
-		_s_accumulatedButtonMask | MIDDLE_MOUSE_BUTTON; 
-	    _s_button = MIDDLE_MOUSE_BUTTON;
-	    break;
+            _s_accumulatedButtonMask = _s_accumulatedButtonMask | MIDDLE_MOUSE_BUTTON; 
+            _s_button = MIDDLE_MOUSE_BUTTON;
+            break;
         case(2): 
-	    _s_accumulatedButtonMask = 
-		_s_accumulatedButtonMask | RIGHT_MOUSE_BUTTON; 
-	    _s_button = RIGHT_MOUSE_BUTTON;
-	    break;
+            _s_accumulatedButtonMask = _s_accumulatedButtonMask | RIGHT_MOUSE_BUTTON; 
+            _s_button = RIGHT_MOUSE_BUTTON;
+            break;
     }
 
     _s_mx = x;
@@ -124,20 +121,17 @@ void EventAdapter::adaptButtonRelease(double time,float x, float y, unsigned int
     switch(_button)
     {
         case(0): 
-	    _s_accumulatedButtonMask = 
-		_s_accumulatedButtonMask & ~LEFT_MOUSE_BUTTON;
-	    _s_button = LEFT_MOUSE_BUTTON;
-	    break;
+            _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~LEFT_MOUSE_BUTTON;
+            _s_button = LEFT_MOUSE_BUTTON;
+            break;
         case(1): 
-	    _s_accumulatedButtonMask = 
-		_s_accumulatedButtonMask & ~MIDDLE_MOUSE_BUTTON; 
-	    _s_button = MIDDLE_MOUSE_BUTTON;
-	    break;
+            _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~MIDDLE_MOUSE_BUTTON; 
+            _s_button = MIDDLE_MOUSE_BUTTON;
+            break;
         case(2): 
-	    _s_accumulatedButtonMask = 
-		_s_accumulatedButtonMask & ~RIGHT_MOUSE_BUTTON; 
-	    _s_button = RIGHT_MOUSE_BUTTON;
-	    break;
+            _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~RIGHT_MOUSE_BUTTON; 
+            _s_button = RIGHT_MOUSE_BUTTON;
+            break;
     }
 
     _s_mx = x;

@@ -94,13 +94,13 @@ void HeightFieldNode::computeNormalMap()
         char* ptr = (char*) image->data();
         for(unsigned int r=0;r<_heightField->getNumRows();++r)
         {
-	    for(unsigned int c=0;c<_heightField->getNumColumns();++c)
-	    {
-	        osg::Vec3 normal = _heightField->getNormal(c,r);
+            for(unsigned int c=0;c<_heightField->getNumColumns();++c)
+            {
+                osg::Vec3 normal = _heightField->getNormal(c,r);
                 (*ptr++) = (char)((normal.x()+1.0)*0.5*255);
                 (*ptr++) = (char)((normal.y()+1.0)*0.5*255);
                 (*ptr++) = (char)((normal.z()+1.0)*0.5*255);
-	    }
+            }
         }
         
         setNormalMapImage(image);

@@ -352,7 +352,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             }
             
             // => word boundary detection & wrapping
-	    if (outOfSpace) break;
+            if (outOfSpace) break;
 
             // move the cursor onto the next character.
             switch(_layout)
@@ -377,7 +377,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             while (lastValidChar!=first && deliminatorSet.count(*lastValidChar)==0)
             {
                 --lastValidChar;
-	    }
+            }
             if (first!=lastValidChar)
             {
                 ++lastValidChar;
@@ -427,111 +427,111 @@ void Text::computeGlyphRepresentation()
         itr!=_text.end();
         )
     {
-    	// record the start of the current line
-    	String::iterator startOfLine_itr = itr;
+        // record the start of the current line
+            String::iterator startOfLine_itr = itr;
 
-        // find the end of the current line.
-	osg::Vec2 endOfLine_coords(cursor);
-        String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
+            // find the end of the current line.
+            osg::Vec2 endOfLine_coords(cursor);
+            String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
 
-	linelength = endOfLine_itr - startOfLine_itr;
+            linelength = endOfLine_itr - startOfLine_itr;
 
-        // Set line position to correct alignment.
-        switch(_layout)
-        {
-          case LEFT_TO_RIGHT:
-          {
-	    switch(_alignment)
+            // Set line position to correct alignment.
+            switch(_layout)
             {
-	      // nothing to be done for these
-	      //case LEFT_TOP:
+            case LEFT_TO_RIGHT:
+            {
+            switch(_alignment)
+            {
+              // nothing to be done for these
+              //case LEFT_TOP:
               //case LEFT_CENTER:
               //case LEFT_BOTTOM:
-	      //case LEFT_BASE_LINE:
-	      //case LEFT_BOTTOM_BASE_LINE:
-	      //  break;
-	      case CENTER_TOP:
+              //case LEFT_BASE_LINE:
+              //case LEFT_BOTTOM_BASE_LINE:
+              //  break;
+              case CENTER_TOP:
               case CENTER_CENTER:
               case CENTER_BOTTOM:
-	      case CENTER_BASE_LINE:
-	      case CENTER_BOTTOM_BASE_LINE:
-	      	cursor.x() = (cursor.x() - endOfLine_coords.x()) * 0.5f;
-		break;
+              case CENTER_BASE_LINE:
+              case CENTER_BOTTOM_BASE_LINE:
+                cursor.x() = (cursor.x() - endOfLine_coords.x()) * 0.5f;
+                break;
               case RIGHT_TOP:
-	      case RIGHT_CENTER:
-	      case RIGHT_BOTTOM:
-	      case RIGHT_BASE_LINE:
-	      case RIGHT_BOTTOM_BASE_LINE:
-	      	cursor.x() = cursor.x() - endOfLine_coords.x();
-		break;
-	      default:
-		break;
-	      }
+              case RIGHT_CENTER:
+              case RIGHT_BOTTOM:
+              case RIGHT_BASE_LINE:
+              case RIGHT_BOTTOM_BASE_LINE:
+                cursor.x() = cursor.x() - endOfLine_coords.x();
+                break;
+              default:
+                break;
+              }
             break;
-          }
-          case RIGHT_TO_LEFT:
-          {
-	    switch(_alignment)
-	    {
-	      case LEFT_TOP:
+            }
+            case RIGHT_TO_LEFT:
+            {
+            switch(_alignment)
+            {
+              case LEFT_TOP:
               case LEFT_CENTER:
               case LEFT_BOTTOM:
-	      case LEFT_BASE_LINE:
-	      case LEFT_BOTTOM_BASE_LINE:
-	      	cursor.x() = 2*cursor.x() - endOfLine_coords.x();
-		break;
-	      case CENTER_TOP:
+              case LEFT_BASE_LINE:
+              case LEFT_BOTTOM_BASE_LINE:
+                cursor.x() = 2*cursor.x() - endOfLine_coords.x();
+                break;
+              case CENTER_TOP:
               case CENTER_CENTER:
               case CENTER_BOTTOM:
-	      case CENTER_BASE_LINE:
-	      case CENTER_BOTTOM_BASE_LINE:
-	      	cursor.x() = cursor.x() + (cursor.x() - endOfLine_coords.x()) * 0.5f;
-		break;
-	      // nothing to be done for these
+              case CENTER_BASE_LINE:
+              case CENTER_BOTTOM_BASE_LINE:
+                cursor.x() = cursor.x() + (cursor.x() - endOfLine_coords.x()) * 0.5f;
+                break;
+              // nothing to be done for these
               //case RIGHT_TOP:
-	      //case RIGHT_CENTER:
-	      //case RIGHT_BOTTOM:
-	      //case RIGHT_BASE_LINE:
-	      //case RIGHT_BOTTOM_BASE_LINE:
-	      //  break;
-	      default:
-		break;
-	    }
+              //case RIGHT_CENTER:
+              //case RIGHT_BOTTOM:
+              //case RIGHT_BASE_LINE:
+              //case RIGHT_BOTTOM_BASE_LINE:
+              //  break;
+              default:
+                break;
+            }
             break;
-          }
-          case VERTICAL:
-          {
-	    switch(_alignment)
-	    {
-	      // TODO: current behaviour top baselines lined up in both cases - need to implement
-	      //       top of characters aligment - Question is this neccesary?
-	      // ... otherwise, nothing to be done for these 6 cases
-	      //case LEFT_TOP:
-	      //case CENTER_TOP:
+            }
+            case VERTICAL:
+            {
+            switch(_alignment)
+            {
+              // TODO: current behaviour top baselines lined up in both cases - need to implement
+              //       top of characters aligment - Question is this neccesary?
+              // ... otherwise, nothing to be done for these 6 cases
+              //case LEFT_TOP:
+              //case CENTER_TOP:
               //case RIGHT_TOP:
-	      //  break;
-	      //case LEFT_BASE_LINE:
-	      //case CENTER_BASE_LINE:
-	      //case RIGHT_BASE_LINE:
-	      //  break;
+              //  break;
+              //case LEFT_BASE_LINE:
+              //case CENTER_BASE_LINE:
+              //case RIGHT_BASE_LINE:
+              //  break;
               case LEFT_CENTER:
               case CENTER_CENTER:
-	      case RIGHT_CENTER:
-	      	cursor.y() = cursor.y() + (cursor.y() - endOfLine_coords.y()) * 0.5f;
-		break;
-	      case LEFT_BOTTOM_BASE_LINE:
-	      case CENTER_BOTTOM_BASE_LINE:
-	      case RIGHT_BOTTOM_BASE_LINE:
-	        cursor.y() = cursor.y() - (linelength * _characterHeight);
-	        break;
+              case RIGHT_CENTER:
+                cursor.y() = cursor.y() + (cursor.y() - endOfLine_coords.y()) * 0.5f;
+                break;
+              case LEFT_BOTTOM_BASE_LINE:
+              case CENTER_BOTTOM_BASE_LINE:
+              case RIGHT_BOTTOM_BASE_LINE:
+                cursor.y() = cursor.y() - (linelength * _characterHeight);
+                break;
               case LEFT_BOTTOM:
               case CENTER_BOTTOM:
-	      case RIGHT_BOTTOM:
-	      	cursor.y() = 2*cursor.y() - endOfLine_coords.y();
-		break;
-	      default:
-		break;
-	    }
+              case RIGHT_BOTTOM:
+                cursor.y() = 2*cursor.y() - endOfLine_coords.y();
+                break;
+              default:
+                break;
+            }
             break;
           }
         }
@@ -652,7 +652,7 @@ void Text::computeGlyphRepresentation()
             startOfLine_coords.y() -= _characterHeight;
             cursor = startOfLine_coords;
             previous_charcode = 0;
-	    _lineCount++;
+            _lineCount++;
             break;
           }
           case RIGHT_TO_LEFT:
@@ -660,7 +660,7 @@ void Text::computeGlyphRepresentation()
             startOfLine_coords.y() -= _characterHeight;
             cursor = startOfLine_coords;
             previous_charcode = 0;
-	    _lineCount++;
+            _lineCount++;
             break;
           }
           case VERTICAL:
@@ -668,8 +668,8 @@ void Text::computeGlyphRepresentation()
             startOfLine_coords.x() += _characterHeight/_characterAspectRatio;
             cursor = startOfLine_coords;
             previous_charcode = 0;
-	    // because _lineCount is the max vertical no. of characters....
-	    _lineCount = (_lineCount >linelength)?_lineCount:linelength;
+            // because _lineCount is the max vertical no. of characters....
+            _lineCount = (_lineCount >linelength)?_lineCount:linelength;
           }
           break;
         }

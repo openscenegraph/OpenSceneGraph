@@ -39,7 +39,7 @@ LightPoint::LightPoint(const osg::Vec3& position,const osg::Vec4& color):
 {
 }    
 
-LightPoint::LightPoint(bool	    	    on,
+LightPoint::LightPoint(bool                 on,
                        const osg::Vec3&     position,
                        const osg::Vec4&     color,
                        float                intensity,

@@ -774,7 +774,7 @@ void CullVisitor::apply(Geode& node)
         }
 
         if (bb.valid()) addDrawableAndDepth(drawable,&matrix,distance(bb.center(),matrix));
-	else addDrawableAndDepth(drawable,&matrix,0.0f);
+        else addDrawableAndDepth(drawable,&matrix,0.0f);
 
         for(unsigned int i=0;i< numPopStateSetRequired; ++i)
         {

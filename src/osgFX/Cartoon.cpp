@@ -177,23 +177,23 @@ namespace
         {
             // implement pass #1 (solid surfaces)
             {
-		const char * vert_source =
-		"const vec3 LightPosition = vec3( 0.0, 2.0, 4.0 );"
-		"varying float CartoonTexCoord;"
-		"void main( void )"
-		"{"
-		    "vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal);"
-		    "CartoonTexCoord = max(0.0, dot(normalize(LightPosition), eye_space_normal));"
-		    "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-		"}";
+                const char * vert_source =
+                "const vec3 LightPosition = vec3( 0.0, 2.0, 4.0 );"
+                "varying float CartoonTexCoord;"
+                "void main( void )"
+                "{"
+                    "vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal);"
+                    "CartoonTexCoord = max(0.0, dot(normalize(LightPosition), eye_space_normal));"
+                    "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                "}";
 
-		const char * frag_source =
-		"uniform sampler1D CartoonTexUnit;"
-		"varying float CartoonTexCoord;"
-		"void main( void )"
-		"{"
-		    "gl_FragColor = texture1D( CartoonTexUnit, CartoonTexCoord );"
-		"}";
+                const char * frag_source =
+                "uniform sampler1D CartoonTexUnit;"
+                "varying float CartoonTexCoord;"
+                "void main( void )"
+                "{"
+                    "gl_FragColor = texture1D( CartoonTexUnit, CartoonTexCoord );"
+                "}";
 
                 osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
 
@@ -202,13 +202,13 @@ namespace
                 polyoffset->setUnits(1.0f);
                 ss->setAttributeAndModes(polyoffset.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-		osg::ref_ptr<osg::Program> program = new osg::Program;
-		program->addShader( new osg::Shader( osg::Shader::VERTEX, vert_source ) );
-		program->addShader( new osg::Shader( osg::Shader::FRAGMENT, frag_source ) );
+                osg::ref_ptr<osg::Program> program = new osg::Program;
+                program->addShader( new osg::Shader( osg::Shader::VERTEX, vert_source ) );
+                program->addShader( new osg::Shader( osg::Shader::FRAGMENT, frag_source ) );
 
                 ss->addUniform( new osg::Uniform("CartoonTexUnit", 0));
-		ss->setAttributeAndModes( program.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
-                
+                ss->setAttributeAndModes( program.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
 
                 ss->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF);
 

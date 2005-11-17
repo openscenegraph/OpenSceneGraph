@@ -228,7 +228,7 @@ class OSG_EXPORT CullSettings
         bool                                        _impostorActive;
         bool                                        _depthSortImpostorSprites;
         float                                       _impostorPixelErrorThreshold;
-        int                                         _numFramesToKeepImpostorSprites;	
+        int                                         _numFramesToKeepImpostorSprites;    
 
         Node::NodeMask                              _cullMask;
         Node::NodeMask                              _cullMaskLeft;

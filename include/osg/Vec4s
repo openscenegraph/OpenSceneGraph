@@ -12,7 +12,7 @@
 */
 
 #ifndef OSG_VEC4S
-#define OSG_VEC4S		1
+#define OSG_VEC4S        1
 
 namespace osg {
 
@@ -52,7 +52,7 @@ class Vec4s
             else return (_v[3]<v._v[3]);
         }
 
-	inline value_type* ptr() { return _v; }
+    inline value_type* ptr() { return _v; }
         inline const value_type* ptr() const { return _v; }
 
         inline void set( value_type x, value_type y, value_type z, value_type w)

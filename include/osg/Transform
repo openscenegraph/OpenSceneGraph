@@ -104,7 +104,7 @@ class OSG_EXPORT Transform : public Group
           * deep in the scene graph.  It is therefore recommended to only use
           * absolute Transforms at the top of the scene, for such things as
           * heads up displays.
-		*/
+        */
         void setReferenceFrame(ReferenceFrame rf);
         
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
@@ -139,7 +139,7 @@ class OSG_EXPORT Transform : public Group
           * There is no need to override in subclasses from osg::Transform
           * since this computeBound() uses the underlying matrix (calling
           * computeMatrix if required).
-		*/
+        */
         virtual BoundingSphere computeBound() const;
 
     protected :

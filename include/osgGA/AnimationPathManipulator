@@ -35,9 +35,9 @@ class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
 {
     public:
     
-	AnimationPathManipulator( osg::AnimationPath* animationPath=0 );
+        AnimationPathManipulator( osg::AnimationPath* animationPath=0 );
 
-	AnimationPathManipulator( const std::string& filename );
+        AnimationPathManipulator( const std::string& filename );
         
         virtual const char* className() const { return "AnimationPath"; }
 
@@ -63,7 +63,7 @@ class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
         
         const osg::AnimationPath* getAnimationPath() const { return _animationPath.get(); }
 
-	bool valid() const { return _animationPath.valid(); }
+        bool valid() const { return _animationPath.valid(); }
 
         void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
@@ -77,13 +77,13 @@ class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
             
     protected:
 
-	bool _valid;
+        bool _valid;
         
         bool _printOutTiminInfo;
 
-	void handleFrame( double time );
+        void handleFrame( double time );
 
-	osg::ref_ptr<osg::AnimationPath> _animationPath;
+        osg::ref_ptr<osg::AnimationPath> _animationPath;
         
         double  _timeOffset;
         double  _timeScale;

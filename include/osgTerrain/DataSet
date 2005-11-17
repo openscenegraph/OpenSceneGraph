@@ -932,7 +932,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         void setRadiusToMaxVisibleDistanceRatio(float ratio) { _radiusToMaxVisibleDistanceRatio = ratio; }
         float getRadiusToMaxVisibleDistanceRatio() const { return _radiusToMaxVisibleDistanceRatio; }
-	
+    
         void setVerticalScale(float verticalScale) { _verticalScale = verticalScale; }
         float getVerticalScale() const { return _verticalScale; }
                
@@ -1117,7 +1117,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         unsigned int                                _maximumTileImageSize;
         unsigned int                                _maximumTileTerrainSize;
         float                                       _maximumVisiableDistanceOfTopLevel;
-	float                                       _radiusToMaxVisibleDistanceRatio;
+    float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
         float                                       _skirtRatio;
             

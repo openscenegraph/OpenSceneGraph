@@ -40,7 +40,7 @@ class ConstShapeVisitor;
         virtual const char* className() const { return #name; } \
         virtual void accept(osg::ShapeVisitor& sv) { sv.apply(*this); } \
         virtual void accept(osg::ConstShapeVisitor& csv) const { csv.apply(*this); }
-	
+
 /** Base class for all shape types. 
   * Shapes are used to either for culling and collision detection or
   * to define the geometric shape of procedurally generate Geometry.
@@ -72,17 +72,17 @@ class OSG_EXPORT Shape : public Object
         /** return the name of the attribute's class type.*/
         virtual const char* className() const { return "Shape"; }
 
-    	/** accept a non const shape visitor which can be used on non const shape objects.
+        /** accept a non const shape visitor which can be used on non const shape objects.
             Must be defined by derived classes.*/
-    	virtual void accept(ShapeVisitor&)=0;
-	
-    	/** accept a const shape visitor which can be used on const shape objects.
+        virtual void accept(ShapeVisitor&)=0;
+
+        /** accept a const shape visitor which can be used on const shape objects.
             Must be defined by derived classes.*/
-    	virtual void accept(ConstShapeVisitor&) const =0;
+        virtual void accept(ConstShapeVisitor&) const =0;
 
     protected:
     
-    	virtual ~Shape();
+        virtual ~Shape();
 };
 
 // forward declarations of Shape types.
@@ -103,137 +103,137 @@ class ShapeVisitor
 {
     public:
     
-    	ShapeVisitor() {}
+        ShapeVisitor() {}
         virtual ~ShapeVisitor() {}
-    
-    	virtual void apply(Sphere&) {}
-    	virtual void apply(Box&) {}
-    	virtual void apply(Cone&) {}
-    	virtual void apply(Cylinder&) {}
-    	virtual void apply(Capsule&) {}
-    	virtual void apply(InfinitePlane&) {}
 
-    	virtual void apply(TriangleMesh&) {}
-    	virtual void apply(ConvexHull&) {}
-    	virtual void apply(HeightField&) {}
+        virtual void apply(Sphere&) {}
+        virtual void apply(Box&) {}
+        virtual void apply(Cone&) {}
+        virtual void apply(Cylinder&) {}
+        virtual void apply(Capsule&) {}
+        virtual void apply(InfinitePlane&) {}
 
-    	virtual void apply(CompositeShape&) {}
+        virtual void apply(TriangleMesh&) {}
+        virtual void apply(ConvexHull&) {}
+        virtual void apply(HeightField&) {}
+
+        virtual void apply(CompositeShape&) {}
 };
 
 class ConstShapeVisitor
 {
     public:
     
-    	ConstShapeVisitor() {}
+        ConstShapeVisitor() {}
         virtual ~ConstShapeVisitor() {}
 
-    	virtual void apply(const Sphere&) {}
-    	virtual void apply(const Box&) {}
-    	virtual void apply(const Cone&) {}
-    	virtual void apply(const Cylinder&) {}
-    	virtual void apply(const Capsule&) {}
-    	virtual void apply(const InfinitePlane&) {}
+        virtual void apply(const Sphere&) {}
+        virtual void apply(const Box&) {}
+        virtual void apply(const Cone&) {}
+        virtual void apply(const Cylinder&) {}
+        virtual void apply(const Capsule&) {}
+        virtual void apply(const InfinitePlane&) {}
 
-    	virtual void apply(const TriangleMesh&) {}
-    	virtual void apply(const ConvexHull&) {}
-    	virtual void apply(const HeightField&) {}
+        virtual void apply(const TriangleMesh&) {}
+        virtual void apply(const ConvexHull&) {}
+        virtual void apply(const HeightField&) {}
 
-    	virtual void apply(const CompositeShape&) {}
+        virtual void apply(const CompositeShape&) {}
 };
 
 class Sphere : public Shape
 {
     public:
-    	
+
         Sphere():
-	    _center(0.0f,0.0f,0.0f),
-	    _radius(1.0f) {}
-	
+            _center(0.0f,0.0f,0.0f),
+            _radius(1.0f) {}
+
         Sphere(const osg::Vec3& center,float radius):
-	    _center(center),
-	    _radius(radius) {}
+            _center(center),
+            _radius(radius) {}
 
         Sphere(const Sphere& sphere,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Shape(sphere,copyop),
-	    _center(sphere._center),
-	    _radius(sphere._radius) {}
-        
-    	META_Shape(osg, Sphere);
-	
-	inline bool valid() const { return _radius>=0.0f; }
-	
-	inline void set(const Vec3& center,float radius)
-	{
-	    _center = center;
-	    _radius = radius;
-	}
+            _center(sphere._center),
+            _radius(sphere._radius) {}
 
-	inline void setCenter(const Vec3& center) { _center = center; }
-	inline const Vec3& getCenter() const { return _center; }
-	
-	inline void setRadius(float radius) { _radius = radius; }
-	inline float getRadius() const { return _radius; }
+        META_Shape(osg, Sphere);
+
+        inline bool valid() const { return _radius>=0.0f; }
+
+        inline void set(const Vec3& center,float radius)
+        {
+            _center = center;
+            _radius = radius;
+        }
+
+        inline void setCenter(const Vec3& center) { _center = center; }
+        inline const Vec3& getCenter() const { return _center; }
+
+        inline void setRadius(float radius) { _radius = radius; }
+        inline float getRadius() const { return _radius; }
 
     protected:
-    
-    	virtual ~Sphere() {}
-    
-    	Vec3    _center;
-	float	_radius;
-	
+
+        virtual ~Sphere() {}
+
+        Vec3    _center;
+        float   _radius;
+
 };
 
 class Box : public Shape
 {
     public:
-    	
+
         Box():
-	    _center(0.0f,0.0f,0.0f),
-	    _halfLengths(0.5f,0.5f,0.5f) {}
-	
+            _center(0.0f,0.0f,0.0f),
+            _halfLengths(0.5f,0.5f,0.5f) {}
+
         Box(const osg::Vec3& center,float width):
-	    _center(center),
-	    _halfLengths(width*0.5f,width*0.5f,width*0.5f) {}
+            _center(center),
+            _halfLengths(width*0.5f,width*0.5f,width*0.5f) {}
 
         Box(const osg::Vec3& center,float lengthX,float lengthY, float lengthZ):
-	    _center(center),
-	    _halfLengths(lengthX*0.5f,lengthY*0.5f,lengthZ*0.5f) {}
+            _center(center),
+            _halfLengths(lengthX*0.5f,lengthY*0.5f,lengthZ*0.5f) {}
 
         Box(const Box& box,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(box,copyop),
-	    _center(box._center),
-	    _halfLengths(box._halfLengths),
-    	    _rotation(box._rotation) {}
-        
-    	META_Shape(osg, Box);
-	
-	inline bool valid() const { return _halfLengths.x()>=0.0f; }
-	
-	inline void set(const Vec3& center,const Vec3& halfLengths)
-	{
-	    _center = center;
-	    _halfLengths = halfLengths;
-	}
+            _center(box._center),
+            _halfLengths(box._halfLengths),
+            _rotation(box._rotation) {}
 
-	inline void setCenter(const Vec3& center) { _center = center; }
-	inline const Vec3& getCenter() const { return _center; }
-	
-	inline void setHalfLengths(const Vec3& halfLengths) { _halfLengths = halfLengths; }
-	inline const Vec3& getHalfLengths() const { return _halfLengths; }
-	
-    	inline void setRotation(const Quat& quat) { _rotation = quat; }
-    	inline const Quat&  getRotation() const { return _rotation; }
-    	inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-    	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        META_Shape(osg, Box);
+
+        inline bool valid() const { return _halfLengths.x()>=0.0f; }
+
+        inline void set(const Vec3& center,const Vec3& halfLengths)
+        {
+            _center = center;
+            _halfLengths = halfLengths;
+        }
+
+        inline void setCenter(const Vec3& center) { _center = center; }
+        inline const Vec3& getCenter() const { return _center; }
+
+        inline void setHalfLengths(const Vec3& halfLengths) { _halfLengths = halfLengths; }
+        inline const Vec3& getHalfLengths() const { return _halfLengths; }
+
+        inline void setRotation(const Quat& quat) { _rotation = quat; }
+        inline const Quat&  getRotation() const { return _rotation; }
+        inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
+        inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
     protected:
     
-    	virtual ~Box() {}
+        virtual ~Box() {}
     
-    	Vec3    _center;
-    	Vec3    _halfLengths;
-    	Quat	_rotation;	
-	
+        Vec3    _center;
+        Vec3    _halfLengths;
+        Quat    _rotation;
+
 };
 
 
@@ -241,188 +241,186 @@ class Box : public Shape
 class Cone : public Shape
 {
     public:
-    	
+
         Cone():
-	    _center(0.0f,0.0f,0.0f),
-	    _radius(1.0f),
-	    _height(1.0f) {}
-	
+            _center(0.0f,0.0f,0.0f),
+            _radius(1.0f),
+            _height(1.0f) {}
+
         Cone(const osg::Vec3& center,float radius,float height):
-	    _center(center),
-	    _radius(radius),
-	    _height(height) {}
+            _center(center),
+            _radius(radius),
+            _height(height) {}
 
         Cone(const Cone& cone,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(cone,copyop),
-	    _center(cone._center),
-	    _radius(cone._radius),
-	    _height(cone._height),
-	    _rotation(cone._rotation) {}
-        
-    	META_Shape(osg, Cone);
-	
-	inline bool valid() const { return _radius>=0.0f; }
-	
-	inline void set(const Vec3& center,float radius, float height)
-	{
-	    _center = center;
-	    _radius = radius;
-	    _height = height;
-	}
+            _center(cone._center),
+            _radius(cone._radius),
+            _height(cone._height),
+            _rotation(cone._rotation) {}
 
-	inline void setCenter(const Vec3& center) { _center = center; }
-	inline const Vec3& getCenter() const { return _center; }
-	
-	inline void setRadius(float radius) { _radius = radius; }
-	inline float getRadius() const { return _radius; }
+        META_Shape(osg, Cone);
 
-	inline void setHeight(float height) { _height = height; }
-	inline float getHeight() const { return _height; }
+        inline bool valid() const { return _radius>=0.0f; }
 
-    	inline void setRotation(const Quat& quat) { _rotation = quat; }
-    	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-    	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
-	
-	inline float getBaseOffsetFactor() const { return 0.25f; } 
-	inline float getBaseOffset() const { return -getBaseOffsetFactor()*getHeight(); } 
+        inline void set(const Vec3& center,float radius, float height)
+        {
+            _center = center;
+            _radius = radius;
+            _height = height;
+        }
+
+        inline void setCenter(const Vec3& center) { _center = center; }
+        inline const Vec3& getCenter() const { return _center; }
+
+        inline void setRadius(float radius) { _radius = radius; }
+        inline float getRadius() const { return _radius; }
+
+        inline void setHeight(float height) { _height = height; }
+        inline float getHeight() const { return _height; }
+
+        inline void setRotation(const Quat& quat) { _rotation = quat; }
+        inline const Quat& getRotation() const { return _rotation; }
+        inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
+        inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
+
+        inline float getBaseOffsetFactor() const { return 0.25f; } 
+        inline float getBaseOffset() const { return -getBaseOffsetFactor()*getHeight(); } 
 
     protected:
     
-    	virtual ~Cone() {}
+        virtual ~Cone() {}
     
-    	Vec3    _center;
-	float 	_radius;
-	float	_height;
-	
-    	Quat	_rotation;	
+        Vec3    _center;
+        float   _radius;
+        float   _height;
+
+        Quat    _rotation;
 };
 
 class Cylinder : public Shape
 {
     public:
-    	
+
         Cylinder():
-	    _center(0.0f,0.0f,0.0f),
-	    _radius(1.0f),
-	    _height(1.0f) {}
-	
+            _center(0.0f,0.0f,0.0f),
+            _radius(1.0f),
+            _height(1.0f) {}
+
         Cylinder(const osg::Vec3& center,float radius,float height):
-	    _center(center),
-	    _radius(radius),
-	    _height(height) {}
+            _center(center),
+            _radius(radius),
+            _height(height) {}
 
         Cylinder(const Cylinder& cylinder,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(cylinder,copyop),
-	    _center(cylinder._center),
-	    _radius(cylinder._radius),
-	    _height(cylinder._height),
-	    _rotation(cylinder._rotation) {}
-        
-    	META_Shape(osg, Cylinder);
-	
-	inline bool valid() const { return _radius>=0.0f; }
-	
-	inline void set(const Vec3& center,float radius, float height)
-	{
-	    _center = center;
-	    _radius = radius;
-	    _height = height;
-	}
+            _center(cylinder._center),
+            _radius(cylinder._radius),
+            _height(cylinder._height),
+            _rotation(cylinder._rotation) {}
 
-	inline void setCenter(const Vec3& center) { _center = center; }
-	inline const Vec3& getCenter() const { return _center; }
-	
-	inline void setRadius(float radius) { _radius = radius; }
-	inline float getRadius() const { return _radius; }
+        META_Shape(osg, Cylinder);
 
-	inline void setHeight(float height) { _height = height; }
-	inline float getHeight() const { return _height; }
+        inline bool valid() const { return _radius>=0.0f; }
 
-    	inline void setRotation(const Quat& quat) { _rotation = quat; }
-    	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-    	bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        inline void set(const Vec3& center,float radius, float height)
+        {
+            _center = center;
+            _radius = radius;
+            _height = height;
+        }
+
+        inline void setCenter(const Vec3& center) { _center = center; }
+        inline const Vec3& getCenter() const { return _center; }
+
+        inline void setRadius(float radius) { _radius = radius; }
+        inline float getRadius() const { return _radius; }
+
+        inline void setHeight(float height) { _height = height; }
+        inline float getHeight() const { return _height; }
+
+        inline void setRotation(const Quat& quat) { _rotation = quat; }
+        inline const Quat& getRotation() const { return _rotation; }
+        inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
+        bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
     protected:
     
-    	virtual ~Cylinder() {}
-    
-    	Vec3    _center;
-	float 	_radius;
-	float	_height;
-	
-    	Quat	_rotation;	
+        virtual ~Cylinder() {}
+
+        Vec3    _center;
+        float   _radius;
+        float   _height;
+        Quat    _rotation;
 };
 
 class Capsule : public Shape
 {
     public:
-    	
+
         Capsule():
-	    _center(0.0f,0.0f,0.0f),
-	    _radius(1.0f),
-	    _height(1.0f) {}
-	
+            _center(0.0f,0.0f,0.0f),
+            _radius(1.0f),
+            _height(1.0f) {}
+
         Capsule(const osg::Vec3& center,float radius,float height):
-	    _center(center),
-	    _radius(radius),
-	    _height(height) {}
+            _center(center),
+            _radius(radius),
+            _height(height) {}
 
         Capsule(const Capsule& capsule,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(capsule,copyop),
-	    _center(capsule._center),
-	    _radius(capsule._radius),
-	    _height(capsule._height),
-	    _rotation(capsule._rotation) {}
-        
-    	META_Shape(osg, Capsule);
-	
-	inline bool valid() const { return _radius>=0.0f; }
-	
-	inline void set(const Vec3& center,float radius, float height)
-	{
-	    _center = center;
-	    _radius = radius;
-	    _height = height;
-	}
+            _center(capsule._center),
+            _radius(capsule._radius),
+            _height(capsule._height),
+            _rotation(capsule._rotation) {}
 
-	inline void setCenter(const Vec3& center) { _center = center; }
-	inline const Vec3& getCenter() const { return _center; }
-	
-	inline void setRadius(float radius) { _radius = radius; }
-	inline float getRadius() const { return _radius; }
+        META_Shape(osg, Capsule);
 
-	inline void setHeight(float height) { _height = height; }
-	inline float getHeight() const { return _height; }
+        inline bool valid() const { return _radius>=0.0f; }
 
-    	inline void setRotation(const Quat& quat) { _rotation = quat; }
-    	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-    	bool zeroRotation() const { return _rotation.zeroRotation(); } 
+        inline void set(const Vec3& center,float radius, float height)
+        {
+            _center = center;
+            _radius = radius;
+            _height = height;
+        }
+
+        inline void setCenter(const Vec3& center) { _center = center; }
+        inline const Vec3& getCenter() const { return _center; }
+
+        inline void setRadius(float radius) { _radius = radius; }
+        inline float getRadius() const { return _radius; }
+
+        inline void setHeight(float height) { _height = height; }
+        inline float getHeight() const { return _height; }
+
+        inline void setRotation(const Quat& quat) { _rotation = quat; }
+        inline const Quat& getRotation() const { return _rotation; }
+        inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
+        bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
     protected:
     
-    	virtual ~Capsule() {}
+        virtual ~Capsule() {}
     
-    	Vec3    _center;
-	float 	_radius;
-	float	_height;
-	
-    	Quat	_rotation;	
+        Vec3    _center;
+        float   _radius;
+        float   _height;
+        Quat    _rotation;
 };
 
 class InfinitePlane : public Shape, public Plane
 {
     public:
-    	InfinitePlane() {}
-	
+        InfinitePlane() {}
+
         InfinitePlane(const InfinitePlane& plane,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(plane,copyop),
             Plane(plane) {}
 
-     	META_Shape(osg, InfinitePlane);
-     	
+        META_Shape(osg, InfinitePlane);
+
      protected:
      
         virtual ~InfinitePlane() {}
@@ -432,101 +430,100 @@ class TriangleMesh : public Shape
 {
     public:
     
-    	TriangleMesh() {}
+        TriangleMesh() {}
 
         TriangleMesh(const TriangleMesh& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(mesh,copyop),
-	    _vertices(mesh._vertices),
-	    _indices(mesh._indices) {}
-        
-    	META_Shape(osg, TriangleMesh);
-	
-	
-	void setVertices(Vec3Array* vertices) { _vertices = vertices; }
-	Vec3Array* getVertices() { return _vertices.get(); }
-	const Vec3Array* getVertices() const { return _vertices.get(); }
-	
-	
-	void setIndices(IndexArray* indices) { _indices = indices; }
-	IndexArray* getIndices() { return _indices.get(); }
-	const IndexArray* getIndices() const { return _indices.get(); }
-	
+            _vertices(mesh._vertices),
+            _indices(mesh._indices) {}
+
+        META_Shape(osg, TriangleMesh);
+
+
+        void setVertices(Vec3Array* vertices) { _vertices = vertices; }
+        Vec3Array* getVertices() { return _vertices.get(); }
+        const Vec3Array* getVertices() const { return _vertices.get(); }
+
+
+        void setIndices(IndexArray* indices) { _indices = indices; }
+        IndexArray* getIndices() { return _indices.get(); }
+        const IndexArray* getIndices() const { return _indices.get(); }
+
     protected:
     
-    	~TriangleMesh() {}
-	
-	ref_ptr<Vec3Array> _vertices;
-	ref_ptr<IndexArray> _indices;
-    	
+        ~TriangleMesh() {}
+
+        ref_ptr<Vec3Array> _vertices;
+        ref_ptr<IndexArray> _indices;
+
 };
 
 class ConvexHull : public TriangleMesh
 {
     public:
     
-    	ConvexHull() {}
-	
+        ConvexHull() {}
+
         ConvexHull(const ConvexHull& hull,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             TriangleMesh(hull,copyop) {}
-        
-    	META_Shape(osg, TriangleMesh);
-	
+
+        META_Shape(osg, TriangleMesh);
+
     protected:
     
-    	~ConvexHull() {}
+        ~ConvexHull() {}
 };
 
 class OSG_EXPORT HeightField : public Shape
 {
     public:
     
-    	HeightField():
-	    _columns(0),
-	    _rows(0),
-	    _origin(0.0f,0.0f,0.0f),
-	    _dx(1.0f),
-	    _dy(1.0f),
+        HeightField():
+            _columns(0),
+            _rows(0),
+            _origin(0.0f,0.0f,0.0f),
+            _dx(1.0f),
+            _dy(1.0f),
             _skirtHeight(0.0f),
             _borderWidth(0) {}
 
         HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(mesh,copyop),
-	    _columns(mesh._columns),
-	    _rows(mesh._rows),
-	    _origin(mesh._origin),
-	    _dx(mesh._dx),
-	    _dy(mesh._dy),
+            _columns(mesh._columns),
+            _rows(mesh._rows),
+            _origin(mesh._origin),
+            _dx(mesh._dx),
+            _dy(mesh._dy),
             _skirtHeight(mesh._skirtHeight),
             _borderWidth(mesh._borderWidth),
             _heights(mesh._heights) {}
         
-    	META_Shape(osg, HeightField);
+        META_Shape(osg, HeightField);
 
-    	typedef std::vector<float> HeightList;
+        typedef std::vector<float> HeightList;
 
-    	void allocate(unsigned int numColumns,unsigned int numRows);
+        void allocate(unsigned int numColumns,unsigned int numRows);
 
-	inline unsigned int getNumColumns() const { return _columns; }
-	inline unsigned int getNumRows() const { return _rows; }
+        inline unsigned int getNumColumns() const { return _columns; }
+        inline unsigned int getNumRows() const { return _rows; }
 
-    	inline void setOrigin(const osg::Vec3& origin) { _origin = origin; }
-    	inline const osg::Vec3& getOrigin() const { return _origin; }
+        inline void setOrigin(const osg::Vec3& origin) { _origin = origin; }
+        inline const osg::Vec3& getOrigin() const { return _origin; }
 
-	inline void setXInterval(float dx) { _dx = dx; }
-	inline float getXInterval() const { return _dx; }
+        inline void setXInterval(float dx) { _dx = dx; }
+        inline float getXInterval() const { return _dx; }
 
-	inline void setYInterval(float dy) { _dy = dy; }
-	inline float getYInterval() const { return _dy; }
+        inline void setYInterval(float dy) { _dy = dy; }
+        inline float getYInterval() const { return _dy; }
 
-	
         /** Set the height of the skirt to render around the edge of HeightField.
           * The skirt is used as a means of disguising edge boundaries between adjacent HeightField, 
           * particularly of ones with different resolutions.*/
         void setSkirtHeight(float skirtHeight) { _skirtHeight = skirtHeight; }
-        
+
         /** Get the height of the skirt to render around the edge of HeightField.*/
         float getSkirtHeight() const { return _skirtHeight; }
-        
+
         /** Set the width in number of cells in from the edge that the height field should be rendered from.
           * This exists to allow gradient and curvature continutity to be maintained between adjacent HeightField, where
           * the border cells will overlap adjacent HeightField.*/
@@ -535,31 +532,31 @@ class OSG_EXPORT HeightField : public Shape
         /** Get the width in number of cells in from the edge that the height field should be rendered from.*/
         unsigned int getBorderWidth() const { return _borderWidth; }
 
-    	inline void setRotation(const Quat& quat) { _rotation = quat; }
-    	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
-    	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
-        
-    /* set a single height point in the height field */
-	inline void setHeight(unsigned int c,unsigned int r,float value)
-	{
-	   _heights[c+r*_columns] = value;
-	}
+        inline void setRotation(const Quat& quat) { _rotation = quat; }
+        inline const Quat& getRotation() const { return _rotation; }
+        inline Matrix computeRotationMatrix() const { return Matrix(_rotation); }
+        inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
-    /* Get address of single height point in the height field, allows user to change. */
-	inline float& getHeight(unsigned int c,unsigned int r)
-	{
-	   return _heights[c+r*_columns];
-	}
+        /* set a single height point in the height field */
+        inline void setHeight(unsigned int c,unsigned int r,float value)
+        {
+           _heights[c+r*_columns] = value;
+        }
 
-    /* Get value of single height point in the height field, not editable. */
-	inline float getHeight(unsigned int c,unsigned int r) const
-	{
-	   return _heights[c+r*_columns];
-	}
+        /* Get address of single height point in the height field, allows user to change. */
+        inline float& getHeight(unsigned int c,unsigned int r)
+        {
+           return _heights[c+r*_columns];
+        }
 
-	HeightList& getHeightList() { return _heights; }
-	const HeightList& getHeightList() const { return _heights; }
+        /* Get value of single height point in the height field, not editable. */
+        inline float getHeight(unsigned int c,unsigned int r) const
+        {
+           return _heights[c+r*_columns];
+        }
+
+        HeightList& getHeightList() { return _heights; }
+        const HeightList& getHeightList() const { return _heights; }
 
         inline Vec3 getVertex(unsigned int c,unsigned int r) const
         {
@@ -567,27 +564,27 @@ class OSG_EXPORT HeightField : public Shape
                         _origin.y()+getYInterval()*(float)r,
                         _origin.z()+_heights[c+r*_columns]);  
         }
-        
+
         Vec3 getNormal(unsigned int c,unsigned int r) const;
 
         Vec2 getHeightDelta(unsigned int c,unsigned int r) const;
 
     protected:
     
-    	virtual ~HeightField();
+        virtual ~HeightField();
 
-    	unsigned int    _columns,_rows;
+        unsigned int    _columns,_rows;
 
-	osg::Vec3       _origin;
-	float	        _dx;
-	float	        _dy;
-	
+        osg::Vec3       _origin;
+        float           _dx;
+        float           _dy;
+
         float           _skirtHeight;
         unsigned int    _borderWidth;
 
-	Quat            _rotation;
-	HeightList      _heights;
-        
+        Quat            _rotation;
+        HeightList      _heights;
+
 };
 
 typedef HeightField Grid;
@@ -599,43 +596,43 @@ class CompositeShape : public Shape
 
 
     
-    	typedef std::vector< ref_ptr<Shape> > ChildList;
-    
-    	CompositeShape() {}
+        typedef std::vector< ref_ptr<Shape> > ChildList;
+
+        CompositeShape() {}
 
         CompositeShape(const CompositeShape& cs,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(cs,copyop),
-	    _children(cs._children) {}
-        
-    	META_Shape(osg, CompositeShape);
+            _children(cs._children) {}
 
-    	/** Set the shape that encloses all of the children.*/	
-	void setShape(Shape* shape) { _shape = shape; }
+        META_Shape(osg, CompositeShape);
 
-    	/** Get the shape that encloses all of the children.*/	
-	Shape* getShape() { return _shape.get(); }
+        /** Set the shape that encloses all of the children.*/
+        void setShape(Shape* shape) { _shape = shape; }
 
-    	/** Get the const shape that encloses all of the children.*/	
-	const Shape* getShape() const { return _shape.get(); }
-	
-	/** Get the number of children of this composite shape.*/
-	unsigned int getNumChildren() const { return _children.size(); }
-	
-	/** Get a child.*/
-	Shape* getChild(unsigned int i) { return _children[i].get(); }
+        /** Get the shape that encloses all of the children.*/
+        Shape* getShape() { return _shape.get(); }
 
-	/** Get a const child.*/
-	const Shape* getChild(unsigned int i) const { return _children[i].get(); }
+        /** Get the const shape that encloses all of the children.*/
+        const Shape* getShape() const { return _shape.get(); }
 
-	/** Add a child to the list.*/
-	void addChild(Shape* shape) { _children.push_back(shape); }
-	
-	/** remove a child from the list.*/
-	void removeChild(unsigned int i) { _children.erase(_children.begin()+i); }
+        /** Get the number of children of this composite shape.*/
+        unsigned int getNumChildren() const { return _children.size(); }
 
-	/** find the index number of child, if child is not found then it returns getNumChildren(),
-	  * so should be used in similar style to STL's result!=end().*/ 
-	unsigned int findChildNo(Shape* shape) const
+        /** Get a child.*/
+        Shape* getChild(unsigned int i) { return _children[i].get(); }
+
+        /** Get a const child.*/
+        const Shape* getChild(unsigned int i) const { return _children[i].get(); }
+
+        /** Add a child to the list.*/
+        void addChild(Shape* shape) { _children.push_back(shape); }
+
+        /** remove a child from the list.*/
+        void removeChild(unsigned int i) { _children.erase(_children.begin()+i); }
+
+        /** find the index number of child, if child is not found then it returns getNumChildren(),
+          * so should be used in similar style to STL's result!=end().*/ 
+        unsigned int findChildNo(Shape* shape) const
         { 
             for (unsigned int childNo=0;childNo<_children.size();++childNo)
             {
@@ -644,13 +641,13 @@ class CompositeShape : public Shape
             return _children.size(); // node not found.
 
         }
-	
+
     protected:
     
-    	~CompositeShape() {}
+        ~CompositeShape() {}
 
-    	ref_ptr<Shape>	_shape;
-	ChildList   	_children;
+        ref_ptr<Shape>  _shape;
+        ChildList       _children;
 
 };
 

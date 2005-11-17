@@ -66,13 +66,13 @@ class OSG_EXPORT Billboard : public Geode
         typedef std::vector<Vec3> PositionList;
         
         /** Set the list of pivot point positions. */
-        inline void setPositionList(PositionList& pl) 	   { _positionList=pl; }
+        inline void setPositionList(PositionList& pl)       { _positionList=pl; }
 
         /** Get the list of pivot point positions. */
-        inline PositionList& getPositionList()             { return _positionList; }
+        inline PositionList& getPositionList()              { return _positionList; }
         
         /** Get a const list of pivot point positions. */
-        inline const PositionList& getPositionList() const { return _positionList; }
+        inline const PositionList& getPositionList() const  { return _positionList; }
 
         /** Add a Drawable with a default position of Vec3(0,0,0).
           * Call the base-class Geode::addDrawble() to add the given Drawable

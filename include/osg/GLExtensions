@@ -55,13 +55,13 @@ inline void* getGLExtensionFuncPtr(const char *funcName)
 #elif defined(__APPLE__)
 
     std::string temp( "_" );
-    temp += funcName;	// Mac OS X prepends an underscore on function names
+    temp += funcName;    // Mac OS X prepends an underscore on function names
     if ( NSIsSymbolNameDefined( temp.c_str() ) )
     {
         NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
         return NSAddressOfSymbol( symbol );
     } else
-	return NULL;
+        return NULL;
 
 #elif defined (__sun) 
 

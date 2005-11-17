@@ -47,13 +47,13 @@ class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::
         virtual void apply(osg::OccluderNode& node);
 
         /** Sets the minimum shadow occluder volume that an active occluder
-		  * must have. vol is units relative the clip space volume where 1.0
-		  * is the whole clip space. */
+          * must have. vol is units relative the clip space volume where 1.0
+          * is the whole clip space. */
         void setMinimumShadowOccluderVolume(float vol) { _minimumShadowOccluderVolume = vol; }
         float getMinimumShadowOccluderVolume() const { return _minimumShadowOccluderVolume; }
 
         /** Sets the maximum number of occluders to have active for culling
-		  * purposes. */
+          * purposes. */
         void setMaximumNumberOfActiveOccluders(unsigned int num) { _maximumNumberOfActiveOccluders = num; }
         unsigned int getMaximumNumberOfActiveOccluders() const { return _maximumNumberOfActiveOccluders; }
 
@@ -65,7 +65,7 @@ class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::
         const ShadowVolumeOccluderSet& getCollectedOccluderSet() const { return _occluderSet; }
 
         /** Removes occluded occluders for the collected occluders list, then
-		  * discards all but MaximumNumberOfActiveOccluders of occluders,
+          * discards all but MaximumNumberOfActiveOccluders of occluders,
           * discarding the occluders with the lowests shadow occluder volume. */
         void removeOccludedOccluders();
 

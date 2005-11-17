@@ -210,7 +210,7 @@ class OSG_EXPORT Matrixf
         void orthoNormalize(const Matrixf& rhs); 
 
         //basic utility functions to create new matrices
-	inline static Matrixf identity( void );
+        inline static Matrixf identity( void );
         inline static Matrixf scale( const Vec3f& sv);
         inline static Matrixf scale( const Vec3d& sv);
         inline static Matrixf scale( value_type sx, value_type sy, value_type sz);
@@ -287,8 +287,8 @@ class OSG_EXPORT Matrixf
         inline Vec4d operator* ( const Vec4d& v ) const;
 
         void setTrans( value_type tx, value_type ty, value_type tz );
-	void setTrans( const Vec3f& v );
-	void setTrans( const Vec3d& v );
+        void setTrans( const Vec3f& v );
+        void setTrans( const Vec3d& v );
         
         inline Vec3d getTrans() const { return Vec3d(_mat[3][0],_mat[3][1],_mat[3][2]); } 
         
@@ -325,11 +325,11 @@ class OSG_EXPORT Matrixf
         }
 
         inline Matrixf operator * ( const Matrixf &m ) const
-	{
-	    osg::Matrixf r;
+        {
+            osg::Matrixf r;
             r.mult(*this,m);
-	    return  r;
-	}
+            return  r;
+        }
 
     protected:
         value_type _mat[4][4];
@@ -610,36 +610,36 @@ inline Vec3d Matrixf::transform3x3(const Matrixf& m,const Vec3d& v)
 
 inline Vec3f operator* (const Vec3f& v, const Matrixf& m )
 {
-	return m.preMult(v);
+    return m.preMult(v);
 }
 inline Vec3d operator* (const Vec3d& v, const Matrixf& m )
 {
-	return m.preMult(v);
+    return m.preMult(v);
 }
 inline Vec4f operator* (const Vec4f& v, const Matrixf& m )
 {
-	return m.preMult(v);
+    return m.preMult(v);
 }
 inline Vec4d operator* (const Vec4d& v, const Matrixf& m )
 {
-	return m.preMult(v);
+    return m.preMult(v);
 }
 
 inline Vec3f Matrixf::operator* (const Vec3f& v) const
 {
-	return postMult(v);
+    return postMult(v);
 }
 inline Vec3d Matrixf::operator* (const Vec3d& v) const
 {
-	return postMult(v);
+    return postMult(v);
 }
 inline Vec4f Matrixf::operator* (const Vec4f& v) const
 {
-	return postMult(v);
+    return postMult(v);
 }
 inline Vec4d Matrixf::operator* (const Vec4d& v) const
 {
-	return postMult(v);
+    return postMult(v);
 }
 
 

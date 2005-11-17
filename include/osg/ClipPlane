@@ -72,9 +72,9 @@ class OSG_EXPORT ClipPlane : public StateAttribute
 
         /** Set the clip plane with the given Plane. */
         void setClipPlane(const Plane& plane) 
-	{
+        {
            _clipPlane.set(plane[0],plane[1],plane[2],plane[3]);
-	}
+        }
 
         /** Defines the plane as [ a b c d ]. */
         void setClipPlane(double a,double b,double c,double d)

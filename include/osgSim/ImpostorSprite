@@ -121,7 +121,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         void setTexture(osg::Texture2D* tex,int s,int t);
         osg::Texture2D* getTexture() { return _texture; }
         const osg::Texture2D* getTexture() const { return _texture; }
-	
+    
         int s() const { return _s; }
         int t() const { return _t; }
 

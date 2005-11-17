@@ -101,16 +101,16 @@ class OSG_EXPORT Light : public StateAttribute
         /** Get the specular component of the light. */
         inline const Vec4& getSpecular() const { return _specular; }
 
-        /** Set the position of the light. */	
+        /** Set the position of the light. */    
         inline void setPosition( const Vec4& position ) { _position = position; }
 
-        /** Get the position of the light. */	
+        /** Get the position of the light. */    
         inline const Vec4& getPosition() const { return _position; }
 
-        /** Set the direction of the light. */	
+        /** Set the direction of the light. */    
         inline void setDirection( const Vec3& direction ) { _direction = direction; }
 
-        /** Get the direction of the light. */	
+        /** Get the direction of the light. */    
         inline const Vec3& getDirection() const { return _direction; }
 
         /** Set the constant attenuation of the light. */

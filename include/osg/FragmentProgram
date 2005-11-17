@@ -157,7 +157,7 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
             _fragmentProgram = program; 
             dirtyFragmentProgramObject();
         }
-	
+    
         /** Set the fragment program using C++ style string.*/
         inline void setFragmentProgram( const std::string& program )
         {
@@ -286,7 +286,7 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
         std::string     _fragmentProgram;
 
         LocalParamList  _programLocalParameters;
-        MatrixList  	_matrixList;
+        MatrixList      _matrixList;
 };
 
 

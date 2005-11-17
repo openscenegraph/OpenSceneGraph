@@ -51,7 +51,7 @@ class Vec2d
 
         inline bool operator != (const Vec2d& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
 
-	inline bool operator <  (const Vec2d& v) const
+        inline bool operator <  (const Vec2d& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
@@ -91,8 +91,8 @@ class Vec2d
         inline Vec2d& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
-	    _v[1]*=rhs;
-	    return *this;
+            _v[1]*=rhs;
+            return *this;
         }
 
         /** Divide by scalar. */
@@ -105,8 +105,8 @@ class Vec2d
         inline Vec2d& operator /= (value_type rhs)
         {
             _v[0]/=rhs;
-	    _v[1]/=rhs;
-	    return *this;
+            _v[1]/=rhs;
+            return *this;
         }
 
         /** Binary vector add. */
@@ -117,12 +117,12 @@ class Vec2d
 
         /** Unary vector add. Slightly more efficient because no temporary
           * intermediate object.
-		*/
+        */
         inline Vec2d& operator += (const Vec2d& rhs)
         {
             _v[0] += rhs._v[0];
             _v[1] += rhs._v[1];
-	    return *this;
+            return *this;
         }
 
         /** Binary vector subtract. */
@@ -136,20 +136,20 @@ class Vec2d
         {
             _v[0]-=rhs._v[0];
             _v[1]-=rhs._v[1];
-	    return *this;
-	}
+            return *this;
+        }
 
         /** Negation operator. Returns the negative of the Vec2d. */
         inline const Vec2d operator - () const
         {
-	    return Vec2d (-_v[0], -_v[1]);
-	}
+            return Vec2d (-_v[0], -_v[1]);
+        }
 
         /** Length of the vector = sqrt( vec . vec ) */
-	inline value_type length() const
-	{
-	    return sqrt( _v[0]*_v[0] + _v[1]*_v[1] );
-	}
+        inline value_type length() const
+        {
+            return sqrt( _v[0]*_v[0] + _v[1]*_v[1] );
+        }
 
         /** Length squared of the vector = vec . vec */
         inline value_type length2( void ) const
@@ -159,20 +159,20 @@ class Vec2d
 
         /** Normalize the vector so that it has length unity.
           * Returns the previous length of the vector.
-		*/
-	inline value_type normalize()
-	{
-	    value_type norm = Vec2d::length();
+        */
+        inline value_type normalize()
+        {
+            value_type norm = Vec2d::length();
             if (norm>0.0)
             {
                 value_type inv = 1.0/norm;
-	        _v[0] *= inv;
-	        _v[1] *= inv;
+                _v[0] *= inv;
+                _v[1] *= inv;
             }
-	    return( norm );
-	}
+            return( norm );
+        }
 
-};	// end of class Vec2d
+};    // end of class Vec2d
 
-}	// end of namespace osg
+}    // end of namespace osg
 #endif

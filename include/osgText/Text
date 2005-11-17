@@ -151,11 +151,11 @@ public:
         LEFT_BASE_LINE,
         CENTER_BASE_LINE,
         RIGHT_BASE_LINE,
-	
+    
         LEFT_BOTTOM_BASE_LINE,
         CENTER_BOTTOM_BASE_LINE,
         RIGHT_BOTTOM_BASE_LINE,
-	
+    
         BASE_LINE = LEFT_BASE_LINE /// default.
     
     };

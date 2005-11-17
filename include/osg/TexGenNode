@@ -31,7 +31,7 @@ class OSG_EXPORT TexGenNode : public Group
         TexGenNode(const TexGenNode& tgb, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, TexGenNode);
-	
+    
         
         enum ReferenceFrame
         {

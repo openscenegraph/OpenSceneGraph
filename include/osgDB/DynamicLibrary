@@ -51,8 +51,8 @@ class OSGDB_EXPORT DynamicLibrary : public osg::Referenced
 
     protected:
 
-	/** get handle to library file */
-	static HANDLE getLibraryHandle( const std::string& libraryName);
+        /** get handle to library file */
+        static HANDLE getLibraryHandle( const std::string& libraryName);
 
         /** disallow default constructor.*/
         DynamicLibrary():osg::Referenced() {}

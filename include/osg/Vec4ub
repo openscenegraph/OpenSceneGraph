@@ -121,12 +121,12 @@ class Vec4ub
         inline Vec4ub operator + (const Vec4ub& rhs) const
         {
             return Vec4ub(_v[0]+rhs._v[0], _v[1]+rhs._v[1],
-		        _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
+                        _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
         }
 
         /** Unary vector add. Slightly more efficient because no temporary
           * intermediate object.
-		*/
+        */
         inline Vec4ub& operator += (const Vec4ub& rhs)
         {
             _v[0] += rhs._v[0];
@@ -140,7 +140,7 @@ class Vec4ub
         inline Vec4ub operator - (const Vec4ub& rhs) const
         {
             return Vec4ub(_v[0]-rhs._v[0], _v[1]-rhs._v[1],
-		        _v[2]-rhs._v[2], _v[3]-rhs._v[3] );
+                        _v[2]-rhs._v[2], _v[3]-rhs._v[3] );
         }
 
         /** Unary vector subtract. */
@@ -153,8 +153,8 @@ class Vec4ub
             return *this;
         }
 
-};	// end of class Vec4ub
+};    // end of class Vec4ub
 
-}	// end of namespace osg
+}    // end of namespace osg
 
 #endif

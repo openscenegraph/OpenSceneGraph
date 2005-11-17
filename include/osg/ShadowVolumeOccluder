@@ -167,6 +167,6 @@ inline void ShadowVolumeOccluder::popCurrentMask()
     //std::cout<<"ShadowVolumeOccluder::popCurrentMasks() - _occluderVolume.getMaskStack().size()="<<_occluderVolume.getMaskStack().size()<<"  "<<_occluderVolume.getCurrentMask()<<std::endl;
 }
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

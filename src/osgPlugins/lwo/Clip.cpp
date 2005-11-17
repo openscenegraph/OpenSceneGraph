@@ -11,15 +11,15 @@ using namespace lwosg;
 
 Clip::Clip(const lwo2::FORM::CLIP *clip)
 {
-	if (clip) {
-		compile(clip);
-	}
+    if (clip) {
+        compile(clip);
+    }
 }
 
 void Clip::compile(const lwo2::FORM::CLIP *clip)
 {
-	for (iff::Chunk_list::const_iterator j=clip->attributes.begin(); j!=clip->attributes.end(); ++j) {
-		const lwo2::FORM::CLIP::STIL *stil = dynamic_cast<const lwo2::FORM::CLIP::STIL *>(*j);
-		if (stil) still_filename_ = stil->name.name;
-	}
+    for (iff::Chunk_list::const_iterator j=clip->attributes.begin(); j!=clip->attributes.end(); ++j) {
+        const lwo2::FORM::CLIP::STIL *stil = dynamic_cast<const lwo2::FORM::CLIP::STIL *>(*j);
+        if (stil) still_filename_ = stil->name.name;
+    }
 }

@@ -31,8 +31,8 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "Performer Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) const
-	{ 
-	    return 
+        { 
+            return 
                 osgDB::equalCaseInsensitive(extension,"3ds")     ? true :
                 osgDB::equalCaseInsensitive(extension,"arcinfo") ? true :
                 osgDB::equalCaseInsensitive(extension,"bin")     ? true :
@@ -92,8 +92,8 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"tri")     ? true :
                 osgDB::equalCaseInsensitive(extension,"unc")     ? true :
                 osgDB::equalCaseInsensitive(extension,"vct")     ? true :
-		false;
-	}
+                false;
+        }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

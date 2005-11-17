@@ -43,7 +43,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             char dirname[128];
             char command[1024];
 
-		#if defined(_WIN32) && !defined(__CYGWIN__)
+        #if defined(_WIN32) && !defined(__CYGWIN__)
             sprintf( dirname, "C:/Windows/Temp/.osgdb_osgtgz");
             // note, the following C option under windows does not seem to work...
             // will pursue an better tar.exe later. RO.
@@ -91,7 +91,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
                 }
             }
 
-		#if defined(_WIN32) && !defined(__CYGWIN__)
+        #if defined(_WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
             sprintf( command, "erase %s", dirname );

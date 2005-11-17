@@ -100,10 +100,10 @@ void MovieData::_initImage(osg::Image* image)
     buffer = (void*)(((unsigned long)(pointer + 31) >> 5) << 5);
         
     image->setImage(_textureWidth,_textureHeight,0,
-				   (GLint) GL_RGBA8,
-				   (GLenum)GL_BGRA_EXT,
-				   (GLenum)GL_UNSIGNED_INT_8_8_8_8_REV,
-				   (unsigned char*) buffer,osg::Image::USE_MALLOC_FREE,4);
+                   (GLint) GL_RGBA8,
+                   (GLenum)GL_BGRA_EXT,
+                   (GLenum)GL_UNSIGNED_INT_8_8_8_8_REV,
+                   (unsigned char*) buffer,osg::Image::USE_MALLOC_FREE,4);
 
 }
 
@@ -116,8 +116,8 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
 
     Rect textureBounds;
     OSStatus err;
-    GDHandle		origDevice;
-    CGrafPtr		origPort;
+    GDHandle        origDevice;
+    CGrafPtr        origPort;
     PixMapHandle pixmap = NULL;
 
     textureBounds.left = 0;
@@ -130,7 +130,7 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
         osg::notify(osg::FATAL) << "MovieData : Could not create gWorld" << std::endl;
         
     GetGWorld (&origPort, &origDevice);
-    SetGWorld(_gw, NULL); 										// set current graphics port to offscreen
+    SetGWorld(_gw, NULL);                                         // set current graphics port to offscreen
     SetMovieGWorld(_movie, (CGrafPtr)_gw, NULL);
     
     _checkMovieError("SetMovieGWorld failed");
@@ -138,7 +138,7 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
     pixmap = GetGWorldPixMap (_gw);
     if (pixmap)
     {
-        if (!LockPixels (pixmap))										// lock offscreen pixel map
+        if (!LockPixels (pixmap))                                        // lock offscreen pixel map
         {
             osg::notify(osg::FATAL) << "Could not lock PixMap" << std::endl;
             ExitToShell ();

@@ -95,8 +95,10 @@ class OSGReaderWriter : public ReaderWriter
             {
                 std::istringstream iss(options->getOptionString());
                 std::string opt;
-                while (iss >> opt) {
-                    if(opt=="PRECISION" || opt=="precision") {
+                while (iss >> opt)
+                {
+                    if(opt=="PRECISION" || opt=="precision") 
+                    {
                         int prec;
                         iss >> prec;
                         fout.precision(prec);
@@ -132,8 +134,8 @@ class OSGReaderWriter : public ReaderWriter
             Output foutput;
             foutput.setOptions(options);
 
-	    std::ios &fios = foutput;
-	    fios.rdbuf(fout.rdbuf());
+            std::ios &fios = foutput;
+            fios.rdbuf(fout.rdbuf());
 
             if (fout)
             {
@@ -170,8 +172,8 @@ class OSGReaderWriter : public ReaderWriter
             Output foutput;
             foutput.setOptions(options);
 
-	    std::ios &fios = foutput;
-	    fios.rdbuf(fout.rdbuf());
+            std::ios &fios = foutput;
+            fios.rdbuf(fout.rdbuf());
 
             if (fout)
             {

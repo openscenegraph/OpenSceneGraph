@@ -99,8 +99,8 @@ void HeaderRecord::endian()
     memcpy( &(pHeader->RecHeader), src, 4 ); src += 4;
     memcpy( &(pHeader->szIdent), src, 8 ); src += 8;
 
-	// Be sure to swap revision level here, since we reference it to determine
-	//   which other fields to memcpy.
+    // Be sure to swap revision level here, since we reference it to determine
+    //   which other fields to memcpy.
     memcpy( &(pHeader->diFormatRevLev), src, 4 ); src += 4;
     ENDIAN( pHeader->diFormatRevLev );
 

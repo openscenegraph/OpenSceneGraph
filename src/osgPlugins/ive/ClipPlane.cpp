@@ -1,14 +1,14 @@
 /**********************************************************************
  *
- *	FILE:			ClipPlane.cpp
+ *    FILE:            ClipPlane.cpp
  *
- *	DESCRIPTION:	Read/Write osg::ClipPlane (partially) in binary format to disk.
+ *    DESCRIPTION:    Read/Write osg::ClipPlane (partially) in binary format to disk.
  *
- *	CREATED BY:		Stanislav Blinov
+ *    CREATED BY:        Stanislav Blinov
  *
- *	HISTORY:		Created 7.09.2004
+ *    HISTORY:        Created 7.09.2004
  *
- *	Copyright 2004 OtherSide
+ *    Copyright 2004 OtherSide
  **********************************************************************/
 
 #include "Exception.h"

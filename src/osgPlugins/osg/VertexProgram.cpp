@@ -52,48 +52,51 @@ bool VertexProgram_readLocalData(Object& obj, Input& fr)
     {
         int index;
         fr[1].getInt(index);
-	fr += 2;
-	osg::Matrix matrix;
-	if (readMatrix(matrix,fr))
-	{
-	    vertexProgram.setMatrix(index, matrix);
-	}
+        fr += 2;
+        osg::Matrix matrix;
+        if (readMatrix(matrix,fr))
+        {
+            vertexProgram.setMatrix(index, matrix);
+        }
         iteratorAdvanced = true;
     }
 
     if (fr.matchSequence("code {")) {
-	std::string code;
-	fr += 2;
-	iteratorAdvanced = true;
-	int entry = fr[0].getNoNestedBrackets();
-	while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry) {
-	    if (fr[0].getStr()) {
-		code.append(std::string(fr[0].getStr()));
-		code += '\n'
-			;
-	    }
-	    ++fr;
-	}
+        std::string code;
+        fr += 2;
+        iteratorAdvanced = true;
+        int entry = fr[0].getNoNestedBrackets();
+        while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry)
+        {
+            if (fr[0].getStr())
+            {
+                code.append(std::string(fr[0].getStr()));
+                code += '\n';
+            }
+            ++fr;
+        }
         vertexProgram.setVertexProgram(code);
     }
 
-    if( fr.matchSequence("file %s")) {
-      std::string filename = fr[1].getStr();
-                                                                                
-      fr+=2;
-      iteratorAdvanced = true;
-                                                                                
-      ifstream vfstream( filename.c_str() );
-                                                                                
-      if( vfstream ) {
-        ostringstream vstream;
-        char ch;
-      
-	/* xxx better way to transfer a ifstream to a string?? */
-        while( vfstream.get(ch)) vstream.put(ch);
-                                                                                
-        vertexProgram.setVertexProgram( vstream.str() );
-      }
+    if( fr.matchSequence("file %s"))
+    {
+        std::string filename = fr[1].getStr();
+
+        fr+=2;
+        iteratorAdvanced = true;
+
+        ifstream vfstream( filename.c_str() );
+
+        if( vfstream )
+        {
+            ostringstream vstream;
+            char ch;
+
+            /* xxx better way to transfer a ifstream to a string?? */
+            while( vfstream.get(ch)) vstream.put(ch);
+
+            vertexProgram.setVertexProgram( vstream.str() );
+        }
     }
 
     return iteratorAdvanced;
@@ -116,7 +119,7 @@ bool VertexProgram_writeLocalData(const Object& obj,Output& fw)
     for(mi=mpl.begin(); mi!=mpl.end(); mi++)
     {
         fw.indent() << "Matrix " << (*mi).first << " ";
-	writeMatrix((*mi).second,fw);
+        writeMatrix((*mi).second,fw);
     }
 
 
@@ -124,7 +127,7 @@ bool VertexProgram_writeLocalData(const Object& obj,Output& fw)
     std::istringstream iss(vertexProgram.getVertexProgram());
     std::string line;
     while (std::getline(iss, line)) {
-	lines.push_back(line);
+        lines.push_back(line);
     }
 
     fw.indent() << "code {\n";
@@ -132,7 +135,7 @@ bool VertexProgram_writeLocalData(const Object& obj,Output& fw)
 
     std::vector<std::string>::const_iterator j;
     for (j=lines.begin(); j!=lines.end(); ++j) {
-	fw.indent() << "\"" << *j << "\"\n";
+        fw.indent() << "\"" << *j << "\"\n";
     }
 
     fw.moveOut();

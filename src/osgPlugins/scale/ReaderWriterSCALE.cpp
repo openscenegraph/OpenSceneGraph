@@ -10,10 +10,10 @@
  *
 */
 
-/* file:	src/osgPlugins/scale/ReaderWriterSCALE.cpp
- * author:	Mike Weiblen http://mew.cx/ 2004-07-15
- * copyright:	(C) 2004 Michael Weiblen
- * license:	OpenSceneGraph Public License (OSGPL)
+/* file:        src/osgPlugins/scale/ReaderWriterSCALE.cpp
+ * author:        Mike Weiblen http://mew.cx/ 2004-07-15
+ * copyright:        (C) 2004 Michael Weiblen
+ * license:        OpenSceneGraph Public License (OSGPL)
 */
 
 #include <osg/Notify>
@@ -47,13 +47,13 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
             else if (c=='.' && noNestedBrackets==0) break;
         }
 
-	// get the next "extension", which actually contains the pseudo-loader parameters
-	params = input.substr(pos+1, std::string::npos );
-	if( params.empty() )
-	{
-	    osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
-	    return false;
-	}
+        // get the next "extension", which actually contains the pseudo-loader parameters
+        params = input.substr(pos+1, std::string::npos );
+        if( params.empty() )
+        {
+            osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
+            return false;
+        }
 
         // clear the params sting of any brackets.
         std::string::size_type params_pos = params.size();
@@ -67,8 +67,8 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
             }
         }
 
-	// strip the "params extension", which must leave a sub-filename.
-	filename = input.substr(0, pos );
+        // strip the "params extension", which must leave a sub-filename.
+        filename = input.substr(0, pos );
 
         return true;
 }
@@ -82,13 +82,13 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
  * by specifying a correcting scale factor as part of the filename.
  *
  * Usage: <modelfile.ext>.<sx>,<sy>,<sz>.globe
- *	  <modelfile.ext>.<su>.globe
+ *        <modelfile.ext>.<su>.globe
  * where:
- *	<modelfile.ext> = an model filename.
- *	<sx> = scale factor along the X axis.
- *	<sy> = scale factor along the Y axis.
- *	<sz> = scale factor along the Z axis.
- *	<su> = uniform scale factor applied to all axes.
+ *      <modelfile.ext> = an model filename.
+ *      <sx> = scale factor along the X axis.
+ *      <sy> = scale factor along the Y axis.
+ *      <sz> = scale factor along the Z axis.
+ *      <su> = uniform scale factor applied to all axes.
  *
  * example: osgviewer cow.osg.5.scale cessna.osg
  */
@@ -102,19 +102,19 @@ public:
 
     virtual bool acceptsExtension(const std::string& extension) const
     { 
-	return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
+        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
-	std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-	if( !acceptsExtension(ext) )
-	    return ReadResult::FILE_NOT_HANDLED;
+        std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+        if( !acceptsExtension(ext) )
+            return ReadResult::FILE_NOT_HANDLED;
 
-	osg::notify(osg::INFO) << "ReaderWriterSCALE( \"" << fileName << "\" )" << std::endl;
+        osg::notify(osg::INFO) << "ReaderWriterSCALE( \"" << fileName << "\" )" << std::endl;
 
-	// strip the pseudo-loader extension
-	std::string tmpName = osgDB::getNameLessExtension( fileName );
+        // strip the pseudo-loader extension
+        std::string tmpName = osgDB::getNameLessExtension( fileName );
 
         if (tmpName.empty())
             return ReadResult::FILE_NOT_HANDLED;
@@ -122,53 +122,53 @@ public:
         std::string subFileName, params;
         if (!getFilenameAndParams(tmpName, subFileName, params))
         {
-	    return ReadResult::FILE_NOT_HANDLED;
-	}
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
-	if( subFileName.empty())
-	{
-	    osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
-	    return ReadResult::FILE_NOT_HANDLED;
-	}
+        if( subFileName.empty())
+        {
+            osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
-	osg::notify(osg::INFO) << " params = \"" << params << "\"" << std::endl;
-	osg::notify(osg::INFO) << " subFileName = \"" << subFileName << "\"" << std::endl;
+        osg::notify(osg::INFO) << " params = \"" << params << "\"" << std::endl;
+        osg::notify(osg::INFO) << " subFileName = \"" << subFileName << "\"" << std::endl;
 
-	float sx, sy, sz;
-	int count = sscanf( params.c_str(), "%f,%f,%f", &sx, &sy, &sz );
-	if( count == 1 )
-	{
-	    // if only one value supplied, apply uniform scaling
-	    sy = sx;
-	    sz = sx;
-	}
-	else if( count != 3 )
-	{
-	    osg::notify(osg::WARN) << "Bad parameters for " EXTENSION_NAME " pseudo-loader: \"" << params << "\"" << std::endl;
-	    return ReadResult::FILE_NOT_HANDLED;
-	}
+        float sx, sy, sz;
+        int count = sscanf( params.c_str(), "%f,%f,%f", &sx, &sy, &sz );
+        if( count == 1 )
+        {
+            // if only one value supplied, apply uniform scaling
+            sy = sx;
+            sz = sx;
+        }
+        else if( count != 3 )
+        {
+            osg::notify(osg::WARN) << "Bad parameters for " EXTENSION_NAME " pseudo-loader: \"" << params << "\"" << std::endl;
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
-	osg::notify(osg::NOTICE) << " sx ="<<sx<<" sy="<<sy<<" sz="<<sz<< std::endl;
+        osg::notify(osg::NOTICE) << " sx ="<<sx<<" sy="<<sy<<" sz="<<sz<< std::endl;
 
-	// recursively load the subfile.
-	osg::Node *node = osgDB::readNodeFile( subFileName, options );
-	if( !node )
-	{
-	    // propagate the read failure upwards
-	    osg::notify(osg::WARN) << "Subfile \"" << subFileName << "\" could not be loaded" << std::endl;
-	    return ReadResult::FILE_NOT_HANDLED;
-	}
+        // recursively load the subfile.
+        osg::Node *node = osgDB::readNodeFile( subFileName, options );
+        if( !node )
+        {
+            // propagate the read failure upwards
+            osg::notify(osg::WARN) << "Subfile \"" << subFileName << "\" could not be loaded" << std::endl;
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
-	osg::MatrixTransform *xform = new osg::MatrixTransform;
-	xform->setDataVariance( osg::Object::STATIC );
-	xform->setMatrix( osg::Matrix::scale( sx, sy, sz ) );
-	xform->addChild( node );
+        osg::MatrixTransform *xform = new osg::MatrixTransform;
+        xform->setDataVariance( osg::Object::STATIC );
+        xform->setMatrix( osg::Matrix::scale( sx, sy, sz ) );
+        xform->addChild( node );
 
-	// turn on GL_NORMALIZE to prevent problems with scaled normals
-	osg::StateSet* ss = xform->getOrCreateStateSet();
-	ss->setMode( GL_NORMALIZE, osg::StateAttribute::ON );
+        // turn on GL_NORMALIZE to prevent problems with scaled normals
+        osg::StateSet* ss = xform->getOrCreateStateSet();
+        ss->setMode( GL_NORMALIZE, osg::StateAttribute::ON );
 
-	return xform;
+        return xform;
     }
 };
 

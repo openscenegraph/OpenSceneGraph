@@ -82,8 +82,8 @@ class IVEReaderWriter : public ReaderWriter
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
             std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
-	    if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
-	    
+            if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+    
             WriteResult result = writeNode(node, fout, local_opt.get());
             fout.close();
             return result;
@@ -106,13 +106,13 @@ class IVEReaderWriter : public ReaderWriter
 
                 out.writeNode(const_cast<osg::Node*>(&node));
 
-    	    	if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
+                if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
 
                 return WriteResult::FILE_SAVED;
             }
             catch(ive::Exception e)
             {
-            osg::notify(osg::WARN)<<"Error writing IVE file: "<< e.getError() << std::endl;
+                osg::notify(osg::WARN)<<"Error writing IVE file: "<< e.getError() << std::endl;
             }
             return WriteResult::FILE_NOT_HANDLED;
 

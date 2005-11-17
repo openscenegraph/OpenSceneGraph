@@ -68,7 +68,7 @@ void FragmentProgram::read(DataInputStream* in){
         // Read data
         int i, size;
         size = in->readInt();
-	for(i=0; i<size; i++)
+        for(i=0; i<size; i++)
         {
             int index = in->readInt();
             osg::Vec4 v = in->readVec4();

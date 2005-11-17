@@ -23,9 +23,9 @@
 #include <string.h>
 
 #define MK_ID(a,b,c,d) ((((guint32)(a))<<24)| \
-			(((guint32)(b))<<16)| \
-			(((guint32)(c))<< 8)| \
-			(((guint32)(d))    ))
+            (((guint32)(b))<<16)| \
+            (((guint32)(c))<< 8)| \
+            (((guint32)(d))    ))
 
 #define ID_FORM MK_ID('F','O','R','M')
 #define ID_LWOB MK_ID('L','W','O','B')
@@ -294,9 +294,9 @@ static void read_pols(FILE *f, int nbytes, lwObject *lwo)
       det_cnt = read_short(f);
       nbytes -= 2;
       while (det_cnt-- > 0) {
-	int cnt = read_short(f);
-	fseek(f, cnt*2+2, SEEK_CUR);
-	nbytes -= cnt*2+2;
+    int cnt = read_short(f);
+    fseek(f, cnt*2+2, SEEK_CUR);
+    nbytes -= cnt*2+2;
       }
     }
     face->material -= 1;

@@ -200,8 +200,8 @@ public:
         // gr is tha vertex; gface is the face containing the vertex
         bool hbeh=false; // true if this vertex has a behaviour
         if (gr->getType()==DB_DSK_VERTEX || 
-			gr->getType()==DB_DSK_FAT_VERTEX || 
-			gr->getType()==DB_DSK_SLIM_VERTEX) {
+            gr->getType()==DB_DSK_FAT_VERTEX || 
+            gr->getType()==DB_DSK_SLIM_VERTEX) {
             const geoField *gfshade=gface->getField(GEO_DB_POLY_SHADEMODEL); // shaded gouraud, flat...
             int shademodel=gfshade ? gfshade->getInt() : -1;
             if (shademodel!=GEO_POLY_SHADEMODEL_LIT && shademodel!=GEO_POLY_SHADEMODEL_FLAT) {
@@ -894,8 +894,8 @@ class ReaderGEO
                 ++itr)
             {
                 if ((*itr)->getType()==DB_DSK_VERTEX || 
-					(*itr)->getType()==DB_DSK_FAT_VERTEX || 
-					(*itr)->getType()==DB_DSK_SLIM_VERTEX)
+                    (*itr)->getType()==DB_DSK_FAT_VERTEX || 
+                    (*itr)->getType()==DB_DSK_SLIM_VERTEX)
                 { // light point vertices
                     const geoField *gfd=(*itr)->getField(GEO_DB_VRTX_COORD);
                     osg::Vec3 pos;

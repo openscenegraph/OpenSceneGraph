@@ -226,7 +226,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 return WriteResult::FILE_NOT_HANDLED;
                 
             OSType desiredType = cur->second;
-            GraphicsExportComponent 	geComp 	= NULL;
+            GraphicsExportComponent     geComp     = NULL;
 
             OSErr err = OpenADefaultComponent(GraphicsExporterComponentType, desiredType, &geComp);
             

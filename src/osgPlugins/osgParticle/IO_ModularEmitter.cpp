@@ -25,19 +25,19 @@ bool ModularEmitter_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::ModularEmitter &myobj = static_cast<osgParticle::ModularEmitter &>(obj);
     bool itAdvanced = false;
 
-	osgParticle::Counter *counter = static_cast<osgParticle::Counter *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Counter>()));
+    osgParticle::Counter *counter = static_cast<osgParticle::Counter *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Counter>()));
     if (counter) {
         myobj.setCounter(counter);
         itAdvanced = true;
     }
     
-	osgParticle::Placer *placer = static_cast<osgParticle::Placer *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Placer>()));
+    osgParticle::Placer *placer = static_cast<osgParticle::Placer *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Placer>()));
     if (placer) {
         myobj.setPlacer(placer);
         itAdvanced = true;
     }
 
-	osgParticle::Shooter *shooter = static_cast<osgParticle::Shooter *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Shooter>()));
+    osgParticle::Shooter *shooter = static_cast<osgParticle::Shooter *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Shooter>()));
     if (shooter) {
         myobj.setShooter(shooter);
         itAdvanced = true;

@@ -1,14 +1,14 @@
 /**********************************************************************
  *
- *	FILE:			AlphaFunc.cpp
+ *    FILE:            AlphaFunc.cpp
  *
- *	DESCRIPTION:	Read/Write osg::AlphaFunc in binary format to disk.
+ *    DESCRIPTION:    Read/Write osg::AlphaFunc in binary format to disk.
  *
- *	CREATED BY:		Pavlo Moloshtan
+ *    CREATED BY:        Pavlo Moloshtan
  *
- *	HISTORY:		Created 30.11.2003
+ *    HISTORY:        Created 30.11.2003
  *
- *	Copyright 2003 VR-C
+ *    Copyright 2003 VR-C
  **********************************************************************/
 
 #include "Exception.h"

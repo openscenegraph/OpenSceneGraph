@@ -46,11 +46,11 @@ public:
     ReaderWriterMD2 () { }
 
     virtual const char* className () const {
-	return "Quake MD2 Reader";
+        return "Quake MD2 Reader";
     }
 
     virtual bool acceptsExtension (const std::string& extension) const {
-	return osgDB::equalCaseInsensitive (extension, "md2") ? true : false;
+        return osgDB::equalCaseInsensitive (extension, "md2") ? true : false;
     }
 
     virtual ReadResult readNode (const std::string& filename, const osgDB::ReaderWriter::Options* options) const;
@@ -82,18 +82,18 @@ typedef struct {
     int version;
     int skinWidth;
     int skinHeight;
-    int frameSize;		// size of each frame in bytes
+    int frameSize;                  // size of each frame in bytes
     int numSkins;
-    int numVertices;		// number of vertices in each frame
-    int numTexcoords;		// number of texcoords in each frame (usually same as numVertices)
-    int numTriangles;		// number of triangles in each frame
+    int numVertices;                // number of vertices in each frame
+    int numTexcoords;               // number of texcoords in each frame (usually same as numVertices)
+    int numTriangles;               // number of triangles in each frame
     int numGlCommands;
-    int numFrames;		// number of frames
+    int numFrames;                  // number of frames
     int offsetSkins;
     int offsetTexCoords;
     int offsetTriangles;
     int offsetFrames;
-    int offsetGlCommands;	// num dwords in gl commands list
+    int offsetGlCommands;           // num dwords in gl commands list
     int offsetEnd;
 } MD2_HEADER;
 
@@ -158,19 +158,19 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     osg::Node* result = NULL;
 
     if (stat (filename, &st) < 0) {
-	return NULL;
+        return NULL;
     }
 
     file_fd = open (filename, O_RDONLY);
     if (file_fd <= 0) {
-	return NULL;
+        return NULL;
     }
 
 #if 0
     mapbase = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, file_fd, 0);
     if (mapbase == NULL) {
-	close (file_fd);
-	return NULL;
+        close (file_fd);
+        return NULL;
     }
 #else
     mapbase = malloc (st.st_size);
@@ -178,21 +178,21 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 #endif
 
     if (g_md2NormalsArray == NULL) {
-	g_md2NormalsArray = new osg::Vec3Array;
-	for (int i = 0; i < NUMVERTEXNORMALS; i++)
-	    g_md2NormalsArray->push_back (osg::Vec3 (g_md2VertexNormals[i][0], g_md2VertexNormals[i][1], g_md2VertexNormals[i][2]));
+        g_md2NormalsArray = new osg::Vec3Array;
+        for (int i = 0; i < NUMVERTEXNORMALS; i++)
+            g_md2NormalsArray->push_back (osg::Vec3 (g_md2VertexNormals[i][0], g_md2VertexNormals[i][1], g_md2VertexNormals[i][2]));
     }
 
 
     MD2_HEADER *md2_header = (MD2_HEADER *) mapbase;
     if (md2_header->magic != MD2_HEADER_MAGIC || md2_header->version != 8) {
 #if 0
-	munmap (mapbase);
+        munmap (mapbase);
 #else
-	free (mapbase);
+        free (mapbase);
 #endif
-	close (file_fd);
-	return NULL;
+        close (file_fd);
+        return NULL;
     }
 
     MD2_SKIN *md2_skins = (MD2_SKIN *) ((unsigned char *) mapbase + md2_header->offsetSkins);
@@ -221,45 +221,45 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     std::vector<osg::Texture2D*> skin_textures;
 
     for (int si = 0; si < md2_header->numSkins; si++) {
-	osg::Image *img;
-	osg::Texture2D *tex;
-	std::string imgname (md2_skins[si].name);
+        osg::Image *img;
+        osg::Texture2D *tex;
+        std::string imgname (md2_skins[si].name);
 
-	// first try loading the imgname straight
-	img = osgDB::readImageFile (imgname, options);
-	if (img) {
-	    tex = new osg::Texture2D;
-	    tex->setImage (img);
-	    skin_textures.push_back (tex);
-	    continue;
-	}
+        // first try loading the imgname straight
+        img = osgDB::readImageFile (imgname, options);
+        if (img) {
+            tex = new osg::Texture2D;
+            tex->setImage (img);
+            skin_textures.push_back (tex);
+            continue;
+        }
 
-	// we failed, so check if it's a PCX image
-	if (imgname.size() > 4 &&
-	    osgDB::equalCaseInsensitive (imgname.substr (imgname.size() - 3, 3), "pcx"))
-	{
-	    // it's a pcx, so try bmp and tga, since pcx sucks
-	    std::string basename = imgname.substr (0, imgname.size() - 3);
-	    img = osgDB::readImageFile (basename + "bmp", options);
-	    if (img) {
-		tex = new osg::Texture2D;
-		tex->setImage (img);
-		skin_textures.push_back (tex);
-		continue;
-	    }
+        // we failed, so check if it's a PCX image
+        if (imgname.size() > 4 &&
+            osgDB::equalCaseInsensitive (imgname.substr (imgname.size() - 3, 3), "pcx"))
+        {
+            // it's a pcx, so try bmp and tga, since pcx sucks
+            std::string basename = imgname.substr (0, imgname.size() - 3);
+            img = osgDB::readImageFile (basename + "bmp", options);
+            if (img) {
+                tex = new osg::Texture2D;
+                tex->setImage (img);
+                skin_textures.push_back (tex);
+                continue;
+            }
 
-	    img = osgDB::readImageFile (basename + "tga", options);
-	    if (img) {
-		tex = new osg::Texture2D;
-		tex->setImage (img);
-		skin_textures.push_back (tex);
-		continue;
-	    }
-	}
+            img = osgDB::readImageFile (basename + "tga", options);
+            if (img) {
+                tex = new osg::Texture2D;
+                tex->setImage (img);
+                skin_textures.push_back (tex);
+                continue;
+            }
+        }
 
-	// couldn't find the referenced texture skin for this model
-	skin_textures.push_back (NULL);
-	osg::notify(osg::WARN) << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
+        // couldn't find the referenced texture skin for this model
+        skin_textures.push_back (NULL);
+        osg::notify(osg::WARN) << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
     }
 #else
     // load the single skin
@@ -267,35 +267,35 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     osg::Texture2D *skin_texture = NULL;
 
     if (md2_header->numSkins > 0) {
-	std::string imgname (md2_skins[0].name);
+        std::string imgname (md2_skins[0].name);
 
-	do {
-	    // first try loading the imgname straight
-	    skin_image = osgDB::readImageFile (imgname, options);
-	    if (skin_image) break;
+        do {
+            // first try loading the imgname straight
+            skin_image = osgDB::readImageFile (imgname, options);
+            if (skin_image) break;
 
-	    // we failed, so check if it's a PCX image
-	    if (imgname.size() > 4 &&
-		osgDB::equalCaseInsensitive (imgname.substr (imgname.size() - 3, 3), "pcx"))
-		{
-		// it's a pcx, so try bmp and tga, since pcx sucks
-		std::string basename = imgname.substr (0, imgname.size() - 3);
-		skin_image = osgDB::readImageFile (basename + "bmp", options);
-		if (skin_image) break;
+            // we failed, so check if it's a PCX image
+            if (imgname.size() > 4 &&
+                osgDB::equalCaseInsensitive (imgname.substr (imgname.size() - 3, 3), "pcx"))
+                {
+                // it's a pcx, so try bmp and tga, since pcx sucks
+                std::string basename = imgname.substr (0, imgname.size() - 3);
+                skin_image = osgDB::readImageFile (basename + "bmp", options);
+                if (skin_image) break;
 
-		skin_image = osgDB::readImageFile (basename + "tga", options);
-		if (skin_image) break;
-	    }
-	} while (0);
+                skin_image = osgDB::readImageFile (basename + "tga", options);
+                if (skin_image) break;
+            }
+        } while (0);
 
-	if (skin_image) {
-	    skin_texture = new osg::Texture2D;
-	    skin_texture->setImage (skin_image);
-	    skin_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
-	} else {
-	    // couldn't find the referenced texture skin for this model
-	    osg::notify(osg::WARN) << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
-	}
+        if (skin_image) {
+            skin_texture = new osg::Texture2D;
+            skin_texture->setImage (skin_image);
+            skin_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
+        } else {
+            // couldn't find the referenced texture skin for this model
+            osg::notify(osg::WARN) << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
+        }
     }
 
 #endif
@@ -303,107 +303,107 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     int sequence_frame = 0;
 
     for (int curFrame = 0; curFrame < md2_header->numFrames; curFrame++) {
-	//	std::cerr << "Num vertices " << md2_header->numVertices << std::endl;
+        //        std::cerr << "Num vertices " << md2_header->numVertices << std::endl;
 
-	//long *command = (long *) ((unsigned char *) mapbase + md2_header->offsetGlCommands);
+        //long *command = (long *) ((unsigned char *) mapbase + md2_header->offsetGlCommands);
 
-	MD2_FRAME *frame = (MD2_FRAME *) ((unsigned char *) mapbase + md2_header->offsetFrames + (md2_header->frameSize * curFrame));
-	MD2_VERTEX *frame_vertices = frame->vertices;
+        MD2_FRAME *frame = (MD2_FRAME *) ((unsigned char *) mapbase + md2_header->offsetFrames + (md2_header->frameSize * curFrame));
+        MD2_VERTEX *frame_vertices = frame->vertices;
 
 
-	//	std::cerr << "Reading frame " << curFrame << " (gl offset: " << md2_header->offsetGlCommands << ") name: " << frame->name << std::endl;
+        //        std::cerr << "Reading frame " << curFrame << " (gl offset: " << md2_header->offsetGlCommands << ") name: " << frame->name << std::endl;
 
-	int last_len = last_frame_name ? strcspn (last_frame_name, "0123456789") : 0;
-	int cur_len = strcspn (frame->name, "0123456789");
+        int last_len = last_frame_name ? strcspn (last_frame_name, "0123456789") : 0;
+        int cur_len = strcspn (frame->name, "0123456789");
 
-	if (last_len != cur_len || strncmp (last_frame_name, frame->name, last_len) != 0) {
-	    if (current_sequence) {
-		current_sequence->setInterval (osg::Sequence::LOOP, 0, -1);
-		base_switch->addChild (current_sequence);
-	    }
+        if (last_len != cur_len || strncmp (last_frame_name, frame->name, last_len) != 0) {
+            if (current_sequence) {
+                current_sequence->setInterval (osg::Sequence::LOOP, 0, -1);
+                base_switch->addChild (current_sequence);
+            }
 
-	    current_sequence = new osg::Sequence ();
-	    current_sequence->setMode (osg::Sequence::START);
-	    current_sequence->setDuration (1.0f, -1);
-	    sequence_frame = 0;
+            current_sequence = new osg::Sequence ();
+            current_sequence->setMode (osg::Sequence::START);
+            current_sequence->setDuration (1.0f, -1);
+            sequence_frame = 0;
 
-	    current_sequence->setName (std::string (frame->name, cur_len));
-	}
+            current_sequence->setName (std::string (frame->name, cur_len));
+        }
 
-	vertexCoords = new osg::Vec3Array;
-	normalCoords = new osg::Vec3Array;
+        vertexCoords = new osg::Vec3Array;
+        normalCoords = new osg::Vec3Array;
 
-	for (int vi = 0; vi < md2_header->numVertices; vi++) {
-	    vertexCoords->push_back
-		(osg::Vec3
-		 (frame_vertices[vi].vertex[0] * frame->scale[0] + frame->translate[0],
-		  -1 * (frame_vertices[vi].vertex[2] * frame->scale[2] + frame->translate[2]),
-		  frame_vertices[vi].vertex[1] * frame->scale[1] + frame->translate[1]));
-	    osg::Vec3 z = (*g_md2NormalsArray) [frame_vertices[vi].lightNormalIndex];
-	    normalCoords->push_back (z);
-	}
+        for (int vi = 0; vi < md2_header->numVertices; vi++) {
+            vertexCoords->push_back
+                (osg::Vec3
+                 (frame_vertices[vi].vertex[0] * frame->scale[0] + frame->translate[0],
+                  -1 * (frame_vertices[vi].vertex[2] * frame->scale[2] + frame->translate[2]),
+                  frame_vertices[vi].vertex[1] * frame->scale[1] + frame->translate[1]));
+            osg::Vec3 z = (*g_md2NormalsArray) [frame_vertices[vi].lightNormalIndex];
+            normalCoords->push_back (z);
+        }
 
-	if (curFrame == 0) {
-	    vertexIndices = new osg::UIntArray;
-	    normalIndices = new osg::UIntArray;
+        if (curFrame == 0) {
+            vertexIndices = new osg::UIntArray;
+            normalIndices = new osg::UIntArray;
 
-	    texCoords = new osg::Vec2Array;
-	    texIndices = new osg::UIntArray;
+            texCoords = new osg::Vec2Array;
+            texIndices = new osg::UIntArray;
 
-	    for (int vi = 0; vi < md2_header->numTexcoords; vi++) {
-		texCoords->push_back
-		    (osg::Vec2 ((float) md2_texcoords[vi].s / md2_header->skinWidth,
-				1.0f - (float) md2_texcoords[vi].t / md2_header->skinHeight));
-	    }
+            for (int vi = 0; vi < md2_header->numTexcoords; vi++) {
+                texCoords->push_back
+                    (osg::Vec2 ((float) md2_texcoords[vi].s / md2_header->skinWidth,
+                                1.0f - (float) md2_texcoords[vi].t / md2_header->skinHeight));
+            }
 
-	    for (int ti = 0; ti < md2_header->numTriangles; ti++) {
-		vertexIndices->push_back (md2_triangles[ti].vertexIndices[0]);
-		vertexIndices->push_back (md2_triangles[ti].vertexIndices[1]);
-		vertexIndices->push_back (md2_triangles[ti].vertexIndices[2]);
+            for (int ti = 0; ti < md2_header->numTriangles; ti++) {
+                vertexIndices->push_back (md2_triangles[ti].vertexIndices[0]);
+                vertexIndices->push_back (md2_triangles[ti].vertexIndices[1]);
+                vertexIndices->push_back (md2_triangles[ti].vertexIndices[2]);
 
-		normalIndices->push_back (md2_triangles[ti].vertexIndices[0]);
-		normalIndices->push_back (md2_triangles[ti].vertexIndices[1]);
-		normalIndices->push_back (md2_triangles[ti].vertexIndices[2]);
+                normalIndices->push_back (md2_triangles[ti].vertexIndices[0]);
+                normalIndices->push_back (md2_triangles[ti].vertexIndices[1]);
+                normalIndices->push_back (md2_triangles[ti].vertexIndices[2]);
 
-		texIndices->push_back (md2_triangles[ti].textureIndices[0]);
-		texIndices->push_back (md2_triangles[ti].textureIndices[1]);
-		texIndices->push_back (md2_triangles[ti].textureIndices[2]);
-	    }
-	}
+                texIndices->push_back (md2_triangles[ti].textureIndices[0]);
+                texIndices->push_back (md2_triangles[ti].textureIndices[1]);
+                texIndices->push_back (md2_triangles[ti].textureIndices[2]);
+            }
+        }
 
-	osg::Geometry *geom = new osg::Geometry;
+        osg::Geometry *geom = new osg::Geometry;
 
-	geom->setVertexArray (vertexCoords);
-	geom->setVertexIndices (vertexIndices);
+        geom->setVertexArray (vertexCoords);
+        geom->setVertexIndices (vertexIndices);
 
-	geom->setTexCoordArray (0, texCoords);
-	geom->setTexCoordIndices (0, texIndices);
+        geom->setTexCoordArray (0, texCoords);
+        geom->setTexCoordIndices (0, texIndices);
 
-	geom->setNormalArray (g_md2NormalsArray);
-	geom->setNormalIndices (normalIndices);
-	geom->setNormalBinding (osg::Geometry::BIND_PER_VERTEX);
+        geom->setNormalArray (g_md2NormalsArray);
+        geom->setNormalIndices (normalIndices);
+        geom->setNormalBinding (osg::Geometry::BIND_PER_VERTEX);
 
-	geom->addPrimitiveSet (new osg::DrawArrays (osg::PrimitiveSet::TRIANGLES, 0, vertexIndices->size ()));
+        geom->addPrimitiveSet (new osg::DrawArrays (osg::PrimitiveSet::TRIANGLES, 0, vertexIndices->size ()));
 
-	osg::Geode *geode = new osg::Geode;
-	geode->addDrawable (geom);
+        osg::Geode *geode = new osg::Geode;
+        geode->addDrawable (geom);
 
-	current_sequence->addChild (geode);
-	current_sequence->setTime (sequence_frame, 0.2f);
-	sequence_frame++;
+        current_sequence->addChild (geode);
+        current_sequence->setTime (sequence_frame, 0.2f);
+        sequence_frame++;
 
-	last_frame_name = frame->name;
+        last_frame_name = frame->name;
     }
 
     if (current_sequence) {
-	current_sequence->setInterval (osg::Sequence::LOOP, 0, -1);
-	base_switch->addChild (current_sequence);
+        current_sequence->setInterval (osg::Sequence::LOOP, 0, -1);
+        base_switch->addChild (current_sequence);
     }
 
     osg::StateSet *state = new osg::StateSet;
 
     if (skin_texture != NULL) {
-	state->setTextureAttributeAndModes (0, skin_texture, osg::StateAttribute::ON);
+        state->setTextureAttributeAndModes (0, skin_texture, osg::StateAttribute::ON);
     }
     base_switch->setStateSet (state);
 

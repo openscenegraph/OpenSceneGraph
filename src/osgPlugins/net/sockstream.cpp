@@ -57,7 +57,7 @@
 // epptr() == pbase().
 //
 // Version: 1.2 2002-07-25 Herbert Straub 
-// 	Improved Error Handling - extending the sockerr class by cOperation
+// Improved Error Handling - extending the sockerr class by cOperation
 
 
 #include "sockstream.h"
@@ -70,57 +70,57 @@ typedef int socklen_t;
 
 #if defined(__CYGWIN__) || !defined(WIN32)
 extern "C" {
-#	include <sys/time.h>
-#	include <sys/socket.h>
-#	include <sys/ioctl.h>
-#	include <unistd.h>
-#	include <errno.h>
+#    include <sys/time.h>
+#    include <sys/socket.h>
+#    include <sys/ioctl.h>
+#    include <unistd.h>
+#    include <errno.h>
 }
 #else
 #   if (_MSC_VER >= 1400)
 #      include <errno.h>
 #   endif
-#	define EWOULDBLOCK			WSAEWOULDBLOCK
-#	define EINPROGRESS			WSAEINPROGRESS
-#	define EALREADY					WSAEALREADY
-#	define ENOTSOCK					WSAENOTSOCK
-#	define EDESTADDRREQ			WSAEDESTADDRREQ
-#	define EMSGSIZE					WSAEMSGSIZE
-#	define EPROTOTYPE				WSAEPROTOTYPE
-#	define ENOPROTOOPT			WSAENOPROTOOPT
-#	define EPROTONOSUPPORT	WSAEPROTONOSUPPORT
-#	define ESOCKTNOSUPPORT	WSAESOCKTNOSUPPORT
-#	define EOPNOTSUPP				WSAEOPNOTSUPP
-#	define EPFNOSUPPORT			WSAEPFNOSUPPORT
-#	define EAFNOSUPPORT			WSAEAFNOSUPPORT
-#	define EADDRINUSE				WSAEADDRINUSE
-#	define EADDRNOTAVAIL		WSAEADDRNOTAVAIL
-#	define ENETDOWN					WSAENETDOWN
-#	define ENETUNREACH			WSAENETUNREACH
-#	define ENETRESET				WSAENETRESET
-#	define ECONNABORTED			WSAECONNABORTED
-#	define ECONNRESET				WSAECONNRESET
-#	define ENOBUFS					WSAENOBUFS
-#	define EISCONN					WSAEISCONN
-#	define ENOTCONN					WSAENOTCONN
-#	define ESHUTDOWN				WSAESHUTDOWN
-#	define ETOOMANYREFS			WSAETOOMANYREFS
-#	define ETIMEDOUT				WSAETIMEDOUT
-#	define ECONNREFUSED			WSAECONNREFUSED
-#	define ELOOP						WSAELOOP
-#	define EHOSTDOWN				WSAEHOSTDOWN
-#	define EHOSTUNREACH			WSAEHOSTUNREACH
-#	define EPROCLIM					WSAEPROCLIM
-#	define EUSERS						WSAEUSERS
-#	define EDQUOT						WSAEDQUOT
-#	define EISCONN					WSAEISCONN
-#	define ENOTCONN					WSAENOTCONN
-#	define ECONNRESET				WSAECONNRESET
-#	define ECONNREFUSED			WSAECONNREFUSED
-#	define ETIMEDOUT				WSAETIMEDOUT
-#	define EADDRINUSE				WSAEADDRINUSE
-#	define EADDRNOTAVAIL		WSAEADDRNOTAVAIL
-#	define EWOULDBLOCK			WSAEWOULDBLOCK
+#   define EWOULDBLOCK          WSAEWOULDBLOCK
+#   define EINPROGRESS          WSAEINPROGRESS
+#   define EALREADY             WSAEALREADY
+#   define ENOTSOCK             WSAENOTSOCK
+#   define EDESTADDRREQ         WSAEDESTADDRREQ
+#   define EMSGSIZE             WSAEMSGSIZE
+#   define EPROTOTYPE           WSAEPROTOTYPE
+#   define ENOPROTOOPT          WSAENOPROTOOPT
+#   define EPROTONOSUPPORT      WSAEPROTONOSUPPORT
+#   define ESOCKTNOSUPPORT      WSAESOCKTNOSUPPORT
+#   define EOPNOTSUPP           WSAEOPNOTSUPP
+#   define EPFNOSUPPORT         WSAEPFNOSUPPORT
+#   define EAFNOSUPPORT         WSAEAFNOSUPPORT
+#   define EADDRINUSE           WSAEADDRINUSE
+#   define EADDRNOTAVAIL        WSAEADDRNOTAVAIL
+#   define ENETDOWN             WSAENETDOWN
+#   define ENETUNREACH          WSAENETUNREACH
+#   define ENETRESET            WSAENETRESET
+#   define ECONNABORTED         WSAECONNABORTED
+#   define ECONNRESET           WSAECONNRESET
+#   define ENOBUFS              WSAENOBUFS
+#   define EISCONN              WSAEISCONN
+#   define ENOTCONN             WSAENOTCONN
+#   define ESHUTDOWN            WSAESHUTDOWN
+#   define ETOOMANYREFS         WSAETOOMANYREFS
+#   define ETIMEDOUT            WSAETIMEDOUT
+#   define ECONNREFUSED         WSAECONNREFUSED
+#   define ELOOP                WSAELOOP
+#   define EHOSTDOWN            WSAEHOSTDOWN
+#   define EHOSTUNREACH         WSAEHOSTUNREACH
+#   define EPROCLIM             WSAEPROCLIM
+#   define EUSERS               WSAEUSERS
+#   define EDQUOT               WSAEDQUOT
+#   define EISCONN              WSAEISCONN
+#   define ENOTCONN             WSAENOTCONN
+#   define ECONNRESET           WSAECONNRESET
+#   define ECONNREFUSED         WSAECONNREFUSED
+#   define ETIMEDOUT            WSAETIMEDOUT
+#   define EADDRINUSE           WSAEADDRINUSE
+#   define EADDRNOTAVAIL        WSAEADDRNOTAVAIL
+#   define EWOULDBLOCK          WSAEWOULDBLOCK
 
 
 #endif // !WIN32
@@ -145,7 +145,7 @@ const char* sockerr::errstr () const
 #if defined(__CYGWIN__) || !defined(WIN32)
     return strerror(err);
 #else
-	return 0; // TODO
+    return 0; // TODO
 #endif
 }
 
@@ -203,9 +203,9 @@ bool sockerr::op () const
   case EHOSTDOWN:
   case EHOSTUNREACH:
   case ENOTEMPTY:
-#	if !defined(__linux__) && !defined(__sun) && !defined(__hpux)// LN
+#   if !defined(__linux__) && !defined(__sun) && !defined(__hpux)// LN
   case EPROCLIM:
-#	endif
+#   endif
   case EUSERS:
   case EDQUOT:
     return true;
@@ -223,7 +223,7 @@ bool sockerr::conn () const
   case ECONNRESET:
   case ECONNREFUSED:
   case ETIMEDOUT:
-	case EPIPE:
+  case EPIPE:
     return true;
   }
   return false;
@@ -266,7 +266,7 @@ sockbuf::sockbuf (const sockbuf::sockdesc& sd)
   setp (pbuf, pbuf + BUFSIZ);
   rep->gend = gbuf + BUFSIZ;
   rep->pend = pbuf + BUFSIZ;
-}	   
+}   
 
 sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
   : rep (0)
@@ -282,7 +282,7 @@ sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
 #if defined(__CYGWIN__) || !defined(WIN32)
     throw sockerr (errno, "sockbuf::sockbuf");
 #else
-		throw sockerr(WSAGetLastError(), "sockbuf::sockbuf");
+    throw sockerr(WSAGetLastError(), "sockbuf::sockbuf");
 #endif
 
   rep = new sockbuf::sockcnt (soc);
@@ -330,14 +330,14 @@ sockbuf::~sockbuf ()
 #if defined(__CYGWIN__) || !defined(WIN32)
     int c = close (rep->sock);
 #else
-		int c = closesocket(rep->sock);
+    int c = closesocket(rep->sock);
 #endif
     delete rep;
     if (c == SOCKET_ERROR) 
 #if defined(__CYGWIN__) || !defined(WIN32)
-			throw sockerr (errno, "sockbuf::~sockbuf", sockname.c_str());
+    throw sockerr (errno, "sockbuf::~sockbuf", sockname.c_str());
 #else
-			throw sockerr(WSAGetLastError(), "sockbuf::~sockbuf", sockname.c_str());
+    throw sockerr(WSAGetLastError(), "sockbuf::~sockbuf", sockname.c_str());
 #endif
   }
 }
@@ -346,52 +346,54 @@ bool sockbuf::is_open () const
 // if socket is still connected to the peer, return true
 // else return false
 {
-  return false;
+    return false;
 }
 
 int sockbuf::sync ()
 // we never return -1 because we throw sockerr
 // exception in the event of an error.
 {
-  if (pptr () && pbase () < pptr () && pptr () <= epptr ()) {
-    // we have some data to flush
-    try {
-      write (pbase (), pptr () - pbase ());
+    if (pptr () && pbase () < pptr () && pptr () <= epptr ())
+    {
+        // we have some data to flush
+        try {
+            write (pbase (), pptr () - pbase ());
+        }
+        catch (int wlen)
+        {
+            // write was not completely successful
+            stringstream sb;
+            string err ("sockbuf::sync");
+            err += "(" + sockname + ")";
+            if (wlen) {
+                // reposition unwritten chars
+                char* pto = pbase ();
+                char* pfrom = pbase () + wlen;
+                int len = pptr () - pbase () - wlen;
+                while (pfrom < pptr ()) *pto++ = *pfrom++;
+                setp (pbase (), (char_type*) rep->pend);
+                pbump (len);
+                sb << " wlen=(" << wlen << ")";
+                err += sb.rdbuf()->str();
+            }
+            throw sockerr (errno, err.c_str ());
+        }
+
+        setp (pbase (), (char_type*) rep->pend);
     }
-    catch (int wlen) {
-      // write was not completely successful
-      stringstream sb;
-      string err ("sockbuf::sync");
-      err += "(" + sockname + ")";
-      if (wlen) {
-	// reposition unwritten chars
-	char* pto = pbase ();
-	char* pfrom = pbase () + wlen;
-	int len = pptr () - pbase () - wlen;
-	while (pfrom < pptr ()) *pto++ = *pfrom++;
-	setp (pbase (), (char_type*) rep->pend);
-	pbump (len);
-	sb << " wlen=(" << wlen << ")";
-	err += sb.rdbuf()->str();
-      }
-      throw sockerr (errno, err.c_str ());
-    }
 
-    setp (pbase (), (char_type*) rep->pend);
-  }
+    // we cannot restore input data back to the socket stream
+    // thus we do not do anything on the input stream
 
-  // we cannot restore input data back to the socket stream
-  // thus we do not do anything on the input stream
-
-  return 0;
+    return 0;
 }
 
 int sockbuf::showmanyc () const
 // return the number of chars in the input sequence
 {
-  if (gptr () && gptr () < egptr ())
-    return egptr () - gptr ();
-  return 0;
+    if (gptr () && gptr () < egptr ())
+        return egptr () - gptr ();
+    return 0;
 }
 
 sockbuf::int_type sockbuf::underflow ()
@@ -576,8 +578,8 @@ int sockbuf::write(const void* buf, int len)
   
   int wlen=0;
   while(len>0) {
-    //int	wval = ::write (rep->sock, (char*) buf, len);
-    int	wval = ::send (rep->sock, (char*) buf, len, 0);
+    //int wval = ::write (rep->sock, (char*) buf, len);
+    int wval = ::send (rep->sock, (char*) buf, len, 0);
     if (wval == -1) throw wlen;
     len -= wval;
     wlen += wval;
@@ -594,7 +596,7 @@ int sockbuf::send (const void* buf, int len, int msgf)
   
   int wlen=0;
   while(len>0) {
-    int	wval = ::send (rep->sock, (char*) buf, len, msgf);
+    int wval = ::send (rep->sock, (char*) buf, len, msgf);
     if (wval == -1) throw wlen;
     len -= wval;
     wlen += wval;
@@ -611,8 +613,8 @@ int sockbuf::sendto (sockAddr& sa, const void* buf, int len, int msgf)
   
   int wlen=0;
   while(len>0) {
-    int	wval = ::sendto (rep->sock, (char*) buf, len, msgf,
-			 sa.addr (), sa.size());
+    int wval = ::sendto (rep->sock, (char*) buf, len, msgf,
+                         sa.addr (), sa.size());
     if (wval == -1) throw wlen;
     len -= wval;
     wlen += wval;
@@ -620,7 +622,7 @@ int sockbuf::sendto (sockAddr& sa, const void* buf, int len, int msgf)
   return wlen;
 }
 
-#if	!defined(__linux__) && !defined(WIN32)
+#if !defined(__linux__) && !defined(WIN32)
 // does not have sendmsg or recvmsg
 
 int sockbuf::recvmsg (msghdr* msg, int msgf)
@@ -908,11 +910,11 @@ bool sockbuf::atmark () const
 // out of band data
 {
 #if !defined(WIN32) || defined(__CYGWIN__) 
-	int arg;
+  int arg;
   if (::ioctl (rep->sock, SIOCATMARK, &arg) == -1)
     throw sockerr (errno, "sockbuf::atmark", sockname.c_str());
 #else
-	unsigned long arg = 0;
+  unsigned long arg = 0;
   if (::ioctlsocket(rep->sock, SIOCATMARK, &arg) == SOCKET_ERROR)
     throw sockerr (WSAGetLastError(), "sockbuf::atmark", sockname.c_str());
 #endif // !WIN32
@@ -961,12 +963,12 @@ long sockbuf::nread () const
 // return how many chars are available for reading in the recvbuf of
 // the socket.
 {
-	long arg;
+  long arg;
 #if defined(__CYGWIN__) || !defined(WIN32)
   if (::ioctl (rep->sock, FIONREAD, &arg) == -1)
     throw sockerr (errno, "sockbuf::nread", sockname.c_str());
 #else
-	if (::ioctlsocket (rep->sock, FIONREAD, (unsigned long *) &arg) == SOCKET_ERROR)
+  if (::ioctlsocket (rep->sock, FIONREAD, (unsigned long *) &arg) == SOCKET_ERROR)
     throw sockerr (WSAGetLastError(), "sockbuf::nread", sockname.c_str());
 #endif // !WIN32
   return arg;

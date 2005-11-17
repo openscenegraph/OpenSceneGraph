@@ -50,12 +50,12 @@ ReaderWriterdxf::readNode(const std::string& filename, const osgDB::ReaderWriter
     std::string ext = osgDB::getFileExtension(filename);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
     // Open
-	dxfFile df(filename);
-	if (df.parseFile()) {
-		// convert to OSG
-		osg::Group* osg_top = df.dxf2osg();
-		return (osg_top);
-	}
-	return ReadResult::FILE_NOT_HANDLED;
+    dxfFile df(filename);
+    if (df.parseFile()) {
+        // convert to OSG
+        osg::Group* osg_top = df.dxf2osg();
+        return (osg_top);
+    }
+    return ReadResult::FILE_NOT_HANDLED;
 }
 

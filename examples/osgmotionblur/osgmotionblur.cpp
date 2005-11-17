@@ -16,44 +16,44 @@
 class MotionBlurDrawCallback: public osgProducer::OsgSceneHandler::Callback
 {
 public:
-	MotionBlurDrawCallback(double persistence)
-	:	cleared_(false),
-		persistence_(persistence)
-	{
-	}
+    MotionBlurDrawCallback(double persistence)
+    :    cleared_(false),
+        persistence_(persistence)
+    {
+    }
 
-	virtual void operator()(osgProducer::OsgSceneHandler &handler, Producer::Camera &camera)
-	{
-		double t = handler.getSceneView()->getFrameStamp()->getReferenceTime();
+    virtual void operator()(osgProducer::OsgSceneHandler &handler, Producer::Camera &camera)
+    {
+        double t = handler.getSceneView()->getFrameStamp()->getReferenceTime();
 
-		if (!cleared_)
-		{
-			// clear the accumulation buffer
-			glClearColor(0, 0, 0, 0);
-			glClear(GL_ACCUM_BUFFER_BIT);
-			cleared_ = true;
-			t0_ = t;
-		}
+        if (!cleared_)
+        {
+            // clear the accumulation buffer
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_ACCUM_BUFFER_BIT);
+            cleared_ = true;
+            t0_ = t;
+        }
 
-		double dt = fabs(t - t0_);
-		t0_ = t;
+        double dt = fabs(t - t0_);
+        t0_ = t;
 
-		// call the scene handler's draw function
-		handler.drawImplementation(camera);		
+        // call the scene handler's draw function
+        handler.drawImplementation(camera);        
 
-		// compute the blur factor
-		double s = powf(0.2, dt / persistence_);
+        // compute the blur factor
+        double s = powf(0.2, dt / persistence_);
 
-		// scale, accumulate and return
-		glAccum(GL_MULT, s);
-		glAccum(GL_ACCUM, 1 - s);
-		glAccum(GL_RETURN, 1.0f);
-	}
+        // scale, accumulate and return
+        glAccum(GL_MULT, s);
+        glAccum(GL_ACCUM, 1 - s);
+        glAccum(GL_RETURN, 1.0f);
+    }
 
 private:
-	bool cleared_;
-	double t0_;
-	double persistence_;
+    bool cleared_;
+    double t0_;
+    double persistence_;
 };
 
 
@@ -68,7 +68,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an OpenSceneGraph example that shows how to use the accumulation buffer to achieve a simple motion blur effect.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-	arguments.getApplicationUsage()->addCommandLineOption("-P or --persistence","Set the motion blur persistence time");
+    arguments.getApplicationUsage()->addCommandLineOption("-P or --persistence","Set the motion blur persistence time");
     
 
     // construct the viewer.
@@ -87,8 +87,8 @@ int main( int argc, char **argv )
         return 1;
     }
 
-	double persistence = 0.25;
-	arguments.read("-P", persistence) || arguments.read("--persistence", persistence);
+    double persistence = 0.25;
+    arguments.read("-P", persistence) || arguments.read("--persistence", persistence);
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -141,12 +141,12 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
-	// set our motion blur callback as the draw callback for each scene handler
-	osgProducer::Viewer::SceneHandlerList &shl = viewer.getSceneHandlerList();
-	for (osgProducer::Viewer::SceneHandlerList::iterator i=shl.begin(); i!=shl.end(); ++i)
-	{
-		(*i)->setDrawCallback(new MotionBlurDrawCallback(persistence));
-	}
+    // set our motion blur callback as the draw callback for each scene handler
+    osgProducer::Viewer::SceneHandlerList &shl = viewer.getSceneHandlerList();
+    for (osgProducer::Viewer::SceneHandlerList::iterator i=shl.begin(); i!=shl.end(); ++i)
+    {
+        (*i)->setDrawCallback(new MotionBlurDrawCallback(persistence));
+    }
 
     while( !viewer.done() )
     {

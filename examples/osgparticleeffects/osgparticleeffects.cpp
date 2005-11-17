@@ -150,9 +150,9 @@ void build_world(osg::Group *root)
         osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
         if (image)
         {
-	    osg::Texture2D* texture = new osg::Texture2D;
-	    texture->setImage(image);
-	    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+            osg::Texture2D* texture = new osg::Texture2D;
+            texture->setImage(image);
+            stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         }
 
         terrainGeode->setStateSet( stateset );
@@ -168,10 +168,10 @@ void build_world(osg::Group *root)
 
         for(unsigned int r=0;r<39;++r)
         {
-	    for(unsigned int c=0;c<38;++c)
-	    {
-	        grid->setHeight(c,r,z_scale*vertex[r+c*39][2]);
-	    }
+            for(unsigned int c=0;c<38;++c)
+            {
+                grid->setHeight(c,r,z_scale*vertex[r+c*39][2]);
+            }
         }
         terrainGeode->addDrawable(new osg::ShapeDrawable(grid));
         

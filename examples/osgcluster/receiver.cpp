@@ -100,8 +100,8 @@ void Receiver::sync( void )
 
     if( _buffer == 0L )
     {
-	fprintf( stderr, "Receiver::sync() - No buffer\n" );
-	return;
+        fprintf( stderr, "Receiver::sync() - No buffer\n" );
+        return;
     }
 
 #if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ )

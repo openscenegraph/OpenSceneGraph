@@ -101,7 +101,7 @@ ref_ptr<MatrixTransform> _create_lights()
   light_0->setSpotCutoff(60.0f);
   light_0->setSpotExponent(2.0f);
 
-  ref_ptr<LightSource> light_source_0 = new LightSource;	
+  ref_ptr<LightSource> light_source_0 = new LightSource;    
   light_source_0->setLight(light_0.get());
   light_source_0->setLocalStateSetModes(StateAttribute::ON); 
   transform_0->setUpdateCallback(new LightTransformCallback(inDegrees(90.0f), 8, 5));

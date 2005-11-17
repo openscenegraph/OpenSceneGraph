@@ -188,8 +188,8 @@ int main( int argc, char **argv )
         // draw the rendering bins.
         sceneView->draw();
                 
-    	// Swap Buffers
-    	renderSurface->swapBuffers();
+        // Swap Buffers
+        renderSurface->swapBuffers();
         
         std::cout << "before readPixels: _r = " << sp->_image->r() << std::endl;
         

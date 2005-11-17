@@ -30,55 +30,55 @@ class MyKeyboardMouseCallback : public Producer::KeyboardMouseCallback
 {
     public:
 
-	MyKeyboardMouseCallback() :
-		Producer::KeyboardMouseCallback(),
-		_mx(0.0f),_my(0.0f),_mbutton(0),
-		_done(false)	
-		{}
+        MyKeyboardMouseCallback() :
+                Producer::KeyboardMouseCallback(),
+                _mx(0.0f),_my(0.0f),_mbutton(0),
+                _done(false)        
+                {}
 
-	virtual void specialKeyPress( Producer::KeyCharacter key )
-	{
-		if (key==Producer::KeyChar_Escape)
+        virtual void specialKeyPress( Producer::KeyCharacter key )
+        {
+                if (key==Producer::KeyChar_Escape)
                     shutdown();
-	}
+        }
 
         virtual void shutdown()
         {
             _done = true; 
         }
 
-	virtual void keyPress( Producer::KeyCharacter )
-	{
-	}
+        virtual void keyPress( Producer::KeyCharacter )
+        {
+        }
 
-	virtual void mouseMotion( float mx, float my ) 
-	{
-		_mx = mx;
-		_my = my;
-	}
-	virtual void buttonPress( float mx, float my, unsigned int mbutton ) 
-	{
-		_mx = mx;
-		_my = my;
-		_mbutton |= (1<<(mbutton-1));
-	}
-	virtual void buttonRelease( float mx, float my, unsigned int mbutton ) 
-	{
-		_mx = mx;
-		_my = my;
-		_mbutton &= ~(1<<(mbutton-1));
-	}
+        virtual void mouseMotion( float mx, float my ) 
+        {
+                _mx = mx;
+                _my = my;
+        }
+        virtual void buttonPress( float mx, float my, unsigned int mbutton ) 
+        {
+                _mx = mx;
+                _my = my;
+                _mbutton |= (1<<(mbutton-1));
+        }
+        virtual void buttonRelease( float mx, float my, unsigned int mbutton ) 
+        {
+                _mx = mx;
+                _my = my;
+                _mbutton &= ~(1<<(mbutton-1));
+        }
 
-	bool done() { return _done; }
-	float mx()  { return _mx; }
-	float my()  { return _my; }
-	unsigned int mbutton()  { return _mbutton; }
+        bool done() { return _done; }
+        float mx()  { return _mx; }
+        float my()  { return _my; }
+        unsigned int mbutton()  { return _mbutton; }
 
     private:
 
-	float _mx, _my;
-	unsigned int _mbutton;
-	bool _done;
+        float _mx, _my;
+        unsigned int _mbutton;
+        bool _done;
 };
 
 int main( int argc, char **argv )
@@ -168,7 +168,7 @@ int main( int argc, char **argv )
         // call all node update callbacks and animations.
         cg.getSceneData()->accept(update);
 
-	tb->input( kbmcb->mx(), kbmcb->my(), kbmcb->mbutton() );
+        tb->input( kbmcb->mx(), kbmcb->my(), kbmcb->mbutton() );
 
         // update the main producer camera
         cg.setViewByMatrix(tb->getMatrix());

@@ -106,7 +106,7 @@ public:
     
     osg::Matrixd getViewMatrix()
     {
-	_trackBall->input( mx(), my(), mbutton() );
+        _trackBall->input( mx(), my(), mbutton() );
         return osg::Matrixd(_trackBall->getMatrix().ptr());
     }
     

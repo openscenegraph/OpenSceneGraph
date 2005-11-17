@@ -26,9 +26,9 @@ osg::Geode* createShapes( char* img_filename )
 
     if (image)
     {
-	osg::Texture2D* texture = new osg::Texture2D;
-	texture->setImage(image);
-	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setImage(image);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     
     geode->setStateSet( stateset );
@@ -52,10 +52,10 @@ osg::Geode* createShapes( char* img_filename )
     
     for(unsigned int r=0;r<39;++r)
     {
-	for(unsigned int c=0;c<38;++c)
-	{
-	    grid->setHeight(c,r,vertex[r+c*39][2]);
-	}
+        for(unsigned int c=0;c<38;++c)
+        {
+            grid->setHeight(c,r,vertex[r+c*39][2]);
+        }
     }
     geode->addDrawable(new osg::ShapeDrawable(grid));
     
@@ -125,11 +125,11 @@ int main( int argc, char **argv )
     char* img_filename = 0;
     for( int pos = 1; pos < arguments.argc(); ++pos )
     {
-	if( arguments.isString(pos) )
-	{
-	    img_filename = arguments[pos];
-	    break;
-	}
+        if( arguments.isString(pos) )
+        {
+            img_filename = arguments[pos];
+            break;
+        }
     }
     
     osg::Node* node = createShapes( img_filename );

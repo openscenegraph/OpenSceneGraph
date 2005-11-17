@@ -144,10 +144,10 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
                 image->allocateImage(tx,ty,1,GL_LUMINANCE,GL_FLOAT,1);
                 for(unsigned int r=0;r<ty;++r)
                 {
-	            for(unsigned int c=0;c<tx;++c)
-	            {
-	                *((float*)image->data(c,r)) = vertex[r+c*39][2]*0.1;
-	            }
+                    for(unsigned int c=0;c<tx;++c)
+                    {
+                        *((float*)image->data(c,r)) = vertex[r+c*39][2]*0.1;
+                    }
                 }
 
                 num_x = tx;

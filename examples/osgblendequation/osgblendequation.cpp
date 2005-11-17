@@ -13,26 +13,26 @@
 const int _eq_nb=8;
 const osg::BlendEquation::Equation _equations[_eq_nb]=
 {
-	osg::BlendEquation::FUNC_ADD,
-	osg::BlendEquation::FUNC_SUBTRACT,
-	osg::BlendEquation::FUNC_REVERSE_SUBTRACT,
-	osg::BlendEquation::RGBA_MIN,
-	osg::BlendEquation::RGBA_MAX,
-	osg::BlendEquation::ALPHA_MIN,
-	osg::BlendEquation::ALPHA_MAX,
-	osg::BlendEquation::LOGIC_OP
+    osg::BlendEquation::FUNC_ADD,
+    osg::BlendEquation::FUNC_SUBTRACT,
+    osg::BlendEquation::FUNC_REVERSE_SUBTRACT,
+    osg::BlendEquation::RGBA_MIN,
+    osg::BlendEquation::RGBA_MAX,
+    osg::BlendEquation::ALPHA_MIN,
+    osg::BlendEquation::ALPHA_MAX,
+    osg::BlendEquation::LOGIC_OP
 };
 
 const char* _equations_name[_eq_nb]=
 {
-	"osg::BlendEquation::FUNC_ADD",
-	"osg::BlendEquation::FUNC_SUBTRACT",
-	"osg::BlendEquation::FUNC_REVERSE_SUBTRACT",
-	"osg::BlendEquation::RGBA_MIN",
-	"osg::BlendEquation::RGBA_MAX",
-	"osg::BlendEquation::ALPHA_MIN",
-	"osg::BlendEquation::ALPHA_MAX",
-	"osg::BlendEquation::LOGIC_OP"
+    "osg::BlendEquation::FUNC_ADD",
+    "osg::BlendEquation::FUNC_SUBTRACT",
+    "osg::BlendEquation::FUNC_REVERSE_SUBTRACT",
+    "osg::BlendEquation::RGBA_MIN",
+    "osg::BlendEquation::RGBA_MAX",
+    "osg::BlendEquation::ALPHA_MIN",
+    "osg::BlendEquation::ALPHA_MAX",
+    "osg::BlendEquation::LOGIC_OP"
 };
 
 
@@ -57,14 +57,14 @@ protected:
 
     TechniqueEventHandler(const TechniqueEventHandler&,const osg::CopyOp&) {}
 
-    osg::BlendEquation*	_blendEq;
+    osg::BlendEquation*    _blendEq;
 
-    int 		_eq_index;
+    int         _eq_index;
 };
 
 
 
-	
+    
 bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
     switch(ea.getEventType())
@@ -74,21 +74,19 @@ bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAc
             if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right ||
                 ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Right)
             {
-			_eq_index++;
-			if (_eq_index>=_eq_nb)
-				_eq_index=0;
-			_blendEq->setEquation(_equations[_eq_index]);
-			std::cout<<"Equation name = "<<_equations_name[_eq_index]<<std::endl;
+                _eq_index++;
+                if (_eq_index>=_eq_nb) _eq_index=0;
+                _blendEq->setEquation(_equations[_eq_index]);
+                std::cout<<"Equation name = "<<_equations_name[_eq_index]<<std::endl;
                 return true;
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left)
             {
-       			_eq_index--;
-			if (_eq_index<0)
-				_eq_index=_eq_nb-1;
-			_blendEq->setEquation(_equations[_eq_index]);
-			std::cout<<"Operation name = "<<_equations_name[_eq_index]<<std::endl;
+                _eq_index--;
+                if (_eq_index<0) _eq_index=_eq_nb-1;
+                _blendEq->setEquation(_equations[_eq_index]);
+                std::cout<<"Operation name = "<<_equations_name[_eq_index]<<std::endl;
                 return true;
             }
             return false;
@@ -134,14 +132,14 @@ int main( int argc, char **argv )
     root->addChild(loadedModel);
     
     
-    osg::StateSet* 	stateset = 	new osg::StateSet;
-    osg::BlendEquation* blendEquation =	new osg::BlendEquation(osg::BlendEquation::FUNC_ADD);
-	    
+    osg::StateSet*      stateset =      new osg::StateSet;
+    osg::BlendEquation* blendEquation = new osg::BlendEquation(osg::BlendEquation::FUNC_ADD);
+    
     stateset->setAttributeAndModes(blendEquation,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
-		    
+            
     //tell to sort the mesh before displaying it
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-		    
+            
 
     loadedModel->setStateSet(stateset);
 
@@ -202,8 +200,6 @@ int main( int argc, char **argv )
          
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
-
-	
         
     }
     

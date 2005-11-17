@@ -12,43 +12,43 @@
 
 const int _ops_nb=16;
 const osg::LogicOp::Opcode _operations[_ops_nb]=
-{	
-	osg::LogicOp::CLEAR,
-	osg::LogicOp::SET,
-	osg::LogicOp::COPY,
-	osg::LogicOp::COPY_INVERTED,
-	osg::LogicOp::NOOP,
-	osg::LogicOp::INVERT,
-	osg::LogicOp::AND,
-	osg::LogicOp::NAND,
-	osg::LogicOp::OR,
-	osg::LogicOp::NOR,
-	osg::LogicOp::XOR,
-	osg::LogicOp::EQUIV,
-	osg::LogicOp::AND_REVERSE,
-	osg::LogicOp::AND_INVERTED,
-	osg::LogicOp::OR_REVERSE,
-	osg::LogicOp::OR_INVERTED
+{    
+    osg::LogicOp::CLEAR,
+    osg::LogicOp::SET,
+    osg::LogicOp::COPY,
+    osg::LogicOp::COPY_INVERTED,
+    osg::LogicOp::NOOP,
+    osg::LogicOp::INVERT,
+    osg::LogicOp::AND,
+    osg::LogicOp::NAND,
+    osg::LogicOp::OR,
+    osg::LogicOp::NOR,
+    osg::LogicOp::XOR,
+    osg::LogicOp::EQUIV,
+    osg::LogicOp::AND_REVERSE,
+    osg::LogicOp::AND_INVERTED,
+    osg::LogicOp::OR_REVERSE,
+    osg::LogicOp::OR_INVERTED
 };
 
 const char* _ops_name[_ops_nb]=
-{	
-	"osg::LogicOp::CLEAR",
-	"osg::LogicOp::SET",
-	"osg::LogicOp::COPY",
-	"osg::LogicOp::COPY_INVERTED",
-	"osg::LogicOp::NOOP",
-	"osg::LogicOp::INVERT",
-	"osg::LogicOp::AND",
-	"osg::LogicOp::NAND",
-	"osg::LogicOp::OR",
-	"osg::LogicOp::NOR",
-	"osg::LogicOp::XOR",
-	"osg::LogicOp::EQUIV",
-	"osg::LogicOp::AND_REVERSE",
-	"osg::LogicOp::AND_INVERTED",
-	"osg::LogicOp::OR_REVERSE",
-	"osg::LogicOp::OR_INVERTED"
+{    
+    "osg::LogicOp::CLEAR",
+    "osg::LogicOp::SET",
+    "osg::LogicOp::COPY",
+    "osg::LogicOp::COPY_INVERTED",
+    "osg::LogicOp::NOOP",
+    "osg::LogicOp::INVERT",
+    "osg::LogicOp::AND",
+    "osg::LogicOp::NAND",
+    "osg::LogicOp::OR",
+    "osg::LogicOp::NOR",
+    "osg::LogicOp::XOR",
+    "osg::LogicOp::EQUIV",
+    "osg::LogicOp::AND_REVERSE",
+    "osg::LogicOp::AND_INVERTED",
+    "osg::LogicOp::OR_REVERSE",
+    "osg::LogicOp::OR_INVERTED"
 };
 
 class TechniqueEventHandler : public osgGA::GUIEventHandler
@@ -72,9 +72,8 @@ protected:
 
     TechniqueEventHandler(const TechniqueEventHandler&,const osg::CopyOp&) {}
 
-    osg::LogicOp* 	_logicOp;
-
-    int 		_ops_index;
+    osg::LogicOp*       _logicOp;
+    int                 _ops_index;
 
 };
 
@@ -87,21 +86,19 @@ bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAc
             if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right ||
                 ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Right)
             {
-			_ops_index++;
-			if (_ops_index>=_ops_nb)
-				_ops_index=0;
-			_logicOp->setOpcode(_operations[_ops_index]);
-			std::cout<<"Operation name = "<<_ops_name[_ops_index]<<std::endl;
+                _ops_index++;
+                if (_ops_index>=_ops_nb) _ops_index=0;
+                _logicOp->setOpcode(_operations[_ops_index]);
+                std::cout<<"Operation name = "<<_ops_name[_ops_index]<<std::endl;
                 return true;
             }
             else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left)
             {
-       			_ops_index--;
-			if (_ops_index<0)
-				_ops_index=_ops_nb-1;
-			_logicOp->setOpcode(_operations[_ops_index]);
-			std::cout<<"Operation name = "<<_ops_name[_ops_index]<<std::endl;
+                _ops_index--;
+                if (_ops_index<0) _ops_index=_ops_nb-1;
+                _logicOp->setOpcode(_operations[_ops_index]);
+                std::cout<<"Operation name = "<<_ops_name[_ops_index]<<std::endl;
                 return true;
             }
             return false;
@@ -146,15 +143,14 @@ int main( int argc, char **argv )
     root->addChild(loadedModel);
     
     
-    osg::StateSet* 	stateset = 	new osg::StateSet;
-    osg::LogicOp* 	logicOp = 	new osg::LogicOp(osg::LogicOp::OR_INVERTED);
-	    
+    osg::StateSet*  stateset =  new osg::StateSet;
+    osg::LogicOp*   logicOp =   new osg::LogicOp(osg::LogicOp::OR_INVERTED);
+
     stateset->setAttributeAndModes(logicOp,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-		    
     //tell to sort the mesh before displaying it
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-		    
+
 
     loadedModel->setStateSet(stateset);
 
@@ -215,9 +211,6 @@ int main( int argc, char **argv )
          
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
-
-	
-        
     }
     
     // wait for all cull and draw threads to complete before exit.

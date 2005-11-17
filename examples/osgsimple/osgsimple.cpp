@@ -73,8 +73,8 @@ int main( int argc, char **argv )
         // draw the rendering bins.
         sceneView->draw();
 
-    	// Swap Buffers
-    	renderSurface->swapBuffers();
+        // Swap Buffers
+        renderSurface->swapBuffers();
     }
 
     return 0;

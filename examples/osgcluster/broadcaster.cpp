@@ -146,11 +146,11 @@ void Broadcaster::setHost( const char *hostname )
     struct hostent *h;
     if( (h = gethostbyname( hostname )) == 0L )
     {
-	fprintf( stderr, "Broadcaster::setHost() - Cannot resolv an address for \"%s\".\n", hostname );
-	_address = 0;
+        fprintf( stderr, "Broadcaster::setHost() - Cannot resolv an address for \"%s\".\n", hostname );
+        _address = 0;
     }
     else
-	_address = *(( unsigned long  *)h->h_addr);
+        _address = *(( unsigned long  *)h->h_addr);
 }
 
 void Broadcaster::setPort( const short port )
@@ -170,8 +170,8 @@ void Broadcaster::sync( void )
 
     if( _buffer == 0L )
     {
-	fprintf( stderr, "Broadcaster::sync() - No buffer\n" );
-	return;
+        fprintf( stderr, "Broadcaster::sync() - No buffer\n" );
+        return;
     }
 
 #if defined (WIN32) && !defined(__CYGWIN__)

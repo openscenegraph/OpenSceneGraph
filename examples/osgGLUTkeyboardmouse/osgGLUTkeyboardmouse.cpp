@@ -31,9 +31,9 @@ void display(void)
 
     // set the view
     osg::Vec3 viewPos(
-	viewRadius * cos(viewElev) * sin(viewRot),
-	viewRadius * cos(viewElev) * cos(viewRot),
-	viewRadius * sin(viewElev));
+        viewRadius * cos(viewElev) * sin(viewRot),
+        viewRadius * cos(viewElev) * cos(viewRot),
+        viewRadius * sin(viewElev));
     sceneView->setViewMatrixAsLookAt( centerPos-viewPos, centerPos, osg::Vec3(0.0f,0.0f,1.0f) );
 
     // do the update traversal the scene graph - such as updating animations
@@ -78,15 +78,15 @@ void keyboard( unsigned char key, int /*x*/, int /*y*/ )
 {
     switch( key )
     {
-	case 27:
-	    exit(0);
-	    break;
-	case ' ':
-	    viewRot = 0.0f;
-	    viewElev = 0.0f;
-	    break;
-	default:
-	    break;
+        case 27:
+            exit(0);
+            break;
+        case ' ':
+            viewRot = 0.0f;
+            viewElev = 0.0f;
+            break;
+        default:
+            break;
     }
 }
 

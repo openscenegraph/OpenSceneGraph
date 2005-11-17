@@ -43,10 +43,25 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method3(void, getCurrentPositionAsLookAt, IN, osg::Vec3 &, eye, IN, osg::Vec3 &, center, IN, osg::Vec3 &, up);
+	I_Method1(void, setMinHeight, IN, double, in_min_height);
+	I_Method0(double, getMinHeight);
+	I_Method1(void, setMinDistance, IN, double, in_min_dist);
+	I_Method0(double, getMinDistance);
+	I_Method1(void, setForwardSpeed, IN, double, in_fs);
+	I_Method0(double, getForwardSpeed);
+	I_Method1(void, setSideSpeed, IN, double, in_ss);
+	I_Method0(double, getSideSpeed);
+	I_Method1(void, setRotationSpeed, IN, double, in_rot_speed);
+	I_Method0(double, getRotationSpeed);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
+	I_Property(double, ForwardSpeed);
 	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
 	I_ReadOnlyProperty(osg::Matrixd, Matrix);
+	I_Property(double, MinDistance);
+	I_Property(double, MinHeight);
 	I_Property(osg::Node *, Node);
+	I_Property(double, RotationSpeed);
+	I_Property(double, SideSpeed);
 END_REFLECTOR
 

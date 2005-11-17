@@ -85,37 +85,37 @@ void ellipsodeTransformTest(double latitude, double longitude, double height)
 }
 
 void processFile(std::string filename,
-		   osgTerrain::DataSet::Source::Type type,
-		   std::string currentCS, 
-		   osg::Matrixd &geoTransform,
-		   bool geoTransformSet,
-		   bool geoTransformScale,
+                   osgTerrain::DataSet::Source::Type type,
+                   std::string currentCS, 
+                   osg::Matrixd &geoTransform,
+                   bool geoTransformSet,
+                   bool geoTransformScale,
                    bool minmaxLevelSet, unsigned int min_level, unsigned int max_level,
                    unsigned int layerNum,
-		   osg::ref_ptr<osgTerrain::DataSet> dataset) {
+                   osg::ref_ptr<osgTerrain::DataSet> dataset) {
 
     if(filename.empty()) return;
 
     if(osgDB::fileType(filename) == osgDB::REGULAR_FILE) {
-	
-	osgTerrain::DataSet::Source* source = new osgTerrain::DataSet::Source(type, filename);                
-	if (source)
-	{
-	    if (!currentCS.empty())
-	    {
-		std::cout<<"source->setCoordySystem "<<currentCS<<std::endl;
-		source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
-		source->setCoordinateSystem(currentCS);
-	    } 
-	    
-	    if (geoTransformSet)
-	    {
-		std::cout<<"source->setGeoTransform "<<geoTransform<<std::endl;
-		source->setGeoTransformPolicy(geoTransformScale ? 
-					      osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION : 
-					      osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
-		source->setGeoTransform(geoTransform);
-	    }
+        
+        osgTerrain::DataSet::Source* source = new osgTerrain::DataSet::Source(type, filename);                
+        if (source)
+        {
+            if (!currentCS.empty())
+            {
+                std::cout<<"source->setCoordySystem "<<currentCS<<std::endl;
+                source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+                source->setCoordinateSystem(currentCS);
+            } 
+            
+            if (geoTransformSet)
+            {
+                std::cout<<"source->setGeoTransform "<<geoTransform<<std::endl;
+                source->setGeoTransformPolicy(geoTransformScale ? 
+                                              osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION : 
+                                              osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+                source->setGeoTransform(geoTransform);
+            }
             if (minmaxLevelSet) 
             {
                 source->setMinMaxLevel(min_level, max_level);
@@ -124,26 +124,26 @@ void processFile(std::string filename,
             source->setLayer(layerNum);
             
             std::cout<<"Reading as layer = "<<layerNum<<std::endl;
-	    
-	    dataset->addSource(source);
-	}
+            
+            dataset->addSource(source);
+        }
     } else if (osgDB::fileType(filename) == osgDB::DIRECTORY) {
 
-	osgDB::DirectoryContents dirContents= osgDB::getDirectoryContents(filename);
-	
-	// loop through directory contents and call processFile
-	std::vector<std::string>::iterator i;
-	std::string fullfilename;
-	for(i = dirContents.begin(); i != dirContents.end(); ++i) {
-	    if((*i != ".") && (*i != "..")) {
-		fullfilename = filename + '/' + *i;
-		processFile(fullfilename, type, currentCS, 
+        osgDB::DirectoryContents dirContents= osgDB::getDirectoryContents(filename);
+        
+        // loop through directory contents and call processFile
+        std::vector<std::string>::iterator i;
+        std::string fullfilename;
+        for(i = dirContents.begin(); i != dirContents.end(); ++i) {
+            if((*i != ".") && (*i != "..")) {
+                fullfilename = filename + '/' + *i;
+                processFile(fullfilename, type, currentCS, 
                             geoTransform, geoTransformSet, geoTransformScale, 
                             minmaxLevelSet, min_level, max_level,
                             layerNum,
                             dataset);
-	    }
-	}
+            }
+        }
     }
 }
 
@@ -514,8 +514,8 @@ int main( int argc, char **argv )
 
         else if (arguments.read(pos, "-d",filename))
         {
-	    std::cout<<"-d "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, 
+            std::cout<<"-d "<<filename<<std::endl;
+            processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, 
                         geoTransform, geoTransformSet, geoTransformScale,
                         minmaxLevelSet, min_level, max_level,
                         currentLayerNum,
@@ -533,8 +533,8 @@ int main( int argc, char **argv )
         }
         else if (arguments.read(pos, "-t",filename))
         {
-	    std::cout<<"-t "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, 
+            std::cout<<"-t "<<filename<<std::endl;
+            processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, 
                         geoTransform, geoTransformSet, geoTransformScale, 
                         minmaxLevelSet, min_level, max_level, 
                         currentLayerNum,
@@ -552,8 +552,8 @@ int main( int argc, char **argv )
 /*        
         else if (arguments.read(pos, "-m",filename))
         {
-	    std::cout<<"-m "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, 
+            std::cout<<"-m "<<filename<<std::endl;
+            processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, 
                         geoTransform, geoTransformSet, geoTransformScale, 
                         minmaxLevelSet, min_level, max_level, 
                         currentLayerNum, 

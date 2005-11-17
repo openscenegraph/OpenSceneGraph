@@ -102,7 +102,7 @@ int Image::compare(const Image& rhs) const
     COMPARE_StateAttribute_Parameter(_modifiedCount)
 
     // same buffer + same parameters = same image
-    if (_data == rhs._data) return 0;
+    if ((_data || rhs._data) && (_data == rhs._data)) return 0;
 
     // slowest comparison at the bottom!
     COMPARE_StateAttribute_Parameter(getFileName())    

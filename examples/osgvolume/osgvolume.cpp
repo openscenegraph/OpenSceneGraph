@@ -492,8 +492,8 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
             int num_t = osg::minimum(image->t(), image_3d->t());
             int num_s = osg::minimum(image->s(), image_3d->s());
         
-	    unsigned int s_offset_dest = (image->s()<s_nearestPowerOfTwo) ? s_nearestPowerOfTwo/2 - image->s()/2 : 0;
-	    unsigned int t_offset_dest = (image->t()<t_nearestPowerOfTwo) ? t_nearestPowerOfTwo/2 - image->t()/2 : 0;
+            unsigned int s_offset_dest = (image->s()<s_nearestPowerOfTwo) ? s_nearestPowerOfTwo/2 - image->s()/2 : 0;
+            unsigned int t_offset_dest = (image->t()<t_nearestPowerOfTwo) ? t_nearestPowerOfTwo/2 - image->t()/2 : 0;
 
             for(int r=0;r<num_r;++r, ++curr_dest_r)
             {
@@ -1011,8 +1011,8 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 
     if (normalmap_3d.valid())
     {
-    	if (two_pass)
-	{
+        if (two_pass)
+        {
 
             // set up normal texture
             osg::Texture3D* bump_texture3D = new osg::Texture3D;
@@ -1076,7 +1076,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 
             stateset->setTextureAttributeAndModes(1,new osg::TexEnv(),osg::StateAttribute::ON);
 
-	}
+        }
         else
         {
             osg::ref_ptr<osg::Image> normalmap_3d = createNormalMapTexture(image_3d.get());

@@ -138,7 +138,7 @@ int main( int argc, char **argv )
 
     // load the osgProducer library manually.
     osg::ref_ptr<osgDB::DynamicLibrary> windowingLib =
-	    osgDB::DynamicLibrary::loadLibrary(osgDB::Registry::instance()->createLibraryNameForNodeKit(windowingLibrary));
+        osgDB::DynamicLibrary::loadLibrary(osgDB::Registry::instance()->createLibraryNameForNodeKit(windowingLibrary));
 
 
     if (!windowingLib)

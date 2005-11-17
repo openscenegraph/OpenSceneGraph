@@ -212,10 +212,10 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::strin
         osg::Image* image = osgDB::readImageFile("Images/land_shallow_topo_2048.jpg");
         if (image)
         {
-	    osg::Texture2D* texture = new osg::Texture2D;
-	    texture->setImage(image);
-	    texture->setMaxAnisotropy(8);
-	    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+            osg::Texture2D* texture = new osg::Texture2D;
+            texture->setImage(image);
+            texture->setMaxAnisotropy(8);
+            stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         }
 
         osg::Material* material = new osg::Material;

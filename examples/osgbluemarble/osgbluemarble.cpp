@@ -81,14 +81,14 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     {
         texCoordRange = dynamic_cast<osgDB::ImageOptions::TexCoordRange*>(image->getUserData());
     
-	osg::Texture2D* texture = new osg::Texture2D;
-	texture->setImage(image);
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setImage(image);
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
         texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
         texture->setMaxAnisotropy(8);
-	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         
         if (useCompressedTextures)
         {
@@ -163,8 +163,8 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
         double latitude = orig_latitude;
         
         tex.x() = tex_orig.x();
-	for(c=0;c<numColumns;++c)
-	{
+        for(c=0;c<numColumns;++c)
+        {
             double sin_longitude = sin(longitude);
             if (leftHemisphere)
             {
@@ -174,14 +174,14 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
             {
                 normal.set(-cos(latitude)*sin_longitude,-sin(latitude)*sin_longitude,-cos(longitude));
             }
-	    v[vi] = normal;
-	    n[vi] = normal;
+            v[vi] = normal;
+            n[vi] = normal;
             
-	    t[vi].set(tex.x(),tex.y());
+            t[vi].set(tex.x(),tex.y());
             latitude+=delta_latitude;
             tex.x()+=columnTexDelta;
             ++vi;
-	}
+        }
         longitude += delta_longitude;
         tex.y() += rowTexDelta;
     }
@@ -198,11 +198,11 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
         osg::DrawElementsUShort& drawElements = *(new osg::DrawElementsUShort(GL_QUAD_STRIP,2*numColumns));
         geometry->addPrimitiveSet(&drawElements);
         int ei=0;
-	for(c=0;c<numColumns;++c)
-	{
-	    drawElements[ei++] = (r+1)*numColumns+c;
-	    drawElements[ei++] = (r)*numColumns+c;
-	}
+        for(c=0;c<numColumns;++c)
+        {
+            drawElements[ei++] = (r+1)*numColumns+c;
+            drawElements[ei++] = (r)*numColumns+c;
+        }
     }
 
     osgUtil::TriStripVisitor tsv;

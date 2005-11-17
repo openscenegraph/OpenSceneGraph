@@ -35,14 +35,14 @@ class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallba
             osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
 
             if (!image_0 || !image_1 || !image_2 || !image_3)
-       	    {
-	    	std::cout << "Warning: could not open files."<<std::endl;
+            {
+                std::cout << "Warning: could not open files."<<std::endl;
                 return new osg::StateSet;
             }
 
             if (image_0->getPixelFormat()!=image_1->getPixelFormat() || image_0->getPixelFormat()!=image_2->getPixelFormat() || image_0->getPixelFormat()!=image_3->getPixelFormat())
             {
-	    	std::cout << "Warning: image pixel formats not compatible."<<std::endl;
+                std::cout << "Warning: image pixel formats not compatible."<<std::endl;
                 return new osg::StateSet;
             }
 

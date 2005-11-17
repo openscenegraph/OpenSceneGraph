@@ -72,10 +72,10 @@ osg::Node* createEarth()
         {
             osgTerrain::DataSet::Source* source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE, filename);
 
-	    source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+            source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
             source->setCoordinateSystem(osgTerrain::DataSet::coordinateSystemStringToWTK("WGS84"));
 
- 	    source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION);
+             source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION);
             source->setGeoTransformFromRange(-180.0, 180.0, -90.0, 90.0);
 
             dataSet->addSource(source);

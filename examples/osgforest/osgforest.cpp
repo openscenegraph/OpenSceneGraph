@@ -357,9 +357,9 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {
-	osg::Texture2D* texture = new osg::Texture2D;
-	texture->setImage(image);
-	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setImage(image);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     
     geode->setStateSet( stateset );
@@ -374,11 +374,11 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
     float max_z = -FLT_MAX;
     for(r=0;r<numRows;++r)
     {
-	for(c=0;c<numColumns;++c)
-	{
-	    min_z = osg::minimum(min_z,vertex[r+c*numRows][2]);
-	    max_z = osg::maximum(max_z,vertex[r+c*numRows][2]);
-	}
+        for(c=0;c<numColumns;++c)
+        {
+            min_z = osg::minimum(min_z,vertex[r+c*numRows][2]);
+            max_z = osg::maximum(max_z,vertex[r+c*numRows][2]);
+        }
     }
     
     float scale_z = size.z()/(max_z-min_z);
@@ -396,10 +396,10 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
 
         for(r=0;r<numRows;++r)
         {
-	    for(c=0;c<numColumns;++c)
-	    {
-	        grid->setHeight(c,r,(vertex[r+c*numRows][2]-min_z)*scale_z);
-	    }
+            for(c=0;c<numColumns;++c)
+            {
+                grid->setHeight(c,r,(vertex[r+c*numRows][2]-min_z)*scale_z);
+            }
         }
         
         geode->addDrawable(new osg::ShapeDrawable(grid));
@@ -427,14 +427,14 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
         {
             pos.x() = origin.x();
             tex.x() = 0.0f;
-	    for(c=0;c<numColumns;++c)
-	    {
-	        v[vi].set(pos.x(),pos.y(),pos.z()+(vertex[r+c*numRows][2]-min_z)*scale_z);
-	        t[vi].set(tex.x(),tex.y());
+            for(c=0;c<numColumns;++c)
+            {
+                v[vi].set(pos.x(),pos.y(),pos.z()+(vertex[r+c*numRows][2]-min_z)*scale_z);
+                t[vi].set(tex.x(),tex.y());
                 pos.x()+=columnCoordDelta;
                 tex.x()+=columnTexDelta;
                 ++vi;
-	    }
+            }
             pos.y() += rowCoordDelta;
             tex.y() += rowTexDelta;
         }
@@ -449,11 +449,11 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
             osg::DrawElementsUShort& drawElements = *(new osg::DrawElementsUShort(GL_QUAD_STRIP,2*numColumns));
             geometry->addPrimitiveSet(&drawElements);
             int ei=0;
-	    for(c=0;c<numColumns;++c)
-	    {
-	        drawElements[ei++] = (r+1)*numColumns+c;
-	        drawElements[ei++] = (r)*numColumns+c;
-	    }
+            for(c=0;c<numColumns;++c)
+            {
+                drawElements[ei++] = (r+1)*numColumns+c;
+                drawElements[ei++] = (r)*numColumns+c;
+            }
         }
         
         geode->addDrawable(geometry);

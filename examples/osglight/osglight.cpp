@@ -83,7 +83,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     myLight1->setSpotExponent(50.0f);
     myLight1->setDirection(osg::Vec3(1.0f,1.0f,-1.0f));
 
-    osg::LightSource* lightS1 = new osg::LightSource;	
+    osg::LightSource* lightS1 = new osg::LightSource;    
     lightS1->setLight(myLight1);
     lightS1->setLocalStateSetModes(osg::StateAttribute::ON); 
 
@@ -101,7 +101,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     myLight2->setLinearAttenuation(2.0f/modelSize);
     myLight2->setQuadraticAttenuation(2.0f/osg::square(modelSize));
 
-    osg::LightSource* lightS2 = new osg::LightSource;	
+    osg::LightSource* lightS2 = new osg::LightSource;    
     lightS2->setLight(myLight2);
     lightS2->setLocalStateSetModes(osg::StateAttribute::ON); 
 

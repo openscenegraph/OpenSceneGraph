@@ -51,8 +51,8 @@ void TestManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         computePosition(boundingSphere.center()+osg::Vec3(0.0f, 0.0f, 20.0f),
-			osg::Vec3(0.0f, 1.0f, 0.0f),
-			osg::Vec3(0.0f,  0.0f,  1.0f));
+                        osg::Vec3(0.0f, 1.0f, 0.0f),
+                        osg::Vec3(0.0f,  0.0f,  1.0f));
 
         us.requestRedraw();
     }
@@ -237,7 +237,7 @@ bool TestManipulator::calcMovement()
         // rotate camera.
 
         osg::Quat new_rotate;
-	new_rotate.makeRotate(dx / 3.0f, osg::Vec3(0.0f, 0.0f, 1.0f));
+        new_rotate.makeRotate(dx / 3.0f, osg::Vec3(0.0f, 0.0f, 1.0f));
         
         _rotation = _rotation*new_rotate;
 
@@ -249,7 +249,7 @@ bool TestManipulator::calcMovement()
 
         // pan model.
 
-	osg::Vec3 dv = osg::Vec3(0.0f, 0.0f, -500.0f) * dy;
+        osg::Vec3 dv = osg::Vec3(0.0f, 0.0f, -500.0f) * dy;
 
         _center += dv;
         
@@ -260,7 +260,7 @@ bool TestManipulator::calcMovement()
     {
         osg::Matrixd rotation_matrix(_rotation);
     
-        		
+                        
         osg::Vec3 uv = osg::Vec3(0.0f,1.0f,0.0f)*rotation_matrix;
         osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f)*rotation_matrix;
         osg::Vec3 fv = uv ^ sv;
@@ -268,7 +268,7 @@ bool TestManipulator::calcMovement()
 
         _center += dv;
 
-	return true;
+        return true;
     }
 
     return false;

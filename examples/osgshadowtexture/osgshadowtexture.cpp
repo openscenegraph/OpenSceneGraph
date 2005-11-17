@@ -60,9 +60,9 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {
-	osg::Texture2D* texture = new osg::Texture2D;
-	texture->setImage(image);
-	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setImage(image);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     
     geode->setStateSet( stateset );
@@ -81,8 +81,8 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     unsigned int r;
     for(r=0;r<39;++r)
     {
-	for(unsigned int c=0;c<38;++c)
-	{
+        for(unsigned int c=0;c<38;++c)
+        {
             float h = vertex[r+c*39][2];
             if (h>maxHeight) maxHeight=h;
             if (h<minHeight) minHeight=h;
@@ -94,11 +94,11 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
 
     for(r=0;r<39;++r)
     {
-	for(unsigned int c=0;c<38;++c)
-	{
+        for(unsigned int c=0;c<38;++c)
+        {
             float h = vertex[r+c*39][2];
-	    grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
-	}
+            grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
+        }
     }
     
     geode->addDrawable(new osg::ShapeDrawable(grid));

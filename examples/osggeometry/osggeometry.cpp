@@ -492,11 +492,11 @@ osg::Node* createScene()
         polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,6,6));
         polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,12,5));
         
-	// polygon stipple
-	osg::StateSet* stateSet = new osg::StateSet();
-	polyGeom->setStateSet(stateSet);
-	osg::PolygonStipple* polygonStipple = new osg::PolygonStipple;
-	stateSet->setAttributeAndModes(polygonStipple,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+        // polygon stipple
+        osg::StateSet* stateSet = new osg::StateSet();
+        polyGeom->setStateSet(stateSet);
+        osg::PolygonStipple* polygonStipple = new osg::PolygonStipple;
+        stateSet->setAttributeAndModes(polygonStipple,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
         
         printTriangles("Triangles/Strip/Fan",*polyGeom);
 

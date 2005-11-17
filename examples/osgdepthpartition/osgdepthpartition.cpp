@@ -23,38 +23,38 @@ const double AU = 149697900.0;
 
 osg::Node* createScene()
 {
-	// Create the Earth, in blue
-	osg::ShapeDrawable *earth_sd = new osg::ShapeDrawable;
-	osg::Sphere* earth_sphere = new osg::Sphere;
-	earth_sphere->setRadius(r_earth);
-	earth_sd->setShape(earth_sphere);
-	earth_sd->setColor(osg::Vec4(0, 0, 1.0, 1.0));
+    // Create the Earth, in blue
+    osg::ShapeDrawable *earth_sd = new osg::ShapeDrawable;
+    osg::Sphere* earth_sphere = new osg::Sphere;
+    earth_sphere->setRadius(r_earth);
+    earth_sd->setShape(earth_sphere);
+    earth_sd->setColor(osg::Vec4(0, 0, 1.0, 1.0));
 
-	osg::Geode* earth = new osg::Geode;
-	earth->setName("earth");
-	earth->addDrawable(earth_sd);
+    osg::Geode* earth = new osg::Geode;
+    earth->setName("earth");
+    earth->addDrawable(earth_sd);
 
-	// Create the Sun, in yellow
-	osg::ShapeDrawable *sun_sd = new osg::ShapeDrawable;
-	osg::Sphere* sun_sphere = new osg::Sphere;
-	sun_sphere->setRadius(r_sun);
-	sun_sd->setShape(sun_sphere);
-	sun_sd->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
+    // Create the Sun, in yellow
+    osg::ShapeDrawable *sun_sd = new osg::ShapeDrawable;
+    osg::Sphere* sun_sphere = new osg::Sphere;
+    sun_sphere->setRadius(r_sun);
+    sun_sd->setShape(sun_sphere);
+    sun_sd->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
 
-	osg::Geode* sun = new osg::Geode;
-	sun->setName("sun");
-	sun->addDrawable(sun_sd);
+    osg::Geode* sun = new osg::Geode;
+    sun->setName("sun");
+    sun->addDrawable(sun_sd);
 
-	// Move the sun behind the earth
-	osg::PositionAttitudeTransform *pat = new osg::PositionAttitudeTransform;
-	pat->setPosition(osg::Vec3d(0.0, AU, 0.0));
+    // Move the sun behind the earth
+    osg::PositionAttitudeTransform *pat = new osg::PositionAttitudeTransform;
+    pat->setPosition(osg::Vec3d(0.0, AU, 0.0));
 
-	osg::Group* scene = new osg::Group;
-	scene->addChild(earth);
-	scene->addChild(pat);
-	pat->addChild(sun);
+    osg::Group* scene = new osg::Group;
+    scene->addChild(earth);
+    scene->addChild(pat);
+    pat->addChild(sun);
 
-	return scene;
+    return scene;
 }
 
 int main( int argc, char **argv )

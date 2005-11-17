@@ -585,7 +585,7 @@ ifeq ($(OS),CYGWIN)
   INST_LIBS         = $(INST_LOCATION)/bin
   INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include
-  INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
+  INST_SHARE_PREFIX = $(INST_LOCATION)
   INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_EXAMPLES     = $(INST_SHARE_PREFIX)/bin
   INST_EXAMPLE_SRC  = $(INST_SHARE_PREFIX)/src/demos
@@ -645,7 +645,7 @@ ifeq ($(OS),MINGW)
   INST_LIBS         = $(INST_LOCATION)/bin
   INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include
-  INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
+  INST_SHARE_PREFIX = $(INST_LOCATION)
   INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_EXAMPLES     = $(INST_SHARE_PREFIX)/bin
   INST_EXAMPLE_SRC  = $(INST_SHARE_PREFIX)/src/examples

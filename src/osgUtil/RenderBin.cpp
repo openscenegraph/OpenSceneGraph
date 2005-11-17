@@ -26,8 +26,8 @@ using namespace osgUtil;
 class RenderBinPrototypeList : public osg::Referenced, public std::map< std::string, osg::ref_ptr<RenderBin> > 
 {
     public:
-	RenderBinPrototypeList() {}
-	~RenderBinPrototypeList() {}
+        RenderBinPrototypeList() {}
+        ~RenderBinPrototypeList() {}
 };
 
 // register a RenderStage prototype with the RenderBin prototype list.

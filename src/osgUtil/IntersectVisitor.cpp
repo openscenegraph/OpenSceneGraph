@@ -615,7 +615,7 @@ void IntersectVisitor::apply(Billboard& node)
         pushMatrix(*billboard_matrix);
 
         intersect(*node.getDrawable(i));
-	
+
         popMatrix();
 
     }

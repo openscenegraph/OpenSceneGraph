@@ -134,33 +134,33 @@ class QuitImageStreamVisitor : public osg::NodeVisitor
     public:
 
         QuitImageStreamVisitor():
-		osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
        
 
         /** Simply traverse using standard NodeVisitor traverse method.*/
         virtual void apply(osg::Node& node)
-	{
-	    if (node.getStateSet())
-        	apply(*(node.getStateSet()));
-
-	    traverse(node);
-	}
-        
-        virtual void apply(osg::Geode& node)
-	{
-	    if (node.getStateSet())
+        {
+            if (node.getStateSet())
                 apply(*(node.getStateSet()));
 
-	    for(unsigned int i=0;i<node.getNumDrawables();++i)
-	    {
-        	osg::Drawable* drawable = node.getDrawable(i);
-        	if (drawable && drawable->getStateSet())
+            traverse(node);
+        }
+
+        virtual void apply(osg::Geode& node)
+        {
+            if (node.getStateSet())
+                apply(*(node.getStateSet()));
+
+            for(unsigned int i=0;i<node.getNumDrawables();++i)
+            {
+                osg::Drawable* drawable = node.getDrawable(i);
+                if (drawable && drawable->getStateSet())
                     apply(*(drawable->getStateSet()));
-	    }
-	}
-	
+            }
+        }
+
         void apply(osg::StateSet& stateset)
-	{
+        {
             for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
             {
                 osg::StateAttribute* texture = stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE);
@@ -168,26 +168,26 @@ class QuitImageStreamVisitor : public osg::NodeVisitor
                 {
                     osg::TextureRectangle* textureRect = dynamic_cast<osg::TextureRectangle*>(texture);
                     if (textureRect)
-		    {
-		        osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(textureRect->getImage());
-		        if (imageStream)
-		        {
-		    	    imageStream->quit();
-		        }
-		    }
+                    {
+                        osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(textureRect->getImage());
+                        if (imageStream)
+                        {
+                            imageStream->quit();
+                        }
+                    }
 
                     osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
                     if (texture2D)
-		    {
-		        osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(texture2D->getImage());
-		        if (imageStream)
-		        {
-		    	    imageStream->quit();
-		        }
-		    }
+                    {
+                        osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(texture2D->getImage());
+                        if (imageStream)
+                        {
+                            imageStream->quit();
+                        }
+                    }
                 }
-	    }
-	}
+            }
+        }
 
 };
 

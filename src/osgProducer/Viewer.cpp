@@ -360,8 +360,8 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     std::string pathfile;
     while (arguments.read("-p",pathfile))
     {
-	osg::ref_ptr<osgGA::AnimationPathManipulator> apm = new osgGA::AnimationPathManipulator(pathfile);
-	if( apm.valid() && apm->valid() ) 
+        osg::ref_ptr<osgGA::AnimationPathManipulator> apm = new osgGA::AnimationPathManipulator(pathfile);
+        if( apm.valid() && apm->valid() ) 
         {
             unsigned int num = addCameraManipulator(apm.get());
             selectCameraManipulator(num);

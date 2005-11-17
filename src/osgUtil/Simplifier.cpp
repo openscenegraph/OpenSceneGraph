@@ -1069,11 +1069,11 @@ struct CollectTriangleOperator
 
 EdgeCollapse::~EdgeCollapse()
 {
-	std::for_each(_edgeSet.begin(),_edgeSet.end(),dereference_clear());
+    std::for_each(_edgeSet.begin(),_edgeSet.end(),dereference_clear());
 
-	std::for_each(_triangleSet.begin(),_triangleSet.end(),dereference_clear());
-	std::for_each(_pointSet.begin(),_pointSet.end(),dereference_clear());
-	std::for_each(_originalPointList.begin(),_originalPointList.end(),dereference_clear());
+    std::for_each(_triangleSet.begin(),_triangleSet.end(),dereference_clear());
+    std::for_each(_pointSet.begin(),_pointSet.end(),dereference_clear());
+    std::for_each(_originalPointList.begin(),_originalPointList.end(),dereference_clear());
 }
 
 

@@ -92,12 +92,12 @@ std::string Output::wrapString(const std::string& str)
     newstring += '"';
     for(unsigned int i=0;i<str.size();++i)
     {
-    	if (str[i]=='"')
-	{
-	    newstring += '\\';
-	    newstring += '"';
-	}
-	else newstring += (str[i]);
+        if (str[i]=='"')
+        {
+            newstring += '\\';
+            newstring += '"';
+        }
+        else newstring += (str[i]);
     }
     newstring += '"';
     return newstring;

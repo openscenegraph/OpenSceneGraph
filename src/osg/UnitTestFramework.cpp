@@ -117,7 +117,7 @@ TestSuite* TestGraph::suite(const std::string& path, TestSuite* tsuite, bool cre
 }
 
 TestSuite* TestGraph::suite(
-		std::list<std::string>::iterator it,
+        std::list<std::string>::iterator it,
         std::list<std::string>::iterator end,
         TestSuite* tsuite, bool createIfNecessary)
 {

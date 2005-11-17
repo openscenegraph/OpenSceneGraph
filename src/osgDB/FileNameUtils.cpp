@@ -43,7 +43,7 @@ std::string osgDB::getSimpleFileName(const std::string& fileName)
     if (slash1==std::string::npos) 
     {
         if (slash2==std::string::npos) return fileName;
-	    return std::string(fileName.begin()+slash2+1,fileName.end());
+        return std::string(fileName.begin()+slash2+1,fileName.end());
     }
     if (slash2==std::string::npos) return std::string(fileName.begin()+slash1+1,fileName.end());
     return std::string(fileName.begin()+(slash1>slash2?slash1:slash2)+1,fileName.end());

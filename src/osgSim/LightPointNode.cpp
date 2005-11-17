@@ -251,14 +251,14 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             ++itr)
         {
             const LightPoint& lp = *itr;
-	    
-	    if (!lp._on) continue;
-	    
+    
+            if (!lp._on) continue;
+
             const osg::Vec3& position = lp._position;
-            
+
             // skip light point if it is not contianed in the view frustum.
             if (computeClipping && !clipvol.contains(position)) continue;
-                        
+
             // delta vector between eyepoint and light point.
             osg::Vec3 dv(eyePoint-position);
 
@@ -282,12 +282,12 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             if (lp._sector.valid())
             {
                 intensity *= (*lp._sector)(dv);
-            
+
                 // slip light point if it is intensity is 0.0 or negative.
                 if (intensity<=minimumIntensity) continue;
-                
+
             }
-            
+
             // temporary accounting of intensity.
             //color *= intensity;
 
@@ -304,13 +304,13 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 color[2] *= bs[2];
                 color[3] *= bs[3];
             }
-            
+
             // if alpha value is less than the min intentsive then skip
             if (color[3]<=minimumIntensity) continue;
 
             float pixelSize = cv->pixelSize(position,lp._radius);
 
-//            cout << "pixelsize = "<<pixelSize<<endl;
+            //            cout << "pixelsize = "<<pixelSize<<endl;
 
             // adjust pixel size to account for intensity.
             if (intensity!=1.0) pixelSize *= sqrt(intensity);

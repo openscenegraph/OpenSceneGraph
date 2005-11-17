@@ -174,7 +174,7 @@ bool FieldReader::_readField(Field* fieldPtr)
             }
             _fin->ignore(1);
             char c;
-	    bool escape = false; // use the escape character sequence \" to allow " to included in strings.
+            bool escape = false; // use the escape character sequence \" to allow " to included in strings.
             while (true)
             {
                 ch = _fin->peek();
@@ -183,34 +183,34 @@ bool FieldReader::_readField(Field* fieldPtr)
                     _eof = true;
                     return fieldPtr && fieldPtr->getNoCharacters()!=0;
                 }
-                c = ch;	
-		if (ch=='\\' && !escape)
-		{
-    	    	    escape = true;
+                c = ch;
+                if (ch=='\\' && !escape)
+                {
+                    escape = true;
                     _fin->ignore(1);
-		}
+                }
                 else if (ch=='"')
                 {
-		    if (escape)
-		    {
-		    	escape = false;
-                	_fin->get(c);
-                	if (fieldPtr) fieldPtr->addChar(c);
-		    }
-		    else
-		    {
-                	_fin->ignore(1);
-                	//return fieldPtr && fieldPtr->getNoCharacters()!=0;
-                	return fieldPtr!=NULL;
-		    }
+                    if (escape)
+                    {
+                        escape = false;
+                        _fin->get(c);
+                        if (fieldPtr) fieldPtr->addChar(c);
+                    }
+                    else
+                    {
+                        _fin->ignore(1);
+                        //return fieldPtr && fieldPtr->getNoCharacters()!=0;
+                        return fieldPtr!=NULL;
+                    }
                 }
                 else
                 {
-		    if (escape)
-		    {
-		    	escape = false;
+                    if (escape)
+                    {
+                        escape = false;
                         if (fieldPtr) fieldPtr->addChar('\\');
-		    }
+                    }
                     _fin->get(c);
                     if (fieldPtr) fieldPtr->addChar(c);
                 }
@@ -225,7 +225,7 @@ bool FieldReader::_readField(Field* fieldPtr)
             }
             _fin->ignore(1);
             char c;
-	    bool escape = false; // use the escape character sequence \' to allow ' to included in strings.
+            bool escape = false; // use the escape character sequence \' to allow ' to included in strings.
             while (true)
             {
                 ch = _fin->peek();
@@ -235,33 +235,33 @@ bool FieldReader::_readField(Field* fieldPtr)
                     return fieldPtr && fieldPtr->getNoCharacters()!=0;
                 }
                 c = ch;
-		if (ch=='\\' && !escape)
-		{
-    	    	    escape = true;
+                if (ch=='\\' && !escape)
+                {
+                    escape = true;
                     _fin->ignore(1);
-		}
+                }
                 else if (ch=='\'')
                 {
-		    if (escape)
-		    {
-		    	escape = false;
-                	_fin->get(c);
-                	if (fieldPtr) fieldPtr->addChar(c);
-		    }
-		    else
-		    {
-                	_fin->ignore(1);
-                	//return fieldPtr && fieldPtr->getNoCharacters()!=0;
-                	return fieldPtr!=NULL;
-		    }
+                    if (escape)
+                    {
+                        escape = false;
+                        _fin->get(c);
+                        if (fieldPtr) fieldPtr->addChar(c);
+                    }
+                    else
+                    {
+                        _fin->ignore(1);
+                        //return fieldPtr && fieldPtr->getNoCharacters()!=0;
+                        return fieldPtr!=NULL;
+                    }
                 }
                 else
                 {
-		    if (escape)
-		    {
-		    	escape = false;
+                    if (escape)
+                    {
+                        escape = false;
                         if (fieldPtr) fieldPtr->addChar('\\');
-		    }
+                    }
                     _fin->get(c);
                     if (fieldPtr) fieldPtr->addChar(c);
                 }

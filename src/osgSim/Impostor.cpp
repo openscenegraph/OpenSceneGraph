@@ -211,8 +211,8 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
      osgSim::ImpostorSpriteManager* impostorSpriteManager = dynamic_cast<osgSim::ImpostorSpriteManager*>(cv->getUserData());
      if (!impostorSpriteManager)
      {
-     	  impostorSpriteManager = new osgSim::ImpostorSpriteManager;
-	  cv->setUserData(impostorSpriteManager);
+          impostorSpriteManager = new osgSim::ImpostorSpriteManager;
+          cv->setUserData(impostorSpriteManager);
      }
     
     

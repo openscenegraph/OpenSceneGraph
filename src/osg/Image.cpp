@@ -308,11 +308,11 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
            sizeOfLastMipMap = maximum(sizeOfLastMipMap, 8u); // block size of 8
-	   break;
+           break;
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
            sizeOfLastMipMap = maximum(sizeOfLastMipMap, 16u); // block size of 16
-	   break;
+           break;
         default: break;
    }
 

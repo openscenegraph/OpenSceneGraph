@@ -158,7 +158,7 @@ bool TerrainManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
         }
 
         case(GUIEventAdapter::KEYDOWN):
-            if (ea.getKey()==' ')
+            if (ea.getKey()== GUIEventAdapter::KEY_Space)
             {
                 flushMouseEventStack();
                 _thrown = false;

@@ -341,7 +341,7 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         case(GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()==' ')
+            if (ea.getKey()==GUIEventAdapter::KEY_Space)
             {
                 flushMouseEventStack();
                 home(ea,us);

@@ -67,8 +67,17 @@ class OSGGA_EXPORT FlightManipulator : public MatrixManipulator
                 NO_AUTOMATIC_YAW
         };
 
-        /**        Configure the Yaw control for the flight model.        */
+        /** Configure the Yaw control for the flight model. */
         void setYawControlMode(YawControlMode ycm) { _yawMode = ycm; }
+
+        void setModelScale(double in_ms) { _modelScale = in_ms; }
+        double getModelScale() const { return _modelScale; }
+
+        void setAcceleration(double in_acc) { _acceleration = in_acc; }
+        double getAcceleration() const { return _acceleration; }
+
+        void setVelocity(double in_vel) { _velocity = in_vel; }
+        double getVelocity() const { return _velocity; }
 
     protected:
 

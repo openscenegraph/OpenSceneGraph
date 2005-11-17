@@ -131,7 +131,8 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
         }
 
         case(GUIEventAdapter::KEYDOWN):
-            if (ea.getKey()==' ')
+        {
+            if (ea.getKey()==GUIEventAdapter::KEY_Space)
             {
                 flushMouseEventStack();
                 home(ea,us);
@@ -150,7 +151,7 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 return true;
             }
             return false;
-
+        }
         case(GUIEventAdapter::FRAME):
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();

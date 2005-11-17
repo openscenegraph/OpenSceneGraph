@@ -29,8 +29,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0();
 	I_Method0(const char *, className);
-	I_Method1(void, setMinimumZoomScale, IN, float, minimumZoomScale);
-	I_Method0(float, getMinimumZoomScale);
 	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
 	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
 	I_Method0(osg::Matrixd, getMatrix);
@@ -45,6 +43,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
+	I_Method1(void, setMinimumZoomScale, IN, double, minimumZoomScale);
+	I_Method0(double, getMinimumZoomScale);
 	I_Method1(void, setTrackballSize, IN, float, size);
 	I_Method0(float, getTrackballSize);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
@@ -53,7 +53,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_ReadOnlyProperty(float, FusionDistanceValue);
 	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
 	I_ReadOnlyProperty(osg::Matrixd, Matrix);
-	I_Property(float, MinimumZoomScale);
+	I_Property(double, MinimumZoomScale);
 	I_Property(osg::Node *, Node);
 	I_Property(float, TrackballSize);
 END_REFLECTOR

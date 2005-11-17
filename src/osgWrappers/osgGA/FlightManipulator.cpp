@@ -45,11 +45,20 @@ BEGIN_OBJECT_REFLECTOR(osgGA::FlightManipulator)
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method1(void, setYawControlMode, IN, osgGA::FlightManipulator::YawControlMode, ycm);
+	I_Method1(void, setModelScale, IN, double, in_ms);
+	I_Method0(double, getModelScale);
+	I_Method1(void, setAcceleration, IN, double, in_acc);
+	I_Method0(double, getAcceleration);
+	I_Method1(void, setVelocity, IN, double, in_vel);
+	I_Method0(double, getVelocity);
+	I_Property(double, Acceleration);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
 	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
 	I_ReadOnlyProperty(osg::Matrixd, Matrix);
+	I_Property(double, ModelScale);
 	I_Property(osg::Node *, Node);
+	I_Property(double, Velocity);
 	I_WriteOnlyProperty(osgGA::FlightManipulator::YawControlMode, YawControlMode);
 END_REFLECTOR
 

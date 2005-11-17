@@ -22,6 +22,6 @@ namespace osg {
     typedef UByte4 Vec4ub;
 #endif
 
-}	// end of namespace osg
+}    // end of namespace osg
 
 #endif

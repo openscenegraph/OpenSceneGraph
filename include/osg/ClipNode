@@ -33,7 +33,7 @@ class OSG_EXPORT ClipNode : public Group
         ClipNode(const ClipNode& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, ClipNode);
-	
+    
         /** Creates six clip planes corresponding to the given BoundingBox. */
         void createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberBase=0);
 

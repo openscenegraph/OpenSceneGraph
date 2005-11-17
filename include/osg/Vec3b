@@ -121,12 +121,12 @@ class Vec3b
         inline Vec3b operator + (const Vec3b& rhs) const
         {
             return Vec3b(_v[0]+rhs._v[0], _v[1]+rhs._v[1],
-		        _v[2]+rhs._v[2]);
+                        _v[2]+rhs._v[2]);
         }
 
         /** Unary vector add. Slightly more efficient because no temporary
           * intermediate object.
-		*/
+        */
         inline Vec3b& operator += (const Vec3b& rhs)
         {
             _v[0] += rhs._v[0];
@@ -139,7 +139,7 @@ class Vec3b
         inline Vec3b operator - (const Vec3b& rhs) const
         {
             return Vec3b(_v[0]-rhs._v[0], _v[1]-rhs._v[1],
-		        _v[2]-rhs._v[2]);
+                        _v[2]-rhs._v[2]);
         }
 
         /** Unary vector subtract. */
@@ -151,10 +151,10 @@ class Vec3b
             return *this;
         }
 
-};	// end of class Vec3b
+};    // end of class Vec3b
 
 
 
-}	// end of namespace osg
+}    // end of namespace osg
 
 #endif

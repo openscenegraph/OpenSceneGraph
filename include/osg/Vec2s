@@ -12,7 +12,7 @@
 */
 
 #ifndef OSG_VEC2S
-#define OSG_VEC2S		1
+#define OSG_VEC2S        1
 
 namespace osg {
 

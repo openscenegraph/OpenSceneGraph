@@ -74,8 +74,8 @@ public:
                 unsigned int pos=first;
                 for(GLsizei i=2;i<count;++i,++pos)
                 {
-		    if ((i%2)) this->operator()(pos,pos+2,pos+1);
-		    else       this->operator()(pos,pos+1,pos+2);
+                    if ((i%2)) this->operator()(pos,pos+2,pos+1);
+                    else       this->operator()(pos,pos+1,pos+2);
                 }
                 break;
             }
@@ -139,8 +139,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-		    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
-		    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
                 }
                 break;
             }
@@ -206,8 +206,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-		    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
-		    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
                 }
                 break;
             }
@@ -273,8 +273,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-		    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
-		    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+                    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
                 }
                 break;
             }

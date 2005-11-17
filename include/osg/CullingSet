@@ -345,6 +345,6 @@ class OSG_EXPORT CullingSet : public Referenced
 
 };
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

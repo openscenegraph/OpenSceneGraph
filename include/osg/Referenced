@@ -172,13 +172,13 @@ inline void Referenced::unref() const
   */
 class OSG_EXPORT Referenced : public NoodleGlue::CBridgable 
 {
-	public:
-		/** Method not used in NoodleGlue referencing 
-		  */
-		inline void unref_nodelete() const { --_refCount; }
-		inline int referenceCount() const { return _refCount; }
-	protected:
-		virtual ~Referenced() {}
+    public:
+        /** Method not used in NoodleGlue referencing 
+          */
+        inline void unref_nodelete() const { --_refCount; }
+        inline int referenceCount() const { return _refCount; }
+    protected:
+        virtual ~Referenced() {}
 };
 #endif //OSG_JAVA_BUILD
 

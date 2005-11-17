@@ -29,12 +29,12 @@
     #  if defined( _LIB ) || defined( USE_STATIC )
     #    define OSGDB_EXPORT
     #  elif defined( OSGDB_LIBRARY )
-	#    define OSGDB_EXPORT   __declspec(dllexport)
-	#  else
-	#    define OSGDB_EXPORT   __declspec(dllimport)
-	#  endif /* OSGDBSG_LIBRARY */
+    #    define OSGDB_EXPORT   __declspec(dllexport)
+    #  else
+    #    define OSGDB_EXPORT   __declspec(dllimport)
+    #  endif /* OSGDBSG_LIBRARY */
 #else
-	#  define OSGDB_EXPORT
+    #  define OSGDB_EXPORT
 #endif
 
 /**

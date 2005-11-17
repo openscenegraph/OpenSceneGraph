@@ -79,7 +79,7 @@ class OSGSIM_EXPORT Impostor : public osg::LOD
         /** Set the Impostor threshold distance.
           * For eye points further than this threshold the Imposter is used if appropriate,
           * otherwise the LOD children as chosen as per a standard LOD node.
-		*/
+        */
         inline void setImpostorThreshold(float distance) { _impostorThreshold = distance; }
         
         /* Get the Impostor threshold distance. */

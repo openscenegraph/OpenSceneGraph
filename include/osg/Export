@@ -31,15 +31,15 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-	#  if defined( _LIB ) || defined( USE_STATIC )
-	#    define OSG_EXPORT
-	#  elif defined( OSG_LIBRARY )
-	#    define OSG_EXPORT   __declspec(dllexport)
-	#  else
-	#    define OSG_EXPORT   __declspec(dllimport)
-	#  endif /* SG_LIBRARY */
+    #  if defined( _LIB ) || defined( USE_STATIC )
+    #    define OSG_EXPORT
+    #  elif defined( OSG_LIBRARY )
+    #    define OSG_EXPORT   __declspec(dllexport)
+    #  else
+    #    define OSG_EXPORT   __declspec(dllimport)
+    #  endif /* SG_LIBRARY */
 #else
-	#  define OSG_EXPORT
+    #  define OSG_EXPORT
 #endif  
 
 // set up define for whether member templates are supported by VisualStudio compilers.

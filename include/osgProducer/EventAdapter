@@ -84,7 +84,7 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         void adaptResize(double t, float Xmin, float Ymin, float Xmax, float Ymax);
 
         /** method for adapting mouse scroll wheel events. */
-	void adaptMouseScroll(double t, Producer::KeyboardMouseCallback::ScrollingMotion sm);
+        void adaptMouseScroll(double t, Producer::KeyboardMouseCallback::ScrollingMotion sm);
 
         /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
         void adaptMouseMotion(double t, float x, float y);
@@ -125,8 +125,8 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         // which required the mouse buttons state at the time of the event.
         static unsigned int _s_accumulatedButtonMask;
         
-	// used to store current button value
-	static int _s_button;
+        // used to store current button value
+        static int _s_button;
 
         // used to store window min and max values.
         static float _s_Xmin;

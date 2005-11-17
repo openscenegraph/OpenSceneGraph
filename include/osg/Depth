@@ -85,7 +85,7 @@ class OSG_EXPORT Depth : public StateAttribute
 
         inline void setZNear(double zNear) { _zNear=zNear; }
         inline double getZNear() const { return _zNear; }
-	
+    
         inline void setZFar(double zFar) { _zFar=zFar; }
         inline double getZFar() const { return _zFar; }
 

@@ -186,10 +186,10 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         ref_ptr<osg::RefMatrix>                                     _identity;
         
         typedef std::vector< osg::ref_ptr<osg::RefMatrix> > MatrixList;
-	MatrixList _reuseMatrixList;
-	unsigned int _currentReuseMatrixIndex;
-	
-	inline osg::RefMatrix* createOrReuseMatrix(const osg::Matrix& value);
+        MatrixList _reuseMatrixList;
+        unsigned int _currentReuseMatrixIndex;
+        
+        inline osg::RefMatrix* createOrReuseMatrix(const osg::Matrix& value);
 
         
 };
@@ -286,6 +286,6 @@ inline RefMatrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
     return matrix;
 }
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

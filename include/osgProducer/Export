@@ -30,12 +30,12 @@
     #  if defined( _LIB ) || defined( USE_STATIC )
     #    define OSGPRODUCER_EXPORT
     #  elif defined( OSGPRODUCER_LIBRARY )
-	#    define OSGPRODUCER_EXPORT   __declspec(dllexport)
-	#  else
-	#    define OSGPRODUCER_EXPORT   __declspec(dllimport)
-	#endif /* OSGPRODUCER_LIBRARY */
+    #    define OSGPRODUCER_EXPORT   __declspec(dllexport)
+    #  else
+    #    define OSGPRODUCER_EXPORT   __declspec(dllimport)
+    #endif /* OSGPRODUCER_LIBRARY */
 #else
-	#define OSGPRODUCER_EXPORT 
+    #define OSGPRODUCER_EXPORT 
 #endif 
 
 /**

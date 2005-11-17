@@ -45,7 +45,7 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
 
         class ControlPoint
         {
-	public:
+        public:
             ControlPoint():
                 _scale(1.0,1.0,1.0) {}
 
@@ -64,14 +64,14 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
                 _rotation(rotation),
                 _scale(scale) {}
         
-    	    void setPosition(const osg::Vec3d& position) { _position = position; }
-    	    const osg::Vec3d& getPosition() const { return _position; }
+            void setPosition(const osg::Vec3d& position) { _position = position; }
+            const osg::Vec3d& getPosition() const { return _position; }
 
-    	    void setRotation(const osg::Quat& rotation) { _rotation = rotation; }
-    	    const osg::Quat& getRotation() const { return _rotation; }
+            void setRotation(const osg::Quat& rotation) { _rotation = rotation; }
+            const osg::Quat& getRotation() const { return _rotation; }
 
-    	    void setScale(const osg::Vec3d& scale) { _scale = scale; }
-    	    const osg::Vec3d& getScale() const { return _scale; }
+            void setScale(const osg::Vec3d& scale) { _scale = scale; }
+            const osg::Vec3d& getScale() const { return _scale; }
 
             inline void interpolate(float ratio,const ControlPoint& first, const ControlPoint& second)
             {
@@ -116,8 +116,8 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
                 matrix.preMult(osg::Matrixd::rotate(_rotation.inverse()));
                 matrix.preMult(osg::Matrixd::translate(-_position));
             }
-	    
-    	protected:
+        
+        protected:
 
             osg::Vec3d _position;
             osg::Quat _rotation;

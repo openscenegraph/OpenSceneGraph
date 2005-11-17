@@ -384,6 +384,6 @@ class OSG_EXPORT Polytope
 
 };
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

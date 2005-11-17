@@ -34,7 +34,7 @@ class OSG_EXPORT ClusterCullingCallback : public Drawable::CullCallback, public 
         META_Object(osg,ClusterCullingCallback);
 
         /** Computes the control point, normal, and deviation from the
-		  * given drawable contents. */
+          * given drawable contents. */
         void computeFrom(const osg::Drawable* drawable);
         
         /** Transform the ClusterCullingCallback's positional members to a new coordinate frame.*/

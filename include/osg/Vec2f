@@ -167,7 +167,7 @@ class Vec2f
             }
             return( norm );
         }
-		
+        
 };    // end of class Vec2f
 
 }    // end of namespace osg

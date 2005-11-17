@@ -48,6 +48,6 @@ class OSG_EXPORT ConvexPlanarPolygon
 
 };
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

@@ -136,7 +136,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec2b& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1];
-	    return output; 	// to enable cascading
+    return output; // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec2b& vec)
@@ -152,7 +152,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec3b& vec)
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
            << (int)vec._v[2];
-	    return output; 	// to enable cascading
+    return output; // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec3b& vec)
@@ -169,7 +169,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec4b& vec)
            << (int)vec._v[1] << " "
            << (int)vec._v[2] << " "
            << (int)vec._v[3];
-	    return output; 	// to enable cascading
+    return output; // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec4b& vec)
@@ -185,7 +185,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec2s& vec)
 {
     output << (int)vec._v[0] << " "
            << (int)vec._v[1];
-	    return output; 	// to enable cascading
+    return output; // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec2s& vec)
@@ -201,7 +201,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec3s& vec)
     output << (int)vec._v[0] << " "
            << (int)vec._v[1] << " "
            << (int)vec._v[2];
-	    return output; 	// to enable cascading
+    return output; // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec3s& vec)
@@ -218,7 +218,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec4s& vec)
            << (int)vec._v[1] << " "
            << (int)vec._v[2] << " "
            << (int)vec._v[3];
-	    return output; 	// to enable cascading
+    return output; // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec4s& vec)
@@ -267,7 +267,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec4ub& vec)
            << (int)vec._v[1] << " "
            << (int)vec._v[2] << " "
            << (int)vec._v[3];
-    return output; 	// to enable cascading
+    return output;         // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Vec4ub& vec)
@@ -301,10 +301,10 @@ inline std::istream& operator >> (std::istream& input, Quat& vec)
 inline std::ostream& operator << (std::ostream& output, const Plane& pl)
 {
     output << pl[0] << " "
-	   << pl[1] << " "
-	   << pl[2] << " "
-	   << pl[3];
-    return output; 	// to enable cascading
+           << pl[1] << " "
+           << pl[2] << " "
+           << pl[3];
+    return output;         // to enable cascading
 }
 
 inline std::istream& operator >> (std::istream& input, Plane& vec)

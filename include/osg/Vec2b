@@ -26,7 +26,7 @@ class Vec2b
 {
     public:
 
-	// Methods are defined here so that they are implicitly inlined
+        // Methods are defined here so that they are implicitly inlined
 
         /** Type of Vec class.*/
         typedef char value_type;
@@ -123,7 +123,7 @@ class Vec2b
 
         /** Unary vector add. Slightly more efficient because no temporary
           * intermediate object.
-		*/
+        */
         inline Vec2b& operator += (const Vec2b& rhs)
         {
             _v[0] += rhs._v[0];
@@ -145,10 +145,10 @@ class Vec2b
             return *this;
         }
 
-};	// end of class Vec2b
+};    // end of class Vec2b
 
 
 
-}	// end of namespace osg
+}    // end of namespace osg
 
 #endif

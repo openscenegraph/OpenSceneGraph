@@ -38,7 +38,7 @@ class OSG_EXPORT ImageStream : public Image
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const Image& rhs) const;
 
-	enum StreamStatus
+        enum StreamStatus
         {
             INVALID,
             PLAYING,

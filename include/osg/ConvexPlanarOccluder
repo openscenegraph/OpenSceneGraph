@@ -39,7 +39,7 @@ class OSG_EXPORT ConvexPlanarOccluder : public Object
         void setOccluder(const ConvexPlanarPolygon& cpp) { _occluder = cpp; }
         
         ConvexPlanarPolygon& getOccluder() { return _occluder; }
-	
+    
         const ConvexPlanarPolygon& getOccluder() const { return _occluder; }
         
         
@@ -50,9 +50,9 @@ class OSG_EXPORT ConvexPlanarOccluder : public Object
 
         void setHoleList(const HoleList& holeList) { _holeList=holeList; }
         
-	HoleList& getHoleList() { return _holeList; }
+        HoleList& getHoleList() { return _holeList; }
         
-	const HoleList& getHoleList() const { return _holeList; }
+        const HoleList& getHoleList() const { return _holeList; }
 
     protected:
 
@@ -63,6 +63,6 @@ class OSG_EXPORT ConvexPlanarOccluder : public Object
 
 };
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

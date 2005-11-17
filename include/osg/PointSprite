@@ -28,17 +28,17 @@ namespace osg {
 class OSG_EXPORT PointSprite : public osg::StateAttribute {
 public:
 
-	PointSprite() {}
+        PointSprite() {}
 
-	/** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-	PointSprite(const PointSprite& texenv,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):        
-	    StateAttribute(texenv,copyop) {}
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        PointSprite(const PointSprite& texenv,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):        
+            StateAttribute(texenv,copyop) {}
 
 
-	META_StateAttribute(osg, PointSprite, POINTSPRITE);
+        META_StateAttribute(osg, PointSprite, POINTSPRITE);
 
-	/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-	virtual int compare(const StateAttribute& sa) const;
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const;
 
         virtual bool getModeUsage(ModeUsage& usage) const
         {
@@ -46,14 +46,14 @@ public:
             return true;
         }
 
-	virtual bool isTextureAttribute() const { return true; }
+        virtual bool isTextureAttribute() const { return true; }
 
-	virtual void apply(osg::State& state) const;
+        virtual void apply(osg::State& state) const;
 
-	static bool isPointSpriteSupported(unsigned int context);
+        static bool isPointSpriteSupported(unsigned int context);
 
 protected:
-	virtual ~PointSprite( void ) {}
+        virtual ~PointSprite( void ) {}
 };
 
 }

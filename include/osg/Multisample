@@ -83,7 +83,7 @@ class OSG_EXPORT Multisample : public StateAttribute
         }
         inline void setCoverage(float coverage) { _coverage=coverage; }
         inline float getCoverage() const { return _coverage; }
-	
+    
         inline void setInvert(bool invert) { _invert=invert; }
         inline bool getInvert() const { return _invert; }
 

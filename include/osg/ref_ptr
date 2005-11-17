@@ -76,9 +76,9 @@ class ref_ptr
 
         inline const T* operator->() const   { return _ptr; }
 
-	inline bool operator!() const	{ return _ptr==0L; }
+        inline bool operator!() const   { return _ptr==0L; }
 
-	inline bool valid() const	{ return _ptr!=0L; }
+        inline bool valid() const       { return _ptr!=0L; }
         
         inline T* get() { return _ptr; }
 

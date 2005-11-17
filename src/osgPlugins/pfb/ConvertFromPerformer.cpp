@@ -1173,25 +1173,25 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
       switch(mode)
       {
           case(PFTE_MODULATE) :
-	      osgTexEnv->setMode(osg::TexEnv::MODULATE);
-	      osgTexEnv->setColor(osg::Vec4(r,g,b,a));
-	      break;
-	  case(PFTE_DECAL) :
-	      osgTexEnv->setMode(osg::TexEnv::DECAL);
-	      osgTexEnv->setColor(osg::Vec4(r,g,b,a));
-	      break;
-	  case(PFTE_BLEND) :
-	      osgTexEnv->setMode(osg::TexEnv::BLEND);
-	      osgTexEnv->setColor(osg::Vec4(r,g,b,a));
-	      break;
-	  case(PFTE_REPLACE) :
-	      osgTexEnv->setMode(osg::TexEnv::REPLACE);
-	      osgTexEnv->setColor(osg::Vec4(r,g,b,a));
-	      break;
-	  case(PFTE_ADD) :
-	      osgTexEnv->setMode(osg::TexEnv::ADD);
-	      osgTexEnv->setColor(osg::Vec4(r,g,b,a));
-	      break;
+              osgTexEnv->setMode(osg::TexEnv::MODULATE);
+              osgTexEnv->setColor(osg::Vec4(r,g,b,a));
+              break;
+          case(PFTE_DECAL) :
+              osgTexEnv->setMode(osg::TexEnv::DECAL);
+              osgTexEnv->setColor(osg::Vec4(r,g,b,a));
+              break;
+          case(PFTE_BLEND) :
+              osgTexEnv->setMode(osg::TexEnv::BLEND);
+              osgTexEnv->setColor(osg::Vec4(r,g,b,a));
+              break;
+          case(PFTE_REPLACE) :
+              osgTexEnv->setMode(osg::TexEnv::REPLACE);
+              osgTexEnv->setColor(osg::Vec4(r,g,b,a));
+              break;
+          case(PFTE_ADD) :
+              osgTexEnv->setMode(osg::TexEnv::ADD);
+              osgTexEnv->setColor(osg::Vec4(r,g,b,a));
+              break;
           default:
               osg::notify(osg::WARN) << "TexEnv Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
               break;

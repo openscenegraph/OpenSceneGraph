@@ -204,7 +204,7 @@ public:
             opening[nop-1].addvtx(nvtot);
         }
     }
-	void setNBegin(int n1) {nVertStart=n1;}
+    void setNBegin(int n1) {nVertStart=n1;}
     void norm(Vec3 &n, const Vec3 side, const Vec3 s2) const {
         n=s2^side; // perpendicular
         n.normalize(); // unit norm
@@ -344,7 +344,7 @@ private:
     class _face *opening; // openings in this face. number of verts, vertex list for opening
     int nv; // number of vertices in the face
     int nset; // number read so far
-	int nVertStart; // start index of vertices in the grand Geometry
+    int nVertStart; // start index of vertices in the grand Geometry
     Vec3 nrm; // surface normal
     int *idx; // indices into the vertex list for the object
 };
@@ -357,22 +357,22 @@ public:
     prims() { nbegin=0; // primlengs=NULL; gsidx=NULL;nrmidx=NULL;
      //   txidx=NULL;nrms=NULL;txcoords=NULL;
      //   nload=0; nff=0; curmode=0;
-		vertices = new osg::Vec3Array;
-		normals = new osg::Vec3Array;
-		txc = new osg::Vec3Array;
+        vertices = new osg::Vec3Array;
+        normals = new osg::Vec3Array;
+        txc = new osg::Vec3Array;
         txcoords=new osg::Vec3Array; // new Vec2[6*nfnvf]; // one texture coord per vertex
-		tmat=NULL;
+        tmat=NULL;
     }
     ~prims() {    /*delete [] primlengs; delete [] nrms;
         delete [] gsidx; delete [] nrmidx; delete [] txcoords;*/
     }
     void addv(avertex *pos) { // tesselation callback
-		vertices->push_back(osg::Vec3(pos->pos[0],pos->pos[1],pos->pos[2]));
-		normals->push_back(pos->nrmv);
+        vertices->push_back(osg::Vec3(pos->pos[0],pos->pos[1],pos->pos[2]));
+        normals->push_back(pos->nrmv);
         txcoords->push_back(osg::Vec3(pos->uv[0],pos->uv[1],0.0f));
     }
     void End() { // tesselation is done
-		int nverts=vertices->size()-nbegin;
+        int nverts=vertices->size()-nbegin;
         osg::DrawArrays *drw=NULL;                                
             switch (primType) {
             case GL_TRIANGLES: //gset->setPrimType( osg::GeoSet::TRIANGLES );
@@ -406,15 +406,15 @@ public:
             }
     }
     void begin(GLenum op) { // part of a tesselator callback - starts a new primitive of type op
-		primType=op;
-		nbegin=vertices->size();
+        primType=op;
+        nbegin=vertices->size();
     }
     void combine( GLdouble coords[3], avertex *d[4], 
         GLfloat w[4], avertex **dataOut , _dwobj *dwob);
     void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, 
         const _face *f1, const _face *f2, 
         const int ipr[2], const int nv) {
-		int gsidx[4];
+        int gsidx[4];
         gsidx[0]=f1->getidx(ipr[1]); // vertex position index
         gsidx[1]=f1->getidx(ipr[0]); // vertex position index
         gsidx[2]=f2->getidx(nv-ipr[0]-1); // vertex position index
@@ -427,14 +427,14 @@ public:
         s2=verts[gsidx[2]]-verts[gsidx[1]];
         f1->norm(nrm, s2, s1);
         f1->settrans(mx, nrm, verts,themat);
-		int n1=vertices->size();
+        int n1=vertices->size();
         for (int j=0; j<4; j++) {
             Vec3 uv;
-			Vec3 coord=(verts[gsidx[j]]);
-			vertices->push_back( coord );
+            Vec3 coord=(verts[gsidx[j]]);
+            vertices->push_back( coord );
             uv=mx*verts[gsidx[j]];
-			txcoords->push_back(uv);
-			normals->push_back(nrm);
+            txcoords->push_back(uv);
+            normals->push_back(nrm);
         }
         osg::DrawArrays *drw=NULL;                                
         drw=new osg::DrawArrays(osg::PrimitiveSet::QUADS,n1,4);
@@ -442,29 +442,29 @@ public:
     }
     void tesselate(_face &fc, const std::vector<Vec3> verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
     {    // generates a set of primitives all of one type (eg tris, qstrip trifan...)
-		fc.setNBegin(vertices->size());
+        fc.setNBegin(vertices->size());
         fc.tesselate(verts, themat, ts, dwob, tmat);
     }
     void buildGeometry() { // at end of all faces, add collection of vertices to geometry
         gset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX); //BIND_PERPRIM); //
-		gset->setNormalArray(normals);
-		gset->setTexCoordArray(0,txcoords);
+        gset->setNormalArray(normals);
+        gset->setTexCoordArray(0,txcoords);
         gset->setVertexArray(vertices); // setCoords( vts, nusidx );
     }
     void setGeometry(osg::Geometry *gs) {
-		gset=gs;
+        gset=gs;
     }
     void settmat(const Matrix *mx) {
         tmat= mx;
     }
 private:
-	osg::Geometry *gset;
-	osg::Vec3Array* vertices;
-	osg::Vec3Array* normals;
-	osg::Vec3Array* txc;
-	osg::Vec3Array* txcoords;
-	GLenum primType;
-	int nbegin; // vertex indices for current primitive
+    osg::Geometry *gset;
+    osg::Vec3Array* vertices;
+    osg::Vec3Array* normals;
+    osg::Vec3Array* txc;
+    osg::Vec3Array* txcoords;
+    GLenum primType;
+    int nbegin; // vertex indices for current primitive
     const Matrix *tmat; // local texture matrix, or may be NULL for default mapping
 };
 
@@ -709,24 +709,24 @@ void _face::tesselate(const std::vector<Vec3> verts, const dwmaterial *themat,
 }
 void prims::combine( GLdouble coords[3], avertex *d[4], 
                     GLfloat w[4], avertex **dataOut , _dwobj *dwob) {
-	avertex *newv = new avertex(); // (avertex *)calloc(1, sizeof(avertex)); 
-	newv->pos[0] = coords[0]; 
-	newv->pos[1] = coords[1]; 
-	newv->pos[2] = coords[2];
-	newv->uv[0] = newv->uv[1] =0;
-	newv->nrmv[0] = newv->nrmv[1] = newv->nrmv[2] =0;
-	for (int i=0; i<4; i++) {
-		if (d[i]) {
-			newv->uv[0] = w[i]*d[i]->uv[0];
-			newv->uv[1] = w[i]*d[i]->uv[1];
-			newv->nrmv[0] = w[i]*d[i]->nrmv[0];
-			newv->nrmv[1] = w[i]*d[i]->nrmv[1];
-			newv->nrmv[2] = w[i]*d[i]->nrmv[2];
-		}
-	}
-	dwob->makeuv(newv->uv, newv->pos);
-	newv->idx=dwob->addvtx(coords[0], coords[1], coords[2]);
-	*dataOut = newv;
+    avertex *newv = new avertex(); // (avertex *)calloc(1, sizeof(avertex)); 
+    newv->pos[0] = coords[0]; 
+    newv->pos[1] = coords[1]; 
+    newv->pos[2] = coords[2];
+    newv->uv[0] = newv->uv[1] =0;
+    newv->nrmv[0] = newv->nrmv[1] = newv->nrmv[2] =0;
+    for (int i=0; i<4; i++) {
+        if (d[i]) {
+            newv->uv[0] = w[i]*d[i]->uv[0];
+            newv->uv[1] = w[i]*d[i]->uv[1];
+            newv->nrmv[0] = w[i]*d[i]->nrmv[0];
+            newv->nrmv[1] = w[i]*d[i]->nrmv[1];
+            newv->nrmv[2] = w[i]*d[i]->nrmv[2];
+        }
+    }
+    dwob->makeuv(newv->uv, newv->pos);
+    newv->idx=dwob->addvtx(coords[0], coords[1], coords[2]);
+    *dataOut = newv;
 }
 void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *options)
 {  // current DWobject complete; make a drawable, and add it to a osg::Group
@@ -744,45 +744,45 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             LightSource *ls=themat->makeLight(pos);
             grp->addChild(ls);
         } else {
-			Geode *geode = new Geode;
-			int nfnvf=0; // number of vertices for faces plus holes
-			int i; // a general counter
-			for (i=0; i<nfaces; i++) { // for each face
-				faces[i].setnorm(verts); // set its normal and any hole normals
-				nfnvf+=faces[i].getallverts(); // get total vertices in object, defines dimensions of NEW arrays
-			}
-			
-			
-			GLUtesselator* ts=gluNewTess();
-			gluTessCallback(ts, GLU_TESS_BEGIN, (GLU_TESS_CALLBACK) myFaceBegin);  
-			gluTessCallback(ts, GLU_TESS_VERTEX, (GLU_TESS_CALLBACK) myVertex);  
-			gluTessCallback(ts, GLU_TESS_END, (GLU_TESS_CALLBACK) myFaceEnd);  
-			gluTessCallback(ts, GLU_TESS_ERROR, (GLU_TESS_CALLBACK) error);  
-			gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK) combineCallback);
-			//  for (int nvf=0; nvf<6; nvf++) { // for each length of face
-			// for Geometry we dont need to collect prim types individually
-			//     prd.setmode(nvf , nfnvf); // filter out only this type of tesselated face
-			prd=new prims;
-			prd->settmat(tmat);
-			osg::Geometry *gset = new osg::Geometry;
-			prd->setGeometry(gset);
-			StateSet *dstate=themat->make(options);            
-			gset->setStateSet( dstate );
-			grp->addChild( geode ); // add to the world outside
-			geode->addDrawable(gset);
+            Geode *geode = new Geode;
+            int nfnvf=0; // number of vertices for faces plus holes
+            int i; // a general counter
+            for (i=0; i<nfaces; i++) { // for each face
+                faces[i].setnorm(verts); // set its normal and any hole normals
+                nfnvf+=faces[i].getallverts(); // get total vertices in object, defines dimensions of NEW arrays
+            }
             
-			// each face adds a primitive to the geometry, after it is tesselated
+            
+            GLUtesselator* ts=gluNewTess();
+            gluTessCallback(ts, GLU_TESS_BEGIN, (GLU_TESS_CALLBACK) myFaceBegin);  
+            gluTessCallback(ts, GLU_TESS_VERTEX, (GLU_TESS_CALLBACK) myVertex);  
+            gluTessCallback(ts, GLU_TESS_END, (GLU_TESS_CALLBACK) myFaceEnd);  
+            gluTessCallback(ts, GLU_TESS_ERROR, (GLU_TESS_CALLBACK) error);  
+            gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK) combineCallback);
+            //  for (int nvf=0; nvf<6; nvf++) { // for each length of face
+            // for Geometry we dont need to collect prim types individually
+            //     prd.setmode(nvf , nfnvf); // filter out only this type of tesselated face
+            prd=new prims;
+            prd->settmat(tmat);
+            osg::Geometry *gset = new osg::Geometry;
+            prd->setGeometry(gset);
+            StateSet *dstate=themat->make(options);            
+            gset->setStateSet( dstate );
+            grp->addChild( geode ); // add to the world outside
+            geode->addDrawable(gset);
+            
+            // each face adds a primitive to the geometry, after it is tesselated
             for (i=0; i<nfaces; i++) { // for each face, collect up
                 prd->tesselate(faces[i],verts, themat, ts, this);
             }
             for (i=0; i<nopens; i++) { // for each hole, join up front & back with Quads
-				if (fc1 && fc2) {
-					faces[fc1[i]].link(openings[i*2], &faces[fc2[i]],openings[i*2+1],verts, themat);
-				}
-			} // for each opening
+                if (fc1 && fc2) {
+                    faces[fc1[i]].link(openings[i*2], &faces[fc2[i]],openings[i*2+1],verts, themat);
+                }
+            } // for each opening
             prd->buildGeometry();
         gluDeleteTess(ts);
-		delete prd;
+        delete prd;
         }
     } // nfaces>0
     verts.clear();

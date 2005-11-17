@@ -82,41 +82,41 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-	if (fr.matchSequence("autoUpdateEyeMovementTolerance %f"))
-	{
-		float f;
-		fr[1].getFloat(f);
-		transform.setAutoUpdateEyeMovementTolerance(f);
-		fr += 2;
-		iteratorAdvanced = true;
-	}
+    if (fr.matchSequence("autoUpdateEyeMovementTolerance %f"))
+    {
+        float f;
+        fr[1].getFloat(f);
+        transform.setAutoUpdateEyeMovementTolerance(f);
+        fr += 2;
+        iteratorAdvanced = true;
+    }
 
-	if (fr.matchSequence("autoRotateToScreen %w"))
-	{
-		std::string w(fr[1].getStr());
-		transform.setAutoRotateMode((w == "TRUE") ? osg::AutoTransform::ROTATE_TO_SCREEN : osg::AutoTransform::NO_ROTATION);
-		fr += 2;
-		iteratorAdvanced = true;
-	}
+    if (fr.matchSequence("autoRotateToScreen %w"))
+    {
+        std::string w(fr[1].getStr());
+        transform.setAutoRotateMode((w == "TRUE") ? osg::AutoTransform::ROTATE_TO_SCREEN : osg::AutoTransform::NO_ROTATION);
+        fr += 2;
+        iteratorAdvanced = true;
+    }
 
-	if (fr.matchSequence("autoRotateMode %w"))
-	{
-		std::string w(fr[1].getStr());
+    if (fr.matchSequence("autoRotateMode %w"))
+    {
+        std::string w(fr[1].getStr());
                 if (w=="ROTATE_TO_SCREEN") transform.setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
                 else if (w=="ROTATE_TO_CAMERA") transform.setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
                 else if (w=="NO_ROTATION") transform.setAutoRotateMode(osg::AutoTransform::NO_ROTATION);
                 
-		fr += 2;
-		iteratorAdvanced = true;
-	}
+        fr += 2;
+        iteratorAdvanced = true;
+    }
 
-	if (fr.matchSequence("autoScaleToScreen %w"))
-	{
-		std::string w(fr[1].getStr());
-		transform.setAutoScaleToScreen(w == "TRUE");
-		fr += 2;
-		iteratorAdvanced = true;
-	}
+    if (fr.matchSequence("autoScaleToScreen %w"))
+    {
+        std::string w(fr[1].getStr());
+        transform.setAutoScaleToScreen(w == "TRUE");
+        fr += 2;
+        iteratorAdvanced = true;
+    }
 
     return iteratorAdvanced;
 }

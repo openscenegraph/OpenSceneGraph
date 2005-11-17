@@ -46,13 +46,13 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
             else if (c=='.' && noNestedBrackets==0) break;
         }
 
-	// get the next "extension", which actually contains the pseudo-loader parameters
-	params = input.substr(pos+1, std::string::npos );
-	if( params.empty() )
-	{
-	    osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
-	    return false;
-	}
+        // get the next "extension", which actually contains the pseudo-loader parameters
+        params = input.substr(pos+1, std::string::npos );
+        if( params.empty() )
+        {
+            osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
+            return false;
+        }
 
         // clear the params sting of any brackets.
         std::string::size_type params_pos = params.size();
@@ -66,8 +66,8 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
             }
         }
 
-	// strip the "params extension", which must leave a sub-filename.
-	filename = input.substr(0, pos );
+        // strip the "params extension", which must leave a sub-filename.
+        filename = input.substr(0, pos );
 
         return true;
 }
@@ -120,17 +120,17 @@ public:
         std::string subFileName, params;
         if (!getFilenameAndParams(tmpName, subFileName, params))
         {
-	    return ReadResult::FILE_NOT_HANDLED;
-	}
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
-	if( subFileName.empty())
-	{
-	    osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
-	    return ReadResult::FILE_NOT_HANDLED;
-	}
+        if( subFileName.empty())
+        {
+            osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
-	osg::notify(osg::INFO) << " params = \"" << params << "\"" << std::endl;
-	osg::notify(osg::INFO) << " subFileName = \"" << subFileName << "\"" << std::endl;
+        osg::notify(osg::INFO) << " params = \"" << params << "\"" << std::endl;
+        osg::notify(osg::INFO) << " subFileName = \"" << subFileName << "\"" << std::endl;
 
         float rx, ry, rz;
         int count = sscanf( params.c_str(), "%f,%f,%f", &rx, &ry, &rz );

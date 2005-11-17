@@ -67,9 +67,9 @@ Lwo2Layer::notify(NotifySeverity severity)
     {
       osg::notify(severity) << "    \t" << polygon_index << " ("<< (*polygon_iterator).size() << " vertexes" << "):" << endl;
       for (itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
-	{
-	  osg::notify(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
-	}
+        {
+          osg::notify(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
+        }
       osg::notify(severity) << endl;
     }
 
@@ -109,23 +109,23 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
       PolygonsList polygons;
       IteratorPolygonsList polygon_iterator;
       for (polygon_iterator = _polygons.begin(); polygon_iterator != _polygons.end(); polygon_iterator++, polygon_index++)
-	{
-	  // *polygon_iterator it's a PolygonsList
+        {
+          // *polygon_iterator it's a PolygonsList
 
-	  // polygons of current tag only
-	  if (_polygons_tag[polygon_index] == current_tag)
-	    {
+          // polygons of current tag only
+          if (_polygons_tag[polygon_index] == current_tag)
+            {
 
-	      // reset point_index member for later comparing poins data
-	      PointsList points_list = *polygon_iterator;
-	      for (unsigned int i = 0; i < points_list.size(); i++)
-		{
-		  points_list[i].point_index = 0;
-		}
+              // reset point_index member for later comparing poins data
+              PointsList points_list = *polygon_iterator;
+              for (unsigned int i = 0; i < points_list.size(); i++)
+                {
+                  points_list[i].point_index = 0;
+                }
 
-	      polygons.push_back(*polygon_iterator);
-	    }
-	}
+              polygons.push_back(*polygon_iterator);
+            }
+        }
 
       // find and compose triangle fans
       PolygonsList triangle_fans;
@@ -138,111 +138,111 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
       // polygons of current layer
       polygon_index = 0;
       for (polygon_iterator = polygons.begin(); polygon_iterator != polygons.end(); polygon_iterator++, polygon_index++)
-	{
-	  if ((*polygon_iterator)[0].point_index != -1)
-	    {
-	      // all points of polygon
-	      for (IteratorPoint itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
-		{
-		  // *itr - it's a PointData
+        {
+          if ((*polygon_iterator)[0].point_index != -1)
+            {
+              // all points of polygon
+              for (IteratorPoint itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
+                {
+                  // *itr - it's a PointData
 
-		  // polygons data
-		  (*coords).push_back((*itr).coord);
-		  (*texcoords).push_back((*itr).texcoord);
+                  // polygons data
+                  (*coords).push_back((*itr).coord);
+                  (*texcoords).push_back((*itr).texcoord);
 
-		  if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
-		    {
-		      have_texture_coords = true;
-		    }
-		}
-	  
-	      unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
-	      unsigned int points_count = (*polygon_iterator).size();
-	      if (points_count == 3)
-		{
-		  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, points_start, points_count));
-		}
-	      else if (points_count == 4)
-		{
-		  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS, points_start, points_count));
-		}
-	      else 
-		{
-		  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::POLYGON, points_start, points_count));
-		}
-	    }
-	}
+                  if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
+                    {
+                      have_texture_coords = true;
+                    }
+                }
+          
+              unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
+              unsigned int points_count = (*polygon_iterator).size();
+              if (points_count == 3)
+                {
+                  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, points_start, points_count));
+                }
+              else if (points_count == 4)
+                {
+                  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS, points_start, points_count));
+                }
+              else 
+                {
+                  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::POLYGON, points_start, points_count));
+                }
+            }
+        }
 
       // triangle fans of current layer
       polygon_index = 0;
       for (polygon_iterator = triangle_fans.begin(); polygon_iterator != triangle_fans.end(); polygon_iterator++, polygon_index++)
-	{
+        {
 
-	  // all points of polygon
-	  for (IteratorPoint itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
-	    {
-	      // *itr - it's a PointData
+          // all points of polygon
+          for (IteratorPoint itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
+            {
+              // *itr - it's a PointData
 
-	      // polygons data
-	      (*coords).push_back((*itr).coord);
-	      (*texcoords).push_back((*itr).texcoord);
+              // polygons data
+              (*coords).push_back((*itr).coord);
+              (*texcoords).push_back((*itr).texcoord);
 
-	      if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
-		{
-		  have_texture_coords = true;
-		}
-	    }
-	  
-	  unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
-	  unsigned int points_count = (*polygon_iterator).size();
-	  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN, points_start, points_count));
-	}
+              if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
+                {
+                  have_texture_coords = true;
+                }
+            }
+          
+          unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
+          unsigned int points_count = (*polygon_iterator).size();
+          geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN, points_start, points_count));
+        }
 
       // triangle strips of current layer
       polygon_index = 0;
       for (polygon_iterator = triangle_strips.begin(); polygon_iterator != triangle_strips.end(); polygon_iterator++, polygon_index++)
-	{
+        {
 
-	  // all points of polygon
-	  for (IteratorPoint itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
-	    {
-	      // *itr - it's a PointData
+          // all points of polygon
+          for (IteratorPoint itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
+            {
+              // *itr - it's a PointData
 
-	      // polygons data
-	      (*coords).push_back((*itr).coord);
-	      (*texcoords).push_back((*itr).texcoord);
+              // polygons data
+              (*coords).push_back((*itr).coord);
+              (*texcoords).push_back((*itr).texcoord);
 
-	      if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
-		{
-		  have_texture_coords = true;
-		}
-	    }
-	  
-	  unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
-	  unsigned int points_count = (*polygon_iterator).size();
-	  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP, points_start, points_count));
-	}
+              if ((*itr).texcoord.x() != -1.0f || (*itr).texcoord.y() != -1.0f) 
+                {
+                  have_texture_coords = true;
+                }
+            }
+          
+          unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
+          unsigned int points_count = (*polygon_iterator).size();
+          geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP, points_start, points_count));
+        }
 
       // add geometry if it contains any points
       if (coords->size() != 0) 
-	{
-	  geometry->setVertexArray(coords.get());
+        {
+          geometry->setVertexArray(coords.get());
 
-	  // assign texture array
-	  if (have_texture_coords)
-	    {
-	      geometry->setTexCoordArray(0, texcoords.get());
-	    }
+          // assign texture array
+          if (have_texture_coords)
+            {
+              geometry->setTexCoordArray(0, texcoords.get());
+            }
 
-	  // generate normals
-	  osgUtil::SmoothingVisitor smoother;
-	  smoother.smooth(*(geometry.get()));
+          // generate normals
+          osgUtil::SmoothingVisitor smoother;
+          smoother.smooth(*(geometry.get()));
 
-	  geode.addDrawable(geometry.get());
+          geode.addDrawable(geometry.get());
 
-	  osg::notify(DEBUG_INFO) << "  inserting tag " << geode.getNumDrawables() - 1 << ":" << current_tag << std::endl;
-	  tag_mapping.insert(PairDrawableToTag(geode.getNumDrawables() - 1, current_tag));
-	}
+          osg::notify(DEBUG_INFO) << "  inserting tag " << geode.getNumDrawables() - 1 << ":" << current_tag << std::endl;
+          tag_mapping.insert(PairDrawableToTag(geode.getNumDrawables() - 1, current_tag));
+        }
     }
 }
 
@@ -291,44 +291,44 @@ Lwo2Layer::_find_triangle_fan(PolygonsList& polygons, PolygonsList& triangle_fan
     {
       PointsList& points_list = *polygon_iterator;
       if (points_list.size() == 3 && points_list[0].point_index != -1)
-	{
-	  PointData a = points_list[0];
-	  PointData b = points_list[1];
-	  PointData c = points_list[2];
+        {
+          PointData a = points_list[0];
+          PointData b = points_list[1];
+          PointData c = points_list[2];
 
-	  int next_polygon_index = _find_triangle_begins_with(polygons, a, c);
-	  while (next_polygon_index >= 0) 
-	    {
-	      found = true;
-	      PointData d = polygons[next_polygon_index][2];
+          int next_polygon_index = _find_triangle_begins_with(polygons, a, c);
+          while (next_polygon_index >= 0) 
+            {
+              found = true;
+              PointData d = polygons[next_polygon_index][2];
 
-	      PointsList point_list;
-	      point_list.push_back(a);
-	      point_list.push_back(b);
-	      point_list.push_back(c);
-	      point_list.push_back(d);
+              PointsList point_list;
+              point_list.push_back(a);
+              point_list.push_back(b);
+              point_list.push_back(c);
+              point_list.push_back(d);
 
-	      // delete second triangle (mark as deleted)
-	      (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
+              // delete second triangle (mark as deleted)
+              (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
 
-	      // delete current (first) triangle (mark as deleted)
-	      (*polygon_iterator)[0].point_index = -1;
+              // delete current (first) triangle (mark as deleted)
+              (*polygon_iterator)[0].point_index = -1;
 
-	      c = d;
-	      while ((next_polygon_index = _find_triangle_begins_with(polygons, a, c)) >= 0)
-		{
-		  PointData d = polygons[next_polygon_index][2];
-		  point_list.push_back(d);
+              c = d;
+              while ((next_polygon_index = _find_triangle_begins_with(polygons, a, c)) >= 0)
+                {
+                  PointData d = polygons[next_polygon_index][2];
+                  point_list.push_back(d);
 
-		  // delete next triangle (mark as deleted)
-		  (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
+                  // delete next triangle (mark as deleted)
+                  (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
 
-		  c = d;
-		}
-	      
-	      triangle_fans.push_back(point_list);
-	    }
-	}
+                  c = d;
+                }
+              
+              triangle_fans.push_back(point_list);
+            }
+        }
       polygon_iterator++;
     }
   return found;
@@ -344,56 +344,56 @@ Lwo2Layer::_find_triangle_strip(PolygonsList& polygons, PolygonsList& triangle_s
     {
       PointsList& points_list = *polygon_iterator;
       if (points_list.size() == 3 && points_list[0].point_index != -1)
-	{
-	  PointData a = points_list[0];
-	  PointData b = points_list[1];
-	  PointData c = points_list[2];
+        {
+          PointData a = points_list[0];
+          PointData b = points_list[1];
+          PointData c = points_list[2];
 
-	  int next_polygon_index = _find_triangle_begins_with(polygons, c, b);
+          int next_polygon_index = _find_triangle_begins_with(polygons, c, b);
 
-	  while (next_polygon_index >= 0) 
-	    {
-	      found = true;
-	      PointData d = polygons[next_polygon_index][2];
+          while (next_polygon_index >= 0) 
+            {
+              found = true;
+              PointData d = polygons[next_polygon_index][2];
 
-	      PointsList point_list;
-	      point_list.push_back(a);
-	      point_list.push_back(b);
-	      point_list.push_back(c);
-	      point_list.push_back(d);
+              PointsList point_list;
+              point_list.push_back(a);
+              point_list.push_back(b);
+              point_list.push_back(c);
+              point_list.push_back(d);
 
-	      // delete second triangle (mark as deleted)
-	      (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
+              // delete second triangle (mark as deleted)
+              (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
 
-	      // delete current (first) triangle (mark as deleted)
-	      (*polygon_iterator)[0].point_index = -1;
+              // delete current (first) triangle (mark as deleted)
+              (*polygon_iterator)[0].point_index = -1;
 
-	      PointData strip_a = c;
-	      PointData strip_b = d;
-	      bool current_strip_a = true;
+              PointData strip_a = c;
+              PointData strip_b = d;
+              bool current_strip_a = true;
 
-	      while ((next_polygon_index = _find_triangle_begins_with(polygons, strip_a, strip_b)) >= 0)
-		{
-		  PointData d = polygons[next_polygon_index][2];
-		  point_list.push_back(d);
+              while ((next_polygon_index = _find_triangle_begins_with(polygons, strip_a, strip_b)) >= 0)
+                {
+                  PointData d = polygons[next_polygon_index][2];
+                  point_list.push_back(d);
 
-		  if (current_strip_a)
-		    {
-		      strip_a = d;
-		    }
-		  else 
-		    {
-		      strip_b = d;
-		    }
-		  current_strip_a = !current_strip_a;
+                  if (current_strip_a)
+                    {
+                      strip_a = d;
+                    }
+                  else 
+                    {
+                      strip_b = d;
+                    }
+                  current_strip_a = !current_strip_a;
 
-		  // delete next triangle (mark as deleted)
-		  (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
-		}
-	      
-	      triangle_strips.push_back(point_list);
-	    }
-	}
+                  // delete next triangle (mark as deleted)
+                  (*(polygons.begin() + next_polygon_index))[0].point_index = -1;
+                }
+              
+              triangle_strips.push_back(point_list);
+            }
+        }
       polygon_iterator++;
       polygon_index++;
     }
@@ -410,35 +410,35 @@ Lwo2Layer::_find_triangle_begins_with(PolygonsList& polygons, PointData& a, Poin
     {
       PointsList& points_list = *polygon_iterator;
       if (points_list.size() == 3 && points_list[0].point_index != -1)
-	{
-	  if (points_list[0] == a && points_list[1] == b)
-	    {
-	      result = polygon_index;
-	      break;
-	    }
-	  else if (points_list[1] == a && points_list[2] == b)
-	    {
-	      // shift points
-	      PointData temp = points_list[0];
-	      points_list[0] = points_list[1];
-	      points_list[1] = points_list[2];
-	      points_list[2] = temp;
+        {
+          if (points_list[0] == a && points_list[1] == b)
+            {
+              result = polygon_index;
+              break;
+            }
+          else if (points_list[1] == a && points_list[2] == b)
+            {
+              // shift points
+              PointData temp = points_list[0];
+              points_list[0] = points_list[1];
+              points_list[1] = points_list[2];
+              points_list[2] = temp;
 
-	      result = polygon_index;
-	      break;
-	    }
-	  else if (points_list[2] == a && points_list[0] == b)
-	    {
-	      // shift points
-	      PointData temp = points_list[2];
-	      points_list[2] = points_list[1];
-	      points_list[1] = points_list[0];
-	      points_list[0] = temp;
+              result = polygon_index;
+              break;
+            }
+          else if (points_list[2] == a && points_list[0] == b)
+            {
+              // shift points
+              PointData temp = points_list[2];
+              points_list[2] = points_list[1];
+              points_list[1] = points_list[0];
+              points_list[0] = temp;
 
-	      result = polygon_index;
-	      break;
-	    }
-	}
+              result = polygon_index;
+              break;
+            }
+        }
     }
   return result;
 }

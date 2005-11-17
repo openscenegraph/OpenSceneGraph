@@ -147,7 +147,7 @@ struct DDSURFACEDESC2
     };
     UI32         dwAlphaBitDepth;
     UI32         dwReserved;     
-    UI32        lpSurface;     	//Fred Marmond: removed from pointer type to UI32 for 64bits compatibility. it is unused data 
+    UI32        lpSurface;         //Fred Marmond: removed from pointer type to UI32 for 64bits compatibility. it is unused data 
     DDCOLORKEY    ddckCKDestOverlay;      
     DDCOLORKEY    ddckCKDestBlt;           
     DDCOLORKEY    ddckCKSrcOverlay;        

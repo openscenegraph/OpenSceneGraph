@@ -109,27 +109,27 @@ void LtPtAnimationPaletteRecord::endian()
     ENDIAN( ltPtAnim->charRate );
     ENDIAN( ltPtAnim->numSequences );
 
-	for (int idx=0; idx < ltPtAnim->numSequences; idx++)
-	{
-		SLightPointAnimationSequence* seq = sequence( idx );
-		assert( seq );
-		ENDIAN( seq->seqState );
-		ENDIAN( seq->duration );
-		ENDIAN( seq->seqColor );
-	}
+    for (int idx=0; idx < ltPtAnim->numSequences; idx++)
+    {
+        SLightPointAnimationSequence* seq = sequence( idx );
+        assert( seq );
+        ENDIAN( seq->seqState );
+        ENDIAN( seq->duration );
+        ENDIAN( seq->seqColor );
+    }
 }
 
 SLightPointAnimationSequence*
 LtPtAnimationPaletteRecord::sequence( int idx )
 {
     SLightPointAnimationPalette* ltPtAnim = (SLightPointAnimationPalette*)getData();
-	if (idx >= ltPtAnim->numSequences)
-		return NULL;
+    if (idx >= ltPtAnim->numSequences)
+        return NULL;
 
-	SLightPointAnimationSequence* seq = (SLightPointAnimationSequence*)
-		( (char*)getData() + sizeof( SLightPointAnimationPalette ) );
-	seq += idx;
+    SLightPointAnimationSequence* seq = (SLightPointAnimationSequence*)
+        ( (char*)getData() + sizeof( SLightPointAnimationPalette ) );
+    seq += idx;
 
-	return seq;
+    return seq;
 }
 

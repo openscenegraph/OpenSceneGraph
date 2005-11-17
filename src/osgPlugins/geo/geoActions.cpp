@@ -124,7 +124,7 @@ void geoAr3Behaviour::doaction(osg::Node *) { // do math operation
 bool geoAr3Behaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
     bool ok=false;
     const geoField *gfd=grec->getField(GEO_DB_EQUATION_ACTION_INPUT_VAR);
-	const unsigned int act=grec->getType();
+    const unsigned int act=grec->getType();
     if (gfd) {
         unsigned fid= gfd->getUInt(); // field identifier
         in=theHeader->getVar(fid); // returns address of input var with fid
@@ -366,7 +366,7 @@ void geoMoveBehaviour::doaction(osg::Node *node) {
 
 bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) {
     bool ok=false;
-	const unsigned int act=grec->getType();
+    const unsigned int act=grec->getType();
     setType(act);
     if (act==DB_DSK_ROTATE_ACTION) {
         const geoField *gfd=grec->getField(GEO_DB_ROTATE_ACTION_INPUT_VAR);
@@ -378,8 +378,8 @@ bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *the
                 setVar(vcon);
                 const geoField *gfdir=grec->getField(GEO_DB_ROTATE_ACTION_DIR);
                 int flip=gfdir!=NULL; // ?(gfdir->getInt()):false;
-//				printf("Flip %d gfdir %x\n",flip, gfdir);
-				gfd=grec->getField(GEO_DB_ROTATE_ACTION_VECTOR);
+//                printf("Flip %d gfdir %x\n",flip, gfdir);
+                gfd=grec->getField(GEO_DB_ROTATE_ACTION_VECTOR);
                 if (gfd) {
                     float *ax= gfd->getVec3Arr(); // field identifier
                     if (flip) setAxis(-osg::Vec3(ax[0],ax[1],ax[2]));
@@ -439,7 +439,7 @@ void geoMoveVertexBehaviour::doaction(osg::Matrix *mtr) {
 
 bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader)
 {
-	const unsigned int act=grec->getType();
+    const unsigned int act=grec->getType();
     bool ok=false;
     setType(act);
     if (act==DB_DSK_ROTATE_ACTION) {
@@ -529,7 +529,7 @@ bool geoColourBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *t
 void geoColourBehaviour::doaction(osg::Drawable *dr)
 { // do visibility operation on Node
     if (getVar()) {
-		double val=getValue();
+        double val=getValue();
         unsigned int idx=(unsigned int)val;
         osg::Geometry *gm=dynamic_cast<osg::Geometry *>(dr);
         if (gm) {
@@ -605,13 +605,13 @@ void geoBehaviourCB::operator() (osg::Node *node, osg::NodeVisitor* nv)
 { // callback updates the transform, colour, string content...
     MatrixTransform *mtr=dynamic_cast<MatrixTransform *> (node);
     if (mtr) mtr->setMatrix(Matrix::identity()); // all actions are multiplied to this
-//		printf("setting matrix %x\n", mtr);
+//        printf("setting matrix %x\n", mtr);
  //   PositionAttitudeTransform *patr=dynamic_cast<PositionAttitudeTransform *> (node);
    // if (patr) patr->setMatrix(Matrix::identity()); // all actions are multiplied to this
     for (std::vector<geoBehaviour *>::const_iterator itr=gblist.begin();
     itr<gblist.end();
     itr++) { // motion behaviour
- 		(*itr)->doaction(node);
+         (*itr)->doaction(node);
 /* === the above is equivalent to my old code with lots of tests in: */
 /*      geoArithBehaviour *ab=dynamic_cast<geoArithBehaviour *>(*itr);
         if (ab) ab->doaction(node);
@@ -644,8 +644,8 @@ void geoBehaviourDrawableCB::update(osg::NodeVisitor *,osg::Drawable *dr) {
          itr<gblist.end();
          itr++)
         { // color or string action behaviour, can also do maths...
-		//	 (*itr)->doaction(dr);
-			 Node *nd=NULL;
+        //     (*itr)->doaction(dr);
+             Node *nd=NULL;
         geoArithBehaviour *ab=dynamic_cast<geoArithBehaviour *>(*itr);
         if (ab) ab->doaction(nd);
         geoAr3Behaviour *a3=dynamic_cast<geoAr3Behaviour *>(*itr);

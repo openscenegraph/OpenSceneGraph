@@ -49,7 +49,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             char dirname[128];
             char command[1024];
 
-		#if defined(_WIN32) && !defined(__CYGWIN__)
+        #if defined(_WIN32) && !defined(__CYGWIN__)
             strcpy(dirname, "C:/Windows/Temp/.osgdb_tgz");
             mkdir( dirname);
             // note, the following C option under windows does not seem to work...
@@ -112,7 +112,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             // restorre original state of the automatic generation of images to geode's.
             osgDB::Registry::instance()->setCreateNodeFromImage(prevCreateNodeFromImage);
 
-		#if defined(_WIN32) && !defined(__CYGWIN__)
+        #if defined(_WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
             sprintf( command, "erase %s", dirname );

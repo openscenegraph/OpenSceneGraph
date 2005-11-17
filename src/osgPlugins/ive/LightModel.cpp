@@ -1,14 +1,14 @@
 /**********************************************************************
  *
- *	FILE:			LightModel.cpp
+ *    FILE:            LightModel.cpp
  *
- *	DESCRIPTION:	Read/Write osg::LightModel (partially) in binary format to disk.
+ *    DESCRIPTION:    Read/Write osg::LightModel (partially) in binary format to disk.
  *
- *	CREATED BY:		Stanislav Blinov
+ *    CREATED BY:        Stanislav Blinov
  *
- *	HISTORY:		Created 7.09.2004
+ *    HISTORY:        Created 7.09.2004
  *
- *	Copyright 2004 OtherSide
+ *    Copyright 2004 OtherSide
  **********************************************************************/
 
 #include "Exception.h"
@@ -54,9 +54,9 @@ void LightModel::read(DataInputStream* in){
 
       // Read LightModel's properties
       setTwoSided(in->readBool());
-	  setLocalViewer(in->readBool());
-	  setAmbientIntensity(in->readVec4());
-	  setColorControl((ColorControl)in->readInt());
+      setLocalViewer(in->readBool());
+      setAmbientIntensity(in->readVec4());
+      setColorControl((ColorControl)in->readInt());
     }
   else{
     throw Exception("LightModel::read(): Expected LightModel identification.");

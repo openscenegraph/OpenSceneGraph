@@ -37,10 +37,10 @@ void LodRecord::endian()
     pSLod->Center.endian();
     ENDIAN( pSLod->dfTransitionRange );
 
-	if (getFltFile()->getFlightVersion() >= 1580 )
-	{
+    if (getFltFile()->getFlightVersion() >= 1580 )
+    {
         ENDIAN( pSLod->dfSignificantSize );
-	}
+    }
 }
 
 

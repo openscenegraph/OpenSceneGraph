@@ -24,9 +24,9 @@
 //
 // Version: 12Jan97 1.11
 // 2002-07-25 Version 1.2 (C) Herbert Straub
-// 	Adding improved Error Handling in sockerr class
-// 	sockinetaddr::setport if the first character of the port parameter is a 
-// 		digit, then the parameter is interpreted as a number
+//     Adding improved Error Handling in sockerr class
+//     sockinetaddr::setport if the first character of the port parameter is a 
+//         digit, then the parameter is interpreted as a number
 // 2002-07-28 Version 1.2 (C) Herbert Straub
 //  Eliminating sorry_about_global_temp inititialisation. This don't work
 //  in combination with NewsCache. My idea is: initializing the classes with (0)
@@ -40,36 +40,36 @@ typedef int socklen_t;
 
 #if defined(__CYGWIN__) || !defined(WIN32)
 extern "C" {
-#	include <netdb.h>
-#	include <sys/time.h>
-#	include <sys/socket.h>
-#	include <stdlib.h>
-#	include <unistd.h>
-#	include <errno.h>
-#	include <netinet/tcp.h>
+#    include <netdb.h>
+#    include <sys/time.h>
+#    include <sys/socket.h>
+#    include <stdlib.h>
+#    include <unistd.h>
+#    include <errno.h>
+#    include <netinet/tcp.h>
 #   include <netinet/in.h>
 #   include <netinet/in.h>
 #   include <arpa/inet.h>
 
 }
 #else
-#	define socklen_t int
-# define EADDRNOTAVAIL				WSAEADDRNOTAVAIL
-# define EADDRINUSE						WSAEADDRINUSE
-#	define ENOPROTOOPT					WSAENOPROTOOPT
+#    define socklen_t int
+# define EADDRNOTAVAIL                WSAEADDRNOTAVAIL
+# define EADDRINUSE                        WSAEADDRINUSE
+#    define ENOPROTOOPT                    WSAENOPROTOOPT
 #endif // !WIN32
 
 #ifndef INADDR_NONE
 #define INADDR_NONE             ((in_addr_t) 0xffffffff)
 #endif
 
-void	herror(const char*);
+void    herror(const char*);
 
 sockinetaddr::sockinetaddr () 
 {
-  sin_family	  = sockinetbuf::af_inet;
+  sin_family      = sockinetbuf::af_inet;
   sin_addr.s_addr = htonl(INADDR_ANY);
-  sin_port	  = 0;
+  sin_port      = 0;
 }
 
 sockinetaddr::sockinetaddr(unsigned long addr, int port_no)
@@ -77,7 +77,7 @@ sockinetaddr::sockinetaddr(unsigned long addr, int port_no)
 {
   sin_family      = sockinetbuf::af_inet;
   sin_addr.s_addr = htonl(addr);
-  sin_port	  = htons(port_no);
+  sin_port      = htons(port_no);
 }
 
 sockinetaddr::sockinetaddr(unsigned long addr, const char* sn, const char* pn)
@@ -105,18 +105,18 @@ sockinetaddr::sockinetaddr (const sockinetaddr& sina): sockAddr()
 {
   sin_family      = sockinetbuf::af_inet;
   sin_addr.s_addr = sina.sin_addr.s_addr;
-  sin_port	      = sina.sin_port;
+  sin_port          = sina.sin_port;
 }   
 
 void sockinetaddr::setport(const char* sn, const char* pn)
 {
-	if (isdigit (*sn)) {
-		sin_port = htons(atoi(sn));
-	} else {
-  	servent* sp = getservbyname(sn, pn);
-  	if (sp == 0) throw sockerr (EADDRNOTAVAIL, "sockinetaddr::setport");
-  	sin_port = sp->s_port;
-	}
+    if (isdigit (*sn)) {
+        sin_port = htons(atoi(sn));
+    } else {
+      servent* sp = getservbyname(sn, pn);
+      if (sp == 0) throw sockerr (EADDRNOTAVAIL, "sockinetaddr::setport");
+      sin_port = sp->s_port;
+    }
 }
 
 int sockinetaddr::getport () const
@@ -140,12 +140,12 @@ const char* sockinetaddr::gethostname () const
   if (sin_addr.s_addr == htonl(INADDR_ANY)) {
     static char hostname[64];
     if (::gethostname(hostname, 63) == -1) return "";
-    return hostname;		
+    return hostname;        
   }
   
   hostent* hp = gethostbyaddr((const char*) &sin_addr,
-			      sizeof(sin_addr),
-			      family());
+                  sizeof(sin_addr),
+                  family());
   if (hp == 0) return "";
   if (hp->h_name) return hp->h_name;
   return "";
@@ -259,16 +259,16 @@ void sockinetbuf::bind (const char* host_name, int port_no)
 }
 
 void sockinetbuf::bind (unsigned long addr,
-			const char* service_name,
-			const char* protocol_name)
+            const char* service_name,
+            const char* protocol_name)
 {
   sockinetaddr sa (addr, service_name, protocol_name);
   bind (sa);
 }
 
 void sockinetbuf::bind (const char* host_name,
-			const char* service_name,
-			const char* protocol_name)
+            const char* service_name,
+            const char* protocol_name)
 {
   sockinetaddr sa (host_name, service_name, protocol_name);
   bind (sa);
@@ -293,16 +293,16 @@ void sockinetbuf::connect (const char* host_name, int port_no)
 }
 
 void sockinetbuf::connect (unsigned long addr,
-			   const char* service_name,
-			   const char* protocol_name)
+               const char* service_name,
+               const char* protocol_name)
 {
   sockinetaddr sa (addr, service_name, protocol_name);
   connect (sa);
 }
 
 void sockinetbuf::connect (const char* host_name,
-			   const char* service_name,
-			   const char* protocol_name)
+               const char* service_name,
+               const char* protocol_name)
 {
   sockinetaddr sa (host_name, service_name, protocol_name);
   connect (sa);
@@ -319,14 +319,14 @@ sockbuf::sockdesc sockinetbuf::accept (sockAddr& sa)
 }
 
 sockbuf::sockdesc sockinetbuf::accept (unsigned long addr,
-				      int port_no)
+                      int port_no)
 {
   sockinetaddr sa (addr, port_no);
   return accept (sa);
 }
 
 sockbuf::sockdesc sockinetbuf::accept (const char* host_name,
-				      int port_no)
+                      int port_no)
 {
   sockinetaddr sa (host_name, port_no);
   return accept (sa);
@@ -357,28 +357,28 @@ bool sockinetbuf::tcpnodelay (bool set) const
 isockinet::isockinet (const sockbuf::sockdesc& sd)
   : ios(0), isockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (sd);
+    sockinetbuf *t = new sockinetbuf (sd);
 
-	ios::init (t);
-	isockstream::init (t);
+    ios::init (t);
+    isockstream::init (t);
 }
 
 isockinet::isockinet (sockbuf::type ty, int proto)
   : ios (0), isockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (ty, proto);
+    sockinetbuf *t = new sockinetbuf (ty, proto);
 
-	ios::init (t);
-	isockstream::init (t);
+    ios::init (t);
+    isockstream::init (t);
 }
 
 isockinet::isockinet (const sockinetbuf& sb)
   : ios (0), isockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (sb);
+    sockinetbuf *t = new sockinetbuf (sb);
 
-	ios::init (t);
-	isockstream::init (t);
+    ios::init (t);
+    isockstream::init (t);
 }
 
 isockinet::~isockinet ()
@@ -389,28 +389,28 @@ isockinet::~isockinet ()
 osockinet::osockinet (const sockbuf::sockdesc& sd)
   : ios (0), osockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (sd);
+    sockinetbuf *t = new sockinetbuf (sd);
 
-	ios::init (t);
-	osockstream::init (t);
+    ios::init (t);
+    osockstream::init (t);
 }
 
 osockinet::osockinet (sockbuf::type ty, int proto)
   : ios (0), osockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (ty, proto);
+    sockinetbuf *t = new sockinetbuf (ty, proto);
 
-	ios::init (t);
-	osockstream::init (t);
+    ios::init (t);
+    osockstream::init (t);
 }
 
 osockinet::osockinet (const sockinetbuf& sb)
   : ios (0), osockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (sb);
+    sockinetbuf *t = new sockinetbuf (sb);
 
-	ios::init (t);
-	osockstream::init (t);
+    ios::init (t);
+    osockstream::init (t);
 }
 
 osockinet::~osockinet ()
@@ -421,28 +421,28 @@ osockinet::~osockinet ()
 iosockinet::iosockinet (const sockbuf::sockdesc& sd)
   : ios (0), iosockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf(sd);
+    sockinetbuf *t = new sockinetbuf(sd);
 
-	ios::init (t);
-	iosockstream::init (t);
+    ios::init (t);
+    iosockstream::init (t);
 }
 
 iosockinet::iosockinet (sockbuf::type ty, int proto)
-	: ios (0), iosockstream (0)
+    : ios (0), iosockstream (0)
 {
- 	sockinetbuf *t = new sockinetbuf (ty, proto);
+     sockinetbuf *t = new sockinetbuf (ty, proto);
 
-	ios::init (t);
-	iosockstream::init (t);
+    ios::init (t);
+    iosockstream::init (t);
 }
 
 iosockinet::iosockinet (const sockinetbuf& sb)
   : ios (0), iosockstream(0)
 {
-	sockinetbuf *t = new sockinetbuf (sb);
+    sockinetbuf *t = new sockinetbuf (sb);
 
-	ios::init (t);
-	iosockstream::init (t);
+    ios::init (t);
+    iosockstream::init (t);
 }
 
 iosockinet::~iosockinet ()

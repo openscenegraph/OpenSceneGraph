@@ -1,14 +1,14 @@
 /**********************************************************************
  *
- *	FILE:			Exception.cpp
+ *    FILE:            Exception.cpp
  *
- *	DESCRIPTION:	Exception throwed when error occur.
+ *    DESCRIPTION:    Exception throwed when error occur.
  *
- *	CREATED BY:		Rune Schmidt Jensen
+ *    CREATED BY:        Rune Schmidt Jensen
  *
- *	HISTORY:		Created 17.03.2003
+ *    HISTORY:        Created 17.03.2003
  *
- *	Copyright 2003 VR-C
+ *    Copyright 2003 VR-C
  **********************************************************************/
 
 
@@ -17,7 +17,7 @@
 using namespace ive;
 
 Exception::Exception(std::string error){
-	_error = error;
+    _error = error;
 }
 
 Exception::~Exception(){}

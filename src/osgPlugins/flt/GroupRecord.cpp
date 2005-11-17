@@ -35,10 +35,10 @@ void GroupRecord::endian()
     ENDIAN( pSGroup->iSpecialId_2 );
     ENDIAN( pSGroup->iSignificance );
 
-	if (getFltFile()->getFlightVersion() >= 1580 )
-	{
-		ENDIAN( pSGroup->iLoopCount );
-		ENDIAN( pSGroup->fLoopDuration );
-		ENDIAN( pSGroup->fLastFrameDuration );
-	}
+    if (getFltFile()->getFlightVersion() >= 1580 )
+    {
+        ENDIAN( pSGroup->iLoopCount );
+        ENDIAN( pSGroup->fLoopDuration );
+        ENDIAN( pSGroup->fLastFrameDuration );
+    }
 }

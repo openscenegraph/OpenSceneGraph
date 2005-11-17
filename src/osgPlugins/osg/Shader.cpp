@@ -33,23 +33,25 @@ bool Shader_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("type %w"))
     {
-	shader.setType( Shader::getTypeId(fr[1].getStr()) );
-	fr+=2;
-	iteratorAdvanced = true;
+        shader.setType( Shader::getTypeId(fr[1].getStr()) );
+        fr+=2;
+        iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("code {")) {
-	std::string code;
-	fr += 2;
-	iteratorAdvanced = true;
-	int entry = fr[0].getNoNestedBrackets();
-	while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry) {
-	    if (fr[0].getStr()) {
-		code.append(std::string(fr[0].getStr()));
-		code += '\n' ;
-	    }
-	    ++fr;
-	}
+    if (fr.matchSequence("code {"))
+    {
+        std::string code;
+        fr += 2;
+        iteratorAdvanced = true;
+        int entry = fr[0].getNoNestedBrackets();
+        while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry)
+        {
+            if (fr[0].getStr()) {
+                code.append(std::string(fr[0].getStr()));
+                code += '\n' ;
+            }
+            ++fr;
+        }
         shader.setShaderSource(code.c_str());
     }
 
@@ -68,7 +70,7 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
     std::istringstream iss(shader.getShaderSource());
     std::string line;
     while (std::getline(iss, line)) {
-	lines.push_back(line);
+        lines.push_back(line);
     }
 
     fw.indent() << "code {\n";
@@ -76,7 +78,7 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
 
     std::vector<std::string>::const_iterator j;
     for (j=lines.begin(); j!=lines.end(); ++j) {
-	fw.indent() << fw.wrapString(*j) << "\n";
+        fw.indent() << fw.wrapString(*j) << "\n";
     }
 
     fw.moveOut();

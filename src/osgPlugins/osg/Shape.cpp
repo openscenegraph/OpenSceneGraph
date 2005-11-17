@@ -583,7 +583,7 @@ bool CompositeShape_readLocalData(Object& obj, Input& fr)
         }
     }
     
-	while((readObject=fr.readObjectOfType(type_wrapper<osg::Shape>())).valid())
+    while((readObject=fr.readObjectOfType(type_wrapper<osg::Shape>())).valid())
     {
         osg::Shape* shape = static_cast<osg::Shape*>(readObject.get());
         composite.addChild(shape);

@@ -52,12 +52,12 @@ bool FragmentProgram_readLocalData(Object& obj, Input& fr)
     {
         int index;
         fr[1].getInt(index);
-	fr += 2;
-	osg::Matrix matrix;
-	if (readMatrix(matrix,fr))
-	{
-	    fragmentProgram.setMatrix(index, matrix);
-	}
+        fr += 2;
+        osg::Matrix matrix;
+        if (readMatrix(matrix,fr))
+        {
+            fragmentProgram.setMatrix(index, matrix);
+        }
         iteratorAdvanced = true;
     }
 
@@ -116,7 +116,7 @@ bool FragmentProgram_writeLocalData(const Object& obj,Output& fw)
     for(mi=mpl.begin(); mi!=mpl.end(); mi++)
     {
         fw.indent() << "Matrix " << (*mi).first << " ";
-	writeMatrix((*mi).second,fw);
+        writeMatrix((*mi).second,fw);
     }
 
     std::vector<std::string> lines;

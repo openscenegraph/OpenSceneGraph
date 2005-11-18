@@ -78,11 +78,17 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         /** get the minimum distance (as ratio) the eye point can be zoomed in */
         double getMinimumZoomScale() const { return _minimumZoomScale; }
 
-        /** Set the size of the trackball. */
-        void setTrackballSize(float size);
+        /** Set the center of the trackball. */
+        void setCenter(const osg::Vec3d& center) { _center = center; }
 
-        /** Get the size of the trackball. */
-        float getTrackballSize() const { return _trackballSize; }
+        /** Get the center of the trackball. */
+        const osg::Vec3d& getCenter() const { return _center; }
+
+        /** Set the rotation of the trackball. */
+        void setRotation(const osg::Quat& rotation) { _rotation = rotation; }
+
+        /** Get the rotation of the trackball. */
+        const osg::Quat& getRotation() const { return _rotation; }
 
         /** Set the distance of the trackball. */
         void setDistance(double distance) { _distance = distance; }
@@ -90,6 +96,11 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         /** Get the distance of the trackball. */
         double getDistance() const { return _distance; }
 
+        /** Set the size of the trackball. */
+        void setTrackballSize(float size);
+
+        /** Get the size of the trackball. */
+        float getTrackballSize() const { return _trackballSize; }
     protected:
 
         virtual ~TrackballManipulator();

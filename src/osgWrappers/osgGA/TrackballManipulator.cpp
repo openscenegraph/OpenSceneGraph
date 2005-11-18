@@ -12,6 +12,8 @@
 #include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/Quat>
+#include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/TrackballManipulator>
@@ -45,16 +47,25 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method1(void, setMinimumZoomScale, IN, double, minimumZoomScale);
 	I_Method0(double, getMinimumZoomScale);
+	I_Method1(void, setCenter, IN, const osg::Vec3d &, center);
+	I_Method0(const osg::Vec3d &, getCenter);
+	I_Method1(void, setRotation, IN, const osg::Quat &, rotation);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method1(void, setDistance, IN, double, distance);
+	I_Method0(double, getDistance);
 	I_Method1(void, setTrackballSize, IN, float, size);
 	I_Method0(float, getTrackballSize);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
+	I_Property(const osg::Vec3d &, Center);
+	I_Property(double, Distance);
 	I_ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
 	I_ReadOnlyProperty(float, FusionDistanceValue);
 	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
 	I_ReadOnlyProperty(osg::Matrixd, Matrix);
 	I_Property(double, MinimumZoomScale);
 	I_Property(osg::Node *, Node);
+	I_Property(const osg::Quat &, Rotation);
 	I_Property(float, TrackballSize);
 END_REFLECTOR
 

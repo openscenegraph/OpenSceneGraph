@@ -117,8 +117,8 @@ class LightPointRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
-        virtual SLightPoint* getData() const { return (SLightPoint*)_pData; }
-
+        virtual SLightPoint* getData() const;
+        
     protected:
         virtual ~LightPointRecord();
 

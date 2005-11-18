@@ -25,13 +25,13 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-    #  if defined( _LIB ) || defined( USE_STATIC )
+    #  if defined( OSG_LIBRARY_STATIC )
     #    define OSGSIM_EXPORT
     #  elif defined( OSGSIM_LIBRARY )
     #    define OSGSIM_EXPORT   __declspec(dllexport)
     #  else
     #    define OSGSIM_EXPORT   __declspec(dllimport)
-    #  endif /* SG_LIBRARY */
+    #  endif
 #else
     #  define OSGSIM_EXPORT
 #endif  

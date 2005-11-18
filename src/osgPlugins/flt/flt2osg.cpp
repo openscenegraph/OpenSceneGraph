@@ -2716,9 +2716,11 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
 
 void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder,osg::Group& osgParent, LightPointRecord* rec)
 {
+    SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
+    if (!pSLightPoint) return;
+
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
     osg::StateSet* stateSet = dgset->getStateSet();
-    SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
 
     dgset->setPrimType(osg::PrimitiveSet::POINTS);
     stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
@@ -2759,6 +2761,7 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder,osg::Group& osgPare
 void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* rec)
 {
     SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
+    if (!pSLightPoint) return;
 
     GeoSetBuilder pBuilder;
     DynGeoSet* dgset = pBuilder.getDynGeoSet();

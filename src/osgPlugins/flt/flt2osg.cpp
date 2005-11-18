@@ -2122,8 +2122,14 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, osg::Group& osgParent, 
            {
            // This will be for replicated verticies
            SReplicate *pSReplicate = (SReplicate *)(child->getData())  ;
+#if 1
+           int16 temp = pSReplicate->iNumber;
+           ENDIAN(temp);
+           num_replicate = temp ;
+#else
            ENDIAN(pSReplicate->iNumber) ;
            num_replicate = pSReplicate->iNumber ;
+#endif
            DPRINT(stderr, "   ** addVerticies: Got Replicate: %d times\n", num_replicate) ;
            got_replicate = 1 ;
            }

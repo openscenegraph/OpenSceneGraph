@@ -25,13 +25,13 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-    #  if defined( _LIB ) || defined( USE_STATIC )
+    #  if defined( OSG_LIBRARY_STATIC )
     #    define OSGINTROSPECTION_EXPORT
     #  elif defined( OSGINTROSPECTION_LIBRARY )
     #    define OSGINTROSPECTION_EXPORT   __declspec(dllexport)
     #  else
     #    define OSGINTROSPECTION_EXPORT   __declspec(dllimport)
-    #  endif /* OSGINTROSPECTION_LIBRARY */
+    #  endif
 #else
     #  define OSGINTROSPECTION_EXPORT
 #endif  

@@ -26,13 +26,13 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__) || defined( __MWERKS__)
-    #  if defined( _LIB ) || defined( USE_STATIC )
+    #  if defined( OSG_LIBRARY_STATIC )
     #    define OSGDB_EXPORT
     #  elif defined( OSGDB_LIBRARY )
     #    define OSGDB_EXPORT   __declspec(dllexport)
     #  else
     #    define OSGDB_EXPORT   __declspec(dllimport)
-    #  endif /* OSGDBSG_LIBRARY */
+    #  endif
 #else
     #  define OSGDB_EXPORT
 #endif
@@ -46,3 +46,4 @@ The plugin framework in centred around the osgDB::Registry, and allows plugins w
 */
 
 #endif
+

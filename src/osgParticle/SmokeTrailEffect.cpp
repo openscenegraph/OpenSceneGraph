@@ -23,6 +23,21 @@
 
 using namespace osgParticle;
 
+SmokeTrailEffect::SmokeTrailEffect(bool automaticSetup):
+    ParticleEffect(automaticSetup) 
+{
+    setDefaults();
+    
+    _position.set(0.0f,0.0f,0.0f);
+    _scale = 1.0f;
+    _intensity = 1.0f;
+
+    _emitterDuration = 65.0;
+    _defaultParticleTemplate.setLifeTime(5.0*_scale);
+        
+    if (_automaticSetup) buildEffect();
+}
+
 SmokeTrailEffect::SmokeTrailEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
@@ -34,7 +49,7 @@ SmokeTrailEffect::SmokeTrailEffect(const osg::Vec3& position, float scale, float
     _emitterDuration = 65.0;
     _defaultParticleTemplate.setLifeTime(5.0*_scale);
         
-    buildEffect();
+    if (_automaticSetup) buildEffect();
 }
 
 SmokeTrailEffect::SmokeTrailEffect(const SmokeTrailEffect& copy, const osg::CopyOp& copyop):

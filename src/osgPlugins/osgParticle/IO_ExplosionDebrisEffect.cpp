@@ -10,7 +10,7 @@ bool  ExplosionDebrisEffect_writeLocalData(const osg::Object &obj, osgDB::Output
 
 osgDB::RegisterDotOsgWrapperProxy  ExplosionDebrisEffect_Proxy
 (
-    new osgParticle::ExplosionDebrisEffect,
+    new osgParticle::ExplosionDebrisEffect(false),
     "ExplosionDebrisEffect",
     "Object Node ParticleEffect ExplosionDebrisEffect",
     ExplosionDebrisEffect_readLocalData,

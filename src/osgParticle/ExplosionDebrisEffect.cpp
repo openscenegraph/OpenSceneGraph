@@ -25,6 +25,21 @@
 
 using namespace osgParticle;
 
+ExplosionDebrisEffect::ExplosionDebrisEffect(bool automaticSetup):
+    ParticleEffect(automaticSetup)
+{
+    setDefaults();
+    
+    _position.set(0.0f,0.0f,0.0f);
+    _scale = 1.0f;
+    _intensity = 1.0f;
+     
+    _emitterDuration = 0.1;
+    _defaultParticleTemplate.setLifeTime(1.0+0.6*_scale);
+   
+    if (_automaticSetup) buildEffect();
+}
+
 ExplosionDebrisEffect::ExplosionDebrisEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
@@ -36,7 +51,7 @@ ExplosionDebrisEffect::ExplosionDebrisEffect(const osg::Vec3& position, float sc
     _emitterDuration = 0.1;
     _defaultParticleTemplate.setLifeTime(1.0+0.6*_scale);
    
-    buildEffect();
+    if (_automaticSetup) buildEffect();
 }
 
 ExplosionDebrisEffect::ExplosionDebrisEffect(const ExplosionDebrisEffect& copy, const osg::CopyOp& copyop):

@@ -18,9 +18,10 @@
 using namespace osgParticle;
 
 ParticleEffect::ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& copyop):
-    osg::Group(copy,copyop),/*,
-    _particleSystem(copy._particleSystem.valid()?copy._particleSystem->clone():0)*/
+    osg::Group(copy,copyop),
+    _automaticSetup(copy._automaticSetup),
     _useLocalParticleSystem(copy._useLocalParticleSystem),
+    _textureFileName(copy._textureFileName),
     _defaultParticleTemplate(copy._defaultParticleTemplate),
     _position(copy._position),
     _scale(copy._scale),
@@ -29,6 +30,7 @@ ParticleEffect::ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& co
     _emitterDuration(copy._emitterDuration),
     _wind(copy._wind)
 {
+    if (_automaticSetup) buildEffect();
 }
 
 void ParticleEffect::setUseLocalParticleSystem(bool local)
@@ -36,19 +38,22 @@ void ParticleEffect::setUseLocalParticleSystem(bool local)
     if (_useLocalParticleSystem==local) return;
     
     _useLocalParticleSystem = local;
-    buildEffect();
+
+    if (_automaticSetup) buildEffect();
 }
 
 void ParticleEffect::setTextureFileName(const std::string& filename)
 {
     _textureFileName = filename;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setDefaultParticleTemplate(const Particle& p)
 {
     _defaultParticleTemplate = p;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setPosition(const osg::Vec3& position)
@@ -56,7 +61,8 @@ void ParticleEffect::setPosition(const osg::Vec3& position)
     if (_position==position) return;
 
     _position = position;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setScale(float scale)
@@ -64,7 +70,8 @@ void ParticleEffect::setScale(float scale)
     if (_scale==scale) return;
 
     _scale = scale;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setIntensity(float intensity)
@@ -72,7 +79,8 @@ void ParticleEffect::setIntensity(float intensity)
     if (_intensity==intensity) return;
 
     _intensity = intensity;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setStartTime(double startTime)
@@ -80,7 +88,8 @@ void ParticleEffect::setStartTime(double startTime)
     if (_startTime==startTime) return;
     
     _startTime =startTime;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setEmitterDuration(double duration)
@@ -88,7 +97,8 @@ void ParticleEffect::setEmitterDuration(double duration)
     if (_emitterDuration==duration) return;
 
     _emitterDuration = duration;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setParticleDuration(double duration)
@@ -97,7 +107,7 @@ void ParticleEffect::setParticleDuration(double duration)
 
     _defaultParticleTemplate.setLifeTime(duration);
     
-    setUpEmitterAndProgram();
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setWind(const osg::Vec3& wind)
@@ -105,7 +115,8 @@ void ParticleEffect::setWind(const osg::Vec3& wind)
     if (_wind==wind) return;
 
     _wind = wind;
-    setUpEmitterAndProgram();
+
+    if (_automaticSetup) setUpEmitterAndProgram();
 }
 
 void ParticleEffect::setParticleSystem(ParticleSystem* ps)
@@ -113,7 +124,8 @@ void ParticleEffect::setParticleSystem(ParticleSystem* ps)
     if (_particleSystem==ps) return;
     
     _particleSystem = ps;
-    buildEffect();
+
+    if (_automaticSetup) buildEffect();
 }
 
 void ParticleEffect::setDefaults()
@@ -130,9 +142,9 @@ void ParticleEffect::buildEffect()
 {
     setUpEmitterAndProgram();
 
-    Emitter* emitter = getEmitter();
-    Program* program = getProgram();
-    ParticleSystem* particleSystem = getParticleSystem();
+    osg::ref_ptr<Emitter> emitter = getEmitter();
+    osg::ref_ptr<Program> program = getProgram();
+    osg::ref_ptr<ParticleSystem> particleSystem = getParticleSystem();
 
     if (!emitter || !particleSystem || !program) return; 
 
@@ -141,21 +153,21 @@ void ParticleEffect::buildEffect()
     removeChild(0,getNumChildren());
     
     // add the emitter
-    addChild(emitter);
+    addChild(emitter.get());
     
     // add the program to update the particles
-    addChild(program);
+    addChild(program.get());
 
     // add the particle system updater.
-    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
-    psu->addParticleSystem(particleSystem);
-    addChild(psu);
+    osg::ref_ptr<osgParticle::ParticleSystemUpdater> psu = new osgParticle::ParticleSystemUpdater;
+    psu->addParticleSystem(particleSystem.get());
+    addChild(psu.get());
 
     if (_useLocalParticleSystem)
     {
         // add the geode to the scene graph
-        osg::Geode *geode = new osg::Geode;
-        geode->addDrawable(particleSystem);
+        osg::Geode* geode = new osg::Geode;
+        geode->addDrawable(particleSystem.get());
         addChild(geode);
     }
 }

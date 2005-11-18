@@ -26,6 +26,21 @@
 
 using namespace osgParticle;
 
+FireEffect::FireEffect(bool automaticSetup):
+    ParticleEffect(automaticSetup)
+{
+    setDefaults();
+    
+    _position.set(0.0f,0.0f,0.0f);
+    _scale = 1.0f;
+    _intensity = 1.0f;
+     
+    _emitterDuration = 60.0;
+    _defaultParticleTemplate.setLifeTime(0.5+0.1*_scale);
+       
+    if (_automaticSetup) buildEffect();
+}
+
 FireEffect::FireEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
@@ -37,7 +52,7 @@ FireEffect::FireEffect(const osg::Vec3& position, float scale, float intensity)
     _emitterDuration = 60.0;
     _defaultParticleTemplate.setLifeTime(0.5+0.1*_scale);
        
-    buildEffect();
+    if (_automaticSetup) buildEffect();
 }
 
 FireEffect::FireEffect(const FireEffect& copy, const osg::CopyOp& copyop):

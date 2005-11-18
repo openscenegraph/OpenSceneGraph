@@ -10,7 +10,7 @@ bool  SmokeTrailEffect_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 
 osgDB::RegisterDotOsgWrapperProxy  SmokeTrailEffect_Proxy
 (
-    new osgParticle::SmokeTrailEffect,
+    new osgParticle::SmokeTrailEffect(false),
     "SmokeTrailEffect",
     "Object Node ParticleEffect SmokeTrailEffect",
     SmokeTrailEffect_readLocalData,

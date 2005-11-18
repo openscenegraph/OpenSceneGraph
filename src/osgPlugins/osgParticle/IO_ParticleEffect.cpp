@@ -177,7 +177,14 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
         }
     }
 
-
+    if (!effect.getAutomaticSetup())
+    {
+        // since by default the clone of the ParticleEffect is done with automatic setup off to prevent premature loading of
+        // imagery, we still want to make sure the ParticleEffect is properly built so we'll now mannually enable the automatic setup
+        // run the buildEffect().
+        effect.setAutomaticSetup(true);
+        effect.buildEffect();
+    }
 
     return itrAdvanced;
 }

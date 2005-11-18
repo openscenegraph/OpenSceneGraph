@@ -84,6 +84,12 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         /** Get the size of the trackball. */
         float getTrackballSize() const { return _trackballSize; }
 
+        /** Set the distance of the trackball. */
+        void setDistance(double distance) { _distance = distance; }
+
+        /** Get the distance of the trackball. */
+        double getDistance() const { return _distance; }
+
     protected:
 
         virtual ~TrackballManipulator();

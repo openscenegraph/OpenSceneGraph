@@ -27,7 +27,8 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::FireEffect)
 	I_BaseType(osgParticle::ParticleEffect);
-	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, position, osg::Vec3(0.0f, 0.0f, 0.0f), IN, float, scale, 1.0f, IN, float, intensity, 1.0f);
+	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true);
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, position, , IN, float, scale, 1.0f, IN, float, intensity, 1.0f);
 	I_ConstructorWithDefaults2(IN, const osgParticle::FireEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);

@@ -29,12 +29,14 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
 	I_BaseType(osg::Group);
-	I_Constructor0();
+	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true);
 	I_ConstructorWithDefaults2(IN, const osgParticle::ParticleEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setAutomaticSetup, IN, bool, flag);
+	I_Method0(bool, getAutomaticSetup);
 	I_Method1(void, setUseLocalParticleSystem, IN, bool, local);
 	I_Method0(bool, getUseLocalParticleSystem);
 	I_Method1(void, setTextureFileName, IN, const std::string &, filename);
@@ -66,6 +68,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
 	I_Method0(void, setDefaults);
 	I_Method0(void, setUpEmitterAndProgram);
 	I_Method0(void, buildEffect);
+	I_Property(bool, AutomaticSetup);
 	I_Property(const osgParticle::Particle &, DefaultParticleTemplate);
 	I_ReadOnlyProperty(osgParticle::Emitter *, Emitter);
 	I_Property(double, EmitterDuration);

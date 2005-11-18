@@ -24,7 +24,8 @@ namespace osgParticle
     {
     public:
     
-        ParticleEffect():
+        ParticleEffect(bool automaticSetup=true):
+            _automaticSetup(automaticSetup),
             _useLocalParticleSystem(true),
             _scale(1.0f),
             _intensity(1.0f),
@@ -40,6 +41,9 @@ namespace osgParticle
         virtual const char* className() const { return "ParticleEffect"; }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ParticleEffect*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
+
+        void setAutomaticSetup(bool flag) { _automaticSetup = flag; }
+        bool getAutomaticSetup() const { return _automaticSetup; }
 
         void setUseLocalParticleSystem(bool local);
         bool getUseLocalParticleSystem() const { return _useLocalParticleSystem; }
@@ -93,6 +97,8 @@ namespace osgParticle
     protected:
     
         virtual ~ParticleEffect() {}
+        
+        bool                            _automaticSetup;
 
         osg::ref_ptr<ParticleSystem>    _particleSystem;
 

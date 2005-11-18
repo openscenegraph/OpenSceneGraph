@@ -10,7 +10,7 @@ bool  FireEffect_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  FireEffect_Proxy
 (
-    new osgParticle::FireEffect,
+    new osgParticle::FireEffect(false),
     "FireEffect",
     "Object Node ParticleEffect FireEffect",
     FireEffect_readLocalData,

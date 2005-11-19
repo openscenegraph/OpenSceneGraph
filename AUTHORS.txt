@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.0
 
-166 Contributors:
+168 Contributors:
 
 Firstname Surname
 -----------------
@@ -13,11 +13,11 @@ Bob Kuehne
 Brede Johansen
 Tree 
 Ulrich Hertlein
+Eric Sokolowsky
 Pavel Moloshtan
 Paul Martz
 Norman Vine
 Farshid Lashkari
-Eric Sokolowsky
 Trajce Nikolov
 Tom Jolley
 Alberto Farre
@@ -51,6 +51,7 @@ Joseph Steel
 Joakim Simonsson
 David Spilling
 Corbin Holtz
+Toshiyuki Takahei
 Nikolaus Hanekamp
 Loic Dachary
 Jason Daly
@@ -81,6 +82,7 @@ Thom DeCarlo
 Steve Lunsford
 Stanislav Blinov
 Sohey Yamamoto
+Roger James
 Perry Miller
 Per Fahlberg
 Paul Melis
@@ -106,13 +108,11 @@ Vladimir Vukicevic
 Vasily Radostev
 Uwe Woessner
 Troy Yee
-Toshiyuki Takehei
 Tino Schwarze
 Tanguy Fautré
 Shane Arnott
 Sebastien Kuntz
 Ronny Krueger
-Roger James
 Reinhard Sainitzer
 Qing Shen
 Nikolov Trajce
@@ -120,6 +120,7 @@ Nicolas Brodu
 Nathan Monteleone
 Nathan Cournia
 Morné Pistorius
+Mikkel Gjøl
 Michael Morrison
 Michael Logan
 Max Rhiener
@@ -161,6 +162,7 @@ Bora Utka
 Blake Williams
 Bart Gallet
 Axel Volley
+Andrew Reyonolds
 Andreas Jochens
 Andreas Ekstrand
 Anders Backman

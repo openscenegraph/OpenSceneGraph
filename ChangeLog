@@ -1,3 +1,280 @@
+2005-11-18 17:04  robert
+
+	* include/osgParticle/ExplosionDebrisEffect,
+	  include/osgParticle/ExplosionEffect,
+	  include/osgParticle/FireEffect,
+	  include/osgParticle/ParticleEffect,
+	  include/osgParticle/SmokeEffect,
+	  include/osgParticle/SmokeTrailEffect,
+	  src/osgParticle/ExplosionDebrisEffect.cpp,
+	  src/osgParticle/ExplosionEffect.cpp,
+	  src/osgParticle/FireEffect.cpp,
+	  src/osgParticle/ParticleEffect.cpp,
+	  src/osgParticle/SmokeEffect.cpp,
+	  src/osgParticle/SmokeTrailEffect.cpp,
+	  src/osgPlugins/osgParticle/IO_ExplosionDebrisEffect.cpp,
+	  src/osgPlugins/osgParticle/IO_ExplosionEffect.cpp,
+	  src/osgPlugins/osgParticle/IO_FireEffect.cpp,
+	  src/osgPlugins/osgParticle/IO_ParticleEffect.cpp,
+	  src/osgPlugins/osgParticle/IO_SmokeEffect.cpp,
+	  src/osgPlugins/osgParticle/IO_SmokeTrailEffect.cpp,
+	  src/osgWrappers/osgParticle/ExplosionDebrisEffect.cpp,
+	  src/osgWrappers/osgParticle/ExplosionEffect.cpp,
+	  src/osgWrappers/osgParticle/FireEffect.cpp,
+	  src/osgWrappers/osgParticle/ParticleEffect.cpp,
+	  src/osgWrappers/osgParticle/SmokeEffect.cpp,
+	  src/osgWrappers/osgParticle/SmokeTrailEffect.cpp: Added the
+	  ability for osgParticle::ParticleEffect to switch off the
+	  automatic setup.  Normally the automatic setup is useful, but in
+	  the case of the .osg support this automatic update was forcing
+	  premature loading of imagery that wasn't necessarily, and can
+	  lead to reports of looking for files that arn't present.
+
+2005-11-18 15:00  robert
+
+	* include/osgGA/TrackballManipulator,
+	  src/osgWrappers/osgGA/TrackballManipulator.cpp: Added s/getCenter
+	  and s/getRotation methods, and updated wrapper.
+
+2005-11-18 14:49  robert
+
+	* include/osgGA/TrackballManipulator: From  Toshiyuki Takeahei,
+	  addition of s/getDistance() methods
+
+2005-11-18 14:46  robert
+
+	* src/osgPlugins/flt/: LightPointRecord.cpp, LightPointRecord.h,
+	  flt2osg.cpp: The OpenFlight plugin was crashing with pre 15.6
+	  .flt files that contained light points.  This was due to the
+	  mismatch is size and fiels in the LightPointRecord before 15.6
+	  and after it, the OSG's flt plugin was assuming just 15.6 record
+	  structure.  As a temporary solution I have disabled the
+	  processing of light point records on .flt file version before
+	  15.6, this allows these files to be loaded safely, but without
+	  light points.
+
+2005-11-18 10:03  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: From Andrew Reyonolds : changed
+	  the endian conversion code to work on a temporary rather then on
+	  a flt structure to prevent repeated conversion of the same value,
+	  something that led to eroneously large light point string sizes.
+
+2005-11-18 09:52  robert
+
+	* include/: osg/Export, osgDB/Export, osgFX/Export, osgGA/Export,
+	  osgIntrospection/Export, osgParticle/Export, osgProducer/Export,
+	  osgSim/Export, osgTerrain/Export, osgText/Export, osgUtil/Export:
+	  From Rodger James, changed the Win32 static library compilation
+	  support to use OSG_LIBRARY_STATIC to avoid problems with building
+	  libs when not required.
+
+2005-11-17 20:22  robert
+
+	* examples/: osgGLUTkeyboardmouse/osgGLUTkeyboardmouse.cpp,
+	  osgblendequation/osgblendequation.cpp,
+	  osgbluemarble/osgbluemarble.cpp, osgcamera/osgcamera.cpp,
+	  osgcameragroup/osgcameragroup.cpp, osgcluster/broadcaster.cpp,
+	  osgcluster/receiver.cpp,
+	  osgdepthpartition/DepthPartitionNode.cpp,
+	  osgdepthpartition/DistanceAccumulator.cpp,
+	  osgdepthpartition/osgdepthpartition.cpp,
+	  osgdepthshadow/osgdepthshadow.cpp, osgforest/osgforest.cpp,
+	  osgfxbrowser/osgfxbrowser.cpp, osggeometry/osggeometry.cpp,
+	  osgimpostor/TestManipulator.cpp, osgimpostor/osgimpostor.cpp,
+	  osgintrospection/osgintrospection.cpp,
+	  osgkeyboardmouse/osgkeyboardmouse.cpp, osglight/osglight.cpp,
+	  osglogicop/osglogicop.cpp, osglogo/osglogo.cpp,
+	  osgmotionblur/osgmotionblur.cpp, osgparametric/osgparametric.cpp,
+	  osgparticle/osgparticle.cpp,
+	  osgparticleeffects/osgparticleeffects.cpp,
+	  osgplanets/osgplanets.cpp, osgshadowtexture/osgshadowtexture.cpp,
+	  osgshape/osgshape.cpp, osgsimple/osgsimple.cpp,
+	  osgsimplepager/osgsimplepager.cpp,
+	  osgsimulation/osgsimulation.cpp, osgslice/osgslice.cpp,
+	  osgspheresegment/osgspheresegment.cpp,
+	  osgspotlight/osgspotlight.cpp, osgtexture3D/osgtexture3D.cpp,
+	  osgvolume/osgvolume.cpp: Replaced tabs with spaces in examples.
+
+2005-11-17 17:45  robert
+
+	* applications/osgdem/osgdem.cpp,
+	  src/osgWrappers/osgGA/DriveManipulator.cpp,
+	  src/osgWrappers/osgGA/FlightManipulator.cpp,
+	  src/osgWrappers/osgGA/TrackballManipulator.cpp,
+	  src/osgWrappers/osgGA/UFOManipulator.cpp: Updated wrappers.
+
+2005-11-17 17:44  robert
+
+	* include/: osg/AnimationPath, osg/Billboard, osg/ClipNode,
+	  osg/ClipPlane, osg/ClusterCullingCallback,
+	  osg/CollectOccludersVisitor, osg/ConvexPlanarOccluder,
+	  osg/ConvexPlanarPolygon, osg/CopyOp, osg/CullSettings,
+	  osg/CullStack, osg/CullingSet, osg/Depth, osg/Export,
+	  osg/FragmentProgram, osg/GLExtensions, osg/Group,
+	  osg/ImageStream, osg/Light, osg/LineStipple, osg/Matrixd,
+	  osg/Matrixf, osg/Multisample, osg/PointSprite, osg/Polytope,
+	  osg/Referenced, osg/ShadowVolumeOccluder, osg/Shape,
+	  osg/TexGenNode, osg/Texture1D, osg/Texture2D, osg/Transform,
+	  osg/TriangleFunctor, osg/TriangleIndexFunctor, osg/UByte4,
+	  osg/Vec2b, osg/Vec2d, osg/Vec2f, osg/Vec2s, osg/Vec3b, osg/Vec3s,
+	  osg/Vec4s, osg/Vec4ub, osg/io_utils, osg/ref_ptr,
+	  osgDB/DynamicLibrary, osgDB/Export, osgDB/Output,
+	  osgGA/AnimationPathManipulator, osgGA/DriveManipulator,
+	  osgGA/KeySwitchMatrixManipulator, osgIntrospection/Comparator,
+	  osgProducer/EventAdapter, osgProducer/Export, osgSim/Impostor,
+	  osgSim/ImpostorSprite, osgTerrain/DataSet, osgText/Text: Convert
+	  tabs to spaces.
+
+2005-11-17 15:18  robert
+
+	* applications/osgversion/osgversion.cpp: From Toshiyuki Takahei,
+	  added #pragam to avoid build problem with special characters.
+	  From Robert Osfield, added #if _MSC_VER to restrict pragma usage
+	  to just VisualStudio, and added comment explaining all the extra
+	  parsing code in osgversion.
+
+2005-11-17 15:03  robert
+
+	* src/osgPlugins/: ac3d/Exception.cpp, ac3d/Geode.cpp,
+	  dds/ReaderWriterDDS.cpp, dw/ReaderWriterDW.cpp,
+	  dxf/ReaderWriterDXF.cpp, dxf/dxfBlock.cpp, dxf/dxfEntity.cpp,
+	  dxf/dxfFile.cpp, dxf/dxfReader.cpp, dxf/dxfSection.cpp,
+	  dxf/dxfTable.cpp, dxf/scene.cpp,
+	  flt/FindExternalModelVisitor.cpp, flt/GroupRecord.cpp,
+	  flt/HeaderRecord.cpp, flt/LightPointPaletteRecords.cpp,
+	  flt/LodRecord.cpp, geo/ClipRegion.cpp, geo/ReaderWriterGEO.cpp,
+	  geo/geoActions.cpp, ive/AlphaFunc.cpp, ive/AnimationPath.cpp,
+	  ive/AnimationPathCallback.cpp, ive/AzimElevationSector.cpp,
+	  ive/AzimSector.cpp, ive/Billboard.cpp, ive/BlendFunc.cpp,
+	  ive/BlinkSequence.cpp, ive/ClipPlane.cpp, ive/ConeSector.cpp,
+	  ive/ConvexPlanarPolygon.cpp, ive/CullFace.cpp,
+	  ive/DirectionalSector.cpp, ive/ElevationSector.cpp,
+	  ive/Exception.cpp, ive/FragmentProgram.cpp, ive/FrontFace.cpp,
+	  ive/Impostor.cpp, ive/LOD.cpp, ive/Light.cpp, ive/LightModel.cpp,
+	  ive/LightPoint.cpp, ive/LightPointNode.cpp, ive/LineWidth.cpp,
+	  ive/Material.cpp, ive/MultiSwitch.cpp, ive/Object.cpp,
+	  ive/PagedLOD.cpp, ive/Point.cpp, ive/PolygonOffset.cpp,
+	  ive/PositionAttitudeTransform.cpp, ive/PrimitiveSet.cpp,
+	  ive/ReaderWriterIVE.cpp, ive/Scissor.cpp, ive/Sequence.cpp,
+	  ive/ShadeModel.cpp, ive/Switch.cpp, ive/TexEnv.cpp,
+	  ive/TexEnvCombine.cpp, ive/TexGen.cpp, ive/TexMat.cpp,
+	  ive/Transform.cpp, ive/Viewport.cpp, ive/VisibilityGroup.cpp,
+	  lib3ds/ReaderWriter3DS.cpp, lwo/Block.cpp, lwo/Clip.cpp,
+	  lwo/Converter.cpp, lwo/Object.cpp, lwo/Polygon.cpp,
+	  lwo/Surface.cpp, lwo/Tessellator.cpp, lwo/Unit.cpp,
+	  lwo/VertexMap.cpp, lwo/old_Lwo2.cpp, lwo/old_Lwo2Layer.cpp,
+	  lwo/old_lw.cpp, md2/ReaderWriterMD2.cpp, net/sockinet.cpp,
+	  net/sockstream.cpp, osg/AutoTransform.cpp, osg/ClipPlane.cpp,
+	  osg/ConvexPlanarOccluder.cpp, osg/Fog.cpp,
+	  osg/FragmentProgram.cpp, osg/Light.cpp, osg/LineWidth.cpp,
+	  osg/Material.cpp, osg/Point.cpp, osg/PointSprite.cpp,
+	  osg/ReaderWriterOSG.cpp, osg/Shader.cpp, osg/Shape.cpp,
+	  osg/TexGen.cpp, osg/VertexProgram.cpp,
+	  osgFX/IO_AnisotropicLighting.cpp, osgFX/IO_BumpMapping.cpp,
+	  osgFX/IO_Cartoon.cpp, osgFX/IO_Effect.cpp, osgFX/IO_Scribe.cpp,
+	  osgFX/IO_SpecularHighlights.cpp,
+	  osgParticle/IO_ModularEmitter.cpp,
+	  osgParticle/IO_ModularProgram.cpp, osgParticle/IO_Particle.cpp,
+	  osgParticle/IO_ParticleProcessor.cpp,
+	  osgParticle/IO_RadialShooter.cpp, osgtgz/ReaderWriterOSGTGZ.cpp,
+	  pfb/ConvertFromPerformer.cpp, pfb/ReaderWriterPFB.cpp,
+	  quicktime/MovieData.cpp, quicktime/QTUtils.cpp,
+	  quicktime/ReaderWriterQT.cpp, rot/ReaderWriterROT.cpp,
+	  scale/ReaderWriterSCALE.cpp, tgz/ReaderWriterTGZ.cpp,
+	  trans/ReaderWriterTRANS.cpp: Replaced tabs with spaces.
+
+2005-11-17 13:35  robert
+
+	* src/: osg/Image.cpp, osg/LightModel.cpp, osg/Matrixd.cpp,
+	  osg/Shape.cpp, osg/ShapeDrawable.cpp, osg/UnitTestFramework.cpp,
+	  osg/Vec3.cpp, osgDB/DynamicLibrary.cpp, osgDB/FieldReader.cpp,
+	  osgDB/FileNameUtils.cpp, osgDB/Output.cpp, osgFX/BumpMapping.cpp,
+	  osgFX/Cartoon.cpp, osgFX/Effect.cpp, osgFX/Technique.cpp,
+	  osgFX/Validator.cpp, osgParticle/ParticleSystem.cpp,
+	  osgProducer/EventAdapter.cpp, osgProducer/OsgCameraGroup.cpp,
+	  osgProducer/Viewer.cpp, osgSim/Impostor.cpp,
+	  osgSim/LightPoint.cpp, osgSim/LightPointNode.cpp,
+	  osgSim/MultiSwitch.cpp, osgSim/SphereSegment.cpp,
+	  osgTerrain/HeightFieldNode.cpp, osgText/Text.cpp,
+	  osgUtil/CullVisitor.cpp, osgUtil/DisplayRequirementsVisitor.cpp,
+	  osgUtil/HalfWayMapGenerator.cpp, osgUtil/IntersectVisitor.cpp,
+	  osgUtil/RenderBin.cpp, osgUtil/Simplifier.cpp: Coverted tabs to
+	  space in core libraries.
+
+2005-11-17 11:27  robert
+
+	* src/osgProducer/Viewer.cpp: From Toshiyuki Takahei, fixed order
+	  intialiation problem in Viewer::selectCameraManipulator(..).
+
+2005-11-17 11:22  robert
+
+	* examples/osgdepthshadow/osgdepthshadow.cpp: From Mike Weiblen,
+	  "fix for another one of those GLSL syntax errors that slip thru
+	  the nvidia compiler.	gl_TexCoord[] is an array of vec4, and must
+	  be reduced to a vec2 for use with texture2D()"
+
+2005-11-17 11:13  robert
+
+	* Make/makedefs: From Eric Sokolosky, for Cygwin and Minw sections
+	  changed definition of INST_SHARE so that it is based on
+	  INST_LOCATION, providing the same default as before but also
+	  allow it to be override by env vars when required.
+
+2005-11-17 11:09  robert
+
+	* Make/makedefs: From Eric Sokolosky, made spacing more consistent.
+
+2005-11-17 11:03  robert
+
+	* include/osgGA/DriveManipulator, include/osgGA/FlightManipulator,
+	  include/osgGA/TrackballManipulator, include/osgGA/UFOManipulator,
+	  src/osg/Matrix_implementation.cpp,
+	  src/osgGA/DriveManipulator.cpp, src/osgGA/FlightManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgGA/TrackballManipulator.cpp: From Mikkel Gjøl, addition of
+	  paramter set/get methods to osgGA::*Manipulators, change of ' '
+	  to GUIEventAdapter::KEY_Space, fix to url in
+	  Matrix_implementation.cpp.  Syntax fixes by Robert Osfield to
+	  above submission fix inconsistencies with normal OSG coding
+	  style.
+
+2005-11-17 09:57  robert
+
+	* examples/osgsimulation/osgsimulation.cpp: Improved handling of
+	  core OSG being compile with float Matrices.
+
+2005-11-17 09:20  robert
+
+	* src/osg/Image.cpp: Added (_data || rhs._data) extra qualify to
+	  Image::compare is data equal test.
+
+2005-11-16 21:08  robert
+
+	* src/osgPlugins/geo/osgGeoNodes.h: Removed redundent copyop.
+
+2005-11-16 20:27  robert
+
+	* examples/osgtesselate/GNUmakefile: Ran dos2unix on makefile.
+
+2005-11-16 16:35  robert
+
+	* doc/ProgrammingGuide/ProgrammingGuide.odt: Started experimenting
+	  with sections and table of contents.
+
+2005-11-16 16:30  robert
+
+	* src/osgPlugins/dxf/: dxfEntity.cpp, dxfEntity.h, scene.cpp,
+	  scene.h: Converted remaining osg::Matrix usage to osg::Matrixd.
+
+2005-11-16 12:14  robert
+
+	* AUTHORS.txt, ChangeLog: Updated changelog and authors file.
+
+2005-11-16 12:07  robert
+
+	* applications/osgversion/osgversion.cpp: Fixed typo entry.
+
 2005-11-16 09:28  robert
 
 	* src/osg/TextureRectangle.cpp: From Mike Weiblen, support for

@@ -79,6 +79,10 @@ namespace DX {
         float power;
         ColorRGB specularColor;
         ColorRGB emissiveColor;
+        //
+        // dgm -  - materials can have names for later reference
+        //
+        std::string name;
         std::vector<TextureFilename> texture;
     } Material;
 
@@ -165,6 +169,11 @@ namespace DX {
 
         /// Material list (per-face).
         MeshMaterialList* _materialList;
+
+        //
+        // dgm keep list of materials global to the file
+        //
+        std::vector<Material> _globalMaterials;
 
         /// Normals (per-face).
         MeshNormals* _normals;

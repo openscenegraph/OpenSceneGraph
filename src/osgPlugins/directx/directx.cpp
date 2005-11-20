@@ -273,7 +273,6 @@ void Object::parseMaterial(ifstream& fin, Material& material)
             continue;
         if (token[0] == "}")
             break;
-
         if (token[0] == "TextureFilename") {
             TextureFilename tf;
             readTexFilename(fin, tf);
@@ -415,13 +414,33 @@ void Object::parseMeshMaterialList(ifstream& fin)
         if (token.size() == 0)
             continue;
 
+        //
+        // dgm - check for "{ <material name> }" for a
+        // material which was declared globally 
+        //
+        bool found = false;
+        if (token.size() > 2) {
+            std::vector<Material>::iterator itr;
+            for (itr=_globalMaterials.begin();
+                 itr != _globalMaterials.end();
+                 ++itr) {
+                if ( (*itr).name == token[1]) {
+                    if (!_materialList)
+                        _materialList = new MeshMaterialList;
+                    _materialList->material.push_back(*itr);
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found ) continue;
+        
         if (strrchr(buf, '}') != 0)
             break;
         else if (strrchr(buf, '{') != 0) {
             if (token[0] == "Material") {
                 Material mm;
                 parseMaterial(fin, mm);
-
                 _materialList->material.push_back(mm);
                 //cerr << "* num mat=" << _materialList->material.size() << endl;
             }
@@ -639,7 +658,20 @@ void Object::parseSection(ifstream& fin)
             //cerr << "!!! Section " << token[0] << endl;
             if (token[0] == "Mesh")
                 parseMesh(fin);
-            else
+
+            //
+            //dgm - In later versions of directx files, materials
+            // can be declared at the top of the file (e.g. globally).
+            // Keep this list of global materials in "_globalMaterials"
+            //
+            else if (token[0] == "Material") {
+                Material mm;
+                if (token.size() > 1 && token[1] != "") {
+                    mm.name = token[1];
+                }
+                parseMaterial(fin, mm);
+                _globalMaterials.push_back(mm);
+            } else
                 parseSection(fin);
         }
     }

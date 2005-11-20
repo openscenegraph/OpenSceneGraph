@@ -38,7 +38,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#include <assert.h>
 #include <map>
 
 
@@ -258,7 +257,10 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
         unsigned int np = mesh->faces[i].size();
         ((osg::DrawArrayLengths*) geom->getPrimitiveSet(0))->push_back(np);
 
-        assert(np == meshNormals->faceNormals[i].size());
+        if (np != meshNormals->faceNormals[i].size())
+        {
+            osg::notify(osg::WARN)<<"DirectX loader: Error, error in normal list."<<std::endl;
+        }
 
         osg::Vec3Array* vertexArray = (osg::Vec3Array*) geom->getVertexArray();
         osg::Vec3Array* normalArray = (osg::Vec3Array*) geom->getNormalArray();

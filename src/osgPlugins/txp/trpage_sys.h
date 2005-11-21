@@ -53,6 +53,9 @@
 typedef __int64 int64;
 #endif
 
+// Get the template intantiations for basic types
+#include <osg/Export>
+
 #else   // Unix
 
 #include <stdio.h>

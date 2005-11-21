@@ -42,6 +42,33 @@
     #  define OSG_EXPORT
 #endif  
 
+// export template instances for basic types
+#if (_MSC_VER >= 1100) && !defined( OSG_LIBRARY_STATIC ) // This should work from VC5.0 onwards
+#include <vector>
+#if defined( OSG_LIBRARY )
+template class __declspec(dllexport) std::allocator<int>; // GLsizei
+template class __declspec(dllexport) std::vector<int, std::allocator<int> >; // GLsizei
+template class __declspec(dllexport) std::allocator<unsigned char>; // GLubyte
+template class __declspec(dllexport) std::vector<unsigned char, std::allocator<unsigned char> >; // GLubyte
+template class __declspec(dllexport) std::allocator<unsigned short>; // GLushort
+template class __declspec(dllexport) std::vector<unsigned short, std::allocator<unsigned short> >; // GLushort
+template class __declspec(dllexport) std::allocator<unsigned int>; // GLuint
+template class __declspec(dllexport) std::vector<unsigned int, std::allocator<unsigned int> >; // GLuint
+#else
+#pragma warning ( push )
+#pragma warning ( disable : 4231 )
+extern template class __declspec(dllimport) std::allocator<int>; // GLsizei
+extern template class __declspec(dllimport) std::vector<int, std::allocator<int> >; // GLsizei
+extern template class __declspec(dllimport) std::allocator<unsigned char>; // GLubyte
+extern template class __declspec(dllimport) std::vector<unsigned char, std::allocator<unsigned char> >; // GLubyte
+extern template class __declspec(dllimport) std::allocator<unsigned short>; // GLushort
+extern template class __declspec(dllimport) std::vector<unsigned short, std::allocator<unsigned short> >; // GLushort
+extern template class __declspec(dllimport) std::allocator<unsigned int>; // GLuint
+extern template class __declspec(dllimport) std::vector<unsigned int, std::allocator<unsigned int> >; // GLuint
+#pragma warning ( pop )
+#endif
+#endif
+
 // set up define for whether member templates are supported by VisualStudio compilers.
 #ifdef _MSC_VER
 # if (_MSC_VER >= 1300)

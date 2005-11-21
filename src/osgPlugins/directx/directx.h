@@ -28,6 +28,7 @@
 #include <vector>
 #include <fstream>
 
+#include <osg/Export>
 #include <osg/Math>
 
 namespace DX {

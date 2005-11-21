@@ -1,9 +1,9 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-9th November 2005 - OpenScneneGraph-1.0-rc1
+21st November 2005 - OpenScneneGraph-1.0-rc5
 
->>> Long awaited Release candidate one...
+>>> Long awaited Release candidate five...
 
 Lots of stuff is new and improved, in particular render to texture support.
 

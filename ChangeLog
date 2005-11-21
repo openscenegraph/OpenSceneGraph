@@ -1,3 +1,26 @@
+2005-11-21 13:51  robert
+
+	* include/osg/Export, include/osg/PrimitiveSet,
+	  include/osgText/String, src/osgPlugins/directx/directx.h,
+	  src/osgPlugins/txp/trpage_sys.h: From Roger James, reworked the
+	  export of std::vector<> on standard types to prevent problems
+	  with .lib being built for all targets under VS7.x
+
+2005-11-20 22:07  robert
+
+	* src/osgPlugins/directx/: ReaderWriterDirectX.cpp, directx.cpp,
+	  directx.h: Replaced asserts with notification of error.
+
+2005-11-20 22:06  robert
+
+	* src/osgPlugins/directx/: directx.cpp, directx.h: From Donn
+	  Mielcarek, added support Materials being declared globally.
+
+2005-11-19 12:18  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/osgversion.cpp:
+	  Updated ChangeLog, osgversion and AUTHORS file.
+
 2005-11-18 17:04  robert
 
 	* include/osgParticle/ExplosionDebrisEffect,

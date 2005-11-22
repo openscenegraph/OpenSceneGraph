@@ -551,6 +551,9 @@ void Geometry::setVertexAttribData(unsigned int index, const Geometry::ArrayData
         _vertexAttribList.resize(index+1);
         
     _vertexAttribList[index] = attrData;
+
+    computeFastPathsUsed();
+    dirtyDisplayList();
 }
 
 Geometry::ArrayData& Geometry::getVertexAttribData(unsigned int index)

@@ -634,7 +634,7 @@ ifeq ($(OS),MINGW)
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
 
-  LIBINST    = bin
+  LIBINST    = bin/$(OS)$(ARCH)
   PLUGININST = bin/$(OS)$(ARCH)
 
   LIB_PREFIX        = lib

@@ -172,18 +172,18 @@ void scene::addQuads(std::string l, unsigned short color, std::vector<Vec3d> ver
 unsigned short 
 scene::correctedColorIndex(std::string l, unsigned short color)
 {
-    if (color >= aci::MIN && color <= aci::MAX) {
+    if (color >= aci::MIN && color <= aci::MAX)
+    {
         return color;
-    } else if (!color || color == aci::BYLAYER) {
+    }
+    else if (!color || color == aci::BYLAYER)
+    {
         dxfLayer* layer = _layerTable->findOrCreateLayer(l);
         unsigned short lcolor = layer->getColor();
-        if (lcolor >= aci::MIN && lcolor <= aci::MAX) {
+        if (lcolor >= aci::MIN && lcolor <= aci::MAX)
+        {
             return lcolor;
-        } else {
-            return aci::WHITE;
         }
-    } else {
-        return aci::WHITE;
     }
+    return aci::WHITE;
 }
-

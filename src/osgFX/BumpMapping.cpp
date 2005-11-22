@@ -589,7 +589,9 @@ bool BumpMapping::define_techniques()
 void BumpMapping::prepareGeometry(osg::Geometry* geo)
 {
     osg::ref_ptr<osgUtil::TangentSpaceGenerator> tsg = new osgUtil::TangentSpaceGenerator;
+    
     tsg->generate(geo, _normal_unit);
+ 
     if (!geo->getVertexAttribArray(6))
         geo->setVertexAttribData(6, osg::Geometry::ArrayData(tsg->getTangentArray(), osg::Geometry::BIND_PER_VERTEX,GL_FALSE));
     if (!geo->getVertexAttribArray(7))

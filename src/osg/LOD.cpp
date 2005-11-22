@@ -52,7 +52,7 @@ void LOD::traverse(NodeVisitor& nv)
             else
             {
                 osg::CullStack* cullStack = dynamic_cast<osg::CullStack*>(&nv);
-                if (cullStack)
+                if (cullStack && cullStack->getLODScale())
                 {
                     required_range = cullStack->clampedPixelSize(getBound()) / cullStack->getLODScale();
                 }
@@ -62,7 +62,7 @@ void LOD::traverse(NodeVisitor& nv)
                     // finding out the max range
                     for(unsigned int i=0;i<_rangeList.size();++i)
                     {
-                        required_range = osg::minimum(required_range,_rangeList[i].first);
+                        required_range = osg::maximum(required_range,_rangeList[i].first);
                     }
                 }
             }

@@ -166,24 +166,38 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * before being removed.*/
         double getExpiryDelay() const { return _expiryDelay; }
 
-        /** set whether the removed subgraphs should be deleted in the database thread or not.*/
+        /** Set whether the removed subgraphs should be deleted in the database thread or not.*/
         void setDeleteRemovedSubgraphsInDatabaseThread(bool flag) { _deleteRemovedSubgraphsInDatabaseThread = flag; }
         
-        /** get whether the removed subgraphs should be deleted in the database thread or not.*/
+        /** Get whether the removed subgraphs should be deleted in the database thread or not.*/
         bool getDeleteRemovedSubgraphsInDatabaseThread() const { return _deleteRemovedSubgraphsInDatabaseThread; }
 
+        enum DrawablePolicy
+        {
+            DO_NOT_MODIFY_DRAWABLE_SETTINGS,
+            USE_DISPLAY_LISTS,
+            USE_VERTEX_BUFFER_OBJECTS,
+            USE_VERTEX_ARRAYS
+        };
 
-        /** set whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
+        /** Set how loaded drawables should be handled w.r.t their display list/vertex buffer object/vertex array settings.*/
+        void setDrawablePolicy(DrawablePolicy policy) { _drawablePolicy = policy; }
+
+        /** Get how loaded drawables should be handled w.r.t their display list/vertex buffer object/vertex array settings.*/
+        DrawablePolicy getDrawablePolicy() const { return _drawablePolicy; }
+
+
+        /** Set whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
         void setUnrefImageDataAfterApplyPolicy(bool changeAutoUnRef, bool valueAutoUnRef) { _changeAutoUnRef = changeAutoUnRef; _valueAutoUnRef = valueAutoUnRef; }
 
-        /** get whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
+        /** Get whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
         void getUnrefImageDataAfterApplyPolicy(bool& changeAutoUnRef, bool& valueAutoUnRef) const { changeAutoUnRef = _changeAutoUnRef; valueAutoUnRef = _valueAutoUnRef; }
 
 
-        /** set whether newly loaded textures should have their MaxAnisotopy set to a specified value.*/
+        /** Set whether newly loaded textures should have their MaxAnisotopy set to a specified value.*/
         void setMaxAnisotropyPolicy(bool changeAnisotropy, float valueAnisotropy) { _changeAnisotropy = changeAnisotropy; _valueAnisotropy = valueAnisotropy; }
 
-        /** set whether newly loaded textures should have their MaxAnisotopy set to a specified value.*/
+        /** Set whether newly loaded textures should have their MaxAnisotopy set to a specified value.*/
         void getMaxAnisotropyPolicy(bool& changeAnisotropy, float& valueAnisotropy) const { changeAnisotropy = _changeAnisotropy; valueAnisotropy = _valueAnisotropy; }
 
 
@@ -309,6 +323,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         DatabaseRequestList             _dataToCompileList;
         mutable OpenThreads::Mutex      _dataToCompileListMutex;
+
+        DrawablePolicy                  _drawablePolicy;
 
         bool                            _changeAutoUnRef;
         bool                            _valueAutoUnRef;

@@ -39,6 +39,13 @@ TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompil
 
 TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts);
 
+BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
+	I_EnumLabel(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
+	I_EnumLabel(osgDB::DatabasePager::USE_DISPLAY_LISTS);
+	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_BUFFER_OBJECTS);
+	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_ARRAYS);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_BaseType(osg::NodeVisitor::DatabaseRequestHandler);
 	I_Constructor0();
@@ -73,6 +80,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method0(double, getExpiryDelay);
 	I_Method1(void, setDeleteRemovedSubgraphsInDatabaseThread, IN, bool, flag);
 	I_Method0(bool, getDeleteRemovedSubgraphsInDatabaseThread);
+	I_Method1(void, setDrawablePolicy, IN, osgDB::DatabasePager::DrawablePolicy, policy);
+	I_Method0(osgDB::DatabasePager::DrawablePolicy, getDrawablePolicy);
 	I_Method2(void, setUnrefImageDataAfterApplyPolicy, IN, bool, changeAutoUnRef, IN, bool, valueAutoUnRef);
 	I_Method2(void, getUnrefImageDataAfterApplyPolicy, IN, bool &, changeAutoUnRef, IN, bool &, valueAutoUnRef);
 	I_Method2(void, setMaxAnisotropyPolicy, IN, bool, changeAnisotropy, IN, float, valueAnisotropy);
@@ -88,6 +97,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Property(bool, DatabasePagerThreadPause);
 	I_Property(bool, DeleteRemovedSubgraphsInDatabaseThread);
 	I_Property(bool, DoPreCompile);
+	I_Property(osgDB::DatabasePager::DrawablePolicy, DrawablePolicy);
 	I_Property(double, ExpiryDelay);
 	I_ReadOnlyProperty(osg::Block *, FrameBlock);
 	I_Property(unsigned int, MaximumNumOfObjectsToCompilePerFrame);

@@ -145,7 +145,7 @@ class OSG_EXPORT Geometry : public Drawable
         typedef std::vector< ArrayData >  ArrayList;
                
 
-        void setVertexArray(Array* array) { _vertexData.array = array; dirtyDisplayList(); dirtyBound();     }
+        void setVertexArray(Array* array) { _vertexData.array = array; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound();     }
         Array* getVertexArray() { return _vertexData.array.get(); }
         const Array* getVertexArray() const  { return _vertexData.array.get(); }
 
@@ -153,12 +153,12 @@ class OSG_EXPORT Geometry : public Drawable
         IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
         const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
 
-        void setVertexData(const ArrayData& arrayData) { _vertexData = arrayData; }
+        void setVertexData(const ArrayData& arrayData) { _vertexData = arrayData; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound(); }
         ArrayData& getVertexData() { return _vertexData; }
         const ArrayData& getVertexData() const { return _vertexData; }
         
 
-        void setNormalBinding(AttributeBinding ab) { _normalData.binding = ab; dirtyDisplayList(); computeFastPathsUsed(); }
+        void setNormalBinding(AttributeBinding ab) { _normalData.binding = ab; dirtyDisplayList(); computeFastPathsUsed(); dirtyDisplayList(); }
         AttributeBinding getNormalBinding() const { return _normalData.binding; }
 
         void setNormalArray(Array* array) { _normalData.array = array; if (!_normalData.array.valid()) _normalData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
@@ -169,11 +169,11 @@ class OSG_EXPORT Geometry : public Drawable
         IndexArray* getNormalIndices() { return _normalData.indices.get(); }
         const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }
 
-        void setNormalData(const ArrayData& arrayData) { _normalData = arrayData; }
+        void setNormalData(const ArrayData& arrayData) { _normalData = arrayData;  computeFastPathsUsed(); dirtyDisplayList();}
         ArrayData& getNormalData() { return _normalData; }
         const ArrayData& getNormalData() const { return _normalData; }
 
-        void setColorBinding(AttributeBinding ab) { _colorData.binding = ab; computeFastPathsUsed();}
+        void setColorBinding(AttributeBinding ab) { _colorData.binding = ab; computeFastPathsUsed(); dirtyDisplayList(); }
         AttributeBinding getColorBinding() const { return _colorData.binding; }
 
         void setColorArray(Array* array) { _colorData.array = array;  if (!_colorData.array.valid()) _colorData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
@@ -184,39 +184,39 @@ class OSG_EXPORT Geometry : public Drawable
         IndexArray* getColorIndices() { return _colorData.indices.get(); }
         const IndexArray* getColorIndices() const { return _colorData.indices.get(); }
 
-        void setColorData(const ArrayData& arrayData) { _colorData = arrayData; }
+        void setColorData(const ArrayData& arrayData) { _colorData = arrayData;  computeFastPathsUsed(); dirtyDisplayList();}
         ArrayData& getColorData() { return _colorData; }
         const ArrayData& getColorData() const { return _colorData; }
 
 
-        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorData.binding = ab; computeFastPathsUsed();}
+        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorData.binding = ab; computeFastPathsUsed(); dirtyDisplayList(); }
         AttributeBinding getSecondaryColorBinding() const { return _secondaryColorData.binding; }
 
         void setSecondaryColorArray(Array* array) { _secondaryColorData.array = array;  if (!_secondaryColorData.array.valid()) _secondaryColorData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
         Array* getSecondaryColorArray() { return _secondaryColorData.array.get(); }
         const Array* getSecondaryColorArray() const { return _secondaryColorData.array.get(); }
 
-        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorData.indices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
+        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
         IndexArray* getSecondaryColorIndices() { return _secondaryColorData.indices.get(); }
         const IndexArray* getSecondaryColorIndices() const { return _secondaryColorData.indices.get(); }
 
-        void setSecondaryColorData(const ArrayData& arrayData) { _secondaryColorData = arrayData; }
+        void setSecondaryColorData(const ArrayData& arrayData) { _secondaryColorData = arrayData; computeFastPathsUsed(); dirtyDisplayList(); }
         ArrayData& getSecondaryColorData() { return _secondaryColorData; }
         const ArrayData& getSecondaryColorData() const { return _secondaryColorData; }
 
 
-        void setFogCoordBinding(AttributeBinding ab) { _fogCoordData.binding = ab; computeFastPathsUsed();}
+        void setFogCoordBinding(AttributeBinding ab) { _fogCoordData.binding = ab; computeFastPathsUsed(); dirtyDisplayList(); }
         AttributeBinding getFogCoordBinding() const { return _fogCoordData.binding; }
 
-        void setFogCoordArray(Array* array) { _fogCoordData.array = array; if (!_fogCoordData.array.valid()) _fogCoordData.binding=BIND_OFF; dirtyDisplayList(); }
+        void setFogCoordArray(Array* array) { _fogCoordData.array = array; if (!_fogCoordData.array.valid()) _fogCoordData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList();  }
         Array* getFogCoordArray() { return _fogCoordData.array.get(); }
         const Array* getFogCoordArray() const { return _fogCoordData.array.get(); }
 
-        void setFogCoordIndices(IndexArray* array) { _fogCoordData.indices = array; dirtyDisplayList(); }
+        void setFogCoordIndices(IndexArray* array) { _fogCoordData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
         IndexArray* getFogCoordIndices() { return _fogCoordData.indices.get(); }
         const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
 
-        void setFogCoordData(const ArrayData& arrayData) { _fogCoordData = arrayData; }
+        void setFogCoordData(const ArrayData& arrayData) { _fogCoordData = arrayData; computeFastPathsUsed(); dirtyDisplayList(); }
         ArrayData& getFogCoordData() { return _fogCoordData; }
         const ArrayData& getFogCoordData() const { return _fogCoordData; }
         

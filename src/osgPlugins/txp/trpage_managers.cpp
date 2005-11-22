@@ -474,7 +474,7 @@ void trpgPageManager::LodPageInfo::Print(trpgPrintBuffer &buf)
         current[i]->Print(buf);
     buf.DecreaseIndent();
 
-    sprintf(line,"Free list size = %d",freeList.size());  buf.prnLine(line);
+    sprintf(line,"Free list size = %d", (int)freeList.size());  buf.prnLine(line);
 }
 
 /* Page Manager methods

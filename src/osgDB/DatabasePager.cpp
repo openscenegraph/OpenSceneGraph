@@ -23,7 +23,7 @@ using namespace OpenThreads;
 static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DO_PRE_COMPILE <ON/OFF>","Switch on or off the pre compile of OpenGL object database pager.");
 static osg::ApplicationUsageProxy DatabasePager_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
 static osg::ApplicationUsageProxy DatabasePager_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
-
+static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_DRAWABLE <DoNotModify/DisplayList/VBO/VertexArrays>","Set the drawable policy for setting of loaded drawable to specified type.");
 DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
@@ -42,6 +42,36 @@ DatabasePager::DatabasePager()
 
     _threadPriorityDuringFrame = THREAD_PRIORITY_MIN;
     _threadPriorityOutwithFrame = THREAD_PRIORITY_MIN;
+
+#if __APPLE__
+    // OSX really doesn't like compiling display lists, and performs poorly when they are used,
+    // so apply this hack to make up for its short comings.
+    _drawablePolicy = USE_VERTEX_ARRAYS;
+#else
+    _drawablePolicy = DO_NOT_MODIFY_DRAWABLE_SETTINGS;
+#endif    
+    
+    const char* str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
+    if (!str) str = getenv("OSG_DATABASE_PAGER_DRAWABLE");
+    if (str)
+    {
+        if (strcmp(str,"DoNotModify")==0)
+        {
+            _drawablePolicy = DO_NOT_MODIFY_DRAWABLE_SETTINGS;
+        }
+        else if (strcmp(str,"DisplayList")==0 || strcmp(str,"DL")==0)
+        {
+            _drawablePolicy = USE_DISPLAY_LISTS;
+        }
+        else if (strcmp(str,"VBO")==0)
+        {
+            _drawablePolicy = USE_VERTEX_BUFFER_OBJECTS;
+        }
+        else if (strcmp(str,"VertexArrays")==0 || strcmp(str,"VA")==0 )
+        {
+            _drawablePolicy = USE_VERTEX_ARRAYS;
+        } 
+    }
 
     _changeAutoUnRef = true;
     _valueAutoUnRef = true;
@@ -288,38 +318,14 @@ class DatabasePager::FindCompileableGLObjectsVisitor : public osg::NodeVisitor
 public:
     FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile, 
                                bool changeAutoUnRef, bool valueAutoUnRef,
-                               bool changeAnisotropy, float valueAnisotropy):
-                        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-                        _dataToCompile(dataToCompile),
-                        _changeAutoUnRef(changeAutoUnRef), _valueAutoUnRef(valueAutoUnRef),
-                        _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy),
-                        _useDisplayLists(true),
-                        _useVertexBufferObjects(false)
+                               bool changeAnisotropy, float valueAnisotropy,
+                               DatabasePager::DrawablePolicy drawablePolicy):
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+            _dataToCompile(dataToCompile),
+            _changeAutoUnRef(changeAutoUnRef), _valueAutoUnRef(valueAutoUnRef),
+            _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy),
+            _drawablePolicy(drawablePolicy)
     {
-#if __APPLE__
-    _useDisplayLists = false;
-    _useVertexBufferObjects = false;
-#endif    
-    
-        static const char* str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
-        if (str)
-        {
-            if (strcmp(str,"DisplayList")==0 || strcmp(str,"DL")==0)
-            {
-                _useDisplayLists = true;
-                _useVertexBufferObjects = false;
-            }
-            else if (strcmp(str,"VBO")==0)
-            {
-                _useDisplayLists = true;
-                _useVertexBufferObjects = true;
-            }
-            else if (strcmp(str,"VertexArrays")==0 || strcmp(str,"VA")==0 )
-            {
-                _useDisplayLists = false;
-                _useVertexBufferObjects = false;
-            }
-        }
     }
     
     virtual void apply(osg::Node& node)
@@ -371,12 +377,31 @@ public:
     {
         apply(drawable->getStateSet());
         
-        drawable->setUseDisplayList(_useDisplayLists);
-        drawable->setUseVertexBufferObjects(_useVertexBufferObjects);
-
+        switch(_drawablePolicy)
+        {
+        case DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS: 
+             // do nothing, leave settings as they came in from loaded database.
+             // osg::notify(osg::NOTICE)<<"DO_NOT_MODIFY_DRAWABLE_SETTINGS"<<std::endl;
+             break;
+        case DatabasePager::USE_DISPLAY_LISTS: 
+             drawable->setUseDisplayList(true);
+             drawable->setUseVertexBufferObjects(false);
+             break;
+        case DatabasePager::USE_VERTEX_BUFFER_OBJECTS:
+             drawable->setUseDisplayList(true);
+             drawable->setUseVertexBufferObjects(true);
+             // osg::notify(osg::NOTICE)<<"USE_VERTEX_BUFFER_OBJECTS"<<std::endl;
+             break;
+        case DatabasePager::USE_VERTEX_ARRAYS:
+             drawable->setUseDisplayList(false);
+             drawable->setUseVertexBufferObjects(false);
+             // osg::notify(osg::NOTICE)<<"USE_VERTEX_ARRAYS"<<std::endl;
+             break;
+        }
+        
         if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
         {
-            //osg::notify(osg::INFO)<<"Found compilable drawable"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"  Found compilable drawable"<<std::endl;
             _dataToCompile.second.push_back(drawable);
         }
     }
@@ -386,8 +411,7 @@ public:
     bool                            _valueAutoUnRef;
     bool                            _changeAnisotropy;
     float                           _valueAnisotropy;
-    bool                            _useDisplayLists;
-    bool                            _useVertexBufferObjects;
+    DatabasePager::DrawablePolicy   _drawablePolicy;
 };
 
 
@@ -512,7 +536,8 @@ void DatabasePager::run()
                     // find all the compileable rendering objects
                     FindCompileableGLObjectsVisitor frov(dtc, 
                                                          _changeAutoUnRef, _valueAutoUnRef,
-                                                         _changeAnisotropy, _valueAnisotropy);
+                                                         _changeAnisotropy, _valueAnisotropy,
+                                                         _drawablePolicy);
 
                     databaseRequest->_loadedModel->accept(frov);
 

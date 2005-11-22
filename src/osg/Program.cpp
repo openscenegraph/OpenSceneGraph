@@ -2027,12 +2027,14 @@ bool Program::removeShader( Shader* shader )
     if( !shader ) return false;
 
     // Shader must exist to be removed.
-    for( unsigned int i=0; i < _shaderList.size(); ++i )
+    for( ShaderList::iterator itr = _shaderList.begin();
+         itr != _shaderList.end();
+         ++itr)
     {
-        if( shader == _shaderList[i].get() )
+        if( shader == itr->get() )
         {
             shader->removeProgramRef( this );
-            _shaderList[i] = 0;
+            _shaderList.erase(itr);
             dirtyProgram();
             return true;
         }

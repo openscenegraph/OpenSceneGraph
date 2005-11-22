@@ -79,7 +79,7 @@
     #endif
            // XXX This is from Win32's <ctype.h>
 
-    #if !defined(_WCHAR_T_DEFINED) && !(defined(__GNUC__)&&(__GNUC__ == 3))
+    #if !defined(_WCHAR_T_DEFINED) && !(defined(__GNUC__)&&((__GNUC__ == 3)||(__GNUC__ == 4)))
         typedef unsigned short wchar_t;
         #define _WCHAR_T_DEFINED
     #endif

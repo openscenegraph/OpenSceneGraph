@@ -245,6 +245,20 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 
     return dlsym( RTLD_DEFAULT, funcName );
 
+#elif defined (__linux__)
+
+    typedef void (*__GLXextFuncPtr)(void);
+    typedef __GLXextFuncPtr (*GetProcAddressARBProc)(const char*);
+    static GetProcAddressARBProc s_glXGetProcAddressARB = (GetProcAddressARBProc)dlsym(0, "glXGetProcAddressARB");
+    if (s_glXGetProcAddressARB)
+    {
+        return (void*) (s_glXGetProcAddressARB)(funcName);
+    }
+    else
+    {
+        return dlsym(0, funcName);
+    }
+
 #else // all other unixes
 
     return dlsym(0, funcName);

@@ -201,3 +201,53 @@ bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
 
     return result;
 }
+
+#if defined(WIN32)
+    #define WIN32_LEAN_AND_MEAN
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif // NOMINMAX
+    #include <windows.h>
+#elif defined(__APPLE__)
+    #include <mach-o/dyld.h>
+#else
+    #include <dlfcn.h>
+#endif
+
+void* osg::getGLExtensionFuncPtr(const char *funcName)
+{
+#if defined(WIN32)
+
+    return (void*)wglGetProcAddress(funcName);
+
+#elif defined(__APPLE__)
+
+    std::string temp( "_" );
+    temp += funcName;    // Mac OS X prepends an underscore on function names
+    if ( NSIsSymbolNameDefined( temp.c_str() ) )
+    {
+        NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
+        return NSAddressOfSymbol( symbol );
+    } else
+        return NULL;
+
+#elif defined (__sun) 
+
+     static void *handle = dlopen((const char *)0L, RTLD_LAZY);
+     return dlsym(handle, funcName);
+    
+#elif defined (__sgi)
+
+     static void *handle = dlopen((const char *)0L, RTLD_LAZY);
+     return dlsym(handle, funcName);
+
+#elif defined (__FreeBSD__)
+
+    return dlsym( RTLD_DEFAULT, funcName );
+
+#else // all other unixes
+
+    return dlsym(0, funcName);
+
+#endif
+}

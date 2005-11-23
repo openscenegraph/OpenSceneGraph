@@ -107,7 +107,7 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
 class MyReadFileCallback : public osgDB::Registry::ReadFileCallback
 {
 public:
-    virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, osgDB::ReaderWriter::Options* options)
+    virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
     {
         std::cout<<"before readNode"<<std::endl;
         // note when calling the Registry to do the read you have to call readNodeImplementation NOT readNode, as this will

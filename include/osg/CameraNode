@@ -305,7 +305,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         /** Get the const post draw callback.*/
         const DrawCallback* getPostDrawCallback() const { return _postDrawCallback.get(); }
  
-        OpenThreads::Mutex& getDataChangeMutex() const { return _dataChangeMutex; }
+        OpenThreads::Mutex* getDataChangeMutex() const { return &_dataChangeMutex; }
 
     public:
 

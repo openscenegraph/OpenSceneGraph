@@ -286,7 +286,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
         {
             osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER_OBJECT"<<std::endl;
 
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_camera->getDataChangeMutex());
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(_camera->getDataChangeMutex()));
 
             _fbo = new osg::FrameBufferObject;
 

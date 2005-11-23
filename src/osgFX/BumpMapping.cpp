@@ -428,7 +428,7 @@ namespace
         void getRequiredExtensions(std::vector<std::string>& extensions) const
         {
             extensions.push_back("GL_ARB_vertex_program");
-            extensions.push_back("GL_ARB__textureenv_dot3");
+            extensions.push_back("GL_ARB_texture_env_dot3");
         }
 
         void define_passes()
@@ -589,9 +589,7 @@ bool BumpMapping::define_techniques()
 void BumpMapping::prepareGeometry(osg::Geometry* geo)
 {
     osg::ref_ptr<osgUtil::TangentSpaceGenerator> tsg = new osgUtil::TangentSpaceGenerator;
-    
     tsg->generate(geo, _normal_unit);
- 
     if (!geo->getVertexAttribArray(6))
         geo->setVertexAttribData(6, osg::Geometry::ArrayData(tsg->getTangentArray(), osg::Geometry::BIND_PER_VERTEX,GL_FALSE));
     if (!geo->getVertexAttribArray(7))

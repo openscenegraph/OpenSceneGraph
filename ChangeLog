@@ -1,3 +1,95 @@
+2005-11-23 15:25  robert
+
+	* src/osg/GLExtensions.cpp: Changed the linux implement of
+	  getGLExtensionFuncPtr to querry for glXGetProcAddressARB and then
+	  use this if its available, otherwise fallback to the original
+	  dlsym usage.
+
+2005-11-23 13:44  robert
+
+	* include/osg/CameraNode, src/osg/FrameBufferObject.cpp,
+	  src/osgUtil/CullVisitor.cpp, src/osgUtil/RenderStage.cpp,
+	  src/osgWrappers/osg/CameraNode.cpp: Added multi-buffering of the
+	  CameraNode::_renderingCache to help cope with multiple graphis
+	  context usages.
+
+2005-11-23 12:16  robert
+
+	* examples/osgcallback/osgcallback.cpp: Fixed mistmatch of
+	  ReadFileCallback type.
+
+2005-11-23 10:16  robert
+
+	* include/osg/GLExtensions, src/osg/GLExtensions.cpp: Moved
+	  getGLExtensionFuncPtr implementation into the .cpp to make it
+	  easier to change it implementation without forcing a complete
+	  recompile.
+
+2005-11-23 10:15  robert
+
+	* src/osgFX/BumpMapping.cpp: From Marco Jez, typo fix if GL
+	  extension name.
+
+2005-11-22 21:14  robert
+
+	* include/osgUtil/TangentSpaceGenerator, src/osgFX/BumpMapping.cpp,
+	  src/osgUtil/TangentSpaceGenerator.cpp,
+	  src/osgWrappers/osgUtil/TangentSpaceGenerator.cpp: Simplified the
+	  TangentSpaceGenerator so that is automatically converts any
+	  models with indices to one without indices and then runs the
+	  tangent space generation code on the result.
+
+2005-11-22 14:35  robert
+
+	* Make/makedefs: From Markus Trenkwalder, fixed placment of libs in
+	  mingw build.
+
+2005-11-22 13:56  robert
+
+	* include/osg/Geometry, src/osg/Geometry.cpp: Added missing
+	  dirtyDisplayList call into osg::Geometry::set calls.
+
+2005-11-22 13:14  robert
+
+	* include/osgDB/DatabasePager, src/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/osgDB/DatabasePager.cpp: Added
+	  DatabasePager::s/getDrawablePolicy() to allow the way that the
+	  display list/VBO settings are applied to loaded databases.
+
+2005-11-22 10:26  robert
+
+	* src/osg/: LOD.cpp, PagedLOD.cpp: Added check against LODScale
+	  being zero, and fixed the search for the maximum LOD range in the
+	  pixel size range fallback.
+
+2005-11-22 10:08  robert
+
+	* src/osg/: LOD.cpp, PagedLOD.cpp: From Chris Hanson, add LODScale
+	  support to pixel based LOD range selection.
+
+2005-11-22 09:57  robert
+
+	* src/osg/Program.cpp: From Jason Daly, (with small tweak by Robert
+	  Osfield) fix for Prorgram::removeShader(Shader*) so that it
+	  properly remove the shader and its entry in the _shaderList.
+
+2005-11-22 09:51  robert
+
+	* src/osgPlugins/: dxf/scene.cpp, txp/trpage_managers.cpp: From
+	  Eric Wing, warning fixes for gcc4.0/OSX.
+
+2005-11-22 09:47  robert
+
+	* include/osg/GL: From Marco Jez, fix for wchar_t being redefined.
+
+2005-11-21 16:29  robert
+
+	* NEWS.txt: Updated NEWS
+
+2005-11-21 16:15  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and authors file.
+
 2005-11-21 13:51  robert
 
 	* include/osg/Export, include/osg/PrimitiveSet,

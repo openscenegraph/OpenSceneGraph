@@ -17,21 +17,8 @@
 #include <osg/Export>
 #include <string>
 
-#if defined(WIN32)
-    #define WIN32_LEAN_AND_MEAN
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif // NOMINMAX
-    #include <windows.h>
-#elif defined(__APPLE__)
-    #include <mach-o/dyld.h>
-#else
-    #include <dlfcn.h>
-#endif
 
 namespace osg {
-
-
 
 /** Return true if OpenGL "extension" is supported.
   * Note: Must only be called within a valid OpenGL context,
@@ -46,43 +33,7 @@ extern OSG_EXPORT bool isGLExtensionSupported(unsigned int contextID, const char
   * dumb implementation of having different GL function ptr's for each
   * library when linked to it. 
 */
-inline void* getGLExtensionFuncPtr(const char *funcName)
-{
-#if defined(WIN32)
-
-    return (void*)wglGetProcAddress(funcName);
-
-#elif defined(__APPLE__)
-
-    std::string temp( "_" );
-    temp += funcName;    // Mac OS X prepends an underscore on function names
-    if ( NSIsSymbolNameDefined( temp.c_str() ) )
-    {
-        NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
-        return NSAddressOfSymbol( symbol );
-    } else
-        return NULL;
-
-#elif defined (__sun) 
-
-     static void *handle = dlopen((const char *)0L, RTLD_LAZY);
-     return dlsym(handle, funcName);
-    
-#elif defined (__sgi)
-
-     static void *handle = dlopen((const char *)0L, RTLD_LAZY);
-     return dlsym(handle, funcName);
-
-#elif defined (__FreeBSD__)
-
-    return dlsym( RTLD_DEFAULT, funcName );
-
-#else // all other unixes
-
-    return dlsym(0, funcName);
-
-#endif
-}
+extern OSG_EXPORT void* getGLExtensionFuncPtr(const char *funcName);
 
 /** Set a list of extensions to disable for different OpenGL renderers. This allows
   * OSG applications to work around OpenGL drivers' bugs which are due to problematic extension support.
@@ -96,8 +47,6 @@ extern OSG_EXPORT void setGLExtensionDisableString(const std::string& disableStr
 
 /** Get the list of extensions that are disabled for various OpenGL renderers. */
 extern OSG_EXPORT std::string& getGLExtensionDisableString();
-
-
 
 /** Return the address of the specified OpenGL function. If not found then
   * check a second function name, if this fails then return NULL as function is

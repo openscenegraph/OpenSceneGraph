@@ -28,9 +28,9 @@ Randall Hopper
 Stephan Huber
 Michael Gronager
 Gideon May
+Chris Hanson
 Neil Salter
 Frederic Marmond
-Chris Hanson
 Boris Bralo
 Sondra Iverson
 Rune Schmidt Jensen
@@ -49,13 +49,14 @@ Sean Spicer
 Ravi Mathur
 Joseph Steel
 Joakim Simonsson
+Jason Daly
+Eric Wing
 David Spilling
 Corbin Holtz
 Toshiyuki Takahei
 Nikolaus Hanekamp
+Markus Trenkwalder
 Loic Dachary
-Jason Daly
-Eric Wing
 Bruce Clay
 Brad Christiansen
 Alberto Barbati
@@ -64,7 +65,6 @@ Sebastien Grignard
 Romano Magacho
 Roger James
 Phil Atkin
-Markus Trenkwalder
 Leandro Motta Barros
 Ken Sewell
 Julian Ortiz

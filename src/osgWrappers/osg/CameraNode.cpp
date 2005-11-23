@@ -135,14 +135,14 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method1(void, setPostDrawCallback, IN, osg::CameraNode::DrawCallback *, cb);
 	I_Method0(osg::CameraNode::DrawCallback *, getPostDrawCallback);
 	I_Method0(const osg::CameraNode::DrawCallback *, getPostDrawCallback);
-	I_Method0(OpenThreads::Mutex &, getDataChangeMutex);
+	I_Method0(OpenThreads::Mutex *, getDataChangeMutex);
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	I_ReadOnlyProperty(osg::CameraNode::BufferAttachmentMap &, BufferAttachmentMap);
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(GLbitfield, ClearMask);
 	I_Property(osg::ColorMask *, ColorMask);
-	I_ReadOnlyProperty(OpenThreads::Mutex &, DataChangeMutex);
+	I_ReadOnlyProperty(OpenThreads::Mutex *, DataChangeMutex);
 	I_Property(GLenum, DrawBuffer);
 	I_Property(osg::GraphicsContext *, GraphicsContext);
 	I_ReadOnlyProperty(osg::Matrixd, InverseViewMatrix);

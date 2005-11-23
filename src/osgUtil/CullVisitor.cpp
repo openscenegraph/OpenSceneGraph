@@ -1104,7 +1104,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         osg::ref_ptr<osgUtil::RenderStage> rtts = dynamic_cast<osgUtil::RenderStage*>(camera.getRenderingCache(contextID));
         if (!rtts)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(camera.getDataChangeMutex());
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(camera.getDataChangeMutex()));
         
             rtts = new osgUtil::RenderStage;
             rtts->setCameraNode(&camera);

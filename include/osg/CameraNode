@@ -22,6 +22,8 @@
 #include <osg/Image>
 #include <osg/GraphicsContext>
 
+#include <OpenThreads/Mutex>
+
 namespace osg {
 
 /** CameraNode - is a subclass of Transform which represents encapsulates the settings of a Camera.
@@ -273,13 +275,13 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         
         /** Set the Rendering object that is used to implement rendering of the subgraph.*/
-        void setRenderingCache(osg::Object* rc) { _renderingCache = rc; }
+        void setRenderingCache(unsigned int contextID, osg::Object* rc) { _renderingCache[contextID] = rc; }
 
         /** Get the Rendering object that is used to implement rendering of the subgraph.*/
-        osg::Object* getRenderingCache() { return _renderingCache.get(); }
+        osg::Object* getRenderingCache(unsigned int contextID) { return _renderingCache[contextID].get(); }
 
         /** Get the const Rendering object that is used to implement rendering of the subgraph.*/
-        const osg::Object* getRenderingCache() const { return _renderingCache.get(); }
+        const osg::Object* getRenderingCache(unsigned int contextID) const { return _renderingCache[contextID].get(); }
  
 
         /** Draw callback for custom operations.*/
@@ -303,6 +305,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         /** Get the const post draw callback.*/
         const DrawCallback* getPostDrawCallback() const { return _postDrawCallback.get(); }
  
+        OpenThreads::Mutex& getDataChangeMutex() const { return _dataChangeMutex; }
 
     public:
 
@@ -315,6 +318,8 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
     protected :
     
         virtual ~CameraNode();
+        
+        mutable OpenThreads::Mutex  _dataChangeMutex;
 
         Vec4                        _clearColor;
         GLbitfield                  _clearMask;
@@ -334,10 +339,10 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         RenderTargetImplementation  _renderTargetFallback;
         BufferAttachmentMap         _bufferAttachmentMap;
 
-        ref_ptr<GraphicsContext>    _graphicsContext;
-        ref_ptr<Object>             _renderingCache;
+        ref_ptr<GraphicsContext>            _graphicsContext;
+        buffered_object< ref_ptr<Object> >  _renderingCache;
         
-        ref_ptr<DrawCallback>       _postDrawCallback;
+        ref_ptr<DrawCallback>               _postDrawCallback;
 };
 
 }

@@ -1097,12 +1097,15 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // will do later.
         osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
 
+        unsigned int contextID = getState() ? getState()->getContextID() : 0;
 
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderStage> rtts = dynamic_cast<osgUtil::RenderStage*>(camera.getRenderingCache());
+        osg::ref_ptr<osgUtil::RenderStage> rtts = dynamic_cast<osgUtil::RenderStage*>(camera.getRenderingCache(contextID));
         if (!rtts)
         {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(camera.getDataChangeMutex());
+        
             rtts = new osgUtil::RenderStage;
             rtts->setCameraNode(&camera);
 
@@ -1126,7 +1129,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
                 rtts->setReadBuffer(previous_stage->getReadBuffer());
             }
 
-            camera.setRenderingCache(rtts.get());
+            camera.setRenderingCache(contextID, rtts.get());
         }
         else
         {

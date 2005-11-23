@@ -286,6 +286,8 @@ void RenderStage::runCameraSetUp(osg::State& state)
         {
             osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER_OBJECT"<<std::endl;
 
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_camera->getDataChangeMutex());
+
             _fbo = new osg::FrameBufferObject;
 
             setDrawBuffer(GL_NONE);
@@ -766,7 +768,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
 void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
 {
-    
+
     if (!_viewport)
     {
         notify(FATAL) << "Error: cannot draw stage due to undefined viewport."<< std::endl;

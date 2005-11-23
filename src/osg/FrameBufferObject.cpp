@@ -404,9 +404,6 @@ void FrameBufferObject::apply(State &state) const
         return;
         
         
-        
-    state.checkGLErrors("A");
-        
     FBOExtensions* ext = FBOExtensions::instance(contextID);
     if (!ext->isSupported())
     {
@@ -420,8 +417,6 @@ void FrameBufferObject::apply(State &state) const
         ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         return;
     }
-
-    state.checkGLErrors("B");
 
     int &dirtyAttachmentList = _dirtyAttachmentList[contextID];
 
@@ -439,10 +434,16 @@ void FrameBufferObject::apply(State &state) const
 
     }
 
-    state.checkGLErrors("C");
-
     if (dirtyAttachmentList)
     {
+        // the set of of attachements appears to be thread sensitive, it shouldn't be because 
+        // OpenGL FBO handles osg::FrameBufferObject has are multi-buffered...
+        // so as a temporary fix will stick in a mutex to ensure that only one thread passes through here
+        // at one time.
+        static OpenThreads::Mutex s_mutex;
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex);
+
+
         // create textures and mipmaps before we bind the frame buffer object
         for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
         {
@@ -452,11 +453,7 @@ void FrameBufferObject::apply(State &state) const
 
     }
     
-    state.checkGLErrors("D");
-
     ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
-
-    state.checkGLErrors("E");
 
     if (dirtyAttachmentList)
     {
@@ -467,7 +464,7 @@ void FrameBufferObject::apply(State &state) const
         }        
         dirtyAttachmentList = 0;
     }
-    state.checkGLErrors("F");
+
 }
 
 int FrameBufferObject::compare(const StateAttribute &sa) const

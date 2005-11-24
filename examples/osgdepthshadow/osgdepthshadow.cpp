@@ -398,7 +398,7 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
             stateset->addUniform(shadowTextureSampler);
         }
         
-        osg::Uniform* ambientBias = new osg::Uniform("ambientBias",osg::Vec2(0.2f,0.8f));
+        osg::Uniform* ambientBias = new osg::Uniform("ambientBias",osg::Vec2(0.3f,1.2f));
         stateset->addUniform(ambientBias);
 
     }

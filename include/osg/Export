@@ -43,7 +43,7 @@
 #endif  
 
 // export template instances for basic types
-#if (_MSC_VER >= 1100) && !defined( OSG_LIBRARY_STATIC ) // This should work from VC5.0 onwards
+#if (_MSC_VER >= 1300) && !defined( OSG_LIBRARY_STATIC )
 #include <vector>
 #if defined( OSG_LIBRARY )
 template class __declspec(dllexport) std::allocator<int>; // GLsizei

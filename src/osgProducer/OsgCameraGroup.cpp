@@ -231,6 +231,11 @@ void OsgCameraGroup::_init()
         else if (strcmp(str,"OFF")==0) Producer::RenderSurface::shareAllGLContexts(false);
     }
     
+    if (_thread_model==ThreadPerCamera && _cfg->getNumberOfCameras()>1)
+    {
+        // switch on thread safe reference counting by default when running multi-threaded.
+        osg::Referenced::setThreadSafeReferenceCounting(true);
+    }
 
     _scene_data = NULL;
     _global_stateset = NULL;

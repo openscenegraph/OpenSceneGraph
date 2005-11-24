@@ -533,7 +533,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     terrainTexture->setImage(terrainImage);
     terrainTexture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST);
     terrainTexture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
-    //terrainTexture->setResizeNonPowerOfTwoHint(true);
+    terrainTexture->setResizeNonPowerOfTwoHint(false);
     stateset->setTextureAttributeAndModes(0,terrainTexture,osg::StateAttribute::ON);
 
 
@@ -669,6 +669,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     }
         
     std::cout<<"done."<<std::endl;
+    
 #if 0
     std::cout<<"Creating tree locations...";std::cout.flush();
     TreeList trees;
@@ -686,6 +687,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     tex->setWrap( osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP );
     tex->setWrap( osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP );
     tex->setImage(osgDB::readImageFile("Images/tree0.rgba"));
+    tex->setResizeNonPowerOfTwoHint(false);
 
     osg::StateSet *dstate = new osg::StateSet;
     {    

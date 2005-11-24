@@ -274,24 +274,14 @@ void RenderStage::runCameraSetUp(osg::State& state)
     {
         osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID());
         bool fbo_supported = fbo_ext && fbo_ext->isSupported();
-
-        if (!fbo_supported)
-        {
-            if (renderTargetImplemntation<renderTargetFallback)
-                renderTargetImplemntation = renderTargetFallback;
-            else
-                renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER_RTT;
-        }
-        else if (!_fbo)
+        
+        if (fbo_supported && !_fbo)
         {
             osg::notify(osg::INFO)<<"Setting up osg::CameraNode::FRAME_BUFFER_OBJECT"<<std::endl;
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(_camera->getDataChangeMutex()));
 
-            _fbo = new osg::FrameBufferObject;
-
-            setDrawBuffer(GL_NONE);
-            setReadBuffer(GL_NONE);
+            osg::ref_ptr<osg::FrameBufferObject> fbo = new osg::FrameBufferObject;
 
             bool colorAttached = false;
             bool depthAttached = false;
@@ -308,19 +298,19 @@ void RenderStage::runCameraSetUp(osg::State& state)
                 {
                     case(osg::CameraNode::DEPTH_BUFFER):
                     {
-                        _fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
+                        fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
                         depthAttached = true;
                         break;
                     }
                     case(osg::CameraNode::STENCIL_BUFFER):
                     {
-                        _fbo->setAttachment(GL_STENCIL_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
+                        fbo->setAttachment(GL_STENCIL_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
                         stencilAttached = true;
                         break;
                     }
                     default:
                     {
-                        _fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::CameraNode::COLOR_BUFFER0), osg::FrameBufferAttachment(attachment));
+                        fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::CameraNode::COLOR_BUFFER0), osg::FrameBufferAttachment(attachment));
                         colorAttached = true;
                         break;
                     }
@@ -330,13 +320,51 @@ void RenderStage::runCameraSetUp(osg::State& state)
 
             if (!depthAttached)
             {                
-                _fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(_viewport->width(), _viewport->height(), GL_DEPTH_COMPONENT24)));
+                fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(_viewport->width(), _viewport->height(), GL_DEPTH_COMPONENT24)));
             }
 
             if (!colorAttached)
             {                
-                _fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(_viewport->width(), _viewport->height(), GL_RGB)));
+                fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(_viewport->width(), _viewport->height(), GL_RGB)));
             }
+
+            fbo->apply(state);
+            
+            GLenum status = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+            
+            if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+            {
+                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::endl;
+
+                fbo_supported = false;
+                fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+                fbo = 0;
+                
+                // clean up.
+                double availableTime = 100.0f;
+                double currentTime = state.getFrameStamp()?state.getFrameStamp()->getReferenceTime():0.0;
+                osg::RenderBuffer::flushDeletedRenderBuffers(state.getContextID(),currentTime,availableTime);
+                osg::FrameBufferObject::flushDeletedFrameBufferObjects(state.getContextID(),currentTime,availableTime);
+               
+
+            }
+            else
+            {
+                setDrawBuffer(GL_NONE);
+                setReadBuffer(GL_NONE);
+                
+                _fbo = fbo;
+            }
+
+
+        }
+        
+        if (!fbo_supported)
+        {
+            if (renderTargetImplemntation<renderTargetFallback)
+                renderTargetImplemntation = renderTargetFallback;
+            else
+                renderTargetImplemntation = osg::CameraNode::PIXEL_BUFFER_RTT;
         }
     }
     

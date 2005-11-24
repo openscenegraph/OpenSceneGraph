@@ -95,9 +95,11 @@ namespace osg
     {
     public:
         typedef void APIENTRY TglBindRenderbufferEXT(GLenum, GLuint);
+        typedef void APIENTRY TglDeleteRenderbuffersEXT(GLsizei n, const GLuint *renderbuffers);
         typedef void APIENTRY TglGenRenderbuffersEXT(GLsizei, GLuint *);
         typedef void APIENTRY TglRenderbufferStorageEXT(GLenum, GLenum, GLsizei, GLsizei);
         typedef void APIENTRY TglBindFramebufferEXT(GLenum, GLuint);
+        typedef void APIENTRY TglDeleteFramebuffersEXT(GLsizei n, const GLuint *framebuffers);
         typedef void APIENTRY TglGenFramebuffersEXT(GLsizei, GLuint *);
         typedef GLenum APIENTRY TglCheckFramebufferStatusEXT(GLenum);
         typedef void APIENTRY TglFramebufferTexture1DEXT(GLenum, GLenum, GLenum, GLuint, GLint);
@@ -106,19 +108,21 @@ namespace osg
         typedef void APIENTRY TglFramebufferRenderbufferEXT(GLenum, GLenum, GLenum, GLuint);
         typedef void APIENTRY TglGenerateMipmapEXT(GLenum);
 
-        TglBindRenderbufferEXT *glBindRenderbufferEXT;
-        TglGenRenderbuffersEXT *glGenRenderbuffersEXT;
-        TglRenderbufferStorageEXT *glRenderbufferStorageEXT;
-        TglBindFramebufferEXT *glBindFramebufferEXT;
-        TglGenFramebuffersEXT *glGenFramebuffersEXT;
-        TglCheckFramebufferStatusEXT *glCheckFramebufferStatusEXT;
-        TglFramebufferTexture1DEXT *glFramebufferTexture1DEXT;
-        TglFramebufferTexture2DEXT *glFramebufferTexture2DEXT;
-        TglFramebufferTexture3DEXT *glFramebufferTexture3DEXT;
-        TglFramebufferRenderbufferEXT *glFramebufferRenderbufferEXT;
-        TglGenerateMipmapEXT *glGenerateMipmapEXT;
+        TglBindRenderbufferEXT* glBindRenderbufferEXT;
+        TglGenRenderbuffersEXT* glGenRenderbuffersEXT;
+        TglDeleteRenderbuffersEXT* glDeleteRenderbuffersEXT; 
+        TglRenderbufferStorageEXT* glRenderbufferStorageEXT;
+        TglBindFramebufferEXT* glBindFramebufferEXT;
+        TglDeleteFramebuffersEXT* glDeleteFramebuffersEXT;
+        TglGenFramebuffersEXT* glGenFramebuffersEXT;
+        TglCheckFramebufferStatusEXT* glCheckFramebufferStatusEXT;
+        TglFramebufferTexture1DEXT* glFramebufferTexture1DEXT;
+        TglFramebufferTexture2DEXT* glFramebufferTexture2DEXT;
+        TglFramebufferTexture3DEXT* glFramebufferTexture3DEXT;
+        TglFramebufferRenderbufferEXT* glFramebufferRenderbufferEXT;
+        TglGenerateMipmapEXT* glGenerateMipmapEXT;
 
-        static FBOExtensions *instance(unsigned contextID)
+        static FBOExtensions* instance(unsigned contextID)
         {
             static buffered_object<FBOExtensions *> _instances;
             FBOExtensions *ext = _instances[contextID];
@@ -148,7 +152,7 @@ namespace osg
     public:
         RenderBuffer();
         RenderBuffer(int width, int height, GLenum internalFormat);
-        RenderBuffer(const RenderBuffer &copy, const CopyOp &copyop = CopyOp::SHALLOW_COPY);
+        RenderBuffer(const RenderBuffer& copy, const CopyOp& copyop = CopyOp::SHALLOW_COPY);
 
         META_Object(osg, RenderBuffer);
 
@@ -163,8 +167,18 @@ namespace osg
         GLuint getObjectID(unsigned int contextID, const FBOExtensions *ext) const;
         inline int compare(const RenderBuffer &rb) const;
 
+        /** Mark internal RenderBuffer for deletion.
+          * Deletion requests are queued until they can be executed
+          * in the proper GL context. */
+        static void deleteRenderBuffer(unsigned int contextID, GLuint rb);
+
+        /** flush all the cached RenderBuffers which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedRenderBuffers(unsigned int contextID,double currentTime, double& availableTime);
+
+
     protected:
-        virtual ~RenderBuffer() {}
+        virtual ~RenderBuffer();
         RenderBuffer &operator=(const RenderBuffer &) { return *this; }
 
         inline void dirtyAll() const;
@@ -249,7 +263,7 @@ namespace osg
     {
     public:
         FrameBufferAttachment();
-        FrameBufferAttachment(const FrameBufferAttachment &copy);
+        FrameBufferAttachment(const FrameBufferAttachment& copy);
 
         explicit FrameBufferAttachment(RenderBuffer* target);
         explicit FrameBufferAttachment(Texture1D* target, int level = 0);
@@ -261,9 +275,9 @@ namespace osg
         
         ~FrameBufferAttachment();
 
-        FrameBufferAttachment &operator = (const FrameBufferAttachment &copy);        
+        FrameBufferAttachment&operator = (const FrameBufferAttachment& copy);        
 
-        void createRequiredTexturesAndApplyGenerateMipMap(State &state, const FBOExtensions* ext) const;
+        void createRequiredTexturesAndApplyGenerateMipMap(State& state, const FBOExtensions* ext) const;
         void attach(State &state, GLenum attachment_point, const FBOExtensions* ext) const;
         int compare(const FrameBufferAttachment &fa) const;
 
@@ -283,7 +297,7 @@ namespace osg
         typedef std::map<GLenum, FrameBufferAttachment> AttachmentMap;
 
         FrameBufferObject();
-        FrameBufferObject(const FrameBufferObject &copy, const CopyOp &copyop = CopyOp::SHALLOW_COPY);
+        FrameBufferObject(const FrameBufferObject& copy, const CopyOp& copyop = CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osg, FrameBufferObject, (StateAttribute::Type)0x101010/*FrameBufferObject*/);
 
@@ -295,9 +309,18 @@ namespace osg
         int compare(const StateAttribute &sa) const;
         void apply(State &state) const;
 
+        /** Mark internal FBO for deletion.
+          * Deletion requests are queued until they can be executed
+          * in the proper GL context. */
+        static void deleteFrameBufferObject(unsigned int contextID, GLuint program);
+
+        /** flush all the cached FBOs which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedFrameBufferObjects(unsigned int contextID,double currentTime, double& availableTime);
+
     protected:
-        virtual ~FrameBufferObject() {}
-        FrameBufferObject &operator=(const FrameBufferObject &) { return *this; }
+        virtual ~FrameBufferObject();
+        FrameBufferObject& operator = (const FrameBufferObject&) { return *this; }
 
         inline void dirtyAll();
 

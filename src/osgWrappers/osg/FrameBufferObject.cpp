@@ -31,11 +31,15 @@
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindRenderbufferEXT);
 
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteRenderbuffersEXT);
+
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenRenderbuffersEXT);
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageEXT);
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindFramebufferEXT);
+
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteFramebuffersEXT);
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenFramebuffersEXT);
 

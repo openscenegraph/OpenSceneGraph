@@ -158,6 +158,11 @@ class PrimitiveSet : public Object
         /** Get modified count value.*/
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * for all graphics contexts. */
+        virtual void releaseGLObjects(State* /*state*/=0) const {}
+
     protected:
 
         virtual ~PrimitiveSet() {}
@@ -165,6 +170,30 @@ class PrimitiveSet : public Object
         Type            _primitiveType;
         GLenum          _mode;
         unsigned int    _modifiedCount;
+
+
+        struct ObjectIDModifiedCountPair
+        {
+            ObjectIDModifiedCountPair():
+                _objectID(0),
+                _modifiedCount(0) {}
+                
+            ObjectIDModifiedCountPair(const ObjectIDModifiedCountPair& obj):
+                _objectID(obj._objectID),
+                _modifiedCount(obj._modifiedCount) {}
+                
+            ObjectIDModifiedCountPair& operator = (const ObjectIDModifiedCountPair& obj)
+            {
+                _objectID = obj._objectID;
+                _modifiedCount = obj._modifiedCount;
+                return *this;
+            }
+
+            GLuint _objectID;
+            unsigned int _modifiedCount;
+        };
+        
+        typedef osg::buffered_object<ObjectIDModifiedCountPair> GLObjectList;
 };
 
 class OSG_EXPORT DrawArrays : public PrimitiveSet
@@ -338,12 +367,14 @@ class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public std::vector<GLu
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        virtual void releaseGLObjects(State* state=0) const;
+        
     protected:
 
-        typedef osg::buffered_value<GLuint> GLObjectList;
+        virtual ~DrawElementsUByte();
+
         mutable GLObjectList    _vboList;
 
-        virtual ~DrawElementsUByte();
 };
 
 
@@ -392,12 +423,13 @@ class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public std::vector<GL
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        virtual void releaseGLObjects(State* state=0) const;
+        
     protected:
 
-        typedef osg::buffered_value<GLuint> GLObjectList;
-        mutable GLObjectList    _vboList;
-
         virtual ~DrawElementsUShort();
+
+        mutable GLObjectList    _vboList;
 };
 
 class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public std::vector<GLuint>
@@ -445,12 +477,13 @@ class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public std::vector<GLui
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        virtual void releaseGLObjects(State* state=0) const;
+        
     protected:
 
         virtual ~DrawElementsUInt();
-
-        typedef osg::buffered_value<GLuint> GLObjectList;
-        mutable GLObjectList    _vboList;
+        
+        mutable GLObjectList _vboList;
 };
 
 }

@@ -275,8 +275,6 @@ class OSG_EXPORT Drawable : public Object
 
         /** Immediately compile this \c Drawable into an OpenGL Display List.
           * @note Operation is ignored if \c _useDisplayList is \c false.
-          * @note This member function is not intended to be overridden in
-          *       subclasses (notice that it is not even \c virtual).
         */
         virtual void compileGLObjects(State& state) const;
 

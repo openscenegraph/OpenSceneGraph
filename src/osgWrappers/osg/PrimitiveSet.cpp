@@ -98,6 +98,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	I_Method0(unsigned int, getNumIndices);
 	I_Method1(unsigned int, index, IN, unsigned int, pos);
 	I_Method1(void, offsetIndices, IN, int, offset);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	I_ReadOnlyProperty(const GLvoid *, DataPointer);
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
@@ -124,6 +125,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	I_Method0(unsigned int, getNumIndices);
 	I_Method1(unsigned int, index, IN, unsigned int, pos);
 	I_Method1(void, offsetIndices, IN, int, offset);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	I_ReadOnlyProperty(const GLvoid *, DataPointer);
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
@@ -150,6 +152,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 	I_Method0(unsigned int, getNumIndices);
 	I_Method1(unsigned int, index, IN, unsigned int, pos);
 	I_Method1(void, offsetIndices, IN, int, offset);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	I_ReadOnlyProperty(const GLvoid *, DataPointer);
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
@@ -232,6 +235,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_Method0(void, dirty);
 	I_Method1(void, setModifiedCount, IN, unsigned int, value);
 	I_Method0(unsigned int, getModifiedCount);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	I_ReadOnlyProperty(const GLvoid *, DataPointer);
 	I_Property(GLenum, Mode);
 	I_Property(unsigned int, ModifiedCount);

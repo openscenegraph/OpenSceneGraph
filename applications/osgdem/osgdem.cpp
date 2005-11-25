@@ -9,6 +9,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#ifdef WIN32
+    #pragma warning(disable : 4503)
+#endif // WIN32
+
 #include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/State>

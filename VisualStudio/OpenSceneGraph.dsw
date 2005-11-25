@@ -2697,7 +2697,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin flt"=.\osgPlugins\dxf\dxf.dsp - Package Owner=<4>
+Project: "osgPlugin dxf"=.\osgPlugins\dxf\dxf.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

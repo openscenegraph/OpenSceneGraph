@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.0
 
-168 Contributors:
+169 Contributors:
 
 Firstname Surname
 -----------------
@@ -136,6 +136,7 @@ Karsten Weiss
 Josh Portway
 John Tan
 John Grant
+John Donovan
 John Davis
 Jay Zuckerman
 Jason Beverage

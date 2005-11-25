@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -301,8 +301,8 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | ON | OFF ");
         arguments.getApplicationUsage()->addCommandLineOption("--rgba","Request a RGBA color buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
-        arguments.getApplicationUsage()->addCommandLineOption("--accum-rgb","Request a rgb acummulator buffer visual");
-        arguments.getApplicationUsage()->addCommandLineOption("--accum-rgba","Request a rgb acummulator buffer visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--accum-rgb","Request a rgb accumulator buffer visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--accum-rgba","Request a rgb accumulator buffer visual");
     }
 
     std::string str;

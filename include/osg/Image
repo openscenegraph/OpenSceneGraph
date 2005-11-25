@@ -90,12 +90,7 @@ class OSG_EXPORT Image : public Object
                            int packing=1);
         
         
-        /** Set the image data and pixelFormat.
-          * Note, when the packing value is negative (the default is -1) this method assumes
-          * a _packing width of 1 if the width is not a multiple of 4,
-          * otherwise automatically sets to _packing to 4. If a positive
-          * value of packing is supplied than _packing is simply set to that value.
-        */
+        /** Set the image dimensions, format and data. */
         void setImage(int s,int t,int r,
                       GLint internalTextureformat,
                       GLenum pixelFormat,GLenum type,

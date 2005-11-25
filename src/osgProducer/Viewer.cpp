@@ -350,7 +350,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     {
         arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Specify camera path file to animate the camera through the loaded scene");
         arguments.getApplicationUsage()->addCommandLineOption("--run-till-frame-number <integer>","Specify the number of frame to run");
-        arguments.getApplicationUsage()->addCommandLineOption("--run-till-elapsed-time","Specify the about of time to run");
+        arguments.getApplicationUsage()->addCommandLineOption("--run-till-elapsed-time","Specify the amount of time to run");
         arguments.getApplicationUsage()->addCommandLineOption("--clear-color <float>,<float>,<float>[,<float>]","Specify the clear color as RGB or RGBA");
     }
 

@@ -1,3 +1,74 @@
+2005-11-25 19:18  robert
+
+	* examples/osgdelaunay/osgdelaunay.cpp,
+	  examples/osgpbuffer/osgpbuffer.cpp, src/osg/DisplaySettings.cpp,
+	  src/osgProducer/Viewer.cpp: From John Donovan, typo fixes.
+
+2005-11-25 14:58  robert
+
+	* applications/osgdem/osgdem.cpp: Added disable of spurious VS6.0
+	  warning.
+
+2005-11-25 13:45  robert
+
+	* include/osg/Image: Fixed docs of setImage.
+
+2005-11-25 12:31  robert
+
+	* include/osg/Drawable, include/osg/PrimitiveSet,
+	  src/osg/PrimitiveSet.cpp, src/osgWrappers/osg/PrimitiveSet.cpp:
+	  Added releaseGLObjects to PrimitiveSet.
+
+2005-11-25 10:32  robert
+
+	* VisualStudio/OpenSceneGraph.dsw: Fixed typo of dxf.
+
+2005-11-24 19:53  robert
+
+	* examples/osgdepthshadow/osgdepthshadow.cpp: Lightened by the
+	  ambientBias term.
+
+2005-11-24 15:18  robert
+
+	* include/osg/FrameBufferObject, src/osg/FrameBufferObject.cpp,
+	  src/osgUtil/RenderStage.cpp, src/osgUtil/SceneView.cpp,
+	  src/osgWrappers/osg/FrameBufferObject.cpp: Added FBO deletion
+	  support, and better FBO querry and fallback mechansim in
+	  RenderStage.
+
+2005-11-24 15:17  robert
+
+	* include/osg/Export: Changed the VS template export block to just
+	  compile when VS verion >= 1300 (VS.NET onwards.)
+
+2005-11-24 10:28  robert
+
+	* examples/osgshaderterrain/osgshaderterrain.cpp,
+	  src/osg/Texture.cpp: Changed the default value of
+	  Texture::_resizeNonPowerOfTwoHint to true, to improve the
+	  backwards compatibility of peformance on systems that have
+	  OpenGL2.0 drivers but without hardware that can't handle non
+	  power of two textures.
+
+2005-11-24 10:14  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Added automatic setting of
+	  thread safe reference counting when multi-threaded cameras are
+	  used.
+
+2005-11-23 16:32  robert
+
+	* include/osg/CameraNode, src/osgUtil/CullVisitor.cpp,
+	  src/osgUtil/RenderStage.cpp, src/osgWrappers/osg/CameraNode.cpp:
+	  Changed CameraNode::getDataChangeMutex() to be a pointer rather
+	  than a reference to get around osgIntrospeciton build problem
+	  with the OpenThreads::Mutex copy constructor being private.
+
+2005-11-23 16:24  robert
+
+	* AUTHORS.txt, ChangeLog, NEWS.txt, Make/makedefs: Updated
+	  AUTHORES, ChangeLog, NEWS and version number for 1.0-rc6
+
 2005-11-23 15:25  robert
 
 	* src/osg/GLExtensions.cpp: Changed the linux implement of

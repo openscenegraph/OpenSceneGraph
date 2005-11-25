@@ -13,6 +13,7 @@
 #include <osg/PrimitiveSet>
 #include <osg/BufferObject>
 #include <osg/State>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -81,12 +82,29 @@ unsigned int DrawArrayLengths::getNumIndices() const
 
 DrawElementsUByte::~DrawElementsUByte()
 {
-    for(unsigned int i=0;i<_vboList.size();++i)
+    releaseGLObjects();
+}
+
+void DrawElementsUByte::releaseGLObjects(State* state) const
+{
+    if (state)
     {
-        if (_vboList[i] != 0)
+        unsigned int contextID = state->getContextID();
+        if (_vboList[contextID]._objectID != 0)
         {
-            BufferObject::deleteBufferObject(i,_vboList[i]);
-            _vboList[i] = 0;
+            BufferObject::deleteBufferObject(contextID,_vboList[contextID]._objectID);
+            _vboList[contextID]._objectID = 0;
+        }
+    }
+    else
+    {
+        for(unsigned int i=0;i<_vboList.size();++i)
+        {
+            if (_vboList[i]._objectID != 0)
+            {
+                BufferObject::deleteBufferObject(i,_vboList[i]._objectID);
+                _vboList[i]._objectID = 0;
+            }
         }
     }
 }
@@ -95,18 +113,28 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
-        const BufferObject::Extensions* extensions = BufferObject::getExtensions(state.getContextID(), true);
+        unsigned int contextID = state.getContextID();
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
 
-        GLuint& buffer = _vboList[state.getContextID()];
+        GLuint& buffer = _vboList[contextID]._objectID;
         if (!buffer)
         {
             extensions->glGenBuffers(1, &buffer);
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
             extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 1, &front(), GL_STATIC_DRAW_ARB);
+            // osg::notify(osg::NOTICE)<<"Generating ubyte buffer"<<buffer<<std::endl;
+            
+            _vboList[contextID]._modifiedCount = _modifiedCount;
         }
         else
         {
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+        
+            if (_vboList[contextID]._modifiedCount != _modifiedCount) 
+            {
+                extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 1, &front(), GL_STATIC_DRAW_ARB);
+                _vboList[contextID]._modifiedCount = _modifiedCount;
+            }
         }
     
         glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, 0);
@@ -142,12 +170,29 @@ void DrawElementsUByte::offsetIndices(int offset)
 
 DrawElementsUShort::~DrawElementsUShort()
 {
-    for(unsigned int i=0;i<_vboList.size();++i)
+    releaseGLObjects();
+}
+
+void DrawElementsUShort::releaseGLObjects(State* state) const
+{
+    if (state)
     {
-        if (_vboList[i] != 0)
+        unsigned int contextID = state->getContextID();
+        if (_vboList[contextID]._objectID != 0)
         {
-            BufferObject::deleteBufferObject(i,_vboList[i]);
-            _vboList[i] = 0;
+            BufferObject::deleteBufferObject(contextID,_vboList[contextID]._objectID);
+            _vboList[contextID]._objectID = 0;
+        }
+    }
+    else
+    {
+        for(unsigned int i=0;i<_vboList.size();++i)
+        {
+            if (_vboList[i]._objectID != 0)
+            {
+                BufferObject::deleteBufferObject(i,_vboList[i]._objectID);
+                _vboList[i]._objectID = 0;
+            }
         }
     }
 }
@@ -156,18 +201,29 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
-        const BufferObject::Extensions* extensions = BufferObject::getExtensions(state.getContextID(), true);
+        unsigned int contextID = state.getContextID();
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
 
-        GLuint& buffer = _vboList[state.getContextID()];
+        GLuint& buffer = _vboList[contextID]._objectID;
         if (!buffer)
         {
+        
             extensions->glGenBuffers(1, &buffer);
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
             extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 2, &front(), GL_STATIC_DRAW_ARB);
+            // osg::notify(osg::NOTICE)<<"Generating ushort buffer"<<buffer<<std::endl;
+            
+            _vboList[contextID]._modifiedCount = _modifiedCount;
         }
         else
         {
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+        
+            if (_vboList[contextID]._modifiedCount != _modifiedCount) 
+            {
+                extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 2, &front(), GL_STATIC_DRAW_ARB);
+                _vboList[contextID]._modifiedCount = _modifiedCount;
+            }
         }
     
         glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, 0);
@@ -203,12 +259,29 @@ void DrawElementsUShort::offsetIndices(int offset)
 
 DrawElementsUInt::~DrawElementsUInt()
 {
-    for(unsigned int i=0;i<_vboList.size();++i)
+    releaseGLObjects();
+}
+
+void DrawElementsUInt::releaseGLObjects(State* state) const
+{
+    if (state)
     {
-        if (_vboList[i] != 0)
+        unsigned int contextID = state->getContextID();
+        if (_vboList[contextID]._objectID != 0)
         {
-            BufferObject::deleteBufferObject(i,_vboList[i]);
-            _vboList[i] = 0;
+            BufferObject::deleteBufferObject(contextID,_vboList[contextID]._objectID);
+            _vboList[contextID]._objectID = 0;
+        }
+    }
+    else
+    {
+        for(unsigned int i=0;i<_vboList.size();++i)
+        {
+            if (_vboList[i]._objectID != 0)
+            {
+                BufferObject::deleteBufferObject(i,_vboList[i]._objectID);
+                _vboList[i]._objectID = 0;
+            }
         }
     }
 }
@@ -217,18 +290,29 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
-        const BufferObject::Extensions* extensions = BufferObject::getExtensions(state.getContextID(), true);
-
-        GLuint& buffer = _vboList[state.getContextID()];
+        unsigned int contextID = state.getContextID();
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
+        
+        GLuint& buffer = _vboList[contextID]._objectID;
         if (!buffer)
         {
             extensions->glGenBuffers(1, &buffer);
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
             extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 4, &front(), GL_STATIC_DRAW_ARB);
+            // osg::notify(osg::NOTICE)<<"Generating buffer int"<<buffer<<std::endl;
+            
+            _vboList[contextID]._modifiedCount = _modifiedCount;
         }
         else
         {
+            // osg::notify(osg::NOTICE)<<"binding buffer int"<<buffer<<std::endl;
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+        
+            if (_vboList[contextID]._modifiedCount != _modifiedCount) 
+            {
+                extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 4, &front(), GL_STATIC_DRAW_ARB);
+                _vboList[contextID]._modifiedCount = _modifiedCount;
+            }
         }
     
         glDrawElements(_mode, size(), GL_UNSIGNED_INT, 0);

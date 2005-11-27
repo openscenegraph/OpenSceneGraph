@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
 *
 * This application is open source and may be redistributed and/or modified   
 * freely and without restriction, both in commericial and non commericial applications,
@@ -139,7 +139,7 @@ protected:
 };
 
 class LinearConstraint: public osgUtil::DelaunayConstraint { 
-/** forces edges of a "Images/road" to fit triangles
+/** forces edges of a "road" to fit triangles
 *  if 2 roads cross, then the overlap will be replaced by a 'cross road'
     *  and the roads built up to the cross roads with a texture along its length. */
 public:
@@ -265,8 +265,8 @@ osg::Vec3d getpt(const int np)
     int i=np/maxp;
     int j=np%maxp;
     // make the random scale 0.00 if you want an equispaced XY grid.
-    float x=3000.0/(maxp-1)*i+0.00052*rand();
-    float y=3000.0/(maxp-1)*j+0.0005*rand();
+    float x=3000.0/(maxp-1)*i+16.*(float)rand()/RAND_MAX;
+    float y=3000.0/(maxp-1)*j+16.*(float)rand()/RAND_MAX;
     float z=getheight(x,y);
     if (np>=maxp*maxp) z=-1.e32;
     return osg::Vec3d(x,y,z);
@@ -380,7 +380,7 @@ osg::Group *makedelaunay(const int ndcs)
     osg::ref_ptr<LinearConstraint> forestroad3;
     osg::ref_ptr<osgUtil::DelaunayConstraint> dc;
     std::ostringstream what;
-    if (1==1) { // add a simple constraint of few points
+    if (1==0) { // add a simple constraint of few points
         osg::ref_ptr<osgUtil::DelaunayConstraint> dc=new osgUtil::DelaunayConstraint;
         osg::Vec3Array *bounds=new osg::Vec3Array;
         unsigned int nmax=4;
@@ -638,7 +638,7 @@ osg::Group *makedelaunay(const int ndcs)
                 dc2->setTexture("Images/purpleFlowers.png");
                 geode->addDrawable(dc2->makeAreal(arpts.get())); // this creates fill in geometry
                 
-                if (ndcs>4) { // a simple "Images/road"
+                if (ndcs>4) { // a simple "road"
                     trig->removeInternalTriangles(dc3.get());
                     dc3->setTexture ("Images/road.png");
                     dc3->setTexrep(40,9.5); // texture is repeated at this frequency
@@ -1125,7 +1125,7 @@ osg::DrawArrays* LinearConstraint::makeRoad(void ) const
     
 }
 
-osg::Vec3Array *LinearConstraint::getRoadNormals(const osg::Vec3Array*) const
+osg::Vec3Array *LinearConstraint::getRoadNormals(const osg::Vec3Array *points) const
 {
     osg::Vec3Array *nrms=new osg::Vec3Array;
     for(unsigned int i=0;i<_midline->size();i++) {

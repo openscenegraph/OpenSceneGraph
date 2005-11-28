@@ -209,6 +209,7 @@ ifeq ($(OS),SunOS)
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lGLU -lGL 
+  GLUT_LIBS         = -lglut
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -lXext -lXmu -lXi -lX11 
   SOCKET_LIBS       = -lsocket -lnsl
@@ -298,6 +299,7 @@ ifeq ($(OS),IRIX)
   DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lGLU -lGL 
+  GLUT_LIBS         = -lglut
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -lXext -lXi -lXmu -lX11
   SOCKET_LIBS       = 
@@ -382,6 +384,7 @@ endif
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lGLU -lGL 
+  GLUT_LIBS         = -lglut
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -lXi -lXmu -lX11
   PF_XTRA_LIBS      = -L/usr/lib/libpfdb   -Xlinker -rpath /usr/lib/libpfdb \
@@ -430,6 +433,7 @@ ifeq ($(OS),FreeBSD)
  DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lGLU -lGL 
+  GLUT_LIBS         = -lglut
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
@@ -503,6 +507,7 @@ ifeq ($(OS),Darwin)
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   CARBON_LIB        = -framework Carbon
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
+  GLUT_LIBS         = -framework GLUT
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
@@ -555,6 +560,7 @@ ifeq ($(OS),CYGWIN)
   DYNAMICLIBRARYLIB =
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
+  GLUT_LIBS         = -lglut
   X_INC             = 
   X_LIBS            = -lgdi32 -luser32
   SOCKET_LIBS       = 
@@ -616,6 +622,7 @@ ifeq ($(OS),MINGW)
   DYNAMICLIBRARYLIB =
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
+  GLUT_LIBS         = -lglut
   X_INC             = 
   X_LIBS            = -lgdi32 -luser32
   SOCKET_LIBS       = -lws2_32
@@ -676,6 +683,7 @@ ifeq ($(OS),HP-UX)
 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -L/opt/graphics/OpenGL/lib -lGLU -lGL 
+  GLUT_LIBS         = -lglut
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -L/usr/lib/X11R6 -lXext -lXi -lX11 
   SOCKET_LIBS       = 

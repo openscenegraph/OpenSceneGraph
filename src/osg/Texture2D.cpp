@@ -163,11 +163,14 @@ void Texture2D::apply(State& state) const
     else if (_image.valid() && _image->data())
     {
 
+        // keep the image around at least till we go out of scope.
+        osg::ref_ptr<osg::Image> image = _image;
+
         // compute the internal texture format, this set the _internalFormat to an appropriate value.
         computeInternalFormat();
         
         // compute the dimensions of the texture.
-        computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _numMipmapLevels);
+        computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
         
         
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
@@ -180,13 +183,13 @@ void Texture2D::apply(State& state) const
         if (textureObject->isAllocated())
         {
             //std::cout<<"Reusing texture object"<<std::endl;
-            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
+            applyTexImage2D_subload(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
         }
         else
         {
             //std::cout<<"Creating new texture object"<<std::endl;
-            applyTexImage2D_load(state,GL_TEXTURE_2D,_image.get(),
+            applyTexImage2D_load(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _numMipmapLevels);
                                  
             textureObject->setAllocated(true);
@@ -194,10 +197,10 @@ void Texture2D::apply(State& state) const
         
         
         // update the modified tag to show that it is upto date.
-        getModifiedCount(contextID) = _image->getModifiedCount();
+        getModifiedCount(contextID) = image->getModifiedCount();
 
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && image->getDataVariance()==STATIC)
         {
             Texture2D* non_const_this = const_cast<Texture2D*>(this);
             non_const_this->_image = 0;

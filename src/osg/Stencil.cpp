@@ -19,7 +19,7 @@ Stencil::Stencil()
     // set up same defaults as glStencilFunc.
     _func = ALWAYS;
     _funcRef = 0;
-    _funcMask = ~0;
+    _funcMask = ~0u;
         
     // set up same defaults as glStencilOp.
     _sfail = KEEP;
@@ -27,7 +27,7 @@ Stencil::Stencil()
     _zpass = KEEP;
 
     // set up same defaults as glStencilMask.
-    _writeMask = ~0;
+    _writeMask = ~0u;
 }
 
 

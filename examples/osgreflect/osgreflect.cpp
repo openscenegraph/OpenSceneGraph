@@ -149,7 +149,7 @@ osg::Node* createMirroredScene(osg::Node* model)
         // set up the stencil ops so that the stencil buffer get set at
         // the mirror plane 
         osg::Stencil* stencil = new osg::Stencil;
-        stencil->setFunction(osg::Stencil::ALWAYS,1,~0);
+        stencil->setFunction(osg::Stencil::ALWAYS,1,~0u);
         stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::REPLACE);
         
         // switch off the writing to the color bit planes.
@@ -176,7 +176,7 @@ osg::Node* createMirroredScene(osg::Node* model)
     // occludes the mirror. 
     {        
         osg::Stencil* stencil = new osg::Stencil;
-        stencil->setFunction(osg::Stencil::ALWAYS,0,~0);
+        stencil->setFunction(osg::Stencil::ALWAYS,0,~0u);
         stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::REPLACE);
 
         osg::StateSet* statesetBin2 = new osg::StateSet();        
@@ -196,7 +196,7 @@ osg::Node* createMirroredScene(osg::Node* model)
     
         // set up the stencil ops so that only operator on this mirrors stencil value.
         osg::Stencil* stencil = new osg::Stencil;
-        stencil->setFunction(osg::Stencil::EQUAL,1,~0);
+        stencil->setFunction(osg::Stencil::EQUAL,1,~0u);
         stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
         
         // switch off the writing to the color bit planes.
@@ -254,7 +254,7 @@ osg::Node* createMirroredScene(osg::Node* model)
         dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
 
         osg::Stencil* stencil = new osg::Stencil;
-        stencil->setFunction(osg::Stencil::EQUAL,1,~0);
+        stencil->setFunction(osg::Stencil::EQUAL,1,~0u);
         stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
         dstate->setAttributeAndModes(stencil,osg::StateAttribute::ON);
 
@@ -281,7 +281,7 @@ osg::Node* createMirroredScene(osg::Node* model)
         depth->setFunction(osg::Depth::ALWAYS);
 
         osg::Stencil* stencil = new osg::Stencil;
-        stencil->setFunction(osg::Stencil::EQUAL,1,~0);
+        stencil->setFunction(osg::Stencil::EQUAL,1,~0u);
         stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::ZERO);
 
         // set up additive blending.

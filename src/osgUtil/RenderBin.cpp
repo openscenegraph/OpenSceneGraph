@@ -400,28 +400,33 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 
 // stats
 bool RenderBin::getStats(Statistics* primStats)
-{ // different by return type - collects the stats in this renderrBin
-  bool somestats=false;
+{
+    // different by return type - collects the stats in this renderrBin
+    bool somestats=false;
 
     // draw fine grained ordering.
     for(RenderLeafList::iterator dw_itr = _renderLeafList.begin();
         dw_itr != _renderLeafList.end();
         ++dw_itr)
     {
-      RenderLeaf* rl = *dw_itr;
-      Drawable* dw= rl->_drawable;
-      primStats->addDrawable(); // number of geosets
-      if (rl->_modelview.get()) primStats->addMatrix(); // number of matrices
-      if (dw)
+        RenderLeaf* rl = *dw_itr;
+        Drawable* dw= rl->_drawable;
+        primStats->addDrawable(); // number of geosets
+        if (rl->_modelview.get())
         {
-          // then tot up the primtive types and no vertices.
-          dw->accept(*primStats); // use sub-class to find the stats for each drawable
+            primStats->addMatrix(); // number of matrices
         }
-      somestats = true;
+        
+        if (dw)
+        {
+              // then tot up the primtive types and no vertices.
+              dw->accept(*primStats); // use sub-class to find the stats for each drawable
+        }
+        somestats = true;
 
     }
 
-  for(StateGraphList::iterator oitr=_stateGraphList.begin();
+    for(StateGraphList::iterator oitr=_stateGraphList.begin();
         oitr!=_stateGraphList.end();
         ++oitr)
     {

@@ -1081,10 +1081,10 @@ void SceneView::draw()
                     glLoadIdentity();    
                     glDisable(GL_LIGHTING);
                     glDisable(GL_DEPTH_TEST);
-                    glStencilMask(~0);
+                    glStencilMask(~0u);
                     glClear(GL_STENCIL_BUFFER_BIT);
                     glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-                    glStencilFunc(GL_ALWAYS, 1, ~0);
+                    glStencilFunc(GL_ALWAYS, 1, ~0u);
                     glPolygonStipple(patternVertEven);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -1103,10 +1103,10 @@ void SceneView::draw()
                 _renderStageRight->setClearMask(_renderStageRight->getClearMask() & ~(GL_STENCIL_BUFFER_BIT|GL_COLOR_BUFFER_BIT));
 
                 glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-                glStencilFunc(GL_EQUAL, 0, ~0);    
+                glStencilFunc(GL_EQUAL, 0, ~0u);    
                 _renderStageLeft->draw(*_state,previous);
                 
-                glStencilFunc(GL_NOTEQUAL, 0, ~0);
+                glStencilFunc(GL_NOTEQUAL, 0, ~0u);
                 _renderStageRight->draw(*_state,previous);
                 glDisable(GL_STENCIL_TEST);
             }
@@ -1146,10 +1146,10 @@ void SceneView::draw()
                     glLoadIdentity();
                     glDisable(GL_LIGHTING);
                     glDisable(GL_DEPTH_TEST);
-                    glStencilMask(~0);
+                    glStencilMask(~0u);
                     glClear(GL_STENCIL_BUFFER_BIT);
                     glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-                    glStencilFunc(GL_ALWAYS, 1, ~0);
+                    glStencilFunc(GL_ALWAYS, 1, ~0u);
                     glPolygonStipple(patternHorzEven);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -1168,10 +1168,10 @@ void SceneView::draw()
                 _renderStageRight->setClearMask(_renderStageRight->getClearMask() & ~(GL_STENCIL_BUFFER_BIT|GL_COLOR_BUFFER_BIT));
 
                 glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-                glStencilFunc(GL_EQUAL, 0, ~0);    
+                glStencilFunc(GL_EQUAL, 0, ~0u);    
                 _renderStageLeft->draw(*_state,previous);
                 
-                glStencilFunc(GL_NOTEQUAL, 0, ~0);
+                glStencilFunc(GL_NOTEQUAL, 0, ~0u);
                 _renderStageRight->draw(*_state,previous);
                 glDisable(GL_STENCIL_TEST);
             }

@@ -72,6 +72,9 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
         
         bool                _firstTimeTogglingFullScreen;
         
+        class CameraBarrierCallback;
+        CameraBarrierCallback* _cameraBarrierCallback;
+
         class StatsAndHelpDrawCallback;
         StatsAndHelpDrawCallback* _statsAndHelpDrawCallback;
 
@@ -79,7 +82,6 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
         typedef std::vector<SnapImageDrawCallback*> SnapImageDrawCallbackList;
         SnapImageDrawCallbackList   _snapImageDrawCallbackList;
         std::string                 _writeImageFileName;
-
 };
 
 }

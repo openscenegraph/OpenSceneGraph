@@ -43,6 +43,7 @@ Colin McDonald
 Yefei He
 Sasa Bistrovic
 Olaf Flebbe
+Eric Wing
 Ben Discoe
 Stephane Simon
 Sean Spicer

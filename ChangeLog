@@ -1,3 +1,56 @@
+2005-11-29 14:07  robert
+
+	* NEWS.txt: Updated NEWS with second draft of press release.
+
+2005-11-29 12:09  robert
+
+	* include/osgProducer/ViewerEventHandler,
+	  src/osgProducer/ViewerEventHandler.cpp: Added
+	  CameraBarrierCallback so that multi-thread multi-cameras are
+	  synconized correctly when do stats collection.
+
+2005-11-29 11:39  robert
+
+	* examples/osgreflect/osgreflect.cpp, src/osg/Stencil.cpp,
+	  src/osgPlugins/geo/ClipRegion.cpp, src/osgUtil/RenderBin.cpp,
+	  src/osgUtil/SceneView.cpp: From Eric Wing, fixes for "warning:
+	  converting of negative value '-0x00000000000000001' to 'unsigned
+	  int'"
+
+2005-11-29 08:59  robert
+
+	* examples/osgparametric/osgparametric.cpp: Switched off the VBO
+	  usage in osgparametric as it was tripping up ATI and 3DLabs
+	  drivers.
+
+2005-11-28 20:08  robert
+
+	* src/osg/Texture2D.cpp: Added temporary ref_ptr<osg::Image> to
+	  prevent the _image going out of scope due to another thread
+	  complete the texture::apply() while the present texture::apply()
+	  is still running.
+
+2005-11-28 10:58  robert
+
+	* examples/osgdelaunay/osgdelaunay.cpp: Fixed warning.
+
+2005-11-28 09:15  robert
+
+	* Make/makedefs, examples/osgGLUTkeyboardmouse/GNUmakefile,
+	  examples/osgGLUTkeyboardmouse/osgGLUTkeyboardmouse.cpp,
+	  examples/osgGLUTsimple/GNUmakefile,
+	  examples/osgGLUTsimple/osgGLUTsimple.cpp: From Gideon May, port
+	  to OSX of GLUT examples.
+
+2005-11-27 15:32  robert
+
+	* examples/osgdelaunay/osgdelaunay.cpp: From Geoff Michel, fix for
+	  the scaling of the random number generation.
+
+2005-11-25 20:23  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and authors file.
+
 2005-11-25 19:18  robert
 
 	* examples/osgdelaunay/osgdelaunay.cpp,

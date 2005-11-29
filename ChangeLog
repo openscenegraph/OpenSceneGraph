@@ -1,3 +1,19 @@
+2005-11-29 18:38  robert
+
+	* src/osgPlugins/stl/ReaderWriterSTL.cpp: Added default opening of
+	  the file as a binary file, and once the type is confirmed then
+	  close and reopen as an ascii as required.  This is done to get
+	  round problems under Windows.
+
+	  Also made the running of the SmoothingVisitor optional, now use
+	  -O smooth to make the loader run the osgUtil::SmoothingVisitor
+	  over the model.
+
+2005-11-29 14:20  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/osgversion.cpp:
+	  Updated ChangeLog, osgversion.cpp and AUTHORS.txt for 1.0-rc6.
+
 2005-11-29 14:07  robert
 
 	* NEWS.txt: Updated NEWS with second draft of press release.

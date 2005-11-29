@@ -39,7 +39,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
 /**
  * STL importer for OpenSceneGraph.
  */
@@ -121,7 +120,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     osg::notify(osg::INFO) << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")\n";
 
     // determine ASCII vs. binary mode
-    FILE* fp = fopen(fileName.c_str(), "r");
+    FILE* fp = fopen(fileName.c_str(), "rb");
+
     if (!fp) {
         return ReadResult::FILE_NOT_HANDLED;
     }
@@ -144,17 +144,21 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     off_t expectLen = sizeof_StlHeader + expectFacets * sizeof_StlFacet;
  
     struct stat stb;
-    if (fstat(fileno(fp), &stb) < 0) {
+    if (fstat(fileno(fp), &stb) < 0)
+    {
         osg::notify(osg::FATAL) << "ReaderWriterSTL::readNode: Unable to stat '" << fileName << "'" << std::endl;
         fclose(fp);
         return ReadResult::FILE_NOT_HANDLED;
     }
-    if (stb.st_size == expectLen) {
+
+    if (stb.st_size == expectLen)
+    {
         // assume binary
         readerObject._numFacets = expectFacets;
         isBinary = true;
     }
-    else if (strstr(header.text, "solid") != 0) {
+    else if (strstr(header.text, "solid") != 0)
+    {
         // assume ASCII
         isBinary = false;
     }
@@ -164,15 +168,23 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         return ReadResult::FILE_NOT_HANDLED;
     }
 
+    if (!isBinary) 
+    {
+        fclose(fp);
+        fp = fopen(fileName.c_str(), "r");
+    }
+
     // read
     rewind(fp);
     bool ok = (isBinary ? readerObject.readStlBinary(fp) : readerObject.readStlAscii(fp));
     fclose(fp);
 
-    if (!ok) {
+    if (!ok)
+    {
         return ReadResult::FILE_NOT_HANDLED;
     }
-    osg::notify(osg::NOTICE) << "### found " << readerObject._numFacets << " facets" << std::endl;
+    
+    osg::notify(osg::INFO) << "STL loader found " << readerObject._numFacets << " facets" << std::endl;
 
     /*
      * setup geometry
@@ -184,7 +196,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
 
     if (readerObject._color.valid()) {
-        osg::notify(osg::NOTICE) << "### with color" << std::endl;
+        osg::notify(osg::INFO) << "STL file with color" << std::endl;
         geom->setColorArray(readerObject._color.get());
         geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
@@ -194,9 +206,18 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     
-
-    osgUtil::SmoothingVisitor smooter;
-    geode->accept(smooter);
+    bool doSmoothing = false;
+    
+    if (options && (options->getOptionString() == "smooth"))
+    {
+        doSmoothing = true;
+    } 
+    
+    if (doSmoothing)
+    {
+        osgUtil::SmoothingVisitor smooter;
+        geode->accept(smooter);
+    }
 
     osgUtil::TriStripVisitor tristripper;
     tristripper.stripify(*geom);
@@ -213,6 +234,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
 bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
 {
+
     unsigned int vertexCount = 0;
     unsigned int facetIndex[] = { 0,0,0 };
     unsigned int vertexIndex = 0;
@@ -281,7 +303,7 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
             }
         }
         else if (strncmp(bp, "solid", 5) == 0) {
-            osg::notify(osg::NOTICE) << "### parsing '" << bp + 6 << "'" << std::endl;
+            osg::notify(osg::INFO) << "STL loader parsing '" << bp + 6 << "'" << std::endl;
         }
     }
 

@@ -5,12 +5,62 @@
 #include <osgText/Text>
 #include <osg/BlendFunc>
 #include <osgUtil/Statistics>
+#include <OpenThreads/Barrier>
 
 
 #include <algorithm>
 #include <fstream>
 
 using namespace osgProducer;
+
+class ViewerEventHandler::CameraBarrierCallback : public Producer::Camera::Callback, public OpenThreads::Barrier
+{
+public:
+    CameraBarrierCallback(unsigned int numThreads):
+        OpenThreads::Barrier(numThreads),
+        _doBlock(false) {}
+        
+    virtual ~CameraBarrierCallback()
+    {
+        release();
+    }
+    
+    void setDoBlock(bool block)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        if (_doBlock != block)
+        {
+            if (_doBlock) release();
+            
+            _doBlock = block;
+            
+            // osg::notify(osg::NOTICE)<<"setDoBlock("<<block<<")"<<std::endl;
+        }
+    }
+    
+    bool getDoBlock() const { return _doBlock; } 
+    
+    virtual void operator() (const Producer::Camera&)
+    {
+        bool doBlock = false;
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            doBlock = _doBlock;
+        }
+        
+        if (doBlock)
+        {
+            //osg::notify(osg::NOTICE)<<"Entering block()"<<std::endl;
+            block();
+        }
+    };
+
+protected:
+
+    bool                _doBlock;
+    OpenThreads::Mutex  _mutex;
+    
+};
 
 
 class ViewerEventHandler::SnapImageDrawCallback : public Producer::Camera::Callback
@@ -843,6 +893,18 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     _firstTimeTogglingFullScreen(true)
 {
     Producer::CameraConfig* cfg = _cg->getCameraConfig();
+
+    _cameraBarrierCallback = 0;
+    if (cfg->getNumberOfCameras()>1) 
+    {
+        // use a barrier to make that stats only runs once all the threads have done their drawing.
+        _cameraBarrierCallback = new CameraBarrierCallback(cfg->getNumberOfCameras());
+        for(unsigned int i=0;i<cfg->getNumberOfCameras();++i)
+        {
+            cfg->getCamera(i)->addPostDrawCallback(_cameraBarrierCallback);
+        }
+    }
+        
     Producer::Camera *cam = cfg->getCamera(0);
     
     _statsAndHelpDrawCallback = new StatsAndHelpDrawCallback(this,0);
@@ -907,7 +969,12 @@ void ViewerEventHandler::setFrameStatsMode(FrameStatsMode mode)
     else
     {
         _cg->setInstrumentationMode(true);
-    }    
+    }
+    
+    if (_cameraBarrierCallback)
+    {
+        _cameraBarrierCallback->setDoBlock(_frameStatsMode>=SCENE_STATS);
+    }
 }
 
 bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)

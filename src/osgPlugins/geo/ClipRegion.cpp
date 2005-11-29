@@ -36,7 +36,7 @@ void GeoClipRegion::addClipNode(osg::Node *gd) {
     // add clip node(s) to set stencil bit marking the clip area.
     // stencil op so that the stencil buffer get set at the clip pixels 
     osg::Stencil* stencil = new osg::Stencil;
-    stencil->setFunction(osg::Stencil::ALWAYS,1,~0);
+    stencil->setFunction(osg::Stencil::ALWAYS,1,~0u);
     stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::REPLACE);
     state->setAttributeAndModes(stencil,osg::StateAttribute::ON);
     
@@ -74,7 +74,7 @@ bool GeoClipRegion::addClippedChild( osg::Node *child )
     osg::StateSet *state=child->getOrCreateStateSet();
     // state tests pixels against the set stencil.
     osg::Stencil* stenciltest = new osg::Stencil;
-    stenciltest->setFunction(osg::Stencil::EQUAL,1,~0);
+    stenciltest->setFunction(osg::Stencil::EQUAL,1,~0u);
     stenciltest->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
     state->setAttributeAndModes(stenciltest,osg::StateAttribute::ON);
 
@@ -97,7 +97,7 @@ bool GeoClipRegion::addObscuredChild( osg::Node *child )
     osg::StateSet *state=child->getOrCreateStateSet();
     // state tests pixels against the set stencil.
     osg::Stencil* stenciltest = new osg::Stencil;
-    stenciltest->setFunction(osg::Stencil::NOTEQUAL,1,~0);
+    stenciltest->setFunction(osg::Stencil::NOTEQUAL,1,~0u);
     stenciltest->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
     state->setAttributeAndModes(stenciltest,osg::StateAttribute::ON);
 
@@ -124,7 +124,7 @@ void GeoClipRegion::addDrawClipNode(osg::Node *ndclip)
     depth->setFunction(osg::Depth::ALWAYS);
 
     osg::Stencil* stencil = new osg::Stencil;
-    stencil->setFunction(osg::Stencil::EQUAL,1,~0);
+    stencil->setFunction(osg::Stencil::EQUAL,1,~0u);
     stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::ZERO);
 
     // set up additive blending.

@@ -156,6 +156,7 @@ bool validName(const std::string& first)
     if (first=="PolytopeVisitor") return false;
     if (first=="Performer") return false;
     if (first=="Paging") return false;
+    if (first=="CameraBarrierCallback") return false;
     return true;
 }
 

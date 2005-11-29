@@ -222,7 +222,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         geom->addPrimitiveSet(elements);    
     }
     
-    geom->setUseVertexBufferObjects(true);
+    // geom->setUseVertexBufferObjects(true);
 
     return geode;
 }

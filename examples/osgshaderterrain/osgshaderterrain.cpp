@@ -729,6 +729,39 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int /*numTreesToCreates*
     return scene;
 }
 
+class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
+{
+    public:
+        TestSupportCallback():_supported(true),_errorMessage() {}
+        
+        virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
+        { 
+            unsigned int contextID = sh.getSceneView()->getState()->getContextID();
+            osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
+            if( gl2ext )
+            {
+                if( !gl2ext->isGlslSupported() )
+                {
+                    _supported = false;
+                    _errorMessage = "ERROR: GLSL not supported by OpenGL driver.";
+                }
+
+                GLint numVertexTexUnits = 0;
+                glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
+                if( numVertexTexUnits <= 0 )
+                {
+                    _supported = false;
+                    _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
+                }
+            }
+            
+        }
+        
+        bool        _supported;
+        std::string _errorMessage;
+        
+};
+
 int main( int argc, char **argv )
 {
 
@@ -777,31 +810,16 @@ int main( int argc, char **argv )
     // add model to viewer.
     viewer.setSceneData( node );
 
+    osg::ref_ptr<TestSupportCallback> testSupportCallback = new TestSupportCallback();
+    viewer.setRealizeCallback(testSupportCallback.get());
+
     // create the windows and run the threads.
     viewer.realize();
-
-    // not all hardware can support vertex texturing, so check first.
-    for(unsigned int contextID = 0; 
-        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
-        ++contextID)
+    
+    if (!testSupportCallback->_supported)
     {
-        osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,false);
-        if( gl2ext )
-        {
-            if( !gl2ext->isGlslSupported() )
-            {
-                std::cout<<"ERROR: GLSL not supported by OpenGL driver."<<std::endl;
-                return 1;
-            }
-
-            GLint numVertexTexUnits = 0;
-            glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
-            if( numVertexTexUnits <= 0 )
-            {
-                std::cout<<"ERROR: vertex texturing not supported by OpenGL driver."<<std::endl;
-                return 1;
-            }
-        }
+        osg::notify(osg::WARN)<<testSupportCallback->_errorMessage<<std::endl;
+        exit(1);
     }
 
     while( !viewer.done() )

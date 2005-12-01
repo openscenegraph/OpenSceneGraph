@@ -150,7 +150,11 @@ void SceneView::setDefaults(unsigned int options)
         _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
     }
-    
+    else
+    {
+        _lightingMode = NO_SCENEVIEW_LIGHT;
+    }
+ 
     _state = new State;
     
     _rendergraph = new StateGraph;

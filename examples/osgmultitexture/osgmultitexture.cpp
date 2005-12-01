@@ -110,7 +110,7 @@ int main( int argc, char **argv )
         {
             if (!textExt->isMultiTexturingSupported())
             {
-                std::cout<<"Warning: texture_cube_map not supported by OpenGL drivers, unable to run application."<<std::endl;
+                std::cout<<"Warning: multi-texturing not supported by OpenGL drivers, unable to run application."<<std::endl;
                 return 1;
             }
         }

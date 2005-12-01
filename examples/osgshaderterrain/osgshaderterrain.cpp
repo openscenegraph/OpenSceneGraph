@@ -810,12 +810,14 @@ int main( int argc, char **argv )
     // add model to viewer.
     viewer.setSceneData( node );
 
+    // register a test extension callback to be called when app realizes and gets a valid graphics context
     osg::ref_ptr<TestSupportCallback> testSupportCallback = new TestSupportCallback();
     viewer.setRealizeCallback(testSupportCallback.get());
 
     // create the windows and run the threads.
     viewer.realize();
     
+    // exit if we don't have the extensions this example needs.
     if (!testSupportCallback->_supported)
     {
         osg::notify(osg::WARN)<<testSupportCallback->_errorMessage<<std::endl;

@@ -1,7 +1,9 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-AYRSHIRE, Scotland - November 30th, 2005 - [=OpenSceneGraph=] Professional
+FOR IMMEDIATE RELEASE
+
+AYRSHIRE, Scotland - December 1st, 2005 - [=OpenSceneGraph=] Professional
 Services and Andes Engineering today announced the release of
 [=OpenSceneGraph=] 1.0, the industry's leading open source, [=OpenGL=] 2.0
 and [=OpenGL=] Shading Language-capable graphics library designed to
@@ -15,72 +17,64 @@ commercial scene graphs in functionality and performance.
 OSX, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems. 
 
 !!!Open source development delivers industry leading features and performance
-The [=OpenSceneGraph=] 1.0 release in the culmination of 6 years development by the lead developers and contributions from the open community source community that has grown up 
+[=OpenSceneGraph=] 1.0 release in the culmination of 6 years development by the lead developers and contributions from the open community source community that has grown up 
 around the project. Through its developement, the [=OpenSceneGraph=] has benefited tremendously from contributions from and extensive real world testing by the community, 
 shaping ot into a high quality library with a feature set relevant to application developers needs. Features include:
 
 * A fully featured and industry proven scene graph
-* High performance due to support for view frustum, level of detail, Small feature and occlusion culling; state sorting, lazy state updating, [=OpenGL=] fast paths, multi-threading and database optimization.
+* High performance due to support for 
+ * view frustum, small feature and occlusion culling
+ * level of detail
+ * state sorting and lazy state updating
+ *[=OpenGL=] fast paths and latest extension
+ * multi-threading and database optimization
 * An extensive support for [=OpenGL=], from 1.1 through to 2.0 and latest extensions.
 * Tightly coupled support for [=OpenGL=] Shader Language, developed in conjunction with 3D labs.
-* Support for an wide range of 2D image and 3D database formats, with 34 loaders available including industry standards such as [=OpenFlight=], [=TerraPage=], OBJ, 3DS,  Jpeg, Png and [=GeoTif=]f.
-* Particle effects.
-* High quality anti-aliased [=TrueType=](R) text support.
+* Support for an wide range of 2D image and 3D database formats, with 34 loaders available including industry standards such as [=OpenFlight=], [=TerraPage=], OBJ, 3DS,  Jpeg, Png and [=GeoTiff=]
+* Particle effects
+* High quality anti-aliased [=TrueType=](R) text support
 * Seamless support for framebuffer objects, pbuffers and frame buffer render-to-texture effects.
-* Multi-threaded database paging support, which can be used in conjunction with all 3D database and image loaders, allowing terabyte database to be explored at a solid 60Hz.
-* Large scale, whole earth geospatial terrain paged database generation.
-* Introspection support for core libraries allowing external applications to query, get, set and operate on all classes in the scene graph, via a generic interface.
-* Multi-threaded and highly configurable support for multiple CPU/multiple GPU machines.
+* Multi-threaded database paging support, which can be used in conjunction with all 3D database and image loaders, allowing terabyte database to be explored at a solid 60Hz
+* Large scale, whole earth geospatial terrain paged database generation
+* Introspection support for core libraries allowing external applications to query, get, set and operate on all classes in the scene graph, via a generic interface
+* Multi-threaded and highly configurable support for multiple CPU/multiple GPU machines
 * An Open Source license that permits usage in commercial applications free of charge and without affecting the license of end-user applications. The [=OpenSceneGraph=] Public Licence  is based on the wxWidgets relaxation of the Lesser GNU Public License (LGPL).
 
 Further details on software features can be found at [[http://openscenegraph.org/osgwiki/pmwiki.php/Introduction/Introduction Intoduction]] section of openscenegraph.org.
 
 !!!Downloads and Licensing
-The [=OpenSceneGraph=] is open source so all access to the source code is provided, and its use free of charge for commericial and non commericial use.  Access
-to the source allows end user great flexibility in how they develop, debug and deploy their applications and to benefit from productivity gains of having
-full access to tool chain, and control over release cycles. Downloads of binaries and source can be found on [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Downloads/Downloads Downloads]] section of the openscenegraph.org website.
+[=OpenSceneGraph=] is open source so full source code is provided, and can be copied, modified and used free of charge for commericial and non commericial use.  Access to the source allows end user great flexibility in how they develop, debug and deploy their applications and to benefit from productivity gains of having full access to tool chain, and control over release cycles. Downloads of binaries and source can be found on [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Downloads/Downloads Downloads]] section of the openscenegraph.org website.
 
-The [=OpenSceneGraph=] is released under the [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Legal/Legal [=OpenSceneGraph=] Public License]], which is based on the Lesser GNU Public License (LGPL), adding clarifying that the software can be used free of charge across the full spectrum of commericial and open source applications, including
+[=OpenSceneGraph=] is released under the [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Legal/Legal [=OpenSceneGraph=] Public License]], which is based on the Lesser GNU Public License (LGPL), adding clarifying that the software can be used free of charge across the full spectrum of commericial and open source applications, including
 the static linking of the [=OpenSceneGraph=] libraries without restricting the licensing of the original software. 
 
-!!!Community contributions and support
-The diverse community of nearly 1200 developers, from many different countries and professional backgrounds ranging from the some of the worlds
-largest aerospace companies, games companies, visual simulation specialists, through to University researches, students and hobbiests. 
-Community based support is available via public mailing lists which
-are free of charge, where a community with nearly 1200 developers subscribed to the main
-public list, which acts as the center for community support, and
-participation in development and testing of the software.
-
 !!!Professioal support and services
-The [=OpenSceneGraph=] project is backed up with professional services
+[=OpenSceneGraph=] project is backed up with professional services
 provided by the partnership of [=OpenSceneGraph=] Professional Services,
-based in Ayrshire, Scotland, and Andes Engineering in California, USA.  Services
-available include:
+based in Ayrshire, Scotland, and Andes Engineering in California, USA. 
+Services available include:
 
 * Confidential Professional Support
 * Bespoke development
 * Consultancy 
 * Training  
 
-!!!Thanks
-The [=OpenSceneGraph=] 1.0 release is the culmination of 7 years' work, taking what
-started out a small hobby project to the an industry-leading graphics toolkit used 
-throughout industry and academia.  Community participation has been a crucial part 
-to the success of the project with [[http://openscenegraph.org/osgwiki/pmwiki.php/Documentation/Contributors contributions from 169 developers]] from around the world, we are indebted to all their efforts.  
-A special thanks goes to Don Burns, Marco Jez and Mike Weiblen for the massive contributions that they have made in terms of coding, support and expertise over a wide range of topics through the years.
+!!!Community support and contributions
+The diverse community of nearly 1200 developers, is centers around the public osg-users mailing list, where members discuss how best to use OpenSceneGraph, provide mutual support and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from the some of the worlds largest aerospace companies, games companies, visual simulation specialists, through to University researches, students and hobbiests. 
+
+The OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [[http://openscenegraph.org/osgwiki/pmwiki.php/Documentation/Contributors 169 individuals]] from around the world that have directly contributed to the development and refinement of the OpenSceneGraph code base.  A special thanks goes to Don Burns, Marco Jez and Mike Weiblen for the massive contributions that they have made in terms of coding, support and expertise over a wide range of topics through the years.
 
 Robert Osfield
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
-30th November 2005.
 
 !!!About [=OpenSceneGraph=] Professional Services
 [=OpenSceneGraph=] Professional Services was founded by Robert Osfield, in
-April 2000, and is based in Prestwick, Scotland, and provides
+April 2000, is based in Prestwick, Scotland, and provides
 professional services on top of the [=OpenSceneGraph=]. Further information about the
 services it provides can be found at http://www.openscenegraph.com
 
 !!!About Andes Engineering
-Andes Engineering was founded by Don Burns, in December 2000, and is
+Andes Engineering was founded by Don Burns, in December 2000, is
 based in Sunnyvale, California, and provides professional services and
 custom simulators on top of the [=OpenSceneGraph=]. Further information about the
 products and services it provides can be found at http://www.andesengineering.com

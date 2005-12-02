@@ -157,6 +157,7 @@ bool validName(const std::string& first)
     if (first=="Performer") return false;
     if (first=="Paging") return false;
     if (first=="CameraBarrierCallback") return false;
+    if (first=="TestSupportCallback") return false;
     return true;
 }
 
@@ -380,6 +381,7 @@ bool submissionsSequence(const Words& words, unsigned int& i)
         words[i]=="from" || 
         words[i]=="From:" || 
         words[i]=="from:" || 
+        words[i]=="Applied" || 
         words[i]=="Added" || 
         words[i]=="Merged" || 
         words[i]=="Integrated") return true;

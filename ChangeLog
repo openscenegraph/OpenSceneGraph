@@ -1,3 +1,67 @@
+2005-12-02 12:10  robert
+
+	* NEWS.txt: Fixed typos in NEWS, improved formating.
+
+2005-12-02 11:59  robert
+
+	* NEWS.txt: Updated NEWS with quotes.
+
+2005-12-02 09:57  robert
+
+	* src/osgPlugins/freetype/FreeTypeLibrary.cpp: Added a
+	  static_cast<std::streampos> to get round IRIX64 build problem.
+
+2005-12-02 00:25  robert
+
+	* include/osg/Export, include/osg/PrimitiveSet,
+	  include/osgText/String, src/osgUtil/CullVisitor.cpp,
+	  src/osgWrappers/osg/PrimitiveSet.cpp,
+	  src/osgWrappers/osgText/String.cpp: From Marco Jez, hack/fix for
+	  VS compile/link problems related to STL containers.
+
+2005-12-02 00:21  robert
+
+	* NEWS.txt: Updated NEWS
+
+2005-12-01 16:44  robert
+
+	* NEWS.txt: Updated NEWS
+
+2005-12-01 16:43  robert
+
+	* examples/: osgmultitexture/osgmultitexture.cpp,
+	  osgshaderterrain/osgshaderterrain.cpp: Added comments.
+
+2005-12-01 14:37  robert
+
+	* src/osgUtil/SceneView.cpp: From Ali Botorabi, fixed the
+	  setDefault() fallback to properly handle the case when no scene
+	  view light is requested.
+
+2005-12-01 14:09  robert
+
+	* examples/osgshaderterrain/osgshaderterrain.cpp: Added
+	  TestSupportCallback to properly handle querry of OpenGL support
+	  of vertex texturing in GLSL.
+
+2005-12-01 13:38  robert
+
+	* src/osgPlugins/txp/GNUmakefile: From Thom DeCarlo, build fix for
+	  Cygwin.
+
+2005-12-01 13:19  robert
+
+	* src/osgUtil/CullVisitor.cpp: From Geoff Michel, fixed the
+	  handling of zfar values of 0.0.
+
+2005-11-30 15:30  robert
+
+	* NEWS.txt: Updated NEWS.
+
+2005-11-29 22:29  robert
+
+	* ChangeLog: Updated changed log for 1.0-rc7.
+
 2005-11-29 18:38  robert
 
 	* src/osgPlugins/stl/ReaderWriterSTL.cpp: Added default opening of

@@ -40,7 +40,16 @@ shaping ot into a high quality library with a feature set relevant to applicatio
 * Multi-threaded and highly configurable support for multiple CPU/multiple GPU machines
 * An Open Source license that permits usage in commercial applications free of charge and without affecting the license of end-user applications. The [=OpenSceneGraph=] Public Licence  is based on the wxWidgets relaxation of the Lesser GNU Public License (LGPL).
 
-Further details on software features can be found at [[http://openscenegraph.org/osgwiki/pmwiki.php/Introduction/Introduction Intoduction]] section of openscenegraph.org.
+
+"3D Nature uses OpenSceneGraph to build our NatureView realtime terrain visualization tool.
+OSG offered us a high-performance scene graph that had great terrain capability, advanced
+culling and Level of Detail features, multithreaded paging and loading and solid, clean,
+accessible code. We have used and contributed to OSG for two years now, and could not have
+delivered the kind of high-detail interactive landscape visualization our users require
+without OpenSceneGraph."
+
+Chris "Xenon" Hanson, Vice President of R&D, 3D Nature LLC (www.3DNature.com)
+  
 
 !!!Downloads and Licensing
 [=OpenSceneGraph=] is open source so full source code is provided, and can be copied, modified and used free of charge for commericial and non commericial use.  Access to the source allows end user great flexibility in how they develop, debug and deploy their applications and to benefit from productivity gains of having full access to tool chain, and control over release cycles. Downloads of binaries and source can be found on [[http://www.openscenegraph.org/osgwiki/pmwiki.php/Downloads/Downloads Downloads]] section of the openscenegraph.org website.

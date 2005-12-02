@@ -89,7 +89,7 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
     /* empty stream into memory, open that, and keep the pointer in a FreeTypeFont for cleanup */
     FT_Byte *buffer = new FT_Byte[length];
     fontstream.read(reinterpret_cast<char*>(buffer), length);
-    if (!fontstream || (fontstream.gcount() != length))
+    if (!fontstream || (static_cast<std::streampos>(fontstream.gcount()) != length))
     {
         osg::notify(osg::WARN)<<" .... the font file could not be read from its stream"<<std::endl;
         return 0;

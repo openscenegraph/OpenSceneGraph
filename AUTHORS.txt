@@ -13,10 +13,10 @@ Bob Kuehne
 Brede Johansen
 Tree 
 Ulrich Hertlein
+Norman Vine
 Eric Sokolowsky
 Pavel Moloshtan
 Paul Martz
-Norman Vine
 Farshid Lashkari
 Trajce Nikolov
 Tom Jolley
@@ -51,7 +51,6 @@ Ravi Mathur
 Joseph Steel
 Joakim Simonsson
 Jason Daly
-Eric Wing
 David Spilling
 Corbin Holtz
 Toshiyuki Takahei
@@ -61,6 +60,7 @@ Loic Dachary
 Bruce Clay
 Brad Christiansen
 Alberto Barbati
+Thom DeCarlo
 Terry Welsh
 Sebastien Grignard
 Romano Magacho
@@ -80,7 +80,6 @@ Vivek Rajan
 Tugkan Calapoglu
 Tony Horrobin
 Tim Daoust
-Thom DeCarlo
 Steve Lunsford
 Stanislav Blinov
 Sohey Yamamoto
@@ -101,6 +100,7 @@ Fabio Mierlo
 Donn Mielcarek
 David Ergo
 Brad Colbert
+Ali Botorabi
 Yuri Vilmanis
 Warren Macchi
 Wang Lam
@@ -169,7 +169,6 @@ Andreas Jochens
 Andreas Ekstrand
 Anders Backman
 Allen Bierbaum
-Ali Botorabi
 Alberto Jaspe
 Alan Purvis
 Alan Ott

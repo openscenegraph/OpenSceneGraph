@@ -23,13 +23,29 @@
 
 namespace osgText {
 
+// ********************************  HACK  **********************************
+// Following class is needed to work around a DLL export problem. See file
+// include/osg/PrimitiveSet for details.
+
+class VectorUInt: public std::vector<unsigned int>
+{
+    typedef std::vector<value_type> vector_type;
+public:
+    VectorUInt(): vector_type() {}
+    VectorUInt(const VectorUInt &copy): vector_type(copy) {}
+    VectorUInt(unsigned int* beg, unsigned int* end): vector_type(beg, end) {}
+    explicit VectorUInt(VectorUInt::size_type n): vector_type(n) {}
+};
+
+// **************************************************************************
+
 class Text;
 
-class OSGTEXT_EXPORT String : public osg::Referenced, public std::vector<unsigned int>
+class OSGTEXT_EXPORT String : public osg::Referenced, public VectorUInt
 {
     public:
 
-        typedef std::vector<unsigned int> vector_type;
+        typedef VectorUInt vector_type;
 
         /**
          * Types of string encodings supported

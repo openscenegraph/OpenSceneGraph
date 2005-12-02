@@ -19,7 +19,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::String::vector_type);
+TYPE_NAME_ALIAS(osgText::VectorUInt, osgText::String::vector_type);
 
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);
@@ -36,6 +36,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::String)
 	I_BaseType(osg::Referenced);
+	I_BaseType(osgText::VectorUInt);
 	I_Constructor0();
 	I_Constructor1(IN, const osgText::String &, str);
 	I_Constructor1(IN, const std::string &, str);
@@ -46,5 +47,13 @@ BEGIN_OBJECT_REFLECTOR(osgText::String)
 	I_Method2(void, set, IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
 	I_Method0(std::string, createUTF8EncodedString);
 	I_WriteOnlyProperty(const wchar_t *, );
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgText::VectorUInt)
+	I_BaseType(std::vector<unsigned int>);
+	I_Constructor0();
+	I_Constructor1(IN, const osgText::VectorUInt &, copy);
+	I_Constructor2(IN, unsigned int *, beg, IN, unsigned int *, end);
+	I_Constructor1(IN, osgText::VectorUInt::size_type, n);
 END_REFLECTOR
 

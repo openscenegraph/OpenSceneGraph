@@ -595,7 +595,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
         }
     }
 
-    if (d_far<=0.0) // gwm if ==0 extends purely behind eye, forces far to 0 get invalid projection matrix (ratio near:far=inf)
+    if (d_far<0.0)
     {
         // whole object behind the eye point so discard
         return false;

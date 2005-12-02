@@ -25,6 +25,60 @@
 
 namespace osg {
 
+// ********************************  HACK  **********************************
+// Following classes are needed by VC++ in order to avoid linking errors due
+// to multiply defined member functions. Classes that would normally derive
+// from std::vector<T> (and that are exported via OSG_EXPORT) should derive 
+// from one of these classes instead.
+//
+// NOTE: to keep the interface consistent and avoid breaking introspection
+//       wrappers, this hack was deliberately made not Microsoft-specific
+//       even though other compilers like GCC actually don't need that.
+//
+// Marco Jez, Dec 2005
+
+class VectorGLsizei: public std::vector<GLsizei>
+{
+    typedef std::vector<value_type> vector_type;
+public:    
+    VectorGLsizei(): vector_type() {}
+    VectorGLsizei(const VectorGLsizei &copy): vector_type(copy) {}
+    VectorGLsizei(GLsizei* beg, GLsizei* end): vector_type(beg, end) {}
+    explicit VectorGLsizei(VectorGLsizei::size_type n): vector_type(n) {}
+};
+
+class VectorGLubyte: public std::vector<GLubyte>
+{
+    typedef std::vector<value_type> vector_type;
+public:    
+    VectorGLubyte(): vector_type() {}
+    VectorGLubyte(const VectorGLubyte &copy): vector_type(copy) {}
+    VectorGLubyte(GLubyte* beg, GLubyte* end): vector_type(beg, end) {}
+    explicit VectorGLubyte(VectorGLubyte::size_type n): vector_type(n) {}
+};
+
+class VectorGLushort: public std::vector<GLushort>
+{
+    typedef std::vector<value_type> vector_type;
+public:    
+    VectorGLushort(): vector_type() {}
+    VectorGLushort(const VectorGLushort &copy): vector_type(copy) {}
+    VectorGLushort(GLushort* beg, GLushort* end): vector_type(beg, end) {}
+    explicit VectorGLushort(VectorGLushort::size_type n): vector_type(n) {}
+};
+
+class VectorGLuint: public std::vector<GLuint>
+{
+    typedef std::vector<value_type> vector_type;
+public:
+    VectorGLuint(): vector_type() {}
+    VectorGLuint(const VectorGLuint &copy): vector_type(copy) {}
+    VectorGLuint(GLuint* beg, GLuint* end): vector_type(beg, end) {}
+    explicit VectorGLuint(VectorGLuint::size_type n): vector_type(n) {}
+};
+
+// **************************************************************************
+
 class State;    
 class PrimitiveFunctor
 {
@@ -252,11 +306,11 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
         GLsizei _count;
 };
 
-class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public std::vector<GLsizei>
+class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorGLsizei
 {
     public:
 
-        typedef std::vector<GLsizei> vector_type;
+        typedef VectorGLsizei vector_type;
 
         DrawArrayLengths(GLenum mode=0):
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
@@ -327,11 +381,11 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public std::vector<GLsi
         GLint   _first;
 };
 
-class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public std::vector<GLubyte>
+class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorGLubyte
 {
     public:
     
-        typedef std::vector<GLubyte> vector_type;
+        typedef VectorGLubyte vector_type;
 
         DrawElementsUByte(GLenum mode=0):
             PrimitiveSet(DrawElementsUBytePrimitiveType,mode) {}
@@ -378,11 +432,11 @@ class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public std::vector<GLu
 };
 
 
-class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public std::vector<GLushort>
+class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorGLushort
 {
     public:
 
-        typedef std::vector<GLushort> vector_type;
+        typedef VectorGLushort vector_type;
 
         DrawElementsUShort(GLenum mode=0):
             PrimitiveSet(DrawElementsUShortPrimitiveType,mode) {}
@@ -432,11 +486,11 @@ class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public std::vector<GL
         mutable GLObjectList    _vboList;
 };
 
-class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public std::vector<GLuint>
+class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorGLuint
 {
     public:
 
-        typedef std::vector<GLuint> vector_type;
+        typedef VectorGLuint vector_type;
 
         DrawElementsUInt(GLenum mode=0):
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode) {}

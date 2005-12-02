@@ -25,10 +25,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< GLsizei >, osg::DrawArrayLengths::vector_type);
+TYPE_NAME_ALIAS(osg::VectorGLsizei, osg::DrawArrayLengths::vector_type);
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrayLengths)
 	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::VectorGLsizei);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
 	I_ConstructorWithDefaults2(IN, const osg::DrawArrayLengths &, dal, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Constructor4(IN, GLenum, mode, IN, GLint, first, IN, unsigned int, no, IN, GLsizei *, ptr);
@@ -76,10 +77,11 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
 	I_Property(GLint, First);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< GLubyte >, osg::DrawElementsUByte::vector_type);
+TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type);
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::VectorGLubyte);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
 	I_ConstructorWithDefaults2(IN, const osg::DrawElementsUByte &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLubyte *, ptr);
@@ -103,10 +105,11 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< GLuint >, osg::DrawElementsUInt::vector_type);
+TYPE_NAME_ALIAS(osg::VectorGLuint, osg::DrawElementsUInt::vector_type);
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::VectorGLuint);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
 	I_ConstructorWithDefaults2(IN, const osg::DrawElementsUInt &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLuint *, ptr);
@@ -130,10 +133,11 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	I_ReadOnlyProperty(unsigned int, TotalDataSize);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< GLushort >, osg::DrawElementsUShort::vector_type);
+TYPE_NAME_ALIAS(osg::VectorGLushort, osg::DrawElementsUShort::vector_type);
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::VectorGLushort);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0);
 	I_ConstructorWithDefaults2(IN, const osg::DrawElementsUShort &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Constructor3(IN, GLenum, mode, IN, unsigned int, no, IN, GLushort *, ptr);
@@ -243,11 +247,35 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_ReadOnlyProperty(osg::PrimitiveSet::Type, Type);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< GLsizei >);
+BEGIN_OBJECT_REFLECTOR(osg::VectorGLsizei)
+	I_BaseType(std::vector<GLsizei>);
+	I_Constructor0();
+	I_Constructor1(IN, const osg::VectorGLsizei &, copy);
+	I_Constructor2(IN, GLsizei *, beg, IN, GLsizei *, end);
+	I_Constructor1(IN, osg::VectorGLsizei::size_type, n);
+END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< GLubyte >);
+BEGIN_OBJECT_REFLECTOR(osg::VectorGLubyte)
+	I_BaseType(std::vector<GLubyte>);
+	I_Constructor0();
+	I_Constructor1(IN, const osg::VectorGLubyte &, copy);
+	I_Constructor2(IN, GLubyte *, beg, IN, GLubyte *, end);
+	I_Constructor1(IN, osg::VectorGLubyte::size_type, n);
+END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< GLuint >);
+BEGIN_OBJECT_REFLECTOR(osg::VectorGLuint)
+	I_BaseType(std::vector<GLuint>);
+	I_Constructor0();
+	I_Constructor1(IN, const osg::VectorGLuint &, copy);
+	I_Constructor2(IN, GLuint *, beg, IN, GLuint *, end);
+	I_Constructor1(IN, osg::VectorGLuint::size_type, n);
+END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< GLushort >);
+BEGIN_OBJECT_REFLECTOR(osg::VectorGLushort)
+	I_BaseType(std::vector<GLushort>);
+	I_Constructor0();
+	I_Constructor1(IN, const osg::VectorGLushort &, copy);
+	I_Constructor2(IN, GLushort *, beg, IN, GLushort *, end);
+	I_Constructor1(IN, osg::VectorGLushort::size_type, n);
+END_REFLECTOR
 

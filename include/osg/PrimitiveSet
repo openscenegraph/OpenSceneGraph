@@ -80,6 +80,7 @@ public:
 // **************************************************************************
 
 class State;    
+
 class PrimitiveFunctor
 {
 public:
@@ -125,7 +126,7 @@ public:
     virtual void end() = 0;
 };
 
-class PrimitiveSet : public Object
+class OSG_EXPORT PrimitiveSet : public Object
 {
     public:
     

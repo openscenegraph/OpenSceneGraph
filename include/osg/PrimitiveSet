@@ -185,23 +185,7 @@ class PrimitiveSet : public Object
         virtual unsigned int getNumIndices() const = 0;
         virtual void offsetIndices(int offset) = 0;
 
-        virtual unsigned int getNumPrimitives() const 
-        {
-            switch(_mode)
-            {
-                case(POINTS): return getNumIndices();
-                case(LINES): return getNumIndices()/2;
-                case(TRIANGLES): return getNumIndices()/3;
-                case(QUADS): return getNumIndices()/4;
-                case(LINE_STRIP):
-                case(LINE_LOOP):
-                case(TRIANGLE_STRIP):
-                case(TRIANGLE_FAN):
-                case(QUAD_STRIP):
-                case(POLYGON): return 1;
-            }
-            return 0;
-        }
+        virtual unsigned int getNumPrimitives() const; 
 
         /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
         inline void dirty() { ++_modifiedCount; }      
@@ -356,23 +340,7 @@ class OSG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorGLsizei
         virtual unsigned int index(unsigned int pos) const { return _first+pos; }
         virtual void offsetIndices(int offset) { _first += offset; }
 
-        virtual unsigned int getNumPrimitives() const 
-        {
-            switch(_mode)
-            {
-                case(POINTS): return getNumIndices();
-                case(LINES): return getNumIndices()/2;
-                case(TRIANGLES): return getNumIndices()/3;
-                case(QUADS): return getNumIndices()/4;
-                case(LINE_STRIP):
-                case(LINE_LOOP):
-                case(TRIANGLE_STRIP):
-                case(TRIANGLE_FAN):
-                case(QUAD_STRIP):
-                case(POLYGON): return size();
-            }
-            return 0;
-        }
+        virtual unsigned int getNumPrimitives() const;
 
     protected:
 

@@ -17,6 +17,24 @@
 
 using namespace osg;
 
+unsigned int PrimitiveSet::getNumPrimitives() const
+{
+    switch(_mode)
+    {
+        case(POINTS): return getNumIndices();
+        case(LINES): return getNumIndices()/2;
+        case(TRIANGLES): return getNumIndices()/3;
+        case(QUADS): return getNumIndices()/4;
+        case(LINE_STRIP):
+        case(LINE_LOOP):
+        case(TRIANGLE_STRIP):
+        case(TRIANGLE_FAN):
+        case(QUAD_STRIP):
+        case(POLYGON): return 1;
+    }
+    return 0;
+}
+
 void DrawArrays::draw(State&, bool) const 
 {
     glDrawArrays(_mode,_first,_count);
@@ -30,6 +48,24 @@ void DrawArrays::accept(PrimitiveFunctor& functor) const
 void DrawArrays::accept(PrimitiveIndexFunctor& functor) const
 {
     functor.drawArrays(_mode,_first,_count);
+}
+
+unsigned int DrawArrayLengths::getNumPrimitives() const
+{
+    switch(_mode)
+    {
+        case(POINTS): return getNumIndices();
+        case(LINES): return getNumIndices()/2;
+        case(TRIANGLES): return getNumIndices()/3;
+        case(QUADS): return getNumIndices()/4;
+        case(LINE_STRIP):
+        case(LINE_LOOP):
+        case(TRIANGLE_STRIP):
+        case(TRIANGLE_FAN):
+        case(QUAD_STRIP):
+        case(POLYGON): return size();
+    }
+    return 0;
 }
 
 void DrawArrayLengths::draw(State&, bool) const

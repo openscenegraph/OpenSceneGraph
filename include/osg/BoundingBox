@@ -30,10 +30,10 @@ class OSG_EXPORT BoundingBox
 {
     public:
     
-    /** Minimum extent. (Smallest X, Y, and Z values of all coordinates.) */
-    Vec3 _min;
-    /** Maximum extent. (Greatest X, Y, and Z values of all coordinates.) */
-    Vec3 _max;
+        /** Minimum extent. (Smallest X, Y, and Z values of all coordinates.) */
+        Vec3 _min;
+        /** Maximum extent. (Greatest X, Y, and Z values of all coordinates.) */
+        Vec3 _max;
 
         /** Creates an uninitialized bounding box. */
         inline BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),

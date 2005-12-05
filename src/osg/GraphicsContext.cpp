@@ -58,7 +58,7 @@ unsigned int GraphicsContext::createNewContextID()
             // reuse contextID;
             itr->second = 1;
 
-            osg::notify(osg::NOTICE)<<"GraphicsContext::createNewContextID() reusing contextID="<<itr->first<<std::endl;
+            osg::notify(osg::INFO)<<"GraphicsContext::createNewContextID() reusing contextID="<<itr->first<<std::endl;
 
             return itr->first;
         }

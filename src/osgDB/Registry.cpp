@@ -119,13 +119,12 @@ void PrintFilePathList(std::ostream& stream,const FilePathList& filepath)
 
 Registry* Registry::instance(bool erase)
 {
-    static ref_ptr<Registry> s_nodeFactory = new Registry;
+    static ref_ptr<Registry> s_registry = new Registry;
     if (erase) 
     {
-        s_nodeFactory->closeAllLibraries();
-        s_nodeFactory = 0;
+        s_registry = 0;
     }
-    return s_nodeFactory.get(); // will return NULL on erase
+    return s_registry.get(); // will return NULL on erase
 }
 
 

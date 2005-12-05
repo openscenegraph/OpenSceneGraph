@@ -81,10 +81,13 @@ public:
         if (scene)
         {
             const osg::BoundingSphere& bs = scene->getBound();
-            _trackBall->reset();
-            _trackBall->setOrientation( Producer::Trackball::Z_UP );
-            _trackBall->setDistance(bs.radius()*2.0f);
-            _trackBall->translate(-bs.center().x(),-bs.center().y(),-bs.center().z());
+            if (bs.valid())
+            {
+                _trackBall->reset();
+                _trackBall->setOrientation( Producer::Trackball::Z_UP );
+                _trackBall->setDistance(bs.radius()*2.0f);
+                _trackBall->translate(-bs.center().x(),-bs.center().y(),-bs.center().z());
+            }
         }
     }
     

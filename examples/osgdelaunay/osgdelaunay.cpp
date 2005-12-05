@@ -143,7 +143,7 @@ class LinearConstraint: public osgUtil::DelaunayConstraint {
 *  if 2 roads cross, then the overlap will be replaced by a 'cross road'
     *  and the roads built up to the cross roads with a texture along its length. */
 public:
-    LinearConstraint() : DelaunayConstraint(), txxrepAlong(10), txyrepAcross(10), width(2) { }
+    LinearConstraint() : osgUtil::DelaunayConstraint(), txxrepAlong(10), txyrepAcross(10), width(2) { }
     
     /** geometry creation parameters */
     /* Width of linear feature (eg road, railway) */

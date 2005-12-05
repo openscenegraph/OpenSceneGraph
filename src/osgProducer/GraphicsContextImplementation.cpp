@@ -138,7 +138,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         }
         else
         {
-            getState()->setContextID( GraphicsContext::createNewContextID() );
+            getState()->setContextID( osg::GraphicsContext::createNewContextID() );
         }
         
         // but we share texture objects etc. so we also share the same contextID
@@ -150,7 +150,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     
         // need to do something here....    
         setState( new osg::State );
-        getState()->setContextID( GraphicsContext::createNewContextID() );
+        getState()->setContextID( osg::GraphicsContext::createNewContextID() );
 
         //_rs->realize();
     }

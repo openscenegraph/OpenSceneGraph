@@ -1,7 +1,10 @@
 #include "DepthPartitionNode.h"
 #include <osgUtil/CullVisitor>
 
+using namespace osg;
+
 #define CURRENT_CLASS DepthPartitionNode
+
 CURRENT_CLASS::CURRENT_CLASS()
 {
     _distAccumulator = new DistanceAccumulator;
@@ -9,7 +12,7 @@ CURRENT_CLASS::CURRENT_CLASS()
 }
 
 CURRENT_CLASS::CURRENT_CLASS(const CURRENT_CLASS& dpn, const osg::CopyOp& copyop)
-    : Group(dpn, copyop),
+    : osg::Group(dpn, copyop),
           _active(dpn._active),
           _renderOrder(dpn._renderOrder),
           _clearColorBuffer(dpn._clearColorBuffer)

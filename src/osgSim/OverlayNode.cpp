@@ -20,6 +20,7 @@
 #include <osgSim/OverlayNode>
 
 using namespace osgSim;
+using namespace osg;
 
 OverlayNode::OverlayNode():
     _texEnvMode(GL_DECAL),
@@ -31,7 +32,7 @@ OverlayNode::OverlayNode():
 }
 
 OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
-    Group(copy,copyop),
+    osg::Group(copy,copyop),
     _overlaySubgraph(copy._overlaySubgraph),
     _texEnvMode(copy._texEnvMode),
     _textureUnit(copy._textureUnit),

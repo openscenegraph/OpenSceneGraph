@@ -1045,22 +1045,22 @@ void Geometry::drawImplementation(State& state) const
             else
                 state.disableVertexPointer();
 
-            if (_normalData.binding==BIND_PER_VERTEX)
+            if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
                 state.setNormalPointer(GL_FLOAT,0,(const GLvoid*)_normalData.offset);
             else
                 state.disableNormalPointer();
 
-            if (_colorData.binding==BIND_PER_VERTEX)
+            if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
                 state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,(const GLvoid*)_colorData.offset);
             else
                 state.disableColorPointer();
 
-            if (secondaryColorBinding==BIND_PER_VERTEX)
+            if (secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
                 state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,(const GLvoid*)_secondaryColorData.offset);
             else
                 state.disableSecondaryColorPointer();
 
-            if (fogCoordBinding==BIND_PER_VERTEX)
+            if (fogCoordBinding==BIND_PER_VERTEX && _fogCoordData.array.valid())
                 state.setFogCoordPointer(GL_FLOAT,0,(const GLvoid*)_fogCoordData.offset);
             else
                 state.disableFogCoordPointer();
@@ -1132,22 +1132,22 @@ void Geometry::drawImplementation(State& state) const
             else
                 state.disableVertexPointer();
 
-            if (_normalData.binding==BIND_PER_VERTEX)
+            if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
                 state.setNormalPointer(_normalData.array->getDataType(),0,_normalData.array->getDataPointer());
             else
                 state.disableNormalPointer();
 
-            if (_colorData.binding==BIND_PER_VERTEX)
+            if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
                 state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,_colorData.array->getDataPointer());
             else
                 state.disableColorPointer();
 
-            if (secondaryColorBinding==BIND_PER_VERTEX)
+            if (secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
                 state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,_secondaryColorData.array->getDataPointer());
             else
                 state.disableSecondaryColorPointer();
 
-            if (fogCoordBinding==BIND_PER_VERTEX)
+            if (fogCoordBinding==BIND_PER_VERTEX && _fogCoordData.array.valid())
                 state.setFogCoordPointer(GL_FLOAT,0,_fogCoordData.array->getDataPointer());
             else
                 state.disableFogCoordPointer();
@@ -1210,8 +1210,8 @@ void Geometry::drawImplementation(State& state) const
         //
         // pass the overall binding values onto OpenGL.
         //
-        if (_normalData.binding==BIND_OVERALL)           drawNormal(normalIndex++);
-        if (_colorData.binding==BIND_OVERALL)            drawColor(colorIndex++);
+        if (_normalData.binding==BIND_OVERALL)      drawNormal(normalIndex++);
+        if (_colorData.binding==BIND_OVERALL)       drawColor(colorIndex++);
         if (secondaryColorBinding==BIND_OVERALL)    drawSecondaryColor(secondaryColorIndex++);
         if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
         if (handleVertexAttributes)
@@ -1233,8 +1233,8 @@ void Geometry::drawImplementation(State& state) const
             ++itr)
         {
 
-            if (_normalData.binding==BIND_PER_PRIMITIVE_SET)           drawNormal(normalIndex++);
-            if (_colorData.binding==BIND_PER_PRIMITIVE_SET)            drawColor(colorIndex++);
+            if (_normalData.binding==BIND_PER_PRIMITIVE_SET)      drawNormal(normalIndex++);
+            if (_colorData.binding==BIND_PER_PRIMITIVE_SET)       drawColor(colorIndex++);
             if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
             if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
             if (handleVertexAttributes)

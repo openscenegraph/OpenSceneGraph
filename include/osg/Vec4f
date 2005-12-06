@@ -103,20 +103,20 @@ class Vec4f
         inline value_type b() const { return _v[2]; }
         inline value_type a() const { return _v[3]; }
 
-        inline unsigned long asABGR() const
+        inline unsigned int asABGR() const
         {
-            return (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f)<<24 |
-                   (unsigned long)clampTo((_v[1]*255.0f),0.0f,255.0f)<<16 |
-                   (unsigned long)clampTo((_v[2]*255.0f),0.0f,255.0f)<<8  |
-                   (unsigned long)clampTo((_v[3]*255.0f),0.0f,255.0f);
+            return (unsigned int)clampTo((_v[0]*255.0f),0.0f,255.0f)<<24 |
+                   (unsigned int)clampTo((_v[1]*255.0f),0.0f,255.0f)<<16 |
+                   (unsigned int)clampTo((_v[2]*255.0f),0.0f,255.0f)<<8  |
+                   (unsigned int)clampTo((_v[3]*255.0f),0.0f,255.0f);
         }
 
-        inline unsigned long asRGBA() const
+        inline unsigned int asRGBA() const
         {
-            return (unsigned long)clampTo((_v[3]*255.0f),0.0f,255.0f)<<24 |
-                   (unsigned long)clampTo((_v[2]*255.0f),0.0f,255.0f)<<16 |
-                   (unsigned long)clampTo((_v[1]*255.0f),0.0f,255.0f)<<8  |
-                   (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f);
+            return (unsigned int)clampTo((_v[3]*255.0f),0.0f,255.0f)<<24 |
+                   (unsigned int)clampTo((_v[2]*255.0f),0.0f,255.0f)<<16 |
+                   (unsigned int)clampTo((_v[1]*255.0f),0.0f,255.0f)<<8  |
+                   (unsigned int)clampTo((_v[0]*255.0f),0.0f,255.0f);
         }
 
         inline bool valid() const { return !isNaN(); }

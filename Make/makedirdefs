@@ -272,10 +272,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
         EXAMPLE_DIRS += osgsimulation
     endif
 
-    ifeq ($(DEMETER_INSTALLED),yes)
-        EXAMPLE_DIRS += osgdemeter
-    endif
-
 endif
 
 ifeq ($(GLUT_INSTALLED),yes)

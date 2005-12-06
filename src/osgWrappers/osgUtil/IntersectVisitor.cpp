@@ -84,6 +84,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_Method1(void, addLineSegment, IN, osg::LineSegment *, seg);
 	I_Method1(osgUtil::IntersectVisitor::HitList &, getHitList, IN, const osg::LineSegment *, seg);
 	I_Method1(int, getNumHits, IN, const osg::LineSegment *, seg);
+	I_Method0(osgUtil::IntersectVisitor::LineSegmentHitListMap &, getSegHitList);
 	I_Method0(bool, hits);
 	I_Method1(void, setLODSelectionMode, IN, osgUtil::IntersectVisitor::LODSelectionMode, mode);
 	I_Method0(osgUtil::IntersectVisitor::LODSelectionMode, getLODSelectionMode);
@@ -99,6 +100,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_Method1(void, apply, IN, osg::LOD &, node);
 	I_ReadOnlyProperty(osg::Vec3, EyePoint);
 	I_Property(osgUtil::IntersectVisitor::LODSelectionMode, LODSelectionMode);
+	I_ReadOnlyProperty(osgUtil::IntersectVisitor::LineSegmentHitListMap &, SegHitList);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >);

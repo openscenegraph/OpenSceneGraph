@@ -49,8 +49,8 @@ BEGIN_VALUE_REFLECTOR(osg::Vec4f)
 	I_Method0(osg::Vec4f::value_type, g);
 	I_Method0(osg::Vec4f::value_type, b);
 	I_Method0(osg::Vec4f::value_type, a);
-	I_Method0(unsigned long, asABGR);
-	I_Method0(unsigned long, asRGBA);
+	I_Method0(unsigned int, asABGR);
+	I_Method0(unsigned int, asRGBA);
 	I_Method0(bool, valid);
 	I_Method0(bool, isNaN);
 	I_Method0(osg::Vec4f::value_type, length);

@@ -40,18 +40,18 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         virtual const char* className() const { return "LightPointDrawable"; }
 
         
-        //typedef std::pair<unsigned long,osg::Vec3> ColorPosition;
+        //typedef std::pair<unsigned int,osg::Vec3> ColorPosition;
         struct ColorPosition
         {
-            unsigned long first;
+            unsigned int first;
             osg::Vec3 second;
             ColorPosition() {}
-            ColorPosition(unsigned long f,const osg::Vec3& s):first(f),second(s) {}
+            ColorPosition(unsigned int f,const osg::Vec3& s):first(f),second(s) {}
         };
         
         void reset();
 
-        inline unsigned long asRGBA(const osg::Vec4& color) const
+        inline unsigned int asRGBA(const osg::Vec4& color) const
         {
             return _endian==osg::BigEndian?color.asABGR():color.asRGBA();
         }

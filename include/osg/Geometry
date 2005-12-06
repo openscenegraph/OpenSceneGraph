@@ -158,7 +158,7 @@ class OSG_EXPORT Geometry : public Drawable
         const ArrayData& getVertexData() const { return _vertexData; }
         
 
-        void setNormalBinding(AttributeBinding ab) { _normalData.binding = ab; dirtyDisplayList(); computeFastPathsUsed(); dirtyDisplayList(); }
+        void setNormalBinding(AttributeBinding ab) { _normalData.binding = ab; computeFastPathsUsed(); dirtyDisplayList(); }
         AttributeBinding getNormalBinding() const { return _normalData.binding; }
 
         void setNormalArray(Array* array) { _normalData.array = array; if (!_normalData.array.valid()) _normalData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }

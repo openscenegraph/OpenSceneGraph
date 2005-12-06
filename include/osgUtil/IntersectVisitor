@@ -115,6 +115,8 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         HitList& getHitList(const osg::LineSegment* seg) { return _segHitList[seg]; }
 
         int getNumHits(const osg::LineSegment* seg) { return _segHitList[seg].size(); }
+        
+        LineSegmentHitListMap& getSegHitList() { return _segHitList; }
 
         bool hits();
 

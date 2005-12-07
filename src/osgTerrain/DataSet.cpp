@@ -227,7 +227,9 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
     case(Source::IMAGE):
     case(Source::HEIGHT_FIELD):
         {
-            GDALDataset* gdalDataSet = (GDALDataset*)GDALOpen(source->getFileName().c_str(),GA_ReadOnly);
+            GDALDataset* gdalDataSet = source->getGdalDataSet();
+            if(!gdalDataSet)
+                gdalDataSet = (GDALDataset*)GDALOpen(source->getFileName().c_str(),GA_ReadOnly);
             if (gdalDataSet)
             {
                 SourceData* data = new SourceData(source);

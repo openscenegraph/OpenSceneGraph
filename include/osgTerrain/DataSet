@@ -193,7 +193,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _geoTransformPolicy(PREFER_FILE_SETTINGS),
                 _minLevel(0),
                 _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
-                _layer(0)
+                _layer(0),
+                _gdalDataSet(0)
                 {}
         
             Source(Type type, const std::string& filename):
@@ -205,7 +206,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _geoTransformPolicy(PREFER_FILE_SETTINGS),
                 _minLevel(0),
                 _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
-                _layer(0)
+                _layer(0),
+                _gdalDataSet(0)
                 {}
 
             void setSortValue(double s) { _sortValue = s; }
@@ -221,6 +223,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             void setTemporaryFile(bool temporaryFile) { _temporaryFile = temporaryFile; }
             bool getTemporaryFile() const { return _temporaryFile; }
+
+            void setGdalDataSet(GDALDataset* gdalDataSet) { _gdalDataSet = gdalDataSet; }
+            GDALDataset* getGdalDataSet() const { return _gdalDataSet; }
 
             void setCoordinateSystemPolicy(ParameterPolicy policy) { _coordinateSystemPolicy = policy; }
             ParameterPolicy getCoordinateSystemPolicy() const { return _coordinateSystemPolicy; }
@@ -333,8 +338,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             osg::ref_ptr<SourceData>                    _sourceData;
             
             ResolutionList                              _requiredResolutions;
-                
-        };
+          
+             GDALDataset*                                _gdalDataSet;
+         };
         
         enum CompositeType
         {

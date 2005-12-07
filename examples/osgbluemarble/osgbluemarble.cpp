@@ -233,7 +233,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
         min_dot = osg::minimum(normal*n01,min_dot);
 
         float angle = acosf(min_dot)+osg::PI*0.5f;
-        float deviation = (angle<osg::PI) ? deviation = cosf(angle) : -1.0f;
+        float deviation = (angle<osg::PI) ? cosf(angle) : -1.0f;
 
         osg::ClusterCullingCallback* ccc = new osg::ClusterCullingCallback;
         ccc->setControlPoint(center);

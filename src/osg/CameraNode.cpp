@@ -53,6 +53,11 @@ CameraNode::~CameraNode()
 {
 }
 
+bool CameraNode::isRenderToTextureCamera() const
+{
+    return (!_bufferAttachmentMap.empty());
+}
+
 void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl)
 {
     _renderTargetImplementation = impl;

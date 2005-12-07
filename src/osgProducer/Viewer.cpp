@@ -764,12 +764,9 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
             view = osg::Matrixd(camera->getViewMatrix());
         }
 
-        node = node->getParent(0);
-
         osgUtil::PickVisitor pick(viewport, proj, view, pixel_x, pixel_y);
         pick.setTraversalMask(traversalMask);
         node->accept(pick);
-        
         
         // copy all the hits across to the external hits list
         for(osgUtil::PickVisitor::LineSegmentHitListMap::iterator itr = pick.getSegHitList().begin();

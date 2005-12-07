@@ -92,7 +92,6 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         void setTransformOrder(TransformOrder order) { _transformOrder = order; }
         TransformOrder getTransformOrder() const { return _transformOrder; }
         
-        
 
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
         inline void setProjectionMatrix(const osg::Matrixf& matrix) { _projectionMatrix.set(matrix); }
@@ -183,6 +182,9 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         /** Get the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.*/
         RenderOrder getRenderOrder() const { return _renderOrder; }
+
+        /** Return true if this Camera is set up as a render to texture camera, i.e. it has textures assigned to it.*/
+        bool isRenderToTextureCamera() const;
 
         enum RenderTargetImplementation
         {

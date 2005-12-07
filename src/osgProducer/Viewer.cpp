@@ -30,87 +30,6 @@ using namespace osg;
 #define SINGLE_THREAD_KEYBOARDMOUSE
 #endif
 
-//////////////////////////////////////////////////////////////////////////////
-//
-// Picking intersection visitor.
-//
-class PickVisitor : public osgUtil::IntersectVisitor
-{
-public:
-
-
-    PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj, const osg::Matrixd& view, float mx, float my):
-        _mx(mx),
-        _my(my),
-        _lastViewport(viewport),
-        _lastProjectionMatrix(proj),
-        _lastViewMatrix(view)
-   {
-        if (viewport && 
-            mx >= static_cast<float>(viewport->x()) && 
-            my >= static_cast<float>(viewport->y()) &&
-            mx < static_cast<float>(viewport->x()+viewport->width()) &&
-            my < static_cast<float>(viewport->y()+viewport->height()))
-        {
-
-            // mouse pointer intersect viewport so we can proceed to set up a line segment
-            osg::Matrix MVPW = view * proj * viewport->computeWindowMatrix();
-            osg::Matrixd inverseMVPW;
-            inverseMVPW.invert(MVPW);
-            
-            osg::Vec3 nearPoint = osg::Vec3(mx,my,0.0f) * inverseMVPW;
-            osg::Vec3 farPoint = osg::Vec3(mx,my,1.0f) * inverseMVPW;
-            osg::LineSegment* lineSegment = new osg::LineSegment;
-            lineSegment->set(nearPoint, farPoint);
-            
-            addLineSegment(lineSegment);
-        }
-
-    }
-    
-    void runNestedPickVisitor(osg::Node& node, const osg::Viewport* viewport, const osg::Matrix& proj, const osg::Matrix& view, float mx, float my)
-    {
-    
-        PickVisitor newPickVisitor( viewport, proj, view, _mx, _my );
-        newPickVisitor.setTraversalMask(getTraversalMask());
-        
-        // the new pickvisitor over the nodes children.
-        node.traverse( newPickVisitor );
-        
-        for(LineSegmentHitListMap::iterator itr = newPickVisitor._segHitList.begin();
-            itr != newPickVisitor._segHitList.end();
-            ++itr)
-        {
-            _segHitList.insert(*itr);
-        }
-    }
-        
-    void apply(osg::Projection& projection)
-    {
-        runNestedPickVisitor( projection, 
-                              _lastViewport.get(), 
-                              projection.getMatrix(),
-                              _lastViewMatrix,
-                              _mx, _my );
-    }
-    
-    void apply(osg::CameraNode& camera)
-    {
-        runNestedPickVisitor( camera,
-                              camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                              camera.getProjectionMatrix(), 
-                              camera.getViewMatrix(),
-                              _mx, _my );
-    }
-    
-    
-    float _mx;
-    float _my;
-
-    osg::ref_ptr<const osg::Viewport>   _lastViewport;
-    osg::Matrixd                        _lastProjectionMatrix;
-    osg::Matrixd                        _lastViewMatrix;
-};
 
 class CollectedCoordinateSystemNodesVisitor : public osg::NodeVisitor
 {
@@ -847,13 +766,13 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
 
         node = node->getParent(0);
 
-        PickVisitor pick(viewport, proj, view, pixel_x, pixel_y);
+        osgUtil::PickVisitor pick(viewport, proj, view, pixel_x, pixel_y);
         pick.setTraversalMask(traversalMask);
         node->accept(pick);
         
         
         // copy all the hits across to the external hits list
-        for(osgUtil::IntersectVisitor::LineSegmentHitListMap::iterator itr = pick.getSegHitList().begin();
+        for(osgUtil::PickVisitor::LineSegmentHitListMap::iterator itr = pick.getSegHitList().begin();
             itr != pick.getSegHitList().end();
             ++itr)
         {

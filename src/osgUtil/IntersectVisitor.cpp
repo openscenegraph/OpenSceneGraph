@@ -18,6 +18,8 @@
 #include <osg/Notify>
 #include <osg/TriangleFunctor>
 #include <osg/Geometry>
+#include <osg/Projection>
+#include <osg/CameraNode>
 #include <osg/io_utils>
 
 #include <float.h>
@@ -660,4 +662,68 @@ void IntersectVisitor::apply(Switch& node)
 void IntersectVisitor::apply(LOD& node)
 {
     apply((Group&)node);
+}
+
+PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj, const osg::Matrixd& view, float mx, float my):
+    _mx(mx),
+    _my(my),
+    _lastViewport(viewport),
+    _lastProjectionMatrix(proj),
+    _lastViewMatrix(view)
+{
+    if (viewport && 
+        mx >= static_cast<float>(viewport->x()) && 
+        my >= static_cast<float>(viewport->y()) &&
+        mx < static_cast<float>(viewport->x()+viewport->width()) &&
+        my < static_cast<float>(viewport->y()+viewport->height()))
+    {
+
+        // mouse pointer intersect viewport so we can proceed to set up a line segment
+        osg::Matrix MVPW = view * proj * viewport->computeWindowMatrix();
+        osg::Matrixd inverseMVPW;
+        inverseMVPW.invert(MVPW);
+
+        osg::Vec3 nearPoint = osg::Vec3(mx,my,0.0f) * inverseMVPW;
+        osg::Vec3 farPoint = osg::Vec3(mx,my,1.0f) * inverseMVPW;
+        osg::LineSegment* lineSegment = new osg::LineSegment;
+        lineSegment->set(nearPoint, farPoint);
+
+        addLineSegment(lineSegment);
+    }
+
+}
+
+void PickVisitor::runNestedPickVisitor(osg::Node& node, const osg::Viewport* viewport, const osg::Matrix& proj, const osg::Matrix& view, float mx, float my)
+{
+
+    PickVisitor newPickVisitor( viewport, proj, view, mx, my );
+    newPickVisitor.setTraversalMask(getTraversalMask());
+
+    // the new pickvisitor over the nodes children.
+    node.traverse( newPickVisitor );
+
+    for(LineSegmentHitListMap::iterator itr = newPickVisitor._segHitList.begin();
+        itr != newPickVisitor._segHitList.end();
+        ++itr)
+    {
+        _segHitList.insert(*itr);
+    }
+}
+
+void PickVisitor::apply(osg::Projection& projection)
+{
+    runNestedPickVisitor( projection, 
+                          _lastViewport.get(), 
+                          projection.getMatrix(),
+                          _lastViewMatrix,
+                          _mx, _my );
+}
+
+void PickVisitor::apply(osg::CameraNode& camera)
+{
+    runNestedPickVisitor( camera,
+                          camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                          camera.getProjectionMatrix(), 
+                          camera.getViewMatrix(),
+                          _mx, _my );
 }

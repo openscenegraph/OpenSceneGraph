@@ -10,16 +10,20 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
+#include <osg/CameraNode>
 #include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/LOD>
 #include <osg/LineSegment>
 #include <osg/Matrix>
+#include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/Projection>
 #include <osg/Switch>
 #include <osg/Transform>
 #include <osg/Vec3>
+#include <osg/Viewport>
 #include <osgUtil/IntersectVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -101,6 +105,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_ReadOnlyProperty(osg::Vec3, EyePoint);
 	I_Property(osgUtil::IntersectVisitor::LODSelectionMode, LODSelectionMode);
 	I_ReadOnlyProperty(osgUtil::IntersectVisitor::LineSegmentHitListMap &, SegHitList);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::PickVisitor)
+	I_BaseType(osgUtil::IntersectVisitor);
+	I_Constructor5(IN, const osg::Viewport *, viewport, IN, const osg::Matrixd &, proj, IN, const osg::Matrixd &, view, IN, float, mx, IN, float, my);
+	I_Method6(void, runNestedPickVisitor, IN, osg::Node &, node, IN, const osg::Viewport *, viewport, IN, const osg::Matrix &, proj, IN, const osg::Matrix &, view, IN, float, mx, IN, float, my);
+	I_Method1(void, apply, IN, osg::Projection &, projection);
+	I_Method1(void, apply, IN, osg::CameraNode &, camera);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >);

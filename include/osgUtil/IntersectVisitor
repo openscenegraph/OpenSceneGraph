@@ -202,6 +202,29 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         osg::Vec3                   _pseudoEyePoint;
 };
 
+/** Picking intersection visitor specialises the IntersectVistor to allow more convinient handling of mouse picking.*/
+class OSGUTIL_EXPORT PickVisitor : public osgUtil::IntersectVisitor
+{
+    public:
+
+        PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj, const osg::Matrixd& view, float mx, float my);
+
+        void runNestedPickVisitor(osg::Node& node, const osg::Viewport* viewport, const osg::Matrix& proj, const osg::Matrix& view, float mx, float my);
+
+        void apply(osg::Projection& projection);
+
+        void apply(osg::CameraNode& camera);
+
+    protected:
+        
+        float _mx;
+        float _my;
+
+        osg::ref_ptr<const osg::Viewport>   _lastViewport;
+        osg::Matrixd                        _lastProjectionMatrix;
+        osg::Matrixd                        _lastViewMatrix;
+};
+
 }
 
 #endif

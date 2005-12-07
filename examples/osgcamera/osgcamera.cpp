@@ -130,6 +130,8 @@ struct CleanUpOperation : public osg::GraphicsThread::Operation
 //
 int main( int argc, char **argv )
 {
+    osg::Referenced::setThreadSafeReferenceCounting(true);
+
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 

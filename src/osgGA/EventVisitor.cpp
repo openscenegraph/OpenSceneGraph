@@ -18,7 +18,7 @@ using namespace osg;
 using namespace osgGA;
 
 EventVisitor::EventVisitor()
-:    NodeVisitor(EVENT_VISITOR,TRAVERSE_ALL_CHILDREN),
+:    NodeVisitor(EVENT_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
     _handled(false)
 {
 }

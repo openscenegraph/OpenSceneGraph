@@ -28,6 +28,14 @@ namespace osg {
 class NodeVisitor;
 class Group;
 class Transform;
+class Node;
+
+/** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
+typedef std::vector< Node* > NodePath;
+
+/** A vector of NodePath, typically used to describe all the paths from a node to the potential root nodes it has.*/
+typedef std::vector< NodePath > NodePathList;
+
 
 /** META_Node macro define the standard clone, isSameKindAs, className
   * and accept methods.  Use when subclassing from Node to make it
@@ -103,6 +111,7 @@ class OSG_EXPORT Node : public Object
         inline ParentList getParents() { return _parents; }
 
         inline Group* getParent(unsigned int i)  { return _parents[i]; }
+
         /**
          * Get a single const parent of node.
          * @param i index of the parent to get.
@@ -115,6 +124,10 @@ class OSG_EXPORT Node : public Object
          * @return the number of parents of this node.
          */
         inline unsigned int getNumParents() const { return _parents.size(); }
+
+        /** Get the list of node paths parent paths.
+          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
+        NodePathList getParentalNodePaths(osg::Node* haltTraversalAtNode=0) const;
 
 
         /** Set update node callback, called during update traversal. */
@@ -336,9 +349,6 @@ class OSG_EXPORT Node : public Object
         ref_ptr<StateSet> _stateset;
 
 };
-
-/** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
-typedef std::vector<Node*> NodePath;
 
 }
 

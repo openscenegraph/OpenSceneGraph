@@ -337,6 +337,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
 	I_Method0(const std::string &, getFileName);
 	I_Method1(void, setTemporaryFile, IN, bool, temporaryFile);
 	I_Method0(bool, getTemporaryFile);
+	I_Method1(void, setGdalDataSet, IN, GDALDataset *, gdalDataSet);
+	I_Method0(GDALDataset *, getGdalDataSet);
 	I_Method1(void, setCoordinateSystemPolicy, IN, osgTerrain::DataSet::Source::ParameterPolicy, policy);
 	I_Method0(osgTerrain::DataSet::Source::ParameterPolicy, getCoordinateSystemPolicy);
 	I_Method1(void, setCoordinateSystem, IN, const std::string &, wellKnownText);
@@ -371,6 +373,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
 	I_Property(osg::CoordinateSystemNode *, CoordinateSystem);
 	I_Property(osgTerrain::DataSet::Source::ParameterPolicy, CoordinateSystemPolicy);
 	I_Property(const std::string &, FileName);
+	I_Property(GDALDataset *, GdalDataSet);
 	I_Property(osg::Matrixd &, GeoTransform);
 	I_Property(osgTerrain::DataSet::Source::ParameterPolicy, GeoTransformPolicy);
 	I_Property(unsigned int, Layer);

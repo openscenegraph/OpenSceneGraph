@@ -741,7 +741,7 @@ bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Ve
 bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::Node* node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
     float pixel_x,pixel_y;
-    if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
+    if (node && computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
     {
 
         Producer::Camera* camera=getCamera(cameraNum);
@@ -751,11 +751,13 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
         osg::Matrixd proj;
         osg::Matrixd view;
         const osg::Viewport* viewport = 0;
+        osg::Node* rootNode = 0; 
         if (sv!=0)
         {
             viewport = sv->getViewport();
             proj = sv->getProjectionMatrix();
             view = sv->getViewMatrix();
+            rootNode = sv->getSceneData();
         }
         else
         {
@@ -764,19 +766,37 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
             view = osg::Matrixd(camera->getViewMatrix());
         }
 
-        osgUtil::PickVisitor pick(viewport, proj, view, pixel_x, pixel_y);
-        pick.setTraversalMask(traversalMask);
-        node->accept(pick);
-        
-        // copy all the hits across to the external hits list
-        for(osgUtil::PickVisitor::LineSegmentHitListMap::iterator itr = pick.getSegHitList().begin();
-            itr != pick.getSegHitList().end();
-            ++itr)
+        unsigned int numHitsBefore = hits.size();
+
+        osg::NodePathList parentNodePaths = node->getParentalNodePaths(rootNode);
+        for(unsigned int i=0;i<parentNodePaths.size();++i)
         {
-            hits.insert(hits.end(),itr->second.begin(), itr->second.end());
+            osg::NodePath& nodePath = parentNodePaths[i];
+            
+            // remove the intersection node from the nodePath as it'll be accounted for
+            // in the PickVisitor traversal, so we don't double account for its transform.
+            if (!nodePath.empty()) nodePath.pop_back();  
+            
+            osg::Matrixd modelview(view);
+            // modify the view matrix so that it accounts for this nodePath's accumulated transform
+            if (!nodePath.empty()) modelview.preMult(computeLocalToWorld(nodePath));
+            
+            osgUtil::PickVisitor pick(viewport, proj, modelview, pixel_x, pixel_y);
+            pick.setTraversalMask(traversalMask);
+            node->accept(pick);
+
+            // copy all the hits across to the external hits list
+            for(osgUtil::PickVisitor::LineSegmentHitListMap::iterator itr = pick.getSegHitList().begin();
+                itr != pick.getSegHitList().end();
+                ++itr)
+            {
+                hits.insert(hits.end(),itr->second.begin(), itr->second.end());
+            }
+
         }
         
-        return true;
+        // return true if we now have more hits than before
+        return hits.size()>numHitsBefore;
     }
     return false;
 }

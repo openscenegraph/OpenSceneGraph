@@ -21,6 +21,36 @@
 
 using namespace osg;
 
+namespace osg
+{
+    /// Helper class for generating NodePathList.
+    class CollectParentPaths : public NodeVisitor
+    {
+    public:
+        CollectParentPaths(osg::Node* haltTraversalAtNode=0) : 
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
+            _haltTraversalAtNode(haltTraversalAtNode)
+        {
+        }
+
+        virtual void apply(osg::Node& node)
+        {
+            if (node.getNumParents()==0 || &node==_haltTraversalAtNode)
+            {
+                _nodePaths.push_back(getNodePath());
+            }
+            else
+            {
+                traverse(node);
+            }
+       }
+
+        Node*           _haltTraversalAtNode;
+        NodePath        _nodePath;
+        NodePathList    _nodePaths;
+    };
+}
+
 Node::Node()
 {
     _boundingSphereComputed = false;
@@ -133,6 +163,12 @@ osg::StateSet* Node::getOrCreateStateSet()
     return _stateset.get();
 }
 
+NodePathList Node::getParentalNodePaths(osg::Node* haltTraversalAtNode) const
+{
+    CollectParentPaths cpp(haltTraversalAtNode);
+    const_cast<Node*>(this)->accept(cpp);
+    return cpp._nodePaths;
+}
 
 void Node::setUpdateCallback(NodeCallback* nc)
 {

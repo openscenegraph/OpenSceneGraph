@@ -112,6 +112,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(osg::Matrixd, getInverseViewMatrix);
 	I_Method1(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order);
 	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder);
+	I_Method0(bool, isRenderToTextureCamera);
 	I_Method1(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl);
 	I_Method2(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl, IN, osg::CameraNode::RenderTargetImplementation, fallback);
 	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetImplementation);

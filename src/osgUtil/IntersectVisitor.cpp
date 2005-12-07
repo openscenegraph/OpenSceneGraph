@@ -113,20 +113,17 @@ bool IntersectVisitor::IntersectState::isCulled(const BoundingSphere& bs,LineSeg
     LineSegmentMask mask = 0x00000001;
     segMaskOut = 0x00000000;
     LineSegmentMask segMaskIn = _segmentMaskStack.back();
-    //    notify(INFO) << << "IntersectState::isCulled() mask in "<<segMaskIn<<"  ";
     for(IntersectState::LineSegmentList::iterator sitr=_segList.begin();
         sitr!=_segList.end();
         ++sitr)
     {
         if ((segMaskIn & mask) && (sitr->second)->intersect(bs))
         {
-            //            notify(INFO) << << "Hit ";
             segMaskOut = segMaskOut| mask;
             hit = true;
         }
         mask = mask << 1;
     }
-    //    notify(INFO) << << "mask = "<<segMaskOut<< std::endl;
     return !hit;
 }
 
@@ -303,7 +300,7 @@ void IntersectVisitor::popMatrix()
 bool IntersectVisitor::enterNode(Node& node)
 {
     const BoundingSphere& bs = node.getBound();
-    if (bs.valid())
+    if (bs.valid() && node.isCullingActive())
     {
         IntersectState* cis = _intersectStateStack.back().get();
         IntersectState::LineSegmentMask sm=0xffffffff;
@@ -313,7 +310,13 @@ bool IntersectVisitor::enterNode(Node& node)
     }
     else
     {
-        return false;
+        IntersectState* cis = _intersectStateStack.back().get();
+        if (!cis->_segmentMaskStack.empty()) 
+            cis->_segmentMaskStack.push_back(cis->_segmentMaskStack.back());
+        else
+            cis->_segmentMaskStack.push_back(0xffffffff);
+        
+        return true;
     }
 }
 
@@ -721,9 +724,12 @@ void PickVisitor::apply(osg::Projection& projection)
 
 void PickVisitor::apply(osg::CameraNode& camera)
 {
-    runNestedPickVisitor( camera,
-                          camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                          camera.getProjectionMatrix(), 
-                          camera.getViewMatrix(),
-                          _mx, _my );
+    if (!camera.isRenderToTextureCamera())
+    {
+        runNestedPickVisitor( camera,
+                              camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                              camera.getProjectionMatrix(), 
+                              camera.getViewMatrix(),
+                              _mx, _my );
+    }
 }

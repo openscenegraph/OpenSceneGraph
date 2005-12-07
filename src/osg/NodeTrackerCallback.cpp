@@ -21,26 +21,6 @@
 
 using namespace osg;
 
-class CollectParentPaths : public osg::NodeVisitor
-{
-public:
-    CollectParentPaths() : 
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-        
-    virtual void apply(osg::Node& node)
-    {
-        if (node.getNumParents()==0)
-        {
-            _nodePaths.push_back(getNodePath());
-        }
-        traverse(node);
-   }
-    
-    osg::NodePath _nodePath;
-    typedef std::vector< osg::NodePath > NodePathList;
-    NodePathList _nodePaths;
-};
-
 class ApplyMatrixVisitor : public NodeVisitor
 {
     public:
@@ -88,13 +68,12 @@ void NodeTrackerCallback::setTrackNode(osg::Node* node)
         return;
     }
 
-    CollectParentPaths cpp;
-    node->accept(cpp);
+    NodePathList parentNodePaths = node->getParentalNodePaths();
 
-    if (!cpp._nodePaths.empty())
+    if (!parentNodePaths.empty())
     {
         osg::notify(osg::INFO)<<"NodeTrackerCallback::setTrackNode(Node*): Path set"<<std::endl;
-        _trackNodePath = cpp._nodePaths[0];
+        _trackNodePath = parentNodePaths[0];
     }
     else
     {

@@ -726,10 +726,29 @@ void PickVisitor::apply(osg::CameraNode& camera)
 {
     if (!camera.isRenderToTextureCamera())
     {
-        runNestedPickVisitor( camera,
-                              camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                              camera.getProjectionMatrix(), 
-                              camera.getViewMatrix(),
-                              _mx, _my );
+        if (camera.getReferenceFrame()==osg::CameraNode::ABSOLUTE_RF)
+        {
+            runNestedPickVisitor( camera,
+                                  camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                                  camera.getProjectionMatrix(), 
+                                  camera.getViewMatrix(),
+                                  _mx, _my );
+        }
+        else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLE)
+        {
+            runNestedPickVisitor( camera,
+                                  camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                                  _lastProjectionMatrix * camera.getProjectionMatrix(), 
+                                  _lastViewMatrix * camera.getViewMatrix(),
+                                  _mx, _my );
+        }
+        else // PRE_MULTIPLE
+        {
+            runNestedPickVisitor( camera,
+                                  camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                                  camera.getProjectionMatrix() * _lastProjectionMatrix, 
+                                  camera.getViewMatrix() * _lastViewMatrix,
+                                  _mx, _my );
+        }
     }
 }

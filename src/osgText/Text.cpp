@@ -731,7 +731,7 @@ void Text::computePositions(unsigned int contextID) const
         osg::Matrix rotate_matrix; 
         if (_autoRotateToScreen) 
         {
-            osg::Vec3 trans(atc._modelview.getTrans());
+            osg::Vec3d trans(atc._modelview.getTrans());
             atc._modelview.setTrans(0.0f,0.0f,0.0f);
 
             rotate_matrix.invert(atc._modelview);

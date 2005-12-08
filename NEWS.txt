@@ -56,7 +56,7 @@ The diverse community of nearly 1200 developers is centered around the public os
 ->''"Since I joined this list 6 months ago I have rarely seen a question go unanswered!  The community averages 30 responses a day with about a fifth of them coming from the project lead himself."''\\
 Jacob Foshee, Software Engineer in the Oil and Gas industry. 
 
-The [=OpenSceneGraph=] project owes a great deal to the community for its development and support, in particular we wish to thank the [[http://openscenegraph.org/osgwiki/pmwiki.php/Documentation/Contributors 169 individuals]] from around the world that have directly contributed to the development and refinement of the [=OpenSceneGraph=] code base.  A special thanks goes to Don Burns, Marco Jez and Mike Weiblen for the massive contributions that they have made in terms of coding, support and expertise over a wide range of topics through the years.
+The [=OpenSceneGraph=] project owes a great deal to the community for its development and support, in particular we wish to thank the [[http://openscenegraph.org/osgwiki/pmwiki.php/Documentation/Contributors 172 individuals]] from around the world that have directly contributed to the development and refinement of the [=OpenSceneGraph=] code base.  A special thanks goes to Don Burns, Marco Jez and Mike Weiblen for the massive contributions that they have made in terms of coding, support and expertise over a wide range of topics through the years.
 
 Robert Osfield\\
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services

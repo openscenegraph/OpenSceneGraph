@@ -1,3 +1,173 @@
+2005-12-08 11:53  robert
+
+	* NEWS.txt: Updated NEWS from wiki ammendments.
+
+2005-12-08 11:37  robert
+
+	* Make/: instrules, makedefs, makerules: From Simon Julier, build
+	  fixes for Cygwin/mingw
+
+2005-12-08 11:01  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Added support for pre and post
+	  relative transforms on cameranode.
+
+2005-12-08 10:06  robert
+
+	* include/osg/CameraNode, src/osg/CameraNode.cpp,
+	  src/osgProducer/OsgCameraGroup.cpp, src/osgUtil/SceneView.cpp,
+	  src/osgWrappers/osg/CameraNode.cpp: Added
+	  CameraNode::releaseGLObejcts() to help in clean up, and changed
+	  the ordering in SceneView::flushDeleteGLObjects() so that fbo's
+	  are deleted before any texture objects they use are deleted.
+
+2005-12-08 10:03  robert
+
+	* include/osgTerrain/DataSet, src/osgTerrain/DataSet.cpp,
+	  src/osgWrappers/osgTerrain/DataSet.cpp: Changed
+	  s/getGdalDataset() methods to use void* to avoid introspeciton
+	  wrapping problems.
+
+2005-12-08 08:57  robert
+
+	* include/osgText/Text: From Eric Wing, fix to comment.
+
+2005-12-07 15:29  robert
+
+	* include/osg/Node, src/osg/Node.cpp,
+	  src/osg/NodeTrackerCallback.cpp, src/osgGA/EventVisitor.cpp,
+	  src/osgProducer/Viewer.cpp, src/osgWrappers/osg/Node.cpp,
+	  src/osgWrappers/osgTerrain/DataSet.cpp: Added new
+	  Node::getParentalNodePaths() method.
+
+	  Added better handling in computeIntersections(..) of nodes that
+	  are internal to the scene graph, correctly accounting for the
+	  accumulated transforms.
+
+	  Changed the EventVisitor so that it only traveses active children
+	  rather than all children.
+
+	  Updated wrappers.
+
+2005-12-07 15:26  robert
+
+	* include/osgTerrain/DataSet, src/osgTerrain/DataSet.cpp: From
+	  Antonoine Hue, a small modification to the osgTerrain::DataSet to
+	  be able to pass an already opened GDAL Dataset to the
+	  osgTerrain::DataSet::Source
+
+2005-12-07 12:29  robert
+
+	* NEWS.txt: Updated NEWS for release
+
+2005-12-07 11:38  robert
+
+	* examples/osgbluemarble/osgbluemarble.cpp: From Eric Wing, fixed
+	  typo induced bug.
+
+2005-12-07 11:36  robert
+
+	* include/osg/CameraNode, src/osg/CameraNode.cpp,
+	  src/osgProducer/Viewer.cpp, src/osgUtil/IntersectVisitor.cpp,
+	  src/osgWrappers/osg/CameraNode.cpp: Added
+	  Camera::isRenderToTextureCamera() method, and improved support in
+	  PickVisitor and IntersectVisitor for CameraNode, including the
+	  ignoring of render to texture cameras, such that HUD's etc are
+	  still intersected against.
+
+2005-12-07 10:25  robert
+
+	* include/osgUtil/IntersectVisitor, src/osgProducer/Viewer.cpp,
+	  src/osgUtil/IntersectVisitor.cpp,
+	  src/osgWrappers/osgUtil/IntersectVisitor.cpp: Moved PickVistor
+	  into osgUtil
+
+2005-12-07 09:48  robert
+
+	* examples/osgcamera/osgcamera.cpp: Enabled thread safe counting by
+	  default.
+
+2005-12-06 21:59  robert
+
+	* include/osgUtil/IntersectVisitor, src/osgProducer/Viewer.cpp,
+	  src/osgWrappers/osgUtil/IntersectVisitor.cpp: Improved the
+	  PickVisitor to make it more flexible and robust.
+
+2005-12-06 12:07  robert
+
+	* Make/dependencies, Make/makedirdefs,
+	  examples/osgdemeter/GNUmakefile,
+	  examples/osgdemeter/GNUmakefile.inst,
+	  examples/osgdemeter/osgdemeter.cpp: Removed osgdemeter example
+	  from distribution because it no longer compiles, and Demeter
+	  itself nolonger compiles, osgdemeter has now been moved to the
+	  community section of openscenegraph.org.
+
+2005-12-06 11:24  robert
+
+	* src/osg/Geometry.cpp: Added checks in the drawImplementation to
+	  catch when attribute bindings are set on but the relevant arrays
+	  remain unset, this prevents previous crash when this occured.
+
+2005-12-06 10:26  robert
+
+	* src/osgGA/TerrainManipulator.cpp: From Gideon May, fixed typo in
+	  docs.
+
+2005-12-06 10:18  robert
+
+	* include/osg/Geometry: From Farshid Lashkari, removed second
+	  redundent dirtyDisplayList() call.
+
+2005-12-06 10:16  robert
+
+	* include/osg/Vec4d, include/osg/Vec4f,
+	  src/osgSim/LightPointDrawable.h, src/osgWrappers/osg/Vec4d.cpp,
+	  src/osgWrappers/osg/Vec4f.cpp: From Louis Hamilton, fix to
+	  LightPoint's under 64 bit build, changing longs to ints in colour
+	  conversion code.
+
+2005-12-05 20:11  robert
+
+	* src/osg/GraphicsContext.cpp: Changed debug message to INFO.
+
+2005-12-05 10:24  robert
+
+	* examples/osgdelaunay/osgdelaunay.cpp,
+	  examples/osgdepthpartition/DepthPartitionNode.cpp,
+	  src/osgProducer/GraphicsContextImplementation.cpp,
+	  src/osgSim/OverlayNode.cpp: Attempt at build fixes for IRIX.
+
+2005-12-05 10:23  robert
+
+	* src/osgDB/Registry.cpp: Removed the closeLibraries call from the
+	  registry singleton desctuction.
+
+2005-12-05 10:08  robert
+
+	* examples/: osgsimplepager/osgsimplepager.cpp,
+	  osgkeyboardmouse/osgkeyboardmouse.cpp: From Geoff Michel, Fix to
+	  prevent Producer::Trackball being set up with a negative radius.
+
+2005-12-04 20:08  robert
+
+	* include/osg/BoundingBox: Fixed tabbing.
+
+2005-12-03 15:12  robert
+
+	* include/osg/PrimitiveSet: Added OSG_EXPORT to PrimitiveSet.
+
+2005-12-03 00:03  robert
+
+	* include/osg/PrimitiveSet, src/osg/PrimitiveSet.cpp: Moved the
+	  body of the getNumPrimitives() into the .cpp.
+
+2005-12-02 12:30  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/osgversion.cpp:
+	  Updated ChangeLog, AUTHTORS.txt and osgversion for next release
+	  candidate.
+
 2005-12-02 12:10  robert
 
 	* NEWS.txt: Fixed typos in NEWS, improved formating.

@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.0
 
-169 Contributors:
+172 Contributors:
 
 Firstname Surname
 -----------------
@@ -25,12 +25,13 @@ Don Tidrow
 Ruben Lopez
 Romano José Magacho da Silva
 Randall Hopper
+Gideon May
 Stephan Huber
 Michael Gronager
-Gideon May
 Chris Hanson
 Neil Salter
 Frederic Marmond
+Eric Wing
 Boris Bralo
 Sondra Iverson
 Rune Schmidt Jensen
@@ -43,7 +44,6 @@ Colin McDonald
 Yefei He
 Sasa Bistrovic
 Olaf Flebbe
-Eric Wing
 Ben Discoe
 Stephane Simon
 Sean Spicer
@@ -112,6 +112,7 @@ Uwe Woessner
 Troy Yee
 Tino Schwarze
 Tanguy Fautré
+Simon Julier
 Shane Arnott
 Sebastien Kuntz
 Ronny Krueger
@@ -130,6 +131,7 @@ Matt Burke
 Mathia Walker
 Mason Menninger
 Martijn Kragtwijk
+Louis Hamilton
 Lewis Harmon
 Kristopher Bixler
 Keith Steffen
@@ -164,6 +166,7 @@ Bora Utka
 Blake Williams
 Bart Gallet
 Axel Volley
+Antonoine Hue
 Andrew Reyonolds
 Andreas Jochens
 Andreas Ekstrand

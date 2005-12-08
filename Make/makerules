@@ -120,6 +120,9 @@ $(LIB:=.dbg) :
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
+ifdef IMP_LIB_EXT
+	@$(MAKE) LNSRC=$(DEBUGDIR)/lib$(TARGET_BASENAME)$(IMP_LIB_EXT) LNDEST=$(IMP_LIBINST)/lib$(TARGET_BASENAME)$(IMP_LIB_EXT) __link
+endif
 
 $(LIB:.$(LIB_EXT)=.staticdbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
@@ -144,6 +147,9 @@ $(PLUGIN:=.dbg) :
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
+ifdef IMP_LIB_EXT
+	@$(MAKE) LNSRC=$(DEBUGDIR)/lib$(TARGET_BASENAME)$(IMP_LIB_EXT) LNDEST=$(IMP_PLUGININST)/lib$(TARGET_BASENAME).$(IMP_LIB_EXT) __link
+endif
 
 $(PLUGIN:.$(PLUGIN_EXT)=.staticdbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir -p $(DEBUGDIR)
@@ -169,6 +175,9 @@ $(LIB:=.opt) :
 	        THISDIR=../$(THISDIR)\
 	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
+ifdef IMP_LIB_EXT
+	@$(MAKE) LNSRC=$(OPTDIR)/lib$(TARGET_BASENAME).$(IMP_LIB_EXT) LNDEST=$(IMP_LIBINST)/lib$(TARGET_BASENAME).$(IMP_LIB_EXT) __link
+endif
 
 $(LIB:.$(LIB_EXT)=.static) :
 	[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
@@ -177,7 +186,6 @@ $(LIB:.$(LIB_EXT)=.static) :
             THISDIR=../$(THISDIR)\
             MAKEDEPEND=Makedepend $(STATICLIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(STATICLIB) __link
-
 
 $(WRAPPER:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
@@ -194,6 +202,9 @@ $(PLUGIN:=.opt) :
 	    THISDIR=../$(THISDIR)\
 	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
+ifdef IMP_LIB_EXT
+	@$(MAKE) LNSRC=$(OPTDIR)/lib$(TARGET_BASENAME)$(IMP_LIB_EXT) LNDEST=$(IMP_PLUGININST)/lib$(TARGET_BASENAME).$(IMP_LIB_EXT) __link
+endif
 
 $(PLUGIN:.$(PLUGIN_EXT)=.static) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)

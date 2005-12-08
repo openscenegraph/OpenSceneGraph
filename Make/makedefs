@@ -549,7 +549,7 @@ ifeq ($(OS),CYGWIN)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared \
-                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)$(ARCH)/lib$(TARGET_BASENAME).dll.a \
+                      -Wl,--out-implib,lib$(TARGET_BASENAME).dll.a \
                       -Wl,--export-all-symbols
 
   EXE_EXT           =.exe
@@ -581,15 +581,16 @@ ifeq ($(OS),CYGWIN)
   XINE_LIBS         = `xine-config --libs`
 
   LIBINST    = bin/$(OS)$(ARCH)
-  PLUGININST = bin/$(OS)$(ARCH)
+  IMP_LIBINST    = lib/$(OS)$(ARCH)
+  PLUGININST = bin/$(OS)$(ARCH)/osgPlugins
+  IMP_PLUGININST    = lib/$(OS)$(ARCH)/osgPlugins
 
   LIB_PREFIX        = cyg
   LIB_EXT           = dll
+  IMP_LIB_EXT       = dll.a
   PLUGIN_EXT        = dll
   LINK              = cp -f
   INST_LOCATION     ?= /usr/local/OpenSceneGraph
-  INST_LIBS         = $(INST_LOCATION)/bin
-  INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = $(INST_LOCATION)
   INST_SRC          = $(INST_SHARE_PREFIX)/src
@@ -611,7 +612,7 @@ ifeq ($(OS),MINGW)
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -mthreads \
-                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).a \
+                      -Wl,--out-implib,lib$(TARGET_BASENAME).dll.a \
                       -Wl,--export-all-symbols
 
   EXE_EXT           =.exe
@@ -642,15 +643,16 @@ ifeq ($(OS),MINGW)
   XINE_LIBS         = `xine-config --libs`
 
   LIBINST    = bin/$(OS)$(ARCH)
-  PLUGININST = bin/$(OS)$(ARCH)
+  IMP_LIBINST    = lib/$(OS)$(ARCH)
+  PLUGININST = bin/$(OS)$(ARCH)/osgPlugins
+  IMP_PLUGININST    = lib/$(OS)$(ARCH)/osgPlugins
 
   LIB_PREFIX        = lib
   LIB_EXT           = dll
+  IMP_LIB_EXT       = dll.a
   PLUGIN_EXT        = dll
   LINK              = cp -f
   INST_LOCATION     ?= /usr/local/OpenSceneGraph
-  INST_LIBS         = $(INST_LOCATION)/bin
-  INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = $(INST_LOCATION)
   INST_SRC          = $(INST_SHARE_PREFIX)/src

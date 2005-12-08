@@ -13,6 +13,10 @@ __instbin:
 		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH)/osgPlugins INSTDEST=$(INST_PLUGINS)\
 		INSTALL?="$(INSTBINCMD)" __install
+ifdef IMP_LIB_EXT
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH)/osgPlugins INSTDEST=$(INST_EXAMPLES)/osgPlugins\
+		INSTALL?="$(INSTBINCMD)" __install
+endif
 	@echo  >> $(INSTLOGFILE)
 	@echo "    Run-time environment installation successful.  Add "\
 	  >> $(INSTLOGFILE)
@@ -25,7 +29,6 @@ __instbin:
 	@echo "    to your LD_LIBRARY_PATH if not already present."\
 	  >> $(INSTLOGFILE)
 	@echo >> $(INSTLOGFILE)
-	
 
 __instdev:
 	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
@@ -69,7 +72,7 @@ __instdev:
 	@echo "    Example programs can be found at $(INST_EXAMPLE_SRC)."\
 	  >> $(INSTLOGFILE)
 	@echo  >> $(INSTLOGFILE)
-	  
+
 instlinks : 
 	@rm -f $(INSTLOGFILE)
 	$(MAKE) INSTBINCMD="$(INSTLINKBINCMD)" __instbin

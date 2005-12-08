@@ -135,7 +135,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             SourceData(Source* source=0):
                 _source(source),
                 _hasGCPs(false),
-                _gdalDataSet(0) {}
+                _gdalDataset(0) {}
                 
             virtual ~SourceData();
 
@@ -158,7 +158,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             bool                                        _hasGCPs;
             
             osg::ref_ptr<osg::Node>                     _model;
-            GDALDataset*                                _gdalDataSet;
+            GDALDataset*                                _gdalDataset;
             
             typedef std::map<const osg::CoordinateSystemNode*,SpatialProperties> SpatialPropertiesMap;
             mutable SpatialPropertiesMap _spatialPropertiesMap;
@@ -194,7 +194,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _minLevel(0),
                 _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
                 _layer(0),
-                _gdalDataSet(0)
+                _gdalDataset(0)
                 {}
         
             Source(Type type, const std::string& filename):
@@ -207,7 +207,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _minLevel(0),
                 _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
                 _layer(0),
-                _gdalDataSet(0)
+                _gdalDataset(0)
                 {}
 
             void setSortValue(double s) { _sortValue = s; }
@@ -224,8 +224,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             void setTemporaryFile(bool temporaryFile) { _temporaryFile = temporaryFile; }
             bool getTemporaryFile() const { return _temporaryFile; }
 
-            void setGdalDataSet(GDALDataset* gdalDataSet) { _gdalDataSet = gdalDataSet; }
-            GDALDataset* getGdalDataSet() const { return _gdalDataSet; }
+            void setGdalDataset(void* gdalDataset);
+            void* getGdalDataset();
+            const void* getGdalDataset() const;
 
             void setCoordinateSystemPolicy(ParameterPolicy policy) { _coordinateSystemPolicy = policy; }
             ParameterPolicy getCoordinateSystemPolicy() const { return _coordinateSystemPolicy; }
@@ -339,8 +340,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             
             ResolutionList                              _requiredResolutions;
           
-             GDALDataset*                                _gdalDataSet;
-         };
+            GDALDataset*                                _gdalDataset;
+        };
         
         enum CompositeType
         {

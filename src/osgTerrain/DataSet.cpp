@@ -214,7 +214,7 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
 
 DataSet::SourceData::~SourceData()
 {
-    if (_gdalDataSet) GDALClose(_gdalDataSet);
+    if (_gdalDataset) GDALClose(_gdalDataset);
 }
 
 DataSet::SourceData* DataSet::SourceData::readData(Source* source)
@@ -227,13 +227,13 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
     case(Source::IMAGE):
     case(Source::HEIGHT_FIELD):
         {
-            GDALDataset* gdalDataSet = source->getGdalDataSet();
+            GDALDataset* gdalDataSet = (GDALDataset*)source->getGdalDataset();
             if(!gdalDataSet)
                 gdalDataSet = (GDALDataset*)GDALOpen(source->getFileName().c_str(),GA_ReadOnly);
             if (gdalDataSet)
             {
                 SourceData* data = new SourceData(source);
-                data->_gdalDataSet = gdalDataSet;
+                data->_gdalDataset = gdalDataSet;
                 
                 data->_numValuesX = gdalDataSet->GetRasterXSize();
                 data->_numValuesY = gdalDataSet->GetRasterYSize();
@@ -355,7 +355,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
     if (_cs.valid() && cs)
     {
         
-        if (_gdalDataSet)
+        if (_gdalDataset)
         {
 
             //my_notify(osg::INFO)<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
@@ -370,7 +370,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
             /*      destination coordinate system.                                  */
             /* -------------------------------------------------------------------- */
             void *hTransformArg = 
-                GDALCreateGenImgProjTransformer( _gdalDataSet,_cs->getCoordinateSystem().c_str(),
+                GDALCreateGenImgProjTransformer( _gdalDataset,_cs->getCoordinateSystem().c_str(),
                                                  NULL, cs->getCoordinateSystem().c_str(),
                                                  TRUE, 0.0, 1 );
 
@@ -382,7 +382,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
         
             double adfDstGeoTransform[6];
             int nPixels=0, nLines=0;
-            if( GDALSuggestedWarpOutput( _gdalDataSet, 
+            if( GDALSuggestedWarpOutput( _gdalDataset, 
                                          GDALGenImgProjTransform, hTransformArg, 
                                          adfDstGeoTransform, &nPixels, &nLines )
                 != CE_None )
@@ -489,10 +489,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             doResample = true;
         }
 
-        bool hasRGB = _gdalDataSet->GetRasterCount() >= 3;
-        bool hasAlpha = _gdalDataSet->GetRasterCount() >= 4;
-        bool hasColorTable = _gdalDataSet->GetRasterCount() >= 1 && _gdalDataSet->GetRasterBand(1)->GetColorTable();
-        bool hasGreyScale = _gdalDataSet->GetRasterCount() == 1;
+        bool hasRGB = _gdalDataset->GetRasterCount() >= 3;
+        bool hasAlpha = _gdalDataset->GetRasterCount() >= 4;
+        bool hasColorTable = _gdalDataset->GetRasterCount() >= 1 && _gdalDataset->GetRasterBand(1)->GetColorTable();
+        bool hasGreyScale = _gdalDataset->GetRasterCount() == 1;
         unsigned int numSourceComponents = hasAlpha?4:3;
 
         if (hasRGB || hasColorTable || hasGreyScale)
@@ -515,10 +515,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             // as RGB. 
             if( hasRGB ) 
             { 
-                GDALRasterBand* bandRed = _gdalDataSet->GetRasterBand(1); 
-                GDALRasterBand* bandGreen = _gdalDataSet->GetRasterBand(2); 
-                GDALRasterBand* bandBlue = _gdalDataSet->GetRasterBand(3); 
-                GDALRasterBand* bandAlpha = hasAlpha ? _gdalDataSet->GetRasterBand(4) : 0; 
+                GDALRasterBand* bandRed = _gdalDataset->GetRasterBand(1); 
+                GDALRasterBand* bandGreen = _gdalDataset->GetRasterBand(2); 
+                GDALRasterBand* bandBlue = _gdalDataset->GetRasterBand(3); 
+                GDALRasterBand* bandAlpha = hasAlpha ? _gdalDataset->GetRasterBand(4) : 0; 
 
                 bandRed->RasterIO(GF_Read, 
                                   windowX,_numValuesY-(windowY+windowHeight), 
@@ -555,7 +555,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 int i; 
 
 
-                band = _gdalDataSet->GetRasterBand(1); 
+                band = _gdalDataset->GetRasterBand(1); 
 
 
                 band->RasterIO(GF_Read, 
@@ -596,7 +596,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 GDALRasterBand *band; 
 
 
-                band = _gdalDataSet->GetRasterBand(1); 
+                band = _gdalDataset->GetRasterBand(1); 
 
 
                 band->RasterIO(GF_Read, 
@@ -817,7 +817,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 
 
         // which band do we want to read from...        
-        int numBands = _gdalDataSet->GetRasterCount();
+        int numBands = _gdalDataset->GetRasterCount();
         GDALRasterBand* bandGray = 0;
         GDALRasterBand* bandRed = 0;
         GDALRasterBand* bandGreen = 0;
@@ -826,7 +826,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 
         for(int b=1;b<=numBands;++b)
         {
-            GDALRasterBand* band = _gdalDataSet->GetRasterBand(b);
+            GDALRasterBand* band = _gdalDataset->GetRasterBand(b);
             if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
             else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
             else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
@@ -930,6 +930,22 @@ void DataSet::SourceData::readModels(DestinationData& destination)
         my_notify(osg::INFO)<<"Raading model"<<std::endl;
         destination._models.push_back(_model);
     }
+}
+
+
+void DataSet::Source::setGdalDataset(void* gdalDataSet)
+{
+    _gdalDataset = (GDALDataset*)gdalDataSet;
+}
+
+void* DataSet::Source::getGdalDataset()
+{
+    return _gdalDataset;
+}
+
+const void* DataSet::Source::getGdalDataset() const
+{
+    return _gdalDataset;
 }
 
 void DataSet::Source::setSortValueFromSourceDataResolution()
@@ -1071,7 +1087,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /*      destination coordinate system.                                  */
 /* -------------------------------------------------------------------- */
     void *hTransformArg = 
-         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getCoordinateSystem().c_str(),
+         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataset,_sourceData->_cs->getCoordinateSystem().c_str(),
                                           NULL, cs->getCoordinateSystem().c_str(),
                                           TRUE, 0.0, 1 );
 
@@ -1083,7 +1099,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 
     double adfDstGeoTransform[6];
     int nPixels=0, nLines=0;
-    if( GDALSuggestedWarpOutput( _sourceData->_gdalDataSet, 
+    if( GDALSuggestedWarpOutput( _sourceData->_gdalDataset, 
                                  GDALGenImgProjTransform, hTransformArg, 
                                  adfDstGeoTransform, &nPixels, &nLines )
         != CE_None )
@@ -1124,14 +1140,14 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
     
     GDALDestroyGenImgProjTransformer( hTransformArg );
 
-    GDALDataType eDT = GDALGetRasterDataType(GDALGetRasterBand(_sourceData->_gdalDataSet,1));
+    GDALDataType eDT = GDALGetRasterDataType(GDALGetRasterBand(_sourceData->_gdalDataset,1));
     
 
 /* --------------------------------------------------------------------- */
 /*    Create the file                                                    */
 /* --------------------------------------------------------------------- */
 
-    int numSourceBands = GDALGetRasterCount(_sourceData->_gdalDataSet);
+    int numSourceBands = GDALGetRasterCount(_sourceData->_gdalDataset);
     int numDestinationBands = (numSourceBands >= 3) ? 4 : numSourceBands; // expand RGB to RGBA, but leave other formats unchanged
 
     GDALDatasetH hDstDS = GDALCreate( hDriver, filename.c_str(), nPixels, nLines, 
@@ -1153,7 +1169,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 // Set up the transformer along with the new datasets.
 
     hTransformArg = 
-         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getCoordinateSystem().c_str(),
+         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataset,_sourceData->_cs->getCoordinateSystem().c_str(),
                                           hDstDS, cs->getCoordinateSystem().c_str(),
                                           TRUE, 0.0, 1 );
 
@@ -1167,7 +1183,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /* -------------------------------------------------------------------- */
     GDALColorTableH hCT;
 
-    hCT = GDALGetRasterColorTable( GDALGetRasterBand(_sourceData->_gdalDataSet,1) );
+    hCT = GDALGetRasterColorTable( GDALGetRasterBand(_sourceData->_gdalDataset,1) );
     if( hCT != NULL )
         GDALSetRasterColorTable( GDALGetRasterBand(hDstDS,1), hCT );
 
@@ -1176,7 +1192,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 /* -------------------------------------------------------------------- */
     GDALWarpOptions *psWO = GDALCreateWarpOptions();
 
-    psWO->hSrcDS = _sourceData->_gdalDataSet;
+    psWO->hSrcDS = _sourceData->_gdalDataset;
     psWO->hDstDS = hDstDS;
 
     psWO->pfnTransformer = pfnTransformer;
@@ -1212,7 +1228,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
     for(i = 0; i < psWO->nBandCount; i++ )
     {
         int success = 0;
-        GDALRasterBand* band = (i<numSourceBands) ? _sourceData->_gdalDataSet->GetRasterBand(i+1) : 0;
+        GDALRasterBand* band = (i<numSourceBands) ? _sourceData->_gdalDataset->GetRasterBand(i+1) : 0;
         double noDataValue = band ? band->GetNoDataValue(&success) : 0.0;
         double new_noDataValue = 0;
         if (success)
@@ -1348,11 +1364,11 @@ void DataSet::Source::buildOverviews()
 {
     return;
 
-    if (_sourceData.valid() && _sourceData->_gdalDataSet )
+    if (_sourceData.valid() && _sourceData->_gdalDataset )
     {
 
         int anOverviewList[4] = { 2, 4, 8, 16 };
-        GDALBuildOverviews( _sourceData->_gdalDataSet, "AVERAGE", 4, anOverviewList, 0, NULL, 
+        GDALBuildOverviews( _sourceData->_gdalDataset, "AVERAGE", 4, anOverviewList, 0, NULL, 
                                 GDALTermProgress/*GDALDummyProgress*/, NULL );
 
     }

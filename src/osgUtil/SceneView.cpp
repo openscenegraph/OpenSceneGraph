@@ -746,6 +746,8 @@ void SceneView::flushAllDeletedGLObjects()
     double availableTime = 100.0f;
     double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
     
+    osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
+    osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
     osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
     osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
@@ -753,8 +755,6 @@ void SceneView::flushAllDeletedGLObjects()
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
     osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
-    osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
-    osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
  }
 
 void SceneView::flushDeletedGLObjects(double& availableTime)
@@ -762,6 +762,9 @@ void SceneView::flushDeletedGLObjects(double& availableTime)
     _requiresFlush = false;
 
     double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+
+    osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
+    osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
     osg::Texture::flushDeletedTextureObjects(_state->getContextID(),currentTime,availableTime);
     osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),availableTime);
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
@@ -769,8 +772,6 @@ void SceneView::flushDeletedGLObjects(double& availableTime)
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
     osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
-    osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
-    osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
 }
 
 void SceneView::draw()

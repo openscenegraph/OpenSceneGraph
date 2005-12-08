@@ -741,6 +741,7 @@ void OsgCameraGroup::cleanup_frame()
         ++itr)
     {
         (*itr)->getSceneView()->releaseAllGLObjects();
+        (*itr)->getSceneView()->setRenderStage(0);
         (*itr)->setCleanUpOnNextFrame(true);
     }
     

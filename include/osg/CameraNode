@@ -309,6 +309,11 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
  
         OpenThreads::Mutex* getDataChangeMutex() const { return &_dataChangeMutex; }
 
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
     public:
 
         /** Transform method that must be defined to provide generic interface for scene graph traversals.*/

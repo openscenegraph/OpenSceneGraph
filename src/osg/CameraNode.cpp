@@ -223,6 +223,14 @@ void CameraNode::detach(BufferComponent buffer)
     _bufferAttachmentMap.erase(buffer);
 }
 
+void CameraNode::releaseGLObjects(osg::State* state) const
+{
+    if (state) const_cast<CameraNode*>(this)->_renderingCache[state->getContextID()] = 0;
+    else const_cast<CameraNode*>(this)->_renderingCache.setAllElementsTo(0);
+    
+    Transform::releaseGLObjects(state);
+}
+
 
 bool CameraNode::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {

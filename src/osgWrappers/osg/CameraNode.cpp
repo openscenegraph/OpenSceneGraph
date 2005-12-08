@@ -19,6 +19,7 @@
 #include <osg/Matrixf>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/State>
 #include <osg/Texture>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -137,6 +138,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(osg::CameraNode::DrawCallback *, getPostDrawCallback);
 	I_Method0(const osg::CameraNode::DrawCallback *, getPostDrawCallback);
 	I_Method0(OpenThreads::Mutex *, getDataChangeMutex);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
 	I_ReadOnlyProperty(osg::CameraNode::BufferAttachmentMap &, BufferAttachmentMap);

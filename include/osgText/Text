@@ -215,7 +215,7 @@ public:
 
     KerningType getKerningType() const { return _kerningType; }
 
-    /** Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns -1 otherwise */
+    /** Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns 0 otherwise */
     unsigned int getLineCount() { return _lineCount; }
     
     /** Draw the text.*/

@@ -45,6 +45,6 @@ const char* Array::className() const
     if (_arrayType>=ArrayType && _arrayType<=Vec4bArrayType)
         return s_ArrayNames[_arrayType];
     else
-        return "UnkownArray";
+        return "UnknownArray";
 }
 

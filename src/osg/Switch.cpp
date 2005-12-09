@@ -13,6 +13,7 @@
 #include <osg/Switch>
 #include <osg/BoundingBox>
 #include <osg/Transform>
+#include <osg/Notify>
 
 #include <algorithm>
 
@@ -102,11 +103,27 @@ bool Switch::removeChild( Node *child )
 {
     // find the child's position.
     unsigned int pos=getChildIndex(child);
-    if (pos==_children.size()) return false;
+    if (pos>=_children.size()) return false;
     
     _values.erase(_values.begin()+pos);
     
     return Group::removeChild(child);    
+}
+
+bool Switch::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
+{
+    if (pos>=_values.size() || numChildrenToRemove==0) return false;
+
+    unsigned int endOfRemoveRange = pos+numChildrenToRemove;
+    if (endOfRemoveRange>_values.size())
+    {
+        notify(DEBUG_INFO)<<"Warning: Switch::removeChild(i,numChildrenToRemove) has been passed an excessive number"<<std::endl;
+        notify(DEBUG_INFO)<<"         of chilren to remove, trimming just to end of value list."<<std::endl;
+        endOfRemoveRange=_values.size();
+    }
+    _values.erase(_values.begin()+pos,_values.begin()+endOfRemoveRange);
+
+    return Group::removeChild(pos, numChildrenToRemove);
 }
 
 void Switch::setValue(unsigned int pos,bool value)

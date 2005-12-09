@@ -124,7 +124,7 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
             If speed is below a threshold then return false, otherwise return true.*/
         bool isMouseMoving();
 
-        // Internal event stack comprising last three mouse events.
+        // Internal event stack comprising last two mouse events.
         osg::ref_ptr<const GUIEventAdapter> _ga_t1;
         osg::ref_ptr<const GUIEventAdapter> _ga_t0;
 

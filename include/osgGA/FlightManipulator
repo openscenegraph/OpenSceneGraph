@@ -95,7 +95,7 @@ class OSGGA_EXPORT FlightManipulator : public MatrixManipulator
         bool calcMovement();
 
 
-        // Internal event stack comprising last three mouse events.
+        // Internal event stack comprising last two mouse events.
         osg::ref_ptr<const GUIEventAdapter> _ga_t1;
         osg::ref_ptr<const GUIEventAdapter> _ga_t0;
 

@@ -91,7 +91,7 @@ void TerrainManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("Terrain: Space","Reset the viewing position to home");
     usage.addKeyboardMouseBinding("Terrain: +","When in stereo, increase the fusion distance");
-    usage.addKeyboardMouseBinding("Terrain: -","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("Terrain: -","When in stereo, reduce the fusion distance");
 }
 
 bool TerrainManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)

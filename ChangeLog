@@ -1,3 +1,22 @@
+2005-12-08 22:12  robert
+
+	* NEWS.txt: Updated NEWS.
+
+2005-12-08 20:32  robert
+
+	* src/osgText/Text.cpp: From Paul Martz, changed Vec3 to Vec3d to
+	  ensure that the lazy evaluation of computeBound  work properly.
+
+2005-12-08 14:08  robert
+
+	* src/osg/Array.cpp: From Simon Julier, fixed typo of unknown.
+
+2005-12-08 12:02  robert
+
+	* AUTHORS.txt, ChangeLog, NEWS.txt,
+	  applications/osgversion/osgversion.cpp: Updated AUTHORS and
+	  ChangeLog for rc9.
+
 2005-12-08 11:53  robert
 
 	* NEWS.txt: Updated NEWS from wiki ammendments.
@@ -95,13 +114,10 @@
 
 2005-12-06 12:07  robert
 
-	* Make/dependencies, Make/makedirdefs,
-	  examples/osgdemeter/GNUmakefile,
-	  examples/osgdemeter/GNUmakefile.inst,
-	  examples/osgdemeter/osgdemeter.cpp: Removed osgdemeter example
-	  from distribution because it no longer compiles, and Demeter
-	  itself nolonger compiles, osgdemeter has now been moved to the
-	  community section of openscenegraph.org.
+	* Make/: dependencies, makedirdefs: Removed osgdemeter example from
+	  distribution because it no longer compiles, and Demeter itself
+	  nolonger compiles, osgdemeter has now been moved to the community
+	  section of openscenegraph.org.
 
 2005-12-06 11:24  robert
 
@@ -786,7 +802,6 @@
 	  applications/osgconv/osgconv.cpp, applications/osgdem/osgdem.cpp,
 	  examples/osgbluemarble/osgbluemarble.cpp,
 	  examples/osgdelaunay/osgdelaunay.cpp,
-	  examples/osgdemeter/osgdemeter.cpp,
 	  examples/osgmovie/osgmovie.cpp,
 	  examples/osgpbuffer/osgpbuffer.cpp,
 	  examples/osgpoints/osgpoints.cpp,
@@ -17082,12 +17097,6 @@
 	  src/osg/Matrix_implementation.cpp, src/osgUtil/SceneView.cpp:
 	  Added getPerspective() method to Matrix* and SceneView
 
-2003-09-29 09:03  robert
-
-	* examples/osgdemeter/osgdemeter.cpp: From Clay Fowler, fixes to
-	  osgdemeter so that the whole terrain model can be visualised at
-	  once.
-
 2003-09-28 11:15  robert
 
 	* AUTHORS.txt, include/osg/CullingSet,
@@ -18199,8 +18208,6 @@
 	  examples/osgcopy/GNUmakefile, examples/osgcopy/GNUmakefile.inst,
 	  examples/osgcubemap/GNUmakefile,
 	  examples/osgcubemap/GNUmakefile.inst,
-	  examples/osgdemeter/GNUmakefile,
-	  examples/osgdemeter/GNUmakefile.inst,
 	  examples/osggeodemo/GNUmakefile,
 	  examples/osggeodemo/GNUmakefile.inst,
 	  examples/osggeometry/GNUmakefile,
@@ -18376,7 +18383,7 @@
 
 2003-08-04 17:26  don
 
-	* examples/: osgdemeter/GNUmakefile, osgpoints/GNUmakefile,
+	* examples/: osgpoints/GNUmakefile,
 	  osgprerendercubemap/GNUmakefile: Removed a couple of stray
 	  PRODUCER_LIB_DIR definitions in the examples
 
@@ -19175,11 +19182,7 @@
 
 	* Make/makedirdefs, VisualStudio/osg/osg.dsp,
 	  VisualStudio/osgPlugins/osg/dot_osg.dsp,
-	  VisualStudio/osgUtil/osgUtil.dsp,
-	  examples/osgdemeter/GNUmakefile,
-	  examples/osgdemeter/GNUmakefile.inst,
-	  examples/osgdemeter/osgdemeter.cpp,
-	  examples/osgpoints/GNUmakefile,
+	  VisualStudio/osgUtil/osgUtil.dsp, examples/osgpoints/GNUmakefile,
 	  examples/osgpoints/GNUmakefile.inst,
 	  examples/osgpoints/osgpoints.cpp,
 	  examples/osgprerendercubemap/GNUmakefile,

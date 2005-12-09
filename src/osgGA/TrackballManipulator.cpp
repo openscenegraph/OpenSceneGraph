@@ -69,7 +69,7 @@ void TrackballManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("Trackball: Space","Reset the viewing position to home");
     usage.addKeyboardMouseBinding("Trackball: +","When in stereo, increase the fusion distance");
-    usage.addKeyboardMouseBinding("Trackball: -","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("Trackball: -","When in stereo, reduce the fusion distance");
 }
 
 bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)

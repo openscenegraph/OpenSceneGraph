@@ -154,7 +154,7 @@ void NodeTrackerManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("NodeTracker: Space","Reset the viewing position to home");
     usage.addKeyboardMouseBinding("NodeTracker: +","When in stereo, increase the fusion distance");
-    usage.addKeyboardMouseBinding("NodeTracker: -","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("NodeTracker: -","When in stereo, reduce the fusion distance");
 }
 
 bool NodeTrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)

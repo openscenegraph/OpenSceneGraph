@@ -1194,7 +1194,5 @@ void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("s","Toggle instrumention");
     usage.addKeyboardMouseBinding("v","Toggle block and vsync");
     usage.addKeyboardMouseBinding("z","Start recording camera path.");
-    usage.addKeyboardMouseBinding("Z","If recording camera path stop recording camera path, save to \"saved_animation.path\"\nThen start viewing from being on animation path");
-//    usage.addKeyboardMouseBinding("+","When in stereo, increase the fusion distance");
-//    usage.addKeyboardMouseBinding("-","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("Z","If recording camera path stop recording camera path, save to \"saved_animation.path\"\nThen restart camera from beginning on animation path");
 }

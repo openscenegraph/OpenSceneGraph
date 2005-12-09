@@ -88,7 +88,7 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
         Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
 
-        // Internal event stack comprising last three mouse events.
+        // Internal event stack comprising last two mouse events.
         osg::ref_ptr<const GUIEventAdapter> _ga_t1;
         osg::ref_ptr<const GUIEventAdapter> _ga_t0;
 

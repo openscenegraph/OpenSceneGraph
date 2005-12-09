@@ -19,7 +19,6 @@
 #include <osg/Geode>
 #include <osg/BlendFunc>
 #include <osg/Depth>
-#include <osg/Projection>
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
 #include <osg/CameraNode>
@@ -70,33 +69,46 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("Disable depth test in this subgraph to ensure its always ontop.");
-        
-        position += delta;
-    }    
-
-    {
-        osgText::Text* text = new  osgText::Text;
-        geode->addDrawable( text );
-
-        text->setFont(timesFont);
-        text->setPosition(position);
-        text->setText("Then place an osg::Projection node above the subgraph\nto create an orthographic projection.");
-        
-        position += delta;
-    }    
-
-    {
-        osgText::Text* text = new  osgText::Text;
-        geode->addDrawable( text );
-
-        text->setFont(timesFont);
-        text->setPosition(position);
-        text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE_RF to ensure\nit remains independent from any external model view matrices.");
+        text->setText("Then place an osg::CameraNode above the subgraph\n"
+                      "to create an orthographic projection.\n");
         
         position += delta;
     } 
     
+    {
+        osgText::Text* text = new  osgText::Text;
+        geode->addDrawable( text );
+
+        text->setFont(timesFont);
+        text->setPosition(position);
+        text->setText("Set the CameraNode's ReferenceFrame to ABSOLUTE_RF to ensure\n"
+                      "it remains independent from any external model view matrices.");
+        
+        position += delta;
+    } 
+
+    {
+        osgText::Text* text = new  osgText::Text;
+        geode->addDrawable( text );
+
+        text->setFont(timesFont);
+        text->setPosition(position);
+        text->setText("And set the CameraNode's clear mask to just clear the depth buffer.");
+        
+        position += delta;
+    }    
+
+    {
+        osgText::Text* text = new  osgText::Text;
+        geode->addDrawable( text );
+
+        text->setFont(timesFont);
+        text->setPosition(position);
+        text->setText("And finally set the CameraNode's RenderOrder to POST_RENDER\n"
+                      "to make sure its drawn last.");
+        
+        position += delta;
+    }    
     
     
     {

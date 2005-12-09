@@ -252,7 +252,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLsizei)
 	I_Constructor0();
 	I_Constructor1(IN, const osg::VectorGLsizei &, copy);
 	I_Constructor2(IN, GLsizei *, beg, IN, GLsizei *, end);
-	I_Constructor1(IN, osg::VectorGLsizei::size_type, n);
+	I_Constructor1(IN, unsigned int, n);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLubyte)
@@ -260,7 +260,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLubyte)
 	I_Constructor0();
 	I_Constructor1(IN, const osg::VectorGLubyte &, copy);
 	I_Constructor2(IN, GLubyte *, beg, IN, GLubyte *, end);
-	I_Constructor1(IN, osg::VectorGLubyte::size_type, n);
+	I_Constructor1(IN, unsigned int, n);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLuint)
@@ -268,7 +268,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLuint)
 	I_Constructor0();
 	I_Constructor1(IN, const osg::VectorGLuint &, copy);
 	I_Constructor2(IN, GLuint *, beg, IN, GLuint *, end);
-	I_Constructor1(IN, osg::VectorGLuint::size_type, n);
+	I_Constructor1(IN, unsigned int, n);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLushort)
@@ -276,6 +276,6 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLushort)
 	I_Constructor0();
 	I_Constructor1(IN, const osg::VectorGLushort &, copy);
 	I_Constructor2(IN, GLushort *, beg, IN, GLushort *, end);
-	I_Constructor1(IN, osg::VectorGLushort::size_type, n);
+	I_Constructor1(IN, unsigned int, n);
 END_REFLECTOR
 

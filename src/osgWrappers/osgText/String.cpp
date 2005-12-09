@@ -54,6 +54,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::VectorUInt)
 	I_Constructor0();
 	I_Constructor1(IN, const osgText::VectorUInt &, copy);
 	I_Constructor2(IN, unsigned int *, beg, IN, unsigned int *, end);
-	I_Constructor1(IN, osgText::VectorUInt::size_type, n);
+	I_Constructor1(IN, unsigned int, n);
 END_REFLECTOR
 

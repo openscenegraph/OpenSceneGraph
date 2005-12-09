@@ -1,3 +1,59 @@
+2005-12-09 20:03  robert
+
+	* include/osgGA/DriveManipulator, include/osgGA/FlightManipulator,
+	  include/osgGA/NodeTrackerManipulator,
+	  include/osgGA/TerrainManipulator,
+	  include/osgGA/TrackballManipulator,
+	  src/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgGA/TrackballManipulator.cpp,
+	  src/osgProducer/ViewerEventHandler.cpp: Fixed typo in comments
+	  and onscreen help.
+
+2005-12-09 19:54  robert
+
+	* examples/osghud/osghud.cpp: Fixed the text to match the
+	  implementation.
+
+2005-12-09 19:34  robert
+
+	* Make/makedefs: From Thom DeCarlo, changed of ?= to = in
+	  Cygwin/minw options for INST_LOCATION.
+
+2005-12-09 19:14  robert
+
+	* Make/makedefs: From Simon Julier, library reordering for
+	  compiling osgTerrain under cygwin.
+
+2005-12-09 16:00  robert
+
+	* include/osg/PrimitiveSet, include/osgText/String,
+	  src/osgWrappers/osg/PrimitiveSet.cpp,
+	  src/osgWrappers/osgText/String.cpp: Changed constructors to use
+	  unsigned int to get round VS6.0 + wrapper problems.
+
+2005-12-09 15:05  robert
+
+	* Make/: makedefs, makerules: From Simon Julier, fix for .exe
+	  extension under Mingw/Cygwin.
+
+2005-12-09 14:52  robert
+
+	* include/: osg/PrimitiveSet, osgText/String: Build fix for VS6.0
+	  in the template constructors
+
+2005-12-09 11:22  robert
+
+	* ChangeLog, include/osg/Switch, src/osg/Switch.cpp,
+	  src/osgWrappers/osg/Switch.cpp: From Eric Wing, added missing
+	  removeChildren method.
+
+2005-12-09 09:38  robert
+
+	* src/osgUtil/RenderStage.cpp: From Eric Sokolosky, add setting of
+	  _cameraRequiresSetUp in constructor to avoid uninitialized
+	  variable.
+
 2005-12-08 22:12  robert
 
 	* NEWS.txt: Updated NEWS.

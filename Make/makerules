@@ -32,10 +32,10 @@ cleandependdbg:
 cleantarget: cleantargetopt cleantargetdbg
 
 cleantargetopt: 
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(EXEC) $(LIB) ${WRAPPER} $(PLUGIN)
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(EXEC)$(EXE_EXT) $(LIB) ${WRAPPER} $(PLUGIN)
 
 cleantargetdbg: 
-	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC) $(LIB) ${WRAPPER} $(PLUGIN)
+	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC)$(EXE_EXT) $(LIB) ${WRAPPER} $(PLUGIN)
 
 clean: cleanopt cleandbg
 

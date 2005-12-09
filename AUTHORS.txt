@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.0
 
-172 Contributors:
+171 Contributors:
 
 Firstname Surname
 -----------------
@@ -13,10 +13,10 @@ Bob Kuehne
 Brede Johansen
 Tree 
 Ulrich Hertlein
-Norman Vine
 Eric Sokolowsky
-Pavel Moloshtan
 Paul Martz
+Norman Vine
+Pavel Moloshtan
 Farshid Lashkari
 Trajce Nikolov
 Tom Jolley
@@ -28,10 +28,10 @@ Randall Hopper
 Gideon May
 Stephan Huber
 Michael Gronager
+Eric Wing
 Chris Hanson
 Neil Salter
 Frederic Marmond
-Eric Wing
 Boris Bralo
 Sondra Iverson
 Rune Schmidt Jensen
@@ -54,13 +54,14 @@ Jason Daly
 David Spilling
 Corbin Holtz
 Toshiyuki Takahei
+Thom DeCarlo
+Simon Julier
 Nikolaus Hanekamp
 Markus Trenkwalder
 Loic Dachary
 Bruce Clay
 Brad Christiansen
 Alberto Barbati
-Thom DeCarlo
 Terry Welsh
 Sebastien Grignard
 Romano Magacho
@@ -112,7 +113,6 @@ Uwe Woessner
 Troy Yee
 Tino Schwarze
 Tanguy Fautré
-Simon Julier
 Shane Arnott
 Sebastien Kuntz
 Ronny Krueger
@@ -161,7 +161,6 @@ Douglas A. Pouk
 Donny Cipperly
 Dean Iverson
 David Jung
-Clay Fowler
 Bora Utka
 Blake Williams
 Bart Gallet

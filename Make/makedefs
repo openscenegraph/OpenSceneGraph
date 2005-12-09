@@ -575,8 +575,8 @@ ifeq ($(OS),CYGWIN)
   FREETYPE_LIB      = `freetype-config --libs`
 
   GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_LIBS         = `gdal-config --libs`
+  GDAL_LIBS         += `gdal-config --dep-libs`
 
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`

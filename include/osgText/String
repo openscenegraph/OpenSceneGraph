@@ -34,7 +34,7 @@ public:
     VectorUInt(): vector_type() {}
     VectorUInt(const VectorUInt &copy): vector_type(copy) {}
     VectorUInt(unsigned int* beg, unsigned int* end): vector_type(beg, end) {}
-    explicit VectorUInt(VectorUInt::size_type n): vector_type(n) {}
+    explicit VectorUInt(vector_type::size_type n): vector_type(n) {}
 };
 
 // **************************************************************************

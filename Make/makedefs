@@ -82,8 +82,6 @@ OBJS       = $(C++FILES:.cpp=.o) \
              $(CXXFILES:.cpp=.o) \
              $(CFILES:.c=.o) \
 
-EXE_EXT    =
-
 DOF        = $(OPTF)
 DEBUGDIR   = $(OS)$(ARCH).Debug
 OPTDIR     = $(OS)$(ARCH).Opt
@@ -106,8 +104,11 @@ INSTBINCMD     = install -m 755
 INSTDEVCMD     = install -m 644
 INSTLINKBINCMD = $(LINK)
 INSTLINKDEVCMD = $(LINK)
+
 LIB_PREFIX     = lib
 LIB_EXT        = so
+EXE_EXT    =
+
 PLUGIN_PREFIX  = osgdb_
 WRAPPER_PREFIX  = osgwrapper_
 PLUGIN_EXT     = so

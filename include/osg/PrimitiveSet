@@ -44,7 +44,7 @@ public:
     VectorGLsizei(): vector_type() {}
     VectorGLsizei(const VectorGLsizei &copy): vector_type(copy) {}
     VectorGLsizei(GLsizei* beg, GLsizei* end): vector_type(beg, end) {}
-    explicit VectorGLsizei(vector_type::size_type n): vector_type(n) {}
+    explicit VectorGLsizei(unsigned int n): vector_type(n) {}
 };
 
 class VectorGLubyte: public std::vector<GLubyte>
@@ -54,7 +54,7 @@ public:
     VectorGLubyte(): vector_type() {}
     VectorGLubyte(const VectorGLubyte &copy): vector_type(copy) {}
     VectorGLubyte(GLubyte* beg, GLubyte* end): vector_type(beg, end) {}
-    explicit VectorGLubyte(vector_type::size_type n): vector_type(n) {}
+    explicit VectorGLubyte(unsigned int n): vector_type(n) {}
 };
 
 class VectorGLushort: public std::vector<GLushort>
@@ -64,7 +64,7 @@ public:
     VectorGLushort(): vector_type() {}
     VectorGLushort(const VectorGLushort &copy): vector_type(copy) {}
     VectorGLushort(GLushort* beg, GLushort* end): vector_type(beg, end) {}
-    explicit VectorGLushort(vector_type::size_type n): vector_type(n) {}
+    explicit VectorGLushort(unsigned int n): vector_type(n) {}
 };
 
 class VectorGLuint: public std::vector<GLuint>
@@ -74,7 +74,7 @@ public:
     VectorGLuint(): vector_type() {}
     VectorGLuint(const VectorGLuint &copy): vector_type(copy) {}
     VectorGLuint(GLuint* beg, GLuint* end): vector_type(beg, end) {}
-    explicit VectorGLuint(vector_type::size_type n): vector_type(n) {}
+    explicit VectorGLuint(unsigned int n): vector_type(n) {}
 };
 
 // **************************************************************************

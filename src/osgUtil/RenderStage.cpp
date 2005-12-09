@@ -47,6 +47,7 @@ RenderStage::RenderStage():
     _clearDepth = 1.0;
     _clearStencil = 0;
 
+    _cameraRequiresSetUp = false;
     _camera = 0;
     
     _level = 0;
@@ -72,6 +73,7 @@ RenderStage::RenderStage(SortMode mode):
     _clearDepth = 1.0;
     _clearStencil = 0;
 
+    _cameraRequiresSetUp = false;
     _camera = 0;
     
     _level = 0;
@@ -95,6 +97,7 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _clearAccum(rhs._clearAccum),
         _clearDepth(rhs._clearDepth),
         _clearStencil(rhs._clearStencil),
+        _cameraRequiresSetUp(rhs._cameraRequiresSetUp),
         _camera(rhs._camera),
         _level(rhs._level),
         _face(rhs._face),

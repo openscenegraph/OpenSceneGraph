@@ -591,7 +591,7 @@ ifeq ($(OS),CYGWIN)
   IMP_LIB_EXT       = dll.a
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_LOCATION     ?= /usr/local/OpenSceneGraph
+  INST_LOCATION     = /usr/local/OpenSceneGraph
   INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = $(INST_LOCATION)
   INST_SRC          = $(INST_SHARE_PREFIX)/src
@@ -653,7 +653,7 @@ ifeq ($(OS),MINGW)
   IMP_LIB_EXT       = dll.a
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_LOCATION     ?= /usr/local/OpenSceneGraph
+  INST_LOCATION     = /usr/local/OpenSceneGraph
   INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = $(INST_LOCATION)
   INST_SRC          = $(INST_SHARE_PREFIX)/src

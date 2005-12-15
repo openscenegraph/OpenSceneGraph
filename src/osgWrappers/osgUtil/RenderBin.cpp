@@ -83,9 +83,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method1(void, setDrawCallback, IN, osgUtil::RenderBin::DrawCallback *, drawCallback);
 	I_Method0(osgUtil::RenderBin::DrawCallback *, getDrawCallback);
 	I_Method0(const osgUtil::RenderBin::DrawCallback *, getDrawCallback);
-	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
-	I_Method1(void, getPrims, IN, osgUtil::Statistics *, primStats);
-	I_Method2(bool, getPrims, IN, osgUtil::Statistics *, primStats, IN, int, nbin);
+	I_Method1(bool, getStats, IN, osgUtil::Statistics &, primStats);
 	I_Method0(void, copyLeavesFromStateGraphListToRenderLeafList);
 	I_ReadOnlyProperty(int, BinNum);
 	I_Property(osgUtil::RenderBin::DrawCallback *, DrawCallback);

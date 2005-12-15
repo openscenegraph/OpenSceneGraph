@@ -104,7 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs);
 	I_Method1(void, addPreRenderStage, IN, osgUtil::RenderStage *, rs);
 	I_Method1(void, addPostRenderStage, IN, osgUtil::RenderStage *, rs);
-	I_Method1(bool, getStats, IN, osgUtil::Statistics *, primStats);
+	I_Method1(bool, getStats, IN, osgUtil::Statistics &, stats);
 	I_Property(osg::CameraNode *, CameraNode);
 	I_Property(bool, CameraRequiresSetUp);
 	I_Property(const osg::Vec4 &, ClearAccum);

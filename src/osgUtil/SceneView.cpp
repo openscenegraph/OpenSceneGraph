@@ -1371,7 +1371,7 @@ void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float look
     getViewMatrix().getLookAt(eye,center,up,lookDistance);
 }
 
-bool SceneView::getStats(Statistics* primStats)
+bool SceneView::getStats(Statistics& stats)
 {
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
@@ -1384,18 +1384,18 @@ bool SceneView::getStats(Statistics* primStats)
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
         {
-            bool resultLeft = _renderStageLeft->getStats(primStats);
-            bool resultRight = _renderStageRight->getStats(primStats);
+            bool resultLeft = _renderStageLeft->getStats(stats);
+            bool resultRight = _renderStageRight->getStats(stats);
             return resultLeft && resultRight;
         }
         case(osg::DisplaySettings::RIGHT_EYE):
         case(osg::DisplaySettings::LEFT_EYE):
         default:
-            return _renderStage->getStats(primStats);
+            return _renderStage->getStats(stats);
         }
     }
     else
     {
-        return _renderStage->getStats(primStats);
+        return _renderStage->getStats(stats);
     }
 }

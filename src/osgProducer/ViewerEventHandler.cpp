@@ -619,7 +619,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                 shitr != _veh->getOsgCameraGroup()->getSceneHandlerList().end();
                 ++shitr)
             {
-                (*shitr)->getSceneView()->getStats(&stats); 
+                (*shitr)->getSceneView()->getStats(stats); 
             }
 
             unsigned int primitives = 0;

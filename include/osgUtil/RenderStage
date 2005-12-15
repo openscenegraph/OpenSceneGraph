@@ -195,10 +195,11 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         void addToDependencyList(RenderStage* rs) { addPreRenderStage(rs); }
 
         void addPreRenderStage(RenderStage* rs);
+        
         void addPostRenderStage(RenderStage* rs);
 
         /** Extract stats for current draw list. */
-        bool getStats(Statistics* primStats); 
+        bool getStats(Statistics& stats) const; 
         
         
     protected:

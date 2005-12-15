@@ -456,7 +456,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         virtual void flushDeletedGLObjects(double& availableTime);
         
         /** Extract stats for current draw list. */
-        bool getStats(Statistics* primStats); 
+        bool getStats(Statistics& primStats); 
 
     protected:
 

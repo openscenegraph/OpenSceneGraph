@@ -62,8 +62,13 @@ class Statistics : public osg::PrimitiveFunctor
         
         void reset()
         {
-            numDrawables=0, nummat=0; depth=0; stattype=STAT_NONE;
-            nlights=0; nbins=0; nimpostor=0;
+            numDrawables=0;
+            nummat=0;
+            depth=0;
+            stattype=STAT_NONE;
+            nlights=0;
+            nbins=0;
+            nimpostor=0;
             
             _vertexCount=0;
             _primitiveCount.clear();            
@@ -131,6 +136,8 @@ class Statistics : public osg::PrimitiveFunctor
         {
           _primitives_count[_currentPrimitiveFunctorMode] += 
             _calculate_primitives_number_by_mode(_currentPrimitiveFunctorMode, _number_of_vertexes);
+            
+           _vertexCount += _number_of_vertexes;
         }
         
         void addDrawable() { numDrawables++;}

@@ -134,9 +134,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
         /** Extract stats for current draw list. */
-        bool getStats(Statistics* primStats);
-        void getPrims(Statistics* primStats);
-        bool getPrims(Statistics* primStats, int nbin);
+        bool getStats(Statistics& primStats) const;
 
         void copyLeavesFromStateGraphListToRenderLeafList();
 

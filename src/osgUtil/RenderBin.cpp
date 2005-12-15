@@ -399,95 +399,66 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 }
 
 // stats
-bool RenderBin::getStats(Statistics* primStats)
+bool RenderBin::getStats(Statistics& stats) const
 {
+    stats.addBins(1);
+
     // different by return type - collects the stats in this renderrBin
-    bool somestats=false;
+    bool statsCollected = false;
 
     // draw fine grained ordering.
-    for(RenderLeafList::iterator dw_itr = _renderLeafList.begin();
+    for(RenderLeafList::const_iterator dw_itr = _renderLeafList.begin();
         dw_itr != _renderLeafList.end();
         ++dw_itr)
     {
-        RenderLeaf* rl = *dw_itr;
-        Drawable* dw= rl->_drawable;
-        primStats->addDrawable(); // number of geosets
+        const RenderLeaf* rl = *dw_itr;
+        const Drawable* dw= rl->_drawable;
+        stats.addDrawable(); // number of geosets
         if (rl->_modelview.get())
         {
-            primStats->addMatrix(); // number of matrices
+            stats.addMatrix(); // number of matrices
         }
         
         if (dw)
         {
               // then tot up the primtive types and no vertices.
-              dw->accept(*primStats); // use sub-class to find the stats for each drawable
+              dw->accept(stats); // use sub-class to find the stats for each drawable
         }
-        somestats = true;
-
+        statsCollected = true;
     }
 
-    for(StateGraphList::iterator oitr=_stateGraphList.begin();
+    for(StateGraphList::const_iterator oitr=_stateGraphList.begin();
         oitr!=_stateGraphList.end();
         ++oitr)
     {
         
-        for(StateGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+        for(StateGraph::LeafList::const_iterator dw_itr = (*oitr)->_leaves.begin();
             dw_itr != (*oitr)->_leaves.end();
             ++dw_itr)
         {
-            RenderLeaf* rl = dw_itr->get();
-            Drawable* dw= rl->_drawable;
-            primStats->addDrawable(); // number of geosets
-            if (rl->_modelview.get()) primStats->addMatrix(); // number of matrices
+            const RenderLeaf* rl = dw_itr->get();
+            const Drawable* dw= rl->_drawable;
+            stats.addDrawable(); // number of geosets
+            if (rl->_modelview.get()) stats.addMatrix(); // number of matrices
             if (dw)
             {
                 // then tot up the primtive types and no vertices.
-                dw->accept(*primStats); // use sub-class to find the stats for each drawable
+                dw->accept(stats); // use sub-class to find the stats for each drawable
             }
         }
-        somestats=true;
+        statsCollected = true;
     }
-    return somestats;
-}
 
-void RenderBin::getPrims(Statistics* primStats)
-{
-    static int ndepth;
-    ndepth++;
-    for(RenderBinList::iterator itr = _bins.begin();
+    // now collects stats for any subbins.
+    for(RenderBinList::const_iterator itr = _bins.begin();
         itr!=_bins.end();
         ++itr)
     {
-        primStats->addBins(1);
-        itr->second->getPrims(primStats);
+        if (itr->second->getStats(stats))
+        {
+            statsCollected = true;
+        }
     }
-    getStats(primStats);
-    ndepth--;
 
-}
-
-bool RenderBin::getPrims(Statistics* primStats, int nbin)
-{ // collect stats for array of bins, maximum nbin 
-    // (which will be modified on next call if array of primStats is too small);
-    // return 1 for OK;
-    static int ndepth;
-    bool ok=false;
-    ndepth++;
-    int nb=primStats[0].getBins();
-    if (nb<nbin)
-    { // if statement to protect against writing to bins beyond the maximum seen before
-        primStats[nb].setBinNo(nb);
-        primStats[nb].setDepth(ndepth);
-        getStats(primStats+nb);
-    }
-    primStats[0].addBins(1);
-    for(RenderBinList::iterator itr = _bins.begin();
-        itr!=_bins.end();
-        ++itr)
-    {
-        if (itr->second->getPrims(primStats, nbin)) ok = true;
-    }
-    ok=true;
-    ndepth--;
-    return ok;
+    return statsCollected;
 }

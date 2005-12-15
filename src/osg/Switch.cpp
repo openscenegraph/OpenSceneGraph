@@ -99,17 +99,6 @@ bool Switch::insertChild( unsigned int index, Node *child, bool value )
     return false;
 }
 
-bool Switch::removeChild( Node *child )
-{
-    // find the child's position.
-    unsigned int pos=getChildIndex(child);
-    if (pos>=_children.size()) return false;
-    
-    _values.erase(_values.begin()+pos);
-    
-    return Group::removeChild(child);    
-}
-
 bool Switch::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
 {
     if (pos>=_values.size() || numChildrenToRemove==0) return false;

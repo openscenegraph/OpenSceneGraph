@@ -49,8 +49,6 @@ class OSG_EXPORT Switch : public Group
 
         virtual bool insertChild( unsigned int index, Node *child, bool value );
 
-        virtual bool removeChild( Node *child );
-
         virtual bool removeChild(unsigned int pos,unsigned int numChildrenToRemove=1);
 
 

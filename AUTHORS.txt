@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.0
 
-171 Contributors:
+172 Contributors:
 
 Firstname Surname
 -----------------
@@ -118,6 +118,8 @@ Sebastien Kuntz
 Ronny Krueger
 Reinhard Sainitzer
 Qing Shen
+Paul de Repentinguy
+Paul Fredrikson
 Nikolov Trajce
 Nicolas Brodu
 Nathan Monteleone

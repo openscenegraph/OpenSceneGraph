@@ -25,6 +25,9 @@ NamePair NameDonBurns("Don","Burns");
 
 bool validName(const std::string& first)
 {
+    if (first=="de") return true;
+
+
     if (first.empty()) return false;
     if (first[0]<'A' || first[0]>'Z') return false;
     
@@ -246,6 +249,11 @@ void nameCorrection(NamePair& name)
     {
         name.first = "Chris";
         name.second = "Hanson";
+    }
+    if (name.first=="Paul" && name.second=="de")
+    {
+        name.first = "Paul";
+        name.second = "de Repentinguy";
     }
     if (name.first=="Nick" && name.second=="")
     {

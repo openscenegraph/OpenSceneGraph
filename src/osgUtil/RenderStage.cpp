@@ -886,13 +886,33 @@ void RenderStage::drawPostRenderStages(osg::State& state,RenderLeaf*& previous)
 }
 
 // Statistics features
-bool RenderStage::getStats(Statistics* primStats)
+bool RenderStage::getStats(Statistics& stats) const
 {
-    if (_renderStageLighting.valid())
+    bool statsCollected = false;
+
+    for(RenderStageList::const_iterator pre_itr = _preRenderList.begin();
+        pre_itr != _preRenderList.end();
+        ++pre_itr)
     {
-        // need to re-implement by checking for lights in the scene
-        // by downcasting the positioned attribute list. RO. May 2002.
-        //primStats->addLight(_renderStageLighting->_lightList.size());
+        if ((*pre_itr)->getStats(stats))
+        {
+            statsCollected = true;
+        }
     }
-    return RenderBin::getStats(primStats);
+
+    for(RenderStageList::const_iterator post_itr = _postRenderList.begin();
+        post_itr != _postRenderList.end();
+        ++post_itr)
+    {
+        if ((*post_itr)->getStats(stats))
+        {
+            statsCollected = true;
+        }
+    }
+        
+    if (RenderBin::getStats(stats))
+    {
+        statsCollected = true;
+    }
+    return statsCollected;
 }

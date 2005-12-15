@@ -3023,14 +3023,15 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         osgDB::writeNodeFile(*geode,"NodeBeforeSimplification.osg");
     }
 
-#if 1
-    unsigned int targetMaxNumVertices = 2048;
-    float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
+    if (_dataSet->getSimplifyTerrain())
+    {
+        unsigned int targetMaxNumVertices = 2048;
+        float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
     
-    osgUtil::Simplifier simplifier(sample_ratio,geometry->getBound().radius()/2000.0f);
+        osgUtil::Simplifier simplifier(sample_ratio,geometry->getBound().radius()/2000.0f);
     
-    simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
-#endif
+        simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
+    }
 
     osgUtil::TriStripVisitor tsv;
     tsv.setMinStripSize(3);
@@ -3742,6 +3743,8 @@ DataSet::DataSet()
     _numTextureLevels = 1;
     
     _writeNodeBeforeSimplification = false;
+
+    _simplifyTerrain = true;
 
     setEllipsoidModel(new osg::EllipsoidModel());
 }

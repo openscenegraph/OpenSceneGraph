@@ -128,6 +128,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method0(osgTerrain::DataSet::MipMappingMode, getMipMappingMode);
 	I_Method1(void, setUseLocalTileTransform, IN, bool, flag);
 	I_Method0(bool, getUseLocalTileTransform);
+	I_Method1(void, setSimplifyTerrain, IN, bool, flag);
+	I_Method0(bool, getSimplifyTerrain);
 	I_Method1(void, setDecorateGeneratedSceneGraphWithCoordinateSystemNode, IN, bool, flag);
 	I_Method0(bool, getDecorateGeneratedSceneGraphWithCoordinateSystemNode);
 	I_Method1(void, setDecorateGeneratedSceneGraphWithMultiTextureControl, IN, bool, flag);
@@ -175,6 +177,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Property(float, MaximumVisibleDistanceOfTopLevel);
 	I_Property(osgTerrain::DataSet::MipMappingMode, MipMappingMode);
 	I_Property(float, RadiusToMaxVisibleDistanceRatio);
+	I_Property(bool, SimplifyTerrain);
 	I_Property(float, SkirtRatio);
 	I_Property(osg::State *, State);
 	I_Property(osgTerrain::DataSet::TextureType, TextureType);

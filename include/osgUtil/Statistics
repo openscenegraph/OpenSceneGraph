@@ -181,7 +181,7 @@ inline unsigned int Statistics::_calculate_primitives_number_by_mode(GLenum mode
     case GL_TRIANGLE_STRIP:
     case GL_TRIANGLE_FAN: return count - 2; 
     case GL_QUADS: return count / 4; 
-    case GL_QUAD_STRIP: return count - 3; 
+    case GL_QUAD_STRIP: return count / 2 - 1; 
     default: return 0;
     }
 }

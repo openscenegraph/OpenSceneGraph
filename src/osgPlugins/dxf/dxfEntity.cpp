@@ -98,7 +98,10 @@ void
 dxfVertex::assign(dxfFile* dxf, codeValue& cv)
 {
     double d = cv._double;
-    unsigned short s = cv._short;
+    // 2005.12.13 pdr: learned today that negative indices mean something and were possible
+    
+    int s = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
+    if ( s < 0 ) s = -s;
     switch (cv._groupCode) {
         case 10:
             _vertex.x() = d;
@@ -356,22 +359,22 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
                 _elevation = d; // what is elevation?
                 break;
             case 70:
-                _flag = cv._short;
+                _flag = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 71:
-                _mcount = cv._short;
+                _mcount = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 72:
-                _ncount = cv._short;
+                _ncount = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 73:
-                _mdensity = cv._short;
+                _mdensity = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 74:
-                _ndensity = cv._short;
+                _ndensity = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 75:
-                _surfacetype = cv._short;
+                _surfacetype = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 210:
                 _ocs.x() = d;
@@ -575,9 +578,10 @@ dxfPolyline::drawScene(scene* sc)
                 qlist.push_back(b);
                 qlist.push_back(a);
             } else {
-                qlist.push_back(c);
-                qlist.push_back(b);
-                qlist.push_back(a);
+                // 2005.12.13 pdr: vlist! not qlist!
+                vlist.push_back(c);
+                vlist.push_back(b);
+                vlist.push_back(a);
             }
         }
         if (vlist.size())
@@ -622,7 +626,7 @@ dxfLWPolyline::assign(dxfFile* dxf, codeValue& cv)
             _elevation = d; // what is elevation?
             break;
         case 70:
-            _flag = cv._short;
+            _flag = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
             break;
         case 90:
             _vcount = cv._short;

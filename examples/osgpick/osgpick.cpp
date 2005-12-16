@@ -141,7 +141,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         geode->addDrawable( text );
         
         text->setFont(timesFont);
-        text->setText("Picking in Head Up Displays is simple !=]");
+        text->setText("Picking in Head Up Displays is simple!");
         text->setPosition(position);
         
         position += delta;

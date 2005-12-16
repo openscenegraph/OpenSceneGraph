@@ -18,6 +18,7 @@
 #include <osg/LineSegment>
 #include <osg/Geode>
 #include <osg/Matrix>
+#include <osg/Transform>
 
 #include <osgUtil/Export>
 
@@ -186,7 +187,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         bool intersect(osg::Drawable& gset);
 
-        void pushMatrix(const osg::Matrix& matrix);
+        void pushMatrix(osg::RefMatrix* matrix, osg::Transform::ReferenceFrame rf);
         void popMatrix();
 
         bool enterNode(osg::Node& node);

@@ -249,20 +249,19 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
 }
 
 
-void IntersectVisitor::pushMatrix(const Matrix& matrix)
+void IntersectVisitor::pushMatrix(RefMatrix* matrix, osg::Transform::ReferenceFrame rf)
 {
     IntersectState* nis = new IntersectState;
 
     IntersectState* cis = _intersectStateStack.back().get();
-
-    if (cis->_matrix.valid())
+    if (rf == osg::Transform::RELATIVE_RF &&
+        cis->_matrix.valid())
     {
-        nis->_matrix = new RefMatrix;
-        nis->_matrix->mult(matrix,*(cis->_matrix));
+        nis->_matrix->mult(*matrix, *(cis->_matrix));
     }
     else
     {
-        nis->_matrix = new RefMatrix(matrix);
+        nis->_matrix = matrix;
     }
 
     RefMatrix* inverse_world = new RefMatrix;
@@ -617,7 +616,7 @@ void IntersectVisitor::apply(Billboard& node)
         osg::ref_ptr<RefMatrix> billboard_matrix = new RefMatrix;
         node.computeMatrix(*billboard_matrix,eye_local,pos);
 
-        pushMatrix(*billboard_matrix);
+        pushMatrix(billboard_matrix.get(), osg::Transform::RELATIVE_RF);
 
         intersect(*node.getDrawable(i));
 
@@ -646,7 +645,7 @@ void IntersectVisitor::apply(Transform& node)
     osg::ref_ptr<RefMatrix> matrix = new RefMatrix;
     node.computeLocalToWorldMatrix(*matrix,this);
 
-    pushMatrix(*matrix);
+    pushMatrix(matrix.get(), node.getReferenceFrame());
 
     traverse(node);
 
@@ -682,7 +681,7 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
     {
 
         // mouse pointer intersect viewport so we can proceed to set up a line segment
-        osg::Matrix MVPW = view * proj * viewport->computeWindowMatrix();
+        osg::Matrix MVPW = proj * viewport->computeWindowMatrix();
         osg::Matrixd inverseMVPW;
         inverseMVPW.invert(MVPW);
 
@@ -691,9 +690,27 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
         osg::LineSegment* lineSegment = new osg::LineSegment;
         lineSegment->set(nearPoint, farPoint);
 
-        addLineSegment(lineSegment);
-    }
+        IntersectState* cis = !_intersectStateStack.empty() ? _intersectStateStack.back().get() : 0;
+        if (cis)
+        {
+            cis->_matrix = new RefMatrix(view);
+            cis->_inverse = new RefMatrix;
+            cis->_inverse->invert(*(cis->_matrix));
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Warning: PickVisitor not set up correctly, picking errors likely"<<std::endl;
+        }
+        
 
+        addLineSegment(lineSegment);
+
+#if 0
+        // account for the view matrix by pushing it onto the IntersectionState stack,
+        // this then transforms the line segment into world coordinates.
+        pushMatrix(new RefMatrix(view), osg::Transform::ABSOLUTE_RF);
+#endif        
+    }
 }
 
 void PickVisitor::runNestedPickVisitor(osg::Node& node, const osg::Viewport* viewport, const osg::Matrix& proj, const osg::Matrix& view, float mx, float my)

@@ -99,6 +99,11 @@ bool Switch::insertChild( unsigned int index, Node *child, bool value )
     return false;
 }
 
+bool Switch::removeChild( Node *child )
+{
+    removeChild( getChildIndex(child) );
+}
+
 bool Switch::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
 {
     if (pos>=_values.size() || numChildrenToRemove==0) return false;

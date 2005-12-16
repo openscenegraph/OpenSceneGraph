@@ -257,7 +257,8 @@ void IntersectVisitor::pushMatrix(RefMatrix* matrix, osg::Transform::ReferenceFr
     if (rf == osg::Transform::RELATIVE_RF &&
         cis->_matrix.valid())
     {
-        nis->_matrix->mult(*matrix, *(cis->_matrix));
+        nis->_matrix = matrix;
+        nis->_matrix->postMult(*(cis->_matrix));
     }
     else
     {

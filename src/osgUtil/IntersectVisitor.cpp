@@ -674,6 +674,8 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
     _lastProjectionMatrix(proj),
     _lastViewMatrix(view)
 {
+    setLODSelectionMode(USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
+
     if (viewport && 
         mx >= static_cast<float>(viewport->x()) && 
         my >= static_cast<float>(viewport->y()) &&
@@ -705,12 +707,6 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
         
 
         addLineSegment(lineSegment);
-
-#if 0
-        // account for the view matrix by pushing it onto the IntersectionState stack,
-        // this then transforms the line segment into world coordinates.
-        pushMatrix(new RefMatrix(view), osg::Transform::ABSOLUTE_RF);
-#endif        
     }
 }
 

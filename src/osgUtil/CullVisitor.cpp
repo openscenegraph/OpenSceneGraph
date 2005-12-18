@@ -222,72 +222,79 @@ void CullVisitor::popProjectionMatrix()
 template<class matrix_type, class value_type>
 bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar, value_type nearFarRatio)
 {
-    if (zfar>=znear)
+    double epsilon = 1e-6;
+    if (zfar<znear-epsilon)
+    {
+        osg::notify(osg::INFO)<<"_clampProjectionMatrix not applied, invalid depth range, znear = "<<znear<<"  zfar = "<<zfar<<std::endl;
+        return false;
+    }
+    
+    if (zfar<znear+epsilon)
+    {
+        // znear and zfar are too close together and could cause divide by zero problems
+        // late on in the clamping code, so move the znear and zfar apart.
+        double average = (znear+zfar)*0.5;
+        znear = average-epsilon;
+        zfar = average+epsilon;
+        // osg::notify(osg::INFO) << "_clampProjectionMatrix widening znear and zfar to "<<znear<<" "<<zfar<<std::endl;
+    }
+
+    if (fabs(projection(0,3))<epsilon  && fabs(projection(1,3))<epsilon  && fabs(projection(2,3))<epsilon )
+    {
+        // osg::notify(osg::INFO) << "Orthographic matrix before clamping"<<projection<<std::endl;
+
+        value_type delta_span = (zfar-znear)*0.02;
+        if (delta_span<1.0) delta_span = 1.0;
+        value_type desired_znear = znear - delta_span;
+        value_type desired_zfar = zfar + delta_span;
+
+        // assign the clamped values back to the computed values.
+        znear = desired_znear;
+        zfar = desired_zfar;
+
+        projection(2,2)=-2.0f/(desired_zfar-desired_znear);
+        projection(3,2)=-(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
+
+        // osg::notify(osg::INFO) << "Orthographic matrix after clamping "<<projection<<std::endl;
+    }
+    else
     {
 
-        double epsilon = 1e-6;
-        if (fabs(projection(0,3))<epsilon  && fabs(projection(1,3))<epsilon  && fabs(projection(2,3))<epsilon )
-        {
-            // osg::notify(osg::INFO) << "Orthographic matrix before clamping"<<projection<<std::endl;
+        // osg::notify(osg::INFO) << "Persepective matrix before clamping"<<projection<<std::endl;
 
-            value_type delta_span = (zfar-znear)*0.02;
-            if (delta_span<1.0) delta_span = 1.0;
-            value_type desired_znear = znear - delta_span;
-            value_type desired_zfar = zfar + delta_span;
+        //std::cout << "_computed_znear"<<_computed_znear<<std::endl;
+        //std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
 
-            // assign the clamped values back to the computed values.
-            znear = desired_znear;
-            zfar = desired_zfar;
+        value_type zfarPushRatio = 1.02;
+        value_type znearPullRatio = 0.98;
 
-            projection(2,2)=-2.0f/(desired_zfar-desired_znear);
-            projection(3,2)=-(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
-            
-            // osg::notify(osg::INFO) << "Orthographic matrix after clamping "<<projection<<std::endl;
+        //znearPullRatio = 0.99; 
 
-            return true;
+        value_type desired_znear = znear * znearPullRatio;
+        value_type desired_zfar = zfar * zfarPushRatio;
 
-        }
-        else
-        {
+        // near plane clamping.
+        double min_near_plane = zfar*nearFarRatio;
+        if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
-            // osg::notify(osg::INFO) << "Persepective matrix before clamping"<<projection<<std::endl;
+        // assign the clamped values back to the computed values.
+        znear = desired_znear;
+        zfar = desired_zfar;
 
-            //std::cout << "_computed_znear"<<_computed_znear<<std::endl;
-            //std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
+        value_type trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
+        value_type trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));
 
-            value_type zfarPushRatio = 1.02;
-            value_type znearPullRatio = 0.98;
-            
-            //znearPullRatio = 0.99; 
-            
-            value_type desired_znear = znear * znearPullRatio;
-            value_type desired_zfar = zfar * zfarPushRatio;
+        value_type ratio = fabs(2.0/(trans_near_plane-trans_far_plane));
+        value_type center = -(trans_near_plane+trans_far_plane)/2.0;
 
-            // near plane clamping.
-            double min_near_plane = zfar*nearFarRatio;
-            if (desired_znear<min_near_plane) desired_znear=min_near_plane;
+        projection.postMult(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                        0.0f,1.0f,0.0f,0.0f,
+                                        0.0f,0.0f,ratio,0.0f,
+                                        0.0f,0.0f,center*ratio,1.0f));
 
-            // assign the clamped values back to the computed values.
-            znear = desired_znear;
-            zfar = desired_zfar;
-
-            value_type trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
-            value_type trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));
-
-            value_type ratio = fabs(2.0/(trans_near_plane-trans_far_plane));
-            value_type center = -(trans_near_plane+trans_far_plane)/2.0;
-            
-            projection.postMult(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                            0.0f,1.0f,0.0f,0.0f,
-                                            0.0f,0.0f,ratio,0.0f,
-                                            0.0f,0.0f,center*ratio,1.0f));
-                                            
-            // osg::notify(osg::INFO) << "Persepective matrix after clamping"<<projection<<std::endl;
-
-            return true;
-        }
+        // osg::notify(osg::INFO) << "Persepective matrix after clamping"<<projection<<std::endl;
     }
-    return false;
+    return true;
 }
 
 

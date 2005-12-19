@@ -207,6 +207,18 @@ bool IntersectVisitor::hits()
     return false;
 }
 
+osg::Vec3 IntersectVisitor::getEyePoint() const
+{
+    const IntersectState* cis = _intersectStateStack.empty() ? 0 : _intersectStateStack.back().get();
+    if (cis)
+    {
+        return _pseudoEyePoint * (*(cis->_inverse));
+    }
+    else
+    {
+        return _pseudoEyePoint;
+    }
+}
 
 void IntersectVisitor::addLineSegment(LineSegment* seg)
 {

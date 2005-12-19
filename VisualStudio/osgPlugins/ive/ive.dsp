@@ -176,6 +176,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Depth.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.cpp
 # End Source File
 # Begin Source File
@@ -521,6 +525,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\DataTypeSize.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Depth.h
 # End Source File
 # Begin Source File
 

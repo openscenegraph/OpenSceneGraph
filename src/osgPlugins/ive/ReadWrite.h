@@ -2,7 +2,7 @@
 #define IVE_READWRITE 1
 
 #include "DataInputStream.h"
-#include "DataOutputStream.h"                       
+#include "DataOutputStream.h"
 
 namespace ive {
 
@@ -43,77 +43,78 @@ namespace ive {
 #define IVECLUSTERCULLINGCALLBACK       0x00000052
 
 // State attributes.
-#define IVESTATEATTRIBUTE				0x00000100
-#define IVEALPHAFUNC					0x00000101
-#define IVEBLENDFUNC					0x00000102
-#define IVEMATERIAL					0x00000110
-#define IVETEXTURE					0x00000120
-#define IVETEXTURE1D					0x00000121
-#define IVETEXTURE2D					0x00000122
-#define IVETEXTURE3D					0x00000123
-#define IVETEXTURECUBEMAP				0x00000124
-#define IVETEXENV					0x00000125
-#define IVETEXENVCOMBINE				0x00000126
-#define IVETEXGEN					0x00000127
-#define IVECULLFACE					0x00000128
-#define IVEPOLYGONOFFSET				0x00000129
-#define IVESHADEMODEL					0x0000012A
-#define IVEPOINT					0x0000012B
-#define IVETEXMAT					0x0000012C
-#define IVELINEWIDTH					0x0000012D
-#define IVEFRAGMENTPROGRAM				0x0000012E
-#define IVEVERTEXPROGRAM				0x0000012F
-#define IVELIGHTMODEL				        0x00001121
-#define IVECLIPPLANE				        0x00001122
-#define IVEFRONTFACE				        0x00001123
-#define IVEPROGRAM				        0x00001124
-#define IVESHADER				        0x00001125
-#define IVEUNIFORM				        0x00001126
-#define IVEVIEWPORT				        0x00001127
-#define IVESCISSOR				        0x00001128
-#define IVEPOLYGONMODE				        0x00001129
+#define IVESTATEATTRIBUTE               0x00000100
+#define IVEALPHAFUNC                    0x00000101
+#define IVEBLENDFUNC                    0x00000102
+#define IVEMATERIAL                     0x00000110
+#define IVETEXTURE                      0x00000120
+#define IVETEXTURE1D                    0x00000121
+#define IVETEXTURE2D                    0x00000122
+#define IVETEXTURE3D                    0x00000123
+#define IVETEXTURECUBEMAP               0x00000124
+#define IVETEXENV                       0x00000125
+#define IVETEXENVCOMBINE                0x00000126
+#define IVETEXGEN                       0x00000127
+#define IVECULLFACE                     0x00000128
+#define IVEPOLYGONOFFSET                0x00000129
+#define IVESHADEMODEL                   0x0000012A
+#define IVEPOINT                        0x0000012B
+#define IVETEXMAT                       0x0000012C
+#define IVELINEWIDTH                    0x0000012D
+#define IVEFRAGMENTPROGRAM              0x0000012E
+#define IVEVERTEXPROGRAM                0x0000012F
+#define IVEDEPTH                        0x00000130
+#define IVELIGHTMODEL                   0x00001121
+#define IVECLIPPLANE                    0x00001122
+#define IVEFRONTFACE                    0x00001123
+#define IVEPROGRAM                      0x00001124
+#define IVESHADER                       0x00001125
+#define IVEUNIFORM                      0x00001126
+#define IVEVIEWPORT                     0x00001127
+#define IVESCISSOR                      0x00001128
+#define IVEPOLYGONMODE                  0x00001129
 
 // Drawables
-#define IVEDRAWABLE					0x00001000
-#define IVEGEOMETRY					0x00001001
-#define IVESHAPEDRAWABLE				0x00001002
+#define IVEDRAWABLE                     0x00001000
+#define IVEGEOMETRY                     0x00001001
+#define IVESHAPEDRAWABLE                0x00001002
 
 // Shapes
-#define IVESHAPE					0x00002000
-#define IVESPHERE					0x00002001
-#define IVEBOX					        0x00002002
-#define IVECONE					        0x00002004
-#define IVECYLINDER					0x00002005
-#define IVECAPSULE					0x00002006
-#define IVEHEIGHTFIELD					0x00002007
+#define IVESHAPE                        0x00002000
+#define IVESPHERE                       0x00002001
+#define IVEBOX                          0x00002002
+#define IVECONE                         0x00002004
+#define IVECYLINDER                     0x00002005
+#define IVECAPSULE                      0x00002006
+#define IVEHEIGHTFIELD                  0x00002007
 
 // Primitive set
-#define IVEPRIMITIVESET					0x00010000
-#define IVEDRAWARRAYS					0x00010001
-#define IVEDRAWARRAYLENGTHS				0x00010002
-#define IVEDRAWELEMENTSUSHORT			        0x00010003
-#define IVEDRAWELEMENTSUINT				0x00010004
-#define IVEDRAWELEMENTSUBYTE				0x00010005
+#define IVEPRIMITIVESET                 0x00010000
+#define IVEDRAWARRAYS                   0x00010001
+#define IVEDRAWARRAYLENGTHS             0x00010002
+#define IVEDRAWELEMENTSUSHORT           0x00010003
+#define IVEDRAWELEMENTSUINT             0x00010004
+#define IVEDRAWELEMENTSUBYTE            0x00010005
 
 // osgSim classes
-#define IVEBLINKSEQUENCE				0x00100001
-#define IVEAZIMELEVATIONSECTOR			        0x00100002
-#define IVEELEVATIONSECTOR				0x00100003
-#define IVEAZIMSECTOR					0x00100004
-#define IVECONESECTOR					0x00100005
-#define IVELIGHTPOINT					0x00100006
-#define IVELIGHTPOINTNODE				0x00100007
-#define IVEMULTISWITCH				        0x00100008
+#define IVEBLINKSEQUENCE                0x00100001
+#define IVEAZIMELEVATIONSECTOR          0x00100002
+#define IVEELEVATIONSECTOR              0x00100003
+#define IVEAZIMSECTOR                   0x00100004
+#define IVECONESECTOR                   0x00100005
+#define IVELIGHTPOINT                   0x00100006
+#define IVELIGHTPOINTNODE               0x00100007
+#define IVEMULTISWITCH                  0x00100008
 
 
-#define IVEVISIBILITYGROUP			        0x00100009
-#define IVEDIRECTIONALSECTOR                            0x0010000A
+#define IVEVISIBILITYGROUP              0x00100009
+#define IVEDIRECTIONALSECTOR            0x0010000A
 
 // osgFX classes
-#define IVEMULTITEXTURECONTROL                0x01000001
+#define IVEMULTITEXTURECONTROL          0x01000001
 
 //osgText classes
-#define IVETEXT                                0x10000001
+#define IVETEXT                         0x10000001
 
 
 class ReadWrite{

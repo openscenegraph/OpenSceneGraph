@@ -19,6 +19,7 @@
 #include "StateSet.h"
 #include "AlphaFunc.h"
 #include "BlendFunc.h"
+#include "Depth.h"
 #include "Material.h"
 #include "CullFace.h"
 #include "ClipPlane.h"
@@ -817,6 +818,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEBLENDFUNC){
         attribute = new osg::BlendFunc();
         ((ive::BlendFunc*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEDEPTH){
+        attribute = new osg::Depth();
+        ((ive::Depth*)(attribute))->read(this);
     }
     else if(attributeID == IVEVIEWPORT){
         attribute = new osg::Viewport();

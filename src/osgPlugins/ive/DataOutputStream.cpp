@@ -22,6 +22,7 @@
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
+#include "Depth.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
 #include "PolygonMode.h"
@@ -641,6 +642,9 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::Depth*>(attribute)){
+            ((ive::Depth*)(attribute))->write(this);
         }
         else if(dynamic_cast<const osg::Viewport*>(attribute)){
             ((ive::Viewport*)(attribute))->write(this);

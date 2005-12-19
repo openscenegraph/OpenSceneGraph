@@ -22,6 +22,7 @@ CXXFILES =\
 	CullFace.cpp\
 	DataInputStream.cpp\
 	DataOutputStream.cpp\
+	Depth.cpp\
 	DirectionalSector.cpp\
 	DOFTransform.cpp\
 	Drawable.cpp\

@@ -184,6 +184,7 @@ float IntersectVisitor::getDistanceToEyePoint(const Vec3& pos, bool /*withLODSca
 {
     if (_lodSelectionMode==USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION)
     {
+        // osg::notify(osg::NOTICE)<<"IntersectVisitor::getDistanceToEyePoint)"<<(pos-getEyePoint()).length()<<std::endl;
         // LODScale is not available to IntersectVisitor, so we ignore the withLODScale argument
         //if (withLODScale) return (pos-getEyePoint()).length()*getLODScale();
         //else return (pos-getEyePoint()).length();
@@ -212,6 +213,7 @@ osg::Vec3 IntersectVisitor::getEyePoint() const
     const IntersectState* cis = _intersectStateStack.empty() ? 0 : _intersectStateStack.back().get();
     if (cis)
     {
+        //osg::notify(osg::NOTICE)<<"IntersectVisitor::getEyePoint()"<<_pseudoEyePoint * (*(cis->_inverse))<<std::endl;
         return _pseudoEyePoint * (*(cis->_inverse));
     }
     else

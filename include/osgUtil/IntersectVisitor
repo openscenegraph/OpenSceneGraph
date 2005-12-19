@@ -136,7 +136,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
           * of the intersection ray set (IntersectState::_segList). */
         void setEyePoint(const osg::Vec3& eye) { _pseudoEyePoint = eye; }
 
-        virtual osg::Vec3 getEyePoint() const { return _pseudoEyePoint; }
+        virtual osg::Vec3 getEyePoint() const;
 
 
         /** Get the distance from a point to the eye point, distance value in local coordinate system.

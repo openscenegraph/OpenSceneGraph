@@ -101,7 +101,7 @@ class OSG_EXPORT Viewport : public StateAttribute
         */
         inline const osg::Matrix computeWindowMatrix() const
         {
-            return osg::Matrix::translate(1.0f,1.0f,1.0f)*osg::Matrix::scale(0.5f*width(),0.5f*height(),0.5f);
+            return osg::Matrix::translate(1.0f,1.0f,1.0f)*osg::Matrix::scale(0.5f*width(),0.5f*height(),0.5f)*osg::Matrix::translate(x(),y(),0.0f);
         }
 
         virtual void apply(State& state) const;

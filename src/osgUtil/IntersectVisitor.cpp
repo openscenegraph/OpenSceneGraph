@@ -211,7 +211,7 @@ bool IntersectVisitor::hits()
 osg::Vec3 IntersectVisitor::getEyePoint() const
 {
     const IntersectState* cis = _intersectStateStack.empty() ? 0 : _intersectStateStack.back().get();
-    if (cis)
+    if (cis && cis->_inverse.valid())
     {
         //osg::notify(osg::NOTICE)<<"IntersectVisitor::getEyePoint()"<<_pseudoEyePoint * (*(cis->_inverse))<<std::endl;
         return _pseudoEyePoint * (*(cis->_inverse));

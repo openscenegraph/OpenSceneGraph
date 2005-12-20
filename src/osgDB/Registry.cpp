@@ -455,7 +455,7 @@ void Registry::removeReaderWriter(ReaderWriter* rw)
 
 void Registry::addFileExtensionAlias(const std::string mapExt, const std::string toExt)
 {
-    if (mapExt!=toExt) _extAliasMap[mapExt] = toExt;
+    _extAliasMap[mapExt] = toExt;
 }
 
 std::string Registry::createLibraryNameForFile(const std::string& fileName)

@@ -101,7 +101,7 @@ bool Switch::insertChild( unsigned int index, Node *child, bool value )
 
 bool Switch::removeChild( Node *child )
 {
-    removeChild( getChildIndex(child) );
+    return removeChild( getChildIndex(child) );
 }
 
 bool Switch::removeChild(unsigned int pos,unsigned int numChildrenToRemove)

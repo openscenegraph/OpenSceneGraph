@@ -1,10 +1,13 @@
 #include "osg/Shader"
+#include "osg/Notify"
 
 #include <iostream>
 #include <sstream>
+
 #include "osgDB/Registry"
 #include "osgDB/Input"
 #include "osgDB/Output"
+#include "osgDB/FileUtils"
 
 using namespace osg;
 using namespace osgDB;
@@ -35,6 +38,22 @@ bool Shader_readLocalData(Object& obj, Input& fr)
     {
         shader.setType( Shader::getTypeId(fr[1].getStr()) );
         fr+=2;
+        iteratorAdvanced = true;
+    }
+    
+    if (fr.matchSequence("file %w") || fr.matchSequence("file %s") )
+    {
+        std::string fileName = osgDB::findDataFile(fr[1].getStr());
+        if (!fileName.empty())
+        {
+            shader.loadShaderSourceFromFile( fileName.c_str() );
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Warning: could not find shader file \""<<fr[1].getStr()<<"\""<<std::endl;
+        }
+        
+        fr += 2;
         iteratorAdvanced = true;
     }
 

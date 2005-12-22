@@ -160,8 +160,10 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
                 IntersectState();
 
-                osg::ref_ptr<osg::RefMatrix> _matrix;
-                osg::ref_ptr<osg::RefMatrix> _inverse;
+                osg::ref_ptr<osg::RefMatrix> _view_matrix;
+                osg::ref_ptr<osg::RefMatrix> _view_inverse;
+                osg::ref_ptr<osg::RefMatrix> _model_matrix;
+                osg::ref_ptr<osg::RefMatrix> _model_inverse;
 
                 typedef std::pair<osg::ref_ptr<osg::LineSegment>,osg::ref_ptr<osg::LineSegment> >   LineSegmentPair;
                 typedef std::vector< LineSegmentPair >                                              LineSegmentList;
@@ -174,10 +176,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
                 bool isCulled(const osg::BoundingSphere& bs,LineSegmentMask& segMaskOut);
                 bool isCulled(const osg::BoundingBox& bb,LineSegmentMask& segMaskOut);
 
-                void addLineSegmentPair(osg::LineSegment* first,osg::LineSegment* second)
-                {
-                    _segList.push_back(LineSegmentPair(first,second));
-                }
+                void addLineSegment(osg::LineSegment* seg);
 
             protected:
 

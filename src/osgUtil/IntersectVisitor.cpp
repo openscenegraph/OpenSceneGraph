@@ -127,7 +127,6 @@ bool IntersectVisitor::IntersectState::isCulled(const BoundingSphere& bs,LineSeg
     return !hit;
 }
 
-
 bool IntersectVisitor::IntersectState::isCulled(const BoundingBox& bb,LineSegmentMask& segMaskOut)
 {
     bool hit = false;
@@ -147,6 +146,36 @@ bool IntersectVisitor::IntersectState::isCulled(const BoundingBox& bb,LineSegmen
     }
     return !hit;
 }
+
+void IntersectVisitor::IntersectState::addLineSegment(osg::LineSegment* seg)
+{
+    // create a new segment transformed to local coordintes.
+    LineSegment* ns = new LineSegment;
+
+    if (_model_inverse.valid()) 
+    {
+        if (_view_inverse.valid())
+        {
+            osg::Matrix matrix = (*(_view_inverse)) * (*(_model_inverse));
+            ns->mult(*seg,matrix);
+        }
+        else
+        { 
+            ns->mult(*seg,*(_model_inverse));
+        }
+    }
+    else if (_view_inverse.valid())
+    {
+        ns->mult(*seg,*(_view_inverse));
+    }
+    else
+    {
+        *ns = *seg;
+    }
+    
+    _segList.push_back(LineSegmentPair(seg,ns));
+}
+
 
 IntersectVisitor::IntersectVisitor()
 {
@@ -211,10 +240,16 @@ bool IntersectVisitor::hits()
 osg::Vec3 IntersectVisitor::getEyePoint() const
 {
     const IntersectState* cis = _intersectStateStack.empty() ? 0 : _intersectStateStack.back().get();
-    if (cis && cis->_inverse.valid())
+    if (cis && (cis->_model_inverse.valid() || cis->_view_inverse.valid()))
     {
-        //osg::notify(osg::NOTICE)<<"IntersectVisitor::getEyePoint()"<<_pseudoEyePoint * (*(cis->_inverse))<<std::endl;
-        return _pseudoEyePoint * (*(cis->_inverse));
+        
+        osg::Vec3 eyePoint = _pseudoEyePoint;
+        if (cis->_view_inverse.valid()) eyePoint = eyePoint * (*(cis->_view_inverse));
+        if (cis->_model_inverse.valid()) eyePoint = eyePoint * (*(cis->_model_inverse));
+        
+        //osg::notify(osg::NOTICE)<<"IntersectVisitor::getEyePoint()"<<eyePoint<<std::endl;
+
+        return eyePoint;
     }
     else
     {
@@ -252,13 +287,7 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
         if (itr->first == seg) return;
     }
 
-    // create a new segment transformed to local coordintes.
-    LineSegment* ns = new LineSegment;
-
-    if (cis->_inverse.valid()) ns->mult(*seg,*(cis->_inverse));
-    else *ns = *seg;
-    
-    cis->addLineSegmentPair(seg,ns);
+    cis->addLineSegment(seg);
 
 }
 
@@ -268,20 +297,38 @@ void IntersectVisitor::pushMatrix(RefMatrix* matrix, osg::Transform::ReferenceFr
     IntersectState* nis = new IntersectState;
 
     IntersectState* cis = _intersectStateStack.back().get();
-    if (rf == osg::Transform::RELATIVE_RF &&
-        cis->_matrix.valid())
+
+    if (rf == osg::Transform::RELATIVE_RF)
     {
-        nis->_matrix = matrix;
-        nis->_matrix->postMult(*(cis->_matrix));
+        // share the original view matrix
+        nis->_view_matrix = cis->_view_matrix;
+        nis->_view_inverse = cis->_view_inverse;
+        
+        // set up new model matrix
+        nis->_model_matrix = matrix;
+        if (cis->_model_matrix.valid())
+        {
+            nis->_model_matrix->postMult(*(cis->_model_matrix));
+        }
+
+        RefMatrix* inverse_world = new RefMatrix;
+        inverse_world->invert(*(nis->_model_matrix));
+        nis->_model_inverse = inverse_world;
     }
     else
     {
-        nis->_matrix = matrix;
+        // set a new view matrix
+        nis->_view_matrix = matrix;
+
+        RefMatrix* inverse_world = new RefMatrix;
+        inverse_world->invert(*(nis->_view_matrix));
+        nis->_view_inverse = inverse_world;
+
+        // model matrix now blank.
+        nis->_model_matrix = 0;
+        nis->_model_inverse = 0;
     }
 
-    RefMatrix* inverse_world = new RefMatrix;
-    inverse_world->invert(*(nis->_matrix));
-    nis->_inverse = inverse_world;
 
     IntersectState::LineSegmentMask segMaskIn = cis->_segmentMaskStack.back();
     IntersectState::LineSegmentMask mask = 0x00000001;
@@ -291,9 +338,7 @@ void IntersectVisitor::pushMatrix(RefMatrix* matrix, osg::Transform::ReferenceFr
     {
         if ((segMaskIn & mask))
         {
-            LineSegment* seg = new LineSegment;
-            seg->mult(*(sitr->first),*inverse_world);
-            nis->addLineSegmentPair(sitr->first.get(),seg);
+            nis->addLineSegment(sitr->first.get());
         }
         mask = mask << 1;
     }
@@ -559,8 +604,8 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                 
                     Hit hit;
                     hit._nodePath = _nodePath;
-                    hit._matrix = cis->_matrix;
-                    hit._inverse = cis->_inverse;
+                    hit._matrix = cis->_model_matrix;
+                    hit._inverse = cis->_model_inverse;
                     hit._drawable = &drawable;
                     if (_nodePath.empty()) hit._geode = NULL;
                     else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
@@ -710,9 +755,12 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
         IntersectState* cis = !_intersectStateStack.empty() ? _intersectStateStack.back().get() : 0;
         if (cis)
         {
-            cis->_matrix = new RefMatrix(view);
-            cis->_inverse = new RefMatrix;
-            cis->_inverse->invert(*(cis->_matrix));
+            cis->_view_matrix = new RefMatrix(view);
+            cis->_view_inverse = new RefMatrix;
+            cis->_view_inverse->invert(*(cis->_view_matrix));
+
+            cis->_model_matrix = 0;
+            cis->_model_inverse = 0;
         }
         else
         {

@@ -120,32 +120,28 @@ public:
         {
             std::cout<<"Picking "<<x<<"\t"<<y<<std::endl;
 
-
             int origX, origY, width, height;
             _sceneView->getViewport(origX,origY,width,height);
 
-            // convert Produce's non dimensional x,y coords back into pixel coords.
-            int winX = (int)((x+1.0f)*0.5f*(float)width);
-            int winY = (int)((y+1.0f)*0.5f*(float)height);
-
-            osg::Vec3 nearPoint, farPoint;
-            _sceneView->projectWindowXYIntoObject(winX,winY,nearPoint,farPoint);
-
-            std::cout<<"nearPoint "<<nearPoint<<"  farPoint "<<farPoint<<std::endl;
-
-            // make a line segment
-            osg::ref_ptr<osg::LineSegment> lineSegment = new osg::LineSegment(nearPoint,farPoint); 
-
-            // create the IntersectVisitor to do the line intersection traversals.
-            osgUtil::IntersectVisitor intersector;
-            intersector.addLineSegment(lineSegment.get());
+            // convert Producer's non dimensional x,y coords back into pixel coords.
+            int pixel_x = (int)((x+1.0f)*0.5f*(float)width);
+            int pixel_y = (int)((y+1.0f)*0.5f*(float)height);
             
-            scene->accept(intersector);
             
-            osgUtil::IntersectVisitor::HitList& hits=intersector.getHitList(lineSegment.get());
-            if (!hits.empty())
+            osgUtil::PickVisitor pick(_sceneView->getViewport(),
+                                      _sceneView->getProjectionMatrix(),
+                                      _sceneView->getViewMatrix(),
+                                      pixel_x, pixel_y);
+
+            scene->accept(pick);
+            
+            osgUtil::PickVisitor::LineSegmentHitListMap& segHitList = pick.getSegHitList();
+            if (!segHitList.empty() && !segHitList.begin()->second.empty())
             {
                 std::cout<<"Got hits"<<std::endl;
+                
+                // get the hits for the first segment
+                osgUtil::PickVisitor::HitList& hits = segHitList.begin()->second;
                 
                 // just take the first hit - nearest the eye point.
                 osgUtil::Hit& hit = hits.front();
@@ -153,12 +149,14 @@ public:
                 osg::NodePath& nodePath = hit._nodePath;
                 osg::Node* node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
                 osg::Group* parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
-                
+
+                if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
+
+                // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
                 if (parent && node)
                 {
                 
-                    std::cout<<"Hits "<<node->className()<<std::endl;
-                    std::cout<<" parent "<<parent->className()<<std::endl;
+                    std::cout<<"  parent "<<parent->className()<<std::endl;
                     
                     osgFX::Scribe* parentAsScribe = dynamic_cast<osgFX::Scribe*>(parent);
                     if (!parentAsScribe)

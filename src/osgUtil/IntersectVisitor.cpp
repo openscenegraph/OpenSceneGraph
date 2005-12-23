@@ -778,6 +778,8 @@ void PickVisitor::runNestedPickVisitor(osg::Node& node, const osg::Viewport* vie
     PickVisitor newPickVisitor( viewport, proj, view, mx, my );
     newPickVisitor.setTraversalMask(getTraversalMask());
 
+    newPickVisitor.getNodePath() = getNodePath();
+
     // the new pickvisitor over the nodes children.
     node.traverse( newPickVisitor );
 

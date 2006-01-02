@@ -97,7 +97,7 @@ DatabasePager::DatabasePager()
 
     _targetFrameRate = 100.0;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
-    _maximumNumOfObjectsToCompilePerFrame = 8;
+    _maximumNumOfObjectsToCompilePerFrame = 4;
     if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
     {
         _minimumTimeAvailableForGLCompileAndDeletePerFrame = atof(ptr);
@@ -913,7 +913,6 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
         };
 
         unsigned int numObjectsCompiled = 0;
-        unsigned int maxNumObjectsToCompile = 4;
 
         // while there are valid databaseRequest's in the to compile list and there is
         // sufficient time left compile each databaseRequest's stateset and drawables.
@@ -921,7 +920,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
         {
             DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
             DataToCompile& dtc = dcm[state.getContextID()];
-            if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile)
+            if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
             {
 
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
@@ -931,7 +930,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 //osg::notify(osg::INFO)<<"Compiling statesets"<<std::endl;
                 StateSetList::iterator itr=sslist.begin();
                 for(;
-                    itr!=sslist.end() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile;
+                    itr!=sslist.end() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame;
                     ++itr)
                 {
                     //osg::notify(osg::INFO)<<"    Compiling stateset "<<(*itr).get()<<std::endl;
@@ -955,14 +954,14 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 sslist.erase(sslist.begin(),itr);
             }
 
-            if (!dtc.second.empty() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile)
+            if (!dtc.second.empty() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
             {
                 // we have Drawable's to compile
                 //osg::notify(osg::INFO)<<"Compiling drawables"<<std::endl;
                 DrawableList& dwlist = dtc.second;
                 DrawableList::iterator itr=dwlist.begin();
                 for(;
-                    itr!=dwlist.end() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile;
+                    itr!=dwlist.end() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame;
                     ++itr)
                 {
                     //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;

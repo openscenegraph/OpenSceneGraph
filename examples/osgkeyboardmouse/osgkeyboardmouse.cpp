@@ -14,9 +14,41 @@
 #include <osgUtil/IntersectVisitor>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgFX/Scribe>
 
+
+class CreateModelToSaveVisitor : public osg::NodeVisitor
+{
+public:
+
+    CreateModelToSaveVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)        
+    {
+        _group = new osg::Group;
+        _addToModel = false;
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        osgFX::Scribe* scribe = dynamic_cast<osgFX::Scribe*>(&node);
+        if (scribe)
+        {
+            for(unsigned int i=0; i<scribe->getNumChildren(); ++i)
+            {
+                _group->addChild(scribe->getChild(i));
+            }
+        }
+        else
+        {
+            traverse(node);
+        }
+    }
+    
+    osg::ref_ptr<osg::Group> _group;
+    bool _addToModel;
+};
 
 class MyKeyboardMouseCallback : public Producer::KeyboardMouseCallback
 {
@@ -47,6 +79,7 @@ public:
     virtual void keyPress( Producer::KeyCharacter key)
     {
         if (key==' ') resetTrackball();
+        else if (key=='o') saveSelectedModel();
     }
 
     virtual void mouseMotion( float mx, float my ) 
@@ -183,6 +216,17 @@ public:
             
         }        
         
+    }
+
+    void saveSelectedModel()
+    {
+        CreateModelToSaveVisitor cmtsv;
+        _sceneView->getSceneData()->accept(cmtsv);
+        
+        if (cmtsv._group->getNumChildren()>0)
+        {
+            osgDB::writeNodeFile(*cmtsv._group, "selected_model.osg");
+        }
     }
 
 private:

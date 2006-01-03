@@ -27,6 +27,13 @@
 using namespace osg;
 
 
+FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInitalized)
+{
+    static buffered_object< ref_ptr<FBOExtensions> > s_extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new FBOExtensions(contextID);
+    return s_extensions[contextID].get();
+}
+
 /**************************************************************************
  * FBOExtensions
  **************************************************************************/
@@ -99,7 +106,7 @@ void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*cur
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const FBOExtensions* extensions = FBOExtensions::instance(contextID);
+    const FBOExtensions* extensions = FBOExtensions::instance(contextID,true);
     if(!extensions || !extensions->isSupported() ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
@@ -479,7 +486,7 @@ void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,do
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
-    const FBOExtensions* extensions = FBOExtensions::instance(contextID);
+    const FBOExtensions* extensions = FBOExtensions::instance(contextID,true);
     if(!extensions || !extensions->isSupported() ) return;
 
     const osg::Timer& timer = *osg::Timer::instance();
@@ -536,7 +543,7 @@ void FrameBufferObject::apply(State &state) const
         return;
         
         
-    FBOExtensions* ext = FBOExtensions::instance(contextID);
+    FBOExtensions* ext = FBOExtensions::instance(contextID,true);
     if (!ext->isSupported())
     {
         _unsupported[contextID] = 1;

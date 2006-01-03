@@ -275,7 +275,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
     
     if (renderTargetImplemntation==osg::CameraNode::FRAME_BUFFER_OBJECT)
     {
-        osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID());
+        osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID(),true);
         bool fbo_supported = fbo_ext && fbo_ext->isSupported();
         
         if (fbo_supported && !_fbo)
@@ -617,7 +617,7 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         glReadBuffer(_readBuffer);
     }
 
-    osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID()) : 0;
+    osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID(),true) : 0;
     bool fbo_supported = fbo_ext && fbo_ext->isSupported();
 
     if (fbo_supported)

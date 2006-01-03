@@ -91,7 +91,7 @@ namespace osg
  * FBOExtensions
  **************************************************************************/
 
-    class OSG_EXPORT FBOExtensions
+    class OSG_EXPORT FBOExtensions : public osg::Referenced
     {
     public:
         typedef void APIENTRY TglBindRenderbufferEXT(GLenum, GLuint);
@@ -122,17 +122,7 @@ namespace osg
         TglFramebufferRenderbufferEXT* glFramebufferRenderbufferEXT;
         TglGenerateMipmapEXT* glGenerateMipmapEXT;
 
-        static FBOExtensions* instance(unsigned contextID)
-        {
-            static buffered_object<FBOExtensions *> _instances;
-            FBOExtensions *ext = _instances[contextID];
-            if (!ext)
-            {
-                ext = new FBOExtensions(contextID);
-                _instances[contextID] = ext;
-            }
-            return ext;
-        }
+        static FBOExtensions* instance(unsigned contextID, bool createIfNotInitalized);
 
         bool isSupported() const { return _supported; }
 

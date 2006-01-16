@@ -81,6 +81,11 @@ class OSG_EXPORT Shader : public osg::Object
         /** Get the Shader type as a descriptive string. */
         const char* getTypename() const;
 
+        /** release OpenGL objects in specified graphics context if State
+            object is passed, otherwise release OpenGL objects for all graphics context if
+            State object pointer NULL.*/
+        void releaseGLObjects(osg::State* state=0) const;
+
         /** Mark our PCSs as needing recompilation.
           * Also mark Programs that depend on us as needing relink */
         void dirtyShader();        

@@ -1999,9 +1999,19 @@ void Program::dirtyProgram()
 }
 
 
-void Program::releaseGLObjects(osg::State* /*state*/) const
+void Program::releaseGLObjects(osg::State* state) const
 {
-    // TODO
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
+    {
+        if (_shaderList[i].valid()) _shaderList[i]->releaseGLObjects(state);
+    }
+
+    if (!state) _pcpList.setAllElementsTo(0);
+    else
+    {
+        unsigned int contextID = state->getContextID();
+        _pcpList[contextID] = 0;
+    }   
 }
 
 
@@ -2274,13 +2284,13 @@ void Program::PerContextProgram::linkProgram()
     osg::notify(osg::INFO) << std::endl;
 }
 
-void Program::PerContextProgram::validateProgram()
+bool Program::PerContextProgram::validateProgram()
 {
     GLint validated = GL_FALSE;
     _extensions->glValidateProgram( _glProgramHandle );
     _extensions->glGetProgramiv( _glProgramHandle, GL_VALIDATE_STATUS, &validated );
     if( validated == GL_TRUE)
-        return;
+        return true;
 
     osg::notify(osg::INFO)
         << "glValidateProgram FAILED \"" << _program->getName() << "\""
@@ -2293,6 +2303,8 @@ void Program::PerContextProgram::validateProgram()
         osg::notify(osg::INFO) << "infolog:\n" << infoLog << std::endl;
 
     osg::notify(osg::INFO) << std::endl;
+    
+    return false;
 }
 
 bool Program::PerContextProgram::getInfoLog( std::string& infoLog ) const

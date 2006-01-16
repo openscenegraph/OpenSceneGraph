@@ -132,7 +132,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 void requestLink();
                 void linkProgram();
-                void validateProgram();
+                bool validateProgram();
                 bool needsLink() const {return _needsLink;}
                 bool isLinked() const {return _isLinked;}
                 bool getInfoLog( std::string& infoLog ) const;

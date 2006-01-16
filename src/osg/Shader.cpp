@@ -201,6 +201,16 @@ const char* Shader::getTypename() const
 }
 
 
+void Shader::releaseGLObjects(osg::State* state) const
+{
+    if (!state) _pcsList.setAllElementsTo(0);
+    else
+    {
+        unsigned int contextID = state->getContextID();
+        _pcsList[contextID] = 0;
+    }
+}
+
 void Shader::compileShader( unsigned int contextID ) const
 {
     PerContextShader* pcs = getPCS( contextID );

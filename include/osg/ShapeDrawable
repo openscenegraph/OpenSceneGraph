@@ -62,7 +62,7 @@ class TessellationHints : public Object
         enum TessellationMode
         {
             USE_SHAPE_DEFAULTS,
-                USE_TARGET_NUM_FACES
+            USE_TARGET_NUM_FACES
         };
 
         inline void setTessellationMode(TessellationMode mode) { _TessellationMode=mode; }

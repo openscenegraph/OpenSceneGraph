@@ -53,7 +53,7 @@ else
     #4) strip the absolute path prefix of SRCDIR leading to the current
     ## directory, so we are left with the relative path from the current
     ## directory to the link source directory.  Prefix that with PFX.
-    LINK="$PFX"`echo $LINK_ECHO_OPTION $SRCDIR $ROOTDIR  | awk '{ print substr($1,length($2)+2,512) }'`/`basename $LNDEST`
+    LINK=`echo $LINK_ECHO_OPTION $SRCDIR | sed -e "s,$ROOTDIR/,$PFX,"`/`basename $LNDEST`	
 
     #5) Create the links by changing to the destination directory,
     ## removing any old versions of the link and creating a new one

@@ -132,7 +132,7 @@ __install :
 	    if [ -f $$f ] ; \
 	    then \
 	        INSTPATH=$$THISDIR/$$f; \
-	        $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
+	        $(INSTALL) "$$INSTPATH" "$(INSTDEST)/$$f";\
 	    fi\
 	  done\
 	fi

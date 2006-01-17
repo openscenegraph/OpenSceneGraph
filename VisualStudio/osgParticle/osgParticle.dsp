@@ -183,6 +183,10 @@ SOURCE=..\..\include\osgParticle\AngularAccelOperator
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgParticle\BoxPlacer
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgParticle\CenteredPlacer
 # End Source File
 # Begin Source File

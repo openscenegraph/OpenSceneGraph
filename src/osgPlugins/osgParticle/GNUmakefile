@@ -3,7 +3,8 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	IO_AccelOperator.cpp\
-        IO_AngularAccelOperator.cpp\
+	IO_AngularAccelOperator.cpp\
+	IO_BoxPlacer.cpp\
 	IO_CenteredPlacer.cpp\
 	IO_ConnectedParticleSystem.cpp\
 	IO_Emitter.cpp\

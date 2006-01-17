@@ -104,6 +104,10 @@ SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_AngularAccelOperator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_BoxPlacer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_CenteredPlacer.cpp
 # End Source File
 # Begin Source File

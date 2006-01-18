@@ -1,5 +1,9 @@
 #include <stdio.h>
 
+#if defined(_MSC_VER)
+    #include <io.h>
+#endif 
+
 #include "ESRIShape.h"
 
 using namespace ESRIShape ;

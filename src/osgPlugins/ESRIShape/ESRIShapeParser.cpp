@@ -2,6 +2,11 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 
+#if defined(_MSC_VER)
+    #include <io.h>
+    #include <stdio.h>
+#endif 
+
 #include "ESRIShapeParser.h"
 
 using namespace ESRIShape;

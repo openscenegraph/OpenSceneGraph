@@ -51,7 +51,11 @@ public:
 
     virtual ReadResult readImage(const std::string &_file, const osgDB::ReaderWriter::Options *_opts) const
     {
-        if (!HDRLoader::isHDRFile(_file.c_str()))
+        std::string filepath = osgDB::findDataFile(_file, _opts);
+        if (filepath.empty()) 
+            return ReadResult::FILE_NOT_FOUND;
+
+        if (!HDRLoader::isHDRFile(filepath.c_str()))
             return ReadResult::FILE_NOT_HANDLED;
 
         float mul = 1.0f;
@@ -96,9 +100,9 @@ public:
         }
 
         HDRLoaderResult res;
-        bool ret = HDRLoader::load(_file.c_str(), rawRGBE, res);
+        bool ret = HDRLoader::load(filepath.c_str(), rawRGBE, res);
         if (!ret)
-            return ReadResult::FILE_NOT_FOUND;
+            return ReadResult::ERROR_IN_READING_FILE;
 
         // create the osg::Image to fill in.
         osg::Image *img = new osg::Image;
@@ -126,7 +130,7 @@ public:
             int pixelFormat = GL_RGB;
             int dataType = GL_UNSIGNED_BYTE;
 
-            img->setFileName(_file.c_str());
+            img->setFileName(filepath.c_str());
             img->setImage(  res.width, res.height, 1,
                             3, // Why this value are here?
                             pixelFormat,
@@ -154,7 +158,7 @@ public:
                 pixelFormat = GL_RGB;
             }
 
-            img->setFileName(_file.c_str());
+            img->setFileName(filepath.c_str());
             img->setImage(  res.width, res.height, 1,
                             internalFormat,
                             pixelFormat,

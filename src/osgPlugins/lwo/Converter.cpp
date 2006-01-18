@@ -207,6 +207,7 @@ void Converter::build_scene_graph(Object &obj)
                         options_.max_tex_units,
                         options_.use_osgfx,
                         options_.force_arb_compression,
+                        options_.texturemap_bindings,
                         db_options_.get());
                     if (sgrp) 
                     {

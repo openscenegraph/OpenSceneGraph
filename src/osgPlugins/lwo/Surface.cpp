@@ -255,7 +255,7 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, c
     }
 }
 
-osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units, bool use_osgfx, bool force_arb_compression, const osgDB::ReaderWriter::Options* db_options) const
+osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units, bool use_osgfx, bool force_arb_compression, const VertexMap_binding_map &texmap_bindings, const osgDB::ReaderWriter::Options* db_options) const
 {
     int num_points = 0;
 
@@ -281,6 +281,25 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
                     }
                 }
                 ++unit;
+            }
+        }
+    }
+
+    for (VertexMap_binding_map::const_iterator i=texmap_bindings.begin(); i!=texmap_bindings.end(); ++i)
+    {
+        for (VertexMap_map::const_iterator j=texture_maps->begin(); j!=texture_maps->end(); ++j)
+        {
+            if (j->first == i->first)
+            {
+                if (geo->getTexCoordArray(i->second) != 0)
+                {
+                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicing binding of texture map '" << i->first << "' to texunit " << i->second << " will replace existing texture map" << std::endl;
+                }
+                geo->setTexCoordArray(i->second, j->second->asVec2Array(num_points));
+            }
+            else
+            {
+                osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicit binding of texture map '" << i->first << "' to texunit " << i->second << " was requested but there is no such map in this LWO file" << std::endl;
             }
         }
     }

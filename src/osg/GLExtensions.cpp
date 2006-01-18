@@ -24,6 +24,10 @@
 #include <vector>
 #include <set>
 
+#if defined(WIN32)
+#include <windows.h>
+#endif
+
 bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
 {
     typedef std::set<std::string>  ExtensionSet;
@@ -56,6 +60,44 @@ bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
             startOfWord = endOfWord+1;
         }
         if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
+
+#if defined(WIN32)
+
+        // add WGL extensions to the list
+
+        typedef const char* WINAPI WGLGETEXTENSIONSSTRINGARB(HDC);
+        WGLGETEXTENSIONSSTRINGARB* wglGetExtensionsStringARB = 
+            (WGLGETEXTENSIONSSTRINGARB*)getGLExtensionFuncPtr("wglGetExtensionsStringARB");
+        
+        typedef const char* WINAPI WGLGETEXTENSIONSSTRINGEXT();
+        WGLGETEXTENSIONSSTRINGEXT* wglGetExtensionsStringEXT = 
+            (WGLGETEXTENSIONSSTRINGEXT*)getGLExtensionFuncPtr("wglGetExtensionsStringEXT");
+        
+        const char* wglextensions = 0;
+        
+        if (wglGetExtensionsStringARB)
+        {
+            HDC dc = wglGetCurrentDC();
+            wglextensions = wglGetExtensionsStringARB(dc);
+        }
+        else if (wglGetExtensionsStringEXT)
+        {
+            wglextensions = wglGetExtensionsStringEXT();
+        }
+
+        if (wglextensions)
+        {    
+            const char* startOfWord = wglextensions;
+            const char* endOfWord;
+            while ((endOfWord = strchr(startOfWord, ' ')))
+            {
+                extensionSet.insert(std::string(startOfWord, endOfWord));
+                startOfWord = endOfWord+1;
+            }
+            if (*startOfWord != 0) extensionSet.insert(std::string(startOfWord));
+        }
+
+#endif
         
         osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
         for(ExtensionSet::iterator itr=extensionSet.begin();

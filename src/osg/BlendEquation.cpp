@@ -108,8 +108,8 @@ void BlendEquation::Extensions::setupGLExtenions(unsigned int contextID)
     _isBlendEquationSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_equation") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
     
-    _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "SGIX_blend_alpha_minmax");
-    _isLogicOpSupported = isGLExtensionSupported(contextID, "EXT_blend_logic_op");
+    _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
+    _isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
 
     _glBlendEquation = getGLExtensionFuncPtr("glBlendEquation", "glBlendEquationEXT");
 }

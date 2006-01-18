@@ -373,7 +373,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
     
     // check whether PBuffer-RTT is supported or not
     if (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT && 
-        !osg::isGLExtensionSupported(state.getContextID(), "ARB_render_texture"))
+        !osg::isGLExtensionSupported(state.getContextID(), "WGL_ARB_render_texture"))
     {    
         if (renderTargetImplemntation<renderTargetFallback)
             renderTargetImplemntation = renderTargetFallback;

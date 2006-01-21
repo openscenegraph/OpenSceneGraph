@@ -55,7 +55,8 @@ TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT);
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT);
 
-BEGIN_VALUE_REFLECTOR(osg::FBOExtensions)
+BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
+	I_BaseType(osg::Referenced);
 	I_Method0(bool, isSupported);
 END_REFLECTOR
 

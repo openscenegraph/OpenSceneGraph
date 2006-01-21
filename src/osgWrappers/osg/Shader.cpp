@@ -12,6 +12,7 @@
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osg/Shader>
+#include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -44,6 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_Method0(const std::string &, getShaderSource);
 	I_Method0(osg::Shader::Type, getType);
 	I_Method0(const char *, getTypename);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	I_Method0(void, dirtyShader);
 	I_Method1(void, compileShader, IN, unsigned int, contextID);
 	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program);

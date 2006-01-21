@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	AccelOperator.cpp\
 	AngularAccelOperator.cpp\
+	BoxPlacer.cpp\
 	CenteredPlacer.cpp\
 	ConnectedParticleSystem.cpp\
 	ConstantRateCounter.cpp\

@@ -44,14 +44,21 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             char command[1024];
 
         #if defined(WIN32) && !defined(__CYGWIN__)
-            strcpy(dirname, getenv("TEMP"));
+            if ( getenv("TEMP") != NULL ){
+               strcpy(dirname, getenv("TEMP"));
+            }else{
+               //TEMP environment variable not set so pick current directory.
+               strcpy(dirname, "./");
+            }
             strcat(dirname, "\\.osgdb_zip");
 
             mkdir(dirname);
+            // Using unzip.exe from http://www.info-zip.org/pub/infozip/UnZip.html
+            // unzip.exe must be in your path.  (PATH environment variable).
             sprintf( command,
-                "unzip -o -qq %s -d %s",
+                "unzip -o -qq \"%s\" -d \"%s\"",
                 fileName.c_str(), dirname);
-
+            osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
             system( command );
 
         #else
@@ -70,6 +77,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
             local_options->getDatabasePathList().push_front(dirname);
 
+            // deactivate the automatic generation of images to geode's.
             bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();
             osgDB::Registry::instance()->setCreateNodeFromImage(false);
 
@@ -93,7 +101,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
         #if defined(WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
-            sprintf( command, "erase /S /Q %s", dirname );
+            sprintf( command, "erase /S /Q \"%s\"", dirname );
             system( command );
         #else
 

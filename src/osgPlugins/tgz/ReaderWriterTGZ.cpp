@@ -50,12 +50,18 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             char command[1024];
 
         #if defined(_WIN32) && !defined(__CYGWIN__)
-            strcpy(dirname, "C:/Windows/Temp/.osgdb_tgz");
+            if ( getenv("TEMP") != NULL ){
+               strcpy(dirname, getenv("TEMP"));
+            }else{
+               //TEMP environment variable not set so pick current directory.
+               strcpy(dirname, "./");
+            }
+            strcat(dirname, ".osgdb_tgz");
             mkdir( dirname);
-            // note, the following C option under windows does not seem to work...
-            // will pursue an better tar.exe later. RO.
+            // Using tar.exe from http://www.cygwin.com/
+            // tar.exe must be in your path.  (PATH environment variable).
             sprintf( command,
-                "tar xfz %s %s",
+                "tar xfCz \"%s\" \"%s\"",
                 fileName.c_str(), dirname );
         #endif
 
@@ -113,14 +119,12 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             osgDB::Registry::instance()->setCreateNodeFromImage(prevCreateNodeFromImage);
 
         #if defined(_WIN32) && !defined(__CYGWIN__)
-            // note, is this the right command for windows?
-            // is there any way of overiding the Y/N option? RO.
-            sprintf( command, "erase %s", dirname );
-            system( command );
+            sprintf( command, "erase /F /Q /S \"%s\"", dirname );
         #else
             sprintf( command, "rm -rf %s", dirname );
-            system( command );
         #endif
+            osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
+            system( command );
 
             if( grp->getNumChildren() == 0 )
             {

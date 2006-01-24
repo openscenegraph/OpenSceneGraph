@@ -493,6 +493,8 @@ void SceneView::cull()
         _renderStage = new RenderStage;
     }
 
+    bool computeNearFar = (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR) && getSceneData()!=0;
+
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
 
@@ -502,7 +504,7 @@ void SceneView::cull()
             _cullVisitor->setTraversalMask(_cullMaskLeft);
             cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
-            if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            if (computeNearFar)
             {
                 CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
                 CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
@@ -516,7 +518,7 @@ void SceneView::cull()
             _cullVisitor->setTraversalMask(_cullMaskRight);
             cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
-            if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            if (computeNearFar)
             {
                 CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
                 CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
@@ -547,8 +549,7 @@ void SceneView::cull()
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
            
-            if (_cullVisitorLeft->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR &&
-                _cullVisitorRight->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            if (computeNearFar)
             {
                 CullVisitor::value_type zNear = osg::minimum(_cullVisitorLeft->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedNearPlane());
                 CullVisitor::value_type zFar =  osg::maximum(_cullVisitorLeft->getCalculatedFarPlane(),_cullVisitorRight->getCalculatedFarPlane());
@@ -564,7 +565,7 @@ void SceneView::cull()
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
-        if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+        if (computeNearFar)
         {
             CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
             CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();

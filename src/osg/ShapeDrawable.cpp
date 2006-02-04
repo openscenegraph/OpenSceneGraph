@@ -1378,7 +1378,7 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 
             // do last point by hand to ensure no round off errors.
             _functor.vertex(tx+rTop,ty,tz+zTop);
-            _functor.vertex(ty+rBase,ty,tz+zBase);
+            _functor.vertex(tx+rBase,ty,tz+zBase);
 
         _functor.end();
 

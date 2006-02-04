@@ -227,6 +227,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * note, should only be called from the draw thread.
           * Note, must only be called from a valid graphics context. */
         virtual void compileGLObjects(osg::State& state,double& availableTime);
+        
+        /** Report how many items are in the _fileRequestList queue */
+        unsigned int getFileRequestListSize() const { return _fileRequestList.size(); }
+
+        /** Report how many items are in the _dataToCompileList queue */
+        unsigned int getDataToCompileListSize() const { return _dataToCompileList.size(); }
+
 
         typedef std::list< osg::ref_ptr<osg::PagedLOD> >   PagedLODList;
         typedef std::set< osg::ref_ptr<osg::StateSet> >    StateSetList;

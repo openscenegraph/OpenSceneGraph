@@ -26,7 +26,8 @@ osgParticle::ParticleProcessor::ParticleProcessor()
     _lifeTime(0.0),
     _startTime(0.0),
     _currentTime(0.0),
-    _resetTime(0.0)
+    _resetTime(0.0),
+    _frameNumber(0)
 {
     setCullingActive(false);
 }
@@ -64,51 +65,59 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
 
             if (nv.getFrameStamp())
             {
-
-                // retrieve the current time
-                double t = nv.getFrameStamp()->getReferenceTime();
-
-                // reset this processor if we've reached the reset point
-                if ((_currentTime >= _resetTime) && (_resetTime > 0))
-                {
-                    _currentTime = 0;
-                    _t0 = -1;
-                }
-
-                // skip if we haven't initialized _t0 yet
-                if (_t0 != -1)
+                //added- 1/17/06- bgandere@nps.edu 
+                //a check to make sure we havent updated yet this frame
+                if(_frameNumber < nv.getFrameStamp()->getFrameNumber())
                 {
 
-                    // check whether the processor is alive
-                    bool alive = false;
-                    if (_currentTime >= _startTime)
+                    // retrieve the current time
+                    double t = nv.getFrameStamp()->getReferenceTime();
+
+                    // reset this processor if we've reached the reset point
+                    if ((_currentTime >= _resetTime) && (_resetTime > 0))
                     {
-                        if (_endless || (_currentTime < (_startTime + _lifeTime)))
-                            alive = true;
+                        _currentTime = 0;
+                        _t0 = -1;
                     }
 
-                    // update current time
-                    _currentTime += t - _t0;
-
-                    // process only if the particle system is not frozen/culled
-                    if (alive && 
-                        _enabled && 
-                        !_ps->isFrozen() && 
-                        (_ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !_ps->getFreezeOnCull()))
+                    // skip if we haven't initialized _t0 yet
+                    if (_t0 != -1)
                     {
-                        // initialize matrix flags
-                        _need_ltw_matrix = true;
-                        _need_wtl_matrix = true;
-                        _current_nodevisitor = &nv;
 
-                        // do some process (unimplemented in this base class)
-                        process(t - _t0);
+                        // check whether the processor is alive
+                        bool alive = false;
+                        if (_currentTime >= _startTime)
+                        {
+                            if (_endless || (_currentTime < (_startTime + _lifeTime)))
+                                alive = true;
+                        }
+
+                        // update current time
+                        _currentTime += t - _t0;
+
+                        // process only if the particle system is not frozen/culled
+                        if (alive && 
+                            _enabled && 
+                            !_ps->isFrozen() && 
+                            (_ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !_ps->getFreezeOnCull()))
+                        {
+                            // initialize matrix flags
+                            _need_ltw_matrix = true;
+                            _need_wtl_matrix = true;
+                            _current_nodevisitor = &nv;
+
+                            // do some process (unimplemented in this base class)
+                            process(t - _t0);
+                        }
                     }
+
+                    // update _t0
+                    _t0 = t;
                 }
 
-                // update _t0
-                _t0 = t;
-
+                //added- 1/17/06- bgandere@nps.edu 
+                //updates the _frameNumber, keeping it current 
+                _frameNumber = nv.getFrameStamp()->getFrameNumber();
             }
             else
             {

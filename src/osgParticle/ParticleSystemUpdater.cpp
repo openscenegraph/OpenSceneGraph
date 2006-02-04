@@ -6,7 +6,7 @@
 using namespace osg;
 
 osgParticle::ParticleSystemUpdater::ParticleSystemUpdater()
-: osg::Node(), _t0(-1)
+: osg::Node(), _t0(-1), _frameNumber(0)
 {
     setCullingActive(false);
 }
@@ -26,19 +26,28 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
     if (cv) {
         if (nv.getFrameStamp())
         {
-            double t = nv.getFrameStamp()->getReferenceTime();
-            if (_t0 != -1)
-            {
-                ParticleSystem_Vector::iterator i;
-                for (i=_psv.begin(); i!=_psv.end(); ++i)
+          //added 1/17/06- bgandere@nps.edu 
+          //ensures ParticleSystem will only be updated once per frame
+          //regardless of the number of cameras viewing it
+          if( _frameNumber < nv.getFrameStamp()->getFrameNumber())
+          {
+                double t = nv.getFrameStamp()->getReferenceTime();
+                if (_t0 != -1)
                 {
-                    if (!i->get()->isFrozen() && (i->get()->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !i->get()->getFreezeOnCull()))
+                    ParticleSystem_Vector::iterator i;
+                    for (i=_psv.begin(); i!=_psv.end(); ++i)
                     {
-                        i->get()->update(t - _t0);
+                        if (!i->get()->isFrozen() && (i->get()->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !i->get()->getFreezeOnCull()))
+                        {
+                            i->get()->update(t - _t0);
+                        }
                     }
                 }
-            }
-            _t0 = t;
+                _t0 = t;
+          }
+          //added- 1/17/06- bgandere@nps.edu 
+          //set frame number to the current frame number
+          _frameNumber = nv.getFrameStamp()->getFrameNumber();
         }
         else
         {

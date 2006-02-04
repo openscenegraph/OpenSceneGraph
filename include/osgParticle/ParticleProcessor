@@ -167,6 +167,10 @@ namespace osgParticle
         double _startTime;
         double _currentTime;
         double _resetTime;
+        
+        //added- 1/17/06- bgandere@nps.edu 
+        //a var to keep from doing multiple updates
+        int _frameNumber;
     };
     
     // INLINE FUNCTIONS

@@ -234,7 +234,7 @@ void OsgCameraGroup::_init()
     if (_thread_model==ThreadPerCamera && _cfg->getNumberOfCameras()>1)
     {
         // switch on thread safe reference counting by default when running multi-threaded.
-        osg::Referenced::setThreadSafeReferenceCounting(true);
+        // osg::Referenced::setThreadSafeReferenceCounting(true);
     }
 
     _scene_data = NULL;

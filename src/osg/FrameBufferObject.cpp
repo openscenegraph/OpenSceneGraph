@@ -338,10 +338,13 @@ FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment& attachment)
     osg::Image* image = attachment._image.get();
     if (image)
     {
-        if (image->s()>0 && image->t()>0 && image->getPixelFormat()>0)
+        if (image->s()>0 && image->t()>0)
         {
+            GLenum format = attachment._image->getInternalTextureFormat();
+            if (format == 0)
+                format = attachment._internalFormat;
             _ximpl = new Pimpl(Pimpl::RENDERBUFFER);
-            _ximpl->renderbufferTarget = new osg::RenderBuffer(image->s(), image->t(), image->getPixelFormat());
+            _ximpl->renderbufferTarget = new osg::RenderBuffer(image->s(), image->t(), format);
         }
         else
         {
@@ -379,7 +382,6 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
         {
             _ximpl->textureTarget->compileGLObjects(state);
             tobj = _ximpl->textureTarget->getTextureObject(contextID);
-
         }
         if (!tobj || tobj->_id == 0)
             return;
@@ -390,6 +392,8 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
             minFilter==Texture::NEAREST_MIPMAP_LINEAR || 
             minFilter==Texture::NEAREST_MIPMAP_NEAREST)
         {
+            state.setActiveTextureUnit(0);
+            state.applyTextureAttribute(0, _ximpl->textureTarget.get());
             ext->glGenerateMipmapEXT(_ximpl->textureTarget->getTextureTarget());
         }
 

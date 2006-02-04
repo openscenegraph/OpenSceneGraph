@@ -87,6 +87,10 @@ namespace osgParticle
         
         ParticleSystem_Vector _psv;
         double _t0;
+        
+        //added 1/17/06- bgandere@nps.edu
+        //a var to keep from doing multiple updates per frame
+        int _frameNumber; 
     };
     
     // INLINE FUNCTIONS

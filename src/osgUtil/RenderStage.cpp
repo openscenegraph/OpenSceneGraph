@@ -684,8 +684,9 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         {
             if (itr->second._texture.valid() && itr->second._mipMapGeneration) 
             {
-                itr->second._texture->apply(state);
-                // fbo_ext->glGenerateMipmapEXT(itr->second._texture->getTextureTarget());
+                state.setActiveTextureUnit(0);
+                state.applyTextureAttribute(0, itr->second._texture.get());
+                fbo_ext->glGenerateMipmapEXT(itr->second._texture->getTextureTarget());
             }
         }
     }

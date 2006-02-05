@@ -10,11 +10,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+
+//The dlopen calls were not adding to OS X until 10.3 
+#ifdef __APPLE__
+#include <AvailabilityMacros.h>
+#if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
+#define APPLE_PRE_10_3
+#endif
+#endif
+
 #if defined(WIN32) && !defined(__CYGWIN__)
 #include <Io.h>
 #include <Windows.h>
 #include <Winbase.h>
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
 #include <mach-o/dyld.h>
 #else // all other unix
 #include <unistd.h>
@@ -51,7 +60,7 @@ DynamicLibrary::~DynamicLibrary()
         osg::notify(osg::INFO)<<"Closing DynamicLibrary "<<_name<<std::endl;
 #if defined(WIN32) && !defined(__CYGWIN__)
         FreeLibrary((HMODULE)_handle);
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
         NSUnLinkModule(static_cast<NSModule>(_handle), FALSE);
 #elif defined(__hpux__)
         // fortunately, shl_t is a pointer
@@ -85,7 +94,7 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     handle = LoadLibrary( libraryName.c_str() );
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
     NSObjectFileImage image;
     // NSModule os_handle = NULL;
     if (NSCreateObjectFileImageFromFile(libraryName.c_str(), &image) == NSObjectFileImageSuccess) {
@@ -119,7 +128,7 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
 #if defined(WIN32) && !defined(__CYGWIN__)
     return (DynamicLibrary::PROC_ADDRESS)GetProcAddress( (HMODULE)_handle,
                                                          procName.c_str() );
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
     std::string temp("_");
     NSSymbol symbol;
     temp += procName;   // Mac OS X prepends an underscore on function names

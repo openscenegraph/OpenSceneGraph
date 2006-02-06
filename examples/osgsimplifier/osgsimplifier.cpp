@@ -133,7 +133,6 @@ int main( int argc, char **argv )
 
     std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
-    osgUtil::Simplifier simplifier(sampleRatio, maxError);
     
     //loadedModel->accept(simplifier);
 
@@ -166,10 +165,9 @@ int main( int argc, char **argv )
         {
             if (keyFlag == 1) ratio *= multiplier;
             if (keyFlag == 2) ratio /= multiplier;
-            if (ratio>1.0f) ratio=1.0f;
             if (ratio<minRatio) ratio=minRatio;
             
-            simplifier.setSampleRatio(ratio);
+            osgUtil::Simplifier simplifier(ratio, maxError);
 
             std::cout<<"Runing osgUtil::Simplifier with SampleRatio="<<ratio<<" maxError="<<maxError<<" ...";
             std::cout.flush();

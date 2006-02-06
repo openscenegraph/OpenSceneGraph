@@ -63,8 +63,8 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
         virtual bool continueSimplificationImplementation(float nextError, unsigned int numOriginalPrimitives, unsigned int numRemainingPrimitives) const
         {
-            if (nextError<=getMaximumError()) return true;
-            return (float)numRemainingPrimitives > (float)numOriginalPrimitives * getSampleRatio();
+            if (getSampleRatio()<1.0) return ((float)numRemainingPrimitives > ((float)numOriginalPrimitives) * getSampleRatio()) && nextError<=getMaximumError();
+            else return ((float)numRemainingPrimitives < ((float)numOriginalPrimitives) * getSampleRatio());
         }
 
 
@@ -87,6 +87,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
         /** simply the geometry, whilst protecting key points from being modified.*/
         void simplify(osg::Geometry& geometry, const IndexList& protectedPoints);
+
 
     protected:
     

@@ -70,6 +70,7 @@ PLUGIN_DIRS = \
 	directx\
 	dw\
 	dxf\
+    ESRIShape\
 	flt\
 	hdr\
 	ive\
@@ -79,6 +80,7 @@ PLUGIN_DIRS = \
 	lws\
 	md2\
 	net\
+    normals\
 	obj\
 	osg\
 	osga\

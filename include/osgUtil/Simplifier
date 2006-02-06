@@ -43,6 +43,12 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
           * Note, Only used when up sampling i.e. sampleRatio > 1.0.*/
         void setMaximumLength(float length) { _maximumLength = length; }
         float getMaximumLength() const { return _maximumLength; }
+
+        void setDoTriStrip(bool on) { _triStrip = on; }
+        bool getDoTriStrip() const { return _triStrip; }
+
+        void setSmoothing(bool on) { _smoothing = on; }
+        bool getSmoothing() const { return _smoothing; }
         
         class ContinueSimplificationCallback : public osg::Referenced
         {
@@ -101,6 +107,8 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
         float _sampleRatio;
         float _maximumError;
         float _maximumLength;
+        bool  _triStrip;
+        bool  _smoothing;
         
         osg::ref_ptr<ContinueSimplificationCallback> _continueSimplificationCallback;
     

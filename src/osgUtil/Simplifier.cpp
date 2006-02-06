@@ -1671,12 +1671,6 @@ void EdgeCollapse::copyBackToGeometry()
     _geometry->getPrimitiveSetList().clear();
     _geometry->addPrimitiveSet(primitives);
 
-#if 1    
-    osgUtil::SmoothingVisitor::smooth(*_geometry);
-    
-    osgUtil::TriStripVisitor stripper;
-    stripper.stripify(*_geometry);
-#endif  
 }
 
 
@@ -1684,7 +1678,10 @@ Simplifier::Simplifier(float sampleRatio, float maximumError, float maximumLengt
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _sampleRatio(sampleRatio),
             _maximumError(maximumError),
-            _maximumLength(maximumLength)
+            _maximumLength(maximumLength),
+            _triStrip(true),
+            _smoothing(true)
+            
 {
 }
 
@@ -1749,4 +1746,16 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
     }
     
     ec.copyBackToGeometry();
+
+    if (_smoothing)
+    {
+        osgUtil::SmoothingVisitor::smooth(geometry);
+    }
+    
+    if (_triStrip)
+    {
+        osgUtil::TriStripVisitor stripper;
+        stripper.stripify(geometry);
+    }
+
 }

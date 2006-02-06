@@ -53,7 +53,7 @@ public:
 
 
     EdgeCollapse():
-       _computeErrorMetricUsingLength(false)  { osg::notify(osg::NOTICE)<<"EdgeCollapse() CONSTRUCTOR"<<std::endl; }
+       _computeErrorMetricUsingLength(false)  {}
         
     ~EdgeCollapse();
 
@@ -1671,7 +1671,7 @@ void EdgeCollapse::copyBackToGeometry()
     _geometry->getPrimitiveSetList().clear();
     _geometry->addPrimitiveSet(primitives);
 
-#if 0    
+#if 1    
     osgUtil::SmoothingVisitor::smooth(*_geometry);
     
     osgUtil::TriStripVisitor stripper;
@@ -1680,10 +1680,11 @@ void EdgeCollapse::copyBackToGeometry()
 }
 
 
-Simplifier::Simplifier(float sampleRatio, float maximumError):
+Simplifier::Simplifier(float sampleRatio, float maximumError, float maximumLength):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _sampleRatio(sampleRatio),
-            _maximumError(maximumError)
+            _maximumError(maximumError),
+            _maximumLength(maximumLength)
 {
 }
 

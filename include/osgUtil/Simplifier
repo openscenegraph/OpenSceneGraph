@@ -28,14 +28,21 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 {
     public:
 
-        Simplifier(float sampleRatio=1.0f, float maximumError=0.0f);
+        Simplifier(float sampleRatio=1.0f, float maximumError=FLT_MAX, float maximumLength=0.0);
 
 
         void setSampleRatio(float sampleRatio) { _sampleRatio = sampleRatio; }
         float getSampleRatio() const { return _sampleRatio; }
 
+        /** Set the maximum point error that all point removals must be less than to permit removal of a point.
+          * Note, Only used when down sampling. i.e. sampleRatio < 1.0*/
         void setMaximumError(float error) { _maximumError = error; }
         float getMaximumError() const { return _maximumError; }
+
+        /** Set the maximum length target that all edges must be shorted than.
+          * Note, Only used when up sampling i.e. sampleRatio > 1.0.*/
+        void setMaximumLength(float length) { _maximumLength = length; }
+        float getMaximumLength() const { return _maximumLength; }
         
         class ContinueSimplificationCallback : public osg::Referenced
         {
@@ -64,7 +71,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
         virtual bool continueSimplificationImplementation(float nextError, unsigned int numOriginalPrimitives, unsigned int numRemainingPrimitives) const
         {
             if (getSampleRatio()<1.0) return ((float)numRemainingPrimitives > ((float)numOriginalPrimitives) * getSampleRatio()) && nextError<=getMaximumError();
-            else return ((float)numRemainingPrimitives < ((float)numOriginalPrimitives) * getSampleRatio());
+            else return ((float)numRemainingPrimitives < ((float)numOriginalPrimitives) * getSampleRatio()) && nextError>getMaximumLength();
         }
 
 
@@ -93,6 +100,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
     
         float _sampleRatio;
         float _maximumError;
+        float _maximumLength;
         
         osg::ref_ptr<ContinueSimplificationCallback> _continueSimplificationCallback;
     

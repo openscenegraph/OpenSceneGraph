@@ -658,6 +658,32 @@ void DelaunayConstraint::merge(DelaunayConstraint *dco)
     if (varr) vmerge->insert(vmerge->end(),varr->begin(),varr->end());
 }
 
+void DelaunayTriangulator::_uniqueifyPoints()
+{
+    std::sort( points_->begin(), points_->end() );
+
+    osg::ref_ptr<osg::Vec3Array> temppts = new osg::Vec3Array;
+    // This won't work... must write our own unique() that compares only the first
+    // two terms of a Vec3 for equivalency
+    //std::insert_iterator< osg::Vec3Array > ti( *(temppts.get()), temppts->begin() );
+    //std::unique_copy( points_->begin(), points_->end(), ti );
+
+    osg::Vec3Array::iterator p = points_->begin();
+    osg::Vec3 v = *p;
+    for( ; p != points_->end(); p++ )
+    {
+        if( v[0] == (*p)[0] && v[1] == (*p)[1] )
+            continue;
+
+        temppts->push_back( (v = *p));
+    }
+
+    points_->clear();
+    std::insert_iterator< osg::Vec3Array > ci(*(points_.get()),points_->begin());
+    std::copy( temppts->begin(), temppts->end(), ci );
+}
+
+
 
 bool DelaunayTriangulator::triangulate()
 {
@@ -675,6 +701,10 @@ bool DelaunayTriangulator::triangulate()
         osg::notify(osg::WARN) << "Warning: DelaunayTriangulator::triangulate(): too few sample points" << std::endl;
         return false;
     }
+
+    // Eliminate duplicate lat/lon points from input coordinates.
+    _uniqueifyPoints();
+
 
     // initialize storage structures
     Triangle_list triangles;

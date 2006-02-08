@@ -167,6 +167,8 @@ private:
 
     // GWM these lines provide required edges in the triangulated shape.
     linelist constraint_lines;
+
+    void _uniqueifyPoints();
     
 };
 

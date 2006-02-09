@@ -25,11 +25,17 @@ TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList);
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	I_BaseType(osg::NodeVisitor);
-	I_ConstructorWithDefaults2(IN, float, sampleRatio, 1.0f, IN, float, maximumError, 0.0f);
+	I_ConstructorWithDefaults3(IN, float, sampleRatio, 1.0f, IN, float, maximumError, FLT_MAX, IN, float, maximumLength, 0.0);
 	I_Method1(void, setSampleRatio, IN, float, sampleRatio);
 	I_Method0(float, getSampleRatio);
 	I_Method1(void, setMaximumError, IN, float, error);
 	I_Method0(float, getMaximumError);
+	I_Method1(void, setMaximumLength, IN, float, length);
+	I_Method0(float, getMaximumLength);
+	I_Method1(void, setDoTriStrip, IN, bool, on);
+	I_Method0(bool, getDoTriStrip);
+	I_Method1(void, setSmoothing, IN, bool, on);
+	I_Method0(bool, getSmoothing);
 	I_Method1(void, setContinueSimplificationCallback, IN, osgUtil::Simplifier::ContinueSimplificationCallback *, cb);
 	I_Method0(osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
 	I_Method0(const osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
@@ -39,8 +45,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	I_Method1(void, simplify, IN, osg::Geometry &, geometry);
 	I_Method2(void, simplify, IN, osg::Geometry &, geometry, IN, const osgUtil::Simplifier::IndexList &, protectedPoints);
 	I_Property(osgUtil::Simplifier::ContinueSimplificationCallback *, ContinueSimplificationCallback);
+	I_Property(bool, DoTriStrip);
 	I_Property(float, MaximumError);
+	I_Property(float, MaximumLength);
 	I_Property(float, SampleRatio);
+	I_Property(bool, Smoothing);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier::ContinueSimplificationCallback)

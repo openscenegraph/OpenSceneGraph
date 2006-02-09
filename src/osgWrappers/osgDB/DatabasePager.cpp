@@ -92,13 +92,17 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method1(bool, getCompileGLObjectsForContextID, IN, unsigned int, contextID);
 	I_Method0(bool, requiresCompileGLObjects);
 	I_Method2(void, compileGLObjects, IN, osg::State &, state, IN, double &, availableTime);
+	I_Method0(unsigned int, getFileRequestListSize);
+	I_Method0(unsigned int, getDataToCompileListSize);
 	I_Property(bool, AcceptNewDatabaseRequests);
 	I_IndexedProperty1(bool, CompileGLObjectsForContextID, unsigned int, contextID);
+	I_ReadOnlyProperty(unsigned int, DataToCompileListSize);
 	I_Property(bool, DatabasePagerThreadPause);
 	I_Property(bool, DeleteRemovedSubgraphsInDatabaseThread);
 	I_Property(bool, DoPreCompile);
 	I_Property(osgDB::DatabasePager::DrawablePolicy, DrawablePolicy);
 	I_Property(double, ExpiryDelay);
+	I_ReadOnlyProperty(unsigned int, FileRequestListSize);
 	I_ReadOnlyProperty(osg::Block *, FrameBlock);
 	I_Property(unsigned int, MaximumNumOfObjectsToCompilePerFrame);
 	I_Property(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame);

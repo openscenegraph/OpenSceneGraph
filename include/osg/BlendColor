@@ -30,6 +30,8 @@ class OSG_EXPORT BlendColor : public StateAttribute
 
         BlendColor();
         
+        BlendColor(const osg::Vec4& constantColor);
+        
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         BlendColor(const BlendColor& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(trans,copyop),

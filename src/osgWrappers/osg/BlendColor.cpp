@@ -27,6 +27,7 @@
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0();
+	I_Constructor1(IN, const osg::Vec4 &, constantColor);
 	I_ConstructorWithDefaults2(IN, const osg::BlendColor &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);

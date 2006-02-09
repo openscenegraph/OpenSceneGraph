@@ -20,7 +20,12 @@ using namespace osg;
 
 
 BlendColor::BlendColor() :
-            _constantColor(0.0f,0.0f,0.0f,0.0f)
+    _constantColor(0.0f,0.0f,0.0f,0.0f)
+{
+}
+
+BlendColor::BlendColor(const osg::Vec4& constantColor):
+    _constantColor(constantColor)
 {
 }
 

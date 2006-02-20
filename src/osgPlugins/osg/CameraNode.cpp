@@ -71,8 +71,11 @@ bool CameraNode_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("transformOrder %w"))
     {
-        if      (fr[1].matchWord("PRE_MULTIPLE")) camera.setTransformOrder(osg::CameraNode::PRE_MULTIPLE);
-        else if (fr[1].matchWord("POST_MULTIPLE")) camera.setTransformOrder(osg::CameraNode::POST_MULTIPLE);
+        if      (fr[1].matchWord("PRE_MULTIPLY")) camera.setTransformOrder(osg::CameraNode::PRE_MULTIPLY);
+        else if (fr[1].matchWord("POST_MULTIPLY")) camera.setTransformOrder(osg::CameraNode::POST_MULTIPLY);
+        // the following are for backwards compatibility.
+        else if (fr[1].matchWord("PRE_MULTIPLE")) camera.setTransformOrder(osg::CameraNode::PRE_MULTIPLY);
+        else if (fr[1].matchWord("POST_MULTIPLE")) camera.setTransformOrder(osg::CameraNode::POST_MULTIPLY);
 
         fr += 2;
         iteratorAdvanced = true;
@@ -235,8 +238,8 @@ bool CameraNode_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"transformOrder ";
     switch(camera.getTransformOrder())
     {
-        case(osg::CameraNode::PRE_MULTIPLE): fw <<"PRE_MULTIPLE"<<std::endl; break;
-        case(osg::CameraNode::POST_MULTIPLE): fw <<"POST_MULTIPLE"<<std::endl; break;
+        case(osg::CameraNode::PRE_MULTIPLY): fw <<"PRE_MULTIPLY"<<std::endl; break;
+        case(osg::CameraNode::POST_MULTIPLY): fw <<"POST_MULTIPLY"<<std::endl; break;
     }
 
     writeMatrix(camera.getProjectionMatrix(),fw,"ProjectionMatrix");

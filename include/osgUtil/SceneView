@@ -28,7 +28,7 @@
 namespace osgUtil {
 
 /**
- * SceneView is literally a view of a scene, encapsulating the 'camera' 
+ * SceneView is literaly a view of a scene, encapsulating the 'camera' 
  * (not to be confused with Producer::Camera) (modelview+projection matrices),
  * global state, lights and the scene itself.  Provides
  * methods for setting up the view and rendering it.
@@ -122,7 +122,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         const osg::Vec4& getClearColor() const { return _camera->getClearColor(); }
         
         
-        /** Mannually set the redraw interlaced stereo stencil mask request flag to control whether to redraw the stencil buffer on the next frame.*/  
+        /** Manually set the redraw interlaced stereo stencil mask request flag to control whether to redraw the stencil buffer on the next frame.*/  
         void setRedrawInterlacedStereoStencilMask(bool flag) { _redrawInterlacedStereoStencilMask = flag; }
 
         /** Get the redraw interlaced stereo stencil mask request flag.*/  
@@ -207,7 +207,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Get the const projection matrix.*/
         const osg::Matrixd& getProjectionMatrix() const { return _camera->getProjectionMatrix(); }
 
-        /** Get the othographic settings of the orthographic projection matrix. 
+        /** Get the orthographic settings of the orthographic projection matrix. 
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
         bool getProjectionMatrixAsOrtho(double& left, double& right,
                                         double& bottom, double& top,

@@ -26,7 +26,7 @@ OverlayNode::OverlayNode():
     _texEnvMode(GL_DECAL),
     _textureUnit(1),
     _textureSizeHint(1024),
-    _continousUpdate(false)
+    _continuousUpdate(false)
 {
     init();
 }
@@ -37,7 +37,7 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     _texEnvMode(copy._texEnvMode),
     _textureUnit(copy._textureUnit),
     _textureSizeHint(copy._textureSizeHint),
-    _continousUpdate(copy._continousUpdate)
+    _continuousUpdate(copy._continuousUpdate)
 {
     init();
 }
@@ -109,7 +109,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
     unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 
     // if we need to redraw then do cull traversal on camera.
-    if (!_textureObjectValidList[contextID] || _continousUpdate)
+    if (!_textureObjectValidList[contextID] || _continuousUpdate)
     {
     
         // now compute the camera's view and projection matrix to point at the shadower (the camera's children)

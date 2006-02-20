@@ -152,7 +152,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             png_read_end(png, endinfo);
 
             GLenum pixelFormat = 0;
-            GLenum dataType = depth==8?GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT;
+            GLenum dataType = depth<=8?GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT;
             switch(color)
             {
               case(PNG_SOLID): pixelFormat = GL_LUMINANCE; break;

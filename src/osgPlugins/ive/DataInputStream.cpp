@@ -456,7 +456,8 @@ osg::Array* DataInputStream::readArray(){
     }
 }
 
-osg::IntArray* DataInputStream::readIntArray(){
+osg::IntArray* DataInputStream::readIntArray()
+{
     int size = readInt();
     osg::IntArray* a = new osg::IntArray(size);
     
@@ -468,13 +469,14 @@ osg::IntArray* DataInputStream::readIntArray(){
     if (_verboseOutput) std::cout<<"read/writeIntArray() ["<<size<<"]"<<std::endl;  
 
     if (_byteswap) {
-       for (int  i = 0 ; i < size ; i++ ) osg::swapBytes((char *)&(a[i]),INTSIZE) ;
+       for (int  i = 0 ; i < size ; i++ ) osg::swapBytes((char *)&((*a)[i]),INTSIZE) ;
     }
        
     return a;
 }
 
-osg::UByteArray* DataInputStream::readUByteArray(){
+osg::UByteArray* DataInputStream::readUByteArray()
+{
     int size = readInt();
     osg::UByteArray* a = new osg::UByteArray(size);
 
@@ -488,7 +490,8 @@ osg::UByteArray* DataInputStream::readUByteArray(){
     return a;
 }
 
-osg::UShortArray* DataInputStream::readUShortArray(){
+osg::UShortArray* DataInputStream::readUShortArray()
+{
     int size = readInt();
     osg::UShortArray* a = new osg::UShortArray(size);
 
@@ -501,8 +504,8 @@ osg::UShortArray* DataInputStream::readUShortArray(){
     
     if (_byteswap)
     {
-       for (int i = 0 ; i < size ; i++ ) 
-        osg::swapBytes((char *)&((*a)[i]),SHORTSIZE) ;
+        for (int i = 0 ; i < size ; i++ ) 
+            osg::swapBytes((char *)&((*a)[i]),SHORTSIZE) ;
     }
     return a;
 }
@@ -521,7 +524,8 @@ osg::UIntArray* DataInputStream::readUIntArray()
     
     if (_byteswap)
     {
-       for (int i = 0 ; i < size ; i++ ) osg::swapBytes((char *)&(a[i]),INTSIZE) ;
+        for (int i = 0 ; i < size ; i++ )
+            osg::swapBytes((char *)&((*a)[i]),INTSIZE) ;
     }
     return a;
 }
@@ -556,7 +560,8 @@ osg::FloatArray* DataInputStream::readFloatArray()
     
     if (_byteswap)
     {
-       for (int i = 0 ; i < size ; i++ ) osg::swapBytes((char *)&(a[i]),FLOATSIZE) ;
+        for (int i = 0 ; i < size ; i++ )
+            osg::swapBytes((char *)&((*a)[i]),FLOATSIZE) ;
     }
     return a;
 }
@@ -600,7 +605,8 @@ osg::Vec3Array* DataInputStream::readVec3Array()
     if (_byteswap)
     {
        float *ptr = (float*)&((*a)[0]) ;
-       for (int i = 0 ; i < size*3 ; i++ ) {
+       for (int i = 0 ; i < size*3 ; i++ )
+       {
           osg::swapBytes((char *)&(ptr[i]),FLOATSIZE) ;
        }
     }
@@ -684,6 +690,15 @@ osg::Vec2sArray* DataInputStream::readVec2sArray()
 
     if (_verboseOutput) std::cout<<"read/writeVec2sArray() ["<<size<<"]"<<std::endl;
 
+    if (_byteswap)
+    {
+       short *ptr = (short*)&((*a)[0]) ;
+       for (int i = 0 ; i < size*2 ; i++ )
+       {
+          osg::swapBytes((char *)&(ptr[i]), SHORTSIZE) ;
+       }
+    }
+
     return a;
 }
 
@@ -699,6 +714,16 @@ osg::Vec3sArray* DataInputStream::readVec3sArray()
 
     if (_verboseOutput) std::cout<<"read/writeVec3sArray() ["<<size<<"]"<<std::endl;
 
+
+    if (_byteswap)
+    {
+       short *ptr = (short*)&((*a)[0]) ;
+       for (int i = 0 ; i < size*3 ; i++ )
+       {
+          osg::swapBytes((char *)&(ptr[i]), SHORTSIZE) ;
+       }
+    }
+
     return a;
 }
 
@@ -713,6 +738,15 @@ osg::Vec4sArray* DataInputStream::readVec4sArray()
         throw Exception("DataInputStream::readVec4sArray(): Failed to read Vec4s array.");
 
     if (_verboseOutput) std::cout<<"read/writeVec4sArray() ["<<size<<"]"<<std::endl;
+
+    if (_byteswap)
+    {
+       short *ptr = (short*)&((*a)[0]) ;
+       for (int i = 0 ; i < size*4 ; i++ )
+       {
+          osg::swapBytes((char *)&(ptr[i]), SHORTSIZE) ;
+       }
+    }
 
     return a;
 }

@@ -187,7 +187,7 @@ osg::Node* createModel(bool overlay)
     if (overlay)
     {
         osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
-        overlayNode->setContinousUpdate(true);
+        overlayNode->setContinuousUpdate(true);
         overlayNode->setOverlaySubgraph(movingModel);
         overlayNode->addChild(baseModel);
         root->addChild(overlayNode);

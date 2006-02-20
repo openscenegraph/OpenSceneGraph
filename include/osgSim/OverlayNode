@@ -50,10 +50,10 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         void dirtyOverlayTexture();
         
         /** Set whether the OverlayNode should update the overlay texture on every frame.*/
-        void setContinousUpdate(bool update) { _continousUpdate = update; }
+        void setContinuousUpdate(bool update) { _continuousUpdate = update; }
 
         /** Get whether the OverlayNode should update the overlay texture on every frame.*/
-        bool getContinousUpdate() const { return _continousUpdate; }
+        bool getContinuousUpdate() const { return _continuousUpdate; }
 
 
         /** Set the clear color to use when rendering the overlay subgraph.*/
@@ -66,7 +66,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         void setTexEnvMode(GLenum mode);
         
         /** Get the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
-        GLenum getTexEnvMode() { return _texEnvMode; }
+        GLenum getTexEnvMode() const { return _texEnvMode; }
 
         /** Set the texture unit that the texture should be assigned to.*/
         void setOverlayTextureUnit(unsigned int unit);
@@ -101,7 +101,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         osg::ref_ptr<osg::CameraNode>   _camera;
         
-        // overaly subgraph is render to a texture
+        // overlay subgraph is render to a texture
         osg::ref_ptr<osg::Node>         _overlaySubgraph;
         
         // texgen node to generate the tex coordinates for us
@@ -116,7 +116,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         unsigned int                    _textureSizeHint;
         osg::ref_ptr<osg::Texture2D>    _texture;
 
-        bool                            _continousUpdate;
+        bool                            _continuousUpdate;
         osg::Polytope                   _textureFrustum;
 };
 

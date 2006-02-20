@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <string>
 
 #include <osg/Geode>
 #include <osg/Group>
@@ -222,6 +223,18 @@ void ReaderWriterPFB::initPerformer()
     //         pfdInitConverter((*itr).c_str());
     //     }
     pfdInitConverter(".pfb");
+
+    /*
+     * Tell Performer to look in OSG search path
+     */
+    const osgDB::FilePathList& filePath = osgDB::Registry::instance()->getDataFilePathList();
+    std::string path = "";
+    for (unsigned int i = 0; i < filePath.size(); i++) {
+        if (i != 0)
+            path += ":";
+        path += filePath[i];
+    }
+    pfFilePath(path.c_str());
 
     pfConfig();
 }

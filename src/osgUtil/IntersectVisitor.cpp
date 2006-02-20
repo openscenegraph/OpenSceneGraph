@@ -812,7 +812,7 @@ void PickVisitor::apply(osg::CameraNode& camera)
                                   camera.getViewMatrix(),
                                   _mx, _my );
         }
-        else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLE)
+        else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLY)
         {
             runNestedPickVisitor( camera,
                                   camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
@@ -820,7 +820,7 @@ void PickVisitor::apply(osg::CameraNode& camera)
                                   _lastViewMatrix * camera.getViewMatrix(),
                                   _mx, _my );
         }
-        else // PRE_MULTIPLE
+        else // PRE_MULTIPLY
         {
             runNestedPickVisitor( camera,
                                   camera.getViewport() ? camera.getViewport() : _lastViewport.get(),

@@ -85,11 +85,14 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
 
         enum TransformOrder
         {
-            PRE_MULTIPLE,
-            POST_MULTIPLE  
+            PRE_MULTIPLY,
+            POST_MULTIPLY  
         };
         
+        /** Set the transformation order for world-to-local and local-to-world transformation.*/
         void setTransformOrder(TransformOrder order) { _transformOrder = order; }
+
+        /** Get the transformation order.*/
         TransformOrder getTransformOrder() const { return _transformOrder; }
         
 
@@ -195,12 +198,16 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
             SEPERATE_WINDOW
         };
 
+        /** Set the render target.*/
         void setRenderTargetImplementation(RenderTargetImplementation impl);
 
+        /** Set the render target and fall-back that's used if the former isn't available.*/
         void setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback);
 
+        /** Get the render target.*/
         RenderTargetImplementation getRenderTargetImplementation() const { return _renderTargetImplementation; }
 
+        /** Get the render target fallback.*/
         RenderTargetImplementation getRenderTargetFallback() const { return _renderTargetFallback; }
 
 

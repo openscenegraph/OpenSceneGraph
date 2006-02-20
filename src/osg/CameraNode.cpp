@@ -18,7 +18,7 @@ using namespace osg;
 CameraNode::CameraNode():
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
     _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
-    _transformOrder(PRE_MULTIPLE),
+    _transformOrder(PRE_MULTIPLY),
     _renderOrder(POST_RENDER),
     _drawBuffer(GL_NONE),
     _readBuffer(GL_NONE),
@@ -236,7 +236,7 @@ bool CameraNode::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_referenceFrame==RELATIVE_RF)
     {
-        if (_transformOrder==PRE_MULTIPLE)
+        if (_transformOrder==PRE_MULTIPLY)
         {
             matrix.preMult(_viewMatrix);
         }
@@ -258,7 +258,7 @@ bool CameraNode::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 
     if (_referenceFrame==RELATIVE_RF)
     {
-        if (_transformOrder==PRE_MULTIPLE)
+        if (_transformOrder==PRE_MULTIPLY)
         {
             // note doing inverse so pre becomes post.
             matrix.postMult(inverse);

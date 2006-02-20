@@ -38,7 +38,7 @@ osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
     // set the view matrix
     camera->setCullingActive(false);    
     camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
-    camera->setTransformOrder(osg::CameraNode::POST_MULTIPLE);
+    camera->setTransformOrder(osg::CameraNode::POST_MULTIPLY);
 
     camera->setProjectionMatrix(osg::Matrixd::scale(-1.0f,1.0f,1.0f));
     camera->setViewMatrix(osg::Matrixd::rotate(osg::inDegrees(180.0f),0.0f,1.0f,0.0f));

@@ -1081,12 +1081,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
         pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()));
         pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()));
     }
-    else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLE)
+    else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLY)
     {
         pushProjectionMatrix(createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix()));
         pushModelViewMatrix(createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix()));
     }
-    else // pre multiple 
+    else // pre multiply 
     {
         pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix()));
         pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix()));

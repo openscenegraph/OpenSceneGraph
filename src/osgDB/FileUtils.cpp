@@ -497,8 +497,10 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         std::string path;
         CFURLRef urlRef = CFBundleCopyBundleURL(mainBundle);
         if(urlRef)
+        {
             path = GetPathFromCFURLRef(urlRef);
-        CFRelease(urlRef); // docs say we are responsible for releasing CFURLRef
+            CFRelease(urlRef); // docs say we are responsible for releasing CFURLRef
+        }
         return path;
         
     }
@@ -513,8 +515,10 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         std::string path;
         CFURLRef urlRef = CFBundleCopyBuiltInPlugInsURL(mainBundle);
         if(urlRef)
+        {
             path = GetPathFromCFURLRef(urlRef);
-        CFRelease(urlRef);
+            CFRelease(urlRef);
+        }
         return path;
         
     }
@@ -524,8 +528,10 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         std::string path;
         CFURLRef urlRef = CFBundleCopyResourcesDirectoryURL(mainBundle);
         if(urlRef)
+        {
             path = GetPathFromCFURLRef(urlRef);
-        CFRelease(urlRef);
+            CFRelease(urlRef);
+        }
         return path;
     }
 
@@ -682,11 +688,13 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             // Get the URL
             url = CFURLCreateFromFSRef( 0, &f );
             if(url)
+            {
                 filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
+                CFRelease( url );
+            }
             else
                 osg::notify( osg::DEBUG_INFO ) << "Couldn't create CFURLRef for User's application support Path" << std::endl;
 
-            CFRelease( url );
             url = NULL;
         }
         else
@@ -702,11 +710,13 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             url = CFURLCreateFromFSRef( 0, &f );
             
             if(url)
+            {
                 filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
+                CFRelease( url );
+            }
             else
                 osg::notify( osg::DEBUG_INFO ) << "Couldn't create CFURLRef for local System's ApplicationSupport Path" << std::endl;
 
-            CFRelease( url );
             url = NULL;
         }
         else
@@ -724,11 +734,13 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             url = CFURLCreateFromFSRef( 0, &f );
             
             if(url)
+            {
                 filepath.push_back(GetPathFromCFURLRef(url) + OSG_PLUGIN_PATH);
+                CFRelease( url );
+            }
             else
                 osg::notify( osg::DEBUG_INFO ) << "Couldn't create CFURLRef for network Application Support Path" << std::endl;
 
-            CFRelease( url );
             url = NULL;
         }
         else

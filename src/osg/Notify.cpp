@@ -39,8 +39,6 @@ bool osg::initNotifyLevel()
 
     if (s_NotifyInit) return true;
     
-    s_NotifyInit = true;
-
     // g_NotifyLevel
     // =============
 
@@ -72,6 +70,8 @@ bool osg::initNotifyLevel()
         else std::cout << "Warning: invalid OSG_NOTIFY_LEVEL set ("<<stringOSGNOTIFYLEVEL<<")"<<std::endl;
  
     }
+
+    s_NotifyInit = true;
 
     return true;
 

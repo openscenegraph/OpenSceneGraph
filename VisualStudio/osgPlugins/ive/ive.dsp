@@ -108,6 +108,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\AnimationPathCallback.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\AutoTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.cpp
 # End Source File
 # Begin Source File
@@ -453,6 +457,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\AnimationPath.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\AnimationPathCallback.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AutoTransform.h
 # End Source File
 # Begin Source File
 

@@ -61,6 +61,7 @@
 #include "LOD.h"
 #include "PagedLOD.h"
 #include "PositionAttitudeTransform.h"
+#include "AutoTransform.h"
 #include "DOFTransform.h"
 #include "Transform.h"
 #include "Switch.h"
@@ -913,6 +914,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::PositionAttitudeTransform*>(node)){
             ((ive::PositionAttitudeTransform*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::AutoTransform*>(node)){
+            ((ive::AutoTransform*)(node))->write(this);
         }
         else if(dynamic_cast<const osgSim::DOFTransform*>(node)){
             ((ive::DOFTransform*)(node))->write(this);

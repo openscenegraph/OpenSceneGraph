@@ -7,6 +7,7 @@ CXXFILES =\
 	AnimationPath.cpp\
 	AzimElevationSector.cpp\
 	AzimSector.cpp\
+	AutoTransform.cpp\
 	Billboard.cpp\
 	BlendFunc.cpp\
 	BlinkSequence.cpp\

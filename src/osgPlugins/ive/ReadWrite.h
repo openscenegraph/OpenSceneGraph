@@ -36,6 +36,7 @@ namespace ive {
 #define IVEPROXYNODE                    0x00000027
 #define IVECAMERANODE                   0x00000028
 #define IVECAMERAVIEW                   0x00000029
+#define IVEAUTOTRANSFORM                0x00000030
 
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050

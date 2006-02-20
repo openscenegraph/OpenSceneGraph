@@ -58,6 +58,7 @@
 #include "LOD.h"
 #include "PagedLOD.h"
 #include "PositionAttitudeTransform.h"
+#include "AutoTransform.h"
 #include "DOFTransform.h"
 #include "Transform.h"
 #include "Switch.h"
@@ -1140,6 +1141,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEPOSITIONATTITUDETRANSFORM){
         node = new osg::PositionAttitudeTransform();
         ((ive::PositionAttitudeTransform*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEAUTOTRANSFORM){
+        node = new osg::AutoTransform();
+        ((ive::AutoTransform*)(node))->read(this);
     }
     else if(nodeTypeID== IVEDOFTRANSFORM){
         node = new osgSim::DOFTransform();

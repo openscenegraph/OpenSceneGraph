@@ -84,6 +84,8 @@
 #include <osg/io_utils>
 #include <osgDB/ReadFile>
 
+#include <stdio.h>
+
 
 using namespace ive;
 using namespace std;
@@ -199,9 +201,9 @@ unsigned int DataInputStream::readUInt(){
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUInt(): Failed to read unsigned int value.");
 
-    if (_verboseOutput) std::cout<<"read/writeUInt() ["<<s<<"]"<<std::endl;
-    
     if (_byteswap) osg::swapBytes((char *)&s,INTSIZE) ;
+    
+    if (_verboseOutput) std::cout<<"read/writeUInt() ["<<s<<"]"<<std::endl;
     
     return s;
 }
@@ -220,9 +222,10 @@ int DataInputStream::readInt(){
     // if (_istream->rdstate() & _istream->failbit)
     //    throw Exception("DataInputStream::readInt(): Failed to read int value.");
 
-    if (_verboseOutput) std::cout<<"read/writeInt() ["<<i<<"]"<<std::endl;
     
     if (_byteswap) osg::swapBytes((char *)&i,INTSIZE) ;
+    
+    if (_verboseOutput) std::cout<<"read/writeInt() ["<<i<<"]"<<std::endl;
 
     return i;
 }
@@ -247,9 +250,9 @@ float DataInputStream::readFloat(){
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readFloat(): Failed to read float value.");
 
-    if (_verboseOutput) std::cout<<"read/writeFloat() ["<<f<<"]"<<std::endl;
-    
     if (_byteswap) osg::swapBytes((char *)&f,FLOATSIZE) ;
+
+    if (_verboseOutput) std::cout<<"read/writeFloat() ["<<f<<"]"<<std::endl;
     return f;
 }
 
@@ -259,9 +262,9 @@ long DataInputStream::readLong(){
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readLong(): Failed to read long value.");
 
-    if (_verboseOutput) std::cout<<"read/writeLong() ["<<l<<"]"<<std::endl;
-    
     if (_byteswap) osg::swapBytes((char *)&l,LONGSIZE) ;
+
+    if (_verboseOutput) std::cout<<"read/writeLong() ["<<l<<"]"<<std::endl;
     return l;
 }
 
@@ -270,6 +273,8 @@ unsigned long DataInputStream::readULong(){
     _istream->read((char*)&l, LONGSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readULong(): Failed to read unsigned long value.");
+
+    if (_byteswap) osg::swapBytes((char *)&l,LONGSIZE) ;
 
     if (_verboseOutput) std::cout<<"read/writeULong() ["<<l<<"]"<<std::endl;
     
@@ -282,9 +287,8 @@ double DataInputStream::readDouble(){
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readDouble(): Failed to read double value.");
 
-    if (_verboseOutput) std::cout<<"read/writeDouble() ["<<d<<"]"<<std::endl;
-    
     if (_byteswap) osg::swapBytes((char *)&d,DOUBLESIZE) ;
+    if (_verboseOutput) std::cout<<"read/writeDouble() ["<<d<<"]"<<std::endl;
     return d;
 }
 
@@ -432,7 +436,6 @@ osg::Geometry::AttributeBinding DataInputStream::readBinding(){
 
 osg::Array* DataInputStream::readArray(){
     char c = readChar();
-
     switch((int)c){
         case 0: return readIntArray();
         case 1: return readUByteArray();
@@ -498,7 +501,8 @@ osg::UShortArray* DataInputStream::readUShortArray(){
     
     if (_byteswap)
     {
-       for (int i = 0 ; i < size ; i++ ) osg::swapBytes((char *)&(a[i]),SHORTSIZE) ;
+       for (int i = 0 ; i < size ; i++ ) 
+        osg::swapBytes((char *)&((*a)[i]),SHORTSIZE) ;
     }
     return a;
 }

@@ -26,10 +26,11 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
     arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line paramters");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
     arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindigs.");
+
+    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
     
 
     // construct the viewer.
@@ -52,7 +53,7 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
@@ -67,7 +68,7 @@ int main( int argc, char **argv )
 
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
 
-    // read the scene from the list of file specified commandline args.
+    // read the scene from the list of file specified command line args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
     // if no model has been successfully loaded report failure.
@@ -80,7 +81,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
@@ -90,7 +91,8 @@ int main( int argc, char **argv )
 
     std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
-    // optimize the scene graph, remove rendundent nodes and state etc.
+
+    // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 

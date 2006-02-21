@@ -82,6 +82,7 @@ class OSG_EXPORT AutoTransform : public Transform
 
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
+        virtual BoundingSphere computeBound() const;
 
 
     protected :

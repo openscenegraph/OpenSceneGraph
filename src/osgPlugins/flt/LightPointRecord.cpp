@@ -80,6 +80,7 @@ void LightPointRecord::endian()
         ENDIAN( pSLightPoint->sfSignificance );
         ENDIAN( pSLightPoint->sfDrawOrder );
         ENDIAN( pSLightPoint->sfFlags );
+        ENDIAN( pSLightPoint->dwBackColor );
         pSLightPoint->animRot.endian();
     }
 

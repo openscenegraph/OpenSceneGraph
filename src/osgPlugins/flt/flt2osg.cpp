@@ -184,6 +184,7 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
     // ancillary records. We need just one of these to put into the scenegraph
     // Nick.
     bool mxFound  = false;
+    static int numVerts = 0;
 
     osg::Group* parent = &osgParent;
     // Visit ancillary records
@@ -255,18 +256,22 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
 
         case VERTEX_C_OP:
             visitVertex(osgPrimary, (VertexRecord*)child);
+            numVerts++;
             break;
 
         case VERTEX_CN_OP:
             visitNormalVertex(osgPrimary, (NormalVertexRecord*)child);
+            numVerts++;
             break;
 
         case VERTEX_CNT_OP:
             visitNormalTextureVertex(osgPrimary, (NormalTextureVertexRecord*)child);
+            numVerts++;
             break;
 
         case VERTEX_CT_OP:
             visitTextureVertex(osgPrimary, (TextureVertexRecord*)child);
+            numVerts++;
             break;
 
         default:
@@ -2879,7 +2884,13 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
             {
                  DPRINT(stderr, "   ** LP is BIdirectional...\n") ;
                  
-                 osg::Vec4 backcolor = pSLightPoint->dwBackColor.get() ;
+                 // pSLightPoint->dwBackColor is not a color, it is handle
+                 // Get the color from the ColorPool
+                 // Nick
+                 // osg::Vec4 backcolor = pSLightPoint->dwBackColor.get() ;
+                 ColorPool* pColorPool = rec->getFltFile()->getColorPool();
+                 osg::Vec4 backcolor = pColorPool->getColor(pSLightPoint->dwBackColor);
+
                  if ( backcolor.w() == 0.0 ) backcolor[3] = 1.0 ;
                  osgSim::LightPoint lp2( true, coords[ nl], backcolor, 1.0f, pointRadius);
                  DPRINT(stderr, "   Backface Color = %f, %f, %f, %f\n", backcolor.x(), backcolor.y(), backcolor.z(), backcolor.w()) ;

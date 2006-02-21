@@ -17,7 +17,7 @@ struct SLightPoint
     char        szIdent[8];         // 7 char ASCII ID; 0 terminates
     int16       iMaterial;          // Surface material code (for DFAD)
     int16       iFeature;           // Feature ID (for DFAD)
-    color32     dwBackColor;        // Back color for all bidirectional points
+    int32        dwBackColor;        // Back color for all bidirectional points
     int32       diMode;             // Display mode
                                     // 0 = RASTER
                                     // 1 = CALLIGRAPHIC
@@ -134,7 +134,7 @@ struct SLightPointIndex
     int32       iAppearanceIndex;   // Index into lt pt appearance palette
     int32       iAnimationIndex;    // Index into lt pt animation palette
     int32       iDrawOrder;         // Calligraphic draw order
-	int32       iReserved_0;        // Reserved
+    int32       iReserved_0;        // Reserved
 };
 
 class LightPointIndexRecord : public PrimNodeRecord

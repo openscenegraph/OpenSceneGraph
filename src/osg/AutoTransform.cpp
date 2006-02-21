@@ -189,3 +189,16 @@ void AutoTransform::accept(NodeVisitor& nv)
     // now do the proper accept
     Transform::accept(nv);
 }
+
+BoundingSphere AutoTransform::computeBound() const
+{
+    BoundingSphere bsphere;
+
+    float scale( 1.f );
+    if ( getAutoScaleToScreen() && _firstTimeToInitEyePoint )
+        return bsphere;
+
+    bsphere = Transform::computeBound();
+
+    return bsphere;
+}

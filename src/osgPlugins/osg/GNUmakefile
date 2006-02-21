@@ -12,6 +12,7 @@ CXXFILES =\
         ClearNode.cpp\
         ClipNode.cpp\
         ClipPlane.cpp\
+        ClusterCullingCallback.cpp\
         ColorMask.cpp\
         ConvexPlanarOccluder.cpp\
         CoordinateSystemNode.cpp\

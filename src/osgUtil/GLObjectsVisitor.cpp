@@ -113,6 +113,6 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     
     if (_mode & CHECK_BLACK_LISTED_MODES)
     {
-        stateset.checkValididityOfAssociatedModes(*_state.get());
+        stateset.checkValidityOfAssociatedModes(*_state.get());
     }
 }

@@ -32,7 +32,7 @@ int PointSprite::compare(const StateAttribute& sa) const
 }
 
 
-bool PointSprite::checkValididityOfAssociatedModes(osg::State& state) const
+bool PointSprite::checkValidityOfAssociatedModes(osg::State& state) const
 {
 
     bool modeValid = isPointSpriteSupported(state.getContextID());

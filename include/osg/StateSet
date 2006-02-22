@@ -413,7 +413,7 @@ class OSG_EXPORT StateSet : public Object
         /** Check the modes associated with this StateSet are supported by current OpenGL drivers,
           * and if not set the associated mode in osg::State to be black listed/invalid.
           * Return true if all associated modes are valid.*/
-        bool checkValididityOfAssociatedModes(State& state) const;
+        bool checkValidityOfAssociatedModes(State& state) const;
 
         /** call compile on all StateAttributes contained within this StateSet.*/
         void compileGLObjects(State& state) const;

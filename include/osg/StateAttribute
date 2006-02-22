@@ -273,7 +273,7 @@ class OSG_EXPORT StateAttribute : public Object
         /** Check the modes associated with this StateAttribute are supported by current OpenGL drivers,
           * and if not set the associated mode in osg::State to be black listed/invalid.
           * Return true if all associated modes are valid.*/
-        virtual bool checkValididityOfAssociatedModes(osg::State&) const
+        virtual bool checkValidityOfAssociatedModes(osg::State&) const
         {
             // default to no black listed GLMode's associated with use of the StateAttribute.
             return true;

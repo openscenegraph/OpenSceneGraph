@@ -1131,7 +1131,7 @@ const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int
     return getAttributePair(_textureAttributeList[unit],type,0);
 }
 
-bool StateSet::checkValididityOfAssociatedModes(osg::State& state) const
+bool StateSet::checkValidityOfAssociatedModes(osg::State& state) const
 {
 
 
@@ -1140,7 +1140,7 @@ bool StateSet::checkValididityOfAssociatedModes(osg::State& state) const
         itr!=_attributeList.end();
         ++itr)
     {
-        if (!itr->second.first->checkValididityOfAssociatedModes(state)) modesValid = false;
+        if (!itr->second.first->checkValidityOfAssociatedModes(state)) modesValid = false;
     }
 
     for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
@@ -1151,7 +1151,7 @@ bool StateSet::checkValididityOfAssociatedModes(osg::State& state) const
             itr!=taitr->end();
             ++itr)
         {
-            if (!itr->second.first->checkValididityOfAssociatedModes(state)) modesValid = false;
+            if (!itr->second.first->checkValidityOfAssociatedModes(state)) modesValid = false;
         }
     }
 

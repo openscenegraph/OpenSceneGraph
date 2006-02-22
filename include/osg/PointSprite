@@ -46,7 +46,7 @@ public:
             return true;
         }
 
-        virtual bool checkValididityOfAssociatedModes(osg::State&) const;
+        virtual bool checkValidityOfAssociatedModes(osg::State&) const;
 
         virtual bool isTextureAttribute() const { return true; }
 

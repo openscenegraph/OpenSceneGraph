@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/AutoTransform>
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/NodeVisitor>
@@ -60,6 +61,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	I_Method0(bool, getAutoScaleToScreen);
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
 	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
+	I_Method0(osg::BoundingSphere, computeBound);
 	I_Property(osg::AutoTransform::AutoRotateMode, AutoRotateMode);
 	I_Property(bool, AutoScaleToScreen);
 	I_Property(float, AutoUpdateEyeMovementTolerance);

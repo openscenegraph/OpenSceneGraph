@@ -40,8 +40,8 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_Method0(osg::Node *, getOverlaySubgraph);
 	I_Method0(const osg::Node *, getOverlaySubgraph);
 	I_Method0(void, dirtyOverlayTexture);
-	I_Method1(void, setContinousUpdate, IN, bool, update);
-	I_Method0(bool, getContinousUpdate);
+	I_Method1(void, setContinuousUpdate, IN, bool, update);
+	I_Method0(bool, getContinuousUpdate);
 	I_Method1(void, setOverlayClearColor, IN, const osg::Vec4 &, color);
 	I_Method0(const osg::Vec4 &, getOverlayClearColor);
 	I_Method1(void, setTexEnvMode, IN, GLenum, mode);
@@ -53,7 +53,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_Method0(osg::CameraNode *, getCamera);
 	I_Method0(const osg::CameraNode *, getCamera);
 	I_ReadOnlyProperty(osg::CameraNode *, Camera);
-	I_Property(bool, ContinousUpdate);
+	I_Property(bool, ContinuousUpdate);
 	I_Property(const osg::Vec4 &, OverlayClearColor);
 	I_Property(osg::Node *, OverlaySubgraph);
 	I_Property(unsigned int, OverlayTextureSizeHint);

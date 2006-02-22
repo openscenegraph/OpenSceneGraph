@@ -160,9 +160,8 @@ class OSG_EXPORT Drawable : public Object
           * is modified.*/
         void dirtyBound();
 
-        /** get bounding box of geoset.
-          * Note, now made virtual to make it possible to implement user-drawn
-          * objects albeit somewhat crudely, to be improved later.
+        /** Get BoundingBox of Drawable.
+          * If the BoundingBox is not up to date then its updated via an internal call to computeBond().
           */
         inline const BoundingBox& getBound() const
         {

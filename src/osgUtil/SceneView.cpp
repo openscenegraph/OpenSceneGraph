@@ -163,7 +163,9 @@ void SceneView::setDefaults(unsigned int options)
 
     if (options & COMPILE_GLOBJECTS_AT_INIT)
     {
-        GLObjectsVisitor::Mode  dlvMode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
+        GLObjectsVisitor::Mode  dlvMode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS |
+                                          GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES | 
+                                          GLObjectsVisitor::CHECK_BLACK_LISTED_MODES;
 
     #ifdef __sgi
         dlvMode = GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;

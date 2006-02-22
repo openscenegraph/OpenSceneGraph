@@ -40,7 +40,8 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
             RELEASE_DISPLAY_LISTS               = 0x10,
             RELEASE_STATE_ATTRIBUTES            = 0x20,
             SWITCH_ON_VERTEX_BUFFER_OBJECTS     = 0x40,
-            SWITCH_OFF_VERTEX_BUFFER_OBJECTS    = 0x80
+            SWITCH_OFF_VERTEX_BUFFER_OBJECTS    = 0x80,
+            CHECK_BLACK_LISTED_MODES            = 0xA0
         };
         
         typedef unsigned int Mode;
@@ -50,7 +51,15 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
           * display list/texture objects etc. Default mode is to compile 
           * GL objects.
           */
-        GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES);
+        GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES|CHECK_BLACK_LISTED_MODES);
+        
+        
+        virtual void reset()
+        {
+            _drawablesAppliedSet.clear();
+            _stateSetAppliedSet.clear();
+        }
+
         
         /** Set the operational mode of what operations to do on the scene graph.*/
         void setMode(Mode mode) { _mode = mode; }
@@ -84,9 +93,13 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
 
     protected:
 
-        Mode _mode;
+        typedef std::set<osg::Drawable*> DrawableAppliedSet;
+        typedef std::set<osg::StateSet*> StatesSetAppliedSet;
 
-        osg::ref_ptr<osg::State> _state;
+        Mode                        _mode;
+        osg::ref_ptr<osg::State>    _state;
+        DrawableAppliedSet          _drawablesAppliedSet;
+        StatesSetAppliedSet         _stateSetAppliedSet;
 
 };
 

@@ -16,6 +16,7 @@
 #include <osg/PointSprite>
 #include <osg/State>
 #include <osg/buffered_value>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -28,6 +29,16 @@ int PointSprite::compare(const StateAttribute& sa) const
     if (*type_lhs != *type_rhs) return 1;\
 
     return 0; // passed all the above comparison macro's, must be equal.
+}
+
+
+bool PointSprite::checkValididityOfAssociatedModes(osg::State& state) const
+{
+
+    bool modeValid = isPointSpriteSupported(state.getContextID());
+    state.setModeValidity(GL_POINT_SPRITE_ARB, modeValid);
+
+    return modeValid;
 }
 
 void PointSprite::apply(osg::State& state) const

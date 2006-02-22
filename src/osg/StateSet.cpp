@@ -1131,6 +1131,32 @@ const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int
     return getAttributePair(_textureAttributeList[unit],type,0);
 }
 
+bool StateSet::checkValididityOfAssociatedModes(osg::State& state) const
+{
+
+
+    bool modesValid = true;
+    for(AttributeList::const_iterator itr = _attributeList.begin();
+        itr!=_attributeList.end();
+        ++itr)
+    {
+        if (!itr->second.first->checkValididityOfAssociatedModes(state)) modesValid = false;
+    }
+
+    for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
+        taitr!=_textureAttributeList.end();
+        ++taitr)
+    {
+        for(AttributeList::const_iterator itr = taitr->begin();
+            itr!=taitr->end();
+            ++itr)
+        {
+            if (!itr->second.first->checkValididityOfAssociatedModes(state)) modesValid = false;
+        }
+    }
+
+    return modesValid;
+}
 
 void StateSet::compileGLObjects(State& state) const
 {

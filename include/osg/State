@@ -201,6 +201,22 @@ class OSG_EXPORT State : public Referenced
         void apply();
 
 
+        /** Set whether a particular OpenGL mode is valid in the current graphics context.
+          * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
+        inline void setModeValidity(StateAttribute::GLMode mode,bool valid)
+        {
+            ModeStack& ms = _modeMap[mode];
+            ms.valid = valid;
+        }
+
+        /** Get whether a particular OpenGL mode is valid in the current graphics context.
+          * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
+        inline bool getModeValidity(StateAttribute::GLMode mode)
+        {
+            ModeStack& ms = _modeMap[mode];
+            return ms.valid;
+        }
+
         inline void setGlobalDefaultModeValue(StateAttribute::GLMode mode,bool enabled)
         {
             ModeStack& ms = _modeMap[mode];
@@ -775,11 +791,13 @@ class OSG_EXPORT State : public Referenced
 
             ModeStack()
             {
+                valid = true;
                 changed = false;
                 last_applied_value = false;
                 global_default_value = false;
             }
 
+            bool        valid;
             bool        changed;
             bool        last_applied_value;
             bool        global_default_value;
@@ -828,7 +846,7 @@ class OSG_EXPORT State : public Referenced
         */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled,ModeStack& ms)
         {
-            if (ms.last_applied_value != enabled)
+            if (ms.valid && ms.last_applied_value != enabled)
             {
                 ms.last_applied_value = enabled;
 

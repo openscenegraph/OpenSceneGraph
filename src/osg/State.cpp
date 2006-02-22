@@ -53,7 +53,7 @@ State::~State()
 void State::reset()
 {
 
-/*
+#if 1
     for(ModeMap::iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();
         ++mitr)
@@ -63,9 +63,10 @@ void State::reset()
         ms.last_applied_value = !ms.global_default_value;
         ms.changed = true;
     }        
-*/
-
+#else
     _modeMap.clear();
+#endif
+
     _modeMap[GL_DEPTH_TEST].global_default_value = true;
     _modeMap[GL_DEPTH_TEST].changed = true;
     

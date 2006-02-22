@@ -60,6 +60,10 @@ void GLObjectsVisitor::apply(osg::Geode& node)
 
 void GLObjectsVisitor::apply(osg::Drawable& drawable)
 {
+    if (_drawablesAppliedSet.count(&drawable)!=0) return;
+    
+    _drawablesAppliedSet.insert(&drawable);
+
     if (_mode&SWITCH_OFF_DISPLAY_LISTS)
     {
         drawable.setUseDisplayList(false);
@@ -93,12 +97,22 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
 
 void GLObjectsVisitor::apply(osg::StateSet& stateset)
 {
-    if (_mode&COMPILE_STATE_ATTRIBUTES && _state.valid())
+    if (_stateSetAppliedSet.count(&stateset)!=0) return;
+    
+    _stateSetAppliedSet.insert(&stateset);
+
+    if (_mode & COMPILE_STATE_ATTRIBUTES && _state.valid())
     {
         stateset.compileGLObjects(*_state);
     }
-    if (_mode&RELEASE_STATE_ATTRIBUTES)
+
+    if (_mode & RELEASE_STATE_ATTRIBUTES)
     {
         stateset.releaseGLObjects(_state.get());
+    }
+    
+    if (_mode & CHECK_BLACK_LISTED_MODES)
+    {
+        stateset.checkValididityOfAssociatedModes(*_state.get());
     }
 }

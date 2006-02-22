@@ -410,6 +410,10 @@ class OSG_EXPORT StateSet : public Object
         /** Run the event callbacks attached directly to this StateSet or to its children.*/
         void runEventCallbacks(osg::NodeVisitor* nv);
 
+        /** Check the modes associated with this StateSet are supported by current OpenGL drivers,
+          * and if not set the associated mode in osg::State to be black listed/invalid.
+          * Return true if any modes have been black listed.*/
+        bool checkValididityOfAssociatedModes(State& state) const;
 
         /** call compile on all StateAttributes contained within this StateSet.*/
         void compileGLObjects(State& state) const;

@@ -35,11 +35,13 @@ BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 	I_EnumLabel(osgUtil::GLObjectsVisitor::RELEASE_STATE_ATTRIBUTES);
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS);
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS);
+	I_EnumLabel(osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
+	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
+	I_Method0(void, reset);
 	I_Method1(void, setMode, IN, osgUtil::GLObjectsVisitor::Mode, mode);
 	I_Method0(osgUtil::GLObjectsVisitor::Mode, getMode);
 	I_Method1(void, setState, IN, osg::State *, state);

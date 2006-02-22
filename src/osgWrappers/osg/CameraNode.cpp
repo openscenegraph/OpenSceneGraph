@@ -36,8 +36,8 @@
 TYPE_NAME_ALIAS(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >, osg::CameraNode::BufferAttachmentMap);
 
 BEGIN_ENUM_REFLECTOR(osg::CameraNode::TransformOrder)
-	I_EnumLabel(osg::CameraNode::PRE_MULTIPLE);
-	I_EnumLabel(osg::CameraNode::POST_MULTIPLE);
+	I_EnumLabel(osg::CameraNode::PRE_MULTIPLY);
+	I_EnumLabel(osg::CameraNode::POST_MULTIPLY);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderOrder)

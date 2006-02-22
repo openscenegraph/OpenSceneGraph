@@ -58,6 +58,8 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method0(osg::Polytope, getViewFrustum);
 	I_Method1(void, apply, IN, const osg::StateSet *, dstate);
 	I_Method0(void, apply);
+	I_Method2(void, setModeValidity, IN, osg::StateAttribute::GLMode, mode, IN, bool, valid);
+	I_Method1(bool, getModeValidity, IN, osg::StateAttribute::GLMode, mode);
 	I_Method2(void, setGlobalDefaultModeValue, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled);
 	I_Method1(bool, getGlobalDefaultModeValue, IN, osg::StateAttribute::GLMode, mode);
 	I_Method2(bool, applyMode, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled);
@@ -152,6 +154,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_ReadOnlyProperty(const osg::Matrix &, InitialInverseViewMatrix);
 	I_WriteOnlyProperty(const osg::RefMatrix *, InitialViewMatrix);
 	I_Property(const osg::Program::PerContextProgram *, LastAppliedProgramObject);
+	I_IndexedProperty1(bool, ModeValidity, osg::StateAttribute::GLMode, mode);
 	I_ReadOnlyProperty(const osg::Matrix &, ModelViewMatrix);
 	I_ReadOnlyProperty(const osg::Matrix &, ProjectionMatrix);
 	I_ReadOnlyProperty(osg::Polytope, ViewFrustum);

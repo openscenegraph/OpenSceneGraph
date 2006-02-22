@@ -139,6 +139,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_Method0(bool, requiresEventTraversal);
 	I_Method0(unsigned int, getNumChildrenRequiringEventTraversal);
 	I_Method1(void, runEventCallbacks, IN, osg::NodeVisitor *, nv);
+	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, state);
 	I_Method1(void, compileGLObjects, IN, osg::State &, state);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	I_Property(osg::StateSet::AttributeList &, AttributeList);

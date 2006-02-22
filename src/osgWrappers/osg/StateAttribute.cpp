@@ -110,6 +110,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	I_Method1(const osg::StateSet *, getParent, IN, unsigned int, i);
 	I_Method0(unsigned int, getNumParents);
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x);
+	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, x);
 	I_Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc);
 	I_Method0(osg::StateAttribute::Callback *, getUpdateCallback);
 	I_Method0(const osg::StateAttribute::Callback *, getUpdateCallback);

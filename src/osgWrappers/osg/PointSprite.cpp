@@ -35,6 +35,7 @@ BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, x);
 	I_Method0(bool, isTextureAttribute);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);

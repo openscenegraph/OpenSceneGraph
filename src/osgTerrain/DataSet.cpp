@@ -3029,6 +3029,9 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
     
         osgUtil::Simplifier simplifier(sample_ratio,geometry->getBound().radius()/2000.0f);
+
+        simplifier.setDoTriStrip(false);
+        simplifier.setSmoothing(false);
     
         simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
     }

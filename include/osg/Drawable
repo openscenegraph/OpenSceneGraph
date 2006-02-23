@@ -98,7 +98,8 @@ class OSG_EXPORT Drawable : public Object
         /** Convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<Geometry*>(this).*/
         virtual Geometry* asGeometry() { return 0; }
-        /** Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
+
+        /** Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0. 
           * Equivalent to dynamic_cast<const Geometry*>(this).*/
         virtual const Geometry* asGeometry() const { return 0; }
 
@@ -149,10 +150,10 @@ class OSG_EXPORT Drawable : public Object
         StateSet* getOrCreateStateSet();
 
 
-        /** Set the intial bounding volume to use when computing the overall bounding volume.*/
+        /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         void setInitialBound(const osg::BoundingBox& bbox) { _initialBound = bbox; dirtyBound(); }
 
-        /** Set the intial bounding volume to use when computing the overall bounding volume.*/
+        /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         const BoundingBox& getInitialBound() const { return _initialBound; }
 
         /** Dirty the bounding box, forcing a computeBound() on the next call
@@ -182,7 +183,7 @@ class OSG_EXPORT Drawable : public Object
         /** Compute the bounding box around Drawables's geometry.*/
         virtual BoundingBox computeBound() const;
 
-        /** Callback to allow users to override the default computation of bounding volume.*/
+        /** Callback to allow users to override the default computation of bounding volume. */
         struct ComputeBoundingBoxCallback : public osg::Object
         {
             ComputeBoundingBoxCallback() {}
@@ -256,7 +257,7 @@ class OSG_EXPORT Drawable : public Object
 
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
-          * This size is used a hint for reuse of deleteed display lists/vertex buffer objects. */
+          * This size is used a hint for reuse of deleted display lists/vertex buffer objects.  */
         virtual unsigned int getGLObjectSizeHint() const { return 0; }
 
 
@@ -294,7 +295,7 @@ class OSG_EXPORT Drawable : public Object
             virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
         };
 
-        /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
+        /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal. */
         virtual void setUpdateCallback(UpdateCallback* ac);
 
         /** Get the non const UpdateCallback.*/
@@ -315,7 +316,7 @@ class OSG_EXPORT Drawable : public Object
 
             META_Object(osg,EventCallback);
 
-            /** do customized Event code.*/
+            /** do customized Event code. */
             virtual void event(osg::NodeVisitor*, osg::Drawable*) {}
         };
 
@@ -359,7 +360,7 @@ class OSG_EXPORT Drawable : public Object
         /** Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
           * The draw callback is implement as a replacement to the Drawable's own drawImplementation() method, if the
           * the user intends to decorate the existing draw code then simple call the drawable->drawImplementation() from
-          * with the callbacks drawImplementation() method.  This allows the users to do both pre and post callbacks
+          * with the callbacks drawImplementation() method. This allows the users to do both pre and post callbacks
           * without fuss and can even disable the inner draw if required.*/
         struct DrawCallback : public virtual osg::Object
         {
@@ -384,7 +385,7 @@ class OSG_EXPORT Drawable : public Object
 
 
 
-        /** drawImplementation(State&) is a pure virtaul method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
+        /** drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
           * drawImplementation(State&) is called from the draw(State&) method, with the draw method handling management of OpenGL display lists,
           * and drawImplementation(State&) handling the actuall drawing itself.  
@@ -715,7 +716,7 @@ class OSG_EXPORT Drawable : public Object
         };
 
         /** Function to call to get the extension of a specified context.
-        * If the Exentsion object for that context has not yet been created  
+        * If the Extension object for that context has not yet been created  
         * and the 'createIfNotInitalized' flag been set to false then returns NULL.
         * If 'createIfNotInitalized' is true then the Extensions object is 
         * automatically created.  However, in this case the extension object is

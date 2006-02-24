@@ -32,16 +32,25 @@ void osgParticle::FluidProgram::execute(double dt)
             float Volume = Area*radius*four_over_three;
         
             // compute force due to gravity + boyancy of displacing the fluid that the particle is emersed in.
-            osg::Vec3 force = _acceleration * (particle->getMass() - _density*Volume);
-
+            osg::Vec3 accel_gravity = _acceleration * ((particle->getMass() - _density*Volume) * particle->getMassInv());
+            
             // compute force due to friction
+            osg::Vec3 velBefore = particle->getVelocity();
             osg::Vec3 relative_wind = particle->getVelocity()-_wind;            
-            force -= relative_wind * Area * (_viscosityCoefficient + _densityCoefficeint*relative_wind.length());            
+            osg::Vec3 wind_force = - relative_wind * Area * (_viscosityCoefficient + _densityCoefficeint*relative_wind.length());
+            osg::Vec3 wind_accel = wind_force * particle->getMassInv();
+
+            double critical_dt2 = relative_wind.length2()/wind_accel.length2();
+            double compenstated_dt = dt;
+            if (critical_dt2 < dt*dt)
+            {
+                // osg::notify(osg::NOTICE)<<"** Could be critical: dt="<<dt<<" critical_dt="<<sqrtf(critical_dt2)<<std::endl;
+                compenstated_dt = sqrtf(critical_dt2)*0.8f;
+            }
+
+            particle->addVelocity(accel_gravity*dt + wind_accel*compenstated_dt);
             
-            // divide force by mass to get acceleration.
-            force *= particle->getMassInv()*dt;
-            
-            particle->addVelocity(force);
+
         }
     }
 }

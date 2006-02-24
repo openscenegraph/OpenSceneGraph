@@ -6,6 +6,7 @@
 #include <osg/Texture2D>
 #include <osg/PositionAttitudeTransform>
 #include <osg/MatrixTransform>
+#include <osg/io_utils>
 
 #include <osgUtil/Optimizer>
 
@@ -382,10 +383,45 @@ protected:
     virtual ~PickHandler() {}
 };
 
+// function used in debugging
+void insertParticle(osg::Group* root, const osg::Vec3& center, float radius)
+{
+    bool handleMovingModels = false;
+
+    osg::Vec3 position = center + 
+               osg::Vec3( radius * (((float)rand() / (float)RAND_MAX)-0.5)*2.0,
+                          radius * (((float)rand() / (float)RAND_MAX)-0.5)*2.0,
+                          0.0f);
+
+    float scale = 10.0f * ((float)rand() / (float)RAND_MAX);
+    float intensity = 1.0f;
+
+    osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, scale, intensity);
+    osgParticle::ExplosionDebrisEffect* explosionDebri = new osgParticle::ExplosionDebrisEffect(position, scale, intensity);
+    osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, scale, intensity);
+    osgParticle::ParticleEffect* smoke = 0;
+    if (handleMovingModels)
+        smoke =  new osgParticle::SmokeTrailEffect(position, scale, intensity);
+    else
+        smoke =  new osgParticle::SmokeEffect(position, scale, intensity);
+
+    explosion->setWind(wind);
+    explosionDebri->setWind(wind);
+    smoke->setWind(wind);
+    fire->setWind(wind);
+
+    osg::Group* effectsGroup = new osg::Group;
+    effectsGroup->addChild(explosion);
+    effectsGroup->addChild(explosionDebri);
+    effectsGroup->addChild(smoke);
+    effectsGroup->addChild(fire);
+
+    root->addChild(effectsGroup);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // main()
 //////////////////////////////////////////////////////////////////////////////
-
 
 int main(int argc, char **argv)
 {
@@ -440,10 +476,15 @@ int main(int argc, char **argv)
     // create the windows and run the threads.
     viewer.realize();
 
+    // osg::Vec3 center = root->getBound().center();
+    // float radius = root->getBound().radius();
+
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.
         viewer.sync();
+
+        // insertParticle(root, center, radius);
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.

@@ -32,6 +32,7 @@
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "TextureCubeMap.h"
+#include "TextureRectangle.h"
 #include "TexEnv.h"
 #include "TexEnvCombine.h"
 #include "TexGen.h"
@@ -44,6 +45,7 @@
 #include "Program.h"
 #include "Viewport.h"
 #include "Scissor.h"
+#include "Image.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -84,9 +86,10 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgDB/ReadFile>
+#include <osgDB/FileNameUtils>
 
 #include <stdio.h>
-
+#include <sstream>
 
 using namespace ive;
 using namespace std;
@@ -812,6 +815,69 @@ osg::Image* DataInputStream::readImage(std::string filename)
     return image;
 }
 
+osg::Image* DataInputStream::readImage(IncludeImageMode mode)
+{
+    switch(mode) {
+        case IMAGE_INCLUDE_DATA:
+            // Read image data from stream
+            if(readBool())
+            {
+                osg::Image* image = new osg::Image();
+                ((ive::Image*)image)->read(this);
+                return image;
+            }
+            break;
+        case IMAGE_REFERENCE_FILE:
+            // Only read image name from stream.
+            {
+                std::string filename = readString();
+                if(filename.compare("")!=0){
+                    return readImage(filename);
+                }
+            }
+            break;
+        case IMAGE_INCLUDE_FILE:
+            // Read image file from stream
+            {
+                std::string filename = readString();
+                int size = readInt();
+                if(filename.compare("")!=0 && size > 0){
+
+                    //Read in file
+                    char *buffer = new char[size];
+                    readCharArray(buffer,size);
+
+                    //Get ReaderWriter from file extension
+                    std::string ext = osgDB::getFileExtension(filename);
+                    osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension(ext);
+
+                    osgDB::ReaderWriter::ReadResult rr;
+                    if(reader) {
+                        //Convert data to istream
+                        std::stringstream inputStream;
+                        inputStream.write(buffer,size);
+
+                        //Attempt to read the image
+                        rr = reader->readImage(inputStream,_options.get());
+                    }
+
+                    //Delete buffer
+                    delete [] buffer;
+
+                    //Return result
+                    if(rr.validImage()) {
+                        return rr.takeImage();
+                    }
+                }
+            }
+            break;
+        default:
+            throw Exception("DataInputStream::readImage(): Invalid IncludeImageMode value.");
+            break;
+    }
+    return 0;
+}
+
 osg::StateSet* DataInputStream::readStateSet()
 {
     // Read statesets unique ID.
@@ -917,6 +983,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVETEXTURECUBEMAP){
         attribute = new osg::TextureCubeMap();
         ((ive::TextureCubeMap*)(attribute))->read(this);
+    }
+    else if(attributeID == IVETEXTURERECTANGLE){
+        attribute = new osg::TextureRectangle();
+        ((ive::TextureRectangle*)(attribute))->read(this);
     }
     else if(attributeID == IVETEXENV){
         attribute = new osg::TexEnv();

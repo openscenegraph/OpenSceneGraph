@@ -30,7 +30,7 @@ class DataOutputStream{
 public:
     DataOutputStream(std::ostream* ostream);
     ~DataOutputStream();
-        
+
     void setOptions(const osgDB::ReaderWriter::Options* options);
     const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
@@ -88,10 +88,11 @@ public:
     void writeDrawable(const osg::Drawable* sa);
     void writeShape(const osg::Shape* sa);
     void writeNode(const osg::Node* sa);
+    void writeImage(IncludeImageMode mode, osg::Image *image);
 
     // Set and get include image data in stream
-    void setIncludeImageData(bool b) {_includeImageData=b;};
-    bool getIncludeImageData() {return _includeImageData;};
+    void setIncludeImageMode(IncludeImageMode mode) {_includeImageMode=mode;};
+    IncludeImageMode getIncludeImageMode() {return _includeImageMode;};
 
     // Set and get include external references in stream
     void setIncludeExternalReferences(bool b) {_includeExternalReferences=b;};
@@ -127,10 +128,11 @@ private:
     ShapeMap            _shapeMap;
     NodeMap             _nodeMap;
 
-    bool                _includeImageData;
     bool                _includeExternalReferences;
     bool                _writeExternalReferenceFiles;
     bool                _useOriginalExternalReferences;
+
+    IncludeImageMode    _includeImageMode;
     
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
 };

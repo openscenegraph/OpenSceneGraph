@@ -33,25 +33,10 @@ void Texture3D::write(DataOutputStream* out){
     // Write image.
 
     // Should we include images date in stream
-    bool includeImg = out->getIncludeImageData();
-    out->writeBool(includeImg);
+    IncludeImageMode includeImg = out->getIncludeImageMode();
+    out->writeChar(includeImg);
 
-    // Include image data in stream
-    if(includeImg){
-        out->writeBool(getImage()!=0);
-        if(getImage())
-            ((ive::Image*)getImage())->write(out);
-    }
-    // Only include image name in stream
-    else{
-        if (getImage() && !(getImage()->getFileName().empty())){
-            out->writeString(getImage()->getFileName());
-        }
-        else{ 
-            out->writeString("");
-        }    
-    }
-
+    out->writeImage(includeImg,getImage());
 }
 
 void Texture3D::read(DataInputStream* in){
@@ -70,27 +55,11 @@ void Texture3D::read(DataInputStream* in){
         // Read image.
         
         // Should we read image data from stream
-        bool includeImg = in->readBool();
+        IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
 
-        // Read image data from stream
-        if(includeImg)
-        {
-            if(in->readBool())
-            {
-                osg::Image* image = new osg::Image();
-                ((ive::Image*)image)->read(in);
-                setImage(image);
-            }
-        }
-        // Only read image name from stream.
-        else{
-            std::string filename = in->readString();
-            if(filename.compare("")!=0){
-                osg::Image* image = in->readImage(filename);
-                if (image){
-                    setImage(image);
-                }
-            }
+        osg::Image *image = in->readImage(includeImg);
+        if(image) {
+            setImage(image);
         }
     }
     else{

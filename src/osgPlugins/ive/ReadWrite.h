@@ -74,6 +74,7 @@ namespace ive {
 #define IVEVIEWPORT                     0x00001127
 #define IVESCISSOR                      0x00001128
 #define IVEPOLYGONMODE                  0x00001129
+#define IVETEXTURERECTANGLE             0x00001130
 
 // Drawables
 #define IVEDRAWABLE                     0x00001000
@@ -116,7 +117,6 @@ namespace ive {
 
 //osgText classes
 #define IVETEXT                         0x10000001
-
 
 class ReadWrite{
 

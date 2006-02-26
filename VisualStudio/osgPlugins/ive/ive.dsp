@@ -428,6 +428,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\TextureRectangle.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Transform.cpp
 # End Source File
 # Begin Source File
@@ -781,6 +785,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Texture3D.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TextureRectangle.h
 # End Source File
 # Begin Source File
 

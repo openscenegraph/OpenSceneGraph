@@ -33,6 +33,7 @@
 #include "Texture2D.h"
 #include "Texture3D.h"
 #include "TextureCubeMap.h"
+#include "TextureRectangle.h"
 #include "TexEnv.h"
 #include "TexEnvCombine.h"
 #include "TexGen.h"
@@ -47,6 +48,7 @@
 #include "Shader.h"
 #include "Viewport.h"
 #include "Scissor.h"
+#include "Image.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -84,6 +86,9 @@
 
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osgDB/FileUtils>
+
+#include <fstream>
 
 using namespace ive;
 
@@ -94,8 +99,12 @@ void DataOutputStream::setOptions(const osgDB::ReaderWriter::Options* options)
 
     if (_options.get())
     {
-        setIncludeImageData(_options->getOptionString().find("noTexturesInIVEFile")==std::string::npos);
-        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageData()=" << getIncludeImageData() << std::endl;
+        if(_options->getOptionString().find("noTexturesInIVEFile")!=std::string::npos) {
+            setIncludeImageMode(IMAGE_REFERENCE_FILE);
+        } else if(_options->getOptionString().find("includeImageFileInIVEFile")!=std::string::npos) {
+            setIncludeImageMode(IMAGE_INCLUDE_FILE);
+        }
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
 
         setIncludeExternalReferences(_options->getOptionString().find("inlineExternalReferencesInIVEFile")!=std::string::npos);
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
@@ -112,7 +121,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream)
 {
     _verboseOutput = false;
 
-    _includeImageData= true;
+    _includeImageMode = IMAGE_INCLUDE_DATA;
 
     _includeExternalReferences     = false;
     _writeExternalReferenceFiles   = false;
@@ -701,6 +710,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::TextureCubeMap*>(attribute)){
             ((ive::TextureCubeMap*)(attribute))->write(this);
         }
+        // This is a TextureRectangle
+        else if(dynamic_cast<const osg::TextureRectangle*>(attribute)){
+            ((ive::TextureRectangle*)(attribute))->write(this);
+        }
         // This is a TexEnv
         else if(dynamic_cast<const osg::TexEnv*>(attribute)){
             ((ive::TexEnv*)(attribute))->write(this);
@@ -982,5 +995,70 @@ void DataOutputStream::writeNode(const osg::Node* node)
             throw Exception("Unknown node in Group::write()");
 
         if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
+    }
+}
+
+void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
+{
+    switch(mode) {
+        case IMAGE_INCLUDE_DATA:
+            // Include image data in stream
+            writeBool(image!=0);
+            if(image)
+                ((ive::Image*)image)->write(this);
+            break;
+        case IMAGE_REFERENCE_FILE:
+            // Only include image name in stream
+            if (image && !(image->getFileName().empty())){
+                writeString(image->getFileName());
+            }
+            else{ 
+                writeString("");
+            }    
+            break;
+        case IMAGE_INCLUDE_FILE:
+            // Include image file in stream
+            if(image && !(image->getFileName().empty())) {
+                std::string fullPath = osgDB::findDataFile(image->getFileName(),_options.get());
+                std::ifstream infile(fullPath.c_str(), std::ios::in | std::ios::binary);
+                if(infile) {
+
+                    //Write filename
+                    writeString(image->getFileName());
+
+                    //Get size of file
+                    infile.seekg(0,std::ios::end);
+                    int size = infile.tellg();
+                    infile.seekg(0,std::ios::beg);
+
+                    //Write file size
+                    writeInt(size);
+
+                    //Read file data
+                    char *buffer = new char[size];
+                    infile.read(buffer,size);
+
+                    //Write file data
+                    writeCharArray(buffer,size);
+
+                    //Delete buffer
+                    delete [] buffer;
+
+                    //Close file
+                    infile.close();
+                   
+                } else {
+                    writeString("");
+                    writeInt(0);
+                }
+            }
+            else{ 
+                writeString("");
+                writeInt(0);
+            }    
+            break;
+        default:
+            throw Exception("DataOutputStream::writeImage(): Invalid IncludeImageMode value.");
+            break;
     }
 }

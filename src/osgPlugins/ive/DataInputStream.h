@@ -85,6 +85,7 @@ public:
     osg::Vec4sArray* readVec4sArray();    
 
     osg::Image* readImage(std::string s);
+    osg::Image* readImage(IncludeImageMode mode);
     osg::StateSet* readStateSet();
     osg::StateAttribute* readStateAttribute();
     osg::Uniform* readUniform();

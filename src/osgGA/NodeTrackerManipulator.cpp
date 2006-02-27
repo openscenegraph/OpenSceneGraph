@@ -57,6 +57,34 @@ NodeTrackerManipulator::~NodeTrackerManipulator()
 {
 }
 
+osg::NodePath NodeTrackerManipulator::getNodePath() const
+{
+    osg::NodePath nodePath;
+    for(ObserveredNodePath::const_iterator itr = _trackNodePath.begin();
+        itr != _trackNodePath.end();
+        ++itr)
+    {
+        nodePath.push_back(const_cast<osg::Node*>(itr->get()));
+    }
+    return nodePath;
+}
+
+bool NodeTrackerManipulator::validateNodePath() const
+{
+    for(ObserveredNodePath::const_iterator itr = _trackNodePath.begin();
+        itr != _trackNodePath.begin();
+        ++itr)
+    {
+        if (*itr==0) 
+        {
+            osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
+            const_cast<ObserveredNodePath&>(_trackNodePath).clear();
+            return false;
+        }
+    }
+    return true;
+}
+
 void NodeTrackerManipulator::setTrackerMode(TrackerMode mode)
 {
     _trackerMode = mode;
@@ -98,13 +126,21 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
 
     if (!cpp._nodePaths.empty())
     {
-        osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*): Path set"<<std::endl;
-        _trackNodePath = cpp._nodePaths[0];
+        osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
+        _trackNodePath.clear();
+        setTrackNodePath( cpp._nodePaths[0] );
     }
     else
     {
         osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
     }
+    
+    osg::notify(osg::NOTICE)<<"setTrackNode("<<node->getName()<<")"<<std::endl;
+    for(unsigned int i=0; i<_trackNodePath.size(); ++i)
+    {
+        osg::notify(osg::NOTICE)<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
+    }
+
 }
 
 const osg::Node* NodeTrackerManipulator::getNode() const
@@ -282,7 +318,7 @@ void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal)
 {
     if (validateNodePath())
     {
-        worldToLocal = osg::computeWorldToLocal(_trackNodePath);
+        worldToLocal = osg::computeWorldToLocal(getNodePath());
     }
 }
 
@@ -290,7 +326,7 @@ void NodeTrackerManipulator::computeNodeLocalToWorld(osg::Matrixd& localToWorld)
 {
     if (validateNodePath())
     {
-        localToWorld = osg::computeLocalToWorld(_trackNodePath);
+        localToWorld = osg::computeLocalToWorld(getNodePath());
     }
 
 }

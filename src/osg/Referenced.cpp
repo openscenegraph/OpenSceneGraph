@@ -13,9 +13,11 @@
 #include <osg/Referenced>
 #include <osg/Notify>
 #include <osg/ApplicationUsage>
+#include <osg/observer_ptr>
 
 #include <typeinfo>
 #include <memory>
+#include <set>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -24,6 +26,8 @@
 
 namespace osg
 {
+
+typedef std::set<Observer*> ObserverSet;
 
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
 static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
@@ -50,18 +54,20 @@ DeleteHandler* Referenced::getDeleteHandler()
     return s_deleteHandler.get();
 }
 
-Referenced::Referenced()
+Referenced::Referenced():
+    _refMutex(0),
+    _refCount(0),
+    _observers(0)
 {
     if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
-    else _refMutex = 0;
-   _refCount=0;
 }
 
-Referenced::Referenced(const Referenced&)
+Referenced::Referenced(const Referenced&):
+    _refMutex(0),
+    _refCount(0),
+    _observers(0)
 {
     if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
-    else _refMutex = 0;
-    _refCount=0;
 }
 
 Referenced::~Referenced()
@@ -70,6 +76,19 @@ Referenced::~Referenced()
     {
         notify(WARN)<<"Warning: deleting still referenced object "<<this<<" of type '"<<typeid(this).name()<<"'"<<std::endl;
         notify(WARN)<<"         the final reference count was "<<_refCount<<", memory corruption possible."<<std::endl;
+    }
+
+    if (_observers)
+    {
+        ObserverSet* os = static_cast<ObserverSet*>(_observers);
+        for(ObserverSet::iterator itr = os->begin();
+            itr != os->end();
+            ++itr)
+        {
+            (*itr)->objectDeleted(this);
+        }
+        delete os;
+        _observers = 0;
     }
 
     if (_refMutex)
@@ -151,7 +170,36 @@ void Referenced::unref_nodelete() const
         --_refCount;
     }
 }
-        
+
+void Referenced::addObserver(Observer* observer_ptr)
+{
+    if (_refMutex)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
+
+        if (!_observers) _observers = new ObserverSet;
+        if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer_ptr);
+    }
+    else
+    {
+        if (!_observers) _observers = new ObserverSet;
+        if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer_ptr);
+    }
+}
+
+void Referenced::removeObserver(Observer* observer_ptr)
+{
+    if (_refMutex)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
+
+        if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer_ptr);
+    }
+    else
+    {
+        if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer_ptr);
+    }
+}
 
 }; // end of namespace osg
 

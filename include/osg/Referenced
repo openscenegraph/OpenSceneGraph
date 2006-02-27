@@ -33,8 +33,9 @@
 namespace osg {
 
 #ifndef OSG_JAVA_BUILD
-// forward declar, declared after Referenced below.
+// forward declare, declared after Referenced below.
 class DeleteHandler;
+class Observer;
 
 /** Base class from providing referencing counted objects.*/
 class OSG_EXPORT Referenced
@@ -76,6 +77,11 @@ class OSG_EXPORT Referenced
         /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
 
+        /** Add a Observer that is observering this object, notify the Observer when this object gets deleted.*/
+        void addObserver(Observer* observer_ptr);
+
+        /** Add a Observer that is observering this object, notify the Observer when this object gets deleted.*/
+        void removeObserver(Observer* observer_ptr);
 
     public:
 
@@ -98,9 +104,11 @@ class OSG_EXPORT Referenced
     protected:
         virtual ~Referenced();
         
-        mutable OpenThreads::Mutex*  _refMutex;
+        mutable OpenThreads::Mutex*     _refMutex;
 
-        mutable int                  _refCount;
+        mutable int                     _refCount;
+        
+        void*                          _observers;
         
 };
 

@@ -17,7 +17,7 @@
 #include <osgGA/MatrixManipulator>
 
 #include <osg/Quat>
-#include <osg/RefNodePath>
+#include <osg/observer_ptr>
 
 namespace osgGA{
 
@@ -29,11 +29,11 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         virtual const char* className() const { return "NodeTrackerManipulator"; }
 
-        void setTrackNodePath(const osg::RefNodePath& nodePath) { _trackNodePath = nodePath; }
-        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath = nodePath; }
+        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserveredNodePath;
 
-        osg::RefNodePath& getTrackNodePath() { return _trackNodePath; }
-        const osg::RefNodePath& getTrackNodePath() const { return _trackNodePath; }
+        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath.clear();  _trackNodePath.insert(_trackNodePath.begin(), nodePath.begin(),nodePath.end()); }
+        void setTrackNodePath(const ObserveredNodePath& nodePath) { _trackNodePath = nodePath; }
+        ObserveredNodePath& getTrackNodePath() { return _trackNodePath; }
 
         void setTrackNode(osg::Node* node);
         osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
@@ -121,20 +121,9 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         virtual ~NodeTrackerManipulator();
         
-        inline bool validateNodePath() const
-        {
-            if (!_trackNodePath.valid())
-            {
-                if (_trackNodePath.empty())
-                {
-                    osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
-                    NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
-                    non_const_this->_trackNodePath.clear();
-                }
-                return false;
-            }
-            return true;
-        }
+        osg::NodePath getNodePath() const;
+
+        bool validateNodePath() const;
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
@@ -170,7 +159,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node> _node;
         
-        osg::RefNodePath        _trackNodePath;
+        ObserveredNodePath      _trackNodePath;
 
         TrackerMode             _trackerMode;
         RotationMode            _rotationMode;

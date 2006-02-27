@@ -16,7 +16,7 @@
 
 #include <osg/Node>
 #include <osg/NodeCallback>
-#include <osg/RefNodePath>
+#include <osg/observer_ptr>
 
 namespace osg
 {
@@ -26,16 +26,15 @@ class OSG_EXPORT NodeTrackerCallback : public NodeCallback
     public:
 
 
-        void setTrackNodePath(const osg::RefNodePath& nodePath) { _trackNodePath = nodePath; }
-        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath = nodePath; }
+        typedef std::vector< observer_ptr<Node> >   ObserveredNodePath;
 
-        osg::RefNodePath& getTrackNodePath() { return _trackNodePath; }
-        const osg::RefNodePath& getTrackNodePath() const { return _trackNodePath; }
+        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath.clear();  _trackNodePath.insert(_trackNodePath.begin(), nodePath.begin(),nodePath.end()); }
+        void setTrackNodePath(const ObserveredNodePath& nodePath) { _trackNodePath = nodePath; }
+        ObserveredNodePath& getTrackNodePath() { return _trackNodePath; }
 
         void setTrackNode(osg::Node* node);
         osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
         const osg::Node* getTrackNode() const { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
-
 
         /** Implements the callback. */
         virtual void operator()(Node* node, NodeVisitor* nv);
@@ -43,12 +42,12 @@ class OSG_EXPORT NodeTrackerCallback : public NodeCallback
         /** Update the node to track the nodepath.*/
         void update(osg::Node& node);
 
-        /** Validate the NodePath by removing any unref'd nodes.*/
+
         bool validateNodePath() const;
 
     protected:
 
-        osg::RefNodePath        _trackNodePath;
+        ObserveredNodePath _trackNodePath;
 
 };
 

@@ -73,7 +73,7 @@ void NodeTrackerCallback::setTrackNode(osg::Node* node)
     if (!parentNodePaths.empty())
     {
         osg::notify(osg::INFO)<<"NodeTrackerCallback::setTrackNode(Node*): Path set"<<std::endl;
-        _trackNodePath = parentNodePaths[0];
+        setTrackNodePath(parentNodePaths[0]);
     }
     else
     {
@@ -91,24 +91,35 @@ void NodeTrackerCallback::operator()(Node* node, NodeVisitor* nv)
     traverse(node,nv);
 }
 
-void NodeTrackerCallback::update(osg::Node& node)
-{
-    ApplyMatrixVisitor applyMatrix(computeWorldToLocal(_trackNodePath));
-    node.accept(applyMatrix);
-}
-
 bool NodeTrackerCallback::validateNodePath() const
 {
-    if (!_trackNodePath.valid())
+    for(ObserveredNodePath::const_iterator itr = _trackNodePath.begin();
+        itr != _trackNodePath.begin();
+        ++itr)
     {
-        if (_trackNodePath.empty())
+        if (*itr==0) 
         {
             osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
-            NodeTrackerCallback* non_const_this = const_cast<NodeTrackerCallback*>(this);
-            non_const_this->_trackNodePath.clear();
+            const_cast<ObserveredNodePath&>(_trackNodePath).clear();
+            return false;
         }
-        return false;
     }
     return true;
 }
 
+
+void NodeTrackerCallback::update(osg::Node& node)
+{
+    if (!validateNodePath()) return;
+    
+    osg::NodePath nodePath;
+    for(ObserveredNodePath::iterator itr = _trackNodePath.begin();
+        itr != _trackNodePath.begin();
+        ++itr)
+    {
+        nodePath.push_back(itr->get());
+    }
+
+    ApplyMatrixVisitor applyMatrix(computeWorldToLocal(nodePath));
+    node.accept(applyMatrix);
+}

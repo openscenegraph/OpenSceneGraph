@@ -12,7 +12,6 @@
 #include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
-#include <osg/RefNodePath>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/NodeTrackerManipulator>
@@ -25,6 +24,8 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osgGA::NodeTrackerManipulator::ObserveredNodePath);
 
 BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::TrackerMode)
 	I_EnumLabel(osgGA::NodeTrackerManipulator::NODE_CENTER);
@@ -41,10 +42,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0();
 	I_Method0(const char *, className);
-	I_Method1(void, setTrackNodePath, IN, const osg::RefNodePath &, nodePath);
 	I_Method1(void, setTrackNodePath, IN, const osg::NodePath &, nodePath);
-	I_Method0(osg::RefNodePath &, getTrackNodePath);
-	I_Method0(const osg::RefNodePath &, getTrackNodePath);
+	I_Method1(void, setTrackNodePath, IN, const osgGA::NodeTrackerManipulator::ObserveredNodePath &, nodePath);
+	I_Method0(osgGA::NodeTrackerManipulator::ObserveredNodePath &, getTrackNodePath);
 	I_Method1(void, setTrackNode, IN, osg::Node *, node);
 	I_Method0(osg::Node *, getTrackNode);
 	I_Method0(const osg::Node *, getTrackNode);
@@ -75,7 +75,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_Property(osg::Node *, Node);
 	I_Property(osgGA::NodeTrackerManipulator::RotationMode, RotationMode);
 	I_Property(osg::Node *, TrackNode);
-	I_Property(const osg::RefNodePath &, TrackNodePath);
+	I_ReadOnlyProperty(osgGA::NodeTrackerManipulator::ObserveredNodePath &, TrackNodePath);
 	I_Property(osgGA::NodeTrackerManipulator::TrackerMode, TrackerMode);
 END_REFLECTOR
 

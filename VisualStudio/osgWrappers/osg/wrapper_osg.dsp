@@ -428,10 +428,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\Quat.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\RefNodePath.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
 # End Source File
 
@@ -613,6 +609,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\VertexProgram.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Viewport.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\observer_ptr.cpp
 # End Source File
 
 # End Group

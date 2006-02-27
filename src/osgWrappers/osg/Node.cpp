@@ -56,6 +56,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_Method1(const osg::Group *, getParent, IN, unsigned int, i);
 	I_Method0(unsigned int, getNumParents);
 	I_MethodWithDefaults1(osg::NodePathList, getParentalNodePaths, IN, osg::Node *, haltTraversalAtNode, 0);
+	I_MethodWithDefaults1(osg::MatrixList, getWorldMatrices, IN, osg::Node *, haltTraversalAtNode, 0);
 	I_Method1(void, setUpdateCallback, IN, osg::NodeCallback *, nc);
 	I_Method0(osg::NodeCallback *, getUpdateCallback);
 	I_Method0(const osg::NodeCallback *, getUpdateCallback);
@@ -126,7 +127,11 @@ TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::NodePath);
 
 TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osg::NodePathList);
 
+TYPE_NAME_ALIAS(std::vector< osg::Matrix >, osg::MatrixList);
+
 STD_VECTOR_REFLECTOR(std::vector< osg::Group * >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Matrix >);
 
 STD_VECTOR_REFLECTOR(std::vector< osg::NodePath >);
 

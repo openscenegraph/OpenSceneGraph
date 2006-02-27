@@ -9,8 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Node>
-#include <osg/RefNodePath>
+#include <osg/observer_ptr>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -20,10 +19,8 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::RefNodePath)
+BEGIN_VALUE_REFLECTOR(osg::Observer)
 	I_Constructor0();
-	I_Constructor1(IN, const osg::RefNodePath &, refNodePath);
-	I_Constructor1(IN, const osg::NodePath &, nodePath);
-	I_Method0(bool, valid);
+	I_Method1(void, objectDeleted, IN, void *, x);
 END_REFLECTOR
 

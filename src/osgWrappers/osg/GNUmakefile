@@ -85,7 +85,6 @@ CXXFILES =\
 	Projection.cpp\
 	ProxyNode.cpp\
 	Quat.cpp\
-	RefNodePath.cpp\
 	Referenced.cpp\
 	Scissor.cpp\
 	Sequence.cpp\
@@ -132,6 +131,7 @@ CXXFILES =\
 	Vec4ub.cpp\
 	VertexProgram.cpp\
 	Viewport.cpp\
+	observer_ptr.cpp\
 
 LIBS   += -losg -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 

@@ -15,7 +15,6 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Quat>
-#include <osg/RefNodePath>
 #include <osg/Vec3>
 #include <osgGA/EventVisitor>
 #include <osgGA/KeySwitchMatrixManipulator>

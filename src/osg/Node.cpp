@@ -16,6 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Notify>
 #include <osg/OccluderNode>
+#include <osg/CameraNode>
 
 #include <algorithm>
 
@@ -168,6 +169,31 @@ NodePathList Node::getParentalNodePaths(osg::Node* haltTraversalAtNode) const
     CollectParentPaths cpp(haltTraversalAtNode);
     const_cast<Node*>(this)->accept(cpp);
     return cpp._nodePaths;
+}
+
+MatrixList Node::getWorldMatrices(osg::Node* haltTraversalAtNode) const
+{
+    CollectParentPaths cpp(haltTraversalAtNode);
+    const_cast<Node*>(this)->accept(cpp);
+    
+    MatrixList matrices;
+    
+    for(NodePathList::iterator itr = cpp._nodePaths.begin();
+        itr != cpp._nodePaths.end();
+        ++itr)
+    {
+        NodePath& nodePath = *itr;
+        if (nodePath.empty())
+        {
+            matrices.push_back(osg::Matrix::identity());
+        }
+        else
+        {
+            matrices.push_back(osg::computeLocalToWorld(nodePath));
+        }
+    }
+    
+    return matrices;
 }
 
 void Node::setUpdateCallback(NodeCallback* nc)

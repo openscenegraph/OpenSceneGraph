@@ -912,6 +912,10 @@ SOURCE=..\..\Include\Osg\Quat
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\observer_ptr
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osg\ref_ptr
 # End Source File
 # Begin Source File

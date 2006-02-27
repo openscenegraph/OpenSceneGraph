@@ -10,6 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Referenced>
+#include <osg/observer_ptr>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -35,6 +36,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Method0(void, unref);
 	I_Method0(void, unref_nodelete);
 	I_Method0(int, referenceCount);
+	I_Method1(void, addObserver, IN, osg::Observer *, observer_ptr);
+	I_Method1(void, removeObserver, IN, osg::Observer *, observer_ptr);
 	I_Property(bool, ThreadSafeRefUnref);
 END_REFLECTOR
 

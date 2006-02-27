@@ -28,24 +28,24 @@ namespace osg {
 /** Compute the matrix which transforms objects in local coords to world coords,
   * by accumulating the Transform local to world matrices along the specified node path.
 */
-extern OSG_EXPORT Matrix computeLocalToWorld(const NodePath& nodePath);
+extern OSG_EXPORT Matrix computeLocalToWorld(const NodePath& nodePath, bool ignoreCameraNodes = true);
 
 /** Compute the matrix which transforms objects in world coords to local coords,
   * by accumulating the Transform world to local matrices along the specified node path.
 */
-extern OSG_EXPORT Matrix computeWorldToLocal(const NodePath& nodePath);
+extern OSG_EXPORT Matrix computeWorldToLocal(const NodePath& nodePath, bool ignoreCameraNodes = true);
 
 /** Compute the matrix which transforms objects in local coords to eye coords,
   * by accumulating the Transform local to world matrices along the specified node path 
   * and multipling by the supplied initial camera modelview.
 */
-extern OSG_EXPORT Matrix computeLocalToEye(const Matrix& modelview, const NodePath& nodePath);
+extern OSG_EXPORT Matrix computeLocalToEye(const Matrix& modelview, const NodePath& nodePath, bool ignoreCameraNodes = true);
 
 /** Compute the matrix which transforms objects in eye coords to local coords,
   * by accumulating the Transform world to local matrices along the specified node path
   * and multipling by the inverse of the supplied initialial camera modelview.
 */
-extern OSG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePath& nodePath);
+extern OSG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePath& nodePath, bool ignoreCameraNodes = true);
 
 
 /** A Transform is a group node for which all children are transformed by

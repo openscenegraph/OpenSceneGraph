@@ -36,6 +36,8 @@ typedef std::vector< Node* > NodePath;
 /** A vector of NodePath, typically used to describe all the paths from a node to the potential root nodes it has.*/
 typedef std::vector< NodePath > NodePathList;
 
+/** A vector of NodePath, typically used to describe all the paths from a node to the potential root nodes it has.*/
+typedef std::vector< Matrix > MatrixList;
 
 /** META_Node macro define the standard clone, isSameKindAs, className
   * and accept methods.  Use when subclassing from Node to make it
@@ -89,6 +91,7 @@ class OSG_EXPORT Node : public Object
         /** Convert 'this' into a Transform pointer if Node is a Transform, otherwise return 0.
           * Equivalent to dynamic_cast<Transform*>(this).*/
         virtual Transform* asTransform() { return 0; }
+
         /** convert 'const this' into a const Transform pointer if Node is a Transform, otherwise return 0.
           * Equivalent to dynamic_cast<const Transform*>(this).*/
         virtual const Transform* asTransform() const { return 0; }
@@ -129,6 +132,10 @@ class OSG_EXPORT Node : public Object
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
         NodePathList getParentalNodePaths(osg::Node* haltTraversalAtNode=0) const;
 
+        /** Get the list of matrices that transform this node from local coordinates to world coordinates.
+          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
+        MatrixList getWorldMatrices(osg::Node* haltTraversalAtNode=0) const;
+        
 
         /** Set update node callback, called during update traversal. */
         void setUpdateCallback(NodeCallback* nc);

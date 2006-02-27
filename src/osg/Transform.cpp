@@ -11,6 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Transform>
+#include <osg/CameraNode>
+
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -27,11 +30,13 @@ class TransformVisitor : public NodeVisitor
 
         CoordMode       _coordMode;
         Matrix&         _matrix;
+        bool            _ignoreCameraNodes;
 
-        TransformVisitor(Matrix& matrix,CoordMode coordMode):
+        TransformVisitor(Matrix& matrix,CoordMode coordMode, bool ignoreCameraNodes):
             NodeVisitor(),
             _coordMode(coordMode),
-            _matrix(matrix)
+            _matrix(matrix),
+            _ignoreCameraNodes(ignoreCameraNodes)
             {}
 
         virtual void apply(Transform& transform)
@@ -48,46 +53,68 @@ class TransformVisitor : public NodeVisitor
         
         void accumulate(const NodePath& nodePath)
         {
-            NodePath& non_const_nodePath = const_cast<NodePath&>(nodePath);
-            for(NodePath::iterator itr=non_const_nodePath.begin();
-                itr!=non_const_nodePath.end();
-                ++itr)
+            if (nodePath.empty()) return;
+ 
+            unsigned int i = 0;
+            if (_ignoreCameraNodes)
             {
-                (*itr)->accept(*this);
+                // we need to found out the last absolute CameraNode in NodePath and
+                // set the i index to after it so the final accumulation set ignores it.
+                i = nodePath.size();
+                NodePath::const_reverse_iterator ritr;
+                for(ritr = nodePath.rbegin();
+                    ritr != nodePath.rend();
+                    ++ritr, --i)
+                {
+                    const osg::CameraNode* camera = dynamic_cast<const osg::CameraNode*>(*ritr);
+                    if (camera && 
+                        (camera->getReferenceFrame()==osg::Transform::ABSOLUTE_RF || camera->getParents().empty()))
+                    {
+                        break;
+                    }
+                }
+            }            
+
+            // do the accumulation of the active part of nodepath.        
+            for(;
+                i<nodePath.size();
+                ++i)
+            {
+                const_cast<Node*>(nodePath[i])->accept(*this);
             }
         }
     
 };
 
-Matrix osg::computeLocalToWorld(const NodePath& nodePath)
+Matrix osg::computeLocalToWorld(const NodePath& nodePath, bool ignoreCameraNodes)
 {
     Matrix matrix;
-    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD);
+    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,ignoreCameraNodes);
     tv.accumulate(nodePath);
     return matrix;
 }
 
-Matrix osg::computeWorldToLocal(const NodePath& nodePath)
+Matrix osg::computeWorldToLocal(const NodePath& nodePath, bool ignoreCameraNodes)
 {
     osg::Matrix matrix;
-    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL);
+    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,ignoreCameraNodes);
     tv.accumulate(nodePath);
     return matrix;
 }
 
-Matrix osg::computeLocalToEye(const Matrix& modelview,const NodePath& nodePath)
+Matrix osg::computeLocalToEye(const Matrix& modelview,const NodePath& nodePath, bool ignoreCameraNodes)
 {
     Matrix matrix(modelview);
-    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD);
+    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,ignoreCameraNodes);
     tv.accumulate(nodePath);
     return matrix;
 }
 
-Matrix osg::computeEyeToLocal(const Matrix& modelview,const NodePath& nodePath)
+Matrix osg::computeEyeToLocal(const Matrix& modelview,const NodePath& nodePath, bool ignoreCameraNodes)
 {
     Matrix matrix;
     matrix.invert(modelview);
-    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL);
+    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,ignoreCameraNodes);
     tv.accumulate(nodePath);
     return matrix;
 }

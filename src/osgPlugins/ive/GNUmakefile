@@ -84,6 +84,7 @@ CXXFILES =\
 	Texture3D.cpp\
 	Texture.cpp\
 	TextureCubeMap.cpp\
+	TextureRectangle.cpp\
 	Transform.cpp\
 	Uniform.cpp\
 	VertexProgram.cpp\

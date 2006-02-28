@@ -1804,14 +1804,21 @@ class AttributeFunctorArrayVisitor : public ArrayVisitor
 void Geometry::accept(AttributeFunctor& af)
 {
     AttributeFunctorArrayVisitor afav(af);
-    
+
     afav.applyArray(VERTICES,_vertexData.array.get());
     afav.applyArray(NORMALS,_normalData.array.get());
     afav.applyArray(COLORS,_colorData.array.get());
+    afav.applyArray(SECONDARY_COLORS,_secondaryColorData.array.get());
+    afav.applyArray(FOG_COORDS,_fogCoordData.array.get());
     
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
         afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].array.get());
+    }
+
+    for(unsigned int index=0; index<_vertexAttribList.size(); ++index)
+    {
+        afav.applyArray(index,_vertexAttribList[index].array.get());
     }
 }
 
@@ -1857,10 +1864,17 @@ void Geometry::accept(ConstAttributeFunctor& af) const
     afav.applyArray(VERTICES,_vertexData.array.get());
     afav.applyArray(NORMALS,_normalData.array.get());
     afav.applyArray(COLORS,_colorData.array.get());
-    
+    afav.applyArray(SECONDARY_COLORS,_secondaryColorData.array.get());
+    afav.applyArray(FOG_COORDS,_fogCoordData.array.get());
+
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
         afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].array.get());
+    }
+
+    for(unsigned int index=0; index<_vertexAttribList.size(); ++index)
+    {
+        afav.applyArray(index,_vertexAttribList[index].array.get());
     }
 }
 

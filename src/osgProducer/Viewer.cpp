@@ -77,7 +77,6 @@ public:
     {
         osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
-        // do automatic conversion between RefNodePath and NodePath.
         osg::NodePath tmpPath = _viewer->getCoordinateSystemNodePath();
         
         if (!tmpPath.empty())

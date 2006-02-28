@@ -16,7 +16,6 @@
 #include <osg/PolygonOffset>
 #include <osg/CullFace>
 #include <osg/Material>
-#include <osg/RefNodePath>
 #include <osg/PositionAttitudeTransform>
 
 #include <osg/CameraNode>
@@ -85,27 +84,27 @@ ref_ptr<Group> _create_scene()
   return scene;
 }
 
-osg::RefNodePath createReflector()
+osg::NodePath createReflector()
 {
-  ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+  osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
   pat->setPosition(osg::Vec3(0.0f,0.0f,0.0f));
   pat->setAttitude(osg::Quat(osg::inDegrees(0.0f),osg::Vec3(0.0f,0.0f,1.0f)));
   
-  ref_ptr<Geode> geode_1 = new Geode;
-  pat->addChild(geode_1.get());
+  Geode* geode_1 = new Geode;
+  pat->addChild(geode_1);
 
   const float radius = 0.8f;
   ref_ptr<TessellationHints> hints = new TessellationHints;
   hints->setDetailRatio(2.0f);
-  ref_ptr<ShapeDrawable> shape = new ShapeDrawable(new Sphere(Vec3(0.0f, 0.0f, 0.0f), radius * 1.5f), hints.get());
+  ShapeDrawable* shape = new ShapeDrawable(new Sphere(Vec3(0.0f, 0.0f, 0.0f), radius * 1.5f), hints.get());
   shape->setColor(Vec4(0.8f, 0.8f, 0.8f, 1.0f));
-  geode_1->addDrawable(shape.get());
+  geode_1->addDrawable(shape);
   
-  osg::RefNodePath refNodeList;
-  refNodeList.push_back(pat.get());
-  refNodeList.push_back(geode_1.get());
+  osg::NodePath nodeList;
+  nodeList.push_back(pat);
+  nodeList.push_back(geode_1);
   
-  return refNodeList;
+  return nodeList;
 }
 
 class UpdateCameraAndTexGenCallback : public osg::NodeCallback
@@ -114,7 +113,7 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
     
         typedef std::vector< osg::ref_ptr<osg::CameraNode> >  CameraList;
 
-        UpdateCameraAndTexGenCallback(osg::RefNodePath& reflectorNodePath, CameraList& cameraNodes):
+        UpdateCameraAndTexGenCallback(osg::NodePath& reflectorNodePath, CameraList& cameraNodes):
             _reflectorNodePath(reflectorNodePath),
             _cameraNodes(cameraNodes)
         {
@@ -160,7 +159,7 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
     
         virtual ~UpdateCameraAndTexGenCallback() {}
         
-        osg::RefNodePath            _reflectorNodePath;        
+        osg::NodePath               _reflectorNodePath;        
         CameraList                  _cameraNodes;
 };
 
@@ -193,7 +192,7 @@ class TexMatCullCallback : public osg::NodeCallback
 };
 
 
-osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::RefNodePath reflectorNodePath, unsigned int unit, const osg::Vec4& clearColor, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation)
+osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath reflectorNodePath, unsigned int unit, const osg::Vec4& clearColor, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation)
 {
 
     osg::Group* group = new osg::Group;

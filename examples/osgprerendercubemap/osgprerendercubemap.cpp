@@ -245,7 +245,7 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath refl
 
     // set the reflected subgraph so that it uses the texture and tex gen settings.    
     {
-        osg::Node* reflectorNode = reflectorNodePath.front().get();
+        osg::Node* reflectorNode = reflectorNodePath.front();
         group->addChild(reflectorNode);
                 
         osg::StateSet* stateset = reflectorNode->getOrCreateStateSet();

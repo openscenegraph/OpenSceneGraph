@@ -114,7 +114,7 @@ void NodeTrackerCallback::update(osg::Node& node)
     
     osg::NodePath nodePath;
     for(ObserveredNodePath::iterator itr = _trackNodePath.begin();
-        itr != _trackNodePath.begin();
+        itr != _trackNodePath.end();
         ++itr)
     {
         nodePath.push_back(itr->get());

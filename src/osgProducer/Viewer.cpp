@@ -262,6 +262,18 @@ Viewer::~Viewer()
 {
 }
 
+osg::NodePath Viewer::getCoordinateSystemNodePath() const
+{
+    osg::NodePath nodePath;
+    for(ObserveredNodePath::const_iterator itr = _coordinateSystemNodePath.begin();
+        itr != _coordinateSystemNodePath.end();
+        ++itr)
+    {
+        nodePath.push_back(const_cast<osg::Node*>(itr->get()));
+    }
+    return nodePath;
+}
+
 void Viewer::setWriteImageFileName(const std::string& filename)
 {
     _writeImageFileName = filename;

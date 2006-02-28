@@ -84,9 +84,8 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_Method0(osgGA::EventVisitor *, getEventVisitor);
 	I_Method0(const osgGA::EventVisitor *, getEventVisitor);
 	I_Method0(void, computeActiveCoordinateSystemNodePath);
-	I_Method1(void, setCoordinateSystemNodePath, IN, const osg::RefNodePath &, nodePath);
 	I_Method1(void, setCoordinateSystemNodePath, IN, const osg::NodePath &, nodePath);
-	I_Method0(const osg::RefNodePath &, getCoordinateSystemNodePath);
+	I_Method0(osg::NodePath, getCoordinateSystemNodePath);
 	I_Method0(void, frame);
 	I_Method0(void, requestRedraw);
 	I_Method1(void, requestContinuousUpdate, IN, bool, x);
@@ -123,7 +122,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method0(void, updatedSceneData);
 	I_Property(osg::AnimationPath *, AnimationPath);
-	I_Property(const osg::RefNodePath &, CoordinateSystemNodePath);
+	I_ReadOnlyProperty(osg::NodePath, CoordinateSystemNodePath);
 	I_Property(bool, Done);
 	I_Property(double, DoneAtElapsedTime);
 	I_Property(bool, DoneAtElapsedTimeEnabled);

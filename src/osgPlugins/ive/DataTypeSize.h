@@ -12,7 +12,7 @@
 
 //Don't know where else to put this
 namespace ive{
-typedef enum IncludeImageMode { IMAGE_REFERENCE_FILE=0,IMAGE_INCLUDE_DATA,IMAGE_INCLUDE_FILE };
+typedef enum IncludeImageMode { IMAGE_REFERENCE_FILE=0,IMAGE_INCLUDE_DATA,IMAGE_INCLUDE_FILE,IMAGE_COMPRESS_DATA };
 }
 
 #endif 

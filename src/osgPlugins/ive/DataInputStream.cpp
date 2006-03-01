@@ -837,6 +837,7 @@ osg::Image* DataInputStream::readImage(IncludeImageMode mode)
             }
             break;
         case IMAGE_INCLUDE_FILE:
+        case IMAGE_COMPRESS_DATA:
             // Read image file from stream
             {
                 std::string filename = readString();

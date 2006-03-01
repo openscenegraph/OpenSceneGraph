@@ -89,6 +89,7 @@
 #include <osgDB/FileUtils>
 
 #include <fstream>
+#include <sstream>
 
 using namespace ive;
 
@@ -103,6 +104,8 @@ void DataOutputStream::setOptions(const osgDB::ReaderWriter::Options* options)
             setIncludeImageMode(IMAGE_REFERENCE_FILE);
         } else if(_options->getOptionString().find("includeImageFileInIVEFile")!=std::string::npos) {
             setIncludeImageMode(IMAGE_INCLUDE_FILE);
+        } else if(_options->getOptionString().find("compressImageData")!=std::string::npos) {
+            setIncludeImageMode(IMAGE_COMPRESS_DATA);
         }
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
 
@@ -1056,6 +1059,42 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
                 writeString("");
                 writeInt(0);
             }    
+            break;
+        case IMAGE_COMPRESS_DATA:
+            if(image) {
+                //Get ReaderWriter for jpeg images
+                osgDB::ReaderWriter *writer = osgDB::Registry::instance()->getReaderWriterForExtension("jpeg");
+
+                if(writer) {
+                    //Attempt to write the image to an output stream.
+                    //The reason this isn't performed directly on the internal _ostream
+                    //is because the writer might perform seek operations which could
+                    //corrupt the output stream.
+                    std::stringstream outputStream;
+                    osgDB::ReaderWriter::WriteResult wr;
+                    wr = writer->writeImage(*image,outputStream,_options.get());
+
+                    if(wr.success()) {
+
+                        //Write file format. Do this for two reasons:
+                        // 1 - Same code can be used to read in as with IMAGE_INCLUDE_FILE mode
+                        // 2 - Maybe in future version user can specify which format to use
+                        writeString(".jpeg"); //Need to add dot so osgDB::getFileExtension will work
+                        
+                        //Write size of stream
+                        int size = outputStream.tellp();
+                        writeInt(size);
+                       
+                        //Write stream
+                        writeCharArray(outputStream.str().c_str(),size);
+
+                        return;
+                    }
+                }
+            }
+            //Image compression failed, write blank data
+            writeString("");
+            writeInt(0);
             break;
         default:
             throw Exception("DataOutputStream::writeImage(): Invalid IncludeImageMode value.");

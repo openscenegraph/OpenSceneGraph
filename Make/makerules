@@ -2,24 +2,24 @@
 default: opt 
 
 opt: \
-    $(EXEC:=.opt)\
-	$(LIB:=.opt)\
-	$(WRAPPER:=.opt)\
-	$(PLUGIN:=.opt)\
+    $(EXEC:=.opt) \
+	$(LIB:=.opt) \
+	$(WRAPPER:=.opt) \
+	$(PLUGIN:=.opt) \
 
 debug: \
-    $(EXEC:=.dbg)\
-	$(LIB:=.dbg)\
-	$(WRAPPER:=.dbg)\
-	$(PLUGIN:=.dbg)\
+    $(EXEC:=.dbg) \
+	$(LIB:=.dbg) \
+	$(WRAPPER:=.dbg) \
+	$(PLUGIN:=.dbg) \
 
-static:\
-	$(LIB:.$(LIB_EXT)=.static)\
-	$(PLUGIN:.$(PLUGIN_EXT)=.static)\
+static: \
+	$(LIB:.$(LIB_EXT)=.static) \
+	$(PLUGIN:.$(PLUGIN_EXT)=.static) \
 
-staticdebug:\
-	$(LIB:.$(LIB_EXT)=.staticdbg)\
-	$(PLUGIN:.$(LIB_EXT)=.staticdbg)\
+staticdebug: \
+	$(LIB:.$(LIB_EXT)=.staticdbg) \
+	$(PLUGIN:.$(LIB_EXT)=.staticdbg) \
 
 cleandepend: cleandependopt cleandependdbg
 
@@ -63,7 +63,7 @@ docs:
 	mkdir -p $(TOPDIR)/doc/doc++/$(TARGET_BASENAME) && \
 	doc++ -d $(TOPDIR)/doc/doc++/$(TARGET_BASENAME) -H -A \
 	    $(TOPDIR)/include/$(TARGET_BASENAME)/* && \
-	echo "$(TARGET_BASENAME) HTML documentation created in "\
+	echo "$(TARGET_BASENAME) HTML documentation created in " \
 	     "$(TOPDIR)/doc/doc++/$(TARGET_BASENAME)"
 
 
@@ -109,15 +109,15 @@ $(EXEC:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
-	      THISDIR=../$(THISDIR)\
+	      THISDIR=../$(THISDIR) \
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC)$(EXE_EXT) LNDEST=$(BININST)/$(EXEC)$(EXE_EXT) __link
 
 $(LIB:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
-	@cd $(DEBUGDIR);\
+	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
-	      THISDIR=../$(THISDIR)\
+	      THISDIR=../$(THISDIR) \
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 ifdef IMP_LIB_EXT
@@ -126,9 +126,9 @@ endif
 
 $(LIB:.$(LIB_EXT)=.staticdbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
-	@cd $(DEBUGDIR);\
+	@cd $(DEBUGDIR); \
       $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)" TOPDIR=../${TOPDIR} \
-            THISDIR=../$(THISDIR)\
+            THISDIR=../$(THISDIR) \
             MAKEDEPEND=Makedepend $(STATICLIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(STATICLIB) __link
 
@@ -136,7 +136,7 @@ $(WRAPPER:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
-	      THISDIR=../$(THISDIR)\
+	      THISDIR=../$(THISDIR) \
 	      MAKEDEPEND=Makedepend $(WRAPPER)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(WRAPPER) LNDEST=$(PLUGININST)/$(WRAPPER) __link
 
@@ -144,7 +144,7 @@ $(PLUGIN:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
-	      THISDIR=../$(THISDIR)\
+	      THISDIR=../$(THISDIR) \
 	      MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 ifdef IMP_LIB_EXT
@@ -155,7 +155,7 @@ $(PLUGIN:.$(PLUGIN_EXT)=.staticdbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir -p $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)" TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
+	    THISDIR=../$(THISDIR) \
 	               MAKEDEPEND=Makedepend STATICPLUGIN=$(PLUGIN:.$(PLUGIN_EXT)=.a) $(STATICPLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(STATICPLUGIN) LNDEST=$(PLUGININST)/$(STATICPLUGIN) __link
 
@@ -163,16 +163,16 @@ $(EXEC:=.opt) :
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
-	      THISDIR=../$(THISDIR)\
+	      THISDIR=../$(THISDIR) \
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC)$(EXE_EXT) LNDEST=$(BININST)/$(EXEC)$(EXE_EXT) __link
 
 
 $(LIB:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
-	@cd $(OPTDIR);\
+	@cd $(OPTDIR); \
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	        THISDIR=../$(THISDIR)\
+	        THISDIR=../$(THISDIR) \
 	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 ifdef IMP_LIB_EXT
@@ -181,9 +181,9 @@ endif
 
 $(LIB:.$(LIB_EXT)=.static) :
 	[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
-	cd $(OPTDIR);\
+	cd $(OPTDIR); \
       $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-            THISDIR=../$(THISDIR)\
+            THISDIR=../$(THISDIR) \
             MAKEDEPEND=Makedepend $(STATICLIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(STATICLIB) __link
 
@@ -191,7 +191,7 @@ $(WRAPPER:=.opt) :
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
+	    THISDIR=../$(THISDIR) \
 	               MAKEDEPEND=Makedepend $(WRAPPER)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(WRAPPER) LNDEST=$(PLUGININST)/$(WRAPPER) __link
 
@@ -199,7 +199,7 @@ $(PLUGIN:=.opt) :
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
+	    THISDIR=../$(THISDIR) \
 	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 ifdef IMP_LIB_EXT
@@ -210,7 +210,7 @@ $(PLUGIN:.$(PLUGIN_EXT)=.static) :
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
+	    THISDIR=../$(THISDIR) \
 	               MAKEDEPEND=Makedepend STATICPLUGIN=$(PLUGIN:.$(PLUGIN_EXT)=.a) $(STATICPLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICPLUGIN) LNDEST=$(PLUGININST)/$(STATICPLUGIN) __link
 
@@ -228,17 +228,17 @@ ifeq ($(OS),IRIX)
 else
 	@ touch $@
 	@if [ ! -d .depend ] ; then  \
-		mkdir .depend;\
-		depfiles="$+";\
-	else\
-		depfiles="$?";\
-	fi;\
-	if [ ! -z "$$depfiles" ]; then\
+		mkdir .depend; \
+		depfiles="$+"; \
+	else \
+		depfiles="$?"; \
+	fi; \
+	if [ ! -z "$$depfiles" ]; then \
 	for f in $$depfiles; do \
 		echo "$(C++) $(DEPARG) $(INC) $$f  pipeto .depend/`basename $$f`"; \
 		$(C++) $(DEPARG) $(INC) $$f > .depend/`basename $$f`; \
-		grep $$f $@ || echo include .depend/`basename $$f` >> Makedepend ;\
-	done;\
+		grep $$f $@ || echo include .depend/`basename $$f` >> Makedepend ; \
+	done; \
 	fi
 endif
 

@@ -2,7 +2,7 @@
 ################################################################
 # Directories traversed from the top level
 TOP_LEVEL_DIRS = \
-    src\
+    src \
     applications
 
 ifeq ($(COMPILE_EXAMPLES),yes)
@@ -13,13 +13,13 @@ endif
 ################################################################
 # Directories traversed in the TOPDIR/src directory
 SRC_DIRS = \
-	osg\
-	osgUtil\
-	osgDB\
-	osgGA\
-	osgParticle\
-	osgText\
-        osgFX\
+	osg \
+	osgUtil \
+	osgDB \
+	osgGA \
+	osgParticle \
+	osgText \
+        osgFX \
 	osgSim
         
 ifeq ($(PRODUCER_INSTALLED),yes)
@@ -32,22 +32,22 @@ endif
 
 ifeq ($(COMPILE_INTROSPECTION),yes)
 SRC_DIRS += \
-        osgIntrospection\
+        osgIntrospection \
 	osgWrappers
 endif
 
 SRC_DIRS += \
-	osgPlugins\
+	osgPlugins \
         
 
 WRAPPER_DIRS = \
-	osg\
-	osgParticle\
-	osgSim\
-	osgUtil\
-	osgDB\
-	osgFX\
-	osgText\
+	osg \
+	osgParticle \
+	osgSim \
+	osgUtil \
+	osgDB \
+	osgFX \
+	osgText \
 	osgGA
 
 ifeq ($(PRODUCER_INSTALLED),yes)
@@ -63,43 +63,43 @@ endif
 # Directories traversed in the TOPDIR/src/osgPlugins directory
 
 PLUGIN_DIRS = \
-	3dc\
-	ac3d\
-	bmp\
-	dds\
-	directx\
-	dw\
-	dxf\
-    ESRIShape\
-	flt\
-	hdr\
-	ive\
-	lib3ds\
-	logo\
-	lwo\
-	lws\
-	md2\
-	net\
-    normals\
-	obj\
-	osg\
-	osga\
-	osgFX\
-	osgParticle\
-	osgSim\
-	osgText\
-	osgtgz\
-	pic\
-	pnm\
-	rgb\
-	rot\
-	scale\
-	stl\
-	tga\
-	tgz\
-	trans\
-	txp\
-	zip\
+	3dc \
+	ac3d \
+	bmp \
+	dds \
+	directx \
+	dw \
+	dxf \
+    ESRIShape \
+	flt \
+	hdr \
+	ive \
+	lib3ds \
+	logo \
+	lwo \
+	lws \
+	md2 \
+	net \
+    normals \
+	obj \
+	osg \
+	osga \
+	osgFX \
+	osgParticle \
+	osgSim \
+	osgText \
+	osgtgz \
+	pic \
+	pnm \
+	rgb \
+	rot \
+	scale \
+	stl \
+	tga \
+	tgz \
+	trans \
+	txp \
+	zip \
 
 
 ifeq ($(GDAL_INSTALLED),yes)
@@ -173,9 +173,9 @@ APPLICATION_DIRS = \
 
 ifeq ($(PRODUCER_INSTALLED),yes)
 
-    APPLICATION_DIRS += osgarchive\
-        osgconv\
-        osgviewer\
+    APPLICATION_DIRS += osgarchive \
+        osgconv \
+        osgviewer \
 
     ifeq ($(GDAL_INSTALLED),yes)
         APPLICATION_DIRS += osgdem
@@ -189,80 +189,80 @@ EXAMPLE_DIRS =
 
 ifeq ($(PRODUCER_INSTALLED),yes)
 
-    EXAMPLE_DIRS += osganimate\
-	osgautotransform\
-	osgbillboard\
-	osgblendequation\
-	osgcallback\
-	osgcatch\
-	osgcamera\
-	osgcameragroup\
-	osgclip\
-	osgcluster\
-	osgcopy\
-	osgcubemap\
-	osgdelaunay\
-	osgdepthshadow\
-	osgdepthpartition\
-	osgdistortion\
-	osgfbo\
-	osgforest\
-	osgfxbrowser\
-	osggeodemo\
-	osggeometry\
-	osghangglide\
-	osghud\
-	osgimpostor\
-	osgkeyboard\
-	osgkeyboardmouse\
-	osglauncher\
-	osglight\
-	osglightpoint\
-	osglogicop\
-	osglogo\
-        osgmotionblur\
-        osgmovie\
-	osgmultitexture\
-	osgmultiplecameras\
-	osgoccluder\
-	osgpagedlod\
-	osgparametric\
-	osgparticle\
-	osgparticleeffects\
-	osgpbuffer\
-	osgpick\
-        osgplanets\
-	osgpoints\
-	osgpointsprite\
-	osgprerender\
-	osgprerendercubemap\
-	osgreflect\
-	osgscalarbar\
-	osgscribe\
-	osgsequence\
-	osgshaders\
-	osgshaderterrain\
-	osgshadowtexture\
-	osgshape\
-	osgsimple\
-	osgsimplepager\
-	osgsimplifier\
-	osgslice\
-	osgspacewarp\
-	osgspheresegment\
-	osgspotlight\
-	osgstereoimage\
-	osgteapot\
-	osgtesselate\
-	osgtext\
-	osgtexture1D\
-	osgtexture2D\
-	osgtexture3D\
-	osgtexturerectangle\
-	osgunittests\
-	osgvertexprogram\
-	osgvolume\
-	osgwindows\
+    EXAMPLE_DIRS += osganimate \
+	osgautotransform \
+	osgbillboard \
+	osgblendequation \
+	osgcallback \
+	osgcatch \
+	osgcamera \
+	osgcameragroup \
+	osgclip \
+	osgcluster \
+	osgcopy \
+	osgcubemap \
+	osgdelaunay \
+	osgdepthshadow \
+	osgdepthpartition \
+	osgdistortion \
+	osgfbo \
+	osgforest \
+	osgfxbrowser \
+	osggeodemo \
+	osggeometry \
+	osghangglide \
+	osghud \
+	osgimpostor \
+	osgkeyboard \
+	osgkeyboardmouse \
+	osglauncher \
+	osglight \
+	osglightpoint \
+	osglogicop \
+	osglogo \
+        osgmotionblur \
+        osgmovie \
+	osgmultitexture \
+	osgmultiplecameras \
+	osgoccluder \
+	osgpagedlod \
+	osgparametric \
+	osgparticle \
+	osgparticleeffects \
+	osgpbuffer \
+	osgpick \
+        osgplanets \
+	osgpoints \
+	osgpointsprite \
+	osgprerender \
+	osgprerendercubemap \
+	osgreflect \
+	osgscalarbar \
+	osgscribe \
+	osgsequence \
+	osgshaders \
+	osgshaderterrain \
+	osgshadowtexture \
+	osgshape \
+	osgsimple \
+	osgsimplepager \
+	osgsimplifier \
+	osgslice \
+	osgspacewarp \
+	osgspheresegment \
+	osgspotlight \
+	osgstereoimage \
+	osgteapot \
+	osgtesselate \
+	osgtext \
+	osgtexture1D \
+	osgtexture2D \
+	osgtexture3D \
+	osgtexturerectangle \
+	osgunittests \
+	osgvertexprogram \
+	osgvolume \
+	osgwindows \
 
     ifeq ($(COMPILE_INTROSPECTION),yes)
         EXAMPLE_DIRS += osgintrospection

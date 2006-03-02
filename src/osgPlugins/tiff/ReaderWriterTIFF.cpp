@@ -40,7 +40,6 @@
  *
  **********************************************************************/
 
-
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
@@ -136,6 +135,75 @@ int libtiffStreamMapProc(thandle_t, tdata_t*, toff_t*)
 
 void libtiffStreamUnmapProc(thandle_t, tdata_t, toff_t)
 {
+}
+
+/* Functions to write TIFF image from memory
+ *
+ */
+
+tsize_t libtiffOStreamReadProc(thandle_t, tdata_t, tsize_t)
+{
+    return 0;
+}
+
+tsize_t libtiffOStreamWriteProc(thandle_t fd, tdata_t buf, tsize_t size)
+{
+    std::ostream *fout = (std::ostream*)fd;
+
+    fout->write((const char*)buf,size);
+
+    if(fout->bad()) {
+        return -1;
+    }
+
+    return size;
+}
+
+toff_t libtiffOStreamSizeProc(thandle_t fd)
+{
+    std::ostream *fout = (std::ostream*)fd;
+
+    std::streampos curPos = fout->tellp();
+
+    fout->seekp(0, std::ios::end);
+    toff_t size = fout->tellp();
+    fout->seekp(curPos, std::ios::beg);
+
+    return size;
+}
+
+toff_t libtiffOStreamSeekProc(thandle_t fd, toff_t off, int i)
+{
+    std::ostream *fout = (std::ostream*)fd;
+
+    toff_t ret;
+    switch(i)
+    {
+        case SEEK_SET:
+            fout->seekp(off,std::ios::beg);
+            ret = fout->tellp();
+            if(fout->bad())
+                ret = 0;
+            break;
+
+        case SEEK_CUR:
+            fout->seekp(off,std::ios::cur);
+            ret = fout->tellp();
+            if(fout->bad())
+                ret = 0;
+            break;
+
+        case SEEK_END:
+            fout->seekp(off,std::ios::end);
+            ret = fout->tellp();
+            if(fout->bad())
+                ret = 0;
+            break;
+        default:
+            ret = 0;
+            break;
+    }
+    return ret;
 }
 
 static int tifferror = ERR_NO_ERROR;
@@ -586,6 +654,75 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return pOsgImage;
         }
 
+        WriteResult::WriteStatus writeTIFStream(std::ostream& fout, const osg::Image& img) const
+        {
+            //Code is based from the following article on CodeProject.com
+            //http://www.codeproject.com/bitmap/BitmapsToTiffs.asp
+
+            TIFF *image;
+            int samplesPerPixel;
+            uint16 photometric;
+
+            image = TIFFClientOpen("outputstream", "w", (thandle_t)&fout,
+                                    libtiffOStreamReadProc, //Custom read function
+                                    libtiffOStreamWriteProc, //Custom write function
+                                    libtiffOStreamSeekProc, //Custom seek function
+                                    libtiffStreamCloseProc, //Custom close function
+                                    libtiffOStreamSizeProc, //Custom size function
+                                    libtiffStreamMapProc, //Custom map function
+                                    libtiffStreamUnmapProc); //Custom unmap function
+            
+            if(image == NULL)
+            {
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
+            switch(img.getPixelFormat()) {
+                case GL_LUMINANCE:
+                case GL_ALPHA:
+                    photometric = PHOTOMETRIC_MINISBLACK;
+                    samplesPerPixel = 1;
+                    break;
+                case GL_LUMINANCE_ALPHA:
+                    photometric = PHOTOMETRIC_MINISBLACK;
+                    samplesPerPixel = 2;
+                    break;
+                case GL_RGB:
+                    photometric = PHOTOMETRIC_RGB;
+                    samplesPerPixel = 3;
+                    break;
+                case GL_RGBA:
+                    photometric = PHOTOMETRIC_RGB;
+                    samplesPerPixel = 4;
+                    break;
+                default:
+                    return WriteResult::ERROR_IN_WRITING_FILE;
+                    break;
+            }
+
+            TIFFSetField(image, TIFFTAG_IMAGEWIDTH,img.s());
+            TIFFSetField(image, TIFFTAG_IMAGELENGTH,img.t());
+            TIFFSetField(image, TIFFTAG_BITSPERSAMPLE,8);
+            TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL,samplesPerPixel);
+            TIFFSetField(image, TIFFTAG_PHOTOMETRIC, photometric);
+            TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS); 
+            TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+            TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+
+            //uint32 rowsperstrip = TIFFDefaultStripSize(image, -1); 
+            //TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
+            
+            // Write the information to the file
+            for(int i = 0; i < img.t(); ++i) {
+                TIFFWriteScanline(image,(tdata_t)img.data(0,img.t()-i-1),i,0);
+            }
+
+            // Close the file
+            TIFFClose(image);
+
+            return WriteResult::FILE_SAVED;
+        }
+
         virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const
         {
             return readTIFStream(fin);
@@ -604,6 +741,23 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             ReadResult rr = readTIFStream(istream);
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
+        }
+
+        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options *options) const
+        {
+            WriteResult::WriteStatus ws = writeTIFStream(fout,img);
+            return ws;
+        }
+
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options *options) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            return writeImage(img,fout,options);
         }
 };
 

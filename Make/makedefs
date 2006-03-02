@@ -133,25 +133,25 @@ endif
 
 
 RECURSIVE_TARGETS = \
-      opt\
-      debug\
-      static\
-      staticdebug\
-      clean\
-      cleandepend\
-      cleandependopt\
-      cleandependdbg\
-      cleandbg\
-      cleanopt\
-      cleantarget\
-      cleantargetopt\
-      cleantargetdbg\
-      clobber\
-      clobberdbg\
-      clobberopt\
-      beautify\
-      docs\
-      depend\
+      opt \
+      debug \
+      static \
+      staticdebug \
+      clean \
+      cleandepend \
+      cleandependopt \
+      cleandependdbg \
+      cleandbg \
+      cleanopt \
+      cleantarget \
+      cleantargetopt \
+      cleantargetdbg \
+      clobber \
+      clobberdbg \
+      clobberopt \
+      beautify \
+      docs \
+      depend \
 
 STATICLIB    = $(LIB:.$(LIB_EXT)=.a)
 STATICPLUGIN = $(PLUGIN:.$(PLUGIN_EXT)=.a)
@@ -241,7 +241,7 @@ ifeq ($(OS),IRIX)
       INC               += -I${TOPDIR}/include -I/usr/freeware/include
       LDFLAGS           += -L/usr/local/lib
       DEF               += -LANG:std -OPT:Olimit=0 \
-                            -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
+                            -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303 \
                             -MDupdate $(MAKEDEPEND)
       OPTF              = -O2 
       DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  

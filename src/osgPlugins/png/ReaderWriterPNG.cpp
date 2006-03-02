@@ -8,6 +8,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
+#include <sstream>
+
 using namespace osg;
 
 extern "C"
@@ -54,7 +56,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
         virtual const char* className() const { return "PNG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"png"); }
 
-        WriteResult::WriteStatus writePngStream(std::ostream& fout, const osg::Image& img) const
+        WriteResult::WriteStatus writePngStream(std::ostream& fout, const osg::Image& img, int compression_level) const
         {
             png_structp png = NULL;
             png_infop   info = NULL;
@@ -71,6 +73,9 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             //Set custom write function so it will write to ostream
             png_set_write_fn(png,&fout,png_write_ostream,png_flush_ostream);
+
+            //Set compression level
+            png_set_compression_level(png, compression_level);
 
             switch(img.getPixelFormat()) {
                 case(GL_LUMINANCE): color = PNG_COLOR_TYPE_GRAY; break;
@@ -259,6 +264,23 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             return pOsgImage;
         }
 
+        int getCompressionLevel(const osgDB::ReaderWriter::Options *options) const
+        {
+            if(options) {
+                std::istringstream iss(options->getOptionString());
+                std::string opt;
+                while (iss >> opt) {
+                    if(opt=="PNG_COMPRESSION") {
+                        int level;
+                        iss >> level;
+                        return level;
+                    }
+                }
+            }
+
+            return Z_DEFAULT_COMPRESSION;
+        }
+
         virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
         {
             return readPNGStream(fin);
@@ -281,7 +303,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
         virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options *options) const
         {
-            WriteResult::WriteStatus ws = writePngStream(fout,img);
+            WriteResult::WriteStatus ws = writePngStream(fout,img,getCompressionLevel(options));
             return ws;
         }
 

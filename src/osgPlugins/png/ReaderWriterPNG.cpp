@@ -36,11 +36,76 @@ void png_read_istream(png_structp png_ptr, png_bytep data, png_size_t length)
     stream->read((char*)data,length); //Read requested amount of data
 }
 
+void png_write_ostream(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+    std::ostream *stream = (std::ostream*)png_get_io_ptr(png_ptr); //Get pointer to ostream
+    stream->write((char*)data,length); //Write requested amount of data
+}
+
+void png_flush_ostream(png_structp png_ptr)
+{
+    std::ostream *stream = (std::ostream*)png_get_io_ptr(png_ptr); //Get pointer to ostream
+    stream->flush();
+}
+
 class ReaderWriterPNG : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "PNG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"png"); }
+
+        WriteResult::WriteStatus writePngStream(std::ostream& fout, const osg::Image& img) const
+        {
+            png_structp png = NULL;
+            png_infop   info = NULL;
+            int color;
+            png_bytep *rows = NULL;
+
+            //Create write structure
+            png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+            if(!png) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            //Create infr structure
+            info = png_create_info_struct(png);
+            if(!info) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            //Set custom write function so it will write to ostream
+            png_set_write_fn(png,&fout,png_write_ostream,png_flush_ostream);
+
+            switch(img.getPixelFormat()) {
+                case(GL_LUMINANCE): color = PNG_COLOR_TYPE_GRAY; break;
+                case(GL_ALPHA): color = PNG_COLOR_TYPE_GRAY; break; //Couldn't find a color type for pure alpha, using gray instead
+                case(GL_LUMINANCE_ALPHA): color = PNG_COLOR_TYPE_GRAY_ALPHA ; break;
+                case(GL_RGB): color = PNG_COLOR_TYPE_RGB; break;
+                case(GL_RGBA): color = PNG_COLOR_TYPE_RGB_ALPHA; break;
+                default: return WriteResult::ERROR_IN_WRITING_FILE; break;                
+            }
+
+            //Create row data
+            rows = new png_bytep[img.t()];
+            for(int i = 0; i < img.t(); ++i) {
+                rows[i] = (png_bytep)img.data(0,img.t() - i - 1);
+            }
+
+            //Write header info
+            png_set_IHDR(png, info, img.s(), img.t(),
+                        8, color, PNG_INTERLACE_NONE,
+                        PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+
+            png_write_info(png, info);
+
+            //Write data
+            png_write_image(png, rows);
+
+            //End write
+            png_write_end(png, NULL);
+
+            //Cleanup
+            png_destroy_write_struct(&png,&info);
+            delete [] rows;
+
+            return WriteResult::FILE_SAVED;
+        }
 
         ReadResult readPNGStream(std::istream& fin) const
         {
@@ -212,6 +277,23 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             ReadResult rr = readPNGStream(istream);
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
+        }
+
+        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options *options) const
+        {
+            WriteResult::WriteStatus ws = writePngStream(fout,img);
+            return ws;
+        }
+
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options *options) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            return writeImage(img,fout,options);
         }
 };
 

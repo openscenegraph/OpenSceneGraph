@@ -1061,11 +1061,17 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
             }    
             break;
         case IMAGE_COMPRESS_DATA:
-            if(image) {
+            if(image)
+            {
                 //Get ReaderWriter for jpeg images
-                osgDB::ReaderWriter *writer = osgDB::Registry::instance()->getReaderWriterForExtension("jpeg");
+                
+                std::string extension = "png";
+                if (image->getPixelFormat()==GL_RGB) extension = "jpg";
+                
+                osgDB::ReaderWriter* writer = osgDB::Registry::instance()->getReaderWriterForExtension(extension);
 
-                if(writer) {
+                if(writer)
+                {
                     //Attempt to write the image to an output stream.
                     //The reason this isn't performed directly on the internal _ostream
                     //is because the writer might perform seek operations which could
@@ -1079,7 +1085,7 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
                         //Write file format. Do this for two reasons:
                         // 1 - Same code can be used to read in as with IMAGE_INCLUDE_FILE mode
                         // 2 - Maybe in future version user can specify which format to use
-                        writeString(".jpeg"); //Need to add dot so osgDB::getFileExtension will work
+                        writeString(std::string(".")+extension); //Need to add dot so osgDB::getFileExtension will work
                         
                         //Write size of stream
                         int size = outputStream.tellp();

@@ -30,48 +30,6 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         EventAdapter();
         virtual ~EventAdapter() {}
 
-        /** Get the EventType of the GUI event.*/
-        virtual EventType getEventType() const { return _eventType; }
-
-        inline void setKey(int key) { _key = key; }
-
-        /** key pressed, return -1 if inappropriate for this event. */
-        virtual int getKey() const { return _key; }
-
-        /** button pressed/released, return -1 if inappropriate for this event.*/
-        virtual int getButton() const { return _button; }
-
-        /** window minimum x. */
-        virtual float getXmin() const  { return _Xmin; }
-
-        /** window maximum x. */
-        virtual float getXmax() const  { return _Xmax; }
-
-        /** window minimum y. */
-        virtual float getYmin() const { return _Ymin; }
-
-        /** window maximum y. */
-        virtual float getYmax() const { return _Ymax; }
-
-        inline void setX(float x) { _mx = x; }
-
-        /** current mouse x position.*/
-        virtual float getX() const { return _mx; }
-
-        inline void setY(float y) { _my = y; }
-
-        /** current mouse y position.*/
-        virtual float getY() const { return _my; }
-
-        inline void setButtonMak(unsigned int mask) { _buttonMask = mask; }
-
-        /** current mouse button state */
-        virtual unsigned int getButtonMask() const { return _buttonMask; }
-
-        /** time in seconds of event. */
-        virtual double time() const { return _time; }
-
-        virtual unsigned int getModKeyMask() const { return _modKeyMask; }
 
         /** static method for setting window dimensions.*/
         static void setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax);
@@ -103,19 +61,6 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
 
 
         void copyStaticVariables();
-
-    public:
-
-        EventType _eventType;
-        int _key;
-        int _button;
-        float _Xmin,_Xmax;
-        float _Ymin,_Ymax;
-        float _mx;
-        float _my;
-        unsigned int _buttonMask;
-        unsigned int _modKeyMask;
-        double _time;
 
     public:
 

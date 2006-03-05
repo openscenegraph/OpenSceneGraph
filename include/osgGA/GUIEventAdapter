@@ -225,52 +225,72 @@ public:
             MODKEY_META        = (MODKEY_LEFT_META|MODKEY_RIGHT_META)
         };
 
-        /** Get the EventType of the GUI event.*/
-        virtual EventType getEventType() const = 0;
-
-        /** key pressed, return -1 if inappr   opriate for this event. */
-        virtual int getKey() const = 0;
-
-        /** button pressed/released, return -1 if inappropriate for this event.*/
-        virtual int getButton() const = 0;
-
-
         enum MouseYOrientation
         {
             Y_INCREASING_UPWARDS,
             Y_INCREASING_DOWNWARDS
         };
 
-        void setMouseYOrientation(MouseYOrientation myo) { _mouseYOrientation = myo; }
-        MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
+        enum ScrollingMotion 
+        {
+            SCROLL_UP,
+            SCROLL_DOWN
+        };
 
-        /** manimum x mouse position. */
-        virtual float getXmin() const = 0;
+        /** Get the EventType of the GUI event.*/
+        void setEventType(EventType eventType) { _eventType = eventType; }
 
-        /** maximum x mouse position. */
-        virtual float getXmax() const = 0;
-
-        /** minimum y mouse position. */
-        virtual float getYmin() const = 0;
-
-        /** maximum y mouse position. */   
-        virtual float getYmax() const = 0;
-
-        /** current mouse x position.*/
-        virtual float getX() const = 0;
-
-        /** current mouse y position.*/
-        virtual float getY() const = 0;
-        
-        /** current mouse button state */
-        virtual unsigned int getButtonMask() const = 0;
-
-        /** current modkey state */
-        virtual unsigned int getModKeyMask() const = 0;
+        /** Get the EventType of the GUI event.*/
+        virtual EventType getEventType() const { return _eventType; }
 
         /** time in seconds of event. */
-        virtual double time() const = 0;
-        
+        void setTime(double time) { _time = time; }
+
+        /** time in seconds of event. */
+        double getTime() const { return _time; }
+
+
+        /** time in seconds of event. */
+        virtual double time() const { return getTime(); }
+
+
+        inline void setKey(int key) { _key = key; }
+
+        /** key pressed, return -1 if inappropriate for this event. */
+        virtual int getKey() const { return _key; }
+
+        /** button pressed/released, return -1 if inappropriate for this event.*/
+        virtual int getButton() const { return _button; }
+
+        /** window minimum x. */
+        virtual float getXmin() const  { return _Xmin; }
+
+        /** window maximum x. */
+        virtual float getXmax() const  { return _Xmax; }
+
+        /** window minimum y. */
+        virtual float getYmin() const { return _Ymin; }
+
+        /** window maximum y. */
+        virtual float getYmax() const { return _Ymax; }
+
+        inline void setX(float x) { _mx = x; }
+
+        /** current mouse x position.*/
+        virtual float getX() const { return _mx; }
+
+        inline void setY(float y) { _my = y; }
+
+        /** current mouse y position.*/
+        virtual float getY() const { return _my; }
+
+        inline void setButtonMask(unsigned int mask) { _buttonMask = mask; }
+
+        /** current mouse button state */
+        virtual unsigned int getButtonMask() const { return _buttonMask; }
+
+        virtual unsigned int getModKeyMask() const { return _modKeyMask; }
+
         /** return the getX() value normalised to the range of -1 to 1.
           * -1 would be the left hand side of the window.
           * 0.0 would be the middle of the window. 
@@ -287,15 +307,47 @@ public:
             else return -(2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f);
         }
 
+        void setMouseYOrientation(MouseYOrientation myo) { _mouseYOrientation = myo; }
+        MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
+
 protected:
 
         GUIEventAdapter(MouseYOrientation myo=Y_INCREASING_DOWNWARDS):_mouseYOrientation(myo) {}
 
+        GUIEventAdapter(const GUIEventAdapter& rhs):
+            Referenced(),
+            _eventType(rhs._eventType),
+            _time(rhs._time),
+            _key(rhs._key),
+            _button(rhs._button),
+            _Xmin(rhs._Xmin),
+            _Xmax(rhs._Xmax),
+            _Ymin(rhs._Ymin),
+            _Ymax(rhs._Ymax),
+            _mx(rhs._mx),
+            _my(rhs._my),
+            _buttonMask(rhs._buttonMask),
+            _modKeyMask(rhs._modKeyMask),
+            _mouseYOrientation(rhs._mouseYOrientation) {}
+            
+
         /** Force users to create on heap, so that multiple referencing is safe.*/
-        virtual ~GUIEventAdapter(); // {}
+        virtual ~GUIEventAdapter();
+        
+    public:
 
+        EventType _eventType;
+        double _time;
+
+        int _key;
+        int _button;
+        float _Xmin,_Xmax;
+        float _Ymin,_Ymax;
+        float _mx;
+        float _my;
+        unsigned int _buttonMask;
+        unsigned int _modKeyMask;
         MouseYOrientation _mouseYOrientation;
-
 };
 
 }

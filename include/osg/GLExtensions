@@ -20,6 +20,12 @@
 
 namespace osg {
 
+/** Return floating-point OpenGL version number.
+  * Note: Must only be called within a valid OpenGL context,
+  * undefined behavior may occur otherwise.
+*/
+extern OSG_EXPORT float getGLVersionNumber();
+
 /** Return true if OpenGL "extension" is supported.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.

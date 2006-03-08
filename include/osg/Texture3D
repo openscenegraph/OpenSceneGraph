@@ -144,7 +144,7 @@ class OSG_EXPORT Texture3D : public Texture
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                     
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setTexture3DSupported(bool flag) { _isTexture3DSupported=flag; }
                 bool isTexture3DSupported() const { return _isTexture3DSupported; }

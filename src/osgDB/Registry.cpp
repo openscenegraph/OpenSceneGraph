@@ -469,7 +469,7 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 {
 
     ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
-    if (itr!=_extAliasMap.end()) return createLibraryNameForExtension(itr->second);
+    if (itr!=_extAliasMap.end() && ext != itr->second) return createLibraryNameForExtension(itr->second);
 
 #ifdef OSG_JAVA_BUILD
     static std::string prepend = "java";

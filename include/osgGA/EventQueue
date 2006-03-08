@@ -1,0 +1,104 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGGA_EVENTQUEUE
+#define OSGGA_EVENTQUEUE 1
+
+#include <osgGA/GUIEventAdapter>
+
+#include <osg/ref_ptr>
+#include <osg/Timer>
+
+#include <OpenThreads/Mutex>
+#include <list>
+
+namespace osgGA {
+
+/**
+ * EventQueue implementation for collecting and adapting windowing events 
+ */
+class OSGGA_EXPORT EventQueue : public osg::Referenced
+{
+    public:
+
+        EventQueue();
+
+        typedef std::list< osg::ref_ptr<GUIEventAdapter> > Events;
+                
+        /** Set events.*/
+        void setEvents(Events& events);
+
+        /** Take the entire event queue leaving the EventQueue' event queue empty.*/
+        bool takeEvents(Events& events);
+
+        /** Take a copy the entire event queue leaving the EventQueue' event queue intact.*/
+        bool copyEvents(Events& events) const;
+
+        /** Add events to end of event queue.*/
+        void appendEvents(Events& events);
+
+        /** Add an event to the end of the event queue.*/
+        void addEvent(GUIEventAdapter* event);
+
+
+        /** method for adapting window resize event, placing this event on the back of the event queue. */
+        void windowResize(float Xmin, float Ymin, float Xmax, float Ymax);
+
+        /** method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
+        void mouseScroll(GUIEventAdapter::ScrollingMotion sm);
+
+        /** method for adapting mouse motion events whilst mouse buttons are pressed, placing this event on the back of the event queue.*/
+        void mouseMotion(float x, float y);
+
+        /** method for adapting mouse button pressed events, placing this event on the back of the event queue.*/
+        void mouseButtonPress(float x, float y, unsigned int button);
+        
+        /** method for adapting mouse button release events, placing this event on the back of the event queue.*/
+        void mouseButtonRelease(float x, float y, unsigned int button);
+
+        /** method for adapting keyboard press events.*/
+        void keyPress(GUIEventAdapter::KeySymbol key);
+
+        /** method for adapting keyboard press events.*/
+        void keyRelease(GUIEventAdapter::KeySymbol key);
+
+        /** method for adapting frame events.*/
+        void frame(double t);
+        
+
+        void setStartTick(osg::Timer_t tick) { _startTick = tick; }
+        osg::Timer_t getStartTick() const { return _startTick; }
+
+        double getTime() const { return osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()); }
+
+        GUIEventAdapter* getCurrentEventState() { return _accumulateEventState.get(); }
+        const GUIEventAdapter* getCurrentEventState() const { return _accumulateEventState.get(); }
+
+    protected:
+
+        virtual ~EventQueue();
+
+        /** Prevent unwanted copy operator.*/
+        EventQueue& operator = (const EventQueue&) { return *this; }
+        
+        osg::ref_ptr<GUIEventAdapter>   _accumulateEventState;
+
+        osg::Timer_t                _startTick;
+        mutable OpenThreads::Mutex  _eventQueueMutex;
+        Events                      _eventQueue;
+    
+};
+
+}
+
+#endif

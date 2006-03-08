@@ -139,9 +139,6 @@ class ReaderWriterAC : public osgDB::ReaderWriter
                         writeNode(*(gp->getChild(i)), fout, opts);
                     }
                 }
-                //const_cast<ac3d::Group*>(static_cast<const ac3d::Group*>(&node))->Process(fout, options);
-             //   else if(dynamic_cast<const osg::Geode*>(&node))
-             //       const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(&node))->Process(fout);
                 else
                     osg::notify(osg::WARN)<<"File must start with a geode "<<std::endl;
                 fout.flush();
@@ -170,7 +167,6 @@ public:
     inline int getSurfaceType(void) const { return type;}
 protected:
     ~appearance() {
-    //    osg::notify(osg::WARN) << "deleting material type " << material << std::endl;
     }
     int material; // index in the ac3d file
     int type; // as used in ac3d, onesided etc are held as 0x20, 0x21...
@@ -180,7 +176,6 @@ static int line = 0;
 static char buff[255];
 
 static std::vector<osg::Material*> palette; // change to dynamic array
-//static int num_palette = 0;
 static int startmatindex = 0;
 
 
@@ -195,20 +190,6 @@ Boolean read_line(std::istream &fin)
 {
     fin.getline(buff,255);
     return !(fin.eof());
-/*    int nread=0;
-    char c1=1;
-    do {
-        if (!fin.eof( )) {
-            fin.read(&c1,1);
-            buff[nread]=c1;
-            nread++;
-        }
-    } while (nread<255 && c1!= 13 && c1!= 10 &&  fin.eof( )== 0 );
-    if (nread>0) buff[nread-1]='\0'; // null terminate and remove training blank
-    return nread>0;*/
-
-//    fgets(buff, 255, f); line++;
-//    return(TRUE);
 }
 
 
@@ -363,48 +344,6 @@ ACSurface *read_surface(std::istream &f, ACSurface *s,osg::UShortArray *nusidx,
    return(NULL);
 }
 
-
-
-
-/*void ac_object_calc_vertex_normals(ACObject *ob)
-{
-int s, v, vr;
-
-    / ** for each vertex in this object ** /
-    for (v = 0; v < ob->num_vert; v++)
-        {
-        ACNormal n = {0, 0, 0};
-        int found = 0;
-
-        / ** go through each surface ** /
-        for (s = 0; s < ob->num_surf; s++)
-            {
-            ACSurface *surf = &ob->surfaces[s];
-
-            / ** check if this vertex is used in this surface ** /
-            / ** if it is, use it to create an average normal ** /
-            for (vr = 0; vr < surf->num_vertref; vr++)
-                if (surf->vertref[vr] == v)
-                    {
-                    n.x+=surf->normal.x;
-                    n.y+=surf->normal.y;
-                    n.z+=surf->normal.z;
-                    found++;
-                    }
-            }
-        if (found > 0)
-            {
-            n.x /= found;
-            n.y /= found;
-            n.z /= found;
-            }
-        ob->vertices[v].normal = n;
-        }
-    
-
-} */
-
-
 int string_to_objecttype(char *s)
 {
     if (streq("world", s))
@@ -481,7 +420,11 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
             char type[20];
             char str[20];
             osg::Vec3 loc=ob.loc;
-            if (!gp) gp = new osg::Group();
+            if (gp!=NULL)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: Ac3d loader - possible internal error."<<std::endl;
+            }
+            gp = new osg::Group();
             initobject(&ob); // rezero data for object
             ob.loc=loc;
 
@@ -538,9 +481,8 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                     ctmp++;
                     if (*ctmp == '"') *ctmp='\0'; // latest ac3d seems toa dd more quotes than older versions.
                 }
-#ifdef USE_TEXTURE_CACHE
                 osgDB::Registry* pRegistry = osgDB::Registry::instance();
-                osg::Texture2D* pTexture = dynamic_cast<osg::Texture2D*>(pRegistry->getFromObjectCache(osgDB::findDataFile(tokv[1], options)));
+                osg::Texture2D* pTexture = dynamic_cast<osg::Texture2D*>(pRegistry->getFromObjectCache(std::string(tokv[1]) + "TEXTURE2D"));
                 if (NULL != pTexture)
                 {
                     // Use cached texture
@@ -550,25 +492,6 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                 else
                 {
                     // Try to load the texture
-                osg::Image *ctx= osgDB::readImageFile(tokv[1], options);
-                if (ctx)
-                { // image could be read
-                    ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
-                    ob.texture->setImage(ctx);
-                    ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
-                    ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
-                        pRegistry->addEntryToObjectCache(ctx->getFileName(), ob.texture.get());
-                    }
-                }
-#else
-                typedef std::map< std::string , Texture2D *> UsedTextureMap; // what textures already used.
-
-                static    UsedTextureMap usedtextures;
-                // gwm 22.04.05 check for already loaded textures
-                osg::ref_ptr<osg::Texture2D> texture = (usedtextures)[tokv[1]];
-                if (texture.valid()) {
-                    ob.texture = texture.get();// ac_load_texture(tokv[1]);
-                } else {
                     osg::Image *ctx= osgDB::readImageFile(tokv[1], options);
                     if (ctx)
                     { // image could be read
@@ -576,10 +499,9 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                         ob.texture->setImage(ctx);
                         ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
                         ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
-                        (usedtextures)[tokv[1]]=ob.texture.get();
+                        pRegistry->addEntryToObjectCache(std::string(tokv[1]) + "TEXTURE2D", ob.texture.get());
                     }
                 }
-#endif
             }
         }
         else if (streq(t, "texrep"))
@@ -638,14 +560,9 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
             }
             else if (ob.type == OBJECT_NORMAL)
             {
-                if (geode)
-                { // finish off the geode by making sure there are no concave polys
-                    osgUtil::Tesselator tesselator;
-                    for(unsigned int i=0;i<geode->getNumDrawables();++i)
-                    {
-                        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-                        if (geom) tesselator.retesselatePolygons(*geom);
-                    }
+                if (geode!=NULL)
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: Ac3d loader - possible internal error."<<std::endl;
                 }
                 geode = new osg::Geode();
                 gp->addChild(geode);
@@ -802,14 +719,36 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                             if (asurf.num_vertref >= 3)
                             {
                                 osg::Vec3 norm;
+                                // Handle surfaces with duplicate vertex indices
                                 unsigned short i1=(*nusidx)[0];
-                                unsigned short i2=(*nusidx)[1];
-                                unsigned short i3=(*nusidx)[2];
-                                osgtri_calc_normal((*vertpool)[i1], 
-                                (*vertpool)[i2], 
-                                (*vertpool)[i3], norm);
-                                normals->push_back(norm);
-                            //    fprintf(stdout,"New %x are %d nrms\n",normals,normals->size());
+                                unsigned short i2;
+                                unsigned short i3;
+                                int iIndex = 1;
+                                while ((iIndex < asurf.num_vertref) && (i1 == (i2 = (*nusidx)[iIndex])))
+                                    iIndex++;
+                                if (iIndex < asurf.num_vertref)
+                                {
+                                    iIndex = 1;
+                                    while ((iIndex < asurf.num_vertref) && ((i1 == (i3 = (*nusidx)[iIndex])) || (i2 == i3)))
+                                            iIndex++;
+                                    if (iIndex < asurf.num_vertref)
+                                    {
+                                        osgtri_calc_normal((*vertpool)[i1], (*vertpool)[i2], (*vertpool)[i3], norm);
+                                        normals->push_back(norm);
+                                    }
+                                    else
+                                    {
+                                        // Generate a dummy normal
+                                        osg::Vec3 norm(0, 1, 0);
+                                        normals->push_back(norm);
+                                    }
+                                }
+                                else
+                                {
+                                    // Generate a dummy normal
+                                    osg::Vec3 norm(0, 1, 0);
+                                    normals->push_back(norm);
+                                }
                             }
                             else
                             {
@@ -829,7 +768,6 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                             TextureCoordinate._v[0] = ob.texture_offset_x + TextureCoordinate._v[0] * ob.texture_repeat_x;
                             TextureCoordinate._v[1] = ob.texture_offset_y + TextureCoordinate._v[1] * ob.texture_repeat_y;
                             (*tgeom).push_back(TextureCoordinate);
-//                            (*tgeom).push_back((*tcs)[i]);
                         }
                         GLenum poltype=osg::PrimitiveSet::POLYGON;
                         if (asurf.flags & SURFACE_TYPE_CLOSEDLINE) poltype=osg::PrimitiveSet::LINE_LOOP;
@@ -890,15 +828,6 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                 }
 
             }
-            if (geode)
-            {
-                osgUtil::Tesselator tesselator;
-                for(unsigned int i=0;i<geode->getNumDrawables();++i)
-                {
-                    osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-                    if (geom) tesselator.retesselatePolygons(*geom);
-                }
-            }
             else if (ob.type == OBJECT_LIGHT)
             { // add a light source to the scene 1 Nov 2003
                 static int nlight=1;
@@ -917,15 +846,6 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                 return ac3dLightSource;
             }
             return(gp);
-        }
-    }
-    if (geode)
-    {
-        osgUtil::Tesselator tesselator;
-        for(unsigned int i=0;i<geode->getNumDrawables();++i)
-        {
-            osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-            if (geom) tesselator.retesselatePolygons(*geom);
         }
     }
     return(gp);

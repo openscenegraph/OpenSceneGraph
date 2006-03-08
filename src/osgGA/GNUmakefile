@@ -9,6 +9,7 @@ CXXFILES = \
 	EventVisitor.cpp\
 	FlightManipulator.cpp\
 	UFOManipulator.cpp\
+        EventQueue.cpp\
         GUIEventAdapter.cpp\
         GUIEventHandler.cpp\
         GUIEventHandlerVisitor.cpp\

@@ -161,14 +161,14 @@ void UFOManipulator::computeHomePosition()
 
 void UFOManipulator::init(const GUIEventAdapter&, GUIActionAdapter&)
 {
-    //home(ea.time());
+    //home(ea.getTime());
 
     _stop();
 }
 
 void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&) 
 {
-    home(ea.time());
+    home(ea.getTime());
 }
 
 void UFOManipulator::home(double) 
@@ -398,17 +398,17 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             break;
 
         case 'H':
-            home(ea.time());
+            home(ea.getTime());
             break;
     }
 }
 
 void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter & )
 {
-    double t1 = ea.time();
+    double t1 = ea.getTime();
     if( _t0 == 0.0 )
     {
-        _t0 = ea.time();
+        _t0 = ea.getTime();
         _dt = 0.0;
     }
     else

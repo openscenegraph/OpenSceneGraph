@@ -7,212 +7,98 @@
 
 using namespace osgProducer;
 
+KeyboardMouseCallback::KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMouse, bool &done, bool escapeKeySetsDone):
+    Producer::KeyboardMouseCallback(),
+    _keyboardMouse(keyboardMouse),
+    _mx(0.0f),_my(0.0f),_mbutton(0),
+    _done(done),
+    _escapeKeySetsDone(escapeKeySetsDone)            
+{
+    _eventQueue = new osgGA::EventQueue;
+    _eventQueue->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+    updateWindowSize();
+}
+
 void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm )
 {
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-
-    _eventQueueMutex.lock();
-    event->adaptMouseScroll(getTime(), sm);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->mouseScroll((osgGA::GUIEventAdapter::ScrollingMotion)sm);
 }
 
 void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
 {
-    _mx = mx;
-    _my = my;
-    _mbutton |= (1<<(mbutton-1));
-    
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptButtonPress(getTime(),mx,my,mbutton);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->mouseButtonPress(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbutton ) 
 {
-    _mx = mx;
-    _my = my;
-    _mbutton &= ~(1<<(mbutton-1));
-    
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptButtonRelease(getTime(),mx,my,mbutton);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->mouseButtonRelease(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::doubleButtonPress( float mx, float my, unsigned int mbutton ) 
 {
-    _mx = mx;
-    _my = my;
-    _mbutton |= (1<<(mbutton-1));
-    
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptButtonPress(getTime(),mx,my,mbutton);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->mouseButtonPress(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )
 {
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-
-    _eventQueueMutex.lock();
-    event->adaptKeyPress(getTime(),key);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->keyPress((osgGA::GUIEventAdapter::KeySymbol)key);
 
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 
-        event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
+        (osgGA::GUIEventAdapter::KeySymbol)key==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
 }
 
 void KeyboardMouseCallback::keyRelease( Producer::KeyCharacter key )
 {
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptKeyRelease(getTime(),key);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->keyRelease((osgGA::GUIEventAdapter::KeySymbol)key);
 }
 
 void KeyboardMouseCallback::specialKeyPress( Producer::KeyCharacter key )
 {
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-
-    _eventQueueMutex.lock();
-    event->adaptKeyPress(getTime(),key);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
-
-    // check against adapted key symbol.    
-    if (_escapeKeySetsDone && 
-        event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
+    updateWindowSize();
+    keyPress(key);
 }
 
 void KeyboardMouseCallback::specialKeyRelease( Producer::KeyCharacter key )
 {
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptKeyRelease(getTime(),key);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    keyRelease(key);
 }
 
 void KeyboardMouseCallback::windowConfig( int x, int y, unsigned int width, unsigned int height )
 {
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptResize(getTime(), x, y, x+width, y+height );
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
+    updateWindowSize();
+    _eventQueue->windowResize(x,y,x+width,y+height);
 }
 
 void KeyboardMouseCallback::mouseMotion( float mx, float my) 
 {
-    _mx = mx;
-    _my = my;
-    
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptMouseMotion(getTime(),mx,my);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
-
+    updateWindowSize();
+    _eventQueue->mouseMotion(mx,my);
 }
 
 void KeyboardMouseCallback::passiveMouseMotion( float mx, float my) 
 {
-    _mx = mx;
-    _my = my;
-    
-    //std::cout << "mx="<<mx<<" my="<<my<<std::endl;
-
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    event->adaptMouseMotion(getTime(),mx,my);
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
-
+    updateWindowSize();
+    _eventQueue->mouseMotion(mx,my);
 }
 
 void KeyboardMouseCallback::mouseWarp( float mx, float my) 
 {
-    _mx = mx;
-    _my = my;
-    
-    osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    
-    _eventQueueMutex.lock();
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
-
+    updateWindowSize();
+    _eventQueue->mouseMotion(mx,my); // need mouse warp??
 }
 
-double KeyboardMouseCallback::getEventQueue(EventQueue& queue)
+
+void KeyboardMouseCallback::updateWindowSize()
 {
-    double swapTime;
-
-    queue.clear();
-    _eventQueueMutex.lock();
-    _eventQueue.swap(queue);
-    swapTime = getTime();
-    _eventQueueMutex.unlock();
-    
-    return swapTime;
-}
-
-double KeyboardMouseCallback::copyEventQueue(EventQueue& queue) const
-{
-    double swapTime;
-
-    queue.clear();
-    _eventQueueMutex.lock();
-    queue = _eventQueue;
-    swapTime = getTime();
-    _eventQueueMutex.unlock();
-    
-    return swapTime;
-}
-
-double KeyboardMouseCallback::setEventQueue(EventQueue& queue)
-{
-    double swapTime;
-
-    _eventQueueMutex.lock();
-    _eventQueue = queue;
-    swapTime = getTime();
-    _eventQueueMutex.unlock();
-    
-    return swapTime;
-}
-
-double KeyboardMouseCallback::appendEventQueue(EventQueue& queue)
-{
-    double swapTime;
-
-    _eventQueueMutex.lock();
-    _eventQueue.insert(_eventQueue.end(),queue.begin(),queue.end());
-    swapTime = getTime();
-    _eventQueueMutex.unlock();
-    
-    return swapTime;
-}
-
-EventAdapter* KeyboardMouseCallback::createEventAdapter()
-{
-    EventAdapter* ea = new EventAdapter;
+    osgGA::GUIEventAdapter* ea = _eventQueue->getCurrentEventState();
 
     Producer::InputArea* ia = _keyboardMouse->getInputArea();
     Producer::RenderSurface* rs = _keyboardMouse->getRenderSurface();
@@ -257,12 +143,36 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
 
         ea->setWindowSize(minX,minY,maxX,maxY);
     }
-    
-    return ea;
+}
+
+bool KeyboardMouseCallback::takeEventQueue(EventQueue& queue)
+{
+    updateWindowSize();
+    return _eventQueue->takeEvents(queue);
+}
+
+bool KeyboardMouseCallback::copyEventQueue(EventQueue& queue) const
+{
+    return _eventQueue->copyEvents(queue);
+}
+
+void KeyboardMouseCallback::setEventQueue(EventQueue& queue)
+{
+    _eventQueue->setEvents(queue);
+}
+
+void KeyboardMouseCallback::appendEventQueue(EventQueue& queue)
+{
+    _eventQueue->appendEvents(queue);
 }
 
 void KeyboardMouseCallback::shutdown()
 {
     _done = true;
     _keyboardMouse->cancel();
+}
+
+osgGA::GUIEventAdapter* KeyboardMouseCallback::createEventAdapter()
+{
+    return new osgGA::GUIEventAdapter(*(_eventQueue->getCurrentEventState()));
 }

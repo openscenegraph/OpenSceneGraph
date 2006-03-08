@@ -64,7 +64,7 @@ class CameraPacket {
         // us to do this, even though its a reference counted object.    
         osg::FrameStamp  _frameStamp;
         
-        osgProducer::KeyboardMouseCallback::EventQueue _events;
+        osgGA::EventQueue::Events _events;
         
 };
 
@@ -295,36 +295,36 @@ class DataConverter
 
         }
 
-        void write(const osgProducer::EventAdapter& event)
+        void write(const osgGA::GUIEventAdapter& event)
         {
-            writeUInt(event._eventType);
-            writeUInt(event._key);
-            writeUInt(event._button);
-            writeFloat(event._Xmin);
-            writeFloat(event._Xmax);
-            writeFloat(event._Ymin);
-            writeFloat(event._Ymax);
-            writeFloat(event._mx);
-            writeFloat(event._my);
-            writeUInt(event._buttonMask);
-            writeUInt(event._modKeyMask);
-            writeDouble(event._time);
+            writeUInt(event.getEventType());
+            writeUInt(event.getKey());
+            writeUInt(event.getButton());
+            writeFloat(event.getXmin());
+            writeFloat(event.getXmax());
+            writeFloat(event.getYmin());
+            writeFloat(event.getYmax());
+            writeFloat(event.getX());
+            writeFloat(event.getY());
+            writeUInt(event.getButtonMask());
+            writeUInt(event.getModKeyMask());
+            writeDouble(event.getTime());
         }
 
-        void read(osgProducer::EventAdapter& event)
+        void read(osgGA::GUIEventAdapter& event)
         {
-            event._eventType = (osgGA::GUIEventAdapter::EventType)readUInt();
-            event._key = readUInt();
-            event._button = readUInt();
-            event._Xmin = readFloat();
-            event._Xmax = readFloat();
-            event._Ymin = readFloat();
-            event._Ymax = readFloat();
-            event._mx = readFloat();
-            event._my = readFloat();
-            event._buttonMask = readUInt();
-            event._modKeyMask = readUInt();
-            event._time = readDouble();
+            event.setEventType((osgGA::GUIEventAdapter::EventType)readUInt());
+            event.setKey(readUInt());
+            event.setButton(readUInt());
+            event.setXmin(readFloat());
+            event.setXmax(readFloat());
+            event.setYmin(readFloat());
+            event.setYmax(readFloat());
+            event.setX(readFloat());
+            event.setY(readFloat());
+            event.setButtonMask(readUInt());
+            event.setModKeyMask(readUInt());
+            event.setTime(readDouble());
         }
         
         void write(CameraPacket& cameraPacket)
@@ -337,9 +337,11 @@ class DataConverter
             write(cameraPacket._frameStamp);
         
             writeUInt(cameraPacket._events.size());
-            for(unsigned int i=0;i<cameraPacket._events.size();++i)
+            for(osgGA::EventQueue::Events::iterator itr = cameraPacket._events.begin();
+                itr != cameraPacket._events.end();
+                ++itr)
             {
-                write(*(cameraPacket._events[i]));
+                write(*(*itr));
             }
         }
 
@@ -360,7 +362,7 @@ class DataConverter
             unsigned int numEvents = readUInt();
             for(unsigned int i=0;i<numEvents;++i)
             {
-                osgProducer::EventAdapter* event = new osgProducer::EventAdapter;
+                osgGA::GUIEventAdapter* event = new osgGA::GUIEventAdapter;
                 read(*(event));
                 cameraPacket._events.push_back(event);
             }

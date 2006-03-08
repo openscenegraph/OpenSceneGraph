@@ -486,7 +486,7 @@ bool DriveManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    double dt = _ga_t0->time()-_ga_t1->time();
+    double dt = _ga_t0->getTime()-_ga_t1->getTime();
 
     if (dt<0.0f)
     {

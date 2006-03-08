@@ -4,6 +4,8 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	AnimationPathManipulator.cpp\
 	DriveManipulator.cpp\
+	Event.cpp\
+	EventQueue.cpp\
 	EventVisitor.cpp\
 	FlightManipulator.cpp\
 	GUIActionAdapter.cpp\

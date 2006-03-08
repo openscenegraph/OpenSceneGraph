@@ -667,8 +667,8 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                 if (ev)
                 {
                     osgGA::GUIActionAdapter* aa = ev->getActionAdapter();
-                    osgGA::EventVisitor::EventList& events = ev->getEventList();
-                    for(osgGA::EventVisitor::EventList::iterator itr=events.begin();
+                    osgGA::EventQueue::Events& events = ev->getEvents();
+                    for(osgGA::EventQueue::Events::iterator itr=events.begin();
                         itr!=events.end();
                         ++itr)
                     {

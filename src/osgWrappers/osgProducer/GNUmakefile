@@ -2,7 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	EventAdapter.cpp\
+	Export.cpp\
 	GraphicsContextImplementation.cpp\
 	KeyboardMouseCallback.cpp\
 	OsgCameraGroup.cpp\

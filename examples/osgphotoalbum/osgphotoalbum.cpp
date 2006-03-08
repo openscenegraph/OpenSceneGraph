@@ -612,17 +612,17 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             if (ea.getKey()=='a')
             {
                 _autoSteppingActive = !_autoSteppingActive;
-                _previousTime = ea.time();
+                _previousTime = ea.getTime();
                 return true;
             }
             else if (ea.getKey()=='n')
             {
-                _album->nextPage(ea.time()+1.0f);
+                _album->nextPage(ea.getTime()+1.0f);
                 return true;
             }
             else if (ea.getKey()=='p')
             {
-                _album->previousPage(ea.time()+1.0f);
+                _album->previousPage(ea.getTime()+1.0f);
                 return true;
             }
             return false;
@@ -634,13 +634,13 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 if (_firstTraversal)
                 {
                     _firstTraversal = false;
-                    _previousTime = ea.time();
+                    _previousTime = ea.getTime();
                 }
-                else if (ea.time()-_previousTime>_timePerSlide)
+                else if (ea.getTime()-_previousTime>_timePerSlide)
                 {
-                    _previousTime = ea.time();
+                    _previousTime = ea.getTime();
 
-                    _album->nextPage(ea.time()+1.0f);
+                    _album->nextPage(ea.getTime()+1.0f);
                 }
             }
             

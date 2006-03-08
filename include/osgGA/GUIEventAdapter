@@ -11,21 +11,22 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_GUIEVENTADAPTER
-#define OSGGA_GUIEVENTADAPTER 1 
+#ifndef OSGGA_EVENT
+#define OSGGA_EVENT 1 
 
 #include <osg/Referenced>
 #include <osgGA/Export>
 
 namespace osgGA{
 
+
 /**
-Pure virtual base class for adapting platform specific events into
-generic keyboard and mouse events. 
+Pure virtual base class for adapting platform specific GUIEventAdapters into
+generic keyboard and mouse GUIEventAdapters. 
 
 Used as GUI toolkit-independent input into GUIEventAdapters. Viewer
 writers should subclass this base class to implement the functionality
-to translate one of their GUI events, e.g. a Qt Event or an MFC Event,
+to translate one of their GUI GUIEventAdapters, e.g. a Qt GUIEventAdapter or an MFC GUIEventAdapter,
 as appropriate.
 */
 class OSGGA_EXPORT GUIEventAdapter : public osg::Referenced
@@ -49,10 +50,7 @@ public:
             KEYUP,
             FRAME,
             RESIZE,
-            SCROLLUP,
-            SCROLLDOWN,
-            SCROLLLEFT,
-            SCROLLRIGHT
+            SCROLL
         };
 
         enum KeySymbol
@@ -233,63 +231,99 @@ public:
 
         enum ScrollingMotion 
         {
+            SCROLL_LEFT,
+            SCROLL_RIGHT,
             SCROLL_UP,
             SCROLL_DOWN
         };
 
-        /** Get the EventType of the GUI event.*/
-        void setEventType(EventType eventType) { _eventType = eventType; }
+    public:
 
-        /** Get the EventType of the GUI event.*/
+        GUIEventAdapter();
+
+        GUIEventAdapter(const GUIEventAdapter& rhs);
+
+        /** Get the Type of the GUI GUIEventAdapter.*/
+        void setEventType(EventType Type) { _eventType = Type; }
+
+        /** Get the Type of the GUI GUIEventAdapter.*/
         virtual EventType getEventType() const { return _eventType; }
 
-        /** time in seconds of event. */
+        /** set time in seconds of event. */
         void setTime(double time) { _time = time; }
 
-        /** time in seconds of event. */
+        /** get time in seconds of event. */
         double getTime() const { return _time; }
 
+        /** deprecated function for getting time of event. */
+        double time() const { return _time; }
 
-        /** time in seconds of event. */
-        virtual double time() const { return getTime(); }
-
-
+        /** set key pressed. */
         inline void setKey(int key) { _key = key; }
 
-        /** key pressed, return -1 if inappropriate for this event. */
+        /** get key pressed, return -1 if inappropriate for this GUIEventAdapter. */
         virtual int getKey() const { return _key; }
 
-        /** button pressed/released, return -1 if inappropriate for this event.*/
-        virtual int getButton() const { return _button; }
+        /** set button pressed/released.*/
+        void setButton(int button) { _button = button; }
 
-        /** window minimum x. */
-        virtual float getXmin() const  { return _Xmin; }
+        /** button pressed/released, return -1 if inappropriate for this GUIEventAdapter.*/
+        int getButton() const { return _button; }
 
-        /** window maximum x. */
-        virtual float getXmax() const  { return _Xmax; }
+        /** set window minimum x. */
+        void setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax);
 
-        /** window minimum y. */
-        virtual float getYmin() const { return _Ymin; }
+        /** set window minimum x. */
+        void setXmin(float x) { _Xmin = x; }
 
-        /** window maximum y. */
-        virtual float getYmax() const { return _Ymax; }
+        /** get window minimum x. */
+        float getXmin() const { return _Xmin; }
 
-        inline void setX(float x) { _mx = x; }
+        /** set window maximum x. */
+        void setXmax(float x) { _Xmax = x; }
 
-        /** current mouse x position.*/
-        virtual float getX() const { return _mx; }
+        /** get window maximum x. */
+        float getXmax() const { return _Xmax; }
 
-        inline void setY(float y) { _my = y; }
+        /** set window minimum y. */
+        void setYmin(float y) { _Ymin = y; }
 
-        /** current mouse y position.*/
-        virtual float getY() const { return _my; }
+        /** get window minimum y. */
+        float getYmin() const { return _Ymin; }
 
-        inline void setButtonMask(unsigned int mask) { _buttonMask = mask; }
+        /** set window maYimum y. */
+        void setYmax(float y) { _Ymax = y; }
 
-        /** current mouse button state */
-        virtual unsigned int getButtonMask() const { return _buttonMask; }
+        /** get window maYimum y. */
+        float getYmax() const { return _Ymax; }
 
-        virtual unsigned int getModKeyMask() const { return _modKeyMask; }
+        /** set current mouse x position.*/
+        void setX(float x) { _mx = x; }
+
+        /** get current mouse x position.*/
+        float getX() const { return _mx; }
+
+        /** set current mouse y position.*/
+        void setY(float y) { _my = y; }
+
+        /** get current mouse y position.*/
+        float getY() const { return _my; }
+
+        /** set current mouse button state */
+        void setButtonMask(unsigned int mask) { _buttonMask = mask; }
+
+        /** get current mouse button state */
+        unsigned int getButtonMask() const { return _buttonMask; }
+
+        void setModKeyMask(unsigned int mask) { _modKeyMask = mask; }
+
+        unsigned int getModKeyMask() const { return _modKeyMask; }
+
+
+        void setScrollingMotion(ScrollingMotion motion) { _scrollingMotion = motion; }
+
+        ScrollingMotion getScrollingMotion() const { return _scrollingMotion; }
+
 
         /** return the getX() value normalised to the range of -1 to 1.
           * -1 would be the left hand side of the window.
@@ -310,32 +344,13 @@ public:
         void setMouseYOrientation(MouseYOrientation myo) { _mouseYOrientation = myo; }
         MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
 
-protected:
-
-        GUIEventAdapter(MouseYOrientation myo=Y_INCREASING_DOWNWARDS):_mouseYOrientation(myo) {}
-
-        GUIEventAdapter(const GUIEventAdapter& rhs):
-            Referenced(),
-            _eventType(rhs._eventType),
-            _time(rhs._time),
-            _key(rhs._key),
-            _button(rhs._button),
-            _Xmin(rhs._Xmin),
-            _Xmax(rhs._Xmax),
-            _Ymin(rhs._Ymin),
-            _Ymax(rhs._Ymax),
-            _mx(rhs._mx),
-            _my(rhs._my),
-            _buttonMask(rhs._buttonMask),
-            _modKeyMask(rhs._modKeyMask),
-            _mouseYOrientation(rhs._mouseYOrientation) {}
             
+
+    protected:
 
         /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter();
         
-    public:
-
         EventType _eventType;
         double _time;
 
@@ -347,6 +362,7 @@ protected:
         float _my;
         unsigned int _buttonMask;
         unsigned int _modKeyMask;
+        ScrollingMotion _scrollingMotion;
         MouseYOrientation _mouseYOrientation;
 };
 

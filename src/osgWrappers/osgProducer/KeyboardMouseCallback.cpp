@@ -9,8 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Timer>
-#include <osgProducer/EventAdapter>
+#include <osgGA/EventQueue>
+#include <osgGA/GUIEventAdapter>
 #include <osgProducer/KeyboardMouseCallback>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::EventAdapter > >, osgProducer::KeyboardMouseCallback::EventQueue);
+TYPE_NAME_ALIAS(osgGA::EventQueue::Events, osgProducer::KeyboardMouseCallback::EventQueue);
 
 BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
 	I_ConstructorWithDefaults3(IN, Producer::KeyboardMouse *, keyboardMouse, , IN, bool &, done, , IN, bool, escapeKeySetsDone, true);
@@ -40,38 +40,20 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
 	I_Method0(void, shutdown);
 	I_Method1(void, setEscapeSetDone, IN, bool, esc);
 	I_Method0(bool, getEscapeSetDone);
-	I_Method1(double, getEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
-	I_Method1(double, copyEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
-	I_Method1(double, setEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
-	I_Method1(double, appendEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method0(osgGA::EventQueue *, getEventQueue);
+	I_Method1(bool, takeEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method1(bool, copyEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method1(void, setEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
+	I_Method1(void, appendEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
 	I_Method0(bool, done);
-	I_Method0(float, mx);
-	I_Method0(float, my);
-	I_Method0(unsigned int, mbutton);
-	I_Method1(void, setStartTick, IN, osg::Timer_t, tick);
-	I_Method0(osg::Timer_t, getStartTick);
 	I_Method0(double, getTime);
 	I_Method0(Producer::KeyboardMouse *, getKeyboardMouse);
 	I_Method0(const Producer::KeyboardMouse *, getKeyboardMouse);
-	I_Method0(osgProducer::EventAdapter *, createEventAdapter);
+	I_Method0(osgGA::GUIEventAdapter *, createEventAdapter);
+	I_Method0(void, updateWindowSize);
 	I_Property(bool, EscapeSetDone);
-	I_WriteOnlyPropertyWithReturnType(osgProducer::KeyboardMouseCallback::EventQueue &, EventQueue, double);
+	I_ReadOnlyProperty(osgGA::EventQueue *, EventQueue);
 	I_ReadOnlyProperty(Producer::KeyboardMouse *, KeyboardMouse);
-	I_Property(osg::Timer_t, StartTick);
 	I_ReadOnlyProperty(double, Time);
 END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::EventAdapter >)
-	I_Constructor0();
-	I_Constructor1(IN, osgProducer::EventAdapter *, t);
-	I_Constructor1(IN, const osg::ref_ptr< osgProducer::EventAdapter > &, rp);
-	I_Method0(bool, valid);
-	I_Method0(osgProducer::EventAdapter *, get);
-	I_Method0(const osgProducer::EventAdapter *, get);
-	I_Method0(osgProducer::EventAdapter *, take);
-	I_Method0(osgProducer::EventAdapter *, release);
-	I_ReadOnlyProperty(osgProducer::EventAdapter *, );
-END_REFLECTOR
-
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgProducer::EventAdapter > >);
 

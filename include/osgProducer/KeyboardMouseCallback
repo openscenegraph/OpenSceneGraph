@@ -20,8 +20,7 @@
 
 #include <Producer/RenderSurface> // For definition of KeySymbol
 #include <Producer/KeyboardMouse>
-
-#include <osgProducer/EventAdapter>
+#include <osgGA/EventQueue>
 
 #include <osg/ref_ptr>
 #include <osg/Timer>
@@ -32,13 +31,7 @@ namespace osgProducer {
 class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseCallback
 {
     public:
-        KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMouse, bool &done, bool escapeKeySetsDone=true) :
-            Producer::KeyboardMouseCallback(),
-            _keyboardMouse(keyboardMouse),
-            _mx(0.0f),_my(0.0f),_mbutton(0),
-            _done(done),
-            _escapeKeySetsDone(escapeKeySetsDone)            
-            {}
+        KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMouse, bool &done, bool escapeKeySetsDone=true);
 
         virtual ~KeyboardMouseCallback() {}
 
@@ -68,28 +61,26 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 
 
         // local methods and members
-        typedef std::vector< osg::ref_ptr<EventAdapter> > EventQueue;
+        typedef osgGA::EventQueue::Events EventQueue;
 
-        double getEventQueue(EventQueue& queue);
-        double copyEventQueue(EventQueue& queue) const;
-        double setEventQueue(EventQueue& queue);
-        double appendEventQueue(EventQueue& queue);
+        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
+        
+        bool takeEventQueue(EventQueue& queue);
+        bool copyEventQueue(EventQueue& queue) const;
+        void setEventQueue(EventQueue& queue);
+        void appendEventQueue(EventQueue& queue);
 
         bool done() const { return _done; }
-        float mx() const { return _mx; }
-        float my() const  { return _my; }
-        unsigned int mbutton() const { return _mbutton; }
         
-        void setStartTick(osg::Timer_t tick) { _startTick = tick; }
-        osg::Timer_t getStartTick() const { return _startTick; }
-        
-        double getTime() const { return _timer.delta_s(_startTick,_timer.tick()); }
+        double getTime() const { return _eventQueue->getTime(); }
         
         Producer::KeyboardMouse* getKeyboardMouse() { return _keyboardMouse; }
         const Producer::KeyboardMouse* getKeyboardMouse() const { return _keyboardMouse; }
          
-        EventAdapter* createEventAdapter();
+        osgGA::GUIEventAdapter* createEventAdapter();
 
+        void updateWindowSize();
+         
     protected:
     
     
@@ -99,10 +90,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         bool &_done;
         bool _escapeKeySetsDone;
 
-        osg::Timer_t    _startTick;
-        osg::Timer      _timer;
-        mutable OpenThreads::Mutex _eventQueueMutex;
-        EventQueue      _eventQueue;
+        osg::ref_ptr<osgGA::EventQueue>      _eventQueue;
         
 };
 

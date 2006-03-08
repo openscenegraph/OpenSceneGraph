@@ -13,6 +13,7 @@ CXXFILES =\
 	LightPointNode.cpp\
 	LightPointSystem.cpp\
 	MultiSwitch.cpp\
+	OpenFlightOptimizer.cpp\
 	OverlayNode.cpp\
 	ScalarBar.cpp\
 	ScalarsToColors.cpp\

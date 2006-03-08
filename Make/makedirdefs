@@ -70,8 +70,9 @@ PLUGIN_DIRS = \
 	directx \
 	dw \
 	dxf \
-    ESRIShape \
+	ESRIShape \
 	flt \
+	OpenFlight \
 	hdr \
 	ive \
 	lib3ds \
@@ -80,7 +81,7 @@ PLUGIN_DIRS = \
 	lws \
 	md2 \
 	net \
-    normals \
+	normals \
 	obj \
 	osg \
 	osga \

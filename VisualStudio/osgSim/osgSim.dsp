@@ -139,6 +139,10 @@ SOURCE=..\..\src\osgSim\OverlayNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\OpenFlightOptimizer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\ScalarBar.cpp
 # End Source File
 # Begin Source File
@@ -216,6 +220,10 @@ SOURCE=..\..\include\osgSim\MultiSwitch
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\OverlayNode
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\OpenFlightOptimizer
 # End Source File
 # Begin Source File
 

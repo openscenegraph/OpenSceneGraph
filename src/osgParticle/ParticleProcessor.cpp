@@ -108,6 +108,11 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
 
                             // do some process (unimplemented in this base class)
                             process(t - _t0);
+                        } else {
+                            //The values of _previous_wtl_matrix and _previous_ltw_matrix will be invalid
+                            //since processing was skipped for this frame
+                            _first_ltw_compute = true;
+                            _first_wtl_compute = true;
                         }
                     }
 

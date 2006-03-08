@@ -140,6 +140,10 @@ SOURCE=..\..\..\src\osgWrappers\osgSim\MultiSwitch.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgSim\OpenFlightOptimizer.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgSim\OverlayNode.cpp
 # End Source File
 

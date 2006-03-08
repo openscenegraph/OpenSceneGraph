@@ -140,6 +140,15 @@ Registry::Registry()
     initFilePathLists();
 
     // register file extension alias.
+    const char* flt_str = getenv("OSG_OPEN_FLIGHT_PLUGIN");
+    if (flt_str)
+    {
+        if (strcmp(flt_str, "new")==0)
+        {
+            addFileExtensionAlias("flt", "OpenFlight");
+        }
+    }
+
     addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");
     addFileExtensionAlias("int",  "rgb");

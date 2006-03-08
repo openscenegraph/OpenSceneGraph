@@ -1,0 +1,114 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+//
+// OpenFlight® loader for OpenSceneGraph
+//
+//  Copyright (C) 2005-2006  Brede Johansen
+//
+
+#ifndef OSGSIM_OPENFLIGHTOPTIMIZER
+#define OSGSIM_OPENFLIGHTOPTIMIZER
+
+#include <osg/NodeVisitor>
+#include <osg/Group>
+#include <osg/Geometry>
+
+#include <osgSim/Export>
+
+namespace osgFlightUtil {
+
+/** Flight optimizer
+  */
+class OSGSIM_EXPORT Optimizer
+{
+    public:
+
+        Optimizer() {}
+        virtual ~Optimizer() {}
+
+        enum OptimizationOptions
+        {
+            TESSELATE_POLYGON =         0x001,
+            MERGE_GEODES =              0x002,
+            MAKE_LIT =                  0x004,
+            DEFAULT_OPTIMIZATIONS = TESSELATE_POLYGON | MERGE_GEODES,
+            ALL_OPTIMIZATIONS = TESSELATE_POLYGON | MERGE_GEODES
+        };
+
+        
+        /** Traverse the node and its subgraph with a series of optimization
+          * visitors, specified by the OptimizationOptions.*/
+        void optimize(osg::Node* node);
+
+        /** Traverse the node and its subgraph with a series of optimization
+          * visitors, specified by the OptimizationOptions.*/
+        virtual void optimize(osg::Node* node, unsigned int options);
+       
+    protected:
+
+    
+    public:
+
+        class TesselateVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                TesselateVisitor() :
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+                virtual void apply(osg::Geode& geode);
+
+            protected:
+    
+                bool hasPolygons(osg::Geometry& geometry);
+
+        };
+
+        class MakeLitVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                MakeLitVisitor() :
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+                virtual void apply(osg::Geode& geode);
+        };
+
+
+        /** Combine geodes
+          */
+        class MergeGeodesVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                MergeGeodesVisitor() :
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+                virtual void apply(osg::Group& group);
+
+                void mergeGeodes(osg::Group& group);
+
+            protected:
+
+                bool mergeGeode(osg::Geode& lhs, osg::Geode& rhs);
+
+        };
+
+};
+
+} // end namespace
+
+#endif

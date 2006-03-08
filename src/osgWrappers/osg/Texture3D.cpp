@@ -74,7 +74,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 	I_Constructor1(IN, unsigned int, contextID);
 	I_Constructor1(IN, const osg::Texture3D::Extensions &, rhs);
 	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture3D::Extensions &, rhs);
-	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID);
 	I_Method1(void, setTexture3DSupported, IN, bool, flag);
 	I_Method0(bool, isTexture3DSupported);
 	I_Method1(void, setTexture3DFast, IN, bool, flag);
@@ -104,7 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 	I_WriteOnlyProperty(void *, TexSubImage3DProc);
 	I_WriteOnlyProperty(bool, Texture3DFast);
 	I_WriteOnlyProperty(bool, Texture3DSupported);
-	I_WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_WriteOnlyProperty(unsigned int, upGLExtensions);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D::SubloadCallback)

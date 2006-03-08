@@ -439,7 +439,7 @@ void Texture3D::setExtensions(unsigned int contextID,Extensions* extensions)
 
 Texture3D::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 Texture3D::Extensions::Extensions(const Extensions& rhs):
@@ -469,7 +469,7 @@ void Texture3D::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._gluBuild3DMipmaps)                    _gluBuild3DMipmaps = 0;
 }
 
-void Texture3D::Extensions::setupGLExtenions(unsigned int contextID)
+void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isTexture3DFast = isGLExtensionSupported(contextID,"GL_EXT_texture3D");
 

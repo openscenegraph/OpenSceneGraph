@@ -118,7 +118,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             if (ea.getKey()=='a')
             {
                 _autoSteppingActive = !_autoSteppingActive;
-                _previousTime = ea.time();
+                _previousTime = ea.getTime();
                 return true;
             }
             else if (ea.getKey()=='n')

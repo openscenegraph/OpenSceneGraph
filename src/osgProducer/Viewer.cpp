@@ -363,7 +363,7 @@ void Viewer::setUpViewer(unsigned int options)
     if (!_kbmcb)
         _kbmcb = new osgProducer::KeyboardMouseCallback( _kbm.get(), _done, (options & ESCAPE_SETS_DONE)!=0 );
         
-    _kbmcb->setStartTick(_start_tick);
+    _kbmcb->getEventQueue()->setStartTick(_start_tick);
     
     // register the callback with the keyboard mouse manger.
     _kbm->setCallback( _kbmcb.get() );
@@ -541,8 +541,9 @@ bool Viewer::realize()
     {
         _keyswitchManipulator->setCoordinateFrameCallback(new ViewerCoordinateFrameCallback(this));
 
-        osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
-        init_event->adaptFrame(0.0);
+        osg::ref_ptr<osgGA::GUIEventAdapter> init_event =  new osgGA::GUIEventAdapter;
+        init_event->setEventType(osgGA::GUIEventAdapter::FRAME);
+        init_event->setTime(0.0);
     
         _keyswitchManipulator->setNode(getTopMostSceneData());
         _keyswitchManipulator->home(*init_event,*this);
@@ -565,14 +566,12 @@ void Viewer::update()
     if (_kbm.valid() && !_kbm->isRunning()) _kbm->update(*(_kbm->getCallback()));
 #endif
 
+    // create an event to signal the new frame.
+    _kbmcb->getEventQueue()->frame(_frameStamp->getReferenceTime());
+
     // get the event since the last frame.
     osgProducer::KeyboardMouseCallback::EventQueue queue;
-    if (_kbmcb.valid()) _kbmcb->getEventQueue(queue);
-
-    // create an event to signal the new frame.
-    osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
-    frame_event->adaptFrame(_frameStamp->getReferenceTime());
-    queue.push_back(frame_event);
+    if (_kbmcb.valid()) _kbmcb->takeEventQueue(queue);
 
     if (_eventVisitor.valid())
     {
@@ -842,9 +841,11 @@ void Viewer::selectCameraManipulator(unsigned int no)
       // keyswitch manipulator doesn't yet force manipulators to init themselves
       // so we'll do this mannually.  Note pretty, and needs replacing by a refactor
       // of MatrixMinpulators in the longer term.
-      osg::ref_ptr<EventAdapter> ea = new EventAdapter;
+      osg::ref_ptr<osgGA::GUIEventAdapter> ea = new osgGA::GUIEventAdapter;
       double time = _kbmcb.valid() ? _kbmcb->getTime() : 0.0;
-      ea->adaptKeyPress(time, osgGA::GUIEventAdapter::KEY_KP_1+no);
+      ea->setTime(time);
+      ea->setEventType(osgGA::GUIEventAdapter::KEYDOWN);
+      ea->setKey(osgGA::GUIEventAdapter::KEY_KP_1+no);
       _keyswitchManipulator->init(*ea, *this);
    }
 }
@@ -914,8 +915,8 @@ void Viewer::requestWarpPointer(float x,float y)
     {
         osg::notify(osg::INFO) << "requestWarpPointer x= "<<x<<" y="<<y<<std::endl;
     
-        EventAdapter::_s_mx = x;
-        EventAdapter::_s_my = y;
+        _kbmcb->getEventQueue()->getCurrentEventState()->setX(x);
+        _kbmcb->getEventQueue()->getCurrentEventState()->setY(y);
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);
         return;
     }   

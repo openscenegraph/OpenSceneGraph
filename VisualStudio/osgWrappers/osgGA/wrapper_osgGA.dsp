@@ -104,6 +104,14 @@ SOURCE=..\..\..\src\osgWrappers\osgGA\DriveManipulator.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgGA\Event.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgGA\EventQueue.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgGA\EventVisitor.cpp
 # End Source File
 

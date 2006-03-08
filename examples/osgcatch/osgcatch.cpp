@@ -862,9 +862,9 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     if (_numberOfPlayers>=2) _players[1].moveRight();
                 }
 
-                static double previous_time = ea.time();
-                double dt = ea.time()-previous_time;
-                previous_time = ea.time();
+                static double previous_time = ea.getTime();
+                double dt = ea.getTime()-previous_time;
+                previous_time = ea.getTime();
 
                 // move objects
                 for(CatchableObjectList::iterator itr=_catchableObjects.begin();
@@ -921,7 +921,7 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                     }
 
                     if (!(*itr)->anyInside(_origin, _origin+_width+_height) || 
-                        (*itr)->needToRemove(ea.time()) ||
+                        (*itr)->needToRemove(ea.getTime()) ||
                         removeEntry)
                     {
                         // need to remove
@@ -944,16 +944,16 @@ bool GameEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         // hit base line
                         (*itr)->explode();
                         (*itr)->stop();
-                        (*itr)->setTimeToRemove(ea.time()+3.0);
+                        (*itr)->setTimeToRemove(ea.getTime()+3.0);
                     }
 
                 }
 
 
                 // create new catchable objects
-                static double previousTime = ea.time();
-                double deltaTime = ea.time()-previousTime;
-                previousTime = ea.time();
+                static double previousTime = ea.getTime();
+                double deltaTime = ea.getTime()-previousTime;
+                previousTime = ea.getTime();
 
                 float numDropsPerSecond = _initialNumDropsPerSecond * (_level+1);
                 float r = (float)rand()/(float)RAND_MAX;

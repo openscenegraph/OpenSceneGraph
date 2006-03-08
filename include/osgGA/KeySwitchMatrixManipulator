@@ -21,7 +21,6 @@
 
 namespace osgGA{
 
-class GUIEventAdapter;
 class GUIActionAdapter;
 
 /**

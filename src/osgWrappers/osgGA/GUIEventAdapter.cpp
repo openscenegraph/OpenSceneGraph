@@ -36,10 +36,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::EventType)
 	I_EnumLabel(osgGA::GUIEventAdapter::KEYUP);
 	I_EnumLabel(osgGA::GUIEventAdapter::FRAME);
 	I_EnumLabel(osgGA::GUIEventAdapter::RESIZE);
-	I_EnumLabel(osgGA::GUIEventAdapter::SCROLLUP);
-	I_EnumLabel(osgGA::GUIEventAdapter::SCROLLDOWN);
-	I_EnumLabel(osgGA::GUIEventAdapter::SCROLLLEFT);
-	I_EnumLabel(osgGA::GUIEventAdapter::SCROLLRIGHT);
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::KeySymbol)
@@ -189,37 +186,64 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::MouseYOrientation)
 	I_EnumLabel(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
+BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ScrollingMotion)
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_LEFT);
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_RIGHT);
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_UP);
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_DOWN);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_BaseType(osg::Referenced);
+	I_Constructor0();
+	I_Constructor1(IN, const osgGA::GUIEventAdapter &, rhs);
+	I_Method1(void, setEventType, IN, osgGA::GUIEventAdapter::EventType, Type);
 	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType);
-	I_Method0(int, getKey);
-	I_Method0(int, getButton);
-	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo);
-	I_Method0(osgGA::GUIEventAdapter::MouseYOrientation, getMouseYOrientation);
-	I_Method0(float, getXmin);
-	I_Method0(float, getXmax);
-	I_Method0(float, getYmin);
-	I_Method0(float, getYmax);
-	I_Method0(float, getX);
-	I_Method0(float, getY);
-	I_Method0(unsigned int, getButtonMask);
-	I_Method0(unsigned int, getModKeyMask);
+	I_Method1(void, setTime, IN, double, time);
+	I_Method0(double, getTime);
 	I_Method0(double, time);
+	I_Method1(void, setKey, IN, int, key);
+	I_Method0(int, getKey);
+	I_Method1(void, setButton, IN, int, button);
+	I_Method0(int, getButton);
+	I_Method4(void, setWindowSize, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
+	I_Method1(void, setXmin, IN, float, x);
+	I_Method0(float, getXmin);
+	I_Method1(void, setXmax, IN, float, x);
+	I_Method0(float, getXmax);
+	I_Method1(void, setYmin, IN, float, y);
+	I_Method0(float, getYmin);
+	I_Method1(void, setYmax, IN, float, y);
+	I_Method0(float, getYmax);
+	I_Method1(void, setX, IN, float, x);
+	I_Method0(float, getX);
+	I_Method1(void, setY, IN, float, y);
+	I_Method0(float, getY);
+	I_Method1(void, setButtonMask, IN, unsigned int, mask);
+	I_Method0(unsigned int, getButtonMask);
+	I_Method1(void, setModKeyMask, IN, unsigned int, mask);
+	I_Method0(unsigned int, getModKeyMask);
+	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion);
+	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion);
 	I_Method0(float, getXnormalized);
 	I_Method0(float, getYnormalized);
-	I_ReadOnlyProperty(int, Button);
-	I_ReadOnlyProperty(unsigned int, ButtonMask);
-	I_ReadOnlyProperty(osgGA::GUIEventAdapter::EventType, EventType);
-	I_ReadOnlyProperty(int, Key);
-	I_ReadOnlyProperty(unsigned int, ModKeyMask);
+	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo);
+	I_Method0(osgGA::GUIEventAdapter::MouseYOrientation, getMouseYOrientation);
+	I_Property(int, Button);
+	I_Property(unsigned int, ButtonMask);
+	I_Property(osgGA::GUIEventAdapter::EventType, EventType);
+	I_Property(int, Key);
+	I_Property(unsigned int, ModKeyMask);
 	I_Property(osgGA::GUIEventAdapter::MouseYOrientation, MouseYOrientation);
-	I_ReadOnlyProperty(float, X);
-	I_ReadOnlyProperty(float, Xmax);
-	I_ReadOnlyProperty(float, Xmin);
+	I_Property(osgGA::GUIEventAdapter::ScrollingMotion, ScrollingMotion);
+	I_Property(double, Time);
+	I_Property(float, X);
+	I_Property(float, Xmax);
+	I_Property(float, Xmin);
 	I_ReadOnlyProperty(float, Xnormalized);
-	I_ReadOnlyProperty(float, Y);
-	I_ReadOnlyProperty(float, Ymax);
-	I_ReadOnlyProperty(float, Ymin);
+	I_Property(float, Y);
+	I_Property(float, Ymax);
+	I_Property(float, Ymin);
 	I_ReadOnlyProperty(float, Ynormalized);
 END_REFLECTOR
 

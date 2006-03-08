@@ -19,6 +19,7 @@
 #include <osg/Projection>
 #include <osg/Switch>
 #include <osg/Transform>
+#include <osgGA/EventQueue>
 #include <osgGA/EventVisitor>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
@@ -39,13 +40,13 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_Method1(void, setActionAdapter, IN, osgGA::GUIActionAdapter *, actionAdapter);
 	I_Method0(osgGA::GUIActionAdapter *, getActionAdapter);
 	I_Method0(const osgGA::GUIActionAdapter *, getActionAdapter);
-	I_Method1(void, setEventList, IN, const osgGA::EventVisitor::EventList &, events);
-	I_Method0(osgGA::EventVisitor::EventList &, getEventList);
-	I_Method0(const osgGA::EventVisitor::EventList &, getEventList);
 	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
 	I_Method1(void, removeEvent, IN, osgGA::GUIEventAdapter *, event);
-	I_Method0(bool, getEventHandled);
 	I_Method1(void, setEventHandled, IN, bool, handled);
+	I_Method0(bool, getEventHandled);
+	I_Method1(void, setEvents, IN, const osgGA::EventQueue::Events &, events);
+	I_Method0(osgGA::EventQueue::Events &, getEvents);
+	I_Method0(const osgGA::EventQueue::Events &, getEvents);
 	I_Method0(void, reset);
 	I_Method1(void, apply, IN, osg::Node &, node);
 	I_Method1(void, apply, IN, osg::Geode &, node);
@@ -59,20 +60,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_Method1(void, apply, IN, osg::OccluderNode &, node);
 	I_Property(osgGA::GUIActionAdapter *, ActionAdapter);
 	I_Property(bool, EventHandled);
-	I_Property(const osgGA::EventVisitor::EventList &, EventList);
+	I_Property(const osgGA::EventQueue::Events &, Events);
 END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventAdapter >)
-	I_Constructor0();
-	I_Constructor1(IN, osgGA::GUIEventAdapter *, t);
-	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventAdapter > &, rp);
-	I_Method0(bool, valid);
-	I_Method0(osgGA::GUIEventAdapter *, get);
-	I_Method0(const osgGA::GUIEventAdapter *, get);
-	I_Method0(osgGA::GUIEventAdapter *, take);
-	I_Method0(osgGA::GUIEventAdapter *, release);
-	I_ReadOnlyProperty(osgGA::GUIEventAdapter *, );
-END_REFLECTOR
-
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >);
 

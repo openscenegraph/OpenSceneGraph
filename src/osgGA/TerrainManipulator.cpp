@@ -189,7 +189,7 @@ bool TerrainManipulator::isMouseMoving()
     float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
     float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
     float len = sqrtf(dx*dx+dy*dy);
-    float dt = _ga_t0->time()-_ga_t1->time();
+    float dt = _ga_t0->getTime()-_ga_t1->getTime();
 
     return (len>dt*velocity);
 }

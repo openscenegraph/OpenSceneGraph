@@ -57,7 +57,7 @@ void AnimationPathManipulator::home(double currentTime)
 
 void AnimationPathManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter&)
 {
-    home(ea.time());
+    home(ea.getTime());
 }
 
 void AnimationPathManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& aa)
@@ -78,7 +78,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
         }
         else
         {
-            handleFrame( ea.time() );
+            handleFrame( ea.getTime() );
         }
         return false;
     case GUIEventAdapter::KEYDOWN:
@@ -96,12 +96,12 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
                 if( _isPaused )
                 {
                     _isPaused = false;
-                    _timeOffset -= ea.time() - _pauseTime;
+                    _timeOffset -= ea.getTime() - _pauseTime;
                 }
                 else
                 {
                     _isPaused = true;
-                    _pauseTime = ea.time();
+                    _pauseTime = ea.getTime();
                 }
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);

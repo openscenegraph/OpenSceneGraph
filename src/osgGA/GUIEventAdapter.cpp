@@ -11,10 +11,53 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgGA/GUIEventHandler>
+#include <osgGA/GUIEventAdapter>
 
 using namespace osgGA;
 
+GUIEventAdapter::GUIEventAdapter():
+    _eventType(NONE),
+    _time(0.0),
+    _key(0),
+    _button(0),
+    _Xmin(0.0),
+    _Xmax(1.0),
+    _Ymin(0.0),
+    _Ymax(1.0),
+    _mx(0.5),
+    _my(0.5),
+    _buttonMask(0),
+    _modKeyMask(0),
+    _scrollingMotion(SCROLL_DOWN),
+    _mouseYOrientation(Y_INCREASING_DOWNWARDS)
+{}
+
+GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
+    Referenced(),
+    _eventType(rhs._eventType),
+    _time(rhs._time),
+    _key(rhs._key),
+    _button(rhs._button),
+    _Xmin(rhs._Xmin),
+    _Xmax(rhs._Xmax),
+    _Ymin(rhs._Ymin),
+    _Ymax(rhs._Ymax),
+    _mx(rhs._mx),
+    _my(rhs._my),
+    _buttonMask(rhs._buttonMask),
+    _modKeyMask(rhs._modKeyMask),
+    _scrollingMotion(rhs._scrollingMotion),
+    _mouseYOrientation(rhs._mouseYOrientation)
+{}
+
 GUIEventAdapter::~GUIEventAdapter()
 {
+}
+
+void GUIEventAdapter::setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax)
+{
+    _Xmin = Xmin;
+    _Ymin = Ymin;
+    _Xmax = Xmax;
+    _Ymax = Ymax;
 }

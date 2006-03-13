@@ -16,6 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Quat>
 #include <osg/Vec3>
+#include <osgGA/EventQueue>
 #include <osgGA/EventVisitor>
 #include <osgGA/KeySwitchMatrixManipulator>
 #include <osgGA/MatrixManipulator>
@@ -96,6 +97,8 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, unsigned int, cameraNum, , IN, osgUtil::IntersectVisitor::HitList &, hits, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff);
 	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osg::Node *, node, , IN, osgUtil::IntersectVisitor::HitList &, hits, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff);
 	I_MethodWithDefaults4(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osgUtil::IntersectVisitor::HitList &, hits, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff);
+	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue);
+	I_Method0(osgGA::EventQueue *, getEventQueue);
 	I_Method1(void, setKeyboardMouse, IN, Producer::KeyboardMouse *, kbm);
 	I_Method0(Producer::KeyboardMouse *, getKeyboardMouse);
 	I_Method0(const Producer::KeyboardMouse *, getKeyboardMouse);
@@ -129,6 +132,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_Property(unsigned int, DoneAtFrameNumber);
 	I_Property(bool, DoneAtFrameNumberEnabled);
 	I_ReadOnlyProperty(osgProducer::Viewer::EventHandlerList &, EventHandlerList);
+	I_Property(osgGA::EventQueue *, EventQueue);
 	I_Property(osgGA::EventVisitor *, EventVisitor);
 	I_ReadOnlyProperty(osgGA::KeySwitchMatrixManipulator *, KeySwitchMatrixManipulator);
 	I_Property(Producer::KeyboardMouse *, KeyboardMouse);

@@ -31,7 +31,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 {
     public:
 
-        EventQueue();
+        EventQueue(GUIEventAdapter::MouseYOrientation mouseYOrientation=GUIEventAdapter::Y_INCREASING_DOWNWARDS);
 
         typedef std::list< osg::ref_ptr<GUIEventAdapter> > Events;
                 

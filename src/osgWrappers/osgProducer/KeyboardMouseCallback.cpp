@@ -40,6 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
 	I_Method0(void, shutdown);
 	I_Method1(void, setEscapeSetDone, IN, bool, esc);
 	I_Method0(bool, getEscapeSetDone);
+	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue);
 	I_Method0(osgGA::EventQueue *, getEventQueue);
 	I_Method1(bool, takeEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
 	I_Method1(bool, copyEventQueue, IN, osgProducer::KeyboardMouseCallback::EventQueue &, queue);
@@ -52,7 +53,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
 	I_Method0(osgGA::GUIEventAdapter *, createEventAdapter);
 	I_Method0(void, updateWindowSize);
 	I_Property(bool, EscapeSetDone);
-	I_ReadOnlyProperty(osgGA::EventQueue *, EventQueue);
+	I_Property(osgGA::EventQueue *, EventQueue);
 	I_ReadOnlyProperty(Producer::KeyboardMouse *, KeyboardMouse);
 	I_ReadOnlyProperty(double, Time);
 END_REFLECTOR

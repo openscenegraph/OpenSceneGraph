@@ -14,39 +14,37 @@ KeyboardMouseCallback::KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMo
     _done(done),
     _escapeKeySetsDone(escapeKeySetsDone)            
 {
-    _eventQueue = new osgGA::EventQueue;
-    _eventQueue->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     updateWindowSize();
 }
 
 void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm )
 {
     updateWindowSize();
-    _eventQueue->mouseScroll((osgGA::GUIEventAdapter::ScrollingMotion)sm);
+    if (_eventQueue.valid()) _eventQueue->mouseScroll((osgGA::GUIEventAdapter::ScrollingMotion)sm);
 }
 
 void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
 {
     updateWindowSize();
-    _eventQueue->mouseButtonPress(mx,my,mbutton);
+    if (_eventQueue.valid()) _eventQueue->mouseButtonPress(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbutton ) 
 {
     updateWindowSize();
-    _eventQueue->mouseButtonRelease(mx,my,mbutton);
+    if (_eventQueue.valid()) _eventQueue->mouseButtonRelease(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::doubleButtonPress( float mx, float my, unsigned int mbutton ) 
 {
     updateWindowSize();
-    _eventQueue->mouseButtonPress(mx,my,mbutton);
+    if (_eventQueue.valid()) _eventQueue->mouseButtonPress(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )
 {
     updateWindowSize();
-    _eventQueue->keyPress((osgGA::GUIEventAdapter::KeySymbol)key);
+    if (_eventQueue.valid()) _eventQueue->keyPress((osgGA::GUIEventAdapter::KeySymbol)key);
 
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 
@@ -56,7 +54,7 @@ void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )
 void KeyboardMouseCallback::keyRelease( Producer::KeyCharacter key )
 {
     updateWindowSize();
-    _eventQueue->keyRelease((osgGA::GUIEventAdapter::KeySymbol)key);
+    if (_eventQueue.valid()) _eventQueue->keyRelease((osgGA::GUIEventAdapter::KeySymbol)key);
 }
 
 void KeyboardMouseCallback::specialKeyPress( Producer::KeyCharacter key )
@@ -74,30 +72,32 @@ void KeyboardMouseCallback::specialKeyRelease( Producer::KeyCharacter key )
 void KeyboardMouseCallback::windowConfig( int x, int y, unsigned int width, unsigned int height )
 {
     updateWindowSize();
-    _eventQueue->windowResize(x,y,x+width,y+height);
+    if (_eventQueue.valid()) _eventQueue->windowResize(x,y,x+width,y+height);
 }
 
 void KeyboardMouseCallback::mouseMotion( float mx, float my) 
 {
     updateWindowSize();
-    _eventQueue->mouseMotion(mx,my);
+    if (_eventQueue.valid()) _eventQueue->mouseMotion(mx,my);
 }
 
 void KeyboardMouseCallback::passiveMouseMotion( float mx, float my) 
 {
     updateWindowSize();
-    _eventQueue->mouseMotion(mx,my);
+    if (_eventQueue.valid()) _eventQueue->mouseMotion(mx,my);
 }
 
 void KeyboardMouseCallback::mouseWarp( float mx, float my) 
 {
     updateWindowSize();
-    _eventQueue->mouseMotion(mx,my); // need mouse warp??
+    if (_eventQueue.valid()) _eventQueue->mouseMotion(mx,my); // need mouse warp??
 }
 
 
 void KeyboardMouseCallback::updateWindowSize()
 {
+    if (!_eventQueue) return;
+
     osgGA::GUIEventAdapter* ea = _eventQueue->getCurrentEventState();
 
     Producer::InputArea* ia = _keyboardMouse->getInputArea();

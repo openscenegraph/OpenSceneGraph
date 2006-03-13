@@ -144,6 +144,7 @@ Viewer::Viewer():
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
+    _eventQueue = new osgGA::EventQueue(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     _position[0] = 0.0;
     _position[1] = 0.0;
     _position[2] = 0.0;
@@ -162,6 +163,7 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
+    _eventQueue = new osgGA::EventQueue(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     _position[0] = 0.0;
     _position[1] = 0.0;
     _position[2] = 0.0;
@@ -181,6 +183,7 @@ Viewer::Viewer(const std::string& configFile):
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
+    _eventQueue = new osgGA::EventQueue(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     _position[0] = 0.0;
     _position[1] = 0.0;
     _position[2] = 0.0;
@@ -199,6 +202,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
+    _eventQueue = new osgGA::EventQueue(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
     _position[0] = 0.0;
     _position[1] = 0.0;
     _position[2] = 0.0;
@@ -342,7 +346,11 @@ void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)
 void Viewer::setKeyboardMouseCallback(osgProducer::KeyboardMouseCallback* kbmcb)
 {
     _kbmcb = kbmcb;
-    if (_kbm.valid() && _kbmcb.valid()) _kbm->setCallback(_kbmcb.get());
+    if (_kbm.valid() && _kbmcb.valid())
+    {
+        _kbm->setCallback(_kbmcb.get());
+        _kbmcb->setEventQueue(_eventQueue.get());
+    }
 }
 
 void Viewer::setUpViewer(unsigned int options)
@@ -353,17 +361,19 @@ void Viewer::setUpViewer(unsigned int options)
     
     if (!_kbm)
     {
-        _kbm = ia ?
+        setKeyboardMouse(ia ?
                    (new Producer::KeyboardMouse(ia)) : 
-                   (new Producer::KeyboardMouse(getCamera(0)->getRenderSurface()));
+                   (new Producer::KeyboardMouse(getCamera(0)->getRenderSurface())) );
                    
     }
     
     // set the keyboard mouse callback to catch the events from the windows.
     if (!_kbmcb)
-        _kbmcb = new osgProducer::KeyboardMouseCallback( _kbm.get(), _done, (options & ESCAPE_SETS_DONE)!=0 );
+    {
+        setKeyboardMouseCallback(new osgProducer::KeyboardMouseCallback( _kbm.get(), _done, (options & ESCAPE_SETS_DONE)!=0 ));
+    }
         
-    _kbmcb->getEventQueue()->setStartTick(_start_tick);
+    getEventQueue()->setStartTick(_start_tick);
     
     // register the callback with the keyboard mouse manger.
     _kbm->setCallback( _kbmcb.get() );
@@ -567,7 +577,7 @@ void Viewer::update()
 #endif
 
     // create an event to signal the new frame.
-    _kbmcb->getEventQueue()->frame(_frameStamp->getReferenceTime());
+    getEventQueue()->frame(_frameStamp->getReferenceTime());
 
     // get the event since the last frame.
     osgProducer::KeyboardMouseCallback::EventQueue queue;
@@ -915,8 +925,8 @@ void Viewer::requestWarpPointer(float x,float y)
     {
         osg::notify(osg::INFO) << "requestWarpPointer x= "<<x<<" y="<<y<<std::endl;
     
-        _kbmcb->getEventQueue()->getCurrentEventState()->setX(x);
-        _kbmcb->getEventQueue()->getCurrentEventState()->setY(y);
+        getEventQueue()->getCurrentEventState()->setX(x);
+        getEventQueue()->getCurrentEventState()->setY(y);
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);
         return;
     }   

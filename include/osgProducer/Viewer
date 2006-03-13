@@ -255,6 +255,12 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         /** Compute, from normalized mouse coords, for all Cameras, intersections with the scene.*/
         bool computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask = 0xffffffff);
 
+        /** Set the EventQueue - a thread safe queue for registering events.*/
+        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
+
+        /** Get the EventQueue.*/
+        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
+
         void setKeyboardMouse(Producer::KeyboardMouse* kbm);
         Producer::KeyboardMouse* getKeyboardMouse() { return _kbm.get(); }
         const Producer::KeyboardMouse* getKeyboardMouse() const { return _kbm.get(); }
@@ -309,6 +315,8 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         bool            _writeImageWhenDone;
         std::string     _writeImageFileName;
+
+        osg::ref_ptr<osgGA::EventQueue> _eventQueue;
 
         osg::ref_ptr<Producer::KeyboardMouse> _kbm;
 

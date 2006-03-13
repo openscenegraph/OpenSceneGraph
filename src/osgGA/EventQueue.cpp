@@ -16,10 +16,11 @@
 
 using namespace osgGA;
 
-EventQueue::EventQueue()
+EventQueue::EventQueue(GUIEventAdapter::MouseYOrientation mouseYOrientation)
 {
     _startTick = osg::Timer::instance()->tick();
     _accumulateEventState = new GUIEventAdapter();
+    _accumulateEventState->setMouseYOrientation(mouseYOrientation);
 }
 
 EventQueue::~EventQueue()

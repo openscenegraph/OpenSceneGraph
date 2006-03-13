@@ -63,6 +63,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         // local methods and members
         typedef osgGA::EventQueue::Events EventQueue;
 
+        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
         
         bool takeEventQueue(EventQueue& queue);

@@ -58,6 +58,7 @@ namespace txp
 
         TileIdentifier _tileIdentifier;
 
+        virtual osg::BoundingSphere computeBound() const;
 
     protected:
         virtual ~TXPPagedLOD();

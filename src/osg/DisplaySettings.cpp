@@ -68,6 +68,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _minimumNumberStencilBits = vs._minimumNumberStencilBits;
 
     _maxNumOfGraphicsContexts = vs._maxNumOfGraphicsContexts;
+    _numMultiSamples = vs._numMultiSamples;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -82,6 +83,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     
     if (vs._minimumNumberAlphaBits>_minimumNumberAlphaBits) _minimumNumberAlphaBits = vs._minimumNumberAlphaBits;
     if (vs._minimumNumberStencilBits>_minimumNumberStencilBits) _minimumNumberStencilBits = vs._minimumNumberStencilBits;
+    if (vs._numMultiSamples>_numMultiSamples) _numMultiSamples = vs._numMultiSamples;
 }
 
 void DisplaySettings::setDefaults()
@@ -114,6 +116,12 @@ void DisplaySettings::setDefaults()
     _minimumNumberAccumAlphaBits = 0;
     
     _maxNumOfGraphicsContexts = 3;
+    _numMultiSamples = 0;
+
+    #ifdef __sgi
+    // switch on anti-aliasing by default, just in case we have an Onyx :-)
+    _numMultiSamples = 4;
+    #endif
 }
 
 void DisplaySettings::setMinimumNumAccumBits(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha)
@@ -303,6 +311,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--accum-rgb","Request a rgb accumulator buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--accum-rgba","Request a rgb accumulator buffer visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--samples <num>","Request a multisample visual");
     }
 
     std::string str;
@@ -349,5 +358,10 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while (arguments.read("--accum-rgba"))
     {
         setMinimumNumAccumBits(8,8,8,8);
+    }
+
+    while(arguments.read("--samples",str))
+    {
+        _numMultiSamples = atoi(str.c_str());
     }
 }

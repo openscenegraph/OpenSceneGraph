@@ -102,6 +102,9 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_Method0(bool, getAccumBuffer);
 	I_Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num);
 	I_Method0(unsigned int, getMaxNumberOfGraphicsContexts);
+	I_Method1(void, setNumMultiSamples, IN, unsigned int, samples);
+	I_Method0(unsigned int, getNumMultiSamples);
+	I_Method0(bool, getMultiSamples);
 	I_ReadOnlyProperty(bool, AccumBuffer);
 	I_ReadOnlyProperty(bool, AlphaBuffer);
 	I_Property(bool, DepthBuffer);
@@ -116,6 +119,8 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_ReadOnlyProperty(unsigned int, MinimumNumAccumRedBits);
 	I_Property(unsigned int, MinimumNumAlphaBits);
 	I_Property(unsigned int, MinimumNumStencilBits);
+	I_ReadOnlyProperty(bool, MultiSamples);
+	I_WriteOnlyProperty(unsigned int, NumMultiSamples);
 	I_Property(bool, RGB);
 	I_Property(float, ScreenDistance);
 	I_Property(float, ScreenHeight);

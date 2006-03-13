@@ -23,6 +23,11 @@
 
 #include <osgProducer/OsgCameraGroup>
 
+#ifdef WIN32
+#define        WGL_SAMPLE_BUFFERS_ARB        0x2041
+#define        WGL_SAMPLES_ARB                0x2042
+#endif
+
 using namespace Producer;
 using namespace osgProducer;
 
@@ -430,13 +435,6 @@ bool OsgCameraGroup::realize()
         drv.setDisplaySettings(_ds.get());
         node->accept(drv);
     }
-    
-    unsigned int numMultiSamples = 0;
-
-    #ifdef __sgi
-    // switch on anti-aliasing by default, just in case we have an Onyx :-)
-    numMultiSamples = 4;
-    #endif
 
     // set up each render stage to clear the appropriate buffers.
     GLbitfield clear_mask=0;
@@ -503,7 +501,7 @@ bool OsgCameraGroup::realize()
         rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
         
         // set up the visual chooser.
-        if (_ds.valid() || numMultiSamples!=0)
+        if (_ds.valid())
         {
         
             Producer::VisualChooser* rs_vc = rs->getVisualChooser();
@@ -550,13 +548,17 @@ bool OsgCameraGroup::realize()
                 rs_vc->setAccumAlphaSize(_ds->getMinimumNumAccumAlphaBits());
             }
             
-            if (numMultiSamples)
+            if (_ds->getMultiSamples())
             {
                 #if defined( GLX_SAMPLES_SGIS )
-                    rs_vc->addExtendedAttribute( GLX_SAMPLES_SGIS,  numMultiSamples);
+                    rs_vc->addExtendedAttribute( GLX_SAMPLES_SGIS,  _ds->getNumMultiSamples());
                 #endif
                 #if defined( GLX_SAMPLES_BUFFER_SGIS )
                     rs_vc->addExtendedAttribute( GLX_SAMPLES_BUFFER_SGIS,  1);
+                #endif
+                #ifdef WIN32
+                    rs_vc->addExtendedAttribute(WGL_SAMPLE_BUFFERS_ARB, GL_TRUE);
+                    rs_vc->addExtendedAttribute(WGL_SAMPLES_ARB, _ds->getNumMultiSamples());
                 #endif
             }
         }        

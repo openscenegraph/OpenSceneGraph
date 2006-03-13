@@ -100,3 +100,18 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
     }
 }
 
+osg::BoundingSphere TXPPagedLOD::computeBound() const
+{
+    // Force calculation of entire bounding sphere; this will include any
+    // externally-referenced models which are attached to the tile.
+    // If this is not done, then externally referenced models will disappear
+    // when the tile they are attached to leaves the view volume.
+    osg::BoundingSphere result = osg::Group::computeBound();
+    
+    if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
+    {
+        float tempRadius = std::max( _radius, result.radius() );
+        result = osg::BoundingSphere(_userDefinedCenter,tempRadius);
+    }
+    return result;
+}

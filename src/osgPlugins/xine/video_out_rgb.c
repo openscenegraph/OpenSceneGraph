@@ -2787,6 +2787,7 @@ plugin_info_t xine_plugin_info[] =
 {
   /* type, API, "name", version, special_info, init_function */
   { PLUGIN_VIDEO_OUT, 20, "rgb", XINE_VERSION_CODE, &vo_info_rgbout, init_class},
+  { PLUGIN_VIDEO_OUT, 21, "rgb", XINE_VERSION_CODE, &vo_info_rgbout, init_class},
   { PLUGIN_NONE, 0, "", 0, NULL, NULL}
 };
 

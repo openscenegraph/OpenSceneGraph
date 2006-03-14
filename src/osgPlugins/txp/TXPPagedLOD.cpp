@@ -110,7 +110,7 @@ osg::BoundingSphere TXPPagedLOD::computeBound() const
     
     if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
     {
-        float tempRadius = std::max( _radius, result.radius() );
+        float tempRadius = osg::maximum( _radius, result.radius() );
         result = osg::BoundingSphere(_userDefinedCenter,tempRadius);
     }
     return result;

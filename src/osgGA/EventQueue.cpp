@@ -96,6 +96,13 @@ void EventQueue::mouseScroll(GUIEventAdapter::ScrollingMotion sm)
     addEvent(event);
 }
 
+void EventQueue::mouseWarp(float x, float y)
+{
+    _accumulateEventState->setX(x);
+    _accumulateEventState->setY(y);
+}
+
+
 void EventQueue::mouseMotion(float x, float y)
 {
     _accumulateEventState->setX(x);

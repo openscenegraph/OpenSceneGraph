@@ -2,7 +2,9 @@
 #define OSG_SHAPE_H
 
 #include <stdio.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <osg/Referenced>
 
 namespace ESRIShape {

@@ -255,3 +255,9 @@ void EventQueue::frame(double t)
     
     addEvent(event);
 }
+
+GUIEventAdapter* EventQueue::createEvent()
+{
+    if (_accumulateEventState.valid()) return new GUIEventAdapter(*_accumulateEventState.get()); 
+    else return new GUIEventAdapter();    
+}

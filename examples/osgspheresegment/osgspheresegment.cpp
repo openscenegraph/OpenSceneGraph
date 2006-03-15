@@ -52,7 +52,90 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
     return animationPath;    
 }
 
-osg::Node* createMovingModel(const osg::Vec3& center, float radius)
+
+
+class IntersectionUpdateCallback : public osg::NodeCallback
+{
+        virtual void operator()(osg::Node* /*node*/, osg::NodeVisitor* nv)
+        {
+            if (!root_ || !terrain_ || !ss_ || !intersectionGroup_)
+            {
+                osg::notify(osg::NOTICE)<<"IntersectionUpdateCallback not set up correctly."<<std::endl;
+                return;
+            }
+        
+            //traverse(node,nv);
+            frameCount_++;
+            if (frameCount_ > 200)
+            {
+                // first we need find the transformation matrix that takes
+                // the terrain into the coordinate frame of the sphere segment.
+                osg::Matrixd terrainLocalToWorld;
+                osg::MatrixList terrain_worldMatrices = terrain_->getWorldMatrices(root_.get());
+                if (terrain_worldMatrices.empty()) terrainLocalToWorld.makeIdentity();
+                else if (terrain_worldMatrices.size()==1) terrainLocalToWorld = terrain_worldMatrices.front();
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"IntersectionUpdateCallback: warning cannot interestect with multiple terrain instances, just uses first one."<<std::endl;
+                    terrainLocalToWorld = terrain_worldMatrices.front();
+                }
+                
+                // sphere segment is easier as this callback is attached to the node, so the node visitor has the unique path to it already.
+                osg::Matrixd ssWorldToLocal = osg::computeWorldToLocal(nv->getNodePath());
+                
+                // now we can compute the terrain to ss transform
+                osg::Matrixd possie = terrainLocalToWorld*ssWorldToLocal;
+                
+                osgSim::SphereSegment::LineList lines = ss_->computeIntersection(possie, terrain_.get());
+                if (!lines.empty())
+                {
+                    osg::notify(osg::NOTICE)<<"We've found intersections!!!!"<<std::endl;
+            
+                    if (intersectionGroup_.valid())
+                    {
+                        // now we need to place the intersections which are in the SphereSegmenet's coordinate frame into
+                        // to the final position.
+                        osg::MatrixTransform* mt = new osg::MatrixTransform;
+                        mt->setMatrix(osg::computeLocalToWorld(nv->getNodePath()));
+                        intersectionGroup_->addChild(mt);
+
+                        osg::Geode* geode = new osg::Geode;
+                        mt->addChild(geode);
+
+                        geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+                        for(osgSim::SphereSegment::LineList::iterator itr=lines.begin();
+                           itr!=lines.end();
+                           ++itr)
+                        {
+                            osg::Geometry* geom = new osg::Geometry;
+                            geode->addDrawable(geom);
+
+                            osg::Vec3Array* vertices = itr->get();
+                            geom->setVertexArray(vertices);
+                            geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, vertices->getNumElements()));
+                        }
+                    }
+                }
+                else
+                {
+                       osg::notify(osg::NOTICE)<<"No intersections found"<<std::endl;
+                }
+
+                    
+                frameCount_ = 0;
+            }
+        }
+    public:
+    osg::observer_ptr<osg::Group> root_;
+    osg::observer_ptr<osg::Geode> terrain_;
+    osg::observer_ptr<osgSim::SphereSegment> ss_;
+    osg::observer_ptr<osg::Group> intersectionGroup_;
+    unsigned frameCount_;
+};
+
+
+osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode * terrainGeode, osg::Group * root)
 {
     float animationLength = 10.0f;
 
@@ -78,7 +161,37 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         xform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0,1.0));
         xform->addChild(positioned);
-
+        model->addChild(xform);
+    }
+    if (1)
+    {
+        // The IntersectionUpdateCallback has to have a safe place to put all its generated geometry into,
+        // and this group can't be in the parental chain of the callback otherwise we will end up invalidating
+        // traversal iterators.
+        osg::Group* intersectionGroup = new osg::Group;
+        root->addChild(intersectionGroup);
+    
+        osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform;    
+        xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0,1.0));
+        
+        osgSim::SphereSegment * ss = new osgSim::SphereSegment(osg::Vec3d(0.0,0.0,0.0),
+                                700.0f, // radius
+                                osg::DegreesToRadians(135.0f),
+                                osg::DegreesToRadians(240.0f),
+                                osg::DegreesToRadians(-90.0f),
+                                osg::DegreesToRadians(-70.0f),
+                                60);
+                                
+        IntersectionUpdateCallback * iuc = new IntersectionUpdateCallback;
+        iuc->frameCount_ = 0;
+        iuc->root_ = root;
+        iuc->terrain_ = terrainGeode;
+        iuc->ss_ = ss;
+        iuc->intersectionGroup_ = intersectionGroup;
+        ss->setUpdateCallback(iuc);
+        ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
+        ss->setSideColor(osg::Vec4(0.5f,1.0f,1.0f,0.1f));
+        xform->addChild(ss);
         model->addChild(xform);
     }
  
@@ -119,21 +232,6 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         osg::MatrixTransform* xform = new osg::MatrixTransform;
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
-
-        // add particle effects to cessna.
-        {
-            osg::PositionAttitudeTransform* positionEffects = new osg::PositionAttitudeTransform;
-            positionEffects->setPosition(osg::Vec3(0.0f,0.0f,0.0f));
-            xform->addChild(positionEffects);
-
-            osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
-            osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
-            osgParticle::FireEffect* fire = new osgParticle::FireEffect;
-
-            positionEffects->addChild(explosion);
-            positionEffects->addChild(smoke);
-            positionEffects->addChild(fire);
-        }
         
         model->addChild(xform);
     }
@@ -460,7 +558,7 @@ void build_world(osg::Group *root, unsigned int testCase)
     
     // create the moving models.
     {
-        root->addChild(createMovingModel(osg::Vec3(500.0f,500.0f,500.0f),100.0f));
+        root->addChild(createMovingModel(osg::Vec3(500.0f,500.0f,500.0f),100.0f, terrainGeode.get(), root));
     }
 }
 

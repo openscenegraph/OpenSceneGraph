@@ -84,6 +84,9 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
         double getTime() const { return osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()); }
 
+        /** convinience method for create an event ready to fill in.  Clones the getCurrentEventState() to produce a up to date event state. */
+        GUIEventAdapter* createEvent();
+        
         GUIEventAdapter* getCurrentEventState() { return _accumulateEventState.get(); }
         const GUIEventAdapter* getCurrentEventState() const { return _accumulateEventState.get(); }
 

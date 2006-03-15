@@ -231,16 +231,24 @@ public:
     /** A list of vertex arrays representing a list of lines.*/
     typedef std::vector< osg::ref_ptr<osg::Vec3Array> > LineList;
     
-    /** Compute the interesection lines between subgraph and this sphere segment.*/
+    /** Compute the interesection lines between subgraph and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+      * The resulting intersections are in the coordinate frame of the sphere segment. */
     LineList computeIntersection(const osg::Matrixd& matrix, osg::Node* subgraph);
 
-    /** Compute the interesection lines between specified drawable and this sphere segment.*/
+    /** Compute the interesection lines between specified drawable and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+      * The resulting intersections are in the coordinate frame of the sphere segment. */
     LineList computeIntersection(const osg::Matrixd& matrix, osg::Drawable* drawable);
 
-    /** Compute the interesection lines between subgraph and this sphere segment.*/
+    /** Compute the interesection lines between subgraph and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+      * The resulting intersections are in the coordinate frame of the sphere segment. */
     osg::Node* computeIntersectionSubgraph(const osg::Matrixd& matrix, osg::Node* subgraph);
 
-    /** Compute the interesection lines between specified drawable and this sphere segment.*/
+    /** Compute the interesection lines between specified drawable and this sphere segment.
+      * The matrix is the transform that takes the subgraph into the same coordiante frame as the sphere segment.
+      * The resulting intersections are in the coordinate frame of the sphere segment. */
     osg::Node* computeIntersectionSubgraph(const osg::Matrixd& matrix, osg::Drawable* drawable);
 
 

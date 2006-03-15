@@ -2718,7 +2718,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin ERSIShape"=.\osgPlugins\ERSIShape\ERSIShape.dsp - Package Owner=<4>
+Project: "osgPlugin ESRIShape"=.\osgPlugins\ESRIShape\ESRIShape.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

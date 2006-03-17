@@ -146,6 +146,15 @@ namespace osgParticle
         /// Get the t texture coordinate of the bottom left of the particle
         inline float getTCoord() const { return _t_coord; }
 
+        /// Get width of texture tile
+        inline int getTileS() const;
+        
+        /// Get height of texture tile
+        inline int getTileT() const;
+        
+        /// Get number of texture tiles
+        inline int getNumTiles() const { return _num_tile; }
+        
         /** Kill the particle on next update
             NOTE: after calling this function, the <CODE>isAlive()</CODE> method will still 
             return true until the particle is updated again.
@@ -394,6 +403,16 @@ namespace osgParticle
     inline const osg::Vec3& Particle::getPreviousAngle() const
     {
         return _prev_angle;
+    }
+    
+    inline int Particle::getTileS() const
+    {
+        return (_s_tile>0.0f) ? static_cast<int>(1.0f / _s_tile) : 1;
+    }
+
+    inline int Particle::getTileT() const
+    {
+        return (_t_tile>0.0f) ? static_cast<int>(1.0f / _t_tile) : 1;
     }
     
     inline void Particle::kill()

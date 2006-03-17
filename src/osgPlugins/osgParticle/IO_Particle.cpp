@@ -124,6 +124,16 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                 }
             }
 
+            if (fr[0].matchWord("textureTile")) {
+                int sTile,tTile,numTiles;
+                if (fr[1].getInt(sTile) && fr[2].getInt(tTile) && fr[3].getInt(numTiles)) {
+                    P.setTextureTile(sTile,tTile,numTiles);
+                    fr += 4;
+                    itAdvanced = true;
+                }
+            }
+ 
+
             // interpolators
 
             if (fr[0].matchWord("sizeInterpolator") && fr[1].matchString("{")) {
@@ -206,6 +216,7 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
 
     fw.indent() << "radius " << P.getRadius() << std::endl;
     fw.indent() << "mass " << P.getMass() << std::endl;
+    fw.indent() << "textureTile " << P.getTileS() << " " << P.getTileT() << " " << P.getNumTiles() << std::endl;
 
     // interpolators
 

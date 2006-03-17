@@ -59,7 +59,7 @@ class OSGSIM_EXPORT Optimizer
     
     public:
 
-        class TesselateVisitor : public osg::NodeVisitor
+        class OSGSIM_EXPORT TesselateVisitor : public osg::NodeVisitor
         {
             public:
 
@@ -75,7 +75,7 @@ class OSGSIM_EXPORT Optimizer
 
         };
 
-        class MakeLitVisitor : public osg::NodeVisitor
+        class OSGSIM_EXPORT MakeLitVisitor : public osg::NodeVisitor
         {
             public:
 
@@ -89,7 +89,7 @@ class OSGSIM_EXPORT Optimizer
 
         /** Combine geodes
           */
-        class MergeGeodesVisitor : public osg::NodeVisitor
+        class OSGSIM_EXPORT MergeGeodesVisitor : public osg::NodeVisitor
         {
             public:
 

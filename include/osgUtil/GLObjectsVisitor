@@ -41,7 +41,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
             RELEASE_STATE_ATTRIBUTES            = 0x20,
             SWITCH_ON_VERTEX_BUFFER_OBJECTS     = 0x40,
             SWITCH_OFF_VERTEX_BUFFER_OBJECTS    = 0x80,
-            CHECK_BLACK_LISTED_MODES            = 0xA0
+            CHECK_BLACK_LISTED_MODES            = 0x100
         };
         
         typedef unsigned int Mode;

@@ -41,9 +41,9 @@ osg::Node* createScene()
     sun_sd->setShape(sun_sphere);
     sun_sd->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
 
-    osg::Geode* sun = new osg::Geode;
-    sun->setName("sun");
-    sun->addDrawable(sun_sd);
+    osg::Geode* sun_geode = new osg::Geode;
+    sun_geode->setName("sun");
+    sun_geode->addDrawable(sun_sd);
 
     // Move the sun behind the earth
     osg::PositionAttitudeTransform *pat = new osg::PositionAttitudeTransform;
@@ -52,7 +52,7 @@ osg::Node* createScene()
     osg::Group* scene = new osg::Group;
     scene->addChild(earth);
     scene->addChild(pat);
-    pat->addChild(sun);
+    pat->addChild(sun_geode);
 
     return scene;
 }

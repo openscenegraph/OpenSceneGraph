@@ -43,6 +43,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_Method1(void, setStartTick, IN, osg::Timer_t, tick);
 	I_Method0(osg::Timer_t, getStartTick);
 	I_Method0(double, getTime);
+	I_Method0(osgGA::GUIEventAdapter *, createEvent);
 	I_Method0(osgGA::GUIEventAdapter *, getCurrentEventState);
 	I_Method0(const osgGA::GUIEventAdapter *, getCurrentEventState);
 	I_ReadOnlyProperty(osgGA::GUIEventAdapter *, CurrentEventState);

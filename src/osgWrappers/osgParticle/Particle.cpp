@@ -59,6 +59,9 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_Method0(float, getCurrentAlpha);
 	I_Method0(const float, getSTexCoord);
 	I_Method0(float, getTCoord);
+	I_Method0(int, getTileS);
+	I_Method0(int, getTileT);
+	I_Method0(int, getNumTiles);
 	I_Method0(void, kill);
 	I_Method1(void, setLifeTime, IN, double, t);
 	I_Method1(void, setSizeRange, IN, const osgParticle::rangef &, r);
@@ -113,6 +116,8 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_WriteOnlyProperty(osgParticle::Interpolator *, SizeInterpolator);
 	I_Property(const osgParticle::rangef &, SizeRange);
 	I_ReadOnlyProperty(float, TCoord);
+	I_ReadOnlyProperty(int, TileS);
+	I_ReadOnlyProperty(int, TileT);
 	I_WriteOnlyProperty(osgParticle::ParticleSystem *, UpTexCoordsAsPartOfConnectedParticleSystem);
 	I_Property(const osg::Vec3 &, Velocity);
 END_REFLECTOR

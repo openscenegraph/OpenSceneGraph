@@ -7,6 +7,7 @@ CXXFILES =\
 	IO_BoxPlacer.cpp\
 	IO_CenteredPlacer.cpp\
 	IO_ConnectedParticleSystem.cpp\
+        IO_ConstantRateCounter.cpp\
 	IO_Emitter.cpp\
 	IO_FluidFrictionOperator.cpp\
 	IO_ForceOperator.cpp\

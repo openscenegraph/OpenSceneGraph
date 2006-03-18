@@ -116,6 +116,10 @@ SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ConnectedParticleSystem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ConstantRateCounter.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Emitter.cpp
 # End Source File
 # Begin Source File

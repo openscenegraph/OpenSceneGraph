@@ -1,3 +1,1016 @@
+2006-03-18 07:07  robert
+
+	* src/osgPlugins/osgParticle/GNUmakefile,
+	  src/osgPlugins/osgParticle/IO_ConstantRateCounter.cpp,
+	  VisualStudio/osgPlugins/osgParticle/dot_osgParticle.dsp: From
+	  Farshid Lasharki, added IO suppoty fo
+	  osgParticle::ConstantRateContour
+
+2006-03-17 22:25  robert
+
+	* src/osgWrappers/: osgGA/EventQueue.cpp, osgParticle/Particle.cpp:
+	  Updated wrappers.
+
+2006-03-17 22:23  robert
+
+	* include/osgSim/OpenFlightOptimizer: Added exports.
+
+2006-03-17 22:22  robert
+
+	* examples/osgdepthpartition/osgdepthpartition.cpp: From Keith
+	  Steffen, changed instance of sun to sun_geode to avoid Solaris10
+	  build issue with it defining "sun"?#!
+
+2006-03-17 14:05  robert
+
+	* include/osgParticle/Particle,
+	  src/osgPlugins/osgParticle/IO_Particle.cpp: From Farshid
+	  Lashkari, Added ability to read/write the texture tile settings
+	  of osgParticle::Particle to .osg files.
+
+2006-03-17 11:28  robert
+
+	* include/osgUtil/GLObjectsVisitor: From Sohey Yamamoto, fixed
+	  eroneous CHECK_BLACK_LISTED_MODES enum value, changing 0xA0 to
+	  0x100
+
+2006-03-15 15:49  robert
+
+	* include/osgGA/EventQueue, src/osgGA/EventQueue.cpp: Added
+	  createEvent() convinience method.
+
+2006-03-15 12:26  robert
+
+	* include/osgSim/SphereSegment: Added comment on the meaning of the
+	  matrix paramter in the computeIntersections methods.
+
+2006-03-15 12:26  robert
+
+	* examples/osgspheresegment/osgspheresegment.cpp: Added moving
+	  sphere segment intersections.
+
+2006-03-15 11:21  robert
+
+	* src/osgPlugins/ESRIShape/ESRIShape.h: From Martin Naylor, build
+	  fix for Win32.
+
+2006-03-15 10:36  robert
+
+	* VisualStudio/: OpenSceneGraph.dsw,
+	  osgPlugins/ESRIShape/ESRIShape.dsp: From Martin Naylor, added
+	  ESRIShape.dsp project
+
+2006-03-14 13:18  robert
+
+	* VisualStudio/osgWrappers/osgGA/wrapper_osgGA.dsp,
+	  include/osgGA/EventQueue, src/osgGA/EventQueue.cpp,
+	  src/osgPlugins/txp/TXPPagedLOD.cpp,
+	  src/osgProducer/KeyboardMouseCallback.cpp,
+	  src/osgProducer/Viewer.cpp, src/osgWrappers/osgGA/EventQueue.cpp,
+	  src/osgWrappers/osgGA/GNUmakefile: Build fixes
+
+2006-03-14 09:33  robert
+
+	* src/osgPlugins/xine/video_out_rgb.c: Added 21 as the version
+	  number of xine video plugin to allow it work with latest versions
+	  of xine.
+
+2006-03-14 09:23  robert
+
+	* VisualStudio/: OpenSceneGraph.dsw,
+	  osgPlugins/normals/normals.dsp: From Martin Naylor, added normals
+	  VS project
+
+2006-03-13 21:29  robert
+
+	* include/osg/DisplaySettings, src/osg/DisplaySettings.cpp,
+	  src/osgProducer/OsgCameraGroup.cpp,
+	  src/osgWrappers/osg/DisplaySettings.cpp: From Farshid Lashkari,
+	  "The following patch adds a multisample option to the
+	  osg::DisplaySettings class. OsgCameraGroup will now read the
+	  setting from the DisplaySettings instead of hardcoding the value.
+	  I added the following commandline option to be able to set the
+	  multisample value:
+
+	  --samples <num>
+
+	  One thing to note, OsgCameraGroup would previously check if the
+	  computer is an SGI and set multisample to 4. I retained this
+	  check in DisplaySettings to be backwards compatible."
+
+2006-03-13 21:20  robert
+
+	* src/osgPlugins/txp/: TXPPagedLOD.cpp, TXPPagedLOD.h: From Andrew
+	  Sampson, "The terravista terrain generation tool can insert
+	  references to external model files into a terrapage tile.  It
+	  unfortunately does not update the bounding sphere of that tile to
+	  include the extents of the external model.  This means that if a
+	  large model (such as an airfield model) is attached to a tile,
+	  the model will disappear when the tile is off-screen (outside the
+	  view volume), even though the model is on-screen."
+
+2006-03-13 13:19  robert
+
+	* include/osgGA/EventQueue,
+	  include/osgProducer/KeyboardMouseCallback,
+	  include/osgProducer/Viewer, src/osgGA/EventQueue.cpp,
+	  src/osgProducer/KeyboardMouseCallback.cpp,
+	  src/osgProducer/Viewer.cpp, src/osgWrappers/osgGA/EventQueue.cpp,
+	  src/osgWrappers/osgProducer/KeyboardMouseCallback.cpp,
+	  src/osgWrappers/osgProducer/Viewer.cpp: Added an EventQueue
+	  directly into osgProducer::Viewer.
+
+2006-03-09 15:16  robert
+
+	* src/osgWrappers/osgProducer/Export.cpp: Checked in the genwrapper
+	  generated Export.cpp.  This does seem to be an eroneously built
+	  file though since Export.cpp doesn't appear in the other
+	  plugins...  I have checked it in here to keep the builds running,
+	  there isn't actually any useful body in the Export.cpp.
+
+2006-03-09 13:02  robert
+
+	* src/: osgPlugins/OpenFlight/AncillaryRecords.cpp,
+	  osgPlugins/OpenFlight/AttrData.cpp,
+	  osgPlugins/OpenFlight/AttrData.h,
+	  osgPlugins/OpenFlight/ControlRecords.cpp,
+	  osgPlugins/OpenFlight/DataInputStream.cpp,
+	  osgPlugins/OpenFlight/DataInputStream.h,
+	  osgPlugins/OpenFlight/Document.cpp,
+	  osgPlugins/OpenFlight/Document.h,
+	  osgPlugins/OpenFlight/GeometryRecords.cpp,
+	  osgPlugins/OpenFlight/LightPointRecords.cpp,
+	  osgPlugins/OpenFlight/PaletteRecords.cpp,
+	  osgPlugins/OpenFlight/Pools.cpp, osgPlugins/OpenFlight/Pools.h,
+	  osgPlugins/OpenFlight/PrimaryRecords.cpp,
+	  osgPlugins/OpenFlight/ReaderWriterATTR.cpp,
+	  osgPlugins/OpenFlight/ReaderWriterFLT.cpp,
+	  osgPlugins/OpenFlight/Record.cpp, osgPlugins/OpenFlight/Record.h,
+	  osgPlugins/OpenFlight/RecordInputStream.cpp,
+	  osgPlugins/OpenFlight/RecordInputStream.h,
+	  osgPlugins/OpenFlight/Registry.cpp,
+	  osgPlugins/OpenFlight/Registry.h,
+	  osgPlugins/OpenFlight/ReservedRecords.cpp,
+	  osgPlugins/OpenFlight/RoadRecords.cpp,
+	  osgPlugins/OpenFlight/Vertex.cpp, osgPlugins/OpenFlight/Vertex.h,
+	  osgPlugins/OpenFlight/VertexRecords.cpp,
+	  osgPlugins/OpenFlight/opcodes.h, osgPlugins/OpenFlight/types.h,
+	  osgSim/OpenFlightOptimizer.cpp: Ran dos2unix on new OpenFlight
+	  files.
+
+2006-03-08 21:38  robert
+
+	* Make/makedirdefs, VisualStudio/OpenSceneGraph.dsw,
+	  VisualStudio/osgPlugins/OpenFlight/OpenFlight.dsp,
+	  VisualStudio/osgSim/osgSim.dsp,
+	  VisualStudio/osgWrappers/osgSim/wrapper_osgSim.dsp,
+	  include/osgSim/OpenFlightOptimizer, src/osgDB/Registry.cpp,
+	  src/osgPlugins/OpenFlight/AncillaryRecords.cpp,
+	  src/osgPlugins/OpenFlight/AttrData.cpp,
+	  src/osgPlugins/OpenFlight/AttrData.h,
+	  src/osgPlugins/OpenFlight/ControlRecords.cpp,
+	  src/osgPlugins/OpenFlight/DataInputStream.cpp,
+	  src/osgPlugins/OpenFlight/DataInputStream.h,
+	  src/osgPlugins/OpenFlight/Document.cpp,
+	  src/osgPlugins/OpenFlight/Document.h,
+	  src/osgPlugins/OpenFlight/GNUmakefile,
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp,
+	  src/osgPlugins/OpenFlight/LightPointRecords.cpp,
+	  src/osgPlugins/OpenFlight/PaletteRecords.cpp,
+	  src/osgPlugins/OpenFlight/Pools.cpp,
+	  src/osgPlugins/OpenFlight/Pools.h,
+	  src/osgPlugins/OpenFlight/PrimaryRecords.cpp,
+	  src/osgPlugins/OpenFlight/ReaderWriterATTR.cpp,
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp,
+	  src/osgPlugins/OpenFlight/Record.cpp,
+	  src/osgPlugins/OpenFlight/Record.h,
+	  src/osgPlugins/OpenFlight/RecordInputStream.cpp,
+	  src/osgPlugins/OpenFlight/RecordInputStream.h,
+	  src/osgPlugins/OpenFlight/Registry.cpp,
+	  src/osgPlugins/OpenFlight/Registry.h,
+	  src/osgPlugins/OpenFlight/ReservedRecords.cpp,
+	  src/osgPlugins/OpenFlight/RoadRecords.cpp,
+	  src/osgPlugins/OpenFlight/Vertex.cpp,
+	  src/osgPlugins/OpenFlight/Vertex.h,
+	  src/osgPlugins/OpenFlight/VertexRecords.cpp,
+	  src/osgPlugins/OpenFlight/opcodes.h,
+	  src/osgPlugins/OpenFlight/types.h, src/osgSim/GNUmakefile,
+	  src/osgSim/OpenFlightOptimizer.cpp,
+	  src/osgWrappers/osgSim/GNUmakefile,
+	  src/osgWrappers/osgSim/OpenFlightOptimizer.cpp: From Brede
+	  Johansen, new OpenFlight plugin!!!!!
+
+	  By default the original flt plugin is still used, to select at
+	  runtime the new plugin set the env OSG_OPEN_FLIGHT_PLUGIN=new
+
+2006-03-08 16:11  robert
+
+	* include/osg/GLExtensions, include/osg/Texture3D,
+	  src/osg/GLExtensions.cpp, src/osg/Texture3D.cpp,
+	  src/osgWrappers/osg/Texture3D.cpp: From Bob Kuehne, added
+	  osg::getGlVersion() and fixed a minor typo in Texture3D.
+
+2006-03-08 15:40  robert
+
+	* include/osgGA/EventQueue, src/osgGA/EventQueue.cpp: Added
+	  EventQueue.
+
+2006-03-08 15:30  robert
+
+	* src/osgDB/Registry.cpp: From Farshid Lashkari, "A while back the
+	  behaviour of extension alias' was modified so that the user can
+	  override existing alias'. The change allowed for circular
+	  references, so the createLibraryNameForExtension would get caught
+	  in an endless loop. The following fix will catch circular
+	  references."
+
+2006-03-08 15:26  robert
+
+	* src/osgParticle/ParticleProcessor.cpp: From Farshid Lashkari, "I
+	  noticed that sometimes when a particle emitter is re-enabled, a
+	  few particles will appear at the location it was disabled at. The
+	  problem is that the previous local to world matrix is not being
+	  updated while it is disabled. I modified the particle processor
+	  so that it will set the dirty flag for the previous local to
+	  world matrix when the processor is skipped for a frame, since the
+	  value will no longer be relevant."
+
+2006-03-08 15:16  robert
+
+	* src/osgPlugins/ac3d/ac3d.cpp: From Roger James, "1. Fixed a
+	  problem with the caching of textures when the associated image
+	  file was not in the current working directory. In this case the
+	  texture object was being placed in the cache with the short
+	  filename, but was looked up with the full path.
+
+	  2. Fixed a problem with the caching of textures when CACHE_IMAGES
+	  was enabled. This caused a conflict is the names used to cache
+	  the image and texture objects.
+
+	  3. Fixed a problem where AC3D generates surfaces with duplicate
+	  vertex indices.
+
+	  4. Removed what I believe are redundant calls to the tesselator.
+
+	  5. Added a couple of asserts which should fire in debug mode if
+	  my assumptions about 4. are incorrect.
+
+	  6. Removed obviously unused code. (Stuff that was commented or
+	  ifdeffed out.)"
+
+	  Note, from Robert Osfield, changed the asserts to if () report
+	  error using notify so we can catch errors in both optimized and
+	  debug builds, but without crashing.
+
+2006-03-08 14:09  robert
+
+	* VisualStudio/osgGA/osgGA.dsp,
+	  VisualStudio/osgProducer/osgProducer.dsp,
+	  VisualStudio/osgWrappers/osgGA/wrapper_osgGA.dsp,
+	  VisualStudio/osgWrappers/osgProducer/wrapper_osgProducer.dsp,
+	  examples/osgcatch/osgcatch.cpp,
+	  examples/osgcluster/osgcluster.cpp,
+	  examples/osghangglide/GliderManipulator.cpp,
+	  examples/osgimpostor/TestManipulator.cpp,
+	  examples/osgphotoalbum/osgphotoalbum.cpp,
+	  examples/osgstereoimage/osgstereoimage.cpp,
+	  examples/osgvolume/osgvolume.cpp, include/osgGA/EventVisitor,
+	  include/osgGA/GUIEventAdapter,
+	  include/osgGA/KeySwitchMatrixManipulator,
+	  include/osgProducer/EventAdapter,
+	  include/osgProducer/KeyboardMouseCallback,
+	  src/osgGA/AnimationPathManipulator.cpp,
+	  src/osgGA/DriveManipulator.cpp, src/osgGA/FlightManipulator.cpp,
+	  src/osgGA/GNUmakefile, src/osgGA/GUIEventAdapter.cpp,
+	  src/osgGA/GUIEventHandler.cpp,
+	  src/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgGA/TrackballManipulator.cpp, src/osgGA/UFOManipulator.cpp,
+	  src/osgProducer/EventAdapter.cpp, src/osgProducer/GNUmakefile,
+	  src/osgProducer/KeyboardMouseCallback.cpp,
+	  src/osgProducer/Viewer.cpp, src/osgWrappers/osgGA/EventQueue.cpp,
+	  src/osgWrappers/osgGA/EventVisitor.cpp,
+	  src/osgWrappers/osgGA/GNUmakefile,
+	  src/osgWrappers/osgGA/GUIEventAdapter.cpp,
+	  src/osgWrappers/osgProducer/EventAdapter.cpp,
+	  src/osgWrappers/osgProducer/GNUmakefile,
+	  src/osgWrappers/osgProducer/KeyboardMouseCallback.cpp: Converted
+	  osgGA::GUIEventAdapter into a concrete class capable of
+	  respresenting keyboard and mouse events.
+
+	  Added osgGA::EventQueue class to support a thread safe event
+	  queue and adaption of keyboard and mouse events.
+
+	  Removed osgProducer::EventAdapter as GUIEventAdapter replaces it.
+
+	  Adapted osgProducer and examples to work with the new changes to
+	  osgGA.
+
+2006-03-07 18:26  don
+
+	* src/osgPlugins/net/ReaderWriterNET.cpp: Improved the GET protocol
+	  for the http socket.	By adding Connection: close the server
+	  sends a EOF immediately after the data, improving performance
+	  because readers are not left waiting for EOF.
+
+2006-03-05 20:46  robert
+
+	* include/: osgGA/EventVisitor, osgGA/GUIEventAdapter,
+	  osgProducer/EventAdapter: Began work on making EventVisitor
+	  capable of adapting events directly.
+
+2006-03-02 20:39  robert
+
+	* src/osgPlugins/: png/ReaderWriterPNG.cpp,
+	  tiff/ReaderWriterTIFF.cpp: From Farshid Lashkari, support for
+	  writing to istream for the the TIFF plugin and support for
+	  controlling PNG compression level via the the
+	  ReaderWriter::Option string "PNG_COMPRESSION <level>"
+
+2006-03-02 20:31  robert
+
+	* src/osgPlugins/ive/DataOutputStream.cpp: Added automatic toggling
+	  between png and jpeg when compressImageData option is used. Jpeg
+	  is used to compress RGB data only, the just of the formats are
+	  passed on to the png plugin.
+
+2006-03-02 15:26  robert
+
+	* Make/: helprules, instrules, makedefs, makedirdefs, makerules,
+	  versionrules: From Robert Swain, compile fix for debian unstable.
+
+2006-03-02 14:58  robert
+
+	* src/osgPlugins/png/ReaderWriterPNG.cpp: From Farshid Lashakari,
+	  support for png write.
+
+2006-03-01 10:17  robert
+
+	* src/osgPlugins/ive/: DataInputStream.cpp, DataOutputStream.cpp,
+	  DataTypeSize.h: From Farshid Lashkari, "I've attached another
+	  modified version of the IVE loader which supports compressing the
+	  image data. The option to compress the data is
+	  "compressImageData". Currently it uses the jpeg plugin to write
+	  the image. Maybe we could add an option that allows the user to
+	  specify which image format to use. The jpeg writer supports
+	  specifying the quality of the jpeg, so you could use the
+	  following command line to convert the skydome.osg model to IVE
+	  using 50% jpeg quality:
+
+	  osgconv -O "compressImageData JPEG_QUALITY 50" skydome.osg
+	  skydome.ive"
+
+2006-02-28 21:18  robert
+
+	* src/osgPlugins/ive/GNUmakefile: Added TextureRectangle.cpp
+
+2006-02-28 20:10  robert
+
+	* examples/osgprerendercubemap/osgprerendercubemap.cpp: Compile
+	  fix.
+
+2006-02-28 19:46  robert
+
+	* src/osg/Geometry.cpp: From Brede Johansen, added missing array
+	  handling into Geometry::accept(AttributeFunctor& af) and
+	  Geometry::accept(ConstAttributeFunctor& af).
+
+2006-02-28 19:36  robert
+
+	* VisualStudio/highlight70.reg, VisualStudio/highlight71.reg,
+	  VisualStudio/highlight80.reg,
+	  examples/osgprerendercubemap/osgprerendercubemap.cpp,
+	  src/osgProducer/Viewer.cpp: Further clean up of RefNodePath
+	  references.
+
+2006-02-28 19:12  robert
+
+	* src/osgWrappers/osgProducer/Viewer.cpp: Updated wrappers.
+
+2006-02-28 18:54  robert
+
+	* include/osgProducer/Viewer, src/osg/NodeTrackerCallback.cpp,
+	  src/osgProducer/Viewer.cpp: Fixes to removed dependency on
+	  RefNodePath.
+
+2006-02-27 19:51  robert
+
+	* VisualStudio/osg/osg.dsp,
+	  VisualStudio/osgWrappers/osg/wrapper_osg.dsp,
+	  src/osgWrappers/osg/GNUmakefile, src/osgWrappers/osg/Node.cpp,
+	  src/osgWrappers/osg/NodeTrackerCallback.cpp,
+	  src/osgWrappers/osg/RefNodePath.cpp,
+	  src/osgWrappers/osg/Referenced.cpp,
+	  src/osgWrappers/osg/observer_ptr.cpp,
+	  src/osgWrappers/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgWrappers/osgProducer/Viewer.cpp: Updated wrappers.
+
+2006-02-27 19:49  robert
+
+	* include/osg/NodeTrackerCallback, include/osg/RefNodePath,
+	  include/osgGA/NodeTrackerManipulator,
+	  src/osg/NodeTrackerCallback.cpp,
+	  src/osgGA/NodeTrackerManipulator.cpp: Ported NodeTrackCallback
+	  and NodeTrackManipulator across to use oberserver_ptr instead of
+	  RefNodePath.
+
+	  Removed now redundent RefNodePath.
+
+2006-02-27 19:48  robert
+
+	* include/osg/Node, include/osg/Transform, src/osg/Node.cpp,
+	  src/osg/Transform.cpp: Added support in osg::computeWorldToLocal
+	  and compteLocalToWorld functions for automatically stripping any
+	  absolute or root CameraNode's from the NodePaths.
+
+	  Added osg::Node::getWorldMatrices() convinience method.
+
+2006-02-27 19:44  robert
+
+	* include/osg/Referenced, include/osg/observer_ptr,
+	  src/osg/Referenced.cpp: Added new observer_ptr templated smart
+	  pointer to allow one to retain pointers to objects but have the
+	  pointer reset to null if that object is deleted.
+
+2006-02-26 17:45  robert
+
+	* VisualStudio/osgPlugins/ive/ive.dsp,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataInputStream.h,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.h,
+	  src/osgPlugins/ive/DataTypeSize.h,
+	  src/osgPlugins/ive/ReadWrite.h, src/osgPlugins/ive/Texture1D.cpp,
+	  src/osgPlugins/ive/Texture2D.cpp,
+	  src/osgPlugins/ive/Texture3D.cpp,
+	  src/osgPlugins/ive/TextureCubeMap.cpp,
+	  src/osgPlugins/ive/TextureCubeMap.h,
+	  src/osgPlugins/ive/TextureRectangle.cpp,
+	  src/osgPlugins/ive/TextureRectangle.h: From Farshid Lashkari,
+	  "I've made some changes to the IVE loader which will add the
+	  capability of saving image files inside the IVE file. Currently,
+	  only the raw image data is saved into the file. If your model
+	  uses jpg images as textures then this will cause your file size
+	  to increase.
+
+	  I've added an option that will embed the original image file into
+	  the IVE file. The IVE file will then attempt to read the image
+	  from memory. Since most image loaders support reading from
+	  memory, this shouldn't be a problem. To use this new feature the
+	  user must specify the option "includeImageFileInIVEFile" when
+	  converting to IVE.
+
+	  I tested this out on the "skydome.osg" model that comes with OSG.
+	   Using the old method, the IVE file size would be 785 KB, with
+	  the new method it is only 42 KB.
+
+	  Also, I've added the support for TextureRectangle's to the IVE
+	  reader/writer."
+
+2006-02-24 13:57  robert
+
+	* examples/osgparticleeffects/osgparticleeffects.cpp: Added
+	  debugging code to help pick out instablilities in osgParticle.
+	  Debugging code now commented out.
+
+2006-02-24 13:56  robert
+
+	* src/osgParticle/FluidProgram.cpp: Added clamping of the wind
+	  force contribution to acceletion of particle so that the
+	  de-acceleration never exceed the actual wind vector itself.
+
+2006-02-23 20:37  robert
+
+	* src/osgPlugins/osg/ClusterCullingCallback.cpp: Completed .osg
+	  support for ClusterCullingCallback.
+
+2006-02-23 16:47  robert
+
+	* src/osgTerrain/DataSet.cpp: Disabled the running of tristripping
+	  and smoothing from within the Simplifier.
+
+2006-02-23 12:41  robert
+
+	* include/osg/Drawable: From Gordon Tomlinson, spelling fixes.
+
+2006-02-23 12:39  robert
+
+	* examples/osgsimulation/osgsimulation.cpp: Fixed function name
+	  call.
+
+2006-02-22 20:51  robert
+
+	* include/osg/Drawable: Fixed getBound() comment.
+
+2006-02-22 19:28  robert
+
+	* src/osgWrappers/: osg/AutoTransform.cpp, osg/CameraNode.cpp,
+	  osg/PointSprite.cpp, osg/State.cpp, osg/StateAttribute.cpp,
+	  osg/StateSet.cpp, osgSim/OverlayNode.cpp,
+	  osgUtil/GLObjectsVisitor.cpp: Updated wrappers.
+
+2006-02-22 19:14  robert
+
+	* include/osg/PointSprite, include/osg/StateAttribute,
+	  include/osg/StateSet, src/osg/PointSprite.cpp,
+	  src/osg/StateSet.cpp, src/osgUtil/GLObjectsVisitor.cpp: Fixed
+	  typo of Validity.
+
+2006-02-22 16:05  robert
+
+	* src/osgFX/Cartoon.cpp: From Thom Carlo, with tweak from Robert
+	  Osfield, removed the setting of the outline colour (the emission
+	  part of material) during setup of the Carton effects for the
+	  second pass.
+
+2006-02-22 14:35  robert
+
+	* include/osg/StateSet: Fixed documentation.
+
+2006-02-22 14:31  robert
+
+	* include/osg/PointSprite, include/osg/State,
+	  include/osg/StateAttribute, include/osg/StateSet,
+	  include/osgUtil/GLObjectsVisitor, src/osg/PointSprite.cpp,
+	  src/osg/State.cpp, src/osg/StateSet.cpp,
+	  src/osgUtil/GLObjectsVisitor.cpp, src/osgUtil/SceneView.cpp:
+	  Added support for OpenGL mode black listing to provide better
+	  support for extension checking and invalidation of OpenGL modes
+	  associated with extensions.
+
+2006-02-21 21:29  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp: Added
+	  ClusterCullingCallback.cpp
+
+2006-02-21 21:28  robert
+
+	* src/osgPlugins/osg/: ClusterCullingCallback.cpp, GNUmakefile:
+	  Added initial cut of ClusterCullingCallback .osg support.
+
+2006-02-21 14:34  robert
+
+	* applications/osgviewer/osgviewer.cpp: From Gordon Tomlinson,
+	  spelling fixes.
+
+2006-02-21 13:55  robert
+
+	* VisualStudio/highlight80.reg: From Gordon Tomlinson, VS2005
+	  Syntax highling regonition.
+
+2006-02-21 13:51  robert
+
+	* include/osg/AutoTransform, src/osg/AutoTransform.cpp: From Paul
+	  Martz, "I've attempted to make AutoTransform override
+	  computeBounds() to return an invalid bounding sphere if it hasn't
+	  seen a cull traversal yet. It depends on _firstTimeToSetEyePoint,
+	  which is initially true, then false after a cull. There might be
+	  a better way? If so, let me know.
+
+	  This change does resolve the issue I had encountered with auto
+	  scale to screen and incorrect culling."
+
+2006-02-21 12:39  robert
+
+	* src/osgPlugins/flt/: LightPointRecord.cpp, LightPointRecord.h,
+	  flt2osg.cpp: From Trajce Nikolov, "small fix for the flt loader -
+	  the back color of the bidirectional light points"
+
+2006-02-20 21:05  robert
+
+	* examples/osganimate/osganimate.cpp,
+	  examples/osgmultiplecameras/osgmultiplecameras.cpp,
+	  include/osg/CameraNode, include/osgSim/OverlayNode,
+	  include/osgSim/VisibilityGroup, include/osgUtil/SceneView,
+	  src/osg/CameraNode.cpp, src/osgPlugins/osg/CameraNode.cpp,
+	  src/osgPlugins/pfb/ReaderWriterPFB.cpp,
+	  src/osgSim/OverlayNode.cpp, src/osgUtil/CullVisitor.cpp,
+	  src/osgUtil/IntersectVisitor.cpp: From Ulrich Hertlein, spelling
+	  corrections and a few Doxgen comments.
+
+2006-02-20 20:06  robert
+
+	* src/osgPlugins/png/ReaderWriterPNG.cpp: From Eric Sokolowsky,
+	  "There was a problem with the PNG plugin when it encounters an
+	  image that is less than 8 bits per pixel (this can happen with
+	  greyscale or paletted images).  It was a pretty simple problem to
+	  fix."
+
+2006-02-20 19:13  robert
+
+	* VisualStudio/osgPlugins/ive/ive.dsp,
+	  src/osgPlugins/ive/AutoTransform.cpp,
+	  src/osgPlugins/ive/AutoTransform.h,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/GNUmakefile, src/osgPlugins/ive/ReadWrite.h:
+	  From Nathan Monteleone, addition of AutoTransform support.
+
+2006-02-20 16:50  robert
+
+	* src/osg/Notify.cpp: Moved the intialization variable reset to end
+	  of the init funciton to avoid multi-thread initialization from
+	  producing different results.
+
+2006-02-20 16:20  robert
+
+	* src/osgDB/FileUtils.cpp: From Ed Ralston, "According to the OSX
+	  Developer Documentation, CFRelease cannot be called with a NULL
+	  argument.
+
+	  This patch prevents osgDB::FileUtils from doing this."
+
+2006-02-20 15:46  robert
+
+	* src/osgPlugins/ive/DataInputStream.cpp: Added missing swap byte
+	  operations to readVec*sArray() methods.
+
+2006-02-20 15:32  robert
+
+	* src/osgPlugins/ive/DataInputStream.cpp: From Daniel Larimer,
+	  fixed error is swap byte code handling vector<short>
+
+2006-02-20 15:25  robert
+
+	* Make/makerules: From Markus Trenkwalder, "when building debug
+	  libs in mingw the .dll.a files are not copied to the
+	  lib/MINGW(32) folder. The makefiles in the attached zip should
+	  fix this."
+
+2006-02-09 19:31  don
+
+	* src/osgGA/UFOManipulator.cpp: Fixed a bug spotted in
+	  UFOManipulator where a Vec3's 4th component was being inspected
+	  (ip[3]).
+
+2006-02-09 12:20  robert
+
+	* include/osg/BlendColor, src/osg/BlendColor.cpp,
+	  src/osgWrappers/osg/BlendColor.cpp,
+	  src/osgWrappers/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/osgUtil/Simplifier.cpp: Added BlenColour(Vec4)
+	  constructor and updated wrappers.
+
+2006-02-08 23:41  don
+
+	* include/osgUtil/DelaunayTriangulator,
+	  src/osgUtil/DelaunayTriangulator.cpp: Added a filter to the
+	  Delaunay Triangulator to insure that incoming points are unique
+	  in the X and Y components.
+
+2006-02-06 20:36  robert
+
+	* include/osgUtil/Simplifier, src/osgUtil/Simplifier.cpp: Added
+	  s/getDoTriStrip and s/getSmoothing method.
+
+2006-02-06 19:41  don
+
+	* Make/makedirdefs: Added normals and ESRIshape directories to
+	  makedirdefs
+
+2006-02-06 19:40  don
+
+	* src/osgPlugins/normals/: GNUmakefile, Normals.cpp, Normals.h,
+	  ReaderWriterNormals.cpp: Added 'normals' pseudoloader
+
+2006-02-06 19:16  robert
+
+	* include/osgUtil/Simplifier, src/osgUtil/Simplifier.cpp: Improved
+	  default settings, re-enambled smoothing and tri stripping of
+	  sampled data.
+
+2006-02-06 17:12  robert
+
+	* examples/osgsimplifier/osgsimplifier.cpp,
+	  include/osgUtil/Simplifier, src/osgUtil/Simplifier.cpp: Added
+	  support for up sampling by dividing longest edges.
+
+2006-02-05 21:53  robert
+
+	* include/osg/Math, src/osgDB/DynamicLibrary.cpp: From David
+	  Guthrie, OSX marco reworking to better handling different OSX
+	  versions.
+
+2006-02-04 21:25  robert
+
+	* src/osg/ShapeDrawable.cpp: From Edmond Gheury, fixe and bug in
+	  the PrimitiveShapeVisitor.
+
+2006-02-04 21:20  robert
+
+	* src/: osg/FrameBufferObject.cpp, osgProducer/OsgCameraGroup.cpp,
+	  osgUtil/RenderStage.cpp: From Marco Jez, " I've modified in order
+	  to make FBO mipmapping work. In FrameBufferObject.cpp there is
+	  also another fix: when initializing a FBO attachment from a
+	  CameraNode attachment, the renderbuffer's format must be set to
+	  the attachment's internal format, not to the image's pixel
+	  format.
+
+	  Another problem is that attaching a renderbuffer to the FBO
+	  through CameraNode is not simple (if not impossible) if you don't
+	  intend to specify an Image object. Probably CameraNode could be
+	  enriched with an "attach(buffer, width, height, format)" method.
+	  For example if you attach a color buffer as a texture whose size
+	  is different than that of the CameraNode's viewport you also need
+	  to attach a depth buffer of the same size, because the depth
+	  buffer that is automatically attached by RenderStage has the
+	  viewport's size. FBOs require that all attachment have the same
+	  dimensions, so said setup will fail if you can't specify a custom
+	  depth renderbuffer"
+
+2006-02-04 21:12  robert
+
+	* include/osgParticle/ParticleProcessor,
+	  include/osgParticle/ParticleSystemUpdater,
+	  src/osgParticle/ParticleProcessor.cpp,
+	  src/osgParticle/ParticleSystemUpdater.cpp: From Brad Anderegg,
+	  add _frameNumber and associated code to ensure that particles
+	  only get updated once per frame.
+
+2006-02-04 21:06  robert
+
+	* include/osgDB/DatabasePager: From Chris Hanson, added get methods
+	  for size of file request and data to compile lists.
+
+2006-01-24 17:43  don
+
+	* src/osgPlugins/: tgz/ReaderWriterTGZ.cpp,
+	  zip/ReaderWriterZIP.cpp: Changes to zip and tgz plug-ins to allow
+	  for use of TEMP variable on Windows.	Submitted by Zach Deedler
+
+2006-01-24 12:02  robert
+
+	* src/osgUtil/SceneView.cpp: cleaned up clampNearNar code.
+
+2006-01-23 20:38  robert
+
+	* src/osgDB/DatabasePager.cpp: Improved the env var reporting to
+	  avoid the overlong lines.
+
+2006-01-23 20:16  robert
+
+	* applications/osgdem/osgdem.cpp: Added explanation of
+	  --no-terrain-simplification
+
+2006-01-21 13:02  robert
+
+	* VisualStudio/osgWrappers/osgParticle/wrapper_osgParticle.dsp,
+	  src/osgWrappers/osg/FrameBufferObject.cpp,
+	  src/osgWrappers/osg/Program.cpp, src/osgWrappers/osg/Shader.cpp,
+	  src/osgWrappers/osgParticle/BoxPlacer.cpp,
+	  src/osgWrappers/osgParticle/GNUmakefile: Updated wrappers.
+
+2006-01-18 12:16  robert
+
+	* src/osgPlugins/hdr/ReaderWriterHDR.cpp: From Marco Jez, adding
+	  osgDB::findDataFile() usage.
+
+2006-01-18 12:13  robert
+
+	* src/osgPlugins/lwo/: Converter.cpp, Converter.h,
+	  ReaderWriterLWO.cpp, Surface.cpp, Surface.h, VertexMap.h: From
+	  Marco Jez:
+
+	  here is a patch that enables a new option named
+	  "BIND_TEXTURE_MAP" in the LWO plugin. Its purpose is to allow
+	  explicit binding between texture UV maps defined in the LWO file
+	  and OpenGL texture units, overriding the default mechanism that
+	  allocates texture units automatically. This is useful when you
+	  have an UV map built in Lightwave (for example an atlas map) but
+	  no textures actually using it, so you can keep the UV map (that
+	  would be discarded otherwise) and add a texture later int your
+	  program.
+
+	  Syntax is: BIND_TEXTURE_MAP <map_name> <texunit>
+
+2006-01-18 12:03  robert
+
+	* VisualStudio/OpenSceneGraph.dsw,
+	  src/osgPlugins/ESRIShape/ESRIShape.cpp,
+	  src/osgPlugins/ESRIShape/ESRIShapeParser.cpp: From Maya Leonard,
+	  ERSIShape VS project file, and compile fixes for Win32.
+
+2006-01-18 11:45  robert
+
+	* src/: osg/BlendEquation.cpp, osg/GLExtensions.cpp,
+	  osgUtil/RenderStage.cpp: From Marco Jez, addition of glw
+	  extension checking under Windows, and tweaks to BlendEquation and
+	  RenderStage to correct the extensions being tested.
+
+2006-01-17 17:04  robert
+
+	* Make/: dolink.sh, instrules: From Zbigniew Sroczynski, fix for
+	  handling of paths with spaces.
+
+2006-01-17 15:18  robert
+
+	* include/osgParticle/BoxPlacer,
+	  src/osgPlugins/osgParticle/IO_BoxPlacer.cpp: Added new BoxPlacer
+	  files.
+
+2006-01-17 15:17  robert
+
+	* VisualStudio/osgParticle/osgParticle.dsp,
+	  VisualStudio/osgPlugins/osgParticle/dot_osgParticle.dsp,
+	  src/osgPlugins/osgParticle/GNUmakefile: From Zach Deedler,
+	  addition of osgParticle/BoxSpacer.
+
+2006-01-16 17:05  robert
+
+	* include/osg/Program, include/osg/Shader, src/osg/Program.cpp,
+	  src/osg/Shader.cpp, src/osgUtil/SceneView.cpp: Improved handling
+	  of clean up of osg::Program/osg::Shader on closing of a graphis
+	  context.
+
+2006-01-16 17:03  robert
+
+	* include/osg/ShapeDrawable: Fixed indenting.
+
+2006-01-12 22:43  robert
+
+	* examples/osgmovie/osgmovie.cpp: Added support for tracking mouse
+	  movement and computing the intersection of the mouse position
+	  into texture coords.
+
+2006-01-03 16:52  robert
+
+	* examples/osgkeyboardmouse/osgkeyboardmouse.cpp: Added ability to
+	  write out the selected parts of the scene graph.
+
+2006-01-03 10:44  robert
+
+	* include/osg/FrameBufferObject, src/osg/FrameBufferObject.cpp,
+	  src/osgUtil/RenderStage.cpp: Moved the body of the
+	  FBOExtensions::instance() to the .cpp and added bool to control
+	  whether that an FBOExtensions structure can be created if
+	  missing.
+
+2006-01-02 12:03  robert
+
+	* src/osgDB/DatabasePager.cpp: Standardised compile code to use
+	  _maximumNumOfObjectsToCompilePerFrame.
+
+2005-12-23 10:59  robert
+
+	* examples/osgkeyboardmouse/osgkeyboardmouse.cpp: Ported picking
+	  across to using PickVisitor.
+
+2005-12-23 10:59  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Added setting of the parent
+	  path on the new PickVisitor.
+
+2005-12-22 14:06  robert
+
+	* include/osgUtil/IntersectVisitor,
+	  src/osgUtil/IntersectVisitor.cpp: Seperated out the view and
+	  model matrices in IntersectVisitor to allow handling of world
+	  coordinates better when using PickVisitor.
+
+2005-12-21 10:32  robert
+
+	* src/osgPlugins/osg/Shader.cpp: Added support for an externally
+	  referenced shader file, via the keyword combinations
+
+	     file "shader.vert"
+
+	  OR
+
+	     file shader.vert.
+
+2005-12-20 09:29  robert
+
+	* src/osgDB/Registry.cpp: Removed "if (mapExt!=toExt)" from alias
+	  map assignement to allow aliases to be overriden for all cases.
+
+2005-12-20 09:13  robert
+
+	* src/osg/Switch.cpp: From Farshid Lashkari, compile fix
+
+2005-12-19 15:05  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Added check against the
+	  validity of the _inverse matrix pointer.
+
+2005-12-19 14:48  robert
+
+	* VisualStudio/osgPlugins/ive/ive.dsp,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/Depth.cpp, src/osgPlugins/ive/Depth.h,
+	  src/osgPlugins/ive/GNUmakefile, src/osgPlugins/ive/ReadWrite.h:
+	  From Ali Botorabi, adding of osg::Depth support in .ive format.
+
+2005-12-19 13:57  robert
+
+	* include/osgUtil/IntersectVisitor,
+	  src/osgUtil/IntersectVisitor.cpp: Added debugging info for future
+	  reference (currently commented out.)
+
+2005-12-19 13:40  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Added transform of the eye
+	  point into local coordinates to properly account for transforms
+	  within the scene graph.
+
+2005-12-19 12:00  robert
+
+	* include/osg/Viewport: Fixed computeWindowMatrix so that it
+	  properly accounts for x,y position of the viewport.
+
+2005-12-19 11:18  robert
+
+	* include/osgText/Text: From Eric Wing, made getLineCount() const.
+
+2005-12-18 16:06  robert
+
+	* src/osgUtil/: CullVisitor.cpp, IntersectVisitor.cpp: Improved
+	  handling of clamping of projection matrix for scenes with close
+	  to zero depth range.
+
+2005-12-16 17:01  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Fixed null matrix op.
+
+2005-12-16 16:27  robert
+
+	* include/osgUtil/IntersectVisitor,
+	  src/osgUtil/IntersectVisitor.cpp: Fixed handling of absolute
+	  transforms in IntersectVisitor.
+
+2005-12-16 14:53  robert
+
+	* examples/osgpick/osgpick.cpp: Fixed typo in text string.
+
+2005-12-16 11:04  robert
+
+	* include/osg/Switch, src/osg/Switch.cpp,
+	  src/osgWrappers/osg/Switch.cpp: Added back in
+	  Switch::removeChild(Node*)
+
+2005-12-15 20:56  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Added proper
+	  catch of Paul de Repentinguy name
+
+2005-12-15 19:38  robert
+
+	* src/osgWrappers/osgUtil/: RenderBin.cpp, RenderStage.cpp,
+	  SceneView.cpp: Updated wrappers.
+
+2005-12-15 17:14  robert
+
+	* include/osgUtil/RenderBin, include/osgUtil/RenderStage,
+	  include/osgUtil/SceneView, include/osgUtil/Statistics,
+	  src/osgProducer/ViewerEventHandler.cpp,
+	  src/osgUtil/RenderBin.cpp, src/osgUtil/RenderStage.cpp,
+	  src/osgUtil/SceneView.cpp: Improved stats handling, and fixed a
+	  couple of stats bugs.
+
+2005-12-15 16:30  robert
+
+	* applications/osgdem/osgdem.cpp, include/osgTerrain/DataSet,
+	  src/osgTerrain/DataSet.cpp,
+	  src/osgWrappers/osgTerrain/DataSet.cpp: From Jason Beverage,
+	  added option to control whether simplification of tiles is done
+	  during osgdem builds.
+
+2005-12-15 16:24  robert
+
+	* Make/makedefs: From Matthew May, fixes for threading problems
+	  under FreeBSD build.
+
+2005-12-15 15:50  robert
+
+	* include/osg/Switch, src/osg/Switch.cpp,
+	  src/osgWrappers/osg/Switch.cpp: Removed
+	  Switch::removedChild(Node*) as the Group::removeChild(Node*)
+	  implementation should be sufficient, as it calls the virtual
+	  removeChild(uint,uint).
+
+2005-12-15 15:36  robert
+
+	* src/osgPlugins/dxf/: dxfDataTypes.h, dxfEntity.cpp: From Paul de
+	  Repentigny, ciyple fo fixes for the DXF reader.
+
+2005-12-15 15:25  robert
+
+	* include/osgUtil/Statistics: From Yefei He, fix to QUAD_STRIP
+	  stats.
+
+2005-12-09 22:53  robert
+
+	* Make/makedefs: Updated version/revision for 1.0.0 release.
+
+2005-12-09 20:17  robert
+
+	* AUTHORS.txt, NEWS.txt: Updated NEWS and AUTHORS files for the
+	  release.
+
+2005-12-09 20:10  robert
+
+	* ChangeLog: Updated ChangeLog for 1.0 release.
+
 2005-12-09 20:03  robert
 
 	* include/osgGA/DriveManipulator, include/osgGA/FlightManipulator,

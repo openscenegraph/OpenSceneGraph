@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  *
@@ -13,7 +13,7 @@
 */
 
 /* file:        src/osg/Program.cpp
- * author:      Mike Weiblen 2005-07-01
+ * author:      Mike Weiblen 2006-03-25
 */
 
 #include <fstream>
@@ -2131,12 +2131,12 @@ bool Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) cons
     return getPCP( contextID )->getInfoLog( log );
 }
 
-const Program::NameInfoMap& Program::getActiveUniforms(unsigned int contextID) const
+const Program::ActiveVarInfoMap& Program::getActiveUniforms(unsigned int contextID) const
 {
     return getPCP( contextID )->getActiveUniforms();
 }
 
-const Program::NameInfoMap& Program::getActiveAttribs(unsigned int contextID) const
+const Program::ActiveVarInfoMap& Program::getActiveAttribs(unsigned int contextID) const
 {
     return getPCP( contextID )->getActiveAttribs();
 }
@@ -2240,11 +2240,12 @@ void Program::PerContextProgram::linkProgram()
             
             if( loc != -1 )
             {
-                _uniformInfoMap[name] = std::pair<GLint,GLenum>(loc,type);
+                _uniformInfoMap[name] = ActiveVarInfo(loc,type,size);
 
                 osg::notify(osg::INFO)
                     << "\tUniform \"" << name << "\""
                     << " loc="<< loc
+                    << " size="<< size
                     << " type=" << Uniform::getTypename((Uniform::Type)type)
                     << std::endl;
             }
@@ -2271,11 +2272,12 @@ void Program::PerContextProgram::linkProgram()
             
             if( loc != -1 )
             {
-                _attribInfoMap[name] = std::pair<GLint,GLenum>(loc,type);
+                _attribInfoMap[name] = ActiveVarInfo(loc,type,size);
 
                 osg::notify(osg::INFO)
                     << "\tAttrib \"" << name << "\""
                     << " loc=" << loc
+                    << " size=" << size
                     << std::endl;
             }
         }

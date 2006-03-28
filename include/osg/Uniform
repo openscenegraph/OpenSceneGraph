@@ -164,7 +164,7 @@ class OSG_EXPORT Uniform : public Object
             SAMPLER_CUBE = GL_SAMPLER_CUBE,
             SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
             SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
-            UNDEFINED = -1
+            UNDEFINED = 0x0
         };
 
     public:

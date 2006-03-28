@@ -82,6 +82,25 @@ void PagedLOD::write(DataOutputStream* out)
     for(i=0;i<size;i++){
         out->writeString(getFileName(i));
     }
+
+    // PagedLOD priority settings
+    // 2006/03/10 GW
+    if ( out->getVersion() >= VERSION_0015 )
+    {
+        size = getNumPriorityOffsets();
+        out->writeInt( size );
+        for(int i=0; i<size; i++)
+        {
+            out->writeFloat( getPriorityOffset( i ) );
+        }
+
+        size = getNumPriorityScales();
+        out->writeInt( size );
+        for( int i=0; i<size; i++ )
+        {
+            out->writeFloat( getPriorityScale( i ) );
+        }
+    }
 }
 
 void PagedLOD::read(DataInputStream* in)
@@ -147,6 +166,29 @@ void PagedLOD::read(DataInputStream* in)
         size = in->readInt();
         for(i=0;i<size;i++){
             setFileName(i, in->readString());
+        }
+        
+
+        // PagedLOD priority settings
+        // 2006/03/10 GW
+        if ( in->getVersion() >= VERSION_0015 )
+        {
+            // priority offsets:
+            size = in->readInt();
+            for( int i=0; i<size; i++ )
+            {
+                float pri_offset = in->readFloat();
+                setPriorityOffset( i, pri_offset );
+            }
+
+            // priority scales:
+            size = in->readInt();
+            for( int i=0; i<size; i++ )
+            {
+                float pri_scale = in->readFloat();
+                setPriorityScale( i, pri_scale );
+            }
+
         }
     }
     else{

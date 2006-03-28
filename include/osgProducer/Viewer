@@ -188,8 +188,11 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         /** Set the filename to write to when the viewer takes an image snapshot on the last frame() when done is enabled.*/
         void setWriteImageFileName(const std::string& filename);
 
-        /** Set the filename to write to when the viewer takes an image snapshot on the last frame() when done is enabled.*/
+        /** Get the filename to write to when the viewer takes an image snapshot on the last frame() when done is enabled.*/
         const std::string& getWriteImageFileName() const;
+
+        /** Get the default filename for writing an image snapshot */
+        static const char* getDefaultImageFileName();
 
 
         /** Override the Producer::CameraGroup::setViewByMatrix to catch all changes to view.*/

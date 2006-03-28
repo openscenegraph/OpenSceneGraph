@@ -98,6 +98,13 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
 
 static osg::ApplicationUsageProxy OsgCameraGroup_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"PRODUCER_CAMERA_CONFIG_FILE <filename>","specify the default producer camera config to use when opening osgProducer based applications.");
 
+static osg::ApplicationUsageProxy OsgCameraGroup_e4(
+    osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+    "PRODUCER_CAMERA_BLOCK_ON_VSYNC", 
+    "After the CPU finishes generating the scene for one frame,"
+    " block the CPU until the start of the next frame. Same as pressing 'v'"
+    " within an osgProducer-based application.");
+
 
 OsgCameraGroup::OsgCameraGroup() : Producer::CameraGroup() 
 {

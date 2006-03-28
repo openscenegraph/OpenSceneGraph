@@ -140,7 +140,7 @@ Viewer::Viewer():
     _setDoneAtFrameNumber(0),
     _done(false),
     _writeImageWhenDone(false),
-    _writeImageFileName("saved_image.jpg"),
+    _writeImageFileName(getDefaultImageFileName()),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -159,7 +159,7 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
     _setDoneAtFrameNumber(0),
     _done(false),
     _writeImageWhenDone(false),
-    _writeImageFileName("saved_image.jpg"),
+    _writeImageFileName(getDefaultImageFileName()),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -179,7 +179,7 @@ Viewer::Viewer(const std::string& configFile):
     _setDoneAtFrameNumber(0),
     _done(false),
     _writeImageWhenDone(false),
-    _writeImageFileName("saved_image.jpg"),
+    _writeImageFileName(getDefaultImageFileName()),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -198,7 +198,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     _setDoneAtFrameNumber(0),
     _done(false),
     _writeImageWhenDone(false),
-    _writeImageFileName("saved_image.jpg"),
+    _writeImageFileName(getDefaultImageFileName()),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -295,6 +295,14 @@ void Viewer::setWriteImageFileName(const std::string& filename)
 const std::string& Viewer::getWriteImageFileName() const
 {
     return _writeImageFileName;
+}
+
+static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_IMAGE_FILE_NAME <filename>", "name of snapshot image file" );
+
+const char* Viewer::getDefaultImageFileName()
+{
+    const char* name = getenv( "OSG_IMAGE_FILE_NAME" );
+    return name ? name : "saved_image.jpg";
 }
 
 

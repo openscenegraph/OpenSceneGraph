@@ -14,6 +14,8 @@
 #include <osgProducer/Viewer>
 #include <osg/CoordinateSystemNode>
 
+#include <osgUtil/SceneView>
+
 int main( int argc, char **argv )
 {
 
@@ -101,6 +103,16 @@ int main( int argc, char **argv )
 
     // create the windows and run the threads.
     viewer.realize();
+
+    {
+        osgProducer::OsgSceneHandler *sh = viewer.getSceneHandlerList().front().get();
+        osgUtil::SceneView *sv = sh->getSceneView();
+        osg::CullStack::CullingMode cullingMode = sv->getCullingMode();
+        cullingMode &= ~(osg::CullStack::SMALL_FEATURE_CULLING);
+        sv->setCullingMode( cullingMode );
+
+
+    }
 
     while( !viewer.done() )
     {

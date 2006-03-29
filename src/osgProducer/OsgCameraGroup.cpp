@@ -22,6 +22,7 @@
 #include <osgDB/FileUtils>
 
 #include <osgProducer/OsgCameraGroup>
+#include <Producer/CameraConfig>
 
 #ifdef WIN32
 #define        WGL_SAMPLE_BUFFERS_ARB        0x2041
@@ -226,14 +227,14 @@ void OsgCameraGroup::_init()
     if (_cfg.valid())
     {
         // By default select ThreadPerCamera when we have multiple cameras.
-        _thread_model = (_cfg->getNumberOfCameras()>1) ? ThreadPerCamera : SingleThreaded;
+        _threadModel = (_cfg->getNumberOfCameras()>1) ? ThreadPerCamera : SingleThreaded;
     }
 
     const char* str = getenv("OSG_CAMERA_THREADING");
     if (str)
     {
-        if (strcmp(str,"SingleThreaded")==0) _thread_model = SingleThreaded;
-        else if (strcmp(str,"ThreadPerCamera")==0) _thread_model = ThreadPerCamera;
+        if (strcmp(str,"SingleThreaded")==0) _threadModel = SingleThreaded;
+        else if (strcmp(str,"ThreadPerCamera")==0) _threadModel = ThreadPerCamera;
     }
     
     str = getenv("OSG_SHARE_GRAPHICS_CONTEXTS");
@@ -243,7 +244,7 @@ void OsgCameraGroup::_init()
         else if (strcmp(str,"OFF")==0) Producer::RenderSurface::shareAllGLContexts(false);
     }
     
-    if (_thread_model==ThreadPerCamera && _cfg->getNumberOfCameras()>1)
+    if (_threadModel==ThreadPerCamera && _cfg->getNumberOfCameras()>1)
     {
         // switch on thread safe reference counting by default when running multi-threaded.
         // osg::Referenced::setThreadSafeReferenceCounting(true);
@@ -390,7 +391,7 @@ void OsgCameraGroup::advance()
 bool OsgCameraGroup::realize( ThreadingModel thread_model )
 {
     if( _realized ) return _realized;
-    _thread_model = thread_model;
+    _threadModel = thread_model;
     return realize();
 }
 
@@ -595,7 +596,7 @@ bool OsgCameraGroup::realize()
 
     // if we are multi-threaded check to see if particle exists in the scene
     // if so we need to disable multi-threading of cameras.
-    if (_thread_model == Producer::CameraGroup::ThreadPerCamera)
+    if (_threadModel == Producer::CameraGroup::ThreadPerCamera)
     {
         if (getTopMostSceneData())
         {
@@ -605,7 +606,7 @@ bool OsgCameraGroup::realize()
             {
                 osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
                 osg::notify(osg::INFO)<<"         to avoid threading problems in osgParticle."<<std::endl;
-                _thread_model = Producer::CameraGroup::SingleThreaded;
+                _threadModel = Producer::CameraGroup::SingleThreaded;
             }
         }
         
@@ -614,7 +615,7 @@ bool OsgCameraGroup::realize()
     // if we are still multi-thread check to make sure that no render surfaces
     // are shared and don't use shared contexts, if they do we need to 
     // disable multi-threading of cameras.
-    if (_thread_model == Producer::CameraGroup::ThreadPerCamera)
+    if (_threadModel == Producer::CameraGroup::ThreadPerCamera)
     {
         std::set<RenderSurface*> renderSurfaceSet;
         for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
@@ -628,7 +629,7 @@ bool OsgCameraGroup::realize()
             // running single threaded, to avoid OpenGL threading issues.
             osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw to avoid"<<std::endl;
             osg::notify(osg::INFO)<<"         threading problems when camera's share a RenderSurface."<<std::endl;
-            _thread_model = Producer::CameraGroup::SingleThreaded;
+            _threadModel = Producer::CameraGroup::SingleThreaded;
         }
         else if (renderSurfaceSet.size()>1 && RenderSurface::allGLContextsAreShared())
         {
@@ -636,18 +637,18 @@ bool OsgCameraGroup::realize()
             // so need to disable multi-threading to prevent problems.
             osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw to avoid"<<std::endl;
             osg::notify(osg::INFO)<<"         threading problems when sharing graphics contexts within RenderSurface."<<std::endl;
-            _thread_model = Producer::CameraGroup::SingleThreaded;
+            _threadModel = Producer::CameraGroup::SingleThreaded;
         }
 
     }
     
-    if (_thread_model==Producer::CameraGroup::SingleThreaded)
+    if (_threadModel==Producer::CameraGroup::SingleThreaded)
     {
-        osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _thread_model==Producer::CameraGroup::SingleThreaded"<<std::endl;
+        osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _threadModel==Producer::CameraGroup::SingleThreaded"<<std::endl;
     }
     else
     {
-        osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _thread_model==Producer::CameraGroup::ThreadPerCamera"<<std::endl;
+        osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _threadModel==Producer::CameraGroup::ThreadPerCamera"<<std::endl;
     }
 
     _initialized = CameraGroup::realize();

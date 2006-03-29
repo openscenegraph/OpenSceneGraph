@@ -16,6 +16,7 @@
 #include <osgGA/UFOManipulator>
 #include <osgGA/StateSetManipulator>
 
+#include <Producer/CameraConfig>
 #include <osgProducer/Viewer>
 #include <osgProducer/ViewerEventHandler>
 
@@ -498,7 +499,7 @@ void Viewer::setViewByMatrix( const Producer::Matrix & pm)
 bool Viewer::realize( ThreadingModel thread_model )
 {
     if( _realized ) return _realized;
-    _thread_model = thread_model;
+    _threadModel = thread_model;
     return realize();
 }
 

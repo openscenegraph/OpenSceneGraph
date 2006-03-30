@@ -19,6 +19,7 @@
 
 #include <osgUtil/SmoothingVisitor>
 
+#include <Producer/CameraConfig>
 
 class PBufferTexture2D : public osg::Texture2D
 {

@@ -13,6 +13,8 @@
 #include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
 
+#include <Producer/CameraConfig>
+
 static Producer::CameraConfig *BuildConfig(void)
 {
 #define TWO_SEPERATE_WINDOWS

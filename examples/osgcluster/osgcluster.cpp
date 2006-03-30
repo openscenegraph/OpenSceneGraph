@@ -510,7 +510,7 @@ int main( int argc, char **argv )
             {
                 
                 // take camera zero as the guide.
-                osg::Matrix modelview(viewer.getCameraConfig()->getCamera(0)->getViewMatrix());
+                osg::Matrix modelview(viewer.getCamera(0)->getViewMatrix());
                 
                 cp->setPacket(modelview,viewer.getFrameStamp());
                 

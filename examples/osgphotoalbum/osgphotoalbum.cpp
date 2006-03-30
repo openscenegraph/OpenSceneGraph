@@ -744,9 +744,9 @@ int main( int argc, char **argv )
     // distracting the people seeing the stereo images.
     float fovx = 1.25f;
     float fovy = 1.0f;
-    for( unsigned int i = 0; i < viewer.getCameraConfig()->getNumberOfCameras(); i++ )
+    for( unsigned int i = 0; i < viewer.getNumberOfCameras(); i++ )
     {
-        Producer::Camera* cam = viewer.getCameraConfig()->getCamera(i);
+        Producer::Camera* cam = viewer.getCamera(i);
         //Producer::RenderSurface* rs = cam->getRenderSurface();
         //rs->useCursor(false);
         fovx = cam->getLensHorizontalFov();

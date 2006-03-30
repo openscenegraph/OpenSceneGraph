@@ -1425,9 +1425,9 @@ int main( int argc, char **argv )
     // now the windows have been realized we switch off the cursor to prevent it
     // distracting the people seeing the stereo images.
     float fovy = 1.0f;
-    for( unsigned int i = 0; i < viewer.getCameraConfig()->getNumberOfCameras(); i++ )
+    for( unsigned int i = 0; i < viewer.getNumberOfCameras(); i++ )
     {
-        Producer::Camera* cam = viewer.getCameraConfig()->getCamera(i);
+        Producer::Camera* cam = viewer.getCamera(i);
         Producer::RenderSurface* rs = cam->getRenderSurface();
         rs->useCursor(false);
         fovy = osg::DegreesToRadians(cam->getLensVerticalFov());

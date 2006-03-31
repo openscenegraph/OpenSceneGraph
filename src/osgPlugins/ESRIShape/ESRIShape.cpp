@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW32__)
     #include <io.h>
 #endif 
 
@@ -1213,4 +1213,5 @@ bool MultiPatch::read( int fd )
 
     return true;
 }
+
 

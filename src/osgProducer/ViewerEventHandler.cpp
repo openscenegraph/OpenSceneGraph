@@ -35,7 +35,7 @@ public:
             
             _doBlock = block;
             
-            // osg::notify(osg::NOTICE)<<"setDoBlock("<<block<<")"<<std::endl;
+            osg::notify(osg::NOTICE)<<"setDoBlock("<<block<<")"<<std::endl;
         }
     }
     
@@ -51,7 +51,7 @@ public:
         
         if (doBlock)
         {
-            //osg::notify(osg::NOTICE)<<"Entering block()"<<std::endl;
+            osg::notify(osg::NOTICE)<<"Entering block()"<<std::endl;
             block();
         }
     };
@@ -896,6 +896,7 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     Producer::CameraConfig* cfg = _cg->getCameraConfig();
 
     _cameraBarrierCallback = 0;
+#if 0    
     if (cfg->getNumberOfCameras()>1) 
     {
         // use a barrier to make that stats only runs once all the threads have done their drawing.
@@ -905,6 +906,7 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
             cfg->getCamera(i)->addPostDrawCallback(_cameraBarrierCallback);
         }
     }
+#endif
         
     Producer::Camera *cam = cfg->getCamera(0);
     

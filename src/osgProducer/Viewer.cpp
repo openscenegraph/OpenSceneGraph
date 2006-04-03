@@ -589,8 +589,8 @@ void Viewer::update()
     getEventQueue()->frame(_frameStamp->getReferenceTime());
 
     // get the event since the last frame.
-    osgProducer::KeyboardMouseCallback::EventQueue queue;
-    if (_kbmcb.valid()) _kbmcb->takeEventQueue(queue);
+    osgGA::EventQueue::Events events;
+    getEventQueue()->takeEvents(events);
 
     if (_eventVisitor.valid())
     {
@@ -598,8 +598,8 @@ void Viewer::update()
     }
 
     // dispatch the events in order of arrival.
-    for(osgProducer::KeyboardMouseCallback::EventQueue::iterator event_itr=queue.begin();
-        event_itr!=queue.end();
+    for(osgGA::EventQueue::Events::iterator event_itr=events.begin();
+        event_itr!=events.end();
         ++event_itr)
     {
         bool handled = false;

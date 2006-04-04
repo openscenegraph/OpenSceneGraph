@@ -1,0 +1,13 @@
+{
+	FilesToRename = {
+		"osgApp_Prefix.pch" = "ÇPROJECTNAMEÈ_Prefix.pch";
+	};
+	FilesToMacroExpand = (
+		"ÇPROJECTNAMEÈ_Prefix.pch",
+		"main.c",
+		"Info.plist",
+		"English.lproj/InfoPlist.strings",
+		"English.lproj/main.nib/objects.xib",
+	);
+	Description = "This project builds a OSG application.";
+}

@@ -1,0 +1,268 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf230
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fmodern\fcharset77 Courier;
+\f3\fnil\fcharset77 Monaco;}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\vieww11120\viewh12880\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 OpenSceneGraph on OS X
+\f1\b0 \
+\
+This is the readme for the entire OpenThreads/Producer/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.0 release.\
+\
+The source code is available at {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/"}}{\fldrslt http://www.openscenegraph.org/}}\
+Our patches are included in this package.\
+\
+Also included is a framework for GDAL. You can get the source code and the full GDAL package at {\field{\*\fldinst{HYPERLINK "http://www.gdal.org/"}}{\fldrslt http://www.gdal.org/}}\
+\
+\
+
+\f0\b What's New in this release:
+\f1\b0 \
+\pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
+\ls1\ilvl0\cf0 {\listtext	\'a5	}OSG 1.0 synchronization\
+{\listtext	\'a5	}Built with gcc 4.0.1 with support for Tiger and Panther\
+{\listtext	\'a5	}Xcode 2.1/2.2 and 1.5/2.0 projects\
+{\listtext	\'a5	}More aggressive compiler options\
+{\listtext	\'a5	}Xcode "New Project" templates\
+{\listtext	\'a5	}GDAL support (optional)\
+{\listtext	\'a5	}Updated prebinding addresses\
+{\listtext	\'a5	}Groundwork for future Universal Binaries\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\
+
+\f0\b Notes for this release:
+\f1\b0 \
+\
+These projects were primarily developed with gcc 4.0.1 under Tiger 10.4.3 using Xcode 2.2. Starting with gcc 4.0, Apple no longer statically links in the C++ runtime. Apple has made available the g++ 4.0 dynamic runtime for Panther under the 10.3.9 release. To run under Panther, your system must have this update (or you must recompile the binaries for your system).\
+\
+With gcc 4.0, serious bugs have been fixed from gcc 3.3 and new features are available to us so we have experimented with more aggressive optimizations. For these binaries we have enabled -O3 optimization and -mtune=G5. We have also enabled autovectorization. We also enabled -fvisibility-inlines-hidden which is expected to shrink the binary sizes, but noticed very little difference. (There may be something wrong.) We have not done the proper benchmarking with these options, so feedback is welcome.\
+\
+Because of the changes to OSG from the last version and our different optimization options, we needed to redo the prebinding addresses. (See below) The new addresses will hopefully have enough wiggle room so future OSG releases might still be able to use the same addresses if you use compile options that make smaller binaries. \
+\
+With Apple's announcement of the Intel transition, Xcode 2.1 was released to help developers prepare for the migration. Unfortunately, Xcode 2.1 projects are incompatible with previous Xcode versions. So we have included both Xcode 2.0 (should work with 1.5) and Xcode 2.1/2.2 project files. This will likely be our last release of Xcode 2.0 projects as we move forward. It is also likely our next release will be built as a Universal Binary (this version is not). Prebinding will be dropped in future when this happens (because Tiger doesn't really need prebinding any more and Xcode ignores the option when compiling as Universal).\
+\
+\
+\
+
+\f0\b Acknowledgments:
+\f1\b0 \
+\
+Many thanks should be given to the people that have helped make these projects possible and for their contributions to make OSG run well on OS X through the multiyear run-up to 1.0. I unfortunately don't have a comprehensive list as many contributions have been submitted directly to OpenSceneGraph, but I wanted to give mention to these specific people I've had the pleasure of working with in trying to make this corner of the universe work.\
+\
+James Hopper (work on native Aqua Producer, Xcode templates, GDAL frameworks)\
+David Guthrie (various patches, testing, Xcode project compiler options refinement)\
+Jeremy Bell (original comprehensive discussion on OS X frameworks, patches)\
+Stephen Travis Pope (provider of the OSG on OS X website)\
+Markus St\'9abe (web site design, documentation reviewer and formatter)\
+(And for the curious) Eric Wing (Xcode projects and frameworks, patches, documentation)\
+\
+\
+\
+
+\f0\b Installation:
+\f1\b0 \
+\
+To "Install" the Frameworks, copy the Frameworks inside the \
+frameworks folder to a standard location.\
+\
+~/Library/Frameworks  (for a single user)\
+/Library/Frameworks   (for system wide installation)\
+/Network/Library/Frameworks  (for those who understand when this should be used)\
+Or you may place them inside your application bundle e.g.\
+YourApp.app/Contents/Frameworks  (best for distributing your app)\
+\
+Simply drag and drop the frameworks to the desired location.\
+\
+To "Install" the osgPlugins, copy the Plugins to one of the following\
+locations.\
+\
+~/Library/Application Support/OpenSceneGraph/PlugIns\
+/Library/Application Support/OpenSceneGraph/PlugIns\
+/Network/Library/Application Support/OpenSceneGraph/PlugIns\
+YourApp.app/Contents/PlugIns  (best for distributing your app)\
+\
+Note that the search order is:\
+1) Application Bundle\
+2) ~/Library\
+3) /Library\
+4) /Network/Library\
+\
+\
+That's it! Just remember to link using -framework instead of -l, e.g. \
+-framework osg -framework osgUtil -framework OpenThreads\
+instead of \
+-losg -losgUtil -lOpenThreads\
+\
+Also be aware that if using the 10.4 Universal SDK, you may have to explicitly set the Framework search paths (its an option/field in the build settings for your Target) due to the way Apple modifies the standard search paths when using an SDK. (Please see the Universal Binaries section.)\
+\
+\
+
+\f0\b Running the examples:
+\f1\b0 \
+\
+Now that Producer supports a native Window manager, we have attempted to provide double clickable .app bundles. We cheat a little to keep the download size smaller by symbolically linking the Frameworks, PlugIns, and Resources directories for each .app bundle instead of giving each its own copy. This allows the apps to find their resources when trying to run directly from the .dmg without having to copy anything to your computer. \
+\
+If you copy these examples out of .dmg, be aware that these symbolic links may or may not be able to find all the dependencies depending on factors such as retaining the directory structure of the .dmg, copying everything over, or what you installed to system locations.\
+\
+If you want to build stand-alone, completely self-contained OSG apps that require no user installation, follow the standard Apple guidelines for Application Bundles. It might look something like this:\
+\
+YourProgram.app/\
+    Contents/\
+        Frameworks/     (all the frameworks you depend on go in here)\
+            osg.framework\
+            osgDB.framework\
+            Producer.framework\
+            ...\
+        PlugIns/  (the plugins you need go in here)\
+            osgdb_freetype.so\
+            ...\
+        Resources/ (the data files you need go in here)\
+            logo.jpg\
+            arial.ttf\
+            model.md2\
+            ...\
+\
+Some of these examples will run if you double click them, but others will not because they were written expecting command line arguments. To run these you must run from the command line. However, you may now use Terminal.app instead of X11.app if you choose. You would run like:\
+\
+./osgreflect.app/Contents/MacOS/osgreflect <arguments here>\
+\
+Also remember that OSG will still respond to standard OSG environmental variables.\
+\
+\
+
+\f0\b Prebinding Addresses:\
+
+\f1\b0 \
+	We've adjusted the prebinding addresses (again). (Please see the Xcode Projects section for more information.)\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f2 \cf0 OpenThreads       -seg1addr 0x1FF00000\
+osg               -seg1addr 0x1FF10000\
+osgUtil           -seg1addr 0x20230000\
+osgDB             -seg1addr 0x20380000\
+osgText           -seg1addr 0x2040a000\
+osgParticle       -seg1addr 0x20443000\
+osgGA             -seg1addr 0x2049a000\
+osgIntrospection  -seg1addr 0x204fd000\
+osgSim            -seg1addr 0x205f4000\
+osgFX             -seg1addr 0x20690000\
+Producer          -seg1addr 0x20700000\
+osgProducer       -seg1addr 0x20760000\
+gdal              -seg1addr 0x207d0000\
+osgTerrain        -seg1addr 0x20c40000
+\f1 \
+\
+If you are aware of any conflicts with other popular libraries that may frequently be used with OSG, please let me know. Keep in mind that prebinding is going away and once Intel based Macs start shipping, we will abandon maintenance on these.\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b \cf0 Xcode Projects:
+\f1\b0 \
+\
+The Xcode Projects are now included as part of the official OpenSceneGraph distribution.\
+\
+Xcode 2.1+ projects have the extension .xcodeproj.\
+Xcode 2.0 and below have the extension .xcode\
+\
+Remember that we have more aggressive compile options set in the 2.1 projects than the 1.5/2.0 projects (due to gcc bugs we found). The prebinding addresses may not work 1.5 or 2.0 depending on your settings and may require adjustment. In OSG 0.9.9, we had selected prebinding addresses that seemed to work, but in 1.0, testing under Xcode 2.0, the binaries suddenly became much more bloated, even though it used -Os instead of -O3 which is what is used in the 2.1+ projects. Xcode 1.5 with gcc 3.3 might produce entirely different results so this issue was left unresolved with the hope that things may just work under Xcode 1.5/gcc 3.3.\
+\
+\
+
+\f0\b Xcode Templates:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f1\b0 \cf0 \
+We have included a "New Project" template for OpenSceneGraph projects. We recommend you place the "OSG Application" folder into either:\
+\
+/Library/Application Support/Apple/Developer Tools/Project Templates/Appllcation (for system-wide)
+\f0\b \
+
+\f1\b0 ~/Library/Application Support/Apple/Developer Tools/Project Templates/Appllcation (for per-user)
+\f0\b \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f1\b0 \cf0 \
+After doing this, when doing a File->New Project, you will see "OSG Application" under the Application category. Selecting this will create a simple OSG project with some sample source code already in place which currently renders 2 colored tetrahedrons.\
+\
+All the OSG related frameworks are listed already, though gdal and osgTerrain are not checked by default. To link against them, you must check their checkboxes to enable them. Feel free to uncheck or remove frameworks you don't need.\
+\
+The OSGTemplate target defines __USE_OSX_AGL_IMPLEMENTATION__  as a Preprocessor macro already for you.\
+\
+A prefix header file has been included which lists all the OSG headers. This will take some additional time to compile your first time. If you don't need all the headers, you may remove them as you see fit.\
+\
+You are encouraged to setup a "Copy Files Build Phase" for your project to automatically bundle the OSG frameworks and PlugIns. (And of course, use the "Bundle Resources" to include your Resources. We did not set this up automatically for you because if you use the development frameworks, they can be several hundred megabytes.\
+\
+To learn more about Framework bundling, a good demonstration video and sample project exists here:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://rentzsch.com/cocoa/embeddedFrameworks"}}{\fldrslt \cf0 http://rentzsch.com/cocoa/embeddedFrameworks}}\
+\
+\
+Finally, there may still be issues with Zerolink. If you have problems seeing the sample code render an image, try rerunning the program or try disabling zerolink.\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b \cf0 Compatibility:
+\f1\b0 \
+\
+The binaries are built using gcc 4.0.1 under Tiger 10.4.3. These binaries also will run under Panther 10.3.9 (which has the needed C++ runtime library). \
+\
+Remember that the C++ ABI breaks with every new version of gcc. This generally means you shouldn't mix and match C++ code built under different versions of gcc unless you know what you're doing. The promise of gcc 4.0 is that the ABI will finally be stable and this problem will go away in the future. It is highly recommended that you use gcc 4.0 if possible. (There are also many additional reasons to use gcc 4.0 separate from this issue.) If you are running under Panther and must write new code that links to OpenSceneGraph, you might have problems (unverified) since Panther's default compiler is gcc 3.3 and not 4.0. It is highly recommended that you do your development work and building in Tiger under gcc 4.0 and then simply test and reuse the same binaries from Tiger which will avoid the ABI issues with gcc 3.3. If this is not possible for you to do, or must support older gcc versions, you will need to recompile all the osg frameworks with your targeted gcc version.\
+\
+Also keep in mind that the prebinding addresses are finicky. Changing the compiler version or the build options can change the binary sizes enough to invalidate our addresses. It is recommended you compile with Xcode 2.1+ and gcc 4.0. If you need to work on other versions, you may need to redo the addresses yourself. Remember that versions prior to gcc 3.3 statically link in the C++ runtime which increases the sizes of the binaries.\
+\
+If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, I do not expect you to have any problems, but there have been reports of problems I have been unable to reproduce. If you do encounter these problems, please try the following. \
+\pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
+\ls2\ilvl0\cf0 {\listtext	\'a5	}I have more rigorously tested the Deployment build style than the Development build style so use the Deployment build style. Make sure you are compiling using -Os or -O0 optimization. -O3 is known to have problems under gcc 3.3. \
+{\listtext	\'a5	}The -mtune=G4 is has been tested more under Xcode 1.5 than -mtune=G5. \
+{\listtext	\'a5	}I noticed that for some reason, Xcode has problems compiling the Carbon header with the OpenThreads framework when autovectorization and precompiled headers were enabled. You might try disabling precompiled headers if it is not already. If the problem persists, you may also need to delete the entry that enables autovectorization. In the Groups and Files panel (left side panel), open the Info inspector for the project (top item) and click on the Build tab. Scroll down to the bottom, and remove the autovectorization option. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+
+\f0\b Universal Binaries:
+\f1\b0 \
+\
+For the curious, these binaries were built for the PowerPC platform and are not compiled as Universal Binaries. However, I have successfully compiled and run natively on the Intel machines at WWDC and things generally work. \
+\
+There is a bug in Xcode 2.1 related to search paths for 3rd party frameworks though which causes the compiler to not see any of the headers, even if you explicitly list the search path. So until the next release of Xcode, please be careful about enabling the "10.4 Universal" SDK target if you are developing with OSG. If the osg headers are not being found, this is probably the reason. This problem might be improved in Xcode 2.2, but you still may be required to explicitly list the Framework search path as Apple seems to have changed the behavior of what's automatically searched.\
+\
+We are holding off on shipping Universal Binaries as Apple has already once broken the Intel ABI. They reserve the right to do so in the future until the first Intel Macs start shipping so there is no strong incentive for us to deploy Intel binaries now. The dynamic linking of the C++ runtime has let us shave off about 10MB from the package size. The Universal Binaries will probably cause us to lose all the space savings. So enjoy the small package size while it lasts :)\
+\
+\
+
+\f0\b Known Issues:
+\f1\b0 \
+\
+There is one known serious bug that appears sometimes. With Xcode 2.0 and 2.1, in some cases when you build OpenThreads/Producer/OSG from scratch, when you run the examples, they will crash on load. The workaround seems to be to delete just the OpenThreads framework after everything is built. Then rebuild just the OpenThreads framework. Bug reports have been filed with Apple, but the root cause remains to be a mystery. (We have some guesses, but nothing substantial.) I have not yet seen this issue emerge with Xcode 2.2, so maybe the problem is fixed.\
+\
+The native Aqua back-end (AGL based) for Producer continues to improve, but it is not as rigorously tested as the X11 back-end. With the included examples, AGL Producer seems to work well enough. There has been one report of crashing with a dual screen setup using a Radeon 9800 in the release candidate phase which may or may not be fixed by the final OSG release. But if you are experiencing problems and you think the AGL implementation might be suspect, you should try swapping in the X11 back-end for comparison. However, for releasable products, you are strongly discouraged from basing your application around the X11 back-end as there are known limitations and critical bugs in Apple's X11 implementation itself which could potentially derail your entire project. Apple's X11 is only intended to help initial porting to OS X and is not intended as a final destination.\
+\
+The osgdb_geo plugin is not big endian safe. The Makefile system does not build it for OS X. We have added it for the Xcode projects, but you probably shouldn't use it unless you're on Intel.\
+\
+Do not use the 
+\f3\fs22 -fvisibility=hidden 
+\f1\fs24 flag unless you know what you're doing. In some cases, Xcode 2.2 seems to enable this by default in the project settings. You should verify your project settings and make sure this is disabled. Among other things, this flag will hide RTTI information causing dynamic_cast<> operations to fail. Since parts of OSG are dependent on RTTI, this option should remain off. The flag 
+\f3\fs22 -fvisibility-inlines-hidden 
+\f1\fs24 may be safe to use. (This is actually enabled in our Xcode projects. If there are problems, please let us know.)\
+\
+Finally, there may still be issues with Zerolink. In the Project Template, we defer to the default for this option and in current Xcode versions, the default is on. The OSG Xcode projects themselves have explicitly disabled Zerolink. In the worst cases, scenes will not render correctly or the application may crash. The worst thing about this is that the problems are so strange, you may not realize Zerolink is the problem. To see this for yourself (we tried in Xcode 2.2), you might try comparing the osgdelaunay example with and without Zerolink, toggling through all values of 'n'. With Zerolink certain objects do not even appear and it crashes. So you are probably should disable this to be safe. However, for the daring, Zerolink does seem to work for some projects though we do not fully understand the criteria for this. Furthermore, Apple constantly works on improving this feature so maybe one day it will all just work right.\
+\
+
+\f0\b Misc:
+\f1\b0 \
+\
+Included with the OSG Xcode projects are some of the little scripts I used to help put everything together. The build script might be of interest to those who wish to produce their own automated nightly builds.\
+\
+\
+-Eric Wing\
+ewing 2121  - at -  yahoo (in the commercial domain)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://www.create.ucsb.edu/OSG/"}}{\fldrslt \cf0 http://www.create.ucsb.edu/OSG/}}\
+}

@@ -27,7 +27,7 @@
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList);
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  std::pair< GLint COMMA  GLenum > >, osg::Program::NameInfoMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap);
 
 BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_BaseType(osg::StateAttribute);
@@ -54,12 +54,17 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_Method0(const osg::Program::AttribBindingList &, getAttribBindingList);
 	I_Method0(bool, isFixedFunction);
 	I_Method2(bool, getGlProgramInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
-	I_Method1(const osg::Program::NameInfoMap &, getActiveUniforms, IN, unsigned int, contextID);
-	I_Method1(const osg::Program::NameInfoMap &, getActiveAttribs, IN, unsigned int, contextID);
+	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveUniforms, IN, unsigned int, contextID);
+	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveAttribs, IN, unsigned int, contextID);
 	I_Method1(osg::Program::PerContextProgram *, getPCP, IN, unsigned int, contextID);
 	I_ReadOnlyProperty(const osg::Program::AttribBindingList &, AttribBindingList);
 	I_ArrayProperty_GA(osg::Shader *, Shader, Shaders, unsigned int, bool);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
+	I_Constructor0();
+	I_Constructor3(IN, GLint, loc, IN, GLenum, type, IN, GLint, size);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
@@ -75,18 +80,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	I_Method0(void, useProgram);
 	I_Method0(void, resetAppliedUniforms);
 	I_Method1(void, apply, IN, const osg::Uniform &, uniform);
-	I_Method0(const osg::Program::NameInfoMap &, getActiveUniforms);
-	I_Method0(const osg::Program::NameInfoMap &, getActiveAttribs);
+	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveUniforms);
+	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveAttribs);
 	I_Method1(GLint, getUniformLocation, IN, const std::string &, name);
 	I_Method1(GLint, getAttribLocation, IN, const std::string &, name);
-	I_ReadOnlyProperty(const osg::Program::NameInfoMap &, ActiveAttribs);
-	I_ReadOnlyProperty(const osg::Program::NameInfoMap &, ActiveUniforms);
+	I_ReadOnlyProperty(const osg::Program::ActiveVarInfoMap &, ActiveAttribs);
+	I_ReadOnlyProperty(const osg::Program::ActiveVarInfoMap &, ActiveUniforms);
 	I_ReadOnlyProperty(GLuint, Handle);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >);
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  std::pair< GLint COMMA  GLenum > >);
-
-STD_PAIR_REFLECTOR(std::pair< GLint COMMA  GLenum >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::Program::ActiveVarInfo >);
 

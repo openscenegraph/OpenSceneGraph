@@ -1,0 +1,125 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf230
+{\fonttbl\f0\fnil\fcharset77 LucidaGrande-Bold;\f1\fswiss\fcharset77 ArialMT;\f2\fmodern\fcharset77 Courier;
+\f3\fnil\fcharset77 LucidaGrande;\f4\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww11980\viewh13540\viewkind0
+\deftab720
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs36 \cf0 Instruction on how to build, install and use OSG on Mac OS X\
+\pard\pardeftab720\sa200\ql\qnatural
+
+\fs28 \cf0 Requirements\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 You must have Apple's Development tools installed. You also need the the X11 development package installed. (It comes with Apple's Development Tools but depending on version you may need to explicitly mark a check box to install them.) 3rd party package systems like Fink or DarwinPorts are not required.\
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs28 \cf0 Instructions\
+\pard\pardeftab720\sa200\ql\qnatural
+
+\fs20 \cf0 Step 1 - Uninstall old Versions\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 If you have an old version of OSG previously, installed, you should probably remove it first. (This is true of all platforms and build systems, not just Xcode and OS X.)\
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs20 \cf0 Step 2 - Find the Xcode projects\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 The Xcode projects are now part of the official OSG distribution so everything should be already laid out for you. Xcode 2.1+ projects have the .xcodeproj extension. Prior Xcode projects have the .xcode extension.\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f2\fs21\fsmilli10563 \cf0 SomeDirectory/
+\f3 \uc0\u8232 \'ca\'ca
+\f2 OpenThreads/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca
+\f2 Xcode/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca
+\f2 OpenThreads/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
+\f2 OpenThreads.xcodeproj
+\f3 \uc0\u8232 \'ca\'ca
+\f2 Producer/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca
+\f2  Xcode/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca
+\f2  Producer/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
+\f2  Producer.xcodeproj
+\f3 \uc0\u8232 \'ca\'ca
+\f2 OpenSceneGraph/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca
+\f2  Xcode/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca
+\f2  OpenSceneGraph/
+\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
+\f2  OpenSceneGraph.xcodeproj
+\f1\fs26 \
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs20 \cf0 Step 3 - Build it\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 Now use Xcode to build each of the projects. You should build OpenThreads first, Producer second, and OpenSceneGraph last. If you are using the Xcode 2.1+ projects, there is a cross-project dependency rule already setup for you in the OpenSceneGraph.xcodeproj called "AllStandardTargets" target. If you use this target, you can skip going to the other two projects and just go directly to OpenSceneGraph and it will build OpenThreads and Producer for you automatically.\
+You may want to set the build style to Deployment depending on what you are doing. The OpenSceneGraph project gives you multiple targets to select from so you may build everything, or just pieces you want.\
+The binaries will be written to the Xcode build subdirectory (following standard Xcode behavior).\
+To "Install" the Frameworks, you may move the Frameworks to a standard location.\uc0\u8232 ~/Library/Frameworks (for a single user)\u8232 /Library/Frameworks (for system wide installation)\u8232 /Network/Library/Frameworks (for those who understand when this should be used)\u8232 Or you may place them inside your application bundle e.g.\u8232 YourApp.app/Contents/Frameworks\u8232 Simply drag and drop the frameworks to the desired location.\u8232 \u8232 Similarly, to "Install" the Plugins, move the .so files to\u8232 ~/Library/Application Support/OpenSceneGraph/PlugIns\u8232 /Library/Application Support/OpenSceneGraph/PlugIns\u8232 /Network/Library/Application Support/OpenSceneGraph/PlugIns\u8232 Or you may place the ones you need inside your application bundle e.g.\u8232 YourApp.app/Contents/PlugIns\
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs20 \cf0 Step 4 - There's no Step 4\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 That's it! Just remember to link using -framework instead of -l, e.g. \uc0\u8232 
+\f2\fs21\fsmilli10563 -framework osg -framework osgUtil -framework OpenThreads
+\f3 \uc0\u8232 
+\f1\fs26 instead of \uc0\u8232 
+\f2\fs21\fsmilli10563 -losg -losgUtil -lOpenThreads\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ql\qnatural\pardirnatural
+
+\f4\fs24 \cf0 Also be aware that if using the 10.4 Universal SDK, you may have to explicitly set the Framework search paths (its an option/field in the build settings for your Target) due to the way Apple modifies the standard search paths when using an SDK.\
+
+\f1\fs26 \
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs28 \cf0 Issues\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 There is a serious bug that appears sometimes when you build OpenThreads/Producer/OSG from scratch. When you run the examples, they will crash on load. If you encounter this problem, the workaround seems to be to delete just the OpenThreads framework after everything is built. Then rebuild just the OpenThreads framework. Bug reports have been filed with Apple, but the root cause remains to be a mystery. (We have some guesses, but nothing substantial.) So far the problem has not materialized yet for Xcode 2.2, so the problem may finally be resolved.\
+Currently frameworks, plugins, and executables that have non-standard dependencies such as osgTerrain are not built. There is a target called GDALdependentStuff which will build all the GDAL dependent stuff. You must have the GDAL framework installed for this to work. This target is not built by default so you must select it manually. \
+The new native Aqua backend for Producer has improved dramatically from the previous release, but it is still a work in progress. For example, cmd/option clicking may lead to strange behavior and/or a crash. (This only affects you when you use the actual keys. A mutli-button mouse doesn't seem to have this problem.) If you have feedback or can contribute to its development, Don Burns (author of Producer/co-author of OSG) would like to hear from you.\
+By OS X conventions, resources (data files like images, models, fonts, etc) should be placed in your application bundles Contents/Resources directory. This behavior is not in the osg sources so we have patched the source to do so. You must apply our patch until osg accepts and includes this modification in the official source.\
+Many examples require command line parameters. This makes double clicking useless. For those examples, you must run them on the command line. You may use Terminal instead of X11 if you wish.\uc0\u8232 Example:\u8232 
+\f2\fs21\fsmilli10563 ./osgreflect.app/Contents/MacOS/osgreflect cessna.osg
+\f1\fs26 \
+\pard\pardeftab720\sa200\ql\qnatural
+
+\f0\b\fs28 \cf0 Prebinding Addresses\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\b0\fs26 \cf0 We've had to redo the prebinding addresses (again). Please see the OSX_OSG_README.rtf file for more details.\
+Looking ahead to the future with the Intel migration, this is likely to be our last release we do with prebinding enabled.\
+\pard\pardeftab720\ql\qnatural
+\cf0 The projects are set to use these values:\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ql\qnatural\pardirnatural
+
+\f2\fs24 \cf0 OpenThreads       -seg1addr 0x1FF00000\
+osg               -seg1addr 0x1FF10000\
+osgUtil           -seg1addr 0x20230000\
+osgDB             -seg1addr 0x20380000\
+osgText           -seg1addr 0x2040a000\
+osgParticle       -seg1addr 0x20443000\
+osgGA             -seg1addr 0x2049a000\
+osgIntrospection  -seg1addr 0x204fd000\
+osgSim            -seg1addr 0x205f4000\
+osgFX             -seg1addr 0x20690000\
+Producer          -seg1addr 0x20700000\
+osgProducer       -seg1addr 0x20760000\
+gdal              -seg1addr 0x207d0000\
+osgTerrain        -seg1addr 0x20c40000\
+\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f1\fs26 \cf0 These values work under Xcode 2.2 with autovectorization and -O3 so in theory, there should be some leeway if you use smaller build options. However, we encountered some strangeness under Xcode 2.0/gcc 4.0 where the binaries were even larger, but using -Os. This did not happen under the OSG 0.9.9 release. But we're hopeful that under Xcode 1.5/gcc 3.3, these addresses will just work.\
+}

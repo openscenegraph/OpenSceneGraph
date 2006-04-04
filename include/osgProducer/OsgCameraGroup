@@ -15,6 +15,7 @@
 #define OSGPRODUCER_OSGCAMERAGROUP_H 1
 
 
+#include <Producer/CameraConfig>
 #include <Producer/CameraGroup>
 
 #include <osg/Timer>
@@ -65,7 +66,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         const GraphicsContextList& getGraphicsContextList() const { return _gcList;}
 
 
-        typedef std::vector < osg::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
+        typedef std::vector < Producer::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
 
         SceneHandlerList& getSceneHandlerList() { return _shvec;}
 

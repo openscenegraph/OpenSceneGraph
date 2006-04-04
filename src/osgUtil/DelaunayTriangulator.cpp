@@ -670,6 +670,8 @@ void DelaunayTriangulator::_uniqueifyPoints()
 
     osg::Vec3Array::iterator p = points_->begin();
     osg::Vec3 v = *p;
+    // Always push back the first point
+    temppts->push_back( (v = *p));
     for( ; p != points_->end(); p++ )
     {
         if( v[0] == (*p)[0] && v[1] == (*p)[1] )

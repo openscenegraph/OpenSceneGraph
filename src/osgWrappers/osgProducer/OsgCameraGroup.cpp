@@ -32,11 +32,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(Producer::CameraGroup::ThreadingModel, osgProducer::OsgCameraGroup::ThreadingModel);
+TYPE_NAME_ALIAS(Producer::CameraGroup::ThreadModel, osgProducer::OsgCameraGroup::ThreadingModel);
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplementation > >, osgProducer::OsgCameraGroup::GraphicsContextList);
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
+TYPE_NAME_ALIAS(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
 
 BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_Constructor0();
@@ -125,19 +125,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::GraphicsContextImplementation >
 	I_ReadOnlyProperty(osgProducer::GraphicsContextImplementation *, );
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::OsgSceneHandler >)
-	I_Constructor0();
-	I_Constructor1(IN, osgProducer::OsgSceneHandler *, t);
-	I_Constructor1(IN, const osg::ref_ptr< osgProducer::OsgSceneHandler > &, rp);
-	I_Method0(bool, valid);
-	I_Method0(osgProducer::OsgSceneHandler *, get);
-	I_Method0(const osgProducer::OsgSceneHandler *, get);
-	I_Method0(osgProducer::OsgSceneHandler *, take);
-	I_Method0(osgProducer::OsgSceneHandler *, release);
-	I_ReadOnlyProperty(osgProducer::OsgSceneHandler *, );
-END_REFLECTOR
+STD_VECTOR_REFLECTOR(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >);
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplementation > >);
-
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgProducer::OsgSceneHandler > >);
 

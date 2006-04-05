@@ -235,6 +235,7 @@ ifeq ($(PRODUCER_INSTALLED),yes)
         osgplanets \
 	osgpoints \
 	osgpointsprite \
+	osgprecipitation \
 	osgprerender \
 	osgprerendercubemap \
 	osgreflect \

@@ -47,6 +47,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::REMOVE_LOADED_PROXY_NODES);
 	I_EnumLabel(osgUtil::Optimizer::COMBINE_ADJACENT_LODS);
 	I_EnumLabel(osgUtil::Optimizer::SHARE_DUPLICATE_STATE);
+	I_EnumLabel(osgUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgUtil::Optimizer::MERGE_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::CHECK_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::SPATIALIZE_GROUPS);
@@ -130,6 +131,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallba
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::StateAttribute *, attribute, IN, unsigned int, option);
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::Drawable *, drawable, IN, unsigned int, option);
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::Node *, node, IN, unsigned int, option);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
+	I_BaseType(osgUtil::BaseOptimizerVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
+	I_Method1(void, apply, IN, osg::Group &, group);
+	I_Method1(bool, mergeGeodes, IN, osg::Group &, group);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)

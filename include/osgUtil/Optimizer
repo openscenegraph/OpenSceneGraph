@@ -68,6 +68,7 @@ class OSGUTIL_EXPORT Optimizer
             REMOVE_LOADED_PROXY_NODES = 0x004,
             COMBINE_ADJACENT_LODS =     0x008,
             SHARE_DUPLICATE_STATE =     0x010,
+            MERGE_GEODES =             0x1000,
             MERGE_GEOMETRY =            0x020,
             CHECK_GEOMETRY =            0x040,
             SPATIALIZE_GROUPS =         0x080,
@@ -88,6 +89,7 @@ class OSGUTIL_EXPORT Optimizer
                                 REMOVE_LOADED_PROXY_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
+                                MERGE_GEODES |
                                 MERGE_GEOMETRY |
                                 CHECK_GEOMETRY |
                                 SPATIALIZE_GROUPS |
@@ -405,7 +407,27 @@ class OSGUTIL_EXPORT Optimizer
                 StateSetMap _statesets;
 
         };
-        
+
+        /** Combine geodes
+          */
+        class OSGUTIL_EXPORT MergeGeodesVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                MergeGeodesVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, MERGE_GEODES) {}
+
+                virtual void apply(osg::Group& group);
+
+                bool mergeGeodes(osg::Group& group);
+
+            protected:
+
+                bool mergeGeode(osg::Geode& lhs, osg::Geode& rhs);
+
+        };
+
         class OSGUTIL_EXPORT CheckGeometryVisitor : public BaseOptimizerVisitor
         {
             public:

@@ -75,6 +75,9 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~SHARE_DUPLICATE_STATE")!=std::string::npos) options ^= SHARE_DUPLICATE_STATE;
         else if(str.find("SHARE_DUPLICATE_STATE")!=std::string::npos) options |= SHARE_DUPLICATE_STATE;
 
+        if(str.find("~MERGE_GEODES")!=std::string::npos) options ^= MERGE_GEODES;
+        else if(str.find("MERGE_GEODES")!=std::string::npos) options |= MERGE_GEODES;
+
         if(str.find("~MERGE_GEOMETRY")!=std::string::npos) options ^= MERGE_GEOMETRY;
         else if(str.find("MERGE_GEOMETRY")!=std::string::npos) options |= MERGE_GEOMETRY;
 
@@ -200,6 +203,13 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
+    if (options & MERGE_GEODES)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
+
+        MergeGeodesVisitor visitor;
+        node->accept(visitor);
+    }
 
     if (options & CHECK_GEOMETRY)
     {
@@ -2482,3 +2492,80 @@ void Optimizer::TextureVisitor::apply(osg::Texture& texture)
     }
 
 }
+
+////////////////////////////////////////////////////////////////////////////
+// Merge geodes
+////////////////////////////////////////////////////////////////////////////
+
+void Optimizer::MergeGeodesVisitor::apply(osg::Group& group)
+{
+    mergeGeodes(group);
+    traverse(group);
+}
+
+struct LessGeode
+{
+    bool operator() (const osg::Geode* lhs,const osg::Geode* rhs) const
+    {
+        if (lhs->getStateSet()<rhs->getStateSet()) return true;
+        return false;
+    }
+};
+
+bool Optimizer::MergeGeodesVisitor::mergeGeodes(osg::Group& group)
+{
+    if (!isOperationPermissibleForObject(&group)) return false;
+
+    typedef std::vector<osg::Geode*>                      DuplicateList;
+    typedef std::map<osg::Geode*,DuplicateList,LessGeode> GeodeDuplicateMap;
+
+    GeodeDuplicateMap geodeDuplicateMap;
+
+    for (unsigned int i=0; i<group.getNumChildren(); ++i)
+    {
+        osg::Node* child = group.getChild(i);
+        if (typeid(*child)==typeid(osg::Geode)) 
+        {
+            osg::Geode* geode = (osg::Geode*)child;
+            geodeDuplicateMap[geode].push_back(geode);
+        }
+    }
+
+    // merge
+    for(GeodeDuplicateMap::iterator itr=geodeDuplicateMap.begin();
+        itr!=geodeDuplicateMap.end();
+        ++itr)
+    {
+        if (itr->second.size()>1)
+        {
+            osg::Geode* lhs = itr->second[0];
+            for(DuplicateList::iterator dupItr=itr->second.begin()+1;
+                dupItr!=itr->second.end();
+                ++dupItr)
+            {
+                osg::Geode* rhs = *dupItr;
+                
+                if (mergeGeode(*lhs,*rhs))
+                {
+                    group.removeChild(rhs);
+
+                    static int co = 0;
+                    osg::notify(osg::INFO)<<"merged and removed Geode "<<++co<<std::endl;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+bool Optimizer::MergeGeodesVisitor::mergeGeode(osg::Geode& lhs, osg::Geode& rhs)
+{
+    for (unsigned int i=0; i<rhs.getNumDrawables(); ++i)
+    {
+        lhs.addDrawable(rhs.getDrawable(i));
+    }
+
+    return true;
+}
+

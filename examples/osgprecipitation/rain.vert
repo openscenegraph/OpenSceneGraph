@@ -31,7 +31,7 @@ void main(void)
     vec2 dp = vec2( -dv_normalized.y, dv_normalized.x ) * particleSize;
     
     float area = length(dv.xy)*length(dp);
-    colour.a = 0.2+(particleSize2)/area;
+    colour.a = 0.1+(particleSize2)/area;
     
 
     v1.xyz += dv*texCoord.y;

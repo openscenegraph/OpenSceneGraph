@@ -82,6 +82,71 @@ public:
     osg::ref_ptr<osg::Uniform> _uniform;    
 };
 
+void fillSpotLightImage(unsigned char* ptr, const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
+{
+    float mid = (float(size)-1.0f)*0.5f;
+    float div = 2.0f/float(size);
+    for(unsigned int r=0;r<size;++r)
+    {
+        //unsigned char* ptr = image->data(0,r,0);
+        for(unsigned int c=0;c<size;++c)
+        {
+            float dx = (float(c) - mid)*div;
+            float dy = (float(r) - mid)*div;
+            float r = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
+            if (r<0.0f) r=0.0f;
+            osg::Vec4 color = centerColour*r+backgroudColour*(1.0f-r);
+            *ptr++ = (unsigned char)((color[0])*255.0f);
+            *ptr++ = (unsigned char)((color[1])*255.0f);
+            *ptr++ = (unsigned char)((color[2])*255.0f);
+            *ptr++ = (unsigned char)((color[3])*255.0f);
+        }
+    }
+}
+
+
+osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
+{
+    osg::Image* image = new osg::Image;
+
+#if 0
+     
+     
+    unsigned char* ptr = image->data(0,0,0);
+    fillSpotLightImage(ptr, centerColour, backgroudColour, size, power);
+#else
+    osg::Image::MipmapDataType mipmapData;
+    unsigned int s = size;
+    unsigned int totalSize = 0;
+    unsigned i;
+    for(i=0; s>0; s>>=1, ++i)
+    {
+        if (i>0) mipmapData.push_back(totalSize);
+        totalSize += s*s*4;
+        std::cout<<" i= "<<i<<" s="<<s<<" p="<<totalSize<<std::endl;
+    }
+
+    std::cout<<"Total size ="<<totalSize<<std::endl;
+
+    unsigned char* ptr = new unsigned char[totalSize];
+    image->setImage(size, size, size, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, ptr, osg::Image::USE_NEW_DELETE,1);
+
+    image->setMipmapLevels(mipmapData);
+
+    s = size;
+    for(i=0; s>0; s>>=1, ++i)
+    {
+        fillSpotLightImage(ptr, centerColour, backgroudColour, s, power);
+        ptr += s*s*4;
+    }
+
+#endif    
+
+
+    return image;
+}
+
+
 osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity, unsigned int numParticles, bool useShaders)
 {
     osg::Geode* geode = new osg::Geode;
@@ -163,7 +228,9 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
         osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
         stateset->addUniform(baseTextureSampler);
         
-        osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile("Images/particle.rgb"));
+//        osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile("Images/particle.rgb"));
+        osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
+//        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
         stateset->setTextureAttribute(0, texture);
 
         // make it render after the normal transparent bin
@@ -253,7 +320,7 @@ osg::Node* createModel(osg::Node* loadedModel, bool useShaders)
     osg::Group* group = new osg::Group;
 
     osg::BoundingBox bb(0.0, 0.0, 0.0, 100.0, 100.0, 100.0);
-    osg::Vec3 velocity(0.0,0.0,-2.0);
+    osg::Vec3 velocity(0.0,2.0,-5.0);
     unsigned int numParticles = 150000;
     
     if (loadedModel)

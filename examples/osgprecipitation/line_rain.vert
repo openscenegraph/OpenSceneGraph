@@ -17,7 +17,6 @@ varying vec2 texCoord;
 void main(void)
 {
     const float particleSize = 0.01;
-    const float particleSize2 = 0.0001;//particleSize*particleSize;
 
     vec3 pos = position + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
     
@@ -36,14 +35,11 @@ void main(void)
     
     vec2 dv_normalized = normalize(dv.xy);
     dv.xy += dv_normalized * particleSize;
-    vec2 dp = vec2( -dv_normalized.y, dv_normalized.x ) * particleSize;
     
-    float area = length(dv.xy)*length(dp);
-    colour.a = 0.2+(particleSize2)/area;
+    float area = length(dv.xy);
+    colour.a = 0.1+(particleSize)/area;
     
-
     v1.xyz += dv*texCoord.y;
-    v1.xy += dp*texCoord.x;
     
     gl_Position = gl_ProjectionMatrix * v1;
 }

@@ -32,6 +32,11 @@ public:
         virtual void accept(osg::PrimitiveFunctor&) const {}
         virtual bool supports(const osg::PrimitiveIndexFunctor&) const { return false; }
         virtual void accept(osg::PrimitiveIndexFunctor&) const {}
+        
+        virtual osg::BoundingBox computeBound() const
+        {
+            return osg::BoundingBox();
+        }
 
 };
 
@@ -107,14 +112,15 @@ void fillSpotLightImage(unsigned char* ptr, const osg::Vec4& centerColour, const
 
 osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4& backgroudColour, unsigned int size, float power)
 {
-    osg::Image* image = new osg::Image;
 
 #if 0
-     
-     
+    osg::Image* image = new osg::Image;
     unsigned char* ptr = image->data(0,0,0);
     fillSpotLightImage(ptr, centerColour, backgroudColour, size, power);
+
+    return image;
 #else
+    osg::Image* image = new osg::Image;
     osg::Image::MipmapDataType mipmapData;
     unsigned int s = size;
     unsigned int totalSize = 0;
@@ -140,10 +146,101 @@ osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg::Vec4&
         ptr += s*s*4;
     }
 
-#endif    
-
-
     return image;
+#endif    
+}
+
+/** create quad, line and point geometry data all with consistent particle positions.*/
+void createGeometry(unsigned int numParticles, 
+                    osg::Geometry* quad_geometry, 
+                    osg::Geometry* line_geometry,
+                    osg::Geometry* point_geometry)
+{
+    // particle corner offsets
+    osg::Vec2 offset00(0.0f,0.0f);
+    osg::Vec2 offset10(1.0f,0.0f);
+    osg::Vec2 offset01(0.0f,1.0f);
+    osg::Vec2 offset11(1.0f,1.0f);
+    
+    osg::Vec2 offset0(0.5f,0.0f);
+    osg::Vec2 offset1(0.5f,1.0f);
+
+    osg::Vec2 offset(0.5f,0.5f);
+
+
+    // configure quad_geometry;
+    osg::Vec3Array* quad_vertices = 0;
+    osg::Vec2Array* quad_offsets = 0;
+    if (quad_geometry)
+    {
+        quad_vertices = new osg::Vec3Array(numParticles*4);
+        quad_offsets = new osg::Vec2Array(numParticles*4);
+
+        quad_geometry->setVertexArray(quad_vertices);
+        quad_geometry->setTexCoordArray(0, quad_offsets);
+        quad_geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numParticles*4));
+    }
+
+    // configure line_geometry;
+    osg::Vec3Array* line_vertices = 0;
+    osg::Vec2Array* line_offsets = 0;
+    if (line_geometry)
+    {
+        line_vertices = new osg::Vec3Array(numParticles*2);
+        line_offsets = new osg::Vec2Array(numParticles*2);
+
+        line_geometry->setVertexArray(line_vertices);
+        line_geometry->setTexCoordArray(0, line_offsets);
+        line_geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numParticles*2));
+    }
+
+    // configure point_geometry;
+    osg::Vec3Array* point_vertices = 0;
+    osg::Vec2Array* point_offsets = 0;
+    if (point_geometry)
+    {
+        point_vertices = new osg::Vec3Array(numParticles);
+        point_offsets = new osg::Vec2Array(numParticles);
+
+        point_geometry->setVertexArray(point_vertices);
+        point_geometry->setTexCoordArray(0, point_offsets);
+        point_geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, numParticles));
+    }
+
+    // set up vertex attribute data.
+    for(unsigned int i=0; i< numParticles; ++i)
+    {
+        osg::Vec3 pos( random(0.0f, 1.0f), random(0.0f, 1.0f), random(0.0f, 1.0f));
+    
+        // quad particles
+        if (quad_vertices)
+        {
+            (*quad_vertices)[i*4] = pos;
+            (*quad_vertices)[i*4+1] = pos;
+            (*quad_vertices)[i*4+2] =  pos;
+            (*quad_vertices)[i*4+3] =  pos;
+            (*quad_offsets)[i*4] = offset00;
+            (*quad_offsets)[i*4+1] = offset01;
+            (*quad_offsets)[i*4+2] = offset11;
+            (*quad_offsets)[i*4+3] = offset10;
+        }
+                
+        // line particles
+        if (line_vertices)
+        {
+            (*line_vertices)[i*2] = pos;
+            (*line_vertices)[i*2+1] = pos;
+            (*line_offsets)[i*2] = offset0;
+            (*line_offsets)[i*2+1] = offset1;
+        }
+        
+        // point particles
+        if (point_vertices)
+        {
+            (*point_vertices)[i] = pos;
+            (*point_offsets)[i] = offset;
+        }
+    }
 }
 
 
@@ -151,79 +248,98 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 {
     osg::Geode* geode = new osg::Geode;
 
-    osg::Geometry* geometry = new PrecipitationGeometry;
-    geode->addDrawable(geometry);
-
-    osg::StateSet* stateset = geometry->getOrCreateStateSet();
-
-    // set up geometry.
-    {
+    osg::Geometry* quad_geometry = 0;
+    osg::Geometry* line_geometry = 0;
+    osg::Geometry* point_geometry = 0;
     
-        // per vertex properties
-        osg::Vec3Array* vertices = new osg::Vec3Array(numParticles*4);
-        osg::Vec3Array* offsets = new osg::Vec3Array(numParticles*4);
-        
-        osg::Vec3 frameDelta = velocity*(2.0f/60.0f);
-        float size = 1.0;
-        
-        for(unsigned int i=0; i< numParticles; ++i)
-        {
-            (*vertices)[i*4].set(random(bb.xMin(), bb.xMax()), random(bb.yMin(),bb.yMax()), bb.zMax());
-            (*vertices)[i*4+1] = (*vertices)[i*4];
-            (*vertices)[i*4+2] = (*vertices)[i*4];
-            (*vertices)[i*4+3] = (*vertices)[i*4];
-            (*offsets)[i*4].z() = random(0.0, 1.0);
-            (*offsets)[i*4+1].z() = (*offsets)[i*4].z();
-            (*offsets)[i*4+2].z() = (*offsets)[i*4].z();
-            (*offsets)[i*4+3].z() = (*offsets)[i*4].z();
-            (*offsets)[i*4].x() = 0.0;
-            (*offsets)[i*4].y() = 0.0;
-            (*offsets)[i*4+1].x() = 0.0;
-            (*offsets)[i*4+1].y() = 1.0;
-            (*offsets)[i*4+2].x() = 1.0;
-            (*offsets)[i*4+2].y() = 1.0;
-            (*offsets)[i*4+3].x() = 1.0;
-            (*offsets)[i*4+3].y() = 0.0;
-        }
+#if 1
+    quad_geometry = new PrecipitationGeometry;
+    quad_geometry->setUseVertexBufferObjects(true);
+    quad_geometry->setInitialBound(bb);
+    geode->addDrawable(quad_geometry);
 
-        geometry->setVertexArray(vertices);
-        geometry->setTexCoordArray(0, offsets);
+    osg::StateSet* quad_stateset = quad_geometry->getOrCreateStateSet();
+    {
+        osg::Program* program = new osg::Program;
+        quad_stateset->setAttribute(program);
 
-        // overall attributes
-        osg::Vec4Array* colours = new osg::Vec4Array(1);
-        (*colours)[0].set(0.5f,0.5f,0.5f,1.0f);
-        geometry->setColorArray(colours);
-        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-        
-        geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numParticles*4));
+        // get shaders from source
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("quad_rain.vert")));
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
     }
+#endif
+
+#if 0    
+    line_geometry = new PrecipitationGeometry;
+    line_geometry->setUseVertexBufferObjects(true);
+    line_geometry->setInitialBound(bb);
+    geode->addDrawable(line_geometry);
+
+    osg::StateSet* line_stateset = line_geometry->getOrCreateStateSet();
+    {
+        osg::Program* program = new osg::Program;
+        line_stateset->setAttribute(program);
+
+        // get shaders from source
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("line_rain.vert")));
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
+    }
+#endif
+
+
+#if 0    
+    point_geometry = new PrecipitationGeometry;
+    point_geometry->setUseVertexBufferObjects(true);
+    point_geometry->setInitialBound(bb);
+    geode->addDrawable(point_geometry);
+
+    osg::StateSet* point_stateset = point_geometry->getOrCreateStateSet();
+    {
+        osg::Program* program = new osg::Program;
+        point_stateset->setAttribute(program);
+
+        // get shaders from source
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("point_rain.vert")));
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("point_rain.frag")));
+    }
+#endif
+
+
+    createGeometry(numParticles, quad_geometry, line_geometry, point_geometry);
+
 
     // set up state.
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
     {
         // time taken to get from start to the end of cycle
         float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
 
         // distance between start point and end of cyclce
-        osg::Vec3 delta = velocity * period;
+        osg::Vec3 position(bb.xMin(), bb.yMin(), bb.zMax());
+        osg::Vec3 dv_i( bb.xMax()-bb.xMin(), 0.0f, 0.0f );
+        osg::Vec3 dv_j( 0.0f, bb.yMax()-bb.yMin(), 0.0f );
+        osg::Vec3 dv_k( velocity * period );
 
         // set up uniforms
-        osg::Uniform* deltaUniform = new osg::Uniform("delta",delta);
+        osg::Uniform* position_Uniform = new osg::Uniform("position",position);
+        osg::Uniform* dv_i_Uniform = new osg::Uniform("dv_i",dv_i);
+        osg::Uniform* dv_j_Uniform = new osg::Uniform("dv_j",dv_j);
+        osg::Uniform* dv_k_Uniform = new osg::Uniform("dv_k",dv_k);
+        
         osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/period);
         osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
 
-        osg::Program* program = new osg::Program;
-        stateset->setAttribute(program);
-
-        // get shaders from source
-        program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("rain.vert")));
-        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
 
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
         stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
         
-        stateset->addUniform(deltaUniform);
+        stateset->addUniform(position_Uniform);
+        stateset->addUniform(dv_i_Uniform);
+        stateset->addUniform(dv_j_Uniform);
+        stateset->addUniform(dv_k_Uniform);
         stateset->addUniform(inversePeriodUniform);
         stateset->addUniform(startTime);
+        stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
         
         osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
         stateset->addUniform(baseTextureSampler);
@@ -242,8 +358,9 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
     }
     
-    geometry->setUseVertexBufferObjects(true);
-    geometry->setInitialBound(bb);
+
+
+
 
     return geode;
 }

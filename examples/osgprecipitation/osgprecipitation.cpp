@@ -21,6 +21,8 @@
 #include <osg/PointSprite>
 #include <osg/Program>
 #include <osg/Fog>
+#include <osg/Point>
+#include <osg/PointSprite>
 #include <osg/io_utils>
 
 float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
@@ -252,7 +254,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
     osg::Geometry* line_geometry = 0;
     osg::Geometry* point_geometry = 0;
     
-#if 1
+#if 0
     quad_geometry = new PrecipitationGeometry;
     quad_geometry->setUseVertexBufferObjects(true);
     quad_geometry->setInitialBound(bb);
@@ -269,7 +271,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
     }
 #endif
 
-#if 0    
+#if 0   
     line_geometry = new PrecipitationGeometry;
     line_geometry->setUseVertexBufferObjects(true);
     line_geometry->setInitialBound(bb);
@@ -287,7 +289,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 #endif
 
 
-#if 0    
+#if 1    
     point_geometry = new PrecipitationGeometry;
     point_geometry->setUseVertexBufferObjects(true);
     point_geometry->setInitialBound(bb);
@@ -300,7 +302,14 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("point_rain.vert")));
-        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("point_rain.frag")));
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
+
+        /// Setup the point sprites
+        osg::PointSprite *sprite = new osg::PointSprite();
+        point_stateset->setTextureAttributeAndModes(0, sprite, osg::StateAttribute::ON);
+
+        point_stateset->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
+
     }
 #endif
 

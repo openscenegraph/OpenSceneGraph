@@ -237,18 +237,48 @@ void OsgCameraGroup::_init()
         else if (strcmp(str,"ThreadPerCamera")==0) _threadModel = ThreadPerCamera;
     }
     
+
+    // work out how many graphics context we have    
+    std::set<Producer::RenderSurface*> renderSurfaces;
+    for(unsigned int i=0; i<getNumberOfCameras(); ++i)
+    {
+        if (getCamera(i) && getCamera(i)->getRenderSurface())
+        {
+            renderSurfaces.insert(getCamera(i)->getRenderSurface());
+        }
+    }
+    unsigned int numContexts = renderSurfaces.size();
+    
     str = getenv("OSG_SHARE_GRAPHICS_CONTEXTS");
     if (str)
     {
-        if (strcmp(str,"ON")==0) Producer::RenderSurface::shareAllGLContexts(true);
-        else if (strcmp(str,"OFF")==0) Producer::RenderSurface::shareAllGLContexts(false);
+        if (strcmp(str,"ON")==0) 
+        {
+            Producer::RenderSurface::shareAllGLContexts(true);
+
+            // if we are sharing graphics contexts then we just treat them all as one.
+            numContexts = 1;
+        }
+        else if (strcmp(str,"OFF")==0) 
+        {
+            Producer::RenderSurface::shareAllGLContexts(false);
+        }
+        
     }
-    
-    if (_threadModel==ThreadPerCamera && _cfg->getNumberOfCameras()>1)
+
+    // initialize the number of graphics contexts to set up if there arn't already enough.
+    if (osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts() < numContexts)
+    {    
+        osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(numContexts);
+    }
+
+
+    if ((_threadModel==ThreadPerCamera || _threadModel==ThreadPerRenderSurface) && _cfg->getNumberOfCameras()>1)
     {
         // switch on thread safe reference counting by default when running multi-threaded.
-        // osg::Referenced::setThreadSafeReferenceCounting(true);
+        osg::Referenced::setThreadSafeReferenceCounting(true);
     }
+
 
     _scene_data = NULL;
     _global_stateset = NULL;

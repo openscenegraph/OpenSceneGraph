@@ -29,5 +29,5 @@ void main(void)
     float pointSize = min(abs(1280*particleSize / gl_Position.w), 20.0);
     gl_PointSize = max(ceil(pointSize),2);
     
-    colour.a = 0.2+(pointSize)/(gl_PointSize);
+    colour.a = 0.1+(pointSize)/(gl_PointSize);
 }

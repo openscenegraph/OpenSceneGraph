@@ -44,6 +44,9 @@ public:
         void setInternalGeometry(osg::Geometry* geometry) { _internalGeometry = geometry; }
         
         osg::Geometry* getInternalGeometry() { return _internalGeometry.get(); }
+        
+        void setPosition(const osg::Vec3& position) { _position = position; }
+        const osg::Vec3& getPosition() const { return _position; }
 
         
         virtual void compileGLObjects(osg::State& state) const
@@ -62,6 +65,8 @@ public:
         {
             if (!_internalGeometry) return;
             
+            glNormal3fv(_position.ptr());
+
             _internalGeometry->draw(state);
         }
 
@@ -72,6 +77,7 @@ public:
         
 protected:        
 
+        osg::Vec3                   _position;
         osg::ref_ptr<osg::Geometry> _internalGeometry;
 
 };
@@ -295,6 +301,7 @@ void setUpGeometries(unsigned int numParticles)
         quad_stateset = new osg::StateSet;
         osg::Program* program = new osg::Program;
         quad_stateset->setAttribute(program);
+        quad_stateset->setRenderBinDetails(13,"DepthSortedBin");
 
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("quad_rain.vert")));
@@ -310,6 +317,7 @@ void setUpGeometries(unsigned int numParticles)
 
         osg::Program* program = new osg::Program;
         line_stateset->setAttribute(program);
+        line_stateset->setRenderBinDetails(12,"DepthSortedBin");
 
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("line_rain.vert")));
@@ -335,6 +343,7 @@ void setUpGeometries(unsigned int numParticles)
         point_stateset->setTextureAttributeAndModes(0, sprite, osg::StateAttribute::ON);
 
         point_stateset->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
+        point_stateset->setRenderBinDetails(11,"DepthSortedBin");
 
     }
 
@@ -347,8 +356,17 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 {
     osg::LOD* lod = new osg::LOD;
     
-    float nearDistance = 50.0;
-    float farDistance = 200.0;
+    // time taken to get from start to the end of cycle
+    float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
+
+    // distance between start point and end of cyclce
+    osg::Vec3 position(bb.xMin(), bb.yMin(), bb.zMax());
+    osg::Vec3 dv_i( bb.xMax()-bb.xMin(), 0.0f, 0.0f );
+    osg::Vec3 dv_j( 0.0f, bb.yMax()-bb.yMin(), 0.0f );
+    osg::Vec3 dv_k( velocity * period );
+
+    float nearDistance = 25.0;
+    float farDistance = 100.0;
     
     // high res LOD.
     {
@@ -358,6 +376,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         highres_geode->addDrawable(geometry);
 
+        geometry->setPosition(position);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(quad_geometry.get());
         geometry->setStateSet(quad_stateset.get());
@@ -373,65 +392,12 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         lowres_geode->addDrawable(geometry);
 
+        geometry->setPosition(position);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(point_geometry.get());
         geometry->setStateSet(point_stateset.get());
         
         lod->addChild( lowres_geode, nearDistance, farDistance );
-    }
-
-
-    // set up state.
-    osg::StateSet* stateset = lod->getOrCreateStateSet();
-    {
-        // time taken to get from start to the end of cycle
-        float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
-
-        // distance between start point and end of cyclce
-        osg::Vec3 position(bb.xMin(), bb.yMin(), bb.zMax());
-        osg::Vec3 dv_i( bb.xMax()-bb.xMin(), 0.0f, 0.0f );
-        osg::Vec3 dv_j( 0.0f, bb.yMax()-bb.yMin(), 0.0f );
-        osg::Vec3 dv_k( velocity * period );
-
-        // set up uniforms
-        osg::Uniform* position_Uniform = new osg::Uniform("position",position);
-        static osg::Uniform* dv_i_Uniform = new osg::Uniform("dv_i",dv_i);
-        static osg::Uniform* dv_j_Uniform = new osg::Uniform("dv_j",dv_j);
-        static osg::Uniform* dv_k_Uniform = new osg::Uniform("dv_k",dv_k);
-        
-        static osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/period);
-        static osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
-
-
-        
-        stateset->addUniform(position_Uniform); // vec3
-        stateset->addUniform(dv_i_Uniform); // vec3 could be float 
-        stateset->addUniform(dv_j_Uniform); // vec3 could be float
-        stateset->addUniform(dv_k_Uniform); // vec3
-        stateset->addUniform(inversePeriodUniform); // float
-        stateset->addUniform(startTime); // float
-        
-
-        // make it render after the normal transparent bin
-        stateset->setRenderBinDetails(11,"DepthSortedBin");
-        
-#if 0
-        stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-        
-        static osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
-        stateset->addUniform(baseTextureSampler);
-        
-        static osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
-        stateset->setTextureAttribute(0, texture);
-        
-        stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
-        stateset->addUniform(new osg::Uniform("particleSize", 0.01f));
-        
-        osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
-        stateset->addUniform(previousModelViewUniform);
-        lod->setCullCallback(new CullCallback(previousModelViewUniform));
-#endif
     }
 
 
@@ -441,8 +407,8 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity, unsigned int numParticles)
 {
     
-    unsigned int numX = 80;
-    unsigned int numY = 80;
+    unsigned int numX = 100;
+    unsigned int numY = 100;
     unsigned int numCells = numX*numY;
     unsigned int numParticlesPerCell = numParticles/numCells;
 
@@ -480,6 +446,30 @@ osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& vel
 #if 1
     osg::StateSet* stateset = group->getOrCreateStateSet();
 
+    // time taken to get from start to the end of cycle
+    float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
+
+    // distance between start point and end of cyclce
+    osg::Vec3 dv_i( (bb.xMax()-bb.xMin())/(float)(numX), 0.0f, 0.0f );
+    osg::Vec3 dv_j( 0.0f, (bb.yMax()-bb.yMin())/(float)(numY), 0.0f );
+    osg::Vec3 dv_k( velocity * period );
+
+    // set up uniforms
+    // osg::Uniform* position_Uniform = new osg::Uniform("position",position);
+    osg::Uniform* dv_i_Uniform = new osg::Uniform("dv_i",dv_i);
+    osg::Uniform* dv_j_Uniform = new osg::Uniform("dv_j",dv_j);
+    osg::Uniform* dv_k_Uniform = new osg::Uniform("dv_k",dv_k);
+
+    osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/period);
+    osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
+
+    //stateset->addUniform(position_Uniform); // vec3
+    stateset->addUniform(dv_i_Uniform); // vec3 could be float 
+    stateset->addUniform(dv_j_Uniform); // vec3 could be float
+    stateset->addUniform(dv_k_Uniform); // vec3
+    stateset->addUniform(inversePeriodUniform); // float
+    stateset->addUniform(startTime); // float
+
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
@@ -490,7 +480,7 @@ osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& vel
     stateset->setTextureAttribute(0, texture);
 
     stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
-    stateset->addUniform(new osg::Uniform("particleSize", 0.01f));
+    stateset->addUniform(new osg::Uniform("particleSize", 0.02f));
   
     osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
     stateset->addUniform(previousModelViewUniform);
@@ -506,8 +496,8 @@ osg::Node* createModel(osg::Node* loadedModel, bool /*useShaders*/)
     osg::Group* group = new osg::Group;
 
     osg::BoundingBox bb(0.0, 0.0, 0.0, 100.0, 100.0, 100.0);
-    osg::Vec3 velocity(0.0,2.0,-5.0);
-    unsigned int numParticles = 10000000;
+    osg::Vec3 velocity(0.0,2.0,-8.0);
+    unsigned int numParticles = 50000000;
     
     if (loadedModel)
     {
@@ -540,12 +530,8 @@ osg::Node* createModel(osg::Node* loadedModel, bool /*useShaders*/)
                 
     }
     
-#if 0
-    setUpGeometries(numParticles);
-    group->addChild(createRainEffect(bb, velocity));
-#else
     group->addChild(createCellRainEffect(bb, velocity, numParticles));
-#endif
+
     return group;    
 }
 

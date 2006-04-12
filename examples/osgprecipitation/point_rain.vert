@@ -1,4 +1,3 @@
-uniform vec3 position;
 uniform vec3 dv_i;
 uniform vec3 dv_j;
 uniform vec3 dv_k;
@@ -15,7 +14,7 @@ varying vec2 texCoord;
 
 void main(void)
 {
-    vec3 pos = position + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
+    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
     
     texCoord = gl_MultiTexCoord0.xy;
 

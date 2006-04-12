@@ -347,7 +347,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 {
     osg::LOD* lod = new osg::LOD;
     
-    float nearDistance = 100.0;
+    float nearDistance = 50.0;
     float farDistance = 200.0;
     
     // high res LOD.
@@ -403,30 +403,35 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
         static osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
 
 
+        
+        stateset->addUniform(position_Uniform); // vec3
+        stateset->addUniform(dv_i_Uniform); // vec3 could be float 
+        stateset->addUniform(dv_j_Uniform); // vec3 could be float
+        stateset->addUniform(dv_k_Uniform); // vec3
+        stateset->addUniform(inversePeriodUniform); // float
+        stateset->addUniform(startTime); // float
+        
+
+        // make it render after the normal transparent bin
+        stateset->setRenderBinDetails(11,"DepthSortedBin");
+        
+#if 0
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
         stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-        
-        stateset->addUniform(position_Uniform);
-        stateset->addUniform(dv_i_Uniform);
-        stateset->addUniform(dv_j_Uniform);
-        stateset->addUniform(dv_k_Uniform);
-        stateset->addUniform(inversePeriodUniform);
-        stateset->addUniform(startTime);
-        stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
         
         static osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
         stateset->addUniform(baseTextureSampler);
         
         static osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
         stateset->setTextureAttribute(0, texture);
-
-        // make it render after the normal transparent bin
-        stateset->setRenderBinDetails(11,"DepthSortedBin");
-
+        
+        stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
+        stateset->addUniform(new osg::Uniform("particleSize", 0.01f));
+        
         osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
         stateset->addUniform(previousModelViewUniform);
         lod->setCullCallback(new CullCallback(previousModelViewUniform));
-
+#endif
     }
 
 
@@ -436,8 +441,8 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity, unsigned int numParticles)
 {
     
-    unsigned int numX = 50;
-    unsigned int numY = 50;
+    unsigned int numX = 80;
+    unsigned int numY = 80;
     unsigned int numCells = numX*numY;
     unsigned int numParticlesPerCell = numParticles/numCells;
 
@@ -465,6 +470,34 @@ osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& vel
             group->addChild(createRainEffect(bbLocal, velocity));
         }        
     }
+    
+#if 1    
+    osgUtil::Optimizer::SpatializeGroupsVisitor sgv;
+    group->accept(sgv);
+    sgv.divide();
+#endif    
+
+#if 1
+    osg::StateSet* stateset = group->getOrCreateStateSet();
+
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+    osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+    stateset->addUniform(baseTextureSampler);
+
+    osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
+    stateset->setTextureAttribute(0, texture);
+
+    stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
+    stateset->addUniform(new osg::Uniform("particleSize", 0.01f));
+  
+    osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
+    stateset->addUniform(previousModelViewUniform);
+    
+    group->setCullCallback(new CullCallback(previousModelViewUniform));
+#endif
+
     return group;
 }
 

@@ -6,6 +6,7 @@ uniform vec3 dv_k;
 uniform float inversePeriod;
 uniform float startTime;
 uniform vec4 particleColour;
+uniform float particleSize;
 
 uniform float osg_FrameTime;
 uniform float osg_DeltaFrameTime;
@@ -16,9 +17,6 @@ varying vec2 texCoord;
 
 void main(void)
 {
-    const float particleSize = 0.01;
-    const float particleSize2 = 0.0001;//particleSize*particleSize;
-
     vec3 pos = position + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
     
     float offset = gl_Vertex.z;
@@ -39,7 +37,7 @@ void main(void)
     vec2 dp = vec2( -dv_normalized.y, dv_normalized.x ) * particleSize;
     
     float area = length(dv.xy)*length(dp);
-    colour.a = 0.2+(particleSize2)/area;
+    colour.a = 0.05+(particleSize*particleSize)/area;
     
 
     v1.xyz += dv*texCoord.y;

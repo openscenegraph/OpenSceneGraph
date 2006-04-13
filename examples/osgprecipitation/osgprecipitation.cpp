@@ -38,23 +38,29 @@ struct PrecipatationParameters : public osg::Referenced
         numberOfCellsY(100),
         numberOfCellsZ(1),
         nearTransition(25.0),
-        farTransition(100.0)
+        farTransition(100.0),
+        fogDensity(0.1),
+        fogEnd(1000.0)
     {}
 
     void rain (float intensity)
     {
         particleVelocity = osg::Vec3(0.0,0.0,-2.0) + osg::Vec3(0.0,0.0,-10.0)*intensity;
-        particleSize = 0.01 + 0.04*intensity;
+        particleSize = 0.01 + 0.02*intensity;
         numberOfParticles = intensity * 100000000;
         particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0);
+        fogDensity = intensity;
+        fogEnd = 250/(0.01 + intensity);
     }
 
     void snow(float intensity)
     {
         particleVelocity = osg::Vec3(0.0,0.0,-1.0) + osg::Vec3(0.0,0.0,-0.5)*intensity;
-        particleSize = 0.02 + 0.05*intensity;
+        particleSize = 0.02 + 0.03*intensity;
         numberOfParticles = intensity * 100000000;
         particleColour = osg::Vec4(0.8, 0.8, 0.8, 1.0);
+        fogDensity = intensity;
+        fogEnd = 150/(0.01 + intensity);
     }
 
     osg::BoundingBox    boundingBox;
@@ -67,6 +73,8 @@ struct PrecipatationParameters : public osg::Referenced
     unsigned int        numberOfCellsZ;
     float               nearTransition;
     float               farTransition;
+    float               fogDensity;
+    float               fogEnd;
 };
 
 struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
@@ -574,11 +582,11 @@ osg::Node* createCellRainEffect(const PrecipatationParameters& parameters)
         }        
     }
     
-#if 1    
+
     osgUtil::Optimizer::SpatializeGroupsVisitor sgv;
     group->accept(sgv);
     sgv.divide();
-#endif    
+
 
     osg::StateSet* stateset = group->getOrCreateStateSet();
 
@@ -649,9 +657,9 @@ osg::Node* createModel(osg::Node* loadedModel, PrecipatationParameters& paramete
         
         osg::Fog* fog = new osg::Fog;
         fog->setMode(osg::Fog::LINEAR);
-        fog->setDensity(0.1f);
+        fog->setDensity(parameters.fogDensity);
         fog->setStart(0.0f);
-        fog->setEnd(1000.0f);
+        fog->setEnd(parameters.fogEnd);
         fog->setColor(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
         stateset->setAttributeAndModes(fog, osg::StateAttribute::ON);
         
@@ -703,16 +711,30 @@ int main( int argc, char **argv )
     while (arguments.read("--snow", intensity)) parameters.snow(intensity);
     while (arguments.read("--rain", intensity)) parameters.rain(intensity);
 
-    float particleSize;
-    while (arguments.read("--particleSize", particleSize)) parameters.particleSize = particleSize;
+    while (arguments.read("--particleSize", parameters.particleSize)) {}
 
     osg::Vec3 particleVelocity;
     while (arguments.read("--particleVelocity", particleVelocity.x(), particleVelocity.y(), particleVelocity.z() )) parameters.particleVelocity = particleVelocity;
 
-    float transition;
-    while (arguments.read("--nearTransition", transition )) parameters.nearTransition = transition;
-    while (arguments.read("--farTransition", transition )) parameters.farTransition = transition;
+    while (arguments.read("--nearTransition", parameters.nearTransition )) {}
+    while (arguments.read("--farTransition", parameters.farTransition )) {}
 
+    while (arguments.read("--numberOfParticles", parameters.numberOfParticles )) {}
+
+    while (arguments.read("--numberOfCellsX", parameters.numberOfCellsX )) {}
+    while (arguments.read("--numberOfCellsY", parameters.numberOfCellsY )) {}
+    while (arguments.read("--numberOfCellsZ", parameters.numberOfCellsZ )) {}
+
+    while (arguments.read("--boundingBox", parameters.boundingBox.xMin(),
+                                           parameters.boundingBox.yMin(),
+                                           parameters.boundingBox.zMin(),
+                                           parameters.boundingBox.xMax(),
+                                           parameters.boundingBox.yMax(),
+                                           parameters.boundingBox.zMax())) {}
+
+    while (arguments.read("--fogDensity", parameters.fogDensity )) {}
+    while (arguments.read("--fogEnd", parameters.fogEnd )) {}
+ 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {

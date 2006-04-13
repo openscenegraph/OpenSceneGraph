@@ -27,6 +27,92 @@
 
 float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
 
+struct PrecipatationParameters : public osg::Referenced
+{
+    PrecipatationParameters():
+        particleVelocity(0.0,0.0,-5.0),
+        particleSize(0.02),
+        particleColour(0.6, 0.6, 0.6, 1.0),
+        numberOfParticles(10000000),
+        numberOfCellsX(100),
+        numberOfCellsY(100),
+        numberOfCellsZ(1),
+        nearTransition(25.0),
+        farTransition(100.0)
+    {}
+
+    void rain (float intensity)
+    {
+        particleVelocity = osg::Vec3(0.0,0.0,-2.0) + osg::Vec3(0.0,0.0,-10.0)*intensity;
+        particleSize = 0.01 + 0.04*intensity;
+        numberOfParticles = intensity * 100000000;
+        particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0);
+    }
+
+    void snow(float intensity)
+    {
+        particleVelocity = osg::Vec3(0.0,0.0,-1.0) + osg::Vec3(0.0,0.0,-0.5)*intensity;
+        particleSize = 0.02 + 0.05*intensity;
+        numberOfParticles = intensity * 100000000;
+        particleColour = osg::Vec4(0.8, 0.8, 0.8, 1.0);
+    }
+
+    osg::BoundingBox    boundingBox;
+    osg::Vec3           particleVelocity;
+    float               particleSize;
+    osg::Vec4           particleColour;
+    unsigned int        numberOfParticles;
+    unsigned int        numberOfCellsX;
+    unsigned int        numberOfCellsY;
+    unsigned int        numberOfCellsZ;
+    float               nearTransition;
+    float               farTransition;
+};
+
+struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
+{
+    PrecipitationCullCallback() {}
+
+    PrecipitationCullCallback(const PrecipitationCullCallback&,const osg::CopyOp&) {}
+
+    META_Object(osg,PrecipitationCullCallback);
+
+    /** do customized cull code, return true if drawable should be culled.*/
+    virtual bool cull(osg::NodeVisitor* nodeVisitor, osg::Drawable* drawable, osg::State* state) const
+    {
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nodeVisitor);
+        if (cv)
+        {
+            float distance = nodeVisitor->getDistanceFromEyePoint(drawable->getBound().center(),true);
+
+//            if (distance<-4.0) return true;
+            
+#if 0
+            
+            const osg::BoundingBox& bb = drawable->getBound();
+            const osg::Polytope& frustum = cv->getCurrentCullingSet().getFrustum();
+            int numPointsInside = 0;
+            for(unsigned int i=0; i<8; ++i)
+            {
+                if (frustum.contains(bb.corner(i))) ++numPointsInside;
+            }
+        
+            std::cout<<" "<<drawable->getName()<<" distance "<<distance<<"num Points inside = "<<numPointsInside<<std::endl;
+
+            if (cv->isCulled(drawable->getBound()))
+            {
+                std::cout<<" isCulled "<<drawable->getName()<<std::endl;
+                return true;
+            }
+#endif
+
+        }
+    
+        return false;
+    }
+};
+
+
 class PrecipitationGeometry : public osg::Geometry
 {
 public:
@@ -34,6 +120,8 @@ public:
         PrecipitationGeometry()
         {
             setSupportsDisplayList(false);
+            
+            setCullCallback(new PrecipitationCullCallback());
         }
 
         virtual bool supports(const osg::PrimitiveFunctor&) const { return false; }
@@ -68,6 +156,46 @@ public:
             glNormal3fv(_position.ptr());
 
             _internalGeometry->draw(state);
+            
+            
+            static int s_frameNumber = 0xffffffff;
+            static unsigned int s_NumberQuads = 0;
+            static unsigned int s_NumberQuadsVertices = 0;
+            static unsigned int s_NumberLines = 0;
+            static unsigned int s_NumberLinesVertices = 0;
+            static unsigned int s_NumberPoints = 0;
+            static unsigned int s_NumberPointsVertices = 0;
+            
+            if (s_frameNumber != state.getFrameStamp()->getFrameNumber())
+            {
+                // std::cout<<"Frame "<< s_frameNumber<<"\tquads "<<s_NumberQuads<<", "<<s_NumberQuadsVertices<<"  points "<<s_NumberPoints<<", "<<s_NumberPointsVertices<<std::endl;
+            
+                s_NumberQuads = 0;
+                s_NumberLines = 0;
+                s_NumberPoints = 0;
+                s_NumberQuadsVertices = 0;
+                s_NumberLinesVertices = 0;
+                s_NumberPointsVertices = 0;
+
+                s_frameNumber = state.getFrameStamp()->getFrameNumber();
+            }
+            
+            
+            if (_internalGeometry->getName()=="quad") 
+            {
+                s_NumberQuads++;
+                s_NumberQuadsVertices+= _internalGeometry->getVertexArray()->getNumElements();
+            }
+            else if (_internalGeometry->getName()=="line")
+            {
+                s_NumberLines++;
+                s_NumberLinesVertices+= _internalGeometry->getVertexArray()->getNumElements();
+            }
+            else if (_internalGeometry->getName()=="point")
+            {
+                s_NumberPoints++;
+                s_NumberPointsVertices+= _internalGeometry->getVertexArray()->getNumElements();
+            }
         }
 
         virtual osg::BoundingBox computeBound() const
@@ -212,6 +340,8 @@ void createGeometry(unsigned int numParticles,
     osg::Vec2Array* quad_offsets = 0;
     if (quad_geometry)
     {
+        quad_geometry->setName("quad");
+    
         quad_vertices = new osg::Vec3Array(numParticles*4);
         quad_offsets = new osg::Vec2Array(numParticles*4);
 
@@ -225,6 +355,8 @@ void createGeometry(unsigned int numParticles,
     osg::Vec2Array* line_offsets = 0;
     if (line_geometry)
     {
+        line_geometry->setName("line");
+
         line_vertices = new osg::Vec3Array(numParticles*2);
         line_offsets = new osg::Vec2Array(numParticles*2);
 
@@ -238,6 +370,8 @@ void createGeometry(unsigned int numParticles,
     osg::Vec2Array* point_offsets = 0;
     if (point_geometry)
     {
+        point_geometry->setName("point");
+
         point_vertices = new osg::Vec3Array(numParticles);
         point_offsets = new osg::Vec2Array(numParticles);
 
@@ -352,21 +486,19 @@ void setUpGeometries(unsigned int numParticles)
 }
 
 
-osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity)
+osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity, float nearTransition, float farTransition)
 {
     osg::LOD* lod = new osg::LOD;
     
-    // time taken to get from start to the end of cycle
-    float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
 
     // distance between start point and end of cyclce
     osg::Vec3 position(bb.xMin(), bb.yMin(), bb.zMax());
+
+    // time taken to get from start to the end of cycle
+    float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
     osg::Vec3 dv_i( bb.xMax()-bb.xMin(), 0.0f, 0.0f );
     osg::Vec3 dv_j( 0.0f, bb.yMax()-bb.yMin(), 0.0f );
     osg::Vec3 dv_k( velocity * period );
-
-    float nearDistance = 25.0;
-    float farDistance = 100.0;
     
     // high res LOD.
     {
@@ -376,45 +508,50 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         highres_geode->addDrawable(geometry);
 
+        geometry->setName("highres");
         geometry->setPosition(position);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(quad_geometry.get());
         geometry->setStateSet(quad_stateset.get());
         
-        lod->addChild( highres_geode, 0.0f, nearDistance );
+        lod->addChild( highres_geode, 0.0f, nearTransition );
     }
     
     // low res LOD
     {
         osg::Geode* lowres_geode = new osg::Geode;
 
+
         PrecipitationGeometry* geometry = new PrecipitationGeometry;
 
         lowres_geode->addDrawable(geometry);
 
+        geometry->setName("lowres");
         geometry->setPosition(position);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(point_geometry.get());
         geometry->setStateSet(point_stateset.get());
         
-        lod->addChild( lowres_geode, nearDistance, farDistance );
+        lod->addChild( lowres_geode, nearTransition, farTransition );
     }
 
 
     return lod;
 }
 
-osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity, unsigned int numParticles)
+osg::Node* createCellRainEffect(const PrecipatationParameters& parameters)
 {
     
-    unsigned int numX = 100;
-    unsigned int numY = 100;
+    unsigned int numX = parameters.numberOfCellsX;
+    unsigned int numY = parameters.numberOfCellsY;
     unsigned int numCells = numX*numY;
-    unsigned int numParticlesPerCell = numParticles/numCells;
+    unsigned int numParticlesPerCell = parameters.numberOfParticles/numCells;
 
     setUpGeometries(numParticlesPerCell);
     
-    std::cout<<"Effect total number of particles = "<<numParticles<<std::endl;
+    const osg::BoundingBox& bb = parameters.boundingBox;
+    
+    std::cout<<"Effect total number of particles = "<<parameters.numberOfParticles<<std::endl;
     std::cout<<"Number of cells = "<<numCells<<std::endl;
     std::cout<<"Number of particles per cell = "<<numParticlesPerCell<<std::endl;
     std::cout<<"Cell width = "<<(bb.xMax()-bb.xMin())/(float)(numX)<<std::endl;
@@ -433,7 +570,7 @@ osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& vel
                                      bb.yMin() + ((bb.yMax()-bb.yMin())*(float)(j+1))/(float)(numY),
                                      bb.zMax());
 
-            group->addChild(createRainEffect(bbLocal, velocity));
+            group->addChild(createRainEffect(bbLocal, parameters.particleVelocity, parameters.nearTransition, parameters.farTransition));
         }        
     }
     
@@ -443,16 +580,15 @@ osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& vel
     sgv.divide();
 #endif    
 
-#if 1
     osg::StateSet* stateset = group->getOrCreateStateSet();
 
     // time taken to get from start to the end of cycle
-    float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
+    float period = fabs((bb.zMax()-bb.zMin()) / parameters.particleVelocity.z());
 
     // distance between start point and end of cyclce
     osg::Vec3 dv_i( (bb.xMax()-bb.xMin())/(float)(numX), 0.0f, 0.0f );
     osg::Vec3 dv_j( 0.0f, (bb.yMax()-bb.yMin())/(float)(numY), 0.0f );
-    osg::Vec3 dv_k( velocity * period );
+    osg::Vec3 dv_k( parameters.particleVelocity * period );
 
     // set up uniforms
     // osg::Uniform* position_Uniform = new osg::Uniform("position",position);
@@ -479,19 +615,19 @@ osg::Node* createCellRainEffect(const osg::BoundingBox& bb, const osg::Vec3& vel
     osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
     stateset->setTextureAttribute(0, texture);
 
-    stateset->addUniform(new osg::Uniform("particleColour", osg::Vec4(0.6,0.6,0.6,1.0)));
-    stateset->addUniform(new osg::Uniform("particleSize", 0.02f));
+    stateset->addUniform(new osg::Uniform("particleColour", parameters.particleColour));
+    stateset->addUniform(new osg::Uniform("particleSize", parameters.particleSize));
   
     osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
     stateset->addUniform(previousModelViewUniform);
     
     group->setCullCallback(new CullCallback(previousModelViewUniform));
-#endif
+
 
     return group;
 }
 
-osg::Node* createModel(osg::Node* loadedModel, bool /*useShaders*/)
+osg::Node* createModel(osg::Node* loadedModel, PrecipatationParameters& parameters)
 {
     osg::Group* group = new osg::Group;
 
@@ -506,6 +642,8 @@ osg::Node* createModel(osg::Node* loadedModel, bool /*useShaders*/)
         osg::BoundingSphere bs = loadedModel->getBound();
 
         bb.set( -500, -500, 0, +500, +500, 10);
+        
+        parameters.boundingBox = bb;
         
         osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
         
@@ -530,7 +668,7 @@ osg::Node* createModel(osg::Node* loadedModel, bool /*useShaders*/)
                 
     }
     
-    group->addChild(createCellRainEffect(bb, velocity, numParticles));
+    group->addChild(createCellRainEffect(parameters));
 
     return group;    
 }
@@ -559,9 +697,21 @@ int main( int argc, char **argv )
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
-    bool shader = true;
-    while (arguments.read("--shader")) shader = true;
-    while (arguments.read("--fixed")) shader = false;
+    PrecipatationParameters parameters;
+
+    float intensity;
+    while (arguments.read("--snow", intensity)) parameters.snow(intensity);
+    while (arguments.read("--rain", intensity)) parameters.rain(intensity);
+
+    float particleSize;
+    while (arguments.read("--particleSize", particleSize)) parameters.particleSize = particleSize;
+
+    osg::Vec3 particleVelocity;
+    while (arguments.read("--particleVelocity", particleVelocity.x(), particleVelocity.y(), particleVelocity.z() )) parameters.particleVelocity = particleVelocity;
+
+    float transition;
+    while (arguments.read("--nearTransition", transition )) parameters.nearTransition = transition;
+    while (arguments.read("--farTransition", transition )) parameters.farTransition = transition;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -586,7 +736,7 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     
-    loadedModel = createModel(loadedModel.get(), shader);
+    loadedModel = createModel(loadedModel.get(), parameters);
 
     // if no model has been successfully loaded report failure.
     if (!loadedModel) 

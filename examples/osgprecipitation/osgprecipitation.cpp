@@ -44,7 +44,9 @@ struct PrecipatationParameters : public osg::Referenced
         fogEnd(1000.0),
         fogColour(0.5, 0.5, 0.5, 1.0),
         clearColour(0.5, 0.5, 0.5, 1.0)
-    {}
+    {
+        rain(0.5);
+    }
 
     void rain (float intensity)
     {
@@ -158,7 +160,7 @@ public:
             const Extensions* extensions = getExtensions(state.getContextID(),true);
 
             glNormal3fv(_position.ptr());
-            extensions->glMultiTexCoord1f(GL_TEXTURE1, _startTime);
+            extensions->glMultiTexCoord1f(GL_TEXTURE0+1, _startTime);
 
             _internalGeometry->draw(state);
             
@@ -443,9 +445,72 @@ void setUpGeometries(unsigned int numParticles)
         quad_stateset->setAttribute(program);
         quad_stateset->setRenderBinDetails(13,"DepthSortedBin");
 
+#if 1
+        char vertexShaderSource[] = 
+            "uniform vec3 dv_i;\n"
+            "uniform vec3 dv_j;\n"
+            "uniform vec3 dv_k;\n"
+            "\n"
+            "uniform float inversePeriod;\n"
+            "uniform vec4 particleColour;\n"
+            "uniform float particleSize;\n"
+            "\n"
+            "uniform float osg_FrameTime;\n"
+            "uniform float osg_DeltaFrameTime;\n"
+            "uniform mat4 previousModelViewMatrix;\n"
+            "\n"
+            "varying vec4 colour;\n"
+            "varying vec2 texCoord;\n"
+            "\n"
+            "void main(void)\n"
+            "{\n"
+            "    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);\n"
+            "    \n"
+            "    float offset = gl_Vertex.z;\n"
+            "    texCoord = gl_MultiTexCoord0.xy;\n"
+            "    float startTime = gl_MultiTexCoord1.x;\n"
+            "\n"
+            "    vec3 v_previous = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
+            "    vec3 v_current = v_previous + dv_k * (osg_DeltaFrameTime*inversePeriod);\n"
+            "    \n"
+            "    colour = particleColour;\n"
+            "    \n"
+            "    vec4 v1 = gl_ModelViewMatrix * vec4(v_current,1.0);\n"
+            "    vec4 v2 = previousModelViewMatrix * vec4(v_previous,1.0);\n"
+            "    \n"
+            "    vec3 dv = v2.xyz - v1.xyz;\n"
+            "    \n"
+            "    vec2 dv_normalized = normalize(dv.xy);\n"
+            "    dv.xy += dv_normalized * particleSize;\n"
+            "    vec2 dp = vec2( -dv_normalized.y, dv_normalized.x ) * particleSize;\n"
+            "    \n"
+            "    float area = length(dv.xy);\n"
+            "    colour.a = 0.05+(particleSize)/area;\n"
+            "    \n"
+            "\n"
+            "    v1.xyz += dv*texCoord.y;\n"
+            "    v1.xy += dp*texCoord.x;\n"
+            "    \n"
+            "    gl_Position = gl_ProjectionMatrix * v1;\n"
+            "}\n";
+
+        char fragmentShaderSource[] = 
+            "uniform sampler2D baseTexture;\n"
+            "varying vec2 texCoord;\n"
+            "varying vec4 colour;\n"
+            "\n"
+            "void main (void)\n"
+            "{\n"
+            "    gl_FragColor = colour * texture2D( baseTexture, texCoord);\n"
+            "}\n";
+
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
+#else
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("quad_rain.vert")));
         program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
+#endif
     }
 
 
@@ -459,9 +524,70 @@ void setUpGeometries(unsigned int numParticles)
         line_stateset->setAttribute(program);
         line_stateset->setRenderBinDetails(12,"DepthSortedBin");
 
+#if 1
+        char vertexShaderSource[] = 
+            "uniform vec3 dv_i;\n"
+            "uniform vec3 dv_j;\n"
+            "uniform vec3 dv_k;\n"
+            "\n"
+            "uniform float inversePeriod;\n"
+            "uniform vec4 particleColour;\n"
+            "uniform float particleSize;\n"
+            "\n"
+            "uniform float osg_FrameTime;\n"
+            "uniform float osg_DeltaFrameTime;\n"
+            "uniform mat4 previousModelViewMatrix;\n"
+            "\n"
+            "varying vec4 colour;\n"
+            "varying vec2 texCoord;\n"
+            "\n"
+            "void main(void)\n"
+            "{\n"
+            "    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);\n"
+            "    \n"
+            "\n"
+            "    float offset = gl_Vertex.z;\n"
+            "    texCoord = gl_MultiTexCoord0.xy;\n"
+            "    float startTime = gl_MultiTexCoord1.x;\n"
+            "\n"
+            "    vec3 v_previous = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
+            "    vec3 v_current = v_previous + dv_k * (osg_DeltaFrameTime*inversePeriod);\n"
+            "    \n"
+            "    colour = particleColour;\n"
+            "    \n"
+            "    vec4 v1 = gl_ModelViewMatrix * vec4(v_current,1.0);\n"
+            "    vec4 v2 = previousModelViewMatrix * vec4(v_previous,1.0);\n"
+            "    \n"
+            "    vec3 dv = v2.xyz - v1.xyz;\n"
+            "    \n"
+            "    vec2 dv_normalized = normalize(dv.xy);\n"
+            "    dv.xy += dv_normalized * particleSize;\n"
+            "    \n"
+            "    float area = length(dv.xy);\n"
+            "    colour.a = 0.1+(particleSize)/area;\n"
+            "    \n"
+            "    v1.xyz += dv*texCoord.y;\n"
+            "    \n"
+            "    gl_Position = gl_ProjectionMatrix * v1;\n"
+            "}";
+
+        char fragmentShaderSource[] = 
+            "uniform sampler2D baseTexture;\n"
+            "varying vec2 texCoord;\n"
+            "varying vec4 colour;\n"
+            "\n"
+            "void main (void)\n"
+            "{\n"
+            "    gl_FragColor = colour * texture2D( baseTexture, texCoord);\n"
+            "}\n";
+
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
+#else
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("line_rain.vert")));
         program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
+#endif
     }
 
 
@@ -474,9 +600,59 @@ void setUpGeometries(unsigned int numParticles)
         osg::Program* program = new osg::Program;
         point_stateset->setAttribute(program);
 
+#if 1
+        char vertexShaderSource[] = 
+            "uniform vec3 dv_i;\n"
+            "uniform vec3 dv_j;\n"
+            "uniform vec3 dv_k;\n"
+            "\n"
+            "uniform float inversePeriod;\n"
+            "uniform vec4 particleColour;\n"
+            "uniform float particleSize;\n"
+            "\n"
+            "uniform float osg_FrameTime;\n"
+            "\n"
+            "varying vec4 colour;\n"
+            "varying vec2 texCoord;\n"
+            "\n"
+            "void main(void)\n"
+            "{\n"
+            "    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);\n"
+            "    texCoord = gl_MultiTexCoord0.xy;\n"
+            "\n"
+            "    float startTime = gl_MultiTexCoord1.x;\n"
+            "\n"
+            "    vec3 v_current = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - gl_Vertex.z);\n"
+            "   \n"
+            "    colour = particleColour;\n"
+            "\n"
+            "    gl_Position = gl_ModelViewProjectionMatrix * vec4(v_current,1.0);\n"
+            "\n"
+            "    //float pointSize = min(abs(1280*particleSize / gl_Position.w), 20.0);\n"
+            "    float pointSize = abs(1280*particleSize / gl_Position.w);\n"
+            "    //gl_PointSize = max(ceil(pointSize),2);\n"
+            "    gl_PointSize = ceil(pointSize);\n"
+            "    \n"
+            "    colour.a = 0.05+(pointSize*pointSize)/(gl_PointSize*gl_PointSize);\n"
+            "}\n";
+
+        char fragmentShaderSource[] = 
+            "uniform sampler2D baseTexture;\n"
+            "varying vec2 texCoord;\n"
+            "varying vec4 colour;\n"
+            "\n"
+            "void main (void)\n"
+            "{\n"
+            "    gl_FragColor = colour * texture2D( baseTexture, texCoord);\n"
+            "}\n";
+
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
+#else
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("point_rain.vert")));
         program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
+#endif
 
         /// Setup the point sprites
         osg::PointSprite *sprite = new osg::PointSprite();
@@ -484,7 +660,6 @@ void setUpGeometries(unsigned int numParticles)
 
         point_stateset->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
         point_stateset->setRenderBinDetails(11,"DepthSortedBin");
-
     }
 
     createGeometry(numParticles, quad_geometry.get(), line_geometry.get(), point_geometry.get());

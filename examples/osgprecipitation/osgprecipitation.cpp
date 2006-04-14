@@ -42,31 +42,40 @@ struct PrecipatationParameters : public osg::Referenced
         fogDensity(0.001),
         fogExponent(1.0),
         fogEnd(1000.0),
-        fogColour(0.5, 0.5, 0.5, 1.0)
+        fogColour(0.5, 0.5, 0.5, 1.0),
+        clearColour(0.5, 0.5, 0.5, 1.0)
     {}
 
     void rain (float intensity)
     {
         particleVelocity = osg::Vec3(0.0,0.0,-2.0) + osg::Vec3(0.0,0.0,-10.0)*intensity;
         particleSize = 0.01 + 0.02*intensity;
-        numberOfParticles = intensity * 100000000;
         particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0) -  osg::Vec4(0.1, 0.1, 0.1, 1.0)* intensity;
+        numberOfParticles = intensity * 85000000;
+        numberOfCellsX = 50 + (int)(150.0f*intensity);
+        numberOfCellsY = 50 + (int)(150.0f*intensity);
+        farTransition = 140.0f - 100.0f*intensity;
         fogExponent = 1.0f;
         fogDensity = 0.01f*intensity;
         fogEnd = 250/(0.01 + intensity);
-        farTransition = 150.0f - 100.0f*intensity;
+        fogColour.set(0.5, 0.5, 0.5, 1.0);
+        clearColour.set(0.5, 0.5, 0.5, 1.0);
     }
 
     void snow(float intensity)
     {
         particleVelocity = osg::Vec3(0.0,0.0,-1.0) + osg::Vec3(0.0,0.0,-0.5)*intensity;
         particleSize = 0.02 + 0.03*intensity;
-        numberOfParticles = intensity * 100000000;
         particleColour = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
+        numberOfParticles = intensity * 80000000;
+        numberOfCellsX = 50 + (int)(150.0f*intensity);
+        numberOfCellsY = 50 + (int)(150.0f*intensity);
+        farTransition = 140.0f - 100.0f*intensity;
         fogExponent = 1.0f;
         fogDensity = 0.02f*intensity;
         fogEnd = 150.0f/(0.01f + intensity);
-        farTransition = 150.0f - 100.0f*intensity;
+        fogColour.set(0.6, 0.6, 0.6, 1.0);
+        clearColour.set(0.6, 0.6, 0.6, 1.0);
     }
 
     osg::BoundingBox    boundingBox;
@@ -83,6 +92,7 @@ struct PrecipatationParameters : public osg::Referenced
     float               fogDensity;
     float               fogEnd;
     osg::Vec4           fogColour;
+    osg::Vec4           clearColour;
 };
 
 struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
@@ -752,6 +762,9 @@ int main( int argc, char **argv )
     while (arguments.read("--fogColor", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
     while (arguments.read("--fogColour", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
  
+
+    viewer.setClearColor(parameters.clearColour);
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {

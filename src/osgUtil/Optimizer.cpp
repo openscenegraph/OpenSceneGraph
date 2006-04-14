@@ -788,6 +788,8 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
         osgUtil::TransformAttributeFunctor tf(matrix);
         drawable->accept(tf);
         drawable->dirtyBound();
+        drawable->dirtyDisplayList();
+
         return;
     }
 

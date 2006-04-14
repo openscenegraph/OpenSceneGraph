@@ -3,7 +3,6 @@ uniform vec3 dv_j;
 uniform vec3 dv_k;
 
 uniform float inversePeriod;
-uniform float startTime;
 uniform vec4 particleColour;
 uniform float particleSize;
 
@@ -18,8 +17,10 @@ void main(void)
 {
     vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
     
+
     float offset = gl_Vertex.z;
     texCoord = gl_MultiTexCoord0.xy;
+    float startTime = gl_MultiTexCoord1.x;
 
     vec3 v_previous = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - offset);
     vec3 v_current = v_previous + dv_k * (osg_DeltaFrameTime*inversePeriod);

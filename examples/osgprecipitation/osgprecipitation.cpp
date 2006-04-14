@@ -39,8 +39,10 @@ struct PrecipatationParameters : public osg::Referenced
         numberOfCellsZ(1),
         nearTransition(25.0),
         farTransition(100.0),
-        fogDensity(0.1),
-        fogEnd(1000.0)
+        fogDensity(0.001),
+        fogExponent(1.0),
+        fogEnd(1000.0),
+        fogColour(0.5, 0.5, 0.5, 1.0)
     {}
 
     void rain (float intensity)
@@ -48,9 +50,11 @@ struct PrecipatationParameters : public osg::Referenced
         particleVelocity = osg::Vec3(0.0,0.0,-2.0) + osg::Vec3(0.0,0.0,-10.0)*intensity;
         particleSize = 0.01 + 0.02*intensity;
         numberOfParticles = intensity * 100000000;
-        particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0);
-        fogDensity = intensity;
+        particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0) -  osg::Vec4(0.1, 0.1, 0.1, 1.0)* intensity;
+        fogExponent = 1.0f;
+        fogDensity = 0.01f*intensity;
         fogEnd = 250/(0.01 + intensity);
+        farTransition = 150.0f - 100.0f*intensity;
     }
 
     void snow(float intensity)
@@ -58,9 +62,11 @@ struct PrecipatationParameters : public osg::Referenced
         particleVelocity = osg::Vec3(0.0,0.0,-1.0) + osg::Vec3(0.0,0.0,-0.5)*intensity;
         particleSize = 0.02 + 0.03*intensity;
         numberOfParticles = intensity * 100000000;
-        particleColour = osg::Vec4(0.8, 0.8, 0.8, 1.0);
-        fogDensity = intensity;
-        fogEnd = 150/(0.01 + intensity);
+        particleColour = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
+        fogExponent = 1.0f;
+        fogDensity = 0.02f*intensity;
+        fogEnd = 150.0f/(0.01f + intensity);
+        farTransition = 150.0f - 100.0f*intensity;
     }
 
     osg::BoundingBox    boundingBox;
@@ -73,8 +79,10 @@ struct PrecipatationParameters : public osg::Referenced
     unsigned int        numberOfCellsZ;
     float               nearTransition;
     float               farTransition;
+    float               fogExponent;
     float               fogDensity;
     float               fogEnd;
+    osg::Vec4           fogColour;
 };
 
 struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
@@ -88,34 +96,6 @@ struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
     /** do customized cull code, return true if drawable should be culled.*/
     virtual bool cull(osg::NodeVisitor* nodeVisitor, osg::Drawable* drawable, osg::State* state) const
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nodeVisitor);
-        if (cv)
-        {
-            float distance = nodeVisitor->getDistanceFromEyePoint(drawable->getBound().center(),true);
-
-//            if (distance<-4.0) return true;
-            
-#if 0
-            
-            const osg::BoundingBox& bb = drawable->getBound();
-            const osg::Polytope& frustum = cv->getCurrentCullingSet().getFrustum();
-            int numPointsInside = 0;
-            for(unsigned int i=0; i<8; ++i)
-            {
-                if (frustum.contains(bb.corner(i))) ++numPointsInside;
-            }
-        
-            std::cout<<" "<<drawable->getName()<<" distance "<<distance<<"num Points inside = "<<numPointsInside<<std::endl;
-
-            if (cv->isCulled(drawable->getBound()))
-            {
-                std::cout<<" isCulled "<<drawable->getName()<<std::endl;
-                return true;
-            }
-#endif
-
-        }
-    
         return false;
     }
 };
@@ -143,8 +123,11 @@ public:
         
         void setPosition(const osg::Vec3& position) { _position = position; }
         const osg::Vec3& getPosition() const { return _position; }
-
         
+        void setStartTime(float time) { _startTime = time; }
+        float getStartTime() const { return _startTime; }
+
+
         virtual void compileGLObjects(osg::State& state) const
         {
             if (!_internalGeometry) return;
@@ -161,7 +144,10 @@ public:
         {
             if (!_internalGeometry) return;
             
+            const Extensions* extensions = getExtensions(state.getContextID(),true);
+
             glNormal3fv(_position.ptr());
+            extensions->glMultiTexCoord1f(GL_TEXTURE1, _startTime);
 
             _internalGeometry->draw(state);
             
@@ -214,6 +200,7 @@ public:
 protected:        
 
         osg::Vec3                   _position;
+        float                       _startTime;
         osg::ref_ptr<osg::Geometry> _internalGeometry;
 
 };
@@ -507,6 +494,8 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
     osg::Vec3 dv_i( bb.xMax()-bb.xMin(), 0.0f, 0.0f );
     osg::Vec3 dv_j( 0.0f, bb.yMax()-bb.yMin(), 0.0f );
     osg::Vec3 dv_k( velocity * period );
+
+    float startTime = random(0, period);
     
     // high res LOD.
     {
@@ -518,6 +507,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         geometry->setName("highres");
         geometry->setPosition(position);
+        geometry->setStartTime(startTime);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(quad_geometry.get());
         geometry->setStateSet(quad_stateset.get());
@@ -536,6 +526,7 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         geometry->setName("lowres");
         geometry->setPosition(position);
+        geometry->setStartTime(startTime);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(point_geometry.get());
         geometry->setStateSet(point_stateset.get());
@@ -605,14 +596,14 @@ osg::Node* createCellRainEffect(const PrecipatationParameters& parameters)
     osg::Uniform* dv_k_Uniform = new osg::Uniform("dv_k",dv_k);
 
     osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/period);
-    osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
+    //osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
 
     //stateset->addUniform(position_Uniform); // vec3
     stateset->addUniform(dv_i_Uniform); // vec3 could be float 
     stateset->addUniform(dv_j_Uniform); // vec3 could be float
     stateset->addUniform(dv_k_Uniform); // vec3
     stateset->addUniform(inversePeriodUniform); // float
-    stateset->addUniform(startTime); // float
+    //stateset->addUniform(startTime); // float
 
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
@@ -656,11 +647,24 @@ osg::Node* createModel(osg::Node* loadedModel, PrecipatationParameters& paramete
         osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
         
         osg::Fog* fog = new osg::Fog;
-        fog->setMode(osg::Fog::LINEAR);
+        
+        if (parameters.fogExponent<1.0)
+        {
+            fog->setMode(osg::Fog::LINEAR);
+        }
+        else if (parameters.fogExponent<2.0)
+        {
+            fog->setMode(osg::Fog::EXP);
+        }
+        else
+        {
+            fog->setMode(osg::Fog::EXP2);
+        }
+        
         fog->setDensity(parameters.fogDensity);
         fog->setStart(0.0f);
         fog->setEnd(parameters.fogEnd);
-        fog->setColor(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
+        fog->setColor(parameters.fogColour);
         stateset->setAttributeAndModes(fog, osg::StateAttribute::ON);
         
         osg::LightSource* lightSource = new osg::LightSource;
@@ -692,8 +696,16 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example provides an interactive viewer for visualising point clouds..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--shader","Use GLSL shaders.");
-    arguments.getApplicationUsage()->addCommandLineOption("--fixed","Use fixed function pipeline.");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("","");
     
 
     // construct the viewer.
@@ -712,6 +724,8 @@ int main( int argc, char **argv )
     while (arguments.read("--rain", intensity)) parameters.rain(intensity);
 
     while (arguments.read("--particleSize", parameters.particleSize)) {}
+    while (arguments.read("--particleColor", parameters.particleColour.r(), parameters.particleColour.g(), parameters.particleColour.b(), parameters.particleColour.a())) {}
+    while (arguments.read("--particleColour", parameters.particleColour.r(), parameters.particleColour.g(), parameters.particleColour.b(), parameters.particleColour.a())) {}
 
     osg::Vec3 particleVelocity;
     while (arguments.read("--particleVelocity", particleVelocity.x(), particleVelocity.y(), particleVelocity.z() )) parameters.particleVelocity = particleVelocity;
@@ -733,7 +747,10 @@ int main( int argc, char **argv )
                                            parameters.boundingBox.zMax())) {}
 
     while (arguments.read("--fogDensity", parameters.fogDensity )) {}
+    while (arguments.read("--fogExponent", parameters.fogExponent )) {}
     while (arguments.read("--fogEnd", parameters.fogEnd )) {}
+    while (arguments.read("--fogColor", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
+    while (arguments.read("--fogColour", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
  
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

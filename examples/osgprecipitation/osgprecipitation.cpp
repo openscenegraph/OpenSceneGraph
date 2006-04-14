@@ -39,8 +39,8 @@ struct PrecipatationParameters : public osg::Referenced
         numberOfCellsZ(1),
         nearTransition(25.0),
         farTransition(100.0),
-        fogDensity(0.001),
         fogExponent(1.0),
+        fogDensity(0.001),
         fogEnd(1000.0),
         fogColour(0.5, 0.5, 0.5, 1.0),
         clearColour(0.5, 0.5, 0.5, 1.0)
@@ -51,12 +51,12 @@ struct PrecipatationParameters : public osg::Referenced
         particleVelocity = osg::Vec3(0.0,0.0,-2.0) + osg::Vec3(0.0,0.0,-10.0)*intensity;
         particleSize = 0.01 + 0.02*intensity;
         particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0) -  osg::Vec4(0.1, 0.1, 0.1, 1.0)* intensity;
-        numberOfParticles = intensity * 85000000;
-        numberOfCellsX = 50 + (int)(150.0f*intensity);
-        numberOfCellsY = 50 + (int)(150.0f*intensity);
+        numberOfParticles = (int)(intensity * 85000000.0f);
+        numberOfCellsX = 100 + (int)(100.0f*intensity);
+        numberOfCellsY = 100 + (int)(100.0f*intensity);
         farTransition = 140.0f - 100.0f*intensity;
         fogExponent = 1.0f;
-        fogDensity = 0.01f*intensity;
+        fogDensity = 0.005f*intensity;
         fogEnd = 250/(0.01 + intensity);
         fogColour.set(0.5, 0.5, 0.5, 1.0);
         clearColour.set(0.5, 0.5, 0.5, 1.0);
@@ -67,9 +67,9 @@ struct PrecipatationParameters : public osg::Referenced
         particleVelocity = osg::Vec3(0.0,0.0,-1.0) + osg::Vec3(0.0,0.0,-0.5)*intensity;
         particleSize = 0.02 + 0.03*intensity;
         particleColour = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
-        numberOfParticles = intensity * 80000000;
-        numberOfCellsX = 50 + (int)(150.0f*intensity);
-        numberOfCellsY = 50 + (int)(150.0f*intensity);
+        numberOfParticles = (int)(intensity * 82000000.0f);
+        numberOfCellsX = 100 + (int)(100.0f*intensity);
+        numberOfCellsY = 100 + (int)(100.0f*intensity);
         farTransition = 140.0f - 100.0f*intensity;
         fogExponent = 1.0f;
         fogDensity = 0.02f*intensity;
@@ -95,6 +95,7 @@ struct PrecipatationParameters : public osg::Referenced
     osg::Vec4           clearColour;
 };
 
+#if 0
 struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
 {
     PrecipitationCullCallback() {}
@@ -109,7 +110,7 @@ struct PrecipitationCullCallback : public virtual osg::Drawable::CullCallback
         return false;
     }
 };
-
+#endif
 
 class PrecipitationGeometry : public osg::Geometry
 {
@@ -119,7 +120,7 @@ public:
         {
             setSupportsDisplayList(false);
             
-            setCullCallback(new PrecipitationCullCallback());
+            // setCullCallback(new PrecipitationCullCallback());
         }
 
         virtual bool supports(const osg::PrimitiveFunctor&) const { return false; }
@@ -641,8 +642,6 @@ osg::Node* createModel(osg::Node* loadedModel, PrecipatationParameters& paramete
     osg::Group* group = new osg::Group;
 
     osg::BoundingBox bb(0.0, 0.0, 0.0, 100.0, 100.0, 100.0);
-    osg::Vec3 velocity(0.0,2.0,-8.0);
-    unsigned int numParticles = 50000000;
     
     if (loadedModel)
     {

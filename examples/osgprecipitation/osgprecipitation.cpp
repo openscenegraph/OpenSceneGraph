@@ -25,6 +25,8 @@
 #include <osg/PointSprite>
 #include <osg/io_utils>
 
+#define USE_LOCAL_SHADERS 1
+
 float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
 
 struct PrecipatationParameters : public osg::Referenced
@@ -436,6 +438,8 @@ static osg::ref_ptr<osg::StateSet> point_stateset = 0;
 
 void setUpGeometries(unsigned int numParticles)
 {
+    unsigned int renderBin = 11;
+
     {
         quad_geometry = new osg::Geometry;
         quad_geometry->setUseVertexBufferObjects(true);
@@ -443,9 +447,9 @@ void setUpGeometries(unsigned int numParticles)
         quad_stateset = new osg::StateSet;
         osg::Program* program = new osg::Program;
         quad_stateset->setAttribute(program);
-        quad_stateset->setRenderBinDetails(13,"DepthSortedBin");
+        quad_stateset->setRenderBinDetails(renderBin,"DepthSortedBin");
 
-#if 1
+#ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
             "uniform vec3 dv_i;\n"
             "uniform vec3 dv_j;\n"
@@ -522,9 +526,9 @@ void setUpGeometries(unsigned int numParticles)
 
         osg::Program* program = new osg::Program;
         line_stateset->setAttribute(program);
-        line_stateset->setRenderBinDetails(12,"DepthSortedBin");
+        line_stateset->setRenderBinDetails(renderBin,"DepthSortedBin");
 
-#if 1
+#ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
             "uniform vec3 dv_i;\n"
             "uniform vec3 dv_j;\n"
@@ -600,7 +604,7 @@ void setUpGeometries(unsigned int numParticles)
         osg::Program* program = new osg::Program;
         point_stateset->setAttribute(program);
 
-#if 1
+#ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
             "uniform vec3 dv_i;\n"
             "uniform vec3 dv_j;\n"
@@ -628,8 +632,7 @@ void setUpGeometries(unsigned int numParticles)
             "\n"
             "    gl_Position = gl_ModelViewProjectionMatrix * vec4(v_current,1.0);\n"
             "\n"
-            "    //float pointSize = min(abs(1280*particleSize / gl_Position.w), 20.0);\n"
-            "    float pointSize = abs(1280*particleSize / gl_Position.w);\n"
+            "    float pointSize = abs(1280.0*particleSize / gl_Position.w);\n"
             "    //gl_PointSize = max(ceil(pointSize),2);\n"
             "    gl_PointSize = ceil(pointSize);\n"
             "    \n"
@@ -659,7 +662,7 @@ void setUpGeometries(unsigned int numParticles)
         point_stateset->setTextureAttributeAndModes(0, sprite, osg::StateAttribute::ON);
 
         point_stateset->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
-        point_stateset->setRenderBinDetails(11,"DepthSortedBin");
+        point_stateset->setRenderBinDetails(renderBin,"DepthSortedBin");
     }
 
     createGeometry(numParticles, quad_geometry.get(), line_geometry.get(), point_geometry.get());

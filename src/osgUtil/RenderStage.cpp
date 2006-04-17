@@ -742,8 +742,10 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     
         useState = _graphicsContext->getState();
         useContext = _graphicsContext.get();
-        
         useThread = useContext->getGraphicsThread();
+        
+        // syncronize the frame stamps
+        useState->setFrameStamp(const_cast<osg::FrameStamp*>(state.getFrameStamp()));
         
         if (!useThread) useContext->makeCurrent();
     }

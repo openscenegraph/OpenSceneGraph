@@ -24,8 +24,8 @@ void main(void)
 
     gl_Position = gl_ModelViewProjectionMatrix * vec4(v_current,1.0);
 
-    //float pointSize = min(abs(1280*particleSize / gl_Position.w), 20.0);
-    float pointSize = abs(1280*particleSize / gl_Position.w);
+    float pointSize = abs(1280.0*particleSize / gl_Position.w);
+
     //gl_PointSize = max(ceil(pointSize),2);
     gl_PointSize = ceil(pointSize);
     

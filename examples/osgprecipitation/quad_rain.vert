@@ -1,33 +1,30 @@
-uniform vec3 dv_i;
-uniform vec3 dv_j;
-uniform vec3 dv_k;
-
 uniform float inversePeriod;
 uniform vec4 particleColour;
 uniform float particleSize;
 
 uniform float osg_FrameTime;
 uniform float osg_DeltaFrameTime;
-uniform mat4 previousModelViewMatrix;
 
 varying vec4 colour;
 varying vec2 texCoord;
 
 void main(void)
 {
-    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
-    
     float offset = gl_Vertex.z;
-    texCoord = gl_MultiTexCoord0.xy;
     float startTime = gl_MultiTexCoord1.x;
+    texCoord = gl_MultiTexCoord0.xy;
 
-    vec3 v_previous = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - offset);
-    vec3 v_current = v_previous + dv_k * (osg_DeltaFrameTime*inversePeriod);
+    vec4 v_previous = gl_Vertex;
+    v_previous.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);
     
+    vec4 v_current =  v_previous;
+    v_current.z += (osg_DeltaFrameTime*inversePeriod);
+    
+
     colour = particleColour;
     
-    vec4 v1 = gl_ModelViewMatrix * vec4(v_current,1.0);
-    vec4 v2 = previousModelViewMatrix * vec4(v_previous,1.0);
+    vec4 v1 = gl_ModelViewMatrix * v_current;
+    vec4 v2 = gl_TextureMatrix[0] * v_previous;
     
     vec3 dv = v2.xyz - v1.xyz;
     

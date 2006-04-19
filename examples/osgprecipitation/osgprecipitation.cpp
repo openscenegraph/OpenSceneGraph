@@ -45,7 +45,8 @@ struct PrecipatationParameters : public osg::Referenced
         fogDensity(0.001),
         fogEnd(1000.0),
         fogColour(0.5, 0.5, 0.5, 1.0),
-        clearColour(0.5, 0.5, 0.5, 1.0)
+        clearColour(0.5, 0.5, 0.5, 1.0),
+        useFarLineSegments(false)
     {
         rain(0.5);
     }
@@ -64,6 +65,7 @@ struct PrecipatationParameters : public osg::Referenced
         fogEnd = 250/(0.01 + intensity);
         fogColour.set(0.5, 0.5, 0.5, 1.0);
         clearColour.set(0.5, 0.5, 0.5, 1.0);
+        useFarLineSegments = false;
     }
 
     void snow(float intensity)
@@ -80,6 +82,7 @@ struct PrecipatationParameters : public osg::Referenced
         fogEnd = 150.0f/(0.01f + intensity);
         fogColour.set(0.6, 0.6, 0.6, 1.0);
         clearColour.set(0.6, 0.6, 0.6, 1.0);
+        useFarLineSegments = false;
     }
 
     osg::BoundingBox    boundingBox;
@@ -97,6 +100,7 @@ struct PrecipatationParameters : public osg::Referenced
     float               fogEnd;
     osg::Vec4           fogColour;
     osg::Vec4           clearColour;
+    bool                useFarLineSegments;
 };
 
 #if 0
@@ -139,6 +143,9 @@ public:
         void setPosition(const osg::Vec3& position) { _position = position; }
         const osg::Vec3& getPosition() const { return _position; }
         
+        void setScale(const osg::Vec3& scale) { _scale = scale; }
+        const osg::Vec3& getScale() const { return _scale; }
+        
         void setStartTime(float time) { _startTime = time; }
         float getStartTime() const { return _startTime; }
 
@@ -163,7 +170,41 @@ public:
 
             glNormal3fv(_position.ptr());
             extensions->glMultiTexCoord1f(GL_TEXTURE0+1, _startTime);
+            
+            glPushMatrix();
+            
+            osg::Matrix modelview = state.getModelViewMatrix();
+            modelview.preMult(osg::Matrix::translate(_position));
+            modelview.preMult(osg::Matrix::scale(_scale));
+            
+            bool isPoint = (_internalGeometry->getName()=="point");
+            
+            glLoadMatrix(modelview.ptr());
+            
+            if (!isPoint)
+            {
+                state.setActiveTextureUnit(0);
+                glMatrixMode( GL_TEXTURE );
 
+                glPushMatrix();
+
+                glLoadMatrix(_previousModelView.ptr());
+
+                _previousModelView = modelview;
+            }
+#if 0            
+            else
+            {
+                state.setActiveTextureUnit(0);
+                glMatrixMode( GL_TEXTURE );
+
+                glPushMatrix();
+
+                glLoadIdentity();
+
+                _previousModelView = modelview;
+            }      
+#endif                        
             _internalGeometry->draw(state);
             
             
@@ -205,6 +246,14 @@ public:
                 s_NumberPoints++;
                 s_NumberPointsVertices+= _internalGeometry->getVertexArray()->getNumElements();
             }
+        
+            if (!isPoint)
+            {
+                glPopMatrix();
+                glMatrixMode( GL_MODELVIEW );
+            }
+            
+            glPopMatrix();
         }
 
         virtual osg::BoundingBox computeBound() const
@@ -215,8 +264,10 @@ public:
 protected:        
 
         osg::Vec3                   _position;
+        osg::Vec3                   _scale;
         float                       _startTime;
         osg::ref_ptr<osg::Geometry> _internalGeometry;
+        mutable osg::Matrix                 _previousModelView;
 
 };
 
@@ -451,36 +502,33 @@ void setUpGeometries(unsigned int numParticles)
 
 #ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
-            "uniform vec3 dv_i;\n"
-            "uniform vec3 dv_j;\n"
-            "uniform vec3 dv_k;\n"
-            "\n"
             "uniform float inversePeriod;\n"
             "uniform vec4 particleColour;\n"
             "uniform float particleSize;\n"
             "\n"
             "uniform float osg_FrameTime;\n"
             "uniform float osg_DeltaFrameTime;\n"
-            "uniform mat4 previousModelViewMatrix;\n"
             "\n"
             "varying vec4 colour;\n"
             "varying vec2 texCoord;\n"
             "\n"
             "void main(void)\n"
             "{\n"
-            "    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);\n"
-            "    \n"
             "    float offset = gl_Vertex.z;\n"
-            "    texCoord = gl_MultiTexCoord0.xy;\n"
             "    float startTime = gl_MultiTexCoord1.x;\n"
+            "    texCoord = gl_MultiTexCoord0.xy;\n"
             "\n"
-            "    vec3 v_previous = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
-            "    vec3 v_current = v_previous + dv_k * (osg_DeltaFrameTime*inversePeriod);\n"
+            "    vec4 v_previous = gl_Vertex;\n"
+            "    v_previous.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
             "    \n"
+            "    vec4 v_current =  v_previous;\n"
+            "    v_current.z += (osg_DeltaFrameTime*inversePeriod);\n"
+            "    \n"
+            "\n"
             "    colour = particleColour;\n"
             "    \n"
-            "    vec4 v1 = gl_ModelViewMatrix * vec4(v_current,1.0);\n"
-            "    vec4 v2 = previousModelViewMatrix * vec4(v_previous,1.0);\n"
+            "    vec4 v1 = gl_ModelViewMatrix * v_current;\n"
+            "    vec4 v2 = gl_TextureMatrix[0] * v_previous;\n"
             "    \n"
             "    vec3 dv = v2.xyz - v1.xyz;\n"
             "    \n"
@@ -530,10 +578,6 @@ void setUpGeometries(unsigned int numParticles)
 
 #ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
-            "uniform vec3 dv_i;\n"
-            "uniform vec3 dv_j;\n"
-            "uniform vec3 dv_k;\n"
-            "\n"
             "uniform float inversePeriod;\n"
             "uniform vec4 particleColour;\n"
             "uniform float particleSize;\n"
@@ -547,20 +591,20 @@ void setUpGeometries(unsigned int numParticles)
             "\n"
             "void main(void)\n"
             "{\n"
-            "    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);\n"
-            "    \n"
-            "\n"
             "    float offset = gl_Vertex.z;\n"
-            "    texCoord = gl_MultiTexCoord0.xy;\n"
             "    float startTime = gl_MultiTexCoord1.x;\n"
+            "    texCoord = gl_MultiTexCoord0.xy;\n"
             "\n"
-            "    vec3 v_previous = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
-            "    vec3 v_current = v_previous + dv_k * (osg_DeltaFrameTime*inversePeriod);\n"
+            "    vec4 v_previous = gl_Vertex;\n"
+            "    v_previous.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
+            "    \n"
+            "    vec4 v_current =  v_previous;\n"
+            "    v_current.z += (osg_DeltaFrameTime*inversePeriod);\n"
             "    \n"
             "    colour = particleColour;\n"
             "    \n"
-            "    vec4 v1 = gl_ModelViewMatrix * vec4(v_current,1.0);\n"
-            "    vec4 v2 = previousModelViewMatrix * vec4(v_previous,1.0);\n"
+            "    vec4 v1 = gl_ModelViewMatrix * v_current;\n"
+            "    vec4 v2 = gl_TextureMatrix[0] * v_previous;\n"
             "    \n"
             "    vec3 dv = v2.xyz - v1.xyz;\n"
             "    \n"
@@ -568,12 +612,12 @@ void setUpGeometries(unsigned int numParticles)
             "    dv.xy += dv_normalized * particleSize;\n"
             "    \n"
             "    float area = length(dv.xy);\n"
-            "    colour.a = 0.1+(particleSize)/area;\n"
+            "    colour.a = (particleSize)/area;\n"
             "    \n"
             "    v1.xyz += dv*texCoord.y;\n"
             "    \n"
             "    gl_Position = gl_ProjectionMatrix * v1;\n"
-            "}";
+            "}\n";
 
         char fragmentShaderSource[] = 
             "uniform sampler2D baseTexture;\n"
@@ -606,10 +650,6 @@ void setUpGeometries(unsigned int numParticles)
 
 #ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
-            "uniform vec3 dv_i;\n"
-            "uniform vec3 dv_j;\n"
-            "uniform vec3 dv_k;\n"
-            "\n"
             "uniform float inversePeriod;\n"
             "uniform vec4 particleColour;\n"
             "uniform float particleSize;\n"
@@ -617,22 +657,21 @@ void setUpGeometries(unsigned int numParticles)
             "uniform float osg_FrameTime;\n"
             "\n"
             "varying vec4 colour;\n"
-            "varying vec2 texCoord;\n"
             "\n"
             "void main(void)\n"
             "{\n"
-            "    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);\n"
-            "    texCoord = gl_MultiTexCoord0.xy;\n"
-            "\n"
+            "    float offset = gl_Vertex.z;\n"
             "    float startTime = gl_MultiTexCoord1.x;\n"
             "\n"
-            "    vec3 v_current = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - gl_Vertex.z);\n"
+            "    vec4 v_current = gl_Vertex;\n"
+            "    v_current.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
             "   \n"
             "    colour = particleColour;\n"
             "\n"
-            "    gl_Position = gl_ModelViewProjectionMatrix * vec4(v_current,1.0);\n"
+            "    gl_Position = gl_ModelViewProjectionMatrix * v_current;\n"
             "\n"
             "    float pointSize = abs(1280.0*particleSize / gl_Position.w);\n"
+            "\n"
             "    //gl_PointSize = max(ceil(pointSize),2);\n"
             "    gl_PointSize = ceil(pointSize);\n"
             "    \n"
@@ -641,12 +680,11 @@ void setUpGeometries(unsigned int numParticles)
 
         char fragmentShaderSource[] = 
             "uniform sampler2D baseTexture;\n"
-            "varying vec2 texCoord;\n"
             "varying vec4 colour;\n"
             "\n"
             "void main (void)\n"
             "{\n"
-            "    gl_FragColor = colour * texture2D( baseTexture, texCoord);\n"
+            "    gl_FragColor = colour * texture2D( baseTexture, gl_TexCoord[0]);\n"
             "}\n";
 
         program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
@@ -654,7 +692,7 @@ void setUpGeometries(unsigned int numParticles)
 #else
         // get shaders from source
         program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile("point_rain.vert")));
-        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("rain.frag")));
+        program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile("point_rain.frag")));
 #endif
 
         /// Setup the point sprites
@@ -670,7 +708,7 @@ void setUpGeometries(unsigned int numParticles)
 }
 
 
-osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocity, float nearTransition, float farTransition)
+osg::Node* createRainEffect(const osg::BoundingBox& bb, const PrecipatationParameters& parameters)
 {
     osg::LOD* lod = new osg::LOD;
     
@@ -679,10 +717,12 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
     osg::Vec3 position(bb.xMin(), bb.yMin(), bb.zMax());
 
     // time taken to get from start to the end of cycle
-    float period = fabs((bb.zMax()-bb.zMin()) / velocity.z());
+    float period = fabs((bb.zMax()-bb.zMin()) / parameters.particleVelocity.z());
     osg::Vec3 dv_i( bb.xMax()-bb.xMin(), 0.0f, 0.0f );
     osg::Vec3 dv_j( 0.0f, bb.yMax()-bb.yMin(), 0.0f );
-    osg::Vec3 dv_k( velocity * period );
+    osg::Vec3 dv_k( parameters.particleVelocity * period );
+
+    osg::Vec3 scale( bb.xMax()-bb.xMin(), bb.yMax()-bb.yMin(), parameters.particleVelocity.z() * period);
 
     float startTime = random(0, period);
     
@@ -696,15 +736,17 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         geometry->setName("highres");
         geometry->setPosition(position);
+        geometry->setScale(scale);
         geometry->setStartTime(startTime);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(quad_geometry.get());
         geometry->setStateSet(quad_stateset.get());
         
-        lod->addChild( highres_geode, 0.0f, nearTransition );
+        lod->addChild( highres_geode, 0.0f, parameters.nearTransition );
     }
-    
-    // low res LOD
+
+
+    if (parameters.useFarLineSegments)
     {
         osg::Geode* lowres_geode = new osg::Geode;
 
@@ -715,12 +757,32 @@ osg::Node* createRainEffect(const osg::BoundingBox& bb, const osg::Vec3& velocit
 
         geometry->setName("lowres");
         geometry->setPosition(position);
+        geometry->setScale(scale);
+        geometry->setStartTime(startTime);
+        geometry->setInitialBound(bb);
+        geometry->setInternalGeometry(line_geometry.get());
+        geometry->setStateSet(line_stateset.get());
+        
+        lod->addChild( lowres_geode, parameters.nearTransition, parameters.farTransition );
+    }
+    else
+    {
+        osg::Geode* lowres_geode = new osg::Geode;
+
+
+        PrecipitationGeometry* geometry = new PrecipitationGeometry;
+
+        lowres_geode->addDrawable(geometry);
+
+        geometry->setName("lowres");
+        geometry->setPosition(position);
+        geometry->setScale(scale);
         geometry->setStartTime(startTime);
         geometry->setInitialBound(bb);
         geometry->setInternalGeometry(point_geometry.get());
         geometry->setStateSet(point_stateset.get());
         
-        lod->addChild( lowres_geode, nearTransition, farTransition );
+        lod->addChild( lowres_geode, parameters.nearTransition, parameters.farTransition );
     }
 
 
@@ -758,7 +820,7 @@ osg::Node* createCellRainEffect(const PrecipatationParameters& parameters)
                                      bb.yMin() + ((bb.yMax()-bb.yMin())*(float)(j+1))/(float)(numY),
                                      bb.zMax());
 
-            group->addChild(createRainEffect(bbLocal, parameters.particleVelocity, parameters.nearTransition, parameters.farTransition));
+            group->addChild(createRainEffect(bbLocal, parameters));
         }        
     }
     
@@ -778,19 +840,10 @@ osg::Node* createCellRainEffect(const PrecipatationParameters& parameters)
     osg::Vec3 dv_j( 0.0f, (bb.yMax()-bb.yMin())/(float)(numY), 0.0f );
     osg::Vec3 dv_k( parameters.particleVelocity * period );
 
-    // set up uniforms
-    // osg::Uniform* position_Uniform = new osg::Uniform("position",position);
-    osg::Uniform* dv_i_Uniform = new osg::Uniform("dv_i",dv_i);
-    osg::Uniform* dv_j_Uniform = new osg::Uniform("dv_j",dv_j);
-    osg::Uniform* dv_k_Uniform = new osg::Uniform("dv_k",dv_k);
 
     osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/period);
     //osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
 
-    //stateset->addUniform(position_Uniform); // vec3
-    stateset->addUniform(dv_i_Uniform); // vec3 could be float 
-    stateset->addUniform(dv_j_Uniform); // vec3 could be float
-    stateset->addUniform(dv_k_Uniform); // vec3
     stateset->addUniform(inversePeriodUniform); // float
     //stateset->addUniform(startTime); // float
 
@@ -806,10 +859,10 @@ osg::Node* createCellRainEffect(const PrecipatationParameters& parameters)
     stateset->addUniform(new osg::Uniform("particleColour", parameters.particleColour));
     stateset->addUniform(new osg::Uniform("particleSize", parameters.particleSize));
   
-    osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
-    stateset->addUniform(previousModelViewUniform);
+    // osg::Uniform* previousModelViewUniform = new osg::Uniform("previousModelViewMatrix",osg::Matrix());
+    // stateset->addUniform(previousModelViewUniform);
     
-    group->setCullCallback(new CullCallback(previousModelViewUniform));
+    // group->setCullCallback(new CullCallback(previousModelViewUniform));
 
 
     return group;
@@ -939,6 +992,7 @@ int main( int argc, char **argv )
     while (arguments.read("--fogColor", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
     while (arguments.read("--fogColour", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
  
+    while (arguments.read("--useFarLineSegments")) { parameters.useFarLineSegments = true; }
 
     viewer.setClearColor(parameters.clearColour);
 

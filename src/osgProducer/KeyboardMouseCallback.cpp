@@ -20,7 +20,15 @@ KeyboardMouseCallback::KeyboardMouseCallback(Producer::KeyboardMouse* keyboardMo
 void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm )
 {
     updateWindowSize();
-    if (_eventQueue.valid()) _eventQueue->mouseScroll((osgGA::GUIEventAdapter::ScrollingMotion)sm);
+    if (_eventQueue.valid()) 
+    {
+        switch(sm)
+        {
+            case(Producer::KeyboardMouseCallback::ScrollNone): break;
+            case(Producer::KeyboardMouseCallback::ScrollUp): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP); break;
+            case(Producer::KeyboardMouseCallback::ScrollDown): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN); break;
+        }
+    }
 }
 
 void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 

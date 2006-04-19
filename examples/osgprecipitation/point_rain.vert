@@ -1,7 +1,3 @@
-uniform vec3 dv_i;
-uniform vec3 dv_j;
-uniform vec3 dv_k;
-
 uniform float inversePeriod;
 uniform vec4 particleColour;
 uniform float particleSize;
@@ -9,20 +5,18 @@ uniform float particleSize;
 uniform float osg_FrameTime;
 
 varying vec4 colour;
-varying vec2 texCoord;
 
 void main(void)
 {
-    vec3 pos = gl_Normal.xyz + (gl_Vertex.x*dv_i) + (dv_j * gl_Vertex.y);
-    
-    texCoord = gl_MultiTexCoord0.xy;
+    float offset = gl_Vertex.z;
     float startTime = gl_MultiTexCoord1.x;
 
-    vec3 v_current = pos + dv_k * fract( (osg_FrameTime - startTime)*inversePeriod - gl_Vertex.z);
+    vec4 v_current = gl_Vertex;
+    v_current.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);
    
     colour = particleColour;
 
-    gl_Position = gl_ModelViewProjectionMatrix * vec4(v_current,1.0);
+    gl_Position = gl_ModelViewProjectionMatrix * v_current;
 
     float pointSize = abs(1280.0*particleSize / gl_Position.w);
 

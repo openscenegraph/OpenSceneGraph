@@ -140,13 +140,9 @@ void UFOManipulator::computeHomePosition()
     if (iv.hits())
     {
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(seg.get());
-        for(osgUtil::IntersectVisitor::HitList::iterator hitr=hitList.begin();
-            hitr!=hitList.end(); ++hitr)
-        {
-            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-            if( fabs(ip[2]) < ground )
-                ground = ip[2];
-        }
+        osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+        if( fabs(ip[2]) < ground )
+            ground = ip[2];
     }
     else
     {

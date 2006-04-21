@@ -4,7 +4,6 @@ uniform float particleSize;
 
 uniform float osg_FrameTime;
 uniform float osg_DeltaFrameTime;
-uniform mat4 previousModelViewMatrix;
 
 varying vec4 colour;
 varying vec2 texCoord;
@@ -21,6 +20,7 @@ void main(void)
     vec4 v_current =  v_previous;
     v_current.z += (osg_DeltaFrameTime*inversePeriod);
     
+
     colour = particleColour;
     
     vec4 v1 = gl_ModelViewMatrix * v_current;

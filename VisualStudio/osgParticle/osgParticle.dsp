@@ -207,6 +207,10 @@ SOURCE=..\..\src\osgParticle\ParticleSystem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgParticle\PrecipitationEffect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgParticle\ConnectedParticleSystem.cpp
 # End Source File
 # Begin Source File

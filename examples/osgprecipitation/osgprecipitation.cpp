@@ -15,17 +15,7 @@
 #include <osgUtil/CullVisitor>
 #include <osgProducer/Viewer>
 
-#include <osg/Point>
-#include <osg/BlendFunc>
-#include <osg/Texture2D>
-#include <osg/PointSprite>
-#include <osg/Program>
-#include <osg/Fog>
-#include <osg/Point>
-#include <osg/PointSprite>
-#include <osg/io_utils>
-
-#include "PrecipitationEffect.h"
+#include <osgParticle/PrecipitationEffect>
 
 #if 0
 osg::Node* createModel(osg::Node* loadedModel, osgParticle::PrecipitationParameters& parameters)

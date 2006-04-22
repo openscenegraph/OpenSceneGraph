@@ -18,12 +18,13 @@
 #include <osg/BoundingBox>
 #include <osg/ClearNode>
 #include <osg/Fog>
+#include <osg/Geometry>
 
 #include <osgUtil/CullVisitor>
 
 #include <osgParticle/Export>
 
-#include "PrecipitationDrawable.h"
+#include "PrecipitationParameters.h"
 
 namespace osgParticle
 {
@@ -63,22 +64,91 @@ namespace osgParticle
                     
         void setUpGeometries(unsigned int numParticles);
 
+        class OSGPARTICLE_EXPORT PrecipitationDrawable : public osg::Drawable
+        {
+        public:
+
+            PrecipitationDrawable();
+            PrecipitationDrawable(const PrecipitationDrawable& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+
+            META_Object(osgParticle, PrecipitationDrawable);
+
+            virtual bool supports(const osg::PrimitiveFunctor&) const { return false; }
+            virtual void accept(osg::PrimitiveFunctor&) const {}
+            virtual bool supports(const osg::PrimitiveIndexFunctor&) const { return false; }
+            virtual void accept(osg::PrimitiveIndexFunctor&) const {}
+
+            void setGeometry(osg::Geometry* geom) { _geometry = geom; }
+            osg::Geometry* getGeometry() { return _geometry.get(); }
+            const osg::Geometry* getGeometry() const { return _geometry.get(); }
+
+            virtual void drawImplementation(osg::State& state) const;
+
+            struct Cell
+            {
+                Cell(int in_i, int in_j, int in_k):
+                    i(in_i), j(in_j), k(in_k) {}
+
+
+                inline bool operator == (const Cell& rhs) const
+                {
+                    return i==rhs.i && j==rhs.j && k==rhs.k;
+                }
+
+                inline bool operator != (const Cell& rhs) const
+                {
+                    return i!=rhs.i || j!=rhs.j || k!=rhs.k;
+                }
+
+                inline bool operator < (const Cell& rhs) const
+                {
+                    if (i<rhs.i) return true;
+                    if (i>rhs.i) return false;
+                    if (j<rhs.j) return true;
+                    if (j>rhs.j) return false;
+                    if (k<rhs.k) return true;
+                    if (k>rhs.k) return false;
+                    return false;
+                }
+
+                int i;
+                int j;
+                int k;
+            };
+
+            typedef std::pair<osg::Matrix, float>  MatrixStartTimePair;
+
+            typedef std::map< Cell, MatrixStartTimePair >  CellMatrixMap;
+
+            CellMatrixMap& getCurrentCellMatrixMap() { return _currentCellMatrixMap; }
+            CellMatrixMap& getPreviousCellMatrixMap() { return _previousCellMatrixMap; }
+
+            inline void newFrame()
+            {
+                _previousCellMatrixMap.swap(_currentCellMatrixMap);
+                _currentCellMatrixMap.clear();
+            }
+
+        protected:
+
+            virtual ~PrecipitationDrawable() {}
+
+            osg::ref_ptr<osg::Geometry> _geometry;
+
+            mutable CellMatrixMap _currentCellMatrixMap;
+            mutable CellMatrixMap _previousCellMatrixMap;
+
+        };
+
         struct PrecipitationDrawableSet
         {
-            void setParameters(PrecipitationParameters* parameters)
-            {
-                if (_quadPrecipitationDrawable.valid()) _quadPrecipitationDrawable->setParameters(parameters);
-                if (_linePrecipitationDrawable.valid()) _linePrecipitationDrawable->setParameters(parameters);
-                if (_pointPrecipitationDrawable.valid()) _pointPrecipitationDrawable->setParameters(parameters);
-            }
-            
             osg::ref_ptr<PrecipitationDrawable> _quadPrecipitationDrawable;
             osg::ref_ptr<PrecipitationDrawable> _linePrecipitationDrawable;
             osg::ref_ptr<PrecipitationDrawable> _pointPrecipitationDrawable;
         };
         
         void cull(PrecipitationDrawableSet& pds, osgUtil::CullVisitor* cv) const;
-        bool build(const osg::Vec3 eyeLocal, int i, int j, int k, PrecipitationDrawableSet& pds, osg::Polytope& frustum, osgUtil::CullVisitor* cv) const;
+        bool build(const osg::Vec3 eyeLocal, int i, int j, int k, float startTime, PrecipitationDrawableSet& pds, osg::Polytope& frustum, osgUtil::CullVisitor* cv) const;
 
         osg::ref_ptr<PrecipitationParameters> _parameters;
 
@@ -105,13 +175,14 @@ namespace osgParticle
         osg::ref_ptr<osg::StateSet> _pointStateSet;
 
 
-        osg::Vec3 _origin;
-        osg::Vec3 _du;
-        osg::Vec3 _dv;
-        osg::Vec3 _dw;
-        osg::Vec3 _inverse_du;
-        osg::Vec3 _inverse_dv;
-        osg::Vec3 _inverse_dw;
+        float       _period;
+        osg::Vec3   _origin;
+        osg::Vec3   _du;
+        osg::Vec3   _dv;
+        osg::Vec3   _dw;
+        osg::Vec3   _inverse_du;
+        osg::Vec3   _inverse_dv;
+        osg::Vec3   _inverse_dw;
 
     };
 

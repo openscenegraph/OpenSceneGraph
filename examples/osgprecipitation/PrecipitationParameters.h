@@ -61,7 +61,7 @@ namespace osgParticle
 
         void snow(float intensity)
         {
-            particleVelocity = osg::Vec3(0.0,0.0,-1.0) + osg::Vec3(0.0,0.0,-0.5)*intensity;
+            particleVelocity = osg::Vec3(0.0,0.0,-0.75) + osg::Vec3(0.0,0.0,-0.25)*intensity;
             particleSize = 0.02 + 0.03*intensity;
             particleColour = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
             particleDensity = intensity * 8.2f;

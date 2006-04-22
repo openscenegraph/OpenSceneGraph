@@ -178,8 +178,6 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
             precipitationDrawableSet._pointPrecipitationDrawable = new PrecipitationDrawable;
             precipitationDrawableSet._pointPrecipitationDrawable->setGeometry(_pointGeometry.get());
             precipitationDrawableSet._pointPrecipitationDrawable->setStateSet(_pointStateSet.get());
-
-            precipitationDrawableSet.setParameters(_parameters.get());
         }
         
         cull(precipitationDrawableSet, cv);
@@ -220,15 +218,6 @@ void PrecipitationEffect::setParameters(PrecipitationParameters* parameters)
     if (_parameters==parameters) return;
 
     _parameters = parameters;
-    
-    // inform the PrecipitationDrawable about the change.
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    for(ViewDrawableMap::iterator itr=_viewDrawableMap.begin();
-        itr!=_viewDrawableMap.end();
-        ++itr)
-    {
-        (itr->second).setParameters(parameters);
-    }
 }
 
 void PrecipitationEffect::update()
@@ -272,7 +261,7 @@ void PrecipitationEffect::update()
     float cellVolume = length_u*length_v*length_w;
 
     // time taken to get from start to the end of cycle
-    float period = fabsf(_parameters->cellSizeZ / _parameters->particleVelocity.z());
+    _period = fabsf(_parameters->cellSizeZ / _parameters->particleVelocity.z());
 
     _du.set(length_u, 0.0f, 0.0f);
     _dv.set(0.0f, length_v, 0.0f);
@@ -318,8 +307,6 @@ void PrecipitationEffect::update()
             precipitationDrawableSet._pointPrecipitationDrawable->setGeometry(_pointGeometry.get());
             precipitationDrawableSet._pointPrecipitationDrawable->setStateSet(_pointStateSet.get());
 
-            precipitationDrawableSet.setParameters(_parameters.get());
-
         }
     }    
 
@@ -329,11 +316,9 @@ void PrecipitationEffect::update()
 
         const osg::BoundingBox& bb = _parameters->boundingBox;
 
-        osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/period);
-        //osg::Uniform* startTime = new osg::Uniform("startTime",0.0f);
+        osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/_period);
 
         _precipitationStateSet->addUniform(inversePeriodUniform); // float
-        //stateset->addUniform(startTime); // float
 
         _precipitationStateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
         _precipitationStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
@@ -694,8 +679,6 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     float eye_i = eye_kPlane*_inverse_du;
     float eye_j = eye_kPlane*_inverse_dv;
     
-    float _startTime = 0.0f;
-    
     osg::Polytope frustum;
     frustum.setToUnitFrustum(false,false);
     frustum.transformProvidingInverse(cv->getProjectionMatrix());
@@ -718,13 +701,19 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     unsigned int numTested=0;
     unsigned int numInFrustum=0;
 
+    float iCyle = 0.43;
+    float jCyle = 0.64;
+
     for(int i = i_min; i<=i_max; ++i)
     {
         for(int j = j_min; j<=j_max; ++j)
         {
             for(int k = k_min; k<=k_max; ++k)
             {
-                if (build(eyeLocal, i,j,k, pds, frustum, cv)) ++numInFrustum;
+                float startTime = (float)(i)*iCyle + (float)(j)*jCyle;
+                startTime = (startTime-floor(startTime))*_period;
+    
+                if (build(eyeLocal, i,j,k, startTime, pds, frustum, cv)) ++numInFrustum;
                 ++numTested;
             }
         }
@@ -732,11 +721,11 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
 
     osg::Timer_t endTick = osg::Timer::instance()->tick();
     
-//    osg::notify(osg::NOTICE)<<"time for cull "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms  numTested="<<numTested<<" numInFrustum"<<numInFrustum<<std::endl;
-//    osg::notify(osg::NOTICE)<<"     quads "<<pds._quadPrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   lines "<<pds._linePrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   points "<<pds._pointPrecipitationDrawable->getCurrentCellMatrixMap().size()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"time for cull "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms  numTested="<<numTested<<" numInFrustum"<<numInFrustum<<std::endl;
+    // osg::notify(osg::NOTICE)<<"     quads "<<pds._quadPrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   lines "<<pds._linePrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   points "<<pds._pointPrecipitationDrawable->getCurrentCellMatrixMap().size()<<std::endl;
 }
 
-bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, PrecipitationDrawableSet& pds, osg::Polytope& frustum, osgUtil::CullVisitor* cv) const
+bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, float startTime, PrecipitationDrawableSet& pds, osg::Polytope& frustum, osgUtil::CullVisitor* cv) const
 {
     osg::Vec3 position = _origin + osg::Vec3(float(i)*_du.x(), float(j)*_dv.y(), float(k+1)*_dw.z());
     osg::Vec3 scale(_du.x(), _dv.y(), -_dw.z());
@@ -752,17 +741,23 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, P
     osg::Matrix* mymodelview = 0;
     if (distance < _parameters->nearTransition)
     {
-        mymodelview = &(pds._quadPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)]);
+        PrecipitationDrawable::MatrixStartTimePair& mstp = pds._quadPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
+        mymodelview = &mstp.first;
+        mstp.second = startTime;
     }
     else if (distance <= _parameters->farTransition)
     {
         if (_parameters->useFarLineSegments)
         {
-            mymodelview = &(pds._linePrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)]);
+            PrecipitationDrawable::MatrixStartTimePair& mstp = pds._linePrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
+            mymodelview = &mstp.first;
+            mstp.second = startTime;
         }
         else
         {
-            mymodelview = &(pds._pointPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)]);
+            PrecipitationDrawable::MatrixStartTimePair& mstp = pds._pointPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
+            mymodelview = &mstp.first;
+            mstp.second = startTime;
         }
     }
     else
@@ -775,4 +770,73 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, P
     mymodelview->preMult(osg::Matrix::scale(scale));
     
     return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//   Precipitation Drawable
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable()
+{
+    setSupportsDisplayList(false);
+}
+
+PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const PrecipitationDrawable& copy, const osg::CopyOp& copyop):
+    Drawable(copy,copyop)
+{
+}
+
+void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& state) const
+{
+    if (!_geometry) return;
+
+    const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(state.getContextID(),true);
+    
+    // save OpenGL matrices
+    glPushMatrix();
+    glMatrixMode( GL_TEXTURE );
+    glPushMatrix();
+
+    state.setActiveTextureUnit(0);
+
+    for(CellMatrixMap::const_iterator itr = _currentCellMatrixMap.begin();
+        itr != _currentCellMatrixMap.end();
+        ++itr)
+    {
+
+        extensions->glMultiTexCoord1f(GL_TEXTURE0+1, itr->second.second);
+
+        // load cells current modelview matrix
+        glMatrixMode( GL_MODELVIEW );
+        glLoadMatrix(itr->second.first.ptr());
+
+
+        CellMatrixMap::const_iterator pitr = _previousCellMatrixMap.find(itr->first);
+        if (pitr != _previousCellMatrixMap.end())
+        {
+            // load previous frame modelview matrix for motion blurr effect
+            glMatrixMode( GL_TEXTURE );
+            glLoadMatrix(pitr->second.first.ptr());    
+        }
+        else
+        {
+            // use current modelview matrix as "previous" frame value, cancelling motion blurr effect
+            glMatrixMode( GL_TEXTURE );
+            glLoadMatrix(itr->second.first.ptr());    
+        }
+
+        _geometry->draw(state);
+
+    }
+
+    // restore OpenGL matrices
+    glMatrixMode( GL_TEXTURE );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glPopMatrix();
+
+    
 }

@@ -24,10 +24,33 @@
 
 #include <osgParticle/Export>
 
-#include "PrecipitationParameters.h"
-
 namespace osgParticle
 {
+    struct OSGPARTICLE_EXPORT PrecipitationParameters : public osg::Referenced
+    {
+        PrecipitationParameters();
+
+        void rain (float intensity);
+
+        void snow(float intensity);
+
+        osg::BoundingBox    boundingBox;
+        osg::Vec3           particleVelocity;
+        float               particleSize;
+        osg::Vec4           particleColour;
+        float               particleDensity;
+        float               cellSizeX;
+        float               cellSizeY;
+        float               cellSizeZ;
+        float               nearTransition;
+        float               farTransition;
+        float               fogExponent;
+        float               fogDensity;
+        float               fogEnd;
+        osg::Vec4           fogColour;
+        osg::Vec4           clearColour;
+        bool                useFarLineSegments;
+    };
 
     class OSGPARTICLE_EXPORT PrecipitationEffect : public osg::Group
     {
@@ -77,6 +100,9 @@ namespace osgParticle
             virtual void accept(osg::PrimitiveFunctor&) const {}
             virtual bool supports(const osg::PrimitiveIndexFunctor&) const { return false; }
             virtual void accept(osg::PrimitiveIndexFunctor&) const {}
+
+            void setRequiresPreviousMatrix(bool flag) { _requiresPreviousMatrix = flag; }
+            bool getRequiresPreviousMatrix() const { return _requiresPreviousMatrix; }
 
             void setGeometry(osg::Geometry* geom) { _geometry = geom; }
             osg::Geometry* getGeometry() { return _geometry.get(); }
@@ -132,6 +158,8 @@ namespace osgParticle
         protected:
 
             virtual ~PrecipitationDrawable() {}
+
+            bool _requiresPreviousMatrix;
 
             osg::ref_ptr<osg::Geometry> _geometry;
 

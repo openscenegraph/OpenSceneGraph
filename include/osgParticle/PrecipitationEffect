@@ -16,7 +16,6 @@
 
 #include <osg/Group>
 #include <osg/BoundingBox>
-#include <osg/ClearNode>
 #include <osg/Fog>
 #include <osg/Geometry>
 
@@ -26,33 +25,6 @@
 
 namespace osgParticle
 {
-    struct OSGPARTICLE_EXPORT PrecipitationParameters : public osg::Referenced
-    {
-        PrecipitationParameters();
-
-        void rain (float intensity);
-
-        void snow(float intensity);
-
-        osg::Vec3           wind;
-        osg::BoundingBox    boundingBox;
-        float               particleVelocity;
-        float               particleSize;
-        osg::Vec4           particleColour;
-        float               particleDensity;
-        float               cellSizeX;
-        float               cellSizeY;
-        float               cellSizeZ;
-        float               nearTransition;
-        float               farTransition;
-        float               fogExponent;
-        float               fogDensity;
-        float               fogEnd;
-        osg::Vec4           fogColour;
-        osg::Vec4           clearColour;
-        bool                useFarLineSegments;
-    };
-
     class OSGPARTICLE_EXPORT PrecipitationEffect : public osg::Group
     {
     public:
@@ -66,12 +38,48 @@ namespace osgParticle
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
         virtual void traverse(osg::NodeVisitor& nv);
+        
+        
+        /** Set all the parameters to create an rain effect of specified intensity.*/
+        void rain(float intensity);
+        
+        /** Set all the parameters to create an rain effect of specified intensity.*/
+        void snow(float intensity);
 
-        void setParameters(PrecipitationParameters* parameters);
         
-        PrecipitationParameters* getParameters() { return _parameters.get(); }
+        void setIntensity(float intensity) { _intensity = intensity; }
+        float getIntensity() const { return _intensity; }
         
-        const PrecipitationParameters* getParameters() const { return _parameters.get(); }
+        void setMaximumParticleDensity(float density) { _maximumParticleDensity = density; }
+        float setMaximumParticleDensity() const { return _maximumParticleDensity; }
+
+        void setWind(const osg::Vec3& wind) { _wind = wind; }
+        const osg::Vec3& getWind() const { return _wind; }
+        
+        void setPosition(const osg::Vec3& position) { _origin = position; }
+        const osg::Vec3& getPosition() const { return _origin; }
+        
+        void setCellSize(const osg::Vec3& cellSize) { _cellSize = cellSize; }
+        const osg::Vec3& getCellSize() const { return _cellSize; }
+        
+        void setParticleSpeed(float particleSpeed) { _particleSpeed = particleSpeed; }
+        float getParticleSpeed() const { return _particleSpeed; }
+
+        void setParticleSize(float particleSize) { _particleSize = particleSize; }
+        float getParticleSize() const { return _particleSize; }
+        
+        void setParticleColor(const osg::Vec4& color) { _particleColor = color; }
+        const osg::Vec4& getParticleColor() const { return _particleColor; }
+        
+        void setNearTransition(float nearTransition) { _nearTransition = nearTransition; }
+        float getNearTransition() const { return _nearTransition; }
+
+        void setFarTransition(float farTransition) { _farTransition = farTransition; }
+        float getFarTransition() const { return _farTransition; }
+        
+        void setFog(osg::Fog* fog) { _fog = fog; }
+        osg::Fog* getFog() { return _fog.get(); }
+        const osg::Fog* getFog() const { return _fog.get(); }
         
         void compileGLObjects(osg::State& state) const;
 
@@ -116,17 +124,6 @@ namespace osgParticle
                 Cell(int in_i, int in_j, int in_k):
                     i(in_i), j(in_j), k(in_k) {}
 
-
-                inline bool operator == (const Cell& rhs) const
-                {
-                    return i==rhs.i && j==rhs.j && k==rhs.k;
-                }
-
-                inline bool operator != (const Cell& rhs) const
-                {
-                    return i!=rhs.i || j!=rhs.j || k!=rhs.k;
-                }
-
                 inline bool operator < (const Cell& rhs) const
                 {
                     if (i<rhs.i) return true;
@@ -142,10 +139,20 @@ namespace osgParticle
                 int j;
                 int k;
             };
+            
+            struct DepthMatrixStartTime
+            {
+                inline bool operator < (const DepthMatrixStartTime& rhs) const
+                {
+                    return depth < rhs.depth;
+                }
+                
+                float           depth;
+                float           startTime;
+                osg::Matrix     modelview;
+            };
 
-            typedef std::pair<osg::Matrix, float>  MatrixStartTimePair;
-
-            typedef std::map< Cell, MatrixStartTimePair >  CellMatrixMap;
+            typedef std::map< Cell, DepthMatrixStartTime >  CellMatrixMap;
 
             CellMatrixMap& getCurrentCellMatrixMap() { return _currentCellMatrixMap; }
             CellMatrixMap& getPreviousCellMatrixMap() { return _previousCellMatrixMap; }
@@ -179,12 +186,19 @@ namespace osgParticle
         void cull(PrecipitationDrawableSet& pds, osgUtil::CullVisitor* cv) const;
         bool build(const osg::Vec3 eyeLocal, int i, int j, int k, float startTime, PrecipitationDrawableSet& pds, osg::Polytope& frustum, osgUtil::CullVisitor* cv) const;
 
-        osg::ref_ptr<PrecipitationParameters> _parameters;
-
-        // elements for the subgraph
-        osg::ref_ptr<osg::ClearNode>    _clearNode;
-        osg::ref_ptr<osg::Fog>          _fog;
-
+        // parameters
+        osg::BoundingBox        _boundingBox;
+        float                   _intensity;
+        osg::Vec3               _wind;
+        float                   _particleSpeed;
+        float                   _particleSize;
+        osg::Vec4               _particleColor;
+        float                   _maximumParticleDensity;
+        osg::Vec3               _cellSize;
+        float                   _nearTransition;
+        float                   _farTransition;
+        bool                    _useFarLineSegments;
+        osg::ref_ptr<osg::Fog>  _fog;
 
         typedef std::pair< osg::NodeVisitor*, osg::NodePath > ViewIdenitifier;
         typedef std::map< ViewIdenitifier, PrecipitationDrawableSet >  ViewDrawableMap;
@@ -203,7 +217,7 @@ namespace osgParticle
         osg::ref_ptr<osg::Geometry> _pointGeometry;
         osg::ref_ptr<osg::StateSet> _pointStateSet;
 
-
+        // cache variables.
         float       _period;
         osg::Vec3   _origin;
         osg::Vec3   _du;

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -103,56 +103,55 @@ static osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg
 }
 
 
-PrecipitationParameters::PrecipitationParameters()
-{
-    rain(0.5);
-}
-
-void PrecipitationParameters::rain(float intensity)
-{
-    wind.set(0.0f,0.0f,0.0f);
-    particleVelocity = -2.0f + -5.0f*intensity;
-    particleSize = 0.01 + 0.02*intensity;
-    particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0) -  osg::Vec4(0.1, 0.1, 0.1, 1.0)* intensity;
-    particleDensity = intensity * 8.5f;
-    cellSizeX = 5.0f / (0.25f+intensity);
-    cellSizeY = 5.0f / (0.25f+intensity);
-    cellSizeZ = 5.0f;
-    nearTransition = 25.f;
-    farTransition = 100.0f - 60.0f*sqrtf(intensity);
-    fogExponent = 1.0f;
-    fogDensity = 0.005f*intensity;
-    fogEnd = 250/(0.01 + intensity);
-    fogColour.set(0.5, 0.5, 0.5, 1.0);
-    clearColour.set(0.5, 0.5, 0.5, 1.0);
-    useFarLineSegments = false;
-}
-
-void PrecipitationParameters::snow(float intensity)
-{
-    wind.set(0.0f,0.0f,0.0f);
-    particleVelocity = -0.75f - 0.25f*intensity;
-    particleSize = 0.02f + 0.03f*intensity;
-    particleColour = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
-    particleDensity = intensity * 8.2f;
-    cellSizeX = 5.0f / (0.25f+intensity);
-    cellSizeY = 5.0f / (0.25f+intensity);
-    cellSizeZ = 5.0f;
-    nearTransition = 25.0f;
-    farTransition = 100.0f - 60.0f*sqrtf(intensity);
-    fogExponent = 1.0f;
-    fogDensity = 0.02f*intensity;
-    fogEnd = 150.0f/(0.01f + intensity);
-    fogColour.set(0.6, 0.6, 0.6, 1.0);
-    clearColour.set(0.6, 0.6, 0.6, 1.0);
-    useFarLineSegments = false;
-}
-
-
 PrecipitationEffect::PrecipitationEffect()
 {
     setNumChildrenRequiringUpdateTraversal(1);
-    setParameters(new PrecipitationParameters);
+    rain(0.5);
+}
+
+void PrecipitationEffect::rain(float intensity)
+{
+    _intensity = 1.0f;
+    _wind.set(0.0f,0.0f,0.0f);
+    _particleSpeed = -2.0f + -5.0f*intensity;
+    _particleSize = 0.01 + 0.02*intensity;
+    _particleColor = osg::Vec4(0.6, 0.6, 0.6, 1.0) -  osg::Vec4(0.1, 0.1, 0.1, 1.0)* intensity;
+    _maximumParticleDensity = intensity * 8.5f;
+    _cellSize.set(5.0f / (0.25f+intensity), 5.0f / (0.25f+intensity), 5.0f);
+    _nearTransition = 25.f;
+    _farTransition = 100.0f - 60.0f*sqrtf(intensity);
+    
+    if (!_fog) _fog = new osg::Fog;
+
+    _fog->setMode(osg::Fog::EXP);
+    _fog->setDensity(0.005f*intensity);
+    _fog->setColor(osg::Vec4(0.5, 0.5, 0.5, 1.0));
+
+    _useFarLineSegments = false;
+    
+    update();
+}
+
+void PrecipitationEffect::snow(float intensity)
+{
+    _intensity = 1.0f;
+    _wind.set(0.0f,0.0f,0.0f);
+    _particleSpeed = -0.75f - 0.25f*intensity;
+    _particleSize = 0.02f + 0.03f*intensity;
+    _particleColor = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
+    _maximumParticleDensity = intensity * 8.2f;
+    _cellSize.set(5.0f / (0.25f+intensity), 5.0f / (0.25f+intensity), 5.0f);
+    _nearTransition = 25.f;
+    _farTransition = 100.0f - 60.0f*sqrtf(intensity);
+    
+    if (!_fog) _fog = new osg::Fog;
+
+    _fog->setMode(osg::Fog::EXP);
+    _fog->setDensity(0.01f*intensity);
+    _fog->setColor(osg::Vec4(0.6, 0.6, 0.6, 1.0));
+
+    _useFarLineSegments = false;
+    
     update();
 }
 
@@ -160,7 +159,6 @@ PrecipitationEffect::PrecipitationEffect(const PrecipitationEffect& copy, const 
     osg::Group(copy,copyop)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
-    setParameters(const_cast<PrecipitationParameters*>(copy._parameters.get()));
     update();
 }
 
@@ -195,7 +193,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
             double currentTime = nv.getFrameStamp()->getReferenceTime();
             static double previousTime = currentTime;
             double delta = currentTime - previousTime;
-            _origin += _parameters->wind * delta;
+            _origin += _wind * delta;
             previousTime = currentTime;
         }
 
@@ -221,7 +219,6 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
 
     if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
     {
-        osg::notify(osg::NOTICE)<<"!CUll"<<std::endl;
         Group::traverse(nv);
         return;
     }
@@ -229,7 +226,6 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
     osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
     if (!cv)
     {
-        osg::notify(osg::NOTICE)<<"Cull cast failed"<<std::endl;
         Group::traverse(nv);
         return;
     }
@@ -246,8 +242,6 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
                 
         if (!precipitationDrawableSet->_quadPrecipitationDrawable)
         {
-            osg::notify(osg::NOTICE)<<"Setting up"<<std::endl;
-            
             precipitationDrawableSet->_quadPrecipitationDrawable = new PrecipitationDrawable;
             precipitationDrawableSet->_quadPrecipitationDrawable->setRequiresPreviousMatrix(true);
             precipitationDrawableSet->_quadPrecipitationDrawable->setGeometry(_quadGeometry.get());
@@ -297,55 +291,19 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
     Group::traverse(nv);
 }
 
-void PrecipitationEffect::setParameters(PrecipitationParameters* parameters)
-{
-    if (_parameters==parameters) return;
-
-    _parameters = parameters;
-}
-
 void PrecipitationEffect::update()
 {
-    osg::notify(osg::NOTICE)<<"PrecipitationEffect::update()"<<std::endl;
+    osg::notify(osg::INFO)<<"PrecipitationEffect::update()"<<std::endl;
 
-    if (!_parameters) return;
-    
-    if (_fog.valid())
-    {
-        if (_parameters->fogExponent<1.0)
-        {
-            _fog->setMode(osg::Fog::LINEAR);
-        }
-        else if (_parameters->fogExponent<2.0)
-        {
-            _fog->setMode(osg::Fog::EXP);
-        }
-        else
-        {
-            _fog->setMode(osg::Fog::EXP2);
-        }
-        
-        _fog->setDensity(_parameters->fogDensity);
-        _fog->setStart(0.0f);
-        _fog->setEnd(_parameters->fogEnd);
-        _fog->setColor(_parameters->fogColour);
-    }
-    
-    if (_clearNode.valid())
-    {
-        _clearNode->setClearColor(_parameters->clearColour);
-    }
-    
-    
-    float length_u = _parameters->cellSizeX;
-    float length_v = _parameters->cellSizeY;
-    float length_w = _parameters->cellSizeZ;
+    float length_u = _cellSize.x();
+    float length_v = _cellSize.y();
+    float length_w = _cellSize.z();
         
     // volume of a single cell
     float cellVolume = length_u*length_v*length_w;
 
     // time taken to get from start to the end of cycle
-    _period = fabsf(_parameters->cellSizeZ / _parameters->particleVelocity);
+    _period = fabsf(_cellSize.z() / _particleSpeed);
 
     _du.set(length_u, 0.0f, 0.0f);
     _dv.set(0.0f, length_v, 0.0f);
@@ -355,12 +313,11 @@ void PrecipitationEffect::update()
     _inverse_dv.set(0.0f, 1.0f/length_v, 0.0f);
     _inverse_dw.set(0.0f, 0.0f, 1.0f/length_w);
     
-    osg::notify(osg::NOTICE)<<"Cell size X="<<length_u<<std::endl;
-    osg::notify(osg::NOTICE)<<"Cell size Y="<<length_v<<std::endl;
-    osg::notify(osg::NOTICE)<<"Cell size Z="<<length_w<<std::endl;
+    osg::notify(osg::INFO)<<"Cell size X="<<length_u<<std::endl;
+    osg::notify(osg::INFO)<<"Cell size Y="<<length_v<<std::endl;
+    osg::notify(osg::INFO)<<"Cell size Z="<<length_w<<std::endl;
 
-
-    osg::BoundingBox& bb = _parameters->boundingBox;
+    osg::BoundingBox& bb = _boundingBox;
     if (bb.valid())
     {
         _origin.set(bb.xMin(), bb.yMin(), bb.zMin());
@@ -370,7 +327,7 @@ void PrecipitationEffect::update()
         _origin.set(0.0f, 0.0f, 0.0f);
     }
     
-    setUpGeometries((int)(_parameters->particleDensity * cellVolume));
+    setUpGeometries((int)(_maximumParticleDensity * cellVolume));
     
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
@@ -394,8 +351,8 @@ void PrecipitationEffect::update()
         osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
         _precipitationStateSet->setTextureAttribute(0, texture);
 
-        _precipitationStateSet->addUniform(new osg::Uniform("particleColour", _parameters->particleColour));
-        _precipitationStateSet->addUniform(new osg::Uniform("particleSize", _parameters->particleSize));
+        _precipitationStateSet->addUniform(new osg::Uniform("particleColour", _particleColor));
+        _precipitationStateSet->addUniform(new osg::Uniform("particleSize", _particleSize));
 
     }
         
@@ -505,12 +462,39 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
     unsigned int lineRenderBin = 12;
     unsigned int pointRenderBin = 11;
     
-    osg::notify(osg::NOTICE)<<"setUpGeometries("<<numParticles<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"PrecipitationEffect::setUpGeometries("<<numParticles<<")"<<std::endl;
 
+    bool needGeometryRebuild = false;
+
+    if (!_quadGeometry || _quadGeometry->getVertexArray()->getNumElements() != 4*numParticles)
     {
         _quadGeometry = new osg::Geometry;
         _quadGeometry->setUseVertexBufferObjects(true);
+        needGeometryRebuild = true;
+    }
 
+    if (!_lineGeometry || _lineGeometry->getVertexArray()->getNumElements() != 2*numParticles)
+    {
+        _lineGeometry = new osg::Geometry;
+        _lineGeometry->setUseVertexBufferObjects(true);
+        needGeometryRebuild = true;
+    }
+    
+    if (!_pointGeometry || _pointGeometry->getVertexArray()->getNumElements() != numParticles)
+    {
+        _pointGeometry = new osg::Geometry;
+        _pointGeometry->setUseVertexBufferObjects(true);
+        needGeometryRebuild = true;
+    }
+    
+    if (needGeometryRebuild) 
+    {
+        createGeometry(numParticles, _quadGeometry.get(), _lineGeometry.get(), _pointGeometry.get());
+    }
+
+
+    if (!_quadStateSet)
+    {
         _quadStateSet = new osg::StateSet;
         
         osg::Program* program = new osg::Program;
@@ -583,10 +567,8 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
     }
 
 
+    if (!_lineStateSet)
     {
-        _lineGeometry = new osg::Geometry;
-        _lineGeometry->setUseVertexBufferObjects(true);
-
         _lineStateSet = new osg::StateSet;
 
         osg::Program* program = new osg::Program;
@@ -656,10 +638,8 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
     }
 
 
+    if (!_pointStateSet)
     {
-        _pointGeometry = new osg::Geometry;
-        _pointGeometry->setUseVertexBufferObjects(true);
-
         _pointStateSet = new osg::StateSet;
 
         osg::Program* program = new osg::Program;
@@ -720,7 +700,6 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
         _pointStateSet->setRenderBinDetails(pointRenderBin,"DepthSortedBin");
     }
 
-    createGeometry(numParticles, _quadGeometry.get(), _lineGeometry.get(), _pointGeometry.get());
 
 }
 
@@ -753,9 +732,9 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     frustum.transformProvidingInverse(cv->getProjectionMatrix());
     frustum.transformProvidingInverse(cv->getModelViewMatrix());
 
-    float i_delta = _parameters->farTransition * _inverse_du.x();
-    float j_delta = _parameters->farTransition * _inverse_dv.y();
-    float k_delta = 1;//_parameters->nearTransition * _inverse_dw.z();
+    float i_delta = _farTransition * _inverse_du.x();
+    float j_delta = _farTransition * _inverse_dv.y();
+    float k_delta = 1;//_nearTransition * _inverse_dw.z();
     
     int i_min = (int)floor(eye_i - i_delta);
     int j_min = (int)floor(eye_j - j_delta);
@@ -811,16 +790,16 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, f
     float distance = (center-eyeLocal).length();
 
     osg::Matrix* mymodelview = 0;
-    if (distance < _parameters->nearTransition)
+    if (distance < _nearTransition)
     {
         PrecipitationDrawable::DepthMatrixStartTime& mstp = pds._quadPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
         mstp.depth = distance;
         mstp.startTime = startTime;
         mymodelview = &mstp.modelview;
     }
-    else if (distance <= _parameters->farTransition)
+    else if (distance <= _farTransition)
     {
-        if (_parameters->useFarLineSegments)
+        if (_useFarLineSegments)
         {
             PrecipitationDrawable::DepthMatrixStartTime& mstp = pds._linePrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
             mstp.depth = distance;

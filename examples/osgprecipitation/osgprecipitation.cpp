@@ -31,8 +31,8 @@ class MyGustCallback : public osg::NodeCallback
             osgParticle::PrecipitationEffect* pe = dynamic_cast<osgParticle::PrecipitationEffect*>(node);
             
             float value = sin(nv->getFrameStamp()->getReferenceTime());
-            if (value<-0.5) pe->getParameters()->wind.set(5.0,0.0,0.0);
-            else pe->getParameters()->wind.set(1.0,0.0,0.0);
+            if (value<-0.5) pe->setWind(osg::Vec3(5.0f,0.0f,0.0f));
+            else pe->setWind(osg::Vec3(1.0,0.0,0.0));
         
             traverse(node, nv);
         }
@@ -130,49 +130,47 @@ int main( int argc, char **argv )
     viewer.getUsage(*arguments.getApplicationUsage());
 
     osg::ref_ptr<osgParticle::PrecipitationEffect> precipitationEffect = new osgParticle::PrecipitationEffect;
-    osgParticle::PrecipitationParameters& parameters = *precipitationEffect->getParameters();
 
     float intensity;
-    while (arguments.read("--snow", intensity)) parameters.snow(intensity);
-    while (arguments.read("--rain", intensity)) parameters.rain(intensity);
+    while (arguments.read("--snow", intensity)) precipitationEffect->snow(intensity);
+    while (arguments.read("--rain", intensity)) precipitationEffect->rain(intensity);
 
-    while (arguments.read("--particleSize", parameters.particleSize)) {}
-    while (arguments.read("--particleColor", parameters.particleColour.r(), parameters.particleColour.g(), parameters.particleColour.b(), parameters.particleColour.a())) {}
-    while (arguments.read("--particleColour", parameters.particleColour.r(), parameters.particleColour.g(), parameters.particleColour.b(), parameters.particleColour.a())) {}
+    float value;
+    while (arguments.read("--particleSize", value)) precipitationEffect->setParticleSize(value);
+
+    osg::Vec4 color;
+    while (arguments.read("--particleColor", color.r(), color.g(), color.b(), color.a())) precipitationEffect->setParticleColor(color);
+    while (arguments.read("--particleColour", color.r(), color.g(), color.b(), color.a())) precipitationEffect->setParticleColor(color);
 
     osg::Vec3 wind;
-    while (arguments.read("--wind", wind.x(), wind.y(), wind.z())) parameters.wind = wind;
+    while (arguments.read("--wind", wind.x(), wind.y(), wind.z())) precipitationEffect->setWind(wind);
     
-    while (arguments.read("--particleVelocity", parameters.particleVelocity)) {}
+    while (arguments.read("--particleSpeed", value)) precipitationEffect->setParticleSpeed(value);
 
-    while (arguments.read("--nearTransition", parameters.nearTransition )) {}
-    while (arguments.read("--farTransition", parameters.farTransition )) {}
+    while (arguments.read("--nearTransition", value )) precipitationEffect->setNearTransition(value);
+    while (arguments.read("--farTransition", value )) precipitationEffect->setFarTransition(value);
 
-    while (arguments.read("--particleDensity", parameters.particleDensity )) {}
+    while (arguments.read("--particleDensity", value )) precipitationEffect->setMaximumParticleDensity(value);
 
-    while (arguments.read("--cellSizeX", parameters.cellSizeX )) {}
-    while (arguments.read("--cellSizeY", parameters.cellSizeY )) {}
-    while (arguments.read("--cellSizeZ", parameters.cellSizeZ )) {}
+    osg::Vec3 cellSize;
+    while (arguments.read("--cellSize", cellSize.x(), cellSize.y(), cellSize.z())) precipitationEffect->setCellSize(cellSize); 
 
-    while (arguments.read("--boundingBox", parameters.boundingBox.xMin(),
-                                           parameters.boundingBox.yMin(),
-                                           parameters.boundingBox.zMin(),
-                                           parameters.boundingBox.xMax(),
-                                           parameters.boundingBox.yMax(),
-                                           parameters.boundingBox.zMax())) {}
+    osg::BoundingBox bb;
+    while (arguments.read("--boundingBox", bb.xMin(),
+                                           bb.yMin(),
+                                           bb.zMin(),
+                                           bb.xMax(),
+                                           bb.yMax(),
+                                           bb.zMax())) {}
 
-    while (arguments.read("--fogDensity", parameters.fogDensity )) {}
-    while (arguments.read("--fogExponent", parameters.fogExponent )) {}
-    while (arguments.read("--fogEnd", parameters.fogEnd )) {}
-    while (arguments.read("--fogColor", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
-    while (arguments.read("--fogColour", parameters.fogColour.r(), parameters.fogColour.g(), parameters.fogColour.b(), parameters.fogColour.a())) {}
+    while (arguments.read("--fogDensity", value )) precipitationEffect->getFog()->setDensity(value);
+    while (arguments.read("--fogColor", color.r(), color.g(), color.b(), color.a() ))  precipitationEffect->getFog()->setColor(color);
+    while (arguments.read("--fogColour", color.r(), color.g(), color.b(), color.a() ))  precipitationEffect->getFog()->setColor(color);
  
-    while (arguments.read("--useFarLineSegments")) { parameters.useFarLineSegments = true; }
+//  while (arguments.read("--useFarLineSegments")) { parameters.useFarLineSegments = true; }
 
     
-
-
-    viewer.setClearColor(parameters.clearColour);
+    viewer.setClearColor( precipitationEffect->getFog()->getColor() );
 
     // now force the effect to update all its internal state.
     precipitationEffect->update();
@@ -204,11 +202,28 @@ int main( int argc, char **argv )
     }
     
     // precipitationEffect->setUpdateCallback(new MyGustCallback);
+    
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
     group->addChild(precipitationEffect.get());
+
     group->addChild(loadedModel.get());
+    loadedModel->getOrCreateStateSet()->setAttributeAndModes(precipitationEffect->getFog());
     
+    // create the light    
+    osg::LightSource* lightSource = new osg::LightSource;
+    group->addChild(lightSource);
+
+    osg::Light* light = lightSource->getLight();
+    light->setLightNum(0);
+    light->setPosition(osg::Vec4(0.0f,0.0f,1.0f,0.0f)); // directional light from above
+    light->setAmbient(osg::Vec4(0.8f,0.8f,0.8f,1.0f));
+    light->setDiffuse(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
+    light->setSpecular(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
+
+
+
+
     // set the scene to render
     viewer.setSceneData(group.get());
 

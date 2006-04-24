@@ -110,7 +110,8 @@ PrecipitationParameters::PrecipitationParameters()
 
 void PrecipitationParameters::rain(float intensity)
 {
-    particleVelocity = osg::Vec3(0.0,0.0,-2.0) + osg::Vec3(0.0,0.0,-5.0)*intensity;
+    wind.set(0.0f,0.0f,0.0f);
+    particleVelocity = -2.0f + -5.0f*intensity;
     particleSize = 0.01 + 0.02*intensity;
     particleColour = osg::Vec4(0.6, 0.6, 0.6, 1.0) -  osg::Vec4(0.1, 0.1, 0.1, 1.0)* intensity;
     particleDensity = intensity * 8.5f;
@@ -129,8 +130,9 @@ void PrecipitationParameters::rain(float intensity)
 
 void PrecipitationParameters::snow(float intensity)
 {
-    particleVelocity = osg::Vec3(0.0,0.0,-0.75) + osg::Vec3(0.0,0.0,-0.25)*intensity;
-    particleSize = 0.02 + 0.03*intensity;
+    wind.set(0.0f,0.0f,0.0f);
+    particleVelocity = -0.75f - 0.25f*intensity;
+    particleSize = 0.02f + 0.03f*intensity;
     particleColour = osg::Vec4(0.85f, 0.85f, 0.85f, 1.0f) -  osg::Vec4(0.1f, 0.1f, 0.1f, 1.0f)* intensity;
     particleDensity = intensity * 8.2f;
     cellSizeX = 5.0f / (0.25f+intensity);
@@ -149,6 +151,7 @@ void PrecipitationParameters::snow(float intensity)
 
 PrecipitationEffect::PrecipitationEffect()
 {
+    setNumChildrenRequiringUpdateTraversal(1);
     setParameters(new PrecipitationParameters);
     update();
 }
@@ -156,14 +159,13 @@ PrecipitationEffect::PrecipitationEffect()
 PrecipitationEffect::PrecipitationEffect(const PrecipitationEffect& copy, const osg::CopyOp& copyop):
     osg::Group(copy,copyop)
 {
+    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
     setParameters(const_cast<PrecipitationParameters*>(copy._parameters.get()));
     update();
 }
 
 void PrecipitationEffect::compileGLObjects(osg::State& state) const
 {
-    osg::notify(osg::NOTICE)<<"PrecipitationEffect::compileGLObjects()"<<this<<std::endl;
-
     if (_quadGeometry.valid()) 
     {
         _quadGeometry->compileGLObjects(state);
@@ -186,6 +188,21 @@ void PrecipitationEffect::compileGLObjects(osg::State& state) const
 
 void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
 {
+    if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+    {
+        if (nv.getFrameStamp())
+        {
+            double currentTime = nv.getFrameStamp()->getReferenceTime();
+            static double previousTime = currentTime;
+            double delta = currentTime - previousTime;
+            _origin += _parameters->wind * delta;
+            previousTime = currentTime;
+        }
+
+        Group::traverse(nv);
+        return;
+    }
+    
     if (nv.getVisitorType() == osg::NodeVisitor::NODE_VISITOR)
     {
         osgUtil::GLObjectsVisitor* globjVisitor = dynamic_cast<osgUtil::GLObjectsVisitor*>(&nv);
@@ -204,6 +221,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
 
     if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
     {
+        osg::notify(osg::NOTICE)<<"!CUll"<<std::endl;
         Group::traverse(nv);
         return;
     }
@@ -211,6 +229,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
     osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
     if (!cv)
     {
+        osg::notify(osg::NOTICE)<<"Cull cast failed"<<std::endl;
         Group::traverse(nv);
         return;
     }
@@ -326,7 +345,7 @@ void PrecipitationEffect::update()
     float cellVolume = length_u*length_v*length_w;
 
     // time taken to get from start to the end of cycle
-    _period = fabsf(_parameters->cellSizeZ / _parameters->particleVelocity.z());
+    _period = fabsf(_parameters->cellSizeZ / _parameters->particleVelocity);
 
     _du.set(length_u, 0.0f, 0.0f);
     _dv.set(0.0f, length_v, 0.0f);

@@ -34,8 +34,9 @@ namespace osgParticle
 
         void snow(float intensity);
 
+        osg::Vec3           wind;
         osg::BoundingBox    boundingBox;
-        osg::Vec3           particleVelocity;
+        float               particleVelocity;
         float               particleSize;
         osg::Vec4           particleColour;
         float               particleDensity;

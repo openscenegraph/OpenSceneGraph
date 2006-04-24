@@ -43,7 +43,7 @@ namespace osgParticle
         /** Set all the parameters to create an rain effect of specified intensity.*/
         void rain(float intensity);
         
-        /** Set all the parameters to create an rain effect of specified intensity.*/
+        /** Set all the parameters to create an snow effect of specified intensity.*/
         void snow(float intensity);
 
         
@@ -153,6 +153,15 @@ namespace osgParticle
             };
 
             typedef std::map< Cell, DepthMatrixStartTime >  CellMatrixMap;
+
+            struct LessFunctor 
+            {
+                inline bool operator () (const CellMatrixMap::value_type* lhs,const CellMatrixMap::value_type* rhs) const
+                {
+                    return (*lhs).second<(*rhs).second; 
+                }
+            };
+
 
             CellMatrixMap& getCurrentCellMatrixMap() { return _currentCellMatrixMap; }
             CellMatrixMap& getPreviousCellMatrixMap() { return _previousCellMatrixMap; }

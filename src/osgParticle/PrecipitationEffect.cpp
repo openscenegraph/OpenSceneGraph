@@ -849,13 +849,6 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const Precipit
 }
 
 
-struct LessFunctor 
-{
-    bool operator () (const PrecipitationEffect::PrecipitationDrawable::CellMatrixMap::value_type* lhs,const PrecipitationEffect::PrecipitationDrawable::CellMatrixMap::value_type* rhs) const
-    {
-        return (*lhs).second<(*rhs).second; 
-    }
-};
 
 void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& state) const
 {

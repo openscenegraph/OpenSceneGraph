@@ -839,6 +839,8 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, f
     mymodelview->preMult(osg::Matrix::translate(position));
     mymodelview->preMult(osg::Matrix::scale(scale));
     
+    cv->updateCalculatedNearFar(cv->getModelViewMatrix(),bb);
+
     return true;
 }
 

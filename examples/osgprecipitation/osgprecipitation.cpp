@@ -15,7 +15,28 @@
 #include <osgUtil/CullVisitor>
 #include <osgProducer/Viewer>
 
+#include <osg/MatrixTransform>
+#include <osgUtil/TransformCallback>
 #include <osgParticle/PrecipitationEffect>
+
+class MyGustCallback : public osg::NodeCallback
+{
+
+    public:
+
+        MyGustCallback() {}
+
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            osgParticle::PrecipitationEffect* pe = dynamic_cast<osgParticle::PrecipitationEffect*>(node);
+            
+            float value = sin(nv->getFrameStamp()->getReferenceTime());
+            if (value<-0.5) pe->getParameters()->wind.set(5.0,0.0,0.0);
+            else pe->getParameters()->wind.set(1.0,0.0,0.0);
+        
+            traverse(node, nv);
+        }
+};
 
 #if 0
 osg::Node* createModel(osg::Node* loadedModel, osgParticle::PrecipitationParameters& parameters)
@@ -119,8 +140,10 @@ int main( int argc, char **argv )
     while (arguments.read("--particleColor", parameters.particleColour.r(), parameters.particleColour.g(), parameters.particleColour.b(), parameters.particleColour.a())) {}
     while (arguments.read("--particleColour", parameters.particleColour.r(), parameters.particleColour.g(), parameters.particleColour.b(), parameters.particleColour.a())) {}
 
-    osg::Vec3 particleVelocity;
-    while (arguments.read("--particleVelocity", particleVelocity.x(), particleVelocity.y(), particleVelocity.z() )) parameters.particleVelocity = particleVelocity;
+    osg::Vec3 wind;
+    while (arguments.read("--wind", wind.x(), wind.y(), wind.z())) parameters.wind = wind;
+    
+    while (arguments.read("--particleVelocity", parameters.particleVelocity)) {}
 
     while (arguments.read("--nearTransition", parameters.nearTransition )) {}
     while (arguments.read("--farTransition", parameters.farTransition )) {}
@@ -180,22 +203,14 @@ int main( int argc, char **argv )
         return 1;
     }
     
-#if 1
-    
+    // precipitationEffect->setUpdateCallback(new MyGustCallback);
+
     osg::ref_ptr<osg::Group> group = new osg::Group;
     group->addChild(precipitationEffect.get());
     group->addChild(loadedModel.get());
     
     // set the scene to render
     viewer.setSceneData(group.get());
-
-#else    
-
-        loadedModel = createModel(loadedModel.get(), parameters);
-
-        // set the scene to render
-        viewer.setSceneData(loadedModel.get());
-#endif
 
     // create the windows and run the threads.
     viewer.realize();

@@ -501,7 +501,9 @@ void PrecipitationEffect::createGeometry(unsigned int numParticles,
 
 void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
 {
-    unsigned int renderBin = 11;
+    unsigned int quadRenderBin = 13;
+    unsigned int lineRenderBin = 12;
+    unsigned int pointRenderBin = 11;
     
     osg::notify(osg::NOTICE)<<"setUpGeometries("<<numParticles<<")"<<std::endl;
 
@@ -513,7 +515,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
         
         osg::Program* program = new osg::Program;
         _quadStateSet->setAttribute(program);
-        _quadStateSet->setRenderBinDetails(renderBin,"DepthSortedBin");
+        _quadStateSet->setRenderBinDetails(quadRenderBin,"DepthSortedBin");
 
 #ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
@@ -589,7 +591,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
 
         osg::Program* program = new osg::Program;
         _lineStateSet->setAttribute(program);
-        _lineStateSet->setRenderBinDetails(renderBin,"DepthSortedBin");
+        _lineStateSet->setRenderBinDetails(lineRenderBin,"DepthSortedBin");
 
 #ifdef USE_LOCAL_SHADERS
         char vertexShaderSource[] = 
@@ -715,7 +717,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
         _pointStateSet->setTextureAttributeAndModes(0, sprite, osg::StateAttribute::ON);
 
         _pointStateSet->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
-        _pointStateSet->setRenderBinDetails(renderBin,"DepthSortedBin");
+        _pointStateSet->setRenderBinDetails(pointRenderBin,"DepthSortedBin");
     }
 
     createGeometry(numParticles, _quadGeometry.get(), _lineGeometry.get(), _pointGeometry.get());
@@ -811,23 +813,26 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, f
     osg::Matrix* mymodelview = 0;
     if (distance < _parameters->nearTransition)
     {
-        PrecipitationDrawable::MatrixStartTimePair& mstp = pds._quadPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
-        mymodelview = &mstp.first;
-        mstp.second = startTime;
+        PrecipitationDrawable::DepthMatrixStartTime& mstp = pds._quadPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
+        mstp.depth = distance;
+        mstp.startTime = startTime;
+        mymodelview = &mstp.modelview;
     }
     else if (distance <= _parameters->farTransition)
     {
         if (_parameters->useFarLineSegments)
         {
-            PrecipitationDrawable::MatrixStartTimePair& mstp = pds._linePrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
-            mymodelview = &mstp.first;
-            mstp.second = startTime;
+            PrecipitationDrawable::DepthMatrixStartTime& mstp = pds._linePrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
+            mstp.depth = distance;
+            mstp.startTime = startTime;
+            mymodelview = &mstp.modelview;
         }
         else
         {
-            PrecipitationDrawable::MatrixStartTimePair& mstp = pds._pointPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
-            mymodelview = &mstp.first;
-            mstp.second = startTime;
+            PrecipitationDrawable::DepthMatrixStartTime& mstp = pds._pointPrecipitationDrawable->getCurrentCellMatrixMap()[PrecipitationDrawable::Cell(i,k,j)];
+            mstp.depth = distance;
+            mstp.startTime = startTime;
+            mymodelview = &mstp.modelview;
         }
     }
     else
@@ -864,6 +869,15 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const Precipit
 {
 }
 
+
+struct LessFunctor 
+{
+    bool operator () (const PrecipitationEffect::PrecipitationDrawable::CellMatrixMap::value_type* lhs,const PrecipitationEffect::PrecipitationDrawable::CellMatrixMap::value_type* rhs) const
+    {
+        return (*lhs).second<(*rhs).second; 
+    }
+};
+
 void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& state) const
 {
     if (!_geometry) return;
@@ -880,37 +894,83 @@ void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& 
         glPushMatrix();
     }
     
-    for(CellMatrixMap::const_iterator itr = _currentCellMatrixMap.begin();
-        itr != _currentCellMatrixMap.end();
+    typedef std::vector<const CellMatrixMap::value_type*> DepthMatrixStartTimeVector;
+    DepthMatrixStartTimeVector orderedEntries;
+    orderedEntries.reserve(_currentCellMatrixMap.size());
+
+    for(CellMatrixMap::const_iterator citr = _currentCellMatrixMap.begin();
+        citr != _currentCellMatrixMap.end();
+        ++citr)
+    {
+        orderedEntries.push_back(&(*citr));
+    }
+    
+    std::sort(orderedEntries.begin(),orderedEntries.end(),LessFunctor());
+        
+    for(DepthMatrixStartTimeVector::reverse_iterator itr = orderedEntries.rbegin();
+        itr != orderedEntries.rend();
         ++itr)
     {
-
-        extensions->glMultiTexCoord1f(GL_TEXTURE0+1, itr->second.second);
+        extensions->glMultiTexCoord1f(GL_TEXTURE0+1, (*itr)->second.startTime);
 
         // load cells current modelview matrix
         if (_requiresPreviousMatrix)
         {
             glMatrixMode( GL_MODELVIEW );
-            glLoadMatrix(itr->second.first.ptr());
+            glLoadMatrix((*itr)->second.modelview.ptr());
 
+            CellMatrixMap::const_iterator pitr = _previousCellMatrixMap.find((*itr)->first);
+            if (pitr != _previousCellMatrixMap.end())
+            {
+                // load previous frame modelview matrix for motion blurr effect
+                glMatrixMode( GL_TEXTURE );
+                glLoadMatrix(pitr->second.modelview.ptr());    
+            }
+            else
+            {
+                // use current modelview matrix as "previous" frame value, cancelling motion blurr effect
+                glMatrixMode( GL_TEXTURE );
+                glLoadMatrix((*itr)->second.modelview.ptr());    
+            }
+        }
+        else
+        {
+            glLoadMatrix((*itr)->second.modelview.ptr());
+        }
+
+        _geometry->draw(state);
+        
+    }
+
+    for(CellMatrixMap::const_iterator itr = _currentCellMatrixMap.begin();
+        itr != _currentCellMatrixMap.end();
+        ++itr)
+    {
+        extensions->glMultiTexCoord1f(GL_TEXTURE0+1, itr->second.startTime);
+
+        // load cells current modelview matrix
+        if (_requiresPreviousMatrix)
+        {
+            glMatrixMode( GL_MODELVIEW );
+            glLoadMatrix(itr->second.modelview.ptr());
 
             CellMatrixMap::const_iterator pitr = _previousCellMatrixMap.find(itr->first);
             if (pitr != _previousCellMatrixMap.end())
             {
                 // load previous frame modelview matrix for motion blurr effect
                 glMatrixMode( GL_TEXTURE );
-                glLoadMatrix(pitr->second.first.ptr());    
+                glLoadMatrix(pitr->second.modelview.ptr());    
             }
             else
             {
                 // use current modelview matrix as "previous" frame value, cancelling motion blurr effect
                 glMatrixMode( GL_TEXTURE );
-                glLoadMatrix(itr->second.first.ptr());    
+                glLoadMatrix(itr->second.modelview.ptr());    
             }
         }
         else
         {
-            glLoadMatrix(itr->second.first.ptr());
+            glLoadMatrix(itr->second.modelview.ptr());
         }
 
         _geometry->draw(state);

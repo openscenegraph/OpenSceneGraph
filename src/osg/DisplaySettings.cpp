@@ -115,7 +115,7 @@ void DisplaySettings::setDefaults()
     _minimumNumberAccumBlueBits = 0;
     _minimumNumberAccumAlphaBits = 0;
     
-    _maxNumOfGraphicsContexts = 3;
+    _maxNumOfGraphicsContexts = 1;
     _numMultiSamples = 0;
 
     #ifdef __sgi

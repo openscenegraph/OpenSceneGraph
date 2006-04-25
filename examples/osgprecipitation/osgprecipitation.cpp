@@ -31,71 +31,19 @@ class MyGustCallback : public osg::NodeCallback
             osgParticle::PrecipitationEffect* pe = dynamic_cast<osgParticle::PrecipitationEffect*>(node);
             
             float value = sin(nv->getFrameStamp()->getReferenceTime());
-            if (value<-0.5) pe->setWind(osg::Vec3(5.0f,0.0f,0.0f));
-            else pe->setWind(osg::Vec3(1.0,0.0,0.0));
+            if (value<-0.5)
+            {
+                pe->snow(1.0);
+            }
+            else
+            {
+                pe->rain(0.5);
+            }
         
             traverse(node, nv);
         }
 };
 
-#if 0
-osg::Node* createModel(osg::Node* loadedModel, osgParticle::PrecipitationParameters& parameters)
-{
-    osg::Group* group = new osg::Group;
-
-    osg::BoundingBox bb(0.0, 0.0, 0.0, 100.0, 100.0, 100.0);
-    
-    if (loadedModel)
-    {
-        group->addChild(loadedModel);
-        
-        osg::BoundingSphere bs = loadedModel->getBound();
-
-        bb.set( -500, -500, 0, +500, +500, 10);
-        
-        parameters.boundingBox = bb;
-        
-        osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
-        
-        osg::Fog* fog = new osg::Fog;
-        
-        if (parameters.fogExponent<1.0)
-        {
-            fog->setMode(osg::Fog::LINEAR);
-        }
-        else if (parameters.fogExponent<2.0)
-        {
-            fog->setMode(osg::Fog::EXP);
-        }
-        else
-        {
-            fog->setMode(osg::Fog::EXP2);
-        }
-        
-        fog->setDensity(parameters.fogDensity);
-        fog->setStart(0.0f);
-        fog->setEnd(parameters.fogEnd);
-        fog->setColor(parameters.fogColour);
-        stateset->setAttributeAndModes(fog, osg::StateAttribute::ON);
-        
-        osg::LightSource* lightSource = new osg::LightSource;
-        group->addChild(lightSource);
-
-        osg::Light* light = lightSource->getLight();
-        light->setLightNum(0);
-        light->setPosition(osg::Vec4(0.0f,0.0f,1.0f,0.0f)); // directional light from above
-        light->setAmbient(osg::Vec4(0.8f,0.8f,0.8f,1.0f));
-        light->setDiffuse(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
-        light->setSpecular(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
-
-                
-    }
-    
-    group->addChild(createCellRainEffect(parameters));
-
-    return group;    
-}
-#endif
 
 int main( int argc, char **argv )
 {
@@ -172,9 +120,6 @@ int main( int argc, char **argv )
     
     viewer.setClearColor( precipitationEffect->getFog()->getColor() );
 
-    // now force the effect to update all its internal state.
-    precipitationEffect->update();
-
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -220,8 +165,6 @@ int main( int argc, char **argv )
     light->setAmbient(osg::Vec4(0.8f,0.8f,0.8f,1.0f));
     light->setDiffuse(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
     light->setSpecular(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
-
-
 
 
     // set the scene to render

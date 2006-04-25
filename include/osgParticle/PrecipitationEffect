@@ -73,13 +73,21 @@ namespace osgParticle
         void setFarTransition(float farTransition) { _farTransition = farTransition; }
         float getFarTransition() const { return _farTransition; }
         
+        void setUseFarLineSegments(bool useFarLineSegments) { _useFarLineSegments = useFarLineSegments; }
+        bool getUseFarLineSegments() const { return _useFarLineSegments; }
+
         void setFog(osg::Fog* fog) { _fog = fog; }
         osg::Fog* getFog() { return _fog.get(); }
         const osg::Fog* getFog() const { return _fog.get(); }
         
-        
         osg::Geometry* getQuadGeometry() { return _quadGeometry.get(); }
         osg::StateSet* getQuadStateSet() { return _quadStateSet.get(); }
+        
+        osg::Geometry* getLineGeometry() { return _lineGeometry.get(); }
+        osg::StateSet* getLineStateSet() { return _lineStateSet.get(); }
+        
+        osg::Geometry* getPointGeometry() { return _pointGeometry.get(); }
+        osg::StateSet* getPointStateSet() { return _pointStateSet.get(); }
 
 
     protected:

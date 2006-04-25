@@ -89,22 +89,7 @@ namespace osgParticle
         osg::Geometry* getPointGeometry() { return _pointGeometry.get(); }
         osg::StateSet* getPointStateSet() { return _pointStateSet.get(); }
 
-
-    protected:
-    
-        virtual ~PrecipitationEffect() {}
-        
-        void compileGLObjects(osg::State& state) const;
-
-        void update();
-        
-        void createGeometry(unsigned int numParticles, 
-                            osg::Geometry* quad_geometry, 
-                            osg::Geometry* line_geometry,
-                            osg::Geometry* point_geometry);
-                    
-        void setUpGeometries(unsigned int numParticles);
-
+        /** Internal drawable used to render batches of cells.*/
         class OSGPARTICLE_EXPORT PrecipitationDrawable : public osg::Drawable
         {
         public:
@@ -202,6 +187,22 @@ namespace osgParticle
             unsigned int    _numberOfVertices;
 
         };
+
+    protected:
+    
+        virtual ~PrecipitationEffect() {}
+        
+        void compileGLObjects(osg::State& state) const;
+
+        void update();
+        
+        void createGeometry(unsigned int numParticles, 
+                            osg::Geometry* quad_geometry, 
+                            osg::Geometry* line_geometry,
+                            osg::Geometry* point_geometry);
+                    
+        void setUpGeometries(unsigned int numParticles);
+
 
         struct PrecipitationDrawableSet
         {

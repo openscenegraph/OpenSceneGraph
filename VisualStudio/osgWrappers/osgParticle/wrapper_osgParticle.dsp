@@ -204,6 +204,10 @@ SOURCE=..\..\..\src\osgWrappers\osgParticle\PointPlacer.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgParticle\PrecipitationEffect.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgParticle\Program.cpp
 # End Source File
 

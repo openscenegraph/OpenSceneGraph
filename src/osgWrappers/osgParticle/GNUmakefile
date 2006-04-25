@@ -29,6 +29,7 @@ CXXFILES =\
 	ParticleSystemUpdater.cpp\
 	Placer.cpp\
 	PointPlacer.cpp\
+	PrecipitationEffect.cpp\
 	Program.cpp\
 	RadialShooter.cpp\
 	RandomRateCounter.cpp\

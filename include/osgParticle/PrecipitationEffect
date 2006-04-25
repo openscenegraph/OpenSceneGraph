@@ -25,7 +25,7 @@
 
 namespace osgParticle
 {
-    class OSGPARTICLE_EXPORT PrecipitationEffect : public osg::Group
+    class OSGPARTICLE_EXPORT PrecipitationEffect : public osg::Node
     {
     public:
     
@@ -45,12 +45,8 @@ namespace osgParticle
         
         /** Set all the parameters to create an snow effect of specified intensity.*/
         void snow(float intensity);
-
         
-        void setIntensity(float intensity) { _intensity = intensity; }
-        float getIntensity() const { return _intensity; }
-        
-        void setMaximumParticleDensity(float density) { _maximumParticleDensity = density; }
+        void setMaximumParticleDensity(float density) { if (_maximumParticleDensity==density) return;  _maximumParticleDensity = density; _dirty = true;}
         float setMaximumParticleDensity() const { return _maximumParticleDensity; }
 
         void setWind(const osg::Vec3& wind) { _wind = wind; }
@@ -59,16 +55,16 @@ namespace osgParticle
         void setPosition(const osg::Vec3& position) { _origin = position; }
         const osg::Vec3& getPosition() const { return _origin; }
         
-        void setCellSize(const osg::Vec3& cellSize) { _cellSize = cellSize; }
+        void setCellSize(const osg::Vec3& cellSize) { if (_cellSize==cellSize) return; _cellSize = cellSize; _dirty = true; }
         const osg::Vec3& getCellSize() const { return _cellSize; }
         
-        void setParticleSpeed(float particleSpeed) { _particleSpeed = particleSpeed; }
+        void setParticleSpeed(float particleSpeed) { if (_particleSpeed==particleSpeed) return; _particleSpeed = particleSpeed; _dirty = true; }
         float getParticleSpeed() const { return _particleSpeed; }
 
-        void setParticleSize(float particleSize) { _particleSize = particleSize; }
+        void setParticleSize(float particleSize) { if (_particleSize==particleSize) return; _particleSize = particleSize; _dirty = true;}
         float getParticleSize() const { return _particleSize; }
         
-        void setParticleColor(const osg::Vec4& color) { _particleColor = color; }
+        void setParticleColor(const osg::Vec4& color) { if (_particleColor==color) return; _particleColor = color; _dirty = true;}
         const osg::Vec4& getParticleColor() const { return _particleColor; }
         
         void setNearTransition(float nearTransition) { _nearTransition = nearTransition; }
@@ -81,13 +77,18 @@ namespace osgParticle
         osg::Fog* getFog() { return _fog.get(); }
         const osg::Fog* getFog() const { return _fog.get(); }
         
-        void compileGLObjects(osg::State& state) const;
+        
+        osg::Geometry* getQuadGeometry() { return _quadGeometry.get(); }
+        osg::StateSet* getQuadStateSet() { return _quadStateSet.get(); }
 
-        void update();
 
     protected:
     
         virtual ~PrecipitationEffect() {}
+        
+        void compileGLObjects(osg::State& state) const;
+
+        void update();
         
         void createGeometry(unsigned int numParticles, 
                             osg::Geometry* quad_geometry, 
@@ -116,6 +117,12 @@ namespace osgParticle
             void setGeometry(osg::Geometry* geom) { _geometry = geom; }
             osg::Geometry* getGeometry() { return _geometry.get(); }
             const osg::Geometry* getGeometry() const { return _geometry.get(); }
+            
+            void setDrawType(GLenum type) { _drawType = type; }
+            GLenum getDrawType() const { return _drawType; }
+            
+            void setNumberOfVertices(unsigned int numVertices) { _numberOfVertices = numVertices; }
+            unsigned int getNumberOfVertices() const { return _numberOfVertices; }
 
             virtual void drawImplementation(osg::State& state) const;
 
@@ -182,6 +189,9 @@ namespace osgParticle
 
             mutable CellMatrixMap _currentCellMatrixMap;
             mutable CellMatrixMap _previousCellMatrixMap;
+            
+            GLenum          _drawType;
+            unsigned int    _numberOfVertices;
 
         };
 
@@ -196,26 +206,27 @@ namespace osgParticle
         bool build(const osg::Vec3 eyeLocal, int i, int j, int k, float startTime, PrecipitationDrawableSet& pds, osg::Polytope& frustum, osgUtil::CullVisitor* cv) const;
 
         // parameters
-        osg::BoundingBox        _boundingBox;
-        float                   _intensity;
-        osg::Vec3               _wind;
-        float                   _particleSpeed;
-        float                   _particleSize;
-        osg::Vec4               _particleColor;
-        float                   _maximumParticleDensity;
-        osg::Vec3               _cellSize;
-        float                   _nearTransition;
-        float                   _farTransition;
-        bool                    _useFarLineSegments;
-        osg::ref_ptr<osg::Fog>  _fog;
+        bool                        _dirty;
+        osg::Vec3                   _wind;
+        float                       _particleSpeed;
+        float                       _particleSize;
+        osg::Vec4                   _particleColor;
+        float                       _maximumParticleDensity;
+        osg::Vec3                   _cellSize;
+        float                       _nearTransition;
+        float                       _farTransition;
+        bool                        _useFarLineSegments;
+        osg::ref_ptr<osg::Fog>      _fog;
+
+        osg::ref_ptr<osg::Uniform>  _inversePeriodUniform;
+        osg::ref_ptr<osg::Uniform>  _particleSizeUniform;
+        osg::ref_ptr<osg::Uniform>  _particleColorUniform;
 
         typedef std::pair< osg::NodeVisitor*, osg::NodePath > ViewIdenitifier;
         typedef std::map< ViewIdenitifier, PrecipitationDrawableSet >  ViewDrawableMap;
 
         OpenThreads::Mutex _mutex;
         ViewDrawableMap _viewDrawableMap;
-        
-        osg::ref_ptr<osg::StateSet>     _precipitationStateSet;
         
         osg::ref_ptr<osg::Geometry> _quadGeometry;
         osg::ref_ptr<osg::StateSet> _quadStateSet;

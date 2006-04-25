@@ -106,12 +106,14 @@ static osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg
 PrecipitationEffect::PrecipitationEffect()
 {
     setNumChildrenRequiringUpdateTraversal(1);
+    
+    setUpGeometries(1024);
+
     rain(0.5);
 }
 
 void PrecipitationEffect::rain(float intensity)
 {
-    _intensity = 1.0f;
     _wind.set(0.0f,0.0f,0.0f);
     _particleSpeed = -2.0f + -5.0f*intensity;
     _particleSize = 0.01 + 0.02*intensity;
@@ -129,12 +131,13 @@ void PrecipitationEffect::rain(float intensity)
 
     _useFarLineSegments = false;
     
+    _dirty = true;
+
     update();
 }
 
 void PrecipitationEffect::snow(float intensity)
 {
-    _intensity = 1.0f;
     _wind.set(0.0f,0.0f,0.0f);
     _particleSpeed = -0.75f - 0.25f*intensity;
     _particleSize = 0.02f + 0.03f*intensity;
@@ -152,13 +155,16 @@ void PrecipitationEffect::snow(float intensity)
 
     _useFarLineSegments = false;
     
+    _dirty = true;
+
     update();
 }
 
 PrecipitationEffect::PrecipitationEffect(const PrecipitationEffect& copy, const osg::CopyOp& copyop):
-    osg::Group(copy,copyop)
+    osg::Node(copy,copyop)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+    _dirty = true;
     update();
 }
 
@@ -188,6 +194,8 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
 {
     if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
+        if (_dirty) update();
+    
         if (nv.getFrameStamp())
         {
             double currentTime = nv.getFrameStamp()->getReferenceTime();
@@ -197,12 +205,13 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
             previousTime = currentTime;
         }
 
-        Group::traverse(nv);
         return;
     }
     
     if (nv.getVisitorType() == osg::NodeVisitor::NODE_VISITOR)
     {
+        if (_dirty) update();
+
         osgUtil::GLObjectsVisitor* globjVisitor = dynamic_cast<osgUtil::GLObjectsVisitor*>(&nv);
         if (globjVisitor)
         {
@@ -212,21 +221,18 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
             }
         }
     
-        Group::traverse(nv);
         return;
     }
     
 
     if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
     {
-        Group::traverse(nv);
         return;
     }
 
     osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
     if (!cv)
     {
-        Group::traverse(nv);
         return;
     }
 
@@ -246,21 +252,24 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
             precipitationDrawableSet->_quadPrecipitationDrawable->setRequiresPreviousMatrix(true);
             precipitationDrawableSet->_quadPrecipitationDrawable->setGeometry(_quadGeometry.get());
             precipitationDrawableSet->_quadPrecipitationDrawable->setStateSet(_quadStateSet.get());
-
+            precipitationDrawableSet->_quadPrecipitationDrawable->setDrawType(GL_QUADS);
+            
             precipitationDrawableSet->_linePrecipitationDrawable = new PrecipitationDrawable;
             precipitationDrawableSet->_linePrecipitationDrawable->setRequiresPreviousMatrix(true);
             precipitationDrawableSet->_linePrecipitationDrawable->setGeometry(_lineGeometry.get());
             precipitationDrawableSet->_linePrecipitationDrawable->setStateSet(_lineStateSet.get());
+            precipitationDrawableSet->_linePrecipitationDrawable->setDrawType(GL_LINES);
 
             precipitationDrawableSet->_pointPrecipitationDrawable = new PrecipitationDrawable;
             precipitationDrawableSet->_pointPrecipitationDrawable->setRequiresPreviousMatrix(false);
             precipitationDrawableSet->_pointPrecipitationDrawable->setGeometry(_pointGeometry.get());
             precipitationDrawableSet->_pointPrecipitationDrawable->setStateSet(_pointStateSet.get());
+            precipitationDrawableSet->_pointPrecipitationDrawable->setDrawType(GL_POINTS);
         }
         
         cull(*precipitationDrawableSet, cv);
         
-        cv->pushStateSet(_precipitationStateSet.get());
+        cv->pushStateSet(_stateset.get());
         float depth = 0.0f;
 
         if (!precipitationDrawableSet->_quadPrecipitationDrawable->getCurrentCellMatrixMap().empty())
@@ -287,20 +296,17 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         cv->popStateSet();
 
     }
-
-    Group::traverse(nv);
 }
 
 void PrecipitationEffect::update()
 {
+    _dirty = false;
+
     osg::notify(osg::INFO)<<"PrecipitationEffect::update()"<<std::endl;
 
     float length_u = _cellSize.x();
     float length_v = _cellSize.y();
     float length_w = _cellSize.z();
-        
-    // volume of a single cell
-    float cellVolume = length_u*length_v*length_w;
 
     // time taken to get from start to the end of cycle
     _period = fabsf(_cellSize.z() / _particleSpeed);
@@ -316,19 +322,8 @@ void PrecipitationEffect::update()
     osg::notify(osg::INFO)<<"Cell size X="<<length_u<<std::endl;
     osg::notify(osg::INFO)<<"Cell size Y="<<length_v<<std::endl;
     osg::notify(osg::INFO)<<"Cell size Z="<<length_w<<std::endl;
+    
 
-    osg::BoundingBox& bb = _boundingBox;
-    if (bb.valid())
-    {
-        _origin.set(bb.xMin(), bb.yMin(), bb.zMin());
-    }
-    else
-    {
-        _origin.set(0.0f, 0.0f, 0.0f);
-    }
-    
-    setUpGeometries((int)(_maximumParticleDensity * cellVolume));
-    
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         _viewDrawableMap.clear();
@@ -336,23 +331,38 @@ void PrecipitationEffect::update()
 
     // set up state/
     {
-        _precipitationStateSet = new osg::StateSet;
+        if (!_stateset)
+        {
+            _stateset = new osg::StateSet;
+            _stateset->addUniform(new osg::Uniform("baseTexture",0));
 
-        osg::Uniform* inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/_period);
+            _stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+            _stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
-        _precipitationStateSet->addUniform(inversePeriodUniform); // float
+            osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
+            _stateset->setTextureAttribute(0, texture);
+        }
 
-        _precipitationStateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        _precipitationStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+        if (!_inversePeriodUniform)
+        {
+            _inversePeriodUniform = new osg::Uniform("inversePeriod",1.0f/_period);
+            _stateset->addUniform(_inversePeriodUniform.get());
+        }
+        else _inversePeriodUniform->set(1.0f/_period);
 
-        osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
-        _precipitationStateSet->addUniform(baseTextureSampler);
-
-        osg::Texture2D* texture = new osg::Texture2D(createSpotLightImage(osg::Vec4(1.0f,1.0f,1.0f,1.0f),osg::Vec4(1.0f,1.0f,1.0f,0.0f),32,1.0));
-        _precipitationStateSet->setTextureAttribute(0, texture);
-
-        _precipitationStateSet->addUniform(new osg::Uniform("particleColour", _particleColor));
-        _precipitationStateSet->addUniform(new osg::Uniform("particleSize", _particleSize));
+        if (!_particleSizeUniform)
+        {
+            _particleColorUniform = new osg::Uniform("particleColour", _particleColor);
+            _stateset->addUniform(_particleColorUniform.get());
+        }
+        else _particleColorUniform->set(_particleColor);
+        
+        if (!_particleSizeUniform)
+        {
+            _particleSizeUniform = new osg::Uniform("particleSize", _particleSize);
+            _stateset->addUniform(_particleSizeUniform.get());
+        }
+        else _particleSizeUniform->set(_particleSize);
 
     }
         
@@ -387,7 +397,6 @@ void PrecipitationEffect::createGeometry(unsigned int numParticles,
 
         quad_geometry->setVertexArray(quad_vertices);
         quad_geometry->setTexCoordArray(0, quad_offsets);
-        quad_geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numParticles*4));
     }
 
     // configure line_geometry;
@@ -402,7 +411,6 @@ void PrecipitationEffect::createGeometry(unsigned int numParticles,
 
         line_geometry->setVertexArray(line_vertices);
         line_geometry->setTexCoordArray(0, line_offsets);
-        line_geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numParticles*2));
     }
 
     // configure point_geometry;
@@ -417,7 +425,6 @@ void PrecipitationEffect::createGeometry(unsigned int numParticles,
 
         point_geometry->setVertexArray(point_vertices);
         point_geometry->setTexCoordArray(0, point_offsets);
-        point_geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, numParticles));
     }
 
     // set up vertex attribute data.
@@ -461,6 +468,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
     unsigned int quadRenderBin = 13;
     unsigned int lineRenderBin = 12;
     unsigned int pointRenderBin = 11;
+    
     
     osg::notify(osg::INFO)<<"PrecipitationEffect::setUpGeometries("<<numParticles<<")"<<std::endl;
 
@@ -709,6 +717,15 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 #endif
 
+    float cellVolume = _cellSize.x() * _cellSize.y() * _cellSize.z();
+    int numberOfParticles = (int)(_maximumParticleDensity * cellVolume);
+
+    if (numberOfParticles==0) return;
+
+    pds._quadPrecipitationDrawable->setNumberOfVertices(numberOfParticles*4);
+    pds._linePrecipitationDrawable->setNumberOfVertices(numberOfParticles*2);
+    pds._pointPrecipitationDrawable->setNumberOfVertices(numberOfParticles);
+
     pds._quadPrecipitationDrawable->newFrame();
     pds._linePrecipitationDrawable->newFrame();
     pds._pointPrecipitationDrawable->newFrame();
@@ -836,7 +853,9 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, f
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable():
-    _requiresPreviousMatrix(true)
+    _requiresPreviousMatrix(true),
+    _drawType(GL_QUADS),
+    _numberOfVertices(0)
 {
     setSupportsDisplayList(false);
 }
@@ -844,7 +863,9 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable():
 PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const PrecipitationDrawable& copy, const osg::CopyOp& copyop):
     Drawable(copy,copyop),
     _requiresPreviousMatrix(copy._requiresPreviousMatrix),
-    _geometry(copy._geometry)
+    _geometry(copy._geometry),
+    _drawType(copy._drawType),
+    _numberOfVertices(copy._numberOfVertices)
 {
 }
 
@@ -912,41 +933,8 @@ void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& 
 
         _geometry->draw(state);
         
-    }
-
-    for(CellMatrixMap::const_iterator itr = _currentCellMatrixMap.begin();
-        itr != _currentCellMatrixMap.end();
-        ++itr)
-    {
-        extensions->glMultiTexCoord1f(GL_TEXTURE0+1, itr->second.startTime);
-
-        // load cells current modelview matrix
-        if (_requiresPreviousMatrix)
-        {
-            glMatrixMode( GL_MODELVIEW );
-            glLoadMatrix(itr->second.modelview.ptr());
-
-            CellMatrixMap::const_iterator pitr = _previousCellMatrixMap.find(itr->first);
-            if (pitr != _previousCellMatrixMap.end())
-            {
-                // load previous frame modelview matrix for motion blurr effect
-                glMatrixMode( GL_TEXTURE );
-                glLoadMatrix(pitr->second.modelview.ptr());    
-            }
-            else
-            {
-                // use current modelview matrix as "previous" frame value, cancelling motion blurr effect
-                glMatrixMode( GL_TEXTURE );
-                glLoadMatrix(itr->second.modelview.ptr());    
-            }
-        }
-        else
-        {
-            glLoadMatrix(itr->second.modelview.ptr());
-        }
-
-        _geometry->draw(state);
-
+        unsigned int numVertices = osg::minimum(_geometry->getVertexArray()->getNumElements(), _numberOfVertices);
+        glDrawArrays(_drawType, 0, numVertices);
     }
 
     // restore OpenGL matrices

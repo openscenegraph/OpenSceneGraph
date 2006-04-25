@@ -115,7 +115,7 @@ int main( int argc, char **argv )
     while (arguments.read("--fogColor", color.r(), color.g(), color.b(), color.a() ))  precipitationEffect->getFog()->setColor(color);
     while (arguments.read("--fogColour", color.r(), color.g(), color.b(), color.a() ))  precipitationEffect->getFog()->setColor(color);
  
-//  while (arguments.read("--useFarLineSegments")) { parameters.useFarLineSegments = true; }
+    while (arguments.read("--useFarLineSegments")) { precipitationEffect->setUseFarLineSegments(true); }
 
     
     viewer.setClearColor( precipitationEffect->getFog()->getColor() );

@@ -441,7 +441,7 @@ public:
     
     virtual void apply(osg::Node& node)
     {
-        if (strcmp(node.libraryName(),"osgParticle")==0) _foundParticles = true;
+        if (strcmp(node.libraryName(),"osgParticle")==0 && strcmp(node.className(),"PrecipitationEffect")!=0) _foundParticles = true;
         
         if (!_foundParticles ||
             !_foundPagedLOD) traverse(node);

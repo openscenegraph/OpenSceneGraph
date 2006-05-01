@@ -1,4 +1,3 @@
-
 #include <osgParticle/ConstantRateCounter>
 
 #include <iostream>

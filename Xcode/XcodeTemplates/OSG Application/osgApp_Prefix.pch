@@ -136,15 +136,14 @@
 #include <osg/Projection>
 #include <osg/ProxyNode>
 #include <osg/Quat>
-#include <osg/RefNodePath>
 #include <osg/Referenced>
+#include <osg/Scissor>
 #include <osg/Sequence>
 #include <osg/ShadeModel>
 #include <osg/Shader>
 #include <osg/ShadowVolumeOccluder>
 #include <osg/Shape>
 #include <osg/ShapeDrawable>
-#include <osg/Scissor>
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
@@ -228,6 +227,7 @@
 
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/DriveManipulator>
+#include <osgGA/EventQueue>
 #include <osgGA/EventVisitor>
 #include <osgGA/Export>
 #include <osgGA/FlightManipulator>
@@ -273,6 +273,7 @@
 
 #include <osgParticle/AccelOperator>
 #include <osgParticle/AngularAccelOperator>
+#include <osgParticle/BoxPlacer>
 #include <osgParticle/CenteredPlacer>
 #include <osgParticle/ConnectedParticleSystem>
 #include <osgParticle/ConstantRateCounter>
@@ -310,7 +311,6 @@
 #include <osgParticle/Version>
 #include <osgParticle/range>  
 
-#include <osgProducer/EventAdapter>
 #include <osgProducer/Export>
 #include <osgProducer/GraphicsContextImplementation>
 #include <osgProducer/KeyboardMouseCallback>
@@ -332,6 +332,7 @@
 #include <osgSim/LightPointNode>
 #include <osgSim/LightPointSystem>
 #include <osgSim/MultiSwitch>
+#include <osgSim/OpenFlightOptimizer>
 #include <osgSim/OverlayNode>
 #include <osgSim/ScalarBar>
 #include <osgSim/ScalarsToColors>

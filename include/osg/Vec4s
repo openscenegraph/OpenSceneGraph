@@ -119,6 +119,6 @@ class Vec4s
         }
 };
 
-};
+}
 
 #endif

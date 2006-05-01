@@ -905,6 +905,19 @@ void Text::drawImplementation(osg::State& state) const
         }
         
     }
+    
+    
+    // Ensure that the glyph coordinates have been transformed for
+    // this context id.
+
+    if ( !_textureGlyphQuadMap.empty() )
+    {
+        const GlyphQuads& glyphquad = (_textureGlyphQuadMap.begin())->second;
+        if ( glyphquad._transformedCoords[contextID].empty() )
+        {
+            computePositions(contextID);
+        }
+    }
 
 
     glNormal3fv(_normal.ptr());

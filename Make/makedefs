@@ -420,6 +420,7 @@ endif
 
 #### FreeBSD specific definitions
 ifeq ($(OS),FreeBSD)
+  SYSARCH           := $(shell uname -m)
   C++               = g++
   DEPARG            = -MM
   INC               += -I/usr/local/include -I/usr/X11R6/include
@@ -427,9 +428,15 @@ ifeq ($(OS),FreeBSD)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared
-  ARCH              = 
-  ARCHINST          = 
-  ARCHARGS          = 
+  ifeq ($(SYSARCH),amd64)
+    ARCH            = 64
+    ARCHARGS        = -fPIC
+    ARCHINST        = 
+  else
+    ARCH            = 32
+    ARCHARGS        =
+    ARCHINST        = 
+  endif
   LINKARGS          = -pthread -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
   DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 

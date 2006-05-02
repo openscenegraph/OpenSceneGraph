@@ -52,6 +52,8 @@ class OSG_EXPORT Object : public Referenced
             concrete classes and can be constructed.*/
         inline Object():Referenced(),_dataVariance(DYNAMIC) {}
 
+        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(DYNAMIC) {}
+
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
         Object(const Object&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);

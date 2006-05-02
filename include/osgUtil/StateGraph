@@ -60,6 +60,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
 
         StateGraph():
+            osg::Referenced(false),
             _parent(NULL), 
             _stateset(NULL), 
             _depth(0),
@@ -70,6 +71,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         }
 
         StateGraph(StateGraph* parent,const osg::StateSet* stateset):
+            osg::Referenced(false),
             _parent(parent), 
             _stateset(stateset),
             _depth(0),

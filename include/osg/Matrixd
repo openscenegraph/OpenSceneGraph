@@ -339,15 +339,16 @@ class RefMatrixd : public Object, public Matrixd
 {
     public:
     
-        RefMatrixd():Matrixd() {}
-        RefMatrixd( const Matrixd& other) : Matrixd(other) {}
-        RefMatrixd( const Matrixf& other) : Matrixd(other) {}
+        RefMatrixd():Object(false), Matrixd() {}
+        RefMatrixd( const Matrixd& other) : Object(false), Matrixd(other) {}
+        RefMatrixd( const Matrixf& other) : Object(false), Matrixd(other) {}
         RefMatrixd( const RefMatrixd& other) : Object(other), Matrixd(other) {}
-        explicit RefMatrixd( Matrixd::value_type const * const def ):Matrixd(def) {}
+        explicit RefMatrixd( Matrixd::value_type const * const def ):Object(false), Matrixd(def) {}
         RefMatrixd( Matrixd::value_type a00, Matrixd::value_type a01, Matrixd::value_type a02, Matrixd::value_type a03,
             Matrixd::value_type a10, Matrixd::value_type a11, Matrixd::value_type a12, Matrixd::value_type a13,
             Matrixd::value_type a20, Matrixd::value_type a21, Matrixd::value_type a22, Matrixd::value_type a23,
             Matrixd::value_type a30, Matrixd::value_type a31, Matrixd::value_type a32, Matrixd::value_type a33):
+            Object(false), 
             Matrixd(a00, a01, a02, a03,
                     a10, a11, a12, a13,
                     a20, a21, a22, a23,

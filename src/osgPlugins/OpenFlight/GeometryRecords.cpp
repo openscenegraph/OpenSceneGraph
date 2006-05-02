@@ -12,15 +12,13 @@
 #include <osg/CullFace>
 #include <osg/PolygonOffset>
 #include <osg/Depth>
-#include <osg/ShadeModel>
 #include <osg/BlendFunc>
-#include <osgUtil/Tesselator>
-#include <osgUtil/SmoothingVisitor>
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
 
 namespace flt {
+
 
 class Face : public PrimaryRecord
 {
@@ -134,9 +132,9 @@ public:
 
     virtual osg::Vec4 getPrimaryColor() const { return _primaryColor; }
     inline int getMaterialIndex() const { return _materialIndex; }
-	inline int getTextureIndex() const { return _textureIndex; }
-	inline int getTextureMappingIndex() const { return _textureMappingIndex; }
-	inline float getTransparency() const { return (float)_transparency / 65535.0f; }
+    inline int getTextureIndex() const { return _textureIndex; }
+    inline int getTextureMappingIndex() const { return _textureMappingIndex; }
+    inline float getTransparency() const { return (float)_transparency / 65535.0f; }
     inline bool isTransparent() const { return _transparency > 0; }
 
     virtual void addChild(osg::Node& child)
@@ -284,7 +282,7 @@ protected:
         _geode->addDrawable(_geometry.get());
 
         // StateSet
-        osg::StateSet* stateset = _geode->getOrCreateStateSet();
+        osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
         // Hidden
         if (isHidden())
@@ -362,7 +360,8 @@ protected:
         // Enable alpha blend?
         if (isAlphaBlend() || isTransparent() || isTransparentMaterial || isImageTranslucent)
         {
-            stateset->setAttributeAndModes(new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA), osg::StateAttribute::ON);
+            static osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+            stateset->setAttributeAndModes(blendFunc.get(), osg::StateAttribute::ON);
             stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
         }
 
@@ -370,8 +369,11 @@ protected:
         switch(_drawFlag)
         {
         case SOLID_BACKFACED:     // Enable backface culling
-            stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
+        {
+            static osg::ref_ptr<osg::CullFace> cullFace = new osg::CullFace(osg::CullFace::BACK);
+            stateset->setAttributeAndModes(cullFace.get(), osg::StateAttribute::ON);
             break;
+        }
         case SOLID_NO_BACKFACE:   // Disable backface culling
             stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
             break;
@@ -380,17 +382,23 @@ protected:
         // Subface
         if (document.subfaceLevel() > 0)
         {
-            osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
-            polyoffset->setFactor(-10.0f);
-            polyoffset->setUnits(-40.0f);
-            stateset->setAttributeAndModes(polyoffset, osg::StateAttribute::ON);
+            static osg::ref_ptr<osg::PolygonOffset> polygonOffset = new osg::PolygonOffset(-10.0f, -40.0f);
+            stateset->setAttributeAndModes(polygonOffset.get(), osg::StateAttribute::ON);
 
-            osg::Depth* depth = new osg::Depth;
-            depth->setWriteMask(false);
-            stateset->setAttribute(depth);
+            static osg::ref_ptr<osg::Depth> depth = new osg::Depth(osg::Depth::LESS, 0.0, 1.0,false);
+            stateset->setAttribute(depth.get());
 
             stateset->setRenderBinDetails(document.subfaceLevel(),"RenderBin");
         }
+#if 1
+        // A simple share stateset optimization.
+        static osg::ref_ptr<osg::StateSet> lastStateset;
+        if (lastStateset.valid() && (stateset->compare(*lastStateset,false)==0))
+            stateset = lastStateset;
+        else
+            lastStateset = stateset;
+#endif
+        _geode->setStateSet(stateset.get());
 
         // Add to parent.
         if (_parent.valid())
@@ -623,3 +631,15 @@ protected:
 RegisterRecordProxy<MorphVertexList> g_MorphVertexList(MORPH_VERTEX_LIST_OP);
 
 } // end namespace
+
+
+
+
+
+
+
+
+
+
+
+

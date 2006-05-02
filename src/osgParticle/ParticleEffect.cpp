@@ -150,7 +150,7 @@ void ParticleEffect::buildEffect()
 
 
     // clear the children.
-    removeChild(0,getNumChildren());
+    removeChildren(0,getNumChildren());
     
     // add the emitter
     addChild(emitter.get());

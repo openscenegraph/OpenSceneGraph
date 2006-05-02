@@ -208,27 +208,6 @@ void PagedLOD::traverse(NodeVisitor& nv)
 }
 
 
-void PagedLOD::childRemoved(unsigned int pos, unsigned int numChildrenToRemove)
-{
-    LOD::childRemoved(pos, numChildrenToRemove);
-}
-
-void PagedLOD::childInserted(unsigned int pos)
-{
-    LOD::childInserted(pos);
-}
-
-void PagedLOD::rangeRemoved(unsigned int pos, unsigned int numChildrenToRemove)
-{
-    LOD::rangeRemoved(pos, numChildrenToRemove);
-}
-
-void PagedLOD::rangeInserted(unsigned int pos)
-{
-    LOD::rangeInserted(pos);
-    expandPerRangeDataTo(pos);
-}
-
 void PagedLOD::expandPerRangeDataTo(unsigned int pos)
 {
     if (pos>=_perRangeDataList.size()) _perRangeDataList.resize(pos+1);
@@ -267,16 +246,12 @@ bool PagedLOD::addChild(Node *child, float min, float max,const std::string& fil
     return false;
 }
 
-bool PagedLOD::removeChild( Node *child )
+bool PagedLOD::removeChildren( unsigned int pos,unsigned int numChildrenToRemove)
 {
-    // find the child's position.
-    unsigned int pos=getChildIndex(child);
-    if (pos==_children.size()) return false;
-    
-    if (pos<_rangeList.size()) _rangeList.erase(_rangeList.begin()+pos);
-    if (pos<_perRangeDataList.size()) _perRangeDataList.erase(_perRangeDataList.begin()+pos);
-    
-    return Group::removeChild(child);    
+    if (pos<_rangeList.size()) _rangeList.erase(_rangeList.begin()+pos, osg::minimum(_rangeList.begin()+(pos+numChildrenToRemove), _rangeList.end()) );
+    if (pos<_perRangeDataList.size()) _perRangeDataList.erase(_perRangeDataList.begin()+pos, osg::minimum(_perRangeDataList.begin()+ (pos+numChildrenToRemove), _perRangeDataList.end()) );
+            
+    return Group::removeChildren(pos,numChildrenToRemove);
 }
 
 bool PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)

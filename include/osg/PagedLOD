@@ -41,9 +41,8 @@ class OSG_EXPORT PagedLOD : public LOD
 
         virtual bool addChild(Node *child, float min, float max,const std::string& filename, float priorityOffset=0.0f, float priorityScale=1.0f);
 
-        virtual bool removeChild(Node *child);
+        virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove=1);
         
-
 
 
         /** Set the database path to prepend to children's filenames.*/
@@ -112,12 +111,6 @@ class OSG_EXPORT PagedLOD : public LOD
     protected :
     
         virtual ~PagedLOD() {}
-
-        virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
-        virtual void childInserted(unsigned int pos);
-
-        virtual void rangeRemoved(unsigned int pos, unsigned int numChildrenToRemove);
-        virtual void rangeInserted(unsigned int pos);
         
         void expandPerRangeDataTo(unsigned int pos);
 

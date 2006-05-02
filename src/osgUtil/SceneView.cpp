@@ -226,7 +226,7 @@ void SceneView::setSceneData(osg::Node* node)
     osg::ref_ptr<osg::Node> temporaryRefernce = node;
     
     // remove pre existing children
-    _camera->removeChild(0, _camera->getNumChildren());
+    _camera->removeChildren(0, _camera->getNumChildren());
     
     // add the new one in.
     _camera->addChild(node);

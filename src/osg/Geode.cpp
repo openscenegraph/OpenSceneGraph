@@ -77,10 +77,10 @@ bool Geode::addDrawable( Drawable *drawable )
 
 bool Geode::removeDrawable( Drawable *drawable )
 {
-    return removeDrawable(getDrawableIndex(drawable));
+    return removeDrawables(getDrawableIndex(drawable),1);
 }
 
-bool Geode::removeDrawable(unsigned int pos,unsigned int numDrawablesToRemove)
+bool Geode::removeDrawables(unsigned int pos,unsigned int numDrawablesToRemove)
 {
     if (pos<_drawables.size() && numDrawablesToRemove>0)
     {

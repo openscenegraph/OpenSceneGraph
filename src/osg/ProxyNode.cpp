@@ -92,15 +92,11 @@ bool ProxyNode::addChild(Node *child, const std::string& filename)
     return false;
 }
 
-bool ProxyNode::removeChild( Node *child )
+bool ProxyNode::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 {
-    // find the child's position.
-    unsigned int pos=getChildIndex(child);
-    if (pos==_children.size()) return false;
-    
-    if (pos<_filenameList.size()) _filenameList.erase(_filenameList.begin()+pos);
-    
-    return Group::removeChild(child);    
+    if (pos<_filenameList.size()) _filenameList.erase(_filenameList.begin()+pos, osg::minimum(_filenameList.begin()+(pos+numChildrenToRemove), _filenameList.end()) );
+
+    return Group::removeChildren(pos,numChildrenToRemove);
 }
 
 BoundingSphere ProxyNode::computeBound() const

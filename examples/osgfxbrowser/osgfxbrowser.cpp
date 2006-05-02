@@ -180,10 +180,10 @@ protected:
             effect_description += "DESCRIPTION:\n" + std::string(_effects[_selected_fx]->effectDescription());            
 
             if (_scene.valid() && _root.valid()) {
-                _root->removeChild(0, _root->getNumChildren());
+                _root->removeChildren(0, _root->getNumChildren());
                 osg::ref_ptr<osgFX::Effect> effect = _effects[_selected_fx].get();
                 effect->setEnabled(_fxen);
-                effect->removeChild(0, effect->getNumChildren());
+                effect->removeChildren(0, effect->getNumChildren());
                 effect->addChild(_scene.get());
                 effect->setUpDemo();
                 _root->addChild(effect.get());

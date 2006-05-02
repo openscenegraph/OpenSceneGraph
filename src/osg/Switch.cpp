@@ -99,25 +99,11 @@ bool Switch::insertChild( unsigned int index, Node *child, bool value )
     return false;
 }
 
-bool Switch::removeChild( Node *child )
+bool Switch::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 {
-    return removeChild( getChildIndex(child) );
-}
+    if (pos<_values.size()) _values.erase(_values.begin()+pos, osg::minimum(_values.begin()+(pos+numChildrenToRemove), _values.end()) );
 
-bool Switch::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
-{
-    if (pos>=_values.size() || numChildrenToRemove==0) return false;
-
-    unsigned int endOfRemoveRange = pos+numChildrenToRemove;
-    if (endOfRemoveRange>_values.size())
-    {
-        notify(DEBUG_INFO)<<"Warning: Switch::removeChild(i,numChildrenToRemove) has been passed an excessive number"<<std::endl;
-        notify(DEBUG_INFO)<<"         of chilren to remove, trimming just to end of value list."<<std::endl;
-        endOfRemoveRange=_values.size();
-    }
-    _values.erase(_values.begin()+pos,_values.begin()+endOfRemoveRange);
-
-    return Group::removeChild(pos, numChildrenToRemove);
+    return Group::removeChildren(pos,numChildrenToRemove);
 }
 
 void Switch::setValue(unsigned int pos,bool value)

@@ -53,9 +53,11 @@ class FLTReaderWriter : public ReaderWriter
             // code for setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
-//          local_opt->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_ALL);
-            
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+
+            std::ifstream istream;
+            istream.imbue(std::locale::classic());
+            istream.open(fileName.c_str(), std::ios::in | std::ios::binary);
+
             return readNode(istream,local_opt.get());
         }
         
@@ -185,3 +187,15 @@ class FLTReaderWriter : public ReaderWriter
 // now register with Registry to instantiate the above
 // reader/writer.
 RegisterReaderWriterProxy<FLTReaderWriter> g_FLTReaderWriterProxy;
+
+
+
+
+
+
+
+
+
+
+
+

@@ -47,7 +47,9 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    std::ifstream fin(fileName.c_str(), ios::in | ios::binary);
+    std::ifstream fin;
+    fin.imbue(std::locale::classic());
+    fin.open(fileName.c_str(), std::ios::in | std::ios::binary);
 
     if ( fin.fail())
         return ReadResult::ERROR_IN_READING_FILE;
@@ -175,3 +177,15 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
 // now register with Registry to instantiate the above
 // reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterATTR> g_readerWriter_ATTR_Proxy;
+
+
+
+
+
+
+
+
+
+
+
+

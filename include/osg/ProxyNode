@@ -35,7 +35,8 @@ class OSG_EXPORT ProxyNode : public Group
        
         virtual bool addChild(Node *child);
         virtual bool addChild(Node *child, const std::string& filename);
-        virtual bool removeChild(Node *child);
+        
+        virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 
         /** Set the database path to prepend to children's filenames.*/
         void setDatabasePath(const std::string& path);

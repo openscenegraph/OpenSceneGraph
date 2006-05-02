@@ -52,8 +52,7 @@ class CURRENT_CLASS : public osg::Group
 	    of added or removed children. */
 	virtual bool addChild(osg::Node *child);
 	virtual bool insertChild(unsigned int index, osg::Node *child);
-	virtual bool removeChild(osg::Node *child);
-	virtual bool removeChild(unsigned int pos, unsigned int numRemove = 1);
+	virtual bool removeChildren(unsigned int pos, unsigned int numRemove = 1);
 	virtual bool setChild(unsigned int i, osg::Node *node);
 
   protected:

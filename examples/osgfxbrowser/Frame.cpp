@@ -24,7 +24,7 @@ void Frame::rebuild()
 {
     float zPos = -0.1f;
 
-    removeDrawable(0, getNumDrawables());
+    removeDrawables(0, getNumDrawables());
     addDrawable(build_quad(rect_, bgcolor_));
     addDrawable(build_quad(Rect(rect_.x0 + 4, rect_.y1 - 24, rect_.x1 - 4, rect_.y1 - 4), osg::Vec4(0, 0, 0, bgcolor_.w()), false, zPos));
 

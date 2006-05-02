@@ -49,8 +49,7 @@ class OSG_EXPORT LOD : public Group
 
         virtual bool addChild(Node *child, float min, float max);
 
-        virtual bool removeChild(Node *child);
-
+        virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove=1);
 
         typedef std::pair<float,float>  MinMaxPair;
         typedef std::vector<MinMaxPair> RangeList;
@@ -123,12 +122,6 @@ class OSG_EXPORT LOD : public Group
 
     protected :
         virtual ~LOD() {}
-
-        virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
-        virtual void childInserted(unsigned int pos);
-
-        virtual void rangeRemoved(unsigned int /*pos*/, unsigned int /*numChildrenToRemove*/) {}
-        virtual void rangeInserted(unsigned int /*pos*/) {}
 
         CenterMode                      _centerMode;
         Vec3                            _userDefinedCenter;

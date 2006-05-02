@@ -1175,7 +1175,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Geode& geode)
         osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
         if (geom && geom->empty() && isOperationPermissibleForObject(geom))
         {
-           geode.removeDrawable(i);
+           geode.removeDrawables(i,1);
         }
     }
 
@@ -2328,7 +2328,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
     
     
     // first removing from the original group,
-    group->removeChild(0,group->getNumChildren());
+    group->removeChildren(0,group->getNumChildren());
     
     // add in the bb groups
     typedef std::vector< osg::ref_ptr<osg::Group> > GroupList;

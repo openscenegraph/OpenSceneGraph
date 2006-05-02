@@ -156,20 +156,16 @@ bool CURRENT_CLASS::insertChild(unsigned int index, osg::Node *child)
     return true;
 }
 
-bool CURRENT_CLASS::removeChild(osg::Node *child)
-{
-    return Group::removeChild(child);
-}
 
-bool CURRENT_CLASS::removeChild(unsigned int pos, unsigned int numRemove)
+bool CURRENT_CLASS::removeChildren(unsigned int pos, unsigned int numRemove)
 {
-    if(!Group::removeChild(pos, numRemove)) return false; // Remove child
+    if(!Group::removeChildren(pos, numRemove)) return false; // Remove child
 
     // Remove child from each CameraNode
     unsigned int totalCameras = _cameraList.size();
     for(unsigned int i = 0; i < totalCameras; i++)
     {
-      _cameraList[i]->removeChild(pos, numRemove);
+      _cameraList[i]->removeChildren(pos, numRemove);
     }
     return true;
 }

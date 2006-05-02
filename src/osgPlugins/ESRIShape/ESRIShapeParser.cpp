@@ -219,7 +219,7 @@ void ESRIShapeParser::_combinePointToMultipoint()
         }
     }
 
-    _geode->removeDrawable( 0, numDrawables );
+    _geode->removeDrawables( 0, numDrawables );
 
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
     geometry->setVertexArray(coords.get());

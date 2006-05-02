@@ -361,6 +361,7 @@ endif
 #    DEF             += `getconf LFS_CFLAGS`
 
     LIBS            = -lstdc++
+#    DEF             += -W -Wall -fPIC -pipe -Woverloaded-virtual
     DEF             += -W -Wall -fPIC -pipe
     OPTF            = -O2 
     DBGF            = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 

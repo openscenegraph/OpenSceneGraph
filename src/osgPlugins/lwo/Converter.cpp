@@ -54,7 +54,7 @@ Converter::Converter(const Options &options, const osgDB::ReaderWriter::Options*
 osg::Group *Converter::convert(Object &obj)
 {
     if (root_->getNumChildren() > 0) {
-        root_->removeChild(0, root_->getNumChildren());
+        root_->removeChildren(0, root_->getNumChildren());
     }
 
     osg::notify(osg::INFO) << "INFO: lwosg::Converter: flattening per-polygon vertex maps\n";

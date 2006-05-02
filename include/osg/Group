@@ -63,10 +63,32 @@ class OSG_EXPORT Group : public Node
           * bounding sphere to force it to recompute on next getBound() and
           * return true for success. If Node is not found then return false
           * and do not change the reference count of the Node.
+          * Note, do not override, only override removeChildren(,) is required.
         */
-        virtual bool removeChild( Node *child );
+        inline bool removeChild( Node *child )
+        {
+            unsigned int pos = getChildIndex(child);
+            if (pos<_children.size()) return removeChildren(pos,1);
+            else return false;
+        }
 
-        virtual bool removeChild(unsigned int pos,unsigned int numChildrenToRemove=1);
+        /** Remove Node from Group.
+          * If Node is contained in Group then remove it from the child
+          * list, decrement its reference count, and dirty the 
+          * bounding sphere to force it to recompute on next getBound() and
+          * return true for success. If Node is not found then return false
+          * and do not change the reference count of the Node.
+          * Note, do not override, only override removeChildren(,) is required.
+        */
+        inline bool removeChild( unsigned int pos )
+        {
+            if (pos<_children.size()) return removeChildren(pos,1);
+            else return false;
+        }
+
+        /** Remove children from Group.
+          * Note, must be override by subclasses of Group which add per child attributes.*/
+        virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 
         /** Replace specified Node with another Node.
           * Equivalent to setChild(getChildIndex(orignChild),node)

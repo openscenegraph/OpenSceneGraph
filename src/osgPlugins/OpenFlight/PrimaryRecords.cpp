@@ -128,9 +128,13 @@ protected:
         // Flat shaded?
         if (flags & FLAT_SHADED)
         {
-            osg::ShadeModel* shademodel = new osg::ShadeModel;
-            shademodel->setMode(osg::ShadeModel::FLAT);
-            _object->getOrCreateStateSet()->setAttribute(shademodel);
+            static osg::ref_ptr<osg::ShadeModel> shademodel;
+            if (!shademodel.valid())
+            {
+                shademodel = new osg::ShadeModel;
+                shademodel->setMode(osg::ShadeModel::FLAT);
+            }
+            _object->getOrCreateStateSet()->setAttribute(shademodel.get());
         }
 
         if (_parent.valid())
@@ -745,3 +749,15 @@ RegisterRecordProxy<Extension> g_Extension(EXTENSION_OP);
 
 
 } // end namespace
+
+
+
+
+
+
+
+
+
+
+
+

@@ -113,16 +113,6 @@ bool LOD::addChild( Node *child )
     return false;
 }
 
-void LOD::childRemoved(unsigned int /*pos*/, unsigned int /*numChildrenToRemove*/)
-{
-    //std::cout<<"LOD::childRemoved("<<pos<<","<<numChildrenToRemove<<")"<<std::endl;
-}
-
-void LOD::childInserted(unsigned int /*pos*/)
-{
-    //std::cout<<"LOD::childInserted("<<pos<<")"<<std::endl;
-}
-
 
 bool LOD::addChild(Node *child, float min, float max)
 {
@@ -136,15 +126,11 @@ bool LOD::addChild(Node *child, float min, float max)
     return false;
 }
 
-bool LOD::removeChild( Node *child )
+bool LOD::removeChildren( unsigned int pos,unsigned int numChildrenToRemove)
 {
-    // find the child's position.
-    unsigned int pos=getChildIndex(child);
-    if (pos==_children.size()) return false;
-    
-    _rangeList.erase(_rangeList.begin()+pos);
-    
-    return Group::removeChild(child);    
+    if (pos<_rangeList.size()) _rangeList.erase(_rangeList.begin()+pos, osg::minimum(_rangeList.begin()+(pos+numChildrenToRemove), _rangeList.end()) );
+
+    return Group::removeChildren(pos,numChildrenToRemove);
 }
 
 void LOD::setRange(unsigned int childNo, float min,float max)

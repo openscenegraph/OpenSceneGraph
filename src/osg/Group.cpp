@@ -144,12 +144,7 @@ bool Group::insertChild( unsigned int index, Node *child )
     else return false;
 }
 
-bool Group::removeChild( Node *child )
-{
-    return removeChild(getChildIndex(child));
-}
-
-bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
+bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 {
     if (pos<_children.size() && numChildrenToRemove>0)
     {

@@ -65,7 +65,7 @@ class OSG_EXPORT Geode : public Node
           * @return \c true if at least one \c Drawable was removed. \c false
           *         otherwise.
         */
-        virtual bool removeDrawable(unsigned int i,unsigned int numDrawablesToRemove=1);
+        virtual bool removeDrawables(unsigned int i,unsigned int numDrawablesToRemove=1);
 
         /** Replace specified Drawable with another Drawable.
          * Equivalent to <tt>setDrawable(getDrawableIndex(origDraw),newDraw)</tt>,

@@ -52,7 +52,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
 	I_Method1(bool, addChild, IN, osg::Node *, child);
 	I_Method3(bool, addChild, IN, osg::Node *, child, IN, float, min, IN, float, max);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
+	I_MethodWithDefaults2(bool, removeChildren, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
 	I_Method1(void, setCenterMode, IN, osg::LOD::CenterMode, mode);
 	I_Method0(osg::LOD::CenterMode, getCenterMode);
 	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);

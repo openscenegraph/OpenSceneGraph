@@ -90,6 +90,40 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >, osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap);
 
+BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
+	I_BaseType(osg::Drawable);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgParticle::PrecipitationEffect::PrecipitationDrawable &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, x);
+	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x);
+	I_Method1(void, setRequiresPreviousMatrix, IN, bool, flag);
+	I_Method0(bool, getRequiresPreviousMatrix);
+	I_Method1(void, setGeometry, IN, osg::Geometry *, geom);
+	I_Method0(osg::Geometry *, getGeometry);
+	I_Method0(const osg::Geometry *, getGeometry);
+	I_Method1(void, setDrawType, IN, GLenum, type);
+	I_Method0(GLenum, getDrawType);
+	I_Method1(void, setNumberOfVertices, IN, unsigned int, numVertices);
+	I_Method0(unsigned int, getNumberOfVertices);
+	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getCurrentCellMatrixMap);
+	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getPreviousCellMatrixMap);
+	I_Method0(void, newFrame);
+	I_ReadOnlyProperty(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, CurrentCellMatrixMap);
+	I_Property(GLenum, DrawType);
+	I_Property(osg::Geometry *, Geometry);
+	I_Property(unsigned int, NumberOfVertices);
+	I_ReadOnlyProperty(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, PreviousCellMatrixMap);
+	I_Property(bool, RequiresPreviousMatrix);
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell)
 	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k);
 END_REFLECTOR

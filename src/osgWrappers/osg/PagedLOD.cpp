@@ -40,7 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	I_Method1(bool, addChild, IN, osg::Node *, child);
 	I_Method3(bool, addChild, IN, osg::Node *, child, IN, float, min, IN, float, max);
 	I_MethodWithDefaults6(bool, addChild, IN, osg::Node *, child, , IN, float, min, , IN, float, max, , IN, const std::string &, filename, , IN, float, priorityOffset, 0.0f, IN, float, priorityScale, 1.0f);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
+	I_MethodWithDefaults2(bool, removeChildren, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
 	I_Method1(void, setDatabasePath, IN, const std::string &, path);
 	I_Method0(const std::string &, getDatabasePath);
 	I_Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename);

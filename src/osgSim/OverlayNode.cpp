@@ -213,25 +213,22 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
         _texgenNode->accept(*cv);
         
-        osg::CullingSet& pcs = cv->getProjectionCullingStack().back();
-        osg::CullingSet& ccs = cv->getCurrentCullingSet();
-
         const osg::Matrix modelView = (cv->getModelViewMatrix());
         osg::Polytope viewTextureFrustum;
         viewTextureFrustum.setAndTransformProvidingInverse(_textureFrustum, osg::Matrix::inverse(modelView));
 
-        pcs.addStateFrustum(_mainSubgraphStateSet.get(), viewTextureFrustum);
-        ccs.addStateFrustum(_mainSubgraphStateSet.get(), _textureFrustum);
-
+        cv->getProjectionCullingStack().back().addStateFrustum(_mainSubgraphStateSet.get(), viewTextureFrustum);
+        cv->getCurrentCullingSet().addStateFrustum(_mainSubgraphStateSet.get(), _textureFrustum);
+        
         // push the stateset.
         // cv->pushStateSet(_mainSubgraphStateSet.get());
 
         Group::traverse(nv);
 
         // cv->popStateSet();
-        
-        ccs.getStateFrustumList().pop_back();
-        pcs.getStateFrustumList().pop_back();
+
+        cv->getCurrentCullingSet().getStateFrustumList().pop_back();
+        cv->getProjectionCullingStack().back().getStateFrustumList().pop_back();
     }
 }
 
@@ -241,7 +238,7 @@ void OverlayNode::setOverlaySubgraph(osg::Node* node)
 
     _overlaySubgraph = node;
 
-    _camera->removeChild(0, _camera->getNumChildren());
+    _camera->removeChildren(0, _camera->getNumChildren());
     _camera->addChild(node);
 
     dirtyOverlayTexture();

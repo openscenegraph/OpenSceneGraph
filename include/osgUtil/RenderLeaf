@@ -34,6 +34,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     
 
         inline RenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f):
+            osg::Referenced(false),
             _parent(0),
             _drawable(drawable),
             _projection(projection),
@@ -76,6 +77,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 
         /// disallow creation of blank RenderLeaf as this isn't useful.
         RenderLeaf():
+            osg::Referenced(false),
             _parent(0),
             _drawable(0),
             _projection(0),
@@ -83,7 +85,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _depth(0.0f) {}
 
         /// disallow copy construction.
-        RenderLeaf(const RenderLeaf&):osg::Referenced() {}
+        RenderLeaf(const RenderLeaf&):osg::Referenced(false) {}
         /// disallow copy operator.
         RenderLeaf& operator = (const RenderLeaf&) { return *this; }
 

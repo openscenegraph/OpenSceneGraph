@@ -62,6 +62,14 @@ Referenced::Referenced():
     if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
 }
 
+Referenced::Referenced(bool threadSafeRefUnref):
+    _refMutex(0),
+    _refCount(0),
+    _observers(0)
+{
+    if (threadSafeRefUnref) _refMutex = new OpenThreads::Mutex;
+}
+
 Referenced::Referenced(const Referenced&):
     _refMutex(0),
     _refCount(0),

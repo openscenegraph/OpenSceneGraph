@@ -992,7 +992,7 @@ void CullVisitor::apply(Projection& node)
     _computed_zfar = -FLT_MAX;
 
 
-    ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
     //osg::notify(osg::INFO)<<"Push projection "<<*matrix<<std::endl;
@@ -1074,7 +1074,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
     setComputeNearFarMode( camera.getComputeNearFarMode());
 
 
-    osg::RefMatrix& originalModelView = getModelViewMatrix();
+    RefMatrix& originalModelView = getModelViewMatrix();
 
     if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
     {

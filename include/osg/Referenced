@@ -46,6 +46,8 @@ class OSG_EXPORT Referenced
 
         Referenced(); 
         
+        explicit Referenced(bool threadSafeRefUnref); 
+
         Referenced(const Referenced&);
 
         inline Referenced& operator = (const Referenced&) { return *this; }

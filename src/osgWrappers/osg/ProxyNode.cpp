@@ -45,7 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
 	I_Method1(bool, addChild, IN, osg::Node *, child);
 	I_Method2(bool, addChild, IN, osg::Node *, child, IN, const std::string &, filename);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
+	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
 	I_Method1(void, setDatabasePath, IN, const std::string &, path);
 	I_Method0(const std::string &, getDatabasePath);
 	I_Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename);

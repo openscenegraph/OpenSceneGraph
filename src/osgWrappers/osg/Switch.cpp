@@ -43,8 +43,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	I_Method2(bool, addChild, IN, osg::Node *, child, IN, bool, value);
 	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
 	I_Method3(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child, IN, bool, value);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
-	I_MethodWithDefaults2(bool, removeChild, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
+	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
 	I_Method2(void, setValue, IN, unsigned int, pos, IN, bool, value);
 	I_Method1(bool, getValue, IN, unsigned int, pos);
 	I_Method2(void, setChildValue, IN, const osg::Node *, child, IN, bool, value);

@@ -40,7 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
 	I_Method1(bool, addDrawable, IN, osg::Drawable *, drawable);
 	I_Method1(bool, removeDrawable, IN, osg::Drawable *, drawable);
-	I_MethodWithDefaults2(bool, removeDrawable, IN, unsigned int, i, , IN, unsigned int, numDrawablesToRemove, 1);
+	I_MethodWithDefaults2(bool, removeDrawables, IN, unsigned int, i, , IN, unsigned int, numDrawablesToRemove, 1);
 	I_Method2(bool, replaceDrawable, IN, osg::Drawable *, origDraw, IN, osg::Drawable *, newDraw);
 	I_Method2(bool, setDrawable, IN, unsigned int, i, IN, osg::Drawable *, drawable);
 	I_Method0(unsigned int, getNumDrawables);

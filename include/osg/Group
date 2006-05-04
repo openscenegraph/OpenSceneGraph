@@ -80,9 +80,9 @@ class OSG_EXPORT Group : public Node
           * and do not change the reference count of the Node.
           * Note, do not override, only override removeChildren(,) is required.
         */
-        inline bool removeChild( unsigned int pos )
+        inline bool removeChild( unsigned int pos, unsigned int numChildrenToRemove=1 )
         {
-            if (pos<_children.size()) return removeChildren(pos,1);
+            if (pos<_children.size()) return removeChildren(pos,numChildrenToRemove);
             else return false;
         }
 

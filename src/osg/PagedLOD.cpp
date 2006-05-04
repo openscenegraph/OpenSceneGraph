@@ -262,7 +262,7 @@ bool PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren
         {
             osg::Node* nodeToRemove = _children[_children.size()-1].get();
             removedChildren.push_back(nodeToRemove);
-            return Group::removeChild(nodeToRemove);
+            return Group::removeChildren(_children.size()-1,1);
         }
     }
     return false;

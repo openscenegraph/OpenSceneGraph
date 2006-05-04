@@ -41,7 +41,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	I_Method1(bool, addChild, IN, osg::Node *, child);
 	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
 	I_Method1(bool, removeChild, IN, osg::Node *, child);
-	I_Method1(bool, removeChild, IN, unsigned int, pos);
+	I_MethodWithDefaults2(bool, removeChild, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
 	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
 	I_Method2(bool, replaceChild, IN, osg::Node *, origChild, IN, osg::Node *, newChild);
 	I_Method0(unsigned int, getNumChildren);

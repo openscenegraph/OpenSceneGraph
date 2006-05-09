@@ -165,6 +165,9 @@ inline double DegreesToRadians(double angle) { return angle*PI/180.0; }
 inline float RadiansToDegrees(float angle) { return angle*180.0f/(float)PI; }
 inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
 
+inline float round(float v) { return v>=0.0f?floorf(v+0.5f):ceilf(v-0.5f); }
+inline double round(double v) { return v>=0.0?floor(v+0.5):ceil(v-0.5); }
+
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MWERKS__)
     inline bool isNaN(float v) { return _isnan(v)!=0; }
     inline bool isNaN(double v) { return _isnan(v)!=0; }

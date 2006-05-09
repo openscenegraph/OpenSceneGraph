@@ -49,7 +49,7 @@ class OSG_EXPORT AutoTransform : public Transform
         inline const Quat& getRotation() const { return _rotation; }
         
         inline void setScale(float scale) { _scale.set(scale,scale,scale); _matrixDirty=true; dirtyBound(); }
-        inline void setScale(const Vec3& scale) { _scale = scale; dirtyBound(); }
+        inline void setScale(const Vec3& scale) { _scale = scale; _matrixDirty=true; dirtyBound(); }
         inline const Vec3& getScale() const { return _scale; }
         
         inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }

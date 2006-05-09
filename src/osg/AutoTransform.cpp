@@ -194,7 +194,6 @@ BoundingSphere AutoTransform::computeBound() const
 {
     BoundingSphere bsphere;
 
-    float scale( 1.f );
     if ( getAutoScaleToScreen() && _firstTimeToInitEyePoint )
         return bsphere;
 

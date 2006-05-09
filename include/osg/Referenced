@@ -187,6 +187,19 @@ class OSG_EXPORT Referenced : public NoodleGlue::CBridgable
           */
         inline void unref_nodelete() const { --_refCount; }
         inline int referenceCount() const { return _refCount; }
+
+        /* These methods are not used in JavaOSG */
+        void addObserver(Observer* observer_ptr) {}
+        void removeObserver(Observer* observer_ptr) {}
+
+    public:
+
+        /** Set whether reference counting should be use a mutex to create thread reference counting.*/
+        static void setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting) {}
+        
+        /** Get whether reference counting is active. */
+        static bool getThreadSafeReferenceCounting() { return true; }
+
     protected:
         virtual ~Referenced() {}
 };

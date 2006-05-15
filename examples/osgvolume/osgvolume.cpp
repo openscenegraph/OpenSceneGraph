@@ -1222,7 +1222,7 @@ struct WriteRowOperator
 
 osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent, int numberOfComponents, const std::string& endian, const std::string& raw_filename)
 {
-    std::ifstream fin(raw_filename.c_str());
+    std::ifstream fin(raw_filename.c_str(), std::ifstream::binary);
     if (!fin) return 0;
 
     GLenum pixelFormat;

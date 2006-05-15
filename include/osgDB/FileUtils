@@ -26,14 +26,14 @@ namespace osgDB {
 enum CaseSensitivity
 {
     CASE_SENSITIVE,
-    CASE_INSENSITIVE,
+    CASE_INSENSITIVE
 };
 
 enum FileType
 {
     FILE_NOT_FOUND,
     REGULAR_FILE,
-    DIRECTORY,
+    DIRECTORY
 };
 
 // Make a new directory.  Returns true if directory exists or was created.

@@ -16,13 +16,27 @@
 
 #include <math.h>
 
-
 //certain math functions were not defined until 10.2
 //so this code checks the version so it can add in workarounds for older versions.
 #ifdef __APPLE__
 #include <AvailabilityMacros.h>
 #if !defined(MAC_OS_X_VERSION_10_2) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_2)
-#define APPLE_PRE_10_2
+    // One extra check to verify the gcc version.
+    // The assumption is that there is no possible way to use gcc 4+
+    // on anything less than 10.3.9. So if gcc 4 is in use, this means
+    // pre-10.2 support is not intended and we need not define APPLE_PRE_10_2.
+    // The reason for this extra check is that if the user relies on default
+    // settings, MAC_OS_X_VERSION_MIN_REQUIRED will be set to 1010 and hit
+    // this code path, but this is probably not what they want if using gcc 4+. 
+    #if (__GNUC__ < 4)
+        #define APPLE_PRE_10_2
+        // Use of isnan was causing problems if <cmath> is used elsewhere 
+        // in the code. <cmath> seems to undef isnan which causes compile 
+        // failures below. Using std::isnan will work, but use of <cmath> 
+        // and std:: are not necessarily portible with other systems so 
+        // the include of <cmath> is isolated here.
+        #include <cmath>
+    #endif
 #endif
 #endif
 
@@ -172,10 +186,16 @@ inline double round(double v) { return v>=0.0?floor(v+0.5):ceil(v-0.5); }
     inline bool isNaN(float v) { return _isnan(v)!=0; }
     inline bool isNaN(double v) { return _isnan(v)!=0; }
 #else
-    # if defined(__APPLE__) && !defined (APPLE_PRE_10_2)
-        inline bool isNaN(float v) { return __isnanf(v); }
-        inline bool isNaN(double v) { return __isnand(v); }
+    #if defined(__APPLE__)
+        #if !defined (APPLE_PRE_10_2)
+            inline bool isNaN(float v) { return __isnanf(v); }
+            inline bool isNaN(double v) { return __isnand(v); }
+        #else
+            inline bool isNaN(float v) { return std::isnan(v); }
+            inline bool isNaN(double v) { return std::isnan(v); }
+        #endif
     #else
+        // Need to use to std::isnan to avoid undef problem from <cmath>
         inline bool isNaN(float v) { return isnan(v); }
         inline bool isNaN(double v) { return isnan(v); }
     #endif

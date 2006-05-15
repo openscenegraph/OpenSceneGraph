@@ -6,13 +6,12 @@
 
 #include <stdexcept>
 #include <osg/Notify>
+#include <osg/ProxyNode>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/ReentrantMutex>
-
-#include <osgSim/OpenFlightOptimizer>
 
 #include "Registry.h"
 #include "Document.h"
@@ -23,6 +22,35 @@
 using namespace flt;
 using namespace osg;
 using namespace osgDB;
+
+
+class ReadExternalsVisitor : public osg::NodeVisitor
+{
+    osg::ref_ptr<ReaderWriter::Options> _options;
+
+public:
+
+    ReadExternalsVisitor(ReaderWriter::Options* options) :
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _options(options)
+    {
+    }
+        
+    virtual ~ReadExternalsVisitor() {}
+
+    virtual void apply(ProxyNode& node)
+    {
+        for (unsigned int pos=0; pos<node.getNumFileNames(); pos++)
+        {
+            std::string filename = node.getFileName(pos);
+
+            // read external
+            osg::Node* external = osgDB::readNodeFile(filename,_options.get());
+            if (external)
+                node.addChild(external);
+        }
+    }
+};
 
 
 class FLTReaderWriter : public ReaderWriter
@@ -47,18 +75,55 @@ class FLTReaderWriter : public ReaderWriter
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file, options );
+            std::string fileName = osgDB::findDataFile(file, options);
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            // in local cache?
+            {
+                osg::Node* node = flt::Registry::instance()->getFromLocalCache(fileName);
+                if (node)
+                    return ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+            }
+
+            // setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
-            std::ifstream istream;
-            istream.imbue(std::locale::classic());
-            istream.open(fileName.c_str(), std::ios::in | std::ios::binary);
+            ReadResult rr;
 
-            return readNode(istream,local_opt.get());
+            // read file
+            {
+                std::ifstream istream;
+                istream.imbue(std::locale::classic());
+                istream.open(fileName.c_str(), std::ios::in | std::ios::binary);
+
+                if (istream)
+                {
+                    rr = readNode(istream,local_opt.get());
+                }
+            }
+
+            static int nestedExternalsLevel = 0;
+            if (rr.success())
+            {
+                // add to local cache.
+                flt::Registry::instance()->addToLocalCache(fileName,rr.getNode());
+
+                // read externals.
+                if (rr.getNode())
+                {
+                    nestedExternalsLevel++;
+                    ReadExternalsVisitor visitor(local_opt.get());
+                    rr.getNode()->accept(visitor);
+                    nestedExternalsLevel--;
+                }
+            }
+
+            // clear local cache.
+            if (nestedExternalsLevel==0)
+                flt::Registry::instance()->clearLocalCache();
+
+            return rr;
         }
         
         virtual ReadResult readObject(std::istream& fin, const Options* options) const
@@ -68,62 +133,45 @@ class FLTReaderWriter : public ReaderWriter
         
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
-            try
+            Document document;
+            document.setOptions(options);
+
+            // option string
+            if (options)
             {
-                Document document;
-                document.setOptions(options);
+                document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
+                osg::notify(osg::DEBUG_INFO) << "FltFile.getUseTextureAlphaForTransparancyBinning()=" << document.getUseTextureAlphaForTransparancyBinning() << std::endl;
+                document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.o
+                osg::notify(osg::DEBUG_INFO) << "FltFile.getDoUnitsConversion()=" << document.getDoUnitsConversion() << std::endl;
 
-                // option string
-                if (options)
+                if (document.getDoUnitsConversion())
                 {
-                    document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
-                    osg::notify(osg::DEBUG_INFO) << "FltFile.getUseTextureAlphaForTransparancyBinning()=" << document.getUseTextureAlphaForTransparancyBinning() << std::endl;
-                    document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.o
-                    osg::notify(osg::DEBUG_INFO) << "FltFile.getDoUnitsConversion()=" << document.getDoUnitsConversion() << std::endl;
-
-                    if (document.getDoUnitsConversion())
-                    {
-                        if (options->getOptionString().find("convertToFeet")!=std::string::npos)
-                            document.setDesiredUnits(FEET);
-                        else if (options->getOptionString().find("convertToInches")!=std::string::npos)
-                            document.setDesiredUnits(INCHES);
-                        else if (options->getOptionString().find("convertToMeters")!=std::string::npos)
-                            document.setDesiredUnits(METERS);
-                        else if (options->getOptionString().find("convertToKilometers")!=std::string::npos)
-                            document.setDesiredUnits(KILOMETERS);
-                        else if (options->getOptionString().find("convertToNauticalMiles")!=std::string::npos)
-                            document.setDesiredUnits(NAUTICAL_MILES);
-                    }
+                    if (options->getOptionString().find("convertToFeet")!=std::string::npos)
+                        document.setDesiredUnits(FEET);
+                    else if (options->getOptionString().find("convertToInches")!=std::string::npos)
+                        document.setDesiredUnits(INCHES);
+                    else if (options->getOptionString().find("convertToMeters")!=std::string::npos)
+                        document.setDesiredUnits(METERS);
+                    else if (options->getOptionString().find("convertToKilometers")!=std::string::npos)
+                        document.setDesiredUnits(KILOMETERS);
+                    else if (options->getOptionString().find("convertToNauticalMiles")!=std::string::npos)
+                        document.setDesiredUnits(NAUTICAL_MILES);
                 }
-
-                {
-                    // read records
-                    flt::RecordInputStream recordStream(&fin);
-                    while (recordStream().good() && !document.done())
-                    {
-                        recordStream.readRecord(document);
-                    }
-                }
-
-                {
-                    // optimize
-                    osgFlightUtil::Optimizer optimizer;
-                    optimizer.optimize(document.getHeaderNode());
-                }
-
-                readExternals(options);
-
-                return document.getHeaderNode();
             }
-            catch (std::exception &e) 
+
             {
-                osg::notify(osg::NOTICE) << "Error reading file: " << e.what() << std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
+                // read records
+                flt::RecordInputStream recordStream(&fin);
+                while (recordStream().good() && !document.done())
+                {
+                    recordStream.readRecord(document);
+                }
             }
-            catch (...)
-            {
-                return ReadResult::FILE_NOT_HANDLED;
-            }
+
+            if (!document.getHeaderNode())
+                return ReadResult::ERROR_IN_READING_FILE;
+
+            return document.getHeaderNode();
         }
 
         virtual WriteResult writeObject(const Object& object,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
@@ -164,29 +212,15 @@ class FLTReaderWriter : public ReaderWriter
 
     protected:
 
-        void readExternals(const Options* options) const
-        {
-            flt::Registry::ExternalQueue& eq = flt::Registry::instance()->getExternalQueue();
-            while (!eq.empty())
-            {
-                std::string extfilename = eq.front().first;
-                osg::ref_ptr<osg::Group> external = eq.front().second;
-                eq.pop();
-
-                if (external.valid())
-                {
-                    osg::Node* extmodel = osgDB::readNodeFile(extfilename,options);
-                    external->addChild(extmodel);
-                }
-            }
-        }
-
         mutable osgDB::ReentrantMutex _serializerMutex;
 };
 
 // now register with Registry to instantiate the above
 // reader/writer.
 RegisterReaderWriterProxy<FLTReaderWriter> g_FLTReaderWriterProxy;
+
+
+
 
 
 

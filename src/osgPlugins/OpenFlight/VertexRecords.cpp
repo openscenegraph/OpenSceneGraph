@@ -128,7 +128,7 @@ class VertexCT : public Record
 
             Vertex vertex;
             vertex.setCoord(coord*document.unitScale());
-            vertex.setUV(uv);
+            vertex.setUV(0,uv);
 
             // color
             if (flags & PACKED_COLOR)
@@ -169,7 +169,7 @@ class VertexCNT : public Record
             Vertex vertex;
             vertex.setCoord(coord*document.unitScale());
             vertex.setNormal(normal);
-            vertex.setUV(uv);
+            vertex.setUV(0,uv);
 
             // color
             if (flags & PACKED_COLOR)
@@ -215,7 +215,7 @@ class AbsoluteVertex : public Record
             if (in().tellg() < in.getEndOfRecord())
             {
                 osg::Vec2f uv = in.readVec2f();
-                vertex.setUV(uv);
+                vertex.setUV(0,uv);
             }
 
             if (_parent.valid())
@@ -263,7 +263,7 @@ class ShadedVertex : public Record
             if (in().tellg() < in.getEndOfRecord())
             {
                 osg::Vec2f uv = in.readVec2f();
-                vertex.setUV(uv);
+                vertex.setUV(0,uv);
             }
 
             if (_parent.valid())
@@ -311,7 +311,7 @@ class NormalVertex : public Record
             if (in().tellg() < in.getEndOfRecord())
             {
                 osg::Vec2f uv = in.readVec2f();
-                vertex.setUV(uv);
+                vertex.setUV(0,uv);
             }
 
             if (_parent.valid())

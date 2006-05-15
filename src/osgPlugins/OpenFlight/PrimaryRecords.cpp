@@ -9,6 +9,7 @@
 #include <osg/ProxyNode>
 #include <osg/Sequence>
 #include <osg/LOD>
+#include <osg/ProxyNode>
 #include <osgDB/FileUtils>
 #include <osgSim/DOFTransform>
 #include <osgSim/MultiSwitch>
@@ -587,7 +588,7 @@ RegisterRecordProxy<Switch> g_Switch(SWITCH_OP);
 */
 class ExternalReference : public PrimaryRecord
 {
-    osg::ref_ptr<osg::Group> _external;
+    osg::ref_ptr<osg::ProxyNode> _external;
 
 public:
 
@@ -609,18 +610,9 @@ protected:
     {
         std::string strFile = in.readString(200);
 
-        //Path for Nested external references
-        const osgDB::ReaderWriter::Options *options = document.getOptions();
-        std::string filename = osgDB::findDataFile(strFile, options);
-        if (filename.empty())
-        {
-            osg::notify(osg::WARN) << "Can't find external " << strFile << std::endl;
-            return;
-        }
-
-        _external = new osg::Group;
-        _external->setName(strFile);
-        Registry::instance()->addExternal(filename, _external.get());
+        _external = new osg::ProxyNode;
+        _external->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+        _external->setFileName(0,strFile);
 
         // Add this implementation to parent implementation.
         if (_parent.valid())
@@ -749,6 +741,9 @@ RegisterRecordProxy<Extension> g_Extension(EXTENSION_OP);
 
 
 } // end namespace
+
+
+
 
 
 

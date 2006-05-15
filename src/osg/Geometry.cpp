@@ -479,6 +479,42 @@ bool Geometry::empty() const
     return true;
 }
 
+void Geometry::setNormalBinding(AttributeBinding ab) 
+{
+    if (_normalData.binding == ab) return;
+    
+    _normalData.binding = ab;
+    computeFastPathsUsed();
+    dirtyDisplayList(); 
+}
+
+void Geometry::setColorBinding(AttributeBinding ab)
+{
+    if (_colorData.binding == ab) return;
+
+    _colorData.binding = ab;
+    computeFastPathsUsed();
+    dirtyDisplayList(); 
+}
+
+void Geometry::setSecondaryColorBinding(AttributeBinding ab)
+{
+    if (_secondaryColorData.binding == ab) return;
+
+    _secondaryColorData.binding = ab;
+    computeFastPathsUsed();
+    dirtyDisplayList(); 
+}
+
+void Geometry::setFogCoordBinding(AttributeBinding ab)
+{
+    if (_fogCoordData.binding == ab) return;
+
+    _fogCoordData.binding = ab;
+    computeFastPathsUsed();
+    dirtyDisplayList(); 
+}
+
 void Geometry::setTexCoordData(unsigned int unit,const ArrayData& arrayData)
 {
     if (_texCoordList.size()<=unit)
@@ -614,8 +650,9 @@ const IndexArray* Geometry::getVertexAttribIndices(unsigned int index) const
 
 void Geometry::setVertexAttribBinding(unsigned int index,AttributeBinding ab)
 {
+    if (getVertexAttribData(index).binding == ab)
+       return;
     getVertexAttribData(index).binding = ab;
-
     computeFastPathsUsed();
     dirtyDisplayList();
 }

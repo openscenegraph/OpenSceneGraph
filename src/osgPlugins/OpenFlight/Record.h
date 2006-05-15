@@ -77,11 +77,15 @@ public:
 
     void setNumberOfReplications(int num) { _numberOfReplications = num; }
 
+    void setLocalVertexPool(VertexList* pool) { _localVertexPool = pool; }
+    VertexList* getLocalVertexPool() { return _localVertexPool.get(); }
+
 protected:
 
     virtual ~PrimaryRecord() {}
 
     int _numberOfReplications;
+    osg::ref_ptr<VertexList> _localVertexPool;
 };
 
 

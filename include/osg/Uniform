@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
@@ -11,13 +11,14 @@
 */
 
 /* file:   include/osg/Uniform
- * author: Mike Weiblen 2005-06-03
+ * author: Mike Weiblen 2006-05-14
 */
 
 #ifndef OSG_UNIFORM
 #define OSG_UNIFORM 1
 
 #include <osg/ref_ptr>
+#include <osg/Array>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -169,7 +170,7 @@ class OSG_EXPORT Uniform : public Object
 
     public:
         Uniform();
-        Uniform( Type type, const std::string& name );
+        Uniform( Type type, const std::string& name, int numElements=1 );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Uniform(const Uniform& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
@@ -177,19 +178,30 @@ class OSG_EXPORT Uniform : public Object
         META_Object(osg, Uniform);
 
 
-
-
-        /** Set the type of glUniform. */
+        /** Set the type of glUniform, ensuring it is only set once.*/
         bool setType( Type t );
 
         /** Get the type of glUniform as enum. */
         const Type getType() const { return _type; }
 
-        /** Set the name of the glUniform, checking to make sure its only set once.*/
+        /** Set the name of the glUniform, ensuring it is only set once.*/
         void setName( const std::string& name );
+
+        /** Set the length of a uniform array, ensuring it is only set once.*/
+        void setNumElements( unsigned int numElements );
+
+        /** Get the number of GLSL elements of the osg::Uniform (>1 == array) */
+        unsigned int getNumElements() const { return _numElements; }
+
+        /** Get the number of elements required for the internal scalar data array.
+          * Returns 0 if the osg::Uniform is not properly configured.  */
+        unsigned int getInternalArrayNumElements() const;
 
         /** Return the name of a Type enum as string. */
         static const char* getTypename( Type t );
+
+        /** Return the the number of scalar components for a GLSL type. */
+        static int getTypeNumComponents( Type t );
 
         /** Return the Type enum of a Uniform typename string */
         static Uniform::Type getTypeId( const std::string& tname );
@@ -197,7 +209,10 @@ class OSG_EXPORT Uniform : public Object
         /** Return the GL API type corresponding to a GLSL type */
         static Type getGlApiType( Type t );
 
-        /** convenient construction w/ assignment */
+        /** Return the internal scalar data array type corresponding to a GLSL type */
+        static GLenum getInternalArrayType( Type t );
+
+        /** convenient single-element constructors w/ assignment */
         explicit Uniform( const char* name, float f );
         explicit Uniform( const char* name, int i );
         explicit Uniform( const char* name, bool b );
@@ -251,7 +266,7 @@ class OSG_EXPORT Uniform : public Object
         inline unsigned int getNumParents() const { return _parents.size(); }
 
 
-        /** value assignment */
+        /** convenient single-element value assignment; may only be used w/ Uniforms where isScalar()==TRUE */
         bool set( float f );
         bool set( int i );
         bool set( bool b );
@@ -269,7 +284,7 @@ class OSG_EXPORT Uniform : public Object
         bool set( bool b0, bool b1, bool b2 );
         bool set( bool b0, bool b1, bool b2, bool b3 );
 
-        /** value query */
+        /** convenient single-element value query; may only be used w/ Uniforms where isScalar()==TRUE */
         bool get( float& f ) const;
         bool get( int& i ) const;
         bool get( bool& b ) const;
@@ -286,7 +301,13 @@ class OSG_EXPORT Uniform : public Object
         bool get( bool& b0, bool& b1 ) const;
         bool get( bool& b0, bool& b1, bool& b2 ) const;
         bool get( bool& b0, bool& b1, bool& b2, bool& b3 ) const;
-        
+
+        /** value assignment for array uniforms */
+        bool setElement( unsigned int index, float f );
+        bool setElement( unsigned int index, const osg::Vec2& v2 );
+        bool setElement( unsigned int index, const osg::Vec3& v3 );
+        bool setElement( unsigned int index, const osg::Vec4& v4 );
+
 
         struct Callback : public virtual osg::Object
         {
@@ -319,9 +340,19 @@ class OSG_EXPORT Uniform : public Object
         /** Get the const EventCallback.*/
         const Callback* getEventCallback() const { return _eventCallback.get(); }
 
-        /** Increment the modified count on the Uniform so ProgramObjects watching it know it update themselves.
-          * note, autoatmatically call bet Uniform::set(*). */
+        /** Increment the modified count on the Uniform so Programs watching it know it update themselves.
+          * note: autotomatically called by Uniform::set(*);
+          * you must call if modify a data array directly. */
         inline void dirty() { ++_modifiedCount; }
+
+        bool setArray( FloatArray* array );
+        bool setArray( IntArray* array );
+
+        FloatArray* getFloatArray() { return _floatArray.get(); }
+        const FloatArray* getFloatArray() const { return _floatArray.get(); }
+
+        IntArray* getIntArray() { return _intArray.get(); }
+        const IntArray* getIntArray() const { return _intArray.get(); }
 
         inline void setModifiedCount(unsigned int mc) { _modifiedCount = mc; }
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
@@ -336,6 +367,8 @@ class OSG_EXPORT Uniform : public Object
         Uniform& operator=(const Uniform&) { return *this; }
 
         bool isCompatibleType( Type t ) const;
+        bool isScalar() const { return _numElements==1; }
+        void allocateDataArray();
 
         void addParent(osg::StateSet* object);
         void removeParent(osg::StateSet* object);
@@ -343,27 +376,18 @@ class OSG_EXPORT Uniform : public Object
         ParentList _parents;
         friend class osg::StateSet;
 
-        Type _type;
+        Type                _type;
+        unsigned int        _numElements;
 
-        union
-        {
-            GLfloat f1;         // float
-            GLfloat f2[2];      // vec2
-            GLfloat f3[3];      // vec3
-            GLfloat f4[4];      // vec4, mat2
-            GLfloat f9[9];      // mat3
-            GLfloat f16[16];    // mat4
-            GLint i1;           // int, bool, sampler*
-            GLint i2[2];        // ivec2, bvec2
-            GLint i3[3];        // ivec3, bvec3
-            GLint i4[4];        // ivec4, bvec4
-        } _data;
+        // The internal data for osg::Uniforms are stored as an array of
+        // getInternalArrayType() of length getInternalArrayNumElements().
+        ref_ptr<FloatArray> _floatArray;
+        ref_ptr<IntArray>   _intArray;
 
         ref_ptr<Callback>   _updateCallback;
         ref_ptr<Callback>   _eventCallback;
         
         unsigned int        _modifiedCount;
-
 };
 
 }

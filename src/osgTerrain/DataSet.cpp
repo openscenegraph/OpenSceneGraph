@@ -333,7 +333,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
     return 0;
 }
 
-osg::BoundingBox DataSet::SourceData::getExtents(const osg::CoordinateSystemNode* cs) const
+GeospatialExtents DataSet::SourceData::getExtents(const osg::CoordinateSystemNode* cs) const
 {
     return computeSpatialProperties(cs)._extents;
 }
@@ -446,11 +446,11 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 {
     if (destination._image.valid())
     {
-        osg::BoundingBox s_bb = getExtents(destination._cs.get());
+        GeospatialExtents s_bb = getExtents(destination._cs.get());
         
-        osg::BoundingBox d_bb = destination._extents;
+        GeospatialExtents d_bb = destination._extents;
         
-        osg::BoundingBox intersect_bb(s_bb.intersect(d_bb));
+        GeospatialExtents intersect_bb(s_bb.intersect(d_bb));
         if (!intersect_bb.valid())
         {
             my_notify(osg::INFO)<<"Reading image but it does not intesection destination - ignoring"<<std::endl;
@@ -789,11 +789,11 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
     {
         my_notify(osg::INFO)<<"Reading height field"<<std::endl;
 
-        osg::BoundingBox s_bb = getExtents(destination._cs.get());
+        GeospatialExtents s_bb = getExtents(destination._cs.get());
         
-        osg::BoundingBox d_bb = destination._extents;
+        GeospatialExtents d_bb = destination._extents;
         
-        osg::BoundingBox intersect_bb(s_bb.intersect(d_bb));
+        GeospatialExtents intersect_bb(s_bb.intersect(d_bb));
 
         if (!intersect_bb.valid())
         {
@@ -887,22 +887,78 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             
             my_notify(osg::INFO)<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
 
+            int readWidth = destWidth;
+            int readHeight = destHeight;
+            
+            bool doResample = false;
+            bool interpolateTerrain = true;
+            
+            if (interpolateTerrain &&
+               ((windowWidth != readWidth) || (windowHeight != readHeight)))
+               
+            {
+                readWidth  = windowWidth;
+                readHeight = windowHeight;
+                doResample = true;
+            }
+
             // read data into temporary array
-            float* heightData = new float [ destWidth*destHeight ];
+            float* heightData = new float [ readWidth*readHeight ];
 
             // raad the data.
             osg::HeightField* hf = destination._heightField.get();
 
             my_notify(osg::INFO)<<"reading height field"<<std::endl;
             //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
-            bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
+            //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
+            bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,readWidth,readHeight,GDT_Float32,0,0);
+
+
+            if (doResample)
+            {
+                my_notify(osg::INFO)<<"Resampling height field."<<std::endl;
+                float* resampledHeightData = new float[destWidth * destHeight];
+                for (int j=0; j<destHeight;++j)
+                {
+                    double t_d = (double)j/((double)destHeight-1);
+                    for (int i=0;i<destWidth;++i)
+                    {
+                        double s_d = (double)i/((double)destWidth-1);
+
+                        double read_i = s_d * ((double)readWidth-1);
+                        double read_j = t_d * ((double)readHeight-1);
+
+                        int right = osg::minimum((int)ceil(read_i), readWidth-1);
+                        int left = osg::maximum((int)floor(read_i), 0);
+                        int top = osg::minimum((int)ceil(read_j), readHeight-1);
+                        int bottom = osg::maximum((int)floor(read_j),0);
+
+                        double v00 = (double)heightData[left+bottom*readWidth];
+                        double v01 = (double)heightData[left+top*readWidth];
+                        double v10 = (double)heightData[right+bottom*readWidth];
+                        double v11 = (double)heightData[right+top*readWidth];
+
+                        double x_rem = read_i - (int)read_i;
+                        double y_rem = read_j - (int)read_j;
+
+                        double w00 = (1.0 - y_rem) * (1.0 - x_rem) * v00;
+                        double w01 = (1.0 - y_rem) * x_rem * v01;
+                        double w10 = y_rem * (1.0 - x_rem) * v10;
+                        double w11 = y_rem * x_rem * v11;
+                        float result = (float)(w00 + w01 + w10 + w11);
+                        resampledHeightData[i+j*destWidth] = result;
+                    }
+                }
+                delete [] heightData;
+                heightData = resampledHeightData;
+            }
 
             my_notify(osg::INFO)<<"    scaling height field"<<std::endl;
 
             float noDataValueFill = 0.0f;
             bool ignoreNoDataValue = true;
 
-            float* heightPtr = heightData;            
+            float* heightPtr = heightData;
 
             for(int r=destY+destHeight-1;r>=destY;--r)
             {
@@ -915,6 +971,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
                     h = hf->getHeight(c,r);
                 }
             }
+
             
             delete [] heightData;
            
@@ -3828,7 +3885,7 @@ void DataSet::loadSources()
 
 DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestination* parent,
                                                            osg::CoordinateSystemNode* cs,
-                                                           const osg::BoundingBox& extents,
+                                                           const GeospatialExtents& extents,
                                                            unsigned int maxImageSize,
                                                            unsigned int maxTerrainSize,
                                                            unsigned int currentLevel,
@@ -3942,10 +3999,10 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         {
             my_notify(osg::INFO)<<"Need to Divide X + Y for level "<<currentLevel<<std::endl;
             // create four tiles.
-            osg::BoundingBox bottom_left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,yCenter,extents.zMax());
-            osg::BoundingBox bottom_right(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
-            osg::BoundingBox top_left(extents.xMin(),yCenter,extents.zMin(),xCenter,extents.yMax(),extents.zMax());
-            osg::BoundingBox top_right(xCenter,yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
+            GeospatialExtents bottom_left(extents.xMin(),extents.yMin(),xCenter,yCenter);
+            GeospatialExtents bottom_right(xCenter,extents.yMin(),extents.xMax(),yCenter);
+            GeospatialExtents top_left(extents.xMin(),yCenter,xCenter,extents.yMax());
+            GeospatialExtents top_right(xCenter,yCenter,extents.xMax(),extents.yMax());
 
             destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
                                                                          cs,
@@ -4003,8 +4060,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
             my_notify(osg::INFO)<<"Need to Divide X only"<<std::endl;
 
             // create two tiles.
-            osg::BoundingBox left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,extents.yMax(),extents.zMax());
-            osg::BoundingBox right(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
+            GeospatialExtents left(extents.xMin(),extents.yMin(),xCenter,extents.yMax());
+            GeospatialExtents right(xCenter,extents.yMin(),extents.xMax(),extents.yMax());
 
             destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
                                                                          cs,
@@ -4043,8 +4100,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
             my_notify(osg::INFO)<<"Need to Divide Y only"<<std::endl;
 
             // create two tiles.
-            osg::BoundingBox top(extents.xMin(),yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
-            osg::BoundingBox bottom(extents.xMin(),extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
+            GeospatialExtents top(extents.xMin(),yCenter,extents.xMax(),extents.yMax());
+            GeospatialExtents bottom(extents.xMin(),extents.yMin(),extents.xMax(),yCenter);
 
             destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
                                                                          cs,
@@ -4140,7 +4197,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     }
 
     // get the extents of the sources and
-    osg::BoundingBox extents(_extents);
+    GeospatialExtents extents(_extents);
     if (!extents.valid()) 
     {
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
@@ -4148,7 +4205,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
             SourceData* sd = (*itr)->getSourceData();
             if (sd)
             {
-                osg::BoundingBox local_extents(sd->getExtents(_intermediateCoordinateSystem.get()));
+                GeospatialExtents local_extents(sd->getExtents(_intermediateCoordinateSystem.get()));
                 my_notify(osg::INFO)<<"local_extents = xMin()"<<local_extents.xMin()<<" "<<local_extents.xMax()<<std::endl;
                 my_notify(osg::INFO)<<"                yMin()"<<local_extents.yMin()<<" "<<local_extents.yMax()<<std::endl;
                 extents.expandBy(local_extents);

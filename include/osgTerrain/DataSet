@@ -25,9 +25,9 @@
 #ifndef DATASET_H
 #define DATASET_H 1
 
+#include <osg/BoundingSphere>
 #include <osg/Node>
 #include <osg/Matrixd>
-#include <osg/BoundingBox>
 #include <osg/Image>
 #include <osg/Shape>
 #include <osg/CoordinateSystemNode>
@@ -46,6 +46,101 @@ namespace osgTerrain
 {
 
 #define MAXIMUM_NUMBER_OF_LEVELS 30
+
+class GeospatialExtents
+{
+public:
+
+    osg::Vec2d _min;
+    osg::Vec2d _max;
+
+    inline GeospatialExtents() : 
+        _min(DBL_MAX,DBL_MAX),
+        _max(DBL_MIN,DBL_MIN) {}
+
+    inline GeospatialExtents(double xmin, double ymin, double xmax, double ymax) :
+        _min(xmin, ymin),
+        _max(xmax, ymax){}
+
+    inline double& xMin() { return _min.x(); }
+    inline double xMin() const { return _min.x(); }
+
+    inline double& yMin() { return _min.y(); }
+    inline double yMin() const { return _min.y(); }
+
+    inline double& xMax() { return _max.x(); }
+    inline double xMax() const { return _max.x(); }
+
+    inline double& yMax() { return _max.y(); }
+    inline double yMax() const { return _max.y(); }
+
+    inline void init()
+    {
+        _min.set(DBL_MAX,DBL_MAX);
+        _max.set(-DBL_MAX,-DBL_MAX);
+    }
+
+    inline bool valid() const
+    {
+        return _max.x()>=_min.x() &&  _max.y()>=_min.y();
+    }
+
+    inline double radius() const
+    {
+        return sqrt((radius2()));
+    }
+
+    inline double radius2() const
+    {
+        return 0.25f*((_max-_min).length2());
+    }
+
+    GeospatialExtents intersect(const GeospatialExtents& e) const
+    {    
+        return GeospatialExtents(osg::maximum(xMin(),e.xMin()),osg::maximum(yMin(),e.yMin()),
+                                 osg::minimum(xMax(),e.xMax()),osg::minimum(yMax(),e.yMax()));
+    }
+
+    /** Return true if this bounding box intersects the specified bounding box. */
+    bool intersects(const GeospatialExtents& bb) const
+    {
+        return osg::maximum(xMin(),bb.xMin()) <= osg::minimum(xMax(),bb.xMax()) &&
+               osg::maximum(yMin(),bb.yMin()) <= osg::minimum(yMax(),bb.yMax());
+    }
+
+    void expandBy(const osg::BoundingSphere& sh)
+    {
+        if (!sh.valid()) return;
+
+        if(sh._center.x()-sh._radius<_min.x()) _min.x() = sh._center.x()-sh._radius;
+        if(sh._center.x()+sh._radius>_max.x()) _max.x() = sh._center.x()+sh._radius;
+
+        if(sh._center.y()-sh._radius<_min.y()) _min.y() = sh._center.y()-sh._radius;
+        if(sh._center.y()+sh._radius>_max.y()) _max.y() = sh._center.y()+sh._radius;
+    }
+
+    inline void expandBy(const osg::Vec3& v)
+    {
+        if(v.x()<_min.x()) _min.x() = v.x();
+        if(v.x()>_max.x()) _max.x() = v.x();
+
+        if(v.y()<_min.y()) _min.y() = v.y();
+        if(v.y()>_max.y()) _max.y() = v.y();
+    }
+
+    void expandBy(const GeospatialExtents& e)
+    {
+        if (!e.valid()) return;
+
+        if(e._min.x()<_min.x()) _min.x() = e._min.x();
+        if(e._max.x()>_max.x()) _max.x() = e._max.x();
+
+        if(e._min.y()<_min.y()) _min.y() = e._min.y();
+        if(e._max.y()>_max.y()) _max.y() = e._max.y();
+    }
+};
+
+
 
 class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 {
@@ -70,7 +165,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _numValuesY(sp._numValuesY),
                 _numValuesZ(sp._numValuesZ) {}
 
-            SpatialProperties(osg::CoordinateSystemNode* cs, const osg::BoundingBox& extents):
+             SpatialProperties(osg::CoordinateSystemNode* cs, const GeospatialExtents& extents):
                 _cs(cs),
                 _extents(extents),
                 _numValuesX(0),
@@ -100,7 +195,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             osg::ref_ptr<osg::CoordinateSystemNode>  _cs;
             osg::Matrixd                                _geoTransform;
-            osg::BoundingBox                            _extents;
+            GeospatialExtents                           _extents;
             unsigned int                                _numValuesX;
             unsigned int                                _numValuesY;
             unsigned int                                _numValuesZ;
@@ -141,7 +236,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             static SourceData* readData(Source* source);
             
-            osg::BoundingBox getExtents(const osg::CoordinateSystemNode* cs) const;
+            GeospatialExtents getExtents(const osg::CoordinateSystemNode* cs) const;
             
             const SpatialProperties& computeSpatialProperties(const osg::CoordinateSystemNode* cs) const;
 
@@ -149,9 +244,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             void read(DestinationData& destination);
             
-            void readImage(DestinationData& destination);
-            void readHeightField(DestinationData& destination);
-            void readModels(DestinationData& destination);
+            virtual void readImage(DestinationData& destination);
+            virtual void readHeightField(DestinationData& destination);
+            virtual void readModels(DestinationData& destination);
 
             Source*                                     _source;
             
@@ -831,7 +926,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _maxVisibleDistance(FLT_MAX),
                 _subTileGenerated(false) {}
         
-            CompositeDestination(osg::CoordinateSystemNode* cs, const osg::BoundingBox& extents):
+            CompositeDestination(osg::CoordinateSystemNode* cs, const GeospatialExtents& extents):
                 SpatialProperties(cs,extents),
                 _dataSet(0),
                 _parent(0),
@@ -966,7 +1061,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         
         bool mapLatLongsToXYZ() const { return getConvertFromGeographicToGeocentric() && getEllipsoidModel(); }
 
-        void setDestinationExtents(const osg::BoundingBox& extents) { _extents = extents; }
+        void setDestinationExtents(const GeospatialExtents& extents) { _extents = extents; }
         
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
 
@@ -1071,7 +1166,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         CompositeDestination* createDestinationGraph(CompositeDestination* parent,
                                                      osg::CoordinateSystemNode* cs,
-                                                     const osg::BoundingBox& extents,
+                                                     const GeospatialExtents& extents,
                                                      unsigned int maxImageSize,
                                                      unsigned int maxTerrainSize,
                                                      unsigned int currentLevel,
@@ -1138,7 +1233,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         osg::ref_ptr<osg::EllipsoidModel>           _ellipsoidModel;
  
         osg::Matrixd                                _geoTransform;
-        osg::BoundingBox                            _extents;
+        GeospatialExtents                           _extents;
         std::string                                 _archiveName;
         osg::ref_ptr<osgDB::Archive>                _archive;
         std::string                                 _directory;

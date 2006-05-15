@@ -64,6 +64,7 @@ endif
 
 PLUGIN_DIRS = \
 	3dc \
+	bsp \
 	ac3d \
 	bmp \
 	dds \

@@ -217,7 +217,7 @@ int main( int argc, char **argv )
     float x,y,w,h;
     while (arguments.read("-e",x,y,w,h))
     {
-        dataset->setDestinationExtents(osg::BoundingBox(x,y,0.0f,x+w,y+h,0.0f));
+        dataset->setDestinationExtents(osgTerrain::GeospatialExtents(x,y,x+w,y+h));
     }
     
     while (arguments.read("--HEIGHT_FIELD"))

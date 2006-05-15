@@ -923,8 +923,7 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     
     Viewer* viewer = dynamic_cast<Viewer*>(cg);
     if (viewer) setWriteImageFileName(viewer->getWriteImageFileName());
-    else setWriteImageFileName("saved_image.jpg");
-    
+    else setWriteImageFileName( Viewer::getDefaultImageFileName() );
 }
 
 void ViewerEventHandler::setWriteImageOnNextFrame(bool writeImageOnNextFrame)

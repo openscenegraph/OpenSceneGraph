@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:        examples/osgshaders/GL2Scene.cpp
- * author:        Mike Weiblen 2005-05-01
+/* file:     examples/osgshaders/GL2Scene.cpp
+ * author:   Mike Weiblen 2006-05-14
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -166,7 +166,7 @@ static const char *microshaderFragSource = {
 
 static osg::ref_ptr<osg::Group> rootNode;
 
-// Create some geometry upon which to render GL2 shaders.
+// Create some geometry upon which to render GLSL shaders.
 static osg::Geode*
 CreateModel()
 {
@@ -267,7 +267,7 @@ class AnimateCallback: public osg::Uniform::Callback
 };
 
 ///////////////////////////////////////////////////////////////////////////
-// Compose a scenegraph with examples of GL2 shaders
+// Compose a scenegraph with examples of GLSL shaders
 
 #define TEXUNIT_SINE        1
 #define TEXUNIT_NOISE        2
@@ -280,7 +280,6 @@ GL2Scene::buildScene()
 
     // the root of our scenegraph.
     rootNode = new osg::Group;
-    //rootNode->setUpdateCallback( new AnimateCallback );
 
     // attach some Uniforms to the root, to be inherited by Programs.
     {
@@ -299,9 +298,6 @@ GL2Scene::buildScene()
         ss->addUniform( SineUniform );
         ss->addUniform( Color1Uniform );
         ss->addUniform( Color2Uniform );
-        
-        
-        //ss->setUpdateCallback(new AnimateCallback2);
     }
 
     // the simple Microshader (its source appears earlier in this file)
@@ -362,6 +358,16 @@ GL2Scene::buildScene()
 
         ss->addUniform( new osg::Uniform("NoiseTex", TEXUNIT_NOISE) );
         ss->addUniform( new osg::Uniform("SineTex", TEXUNIT_SINE) );
+
+        osg::Uniform* MarbleColor = new osg::Uniform( osg::Uniform::FLOAT_VEC3, "MarbleColor[0]", 2 );
+        MarbleColor->setElement( 0, osg::Vec3( 0.7, 0.7, 0.7 ) );
+        MarbleColor->setElement( 1, osg::Vec3( 0.2, 0.2, 0.2 ) );
+        ss->addUniform( MarbleColor );
+
+        osg::Uniform* VeinColor = new osg::Uniform( osg::Uniform::FLOAT_VEC3, "VeinColor[0]", 2 );
+        VeinColor->setElement( 0, osg::Vec3( 0.0, 0.15, 0.0 ) );
+        VeinColor->setElement( 1, osg::Vec3( 0.9, 0.95, 0.9 ) );
+        ss->addUniform( VeinColor );
     }
 
 #ifdef INTERNAL_3DLABS //[

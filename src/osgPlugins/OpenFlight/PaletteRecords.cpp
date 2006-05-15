@@ -234,6 +234,23 @@ protected:
 
     virtual ~TexturePalette() {}
 
+    osg::Texture2D::WrapMode convertWrapMode( int32 wrap )
+    {
+        switch( wrap )
+        {
+        case AttrData::WRAP_CLAMP:
+            return osg::Texture2D::CLAMP;
+            break;
+        case AttrData::WRAP_MIRRORED_REPEAT:
+            return osg::Texture2D::MIRROR;
+            break;
+        default:
+        case AttrData::WRAP_REPEAT:
+            return osg::Texture2D::REPEAT;
+            break;
+        }
+    }
+
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         int maxLength = (document.version() < VERSION_14) ? 80 : 200;
@@ -270,10 +287,10 @@ protected:
         if (attr.valid())
         {
             // Wrap mode
-            osg::Texture2D::WrapMode wrap_s = (attr->wrapMode_u==AttrData::WRAP_CLAMP) ? osg::Texture2D::CLAMP : osg::Texture2D::REPEAT;
+            osg::Texture2D::WrapMode wrap_s = convertWrapMode( attr->wrapMode_u );
             texture->setWrap(osg::Texture2D::WRAP_S,wrap_s);
 
-            osg::Texture2D::WrapMode wrap_t = (attr->wrapMode_v==AttrData::WRAP_CLAMP) ? osg::Texture2D::CLAMP : osg::Texture2D::REPEAT;
+            osg::Texture2D::WrapMode wrap_t = convertWrapMode( attr->wrapMode_v );
             texture->setWrap(osg::Texture2D::WRAP_T,wrap_t);
 
             // Min filter
@@ -342,6 +359,9 @@ protected:
                 break;
             case AttrData::TEXENV_COLOR:
                 texenv->setMode(osg::TexEnv::REPLACE);
+                break;
+            case AttrData::TEXENV_ADD:
+                texenv->setMode(osg::TexEnv::ADD);
                 break;
             }
             stateset->setTextureAttribute(0, texenv);

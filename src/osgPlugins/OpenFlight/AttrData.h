@@ -20,7 +20,7 @@ class AttrData : public osg::Object
 
         AttrData();
         
-		AttrData(const AttrData& attr, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        AttrData(const AttrData& attr, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(flt,AttrData);
 
@@ -57,14 +57,16 @@ class AttrData : public osg::Object
 
         enum WrapMode {
             WRAP_REPEAT = 0,
-            WRAP_CLAMP = 1
+            WRAP_CLAMP = 1,
+            WRAP_MIRRORED_REPEAT = 2
         };
 
         enum TexEnvMode {
             TEXENV_MODULATE = 0,
             TEXENV_BLEND = 1,
             TEXENV_DECAL = 2,
-            TEXENV_COLOR = 3
+            TEXENV_COLOR = 3,
+            TEXENV_ADD = 4
         };
 
         enum Projection {
@@ -142,6 +144,7 @@ class AttrData : public osg::Object
                                         //    1 - TV_BLEND
                                         //    2 - TV_DECAL
                                         //    3 - TV_COLOR
+                                        //    4 - TV_ADD
         int32   intensityAsAlpha;       // TRUE if intensity pattern to be loaded in alpha with white in color
 //      int32   spare1[8];              // 8 words of spare
         float64 size_u;                 // Real world size u for floating point databases

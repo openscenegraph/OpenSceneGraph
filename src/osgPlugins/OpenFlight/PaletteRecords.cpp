@@ -618,28 +618,61 @@ protected:
         int32 index = in.readInt32();
         int32 type = in.readInt32();
         std::string name = in.readString(1024);
-        std::string vertexProgramFilename = in.readString(1024);
-        std::string fragmentProgramFilename = in.readString(1024);
+
+        if (type == CG)
+        {
+            // CG support is currently not implemented. Just parse.
+            std::string vertexProgramFilename = in.readString(1024);
+            std::string fragmentProgramFilename = in.readString(1024);
+            int32 vertexProgramProfile = in.readInt32();
+            int32 fragmentProgramProfile = in.readInt32();
+            std::string vertexProgramEntry = in.readString(256);
+            std::string fragmentProgramEntry = in.readString(256);
+        }
 
         if (type == GLSL)
         {
+            int32 vertexProgramFileCount( 1 );
+            int32 fragmentProgramFileCount( 1 );
+
+            if (document.version() > VERSION_16_1)
+            {
+                // In 16.1, possibly multiple filenames for each vertex and fragment program.
+                vertexProgramFileCount = in.readInt32();
+                fragmentProgramFileCount = in.readInt32();
+            }
+            // else 16.0
+            //   Technically, 16.0 didn't support GLSL, but this plugin
+            //   supports it with a single vertex shader filename and a
+            //   single fragment shader filename.
+
             osg::Program* program = new osg::Program;
             program->setName(name);
 
-            std::string vertexProgramFilePath = osgDB::findDataFile(vertexProgramFilename);
-            if (!vertexProgramFilePath.empty())
+            int idx;
+            for( idx=0; idx<vertexProgramFileCount; idx++)
             {
-                osg::Shader* vertexShader = osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexProgramFilePath);
-                if (vertexShader)
-                    program->addShader( vertexShader );
-            }
+                std::string vertexProgramFilename = in.readString(1024);
 
-            std::string fragmentProgramFilePath = osgDB::findDataFile(fragmentProgramFilename);
-            if (!fragmentProgramFilePath.empty())
+                std::string vertexProgramFilePath = osgDB::findDataFile(vertexProgramFilename);
+                if (!vertexProgramFilePath.empty())
+                {
+                    osg::Shader* vertexShader = osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexProgramFilePath);
+                    if (vertexShader)
+                        program->addShader( vertexShader );
+                }
+            }
+            for( idx=0; idx<fragmentProgramFileCount; idx++)
             {
-                osg::Shader* fragmentShader = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentProgramFilePath);
-                if (fragmentShader)
-                    program->addShader( fragmentShader );
+                std::string fragmentProgramFilename = in.readString(1024);
+
+                std::string fragmentProgramFilePath = osgDB::findDataFile(fragmentProgramFilename);
+                if (!fragmentProgramFilePath.empty())
+                {
+                    osg::Shader* fragmentShader = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentProgramFilePath);
+                    if (fragmentShader)
+                        program->addShader( fragmentShader );
+                }
             }
 
             ShaderPool* shaderPool = document.getOrCreateShaderPool();

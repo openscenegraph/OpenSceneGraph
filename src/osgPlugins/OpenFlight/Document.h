@@ -38,7 +38,8 @@ enum Version
     VERSION_15_6    = 1560,
     VERSION_15_7    = 1570,
     VERSION_15_8    = 1580,
-    VERSION_16_0    = 1600
+    VERSION_16_0    = 1600,
+    VERSION_16_1    = 1610
 };
 
 enum CoordUnits {
@@ -75,8 +76,8 @@ class Document
 {
     public:
 
-	    Document();
-	    virtual ~Document();
+        Document();
+        virtual ~Document();
 
         void setOptions(const osgDB::ReaderWriter::Options* options) { _options = options; }
         const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }

@@ -24,9 +24,9 @@
 #define VERSION_0013 13
 #define VERSION_0014 14
 #define VERSION_0015 15
+#define VERSION_0016 16
 
-//#define VERSION VERSION_0014
-#define VERSION VERSION_0015
+#define VERSION VERSION_0016
 
 /* The BYTE_SEX tag is used to check the endian
    of the IVE file being read in.  The IVE format

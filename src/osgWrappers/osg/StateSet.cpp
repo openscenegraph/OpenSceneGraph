@@ -110,7 +110,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_Method1(void, removeUniform, IN, const std::string &, name);
 	I_Method1(void, removeUniform, IN, osg::Uniform *, uniform);
 	I_Method1(osg::Uniform *, getUniform, IN, const std::string &, name);
-	I_Method2(osg::Uniform *, getOrCreateUniform, IN, const std::string &, name, IN, osg::Uniform::Type, type);
+	I_MethodWithDefaults3(osg::Uniform *, getOrCreateUniform, IN, const std::string &, name, , IN, osg::Uniform::Type, type, , IN, unsigned int, numElements, 1);
 	I_Method1(const osg::Uniform *, getUniform, IN, const std::string &, name);
 	I_Method1(const osg::StateSet::RefUniformPair *, getUniformPair, IN, const std::string &, name);
 	I_Method1(void, setUniformList, IN, osg::StateSet::UniformList &, al);

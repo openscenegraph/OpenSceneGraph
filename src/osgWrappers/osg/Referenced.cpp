@@ -29,6 +29,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Constructor0();
+	I_Constructor1(IN, bool, threadSafeRefUnref);
 	I_Constructor1(IN, const osg::Referenced &, x);
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe);
 	I_Method0(bool, getThreadSafeRefUnref);

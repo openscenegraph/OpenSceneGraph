@@ -9,13 +9,14 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/CoordinateSystemNode>
 #include <osg/Image>
 #include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/State>
 #include <osg/StateSet>
+#include <osg/Vec3>
 #include <osg/Vec4>
 #include <osgDB/Archive>
 #include <osgTerrain/DataSet>
@@ -101,7 +102,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method0(osg::EllipsoidModel *, getEllipsoidModel);
 	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel);
 	I_Method0(bool, mapLatLongsToXYZ);
-	I_Method1(void, setDestinationExtents, IN, const osg::BoundingBox &, extents);
+	I_Method1(void, setDestinationExtents, IN, const osgTerrain::GeospatialExtents &, extents);
 	I_Method1(void, setDestinationGeoTransform, IN, const osg::Matrixd &, geoTransform);
 	I_Method1(void, setArchiveName, IN, const std::string &, filename);
 	I_Method0(const std::string &, getArchiveName);
@@ -139,7 +140,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method0(const std::string &, getCommentString);
 	I_Method1(void, setWriteNodeBeforeSimplification, IN, bool, flag);
 	I_Method0(bool, getWriteNodeBeforeSimplification);
-	I_Method9(osgTerrain::DataSet::CompositeDestination *, createDestinationGraph, IN, osgTerrain::DataSet::CompositeDestination *, parent, IN, osg::CoordinateSystemNode *, cs, IN, const osg::BoundingBox &, extents, IN, unsigned int, maxImageSize, IN, unsigned int, maxTerrainSize, IN, unsigned int, currentLevel, IN, unsigned int, currentX, IN, unsigned int, currentY, IN, unsigned int, maxNumLevels);
+	I_Method9(osgTerrain::DataSet::CompositeDestination *, createDestinationGraph, IN, osgTerrain::DataSet::CompositeDestination *, parent, IN, osg::CoordinateSystemNode *, cs, IN, const osgTerrain::GeospatialExtents &, extents, IN, unsigned int, maxImageSize, IN, unsigned int, maxTerrainSize, IN, unsigned int, currentLevel, IN, unsigned int, currentX, IN, unsigned int, currentY, IN, unsigned int, maxNumLevels);
 	I_Method1(void, computeDestinationGraphFromSources, IN, unsigned int, numLevels);
 	I_Method0(void, updateSourcesForDestinationGraphNeeds);
 	I_Method0(void, populateDestinationGraphFromSources);
@@ -160,7 +161,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Property(bool, DecorateGeneratedSceneGraphWithMultiTextureControl);
 	I_Property(const osg::Vec4 &, DefaultColor);
 	I_Property(osg::CoordinateSystemNode *, DestinationCoordinateSystem);
-	I_WriteOnlyProperty(const osg::BoundingBox &, DestinationExtents);
+	I_WriteOnlyProperty(const osgTerrain::GeospatialExtents &, DestinationExtents);
 	I_WriteOnlyProperty(const osg::Matrixd &, DestinationGeoTransform);
 	I_Property(const std::string &, DestinationImageExtension);
 	I_WriteOnlyProperty(const std::string &, DestinationName);
@@ -194,7 +195,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0();
-	I_Constructor2(IN, osg::CoordinateSystemNode *, cs, IN, const osg::BoundingBox &, extents);
+	I_Constructor2(IN, osg::CoordinateSystemNode *, cs, IN, const osgTerrain::GeospatialExtents &, extents);
 	I_Method0(void, computeNeighboursFromQuadMap);
 	I_Method1(void, addRequiredResolutions, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph);
 	I_Method1(void, readFrom, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph);
@@ -401,7 +402,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_ConstructorWithDefaults1(IN, osgTerrain::DataSet::Source *, source, 0);
-	I_Method1(osg::BoundingBox, getExtents, IN, const osg::CoordinateSystemNode *, cs);
+	I_Method1(osgTerrain::GeospatialExtents, getExtents, IN, const osg::CoordinateSystemNode *, cs);
 	I_Method1(const osgTerrain::DataSet::SpatialProperties &, computeSpatialProperties, IN, const osg::CoordinateSystemNode *, cs);
 	I_Method1(bool, intersects, IN, const osgTerrain::DataSet::SpatialProperties &, sp);
 	I_Method1(void, read, IN, osgTerrain::DataSet::DestinationData &, destination);
@@ -413,9 +414,31 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::SpatialProperties)
 	I_Constructor0();
 	I_Constructor1(IN, const osgTerrain::DataSet::SpatialProperties &, sp);
-	I_Constructor2(IN, osg::CoordinateSystemNode *, cs, IN, const osg::BoundingBox &, extents);
+	I_Constructor2(IN, osg::CoordinateSystemNode *, cs, IN, const osgTerrain::GeospatialExtents &, extents);
 	I_Method1(osgTerrain::DataSet::SpatialProperties &, assignSpatialProperties, IN, const osgTerrain::DataSet::SpatialProperties &, sp);
 	I_Method0(void, computeExtents);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
+	I_Constructor0();
+	I_Constructor4(IN, double, xmin, IN, double, ymin, IN, double, xmax, IN, double, ymax);
+	I_Method0(double &, xMin);
+	I_Method0(double, xMin);
+	I_Method0(double &, yMin);
+	I_Method0(double, yMin);
+	I_Method0(double &, xMax);
+	I_Method0(double, xMax);
+	I_Method0(double &, yMax);
+	I_Method0(double, yMax);
+	I_Method0(void, init);
+	I_Method0(bool, valid);
+	I_Method0(double, radius);
+	I_Method0(double, radius2);
+	I_Method1(osgTerrain::GeospatialExtents, intersect, IN, const osgTerrain::GeospatialExtents &, e);
+	I_Method1(bool, intersects, IN, const osgTerrain::GeospatialExtents &, bb);
+	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh);
+	I_Method1(void, expandBy, IN, const osg::Vec3 &, v);
+	I_Method1(void, expandBy, IN, const osgTerrain::GeospatialExtents &, e);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)

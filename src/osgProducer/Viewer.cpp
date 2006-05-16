@@ -16,7 +16,6 @@
 #include <osgGA/UFOManipulator>
 #include <osgGA/StateSetManipulator>
 
-#include <Producer/CameraConfig>
 #include <osgProducer/Viewer>
 #include <osgProducer/ViewerEventHandler>
 

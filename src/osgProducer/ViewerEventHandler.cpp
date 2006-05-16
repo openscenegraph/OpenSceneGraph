@@ -1,4 +1,3 @@
-#include <Producer/CameraConfig>
 #include <osgProducer/ViewerEventHandler>
 #include <osgGA/AnimationPathManipulator>
 #include <osgDB/WriteFile>

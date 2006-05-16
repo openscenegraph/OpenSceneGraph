@@ -281,7 +281,7 @@ class OSG_EXPORT StateSet : public Object
         Uniform* getUniform(const std::string& name);
 
         /** Get Uniform for specified name, if one is not available create it, add it to this StateSet and return a pointer to it.*/
-        Uniform* getOrCreateUniform(const std::string& name, Uniform::Type type, int numElements=1);
+        Uniform* getOrCreateUniform(const std::string& name, Uniform::Type type, unsigned int numElements=1);
 
         /** Get const Uniform for specified name.
           * Returns NULL if no matching Uniform is contained within StateSet.*/

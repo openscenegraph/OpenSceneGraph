@@ -9,6 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
 #include <osg/CopyOp>
 #include <osg/GL2Extensions>
 #include <osg/Matrixd>
@@ -85,7 +86,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_BaseType(osg::Object);
 	I_Constructor0();
-	I_Constructor2(IN, osg::Uniform::Type, type, IN, const std::string &, name);
+	I_ConstructorWithDefaults3(IN, osg::Uniform::Type, type, , IN, const std::string &, name, , IN, int, numElements, 1);
 	I_ConstructorWithDefaults2(IN, const osg::Uniform &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
@@ -95,6 +96,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method1(bool, setType, IN, osg::Uniform::Type, t);
 	I_Method0(const osg::Uniform::Type, getType);
 	I_Method1(void, setName, IN, const std::string &, name);
+	I_Method1(void, setNumElements, IN, unsigned int, numElements);
+	I_Method0(unsigned int, getNumElements);
+	I_Method0(unsigned int, getInternalArrayNumElements);
 	I_Constructor2(IN, const char *, name, IN, float, f);
 	I_Constructor2(IN, const char *, name, IN, int, i);
 	I_Constructor2(IN, const char *, name, IN, bool, b);
@@ -151,6 +155,38 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method2(bool, get, IN, bool &, b0, IN, bool &, b1);
 	I_Method3(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2);
 	I_Method4(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2, IN, bool &, b3);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, float, f);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, int, i);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, bool, b);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Vec2 &, v2);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Vec3 &, v3);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Vec4 &, v4);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrix2 &, m2);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrix3 &, m3);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrixf &, m4);
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrixd &, m4);
+	I_Method3(bool, setElement, IN, unsigned int, index, IN, int, i0, IN, int, i1);
+	I_Method4(bool, setElement, IN, unsigned int, index, IN, int, i0, IN, int, i1, IN, int, i2);
+	I_Method5(bool, setElement, IN, unsigned int, index, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3);
+	I_Method3(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1);
+	I_Method4(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1, IN, bool, b2);
+	I_Method5(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1, IN, bool, b2, IN, bool, b3);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, float &, f);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, int &, i);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, bool &, b);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Vec2 &, v2);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Vec3 &, v3);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Vec4 &, v4);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrix2 &, m2);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrix3 &, m3);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrixf &, m4);
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrixd &, m4);
+	I_Method3(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1);
+	I_Method4(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1, IN, int &, i2);
+	I_Method5(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1, IN, int &, i2, IN, int &, i3);
+	I_Method3(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1);
+	I_Method4(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2);
+	I_Method5(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2, IN, bool &, b3);
 	I_Method1(void, setUpdateCallback, IN, osg::Uniform::Callback *, uc);
 	I_Method0(osg::Uniform::Callback *, getUpdateCallback);
 	I_Method0(const osg::Uniform::Callback *, getUpdateCallback);
@@ -158,13 +194,25 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method0(osg::Uniform::Callback *, getEventCallback);
 	I_Method0(const osg::Uniform::Callback *, getEventCallback);
 	I_Method0(void, dirty);
+	I_Method1(bool, setArray, IN, osg::FloatArray *, array);
+	I_Method1(bool, setArray, IN, osg::IntArray *, array);
+	I_Method0(osg::FloatArray *, getFloatArray);
+	I_Method0(const osg::FloatArray *, getFloatArray);
+	I_Method0(osg::IntArray *, getIntArray);
+	I_Method0(const osg::IntArray *, getIntArray);
 	I_Method1(void, setModifiedCount, IN, unsigned int, mc);
 	I_Method0(unsigned int, getModifiedCount);
 	I_Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location);
 	I_WriteOnlyPropertyWithReturnType(bool, , bool);
+	I_WriteOnlyPropertyWithReturnType(osg::FloatArray *, Array, bool);
+	I_ArrayProperty_Custom(bool, Element, Elements, unsigned int, bool);
 	I_Property(osg::Uniform::Callback *, EventCallback);
+	I_ReadOnlyProperty(osg::FloatArray *, FloatArray);
+	I_ReadOnlyProperty(osg::IntArray *, IntArray);
+	I_ReadOnlyProperty(unsigned int, InternalArrayNumElements);
 	I_Property(unsigned int, ModifiedCount);
 	I_WriteOnlyProperty(const std::string &, Name);
+	I_WriteOnlyProperty(unsigned int, NumElements);
 	I_ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
 	I_ReadOnlyProperty(osg::Uniform::ParentList, Parents);
 	I_WriteOnlyPropertyWithReturnType(osg::Uniform::Type, Type, bool);

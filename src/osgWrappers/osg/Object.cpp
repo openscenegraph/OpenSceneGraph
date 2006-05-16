@@ -30,6 +30,7 @@ END_REFLECTOR
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
+	I_Constructor1(IN, bool, threadSafeRefUnref);
 	I_ConstructorWithDefaults2(IN, const osg::Object &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);

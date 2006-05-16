@@ -40,7 +40,7 @@ void Uniform::write(DataOutputStream* out){
 
     if ( out->getVersion() >= VERSION_0016 )
     {
-        out->writeInt(getNumElements());
+        out->writeUInt(getNumElements());
 
         if( getFloatArray() ) out->writeArray( getFloatArray() );
         if( getIntArray() )   out->writeArray( getIntArray() );
@@ -173,7 +173,7 @@ void Uniform::read(DataInputStream* in)
     
     if ( in->getVersion() >= VERSION_0016 )
     {
-        setNumElements( in->readInt() );
+        setNumElements( in->readUInt() );
 
         osg::Array* data = in->readArray();
         setArray( dynamic_cast<osg::FloatArray*>(data) );

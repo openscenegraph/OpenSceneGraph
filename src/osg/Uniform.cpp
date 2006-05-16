@@ -11,7 +11,7 @@
 */
 
 /* file:   src/osg/Uniform.cpp
- * author: Mike Weiblen 2006-05-14
+ * author: Mike Weiblen 2006-05-15
 */
 
 #include <osg/Notify>
@@ -537,170 +537,103 @@ Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
 
 ///////////////////////////////////////////////////////////////////////////
 // Value assignment for single-element (ie: non-array) uniforms.
+// (For backwards compatability, if not already configured, set the
+// Uniform's _numElements=1)
 
 bool Uniform::set( float f )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT)) ) return false;
-    (*_floatArray)[0] = f;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,f) : false;
 }
 
 bool Uniform::set( const osg::Vec2& v2 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_VEC2)) ) return false;
-    (*_floatArray)[0] = v2.x();
-    (*_floatArray)[1] = v2.y();
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,v2) : false;
 }
 
 bool Uniform::set( const osg::Vec3& v3 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_VEC3)) ) return false;
-    (*_floatArray)[0] = v3.x();
-    (*_floatArray)[1] = v3.y();
-    (*_floatArray)[2] = v3.z();
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,v3) : false;
 }
 
 bool Uniform::set( const osg::Vec4& v4 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_VEC4)) ) return false;
-    (*_floatArray)[0] = v4.x();
-    (*_floatArray)[1] = v4.y();
-    (*_floatArray)[2] = v4.z();
-    (*_floatArray)[3] = v4.w();
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,v4) : false;
 }
 
 bool Uniform::set( const osg::Matrix2& m2 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT2)) ) return false;
-    for( int i = 0; i < 4; ++i ) (*_floatArray)[i] = m2[i];
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,m2) : false;
 }
-
 
 bool Uniform::set( const osg::Matrix3& m3 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT3)) ) return false;
-    for( int i = 0; i < 9; ++i ) (*_floatArray)[i] = m3[i];
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,m3) : false;
 }
 
 bool Uniform::set( const osg::Matrixf& m4 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT4)) ) return false;
-    const Matrixf::value_type* p = m4.ptr();
-    for( int i = 0; i < 16; ++i ) (*_floatArray)[i] = p[i];
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,m4) : false;
 }
 
 bool Uniform::set( const osg::Matrixd& m4 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT4)) ) return false;
-    const Matrixd::value_type* p = m4.ptr();
-    for( int i = 0; i < 16; ++i ) (*_floatArray)[i] = static_cast<float>(p[i]);
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,m4) : false;
 }
 
 bool Uniform::set( int i )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(INT)) ) return false;
-    (*_intArray)[0] = i;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,i) : false;
 }
 
 bool Uniform::set( int i0, int i1 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(INT_VEC2)) ) return false;
-    (*_intArray)[0] = i0;
-    (*_intArray)[1] = i1;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,i0,i1) : false;
 }
 
 bool Uniform::set( int i0, int i1, int i2 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(INT_VEC3)) ) return false;
-    (*_intArray)[0] = i0;
-    (*_intArray)[1] = i1;
-    (*_intArray)[2] = i2;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,i0,i1,i2) : false;
 }
 
 bool Uniform::set( int i0, int i1, int i2, int i3 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(INT_VEC4)) ) return false;
-    (*_intArray)[0] = i0;
-    (*_intArray)[1] = i1;
-    (*_intArray)[2] = i2;
-    (*_intArray)[3] = i3;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,i0,i1,i2,i3) : false;
 }
 
 bool Uniform::set( bool b )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(BOOL)) ) return false;
-    (*_intArray)[0] = b;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,b) : false;
 }
 
 bool Uniform::set( bool b0, bool b1 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(BOOL_VEC2)) ) return false;
-    (*_intArray)[0] = b0;
-    (*_intArray)[1] = b1;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,b0,b1) : false;
 }
 
 bool Uniform::set( bool b0, bool b1, bool b2 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(BOOL_VEC3)) ) return false;
-    (*_intArray)[0] = b0;
-    (*_intArray)[1] = b1;
-    (*_intArray)[2] = b2;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,b0,b1,b2) : false;
 }
 
 bool Uniform::set( bool b0, bool b1, bool b2, bool b3 )
 {
     if( getNumElements() == 0 ) setNumElements(1);
-    if( ! (isScalar() && isCompatibleType(BOOL_VEC4)) ) return false;
-    (*_intArray)[0] = b0;
-    (*_intArray)[1] = b1;
-    (*_intArray)[2] = b2;
-    (*_intArray)[3] = b3;
-    dirty();
-    return true;
+    return isScalar() ? setElement(0,b0,b1,b2,b3) : false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -708,143 +641,92 @@ bool Uniform::set( bool b0, bool b1, bool b2, bool b3 )
 
 bool Uniform::get( float& f ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT)) ) return false;
-    f = (*_floatArray)[0];
-    return true;
+    return isScalar() ? getElement(0,f) : false;
 }
 
 bool Uniform::get( osg::Vec2& v2 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_VEC2)) ) return false;
-    v2.x() = (*_floatArray)[0];
-    v2.y() = (*_floatArray)[1];
-    return true;
+    return isScalar() ? getElement(0,v2) : false;
 }
 
 bool Uniform::get( osg::Vec3& v3 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_VEC3)) ) return false;
-    v3.x() = (*_floatArray)[0];
-    v3.y() = (*_floatArray)[1];
-    v3.z() = (*_floatArray)[2];
-    return true;
+    return isScalar() ? getElement(0,v3) : false;
 }
 
 bool Uniform::get( osg::Vec4& v4 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_VEC4)) ) return false;
-    v4.x() = (*_floatArray)[0];
-    v4.y() = (*_floatArray)[1];
-    v4.z() = (*_floatArray)[2];
-    v4.w() = (*_floatArray)[3];
-    return true;
+    return isScalar() ? getElement(0,v4) : false;
 }
 
 bool Uniform::get( osg::Matrix2& m2 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT2)) ) return false;
-    m2.set( &_floatArray->front() );
-    return true;
+    return isScalar() ? getElement(0,m2) : false;
 }
 
 bool Uniform::get( osg::Matrix3& m3 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT3)) ) return false;
-    m3.set( &_floatArray->front() );
-    return true;
+    return isScalar() ? getElement(0,m3) : false;
 }
 
 bool Uniform::get( osg::Matrixf& m4 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT4)) ) return false;
-    m4.set( &_floatArray->front() );
-    return true;
+    return isScalar() ? getElement(0,m4) : false;
 }
 
 bool Uniform::get( osg::Matrixd& m4 ) const
 {
-    if( ! (isScalar() && isCompatibleType(FLOAT_MAT4)) ) return false;
-    m4.set( &_floatArray->front() );
-    return true;
+    return isScalar() ? getElement(0,m4) : false;
 }
 
 bool Uniform::get( int& i ) const
 {
-    if( ! (isScalar() && isCompatibleType(INT)) ) return false;
-    i = (*_intArray)[0];
-    return true;
+    return isScalar() ? getElement(0,i) : false;
 }
 
 bool Uniform::get( int& i0, int& i1 ) const
 {
-    if( ! (isScalar() && isCompatibleType(INT_VEC2)) ) return false;
-    i0 = (*_intArray)[0];
-    i1 = (*_intArray)[1];
-    return true;
+    return isScalar() ? getElement(0,i0,i1) : false;
 }
 
 bool Uniform::get( int& i0, int& i1, int& i2 ) const
 {
-    if( ! (isScalar() && isCompatibleType(INT_VEC3)) ) return false;
-    i0 = (*_intArray)[0];
-    i1 = (*_intArray)[1];
-    i2 = (*_intArray)[2];
-    return true;
+    return isScalar() ? getElement(0,i0,i1,i2) : false;
 }
 
 bool Uniform::get( int& i0, int& i1, int& i2, int& i3 ) const
 {
-    if( ! (isScalar() && isCompatibleType(INT_VEC4)) ) return false;
-    i0 = (*_intArray)[0];
-    i1 = (*_intArray)[1];
-    i2 = (*_intArray)[2];
-    i3 = (*_intArray)[3];
-    return true;
+    return isScalar() ? getElement(0,i0,i1,i2,i3) : false;
 }
 
 bool Uniform::get( bool& b ) const
 {
-    if( ! (isScalar() && isCompatibleType(BOOL)) ) return false;
-    b = ((*_intArray)[0] != 0);
-    return true;
+    return isScalar() ? getElement(0,b) : false;
 }
 
 bool Uniform::get( bool& b0, bool& b1 ) const
 {
-    if( ! (isScalar() && isCompatibleType(BOOL_VEC2)) ) return false;
-    b0 = ((*_intArray)[0] != 0);
-    b1 = ((*_intArray)[1] != 0);
-    return true;
+    return isScalar() ? getElement(0,b0,b1) : false;
 }
 
 bool Uniform::get( bool& b0, bool& b1, bool& b2 ) const
 {
-    if( ! (isScalar() && isCompatibleType(BOOL_VEC3)) ) return false;
-    b0 = ((*_intArray)[0] != 0);
-    b1 = ((*_intArray)[1] != 0);
-    b2 = ((*_intArray)[2] != 0);
-    return true;
+    return isScalar() ? getElement(0,b0,b1,b2) : false;
 }
 
 bool Uniform::get( bool& b0, bool& b1, bool& b2, bool& b3 ) const
 {
-    if( ! (isScalar() && isCompatibleType(BOOL_VEC4)) ) return false;
-    b0 = ((*_intArray)[0] != 0);
-    b1 = ((*_intArray)[1] != 0);
-    b2 = ((*_intArray)[2] != 0);
-    b3 = ((*_intArray)[3] != 0);
-    return true;
+    return isScalar() ? getElement(0,b0,b1,b2,b3) : false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // Value assignment for array uniforms.
-// TODO just a few of all the type variations are implemented so far
 
 bool Uniform::setElement( unsigned int index, float f )
 {
     if( index>=getNumElements() || !isCompatibleType(FLOAT) ) return false;
-    int i = index * getTypeNumComponents(getType());
-    (*_floatArray)[i] = f;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_floatArray)[j] = f;
     dirty();
     return true;
 }
@@ -852,9 +734,9 @@ bool Uniform::setElement( unsigned int index, float f )
 bool Uniform::setElement( unsigned int index, const osg::Vec2& v2 )
 {
     if( index>=getNumElements() || !isCompatibleType(FLOAT_VEC2) ) return false;
-    int i = index * getTypeNumComponents(getType());
-    (*_floatArray)[i] = v2.x();
-    (*_floatArray)[i+1] = v2.y();
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_floatArray)[j] = v2.x();
+    (*_floatArray)[j+1] = v2.y();
     dirty();
     return true;
 }
@@ -862,10 +744,10 @@ bool Uniform::setElement( unsigned int index, const osg::Vec2& v2 )
 bool Uniform::setElement( unsigned int index, const osg::Vec3& v3 )
 {
     if( index>=getNumElements() || !isCompatibleType(FLOAT_VEC3) ) return false;
-    int i = index * getTypeNumComponents(getType());
-    (*_floatArray)[i] = v3.x();
-    (*_floatArray)[i+1] = v3.y();
-    (*_floatArray)[i+2] = v3.z();
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_floatArray)[j] = v3.x();
+    (*_floatArray)[j+1] = v3.y();
+    (*_floatArray)[j+2] = v3.z();
     dirty();
     return true;
 }
@@ -873,12 +755,283 @@ bool Uniform::setElement( unsigned int index, const osg::Vec3& v3 )
 bool Uniform::setElement( unsigned int index, const osg::Vec4& v4 )
 {
     if( index>=getNumElements() || !isCompatibleType(FLOAT_VEC4) ) return false;
-    int i = index * getTypeNumComponents(getType());
-    (*_floatArray)[i] = v4.x();
-    (*_floatArray)[i+1] = v4.y();
-    (*_floatArray)[i+2] = v4.z();
-    (*_floatArray)[i+3] = v4.w();
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_floatArray)[j] = v4.x();
+    (*_floatArray)[j+1] = v4.y();
+    (*_floatArray)[j+2] = v4.z();
+    (*_floatArray)[j+3] = v4.w();
     dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, const osg::Matrix2& m2 )
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    for( int i = 0; i < 4; ++i ) (*_floatArray)[j+i] = m2[i];
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, const osg::Matrix3& m3 )
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    for( int i = 0; i < 9; ++i ) (*_floatArray)[j+i] = m3[i];
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, const osg::Matrixf& m4 )
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    const Matrixf::value_type* p = m4.ptr();
+    for( int i = 0; i < 16; ++i ) (*_floatArray)[j+i] = p[i];
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, const osg::Matrixd& m4 )
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    const Matrixd::value_type* p = m4.ptr();
+    for( int i = 0; i < 16; ++i ) (*_floatArray)[j+i] = static_cast<float>(p[i]);
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, int i )
+{
+    if( index>=getNumElements() || !isCompatibleType(INT) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = i;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, int i0, int i1 )
+{
+    if( index>=getNumElements() || !isCompatibleType(INT_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = i0;
+    (*_intArray)[j+1] = i1;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, int i0, int i1, int i2 )
+{
+    if( index>=getNumElements() || !isCompatibleType(INT_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = i0;
+    (*_intArray)[j+1] = i1;
+    (*_intArray)[j+2] = i2;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, int i0, int i1, int i2, int i3 )
+{
+    if( index>=getNumElements() || !isCompatibleType(INT_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = i0;
+    (*_intArray)[j+1] = i1;
+    (*_intArray)[j+2] = i2;
+    (*_intArray)[j+3] = i3;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, bool b )
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = b;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, bool b0, bool b1 )
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = b0;
+    (*_intArray)[j+1] = b1;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, bool b0, bool b1, bool b2 )
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = b0;
+    (*_intArray)[j+1] = b1;
+    (*_intArray)[j+2] = b2;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, bool b0, bool b1, bool b2, bool b3 )
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_intArray)[j] = b0;
+    (*_intArray)[j+1] = b1;
+    (*_intArray)[j+2] = b2;
+    (*_intArray)[j+3] = b3;
+    dirty();
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Value query for array uniforms.
+
+bool Uniform::getElement( unsigned int index, float& f ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    f = (*_floatArray)[j];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Vec2& v2 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    v2.x() = (*_floatArray)[j];
+    v2.y() = (*_floatArray)[j+1];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Vec3& v3 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    v3.x() = (*_floatArray)[j];
+    v3.y() = (*_floatArray)[j+1];
+    v3.z() = (*_floatArray)[j+2];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Vec4& v4 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    v4.x() = (*_floatArray)[j];
+    v4.y() = (*_floatArray)[j+1];
+    v4.z() = (*_floatArray)[j+2];
+    v4.w() = (*_floatArray)[j+3];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Matrix2& m2 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    m2.set( &((*_floatArray)[j]) );
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Matrix3& m3 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    m3.set( &((*_floatArray)[j]) );
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Matrixf& m4 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    m4.set( &((*_floatArray)[j]) );
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, osg::Matrixd& m4 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(FLOAT_MAT4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    m4.set( &((*_floatArray)[j]) );
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, int& i ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(INT) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i = (*_intArray)[j];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, int& i0, int& i1 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(INT_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i0 = (*_intArray)[j];
+    i1 = (*_intArray)[j+1];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, int& i0, int& i1, int& i2 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(INT_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i0 = (*_intArray)[j];
+    i1 = (*_intArray)[j+1];
+    i2 = (*_intArray)[j+2];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, int& i0, int& i1, int& i2, int& i3 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(INT_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i0 = (*_intArray)[j];
+    i1 = (*_intArray)[j+1];
+    i2 = (*_intArray)[j+2];
+    i3 = (*_intArray)[j+3];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, bool& b ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    b = ((*_intArray)[j] != 0);
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, bool& b0, bool& b1 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    b0 = ((*_intArray)[j] != 0);
+    b1 = ((*_intArray)[j+1] != 0);
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, bool& b0, bool& b1, bool& b2 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    b0 = ((*_intArray)[j] != 0);
+    b1 = ((*_intArray)[j+1] != 0);
+    b2 = ((*_intArray)[j+2] != 0);
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(BOOL_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    b0 = ((*_intArray)[j] != 0);
+    b1 = ((*_intArray)[j+1] != 0);
+    b2 = ((*_intArray)[j+2] != 0);
+    b3 = ((*_intArray)[j+3] != 0);
     return true;
 }
 

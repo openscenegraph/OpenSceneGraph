@@ -38,95 +38,105 @@ void Uniform::write(DataOutputStream* out){
         out->writeString(getName());
     }
 
-    switch( Uniform::getGlApiType(getType()) )
+    if ( out->getVersion() >= VERSION_0016 )
     {
-        case(osg::Uniform::FLOAT):
+        out->writeInt(getNumElements());
+
+        if( getFloatArray() ) out->writeArray( getFloatArray() );
+        if( getIntArray() )   out->writeArray( getIntArray() );
+    }
+    else
+    {
+        switch( Uniform::getGlApiType(getType()) )
         {
-            float value;
-            get(value);
-            out->writeFloat(value);
-            break;
-        }
-        case(osg::Uniform::FLOAT_VEC2):
-        {
-            osg::Vec2 value;
-            get(value);
-            out->writeVec2(value);
-            break;
-        }
-        case(osg::Uniform::FLOAT_VEC3):
-        {
-            osg::Vec3 value;
-            get(value);
-            out->writeVec3(value);
-            break;
-        }
-        case(osg::Uniform::FLOAT_VEC4):
-        {
-            osg::Vec4 value;
-            get(value);
-            out->writeVec4(value);
-            break;
-        }
-        case(osg::Uniform::INT):
-        {
-            int i0;
-            get(i0);
-            out->writeInt(i0);
-            break;
-        }
-        case(osg::Uniform::INT_VEC2):
-        {
-            int i0, i1;
-            get(i0, i1);
-            out->writeInt(i0);
-            out->writeInt(i1);
-            break;
-        }
-        case(osg::Uniform::INT_VEC3):
-        {
-            int i0, i1, i2;
-            get(i0, i1, i2);
-            out->writeInt(i0);
-            out->writeInt(i1);
-            out->writeInt(i2);
-            break;
-        }
-        case(osg::Uniform::INT_VEC4):
-        {
-            int i0, i1, i2, i3;
-            get(i0, i1, i2, i3);
-            out->writeInt(i0);
-            out->writeInt(i1);
-            out->writeInt(i2);
-            out->writeInt(i3);
-            break;
-        }
-        case(osg::Uniform::FLOAT_MAT2):
-        {
-            osg::Matrix2 m2;
-            get(m2);
-            for(int i=0; i<4; ++i) out->writeFloat(m2[i]);
-            break;
-        }
-        case(osg::Uniform::FLOAT_MAT3):
-        {
-            osg::Matrix3 m3;
-            get(m3);
-            for(int i=0; i<9; ++i) out->writeFloat(m3[i]);
-            break;
-        }
-        case(osg::Uniform::FLOAT_MAT4):
-        {
-            osg::Matrixf matrix;
-            get(matrix);
-            out->writeMatrixf(matrix);
-            break;
-        }
-        default:
-        {
-            osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for writing."<<std::endl;
-            break;
+            case(osg::Uniform::FLOAT):
+            {
+                float value;
+                get(value);
+                out->writeFloat(value);
+                break;
+            }
+            case(osg::Uniform::FLOAT_VEC2):
+            {
+                osg::Vec2 value;
+                get(value);
+                out->writeVec2(value);
+                break;
+            }
+            case(osg::Uniform::FLOAT_VEC3):
+            {
+                osg::Vec3 value;
+                get(value);
+                out->writeVec3(value);
+                break;
+            }
+            case(osg::Uniform::FLOAT_VEC4):
+            {
+                osg::Vec4 value;
+                get(value);
+                out->writeVec4(value);
+                break;
+            }
+            case(osg::Uniform::INT):
+            {
+                int i0;
+                get(i0);
+                out->writeInt(i0);
+                break;
+            }
+            case(osg::Uniform::INT_VEC2):
+            {
+                int i0, i1;
+                get(i0, i1);
+                out->writeInt(i0);
+                out->writeInt(i1);
+                break;
+            }
+            case(osg::Uniform::INT_VEC3):
+            {
+                int i0, i1, i2;
+                get(i0, i1, i2);
+                out->writeInt(i0);
+                out->writeInt(i1);
+                out->writeInt(i2);
+                break;
+            }
+            case(osg::Uniform::INT_VEC4):
+            {
+                int i0, i1, i2, i3;
+                get(i0, i1, i2, i3);
+                out->writeInt(i0);
+                out->writeInt(i1);
+                out->writeInt(i2);
+                out->writeInt(i3);
+                break;
+            }
+            case(osg::Uniform::FLOAT_MAT2):
+            {
+                osg::Matrix2 m2;
+                get(m2);
+                for(int i=0; i<4; ++i) out->writeFloat(m2[i]);
+                break;
+            }
+            case(osg::Uniform::FLOAT_MAT3):
+            {
+                osg::Matrix3 m3;
+                get(m3);
+                for(int i=0; i<9; ++i) out->writeFloat(m3[i]);
+                break;
+            }
+            case(osg::Uniform::FLOAT_MAT4):
+            {
+                osg::Matrixf matrix;
+                get(matrix);
+                out->writeMatrixf(matrix);
+                break;
+            }
+            default:
+            {
+                osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for writing."<<std::endl;
+                break;
+            }
         }
     }
 }
@@ -161,81 +171,91 @@ void Uniform::read(DataInputStream* in)
         setName(in->readString());
     }
     
-    switch( Uniform::getGlApiType(getType()) )
+    if ( in->getVersion() >= VERSION_0016 )
     {
-        case(osg::Uniform::FLOAT):
+        setNumElements( in->readInt() );
+
+        osg::Array* data = in->readArray();
+        setArray( dynamic_cast<osg::FloatArray*>(data) );
+        setArray( dynamic_cast<osg::IntArray*>(data) );
+    }
+    else
+    {
+        switch( Uniform::getGlApiType(getType()) )
         {
-            set(in->readFloat());
-            break;
-        }
-        case(osg::Uniform::FLOAT_VEC2):
-        {
-            set(in->readVec2());
-            break;
-        }
-        case(osg::Uniform::FLOAT_VEC3):
-        {
-            set(in->readVec3());
-            break;
-        }
-        case(osg::Uniform::FLOAT_VEC4):
-        {
-            set(in->readVec4());
-            break;
-        }
-        case(osg::Uniform::INT):
-        {
-            set(in->readInt());
-            break;
-        }
-        case(osg::Uniform::INT_VEC2):
-        {
-            int i0 = in->readInt();
-            int i1 = in->readInt();
-            set(i0,i1);
-            break;
-        }
-        case(osg::Uniform::INT_VEC3):
-        {
-            int i0 = in->readInt();
-            int i1 = in->readInt();
-            int i2 = in->readInt();
-            set(i0,i1,i2);
-            break;
-        }
-        case(osg::Uniform::INT_VEC4):
-        {
-            int i0 = in->readInt();
-            int i1 = in->readInt();
-            int i2 = in->readInt();
-            int i3 = in->readInt();
-            set(i0,i1,i2,i3);
-            break;
-        }
-        case(osg::Uniform::FLOAT_MAT2):
-        {
-            osg::Matrix2 m2;
-            for(int i=0; i<9; ++i) m2[i]=in->readFloat();
-            set(m2);
-            break;
-        }
-        case(osg::Uniform::FLOAT_MAT3):
-        {
-            osg::Matrix3 m3;
-            for(int i=0; i<9; ++i) m3[i]=in->readFloat();
-            set(m3);
-            break;
-        }
-        case(osg::Uniform::FLOAT_MAT4):
-        {
-            set( in->readMatrixf() );
-            break;
-        }
-        default:
-        {
-            osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
-            break;
+            case(osg::Uniform::FLOAT):
+            {
+                set(in->readFloat());
+                break;
+            }
+            case(osg::Uniform::FLOAT_VEC2):
+            {
+                set(in->readVec2());
+                break;
+            }
+            case(osg::Uniform::FLOAT_VEC3):
+            {
+                set(in->readVec3());
+                break;
+            }
+            case(osg::Uniform::FLOAT_VEC4):
+            {
+                set(in->readVec4());
+                break;
+            }
+            case(osg::Uniform::INT):
+            {
+                set(in->readInt());
+                break;
+            }
+            case(osg::Uniform::INT_VEC2):
+            {
+                int i0 = in->readInt();
+                int i1 = in->readInt();
+                set(i0,i1);
+                break;
+            }
+            case(osg::Uniform::INT_VEC3):
+            {
+                int i0 = in->readInt();
+                int i1 = in->readInt();
+                int i2 = in->readInt();
+                set(i0,i1,i2);
+                break;
+            }
+            case(osg::Uniform::INT_VEC4):
+            {
+                int i0 = in->readInt();
+                int i1 = in->readInt();
+                int i2 = in->readInt();
+                int i3 = in->readInt();
+                set(i0,i1,i2,i3);
+                break;
+            }
+            case(osg::Uniform::FLOAT_MAT2):
+            {
+                osg::Matrix2 m2;
+                for(int i=0; i<9; ++i) m2[i]=in->readFloat();
+                set(m2);
+                break;
+            }
+            case(osg::Uniform::FLOAT_MAT3):
+            {
+                osg::Matrix3 m3;
+                for(int i=0; i<9; ++i) m3[i]=in->readFloat();
+                set(m3);
+                break;
+            }
+            case(osg::Uniform::FLOAT_MAT4):
+            {
+                set( in->readMatrixf() );
+                break;
+            }
+            default:
+            {
+                osg::notify(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
+                break;
+            }
         }
     }
-
 }

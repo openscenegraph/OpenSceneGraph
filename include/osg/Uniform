@@ -11,7 +11,7 @@
 */
 
 /* file:   include/osg/Uniform
- * author: Mike Weiblen 2006-05-14
+ * author: Mike Weiblen 2006-05-15
 */
 
 #ifndef OSG_UNIFORM
@@ -187,20 +187,20 @@ class OSG_EXPORT Uniform : public Object
         /** Set the name of the glUniform, ensuring it is only set once.*/
         void setName( const std::string& name );
 
-        /** Set the length of a uniform array, ensuring it is only set once.*/
+        /** Set the length of a uniform, ensuring it is only set once (1==scalar)*/
         void setNumElements( unsigned int numElements );
 
-        /** Get the number of GLSL elements of the osg::Uniform (>1 == array) */
+        /** Get the number of GLSL elements of the osg::Uniform (1==scalar) */
         unsigned int getNumElements() const { return _numElements; }
 
-        /** Get the number of elements required for the internal scalar data array.
+        /** Get the number of elements required for the internal data array.
           * Returns 0 if the osg::Uniform is not properly configured.  */
         unsigned int getInternalArrayNumElements() const;
 
         /** Return the name of a Type enum as string. */
         static const char* getTypename( Type t );
 
-        /** Return the the number of scalar components for a GLSL type. */
+        /** Return the the number of components for a GLSL type. */
         static int getTypeNumComponents( Type t );
 
         /** Return the Type enum of a Uniform typename string */
@@ -209,10 +209,10 @@ class OSG_EXPORT Uniform : public Object
         /** Return the GL API type corresponding to a GLSL type */
         static Type getGlApiType( Type t );
 
-        /** Return the internal scalar data array type corresponding to a GLSL type */
+        /** Return the internal data array type corresponding to a GLSL type */
         static GLenum getInternalArrayType( Type t );
 
-        /** convenient single-element constructors w/ assignment */
+        /** convenient scalar (non-array) constructors w/ assignment */
         explicit Uniform( const char* name, float f );
         explicit Uniform( const char* name, int i );
         explicit Uniform( const char* name, bool b );
@@ -266,7 +266,7 @@ class OSG_EXPORT Uniform : public Object
         inline unsigned int getNumParents() const { return _parents.size(); }
 
 
-        /** convenient single-element value assignment; may only be used w/ Uniforms where isScalar()==TRUE */
+        /** convenient scalar (non-array) value assignment */
         bool set( float f );
         bool set( int i );
         bool set( bool b );
@@ -284,7 +284,7 @@ class OSG_EXPORT Uniform : public Object
         bool set( bool b0, bool b1, bool b2 );
         bool set( bool b0, bool b1, bool b2, bool b3 );
 
-        /** convenient single-element value query; may only be used w/ Uniforms where isScalar()==TRUE */
+        /** convenient scalar (non-array) value query */
         bool get( float& f ) const;
         bool get( int& i ) const;
         bool get( bool& b ) const;
@@ -304,9 +304,39 @@ class OSG_EXPORT Uniform : public Object
 
         /** value assignment for array uniforms */
         bool setElement( unsigned int index, float f );
+        bool setElement( unsigned int index, int i );
+        bool setElement( unsigned int index, bool b );
         bool setElement( unsigned int index, const osg::Vec2& v2 );
         bool setElement( unsigned int index, const osg::Vec3& v3 );
         bool setElement( unsigned int index, const osg::Vec4& v4 );
+        bool setElement( unsigned int index, const osg::Matrix2& m2 );
+        bool setElement( unsigned int index, const osg::Matrix3& m3 );
+        bool setElement( unsigned int index, const osg::Matrixf& m4 );
+        bool setElement( unsigned int index, const osg::Matrixd& m4 );
+        bool setElement( unsigned int index, int i0, int i1 );
+        bool setElement( unsigned int index, int i0, int i1, int i2 );
+        bool setElement( unsigned int index, int i0, int i1, int i2, int i3 );
+        bool setElement( unsigned int index, bool b0, bool b1 );
+        bool setElement( unsigned int index, bool b0, bool b1, bool b2 );
+        bool setElement( unsigned int index, bool b0, bool b1, bool b2, bool b3 );
+
+        /** value query for array uniforms */
+        bool getElement( unsigned int index, float& f ) const;
+        bool getElement( unsigned int index, int& i ) const;
+        bool getElement( unsigned int index, bool& b ) const;
+        bool getElement( unsigned int index, osg::Vec2& v2 ) const;
+        bool getElement( unsigned int index, osg::Vec3& v3 ) const;
+        bool getElement( unsigned int index, osg::Vec4& v4 ) const;
+        bool getElement( unsigned int index, osg::Matrix2& m2 ) const;
+        bool getElement( unsigned int index, osg::Matrix3& m3 ) const;
+        bool getElement( unsigned int index, osg::Matrixf& m4 ) const;
+        bool getElement( unsigned int index, osg::Matrixd& m4 ) const;
+        bool getElement( unsigned int index, int& i0, int& i1 ) const;
+        bool getElement( unsigned int index, int& i0, int& i1, int& i2 ) const;
+        bool getElement( unsigned int index, int& i0, int& i1, int& i2, int& i3 ) const;
+        bool getElement( unsigned int index, bool& b0, bool& b1 ) const;
+        bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2 ) const;
+        bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const;
 
 
         struct Callback : public virtual osg::Object
@@ -341,16 +371,19 @@ class OSG_EXPORT Uniform : public Object
         const Callback* getEventCallback() const { return _eventCallback.get(); }
 
         /** Increment the modified count on the Uniform so Programs watching it know it update themselves.
-          * note: autotomatically called by Uniform::set(*);
-          * you must call if modify a data array directly. */
+          * NOTE: autotomatically called during osg::Uniform::set*();
+          * you must call if modifying the internal data array directly. */
         inline void dirty() { ++_modifiedCount; }
 
+        /** Set the internal data array for a osg::Uniform */
         bool setArray( FloatArray* array );
         bool setArray( IntArray* array );
 
+        /** Get the internal data array for a float osg::Uniform. */
         FloatArray* getFloatArray() { return _floatArray.get(); }
         const FloatArray* getFloatArray() const { return _floatArray.get(); }
 
+        /** Get the internal data array for an int osg::Uniform. */
         IntArray* getIntArray() { return _intArray.get(); }
         const IntArray* getIntArray() const { return _intArray.get(); }
 

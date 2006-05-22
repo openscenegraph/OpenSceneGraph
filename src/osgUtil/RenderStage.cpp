@@ -19,6 +19,7 @@
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
 #include <osg/GLExtensions>
+#include <osg/GLU>
 
 #include <osgUtil/Statistics>
 
@@ -634,11 +635,13 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
         GLenum errorNo = glGetError();
         if (errorNo!=GL_NO_ERROR)
         {
-            osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) OpenGL errorNo= 0x"<<std::hex<<errorNo<<std::endl;
+            const char* error = (char*)gluErrorString(errorNo);
+            if (error)  osg::notify(osg::NOTICE)<<"Warning: detected OpenGL error '"<<error<<"' after RenderBin::draw(,)"<<std::endl;
+            else        osg::notify(osg::NOTICE)<<"Warning: detected OpenGL errorNo= 0x"<<std::hex<<errorNo<<" after RenderBin::draw(,)"<<std::endl;
+
             if (fbo_ext) osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status= 0x"<<std::hex<<fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)<<std::endl;
         }
     }
-    // state.checkGLErrors("After RenderBin::draw");
 
     // now copy the rendered image to attached texture.
     if (doCopyTexture)

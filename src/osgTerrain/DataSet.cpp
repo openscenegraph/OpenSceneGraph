@@ -212,6 +212,54 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
          return result ? true : false;
 }
 
+float getInterpolatedValue(GDALRasterBand *band, double x, double y)
+{
+    double geoTransform[6];
+    band->GetDataset()->GetGeoTransform(geoTransform);
+    double invTransform[6];
+    GDALInvGeoTransform(geoTransform, invTransform);
+    double r, c;
+    GDALApplyGeoTransform(invTransform, x, y, &c, &r);
+
+    int numRows = band->GetYSize();
+    int numCols = band->GetXSize();
+
+    int rowMin = osg::maximum((int)floor(r), 0);
+    int rowMax = osg::minimum((int)ceil(r), numRows-1);
+    int colMin = osg::maximum((int)floor(c), 0);
+    int colMax = osg::minimum((int)ceil(c), numCols-1);
+
+    if (rowMin > rowMax) rowMin = rowMax;
+    if (colMin > colMax) colMin = colMax;
+
+    float urHeight, llHeight, ulHeight, lrHeight;
+
+    band->RasterIO(GF_Read, colMin, rowMin, 1, 1, &llHeight, 1, 1, GDT_Float32, 0, 0);
+    band->RasterIO(GF_Read, colMin, rowMax, 1, 1, &ulHeight, 1, 1, GDT_Float32, 0, 0);
+    band->RasterIO(GF_Read, colMax, rowMin, 1, 1, &lrHeight, 1, 1, GDT_Float32, 0, 0);
+    band->RasterIO(GF_Read, colMax, rowMax, 1, 1, &urHeight, 1, 1, GDT_Float32, 0, 0);
+
+    int success = 0;
+    float noDataValue = band->GetNoDataValue(&success);
+    if (success)
+    {
+      if (llHeight == noDataValue) llHeight = 0.0f;
+      if (ulHeight == noDataValue) ulHeight = 0.0f;
+      if (lrHeight == noDataValue) lrHeight = 0.0f;
+      if (urHeight == noDataValue) urHeight = 0.0f;
+    }
+
+    double x_rem = c - (int)c;
+    double y_rem = r - (int)r;
+
+    double w00 = (1.0 - y_rem) * (1.0 - x_rem) * (double)llHeight;
+    double w01 = (1.0 - y_rem) * x_rem * (double)lrHeight;
+    double w10 = y_rem * (1.0 - x_rem) * (double)ulHeight;
+    double w11 = y_rem * x_rem * (double)urHeight;
+    float result = (float)(w00 + w01 + w10 + w11);
+    return result;
+}
+
 DataSet::SourceData::~SourceData()
 {
     if (_gdalDataset) GDALClose(_gdalDataset);
@@ -800,20 +848,11 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             my_notify(osg::INFO)<<"Reading height field but it does not intesection destination - ignoring"<<std::endl;
             return;
         }
-        
-       // compute dimensions to read from.        
-       int windowX = osg::maximum((int)floorf((float)_numValuesX*(intersect_bb.xMin()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),0);
-       int windowY = osg::maximum((int)floorf((float)_numValuesY*(intersect_bb.yMin()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),0);
-       int windowWidth = osg::minimum((int)ceilf((float)_numValuesX*(intersect_bb.xMax()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),(int)_numValuesX)-windowX;
-       int windowHeight = osg::minimum((int)ceilf((float)_numValuesY*(intersect_bb.yMax()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),(int)_numValuesY)-windowY;
 
        int destX = osg::maximum((int)floorf((float)destination._heightField->getNumColumns()*(intersect_bb.xMin()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),0);
        int destY = osg::maximum((int)floorf((float)destination._heightField->getNumRows()*(intersect_bb.yMin()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),0);
        int destWidth = osg::minimum((int)ceilf((float)destination._heightField->getNumColumns()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._heightField->getNumColumns())-destX;
        int destHeight = osg::minimum((int)ceilf((float)destination._heightField->getNumRows()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._heightField->getNumRows())-destY;
-
-        my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
-        my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
 
 
         // which band do we want to read from...        
@@ -886,97 +925,72 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             }
             
             my_notify(osg::INFO)<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
-
-            int readWidth = destWidth;
-            int readHeight = destHeight;
             
-            bool doResample = false;
-            bool interpolateTerrain = true;
-            
-            if (interpolateTerrain &&
-               ((windowWidth != readWidth) || (windowHeight != readHeight)))
-               
-            {
-                readWidth  = windowWidth;
-                readHeight = windowHeight;
-                doResample = true;
-            }
-
-            // read data into temporary array
-            float* heightData = new float [ readWidth*readHeight ];
-
             // raad the data.
             osg::HeightField* hf = destination._heightField.get();
-
-            my_notify(osg::INFO)<<"reading height field"<<std::endl;
-            //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
-            //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
-            bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,readWidth,readHeight,GDT_Float32,0,0);
-
-
-            if (doResample)
-            {
-                my_notify(osg::INFO)<<"Resampling height field."<<std::endl;
-                float* resampledHeightData = new float[destWidth * destHeight];
-                for (int j=0; j<destHeight;++j)
-                {
-                    double t_d = (double)j/((double)destHeight-1);
-                    for (int i=0;i<destWidth;++i)
-                    {
-                        double s_d = (double)i/((double)destWidth-1);
-
-                        double read_i = s_d * ((double)readWidth-1);
-                        double read_j = t_d * ((double)readHeight-1);
-
-                        int right = osg::minimum((int)ceil(read_i), readWidth-1);
-                        int left = osg::maximum((int)floor(read_i), 0);
-                        int top = osg::minimum((int)ceil(read_j), readHeight-1);
-                        int bottom = osg::maximum((int)floor(read_j),0);
-
-                        double v00 = (double)heightData[left+bottom*readWidth];
-                        double v01 = (double)heightData[left+top*readWidth];
-                        double v10 = (double)heightData[right+bottom*readWidth];
-                        double v11 = (double)heightData[right+top*readWidth];
-
-                        double x_rem = read_i - (int)read_i;
-                        double y_rem = read_j - (int)read_j;
-
-                        double w00 = (1.0 - y_rem) * (1.0 - x_rem) * v00;
-                        double w01 = (1.0 - y_rem) * x_rem * v01;
-                        double w10 = y_rem * (1.0 - x_rem) * v10;
-                        double w11 = y_rem * x_rem * v11;
-                        float result = (float)(w00 + w01 + w10 + w11);
-                        resampledHeightData[i+j*destWidth] = result;
-                    }
-                }
-                delete [] heightData;
-                heightData = resampledHeightData;
-            }
-
-            my_notify(osg::INFO)<<"    scaling height field"<<std::endl;
 
             float noDataValueFill = 0.0f;
             bool ignoreNoDataValue = true;
 
-            float* heightPtr = heightData;
+            bool interpolateTerrain = true;
 
-            for(int r=destY+destHeight-1;r>=destY;--r)
+            if (interpolateTerrain)
             {
-                for(int c=destX;c<destX+destWidth;++c)
+                //Sample terrain at each vert to increase accuracy of the terrain.
+                int endX = destX + destWidth;
+                int endY = destY + destHeight;
+
+                double orig_X = hf->getOrigin().x();
+                double orig_Y = hf->getOrigin().y();
+                double delta_X = hf->getXInterval();
+                double delta_Y = hf->getYInterval();
+
+                for (int c = destX; c < endX; ++c)
                 {
-                    float h = *heightPtr++;
-                    if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
-                    else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
-                    
-                    h = hf->getHeight(c,r);
+                    double geoX = orig_X + (delta_X * (double)c);
+                    for (int r = destY; r < endY; ++r)
+                    {
+                        double geoY = orig_Y + (delta_Y * (double)r);
+                        float h = getInterpolatedValue(bandSelected, geoX, geoY);
+                        if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
+                        else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
+                    }
                 }
             }
+            else
+            {
+                // compute dimensions to read from.        
+                int windowX = osg::maximum((int)floorf((float)_numValuesX*(intersect_bb.xMin()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),0);
+                int windowY = osg::maximum((int)floorf((float)_numValuesY*(intersect_bb.yMin()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),0);
+                int windowWidth = osg::minimum((int)ceilf((float)_numValuesX*(intersect_bb.xMax()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),(int)_numValuesX)-windowX;
+                int windowHeight = osg::minimum((int)ceilf((float)_numValuesY*(intersect_bb.yMax()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),(int)_numValuesY)-windowY;
 
-            
-            delete [] heightData;
-           
+                my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
+                my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
+
+                // read data into temporary array
+                float* heightData = new float [ destWidth*destHeight ];
+
+                //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
+                bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
+
+                float* heightPtr = heightData;
+
+                for(int r=destY+destHeight-1;r>=destY;--r)
+                {
+                    for(int c=destX;c<destX+destWidth;++c)
+                    {
+                        float h = *heightPtr++;
+                        if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
+                        else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
+
+                        h = hf->getHeight(c,r);
+                    }
+                }
+
+                delete [] heightData;
+            }          
         }
-
     }
 }
 

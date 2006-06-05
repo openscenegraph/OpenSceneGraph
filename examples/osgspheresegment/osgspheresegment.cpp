@@ -22,6 +22,8 @@
 #include <osgParticle/FireEffect>
 #include <osgParticle/ParticleSystemUpdater>
 
+#include <osg/io_utils>
+
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
@@ -89,8 +91,6 @@ class IntersectionUpdateCallback : public osg::NodeCallback
                 osgSim::SphereSegment::LineList lines = ss_->computeIntersection(possie, terrain_.get());
                 if (!lines.empty())
                 {
-                    osg::notify(osg::NOTICE)<<"We've found intersections!!!!"<<std::endl;
-            
                     if (intersectionGroup_.valid())
                     {
                         // now we need to place the intersections which are in the SphereSegmenet's coordinate frame into
@@ -98,6 +98,8 @@ class IntersectionUpdateCallback : public osg::NodeCallback
                         osg::MatrixTransform* mt = new osg::MatrixTransform;
                         mt->setMatrix(osg::computeLocalToWorld(nv->getNodePath()));
                         intersectionGroup_->addChild(mt);
+                        
+                        // std::cout<<"matrix = "<<mt->getMatrix()<<std::endl;
 
                         osg::Geode* geode = new osg::Geode;
                         mt->addChild(geode);
@@ -135,7 +137,7 @@ class IntersectionUpdateCallback : public osg::NodeCallback
 };
 
 
-osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode * terrainGeode, osg::Group * root)
+osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode * terrainGeode, osg::Group * root, bool createMovingRadar = false)
 {
     float animationLength = 10.0f;
 
@@ -163,7 +165,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
         xform->addChild(positioned);
         model->addChild(xform);
     }
-    if (1)
+    
+    if (createMovingRadar)
     {
         // The IntersectionUpdateCallback has to have a safe place to put all its generated geometry into,
         // and this group can't be in the parental chain of the callback otherwise we will end up invalidating
@@ -178,8 +181,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
                                 700.0f, // radius
                                 osg::DegreesToRadians(135.0f),
                                 osg::DegreesToRadians(240.0f),
-                                osg::DegreesToRadians(-90.0f),
-                                osg::DegreesToRadians(-70.0f),
+                                osg::DegreesToRadians(-60.0f),
+                                osg::DegreesToRadians(-40.0f),
                                 60);
                                 
         IntersectionUpdateCallback * iuc = new IntersectionUpdateCallback;
@@ -427,6 +430,8 @@ void build_world(osg::Group *root, unsigned int testCase)
     osg::ref_ptr<osgSim::SphereSegment> ss = 0;
     {
 
+        osg::Matrix terrainToSS;
+
         switch(testCase)
         {
             case(0):        
@@ -438,6 +443,7 @@ void build_world(osg::Group *root, unsigned int testCase)
                                 osg::DegreesToRadians(-10.0f),
                                 osg::DegreesToRadians(30.0f),
                                 60);
+                root->addChild(ss.get());
                 break;
             case(1):        
                 ss = new osgSim::SphereSegment(
@@ -448,6 +454,7 @@ void build_world(osg::Group *root, unsigned int testCase)
                                 osg::DegreesToRadians(-10.0f),
                                 osg::DegreesToRadians(30.0f),
                                 60);
+                root->addChild(ss.get());
                 break;
             case(2):        
                 ss = new osgSim::SphereSegment(
@@ -458,6 +465,7 @@ void build_world(osg::Group *root, unsigned int testCase)
                                 osg::DegreesToRadians(-10.0f),
                                 osg::DegreesToRadians(30.0f),
                                 60);
+                root->addChild(ss.get());
                 break;
             case(3):        
                 ss = new osgSim::SphereSegment(
@@ -468,67 +476,94 @@ void build_world(osg::Group *root, unsigned int testCase)
                                 osg::DegreesToRadians(-10.0f),
                                 osg::DegreesToRadians(30.0f),
                                 60);
+                root->addChild(ss.get());
                 break;
+            case(4):        
+            {
+                ss = new osgSim::SphereSegment(osg::Vec3d(0.0,0.0,0.0),
+                                700.0f, // radius
+                                osg::DegreesToRadians(135.0f),
+                                osg::DegreesToRadians(240.0f),
+                                osg::DegreesToRadians(-60.0f),
+                                osg::DegreesToRadians(-40.0f),
+                                60);
+                  
+                osg::ref_ptr<osg::MatrixTransform> mt = new osg::MatrixTransform;              
+                
+                mt->setMatrix(osg::Matrix(-0.851781, 0.156428, -0.5, 0,
+                                          -0.180627, -0.983552, -6.93889e-18, 0,
+                                          -0.491776, 0.0903136, 0.866025, 0,
+                                          598.217, 481.957, 100, 1));
+                mt->addChild(ss.get());
+                
+                terrainToSS.invert(mt->getMatrix());
+                                               
+                root->addChild(mt.get());
+                break;
+            }
+            case(5):        
+            {
+                ss = new osgSim::SphereSegment(osg::Vec3d(0.0,0.0,0.0),
+                                700.0f, // radius
+                                osg::DegreesToRadians(35.0f),
+                                osg::DegreesToRadians(135.0f),
+                                osg::DegreesToRadians(-60.0f),
+                                osg::DegreesToRadians(-40.0f),
+                                60);
+                  
+                osg::ref_ptr<osg::MatrixTransform> mt = new osg::MatrixTransform;              
+                
+                mt->setMatrix(osg::Matrix(-0.851781, 0.156428, -0.5, 0,
+                                          -0.180627, -0.983552, -6.93889e-18, 0,
+                                          -0.491776, 0.0903136, 0.866025, 0,
+                                          598.217, 481.957, 100, 1));
+                mt->addChild(ss.get());
+                
+                terrainToSS.invert(mt->getMatrix());
+                                               
+                root->addChild(mt.get());
+                break;
+            }
+            case(6):        
+            {
+                ss = new osgSim::SphereSegment(osg::Vec3d(0.0,0.0,0.0),
+                                700.0f, // radius
+                                osg::DegreesToRadians(-45.0f),
+                                osg::DegreesToRadians(45.0f),
+                                osg::DegreesToRadians(-60.0f),
+                                osg::DegreesToRadians(-40.0f),
+                                60);
+                  
+                osg::ref_ptr<osg::MatrixTransform> mt = new osg::MatrixTransform;              
+                
+                mt->setMatrix(osg::Matrix(-0.851781, 0.156428, -0.5, 0,
+                                          -0.180627, -0.983552, -6.93889e-18, 0,
+                                          -0.491776, 0.0903136, 0.866025, 0,
+                                          598.217, 481.957, 100, 1));
+                mt->addChild(ss.get());
+                
+                terrainToSS.invert(mt->getMatrix());
+                                               
+                root->addChild(mt.get());
+                break;
+            }
         };
         
-        ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
-        ss->setSideColor(osg::Vec4(0.0f,1.0f,1.0f,0.1f));
-#if 1
-        root->addChild(ss.get());
-#endif
-    }
-    
-#if 1    
-    root->addChild(ss->computeIntersectionSubgraph(osg::Matrixd::identity(), terrainGeode.get()));
-#else
-    osgSim::SphereSegment::LineList lines = ss->computeIntersection(osg::Matrixd::identity(), terrainGeode.get());
-    if (!lines.empty())
-    {
-        osg::notify(osg::NOTICE)<<"We've found intersections!!!!"<<std::endl;
-
-        osg::Geode* geode = new osg::Geode;
-        root->addChild(geode);
-
-        geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-        for(osgSim::SphereSegment::LineList::iterator itr=lines.begin();
-           itr!=lines.end();
-           ++itr)
+        if (ss.valid())
         {
-            osg::Geometry* geom = new osg::Geometry;
-            geode->addDrawable(geom);
-            
-            osg::Vec3Array* vertices = itr->get();
-            geom->setVertexArray(vertices);
-            geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, vertices->getNumElements()));
+            ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
+            ss->setSideColor(osg::Vec4(0.0f,1.0f,1.0f,0.1f));
+
+            if (!ss->getParents().empty())
+            {
+                ss->getParent(0)->addChild(ss->computeIntersectionSubgraph(terrainToSS, terrainGeode.get()));
+            }
+        
         }
     }
-    else
-    {
-       osg::notify(osg::NOTICE)<<"No intersections found"<<std::endl;
-    }
-#endif
-
-#if 0
-
-
-    osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
     
-    overlayNode->getOrCreateStateSet()->setTextureAttribute(1, new osg::TexEnv(osg::TexEnv::DECAL));
 
-    const osg::BoundingSphere& bs = terrainGeode->getBound();
-    osg::Group* overlaySubgraph = createOverlay(bs.center(), bs.radius()*0.5f);
-    overlaySubgraph->addChild(ss.get());
-    overlayNode->setOverlaySubgraph(overlaySubgraph);
-    overlayNode->setOverlayTextureSizeHint(2048);
-    overlayNode->addChild(terrainGeode.get());
-
-    root->addChild(overlayNode);
-    
-#else
     root->addChild(terrainGeode.get());
-#endif
-
 
     // create particle effects
     {    
@@ -556,9 +591,12 @@ void build_world(osg::Group *root, unsigned int testCase)
         root->addChild(fire);
     }
     
+    
+    bool createMovingRadar = true;
+    
     // create the moving models.
     {
-        root->addChild(createMovingModel(osg::Vec3(500.0f,500.0f,500.0f),100.0f, terrainGeode.get(), root));
+        root->addChild(createMovingModel(osg::Vec3(500.0f,500.0f,500.0f),100.0f, terrainGeode.get(), root, createMovingRadar));
     }
 }
 

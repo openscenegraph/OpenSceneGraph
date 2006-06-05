@@ -2930,6 +2930,10 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
         tif.trim(azMinLines, elevMinIntersector);
         tif.trim(azMaxLines, elevMinIntersector);
 
+        // trim the azim intersection lines by the elevation
+        tif.trim(azMinLines, elevMaxIntersector);
+        tif.trim(azMaxLines, elevMaxIntersector);
+
         // trim the centeral ends of the azim lines
         tif.trim(azMinLines,azMinEndIntersector);
         tif.trim(azMaxLines,azMaxEndIntersector);

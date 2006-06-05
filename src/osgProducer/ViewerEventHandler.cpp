@@ -129,7 +129,7 @@ public:
         _stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         _stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         
-        _projection = new osg::RefMatrix(osg::Matrix::ortho2D(0.0,1280,0,1024));
+        _projection = new osg::RefMatrix(osg::Matrix::ortho2D(0.0,1280,0.0,1024));
         _modelview = new osg::RefMatrix();
     
         //createHelpText();
@@ -223,6 +223,14 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
     osgUtil::SceneView* sv = osh->getSceneView();
     osg::State& state = *(sv->getState());
     
+
+    if (!_projection) _projection = new osg::RefMatrix(osg::Matrix::ortho2D(0.0,width/height*1024.0f,0.0,1024.0));
+    else 
+    {
+        _projection->makeOrtho2D(0.0,width/height*1024.0f,0.0,1024.0);
+    }
+
+
     state.applyProjectionMatrix(_projection.get());
     state.applyModelViewMatrix(_modelview.get());
     

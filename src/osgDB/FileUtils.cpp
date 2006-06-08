@@ -107,6 +107,14 @@ bool osgDB::makeDirectory( const std::string &path )
     {
         std::string dir = paths.top();
  
+        #if defined(WIN32)
+            //catch drive name
+            if (dir.size() == 2 && dir.c_str()[1] == ':') {
+                paths.pop();
+                continue;
+            }
+        #endif
+
         if( mkdir( dir.c_str(), 0755 )< 0 )
         {
             osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;

@@ -2380,12 +2380,12 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
-//  Spatialize the scene to accelerate culling
+//  Duplicated subgraphs which are shared
 //
 
 void Optimizer::CopySharedSubgraphsVisitor::apply(osg::Node& node)
 {
-    if (node.getNumParents()>1 && !isOperationPermissibleForObject(&node))
+    if (node.getNumParents()>1 && isOperationPermissibleForObject(&node))
     {
         _sharedNodeList.insert(&node);
     }

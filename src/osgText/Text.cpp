@@ -377,6 +377,18 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             while (lastValidChar!=first && deliminatorSet.count(*lastValidChar)==0)
             {
                 --lastValidChar;
+                
+                //Substract off glyphs from the cursor position (to correctly center text)
+                Font::Glyph* glyph = activefont->getGlyph(*lastValidChar);
+                if (glyph)
+                {
+                    switch(_layout)
+                    {
+                    case LEFT_TO_RIGHT: cursor.x() -= glyph->getHorizontalAdvance() * wr; break;
+                    case VERTICAL:      cursor.y() += glyph->getVerticalAdvance() * hr; break;
+                    case RIGHT_TO_LEFT: break; // nop.
+                    }
+                }
             }
             if (first!=lastValidChar)
             {
@@ -918,7 +930,6 @@ void Text::drawImplementation(osg::State& state) const
             computePositions(contextID);
         }
     }
-
 
     glNormal3fv(_normal.ptr());
     glColor4fv(_color.ptr());

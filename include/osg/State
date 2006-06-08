@@ -67,17 +67,18 @@ namespace osg {
 // forward decalr GraphicsContext
 class GraphicsContext;
 
-/** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,.
+/** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
   * implements lazy state updating and provides accessors for querrying the current state.
   . The venerable Red Book says that "OpenGL is a state machine", and this class
   * represents the OpenGL state in OSG. Furthermore, \c State also has other
   * important features:
   * - It works as a stack of states (see \c pushStateSet() and
   *   \c popStateSet()). Manipulating this stack of OpenGL states manually is
-  *   seldom needed, since OSG does this is the most common situations.
+  *   seldom needed, since OSG does this in the most common situations.
   * - It implements lazy state updating. This means that, if one requests a
-  *   state change and that particular state is already in the requested stated, no OpenGL
-  *   call will be made, this ensures that OpenGL pipeline is not stalled by unncessary state changes.
+  *   state change and that particular state is already in the requested state,
+  *   no OpenGL call will be made. This ensures that the OpenGL pipeline is not
+  *   stalled by unncessary state changes.
   * - It allows to query the current OpenGL state without calls to \c glGet*(),
   *   which typically stall the graphics pipeline (see, for instance,
   *   \c captureCurrentState() and \c getModelViewMatrix()).

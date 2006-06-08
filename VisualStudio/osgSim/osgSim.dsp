@@ -271,7 +271,7 @@ SOURCE=..\..\include\osgSim\LightPointNode
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgSim\LightSystem
+SOURCE=..\..\include\osgSim\LightPointSystem
 # End Source File
 # Begin Source File
 

@@ -10,8 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:     examples/osgshaders/GL2Scene.cpp
- * author:   Mike Weiblen 2006-05-14
+/* file:        examples/osgshaders/GL2Scene.cpp
+ * author:        Mike Weiblen 2005-05-01
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -358,16 +358,6 @@ GL2Scene::buildScene()
 
         ss->addUniform( new osg::Uniform("NoiseTex", TEXUNIT_NOISE) );
         ss->addUniform( new osg::Uniform("SineTex", TEXUNIT_SINE) );
-
-        osg::Uniform* MarbleColor = new osg::Uniform( osg::Uniform::FLOAT_VEC3, "MarbleColor[0]", 2 );
-        MarbleColor->setElement( 0, osg::Vec3( 0.7, 0.7, 0.7 ) );
-        MarbleColor->setElement( 1, osg::Vec3( 0.2, 0.2, 0.2 ) );
-        ss->addUniform( MarbleColor );
-
-        osg::Uniform* VeinColor = new osg::Uniform( osg::Uniform::FLOAT_VEC3, "VeinColor[0]", 2 );
-        VeinColor->setElement( 0, osg::Vec3( 0.0, 0.15, 0.0 ) );
-        VeinColor->setElement( 1, osg::Vec3( 0.9, 0.95, 0.9 ) );
-        ss->addUniform( VeinColor );
     }
 
 #ifdef INTERNAL_3DLABS //[

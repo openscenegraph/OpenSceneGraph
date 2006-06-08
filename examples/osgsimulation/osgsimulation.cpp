@@ -34,6 +34,7 @@
 #include <osgTerrain/DataSet>
 
 #include <osgSim/OverlayNode>
+#include <osgSim/SphereSegment>
 
 #include <osgGA/NodeTrackerManipulator>
 
@@ -345,6 +346,20 @@ int main(int argc, char **argv)
             scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
             scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
         
+            if (false)
+            {
+                osgSim::SphereSegment* ss = new osgSim::SphereSegment(
+                                    osg::Vec3(0.0f,0.0f,0.0f), // center
+                                    19.9f, // radius
+                                    osg::DegreesToRadians(135.0f),
+                                    osg::DegreesToRadians(240.0f),
+                                    osg::DegreesToRadians(-10.0f),
+                                    osg::DegreesToRadians(30.0f),
+                                    60);
+                                    
+                scaler->addChild(ss);
+            }
+
             osg::MatrixTransform* mt = new osg::MatrixTransform;
             mt->addChild(scaler);
 

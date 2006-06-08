@@ -101,6 +101,9 @@ class OSG_EXPORT Array : public Object
         virtual unsigned int    getTotalDataSize() const = 0;
         virtual unsigned int    getNumElements() const = 0;
 
+        /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
+        virtual void trim() {}
+
         /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
         inline void dirty() { ++_modifiedCount; }      
       
@@ -167,6 +170,12 @@ class TemplateArray : public Array, public std::vector<T>
             if (elem_lhs<elem_rhs) return -1;
             if (elem_rhs<elem_lhs) return 1;
             return 0;
+        }
+
+        /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
+        virtual void trim()
+        {
+            std::vector<T>( *this ).swap( *this );
         }
         
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
@@ -247,6 +256,12 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
             return 0;
         }
 
+        /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
+        virtual void trim()
+        {
+            std::vector<T>( *this ).swap( *this );
+        }
+        
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return this->size()*sizeof(T); }
         virtual unsigned int    getNumElements() const { return this->size(); }

@@ -190,6 +190,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--RGBA","Use 32bit RGBA destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--max-visible-distance-of-top-level","Set the maximum visible distance that the top most tile can be viewed at");     
     arguments.getApplicationUsage()->addCommandLineOption("--no-terrain-simplification","Switch off terrain simplification.");
+    arguments.getApplicationUsage()->addCommandLineOption("--default-color <r,g,b,a>","Sets the default color of the terrain.");
     arguments.getApplicationUsage()->addCommandLineOption("--radius-to-max-visible-distance-ratio","Set the maximum visible distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
     arguments.getApplicationUsage()->addCommandLineOption("--no-mip-mapping","Disable mip mapping of textures");     
     arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
@@ -305,6 +306,20 @@ int main( int argc, char **argv )
            arguments.read("--no-terrain-simplification"))
     {
         dataset->setSimplifyTerrain(false);
+    }
+
+    std::string str;
+    while (arguments.read("--default-color",str) ||
+           arguments.read("--default_color",str))
+    {
+        osg::Vec4 defaultColor;
+        if( sscanf( str.c_str(), "%f,%f,%f,%f",
+                &defaultColor[0], &defaultColor[1], &defaultColor[2], &defaultColor[3] ) != 4 )
+        {
+            std::cout<<"Color argument format incorrect."<<std::endl;
+            return 1;
+        }
+        dataset->setDefaultColor(defaultColor);
     }
 
     std::string image_ext;

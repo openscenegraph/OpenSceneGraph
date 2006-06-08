@@ -187,6 +187,10 @@ SOURCE=..\..\src\osgSim\LightPointDrawable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\LightPointSpriteDrawable.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\LightPointNode.cpp
 # End Source File
 # Begin Source File
@@ -264,6 +268,10 @@ SOURCE=..\..\include\osgSim\LightPoint
 # Begin Source File
 
 SOURCE=..\..\src\osgSim\LightPointDrawable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\LightPointSpriteDrawable.h
 # End Source File
 # Begin Source File
 

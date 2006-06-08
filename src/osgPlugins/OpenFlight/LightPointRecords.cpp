@@ -5,6 +5,7 @@
 //
 
 #include <osgSim/LightPointNode>
+#include <osg/Texture2D>
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
@@ -271,6 +272,21 @@ protected:
         {
             _lpn->setMinPixelSize(_appearance->minPixelSize);
             _lpn->setMaxPixelSize(_appearance->maxPixelSize);
+
+            if (_appearance->texturePatternIndex != -1)
+            {
+                // Use point sprites for light points.
+                _lpn->setPointSprite();
+
+                TexturePool* tp = document.getOrCreateTexturePool();
+                osg::StateSet* textureStateSet = tp->get(_appearance->texturePatternIndex);
+                if (textureStateSet)
+                {
+                    // Merge face stateset with texture stateset
+                    osg::StateSet* stateset = _lpn->getOrCreateStateSet();
+                    stateset->merge(*textureStateSet);
+                }
+            }
         }
 
         // Add to parent

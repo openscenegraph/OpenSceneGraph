@@ -165,7 +165,7 @@ struct LPAppearance : public osg::Referenced
     float32 fadeOutDuration;
     float32 LODRangeRatio;
     float32 LODScale;
-    int32 texturePatternIndex;
+    int16 texturePatternIndex;
 };
 
 

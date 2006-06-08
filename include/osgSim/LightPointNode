@@ -82,6 +82,10 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
         osgSim::LightPointSystem* getLightPointSystem() { return _lightSystem.get(); }
 
+        void setPointSprite(bool enable=true) { _pointSprites = enable; }
+
+        bool getPointSprite() const { return _pointSprites; }
+
         virtual osg::BoundingSphere computeBound() const;
 
     protected:
@@ -99,6 +103,8 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         float _maxVisibleDistance2;
 
         osg::ref_ptr<osgSim::LightPointSystem> _lightSystem;        
+        
+        bool _pointSprites;
 
 };
 

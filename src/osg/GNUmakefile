@@ -20,6 +20,7 @@ CXXFILES =\
 	ClearNode.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\
+	ClampColor.cpp\
 	ClusterCullingCallback.cpp\
 	CollectOccludersVisitor.cpp\
 	ColorMask.cpp\

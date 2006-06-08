@@ -1,0 +1,144 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_CLAMPCOLOR
+#define OSG_CLAMPCOLOR 1
+
+#include <osg/StateAttribute>
+
+#ifndef GL_ARB_color_buffer_float
+#define GL_RGBA_FLOAT_MODE_ARB                  0x8820
+#define GL_CLAMP_VERTEX_COLOR_ARB               0x891A
+#define GL_CLAMP_FRAGMENT_COLOR_ARB             0x891B
+#define GL_CLAMP_READ_COLOR_ARB                 0x891C
+#define GL_FIXED_ONLY_ARB                       0x891D
+#endif
+
+namespace osg {
+
+/** Encapsulates OpenGL ClampColor state. */
+class OSG_EXPORT ClampColor : public StateAttribute
+{
+    public :
+
+        enum Target {
+          CLAMP_VERTEX_COLOR   = GL_CLAMP_VERTEX_COLOR_ARB,
+          CLAMP_FRAGMENT_COLOR = GL_CLAMP_FRAGMENT_COLOR_ARB,
+          CLAMP_READ_COLOR     = GL_CLAMP_READ_COLOR_ARB
+        };
+
+        enum Mode {
+          FIXED_ONLY = GL_FIXED_ONLY_ARB,
+          FALSE      = GL_FALSE,
+          TRUE       = GL_TRUE
+        };
+
+
+        ClampColor();
+        
+        ClampColor(Target target, Mode mode);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        ClampColor(const ClampColor& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(trans,copyop),
+            _target(trans._target),
+            _mode(trans._mode) {}
+
+        META_StateAttribute(osg, ClampColor,CLAMPCOLOR);
+        
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macros below.
+            COMPARE_StateAttribute_Types(ClampColor,sa)
+
+            // Compare each parameter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_target)
+            COMPARE_StateAttribute_Parameter(_mode)
+
+            return 0; // Passed all the above comparison macros, so must be equal.
+        }
+
+        inline void setTarget(Target target)
+        {
+            _target = target;
+        }
+
+        inline Target getTarget() const { return _target; }
+
+
+        inline void setMode(Mode mode)
+        {
+            _mode = mode;
+        }
+
+        inline Mode getMode() const { return _mode; }
+
+        
+        virtual void apply(State& state) const;
+        /** Encapsulates queries of extension availability, obtains extension
+          * function pointers, and provides convinience wrappers for
+          * calling extension functions. */        
+        class OSG_EXPORT Extensions : public osg::Referenced
+        {
+            public:
+                Extensions(unsigned int contextID);
+
+                Extensions(const Extensions& rhs);
+                
+                void lowestCommonDenominator(const Extensions& rhs);
+                
+                void setupGLExtenions(unsigned int contextID);
+
+                void setClampColorSupported(bool flag) { _isClampColorSupported=flag; }
+                bool isClampColorSupported() const { return _isClampColorSupported; }
+                
+                void setClampColorProc(void* ptr) { _glClampColor = ptr; }
+                void glClampColor(GLenum target, GLenum mode) const;
+
+            protected:
+
+                ~Extensions() {}
+                
+                bool    _isClampColorSupported;
+
+                void*   _glClampColor;
+
+        };
+        
+        /** Returns the Extensions object for the given context.
+          * If createIfNotInitalized is true and the Exentsions object doesn't
+          * exist, getExtensions() creates it on the given context.
+          * Returns NULL if createIfNotInitalized is false and the Extensions
+          * object doesn't exist. */
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions() allows users to override the extensions across graphics contexts.
+          * Typically used when you have different extensions supported across graphics pipes,
+          * but need to ensure that they all use the same low common denominator extensions. */
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+
+    protected :
+
+        virtual ~ClampColor();
+
+
+        Target _target;
+        Mode   _mode;
+};
+
+}
+
+#endif

@@ -228,6 +228,10 @@ SOURCE=..\..\src\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ClampColor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ClusterCullingCallback.cpp
 # End Source File
 # Begin Source File
@@ -685,6 +689,10 @@ SOURCE=..\..\Include\Osg\ClipNode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ClipPlane
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ClampColor
 # End Source File
 # Begin Source File
 

@@ -152,19 +152,13 @@ class OSG_EXPORT StateAttribute : public Object
             SCISSOR,
             BLENDCOLOR,
             MULTISAMPLE,
-
-            
             CLIPPLANE,
-            
             COLORMATRIX,
-            
             VERTEXPROGRAM,
             FRAGMENTPROGRAM,
-            
             POINTSPRITE,
-
-            /// core GLSL support
             PROGRAM,
+            CLAMPCOLOR,
 
             /// osgFX namespace
             VALIDATOR,

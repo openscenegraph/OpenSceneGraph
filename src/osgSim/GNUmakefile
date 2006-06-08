@@ -11,6 +11,7 @@ CXXFILES = \
         InsertImpostorsVisitor.cpp\
 	LightPoint.cpp\
 	LightPointDrawable.cpp\
+	LightPointSpriteDrawable.cpp\
 	LightPointNode.cpp\
 	MultiSwitch.cpp\
 	OverlayNode.cpp\

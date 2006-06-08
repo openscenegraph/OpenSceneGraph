@@ -7,6 +7,9 @@
 #include <osg/Group>
 #include <osg/ShapeDrawable>
 #include <osg/Notify>
+#include <osg/PointSprite>
+#include <osg/Texture2D>
+#include <osg/BlendFunc>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -47,6 +50,8 @@ void addToLightPointNode(osgSim::LightPointNode& lpn,osgSim::LightPoint& start,o
 }
 
 #undef INTERPOLATE
+
+bool usePointSprites;
 
 osg::Node* createLightPointsDatabase()
 {
@@ -96,6 +101,26 @@ osg::Node* createLightPointsDatabase()
 //        start._sector = sector;
 
         osgSim::LightPointNode* lpn = new osgSim::LightPointNode;
+
+        //
+        osg::StateSet* set = lpn->getOrCreateStateSet();
+
+        if (usePointSprites)
+        {
+            lpn->setPointSprite();
+
+            // Set point sprite texture in LightPointNode StateSet.
+            osg::Texture2D *tex = new osg::Texture2D();
+            tex->setImage(osgDB::readImageFile("Images/particle.rgb"));
+            set->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
+        }
+
+        //set->setMode(GL_BLEND, osg::StateAttribute::ON);
+        //osg::BlendFunc *fn = new osg::BlendFunc();
+        //fn->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::DST_ALPHA);
+        //set->setAttributeAndModes(fn, osg::StateAttribute::ON);
+        //
+
         addToLightPointNode(*lpn,start,end,noStepsX);
         
         start._position += start_delta;
@@ -172,6 +197,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use high quality light point, typically used for naviagional lights.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--sprites","Point sprites.");
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -188,6 +214,9 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+    usePointSprites = false;
+    while (arguments.read("--sprites")) { usePointSprites = true; };
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();

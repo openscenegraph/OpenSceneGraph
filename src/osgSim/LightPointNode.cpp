@@ -15,11 +15,13 @@
 #include <osgSim/LightPointSystem>
 
 #include "LightPointDrawable.h"
+#include "LightPointSpriteDrawable.h"
 
 #include <osg/Timer>
 #include <osg/BoundingBox>
 #include <osg/BlendFunc>
 #include <osg/Material>
+#include <osg/PointSprite>
 
 #include <osgUtil/CullVisitor>
 
@@ -46,7 +48,8 @@ LightPointNode::LightPointNode():
     _minPixelSize(0.0f),
     _maxPixelSize(30.0f),
     _maxVisibleDistance2(FLT_MAX),
-    _lightSystem(0)
+    _lightSystem(0),
+    _pointSprites(false)
 {
     setStateSet(getSingletonLightPointSystemSet());
 }
@@ -58,7 +61,8 @@ LightPointNode::LightPointNode(const LightPointNode& lpn,const osg::CopyOp& copy
     _minPixelSize(lpn._minPixelSize),
     _maxPixelSize(lpn._maxPixelSize),
     _maxVisibleDistance2(lpn._maxVisibleDistance2),
-    _lightSystem(lpn._lightSystem)
+    _lightSystem(lpn._lightSystem),
+    _pointSprites(lpn._pointSprites)
 {
 }
 
@@ -178,6 +182,10 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 drawable = static_cast<LightPointDrawable*>(object);
 
             }
+            else if (typeid(*object)==typeid(LightPointSpriteDrawable))
+            {
+                drawable = static_cast<LightPointSpriteDrawable*>(object);
+            }
             else
             {
                 // will need to replace UserData.
@@ -187,8 +195,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 
         if (!drawable)
         {
-            // set it for the frst time.
-            drawable = new LightPointDrawable;
+            drawable = _pointSprites ? new LightPointSpriteDrawable : new LightPointDrawable;
             rg->setUserData(drawable);
             
             if (cv->getFrameStamp())

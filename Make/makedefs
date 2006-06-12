@@ -421,24 +421,35 @@ endif
 
 #### FreeBSD specific definitions
 ifeq ($(OS),FreeBSD)
-  SYSARCH           := $(shell uname -m)
-  C++               = g++
+  SYSARCH           := $(shell uname -p)
+  ifeq (x$(CXX),x)
+    C++             = g++
+  else
+    C++             = $(CXX)
+  endif
+  ifeq (x$(PTHREAD_CFLAGS),x)
+    PTHREAD_CFLAGS  = -pthread
+  endif
+  ifeq (x$(PTHREAD_LIBS),x)
+    PTHREAD_LIBS    = -pthread
+  endif
+  ifeq (x$(ARCH),x)
+    ARCH            = $(SYSARCH)
+  endif
   DEPARG            = -MM
   INC               += -I/usr/local/include -I/usr/X11R6/include
-  DEF               += -W -Wall -pthread
+  DEF               += -W -Wall $(PTHREAD_CFLAGS)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared
   ifeq ($(SYSARCH),amd64)
-    ARCH            = 64
     ARCHARGS        = -fPIC
     ARCHINST        = 
   else
-    ARCH            = 32
     ARCHARGS        =
     ARCHINST        = 
   endif
-  LINKARGS          = -pthread -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
+  LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib $(PTHREAD_CFLAGS)
   DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lGLU -lGL 

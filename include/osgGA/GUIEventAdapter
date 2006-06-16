@@ -270,7 +270,7 @@ public:
         /** button pressed/released, return -1 if inappropriate for this GUIEventAdapter.*/
         int getButton() const { return _button; }
 
-        /** set window minimum x. */
+        /** set window size. */
         void setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax);
 
         /** set window minimum x. */

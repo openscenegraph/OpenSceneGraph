@@ -7,7 +7,6 @@
 #include <osg/Geode>
 #include <osg/ShapeDrawable>
 #include <osg/PolygonOffset>
-#include <osg/CullFace>
 #include <osg/Texture2D>
 #include <osg/MatrixTransform>
 #include <osg/Light>

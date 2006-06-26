@@ -95,7 +95,7 @@ osg::Geometry *Frame::build_quad(const Rect &rect, const osg::Vec4 &color, bool 
 
     geo->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, shadow? 12: 4));
 
-    return geo.take();
+    return geo.release();
 }
 
 }

@@ -33,7 +33,7 @@ namespace
             *(image->data(i, 0)+2) = static_cast<unsigned char>(c*255);
             *(image->data(i, 0)+3) = 255;
         }
-        return image.take();
+        return image.release();
     }
 
 }

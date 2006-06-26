@@ -740,12 +740,9 @@ public:
             if (edge->_p1==pOriginal) edge->_p1=pNew;
             if (edge->_p2==pOriginal) edge->_p2=pNew;
 
-            if (edge->_p2 > edge->_p1)
+            if (edge->_p2 < edge->_p1)
             {
-                // swap to ensure that lowest ptr value of p1, p2 pair is first.
-                osg::ref_ptr<Point> tmp = edge->_p1;
-                edge->_p1 = edge->_p2;
-                edge->_p2 = tmp;
+                edge->_p1.swap(edge->_p2);
             }
 
             itr = _edgeSet.find(edge);

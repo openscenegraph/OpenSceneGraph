@@ -243,7 +243,7 @@ osg::Group* build_hud_base(osg::Group* root)
     osg::ref_ptr<osg::BlendFunc> bf = new osg::BlendFunc;
     ss->setAttributeAndModes(bf.get());
 
-    return xform.take();
+    return xform.release();
 }
 
 EffectPanel* build_gui(osg::Group* root)
@@ -256,7 +256,7 @@ EffectPanel* build_gui(osg::Group* root)
 
     hud->addChild(effect_panel.get());
 
-    return effect_panel.take();
+    return effect_panel.release();
 }
 
 void build_world(osg::Group* root, osg::Node* scene, osgProducer::Viewer& viewer)

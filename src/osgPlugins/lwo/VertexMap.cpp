@@ -23,7 +23,7 @@ osg::Vec4Array *VertexMap::asVec4Array(int num_vertices, const osg::Vec4 &defaul
         value.w() *= modulator.w();
         array->at(i->first) = value;
     }
-    return array.take();
+    return array.release();
 }
 
 osg::Vec2Array *VertexMap::asVec2Array(int num_vertices, const osg::Vec2 &default_value, const osg::Vec2 &modulator) const
@@ -36,7 +36,7 @@ osg::Vec2Array *VertexMap::asVec2Array(int num_vertices, const osg::Vec2 &defaul
         value.y() *= modulator.y();
         array->at(i->first) = osg::Vec2(value.x(), value.y());
     }
-    return array.take();
+    return array.release();
 }
 
 osg::Vec3Array *VertexMap::asVec3Array(int num_vertices, const osg::Vec3 &default_value, const osg::Vec3 &modulator) const
@@ -50,7 +50,7 @@ osg::Vec3Array *VertexMap::asVec3Array(int num_vertices, const osg::Vec3 &defaul
         value.z() *= modulator.z();
         array->at(i->first) = osg::Vec3(value.x(), value.y(), value.z());
     }
-    return array.take();
+    return array.release();
 }
 
 VertexMap *VertexMap::remap(const std::vector<int> &remapping) const
@@ -68,7 +68,7 @@ VertexMap *VertexMap::remap(const std::vector<int> &remapping) const
         }
     }
 
-    return result.take();
+    return result.release();
 }
 
 VertexMap_map *VertexMap_map::remap(const std::vector<int> &remapping) const
@@ -77,5 +77,5 @@ VertexMap_map *VertexMap_map::remap(const std::vector<int> &remapping) const
     for (VertexMap_map::const_iterator i=begin(); i!=end(); ++i) {
         (*result.get())[i->first] = i->second->remap(remapping);
     }
-    return result.take();
+    return result.release();
 }

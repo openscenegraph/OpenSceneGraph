@@ -105,7 +105,7 @@ namespace
                 *(image->data(j, i)+2) = static_cast<unsigned char>(blue * 255);
             }
         }
-        return image.take();
+        return image.release();
     }
 
 }

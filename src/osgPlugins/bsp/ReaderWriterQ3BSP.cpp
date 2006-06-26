@@ -19,9 +19,6 @@
 #include "BSPLoad.h"
 
 
-
-
-
 class ReaderWriterQ3BSP: public osgDB::ReaderWriter
 {
 public:
@@ -42,7 +39,7 @@ public:
 private:
     osg::Geode* convertFromBSP(BSPLoad& aLoadData,const osgDB::ReaderWriter::Options* options) const;
     osg::Geometry* createMeshFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
-                                  osg::Vec3Array& aVertexArray,std::vector<GLuint>& aIndices,
+                                  osg::Vec3Array& aVertexArray,std::vector<unsigned int>& aIndices,
                                   osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
                                  ) const;
     osg::Geometry* createPolygonFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,const std::vector<osg::Texture2D*>& aTextureLMapArray,
@@ -164,7 +161,7 @@ protected:
         
     int m_tesselation;
     std::vector<BSP_VERTEX> m_vertices;
-    std::vector<GLuint> m_indices;
+    std::vector<unsigned int> m_indices;
 
     //arrays for multi_draw_arrays
     std::vector<int>  m_trianglesPerRow;
@@ -356,11 +353,8 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
 
 
 
-
-
-
 osg::Geometry* ReaderWriterQ3BSP::createMeshFace( const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
-                                                  osg::Vec3Array& aVertexArray,std::vector<GLuint>& aIndices,
+                                                  osg::Vec3Array& aVertexArray,std::vector<unsigned int>& aIndices,
                                                   osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
                                                 ) const
 {
@@ -538,10 +532,10 @@ bool ReaderWriterQ3BSP::loadLightMaps(const BSPLoad& aLoadData,std::vector<osg::
   // A continuación, añado el blanco
   osg::Image* image=new osg::Image;
   unsigned char *data=new unsigned char[3];
-  for(int whiteidx=0;i<3;i++)
-    {
-      data[i]=255;
-    }
+  for(int whiteidx=0;whiteidx<3;whiteidx++)
+  {
+      data[whiteidx]=255;
+  }
 
   image->setImage(1,1,1,GL_RGBA8,GL_RGB,GL_UNSIGNED_BYTE,data,osg::Image::USE_NEW_DELETE);
 
@@ -557,15 +551,6 @@ bool ReaderWriterQ3BSP::loadLightMaps(const BSPLoad& aLoadData,std::vector<osg::
 
   return true;
 }
-
-
-
-
-
-
-
-
-
 
 
 //Tesselate a biquadratic patch

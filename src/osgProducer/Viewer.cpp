@@ -705,6 +705,12 @@ void Viewer::frame()
 
     OsgCameraGroup::frame();
 
+
+    if (osg::Referenced::getDeleteHandler()) 
+    {
+        osg::Referenced::getDeleteHandler()->flush();
+    }
+
 }
 
 bool Viewer::computePixelCoords(float x,float y,unsigned int cameraNum,float& pixel_x,float& pixel_y)

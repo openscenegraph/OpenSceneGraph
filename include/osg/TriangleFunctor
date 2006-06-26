@@ -19,6 +19,21 @@
 
 namespace osg {
 
+
+/** Provides access to the triangles that compose an \c osg::Drawable. If the \c
+ *  Drawable is not composed of triangles, the \c TriangleFunctor will convert
+ *  the primitives to triangles whenever possible.
+ *  <p>Notice that \c TriangleFunctor is a class template, and that it inherits
+ *  from its template parameter \c T. This template parameter must implement
+ *  <tt>T::operator() (const osg::Vec3 v1, const osg::Vec3 v2, const osg::Vec3
+ *  v3, bool treatVertexDataAsTemporary)</tt>, which will be called for every
+ *  triangle when the functor is applied to a \c Drawable. Parameters \c v1, \c
+ *  v2, and \c v3 are the triangle vertices. The fourth parameter, \c
+ *  treatVertexDataAsTemporary, indicates whether these vertices are coming from
+ *  a "real" vertex array, or from a temporary vertex array, created by the \c
+ *  TriangleFunctor from some other geometry representation.
+ *  @see \c PrimitiveFunctor for general usage hints.
+ */
 template<class T>
 class TriangleFunctor : public PrimitiveFunctor, public T
 {
@@ -31,13 +46,13 @@ public:
         _modeCache=0;
         _treatVertexDataAsTemporary=false;
     }
-    
+
     virtual ~TriangleFunctor() {}
-    
+
     void setTreatVertexDataAsTemporary(bool treatVertexDataAsTemporary) { _treatVertexDataAsTemporary=treatVertexDataAsTemporary; }
     bool getTreatVertexDataAsTemporary() const { return _treatVertexDataAsTemporary; }
 
-    virtual void setVertexArray(unsigned int,const Vec2*) 
+    virtual void setVertexArray(unsigned int,const Vec2*)
     {
         notify(WARN)<<"Triangle Functor does not support Vec2* vertex arrays"<<std::endl;
     }
@@ -57,7 +72,7 @@ public:
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {
         if (_vertexArrayPtr==0 && count==0) return;
-    
+
         switch(mode)
         {
             case(GL_TRIANGLES):
@@ -117,7 +132,7 @@ public:
                 break;
         }
     }
-    
+
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
     {
         if (indices==0 || count==0) return;
@@ -319,7 +334,7 @@ public:
                 // can't be converted into to triangles.
                 break;
         }
-    }    
+    }
 
 
 

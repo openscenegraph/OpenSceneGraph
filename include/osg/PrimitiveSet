@@ -40,7 +40,7 @@ namespace osg {
 class VectorGLsizei: public std::vector<GLsizei>
 {
     typedef std::vector<value_type> vector_type;
-public:    
+public:
     VectorGLsizei(): vector_type() {}
     VectorGLsizei(const VectorGLsizei &copy): vector_type(copy) {}
     VectorGLsizei(GLsizei* beg, GLsizei* end): vector_type(beg, end) {}
@@ -50,7 +50,7 @@ public:
 class VectorGLubyte: public std::vector<GLubyte>
 {
     typedef std::vector<value_type> vector_type;
-public:    
+public:
     VectorGLubyte(): vector_type() {}
     VectorGLubyte(const VectorGLubyte &copy): vector_type(copy) {}
     VectorGLubyte(GLubyte* beg, GLubyte* end): vector_type(beg, end) {}
@@ -60,7 +60,7 @@ public:
 class VectorGLushort: public std::vector<GLushort>
 {
     typedef std::vector<value_type> vector_type;
-public:    
+public:
     VectorGLushort(): vector_type() {}
     VectorGLushort(const VectorGLushort &copy): vector_type(copy) {}
     VectorGLushort(GLushort* beg, GLushort* end): vector_type(beg, end) {}
@@ -79,30 +79,73 @@ public:
 
 // **************************************************************************
 
-class State;    
+class State;
 
+/** A \c PrimitiveFunctor is used (in conjunction with
+ *  <tt>osg::Drawable::accept (PrimitiveFunctor&)</tt>) to get access to the
+ *  primitives that compose the things drawn by OSG.
+ *  <p>If \c osg::Drawable::accept() is called with a \c PrimitiveFunctor
+ *  parameter, the \c Drawable will "pretend" it is drawing itself, but instead
+ *  of calling real OpenGL functions, it will call <tt>PrimitiveFunctor</tt>'s
+ *  member functions that "mimic" the OpenGL calls.
+ *  <p>Concrete subclasses of \c PrimitiveFunctor must implement these methods
+ *  so that they performs whatever they want.
+ */
 class PrimitiveFunctor
 {
 public:
 
     virtual ~PrimitiveFunctor() {}
 
+    /** Sets the array of vertices used to describe the primitives. Somehow
+     *  mimics the OpenGL \c glVertexPointer() function.
+     */
     virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
+
+    /** Sets the array of vertices used to describe the primitives. Somehow
+     *  mimics the OpenGL \c glVertexPointer() function.
+     */
     virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
+
+    /** Sets the array of vertices used to describe the primitives. Somehow
+     *  mimics the OpenGL \c glVertexPointer() function.
+     */
     virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
 
+    /// Mimics the OpenGL \c glDrawArrays() function.
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
+
+    /// Mimics the OpenGL \c glDrawElements() function.
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
+
+    /// Mimics the OpenGL \c glDrawElements() function.
     virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
+
+    /// Mimics the OpenGL \c glDrawElements() function.
     virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
 
+    /// Mimics the OpenGL \c glBegin() function.
     virtual void begin(GLenum mode) = 0;
+
+    /// Mimics the OpenGL \c glVertex() "family of functions".
     virtual void vertex(const Vec2& vert) = 0;
+
+    /// Mimics the OpenGL \c glVertex() "family of functions".
     virtual void vertex(const Vec3& vert) = 0;
+
+    /// Mimics the OpenGL \c glVertex() "family of functions".
     virtual void vertex(const Vec4& vert) = 0;
+
+    /// Mimics the OpenGL \c glVertex() "family of functions".
     virtual void vertex(float x,float y) = 0;
+
+    /// Mimics the OpenGL \c glVertex() "family of functions".
     virtual void vertex(float x,float y,float z) = 0;
+
+    /// Mimics the OpenGL \c glVertex() "family of functions".
     virtual void vertex(float x,float y,float z,float w) = 0;
+
+    /// Mimics the OpenGL \c glEnd() function.
     virtual void end() = 0;
 };
 

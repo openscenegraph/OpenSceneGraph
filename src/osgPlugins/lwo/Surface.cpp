@@ -340,7 +340,7 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
                 material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 0));
                 material->setShininess(osg::Material::FRONT_AND_BACK, 0);
             }
-            return sh.take();
+            return sh.release();
         }
     }
 

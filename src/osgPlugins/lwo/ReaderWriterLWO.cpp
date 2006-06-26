@@ -130,7 +130,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string
     lwosg::Converter converter(conv_options, options);
     osg::ref_ptr<osg::Node> node = converter.convert(fileName);
     if (node.valid()) {
-        return node.take();
+        return node.release();
     }
 
     return ReadResult::FILE_NOT_HANDLED;
@@ -143,7 +143,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_old_LWO2(const std::st
     if (lwo2->ReadFile(fileName))
     {
         osg::ref_ptr<Group> group = new osg::Group();
-        if (lwo2->GenerateGroup(*group)) return group.take();
+        if (lwo2->GenerateGroup(*group)) return group.release();
     }
     return ReadResult::FILE_NOT_HANDLED;
 }

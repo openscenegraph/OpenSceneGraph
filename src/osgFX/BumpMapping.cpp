@@ -108,7 +108,7 @@ namespace
 
                 tc->push_back(uv * scale);
             }
-            return tc.take();
+            return tc.release();
         }
 
     private:

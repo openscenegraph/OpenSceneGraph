@@ -50,7 +50,7 @@ class OSGUTIL_EXPORT Hit
         bool operator < (const Hit& hit) const
         {
             if (_originalLineSegment<hit._originalLineSegment) return true;
-            if (_originalLineSegment>hit._originalLineSegment) return false;
+            if (hit._originalLineSegment<_originalLineSegment) return false;
             return _ratio<hit._ratio;
         }
         

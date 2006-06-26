@@ -48,7 +48,7 @@ public:
         lwosg::SceneLoader scene_loader(conv_options);
         osg::ref_ptr<osg::Node> node = scene_loader.load(fileName, local_opt.get());
         if (node.valid()) {
-            return node.take();
+            return node.release();
         }
 
         return ReadResult::FILE_NOT_HANDLED;

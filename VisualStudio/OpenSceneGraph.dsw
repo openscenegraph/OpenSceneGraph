@@ -1122,6 +1122,9 @@ Package=<4>
     Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency

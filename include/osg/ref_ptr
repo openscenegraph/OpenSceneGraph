@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -20,16 +20,33 @@ namespace osg {
 template<class T>
 class ref_ptr
 {
-
     public:
         typedef T element_type;
 
-        ref_ptr() :_ptr(0L) {}
-        ref_ptr(T* t):_ptr(t)              { if (_ptr) _ptr->ref(); }
-        ref_ptr(const ref_ptr& rp):_ptr(rp._ptr)  { if (_ptr) _ptr->ref(); }
-        ~ref_ptr()                           { if (_ptr) _ptr->unref(); _ptr=0; }
+        ref_ptr() : _ptr(0) {}
+        ref_ptr(T* ptr) : _ptr(ptr) { if (_ptr) _ptr->ref(); }
+        ref_ptr(const ref_ptr& rp) : _ptr(rp._ptr) { if (_ptr) _ptr->ref(); }
 
-        inline ref_ptr& operator = (const ref_ptr& rp)
+        template<class Y>
+        ref_ptr(const ref_ptr<Y>& rp) : _ptr(rp.get()) { if (_ptr) _ptr->ref(); }
+
+        ~ref_ptr() { if (_ptr) _ptr->unref();  _ptr = 0; }
+
+        ref_ptr& operator = (const ref_ptr& rp)
+        {
+            if (_ptr==rp._ptr) return *this;
+            T* tmp_ptr = _ptr;
+            _ptr = rp._ptr;
+            if (_ptr) _ptr->ref();
+            // unref second to prevent any deletion of any object which might
+            // be referenced by the other object. i.e rp is child of the
+            // original _ptr.
+            if (tmp_ptr) tmp_ptr->unref();
+            return *this;
+        }
+
+        template<class Y>
+        ref_ptr& operator = (const ref_ptr<Y>& rp)
         {
             if (_ptr==rp._ptr) return *this;
             T* tmp_ptr = _ptr;
@@ -56,45 +73,48 @@ class ref_ptr
         }
 
         // comparison operators for ref_ptr.
-        inline bool operator == (const ref_ptr& rp) const { return (_ptr==rp._ptr); }
-        inline bool operator != (const ref_ptr& rp) const { return (_ptr!=rp._ptr); }
-        inline bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
-        inline bool operator > (const ref_ptr& rp) const { return (_ptr>rp._ptr); }
+        template<class Y>
+        bool operator == (const ref_ptr<Y>& rp) const { return (_ptr==rp.get()); }
+        bool operator == (const T* ptr) const { return (_ptr==ptr); }
+        friend bool operator == (const T* ptr, const ref_ptr& rp) { return (ptr==rp._ptr); }
 
-        // comparison operator for const T*.
-        inline bool operator == (const T* ptr) const { return (_ptr==ptr); }
-        inline bool operator != (const T* ptr) const { return (_ptr!=ptr); }
-        inline bool operator < (const T* ptr) const { return (_ptr<ptr); }
-        inline bool operator > (const T* ptr) const { return (_ptr>ptr); }
+        template<class Y>
+        bool operator != (const ref_ptr<Y>& rp) const { return (_ptr!=rp.get()); }
+        bool operator != (const T* ptr) const { return (_ptr!=ptr); }
+        friend bool operator != (const T* ptr, const ref_ptr& rp) { return (ptr!=rp._ptr); }
+ 
+        bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
 
+        T& operator*() const { return *_ptr; }
+        T* operator->() const { return _ptr; }
+        T* get() const { return _ptr; }
 
-        inline T& operator*()  { return *_ptr; }
+        bool operator!() const   { return _ptr==0; } // not required
+        bool valid() const       { return _ptr!=0; }
 
-        inline const T& operator*() const { return *_ptr; }
+        T* release() { T* tmp=_ptr; if (_ptr) _ptr->unref_nodelete(); _ptr=0; return tmp; }
 
-        inline T* operator->() { return _ptr; }
-
-        inline const T* operator->() const   { return _ptr; }
-
-        inline bool operator!() const   { return _ptr==0L; }
-
-        inline bool valid() const       { return _ptr!=0L; }
-        
-        inline T* get() { return _ptr; }
-
-        inline const T* get() const { return _ptr; }
-
-        /** take control over the object pointed to by ref_ptr, unreference but do not delete even if ref count goes to 0,
-          * return the pointer to the object.
-          * Note, do not use this unless you are 100% sure your code handles the deletion of the object correctly, and
-          * only use when absolutely required.*/
-        inline T* take() { return release();}
-
-        inline T* release() { T* tmp=_ptr; if (_ptr) _ptr->unref_nodelete(); _ptr=0; return tmp;}
+        void swap(ref_ptr& rp) { T* tmp=_ptr; _ptr=rp._ptr; rp._ptr=tmp; }
 
     private:
         T* _ptr;
 };
+
+
+template<class T> inline
+void swap(ref_ptr<T>& rp1, ref_ptr<T>& rp2) { rp1.swap(rp2); }
+
+template<class T> inline
+T* get_pointer(const ref_ptr<T>& rp) { return rp.get(); }
+
+template<class T, class Y> inline
+ref_ptr<T> static_pointer_cast(const ref_ptr<Y>& rp) { return static_cast<T*>(rp.get()); }
+
+template<class T, class Y> inline
+ref_ptr<T> dynamic_pointer_cast(const ref_ptr<Y>& rp) { return dynamic_cast<T*>(rp.get()); }
+
+template<class T, class Y> inline
+ref_ptr<T> const_pointer_cast(const ref_ptr<Y>& rp) { return const_cast<T*>(rp.get()); }
 
 }
 

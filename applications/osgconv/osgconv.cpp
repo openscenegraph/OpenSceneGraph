@@ -103,15 +103,22 @@ public:
             osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
             osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
             
-            osg::Image* image = texture2D ? texture2D->getImage() : texture3D ? texture3D->getImage() : 0;
-            if (image && 
+            osg::ref_ptr<osg::Image> image = texture2D ? texture2D->getImage() : (texture3D ? texture3D->getImage() : 0);
+            if (image.valid() && 
                 (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA) &&
                 (image->s()>=32 && image->t()>=32))
             {
                 texture->setInternalFormatMode(_internalFormatMode);
-
+                
+                // need to disable the unref after apply, other the image could go out of scope.
+                bool unrefImageDataAfterApply = texture->getUnRefImageDataAfterApply();
+                texture->setUnRefImageDataAfterApply(false);
+                
                 // get OpenGL driver to create texture from image.
                 texture->apply(*state);
+
+                // restore the original setting
+                texture->setUnRefImageDataAfterApply(unrefImageDataAfterApply);
 
                 image->readImageFromCurrentTexture(0,true);
 

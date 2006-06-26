@@ -17,7 +17,11 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName ):
     int fd = 0;
     if( !fileName.empty() )
     {
+#ifdef WIN32
+        if( (fd = open( fileName.c_str(), O_RDONLY | O_BINARY )) <= 0 )
+#else
         if( (fd = open( fileName.c_str(), O_RDONLY )) <= 0 )
+#endif
         {
             perror( fileName.c_str() );
             return ;

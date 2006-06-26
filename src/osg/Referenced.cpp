@@ -27,10 +27,58 @@
 namespace osg
 {
 
+// specialzed smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
+struct DeleteHandlerPointer
+{
+    DeleteHandlerPointer():
+        _ptr(0) {}
+
+    DeleteHandlerPointer(DeleteHandler* ptr):
+        _ptr(ptr) {}
+
+    ~DeleteHandlerPointer()
+    {
+        delete _ptr;
+        _ptr = 0;
+    }
+
+    inline DeleteHandlerPointer& operator = (DeleteHandler* ptr)
+    {
+        if (_ptr==ptr) return *this;
+        delete _ptr;
+        _ptr = ptr;
+        return *this;
+    }
+
+    void reset(DeleteHandler* ptr)
+    {
+        if (_ptr==ptr) return;
+        delete _ptr;
+        _ptr = ptr;
+    }
+
+    inline DeleteHandler& operator*()  { return *_ptr; }
+
+    inline const DeleteHandler& operator*() const { return *_ptr; }
+
+    inline DeleteHandler* operator->() { return _ptr; }
+
+    inline const DeleteHandler* operator->() const   { return _ptr; }
+
+    DeleteHandler* get() { return _ptr; }
+
+    const DeleteHandler* get() const { return _ptr; }
+
+    DeleteHandler* _ptr;
+};
+
+
 typedef std::set<Observer*> ObserverSet;
 
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
-static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
+// static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
+static DeleteHandlerPointer s_deleteHandler(0);
+
 static ApplicationUsageProxy Referenced_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREAD_SAFE_REF_UNREF","");
 
 void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting)

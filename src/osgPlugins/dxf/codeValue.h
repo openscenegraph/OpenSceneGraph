@@ -22,27 +22,27 @@
 /// associated with it).
 class codeValue {
 public:
-	codeValue() { reset(); }
-	void			reset()
-	{
-		_groupCode = -100;
-		_type = 0;
-		_bool = false;
-		_short = 0;
-		_int = 0;
-		_long = 0;
-		_double = 0;
-		_string = "";
-	}
-	int				_groupCode;
-	int				_type;
-	std::string		_unknown;
-	std::string		_string;
-	bool			_bool;
-	unsigned short	_short;
-	int				_int;
-	long			_long;
-	double			_double;
+    codeValue() { reset(); }
+    void            reset()
+    {
+        _groupCode = -100;
+        _type = 0;
+        _bool = false;
+        _short = 0;
+        _int = 0;
+        _long = 0;
+        _double = 0;
+        _string = "";
+    }
+    int                _groupCode;
+    int                _type;
+    std::string        _unknown;
+    std::string        _string;
+    bool            _bool;
+    short            _short;
+    int                _int;
+    long            _long;
+    double            _double;
 };
 
 typedef std::vector<codeValue> VariableList; // this may be too big, find another way

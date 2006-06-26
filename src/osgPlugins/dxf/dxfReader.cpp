@@ -124,11 +124,11 @@ bool readerText::readValue(std::ifstream& f, bool &b)
         return false;
     }
 }
-bool readerText::readValue(std::ifstream& f, unsigned short &s)
+bool readerText::readValue(std::ifstream& f, short &s)
 {
     if (getTrimmedLine(f)) {
         _str >> s;
-        return success(!_str.fail(), "unsigned short");
+        return success(!_str.fail(), "short");
     } else {
         return false;
     }

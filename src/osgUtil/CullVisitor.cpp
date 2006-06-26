@@ -129,18 +129,18 @@ void CullVisitor::reset()
 
     _bbCornerNear = (~_bbCornerFar)&7;
     
-    // reset the resuse lists.
-    _currentReuseMatrixIndex = 0;
-    _currentReuseRenderLeafIndex = 0;
-    
-    for(RenderLeafList::iterator itr=_reuseRenderLeafList.begin();
-        itr!=_reuseRenderLeafList.end();
+    // Only reset the RenderLeaf objects used last frame.
+    for(RenderLeafList::iterator itr=_reuseRenderLeafList.begin(),
+        iter_end=_reuseRenderLeafList.begin()+_currentReuseRenderLeafIndex;
+        itr!=iter_end;
         ++itr)
     {
         (*itr)->reset();
     }
     
-    
+    // reset the resuse lists.
+    _currentReuseMatrixIndex = 0;
+    _currentReuseRenderLeafIndex = 0;
 
     _nearPlaneCandidateMap.clear();
 }

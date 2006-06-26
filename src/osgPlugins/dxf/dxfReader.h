@@ -31,41 +31,41 @@ class codeValue;
 class readerBase :public osg::Referenced
 {
 public:
-	readerBase() {}
-	virtual ~readerBase() {}
-	bool readGroup(std::ifstream& f, codeValue& cv);
+    readerBase() {}
+    virtual ~readerBase() {}
+    bool readGroup(std::ifstream& f, codeValue& cv);
 
 protected:
-	virtual bool readGroupCode(std::ifstream& f, int &groupcode)  = 0;
-	virtual bool readValue(std::ifstream& f, std::string &s)  = 0;
-	virtual bool readValue(std::ifstream& f, bool &b)  = 0;
-	virtual bool readValue(std::ifstream& f, unsigned short &s)  = 0;
-	virtual bool readValue(std::ifstream& f, int &i)  = 0;
-	virtual bool readValue(std::ifstream& f, long &l)  = 0;
-	virtual bool readValue(std::ifstream& f, double &d)  = 0;
+    virtual bool readGroupCode(std::ifstream& f, int &groupcode)  = 0;
+    virtual bool readValue(std::ifstream& f, std::string &s)  = 0;
+    virtual bool readValue(std::ifstream& f, bool &b)  = 0;
+    virtual bool readValue(std::ifstream& f, short &s)  = 0;
+    virtual bool readValue(std::ifstream& f, int &i)  = 0;
+    virtual bool readValue(std::ifstream& f, long &l)  = 0;
+    virtual bool readValue(std::ifstream& f, double &d)  = 0;
 };
 
 /// readerText. convert data using stringstream.
 class readerText : public readerBase
 {
 public:
-	readerText(char delim = '\n') : readerBase(), _lineCount(0), _delim(delim) {}
-	virtual ~readerText() {}
+    readerText(char delim = '\n') : readerBase(), _lineCount(0), _delim(delim) {}
+    virtual ~readerText() {}
 
 protected:
-	bool success(bool inSuccess, std::string type);
-	bool getTrimmedLine(std::ifstream& f);
+    bool success(bool inSuccess, std::string type);
+    bool getTrimmedLine(std::ifstream& f);
 
-	virtual bool readGroupCode(std::ifstream& f, int &groupcode);
-	virtual bool readValue(std::ifstream& f, std::string &s);
-	virtual bool readValue(std::ifstream& f, bool &b);
-	virtual bool readValue(std::ifstream& f, unsigned short &s);
-	virtual bool readValue(std::ifstream& f, int &i);
-	virtual bool readValue(std::ifstream& f, long &l);
-	virtual bool readValue(std::ifstream& f, double &d);
-	std::stringstream _str;
-	unsigned long _lineCount;
-	char _delim;
+    virtual bool readGroupCode(std::ifstream& f, int &groupcode);
+    virtual bool readValue(std::ifstream& f, std::string &s);
+    virtual bool readValue(std::ifstream& f, bool &b);
+    virtual bool readValue(std::ifstream& f, short &s);
+    virtual bool readValue(std::ifstream& f, int &i);
+    virtual bool readValue(std::ifstream& f, long &l);
+    virtual bool readValue(std::ifstream& f, double &d);
+    std::stringstream _str;
+    unsigned long _lineCount;
+    char _delim;
 };
 
 
@@ -73,16 +73,16 @@ protected:
 class readerBinary : public readerBase
 {
 public:
-	readerBinary() : readerBase() {}
-	virtual ~readerBinary() {}
+    readerBinary() : readerBase() {}
+    virtual ~readerBinary() {}
 protected:
-	virtual bool readGroupCode(std::ifstream& /*f*/, int& /*groupcode*/) { return false; }
-	virtual bool readValue(std::ifstream& /*f*/, std::string& /*s*/) { return false; }
-	virtual bool readValue(std::ifstream& /*f*/, bool& /*b*/) { return false; }
-	virtual bool readValue(std::ifstream& /*f*/, unsigned short& /*s*/) { return false; }
-	virtual bool readValue(std::ifstream& /*f*/, int& /*i*/) { return false; }
-	virtual bool readValue(std::ifstream& /*f*/, long& /*l*/) { return false; }
-	virtual bool readValue(std::ifstream& /*f*/, double& /*d*/) { return false; }
+    virtual bool readGroupCode(std::ifstream& /*f*/, int& /*groupcode*/) { return false; }
+    virtual bool readValue(std::ifstream& /*f*/, std::string& /*s*/) { return false; }
+    virtual bool readValue(std::ifstream& /*f*/, bool& /*b*/) { return false; }
+    virtual bool readValue(std::ifstream& /*f*/, short& /*s*/) { return false; }
+    virtual bool readValue(std::ifstream& /*f*/, int& /*i*/) { return false; }
+    virtual bool readValue(std::ifstream& /*f*/, long& /*l*/) { return false; }
+    virtual bool readValue(std::ifstream& /*f*/, double& /*d*/) { return false; }
 };
 
 /// dxfReader. gets you through the dxf file, one group code/value pair at a time.
@@ -90,13 +90,13 @@ protected:
 class dxfReader : public osg::Referenced
 {
 public:
-	dxfReader() {}
-	virtual ~dxfReader() {}
-	bool	openFile(std::string fileName);
-	bool	nextGroupCode(codeValue& cv);
+    dxfReader() {}
+    virtual ~dxfReader() {}
+    bool    openFile(std::string fileName);
+    bool    nextGroupCode(codeValue& cv);
 protected:
-	std::ifstream				_ifs;
-	osg::ref_ptr<readerBase>	_reader;
+    std::ifstream                _ifs;
+    osg::ref_ptr<readerBase>    _reader;
 };
 
 #endif

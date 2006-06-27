@@ -37,6 +37,7 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
     {
     
         TileMapper* tileMapper = dynamic_cast<TileMapper*>(nv.getUserData());
+
         if (tileMapper && !tileMapper->isTileNeighbourALowerLODLevel(_tid,_dx,_dy))
         {
             getChild(1)->accept(nv);

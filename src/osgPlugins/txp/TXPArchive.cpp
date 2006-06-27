@@ -25,6 +25,10 @@
 #include <iostream>
 #include <fstream>
 
+#if defined(linux)
+#  include <unistd.h>
+#  define _access access
+#endif
 
 #include "TXPArchive.h"
 #include "TXPParser.h"
@@ -36,12 +40,36 @@ using namespace txp;
 
 #define TXPArchiveERROR(s) osg::notify(osg::NOTICE) << "txp::TXPArchive::" << (s) << " error: "
 
+
+void TXPArchive::SetTexMap(int key,osg::ref_ptr<osg::Texture2D> ref)
+{
+    _texmap[key] = ref;
+}
+
+osg::ref_ptr<osg::Texture2D> TXPArchive::GetTexMapEntry(int key)
+{
+    return _texmap[key];
+}
+
+void TXPArchive::SetStatesMap(int key,osg::ref_ptr<osg::StateSet> ref)
+{
+    _statesMap[key] = ref;
+}
+
+osg::ref_ptr<osg::StateSet> TXPArchive::GetStatesMapEntry(int key)
+{
+    return _statesMap[key];
+}
+
 TXPArchive::TXPArchive():
-trpgr_Archive(),
-_id(-1),
-_numLODs(0),
-_swExtents(0.0,0.0),
-_neExtents(0.0,0.0)
+    trpgr_Archive(),
+    _id(-1),
+    _numLODs(0),
+    _swExtents(0.0,0.0),
+    _neExtents(0.0,0.0),
+    _majorVersion(-1),
+    _minorVersion(-1),
+    _isMaster(false)
 {
 }
 
@@ -87,7 +115,7 @@ bool TXPArchive::openFile(const std::string& archiveName)
         return false;
     }
 
-    if (!ReadHeader())
+    if (!ReadHeader(false))
     {
         TXPArchiveERROR("openFile()") << "couldn't read header for archive: " << archiveName << std::endl;
         return false;
@@ -98,19 +126,19 @@ bool TXPArchive::openFile(const std::string& archiveName)
     {
         header->GetNumLods(_numLODs);
         header->GetExtents(_swExtents,_neExtents);
+        header->GetVersion(_majorVersion, _minorVersion);
+	_isMaster = header->GetIsMaster();
     }
 
     int numTextures;
     texTable.GetNumTextures(numTextures);
-    _textures.resize(numTextures);
 
     int numModel;
     modelTable.GetNumModels(numModel);
-    _models.resize(numModel);
+    _models.clear();
 
     int numMaterials;
     materialTable.GetNumMaterial(numMaterials);
-    _gstates.resize(numMaterials);
 
     return true;
 }
@@ -119,7 +147,9 @@ bool TXPArchive::loadMaterial(int ix)
 {
     int i = ix;
 
-    if (_gstates[ix].get()) return true;
+
+    if (GetStatesMapEntry(ix).get())
+	return true;
 
     osg::StateSet* osg_state_set = new osg::StateSet;
             
@@ -145,17 +175,17 @@ bool TXPArchive::loadMaterial(int ix)
         trpgColor color;
         mat->GetAmbient(color);
         osg_material->setAmbient( osg::Material::FRONT_AND_BACK , 
-            osg::Vec4(color.red, color.green, color.blue, alpha));
+				  osg::Vec4(color.red, color.green, color.blue, alpha));
         mat->GetDiffuse(color);
         osg_material->setDiffuse(osg::Material::FRONT_AND_BACK , 
-            osg::Vec4(color.red, color.green, color.blue, alpha));
+				 osg::Vec4(color.red, color.green, color.blue, alpha));
         
         mat->GetSpecular(color);
         osg_material->setSpecular(osg::Material::FRONT_AND_BACK , 
-            osg::Vec4(color.red, color.green, color.blue, alpha));
+				  osg::Vec4(color.red, color.green, color.blue, alpha));
         mat->GetEmission(color);
         osg_material->setEmission(osg::Material::FRONT_AND_BACK , 
-            osg::Vec4(color.red, color.green, color.blue, alpha));
+				  osg::Vec4(color.red, color.green, color.blue, alpha));
 
         float64 shinines;
         mat->GetShininess(shinines);
@@ -213,7 +243,7 @@ bool TXPArchive::loadMaterial(int ix)
             texEnv.GetWrap(wrap_s, wrap_t);
 
             loadTexture(texId);
-            osg::Texture2D* osg_texture = _textures[texId].get();
+            osg::Texture2D* osg_texture = GetTexMapEntry(texId).get();
             if(osg_texture)
             {
 
@@ -299,7 +329,7 @@ bool TXPArchive::loadMaterial(int ix)
             osg_state_set->setAttributeAndModes(cull_face, osg::StateAttribute::ON);
         }
     }
-    _gstates[i] = osg_state_set;
+    SetStatesMap(i,osg_state_set);
 
     return true;
 }
@@ -311,19 +341,29 @@ bool TXPArchive::loadMaterials()
 
 bool TXPArchive::loadTexture(int i)
 {
-    if (_textures[i].get()) return true;
-
-    trpgrImageHelper image_helper(this->GetEndian(),getDir(),materialTable,texTable);
+    if (GetTexMapEntry(i).get())
+	return true;		
+		
+    bool separateGeo = false;
+    int majorVer,minorVer;
+    GetVersion(majorVer,minorVer);
+    if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer>=TRPG_NOMERGE_VERSION_MINOR))
+    {
+	separateGeo = true;
+    }
+    trpgrImageHelper image_helper(this->GetEndian(),getDir(),materialTable,texTable,separateGeo);
 
     const trpgTexture *tex;
     tex = texTable.GetTextureRef(i);
-    if (!tex) return false;
+    if (!tex) 
+	return false;
 
     trpgTexture::ImageMode mode;
     tex->GetImageMode(mode);
     if(mode == trpgTexture::External)
     {
-        char texName[1024];  texName[0] = 0;
+	char texName[ 1024 ];
+	texName[ 0 ] = 0;
         tex->GetName(texName,1023);
 
         // Create a texture by name.
@@ -356,30 +396,32 @@ bool TXPArchive::loadTexture(int i)
         else
         {
             osg::notify(osg::WARN) << "TrPageArchive::LoadMaterials() error: "
-                << "couldn't open image: " << filename << std::endl;
+				   << "couldn't open image: " << filename << std::endl;
         }
-        _textures[i] = osg_texture;
+	SetTexMap(i,osg_texture);
     }
     else if( mode == trpgTexture::Local )
     {
-        _textures[i] = getLocalTexture(image_helper,tex);
+	SetTexMap(i,getLocalTexture(image_helper,tex));
     }
     else if( mode == trpgTexture::Template )
     {
-        _textures[i] = 0L; //GetTemplateTexture(image_helper,0, tex);
+	SetTexMap(i,0L);
     }
     else
     {
-        _textures[i] = 0;
+	SetTexMap(i,0L);
     }
 
-    return (_textures[i].get() != 0);
+    return (GetTexMapEntry(i).get() != 0);
 }
 
 bool TXPArchive::loadModel(int ix)
 {
     trpgModel *mod = modelTable.GetModelRef(ix);
     int type;
+    if(!mod)
+	return false;
     mod->GetType(type);
 
     // Only dealing with external models currently
@@ -389,24 +431,24 @@ bool TXPArchive::loadModel(int ix)
         mod->GetName(name,1023);
 
         // Load the model.  It's probably not TerraPage
-        osg::Node *osg_model = osgDB::readNodeFile(name);
-        if (!osg_model)
+	osg::Node *osg_model = osgDB::readNodeFile( name );
+	if ( !osg_model )
         {
             osg::notify(osg::WARN) << "TrPageArchive::LoadModels() error: "
-                            << "failed to load model: "
-                            << name << std::endl;
+				   << "failed to load model: "
+				   << name << std::endl;
         }
-        // Do this even if it's NULL
-        _models[ix] = osg_model;
+	// Do this even if it's NULL
+	_models[ ix ] = osg_model;
     }
 /*
-    else
-    {
-        trpgMemReadBuffer buf(GetEndian());
-        mod->Read(buf);
-        Group *osg_model = parse->ParseScene(buf, m_gstates , m_models);
-        m_models.push_back(osg_model);  
-    }
+  else
+  {
+  trpgMemReadBuffer buf(GetEndian());
+  mod->Read(buf);
+  Group *osg_model = parse->ParseScene(buf, m_gstates , m_models);
+  m_models.push_back(osg_model);  
+  }
 */
     return true;
 }
@@ -417,14 +459,14 @@ bool TXPArchive::loadModels()
 
     int numModel;
     modelTable.GetNumModels(numModel);
-    _models.resize(numModel);
 
-    // Iterate over the models
-    for (int i=0; i< numModel; i++)
+    // use a pointer to the models map to bootstrap our map
+    trpgModelTable::ModelMapType *mt = modelTable.GetModelMap();
+    trpgModelTable::ModelMapType::iterator itr = mt->begin();
+    for (  ; itr != mt->end( ); itr++)
     {
-        loadModel(i);
+	loadModel(itr->first);
     }
-
     osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
     return true;
 }
@@ -433,11 +475,11 @@ bool TXPArchive::loadLightAttributes()
 {
     osg::notify(osg::NOTICE) << "txp:: Loading light attributes ..." << std::endl;
 
-    int num;
-    lightTable.GetNumLightAttrs(num);
-    for ( int attr_num = 0; attr_num < num; attr_num++    )
+    trpgLightTable::LightMapType *lm  = lightTable.getLightMap();
+    trpgLightTable::LightMapType::iterator itr = lm->begin();
+    for ( ; itr != lm->end() ; itr++)
     {
-        trpgLightAttr* ref = const_cast<trpgLightAttr*>(lightTable.GetLightAttrRef(attr_num));
+		trpgLightAttr* ref = &itr->second;
 
         osgSim::LightPointNode* osgLight = new osgSim::LightPointNode();
 
@@ -523,11 +565,12 @@ bool TXPArchive::loadLightAttributes()
             lp._sector = back;
             osgLight->addLightPoint(lp);
         } 
-        else{
+	else
+	{
             osgLight->addLightPoint(lp);
         }
 
-        addLightAttribute(osgLight, stateSet, osg::Vec3(normal.x,normal.y,normal.z));
+	addLightAttribute(osgLight, stateSet, osg::Vec3(normal.x,normal.y,normal.z),itr->first);
     }
 
     osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
@@ -537,15 +580,17 @@ bool TXPArchive::loadLightAttributes()
 void trim(std::string& str)
 {
     while (!str.empty() && isspace(str[str.length()-1]))
-        str.erase(str.length()-1);
+	str.erase(str.length()-1);
     while (!str.empty() && isspace(str[0]))
         str.erase(0,1);
 }
 bool TXPArchive::loadTextStyles()
 {
     const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
-    if (!textStyleTable) return false;
-    if (textStyleTable->GetNumStyle() < 1) return true;
+    if ( !textStyleTable )
+	return false;
+    if ( textStyleTable->GetNumStyle() < 1 )
+	return true;
 
     // try fontmap.txt
     std::map< std::string, std::string > fontmap;
@@ -556,78 +601,81 @@ bool TXPArchive::loadTextStyles()
 
     if (fmapfile.is_open())
     {
-        osg::notify(osg::NOTICE) << "txp:: Font map file found: " << fmapfname << std::endl;
-        std::string line;
-        while (std::getline(fmapfile,line))
-        {
-            unsigned int ix = line.find_first_of('=');
-            if (ix != std::string::npos)
-            {
-                std::string fontname = line.substr(0,ix);
-                std::string fontfilename = line.substr(ix+1,line.length()-ix+1);
+	osg::notify(osg::NOTICE) << "txp:: Font map file found: " << fmapfname << std::endl;
+	std::string line;
+	while (std::getline(fmapfile,line))
+	{
+	    std::string::size_type ix = line.find_first_of('=');
+	    if (ix != std::string::npos)
+	    {
+		std::string fontname = line.substr(0,ix);
+		std::string fontfilename = line.substr(ix+1,line.length()-ix+1);
 
-                trim(fontname);
-                trim(fontfilename);
+		trim(fontname);
+		trim(fontfilename);
 
-                fontmap[fontname] = fontfilename;
+		fontmap[fontname] = fontfilename;
 
-            }
-        }
-        fmapfile.close();
+	    }
+	}
+	fmapfile.close();
     }
     else
     {
-        osg::notify(osg::NOTICE) << "txp:: No font map file found: " << fmapfname << std::endl;        
-        osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to arial.ttf" << std::endl;        
+	osg::notify(osg::NOTICE) << "txp:: No font map file found: " << fmapfname << std::endl;		
+	osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to arial.ttf" << std::endl;		
     }
 
-    _fonts.resize(textStyleTable->GetNumStyle());
-    _fcolors.resize(textStyleTable->GetNumStyle());
-    for (int i = 0; i < textStyleTable->GetNumStyle(); i++)
+    const trpgTextStyleTable::StyleMapType *smap = textStyleTable->getStyleMap();
+    trpgTextStyleTable::StyleMapType::const_iterator itr = smap->begin();
+    for (  ; itr != smap->end(); itr++)
     {
-        const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(i);
-        if (!textStyle) continue;
+	const trpgTextStyle *textStyle = &itr->second; 
+	if ( !textStyle )
+	    continue;
 
-        const std::string *fontName = textStyle->GetFont();
-        if (!fontName) continue;
+	const std::string *fontName = textStyle->GetFont();
+	if ( !fontName )
+	    continue;
 
-        std::string fontfilename = fontmap[*fontName];
-        if (!fontfilename.length()) fontfilename = "arial.ttf";
-        osg::ref_ptr< osgText::Font > font = osgText::readFontFile(fontfilename);
+	std::string fontfilename = fontmap[*fontName];
+	if ( !fontfilename.length() )
+	    fontfilename = "arial.ttf";
+	osg::ref_ptr< osgText::Font > font = osgText::readFontFile(fontfilename);
 
-        _fonts[i] = font;
+	_fonts[itr->first] = font;
 
-        const trpgMatTable* matTable = GetMaterialTable();
-        if (matTable)
-        {
-            int matId = textStyle->GetMaterial();
-            const trpgMaterial* mat = matTable->GetMaterialRef(0,matId);
-            if (mat)
-            {
-                trpgColor faceColor;
-                mat->GetColor(faceColor);
+	const trpgMatTable* matTable = GetMaterialTable();
+	if (matTable)
+	{
+	    int matId = textStyle->GetMaterial();
+	    const trpgMaterial* mat = matTable->GetMaterialRef(0,matId);
+	    if (mat)
+	    {
+		trpgColor faceColor;
+		mat->GetColor(faceColor);
 
-                float64 alpha;
-                mat->GetAlpha(alpha);
+		float64 alpha;
+		mat->GetAlpha(alpha);
 
-                _fcolors[i] = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
-            }
-        }
+		_fcolors[itr->first] = osg::Vec4(faceColor.red, faceColor.green, faceColor.blue, alpha );
+	    }
+	}
     }
 
     return true;
 }
 
-void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att)
+void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att,int handle)
 {
     DeferredLightAttribute la;
     la.lightPoint = lpn;
     la.fallback = fallback;
     la.attitude = att;
-    _lights.push_back(la);
+    _lights[handle] = la;
 }
 
-bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
+bool TXPArchive::getTileInfo(const TileLocationInfo& loc, TileInfo& info)
 {
     info.minRange = 0.0;
     info.maxRange = 0.0;
@@ -637,104 +685,150 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    header.GetLodRange(lod,info.maxRange);
-    header.GetLodRange(lod+1,info.minRange);
+    header.GetLodRange(loc.lod,info.maxRange);
+    header.GetLodRange(loc.lod+1,info.minRange);
     header.GetLodRange(0,info.lod0Range);
 
     trpg2dPoint sw,ne;
     header.GetExtents(sw,ne);
 
     trpg2dPoint size;
-    header.GetTileSize(lod,size);
+    header.GetTileSize(loc.lod,size);
 
     info.size.x() = size.x;
     info.size.y() = size.y;
     info.size.z() = 0.f;
 
-    trpgwAppAddress addr;
-    float minz = 0.f;
-    float maxz = 0.f;
-    tileTable.GetTile(x,y,lod,addr,minz,maxz);
-
     info.center.set(
-        sw.x+(x*size.x)+(size.x/2.f),
-        sw.y+(y*size.y)+(size.y/2.f),
-        (minz+maxz)/2.f
-    );
+        sw.x+(loc.x*size.x)+(size.x/2.f),
+        sw.y+(loc.y*size.y)+(size.y/2.f),
+        (loc.zmin + loc.zmax)/2.f
+	);
     info.bbox.set(
         osg::Vec3(
             info.center.x()-(size.x/2.f),
             info.center.y()-(size.y/2.f),
-            minz
-        ),
+            loc.zmin
+	    ),
         osg::Vec3(
             info.center.x()+(size.x/2.f),
             info.center.y()+(size.y/2.f),
-            maxz
-        )
-    );
+            loc.zmax
+	    )
+	);
     info.radius = osg::Vec3(size.x/2.f, size.y/2.f,0.f).length() * 1.3;
 
     return true;
+   
 }
 
-class ModelVisitor : public osg::NodeVisitor
+bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
 {
-    TXPArchive* _archive;
-    int _x;
-    int _y;
-    int _lod;
-
-public:
-    ModelVisitor(TXPArchive* archive, int x, int y, int lod):
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-    _archive(archive), _x(x), _y(y), _lod(lod)
+   
+    if(_majorVersion == 2 && _minorVersion >=1)
     {
+	// Version 2.1
+	// Tile table contain only lod 0
+	if(lod > 0)
+	    return false;
     }
-    
-    virtual void apply(osg::MatrixTransform& xform)
-    {
-        const trpgHeader* header = _archive->GetHeader();
-        trpgHeader::trpgTileType tileType;
-        header->GetTileOriginType(tileType);
-        const osg::Referenced* ref = xform.getUserData();
-        const TileIdentifier* tileID = dynamic_cast<const txp::TileIdentifier*>(ref);
 
-        if(!tileID) return; // bail early - this isn't a loaded model
+    trpgwAppAddress addr;
+    float minz = 0.f;
+    float maxz = 0.f;
+    tileTable.GetTile(x, y, lod, addr, minz, maxz);
 
-        if(tileType == trpgHeader::TileLocal && tileID->lod == 9999)
-        {
-            trpg2dPoint tileExtents;
-            header->GetTileSize(0, tileExtents);
-            osg::BoundingBox bbox;
-            _archive->getExtents(bbox);
-            osg::Vec3 offset(xform.getMatrix().getTrans());
-            offset[0] -= bbox._min[0];
-            offset[1] -= bbox._min[1];
+    TileLocationInfo loc(x, y, lod, addr,  minz, maxz);
 
-            trpg2dPoint offsetXY, tileID(_x,_y);
-            int divider = (0x01 << _lod);
-            // calculate which tile model is located in
-            tileExtents.x /= divider;
-            tileExtents.y /= divider;
-            offset[0] -= tileID.x*tileExtents.x;
-            offset[1] -= tileID.y*tileExtents.y;
-
-            osg::Matrix mat(xform.getMatrix());
-            mat.setTrans(offset);
-            xform.setMatrix(mat);
-        }
-    }
-};
-
+    return getTileInfo(loc, info);
+}
 
 osg::Group* TXPArchive::getTileContent(
     int x, int y, int lod,
     double realMinRange, 
     double realMaxRange, 
     double usedMaxRange,
-    osg::Vec3& tileCenter)
+    osg::Vec3& tileCenter,
+    std::vector<TXPArchive::TileLocationInfo>& childInfoList)
 {
+    if(_majorVersion == 2 && _minorVersion >= 1)
+    {
+	// Version 2.1
+	// This call is valid only for lod = 0
+	if(lod != 0)
+	    return new osg::Group;
+    }
+
+    trpgwAppAddress addr;
+    float minz = 0.f;
+    float maxz = 0.f;
+    tileTable.GetTile(x, y, lod, addr, minz, maxz);
+    TileLocationInfo loc(x,y,lod,addr, minz,maxz);
+
+    return getTileContent(loc, realMinRange, realMaxRange, usedMaxRange, tileCenter, childInfoList);
+
+}
+
+class ModelVisitor : public osg::NodeVisitor
+{
+    TXPArchive* _archive;
+    TXPArchive::TileLocationInfo _tileInfo;
+//     int _x;
+//     int _y;
+//     int _lod;
+
+public:
+    ModelVisitor(TXPArchive* archive, const TXPArchive::TileLocationInfo& loc):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _archive(archive), _tileInfo(loc)
+	{
+	}
+    
+    virtual void apply(osg::MatrixTransform& xform)
+	{
+	    const trpgHeader* header = _archive->GetHeader();
+	    trpgHeader::trpgTileType tileType;
+	    header->GetTileOriginType(tileType);
+	    const osg::Referenced* ref = xform.getUserData();
+	    const TileIdentifier* tileID = dynamic_cast<const txp::TileIdentifier*>(ref);
+
+	    if(!tileID) return; // bail early - this isn't a loaded model
+
+	    if(tileType == trpgHeader::TileLocal && tileID->lod == 9999)
+	    {
+		trpg2dPoint tileExtents;
+		header->GetTileSize(0, tileExtents);
+		osg::BoundingBox bbox;
+		_archive->getExtents(bbox);
+		osg::Vec3 offset(xform.getMatrix().getTrans());
+		offset[0] -= bbox._min[0];
+		offset[1] -= bbox._min[1];
+
+		trpg2dPoint offsetXY, tileID(_tileInfo.x,_tileInfo.y);
+		int divider = (0x01 << _tileInfo.lod);
+		// calculate which tile model is located in
+		tileExtents.x /= divider;
+		tileExtents.y /= divider;
+		offset[0] -= tileID.x*tileExtents.x;
+		offset[1] -= tileID.y*tileExtents.y;
+
+		osg::Matrix mat(xform.getMatrix());
+		mat.setTrans(offset);
+		xform.setMatrix(mat);
+	    }
+	}
+};
+
+
+osg::Group* TXPArchive::getTileContent(
+    const TileLocationInfo& loc,
+    double realMinRange, 
+    double realMaxRange, 
+    double usedMaxRange,
+    osg::Vec3& tileCenter,
+    std::vector<TileLocationInfo>& childInfoList)
+{
+
     if (_parser.get() == 0) 
     {
         _parser = new TXPParser();
@@ -742,28 +836,99 @@ osg::Group* TXPArchive::getTileContent(
     }
 
     trpgMemReadBuffer buf(GetEndian());
-    if (!ReadTile(x,y,lod,buf))
+    bool readStatus;
+    trpgTileTable::TileMode tileMode;
+    tileTable.GetMode(tileMode);
+    if(tileMode == trpgTileTable::External)
+	readStatus = ReadExternalTile(loc.x, loc.y, loc.lod, buf);
+    else
+	readStatus = ReadTile(loc.addr, buf);
+
+    if(!readStatus)
+	return new osg::Group;
+    trpgTileHeader *tilehdr = _parser->getTileHeaderRef();
+
+    int majVersion,minVersion;
+    GetVersion(majVersion,minVersion);
+    // only compute block # if we are a master archive.
+    if((majVersion >= TRPG_NOMERGE_VERSION_MAJOR) && (minVersion >= TRPG_NOMERGE_VERSION_MINOR) && (_isMaster))
     {
-        return new osg::Group;
+	if(tilehdr)
+	{
+	    int x,y;
+	    unsigned int denom = (1 << loc.lod); // this should work up to lod 31
+	    x = loc.x/denom;
+	    y = loc.y/denom;
+	    tilehdr->SetBlockNo(y,x);
+	}
     }
 
-    osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
+    osg::Group *tileGroup = _parser->parseScene(buf,_statesMap,_models,realMinRange,realMaxRange,usedMaxRange);
     tileCenter = _parser->getTileCenter();
 
+    int nbChild = _parser->GetNbChildrenRef();
+    
+    childInfoList.clear();
+    for(int idx = 0; idx < nbChild; idx++)
+    {
+	const trpgChildRef *childRef = _parser->GetChildRef(idx);
+       
+	if(childRef)
+	{
+	    TileLocationInfo loc;
+	    childRef->GetTileLoc(loc.x, loc.y, loc.lod);
+	    childRef->GetTileZValue(loc.zmin, loc.zmax);
+	    childRef->GetTileAddress(loc.addr);
+	    childInfoList.push_back(loc);
+
+	}
+    }
+
     // Fix up model MatrixTransform
-    ModelVisitor mv(this, x, y, lod);
+    ModelVisitor mv(this, loc);
     tileGroup->accept(mv);
 
     // Prune
-    unsigned int i = 0;
-    for (i = 0; i < _gstates.size(); i++) 
+    OSGStatesMapType::iterator itr = _statesMap.begin();
+    while( itr != _statesMap.end( ) )
     {
-        if (_gstates[i].valid() && (_gstates[i]->referenceCount()==1)) _gstates[i] = 0;
+	if(itr->second.valid() &&
+	   (itr->second->referenceCount()==1))
+	{
+	    // unreference it.
+            itr->second = NULL;
+			
+            OSGStatesMapType::iterator toRemove = itr;
+            ++itr;
+			
+	    // remove it from the map
+            _statesMap.erase( toRemove );
+        }
+        else
+        {
+            ++itr;
+        }
     }
 
-    for (i = 0; i < _textures.size(); i++) 
+    OSGTexMapType::iterator mitr = _texmap.begin();
+    while( mitr != _texmap.end( ) )
     {
-        if (_textures[i].valid() && (_textures[i]->referenceCount()==1)) _textures[i] = 0;
+	if(mitr->second.valid() &&
+	   (mitr->second->referenceCount()==1))
+	{
+	    // unreference it.
+            mitr->second = NULL;
+			
+            OSGTexMapType::iterator toRemove = mitr;
+            ++mitr;
+			
+	    // remove it from the map
+            _texmap.erase( toRemove );
+	}
+        else
+        {
+            ++mitr;
+        }
     }
 
     return tileGroup;

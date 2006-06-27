@@ -20,6 +20,41 @@ using namespace osg;
 
 
 
+class RetestCallback : public osg::NodeCallback
+{
+
+public:
+    RetestCallback()
+    {
+	timer = osg::Timer::instance(); // get static timer
+        prevTime = 0; // should this be instantiated with current time?
+    }
+
+    virtual void operator () ( osg::Node * node, osg::NodeVisitor * nv )
+    {
+        osg::Group *pLOD = (osg::Group *) node; 
+        osg::Group *n = NULL;
+        if ((pLOD->getNumChildren() > 0) &&
+            (n = (osg::Group *) pLOD->getChild(0)) &&
+            (n->getNumChildren() == 0))
+        {
+	    osg::Timer_t curTime = timer->tick();
+            if ((prevTime + 2.0/timer->getSecondsPerTick() ) < curTime)
+            {
+                prevTime = curTime;
+                pLOD->removeChildren( 0, pLOD->getNumChildren());
+            }
+        }
+
+        NodeCallback::traverse( node, nv );
+    }
+
+protected:
+    const osg::Timer* timer;
+    osg::Timer_t prevTime;
+};
+
+
 
 #define TXPNodeERROR(s) osg::notify(osg::NOTICE) << "txp::TXPNode::" << (s) << " error: "
 
@@ -29,6 +64,7 @@ _originX(0.0),
 _originY(0.0)
 {
     setNumChildrenRequiringUpdateTraversal(1);
+	setCullingActive(false);
 }
             
 TXPNode::TXPNode(const TXPNode& txpNode,const osg::CopyOp& copyop):
@@ -52,18 +88,18 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
 {
     switch(nv.getVisitorType())
     {
-      case osg::NodeVisitor::CULL_VISITOR:
-      {
+    case osg::NodeVisitor::CULL_VISITOR:
+    {
                 
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (cv)
         {
-//#define PRINT_TILEMAPP_TIMEINFO        
-#ifdef PRINT_TILEMAPP_TIMEINFO        
+//#define PRINT_TILEMAPP_TIMEINFO
+#ifdef PRINT_TILEMAPP_TIMEINFO
             const osg::Timer& timer = *osg::Timer::instance();
             osg::Timer_t start = timer.tick();
             std::cout<<"Doing visible tile search"<<std::endl;
-#endif // PRINT_TILEMAPP_TIMEINFO        
+#endif // PRINT_TILEMAPP_TIMEINFO
         
             osg::ref_ptr<TileMapper> tileMapper = new TileMapper;
             tileMapper->setLODScale(cv->getLODScale());
@@ -92,11 +128,11 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
     
         updateEye(nv);
         break;
-      }
-      case osg::NodeVisitor::UPDATE_VISITOR:
+    }
+    case osg::NodeVisitor::UPDATE_VISITOR:
         updateSceneGraph();
         break;
-      default:
+    default:
         break;
     }
     Group::traverse(nv);
@@ -186,7 +222,10 @@ bool TXPNode::loadArchive()
     _archive->GetHeader()->GetLodSize(0,tileSize);
 
     _pageManager = new TXPPageManager;
-    _pageManager->Init(_archive.get());
+
+    // We are going to use _pageManager to manage lod 0 only, all other lod
+    // are managed by this OSG plugin
+    _pageManager->Init(_archive.get(), 1);
 
     return true;
 }
@@ -227,7 +266,7 @@ void TXPNode::updateEye(osg::NodeVisitor& nv)
             tile->GetTileLoc(x,y,lod);
             if (lod==0)
             {
-                osg::Node* node = addPagedLODTile(x,y,lod);
+                osg::Node* node = addPagedLODTile(x,y);
                 tile->SetLocalData(node);
                 //osg::notify(osg::NOTICE) << "Tile load: " << x << " " << y << " " << lod << std::endl;
             }
@@ -237,8 +276,12 @@ void TXPNode::updateEye(osg::NodeVisitor& nv)
     }
 }
 
-osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
+osg::Node* TXPNode::addPagedLODTile(int x, int y)
 {
+    // For TerraPage 2.1 and over this method must only be use with lod = 0.
+    // If you look at the code that calls it, it is effectively called only when
+    // lod = 0. So all is OK
+    int lod = 0;
     char pagedLODfile[1024];
     sprintf(pagedLODfile,"%s\\tile%d_%dx%d_%d.txp",_archive->getDir(),lod,x,y,_archive->getId());
 
@@ -254,6 +297,7 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
     pagedLOD->setCenter(info.center);
     pagedLOD->setRadius(info.radius);
     pagedLOD->setNumChildrenThatCannotBeExpired(1);
+    pagedLOD->setUpdateCallback(new RetestCallback);
 
     const trpgHeader* header = _archive->GetHeader();
     trpgHeader::trpgTileType tileType;
@@ -274,9 +318,10 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
     }
     else
     {
-        _nodesToAdd.push_back(pagedLOD);
-        return pagedLOD;
-    }
+    _nodesToAdd.push_back(pagedLOD);
+    
+    return pagedLOD;
+}
 }
 
 void TXPNode::updateSceneGraph()

@@ -42,7 +42,16 @@ Text::Text():
     _color(1.0f,1.0f,1.0f,1.0f),
     _drawMode(TEXT),
     _kerningType(KERNING_DEFAULT),
-    _lineCount(0)
+    _lineCount(0),
+    _backdropType(NONE),
+    _backdropHorizontalOffset(0.07f),
+    _backdropVerticalOffset(0.07f),
+    _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
+    _colorGradientMode(SOLID),
+    _colorGradientTopLeft(1.0f, 0.0f, 0.0f, 1.0f),
+    _colorGradientBottomLeft(0.0f, 1.0f, 0.0f, 1.0f),
+    _colorGradientBottomRight(0.0f, 0.0f, 1.0f, 1.0f),
+    _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)    
 {
     setUseDisplayList(false);
     setSupportsDisplayList(false);
@@ -693,6 +702,7 @@ void Text::computeGlyphRepresentation()
     setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
 
     computePositions();
+    computeColorGradients();
 }
 
 void Text::computePositions()
@@ -706,7 +716,6 @@ void Text::computePositions()
 
 void Text::computePositions(unsigned int contextID) const
 {
-
     switch(_alignment)
     {
     case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
@@ -729,8 +738,6 @@ void Text::computePositions(unsigned int contextID) const
     case CENTER_BOTTOM_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,-_characterHeight*(_lineCount-1),0.0f); break;
     case RIGHT_BOTTOM_BASE_LINE:  _offset.set(_textBB.xMax(),-_characterHeight*(_lineCount-1),0.0f); break;
     }
-    
-    
     
     AutoTransformCache& atc = _autoTransformCache[contextID];
     osg::Matrix& matrix = atc._matrix;
@@ -809,11 +816,9 @@ void Text::computePositions(unsigned int contextID) const
 
         }
         
-       
         if (_autoRotateToScreen) 
         {
             matrix.postMult(rotate_matrix);
-
         }
 
         if (!_rotation.zeroRotation() )
@@ -833,8 +838,6 @@ void Text::computePositions(unsigned int contextID) const
     {
         matrix.makeTranslate(_position-_offset);
     }
-
-    
 
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
@@ -857,10 +860,506 @@ void Text::computePositions(unsigned int contextID) const
         }
     }
 
+    computeBackdropPositions(contextID);
+
     _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix);
     _normal.normalize();
 
     const_cast<Text*>(this)->dirtyBound();    
+}
+
+// Presumes the atc matrix is already up-to-date
+void Text::computeBackdropPositions(unsigned int contextID) const
+{
+    if(_backdropType == NONE)
+    {
+        return;
+    }
+
+    float width = 0.0f;
+    float height = 0.0f;
+    float running_width = 0.0f;
+    float running_height = 0.0f;
+    float avg_width = 0.0f;
+    float avg_height = 0.0f;
+    int counter = 0;
+    unsigned int i;
+    AutoTransformCache& atc = _autoTransformCache[contextID];
+    osg::Matrix& matrix = atc._matrix;
+
+    // This section is going to try to compute the average width and height
+    // for a character among the text. The reason I shift by an 
+    // average amount per-character instead of shifting each character 
+    // by its per-instance amount is because it may look strange to see 
+    // the individual backdrop text letters not space themselves the same 
+    // way the foreground text does. Using one value gives uniformity.
+    for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
+        const_titr!=_textureGlyphQuadMap.end();
+        ++const_titr)
+    {
+        const GlyphQuads& glyphquad = const_titr->second;
+        const GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        for(i = 0; i < coords2.size(); i+=4)
+        {
+            width = coords2[i+2].x() - coords2[i].x();
+            height = coords2[i].y() - coords2[i+1].y();
+
+            running_width += width;
+            running_height += height;
+            counter++;
+        }
+    }
+    avg_width = running_width/counter;
+    avg_height = running_height/counter;
+
+    // now apply matrix to the glyphs.
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        GlyphQuads& glyphquad = titr->second;
+        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+
+        unsigned int backdrop_index;
+        unsigned int max_backdrop_index;
+        if(_backdropType == OUTLINE)
+        {
+            // For outline, we want to draw the in every direction
+            backdrop_index = 0;
+            max_backdrop_index = 8;
+        }
+        else
+        {
+            // Yes, this may seem a little strange,
+            // but since the code is using references,
+            // I would have to duplicate the following code twice
+            // for each part of the if/else because I can't
+            // declare a reference without setting it immediately
+            // and it wouldn't survive the scope.
+            // So it happens that the _backdropType value matches
+            // the index in the array I want to store the coordinates
+            // in. So I'll just setup the for-loop so it only does
+            // the one direction I'm interested in.
+            backdrop_index = _backdropType;
+            max_backdrop_index = _backdropType+1;
+        }
+        for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+        {
+            GlyphQuads::Coords3& transformedCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+            unsigned int numCoords = coords2.size();
+            if (numCoords!=transformedCoords.size())
+            {
+                transformedCoords.resize(numCoords);
+            }
+
+            for(i=0;i<numCoords;++i)
+            {
+                float horizontal_shift_direction;
+                float vertical_shift_direction;
+                switch(backdrop_index)
+                {
+                    case DROP_SHADOW_BOTTOM_RIGHT:
+                        {
+                            horizontal_shift_direction = 1.0f;
+                            vertical_shift_direction = -1.0f;
+                            break;
+                        }
+                    case DROP_SHADOW_CENTER_RIGHT:
+                        {
+                            horizontal_shift_direction = 1.0f;
+                            vertical_shift_direction = 0.0f;
+                            break;
+                        }
+                    case DROP_SHADOW_TOP_RIGHT:
+                        {
+                            horizontal_shift_direction = 1.0f;
+                            vertical_shift_direction = 1.0f;
+                            break;
+                        }
+                    case DROP_SHADOW_BOTTOM_CENTER:
+                        {
+                            horizontal_shift_direction = 0.0f;
+                            vertical_shift_direction = -1.0f;
+                            break;
+                        }
+                    case DROP_SHADOW_TOP_CENTER:
+                        {
+                            horizontal_shift_direction = 0.0f;
+                            vertical_shift_direction = 1.0f;
+                            break;
+                        }                                
+                    case DROP_SHADOW_BOTTOM_LEFT:
+                        {
+                            horizontal_shift_direction = -1.0f;
+                            vertical_shift_direction = -1.0f;
+                            break;
+                        }
+                    case DROP_SHADOW_CENTER_LEFT:
+                        {
+                            horizontal_shift_direction = -1.0f;
+                            vertical_shift_direction = 0.0f;
+                            break;
+                        }
+                    case DROP_SHADOW_TOP_LEFT:
+                        {
+                            horizontal_shift_direction = -1.0f;
+                            vertical_shift_direction = 1.0f;
+                            break;
+                        }
+                    default: // error
+                        {
+                            horizontal_shift_direction = 1.0f;
+                            vertical_shift_direction = -1.0f;
+                        }
+                }
+                transformedCoords[i] = osg::Vec3(horizontal_shift_direction * _backdropHorizontalOffset * avg_width+coords2[i].x(),vertical_shift_direction * _backdropVerticalOffset * avg_height+coords2[i].y(),0.0f)*matrix;
+            }
+        }
+    }
+
+    // Finally, we have one more issue to deal with.
+    // Now that the text takes more space, we need
+    // to adjust the size of the bounding box.
+    switch(_backdropType)
+    {
+        case DROP_SHADOW_BOTTOM_RIGHT:
+            {
+                _textBB.set(
+                    _textBB.xMin(),
+                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBB.zMin(),
+                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBB.yMax(),
+                    _textBB.zMax()
+                );
+                break;
+            }
+        case DROP_SHADOW_CENTER_RIGHT:
+            {
+                _textBB.set(
+                    _textBB.xMin(),
+                    _textBB.yMin(),
+                    _textBB.zMin(),
+                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBB.yMax(),
+                    _textBB.zMax()
+                );
+                break;
+            }
+        case DROP_SHADOW_TOP_RIGHT:
+            {
+                _textBB.set(
+                    _textBB.xMin(),
+                    _textBB.yMin(),
+                    _textBB.zMin(),
+                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBB.zMax()
+                );
+                break;
+            }
+        case DROP_SHADOW_BOTTOM_CENTER:
+            {
+                _textBB.set(
+                    _textBB.xMin(),
+                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBB.zMin(),
+                    _textBB.xMax(),
+                    _textBB.yMax(),
+                    _textBB.zMax()
+                );
+                break;
+            }
+        case DROP_SHADOW_TOP_CENTER:
+            {
+                _textBB.set(
+                    _textBB.xMin(),
+                    _textBB.yMin(),
+                    _textBB.zMin(),
+                    _textBB.xMax(),
+                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBB.zMax()
+                );
+                break;
+            }                                
+        case DROP_SHADOW_BOTTOM_LEFT:
+            {
+                _textBB.set(
+                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBB.zMin(),
+                    _textBB.xMax(),
+                    _textBB.yMax(),
+                    _textBB.zMax()
+                );
+                break;
+            }
+        case DROP_SHADOW_CENTER_LEFT:
+            {
+                _textBB.set(
+                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBB.yMin(),
+                    _textBB.zMin(),
+                    _textBB.xMax(),
+                    _textBB.yMax(),
+                    _textBB.zMax()
+                );            break;
+            }
+        case DROP_SHADOW_TOP_LEFT:
+            {
+                _textBB.set(
+                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBB.yMin(),
+                    _textBB.zMin(),
+                    _textBB.xMax(),
+                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBB.zMax()
+                );
+                break;
+            }
+        case OUTLINE:
+            {
+                _textBB.set(
+                    _textBB.xMin() - avg_width * _backdropHorizontalOffset,
+                    _textBB.yMin() - avg_height * _backdropVerticalOffset,
+                    _textBB.zMin(),
+                    _textBB.xMax() + avg_width * _backdropHorizontalOffset,
+                    _textBB.yMax() + avg_height * _backdropVerticalOffset,
+                    _textBB.zMax()
+                );
+                break;
+            }
+        default: // error
+            {
+                break;
+            }
+    }
+}
+
+void Text::computeColorGradients() const
+{
+    switch(_colorGradientMode)
+    {
+        case SOLID:
+            return;
+            break;
+        case PER_CHARACTER:
+            computeColorGradientsPerCharacter();
+            break;
+        case OVERALL:
+            computeColorGradientsOverall();
+            break;
+        default:
+            break;
+    }
+}
+
+void Text::computeColorGradientsOverall() const
+{
+
+    float min_x = FLT_MAX;
+    float min_y = FLT_MAX;
+    float max_x = FLT_MIN;
+    float max_y = FLT_MIN;
+
+    float rgb_q11[3];
+    float hsv_q11[3];
+    float rgb_q12[3];
+    float hsv_q12[3];
+    float rgb_q21[3];
+    float hsv_q21[3];
+    float rgb_q22[3];
+    float hsv_q22[3];
+
+    float rgb[3];
+    float hsv[3];
+    unsigned int i;
+
+    for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
+        const_titr!=_textureGlyphQuadMap.end();
+        ++const_titr)
+    {
+        const GlyphQuads& glyphquad = const_titr->second;
+        const GlyphQuads::Coords2& coords2 = glyphquad._coords;
+
+        for(i=0;i<coords2.size();++i)
+        {  
+            // Min and Max are needed for color gradients
+            if(coords2[i].x() > max_x)
+            {
+                max_x = coords2[i].x();
+            }
+            if(coords2[i].x() < min_x)
+            {
+                min_x = coords2[i].x();
+            }
+            if(coords2[i].y() > max_y)
+            {
+                max_y = coords2[i].y();
+            }
+            if(coords2[i].y() < min_y)
+            {
+                min_y = coords2[i].y();
+            }        
+
+        }
+    }
+
+    rgb_q11[0] = _colorGradientBottomLeft[0];
+    rgb_q11[1] = _colorGradientBottomLeft[1];
+    rgb_q11[2] = _colorGradientBottomLeft[2];
+
+    rgb_q12[0] = _colorGradientTopLeft[0];
+    rgb_q12[1] = _colorGradientTopLeft[1];
+    rgb_q12[2] = _colorGradientTopLeft[2];
+
+    rgb_q21[0] = _colorGradientBottomRight[0];
+    rgb_q21[1] = _colorGradientBottomRight[1];
+    rgb_q21[2] = _colorGradientBottomRight[2];
+
+    rgb_q22[0] = _colorGradientTopRight[0];
+    rgb_q22[1] = _colorGradientTopRight[1];
+    rgb_q22[2] = _colorGradientTopRight[2];
+
+    // for linear interpolation to look correct 
+    // for colors and imitate what OpenGL does,
+    // we need to convert over to Hue-Saturation-Value
+    // and linear interpolate in that space.
+    // HSV will interpolate through the color spectrum.
+    // Now that I think about this, perhaps we could
+    // extend this to use function pointers or something
+    // so users may specify their own color interpolation
+    // scales such as Intensity, or Heated Metal, etc.
+    convertRgbToHsv(rgb_q11, hsv_q11);
+    convertRgbToHsv(rgb_q12, hsv_q12);
+    convertRgbToHsv(rgb_q21, hsv_q21);
+    convertRgbToHsv(rgb_q22, hsv_q22);
+
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        GlyphQuads& glyphquad = titr->second;
+        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        GlyphQuads::ColorCoords& colorCoords = glyphquad._colorCoords;
+
+        unsigned int numCoords = coords2.size();
+        if (numCoords!=colorCoords.size())
+        {
+            colorCoords.resize(numCoords);
+        }
+
+        for(i=0;i<numCoords;++i)
+        {
+            float hue = bilinearInterpolate(
+                min_x,
+                max_x,
+                min_y,
+                max_y,
+                coords2[i].x(),
+                coords2[i].y(),
+                hsv_q11[0],
+                hsv_q12[0],
+                hsv_q21[0],
+                hsv_q22[0]
+            );
+
+            float saturation = bilinearInterpolate(
+                min_x,
+                max_x,
+                min_y,
+                max_y,
+                coords2[i].x(),
+                coords2[i].y(),
+                hsv_q11[1],
+                hsv_q12[1],
+                hsv_q21[1],
+                hsv_q22[1]
+            );
+
+            float value = bilinearInterpolate(
+                min_x,
+                max_x,
+                min_y,
+                max_y,
+                coords2[i].x(),
+                coords2[i].y(),
+                hsv_q11[2],
+                hsv_q12[2],
+                hsv_q21[2],
+                hsv_q22[2]
+            );
+            // Alpha does not convert to HSV            
+            float alpha = bilinearInterpolate(
+                min_x,
+                max_x,
+                min_y,
+                max_y,
+                coords2[i].x(),
+                coords2[i].y(),
+                _colorGradientBottomLeft[3],
+                _colorGradientTopLeft[3],
+                _colorGradientBottomRight[3],
+                _colorGradientTopRight[3]
+            );                                    
+
+            hsv[0] = hue;
+            hsv[1] = saturation;
+            hsv[2] = value;
+            // Convert back to RGB
+            convertHsvToRgb(hsv, rgb);
+            colorCoords[i] = osg::Vec4(rgb[0],rgb[1],rgb[2],alpha);
+        }
+    }
+}
+
+void Text::computeColorGradientsPerCharacter() const
+{
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        GlyphQuads& glyphquad = titr->second;
+        GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        GlyphQuads::ColorCoords& colorCoords = glyphquad._colorCoords;
+
+        unsigned int numCoords = coords2.size();
+        if (numCoords!=colorCoords.size())
+        {
+            colorCoords.resize(numCoords);
+        }
+
+        for(unsigned int i=0;i<numCoords;++i)
+        {
+            switch(i%4)
+            {
+                case 0: // top-left
+                    {
+                        colorCoords[i] = _colorGradientTopLeft;
+                        break;
+                    }
+                case 1: // bottom-left
+                    {
+                        colorCoords[i] = _colorGradientBottomLeft;
+                        break;
+                    }
+                case 2: // bottom-right
+                    {
+                        colorCoords[i] = _colorGradientBottomRight;
+                        break;
+                    }
+                case 3: // top-right
+                    {
+                        colorCoords[i] = _colorGradientTopRight;
+                        break;
+                    }
+                default: // error
+                    {
+                        colorCoords[i] = osg::Vec4(0.0f,0.0f,0.0f,1.0f);
+                    }
+            }
+        }
+    }
 }
 
 void Text::drawImplementation(osg::State& state) const
@@ -875,7 +1374,7 @@ void Text::drawImplementation(osg::State& state) const
         const osg::Matrix& projection = state.getProjectionMatrix();
 
         osg::Vec3 newTransformedPosition = _position*modelview;
-        
+
         int width = atc._width;
         int height = atc._height;
 
@@ -932,14 +1431,19 @@ void Text::drawImplementation(osg::State& state) const
     }
 
     glNormal3fv(_normal.ptr());
-    glColor4fv(_color.ptr());
 
     if (_drawMode & TEXT)
     {
 
         state.disableAllVertexArrays();
 
-        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+        if(_backdropType != NONE)
+        {
+            // Do I really need to do this for glPolygonOffset?
+            glPushAttrib(GL_POLYGON_OFFSET_FILL);
+            glEnable(GL_POLYGON_OFFSET_FILL);
+        }
+        for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();
             ++titr)
         {
@@ -948,24 +1452,77 @@ void Text::drawImplementation(osg::State& state) const
 
             const GlyphQuads& glyphquad = titr->second;
 
+            // For backdrop text
+            if(_backdropType != NONE)
+            {
+                unsigned int backdrop_index;
+                unsigned int max_backdrop_index;
+                if(_backdropType == OUTLINE)
+                {
+                    backdrop_index = 0;
+                    max_backdrop_index = 8;
+                }
+                else
+                {
+                    backdrop_index = _backdropType;
+                    max_backdrop_index = _backdropType+1;
+                }
+
+                state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+                state.disableColorPointer();
+                glColor4fv(_backdropColor.ptr());
+
+                for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+                {
+                    const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+                    if (!transformedBackdropCoords.empty()) 
+                    {
+                        state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                        glPolygonOffset(-1.0f, -1.0f * (backdrop_index+1) );
+                        glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+                    }
+                }
+            } // end of backdrop text
+
             const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
             if (!transformedCoords.empty()) 
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
                 state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
 
+                if(_colorGradientMode == SOLID)
+                {
+                    state.disableColorPointer();
+                    glColor4fv(_color.ptr());
+                }
+                else
+                {
+                    state.setColorPointer( 4, GL_FLOAT, 0, &(glyphquad._colorCoords.front()));
+                }
+
+                if(_backdropType != NONE)
+                {
+                    // Make sure that the main (foreground) text is on top
+                    glPolygonOffset(-10, -10);
+                }
                 glDrawArrays(GL_QUADS,0,transformedCoords.size());
+                glPolygonOffset(0,0);
             }
         }
+
+        if(_backdropType != NONE)
+        {
+            glPopAttrib();
+        }                
     }
 
     if (_drawMode & BOUNDINGBOX)
     {
-    
+
         if (_textBB.valid())
         {
             state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-            
+
             const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
 
             osg::Vec3 c00(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
@@ -1007,9 +1564,6 @@ void Text::drawImplementation(osg::State& state) const
         glEnd();
         
     }    
-
-
-//    glPopMatrix();
 }
 
 void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
@@ -1047,3 +1601,251 @@ void Text::releaseGLObjects(osg::State* state) const
     Drawable::releaseGLObjects(state);
     if (_font.valid()) _font->releaseGLObjects(state);
 }
+
+
+
+void Text::setBackdropType(BackdropType type)
+{
+    if (_backdropType==type) return;
+
+    _backdropType = type;
+    computeGlyphRepresentation();
+}
+
+void Text::setBackdropOffset(float offset)
+{
+    _backdropHorizontalOffset = offset;
+    _backdropVerticalOffset = offset;
+    computeGlyphRepresentation();
+}
+
+void Text::setBackdropOffset(float horizontal, float vertical)
+{
+    _backdropHorizontalOffset = horizontal;
+    _backdropVerticalOffset = vertical;
+    computeGlyphRepresentation();
+}
+
+void Text::setBackdropColor(const osg::Vec4& color)
+{
+    _backdropColor = color;
+    computeGlyphRepresentation();
+}
+
+void Text::setColorGradientMode(ColorGradientMode mode)
+{
+    if (_colorGradientMode==mode) return;
+
+    _colorGradientMode = mode;
+    computeGlyphRepresentation();
+}
+
+void Text::setColorGradientCorners(const osg::Vec4& topLeft, const osg::Vec4& bottomLeft, const osg::Vec4& bottomRight, const osg::Vec4& topRight)
+{
+    _colorGradientTopLeft = topLeft;
+    _colorGradientBottomLeft = bottomLeft;
+    _colorGradientBottomRight = bottomRight;
+    _colorGradientTopRight = topRight;
+    computeGlyphRepresentation();
+}
+
+// Formula for f(x,y) from Wikipedia "Bilinear interpolation", 2006-06-18
+float Text::bilinearInterpolate(float x1, float x2, float y1, float y2, float x, float y, float q11, float q12, float q21, float q22) const
+{
+    return (
+        ((q11 / ((x2-x1)*(y2-y1))) * (x2-x)*(y2-y))
+        + ((q21 / ((x2-x1)*(y2-y1))) * (x-x1)*(y2-y))
+        + ((q12 / ((x2-x1)*(y2-y1))) * (x2-x)*(y-y1))
+        + ((q22 / ((x2-x1)*(y2-y1))) * (x-x1)*(y-y1))
+    );
+}
+
+
+/**
+ ** routines to convert between RGB and HSV
+ **
+ ** Reference:  Foley, van Dam, Feiner, Hughes,
+ **        "Computer Graphics Principles and Practices,"
+ **        Additon-Wesley, 1990, pp592-593.
+ **/       
+/*
+ *  FUNCTION
+ *    HsvRgb( hsv, rgb )
+ *
+ *  DESCRIPTION
+ *    convert a hue-saturation-value into a red-green-blue value
+ *
+ *    NOTE
+ *    Array sizes are 3
+ *    Values are between 0.0 and 1.0
+ */
+
+void Text::convertHsvToRgb( float hsv[], float rgb[] ) const
+{
+    float h, s, v;            /* hue, sat, value        */
+    /*    double delta;    */        /* change in color value    */
+    float r, g, b;            /* red, green, blue        */
+    float i, f, p, q, t;        /* interim values        */
+
+
+    /* guarantee valid input:                    */
+
+    h = hsv[0] / 60.f;
+    while( h >= 6.f )    h -= 6.f;
+    while( h <  0.f )     h += 6.f;
+
+    s = hsv[1];
+    if( s < 0.f )
+        s = 0.f;
+    if( s > 1.f )
+        s = 1.f;
+
+    v = hsv[2];
+    if( v < 0.f )
+        v = 0.f;
+    if( v > 1.f )
+        v = 1.f;
+
+
+    /* if sat==0, then is a gray:                    */
+
+    if( s == 0.0f )
+    {
+        rgb[0] = rgb[1] = rgb[2] = v;
+        return;
+    }
+
+
+    /* get an rgb from the hue itself:                */
+
+    i = floor( h );
+    f = h - i;
+    p = v * ( 1.f - s );
+    q = v * ( 1.f - s*f );
+    t = v * ( 1.f - ( s * (1.f-f) ) );
+
+    switch( (int) i )
+    {
+        case 0:
+            r = v;    g = t;    b = p;
+            break;
+
+        case 1:
+            r = q;    g = v;    b = p;
+            break;
+
+        case 2:
+            r = p;    g = v;    b = t;
+            break;
+
+        case 3:
+            r = p;    g = q;    b = v;
+            break;
+
+        case 4:
+            r = t;    g = p;    b = v;
+            break;
+
+        case 5:
+            r = v;    g = p;    b = q;
+            break;
+
+        default:
+            /* never happens? */
+            r = 0;  g = 0;  b = 0;
+            break;
+    }
+
+
+    rgb[0] = r;
+    rgb[1] = g;
+    rgb[2] = b;
+
+}
+
+/*
+ *  FUNCTION
+ *    RgbHsv
+ *
+ *  DESCRIPTION
+ *    convert a red-green-blue value into hue-saturation-value
+ *
+ *    NOTE
+ *    Array sizes are 3
+ *    Values are between 0.0 and 1.0
+ */
+
+void Text::convertRgbToHsv( float rgb[], float hsv[] ) const
+{
+    float r, g, b;            /* red, green, blue        */
+    float min, max;            /* min and max rgb values    */
+    float fmin, fmax, diff;        /* min, max, and range of rgb vals */
+    float hue, sat, value;        /* h s v            */
+    float cr, cg, cb;        /* coefficients for computing hue */
+
+
+    /* determine min and max color primary values:            */
+
+    r = rgb[0];    g = rgb[1];    b = rgb[2];
+    min = r;    max = r;
+    if( g < min ) min = g;
+    if( g > max ) max = g;
+    if( b < min ) min = b;
+    if( b > max ) max = b;
+
+    fmin = min;
+    fmax = max;
+    diff = fmax - fmin;
+
+
+    /* get value and saturation:                    */
+
+    value = fmax;
+    if( max == 0.f )
+        sat = 0.0f;
+    else
+        sat = diff/fmax;
+
+
+
+    /* compute hue:                            */
+
+    if( sat == 0.0f )
+        hue = 0.0f;
+    else
+    {
+        float inv_diff = 1.0f / diff;
+        cr = ( fmax-r ) * inv_diff;
+        cg = ( fmax-g ) * inv_diff;
+        cb = ( fmax-b ) * inv_diff;
+
+        if( max == r ) 
+            hue =      (g-b) * inv_diff;
+        else if( max == g ) 
+            hue = 2.f + (b-r) * inv_diff;
+        else if( max == b ) 
+            hue = 4.f + (r-g) * inv_diff;
+        else
+            hue = 0.0f;
+    }
+
+
+    hue *= 60.0f;
+    if( hue < 0.0f )
+        hue += 360.0f;
+    if( hue > 360.0f )
+        hue -= 360.0f;
+
+
+    /* store output values:                        */
+
+    hsv[0] = hue;
+    hsv[1] = sat;
+    hsv[2] = value;
+
+}
+
+
+
+
+

@@ -588,16 +588,8 @@ bool OsgCameraGroup::realize()
             
             if (_ds->getMultiSamples())
             {
-                #if defined( GLX_SAMPLES_SGIS )
-                    rs_vc->addExtendedAttribute( GLX_SAMPLES_SGIS,  _ds->getNumMultiSamples());
-                #endif
-                #if defined( GLX_SAMPLES_BUFFER_SGIS )
-                    rs_vc->addExtendedAttribute( GLX_SAMPLES_BUFFER_SGIS,  1);
-                #endif
-                #ifdef WIN32
-                    rs_vc->addExtendedAttribute(WGL_SAMPLE_BUFFERS_ARB, GL_TRUE);
-                    rs_vc->addExtendedAttribute(WGL_SAMPLES_ARB, _ds->getNumMultiSamples());
-                #endif
+                rs_vc->addAttribute(Producer::VisualChooser::SampleBuffers, 1);
+                rs_vc->addAttribute(Producer::VisualChooser::Samples, _ds->getNumMultiSamples());
             }
         }        
     }

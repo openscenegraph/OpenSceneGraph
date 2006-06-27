@@ -165,6 +165,26 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
     text->setText("OpenSceneGraph");
 
+#if 1
+    text->setBackdropType(osgText::Text::OUTLINE);
+    text->setBackdropOffset(0.05f);
+    text->setBackdropColor(osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f));
+#endif
+
+
+#if 1
+    text->setColorGradientMode(osgText::Text::OVERALL);
+    osg::Vec4 lightblue(0.30f,0.6f,0.90f,1.0f);
+    osg::Vec4 blue(0.10f,0.30f,0.40f,1.0f);
+    text->setColorGradientCorners(lightblue, blue, blue, lightblue);
+#else
+    text->setColorGradientMode(osgText::Text::OVERALL);
+    osg::Vec4 light = osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f);
+    osg::Vec4 dark = osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f);
+    text->setColorGradientCorners(light, dark, dark, light);
+//    text->setColorGradientCorners(dark, light, light, dark);
+#endif
+
     geode->addDrawable( text );
 
 

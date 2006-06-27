@@ -34,13 +34,13 @@ public:
     trpgMatTable1_0(const trpgMatTable &);
 
     /* This read method overrides the one from trpgMatTable and knows
-    how to read the old school material tables.
+	how to read the old school material tables.
      */
-    bool    Read(trpgReadBuffer &);
+    bool	Read(trpgReadBuffer &);
     /* This write method can write a 2.0 material table as 1.0
-    style for backward compatibility.
+	style for backward compatibility.
      */
-    bool    Write(trpgWriteBuffer &);
+    bool	Write(trpgWriteBuffer &);
 protected:
 };
 
@@ -56,13 +56,13 @@ public:
     trpgTexTable1_0(const trpgTexTable &);
 
     /* This read method overrides the one from trpgTexTable and
-    knows how to read the old style texture table.
+	knows how to read the old style texture table.
      */
-    bool    Read(trpgReadBuffer &);
+    bool	Read(trpgReadBuffer &);
     /* The write method can write a 2.0 texture table as 1.0
-    style for backward compatibility.
+	style for backward compatibility.
      */
-    bool    Write(trpgWriteBuffer &);
+    bool	Write(trpgWriteBuffer &);
 protected:
 };
 
@@ -76,9 +76,9 @@ public:
     trpgTexture1_0 operator = (const trpgTexture &);
 
     // Knows how to read old style textures
-    bool    Read(trpgReadBuffer &);
+    bool	Read(trpgReadBuffer &);
     // Can write old style textures
-    bool    Write(trpgWriteBuffer &);
+    bool	Write(trpgWriteBuffer &);
 protected:
 };
 
@@ -90,7 +90,7 @@ class trpgTileTable1_0 : public trpgTileTable {
 public:
     trpgTileTable1_0(const trpgTileTable &);
     // Can write old style tile table
-    bool    Write(trpgWriteBuffer &);
+    bool	Write(trpgWriteBuffer &);
 };
 
 #endif

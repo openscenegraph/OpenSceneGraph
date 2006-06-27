@@ -1,3 +1,4 @@
+// -*-c++-*-
 /*************************************************************************** 
  * December 2003
  *
@@ -58,12 +59,15 @@ public:
 
     virtual void traverse(osg::NodeVisitor& nv);
 
+    void setCenter( const osg::Vec3& center ) { _center = center; }
+    osg::Vec3 getCenter() { return _center; }
 protected:
 
     TileIdentifier _tid;
 
     int _dx;
     int _dy;
+    osg::Vec3 _center;
 };
 
 }

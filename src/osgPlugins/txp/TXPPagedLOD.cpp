@@ -42,7 +42,8 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
             bool needToLoadChild = false;
             
             unsigned maxRangeSize = _rangeList.size();
-            if (maxRangeSize!=0 && forceUseOfFirstChild) maxRangeSize=1;
+            if (maxRangeSize!=0 && forceUseOfFirstChild)
+		maxRangeSize=1;
             
             for(unsigned int i=0;i<maxRangeSize;++i)
             {    
@@ -50,9 +51,9 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
                 {
                     if (i<_children.size())
                     {
-                        if (updateTimeStamp) _perRangeDataList[i]._timeStamp=timeStamp;
+                        if (updateTimeStamp)
+			    _perRangeDataList[i]._timeStamp=timeStamp;
 
-                        //std::cout<<"PagedLOD::traverse() - Selecting child "<<i<<std::endl;
                         _children[i]->accept(nv);
                         lastChildTraversed = (int)i;
                     }
@@ -72,7 +73,8 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
                 if (numChildren>0 && ((int)numChildren-1)!=lastChildTraversed)
                 {
                     //std::cout<<"    to child "<<numChildren-1<<std::endl;
-                    if (updateTimeStamp) _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
+                    if (updateTimeStamp)
+			_perRangeDataList[numChildren-1]._timeStamp=timeStamp;
                     _children[numChildren-1]->accept(nv);
                 }
                 
@@ -110,7 +112,7 @@ osg::BoundingSphere TXPPagedLOD::computeBound() const
     
     if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
     {
-        float tempRadius = osg::maximum( _radius, result.radius() );
+	float tempRadius = osg::maximum( _radius, result.radius() );
         result = osg::BoundingSphere(_userDefinedCenter,tempRadius);
     }
     return result;

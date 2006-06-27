@@ -45,6 +45,7 @@
 
 namespace txp
 {
+
 class TXPNode : public osg::Group
 {
 public:
@@ -68,32 +69,35 @@ public:
     
     TXPArchive* getArchive();
 
-    void setArchive(TXPArchive* archive) { _archive = archive; }
+	void setArchive( TXPArchive* archive )
+	{
+		_archive = archive;
+	}
     
     virtual osg::BoundingSphere computeBound() const;
-
+    
 protected:
 
     virtual ~TXPNode();
     
-    
     void updateEye(osg::NodeVisitor& nv);
     void updateSceneGraph();
     
-    osg::Node* addPagedLODTile(int x, int y, int lod);
+    // Create a page lod for lod 0 with givin grid location (x,y)
+    osg::Node* addPagedLODTile(int x, int y);
     
-    std::string _archiveName;
-    std::string _options;
+    std::string			 _archiveName;
+    std::string			 _options;
     
-    osg::ref_ptr<TXPArchive>        _archive;
-    osg::ref_ptr<TXPPageManager>    _pageManager;
+    osg::ref_ptr<TXPArchive>     _archive;
+    osg::ref_ptr<TXPPageManager> _pageManager;
     
-    double _originX;
-    double _originY;
-    osg::BoundingBox    _extents;
+    double			 _originX;
+    double			 _originY;
+    osg::BoundingBox		 _extents;
     
-    std::vector<osg::Node*> _nodesToAdd;
-    std::vector<osg::Node*> _nodesToRemove;
+    std::vector<osg::Node*>	 _nodesToAdd;
+    std::vector<osg::Node*>	 _nodesToRemove;
     
 };
 

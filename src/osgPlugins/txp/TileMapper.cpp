@@ -21,8 +21,10 @@ using namespace txp;
 
 float TileMapper::getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const
 {
-    if (withLODScale) return (pos-getEyeLocal()).length()*getLODScale();
-    else return (pos-getEyeLocal()).length();
+    if (withLODScale)
+	return (pos-getEyeLocal()).length()*getLODScale();
+    else
+	return (pos-getEyeLocal()).length();
 }
 
 inline TileMapper::value_type distance(const osg::Vec3& coord,const osg::Matrix& matrix)
@@ -30,7 +32,10 @@ inline TileMapper::value_type distance(const osg::Vec3& coord,const osg::Matrix&
 
     //std::cout << "distance("<<coord<<", "<<matrix<<")"<<std::endl;
 
-    return -((TileMapper::value_type)coord[0]*(TileMapper::value_type)matrix(0,2)+(TileMapper::value_type)coord[1]*(TileMapper::value_type)matrix(1,2)+(TileMapper::value_type)coord[2]*(TileMapper::value_type)matrix(2,2)+matrix(3,2));
+    return -((TileMapper::value_type)coord[0]*(TileMapper::value_type)matrix(0,2)+
+	     (TileMapper::value_type)coord[1]*(TileMapper::value_type)matrix(1,2)+
+	     (TileMapper::value_type)coord[2]*(TileMapper::value_type)matrix(2,2)+
+	     matrix(3,2));
 }
 
 float TileMapper::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const
@@ -38,8 +43,10 @@ float TileMapper::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScal
     const osg::Matrix& matrix = *_modelviewStack.back();
     float dist = distance(pos,matrix);
     
-    if (withLODScale) return dist*getLODScale();
-    else return dist;
+    if (withLODScale)
+	return dist*getLODScale();
+    else
+	return dist;
 }
 
 void TileMapper::apply(osg::Node& node)
@@ -50,7 +57,8 @@ void TileMapper::apply(osg::Node& node)
         return;
     }
 
-    if (isCulled(node)) return;
+    if (isCulled(node))
+	return;
 
     // push the culling mode.
     pushCurrentMask();
@@ -69,11 +77,12 @@ void TileMapper::apply(osg::Group& node)
         return;
     }
 
-    if (isCulled(node)) return;
+    if (isCulled(node))
+	return;
 
     // push the culling mode.
     pushCurrentMask();
-    
+
     TileIdentifier* tid = dynamic_cast<TileIdentifier*>(node.getUserData());
     
     if (tid)
@@ -95,9 +104,9 @@ void TileMapper::apply(osg::Group& node)
 
 #if 0
             std::cout<<"found Group="<<tid->lod
-                                       <<"  X="<<tid->x
-                                       <<"  Y="<<tid->y
-                                       <<"  ptr="<<&node<<std::endl;  
+		     <<"  X="<<tid->x
+		     <<"  Y="<<tid->y
+		     <<"  ptr="<<&node<<std::endl;  
 
             std::cout<<"      inheritance list "<<_tileStack.size()<<std::endl;
             for(TileStack::iterator itr=_tileStack.begin();
@@ -144,7 +153,8 @@ void TileMapper::apply(osg::Geode&)
 
 void TileMapper::apply(osg::PagedLOD& node)
 {
-    if (isCulled(node)) return;
+    if (isCulled(node))
+	return;
 
     // push the culling mode.
     pushCurrentMask();
@@ -171,9 +181,9 @@ void TileMapper::apply(osg::PagedLOD& node)
 
 #if 0
             std::cout<<"found txpPagedLOD LOD="<<txpPagedLOD->_tileIdentifier.lod
-                                       <<"  X="<<txpPagedLOD->_tileIdentifier.x
-                                       <<"  Y="<<txpPagedLOD->_tileIdentifier.y
-                                       <<"  ptr="<<txpPagedLOD<<std::endl;  
+		     <<"  X="<<txpPagedLOD->_tileIdentifier.x
+		     <<"  Y="<<txpPagedLOD->_tileIdentifier.y
+		     <<"  ptr="<<txpPagedLOD<<std::endl;  
 
             std::cout<<"      inheritance list "<<_tileStack.size()<<std::endl;
             for(TileStack::iterator itr=_tileStack.begin();
@@ -187,12 +197,11 @@ void TileMapper::apply(osg::PagedLOD& node)
                          <<" ptr="<<itr->second<<std::endl;      
             }
 
-            
             osg::StateSet* stateset = txpPagedLOD->getOrCreateStateSet();
             osg::Material* material = new osg::Material;
             material->setColorMode(osg::Material::OFF);
             stateset->setAttribute(material);
-            
+
             switch(txpPagedLOD->_tileIdentifier.lod)
             {
             case(0): material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f)); break;
@@ -201,14 +210,11 @@ void TileMapper::apply(osg::PagedLOD& node)
             case(3): material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,1.0f,1.0f)); break;
             case(4): material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,0.0f,1.0f,1.0f)); break;
             }
-            
 #endif            
-            
         }
-    
         _tileStack.pop_back();
     }
-    
+
     // pop the culling mode.
     popCurrentMask();
 }
@@ -360,20 +366,23 @@ void TileMapper::checkValidityOfAllVisibleTiles()
             _tileMap.insert(TileMap::value_type(aitr->back().first,*aitr));
         }
         
-    } while (!toRemoveList.empty());
+    }
+    while (!toRemoveList.empty());
     
 
 #if 0
-    if (!_blackListedNodeSet.empty()) std::cout<<"********** We have blacked list "<<_blackListedNodeSet.size()<<std::endl;
+
+	if ( !_blackListedNodeSet.empty() )
+		std::cout << "********** We have blacked list " << _blackListedNodeSet.size() << std::endl;
 
     std::cout<<"TileMap contains "<<_tileMap.size()<<std::endl;
     for(TileMap::iterator itr=_tileMap.begin();
         itr!=_tileMap.end();
         ++itr)
     {
-            std::cout<<"    tile="<<itr->first.lod
-                          <<"  X="<<itr->first.x
-                          <<"  Y="<<itr->first.y<<std::endl;  
+	std::cout<<"    tile="<<itr->first.lod
+		 <<"  X="<<itr->first.x
+		 <<"  Y="<<itr->first.y<<std::endl;  
         
     }
 #endif
@@ -388,7 +397,6 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         return false;
     }
 
-
     // find the tiles parents.
     TileMap::const_iterator itr = _tileMap.find(tid);
     if (itr==_tileMap.end())
@@ -396,8 +404,8 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         // not found tile in _tileMap, what should we do??
         // return true as a fallback right now.
 #if 0
-        std::cout<<"TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map,"<<std::endl;
-        std::cout<<"    LOD="<<tid.lod<<"  X="<<tid.x<<"  Y="<<tid.y<<std::endl;  
+	std::cout << "TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map," << std::endl;
+	std::cout << "    LOD=" << tid.lod << "  X=" << tid.x << "  Y=" << tid.y << std::endl;
 #endif 
         return true;
     }
@@ -409,7 +417,7 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
 
     if (!tile)
     {
-        // no tile, so must assume taht neight is now at a lower level
+        // no tile, so must assume that neighbor is now at a lower level
         return false;
     }
 
@@ -424,10 +432,10 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
     
     const TileIdentifier& parent_tid = parent->first;
     
-    bool parentHasNorthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,parent_tid.y+1,parent_tid.lod))!=0;
-    bool parentHasEastNeighour = _tileMap.count(TileIdentifier(parent_tid.x+1,parent_tid.y,parent_tid.lod))!=0;
-    bool parentHasSouthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,parent_tid.y-1,parent_tid.lod))!=0;
-    bool parentHasWestNeighour = _tileMap.count(TileIdentifier(parent_tid.x-1,parent_tid.y,parent_tid.lod))!=0;
+    bool parentHasNorthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,  parent_tid.y+1,parent_tid.lod))!=0;
+    bool parentHasEastNeighour  = _tileMap.count(TileIdentifier(parent_tid.x+1,parent_tid.y,  parent_tid.lod))!=0;
+    bool parentHasSouthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,  parent_tid.y-1,parent_tid.lod))!=0;
+    bool parentHasWestNeighour  = _tileMap.count(TileIdentifier(parent_tid.x-1,parent_tid.y,  parent_tid.lod))!=0;
     
 
     // identify whether the tile is a NE/SE/SW/NW tile relative to its parent.
@@ -438,14 +446,18 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         if (delta.x()>=0.0f)
         {
             // NE
-            if (dy==1) return parentHasNorthNeighour;
-            else if (dx==1) return parentHasEastNeighour;
+            if (dy==1)
+		return parentHasNorthNeighour;
+            else if (dx==1)
+		return parentHasEastNeighour;
         }
         else 
         {
             // NW
-            if (dy==1) return parentHasNorthNeighour;
-            else if (dx==-1) return parentHasWestNeighour;
+            if (dy==1)
+		return parentHasNorthNeighour;
+            else if (dx==-1)
+		return parentHasWestNeighour;
         }
     }
     else // south side
@@ -453,14 +465,18 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         if (delta.x()>=0.0f)
         {
             // SE
-            if (dy==-1) return parentHasSouthNeighour;
-            else if (dx==1) return parentHasEastNeighour;
+            if (dy==-1)
+		return parentHasSouthNeighour;
+            else if (dx==1)
+		return parentHasEastNeighour;
         }
         else 
         {
             // SW
-            if (dy==-1) return parentHasSouthNeighour;
-            else if (dx==-1) return parentHasWestNeighour;
+            if (dy==-1)
+		return parentHasSouthNeighour;
+            else if (dx==-1)
+		return parentHasWestNeighour;
         }
     }
     

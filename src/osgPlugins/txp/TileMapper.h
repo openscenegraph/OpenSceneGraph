@@ -30,18 +30,21 @@ struct TileIdentifier : public osg::Referenced
     TileIdentifier():
         x(-1),
         y(-1),
-        lod(-1) {}
+        lod(-1)
+	{}
 
     TileIdentifier(int ax, int ay, int alod):
         x(ax),
         y(ay),
-        lod(alod) {}
+        lod(alod)
+	{}
     
     TileIdentifier(const TileIdentifier& rhs):
         osg::Referenced(),
         x(rhs.x),
         y(rhs.y),
-        lod(rhs.lod) {}
+        lod(rhs.lod)
+	{}
 
     TileIdentifier& operator = (const TileIdentifier& rhs)
     {
@@ -91,7 +94,10 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
 
             
-    virtual osg::Vec3 getEyePoint() const { return getEyeLocal(); }
+    virtual osg::Vec3 getEyePoint() const
+    {
+	return getEyeLocal();
+    }
     virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const;
     virtual float getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const;
 

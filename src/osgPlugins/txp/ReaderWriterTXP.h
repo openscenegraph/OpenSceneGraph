@@ -80,9 +80,13 @@ protected:
 
     TXPArchive *getArchive(int id, const std::string&);
  
-    osg::Node* getTileContent(TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive);
-    
+    osg::Node* getTileContent(const TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc);
+    osg::Node* getTileContent(const TXPArchive::TileInfo &info, const TXPArchive::TileLocationInfo& loc, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc);
+    void createChildrenLocationString(const std::vector<TXPArchive::TileLocationInfo>& locs, std::string& locString) const;
+    bool extractChildrenLocations(const std::string& name, int parentLod, std::vector<TXPArchive::TileLocationInfo>& locs, int nbChild) const;
+
     mutable osgDB::ReentrantMutex               _serializerMutex;
+    
     std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
     static int                                  _archiveId;
 };

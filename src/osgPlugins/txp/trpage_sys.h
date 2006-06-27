@@ -14,8 +14,8 @@
    */
 
 /* trpage_sys.h
-    System specific declarations.
-    */
+	System specific declarations.
+	*/
 
 #ifndef trpage_sys_h_
 #define trpage_sys_h_
@@ -29,11 +29,11 @@
 #endif
 
 #if defined(_WIN32)
-/*    *********************
-    System Specific Section.
-    This is currently set up for win32.
-    *********************
-    */
+/*	*********************
+	System Specific Section.
+	This is currently set up for win32.
+	*********************
+	*/
 
 #include <windows.h>
 
@@ -86,15 +86,15 @@ typedef float float32;
 typedef double float64;
 #endif
 
-// Note: replace this with your own STL implementation
-//   You can use the Microsoft provided one by deleting the first #include
-#ifdef USEROGUE
-#include <txRogueWave.h>
-#endif
 
+#if defined(_WIN32) || defined(linux)
 #include <vector>
 #include <map>
 #include <string>
+#else
+#include <vector.h>
+#include <map.h>
+#endif
 
 #if defined(_WIN32)     // PJM
 // Had to take this out because of an iostream conflict

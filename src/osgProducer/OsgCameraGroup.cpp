@@ -421,7 +421,10 @@ void OsgCameraGroup::advance()
 bool OsgCameraGroup::realize( ThreadingModel thread_model )
 {
     if( _realized ) return _realized;
+    
+    if (_cfg.valid()) _cfg->setThreadModelDirective(thread_model);
     _threadModel = thread_model;
+    
     return realize();
 }
 
@@ -672,6 +675,8 @@ bool OsgCameraGroup::realize()
     {
         osg::notify(osg::INFO)<<"OsgCameraGroup::realize() _threadModel==Producer::CameraGroup::ThreadPerCamera"<<std::endl;
     }
+
+    if (_cfg.valid()) _cfg->setThreadModelDirective(_threadModel);
 
     _initialized = CameraGroup::realize();
     

@@ -26,6 +26,10 @@
 #include <trpage_geom.h>
 #include <trpage_read.h>
 
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+
 /* Write Material Table class
    Keeps track of the materials that have been added.
 */

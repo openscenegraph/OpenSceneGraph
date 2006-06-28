@@ -148,6 +148,12 @@ Registry::Registry()
             addFileExtensionAlias("flt", "OpenFlight");
         }
     }
+    else
+    {
+    #ifndef COMPILE_WITH_OLD_OPENFLIGHT_PLUGIN_AS_DEFAULT
+        addFileExtensionAlias("flt", "OpenFlight");
+    #endif
+    }
 
     addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");

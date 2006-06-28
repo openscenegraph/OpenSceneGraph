@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>osgcopy</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.MySoftwareCompany.osgcopy</string>
+	<string>com. OpenSceneGraph.osgcopy</string>
 	<key>CFBundleVersion</key>
 	<string>1.0.0.d1</string>
 </dict>

@@ -218,6 +218,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode *
     
         osg::LOD* lod = new osg::LOD;
         lod->setRangeMode(osg::LOD::PIXEL_SIZE_ON_SCREEN);
+        lod->setRadius(cessna->getBound().radius());
         lod->addChild(geode,0.0f,100.0f);
         lod->addChild(cessna,100.0f,10000.0f);
 

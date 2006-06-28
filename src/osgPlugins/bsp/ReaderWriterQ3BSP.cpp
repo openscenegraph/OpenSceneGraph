@@ -161,11 +161,11 @@ protected:
         
     int m_tesselation;
     std::vector<BSP_VERTEX> m_vertices;
-    std::vector<unsigned int> m_indices;
+    std::vector<GLuint> m_indices;
 
     //arrays for multi_draw_arrays
     std::vector<int>  m_trianglesPerRow;
-    std::vector<unsigned int *>  m_rowIndexPointers;
+    std::vector<GLuint *>  m_rowIndexPointers;
 
 };
 

@@ -87,20 +87,10 @@ typedef double float64;
 #endif
 
 
-#if defined(_WIN32) || defined(linux)
 #include <vector>
 #include <map>
 #include <string>
-#else
-#include <vector.h>
-#include <map.h>
-#endif
 
-#if defined(_WIN32)     // PJM
-// Had to take this out because of an iostream conflict
-// Now referencing everything by std::
-// using namespace std;
-#endif
 
 // We use long longs for addresses within a paging file
 typedef int64 trpgllong;

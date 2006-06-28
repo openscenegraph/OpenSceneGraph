@@ -39,7 +39,7 @@ public:
 private:
     osg::Geode* convertFromBSP(BSPLoad& aLoadData,const osgDB::ReaderWriter::Options* options) const;
     osg::Geometry* createMeshFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
-                                  osg::Vec3Array& aVertexArray,std::vector<unsigned int>& aIndices,
+                                  osg::Vec3Array& aVertexArray,std::vector<GLuint>& aIndices,
                                   osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
                                  ) const;
     osg::Geometry* createPolygonFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,const std::vector<osg::Texture2D*>& aTextureLMapArray,
@@ -354,7 +354,7 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
 
 
 osg::Geometry* ReaderWriterQ3BSP::createMeshFace( const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
-                                                  osg::Vec3Array& aVertexArray,std::vector<unsigned int>& aIndices,
+                                                  osg::Vec3Array& aVertexArray,std::vector<GLuint>& aIndices,
                                                   osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
                                                 ) const
 {

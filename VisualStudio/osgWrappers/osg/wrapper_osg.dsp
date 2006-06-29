@@ -284,10 +284,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\Group.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Group.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Image.cpp
 # End Source File
 

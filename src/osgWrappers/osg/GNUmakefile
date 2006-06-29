@@ -17,6 +17,7 @@ CXXFILES =\
 	BufferObject.cpp\
 	CameraNode.cpp\
 	CameraView.cpp\
+	ClampColor.cpp\
 	ClearNode.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\
@@ -47,6 +48,7 @@ CXXFILES =\
 	Geometry.cpp\
 	GraphicsContext.cpp\
 	GraphicsThread.cpp\
+	Group.cpp\
 	Group.cpp\
 	Image.cpp\
 	ImageStream.cpp\

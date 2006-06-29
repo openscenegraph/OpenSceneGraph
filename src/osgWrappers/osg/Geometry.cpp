@@ -218,13 +218,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::PrimitiveSet *, t);
+	I_Constructor1(IN, osg::PrimitiveSet *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::PrimitiveSet > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::PrimitiveSet *, get);
-	I_Method0(const osg::PrimitiveSet *, get);
-	I_Method0(osg::PrimitiveSet *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::PrimitiveSet *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::PrimitiveSet > &, rp);
 	I_ReadOnlyProperty(osg::PrimitiveSet *, );
 END_REFLECTOR
 

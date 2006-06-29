@@ -14,7 +14,7 @@
 #include <osg/CullSettings>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
-#include <osg/Group>
+#include <osg/Group.bkp>
 #include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/StateSet>
@@ -115,13 +115,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::GraphicsContextImplementation >)
 	I_Constructor0();
-	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, t);
+	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgProducer::GraphicsContextImplementation *, get);
-	I_Method0(const osgProducer::GraphicsContextImplementation *, get);
-	I_Method0(osgProducer::GraphicsContextImplementation *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgProducer::GraphicsContextImplementation *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
 	I_ReadOnlyProperty(osgProducer::GraphicsContextImplementation *, );
 END_REFLECTOR
 

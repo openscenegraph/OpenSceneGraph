@@ -12,7 +12,7 @@
 #include <osg/Billboard>
 #include <osg/Drawable>
 #include <osg/Geode>
-#include <osg/Group>
+#include <osg/Group.bkp>
 #include <osg/LOD>
 #include <osg/MatrixTransform>
 #include <osg/Node>

@@ -80,6 +80,7 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
 	I_EnumLabel(osg::StateAttribute::FRAGMENTPROGRAM);
 	I_EnumLabel(osg::StateAttribute::POINTSPRITE);
 	I_EnumLabel(osg::StateAttribute::PROGRAM);
+	I_EnumLabel(osg::StateAttribute::CLAMPCOLOR);
 	I_EnumLabel(osg::StateAttribute::VALIDATOR);
 	I_EnumLabel(osg::StateAttribute::VIEWMATRIXEXTRACTOR);
 	I_EnumLabel(osg::StateAttribute::OSGNV_PARAMETER_BLOCK);

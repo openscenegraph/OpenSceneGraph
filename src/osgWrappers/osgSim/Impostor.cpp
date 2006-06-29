@@ -52,13 +52,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgSim::ImpostorSprite >)
 	I_Constructor0();
-	I_Constructor1(IN, osgSim::ImpostorSprite *, t);
+	I_Constructor1(IN, osgSim::ImpostorSprite *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgSim::ImpostorSprite > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgSim::ImpostorSprite *, get);
-	I_Method0(const osgSim::ImpostorSprite *, get);
-	I_Method0(osgSim::ImpostorSprite *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgSim::ImpostorSprite *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgSim::ImpostorSprite > &, rp);
 	I_ReadOnlyProperty(osgSim::ImpostorSprite *, );
 END_REFLECTOR
 

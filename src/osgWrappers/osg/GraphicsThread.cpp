@@ -84,13 +84,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GraphicsThread::Operation >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::GraphicsThread::Operation *, t);
+	I_Constructor1(IN, osg::GraphicsThread::Operation *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::GraphicsThread::Operation > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::GraphicsThread::Operation *, get);
-	I_Method0(const osg::GraphicsThread::Operation *, get);
-	I_Method0(osg::GraphicsThread::Operation *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::GraphicsThread::Operation *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::GraphicsThread::Operation > &, rp);
 	I_ReadOnlyProperty(osg::GraphicsThread::Operation *, );
 END_REFLECTOR
 

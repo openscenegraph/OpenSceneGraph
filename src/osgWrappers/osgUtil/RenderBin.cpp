@@ -110,13 +110,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderBin >)
 	I_Constructor0();
-	I_Constructor1(IN, osgUtil::RenderBin *, t);
+	I_Constructor1(IN, osgUtil::RenderBin *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderBin > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgUtil::RenderBin *, get);
-	I_Method0(const osgUtil::RenderBin *, get);
-	I_Method0(osgUtil::RenderBin *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgUtil::RenderBin *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::RenderBin > &, rp);
 	I_ReadOnlyProperty(osgUtil::RenderBin *, );
 END_REFLECTOR
 

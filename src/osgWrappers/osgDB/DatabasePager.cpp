@@ -11,7 +11,7 @@
 
 #include <osg/FrameStamp>
 #include <osg/GraphicsThread>
-#include <osg/Group>
+#include <osg/Group.bkp>
 #include <osg/Node>
 #include <osg/PagedLOD>
 #include <osg/State>
@@ -114,13 +114,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::PagedLOD *, t);
+	I_Constructor1(IN, osg::PagedLOD *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::PagedLOD *, get);
-	I_Method0(const osg::PagedLOD *, get);
-	I_Method0(osg::PagedLOD *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::PagedLOD *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::PagedLOD > &, rp);
 	I_ReadOnlyProperty(osg::PagedLOD *, );
 END_REFLECTOR
 

@@ -65,13 +65,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::DelaunayConstraint >)
 	I_Constructor0();
-	I_Constructor1(IN, osgUtil::DelaunayConstraint *, t);
+	I_Constructor1(IN, osgUtil::DelaunayConstraint *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::DelaunayConstraint > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgUtil::DelaunayConstraint *, get);
-	I_Method0(const osgUtil::DelaunayConstraint *, get);
-	I_Method0(osgUtil::DelaunayConstraint *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgUtil::DelaunayConstraint *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::DelaunayConstraint > &, rp);
 	I_ReadOnlyProperty(osgUtil::DelaunayConstraint *, );
 END_REFLECTOR
 

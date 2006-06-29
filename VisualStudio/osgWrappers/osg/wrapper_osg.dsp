@@ -156,6 +156,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\CameraView.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\ClampColor.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\ClearNode.cpp
 # End Source File
 
@@ -273,6 +277,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\GraphicsContext.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\GraphicsThread.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Group.cpp
 # End Source File
 
 # Begin Source File

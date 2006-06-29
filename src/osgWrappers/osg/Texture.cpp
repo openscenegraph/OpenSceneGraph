@@ -237,13 +237,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::Texture::TextureObject *, t);
+	I_Constructor1(IN, osg::Texture::TextureObject *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObject > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::Texture::TextureObject *, get);
-	I_Method0(const osg::Texture::TextureObject *, get);
-	I_Method0(osg::Texture::TextureObject *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::Texture::TextureObject *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Texture::TextureObject > &, rp);
 	I_ReadOnlyProperty(osg::Texture::TextureObject *, );
 END_REFLECTOR
 

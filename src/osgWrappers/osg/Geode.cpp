@@ -60,13 +60,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Drawable >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::Drawable *, t);
+	I_Constructor1(IN, osg::Drawable *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Drawable > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::Drawable *, get);
-	I_Method0(const osg::Drawable *, get);
-	I_Method0(osg::Drawable *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::Drawable *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Drawable > &, rp);
 	I_ReadOnlyProperty(osg::Drawable *, );
 END_REFLECTOR
 

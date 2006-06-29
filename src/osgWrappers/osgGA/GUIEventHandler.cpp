@@ -72,13 +72,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
 	I_Constructor0();
-	I_Constructor1(IN, osgGA::GUIEventHandler *, t);
+	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgGA::GUIEventHandler *, get);
-	I_Method0(const osgGA::GUIEventHandler *, get);
-	I_Method0(osgGA::GUIEventHandler *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgGA::GUIEventHandler *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
 	I_ReadOnlyProperty(osgGA::GUIEventHandler *, );
 END_REFLECTOR
 

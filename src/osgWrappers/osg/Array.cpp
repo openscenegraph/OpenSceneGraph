@@ -70,6 +70,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
+	I_Method0(void, trim);
 	I_Method0(void, dirty);
 	I_Method1(void, setModifiedCount, IN, unsigned int, value);
 	I_Method0(unsigned int, getModifiedCount);
@@ -223,6 +224,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArray
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -244,6 +246,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2Arra
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -265,6 +268,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -286,6 +290,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -307,6 +312,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3Arra
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -328,6 +334,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -349,6 +356,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -370,6 +378,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4Arra
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -391,6 +400,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -412,6 +422,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -433,6 +444,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ub
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -454,6 +466,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -476,6 +489,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArra
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -498,6 +512,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLshort COMMA  osg::Array::Short
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -520,6 +535,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByte
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -542,6 +558,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntAr
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);
@@ -564,6 +581,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLushort COMMA  osg::Array::USho
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
 	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
 	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
+	I_Method0(void, trim);
 	I_Method0(const GLvoid *, getDataPointer);
 	I_Method0(unsigned int, getTotalDataSize);
 	I_Method0(unsigned int, getNumElements);

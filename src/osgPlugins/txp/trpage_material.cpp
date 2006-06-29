@@ -26,7 +26,7 @@
 #include <trpage_geom.h>
 #include <trpage_read.h>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define strcasecmp _stricmp
 #endif
 

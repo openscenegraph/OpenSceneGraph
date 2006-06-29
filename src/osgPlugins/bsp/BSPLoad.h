@@ -5,6 +5,7 @@
 
 
 #include <osg/Vec3f>
+#include <osg/GL>
 
 #include <vector>
 #include <string>
@@ -186,7 +187,7 @@ public:
 
   // Load Data
   std::vector<BSP_LOAD_VERTEX>    m_loadVertices;
-  std::vector<unsigned int>       m_loadMeshIndices;
+  std::vector<GLuint>             m_loadMeshIndices;
   std::vector<BSP_LOAD_FACE>      m_loadFaces;
   std::vector<BSP_LOAD_TEXTURE>   m_loadTextures;
   std::vector<BSP_LOAD_LIGHTMAP>  m_loadLightmaps;

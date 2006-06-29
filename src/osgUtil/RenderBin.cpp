@@ -16,6 +16,7 @@
 
 #include <osg/Notify>
 #include <osg/ApplicationUsage>
+#include <osg/AlphaFunc>
 
 #include <algorithm>
 
@@ -128,6 +129,21 @@ RenderBin::RenderBin(SortMode mode)
     _parent = NULL;
     _stage = NULL;
     _sortMode = mode;
+
+#if 1
+    if (_sortMode==SORT_BACK_TO_FRONT)
+    {
+        _stateset  = new osg::StateSet;
+        _stateset->setThreadSafeRefUnref(true);
+        
+         // set up an alphafunc by default to speed up blending operations.
+        osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
+        alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
+        alphafunc->setThreadSafeRefUnref(true);
+        
+        _stateset->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
+    }
+#endif    
 }
 
 RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
@@ -140,7 +156,8 @@ RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
         _renderLeafList(rhs._renderLeafList),
         _sortMode(rhs._sortMode),
         _sortCallback(rhs._sortCallback),
-        _drawCallback(rhs._drawCallback)
+        _drawCallback(rhs._drawCallback),
+        _stateset(rhs._stateset)
 {
 
 }
@@ -348,6 +365,11 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 {
     // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
 
+    if (_stateset.valid())
+    {
+        state.pushStateSet(_stateset.get());
+    }
+
     // draw first set of draw bins.
     RenderBinList::iterator rbitr;
     for(rbitr = _bins.begin();
@@ -394,6 +416,8 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
     {
         rbitr->second->draw(state,previous);
     }
+
+    if (_stateset.valid()) state.popStateSet();
 
     //osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;
 }

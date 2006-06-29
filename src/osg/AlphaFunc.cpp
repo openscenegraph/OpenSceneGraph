@@ -12,6 +12,7 @@
 */
 
 #include <osg/AlphaFunc>
+#include <osg/Notify>
 
 using namespace osg;
 

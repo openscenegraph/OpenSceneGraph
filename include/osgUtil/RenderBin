@@ -72,6 +72,11 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         virtual void reset();
         
+        void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
+        osg::StateSet* getStateSet() { return _stateset.get(); }
+        const osg::StateSet* getStateSet() const { return _stateset.get(); }
+        
+        
         RenderBin* getParent() { return _parent; }
         const RenderBin* getParent() const { return _parent; }
 
@@ -149,12 +154,12 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         StateGraphList                  _stateGraphList;
         RenderLeafList                  _renderLeafList;
            
-
         SortMode                        _sortMode;
         osg::ref_ptr<SortCallback>      _sortCallback;
 
         osg::ref_ptr<DrawCallback>      _drawCallback;
 
+        osg::ref_ptr<osg::StateSet>     _stateset;
 
 };
 

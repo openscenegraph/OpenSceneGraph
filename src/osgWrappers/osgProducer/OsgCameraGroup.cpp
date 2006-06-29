@@ -14,7 +14,7 @@
 #include <osg/CullSettings>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
-#include <osg/Group.bkp>
+#include <osg/Group>
 #include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/StateSet>

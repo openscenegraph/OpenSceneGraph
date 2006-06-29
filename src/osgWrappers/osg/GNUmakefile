@@ -49,7 +49,6 @@ CXXFILES =\
 	GraphicsContext.cpp\
 	GraphicsThread.cpp\
 	Group.cpp\
-	Group.cpp\
 	Image.cpp\
 	ImageStream.cpp\
 	LOD.cpp\

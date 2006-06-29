@@ -11,7 +11,7 @@
 
 #include <osg/FrameStamp>
 #include <osg/GraphicsThread>
-#include <osg/Group.bkp>
+#include <osg/Group>
 #include <osg/Node>
 #include <osg/PagedLOD>
 #include <osg/State>

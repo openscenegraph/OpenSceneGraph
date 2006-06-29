@@ -8,88 +8,78 @@
 
 #include <osg/Endian>
 #include <osg/Notify>
-#include <osgDB/ReadFile>
 
 using namespace flt;
 
 
-DataInputStream::DataInputStream(std::istream* istream):
-    _istream(istream)
+DataInputStream::DataInputStream(std::streambuf* sb):
+    std::istream(sb)
 {
     _byteswap = osg::getCpuByteOrder() == osg::LittleEndian;
-
-    if (!istream)
-        throw std::string("DataInputStream::DataInputStream(): null pointer exception in argument.");
 }
 
-
-DataInputStream::~DataInputStream()
-{
-}
-
-
-int8 DataInputStream::readInt8(int8 def) const
+int8 DataInputStream::readInt8(int8 def)
 {
     int8 d=def;
-    read((char*)&d, sizeof(int8));
+    vread((char*)&d, sizeof(int8));
     return d;
 }
 
 
-uint8 DataInputStream::readUInt8(uint8 def) const
+uint8 DataInputStream::readUInt8(uint8 def)
 {
     uint8 d=def;
-    read((char*)&d, sizeof(uint8));
+    vread((char*)&d, sizeof(uint8));
     return d;
 }
 
 
-int16 DataInputStream::readInt16(int16 def) const
+int16 DataInputStream::readInt16(int16 def)
 {
     int16 d=def;
-    read((char*)&d, sizeof(int16));
-    if (_byteswap && !_istream->fail())
+    vread((char*)&d, sizeof(int16));
+    if (_byteswap && good())
         osg::swapBytes2((char *)&d);
     return d;
 }
 
 
-uint16 DataInputStream::readUInt16(uint16 def) const
+uint16 DataInputStream::readUInt16(uint16 def)
 {
     uint16 d=def;
-    read((char*)&d, sizeof(uint16));
-    if (_byteswap && !_istream->fail())
+    vread((char*)&d, sizeof(uint16));
+    if (_byteswap && good())
         osg::swapBytes2((char *)&d);
     return d;
 }
 
 
-int32 DataInputStream::readInt32(int32 def) const
+int32 DataInputStream::readInt32(int32 def)
 {
     int32 d=def;
-    read((char*)&d, sizeof(int32));
-    if (_byteswap && !_istream->fail())
+    vread((char*)&d, sizeof(int32));
+    if (_byteswap && good())
         osg::swapBytes4((char *)&d);
     return d;
 }
 
 
-uint32 DataInputStream::readUInt32(uint32 def) const
+uint32 DataInputStream::readUInt32(uint32 def)
 {
     uint32 d=def;
-    read((char*)&d, sizeof(uint32));
-    if (_byteswap && !_istream->fail())
+    vread((char*)&d, sizeof(uint32));
+    if (_byteswap && good())
         osg::swapBytes4((char *)&d);
     return d;
 }
 
 
-float32 DataInputStream::readFloat32(float32 def) const
+float32 DataInputStream::readFloat32(float32 def)
 {
     float32 d=def;
     char buf[sizeof(float32)];
-    read(buf, sizeof(float32));
-    if (_byteswap && !_istream->fail())
+    vread(buf, sizeof(float32));
+    if (_byteswap && good())
     {
         osg::swapBytes4(buf);
         memcpy(&d,buf,sizeof(float32));
@@ -98,12 +88,12 @@ float32 DataInputStream::readFloat32(float32 def) const
 }
 
 
-float64 DataInputStream::readFloat64(float64 def) const
+float64 DataInputStream::readFloat64(float64 def)
 {
     float64 d=def;
     char buf[sizeof(float64)];
-    read(buf, sizeof(float64));
-    if (_byteswap && !_istream->fail())
+    vread(buf, sizeof(float64));
+    if (_byteswap && good())
     {
         osg::swapBytes8(buf);
         memcpy(&d,buf,sizeof(float64));
@@ -112,16 +102,16 @@ float64 DataInputStream::readFloat64(float64 def) const
 }
 
 
-void DataInputStream::readCharArray(char* data, int size) const
+void DataInputStream::readCharArray(char* data, int size)
 {
-    read(data, size);
+    vread(data,size);
 }
 
 
-std::string DataInputStream::readString(int size) const
+std::string DataInputStream::readString(int size)
 {
     char* buf = new char[size+1];
-    read(buf,size);
+    vread(buf,size);
     buf[size] = '\0';
     std::string str = buf;
     delete [] buf;
@@ -129,7 +119,7 @@ std::string DataInputStream::readString(int size) const
 }
 
 
-osg::Vec4f DataInputStream::readColor32() const
+osg::Vec4f DataInputStream::readColor32()
 {
     uint8 alpha = readUInt8();
     uint8 blue  = readUInt8();
@@ -142,7 +132,7 @@ osg::Vec4f DataInputStream::readColor32() const
 }
 
 
-osg::Vec2f DataInputStream::readVec2f() const
+osg::Vec2f DataInputStream::readVec2f()
 {
     float32 x = readFloat32();
     float32 y = readFloat32();
@@ -153,7 +143,7 @@ osg::Vec2f DataInputStream::readVec2f() const
 }
 
 
-osg::Vec3f DataInputStream::readVec3f() const
+osg::Vec3f DataInputStream::readVec3f()
 {
     float32 x = readFloat32();
     float32 y = readFloat32();
@@ -165,7 +155,7 @@ osg::Vec3f DataInputStream::readVec3f() const
 }
 
 
-osg::Vec3d DataInputStream::readVec3d() const
+osg::Vec3d DataInputStream::readVec3d()
 {
     float64 x = readFloat64();
     float64 y = readFloat64();
@@ -177,34 +167,34 @@ osg::Vec3d DataInputStream::readVec3d() const
 }
 
 
-int16 DataInputStream::peekInt16() const
+int16 DataInputStream::peekInt16()
 {
     // Get current read position in stream.
-    std::istream::pos_type pos = _istream->tellg();
+    std::istream::pos_type pos = tellg();
 
     int16 value = readInt16();
 
     // Restore position
-    _istream->seekg(pos, std::ios_base::beg);
+    seekg(pos, std::ios_base::beg);
 
     return value;
 }
 
 
-void DataInputStream::forward(std::istream::off_type _Off) const
+std::istream& DataInputStream::forward(std::istream::off_type off)
 {
-    seekg(_Off, std::ios_base::cur);
+    return vforward(off);
 }
 
 
-std::istream& DataInputStream::read(std::istream::char_type *_Str, std::streamsize _Count) const
+std::istream& DataInputStream::vread(char_type *str, std::streamsize count)
 {
-    return _istream->read(_Str, _Count);
+    return read(str,count);
 }
 
 
-std::istream& DataInputStream::seekg(std::istream::off_type _Off, std::ios_base::seekdir _Way) const
+std::istream& DataInputStream::vforward(std::istream::off_type off)
 {
-    return _istream->seekg(_Off, _Way);
+    return seekg(off, std::ios_base::cur);
 }
 

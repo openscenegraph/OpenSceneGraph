@@ -18,11 +18,7 @@ class RecordInputStream : public DataInputStream
 {
     public:
 
-        RecordInputStream(std::istream* istream);
-        virtual ~RecordInputStream();
-
-        // end of record
-//      bool eor() const;
+        explicit RecordInputStream(std::streambuf* sb);
 
         bool readRecord(Document& data);
 
@@ -31,15 +27,16 @@ class RecordInputStream : public DataInputStream
         inline std::streamsize getRecordSize() const { return _end-_start; }
         inline std::streamsize getRecordBodySize() const { return getRecordSize()-(std::streamsize)4; }
 
-        inline void moveToStartOfRecord() const { _istream->seekg(_start,std::ios_base::beg); }
+        inline void moveToStartOfRecord() { seekg(_start /*,std::ios_base::beg*/); }
         inline void setEndOfRecord(std::istream::pos_type pos) { _end=pos; }
-
 
     protected:
 
-        virtual std::istream& read(std::istream::char_type *_Str, std::streamsize _Count) const;
+        virtual std::istream& vread(char_type *str, std::streamsize count);
+        virtual std::istream& vforward(std::istream::off_type off);
 
-//      std::istream*          _istream;
+        int _recordSize;
+        int _recordOffset;
         std::istream::pos_type _start;      // start of record
         std::istream::pos_type _end;        // end of record
 };

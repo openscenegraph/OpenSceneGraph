@@ -212,7 +212,7 @@ class AbsoluteVertex : public Record
             vertex.setCoord(osg::Vec3(x,y,z) * document.unitScale());
 
             // optional texture coordinates
-            if (in().tellg() < in.getEndOfRecord())
+            if (in.tellg() < in.getEndOfRecord())
             {
                 osg::Vec2f uv = in.readVec2f();
                 vertex.setUV(0,uv);
@@ -260,7 +260,7 @@ class ShadedVertex : public Record
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
 
             // optional texture coordinates
-            if (in().tellg() < in.getEndOfRecord())
+            if (in.tellg() < in.getEndOfRecord())
             {
                 osg::Vec2f uv = in.readVec2f();
                 vertex.setUV(0,uv);
@@ -308,7 +308,7 @@ class NormalVertex : public Record
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
 
             // optional texture coordinates
-            if (in().tellg() < in.getEndOfRecord())
+            if (in.tellg() < in.getEndOfRecord())
             {
                 osg::Vec2f uv = in.readVec2f();
                 vertex.setUV(0,uv);

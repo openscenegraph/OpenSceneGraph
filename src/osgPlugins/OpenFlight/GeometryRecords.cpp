@@ -509,14 +509,14 @@ protected:
             int vertices = (in.getRecordSize()-4) / 4;
 
             // Use the Vertex pool as a record stream.
-            RecordInputStream inVP(vp);
+            RecordInputStream inVP(vp->rdbuf());
             for (int n=0; n<vertices; n++)
             {
                 // Get position of vertex.
                 uint32 pos = in.readUInt32();
 
                 // Get vertex from vertex pool.
-                inVP().seekg((std::istream::pos_type)pos);
+                inVP.seekg((std::istream::pos_type)pos);
                 inVP.readRecord(document);
             }
         }
@@ -588,7 +588,7 @@ protected:
             int vertices = (in.getRecordSize()-4) / 8;
 
             // Use the Vertex pool as a record stream.
-            RecordInputStream inVP(vp);
+            RecordInputStream inVP(vp->rdbuf());
             for (int n=0; n<vertices; n++)
             {
                 // Get position of vertex.
@@ -599,12 +599,12 @@ protected:
 
                 // 0%
                 _mode = MORPH_0;
-                inVP().seekg((std::istream::pos_type)offset0);
+                inVP.seekg((std::istream::pos_type)offset0);
                 inVP.readRecord(document);
 
                 // 100%
                 _mode = MORPH_100;
-                inVP().seekg((std::istream::pos_type)offset100);
+                inVP.seekg((std::istream::pos_type)offset100);
                 inVP.readRecord(document);
             }
         }

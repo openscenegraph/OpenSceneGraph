@@ -15,6 +15,7 @@ Document::Document() :
     _subfaceLevel(0),
     _version(0),
     _unitScale(1.0),
+    _preserveFace(false),
     _defaultDOFAnimationState(false),
     _useTextureAlphaForTransparancyBinning(true),
     _doUnitsConversion(true),

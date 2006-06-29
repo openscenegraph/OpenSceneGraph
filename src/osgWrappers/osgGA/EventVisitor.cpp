@@ -11,7 +11,7 @@
 
 #include <osg/Billboard>
 #include <osg/Geode>
-#include <osg/Group.bkp>
+#include <osg/Group>
 #include <osg/LOD>
 #include <osg/LightSource>
 #include <osg/Node>

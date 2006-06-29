@@ -11,7 +11,7 @@
 
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
-#include <osg/Group.bkp>
+#include <osg/Group>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
@@ -27,7 +27,6 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::Group)
 	I_BaseType(osg::Node);
-	I_BaseType(osg::Node);
 	I_Constructor0();
 	I_ConstructorWithDefaults2(IN, const osg::Group &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
@@ -43,31 +42,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
 	I_Method1(bool, removeChild, IN, osg::Node *, child);
 	I_MethodWithDefaults2(bool, removeChild, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
-	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
-	I_Method2(bool, replaceChild, IN, osg::Node *, origChild, IN, osg::Node *, newChild);
-	I_Method0(unsigned int, getNumChildren);
-	I_Method2(bool, setChild, IN, unsigned int, i, IN, osg::Node *, node);
-	I_Method1(osg::Node *, getChild, IN, unsigned int, i);
-	I_Method1(const osg::Node *, getChild, IN, unsigned int, i);
-	I_Method1(bool, containsNode, IN, const osg::Node *, node);
-	I_Method1(unsigned int, getChildIndex, IN, const osg::Node *, node);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Group &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(osg::Group *, asGroup);
-	I_Method0(const osg::Group *, asGroup);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(bool, addChild, IN, osg::Node *, child);
-	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
-	I_Method1(bool, removeChild, IN, unsigned int, pos);
 	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
 	I_Method2(bool, replaceChild, IN, osg::Node *, origChild, IN, osg::Node *, newChild);
 	I_Method0(unsigned int, getNumChildren);
@@ -81,59 +55,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	I_ArrayProperty_GSA(osg::Node *, Child, Children, unsigned int, bool);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Group)
-	I_BaseType(osg::Node);
-	I_BaseType(osg::Node);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osg::NodeList);
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Node >)
 	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Group &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(osg::Group *, asGroup);
-	I_Method0(const osg::Group *, asGroup);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(bool, addChild, IN, osg::Node *, child);
-	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
-	I_MethodWithDefaults2(bool, removeChild, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
-	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
-	I_Method2(bool, replaceChild, IN, osg::Node *, origChild, IN, osg::Node *, newChild);
-	I_Method0(unsigned int, getNumChildren);
-	I_Method2(bool, setChild, IN, unsigned int, i, IN, osg::Node *, node);
-	I_Method1(osg::Node *, getChild, IN, unsigned int, i);
-	I_Method1(const osg::Node *, getChild, IN, unsigned int, i);
-	I_Method1(bool, containsNode, IN, const osg::Node *, node);
-	I_Method1(unsigned int, getChildIndex, IN, const osg::Node *, node);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Group &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(osg::Group *, asGroup);
-	I_Method0(const osg::Group *, asGroup);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(bool, addChild, IN, osg::Node *, child);
-	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
-	I_Method1(bool, removeChild, IN, osg::Node *, child);
-	I_Method1(bool, removeChild, IN, unsigned int, pos);
-	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
-	I_Method2(bool, replaceChild, IN, osg::Node *, origChild, IN, osg::Node *, newChild);
-	I_Method0(unsigned int, getNumChildren);
-	I_Method2(bool, setChild, IN, unsigned int, i, IN, osg::Node *, node);
-	I_Method1(osg::Node *, getChild, IN, unsigned int, i);
-	I_Method1(const osg::Node *, getChild, IN, unsigned int, i);
-	I_Method1(bool, containsNode, IN, const osg::Node *, node);
-	I_Method1(unsigned int, getChildIndex, IN, const osg::Node *, node);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_ArrayProperty_GSA(osg::Node *, Child, Children, unsigned int, bool);
+	I_Constructor1(IN, osg::Node *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osg::Node > &, rp);
+	I_Method0(osg::Node *, get);
+	I_Method0(bool, valid);
+	I_Method0(osg::Node *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Node > &, rp);
+	I_ReadOnlyProperty(osg::Node *, );
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Node > >);
 

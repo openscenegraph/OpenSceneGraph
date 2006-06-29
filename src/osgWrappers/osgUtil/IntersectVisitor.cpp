@@ -13,7 +13,7 @@
 #include <osg/CameraNode>
 #include <osg/Drawable>
 #include <osg/Geode>
-#include <osg/Group.bkp>
+#include <osg/Group>
 #include <osg/LOD>
 #include <osg/LineSegment>
 #include <osg/Matrix>

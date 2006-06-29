@@ -10,7 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Geode>
-#include <osg/Group.bkp>
+#include <osg/Group>
 #include <osg/Node>
 #include <osgSim/OpenFlightOptimizer>
 

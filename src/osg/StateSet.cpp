@@ -423,7 +423,7 @@ void StateSet::setGlobalDefaults()
 
 
     setMode(GL_DEPTH_TEST,StateAttribute::ON);
-    setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
+    // setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
     setAttributeAndModes(new BlendFunc,StateAttribute::OFF);
 
     Material *material       = new Material;

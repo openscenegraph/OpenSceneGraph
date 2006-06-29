@@ -194,10 +194,12 @@ void SceneView::setDefaults(unsigned int options)
     // enable depth testing by default.
     _globalStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
+#if 0
     // set up an alphafunc by default to speed up blending operations.
     osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
-    alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
-    _globalStateSet->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
+    alphafunc->setFunction(osg::AlphaFunc::GREATER,1.0f);
+    _globalStateSet->setAttributeAndModes(alphafunc, osg::StateAttribute::OFF);
+#endif
 
     // set up an texture environment by default to speed up blending operations.
      osg::TexEnv* texenv = new osg::TexEnv;

@@ -12,6 +12,7 @@
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osg/State>
+#include <osg/StateSet>
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/RenderStage>
@@ -54,6 +55,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method0(void, reset);
+	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset);
+	I_Method0(osg::StateSet *, getStateSet);
+	I_Method0(const osg::StateSet *, getStateSet);
 	I_Method0(osgUtil::RenderBin *, getParent);
 	I_Method0(const osgUtil::RenderBin *, getParent);
 	I_Method0(osgUtil::RenderStage *, getStage);
@@ -94,6 +98,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Property(osgUtil::RenderBin::SortMode, SortMode);
 	I_ReadOnlyProperty(osgUtil::RenderStage *, Stage);
 	I_ReadOnlyProperty(osgUtil::RenderBin::StateGraphList &, StateGraphList);
+	I_Property(osg::StateSet *, StateSet);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::DrawCallback)

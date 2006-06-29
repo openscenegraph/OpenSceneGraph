@@ -139,10 +139,19 @@ class FLTReaderWriter : public ReaderWriter
             // option string
             if (options)
             {
+                const char readerMsg[] = "flt reader option: ";
+
+                document.setPreserveFace((options->getOptionString().find("FLT_preserveFace")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "FLT_preserveFace=" << document.getPreserveFace() << std::endl;
+
+                document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
+
                 document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
-                osg::notify(osg::DEBUG_INFO) << "FltFile.getUseTextureAlphaForTransparancyBinning()=" << document.getUseTextureAlphaForTransparancyBinning() << std::endl;
-                document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.o
-                osg::notify(osg::DEBUG_INFO) << "FltFile.getDoUnitsConversion()=" << document.getDoUnitsConversion() << std::endl;
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "noTextureAlphaForTransparancyBinning=" << document.getUseTextureAlphaForTransparancyBinning() << std::endl;
+
+                document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "noUnitsConversion=" << document.getDoUnitsConversion() << std::endl;
 
                 if (document.getDoUnitsConversion())
                 {
@@ -161,8 +170,8 @@ class FLTReaderWriter : public ReaderWriter
 
             {
                 // read records
-                flt::RecordInputStream recordStream(&fin);
-                while (recordStream().good() && !document.done())
+                flt::RecordInputStream recordStream(fin.rdbuf());
+                while (recordStream.good() && !document.done())
                 {
                     recordStream.readRecord(document);
                 }

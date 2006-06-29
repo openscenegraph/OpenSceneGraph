@@ -9,10 +9,7 @@
 
 #include <vector>
 #include <map>
-
-// need to replace this... and associated istrstream as its deprecated
-#include <strstream>
-
+#include <sstream>
 #include <osg/Vec4>
 #include <osg/StateSet>
 #include <osg/Material>
@@ -22,21 +19,16 @@
 
 namespace flt {
 
-class VertexPool : public osg::Referenced, public std::istrstream
+class VertexPool : public osg::Referenced, public std::istringstream
 {
-    const char* _buffer;
-
 public:
 
-    explicit VertexPool(std::streamsize count) :
-        std::istrstream(_buffer=new char[count],count) {}
+    explicit VertexPool( const std::string& str) :
+        std::istringstream(str,std::istringstream::in|std::istringstream::binary) {}
 
 protected:
 
-    virtual ~VertexPool()
-    {
-        if (_buffer) delete [] _buffer;
-    }
+    virtual ~VertexPool() {}
 };
 
 

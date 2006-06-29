@@ -4,6 +4,7 @@
 //  Copyright (C) 2005-2006  Brede Johansen
 //
 
+#include <iostream>
 #include "opcodes.h"
 #include "Registry.h"
 #include "Document.h"
@@ -13,50 +14,49 @@ using namespace flt;
 using namespace std;
 
 
-RecordInputStream::RecordInputStream(std::istream* istream):
-    DataInputStream(istream)
+RecordInputStream::RecordInputStream(std::streambuf* sb):
+    DataInputStream(sb),
+    _recordSize(0),
+    _recordOffset(0)
+{}
+
+
+std::istream& RecordInputStream::vread(char_type *str, std::streamsize count)
 {
-
-#if 0 //def _DEBUG
-    ios::iostate mask = istream->exceptions();
-    cout << "ios::badbit=" << ( mask & ios::badbit ) << std::endl;
-    cout << "ios::failbit=" << ( mask & ios::failbit ) << std::endl;
-    cout << "ios::eofbit=" << ( mask & ios::eofbit ) << std::endl;
-#endif
-
-    // dont't throw an exception on failbit
-    istream->exceptions(istream->exceptions() & ~ios::failbit);
-}
-
-
-RecordInputStream::~RecordInputStream()
-{
-}
-
-
-std::istream& RecordInputStream::read(std::istream::char_type *_Str, std::streamsize _Count) const
-{
-    // Bounds check
-    istream::pos_type pos = _istream->tellg();
-    if (pos+(istream::pos_type)_Count > _end)
+    if ((_recordSize>0) && (_recordOffset+count > _recordSize))
     {
-        _istream->setstate(ios::failbit); // end-of-record (EOR)
-        return *_istream;
+        setstate(ios::failbit); // end-of-record (EOR)
+        return *this;
     }
 
-    return _istream->read(_Str,_Count);
+    _recordOffset += count;
+    return DataInputStream::vread(str,count);
+}
+
+
+std::istream& RecordInputStream::vforward(std::istream::off_type off)
+{
+    if ((_recordSize>0) && (_recordOffset+off > _recordSize))
+    {
+        setstate(ios::failbit); // end-of-record (EOR)
+        return *this;
+    }
+
+    _recordOffset += off;
+    return DataInputStream::vforward(off);
 }
 
 
 bool RecordInputStream::readRecord(Document& document)
 {
     // Get current read position in stream.
-    _start = _istream->tellg();
+    _start = tellg();
+    _recordOffset = 0;
 
     // Get record header without bounds check.
-    DataInputStream distream(_istream);
-    uint16 opcode = distream.readUInt16();
-    uint16 size = distream.readUInt16();
+    _recordSize = 0;               // disable boundary check
+    uint16 opcode = readUInt16();
+    int size = (int)readUInt16();
 
     // Correct endian error in Creator v2.5 gallery models.
     // Last pop level record in little-endian.
@@ -68,17 +68,19 @@ bool RecordInputStream::readRecord(Document& document)
         size=4;
     }
 
+    _recordSize = size;
+
     // Update end-of-record
     _end = _start + (std::istream::pos_type)size;
 
 #if 0
     // TODO: Peek at next opcode looking for continuation record.
-    _istream->seekg(_end, std::ios_base::beg);
+    seekg(_end, std::ios_base::beg);
     if (_istream->fail())
         return false;
 
     int16 nextOpcode = readUInt16();
-    _istream->seekg(_start+(std::istream::pos_type)4, std::ios_base::beg);
+    seekg(_start+(std::istream::pos_type)4, std::ios_base::beg);
     if (nextOpcode == CONTINUATION_OP)
     {
 
@@ -109,7 +111,7 @@ bool RecordInputStream::readRecord(Document& document)
         }
 
         // Clear failbit, it's used for end-of-record testing.
-        _istream->clear(_istream->rdstate() & ~std::ios::failbit);
+        clear(rdstate() & ~std::ios::failbit);
     }
     else // prototype not found
     {
@@ -120,7 +122,7 @@ bool RecordInputStream::readRecord(Document& document)
     }
 
     // Move to beginning of next record
-    _istream->seekg(_end, std::ios_base::beg);
+    seekg(_end, std::ios_base::beg);
 
-    return _istream->good();
+    return good();
 }

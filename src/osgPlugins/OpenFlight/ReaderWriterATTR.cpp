@@ -54,7 +54,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
     if ( fin.fail())
         return ReadResult::ERROR_IN_READING_FILE;
 
-    flt::DataInputStream in(&fin);
+    flt::DataInputStream in(fin.rdbuf());
 
     AttrData* attr = new AttrData;
 

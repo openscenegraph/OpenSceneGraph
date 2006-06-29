@@ -171,7 +171,7 @@ namespace txp
 	// For version 2.1 and over this function can only be call
 	// with lod = 0, since the archive tile table will contain 
 	// only tiles with lod = 0
-	osg::Group* TXPArchive::getTileContent(
+	osg::Group* getTileContent(
             int x, 
             int y, 
             int lod,
@@ -182,7 +182,7 @@ namespace txp
             std::vector<TXPArchive::TileLocationInfo>& childInfoList);
 
 	//  To be used for Version 2.1 with lod > 0
-	osg::Group* TXPArchive::getTileContent(
+	osg::Group* getTileContent(
             const TileLocationInfo& loc,
             double realMinRange, 
             double realMaxRange, 

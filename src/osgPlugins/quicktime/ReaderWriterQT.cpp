@@ -235,11 +235,10 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 return WriteResult::FILE_NOT_HANDLED;
             }
             
-            GWorldPtr gw = NULL;
-            
-            // we are converting the images back to 32bit, it seems, that quicktime can't handle others
+            CGContextRef cg_context = NULL;
                         
-            unsigned long desiredPixelFormat = k32ARGBPixelFormat;
+            // we are converting the images back to 32bit, it seems, that quicktime can't handle others
+//            unsigned long desiredPixelFormat = k32ARGBPixelFormat;
             
             
             
@@ -259,7 +258,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 
                 switch (numBytes) {
                     case 1 : 
-                        dstp[0] = 0;
+                        dstp[0] = 0xFFFFFFFF;
                         dstp[1] = srcp[0];
                         dstp[2] = srcp[0];
                         dstp[3] = srcp[0];
@@ -269,7 +268,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                         break;
                     case 3 :
                         for (j=0; j<buffWidth; j++ ) {
-                            dstp[0]=0;
+                            dstp[0]=0xFFFFFFFF;
                             dstp[1]=srcp[0];
                             dstp[2]=srcp[1];
                             dstp[3]=srcp[2];
@@ -280,10 +279,11 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                         break;
                     case 4 :
                         for (j=0; j<buffWidth; j++ ) {
-                            dstp[0]=srcp[1];
-                            dstp[1]=srcp[2];
-                            dstp[2]=srcp[3];
-                            dstp[3]=srcp[0];
+                            // shift from RGBA to ARGB
+                            dstp[0]=srcp[3];
+                            dstp[1]=srcp[0];
+                            dstp[2]=srcp[1];
+                            dstp[3]=srcp[2];
                             
                             srcp+=4;
                             dstp+=4;
@@ -309,18 +309,18 @@ class ReaderWriterQT : public osgDB::ReaderWriter
             FSSpec* fileSpec = NULL;
 
             try {
-            
-                
-
-                Rect bounds;
-                SetRect(&bounds, 0,0, img.s(), img.t());
-                
-                err = NewGWorldFromPtr(&gw, desiredPixelFormat, &bounds, 0,0,0, pixels, buffWidth*4);
-                if (err != noErr) {
+                // I'm not sure what the bitsPerComponet should be. For RGB and RGBA in 24 and 32 bit pixel formats, it's 8.
+                // Since the code above put everything in ARGB, I guess I can hardcode everything.
+                cg_context = CGBitmapContextCreate(pixels, img.s(), img.t(), 8, buffWidth*4, 
+                                 CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB),
+                                 kCGImageAlphaPremultipliedFirst // The code above put everything in ARGB
+                             );
+                if (cg_context == NULL) {
                     osg::notify(osg::WARN) << "ReaderWriterQT: could not create gworld for type " << ext << ", Err: " << err << std::endl;
-                    throw err;
-                }
-                
+                    // This seems really messed up, but throwing Sin16's seems really messed up in general.
+                    throw 0;
+                }                                                   
+
                 // create a dummy file at location
                 FILE *fp = fopen(fileName.c_str(), "wb");
                 if (!fp) {
@@ -337,7 +337,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                     throw err;
                 }
                        
-                err = GraphicsExportSetInputGWorld(geComp, gw);
+                err = GraphicsExportSetInputCGBitmapContext(geComp, cg_context);
                 if (err != noErr) {
                     osg::notify(osg::WARN) << "ReaderWriterQT: could not set input gworld for type " << ext << ", Err: " << err << std::endl;
                     throw err;
@@ -358,6 +358,13 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                     }
                 }
                 
+                if(32 == numBytes)
+                {
+                    err = GraphicsExportSetDepth( geComp,
+                                                  k32ARGBPixelFormat );    // depth
+                }
+                // else k24RGBPixelFormat???
+                
                 // do the export
                 err = GraphicsExportDoExport(geComp, NULL);
                 if (err != noErr) {
@@ -368,7 +375,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 if (geComp != NULL)
                     CloseComponent(geComp);
                     
-                DisposeGWorld (gw);
+                CGContextRelease(cg_context);
                 if (fileSpec != NULL ) free(fileSpec);   
                 if (pixels) free(pixels);
                                     
@@ -379,7 +386,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
             catch (...) {
                 
                 if (geComp != NULL) CloseComponent(geComp);      
-                if (gw != NULL) DisposeGWorld (gw);
+                if (cg_context != NULL) CGContextRelease(cg_context);
                 if (fileSpec != NULL ) free(fileSpec);
                 if (pixels) free(pixels);
                        

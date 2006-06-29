@@ -80,6 +80,25 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::DrawModeMask)
 	I_EnumLabel(osgText::Text::ALIGNMENT);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
+	I_EnumLabel(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_CENTER_RIGHT);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_TOP_RIGHT);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_BOTTOM_CENTER);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_TOP_CENTER);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_BOTTOM_LEFT);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_CENTER_LEFT);
+	I_EnumLabel(osgText::Text::DROP_SHADOW_TOP_LEFT);
+	I_EnumLabel(osgText::Text::OUTLINE);
+	I_EnumLabel(osgText::Text::NONE);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgText::Text::ColorGradientMode)
+	I_EnumLabel(osgText::Text::SOLID);
+	I_EnumLabel(osgText::Text::PER_CHARACTER);
+	I_EnumLabel(osgText::Text::OVERALL);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_BaseType(osg::Drawable);
 	I_Constructor0();
@@ -126,6 +145,21 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method0(const osg::Vec4 &, getColor);
 	I_Method1(void, setDrawMode, IN, unsigned int, mode);
 	I_Method0(unsigned int, getDrawMode);
+	I_Method1(void, setBackdropType, IN, osgText::Text::BackdropType, type);
+	I_Method0(osgText::Text::BackdropType, getBackdropType);
+	I_MethodWithDefaults1(void, setBackdropOffset, IN, float, offset, 0.07f);
+	I_Method2(void, setBackdropOffset, IN, float, horizontal, IN, float, vertical);
+	I_Method0(float, getBackdropHorizontalOffet);
+	I_Method0(float, getBackdropVerticalOffset);
+	I_Method1(void, setBackdropColor, IN, const osg::Vec4 &, color);
+	I_Method0(const osg::Vec4 &, getBackdropColor);
+	I_Method1(void, setColorGradientMode, IN, osgText::Text::ColorGradientMode, mode);
+	I_Method0(osgText::Text::ColorGradientMode, getColorGradientMode);
+	I_Method4(void, setColorGradientCorners, IN, const osg::Vec4 &, topLeft, IN, const osg::Vec4 &, bottomLeft, IN, const osg::Vec4 &, bottomRight, IN, const osg::Vec4 &, topRight);
+	I_Method0(const osg::Vec4 &, getColorGradientTopLeft);
+	I_Method0(const osg::Vec4 &, getColorGradientBottomLeft);
+	I_Method0(const osg::Vec4 &, getColorGradientBottomRight);
+	I_Method0(const osg::Vec4 &, getColorGradientTopRight);
 	I_Method1(void, setKerningType, IN, osgText::KerningType, kerningType);
 	I_Method0(osgText::KerningType, getKerningType);
 	I_Method0(unsigned int, getLineCount);
@@ -142,10 +176,20 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Property(osgText::Text::AlignmentType, Alignment);
 	I_Property(bool, AutoRotateToScreen);
 	I_WriteOnlyProperty(osgText::Text::AxisAlignment, AxisAlignment);
+	I_Property(const osg::Vec4 &, BackdropColor);
+	I_ReadOnlyProperty(float, BackdropHorizontalOffet);
+	I_WriteOnlyProperty(float, BackdropOffset);
+	I_Property(osgText::Text::BackdropType, BackdropType);
+	I_ReadOnlyProperty(float, BackdropVerticalOffset);
 	I_ReadOnlyProperty(float, CharacterAspectRatio);
 	I_ReadOnlyProperty(float, CharacterHeight);
 	I_Property(osgText::Text::CharacterSizeMode, CharacterSizeMode);
 	I_Property(const osg::Vec4 &, Color);
+	I_ReadOnlyProperty(const osg::Vec4 &, ColorGradientBottomLeft);
+	I_ReadOnlyProperty(const osg::Vec4 &, ColorGradientBottomRight);
+	I_Property(osgText::Text::ColorGradientMode, ColorGradientMode);
+	I_ReadOnlyProperty(const osg::Vec4 &, ColorGradientTopLeft);
+	I_ReadOnlyProperty(const osg::Vec4 &, ColorGradientTopRight);
 	I_Property(unsigned int, DrawMode);
 	I_WriteOnlyProperty(osgText::Font *, Font);
 	I_ReadOnlyProperty(unsigned int, FontHeight);
@@ -170,6 +214,8 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::Coords2);
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgText::Text::GlyphQuads::Coords3);
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::TexCoords);
+
+TYPE_NAME_ALIAS(std::vector< osg::Vec4 >, osgText::Text::GlyphQuads::ColorCoords);
 
 BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 	I_Constructor0();

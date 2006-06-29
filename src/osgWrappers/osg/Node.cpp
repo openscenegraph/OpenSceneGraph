@@ -11,7 +11,7 @@
 
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
-#include <osg/Group>
+#include <osg/Group.bkp>
 #include <osg/Node>
 #include <osg/NodeCallback>
 #include <osg/NodeVisitor>

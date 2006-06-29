@@ -91,13 +91,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::StateSet *, t);
+	I_Constructor1(IN, osg::StateSet *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::StateSet *, get);
-	I_Method0(const osg::StateSet *, get);
-	I_Method0(osg::StateSet *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::StateSet *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::StateSet > &, rp);
 	I_ReadOnlyProperty(osg::StateSet *, );
 END_REFLECTOR
 

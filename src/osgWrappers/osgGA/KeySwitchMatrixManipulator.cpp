@@ -81,13 +81,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::MatrixManipulator >)
 	I_Constructor0();
-	I_Constructor1(IN, osgGA::MatrixManipulator *, t);
+	I_Constructor1(IN, osgGA::MatrixManipulator *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgGA::MatrixManipulator > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgGA::MatrixManipulator *, get);
-	I_Method0(const osgGA::MatrixManipulator *, get);
-	I_Method0(osgGA::MatrixManipulator *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgGA::MatrixManipulator *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::MatrixManipulator > &, rp);
 	I_ReadOnlyProperty(osgGA::MatrixManipulator *, );
 END_REFLECTOR
 

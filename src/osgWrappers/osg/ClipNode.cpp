@@ -59,13 +59,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::ClipPlane >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::ClipPlane *, t);
+	I_Constructor1(IN, osg::ClipPlane *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::ClipPlane > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::ClipPlane *, get);
-	I_Method0(const osg::ClipPlane *, get);
-	I_Method0(osg::ClipPlane *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::ClipPlane *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::ClipPlane > &, rp);
 	I_ReadOnlyProperty(osg::ClipPlane *, );
 END_REFLECTOR
 

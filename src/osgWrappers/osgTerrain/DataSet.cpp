@@ -443,61 +443,56 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::Image *, t);
+	I_Constructor1(IN, osg::Image *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Image > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::Image *, get);
-	I_Method0(const osg::Image *, get);
-	I_Method0(osg::Image *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::Image *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Image > &, rp);
 	I_ReadOnlyProperty(osg::Image *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::CompositeDestination >)
 	I_Constructor0();
-	I_Constructor1(IN, osgTerrain::DataSet::CompositeDestination *, t);
+	I_Constructor1(IN, osgTerrain::DataSet::CompositeDestination *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::CompositeDestination > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::CompositeDestination *, get);
-	I_Method0(const osgTerrain::DataSet::CompositeDestination *, get);
-	I_Method0(osgTerrain::DataSet::CompositeDestination *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::CompositeDestination *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::CompositeDestination > &, rp);
 	I_ReadOnlyProperty(osgTerrain::DataSet::CompositeDestination *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::CompositeSource >)
 	I_Constructor0();
-	I_Constructor1(IN, osgTerrain::DataSet::CompositeSource *, t);
+	I_Constructor1(IN, osgTerrain::DataSet::CompositeSource *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::CompositeSource > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::CompositeSource *, get);
-	I_Method0(const osgTerrain::DataSet::CompositeSource *, get);
-	I_Method0(osgTerrain::DataSet::CompositeSource *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::CompositeSource *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::CompositeSource > &, rp);
 	I_ReadOnlyProperty(osgTerrain::DataSet::CompositeSource *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::DestinationTile >)
 	I_Constructor0();
-	I_Constructor1(IN, osgTerrain::DataSet::DestinationTile *, t);
+	I_Constructor1(IN, osgTerrain::DataSet::DestinationTile *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::DestinationTile > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::DestinationTile *, get);
-	I_Method0(const osgTerrain::DataSet::DestinationTile *, get);
-	I_Method0(osgTerrain::DataSet::DestinationTile *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::DestinationTile *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::DestinationTile > &, rp);
 	I_ReadOnlyProperty(osgTerrain::DataSet::DestinationTile *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::Source >)
 	I_Constructor0();
-	I_Constructor1(IN, osgTerrain::DataSet::Source *, t);
+	I_Constructor1(IN, osgTerrain::DataSet::Source *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::Source > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::Source *, get);
-	I_Method0(const osgTerrain::DataSet::Source *, get);
-	I_Method0(osgTerrain::DataSet::Source *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgTerrain::DataSet::Source *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::Source > &, rp);
 	I_ReadOnlyProperty(osgTerrain::DataSet::Source *, );
 END_REFLECTOR
 

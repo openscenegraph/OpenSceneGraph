@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Group>
+#include <osg/Group.bkp>
 #include <osg/LOD>
 #include <osg/Node>
 #include <osgSim/InsertImpostorsVisitor>

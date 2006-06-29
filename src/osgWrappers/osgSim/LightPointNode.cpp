@@ -54,6 +54,8 @@ BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	I_Method0(float, getMaxVisibleDistance2);
 	I_Method1(void, setLightPointSystem, IN, osgSim::LightPointSystem *, lps);
 	I_Method0(osgSim::LightPointSystem *, getLightPointSystem);
+	I_MethodWithDefaults1(void, setPointSprite, IN, bool, enable, true);
+	I_Method0(bool, getPointSprite);
 	I_Method0(osg::BoundingSphere, computeBound);
 	I_ArrayProperty_GA(const osgSim::LightPoint &, LightPoint, LightPoints, unsigned int, unsigned int);
 	I_Property(const osgSim::LightPointNode::LightPointList &, LightPointList);
@@ -61,6 +63,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	I_Property(float, MaxPixelSize);
 	I_Property(float, MaxVisibleDistance2);
 	I_Property(float, MinPixelSize);
+	I_Property(bool, PointSprite);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osgSim::LightPoint >);

@@ -55,25 +55,23 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
 	I_Constructor0();
-	I_Constructor1(IN, osgUtil::RenderLeaf *, t);
+	I_Constructor1(IN, osgUtil::RenderLeaf *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgUtil::RenderLeaf *, get);
-	I_Method0(const osgUtil::RenderLeaf *, get);
-	I_Method0(osgUtil::RenderLeaf *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgUtil::RenderLeaf *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
 	I_ReadOnlyProperty(osgUtil::RenderLeaf *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::StateGraph >)
 	I_Constructor0();
-	I_Constructor1(IN, osgUtil::StateGraph *, t);
+	I_Constructor1(IN, osgUtil::StateGraph *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::StateGraph > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgUtil::StateGraph *, get);
-	I_Method0(const osgUtil::StateGraph *, get);
-	I_Method0(osgUtil::StateGraph *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgUtil::StateGraph *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::StateGraph > &, rp);
 	I_ReadOnlyProperty(osgUtil::StateGraph *, );
 END_REFLECTOR
 

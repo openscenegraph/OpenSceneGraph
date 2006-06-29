@@ -172,25 +172,23 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::StateAttribute *, t);
+	I_Constructor1(IN, osg::StateAttribute *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::StateAttribute > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::StateAttribute *, get);
-	I_Method0(const osg::StateAttribute *, get);
-	I_Method0(osg::StateAttribute *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::StateAttribute *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::StateAttribute > &, rp);
 	I_ReadOnlyProperty(osg::StateAttribute *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::Uniform *, t);
+	I_Constructor1(IN, osg::Uniform *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::Uniform *, get);
-	I_Method0(const osg::Uniform *, get);
-	I_Method0(osg::Uniform *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::Uniform *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Uniform > &, rp);
 	I_ReadOnlyProperty(osg::Uniform *, );
 END_REFLECTOR
 

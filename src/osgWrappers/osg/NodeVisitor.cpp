@@ -17,7 +17,7 @@
 #include <osg/CoordinateSystemNode>
 #include <osg/FrameStamp>
 #include <osg/Geode>
-#include <osg/Group>
+#include <osg/Group.bkp>
 #include <osg/LOD>
 #include <osg/LightSource>
 #include <osg/MatrixTransform>

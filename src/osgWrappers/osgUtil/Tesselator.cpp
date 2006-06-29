@@ -75,13 +75,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tesselator::Prim >)
 	I_Constructor0();
-	I_Constructor1(IN, osgUtil::Tesselator::Prim *, t);
+	I_Constructor1(IN, osgUtil::Tesselator::Prim *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osgUtil::Tesselator::Prim *, get);
-	I_Method0(const osgUtil::Tesselator::Prim *, get);
-	I_Method0(osgUtil::Tesselator::Prim *, take);
+	I_Method0(bool, valid);
 	I_Method0(osgUtil::Tesselator::Prim *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);
 	I_ReadOnlyProperty(osgUtil::Tesselator::Prim *, );
 END_REFLECTOR
 

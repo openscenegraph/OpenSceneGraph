@@ -88,13 +88,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Vec3Array >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::Vec3Array *, t);
+	I_Constructor1(IN, osg::Vec3Array *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Vec3Array > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::Vec3Array *, get);
-	I_Method0(const osg::Vec3Array *, get);
-	I_Method0(osg::Vec3Array *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::Vec3Array *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Vec3Array > &, rp);
 	I_ReadOnlyProperty(osg::Vec3Array *, );
 END_REFLECTOR
 

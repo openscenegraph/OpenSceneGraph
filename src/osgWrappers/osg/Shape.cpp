@@ -337,13 +337,12 @@ TYPE_NAME_ALIAS(osg::HeightField, osg::Grid);
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
 	I_Constructor0();
-	I_Constructor1(IN, osg::Shape *, t);
+	I_Constructor1(IN, osg::Shape *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Shape > &, rp);
-	I_Method0(bool, valid);
 	I_Method0(osg::Shape *, get);
-	I_Method0(const osg::Shape *, get);
-	I_Method0(osg::Shape *, take);
+	I_Method0(bool, valid);
 	I_Method0(osg::Shape *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Shape > &, rp);
 	I_ReadOnlyProperty(osg::Shape *, );
 END_REFLECTOR
 

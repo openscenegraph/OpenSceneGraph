@@ -554,6 +554,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * on sustems with different graphics pipes. */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
+        /** Determine whether the given internalFormat is a compressed
+          * image format. */
+        static bool isCompressedInternalFormat(GLint internalFormat);
+        
+        /** Determine the size of a compressed image, given the internalFormat,
+          * the width, the height, and the depth of the image. The block size
+          * and the size are output parameters. */
+        static void getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size);
+
 
         /** Helper method. Creates the texture, but doesn't set or use a
           * texture binding. Note: Don't call this method directly unless
@@ -574,10 +583,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         void computeInternalFormatWithImage(const osg::Image& image) const;
 
         void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& numMipmapLevels) const;
-
-        bool isCompressedInternalFormat(GLint internalFormat) const;
-        
-        void getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size) const;
 
         /** Helper method. Sets texture paramters. */
         void applyTexParameters(GLenum target, State& state) const;

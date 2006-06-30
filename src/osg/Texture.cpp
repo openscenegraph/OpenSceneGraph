@@ -599,7 +599,7 @@ bool Texture::isCompressedInternalFormat() const
     return isCompressedInternalFormat(getInternalFormat());
 }
 
-bool Texture::isCompressedInternalFormat(GLint internalFormat) const
+bool Texture::isCompressedInternalFormat(GLint internalFormat)
 {
     switch(internalFormat)
     {
@@ -619,7 +619,7 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat) const
     }
 }
 
-void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size) const
+void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size)
 {
     if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
         blockSize = 8;

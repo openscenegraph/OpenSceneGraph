@@ -11,18 +11,33 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/BlendFunc>
+#include <osg/GLExtensions>
+#include <osg/State>
+#include <osg/Notify>
 
 using namespace osg;
 
 BlendFunc::BlendFunc():
     _source_factor(SRC_ALPHA),
-    _destination_factor(ONE_MINUS_SRC_ALPHA)
+    _destination_factor(ONE_MINUS_SRC_ALPHA),
+    _source_factor_alpha(SRC_ALPHA),
+    _destination_factor_alpha(ONE_MINUS_SRC_ALPHA)
 {
 }
 
 BlendFunc::BlendFunc(GLenum source, GLenum destination):
     _source_factor(source),
-    _destination_factor(destination)
+    _destination_factor(destination),
+    _source_factor_alpha(source),
+    _destination_factor_alpha(destination)
+{
+}
+
+BlendFunc::BlendFunc(GLenum source, GLenum destination, GLenum source_alpha, GLenum destination_alpha):
+    _source_factor(source),
+    _destination_factor(destination),
+    _source_factor_alpha(source_alpha),
+    _destination_factor_alpha(destination_alpha)
 {
 }
 
@@ -30,7 +45,91 @@ BlendFunc::~BlendFunc()
 {
 }
 
-void BlendFunc::apply(State&) const
+void BlendFunc::apply(State& state) const
 {
+    if (_source_factor != _source_factor_alpha ||
+        _destination_factor != _destination_factor_alpha)
+    {
+        // get the contextID (user defined ID of 0 upwards) for the 
+        // current OpenGL context.
+        const unsigned int contextID = state.getContextID();
+
+        const Extensions* extensions = getExtensions(contextID,true);
+
+        if (!extensions->isBlendFuncSeparateSupported())
+        {
+            notify(WARN)<<"Warning: BlendFunc::apply(..) failed, BlendFuncSeparate is not support by OpenGL driver, falling back to BlendFunc."<<std::endl;
+        }
+        else
+        {
+            extensions->glBlendFuncSeparate(_source_factor, _destination_factor, _source_factor_alpha, _destination_factor_alpha);
+            return;
+        }
+    }
+
     glBlendFunc( _source_factor, _destination_factor );
+}
+
+
+typedef buffered_value< ref_ptr<BlendFunc::Extensions> > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
+BlendFunc::Extensions* BlendFunc::getExtensions(unsigned int contextID,bool createIfNotInitalized)
+{
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions(contextID);
+    return s_extensions[contextID].get();
+}
+
+void BlendFunc::setExtensions(unsigned int contextID,Extensions* extensions)
+{
+    s_extensions[contextID] = extensions;
+}
+
+
+BlendFunc::Extensions::Extensions(unsigned int contextID)
+{
+    setupGLExtensions(contextID);
+}
+
+BlendFunc::Extensions::Extensions(const Extensions& rhs):
+    Referenced()
+{
+    _isBlendFuncSeparateSupported = rhs._isBlendFuncSeparateSupported;
+    _glBlendFuncSeparate = rhs._glBlendFuncSeparate;
+}
+
+void BlendFunc::Extensions::lowestCommonDenominator(const Extensions& rhs)
+{
+    if (!rhs._isBlendFuncSeparateSupported)  _isBlendFuncSeparateSupported = false;
+    if (!rhs._glBlendFuncSeparate)           _glBlendFuncSeparate = 0;
+}
+
+void BlendFunc::Extensions::setupGLExtensions(unsigned int contextID)
+{
+    _isBlendFuncSeparateSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
+        strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
+
+    _glBlendFuncSeparate = getGLExtensionFuncPtr("glBlendFuncSeparate", "glBlendFuncSeparateEXT");
+}
+
+void BlendFunc::Extensions::glBlendFuncSeparate(GLenum sfactorRGB,
+                                                GLenum dfactorRGB,
+                                                GLenum sfactorAlpha,
+                                                GLenum dfactorAlpha) const
+{
+    if (_glBlendFuncSeparate)
+    {
+        typedef void (APIENTRY * GLBlendFuncSeparateProc) (GLenum sfactorRGB,
+                                                           GLenum dfactorRGB,
+                                                           GLenum sfactorAlpha,
+                                                           GLenum dfactorAlpha);
+        ((GLBlendFuncSeparateProc)_glBlendFuncSeparate)(sfactorRGB,
+                                                        dfactorRGB,
+                                                        sfactorAlpha,
+                                                        dfactorAlpha);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glBlendFuncSeparate not supported by OpenGL driver"<<std::endl;
+    }
 }

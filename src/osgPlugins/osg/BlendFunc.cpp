@@ -54,7 +54,21 @@ bool BlendFunc_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
     }
-    
+
+    if (fr[0].matchWord("sourceAlpha") && BlendFunc_matchModeStr(fr[1].getStr(),mode))
+    {
+        transparency.setSourceAlpha(mode);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr[0].matchWord("destinationAlpha") && BlendFunc_matchModeStr(fr[1].getStr(),mode))
+    {
+        transparency.setDestinationAlpha(mode);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -64,6 +78,16 @@ bool BlendFunc_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "source " << BlendFunc_getModeStr(transparency.getSource()) << std::endl;
     fw.indent() << "destination " << BlendFunc_getModeStr(transparency.getDestination()) << std::endl;
+
+    if (transparency.getSource() != transparency.getSourceAlpha())
+    {
+        fw.indent() << "sourceAlpha " << BlendFunc_getModeStr(transparency.getSourceAlpha()) << std::endl;
+    }
+
+    if (transparency.getDestination() != transparency.getDestinationAlpha())
+    {
+        fw.indent() << "destinationAlpha " << BlendFunc_getModeStr(transparency.getDestinationAlpha()) << std::endl;
+    }
 
     return true;
 }

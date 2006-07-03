@@ -921,7 +921,8 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::AlphaFunc();
         ((ive::AlphaFunc*)(attribute))->read(this);
     }
-    else if(attributeID == IVEBLENDFUNC){
+    else if(attributeID == IVEBLENDFUNC ||
+            attributeID == IVEBLENDFUNCSEPARATE){
         attribute = new osg::BlendFunc();
         ((ive::BlendFunc*)(attribute))->read(this);
     }

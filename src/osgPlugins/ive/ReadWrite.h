@@ -47,6 +47,7 @@ namespace ive {
 #define IVESTATEATTRIBUTE               0x00000100
 #define IVEALPHAFUNC                    0x00000101
 #define IVEBLENDFUNC                    0x00000102
+#define IVEBLENDFUNCSEPARATE            0x00000103
 #define IVEMATERIAL                     0x00000110
 #define IVETEXTURE                      0x00000120
 #define IVETEXTURE1D                    0x00000121

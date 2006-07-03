@@ -220,7 +220,7 @@ class FLTReaderWriter : public ReaderWriter
             return WriteResult::FILE_NOT_HANDLED;
         }
 
-        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
+        virtual WriteResult writeNode(const Node& /*node*/,std::ostream& /*fout*/, const osgDB::ReaderWriter::Options* /*options*/) const
         {
             return WriteResult::FILE_NOT_HANDLED;
 

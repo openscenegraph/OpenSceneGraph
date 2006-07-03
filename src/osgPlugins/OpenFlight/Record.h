@@ -66,14 +66,14 @@ public:
     virtual void read(RecordInputStream& in, Document& document);
 
     // Ancillary operations
-    virtual void setID(const std::string& id) {}
-    virtual void setComment(const std::string& comment) {}
-    virtual void setMatrix(osg::Matrix& matrix) {}
-    virtual void setMultitexture(osg::StateSet& multitexture) {}
-    virtual void addChild(osg::Node& child) {}
-    virtual void addVertex(Vertex& vertex) {}
-    virtual void addVertexUV(int layer,const osg::Vec2& uv) {}
-    virtual void addMorphVertex(Vertex& vertex0, Vertex& vertex100) {}
+    virtual void setID(const std::string& /*id*/) {}
+    virtual void setComment(const std::string& /*comment*/) {}
+    virtual void setMatrix(osg::Matrix& /*matrix*/) {}
+    virtual void setMultitexture(osg::StateSet& /*multitexture*/) {}
+    virtual void addChild(osg::Node& /*child*/) {}
+    virtual void addVertex(Vertex& /*vertex*/) {}
+    virtual void addVertexUV(int /*layer*/,const osg::Vec2& /*uv*/) {}
+    virtual void addMorphVertex(Vertex& /*vertex0*/, Vertex& /*vertex100*/) {}
 
     void setNumberOfReplications(int num) { _numberOfReplications = num; }
 

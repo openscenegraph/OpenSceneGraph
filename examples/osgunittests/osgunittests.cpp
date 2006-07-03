@@ -6,6 +6,8 @@
 #include <osg/Matrix>
 #include <osg/io_utils>
 
+#include "performance.h"
+
 #include <iostream>
 
 void testFrustum(double left,double right,double bottom,double top,double zNear,double zFar)
@@ -192,6 +194,7 @@ int main( int argc, char** argv )
     arguments.getApplicationUsage()->addCommandLineOption("qt","Display qualified tests.");
     arguments.getApplicationUsage()->addCommandLineOption("sizeof","Display sizeof tests.");
     arguments.getApplicationUsage()->addCommandLineOption("matrix","Display qualified tests.");
+    arguments.getApplicationUsage()->addCommandLineOption("performance","Display qualified tests.");
  
 
     if (arguments.argc()<=1)
@@ -211,6 +214,9 @@ int main( int argc, char** argv )
 
     bool printQuatTest = false; 
     while (arguments.read("quat")) printQuatTest = true; 
+
+    bool performanceTest = false; 
+    while (arguments.read("p") || arguments.read("performance")) performanceTest = true; 
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -261,6 +267,14 @@ int main( int argc, char** argv )
         sizeOfTest();
 
         std::cout<<std::endl;
+    }
+
+
+    if (performanceTest)
+    {
+        std::cout<<"**** performance tests  ******"<<std::endl;
+        
+        runPerformanceTests();
     }
 
 

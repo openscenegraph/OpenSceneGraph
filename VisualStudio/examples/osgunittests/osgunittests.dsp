@@ -85,14 +85,31 @@ LINK32=link.exe
 
 # Name "Example osgunittests - Win32 Release"
 # Name "Example osgunittests - Win32 Debug"
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
 SOURCE=..\..\..\examples\osgunittests\osgunittests.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\examples\osgunittests\performance.cpp
+# End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter ";h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\examples\performance\performance.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\icons\osg_icon.rc
 # End Source File
+# End Group
+
 # End Target
 # Begin Group "Resource Files"
 

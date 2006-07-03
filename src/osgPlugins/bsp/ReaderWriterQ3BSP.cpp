@@ -198,7 +198,7 @@ public:
 
 
 
-osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::ReaderWriter::Options* options) const
+osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::ReaderWriter::Options*) const
 {
 
   std::vector<osg::Texture2D*> texture_array;
@@ -209,22 +209,21 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
 
   osg::Geode* map_geode=new osg::Geode;
 
-
-
   // Convertir los vertices
   unsigned int num_load_vertices=aLoadData.m_loadVertices.size();
   osg::Vec3Array* vertex_array = new osg::Vec3Array(num_load_vertices);
   osg::Vec2Array* text_decal_array = new osg::Vec2Array(num_load_vertices);
   osg::Vec2Array* text_lmap_array = new osg::Vec2Array(num_load_vertices);
 
+  float scale = 0.03;
   unsigned int i;
   for(i=0; i<num_load_vertices; ++i)
     {
       BSP_LOAD_VERTEX& vtx=aLoadData.m_loadVertices[i];
       //swap y and z and negate z
-      (*vertex_array)[i]=(osg::Vec3d(  vtx.m_position[0]/64,
-                                           vtx.m_position[2]/64,
-                                          -vtx.m_position[1]/64 ) );
+      (*vertex_array)[i]=(osg::Vec3d(  vtx.m_position[0]*scale,
+                                       -vtx.m_position[1]*scale,
+                                       vtx.m_position[2]*scale ) );
 
       //Transfer texture coordinates (Invert t)
       (*text_decal_array)[i]=(osg::Vec2d(vtx.m_decalS,-vtx.m_decalT) );
@@ -324,13 +323,15 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
 
               osg::StateSet* stateset = patch_geom->getOrCreateStateSet();
               if(texture)
+              {
                 stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+              }
+              
               if(lightmap_texture)
-                {
+              {
                   stateset->setTextureAttributeAndModes(1,lightmap_texture,osg::StateAttribute::ON);
-                }
-
-
+              }
+                
               //patch_group->addChild(map_geode);
 
               current_patch.m_quadraticPatches[y*numPatchesWide+x].Tesselate(8/*aCurveTesselation*/,patch_geom);
@@ -346,6 +347,7 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
   //const osg::BoundingSphere& bs=map_geom->getBound();
 
 
+  map_geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
 
   return map_geode;

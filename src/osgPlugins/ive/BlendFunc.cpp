@@ -19,8 +19,11 @@
 using namespace ive;
 
 void BlendFunc::write(DataOutputStream* out){
+
+    bool bSeparate = getSource() != getSourceAlpha() || getDestination() != getDestinationAlpha();
+
     // Write BlendFunc's identification.
-    out->writeInt(IVEBLENDFUNC);
+    out->writeInt(bSeparate ? IVEBLENDFUNCSEPARATE : IVEBLENDFUNC);
     // If the osg class is inherited by any other class we should also write this to file.
     osg::Object*  obj = dynamic_cast<osg::Object*>(this);
     if(obj){
@@ -34,12 +37,20 @@ void BlendFunc::write(DataOutputStream* out){
     out->writeInt(getSource());
     // Write destination
     out->writeInt(getDestination());
+
+    if (bSeparate)
+    {
+        // Write source alpha
+        out->writeInt(getSourceAlpha());
+        // Write destination alpha
+        out->writeInt(getDestinationAlpha());
+    }
 }
 
 void BlendFunc::read(DataInputStream* in){
     // Peek on BlendFunc's identification.
     int id = in->peekInt();
-    if(id == IVEBLENDFUNC){
+    if(id == IVEBLENDFUNC || id == IVEBLENDFUNCSEPARATE){
         // Read BlendFunc's identification.
         id = in->readInt();
         // If the osg class is inherited by any other class we should also read this from file.
@@ -55,6 +66,15 @@ void BlendFunc::read(DataInputStream* in){
         setSource((GLenum)in->readInt());
         // Read destination
         setDestination((GLenum)in->readInt());
+
+        if (id == IVEBLENDFUNCSEPARATE)
+        {
+            // Read source alpha
+            setSourceAlpha((GLenum)in->readInt());
+
+            // Read destination alpha
+            setDestinationAlpha((GLenum)in->readInt());
+        }
 
     }
     else{

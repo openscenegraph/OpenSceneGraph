@@ -270,16 +270,11 @@ protected:
         osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
         osg::Texture2D* texture = new osg::Texture2D;
+        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
         texture->setResizeNonPowerOfTwoHint(true);
         texture->setImage(image.get());
         stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-
-        // Blend mode moved to Face.
-        //if (image->isImageTranslucent())
-        //{
-        //    stateset->setAttributeAndModes(new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA),osg::StateAttribute::ON);
-        //    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-        //}
 
         // Read attribute file
         std::string attrname = filename + ".attr";

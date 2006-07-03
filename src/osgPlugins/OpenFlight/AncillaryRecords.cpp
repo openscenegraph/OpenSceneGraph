@@ -27,7 +27,7 @@ class Comment : public Record
 
         virtual ~Comment() {}
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             std::streamsize size = in.getRecordSize();
             std::string comment = in.readString(size-4);
@@ -54,7 +54,7 @@ class LongID : public Record
 
         virtual ~LongID() {}
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             std::streamsize size = in.getRecordSize();
             std::string id = in.readString(size-4);

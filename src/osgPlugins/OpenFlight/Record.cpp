@@ -40,7 +40,7 @@ void Record::read(RecordInputStream& in, Document& document)
 }
 
 
-void Record::readRecord(RecordInputStream& in, Document& document)
+void Record::readRecord(RecordInputStream& /*in*/, Document& /*document*/)
 {
 }
 

@@ -12,6 +12,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/ReentrantMutex>
+#include <osgUtil/Optimizer>
 
 #include "Registry.h"
 #include "Document.h"
@@ -179,6 +180,12 @@ class FLTReaderWriter : public ReaderWriter
 
             if (!document.getHeaderNode())
                 return ReadResult::ERROR_IN_READING_FILE;
+                
+            if (!document.getPreserveFace())
+            {
+                osgUtil::Optimizer optimizer;
+                optimizer.optimize(document.getHeaderNode(), osgUtil::Optimizer::MERGE_GEOMETRY | osgUtil::Optimizer::MERGE_GEODES);
+            }
 
             return document.getHeaderNode();
         }

@@ -3,6 +3,11 @@
 #include <osg/Timer>
 #include <iostream>
 
+#include <osg/NodeVisitor>
+#include <osg/ref_ptr>
+#include <osg/MatrixTransform>
+#include <osg/Group>
+
 struct Benchmark
 {
 
@@ -139,6 +144,15 @@ struct CustomVisitor
     virtual ~CustomVisitor() {}
 };
 
+class CustomNodeVisitor : public osg::NodeVisitor
+{
+public:
+    void apply(osg::Node&) { }
+    void apply(osg::Group&) { }
+    void apply(osg::Transform&) { }
+};
+
+
 void runPerformanceTests()
 {
     Benchmark benchmark;
@@ -179,4 +193,13 @@ void runPerformanceTests()
     RUN(benchmark, (static_cast<VirtualMethod2*>(vm4))->method(), iterations)
     RUN(benchmark, { VirtualMethod mm; mm.method(); }, iterations)
     RUN(benchmark, { VirtualMethod2 mm; mm.method(); }, iterations)
+
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    osg::ref_ptr<osg::MatrixTransform> mt = new osg::MatrixTransform;
+    osg::Node* m = mt.get();
+    CustomNodeVisitor cnv;
+    RUN(benchmark, { osg::MatrixTransform* mtl = dynamic_cast<osg::MatrixTransform*>(m); if (mtl) cnv.apply(*mtl); }, 1000)
+    RUN(benchmark, { m->accept(cnv); }, 10000)
+    
 }

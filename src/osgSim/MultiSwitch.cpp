@@ -60,7 +60,7 @@ bool MultiSwitch::addChild( osg::Node *child)
             ++itr)
         {
             ValueList& values = *itr;
-            if (_children.size()>_values.size())
+            if (_children.size()>values.size())
             {
                 values.resize(_children.size(),_newChildDefaultValue);
                 values[childPosition]=_newChildDefaultValue;
@@ -80,7 +80,7 @@ bool MultiSwitch::insertChild( unsigned int index, osg::Node *child)
             ++itr)
         {
             ValueList& values = *itr;
-            if (index>=_values.size())
+            if (index>=values.size())
             {
                 values.push_back(_newChildDefaultValue);
             }

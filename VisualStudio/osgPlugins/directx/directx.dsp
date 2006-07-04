@@ -161,6 +161,14 @@ SOURCE=..\..\..\src\osgPlugins\directx\directx.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\directx\types.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\directx\mesh.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\directx\ReaderWriterDirectX.cpp
 # End Source File
 # End Group
@@ -170,6 +178,14 @@ SOURCE=..\..\..\src\osgPlugins\directx\ReaderWriterDirectX.cpp
 # Begin Source File
 
 SOURCE=..\..\..\Src\osgPlugins\directx\directx.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\directx\types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\directx\mesh.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

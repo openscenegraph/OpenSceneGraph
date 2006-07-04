@@ -7,7 +7,9 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
         ReaderWriterDirectX.cpp\
-	directx.cpp
+	directx.cpp\
+        mesh.cpp\
+        types.cpp
 
 LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
 

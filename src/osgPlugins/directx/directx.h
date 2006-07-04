@@ -31,88 +31,10 @@
 #include <osg/Export>
 #include <osg/Math>
 
+#include "types.h"
+#include "mesh.h"
+
 namespace DX {
-
-    /*
-     * DirectX templates
-     * http://astronomy.swin.edu.au/~pbourke/geomformats/directx/
-     */
-
-    // Vector
-    typedef struct {
-        float x,y,z;
-
-        inline void normalize() {
-            float lenRecip = 1.0f / sqrtf(x * x + y * y + z * z);
-            x *= lenRecip;
-            y *= lenRecip;
-            z *= lenRecip;
-        }
-    } Vector;
-
-    // Coords2d
-    typedef struct {
-        float u,v;
-    } Coords2d;
-
-    // ColorRGBA
-    typedef struct {
-        float red,green,blue,alpha;
-    } ColorRGBA;
-
-    // ColorRGB
-    typedef struct {
-        float red,green,blue;
-    } ColorRGB;
-
-    // IndexedColor
-    typedef struct {
-        unsigned int index;
-        ColorRGBA indexColor;
-    } IndexedColor;
-
-    // TextureFilename
-    typedef std::string TextureFilename;
-
-    // Material (potentially with multiple textures)
-    typedef struct {
-        ColorRGBA faceColor;
-        float power;
-        ColorRGB specularColor;
-        ColorRGB emissiveColor;
-        //
-        // dgm -  - materials can have names for later reference
-        //
-        std::string name;
-        std::vector<TextureFilename> texture;
-    } Material;
-
-    // MeshFace
-    typedef std::vector<unsigned int> MeshFace;
-
-    // MeshTextureCoords
-    typedef std::vector<Coords2d> MeshTextureCoords;
-
-    // MeshNormals
-    typedef struct {
-        std::vector<Vector> normals;
-        std::vector<MeshFace> faceNormals;
-    } MeshNormals;
-
-    // MeshVertexColors.
-    typedef std::vector<IndexedColor> MeshVertexColors;
-
-    // MeshMaterialList
-    typedef struct {
-        std::vector<unsigned int> faceIndices;
-        std::vector<Material> material;
-    } MeshMaterialList;
-
-    // Mesh
-    typedef struct {
-        std::vector<Vector> vertices;
-        std::vector<MeshFace> faces;
-    } Mesh;
 
     /**
      * DirectX object.
@@ -144,79 +66,37 @@ namespace DX {
          */
         bool generateNormals(float creaseAngle = 80.0f);
 
-        /// Get MeshTextureCoords.
-        inline const MeshTextureCoords* getMeshTextureCoords() const {
-            return _textureCoords;
-        }
-
-        /// Get MeshMaterialList.
-        inline const MeshMaterialList* getMeshMaterialList() const {
-            return _materialList;
-        }
-
-        /// Get MeshNormals.
-        inline const MeshNormals* getMeshNormals() const {
-            return _normals;
+        /// Get number of meshes.
+        inline unsigned int getNumMeshes() const {
+            return _meshes.size();
         }
 
         /// Get Mesh.
-        inline const Mesh* getMesh() const {
-            return _mesh;
+        inline Mesh* getMesh(unsigned int i) {
+            return _meshes[i];
+        }
+        inline const Mesh* getMesh(unsigned int i) const {
+            return _meshes[i];
         }
 
+        /// Find global material.
+        Material * findMaterial(const std::string & name);
+
+        /// Parse section until '}'; recurse as needed.
+        void parseSection(std::ifstream& fin);
+
     private:
-        /// Texture coordinates (per-vertex).
-        MeshTextureCoords* _textureCoords;
-
-        /// Material list (per-face).
-        MeshMaterialList* _materialList;
-
-        //
-        // dgm keep list of materials global to the file
-        //
+        // dgm - keep list of materials global to the file
         std::vector<Material> _globalMaterials;
 
-        /// Normals (per-face).
-        MeshNormals* _normals;
-
-        /// Mesh.
-        Mesh* _mesh;
+        /// Meshes.
+        std::vector<Mesh*> _meshes;
 
         /// Clear object.
         void clear();
 
-        /// Read 'TextureFilename'.
-        void readTexFilename(std::ifstream& fin, TextureFilename& texture);
-
-        /// Parse 'Material'.
-        void parseMaterial(std::ifstream& fin, Material& material);
-        
-        /// Read 'Coords2d'.
-        void readCoords2d(std::ifstream& fin, std::vector<Coords2d>& v, unsigned int count);
-
-        /// Read 'MeshTextureCoords'.
-        void readMeshTexCoords(std::ifstream& fin);
-
-        /// Read index list.
-        void readIndexList(std::ifstream& fin, std::vector<unsigned int>& v, unsigned int count);
-
-        /// Parse 'MeshMaterialList'.
-        void parseMeshMaterialList(std::ifstream& fin);
-
-        /// Read 'Vector'.
-        void readVector(std::ifstream& fin, std::vector<Vector>& v, unsigned int count);
-
-        /// Read 'MeshFace'.
-        void readMeshFace(std::ifstream& fin, std::vector<MeshFace>& v, unsigned int count);
-
-        /// Parse 'MeshNormals'.
-        void parseMeshNormals(std::ifstream& fin);
-
-        /// Parse 'Mesh'.
-        void parseMesh(std::ifstream& fin);
-
-        /// Parse section until '}'; recurse as needed.
-        void parseSection(std::ifstream& fin);
+        /// Parse frame.
+        void parseFrame(std::ifstream& fin);
     };
 } // namespace
 

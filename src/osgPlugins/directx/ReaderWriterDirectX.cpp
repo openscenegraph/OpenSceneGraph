@@ -39,6 +39,7 @@
 #include <osgDB/FileUtils>
 
 #include <map>
+#include <iostream>
 
 
 /**
@@ -61,8 +62,11 @@ public:
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
 private:
-    osg::Geode* convertFromDX(DX::Object& obj, bool flipTexture, float creaseAngle,
-                                               const osgDB::ReaderWriter::Options* options) const;
+    osg::Group * convertFromDX(DX::Object & obj, bool flipTexture, float creaseAngle,
+            const osgDB::ReaderWriter::Options * options) const;
+
+    osg::Geode * convertFromDX(DX::Mesh & mesh, bool flipTexture, float creaseAngle,
+            const osgDB::ReaderWriter::Options * options) const;
 };
 
 // Register with Registry to instantiate the above reader/writer.
@@ -79,8 +83,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     osg::notify(osg::INFO) << "ReaderWriterDirectX::readNode(" << fileName.c_str() << ")\n";
-
-
 
     // Load DirectX mesh
     DX::Object obj;
@@ -102,40 +104,55 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
             }
         }
 
-        // Convert to osg::Geode
-        osg::Geode* geode = convertFromDX(obj, flipTexture, creaseAngle, local_opt.get());
-        if (!geode)
+        // Convert to osg::Group
+        osg::Group* group = convertFromDX(obj, flipTexture, creaseAngle, local_opt.get());
+        if (!group)
             return ReadResult::FILE_NOT_HANDLED;
 
-        return geode;
+        return group;
     }
 
     return ReadResult::FILE_NOT_HANDLED;
 }
 
-// Convert DirectX mesh to osg::Geode
-osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
-                                               bool flipTexture, float creaseAngle,
-                                               const osgDB::ReaderWriter::Options* options) const
+// Convert DirectX object
+osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj,
+                                                bool flipTexture, float creaseAngle,
+                                                const osgDB::ReaderWriter::Options * options) const
 {
-    // Fetch mesh
-    const DX::Mesh* mesh = obj.getMesh();
-    if (!mesh)
-        return NULL;
+    osg::Group * group = new osg::Group;
 
-    const DX::MeshMaterialList* meshMaterial = obj.getMeshMaterialList();
+    for (unsigned int i = 0; i < obj.getNumMeshes(); ++i) {
+        //std::cerr << "converting mesh " << i << std::endl;
+        DX::Mesh & mesh = *obj.getMesh(i);
+        osg::Geode * geode = convertFromDX(mesh, flipTexture, creaseAngle, options);
+        if (geode)
+            group->addChild(geode);
+    }
+
+    return group;
+}
+
+// Convert DirectX mesh to osg::Geode
+osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
+                                               bool flipTexture, float creaseAngle,
+                                               const osgDB::ReaderWriter::Options * options) const
+{
+    const DX::MeshMaterialList* meshMaterial = mesh.getMeshMaterialList();
     if (!meshMaterial)
         return NULL;
 
-    const DX::MeshNormals* meshNormals = obj.getMeshNormals();
+    const DX::MeshNormals* meshNormals = mesh.getMeshNormals();
     if (!meshNormals) {
-        obj.generateNormals(creaseAngle);
-        meshNormals = obj.getMeshNormals();
+        mesh.generateNormals(creaseAngle);
+        meshNormals = mesh.getMeshNormals();
     }
+    //std::cerr << "normals=" << meshNormals << std::endl;
     if (!meshNormals)
         return NULL;
 
-    const DX::MeshTextureCoords* meshTexCoords = obj.getMeshTextureCoords();
+    const DX::MeshTextureCoords* meshTexCoords = mesh.getMeshTextureCoords();
+    //std::cerr << "texcoord=" << meshTexCoords << std::endl;
     if (!meshTexCoords)
         return NULL;
 
@@ -162,6 +179,8 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
     
     unsigned int i;
     for (i = 0; i < meshMaterial->material.size(); i++) {
+
+        //std::cerr << "material " << i << std::endl;
 
         const DX::Material& mtl = meshMaterial->material[i];
         osg::StateSet* state = new osg::StateSet;
@@ -201,6 +220,8 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
         unsigned int textureCount = mtl.texture.size();
         for (unsigned int j = 0; j < textureCount; j++) {
 
+            //std::cerr << "texture " << j << std::endl;
+
             // Share image/texture pairs
             osg::Texture2D* texture = texForImage[mtl.texture[j]];
             if (!texture) {
@@ -239,7 +260,8 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
         geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
     }
 
-    if (mesh->faces.size() != meshMaterial->faceIndices.size())
+    const std::vector<DX::MeshFace> & faces = mesh.getFaces();
+    if (faces.size() != meshMaterial->faceIndices.size())
     {
         osg::notify(osg::FATAL)<<"Error: internal error in DirectX .x loader,"<<std::endl;
         osg::notify(osg::FATAL)<<"       mesh->faces.size() == meshMaterial->faceIndices.size()"<<std::endl;
@@ -254,7 +276,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
         osg::Geometry* geom = geomList[mi];
 
         // #pts of this face
-        unsigned int np = mesh->faces[i].size();
+        unsigned int np = faces[i].size();
         ((osg::DrawArrayLengths*) geom->getPrimitiveSet(0))->push_back(np);
 
         if (np != meshNormals->faceNormals[i].size())
@@ -273,10 +295,10 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
             unsigned int jj = (j > 0 ? np - j : j);
 
             // Vertices
-            unsigned int vi = mesh->faces[i][jj];
+            unsigned int vi = faces[i][jj];
             if (vertexArray) {
                 // Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
-                const DX::Vector& v = mesh->vertices[vi];
+                const DX::Vector & v = mesh.getVertices()[vi];
                 vertexArray->push_back(osg::Vec3(v.x,v.z,v.y));
             }
 

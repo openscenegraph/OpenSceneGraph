@@ -35,7 +35,7 @@ class RoadSegment : public PrimaryRecord
 
         virtual ~RoadSegment() {}
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
         {
             _roadSegment = new osg::Group;
 
@@ -70,7 +70,7 @@ class RoadConstruction : public PrimaryRecord
 
         virtual ~RoadConstruction() {}
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
         {
             _roadConstruction = new osg::Group;
 
@@ -105,7 +105,7 @@ class RoadPath : public PrimaryRecord
 
         virtual ~RoadPath() {}
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
         {
             _roadPath = new osg::Group;
 

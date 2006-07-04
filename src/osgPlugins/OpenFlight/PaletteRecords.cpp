@@ -84,7 +84,7 @@ protected:
                 uint8 green = in.readUInt8(1);
                 uint8 red   = in.readUInt8(1);
 
-                (*cp)[i] = osg::Vec4((float)red/255,(float)green/255,(float)blue/255,1);
+                (*cp)[i] = osg::Vec4((float)red/255,(float)green/255,(float)blue/255,(float)alpha/255);
             }
         }
         else // version <= 13
@@ -132,7 +132,7 @@ protected:
 
     virtual ~NameTable() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
     {
     }
 };
@@ -156,7 +156,7 @@ protected:
     {
         int32 index = in.readInt32();
         std::string name = in.readString(12);
-        uint32 flags = in.readUInt32();
+        /*uint32 flags =*/ in.readUInt32();
         osg::Vec3f ambient = in.readVec3f();
         osg::Vec3f diffuse = in.readVec3f();
         osg::Vec3f specular = in.readVec3f();
@@ -201,7 +201,7 @@ protected:
             osg::Vec3f emissive = in.readVec3f();
             float32 shininess = in.readFloat32();
             float32 alpha = in.readFloat32();
-            uint32 flags = in.readUInt32();
+            /*uint32 flags =*/ in.readUInt32();
             std::string name = in.readString(12);
             in.forward(4*28);
             
@@ -249,6 +249,7 @@ protected:
             return osg::Texture2D::REPEAT;
             break;
         }
+        return osg::Texture2D::REPEAT;
     }
 
     virtual void readRecord(RecordInputStream& in, Document& document)
@@ -256,8 +257,8 @@ protected:
         int maxLength = (document.version() < VERSION_14) ? 80 : 200;
         std::string filename = in.readString(maxLength);
         int32 index = in.readInt32(-1);
-        int32 x = in.readInt32();
-        int32 y = in.readInt32();
+        /*int32 x =*/ in.readInt32();
+        /*int32 y =*/ in.readInt32();
 
         osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename,document.getOptions());
         if (!image.valid())
@@ -382,7 +383,7 @@ protected:
 
     virtual ~EyepointAndTrackplanePalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document) {}
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
 RegisterRecordProxy<EyepointAndTrackplanePalette> g_EyepointAndTrackplanePalette(EYEPOINT_AND_TRACKPLANE_PALETTE_OP);
@@ -400,7 +401,7 @@ protected:
 
     virtual ~LinkagePalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document) {}
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
 RegisterRecordProxy<LinkagePalette> g_LinkagePalette(LINKAGE_PALETTE_OP);
@@ -418,7 +419,7 @@ protected:
 
     virtual ~SoundPalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document) {}
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
 RegisterRecordProxy<SoundPalette> g_SoundPalette(SOUND_PALETTE_OP);
@@ -436,7 +437,7 @@ protected:
 
     virtual ~LightSourcePalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document) {}
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
 RegisterRecordProxy<LightSourcePalette> g_LightSourcePalette(LIGHT_SOURCE_PALETTE_OP);
@@ -522,27 +523,27 @@ protected:
 
     virtual ~LightPointAnimationPalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         in.forward(4);
         std::string name = in.readString(256);
-        int32 index = in.readInt32(-1);
-        float32 animationPeriod = in.readFloat32();
-        float32 animationPhaseDelay = in.readFloat32();
-        float32 animationEnabledPeriod = in.readFloat32();
-        osg::Vec3f axisOfRotation = in.readVec3f();
-        uint32 flags = in.readUInt32();
-        int32 animationType = in.readInt32();
-        int32 morseCodeTiming = in.readInt32();
-        int32 wordRate = in.readInt32();
-        int32 characterRate = in.readInt32();
+        /*int32 index =*/ in.readInt32(-1);
+        /*float32 animationPeriod =*/ in.readFloat32();
+        /*float32 animationPhaseDelay =*/ in.readFloat32();
+        /*float32 animationEnabledPeriod =*/ in.readFloat32();
+        /*osg::Vec3f axisOfRotation =*/ in.readVec3f();
+        /*uint32 flags =*/ in.readUInt32();
+        /*int32 animationType =*/ in.readInt32();
+        /*int32 morseCodeTiming =*/ in.readInt32();
+        /*int32 wordRate =*/ in.readInt32();
+        /*int32 characterRate =*/ in.readInt32();
         std::string morseCodeString = in.readString(1024);
         int32 numberOfSequences = in.readInt32();
         for (int n=0; n<numberOfSequences; ++n)
         {
-            uint32 sequenceState = in.readUInt32();
-            float32 sequenceDuration = in.readFloat32();
-            osg::Vec4f sequenceColor = in.readColor32();
+            /*uint32 sequenceState =*/ in.readUInt32();
+            /*float32 sequenceDuration =*/ in.readFloat32();
+            /*osg::Vec4f sequenceColor =*/ in.readColor32();
         }
     }
 };
@@ -562,7 +563,7 @@ protected:
 
     virtual ~LineStylePalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
     {
     }
 };
@@ -582,7 +583,7 @@ protected:
 
     virtual ~TextureMappingPalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
     {
     }
 };
@@ -620,8 +621,8 @@ protected:
             // CG support is currently not implemented. Just parse.
             std::string vertexProgramFilename = in.readString(1024);
             std::string fragmentProgramFilename = in.readString(1024);
-            int32 vertexProgramProfile = in.readInt32();
-            int32 fragmentProgramProfile = in.readInt32();
+            /*int32 vertexProgramProfile =*/ in.readInt32();
+            /*int32 fragmentProgramProfile =*/ in.readInt32();
             std::string vertexProgramEntry = in.readString(256);
             std::string fragmentProgramEntry = in.readString(256);
         }

@@ -122,7 +122,7 @@ protected:
 
     virtual ~LightPoint() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
         _material = in.readInt16();
@@ -259,8 +259,8 @@ protected:
     {
         std::string id = in.readString(8);
         int32 appearanceIndex = in.readInt32();
-        int32 animationIndex = in.readInt32();
-        int32 drawOrder = in.readInt32();           // for calligraphic lights
+        /*int32 animationIndex =*/ in.readInt32();
+        /*int32 drawOrder =*/ in.readInt32();           // for calligraphic lights
 
         LightPointAppearancePool* lpaPool = document.getOrCreateLightPointAppearancePool();
         _appearance = lpaPool->get(appearanceIndex);
@@ -313,7 +313,7 @@ protected:
 
     virtual ~LightPointSystem() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
         osg::notify(osg::INFO) << "ID: " << id << std::endl;

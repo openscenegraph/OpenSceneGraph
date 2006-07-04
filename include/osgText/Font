@@ -88,6 +88,11 @@ public:
 
     virtual std::string getFileName() const;
 
+
+    void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
+    osg::StateSet* getStateSet() { return _stateset.get(); }
+    const osg::StateSet* getStateSet() const { return _stateset.get(); }
+
     /** Set the pixel width and height hint.*/
     virtual void setFontResolution(unsigned int width, unsigned int height);
     
@@ -152,6 +157,8 @@ protected:
     typedef std::pair< unsigned int, unsigned int >         SizePair;
     typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
     
+
+    osg::ref_ptr<osg::StateSet>     _stateset;
     SizeGlyphMap                    _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
     StateSetList                    _stateSetList;

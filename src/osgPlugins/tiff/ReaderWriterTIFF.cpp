@@ -743,7 +743,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return rr;
         }
 
-        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options *options) const
+        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options* /*options*/) const
         {
             WriteResult::WriteStatus ws = writeTIFStream(fout,img);
             return ws;

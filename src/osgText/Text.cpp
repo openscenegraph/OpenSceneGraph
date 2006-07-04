@@ -89,6 +89,14 @@ void Text::setFont(Font* font)
 {
     if (_font==font) return;
     
+    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : 0;
+    osg::StateSet* newFontStateSet = font ? font->getStateSet() : 0;
+    
+    if (getStateSet() == previousFontStateSet)
+    {
+        setStateSet( newFontStateSet );
+    }
+    
     _font = font;
     
     computeGlyphRepresentation();
@@ -699,8 +707,6 @@ void Text::computeGlyphRepresentation()
 
     }
    
-    setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
-
     computePositions();
     computeColorGradients();
 }
@@ -1443,6 +1449,7 @@ void Text::drawImplementation(osg::State& state) const
             glPushAttrib(GL_POLYGON_OFFSET_FILL);
             glEnable(GL_POLYGON_OFFSET_FILL);
         }
+
         for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();
             ++titr)
@@ -1505,8 +1512,13 @@ void Text::drawImplementation(osg::State& state) const
                     // Make sure that the main (foreground) text is on top
                     glPolygonOffset(-10, -10);
                 }
+
                 glDrawArrays(GL_QUADS,0,transformedCoords.size());
-                glPolygonOffset(0,0);
+
+                if(_backdropType != NONE)
+                {
+                    glPolygonOffset(0,0);
+                }
             }
         }
 

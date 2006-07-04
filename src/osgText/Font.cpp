@@ -31,7 +31,7 @@ std::string osgText::findFontFile(const std::string& str)
 {
     // try looking in OSGFILEPATH etc first for fonts.
     std::string filename = osgDB::findDataFile(str);
-    if (!filename.empty()) return std::string(filename);
+    if (!filename.empty()) return filename;
 
 
     static osgDB::FilePathList s_FontFilePath;
@@ -68,6 +68,11 @@ std::string osgText::findFontFile(const std::string& str)
         filename = osgDB::findFileInPath(filename,s_FontFilePath);
         if (!filename.empty()) return filename;
     }
+    else
+    {
+        filename = osgText::findFontFile(std::string("fonts/")+filename);
+        if (!filename.empty()) return filename;
+    }
 
     // Not found, return empty string
     osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
@@ -76,6 +81,8 @@ std::string osgText::findFontFile(const std::string& str)
 
 osgText::Font* osgText::readFontFile(const std::string& filename)
 {
+    if (filename=="") return 0;
+
     std::string foundFile = findFontFile(filename);
     if (foundFile.empty()) return 0;
     
@@ -132,6 +139,9 @@ Font::Font(FontImplementation* implementation):
 {
     setImplementation(implementation);
     _texEnv = new osg::TexEnv(osg::TexEnv::BLEND);
+
+    _stateset = new osg::StateSet;
+    _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
 Font::~Font()

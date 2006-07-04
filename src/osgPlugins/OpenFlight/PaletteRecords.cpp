@@ -58,6 +58,10 @@ protected:
 
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
+        if (document.getColorPoolParent())
+            // Using parent's color pool -- ignore this record.
+            return;
+
         if (document.version() > VERSION_13)
         {
             bool oldVersion = false;
@@ -154,6 +158,10 @@ protected:
 
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
+        if (document.getMaterialPoolParent())
+            // Using parent's material pool -- ignore this record.
+            return;
+
         int32 index = in.readInt32();
         std::string name = in.readString(12);
         /*uint32 flags =*/ in.readUInt32();
@@ -193,6 +201,10 @@ protected:
 
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
+        if (document.getMaterialPoolParent())
+            // Using parent's material pool -- ignore this record.
+            return;
+
         for (int i=0; i < 64; i++)
         {
             osg::Vec3f ambient = in.readVec3f();
@@ -254,6 +266,10 @@ protected:
 
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
+        if (document.getTexturePoolParent())
+            // Using parent's texture pool -- ignore this record.
+            return;
+
         int maxLength = (document.version() < VERSION_14) ? 80 : 200;
         std::string filename = in.readString(maxLength);
         int32 index = in.readInt32(-1);
@@ -457,6 +473,10 @@ protected:
 
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
+        if (document.getLightPointAppearancePoolParent())
+            // Using parent's light point appearance pool -- ignore this record.
+            return;
+
         osg::ref_ptr<LPAppearance> appearance = new LPAppearance;
 
         in.forward(4);
@@ -612,6 +632,10 @@ protected:
 
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
+        if (document.getShaderPoolParent())
+            // Using parent's shader pool -- ignore this record.
+            return;
+
         int32 index = in.readInt32();
         int32 type = in.readInt32();
         std::string name = in.readString(1024);

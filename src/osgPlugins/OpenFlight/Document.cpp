@@ -19,7 +19,12 @@ Document::Document() :
     _level(0),
     _subfaceLevel(0),
     _unitScale(1.0),
-    _version(0)
+    _version(0),
+    _colorPoolParent(false),
+    _texturePoolParent(false),
+    _materialPoolParent(false),
+    _lightPointAppearancePoolParent(false),
+    _shaderPoolParent(false)
 {
 }
 

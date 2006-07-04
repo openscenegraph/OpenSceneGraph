@@ -26,10 +26,14 @@ GUIEventAdapter::GUIEventAdapter():
     _Ymax(1.0),
     _mx(0.5),
     _my(0.5),
+    _pressure(0.0),
     _buttonMask(0),
     _modKeyMask(0),
-    _scrollingMotion(SCROLL_DOWN),
-    _mouseYOrientation(Y_INCREASING_DOWNWARDS)
+    _scrollingMotion(SCROLL_NONE),
+    _scrollingDeltaX(0),
+    _scrollingDeltaY(0),
+    _mouseYOrientation(Y_INCREASING_DOWNWARDS),
+    _tabletPointerType(UNKNOWN)
 {}
 
 GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
@@ -44,10 +48,14 @@ GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
     _Ymax(rhs._Ymax),
     _mx(rhs._mx),
     _my(rhs._my),
+    _pressure(rhs._pressure),
     _buttonMask(rhs._buttonMask),
     _modKeyMask(rhs._modKeyMask),
     _scrollingMotion(rhs._scrollingMotion),
-    _mouseYOrientation(rhs._mouseYOrientation)
+    _scrollingDeltaX(rhs._scrollingDeltaX),
+    _scrollingDeltaY(rhs._scrollingDeltaY),
+    _mouseYOrientation(rhs._mouseYOrientation),
+    _tabletPointerType(rhs._tabletPointerType)
 {}
 
 GUIEventAdapter::~GUIEventAdapter()

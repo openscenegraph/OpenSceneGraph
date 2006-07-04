@@ -25,10 +25,31 @@ void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::Scroll
         switch(sm)
         {
             case(Producer::KeyboardMouseCallback::ScrollNone): break;
+            case(Producer::KeyboardMouseCallback::ScrollLeft): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_LEFT); break;
+            case(Producer::KeyboardMouseCallback::ScrollRight): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_RIGHT); break;
             case(Producer::KeyboardMouseCallback::ScrollUp): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP); break;
             case(Producer::KeyboardMouseCallback::ScrollDown): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN); break;
+            case(Producer::KeyboardMouseCallback::Scroll2D): _eventQueue->mouseScroll(osgGA::GUIEventAdapter::SCROLL_2D); break;
         }
     }
+}
+
+void KeyboardMouseCallback::mouseScroll2D( float x, float y )
+{
+    updateWindowSize();
+    if (_eventQueue.valid()) _eventQueue->mouseScroll2D(x,y);
+}
+
+void KeyboardMouseCallback::penPressure( float pressure ) 
+{
+    updateWindowSize();
+    if (_eventQueue.valid()) _eventQueue->penPressure(pressure);
+}
+
+void KeyboardMouseCallback::penProximity(TabletPointerType pt, bool isEntering)
+{
+    updateWindowSize();
+    if (_eventQueue.valid()) _eventQueue->penProximity((osgGA::GUIEventAdapter::TabletPointerType)pt, isEntering);
 }
 
 void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 

@@ -87,6 +87,24 @@ void EventQueue::windowResize(float Xmin, float Ymin, float Xmax, float Ymax)
     addEvent(event);
 }
 
+void EventQueue::penPressure(float pressure)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::PEN_PRESSURE);
+    event->setPenPressure(pressure);
+    
+    addEvent(event);
+}
+
+void EventQueue::penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType( (isEntering) ? GUIEventAdapter::PEN_PROXIMITY_ENTER : GUIEventAdapter::PEN_PROXIMITY_LEAVE);
+    event->setTabletPointerType(pt);
+    
+    addEvent(event);
+}
+
 void EventQueue::mouseScroll(GUIEventAdapter::ScrollingMotion sm)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
@@ -95,6 +113,16 @@ void EventQueue::mouseScroll(GUIEventAdapter::ScrollingMotion sm)
     
     addEvent(event);
 }
+
+void EventQueue::mouseScroll2D(float x, float y)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::SCROLL);
+    event->setScrollingMotionDelta(x,y);
+    
+    addEvent(event);
+}
+
 
 void EventQueue::mouseWarp(float x, float y)
 {

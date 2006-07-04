@@ -56,6 +56,15 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
         /** method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
         void mouseScroll(GUIEventAdapter::ScrollingMotion sm);
+        
+        /** method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
+        void mouseScroll2D(float x, float y);
+        
+        /** method for adapting pen pressure events, placing this event on the back og the event queue.*/
+        void penPressure(float pressure);
+        
+         /** method for adapting pen proximity events, placing this event on the back og the event queue.*/
+        void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering);
 
         /** method for updating in response to a mouse warp. Note, just moves the mouse position without creating a new event for it.*/
         void mouseWarp(float x, float y);

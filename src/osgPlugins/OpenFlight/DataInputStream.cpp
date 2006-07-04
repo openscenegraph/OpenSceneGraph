@@ -126,7 +126,7 @@ osg::Vec4f DataInputStream::readColor32()
     uint8 green = readUInt8();
     uint8 red   = readUInt8();
 
-    osg::Vec4f color((float)red/255,(float)green/255,(float)blue/255,1);
+    osg::Vec4f color((float)red/255,(float)green/255,(float)blue/255,(float)alpha/255);
 
     return color;
 }

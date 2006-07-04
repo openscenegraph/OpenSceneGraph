@@ -43,7 +43,7 @@ class VertexC : public Record
 
         virtual void readRecord(RecordInputStream& in, Document& document)
         {
-            int colorNameIndex = in.readInt16();
+            /*int colorNameIndex =*/ in.readInt16();
             uint16 flags = in.readUInt16();
             osg::Vec3d coord = in.readVec3d();
             osg::Vec4f packedColor = in.readColor32();
@@ -80,7 +80,7 @@ class VertexCN : public Record
 
         virtual void readRecord(RecordInputStream& in, Document& document)
         {
-            int colorNameIndex = in.readInt16();
+            /*int colorNameIndex =*/ in.readInt16();
             uint16 flags = in.readUInt16();
             osg::Vec3d coord = in.readVec3d();
             osg::Vec3f normal = in.readVec3f();
@@ -119,7 +119,7 @@ class VertexCT : public Record
 
         virtual void readRecord(RecordInputStream& in, Document& document)
         {
-            int colorNameIndex = in.readInt16();
+            /*int colorNameIndex =*/ in.readInt16();
             uint16 flags = in.readUInt16();
             osg::Vec3d coord = in.readVec3d();
             osg::Vec2f uv = in.readVec2f();
@@ -158,7 +158,7 @@ class VertexCNT : public Record
 
         virtual void readRecord(RecordInputStream& in, Document& document)
         {
-            int colorNameIndex = in.readInt16();
+            /*int colorNameIndex =*/ in.readInt16();
             uint16 flags = in.readUInt16();
             osg::Vec3d coord = in.readVec3d();
             osg::Vec3f normal = in.readVec3f();
@@ -246,8 +246,8 @@ class ShadedVertex : public Record
             int32 x = in.readInt32();
             int32 y = in.readInt32();
             int32 z = in.readInt32();
-            uint8 edgeFlag = in.readUInt8();
-            uint8 shadingFlag = in.readUInt8();
+            /*uint8 edgeFlag =*/ in.readUInt8();
+            /*uint8 shadingFlag =*/ in.readUInt8();
             int colorIndex = (int)in.readInt16();
 
             Vertex vertex;
@@ -294,8 +294,8 @@ class NormalVertex : public Record
             int32 x = in.readInt32();
             int32 y = in.readInt32();
             int32 z = in.readInt32();
-            uint8 edgeFlag = in.readUInt8();
-            uint8 shadingFlag = in.readUInt8();
+            /*uint8 edgeFlag =*/ in.readUInt8();
+            /*uint8 shadingFlag =*/ in.readUInt8();
             int colorIndex = (int)in.readInt16();
             osg::Vec3f normal = in.readVec3d();
 

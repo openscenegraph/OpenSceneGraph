@@ -164,7 +164,7 @@ public:
         UVs->push_back(uv);
     }
 
-    virtual void addMorphVertex(Vertex& vertex0, Vertex& vertex100)
+    virtual void addMorphVertex(Vertex& vertex0, Vertex& /*vertex100*/)
     {
         osg::Vec3Array* vertices = getOrCreateVertexArray(*_geometry);
         vertices->push_back(vertex0._coord);
@@ -205,34 +205,34 @@ protected:
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
-        int32 IRColor = in.readInt32();
-        int16 relativePriority = in.readInt16();
+        /*int32 IRColor =*/ in.readInt32();
+        /*int16 relativePriority =*/ in.readInt16();
         _drawFlag = in.readUInt8();
         uint8 texturedWhite = in.readUInt8();
         int16 primaryNameIndex = in.readInt16(-1);
-        int16 secondaryNameIndex = in.readInt16(-1);
+        /*int16 secondaryNameIndex =*/ in.readInt16(-1);
         in.forward(1);
         _template = in.readUInt8(FIXED_NO_ALPHA_BLENDING);
-        int detailTexture = in.readInt16(-1);
+        /*int detailTexture =*/ in.readInt16(-1);
         int textureIndex = in.readInt16(-1);
         int materialIndex = in.readInt16(-1);
-        int16 surface = in.readInt16();
-        int16 feature = in.readInt16();
-        int32 IRMaterial = in.readInt32(-1);
+        /*int16 surface =*/ in.readInt16();
+        /*int16 feature =*/ in.readInt16();
+        /*int32 IRMaterial =*/ in.readInt32(-1);
         _transparency = in.readUInt16(0);
         // version > 13
-        uint8 influenceLOD = in.readUInt8();
-        uint8 linestyle = in.readUInt8();
+        /*uint8 influenceLOD =*/ in.readUInt8();
+        /*uint8 linestyle =*/ in.readUInt8();
         _flags = in.readUInt32(0);
         _lightMode = in.readUInt8(FACE_COLOR);
         in.forward(7);
         osg::Vec4 primaryPackedColor = in.readColor32();
         osg::Vec4 secondaryPackedColor = in.readColor32();
         // version >= VERSION_15_1
-        int textureMappingIndex = in.readInt16(-1);
+        /*int textureMappingIndex =*/ in.readInt16(-1);
         in.forward(2);
         int primaryColorIndex = in.readInt32(-1);
-        int alternateColorIndex = in.readInt32(-1);
+        /*int alternateColorIndex =*/ in.readInt32(-1);
         // version >= 16
         in.forward(2);
         int shaderIndex = in.readInt16(-1);
@@ -566,6 +566,8 @@ public:
             if (_parent.valid())
                 _parent->addMorphVertex(_vertex0, _vertex100);
             break;
+        case UNDEFINED:
+            break;
         }
     }
 
@@ -728,34 +730,34 @@ protected:
     {
         std::string id = in.readString(8);
         in.forward(4);
-        int32 IRColor = in.readInt32();
-        int16 relativePriority = in.readInt16();
+        /*int32 IRColor =*/ in.readInt32();
+        /*int16 relativePriority =*/ in.readInt16();
         _drawFlag = in.readUInt8();
         uint8 texturedWhite = in.readUInt8();
         int16 primaryNameIndex = in.readInt16(-1);
-        int16 secondaryNameIndex = in.readInt16(-1);
+        /*int16 secondaryNameIndex =*/ in.readInt16(-1);
         in.forward(1);
         _template = in.readUInt8(FIXED_NO_ALPHA_BLENDING);
-        int detailTexture = in.readInt16(-1);
+        /*int detailTexture =*/ in.readInt16(-1);
         int textureIndex = in.readInt16(-1);
         int materialIndex = in.readInt16(-1);
-        int16 surface = in.readInt16();
-        int16 feature = in.readInt16();
-        int32 IRMaterial = in.readInt32(-1);
+        /*int16 surface =*/ in.readInt16();
+        /*int16 feature =*/ in.readInt16();
+        /*int32 IRMaterial =*/ in.readInt32(-1);
         _transparency = in.readUInt16(0);
         // version > 13
-        uint8 influenceLOD = in.readUInt8();
-        uint8 linestyle = in.readUInt8();
+        /*uint8 influenceLOD =*/ in.readUInt8();
+        /*uint8 linestyle =*/ in.readUInt8();
         _flags = in.readUInt32(0);
         _lightMode = in.readUInt8(FACE_COLOR);
         in.forward(7);
         osg::Vec4 primaryPackedColor = in.readColor32();
         osg::Vec4 secondaryPackedColor = in.readColor32();
         // version >= VERSION_15_1
-        int textureMappingIndex = in.readInt16(-1);
+        /*int textureMappingIndex =*/ in.readInt16(-1);
         in.forward(2);
         int primaryColorIndex = in.readInt32(-1);
-        int alternateColorIndex = in.readInt32(-1);
+        /*int alternateColorIndex =*/ in.readInt32(-1);
         // version >= 16
         in.forward(2);
         int shaderIndex = in.readInt16(-1);
@@ -1028,7 +1030,7 @@ protected:
 
     virtual ~MeshPrimitive() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         Mesh* mesh = dynamic_cast<Mesh*>(_parent.get());
         if (!mesh) return;

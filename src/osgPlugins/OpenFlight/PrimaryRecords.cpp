@@ -54,7 +54,7 @@ protected:
         osg::notify(osg::DEBUG_INFO) << "Format: " << format << std::endl;
         document._version = format;
 
-        uint32 revision = in.readUInt32();
+        /*uint32 revision =*/ in.readUInt32();
 
         std::string revisionTime = in.readString(32);
         osg::notify(osg::INFO) << "Last revision: " << revisionTime << std::endl;
@@ -64,8 +64,8 @@ protected:
         // Flight v.11 & 12 use integer coordinates
         int16 multDivUnits = in.readInt16();        // Units multiplier/divisor
         uint8 units = in.readUInt8();               // 0=Meters 1=Kilometers 4=Feet 5=Inches 8=Nautical miles
-        uint8 textureWhite = in.readUInt8();
-        uint32 flags = in.readUInt32();
+        /*uint8 textureWhite =*/ in.readUInt8();
+        /*uint32 flags =*/ in.readUInt32();
 
         if (document.getDoUnitsConversion())
             document._unitScale = unitsToMeters((CoordUnits)units) / unitsToMeters(document.getDesiredUnits());
@@ -118,7 +118,7 @@ protected:
 
     virtual ~Object() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
         uint32 flags = in.readUInt32();
@@ -180,17 +180,17 @@ protected:
         std::string id = in.readString(8);
         osg::notify(osg::DEBUG_INFO) << "ID: " << id << std::endl;
 
-        int16 relativePriority = in.readInt16();
+        /*int16 relativePriority =*/ in.readInt16();
         in.forward(2);
         uint32 flags = in.readUInt32();
-        uint16 specialId0 = in.readUInt16();
-        uint16 specialId1 = in.readUInt16();
-        uint16 significance = in.readUInt16();
-        int8 layer = in.readInt8();
+        /*uint16 specialId0 =*/ in.readUInt16();
+        /*uint16 specialId1 =*/ in.readUInt16();
+        /*uint16 significance =*/ in.readUInt16();
+        /*int8 layer =*/ in.readInt8();
         in.forward(5);
-        uint32 loopCount = in.readUInt32();
-        float32 loopDuration = in.readFloat32();
-        float32 lastFrameDuration = in.readFloat32();
+        /*uint32 loopCount =*/ in.readUInt32();
+        /*float32 loopDuration =*/ in.readFloat32();
+        /*float32 lastFrameDuration =*/ in.readFloat32();
 
         // Check for forward animation (sequence)
         bool forwardAnim = (flags & FORWARD_ANIM) != 0;
@@ -423,9 +423,9 @@ protected:
         in.forward(4);
         float64 switchInDistance = in.readFloat64();
         float64 switchOutDistance = in.readFloat64();
-        int16 specialEffectID1 = in.readInt16();
-        int16 specialEffectID2 = in.readInt16();
-        uint32 flags = in.readUInt32();
+        /*int16 specialEffectID1 =*/ in.readInt16();
+        /*int16 specialEffectID2 =*/ in.readInt16();
+        /*uint32 flags =*/ in.readUInt32();
         osg::Vec3d center = in.readVec3d();
 
         _lod = new osg::LOD;
@@ -478,9 +478,9 @@ protected:
         std::string id = in.readString(8);
         uint32 switchInDistance = in.readUInt32();
         uint32 switchOutDistance = in.readUInt32();
-        int16 specialEffectID1 = in.readInt16();
-        int16 specialEffectID2 = in.readInt16();
-        uint32 flags = in.readUInt32();
+        /*int16 specialEffectID1 =*/ in.readInt16();
+        /*int16 specialEffectID2 =*/ in.readInt16();
+        /*uint32 flags =*/ in.readUInt32();
 
         osg::Vec3 center;
         center.x() = (float)in.readInt32();
@@ -550,7 +550,7 @@ protected:
 
     virtual ~Switch() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
         in.forward(4);
@@ -606,7 +606,7 @@ protected:
 
     virtual ~ExternalReference() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string strFile = in.readString(200);
 
@@ -722,7 +722,7 @@ protected:
 
     virtual ~Extension() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
         std::string siteId = in.readString(8);

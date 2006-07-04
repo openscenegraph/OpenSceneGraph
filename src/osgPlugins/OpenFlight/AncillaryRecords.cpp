@@ -131,9 +131,9 @@ class Multitexture : public Record
                 if (mask & layerBit)
                 {
                     int16 textureIndex = in.readInt16();
-                    int16 effectIndex = in.readInt16();
-                    int16 mappingIndex = in.readInt16();
-                    uint16 data= in.readUInt16();
+                    /* int16 effectIndex =*/ in.readInt16();
+                    /* int16 mappingIndex =*/ in.readInt16();
+                    /* uint16 data=*/ in.readUInt16();
 
                     osg::ref_ptr<osg::StateSet> texturePoolStateset = document.getOrCreateTexturePool()->get(textureIndex);
                     if (stateset.valid() && texturePoolStateset.valid())
@@ -181,7 +181,7 @@ class UVList : public Record
             return count;
         }
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             uint32 mask = in.readUInt32(0);
 
@@ -223,7 +223,7 @@ class Replicate : public Record
 
         virtual ~Replicate() {}
 
-        virtual void readRecord(RecordInputStream& in, Document& document)
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             int16 replicate = in.readInt16();
 

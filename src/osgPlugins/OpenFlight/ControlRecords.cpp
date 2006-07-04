@@ -25,7 +25,7 @@ class PushLevel : public Record
 
         META_Record(PushLevel)
 
-        virtual void read(RecordInputStream& in, Document& document)
+        virtual void read(RecordInputStream& /*in*/, Document& document)
         {
             document.pushLevel();
         }
@@ -48,7 +48,7 @@ class PopLevel : public Record
 
         META_Record(PopLevel)
 
-        virtual void read(RecordInputStream& in, Document& document)
+        virtual void read(RecordInputStream& /*in*/, Document& document)
         {
             document.popLevel();
         }
@@ -71,7 +71,7 @@ class PushSubface : public Record
 
         META_Record(PushSubface)
 
-        virtual void read(RecordInputStream& in, Document& document)
+        virtual void read(RecordInputStream& /*in*/, Document& document)
         {
             document.pushSubface();
         }
@@ -94,7 +94,7 @@ class PopSubface : public Record
 
         META_Record(PopSubface)
 
-        virtual void read(RecordInputStream& in, Document& document)
+        virtual void read(RecordInputStream& /*in*/, Document& document)
         {
             document.popSubface();
         }

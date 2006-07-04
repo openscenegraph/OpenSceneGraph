@@ -20,7 +20,7 @@ osg::Vec4 ColorPool::getColor(int indexIntensity) const
         // bit 12    fixed intensity bit
         bool fixedIntensity = (indexIntensity & 0x1000) ? true : false;
         unsigned int index = (fixedIntensity) ? (indexIntensity & 0x0fff)+(4096>>7) : indexIntensity >> 7;
-        assert(index>=0 && index<size());
+        assert(index<size());
         osg::Vec4 col = at(index);
         if (!fixedIntensity)
         {

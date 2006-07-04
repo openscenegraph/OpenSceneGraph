@@ -227,33 +227,33 @@ void Referenced::unref_nodelete() const
     }
 }
 
-void Referenced::addObserver(Observer* observer_ptr)
+void Referenced::addObserver(Observer* observer)
 {
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
 
         if (!_observers) _observers = new ObserverSet;
-        if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer_ptr);
+        if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer);
     }
     else
     {
         if (!_observers) _observers = new ObserverSet;
-        if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer_ptr);
+        if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer);
     }
 }
 
-void Referenced::removeObserver(Observer* observer_ptr)
+void Referenced::removeObserver(Observer* observer)
 {
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
 
-        if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer_ptr);
+        if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer);
     }
     else
     {
-        if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer_ptr);
+        if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer);
     }
 }
 

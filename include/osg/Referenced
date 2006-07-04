@@ -80,10 +80,10 @@ class OSG_EXPORT Referenced
         inline int referenceCount() const { return _refCount; }
 
         /** Add a Observer that is observering this object, notify the Observer when this object gets deleted.*/
-        void addObserver(Observer* observer_ptr);
+        void addObserver(Observer* observer);
 
         /** Add a Observer that is observering this object, notify the Observer when this object gets deleted.*/
-        void removeObserver(Observer* observer_ptr);
+        void removeObserver(Observer* observer);
 
     public:
 
@@ -189,8 +189,8 @@ class OSG_EXPORT Referenced : public NoodleGlue::CBridgable
         inline int referenceCount() const { return _refCount; }
 
         /* These methods are not used in JavaOSG */
-        void addObserver(Observer* observer_ptr) {}
-        void removeObserver(Observer* observer_ptr) {}
+        void addObserver(Observer* observer) {}
+        void removeObserver(Observer* observer) {}
 
     public:
 

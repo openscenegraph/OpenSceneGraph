@@ -33,6 +33,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
 	I_Method4(void, windowResize, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
 	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm);
+	I_Method2(void, mouseScroll2D, IN, float, x, IN, float, y);
+	I_Method1(void, penPressure, IN, float, pressure);
+	I_Method2(void, penProximity, IN, osgGA::GUIEventAdapter::TabletPointerType, pt, IN, bool, isEntering);
 	I_Method2(void, mouseWarp, IN, float, x, IN, float, y);
 	I_Method2(void, mouseMotion, IN, float, x, IN, float, y);
 	I_Method3(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button);

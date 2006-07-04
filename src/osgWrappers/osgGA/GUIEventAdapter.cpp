@@ -37,6 +37,9 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::EventType)
 	I_EnumLabel(osgGA::GUIEventAdapter::FRAME);
 	I_EnumLabel(osgGA::GUIEventAdapter::RESIZE);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL);
+	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PRESSURE);
+	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER);
+	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::KeySymbol)
@@ -187,10 +190,19 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::MouseYOrientation)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ScrollingMotion)
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_NONE);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_LEFT);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_RIGHT);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_UP);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_DOWN);
+	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_2D);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::TabletPointerType)
+	I_EnumLabel(osgGA::GUIEventAdapter::UNKNOWN);
+	I_EnumLabel(osgGA::GUIEventAdapter::PEN);
+	I_EnumLabel(osgGA::GUIEventAdapter::PUCK);
+	I_EnumLabel(osgGA::GUIEventAdapter::ERASER);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
@@ -223,7 +235,14 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Method0(unsigned int, getButtonMask);
 	I_Method1(void, setModKeyMask, IN, unsigned int, mask);
 	I_Method0(unsigned int, getModKeyMask);
+	I_Method0(float, getPenPressure);
+	I_Method1(void, setPenPressure, IN, float, pressure);
+	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType);
+	I_Method1(void, setTabletPointerType, IN, osgGA::GUIEventAdapter::TabletPointerType, pt);
 	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion);
+	I_Method0(float, getScrollingDeltaX);
+	I_Method0(float, getScrollingDeltaY);
+	I_Method2(void, setScrollingMotionDelta, IN, float, x, IN, float, y);
 	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion);
 	I_Method0(float, getXnormalized);
 	I_Method0(float, getYnormalized);
@@ -235,7 +254,11 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Property(int, Key);
 	I_Property(unsigned int, ModKeyMask);
 	I_Property(osgGA::GUIEventAdapter::MouseYOrientation, MouseYOrientation);
+	I_Property(float, PenPressure);
+	I_ReadOnlyProperty(float, ScrollingDeltaX);
+	I_ReadOnlyProperty(float, ScrollingDeltaY);
 	I_Property(osgGA::GUIEventAdapter::ScrollingMotion, ScrollingMotion);
+	I_Property(osgGA::GUIEventAdapter::TabletPointerType, TabletPointerType);
 	I_Property(double, Time);
 	I_Property(float, X);
 	I_Property(float, Xmax);

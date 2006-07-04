@@ -35,6 +35,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_Method0(const char *, className);
 	I_Method0(const char *, libraryName);
 	I_Method0(std::string, getFileName);
+	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset);
+	I_Method0(osg::StateSet *, getStateSet);
+	I_Method0(const osg::StateSet *, getStateSet);
 	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height);
 	I_Method0(unsigned int, getFontWidth);
 	I_Method0(unsigned int, getFontHeight);
@@ -61,6 +64,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_Property(osgText::Font::FontImplementation *, Implementation);
 	I_Property(osg::Texture::FilterMode, MagFilterHint);
 	I_Property(osg::Texture::FilterMode, MinFilterHint);
+	I_Property(osg::StateSet *, StateSet);
 	I_ReadOnlyProperty(unsigned int, TextureHeightHint);
 	I_ReadOnlyProperty(unsigned int, TextureWidthHint);
 END_REFLECTOR

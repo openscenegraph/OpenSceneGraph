@@ -1337,6 +1337,8 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         }
     }
 
+    results.clear();
+
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForFile(readFunctor._filename);
     if (loadLibrary(libraryName))
@@ -1349,11 +1351,40 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         }
     }
     
-    if (results.empty())
+    if (!results.empty())
+    {
+        unsigned int num_FILE_NOT_HANDLED = 0;
+        unsigned int num_FILE_NOT_FOUND = 0;
+        unsigned int num_ERROR_IN_READING_FILE = 0;
+
+        for(Results::iterator ritr=results.begin();
+            ritr!=results.end();
+            ++ritr)
+        {
+            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
+            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
+            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
+        }
+        
+        if (num_FILE_NOT_HANDLED!=results.size())
+        {
+            // we've come across a file not found or error in reading file.
+            if (num_ERROR_IN_READING_FILE)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                return ReaderWriter::ReadResult(ReaderWriter::ReadResult::ERROR_IN_READING_FILE);
+            }
+            else if (num_FILE_NOT_FOUND)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                return ReaderWriter::ReadResult(ReaderWriter::ReadResult::FILE_NOT_FOUND);
+            }
+        }
+    }
+    else
     {
         return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+readFunctor._filename+"\".");
     }
-    
 
     return results.front();
 }

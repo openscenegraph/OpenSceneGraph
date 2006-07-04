@@ -41,6 +41,8 @@ public:
 
     virtual void apply(ProxyNode& node)
     {
+        _options->setUserData( node.getUserData() );
+
         for (unsigned int pos=0; pos<node.getNumFileNames(); pos++)
         {
             std::string filename = node.getFileName(pos);
@@ -137,7 +139,7 @@ class FLTReaderWriter : public ReaderWriter
             Document document;
             document.setOptions(options);
 
-            // option string
+            // option string and parent pools
             if (options)
             {
                 const char readerMsg[] = "flt reader option: ";
@@ -166,6 +168,23 @@ class FLTReaderWriter : public ReaderWriter
                         document.setDesiredUnits(KILOMETERS);
                     else if (options->getOptionString().find("convertToNauticalMiles")!=std::string::npos)
                         document.setDesiredUnits(NAUTICAL_MILES);
+                }
+
+                const ParentPools* pools = dynamic_cast<const ParentPools*>( options->getUserData() );
+                if (pools)
+                {
+                    // This file is an external reference. The individual pools will
+                    // be non-NULL if the parent is overriding the ext ref model's pools.
+                    if (pools->getColorPool())
+                        document.setColorPool( pools->getColorPool(), true );
+                    if (pools->getTexturePool())
+                        document.setTexturePool( pools->getTexturePool(), true );
+                    if (pools->getMaterialPool())
+                        document.setMaterialPool( pools->getMaterialPool(), true );
+                    if (pools->getLPAppearancePool())
+                        document.setLightPointAppearancePool( pools->getLPAppearancePool(), true );
+                    if (pools->getShaderPool())
+                        document.setShaderPool( pools->getShaderPool(), true );
                 }
             }
 

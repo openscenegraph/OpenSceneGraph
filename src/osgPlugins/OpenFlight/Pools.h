@@ -201,6 +201,48 @@ protected:
     virtual ~ShaderPool() {}
 };
 
+
+// This object records parent palettes for external record support.
+// When an external record is parsed, this object is instatiated and populated with
+// the parent model's paettes, then stored as UserData on the ProxyNode.
+// When the ReadExternalsVisitor hits the ProcyNode, it moves this object
+// into the ReaderWriter Options' UserData before calling osgDB::ReadNode,
+// enabling  access to the parent palattes during load of the ext ref model.
+class ParentPools : public osg::Referenced
+{
+public:
+
+    ParentPools(
+        ColorPool* color,
+        MaterialPool* material,
+        TexturePool* texture,
+        LightPointAppearancePool* lpAppearance,
+        ShaderPool* shader )
+      : Referenced(),
+        _colorPool( color ),
+        _materialPool( material ),
+        _texturePool( texture ),
+        _lpAppearancePool( lpAppearance ),
+        _shaderPool( shader ) {}
+
+    ColorPool* getColorPool() const { return _colorPool.get(); }
+    TexturePool* getTexturePool() const { return _texturePool.get(); }
+    MaterialPool* getMaterialPool() const { return _materialPool.get(); }
+    LightPointAppearancePool* getLPAppearancePool() const { return _lpAppearancePool.get(); }
+    ShaderPool* getShaderPool() const { return _shaderPool.get(); }
+
+protected:
+
+    virtual ~ParentPools() {}
+
+    osg::ref_ptr<ColorPool> _colorPool;
+    osg::ref_ptr<MaterialPool> _materialPool;
+    osg::ref_ptr<TexturePool> _texturePool;
+    osg::ref_ptr<LightPointAppearancePool> _lpAppearancePool;
+    osg::ref_ptr<ShaderPool> _shaderPool;
+};
+
+
 } // end namespace
 
 #endif

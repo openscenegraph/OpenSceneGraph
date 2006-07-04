@@ -119,14 +119,27 @@ class Document
         VertexPool* getVertexPool() { return _vertexPool.get(); }
         const VertexPool* getVertexPool() const { return _vertexPool.get(); }
 
-        void setColorPool(ColorPool* cp) { _colorPool = cp; }
+        void setColorPool(ColorPool* cp, bool parent=false) { _colorPool = cp; _colorPoolParent=parent; }
         ColorPool* getColorPool() { return _colorPool.get(); }
         const ColorPool* getColorPool() const { return _colorPool.get(); }
+        bool getColorPoolParent() const { return _colorPoolParent; }
 
+        void setTexturePool(TexturePool* tp, bool parent=false) { _texturePool = tp; _texturePoolParent=parent; }
         TexturePool* getOrCreateTexturePool();
+        bool getTexturePoolParent() const { return _texturePoolParent; }
+
+        void setMaterialPool(MaterialPool* mp, bool parent=false) { _materialPool = mp; _materialPoolParent=parent; }
         MaterialPool* getOrCreateMaterialPool();
+        bool getMaterialPoolParent() const { return _materialPoolParent; }
+
+        void setLightPointAppearancePool(LightPointAppearancePool* lpap, bool parent=false) { _lightPointAppearancePool = lpap; _lightPointAppearancePoolParent=parent; }
         LightPointAppearancePool* getOrCreateLightPointAppearancePool();
+        bool getLightPointAppearancePoolParent() const { return _lightPointAppearancePoolParent; }
+
+        void setShaderPool(ShaderPool* cp, bool parent=false) { _shaderPool = cp; _shaderPoolParent=parent; }
         ShaderPool* getOrCreateShaderPool();
+        bool getShaderPoolParent() const { return _shaderPoolParent; }
+
 
         // Options
         void setPreserveFace(bool flag) { _preserveFace = flag; }
@@ -166,6 +179,11 @@ class Document
         osg::ref_ptr<MaterialPool> _materialPool;
         osg::ref_ptr<LightPointAppearancePool> _lightPointAppearancePool;
         osg::ref_ptr<ShaderPool> _shaderPool;
+        bool _colorPoolParent;
+        bool _texturePoolParent;
+        bool _materialPoolParent;
+        bool _lightPointAppearancePoolParent;
+        bool _shaderPoolParent;
 
         osg::ref_ptr<PrimaryRecord> _currentPrimaryRecord;
 

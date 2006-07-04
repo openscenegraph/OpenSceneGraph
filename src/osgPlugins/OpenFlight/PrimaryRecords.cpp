@@ -16,6 +16,7 @@
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
+#include <assert.h>
 
 namespace flt {
 
@@ -590,6 +591,16 @@ class ExternalReference : public PrimaryRecord
 {
     osg::ref_ptr<osg::ProxyNode> _external;
 
+    // Parent pool override flags
+    static const unsigned long COLOR_PALETTE_OVERRIDE        = 0x80000000u >> 0;
+    static const unsigned long MATERIAL_PALETTE_OVERRIDE     = 0x80000000u >> 1;
+    static const unsigned long TEXTURE_PALETTE_OVERRIDE      = 0x80000000u >> 2;
+    static const unsigned long LINE_STYLE_PALETTE_OVERRIDE   = 0x80000000u >> 3;
+    static const unsigned long SOUND_PALETTE_OVERRIDE        = 0x80000000u >> 4;
+    static const unsigned long LIGHT_SOURCE_PALETTE_OVERRIDE = 0x80000000u >> 5;
+    static const unsigned long LIGHT_POINT_PALETTE_OVERRIDE  = 0x80000000u >> 6;
+    static const unsigned long SHADER_PALETTE_OVERRIDE       = 0x80000000u >> 7;
+
 public:
 
     ExternalReference() {}
@@ -606,13 +617,23 @@ protected:
 
     virtual ~ExternalReference() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
+    virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string strFile = in.readString(200);
 
         _external = new osg::ProxyNode;
         _external->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
         _external->setFileName(0,strFile);
+
+        // Set parent pools as user data
+        in.forward(4);
+        unsigned int mask = in.readUInt32();
+        _external->setUserData( static_cast<osg::Referenced*>( new ParentPools(
+            ((mask & COLOR_PALETTE_OVERRIDE) ? NULL : document.getColorPool()),
+            ((mask & MATERIAL_PALETTE_OVERRIDE) ? NULL : document.getOrCreateMaterialPool()),
+            ((mask & TEXTURE_PALETTE_OVERRIDE) ? NULL : document.getOrCreateTexturePool()),
+            ((mask & LIGHT_POINT_PALETTE_OVERRIDE) ? NULL : document.getOrCreateLightPointAppearancePool()),
+            ((mask & SHADER_PALETTE_OVERRIDE) ? NULL : document.getOrCreateShaderPool()) )));
 
         // Add this implementation to parent implementation.
         if (_parent.valid())

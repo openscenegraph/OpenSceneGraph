@@ -27,14 +27,16 @@ namespace osgParticle
         ConstantRateCounter():
             Counter(), 
             _minimumNumberOfParticlesToCreate(0),
-            _numberOfParticlesPerSecondToCreate(0)
+            _numberOfParticlesPerSecondToCreate(0),
+            _carryOver(0)
         {
         }
 
         ConstantRateCounter(const ConstantRateCounter& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
              Counter(copy, copyop), 
              _minimumNumberOfParticlesToCreate(copy._minimumNumberOfParticlesToCreate),
-             _numberOfParticlesPerSecondToCreate(copy._numberOfParticlesPerSecondToCreate)
+             _numberOfParticlesPerSecondToCreate(copy._numberOfParticlesPerSecondToCreate),
+             _carryOver(copy._carryOver)
         {
         }
             

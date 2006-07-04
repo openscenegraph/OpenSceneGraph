@@ -46,7 +46,7 @@ void KeyboardMouseCallback::penPressure( float pressure )
     if (_eventQueue.valid()) _eventQueue->penPressure(pressure);
 }
 
-void KeyboardMouseCallback::penProximity(TabletPointerType pt, bool isEntering)
+void KeyboardMouseCallback::penProximity(Producer::KeyboardMouseCallback::TabletPointerType pt, bool isEntering)
 {
     updateWindowSize();
     if (_eventQueue.valid()) _eventQueue->penProximity((osgGA::GUIEventAdapter::TabletPointerType)pt, isEntering);

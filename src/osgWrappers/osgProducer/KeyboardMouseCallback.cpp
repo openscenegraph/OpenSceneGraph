@@ -26,6 +26,9 @@ TYPE_NAME_ALIAS(osgGA::EventQueue::Events, osgProducer::KeyboardMouseCallback::E
 BEGIN_OBJECT_REFLECTOR(osgProducer::KeyboardMouseCallback)
 	I_ConstructorWithDefaults3(IN, Producer::KeyboardMouse *, keyboardMouse, , IN, bool &, done, , IN, bool, escapeKeySetsDone, true);
 	I_Method1(void, mouseScroll, IN, Producer::KeyboardMouseCallback::ScrollingMotion, sm);
+	I_Method2(void, mouseScroll2D, IN, float, x, IN, float, x);
+	I_Method1(void, penPressure, IN, float, pressure);
+	I_Method2(void, penProximity, IN, Producer::KeyboardMouseCallback::TabletPointerType, x, IN, bool, x);
 	I_Method2(void, mouseMotion, IN, float, mx, IN, float, my);
 	I_Method2(void, passiveMouseMotion, IN, float, mx, IN, float, my);
 	I_Method2(void, mouseWarp, IN, float, mx, IN, float, my);

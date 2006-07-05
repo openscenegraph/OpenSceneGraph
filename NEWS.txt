@@ -12,6 +12,8 @@ TerraPage update to version 2.2
 
 Support for OpenGL Shander Lanaguage uniform arrays
 
+New outline and drop shadow support for osgText.
+
 New Quake3 BSP loader
 
 New observer_ptr<> smart pointer which holds a pointer to an object, but does

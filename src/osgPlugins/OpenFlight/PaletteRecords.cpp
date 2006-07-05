@@ -636,8 +636,8 @@ protected:
             // Using parent's shader pool -- ignore this record.
             return;
 
-        int32 index = in.readInt32();
-        int32 type = in.readInt32();
+        int32 index = in.readInt32(-1);
+        int32 type = in.readInt32(-1);
         std::string name = in.readString(1024);
 
         if (type == CG)
@@ -650,13 +650,12 @@ protected:
             std::string vertexProgramEntry = in.readString(256);
             std::string fragmentProgramEntry = in.readString(256);
         }
-
-        if (type == GLSL)
+        else if (type == GLSL)
         {
-            int32 vertexProgramFileCount( 1 );
-            int32 fragmentProgramFileCount( 1 );
+            int32 vertexProgramFileCount(1);
+            int32 fragmentProgramFileCount(1);
 
-            if (document.version() > VERSION_16_1)
+            if (document.version() >= VERSION_16_1)
             {
                 // In 16.1, possibly multiple filenames for each vertex and fragment program.
                 vertexProgramFileCount = in.readInt32();

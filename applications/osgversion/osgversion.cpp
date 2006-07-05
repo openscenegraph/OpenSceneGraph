@@ -166,6 +166,8 @@ bool validName(const std::string& first)
     if (first=="BlenColour(Vec4") return false;
     if (first=="UseFarLineSegments") return false;
     if (first=="TextureRectangle") return false;
+    if (first=="DeleteHandler") return false;
+    if (first=="EventQueue") return false;
     return true;
 }
 
@@ -177,20 +179,12 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
-    if (name=="Rodger") return "Roger";
-    if (name=="Takeahei") return "Takahei";
-    if (name=="Takehei") return "Takahei";
-    if (name=="Joson") return "Jason";
-    if (name=="Micheal") return "Michael";
-    if (name=="Heirtlein") return "Hertlein";
-    if (name=="Yefrei") return "Yefei";
-    if (name=="Randal") return "Randall";
-    if (name=="Hooper") return "Hopper";
-    if (name=="Molishtan") return "Moloshtan";
-    if (name=="Vines") return "Vine";
-    if (name=="Connel") return "Connell";
+    if (name=="Trastenjak") return "Trstenjak";
+    if (name=="Baverage") return "Beverage";
     if (name=="Bistroviae") return "Bistrovic";
     if (name=="Christaiansen") return "Christiansen";
+    if (name=="Cobin") return "Corbin";
+    if (name=="Connel") return "Connell";
     if (name=="Daust") return "Daoust";
     if (name=="Daved") return "David";
     if (name=="Fred") return "Frederic";
@@ -202,8 +196,10 @@ std::string typoCorrection(const std::string& name)
     if (name=="Gronger") return "Gronager";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
+    if (name=="Heirtlein") return "Hertlein";
     if (name=="Hertlien") return "Hertlein";
     if (name=="Hi") return "He";
+    if (name=="Hooper") return "Hopper";
     if (name=="Inverson") return "Iverson";
     if (name=="Iversion") return "Iverson";
     if (name=="Jeoen") return "Joran";
@@ -212,39 +208,47 @@ std::string typoCorrection(const std::string& name)
     if (name=="Johnasen") return "Johansen";
     if (name=="Jolly") return "Jolley";
     if (name=="Jose") return "José";
+    if (name=="Joson") return "Jason";
     if (name=="J") return "José";
     if (name=="Keuhne") return "Kuehne";
     if (name=="Kheune") return "Kuehne";
-    if (name=="Lashari") return "Lashkari";
-    if (name=="Laskari") return "Lashkari";
-    if (name=="Lasharki") return "Lashkari";
     if (name=="Lashakari") return "Lashkari";
+    if (name=="Lashari") return "Lashkari";
+    if (name=="Lasharki") return "Lashkari";
+    if (name=="Laskari") return "Lashkari";
     if (name=="Macro") return "Marco";
     if (name=="Mammond") return "Marmond";
     if (name=="March") return "Marco";
     if (name=="Marz") return "Martz";
+    if (name=="Micheal") return "Michael";
+    if (name=="Molishtan") return "Moloshtan";
     if (name=="Molishtan") return "Moloshtan";
     if (name=="Moloshton") return "Moloshtan";
     if (name=="Moule") return "Moiule";
     if (name=="Nicklov") return "Nikolov";
     if (name=="Olad") return "Olaf";
+    if (name=="Oritz") return "Ortiz";
     if (name=="Osfied") return "Osfield";
     if (name=="Pail") return "Paul";
+    if (name=="Randal") return "Randall";
+    if (name=="Rodger") return "Roger";
     if (name=="Sewel") return "Sewell";
     if (name=="Sjolie") return "Sjölie";
     if (name=="Sokolosky") return "Sokolowsky";
+    if (name=="Sokolowski") return "Sokolowsky";
     if (name=="Sokolsky") return "Sokolowsky";
     if (name=="Sonda") return "Sondra";
     if (name=="Stansilav") return "Stanislav";
     if (name=="Stefan") return "Stephan";
     if (name=="Stell") return "Steel";
+    if (name=="Takeahei") return "Takahei";
+    if (name=="Takehei") return "Takahei";
     if (name=="Tarantilils") return "Tarantilis";
+    if (name=="Vines") return "Vine";
     if (name=="Wieblen") return "Weiblen";
     if (name=="Xennon") return "Hanson";
+    if (name=="Yefrei") return "Yefei";
     if (name=="Yfei") return "Yefei";
-    if (name=="Oritz") return "Ortiz";
-    if (name=="Cobin") return "Corbin";
-    if (name=="Baverage") return "Beverage";
     return name;
 }
 

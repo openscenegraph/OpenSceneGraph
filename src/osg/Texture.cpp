@@ -1139,7 +1139,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         else if (extensions->isCompressedTexImage2DSupported())
         {        
             GLint blockSize,size;
-            getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
+            getCompressedSize(image->getInternalTextureFormat(), inwidth, inheight, 1, blockSize,size);
 
             extensions->glCompressedTexSubImage2D(target, 0, 
                 0,0,
@@ -1191,7 +1191,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                     if (height == 0)
                         height = 1;
 
-                    getCompressedSize(_internalFormat, width, height, 1, blockSize,size);
+                    getCompressedSize(image->getInternalTextureFormat(), width, height, 1, blockSize,size);
 
                     //state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
 

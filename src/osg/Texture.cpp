@@ -623,8 +623,13 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
 {
     if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
         blockSize = 8;
-    else
+    else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
         blockSize = 16;
+    else
+    {
+        notify(WARN)<<"Texture::getCompressedSize(...) : cannot compute correct size of compressed format ("<<internalFormat<<") returning 0."<<std::endl;
+        blockSize = 0;
+    }
          
     size = ((width+3)/4)*((height+3)/4)*depth*blockSize;        
 }

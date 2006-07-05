@@ -1,179 +1,209 @@
 OpenSceneGraph Library 1.0
 
-172 Contributors:
+203 Contributors:
 
-Firstname Surname
------------------
-Robert Osfield
-Don Burns
-Marco Jez
-Mike Weiblen
-Geoff Michel
-Bob Kuehne
-Brede Johansen
-Tree 
-Ulrich Hertlein
-Eric Sokolowsky
-Paul Martz
-Norman Vine
-Pavel Moloshtan
-Farshid Lashkari
-Trajce Nikolov
-Tom Jolley
-Alberto Farre
-Don Tidrow
-Ruben Lopez
-Romano José Magacho da Silva
-Randall Hopper
-Gideon May
-Stephan Huber
-Michael Gronager
-Eric Wing
-Chris Hanson
-Neil Salter
-Frederic Marmond
-Boris Bralo
-Sondra Iverson
-Rune Schmidt Jensen
-Rainer Oder
-Mike Connell
-Joran Jessurun
-David Fries
-Daniel Sjölie
-Colin McDonald
-Yefei He
-Sasa Bistrovic
-Olaf Flebbe
-Ben Discoe
-Stephane Simon
-Sean Spicer
-Ravi Mathur
-Joseph Steel
-Joakim Simonsson
-Jason Daly
-David Spilling
-Corbin Holtz
-Toshiyuki Takahei
-Thom DeCarlo
-Simon Julier
-Nikolaus Hanekamp
-Markus Trenkwalder
-Loic Dachary
-Bruce Clay
-Brad Christiansen
-Alberto Barbati
-Terry Welsh
-Sebastien Grignard
-Romano Magacho
-Roger James
-Phil Atkin
-Leandro Motta Barros
-Ken Sewell
-Julian Ortiz
-Jeremy Bell
-James French
-Gabor Dorka
-Domenico Mangieri
-David Guthrie
-Carlo Camporesi
-Yuzhong Shen
-Vivek Rajan
-Tugkan Calapoglu
-Tony Horrobin
-Tim Daoust
-Steve Lunsford
-Stanislav Blinov
-Sohey Yamamoto
-Perry Miller
-Per Fahlberg
-Paul Melis
-Paul Fredrikson
-Max Behensky
-Martin Aumueller
-Kevin Moiule
-Joseph Winston
-John Shue
-Johan Nouvel
-Igor Kravtchenko
-George Tarantilis
-Garret Potts
-Fabio Mierlo
-Donn Mielcarek
-David Ergo
-Brad Colbert
-Ali Botorabi
-Yuri Vilmanis
-Warren Macchi
-Wang Lam
-Walter J. Altice
-Volker Walkiewicz
-Vladimir Vukicevic
-Vasily Radostev
-Uwe Woessner
-Troy Yee
-Tino Schwarze
-Tanguy Fautré
-Shane Arnott
-Sebastien Kuntz
-Ronny Krueger
-Reinhard Sainitzer
-Qing Shen
-Paul de Repentinguy
-Paul Fredrikson
-Nikolov Trajce
-Nicolas Brodu
-Nathan Monteleone
-Nathan Cournia
-Morné Pistorius
-Mikkel Gjøl
-Michael Morrison
-Michael Logan
-Max Rhiener
-Matt Burke
-Mathia Walker
-Mason Menninger
-Martijn Kragtwijk
-Louis Hamilton
-Lewis Harmon
-Kristopher Bixler
-Keith Steffen
-Karsten Weiss
-Josh Portway
-John Tan
-John Grant
-John Donovan
-John Davis
-Jay Zuckerman
-Jason Beverage
-Jason Ballenger
-Jan Ciger
-J.E. Hoffmann
-Henrique Bucher
-Graeme Harkness
-Gordon Tomlinson
-George Papagiannakis
-Frank Warmerdam
-Frank Lindeman
-Frank Lichtenheld
-Ferdinand Cornelissen
-Fabien Dachicourt
-Duvan Cope
-Drew Whitehouse
-Douglas A. Pouk
-Donny Cipperly
-Dean Iverson
-David Jung
-Bora Utka
-Blake Williams
-Bart Gallet
-Axel Volley
-Antonoine Hue
-Andrew Reyonolds
-Andreas Jochens
-Andreas Ekstrand
-Anders Backman
-Allen Bierbaum
-Alberto Jaspe
-Alan Purvis
-Alan Ott
-Adam Richard
+Entries Firstname Surname
+-------------------------
+3442	Robert Osfield
+321	Don Burns
+91	Marco Jez
+69	Mike Weiblen
+51	Geoff Michel
+35	Brede Johansen
+34	Bob Kuehne
+31	Farshid Lashkari
+26	Ulrich Hertlein
+26	Tree 
+26	Paul Martz
+22	Eric Sokolowsky
+20	Eric Wing
+19	Norman Vine
+18	Pavel Moloshtan
+17	Trajce Nikolov
+16	Tom Jolley
+15	Alberto Farre
+12	Stephan Huber
+12	Don Tidrow
+11	Ruben Lopez
+11	Romano José Magacho da Silva
+11	Randall Hopper
+11	Gideon May
+10	Michael Gronager
+10	Chris Hanson
+8	Neil Salter
+8	Joran Jessurun
+8	Frederic Marmond
+8	David Fries
+8	Boris Bralo
+7	Yefei He
+7	Sondra Iverson
+7	Rune Schmidt Jensen
+7	Rainer Oder
+7	Mike Connell
+7	Colin McDonald
+7	Ben Discoe
+6	Sasa Bistrovic
+6	Olaf Flebbe
+6	Martin Naylor
+6	Markus Trenkwalder
+6	Daniel Sjölie
+5	Stephane Simon
+5	Sean Spicer
+5	Ravi Mathur
+5	Joseph Steel
+5	Joakim Simonsson
+5	Jason Daly
+5	David Spilling
+5	Corbin Holtz
+4	Toshiyuki Takahei
+4	Thom DeCarlo
+4	Simon Julier
+4	Roger James
+4	Nikolaus Hanekamp
+4	Loic Dachary
+4	Leandro Motta Barros
+4	Jason Beverage
+4	Gordon Tomlinson
+4	David Guthrie
+4	Bruce Clay
+4	Brad Christiansen
+4	Alberto Barbati
+3	Terry Welsh
+3	Sohey Yamamoto
+3	Sebastien Grignard
+3	Romano Magacho
+3	Phil Atkin
+3	Paul Melis
+3	Ken Sewell
+3	Julian Ortiz
+3	Jeremy Bell
+3	James French
+3	Gabor Dorka
+3	Domenico Mangieri
+3	Carlo Camporesi
+3	Ali Botorabi
+2	Yuzhong Shen
+2	Vivek Rajan
+2	Tugkan Calapoglu
+2	Tony Horrobin
+2	Tim Daoust
+2	Steve Lunsford
+2	Stanislav Blinov
+2	Perry Miller
+2	Per Fahlberg
+2	Paul de Repentinguy
+2	Nathan Monteleone
+2	Michael Platings
+2	Max Behensky
+2	Mathew May
+2	Martin Aumueller
+2	Kevin Moiule
+2	Keith Steffen
+2	Joseph Winston
+2	John Shue
+2	Johan Nouvel
+2	Igor Kravtchenko
+2	George Tarantilis
+2	Garret Potts
+2	Fabio Mierlo
+2	Eric Sokolowski
+2	Donn Mielcarek
+2	David Ergo
+2	Daniel Larimer
+2	Brad Colbert
+2	Andreas Ekstrand
+1	Zbigniew Sroczynski
+1	Zach Deedler
+1	Yuri Vilmanis
+1	Warren Macchi
+1	Wang Lam
+1	Walter J. Altice
+1	Volker Walkiewicz
+1	Vladimir Vukicevic
+1	Vasily Radostev
+1	Uwe Woessner
+1	Tyge 
+1	Troy Yee
+1	Tino Schwarze
+1	Thom Carlo
+1	Terrex 
+1	Tanguy Fautré
+1	Shane Arnott
+1	Sebastien Kuntz
+1	Ronny Krueger
+1	Roland Smeenk
+1	Robert Swain
+1	Reinhard Sainitzer
+1	Qing Shen
+1	Philipp Siemoleit
+1	Paul Fredrikson
+1	Nikolov Trajce
+1	Nicolas Brodu
+1	Nathan Cournia
+1	Morné Pistorius
+1	Mikkel Gjøl
+1	Michael Morrison
+1	Michael Logan
+1	Maya Leonard
+1	Max Rhiener
+1	Matthew May
+1	Matt Green
+1	Matt Burke
+1	Mathia Walker
+1	Mason Menninger
+1	Martijn Kragtwijk
+1	Louis Hamilton
+1	Lewis Harmon
+1	Kristopher Bixler
+1	Karsten Weiss
+1	Josh Portway
+1	John Tan
+1	John Grant
+1	John Donovan
+1	John Davis
+1	Joan Abadie
+1	Jay Zuckerman
+1	Jason Ballenger
+1	Jan Ciger
+1	J.E. Hoffmann
+1	Henrique Bucher
+1	Gustavo Wagner
+1	Graeme Harkness
+1	Glenn Waldrom
+1	George Papagiannakis
+1	Frank Warmerdam
+1	Frank Lindeman
+1	Frank Lichtenheld
+1	Ferdinand Cornelissen
+1	Fabien Dachicourt
+1	EventQueue 
+1	Edmond Gheury
+1	Ed Ralston
+1	Duvan Cope
+1	Drew Whitehouse
+1	Douglas A. Pouk
+1	Donny Cipperly
+1	DeleteHandler 
+1	Dean Iverson
+1	David Jung
+1	David Callu
+1	Daniel Trastenjak
+1	Colin MacDonald
+1	Carlos García
+1	Brad Anderegg
+1	Bora Utka
+1	Blake Williams
+1	Bart Gallet
+1	Axel Volley
+1	Antonoine Hue
+1	Andrew Sampson
+1	Andrew Reyonolds
+1	Andreas Jochens
+1	Andew Sampson
+1	Anders Backman
+1	Allen Bierbaum
+1	Alberto Jaspe
+1	Alan Purvis
+1	Alan Ott
+1	Adrian Egli
+1	Adam Richard

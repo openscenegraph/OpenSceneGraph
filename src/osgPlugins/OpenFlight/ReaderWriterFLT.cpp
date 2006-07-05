@@ -144,8 +144,8 @@ class FLTReaderWriter : public ReaderWriter
             {
                 const char readerMsg[] = "flt reader option: ";
 
-                document.setPreserveFace((options->getOptionString().find("FLT_preserveFace")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "FLT_preserveFace=" << document.getPreserveFace() << std::endl;
+                document.setPreserveFace((options->getOptionString().find("preserveFace")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
 
                 document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;

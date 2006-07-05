@@ -736,7 +736,9 @@ class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
         TestSupportCallback():_supported(true),_errorMessage() {}
         
         virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
-        { 
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        
             unsigned int contextID = sh.getSceneView()->getState()->getContextID();
             osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
             if( gl2ext )
@@ -755,11 +757,11 @@ class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
                     _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
                 }
             }
-            
         }
         
-        bool        _supported;
-        std::string _errorMessage;
+        OpenThreads::Mutex  _mutex;
+        bool                _supported;
+        std::string         _errorMessage;
         
 };
 
@@ -817,11 +819,12 @@ int main( int argc, char **argv )
 
     // create the windows and run the threads.
     viewer.realize();
-    
+
     // exit if we don't have the extensions this example needs.
     if (!testSupportCallback->_supported)
     {
         osg::notify(osg::WARN)<<testSupportCallback->_errorMessage<<std::endl;
+
         exit(1);
     }
 

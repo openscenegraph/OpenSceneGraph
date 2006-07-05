@@ -1,10 +1,10 @@
-OpenSceneGraph Library 1.0
+OpenSceneGraph Library 1.1
 
-203 Contributors:
+200 Contributors:
 
 Entries Firstname Surname
 -------------------------
-3442	Robert Osfield
+3444	Robert Osfield
 321	Don Burns
 91	Marco Jez
 69	Mike Weiblen
@@ -15,7 +15,7 @@ Entries Firstname Surname
 26	Ulrich Hertlein
 26	Tree 
 26	Paul Martz
-22	Eric Sokolowsky
+24	Eric Sokolowsky
 20	Eric Wing
 19	Norman Vine
 18	Pavel Moloshtan
@@ -106,7 +106,6 @@ Entries Firstname Surname
 2	George Tarantilis
 2	Garret Potts
 2	Fabio Mierlo
-2	Eric Sokolowski
 2	Donn Mielcarek
 2	David Ergo
 2	Daniel Larimer
@@ -176,18 +175,16 @@ Entries Firstname Surname
 1	Frank Lichtenheld
 1	Ferdinand Cornelissen
 1	Fabien Dachicourt
-1	EventQueue 
 1	Edmond Gheury
 1	Ed Ralston
 1	Duvan Cope
 1	Drew Whitehouse
 1	Douglas A. Pouk
 1	Donny Cipperly
-1	DeleteHandler 
 1	Dean Iverson
 1	David Jung
 1	David Callu
-1	Daniel Trastenjak
+1	Daniel Trstenjak
 1	Colin MacDonald
 1	Carlos García
 1	Brad Anderegg

@@ -28,7 +28,7 @@ class Normals: public osg::Geode
         class MakeNormalsVisitor : public osg::NodeVisitor
         {
             public:
-                MakeNormalsVisitor(float normalScale=1.0, Normals::Mode=Normals::SurfaceNormals );
+                MakeNormalsVisitor(float normalScale, Mode mode);
 
                 void setMode( Mode mode ) { _mode = mode; }
 
@@ -63,14 +63,14 @@ class Normals: public osg::Geode
 class SurfaceNormals: public Normals
 {
     public:
-        SurfaceNormals( Node *node, float scale=1.0 ):
+        SurfaceNormals( osg::Node *node, float scale=1.0 ):
             Normals( node, scale, Normals::SurfaceNormals ) {}
 };
 
 class VertexNormals: public Normals
 {
     public:
-        VertexNormals( Node *node, float scale=1.0 ):
+        VertexNormals( osg::Node *node, float scale=1.0 ):
             Normals( node, scale, Normals::VertexNormals ) {}
 };
 

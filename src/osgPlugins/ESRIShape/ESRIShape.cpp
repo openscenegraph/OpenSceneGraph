@@ -294,11 +294,12 @@ PolyLine::PolyLine( const PolyLine &p ):
     numPoints(p.numPoints)
 {
     parts = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for(i = 0; i < numParts; i++ )
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for(i = 0; i < numPoints; i++ )
         points[i] = p.points[i];
 }
 
@@ -331,14 +332,15 @@ bool PolyLine::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
 
     }
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -360,11 +362,12 @@ Polygon::Polygon():
     numPoints(p.numPoints)
 {
     parts = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for( i = 0; i < numParts; i++ )
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
         points[i] = p.points[i];
 }
 
@@ -398,13 +401,14 @@ bool Polygon::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
     }
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -509,7 +513,8 @@ bool MultiPointM::read( int fd )
         return false;
     
     points = new struct Point[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    Integer i;
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd) == false )
             return false;
@@ -522,7 +527,7 @@ bool MultiPointM::read( int fd )
             return false;
 
         mArray = new Double[numPoints];
-        for( Integer i = 0; i < numPoints; i++ )
+        for( i = 0; i < numPoints; i++ )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;
@@ -557,12 +562,13 @@ PolyLineM::PolyLineM(const PolyLineM &p):
     mArray(0L) 
 {
     parts = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for( i = 0; i < numParts; i++ )
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
     mArray = new Double[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
         mArray[i] = p.mArray[i];
@@ -599,14 +605,15 @@ bool PolyLineM::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
 
     }
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -619,7 +626,7 @@ bool PolyLineM::read( int fd )
     {
         mRange.read(fd);
         mArray = new Double[numPoints];
-        for( int i = 0; i < numPoints; i++  )
+        for( i = 0; i < numPoints; i++  )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;
@@ -648,12 +655,13 @@ PolygonM::PolygonM(const PolygonM &p):
     mArray(0L)
 {
     parts = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for( i = 0; i < numParts; i++ )
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
     mArray = new Double[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
         mArray[i] = p.mArray[i];
@@ -683,13 +691,14 @@ bool PolygonM::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
     }
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -704,7 +713,7 @@ bool PolygonM::read( int fd )
             return false;
 
         mArray = new Double[numPoints];
-        for( int i = 0; i < numPoints; i++ )
+        for( i = 0; i < numPoints; i++ )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;
@@ -820,7 +829,8 @@ bool MultiPointZ::read( int fd )
         return false;
     
     points = new struct Point[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    Integer i;
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd) == false )
             return false;
@@ -830,7 +840,7 @@ bool MultiPointZ::read( int fd )
         return false;
 
     zArray = new Double[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( readVal<Double>(fd, zArray[i], LittleEndian) == false )
             return false;
@@ -844,7 +854,7 @@ bool MultiPointZ::read( int fd )
             return false;
 
         mArray = new Double[numPoints];
-        for( Integer i = 0; i < numPoints; i++ )
+        for( i = 0; i < numPoints; i++ )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;
@@ -882,13 +892,14 @@ PolyLineZ::PolyLineZ(const PolyLineZ &p):
     mArray(0L) 
 {
     parts = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for( i = 0; i < numParts; i++ )
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
     zArray = new Double[numPoints];
     mArray = new Double[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
         zArray[i] = p.zArray[i];
@@ -928,14 +939,15 @@ bool PolyLineZ::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
 
     }
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -943,7 +955,7 @@ bool PolyLineZ::read( int fd )
 
     zRange.read(fd);
     zArray = new Double[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( readVal<Double>(fd, zArray[i], LittleEndian ) == false )
             return false;
@@ -957,7 +969,7 @@ bool PolyLineZ::read( int fd )
     { 
         mRange.read(fd);
         mArray = new Double[numPoints];
-        for( int i = 0; i < numPoints; i++ )
+        for( i = 0; i < numPoints; i++ )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;
@@ -986,12 +998,13 @@ PolygonZ::PolygonZ(const PolygonZ &p):
     mArray(0L)
 {
     parts = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for( i = 0; i < numParts; i++ )
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
     mArray = new Double[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
         mArray[i] = p.mArray[i];
@@ -1030,13 +1043,14 @@ bool PolygonZ::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
     }
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -1046,7 +1060,7 @@ bool PolygonZ::read( int fd )
         return false;
 
     zArray = new Double[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( readVal<Double>(fd, zArray[i], LittleEndian ) == false )
             return false;
@@ -1061,7 +1075,7 @@ bool PolygonZ::read( int fd )
             return false;
 
         mArray = new Double[numPoints];
-        for( int i = 0; i < numPoints; i++ )
+        for( i = 0; i < numPoints; i++ )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;
@@ -1114,7 +1128,8 @@ MultiPatch::MultiPatch( const MultiPatch &mp):
 {
     parts = new Integer[numParts];
     partTypes = new Integer[numParts];
-    for( Integer i = 0; i < numParts; i++ )
+    Integer i;
+    for( i = 0; i < numParts; i++ )
     {
         parts[i] = mp.parts[i];
         partTypes[i] = mp.partTypes[i];
@@ -1122,7 +1137,7 @@ MultiPatch::MultiPatch( const MultiPatch &mp):
     points = new Point[numPoints];
     zArray = new Double[numPoints];
     mArray = new Double[numPoints];
-    for( Integer i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         points[i] = mp.points[i];
         zArray[i] = mp.zArray[i];
@@ -1164,21 +1179,22 @@ bool MultiPatch::read( int fd )
         return false;
 
     parts  = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    int i;
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, parts[i], LittleEndian ) == false )
             return false;
     }
 
     partTypes = new Integer[numParts];
-    for( int i = 0; i < numParts; i++ )
+    for( i = 0; i < numParts; i++ )
     {
         if( readVal<Integer>(fd, partTypes[i], LittleEndian ) == false )
             return false;
     }
 
     points = new struct Point[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( points[i].read(fd ) == false )
             return false;
@@ -1188,7 +1204,7 @@ bool MultiPatch::read( int fd )
         return false;
 
     zArray = new Double[numPoints];
-    for( int i = 0; i < numPoints; i++ )
+    for( i = 0; i < numPoints; i++ )
     {
         if( readVal<Double>(fd, zArray[i], LittleEndian ) == false )
             return false;
@@ -1204,7 +1220,7 @@ bool MultiPatch::read( int fd )
             return false;
 
         mArray = new Double[numPoints];
-        for( int i = 0; i < numPoints; i++ )
+        for( i = 0; i < numPoints; i++ )
         {
             if( readVal<Double>(fd, mArray[i], LittleEndian ) == false )
                 return false;

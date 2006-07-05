@@ -179,7 +179,7 @@ namespace txp
             double realMaxRange, 
             double usedMaxRange,
             osg::Vec3& tileCenter,
-            std::vector<TXPArchive::TileLocationInfo>& childInfoList);
+            std::vector<TileLocationInfo>& childInfoList);
 
 	//  To be used for Version 2.1 with lod > 0
 	osg::Group* getTileContent(
@@ -188,7 +188,7 @@ namespace txp
             double realMaxRange, 
             double usedMaxRange,
             osg::Vec3& tileCenter,
-            std::vector<TXPArchive::TileLocationInfo>& childInfoList);
+            std::vector<TileLocationInfo>& childInfoList);
 
 	// Get the number of tiles for given LOD
 	bool getLODSize(int lod, int& x, int& y);

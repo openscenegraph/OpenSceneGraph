@@ -4,8 +4,7 @@ using namespace osg;
 
 Normals::Normals( Node *node, float scale, Mode mode )
 {
-    MakeNormalsVisitor mnv(scale);
-    mnv.setMode( mode );
+    MakeNormalsVisitor mnv(scale,mode);
     node->accept( mnv );
 
     ref_ptr<Vec3Array> coords = mnv.getCoords();
@@ -30,7 +29,7 @@ Normals::Normals( Node *node, float scale, Mode mode )
 
 
 
-Normals::MakeNormalsVisitor::MakeNormalsVisitor( float normalScale, Normals::Mode mode): 
+Normals::MakeNormalsVisitor::MakeNormalsVisitor( float normalScale, Mode mode): 
             NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _normal_scale(normalScale),
             _mode(mode)

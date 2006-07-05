@@ -34,6 +34,9 @@ class trpgMaterial;
 class trpgTextureEnv;
 class trpgMatTable;
 
+#define ISMASTER 1
+#define ISLOCAL 2
+
 /* This is the archive header structure.  There is one per TerraPage archive.
    You don't write it directly, but instead fill it out and pass it to
    a trpgwArchive (if you're writing), or get it back from a trpgr_Archive
@@ -226,8 +229,6 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
     std::vector<trpg2dPoint> tileSize;
     std::vector<trpg2iPoint> lodSizes;
     std::vector<float64>   lodRanges;
-    const static int ISMASTER = 1;
-    const static int ISLOCAL = 2;
     int32   flags;
     int32	rows;
     int32	cols;

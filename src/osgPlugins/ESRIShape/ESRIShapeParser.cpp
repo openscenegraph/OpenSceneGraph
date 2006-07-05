@@ -278,13 +278,14 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLine> &lines )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
 
-        for( int i = 0; i < p->numPoints; i++ )
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -306,13 +307,14 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::Polygon> &polys )
     for( p = polys.begin(); p != polys.end(); p++ )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        for( int i = 0; i < p->numPoints; i++ )
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -374,13 +376,14 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLineM> &linems )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
 
-        for( int i = 0; i < p->numPoints; i++ )
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -402,13 +405,14 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonM> &polyms )
     for( p = polyms.begin(); p != polyms.end(); p++ )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        for( int i = 0; i < p->numPoints; i++ )
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -470,13 +474,14 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLineZ> &linezs )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
 
-        for( int i = 0; i < p->numPoints; i++ )
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -498,13 +503,15 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonZ> &polyzs )
     for( p = polyzs.begin(); p != polyzs.end(); p++ )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        for( int i = 0; i < p->numPoints; i++ )
+        
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -526,7 +533,9 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
     for( p = mpatches.begin(); p != mpatches.end(); p++ )
     {
         osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        for( int i = 0; i < p->numPoints; i++ )
+        
+        int i;
+        for( i = 0; i < p->numPoints; i++ )
             coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
@@ -537,7 +546,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
         geometry->setColorArray(colors.get());
         geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX );
 
-        for( int i = 0; i < p->numParts; i++ )
+        for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
             int len = i < p->numParts - 1 ? 
@@ -580,7 +589,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
                 p->partTypes[i] == FirstRing     ? osg::Vec4(1.0,0.0,0.0,1.0) :
                 p->partTypes[i] == Ring          ? osg::Vec4(1.0,0.0,0.0,1.0) :
                                                    osg::Vec4(1.0,0.0,0.0,1.0) ;
-            for( int i = 0; i < len; i++ )
+            for( int j = 0; j < len; j++ )
                 colors->push_back( color );
 
             geometry->addPrimitiveSet( new osg::DrawArrays(mode, index, len )); 

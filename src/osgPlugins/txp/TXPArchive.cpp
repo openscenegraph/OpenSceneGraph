@@ -749,7 +749,7 @@ osg::Group* TXPArchive::getTileContent(
     double realMaxRange, 
     double usedMaxRange,
     osg::Vec3& tileCenter,
-    std::vector<TXPArchive::TileLocationInfo>& childInfoList)
+    std::vector<TileLocationInfo>& childInfoList)
 {
     if(_majorVersion == 2 && _minorVersion >= 1)
     {

@@ -1,4 +1,4 @@
-OpenSceneGraph Library 1.1
+OpenSceneGraph Library 1.0
 
 200 Contributors:
 
@@ -192,7 +192,7 @@ Entries Firstname Surname
 1	Blake Williams
 1	Bart Gallet
 1	Axel Volley
-1	Antonoine Hue
+1	Antoine Hue
 1	Andrew Sampson
 1	Andrew Reyonolds
 1	Andreas Jochens

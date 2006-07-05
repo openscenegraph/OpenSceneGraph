@@ -162,6 +162,10 @@ bool validName(const std::string& first)
     if (first=="Paging") return false;
     if (first=="CameraBarrierCallback") return false;
     if (first=="TestSupportCallback") return false;
+    if (first=="Quake3") return false;
+    if (first=="BlenColour(Vec4") return false;
+    if (first=="UseFarLineSegments") return false;
+    if (first=="TextureRectangle") return false;
     return true;
 }
 
@@ -196,7 +200,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Geof") return "Geoff";
     if (name=="Gronenger") return "Gronager";
     if (name=="Gronger") return "Gronager";
-    if (name=="Heirtlein") return "Heirtlein";
+    if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Hertlien") return "Hertlein";
     if (name=="Hi") return "He";
@@ -213,13 +217,13 @@ std::string typoCorrection(const std::string& name)
     if (name=="Kheune") return "Kuehne";
     if (name=="Lashari") return "Lashkari";
     if (name=="Laskari") return "Lashkari";
+    if (name=="Lasharki") return "Lashkari";
+    if (name=="Lashakari") return "Lashkari";
     if (name=="Macro") return "Marco";
     if (name=="Mammond") return "Marmond";
     if (name=="March") return "Marco";
     if (name=="Marz") return "Martz";
-    if (name=="Molishtan") return "Molishtan";
     if (name=="Molishtan") return "Moloshtan";
-    if (name=="Moloshton") return "Moloshtan";
     if (name=="Moloshton") return "Moloshtan";
     if (name=="Moule") return "Moiule";
     if (name=="Nicklov") return "Nikolov";
@@ -240,6 +244,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Yfei") return "Yefei";
     if (name=="Oritz") return "Ortiz";
     if (name=="Cobin") return "Corbin";
+    if (name=="Baverage") return "Beverage";
     return name;
 }
 

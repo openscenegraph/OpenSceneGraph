@@ -1,3 +1,57 @@
+2006-07-06 15:14  robert
+
+	* src/osg/Texture.cpp: From Eric Sokolowsky, "If a texture is used
+	  that is not a multiple of four, and compression was requested
+	  through the texture's internal format, the texture's internal
+	  format reverts to a non-compressed type and a NOTICE is given.
+	  At present, compressed textures must have a multiple of four in
+	  each dimension."
+
+2006-07-06 15:10  robert
+
+	* src/osgWrappers/osg/: Image.cpp, Referenced.cpp: Updated wrappers
+
+2006-07-06 15:02  robert
+
+	* include/osg/Image, src/osg/Image.cpp: From Eric Sokolowsky,
+
+	  "Attached is some fixes for Image::readImageFromCurrentTexture.
+	  It was failing when used with a new Image object (some of the
+	  fields were not set before they were used, and some were set to
+	  the wrong values).  A new optional parameter was added to give
+	  the desired data type, which defaults to GL_UNSIGNED_BYTE, so
+	  programs should only need a recompile to work properly."
+
+2006-07-06 14:06  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Fixed typo
+	  and unpdated AUTHORS file
+
+2006-07-06 12:40  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Added setting of name
+	  from the .obj goup name and object names.
+
+2006-07-06 12:33  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Removed redundent debug
+	  message.
+
+2006-07-06 12:30  robert
+
+	* src/osgPlugins/obj/: ReaderWriterOBJ.cpp, obj.cpp: Add "hack" fix
+	  for black materials being exported from Maya.
+
+2006-07-06 12:08  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Tweaked
+	  osgversion to catch typos and updates AUTHORS.txt
+
+2006-07-06 11:39  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS.txt for
+	  release
+
 2006-07-06 11:28  robert
 
 	* include/osg/Version, src/osg/Version.cpp, src/osgDB/Version.cpp,

@@ -1485,10 +1485,13 @@ void Text::drawImplementation(osg::State& state) const
                     if (!transformedBackdropCoords.empty()) 
                     {
                         state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                        glPolygonOffset(-1.0f, -1.0f * (backdrop_index+1) );
+                        glPolygonOffset(1.0f, 2.0f * (max_backdrop_index-backdrop_index) );
                         glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
                     }
                 }
+
+                glPolygonOffset(0,0);
+
             } // end of backdrop text
 
             const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
@@ -1507,18 +1510,8 @@ void Text::drawImplementation(osg::State& state) const
                     state.setColorPointer( 4, GL_FLOAT, 0, &(glyphquad._colorCoords.front()));
                 }
 
-                if(_backdropType != NONE)
-                {
-                    // Make sure that the main (foreground) text is on top
-                    glPolygonOffset(-10, -10);
-                }
-
                 glDrawArrays(GL_QUADS,0,transformedCoords.size());
 
-                if(_backdropType != NONE)
-                {
-                    glPolygonOffset(0,0);
-                }
             }
         }
 

@@ -110,8 +110,6 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
 {
     if (_fixBlackMaterials)
     {
-        osg::notify(osg::NOTICE)<<"Testing for black materials"<<std::endl;
-    
         // hack to fix Maya exported models that contian all black materials.
         int numBlack = 0;
         int numNotBlack = 0;

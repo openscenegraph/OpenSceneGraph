@@ -764,6 +764,16 @@ void Text::computePositions(unsigned int contextID) const
             atc._modelview.setTrans(trans);
         }
 
+        if (!_rotation.zeroRotation() )
+        {
+            matrix.postMult(osg::Matrix::rotate(_rotation));
+        }
+
+        if (_autoRotateToScreen) 
+        {
+            matrix.postMult(rotate_matrix);
+        }
+
         if (_characterSizeMode!=OBJECT_COORDS)
         {
 
@@ -822,16 +832,6 @@ void Text::computePositions(unsigned int contextID) const
 
         }
         
-        if (_autoRotateToScreen) 
-        {
-            matrix.postMult(rotate_matrix);
-        }
-
-        if (!_rotation.zeroRotation() )
-        {
-            matrix.postMult(osg::Matrix::rotate(_rotation));
-        }
-
         matrix.postMult(osg::Matrix::translate(_position));
     }
     else if (!_rotation.zeroRotation())

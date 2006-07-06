@@ -89,14 +89,14 @@ void PagedLOD::write(DataOutputStream* out)
     {
         size = getNumPriorityOffsets();
         out->writeInt( size );
-        for(int i=0; i<size; i++)
+        for(i=0; i<size; i++)
         {
             out->writeFloat( getPriorityOffset( i ) );
         }
 
         size = getNumPriorityScales();
         out->writeInt( size );
-        for( int i=0; i<size; i++ )
+        for(i=0; i<size; i++ )
         {
             out->writeFloat( getPriorityScale( i ) );
         }
@@ -175,7 +175,7 @@ void PagedLOD::read(DataInputStream* in)
         {
             // priority offsets:
             size = in->readInt();
-            for( int i=0; i<size; i++ )
+            for(i=0; i<size; i++ )
             {
                 float pri_offset = in->readFloat();
                 setPriorityOffset( i, pri_offset );
@@ -183,7 +183,7 @@ void PagedLOD::read(DataInputStream* in)
 
             // priority scales:
             size = in->readInt();
-            for( int i=0; i<size; i++ )
+            for(i=0; i<size; i++ )
             {
                 float pri_scale = in->readFloat();
                 setPriorityScale( i, pri_scale );

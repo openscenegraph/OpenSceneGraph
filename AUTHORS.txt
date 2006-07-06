@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.1
 
-212 Contributors:
+203 Contributors:
 
 Firstname Surname
 -----------------
@@ -92,7 +92,7 @@ Steve Lunsford
 Stanislav Blinov
 Perry Miller
 Per Fahlberg
-Paul de Repentinguy
+Paul de Repentingy
 Nathan Monteleone
 Michael Platings
 Max Behensky
@@ -110,6 +110,7 @@ Fabio Mierlo
 Donn Mielcarek
 David Ergo
 Brad Colbert
+Andrew Sampson
 Andreas Ekstrand
 Zbigniew Sroczynski
 Zach Deedler
@@ -123,10 +124,8 @@ Vasily Radostev
 Uwe Woessner
 Tyge 
 Troy Yee
-TrPageViewer 
 Tino Schwarze
 Thom Carlo
-TestManipulator 
 Terrex 
 Tanguy Fautré
 SpotExponent 
@@ -137,14 +136,11 @@ Roland Smeenk
 Robert Swain
 Reinhard Sainitzer
 Qing Shen
-ProducerEventCallback 
 Philipp Siemoleit
 Paul Fredrikson
-OrientationConverter 
 Nikolov Trajce
 Nicolas Brodu
 Nathan Cournia
-Mr Osfields
 Morné Pistorius
 Mikkel Gjøl
 Michael Morrison
@@ -158,8 +154,6 @@ Mathia Walker
 Mason Menninger
 Martijn Kragtwijk
 Louis Hamilton
-Logos 
-LineStipple 
 Lewis Harmon
 Kristopher Bixler
 Karsten Weiss
@@ -181,7 +175,6 @@ George Papagiannakis
 Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
-Files 
 Ferdinand Cornelissen
 Fabien Dachicourt
 Edmond Gheury
@@ -205,10 +198,8 @@ Blake Williams
 Bart Gallet
 Axel Volley
 Antoine Hue
-Andrew Sampson
 Andrew Reyonolds
 Andreas Jochens
-Andew Sampson
 Anders Backman
 Allen Bierbaum
 Alberto Jaspe

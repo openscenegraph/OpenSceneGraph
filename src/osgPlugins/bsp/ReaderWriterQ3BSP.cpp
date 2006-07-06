@@ -602,7 +602,8 @@ bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation,osg::Geometry* aGeometr
     //Create indices
     m_indices.resize(m_tesselation*(m_tesselation+1)*2);
 
-    for(int row=0; row<m_tesselation; ++row)
+    int row;
+    for(row=0; row<m_tesselation; ++row)
       {
         for(int point=0; point<=m_tesselation; ++point)
           {
@@ -618,7 +619,6 @@ bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation,osg::Geometry* aGeometr
     m_trianglesPerRow.resize(m_tesselation);
     m_rowIndexPointers.resize(m_tesselation);
 
-    int row;
     for(row=0; row<m_tesselation; ++row)
       {
         m_trianglesPerRow[row]=2*(m_tesselation+1);

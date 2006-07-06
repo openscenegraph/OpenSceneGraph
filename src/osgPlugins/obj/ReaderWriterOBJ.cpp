@@ -23,7 +23,6 @@
 #include <osg/Node>
 #include <osg/MatrixTransform>
 #include <osg/Geode>
-#include <osg/io_utils>
 
 #include <osg/Geometry>
 #include <osg/StateSet>
@@ -522,7 +521,19 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, bool& ro
 
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(geometry);
-            geode->setName(es.objectName);
+            
+            if (es.objectName.empty())
+            {
+                geode->setName(es.groupName);
+            }
+            else if (es.groupName.empty())
+            {
+                geode->setName(es.objectName);
+            }
+            else
+            {
+                geode->setName(es.groupName + std::string(":") + es.objectName);
+            }
 
             group->addChild(geode);
 

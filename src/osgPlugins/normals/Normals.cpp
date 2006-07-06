@@ -115,6 +115,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                         switch((*itr)->getMode())
                         {
                             case(PrimitiveSet::TRIANGLES):
+                            {
                                 for( unsigned int j = 0; j < (*itr)->getNumPrimitives(); j++ )
                                 {
                                     _processPrimitive( 3, coord_index, normals_index, binding );
@@ -126,8 +127,9 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                     
                                 }
                                 break;
-
+                            }
                             case(PrimitiveSet::TRIANGLE_STRIP):
+                            {
                                 for( unsigned int j = 0; j < (*itr)->getNumIndices()-2; j++ )
                                 {
                                     _processPrimitive( 3, coord_index, normals_index, binding );
@@ -138,11 +140,12 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                 if( binding == Geometry::BIND_PER_VERTEX )
                                     normals_index += 2;
                                 break;
-
+                            }
                             case(PrimitiveSet::TRIANGLE_FAN):
                                 break;
 
                             case(PrimitiveSet::QUADS):
+                            {
                                 for( unsigned int j = 0; j < (*itr)->getNumPrimitives(); j++ )
                                 {
                                     _processPrimitive( 4, coord_index, normals_index, binding );
@@ -153,7 +156,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                         normals_index+=4;
                                 }
                                 break;
-
+                            }
                             case(PrimitiveSet::QUAD_STRIP):
                             case(PrimitiveSet::POLYGON):
                                 break;

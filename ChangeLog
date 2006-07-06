@@ -1,3 +1,28 @@
+2006-07-06 16:47  robert
+
+	* src/osgPlugins/ive/PagedLOD.cpp: Fixed scoping for for loop
+	  varaible for VS6.0 build.
+
+2006-07-06 16:00  robert
+
+	* src/osgPlugins/lwo/Surface.cpp: Tweaks to try and fix VS6.0
+	  problems.
+
+2006-07-06 15:50  robert
+
+	* src/osgSim/OpenFlightOptimizer.cpp: Removed explict definition of
+	  osgUtil::Optimizer::StateVisitor to attempt to get round VS 6.0
+	  cruddiness.
+
+2006-07-06 15:43  robert
+
+	* src/osgPlugins/bsp/ReaderWriterQ3BSP.cpp: Tweaked for loop
+	  variaible definition.
+
+2006-07-06 15:36  robert
+
+	* ChangeLog, NEWS.txt: Updated NEWS and ChangeLog
+
 2006-07-06 15:14  robert
 
 	* src/osg/Texture.cpp: From Eric Sokolowsky, "If a texture is used

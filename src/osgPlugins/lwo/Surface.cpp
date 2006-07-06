@@ -285,21 +285,21 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
         }
     }
 
-    for (VertexMap_binding_map::const_iterator i=texmap_bindings.begin(); i!=texmap_bindings.end(); ++i)
+    for (VertexMap_binding_map::const_iterator vi=texmap_bindings.begin(); vi!=texmap_bindings.end(); ++vi)
     {
         for (VertexMap_map::const_iterator j=texture_maps->begin(); j!=texture_maps->end(); ++j)
         {
-            if (j->first == i->first)
+            if (j->first == vi->first)
             {
-                if (geo->getTexCoordArray(i->second) != 0)
+                if (geo->getTexCoordArray(vi->second) != 0)
                 {
-                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicing binding of texture map '" << i->first << "' to texunit " << i->second << " will replace existing texture map" << std::endl;
+                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicing binding of texture map '" << vi->first << "' to texunit " << vi->second << " will replace existing texture map" << std::endl;
                 }
-                geo->setTexCoordArray(i->second, j->second->asVec2Array(num_points));
+                geo->setTexCoordArray(vi->second, j->second->asVec2Array(num_points));
             }
             else
             {
-                osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicit binding of texture map '" << i->first << "' to texunit " << i->second << " was requested but there is no such map in this LWO file" << std::endl;
+                osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicit binding of texture map '" << vi->first << "' to texunit " << vi->second << " was requested but there is no such map in this LWO file" << std::endl;
             }
         }
     }

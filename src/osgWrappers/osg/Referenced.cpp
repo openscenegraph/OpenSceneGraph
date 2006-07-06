@@ -37,8 +37,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Method0(void, unref);
 	I_Method0(void, unref_nodelete);
 	I_Method0(int, referenceCount);
-	I_Method1(void, addObserver, IN, osg::Observer *, observer_ptr);
-	I_Method1(void, removeObserver, IN, osg::Observer *, observer_ptr);
+	I_Method1(void, addObserver, IN, osg::Observer *, observer);
+	I_Method1(void, removeObserver, IN, osg::Observer *, observer);
 	I_Property(bool, ThreadSafeRefUnref);
 END_REFLECTOR
 

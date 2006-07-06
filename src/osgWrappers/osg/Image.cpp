@@ -47,7 +47,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_MethodWithDefaults6(void, allocateImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, int, packing, 1);
 	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1);
 	I_Method6(void, readPixels, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, GLenum, pixelFormat, IN, GLenum, type);
-	I_Method2(void, readImageFromCurrentTexture, IN, unsigned int, contextID, IN, bool, copyMipMapsIfAvailable);
+	I_MethodWithDefaults3(void, readImageFromCurrentTexture, IN, unsigned int, contextID, , IN, bool, copyMipMapsIfAvailable, , IN, GLenum, type, GL_UNSIGNED_BYTE);
 	I_Method3(void, scaleImage, IN, int, s, IN, int, t, IN, int, r);
 	I_Method4(void, scaleImage, IN, int, s, IN, int, t, IN, int, r, IN, GLenum, newDataType);
 	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, osg::Image *, source);

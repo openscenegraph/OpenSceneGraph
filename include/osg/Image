@@ -108,7 +108,7 @@ class OSG_EXPORT Image : public Object
         /** Read the contents of the current bound texture, handling compressed pixelFormats if present.
           * Create memory for storage if required, reuse existing pixel coords if possible.
         */
-        void readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable);
+        void readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type = GL_UNSIGNED_BYTE);
 
 
         /** Scale image to specified size. */

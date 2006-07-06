@@ -428,7 +428,7 @@ void Image::readPixels(int x,int y,int width,int height,
 }
 
 
-void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable)
+void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type)
 {
     const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
     const osg::Texture3D::Extensions* extensions3D = osg::Texture3D::getExtensions(contextID,true);
@@ -447,6 +447,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     GLint width;
     GLint height;
     GLint depth;
+    GLint packing;
 
     GLint numMipMaps = 0;
     if (copyMipMapsIfAvailable)
@@ -516,6 +517,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_WIDTH, &width);
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_HEIGHT, &height);
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_DEPTH, &depth);
+        glGetIntegerv(GL_UNPACK_ALIGNMENT, &packing);
+        glPixelStorei(GL_PACK_ALIGNMENT, packing);
 
         _data = data;
         _s = width;
@@ -523,10 +526,11 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _r = depth;
         
         _pixelFormat = internalformat;
-        _dataType = internalformat;
+        _dataType = type;
         _internalTextureFormat = internalformat;
         _mipmapData = mipMapData;
         _allocationMode=USE_NEW_DELETE;
+        _packing = packing;
         
         for(i=0;i<numMipMaps;++i)
         {
@@ -540,6 +544,12 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     {
         MipmapDataType mipMapData;
 
+        // Get the internal texture format and packing value from OpenGL,
+        // instead of using possibly outdated values from the class.
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+        glGetIntegerv(GL_UNPACK_ALIGNMENT, &packing);
+        glPixelStorei(GL_PACK_ALIGNMENT, packing);
+
         unsigned int total_size = 0;
         GLint i;
         for(i=0;i<numMipMaps;++i)
@@ -550,7 +560,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_HEIGHT, &height);
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_DEPTH, &depth);
             
-            unsigned int level_size = computeRowWidthInBytes(width,_pixelFormat,GL_UNSIGNED_BYTE,_packing)*height*depth;
+            unsigned int level_size = computeRowWidthInBytes(width,internalformat,type,packing)*height*depth;
 
             total_size += level_size;
         }
@@ -565,7 +575,6 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
         deallocateData(); // and sets it to NULL.
 
-        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_WIDTH, &width);
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_HEIGHT, &height);
         glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_DEPTH, &depth);
@@ -576,10 +585,11 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _r = depth;
         
         _pixelFormat = internalformat;
-        _dataType = GL_UNSIGNED_BYTE;
+        _dataType = type;
         _internalTextureFormat = internalformat;
         _mipmapData = mipMapData;
         _allocationMode=USE_NEW_DELETE;
+        _packing = packing;
         
         for(i=0;i<numMipMaps;++i)
         {

@@ -803,6 +803,31 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
     // select the internalFormat required for the texture.
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
+
+    // If the texture's internal format is a compressed type, then the
+    // user is requesting that the graphics card compress the image if it's
+    // not already compressed. However, if the image is not a multiple of 
+    // four in each dimension the subsequent calls to glTexSubImage* will
+    // fail. Revert to uncompressed format in this case.
+    if (isCompressedInternalFormat(_internalFormat) &&
+        (((inwidth >> 2) << 2) != inwidth ||
+         ((inheight >> 2) << 2) != inheight))
+    {
+        osg::notify(osg::NOTICE)<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
+        switch(_internalFormat)
+        {
+            case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+            case GL_COMPRESSED_RGB: _internalFormat = GL_RGB; break;
+            case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+            case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+            case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
+            case GL_COMPRESSED_RGBA: _internalFormat = GL_RGBA; break;
+            case GL_COMPRESSED_ALPHA: _internalFormat = GL_ALPHA; break;
+            case GL_COMPRESSED_LUMINANCE: _internalFormat = GL_LUMINANCE; break;
+            case GL_COMPRESSED_LUMINANCE_ALPHA: _internalFormat = GL_LUMINANCE_ALPHA; break;
+            case GL_COMPRESSED_INTENSITY: _internalFormat = GL_INTENSITY; break;
+        }
+    }
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     
@@ -1036,6 +1061,19 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     }
     // else image size the same as when loaded so we can go ahead and subload
     
+    // If the texture's internal format is a compressed type, then the
+    // user is requesting that the graphics card compress the image if it's
+    // not already compressed. However, if the image is not a multiple of 
+    // four in each dimension the subsequent calls to glTexSubImage* will
+    // fail. Revert to uncompressed format in this case.
+    if (isCompressedInternalFormat(_internalFormat) &&
+        (((inwidth >> 2) << 2) != inwidth ||
+         ((inheight >> 2) << 2) != inheight))
+    {
+        applyTexImage2D_load(state, target, image, inwidth, inheight, numMipmapLevels);
+        return;
+    }
+
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;

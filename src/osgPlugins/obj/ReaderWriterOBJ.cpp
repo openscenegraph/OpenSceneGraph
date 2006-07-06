@@ -23,6 +23,7 @@
 #include <osg/Node>
 #include <osg/MatrixTransform>
 #include <osg/Geode>
+#include <osg/io_utils>
 
 #include <osg/Geometry>
 #include <osg/StateSet>
@@ -48,7 +49,7 @@
 class ReaderWriterOBJ : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterOBJ() { }
+    ReaderWriterOBJ():_fixBlackMaterials(true) {}
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }
     virtual bool acceptsExtension(const std::string& extension) const {
@@ -72,6 +73,8 @@ protected:
 
     inline osg::Vec3 transformVertex(const osg::Vec3& vec, const bool rotate) const ;
     inline osg::Vec3 transformNormal(const osg::Vec3& vec, const bool rotate) const ;
+    
+    bool _fixBlackMaterials;
 
 };
 
@@ -105,6 +108,47 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
 
 void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap) const
 {
+    if (_fixBlackMaterials)
+    {
+        osg::notify(osg::NOTICE)<<"Testing for black materials"<<std::endl;
+    
+        // hack to fix Maya exported models that contian all black materials.
+        int numBlack = 0;
+        int numNotBlack = 0;
+        obj::Model::MaterialMap::iterator itr;
+        for(itr = model.materialMap.begin();
+            itr != model.materialMap.end();
+            ++itr)
+        {
+            obj::Material& material = itr->second;
+            if (material.ambient==osg::Vec4(0.0f,0.0f,0.0f,1.0f) &&
+                material.diffuse==osg::Vec4(0.0f,0.0f,0.0f,1.0f))
+            {
+                ++numBlack;
+            }
+            else
+            {
+                ++numNotBlack;
+            }
+        }
+        
+        if (numNotBlack==0 && numBlack!=0)
+        {
+            for(itr = model.materialMap.begin();
+                itr != model.materialMap.end();
+                ++itr)
+            {
+                obj::Material& material = itr->second;
+                if (material.ambient==osg::Vec4(0.0f,0.0f,0.0f,1.0f) &&
+                    material.diffuse==osg::Vec4(0.0f,0.0f,0.0f,1.0f))
+                {
+                    material.ambient.set(0.3f,0.3f,0.3f,1.0f);
+                    material.diffuse.set(1.0f,1.0f,1.0f,1.0f);
+                }
+            }
+        }
+    }
+    
     for(obj::Model::MaterialMap::iterator itr = model.materialMap.begin();
         itr != model.materialMap.end();
         ++itr)

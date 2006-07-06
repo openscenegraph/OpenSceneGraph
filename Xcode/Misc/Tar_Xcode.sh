@@ -23,16 +23,16 @@ md5 OpenThreads/XcodeOpenThreads.tar.gz >> md5list.txt
 md5 Producer/XcodeProducer.tar.gz >> md5list.txt
 md5 OpenSceneGraph/XcodeOpenSceneGraph.tar.gz >> md5list.txt
 
-mkdir -p PackageDir/Xcode
+mkdir -p XcodePackageDir/Xcode
 
-rm -f PackageDir/Xcode/XcodeOpenThreads.tar.gz
-rm -f PackageDir/Xcode/XcodeProducer.tar.gz
-rm -f PackageDir/Xcode/XcodeOpenSceneGraph.tar.gz
-rm -f PackageDir/Xcode/md5list.txt
+rm -f XcodePackageDir/Xcode/XcodeOpenThreads.tar.gz
+rm -f XcodePackageDir/Xcode/XcodeProducer.tar.gz
+rm -f XcodePackageDir/Xcode/XcodeOpenSceneGraph.tar.gz
+rm -f XcodePackageDir/Xcode/md5list.txt
 
-mv md5list.txt PackageDir/Xcode/
-cp OpenThreads/XcodeOpenThreads.tar.gz PackageDir/Xcode/
-cp Producer/XcodeProducer.tar.gz PackageDir/Xcode/
-cp OpenSceneGraph/XcodeOpenSceneGraph.tar.gz PackageDir/Xcode/
+mv md5list.txt XcodePackageDir/Xcode/
+cp OpenThreads/XcodeOpenThreads.tar.gz XcodePackageDir/Xcode/
+cp Producer/XcodeProducer.tar.gz XcodePackageDir/Xcode/
+cp OpenSceneGraph/XcodeOpenSceneGraph.tar.gz XcodePackageDir/Xcode/
 
 

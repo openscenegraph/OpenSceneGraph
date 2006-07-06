@@ -1,17 +1,18 @@
-{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf230
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
 {\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fmodern\fcharset77 Courier;
 \f3\fnil\fcharset77 Monaco;}
 {\colortbl;\red255\green255\blue255;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid1}
-{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid2}}
-{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
 \margl1440\margr1440\vieww11120\viewh12880\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 OpenSceneGraph on OS X
 \f1\b0 \
 \
-This is the readme for the entire OpenThreads/Producer/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.0 release.\
+This is the readme for the entire OpenThreads/Producer/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.1 release.\
 \
 The source code is available at {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/"}}{\fldrslt http://www.openscenegraph.org/}}\
 Our patches are included in this package.\
@@ -23,21 +24,40 @@ Also included is a framework for GDAL. You can get the source code and the full 
 \f0\b What's New in this release:
 \f1\b0 \
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	\'a5	}OSG 1.0 synchronization\
-{\listtext	\'a5	}Built with gcc 4.0.1 with support for Tiger and Panther\
-{\listtext	\'a5	}Xcode 2.1/2.2 and 1.5/2.0 projects\
-{\listtext	\'a5	}More aggressive compiler options\
-{\listtext	\'a5	}Xcode "New Project" templates\
-{\listtext	\'a5	}GDAL support (optional)\
-{\listtext	\'a5	}Updated prebinding addresses\
-{\listtext	\'a5	}Groundwork for future Universal Binaries\
+\ls1\ilvl0\cf0 {\listtext	\'a5	}OSG 1.1 synchronization\
+{\listtext	\'a5	}Universal Binaries\
+\pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
+\ls2\ilvl0\cf0 {\listtext	\'a5	}Tested with Xcode 2.3\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
 \
 
-\f0\b Notes for this release:
-\f1\b0 \
+\f0\b Notes for 1.1 release:\
+
+\f1\b0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
+The Xcode projects are also set to build as Universal Binaries for both Development and Deployment\
+targets. If you do not need this and want to save build time, you should change the architecture option\
+to your desired setting (most likely to $(NATIVE_ARCH)). It is overridden in the top-level "OpenSceneGraph" project in the Group & Files panel. Don't forget to change OpenThreads and \
+Producer as well. (Quick tip: You can delete the modified (boldfaced) option by clicking on the - button.)\
 \
+Apple documented the behavior of -Os in the Xcode 2.3 release, so we have changed the compiler optimizations (back) from -O3 to -Os. The hope was to shrink the binary size, but it didn't seem to have a large effect. Benchmarking still has not been done. (Volunteers?)\
+\
+There are two new convenience scripts (ArrangeDMG.sh and FindOSGData.pl) in the Misc section\
+of the Xcode section of the source code. These are mainly to help binary distribution. However, if\
+you're interested in seeing some command-line Spotlight (mdfind) in action, you can look at the \
+FindOSGData.pl script.\
+\
+New to Xcode 2.3 is the Dwarf debugging format. It is off by default to retain compatibility with Xcode\
+2.1/2.2. However, for your own development you may see drastic improvements in many things if you \
+enable it. File size alone shrunk from about 500MB for the frameworks to under 100MB. And for the \
+PlugIns, the file size shrunk from about 1GB to about 100MB.\
+\
+We have stopped maintaining the Xcode 1.5/2.0 projects.\
+\
+\
+
+\f0\b Notes for 1.0 release:
+\f1\b0 \
 These projects were primarily developed with gcc 4.0.1 under Tiger 10.4.3 using Xcode 2.2. Starting with gcc 4.0, Apple no longer statically links in the C++ runtime. Apple has made available the g++ 4.0 dynamic runtime for Panther under the 10.3.9 release. To run under Panther, your system must have this update (or you must recompile the binaries for your system).\
 \
 With gcc 4.0, serious bugs have been fixed from gcc 3.3 and new features are available to us so we have experimented with more aggressive optimizations. For these binaries we have enabled -O3 optimization and -mtune=G5. We have also enabled autovectorization. We also enabled -fvisibility-inlines-hidden which is expected to shrink the binary sizes, but noticed very little difference. (There may be something wrong.) We have not done the proper benchmarking with these options, so feedback is welcome.\
@@ -138,7 +158,7 @@ Also remember that OSG will still respond to standard OSG environmental variable
 \f0\b Prebinding Addresses:\
 
 \f1\b0 \
-	We've adjusted the prebinding addresses (again). (Please see the Xcode Projects section for more information.)\
+	These are now obsolete. Prebinding is now disabled. The old addresses were:\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
@@ -158,8 +178,6 @@ gdal              -seg1addr 0x207d0000\
 osgTerrain        -seg1addr 0x20c40000
 \f1 \
 \
-If you are aware of any conflicts with other popular libraries that may frequently be used with OSG, please let me know. Keep in mind that prebinding is going away and once Intel based Macs start shipping, we will abandon maintenance on these.\
-\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
@@ -169,9 +187,7 @@ If you are aware of any conflicts with other popular libraries that may frequent
 The Xcode Projects are now included as part of the official OpenSceneGraph distribution.\
 \
 Xcode 2.1+ projects have the extension .xcodeproj.\
-Xcode 2.0 and below have the extension .xcode\
-\
-Remember that we have more aggressive compile options set in the 2.1 projects than the 1.5/2.0 projects (due to gcc bugs we found). The prebinding addresses may not work 1.5 or 2.0 depending on your settings and may require adjustment. In OSG 0.9.9, we had selected prebinding addresses that seemed to work, but in 1.0, testing under Xcode 2.0, the binaries suddenly became much more bloated, even though it used -Os instead of -O3 which is what is used in the 2.1+ projects. Xcode 1.5 with gcc 3.3 might produce entirely different results so this issue was left unresolved with the hope that things may just work under Xcode 1.5/gcc 3.3.\
+Xcode 2.0 and below have the extension .xcode (no longer maintained)\
 \
 \
 
@@ -212,15 +228,15 @@ Finally, there may still be issues with Zerolink. If you have problems seeing th
 \f0\b \cf0 Compatibility:
 \f1\b0 \
 \
-The binaries are built using gcc 4.0.1 under Tiger 10.4.3. These binaries also will run under Panther 10.3.9 (which has the needed C++ runtime library). \
+The binaries are built using gcc 4.0.1 under Tiger 10.4.7. These binaries also will run under Panther 10.3.9 (which has the needed C++ runtime library). \
 \
 Remember that the C++ ABI breaks with every new version of gcc. This generally means you shouldn't mix and match C++ code built under different versions of gcc unless you know what you're doing. The promise of gcc 4.0 is that the ABI will finally be stable and this problem will go away in the future. It is highly recommended that you use gcc 4.0 if possible. (There are also many additional reasons to use gcc 4.0 separate from this issue.) If you are running under Panther and must write new code that links to OpenSceneGraph, you might have problems (unverified) since Panther's default compiler is gcc 3.3 and not 4.0. It is highly recommended that you do your development work and building in Tiger under gcc 4.0 and then simply test and reuse the same binaries from Tiger which will avoid the ABI issues with gcc 3.3. If this is not possible for you to do, or must support older gcc versions, you will need to recompile all the osg frameworks with your targeted gcc version.\
 \
 Also keep in mind that the prebinding addresses are finicky. Changing the compiler version or the build options can change the binary sizes enough to invalidate our addresses. It is recommended you compile with Xcode 2.1+ and gcc 4.0. If you need to work on other versions, you may need to redo the addresses yourself. Remember that versions prior to gcc 3.3 statically link in the C++ runtime which increases the sizes of the binaries.\
 \
-If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, I do not expect you to have any problems, but there have been reports of problems I have been unable to reproduce. If you do encounter these problems, please try the following. \
+If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, there have been reports of problems I have been unable to reproduce. If you do encounter these problems, please try the following. \
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
-\ls2\ilvl0\cf0 {\listtext	\'a5	}I have more rigorously tested the Deployment build style than the Development build style so use the Deployment build style. Make sure you are compiling using -Os or -O0 optimization. -O3 is known to have problems under gcc 3.3. \
+\ls3\ilvl0\cf0 {\listtext	\'a5	}I have more rigorously tested the Deployment build style than the Development build style so use the Deployment build style. Make sure you are compiling using -Os or -O0 optimization. -O3 is known to have problems under gcc 3.3. \
 {\listtext	\'a5	}The -mtune=G4 is has been tested more under Xcode 1.5 than -mtune=G5. \
 {\listtext	\'a5	}I noticed that for some reason, Xcode has problems compiling the Carbon header with the OpenThreads framework when autovectorization and precompiled headers were enabled. You might try disabling precompiled headers if it is not already. If the problem persists, you may also need to delete the entry that enables autovectorization. In the Groups and Files panel (left side panel), open the Info inspector for the project (top item) and click on the Build tab. Scroll down to the bottom, and remove the autovectorization option. \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -229,12 +245,9 @@ If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, I
 \f0\b Universal Binaries:
 \f1\b0 \
 \
-For the curious, these binaries were built for the PowerPC platform and are not compiled as Universal Binaries. However, I have successfully compiled and run natively on the Intel machines at WWDC and things generally work. \
-\
-There is a bug in Xcode 2.1 related to search paths for 3rd party frameworks though which causes the compiler to not see any of the headers, even if you explicitly list the search path. So until the next release of Xcode, please be careful about enabling the "10.4 Universal" SDK target if you are developing with OSG. If the osg headers are not being found, this is probably the reason. This problem might be improved in Xcode 2.2, but you still may be required to explicitly list the Framework search path as Apple seems to have changed the behavior of what's automatically searched.\
-\
-We are holding off on shipping Universal Binaries as Apple has already once broken the Intel ABI. They reserve the right to do so in the future until the first Intel Macs start shipping so there is no strong incentive for us to deploy Intel binaries now. The dynamic linking of the C++ runtime has let us shave off about 10MB from the package size. The Universal Binaries will probably cause us to lose all the space savings. So enjoy the small package size while it lasts :)\
-\
+Be aware, when building you're own Universal Binaries and you use the 10.4 SDK, you must explicitly\
+list the search path to the frameworks in the project options. It seems that using any SDK will cause\
+the standard places like /Library/Frameworks to not be searched.\
 \
 
 \f0\b Known Issues:
@@ -259,6 +272,9 @@ Finally, there may still be issues with Zerolink. In the Project Template, we de
 \f1\b0 \
 \
 Included with the OSG Xcode projects are some of the little scripts I used to help put everything together. The build script might be of interest to those who wish to produce their own automated nightly builds.\
+\
+We're still looking for volunteers to help us write a new CMake based build system. Please contact me\
+or the list if you are interested in helping implement the thing.\
 \
 \
 -Eric Wing\

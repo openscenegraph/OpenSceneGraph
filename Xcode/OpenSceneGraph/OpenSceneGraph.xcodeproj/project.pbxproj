@@ -1600,6 +1600,13 @@
 		0079507309D36679003FC8A1 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		007950AD09D3686D003FC8A1 /* osgintrospection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 007950AA09D3686D003FC8A1 /* osgintrospection.cpp */; };
 		007950B209D36936003FC8A1 /* osgIntrospection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009DA0CD081D7AB7001FA987 /* osgIntrospection.framework */; };
+		0081CFD50A5C53C1006D3A13 /* osgParticle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557FC40624B86F000A808A /* osgParticle.framework */; };
+		0081CFD90A5C556C006D3A13 /* performance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0081CFD70A5C556B006D3A13 /* performance.cpp */; };
+		0081CFDA0A5C556C006D3A13 /* performance.h in Headers */ = {isa = PBXBuildFile; fileRef = 0081CFD80A5C556C006D3A13 /* performance.h */; };
+		0081CFE40A5C55FE006D3A13 /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0081CFE00A5C55FD006D3A13 /* mesh.cpp */; };
+		0081CFE50A5C55FE006D3A13 /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 0081CFE10A5C55FD006D3A13 /* mesh.h */; };
+		0081CFE60A5C55FE006D3A13 /* types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0081CFE20A5C55FD006D3A13 /* types.cpp */; };
+		0081CFE70A5C55FE006D3A13 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 0081CFE30A5C55FE006D3A13 /* types.h */; };
 		008F443606CBF7BB00F4220C /* ClusterCullingCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F443406CBF7B900F4220C /* ClusterCullingCallback.cpp */; };
 		008F443706CBF7BB00F4220C /* TexGenNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F443506CBF7BA00F4220C /* TexGenNode.cpp */; };
 		008F444506CBF88200F4220C /* Vec2d in Headers */ = {isa = PBXBuildFile; fileRef = 008F443D06CBF87C00F4220C /* Vec2d */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -5250,6 +5257,12 @@
 		0079505209D3659B003FC8A1 /* GNUmakefile */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = GNUmakefile; path = ../../src/osgPlugins/ESRIShape/GNUmakefile; sourceTree = SOURCE_ROOT; };
 		0079507909D36679003FC8A1 /* osgintrospection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgintrospection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		007950AA09D3686D003FC8A1 /* osgintrospection.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgintrospection.cpp; path = ../../examples/osgintrospection/osgintrospection.cpp; sourceTree = SOURCE_ROOT; };
+		0081CFD70A5C556B006D3A13 /* performance.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = performance.cpp; sourceTree = "<group>"; };
+		0081CFD80A5C556C006D3A13 /* performance.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = performance.h; sourceTree = "<group>"; };
+		0081CFE00A5C55FD006D3A13 /* mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = mesh.cpp; sourceTree = "<group>"; };
+		0081CFE10A5C55FD006D3A13 /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
+		0081CFE20A5C55FD006D3A13 /* types.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = types.cpp; sourceTree = "<group>"; };
+		0081CFE30A5C55FE006D3A13 /* types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		008F443406CBF7B900F4220C /* ClusterCullingCallback.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ClusterCullingCallback.cpp; path = ../../src/osg/ClusterCullingCallback.cpp; sourceTree = SOURCE_ROOT; };
 		008F443506CBF7BA00F4220C /* TexGenNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TexGenNode.cpp; path = ../../src/osg/TexGenNode.cpp; sourceTree = SOURCE_ROOT; };
 		008F443B06CBF87A00F4220C /* ClusterCullingCallback */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ClusterCullingCallback; path = ../../include/osg/ClusterCullingCallback; sourceTree = SOURCE_ROOT; };
@@ -6871,6 +6884,7 @@
 				004E4D2B0A51FA4D00EC8521 /* osgGA.framework in Frameworks */,
 				004E4D2C0A51FA4D00EC8521 /* OpenThreads.framework in Frameworks */,
 				004E4D2D0A51FA4D00EC8521 /* Producer.framework in Frameworks */,
+				0081CFD50A5C53C1006D3A13 /* osgParticle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8870,6 +8884,10 @@
 		001DFD84065A997D003310BF /* directx */ = {
 			isa = PBXGroup;
 			children = (
+				0081CFE00A5C55FD006D3A13 /* mesh.cpp */,
+				0081CFE10A5C55FD006D3A13 /* mesh.h */,
+				0081CFE20A5C55FD006D3A13 /* types.cpp */,
+				0081CFE30A5C55FE006D3A13 /* types.h */,
 				001DFD85065A997D003310BF /* directx.cpp */,
 				001DFD86065A997D003310BF /* directx.h */,
 				001DFD89065A997D003310BF /* ReaderWriterDirectX.cpp */,
@@ -9972,6 +9990,8 @@
 			isa = PBXGroup;
 			children = (
 				00EF4F7E06CB14BE008ACEFF /* osgunittests.cpp */,
+				0081CFD70A5C556B006D3A13 /* performance.cpp */,
+				0081CFD80A5C556C006D3A13 /* performance.h */,
 			);
 			name = osgunittests;
 			path = ../../examples/osgunittests;
@@ -11326,6 +11346,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				001DFD8B065A997D003310BF /* directx.h in Headers */,
+				0081CFE50A5C55FE006D3A13 /* mesh.h in Headers */,
+				0081CFE70A5C55FE006D3A13 /* types.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12005,6 +12027,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0081CFDA0A5C556C006D3A13 /* performance.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16787,6 +16810,8 @@
 				001DFD77065A9908003310BF /* ReaderWriterBMP.cpp in Sources */,
 				001DFD8A065A997D003310BF /* directx.cpp in Sources */,
 				001DFD8C065A997D003310BF /* ReaderWriterDirectX.cpp in Sources */,
+				0081CFE40A5C55FE006D3A13 /* mesh.cpp in Sources */,
+				0081CFE60A5C55FE006D3A13 /* types.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17464,6 +17489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00EF4F8106CB14BF008ACEFF /* osgunittests.cpp in Sources */,
+				0081CFD90A5C556C006D3A13 /* performance.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

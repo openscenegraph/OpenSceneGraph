@@ -273,7 +273,7 @@ void nameCorrection(NamePair& name)
     if (name.first=="Paul" && name.second=="de")
     {
         name.first = "Paul";
-        name.second = "de Repentingy";
+        name.second = "de Repentigny";
     }
     if (name.first=="Nick" && name.second=="")
     {

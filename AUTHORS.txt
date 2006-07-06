@@ -12,10 +12,10 @@ Geoff Michel
 Brede Johansen
 Bob Kuehne
 Farshid Lashkari
+Eric Sokolowsky
 Ulrich Hertlein
 Tree 
 Paul Martz
-Eric Sokolowsky
 Eric Wing
 Norman Vine
 Pavel Moloshtan
@@ -95,6 +95,7 @@ Per Fahlberg
 Paul de Repentigny
 Nathan Monteleone
 Michael Platings
+Maya Leonard
 Max Behensky
 Mathew May
 Martin Aumueller
@@ -145,7 +146,6 @@ Morné Pistorius
 Mikkel Gjøl
 Michael Morrison
 Michael Logan
-Maya Leonard
 Max Rhiener
 Matthew May
 Matt Green

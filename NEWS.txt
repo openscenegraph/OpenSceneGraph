@@ -9,7 +9,8 @@ the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=Op
 The OpenSceneGraph-1.1 release introduces:
 
 * Improved support for multi-threaded, multi-pipe applications, including performance improvements and automated configuration of threading.
-* Support for OpenGL Shander Lanaguage uniform arrays
+* Support for OpenGL Shander Language uniform arrays
+* New precipition particle effects that leverage the OpenGL Shader Language to provide high performance and high image quality rendering of rain and snow effects.
 * New OpenFlight loader with support for version 16.1, including OpenGL Shader Language support.
 * New Quake3 BSP loader
 * TerraPage loader updated to latest terrapage code base, version 2.2.

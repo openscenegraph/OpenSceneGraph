@@ -1161,7 +1161,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
 
         static void setNotifyOffset(int level);
-        static int setNotifyOffset();
+        static int getNotifyOffset();
 
 
         CompositeDestination* createDestinationGraph(CompositeDestination* parent,

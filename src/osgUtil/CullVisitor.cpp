@@ -95,7 +95,8 @@ CullVisitor::CullVisitor():
     _currentRenderBin(NULL),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
-    _currentReuseRenderLeafIndex(0)
+    _currentReuseRenderLeafIndex(0),
+    _numberOfEncloseOverrideRenderBinDetails(0)
 {
     // _nearFarRatio = 0.000005f;     
 }
@@ -115,6 +116,8 @@ void CullVisitor::reset()
     //
     
     CullStack::reset();
+
+    _numberOfEncloseOverrideRenderBinDetails = 0;
 
     // reset the calculated near far planes.
     _computed_znear = FLT_MAX;

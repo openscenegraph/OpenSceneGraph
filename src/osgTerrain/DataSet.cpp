@@ -53,7 +53,7 @@ using namespace osgTerrain;
 
 static int s_notifyOffset = 0;
 void DataSet::setNotifyOffset(int level) { s_notifyOffset = level; }
-int DataSet::setNotifyOffset() { return s_notifyOffset; }
+int DataSet::getNotifyOffset() { return s_notifyOffset; }
 
 inline std::ostream& my_notify(osg::NotifySeverity level) { return osg::notify(osg::NotifySeverity(s_notifyOffset+level)); }
 
@@ -1269,8 +1269,11 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
     psWO->pfnTransformer = pfnTransformer;
     psWO->pTransformerArg = hTransformArg;
 
-    psWO->pfnProgress = GDALTermProgress;
-
+    if(osg::isNotifyEnabled(osg::NotifySeverity(osg::INFO + getNotifyOffset())))
+      psWO->pfnProgress = GDALTermProgress;
+    else 
+      psWO->pfnProgress = GDALDummyProgress;
+      
 /* -------------------------------------------------------------------- */
 /*      Setup band mapping.                                             */
 /* -------------------------------------------------------------------- */

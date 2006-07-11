@@ -99,6 +99,8 @@ class OSG_EXPORT BlendFunc : public StateAttribute
         {
             _source_factor = source;
             _destination_factor = destination;
+            _source_factor_alpha = source;
+            _destination_factor_alpha = destination;
         }
 
         inline void setFunction( GLenum source_rgb, GLenum destination_rgb, GLenum source_alpha, GLenum destination_alpha )

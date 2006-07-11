@@ -327,6 +327,11 @@ void nameCorrection(NamePair& name)
         name.first = "Douglas";
         name.second = "A. Pouk";
     }
+    if (name.first=="Colin" && name.second=="MacDonald")
+    {
+        name.first = "Colin";
+        name.second = "McDonald";
+    }
 }
 
 void lastValidCharacter(const std::string& name, unsigned int& pos,char c)

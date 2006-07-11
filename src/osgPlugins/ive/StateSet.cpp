@@ -36,7 +36,6 @@ void StateSet::write(DataOutputStream* out){
         case osg::StateSet::INHERIT_RENDERBIN_DETAILS:        out->writeChar((char)0);break;
         case osg::StateSet::USE_RENDERBIN_DETAILS:            out->writeChar((char)1);break;
         case osg::StateSet::OVERRIDE_RENDERBIN_DETAILS:        out->writeChar((char)2);break;
-        case osg::StateSet::ENCLOSE_RENDERBIN_DETAILS:        out->writeChar((char)3);break;
         default: throw Exception("Unknown RenderBinMode in StateSet::write()");
     }
     out->writeInt(getBinNumber());
@@ -131,7 +130,7 @@ void StateSet::read(DataInputStream* in){
                 setRenderBinDetails(num, name, osg::StateSet::OVERRIDE_RENDERBIN_DETAILS); 
                 break;
             case 3:        
-                setRenderBinDetails(num, name, osg::StateSet::ENCLOSE_RENDERBIN_DETAILS); 
+                setRenderBinDetails(num, name, osg::StateSet::USE_RENDERBIN_DETAILS); 
                 break;
             default: throw Exception("Unknown RenderBinMode in StateSet::read()");
         }

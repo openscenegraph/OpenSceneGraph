@@ -327,8 +327,7 @@ class OSG_EXPORT StateSet : public Object
         {
             INHERIT_RENDERBIN_DETAILS,
             USE_RENDERBIN_DETAILS,
-            OVERRIDE_RENDERBIN_DETAILS,
-            ENCLOSE_RENDERBIN_DETAILS
+            OVERRIDE_RENDERBIN_DETAILS
         };
 
         /** Set the render bin details.*/

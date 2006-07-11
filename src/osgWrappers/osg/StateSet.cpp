@@ -51,7 +51,6 @@ BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderBinMode)
 	I_EnumLabel(osg::StateSet::INHERIT_RENDERBIN_DETAILS);
 	I_EnumLabel(osg::StateSet::USE_RENDERBIN_DETAILS);
 	I_EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
-	I_EnumLabel(osg::StateSet::ENCLOSE_RENDERBIN_DETAILS);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateSet)

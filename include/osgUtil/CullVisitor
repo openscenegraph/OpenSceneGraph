@@ -92,9 +92,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         inline void pushStateSet(const osg::StateSet* ss)
         {
             _currentStateGraph = _currentStateGraph->find_or_insert(ss);
-            if (ss->useRenderBinDetails())
+            if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
             {
                 _currentRenderBin = _currentRenderBin->find_or_insert(ss->getBinNumber(),ss->getBinName());
+            }
+            if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
+            {
+                ++_numberOfEncloseOverrideRenderBinDetails;
             }
         }
         
@@ -104,9 +108,18 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           */
         inline void popStateSet()
         {
-            if (_currentStateGraph->_stateset->useRenderBinDetails())
+            const osg::StateSet* ss = _currentStateGraph->_stateset;
+            if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
             {
                 _currentRenderBin = _currentRenderBin->getParent();
+                if (_currentRenderBin->getParent())
+                {
+                    _currentRenderBin = _currentRenderBin->getParent();
+                }
+            }
+            if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
+            {
+                --_numberOfEncloseOverrideRenderBinDetails;
             }
             _currentStateGraph = _currentStateGraph->_parent;
         }
@@ -269,6 +282,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
     
         inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth=0.0f);
         
+        unsigned int _numberOfEncloseOverrideRenderBinDetails;
+
         osg::ref_ptr<osg::State>                    _state;
 
 

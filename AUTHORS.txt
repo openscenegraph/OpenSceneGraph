@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.1
 
-203 Contributors:
+202 Contributors:
 
 Firstname Surname
 -----------------
@@ -34,6 +34,7 @@ Neil Salter
 Joran Jessurun
 Frederic Marmond
 David Fries
+Colin McDonald
 Boris Bralo
 Yefei He
 Sondra Iverson
@@ -41,7 +42,6 @@ Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
 Daniel Sjölie
-Colin McDonald
 Ben Discoe
 Sasa Bistrovic
 Olaf Flebbe
@@ -189,7 +189,6 @@ David Jung
 David Callu
 Daniel Trstenjak
 Daneil Sjölie
-Colin MacDonald
 Clay Fowler
 Carlos García
 Brad Anderegg

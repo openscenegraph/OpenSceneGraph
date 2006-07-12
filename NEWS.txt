@@ -1,7 +1,7 @@
 OSG News
 ========
 
-!!!OpenScneneGraph 1.1 release introduces peformance improvements, scalability, full GLSL support and new OpenFlight 16.1, TerrPagea2.2 and Quake3 loaders.
+!!!OpenSceneGraph 1.1 release introduces improved peformance and scalability, full OpenGL Shader Language support and new OpenFlight 16.1, TerrPagea2.2 and Quake3 loaders.
 
 AYRSHIRE, Scotland - July 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1, 
 the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.0, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.0 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems. 
@@ -16,7 +16,14 @@ The OpenSceneGraph-1.1 release introduces:
 * TerraPage loader updated to latest terrapage code base, version 2.2.
 * New outline and drop shadow support for osgText.
 * New observer_ptr<> smart pointer which holds a pointer to an object, but does does affect its reference, so doesn't take any ownership of it.  If the object goes out of scope then the observer_ptr<> is automatically set to 0.
+* New osgGA::EventQueue class for making it easier to integrate 3rd Party Windowing toolkits. The revamped osgkeyboardmouse example demonstrates how to use it.
 * A range of bug fixes.
+
+For further information and to download the latest release head to the project website:
+
+    http://www.openscenegraph.org
+
+Many thanks to the contributors who help make this release.
 
 Robert Osfield\\
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services

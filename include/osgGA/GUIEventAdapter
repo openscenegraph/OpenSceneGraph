@@ -204,7 +204,7 @@ public:
             KEY_Super_L         = 0xFFEB,        /* Left super */
             KEY_Super_R         = 0xFFEC,        /* Right super */
             KEY_Hyper_L         = 0xFFED,        /* Left hyper */
-            KEY_Hyper_R         = 0xFFEE,        /* Right hyper */
+            KEY_Hyper_R         = 0xFFEE         /* Right hyper */
         };
 
 

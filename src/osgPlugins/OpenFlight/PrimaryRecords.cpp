@@ -626,14 +626,27 @@ protected:
         _external->setFileName(0,strFile);
 
         // Set parent pools as user data
-        in.forward(4);
-        unsigned int mask = in.readUInt32();
-        _external->setUserData( static_cast<osg::Referenced*>( new ParentPools(
-            ((mask & COLOR_PALETTE_OVERRIDE) ? NULL : document.getColorPool()),
-            ((mask & MATERIAL_PALETTE_OVERRIDE) ? NULL : document.getOrCreateMaterialPool()),
-            ((mask & TEXTURE_PALETTE_OVERRIDE) ? NULL : document.getOrCreateTexturePool()),
-            ((mask & LIGHT_POINT_PALETTE_OVERRIDE) ? NULL : document.getOrCreateLightPointAppearancePool()),
-            ((mask & SHADER_PALETTE_OVERRIDE) ? NULL : document.getOrCreateShaderPool()) )));
+        if (document.version() >= VERSION_14_2)
+        {
+            in.forward(2);
+
+            if (document.version() >= VERSION_15_1)
+                in.forward(2);
+
+            uint32 mask = in.readUInt32(~0);
+
+            // Possible bug in models with version number 15.4.1 ?
+            // Symptoms: Black trees in VegaPlayer town.
+            if (document.version() == 1541)
+                mask = ~0;
+
+            _external->setUserData(new ParentPools(
+                ((mask & COLOR_PALETTE_OVERRIDE) ? NULL : document.getColorPool()),
+                ((mask & MATERIAL_PALETTE_OVERRIDE) ? NULL : document.getOrCreateMaterialPool()),
+                ((mask & TEXTURE_PALETTE_OVERRIDE) ? NULL : document.getOrCreateTexturePool()),
+                ((mask & LIGHT_POINT_PALETTE_OVERRIDE) ? NULL : document.getOrCreateLightPointAppearancePool()),
+                ((mask & SHADER_PALETTE_OVERRIDE) ? NULL : document.getOrCreateShaderPool()) ));
+        }
 
         // Add this implementation to parent implementation.
         if (_parent.valid())

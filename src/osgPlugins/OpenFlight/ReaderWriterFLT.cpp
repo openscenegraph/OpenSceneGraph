@@ -41,7 +41,9 @@ public:
 
     virtual void apply(ProxyNode& node)
     {
+        // Transfer ownership of pools.
         _options->setUserData( node.getUserData() );
+        node.setUserData(NULL);
 
         for (unsigned int pos=0; pos<node.getNumFileNames(); pos++)
         {

@@ -65,6 +65,6 @@ class OSGGA_EXPORT GUIEventHandlerVisitor
 
 };
 
-};
+}
 
 #endif

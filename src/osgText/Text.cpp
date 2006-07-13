@@ -53,6 +53,7 @@ Text::Text():
     _colorGradientBottomRight(0.0f, 0.0f, 1.0f, 1.0f),
     _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)    
 {
+    setStateSet(DefaultFont::instance()->getStateSet());
     setUseDisplayList(false);
     setSupportsDisplayList(false);
 }
@@ -89,8 +90,8 @@ void Text::setFont(Font* font)
 {
     if (_font==font) return;
     
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : 0;
-    osg::StateSet* newFontStateSet = font ? font->getStateSet() : 0;
+    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : DefaultFont::instance()->getStateSet();
+    osg::StateSet* newFontStateSet = font ? font->getStateSet() : DefaultFont::instance()->getStateSet();
     
     if (getStateSet() == previousFontStateSet)
     {

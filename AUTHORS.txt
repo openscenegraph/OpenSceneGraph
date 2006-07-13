@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.1
 
-202 Contributors:
+201 Contributors:
 
 Firstname Surname
 -----------------
@@ -18,8 +18,8 @@ Tree
 Paul Martz
 Eric Wing
 Norman Vine
-Pavel Moloshtan
 Trajce Nikolov
+Pavel Moloshtan
 Tom Jolley
 Alberto Farre
 Ruben Lopez
@@ -139,7 +139,6 @@ Reinhard Sainitzer
 Qing Shen
 Philipp Siemoleit
 Paul Fredrikson
-Nikolov Trajce
 Nicolas Brodu
 Nathan Cournia
 Morné Pistorius

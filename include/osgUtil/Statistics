@@ -74,6 +74,10 @@ class Statistics : public osg::PrimitiveFunctor
             _primitiveCount.clear();            
             
             _currentPrimitiveFunctorMode=0;
+
+            _primitives_count.clear();
+            _total_primitives_count=0;
+            _number_of_vertexes=0;
         }
 
         void setType(statsType t) {stattype=t;}

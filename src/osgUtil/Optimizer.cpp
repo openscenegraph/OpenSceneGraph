@@ -30,6 +30,7 @@
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/Tesselator>
+#include <osgUtil/Statistics>
 
 #include <typeinfo>
 #include <algorithm>
@@ -38,22 +39,21 @@
 using namespace osgUtil;
 
 
-
 void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELATE_GEOMETRY | CHECK_GEOMETRY");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELATE_GEOMETRY | CHECK_GEOMETRY");
 
 void Optimizer::optimize(osg::Node* node)
 {
     unsigned int options = 0;
     
+    
     const char* env = getenv("OSG_OPTIMIZER");
     if (env)
     {
         std::string str(env);
-
 
         if(str.find("OFF")!=std::string::npos) options = 0;
 
@@ -106,10 +106,21 @@ void Optimizer::optimize(osg::Node* node)
     }
 
     optimize(node,options);
+
 }
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
+    StatsVisitor stats;
+    
+    if (osg::getNotifyLevel()>=osg::INFO)
+    {
+        node->accept(stats);
+        stats.totalUpStats();
+        osg::notify(osg::NOTICE)<<std::endl<<"Stats before:"<<std::endl;
+        stats.print(osg::notify(osg::NOTICE));
+    }
+    
     if (options & TESSELATE_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing TESSELATE_GEOMETRY"<<std::endl;
@@ -189,20 +200,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     }
     
 
-    if (options & REMOVE_REDUNDANT_NODES)
-    {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
-
-        RemoveEmptyNodesVisitor renv(this);
-        node->accept(renv);
-        renv.removeEmptyNodes();
-
-        RemoveRedundantNodesVisitor rrnv(this);
-        node->accept(rrnv);
-        rrnv.removeRedundantNodes();
-
-    }
-    
     if (options & MERGE_GEODES)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
@@ -237,7 +234,21 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         tsv.stripify();
     }
 
-    if (options & SPATIALIZE_GROUPS)
+    if (options & REMOVE_REDUNDANT_NODES)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
+
+        RemoveEmptyNodesVisitor renv(this);
+        node->accept(renv);
+        renv.removeEmptyNodes();
+
+        RemoveRedundantNodesVisitor rrnv(this);
+        node->accept(rrnv);
+        rrnv.removeRedundantNodes();
+
+    }
+    
+        if (options & SPATIALIZE_GROUPS)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
 
@@ -246,6 +257,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         sv.divide();
     }
     
+    if (osg::getNotifyLevel()>=osg::INFO)
+    {
+        stats.reset();
+        node->accept(stats);
+        stats.totalUpStats();
+        osg::notify(osg::NOTICE)<<std::endl<<"Stats after:"<<std::endl;
+        stats.print(osg::notify(osg::NOTICE));
+    }
 }
 
 
@@ -2533,11 +2552,16 @@ bool Optimizer::MergeGeodesVisitor::mergeGeodes(osg::Group& group)
         }
     }
 
+    if (geodeDuplicateMap.empty()) return false;
+    
+    // osg::notify(osg::NOTICE)<<"mergeGeodes in group '"<<group.getName()<<"' "<<geodeDuplicateMap.size()<<std::endl;
+    
     // merge
     for(GeodeDuplicateMap::iterator itr=geodeDuplicateMap.begin();
         itr!=geodeDuplicateMap.end();
         ++itr)
     {
+        // osg::notify(osg::NOTICE)<<"   "<<itr->second.size()<<std::endl;
         if (itr->second.size()>1)
         {
             osg::Geode* lhs = itr->second[0];
@@ -2555,6 +2579,9 @@ bool Optimizer::MergeGeodesVisitor::mergeGeodes(osg::Group& group)
                     osg::notify(osg::INFO)<<"merged and removed Geode "<<++co<<std::endl;
                 }
             }
+        }
+        else
+        {
         }
     }
 

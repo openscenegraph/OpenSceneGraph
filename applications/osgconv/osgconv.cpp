@@ -450,6 +450,18 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    std::string options;
+    while(arguments.read("--optimizer",options))
+    {
+        osg::notify(osg::NOTICE)<<"Setting "<<options<<std::endl;
+        setenv("OSG_OPTIMIZER",options.c_str(),1);
+        
+        char* result = getenv("OSG_OPTIMIZER");
+        if (result) osg::notify(osg::NOTICE)<<"Got value "<<result<<std::endl;
+        else osg::notify(osg::NOTICE)<<"No value"<<std::endl;
+    }
+
+
     FileNameList fileNames;
     OrientationConverter oc;
     bool do_convert = false;

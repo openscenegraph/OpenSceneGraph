@@ -26,6 +26,7 @@
 #include <osg/Texture>
 #include <osg/PagedLOD>
 #include <osg/ProxyNode>
+#include <osg/Timer>
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
@@ -120,7 +121,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osg::notify(osg::NOTICE)<<std::endl<<"Stats before:"<<std::endl;
         stats.print(osg::notify(osg::NOTICE));
     }
-    
+
     if (options & TESSELATE_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing TESSELATE_GEOMETRY"<<std::endl;
@@ -204,8 +205,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
 
+        osg::Timer_t startTick = osg::Timer::instance()->tick();
+
         MergeGeodesVisitor visitor;
         node->accept(visitor);
+
+        osg::Timer_t endTick = osg::Timer::instance()->tick();
+        
+        osg::notify(osg::INFO)<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
 
     if (options & CHECK_GEOMETRY)
@@ -220,9 +227,15 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
 
+        osg::Timer_t startTick = osg::Timer::instance()->tick();
+
         MergeGeometryVisitor mgv(this);
         mgv.setTargetMaximumNumberOfVertices(10000);
         node->accept(mgv);
+
+        osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+        osg::notify(osg::INFO)<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
     
     if (options & TRISTRIP_GEOMETRY)
@@ -248,7 +261,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
-        if (options & SPATIALIZE_GROUPS)
+    if (options & SPATIALIZE_GROUPS)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
 
@@ -2520,7 +2533,7 @@ void Optimizer::TextureVisitor::apply(osg::Texture& texture)
 
 void Optimizer::MergeGeodesVisitor::apply(osg::Group& group)
 {
-    mergeGeodes(group);
+    if (typeid(group)==typeid(osg::Group)) mergeGeodes(group);
     traverse(group);
 }
 
@@ -2537,51 +2550,70 @@ bool Optimizer::MergeGeodesVisitor::mergeGeodes(osg::Group& group)
 {
     if (!isOperationPermissibleForObject(&group)) return false;
 
-    typedef std::vector<osg::Geode*>                      DuplicateList;
-    typedef std::map<osg::Geode*,DuplicateList,LessGeode> GeodeDuplicateMap;
+    typedef std::vector< osg::Geode* >                      DuplicateList;
+    typedef std::map<osg::Geode*,DuplicateList,LessGeode>   GeodeDuplicateMap;
+
+    unsigned int i;
+    osg::NodeList children;
+    children.resize(group.getNumChildren());
+    for (i=0; i<group.getNumChildren(); ++i)
+    {
+        // keep a reference to this child so we can safely clear the group of all children
+        // this is done so we don't have to do a search and remove from the list later on.
+        children[i] = group.getChild(i);
+    }
+    
+    // remove all children
+    group.removeChildren(0,group.getNumChildren());
 
     GeodeDuplicateMap geodeDuplicateMap;
-
-    for (unsigned int i=0; i<group.getNumChildren(); ++i)
+    for (i=0; i<children.size(); ++i)
     {
-        osg::Node* child = group.getChild(i);
+        osg::Node* child = children[i].get();
+
         if (typeid(*child)==typeid(osg::Geode)) 
         {
-            osg::Geode* geode = (osg::Geode*)child;
+            osg::Geode* geode = static_cast<osg::Geode*>(child);
             geodeDuplicateMap[geode].push_back(geode);
+        }
+        else
+        {
+            // not a geode so just add back into group as its a normal child
+            group.addChild(child);
         }
     }
 
+    // if no geodes then just return.
     if (geodeDuplicateMap.empty()) return false;
     
-    // osg::notify(osg::NOTICE)<<"mergeGeodes in group '"<<group.getName()<<"' "<<geodeDuplicateMap.size()<<std::endl;
+    osg::notify(osg::INFO)<<"mergeGeodes in group '"<<group.getName()<<"' "<<geodeDuplicateMap.size()<<std::endl;
     
     // merge
     for(GeodeDuplicateMap::iterator itr=geodeDuplicateMap.begin();
         itr!=geodeDuplicateMap.end();
         ++itr)
     {
-        // osg::notify(osg::NOTICE)<<"   "<<itr->second.size()<<std::endl;
         if (itr->second.size()>1)
         {
             osg::Geode* lhs = itr->second[0];
+
+            // add geode back into group
+            group.addChild(lhs);
+            
             for(DuplicateList::iterator dupItr=itr->second.begin()+1;
                 dupItr!=itr->second.end();
                 ++dupItr)
             {
                 osg::Geode* rhs = *dupItr;
-                
-                if (mergeGeode(*lhs,*rhs))
-                {
-                    group.removeChild(rhs);
-
-                    static int co = 0;
-                    osg::notify(osg::INFO)<<"merged and removed Geode "<<++co<<std::endl;
-                }
+                mergeGeode(*lhs,*rhs);
             }
         }
         else
         {
+            osg::Geode* lhs = itr->second[0];
+
+            // add geode back into group
+            group.addChild(lhs);
         }
     }
 

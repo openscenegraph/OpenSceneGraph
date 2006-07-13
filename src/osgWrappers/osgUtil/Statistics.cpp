@@ -9,6 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Drawable>
+#include <osg/Geode>
+#include <osg/Group>
+#include <osg/LOD>
+#include <osg/Switch>
+#include <osg/Transform>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -76,9 +82,29 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_WriteOnlyProperty(osgUtil::Statistics::statsType, Type);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::StatsVisitor::NodeSet);
+
+TYPE_NAME_ALIAS(std::set< osg::Drawable * >, osgUtil::StatsVisitor::DrawableSet);
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
+	I_BaseType(osg::NodeVisitor);
+	I_Constructor0();
+	I_Method0(void, reset);
+	I_Method1(void, apply, IN, osg::Group &, node);
+	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::LOD &, node);
+	I_Method1(void, apply, IN, osg::Switch &, node);
+	I_Method1(void, apply, IN, osg::Geode &, node);
+	I_Method1(void, apply, IN, osg::Drawable &, drawable);
+	I_Method0(void, totalUpStats);
+	I_Method1(void, print, IN, std::ostream &, out);
+END_REFLECTOR
+
 STD_MAP_REFLECTOR(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >);
 
 STD_MAP_REFLECTOR(std::map< GLenum COMMA  unsigned int >);
 
 STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  unsigned int >);
+
+STD_SET_REFLECTOR(std::set< osg::Drawable * >);
 

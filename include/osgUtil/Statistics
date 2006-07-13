@@ -16,8 +16,16 @@
 
 #include <osg/PrimitiveSet>
 #include <osg/Drawable>
+#include <osg/NodeVisitor>
+#include <osg/Geode>
+#include <osg/LOD>
+#include <osg/Switch>
+#include <osg/Geometry>
+#include <osg/Transform>
 
 #include <map>
+#include <set>
+#include <ostream>
 
 namespace osgUtil {
 
@@ -196,6 +204,167 @@ inline unsigned int Statistics::_calculate_primitives_number_by_mode(GLenum mode
     default: return 0;
     }
 }
+
+/** StatsVisitor for collecting statistics about scene graph.*/
+class StatsVisitor : public osg::NodeVisitor
+{
+public:
+
+    typedef std::set<osg::Node*> NodeSet;
+    typedef std::set<osg::Drawable*> DrawableSet;
+
+    StatsVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _numInstancedGroup(0),
+        _numInstancedSwitch(0),
+        _numInstancedLOD(0),
+        _numInstancedTransform(0),
+        _numInstancedGeode(0),
+        _numInstancedDrawable(0),
+        _numInstancedGeometry(0) {}
+        
+    void reset()
+    {
+        _numInstancedGroup = 0;
+        _numInstancedSwitch = 0;
+        _numInstancedLOD = 0;
+        _numInstancedTransform = 0;
+        _numInstancedGeode = 0;
+        _numInstancedDrawable = 0;
+        _numInstancedGeometry = 0;
+
+        _groupSet.clear();
+        _transformSet.clear();
+        _lodSet.clear();
+        _switchSet.clear();
+        _geodeSet.clear();
+        _drawableSet.clear();
+        _geometrySet.clear();
+
+        _uniqueStats.reset();
+        _instancedStats.reset();
+    }    
+    
+    void apply(osg::Group& node)
+    {
+        ++_numInstancedGroup;
+        _groupSet.insert(&node);
+        traverse(node);
+    }
+
+    void apply(osg::Transform& node)
+    {
+        ++_numInstancedTransform;
+        _transformSet.insert(&node);
+        traverse(node);
+    }
+
+    void apply(osg::LOD& node)
+    {
+        ++_numInstancedLOD;
+        _lodSet.insert(&node);
+        traverse(node);
+    }
+
+    void apply(osg::Switch& node)
+    {
+        ++_numInstancedSwitch;
+        _switchSet.insert(&node);
+        traverse(node);
+    }
+
+    void apply(osg::Geode& node)
+    {
+        ++_numInstancedGeode;
+        _geodeSet.insert(&node);
+        
+        for(unsigned int i=0; i<node.getNumDrawables();++i)
+        {
+            apply(*node.getDrawable(i));
+        }
+        
+        traverse(node);
+    }
+
+    void apply(osg::Drawable& drawable)
+    {
+        ++_numInstancedDrawable;
+        
+        drawable.accept(_instancedStats);
+    
+        _drawableSet.insert(&drawable);
+        
+        osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(&drawable);
+        if (geometry)
+        {
+            ++_numInstancedGeometry;
+            _geometrySet.insert(geometry);
+        }
+    }
+
+    void totalUpStats()
+    {
+        _uniqueStats.reset();
+        
+        for(DrawableSet::iterator itr = _drawableSet.begin();
+            itr != _drawableSet.end();
+            ++itr)
+        {
+            (*itr)->accept(_uniqueStats);
+        }
+    }
+    
+    void print(std::ostream& out)
+    {
+    
+        unsigned int unique_primitives = 0;
+        osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr;
+        for(pcmitr = _uniqueStats.GetPrimitivesBegin();
+            pcmitr != _uniqueStats.GetPrimitivesEnd();
+            ++pcmitr)
+        {
+            unique_primitives += pcmitr->second;
+        }
+
+        unsigned int instanced_primitives = 0;
+        for(pcmitr = _instancedStats.GetPrimitivesBegin();
+            pcmitr != _instancedStats.GetPrimitivesEnd();
+            ++pcmitr)
+        {
+            instanced_primitives += pcmitr->second;
+        }
+
+        out<<"Object Type\t#Unique\t#Instanced"<<std::endl;
+        out<<"Group      \t"<<_groupSet.size()<<"\t"<<_numInstancedGroup<<std::endl;
+        out<<"Transform  \t"<<_transformSet.size()<<"\t"<<_numInstancedTransform<<std::endl;
+        out<<"LOD        \t"<<_lodSet.size()<<"\t"<<_numInstancedLOD<<std::endl;
+        out<<"Switch     \t"<<_switchSet.size()<<"\t"<<_numInstancedSwitch<<std::endl;
+        out<<"Geode      \t"<<_geodeSet.size()<<"\t"<<_numInstancedGeode<<std::endl;
+        out<<"Drawable   \t"<<_drawableSet.size()<<"\t"<<_numInstancedDrawable<<std::endl;
+        out<<"Geometry   \t"<<_geometrySet.size()<<"\t"<<_numInstancedGeometry<<std::endl;
+        out<<"Vertices   \t"<<_uniqueStats._vertexCount<<"\t"<<_instancedStats._vertexCount<<std::endl;
+        out<<"Primitives \t"<<unique_primitives<<"\t"<<instanced_primitives<<std::endl;
+    }
+    
+    unsigned int _numInstancedGroup;
+    unsigned int _numInstancedSwitch;
+    unsigned int _numInstancedLOD;
+    unsigned int _numInstancedTransform;
+    unsigned int _numInstancedGeode;
+    unsigned int _numInstancedDrawable;
+    unsigned int _numInstancedGeometry;
+
+    NodeSet _groupSet;
+    NodeSet _transformSet;
+    NodeSet _lodSet;
+    NodeSet _switchSet;
+    NodeSet _geodeSet;
+    DrawableSet _drawableSet;
+    DrawableSet _geometrySet;
+
+    osgUtil::Statistics _uniqueStats;
+    osgUtil::Statistics _instancedStats;
+};
 
 }
 

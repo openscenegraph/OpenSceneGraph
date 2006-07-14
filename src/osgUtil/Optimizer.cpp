@@ -203,7 +203,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MERGE_GEODES)
     {
-        osg::notify(osg::NOTICE)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
 
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
@@ -212,7 +212,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
         
-        osg::notify(osg::NOTICE)<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+        osg::notify(osg::INFO)<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
 
     if (options & CHECK_GEOMETRY)
@@ -225,7 +225,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MERGE_GEOMETRY)
     {
-        osg::notify(osg::NOTICE)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
 
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
@@ -235,7 +235,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 
-        osg::notify(osg::NOTICE)<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+        osg::notify(osg::INFO)<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
     
     if (options & TRISTRIP_GEOMETRY)

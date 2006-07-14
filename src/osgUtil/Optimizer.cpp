@@ -203,7 +203,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MERGE_GEODES)
     {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
 
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
@@ -212,7 +212,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
         
-        osg::notify(osg::INFO)<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+        osg::notify(osg::NOTICE)<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
 
     if (options & CHECK_GEOMETRY)
@@ -225,7 +225,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MERGE_GEOMETRY)
     {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
 
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
@@ -235,7 +235,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 
-        osg::notify(osg::INFO)<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+        osg::notify(osg::NOTICE)<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
     
     if (options & TRISTRIP_GEOMETRY)
@@ -1698,15 +1698,18 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
     if (!isOperationPermissibleForObject(&geode)) return false;
 
-#if 1
-
     if (geode.getNumDrawables()>=2)
     {
+    
+        // osg::notify(osg::NOTICE)<<"Before "<<geode.getNumDrawables()<<std::endl;
     
         typedef std::vector<osg::Geometry*>                         DuplicateList;
         typedef std::map<osg::Geometry*,DuplicateList,LessGeometry> GeometryDuplicateMap;
 
+        typedef std::vector<DuplicateList> MergeList;
+
         GeometryDuplicateMap geometryDuplicateMap;
+        osg::Geode::DrawableList standardDrawables;
 
         unsigned int i;
         for(i=0;i<geode.getNumDrawables();++i)
@@ -1720,10 +1723,113 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 {
                     geometryDuplicateMap[geom].push_back(geom);
                 }
+                else
+                {
+                    standardDrawables.push_back(geode.getDrawable(i));
+                }
+            }
+            else
+            {            
+                standardDrawables.push_back(geode.getDrawable(i));
             }
         }
 
+#if 1
+        bool needToDoMerge = false;
+        MergeList mergeList;
+        for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
+            itr!=geometryDuplicateMap.end();
+            ++itr)
+        {
+            mergeList.push_back(DuplicateList());
+            DuplicateList* duplicateList = &mergeList.back();
+            
+            if (itr->second.size()>1)
+            {
+                std::sort(itr->second.begin(),itr->second.end(),LessGeometryPrimitiveType());
+                osg::Geometry* lhs = itr->second[0];
 
+                duplicateList->push_back(lhs);
+                
+                unsigned int numVertices = lhs->getVertexArray() ? lhs->getVertexArray()->getNumElements() : 0;
+
+                for(DuplicateList::iterator dupItr=itr->second.begin()+1;
+                    dupItr!=itr->second.end();
+                    ++dupItr)
+                {
+                
+                    osg::Geometry* rhs = *dupItr;
+                    
+                    unsigned int numRhsVertices = rhs->getVertexArray() ? rhs->getVertexArray()->getNumElements() : 0;
+
+                    if (numVertices+numRhsVertices < _targetMaximumNumberOfVertices)
+                    {
+                        duplicateList->push_back(rhs); 
+                        numVertices += numRhsVertices;
+                        needToDoMerge = true;
+                    }
+                    else
+                    {
+                        numVertices = numRhsVertices;
+                        mergeList.push_back(DuplicateList());
+                        duplicateList = &mergeList.back();
+                        duplicateList->push_back(rhs);
+                    }
+
+                }
+            }
+            else if (itr->second.size()>0)
+            {
+                duplicateList->push_back(itr->second[0]);
+            }
+        }
+        
+        if (needToDoMerge)
+        {
+            // first take a reference to all the drawables to prevent them being deleted prematurely
+            osg::Geode::DrawableList keepDrawables;
+            keepDrawables.resize(geode.getNumDrawables());
+            for(i=0; i<geode.getNumDrawables(); ++i)
+            {
+                keepDrawables[i] = geode.getDrawable(i);
+            }
+            
+            // now clear the drawable list of the Geode so we don't have to remove items one by one (which is slow)
+            geode.removeDrawables(0, geode.getNumDrawables());
+            
+            // add back in the standard drawables which arn't possible to merge.
+            for(osg::Geode::DrawableList::iterator sitr = standardDrawables.begin();
+                sitr != standardDrawables.end();
+                ++sitr)
+            {
+                geode.addDrawable(sitr->get());
+            }
+                
+            // now do the merging of geometries
+            for(MergeList::iterator mitr = mergeList.begin();
+                mitr != mergeList.end();
+                ++mitr)
+            {
+                DuplicateList& duplicateList = *mitr;
+                if (duplicateList.size()>1)
+                {
+                    osg::Geometry* lhs = duplicateList.front();
+                    geode.addDrawable(lhs);
+                    for(DuplicateList::iterator ditr = duplicateList.begin()+1;
+                        ditr != duplicateList.end();
+                        ++ditr)
+                    {
+                        mergeGeometry(*lhs,**ditr);
+                    }
+                }
+                else if (duplicateList.size()>0)
+                {
+                    geode.addDrawable(duplicateList.front());
+                }
+            }
+        }
+
+#else
         // don't merge geometry if its above a maximum number of vertices.
         for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
             itr!=geometryDuplicateMap.end();
@@ -1767,10 +1873,12 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 }
             }
         }
+#endif
+
+        // osg::notify(osg::NOTICE)<<"After "<<geode.getNumDrawables()<<std::endl;
+
     }
 
-
-#endif
 
     // convert all polygon primitives which has 3 indices into TRIANGLES, 4 indices into QUADS.
     unsigned int i;
@@ -1800,8 +1908,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         }
     }
 
-
-    // now merge any compatible primtives.
+    // now merge any compatible primitives.
     for(i=0;i<geode.getNumDrawables();++i)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
@@ -1813,6 +1920,97 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 geom->getSecondaryColorBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
                 geom->getFogCoordBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET)
             {
+            
+#if 1
+                bool doneCombine = false;
+
+                osg::Geometry::PrimitiveSetList& primitives = geom->getPrimitiveSetList();
+                unsigned int lhsNo=0;
+                unsigned int rhsNo=1;
+                while(rhsNo<primitives.size())
+                {
+                    osg::PrimitiveSet* lhs = primitives[lhsNo].get();
+                    osg::PrimitiveSet* rhs = primitives[rhsNo].get();
+ 
+                    bool combine = false;
+
+                    if (lhs->getType()==rhs->getType() &&
+                        lhs->getMode()==rhs->getMode())
+                    {
+
+                        switch(lhs->getMode())
+                        {
+                        case(osg::PrimitiveSet::POINTS):
+                        case(osg::PrimitiveSet::LINES):
+                        case(osg::PrimitiveSet::TRIANGLES):
+                        case(osg::PrimitiveSet::QUADS):
+                            combine = true;       
+                            break;
+                        }
+                        
+                    }
+
+                    if (combine)
+                    {
+                    
+                        switch(lhs->getType())
+                        {
+                        case(osg::PrimitiveSet::DrawArraysPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawArrays*>(lhs)),*(static_cast<osg::DrawArrays*>(rhs)));
+                            break;
+                        case(osg::PrimitiveSet::DrawArrayLengthsPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawArrayLengths*>(lhs)),*(static_cast<osg::DrawArrayLengths*>(rhs)));
+                            break;
+                        case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawElementsUByte*>(lhs)),*(static_cast<osg::DrawElementsUByte*>(rhs)));
+                            break;
+                        case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawElementsUShort*>(lhs)),*(static_cast<osg::DrawElementsUShort*>(rhs)));
+                            break;
+                        case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawElementsUInt*>(lhs)),*(static_cast<osg::DrawElementsUInt*>(rhs)));
+                            break;
+                        default:
+                            combine = false;
+                            break;
+                        }
+                    }
+
+                    if (combine)
+                    {
+                        // make this primitive set as invalid and needing cleaning up.
+                        rhs->setMode(0xffffff);
+                        doneCombine = true;
+                        ++rhsNo;
+                    }
+                    else
+                    {
+                        lhsNo = rhsNo;
+                        ++rhsNo;
+                    }
+                }
+
+    #if 1                
+                if (doneCombine)
+                {
+                    // now need to clean up primitiveset so it no longer contains the rhs combined primitives.
+
+                    // first swap with a empty primtiveSet to empty it completely.
+                    osg::Geometry::PrimitiveSetList oldPrimitives;
+                    primitives.swap(oldPrimitives);
+                    
+                    // now add the active primitive sets
+                    for(osg::Geometry::PrimitiveSetList::iterator pitr = oldPrimitives.begin();
+                        pitr != oldPrimitives.end();
+                        ++pitr)
+                    {
+                        if ((*pitr)->getMode()!=0xffffff) primitives.push_back(*pitr);
+                    }
+                }
+    #endif
+
+#else            
+
                 osg::Geometry::PrimitiveSetList& primitives = geom->getPrimitiveSetList();
                 unsigned int primNo=0;
                 while(primNo+1<primitives.size())
@@ -1872,8 +2070,11 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                         primNo++;
                     }
                 }
+#endif
             }
         }
+
+
     }
 
 //    geode.dirtyBound();

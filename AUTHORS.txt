@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.1
 
-201 Contributors:
+198 Contributors:
 
 Firstname Surname
 -----------------
@@ -22,12 +22,12 @@ Trajce Nikolov
 Pavel Moloshtan
 Tom Jolley
 Alberto Farre
-Ruben Lopez
-Randall Hopper
 Stephan Huber
-Gideon May
 Don Tidrow
+Ruben Lopez
 Romano José Magacho da Silva
+Randall Hopper
+Gideon May
 Michael Gronager
 Chris Hanson
 Neil Salter
@@ -58,7 +58,6 @@ Corbin Holtz
 Toshiyuki Takahei
 Thom DeCarlo
 Simon Julier
-Romano Magacho
 Roger James
 Nikolaus Hanekamp
 Loic Dachary
@@ -73,6 +72,7 @@ Vivek Rajan
 Terry Welsh
 Sohey Yamamoto
 Sebastien Grignard
+Romano Magacho
 Phil Atkin
 Paul Melis
 Ken Sewell
@@ -81,7 +81,6 @@ Jeremy Bell
 James French
 Gabor Dorka
 Domenico Mangieri
-Daniel Larimer
 Carlo Camporesi
 Ali Botorabi
 Yuzhong Shen
@@ -111,6 +110,7 @@ Fabio Mierlo
 Donn Mielcarek
 David Ergo
 Brad Colbert
+Antoine Hue
 Andrew Sampson
 Andreas Ekstrand
 Zbigniew Sroczynski
@@ -121,6 +121,7 @@ Wang Lam
 Walter J. Altice
 Volker Walkiewicz
 Vladimir Vukicevic
+Vincent Vivanloc
 Vasily Radostev
 Uwe Woessner
 Tyge 
@@ -129,7 +130,6 @@ Tino Schwarze
 Thom Carlo
 Terrex 
 Tanguy Fautré
-SpotExponent 
 Shane Arnott
 Sebastien Kuntz
 Ronny Krueger
@@ -179,7 +179,6 @@ Fabien Dachicourt
 Edmond Gheury
 Ed Ralston
 Duvan Cope
-Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
 Donny Cipperly
@@ -187,15 +186,13 @@ Dean Iverson
 David Jung
 David Callu
 Daniel Trstenjak
-Daneil Sjölie
-Clay Fowler
+Daniel Larimer
 Carlos García
 Brad Anderegg
 Bora Utka
 Blake Williams
 Bart Gallet
 Axel Volley
-Antoine Hue
 Andrew Reyonolds
 Andreas Jochens
 Anders Backman

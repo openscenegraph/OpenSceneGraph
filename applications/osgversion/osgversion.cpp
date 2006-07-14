@@ -173,6 +173,7 @@ bool validName(const std::string& first)
     if (first=="ProducerEventCallback") return false;
     if (first=="OrientationConverter") return false;
     if (first=="Logos") return false;
+    if (first=="StatsVisitor") return false;
     if (first=="LineStipple") return false;
     if (first=="Files") return false;
     if (first=="Mr") return false;
@@ -260,6 +261,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Yfei") return "Yefei";
     if (name=="Antonoine") return "Antoine";
     if (name=="Andew") return "Andrew";
+    if (name=="Daneil") return "Daniel";
     return name;
 }
 
@@ -279,6 +281,11 @@ void nameCorrection(NamePair& name)
     {
         name.first = "Trajce";
         name.second = "Nikolov";
+    }
+    if (name.first=="Daniel" && name.second=="")
+    {
+        name.first = "Daniel";
+        name.second = "Sjölie";
     }
     if (name.first=="Julia" && name.second=="Ortiz")
     {

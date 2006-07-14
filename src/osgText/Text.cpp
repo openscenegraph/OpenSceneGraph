@@ -12,13 +12,15 @@
 */
 
 
-#include <vector>
 #include <osgText/Text>
 
 #include <osg/Math>
 #include <osg/GL>
 #include <osg/Notify>
+#include <osg/PolygonOffset>
+
 #include <osgUtil/CullVisitor>
+
 #include <osgDB/ReadFile>
 
 #include "DefaultFont.h"
@@ -1446,6 +1448,11 @@ void Text::drawImplementation(osg::State& state) const
 
         if(_backdropType != NONE)
         {
+            if (!osg::PolygonOffset::areUnitAndMultipliersSet())
+            {
+                osg::PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver();
+            }
+
             // Do I really need to do this for glPolygonOffset?
             glPushAttrib(GL_POLYGON_OFFSET_FILL);
             glEnable(GL_POLYGON_OFFSET_FILL);
@@ -1486,12 +1493,13 @@ void Text::drawImplementation(osg::State& state) const
                     if (!transformedBackdropCoords.empty()) 
                     {
                         state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                        glPolygonOffset(1.0f, 2.0f * (max_backdrop_index-backdrop_index) );
+                        glPolygonOffset(2.0f * osg::PolygonOffset::getFactorMultiplier(),
+                                        2.0f * osg::PolygonOffset::getUnitMultiplier() * (max_backdrop_index-backdrop_index) );
                         glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
                     }
                 }
 
-                glPolygonOffset(0,0);
+                glPolygonOffset(0.0f,0.0f);
 
             } // end of backdrop text
 

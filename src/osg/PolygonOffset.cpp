@@ -12,8 +12,48 @@
 */
 #include <osg/GL>
 #include <osg/PolygonOffset>
+#include <osg/Notify>
 
 using namespace osg;
+
+static float s_FactorMultipler = 1.0f;
+static float s_UnitMultipler = 1.0f;
+static bool s_MultiplerSet = false;
+
+void PolygonOffset::setFactorMultiplier(float multiplier)
+{
+    s_MultiplerSet = true;
+    s_FactorMultipler = multiplier;
+}
+
+float PolygonOffset::getFactorMultiplier()
+{
+    return s_FactorMultipler;
+}
+
+void PolygonOffset::setUnitMultiplier(float multiplier)
+{
+    s_MultiplerSet = true;
+    s_UnitMultipler = multiplier;
+}
+
+float PolygonOffset::getUnitMultiplier()
+{
+    return s_UnitMultipler;
+}
+
+bool PolygonOffset::areUnitAndMultipliersSet()
+{
+    return s_MultiplerSet;
+}
+
+
+void PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()
+{
+    s_MultiplerSet = true;
+    // osg::notify(osg::NOTICE)<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()"<<std::endl;
+}
+
 
 PolygonOffset::PolygonOffset():
     _factor(0.0f),
@@ -33,5 +73,8 @@ PolygonOffset::~PolygonOffset()
 
 void PolygonOffset::apply(State&) const
 {
-    glPolygonOffset(_factor,_units);
+    if (!s_MultiplerSet) setFactorAndUnitMultipliersUsingBestGuessForDriver();
+
+    glPolygonOffset(_factor * s_FactorMultipler, 
+                    _units * s_UnitMultipler);
 }

@@ -3,7 +3,7 @@ OSG News
 
 !!!OpenSceneGraph 1.1 release introduces improved peformance and scalability, full OpenGL Shading Language support and new OpenFlight 16.1, TerrPagea2.2 and Quake3 loaders.
 
-AYRSHIRE, Scotland - July 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1, 
+AYRSHIRE, Scotland - July 19th 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1, 
 the industry's leading open-source graphics library with [=OpenGL=] 2.0 and [=OpenGL=] Shading Language support. [=OpenSceneGraph=] is designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems. 
 
 The OpenSceneGraph-1.1 release introduces:
@@ -23,7 +23,7 @@ For further information and to download the latest release head to the project w
 
     http://www.openscenegraph.org
 
-Many thanks to the contributors who help make this release.
+Special thanks go to the many contributors who help make this release possible.
 
 Robert Osfield\\
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services

@@ -211,7 +211,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::strin
     osg::MatrixTransform* xform = new osg::MatrixTransform;
     xform->setUpdateCallback(new osg::AnimationPathCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(10.0f)));
 
-    osg::Node* bluemarble = osgDB::readNodeFile(filename.c_str());
+    osg::Node* bluemarble = filename.empty() ? 0 : osgDB::readNodeFile(filename.c_str());
     if (bluemarble)
     {
         const osg::BoundingSphere& bs = bluemarble->getBound();
@@ -477,7 +477,7 @@ arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationNam
     osg::Node* node = 0;
     
     if (arguments.argc()>1) createLogo(arguments[1]);
-    else node = createLogo("bluemarble.ive");
+    else node = createLogo("");
 
     // add model to viewer.
     viewer.setSceneData( node );

@@ -6,12 +6,17 @@ STL implemention.
 
 The supported combinations are: 
 
-    1.Visual Studio7.x .NET 
-    2.Visual Studio6.0 + Dinkumware's STL bug fix patches
-    3.Visual Studio6.0 + STLport
+    1.Visual Studio8.x .NET 
+    2.Visual Studio7.x .NET 
+    
+Deprecated are:
+
+    3.Visual Studio6.0 + Dinkumware's STL bug fix patches
+    4.Visual Studio6.0 + STLport
     
 For details on how to patch VisualStudio6.0 read the doc/install.html 
-documentation.
+documentation. Note, osgIntrospection, src/osgWrapper plugins and the 
+osgintrospection example cannot be compiled under VisualStudio plugin.
 
 Several of the plugins and demoes, and two of the core libraries - osgText 
 and osgGLUT require external dependancies.  Full details on where to obtain
@@ -28,7 +33,7 @@ VisualStudio6.0
     Substiture the LANDEXT.DAT file found in this directory with the one found
     *\Common\MSDev98\Bin
 
-VisualStudio7.0/.NET
+VisualStudio7.x & 8.x/.NET
 
     Install the syntaxhighlight.reg (just double click it). This will update 
     Extensionless file for Visual Studio.  Don't worry, it will keep the 

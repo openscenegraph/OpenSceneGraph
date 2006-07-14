@@ -52,6 +52,18 @@ void PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()
 {
     s_MultiplerSet = true;
     // osg::notify(osg::NOTICE)<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()"<<std::endl;
+
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    if (renderer)
+    {
+        if ((strstr((const char*)renderer,"Radeon")!=0) ||
+            (strstr((const char*)renderer,"RADEON")!=0))
+        {
+            setFactorMultiplier(256.0f);
+            setUnitMultiplier(256.0f);
+            osg::notify(osg::INFO)<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver() apply ATI workaround."<<std::endl;
+        }
+    }
 }
 
 

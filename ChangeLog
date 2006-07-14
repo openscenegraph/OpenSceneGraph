@@ -1,3 +1,65 @@
+2006-07-14 21:46  robert
+
+	* NEWS.txt: Updated news for rc2.
+
+2006-07-14 19:40  robert
+
+	* applications/osgconv/osgconv.cpp: From Brede Johansen, patch to
+	  make osgconv.cpp compile on VC 2005.
+
+2006-07-14 19:37  robert
+
+	* VisualStudio/MUST_READ_ME.txt: Updated to officially deprecate
+	  VS6.0 support.
+
+2006-07-14 19:20  robert
+
+	* applications/osgconv/osgconv.cpp: Added optional compilation of
+	  setenv code
+
+2006-07-14 15:38  robert
+
+	* src/osg/PolygonOffset.cpp: Implemented Radeon workaround for
+	  polygonoffset
+
+2006-07-14 15:08  robert
+
+	* include/osg/PolygonOffset, src/osg/PolygonOffset.cpp,
+	  src/osgText/Text.cpp: Added s/getFactorMultiplier(),
+	  s/getUnitMultiplier(), areUnitAndMultipliersSet() and
+	  setFactorAndUnitMultipliersUsingBestGuessForDriver() static
+	  methods to osg::PolygonOffset to help implement workarounds for
+	  lack of portablity of settings between different hardware.
+
+2006-07-14 15:04  robert
+
+	* examples/osglogo/osglogo.cpp: Removed the default loading of
+	  bluemarble.ive
+
+2006-07-14 12:34  robert
+
+	* include/osgUtil/CullVisitor: Fixed popStateSet
+
+2006-07-14 12:29  robert
+
+	* src/osgUtil/Optimizer.cpp: Removed debug info
+
+2006-07-14 12:04  robert
+
+	* src/osgUtil/Optimizer.cpp: Speeded up merge geometry
+
+2006-07-13 21:50  robert
+
+	* NEWS.txt: Typo fixes
+
+2006-07-13 21:42  robert
+
+	* src/osgUtil/Optimizer.cpp: Optimized the MERGE_GEODES pass
+
+2006-07-13 20:42  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2006-07-13 16:56  robert
 
 	* src/osgWrappers/osgUtil/Statistics.cpp: Updated wrappers

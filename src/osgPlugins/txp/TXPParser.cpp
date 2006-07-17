@@ -6,6 +6,7 @@
 #include <osg/Geode>
 #include <osg/Billboard>
 #include <osg/Matrix>
+#include <osg/MatrixTransform>
 #include <osg/Geometry>
 #include <osg/CullFace>
 #include <osg/Light>
@@ -21,13 +22,50 @@
 
 #include "TXPParser.h"
 #include "TXPArchive.h"
-#include "TileMapper.h"
 
 using namespace txp;
 
 #include <sstream>
 
 static osg::ApplicationUsageProxy TXP_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TXP_DEFAULT_MAX_ANISOTROPY \"<value> [<value>]\"","1.0 | 2.0 | 4.0 | 8.0 | 16.0");
+
+
+class LayerGroup : public osg::Group
+{
+public:
+    LayerGroup() : osg::Group() {}
+    
+    LayerGroup(const LayerGroup& gg,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Group(gg, copyop)
+    {};
+    
+    META_Node(txp, LayerGroup);
+protected:
+    virtual ~LayerGroup() {}
+};
+
+class LayerVisitor : public osg::NodeVisitor
+{
+public:
+    LayerVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    virtual void apply(osg::Group& node)
+    {
+        LayerGroup *lg = dynamic_cast<LayerGroup*>(&node);
+        if (lg)
+        {
+            for (unsigned int i=1; i < lg->getNumChildren(); ++i)
+            {
+                osg::Node *child = lg->getChild(i);
+                osg::StateSet *sset = child->getOrCreateStateSet();
+                osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
+                polyoffset->setFactor(-1.0f);
+                polyoffset->setUnits(-200.0f*i);
+                sset->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
+            }
+        }
+        traverse(node);
+    }
+};
 
 TXPParser::TXPParser():
     _archive(0),
@@ -75,11 +113,10 @@ osg::Group *TXPParser::parseScene(
     std::map<int,osg::ref_ptr<osg::Node> > &models,
     double realMinRange, double realMaxRange, double usedMaxRange)
 {
-    if (_archive == 0)
-	return NULL;
+    if (_archive == 0) return NULL;
 
     if(_childRefCB)
-	_childRefCB->Reset();
+       _childRefCB->Reset();
 
     _root = new osg::Group();
     _currentTop = _root.get();
@@ -111,6 +148,9 @@ osg::Group *TXPParser::parseScene(
     }
     _tileGroups.clear();
 
+	LayerVisitor lv;
+	_root->accept(lv);
+
     return _root.get();
 }
 
@@ -124,10 +164,8 @@ void TXPParser::replaceTileLod(osg::Group* group)
         if (loLOD && hiLOD)
         {
             osg::Group *g = dynamic_cast<osg::Group*>(hiLOD->getChild(0));
-            if (!g)
-		return;
-            if (g->getNumChildren())
-		return;
+            if (!g) return;
+            if (g->getNumChildren()) return;
 
             _tileCenter = loLOD->getCenter();
 
@@ -141,18 +179,18 @@ void TXPParser::replaceTileLod(osg::Group* group)
 
 unsigned int TXPParser::GetNbChildrenRef() const
 {
-    if(_childRefCB)
-	return _childRefCB->GetNbChildrenRef();
-    else
-	return 0;
+   if(_childRefCB)
+         return _childRefCB->GetNbChildrenRef();
+      else
+         return 0;
 }
 
 const trpgChildRef* TXPParser::GetChildRef(unsigned int idx) const
 {
-    if(_childRefCB)
-	return _childRefCB->GetChildRef(idx);
-    else
-	return 0;
+   if(_childRefCB)
+      return _childRefCB->GetChildRef(idx);
+   else
+      return 0;
 }
 
 bool TXPParser::StartChildren(void * /*in*/)
@@ -161,17 +199,15 @@ bool TXPParser::StartChildren(void * /*in*/)
     bool pushParent = true;
     if (_underBillboardSubgraph )
     {
-        if (_numBillboardLevels > 0)
-	    pushParent = false;
+        if (_numBillboardLevels > 0) pushParent = false;
         _numBillboardLevels++;
     }
     else
-	if (_underLayerSubgraph)
-	{
-	    if (_numLayerLevels > 0)
-		pushParent = false;
-	    _numLayerLevels++;
-	}
+    if (_underLayerSubgraph)
+    {
+        if (_numLayerLevels > 0) pushParent = false;
+        _numLayerLevels++;
+    }
     if (pushParent)
     {
         _parents.push(_currentTop);
@@ -195,16 +231,16 @@ bool TXPParser::EndChildren(void *)
             popParent = false;
     }
     else
-	if (_underBillboardSubgraph)
-	{
-	    _numBillboardLevels--;
-	    if (_numBillboardLevels == 0)
-	    {
-		_underBillboardSubgraph = false;
-	    }
-	    else
-		popParent = false;
-	}
+    if (_underBillboardSubgraph)
+    {
+        _numBillboardLevels--;
+        if (_numBillboardLevels == 0)
+        {
+            _underBillboardSubgraph = false;
+        }
+        else
+            popParent = false;
+    }
     if (popParent)
     {
         if (_parents.size())
@@ -228,18 +264,16 @@ class FindEmptyGroupsVisitor : public osg::NodeVisitor
 {
 public:
     FindEmptyGroupsVisitor(osg::NodeList& nl):
-	osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _nl(nl)
-	{
-	}
+      osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN), _nl(nl) {};
 
     virtual void apply(osg::Group& group)
-	{
-	    if (group.getNumChildren()==0)
-	    {
-		_nl.push_back(&group);
-	    }
-	    traverse(group);
-	}
+    {
+        if (group.getNumChildren()==0)
+        {
+            _nl.push_back(&group);
+        }
+        traverse(group);
+    }
 protected:
     osg::NodeList& _nl;
 };
@@ -256,15 +290,13 @@ void TXPParser::removeEmptyGroups()
         for (unsigned int i = 0; i < nl.size(); i++)
         {
             osg::Node* node = nl[i].get();
-            if (node == NULL)
-		continue;
+            if (node == NULL) continue;
 
             osg::Node::ParentList parents = node->getParents();
             for (unsigned int j = 0; j < parents.size(); j++)
             {
                 osg::Group* parent = parents[j];
-                if (parent)
-		    parent->removeChild(node);
+                if (parent) parent->removeChild(node);
             }
         }
     }
@@ -281,13 +313,13 @@ osg::Geode* TXPParser::createBoundingBox(int x,int y, int lod)
     osg::TessellationHints* hints = new osg::TessellationHints;
     hints->setDetailRatio(0.5f);
     osg::ShapeDrawable* sd = new osg::ShapeDrawable(
-	new osg::Box(
-	    info.center,
-	    info.bbox.xMax()-info.bbox.xMin(),
-	    info.bbox.yMax()-info.bbox.yMin(),
-	    1
+            new osg::Box(
+                info.center,
+                info.bbox.xMax()-info.bbox.xMin(),
+                info.bbox.yMax()-info.bbox.yMin(),
+                1
             ),
-	hints
+            hints
         );
     
     if (lod==0)
@@ -295,25 +327,25 @@ osg::Geode* TXPParser::createBoundingBox(int x,int y, int lod)
         sd->setColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     }
     else
-	if (lod==1)
-	{
-	    sd->setColor(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
-	}
-	else
-	    if (lod==2)
-	    {
-		sd->setColor(osg::Vec4(0.0f,1.0f,0.0f,1.0f));
-	    }
-	    else
-		if (lod==3)
-		{
-		    sd->setColor(osg::Vec4(0.0f,0.0f,1.0f,1.0f));
-		}
-		else
-		    if (lod==4)
-		    {
-			sd->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-		    }
+    if (lod==1)
+    {
+        sd->setColor(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
+    }
+    else
+    if (lod==2)
+    {
+        sd->setColor(osg::Vec4(0.0f,1.0f,0.0f,1.0f));
+    }
+    else
+    if (lod==3)
+    {
+        sd->setColor(osg::Vec4(0.0f,0.0f,1.0f,1.0f));
+    }
+    else
+    if (lod==4)
+    {
+        sd->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    }
     geode->addDrawable( sd );
 
     return geode;
@@ -333,8 +365,8 @@ void TXPParser::loadLocalMaterials()
         _archive->getDir(),
         *_archive->GetMaterialTable(),
         *_archive->GetTexTable(),
-	separateGeo
-	);
+		separateGeo
+    );
     trpgTileHeader* tile_head = getTileHeaderRef();
 
     int n_materials;
@@ -353,8 +385,8 @@ void TXPParser::loadLocalMaterials()
             trpgLocalMaterial locmat;
             tile_head->GetLocalMaterial(i,locmat);
             
-            const trpgMaterial* mat = NULL;
-            const trpgTexture *tex = NULL;
+            const trpgMaterial* mat = 0;
+            const trpgTexture *tex = 0;
 
             int32 size;
             image_helper.GetImageInfoForLocalMat(&locmat, &mat,&tex,size);
@@ -440,17 +472,17 @@ void TXPParser::loadLocalMaterials()
             trpgColor color;
             mat->GetAmbient(color);
             osg_material->setAmbient( osg::Material::FRONT_AND_BACK , 
-				      osg::Vec4(color.red, color.green, color.blue, alpha));
+                osg::Vec4(color.red, color.green, color.blue, alpha));
             mat->GetDiffuse(color);
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK , 
-				     osg::Vec4(color.red, color.green, color.blue, alpha));
+                osg::Vec4(color.red, color.green, color.blue, alpha));
             
             mat->GetSpecular(color);
             osg_material->setSpecular(osg::Material::FRONT_AND_BACK , 
-				      osg::Vec4(color.red, color.green, color.blue, alpha));
+                osg::Vec4(color.red, color.green, color.blue, alpha));
             mat->GetEmission(color);
             osg_material->setEmission(osg::Material::FRONT_AND_BACK , 
-				      osg::Vec4(color.red, color.green, color.blue, alpha));
+                osg::Vec4(color.red, color.green, color.blue, alpha));
             
             float64 shinines;
             mat->GetShininess(shinines);
@@ -517,8 +549,7 @@ bool TXPParser::requestModel(int ix)
 void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgLod lod;
-    if (!lod.Read(buf))
-	return NULL;
+    if (!lod.Read(buf)) return NULL;
 
     // Pull out the LOD data we'll need
     trpg3dPoint center;
@@ -548,7 +579,7 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         0,
         _parse->checkAndGetMinRange(minRange), 
         _parse->checkAndGetMaxRange(maxRange)
-	);
+    );
 #endif
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
@@ -583,8 +614,7 @@ void* tileHeaderRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgModelRef model;
-    if (!model.Read(buf))
-	return NULL;
+    if (!model.Read(buf)) return NULL;
 
     // Get the matrix and pfNode for the model
     int modelID;
@@ -598,27 +628,30 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         (float)mat[12],(float)mat[13],(float)mat[14],(float)mat[15]
         );
     
+    // Note: Array check before you do this
     osg::Node *osg_Model = NULL;
     std::map<int,osg::ref_ptr<osg::Node> >*modelList = _parse->getModels();
-    osg_Model = (*modelList)[modelID].get();
-
-    if (osg_Model==NULL)
+    //if( modelList->size() )
     {
-        _parse->requestModel(modelID);
-        osg_Model = (*modelList)[modelID].get();
-    }
+       osg_Model = (*modelList)[modelID].get();
 
-    // Create the SCS and position the model
-    if (osg_Model)
-    {
-        osg::MatrixTransform *scs = new osg::MatrixTransform();
-        scs->setMatrix(osg_Mat);
-        scs->addChild(osg_Model);
-        scs->setUserData(new TileIdentifier(99,99,9999)); // tag to indicate a model
+       if (osg_Model==NULL)
+       {
+           _parse->requestModel(modelID);
+           osg_Model = (*modelList)[modelID].get();
+       }
 
-        // Add the SCS to the hierarchy
-        _parse->setCurrentNode(scs);
-        _parse->getCurrTop()->addChild(scs);
+        // Create the SCS and position the model
+        if (osg_Model)
+        {
+            osg::MatrixTransform *scs = new osg::MatrixTransform();
+            scs->setMatrix(osg_Mat);
+            scs->addChild(osg_Model);
+
+            // Add the SCS to the hierarchy
+            _parse->setCurrentNode(scs);
+            _parse->getCurrTop()->addChild(scs);
+        }
     }
     return (void *) 1;
 }
@@ -632,8 +665,7 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     // Read in the txp billboard
     trpgBillboard bill;
-    if (!bill.Read(buf))
-	return NULL;
+    if (!bill.Read(buf)) return NULL;
 
     if (_parse->underBillboardSubgraph())
     {
@@ -665,11 +697,9 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 void* groupRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgGroup group;
-    if (!group.Read(buf))
-	return NULL;
+    if (!group.Read(buf)) return NULL;
 
-    if (_parse->underLayerSubgraph())
-	return (void*)1;
+    if (_parse->underLayerSubgraph()) return (void*)1;
 
     osg::ref_ptr<GeodeGroup> osgGroup = new GeodeGroup();
     _parse->setCurrentNode(osgGroup.get());
@@ -685,8 +715,7 @@ void* groupRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgAttach group;
-    if (!group.Read(buf))
-	return NULL;
+    if (!group.Read(buf)) return NULL;
 
     // Create a new group
     osg::ref_ptr<osg::Group> osgGroup = new osg::Group();
@@ -698,21 +727,21 @@ void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 void* childRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
    
-    // This object contribute nothing to the scenegraph, except
-    // where the children tile should connect.
-    // It only contain location info of the children tile
-    childRefList.push_back(trpgChildRef());
-    trpgReadWriteable& obj = childRefList.back();
+   // This object contribute nothing to the scenegraph, except
+   // where the children tile should connect.
+   // It only contain location info of the children tile
+   childRefList.push_back(trpgChildRef());
+   trpgReadWriteable& obj = childRefList.back();
 
-    if(obj.Read(buf))
-	return &obj;
+   if(obj.Read(buf))
+      return &obj;
     else
-	return 0;
+      return 0;
 
 }
 void childRefRead::Reset()
 {
-    childRefList.clear();
+   childRefList.clear();
 }
 
 
@@ -724,13 +753,119 @@ void childRefRead::Reset()
 void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgLight light;
-    if (!light.Read(buf))
-	return NULL;
+    if (!light.Read(buf)) return NULL;
 
     int attr_index;
     light.GetAttrIndex(attr_index);
 
-    DeferredLightAttribute& dla = _parse->getLightAttribute(attr_index); 
+	uint32 nvert;
+    light.GetNumVertices(nvert);
+
+	const trpgLightTable *lt = _parse->getArchive()->GetLightTable();
+	trpgLightAttr *ref = const_cast<trpgLightAttr*>(lt->GetLightAttrRef(attr_index));
+	if (!ref)
+	{
+		osg::notify(osg::NOTICE) << "NULL LightAttr " << attr_index << std::endl;
+		return (void*)1;
+	}
+
+	osgSim::LightPointNode *lpNode = new osgSim::LightPointNode();
+
+    trpgColor col;
+    ref->GetFrontColor(col);
+
+    float64 inten;
+    ref->GetFrontIntensity(inten);
+
+    trpgLightAttr::PerformerAttr perfAttr;
+    ref->GetPerformerAttr(perfAttr);
+
+	lpNode->setMaxPixelSize(perfAttr.maxPixelSize);
+    lpNode->setMinPixelSize(perfAttr.minPixelSize);    
+
+	trpg3dPoint norm;
+	ref->GetNormal(norm);
+
+	trpgLightAttr::LightDirectionality direc;
+    ref->GetDirectionality(direc);
+
+	for ( unsigned i=0; i < nvert; i++ )
+	{
+		trpg3dPoint pt;
+        light.GetVertex(i, pt);
+
+		osgSim::LightPoint lp( 
+			true, 
+			osg::Vec3(pt.x,pt.y,pt.z), 
+			osg::Vec4(col.red, col.green,col.blue, 1.0), 
+			inten
+		);
+
+		switch (direc)
+		{
+		case trpgLightAttr::trpg_Unidirectional:
+			{
+				float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
+				float64 tmp;
+
+				ref->GetHLobeAngle(tmp);
+				lobeHorz = osg::DegreesToRadians( tmp );
+				
+				ref->GetVLobeAngle(tmp);
+				lobeVert = osg::DegreesToRadians( tmp );
+				
+				ref->GetLobeRollAngle(tmp);
+				lobeRoll = osg::DegreesToRadians( tmp );
+
+				osg::Vec3 normal(norm.x,norm.y,norm.z);
+				lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll );
+			}
+			break;
+		case trpgLightAttr::trpg_Bidirectional:
+			{
+				float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
+				float64 tmp;
+
+				ref->GetHLobeAngle(tmp);
+				lobeHorz = osg::DegreesToRadians( tmp );
+				
+				ref->GetVLobeAngle(tmp);
+				lobeVert = osg::DegreesToRadians( tmp );
+				
+				ref->GetLobeRollAngle(tmp);
+				lobeRoll = osg::DegreesToRadians( tmp );
+
+				osg::Vec3 normal(norm.x,norm.y,norm.z);
+				lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll );
+
+				ref->GetBackColor(col);
+				ref->GetBackIntensity(inten);
+
+				osgSim::LightPoint lp2( 
+					true, 
+					osg::Vec3(pt.x,pt.y,pt.z), 
+					osg::Vec4(col.red, col.green,col.blue, 1.0), 
+					inten
+				);
+
+				lp2._sector = new osgSim::DirectionalSector( -normal, lobeHorz, lobeVert, lobeRoll );
+				lpNode->addLightPoint( lp2 );
+			}
+			break;
+		default:
+			;
+		}
+
+		lpNode->addLightPoint( lp);
+
+	}
+
+	_parse->setCurrentNode(lpNode);
+	_parse->getCurrTop()->addChild(lpNode);
+
+#if 0
+
+    DefferedLightAttribute& dla = _parse->getLightAttribute(attr_index); 
     osgSim::LightPointNode* node = dla.lightPoint.get();
 
     uint32 nvert;
@@ -781,6 +916,7 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         _parse->setCurrentNode(g);
         _parse->getCurrTop()->addChild(g);
     }
+#endif
 
     return (void *) 1;
 }
@@ -793,11 +929,22 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgLayer group;
-    if (!group.Read(buf))
-	return NULL;
+    if (!group.Read(buf)) return NULL;
 
-    if (_parse->underLayerSubgraph())
-	return (void*)1;
+	osg::ref_ptr<LayerGroup> osgGroup = new LayerGroup();
+    _parse->setCurrentNode(osgGroup.get());
+    _parse->getCurrTop()->addChild(osgGroup.get());
+    return (void*)1;
+
+#if 0
+    osg::Group* osgGroup = new osg::Group;
+    _parse->setCurrentNode(osgGroup);
+    _parse->getCurrTop()->addChild(osgGroup);
+    _parse->addLayer(osgGroup);
+    return (void*)1;
+
+#else
+    if (_parse->underLayerSubgraph()) return (void*)1;
 
     osg::ref_ptr<GeodeGroup> layer = new GeodeGroup;
 
@@ -807,6 +954,7 @@ void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     _parse->getCurrTop()->addChild(layer.get());
 
     return (void *)1;
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -817,12 +965,10 @@ void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgLabel label;
-    if (!label.Read(buf))
-	return NULL;
+    if (!label.Read(buf)) return NULL;
 
     const std::string *labelText = label.GetText();
-    if (!labelText)
-	return (void*)1;
+    if (!labelText) return (void*)1;
 
     osg::Vec3 pos(label.GetLocation().x, label.GetLocation().y, label.GetLocation().z);
 
@@ -840,8 +986,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         {
         case 'n':
             lb.erase(0,nl+2);
-            if (sub.length())
-		os << sub << std::endl;
+            if (sub.length()) os << sub << std::endl;
             break;
         case 't':
             lb.erase(0,nl+2);
@@ -854,8 +999,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         }
         
     }
-    if (lb.length())
-	os << lb;
+    if (lb.length()) os << lb;
     text->setText(os.str());
 
     // Position
@@ -883,12 +1027,10 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if (labelProperty)
     {
         const trpgTextStyleTable *textStyleTable = _parse->getArchive()->GetTextStyleTable();
-        if (!textStyleTable)
-	    return (void*)1;
+        if (!textStyleTable) return (void*)1;
 
         const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(labelProperty->GetFontStyle());
-        if (!textStyle)
-	    return (void*)1;
+        if (!textStyle) return (void*)1;
 
         // Size
         text->setCharacterSize(textStyle->GetCharacterSize()*label.GetScale()*2);
@@ -990,20 +1132,20 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             break;
         }
 
-	const std::vector<trpg3dPoint> *supports = label.GetSupports();
-	if (supports && supports->size())
-	{
-	    osg::ref_ptr<osg::Geode> supGeode = new osg::Geode;
+         const std::vector<trpg3dPoint> *supports = label.GetSupports();
+         if (supports && supports->size())
+         {
+             osg::ref_ptr<osg::Geode> supGeode = new osg::Geode;
 
-	    int supId = labelProperty->GetSupport();
-	    const trpgSupportStyleTable *supTable = _parse->getArchive()->GetSupportStyleTable();
-	    const trpgSupportStyle *supStyle = supTable ? supTable->GetStyleRef(supId) : 0;
-	    if (supStyle)
-	    {
+             int supId = labelProperty->GetSupport();
+             const trpgSupportStyleTable *supTable = _parse->getArchive()->GetSupportStyleTable();
+             const trpgSupportStyle *supStyle = supTable ? supTable->GetStyleRef(supId) : 0;
+             if (supStyle)
+             {
                 int matId = supStyle->GetMaterial();
 
                 osg::Vec4 supLineColor(1.f,1.f,1.f,1.f);
-		_parse->loadMaterial(matId);
+                 _parse->loadMaterial(matId);
                 osg::ref_ptr<osg::StateSet>  sset = (*_parse->getMaterials())[matId];
 
                 if (cube.get())
@@ -1028,80 +1170,80 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                     }
                 }
                 
-		switch (supStyle->GetType())
-		{
-		case trpgSupportStyle::Line:
-		{
-		    osg::Geometry* linesGeom = new osg::Geometry();
-		    osg::Vec3Array* vertices = new osg::Vec3Array(supports->size()*2);
+                 switch (supStyle->GetType())
+                 {
+                 case trpgSupportStyle::Line:
+                     {
+                        osg::Geometry* linesGeom = new osg::Geometry();
+                        osg::Vec3Array* vertices = new osg::Vec3Array(supports->size()*2);
 
-		    int cnt = 0;
-		    for (unsigned int i = 0; i < supports->size(); i++)
-		    {
-			const trpg3dPoint& supPt = (*supports)[i];
-			(*vertices)[cnt++].set(pos);
-			(*vertices)[cnt++].set(osg::Vec3(supPt.x,supPt.y,supPt.z));
-		    }
+                        int cnt = 0;
+                        for (unsigned int i = 0; i < supports->size(); i++)
+                        {
+                            const trpg3dPoint& supPt = (*supports)[i];
+                            (*vertices)[cnt++].set(pos);
+                            (*vertices)[cnt++].set(osg::Vec3(supPt.x,supPt.y,supPt.z));
+                        }
 
-		    linesGeom->setVertexArray(vertices);
+                        linesGeom->setVertexArray(vertices);
 
-		    osg::Vec4Array* colors = new osg::Vec4Array;
-		    colors->push_back(supLineColor);
-		    linesGeom->setColorArray(colors);
-		    linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
+                        osg::Vec4Array* colors = new osg::Vec4Array;
+                        colors->push_back(supLineColor);
+                        linesGeom->setColorArray(colors);
+                        linesGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
                         
-		    osg::Vec3Array* normals = new osg::Vec3Array;
-		    normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
-		    linesGeom->setNormalArray(normals);
-		    linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+                        osg::Vec3Array* normals = new osg::Vec3Array;
+                        normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
+                        linesGeom->setNormalArray(normals);
+                        linesGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 
-		    linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,supports->size()*2));
-		    supGeode->addDrawable(linesGeom);
-		}
+                        linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,supports->size()*2));
+                        supGeode->addDrawable(linesGeom);
+                     }
 
-		_parse->getCurrTop()->addChild(supGeode.get());
-		break;
-		case trpgSupportStyle::Cylinder:
-		{
-		    osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
-		    hints->setDetailRatio(0.5f);
+                     _parse->getCurrTop()->addChild(supGeode.get());
+                     break;
+                 case trpgSupportStyle::Cylinder:
+                     {
+                        osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
+                        hints->setDetailRatio(0.5f);
 
-		    for (unsigned int i = 0; i < supports->size(); i++)
-		    {
-			const trpg3dPoint& supPt = (*supports)[i];
+                        for (unsigned int i = 0; i < supports->size(); i++)
+                        {
+                            const trpg3dPoint& supPt = (*supports)[i];
                             
-			osg::Vec3 supPos(supPt.x,supPt.y,supPt.z);
-			osg::Vec3 supCenter = (supPos+pos)/2.f;
-			float supHeight = (supPos-pos).length();
+                            osg::Vec3 supPos(supPt.x,supPt.y,supPt.z);
+                            osg::Vec3 supCenter = (supPos+pos)/2.f;
+                            float supHeight = (supPos-pos).length();
 
-			osg::Vec3 d = pos-supPos;
-			d.normalize();
-			osg::Quat r;
+                            osg::Vec3 d = pos-supPos;
+                            d.normalize();
+                            osg::Quat r;
 
-			r.makeRotate(osg::Vec3(0.f,0.f,1.f),d);
+                            r.makeRotate(osg::Vec3(0.f,0.f,1.f),d);
 
-			osg::Cylinder* cylinder = new osg::Cylinder(supCenter,10.f,supHeight);
-			cylinder->setRotation(r);
+                            osg::Cylinder* cylinder = new osg::Cylinder(supCenter,10.f,supHeight);
+                            cylinder->setRotation(r);
 
-			osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder,hints.get());
-			osg::StateSet* ss = cylinderDrawable->getOrCreateStateSet();
-			ss->merge(*sset);
+                            osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder,hints.get());
+                            osg::StateSet* ss = cylinderDrawable->getOrCreateStateSet();
+                            ss->merge(*sset);
 
-			supGeode->addDrawable(cylinderDrawable);
+                            supGeode->addDrawable(cylinderDrawable);
 
-		    }
+                        }
                         
-		    _parse->getCurrTop()->addChild(supGeode.get());
-		}
-		break;
-		default:
+                        _parse->getCurrTop()->addChild(supGeode.get());
+                     }
+                     break;
+                 default:
                     break;
-		}
+                 }
 
                  
-	    }
-	}
+             }
+         }
     }
     if (addTextGeodeIntoSceneGraph)
     {
@@ -1127,40 +1269,39 @@ public:
 
     TransformFunctor(const osg::Matrix& m)
     {
-	_m = m;
-	_im.invert(_m);
+        _m = m;
+        _im.invert(_m);
     }
         
-    virtual ~TransformFunctor()
-    {}
+    virtual ~TransformFunctor() {}
 
     virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin)
     {
-	if (type == osg::Drawable::VERTICES)
-	{
-	    osg::Vec3* end = begin+count;
-	    for (osg::Vec3* itr=begin;itr<end;++itr)
-	    {
-		(*itr) = (*itr)*_m;
-	    }
-	}
-	else 
-	    if (type == osg::Drawable::NORMALS)
-	    {
-		osg::Vec3* end = begin+count;
-		for (osg::Vec3* itr=begin;itr<end;++itr)
-		{
-		    // note post mult by inverse for normals.
-		    (*itr) = osg::Matrix::transform3x3(_im,(*itr));
-		    (*itr).normalize();
-		}
-	    }
+        if (type == osg::Drawable::VERTICES)
+        {
+            osg::Vec3* end = begin+count;
+            for (osg::Vec3* itr=begin;itr<end;++itr)
+            {
+                (*itr) = (*itr)*_m;
+            }
+        }
+        else 
+        if (type == osg::Drawable::NORMALS)
+        {
+            osg::Vec3* end = begin+count;
+            for (osg::Vec3* itr=begin;itr<end;++itr)
+            {
+                // note post mult by inverse for normals.
+                (*itr) = osg::Matrix::transform3x3(_im,(*itr));
+                (*itr).normalize();
+            }
+        }
     }
 
     inline void SetMatrix(const osg::Matrix& m)
     {
-	_m = m;
-	_im.invert(_m);
+        _m = m;
+        _im.invert(_m);
     }
 
 };
@@ -1168,8 +1309,7 @@ public:
 void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgGeometry geom;
-    if (!geom.Read(buf))
-	return NULL;
+    if (!geom.Read(buf)) return NULL;
 
     // Get the necessary info out of the geom
     trpgGeometry::PrimType primType;
@@ -1189,6 +1329,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     osg::ref_ptr<osg::Geometry> geometry;
     
     // Get texture coordinates
+    ;
     int num_tex;
     geom.GetNumTexCoordSets(num_tex);
     std::vector< osg::ref_ptr<osg::Vec2Array> > tex_coords(num_tex);
@@ -1412,47 +1553,50 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             top->addChild(billboard.get());
         }
         else
-	    if (_parse->underLayerSubgraph())
-	    {
-		osg::Geode* layer = _parse->getLayerGeode();
+#if 0
+        if (_parse->underLayerSubgraph())
+        {
+            osg::Geode* layer = _parse->getLayerGeode();
 
-		if (layer->getNumDrawables())
-		{
-		    osg::StateSet* poStateSet = new osg::StateSet;
-		    osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
+            if (layer->getNumDrawables())
+            {
+                osg::StateSet* poStateSet = new osg::StateSet;
+                osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
 
-		    poStateSet->merge(*sset.get());
-		    polyoffset->setFactor(-2.0f*layer->getNumDrawables());
-		    polyoffset->setUnits(-10.0f*layer->getNumDrawables());
-		    poStateSet->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
+                poStateSet->merge(*sset.get());
+                polyoffset->setFactor(-1.0f);//*layer->getNumDrawables());
+                polyoffset->setUnits(-20.0f);//*layer->getNumDrawables());
+                poStateSet->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
 
-		    geometry->setStateSet(poStateSet);
-		}
-		else
-		{
-		    geometry->setStateSet(sset.get());
-		}
 
-		layer->addDrawable(geometry.get());
-	    }
-	    else
-	    {
-		geometry->setStateSet(sset.get());
-		if (geodeTop)
-		{
-		    geodeTop->getGeode()->addDrawable(geometry.get());
-		    _parse->setCurrentNode(geodeTop->getGeode());
-		}
-		else
-		{
-		    osg::Geode* geode = new osg::Geode;
-		    geode->addDrawable(geometry.get());
+                geometry->setStateSet(poStateSet);
+            }
+            else
+            {
+                geometry->setStateSet(sset.get());
+            }
 
-		    _parse->setCurrentNode(geode);
-		    _parse->getCurrTop()->addChild(geode);
-		}
-	    }
-        
+            layer->addDrawable(geometry.get());
+        }
+        else
+#else
+        {
+            geometry->setStateSet(sset.get());
+            if (geodeTop)
+            {
+                geodeTop->getGeode()->addDrawable(geometry.get());
+                _parse->setCurrentNode(geodeTop->getGeode());
+            }
+            else
+            {
+                osg::Geode* geode = new osg::Geode;
+                geode->addDrawable(geometry.get());
+
+                _parse->setCurrentNode(geode);
+                _parse->getCurrTop()->addChild(geode);
+            }
+        }
+#endif        
         
     }
     else
@@ -1485,6 +1629,11 @@ namespace
         case trpgTexture::trpg_INTA8:
             internalFormat = GL_LUMINANCE_ALPHA;
             pixelFormat    = GL_LUMINANCE_ALPHA;
+            break;
+        case trpgTexture::trpg_FXT1:
+        case trpgTexture::trpg_Filler:
+        case trpgTexture::trpg_RGBX: // MCM
+        case trpgTexture::trpg_Unknown:
             break;
         case trpgTexture::trpg_DDS:
         case trpgTexture::trpg_DXT1:
@@ -1526,10 +1675,6 @@ namespace
         case trpgTexture::trpg_MCM6A:
         case trpgTexture::trpg_MCM7RA:
         case trpgTexture::trpg_MCM7AR:
-        case trpgTexture::trpg_FXT1:
-        case trpgTexture::trpg_Filler:
-        case trpgTexture::trpg_RGBX: // MCM
-        case trpgTexture::trpg_Unknown:
             break;
         }
     }
@@ -1575,7 +1720,7 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
             data = new char [size];
             image_helper.GetLocalGL(tex,data,size);
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
-			    (unsigned char*)data,osg::Image::USE_NEW_DELETE);
+                    (unsigned char*)data,osg::Image::USE_NEW_DELETE);
         }
         else
         {
@@ -1586,8 +1731,8 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
             image_helper.GetLocalGL(tex,data,size);
             // Load entire texture including mipmaps
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
-			    (unsigned char*)data,
-			    osg::Image::USE_NEW_DELETE);
+                    (unsigned char*)data,
+                    osg::Image::USE_NEW_DELETE);
 
             // now set mipmap data (offsets into image raw data)
             osg::Image::MipmapDataType mipmaps;
@@ -1598,6 +1743,7 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
             {
                 mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
             }
+
             image->setMipmapLevels(mipmaps);
 
         }
@@ -1648,7 +1794,7 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
             image_helper.GetNthImageForLocalMat(locmat,index, data,size);
 
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
-			    (unsigned char*)data,osg::Image::USE_NEW_DELETE);
+                    (unsigned char*)data,osg::Image::USE_NEW_DELETE);
         }
         else
         {
@@ -1661,8 +1807,8 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
 
             // Load entire texture including mipmaps
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
-			    (unsigned char*)data,
-			    osg::Image::USE_NEW_DELETE);
+                    (unsigned char*)data,
+                    osg::Image::USE_NEW_DELETE);
 
             // now set mipmap data (offsets into image raw data)
             osg::Image::MipmapDataType mipmaps;
@@ -1673,6 +1819,7 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
             {
                 mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
             }
+
             image->setMipmapLevels(mipmaps);
 
         }

@@ -4,6 +4,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgText/Text>
 #include <osg/BlendFunc>
+#include <osg/PolygonOffset>
 #include <osgUtil/Statistics>
 #include <OpenThreads/Barrier>
 
@@ -1090,6 +1091,33 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 setWriteImageOnNextFrame(true);                
                 return true;
             }
+#if 1
+            case '+' :
+            {
+                osg::PolygonOffset::setFactorMultiplier(osg::PolygonOffset::getFactorMultiplier()*1.1f);
+                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getFactorMultiplier()="<<osg::PolygonOffset::getFactorMultiplier()<<std::endl;
+                return true;
+            }
+            case '-' :
+            {
+                osg::PolygonOffset::setFactorMultiplier(osg::PolygonOffset::getFactorMultiplier()/1.1f);
+                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getFactorMultiplier()="<<osg::PolygonOffset::getFactorMultiplier()<<std::endl;
+                return true;
+            }
+
+            case '*' :
+            {
+                osg::PolygonOffset::setUnitMultiplier(osg::PolygonOffset::getUnitMultiplier()*1.1f);
+                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getUnitMultiplier()="<<osg::PolygonOffset::getUnitMultiplier()<<std::endl;
+                return true;
+            }
+            case '/' :
+            {
+                osg::PolygonOffset::setUnitMultiplier(osg::PolygonOffset::getUnitMultiplier()/1.1f);
+                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getUnitMultiplier()="<<osg::PolygonOffset::getUnitMultiplier()<<std::endl;
+                return true;
+            }
+#else
             case '+' :
             {
                 //_camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
@@ -1109,7 +1137,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 std::cout<<"New LOD Scale = "<<_cg->getLODScale()<<std::endl;
                 return true;
             }
-
+#endif
             case osgGA::GUIEventAdapter::KEY_Help :
             case 'h' :
             {

@@ -1107,14 +1107,14 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
 
             case '*' :
             {
-                osg::PolygonOffset::setUnitMultiplier(osg::PolygonOffset::getUnitMultiplier()*1.1f);
-                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getUnitMultiplier()="<<osg::PolygonOffset::getUnitMultiplier()<<std::endl;
+                osg::PolygonOffset::setUnitsMultiplier(osg::PolygonOffset::getUnitsMultiplier()*1.1f);
+                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getUnitsMultiplier()="<<osg::PolygonOffset::getUnitsMultiplier()<<std::endl;
                 return true;
             }
             case '/' :
             {
-                osg::PolygonOffset::setUnitMultiplier(osg::PolygonOffset::getUnitMultiplier()/1.1f);
-                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getUnitMultiplier()="<<osg::PolygonOffset::getUnitMultiplier()<<std::endl;
+                osg::PolygonOffset::setUnitsMultiplier(osg::PolygonOffset::getUnitsMultiplier()/1.1f);
+                osg::notify(osg::NOTICE)<<"osg::PolygonOffset::getUnitsMultiplier()="<<osg::PolygonOffset::getUnitsMultiplier()<<std::endl;
                 return true;
             }
 #else

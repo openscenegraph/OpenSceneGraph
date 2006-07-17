@@ -25,18 +25,7 @@
 
 #include "OrientationConverter.h"
 
-#if (_MSC_VER >= 1400) // Visual Studio 2005
-#include <sstream>
-int setenv(const char *name, const char *value, int /*rewrite*/)
-{
-    std::stringstream sstr;
-    sstr<<name<<'='<<value;
-    return _putenv(sstr.str().c_str());
-}
-#endif
-
 typedef std::vector<std::string> FileNameList;
-
 
 class GraphicsContext {
     public:
@@ -452,20 +441,11 @@ int main( int argc, char **argv )
         return 1;
     }
     
-
-    
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
-
-    std::string options;
-    while(arguments.read("--optimizer",options))
-    {
-        setenv("OSG_OPTIMIZER",options.c_str(),1);
-    }
-
 
     FileNameList fileNames;
     OrientationConverter oc;

@@ -1494,7 +1494,7 @@ void Text::drawImplementation(osg::State& state) const
                     {
                         state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                         glPolygonOffset(2.0f * osg::PolygonOffset::getFactorMultiplier(),
-                                        2.0f * osg::PolygonOffset::getUnitMultiplier() * (max_backdrop_index-backdrop_index) );
+                                        3.0f * osg::PolygonOffset::getUnitMultiplier() * (max_backdrop_index-backdrop_index) );
                         glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
                     }
                 }

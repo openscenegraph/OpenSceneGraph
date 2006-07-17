@@ -17,7 +17,7 @@
 using namespace osg;
 
 static float s_FactorMultipler = 1.0f;
-static float s_UnitMultipler = 1.0f;
+static float s_UnitsMultipler = 1.0f;
 static bool s_MultiplerSet = false;
 
 void PolygonOffset::setFactorMultiplier(float multiplier)
@@ -31,24 +31,24 @@ float PolygonOffset::getFactorMultiplier()
     return s_FactorMultipler;
 }
 
-void PolygonOffset::setUnitMultiplier(float multiplier)
+void PolygonOffset::setUnitsMultiplier(float multiplier)
 {
     s_MultiplerSet = true;
-    s_UnitMultipler = multiplier;
+    s_UnitsMultipler = multiplier;
 }
 
-float PolygonOffset::getUnitMultiplier()
+float PolygonOffset::getUnitsMultiplier()
 {
-    return s_UnitMultipler;
+    return s_UnitsMultipler;
 }
 
-bool PolygonOffset::areUnitAndMultipliersSet()
+bool PolygonOffset::areUnitsAndMultipliersSet()
 {
     return s_MultiplerSet;
 }
 
 
-void PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()
+void PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver()
 {
     s_MultiplerSet = true;
     // osg::notify(osg::NOTICE)<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()"<<std::endl;
@@ -60,8 +60,8 @@ void PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()
             (strstr((const char*)renderer,"RADEON")!=0))
         {
             setFactorMultiplier(1.0f);
-            setUnitMultiplier(128.0f);
-            osg::notify(osg::INFO)<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver() apply ATI workaround."<<std::endl;
+            setUnitsMultiplier(128.0f);
+            osg::notify(osg::INFO)<<"PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver() apply ATI workaround."<<std::endl;
         }
     }
 }
@@ -85,8 +85,8 @@ PolygonOffset::~PolygonOffset()
 
 void PolygonOffset::apply(State&) const
 {
-    if (!s_MultiplerSet) setFactorAndUnitMultipliersUsingBestGuessForDriver();
+    if (!s_MultiplerSet) setFactorAndUnitsMultipliersUsingBestGuessForDriver();
 
     glPolygonOffset(_factor * s_FactorMultipler, 
-                    _units * s_UnitMultipler);
+                    _units * s_UnitsMultipler);
 }

@@ -1448,9 +1448,9 @@ void Text::drawImplementation(osg::State& state) const
 
         if(_backdropType != NONE)
         {
-            if (!osg::PolygonOffset::areUnitAndMultipliersSet())
+            if (!osg::PolygonOffset::areUnitsAndMultipliersSet())
             {
-                osg::PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver();
+                osg::PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver();
             }
 
             // Do I really need to do this for glPolygonOffset?
@@ -1494,7 +1494,7 @@ void Text::drawImplementation(osg::State& state) const
                     {
                         state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                         glPolygonOffset(2.0f * osg::PolygonOffset::getFactorMultiplier(),
-                                        3.0f * osg::PolygonOffset::getUnitMultiplier() * (max_backdrop_index-backdrop_index) );
+                                        3.0f * osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
                         glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
                     }
                 }

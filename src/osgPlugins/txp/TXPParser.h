@@ -239,6 +239,8 @@ public:
         return _layerGeode;
     }
     
+    inline unsigned int getNumLayerLavels() const { return _numLayerLevels; }
+    
     // default value to use when setting up textures.
     void setMaxAnisotropy(float anisotropy)
     {

@@ -9,7 +9,13 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
+#include <osg/CopyOp>
 #include <osg/DrawPixels>
+#include <osg/Image>
+#include <osg/Object>
+#include <osg/State>
+#include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,11 +25,29 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::DrawPixels)
+BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
+	I_BaseType(osg::Drawable);
 	I_Constructor0();
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::DrawPixels)
-	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::DrawPixels &, drawimage, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, position);
+	I_Method0(osg::Vec3 &, getPosition);
+	I_Method0(const osg::Vec3 &, getPosition);
+	I_Method1(void, setImage, IN, osg::Image *, image);
+	I_Method0(osg::Image *, getImage);
+	I_Method0(const osg::Image *, getImage);
+	I_Method1(void, setUseSubImage, IN, bool, useSubImage);
+	I_Method0(bool, getUseSubImage);
+	I_Method4(void, setSubImageDimensions, IN, unsigned int, offsetX, IN, unsigned int, offsetY, IN, unsigned int, width, IN, unsigned int, height);
+	I_Method4(void, getSubImageDimensions, IN, unsigned int &, offsetX, IN, unsigned int &, offsetY, IN, unsigned int &, width, IN, unsigned int &, height);
+	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method0(osg::BoundingBox, computeBound);
+	I_Property(osg::Image *, Image);
+	I_Property(const osg::Vec3 &, Position);
+	I_Property(bool, UseSubImage);
 END_REFLECTOR
 

@@ -9,10 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/test/CopyOp>
 #include <osgSim/MultiSwitch>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -65,8 +65,6 @@ BEGIN_OBJECT_REFLECTOR(osgSim::MultiSwitch)
 	I_IndexedProperty2(bool, Value, unsigned int, switchSet, unsigned int, pos);
 	I_IndexedProperty1(const osgSim::MultiSwitch::ValueList &, ValueList, unsigned int, switchSet);
 END_REFLECTOR
-
-STD_VECTOR_REFLECTOR(std::vector< bool >);
 
 STD_VECTOR_REFLECTOR(std::vector< osgSim::MultiSwitch::ValueList >);
 

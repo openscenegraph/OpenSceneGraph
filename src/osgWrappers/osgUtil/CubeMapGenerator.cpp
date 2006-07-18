@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/TextureCubeMap>
-#include <osg/test/CopyOp>
 #include <osgUtil/CubeMapGenerator>
 
 // Must undefine IN and OUT macros defined in Windows headers

@@ -9,13 +9,13 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/AnimationPath>
+#include <osg/ApplicationUsage>
 #include <osg/ArgumentParser>
 #include <osg/Node>
 #include <osg/NodeVisitor>
-#include <osg/test/AnimationPath>
-#include <osg/test/ApplicationUsage>
-#include <osg/test/Quat>
-#include <osg/test/Vec3>
+#include <osg/Quat>
+#include <osg/Vec3>
 #include <osgGA/EventQueue>
 #include <osgGA/EventVisitor>
 #include <osgGA/KeySwitchMatrixManipulator>

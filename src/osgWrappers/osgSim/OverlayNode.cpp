@@ -9,12 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CameraNode>
+#include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/test/CameraNode>
-#include <osg/test/CopyOp>
-#include <osg/test/Vec4>
+#include <osg/Vec4>
 #include <osgSim/OverlayNode>
 
 // Must undefine IN and OUT macros defined in Windows headers

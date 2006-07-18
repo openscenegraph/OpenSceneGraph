@@ -9,7 +9,13 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
+#include <osg/Object>
 #include <osg/Program>
+#include <osg/Shader>
+#include <osg/State>
+#include <osg/StateAttribute>
+#include <osg/Uniform>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -23,9 +29,65 @@ TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindi
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap);
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList);
+BEGIN_OBJECT_REFLECTOR(osg::Program)
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Program &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Method1(void, compileGLObjects, IN, osg::State &, state);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
+	I_Method0(void, dirtyProgram);
+	I_Method1(bool, addShader, IN, osg::Shader *, shader);
+	I_Method0(unsigned int, getNumShaders);
+	I_Method1(osg::Shader *, getShader, IN, unsigned int, i);
+	I_Method1(const osg::Shader *, getShader, IN, unsigned int, i);
+	I_Method1(bool, removeShader, IN, osg::Shader *, shader);
+	I_Method2(void, addBindAttribLocation, IN, const std::string &, name, IN, GLuint, index);
+	I_Method1(void, removeBindAttribLocation, IN, const std::string &, name);
+	I_Method0(const osg::Program::AttribBindingList &, getAttribBindingList);
+	I_Method0(bool, isFixedFunction);
+	I_Method2(bool, getGlProgramInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
+	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveUniforms, IN, unsigned int, contextID);
+	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveAttribs, IN, unsigned int, contextID);
+	I_Method1(osg::Program::PerContextProgram *, getPCP, IN, unsigned int, contextID);
+	I_ReadOnlyProperty(const osg::Program::AttribBindingList &, AttribBindingList);
+	I_ArrayProperty_GA(osg::Shader *, Shader, Shaders, unsigned int, bool);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap);
+BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
+	I_Constructor0();
+	I_Constructor3(IN, GLint, loc, IN, GLenum, type, IN, GLint, size);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, const osg::Program *, program, IN, unsigned int, contextID);
+	I_Method0(GLuint, getHandle);
+	I_Method0(void, requestLink);
+	I_Method0(void, linkProgram);
+	I_Method0(bool, validateProgram);
+	I_Method0(bool, needsLink);
+	I_Method0(bool, isLinked);
+	I_Method1(bool, getInfoLog, IN, std::string &, infoLog);
+	I_Method0(void, useProgram);
+	I_Method0(void, resetAppliedUniforms);
+	I_Method1(void, apply, IN, const osg::Uniform &, uniform);
+	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveUniforms);
+	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveAttribs);
+	I_Method1(GLint, getUniformLocation, IN, const std::string &, name);
+	I_Method1(GLint, getAttribLocation, IN, const std::string &, name);
+	I_ReadOnlyProperty(const osg::Program::ActiveVarInfoMap &, ActiveAttribs);
+	I_ReadOnlyProperty(const osg::Program::ActiveVarInfoMap &, ActiveUniforms);
+	I_ReadOnlyProperty(GLuint, Handle);
+END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >);
 

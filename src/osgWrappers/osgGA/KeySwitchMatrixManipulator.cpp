@@ -9,10 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
-#include <osg/test/ApplicationUsage>
-#include <osg/test/Vec3d>
+#include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/KeySwitchMatrixManipulator>
@@ -80,13 +80,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::MatrixManipulator >)
-	I_Constructor0();
-	I_Constructor1(IN, osgGA::MatrixManipulator *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osgGA::MatrixManipulator > &, rp);
-	I_Method0(osgGA::MatrixManipulator *, get);
-	I_Method0(bool, valid);
-	I_Method0(osgGA::MatrixManipulator *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::MatrixManipulator > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osgGA::MatrixManipulator *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgGA::MatrixManipulator > &, rp);

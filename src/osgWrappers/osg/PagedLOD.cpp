@@ -9,6 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
+#include <osg/Group>
+#include <osg/Node>
+#include <osg/NodeVisitor>
+#include <osg/Object>
 #include <osg/PagedLOD>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -19,19 +24,55 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::PagedLOD)
-	I_Constructor0();
-END_REFLECTOR
+TYPE_NAME_ALIAS(std::vector< osg::PagedLOD::PerRangeData >, osg::PagedLOD::PerRangeDataList);
 
-BEGIN_VALUE_REFLECTOR(osg::PagedLOD)
+BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
+	I_BaseType(osg::LOD);
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::PagedLOD &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(bool, addChild, IN, osg::Node *, child);
+	I_Method3(bool, addChild, IN, osg::Node *, child, IN, float, min, IN, float, max);
+	I_MethodWithDefaults6(bool, addChild, IN, osg::Node *, child, , IN, float, min, , IN, float, max, , IN, const std::string &, filename, , IN, float, priorityOffset, 0.0f, IN, float, priorityScale, 1.0f);
+	I_MethodWithDefaults2(bool, removeChildren, IN, unsigned int, pos, , IN, unsigned int, numChildrenToRemove, 1);
+	I_Method1(void, setDatabasePath, IN, const std::string &, path);
+	I_Method0(const std::string &, getDatabasePath);
+	I_Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename);
+	I_Method1(const std::string &, getFileName, IN, unsigned int, childNo);
+	I_Method0(unsigned int, getNumFileNames);
+	I_Method2(void, setPriorityOffset, IN, unsigned int, childNo, IN, float, priorityOffset);
+	I_Method1(float, getPriorityOffset, IN, unsigned int, childNo);
+	I_Method0(unsigned int, getNumPriorityOffsets);
+	I_Method2(void, setPriorityScale, IN, unsigned int, childNo, IN, float, priorityScale);
+	I_Method1(float, getPriorityScale, IN, unsigned int, childNo);
+	I_Method0(unsigned int, getNumPriorityScales);
+	I_Method2(void, setTimeStamp, IN, unsigned int, childNo, IN, double, timeStamp);
+	I_Method1(double, getTimeStamp, IN, unsigned int, childNo);
+	I_Method0(unsigned int, getNumTimeStamps);
+	I_Method1(void, setFrameNumberOfLastTraversal, IN, int, frameNumber);
+	I_Method0(int, getFrameNumberOfLastTraversal);
+	I_Method1(void, setNumChildrenThatCannotBeExpired, IN, unsigned int, num);
+	I_Method0(unsigned int, getNumChildrenThatCannotBeExpired);
+	I_Method2(bool, removeExpiredChildren, IN, double, expiryTime, IN, osg::NodeList &, removedChildren);
+	I_Property(const std::string &, DatabasePath);
+	I_ArrayProperty_G(const std::string &, FileName, FileNames, unsigned int, void);
+	I_Property(int, FrameNumberOfLastTraversal);
+	I_WriteOnlyProperty(unsigned int, NumChildrenThatCannotBeExpired);
+	I_ArrayProperty_G(float, PriorityOffset, PriorityOffsets, unsigned int, void);
+	I_ArrayProperty_G(float, PriorityScale, PriorityScales, unsigned int, void);
+	I_ArrayProperty_G(double, TimeStamp, TimeStamps, unsigned int, void);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
 	I_Constructor0();
+	I_Constructor1(IN, const osg::PagedLOD::PerRangeData &, prd);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
-	I_Constructor0();
-END_REFLECTOR
+STD_VECTOR_REFLECTOR(std::vector< osg::PagedLOD::PerRangeData >);
 

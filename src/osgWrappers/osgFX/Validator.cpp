@@ -9,11 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Object>
+#include <osg/State>
 #include <osg/StateAttribute>
-#include <osg/test/CopyOp>
-#include <osg/test/State>
-#include <osg/test/StateAttribute>
 #include <osgFX/Effect>
 #include <osgFX/Validator>
 

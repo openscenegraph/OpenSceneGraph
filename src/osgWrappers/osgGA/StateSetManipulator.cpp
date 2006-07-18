@@ -9,8 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ApplicationUsage>
 #include <osg/StateSet>
-#include <osg/test/ApplicationUsage>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandlerVisitor>

@@ -9,7 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
+#include <osg/Matrix>
 #include <osg/Plane>
+#include <osg/Vec3>
+#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -25,11 +30,34 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	I_Constructor0();
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::Plane)
-	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
-	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
-	I_Constructor0();
+	I_Constructor1(IN, const osg::Plane &, pl);
+	I_Constructor4(IN, float, a, IN, float, b, IN, float, c, IN, float, d);
+	I_Constructor1(IN, const osg::Vec4 &, vec);
+	I_Constructor2(IN, const osg::Vec3 &, norm, IN, float, d);
+	I_Constructor3(IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3);
+	I_Constructor2(IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point);
+	I_Method1(void, set, IN, const osg::Plane &, pl);
+	I_Method4(void, set, IN, float, a, IN, float, b, IN, float, c, IN, float, d);
+	I_Method1(void, set, IN, const osg::Vec4 &, vec);
+	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, float, d);
+	I_Method3(void, set, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3);
+	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point);
+	I_Method0(void, flip);
+	I_Method0(void, makeUnitLength);
+	I_Method0(void, calculateUpperLowerBBCorners);
+	I_Method0(bool, valid);
+	I_Method0(float *, ptr);
+	I_Method0(const float *, ptr);
+	I_Method0(osg::Vec4 &, asVec4);
+	I_Method0(const osg::Vec4 &, asVec4);
+	I_Method0(osg::Vec3, getNormal);
+	I_Method1(float, distance, IN, const osg::Vec3 &, v);
+	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices);
+	I_Method1(int, intersect, IN, const osg::BoundingSphere &, bs);
+	I_Method1(int, intersect, IN, const osg::BoundingBox &, bb);
+	I_Method1(void, transform, IN, const osg::Matrix &, matrix);
+	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix);
+	I_WriteOnlyProperty(const osg::Vec4 &, );
+	I_ReadOnlyProperty(osg::Vec3, Normal);
 END_REFLECTOR
 

@@ -9,7 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
+#include <osg/Image>
 #include <osg/ImageStream>
+#include <osg/Object>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,11 +22,43 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::ImageStream)
-	I_Constructor0();
+BEGIN_ENUM_REFLECTOR(osg::ImageStream::StreamStatus)
+	I_EnumLabel(osg::ImageStream::INVALID);
+	I_EnumLabel(osg::ImageStream::PLAYING);
+	I_EnumLabel(osg::ImageStream::PAUSED);
+	I_EnumLabel(osg::ImageStream::REWINDING);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::ImageStream)
+BEGIN_ENUM_REFLECTOR(osg::ImageStream::LoopingMode)
+	I_EnumLabel(osg::ImageStream::NO_LOOPING);
+	I_EnumLabel(osg::ImageStream::LOOPING);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
+	I_BaseType(osg::Image);
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::ImageStream &, image, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(int, compare, IN, const osg::Image &, rhs);
+	I_Method0(void, play);
+	I_Method0(void, pause);
+	I_Method0(void, rewind);
+	I_MethodWithDefaults1(void, quit, IN, bool, x, true);
+	I_Method0(osg::ImageStream::StreamStatus, getStatus);
+	I_Method1(void, setLoopingMode, IN, osg::ImageStream::LoopingMode, mode);
+	I_Method0(osg::ImageStream::LoopingMode, getLoopingMode);
+	I_Method1(void, setReferenceTime, IN, double, x);
+	I_Method0(double, getReferenceTime);
+	I_Method1(void, setTimeMultiplier, IN, double, x);
+	I_Method0(double, getTimeMultiplier);
+	I_Method0(void, update);
+	I_Property(osg::ImageStream::LoopingMode, LoopingMode);
+	I_Property(double, ReferenceTime);
+	I_ReadOnlyProperty(osg::ImageStream::StreamStatus, Status);
+	I_Property(double, TimeMultiplier);
 END_REFLECTOR
 

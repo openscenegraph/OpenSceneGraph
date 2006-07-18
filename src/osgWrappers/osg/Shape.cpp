@@ -9,8 +9,14 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
+#include <osg/CopyOp>
+#include <osg/Matrix>
+#include <osg/Object>
+#include <osg/Quat>
 #include <osg/Shape>
-#include <osg/test/Shape>
+#include <osg/Vec2>
+#include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -20,24 +26,316 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList);
+BEGIN_OBJECT_REFLECTOR(osg::Box)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::Vec3 &, center, IN, float, width);
+	I_Constructor4(IN, const osg::Vec3 &, center, IN, float, lengthX, IN, float, lengthY, IN, float, lengthZ);
+	I_ConstructorWithDefaults2(IN, const osg::Box &, box, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method0(bool, valid);
+	I_Method2(void, set, IN, const osg::Vec3 &, center, IN, const osg::Vec3 &, halfLengths);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setHalfLengths, IN, const osg::Vec3 &, halfLengths);
+	I_Method0(const osg::Vec3 &, getHalfLengths);
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method0(osg::Matrix, computeRotationMatrix);
+	I_Method0(bool, zeroRotation);
+	I_Property(const osg::Vec3 &, Center);
+	I_Property(const osg::Vec3 &, HalfLengths);
+	I_Property(const osg::Quat &, Rotation);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Capsule)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
+	I_ConstructorWithDefaults2(IN, const osg::Capsule &, capsule, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method0(bool, valid);
+	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setRadius, IN, float, radius);
+	I_Method0(float, getRadius);
+	I_Method1(void, setHeight, IN, float, height);
+	I_Method0(float, getHeight);
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method0(osg::Matrix, computeRotationMatrix);
+	I_Method0(bool, zeroRotation);
+	I_Property(const osg::Vec3 &, Center);
+	I_Property(float, Height);
+	I_Property(float, Radius);
+	I_Property(const osg::Quat &, Rotation);
+END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList);
 
-TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList);
+BEGIN_OBJECT_REFLECTOR(osg::CompositeShape)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::CompositeShape &, cs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method1(void, setShape, IN, osg::Shape *, shape);
+	I_Method0(osg::Shape *, getShape);
+	I_Method0(const osg::Shape *, getShape);
+	I_Method0(unsigned int, getNumChildren);
+	I_Method1(osg::Shape *, getChild, IN, unsigned int, i);
+	I_Method1(const osg::Shape *, getChild, IN, unsigned int, i);
+	I_Method1(void, addChild, IN, osg::Shape *, shape);
+	I_Method1(void, removeChild, IN, unsigned int, i);
+	I_Method1(unsigned int, findChildNo, IN, osg::Shape *, shape);
+	I_ArrayProperty_GA(osg::Shape *, Child, Children, unsigned int, void);
+	I_Property(osg::Shape *, Shape);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Cone)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
+	I_ConstructorWithDefaults2(IN, const osg::Cone &, cone, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method0(bool, valid);
+	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setRadius, IN, float, radius);
+	I_Method0(float, getRadius);
+	I_Method1(void, setHeight, IN, float, height);
+	I_Method0(float, getHeight);
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method0(osg::Matrix, computeRotationMatrix);
+	I_Method0(bool, zeroRotation);
+	I_Method0(float, getBaseOffsetFactor);
+	I_Method0(float, getBaseOffset);
+	I_ReadOnlyProperty(float, BaseOffset);
+	I_ReadOnlyProperty(float, BaseOffsetFactor);
+	I_Property(const osg::Vec3 &, Center);
+	I_Property(float, Height);
+	I_Property(float, Radius);
+	I_Property(const osg::Quat &, Rotation);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ConstShapeVisitor)
+	I_Constructor0();
+	I_Method1(void, apply, IN, const osg::Sphere &, x);
+	I_Method1(void, apply, IN, const osg::Box &, x);
+	I_Method1(void, apply, IN, const osg::Cone &, x);
+	I_Method1(void, apply, IN, const osg::Cylinder &, x);
+	I_Method1(void, apply, IN, const osg::Capsule &, x);
+	I_Method1(void, apply, IN, const osg::InfinitePlane &, x);
+	I_Method1(void, apply, IN, const osg::TriangleMesh &, x);
+	I_Method1(void, apply, IN, const osg::ConvexHull &, x);
+	I_Method1(void, apply, IN, const osg::HeightField &, x);
+	I_Method1(void, apply, IN, const osg::CompositeShape &, x);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::ConvexHull)
+	I_BaseType(osg::TriangleMesh);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::ConvexHull &, hull, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Cylinder)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
+	I_ConstructorWithDefaults2(IN, const osg::Cylinder &, cylinder, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method0(bool, valid);
+	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setRadius, IN, float, radius);
+	I_Method0(float, getRadius);
+	I_Method1(void, setHeight, IN, float, height);
+	I_Method0(float, getHeight);
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method0(osg::Matrix, computeRotationMatrix);
+	I_Method0(bool, zeroRotation);
+	I_Property(const osg::Vec3 &, Center);
+	I_Property(float, Height);
+	I_Property(float, Radius);
+	I_Property(const osg::Quat &, Rotation);
+END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList);
+
+BEGIN_OBJECT_REFLECTOR(osg::HeightField)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::HeightField &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method2(void, allocate, IN, unsigned int, numColumns, IN, unsigned int, numRows);
+	I_Method0(unsigned int, getNumColumns);
+	I_Method0(unsigned int, getNumRows);
+	I_Method1(void, setOrigin, IN, const osg::Vec3 &, origin);
+	I_Method0(const osg::Vec3 &, getOrigin);
+	I_Method1(void, setXInterval, IN, float, dx);
+	I_Method0(float, getXInterval);
+	I_Method1(void, setYInterval, IN, float, dy);
+	I_Method0(float, getYInterval);
+	I_Method1(void, setSkirtHeight, IN, float, skirtHeight);
+	I_Method0(float, getSkirtHeight);
+	I_Method1(void, setBorderWidth, IN, unsigned int, borderWidth);
+	I_Method0(unsigned int, getBorderWidth);
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
+	I_Method0(const osg::Quat &, getRotation);
+	I_Method0(osg::Matrix, computeRotationMatrix);
+	I_Method0(bool, zeroRotation);
+	I_Method3(void, setHeight, IN, unsigned int, c, IN, unsigned int, r, IN, float, value);
+	I_Method2(float &, getHeight, IN, unsigned int, c, IN, unsigned int, r);
+	I_Method2(float, getHeight, IN, unsigned int, c, IN, unsigned int, r);
+	I_Method0(osg::HeightField::HeightList &, getHeightList);
+	I_Method0(const osg::HeightField::HeightList &, getHeightList);
+	I_Method2(osg::Vec3, getVertex, IN, unsigned int, c, IN, unsigned int, r);
+	I_Method2(osg::Vec3, getNormal, IN, unsigned int, c, IN, unsigned int, r);
+	I_Method2(osg::Vec2, getHeightDelta, IN, unsigned int, c, IN, unsigned int, r);
+	I_Property(unsigned int, BorderWidth);
+	I_IndexedProperty2(float, Height, unsigned int, c, unsigned int, r);
+	I_ReadOnlyProperty(osg::HeightField::HeightList &, HeightList);
+	I_Property(const osg::Vec3 &, Origin);
+	I_Property(const osg::Quat &, Rotation);
+	I_Property(float, SkirtHeight);
+	I_Property(float, XInterval);
+	I_Property(float, YInterval);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::InfinitePlane)
+	I_BaseType(osg::Shape);
+	I_BaseType(osg::Plane);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::InfinitePlane &, plane, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shape)
+	I_BaseType(osg::Object);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Shape &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, x);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, x);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ShapeVisitor)
+	I_Constructor0();
+	I_Method1(void, apply, IN, osg::Sphere &, x);
+	I_Method1(void, apply, IN, osg::Box &, x);
+	I_Method1(void, apply, IN, osg::Cone &, x);
+	I_Method1(void, apply, IN, osg::Cylinder &, x);
+	I_Method1(void, apply, IN, osg::Capsule &, x);
+	I_Method1(void, apply, IN, osg::InfinitePlane &, x);
+	I_Method1(void, apply, IN, osg::TriangleMesh &, x);
+	I_Method1(void, apply, IN, osg::ConvexHull &, x);
+	I_Method1(void, apply, IN, osg::HeightField &, x);
+	I_Method1(void, apply, IN, osg::CompositeShape &, x);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Sphere)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_Constructor2(IN, const osg::Vec3 &, center, IN, float, radius);
+	I_ConstructorWithDefaults2(IN, const osg::Sphere &, sphere, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method0(bool, valid);
+	I_Method2(void, set, IN, const osg::Vec3 &, center, IN, float, radius);
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
+	I_Method0(const osg::Vec3 &, getCenter);
+	I_Method1(void, setRadius, IN, float, radius);
+	I_Method0(float, getRadius);
+	I_Property(const osg::Vec3 &, Center);
+	I_Property(float, Radius);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
+	I_BaseType(osg::Shape);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices);
+	I_Method0(osg::Vec3Array *, getVertices);
+	I_Method0(const osg::Vec3Array *, getVertices);
+	I_Method1(void, setIndices, IN, osg::IndexArray *, indices);
+	I_Method0(osg::IndexArray *, getIndices);
+	I_Method0(const osg::IndexArray *, getIndices);
+	I_Property(osg::IndexArray *, Indices);
+	I_Property(osg::Vec3Array *, Vertices);
+END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::HeightField, osg::Grid);
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::Shape *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::Shape > &, rp);
-	I_Method0(osg::Shape *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::Shape *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::Shape > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osg::Shape *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Shape > &, rp);

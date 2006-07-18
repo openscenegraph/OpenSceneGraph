@@ -10,6 +10,13 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
+#include <osg/BoundingSphere>
+#include <osg/CopyOp>
+#include <osg/Drawable>
+#include <osg/Matrix>
+#include <osg/NodeVisitor>
+#include <osg/Object>
+#include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -27,12 +34,37 @@ BEGIN_ENUM_REFLECTOR(osg::Billboard::Mode)
 	I_EnumLabel(osg::Billboard::AXIAL_ROT);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Billboard::PositionList);
-
-BEGIN_ENUM_REFLECTOR(osg::Billboard::Mode)
-	I_EnumLabel(osg::Billboard::POINT_ROT_EYE);
-	I_EnumLabel(osg::Billboard::POINT_ROT_WORLD);
-	I_EnumLabel(osg::Billboard::AXIAL_ROT);
+BEGIN_OBJECT_REFLECTOR(osg::Billboard)
+	I_BaseType(osg::Geode);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Billboard &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setMode, IN, osg::Billboard::Mode, mode);
+	I_Method0(osg::Billboard::Mode, getMode);
+	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis);
+	I_Method0(const osg::Vec3 &, getAxis);
+	I_Method1(void, setNormal, IN, const osg::Vec3 &, normal);
+	I_Method0(const osg::Vec3 &, getNormal);
+	I_Method2(void, setPosition, IN, unsigned int, i, IN, const osg::Vec3 &, pos);
+	I_Method1(const osg::Vec3 &, getPosition, IN, unsigned int, i);
+	I_Method1(void, setPositionList, IN, osg::Billboard::PositionList &, pl);
+	I_Method0(osg::Billboard::PositionList &, getPositionList);
+	I_Method0(const osg::Billboard::PositionList &, getPositionList);
+	I_Method1(bool, addDrawable, IN, osg::Drawable *, gset);
+	I_Method2(bool, addDrawable, IN, osg::Drawable *, gset, IN, const osg::Vec3 &, pos);
+	I_Method1(bool, removeDrawable, IN, osg::Drawable *, gset);
+	I_Method3(bool, computeMatrix, IN, osg::Matrix &, modelview, IN, const osg::Vec3 &, eye_local, IN, const osg::Vec3 &, pos_local);
+	I_Method0(osg::BoundingSphere, computeBound);
+	I_Property(const osg::Vec3 &, Axis);
+	I_Property(osg::Billboard::Mode, Mode);
+	I_Property(const osg::Vec3 &, Normal);
+	I_IndexedProperty1(const osg::Vec3 &, Position, unsigned int, i);
+	I_Property(osg::Billboard::PositionList &, PositionList);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Vec3 >);

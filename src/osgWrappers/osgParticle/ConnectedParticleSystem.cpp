@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/test/CopyOp>
-#include <osg/test/State>
+#include <osg/State>
 #include <osgParticle/ConnectedParticleSystem>
 #include <osgParticle/Particle>
 

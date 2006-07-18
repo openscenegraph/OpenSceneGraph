@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
+#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/test/BoundingBox>
-#include <osg/test/CopyOp>
-#include <osg/test/State>
-#include <osg/test/Vec3>
+#include <osg/State>
+#include <osg/Vec3>
 #include <osgParticle/Particle>
 #include <osgParticle/ParticleSystem>
 

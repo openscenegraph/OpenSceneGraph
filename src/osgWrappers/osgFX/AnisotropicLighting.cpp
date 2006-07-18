@@ -9,10 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/test/CopyOp>
 #include <osgFX/AnisotropicLighting>
 
 // Must undefine IN and OUT macros defined in Windows headers

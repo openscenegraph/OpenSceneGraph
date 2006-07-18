@@ -9,10 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/DisplaySettings>
 #include <osg/Geode>
 #include <osg/Node>
 #include <osg/StateSet>
-#include <osg/test/DisplaySettings>
 #include <osgUtil/DisplayRequirementsVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers

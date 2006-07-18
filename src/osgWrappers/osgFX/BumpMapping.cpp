@@ -9,12 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Geometry>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/test/CopyOp>
-#include <osg/test/Texture2D>
+#include <osg/Texture2D>
 #include <osgFX/BumpMapping>
 
 // Must undefine IN and OUT macros defined in Windows headers

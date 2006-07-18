@@ -9,7 +9,13 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/FragmentProgram>
+#include <osg/Matrix>
+#include <osg/Object>
+#include <osg/State>
+#include <osg/StateAttribute>
+#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,19 +25,62 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::FragmentProgram)
+TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::FragmentProgram::LocalParamList);
+
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::MatrixList);
+
+BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
+	I_BaseType(osg::StateAttribute);
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::FragmentProgram &, vp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(GLuint &, getFragmentProgramID, IN, unsigned int, contextID);
+	I_Method1(void, setFragmentProgram, IN, const char *, program);
+	I_Method1(void, setFragmentProgram, IN, const std::string &, program);
+	I_Method0(const std::string &, getFragmentProgram);
+	I_Method2(void, setProgramLocalParameter, IN, const GLuint, index, IN, const osg::Vec4 &, p);
+	I_Method1(void, setLocalParameters, IN, const osg::FragmentProgram::LocalParamList &, lpl);
+	I_Method0(osg::FragmentProgram::LocalParamList &, getLocalParameters);
+	I_Method0(const osg::FragmentProgram::LocalParamList &, getLocalParameters);
+	I_Method2(void, setMatrix, IN, const GLenum, mode, IN, const osg::Matrix &, matrix);
+	I_Method1(void, setMatrices, IN, const osg::FragmentProgram::MatrixList &, matrices);
+	I_Method0(osg::FragmentProgram::MatrixList &, getMatrices);
+	I_Method0(const osg::FragmentProgram::MatrixList &, getMatrices);
+	I_Method0(void, dirtyFragmentProgramObject);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Method1(void, compileGLObjects, IN, osg::State &, state);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
+	I_Property(const std::string &, FragmentProgram);
+	I_Property(const osg::FragmentProgram::LocalParamList &, LocalParameters);
+	I_Property(const osg::FragmentProgram::MatrixList &, Matrices);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::FragmentProgram)
-	I_Constructor0();
+BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::FragmentProgram::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::FragmentProgram::Extensions &, rhs);
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setFragmentProgramSupported, IN, bool, flag);
+	I_Method0(bool, isFragmentProgramSupported);
+	I_Method2(void, glBindProgram, IN, GLenum, target, IN, GLuint, id);
+	I_Method2(void, glGenPrograms, IN, GLsizei, n, IN, GLuint *, programs);
+	I_Method2(void, glDeletePrograms, IN, GLsizei, n, IN, GLuint *, programs);
+	I_Method4(void, glProgramString, IN, GLenum, target, IN, GLenum, format, IN, GLsizei, len, IN, const void *, string);
+	I_Method3(void, glProgramLocalParameter4fv, IN, GLenum, target, IN, GLuint, index, IN, const GLfloat *, params);
+	I_WriteOnlyProperty(bool, FragmentProgramSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::FragmentProgram::Extensions)
-	I_Constructor0();
-END_REFLECTOR
+STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::Matrix >);
 
-BEGIN_VALUE_REFLECTOR(osg::FragmentProgram::Extensions)
-	I_Constructor0();
-END_REFLECTOR
+STD_MAP_REFLECTOR(std::map< GLuint COMMA  osg::Vec4 >);
 

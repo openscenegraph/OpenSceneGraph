@@ -9,7 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Depth>
+#include <osg/Object>
+#include <osg/State>
+#include <osg/StateAttribute>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -30,14 +34,32 @@ BEGIN_ENUM_REFLECTOR(osg::Depth::Function)
 	I_EnumLabel(osg::Depth::ALWAYS);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osg::Depth::Function)
-	I_EnumLabel(osg::Depth::NEVER);
-	I_EnumLabel(osg::Depth::LESS);
-	I_EnumLabel(osg::Depth::EQUAL);
-	I_EnumLabel(osg::Depth::LEQUAL);
-	I_EnumLabel(osg::Depth::GREATER);
-	I_EnumLabel(osg::Depth::NOTEQUAL);
-	I_EnumLabel(osg::Depth::GEQUAL);
-	I_EnumLabel(osg::Depth::ALWAYS);
+BEGIN_OBJECT_REFLECTOR(osg::Depth)
+	I_BaseType(osg::StateAttribute);
+	I_ConstructorWithDefaults4(IN, osg::Depth::Function, func, osg::Depth::LESS, IN, double, zNear, 0.0, IN, double, zFar, 1.0, IN, bool, writeMask, true);
+	I_ConstructorWithDefaults2(IN, const osg::Depth &, dp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method1(void, setFunction, IN, osg::Depth::Function, func);
+	I_Method0(osg::Depth::Function, getFunction);
+	I_Method2(void, setRange, IN, double, zNear, IN, double, zFar);
+	I_Method1(void, setZNear, IN, double, zNear);
+	I_Method0(double, getZNear);
+	I_Method1(void, setZFar, IN, double, zFar);
+	I_Method0(double, getZFar);
+	I_Method1(void, setWriteMask, IN, bool, mask);
+	I_Method0(bool, getWriteMask);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(osg::Depth::Function, Function);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Property(bool, WriteMask);
+	I_Property(double, ZFar);
+	I_Property(double, ZNear);
 END_REFLECTOR
 

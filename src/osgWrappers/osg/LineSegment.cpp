@@ -9,7 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/LineSegment>
+#include <osg/Matrix>
+#include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,11 +23,23 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::LineSegment)
+BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
+	I_BaseType(osg::Referenced);
 	I_Constructor0();
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::LineSegment)
-	I_Constructor0();
+	I_Constructor1(IN, const osg::LineSegment &, seg);
+	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e);
+	I_Method2(void, set, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e);
+	I_Method0(osg::Vec3 &, start);
+	I_Method0(const osg::Vec3 &, start);
+	I_Method0(osg::Vec3 &, end);
+	I_Method0(const osg::Vec3 &, end);
+	I_Method0(bool, valid);
+	I_Method1(bool, intersect, IN, const osg::BoundingBox &, bb);
+	I_Method3(bool, intersect, IN, const osg::BoundingBox &, bb, IN, float &, r1, IN, float &, r2);
+	I_Method1(bool, intersect, IN, const osg::BoundingSphere &, bs);
+	I_Method3(bool, intersect, IN, const osg::BoundingSphere &, bs, IN, float &, r1, IN, float &, r2);
+	I_Method4(bool, intersect, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3, IN, float &, r);
+	I_Method2(void, mult, IN, const osg::LineSegment &, seg, IN, const osg::Matrix &, m);
+	I_Method2(void, mult, IN, const osg::Matrix &, m, IN, const osg::LineSegment &, seg);
 END_REFLECTOR
 

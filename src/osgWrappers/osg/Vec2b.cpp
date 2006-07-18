@@ -40,56 +40,6 @@ BEGIN_VALUE_REFLECTOR(osg::Vec2b)
 	I_Method0(osg::Vec2b::value_type &, g);
 	I_Method0(osg::Vec2b::value_type, r);
 	I_Method0(osg::Vec2b::value_type, g);
-	I_Constructor0();
-	I_Constructor2(IN, char, r, IN, char, g);
-	I_Method0(osg::Vec2b::value_type *, ptr);
-	I_Method0(const osg::Vec2b::value_type *, ptr);
-	I_Method2(void, set, IN, osg::Vec2b::value_type, x, IN, osg::Vec2b::value_type, y);
-	I_Method1(void, set, IN, const osg::Vec2b &, rhs);
-	I_Method0(osg::Vec2b::value_type &, x);
-	I_Method0(osg::Vec2b::value_type &, y);
-	I_Method0(osg::Vec2b::value_type, x);
-	I_Method0(osg::Vec2b::value_type, y);
-	I_Method0(osg::Vec2b::value_type &, r);
-	I_Method0(osg::Vec2b::value_type &, g);
-	I_Method0(osg::Vec2b::value_type, r);
-	I_Method0(osg::Vec2b::value_type, g);
-	I_WriteOnlyProperty(const osg::Vec2b &, );
-END_REFLECTOR
-
-TYPE_NAME_ALIAS(char, osg::Vec2b::value_type);
-
-BEGIN_VALUE_REFLECTOR(osg::Vec2b)
-	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
-	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
-	I_Constructor0();
-	I_Constructor2(IN, char, r, IN, char, g);
-	I_Method0(osg::Vec2b::value_type *, ptr);
-	I_Method0(const osg::Vec2b::value_type *, ptr);
-	I_Method2(void, set, IN, osg::Vec2b::value_type, x, IN, osg::Vec2b::value_type, y);
-	I_Method1(void, set, IN, const osg::Vec2b &, rhs);
-	I_Method0(osg::Vec2b::value_type &, x);
-	I_Method0(osg::Vec2b::value_type &, y);
-	I_Method0(osg::Vec2b::value_type, x);
-	I_Method0(osg::Vec2b::value_type, y);
-	I_Method0(osg::Vec2b::value_type &, r);
-	I_Method0(osg::Vec2b::value_type &, g);
-	I_Method0(osg::Vec2b::value_type, r);
-	I_Method0(osg::Vec2b::value_type, g);
-	I_Constructor0();
-	I_Constructor2(IN, char, r, IN, char, g);
-	I_Method0(osg::Vec2b::value_type *, ptr);
-	I_Method0(const osg::Vec2b::value_type *, ptr);
-	I_Method2(void, set, IN, osg::Vec2b::value_type, x, IN, osg::Vec2b::value_type, y);
-	I_Method1(void, set, IN, const osg::Vec2b &, rhs);
-	I_Method0(osg::Vec2b::value_type &, x);
-	I_Method0(osg::Vec2b::value_type &, y);
-	I_Method0(osg::Vec2b::value_type, x);
-	I_Method0(osg::Vec2b::value_type, y);
-	I_Method0(osg::Vec2b::value_type &, r);
-	I_Method0(osg::Vec2b::value_type &, g);
-	I_Method0(osg::Vec2b::value_type, r);
-	I_Method0(osg::Vec2b::value_type, g);
 	I_WriteOnlyProperty(const osg::Vec2b &, );
 END_REFLECTOR
 

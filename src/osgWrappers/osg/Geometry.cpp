@@ -9,7 +9,13 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
+#include <osg/CopyOp>
+#include <osg/Drawable>
 #include <osg/Geometry>
+#include <osg/Object>
+#include <osg/PrimitiveSet>
+#include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,27 +25,209 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::Geometry)
-	I_Constructor0();
+TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayList);
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::PrimitiveSet > >, osg::Geometry::PrimitiveSetList);
+
+BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
+	I_EnumLabel(osg::Geometry::BIND_OFF);
+	I_EnumLabel(osg::Geometry::BIND_OVERALL);
+	I_EnumLabel(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+	I_EnumLabel(osg::Geometry::BIND_PER_PRIMITIVE);
+	I_EnumLabel(osg::Geometry::BIND_PER_VERTEX);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Geometry)
+BEGIN_OBJECT_REFLECTOR(osg::Geometry)
+	I_BaseType(osg::Drawable);
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Geometry &, geometry, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::Geometry *, asGeometry);
+	I_Method0(const osg::Geometry *, asGeometry);
+	I_Method0(bool, empty);
+	I_Method1(void, setVertexArray, IN, osg::Array *, array);
+	I_Method0(osg::Array *, getVertexArray);
+	I_Method0(const osg::Array *, getVertexArray);
+	I_Method1(void, setVertexIndices, IN, osg::IndexArray *, array);
+	I_Method0(osg::IndexArray *, getVertexIndices);
+	I_Method0(const osg::IndexArray *, getVertexIndices);
+	I_Method1(void, setVertexData, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method0(osg::Geometry::ArrayData &, getVertexData);
+	I_Method0(const osg::Geometry::ArrayData &, getVertexData);
+	I_Method1(void, setNormalBinding, IN, osg::Geometry::AttributeBinding, ab);
+	I_Method0(osg::Geometry::AttributeBinding, getNormalBinding);
+	I_Method1(void, setNormalArray, IN, osg::Array *, array);
+	I_Method0(osg::Array *, getNormalArray);
+	I_Method0(const osg::Array *, getNormalArray);
+	I_Method1(void, setNormalIndices, IN, osg::IndexArray *, array);
+	I_Method0(osg::IndexArray *, getNormalIndices);
+	I_Method0(const osg::IndexArray *, getNormalIndices);
+	I_Method1(void, setNormalData, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method0(osg::Geometry::ArrayData &, getNormalData);
+	I_Method0(const osg::Geometry::ArrayData &, getNormalData);
+	I_Method1(void, setColorBinding, IN, osg::Geometry::AttributeBinding, ab);
+	I_Method0(osg::Geometry::AttributeBinding, getColorBinding);
+	I_Method1(void, setColorArray, IN, osg::Array *, array);
+	I_Method0(osg::Array *, getColorArray);
+	I_Method0(const osg::Array *, getColorArray);
+	I_Method1(void, setColorIndices, IN, osg::IndexArray *, array);
+	I_Method0(osg::IndexArray *, getColorIndices);
+	I_Method0(const osg::IndexArray *, getColorIndices);
+	I_Method1(void, setColorData, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method0(osg::Geometry::ArrayData &, getColorData);
+	I_Method0(const osg::Geometry::ArrayData &, getColorData);
+	I_Method1(void, setSecondaryColorBinding, IN, osg::Geometry::AttributeBinding, ab);
+	I_Method0(osg::Geometry::AttributeBinding, getSecondaryColorBinding);
+	I_Method1(void, setSecondaryColorArray, IN, osg::Array *, array);
+	I_Method0(osg::Array *, getSecondaryColorArray);
+	I_Method0(const osg::Array *, getSecondaryColorArray);
+	I_Method1(void, setSecondaryColorIndices, IN, osg::IndexArray *, array);
+	I_Method0(osg::IndexArray *, getSecondaryColorIndices);
+	I_Method0(const osg::IndexArray *, getSecondaryColorIndices);
+	I_Method1(void, setSecondaryColorData, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method0(osg::Geometry::ArrayData &, getSecondaryColorData);
+	I_Method0(const osg::Geometry::ArrayData &, getSecondaryColorData);
+	I_Method1(void, setFogCoordBinding, IN, osg::Geometry::AttributeBinding, ab);
+	I_Method0(osg::Geometry::AttributeBinding, getFogCoordBinding);
+	I_Method1(void, setFogCoordArray, IN, osg::Array *, array);
+	I_Method0(osg::Array *, getFogCoordArray);
+	I_Method0(const osg::Array *, getFogCoordArray);
+	I_Method1(void, setFogCoordIndices, IN, osg::IndexArray *, array);
+	I_Method0(osg::IndexArray *, getFogCoordIndices);
+	I_Method0(const osg::IndexArray *, getFogCoordIndices);
+	I_Method1(void, setFogCoordData, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method0(osg::Geometry::ArrayData &, getFogCoordData);
+	I_Method0(const osg::Geometry::ArrayData &, getFogCoordData);
+	I_Method2(void, setTexCoordArray, IN, unsigned int, unit, IN, osg::Array *, x);
+	I_Method1(osg::Array *, getTexCoordArray, IN, unsigned int, unit);
+	I_Method1(const osg::Array *, getTexCoordArray, IN, unsigned int, unit);
+	I_Method2(void, setTexCoordIndices, IN, unsigned int, unit, IN, osg::IndexArray *, x);
+	I_Method1(osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit);
+	I_Method1(const osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit);
+	I_Method2(void, setTexCoordData, IN, unsigned int, index, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method1(osg::Geometry::ArrayData &, getTexCoordData, IN, unsigned int, index);
+	I_Method1(const osg::Geometry::ArrayData &, getTexCoordData, IN, unsigned int, index);
+	I_Method0(unsigned int, getNumTexCoordArrays);
+	I_Method0(osg::Geometry::ArrayList &, getTexCoordArrayList);
+	I_Method0(const osg::Geometry::ArrayList &, getTexCoordArrayList);
+	I_Method2(void, setVertexAttribArray, IN, unsigned int, index, IN, osg::Array *, array);
+	I_Method1(osg::Array *, getVertexAttribArray, IN, unsigned int, index);
+	I_Method1(const osg::Array *, getVertexAttribArray, IN, unsigned int, index);
+	I_Method2(void, setVertexAttribIndices, IN, unsigned int, index, IN, osg::IndexArray *, array);
+	I_Method1(osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index);
+	I_Method1(const osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index);
+	I_Method2(void, setVertexAttribBinding, IN, unsigned int, index, IN, osg::Geometry::AttributeBinding, ab);
+	I_Method1(osg::Geometry::AttributeBinding, getVertexAttribBinding, IN, unsigned int, index);
+	I_Method2(void, setVertexAttribNormalize, IN, unsigned int, index, IN, GLboolean, norm);
+	I_Method1(GLboolean, getVertexAttribNormalize, IN, unsigned int, index);
+	I_Method2(void, setVertexAttribData, IN, unsigned int, index, IN, const osg::Geometry::ArrayData &, arrayData);
+	I_Method1(osg::Geometry::ArrayData &, getVertexAttribData, IN, unsigned int, index);
+	I_Method1(const osg::Geometry::ArrayData &, getVertexAttribData, IN, unsigned int, index);
+	I_Method0(unsigned int, getNumVertexAttribArrays);
+	I_Method0(osg::Geometry::ArrayList &, getVertexAttribArrayList);
+	I_Method0(const osg::Geometry::ArrayList &, getVertexAttribArrayList);
+	I_Method1(void, setPrimitiveSetList, IN, const osg::Geometry::PrimitiveSetList &, primitives);
+	I_Method0(osg::Geometry::PrimitiveSetList &, getPrimitiveSetList);
+	I_Method0(const osg::Geometry::PrimitiveSetList &, getPrimitiveSetList);
+	I_Method0(unsigned int, getNumPrimitiveSets);
+	I_Method1(osg::PrimitiveSet *, getPrimitiveSet, IN, unsigned int, pos);
+	I_Method1(const osg::PrimitiveSet *, getPrimitiveSet, IN, unsigned int, pos);
+	I_Method1(bool, addPrimitiveSet, IN, osg::PrimitiveSet *, primitiveset);
+	I_Method2(bool, setPrimitiveSet, IN, unsigned int, i, IN, osg::PrimitiveSet *, primitiveset);
+	I_Method2(bool, insertPrimitiveSet, IN, unsigned int, i, IN, osg::PrimitiveSet *, primitiveset);
+	I_MethodWithDefaults2(bool, removePrimitiveSet, IN, unsigned int, i, , IN, unsigned int, numElementsToRemove, 1);
+	I_Method1(unsigned int, getPrimitiveSetIndex, IN, const osg::PrimitiveSet *, primitiveset);
+	I_Method1(void, setFastPathHint, IN, bool, on);
+	I_Method0(bool, getFastPathHint);
+	I_Method0(bool, areFastPathsUsed);
+	I_Method0(bool, computeFastPathsUsed);
+	I_Method0(bool, verifyBindings);
+	I_Method0(void, computeCorrectBindingsAndArraySizes);
+	I_Method0(bool, suitableForOptimization);
+	I_Method1(void, copyToAndOptimize, IN, osg::Geometry &, target);
+	I_Method0(void, computeInternalOptimizedGeometry);
+	I_Method0(void, removeInternalOptimizedGeometry);
+	I_Method1(void, setInternalOptimizedGeometry, IN, osg::Geometry *, geometry);
+	I_Method0(osg::Geometry *, getInternalOptimizedGeometry);
+	I_Method0(const osg::Geometry *, getInternalOptimizedGeometry);
+	I_Method0(unsigned int, getGLObjectSizeHint);
+	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
+	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, af);
+	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
+	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);
+	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
+	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x);
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, pf);
+	I_Property(osg::Array *, ColorArray);
+	I_Property(osg::Geometry::AttributeBinding, ColorBinding);
+	I_Property(const osg::Geometry::ArrayData &, ColorData);
+	I_Property(osg::IndexArray *, ColorIndices);
+	I_Property(bool, FastPathHint);
+	I_Property(osg::Array *, FogCoordArray);
+	I_Property(osg::Geometry::AttributeBinding, FogCoordBinding);
+	I_Property(const osg::Geometry::ArrayData &, FogCoordData);
+	I_Property(osg::IndexArray *, FogCoordIndices);
+	I_ReadOnlyProperty(unsigned int, GLObjectSizeHint);
+	I_Property(osg::Geometry *, InternalOptimizedGeometry);
+	I_Property(osg::Array *, NormalArray);
+	I_Property(osg::Geometry::AttributeBinding, NormalBinding);
+	I_Property(const osg::Geometry::ArrayData &, NormalData);
+	I_Property(osg::IndexArray *, NormalIndices);
+	I_ArrayProperty_GSA(osg::PrimitiveSet *, PrimitiveSet, PrimitiveSets, unsigned int, bool);
+	I_Property(const osg::Geometry::PrimitiveSetList &, PrimitiveSetList);
+	I_Property(osg::Array *, SecondaryColorArray);
+	I_Property(osg::Geometry::AttributeBinding, SecondaryColorBinding);
+	I_Property(const osg::Geometry::ArrayData &, SecondaryColorData);
+	I_Property(osg::IndexArray *, SecondaryColorIndices);
+	I_ArrayProperty_G(osg::Array *, TexCoordArray, TexCoordArrays, unsigned int, void);
+	I_ReadOnlyProperty(osg::Geometry::ArrayList &, TexCoordArrayList);
+	I_IndexedProperty1(const osg::Geometry::ArrayData &, TexCoordData, unsigned int, index);
+	I_IndexedProperty1(osg::IndexArray *, TexCoordIndices, unsigned int, unit);
+	I_Property(osg::Array *, VertexArray);
+	I_ArrayProperty_G(osg::Array *, VertexAttribArray, VertexAttribArrays, unsigned int, void);
+	I_ReadOnlyProperty(osg::Geometry::ArrayList &, VertexAttribArrayList);
+	I_IndexedProperty1(osg::Geometry::AttributeBinding, VertexAttribBinding, unsigned int, index);
+	I_IndexedProperty1(const osg::Geometry::ArrayData &, VertexAttribData, unsigned int, index);
+	I_IndexedProperty1(osg::IndexArray *, VertexAttribIndices, unsigned int, index);
+	I_IndexedProperty1(GLboolean, VertexAttribNormalize, unsigned int, index);
+	I_Property(const osg::Geometry::ArrayData &, VertexData);
+	I_Property(osg::IndexArray *, VertexIndices);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
 	I_Constructor0();
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
-	I_Constructor0();
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
-	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Geometry::ArrayData &, data, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults3(IN, osg::Array *, a, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
+	I_ConstructorWithDefaults4(IN, osg::Array *, a, , IN, osg::IndexArray *, i, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
+	I_Method0(bool, empty);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Geometry::Vec3ArrayData &, data, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults3(IN, osg::Vec3Array *, a, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
+	I_ConstructorWithDefaults4(IN, osg::Vec3Array *, a, , IN, osg::IndexArray *, i, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
+	I_Method0(bool, empty);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
+	I_Constructor0();
+	I_Constructor1(IN, osg::PrimitiveSet *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osg::PrimitiveSet > &, rp);
+	I_Method0(osg::PrimitiveSet *, get);
+	I_Method0(bool, valid);
+	I_Method0(osg::PrimitiveSet *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::PrimitiveSet > &, rp);
+	I_ReadOnlyProperty(osg::PrimitiveSet *, );
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Geometry::ArrayData >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::PrimitiveSet > >);
 

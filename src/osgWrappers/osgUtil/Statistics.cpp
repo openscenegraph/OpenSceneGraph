@@ -9,15 +9,15 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/LOD>
 #include <osg/Switch>
 #include <osg/Transform>
-#include <osg/test/Drawable>
-#include <osg/test/Vec2>
-#include <osg/test/Vec3>
-#include <osg/test/Vec4>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers

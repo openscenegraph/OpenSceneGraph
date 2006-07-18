@@ -10,6 +10,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BlendFunc>
+#include <osg/CopyOp>
+#include <osg/Object>
+#include <osg/State>
+#include <osg/StateAttribute>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -37,21 +41,56 @@ BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
 	I_EnumLabel(osg::BlendFunc::ZERO);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
-	I_EnumLabel(osg::BlendFunc::DST_ALPHA);
-	I_EnumLabel(osg::BlendFunc::DST_COLOR);
-	I_EnumLabel(osg::BlendFunc::ONE);
-	I_EnumLabel(osg::BlendFunc::ONE_MINUS_DST_ALPHA);
-	I_EnumLabel(osg::BlendFunc::ONE_MINUS_DST_COLOR);
-	I_EnumLabel(osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
-	I_EnumLabel(osg::BlendFunc::ONE_MINUS_SRC_COLOR);
-	I_EnumLabel(osg::BlendFunc::SRC_ALPHA);
-	I_EnumLabel(osg::BlendFunc::SRC_ALPHA_SATURATE);
-	I_EnumLabel(osg::BlendFunc::SRC_COLOR);
-	I_EnumLabel(osg::BlendFunc::CONSTANT_COLOR);
-	I_EnumLabel(osg::BlendFunc::ONE_MINUS_CONSTANT_COLOR);
-	I_EnumLabel(osg::BlendFunc::CONSTANT_ALPHA);
-	I_EnumLabel(osg::BlendFunc::ONE_MINUS_CONSTANT_ALPHA);
-	I_EnumLabel(osg::BlendFunc::ZERO);
+BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0();
+	I_Constructor2(IN, GLenum, source, IN, GLenum, destination);
+	I_Constructor4(IN, GLenum, source, IN, GLenum, destination, IN, GLenum, source_alpha, IN, GLenum, destination_alpha);
+	I_ConstructorWithDefaults2(IN, const osg::BlendFunc &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method2(void, setFunction, IN, GLenum, source, IN, GLenum, destination);
+	I_Method4(void, setFunction, IN, GLenum, source_rgb, IN, GLenum, destination_rgb, IN, GLenum, source_alpha, IN, GLenum, destination_alpha);
+	I_Method1(void, setSource, IN, GLenum, source);
+	I_Method0(GLenum, getSource);
+	I_Method1(void, setSourceRGB, IN, GLenum, source);
+	I_Method0(GLenum, getSourceRGB);
+	I_Method1(void, setSourceAlpha, IN, GLenum, source);
+	I_Method0(GLenum, getSourceAlpha);
+	I_Method1(void, setDestination, IN, GLenum, destination);
+	I_Method0(GLenum, getDestination);
+	I_Method1(void, setDestinationRGB, IN, GLenum, destination);
+	I_Method0(GLenum, getDestinationRGB);
+	I_Method1(void, setDestinationAlpha, IN, GLenum, destination);
+	I_Method0(GLenum, getDestinationAlpha);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(GLenum, Destination);
+	I_Property(GLenum, DestinationAlpha);
+	I_Property(GLenum, DestinationRGB);
+	I_Property(GLenum, Source);
+	I_Property(GLenum, SourceAlpha);
+	I_Property(GLenum, SourceRGB);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::BlendFunc::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::BlendFunc::Extensions &, rhs);
+	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID);
+	I_Method1(void, setBlendFuncSeparateSupported, IN, bool, flag);
+	I_Method0(bool, isBlendFuncSeparateSupported);
+	I_Method1(void, setBlendFuncSeparateProc, IN, void *, ptr);
+	I_Method4(void, glBlendFuncSeparate, IN, GLenum, sfactorRGB, IN, GLenum, dfactorRGB, IN, GLenum, sfactorAlpha, IN, GLenum, dfactorAlpha);
+	I_WriteOnlyProperty(void *, BlendFuncSeparateProc);
+	I_WriteOnlyProperty(bool, BlendFuncSeparateSupported);
+	I_WriteOnlyProperty(unsigned int, upGLExtensions);
 END_REFLECTOR
 

@@ -45,7 +45,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELATE_GEOMETRY | CHECK_GEOMETRY");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -100,6 +100,10 @@ void Optimizer::optimize(osg::Node* node)
 
         if(str.find("~CHECK_GEOMETRY")!=std::string::npos) options ^= CHECK_GEOMETRY;
         else if(str.find("CHECK_GEOMETRY")!=std::string::npos) options |= CHECK_GEOMETRY;
+        
+        if(str.find("~FLATTEN_BILLBOARDS")!=std::string::npos) options ^= FLATTEN_BILLBOARDS;
+        else if(str.find("FLATTEN_BILLBOARDS")!=std::string::npos) options |= FLATTEN_BILLBOARDS;
+        
 
     }
     else

@@ -55,6 +55,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::TRISTRIP_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::TESSELATE_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS);
+	I_EnumLabel(osgUtil::Optimizer::FLATTEN_BILLBOARDS);
 	I_EnumLabel(osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
@@ -111,6 +112,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	I_Method1(void, apply, IN, osg::Node &, node);
 	I_Method0(void, copySharedNodes);
+END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList);
+
+TYPE_NAME_ALIAS(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >, osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap);
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
+	I_BaseType(osgUtil::BaseOptimizerVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
+	I_Method0(void, reset);
+	I_Method1(void, apply, IN, osg::Billboard &, billboard);
+	I_Method0(void, process);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
@@ -215,6 +228,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
 	I_Method1(void, apply, IN, osg::StateSet &, stateset);
 	I_Method1(void, apply, IN, osg::Texture &, texture);
 END_REFLECTOR
+
+STD_MAP_REFLECTOR(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >);
 
 STD_SET_REFLECTOR(std::set< osg::Group * >);
 

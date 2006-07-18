@@ -167,6 +167,13 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 
 #if 1
     text->setBackdropType(osgText::Text::OUTLINE);
+//   text->setBackdropType(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
+
+    text->setBackdropImplementation(osgText::Text::POLYGON_OFFSET);
+//    text->setBackdropImplementation(osgText::Text::NO_DEPTH_BUFFER);
+//    text->setBackdropImplementation(osgText::Text::DEPTH_RANGE);
+//    text->setBackdropImplementation(osgText::Text::STENCIL_BUFFER);
+    
     text->setBackdropOffset(0.05f);
     text->setBackdropColor(osg::Vec4(0.0f, 0.0f, 0.5f, 1.0f));
 #endif

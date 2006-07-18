@@ -42,7 +42,7 @@ float PolygonOffset::getUnitsMultiplier()
     return s_UnitsMultipler;
 }
 
-bool PolygonOffset::areUnitsAndMultipliersSet()
+bool PolygonOffset::areFactorAndUnitsMultipliersSet()
 {
     return s_MultiplerSet;
 }

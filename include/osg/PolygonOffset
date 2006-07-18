@@ -72,7 +72,7 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
         static void setUnitsMultiplier(float multiplier);
         static float getUnitsMultiplier();
         
-        static bool areUnitsAndMultipliersSet();
+        static bool areFactorAndUnitsMultipliersSet();
         
         /** Checks with the OpenGL driver to try and pick multiplier approrpriate for the hardware.
             note, requires a valid graphics context to be current. */

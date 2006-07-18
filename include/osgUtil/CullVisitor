@@ -109,16 +109,16 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         inline void popStateSet()
         {
             const osg::StateSet* ss = _currentStateGraph->_stateset;
+            if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
+            {
+                --_numberOfEncloseOverrideRenderBinDetails;
+            }
             if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
             {
                 if (_currentRenderBin->getParent())
                 {
                     _currentRenderBin = _currentRenderBin->getParent();
                 }
-            }
-            if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
-            {
-                --_numberOfEncloseOverrideRenderBinDetails;
             }
             _currentStateGraph = _currentStateGraph->_parent;
         }

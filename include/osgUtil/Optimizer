@@ -76,6 +76,7 @@ class OSGUTIL_EXPORT Optimizer
             TRISTRIP_GEOMETRY =         0x200,
             TESSELATE_GEOMETRY =        0x400,
             OPTIMIZE_TEXTURE_SETTINGS = 0x800,
+            FLATTEN_BILLBOARDS =        0x1000,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -546,6 +547,26 @@ class OSGUTIL_EXPORT Optimizer
 
         };
         
+        /** Flatten MatrixTransform/Billboard pairs.*/
+        class OSGUTIL_EXPORT FlattenBillboardVisitor : public BaseOptimizerVisitor
+        {
+            public:
+                FlattenBillboardVisitor(Optimizer* optimizer=0):
+                        BaseOptimizerVisitor(optimizer, FLATTEN_BILLBOARDS) {}
+
+                typedef std::vector<osg::NodePath> NodePathList;
+                typedef std::map<osg::Billboard*, NodePathList > BillboardNodePathMap;
+
+                virtual void reset();
+
+                virtual void apply(osg::Billboard& billboard);
+
+                void process();    
+
+                BillboardNodePathMap _billboards;
+
+        };
+
 };
 
 inline bool BaseOptimizerVisitor::isOperationPermissibleForObject(const osg::StateSet* object) const

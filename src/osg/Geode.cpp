@@ -49,7 +49,7 @@ Geode::~Geode()
 
 bool Geode::addDrawable( Drawable *drawable )
 {
-    if (drawable && !containsDrawable(drawable))
+    if (drawable /* && !containsDrawable(drawable)*/)
     {
         // note ref_ptr<> automatically handles incrementing drawable's reference count.
         _drawables.push_back(drawable);

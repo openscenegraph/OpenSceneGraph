@@ -93,6 +93,13 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
 	I_EnumLabel(osgText::Text::NONE);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropImplementation)
+	I_EnumLabel(osgText::Text::POLYGON_OFFSET);
+	I_EnumLabel(osgText::Text::NO_DEPTH_BUFFER);
+	I_EnumLabel(osgText::Text::DEPTH_RANGE);
+	I_EnumLabel(osgText::Text::STENCIL_BUFFER);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osgText::Text::ColorGradientMode)
 	I_EnumLabel(osgText::Text::SOLID);
 	I_EnumLabel(osgText::Text::PER_CHARACTER);
@@ -153,6 +160,8 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method0(float, getBackdropVerticalOffset);
 	I_Method1(void, setBackdropColor, IN, const osg::Vec4 &, color);
 	I_Method0(const osg::Vec4 &, getBackdropColor);
+	I_Method1(void, setBackdropImplementation, IN, osgText::Text::BackdropImplementation, implementation);
+	I_Method0(osgText::Text::BackdropImplementation, getBackdropImplementation);
 	I_Method1(void, setColorGradientMode, IN, osgText::Text::ColorGradientMode, mode);
 	I_Method0(osgText::Text::ColorGradientMode, getColorGradientMode);
 	I_Method4(void, setColorGradientCorners, IN, const osg::Vec4 &, topLeft, IN, const osg::Vec4 &, bottomLeft, IN, const osg::Vec4 &, bottomRight, IN, const osg::Vec4 &, topRight);
@@ -178,6 +187,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_WriteOnlyProperty(osgText::Text::AxisAlignment, AxisAlignment);
 	I_Property(const osg::Vec4 &, BackdropColor);
 	I_ReadOnlyProperty(float, BackdropHorizontalOffet);
+	I_Property(osgText::Text::BackdropImplementation, BackdropImplementation);
 	I_WriteOnlyProperty(float, BackdropOffset);
 	I_Property(osgText::Text::BackdropType, BackdropType);
 	I_ReadOnlyProperty(float, BackdropVerticalOffset);

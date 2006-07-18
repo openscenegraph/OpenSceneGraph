@@ -1416,6 +1416,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-n","Create normal map for per voxel lighting.");
     arguments.getApplicationUsage()->addCommandLineOption("-s <numSlices>","Number of slices to create.");
+    arguments.getApplicationUsage()->addCommandLineOption("--images [filenames]","Specify a stack of 2d images to build the 3d volume from.");
+    arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language.");
     arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--zSize <size>","Relative height of rendered brick.");

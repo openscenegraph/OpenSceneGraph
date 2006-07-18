@@ -9542,7 +9542,7 @@
 	  src/osgUtil/TriStripVisitor.cpp,
 	  src/osgUtil/TriStrip_tri_stripper.cpp,
 	  src/osgUtil/UpdateVisitor.cpp, src/osgUtil/Version.cpp: Updated
-	  Copyright notices to 1998-2005.
+	  Copyright notices to 1998-2006.
 
 2005-04-14 21:34  robert
 

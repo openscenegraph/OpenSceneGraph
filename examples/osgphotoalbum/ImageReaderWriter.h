@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  *
  * This application is open source and may be redistributed and/or modified under  
  * the terms of the GNU Public License (GPL) version 1.0 or 

@@ -46,6 +46,7 @@ Text::Text():
     _kerningType(KERNING_DEFAULT),
     _lineCount(0),
     _backdropType(NONE),
+    _backdropImplementation(POLYGON_OFFSET),
     _backdropHorizontalOffset(0.07f),
     _backdropVerticalOffset(0.07f),
     _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -79,7 +80,17 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _color(text._color),
     _drawMode(text._drawMode),
     _kerningType(text._kerningType),
-    _lineCount(text._lineCount)
+    _lineCount(text._lineCount),
+    _backdropType(text._backdropType),
+    _backdropImplementation(text._backdropImplementation),
+    _backdropHorizontalOffset(text._backdropHorizontalOffset),
+    _backdropVerticalOffset(text._backdropVerticalOffset),
+    _backdropColor(text._backdropColor),
+    _colorGradientMode(text._colorGradientMode),
+    _colorGradientTopLeft(text._colorGradientTopLeft),
+    _colorGradientBottomLeft(text._colorGradientBottomLeft),
+    _colorGradientBottomRight(text._colorGradientBottomRight),
+    _colorGradientTopRight(text._colorGradientTopRight)
 {
     computeGlyphRepresentation();
 }
@@ -1446,88 +1457,35 @@ void Text::drawImplementation(osg::State& state) const
 
         state.disableAllVertexArrays();
 
+        // Okay, since ATI's cards/drivers are not working correctly,
+        // we need alternative solutions to glPolygonOffset.
+        // So this is a pick your poison approach. Each alternative
+        // backend has trade-offs associated with it, but with luck,
+        // the user may find that works for them.
         if(_backdropType != NONE)
         {
-            if (!osg::PolygonOffset::areUnitsAndMultipliersSet())
+            switch(_backdropImplementation)
             {
-                osg::PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver();
-            }
-
-            // Do I really need to do this for glPolygonOffset?
-            glPushAttrib(GL_POLYGON_OFFSET_FILL);
-            glEnable(GL_POLYGON_OFFSET_FILL);
-        }
-
-        for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
-            titr!=_textureGlyphQuadMap.end();
-            ++titr)
-        {
-            // need to set the texture here...
-            state.apply(titr->first.get());
-
-            const GlyphQuads& glyphquad = titr->second;
-
-            // For backdrop text
-            if(_backdropType != NONE)
-            {
-                unsigned int backdrop_index;
-                unsigned int max_backdrop_index;
-                if(_backdropType == OUTLINE)
-                {
-                    backdrop_index = 0;
-                    max_backdrop_index = 8;
-                }
-                else
-                {
-                    backdrop_index = _backdropType;
-                    max_backdrop_index = _backdropType+1;
-                }
-
-                state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
-                state.disableColorPointer();
-                glColor4fv(_backdropColor.ptr());
-
-                for( ; backdrop_index < max_backdrop_index; backdrop_index++)
-                {
-                    const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
-                    if (!transformedBackdropCoords.empty()) 
-                    {
-                        state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                        glPolygonOffset(2.0f * osg::PolygonOffset::getFactorMultiplier(),
-                                        3.0f * osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
-                        glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
-                    }
-                }
-
-                glPolygonOffset(0.0f,0.0f);
-
-            } // end of backdrop text
-
-            const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
-            if (!transformedCoords.empty()) 
-            {
-                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
-                state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
-
-                if(_colorGradientMode == SOLID)
-                {
-                    state.disableColorPointer();
-                    glColor4fv(_color.ptr());
-                }
-                else
-                {
-                    state.setColorPointer( 4, GL_FLOAT, 0, &(glyphquad._colorCoords.front()));
-                }
-
-                glDrawArrays(GL_QUADS,0,transformedCoords.size());
-
+                case POLYGON_OFFSET:
+                    renderWithPolygonOffset(state);
+                    break;
+                case NO_DEPTH_BUFFER:
+                    renderWithNoDepthBuffer(state);
+                    break;
+                case DEPTH_RANGE:
+                    renderWithDepthRange(state);
+                    break;
+                case STENCIL_BUFFER:
+                    renderWithStencilBuffer(state);
+                    break;
+                default:
+                    renderWithPolygonOffset(state);
             }
         }
-
-        if(_backdropType != NONE)
+        else
         {
-            glPopAttrib();
-        }                
+            renderOnlyForegroundText(state);
+        }
     }
 
     if (_drawMode & BOUNDINGBOX)
@@ -1625,6 +1583,15 @@ void Text::setBackdropType(BackdropType type)
     _backdropType = type;
     computeGlyphRepresentation();
 }
+
+void Text::setBackdropImplementation(BackdropImplementation implementation)
+{
+    if (_backdropImplementation==implementation) return;
+
+    _backdropImplementation = implementation;
+    computeGlyphRepresentation();
+}
+
 
 void Text::setBackdropOffset(float offset)
 {
@@ -1859,7 +1826,373 @@ void Text::convertRgbToHsv( float rgb[], float hsv[] ) const
 
 }
 
+void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad) const
+{
+    unsigned int contextID = state.getContextID();
 
+    const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
+    if (!transformedCoords.empty()) 
+    {
+        state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+
+        if(_colorGradientMode == SOLID)
+        {
+            state.disableColorPointer();
+            glColor4fv(_color.ptr());
+        }
+        else
+        {
+            state.setColorPointer( 4, GL_FLOAT, 0, &(glyphquad._colorCoords.front()));
+        }
+
+        glDrawArrays(GL_QUADS,0,transformedCoords.size());
+
+    }
+}
+
+void Text::renderOnlyForegroundText(osg::State& state) const
+{
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.apply(titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        drawForegroundText(state, glyphquad);
+    }
+
+}
+
+
+void Text::renderWithPolygonOffset(osg::State& state) const
+{
+//    glNormal3fv(_normal.ptr());
+
+//    state.disableAllVertexArrays();
+    unsigned int contextID = state.getContextID();
+
+
+    if (!osg::PolygonOffset::areFactorAndUnitsMultipliersSet())
+    {
+        osg::PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver();
+    }
+
+    // Do I really need to do this for glPolygonOffset?
+    glPushAttrib(GL_POLYGON_OFFSET_FILL);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.apply(titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        unsigned int backdrop_index;
+        unsigned int max_backdrop_index;
+        if(_backdropType == OUTLINE)
+        {
+            backdrop_index = 0;
+            max_backdrop_index = 8;
+        }
+        else
+        {
+            backdrop_index = _backdropType;
+            max_backdrop_index = _backdropType+1;
+        }
+
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.disableColorPointer();
+        glColor4fv(_backdropColor.ptr());
+
+        for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+        {
+            const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+            if (!transformedBackdropCoords.empty()) 
+            {
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(),
+                                2.0f * osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
+                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+            }
+        }
+
+        // Reset the polygon offset so the foreground text is on top
+        glPolygonOffset(0.0f,0.0f);
+
+        drawForegroundText(state, glyphquad);
+    }
+
+    glPopAttrib();
+}
+    
+
+void Text::renderWithNoDepthBuffer(osg::State& state) const
+{
+    unsigned int contextID = state.getContextID();
+
+    glPushAttrib(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.apply(titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        unsigned int backdrop_index;
+        unsigned int max_backdrop_index;
+        if(_backdropType == OUTLINE)
+        {
+            backdrop_index = 0;
+            max_backdrop_index = 8;
+        }
+        else
+        {
+            backdrop_index = _backdropType;
+            max_backdrop_index = _backdropType+1;
+        }
+
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.disableColorPointer();
+        glColor4fv(_backdropColor.ptr());
+
+        for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+        {
+            const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+            if (!transformedBackdropCoords.empty()) 
+            {
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+            }
+        }
+
+        drawForegroundText(state, glyphquad);
+    }
+
+    glPopAttrib();
+}
+
+// This idea comes from Paul Martz's OpenGL FAQ: 13.050
+void Text::renderWithDepthRange(osg::State& state) const
+{
+    unsigned int contextID = state.getContextID();
+
+    // Hmmm, the man page says GL_VIEWPORT_BIT for Depth range (near and far)
+    // but experimentally, GL_DEPTH_BUFFER_BIT for glDepthRange.
+//    glPushAttrib(GL_VIEWPORT_BIT);
+    glPushAttrib(GL_DEPTH_BUFFER_BIT);
+
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.apply(titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        unsigned int backdrop_index;
+        unsigned int max_backdrop_index;
+        if(_backdropType == OUTLINE)
+        {
+            backdrop_index = 0;
+            max_backdrop_index = 8;
+        }
+        else
+        {
+            backdrop_index = _backdropType;
+            max_backdrop_index = _backdropType+1;
+        }
+
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.disableColorPointer();
+        glColor4fv(_backdropColor.ptr());
+
+        for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+        {
+            const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+            if (!transformedBackdropCoords.empty()) 
+            {
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                glDepthRange(0.01f + ((max_backdrop_index-backdrop_index)/1000.0f), 1.0);
+
+                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+            }
+        }
+
+        glDepthRange(0.0, 0.982);
+
+        drawForegroundText(state, glyphquad);
+    }
+
+    glPopAttrib();
+}
+
+void Text::renderWithStencilBuffer(osg::State& state) const
+{
+    /* Here are the steps:
+     * 1) Disable drawing color
+     * 2) Enable the stencil buffer
+     * 3) Draw all the text to the stencil buffer
+     * 4) Disable the stencil buffer
+     * 5) Enable color
+     * 6) Disable the depth buffer
+     * 7) Draw all the text again.
+     * 7b) Make sure the foreground text is drawn last if priority levels
+     * are the same OR
+     * 7c) If priority levels are different, then make sure the foreground
+     * text has the higher priority.
+     */
+    unsigned int contextID = state.getContextID();
+
+    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_TEST);
+
+    // It seems I can get away without calling this here
+    //glClear(GL_STENCIL_BUFFER_BIT);
+
+    // enable stencil buffer
+    glEnable(GL_STENCIL_TEST);
+
+    // write a one to the stencil buffer everywhere we are about to draw
+    glStencilFunc(GL_ALWAYS, 1, 1);
+
+    // write only to the stencil buffer if we pass the depth test
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    // Disable writing to the color buffer so we only write to the stencil 
+    // buffer and the depth buffer
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+    // make sure the depth buffer is enabled
+//    glEnable(GL_DEPTH_TEST);
+//    glDepthMask(GL_TRUE);
+//    glDepthFunc(GL_LESS);
+
+    // Arrrgh! Why does the code only seem to work correctly if I call this?
+    glDepthMask(GL_FALSE);
+    
+
+    // Draw all the text to the stencil buffer to mark out the region
+    // that we can write too.
+    
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.apply(titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        unsigned int backdrop_index;
+        unsigned int max_backdrop_index;
+        if(_backdropType == OUTLINE)
+        {
+            backdrop_index = 0;
+            max_backdrop_index = 8;
+        }
+        else
+        {
+            backdrop_index = _backdropType;
+            max_backdrop_index = _backdropType+1;
+        }
+
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.disableColorPointer();
+
+        for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+        {
+            const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+            if (!transformedBackdropCoords.empty()) 
+            {
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+            }
+        }
+
+        // Draw the foreground text
+        const GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
+        if (!transformedCoords.empty()) 
+        {
+            state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
+            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+            glDrawArrays(GL_QUADS,0,transformedCoords.size());
+        }
+    }
+
+
+    // disable the depth buffer
+//    glDisable(GL_DEPTH_TEST);
+//    glDepthMask(GL_FALSE);
+//    glDepthMask(GL_TRUE);
+//    glDepthFunc(GL_ALWAYS);
+
+    // Set the stencil function to pass when the stencil is 1
+    // Bug: This call seems to have no effect. Try changing to NOTEQUAL
+    // and see the exact same results.
+    glStencilFunc(GL_EQUAL, 1, 1);
+
+    // disable writing to the stencil buffer
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilMask(GL_FALSE);
+
+    // Re-enable writing to the color buffer so we can see the results
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+
+    // Draw all the text again
+
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.apply(titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        unsigned int backdrop_index;
+        unsigned int max_backdrop_index;
+        if(_backdropType == OUTLINE)
+        {
+            backdrop_index = 0;
+            max_backdrop_index = 8;
+        }
+        else
+        {
+            backdrop_index = _backdropType;
+            max_backdrop_index = _backdropType+1;
+        }
+
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+        state.disableColorPointer();
+        glColor4fv(_backdropColor.ptr());
+
+        for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+        {
+            const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+            if (!transformedBackdropCoords.empty()) 
+            {
+                state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+            }
+        }
+
+        drawForegroundText(state, glyphquad);
+    }
+    
+    glPopAttrib();
+}
 
 
 

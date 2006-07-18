@@ -51,9 +51,9 @@ MAKEDEPEND = ignore
 ##               % make VERSION_REVISION=  
 ####################################################################### 
 VERSION_MAJOR    = 1
-VERSION_MINOR    = 0
+VERSION_MINOR    = 1
 VERSION_RELEASE  = 0
-VERSION_REVISION ?= 0
+VERSION_REVISION ?= 1
 ifneq (,$(OSG_VERSION_REVISION))
 VERSION_REVISION = $(OSG_VERSION_REVISION)
 endif

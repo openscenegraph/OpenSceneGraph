@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/test/CopyOp>
-#include <osg/test/Shape>
+#include <osg/Shape>
 #include <osgTerrain/HeightFieldNode>
 #include <osgTerrain/HeightFieldRenderer>
 

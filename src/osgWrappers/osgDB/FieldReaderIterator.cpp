@@ -11,10 +11,10 @@
 
 #include <osg/Vec2d>
 #include <osg/Vec2f>
+#include <osg/Vec3d>
+#include <osg/Vec3f>
 #include <osg/Vec4d>
-#include <osg/test/Vec3d>
-#include <osg/test/Vec3f>
-#include <osg/test/Vec4f>
+#include <osg/Vec4f>
 #include <osgDB/Field>
 #include <osgDB/FieldReader>
 #include <osgDB/FieldReaderIterator>

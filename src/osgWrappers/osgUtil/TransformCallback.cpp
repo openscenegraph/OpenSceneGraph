@@ -11,7 +11,7 @@
 
 #include <osg/Node>
 #include <osg/NodeVisitor>
-#include <osg/test/Vec3>
+#include <osg/Vec3>
 #include <osgUtil/TransformCallback>
 
 // Must undefine IN and OUT macros defined in Windows headers

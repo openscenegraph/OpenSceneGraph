@@ -10,9 +10,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
+#include <osg/CopyOp>
 #include <osg/Geometry>
-#include <osg/test/Array>
-#include <osg/test/CopyOp>
 #include <osgUtil/TangentSpaceGenerator>
 
 // Must undefine IN and OUT macros defined in Windows headers

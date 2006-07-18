@@ -9,8 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Referenced>
 #include <osg/StateSet>
-#include <osg/test/Referenced>
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/StateGraph>
 
@@ -61,24 +61,10 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
 	I_Method0(bool, valid);
 	I_Method0(osgUtil::RenderLeaf *, release);
 	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
-	I_Constructor0();
-	I_Constructor1(IN, osgUtil::RenderLeaf *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
-	I_Method0(osgUtil::RenderLeaf *, get);
-	I_Method0(bool, valid);
-	I_Method0(osgUtil::RenderLeaf *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::RenderLeaf > &, rp);
 	I_ReadOnlyProperty(osgUtil::RenderLeaf *, );
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::StateGraph >)
-	I_Constructor0();
-	I_Constructor1(IN, osgUtil::StateGraph *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osgUtil::StateGraph > &, rp);
-	I_Method0(osgUtil::StateGraph *, get);
-	I_Method0(bool, valid);
-	I_Method0(osgUtil::StateGraph *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::StateGraph > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osgUtil::StateGraph *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::StateGraph > &, rp);

@@ -9,7 +9,15 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 #include <osg/CullStack>
+#include <osg/CullingSet>
+#include <osg/Matrix>
+#include <osg/Node>
+#include <osg/ShadowVolumeOccluder>
+#include <osg/Vec3>
+#include <osg/Viewport>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -18,10 +26,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullStack::OccluderList);
-
-TYPE_NAME_ALIAS(std::vector< osg::CullingSet >, osg::CullStack::CullingStack);
 
 TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullStack::OccluderList);
 

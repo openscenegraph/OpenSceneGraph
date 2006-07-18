@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/AnimationPath>
+#include <osg/ApplicationUsage>
 #include <osg/Matrixd>
-#include <osg/test/AnimationPath>
-#include <osg/test/ApplicationUsage>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>

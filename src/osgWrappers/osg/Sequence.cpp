@@ -9,6 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
+#include <osg/NodeVisitor>
+#include <osg/Object>
 #include <osg/Sequence>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -19,11 +22,42 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::Sequence)
-	I_Constructor0();
+BEGIN_ENUM_REFLECTOR(osg::Sequence::LoopMode)
+	I_EnumLabel(osg::Sequence::LOOP);
+	I_EnumLabel(osg::Sequence::SWING);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Sequence)
+BEGIN_ENUM_REFLECTOR(osg::Sequence::SequenceMode)
+	I_EnumLabel(osg::Sequence::START);
+	I_EnumLabel(osg::Sequence::STOP);
+	I_EnumLabel(osg::Sequence::PAUSE);
+	I_EnumLabel(osg::Sequence::RESUME);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Sequence)
+	I_BaseType(osg::Group);
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Sequence &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, className);
+	I_Method0(const char *, libraryName);
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setValue, IN, int, value);
+	I_Method0(int, getValue);
+	I_Method2(void, setTime, IN, int, frame, IN, float, t);
+	I_Method1(float, getTime, IN, int, frame);
+	I_Method0(unsigned int, getNumFrames);
+	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end);
+	I_Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end);
+	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1);
+	I_Method2(void, getDuration, IN, float &, speed, IN, int &, nreps);
+	I_Method1(void, setMode, IN, osg::Sequence::SequenceMode, mode);
+	I_Method0(osg::Sequence::SequenceMode, getMode);
+	I_Property(osg::Sequence::SequenceMode, Mode);
+	I_IndexedProperty1(float, Time, int, frame);
+	I_Property(int, Value);
 END_REFLECTOR
 

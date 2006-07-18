@@ -9,7 +9,10 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Object>
+#include <osg/Referenced>
+#include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,11 +22,32 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::Object)
-	I_Constructor0();
+BEGIN_ENUM_REFLECTOR(osg::Object::DataVariance)
+	I_EnumLabel(osg::Object::DYNAMIC);
+	I_EnumLabel(osg::Object::STATIC);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Object)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
+	I_BaseType(osg::Referenced);
 	I_Constructor0();
+	I_Constructor1(IN, bool, threadSafeRefUnref);
+	I_ConstructorWithDefaults2(IN, const osg::Object &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, x);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method1(void, setName, IN, const std::string &, name);
+	I_Method1(void, setName, IN, const char *, name);
+	I_Method0(const std::string &, getName);
+	I_Method1(void, setDataVariance, IN, osg::Object::DataVariance, dv);
+	I_Method0(osg::Object::DataVariance, getDataVariance);
+	I_Method1(void, setUserData, IN, osg::Referenced *, obj);
+	I_Method0(osg::Referenced *, getUserData);
+	I_Method0(const osg::Referenced *, getUserData);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
+	I_Property(osg::Object::DataVariance, DataVariance);
+	I_Property(const std::string &, Name);
+	I_Property(osg::Referenced *, UserData);
 END_REFLECTOR
 

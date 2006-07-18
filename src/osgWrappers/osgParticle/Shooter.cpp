@@ -9,8 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/test/CopyOp>
 #include <osgParticle/Particle>
 #include <osgParticle/Shooter>
 

@@ -14,8 +14,7 @@
 #include <osg/Group>
 #include <osg/Node>
 #include <osg/PagedLOD>
-#include <osg/test/Drawable>
-#include <osg/test/State>
+#include <osg/State>
 #include <osgDB/DatabasePager>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -113,32 +112,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Property(bool, UseFrameBlock);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Drawable >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::Drawable *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::Drawable > &, rp);
-	I_Method0(osg::Drawable *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::Drawable *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::Drawable > &, rp);
-	I_Constructor0();
-	I_Constructor1(IN, osg::Drawable *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::Drawable > &, rp);
-	I_Method0(osg::Drawable *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::Drawable *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::Drawable > &, rp);
-	I_ReadOnlyProperty(osg::Drawable *, );
-END_REFLECTOR
-
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::PagedLOD *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp);
-	I_Method0(osg::PagedLOD *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::PagedLOD *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::PagedLOD > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osg::PagedLOD *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp);
@@ -158,6 +132,4 @@ STD_PAIR_REFLECTOR(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::D
 STD_SET_REFLECTOR(std::set< osg::ref_ptr< osg::StateSet > >);
 
 STD_SET_REFLECTOR(std::set< unsigned int >);
-
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Drawable > >);
 

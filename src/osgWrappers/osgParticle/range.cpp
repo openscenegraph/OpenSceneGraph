@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/test/Vec2>
-#include <osg/test/Vec3>
-#include <osg/test/Vec4>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgParticle/range>
 
 // Must undefine IN and OUT macros defined in Windows headers

@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/test/CopyOp>
-#include <osg/test/Vec3>
+#include <osg/Vec3>
 #include <osgParticle/CenteredPlacer>
 
 // Must undefine IN and OUT macros defined in Windows headers

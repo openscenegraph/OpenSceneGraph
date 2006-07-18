@@ -9,19 +9,19 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CameraNode>
+#include <osg/ColorMask>
+#include <osg/CopyOp>
 #include <osg/FrameBufferObject>
 #include <osg/GraphicsContext>
 #include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Object>
-#include <osg/test/CameraNode>
-#include <osg/test/ColorMask>
-#include <osg/test/CopyOp>
-#include <osg/test/State>
-#include <osg/test/StateAttribute>
-#include <osg/test/Texture>
-#include <osg/test/Vec4>
-#include <osg/test/Viewport>
+#include <osg/State>
+#include <osg/StateAttribute>
+#include <osg/Texture>
+#include <osg/Vec4>
+#include <osg/Viewport>
 #include <osgUtil/PositionalStateContainer>
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderLeaf>

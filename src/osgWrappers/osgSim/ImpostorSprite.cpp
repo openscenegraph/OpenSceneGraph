@@ -9,18 +9,18 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
+#include <osg/CameraNode>
+#include <osg/CopyOp>
+#include <osg/Drawable>
 #include <osg/Matrix>
 #include <osg/Object>
+#include <osg/PrimitiveSet>
+#include <osg/State>
 #include <osg/StateSet>
-#include <osg/test/BoundingBox>
-#include <osg/test/CameraNode>
-#include <osg/test/CopyOp>
-#include <osg/test/Drawable>
-#include <osg/test/PrimitiveSet>
-#include <osg/test/State>
-#include <osg/test/Texture2D>
-#include <osg/test/Vec2>
-#include <osg/test/Vec3>
+#include <osg/Texture2D>
+#include <osg/Vec2>
+#include <osg/Vec3>
 #include <osgSim/Impostor>
 #include <osgSim/ImpostorSprite>
 

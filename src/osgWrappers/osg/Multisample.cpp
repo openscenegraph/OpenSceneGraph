@@ -9,7 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
 #include <osg/Multisample>
+#include <osg/Object>
+#include <osg/State>
+#include <osg/StateAttribute>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,19 +23,52 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::Multisample)
-	I_Constructor0();
+BEGIN_ENUM_REFLECTOR(osg::Multisample::Mode)
+	I_EnumLabel(osg::Multisample::FASTEST);
+	I_EnumLabel(osg::Multisample::NICEST);
+	I_EnumLabel(osg::Multisample::DONT_CARE);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Multisample)
+BEGIN_OBJECT_REFLECTOR(osg::Multisample)
+	I_BaseType(osg::StateAttribute);
 	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osg::Multisample &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osg::StateAttribute::Type, getType);
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
+	I_Method2(void, setSampleCoverage, IN, float, coverage, IN, bool, invert);
+	I_Method1(void, setCoverage, IN, float, coverage);
+	I_Method0(float, getCoverage);
+	I_Method1(void, setInvert, IN, bool, invert);
+	I_Method0(bool, getInvert);
+	I_Method1(void, setHint, IN, osg::Multisample::Mode, mode);
+	I_Method0(osg::Multisample::Mode, getHint);
+	I_Method1(void, apply, IN, osg::State &, state);
+	I_Property(float, Coverage);
+	I_Property(osg::Multisample::Mode, Hint);
+	I_Property(bool, Invert);
+	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Multisample::Extensions)
-	I_Constructor0();
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::Multisample::Extensions)
-	I_Constructor0();
+BEGIN_OBJECT_REFLECTOR(osg::Multisample::Extensions)
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID);
+	I_Constructor1(IN, const osg::Multisample::Extensions &, rhs);
+	I_Method1(void, lowestCommonDenominator, IN, const osg::Multisample::Extensions &, rhs);
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
+	I_Method1(void, setMultisampleSupported, IN, bool, flag);
+	I_Method1(void, setMultisampleFilterHintSupported, IN, bool, flag);
+	I_Method0(bool, isMultisampleSupported);
+	I_Method0(bool, isMultisampleFilterHintSupported);
+	I_Method1(void, setSampleCoverageProc, IN, void *, ptr);
+	I_Method2(void, glSampleCoverage, IN, GLclampf, value, IN, GLboolean, invert);
+	I_WriteOnlyProperty(bool, MultisampleFilterHintSupported);
+	I_WriteOnlyProperty(bool, MultisampleSupported);
+	I_WriteOnlyProperty(void *, SampleCoverageProc);
+	I_WriteOnlyProperty(unsigned int, upGLExtenions);
 END_REFLECTOR
 

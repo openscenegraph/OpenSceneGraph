@@ -9,6 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Billboard>
+#include <osg/CameraNode>
+#include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/LOD>
@@ -16,14 +19,11 @@
 #include <osg/Matrix>
 #include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/Projection>
 #include <osg/Switch>
 #include <osg/Transform>
-#include <osg/test/Billboard>
-#include <osg/test/CameraNode>
-#include <osg/test/Drawable>
-#include <osg/test/Projection>
-#include <osg/test/Vec3>
-#include <osg/test/Viewport>
+#include <osg/Vec3>
+#include <osg/Viewport>
 #include <osgUtil/IntersectVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers

@@ -10,8 +10,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/NodeVisitor>
+#include <osg/State>
 #include <osg/StateSet>
-#include <osg/test/State>
 #include <osgFX/Effect>
 #include <osgFX/Technique>
 

@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/test/Vec4>
+#include <osg/Vec4>
 #include <osgSim/ColorRange>
 
 // Must undefine IN and OUT macros defined in Windows headers

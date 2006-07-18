@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/test/ApplicationUsage>
+#include <osg/ApplicationUsage>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandlerVisitor>

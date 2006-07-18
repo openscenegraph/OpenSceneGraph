@@ -10,8 +10,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Matrix>
-#include <osg/test/Vec3>
-#include <osg/test/Vec4>
+#include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgParticle/Interpolator>
 #include <osgParticle/Particle>
 #include <osgParticle/ParticleSystem>

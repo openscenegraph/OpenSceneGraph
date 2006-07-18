@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/test/CopyOp>
+#include <osg/CopyOp>
 #include <osgUtil/ReflectionMapGenerator>
 
 // Must undefine IN and OUT macros defined in Windows headers

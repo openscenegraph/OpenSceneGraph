@@ -119,7 +119,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
     StatsVisitor stats;
     
-    // if (osg::getNotifyLevel()>=osg::INFO)
+    if (osg::getNotifyLevel()>=osg::INFO)
     {
         node->accept(stats);
         stats.totalUpStats();
@@ -281,7 +281,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         sv.divide();
     }
     
-    // if (osg::getNotifyLevel()>=osg::INFO)
+    if (osg::getNotifyLevel()>=osg::INFO)
     {
         stats.reset();
         node->accept(stats);

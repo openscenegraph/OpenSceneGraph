@@ -178,6 +178,7 @@ bool validName(const std::string& first)
     if (first=="Files") return false;
     if (first=="Mr") return false;
     if (first=="Osfields") return false;
+    if (first=="Optimizer") return false;
     return true;
 }
 

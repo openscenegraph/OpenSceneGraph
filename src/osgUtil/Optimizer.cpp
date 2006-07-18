@@ -27,6 +27,7 @@
 #include <osg/PagedLOD>
 #include <osg/ProxyNode>
 #include <osg/Timer>
+#include <osg/io_utils>
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
@@ -114,7 +115,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
     StatsVisitor stats;
     
-    if (osg::getNotifyLevel()>=osg::INFO)
+    // if (osg::getNotifyLevel()>=osg::INFO)
     {
         node->accept(stats);
         stats.totalUpStats();
@@ -199,7 +200,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         cstv.removeTransforms(node);
 
     }
-    
 
     if (options & MERGE_GEODES)
     {
@@ -261,6 +261,13 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
+    if (options & FLATTEN_BILLBOARDS)
+    {
+        FlattenBillboardVisitor fbv(this);
+        node->accept(fbv);
+        fbv.process();
+    }
+
     if (options & SPATIALIZE_GROUPS)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
@@ -270,7 +277,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         sv.divide();
     }
     
-    if (osg::getNotifyLevel()>=osg::INFO)
+    // if (osg::getNotifyLevel()>=osg::INFO)
     {
         stats.reset();
         node->accept(stats);
@@ -2829,5 +2836,112 @@ bool Optimizer::MergeGeodesVisitor::mergeGeode(osg::Geode& lhs, osg::Geode& rhs)
     }
 
     return true;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// FlattenBillboardVisitor
+////////////////////////////////////////////////////////////////////////////
+void Optimizer::FlattenBillboardVisitor::reset()
+{
+    _billboards.clear();
+}
+
+void Optimizer::FlattenBillboardVisitor::apply(osg::Billboard& billboard)
+{
+    _billboards[&billboard].push_back(getNodePath());
+}
+
+void Optimizer::FlattenBillboardVisitor::process()
+{
+    for(BillboardNodePathMap::iterator itr = _billboards.begin();
+        itr != _billboards.end();
+        ++itr)
+    {
+        bool mergeAcceptable = true;    
+
+        osg::ref_ptr<osg::Billboard> billboard = itr->first;
+
+        NodePathList& npl = itr->second;
+        osg::Group* mainGroup = 0;
+        if (npl.size()>1)
+        {        
+            for(NodePathList::iterator nitr = npl.begin();
+                nitr != npl.end();
+                ++nitr)
+            {
+                osg::NodePath& np = *nitr;
+                if (np.size()>=3)
+                {
+                    osg::Group* group = dynamic_cast<osg::Group*>(np[np.size()-3]);
+                    if (mainGroup==0) mainGroup = group;
+
+                    osg::MatrixTransform* mt = dynamic_cast<osg::MatrixTransform*>(np[np.size()-2]);
+
+                    if (group == mainGroup &&
+                        np[np.size()-1]==billboard.get() && 
+                        mt && mt->getDataVariance()==osg::Object::STATIC &&
+                        mt->getNumChildren()==1)
+                    {
+                        const osg::Matrix& m = mt->getMatrix();
+                        mergeAcceptable = (m(0,0)==1.0 && m(0,1)==0.0 && m(0,2)==0.0 && m(0,3)==0.0 &&
+                                           m(1,0)==0.0 && m(1,1)==1.0 && m(1,2)==0.0 && m(1,3)==0.0 &&
+                                           m(2,0)==0.0 && m(2,1)==0.0 && m(2,2)==1.0 && m(2,3)==0.0 &&
+                                           m(3,3)==1.0);
+                    }
+                    else
+                    {
+                       mergeAcceptable = false;
+                    }
+                }
+                else
+                {
+                    mergeAcceptable = false;
+                }
+            }
+        }
+        else
+        {
+            mergeAcceptable = false;
+        }
+
+        if (mergeAcceptable)
+        {
+            osg::Billboard* new_billboard = new osg::Billboard;
+            new_billboard->setMode(billboard->getMode());
+            new_billboard->setAxis(billboard->getAxis());
+            new_billboard->setStateSet(billboard->getStateSet());
+            new_billboard->setName(billboard->getName());                
+
+            mainGroup->addChild(new_billboard);
+
+            typedef std::set<osg::MatrixTransform*> MatrixTransformSet;
+            MatrixTransformSet mts;
+
+            for(NodePathList::iterator nitr = npl.begin();
+                nitr != npl.end();
+                ++nitr)
+            {
+                osg::NodePath& np = *nitr;
+                osg::MatrixTransform* mt = dynamic_cast<osg::MatrixTransform*>(np[np.size()-2]);
+                mts.insert(mt);
+            }
+
+            for(MatrixTransformSet::iterator mitr = mts.begin();
+                mitr != mts.end();
+                ++mitr)
+            {
+                osg::MatrixTransform* mt = *mitr;
+                for(unsigned int i=0; i<billboard->getNumDrawables(); ++i)
+                {
+                    new_billboard->addDrawable(billboard->getDrawable(i),
+                                               billboard->getPosition(i)*mt->getMatrix());
+                }
+                mainGroup->removeChild(mt);
+            }
+        }
+    }
+
 }
 

@@ -179,6 +179,7 @@ bool validName(const std::string& first)
     if (first=="Mr") return false;
     if (first=="Osfields") return false;
     if (first=="Optimizer") return false;
+    if (first=="RenderStage") return false;
     return true;
 }
 

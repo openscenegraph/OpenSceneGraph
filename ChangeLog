@@ -1,3 +1,81 @@
+2006-07-18 14:05  robert
+
+	* include/osgUtil/CullVisitor: From Farshid Lashakari, fixed
+	  popStateSet.
+
+2006-07-18 14:04  robert
+
+	* src/osgUtil/Optimizer.cpp: Reduced the verbosity of debug info.
+
+2006-07-18 13:48  robert
+
+	* src/osgWrappers/osgText/Text.cpp: Updated wrappers
+
+2006-07-18 13:24  robert
+
+	* examples/osglogo/osglogo.cpp, include/osg/PolygonOffset,
+	  include/osgText/Text, src/osg/PolygonOffset.cpp,
+	  src/osgText/Text.cpp: From Eric Wing, add alternate backdrop
+	  implementations.
+
+	  From Robert Osfield, updated naming  and copy constructor
+	  methods.
+
+2006-07-18 12:42  robert
+
+	* src/: osgUtil/Optimizer.cpp, osgWrappers/osgUtil/Optimizer.cpp:
+	  Updated wrappers
+
+2006-07-18 12:03  robert
+
+	* include/osgUtil/Optimizer, src/osg/Geode.cpp,
+	  src/osgUtil/Optimizer.cpp: Added
+	  Optimizer::FlattenBillboardsVisitor.
+
+2006-07-17 17:36  robert
+
+	* src/osgPlugins/txp/TXPParser.cpp: From Terrex, improvements to
+	  handling of layers w.r.t PolygonOffset
+
+2006-07-17 14:16  robert
+
+	* applications/osgconv/osgconv.cpp: Removed the usage of setenv to
+	  avoid portability issues.
+
+2006-07-17 12:43  robert
+
+	* include/osg/PolygonOffset, src/osg/PolygonOffset.cpp,
+	  src/osgProducer/ViewerEventHandler.cpp, src/osgText/Text.cpp:
+	  Change Unit to Units to keep consistent with OpenGL naming.
+
+2006-07-17 12:37  robert
+
+	* src/osgProducer/ViewerEventHandler.cpp: Added *,/,+ and -
+	  keyboard controls for toggling PolygonOffset factor and units
+
+2006-07-17 12:36  robert
+
+	* src/osgPlugins/txp/TXPParser.h: Added getNumLayers method
+
+2006-07-17 11:25  robert
+
+	* src/osgText/Text.cpp: Increased the unit multiplier to 3 to avoid
+	  z fighting.
+
+2006-07-17 11:24  robert
+
+	* src/osg/PolygonOffset.cpp: Changed the Radeon defaults to 1, 128
+	  for the factor and unit mulitpliers respectively.
+
+2006-07-14 22:02  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Updated
+	  osgversion and AUTHORS.txt for release
+
+2006-07-14 21:50  robert
+
+	* ChangeLog: Updated ChangeLog for the release
+
 2006-07-14 21:46  robert
 
 	* NEWS.txt: Updated news for rc2.

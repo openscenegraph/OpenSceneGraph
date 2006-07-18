@@ -87,6 +87,7 @@ Yuzhong Shen
 Tugkan Calapoglu
 Tony Horrobin
 Tim Daoust
+Terrex 
 Steve Lunsford
 Stanislav Blinov
 Perry Miller
@@ -128,7 +129,6 @@ Tyge
 Troy Yee
 Tino Schwarze
 Thom Carlo
-Terrex 
 Tanguy Fautré
 Shane Arnott
 Sebastien Kuntz

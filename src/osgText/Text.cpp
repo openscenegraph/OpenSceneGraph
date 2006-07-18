@@ -1870,9 +1870,6 @@ void Text::renderOnlyForegroundText(osg::State& state) const
 
 void Text::renderWithPolygonOffset(osg::State& state) const
 {
-//    glNormal3fv(_normal.ptr());
-
-//    state.disableAllVertexArrays();
     unsigned int contextID = state.getContextID();
 
 
@@ -2054,7 +2051,8 @@ void Text::renderWithStencilBuffer(osg::State& state) const
      * text has the higher priority.
      */
     unsigned int contextID = state.getContextID();
-
+    TextureGlyphQuadMap::iterator titr; // Moved up here for VC6
+    
     glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_TEST);
 
     // It seems I can get away without calling this here
@@ -2085,7 +2083,7 @@ void Text::renderWithStencilBuffer(osg::State& state) const
     // Draw all the text to the stencil buffer to mark out the region
     // that we can write too.
     
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
@@ -2152,7 +2150,7 @@ void Text::renderWithStencilBuffer(osg::State& state) const
 
     // Draw all the text again
 
-    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+    for(titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {

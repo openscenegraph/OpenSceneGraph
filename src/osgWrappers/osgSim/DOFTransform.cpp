@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Vec3>
+#include <osg/test/CopyOp>
+#include <osg/test/Vec3>
 #include <osgSim/DOFTransform>
 
 // Must undefine IN and OUT macros defined in Windows headers

@@ -10,11 +10,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CoordinateSystemNode>
-#include <osg/CopyOp>
-#include <osg/Matrixd>
-#include <osg/NodeVisitor>
-#include <osg/Object>
-#include <osg/Vec3d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -23,55 +18,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_OBJECT_REFLECTOR(osg::CoordinateSystemNode)
-	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_Constructor2(IN, const std::string &, format, IN, const std::string &, cs);
-	I_ConstructorWithDefaults2(IN, const osg::CoordinateSystemNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, set, IN, const osg::CoordinateSystemNode &, csn);
-	I_Method1(void, setFormat, IN, const std::string &, format);
-	I_Method0(const std::string &, getFormat);
-	I_Method1(void, setCoordinateSystem, IN, const std::string &, cs);
-	I_Method0(const std::string &, getCoordinateSystem);
-	I_Method1(void, setEllipsoidModel, IN, osg::EllipsoidModel *, ellipsode);
-	I_Method0(osg::EllipsoidModel *, getEllipsoidModel);
-	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel);
-	I_Method1(osg::CoordinateFrame, computeLocalCoordinateFrame, IN, const osg::Vec3d &, position);
-	I_Method1(osg::Vec3d, computeLocalUpVector, IN, const osg::Vec3d &, position);
-	I_WriteOnlyProperty(const osg::CoordinateSystemNode &, );
-	I_Property(const std::string &, CoordinateSystem);
-	I_Property(osg::EllipsoidModel *, EllipsoidModel);
-	I_Property(const std::string &, Format);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::EllipsoidModel)
-	I_BaseType(osg::Object);
-	I_ConstructorWithDefaults2(IN, double, radiusEquator, osg::WGS_84_RADIUS_EQUATOR, IN, double, radiusPolar, osg::WGS_84_RADIUS_POLAR);
-	I_ConstructorWithDefaults2(IN, const osg::EllipsoidModel &, et, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setRadiusEquator, IN, double, radius);
-	I_Method0(double, getRadiusEquator);
-	I_Method1(void, setRadiusPolar, IN, double, radius);
-	I_Method0(double, getRadiusPolar);
-	I_Method6(void, convertLatLongHeightToXYZ, IN, double, latitude, IN, double, longitude, IN, double, height, IN, double &, X, IN, double &, Y, IN, double &, Z);
-	I_Method6(void, convertXYZToLatLongHeight, IN, double, X, IN, double, Y, IN, double, Z, IN, double &, latitude, IN, double &, longitude, IN, double &, height);
-	I_Method4(void, computeLocalToWorldTransformFromLatLongHeight, IN, double, latitude, IN, double, longitude, IN, double, height, IN, osg::Matrixd &, localToWorld);
-	I_Method4(void, computeLocalToWorldTransformFromXYZ, IN, double, X, IN, double, Y, IN, double, Z, IN, osg::Matrixd &, localToWorld);
-	I_Method3(osg::Vec3d, computeLocalUpVector, IN, double, X, IN, double, Y, IN, double, Z);
-	I_Property(double, RadiusEquator);
-	I_Property(double, RadiusPolar);
-END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::Matrixd, osg::CoordinateFrame);
 

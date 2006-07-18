@@ -9,7 +9,6 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ArgumentParser>
 #include <osg/DisplaySettings>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -48,90 +47,31 @@ BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoVerticalEyeMapping)
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
-	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Constructor1(IN, osg::ArgumentParser &, arguments);
-	I_Constructor1(IN, const osg::DisplaySettings &, vs);
-	I_Method1(void, setDisplaySettings, IN, const osg::DisplaySettings &, vs);
-	I_Method1(void, merge, IN, const osg::DisplaySettings &, vs);
-	I_Method0(void, setDefaults);
-	I_Method0(void, readEnvironmentalVariables);
-	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, arguments);
-	I_Method1(void, setDisplayType, IN, osg::DisplaySettings::DisplayType, type);
-	I_Method0(osg::DisplaySettings::DisplayType, getDisplayType);
-	I_Method1(void, setStereo, IN, bool, on);
-	I_Method0(bool, getStereo);
-	I_Method1(void, setStereoMode, IN, osg::DisplaySettings::StereoMode, mode);
-	I_Method0(osg::DisplaySettings::StereoMode, getStereoMode);
-	I_Method1(void, setEyeSeparation, IN, float, eyeSeparation);
-	I_Method0(float, getEyeSeparation);
-	I_Method1(void, setSplitStereoHorizontalEyeMapping, IN, osg::DisplaySettings::SplitStereoHorizontalEyeMapping, m);
-	I_Method0(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, getSplitStereoHorizontalEyeMapping);
-	I_Method1(void, setSplitStereoHorizontalSeparation, IN, int, s);
-	I_Method0(int, getSplitStereoHorizontalSeparation);
-	I_Method1(void, setSplitStereoVerticalEyeMapping, IN, osg::DisplaySettings::SplitStereoVerticalEyeMapping, m);
-	I_Method0(osg::DisplaySettings::SplitStereoVerticalEyeMapping, getSplitStereoVerticalEyeMapping);
-	I_Method1(void, setSplitStereoVerticalSeparation, IN, int, s);
-	I_Method0(int, getSplitStereoVerticalSeparation);
-	I_Method1(void, setSplitStereoAutoAjustAspectRatio, IN, bool, flag);
-	I_Method0(bool, getSplitStereoAutoAjustAspectRatio);
-	I_Method1(void, setScreenWidth, IN, float, width);
-	I_Method0(float, getScreenWidth);
-	I_Method1(void, setScreenHeight, IN, float, height);
-	I_Method0(float, getScreenHeight);
-	I_Method1(void, setScreenDistance, IN, float, distance);
-	I_Method0(float, getScreenDistance);
-	I_Method1(void, setDoubleBuffer, IN, bool, flag);
-	I_Method0(bool, getDoubleBuffer);
-	I_Method1(void, setRGB, IN, bool, flag);
-	I_Method0(bool, getRGB);
-	I_Method1(void, setDepthBuffer, IN, bool, flag);
-	I_Method0(bool, getDepthBuffer);
-	I_Method1(void, setMinimumNumAlphaBits, IN, unsigned int, bits);
-	I_Method0(unsigned int, getMinimumNumAlphaBits);
-	I_Method0(bool, getAlphaBuffer);
-	I_Method1(void, setMinimumNumStencilBits, IN, unsigned int, bits);
-	I_Method0(unsigned int, getMinimumNumStencilBits);
-	I_Method0(bool, getStencilBuffer);
-	I_Method4(void, setMinimumNumAccumBits, IN, unsigned int, red, IN, unsigned int, green, IN, unsigned int, blue, IN, unsigned int, alpha);
-	I_Method0(unsigned int, getMinimumNumAccumRedBits);
-	I_Method0(unsigned int, getMinimumNumAccumGreenBits);
-	I_Method0(unsigned int, getMinimumNumAccumBlueBits);
-	I_Method0(unsigned int, getMinimumNumAccumAlphaBits);
-	I_Method0(bool, getAccumBuffer);
-	I_Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num);
-	I_Method0(unsigned int, getMaxNumberOfGraphicsContexts);
-	I_Method1(void, setNumMultiSamples, IN, unsigned int, samples);
-	I_Method0(unsigned int, getNumMultiSamples);
-	I_Method0(bool, getMultiSamples);
-	I_ReadOnlyProperty(bool, AccumBuffer);
-	I_ReadOnlyProperty(bool, AlphaBuffer);
-	I_Property(bool, DepthBuffer);
-	I_WriteOnlyProperty(const osg::DisplaySettings &, DisplaySettings);
-	I_Property(osg::DisplaySettings::DisplayType, DisplayType);
-	I_Property(bool, DoubleBuffer);
-	I_Property(float, EyeSeparation);
-	I_Property(unsigned int, MaxNumberOfGraphicsContexts);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumAlphaBits);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumBlueBits);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumGreenBits);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumRedBits);
-	I_Property(unsigned int, MinimumNumAlphaBits);
-	I_Property(unsigned int, MinimumNumStencilBits);
-	I_ReadOnlyProperty(bool, MultiSamples);
-	I_WriteOnlyProperty(unsigned int, NumMultiSamples);
-	I_Property(bool, RGB);
-	I_Property(float, ScreenDistance);
-	I_Property(float, ScreenHeight);
-	I_Property(float, ScreenWidth);
-	I_Property(bool, SplitStereoAutoAjustAspectRatio);
-	I_Property(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, SplitStereoHorizontalEyeMapping);
-	I_Property(int, SplitStereoHorizontalSeparation);
-	I_Property(osg::DisplaySettings::SplitStereoVerticalEyeMapping, SplitStereoVerticalEyeMapping);
-	I_Property(int, SplitStereoVerticalSeparation);
-	I_ReadOnlyProperty(bool, StencilBuffer);
-	I_Property(bool, Stereo);
-	I_Property(osg::DisplaySettings::StereoMode, StereoMode);
+BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::DisplayType)
+	I_EnumLabel(osg::DisplaySettings::MONITOR);
+	I_EnumLabel(osg::DisplaySettings::POWERWALL);
+	I_EnumLabel(osg::DisplaySettings::REALITY_CENTER);
+	I_EnumLabel(osg::DisplaySettings::HEAD_MOUNTED_DISPLAY);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::StereoMode)
+	I_EnumLabel(osg::DisplaySettings::QUAD_BUFFER);
+	I_EnumLabel(osg::DisplaySettings::ANAGLYPHIC);
+	I_EnumLabel(osg::DisplaySettings::HORIZONTAL_SPLIT);
+	I_EnumLabel(osg::DisplaySettings::VERTICAL_SPLIT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE);
+	I_EnumLabel(osg::DisplaySettings::RIGHT_EYE);
+	I_EnumLabel(osg::DisplaySettings::HORIZONTAL_INTERLACE);
+	I_EnumLabel(osg::DisplaySettings::VERTICAL_INTERLACE);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoHorizontalEyeMapping)
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_RIGHT_VIEWPORT);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoVerticalEyeMapping)
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT);
+	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
 END_REFLECTOR
 

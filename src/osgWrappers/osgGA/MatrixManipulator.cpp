@@ -12,7 +12,7 @@
 #include <osg/CoordinateSystemNode>
 #include <osg/Matrixd>
 #include <osg/Node>
-#include <osg/Vec3d>
+#include <osg/test/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandlerVisitor>

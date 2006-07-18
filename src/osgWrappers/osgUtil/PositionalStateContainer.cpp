@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/Object>
-#include <osg/State>
-#include <osg/StateAttribute>
+#include <osg/test/CopyOp>
+#include <osg/test/State>
+#include <osg/test/StateAttribute>
 #include <osgUtil/PositionalStateContainer>
 #include <osgUtil/RenderLeaf>
 
@@ -46,6 +46,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
+	I_Constructor0();
+	I_Constructor1(IN, osg::RefMatrix *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp);
+	I_Method0(osg::RefMatrix *, get);
+	I_Method0(bool, valid);
+	I_Method0(osg::RefMatrix *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::RefMatrix > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osg::RefMatrix *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp);

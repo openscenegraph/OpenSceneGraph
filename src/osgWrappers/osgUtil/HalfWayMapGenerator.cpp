@@ -9,8 +9,8 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
-#include <osg/Vec3>
+#include <osg/test/CopyOp>
+#include <osg/test/Vec3>
 #include <osgUtil/HalfWayMapGenerator>
 
 // Must undefine IN and OUT macros defined in Windows headers

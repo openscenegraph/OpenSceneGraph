@@ -12,7 +12,7 @@
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
-#include <osg/Shape>
+#include <osg/test/Shape>
 #include <osgDB/Archive>
 #include <osgDB/ReaderWriter>
 

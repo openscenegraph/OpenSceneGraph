@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/Vec3>
+#include <osg/test/CopyOp>
+#include <osg/test/Vec3>
 #include <osgParticle/ForceOperator>
 #include <osgParticle/Particle>
 #include <osgParticle/Program>

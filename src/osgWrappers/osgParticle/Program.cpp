@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/test/CopyOp>
 #include <osgParticle/Program>
 
 // Must undefine IN and OUT macros defined in Windows headers

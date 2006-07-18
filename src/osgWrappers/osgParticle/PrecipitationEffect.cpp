@@ -9,16 +9,16 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Fog>
 #include <osg/Geometry>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/PrimitiveSet>
-#include <osg/State>
 #include <osg/StateSet>
-#include <osg/Vec3>
-#include <osg/Vec4>
+#include <osg/test/CopyOp>
+#include <osg/test/PrimitiveSet>
+#include <osg/test/State>
+#include <osg/test/Vec3>
+#include <osg/test/Vec4>
 #include <osgParticle/PrecipitationEffect>
 
 // Must undefine IN and OUT macros defined in Windows headers

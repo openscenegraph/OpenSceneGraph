@@ -124,19 +124,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Billboard.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\BlendColor.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\BlendEquation.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\BlendFunc.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\BoundingBox.cpp
 # End Source File
 
 # Begin Source File
@@ -160,31 +152,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\ClampColor.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\ClearNode.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\ClipNode.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\ClipPlane.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\ClusterCullingCallback.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\CollectOccludersVisitor.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\ColorMask.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\ColorMatrix.cpp
 # End Source File
 
 # Begin Source File
@@ -388,27 +360,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Point.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\PointSprite.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\PolygonMode.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\PolygonOffset.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\PolygonStipple.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Polytope.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\PositionAttitudeTransform.cpp
 # End Source File
 
 # Begin Source File
@@ -420,19 +376,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Program.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Projection.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\ProxyNode.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Quat.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
 # End Source File
 
 # Begin Source File
@@ -484,42 +432,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\Switch.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexEnv.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexEnvCombine.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexEnvFilter.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexGen.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexGenNode.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexMat.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Texture.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Texture1D.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Texture2D.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Texture3D.cpp
 # End Source File
 
@@ -544,10 +456,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\Uniform.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec2.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec2b.cpp
 # End Source File
 
@@ -564,43 +472,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec2s.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec3.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec3b.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec3d.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec3f.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec3s.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec4.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec4b.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec4d.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec4f.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec4s.cpp
 # End Source File
 
 # Begin Source File
@@ -609,10 +485,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec4ub.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\VertexProgram.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Viewport.cpp
 # End Source File
 
 # Begin Source File

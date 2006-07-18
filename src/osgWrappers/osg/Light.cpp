@@ -9,13 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Light>
-#include <osg/Object>
-#include <osg/State>
-#include <osg/StateAttribute>
-#include <osg/Vec3>
-#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -25,55 +19,11 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osg::Light)
-	I_BaseType(osg::StateAttribute);
+BEGIN_VALUE_REFLECTOR(osg::Light)
 	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Light &, light, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method0(unsigned int, getMember);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, setLightNum, IN, int, num);
-	I_Method0(int, getLightNum);
-	I_Method1(void, setAmbient, IN, const osg::Vec4 &, ambient);
-	I_Method0(const osg::Vec4 &, getAmbient);
-	I_Method1(void, setDiffuse, IN, const osg::Vec4 &, diffuse);
-	I_Method0(const osg::Vec4 &, getDiffuse);
-	I_Method1(void, setSpecular, IN, const osg::Vec4 &, specular);
-	I_Method0(const osg::Vec4 &, getSpecular);
-	I_Method1(void, setPosition, IN, const osg::Vec4 &, position);
-	I_Method0(const osg::Vec4 &, getPosition);
-	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction);
-	I_Method0(const osg::Vec3 &, getDirection);
-	I_Method1(void, setConstantAttenuation, IN, float, constant_attenuation);
-	I_Method0(float, getConstantAttenuation);
-	I_Method1(void, setLinearAttenuation, IN, float, linear_attenuation);
-	I_Method0(float, getLinearAttenuation);
-	I_Method1(void, setQuadraticAttenuation, IN, float, quadratic_attenuation);
-	I_Method0(float, getQuadraticAttenuation);
-	I_Method1(void, setSpotExponent, IN, float, spot_exponent);
-	I_Method0(float, getSpotExponent);
-	I_Method1(void, setSpotCutoff, IN, float, spot_cutoff);
-	I_Method0(float, getSpotCutoff);
-	I_Method0(void, captureLightState);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(const osg::Vec4 &, Ambient);
-	I_Property(float, ConstantAttenuation);
-	I_Property(const osg::Vec4 &, Diffuse);
-	I_Property(const osg::Vec3 &, Direction);
-	I_Property(int, LightNum);
-	I_Property(float, LinearAttenuation);
-	I_ReadOnlyProperty(unsigned int, Member);
-	I_Property(const osg::Vec4 &, Position);
-	I_Property(float, QuadraticAttenuation);
-	I_Property(const osg::Vec4 &, Specular);
-	I_Property(float, SpotCutoff);
-	I_Property(float, SpotExponent);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Light)
+	I_Constructor0();
 END_REFLECTOR
 

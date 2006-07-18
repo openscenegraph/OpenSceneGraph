@@ -10,7 +10,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Geometry>
-#include <osg/Vec3>
+#include <osg/test/Vec3>
 #include <osgUtil/Tesselator>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -74,6 +74,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tesselator::Prim)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tesselator::Prim >)
+	I_Constructor0();
+	I_Constructor1(IN, osgUtil::Tesselator::Prim *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);
+	I_Method0(osgUtil::Tesselator::Prim *, get);
+	I_Method0(bool, valid);
+	I_Method0(osgUtil::Tesselator::Prim *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osgUtil::Tesselator::Prim *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Tesselator::Prim > &, rp);

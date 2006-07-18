@@ -9,20 +9,20 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CameraNode>
-#include <osg/CollectOccludersVisitor>
-#include <osg/DisplaySettings>
 #include <osg/FrameStamp>
 #include <osg/Light>
 #include <osg/Matrixd>
 #include <osg/Matrixf>
 #include <osg/Node>
 #include <osg/NodeVisitor>
-#include <osg/State>
 #include <osg/StateSet>
-#include <osg/Vec3>
-#include <osg/Vec4>
-#include <osg/Viewport>
+#include <osg/test/CameraNode>
+#include <osg/test/CollectOccludersVisitor>
+#include <osg/test/DisplaySettings>
+#include <osg/test/State>
+#include <osg/test/Vec3>
+#include <osg/test/Vec4>
+#include <osg/test/Viewport>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/RenderStage>
 #include <osgUtil/SceneView>

@@ -19,18 +19,11 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
-	I_BaseType(osg::Referenced);
+BEGIN_VALUE_REFLECTOR(osg::FrameStamp)
 	I_Constructor0();
-	I_Constructor1(IN, const osg::FrameStamp &, fs);
-	I_Method1(void, setFrameNumber, IN, int, fnum);
-	I_Method0(int, getFrameNumber);
-	I_Method1(void, setReferenceTime, IN, double, refTime);
-	I_Method0(double, getReferenceTime);
-	I_Method1(void, setCalendarTime, IN, const tm &, calendarTime);
-	I_Method1(void, getCalendarTime, IN, tm &, calendarTime);
-	I_WriteOnlyProperty(const tm &, CalendarTime);
-	I_Property(int, FrameNumber);
-	I_Property(double, ReferenceTime);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::FrameStamp)
+	I_Constructor0();
 END_REFLECTOR
 

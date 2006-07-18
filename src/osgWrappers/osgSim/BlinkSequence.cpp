@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/Vec4>
+#include <osg/test/CopyOp>
+#include <osg/test/Vec4>
 #include <osgSim/BlinkSequence>
 
 // Must undefine IN and OUT macros defined in Windows headers

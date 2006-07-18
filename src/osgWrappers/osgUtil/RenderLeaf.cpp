@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Drawable>
 #include <osg/Matrix>
-#include <osg/State>
+#include <osg/test/Drawable>
+#include <osg/test/State>
 #include <osgUtil/RenderLeaf>
 
 // Must undefine IN and OUT macros defined in Windows headers

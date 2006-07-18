@@ -9,12 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Fog>
-#include <osg/Object>
-#include <osg/State>
-#include <osg/StateAttribute>
-#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -24,48 +19,11 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osg::Fog::Mode)
-	I_EnumLabel(osg::Fog::LINEAR);
-	I_EnumLabel(osg::Fog::EXP);
-	I_EnumLabel(osg::Fog::EXP2);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osg::Fog::FogCoordinateSource)
-	I_EnumLabel(osg::Fog::FOG_COORDINATE);
-	I_EnumLabel(osg::Fog::FRAGMENT_DEPTH);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::Fog)
-	I_BaseType(osg::StateAttribute);
+BEGIN_VALUE_REFLECTOR(osg::Fog)
 	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Fog &, fog, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, setMode, IN, osg::Fog::Mode, mode);
-	I_Method0(osg::Fog::Mode, getMode);
-	I_Method1(void, setDensity, IN, float, density);
-	I_Method0(float, getDensity);
-	I_Method1(void, setStart, IN, float, start);
-	I_Method0(float, getStart);
-	I_Method1(void, setEnd, IN, float, end);
-	I_Method0(float, getEnd);
-	I_Method1(void, setColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getColor);
-	I_Method1(void, setFogCoordinateSource, IN, GLint, source);
-	I_Method0(GLint, getFogCoordinateSource);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(const osg::Vec4 &, Color);
-	I_Property(float, Density);
-	I_Property(float, End);
-	I_Property(GLint, FogCoordinateSource);
-	I_Property(osg::Fog::Mode, Mode);
-	I_Property(float, Start);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Fog)
+	I_Constructor0();
 END_REFLECTOR
 

@@ -9,11 +9,6 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingSphere>
-#include <osg/CopyOp>
-#include <osg/Node>
-#include <osg/NodeVisitor>
-#include <osg/Object>
 #include <osg/Switch>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,42 +19,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< bool >, osg::Switch::ValueList);
-
-BEGIN_OBJECT_REFLECTOR(osg::Switch)
-	I_BaseType(osg::Group);
+BEGIN_VALUE_REFLECTOR(osg::Switch)
 	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Switch &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setNewChildDefaultValue, IN, bool, value);
-	I_Method0(bool, getNewChildDefaultValue);
-	I_Method1(bool, addChild, IN, osg::Node *, child);
-	I_Method2(bool, addChild, IN, osg::Node *, child, IN, bool, value);
-	I_Method2(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child);
-	I_Method3(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child, IN, bool, value);
-	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
-	I_Method2(void, setValue, IN, unsigned int, pos, IN, bool, value);
-	I_Method1(bool, getValue, IN, unsigned int, pos);
-	I_Method2(void, setChildValue, IN, const osg::Node *, child, IN, bool, value);
-	I_Method1(bool, getChildValue, IN, const osg::Node *, child);
-	I_Method0(bool, setAllChildrenOff);
-	I_Method0(bool, setAllChildrenOn);
-	I_Method1(bool, setSingleChildOn, IN, unsigned int, pos);
-	I_Method1(void, setValueList, IN, const osg::Switch::ValueList &, values);
-	I_Method0(const osg::Switch::ValueList &, getValueList);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_IndexedProperty1(bool, ChildValue, const osg::Node *, child);
-	I_Property(bool, NewChildDefaultValue);
-	I_WriteOnlyPropertyWithReturnType(unsigned int, SingleChildOn, bool);
-	I_IndexedProperty1(bool, Value, unsigned int, pos);
-	I_Property(const osg::Switch::ValueList &, ValueList);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< bool >);
+BEGIN_VALUE_REFLECTOR(osg::Switch)
+	I_Constructor0();
+END_REFLECTOR
 

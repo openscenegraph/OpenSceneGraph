@@ -9,11 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/LogicOp>
-#include <osg/Object>
-#include <osg/State>
-#include <osg/StateAttribute>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -23,42 +19,11 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osg::LogicOp::Opcode)
-	I_EnumLabel(osg::LogicOp::CLEAR);
-	I_EnumLabel(osg::LogicOp::SET);
-	I_EnumLabel(osg::LogicOp::COPY);
-	I_EnumLabel(osg::LogicOp::COPY_INVERTED);
-	I_EnumLabel(osg::LogicOp::NOOP);
-	I_EnumLabel(osg::LogicOp::INVERT);
-	I_EnumLabel(osg::LogicOp::AND);
-	I_EnumLabel(osg::LogicOp::NAND);
-	I_EnumLabel(osg::LogicOp::OR);
-	I_EnumLabel(osg::LogicOp::NOR);
-	I_EnumLabel(osg::LogicOp::XOR);
-	I_EnumLabel(osg::LogicOp::EQUIV);
-	I_EnumLabel(osg::LogicOp::AND_REVERSE);
-	I_EnumLabel(osg::LogicOp::AND_INVERTED);
-	I_EnumLabel(osg::LogicOp::OR_REVERSE);
-	I_EnumLabel(osg::LogicOp::OR_INVERTED);
+BEGIN_VALUE_REFLECTOR(osg::LogicOp)
+	I_Constructor0();
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::LogicOp)
-	I_BaseType(osg::StateAttribute);
+BEGIN_VALUE_REFLECTOR(osg::LogicOp)
 	I_Constructor0();
-	I_Constructor1(IN, osg::LogicOp::Opcode, opcode);
-	I_ConstructorWithDefaults2(IN, const osg::LogicOp &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, setOpcode, IN, osg::LogicOp::Opcode, opcode);
-	I_Method0(osg::LogicOp::Opcode, getOpcode);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(osg::LogicOp::Opcode, Opcode);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

@@ -9,16 +9,16 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/LOD>
 #include <osg/LightSource>
 #include <osg/Node>
 #include <osg/OccluderNode>
-#include <osg/Projection>
 #include <osg/Switch>
 #include <osg/Transform>
+#include <osg/test/Billboard>
+#include <osg/test/Projection>
 #include <osgUtil/UpdateVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers

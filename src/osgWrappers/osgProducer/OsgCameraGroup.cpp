@@ -9,16 +9,16 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ApplicationUsage>
 #include <osg/ArgumentParser>
-#include <osg/CullSettings>
-#include <osg/DisplaySettings>
 #include <osg/FrameStamp>
 #include <osg/Group>
 #include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/StateSet>
-#include <osg/Vec4>
+#include <osg/test/ApplicationUsage>
+#include <osg/test/CullSettings>
+#include <osg/test/DisplaySettings>
+#include <osg/test/Vec4>
 #include <osgProducer/GraphicsContextImplementation>
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/OsgSceneHandler>
@@ -114,6 +114,13 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgCameraGroup::RealizeCallback)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::GraphicsContextImplementation >)
+	I_Constructor0();
+	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
+	I_Method0(osgProducer::GraphicsContextImplementation *, get);
+	I_Method0(bool, valid);
+	I_Method0(osgProducer::GraphicsContextImplementation *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);

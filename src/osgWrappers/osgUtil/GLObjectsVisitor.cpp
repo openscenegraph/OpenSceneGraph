@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Node>
-#include <osg/State>
 #include <osg/StateSet>
+#include <osg/test/Drawable>
+#include <osg/test/State>
 #include <osgUtil/GLObjectsVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers

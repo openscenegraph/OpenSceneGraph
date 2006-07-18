@@ -9,13 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/State>
-#include <osg/StateAttribute>
 #include <osg/StateSet>
-#include <osg/Texture>
-#include <osg/Vec2>
+#include <osg/test/CopyOp>
+#include <osg/test/State>
+#include <osg/test/StateAttribute>
+#include <osg/test/Vec2>
 #include <osgText/Font>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -124,7 +123,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	I_Property(const osg::Vec2 &, VerticalBearing);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
+BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	I_BaseType(osg::Texture2D);
 	I_Constructor0();
 	I_Method0(const char *, className);

@@ -10,11 +10,11 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingSphere>
-#include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Vec3>
+#include <osg/test/CopyOp>
+#include <osg/test/Vec3>
 #include <osgParticle/ParticleProcessor>
 #include <osgParticle/ParticleSystem>
 

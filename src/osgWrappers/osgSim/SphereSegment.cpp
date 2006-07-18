@@ -10,14 +10,14 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
-#include <osg/CopyOp>
-#include <osg/Drawable>
 #include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Vec3>
-#include <osg/Vec4>
+#include <osg/test/CopyOp>
+#include <osg/test/Drawable>
+#include <osg/test/Vec3>
+#include <osg/test/Vec4>
 #include <osgSim/SphereSegment>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -87,6 +87,13 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Vec3Array >)
+	I_Constructor0();
+	I_Constructor1(IN, osg::Vec3Array *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osg::Vec3Array > &, rp);
+	I_Method0(osg::Vec3Array *, get);
+	I_Method0(bool, valid);
+	I_Method0(osg::Vec3Array *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Vec3Array > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osg::Vec3Array *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osg::Vec3Array > &, rp);

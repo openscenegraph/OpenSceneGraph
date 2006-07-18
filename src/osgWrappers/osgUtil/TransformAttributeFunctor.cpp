@@ -11,7 +11,7 @@
 
 #include <osg/Drawable>
 #include <osg/Matrix>
-#include <osg/Vec3>
+#include <osg/test/Vec3>
 #include <osgUtil/TransformAttributeFunctor>
 
 // Must undefine IN and OUT macros defined in Windows headers

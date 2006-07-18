@@ -9,12 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ApplicationUsage>
-#include <osg/CopyOp>
-#include <osg/Drawable>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/test/ApplicationUsage>
+#include <osg/test/CopyOp>
+#include <osg/test/Drawable>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandler>
@@ -71,6 +71,13 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
+	I_Constructor0();
+	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
+	I_Method0(osgGA::GUIEventHandler *, get);
+	I_Method0(bool, valid);
+	I_Method0(osgGA::GUIEventHandler *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
 	I_Constructor0();
 	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr);
 	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);

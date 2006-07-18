@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/test/ApplicationUsage>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/NodeTrackerManipulator>
@@ -78,4 +78,10 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_ReadOnlyProperty(osgGA::NodeTrackerManipulator::ObserveredNodePath &, TrackNodePath);
 	I_Property(osgGA::NodeTrackerManipulator::TrackerMode, TrackerMode);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::observer_ptr< osg::Node >)
+	I_Constructor0();
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::observer_ptr< osg::Node > >);
 

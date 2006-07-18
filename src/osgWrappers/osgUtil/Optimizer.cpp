@@ -9,19 +9,19 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Billboard>
-#include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/LOD>
 #include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/Object>
-#include <osg/ProxyNode>
-#include <osg/StateAttribute>
 #include <osg/StateSet>
-#include <osg/Texture>
 #include <osg/Transform>
+#include <osg/test/Billboard>
+#include <osg/test/Drawable>
+#include <osg/test/ProxyNode>
+#include <osg/test/StateAttribute>
+#include <osg/test/Texture>
 #include <osgUtil/Optimizer>
 
 // Must undefine IN and OUT macros defined in Windows headers

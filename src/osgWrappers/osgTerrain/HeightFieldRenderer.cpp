@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
+#include <osg/test/CopyOp>
 #include <osgTerrain/HeightFieldNode>
 #include <osgTerrain/HeightFieldRenderer>
 #include <osgUtil/CullVisitor>

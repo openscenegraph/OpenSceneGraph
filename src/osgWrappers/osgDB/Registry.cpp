@@ -10,14 +10,14 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ArgumentParser>
-#include <osg/Drawable>
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
-#include <osg/Shape>
-#include <osg/State>
-#include <osg/StateAttribute>
 #include <osg/Uniform>
+#include <osg/test/Drawable>
+#include <osg/test/Shape>
+#include <osg/test/State>
+#include <osg/test/StateAttribute>
 #include <osgDB/Archive>
 #include <osgDB/DatabasePager>
 #include <osgDB/DotOsgWrapper>

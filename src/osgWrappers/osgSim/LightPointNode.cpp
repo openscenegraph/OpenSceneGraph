@@ -10,9 +10,9 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingSphere>
-#include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/test/CopyOp>
 #include <osgSim/LightPoint>
 #include <osgSim/LightPointNode>
 #include <osgSim/LightPointSystem>

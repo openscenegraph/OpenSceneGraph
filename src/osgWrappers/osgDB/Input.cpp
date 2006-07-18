@@ -9,12 +9,12 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Drawable>
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
-#include <osg/StateAttribute>
 #include <osg/Uniform>
+#include <osg/test/Drawable>
+#include <osg/test/StateAttribute>
 #include <osgDB/Input>
 #include <osgDB/ReaderWriter>
 #include <osgDB/Registry>

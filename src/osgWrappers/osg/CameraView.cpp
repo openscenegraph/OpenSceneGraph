@@ -10,12 +10,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CameraView>
-#include <osg/CopyOp>
-#include <osg/Matrix>
-#include <osg/NodeVisitor>
-#include <osg/Object>
-#include <osg/Quat>
-#include <osg/Vec3d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -31,32 +25,9 @@ BEGIN_ENUM_REFLECTOR(osg::CameraView::FieldOfViewMode)
 	I_EnumLabel(osg::CameraView::VERTICAL);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::CameraView)
-	I_BaseType(osg::Transform);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::CameraView &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setPosition, IN, const osg::Vec3d &, pos);
-	I_Method0(const osg::Vec3d &, getPosition);
-	I_Method1(void, setAttitude, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getAttitude);
-	I_Method1(void, setFieldOfView, IN, double, fieldOfView);
-	I_Method0(double, getFieldOfView);
-	I_Method1(void, setFieldOfViewMode, IN, osg::CameraView::FieldOfViewMode, mode);
-	I_Method0(osg::CameraView::FieldOfViewMode, getFieldOfViewMode);
-	I_Method1(void, setFocalLength, IN, double, focalLength);
-	I_Method0(double, getFocalLength);
-	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Property(const osg::Quat &, Attitude);
-	I_Property(double, FieldOfView);
-	I_Property(osg::CameraView::FieldOfViewMode, FieldOfViewMode);
-	I_Property(double, FocalLength);
-	I_Property(const osg::Vec3d &, Position);
+BEGIN_ENUM_REFLECTOR(osg::CameraView::FieldOfViewMode)
+	I_EnumLabel(osg::CameraView::UNCONSTRAINED);
+	I_EnumLabel(osg::CameraView::HORIZONTAL);
+	I_EnumLabel(osg::CameraView::VERTICAL);
 END_REFLECTOR
 

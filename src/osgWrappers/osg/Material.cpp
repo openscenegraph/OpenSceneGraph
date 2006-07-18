@@ -9,12 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
 #include <osg/Material>
-#include <osg/Object>
-#include <osg/State>
-#include <osg/StateAttribute>
-#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -24,64 +19,11 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osg::Material::Face)
-	I_EnumLabel(osg::Material::FRONT);
-	I_EnumLabel(osg::Material::BACK);
-	I_EnumLabel(osg::Material::FRONT_AND_BACK);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osg::Material::ColorMode)
-	I_EnumLabel(osg::Material::AMBIENT);
-	I_EnumLabel(osg::Material::DIFFUSE);
-	I_EnumLabel(osg::Material::SPECULAR);
-	I_EnumLabel(osg::Material::EMISSION);
-	I_EnumLabel(osg::Material::AMBIENT_AND_DIFFUSE);
-	I_EnumLabel(osg::Material::OFF);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::Material)
-	I_BaseType(osg::StateAttribute);
+BEGIN_VALUE_REFLECTOR(osg::Material)
 	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Material &, mat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Method1(void, setColorMode, IN, osg::Material::ColorMode, mode);
-	I_Method0(osg::Material::ColorMode, getColorMode);
-	I_Method2(void, setAmbient, IN, osg::Material::Face, face, IN, const osg::Vec4 &, ambient);
-	I_Method1(const osg::Vec4 &, getAmbient, IN, osg::Material::Face, face);
-	I_Method0(bool, getAmbientFrontAndBack);
-	I_Method2(void, setDiffuse, IN, osg::Material::Face, face, IN, const osg::Vec4 &, diffuse);
-	I_Method1(const osg::Vec4 &, getDiffuse, IN, osg::Material::Face, face);
-	I_Method0(bool, getDiffuseFrontAndBack);
-	I_Method2(void, setSpecular, IN, osg::Material::Face, face, IN, const osg::Vec4 &, specular);
-	I_Method1(const osg::Vec4 &, getSpecular, IN, osg::Material::Face, face);
-	I_Method0(bool, getSpecularFrontAndBack);
-	I_Method2(void, setEmission, IN, osg::Material::Face, face, IN, const osg::Vec4 &, emission);
-	I_Method1(const osg::Vec4 &, getEmission, IN, osg::Material::Face, face);
-	I_Method0(bool, getEmissionFrontAndBack);
-	I_Method2(void, setShininess, IN, osg::Material::Face, face, IN, float, shininess);
-	I_Method1(float, getShininess, IN, osg::Material::Face, face);
-	I_Method0(bool, getShininessFrontAndBack);
-	I_Method2(void, setTransparency, IN, osg::Material::Face, face, IN, float, trans);
-	I_Method2(void, setAlpha, IN, osg::Material::Face, face, IN, float, alpha);
-	I_IndexedProperty1(const osg::Vec4 &, Ambient, osg::Material::Face, face);
-	I_ReadOnlyProperty(bool, AmbientFrontAndBack);
-	I_Property(osg::Material::ColorMode, ColorMode);
-	I_IndexedProperty1(const osg::Vec4 &, Diffuse, osg::Material::Face, face);
-	I_ReadOnlyProperty(bool, DiffuseFrontAndBack);
-	I_IndexedProperty1(const osg::Vec4 &, Emission, osg::Material::Face, face);
-	I_ReadOnlyProperty(bool, EmissionFrontAndBack);
-	I_IndexedProperty1(float, Shininess, osg::Material::Face, face);
-	I_ReadOnlyProperty(bool, ShininessFrontAndBack);
-	I_IndexedProperty1(const osg::Vec4 &, Specular, osg::Material::Face, face);
-	I_ReadOnlyProperty(bool, SpecularFrontAndBack);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Material)
+	I_Constructor0();
 END_REFLECTOR
 

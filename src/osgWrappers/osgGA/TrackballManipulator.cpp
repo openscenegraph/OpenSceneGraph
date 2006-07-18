@@ -9,11 +9,11 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
-#include <osg/Quat>
-#include <osg/Vec3d>
+#include <osg/test/ApplicationUsage>
+#include <osg/test/Quat>
+#include <osg/test/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/TrackballManipulator>

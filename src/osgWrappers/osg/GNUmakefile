@@ -9,22 +9,15 @@ CXXFILES =\
 	Array.cpp\
 	AutoTransform.cpp\
 	Billboard.cpp\
-	BlendColor.cpp\
 	BlendEquation.cpp\
 	BlendFunc.cpp\
-	BoundingBox.cpp\
 	BoundingSphere.cpp\
 	BufferObject.cpp\
 	CameraNode.cpp\
 	CameraView.cpp\
 	ClampColor.cpp\
-	ClearNode.cpp\
 	ClipNode.cpp\
-	ClipPlane.cpp\
-	ClusterCullingCallback.cpp\
 	CollectOccludersVisitor.cpp\
-	ColorMask.cpp\
-	ColorMatrix.cpp\
 	ConvexPlanarOccluder.cpp\
 	ConvexPlanarPolygon.cpp\
 	CoordinateSystemNode.cpp\
@@ -75,18 +68,12 @@ CXXFILES =\
 	PagedLOD.cpp\
 	Plane.cpp\
 	Point.cpp\
-	PointSprite.cpp\
 	PolygonMode.cpp\
-	PolygonOffset.cpp\
-	PolygonStipple.cpp\
 	Polytope.cpp\
-	PositionAttitudeTransform.cpp\
 	PrimitiveSet.cpp\
 	Program.cpp\
-	Projection.cpp\
 	ProxyNode.cpp\
 	Quat.cpp\
-	Referenced.cpp\
 	Scissor.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
@@ -99,39 +86,20 @@ CXXFILES =\
 	StateSet.cpp\
 	Stencil.cpp\
 	Switch.cpp\
-	TexEnv.cpp\
-	TexEnvCombine.cpp\
-	TexEnvFilter.cpp\
-	TexGen.cpp\
-	TexGenNode.cpp\
-	TexMat.cpp\
-	Texture.cpp\
-	Texture1D.cpp\
-	Texture2D.cpp\
 	Texture3D.cpp\
 	TextureCubeMap.cpp\
 	TextureRectangle.cpp\
 	Timer.cpp\
 	Transform.cpp\
 	Uniform.cpp\
-	Vec2.cpp\
 	Vec2b.cpp\
 	Vec2d.cpp\
 	Vec2f.cpp\
 	Vec2s.cpp\
-	Vec3.cpp\
 	Vec3b.cpp\
-	Vec3d.cpp\
-	Vec3f.cpp\
-	Vec3s.cpp\
-	Vec4.cpp\
-	Vec4b.cpp\
 	Vec4d.cpp\
-	Vec4f.cpp\
-	Vec4s.cpp\
 	Vec4ub.cpp\
 	VertexProgram.cpp\
-	Viewport.cpp\
 	observer_ptr.cpp\
 
 LIBS   += -losg -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)

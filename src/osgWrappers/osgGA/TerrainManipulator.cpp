@@ -9,9 +9,9 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/test/ApplicationUsage>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/TerrainManipulator>

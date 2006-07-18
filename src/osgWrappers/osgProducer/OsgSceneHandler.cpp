@@ -9,7 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/DisplaySettings>
+#include <osg/test/DisplaySettings>
 #include <osgProducer/OsgSceneHandler>
 #include <osgUtil/SceneView>
 

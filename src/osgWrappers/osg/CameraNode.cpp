@@ -10,20 +10,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CameraNode>
-#include <osg/ColorMask>
-#include <osg/CopyOp>
-#include <osg/GraphicsContext>
-#include <osg/Image>
-#include <osg/Matrix>
-#include <osg/Matrixd>
-#include <osg/Matrixf>
-#include <osg/NodeVisitor>
-#include <osg/Object>
-#include <osg/State>
-#include <osg/Texture>
-#include <osg/Vec3>
-#include <osg/Vec4>
-#include <osg/Viewport>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -68,112 +54,39 @@ BEGIN_ENUM_REFLECTOR(osg::CameraNode::BufferComponent)
 	I_EnumLabel(osg::CameraNode::COLOR_BUFFER7);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
-	I_BaseType(osg::Transform);
-	I_BaseType(osg::CullSettings);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::CameraNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getClearColor);
-	I_Method1(void, setClearMask, IN, GLbitfield, mask);
-	I_Method0(GLbitfield, getClearMask);
-	I_Method1(void, setColorMask, IN, osg::ColorMask *, colorMask);
-	I_Method4(void, setColorMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
-	I_Method0(const osg::ColorMask *, getColorMask);
-	I_Method0(osg::ColorMask *, getColorMask);
-	I_Method1(void, setViewport, IN, osg::Viewport *, viewport);
-	I_Method4(void, setViewport, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
-	I_Method0(const osg::Viewport *, getViewport);
-	I_Method0(osg::Viewport *, getViewport);
-	I_Method1(void, setTransformOrder, IN, osg::CameraNode::TransformOrder, order);
-	I_Method0(osg::CameraNode::TransformOrder, getTransformOrder);
-	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixf &, matrix);
-	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method6(void, setProjectionMatrixAsOrtho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar);
-	I_Method4(void, setProjectionMatrixAsOrtho2D, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top);
-	I_Method6(void, setProjectionMatrixAsFrustum, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar);
-	I_Method4(void, setProjectionMatrixAsPerspective, IN, double, fovy, IN, double, aspectRatio, IN, double, zNear, IN, double, zFar);
-	I_Method0(osg::Matrixd &, getProjectionMatrix);
-	I_Method0(const osg::Matrixd &, getProjectionMatrix);
-	I_Method6(bool, getProjectionMatrixAsOrtho, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar);
-	I_Method6(bool, getProjectionMatrixAsFrustum, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar);
-	I_Method4(bool, getProjectionMatrixAsPerspective, IN, double &, fovy, IN, double &, aspectRatio, IN, double &, zNear, IN, double &, zFar);
-	I_Method1(void, setViewMatrix, IN, const osg::Matrixf &, matrix);
-	I_Method1(void, setViewMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method3(void, setViewMatrixAsLookAt, IN, const osg::Vec3 &, eye, IN, const osg::Vec3 &, center, IN, const osg::Vec3 &, up);
-	I_Method0(osg::Matrixd &, getViewMatrix);
-	I_Method0(const osg::Matrixd &, getViewMatrix);
-	I_MethodWithDefaults4(void, getViewMatrixAsLookAt, IN, osg::Vec3 &, eye, , IN, osg::Vec3 &, center, , IN, osg::Vec3 &, up, , IN, float, lookDistance, 1.0f);
-	I_Method0(osg::Matrixd, getInverseViewMatrix);
-	I_Method1(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order);
-	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder);
-	I_Method0(bool, isRenderToTextureCamera);
-	I_Method1(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl);
-	I_Method2(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl, IN, osg::CameraNode::RenderTargetImplementation, fallback);
-	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetImplementation);
-	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetFallback);
-	I_Method1(void, setDrawBuffer, IN, GLenum, buffer);
-	I_Method0(GLenum, getDrawBuffer);
-	I_Method1(void, setReadBuffer, IN, GLenum, buffer);
-	I_Method0(GLenum, getReadBuffer);
-	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, GLenum, internalFormat);
-	I_MethodWithDefaults5(void, attach, IN, osg::CameraNode::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false);
-	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, osg::Image *, image);
-	I_Method1(void, detach, IN, osg::CameraNode::BufferComponent, buffer);
-	I_Method0(osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap);
-	I_Method0(const osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap);
-	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context);
-	I_Method0(osg::GraphicsContext *, getGraphicsContext);
-	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
-	I_Method2(void, setRenderingCache, IN, unsigned int, contextID, IN, osg::Object *, rc);
-	I_Method1(osg::Object *, getRenderingCache, IN, unsigned int, contextID);
-	I_Method1(const osg::Object *, getRenderingCache, IN, unsigned int, contextID);
-	I_Method1(void, setPostDrawCallback, IN, osg::CameraNode::DrawCallback *, cb);
-	I_Method0(osg::CameraNode::DrawCallback *, getPostDrawCallback);
-	I_Method0(const osg::CameraNode::DrawCallback *, getPostDrawCallback);
-	I_Method0(OpenThreads::Mutex *, getDataChangeMutex);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
-	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, x);
-	I_ReadOnlyProperty(osg::CameraNode::BufferAttachmentMap &, BufferAttachmentMap);
-	I_Property(const osg::Vec4 &, ClearColor);
-	I_Property(GLbitfield, ClearMask);
-	I_Property(osg::ColorMask *, ColorMask);
-	I_ReadOnlyProperty(OpenThreads::Mutex *, DataChangeMutex);
-	I_Property(GLenum, DrawBuffer);
-	I_Property(osg::GraphicsContext *, GraphicsContext);
-	I_ReadOnlyProperty(osg::Matrixd, InverseViewMatrix);
-	I_Property(osg::CameraNode::DrawCallback *, PostDrawCallback);
-	I_Property(const osg::Matrixd &, ProjectionMatrix);
-	I_Property(GLenum, ReadBuffer);
-	I_Property(osg::CameraNode::RenderOrder, RenderOrder);
-	I_ReadOnlyProperty(osg::CameraNode::RenderTargetImplementation, RenderTargetFallback);
-	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation);
-	I_IndexedProperty1(osg::Object *, RenderingCache, unsigned int, contextID);
-	I_Property(osg::CameraNode::TransformOrder, TransformOrder);
-	I_Property(const osg::Matrixd &, ViewMatrix);
-	I_Property(osg::Viewport *, Viewport);
+TYPE_NAME_ALIAS(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >, osg::CameraNode::BufferAttachmentMap);
+
+BEGIN_ENUM_REFLECTOR(osg::CameraNode::TransformOrder)
+	I_EnumLabel(osg::CameraNode::PRE_MULTIPLY);
+	I_EnumLabel(osg::CameraNode::POST_MULTIPLY);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
-	I_Constructor0();
+BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderOrder)
+	I_EnumLabel(osg::CameraNode::PRE_RENDER);
+	I_EnumLabel(osg::CameraNode::NESTED_RENDER);
+	I_EnumLabel(osg::CameraNode::POST_RENDER);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)
-	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::CameraNode::DrawCallback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
+BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderTargetImplementation)
+	I_EnumLabel(osg::CameraNode::FRAME_BUFFER_OBJECT);
+	I_EnumLabel(osg::CameraNode::PIXEL_BUFFER_RTT);
+	I_EnumLabel(osg::CameraNode::PIXEL_BUFFER);
+	I_EnumLabel(osg::CameraNode::FRAME_BUFFER);
+	I_EnumLabel(osg::CameraNode::SEPERATE_WINDOW);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::CameraNode::BufferComponent)
+	I_EnumLabel(osg::CameraNode::DEPTH_BUFFER);
+	I_EnumLabel(osg::CameraNode::STENCIL_BUFFER);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER0);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER1);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER2);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER3);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER4);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER5);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER6);
+	I_EnumLabel(osg::CameraNode::COLOR_BUFFER7);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >);

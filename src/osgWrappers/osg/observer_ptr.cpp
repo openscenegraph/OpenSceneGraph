@@ -21,6 +21,9 @@
 
 BEGIN_VALUE_REFLECTOR(osg::Observer)
 	I_Constructor0();
-	I_Method1(void, objectDeleted, IN, void *, x);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Observer)
+	I_Constructor0();
 END_REFLECTOR
 

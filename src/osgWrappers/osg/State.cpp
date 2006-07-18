@@ -9,16 +9,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/DisplaySettings>
-#include <osg/FrameStamp>
-#include <osg/GraphicsContext>
-#include <osg/Matrix>
-#include <osg/Polytope>
-#include <osg/Program>
 #include <osg/State>
-#include <osg/StateAttribute>
-#include <osg/StateSet>
-#include <osg/Viewport>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -34,129 +25,9 @@ BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 	I_EnumLabel(osg::State::ONCE_PER_ATTRIBUTE);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::State)
-	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context);
-	I_Method0(osg::GraphicsContext *, getGraphicsContext);
-	I_Method0(const osg::GraphicsContext *, getGraphicsContext);
-	I_Method1(void, setContextID, IN, unsigned int, contextID);
-	I_Method0(unsigned int, getContextID);
-	I_Method1(void, pushStateSet, IN, const osg::StateSet *, dstate);
-	I_Method0(void, popStateSet);
-	I_Method0(void, popAllStateSets);
-	I_Method1(void, captureCurrentState, IN, osg::StateSet &, stateset);
-	I_Method0(void, reset);
-	I_Method0(const osg::Viewport *, getCurrentViewport);
-	I_Method1(void, setInitialViewMatrix, IN, const osg::RefMatrix *, matrix);
-	I_Method0(const osg::Matrix &, getInitialViewMatrix);
-	I_Method0(const osg::Matrix &, getInitialInverseViewMatrix);
-	I_Method1(void, applyProjectionMatrix, IN, const osg::RefMatrix *, matrix);
-	I_Method0(const osg::Matrix &, getProjectionMatrix);
-	I_Method1(void, applyModelViewMatrix, IN, const osg::RefMatrix *, matrix);
-	I_Method0(const osg::Matrix &, getModelViewMatrix);
-	I_Method0(osg::Polytope, getViewFrustum);
-	I_Method1(void, apply, IN, const osg::StateSet *, dstate);
-	I_Method0(void, apply);
-	I_Method2(void, setModeValidity, IN, osg::StateAttribute::GLMode, mode, IN, bool, valid);
-	I_Method1(bool, getModeValidity, IN, osg::StateAttribute::GLMode, mode);
-	I_Method2(void, setGlobalDefaultModeValue, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled);
-	I_Method1(bool, getGlobalDefaultModeValue, IN, osg::StateAttribute::GLMode, mode);
-	I_Method2(bool, applyMode, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled);
-	I_Method3(void, setGlobalDefaultTextureModeValue, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled);
-	I_Method2(bool, getGlobalDefaultTextureModeValue, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	I_Method3(bool, applyTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled);
-	I_Method1(void, setGlobalDefaultAttribute, IN, const osg::StateAttribute *, attribute);
-	I_MethodWithDefaults2(const osg::StateAttribute *, getGlobalDefaultAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method1(bool, applyAttribute, IN, const osg::StateAttribute *, attribute);
-	I_Method2(void, setGlobalDefaultTextureAttribute, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute);
-	I_MethodWithDefaults3(const osg::StateAttribute *, getGlobalDefaultTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method2(bool, applyTextureAttribute, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute);
-	I_Method2(void, haveAppliedMode, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
-	I_Method1(void, haveAppliedMode, IN, osg::StateAttribute::GLMode, mode);
-	I_Method1(void, haveAppliedAttribute, IN, const osg::StateAttribute *, attribute);
-	I_MethodWithDefaults2(void, haveAppliedAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method1(bool, getLastAppliedMode, IN, osg::StateAttribute::GLMode, mode);
-	I_MethodWithDefaults2(const osg::StateAttribute *, getLastAppliedAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method3(void, haveAppliedTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
-	I_Method2(void, haveAppliedTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	I_Method2(void, haveAppliedTextureAttribute, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute);
-	I_MethodWithDefaults3(void, haveAppliedTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method2(bool, getLastAppliedTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	I_MethodWithDefaults3(const osg::StateAttribute *, getLastAppliedTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method0(void, dirtyAllModes);
-	I_Method0(void, dirtyAllAttributes);
-	I_Method0(void, disableAllVertexArrays);
-	I_Method0(void, dirtyAllVertexArrays);
-	I_Method3(void, setInterleavedArrays, IN, GLenum, format, IN, GLsizei, stride, IN, const GLvoid *, pointer);
-	I_Method4(void, setVertexPointer, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method0(void, disableVertexPointer);
-	I_Method0(void, dirtyVertexPointer);
-	I_Method3(void, setNormalPointer, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method0(void, disableNormalPointer);
-	I_Method0(void, dirtyNormalPointer);
-	I_Method4(void, setColorPointer, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method0(void, disableColorPointer);
-	I_Method0(void, dirtyColorPointer);
-	I_Method0(bool, isSecondaryColorSupported);
-	I_Method4(void, setSecondaryColorPointer, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method0(void, disableSecondaryColorPointer);
-	I_Method0(void, dirtySecondaryColorPointer);
-	I_Method3(void, setIndexPointer, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method0(void, disableIndexPointer);
-	I_Method0(void, dirtyIndexPointer);
-	I_Method0(bool, isFogCoordSupported);
-	I_Method3(void, setFogCoordPointer, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method0(void, disableFogCoordPointer);
-	I_Method0(void, dirtyFogCoordPointer);
-	I_Method5(void, setTexCoordPointer, IN, unsigned int, unit, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method1(void, disableTexCoordPointer, IN, unsigned int, unit);
-	I_Method1(void, dirtyTexCoordPointer, IN, unsigned int, unit);
-	I_Method1(void, disableTexCoordPointersAboveAndIncluding, IN, unsigned int, unit);
-	I_Method1(void, dirtyTexCoordPointersAboveAndIncluding, IN, unsigned int, unit);
-	I_Method1(bool, setActiveTextureUnit, IN, unsigned int, unit);
-	I_Method0(unsigned int, getActiveTextureUnit);
-	I_Method1(bool, setClientActiveTextureUnit, IN, unsigned int, unit);
-	I_Method0(unsigned int, getClientActiveTextureUnit);
-	I_Method6(void, setVertexAttribPointer, IN, unsigned int, index, IN, GLint, size, IN, GLenum, type, IN, GLboolean, normalized, IN, GLsizei, stride, IN, const GLvoid *, ptr);
-	I_Method1(void, disableVertexAttribPointer, IN, unsigned int, index);
-	I_Method1(void, disableVertexAttribPointersAboveAndIncluding, IN, unsigned int, index);
-	I_Method1(void, dirtyVertexAttribPointersAboveAndIncluding, IN, unsigned int, index);
-	I_Method0(bool, isVertexBufferObjectSupported);
-	I_Method1(void, setLastAppliedProgramObject, IN, const osg::Program::PerContextProgram *, program);
-	I_Method0(const osg::Program::PerContextProgram *, getLastAppliedProgramObject);
-	I_Method1(GLint, getUniformLocation, IN, const std::string &, name);
-	I_Method1(GLint, getAttribLocation, IN, const std::string &, name);
-	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
-	I_Method0(const osg::FrameStamp *, getFrameStamp);
-	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, vs);
-	I_Method0(const osg::DisplaySettings *, getDisplaySettings);
-	I_Method1(void, setAbortRenderingPtr, IN, bool *, abortPtr);
-	I_Method0(bool, getAbortRendering);
-	I_Method1(void, setCheckForGLErrors, IN, osg::State::CheckForGLErrors, check);
-	I_Method0(osg::State::CheckForGLErrors, getCheckForGLErrors);
-	I_Method1(bool, checkGLErrors, IN, const char *, str);
-	I_Method1(bool, checkGLErrors, IN, osg::StateAttribute::GLMode, mode);
-	I_Method1(bool, checkGLErrors, IN, const osg::StateAttribute *, attribute);
-	I_ReadOnlyProperty(bool, AbortRendering);
-	I_WriteOnlyProperty(bool *, AbortRenderingPtr);
-	I_PropertyWithReturnType(unsigned int, ActiveTextureUnit, bool);
-	I_Property(osg::State::CheckForGLErrors, CheckForGLErrors);
-	I_PropertyWithReturnType(unsigned int, ClientActiveTextureUnit, bool);
-	I_Property(unsigned int, ContextID);
-	I_ReadOnlyProperty(const osg::Viewport *, CurrentViewport);
-	I_WriteOnlyProperty(osg::DisplaySettings *, DisplaySettings);
-	I_WriteOnlyProperty(osg::FrameStamp *, FrameStamp);
-	I_WriteOnlyProperty(const osg::StateAttribute *, GlobalDefaultAttribute);
-	I_IndexedProperty1(bool, GlobalDefaultModeValue, osg::StateAttribute::GLMode, mode);
-	I_IndexedProperty2(bool, GlobalDefaultTextureModeValue, unsigned int, unit, osg::StateAttribute::GLMode, mode);
-	I_Property(osg::GraphicsContext *, GraphicsContext);
-	I_ReadOnlyProperty(const osg::Matrix &, InitialInverseViewMatrix);
-	I_WriteOnlyProperty(const osg::RefMatrix *, InitialViewMatrix);
-	I_Property(const osg::Program::PerContextProgram *, LastAppliedProgramObject);
-	I_IndexedProperty1(bool, ModeValidity, osg::StateAttribute::GLMode, mode);
-	I_ReadOnlyProperty(const osg::Matrix &, ModelViewMatrix);
-	I_ReadOnlyProperty(const osg::Matrix &, ProjectionMatrix);
-	I_ReadOnlyProperty(osg::Polytope, ViewFrustum);
+BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
+	I_EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
+	I_EnumLabel(osg::State::ONCE_PER_FRAME);
+	I_EnumLabel(osg::State::ONCE_PER_ATTRIBUTE);
 END_REFLECTOR
 

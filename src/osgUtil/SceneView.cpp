@@ -1229,6 +1229,7 @@ void SceneView::draw()
     
     // re apply the defalt OGL state.
     _state->popAllStateSets();
+    _state->apply();
 
     if (_state->getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
     {

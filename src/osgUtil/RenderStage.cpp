@@ -870,14 +870,7 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
     // draw the children and local.
     RenderBin::drawImplementation(state,previous);
 
-    // now reset the state so its back in its default state.
-    if (previous)
-    {
-        StateGraph::moveToRootStateGraph(state,previous->_parent);
-        state.apply();
-        previous = NULL;
-    }
-
+    state.apply();
 }
 
 void RenderStage::drawPostRenderStages(osg::State& state,RenderLeaf*& previous)

@@ -417,7 +417,17 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
         rbitr->second->draw(state,previous);
     }
 
-    if (_stateset.valid()) state.popStateSet();
+    // now reset the state so its back in its default state.
+    if (previous)
+    {
+        StateGraph::moveToRootStateGraph(state,previous->_parent);
+        previous = NULL;
+    }
+
+    if (_stateset.valid())
+    {
+        state.popStateSet();
+    }
 
     //osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;
 }

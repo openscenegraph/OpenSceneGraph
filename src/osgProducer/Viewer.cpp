@@ -531,8 +531,17 @@ bool Viewer::realize()
     if (_kbm.valid() && !_kbm->isRunning())
     {
         _kbm->startThread();
+
+        while (!_kbm->isRunning())
+        {
+            // osg::notify(osg::NOTICE)<<"Waiting"<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
     }
 #endif
+
+    if (_kbmcb.valid()) _kbmcb->updateWindowSize();
+
     // by default set up the DatabasePager.
     {    
         osgDB::DatabasePager* databasePager = osgDB::Registry::instance()->getOrCreateDatabasePager();
@@ -560,14 +569,12 @@ bool Viewer::realize()
     }
     
  
-    if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator())
+    if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator() && _eventQueue.valid())
     {
         _keyswitchManipulator->setCoordinateFrameCallback(new ViewerCoordinateFrameCallback(this));
 
-        osg::ref_ptr<osgGA::GUIEventAdapter> init_event =  new osgGA::GUIEventAdapter;
-        init_event->setEventType(osgGA::GUIEventAdapter::FRAME);
-        init_event->setTime(0.0);
-    
+        osg::ref_ptr<osgGA::GUIEventAdapter> init_event = _eventQueue->createEvent();
+
         _keyswitchManipulator->setNode(getTopMostSceneData());
         _keyswitchManipulator->home(*init_event,*this);
     }

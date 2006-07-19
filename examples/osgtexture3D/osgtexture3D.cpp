@@ -101,23 +101,31 @@ class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallba
         }
 
         virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
-        { 
-            if (!_initialized)
+        {
             {
-                // only initialize state once, only need for cases where multiple graphics contexts are
-                // if which case this callback can get called multiple times.
-                _initialized = true;
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-                if (_node) _node->setStateSet(constructState());
-            }            
+                if (!_initialized)
+                {
+
+                    // only initialize state once, only need for cases where multiple graphics contexts are
+                    // if which case this callback can get called multiple times.
+                    _initialized = true;
+
+                    if (_node) _node->setStateSet(constructState());
+                }            
+
+            }
+            
             // now safe to con
             sh.init();
             
         }
         
         
-        osg::Node*  _node;
-        bool        _initialized;
+        OpenThreads::Mutex  _mutex;
+        osg::Node*          _node;
+        bool                _initialized;
         
 };
 

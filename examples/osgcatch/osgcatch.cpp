@@ -1359,14 +1359,19 @@ class CompileStateCallback : public osgProducer::OsgCameraGroup::RealizeCallback
         { 
             // now safe to construct
             sh.init();
-                        
-            if (_gameEventHandler)
+          
             {
-                _gameEventHandler->compileGLObjects(*(sh.getSceneView()->getState()));
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+                if (_gameEventHandler)
+                {
+                    _gameEventHandler->compileGLObjects(*(sh.getSceneView()->getState()));
+                }
             }
         }
         
         
+        OpenThreads::Mutex  _mutex;
         GameEventHandler*  _gameEventHandler;
         
 };

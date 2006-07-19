@@ -1,3 +1,86 @@
+2006-07-19 21:56  robert
+
+	* src/osgUtil/RenderBin.cpp: For cases where the RenderBin has its
+	  own StateSet do a popAllStateSets() to ensure that the state is
+	  completely ready for the RenderBin's StateSet to be at the
+	  bottom.
+
+2006-07-19 20:49  robert
+
+	* src/osgWrappers/osgUtil/IntersectVisitor.cpp: UPdated wrappers
+
+2006-07-19 20:45  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Fixed error in enum, completely
+	  perplexed how the error got in...
+
+2006-07-19 18:39  don
+
+	* include/osgUtil/IntersectVisitor: Fixed HEIGHEST misspelling to
+	  HIGHEST
+
+2006-07-19 16:20  robert
+
+	* src/osgProducer/ViewerEventHandler.cpp: Reverted to LODScale
+	  keyboard adjustment
+
+2006-07-19 16:10  robert
+
+	* src/osgPlugins/txp/trpage_pparse.cpp: Warning fixes
+
+2006-07-19 16:07  robert
+
+	* src/osgPlugins/net/sockstream.cpp: Warning fix
+
+2006-07-19 15:46  robert
+
+	* src/osgPlugins/OpenFlight/AttrData.cpp: Added extra initializes
+
+2006-07-19 15:30  robert
+
+	* src/osgPlugins/ac3d/ac3d.cpp: Added dummy initializers to avoid
+	  warning
+
+2006-07-19 15:04  robert
+
+	* src/osgProducer/: KeyboardMouseCallback.cpp, Viewer.cpp: Added
+	  reset of the event windowSize
+
+2006-07-19 14:02  robert
+
+	* examples/: osgcatch/osgcatch.cpp, osgtexture3D/osgtexture3D.cpp:
+	  Added mutexes to RealizeCallbaks
+
+2006-07-19 13:58  robert
+
+	* examples/osgshaderterrain/osgshaderterrain.cpp: Added scene
+	  handler init to custom realize callback
+
+2006-07-19 13:35  robert
+
+	* src/osgProducer/Viewer.cpp: Moved sync to before the keyboard
+	  mouse startThread to try to avoid some threading issue on start
+	  up of some apps.
+
+2006-07-19 12:25  robert
+
+	* src/osgPlugins/OpenFlight/LightPointRecords.cpp: Fixed handling
+	  of back colour.
+
+2006-07-19 09:39  robert
+
+	* src/osgPlugins/ive/LightPointNode.cpp: Changed code creating
+	  LightPoint on heap to use the stack.
+
+2006-07-18 22:00  robert
+
+	* ChangeLog: Updated ChangeLog for rc3.
+
+2006-07-18 21:59  robert
+
+	* applications/osgversion/osgversion.cpp: Add clause to clean up
+	  AUTHORS.txt
+
 2006-07-18 21:51  robert
 
 	* VisualStudio/osgWrappers/osg/wrapper_osg.dsp,

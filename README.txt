@@ -8,5 +8,5 @@ and examples, and see the documentation on the OpenSceneGraph website.
 
 Robert Osfield. 
 robert@openscenegraph.com
-July 2006.
+July 19th 2006.
 

@@ -367,6 +367,11 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 
     if (_stateset.valid())
     {
+        // first need to flush the stack
+        previous = 0;
+        state.popAllStateSets();
+
+        // now its safe to push RenderBin's StateSet as we now know its the root.        
         state.pushStateSet(_stateset.get());
     }
 
@@ -417,16 +422,10 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
         rbitr->second->draw(state,previous);
     }
 
-    // now reset the state so its back in its default state.
-    if (previous)
-    {
-        StateGraph::moveToRootStateGraph(state,previous->_parent);
-        previous = NULL;
-    }
-
     if (_stateset.valid())
     {
-        state.popStateSet();
+        state.popAllStateSets();
+        previous = 0;
     }
 
     //osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;

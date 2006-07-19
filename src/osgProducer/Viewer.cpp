@@ -521,9 +521,17 @@ bool Viewer::realize()
 
     OsgCameraGroup::realize();
 
+    // force a sync before we intialize the keyswitch manipulator to home
+    // so that Producer has a chance to set up the windows before we do
+    // any work on them.
+    OsgCameraGroup::sync();
+
 #ifndef SINGLE_THREAD_KEYBOARDMOUSE
     // kick start the keyboard mouse if needed.
-    if (_kbm.valid() && !_kbm->isRunning()) _kbm->startThread();
+    if (_kbm.valid() && !_kbm->isRunning())
+    {
+        _kbm->startThread();
+    }
 #endif
     // by default set up the DatabasePager.
     {    
@@ -551,10 +559,6 @@ bool Viewer::realize()
 
     }
     
-    // force a sync before we intialize the keyswitch manipulator to home
-    // so that Producer has a chance to set up the windows before we do
-    // any work on them.
-    OsgCameraGroup::sync();
  
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator())
     {

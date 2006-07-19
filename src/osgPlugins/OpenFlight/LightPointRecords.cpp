@@ -122,12 +122,18 @@ protected:
 
     virtual ~LightPoint() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
+    virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
         _material = in.readInt16();
         _feature = in.readInt16();
-        _backColor = in.readColor32();
+
+        int32 backColorIndex = in.readInt32();
+        
+        _backColor = document.getColorPool() ? 
+                            document.getColorPool()->getColor(backColorIndex) : 
+                            osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
+                            
         _displayMode = in.readInt32();
         _intensityFront = in.readFloat32();
         _intensityBack = in.readFloat32();

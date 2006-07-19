@@ -721,16 +721,18 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                                 osg::Vec3 norm;
                                 // Handle surfaces with duplicate vertex indices
                                 unsigned short i1=(*nusidx)[0];
-                                unsigned short i2;
-                                unsigned short i3;
+                                unsigned short i2=i1;
+                                unsigned short i3=i1;
                                 int iIndex = 1;
                                 while ((iIndex < asurf.num_vertref) && (i1 == (i2 = (*nusidx)[iIndex])))
                                     iIndex++;
+                                    
                                 if (iIndex < asurf.num_vertref)
                                 {
                                     iIndex = 1;
                                     while ((iIndex < asurf.num_vertref) && ((i1 == (i3 = (*nusidx)[iIndex])) || (i2 == i3)))
                                             iIndex++;
+                                            
                                     if (iIndex < asurf.num_vertref)
                                     {
                                         osgtri_calc_normal((*vertpool)[i1], (*vertpool)[i2], (*vertpool)[i3], norm);

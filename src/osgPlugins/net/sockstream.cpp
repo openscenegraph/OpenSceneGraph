@@ -278,7 +278,7 @@ sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
 #endif
   SOCKET soc = ::socket (domain, st, proto);
   
-  if (soc == SOCKET_ERROR)
+  if (soc == static_cast<SOCKET>(SOCKET_ERROR))
 #if defined(__CYGWIN__) || !defined(WIN32)
     throw sockerr (errno, "sockbuf::sockbuf");
 #else

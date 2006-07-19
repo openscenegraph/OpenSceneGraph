@@ -264,10 +264,10 @@ void *trpgPrintGraphParser::ReadHelper::Parse(trpgToken tok,trpgReadBuffer &buf)
 
 					// Fetch the individual mipmap levels
 					{
-						int numMipmap;
-						bool hasMipmap;
+						
+						bool hasMipmap = false;
 						baseTex->GetIsMipmap(hasMipmap);
-						numMipmap = hasMipmap ? baseTex->CalcNumMipmaps() : 0;
+						int numMipmap = hasMipmap ? baseTex->CalcNumMipmaps() : 0;
 						for (int j=1;j<numMipmap;j++) {
 							//int mipOffset = (const_cast<trpgTexture *>(baseTex))->MipLevelOffset(j);
 							int mipSize = (const_cast<trpgTexture *>(baseTex))->MipLevelSize(j);

@@ -63,9 +63,9 @@ void LightPointNode::read(DataInputStream* in){
         // Read in lightpoints.
         unsigned int size = in->readUInt();
         for(unsigned int i=0; i<size; i++ ){
-            osgSim::LightPoint* lightPoint = new osgSim::LightPoint();
-            ((ive::LightPoint*)(lightPoint))->read(in);
-            addLightPoint(*lightPoint);
+            osgSim::LightPoint lightPoint;
+            ((ive::LightPoint*)(&lightPoint))->read(in);
+            addLightPoint(lightPoint);
         }
     }
     else{

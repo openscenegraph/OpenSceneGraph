@@ -33,14 +33,27 @@ AttrData::AttrData() :
     kernelVersion(0),
     intFormat(0),                  //    0 - Default
     extFormat(0),                  //    0 - Default
+
     useMips(0),
-    // float32 _mips[8]),
+
     useLodScale(0),
-    // float32 lod0),
-    // float32 scale0),
-    // ...
-    // float32 lod7),
-    // float32 scale7),
+    lod0(0.0f),
+    scale0(1.0f), 
+    lod1(0.0f),
+    scale1(1.0f), 
+    lod2(0.0f), 
+    scale2(1.0f), 
+    lod3(0.0f),
+    scale3(1.0f),
+    lod4(0.0f),
+    scale4(1.0f),
+    lod5(0.0f),
+    scale5(1.0f),
+    lod6(0.0f), 
+    scale6(1.0f),
+    lod7(0.0f), 
+    scale7(1.0f),
+    
     clamp(0),
     magFilterAlpha(2),             //    2 = None
     magFilterColor(2),             //    2 = None
@@ -68,7 +81,9 @@ AttrData::AttrData() :
     attrVersion(0),
     controlPoints(0)
     // TODO:
-{}
+{
+    _mips[0]=_mips[1]=_mips[2]=_mips[3]=_mips[4]=_mips[5]=_mips[6]=_mips[7]=0.0f;
+}
 
 AttrData::AttrData(const AttrData& attr, const osg::CopyOp& copyop) :
     osg::Object(attr,copyop)

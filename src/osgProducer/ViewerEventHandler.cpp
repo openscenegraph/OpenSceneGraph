@@ -1091,7 +1091,8 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 setWriteImageOnNextFrame(true);                
                 return true;
             }
-#if 1
+#if 0
+// Adjust osg::PolygonOffset
             case '+' :
             {
                 osg::PolygonOffset::setFactorMultiplier(osg::PolygonOffset::getFactorMultiplier()*1.1f);
@@ -1118,16 +1119,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 return true;
             }
 #else
-            case '+' :
-            {
-                //_camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
-                return true;
-            }
-            case '-' :
-            {
-                //_camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
-                return true;
-            }
+// Adjust osg::LODScale
 
             case '*' :
             case '/' :

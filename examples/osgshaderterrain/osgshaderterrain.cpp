@@ -737,26 +737,30 @@ class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
         
         virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        
-            unsigned int contextID = sh.getSceneView()->getState()->getContextID();
-            osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
-            if( gl2ext )
             {
-                if( !gl2ext->isGlslSupported() )
-                {
-                    _supported = false;
-                    _errorMessage = "ERROR: GLSL not supported by OpenGL driver.";
-                }
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-                GLint numVertexTexUnits = 0;
-                glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
-                if( numVertexTexUnits <= 0 )
+                unsigned int contextID = sh.getSceneView()->getState()->getContextID();
+                osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
+                if( gl2ext )
                 {
-                    _supported = false;
-                    _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
+                    if( !gl2ext->isGlslSupported() )
+                    {
+                        _supported = false;
+                        _errorMessage = "ERROR: GLSL not supported by OpenGL driver.";
+                    }
+
+                    GLint numVertexTexUnits = 0;
+                    glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
+                    if( numVertexTexUnits <= 0 )
+                    {
+                        _supported = false;
+                        _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
+                    }
                 }
             }
+                        
+            sh.init();
         }
         
         OpenThreads::Mutex  _mutex;

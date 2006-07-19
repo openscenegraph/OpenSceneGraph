@@ -123,7 +123,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         enum LODSelectionMode
         {
-            USE_HEIGHEST_LEVEL_OF_DETAIL,
+            USE_HIGHEST_LEVEL_OF_DETAIL,
             USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION
         };
         

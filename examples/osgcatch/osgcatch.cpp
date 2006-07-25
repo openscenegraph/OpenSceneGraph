@@ -1456,8 +1456,9 @@ int main( int argc, char **argv )
 
     viewer.setRealizeCallback(new CompileStateCallback(seh));
 
-    // create the windows and run the threads.
-    viewer.realize();
+    // create the windows and run the threads, note has to be single threaded
+    // due to use osgParticle
+    viewer.realize(Producer::CameraGroup::SingleThreaded);
     
     viewer.requestWarpPointer(0.5f,0.5f);
         

@@ -783,11 +783,6 @@ void Text::computePositions(unsigned int contextID) const
             matrix.postMult(osg::Matrix::rotate(_rotation));
         }
 
-        if (_autoRotateToScreen) 
-        {
-            matrix.postMult(rotate_matrix);
-        }
-
         if (_characterSizeMode!=OBJECT_COORDS)
         {
 
@@ -845,7 +840,12 @@ void Text::computePositions(unsigned int contextID) const
             }
 
         }
-        
+
+        if (_autoRotateToScreen) 
+        {
+            matrix.postMult(rotate_matrix);
+        }
+
         matrix.postMult(osg::Matrix::translate(_position));
     }
     else if (!_rotation.zeroRotation())

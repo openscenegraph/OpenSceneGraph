@@ -27,7 +27,7 @@ using namespace osg;
 // by completely deleted once the appropriate OpenGL context
 // is set.
 typedef std::list<GLuint> VertexProgramObjectList;
-typedef std::map<unsigned int,VertexProgramObjectList> DeletedVertexProgramObjectCache;
+typedef osg::buffered_object<VertexProgramObjectList> DeletedVertexProgramObjectCache;
 
 static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
 static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
@@ -56,22 +56,17 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
 
-        DeletedVertexProgramObjectCache::iterator citr = s_deletedVertexProgramObjectCache.find(contextID);
-        if (citr!=s_deletedVertexProgramObjectCache.end())
+        const Extensions* extensions = getExtensions(contextID,true);
+
+        VertexProgramObjectList& vpol = s_deletedVertexProgramObjectCache[contextID];
+
+        for(VertexProgramObjectList::iterator titr=vpol.begin();
+            titr!=vpol.end() && elapsedTime<availableTime;
+            )
         {
-
-            const Extensions* extensions = getExtensions(contextID,true);
-
-            VertexProgramObjectList& vpol = citr->second;
-
-            for(VertexProgramObjectList::iterator titr=vpol.begin();
-                titr!=vpol.end() && elapsedTime<availableTime;
-                )
-            {
-                extensions->glDeletePrograms( 1L, &(*titr ) );
-                titr = vpol.erase(titr);
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-            }
+            extensions->glDeletePrograms( 1L, &(*titr ) );
+            titr = vpol.erase(titr);
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
         

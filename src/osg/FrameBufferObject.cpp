@@ -85,7 +85,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
 // be deleted in the correct GL context.
 
 typedef std::list<GLuint> RenderBufferHandleList;
-typedef std::map<unsigned int, RenderBufferHandleList> DeletedRenderBufferCache;
+typedef osg::buffered_object<RenderBufferHandleList> DeletedRenderBufferCache;
 
 static OpenThreads::Mutex    s_mutex_deletedRenderBufferCache;
 static DeletedRenderBufferCache s_deletedRenderBufferCache;
@@ -116,18 +116,14 @@ void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*cur
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedRenderBufferCache);
 
-        DeletedRenderBufferCache::iterator citr = s_deletedRenderBufferCache.find(contextID);
-        if( citr != s_deletedRenderBufferCache.end() )
+        RenderBufferHandleList& pList = s_deletedRenderBufferCache[contextID];
+        for(RenderBufferHandleList::iterator titr=pList.begin();
+            titr!=pList.end() && elapsedTime<availableTime;
+            )
         {
-            RenderBufferHandleList& pList = citr->second;
-            for(RenderBufferHandleList::iterator titr=pList.begin();
-                titr!=pList.end() && elapsedTime<availableTime;
-                )
-            {
-                extensions->glDeleteRenderbuffersEXT(1, &(*titr) );
-                titr = pList.erase( titr );
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-            }
+            extensions->glDeleteRenderbuffersEXT(1, &(*titr) );
+            titr = pList.erase( titr );
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
 
@@ -469,7 +465,7 @@ int FrameBufferAttachment::compare(const FrameBufferAttachment &fa) const
 // be deleted in the correct GL context.
 
 typedef std::list<GLuint> FrameBufferObjectHandleList;
-typedef std::map<unsigned int, FrameBufferObjectHandleList> DeletedFrameBufferObjectCache;
+typedef osg::buffered_object<FrameBufferObjectHandleList> DeletedFrameBufferObjectCache;
 
 static OpenThreads::Mutex    s_mutex_deletedFrameBufferObjectCache;
 static DeletedFrameBufferObjectCache s_deletedFrameBufferObjectCache;
@@ -500,18 +496,14 @@ void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,do
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFrameBufferObjectCache);
 
-        DeletedFrameBufferObjectCache::iterator citr = s_deletedFrameBufferObjectCache.find(contextID);
-        if( citr != s_deletedFrameBufferObjectCache.end() )
+        FrameBufferObjectHandleList& pList = s_deletedFrameBufferObjectCache[contextID];
+        for(FrameBufferObjectHandleList::iterator titr=pList.begin();
+            titr!=pList.end() && elapsedTime<availableTime;
+            )
         {
-            FrameBufferObjectHandleList& pList = citr->second;
-            for(FrameBufferObjectHandleList::iterator titr=pList.begin();
-                titr!=pList.end() && elapsedTime<availableTime;
-                )
-            {
-                extensions->glDeleteFramebuffersEXT(1, &(*titr) );
-                titr = pList.erase( titr );
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-            }
+            extensions->glDeleteFramebuffersEXT(1, &(*titr) );
+            titr = pList.erase( titr );
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
 

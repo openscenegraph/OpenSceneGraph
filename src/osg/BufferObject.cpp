@@ -30,7 +30,7 @@ using namespace osg;
 // by completely deleted once the appropriate OpenGL context
 // is set.  Used osg::BufferObject::deleteDisplayList(..) and flushDeletedBufferObjects(..) below.
 typedef std::multimap<unsigned int,GLuint> DisplayListMap;
-typedef std::map<unsigned int,DisplayListMap> DeletedBufferObjectCache;
+typedef osg::buffered_object<DisplayListMap> DeletedBufferObjectCache;
 
 static OpenThreads::Mutex s_mutex_deletedBufferObjectCache;
 static DeletedBufferObjectCache s_deletedBufferObjectCache;
@@ -61,28 +61,24 @@ void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*cur
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedBufferObjectCache);
 
-        DeletedBufferObjectCache::iterator citr = s_deletedBufferObjectCache.find(contextID);
-        if (citr!=s_deletedBufferObjectCache.end())
+        const Extensions* extensions = getExtensions(contextID,true);
+
+        unsigned int noDeleted = 0;
+
+        DisplayListMap& dll = s_deletedBufferObjectCache[contextID];
+
+        DisplayListMap::iterator ditr=dll.begin();
+        for(;
+            ditr!=dll.end() && elapsedTime<availableTime;
+            ++ditr)
         {
-            const Extensions* extensions = getExtensions(contextID,true);
-
-            unsigned int noDeleted = 0;
-
-            DisplayListMap& dll = citr->second;
-
-            DisplayListMap::iterator ditr=dll.begin();
-            for(;
-                ditr!=dll.end() && elapsedTime<availableTime;
-                ++ditr)
-            {
-                extensions->glDeleteBuffers(1,&(ditr->second));
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-                ++noDeleted;
-            }
-            if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
-
-            if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
+            extensions->glDeleteBuffers(1,&(ditr->second));
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
+            ++noDeleted;
         }
+        if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
+
+        if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
     }    
     
     availableTime -= elapsedTime;

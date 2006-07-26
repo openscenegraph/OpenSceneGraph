@@ -266,12 +266,7 @@ void OsgCameraGroup::_init()
         
     }
 
-    // initialize the number of graphics contexts to set up if there arn't already enough.
-    if (osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts() < numContexts)
-    {    
-        osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(numContexts);
-    }
-
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(numContexts);
 
     if ((_threadModel==ThreadPerCamera || _threadModel==ThreadPerRenderSurface) && _cfg->getNumberOfCameras()>1)
     {

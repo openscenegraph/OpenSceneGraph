@@ -168,8 +168,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         bool getAccumBuffer() const { return (_minimumNumberAccumRedBits+_minimumNumberAccumGreenBits+_minimumNumberAccumBlueBits+_minimumNumberAccumAlphaBits)!=0; }
 
 
-        void setMaxNumberOfGraphicsContexts(unsigned int num) { _maxNumOfGraphicsContexts = num; }
-        unsigned int getMaxNumberOfGraphicsContexts() const { return _maxNumOfGraphicsContexts; }
+        void setMaxNumberOfGraphicsContexts(unsigned int num);
+        unsigned int getMaxNumberOfGraphicsContexts() const;
 
         void setNumMultiSamples(unsigned int samples) { _numMultiSamples = samples; }
         unsigned int getNumMultiSamples() const { return _numMultiSamples; }

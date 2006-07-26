@@ -418,11 +418,10 @@ bool GL2Extensions::isGlslSupported() const
 ///////////////////////////////////////////////////////////////////////////
 // Static array of per-context osg::GL2Extensions instances
 
-typedef osg::buffered_value< osg::ref_ptr<GL2Extensions> > BufferedExtensions;
+typedef osg::buffered_object< osg::ref_ptr<GL2Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-GL2Extensions*
-GL2Extensions::Get(unsigned int contextID, bool createIfNotInitalized)
+GL2Extensions* GL2Extensions::Get(unsigned int contextID, bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized)
             s_extensions[contextID] = new GL2Extensions(contextID);
@@ -1872,7 +1871,7 @@ bool GL2Extensions::getAttribLocation( const char* attribName, GLuint& location 
 // be deleted in the correct GL context.
 
 typedef std::list<GLuint> GlProgramHandleList;
-typedef std::map<unsigned int, GlProgramHandleList> DeletedGlProgramCache;
+typedef osg::buffered_object<GlProgramHandleList> DeletedGlProgramCache;
 
 static OpenThreads::Mutex    s_mutex_deletedGlProgramCache;
 static DeletedGlProgramCache s_deletedGlProgramCache;
@@ -1893,6 +1892,7 @@ void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
     const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
     if( ! extensions->isGlslSupported() ) return;
 
@@ -1901,20 +1901,15 @@ void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime
     double elapsedTime = 0.0;
 
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
 
-        DeletedGlProgramCache::iterator citr = s_deletedGlProgramCache.find(contextID);
-        if( citr != s_deletedGlProgramCache.end() )
+        GlProgramHandleList& pList = s_deletedGlProgramCache[contextID];
+        for(GlProgramHandleList::iterator titr=pList.begin();
+            titr!=pList.end() && elapsedTime<availableTime;
+            )
         {
-            GlProgramHandleList& pList = citr->second;
-            for(GlProgramHandleList::iterator titr=pList.begin();
-                titr!=pList.end() && elapsedTime<availableTime;
-                )
-            {
-                extensions->glDeleteProgram( *titr );
-                titr = pList.erase( titr );
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-            }
+            extensions->glDeleteProgram( *titr );
+            titr = pList.erase( titr );
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
 

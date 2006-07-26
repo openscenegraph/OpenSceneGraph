@@ -13,6 +13,7 @@
 #include <osg/DisplaySettings>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/Notify>
 #include <osg/ref_ptr>
 
 #include <algorithm>
@@ -115,13 +116,24 @@ void DisplaySettings::setDefaults()
     _minimumNumberAccumBlueBits = 0;
     _minimumNumberAccumAlphaBits = 0;
     
-    _maxNumOfGraphicsContexts = 1;
+    _maxNumOfGraphicsContexts = 32;
     _numMultiSamples = 0;
 
     #ifdef __sgi
     // switch on anti-aliasing by default, just in case we have an Onyx :-)
     _numMultiSamples = 4;
     #endif
+}
+
+void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
+{
+    _maxNumOfGraphicsContexts = num;
+}
+
+unsigned int DisplaySettings::getMaxNumberOfGraphicsContexts() const
+{
+    // osg::notify(osg::NOTICE)<<"getMaxNumberOfGraphicsContexts()="<<_maxNumOfGraphicsContexts<<std::endl;
+    return _maxNumOfGraphicsContexts;
 }
 
 void DisplaySettings::setMinimumNumAccumBits(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha)

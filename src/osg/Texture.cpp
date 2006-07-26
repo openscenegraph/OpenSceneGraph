@@ -191,12 +191,10 @@ void TextureObjectManager::addTextureObjects(Texture::TextureObjectListMap& tobl
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    for(Texture::TextureObjectListMap::iterator itr = toblm.begin();
-        itr != toblm.end();
-        ++itr)
+    for(unsigned int i=0; i< toblm.size(); ++i)
     {
-        Texture::TextureObjectList& tol = _textureObjectListMap[itr->first];
-        tol.insert(tol.end(),itr->second.begin(),itr->second.end());
+        Texture::TextureObjectList& tol = _textureObjectListMap[i];
+        tol.insert(tol.end(),toblm[i].begin(),toblm[i].end());
     }
 }
 
@@ -211,19 +209,15 @@ void TextureObjectManager::flushAllTextureObjects(unsigned int contextID)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    Texture::TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
-    if (tmitr!=_textureObjectListMap.end())
-    {
-        Texture::TextureObjectList& tol = tmitr->second;
+    Texture::TextureObjectList& tol = _textureObjectListMap[contextID];
 
-        for(Texture::TextureObjectList::iterator itr=tol.begin();
-            itr!=tol.end();
-            ++itr)
-        {
-            glDeleteTextures( 1L, &((*itr)->_id));
-        }
-        tol.clear();
+    for(Texture::TextureObjectList::iterator itr=tol.begin();
+        itr!=tol.end();
+        ++itr)
+    {
+        glDeleteTextures( 1L, &((*itr)->_id));
     }
+    tol.clear();
 }
 
 void TextureObjectManager::flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime)
@@ -242,43 +236,38 @@ void TextureObjectManager::flushTextureObjects(unsigned int contextID,double cur
     {    
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-        Texture::TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
-        if (tmitr!=_textureObjectListMap.end())
+        Texture::TextureObjectList& tol = _textureObjectListMap[contextID];
+
+        // reset the time of any uninitialized objects.
+        Texture::TextureObjectList::iterator itr;
+        for(itr=tol.begin();
+            itr!=tol.end();
+            ++itr)
         {
-            Texture::TextureObjectList& tol = tmitr->second;
+            if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
+        }
 
-            // reset the time of any uninitialized objects.
-            Texture::TextureObjectList::iterator itr;
-            for(itr=tol.begin();
-                itr!=tol.end();
-                ++itr)
+        double expiryTime = currentTime-_expiryDelay;
+
+        for(itr=tol.begin();
+            itr!=tol.end() && elapsedTime<availableTime && tol.size()>s_minimumNumberOfTextureObjectsToRetainInCache && numObjectsDeleted<maxNumObjectsToDelete;
+            )
+        {
+            if ((*itr)->_timeStamp<=expiryTime)
             {
-                if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
+                --s_number;
+                ++Texture::s_numberDeletedTextureInLastFrame;
+
+                glDeleteTextures( 1L, &((*itr)->_id));
+                itr = tol.erase(itr);
+                ++numTexturesDeleted;
+                ++numObjectsDeleted;
             }
-
-            double expiryTime = currentTime-_expiryDelay;
-
-            for(itr=tol.begin();
-                itr!=tol.end() && elapsedTime<availableTime && tol.size()>s_minimumNumberOfTextureObjectsToRetainInCache && numObjectsDeleted<maxNumObjectsToDelete;
-                )
+            else
             {
-                if ((*itr)->_timeStamp<=expiryTime)
-                {
-                    --s_number;
-                    ++Texture::s_numberDeletedTextureInLastFrame;
-                
-                    glDeleteTextures( 1L, &((*itr)->_id));
-                    itr = tol.erase(itr);
-                    ++numTexturesDeleted;
-                    ++numObjectsDeleted;
-                }
-                else
-                {
-                    ++itr;
-                }
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
+                ++itr;
             }
-
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
     elapsedTime = timer.delta_s(start_tick,timer.tick());

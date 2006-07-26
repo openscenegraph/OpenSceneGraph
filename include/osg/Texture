@@ -719,7 +719,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         };
         
         typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
-        typedef std::map<unsigned int, TextureObjectList > TextureObjectListMap; 
+        typedef osg::buffered_object<TextureObjectList> TextureObjectListMap; 
 
         /** Takes the active texture objects from the Texture and places them
           * in the specified TextureObjectListMap. */

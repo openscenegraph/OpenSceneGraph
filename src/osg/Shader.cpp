@@ -38,7 +38,7 @@ using namespace osg;
 // be deleted in the correct GL context.
 
 typedef std::list<GLuint> GlShaderHandleList;
-typedef std::map<unsigned int, GlShaderHandleList> DeletedGlShaderCache;
+typedef osg::buffered_object<GlShaderHandleList> DeletedGlShaderCache;
 
 static OpenThreads::Mutex    s_mutex_deletedGlShaderCache;
 static DeletedGlShaderCache  s_deletedGlShaderCache;
@@ -69,18 +69,14 @@ void Shader::flushDeletedGlShaders(unsigned int contextID,double /*currentTime*/
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlShaderCache);
 
-        DeletedGlShaderCache::iterator citr = s_deletedGlShaderCache.find(contextID);
-        if( citr != s_deletedGlShaderCache.end() )
+        GlShaderHandleList& pList = s_deletedGlShaderCache[contextID];
+        for(GlShaderHandleList::iterator titr=pList.begin();
+            titr!=pList.end() && elapsedTime<availableTime;
+            )
         {
-            GlShaderHandleList& pList = citr->second;
-            for(GlShaderHandleList::iterator titr=pList.begin();
-                titr!=pList.end() && elapsedTime<availableTime;
-                )
-            {
-                extensions->glDeleteShader( *titr );
-                titr = pList.erase( titr );
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-            }
+            extensions->glDeleteShader( *titr );
+            titr = pList.erase( titr );
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
 
@@ -193,7 +189,7 @@ const char* Shader::getTypename() const
 }
 
 
-/*static*/ Shader::Type Shader::getTypeId( const std::string& tname )
+Shader::Type Shader::getTypeId( const std::string& tname )
 {
     if( tname == "VERTEX" )     return VERTEX;
     if( tname == "FRAGMENT" )   return FRAGMENT;

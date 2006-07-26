@@ -31,6 +31,10 @@ class buffered_value
             _array(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0)
             {}
 
+        inline buffered_value(unsigned int size):
+            _array(size,0)
+            {}
+
         buffered_value& operator = (const buffered_value& rhs)
         {
             _array = rhs._array;
@@ -75,6 +79,10 @@ class buffered_object
     
         inline buffered_object():
             _array(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts())
+            {}
+
+        inline buffered_object(unsigned int size):
+            _array(size)
             {}
 
         buffered_object& operator = (const buffered_object& rhs)

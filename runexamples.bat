@@ -102,6 +102,12 @@ osgpointsprite
 echo osgplanets
 osgplanets
 
+echo osgprecipitation --rain 0.5
+osgprecipitation --rain 0.5 lz.osg
+
+echo osgprecipitation --snow 0.5
+osgprecipitation --snow 0.5 lz.osg
+
 echo osgprerender
 osgprerender dumptruck.osg
 

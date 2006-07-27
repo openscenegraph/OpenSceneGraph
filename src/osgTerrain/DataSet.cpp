@@ -225,9 +225,9 @@ float getInterpolatedValue(GDALRasterBand *band, double x, double y)
     int numCols = band->GetXSize();
 
     int rowMin = osg::maximum((int)floor(r), 0);
-    int rowMax = osg::minimum((int)ceil(r), numRows-1);
+    int rowMax = osg::maximum(osg::minimum((int)ceil(r), numRows-1), 0);
     int colMin = osg::maximum((int)floor(c), 0);
-    int colMax = osg::minimum((int)ceil(c), numCols-1);
+    int colMax = osg::maximum(osg::minimum((int)ceil(c), numCols-1), 0);
 
     if (rowMin > rowMax) rowMin = rowMax;
     if (colMin > colMax) colMin = colMax;

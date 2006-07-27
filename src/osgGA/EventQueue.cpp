@@ -179,6 +179,43 @@ void EventQueue::mouseButtonPress(float x, float y, unsigned int button)
     addEvent(event);
 }
 
+void EventQueue::mouseDoubleButtonPress(float x, float y, unsigned int button)
+{
+    _accumulateEventState->setX(x);
+    _accumulateEventState->setY(y);
+
+    switch(button)
+    {
+        case(1): 
+            _accumulateEventState->setButtonMask(GUIEventAdapter::LEFT_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
+        case(2): 
+            _accumulateEventState->setButtonMask(GUIEventAdapter::MIDDLE_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
+        case(3): 
+            _accumulateEventState->setButtonMask(GUIEventAdapter::RIGHT_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
+    }
+
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::DOUBLECLICK);
+
+    switch(button)
+    {
+        case(1): 
+            event->setButton(GUIEventAdapter::LEFT_MOUSE_BUTTON);
+            break;
+        case(2): 
+            event->setButton(GUIEventAdapter::MIDDLE_MOUSE_BUTTON);
+            break;
+        case(3): 
+            event->setButton(GUIEventAdapter::RIGHT_MOUSE_BUTTON);
+            break;
+    }
+    
+    addEvent(event);
+}
+
 void EventQueue::mouseButtonRelease(float x, float y, unsigned int button)
 {
     _accumulateEventState->setX(x);

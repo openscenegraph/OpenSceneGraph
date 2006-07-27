@@ -57,7 +57,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 OpenThreadsWin32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../../bin/osgdb_ESRI.dll" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 OpenThreadsWin32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../../bin/osgdb_shp.dll" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 
 !ELSEIF  "$(CFG)" == "osgPlugin ESRI - Win32 Debug"
 
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 OpenThreadsWin32d.lib /nologo /dll /pdb:"../../../bin/osgdb_ESRId.pdb" /debug /machine:I386 /out:"../../../bin/osgdb_ESRId.dll" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 OpenThreadsWin32d.lib /nologo /dll /pdb:"../../../bin/osgdb_shpd.pdb" /debug /machine:I386 /out:"../../../bin/osgdb_shpd.dll" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ELSEIF  "$(CFG)" == "osgPlugin ESRI - Win32 Release Static"
@@ -112,7 +112,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nodefaultlib /nologo /out:"../../../lib/osgdb_ESRI_s.lib"
+# ADD LIB32 /nodefaultlib /nologo /out:"../../../lib/osgdb_shp_s.lib"
 # SUBTRACT LIB32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgPlugin ESRI - Win32 Debug Static"
@@ -140,7 +140,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nodefaultlib /nologo /out:"../../../lib/osgdb_ESRId_s.lib"
+# ADD LIB32 /nodefaultlib /nologo /out:"../../../lib/osgdb_shpd_s.lib"
 # SUBTRACT LIB32 /nodefaultlib
 
 !ENDIF 
@@ -189,3 +189,4 @@ SOURCE=..\..\..\src\osgPlugins\ESRI\license.txt
 # End Group
 # End Target
 # End Project
+

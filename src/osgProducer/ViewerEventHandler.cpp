@@ -302,6 +302,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
         float bottomOfDescription = 1000.0f;
         osg::Vec3 posDescription(0.0f,bottomOfDescription,0.0f);
         osg::Vec4 colorDescription(1.0f,1.0f,0.0f,1.0f);
+        osg::Vec4 backdropColorDescription(0.0f,0.0f,0.0f,1.0f);
         float characterSize = 20.0f;
 
         if (!(ocg->getApplicationUsage()->getDescription()).empty())
@@ -314,6 +315,10 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
             text->setPosition(posDescription);
             text->setMaximumWidth(maxWidthOfDisplayRegion);
             text->setAlignment(osgText::Text::BASE_LINE);
+            text->setBackdropType(osgText::Text::OUTLINE);
+            // Probably could use NO_DEPTH_BUFFER and not have any problems
+            text->setBackdropImplementation(osgText::Text::DEPTH_RANGE);
+            text->setBackdropColor(backdropColorDescription);
             text->setText(ocg->getApplicationUsage()->getDescription());
 
             bottomOfDescription = text->getBound().yMin()-characterSize*2.0f;
@@ -324,6 +329,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
 
         osg::Vec3 posOption(0.0f,bottomOfDescription,0.0f);
         osg::Vec4 colorOption(1.0f,1.0f,0.0f,1.0f);
+        osg::Vec4 backdropColorOption(0.0f,0.0f,0.0f,1.0f);
         float maxX = 0.0f;
 
         // create option strings.
@@ -339,6 +345,10 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
             text->setCharacterSize(characterSize);
             text->setPosition(posOption);
             text->setAlignment(osgText::Text::BASE_LINE);
+            text->setBackdropType(osgText::Text::OUTLINE);
+            // Probably could use NO_DEPTH_BUFFER and not have any problems
+            text->setBackdropImplementation(osgText::Text::DEPTH_RANGE);
+            text->setBackdropColor(backdropColorOption);
             text->setText(citr->first);
 
             if (text->getBound().xMax()>maxX) maxX=text->getBound().xMax();
@@ -349,6 +359,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
 
         osg::Vec3 posExplanation(maxX+characterSize,bottomOfDescription,0.0f);
         osg::Vec4 colorExplanation(1.0f,1.0f,0.0f,1.0f);
+        osg::Vec4 backdropColorExplanation(0.0f,0.0f,0.0f,1.0f);
         float maxWidth = maxWidthOfDisplayRegion-maxX;
 
         TextList::iterator oitr;
@@ -367,6 +378,10 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
             text->setPosition(posExplanation);
             text->setMaximumWidth(maxWidth);
             text->setAlignment(osgText::Text::BASE_LINE);
+            text->setBackdropType(osgText::Text::OUTLINE);
+            // Probably could use NO_DEPTH_BUFFER and not have any problems
+            text->setBackdropImplementation(osgText::Text::DEPTH_RANGE);
+            text->setBackdropColor(backdropColorExplanation);
             text->setText(citr->second);
 
             if (text->getBound().xMax()>maxX) maxX=text->getBound().xMax();

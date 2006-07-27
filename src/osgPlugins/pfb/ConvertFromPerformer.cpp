@@ -38,6 +38,10 @@
 #include <Performer/pr/pfMaterial.h>
 #include <Performer/pr/pfTexture.h>
 
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
+
 // Need to undefine these because Performer defines them and it causes a
 // compiler error in ConvertFromPerformer::visitBillboard.
 #ifdef   AXIAL_ROT

@@ -74,6 +74,9 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
         /** method for adapting mouse button pressed events, placing this event on the back of the event queue.*/
         void mouseButtonPress(float x, float y, unsigned int button);
+
+        /** method for adapting mouse button pressed events, placing this event on the back of the event queue.*/
+        void mouseDoubleButtonPress(float x, float y, unsigned int button);
         
         /** method for adapting mouse button release events, placing this event on the back of the event queue.*/
         void mouseButtonRelease(float x, float y, unsigned int button);

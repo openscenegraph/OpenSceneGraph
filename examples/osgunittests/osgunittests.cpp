@@ -124,6 +124,119 @@ void sizeOfTest()
 
 }
 
+/// Exercises the Matrix.get(Quat&) function, printout is generated on problems only
+void testGetQuatFromMatrix() {
+    // acceptable error range
+    double eps=1e-3;
+
+#if 1
+    // wide range
+    double rol1start = 0.0;
+    double rol1stop = 360.0;
+    double rol1step = 30.0;
+
+    double pit1start = 0.0;
+    double pit1stop = 90.0;
+    double pit1step = 30.0;
+
+    double yaw1start = 0.0;
+    double yaw1stop = 360.0;
+    double yaw1step = 30.0;
+
+    double rol2start = 0.0;
+    double rol2stop = 360.0;
+    double rol2step = 30.0;
+
+    double pit2start = 0.0;
+    double pit2stop = 90.0;
+    double pit2step = 30.0;
+
+    double yaw2start = 0.0;
+    double yaw2stop = 360.0;
+    double yaw2step = 30.0;
+#else
+    // focussed range
+    double rol1start = 0.0;
+    double rol1stop = 0.0;
+    double rol1step = 0.1;
+
+    double pit1start = 0.0;
+    double pit1stop = 5.0;
+    double pit1step = 5.0;
+
+    double yaw1start = 89.0;
+    double yaw1stop = 91.0;
+    double yaw1step = 0.1;
+
+    double rol2start = 0.0;
+    double rol2stop = 0.0;
+    double rol2step = 0.1;
+
+    double pit2start = 0.0;
+    double pit2stop = 0.0;
+    double pit2step = 0.1;
+
+    double yaw2start = 89.0;
+    double yaw2stop = 91.0;
+    double yaw2step = 0.1;
+#endif
+    
+    for (double rol1 = rol1start; rol1 <= rol1stop; rol1 += rol1step) {
+	for (double pit1 = pit1start; pit1 <= pit1stop; pit1 += pit1step) {
+	    for (double yaw1 = yaw1start; yaw1 <= yaw1stop; yaw1 += yaw1step) {
+		for (double rol2 = rol2start; rol2 <= rol2stop; rol2 += rol2step) {
+		    for (double pit2 = pit2start; pit2 <= pit2stop; pit2 += pit2step) {
+			for (double yaw2 = yaw2start; yaw2 <= yaw2stop; yaw2 += yaw2step) {
+			    // create two quats based on the roll, pitch and yaw values
+			    osg::Quat rot_quat1 =
+				osg::Quat(osg::DegreesToRadians(rol1),osg::Vec3d(1,0,0),
+					  osg::DegreesToRadians(pit1),osg::Vec3d(0,1,0),
+					  osg::DegreesToRadians(yaw1),osg::Vec3d(0,0,1));
+			    
+			    osg::Quat rot_quat2 =
+				osg::Quat(osg::DegreesToRadians(rol2),osg::Vec3d(1,0,0),
+					  osg::DegreesToRadians(pit2),osg::Vec3d(0,1,0),
+					  osg::DegreesToRadians(yaw2),osg::Vec3d(0,0,1));
+			    
+			    // create an output quat using quaternion math
+			    osg::Quat out_quat1;
+			    out_quat1 = rot_quat2 * rot_quat1;
+			    
+			    // create two matrices based on the input quats
+			    osg::Matrixd mat1,mat2;
+			    mat1.set(rot_quat1);
+			    mat2.set(rot_quat2);
+			    
+			    // create an output quat by matrix multiplication and get
+			    osg::Matrixd out_mat;
+			    out_mat = mat2 * mat1;
+			    osg::Quat out_quat2;
+			    out_mat.get(out_quat2);
+			    
+			    // if the output quat length is not one 
+			    // or if the component magnitudes do not match,
+			    // something is amiss
+			    if (fabs(1.0-out_quat2.length()) > eps ||
+				(fabs(out_quat1.x())-fabs(out_quat2.x())) > eps ||
+				(fabs(out_quat1.y())-fabs(out_quat2.y())) > eps ||
+				(fabs(out_quat1.z())-fabs(out_quat2.z())) > eps ||
+				(fabs(out_quat1.w())-fabs(out_quat2.w())) > eps) {
+				std::cout << "problem at: r1=" << rol1
+					  << " p1=" << pit1
+					  << " y1=" << yaw1
+					  << " r2=" << rol2
+					  << " p2=" << pit2
+					  << " y2=" << yaw2 << "\n";
+				std::cout << "quats:        " << out_quat1 << " length: " << out_quat1.length() << "\n";
+				std::cout << "mats and get: " << out_quat2 << " length: " << out_quat2.length() << "\n\n";
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+}
 
 void testQuatRotate(const osg::Vec3d& from, const osg::Vec3d& to)
 {
@@ -180,7 +293,8 @@ void testQuat()
     testQuatRotate(osg::Vec3d(0.0,-1.0,0.0),osg::Vec3d(0.0,1.0,0.0));
     testQuatRotate(osg::Vec3d(0.0,0.0,1.0),osg::Vec3d(0.0,0.0,-1.0));
     testQuatRotate(osg::Vec3d(0.0,0.0,-1.0),osg::Vec3d(0.0,0.0,1.0));
-    
+
+    testGetQuatFromMatrix();
 }
 
 int main( int argc, char** argv )

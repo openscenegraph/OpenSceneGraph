@@ -121,6 +121,64 @@ void Matrix_implementation::set(const Quat& q_in)
     _mat[3][3] = 1.0;
 }
 
+#if 1
+// David Spillings implementation
+void Matrix_implementation::get( Quat& q ) const
+{
+    value_type s;
+    value_type tq[4];
+    int    i, j;
+
+    // Use tq to store the largest trace
+     tq[0] = 1 + _mat[0][0]+_mat[1][1]+_mat[2][2];
+    tq[1] = 1 + _mat[0][0]-_mat[1][1]-_mat[2][2];
+    tq[2] = 1 - _mat[0][0]+_mat[1][1]-_mat[2][2];
+    tq[3] = 1 - _mat[0][0]-_mat[1][1]+_mat[2][2];
+ 
+    // Find the maximum (could also use stacked if's later)
+    j = 0;
+    for(i=1;i<4;i++) j = (tq[i]>tq[j])? i : j;
+
+    // check the diagonal
+      if (j==0)
+    {
+        /* perform instant calculation */
+        QW = tq[0];
+        QX = _mat[1][2]-_mat[2][1]; 
+        QY = _mat[2][0]-_mat[0][2]; 
+        QZ = _mat[0][1]-_mat[1][0]; 
+    }
+    else if (j==1)
+    {
+        QW = _mat[1][2]-_mat[2][1]; 
+        QX = tq[1];
+        QY = _mat[0][1]+_mat[1][0]; 
+        QZ = _mat[2][0]+_mat[0][2]; 
+    }
+    else if (j==2)
+    {
+        QW = _mat[2][0]-_mat[0][2]; 
+        QX = _mat[0][1]+_mat[1][0]; 
+        QY = tq[2];
+        QZ = _mat[1][2]+_mat[2][1]; 
+    }
+    else /* if (j==3) */
+    {
+        QW = _mat[0][1]-_mat[1][0]; 
+        QX = _mat[2][0]+_mat[0][2]; 
+        QY = _mat[1][2]+_mat[2][1]; 
+        QZ = tq[3];
+    }
+
+    s = sqrt(0.25/tq[j]);
+    QW *= s;
+    QX *= s;
+    QY *= s;
+    QZ *= s;
+
+}
+#else
+// Original implementation
 void Matrix_implementation::get( Quat& q ) const
 {
     // Source: Gamasutra, Rotating Objects Using Quaternions
@@ -173,6 +231,7 @@ void Matrix_implementation::get( Quat& q ) const
         QW = tq[3];
     }
 }
+#endif
 
 int Matrix_implementation::compare(const Matrix_implementation& m) const
 {

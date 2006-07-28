@@ -39,6 +39,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_Method2(void, mouseWarp, IN, float, x, IN, float, y);
 	I_Method2(void, mouseMotion, IN, float, x, IN, float, y);
 	I_Method3(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button);
+	I_Method3(void, mouseDoubleButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button);
 	I_Method3(void, mouseButtonRelease, IN, float, x, IN, float, y, IN, unsigned int, button);
 	I_Method1(void, keyPress, IN, osgGA::GUIEventAdapter::KeySymbol, key);
 	I_Method1(void, keyRelease, IN, osgGA::GUIEventAdapter::KeySymbol, key);

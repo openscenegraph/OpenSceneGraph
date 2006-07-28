@@ -524,45 +524,6 @@ void Matrix_implementation::orthoNormalize(const Matrix_implementation& rhs)
 
 }
 
-bool Matrix_implementation::invert( const Matrix_implementation& rhs)
-{
-#if 1
-    return invert_4x4_new(rhs);
-#else
-    static const osg::Timer& timer = *Timer::instance();
-
-    Matrix_implementation a;
-    Matrix_implementation b;
-
-    Timer_t t1 = timer.tick();
-
-    a.invert_4x4_new(rhs);
-    
-    Timer_t t2 = timer.tick();
-
-    b.invert_4x4_orig(rhs);
-    
-    Timer_t t3 = timer.tick();
-
-    static double new_time = 0.0;
-    static double orig_time = 0.0;
-    static double count = 0.0;
-    
-    new_time += timer.delta_u(t1,t2);
-    orig_time += timer.delta_u(t2,t3);
-    ++count;
-    
-    std::cout<<"Average new="<<new_time/count<<"  orig = "<<orig_time/count<<std::endl;
-
-    std::cout<<"new matrix invert time="<<timer.delta_u(t1,t2)<<" "<<a<<std::endl;
-    std::cout<<"orig matrix invert time="<<timer.delta_u(t2,t3)<<" "<<b<<std::endl;
-    
-    set(b);
-    
-    return true;
-#endif
-}
-
 /******************************************
   Matrix inversion technique:
 Given a matrix mat, we want to invert it.
@@ -589,12 +550,12 @@ So the inverse is mat' = (trans * corr)' * rot', where rot' must be computed the
 This problem is simplified if [px py pz s] = [0 0 0 1], which will happen if mat was composed only of rotations, scales, and translations (which is common).  In this case, we can ignore corr entirely which saves on a lot of computations.
 ******************************************/
 
-bool Matrix_implementation::invert_4x4_new( const Matrix_implementation& mat )
+bool Matrix_implementation::invert_4x3( const Matrix_implementation& mat )
 {
     if (&mat==this)
     {
        Matrix_implementation tm(mat);
-       return invert_4x4_new(tm);
+       return invert_4x3(tm);
     }
 
     register value_type r00, r01, r02,
@@ -719,11 +680,11 @@ inline T SGL_ABS(T a)
 #define SGL_SWAP(a,b,temp) ((temp)=(a),(a)=(b),(b)=(temp))
 #endif
 
-bool Matrix_implementation::invert_4x4_orig( const Matrix_implementation& mat )
+bool Matrix_implementation::invert_4x4( const Matrix_implementation& mat )
 {
     if (&mat==this) {
        Matrix_implementation tm(mat);
-       return invert_4x4_orig(tm);
+       return invert_4x4(tm);
     }
 
     unsigned int indxc[4], indxr[4], ipiv[4];

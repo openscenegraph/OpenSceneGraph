@@ -75,8 +75,8 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	I_MethodWithDefaults4(void, getLookAt, IN, osg::Vec3f &, eye, , IN, osg::Vec3f &, center, , IN, osg::Vec3f &, up, , IN, osg::Matrixd::value_type, lookDistance, 1.0f);
 	I_MethodWithDefaults4(void, getLookAt, IN, osg::Vec3d &, eye, , IN, osg::Vec3d &, center, , IN, osg::Vec3d &, up, , IN, osg::Matrixd::value_type, lookDistance, 1.0f);
 	I_Method1(bool, invert, IN, const osg::Matrixd &, rhs);
-	I_Method1(bool, invert_4x4_orig, IN, const osg::Matrixd &, x);
-	I_Method1(bool, invert_4x4_new, IN, const osg::Matrixd &, x);
+	I_Method1(bool, invert_4x3, IN, const osg::Matrixd &, rhs);
+	I_Method1(bool, invert_4x4, IN, const osg::Matrixd &, rhs);
 	I_Method1(void, orthoNormalize, IN, const osg::Matrixd &, rhs);
 	I_Method1(osg::Vec3f, preMult, IN, const osg::Vec3f &, v);
 	I_Method1(osg::Vec3d, preMult, IN, const osg::Vec3d &, v);

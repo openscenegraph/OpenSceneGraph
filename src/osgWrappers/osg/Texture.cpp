@@ -28,7 +28,7 @@
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList);
 
-TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap);
+TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap);
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
 	I_EnumLabel(osg::Texture::WRAP_S);
@@ -235,6 +235,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_WriteOnlyProperty(bool, Allocated);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
+	I_Constructor0();
+	I_Constructor1(IN, unsigned int, size);
+	I_Method1(void, setAllElementsTo, IN, const osg::Texture::TextureObjectList &, t);
+	I_Method0(void, clear);
+	I_Method0(bool, empty);
+	I_Method0(unsigned int, size);
+	I_WriteOnlyProperty(const osg::Texture::TextureObjectList &, AllElementsTo);
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 	I_Constructor0();
 	I_Constructor1(IN, osg::Texture::TextureObject *, ptr);
@@ -247,6 +257,4 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Texture::TextureObject > >);
-
-STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osg::Texture::TextureObjectList >);
 

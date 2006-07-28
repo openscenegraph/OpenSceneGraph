@@ -98,6 +98,24 @@ void testLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up
     
 }
 
+
+void testMatrixInvert(const osg::Matrix& matrix)
+{
+    //Invert it twice using the two inversion functions and view the results
+    osg::notify(osg::NOTICE)<<"testMatrixInvert("<<std::endl;
+    osg::notify(osg::NOTICE)<<matrix<<std::endl;
+    osg::notify(osg::NOTICE)<<")"<<std::endl;
+
+    osg::Matrix invM1_0;
+    invM1_0.invert(matrix);
+    osg::notify(osg::NOTICE)<<"Matrix::invert"<<std::endl;
+    osg::notify(osg::NOTICE)<<invM1_0<<std::endl;
+    osg::Matrix default_result = matrix*invM1_0;
+    osg::notify(osg::NOTICE)<<"matrix * invert="<<std::endl;
+    osg::notify(osg::NOTICE)<<default_result<<std::endl;;
+
+}
+
 void sizeOfTest()
 {
   std::cout<<"sizeof(bool)=="<<sizeof(bool)<<std::endl;
@@ -371,6 +389,16 @@ int main( int argc, char** argv )
 
         testLookAt(osg::Vec3(10.0,4.0,2.0),osg::Vec3(10.0,4.0,2.0)+osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0));
         testLookAt(osg::Vec3(10.0,4.0,2.0),osg::Vec3(10.0,4.0,2.0)+osg::Vec3(1.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0));
+        
+        testMatrixInvert(osg::Matrix(0.999848,  -0.002700,  0.017242, -0.1715,
+                                     0,         0.987960,   0.154710,  0.207295,
+                                     -0.017452, -0.154687,  0.987809, -0.98239,
+                                     0,         0,          0,         1));
+
+        testMatrixInvert(osg::Matrix(0.999848,  -0.002700,  0.017242,   0.0,
+                                     0.0,        0.987960,   0.154710,   0.0,
+                                     -0.017452, -0.154687,  0.987809,   0.0,
+                                     -0.1715,    0.207295,  -0.98239,   1.0));
 
     }
     

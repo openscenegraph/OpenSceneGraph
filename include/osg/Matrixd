@@ -197,14 +197,20 @@ class OSG_EXPORT Matrixd
         void getLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,
                        value_type lookDistance=1.0f) const;
 
-        /** invert the matrix rhs. */
-        bool invert( const Matrixd& rhs);
+        /** invert the matrix rhs, automatically select invert_4x3 or invert_4x4. */
+        inline bool invert( const Matrixd& rhs)
+        {
+            if (rhs._mat[0][3]==0.0 && rhs._mat[1][3]==0.0 &&  rhs._mat[2][3]==0.0 && rhs._mat[3][3]==1.0)
+                return invert_4x3(rhs);
+            else
+                return invert_4x4(rhs);
+        }
+
+        /** 4x3 matrix invert, not right hand column is assumed to be 0,0,0,1. */
+        bool invert_4x3( const Matrixd& rhs);
 
         /** full 4x4 matrix invert. */
-        bool invert_4x4_orig( const Matrixd& );
-
-        /** full 4x4 matrix invert. */
-        bool invert_4x4_new( const Matrixd& );
+        bool invert_4x4( const Matrixd& rhs);
 
         /** ortho-normalize the 3x3 rotation & scale matrix */ 
         void orthoNormalize(const Matrixd& rhs); 

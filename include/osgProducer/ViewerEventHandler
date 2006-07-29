@@ -72,9 +72,6 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
         
         bool                _firstTimeTogglingFullScreen;
         
-        class CameraBarrierCallback;
-        CameraBarrierCallback* _cameraBarrierCallback;
-
         class StatsAndHelpDrawCallback;
         StatsAndHelpDrawCallback* _statsAndHelpDrawCallback;
 

@@ -12,6 +12,7 @@
 #include <osg/DisplaySettings>
 #include <osgProducer/OsgSceneHandler>
 #include <osgUtil/SceneView>
+#include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -42,6 +43,9 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
 	I_Method1(void, setDrawCallback, IN, osgProducer::OsgSceneHandler::Callback *, callback);
 	I_Method0(osgProducer::OsgSceneHandler::Callback *, getDrawCallback);
 	I_Method0(const osgProducer::OsgSceneHandler::Callback *, getDrawCallback);
+	I_Method1(void, setCollectStats, IN, bool, collectStats);
+	I_Method0(bool, getCollectStats);
+	I_Method1(bool, getStats, IN, osgUtil::Statistics &, primStats);
 	I_Method1(void, setContextID, IN, int, id);
 	I_Method1(void, setFlushOfAllDeletedGLObjectsOnNextFrame, IN, bool, flag);
 	I_Method0(bool, getFlushOfAllDeletedGLObjectsOnNextFrame);
@@ -49,6 +53,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
 	I_Method0(bool, getCleanUpOnNextFrame);
 	I_Property(bool, CleanUpOnNextFrame);
 	I_Property(osgProducer::OsgSceneHandler::Callback *, ClearCallback);
+	I_Property(bool, CollectStats);
 	I_WriteOnlyProperty(int, ContextID);
 	I_Property(osgProducer::OsgSceneHandler::Callback *, CullCallback);
 	I_Property(osgProducer::OsgSceneHandler::Callback *, DrawCallback);

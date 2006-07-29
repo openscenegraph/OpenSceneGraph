@@ -21,7 +21,8 @@ using namespace osgUtil;
 using namespace osgProducer;
 
 OsgSceneHandler::OsgSceneHandler( osg::DisplaySettings *ds) :
-    _sceneView(new osgUtil::SceneView(ds))
+    _sceneView(new osgUtil::SceneView(ds)),
+    _collectStats(false)
 {
     _frameStartTick = 0;
     _previousFrameStartTick = 0;
@@ -59,6 +60,7 @@ void OsgSceneHandler::clearImplementation(Producer::Camera& /*camera*/)
 
 void OsgSceneHandler::cullImplementation(Producer::Camera &cam) 
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_cullMutex);
 
     _sceneView->getProjectionMatrix().set(cam.getProjectionMatrix());
     _sceneView->getViewMatrix().set(cam.getPositionAndAttitudeMatrix());
@@ -74,6 +76,23 @@ void OsgSceneHandler::cullImplementation(Producer::Camera &cam)
     _sceneView->setClearColor(clear_color);
 
     _sceneView->cull();
+
+    if (_collectStats)
+    {
+        _stats.reset();
+        _sceneView->getStats(_stats);
+    }
+}
+
+bool OsgSceneHandler::getStats(Statistics& primStats)
+{
+    if (!_collectStats) return false;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_cullMutex);
+
+    primStats.add(_stats);
+
+    return true;
 }
 
 void OsgSceneHandler::drawImplementation(Producer::Camera &) 

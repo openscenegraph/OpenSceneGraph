@@ -56,7 +56,7 @@ class Statistics : public osg::PrimitiveFunctor
             reset();
         };
 
-        enum statsType
+        enum StatsType
         {
             STAT_NONE, // default
             STAT_FRAMERATE, 
@@ -88,7 +88,7 @@ class Statistics : public osg::PrimitiveFunctor
             _number_of_vertexes=0;
         }
 
-        void setType(statsType t) {stattype=t;}
+        void setType(StatsType t) {stattype=t;}
         
         virtual void setVertexArray(unsigned int count,const osg::Vec3*) { _vertexCount += count; }
         virtual void setVertexArray(unsigned int count,const osg::Vec2*) { _vertexCount += count; }
@@ -160,7 +160,39 @@ class Statistics : public osg::PrimitiveFunctor
         void setDepth(int d) { depth=d; }
         void addBins(int np) { nbins+= np; }
 
-        void setBinNo(int n) { _binNo=n;}       
+        void setBinNo(int n) { _binNo=n;}
+        
+        void add(const Statistics& stats)
+        {
+            numDrawables += stats.numDrawables;
+            nummat += stats.nummat;
+            depth += stats.depth;
+            nlights += stats.nlights;
+            nbins += stats.nbins;
+            nimpostor += stats.nimpostor;
+            
+            _vertexCount += stats._vertexCount;
+            // _primitiveCount += stats._primitiveCount;   
+            for(PrimitiveValueMap::const_iterator pitr = stats._primitiveCount.begin();
+                pitr != stats._primitiveCount.end();
+                ++pitr)
+            {
+                _primitiveCount[pitr->first].first += pitr->second.first;
+                _primitiveCount[pitr->first].second += pitr->second.second;
+            }
+            
+            _currentPrimitiveFunctorMode += stats._currentPrimitiveFunctorMode;
+
+            for(PrimitiveCountMap::const_iterator citr = stats._primitives_count.begin();
+                citr != stats._primitives_count.end();
+                ++citr)
+            {
+                _primitives_count[citr->first] += citr->second;
+            }
+
+            _total_primitives_count += stats._total_primitives_count;
+            _number_of_vertexes += stats._number_of_vertexes;
+        }
                 
     public:
                 
@@ -171,7 +203,7 @@ class Statistics : public osg::PrimitiveFunctor
         int nlights;
         int depth; // depth into bins - eg 1.1,1.2,1.3 etc
         int _binNo;
-        statsType stattype;
+        StatsType stattype;
         int nimpostor; // number of impostors rendered
         
         unsigned int        _vertexCount;

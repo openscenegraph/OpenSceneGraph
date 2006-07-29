@@ -14,55 +14,6 @@
 
 using namespace osgProducer;
 
-class ViewerEventHandler::CameraBarrierCallback : public Producer::Camera::Callback, public OpenThreads::Barrier
-{
-public:
-    CameraBarrierCallback(unsigned int numThreads):
-        OpenThreads::Barrier(numThreads),
-        _doBlock(false) {}
-        
-    virtual ~CameraBarrierCallback()
-    {
-        release();
-    }
-    
-    void setDoBlock(bool block)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        if (_doBlock != block)
-        {
-            if (_doBlock) release();
-            
-            _doBlock = block;
-            
-            osg::notify(osg::NOTICE)<<"setDoBlock("<<block<<")"<<std::endl;
-        }
-    }
-    
-    bool getDoBlock() const { return _doBlock; } 
-    
-    virtual void operator() (const Producer::Camera&)
-    {
-        bool doBlock = false;
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            doBlock = _doBlock;
-        }
-        
-        if (doBlock)
-        {
-            osg::notify(osg::NOTICE)<<"Entering block()"<<std::endl;
-            block();
-        }
-    };
-
-protected:
-
-    bool                _doBlock;
-    OpenThreads::Mutex  _mutex;
-    
-};
-
 
 class ViewerEventHandler::SnapImageDrawCallback : public Producer::Camera::Callback
 {
@@ -643,7 +594,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                 shitr != _veh->getOsgCameraGroup()->getSceneHandlerList().end();
                 ++shitr)
             {
-                (*shitr)->getSceneView()->getStats(stats); 
+                (*shitr)->getStats(stats); 
             }
 
             unsigned int primitives = 0;
@@ -918,19 +869,6 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
 {
     Producer::CameraConfig* cfg = _cg->getCameraConfig();
 
-    _cameraBarrierCallback = 0;
-#if 0    
-    if (cfg->getNumberOfCameras()>1) 
-    {
-        // use a barrier to make that stats only runs once all the threads have done their drawing.
-        _cameraBarrierCallback = new CameraBarrierCallback(cfg->getNumberOfCameras());
-        for(unsigned int i=0;i<cfg->getNumberOfCameras();++i)
-        {
-            cfg->getCamera(i)->addPostDrawCallback(_cameraBarrierCallback);
-        }
-    }
-#endif
-        
     Producer::Camera *cam = cfg->getCamera(0);
     
     _statsAndHelpDrawCallback = new StatsAndHelpDrawCallback(this,0);
@@ -987,18 +925,13 @@ void ViewerEventHandler::setWriteImageFileName(const std::string& filename)
 void ViewerEventHandler::setFrameStatsMode(FrameStatsMode mode)
 { 
     _frameStatsMode = mode; 
-    if (_frameStatsMode==NO_STATS)
+    _cg->setInstrumentationMode(_frameStatsMode!=NO_STATS);
+
+    for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator shitr = _cg->getSceneHandlerList().begin();
+        shitr != _cg->getSceneHandlerList().end();
+        ++shitr)
     {
-        _cg->setInstrumentationMode(false);
-    }
-    else
-    {
-        _cg->setInstrumentationMode(true);
-    }
-    
-    if (_cameraBarrierCallback)
-    {
-        _cameraBarrierCallback->setDoBlock(_frameStatsMode>=SCENE_STATS);
+        (*shitr)->setCollectStats(_frameStatsMode==SCENE_STATS); 
     }
 }
 

@@ -16,6 +16,7 @@
 
 #include <osg/Timer>
 #include <osgUtil/SceneView>
+#include <osgUtil/Statistics>
 
 #include <Producer/Camera>
 
@@ -104,6 +105,11 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         Callback* getDrawCallback() { return _drawCallback.get(); }
         const Callback* getDrawCallback() const { return _drawCallback.get(); }
 
+        void setCollectStats(bool collectStats) { _collectStats = collectStats; }
+        bool getCollectStats() const { return _collectStats; }
+
+        bool getStats(osgUtil::Statistics& primStats); 
+
         void setContextID( int id );
 
         void setFlushOfAllDeletedGLObjectsOnNextFrame(bool flag) { _flushOfAllDeletedGLObjectsOnNextFrame = flag; }
@@ -119,17 +125,22 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         virtual ~OsgSceneHandler() {}
         
         
+        OpenThreads::Mutex      _cullMutex;
+
         osg::ref_ptr<osgUtil::SceneView> _sceneView;
     
-        osg::ref_ptr<Callback> _clearCallback;
-        osg::ref_ptr<Callback> _cullCallback;
-        osg::ref_ptr<Callback> _drawCallback;
+        osg::ref_ptr<Callback>  _clearCallback;
+        osg::ref_ptr<Callback>  _cullCallback;
+        osg::ref_ptr<Callback>  _drawCallback;
         
-        osg::Timer_t           _frameStartTick;
-        osg::Timer_t           _previousFrameStartTick;
+        osg::Timer_t            _frameStartTick;
+        osg::Timer_t            _previousFrameStartTick;
         
-        bool                   _flushOfAllDeletedGLObjectsOnNextFrame;
-        bool                   _cleanUpOnNextFrame;
+        bool                    _flushOfAllDeletedGLObjectsOnNextFrame;
+        bool                    _cleanUpOnNextFrame;
+        
+        bool                    _collectStats;
+        osgUtil::Statistics     _stats;
 };
 
 }

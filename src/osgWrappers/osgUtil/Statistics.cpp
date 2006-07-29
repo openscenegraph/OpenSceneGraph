@@ -34,7 +34,7 @@ TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, os
 
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap);
 
-BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::statsType)
+BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 	I_EnumLabel(osgUtil::Statistics::STAT_NONE);
 	I_EnumLabel(osgUtil::Statistics::STAT_FRAMERATE);
 	I_EnumLabel(osgUtil::Statistics::STAT_GRAPHS);
@@ -49,7 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_BaseType(osg::PrimitiveFunctor);
 	I_Constructor0();
 	I_Method0(void, reset);
-	I_Method1(void, setType, IN, osgUtil::Statistics::statsType, t);
+	I_Method1(void, setType, IN, osgUtil::Statistics::StatsType, t);
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, x);
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, x);
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, x);
@@ -74,12 +74,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_Method1(void, setDepth, IN, int, d);
 	I_Method1(void, addBins, IN, int, np);
 	I_Method1(void, setBinNo, IN, int, n);
+	I_Method1(void, add, IN, const osgUtil::Statistics &, stats);
 	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesBegin);
 	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesEnd);
 	I_WriteOnlyProperty(int, BinNo);
 	I_ReadOnlyProperty(int, Bins);
 	I_WriteOnlyProperty(int, Depth);
-	I_WriteOnlyProperty(osgUtil::Statistics::statsType, Type);
+	I_WriteOnlyProperty(osgUtil::Statistics::StatsType, Type);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::StatsVisitor::NodeSet);

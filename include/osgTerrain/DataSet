@@ -41,6 +41,7 @@
 
 // forward declare so we can avoid tieing osgTerrain to GDAL.
 class GDALDataset;
+class GDALRasterBand;
 
 namespace osgTerrain
 {
@@ -247,6 +248,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             virtual void readImage(DestinationData& destination);
             virtual void readHeightField(DestinationData& destination);
             virtual void readModels(DestinationData& destination);
+
+            float getInterpolatedValue(GDALRasterBand *band, double x, double y);
 
             Source*                                     _source;
             

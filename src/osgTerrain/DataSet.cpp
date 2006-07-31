@@ -212,22 +212,32 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
          return result ? true : false;
 }
 
-float getInterpolatedValue(GDALRasterBand *band, double x, double y)
+
+
+DataSet::SourceData::~SourceData()
+{
+    if (_gdalDataset) GDALClose(_gdalDataset);
+}
+
+float DataSet::SourceData::getInterpolatedValue(GDALRasterBand *band, double x, double y)
 {
     double geoTransform[6];
-    band->GetDataset()->GetGeoTransform(geoTransform);
+    geoTransform[0] = _geoTransform(3,0);
+    geoTransform[1] = _geoTransform(0,0);
+    geoTransform[2] = _geoTransform(1,0);
+    geoTransform[3] = _geoTransform(3,1);
+    geoTransform[4] = _geoTransform(0,1);
+    geoTransform[5] = _geoTransform(1,1);
+
     double invTransform[6];
     GDALInvGeoTransform(geoTransform, invTransform);
     double r, c;
     GDALApplyGeoTransform(invTransform, x, y, &c, &r);
-
-    int numRows = band->GetYSize();
-    int numCols = band->GetXSize();
-
+   
     int rowMin = osg::maximum((int)floor(r), 0);
-    int rowMax = osg::maximum(osg::minimum((int)ceil(r), numRows-1), 0);
+    int rowMax = osg::maximum(osg::minimum((int)ceil(r), (int)(_numValuesY-1)), 0);
     int colMin = osg::maximum((int)floor(c), 0);
-    int colMax = osg::maximum(osg::minimum((int)ceil(c), numCols-1), 0);
+    int colMax = osg::maximum(osg::minimum((int)ceil(c), (int)(_numValuesX-1)), 0);
 
     if (rowMin > rowMax) rowMin = rowMax;
     if (colMin > colMax) colMin = colMax;
@@ -256,13 +266,10 @@ float getInterpolatedValue(GDALRasterBand *band, double x, double y)
     double w01 = (1.0 - y_rem) * x_rem * (double)lrHeight;
     double w10 = y_rem * (1.0 - x_rem) * (double)ulHeight;
     double w11 = y_rem * x_rem * (double)urHeight;
-    float result = (float)(w00 + w01 + w10 + w11);
-    return result;
-}
 
-DataSet::SourceData::~SourceData()
-{
-    if (_gdalDataset) GDALClose(_gdalDataset);
+    float result = (float)(w00 + w01 + w10 + w11);
+
+    return result;
 }
 
 DataSet::SourceData* DataSet::SourceData::readData(Source* source)

@@ -34,7 +34,7 @@ class OSG_EXPORT Matrixf
         Matrixf( const Matrixd& mat );
         inline explicit Matrixf( float const * const ptr ) { set(ptr); }
         inline explicit Matrixf( double const * const ptr ) { set(ptr); }
-        inline explicit Matrixf( const Quat& quat ) { set(quat); }
+        inline explicit Matrixf( const Quat& quat ) { makeRotate(quat); }
 
         Matrixf( value_type a00, value_type a01, value_type a02, value_type a03,
                  value_type a10, value_type a11, value_type a12, value_type a13,
@@ -88,10 +88,6 @@ class OSG_EXPORT Matrixf
                  value_type a20, value_type a21, value_type a22,value_type a23,
                  value_type a30, value_type a31, value_type a32,value_type a33);
                   
-        void set(const Quat& q);
-        
-        void get(Quat& q) const;
-
         value_type * ptr() { return (value_type*)_mat; }
         const value_type * ptr() const { return (const value_type *)_mat; }
 
@@ -289,6 +285,15 @@ class OSG_EXPORT Matrixf
         inline Vec4d postMult( const Vec4d& v ) const;
         inline Vec4f operator* ( const Vec4f& v ) const;
         inline Vec4d operator* ( const Vec4d& v ) const;
+
+#ifdef USE_DEPRECATED_API
+        inline void set(const Quat& q) { makeRotate(q); }
+        inline void get(Quat& q) const { q = getRotate(); }
+#endif
+
+        void setRotate(const Quat& q);
+        Quat getRotate() const;
+
 
         void setTrans( value_type tx, value_type ty, value_type tz );
         void setTrans( const Vec3f& v );

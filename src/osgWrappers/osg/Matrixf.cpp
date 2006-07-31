@@ -45,8 +45,6 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method1(void, set, IN, float const *const, ptr);
 	I_Method1(void, set, IN, double const *const, ptr);
 	I_Method16(void, set, IN, osg::Matrixf::value_type, a00, IN, osg::Matrixf::value_type, a01, IN, osg::Matrixf::value_type, a02, IN, osg::Matrixf::value_type, a03, IN, osg::Matrixf::value_type, a10, IN, osg::Matrixf::value_type, a11, IN, osg::Matrixf::value_type, a12, IN, osg::Matrixf::value_type, a13, IN, osg::Matrixf::value_type, a20, IN, osg::Matrixf::value_type, a21, IN, osg::Matrixf::value_type, a22, IN, osg::Matrixf::value_type, a23, IN, osg::Matrixf::value_type, a30, IN, osg::Matrixf::value_type, a31, IN, osg::Matrixf::value_type, a32, IN, osg::Matrixf::value_type, a33);
-	I_Method1(void, set, IN, const osg::Quat &, q);
-	I_Method1(void, get, IN, osg::Quat &, q);
 	I_Method0(osg::Matrixf::value_type *, ptr);
 	I_Method0(const osg::Matrixf::value_type *, ptr);
 	I_Method0(void, makeIdentity);
@@ -86,6 +84,8 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method1(osg::Vec4d, preMult, IN, const osg::Vec4d &, v);
 	I_Method1(osg::Vec4f, postMult, IN, const osg::Vec4f &, v);
 	I_Method1(osg::Vec4d, postMult, IN, const osg::Vec4d &, v);
+	I_Method1(void, setRotate, IN, const osg::Quat &, q);
+	I_Method0(osg::Quat, getRotate);
 	I_Method3(void, setTrans, IN, osg::Matrixf::value_type, tx, IN, osg::Matrixf::value_type, ty, IN, osg::Matrixf::value_type, tz);
 	I_Method1(void, setTrans, IN, const osg::Vec3f &, v);
 	I_Method1(void, setTrans, IN, const osg::Vec3d &, v);
@@ -95,6 +95,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method1(void, preMult, IN, const osg::Matrixf &, x);
 	I_Method1(void, postMult, IN, const osg::Matrixf &, x);
 	I_WriteOnlyProperty(float const *const, );
+	I_ReadOnlyProperty(osg::Quat, Rotate);
 	I_ReadOnlyProperty(osg::Vec3d, Scale);
 	I_ReadOnlyProperty(osg::Vec3d, Trans);
 END_REFLECTOR

@@ -62,7 +62,7 @@ void Matrix_implementation::set( value_type a00, value_type a01, value_type a02,
 #define QZ  q._v[2]
 #define QW  q._v[3]
 
-void Matrix_implementation::set(const Quat& q_in)
+void Matrix_implementation::setRotate(const Quat& q_in)
 {
     Quat q(q_in);
     double length2 = q.length2();
@@ -103,29 +103,35 @@ void Matrix_implementation::set(const Quat& q_in)
     _mat[0][0] = 1.0 - (yy + zz);
     _mat[1][0] = xy - wz;
     _mat[2][0] = xz + wy;
-    _mat[3][0] = 0.0;
+
 
     _mat[0][1] = xy + wz;
     _mat[1][1] = 1.0 - (xx + zz);
     _mat[2][1] = yz - wx;
-    _mat[3][1] = 0.0;
 
     _mat[0][2] = xz - wy;
     _mat[1][2] = yz + wx;
     _mat[2][2] = 1.0 - (xx + yy);
-    _mat[3][2] = 0.0;
 
+#if 0
     _mat[0][3] = 0.0;
     _mat[1][3] = 0.0;
     _mat[2][3] = 0.0;
+
+    _mat[3][0] = 0.0;
+    _mat[3][1] = 0.0;
+    _mat[3][2] = 0.0;
     _mat[3][3] = 1.0;
+#endif
 }
 
 #if 1
 
 // David Spillings implementation Mk 2
-void Matrix_implementation::get( Quat& q ) const
+Quat Matrix_implementation::getRotate() const
 {
+    Quat q;
+
     // From http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
     QW = 0.5 * sqrt( osg::maximum( 0.0, 1.0 + _mat[0][0] + _mat[1][1] + _mat[2][2] ) );
     QX = 0.5 * sqrt( osg::maximum( 0.0, 1.0 + _mat[0][0] - _mat[1][1] - _mat[2][2] ) );
@@ -135,6 +141,8 @@ void Matrix_implementation::get( Quat& q ) const
     QX = QX * osg::sign(  _mat[1][2] - _mat[2][1]) ;
     QY = QY * osg::sign(  _mat[2][0] - _mat[0][2]) ;
     QZ = QZ * osg::sign(  _mat[0][1] - _mat[1][0]) ;
+
+    return q;
 }
 
 #else
@@ -332,62 +340,78 @@ void Matrix_implementation::makeTranslate( value_type x, value_type y, value_typ
 
 void Matrix_implementation::makeRotate( const Vec3f& from, const Vec3f& to )
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate(from,to);
-    set(quat);
+    setRotate(quat);
 }
 void Matrix_implementation::makeRotate( const Vec3d& from, const Vec3d& to )
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate(from,to);
-    set(quat);
+    setRotate(quat);
 }
 
 void Matrix_implementation::makeRotate( value_type angle, const Vec3f& axis )
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate( angle, axis);
-    set(quat);
+    setRotate(quat);
 }
 void Matrix_implementation::makeRotate( value_type angle, const Vec3d& axis )
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate( angle, axis);
-    set(quat);
+    setRotate(quat);
 }
 
 void Matrix_implementation::makeRotate( value_type angle, value_type x, value_type y, value_type z ) 
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate( angle, x, y, z);
-    set(quat);
+    setRotate(quat);
 }
 
 void Matrix_implementation::makeRotate( const Quat& quat )
 {
-    set(quat);
+    makeIdentity();
+
+    setRotate(quat);
 }
 
 void Matrix_implementation::makeRotate( value_type angle1, const Vec3f& axis1, 
                          value_type angle2, const Vec3f& axis2,
                          value_type angle3, const Vec3f& axis3)
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate(angle1, axis1, 
                     angle2, axis2,
                     angle3, axis3);
-    set(quat);
+    setRotate(quat);
 }
 
 void Matrix_implementation::makeRotate( value_type angle1, const Vec3d& axis1, 
                          value_type angle2, const Vec3d& axis2,
                          value_type angle3, const Vec3d& axis3)
 {
+    makeIdentity();
+
     Quat quat;
     quat.makeRotate(angle1, axis1, 
                     angle2, axis2,
                     angle3, axis3);
-    set(quat);
+    setRotate(quat);
 }
 
 void Matrix_implementation::mult( const Matrix_implementation& lhs, const Matrix_implementation& rhs )

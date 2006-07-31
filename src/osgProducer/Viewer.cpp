@@ -666,7 +666,7 @@ void Viewer::frame()
     // record the position of the view point.
     osg::Matrixd matrix;
     matrix.invert(getViewMatrix());
-    matrix.get(_orientation);
+    _orientation = matrix.getRotate();
 
     double newPosition[3];
     newPosition[0] = matrix(3,0);

@@ -35,11 +35,8 @@ class ApplyMatrixVisitor : public NodeVisitor
 
         virtual void apply(CameraView& cv)
         {
-            Quat rotation;
-            _matrix.get(rotation);
-            
             cv.setPosition(_matrix.getTrans());
-            cv.setAttitude(rotation);
+            cv.setAttitude(_matrix.getRotate());
         }
 
         virtual void apply(MatrixTransform& mt)
@@ -49,11 +46,8 @@ class ApplyMatrixVisitor : public NodeVisitor
         
         virtual void apply(PositionAttitudeTransform& pat)
         {
-            Quat rotation;
-            _matrix.get(rotation);
-            
             pat.setPosition(_matrix.getTrans());
-            pat.setAttitude(rotation);
+            pat.setAttitude(_matrix.getRotate());
         }
         
         osg::Matrix _matrix;

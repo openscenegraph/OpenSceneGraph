@@ -353,7 +353,7 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
             double azim = atan2(-localToFrame(0,1),localToFrame(0,0));
             osg::Quat nodeRotationRelToFrame, rotationOfFrame;
             nodeRotationRelToFrame.makeRotate(-azim,0.0,0.0,1.0);
-            coordinateFrame.get(rotationOfFrame);
+            rotationOfFrame = coordinateFrame.getRotate();
             nodeRotation = nodeRotationRelToFrame*rotationOfFrame;
             break;
         }
@@ -365,14 +365,14 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
             double sz = 1.0/sqrt(localToWorld(0,2)*localToWorld(0,2) + localToWorld(1,2)*localToWorld(1,2) + localToWorld(2,2)*localToWorld(2,2));
             localToWorld = localToWorld*osg::Matrixd::scale(sx,sy,sz);
 
-            localToWorld.get(nodeRotation);
+            nodeRotation = localToWorld.getRotate();
             break;
         }
         case(NODE_CENTER):
         default:
         {
             CoordinateFrame coordinateFrame = getCoordinateFrame(nodeCenter);
-            coordinateFrame.get(nodeRotation);
+            nodeRotation = coordinateFrame.getRotate();
             break;
         }
     }
@@ -406,9 +406,8 @@ void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Ve
     
     osg::Matrixd lookat;
     lookat.makeLookAt(eye,center,up);
-    lookat.get(_rotation);
     
-    _rotation = _rotation.inverse();
+    _rotation = lookat.getRotate().inverse();
 }
 
 bool NodeTrackerManipulator::calcMovement()
@@ -457,7 +456,7 @@ bool NodeTrackerManipulator::calcMovement()
         else
         {
             osg::Matrix rotation_matrix;
-            rotation_matrix.set(_rotation);
+            rotation_matrix.makeRotate(_rotation);
 
             osg::Vec3d lookVector = -getUpVector(rotation_matrix);
             osg::Vec3d sideVector = getSideVector(rotation_matrix);

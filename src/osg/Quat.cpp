@@ -27,22 +27,22 @@ using namespace osg;
 
 void Quat::set(const Matrixf& matrix)
 {
-    matrix.get(*this);
+    *this = matrix.getRotate();
 }
 
 void Quat::set(const Matrixd& matrix)
 {
-    matrix.get(*this);
+    *this = matrix.getRotate();
 }
 
 void Quat::get(Matrixf& matrix) const
 {
-    matrix.set(*this);
+    matrix.makeRotate(*this);
 }
 
 void Quat::get(Matrixd& matrix) const
 {
-    matrix.set(*this);
+    matrix.makeRotate(*this);
 }
 
 

@@ -222,14 +222,14 @@ void testGetQuatFromMatrix() {
 			    
 			    // create two matrices based on the input quats
 			    osg::Matrixd mat1,mat2;
-			    mat1.set(rot_quat1);
-			    mat2.set(rot_quat2);
+			    mat1.makeRotate(rot_quat1);
+			    mat2.makeRotate(rot_quat2);
 			    
 			    // create an output quat by matrix multiplication and get
 			    osg::Matrixd out_mat;
 			    out_mat = mat2 * mat1;
 			    osg::Quat out_quat2;
-			    out_mat.get(out_quat2);
+			    out_quat2 = out_mat.getRotate();
 			    
 			    // if the output quat length is not one 
 			    // or if the component magnitudes do not match,

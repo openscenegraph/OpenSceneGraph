@@ -221,7 +221,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
     {
         _center = eye+ lookVector;
         _distance = lookVector.length();
-        matrix.get(_rotation);
+        _rotation = matrix.getRotate();
         return;
     }
 
@@ -261,7 +261,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
                                           matrix*
                                           osg::Matrixd::translate(-_center);
 
-            rotation_matrix.get(_rotation);
+            _rotation = rotation_matrix.getRotate();
 
             hitFound = true;
         }
@@ -372,8 +372,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
 
     osg::Matrixd rotation_matrix = osg::Matrixd::lookAt(eye,center,up);
 
-    rotation_matrix.get(_rotation);
-    _rotation = _rotation.inverse();
+    _rotation = rotation_matrix.getRotate().inverse();
 
     CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
     _previousUp = getUpVector(coordinateFrame);
@@ -421,7 +420,7 @@ bool TerrainManipulator::calcMovement()
         else
         {
             osg::Matrix rotation_matrix;
-            rotation_matrix.set(_rotation);
+            rotation_matrix.makeRotate(_rotation);
 
             osg::Vec3d lookVector = -getUpVector(rotation_matrix);
             osg::Vec3d sideVector = getSideVector(rotation_matrix);
@@ -459,7 +458,7 @@ bool TerrainManipulator::calcMovement()
         double scale = -0.3f*_distance;
 
         osg::Matrix rotation_matrix;
-        rotation_matrix.set(_rotation);
+        rotation_matrix.makeRotate(_rotation);
 
 
         // compute look vector.
@@ -577,7 +576,7 @@ void TerrainManipulator::clampOrientation()
     if (_rotationMode==ELEVATION_AZIM)
     {
         osg::Matrix rotation_matrix;
-        rotation_matrix.set(_rotation);
+        rotation_matrix.makeRotate(_rotation);
 
         osg::Vec3d lookVector = -getUpVector(rotation_matrix);
         osg::Vec3d upVector = getFrontVector(rotation_matrix);

@@ -182,7 +182,7 @@ void TestManipulator::addMouseEvent(const GUIEventAdapter& ea)
 void TestManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
     _center = matrix.getTrans();
-    matrix.get(_rotation);
+    _rotation = matrix.getRotate();
     _distance = 1.0f;
 }
 
@@ -212,8 +212,7 @@ void TestManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,c
                    
     _center = eye+lv;
     _distance = lv.length();
-    rotation_matrix.get(_rotation);
-    _rotation = _rotation.inverse();
+    _rotation = rotation_matrix.getRotate().inverse();
 }
 
 

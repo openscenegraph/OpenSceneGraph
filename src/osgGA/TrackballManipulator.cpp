@@ -189,7 +189,7 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 void TrackballManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
     _center = osg::Vec3(0.0f,0.0f,-_distance)*matrix;
-    matrix.get(_rotation);
+    _rotation = matrix.getRotate();
 }
 
 osg::Matrixd TrackballManipulator::getMatrix() const
@@ -221,8 +221,7 @@ void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3&
                    
     _center = center;
     _distance = lv.length();
-    rotation_matrix.get(_rotation);
-    _rotation = _rotation.inverse();
+    _rotation = rotation_matrix.getRotate().inverse();
 }
 
 
@@ -276,7 +275,7 @@ bool TrackballManipulator::calcMovement()
         float scale = -0.3f*_distance;
 
         osg::Matrix rotation_matrix;
-        rotation_matrix.set(_rotation);
+        rotation_matrix.makeRotate(_rotation);
 
         osg::Vec3 dv(dx*scale,dy*scale,0.0f);
 

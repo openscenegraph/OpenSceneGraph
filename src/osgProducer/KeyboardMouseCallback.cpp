@@ -67,7 +67,7 @@ void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbut
 void KeyboardMouseCallback::doubleButtonPress( float mx, float my, unsigned int mbutton ) 
 {
     updateWindowSize();
-    if (_eventQueue.valid()) _eventQueue->mouseButtonPress(mx,my,mbutton);
+    if (_eventQueue.valid()) _eventQueue->mouseDoubleButtonPress(mx,my,mbutton);
 }
 
 void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )

@@ -115,7 +115,7 @@ int main( int argc, char **argv )
     osgProducer::Viewer viewer(arguments);
 
     // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    viewer.setUpViewer(osgProducer::Viewer::ESCAPE_SETS_DONE);
 
     unsigned int pos = viewer.addCameraManipulator(new GliderManipulator());
     viewer.selectCameraManipulator(pos);
@@ -145,6 +145,7 @@ int main( int argc, char **argv )
     if (!rootnode) rootnode = createModel();
 
     viewer.setSceneData( rootnode );
+
 
     // create the windows and run the threads.
     viewer.realize();

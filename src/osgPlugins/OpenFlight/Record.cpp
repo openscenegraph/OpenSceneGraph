@@ -17,6 +17,10 @@ Record::Record()
 {
 }
 
+Record::~Record()
+{
+}
+
 void Record::setParent(PrimaryRecord* parent)
 {
     _parent = parent;

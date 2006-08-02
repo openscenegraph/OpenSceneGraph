@@ -49,7 +49,7 @@ public:
 
 protected:
 
-    virtual ~Record() {}
+    virtual ~Record();
 
     virtual void readRecord(RecordInputStream& in, Document& document);
 

@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 
+#include <fstream>
 
 //Directory entry in header
 class BSP_DIRECTORY_ENTRY

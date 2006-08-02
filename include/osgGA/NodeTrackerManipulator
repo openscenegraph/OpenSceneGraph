@@ -31,7 +31,13 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         typedef std::vector< osg::observer_ptr<osg::Node> >   ObserveredNodePath;
 
-        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath.clear();  _trackNodePath.insert(_trackNodePath.begin(), nodePath.begin(),nodePath.end()); }
+        void setTrackNodePath(const osg::NodePath& nodePath)
+        {
+           _trackNodePath.clear();
+           _trackNodePath.reserve(nodePath.size());
+           std::copy(nodePath.begin(), nodePath.end(), std::back_inserter(_trackNodePath));
+        }
+
         void setTrackNodePath(const ObserveredNodePath& nodePath) { _trackNodePath = nodePath; }
         ObserveredNodePath& getTrackNodePath() { return _trackNodePath; }
 

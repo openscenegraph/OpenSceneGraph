@@ -37,6 +37,7 @@
 #include <osgUtil/Tesselator>
 
 #include "Converter.h"
+#include "VertexMap.h"
 
 #include "old_lw.h"
 #include "old_Lwo2.h"
@@ -104,7 +105,7 @@ lwosg::Converter::Options ReaderWriterLWO::parse_options(const Options *options)
                 int unit;
                 if (iss >> mapname >> unit)
                 {
-                    conv_options.texturemap_bindings.insert(std::make_pair(mapname,  unit));
+                    conv_options.texturemap_bindings.insert(lwosg::VertexMap_binding_map::value_type(mapname,  unit));
                 }
             }
             if (opt == "MAX_TEXTURE_UNITS") {

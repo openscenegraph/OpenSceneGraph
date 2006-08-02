@@ -28,6 +28,7 @@ OverlayNode::OverlayNode():
     _textureSizeHint(1024),
     _continuousUpdate(false)
 {
+    setNumChildrenRequiringUpdateTraversal(1);
     init();
 }
 
@@ -39,6 +40,7 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     _textureSizeHint(copy._textureSizeHint),
     _continuousUpdate(copy._continuousUpdate)
 {
+    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
     init();
 }
 
@@ -92,6 +94,93 @@ void OverlayNode::init()
 
 void OverlayNode::traverse(osg::NodeVisitor& nv)
 {
+    if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+    {
+
+
+        Group::traverse(nv);
+
+        if (_continuousUpdate)
+        {
+
+            // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
+            osg::BoundingSphere bs;
+            for(unsigned int i=0; i<_camera->getNumChildren(); ++i)
+            {
+                bs.expandBy(_camera->getChild(i)->getBound());
+            }
+
+            if (bs.valid())
+            {
+                // see if we are within a coordinate system node.
+                osg::CoordinateSystemNode* csn = 0;
+                osg::NodePath& nodePath = nv.getNodePath();
+                for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+                    itr != nodePath.rend() && csn==0;
+                    ++itr)
+                {
+                    csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
+                }
+
+                _camera->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
+
+                if (csn)
+                {
+                    osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
+                    double centerDistance = (eyePoint-osg::Vec3d(bs.center())).length();
+
+                    double znear = centerDistance-bs.radius();
+                    double zfar  = centerDistance+bs.radius();
+                    double zNearRatio = 0.001f;
+                    if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+
+                    double top   = (bs.radius()/centerDistance)*znear;
+                    double right = top;
+
+                    _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+                    _camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
+                }
+                else
+                {
+                    osg::Vec3d upDirection(0.0,1.0,0.0);
+                    osg::Vec3d viewDirection(0.0,0.0,1.0);
+
+                    double viewDistance = 2.0*bs.radius();
+                    osg::Vec3d center = bs.center();
+                    osg::Vec3d eyePoint = center+viewDirection*viewDistance;
+
+                    double znear = viewDistance-bs.radius();
+                    double zfar  = viewDistance+bs.radius();
+
+                    float top   = bs.radius();
+                    float right = top;
+
+                    _camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
+                    _camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
+
+                }
+
+
+                // compute the matrix which takes a vertex from local coords into tex coords
+                // will use this later to specify osg::TexGen..
+                osg::Matrix MVP = _camera->getViewMatrix() * 
+                                  _camera->getProjectionMatrix();
+
+                osg::Matrix MVPT = MVP *
+                                   osg::Matrix::translate(1.0,1.0,1.0) *
+                                   osg::Matrix::scale(0.5,0.5,0.5);
+
+                _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
+                _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
+
+                _textureFrustum.setToUnitFrustum(false,false);
+                _textureFrustum.transformProvidingInverse(MVP);
+            }
+        }
+
+        return;
+    }
+
     if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
     {
         Group::traverse(nv);
@@ -111,87 +200,8 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
     // if we need to redraw then do cull traversal on camera.
     if (!_textureObjectValidList[contextID] || _continuousUpdate)
     {
-    
-        // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
-        osg::BoundingSphere bs;
-        for(unsigned int i=0; i<_camera->getNumChildren(); ++i)
-        {
-            bs.expandBy(_camera->getChild(i)->getBound());
-        }
-
-        if (bs.valid())
-        {
-            // see if we are within a coordinate system node.
-            osg::CoordinateSystemNode* csn = 0;
-            osg::NodePath& nodePath = nv.getNodePath();
-            for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
-                itr != nodePath.rend() && csn==0;
-                ++itr)
-            {
-                csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
-            }
-
-            _camera->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
-
-            if (csn)
-            {
-                osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
-                double centerDistance = (eyePoint-osg::Vec3d(bs.center())).length();
-
-                double znear = centerDistance-bs.radius();
-                double zfar  = centerDistance+bs.radius();
-                double zNearRatio = 0.001f;
-                if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
-
-                double top   = (bs.radius()/centerDistance)*znear;
-                double right = top;
-
-                _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-                _camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
-            }
-            else
-            {
-                osg::Vec3d upDirection(0.0,1.0,0.0);
-                osg::Vec3d viewDirection(0.0,0.0,1.0);
-
-                double viewDistance = 2.0*bs.radius();
-                osg::Vec3d center = bs.center();
-                osg::Vec3d eyePoint = center+viewDirection*viewDistance;
-
-                double znear = viewDistance-bs.radius();
-                double zfar  = viewDistance+bs.radius();
-
-                float top   = bs.radius();
-                float right = top;
-
-                _camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
-                _camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
-
-            }
-
-
-            // compute the matrix which takes a vertex from local coords into tex coords
-            // will use this later to specify osg::TexGen..
-            osg::Matrix MVP = _camera->getViewMatrix() * 
-                              _camera->getProjectionMatrix();
-
-            osg::Matrix MVPT = MVP *
-                               osg::Matrix::translate(1.0,1.0,1.0) *
-                               osg::Matrix::scale(0.5,0.5,0.5);
-
-            _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-            _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
-
-
-            _textureFrustum.setToUnitFrustum(false,false);
-//            const osg::Matrix modelView = (cv->getModelViewMatrix());
-//            _textureFrustum.transformProvidingInverse(osg::Matrix::inverse(modelView)*MVP);
-            _textureFrustum.transformProvidingInverse(MVP);
-
-            _camera->accept(*cv);
-
-            _textureObjectValidList[contextID] = 1;
-        }
+        _camera->accept(*cv);
+        _textureObjectValidList[contextID] = 1;
     }
     
     

@@ -93,6 +93,15 @@ int main(int, char *[])
         viewer.frame();
     }
 
+    // wait for all cull and draw threads to complete.
+    viewer.sync();
+
+    // run a clean up frame to delete all OpenGL objects.
+    viewer.cleanup_frame();
+
+    // wait for all the clean up frame to complete.
+    viewer.sync();
+
     return(0);
 }
 

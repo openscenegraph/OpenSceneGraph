@@ -13,6 +13,7 @@
 #include <osg/StateSet>
 #include <osg/Switch>
 #include <osg/Texture2D>
+#include <osg/TexEnv>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>

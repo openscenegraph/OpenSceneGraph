@@ -17,7 +17,6 @@
 
 #include <osg/State>
 #include <osg/Notify>
-#include <osg/TexEnv>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -138,9 +137,10 @@ Font::Font(FontImplementation* implementation):
     _magFilterHint(osg::Texture::LINEAR)
 {
     setImplementation(implementation);
-    _texEnv = new osg::TexEnv(osg::TexEnv::BLEND);
 
     _stateset = new osg::StateSet;
+    //_stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+    //_stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
@@ -301,15 +301,11 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
     if (!glyphTexture)
     {
         
-        osg::StateSet* stateset = new osg::StateSet;
-        _stateSetList.push_back(stateset);
-
         glyphTexture = new GlyphTexture;
         
         static int numberOfTexturesAllocated = 0;
         ++numberOfTexturesAllocated;
 
-        osg::notify(osg::INFO)<<"    Creating new GlyphTexture "<<glyphTexture<<"& StateSet "<<stateset<<std::endl;
         osg::notify(osg::INFO)<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
@@ -321,12 +317,6 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
         
         _glyphTextureList.push_back(glyphTexture);
         
-        glyphTexture->setStateSet(stateset);
-        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-        stateset->setTextureAttributeAndModes(0,glyphTexture,osg::StateAttribute::ON);
-        if (_texEnv.valid()) stateset->setTextureAttribute(0,_texEnv.get());
-        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-
         if (!glyphTexture->getSpaceForGlyph(glyph,posX,posY))
         {
             osg::notify(osg::WARN)<<"Warning: unable to allocate texture big enough for glyph"<<std::endl;
@@ -342,7 +332,6 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
 
 
 Font::GlyphTexture::GlyphTexture():
-    _stateset(0),
     _margin(2),
     _usedY(0),
     _partUsedX(0),
@@ -651,9 +640,6 @@ float Font::Glyph::getVerticalAdvance() const { return _verticalAdvance; }
 void Font::Glyph::setTexture(GlyphTexture* texture) { _texture = texture; }
 Font::GlyphTexture* Font::Glyph::getTexture() { return _texture; }
 const Font::GlyphTexture* Font::Glyph::getTexture() const { return _texture; }
-
-osg::StateSet* Font::Glyph::getStateSet() { return _texture?_texture->getStateSet():0; }
-const osg::StateSet* Font::Glyph::getStateSet() const { return _texture?_texture->getStateSet():0; }
 
 void Font::Glyph::setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
 int Font::Glyph::getTexturePositionX() const { return _texturePosX; }

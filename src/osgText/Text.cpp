@@ -631,7 +631,7 @@ void Text::computeGlyphRepresentation()
                     local.x() += bearing.x() * wr;
                     local.y() += bearing.y() * hr;
 
-                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
+                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()];
 
                     glyphquad._glyphs.push_back(glyph);
                     glyphquad._lineNumbers.push_back(lineNumber);
@@ -1386,6 +1386,9 @@ void Text::drawImplementation(osg::State& state) const
 {
     unsigned int contextID = state.getContextID();
 
+    state.applyMode(GL_BLEND,true);
+    state.applyTextureMode(0,GL_TEXTURE_2D,true);
+
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
     {
         int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
@@ -1858,7 +1861,7 @@ void Text::renderOnlyForegroundText(osg::State& state) const
         ++titr)
     {
         // need to set the texture here...
-        state.apply(titr->first.get());
+        state.applyTextureAttribute(0,titr->first.get());
 
         const GlyphQuads& glyphquad = titr->second;
 
@@ -1887,7 +1890,7 @@ void Text::renderWithPolygonOffset(osg::State& state) const
         ++titr)
     {
         // need to set the texture here...
-        state.apply(titr->first.get());
+        state.applyTextureAttribute(0,titr->first.get());
 
         const GlyphQuads& glyphquad = titr->second;
 
@@ -1942,7 +1945,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state) const
         ++titr)
     {
         // need to set the texture here...
-        state.apply(titr->first.get());
+        state.applyTextureAttribute(0,titr->first.get());
 
         const GlyphQuads& glyphquad = titr->second;
 
@@ -1994,7 +1997,7 @@ void Text::renderWithDepthRange(osg::State& state) const
         ++titr)
     {
         // need to set the texture here...
-        state.apply(titr->first.get());
+        state.applyTextureAttribute(0,titr->first.get());
 
         const GlyphQuads& glyphquad = titr->second;
 
@@ -2088,7 +2091,7 @@ void Text::renderWithStencilBuffer(osg::State& state) const
         ++titr)
     {
         // need to set the texture here...
-        state.apply(titr->first.get());
+        state.applyTextureAttribute(0,titr->first.get());
 
         const GlyphQuads& glyphquad = titr->second;
 
@@ -2155,7 +2158,7 @@ void Text::renderWithStencilBuffer(osg::State& state) const
         ++titr)
     {
         // need to set the texture here...
-        state.apply(titr->first.get());
+        state.applyTextureAttribute(0,titr->first.get());
 
         const GlyphQuads& glyphquad = titr->second;
 

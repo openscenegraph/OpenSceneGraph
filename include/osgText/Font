@@ -22,7 +22,6 @@
 #include <osg/Texture2D>
 #include <osg/StateSet>
 #include <osg/buffered_value>
-#include <osg/TexEnv>
 
 #include <osgText/Export>
 
@@ -161,7 +160,6 @@ protected:
     osg::ref_ptr<osg::StateSet>     _stateset;
     SizeGlyphMap                    _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
-    StateSetList                    _stateSetList;
     
     // current active size of font
     unsigned int                    _width;
@@ -172,8 +170,6 @@ protected:
     unsigned int                    _textureHeightHint;   
     osg::Texture::FilterMode        _minFilterHint;
     osg::Texture::FilterMode        _magFilterHint;
-    
-    osg::ref_ptr<osg::TexEnv >      _texEnv;
     
     osg::ref_ptr<FontImplementation> _implementation;
 
@@ -222,10 +218,6 @@ public:
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const osg::StateAttribute& rhs) const;
 
-        void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
-        osg::StateSet* getStateSet() { return _stateset; }
-        const osg::StateSet* getStateSet() const { return _stateset; }
-
         /** Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other.*/    
         void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
         unsigned int getGlyphImageMargin() const { return _margin; }
@@ -240,8 +232,6 @@ public:
     
         virtual ~GlyphTexture();
 
-        osg::StateSet* _stateset;
-        
         // parameter used to compute the size and position of empty space
         // in the texture which could accomodate new glyphs.
         int _margin;
@@ -282,9 +272,6 @@ public:
         void setTexture(GlyphTexture* texture);
         GlyphTexture* getTexture();
         const GlyphTexture* getTexture() const;
-
-        osg::StateSet* getStateSet();
-        const osg::StateSet* getStateSet() const;
 
         void setTexturePosition(int posX,int posY);
         int getTexturePositionX() const;

@@ -44,6 +44,15 @@ State::State()
     _isVertexBufferObjectSupported = false;
     
     _lastAppliedProgramObject = 0;
+
+    _extensionProcsInitialized = false;
+    _glClientActiveTexture = 0;
+    _glActiveTexture = 0;
+    _glFogCoordPointer = 0;
+    _glSecondaryColorPointer = 0;
+    _glVertexAttribPointer = 0;
+    _glEnableVertexAttribArray = 0;
+    _glDisableVertexAttribArray = 0;
 }
 
 State::~State()
@@ -630,19 +639,30 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
     dirtyAllVertexArrays();
 }
 
+void State::initializeExtensionProcs()
+{
+    if (_extensionProcsInitialized) return;
 
-typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
+    _glClientActiveTexture = (ActiveTextureProc) osg::getGLExtensionFuncPtr("glClientActiveTexture","glClientActiveTextureARB");
+    _glActiveTexture =  (ActiveTextureProc) osg::getGLExtensionFuncPtr("glActiveTexture","glActiveTextureARB");
+    _glFogCoordPointer = (FogCoordPointerProc) osg::getGLExtensionFuncPtr("glFogCoordPointer","glFogCoordPointerEXT");
+    _glSecondaryColorPointer = (SecondaryColorPointerProc) osg::getGLExtensionFuncPtr("glSecondaryColorPointer","glSecondaryColorPointerEXT");
+    _glVertexAttribPointer =  (VertexAttribPointerProc) osg::getGLExtensionFuncPtr("glVertexAttribPointer","glVertexAttribPointerARB");
+    _glEnableVertexAttribArray =  (EnableVertexAttribProc) osg::getGLExtensionFuncPtr("glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+    _glDisableVertexAttribArray =  (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+
+    _extensionProcsInitialized = true;
+}
 
 bool State::setClientActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentClientActiveTextureUnit)
     {
-        static ActiveTextureProc s_glClientActiveTexture =  
-                (ActiveTextureProc) osg::getGLExtensionFuncPtr("glClientActiveTexture","glClientActiveTextureARB");
-
-        if (s_glClientActiveTexture)
+        if (!_extensionProcsInitialized) initializeExtensionProcs();
+ 
+        if (_glClientActiveTexture)
         {
-            s_glClientActiveTexture(GL_TEXTURE0+unit);
+            _glClientActiveTexture(GL_TEXTURE0+unit);
             _currentClientActiveTextureUnit = unit;
         }
         else
@@ -660,12 +680,11 @@ bool State::setActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentActiveTextureUnit)
     {
-        static ActiveTextureProc s_glActiveTexture =  
-               (ActiveTextureProc) osg::getGLExtensionFuncPtr("glActiveTexture","glActiveTextureARB");
+        if (!_extensionProcsInitialized) initializeExtensionProcs();
 
-        if (s_glActiveTexture)
+        if (_glActiveTexture)
         {
-            s_glActiveTexture(GL_TEXTURE0+unit);
+            _glActiveTexture(GL_TEXTURE0+unit);
             _currentActiveTextureUnit = unit;
         }
         else
@@ -676,13 +695,11 @@ bool State::setActiveTextureUnit( unsigned int unit )
     return true;
 }
 
-typedef void (APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);
 void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
 {
-    static FogCoordPointerProc s_glFogCoordPointer =
-            (FogCoordPointerProc) osg::getGLExtensionFuncPtr("glFogCoordPointer","glFogCoordPointerEXT");
+    if (!_extensionProcsInitialized) initializeExtensionProcs();
 
-    if (s_glFogCoordPointer)
+    if (_glFogCoordPointer)
     {
 
         if (!_fogArray._enabled || _fogArray._dirty)
@@ -693,21 +710,19 @@ void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
         //if (_fogArray._pointer!=ptr || _fogArray._dirty)
         {
             _fogArray._pointer=ptr;
-            s_glFogCoordPointer( type, stride, ptr );
+            _glFogCoordPointer( type, stride, ptr );
         }
         _fogArray._dirty = false;
     }
     
 }
 
-typedef void (APIENTRY * SecondaryColorPointerProc) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
 void State::setSecondaryColorPointer( GLint size, GLenum type,
                                       GLsizei stride, const GLvoid *ptr )
 {
-    static SecondaryColorPointerProc s_glSecondaryColorPointer =
-            (SecondaryColorPointerProc) osg::getGLExtensionFuncPtr("glSecondaryColorPointer","glSecondaryColorPointerEXT");
+    if (!_extensionProcsInitialized) initializeExtensionProcs();
 
-    if (s_glSecondaryColorPointer)
+    if (_glSecondaryColorPointer)
     {
         if (!_secondaryColorArray._enabled || _secondaryColorArray._dirty)
         {
@@ -717,15 +732,11 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
         //if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
         {
             _secondaryColorArray._pointer=ptr;
-            s_glSecondaryColorPointer( size, type, stride, ptr );
+            _glSecondaryColorPointer( size, type, stride, ptr );
         }
         _secondaryColorArray._dirty = false;
     }
 }
-
-typedef void (APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-typedef void (APIENTRY * EnableVertexAttribProc) (unsigned int);
-typedef void (APIENTRY * DisableVertexAttribProc) (unsigned int);
 
 /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
 * note, only updates values that change.*/
@@ -733,13 +744,9 @@ void State::setVertexAttribPointer( unsigned int index,
                                       GLint size, GLenum type, GLboolean normalized, 
                                     GLsizei stride, const GLvoid *ptr )
 {
-    static VertexAttribPointerProc s_glVertexAttribPointer =  
-        (VertexAttribPointerProc) osg::getGLExtensionFuncPtr("glVertexAttribPointer","glVertexAttribPointerARB");
+    if (!_extensionProcsInitialized) initializeExtensionProcs();
 
-    static EnableVertexAttribProc s_glEnableVertexAttribArray =  
-        (EnableVertexAttribProc) osg::getGLExtensionFuncPtr("glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
-
-    if( s_glVertexAttribPointer )
+    if (_glVertexAttribPointer)
     {
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
         EnabledArrayPair& eap = _vertexAttribArrayList[index];
@@ -747,11 +754,11 @@ void State::setVertexAttribPointer( unsigned int index,
         if (!eap._enabled || eap._dirty)
         {
             eap._enabled = true;
-            s_glEnableVertexAttribArray( index );
+            _glEnableVertexAttribArray( index );
         }
         //if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
         {
-            s_glVertexAttribPointer( index, size, type, normalized, stride, ptr );
+            _glVertexAttribPointer( index, size, type, normalized, stride, ptr );
             eap._pointer = ptr;
             eap._normalized = normalized;
         }
@@ -763,10 +770,9 @@ void State::setVertexAttribPointer( unsigned int index,
 * note, only updates values that change.*/
 void State::disableVertexAttribPointer( unsigned int index )
 {
-    static DisableVertexAttribProc s_glDisableVertexAttribArray =  
-        (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+    if (!_extensionProcsInitialized) initializeExtensionProcs();
 
-    if (s_glDisableVertexAttribArray)
+    if (_glDisableVertexAttribArray)
     {
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
         EnabledArrayPair& eap = _vertexAttribArrayList[index];
@@ -775,17 +781,16 @@ void State::disableVertexAttribPointer( unsigned int index )
         {
             eap._enabled = false;
             eap._dirty = false;
-            s_glDisableVertexAttribArray( index );
+            _glDisableVertexAttribArray( index );
         }
     }
 }        
 
 void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 {
-    static DisableVertexAttribProc s_glDisableVertexAttribArray =  
-        (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+    if (!_extensionProcsInitialized) initializeExtensionProcs();
 
-    if (s_glDisableVertexAttribArray)
+    if (_glDisableVertexAttribArray)
     {
         while (index<_vertexAttribArrayList.size())
         {
@@ -794,7 +799,7 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
             {
                 eap._enabled = false;
                 eap._dirty = false;
-                s_glDisableVertexAttribArray( index );
+                _glDisableVertexAttribArray( index );
             }
             ++index;
         }

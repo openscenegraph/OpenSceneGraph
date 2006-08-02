@@ -65,7 +65,15 @@ class TextureObjectManager : public osg::Referenced
 public:
 
     TextureObjectManager():
-        _expiryDelay(0.0) {}
+        _expiryDelay(0.0)
+    {
+        // printf("Constructing TextureObjectManager\n");
+    }
+
+    ~TextureObjectManager()
+    {
+        // printf("Destructing TextureObjectManager\n");
+    }
 
     virtual Texture::TextureObject* generateTextureObject(unsigned int contextID,GLenum target);
 
@@ -279,15 +287,15 @@ void TextureObjectManager::flushTextureObjects(unsigned int contextID,double cur
 
 static TextureObjectManager* getTextureObjectManager()
 {
-    static ref_ptr<TextureObjectManager> s_textureObjectManager;
-    if (!s_textureObjectManager) s_textureObjectManager = new TextureObjectManager;
+    static ref_ptr<TextureObjectManager> s_textureObjectManager = new TextureObjectManager;
     return s_textureObjectManager.get();
 }
 
 
 Texture::TextureObject* Texture::generateTextureObject(unsigned int contextID,GLenum target)
 {
-    return getTextureObjectManager()->generateTextureObject(contextID,target);
+    if (getTextureObjectManager()) return getTextureObjectManager()->generateTextureObject(contextID,target);
+    else return 0;
 }
 
 Texture::TextureObject* Texture::generateTextureObject(unsigned int contextID,
@@ -299,7 +307,8 @@ Texture::TextureObject* Texture::generateTextureObject(unsigned int contextID,
                                              GLsizei   depth,
                                              GLint     border)
 {
-    return getTextureObjectManager()->reuseOrGenerateTextureObject(contextID,
+    if (getTextureObjectManager())    
+        return getTextureObjectManager()->reuseOrGenerateTextureObject(contextID,
                                              target,
                                              numMipmapLevels,
                                              internalFormat,
@@ -307,16 +316,18 @@ Texture::TextureObject* Texture::generateTextureObject(unsigned int contextID,
                                              height,
                                              depth,
                                              border);
+    else
+        return 0;
 }                                             
 
 void Texture::flushAllDeletedTextureObjects(unsigned int contextID)
 {
-    getTextureObjectManager()->flushAllTextureObjects(contextID);
+    if (getTextureObjectManager()) getTextureObjectManager()->flushAllTextureObjects(contextID);
 }
 
 void Texture::flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availbleTime)
 {
-    getTextureObjectManager()->flushTextureObjects(contextID, currentTime, availbleTime);
+    if (getTextureObjectManager()) getTextureObjectManager()->flushTextureObjects(contextID, currentTime, availbleTime);
 }
 
 Texture::Texture():
@@ -465,7 +476,7 @@ void Texture::setMaxAnisotropy(float anis)
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
 {
-    getTextureObjectManager()->addTextureObjectsFrom(*this);
+    if (getTextureObjectManager()) getTextureObjectManager()->addTextureObjectsFrom(*this);
 }
 
 void Texture::takeTextureObjects(Texture::TextureObjectListMap& toblm)
@@ -1279,7 +1290,7 @@ void Texture::releaseGLObjects(State* state) const
     else
     {
         unsigned int contextID = state->getContextID();
-        if (_textureObjectBuffer[contextID].valid()) 
+        if (_textureObjectBuffer[contextID].valid() && getTextureObjectManager()) 
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getTextureObjectManager()->_mutex);
             

@@ -16,7 +16,6 @@
 #include <osg/PrimitiveSet>
 #include <osg/Quat>
 #include <osg/State>
-#include <osg/StateSet>
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osgText/Font>
@@ -31,7 +30,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osg::StateSet > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap);
+TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap);
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::CharacterSizeMode)
 	I_EnumLabel(osgText::Text::OBJECT_COORDS);
@@ -179,7 +178,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	I_Method1(const osgText::Text::GlyphQuads *, getGlyphQuads, IN, osg::StateSet *, stateSet);
+	I_Method1(const osgText::Text::GlyphQuads *, getGlyphQuads, IN, osgText::Font::GlyphTexture *, texture);
 	I_Method0(const osgText::Text::TextureGlyphQuadMap &, getTextureGlyphQuadMap);
 	I_Method0(osg::BoundingBox, computeBound);
 	I_Property(osgText::Text::AlignmentType, Alignment);
@@ -245,7 +244,18 @@ BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 	I_ReadOnlyProperty(osgText::Text::GlyphQuads::TexCoords &, TexCoords);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osg::ref_ptr< osg::StateSet > COMMA  osgText::Text::GlyphQuads >);
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)
+	I_Constructor0();
+	I_Constructor1(IN, osgText::Font::GlyphTexture *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osgText::Font::GlyphTexture > &, rp);
+	I_Method0(osgText::Font::GlyphTexture *, get);
+	I_Method0(bool, valid);
+	I_Method0(osgText::Font::GlyphTexture *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgText::Font::GlyphTexture > &, rp);
+	I_ReadOnlyProperty(osgText::Font::GlyphTexture *, );
+END_REFLECTOR
+
+STD_MAP_REFLECTOR(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >);
 
 STD_VECTOR_REFLECTOR(std::vector< osgText::Font::Glyph * >);
 

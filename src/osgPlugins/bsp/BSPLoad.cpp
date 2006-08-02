@@ -5,10 +5,6 @@
 
 #include "BSPLoad.h"
 
-#include <fstream>
-
-
-
 
 
 bool BSPLoad::Load(const std::string& filename, int curveTesselation)

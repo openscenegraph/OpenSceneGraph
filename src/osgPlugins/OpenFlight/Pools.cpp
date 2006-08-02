@@ -4,7 +4,7 @@
 //  Copyright (C) 2005-2006  Brede Johansen
 //
 
-#include <cassert>
+#include <assert.h>
 #include "Pools.h"
 #include "Document.h"
 

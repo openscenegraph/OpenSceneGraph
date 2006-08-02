@@ -64,7 +64,7 @@
 #include <sstream>
 #include <string>
 
-#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || defined (__sgi) || defined (__hpux) 
+#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || defined (__sgi)
 typedef int socklen_t;
 #endif
 
@@ -246,9 +246,7 @@ bool sockerr::benign () const
   switch (err) {
   case EINTR:
   case EWOULDBLOCK:
-// On FreeBSD (and probably on Linux too) 
-// EAGAIN has the same value as EWOULDBLOCK
-#if !defined(__CYGWIN__) && !defined( __sgi) && !defined(__linux__) && !defined(__sun) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
+#if defined(EAGAIN) && (EAGAIN != EWOULDBLOCK)
   case EAGAIN:
 #endif
     return true;

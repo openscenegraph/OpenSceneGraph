@@ -233,6 +233,8 @@ endif
 
 #### IRIX Specific definitions
 ifeq ($(OS),IRIX)
+  INSTBINCMD        = cp
+  INSTDEVCMD        = cp
   CXX = CC
   ifeq ($(CXX),CC)
       LINKARGS          = -L${TOPDIR}/$(LIBINST) -LANG:std -OPT:Olimit=0  
@@ -717,6 +719,52 @@ ifeq ($(OS),HP-UX)
   TIFF_INCLUDE      = -I/usr/local/include
   TIFF_LIB          = -L/usr/local/lib -ltiff
   GIF_INCLUDE       = -I/opt/libungif/include
+  GIF_LIBS          = -L/opt/libungif/lib -lungif
+
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
+
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
+
+  INSTXCMD           = install -c -m 755
+  INSTRCMD           = install -c -m 644
+
+  INSTBINCMD     = install -c -m 755
+  INSTDEVCMD     = install -c -m 644
+endif
+
+
+ifeq ($(OS),AIX)
+  CXX 		    = g++
+  C++  		    = $(CXX)
+  DEPARG            = -M
+  INC               += 
+  DEF               +=
+  OPTF              = -O
+  DBGF              = -g 
+  SHARED            = 
+  ARCH              = 32
+  LDFLAGS	    +=
+  LINKARGS          = -lpthread
+  LIB_EXT           = sl
+  PLUGIN_EXT        = sl
+  DYNAMICLIBRARYLIB = -ldld
+
+
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
+  GL_LIBS           = -lGLU -lGL 
+  X_INC             = 
+  X_LIBS            = -lXext -lXi -lX11 
+  SOCKET_LIBS       = 
+  OTHER_LIBS        = -lm -lOpenThreads
+  PNG_INCLUDE       = -I/usr/local/include/libpng -I/usr/local/include/
+  PNG_LIBS          = -L/usr/local/lib -lpng  -lz
+  JPEG_INCLUDE		= -I/usr/local/include
+  JPEG_LIBS         = -L/usr/local/lib  -ljpeg
+  TIFF_INCLUDE      = -I/usr/local/include
+  TIFF_LIB          = -L/usr/local/lib -ltiff
+  GIF_INCLUDE		= -I/opt/libungif/include
   GIF_LIBS          = -L/opt/libungif/lib -lungif
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`

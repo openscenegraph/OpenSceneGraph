@@ -840,6 +840,12 @@ int main( int argc, char **argv )
         
     }
     
+    // wait for all cull and draw threads to complete.
+    viewer.sync();
+
+    // do OpenGL clean up
+    viewer.cleanup_frame();
+
     // wait for all cull and draw threads to complete before exit.
     viewer.sync();
 

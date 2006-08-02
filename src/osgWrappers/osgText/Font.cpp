@@ -100,8 +100,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	I_Method1(void, setTexture, IN, osgText::Font::GlyphTexture *, texture);
 	I_Method0(osgText::Font::GlyphTexture *, getTexture);
 	I_Method0(const osgText::Font::GlyphTexture *, getTexture);
-	I_Method0(osg::StateSet *, getStateSet);
-	I_Method0(const osg::StateSet *, getStateSet);
 	I_Method2(void, setTexturePosition, IN, int, posX, IN, int, posY);
 	I_Method0(int, getTexturePositionX);
 	I_Method0(int, getTexturePositionY);
@@ -116,7 +114,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	I_Property(const osg::Vec2 &, HorizontalBearing);
 	I_Property(const osg::Vec2 &, MaxTexCoord);
 	I_Property(const osg::Vec2 &, MinTexCoord);
-	I_ReadOnlyProperty(osg::StateSet *, StateSet);
 	I_Property(osgText::Font::GlyphTexture *, Texture);
 	I_ReadOnlyProperty(int, TexturePositionX);
 	I_ReadOnlyProperty(int, TexturePositionY);
@@ -129,16 +126,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	I_Constructor0();
 	I_Method0(const char *, className);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset);
-	I_Method0(osg::StateSet *, getStateSet);
-	I_Method0(const osg::StateSet *, getStateSet);
 	I_Method1(void, setGlyphImageMargin, IN, unsigned int, margin);
 	I_Method0(unsigned int, getGlyphImageMargin);
 	I_Method3(bool, getSpaceForGlyph, IN, osgText::Font::Glyph *, glyph, IN, int &, posX, IN, int &, posY);
 	I_Method3(void, addGlyph, IN, osgText::Font::Glyph *, glyph, IN, int, posX, IN, int, posY);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Property(unsigned int, GlyphImageMargin);
-	I_Property(osg::StateSet *, StateSet);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::KerningType)

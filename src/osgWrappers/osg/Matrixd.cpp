@@ -84,6 +84,8 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	I_Method1(osg::Vec4d, preMult, IN, const osg::Vec4d &, v);
 	I_Method1(osg::Vec4f, postMult, IN, const osg::Vec4f &, v);
 	I_Method1(osg::Vec4d, postMult, IN, const osg::Vec4d &, v);
+	I_Method1(void, set, IN, const osg::Quat &, q);
+	I_Method1(void, get, IN, osg::Quat &, q);
 	I_Method1(void, setRotate, IN, const osg::Quat &, q);
 	I_Method0(osg::Quat, getRotate);
 	I_Method3(void, setTrans, IN, osg::Matrixd::value_type, tx, IN, osg::Matrixd::value_type, ty, IN, osg::Matrixd::value_type, tz);

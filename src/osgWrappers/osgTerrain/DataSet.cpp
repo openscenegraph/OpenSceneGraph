@@ -409,6 +409,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
 	I_Method1(void, readImage, IN, osgTerrain::DataSet::DestinationData &, destination);
 	I_Method1(void, readHeightField, IN, osgTerrain::DataSet::DestinationData &, destination);
 	I_Method1(void, readModels, IN, osgTerrain::DataSet::DestinationData &, destination);
+	I_Method3(float, getInterpolatedValue, IN, GDALRasterBand *, band, IN, double, x, IN, double, y);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::SpatialProperties)

@@ -479,12 +479,12 @@ public:
         const LineNumbers& getLineNumbers() const { return _lineNumbers; }
     };
 
-    typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;
+    typedef std::map<osg::ref_ptr<Font::GlyphTexture>,GlyphQuads> TextureGlyphQuadMap;
 
     /** Direct Access to GlyphQuads */
-    const GlyphQuads* getGlyphQuads(osg::StateSet* stateSet) const 
+    const GlyphQuads* getGlyphQuads(Font::GlyphTexture* texture) const 
     {
-        TextureGlyphQuadMap::iterator itGlyphQuad = _textureGlyphQuadMap.find(stateSet);
+        TextureGlyphQuadMap::iterator itGlyphQuad = _textureGlyphQuadMap.find(texture);
         if (itGlyphQuad == _textureGlyphQuadMap.end()) return NULL;
 
         return &itGlyphQuad->second;

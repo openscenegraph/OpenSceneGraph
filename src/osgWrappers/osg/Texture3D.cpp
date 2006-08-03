@@ -47,10 +47,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D)
 	I_Method3(void, setTextureSize, IN, int, width, IN, int, height, IN, int, depth);
 	I_Method3(void, getTextureSize, IN, int &, width, IN, int &, height, IN, int &, depth);
 	I_Method1(void, setTextureWidth, IN, int, width);
-	I_Method0(int, getTextureWidth);
 	I_Method1(void, setTextureHeight, IN, int, height);
-	I_Method0(int, getTextureHeight);
 	I_Method1(void, setTextureDepth, IN, int, depth);
+	I_Method0(int, getTextureWidth);
+	I_Method0(int, getTextureHeight);
 	I_Method0(int, getTextureDepth);
 	I_Method1(void, setSubloadCallback, IN, osg::Texture3D::SubloadCallback *, cb);
 	I_Method0(osg::Texture3D::SubloadCallback *, getSubloadCallback);

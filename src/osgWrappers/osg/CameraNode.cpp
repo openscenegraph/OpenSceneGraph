@@ -163,6 +163,9 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
 	I_Constructor0();
+	I_Method0(int, width);
+	I_Method0(int, height);
+	I_Method0(int, depth);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)

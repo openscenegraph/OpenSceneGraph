@@ -47,9 +47,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle)
 	I_Method0(unsigned int, getNumImages);
 	I_Method2(void, setTextureSize, IN, int, width, IN, int, height);
 	I_Method1(void, setTextureWidth, IN, int, width);
-	I_Method0(int, getTextureWidth);
 	I_Method1(void, setTextureHeight, IN, int, height);
+	I_Method0(int, getTextureWidth);
 	I_Method0(int, getTextureHeight);
+	I_Method0(int, getTextureDepth);
 	I_Method1(void, setSubloadCallback, IN, osg::TextureRectangle::SubloadCallback *, cb);
 	I_Method0(osg::TextureRectangle::SubloadCallback *, getSubloadCallback);
 	I_Method0(const osg::TextureRectangle::SubloadCallback *, getSubloadCallback);
@@ -58,6 +59,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle)
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Property(osg::Image *, Image);
 	I_Property(osg::TextureRectangle::SubloadCallback *, SubloadCallback);
+	I_ReadOnlyProperty(int, TextureDepth);
 	I_Property(int, TextureHeight);
 	I_ReadOnlyProperty(GLenum, TextureTarget);
 	I_Property(int, TextureWidth);

@@ -17,6 +17,7 @@
 
 #include <osg/State>
 #include <osg/Notify>
+#include <osg/ApplicationUsage>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -25,6 +26,9 @@
 
 using namespace osgText;
 using namespace std;
+
+static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
+
 
 std::string osgText::findFontFile(const std::string& str)
 {
@@ -513,6 +517,12 @@ void Font::GlyphTexture::apply(osg::State& state) const
             // subloading bugs by loading all at once.
             s_subloadAllGlyphsTogether = true;
         }
+        
+        const char* str = getenv("OSG_TEXT_INCREMENTAL_SUBLOADING");
+        if (str && (strcmp(str,"OFF")==0 || strcmp(str,"Off")==0 || strcmp(str,"Off")==0))
+        {
+            s_subloadAllGlyphsTogether = true;
+        }
     }
 
 
@@ -551,7 +561,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
         }
         else
         {
-            //std::cout<<"all loading"<<std::endl;
+            osg::notify(osg::INFO)<<"osgText::Font loading all glyphs as a single subload."<<std::endl;
 
             // Octane has bugs in OGL driver which mean that subloads smaller
             // than 32x32 produce errors, and also cannot handle general alignment,

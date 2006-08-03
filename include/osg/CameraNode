@@ -256,6 +256,27 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
                 _face(0),
                 _mipMapGeneration(false) {}
         
+            int width() const
+            {
+                if (_texture.valid()) return _texture->getTextureWidth(); 
+                if (_image.valid()) return _image->s();
+                return 0;
+            };
+
+            int height() const
+            {
+                if (_texture.valid()) return _texture->getTextureHeight(); 
+                if (_image.valid()) return _image->t();
+                return 0;
+            };
+        
+            int depth() const
+            {
+                if (_texture.valid()) return _texture->getTextureDepth(); 
+                if (_image.valid()) return _image->r();
+                return 0;
+            };
+
             GLenum              _internalFormat;
             ref_ptr<Image>      _image;
             ref_ptr<Texture>    _texture;

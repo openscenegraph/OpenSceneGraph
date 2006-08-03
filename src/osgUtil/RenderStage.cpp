@@ -195,8 +195,25 @@ void RenderStage::runCameraSetUp(osg::State& state)
 
     osg::CameraNode::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
 
+    // compute the required dimensions
+    int width = _viewport->x() + _viewport->width();
+    int height = _viewport->y() + _viewport->height();
+    int depth = 1;
+    osg::CameraNode::BufferAttachmentMap::iterator itr;
+    for(itr = bufferAttachements.begin();
+        itr != bufferAttachements.end();
+        ++itr)
+    {
+        width = osg::maximum(width,itr->second.width());
+        height = osg::maximum(height,itr->second.height());
+        depth = osg::maximum(depth,itr->second.depth());
+    }
+    
+    // osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp viewport "<<_viewport->x()<<" "<<_viewport->y()<<" "<<_viewport->width()<<" "<<_viewport->height()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp computed "<<width<<" "<<height<<" "<<depth<<std::endl;
+
     // attach an images that need to be copied after the stage is drawn.
-    for(osg::CameraNode::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
+    for(itr = bufferAttachements.begin();
         itr != bufferAttachements.end();
         ++itr)
     {
@@ -216,7 +233,7 @@ void RenderStage::runCameraSetUp(osg::State& state)
                 if (dataType==0) dataType = _imageReadPixelDataType;
                 if (dataType==0) dataType = GL_UNSIGNED_BYTE;
 
-                image->allocateImage(_viewport->width(), _viewport->height(), 1, pixelFormat, dataType);
+                image->allocateImage(width, height, 1, pixelFormat, dataType);
 
             }
 
@@ -238,14 +255,14 @@ void RenderStage::runCameraSetUp(osg::State& state)
             {
                 if (texture1D->getTextureWidth()==0)
                 {
-                    texture1D->setTextureWidth(_viewport->width());
+                    texture1D->setTextureWidth(width);
                 }
             }
             else if (0 != (texture2D = dynamic_cast<osg::Texture2D*>(texture)))
             {
                 if (texture2D->getTextureWidth()==0 || texture2D->getTextureHeight()==0)
                 {
-                    texture2D->setTextureSize(_viewport->width(),_viewport->height());
+                    texture2D->setTextureSize(width,height);
                 }
             }
             else if (0 != (texture3D = dynamic_cast<osg::Texture3D*>(texture)))
@@ -253,21 +270,21 @@ void RenderStage::runCameraSetUp(osg::State& state)
                 if (texture3D->getTextureWidth()==0 || texture3D->getTextureHeight()==0 || texture3D->getTextureDepth()==0 )
                 {
                     // note we dont' have the depth here, so we'll heave to assume that height and depth are the same..
-                    texture3D->setTextureSize(_viewport->width(),_viewport->height(),_viewport->height());
+                    texture3D->setTextureSize(width,height,height);
                 }
             }
             else if (0 != (textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(texture)))
             {
                 if (textureCubeMap->getTextureWidth()==0 || textureCubeMap->getTextureHeight()==0)
                 {
-                    textureCubeMap->setTextureSize(_viewport->width(),_viewport->height());
+                    textureCubeMap->setTextureSize(width,height);
                 }
             }
             else if (0 != (textureRectangle = dynamic_cast<osg::TextureRectangle*>(texture)))
             {
                 if (textureRectangle->getTextureWidth()==0 || textureRectangle->getTextureHeight()==0)
                 {
-                    textureRectangle->setTextureSize(_viewport->width(),_viewport->height());
+                    textureRectangle->setTextureSize(width,height);
                 }
             }
 
@@ -324,12 +341,12 @@ void RenderStage::runCameraSetUp(osg::State& state)
 
             if (!depthAttached)
             {                
-                fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(_viewport->width(), _viewport->height(), GL_DEPTH_COMPONENT24)));
+                fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
             }
 
             if (!colorAttached)
             {                
-                fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(_viewport->width(), _viewport->height(), GL_RGB)));
+                fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
             }
 
             fbo->apply(state);
@@ -396,8 +413,11 @@ void RenderStage::runCameraSetUp(osg::State& state)
             // set up the traits of the graphics context that we want
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
 
-            traits->_width = _viewport->width();
-            traits->_height = _viewport->height();
+            traits->_width = width;
+            traits->_height = height;
+
+            // osg::notify(osg::NOTICE)<<"traits = "<<traits->_width<<" "<<traits->_height<<std::endl;
+
             traits->_pbuffer = (renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER || renderTargetImplemntation==osg::CameraNode::PIXEL_BUFFER_RTT);
             traits->_windowDecoration = (renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW);
             traits->_doubleBuffer = (renderTargetImplemntation==osg::CameraNode::SEPERATE_WINDOW);
@@ -581,6 +601,36 @@ void RenderStage::copyTexture(osg::State& state)
     osg::TextureRectangle* textureRec = 0;
     osg::TextureCubeMap* textureCubeMap = 0;
 
+#if 1
+    // use TexCopySubImage with the offset of the viewport into the texture
+    // note, this path mirrors the pbuffer and fbo means for updating the texture.
+    // Robert Osfield, 3rd August 2006.
+    if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
+    {
+        texture2D->copyTexSubImage2D(state,_viewport->x(),_viewport->y(), _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
+    else if ((textureRec = dynamic_cast<osg::TextureRectangle*>(_texture.get())) != 0)
+    {
+        textureRec->copyTexSubImage2D(state,_viewport->x(),_viewport->y(), _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
+    else if ((texture1D = dynamic_cast<osg::Texture1D*>(_texture.get())) != 0)
+    {
+        // need to implement
+        texture1D->copyTexSubImage1D(state,_viewport->x(), _viewport->x(),_viewport->y(),_viewport->width());
+    }
+    else if ((texture3D = dynamic_cast<osg::Texture3D*>(_texture.get())) != 0)
+    {
+        // need to implement
+        texture3D->copyTexSubImage3D(state, _viewport->x(), _viewport->y(), _face, _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+    }
+    else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
+    {
+        // need to implement
+        textureCubeMap->copyTexSubImageCubeMap(state, _face, _viewport->x(), _viewport->y(), _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
+#else
+    // use CopySubImage with the offset set to 0,0
+    // original code path.
     if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
     {
         texture2D->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
@@ -604,6 +654,7 @@ void RenderStage::copyTexture(osg::State& state)
         // need to implement
         textureCubeMap->copyTexSubImageCubeMap(state, _face, 0, 0, _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
     }
+#endif    
 }
 
 void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCopyTexture)

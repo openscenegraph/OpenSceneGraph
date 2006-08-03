@@ -220,6 +220,10 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             return true;
         }
 
+        virtual int getTextureWidth() const { return 0; }
+        virtual int getTextureHeight() const { return 0; }
+        virtual int getTextureDepth() const { return 0; }
+
         enum WrapParameter {
             WRAP_S,
             WRAP_T,

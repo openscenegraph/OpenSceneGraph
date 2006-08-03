@@ -125,7 +125,14 @@ osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const os
         camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
         // set viewport
+// Both of these methods should produce the same result, but they don't.
+#if 1
+        camera->setViewport(0,tex_height/2,tex_width,tex_height/2);
+#else
         camera->setViewport(0,0,tex_width,tex_height);
+    osg::Viewport* vp = new osg::Viewport(0,tex_height/2,tex_width,tex_height/2);
+    camera->getOrCreateStateSet()->setAttribute(vp);
+#endif
 
         // set the camera to render before the main camera.
         camera->setRenderOrder(osg::CameraNode::PRE_RENDER);

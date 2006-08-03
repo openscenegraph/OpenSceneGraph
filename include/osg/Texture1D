@@ -74,7 +74,9 @@ class OSG_EXPORT Texture1D : public Texture
         inline void setTextureWidth(int width) const { _textureWidth = width; }
 
         /** Gets the texture width. */
-        inline int getTextureWidth() const { return _textureWidth; }
+        virtual int getTextureWidth() const { return _textureWidth; }
+        virtual int getTextureHeight() const { return 1; }
+        virtual int getTextureDepth() const { return 1; }
 
 
         class OSG_EXPORT SubloadCallback : public Referenced

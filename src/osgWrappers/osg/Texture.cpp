@@ -91,6 +91,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method0(bool, isTextureAttribute);
 	I_Method0(GLenum, getTextureTarget);
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
+	I_Method0(int, getTextureWidth);
+	I_Method0(int, getTextureHeight);
+	I_Method0(int, getTextureDepth);
 	I_Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap);
 	I_Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which);
 	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color);
@@ -158,7 +161,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Property(osg::Texture::ShadowTextureMode, ShadowTextureMode);
 	I_Property(GLenum, SourceFormat);
 	I_Property(GLenum, SourceType);
+	I_ReadOnlyProperty(int, TextureDepth);
+	I_ReadOnlyProperty(int, TextureHeight);
 	I_ReadOnlyProperty(GLenum, TextureTarget);
+	I_ReadOnlyProperty(int, TextureWidth);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 	I_Property(bool, UnRefImageDataAfterApply);
 	I_Property(bool, UseHardwareMipMapGeneration);

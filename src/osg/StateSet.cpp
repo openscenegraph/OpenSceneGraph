@@ -67,8 +67,11 @@ class TextureGLModeSet
         
 };
 
-TextureGLModeSet s_textureGLModeSet;
-
+static TextureGLModeSet& getTextureGLModeSet()
+{
+    static TextureGLModeSet s_textureGLModeSet;
+    return s_textureGLModeSet;
+}
 
 StateSet::StateSet()
 {
@@ -655,7 +658,7 @@ void StateSet::merge(const StateSet& rhs)
 
 void StateSet::setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {
-    if (!s_textureGLModeSet.isTextureMode(mode))
+    if (!getTextureGLModeSet().isTextureMode(mode))
     {
         setMode(_modeList,mode,value);
     }
@@ -671,7 +674,7 @@ void StateSet::setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue 
 
 void StateSet::removeMode(StateAttribute::GLMode mode)
 {
-    if (!s_textureGLModeSet.isTextureMode(mode))
+    if (!getTextureGLModeSet().isTextureMode(mode))
     {
         setModeToInherit(_modeList,mode);
     }
@@ -688,7 +691,7 @@ void StateSet::removeMode(StateAttribute::GLMode mode)
 
 StateAttribute::GLModeValue StateSet::getMode(StateAttribute::GLMode mode) const
 {
-    if (!s_textureGLModeSet.isTextureMode(mode))
+    if (!getTextureGLModeSet().isTextureMode(mode))
     {
         return getMode(_modeList,mode);
     }
@@ -959,7 +962,7 @@ const StateSet::RefUniformPair* StateSet::getUniformPair(const std::string& name
 
 void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {
-    if (s_textureGLModeSet.isTextureMode(mode))
+    if (getTextureGLModeSet().isTextureMode(mode))
     {
         setMode(getOrCreateTextureModeList(unit),mode,value);
     }
@@ -975,7 +978,7 @@ void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, Sta
 
 void StateSet::removeTextureMode(unsigned int unit,StateAttribute::GLMode mode)
 {
-    if (s_textureGLModeSet.isTextureMode(mode))
+    if (getTextureGLModeSet().isTextureMode(mode))
     {
         if (unit>=_textureModeList.size()) return;
         setModeToInherit(_textureModeList[unit],mode);
@@ -993,7 +996,7 @@ void StateSet::removeTextureMode(unsigned int unit,StateAttribute::GLMode mode)
 
 StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,StateAttribute::GLMode mode) const
 {
-    if (s_textureGLModeSet.isTextureMode(mode))
+    if (getTextureGLModeSet().isTextureMode(mode))
     {
         if (unit>=_textureModeList.size()) return StateAttribute::INHERIT;
         return getMode(_textureModeList[unit],mode);

@@ -419,20 +419,9 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text4->setText("SCREEN");
     geode->addDrawable(text4);
 
-    ///////////////////////////////////////////////
-    // Added to show osgText state set malfunction
-    osg::StateSet *textStateSet = new osg::StateSet();
-    textStateSet->setMode(GL_BLEND, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
-    textStateSet->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
-    // This works:
-    //geode->setStateSet(textStateSet);
-    // This doesn't work:
-    text4->setStateSet(textStateSet);
-
     osg::ShapeDrawable* shape = new osg::ShapeDrawable(new osg::Sphere(center,characterSize*0.2f));
     shape->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     geode->addDrawable(shape);
-
 
     osg::Group* rootNode = new osg::Group;
     rootNode->addChild(geode);

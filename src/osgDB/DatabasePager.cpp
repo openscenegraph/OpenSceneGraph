@@ -560,21 +560,25 @@ void DatabasePager::run()
                 
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
 
-                if (databaseRequest->_loadedModel.valid())
+                DatabaseRequestList::iterator itr = std::find(_fileRequestList.begin(),_fileRequestList.end(),databaseRequest);
+                if (itr != _fileRequestList.end()) 
                 {
-                    if (loadedObjectsNeedToBeCompiled)
+                    if (databaseRequest->_loadedModel.valid())
                     {
-                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
-                        _dataToCompileList.push_back(databaseRequest);
-                    }
-                    else
-                    {
-                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
-                        _dataToMergeList.push_back(databaseRequest);
-                    }
-                }        
-
-                if (!_fileRequestList.empty()) _fileRequestList.erase(_fileRequestList.begin());
+                        if (loadedObjectsNeedToBeCompiled)
+                        {
+                            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
+                            _dataToCompileList.push_back(databaseRequest);
+                        }
+                        else
+                        {
+                            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
+                            _dataToMergeList.push_back(databaseRequest);
+                        }
+                    }        
+                    
+                    _fileRequestList.erase(itr);
+                }
 
                 updateDatabasePagerThreadBlock();
 
@@ -779,6 +783,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     if (!childrenRemoved.empty())
     { 
         // pass the objects across to the database pager delete list
+        if (_deleteRemovedSubgraphsInDatabaseThread)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_childrenToDeleteListMutex);
             for (osg::NodeList::iterator critr = childrenRemoved.begin();

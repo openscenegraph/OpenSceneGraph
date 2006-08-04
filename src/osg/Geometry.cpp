@@ -1015,7 +1015,7 @@ void Geometry::drawImplementation(State& state) const
                     unsigned int index;
                     for( index = 0; index < _vertexAttribList.size(); ++index )
                     {
-                        _vertexAttribList[unit].offset = totalSize;
+                        _vertexAttribList[index].offset = totalSize;
                         const Array* array = _vertexAttribList[index].array.get();
                         const AttributeBinding ab = _vertexAttribList[index].binding;
                         if( ab == BIND_PER_VERTEX && array )

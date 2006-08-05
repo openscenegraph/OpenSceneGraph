@@ -189,6 +189,8 @@ void CEGUIDrawable::drawImplementation(osg::State& state) const
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
+    state.disableAllVertexArrays();
+
     CEGUI::System::getSingleton().renderGUI();
 
     glPopAttrib();

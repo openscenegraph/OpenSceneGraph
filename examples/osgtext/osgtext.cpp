@@ -416,6 +416,13 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text4->setCharacterSize(characterSize);
     text4->setPosition(center);
     text4->setAxisAlignment(osgText::Text::SCREEN);
+
+#if 1
+    // reproduce outline bounding box compute problem with backdrop on.
+    text4->setBackdropType(osgText::Text::OUTLINE);
+    text4->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
+#endif
+
     text4->setText("SCREEN");
     geode->addDrawable(text4);
 

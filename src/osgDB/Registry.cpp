@@ -1312,7 +1312,8 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         unsigned int num_FILE_NOT_FOUND = 0;
         unsigned int num_ERROR_IN_READING_FILE = 0;
 
-        for(Results::iterator ritr=results.begin();
+        Results::iterator ritr;
+        for(ritr=results.begin();
             ritr!=results.end();
             ++ritr)
         {
@@ -1323,16 +1324,22 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         
         if (num_FILE_NOT_HANDLED!=results.size())
         {
-            // we've come across a file not found or error in reading file.
-            if (num_ERROR_IN_READING_FILE)
+            for(ritr=results.begin(); ritr!=results.end(); ++ritr)
             {
-                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
-                return ReaderWriter::ReadResult(ReaderWriter::ReadResult::ERROR_IN_READING_FILE);
+                if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    return *ritr;
+                }
             }
-            else if (num_FILE_NOT_FOUND)
+
+            for(ritr=results.begin(); ritr!=results.end(); ++ritr)
             {
-                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
-                return ReaderWriter::ReadResult(ReaderWriter::ReadResult::FILE_NOT_FOUND);
+                if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                    return *ritr;
+                }
             }
         }
     }

@@ -29,8 +29,14 @@
 #define        WGL_SAMPLES_ARB                0x2042
 #endif
 
+#if defined (__linux__)
+    #include <sched.h>
+#endif
+
 using namespace Producer;
 using namespace osgProducer;
+
+static osg::ApplicationUsageProxy OsgCameraGroup_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_PROCESSOR_AFFINTIY <mode>", "ON | OFF - Where supported, switch on or off the processor affinity." );
 
 OsgCameraGroup::RealizeCallback::~RealizeCallback()
 {
@@ -42,11 +48,56 @@ public:
 
     RenderSurfaceRealizeCallback(OsgCameraGroup* cameraGroup,OsgSceneHandler* sceneHandler):
         _cameraGroup(cameraGroup),
-        _sceneHandler(sceneHandler) {}
+        _sceneHandler(sceneHandler),
+        _numberOfProcessors(1),
+        _sceneHandlerNumber(0),
+        _enableProccessAffinityHint(false)
+    {
+        const char* str = getenv("OSG_PROCESSOR_AFFINTIY");
+        if (str && (strcmp(str,"ON")==0 || strcmp(str,"On")==0 || strcmp(str,"on")==0))
+        {
+            _enableProccessAffinityHint = true;
+        }
+        else
+        {
+            _enableProccessAffinityHint = false;
+        }
+    
+    
+        #if defined (__linux__)
+            /* Determine the actual number of processors */
+            _numberOfProcessors = sysconf(_SC_NPROCESSORS_CONF);
+        #endif
+        
+        const OsgCameraGroup::SceneHandlerList& shl = _cameraGroup->getSceneHandlerList();
+        for(unsigned int i=0; i<shl.size(); ++i)
+        {
+            if (shl[i]==sceneHandler) _sceneHandlerNumber = i;
+        }
+    }
     
     virtual void operator()( const Producer::RenderSurface & rs)
     {
     
+        #if defined (__linux__)
+            if (_enableProccessAffinityHint && _numberOfProcessors>1)
+            {
+                cpu_set_t cpumask;
+                CPU_ZERO( &cpumask );
+                CPU_SET( _sceneHandlerNumber % _numberOfProcessors, &cpumask );
+
+                if( sched_setaffinity( 0, sizeof(cpumask), &cpumask ) == -1 )
+                {
+                    osg::notify(osg::NOTICE)<<"WARNING: Could not set CPU Affinity for scene handler "<<_sceneHandlerNumber<<std::endl;
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"Set CPU Affinity for scene handler "<<_sceneHandlerNumber<<std::endl;
+                }
+                
+            }
+        #endif
+
         osg::Timer timer;
         osg::Timer_t start_t = timer.tick();
     
@@ -62,8 +113,12 @@ public:
 
     }
 
-    OsgCameraGroup* _cameraGroup;
-    OsgSceneHandler* _sceneHandler;
+    OsgCameraGroup*     _cameraGroup;
+    OsgSceneHandler*    _sceneHandler;
+
+    int                 _numberOfProcessors;
+    int                 _sceneHandlerNumber;
+    bool                _enableProccessAffinityHint;
 
 };
 

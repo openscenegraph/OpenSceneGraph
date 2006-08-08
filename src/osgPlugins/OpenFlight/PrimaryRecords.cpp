@@ -13,6 +13,7 @@
 #include <osgDB/FileUtils>
 #include <osgSim/DOFTransform>
 #include <osgSim/MultiSwitch>
+#include <osgSim/GeographicLocation>
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
@@ -67,6 +68,31 @@ protected:
         uint8 units = in.readUInt8();               // 0=Meters 1=Kilometers 4=Feet 5=Inches 8=Nautical miles
         /*uint8 textureWhite =*/ in.readUInt8();
         /*uint32 flags =*/ in.readUInt32();
+        
+        in.forward( 4*6 );
+        /*int32 projectionType =*/ in.readInt32();
+
+        in.forward( 4*7 );
+        /*int16 nextDOF =*/ in.readInt16();
+        /*int16 vertStorage =*/ in.readInt16();
+        /*int32 dbOrigin =*/ in.readInt32();
+
+        /*float64 swX =*/ in.readFloat64();
+        /*float64 swY =*/ in.readFloat64();
+        /*float64 deltaX =*/ in.readFloat64();
+        /*float64 deltaY =*/ in.readFloat64();
+
+        in.forward( 2*2 ); /* some "next bead" IDs */
+        in.forward( 4*2 ); /* reserved */
+        in.forward( 4*2 ); /* more "next bead" IDs */
+        in.forward( 4 ); /* reserved */
+
+        /*float64 swLat =*/ in.readFloat64();
+        /*float64 swLong =*/ in.readFloat64();
+        /*float64 neLat =*/ in.readFloat64();
+        /*float64 neLong =*/ in.readFloat64();
+        float64 originLat = in.readFloat64();
+        float64 originLong = in.readFloat64();
 
         if (document.getDoUnitsConversion())
             document._unitScale = unitsToMeters((CoordUnits)units) / unitsToMeters(document.getDesiredUnits());
@@ -81,6 +107,12 @@ protected:
 
         _header = new osg::Group;
         _header->setName(id);
+
+        // Store model origin in returned Node userData.
+        osgSim::GeographicLocation* loc = new osgSim::GeographicLocation;
+        loc->set( originLat, originLong );
+        _header->setUserData( loc );
+        osg::notify(osg::INFO) << "DB lat=" << originLat << " lon=" << originLong << std::endl;
 
         document.setHeaderNode(_header.get());
     }

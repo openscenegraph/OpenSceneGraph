@@ -1,6 +1,19 @@
 OSG News
 ========
 
+!!!OpenSceneGraph 1.1.1 maintaince release provides bug fixes and introduces Qt4 threading support.
+
+AYRSHIRE, Scotland - July 19th 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1.1. [=OpenSceneGraph=] 1.1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris and [=FreeBSD=] operating systems. 
+
+
+For further information and to download the latest release head to the project website:
+
+    http://www.openscenegraph.org
+
+Robert Osfield\\
+Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
+
+
 !!!OpenSceneGraph 1.1 release introduces peformance and scalability improvements, full OpenGL Shading Language support and new OpenFlight 16.1, TerrPagea2.2 and Quake3 loaders.
 
 AYRSHIRE, Scotland - July 19th 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1, 

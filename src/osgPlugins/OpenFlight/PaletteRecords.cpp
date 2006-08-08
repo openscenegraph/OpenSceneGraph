@@ -484,7 +484,12 @@ protected:
         appearance->index = in.readInt32(-1);
         appearance->materialCode = in.readInt16();
         appearance->featureID = in.readInt16();
-        appearance->backColor = in.readColor32();
+
+        int32 backColorIndex = in.readInt32();        
+        appearance->backColor = document.getColorPool() ? 
+                            document.getColorPool()->getColor(backColorIndex) : 
+                            osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
         appearance->displayMode = in.readInt32();
         appearance->intensityFront = in.readFloat32();
         appearance->intensityBack = in.readFloat32();

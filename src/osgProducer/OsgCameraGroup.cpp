@@ -46,24 +46,13 @@ class RenderSurfaceRealizeCallback : public Producer::RenderSurface::Callback
 {
 public:
 
-    RenderSurfaceRealizeCallback(OsgCameraGroup* cameraGroup,OsgSceneHandler* sceneHandler):
+    RenderSurfaceRealizeCallback(OsgCameraGroup* cameraGroup,OsgSceneHandler* sceneHandler, bool enableProccessAffinityHint):
         _cameraGroup(cameraGroup),
         _sceneHandler(sceneHandler),
         _numberOfProcessors(1),
         _sceneHandlerNumber(0),
-        _enableProccessAffinityHint(false)
+        _enableProccessAffinityHint(enableProccessAffinityHint)
     {
-        const char* str = getenv("OSG_PROCESSOR_AFFINTIY");
-        if (str && (strcmp(str,"ON")==0 || strcmp(str,"On")==0 || strcmp(str,"on")==0))
-        {
-            _enableProccessAffinityHint = true;
-        }
-        else
-        {
-            _enableProccessAffinityHint = false;
-        }
-    
-    
         #if defined (__linux__)
             /* Determine the actual number of processors */
             _numberOfProcessors = sysconf(_SC_NPROCESSORS_CONF);
@@ -185,6 +174,13 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
     _init();
     _applicationUsage = arguments.getApplicationUsage();
     
+    // report the usage options.
+    if (arguments.getApplicationUsage())
+    {
+        arguments.getApplicationUsage()->addCommandLineOption("--affinity","Enable processor affinity where supported.");
+    }
+
+
     for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
     {
         Producer::Camera *cam = _cfg->getCamera(i);
@@ -194,6 +190,13 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
             rs->setWindowName(arguments.getApplicationName());
         }
     }    
+
+    while (arguments.read("--affinity"))
+    {
+        _enableProccessAffinityHint = true;
+    }
+
+
 }
 
 
@@ -348,6 +351,14 @@ void OsgCameraGroup::_init()
     if (!_frameStamp) _frameStamp = new osg::FrameStamp;
     
     _applicationUsage = osg::ApplicationUsage::instance();
+    
+    _enableProccessAffinityHint = false;
+
+    str = getenv("OSG_PROCESSOR_AFFINTIY");
+    if (str && (strcmp(str,"ON")==0 || strcmp(str,"On")==0 || strcmp(str,"on")==0))
+    {
+        _enableProccessAffinityHint = true;
+    }
 
 }
 
@@ -589,7 +600,7 @@ bool OsgCameraGroup::realize()
         if (stage) stage->setClearMask(clear_mask);
 
         // set the realize callback.
-        rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
+        rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh, _enableProccessAffinityHint));
         
         // set up the visual chooser.
         if (_ds.valid())

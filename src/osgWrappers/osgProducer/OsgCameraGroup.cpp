@@ -79,6 +79,8 @@ BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f);
 	I_Method1(void, setRealizeSceneViewOptions, IN, unsigned int, options);
 	I_Method0(unsigned int, getRealizeSceneViewOptions);
+	I_Method1(void, setEnableProcessorAffinityHint, IN, bool, enableProccessAffinityHint);
+	I_Method0(bool, getEnableProcessorAffinityHint);
 	I_Method1(void, setRealizeCallback, IN, osgProducer::OsgCameraGroup::RealizeCallback *, cb);
 	I_Method0(osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
 	I_Method0(const osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
@@ -94,6 +96,7 @@ BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_Property(const osg::Vec4 &, ClearColor);
 	I_Property(const osg::CullSettings &, CullSettings);
 	I_Property(osg::DisplaySettings *, DisplaySettings);
+	I_Property(bool, EnableProcessorAffinityHint);
 	I_Property(osg::FrameStamp *, FrameStamp);
 	I_Property(osg::StateSet *, GlobalStateSet);
 	I_Property(osgProducer::OsgCameraGroup::GraphicsContextList &, GraphicsContextList);

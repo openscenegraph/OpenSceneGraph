@@ -148,7 +148,14 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         /** Set the options to set up SceneView with, see osgUtil::SceneView::Options for available options.*/
         void setRealizeSceneViewOptions(unsigned int options) { _realizeSceneViewOptions = options; }
 
+        /** Get the options to set up SceneView with.*/
         unsigned int getRealizeSceneViewOptions() { return _realizeSceneViewOptions; }
+
+        /** Set whether processor affinity should be enable where supported by hardware.*/
+        void setEnableProcessorAffinityHint(bool enableProccessAffinityHint) { _enableProccessAffinityHint = enableProccessAffinityHint; }
+
+        /** Get whether processor affinity should be enable where supported by hardware.*/
+        bool getEnableProcessorAffinityHint() const { return _enableProccessAffinityHint; }
 
 
         /** RealizeCallback class one should override to provide an the implemention of realize callbacks.
@@ -233,10 +240,12 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         osg::CullSettings                       _cullSettings;
 
-        unsigned int    _frameNumber;
-        osg::Timer      _timer;
-        osg::Timer_t    _start_tick;
+        unsigned int                            _frameNumber;
+        osg::Timer                              _timer;
+        osg::Timer_t                            _start_tick;
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;
+        
+        bool                                    _enableProccessAffinityHint;
 
         void _init();
 };

@@ -68,7 +68,7 @@ public:
     virtual void operator()( const Producer::RenderSurface & rs)
     {
     
-        #if defined (__linux__)
+        #if defined (__linux__) && defined(CPU_SET)
             if (_enableProccessAffinityHint && _numberOfProcessors>1)
             {
                 cpu_set_t cpumask;

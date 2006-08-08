@@ -421,7 +421,8 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         glMatrixMode( GL_PROJECTION );
         glPushMatrix();
         glLoadIdentity();
-        glOrtho( -.03, .128, 600.0, -20.0, -1.0, 1.0 ); 
+//        glOrtho( -.03, .128, 600.0, -20.0, -1.0, 1.0 ); 
+        glOrtho( -0.04, .128, 600.0, -20.0, -1.0, 1.0 ); 
 
 
         unsigned int lindex = (_index + 1) % _fs.size();

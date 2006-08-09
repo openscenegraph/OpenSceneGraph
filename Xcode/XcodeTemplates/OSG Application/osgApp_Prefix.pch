@@ -165,7 +165,6 @@
 #include <osg/Transform>
 #include <osg/TriangleFunctor>
 #include <osg/TriangleIndexFunctor>
-#include <osg/UByte4>
 #include <osg/Uniform>
 #include <osg/UnitTestFramework>
 #include <osg/Vec2>

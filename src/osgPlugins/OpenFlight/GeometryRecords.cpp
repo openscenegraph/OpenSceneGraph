@@ -962,6 +962,11 @@ protected:
             {
                 osg::Vec3d coord = in.readVec3d();
                 vertex.setCoord(coord*document.unitScale());
+
+                if (!coord.valid())
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord coord="<<coord.x()<<" "<<coord.y()<<" "<<coord.z()<<std::endl;
+                }
             }
 
             if (mask & HAS_COLOR_INDEX)
@@ -972,18 +977,33 @@ protected:
                 osg::Vec4 color = document.getColorPool()->getColor(index);
                 color.a() = (float)alpha/255;
                 vertex.setColor(color);
+
+                if (!color.valid())
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord color="<<color.r()<<" "<<color.g()<<" "<<color.b()<<" "<<color.a()<<std::endl;
+                }
             }
 
             if (mask & HAS_RGBA_COLOR)
             {
                 osg::Vec4f color = in.readColor32();
                 vertex.setColor(color);
+
+                if (!color.valid())
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord color="<<color.r()<<" "<<color.g()<<" "<<color.b()<<" "<<color.a()<<std::endl;
+                }
             }
 
             if (mask & HAS_NORMAL)
             {
                 osg::Vec3f normal = in.readVec3f();
                 vertex.setNormal(normal);
+
+                if (!normal.valid())
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord normal="<<normal.x()<<" "<<normal.y()<<" "<<normal.z()<<std::endl;
+                }
             }
 
             for (unsigned int layer=0; layer<8; layer++)
@@ -992,6 +1012,12 @@ protected:
                 {
                     osg::Vec2f uv = in.readVec2f();
                     vertex.setUV(layer,uv);
+                    
+                    if (!uv.valid())
+                    {
+                        osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
+                    }
+
                 }
             }
 

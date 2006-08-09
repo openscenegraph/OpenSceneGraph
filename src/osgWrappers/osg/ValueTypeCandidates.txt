@@ -1,10 +1,10 @@
-UByte4
 Vec2d
 Vec2f
 Vec3d
 Vec3f
 Vec4d
 Vec4f
+Vec4ub
 BoundingBox
 BoundingSphere
 Matrixd

@@ -170,6 +170,22 @@ class VertexCNT : public Record
             vertex.setCoord(coord*document.unitScale());
             vertex.setNormal(normal);
             vertex.setUV(0,uv);
+            
+
+            if (!coord.valid())
+            {
+                osg::notify(osg::NOTICE)<<"Warning: data error detected in VertexCNT::readRecord coord="<<coord.x()<<" "<<coord.y()<<" "<<coord.z()<<std::endl;
+            }
+
+            if (!normal.valid())
+            {
+                osg::notify(osg::NOTICE)<<"Warning: data error detected in VertexCNT::readRecord normal="<<normal.x()<<" "<<normal.y()<<" "<<normal.z()<<std::endl;
+            }
+
+            if (!uv.valid())
+            {
+                osg::notify(osg::NOTICE)<<"Warning: data error detected in VertexCNT::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
+            }
 
             // color
             if (flags & PACKED_COLOR)

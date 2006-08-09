@@ -187,7 +187,6 @@ Transform
 TransformCallback
 TriangleFunctor
 TriStripVisitor
-UByte4
 UnitTestFramework
 UpdateVisitor
 VariableRateCounter

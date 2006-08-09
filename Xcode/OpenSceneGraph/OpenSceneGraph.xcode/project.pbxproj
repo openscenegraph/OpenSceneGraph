@@ -42554,15 +42554,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		BE11825305D63C0A00EB53E5 = {
-			explicitFileType = sourcecode.cpp;
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = UByte4;
-			path = ../../include/osg/UByte4;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		BE11825405D63C0A00EB53E5 = {
 			explicitFileType = sourcecode.cpp;
 			fileEncoding = 30;

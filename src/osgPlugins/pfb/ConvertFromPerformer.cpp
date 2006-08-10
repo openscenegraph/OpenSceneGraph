@@ -19,6 +19,8 @@
 #include <osg/Geometry>
 #include <osg/Sequence>
 #include <osg/ShadeModel>
+#include <osg/Depth>
+#include <osg/AlphaFunc>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -1021,10 +1023,57 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
     //     if (inherit & PFSTATE_ENTEXLOD) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXLOD"<<std::endl;
     //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXLOD"<<std::endl;
 
+    if (!(inherit & PFSTATE_ALPHAFUNC)) {
+        int mode = geostate->getMode(PFSTATE_ALPHAFUNC);
+        float value = geostate->getVal(PFSTATE_ALPHAREF);
+        osg::AlphaFunc* aFunc = new osg::AlphaFunc();
+        switch (mode) {
+            case PFAF_ALWAYS:
+                aFunc->setFunction(osg::AlphaFunc::ALWAYS); //==PFAF_OFF in performer 311
+                break;
+            case PFAF_EQUAL:
+                aFunc->setFunction(osg::AlphaFunc::EQUAL);
+                break;
+            case PFAF_GEQUAL:
+                aFunc->setFunction(osg::AlphaFunc::GEQUAL);
+                break;
+            case PFAF_GREATER:
+                aFunc->setFunction(osg::AlphaFunc::GREATER);
+                break;
+            case PFAF_LEQUAL:
+                aFunc->setFunction(osg::AlphaFunc::LEQUAL);
+                break;
+            case PFAF_LESS:
+                aFunc->setFunction(osg::AlphaFunc::LESS);
+                break;
+            case PFAF_NEVER:
+                aFunc->setFunction(osg::AlphaFunc::NEVER);
+                break;
+            case PFAF_NOTEQUAL:
+                aFunc->setFunction(osg::AlphaFunc::NOTEQUAL);
+                break;
+//            case PFAF_OFF: //==PFAF_ALWAYS
+//                break;
+            default: //warn PFAF not recognized?
+                break;
+        }
+        aFunc->setReferenceValue(value);
+        if (mode != PFAF_OFF) {
+            osgStateSet->setAttributeAndModes(aFunc);
+        } else {
+            osgStateSet->setAttributeAndModes(aFunc,osg::StateAttribute::OFF);
+        }
+    }
+
     if (inherit & PFSTATE_TRANSPARENCY) osgStateSet->setMode(GL_BLEND,osg::StateAttribute::INHERIT);
     else
     {
         int mode = geostate->getMode(PFSTATE_TRANSPARENCY);
+        if (mode & PFTR_NO_OCCLUDE) {
+            mode &= ~PFTR_NO_OCCLUDE;//remove NO_OCCLUDE bit
+            osg::Depth* depth = new osg::Depth(osg::Depth::LESS,0.0f,1.0f,false);
+            osgStateSet->setAttributeAndModes(depth);
+        }
         switch(mode)
         {
             case(PFTR_FAST):
@@ -1032,7 +1081,7 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
             case(PFTR_BLEND_ALPHA):
             case(PFTR_MS_ALPHA):
             case(PFTR_MS_ALPHA_MASK):
-            case(PFTR_NO_OCCLUDE):
+//            case(PFTR_NO_OCCLUDE): //this is a bit flag.
             case(PFTR_ON):
                 osgStateSet->setMode(GL_BLEND,osg::StateAttribute::ON);
                 osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);

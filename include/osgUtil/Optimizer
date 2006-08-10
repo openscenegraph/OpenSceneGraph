@@ -36,7 +36,10 @@ class OSGUTIL_EXPORT BaseOptimizerVisitor : public osg::NodeVisitor
         BaseOptimizerVisitor(Optimizer* optimizer, unsigned int operation):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _optimizer(optimizer),
-            _operationType(operation) {}
+            _operationType(operation)
+        {
+            setNodeMaskOverride(0xffffffff);
+        }
 
         inline bool isOperationPermissibleForObject(const osg::StateSet* object) const;
         inline bool isOperationPermissibleForObject(const osg::StateAttribute* object) const;

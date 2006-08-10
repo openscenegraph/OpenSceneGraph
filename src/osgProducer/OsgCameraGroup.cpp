@@ -29,10 +29,6 @@
 #define        WGL_SAMPLES_ARB                0x2042
 #endif
 
-#if defined (__linux__)
-    #include <sched.h>
-#endif
-
 using namespace Producer;
 using namespace osgProducer;
 
@@ -46,18 +42,10 @@ class RenderSurfaceRealizeCallback : public Producer::RenderSurface::Callback
 {
 public:
 
-    RenderSurfaceRealizeCallback(OsgCameraGroup* cameraGroup,OsgSceneHandler* sceneHandler, bool enableProccessAffinityHint):
+    RenderSurfaceRealizeCallback(OsgCameraGroup* cameraGroup,OsgSceneHandler* sceneHandler):
         _cameraGroup(cameraGroup),
-        _sceneHandler(sceneHandler),
-        _numberOfProcessors(1),
-        _sceneHandlerNumber(0),
-        _enableProccessAffinityHint(enableProccessAffinityHint)
+        _sceneHandler(sceneHandler)
     {
-        #if defined (__linux__)
-            /* Determine the actual number of processors */
-            _numberOfProcessors = sysconf(_SC_NPROCESSORS_CONF);
-        #endif
-        
         const OsgCameraGroup::SceneHandlerList& shl = _cameraGroup->getSceneHandlerList();
         for(unsigned int i=0; i<shl.size(); ++i)
         {
@@ -67,26 +55,6 @@ public:
     
     virtual void operator()( const Producer::RenderSurface & rs)
     {
-    
-        #if defined (__linux__) && defined(CPU_SET)
-            if (_enableProccessAffinityHint && _numberOfProcessors>1)
-            {
-                cpu_set_t cpumask;
-                CPU_ZERO( &cpumask );
-                CPU_SET( _sceneHandlerNumber % _numberOfProcessors, &cpumask );
-
-                if( sched_setaffinity( 0, sizeof(cpumask), &cpumask ) == -1 )
-                {
-                    osg::notify(osg::NOTICE)<<"WARNING: Could not set CPU Affinity for scene handler "<<_sceneHandlerNumber<<std::endl;
-                }
-                else
-                {
-                    osg::notify(osg::NOTICE)<<"Set CPU Affinity for scene handler "<<_sceneHandlerNumber<<std::endl;
-                }
-                
-            }
-        #endif
-
         osg::Timer timer;
         osg::Timer_t start_t = timer.tick();
     
@@ -174,6 +142,11 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
     _init();
     _applicationUsage = arguments.getApplicationUsage();
     
+    while (arguments.read("--affinity"))
+    {
+        _enableProccessAffinityHint = true;
+    }
+
     // report the usage options.
     if (arguments.getApplicationUsage())
     {
@@ -191,10 +164,6 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
         }
     }    
 
-    while (arguments.read("--affinity"))
-    {
-        _enableProccessAffinityHint = true;
-    }
 
 
 }
@@ -527,6 +496,16 @@ bool OsgCameraGroup::realize()
 
     if (!_ds) _ds = osg::DisplaySettings::instance();
 
+    unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
+    if (_enableProccessAffinityHint && numProcessors>0)
+    {
+        for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+        {
+            Producer::Camera *cam = _cfg->getCamera(i);
+            cam->setProcessorAffinity(i % numProcessors);
+        }    
+    }
+
     _shvec.clear();
     
     osg::Node* node = getTopMostSceneData();
@@ -600,7 +579,7 @@ bool OsgCameraGroup::realize()
         if (stage) stage->setClearMask(clear_mask);
 
         // set the realize callback.
-        rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh, _enableProccessAffinityHint));
+        rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
         
         // set up the visual chooser.
         if (_ds.valid())

@@ -1,3 +1,405 @@
+2006-08-08 12:27  robert
+
+	* include/osgProducer/OsgCameraGroup,
+	  src/osgProducer/OsgCameraGroup.cpp,
+	  src/osgWrappers/osgProducer/OsgCameraGroup.cpp: Added support for
+	  --affinity command line option for switch on procesor affinity
+	  where supported,
+
+2006-08-08 12:26  robert
+
+	* NEWS.txt: First pass at updating NEWS for the up comming 1.1.1
+	  release
+
+2006-08-08 12:23  robert
+
+	* src/osgPlugins/OpenFlight/PrimaryRecords.cpp: From Paul Martz,
+	  "This change causes the new OpenFlight plugin to behave as the
+	  old plugin by returning the database origin latitude/longitude
+	  (extracted from the header record) as userData of the top-level
+	  scene graph node."
+
+2006-08-08 11:41  robert
+
+	* src/osgProducer/ViewerEventHandler.cpp: Fixed the positioning of
+	  the graphical stats bars so that they don't overlap the stats
+	  text
+
+2006-08-06 17:49  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Added preliminary support for
+	  process affinity support under Linux.
+
+2006-08-06 17:42  robert
+
+	* examples/osgshadowtexture/CreateShadowedScene.cpp: Removed
+	  debugging code.
+
+2006-08-05 21:39  robert
+
+	* src/osgDB/Registry.cpp: Added fix to code catching error results
+	  ReadResult's to first instance of checking the value of
+	  ReadResult.
+
+2006-08-05 21:36  robert
+
+	* src/osgDB/Registry.cpp: From Jeremy Moles, refactored by Robert
+	  Osfield.
+
+	  Fixed bug osgDB::Registry::Registry::read(const ReadFunctor&
+	  readFunctor) relating to the handling of failed loads with the
+	  ReadResult::_message value being lost, this changes ensure that
+	  the original ReadResult from the plugin, with message intact, is
+	  returned correctly.
+
+2006-08-05 17:57  robert
+
+	* examples/osgtext/osgtext.cpp: Added code to reproduce Text
+	  outline bounding box compute bug.
+
+2006-08-05 12:12  robert
+
+	* examples/osgcegui/osgcegui.cpp: Added disable vertex arrays.
+
+2006-08-05 11:16  robert
+
+	* examples/osgcegui/: GNUmakefile, GNUmakefile.inst, osgcegui.cpp:
+	  Added osgcegui example
+
+2006-08-04 14:17  robert
+
+	* src/osg/Geometry.cpp: From Uwe Woessner, implementated by Robert
+	  Osfield, Fixed vertex attribute bug, changed
+	  _vertexAttribList[unit] -> _vertexAttribList[index]
+
+2006-08-03 20:14  robert
+
+	* src/osgDB/DatabasePager.cpp: Added if search for the current
+	  databaseRequest in the _fileRequestList to handle cases when the
+	  request is moved back in the list, or when the _fileRequestList
+	  is cleared by an asyncronous call to DatabasePager::clear().
+
+2006-08-03 17:04  robert
+
+	* src/osgWrappers/osg/: CameraNode.cpp, Texture.cpp, Texture1D.cpp,
+	  Texture2D.cpp, Texture3D.cpp, TextureCubeMap.cpp,
+	  TextureRectangle.cpp: Updated wrappers
+
+2006-08-03 16:57  robert
+
+	* examples/osgshadowtexture/CreateShadowedScene.cpp,
+	  include/osg/CameraNode, include/osg/Texture,
+	  include/osg/Texture1D, include/osg/Texture2D,
+	  include/osg/Texture3D, include/osg/TextureCubeMap,
+	  include/osg/TextureRectangle, src/osgUtil/RenderStage.cpp: Fixed
+	  RenderToTexture bug which occured when the viewport dimensions
+	  where different than the texture being written to.
+
+2006-08-03 15:03  robert
+
+	* examples/osgtext/osgtext.cpp: Removed debug code
+
+2006-08-03 14:35  robert
+
+	* src/osg/StateSet.cpp: Changed:
+
+	    static TextureGLModeSet s_textureGLModeSet;
+
+	  To:
+
+	    static TextureGLModeSet& getTextureGLModeSet()
+	    {
+		static TextureGLModeSet s_textureGLModeSet;
+		return s_textureGLModeSet;
+	    }
+
+	  to prevent static initialization problems under static builds.
+
+2006-08-03 14:12  robert
+
+	* src/osgText/Font.cpp: Added OSG_TEXT_INCREMENTAL_SUBLOADING
+	  ON/OFF env var check to osgText::Font to optional disable the
+	  incremental subloading.
+
+2006-08-02 22:09  robert
+
+	* examples/osgtext/osgtext.cpp, src/osgWrappers/osg/Matrixd.cpp,
+	  src/osgWrappers/osg/Matrixf.cpp,
+	  src/osgWrappers/osgTerrain/DataSet.cpp,
+	  src/osgWrappers/osgText/Font.cpp,
+	  src/osgWrappers/osgText/Text.cpp: Updated wrappers
+
+2006-08-02 22:05  robert
+
+	* include/osgText/Font, include/osgText/Text, src/osgText/Font.cpp,
+	  src/osgText/Text.cpp: Reworked the state management within
+	  osgText::Text and osgText::Font so that it only applies textures
+	  locally rather than whole StateSet.
+
+2006-08-02 22:04  robert
+
+	* examples/osgforest/osgforest.cpp: Added missing include
+	  <osg/TexEnv>
+
+2006-08-02 20:56  robert
+
+	* applications/osgviewer/osgviewer.cpp: tweaked comment.
+
+2006-08-02 20:54  robert
+
+	* examples/: osganimate/osganimate.cpp,
+	  osgautotransform/osgautotransform.cpp,
+	  osgbillboard/osgbillboard.cpp,
+	  osgblendequation/osgblendequation.cpp,
+	  osgcallback/osgcallback.cpp, osgcatch/osgcatch.cpp,
+	  osgclip/osgclip.cpp, osgcluster/osgcluster.cpp,
+	  osgcopy/osgcopy.cpp, osgcubemap/osgcubemap.cpp,
+	  osgdelaunay/osgdelaunay.cpp, osgdepthshadow/osgdepthshadow.cpp,
+	  osgdistortion/osgdistortion.cpp, osgforest/osgforest.cpp,
+	  osgfxbrowser/osgfxbrowser.cpp, osggeodemo/osggeodemo.cpp,
+	  osggeometry/osggeometry.cpp, osghud/osghud.cpp,
+	  osgimpostor/osgimpostor.cpp, osgkeyboard/osgkeyboard.cpp,
+	  osglauncher/osglauncher.cpp, osglight/osglight.cpp,
+	  osglightpoint/osglightpoint.cpp, osglogicop/osglogicop.cpp,
+	  osglogo/osglogo.cpp, osgmotionblur/osgmotionblur.cpp,
+	  osgmovie/osgmovie.cpp, osgmultiplecameras/osgmultiplecameras.cpp,
+	  osgmultitexture/osgmultitexture.cpp, osgoccluder/osgoccluder.cpp,
+	  osgparametric/osgparametric.cpp, osgparticle/osgparticle.cpp,
+	  osgparticleeffects/osgparticleeffects.cpp,
+	  osgphotoalbum/osgphotoalbum.cpp, osgpick/osgpick.cpp,
+	  osgplanets/osgplanets.cpp, osgpoints/osgpoints.cpp,
+	  osgpointsprite/osgpointsprite.cpp,
+	  osgprecipitation/osgprecipitation.cpp,
+	  osgprerender/osgprerender.cpp,
+	  osgprerendercubemap/osgprerendercubemap.cpp,
+	  osgreflect/osgreflect.cpp, osgscalarbar/osgscalarbar.cpp,
+	  osgscribe/osgscribe.cpp, osgsequence/osgsequence.cpp,
+	  osgshaders/osgshaders.cpp, osgshaderterrain/osgshaderterrain.cpp,
+	  osgshadowtexture/osgshadowtexture.cpp, osgshape/osgshape.cpp,
+	  osgsimplifier/osgsimplifier.cpp, osgsimulation/osgsimulation.cpp,
+	  osgspacewarp/osgspacewarp.cpp,
+	  osgspheresegment/osgspheresegment.cpp,
+	  osgspotlight/osgspotlight.cpp, osgstereoimage/osgstereoimage.cpp,
+	  osgteapot/osgteapot.cpp, osgtext/osgtext.cpp,
+	  osgtexture1D/osgtexture1D.cpp, osgtexture2D/osgtexture2D.cpp,
+	  osgtexture3D/osgtexture3D.cpp,
+	  osgtexturerectangle/osgtexturerectangle.cpp,
+	  osgvertexprogram/osgvertexprogram.cpp, osgvolume/osgvolume.cpp:
+	  Added viewer.cleanup_frame() to all examples.
+
+2006-08-02 17:14  robert
+
+	* include/osg/State, src/osg/State.cpp: Moved extension function
+	  pointer initilization into a method, and the pointers from being
+	  static to be local member variables.	This should avoid issues
+	  under Windows with multiple graphics contexts have seperate entry
+	  points.
+
+2006-08-02 17:12  robert
+
+	* examples/osgtesselate/osgtesselate.cpp: Added cleanup_frame to
+	  prevent crashes on exit.
+
+2006-08-02 16:41  robert
+
+	* src/osg/Texture.cpp: Reworked the TextureObjectManager singleton
+	  so that it no longer reconstructed itself once deleted, and added
+	  checks to against a null manager to prevent calling code
+	  crashing.
+
+2006-08-02 12:36  robert
+
+	* src/osgSim/OverlayNode.cpp: Fixed crash due on multipipe systems
+	  due by moving the local camera update code from the cull into the
+	  update traversal.
+
+2006-08-02 11:43  robert
+
+	* Make/makedefs, include/osg/GLU, include/osg/Math,
+	  include/osg/NodeTrackerCallback, include/osg/Texture,
+	  include/osgDB/ReaderWriter, include/osgGA/NodeTrackerManipulator,
+	  src/osgPlugins/OpenFlight/ControlRecords.cpp,
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp,
+	  src/osgPlugins/OpenFlight/PaletteRecords.cpp,
+	  src/osgPlugins/OpenFlight/Pools.cpp,
+	  src/osgPlugins/OpenFlight/Record.cpp,
+	  src/osgPlugins/OpenFlight/Record.h,
+	  src/osgPlugins/bsp/BSPLoad.cpp, src/osgPlugins/bsp/BSPLoad.h,
+	  src/osgPlugins/lwo/ReaderWriterLWO.cpp,
+	  src/osgPlugins/net/sockstream.cpp: From Daniel Trstenjak, build
+	  fixes for Hpux 11.11, Irix 6.5, Solaris 8 and Aix
+
+2006-08-01 14:08  robert
+
+	* src/osgProducer/KeyboardMouseCallback.cpp: Fixed
+	  doubleButtonPress.
+
+2006-08-01 11:27  robert
+
+	* examples/osghangglide/osghangglide.cpp: Changed the
+	  viewer.setUpViewer(..) from default to just ESCAPE_SETS_DONE.
+
+2006-07-31 21:56  robert
+
+	* include/osgTerrain/DataSet, src/osgTerrain/DataSet.cpp: From
+	  Jason Beverage, "I've attached fixes to DataSet that should fix
+	  the problems that Maya was seeing yesterday.	The issue was that
+	  the new interpolation code I submitted didn't use the
+	  SourceData's georef, it was assuming that the GDALDataSet had a
+	  proper geo-ref.  I've made the getInterpolatedValue method a
+	  member of SourceData and now it uses the georef the SourceData's
+	  georef.
+
+	  I also forward declared the GDALRasterBand class in the DataSet
+	  header."
+
+2006-07-31 18:31  robert
+
+	* examples/osghangglide/GliderManipulator.cpp,
+	  examples/osgimpostor/TestManipulator.cpp,
+	  examples/osgprerendercubemap/osgprerendercubemap.cpp,
+	  examples/osgunittests/osgunittests.cpp,
+	  examples/osgvertexprogram/osgvertexprogram.cpp,
+	  include/osg/Export, include/osg/Matrixd, include/osg/Matrixf,
+	  src/osg/AutoTransform.cpp, src/osg/Matrix_implementation.cpp,
+	  src/osg/NodeTrackerCallback.cpp, src/osg/Quat.cpp,
+	  src/osgGA/DriveManipulator.cpp, src/osgGA/FlightManipulator.cpp,
+	  src/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgGA/TrackballManipulator.cpp, src/osgProducer/Viewer.cpp,
+	  src/osgWrappers/osg/Matrixd.cpp, src/osgWrappers/osg/Matrixf.cpp:
+	  Added Matrix*::getRotate()/setRotate(Quat), deprecating
+	  Matrix*::get(Quat&), Matrix*::set(Quat&)
+
+2006-07-31 15:49  robert
+
+	* include/osg/: Matrixd, Matrixf: Tweaked the invert() method to
+	  avoid silly OSX warnings.
+
+2006-07-29 17:47  robert
+
+	* include/osgProducer/OsgSceneHandler,
+	  include/osgProducer/ViewerEventHandler,
+	  include/osgUtil/Statistics, src/osgProducer/OsgSceneHandler.cpp,
+	  src/osgProducer/ViewerEventHandler.cpp,
+	  src/osgWrappers/osgProducer/OsgSceneHandler.cpp,
+	  src/osgWrappers/osgUtil/Statistics.cpp: Fixed
+	  multi-threaded/multi-pipe crash when primitive stats where output
+	  in osgProducer::Viewer's stats.
+
+2006-07-28 14:48  robert
+
+	* examples/osgunittests/osgunittests.cpp, include/osg/Matrixd,
+	  include/osg/Matrixf, src/osg/Matrix_implementation.cpp,
+	  src/osgWrappers/osg/Matrixd.cpp, src/osgWrappers/osg/Matrixf.cpp,
+	  src/osgWrappers/osg/Texture.cpp,
+	  src/osgWrappers/osgGA/EventQueue.cpp: Updated osgunittests with a
+	  matrix invert unit test, and added a conditional calling of
+	  invert_4x4 or invert_4x3 depending on the the right hand column
+	  of the matrix.
+
+	  Updated wrappers
+
+2006-07-27 17:41  robert
+
+	* src/osgTerrain/DataSet.cpp: From Jason Beverage, "This patch
+	  should fix Gert's problem that he posted on osg-users.  I
+	  downloaded the sample he posted, reproduced the error, and added
+	  an additional check to make sure the GDAL window size was valid.
+	  Now his example works fine.  Changes made against current CVS.  "
+
+2006-07-27 16:23  robert
+
+	* src/osg/Matrix_implementation.cpp: From David Spilling,
+	  "Matrix_implementation.cpp modified as requested. I ran a version
+	  of it through a local version of osgunittests.cpp and it passes.
+
+	  Note that firstly it always returns the positive real quaternion
+	  (positive w)
+
+	  Note also that it will sometimes slightly differ from the results
+	  of the other methods because it assumes that the input matrix
+	  really is a rotation matrix - if it isn't, e.g. because of
+	  rounding error, then the output quaternion will be very slightly
+	  different. For example, the test matrix
+
+	  0 1 0 0 1 0 0 0 0 0 0.999999 0 0 0 0 1
+
+	  will return 0.707107 0.707107 0.0005033 0.0005033
+
+	  whereas the previous methods return 0.707107 0.707107 0.0 0.0
+
+	  However, since quaternions are rotations, the meaning of how to
+	  convert a matrix that isn't a rotation is a little unclear..."
+
+2006-07-27 13:32  robert
+
+	* include/osgGA/EventQueue, src/osgGA/EventQueue.cpp: From Michael
+	  Polak, double click fixes/additions
+
+2006-07-27 12:58  robert
+
+	* src/osgProducer/ViewerEventHandler.cpp: From Eric Wing, add
+	  outline to help text to make it easier to read on different
+	  coloured backgrounds
+
+2006-07-27 12:22  robert
+
+	* VisualStudio/osgPlugins/ESRIShape/ESRIShape.dsp: From Andreas
+	  Ekstrand, "The ESRIShape plugin needs to produce a osgdb_shp.dll
+	  rather than a osgdb_ESRI.dll in Windows in order to find the
+	  correct library when loading shp files. A new dsp file is
+	  attached to this mail. Also, the ERSIShape folder should be
+	  deleted."
+
+2006-07-27 12:22  robert
+
+	* src/osgPlugins/pfb/ConvertFromPerformer.cpp: Added #define
+	  snprintf _snprintf for Win32 build
+
+2006-07-27 12:14  robert
+
+	* src/osg/Matrix_implementation.cpp: From David Spilling, fix to
+	  Matrix::get(Quat&)
+
+2006-07-27 12:13  robert
+
+	* examples/osgunittests/osgunittests.cpp: From J.P. Delport, added
+	  units tests to pick up on erroneous Matrix::get(Quat&)
+	  computation.
+
+2006-07-26 16:29  robert
+
+	* include/osg/DisplaySettings, include/osg/Texture,
+	  include/osg/buffered_value, src/osg/BufferObject.cpp,
+	  src/osg/DisplaySettings.cpp, src/osg/Drawable.cpp,
+	  src/osg/FragmentProgram.cpp, src/osg/FrameBufferObject.cpp,
+	  src/osg/Program.cpp, src/osg/Shader.cpp, src/osg/Texture.cpp,
+	  src/osg/VertexProgram.cpp, src/osgProducer/OsgCameraGroup.cpp:
+	  Cleaned up per context buffers support
+
+2006-07-26 16:19  robert
+
+	* runexamples.bat: Added osgprecipitation to runexamples list.
+
+2006-07-25 21:43  robert
+
+	* examples/osgcatch/osgcatch.cpp: Force SingelThreaded usage due to
+	  use of osgParticle.
+
+2006-07-25 14:52  robert
+
+	* src/osgText/Text.cpp: Fixed auto rotate bug.
+
+2006-07-19 22:49  robert
+
+	* Make/makedefs: Set release number back to 0 after release
+
+2006-07-19 22:11  robert
+
+	* ChangeLog, README.txt: Updated ChangedLog and READE for the 1.1
+	  release
+
 2006-07-19 21:56  robert
 
 	* src/osgUtil/RenderBin.cpp: For cases where the RenderBin has its
@@ -3254,7 +3656,6 @@
 2006-01-18 12:03  robert
 
 	* VisualStudio/OpenSceneGraph.dsw,
-	  VisualStudio/osgPlugins/ERSIShape/ERSIShape.dsp,
 	  src/osgPlugins/ESRIShape/ESRIShape.cpp,
 	  src/osgPlugins/ESRIShape/ESRIShapeParser.cpp: From Maya Leonard,
 	  ERSIShape VS project file, and compile fixes for Win32.

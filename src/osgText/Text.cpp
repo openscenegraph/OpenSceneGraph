@@ -1037,6 +1037,10 @@ void Text::computeBackdropPositions(unsigned int contextID) const
         }
     }
 
+#if 0
+    // note, commenting out right now as its causing bounding box problems
+    // which haven't yet been located and fixed. Robert Osfield, August 2006.
+
     // Finally, we have one more issue to deal with.
     // Now that the text takes more space, we need
     // to adjust the size of the bounding box.
@@ -1154,6 +1158,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
                 break;
             }
     }
+#endif
 }
 
 void Text::computeColorGradients() const

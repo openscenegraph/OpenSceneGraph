@@ -32,7 +32,6 @@ template <class T>
             int ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                fclose(fp);
                 delete [] data;
                 return NULL;
             }
@@ -76,7 +75,6 @@ template <class T>
             ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                fclose(fp);
                 delete [] data;
                 return NULL;
             }
@@ -91,7 +89,6 @@ template <class T>
             ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                fclose(fp);
                 delete [] data;
                 return NULL;
             }
@@ -113,6 +110,11 @@ template <class T>
     T* dst = data;
     T* end = data + 3*width*height;
 
+    osg::notify(osg::NOTICE)<<"Width = "<<width<<std::endl;
+    osg::notify(osg::NOTICE)<<"Height = "<<height<<std::endl;
+    
+    unsigned int numRead = 0;
+
     while(dst < end)
     {
         int ch;
@@ -125,7 +127,8 @@ template <class T>
             ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                fclose(fp);
+                osg::notify(osg::NOTICE)<<"Error 1 "<<numRead<<std::endl;
+
                 delete [] data;
                 return NULL;
             }
@@ -140,16 +143,21 @@ template <class T>
             ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                fclose(fp);
+                osg::notify(osg::NOTICE)<<"Error 2"<<std::endl;
+
                 delete [] data;
                 return NULL;
             }
         }
         while(isdigit(ch));
 
+        ++numRead;
+
         // place value in the image
         *(dst++) = value;
     }
+
+    osg::notify(osg::NOTICE)<<"Completed"<<std::endl;
 
     return reinterpret_cast<unsigned char*>(data);
 }
@@ -390,7 +398,8 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 
             if (data == NULL)
             {
-                fclose(fp);
+                if (fp)
+                    fclose(fp);
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
@@ -407,8 +416,71 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 data,
                 osg::Image::USE_NEW_DELETE);
 
+            if (options && options->getOptionString().find("flip")!=std::string::npos)
+            {
+                pOsgImage->flipVertical();
+            }
+
             return pOsgImage;
         }
+
+        virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const osgDB::ReaderWriter::Options* options) const
+        {
+            bool ascii = (options && options->getOptionString().find("ascii")!=std::string::npos);
+
+            if (ascii)
+            {
+                // ascii ppm format.
+                fout<<"P3"<<std::endl;
+                fout<<image.s()<<" "<<image.t()<<std::endl;
+                fout<<"255"<<std::endl;
+                for(int row = image.t()-1; row >= 0; --row)
+                {
+                    const unsigned char* ptr = image.data(0,row);
+                    for(int col = 0; col < image.s(); ++col)
+                    {
+                        fout<<static_cast<int>(*(ptr++));
+                        fout<<" "<<static_cast<int>(*(ptr++));
+                        fout<<" "<<static_cast<int>(*(ptr++))<<"  ";
+                    }
+                    fout<<std::endl;
+                }
+            }
+            else
+            {
+                // binary ppm format        
+                fout<<"P6"<<std::endl;
+                fout<<image.s()<<" "<<image.t()<<std::endl;
+                fout<<"255"<<std::endl;
+                for(int row = image.t()-1; row >= 0; --row)
+                {
+                    const unsigned char* ptr = image.data(0,row);
+                    for(int col = 0; col < image.s(); ++col)
+                    {
+                        fout.put(*(ptr++));
+                        fout.put(*(ptr++));
+                        fout.put(*(ptr++));
+                    }
+                }
+            }
+            return WriteResult::FILE_SAVED;
+        }
+
+        virtual WriteResult writeImage(const osg::Image& image,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension("ppm")) return WriteResult::FILE_NOT_HANDLED;
+            
+            // only support rgb images right now.
+            if (image.getPixelFormat()!=GL_RGB || image.getDataType()!=GL_UNSIGNED_BYTE) return WriteResult("Error image pixel format not supported by pnm writer.");
+
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+            return writeImage(image,fout,options);
+        }
+
+
 };
 
 // now register with Registry to instantiate the above

@@ -417,6 +417,39 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text4->setPosition(center);
     text4->setAxisAlignment(osgText::Text::SCREEN);
 
+    osg::Vec4 characterSizeModeColor(1.0f,0.0f,0.5f,1.0f);
+
+    osgText::Text* text5 = new osgText::Text;
+    text5->setColor(characterSizeModeColor);
+    text5->setFont("fonts/times.ttf");
+    //text5->setCharacterSize(characterSize);
+    text5->setCharacterSize(32.0f); // medium
+    text5->setPosition(center - osg::Vec3(0.0, 0.0, 0.2));
+    text5->setAxisAlignment(osgText::Text::SCREEN);
+    text5->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
+    text5->setText("CharacterSizeMode SCREEN_COORDS(size 32.0)");
+    geode->addDrawable(text5);
+
+    osgText::Text* text6 = new osgText::Text;
+    text6->setColor(characterSizeModeColor);
+    text6->setFont("fonts/times.ttf");
+    text6->setCharacterSize(characterSize);
+    text6->setPosition(center - osg::Vec3(0.0, 0.0, 0.4));
+    text6->setAxisAlignment(osgText::Text::SCREEN);
+    text6->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
+    text6->setText("CharacterSizeMode OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT");
+    geode->addDrawable(text6);
+
+    osgText::Text* text7 = new osgText::Text;
+    text7->setColor(characterSizeModeColor);
+    text7->setFont("fonts/times.ttf");
+    text7->setCharacterSize(characterSize);
+    text7->setPosition(center - osg::Vec3(0.0, 0.0, 0.6));
+    text7->setAxisAlignment(osgText::Text::SCREEN);
+    text7->setCharacterSizeMode(osgText::Text::OBJECT_COORDS);
+    text7->setText("CharacterSizeMode OBJECT_COORDS (default)");
+    geode->addDrawable(text7);
+
 #if 1
     // reproduce outline bounding box compute problem with backdrop on.
     text4->setBackdropType(osgText::Text::OUTLINE);

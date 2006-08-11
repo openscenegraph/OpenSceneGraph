@@ -499,7 +499,7 @@ bool OsgCameraGroup::realize()
     if (_enableProccessAffinityHint)
     {
         unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
-        if (numProcessors>=1)
+        if (numProcessors>1)
         {
             for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
             {

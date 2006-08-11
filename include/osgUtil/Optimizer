@@ -71,7 +71,6 @@ class OSGUTIL_EXPORT Optimizer
             REMOVE_LOADED_PROXY_NODES = 0x004,
             COMBINE_ADJACENT_LODS =     0x008,
             SHARE_DUPLICATE_STATE =     0x010,
-            MERGE_GEODES =             0x1000,
             MERGE_GEOMETRY =            0x020,
             CHECK_GEOMETRY =            0x040,
             SPATIALIZE_GROUPS =         0x080,
@@ -79,7 +78,8 @@ class OSGUTIL_EXPORT Optimizer
             TRISTRIP_GEOMETRY =         0x200,
             TESSELATE_GEOMETRY =        0x400,
             OPTIMIZE_TEXTURE_SETTINGS = 0x800,
-            FLATTEN_BILLBOARDS =        0x1000,
+            MERGE_GEODES =              0x1000,
+            FLATTEN_BILLBOARDS =        0x2000,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |

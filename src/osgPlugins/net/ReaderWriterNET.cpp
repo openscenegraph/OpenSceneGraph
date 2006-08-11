@@ -68,6 +68,18 @@
   *                                                    the server.  If fetched, it is written
   *                                                    to cache.
   *
+  *            proxy_host=<hostname>   - Specify the name of a Proxy host.  Proxies are not 
+  *                                      used by default
+  *
+  *            proxy_port=<portnumber> - When using a Proxy host, specify the port.  The 
+  *                                      internal variable defaults to 8080.
+  *
+  *      Environmental Variables:
+  *
+  *               OSG_PROXY_HOST        Specifies the name of a Proxy host.  Overrides options.
+  *
+  *               OSG_PROXY_PORT        When using a Proxy, sets the proxy port deliberately.  
+  *                                     The internal variable defaults to 8080.
   */
 
 

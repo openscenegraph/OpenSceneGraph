@@ -207,7 +207,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgdepthshadow \
 	osgdepthpartition \
 	osgdistortion \
-	osgfbo \
 	osgforest \
 	osgfxbrowser \
 	osggeodemo \
@@ -231,7 +230,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgparametric \
 	osgparticle \
 	osgparticleeffects \
-	osgpbuffer \
 	osgpick \
         osgplanets \
 	osgpoints \

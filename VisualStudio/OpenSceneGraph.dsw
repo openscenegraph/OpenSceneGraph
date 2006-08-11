@@ -801,33 +801,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgfbo"=.\examples\osgfbo\osgfbo.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "Example osgfxbrowser"=.\examples\osgfxbrowser\osgfxbrowser.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1462,33 +1435,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgParticle
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgpbuffer"=.\examples\osgpbuffer\osgpbuffer.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgProducer

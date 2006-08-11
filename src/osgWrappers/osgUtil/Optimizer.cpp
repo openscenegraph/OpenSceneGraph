@@ -47,7 +47,6 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::REMOVE_LOADED_PROXY_NODES);
 	I_EnumLabel(osgUtil::Optimizer::COMBINE_ADJACENT_LODS);
 	I_EnumLabel(osgUtil::Optimizer::SHARE_DUPLICATE_STATE);
-	I_EnumLabel(osgUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgUtil::Optimizer::MERGE_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::CHECK_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::SPATIALIZE_GROUPS);
@@ -55,6 +54,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::TRISTRIP_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::TESSELATE_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS);
+	I_EnumLabel(osgUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgUtil::Optimizer::FLATTEN_BILLBOARDS);
 	I_EnumLabel(osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);

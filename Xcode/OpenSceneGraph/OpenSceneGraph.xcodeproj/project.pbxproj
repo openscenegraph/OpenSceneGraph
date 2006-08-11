@@ -30,7 +30,6 @@
 				006CEA380921B08000985402 /* PBXTargetDependency */,
 				00EF4FCB06CB1775008ACEFF /* PBXTargetDependency */,
 				00EF4FCD06CB1775008ACEFF /* PBXTargetDependency */,
-				006CEA3A0921B08000985402 /* PBXTargetDependency */,
 				00EF4FCF06CB1775008ACEFF /* PBXTargetDependency */,
 				00EF4FD106CB1775008ACEFF /* PBXTargetDependency */,
 				00EF4FD306CB1775008ACEFF /* PBXTargetDependency */,
@@ -57,7 +56,6 @@
 				006CEA3E0921B08000985402 /* PBXTargetDependency */,
 				00EF4FEF06CB1775008ACEFF /* PBXTargetDependency */,
 				00A14F95084E6704000150AD /* PBXTargetDependency */,
-				00A14D87084E5D95000150AD /* PBXTargetDependency */,
 				00A14D89084E5D95000150AD /* PBXTargetDependency */,
 				00EF4FF306CB1775008ACEFF /* PBXTargetDependency */,
 				00F23A1907678DB800528CDD /* PBXTargetDependency */,
@@ -483,12 +481,6 @@
 		000A27E906CAEE13009EE43A /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		000A27EA06CAEE13009EE43A /* osgProducer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098F3140652ED84007615E2 /* osgProducer.framework */; };
 		000A27EB06CAEE13009EE43A /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
-		000A27FA06CAEE1F009EE43A /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		000A27FB06CAEE1F009EE43A /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		000A27FC06CAEE1F009EE43A /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
-		000A27FD06CAEE1F009EE43A /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
-		000A27FE06CAEE1F009EE43A /* osgProducer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098F3140652ED84007615E2 /* osgProducer.framework */; };
-		000A27FF06CAEE1F009EE43A /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		000A280E06CAEE2D009EE43A /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		000A280F06CAEE2D009EE43A /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		000A281006CAEE2D009EE43A /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -501,7 +493,6 @@
 		000A283D06CAF299009EE43A /* osgpagedlod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A283A06CAF298009EE43A /* osgpagedlod.cpp */; };
 		000A284406CAF493009EE43A /* osgparticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A284106CAF493009EE43A /* osgparticle.cpp */; };
 		000A284506CAF681009EE43A /* osgParticle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557FC40624B86F000A808A /* osgParticle.framework */; };
-		000A284C06CAF768009EE43A /* osgpbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A284706CAF764009EE43A /* osgpbuffer.cpp */; };
 		000A286206CAF8B9009EE43A /* ImageReaderWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A285B06CAF8B5009EE43A /* ImageReaderWriter.cpp */; };
 		000A286406CAF8B9009EE43A /* osgphotoalbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A285D06CAF8B6009EE43A /* osgphotoalbum.cpp */; };
 		000A286506CAF8B9009EE43A /* PhotoArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A285E06CAF8B7009EE43A /* PhotoArchive.cpp */; };
@@ -1191,8 +1182,6 @@
 		0040997D0924D189009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
 		0040997E0924D193009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
 		0040997F0924D199009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
-		004099800924D1A0009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
-		004099810924D1A8009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
 		004099820924D1B0009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
 		004099830924D1B2009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099840924D1CB009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
@@ -1242,8 +1231,6 @@
 		004099B20924D2EE009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099B30924D2F5009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099B40924D2F8009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
-		004099B50924D300009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
-		004099B60924D302009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099B70924D309009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099B80924D30B009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
 		004099B90924D312009ADD90 /* Producer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099480924CE15009ADD90 /* Producer.framework */; };
@@ -1525,12 +1512,6 @@
 		006CE9540921AB8300985402 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		006CE9550921AB8300985402 /* osgProducer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098F3140652ED84007615E2 /* osgProducer.framework */; };
 		006CE9560921AB8300985402 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
-		006CE96F0921ABEA00985402 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		006CE9700921ABEA00985402 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		006CE9710921ABEA00985402 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
-		006CE9720921ABEA00985402 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
-		006CE9730921ABEA00985402 /* osgProducer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098F3140652ED84007615E2 /* osgProducer.framework */; };
-		006CE9740921ABEA00985402 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		006CE98F0921AC8700985402 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		006CE9900921AC8700985402 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		006CE9910921AC8700985402 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -1561,7 +1542,6 @@
 		006CEA0B0921AEC500985402 /* DistanceAccumulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CEA040921AEC300985402 /* DistanceAccumulator.cpp */; };
 		006CEA0C0921AEC500985402 /* DistanceAccumulator.h in Headers */ = {isa = PBXBuildFile; fileRef = 006CEA050921AEC400985402 /* DistanceAccumulator.h */; };
 		006CEA0F0921AEC500985402 /* osgdepthpartition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CEA080921AEC500985402 /* osgdepthpartition.cpp */; };
-		006CEA160921AEFA00985402 /* osgfbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CEA130921AEFA00985402 /* osgfbo.cpp */; };
 		006CEA1D0921AF2D00985402 /* osgmultiplecameras.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CEA1A0921AF2D00985402 /* osgmultiplecameras.cpp */; };
 		006CEA240921AF9C00985402 /* osgparametric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CEA210921AF9C00985402 /* osgparametric.cpp */; };
 		006CEA2B0921AFDB00985402 /* osgshaderterrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CEA280921AFDB00985402 /* osgshaderterrain.cpp */; };
@@ -1884,7 +1864,6 @@
 		00A150DA084E6B38000150AD /* hdrloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 00A150D7084E6B37000150AD /* hdrloader.h */; };
 		00A150DB084E6B38000150AD /* ReaderWriterHDR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A150D8084E6B37000150AD /* ReaderWriterHDR.cpp */; };
 		00A1514B084E740B000150AD /* osgParticle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557FC40624B86F000A808A /* osgParticle.framework */; };
-		00A15162084E75DB000150AD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		00A152E4084FD745000150AD /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		00A1533A084FDD4E000150AD /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00A1533B084FDD4E000150AD /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -3237,48 +3216,6 @@
 			remoteGlobalIDString = 0098F3130652ED84007615E2;
 			remoteInfo = osgProducer;
 		};
-		006CE9600921ABEA00985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
-			remoteInfo = osg;
-		};
-		006CE9620921ABEA00985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE11849905D7126100EB53E5;
-			remoteInfo = osgUtil;
-		};
-		006CE9640921ABEA00985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE11876905D75C2700EB53E5;
-			remoteInfo = osgText;
-		};
-		006CE9660921ABEA00985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE1188E605D764C400EB53E5;
-			remoteInfo = osgDB;
-		};
-		006CE9680921ABEA00985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00557CDF0624A947000A808A;
-			remoteInfo = osgGA;
-		};
-		006CE96A0921ABEA00985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0098F3130652ED84007615E2;
-			remoteInfo = osgProducer;
-		};
 		006CE9800921AC8700985402 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -3467,13 +3404,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 006CE9400921AB8300985402;
 			remoteInfo = osgdepthpartition;
-		};
-		006CEA390921B08000985402 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 006CE95E0921ABEA00985402;
-			remoteInfo = osgfbo;
 		};
 		006CEA3B0921B08000985402 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3824,13 +3754,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 000A270006CAE6E6009EE43A;
 			remoteInfo = osgkeyboardmouse;
-		};
-		00A14D86084E5D95000150AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 000A27EF06CAEE1F009EE43A;
-			remoteInfo = osgpbuffer;
 		};
 		00A14D88084E5D95000150AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -4478,14 +4401,12 @@
 		000A27C406CAEDF7009EE43A /* osgoccluder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgoccluder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000A27D806CAEE04009EE43A /* osgpagedlod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgpagedlod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000A27EC06CAEE13009EE43A /* osgparticleExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgparticleExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		000A280006CAEE20009EE43A /* osgpbuffer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgpbuffer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000A281406CAEE2D009EE43A /* osgphotoalbum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgphotoalbum.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000A281A06CAEEB2009EE43A /* osgmovie.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmovie.cpp; sourceTree = "<group>"; };
 		000A282106CAEFCB009EE43A /* osgmultitexture.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmultitexture.cpp; sourceTree = "<group>"; };
 		000A282806CAF187009EE43A /* osgoccluder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgoccluder.cpp; sourceTree = "<group>"; };
 		000A283A06CAF298009EE43A /* osgpagedlod.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgpagedlod.cpp; sourceTree = "<group>"; };
 		000A284106CAF493009EE43A /* osgparticle.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgparticle.cpp; sourceTree = "<group>"; };
-		000A284706CAF764009EE43A /* osgpbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgpbuffer.cpp; sourceTree = "<group>"; };
 		000A285B06CAF8B5009EE43A /* ImageReaderWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ImageReaderWriter.cpp; sourceTree = "<group>"; };
 		000A285C06CAF8B5009EE43A /* ImageReaderWriter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ImageReaderWriter.h; sourceTree = "<group>"; };
 		000A285D06CAF8B6009EE43A /* osgphotoalbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgphotoalbum.cpp; sourceTree = "<group>"; };
@@ -5212,7 +5133,6 @@
 		006CE9130921AA0100985402 /* osgcamera.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgcamera.cpp; sourceTree = "<group>"; };
 		006CE9390921AA9300985402 /* osgdelaunay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgdelaunay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		006CE95B0921AB8300985402 /* osgdepthpartition.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgdepthpartition.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		006CE9790921ABEA00985402 /* osgfbo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgfbo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		006CE9990921AC8700985402 /* osgmultiplecameras.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgmultiplecameras.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		006CE9B70921ACED00985402 /* osgparametric.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgparametric.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		006CE9D70921AD3300985402 /* osgshaderterrain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgshaderterrain.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5223,7 +5143,6 @@
 		006CEA040921AEC300985402 /* DistanceAccumulator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DistanceAccumulator.cpp; sourceTree = "<group>"; };
 		006CEA050921AEC400985402 /* DistanceAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DistanceAccumulator.h; sourceTree = "<group>"; };
 		006CEA080921AEC500985402 /* osgdepthpartition.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgdepthpartition.cpp; sourceTree = "<group>"; };
-		006CEA130921AEFA00985402 /* osgfbo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgfbo.cpp; sourceTree = "<group>"; };
 		006CEA1A0921AF2D00985402 /* osgmultiplecameras.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmultiplecameras.cpp; sourceTree = "<group>"; };
 		006CEA210921AF9C00985402 /* osgparametric.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgparametric.cpp; sourceTree = "<group>"; };
 		006CEA280921AFDB00985402 /* osgshaderterrain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgshaderterrain.cpp; sourceTree = "<group>"; };
@@ -6439,22 +6358,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		000A27F906CAEE1F009EE43A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				000A27FA06CAEE1F009EE43A /* osg.framework in Frameworks */,
-				000A27FB06CAEE1F009EE43A /* osgDB.framework in Frameworks */,
-				000A27FC06CAEE1F009EE43A /* osgText.framework in Frameworks */,
-				000A27FD06CAEE1F009EE43A /* osgUtil.framework in Frameworks */,
-				000A27FE06CAEE1F009EE43A /* osgProducer.framework in Frameworks */,
-				000A27FF06CAEE1F009EE43A /* osgGA.framework in Frameworks */,
-				00A15162084E75DB000150AD /* OpenGL.framework in Frameworks */,
-				004099B50924D300009ADD90 /* Producer.framework in Frameworks */,
-				004099B60924D302009ADD90 /* OpenThreads.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		000A280D06CAEE2D009EE43A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7003,21 +6906,6 @@
 				006CE9560921AB8300985402 /* osgGA.framework in Frameworks */,
 				0040997A0924D177009ADD90 /* OpenThreads.framework in Frameworks */,
 				0040997B0924D17A009ADD90 /* Producer.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		006CE96E0921ABEA00985402 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				006CE96F0921ABEA00985402 /* osg.framework in Frameworks */,
-				006CE9700921ABEA00985402 /* osgDB.framework in Frameworks */,
-				006CE9710921ABEA00985402 /* osgText.framework in Frameworks */,
-				006CE9720921ABEA00985402 /* osgUtil.framework in Frameworks */,
-				006CE9730921ABEA00985402 /* osgProducer.framework in Frameworks */,
-				006CE9740921ABEA00985402 /* osgGA.framework in Frameworks */,
-				004099800924D1A0009ADD90 /* OpenThreads.framework in Frameworks */,
-				004099810924D1A8009ADD90 /* Producer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8113,15 +8001,6 @@
 			path = ../../examples/osgparticle;
 			sourceTree = SOURCE_ROOT;
 		};
-		000A284606CAF763009EE43A /* osgpbuffer */ = {
-			isa = PBXGroup;
-			children = (
-				000A284706CAF764009EE43A /* osgpbuffer.cpp */,
-			);
-			name = osgpbuffer;
-			path = ../../examples/osgpbuffer;
-			sourceTree = SOURCE_ROOT;
-		};
 		000A285806CAF8B2009EE43A /* osgphotoalbum */ = {
 			isa = PBXGroup;
 			children = (
@@ -8771,7 +8650,6 @@
 				006CEA010921AEC200985402 /* osgdepthpartition */,
 				0007B9B506C194B200C884E1 /* osgdepthshadow */,
 				0007B9F506C1971100C884E1 /* osgdistortion */,
-				006CEA100921AEF900985402 /* osgfbo */,
 				0007BA1E06C199AF00C884E1 /* osgforest */,
 				0007BA6306C19C1600C884E1 /* osgfxbrowser */,
 				000A265606CAE131009EE43A /* osggeodemo */,
@@ -8798,7 +8676,6 @@
 				006CEA1E0921AF9B00985402 /* osgparametric */,
 				000A283E06CAF48F009EE43A /* osgparticle */,
 				00A14F89084E66D9000150AD /* osgparticleeffects */,
-				000A284606CAF763009EE43A /* osgpbuffer */,
 				000A285806CAF8B2009EE43A /* osgphotoalbum */,
 				000A28E406CAFA9B009EE43A /* osgpick */,
 				00F239450767783C00528CDD /* osgplanets */,
@@ -9470,15 +9347,6 @@
 			path = ../../examples/osgdepthpartition;
 			sourceTree = SOURCE_ROOT;
 		};
-		006CEA100921AEF900985402 /* osgfbo */ = {
-			isa = PBXGroup;
-			children = (
-				006CEA130921AEFA00985402 /* osgfbo.cpp */,
-			);
-			name = osgfbo;
-			path = ../../examples/osgfbo;
-			sourceTree = SOURCE_ROOT;
-		};
 		006CEA170921AF2C00985402 /* osgmultiplecameras */ = {
 			isa = PBXGroup;
 			children = (
@@ -10129,7 +9997,6 @@
 				000A27C406CAEDF7009EE43A /* osgoccluder.app */,
 				000A27D806CAEE04009EE43A /* osgpagedlod.app */,
 				000A27EC06CAEE13009EE43A /* osgparticleExample.app */,
-				000A280006CAEE20009EE43A /* osgpbuffer.app */,
 				000A281406CAEE2D009EE43A /* osgphotoalbum.app */,
 				000A287A06CAF93D009EE43A /* osgpick.app */,
 				000A288E06CAF95C009EE43A /* osgpoints.app */,
@@ -10181,7 +10048,6 @@
 				006CE90B0921A83D00985402 /* osgcamera.app */,
 				006CE9390921AA9300985402 /* osgdelaunay.app */,
 				006CE95B0921AB8300985402 /* osgdepthpartition.app */,
-				006CE9790921ABEA00985402 /* osgfbo.app */,
 				006CE9990921AC8700985402 /* osgmultiplecameras.app */,
 				006CE9B70921ACED00985402 /* osgparametric.app */,
 				006CE9D70921AD3300985402 /* osgshaderterrain.app */,
@@ -10980,13 +10846,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		000A27F606CAEE1F009EE43A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		000A280A06CAEE2D009EE43A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -11634,13 +11493,6 @@
 			files = (
 				006CEA0A0921AEC500985402 /* DepthPartitionNode.h in Headers */,
 				006CEA0C0921AEC500985402 /* DistanceAccumulator.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		006CE96B0921ABEA00985402 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12948,24 +12800,6 @@
 			productReference = 000A27EC06CAEE13009EE43A /* osgparticleExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		000A27EF06CAEE1F009EE43A /* osgpbuffer */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0011030108736A190015C576 /* Build configuration list for PBXNativeTarget "osgpbuffer" */;
-			buildPhases = (
-				000A27F606CAEE1F009EE43A /* Headers */,
-				000A27F706CAEE1F009EE43A /* Resources */,
-				000A27F806CAEE1F009EE43A /* Sources */,
-				000A27F906CAEE1F009EE43A /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = osgpbuffer;
-			productName = osgtext;
-			productReference = 000A280006CAEE20009EE43A /* osgpbuffer.app */;
-			productType = "com.apple.product-type.application";
-		};
 		000A280306CAEE2D009EE43A /* osgphotoalbum */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0011030508736A190015C576 /* Build configuration list for PBXNativeTarget "osgphotoalbum" */;
@@ -13876,30 +13710,6 @@
 			name = osgdepthpartition;
 			productName = osgtext;
 			productReference = 006CE95B0921AB8300985402 /* osgdepthpartition.app */;
-			productType = "com.apple.product-type.application";
-		};
-		006CE95E0921ABEA00985402 /* osgfbo */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 006CE9750921ABEA00985402 /* Build configuration list for PBXNativeTarget "osgfbo" */;
-			buildPhases = (
-				006CE96B0921ABEA00985402 /* Headers */,
-				006CE96C0921ABEA00985402 /* Resources */,
-				006CE96D0921ABEA00985402 /* Sources */,
-				006CE96E0921ABEA00985402 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				006CE95F0921ABEA00985402 /* PBXTargetDependency */,
-				006CE9610921ABEA00985402 /* PBXTargetDependency */,
-				006CE9630921ABEA00985402 /* PBXTargetDependency */,
-				006CE9650921ABEA00985402 /* PBXTargetDependency */,
-				006CE9670921ABEA00985402 /* PBXTargetDependency */,
-				006CE9690921ABEA00985402 /* PBXTargetDependency */,
-			);
-			name = osgfbo;
-			productName = osgtext;
-			productReference = 006CE9790921ABEA00985402 /* osgfbo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		006CE97E0921AC8700985402 /* osgmultiplecameras */ = {
@@ -15160,7 +14970,6 @@
 				006CE9400921AB8300985402 /* osgdepthpartition */,
 				0007B98A06C1929E00C884E1 /* osgdepthshadow */,
 				0007B9DD06C196E400C884E1 /* osgdistortion */,
-				006CE95E0921ABEA00985402 /* osgfbo */,
 				0007BA0906C1982000C884E1 /* osgforest */,
 				0007BA4806C19BAE00C884E1 /* osgfxbrowser */,
 				000A263706CAE077009EE43A /* osggeodemo */,
@@ -15187,7 +14996,6 @@
 				006CE99C0921ACED00985402 /* osgparametric */,
 				000A27DB06CAEE13009EE43A /* osgparticle example */,
 				00A14EFA084E65A9000150AD /* osgparticleeffects */,
-				000A27EF06CAEE1F009EE43A /* osgpbuffer */,
 				000A280306CAEE2D009EE43A /* osgphotoalbum */,
 				000A286906CAF93D009EE43A /* osgpick */,
 				00F2392A076776E700528CDD /* osgplanets */,
@@ -15506,13 +15314,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		000A27F706CAEE1F009EE43A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		000A280B06CAEE2D009EE43A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -15634,13 +15435,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		006CE94E0921AB8300985402 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		006CE96C0921ABEA00985402 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -16291,14 +16085,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				000A284406CAF493009EE43A /* osgparticle.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		000A27F806CAEE1F009EE43A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				000A284C06CAF768009EE43A /* osgpbuffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17069,14 +16855,6 @@
 				006CEA090921AEC500985402 /* DepthPartitionNode.cpp in Sources */,
 				006CEA0B0921AEC500985402 /* DistanceAccumulator.cpp in Sources */,
 				006CEA0F0921AEC500985402 /* osgdepthpartition.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		006CE96D0921ABEA00985402 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				006CEA160921AEFA00985402 /* osgfbo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18412,36 +18190,6 @@
 			target = 0098F3130652ED84007615E2 /* osgProducer */;
 			targetProxy = 006CE94C0921AB8300985402 /* PBXContainerItemProxy */;
 		};
-		006CE95F0921ABEA00985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE117FB205D63B3800EB53E5 /* osg */;
-			targetProxy = 006CE9600921ABEA00985402 /* PBXContainerItemProxy */;
-		};
-		006CE9610921ABEA00985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE11849905D7126100EB53E5 /* osgUtil */;
-			targetProxy = 006CE9620921ABEA00985402 /* PBXContainerItemProxy */;
-		};
-		006CE9630921ABEA00985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE11876905D75C2700EB53E5 /* osgText */;
-			targetProxy = 006CE9640921ABEA00985402 /* PBXContainerItemProxy */;
-		};
-		006CE9650921ABEA00985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE1188E605D764C400EB53E5 /* osgDB */;
-			targetProxy = 006CE9660921ABEA00985402 /* PBXContainerItemProxy */;
-		};
-		006CE9670921ABEA00985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00557CDF0624A947000A808A /* osgGA */;
-			targetProxy = 006CE9680921ABEA00985402 /* PBXContainerItemProxy */;
-		};
-		006CE9690921ABEA00985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0098F3130652ED84007615E2 /* osgProducer */;
-			targetProxy = 006CE96A0921ABEA00985402 /* PBXContainerItemProxy */;
-		};
 		006CE97F0921AC8700985402 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BE117FB205D63B3800EB53E5 /* osg */;
@@ -18576,11 +18324,6 @@
 			isa = PBXTargetDependency;
 			target = 006CE9400921AB8300985402 /* osgdepthpartition */;
 			targetProxy = 006CEA370921B08000985402 /* PBXContainerItemProxy */;
-		};
-		006CEA3A0921B08000985402 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 006CE95E0921ABEA00985402 /* osgfbo */;
-			targetProxy = 006CEA390921B08000985402 /* PBXContainerItemProxy */;
 		};
 		006CEA3C0921B08000985402 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -18941,11 +18684,6 @@
 			isa = PBXTargetDependency;
 			target = 000A270006CAE6E6009EE43A /* osgkeyboardmouse */;
 			targetProxy = 00A14D84084E5D95000150AD /* PBXContainerItemProxy */;
-		};
-		00A14D87084E5D95000150AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 000A27EF06CAEE1F009EE43A /* osgpbuffer */;
-			targetProxy = 00A14D86084E5D95000150AD /* PBXContainerItemProxy */;
 		};
 		00A14D89084E5D95000150AD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -31995,159 +31733,6 @@
 			};
 			name = Default;
 		};
-		0011030208736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					../../../OpenThreads/Xcode/OpenThreads/build/Development,
-					../../../OpenThreads/Xcode/OpenThreads/build/Deployment,
-					../../../Producer/Xcode/Producer/build,
-					../../../Producer/Xcode/Producer/build/Development,
-					../../../Producer/Xcode/Producer/build/Deployment,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					/usr/X11R6/include,
-					../../../OpenThreads/include,
-					../../../OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework/Headers,
-					"$(HOME)/Library/Frameworks/OpenThreads.framework/Headers",
-					/Library/Frameworks/OpenThreads.framework/Headers,
-					../../../Producer/include,
-					../../../Producer/Xcode/Producer/build/Producer.framework/Headers,
-					"$(HOME)/Library/Frameworks/Producer.framework/Headers",
-					/Library/Frameworks/Producer.framework/Headers,
-				);
-				INFOPLIST_FILE = "osgpbuffer-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					Producer,
-				);
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = osgpbuffer;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		0011030308736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					../../../OpenThreads/Xcode/OpenThreads/build/Deployment,
-					../../../OpenThreads/Xcode/OpenThreads/build/Development,
-					../../../Producer/Xcode/Producer/build,
-					../../../Producer/Xcode/Producer/build/Deployment,
-					../../../Producer/Xcode/Producer/build/Development,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					/usr/X11R6/include,
-					../../../OpenThreads/include,
-					../../../OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework/Headers,
-					"$(HOME)/Library/Frameworks/OpenThreads.framework/Headers",
-					/Library/Frameworks/OpenThreads.framework/Headers,
-					../../../Producer/include,
-					../../../Producer/Xcode/Producer/build/Producer.framework/Headers,
-					"$(HOME)/Library/Frameworks/Producer.framework/Headers",
-					/Library/Frameworks/Producer.framework/Headers,
-				);
-				INFOPLIST_FILE = "osgpbuffer-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					Producer,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgpbuffer;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		0011030408736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-					../../../Producer/Xcode/Producer/build,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					/usr/X11R6/include,
-					../../../OpenThreads/include,
-					../../../OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework/Headers,
-					"$(HOME)/Library/Frameworks/OpenThreads.framework/Headers",
-					/Library/Frameworks/OpenThreads.framework/Headers,
-					../../../Producer/include,
-					../../../Producer/Xcode/Producer/build/Producer.framework/Headers,
-					"$(HOME)/Library/Frameworks/Producer.framework/Headers",
-					/Library/Frameworks/Producer.framework/Headers,
-				);
-				INFOPLIST_FILE = "osgpbuffer-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					Producer,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgpbuffer;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
 		0011030608736A190015C576 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -38330,7 +37915,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Development;
 		};
@@ -38347,7 +37931,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = s;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = Deployment;
@@ -39563,159 +39146,6 @@
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgdepthpartition;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		006CE9760921ABEA00985402 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					../../../OpenThreads/Xcode/OpenThreads/build/Development,
-					../../../OpenThreads/Xcode/OpenThreads/build/Deployment,
-					../../../Producer/Xcode/Producer/build,
-					../../../Producer/Xcode/Producer/build/Development,
-					../../../Producer/Xcode/Producer/build/Deployment,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					/usr/X11R6/include,
-					../../../OpenThreads/include,
-					../../../OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework/Headers,
-					"$(HOME)/Library/Frameworks/OpenThreads.framework/Headers",
-					/Library/Frameworks/OpenThreads.framework/Headers,
-					../../../Producer/include,
-					../../../Producer/Xcode/Producer/build/Producer.framework/Headers,
-					"$(HOME)/Library/Frameworks/Producer.framework/Headers",
-					/Library/Frameworks/Producer.framework/Headers,
-				);
-				INFOPLIST_FILE = "osgfbo-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					Producer,
-				);
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = osgfbo;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		006CE9770921ABEA00985402 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					../../../OpenThreads/Xcode/OpenThreads/build/Deployment,
-					../../../OpenThreads/Xcode/OpenThreads/build/Development,
-					../../../Producer/Xcode/Producer/build,
-					../../../Producer/Xcode/Producer/build/Deployment,
-					../../../Producer/Xcode/Producer/build/Development,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					/usr/X11R6/include,
-					../../../OpenThreads/include,
-					../../../OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework/Headers,
-					"$(HOME)/Library/Frameworks/OpenThreads.framework/Headers",
-					/Library/Frameworks/OpenThreads.framework/Headers,
-					../../../Producer/include,
-					../../../Producer/Xcode/Producer/build/Producer.framework/Headers,
-					"$(HOME)/Library/Frameworks/Producer.framework/Headers",
-					/Library/Frameworks/Producer.framework/Headers,
-				);
-				INFOPLIST_FILE = "osgfbo-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					Producer,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgfbo;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		006CE9780921ABEA00985402 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-					../../../Producer/Xcode/Producer/build,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					/usr/X11R6/include,
-					../../../OpenThreads/include,
-					../../../OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework/Headers,
-					"$(HOME)/Library/Frameworks/OpenThreads.framework/Headers",
-					/Library/Frameworks/OpenThreads.framework/Headers,
-					../../../Producer/include,
-					../../../Producer/Xcode/Producer/build/Producer.framework/Headers,
-					"$(HOME)/Library/Frameworks/Producer.framework/Headers",
-					/Library/Frameworks/Producer.framework/Headers,
-				);
-				INFOPLIST_FILE = "osgfbo-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					Producer,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgfbo;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -41742,16 +41172,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		0011030108736A190015C576 /* Build configuration list for PBXNativeTarget "osgpbuffer" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0011030208736A190015C576 /* Development */,
-				0011030308736A190015C576 /* Deployment */,
-				0011030408736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
 		0011030508736A190015C576 /* Build configuration list for PBXNativeTarget "osgphotoalbum" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -42268,16 +41688,6 @@
 				006CE9580921AB8300985402 /* Development */,
 				006CE9590921AB8300985402 /* Deployment */,
 				006CE95A0921AB8300985402 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		006CE9750921ABEA00985402 /* Build configuration list for PBXNativeTarget "osgfbo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				006CE9760921ABEA00985402 /* Development */,
-				006CE9770921ABEA00985402 /* Deployment */,
-				006CE9780921ABEA00985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

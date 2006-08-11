@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.1
 
-198 Contributors:
+203 Contributors:
 
 Firstname Surname
 -----------------
@@ -13,9 +13,9 @@ Brede Johansen
 Bob Kuehne
 Farshid Lashkari
 Eric Sokolowsky
+Paul Martz
 Ulrich Hertlein
 Tree 
-Paul Martz
 Eric Wing
 Norman Vine
 Trajce Nikolov
@@ -41,19 +41,20 @@ Sondra Iverson
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
+David Spilling
 Daniel Sjölie
 Ben Discoe
 Sasa Bistrovic
 Olaf Flebbe
 Martin Naylor
 Markus Trenkwalder
+Jason Beverage
 Stephane Simon
 Sean Spicer
 Ravi Mathur
 Joseph Steel
 Joakim Simonsson
 Jason Daly
-David Spilling
 Corbin Holtz
 Toshiyuki Takahei
 Thom DeCarlo
@@ -62,7 +63,6 @@ Roger James
 Nikolaus Hanekamp
 Loic Dachary
 Leandro Motta Barros
-Jason Beverage
 Gordon Tomlinson
 David Guthrie
 Bruce Clay
@@ -82,8 +82,10 @@ James French
 Gabor Dorka
 Domenico Mangieri
 Carlo Camporesi
+Andreas Ekstrand
 Ali Botorabi
 Yuzhong Shen
+Uwe Woessner
 Tugkan Calapoglu
 Tony Horrobin
 Tim Daoust
@@ -94,11 +96,13 @@ Perry Miller
 Per Fahlberg
 Paul de Repentigny
 Nathan Monteleone
+Mike Wittman
 Michael Platings
 Maya Leonard
 Max Behensky
 Mathew May
 Martin Aumueller
+Martijn Kragtwijk
 Kevin Moiule
 Keith Steffen
 Joseph Winston
@@ -110,10 +114,11 @@ Garret Potts
 Fabio Mierlo
 Donn Mielcarek
 David Ergo
+Daniel Trstenjak
+Daniel Larimer
 Brad Colbert
 Antoine Hue
 Andrew Sampson
-Andreas Ekstrand
 Zbigniew Sroczynski
 Zach Deedler
 Yuri Vilmanis
@@ -124,7 +129,6 @@ Volker Walkiewicz
 Vladimir Vukicevic
 Vincent Vivanloc
 Vasily Radostev
-Uwe Woessner
 Tyge 
 Troy Yee
 Tino Schwarze
@@ -143,6 +147,7 @@ Nicolas Brodu
 Nathan Cournia
 Morné Pistorius
 Mikkel Gjøl
+Michael Polak
 Michael Morrison
 Michael Logan
 Max Rhiener
@@ -151,17 +156,19 @@ Matt Green
 Matt Burke
 Mathia Walker
 Mason Menninger
-Martijn Kragtwijk
 Louis Hamilton
 Lewis Harmon
+Laurens Voerman
 Kristopher Bixler
 Karsten Weiss
+José Delport
 Josh Portway
 John Tan
 John Grant
 John Donovan
 John Davis
 Joan Abadie
+Jeremy Moles
 Jay Zuckerman
 Jason Ballenger
 Jan Ciger
@@ -185,8 +192,6 @@ Donny Cipperly
 Dean Iverson
 David Jung
 David Callu
-Daniel Trstenjak
-Daniel Larimer
 Carlos García
 Brad Anderegg
 Bora Utka

@@ -180,6 +180,8 @@ bool validName(const std::string& first)
     if (first=="Osfields") return false;
     if (first=="Optimizer") return false;
     if (first=="RenderStage") return false;
+    if (first=="Matrix*") return false;
+    if (first=="Vec4ub") return false;
     return true;
 }
 

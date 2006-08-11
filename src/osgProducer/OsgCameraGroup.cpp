@@ -496,14 +496,17 @@ bool OsgCameraGroup::realize()
 
     if (!_ds) _ds = osg::DisplaySettings::instance();
 
-    unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
-    if (_enableProccessAffinityHint && numProcessors>0)
+    if (_enableProccessAffinityHint)
     {
-        for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+        unsigned int numProcessors = OpenThreads::GetNumberOfProcessors();
+        if (numProcessors>=1)
         {
-            Producer::Camera *cam = _cfg->getCamera(i);
-            cam->setProcessorAffinity(i % numProcessors);
-        }    
+            for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+            {
+                Producer::Camera *cam = _cfg->getCamera(i);
+                cam->setProcessorAffinity(i % numProcessors);
+            }    
+        }
     }
 
     _shvec.clear();

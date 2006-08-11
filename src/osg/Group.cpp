@@ -309,12 +309,12 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         // so need to check and update if required.
         int delta_numChildrenWithOccluderNodes = 0;
         if (origNode->getNumChildrenWithOccluderNodes()>0 ||
-            !origNode->getCullingActive())
+            dynamic_cast<osg::OccluderNode*>(origNode.get()))
         {
             --delta_numChildrenWithOccluderNodes;
         }
         if (newNode->getNumChildrenWithOccluderNodes()>0 ||
-            !newNode->getCullingActive())
+            dynamic_cast<osg::OccluderNode*>(newNode))
         {
             ++delta_numChildrenWithOccluderNodes;
         }

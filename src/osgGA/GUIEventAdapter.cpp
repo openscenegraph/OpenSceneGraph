@@ -37,7 +37,7 @@ GUIEventAdapter::GUIEventAdapter():
 {}
 
 GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
-    Referenced(),
+    osg::Referenced(),
     _eventType(rhs._eventType),
     _time(rhs._time),
     _key(rhs._key),

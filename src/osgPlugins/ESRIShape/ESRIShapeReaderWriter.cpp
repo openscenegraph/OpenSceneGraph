@@ -1,4 +1,5 @@
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
 #include "ESRIShape.h"
@@ -19,11 +20,14 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
         virtual ReadResult readObject(const std::string& fileName, const Options* opt) const
         { return readNode(fileName,opt); }
 
-        virtual ReadResult readNode(const std::string& fileName, const Options* ) const
+        virtual ReadResult readNode(const std::string& file, const Options* options) const
         {
-            std::string ext = osgDB::getFileExtension(fileName);
+            std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) 
                 return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile(file, options);
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             ESRIShape::ESRIShapeParser sp(fileName);
             return sp.getGeode();

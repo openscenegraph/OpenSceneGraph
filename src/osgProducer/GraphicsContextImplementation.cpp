@@ -54,6 +54,9 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     _rs->setWindowName(traits->_windowName);
     _rs->setWindowRectangle(traits->_x, traits->_y, traits->_width, traits->_height);
     _rs->useBorder(traits->_windowDecoration);
+    _rs->setDisplayNum(traits->_displayNum);
+    _rs->setScreenNum(traits->_screenNum);
+    
 
     // set the visual chooser
     Producer::VisualChooser* rs_vc = _rs->getVisualChooser();
@@ -164,6 +167,11 @@ GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSur
 {
     _rs = rs;
     _closeOnDestruction = false;
+
+    _traits = new osg::GraphicsContext::Traits;
+    _traits->_windowName = _rs->getWindowName();
+    _traits->_displayNum = _rs->getDisplayNum();
+    _traits->_screenNum = _rs->getScreenNum();
 }
 
 GraphicsContextImplementation::~GraphicsContextImplementation()
@@ -183,6 +191,8 @@ bool GraphicsContextImplementation::realizeImplementation()
         }
         else
         {
+            osg::notify(osg::NOTICE)<<"GraphicsContextImplementation::realize"<<std::endl;
+
             _rs->realize();
         }
         return _rs->isRealized();

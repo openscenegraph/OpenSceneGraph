@@ -16,6 +16,8 @@ For further information and to download the latest release head to the project w
 
     http://www.openscenegraph.org
 
+The OpenSceneGraph-1.1.1 is the culmination of 7 years development and contributions of over 200 contributors from across the world. 
+
 Robert Osfield\\
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services
 

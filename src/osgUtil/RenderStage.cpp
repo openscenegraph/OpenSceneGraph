@@ -519,6 +519,13 @@ void RenderStage::runCameraSetUp(osg::State& state)
             if (state.getGraphicsContext())
             {
                 traits->_sharedContext = state.getGraphicsContext();
+                
+                const osg::GraphicsContext::Traits* sharedTraits = traits->_sharedContext->getTraits();
+                if (sharedTraits)
+                {
+                    traits->_displayNum = sharedTraits->_displayNum;
+                    traits->_screenNum = sharedTraits->_screenNum;
+                }
             }
 
             // create the graphics context according to these traits.

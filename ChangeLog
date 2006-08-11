@@ -1,3 +1,223 @@
+2006-08-11 10:13  robert
+
+	* NEWS.txt: Updated NEWS
+
+2006-08-10 21:50  robert
+
+	* VisualStudio/reset-64bit-outdirs.pl: From Mike Wittman, perl
+	  script to assist W64 support.
+
+2006-08-10 21:30  robert
+
+	* VisualStudio/: MUST_READ_ME.txt,
+	  applications/osgarchive/osgarchive.dsp,
+	  applications/osgconv/osgconv.dsp, applications/osgdem/osgdem.dsp,
+	  applications/osgversion/osgversion.dsp,
+	  applications/osgviewer/osgviewer.dsp,
+	  examples/osgGLUTkeyboardmouse/osgGLUTkeyboardmouse.dsp,
+	  examples/osgGLUTsimple/osgGLUTsimple.dsp,
+	  examples/osganimate/osganimate.dsp,
+	  examples/osgautotransform/osgautotransform.dsp,
+	  examples/osgbillboard/osgbillboard.dsp,
+	  examples/osgblendequation/osgblendequation.dsp,
+	  examples/osgbluemarble/osgbluemarble.dsp,
+	  examples/osgcallback/osgcallback.dsp,
+	  examples/osgcamera/osgcamera.dsp,
+	  examples/osgcameragroup/osgcameragroup.dsp,
+	  examples/osgcatch/osgcatch.dsp, examples/osgclip/osgclip.dsp,
+	  examples/osgcluster/osgcluster.dsp, examples/osgcopy/osgcopy.dsp,
+	  examples/osgcubemap/osgcubemap.dsp,
+	  examples/osgdelaunay/osgdelaunay.dsp,
+	  examples/osgdepthpartition/osgdepthpartition.dsp,
+	  examples/osgdepthshadow/osgdepthshadow.dsp,
+	  examples/osgdistortion/osgdistortion.dsp,
+	  examples/osgfbo/osgfbo.dsp, examples/osgforest/osgforest.dsp,
+	  examples/osgfxbrowser/osgfxbrowser.dsp,
+	  examples/osggeodemo/osggeodemo.dsp,
+	  examples/osggeometry/osggeometry.dsp,
+	  examples/osghangglide/osghangglide.dsp,
+	  examples/osghud/osghud.dsp, examples/osgimpostor/osgimpostor.dsp,
+	  examples/osgintrospection/example_osgintrospection.dsp,
+	  examples/osgkeyboard/osgkeyboard.dsp,
+	  examples/osgkeyboardmouse/osgkeyboardmouse.dsp,
+	  examples/osglauncher/osglauncher.dsp,
+	  examples/osglight/osglight.dsp,
+	  examples/osglightpoint/osglightpoint.dsp,
+	  examples/osglogicop/osglogicop.dsp, examples/osglogo/osglogo.dsp,
+	  examples/osgmotionblur/osgmotionblur.dsp,
+	  examples/osgmovie/osgmovie.dsp,
+	  examples/osgmultiplecameras/osgmultiplecameras.dsp,
+	  examples/osgmultitexture/osgmultitexture.dsp,
+	  examples/osgoccluder/osgoccluder.dsp,
+	  examples/osgpagedlod/osgpagedlod.dsp,
+	  examples/osgparametric/osgparametric.dsp,
+	  examples/osgparticle/osgparticledemo.dsp,
+	  examples/osgparticleeffects/osgparticleeffects.dsp,
+	  examples/osgpbuffer/osgpbuffer.dsp,
+	  examples/osgphotoalbum/osgphotoalbum.dsp,
+	  examples/osgpick/osgpick.dsp, examples/osgplanets/osgplanets.dsp,
+	  examples/osgpoints/osgpoints.dsp,
+	  examples/osgpointsprite/osgpointsprite.dsp,
+	  examples/osgprecipitation/osgprecipitation.dsp,
+	  examples/osgprerender/osgprerender.dsp,
+	  examples/osgprerendercubemap/osgprerendercubemap.dsp,
+	  examples/osgreflect/osgreflect.dsp,
+	  examples/osgscalarbar/osgscalarbar.dsp,
+	  examples/osgscribe/osgscribe.dsp,
+	  examples/osgsequence/osgsequence.dsp,
+	  examples/osgshaders/osgshaders.dsp,
+	  examples/osgshaderterrain/osgshaderterrain.dsp,
+	  examples/osgshadowtexture/osgshadowtexture.dsp,
+	  examples/osgshape/osgshape.dsp, examples/osgsimple/osgsimple.dsp,
+	  examples/osgsimplepager/osgsimplepager.dsp,
+	  examples/osgsimplifier/osgsimplifier.dsp,
+	  examples/osgsimulation/osgsimulation.dsp,
+	  examples/osgslice/osgslice.dsp,
+	  examples/osgspacewarp/osgspacewarp.dsp,
+	  examples/osgspheresegment/osgspheresegment.dsp,
+	  examples/osgspotlight/osgspotlight.dsp,
+	  examples/osgstereoimage/osgstereoimage.dsp,
+	  examples/osgteapot/osgteapot.dsp,
+	  examples/osgtesselate/osgtesselate.dsp,
+	  examples/osgtext/osgtextdemo.dsp,
+	  examples/osgtexture1D/osgtexture1D.dsp,
+	  examples/osgtexture2D/osgtexture2D.dsp,
+	  examples/osgtexture3D/osgtexture3D.dsp,
+	  examples/osgtexturerectangle/osgtexturerectangle.dsp,
+	  examples/osgunittests/osgunittests.dsp,
+	  examples/osgvertexprogram/osgvertexprogram.dsp,
+	  examples/osgvolume/osgvolume.dsp,
+	  examples/osgwindows/osgwindows.dsp, osg/osg.dsp, osgDB/osgDB.dsp,
+	  osgFX/osgFX.dsp, osgGA/osgGA.dsp,
+	  osgIntrospection/osgIntrospection.dsp,
+	  osgParticle/osgParticle.dsp, osgPlugins/3dc/3dc.dsp,
+	  osgPlugins/ESRIShape/ESRIShape.dsp,
+	  osgPlugins/OpenFlight/OpenFlight.dsp, osgPlugins/ac3d/ac3d.dsp,
+	  osgPlugins/bmp/bmp.dsp, osgPlugins/bsp/bsp.dsp,
+	  osgPlugins/dds/dds.dsp, osgPlugins/directx/directx.dsp,
+	  osgPlugins/dw/dw.dsp, osgPlugins/dxf/dxf.dsp,
+	  osgPlugins/flt/flt.dsp, osgPlugins/freetype/freetype.dsp,
+	  osgPlugins/gdal/gdal.dsp, osgPlugins/geo/geo.dsp,
+	  osgPlugins/gif/gif.dsp, osgPlugins/hdr/hdr.dsp,
+	  osgPlugins/ive/ive.dsp, osgPlugins/jp2/jp2.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	  osgPlugins/logo/logo.dsp, osgPlugins/lwo/lwo.dsp,
+	  osgPlugins/lws/lws.dsp, osgPlugins/md2/md2.dsp,
+	  osgPlugins/net/net.dsp, osgPlugins/normals/normals.dsp,
+	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	  osgPlugins/osgFX/dot_osgFX.dsp,
+	  osgPlugins/osgParticle/dot_osgParticle.dsp,
+	  osgPlugins/osgSim/dot_osgSim.dsp,
+	  osgPlugins/osgText/dot_osgText.dsp, osgPlugins/osga/osga.dsp,
+	  osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pfb/pfb.dsp,
+	  osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	  osgPlugins/pnm/pnm.dsp, osgPlugins/rgb/rgb.dsp,
+	  osgPlugins/rot/rot.dsp, osgPlugins/scale/scale.dsp,
+	  osgPlugins/stl/stl.dsp, osgPlugins/tga/tga.dsp,
+	  osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	  osgPlugins/trans/trans.dsp, osgPlugins/txp/txp.dsp,
+	  osgPlugins/zip/zip.dsp, osgProducer/osgProducer.dsp,
+	  osgSim/osgSim.dsp, osgTerrain/osgTerrain.dsp,
+	  osgText/osgText.dsp, osgUtil/osgUtil.dsp,
+	  osgWrappers/osg/wrapper_osg.dsp,
+	  osgWrappers/osgDB/wrapper_osgDB.dsp,
+	  osgWrappers/osgFX/wrapper_osgFX.dsp,
+	  osgWrappers/osgGA/wrapper_osgGA.dsp,
+	  osgWrappers/osgParticle/wrapper_osgParticle.dsp,
+	  osgWrappers/osgProducer/wrapper_osgProducer.dsp,
+	  osgWrappers/osgSim/wrapper_osgSim.dsp,
+	  osgWrappers/osgTerrain/wrapper_osgTerrain.dsp,
+	  osgWrappers/osgText/wrapper_osgText.dsp,
+	  osgWrappers/osgUtil/wrapper_osgUtil.dsp: From Mike Wittman,
+	  support for VS 64bit build
+
+2006-08-10 16:53  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Moved all platform specific
+	  processor out of osgProducer and into OpenThreads
+
+2006-08-10 14:12  robert
+
+	* src/osgPlugins/pfb/ConvertFromPerformer.cpp: From Laurens
+	  Voerman, " osgPlugins\pfb\ConvertFromPerformer.cpp
+
+	  Added support for	   PFSTATE_ALPHAFUNC
+	  PFSTATE_ALPHAREF Improved handling of        PFTR_NO_OCCLUDE
+
+	  I have tested this with WIN32 performer 3.1 and 3.2.2 and linux
+	  OpenGL Performer 3.1.1"
+
+	  ------------------------------------------------
+
+2006-08-10 13:13  robert
+
+	* examples/osgtext/osgtext.cpp: From Martijn Kragtwijk, added
+	  example text for showing osgText::Text::CharacterSizeMode in
+	  action.
+
+2006-08-10 12:08  robert
+
+	* src/osgPlugins/pnm/ReaderWriterPNM.cpp: Added write ppn support,
+	  use -O ascii to select ascii ppn output, otherwise binary is
+	  chosen.
+
+	  Fixed crash when erroneous pnm files were read.
+
+	  Added -O flip option.
+
+2006-08-10 09:45  robert
+
+	* ChangeLog, include/osg/Math: From Daniel Larimer, "Apple updated
+	  their developer tools again and broke the __isnanf and __isnand
+	  methods... replacing them with a call to isnan(v) seems to work
+	  on both Xcode 2.3 and 2.4"
+
+2006-08-10 07:43  robert
+
+	* include/osgUtil/Optimizer: Addd a setNodeMaskOverride(0xffffffff)
+	  to cope with models that are hiding subgraphs that still need to
+	  be accounted for when optimizer.
+
+2006-08-10 07:20  robert
+
+	* src/osgText/Text.cpp: Commented out the _textBB contribution of
+	  outline/backdrops to fix bounding box problem.
+
+2006-08-09 14:02  robert
+
+	* include/osg/UByte4, VisualStudio/LANGEXT.DAT,
+	  VisualStudio/highlight70.reg, VisualStudio/highlight71.reg,
+	  VisualStudio/highlight80.reg,
+	  Xcode/OpenSceneGraph/OpenSceneGraph.xcode/project.pbxproj,
+	  Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj,
+	  Xcode/XcodeTemplates/OSG Application/osgApp_Prefix.pch: Removed
+	  referecens to the deprecate UByte4
+
+2006-08-09 13:56  robert
+
+	* src/osgWrappers/osg/ValueTypeCandidates.txt: Added Vec4ub and
+	  removed UByte4
+
+2006-08-09 11:09  robert
+
+	* src/osgPlugins/OpenFlight/: GeometryRecords.cpp,
+	  VertexRecords.cpp: Added nan dectecion and error reporting
+
+2006-08-08 17:08  robert
+
+	* src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp: Added
+	  TESSELATE_GEOMETRY to Optimizer pass to fix z fighting issues.
+
+2006-08-08 15:57  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Added extra defined(CPU_SET)
+	  to try and get round RH8 compile problems.
+
+2006-08-08 12:59  robert
+
+	* src/osgPlugins/OpenFlight/PaletteRecords.cpp: Fixed backColor
+	  implementation for LightPointAppearancePalette.
+
 2006-08-08 12:27  robert
 
 	* include/osgProducer/OsgCameraGroup,

@@ -1,3 +1,80 @@
+2006-08-11 22:48  robert
+
+	* Xcode/OpenSceneGraph/: osgfbo-Info.plist, osgpbuffer-Info.plist,
+	  OpenSceneGraph.xcodeproj/project.pbxproj: From Radu Mihai,
+	  removed osgfbo and osgpbuffer projects
+
+2006-08-11 22:39  robert
+
+	* src/osgGA/GUIEventAdapter.cpp: Added osg:: to Referenced() to fix
+	  IRIX build.
+
+2006-08-11 20:56  don
+
+	* src/osgPlugins/net/ReaderWriterNET.cpp: removed CRLF and replaced
+	  with LF in ReaderWriteNET.cpp
+
+2006-08-11 19:23  robert
+
+	* src/osgWrappers/osgUtil/Optimizer.cpp: Updated wrappers
+
+2006-08-11 19:22  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Fixed if (numProcessors>1),
+	  was originally >=
+
+2006-08-11 18:39  don
+
+	* src/osgPlugins/net/ReaderWriterNET.cpp: Added comments to support
+	  use of Proxy in the .net plugin.
+
+2006-08-11 18:34  don
+
+	* src/osgPlugins/net/ReaderWriterNET.cpp: Submission by Carlo
+	  Camporesi - Added Proxy support to .net loader
+
+2006-08-11 17:03  robert
+
+	* include/osgUtil/Optimizer: Fixed value of FLATTEN_BILLBOARDS
+	  enum.
+
+2006-08-11 14:06  robert
+
+	* src/osgPlugins/ESRIShape/ESRIShapeReaderWriter.cpp: Added file
+	  search path to ESRI reader.
+
+2006-08-11 13:53  robert
+
+	* src/osg/Group.cpp: Fixed bug in Group::setChild relating to the
+	  accounting for OccluderNode.
+
+2006-08-11 13:39  robert
+
+	* src/osgProducer/OsgCameraGroup.cpp: Moved the
+	  OpenThreads::GetNumberOfProcessors() inside the if
+	  (_enableProcessAffinitHint) block to avoid slowing down init of
+	  apps that don't require procesor affinity.
+
+2006-08-11 12:05  robert
+
+	* src/: osgProducer/GraphicsContextImplementation.cpp,
+	  osgUtil/RenderStage.cpp: Fixed pbuffer usage cross multiple
+	  graphics contexts
+
+2006-08-11 12:04  robert
+
+	* NEWS.txt: Updated NEWS for rc1
+
+2006-08-11 10:50  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Updated
+	  AUTHORS file
+
+2006-08-11 10:30  robert
+
+	* ChangeLog, Make/makedirdefs, VisualStudio/OpenSceneGraph.dsw:
+	  Removed osgfbo and osgpbuffer examples
+
 2006-08-11 10:13  robert
 
 	* NEWS.txt: Updated NEWS
@@ -31,7 +108,7 @@
 	  examples/osgdepthpartition/osgdepthpartition.dsp,
 	  examples/osgdepthshadow/osgdepthshadow.dsp,
 	  examples/osgdistortion/osgdistortion.dsp,
-	  examples/osgfbo/osgfbo.dsp, examples/osgforest/osgforest.dsp,
+	  examples/osgforest/osgforest.dsp,
 	  examples/osgfxbrowser/osgfxbrowser.dsp,
 	  examples/osggeodemo/osggeodemo.dsp,
 	  examples/osggeometry/osggeometry.dsp,
@@ -53,7 +130,6 @@
 	  examples/osgparametric/osgparametric.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
 	  examples/osgparticleeffects/osgparticleeffects.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgphotoalbum/osgphotoalbum.dsp,
 	  examples/osgpick/osgpick.dsp, examples/osgplanets/osgplanets.dsp,
 	  examples/osgpoints/osgpoints.dsp,
@@ -927,7 +1003,6 @@
 	  examples/osghud/osghud.cpp,
 	  examples/osgmotionblur/osgmotionblur.cpp,
 	  examples/osgmultiplecameras/osgmultiplecameras.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp,
 	  examples/osgphotoalbum/ImageReaderWriter.cpp,
 	  examples/osgphotoalbum/ImageReaderWriter.h,
 	  examples/osgphotoalbum/PhotoArchive.cpp,
@@ -3047,7 +3122,7 @@
 2006-03-30 11:20  robert
 
 	* examples/: osgcatch/osgcatch.cpp, osgcluster/osgcluster.cpp,
-	  osgpbuffer/osgpbuffer.cpp, osgphotoalbum/osgphotoalbum.cpp,
+	  osgphotoalbum/osgphotoalbum.cpp,
 	  osgstereoimage/osgstereoimage.cpp, osgwindows/osgwindows.cpp:
 	  Build fixes to cope with changes to Producer/osgProducer.
 
@@ -4479,8 +4554,8 @@
 2005-11-25 19:18  robert
 
 	* examples/osgdelaunay/osgdelaunay.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp, src/osg/DisplaySettings.cpp,
-	  src/osgProducer/Viewer.cpp: From John Donovan, typo fixes.
+	  src/osg/DisplaySettings.cpp, src/osgProducer/Viewer.cpp: From
+	  John Donovan, typo fixes.
 
 2005-11-25 14:58  robert
 
@@ -4961,9 +5036,7 @@
 	  applications/osgconv/osgconv.cpp, applications/osgdem/osgdem.cpp,
 	  examples/osgbluemarble/osgbluemarble.cpp,
 	  examples/osgdelaunay/osgdelaunay.cpp,
-	  examples/osgmovie/osgmovie.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp,
-	  examples/osgpoints/osgpoints.cpp,
+	  examples/osgmovie/osgmovie.cpp, examples/osgpoints/osgpoints.cpp,
 	  examples/osgsimplifier/osgsimplifier.cpp,
 	  examples/osgspacewarp/osgspacewarp.cpp,
 	  examples/osgtesselate/osgtesselate.cpp: Added proper descriptions
@@ -5335,7 +5408,7 @@
 	  examples/osgdepthshadow/osgdepthshadow.cpp,
 	  examples/osgdistortion/osgdistortion.cpp,
 	  examples/osglauncher/osglauncher.cpp,
-	  examples/osglogo/osglogo.cpp, examples/osgpbuffer/osgpbuffer.cpp,
+	  examples/osglogo/osglogo.cpp,
 	  examples/osgprerender/osgprerender.cpp,
 	  examples/osgprerendercubemap/osgprerendercubemap.cpp,
 	  examples/osgreflect/osgreflect.cpp,
@@ -6057,7 +6130,6 @@
 
 	* examples/osgdepthpartition/DepthPartitionNode.cpp,
 	  examples/osgdepthpartition/DistanceAccumulator.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp,
 	  examples/osgpoints/osgpoints.cpp,
 	  examples/osgshaderterrain/osgshaderterrain.cpp,
 	  examples/osgvolume/osgvolume.cpp, src/osgDB/FileUtils.cpp,
@@ -6450,7 +6522,6 @@
 
 	* examples/osgdepthshadow/osgdepthshadow.cpp,
 	  examples/osgdistortion/osgdistortion.cpp,
-	  examples/osgfbo/osgfbo.cpp,
 	  examples/osgprerender/osgprerender.cpp,
 	  examples/osgprerendercubemap/osgprerendercubemap.cpp,
 	  examples/osgshadowtexture/CreateShadowedScene.cpp,
@@ -7528,8 +7599,7 @@
 
 2005-07-21 20:27  robert
 
-	* examples/osgpbuffer/osgpbuffer.cpp,
-	  examples/osgprerender/osgprerender.cpp, include/osg/CameraNode,
+	* examples/osgprerender/osgprerender.cpp, include/osg/CameraNode,
 	  include/osg/GraphicsContext, include/osgProducer/OsgCameraGroup,
 	  include/osgUtil/RenderToTextureStage,
 	  src/osgProducer/GNUmakefile, src/osgProducer/OsgCameraGroup.cpp,
@@ -7563,9 +7633,9 @@
 	  VisualStudio/osgWrappers/osg/wrapper_osg.dsp,
 	  VisualStudio/osgWrappers/osgIntrospection/wrapper_osgIntrospection.dsp,
 	  VisualStudio/osgWrappers/osgText/wrapper_osgText.dsp,
-	  examples/osgpbuffer/osgpbuffer.cpp, examples/osgtext/osgtext.cpp,
-	  include/osg/CameraNode, include/osg/State, src/osg/GNUmakefile,
-	  src/osg/State.cpp, src/osgWrappers/osg/CameraNode.cpp,
+	  examples/osgtext/osgtext.cpp, include/osg/CameraNode,
+	  include/osg/State, src/osg/GNUmakefile, src/osg/State.cpp,
+	  src/osgWrappers/osg/CameraNode.cpp,
 	  src/osgWrappers/osg/GNUmakefile, src/osgWrappers/osg/State.cpp:
 	  Added new osg::GraphicsContext base class
 
@@ -7639,7 +7709,7 @@
 
 	* examples/osgdepthshadow/osgdepthshadow.cpp,
 	  examples/osgdistortion/osgdistortion.cpp,
-	  examples/osgfbo/osgfbo.cpp, examples/osgforest/osgforest.cpp,
+	  examples/osgforest/osgforest.cpp,
 	  examples/osgmultiplecameras/osgmultiplecameras.cpp,
 	  examples/osgpoints/osgpoints.cpp,
 	  examples/osgprerender/osgprerender.cpp,
@@ -7911,7 +7981,7 @@
 	  examples/osgcopy/osgcopy.dsp, examples/osgcubemap/osgcubemap.dsp,
 	  examples/osgdepthshadow/osgdepthshadow.dsp,
 	  examples/osgdistortion/osgdistortion.dsp,
-	  examples/osgfbo/osgfbo.dsp, examples/osgforest/osgforest.dsp,
+	  examples/osgforest/osgforest.dsp,
 	  examples/osgfxbrowser/osgfxbrowser.dsp,
 	  examples/osggeodemo/osggeodemo.dsp,
 	  examples/osggeometry/osggeometry.dsp,
@@ -7932,7 +8002,6 @@
 	  examples/osgparametric/osgparametric.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
 	  examples/osgparticleeffects/osgparticleeffects.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgphotoalbum/osgphotoalbum.dsp,
 	  examples/osgpick/osgpick.dsp, examples/osgplanets/osgplanets.dsp,
 	  examples/osgplanets/resources.rc,
@@ -8131,8 +8200,7 @@
 
 2005-06-16 15:01  robert
 
-	* examples/osgfbo/osgfbo.cpp,
-	  examples/osgprerender/osgprerender.cpp,
+	* examples/osgprerender/osgprerender.cpp,
 	  include/osgUtil/RenderToTextureStage,
 	  src/osg/FrameBufferObject.cpp, src/osgUtil/CullVisitor.cpp,
 	  src/osgUtil/RenderToTextureStage.cpp: Further FBO support work.
@@ -8149,23 +8217,15 @@
 
 2005-06-16 12:42  robert
 
-	* VisualStudio/examples/osgfbo/osgfbo.dsp,
-	  VisualStudio/osg/osg.dsp, examples/osgfbo/FBOExtensions.cpp,
-	  examples/osgfbo/FBOExtensions.h,
-	  examples/osgfbo/FramebufferAttachment.cpp,
-	  examples/osgfbo/FramebufferAttachment.h,
-	  examples/osgfbo/FramebufferObject.cpp,
-	  examples/osgfbo/FramebufferObject.h, examples/osgfbo/GNUmakefile,
-	  examples/osgfbo/Renderbuffer.cpp, examples/osgfbo/Renderbuffer.h,
-	  examples/osgfbo/osgfbo.cpp, include/osg/CameraNode,
+	* VisualStudio/osg/osg.dsp, include/osg/CameraNode,
 	  include/osg/FrameBufferObject, src/osg/FrameBufferObject.cpp,
 	  src/osg/GNUmakefile: Moved FBO support from osgfbo example into
 	  core osg.
 
 2005-06-15 21:06  robert
 
-	* examples/osgfbo/osgfbo.cpp, include/osg/CameraNode,
-	  src/osg/CameraNode.cpp: Futher work on FBO support
+	* include/osg/CameraNode, src/osg/CameraNode.cpp: Futher work on
+	  FBO support
 
 2005-06-15 21:05  robert
 
@@ -8234,25 +8294,13 @@
 
 2005-06-09 20:02  robert
 
-	* VisualStudio/: VisualStudio.dsw, examples/osgfbo/osgfbo.dsp: From
-	  Marco Jez, added project files for osgfbo example.
-
-2005-06-09 12:53  robert
-
-	* examples/osgfbo/: GNUmakefile, GNUmakefile.inst: Fixed makefiles
+	* VisualStudio/VisualStudio.dsw: From Marco Jez, added project
+	  files for osgfbo example.
 
 2005-06-09 12:08  robert
 
-	* Make/makedirdefs, examples/osgfbo/FBOExtensions.cpp,
-	  examples/osgfbo/FBOExtensions.h,
-	  examples/osgfbo/FramebufferAttachment.cpp,
-	  examples/osgfbo/FramebufferAttachment.h,
-	  examples/osgfbo/FramebufferObject.cpp,
-	  examples/osgfbo/FramebufferObject.h, examples/osgfbo/GNUmakefile,
-	  examples/osgfbo/GNUmakefile.inst,
-	  examples/osgfbo/Renderbuffer.cpp, examples/osgfbo/Renderbuffer.h,
-	  examples/osgfbo/osgfbo.cpp: From Marco Jez, added example that
-	  uses FBO extension to do prerendering.
+	* Make/makedirdefs: From Marco Jez, added example that uses FBO
+	  extension to do prerendering.
 
 2005-06-09 10:27  robert
 
@@ -8559,11 +8607,6 @@
 	  osgParticle/ParticleSystemUpdater, osgProducer/OsgCameraGroup,
 	  osgSim/ScalarBar, osgSim/SphereSegment: Fixed doxygen comments.
 
-2005-05-20 19:35  robert
-
-	* VisualStudio/examples/osgpbuffer/osgpbuffer.dsp: Removed
-	  references to removed files.
-
 2005-05-20 16:45  robert
 
 	* include/osg/Math: Reworking to avoid compile issues under VS6.0.
@@ -8599,13 +8642,6 @@
 	* src/osgProducer/ViewerEventHandler.cpp: Fixed fullscreen toggle
 	  in ViewerEventHandler that assumed the first RenderSurface was a
 	  window (not a pbuffer).
-
-2005-05-18 22:34  don
-
-	* examples/osgpbuffer/osgpbuffer.cpp: PBuffer example revamped to
-	  use a normal CameraConfig for setting up the PBuffer and main
-	  cameras, and a PBufferTexture2D for the texture, rather than a
-	  subload callback
 
 2005-05-18 22:31  robert
 
@@ -8681,11 +8717,6 @@
 	  standard, remove the older code that remained as part of #else
 	  #endif blocks, and remove the erroneous implementation of caching
 	  of proxynodes.
-
-2005-05-17 14:24  robert
-
-	* examples/osgpbuffer/osgpbuffer.cpp: Added destructor to fix
-	  Cygwin build problem.
 
 2005-05-17 12:11  robert
 
@@ -8995,12 +9026,6 @@
 	* src/osgPlugins/ive/MatrixTransform.cpp: Fixed pairing of write
 	  and read of Matrixd
 
-2005-05-12 20:14  robert
-
-	* VisualStudio/examples/osgpbuffer/osgpbuffer.dsp: From Mike
-	  Weiblen, osgpbuffer now needs to link w/ Producer (fixed .dsp
-	  file attached)
-
 2005-05-12 20:05  robert
 
 	* src/osg/Uniform.cpp: Added missing Uniform(Matrixd) constructor
@@ -9119,18 +9144,10 @@
 
 2005-05-11 20:14  robert
 
-	* Make/makedirdefs,
-	  VisualStudio/examples/osgpbuffer/osgpbuffer.dsp,
-	  examples/osgpbuffer/GNUmakefile,
-	  examples/osgpbuffer/GNUmakefile.inst,
-	  examples/osgpbuffer/RenderToTextureStage.cpp,
-	  examples/osgpbuffer/RenderToTextureStage.h,
-	  examples/osgpbuffer/osgpbuffer.cpp,
-	  examples/osgpbuffer/pbuffer.cpp, examples/osgpbuffer/pbuffer.h:
-	  From Nathan Monteleone, rewrote the osgpbuffer example so that it
-	  uses	   Producer xplatform support for pbuffer instead of Win32
-	  specific pathways	as support before. (with a few code tweaks
-	  to simplfy the code, by Robert Osfield).
+	* Make/makedirdefs: From Nathan Monteleone, rewrote the osgpbuffer
+	  example so that it uses     Producer xplatform support for
+	  pbuffer instead of Win32 specific pathways	 as support before.
+	  (with a few code tweaks to simplfy the code, by Robert Osfield).
 
 2005-05-11 17:05  robert
 
@@ -10242,7 +10259,6 @@
 	  examples/osgoccluder/osgoccluder.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
 	  examples/osgparticleeffects/osgparticleeffects.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgphotoalbum/osgphotoalbum.dsp,
 	  examples/osgpick/osgpick.dsp, examples/osgplanets/osgplanets.dsp,
 	  examples/osgpointsprite/osgpointsprite.dsp,
@@ -10493,7 +10509,6 @@
 	  examples/osgoccluder/osgoccluder.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
 	  examples/osgparticleeffects/osgparticleeffects.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgphotoalbum/osgphotoalbum.dsp,
 	  examples/osgpick/osgpick.dsp, examples/osgplanets/osgplanets.dsp,
 	  examples/osgpointsprite/osgpointsprite.dsp,
@@ -12532,8 +12547,7 @@
 
 2005-01-27 15:54  robert
 
-	* VisualStudio/examples/osgpbuffer/osgpbuffer.dsp,
-	  src/osgPlugins/bmp/ReaderWriterBMP.cpp: Fixes for Win32 build
+	* src/osgPlugins/bmp/ReaderWriterBMP.cpp: Fixes for Win32 build
 
 2005-01-27 14:54  robert
 
@@ -15792,11 +15806,6 @@
 	  src/osgUtil/SmoothingVisitor.cpp: From Norman Vine (with small
 	  tweaks by Robert Osfield), build fixes for Cygwin
 
-2004-08-04 08:14  robert
-
-	* examples/osgpbuffer/osgpbuffer.cpp: From Brede Johansen, fixes
-	  for Win32 build
-
 2004-08-04 07:57  robert
 
 	* src/osgPlugins/pfb/ConvertFromPerformer.cpp: From Don Tidrow,
@@ -16072,7 +16081,6 @@
 	  examples/osgmultitexture/osgmultitexture.dsp,
 	  examples/osgoccluder/osgoccluder.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgphotoalbum/osgphotoalbum.dsp,
 	  examples/osgpick/osgpick.dsp,
 	  examples/osgpointsprite/osgpointsprite.dsp,
@@ -17162,7 +17170,6 @@
 	  examples/osgmultitexture/osgmultitexture.dsp,
 	  examples/osgoccluder/osgoccluder.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgphotoalbum/osgphotoalbum.dsp,
 	  examples/osgpick/osgpick.dsp,
 	  examples/osgpointsprite/osgpointsprite.dsp,
@@ -21340,12 +21347,6 @@
 	  Added support into osg::TriangleFunctor for specifying whether
 	  the vertices being generates are temporary or not.
 
-2003-09-24 19:54  robert
-
-	* examples/osgpbuffer/: RenderToTextureStage.cpp,
-	  RenderToTextureStage.h: Added a local osg::State to the pbuffer
-	  implementation.
-
 2003-09-24 19:53  robert
 
 	* include/osgUtil/UpdateVisitor: Made the calling of drawable
@@ -23120,15 +23121,9 @@
 
 2003-07-15 08:53  robert
 
-	* examples/osgpbuffer/RenderToTextureStage.cpp,
-	  src/osgPlugins/txp/trPagePageManager.cpp,
-	  src/osgProducer/DatabasePager.cpp, src/osgProducer/GNUmakefile:
-	  Compile fixes.
-
-2003-07-14 20:12  robert
-
-	* examples/osgpbuffer/RenderToTextureStage.cpp: Attempt to fix
-	  compile error caused by recent change in osg::Texture.
+	* src/: osgPlugins/txp/trPagePageManager.cpp,
+	  osgProducer/DatabasePager.cpp, osgProducer/GNUmakefile: Compile
+	  fixes.
 
 2003-07-14 15:42  robert
 
@@ -24056,12 +24051,6 @@
 	  on demand rather than used as a pointer which was originally
 	  being invalidate before use.
 
-2003-04-18 09:17  robert
-
-	* examples/osgpbuffer/osgpbuffer.cpp: Added a realize callback for
-	  setting up the pbuffer so that it definately has a valid graphics
-	  context.
-
 2003-04-17 16:57  robert
 
 	* examples/osgwindows/osgwindows.cpp,
@@ -24364,9 +24353,8 @@
 	  osglight/osglight.dsp, osglightpoint/osglightpoint.dsp,
 	  osglogo/osglogo.dsp, osgmultitexture/osgmultitexture.dsp,
 	  osgoccluder/osgoccluder.dsp, osgparticle/osgparticledemo.dsp,
-	  osgpbuffer/osgpbuffer.dsp, osgprerender/osgprerender.dsp,
-	  osgsequence/osgsequence.dsp, osgtext/osgtextdemo.dsp: Removed
-	  references to glut32.lib.
+	  osgprerender/osgprerender.dsp, osgsequence/osgsequence.dsp,
+	  osgtext/osgtextdemo.dsp: Removed references to glut32.lib.
 
 2003-04-11 19:57  robert
 
@@ -24524,9 +24512,8 @@
 	  osglight/osglight.cpp, osglightpoint/osglightpoint.cpp,
 	  osglogo/osglogo.cpp, osgmultitexture/osgmultitexture.cpp,
 	  osgoccluder/osgoccluder.cpp, osgparticle/osgparticle.cpp,
-	  osgpbuffer/osgpbuffer.cpp, osgprerender/osgprerender.cpp,
-	  osgreflect/osgreflect.cpp, osgscribe/osgscribe.cpp,
-	  osgsequence/osgsequence.cpp,
+	  osgprerender/osgprerender.cpp, osgreflect/osgreflect.cpp,
+	  osgscribe/osgscribe.cpp, osgsequence/osgsequence.cpp,
 	  osgshadowtexture/osgshadowtexture.cpp, osgshape/osgshape.cpp,
 	  osgstereoimage/osgstereoimage.cpp, osgteapot/osgteapot.cpp,
 	  osgtext/osgtext.cpp, osgtexture1D/osgtexture1D.cpp,
@@ -24628,7 +24615,6 @@
 	  examples/osgmultitexture/osgmultitexture.cpp,
 	  examples/osgoccluder/osgoccluder.cpp,
 	  examples/osgparticle/osgparticle.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp,
 	  examples/osgprerender/osgprerender.cpp,
 	  examples/osgreflect/osgreflect.cpp,
 	  examples/osgscribe/osgscribe.cpp,
@@ -24809,7 +24795,6 @@
 	  examples/osgmultitexture/osgmultitexture.cpp,
 	  examples/osgoccluder/osgoccluder.cpp,
 	  examples/osgparticle/osgparticle.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp,
 	  examples/osgprerender/osgprerender.cpp,
 	  examples/osgreflect/osgreflect.cpp,
 	  examples/osgscribe/osgscribe.cpp,
@@ -25329,7 +25314,6 @@
 	  examples/osgmultitexture/osgmultitexture.cpp,
 	  examples/osgoccluder/osgoccluder.cpp,
 	  examples/osgparticle/osgparticle.cpp,
-	  examples/osgpbuffer/osgpbuffer.cpp,
 	  examples/osgprerender/osgprerender.cpp,
 	  examples/osgreflect/osgreflect.cpp,
 	  examples/osgscribe/osgscribe.cpp,
@@ -25658,7 +25642,6 @@
 	  VisualStudio/examples/osgmultitexture/osgmultitexture.dsp,
 	  VisualStudio/examples/osgoccluder/osgoccluder.dsp,
 	  VisualStudio/examples/osgparticle/osgparticledemo.dsp,
-	  VisualStudio/examples/osgpbuffer/osgpbuffer.dsp,
 	  VisualStudio/examples/osgprerender/osgprerender.dsp,
 	  VisualStudio/examples/osgreflect/osgreflect.dsp,
 	  VisualStudio/examples/osgscribe/osgscribe.dsp,
@@ -25676,12 +25659,6 @@
 	  Removed osgGLUT and Demos/*.
 
 	  Integrated Marco's updated examples/*/*.dsp's.
-
-2003-03-15 16:41  robert
-
-	* examples/osgpbuffer/: RenderToTextureStage.cpp,
-	  RenderToTextureStage.h, osgpbuffer.cpp, pbuffer.cpp, pbuffer.h:
-	  Added osgpbuffer example source.
 
 2003-03-15 09:20  robert
 
@@ -25701,7 +25678,6 @@
 	  examples/osgmultitexture/osgmultitexture.dsp,
 	  examples/osgoccluder/osgoccluder.dsp,
 	  examples/osgparticle/osgparticledemo.dsp,
-	  examples/osgpbuffer/osgpbuffer.dsp,
 	  examples/osgprerender/osgprerender.dsp,
 	  examples/osgreflect/osgreflect.dsp,
 	  examples/osgscribe/osgscribe.dsp,

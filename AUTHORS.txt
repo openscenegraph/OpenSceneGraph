@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.1
 
-203 Contributors:
+204 Contributors:
 
 Firstname Surname
 -----------------
@@ -140,6 +140,7 @@ Ronny Krueger
 Roland Smeenk
 Robert Swain
 Reinhard Sainitzer
+Radu Mihai
 Qing Shen
 Philipp Siemoleit
 Paul Fredrikson

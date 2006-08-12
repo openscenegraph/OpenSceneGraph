@@ -182,6 +182,7 @@ bool validName(const std::string& first)
     if (first=="RenderStage") return false;
     if (first=="Matrix*") return false;
     if (first=="Vec4ub") return false;
+    if (first=="Proxy") return false;
     return true;
 }
 

@@ -59,6 +59,8 @@ void CullStack::reset()
                    (lookVector.z()>=0?4:0);
 
     _bbCornerNear = (~_bbCornerFar)&7;
+    
+     _currentReuseMatrixIndex=0;
 }
 
 

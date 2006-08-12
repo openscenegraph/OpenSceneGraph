@@ -142,7 +142,6 @@ void CullVisitor::reset()
     }
     
     // reset the resuse lists.
-    _currentReuseMatrixIndex = 0;
     _currentReuseRenderLeafIndex = 0;
 
     _nearPlaneCandidateMap.clear();

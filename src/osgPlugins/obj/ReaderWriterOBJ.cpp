@@ -107,6 +107,8 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
 
 void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap) const
 {
+    osg::Texture::WrapMode textureWrapMode = osg::Texture::REPEAT;
+
     if (_fixBlackMaterials)
     {
         // hack to fix Maya exported models that contian all black materials.
@@ -194,6 +196,9 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             if (image)
             {
                 osg::Texture2D* texture = new osg::Texture2D(image);
+                texture->setWrap(osg::Texture2D::WRAP_R, textureWrapMode);
+                texture->setWrap(osg::Texture2D::WRAP_S, textureWrapMode);
+                texture->setWrap(osg::Texture2D::WRAP_T, textureWrapMode);
                 stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
                 
                 if (material.textureReflection)

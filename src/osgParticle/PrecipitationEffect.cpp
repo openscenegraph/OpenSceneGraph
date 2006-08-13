@@ -861,7 +861,7 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable():
 }
 
 PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const PrecipitationDrawable& copy, const osg::CopyOp& copyop):
-    Drawable(copy,copyop),
+    osg::Drawable(copy,copyop),
     _requiresPreviousMatrix(copy._requiresPreviousMatrix),
     _geometry(copy._geometry),
     _drawType(copy._drawType),

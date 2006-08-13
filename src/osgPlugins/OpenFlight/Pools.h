@@ -218,7 +218,7 @@ public:
         TexturePool* texture,
         LightPointAppearancePool* lpAppearance,
         ShaderPool* shader )
-      : Referenced(),
+      : osg::Referenced(),
         _colorPool( color ),
         _materialPool( material ),
         _texturePool( texture ),

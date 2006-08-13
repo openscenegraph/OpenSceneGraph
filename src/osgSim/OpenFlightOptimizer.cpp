@@ -155,7 +155,7 @@ class GeodeStateOptimizer : public osgUtil::Optimizer::StateVisitor
                 }
             }
 
-            StateVisitor::optimize();
+            osgUtil::Optimizer::StateVisitor::optimize();
         }
 
             

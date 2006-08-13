@@ -1,3 +1,9 @@
+2006-08-13 09:40  robert
+
+	* AUTHORS.txt, ChangeLog, NEWS.txt,
+	  applications/osgversion/osgversion.cpp: Updated ChangeLog, NEWS,
+	  osgversion and AUTHORS.txt for 1.1.1 release
+
 2006-08-13 09:24  robert
 
 	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Changed the texture wrap

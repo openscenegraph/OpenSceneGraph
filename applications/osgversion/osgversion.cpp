@@ -183,6 +183,7 @@ bool validName(const std::string& first)
     if (first=="Matrix*") return false;
     if (first=="Vec4ub") return false;
     if (first=="Proxy") return false;
+    if (first=="CullVistor") return false;
     return true;
 }
 

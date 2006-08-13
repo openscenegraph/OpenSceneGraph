@@ -1,3 +1,33 @@
+2006-08-13 09:24  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Changed the texture wrap
+	  mode to repeat
+
+2006-08-13 08:37  robert
+
+	* src/: osgParticle/PrecipitationEffect.cpp,
+	  osgPlugins/OpenFlight/Pools.h, osgSim/OpenFlightOptimizer.cpp:
+	  From Chuck Sembroski, fixes for IRIX
+
+2006-08-12 19:19  robert
+
+	* src/: osg/CullStack.cpp, osgUtil/CullVisitor.cpp: Moved reset to
+	  0 of _createReuseMatrixIndex from CullVistor.cpp to CullStack.cpp
+	  so that CullStack::reset works correctly for all subclasses -
+	  fixing a memory consumption issue with occluders
+
+2006-08-12 09:29  robert
+
+	* src/: osg/Version.cpp, osgDB/Version.cpp, osgGA/Version.cpp,
+	  osgParticle/Version.cpp, osgProducer/Version.cpp,
+	  osgSim/Version.cpp, osgTerrain/Version.cpp, osgText/Version.cpp,
+	  osgUtil/Version.cpp: Updated version number for 1.1.1 release
+
+2006-08-12 08:59  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/osgversion.cpp:
+	  Updated ChangelLog and AUTHORS file
+
 2006-08-11 22:48  robert
 
 	* Xcode/OpenSceneGraph/: osgfbo-Info.plist, osgpbuffer-Info.plist,
@@ -264,7 +294,6 @@
 	* include/osg/UByte4, VisualStudio/LANGEXT.DAT,
 	  VisualStudio/highlight70.reg, VisualStudio/highlight71.reg,
 	  VisualStudio/highlight80.reg,
-	  Xcode/OpenSceneGraph/OpenSceneGraph.xcode/project.pbxproj,
 	  Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj,
 	  Xcode/XcodeTemplates/OSG Application/osgApp_Prefix.pch: Removed
 	  referecens to the deprecate UByte4
@@ -3089,7 +3118,6 @@
 	  OpenSceneGraph/osgwindows-Info.plist,
 	  OpenSceneGraph/version.plist,
 	  OpenSceneGraph/English.lproj/InfoPlist.strings,
-	  OpenSceneGraph/OpenSceneGraph.xcode/project.pbxproj,
 	  OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj,
 	  XcodeTemplates/TemplateNotes.rtf, XcodeTemplates/OSG
 	  Application/Info.plist, XcodeTemplates/OSG Application/main.cpp,

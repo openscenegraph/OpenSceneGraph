@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.1
+OpenSceneGraph Library 1.1.1
 
-204 Contributors:
+205 Contributors:
 
 Firstname Surname
 -----------------
@@ -193,6 +193,7 @@ Donny Cipperly
 Dean Iverson
 David Jung
 David Callu
+Chuck Sembroski
 Carlos García
 Brad Anderegg
 Bora Utka

@@ -672,12 +672,18 @@ protected:
             if (document.version() == 1541)
                 mask = ~0;
 
+            // Only override light points and shader palettes if 
+            //   we are the correct version.
+            bool parentLightPoints( (document.version() >= VERSION_15_8) &&
+                ((mask & LIGHT_POINT_PALETTE_OVERRIDE) == 0) );
+            bool parentShaders( (document.version() >= VERSION_16_0) &&
+                ((mask & SHADER_PALETTE_OVERRIDE) == 0) );
             _external->setUserData(new ParentPools(
                 ((mask & COLOR_PALETTE_OVERRIDE) ? NULL : document.getColorPool()),
                 ((mask & MATERIAL_PALETTE_OVERRIDE) ? NULL : document.getOrCreateMaterialPool()),
                 ((mask & TEXTURE_PALETTE_OVERRIDE) ? NULL : document.getOrCreateTexturePool()),
-                ((mask & LIGHT_POINT_PALETTE_OVERRIDE) ? NULL : document.getOrCreateLightPointAppearancePool()),
-                ((mask & SHADER_PALETTE_OVERRIDE) ? NULL : document.getOrCreateShaderPool()) ));
+                ((!parentLightPoints) ? NULL : document.getOrCreateLightPointAppearancePool()),
+                ((!parentShaders) ? NULL : document.getOrCreateShaderPool()) ));
         }
 
         // Add this implementation to parent implementation.

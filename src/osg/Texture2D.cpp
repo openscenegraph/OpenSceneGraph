@@ -76,6 +76,17 @@ int Texture2D::compare(const StateAttribute& sa) const
         }
     }
 
+    if (!_image && !rhs._image)
+    {
+        // no image attached to either Texture2D
+        // but could these textures already be downloaded?
+        // check the _textureObjectBuffer to see if they have been
+        // downloaded
+
+        int result = compareTextureObjects(rhs);
+        if (result!=0) return result;
+    }
+
     int result = compareTexture(rhs);
     if (result!=0) return result;
 

@@ -76,8 +76,12 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
     // used by the COMPARE_StateAttribute_Paramter macro's below.
     COMPARE_StateAttribute_Types(TextureCubeMap,sa)
 
+    bool noImages = true;
     for (int n=0; n<6; n++)
     {
+        if (noImages && _images[n].valid()) noImages = false;
+        if (noImages && rhs._images[n].valid()) noImages = false;
+    
         if (_images[n]!=rhs._images[n]) // smart pointer comparison.
         {
             if (_images[n].valid())
@@ -97,6 +101,17 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
                 return -1; // valid rhs._image is greater than null. 
             }
         }
+    }
+
+    if (noImages)
+    {
+        // no image attached to either Texture2D
+        // but could these textures already be downloaded?
+        // check the _textureObjectBuffer to see if they have been
+        // downloaded
+
+        int result = compareTextureObjects(rhs);
+        if (result!=0) return result;
     }
 
     int result = compareTexture(rhs);

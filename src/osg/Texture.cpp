@@ -417,6 +417,17 @@ int Texture::compareTexture(const Texture& rhs) const
     return 0;
 }
 
+int Texture::compareTextureObjects(const Texture& rhs) const
+{
+    if (_textureObjectBuffer.size()<rhs._textureObjectBuffer.size()) return -1; 
+    if (rhs._textureObjectBuffer.size()<_textureObjectBuffer.size()) return 1;
+    for(unsigned int i=0; i<_textureObjectBuffer.size(); ++i)
+    {
+        if (_textureObjectBuffer[i] < rhs._textureObjectBuffer[i]) return -1;
+        else if (rhs._textureObjectBuffer[i] < _textureObjectBuffer[i]) return 1;
+    }
+    return 0;
+}
 
 void Texture::setWrap(WrapParameter which, WrapMode wrap)
 {

@@ -45,11 +45,11 @@ extern "C" {
 
 typedef int Lib3dsBool;
 typedef unsigned char Lib3dsByte;
-typedef unsigned short int Lib3dsWord;
-typedef unsigned long Lib3dsDword;
+typedef unsigned short Lib3dsWord;
+typedef unsigned int Lib3dsDword;
 typedef signed char Lib3dsIntb;
-typedef signed short int Lib3dsIntw;
-typedef signed long Lib3dsIntd;
+typedef signed short Lib3dsIntw;
+typedef signed int Lib3dsIntd;
 typedef float Lib3dsFloat;
 typedef double Lib3dsDouble;
 

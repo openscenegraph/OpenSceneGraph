@@ -61,7 +61,7 @@ static void
 lib3ds_chunk_debug_dump(Lib3dsChunk *c)
 {
   if (enable_dump) {
-    printf("%s%s (0x%X) size=%lu\n",
+    printf("%s%s (0x%X) size=%u\n",
       lib3ds_chunk_level,
       lib3ds_chunk_name(c->chunk),
       c->chunk,

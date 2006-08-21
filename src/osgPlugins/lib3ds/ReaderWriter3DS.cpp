@@ -26,6 +26,7 @@
 #include "matrix.h"
 #include "node.h"
 #include "quat.h"
+#include "readwrite.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -126,6 +127,27 @@ osgDB::RegisterReaderWriterProxy<ReaderWriter3DS> g_readerWriter_3DS_Proxy;
 
 ReaderWriter3DS::ReaderWriter3DS()
 {
+    setByteOrder();
+
+#if 0
+    osg::notify(osg::NOTICE)<<"3DS reader sizes:"<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsBool)="<<sizeof(Lib3dsBool)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsByte)="<<sizeof(Lib3dsByte)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsWord)="<<sizeof(Lib3dsWord)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsDword)="<<sizeof(Lib3dsDword)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsIntb)="<<sizeof(Lib3dsIntb)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsIntw)="<<sizeof(Lib3dsIntw)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsIntd)="<<sizeof(Lib3dsIntd)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsFloat)="<<sizeof(Lib3dsFloat)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsDouble)="<<sizeof(Lib3dsDouble)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsVector)="<<sizeof(Lib3dsVector)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsTexel)="<<sizeof(Lib3dsTexel)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsQuat)="<<sizeof(Lib3dsQuat)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsMatrix)="<<sizeof(Lib3dsMatrix)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsRgb)="<<sizeof(Lib3dsRgb)<<std::endl;
+    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsRgba)="<<sizeof(Lib3dsRgba)<<std::endl;
+#endif
+
 }
 
 ReaderWriter3DS::ReaderObject::ReaderObject()
@@ -417,6 +439,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
 
 osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
+
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
@@ -446,18 +469,18 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
         drawStateMap[mat->name] = reader.createStateSet(mat, options);
     }
     
-    /*{
+    if (osg::getNotifyLevel()>=osg::INFO)
+    {
         int level=0;
-        std::cout << "NODE TRAVERSAL of file "<<f->name<<std::endl;
+        std::cout << "NODE TRAVERSAL of 3ds file "<<f->name<<std::endl;
         for(Lib3dsNode *node=f->nodes; node; node=node->next) {
             print(node,level+1);
         }
-        std::cout << "MESH TRAVERSAL of file "<<f->name<<std::endl;
+        std::cout << "MESH TRAVERSAL of 3ds file "<<f->name<<std::endl;
         for(Lib3dsMesh *mesh=f->meshes; mesh; mesh=mesh->next) {
             print(mesh,level+1);
         }
-    }*/
-
+    }
 
     // We can traverse by meshes (old method, broken for pivot points, but otherwise works), or by nodes (new method, not so well tested yet)
     // if your model is broken, especially wrt object positions try setting this flag. If that fixes it,
@@ -481,11 +504,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
         }
     } 
 
-    
-    /*cout << "Final OSG node structure looks like this:"<< endl;
-    PrintVisitor pv;
-    group->accept(pv);*/
-    
+;    if (osg::getNotifyLevel()>=osg::INFO)
+    {
+        osg::notify(osg::NOTICE) << "Final OSG node structure looks like this:"<< endl;
+        PrintVisitor pv(osg::notify(osg::NOTICE));
+        group->accept(pv);
+    }    
     
     lib3ds_file_free(f);
 
@@ -639,8 +663,10 @@ osg::Drawable*   ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,Fac
    
     geom->addPrimitiveSet(elements);
 
+#if 0
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geom);
+#endif
 
     return geom;
 }

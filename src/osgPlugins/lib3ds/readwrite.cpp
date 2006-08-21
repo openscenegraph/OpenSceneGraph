@@ -21,13 +21,22 @@
  */
 #define LIB3DS_EXPORT
 #include "readwrite.h"
-
+#include <osg/Endian>
 
 /*!
  * \defgroup readwrite Portable Binary Input/Ouput
  *
  * \author J.E. Hoffmann <je-h@gmx.net>
  */
+
+
+static bool s_requiresByteSwap = false;
+
+extern LIB3DSAPI void setByteOrder()
+{
+    s_requiresByteSwap = osg::getCpuByteOrder()==osg::BigEndian;
+}
+
 
 
 /*!
@@ -129,13 +138,16 @@ Lib3dsIntw
 lib3ds_intw_read(FILE *f)
 {
   Lib3dsByte b[2];
-  Lib3dsWord w;
 
   ASSERT(f);
   fread(b,2,1,f);
-  w=((Lib3dsWord)b[1] << 8) |
-    ((Lib3dsWord)b[0]);
-  return((Lib3dsIntw)w);
+
+  if (s_requiresByteSwap)
+  {
+    osg::swapBytes2((char*)b);
+  }
+
+  return (*((Lib3dsIntw*)b));
 }
 
 
@@ -152,15 +164,16 @@ Lib3dsIntd
 lib3ds_intd_read(FILE *f)
 {
   Lib3dsByte b[4];
-  Lib3dsDword d;        
                          
   ASSERT(f);
   fread(b,4,1,f);
-  d=((Lib3dsDword)b[3] << 24) |
-    ((Lib3dsDword)b[2] << 16) |
-    ((Lib3dsDword)b[1] << 8) |
-    ((Lib3dsDword)b[0]);
-  return((Lib3dsIntd)d);
+
+  if (s_requiresByteSwap)
+  {
+    osg::swapBytes4((char*)b);
+  }
+
+  return (*((Lib3dsIntd*)b));
 }
 
 
@@ -177,15 +190,16 @@ Lib3dsFloat
 lib3ds_float_read(FILE *f)
 {
   Lib3dsByte b[4];
-  Lib3dsDword d;
 
   ASSERT(f);
   fread(b,4,1,f);
-  d=((Lib3dsDword)b[3] << 24) |
-    ((Lib3dsDword)b[2] << 16) |
-    ((Lib3dsDword)b[1] << 8) |
-    ((Lib3dsDword)b[0]);
-  return(*((Lib3dsFloat*)&d));
+
+  if (s_requiresByteSwap)
+  {
+    osg::swapBytes4((char*)b);
+  }
+
+  return (*((Lib3dsFloat*)b));
 }
 
 
@@ -210,6 +224,9 @@ lib3ds_vector_read(Lib3dsVector v, FILE *f)
   if (ferror(f)) {
     return(LIB3DS_FALSE);
   }
+  
+  /*printf("lib3ds_vector_read %f %f %f\n",v[0],v[1],v[2]);*/
+  
   return(LIB3DS_TRUE);
 }
 
@@ -227,6 +244,8 @@ lib3ds_rgb_read(Lib3dsRgb rgb, FILE *f)
   if (ferror(f)) {
     return(LIB3DS_FALSE);
   }
+  /*printf("lib3ds_rgb_read %f %f %f\n",rgb[0],rgb[1],rgb[2]);*/
+
   return(LIB3DS_TRUE);
 }
 

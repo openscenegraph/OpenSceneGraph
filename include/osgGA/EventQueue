@@ -51,43 +51,46 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         void addEvent(GUIEventAdapter* event);
 
 
-        /** method for adapting window resize event, placing this event on the back of the event queue. */
+        /** Method for adapting window resize event, placing this event on the back of the event queue. */
         void windowResize(float Xmin, float Ymin, float Xmax, float Ymax);
 
-        /** method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
+        /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
         void mouseScroll(GUIEventAdapter::ScrollingMotion sm);
         
-        /** method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
+        /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
         void mouseScroll2D(float x, float y);
         
-        /** method for adapting pen pressure events, placing this event on the back og the event queue.*/
+        /** Method for adapting pen pressure events, placing this event on the back og the event queue.*/
         void penPressure(float pressure);
         
-         /** method for adapting pen proximity events, placing this event on the back og the event queue.*/
+         /** Method for adapting pen proximity events, placing this event on the back og the event queue.*/
         void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering);
 
-        /** method for updating in response to a mouse warp. Note, just moves the mouse position without creating a new event for it.*/
+        /** Method for updating in response to a mouse warp. Note, just moves the mouse position without creating a new event for it.*/
         void mouseWarp(float x, float y);
 
-        /** method for adapting mouse motion events whilst mouse buttons are pressed, placing this event on the back of the event queue.*/
+        /** Method for adapting mouse motion events whilst mouse buttons are pressed, placing this event on the back of the event queue.*/
         void mouseMotion(float x, float y);
 
-        /** method for adapting mouse button pressed events, placing this event on the back of the event queue.*/
+        /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.
+          * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
         void mouseButtonPress(float x, float y, unsigned int button);
 
-        /** method for adapting mouse button pressed events, placing this event on the back of the event queue.*/
+        /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.
+          * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
         void mouseDoubleButtonPress(float x, float y, unsigned int button);
         
-        /** method for adapting mouse button release events, placing this event on the back of the event queue.*/
+        /** Method for adapting mouse button release events, placing this event on the back of the event queue.
+          * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
         void mouseButtonRelease(float x, float y, unsigned int button);
 
-        /** method for adapting keyboard press events.*/
+        /** Method for adapting keyboard press events.*/
         void keyPress(GUIEventAdapter::KeySymbol key);
 
-        /** method for adapting keyboard press events.*/
+        /** Method for adapting keyboard press events.*/
         void keyRelease(GUIEventAdapter::KeySymbol key);
 
-        /** method for adapting frame events.*/
+        /** Method for adapting frame events.*/
         void frame(double t);
         
 

@@ -32,7 +32,22 @@
 
 #else // unix
 
-#if defined( __APPLE__ ) || defined(__CYGWIN__) || defined(__FreeBSD__)
+#if defined( __APPLE__ )
+    // I'm not sure how we would handle this in raw Darwin
+    // without the AvailablilityMacros.
+    #include <AvailabilityMacros.h>
+    // 10.5 defines stat64 so we can't use this #define
+    // By default, MAC_OS_X_VERSION_MAX_ALLOWED is set to the latest
+    // system the headers know about. So I will use this as the control
+    // variable. (MIN_ALLOWED is set low by default so it is 
+    // unhelpful in this case.) 
+    // Unfortunately, we can't use the label MAC_OS_X_VERSION_10_4
+    // for older OS's like Jaguar, Panther since they are not defined,
+    // so I am going to hardcode the number.
+    #if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+        #define stat64 stat
+    #endif
+#elif defined(__CYGWIN__) || defined(__FreeBSD__)
     #define stat64 stat
 #endif
 
@@ -555,6 +570,9 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     // Note that if the Cocoa version is used, the file should be 
     // renamed to use the .mm extension to denote Objective-C++.
     // And of course, you will need to link against Cocoa
+    // Update: There is a bug in the Cocoa version. Advanced users can remap 
+    // their systems so these paths go somewhere else. The Carbon calls
+    // will catch this, but the hardcoded Cocoa code below will not.
 
     #ifdef COMPILE_COCOA_VERSION
     // OS X has preferred locations for where PlugIns should be located.

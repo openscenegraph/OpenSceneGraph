@@ -31,6 +31,8 @@
 extern "C" {
 #endif
 
+extern LIB3DSAPI void setByteOrder();
+
 extern LIB3DSAPI Lib3dsByte lib3ds_byte_read(FILE *f);
 extern LIB3DSAPI Lib3dsWord lib3ds_word_read(FILE *f);
 extern LIB3DSAPI Lib3dsDword lib3ds_dword_read(FILE *f);

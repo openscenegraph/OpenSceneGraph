@@ -722,12 +722,73 @@ void Text::computeGlyphRepresentation()
     }
    
     computePositions();
+    computeBackdropBoundingBox();
     computeColorGradients();
+}
+
+// Returns false if there are no glyphs and the width/height values are invalid.
+// Also sets avg_width and avg_height to 0.0f if the value is invalid.
+// This method is used several times in a loop for the same object which will produce the same values. 
+// Further optimization may try saving these values instead of recomputing them.
+bool Text::computeAverageGlypthWidthAndHeight(float& avg_width, float& avg_height) const
+{
+    float width = 0.0f;
+    float height = 0.0f;
+    float running_width = 0.0f;
+    float running_height = 0.0f;
+    avg_width = 0.0f;
+    avg_height = 0.0f;
+    int counter = 0;
+    unsigned int i;
+    bool is_valid_size = true;
+    // This section is going to try to compute the average width and height
+    // for a character among the text. The reason I shift by an 
+    // average amount per-character instead of shifting each character 
+    // by its per-instance amount is because it may look strange to see 
+    // the individual backdrop text letters not space themselves the same 
+    // way the foreground text does. Using one value gives uniformity.
+    // Note: This loop is repeated for each context. I think it may produce
+    // the same values regardless of context. This code be optimized by moving
+    // this loop outside the loop.
+    for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
+        const_titr!=_textureGlyphQuadMap.end();
+        ++const_titr)
+    {
+        const GlyphQuads& glyphquad = const_titr->second;
+        const GlyphQuads::Coords2& coords2 = glyphquad._coords;
+        for(i = 0; i < coords2.size(); i+=4)
+        {
+            width = coords2[i+2].x() - coords2[i].x();
+            height = coords2[i].y() - coords2[i+1].y();
+
+            running_width += width;
+            running_height += height;
+            counter++;
+        }
+    }
+    if(0 == counter)
+    {
+        is_valid_size = false;
+    }
+    else
+    {
+        avg_width = running_width/counter;
+        avg_height = running_height/counter;
+    }
+    return is_valid_size;
 }
 
 void Text::computePositions()
 {
     unsigned int size = osg::maximum(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),_autoTransformCache.size());
+    
+    // FIXME: OPTIMIZE: This would be one of the ideal locations to
+    // call computeAverageGlypthWidthAndHeight(). It is out of the contextID loop
+    // so the value would be computed fewer times. But the code will need changes
+    // to get the value down to the locations it is needed. (Either pass through parameters
+    // or member variables, but we would need a system to know if the values are stale.)
+
+    
     for(unsigned int i=0;i<size;++i)
     {
         computePositions(i);
@@ -896,42 +957,19 @@ void Text::computeBackdropPositions(unsigned int contextID) const
         return;
     }
 
-    float width = 0.0f;
-    float height = 0.0f;
-    float running_width = 0.0f;
-    float running_height = 0.0f;
     float avg_width = 0.0f;
     float avg_height = 0.0f;
-    int counter = 0;
     unsigned int i;
+    bool is_valid_size;
+    
     AutoTransformCache& atc = _autoTransformCache[contextID];
     osg::Matrix& matrix = atc._matrix;
 
-    // This section is going to try to compute the average width and height
-    // for a character among the text. The reason I shift by an 
-    // average amount per-character instead of shifting each character 
-    // by its per-instance amount is because it may look strange to see 
-    // the individual backdrop text letters not space themselves the same 
-    // way the foreground text does. Using one value gives uniformity.
-    for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
-        const_titr!=_textureGlyphQuadMap.end();
-        ++const_titr)
-    {
-        const GlyphQuads& glyphquad = const_titr->second;
-        const GlyphQuads::Coords2& coords2 = glyphquad._coords;
-        for(i = 0; i < coords2.size(); i+=4)
-        {
-            width = coords2[i+2].x() - coords2[i].x();
-            height = coords2[i].y() - coords2[i+1].y();
-
-            running_width += width;
-            running_height += height;
-            counter++;
-        }
-    }
-    avg_width = running_width/counter;
-    avg_height = running_height/counter;
-
+    // FIXME: OPTIMIZE: This function produces the same value regardless of contextID.
+    // Since we tend to loop over contextID, we should cache this value some how
+    // instead of recomputing it each time.
+    is_valid_size = computeAverageGlypthWidthAndHeight(avg_width, avg_height);
+    
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1036,11 +1074,33 @@ void Text::computeBackdropPositions(unsigned int contextID) const
             }
         }
     }
+}
 
-#if 0
-    // note, commenting out right now as its causing bounding box problems
-    // which haven't yet been located and fixed. Robert Osfield, August 2006.
+// This method adjusts the bounding box to account for the expanded area caused by the backdrop. 
+// This assumes that the bounding box has already been computed for the text without the backdrop.
+void Text::computeBackdropBoundingBox() const
+{
+    if(_backdropType == NONE)
+    {
+        return;
+    }
 
+    float avg_width = 0.0f;
+    float avg_height = 0.0f;
+    bool is_valid_size;
+    
+    // FIXME: OPTIMIZE: It is possible that this value has already been computed before
+    // from previous calls to this function. This might be worth optimizing.
+    is_valid_size = computeAverageGlypthWidthAndHeight(avg_width, avg_height);
+
+    // Finally, we have one more issue to deal with.
+    // Now that the text takes more space, we need
+    // to adjust the size of the bounding box.
+    if((!_textBB.valid() || !is_valid_size))
+    {
+        return;
+    }
+    
     // Finally, we have one more issue to deal with.
     // Now that the text takes more space, we need
     // to adjust the size of the bounding box.
@@ -1158,7 +1218,6 @@ void Text::computeBackdropPositions(unsigned int contextID) const
                 break;
             }
     }
-#endif
 }
 
 void Text::computeColorGradients() const

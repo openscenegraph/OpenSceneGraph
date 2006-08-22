@@ -152,6 +152,9 @@ class Document
         bool getDoUnitsConversion() const { return _doUnitsConversion; }
         void setDesiredUnits(CoordUnits units ) { _desiredUnits=units; }
         CoordUnits getDesiredUnits() const { return _desiredUnits; }
+        
+        bool getKeepExternalReferences() const { return _keepExternalReferences; }
+        void setKeepExternalReferences( bool flag) { _keepExternalReferences=flag; }
 
     protected:
 
@@ -162,6 +165,8 @@ class Document
         bool                        _useTextureAlphaForTransparancyBinning;
         bool                        _doUnitsConversion;
         CoordUnits                  _desiredUnits;
+        
+        bool                        _keepExternalReferences;
 
         friend class Header;
         bool _done;

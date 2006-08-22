@@ -113,14 +113,27 @@ class FLTReaderWriter : public ReaderWriter
             {
                 // add to local cache.
                 flt::Registry::instance()->addToLocalCache(fileName,rr.getNode());
+        
+                bool keepExternalReferences = false;
+                if (options)
+                    keepExternalReferences = (options->getOptionString().find("keepExternalReferences")!=std::string::npos);
 
-                // read externals.
-                if (rr.getNode())
+
+                if ( !keepExternalReferences )
                 {
-                    nestedExternalsLevel++;
-                    ReadExternalsVisitor visitor(local_opt.get());
-                    rr.getNode()->accept(visitor);
-                    nestedExternalsLevel--;
+                    osg::notify(osg::DEBUG_INFO) << "keepExternalReferences not found, so externals will be re-readed"<<std::endl;
+                    // read externals.
+                    if (rr.getNode())
+                    {
+                        nestedExternalsLevel++;
+                        ReadExternalsVisitor visitor(local_opt.get());
+                        rr.getNode()->accept(visitor);
+                        nestedExternalsLevel--;
+                    }
+                }
+                else
+                {
+                    osg::notify(osg::DEBUG_INFO) << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;    
                 }
             }
 
@@ -145,6 +158,9 @@ class FLTReaderWriter : public ReaderWriter
             if (options)
             {
                 const char readerMsg[] = "flt reader option: ";
+                
+                document.setKeepExternalReferences((options->getOptionString().find("keepExternalReferences")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "keepExternalReferences=" << document.getKeepExternalReferences() << std::endl;
 
                 document.setPreserveFace((options->getOptionString().find("preserveFace")!=std::string::npos));
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
@@ -201,7 +217,7 @@ class FLTReaderWriter : public ReaderWriter
 
             if (!document.getHeaderNode())
                 return ReadResult::ERROR_IN_READING_FILE;
-                
+
             if (!document.getPreserveFace())
             {
                 osgUtil::Optimizer optimizer;

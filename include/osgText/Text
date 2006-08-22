@@ -555,10 +555,14 @@ protected:
     mutable osg::Vec3                                   _normal;
     mutable osg::BoundingBox                            _textBB;
 
+
+    bool computeAverageGlypthWidthAndHeight(float& avg_width, float& avg_height) const;
     void computePositions();
     void computePositions(unsigned int contextID) const;
     
     void computeBackdropPositions(unsigned int contextID) const;
+    void computeBackdropBoundingBox() const;
+
     void computeColorGradients() const;
     void computeColorGradientsOverall() const;
     void computeColorGradientsPerCharacter() const;

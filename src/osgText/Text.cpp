@@ -46,7 +46,7 @@ Text::Text():
     _kerningType(KERNING_DEFAULT),
     _lineCount(0),
     _backdropType(NONE),
-    _backdropImplementation(POLYGON_OFFSET),
+    _backdropImplementation(DEPTH_RANGE),
     _backdropHorizontalOffset(0.07f),
     _backdropVerticalOffset(0.07f),
     _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -2088,13 +2088,14 @@ void Text::renderWithDepthRange(osg::State& state) const
             if (!transformedBackdropCoords.empty()) 
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                glDepthRange(0.01f + ((max_backdrop_index-backdrop_index)/1000.0f), 1.0);
+                double offset = double(max_backdrop_index-backdrop_index)*0.003;
+                glDepthRange( offset, 1.0+offset);
 
                 glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
             }
         }
 
-        glDepthRange(0.0, 0.982);
+        glDepthRange(0.0, 1.0);
 
         drawForegroundText(state, glyphquad);
     }

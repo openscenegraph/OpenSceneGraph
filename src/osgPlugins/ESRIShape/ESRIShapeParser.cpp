@@ -1,6 +1,7 @@
 #include <fcntl.h>
 #include <osg/Geometry>
 #include <osg/Notify>
+#include <osgUtil/Tesselator>
 
 #if defined(_MSC_VER)
     #include <io.h>
@@ -314,6 +315,8 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::Polygon> &polys )
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
 
+
+
         for( i = 0; i < p->numParts; i++ )
         {
             int index = p->parts[i];
@@ -324,6 +327,15 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::Polygon> &polys )
             geometry->addPrimitiveSet( 
                     new osg::DrawArrays(osg::PrimitiveSet::POLYGON, index, len));
         }
+
+        // Use osgUtil::Tesselator to handle concave polygons
+        osg::ref_ptr<osgUtil::Tesselator> tscx=new osgUtil::Tesselator;
+        tscx->setTesselationType(osgUtil::Tesselator::TESS_TYPE_GEOMETRY);
+        tscx->setBoundaryOnly(false);
+        tscx->setWindingType( osgUtil::Tesselator::TESS_WINDING_ODD);
+
+        tscx->retesselatePolygons(*(geometry.get()));
+
         _geode->addDrawable( geometry.get() );
     }
 }

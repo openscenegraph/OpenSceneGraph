@@ -5,7 +5,7 @@ REM trees.
 REM mew 2004-07-16
 
 cd ..\..
-set PATH=%CD%\OpenThreads\bin\win32;%CD%\Producer\bin;%CD%\OpenSceneGraph\bin;%CD%\3rdParty\bin;%PATH%
+set PATH=%CD%\OpenThreads\bin\win32;%CD%\Producer\bin\win32;%CD%\OpenSceneGraph\bin\win32;%CD%\3rdParty\bin;%PATH%
 set OSG_FILE_PATH=%CD%\OpenSceneGraph-Data;%CD%\OpenSceneGraph-Data\Images;%CD%\OpenSceneGraph-Data\fonts
 REM set PRODUCER_CAMERA_CONFIG_FILE=%CD%\Producer-Data\1win.cfg
 

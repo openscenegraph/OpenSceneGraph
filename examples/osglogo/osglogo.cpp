@@ -423,7 +423,7 @@ osg::Node* createLogo(const std::string& filename)
 //     backdrop->addChild(createBackdrop(corner,top,right));
 
     osg::ClearNode* backdrop = new osg::ClearNode;
-    backdrop->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    backdrop->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,0.0f));
 
     //osg::Vec3 lightPosition(-500.0f,-2500.0f,500.0f);
     //osg::Node* scene = createShadowedScene(logo_group,backdrop,lightPosition,0.0f,0);
@@ -449,13 +449,18 @@ int main( int argc, char **argv )
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates both text, animation and billboard via custom transform to create the OpenSceneGraph logo..");
    
-arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+"[options] [filename] ...");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+"[options] [filename] ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("ps","Render the Professional Services logo");
+   
+   
+    osg::DisplaySettings::instance()->setMinimumNumAlphaBits(8);
    
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
 
+    viewer.setWriteImageFileName("logo.rgb");
+    
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 

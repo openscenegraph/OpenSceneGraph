@@ -121,6 +121,7 @@ void sizeOfTest()
   std::cout<<"sizeof(bool)=="<<sizeof(bool)<<std::endl;
   std::cout<<"sizeof(char)=="<<sizeof(char)<<std::endl;
   std::cout<<"sizeof(short)=="<<sizeof(short)<<std::endl;
+  std::cout<<"sizeof(short int)=="<<sizeof(short int)<<std::endl;
   std::cout<<"sizeof(int)=="<<sizeof(int)<<std::endl;
   std::cout<<"sizeof(long)=="<<sizeof(long)<<std::endl;
   std::cout<<"sizeof(long int)=="<<sizeof(long int)<<std::endl;

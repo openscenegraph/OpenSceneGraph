@@ -12,6 +12,8 @@ COMPILE_EXAMPLES ?= no
 
 # follows are dependenices on the various plugins.
 
+COLLADA_INSTALLED ?= no
+
 GDAL_INSTALLED ?= no
 JASPER_INSTALLED ?= no
 

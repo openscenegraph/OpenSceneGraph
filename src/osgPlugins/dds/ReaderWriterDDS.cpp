@@ -631,65 +631,23 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 
 
     // Write DDS file
-    unsigned char *header = new unsigned char[128];
-    char *ddsName = "DDS ";
-    memcpy(header, ddsName, 4);
-    memcpy(header+4, &ddsd, sizeof(ddsd));
+    fout.write("DDS ", 4); /* write FOURCC */
+    fout.write(reinterpret_cast<char*>(&ddsd), sizeof(ddsd)); /* write file header */
 
-    fout.write(reinterpret_cast<char*>(header), sizeof(ddsd)+4);  /* write file header */
-
-    int isize = img->getTotalSizeInBytesIncludingMipmaps();
-    unsigned char *buffer = new unsigned char[isize];
-    unsigned char *dataPtr = buffer;
-
+    //    int isize = img->getTotalSizeInBytesIncludingMipmaps();
     if(!is3dImage)
     {
-        // Copy main image data //
-        memcpy(dataPtr, img->data(), imageSize);
-
-        // Handle mipmaps if any
-        if(img->isMipmap())
-        {
-            dataPtr += imageSize;
-            const unsigned char *mmdPtr, *next_mmdPtr;
-            int offset;
-            unsigned int mipmaps = img->getNumMipmapLevels();
-            unsigned int blockSize;
-            if(ddsd.dwFlags & DDSD_LINEARSIZE) // COMPRESSED
-                blockSize = (pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
-            else
-                blockSize = pixelSize;    
-
-            mmdPtr = img->getMipmapData(1); /* get the first mipmap address */
-
-            for(unsigned int mID = 1 ; mID < mipmaps; mID++)
-            {
-                // the last mipmap is 1x1 so we assign size equal to the blockSize 
-                next_mmdPtr = (mID == mipmaps-1) ? (mmdPtr+blockSize) : img->getMipmapData(mID+1);
-                offset = next_mmdPtr - mmdPtr;
-
-                memcpy(dataPtr, mmdPtr, offset);
-
-                mmdPtr  += offset;
-                dataPtr += offset;
-            }
-        }
+        fout.write(reinterpret_cast<const char*>(img->data()), img->getTotalSizeInBytesIncludingMipmaps());
     }
     else  /* 3d image */
     {
         for(int i = 0; i < r; ++i)
         {
-            memcpy(dataPtr, img->data(0, 0, i), imageSize);  
-            dataPtr += imageSize;
+            fout.write(reinterpret_cast<const char*>(img->data(0, 0, i)), imageSize);
         }
     }
 
     // Check for correct saving
-    fout.write(reinterpret_cast<char*>(buffer), isize);
-    
-    delete [] header;
-    delete [] buffer;
-
     if (fout.fail())
     {
         return false;
@@ -729,6 +687,7 @@ public:
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file, options );
+    
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
         
         std::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);

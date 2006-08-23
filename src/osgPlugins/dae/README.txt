@@ -23,7 +23,7 @@ polygon : export polygons as COLLADA polygons instead of polylists.
           ex : osgconv -O polygon myFile.osg myFile.dae
 
 
-BUILD DEPENDENCIESmaterial
+BUILD DEPENDENCIES
 
 - COLLADA DOM (document object model) v1.4.1
   see http://sourceforge.net/projects/collada-dom
@@ -37,7 +37,7 @@ UNIX BUILD
 
 set the env vars:
 
-  COLLDA_INSTEAD = yes
+  COLLADA_INSTALLED = yes
   COLLADA_DAE_HOME = root directory of COLLADA DOM
    
   And if you've compiled the debug version of the COLLADA DOM then define:

@@ -723,32 +723,41 @@ void Image::flipHorizontal()
 {
     if (_data==NULL)
     {
-        notify(WARN) << "Error Image::flipHorizontal() do not succeed : cannot flip NULL image."<<std::endl;
+        notify(WARN) << "Error Image::flipHorizontal() did not succeed : cannot flip NULL image."<<std::endl;
         return;
     }
 
     unsigned int elemSize = getPixelSizeInBits()/8;
 
-    for(int r=0;r<_r;++r)
+    if (_mipmapData.empty())
     {
-        for (int t=0; t<_t; ++t)
-        {
-            unsigned char* rowData = _data+t*getRowSizeInBytes()+r*getImageSizeInBytes();
-            unsigned char* left  = rowData ;
-            unsigned char* right = rowData + ((_s-1)*getPixelSizeInBits())/8;
 
-            while (left < right)
+        for(int r=0;r<_r;++r)
+        {
+            for (int t=0; t<_t; ++t)
             {
-                char tmp[32];  // max elem size is four floats
-                memcpy(tmp, left, elemSize);
-                memcpy(left, right, elemSize);
-                memcpy(right, tmp, elemSize);
-                left  += elemSize;
-                right -= elemSize;
+                unsigned char* rowData = _data+t*getRowSizeInBytes()+r*getImageSizeInBytes();
+                unsigned char* left  = rowData ;
+                unsigned char* right = rowData + ((_s-1)*getPixelSizeInBits())/8;
+
+                while (left < right)
+                {
+                    char tmp[32];  // max elem size is four floats
+                    memcpy(tmp, left, elemSize);
+                    memcpy(left, right, elemSize);
+                    memcpy(right, tmp, elemSize);
+                    left  += elemSize;
+                    right -= elemSize;
+                }
             }
         }
     }
-    
+    else
+    {
+        notify(WARN) << "Error Image::flipHorizontal() did not succeed : cannot flip mipmapped image."<<std::endl;
+        return;
+    }
+        
     ++_modifiedCount;
 }
 

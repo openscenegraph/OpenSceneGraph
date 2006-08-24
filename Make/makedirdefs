@@ -109,7 +109,7 @@ ifeq ($(GDAL_INSTALLED),yes)
 endif
 
 ifeq ($(COLLADA_INSTALLED),yes)
-    PLUGIN_DIRS += gdal
+    PLUGIN_DIRS += dae
 endif
 
 ifeq ($(XINE_INSTALLED),yes)
@@ -226,7 +226,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osglogicop \
 	osglogo \
         osgmotionblur \
-        osgmove \
         osgmovie \
 	osgmultitexture \
 	osgmultiplecameras \

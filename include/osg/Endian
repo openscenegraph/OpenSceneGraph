@@ -42,46 +42,37 @@ inline void swapBytes( char* in, unsigned int size )
     {
         std::swap(*start++,*end--);
     }
-    
 }
 
 inline void swapBytes2( char* in )
 {
-    char* start = in;
-    char* end = start+1;
-    std::swap(*start,*end);
+    std::swap(in[0],in[1]);
 }
 
 inline void swapBytes4( char* in )
 {
-    char* start = in;
-    char* end = start+3;
-    std::swap(*start++,*end--);
-    std::swap(*start,*end);
+    std::swap(in[0],in[3]);
+    std::swap(in[1],in[2]);
 }
 
 inline void swapBytes8( char* in )
 {
-    char* start = in;
-    char* end = start+7;
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start,*end);
+    std::swap(in[0],in[7]);
+    std::swap(in[1],in[6]);
+    std::swap(in[2],in[5]);
+    std::swap(in[3],in[4]);
 }
 
 inline void swapBytes16( char* in )
 {
-    char* start = in;
-    char* end = start+15;
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start++,*end--);
-    std::swap(*start,*end);
+    std::swap(in[0],in[15]);
+    std::swap(in[1],in[14]);
+    std::swap(in[2],in[13]);
+    std::swap(in[3],in[12]);
+    std::swap(in[4],in[11]);
+    std::swap(in[5],in[10]);
+    std::swap(in[6],in[9]);
+    std::swap(in[7],in[8]);
 }
 
 }

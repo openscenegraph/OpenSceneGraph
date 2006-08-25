@@ -182,7 +182,7 @@ void BufferObject::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glGetBufferParameteriv) _glGetBufferPointerv = rhs._glGetBufferPointerv;
 }
 
-void BufferObject::Extensions::setupGLExtenions(unsigned int)
+void BufferObject::Extensions::setupGLExtenions(unsigned int contextID)
 {
     _glGenBuffers = ((GenBuffersProc)osg::getGLExtensionFuncPtr("glGenBuffers","glGenBuffersARB"));
     _glBindBuffer = ((BindBufferProc)osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB"));
@@ -195,6 +195,7 @@ void BufferObject::Extensions::setupGLExtenions(unsigned int)
     _glUnmapBuffer = ((UnmapBufferProc)osg::getGLExtensionFuncPtr("glUnmapBuffer","glUnmapBufferARB"));
     _glGetBufferParameteriv = ((GetBufferParameterivProc)osg::getGLExtensionFuncPtr("glGetBufferParameteriv","glGetBufferParameterivARB"));
     _glGetBufferPointerv = ((GetBufferPointervProc)osg::getGLExtensionFuncPtr("glGetBufferPointerv","glGetBufferPointervARB"));
+    _isPBOSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
 }
 
 void BufferObject::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const

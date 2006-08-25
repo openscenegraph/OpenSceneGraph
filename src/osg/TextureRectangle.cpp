@@ -283,7 +283,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isBufferObjectSupported(contextID))
+    if (pbo && pbo->isPBOSupported(contextID))
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);
@@ -350,7 +350,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isBufferObjectSupported(contextID))
+    if (pbo && pbo->isPBOSupported(contextID))
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);

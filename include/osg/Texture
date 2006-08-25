@@ -405,7 +405,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Sets shadow texture comparison function. */
         void setShadowCompareFunc(ShadowCompareFunc func) { _shadow_compare_func = func; }
-        ShadowCompareFunc getShadowCompareFunc() { return _shadow_compare_func; }
+        ShadowCompareFunc getShadowCompareFunc() const { return _shadow_compare_func; }
 
         enum ShadowTextureMode {
             LUMINANCE = GL_LUMINANCE,
@@ -415,12 +415,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Sets shadow texture mode after comparison. */
         void setShadowTextureMode(ShadowTextureMode mode) { _shadow_texture_mode = mode; }
-        ShadowTextureMode getShadowTextureMode() { return _shadow_texture_mode; }
+        ShadowTextureMode getShadowTextureMode() const { return _shadow_texture_mode; }
 
         /** Sets the TEXTURE_COMPARE_FAIL_VALUE_ARB texture parameter. See
           * http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt. */
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
-        float getShadowAmbient() { return _shadow_ambient; }
+        float getShadowAmbient() const { return _shadow_ambient; }
         
 
         /** Sets the texture image for the specified face. */

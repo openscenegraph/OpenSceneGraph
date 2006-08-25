@@ -2985,6 +2985,33 @@ void Optimizer::TextureAtlasBuilder::addSource(const osg::Texture2D* texture)
 
 void Optimizer::TextureAtlasBuilder::buildAtlas()
 {
+    for(SourceList::iterator sitr = _sourceList.begin();
+        sitr != _sourceList.end();
+        ++sitr)
+    {
+        Source* source = sitr->get();
+        if (source->suitableForAtlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin))
+        {
+            bool addedSourceToAtlas = false;
+            for(AtlasList::iterator aitr = _atlasList.begin();
+                aitr != _atlasList.end() || addedSourceToAtlas;
+                ++aitr)
+            {
+                if ((*aitr)->doesSourceFit(source))
+                {
+                    (*aitr)->addSource(source);
+                }
+            }
+
+            if (!addedSourceToAtlas)
+            {
+                osg::ref_ptr<Atlas> atlas = new Atlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin);
+                _atlasList.push_back(atlas.get());
+                
+                atlas->addSource(source);
+            }
+        }
+    }
 }
 
 osg::Image* Optimizer::TextureAtlasBuilder::getImageAtlas(unsigned int i)
@@ -3069,6 +3096,41 @@ Optimizer::TextureAtlasBuilder::Source* Optimizer::TextureAtlasBuilder::getSourc
     return 0;
 }
 
+bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maximumAtlasWidth, unsigned int maximumAtlasHeight, unsigned int margin)
+{
+    if (!_image) return false;
+    
+    // size too big?
+    if (_image->s()+margin*2 > maximumAtlasWidth) return false;
+    if (_image->t()+margin*2 > maximumAtlasHeight) return false;
+    
+    // FIXME need to handle compressed textures...
+
+    if (_texture.valid())
+    {
+        if (_texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
+            _texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR)
+        {
+            // can't support repeating textures in texture atlas
+            return false;
+        }
+
+        if (_texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
+            _texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR)
+        {
+            // can't support repeating textures in texture atlas
+            return false;
+        }
+
+        if (_texture->getReadPBuffer()!=0)
+        {
+            // pbuffer textures not suitable
+            return false;
+        }
+    }
+    return true;
+}
+
 osg::Matrix Optimizer::TextureAtlasBuilder::Source::computeTextureMatrix() const
 {
     return osg::Matrix();
@@ -3101,6 +3163,12 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
             sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR)
         {
             // can't support repeating textures in texture atlas
+            return false;
+        }
+
+        if (sourceTexture->getReadPBuffer()!=0)
+        {
+            // pbuffer textures not suitable
             return false;
         }
 
@@ -3155,7 +3223,6 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
                 return false;
             }
                 
-                
             if (_texture->getShadowTextureMode() != sourceTexture->getShadowTextureMode())
             {
                 // shadow texture mode inconsitent
@@ -3165,12 +3232,6 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
             if (_texture->getShadowAmbient() != sourceTexture->getShadowAmbient())
             {
                 // shadow ambient inconsitent
-                return false;
-            }
-            
-            if (sourceTexture->getReadPBuffer()!=0)
-            {
-                // pbuffer textures not suitable
                 return false;
             }
         }
@@ -3315,7 +3376,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
         itr !=_sourceList.end();
         ++itr)
     {
-        osg::notify(osg::NOTICE)<<"Copying image "<<itr->_image->getFileName()<<" to "<<itr->_x<<" ,"<<itr->_y<<std::endl;
+        osg::notify(osg::NOTICE)<<"Copying image "<<(*itr)->_image->getFileName()<<" to "<<(*itr)->_x<<" ,"<<(*itr)->_y<<std::endl;
     }
 }
 

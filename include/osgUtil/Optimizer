@@ -18,6 +18,7 @@
 #include <osg/Matrix>
 #include <osg/Geometry>
 #include <osg/Transform>
+#include <osg/Texture2D>
 
 #include <osgUtil/Export>
 
@@ -568,6 +569,125 @@ class OSGUTIL_EXPORT Optimizer
 
                 BillboardNodePathMap _billboards;
 
+        };
+        
+        /** Texture Atlas Builder creates a set of textures/images which each contain multiple images.
+          * Texture Atlas' are used to make it possible to use much wider batching of data. */
+        class OSGUTIL_EXPORT TextureAtlasBuilder
+        {
+        public:
+            TextureAtlasBuilder();
+            
+            void setMaximumAtlasSize(unsigned int width, unsigned int height);
+
+            unsigned int getMaximumAtlasWidth() const { return _maximumAtlasWidth; }
+            unsigned int getMaximumAtlasHeight() const { return _maximumAtlasHeight; }
+            
+            void setMargin(unsigned int margin);
+            unsigned int getMargin() const { return _margin; }
+
+            void addSource(const osg::Image* image);
+            void addSource(const osg::Texture2D* texture);
+            
+            unsigned int getNumSources() const { return _sourceList.size(); }
+            const osg::Image* getSourceImage(unsigned int i) { return _sourceList[i]->_image.get(); }
+            const osg::Texture2D* getSourceTexture(unsigned int i) { return _sourceList[i]->_texture.get(); }
+            
+            void buildAtlas();
+            
+            osg::Image* getImageAtlas(unsigned int i);
+            osg::Texture2D* getTextureAtlas(unsigned int i);
+            osg::Matrix getTextureMatrix(unsigned int i);
+            
+            osg::Image* getImageAtlas(const osg::Image* image);
+            osg::Texture2D* getTextureAtlas(const osg::Image* image);
+            osg::Matrix getTextureMatrix(const osg::Image* image);
+            
+            osg::Image* getImageAtlas(const osg::Texture2D* image);
+            osg::Texture2D* getTextureAtlas(const osg::Texture2D* texture);
+            osg::Matrix getTextureMatrix(const osg::Texture2D* texture);
+            
+        protected:
+        
+            unsigned int _maximumAtlasWidth;
+            unsigned int _maximumAtlasHeight;
+            unsigned int _margin;
+            
+
+            // forward declare
+            class Atlas;
+            
+            class Source : public osg::Referenced
+            {
+            public:
+                Source():
+                    _x(0),_y(0),_atlas(0) {}
+
+                Source(const osg::Image* image):
+                    _x(0),_y(0),_atlas(0),_image(image) {}
+
+                Source(const osg::Texture2D* texture):
+                    _x(0),_y(0),_atlas(0),_texture(texture) { if (texture) _image = texture->getImage(); }
+            
+                unsigned int _x;
+                unsigned int _y;
+                Atlas* _atlas;
+
+                osg::ref_ptr<const osg::Image> _image;
+                osg::ref_ptr<const osg::Texture2D> _texture;
+                
+                osg::Matrix computeTextureMatrix() const;
+                
+                
+            protected:
+            
+                virtual ~Source() {}
+            };
+            
+            typedef std::vector< osg::ref_ptr<Source> > SourceList;
+
+            class Atlas : public osg::Referenced
+            {
+            public:
+                Atlas(unsigned int width, unsigned height, unsigned margin):
+                    _maximumAtlasWidth(width),
+                    _maximumAtlasHeight(height),
+                    _margin(margin),
+                    _x(0),
+                    _width(0),
+                    _height(0){}
+        
+                unsigned int _maximumAtlasWidth;
+                unsigned int _maximumAtlasHeight;
+                unsigned int _margin;
+
+                osg::ref_ptr<osg::Texture2D> _texture;
+                osg::ref_ptr<osg::Image> _image;
+            
+                SourceList _sourceList;
+                
+                unsigned int _x;
+                unsigned int _y;
+                unsigned int _width;
+                unsigned int _height;
+                
+                bool doesSourceFit(Source* source);
+                bool addSource(Source* source);
+                void clampToNearestPowerOfTwoSize();
+                void copySources();
+                
+            protected:
+            
+                virtual ~Atlas() {}
+            };
+            
+            typedef std::vector< osg::ref_ptr<Atlas> > AtlasList;
+            
+            Source* getSource(const osg::Image* image);
+            Source* getSource(const osg::Texture2D* texture);
+
+            SourceList _sourceList;
+            AtlasList _atasList;    
         };
 
 };

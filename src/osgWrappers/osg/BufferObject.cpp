@@ -31,6 +31,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method1(bool, isBufferObjectSupported, IN, unsigned int, contextID);
+	I_Method1(bool, isPBOSupported, IN, unsigned int, contextID);
 	I_Method1(GLuint &, buffer, IN, unsigned int, contextID);
 	I_Method1(void, bindBuffer, IN, unsigned int, contextID);
 	I_Method1(void, unbindBuffer, IN, unsigned int, contextID);
@@ -52,6 +53,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 	I_Method1(void, lowestCommonDenominator, IN, const osg::BufferObject::Extensions &, rhs);
 	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
 	I_Method0(bool, isBufferObjectSupported);
+	I_Method0(bool, isPBOSupported);
 	I_Method2(void, glGenBuffers, IN, GLsizei, n, IN, GLuint *, buffers);
 	I_Method2(void, glBindBuffer, IN, GLenum, target, IN, GLuint, buffer);
 	I_Method4(void, glBufferData, IN, GLenum, target, IN, GLsizeiptrARB, size, IN, const GLvoid *, data, IN, GLenum, usage);

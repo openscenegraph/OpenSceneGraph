@@ -2949,3 +2949,373 @@ void Optimizer::FlattenBillboardVisitor::process()
 
 }
 
+
+
+////////////////////////////////////////////////////////////////////////////
+// TextureAtlasBuilder
+////////////////////////////////////////////////////////////////////////////
+
+Optimizer::TextureAtlasBuilder::TextureAtlasBuilder():
+    _maximumAtlasWidth(2048),
+    _maximumAtlasHeight(2048),
+    _margin(16)
+{
+}
+
+void Optimizer::TextureAtlasBuilder::setMaximumAtlasSize(unsigned int width, unsigned int height)
+{
+    _maximumAtlasWidth = width;
+    _maximumAtlasHeight = height;
+}
+
+void Optimizer::TextureAtlasBuilder::setMargin(unsigned int margin)
+{
+    _margin = margin;
+}
+
+void Optimizer::TextureAtlasBuilder::addSource(const osg::Image* image)
+{
+    if (!getSource(image)) _sourceList.push_back(new Source(image));
+}
+
+void Optimizer::TextureAtlasBuilder::addSource(const osg::Texture2D* texture)
+{
+    if (!getSource(texture)) _sourceList.push_back(new Source(texture));
+}
+
+void Optimizer::TextureAtlasBuilder::buildAtlas()
+{
+}
+
+osg::Image* Optimizer::TextureAtlasBuilder::getImageAtlas(unsigned int i)
+{
+    Source* source = _sourceList[i].get();
+    Atlas* atlas = source ? source->_atlas : 0;
+    return atlas ? atlas->_image.get() : 0;
+}
+
+osg::Texture2D* Optimizer::TextureAtlasBuilder::getTextureAtlas(unsigned int i)
+{
+    Source* source = _sourceList[i].get();
+    Atlas* atlas = source ? source->_atlas : 0;
+    return atlas ? atlas->_texture.get() : 0;
+}
+
+osg::Matrix Optimizer::TextureAtlasBuilder::getTextureMatrix(unsigned int i)
+{
+    Source* source = _sourceList[i].get();
+    return source ? source->computeTextureMatrix() : osg::Matrix();
+}
+
+osg::Image* Optimizer::TextureAtlasBuilder::getImageAtlas(const osg::Image* image)
+{
+    Source* source = getSource(image);
+    Atlas* atlas = source ? source->_atlas : 0;
+    return atlas ? atlas->_image.get() : 0;
+}
+
+osg::Texture2D* Optimizer::TextureAtlasBuilder::getTextureAtlas(const osg::Image* image)
+{
+    Source* source = getSource(image);
+    Atlas* atlas = source ? source->_atlas : 0;
+    return atlas ? atlas->_texture.get() : 0;
+}
+
+osg::Matrix Optimizer::TextureAtlasBuilder::getTextureMatrix(const osg::Image* image)
+{
+    Source* source = getSource(image);
+    return source ? source->computeTextureMatrix() : osg::Matrix();
+}
+
+osg::Image* Optimizer::TextureAtlasBuilder::getImageAtlas(const osg::Texture2D* texture)
+{
+    Source* source = getSource(texture);
+    Atlas* atlas = source ? source->_atlas : 0;
+    return atlas ? atlas->_image.get() : 0;
+}
+
+osg::Texture2D* Optimizer::TextureAtlasBuilder::getTextureAtlas(const osg::Texture2D* texture)
+{
+    Source* source = getSource(texture);
+    Atlas* atlas = source ? source->_atlas : 0;
+    return atlas ? atlas->_texture.get() : 0;
+}
+
+osg::Matrix Optimizer::TextureAtlasBuilder::getTextureMatrix(const osg::Texture2D* texture)
+{
+    Source* source = getSource(texture);
+    return source ? source->computeTextureMatrix() : osg::Matrix();
+}
+
+Optimizer::TextureAtlasBuilder::Source* Optimizer::TextureAtlasBuilder::getSource(const osg::Image* image)
+{
+    for(SourceList::iterator itr = _sourceList.begin();
+        itr != _sourceList.end();
+        ++itr)
+    {
+        if ((*itr)->_image == image) return itr->get();
+    }
+    return 0;
+}
+
+Optimizer::TextureAtlasBuilder::Source* Optimizer::TextureAtlasBuilder::getSource(const osg::Texture2D* texture)
+{
+    for(SourceList::iterator itr = _sourceList.begin();
+        itr != _sourceList.end();
+        ++itr)
+    {
+        if ((*itr)->_texture == texture) return itr->get();
+    }
+    return 0;
+}
+
+osg::Matrix Optimizer::TextureAtlasBuilder::Source::computeTextureMatrix() const
+{
+    return osg::Matrix();
+}
+
+bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
+{
+    // does the source have a valid image?
+    const osg::Image* sourceImage = source->_image.get();
+    if (!sourceImage) return false;
+    
+    // does pixel format match?
+    if (_image.valid())
+    {
+        if (_image->getPixelFormat() != sourceImage->getPixelFormat()) return false;
+        if (_image->getDataType() != sourceImage->getDataType()) return false;
+    }
+    
+    const osg::Texture2D* sourceTexture = source->_texture.get();
+    if (sourceTexture)
+    {
+        if (sourceTexture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
+            sourceTexture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR)
+        {
+            // can't support repeating textures in texture atlas
+            return false;
+        }
+
+        if (sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
+            sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR)
+        {
+            // can't support repeating textures in texture atlas
+            return false;
+        }
+
+        if (_texture.valid())
+        {
+
+            bool sourceUsesBorder = sourceTexture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::CLAMP_TO_BORDER || 
+                                    sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::CLAMP_TO_BORDER;
+
+            bool atlasUsesBorder = sourceTexture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::CLAMP_TO_BORDER || 
+                                   sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::CLAMP_TO_BORDER;
+
+            if (sourceUsesBorder!=atlasUsesBorder)
+            {
+                // border wrapping does not match
+                return false;
+            }
+
+            if (sourceUsesBorder)
+            {
+                // border colours don't match
+                if (_texture->getBorderColor() != sourceTexture->getBorderColor()) return false;
+            }
+            
+            if (_texture->getFilter(osg::Texture2D::MIN_FILTER) != sourceTexture->getFilter(osg::Texture2D::MIN_FILTER))
+            {
+                // inconsitent min filters
+                return false;
+            }
+ 
+            if (_texture->getFilter(osg::Texture2D::MAG_FILTER) != sourceTexture->getFilter(osg::Texture2D::MAG_FILTER))
+            {
+                // inconsitent mag filters
+                return false;
+            }
+            
+            if (_texture->getMaxAnisotropy() != sourceTexture->getMaxAnisotropy())
+            {
+                // anisotropy different.
+                return false;
+            }
+            
+            if (_texture->getInternalFormat() != sourceTexture->getInternalFormat())
+            {
+                // internal formats inconistent
+                return false;
+            }
+            
+            if (_texture->getShadowCompareFunc() != sourceTexture->getShadowCompareFunc())
+            {
+                // shadow functions inconsitent
+                return false;
+            }
+                
+                
+            if (_texture->getShadowTextureMode() != sourceTexture->getShadowTextureMode())
+            {
+                // shadow texture mode inconsitent
+                return false;
+            }
+
+            if (_texture->getShadowAmbient() != sourceTexture->getShadowAmbient())
+            {
+                // shadow ambient inconsitent
+                return false;
+            }
+            
+            if (sourceTexture->getReadPBuffer()!=0)
+            {
+                // pbuffer textures not suitable
+                return false;
+            }
+        }
+    }
+    
+    if (sourceImage->s() + 2*_margin > _maximumAtlasWidth)
+    {
+        // image too big for Atlas
+        return false;
+    }
+    
+    if (sourceImage->t() + 2*_margin > _maximumAtlasHeight)
+    {
+        // image too big for Atlas
+        return false;
+    }
+
+    if ((_y + sourceImage->t() + 2*_margin) > _maximumAtlasWidth)
+    {
+        // image doesn't have up space in height axis.
+    }
+
+    // does the source fit in the current row?
+    if ((_x + sourceImage->s() + 2*_margin) <= _maximumAtlasWidth)
+    {
+        // yes it fits :-)
+        return true;
+    }
+
+    // does the source fit in the new row up?
+    if ((_height + sourceImage->t() + 2*_margin) <= _maximumAtlasHeight)
+    {
+        // yes it fits :-)
+        return true;
+    }
+    
+    // no space for the texture
+    return false;
+}
+
+bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
+{
+    // double check source is compatible
+    if (!doesSourceFit(source)) return false;
+    
+    const osg::Image* sourceImage = source->_image.get();
+    const osg::Texture2D* sourceTexture = source->_texture.get();
+
+    if (!_image)
+    {
+        // need to create an image of the same pixel format to store the atlas in
+        _image = new osg::Image;
+        _image->setPixelFormat(sourceImage->getPixelFormat());
+        _image->setDataType(sourceImage->getDataType());
+    }
+    
+    if (!_texture && sourceTexture)
+    {
+        _texture = new osg::Texture2D(_image.get());
+
+        _texture->setWrap(osg::Texture2D::WRAP_S, sourceTexture->getWrap(osg::Texture2D::WRAP_S));
+        _texture->setWrap(osg::Texture2D::WRAP_T, sourceTexture->getWrap(osg::Texture2D::WRAP_T));
+        
+        _texture->setBorderColor(sourceTexture->getBorderColor());
+        _texture->setBorderWidth(0);
+            
+        _texture->setFilter(osg::Texture2D::MIN_FILTER, sourceTexture->getFilter(osg::Texture2D::MIN_FILTER));
+        _texture->setFilter(osg::Texture2D::MAG_FILTER, sourceTexture->getFilter(osg::Texture2D::MAG_FILTER));
+
+        _texture->setMaxAnisotropy(sourceTexture->getMaxAnisotropy());
+
+        _texture->setInternalFormat(sourceTexture->getInternalFormat());
+
+        _texture->setShadowCompareFunc(sourceTexture->getShadowCompareFunc());
+        _texture->setShadowTextureMode(sourceTexture->getShadowTextureMode());
+        _texture->setShadowAmbient(sourceTexture->getShadowAmbient());
+
+    }
+
+    // now work out where to fit it, first try current row.
+    if ((_x + sourceImage->s() + 2*_margin) <= _maximumAtlasWidth)
+    {
+        // yes it fits, so add the source to the atlas's list of sources it contains
+        _sourceList.push_back(source);
+
+        // set up the source so it knows where it is in the atlas
+        source->_x = _x + _margin;
+        source->_y = _y + _margin;
+        source->_atlas = this;
+        
+        // move the atlas' cursor along to the right
+        _x += sourceImage->s() + 2*_margin;
+        
+        if (_x > _width) _width = _x;
+        
+        return true;
+    }
+
+    // does the source fit in the new row up?
+    if ((_height + sourceImage->t() + 2*_margin) <= _maximumAtlasHeight)
+    {
+        // now row so first need to reset the atlas cursor
+        _x = 0;
+        _y = _height;
+
+        // yes it fits, so add the source to the atlas' list of sources it contains
+        _sourceList.push_back(source);
+
+        // set up the source so it knows where it is in the atlas
+        source->_x = _x + _margin;
+        source->_y = _y + _margin;
+        source->_atlas = this;
+        
+        // move the atlas' cursor along to the right
+        _x += sourceImage->s() + 2*_margin;
+        
+        return true;
+    }
+
+    // shouldn't get here, unless doesSourceFit isn't working...
+    return false;
+}
+
+void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
+{
+    unsigned int w = 1;
+    while (w<_width) w *= 2;
+
+    unsigned int h = 1;
+    while (h<_height) h *= 2;
+    
+    osg::notify(osg::NOTICE)<<"Clamping "<<_width<<", "<<_height<<" to "<<w<<","<<h<<std::endl;
+    
+    _width = w;
+    _height = w;
+}
+
+void Optimizer::TextureAtlasBuilder::Atlas::copySources()
+{
+    osg::notify(osg::NOTICE)<<"Atlas::copySources() "<<std::endl;
+    for(SourceList::iterator itr = _sourceList.begin();
+        itr !=_sourceList.end();
+        ++itr)
+    {
+        osg::notify(osg::NOTICE)<<"Copying image "<<itr->_image->getFileName()<<" to "<<itr->_x<<" ,"<<itr->_y<<std::endl;
+    }
+}
+

@@ -334,7 +334,7 @@ void Image::setPixelFormat(GLenum pixelFormat)
 {
     if (_pixelFormat==pixelFormat) return; // do nothing if the same.
 
-    if (computeNumComponents(_pixelFormat)==computeNumComponents(pixelFormat))
+    if (_pixelFormat==0 || computeNumComponents(_pixelFormat)==computeNumComponents(pixelFormat))
     {
        // if the two formats have the same number of componets then
        // we can do a straight swap.
@@ -345,6 +345,22 @@ void Image::setPixelFormat(GLenum pixelFormat)
         notify(WARN)<<"Image::setPixelFormat(..) - warning, attempt to reset the pixel format with a different number of components."<<std::endl;
     }
 }
+
+void Image::setDataType(GLenum dataType)
+{
+    if (_dataType==dataType) return; // do nothing if the same.
+
+    if (_dataType==0)
+    {
+        // setting the datatype for the first time
+        _dataType = dataType;
+    }
+    else
+    {
+        notify(WARN)<<"Image::setDataType(..) - warning, attempt to reset the data type not permitted."<<std::endl;
+    }
+}
+
 
 void Image::allocateImage(int s,int t,int r,
                         GLenum format,GLenum type,

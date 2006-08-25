@@ -636,6 +636,7 @@ class OSGUTIL_EXPORT Optimizer
                 osg::ref_ptr<const osg::Image> _image;
                 osg::ref_ptr<const osg::Texture2D> _texture;
                 
+                bool suitableForAtlas(unsigned int maximumAtlasWidth, unsigned int maximumAtlasHeight, unsigned int margin);
                 osg::Matrix computeTextureMatrix() const;
                 
                 
@@ -687,7 +688,7 @@ class OSGUTIL_EXPORT Optimizer
             Source* getSource(const osg::Texture2D* texture);
 
             SourceList _sourceList;
-            AtlasList _atasList;    
+            AtlasList _atlasList;    
         };
 
 };

@@ -442,6 +442,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Get the PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
         GraphicsContext* getReadPBuffer() { return _readPBuffer.get(); }
 
+        /** Get the const PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
+        const GraphicsContext* getReadPBuffer() const { return _readPBuffer.get(); }
+
         /** Texture is a pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;
 

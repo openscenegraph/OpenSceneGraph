@@ -1128,6 +1128,7 @@
 		002BE3810769069900D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		002BED3107691F7500D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		002BEF0C0769208400D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		003B78730A9E6ABB002037F4 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		004099310924CCC6009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099320924CCD0009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099330924CCDB009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
@@ -6985,6 +6986,7 @@
 			files = (
 				0079503B09D364DA003FC8A1 /* osg.framework in Frameworks */,
 				0079503C09D364DA003FC8A1 /* osgDB.framework in Frameworks */,
+				003B78730A9E6ABB002037F4 /* osgUtil.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -106,6 +106,7 @@ class OSG_EXPORT BufferObject : public Object
         };
 
         inline bool isBufferObjectSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isBufferObjectSupported(); }
+        inline bool isPBOSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isPBOSupported(); }
 
         inline GLuint& buffer(unsigned int contextID) const { return _bufferObjectList[contextID]; }
         
@@ -153,6 +154,7 @@ class OSG_EXPORT BufferObject : public Object
             void setupGLExtenions(unsigned int contextID);
 
             bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
+            bool isPBOSupported() const { return _isPBOSupported; }
 
             void glGenBuffers (GLsizei n, GLuint *buffers) const;
             void glBindBuffer (GLenum target, GLuint buffer) const;
@@ -192,6 +194,7 @@ class OSG_EXPORT BufferObject : public Object
             GetBufferParameterivProc _glGetBufferParameteriv;
             GetBufferPointervProc   _glGetBufferPointerv;
 
+            bool _isPBOSupported;
         };
 
         /** Function to call to get the extension of a specified context.

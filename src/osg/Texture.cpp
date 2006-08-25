@@ -897,7 +897,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isBufferObjectSupported(contextID) && !needImageRescale)
+    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale)
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);
@@ -1149,7 +1149,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     unsigned char* dataPlusOffset=0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isBufferObjectSupported(contextID) && !needImageRescale)
+    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale)
     {
         pbo->compileBuffer(state);
         pbo->bindBuffer(contextID);

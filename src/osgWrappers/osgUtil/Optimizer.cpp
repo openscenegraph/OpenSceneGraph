@@ -13,7 +13,9 @@
 #include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Group>
+#include <osg/Image>
 #include <osg/LOD>
+#include <osg/Matrix>
 #include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/Object>
@@ -21,6 +23,7 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Transform>
 #include <osgUtil/Optimizer>
 
@@ -218,6 +221,34 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TesselateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	I_Method1(void, apply, IN, osg::Geode &, geode);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
+	I_Constructor0();
+	I_Method2(void, setMaximumAtlasSize, IN, unsigned int, width, IN, unsigned int, height);
+	I_Method0(unsigned int, getMaximumAtlasWidth);
+	I_Method0(unsigned int, getMaximumAtlasHeight);
+	I_Method1(void, setMargin, IN, unsigned int, margin);
+	I_Method0(unsigned int, getMargin);
+	I_Method1(void, addSource, IN, const osg::Image *, image);
+	I_Method1(void, addSource, IN, const osg::Texture2D *, texture);
+	I_Method0(unsigned int, getNumSources);
+	I_Method1(const osg::Image *, getSourceImage, IN, unsigned int, i);
+	I_Method1(const osg::Texture2D *, getSourceTexture, IN, unsigned int, i);
+	I_Method0(void, buildAtlas);
+	I_Method1(osg::Image *, getImageAtlas, IN, unsigned int, i);
+	I_Method1(osg::Texture2D *, getTextureAtlas, IN, unsigned int, i);
+	I_Method1(osg::Matrix, getTextureMatrix, IN, unsigned int, i);
+	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Image *, image);
+	I_Method1(osg::Texture2D *, getTextureAtlas, IN, const osg::Image *, image);
+	I_Method1(osg::Matrix, getTextureMatrix, IN, const osg::Image *, image);
+	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Texture2D *, image);
+	I_Method1(osg::Texture2D *, getTextureAtlas, IN, const osg::Texture2D *, texture);
+	I_Method1(osg::Matrix, getTextureMatrix, IN, const osg::Texture2D *, texture);
+	I_Property(unsigned int, Margin);
+	I_ReadOnlyProperty(unsigned int, MaximumAtlasHeight);
+	I_ReadOnlyProperty(unsigned int, MaximumAtlasWidth);
+	I_ArrayProperty_Custom(const osg::Texture2D *, Source, Sources, unsigned int, void);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)

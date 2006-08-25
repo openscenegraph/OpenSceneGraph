@@ -58,7 +58,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_Method0(GLint, getInternalTextureFormat);
 	I_Method1(void, setPixelFormat, IN, GLenum, pixelFormat);
 	I_Method0(GLenum, getPixelFormat);
+	I_Method1(void, setDataType, IN, GLenum, dataType);
 	I_Method0(GLenum, getDataType);
+	I_Method1(void, setPacking, IN, unsigned int, packing);
 	I_Method0(unsigned int, getPacking);
 	I_Method0(unsigned int, getPixelSizeInBits);
 	I_Method0(unsigned int, getRowSizeInBytes);
@@ -88,13 +90,13 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_Method0(osg::PixelBufferObject *, getPixelBufferObject);
 	I_Method0(const osg::PixelBufferObject *, getPixelBufferObject);
 	I_Property(osg::Image::AllocationMode, AllocationMode);
-	I_ReadOnlyProperty(GLenum, DataType);
+	I_Property(GLenum, DataType);
 	I_Property(const std::string &, FileName);
 	I_ReadOnlyProperty(unsigned int, ImageSizeInBytes);
 	I_Property(GLint, InternalTextureFormat);
 	I_Property(const osg::Image::MipmapDataType &, MipmapLevels);
 	I_Property(unsigned int, ModifiedCount);
-	I_ReadOnlyProperty(unsigned int, Packing);
+	I_Property(unsigned int, Packing);
 	I_Property(osg::PixelBufferObject *, PixelBufferObject);
 	I_Property(GLenum, PixelFormat);
 	I_ReadOnlyProperty(unsigned int, PixelSizeInBits);

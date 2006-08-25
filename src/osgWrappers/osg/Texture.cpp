@@ -139,6 +139,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method0(unsigned int, getNumImages);
 	I_Method1(void, setReadPBuffer, IN, osg::GraphicsContext *, context);
 	I_Method0(osg::GraphicsContext *, getReadPBuffer);
+	I_Method0(const osg::GraphicsContext *, getReadPBuffer);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Method1(void, compileGLObjects, IN, osg::State &, state);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);

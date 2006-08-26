@@ -2985,6 +2985,8 @@ void Optimizer::TextureAtlasBuilder::addSource(const osg::Texture2D* texture)
 
 void Optimizer::TextureAtlasBuilder::buildAtlas()
 {
+    // assign the source to the atlas
+    _atlasList.clear();
     for(SourceList::iterator sitr = _sourceList.begin();
         sitr != _sourceList.end();
         ++sitr)
@@ -3012,6 +3014,35 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
             }
         }
     }
+    
+    // build the atlas which are suitable for use, and discard the rest.
+    AtlasList activeAtlasList;
+    for(AtlasList::iterator aitr = _atlasList.begin();
+        aitr != _atlasList.end();
+        ++aitr)
+    {
+        Atlas* atlas = aitr->get();
+
+        if (atlas->_sourceList.size()==1)
+        {
+            // no point building an atlas with only one entry
+            // so disconnect the source.
+            Source* source = atlas->_sourceList[1].get();
+            source->_atlas = 0;
+            atlas->_sourceList.clear();
+        }
+        
+        if (!(atlas->_sourceList.empty()))
+        {
+            activeAtlasList.push_back(atlas);
+            atlas->clampToNearestPowerOfTwoSize();
+            atlas->copySources();
+        }
+    }
+    
+    // keep only the active atlas'
+    _atlasList.swap(activeAtlasList);
+
 }
 
 osg::Image* Optimizer::TextureAtlasBuilder::getImageAtlas(unsigned int i)
@@ -3133,7 +3164,12 @@ bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maxim
 
 osg::Matrix Optimizer::TextureAtlasBuilder::Source::computeTextureMatrix() const
 {
-    return osg::Matrix();
+    if (!_atlas) return osg::Matrix();
+    if (!_image) return osg::Matrix();
+    if (!(_atlas->_image)) return osg::Matrix();
+    
+    return osg::Matrix::scale(float(_image->s())/float(_atlas->_image->s()), float(_image->t())/float(_atlas->_image->t()), 1.0)*
+           osg::Matrix::translate(float(_x)/float(_atlas->_image->s()), float(_y)/float(_atlas->_image->t()), 1.0);
 }
 
 bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
@@ -3376,7 +3412,29 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
         itr !=_sourceList.end();
         ++itr)
     {
-        osg::notify(osg::NOTICE)<<"Copying image "<<(*itr)->_image->getFileName()<<" to "<<(*itr)->_x<<" ,"<<(*itr)->_y<<std::endl;
+        Source* source = itr->get();
+        Atlas* atlas = source->_atlas;
+
+        if (atlas)
+        {
+            osg::notify(osg::NOTICE)<<"Copying image "<<source->_image->getFileName()<<" to "<<source->_x<<" ,"<<source->_y<<std::endl;
+
+            const osg::Image* sourceImage = source->_image.get();
+            osg::Image* atlasImage = atlas->_image.get();
+
+            unsigned int x = source->_y;
+            unsigned int y = source->_y;
+            unsigned int rowWidth = sourceImage->getRowSizeInBytes();
+            for(int t=0; t<sourceImage->t(); ++t, ++y)
+            {
+                unsigned char* destPtr = atlasImage->data(x, y);
+                const unsigned char* sourcePtr = sourceImage->data(0, t);
+                for(unsigned int i=0; i<rowWidth; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+            }
+        }
     }
 }
 

@@ -24,6 +24,7 @@
 #include <osg/StateSet>
 #include <osg/Notify>
 #include <osg/Texture2D>
+#include <osg/LightModel>
 
 
 #include <osgDB/FileNameUtils>
@@ -700,7 +701,12 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::R
                                 dstate->setTextureAttributeAndModes(0,ob.texture.get(),osg::StateAttribute::ON);
                             }
                             if (asurf.flags & SURFACE_TWOSIDED)
+                            {
+                                osg::LightModel *pLightModel = new osg::LightModel;
+                                pLightModel->setTwoSided(true);
+                                dstate->setAttributeAndModes(pLightModel);
                                 dstate->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+                            }
                             else
                                 dstate->setMode( GL_CULL_FACE, osg::StateAttribute::ON );
 

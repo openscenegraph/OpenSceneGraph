@@ -81,6 +81,7 @@ class OSGUTIL_EXPORT Optimizer
             OPTIMIZE_TEXTURE_SETTINGS = 0x800,
             MERGE_GEODES =              0x1000,
             FLATTEN_BILLBOARDS =        0x2000,
+            TEXTURE_ATLAS_BUILDER =     0x4000,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -100,7 +101,8 @@ class OSGUTIL_EXPORT Optimizer
                                 SPATIALIZE_GROUPS |
                                 COPY_SHARED_NODES |
                                 TRISTRIP_GEOMETRY |
-                                OPTIMIZE_TEXTURE_SETTINGS
+                                OPTIMIZE_TEXTURE_SETTINGS |
+                                TEXTURE_ATLAS_BUILDER
         };
 
         /** Reset internal data to initial state - the getPermissibleOptionsMap is cleared.*/
@@ -578,6 +580,8 @@ class OSGUTIL_EXPORT Optimizer
         public:
             TextureAtlasBuilder();
             
+            void reset();
+            
             void setMaximumAtlasSize(unsigned int width, unsigned int height);
 
             unsigned int getMaximumAtlasWidth() const { return _maximumAtlasWidth; }
@@ -603,7 +607,7 @@ class OSGUTIL_EXPORT Optimizer
             osg::Texture2D* getTextureAtlas(const osg::Image* image);
             osg::Matrix getTextureMatrix(const osg::Image* image);
             
-            osg::Image* getImageAtlas(const osg::Texture2D* image);
+            osg::Image* getImageAtlas(const osg::Texture2D* textue);
             osg::Texture2D* getTextureAtlas(const osg::Texture2D* texture);
             osg::Matrix getTextureMatrix(const osg::Texture2D* texture);
             
@@ -655,6 +659,7 @@ class OSGUTIL_EXPORT Optimizer
                     _maximumAtlasHeight(height),
                     _margin(margin),
                     _x(0),
+                    _y(0),
                     _width(0),
                     _height(0){}
         
@@ -689,6 +694,44 @@ class OSGUTIL_EXPORT Optimizer
 
             SourceList _sourceList;
             AtlasList _atlasList;    
+        };
+
+ 
+        /** Optimize texture usage in the scene graph by combining textures into texture atlas 
+          * Use of texture atlas cuts down on the number of seperate states in the scene, reducing
+          * state changes and improving the chances of use larger batches of geomertry.*/
+        class OSGUTIL_EXPORT TextureAtlasVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                TextureAtlasVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, TEXTURE_ATLAS_BUILDER) {}
+
+
+                TextureAtlasBuilder& getTextureAtlasBuilder() { return _builder; }
+
+                /** empty visitor, make it ready for next traversal.*/        
+                virtual void reset();
+
+                virtual void apply(osg::Node& node);
+
+                virtual void apply(osg::Geode& geode);
+
+                void optimize();
+
+            protected:
+
+                void addStateSet(osg::StateSet* stateset);
+
+                typedef std::set<osg::StateSet*>  StateSets;
+                typedef std::set<osg::Texture2D*>  Textures;
+
+                TextureAtlasBuilder _builder;
+
+                StateSets _statesets;
+                Textures _textures;
+
         };
 
 };

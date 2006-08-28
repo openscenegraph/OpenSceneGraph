@@ -722,15 +722,19 @@ class OSGUTIL_EXPORT Optimizer
 
             protected:
 
-                void addStateSet(osg::StateSet* stateset);
+                bool pushStateSet(osg::StateSet* stateset);
+                void popStateSet();
 
-                typedef std::set<osg::StateSet*>  StateSets;
+                typedef std::set<osg::Drawable*>  Drawables;
+                typedef std::map<osg::StateSet*, Drawables>  StateSetMap;
                 typedef std::set<osg::Texture2D*>  Textures;
+                typedef std::vector<osg::StateSet*>  StateSetStack;
 
                 TextureAtlasBuilder _builder;
 
-                StateSets _statesets;
-                Textures _textures;
+                StateSetMap     _statesetMap;
+                StateSetStack   _statesetStack;
+                Textures        _textures;
 
         };
 

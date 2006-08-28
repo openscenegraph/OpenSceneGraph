@@ -22,6 +22,7 @@
 #include <osg/Texture2D>
 #include <osg/StateSet>
 #include <osg/buffered_value>
+#include <osg/TexEnv>
 
 #include <osgText/Export>
 
@@ -87,6 +88,9 @@ public:
 
     virtual std::string getFileName() const;
 
+    void setTexEnv(osg::TexEnv* texenv) { if (texenv) _texenv = texenv; }
+    inline osg::TexEnv* getTexEnv() {  return _texenv.get(); }
+    inline const osg::TexEnv* getTexEnv() const {  return _texenv.get(); }
 
     void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
     osg::StateSet* getStateSet() { return _stateset.get(); }
@@ -157,6 +161,7 @@ protected:
     typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
     
 
+    osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;
     SizeGlyphMap                    _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;

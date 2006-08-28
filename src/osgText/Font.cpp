@@ -142,9 +142,8 @@ Font::Font(FontImplementation* implementation):
 {
     setImplementation(implementation);
 
+    _texenv = new osg::TexEnv;
     _stateset = new osg::StateSet;
-    //_stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    //_stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 

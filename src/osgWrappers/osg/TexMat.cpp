@@ -27,6 +27,7 @@
 BEGIN_OBJECT_REFLECTOR(osg::TexMat)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0();
+	I_Constructor1(IN, const osg::Matrix &, matrix);
 	I_ConstructorWithDefaults2(IN, const osg::TexMat &, texmat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);

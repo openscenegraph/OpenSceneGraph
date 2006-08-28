@@ -59,6 +59,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS);
 	I_EnumLabel(osgUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgUtil::Optimizer::FLATTEN_BILLBOARDS);
+	I_EnumLabel(osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER);
 	I_EnumLabel(osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
@@ -225,6 +226,7 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
 	I_Constructor0();
+	I_Method0(void, reset);
 	I_Method2(void, setMaximumAtlasSize, IN, unsigned int, width, IN, unsigned int, height);
 	I_Method0(unsigned int, getMaximumAtlasWidth);
 	I_Method0(unsigned int, getMaximumAtlasHeight);
@@ -242,13 +244,24 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
 	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Image *, image);
 	I_Method1(osg::Texture2D *, getTextureAtlas, IN, const osg::Image *, image);
 	I_Method1(osg::Matrix, getTextureMatrix, IN, const osg::Image *, image);
-	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Texture2D *, image);
+	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Texture2D *, textue);
 	I_Method1(osg::Texture2D *, getTextureAtlas, IN, const osg::Texture2D *, texture);
 	I_Method1(osg::Matrix, getTextureMatrix, IN, const osg::Texture2D *, texture);
 	I_Property(unsigned int, Margin);
 	I_ReadOnlyProperty(unsigned int, MaximumAtlasHeight);
 	I_ReadOnlyProperty(unsigned int, MaximumAtlasWidth);
 	I_ArrayProperty_Custom(const osg::Texture2D *, Source, Sources, unsigned int, void);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
+	I_BaseType(osgUtil::BaseOptimizerVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
+	I_Method0(osgUtil::Optimizer::TextureAtlasBuilder &, getTextureAtlasBuilder);
+	I_Method0(void, reset);
+	I_Method1(void, apply, IN, osg::Node &, node);
+	I_Method1(void, apply, IN, osg::Geode &, geode);
+	I_Method0(void, optimize);
+	I_ReadOnlyProperty(osgUtil::Optimizer::TextureAtlasBuilder &, TextureAtlasBuilder);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)

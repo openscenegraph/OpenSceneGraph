@@ -2975,8 +2975,8 @@ void Optimizer::FlattenBillboardVisitor::process()
 ////////////////////////////////////////////////////////////////////////////
 
 Optimizer::TextureAtlasBuilder::TextureAtlasBuilder():
-    _maximumAtlasWidth(512),
-    _maximumAtlasHeight(512),
+    _maximumAtlasWidth(2048),
+    _maximumAtlasHeight(2048),
     _margin(8)
 {
 }
@@ -3024,7 +3024,7 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
                 aitr != _atlasList.end() && !addedSourceToAtlas;
                 ++aitr)
             {
-                osg::notify(osg::NOTICE)<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
+                osg::notify(osg::INFO)<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
                 if ((*aitr)->doesSourceFit(source))
                 {
                     addedSourceToAtlas = true;
@@ -3032,13 +3032,13 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<aitr->get()<<std::endl;
+                    osg::notify(osg::INFO)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<aitr->get()<<std::endl;
                 }
             }
 
             if (!addedSourceToAtlas)
             {
-                osg::notify(osg::NOTICE)<<"creating new Atlas for "<<source->_image->getFileName()<<std::endl;
+                osg::notify(osg::INFO)<<"creating new Atlas for "<<source->_image->getFileName()<<std::endl;
 
                 osg::ref_ptr<Atlas> atlas = new Atlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin);
                 _atlasList.push_back(atlas.get());
@@ -3173,10 +3173,27 @@ bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maxim
     if (_image->s()+margin*2 > maximumAtlasWidth) return false;
     if (_image->t()+margin*2 > maximumAtlasHeight) return false;
     
-    // FIXME need to handle compressed textures...
+    switch(_image->getPixelFormat())
+    {
+        case(GL_COMPRESSED_ALPHA_ARB):
+        case(GL_COMPRESSED_INTENSITY_ARB):
+        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB):
+        case(GL_COMPRESSED_LUMINANCE_ARB):
+        case(GL_COMPRESSED_RGBA_ARB):
+        case(GL_COMPRESSED_RGB_ARB):
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+            // can't handle compressed textures inside an atlas
+            return false;
+        default:
+            break;
+    }
 
     if (_texture.valid())
     {
+
         if (_texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
             _texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR)
         {
@@ -3197,6 +3214,7 @@ bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maxim
             return false;
         }
     }
+    
     return true;
 }
 
@@ -3323,16 +3341,17 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
         return false;
     }
 
-    if ((_y + sourceImage->t() + 2*_margin) > _maximumAtlasWidth)
+    if ((_y + sourceImage->t() + 2*_margin) > _maximumAtlasHeight)
     {
         // image doesn't have up space in height axis.
+        return false;
     }
 
     // does the source fit in the current row?
     if ((_x + sourceImage->s() + 2*_margin) <= _maximumAtlasWidth)
     {
         // yes it fits :-)
-        osg::notify(osg::NOTICE)<<"Fits in current row"<<std::endl;
+        osg::notify(osg::INFO)<<"Fits in current row"<<std::endl;
         return true;
     }
 
@@ -3340,7 +3359,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
     if ((_height + sourceImage->t() + 2*_margin) <= _maximumAtlasHeight)
     {
         // yes it fits :-)
-        osg::notify(osg::NOTICE)<<"Fits in next row"<<std::endl;
+        osg::notify(osg::INFO)<<"Fits in next row"<<std::endl;
         return true;
     }
     
@@ -3353,7 +3372,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
     // double check source is compatible
     if (!doesSourceFit(source))
     {
-        osg::notify(osg::NOTICE)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
+        osg::notify(osg::INFO)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
         return false;
     }
     
@@ -3397,7 +3416,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
         // yes it fits, so add the source to the atlas's list of sources it contains
         _sourceList.push_back(source);
 
-        osg::notify(osg::NOTICE)<<"current row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
+        osg::notify(osg::INFO)<<"current row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
 
         // set up the source so it knows where it is in the atlas
         source->_x = _x + _margin;
@@ -3425,7 +3444,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
         // yes it fits, so add the source to the atlas' list of sources it contains
         _sourceList.push_back(source);
 
-        osg::notify(osg::NOTICE)<<"next row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
+        osg::notify(osg::INFO)<<"next row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
 
         // set up the source so it knows where it is in the atlas
         source->_x = _x + _margin;
@@ -3439,12 +3458,12 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
 
         _height = _y + sourceImage->t() + 2*_margin;
 
-        osg::notify(osg::NOTICE)<<"source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
+        osg::notify(osg::INFO)<<"source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
 
         return true;
     }
 
-    osg::notify(osg::NOTICE)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
+    osg::notify(osg::INFO)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
 
     // shouldn't get here, unless doesSourceFit isn't working...
     return false;
@@ -3458,24 +3477,31 @@ void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
     unsigned int h = 1;
     while (h<_height) h *= 2;
     
-    osg::notify(osg::NOTICE)<<"Clamping "<<_width<<", "<<_height<<" to "<<w<<","<<h<<std::endl;
+    osg::notify(osg::INFO)<<"Clamping "<<_width<<", "<<_height<<" to "<<w<<","<<h<<std::endl;
     
     _width = w;
-    _height = w;
+    _height = h;
 }
 
-#if 0    
+#if 0
     #include <osgDB/WriteFile>
 #endif
 
 void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 {
+    osg::notify(osg::INFO)<<"Allocated to "<<_width<<","<<_height<<std::endl;
     _image->allocateImage(_width,_height,1,
                           _image->getPixelFormat(),_image->getDataType(),
                           _image->getPacking());
-        
+                          
+    {
+        // clear memory
+        unsigned int size = _image->getTotalSizeInBytes();
+        unsigned char* str = _image->data();
+        for(unsigned int i=0; i<size; ++i) *(str++) = 0;
+    }        
 
-    osg::notify(osg::NOTICE)<<"Atlas::copySources() "<<std::endl;
+    osg::notify(osg::INFO)<<"Atlas::copySources() "<<std::endl;
     for(SourceList::iterator itr = _sourceList.begin();
         itr !=_sourceList.end();
         ++itr)
@@ -3485,7 +3511,8 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 
         if (atlas)
         {
-            osg::notify(osg::NOTICE)<<"Copying image "<<source->_image->getFileName()<<" to "<<source->_x<<" ,"<<source->_y<<std::endl;
+            osg::notify(osg::INFO)<<"Copying image "<<source->_image->getFileName()<<" to "<<source->_x<<" ,"<<source->_y<<std::endl;
+            osg::notify(osg::INFO)<<"        image size "<<source->_image->s()<<","<<source->_image->t()<<std::endl;
 
             const osg::Image* sourceImage = source->_image.get();
             osg::Image* atlasImage = atlas->_image.get();
@@ -3504,7 +3531,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
             }
         }
     }
-#if 0    
+#if 0
     osg::notify(osg::NOTICE)<<"Writing atlas image "<<_image->getFileName()<<std::endl;
     osgDB::writeImageFile(*_image,_image->getFileName());
 #endif
@@ -3513,41 +3540,63 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 
 void Optimizer::TextureAtlasVisitor::reset()
 {
-    _statesets.clear();
+    _statesetMap.clear();
+    _statesetStack.clear();
     _textures.clear();
     _builder.reset();
 }
 
-void Optimizer::TextureAtlasVisitor::addStateSet(osg::StateSet* stateset)
+bool Optimizer::TextureAtlasVisitor::pushStateSet(osg::StateSet* stateset)
 {
     osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
     
     // if no textures ignore
-    if (tal.empty()) return;
+    if (tal.empty()) return false;
     
+    bool pushStateState = false;
+
     // if already in stateset list ignore
-    if (_statesets.count(stateset)>0) return;
-    
-    bool containsTexture2D = false;
-    for(unsigned int unit=0; unit<tal.size(); ++unit)
+    if (_statesetMap.count(stateset)>0) 
     {
-        osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));
-        if (texture2D)
+        pushStateState = true;
+    }
+    else
+    {
+        bool containsTexture2D = false;
+        for(unsigned int unit=0; unit<tal.size(); ++unit)
         {
-            containsTexture2D = true;
-            _textures.insert(texture2D);
+            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));
+            if (texture2D)
+            {
+                containsTexture2D = true;
+                _textures.insert(texture2D);
+            }
+        }
+
+        if (containsTexture2D)
+        {
+            _statesetMap[stateset];
+            pushStateState = true;
         }
     }
     
-    if (containsTexture2D)
+    if (pushStateState)
     {
-        _statesets.insert(stateset);
+        _statesetStack.push_back(stateset);
     }
-        
+
+    
+    return pushStateState;  
+}
+
+void Optimizer::TextureAtlasVisitor::popStateSet()
+{
+    _statesetStack.pop_back();
 }
 
 void Optimizer::TextureAtlasVisitor::apply(osg::Node& node)
 {
+    bool pushedStateState = false;
     
     osg::StateSet* ss = node.getStateSet();
     if (ss && ss->getDataVariance()==osg::Object::STATIC) 
@@ -3555,11 +3604,13 @@ void Optimizer::TextureAtlasVisitor::apply(osg::Node& node)
         if (isOperationPermissibleForObject(&node) &&
             isOperationPermissibleForObject(ss))
         {
-            addStateSet(ss);
+            pushedStateState = pushStateSet(ss);
         }
     }
 
     traverse(node);
+    
+    if (pushedStateState) popStateSet();
 }
 
 void Optimizer::TextureAtlasVisitor::apply(osg::Geode& geode)
@@ -3569,37 +3620,140 @@ void Optimizer::TextureAtlasVisitor::apply(osg::Geode& geode)
     osg::StateSet* ss = geode.getStateSet();
     
     
+    bool pushedGeodeStateState = false;
+
     if (ss && ss->getDataVariance()==osg::Object::STATIC)
     {
         if (isOperationPermissibleForObject(ss))
         {
-            addStateSet(ss);
+            pushedGeodeStateState = pushStateSet(ss);
         }
     }
     for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
+
         osg::Drawable* drawable = geode.getDrawable(i);
         if (drawable)
         {
+            bool pushedDrawableStateState = false;
+
             ss = drawable->getStateSet();
             if (ss && ss->getDataVariance()==osg::Object::STATIC)
             {
                 if (isOperationPermissibleForObject(drawable) &&
                     isOperationPermissibleForObject(ss))
                 {
-                    addStateSet(ss);
+                    pushedDrawableStateState = pushStateSet(ss);
                 }
             }
+            
+            if (!_statesetStack.empty())
+            {
+                for(StateSetStack::iterator ssitr = _statesetStack.begin();
+                    ssitr != _statesetStack.end(); 
+                    ++ssitr)
+                {
+                    _statesetMap[*ssitr].insert(drawable);
+                }
+            }
+
+            if (pushedDrawableStateState) popStateSet();
         }
+        
     }
+    
+    if (pushedGeodeStateState) popStateSet();
 }
 
 void Optimizer::TextureAtlasVisitor::optimize()
 {
-    osg::notify(osg::INFO) << "Num of StateSet="<<_statesets.size()<< std::endl;
-    
     _builder.reset();
     
+    if (_textures.size()<2)
+    {
+        // nothing to optimize
+        return;
+    }
+
+    Textures alreadyCheckedForRepeat;
+
+    StateSetMap::iterator sitr;
+    for(sitr = _statesetMap.begin();
+        sitr != _statesetMap.end();
+        ++sitr)
+    {
+        osg::StateSet* stateset = sitr->first;
+        Drawables& drawables = sitr->second;
+
+        osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+        for(unsigned int unit=0; unit<tal.size(); ++unit)
+        {
+            osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));
+            if (texture && alreadyCheckedForRepeat.count(texture)==0)
+            {
+                alreadyCheckedForRepeat.insert(texture);
+            
+                bool s_repeat = texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
+                                texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR;
+
+                bool t_repeat = texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
+                                texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR;
+                               
+                if (s_repeat || t_repeat)
+                {
+                    bool s_outOfRange = false;
+                    bool t_outOfRange = false;
+  
+                    float s_min = -0.001;
+                    float s_max = 1.001;
+
+                    float t_min = -0.001;
+                    float t_max = 1.001;
+                    
+                    for(Drawables::iterator ditr = drawables.begin();
+                        ditr != drawables.end();
+                        ++ditr)
+                    {
+                        osg::Geometry* geom = (*ditr)->asGeometry();
+                        osg::Vec2Array* texcoords = geom ? dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(unit)) : 0;
+                        if (texcoords)
+                        {
+                            for(osg::Vec2Array::iterator titr = texcoords->begin();
+                                titr != texcoords->end() && !s_outOfRange && !t_outOfRange;
+                                ++titr)
+                            {
+                                osg::Vec2 tc = *titr;
+                                if (tc[0]<s_min) { s_min = tc[0]; s_outOfRange = true; }
+                                if (tc[0]>s_max) { s_max = tc[0]; s_outOfRange = true; }
+
+                                if (tc[1]<t_min) { t_min = tc[1]; s_outOfRange = true; }
+                                if (tc[1]>t_max) { t_max = tc[1]; s_outOfRange = true; }
+                            }
+                        }
+                        else
+                        {
+                            // if no texcoords then texgen must be being used, therefore must assume that texture is truely repeating
+                            s_outOfRange = true;
+                            t_outOfRange = true;
+                        }                        
+                    }
+
+                    bool s_canChangeToClamp = s_repeat && !s_outOfRange;
+                    bool t_canChangeToClamp = t_repeat && !t_outOfRange;
+                    if ((!s_repeat || s_canChangeToClamp) && 
+                        (!t_repeat || t_canChangeToClamp))
+                    {
+                        // safe to convert into CLAMP wrap mode.
+                        osg::notify(osg::INFO)<<"Changing wrap mode to CLAMP"<<std::endl;
+                        if (s_canChangeToClamp) texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture::CLAMP);
+                        if (t_canChangeToClamp) texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP);
+                    }
+                }
+            }
+        }
+    }
+
+
     // add the textures as sources for the TextureAtlasBuilder
     for(Textures::iterator titr = _textures.begin();
         titr != _textures.end();
@@ -3611,12 +3765,13 @@ void Optimizer::TextureAtlasVisitor::optimize()
     // build the atlas'
     _builder.buildAtlas();
     
+    
     // remap the textures in the StateSet's 
-    for(StateSets::iterator sitr = _statesets.begin();
-        sitr != _statesets.end();
+    for(sitr = _statesetMap.begin();
+        sitr != _statesetMap.end();
         ++sitr)
     {
-        osg::StateSet* stateset = *sitr;
+        osg::StateSet* stateset = sitr->first;
         osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
         for(unsigned int unit=0; unit<tal.size(); ++unit)
         {
@@ -3627,7 +3782,54 @@ void Optimizer::TextureAtlasVisitor::optimize()
                 if (newTexture && newTexture!=texture)
                 {
                     stateset->setTextureAttribute(unit, newTexture);
-                    stateset->setTextureAttribute(unit, new osg::TexMat(_builder.getTextureMatrix(texture)));
+                    
+                    Drawables& drawables = sitr->second;
+                    
+                    osg::Matrix matrix = _builder.getTextureMatrix(texture);
+                    
+                    // first check to see if all drawables are ok for applying texturematrix to.
+                    bool canTexMatBeFlattenedToAllDrawables = true;
+                    for(Drawables::iterator ditr = drawables.begin();
+                        ditr != drawables.end();
+                        ++ditr)
+                    {
+                        osg::Geometry* geom = (*ditr)->asGeometry();
+                        osg::Vec2Array* texcoords = geom ? dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(unit)) : 0;
+
+                        if (!texcoords) canTexMatBeFlattenedToAllDrawables = false;
+                    }
+
+                    if (canTexMatBeFlattenedToAllDrawables)
+                    {
+                        // osg::notify(osg::NOTICE)<<"All drawables can be flattened "<<drawables.size()<<std::endl;
+                        for(Drawables::iterator ditr = drawables.begin();
+                            ditr != drawables.end();
+                            ++ditr)
+                        {
+                            osg::Geometry* geom = (*ditr)->asGeometry();
+                            osg::Vec2Array* texcoords = geom ? dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(unit)) : 0;
+                            if (texcoords)
+                            {
+                                for(osg::Vec2Array::iterator titr = texcoords->begin();
+                                    titr != texcoords->end();
+                                    ++titr)
+                                {
+                                    osg::Vec2 tc = *titr;
+                                    (*titr).set(tc[0]*matrix(0,0) + tc[1]*matrix(1,0) + matrix(3,0),
+                                              tc[0]*matrix(0,1) + tc[1]*matrix(1,1) + matrix(3,1));
+                                }
+                            }
+                            else
+                            {
+                                osg::notify(osg::NOTICE)<<"Error, Optimizer::TextureAtlasVisitor::optimize() shouldn't ever get here..."<<std::endl;
+                            }                        
+                        }
+                    }
+                    else
+                    {
+                        // osg::notify(osg::NOTICE)<<"Applying TexMat "<<drawables.size()<<std::endl;
+                        stateset->setTextureAttribute(unit, new osg::TexMat(matrix));
+                    }
                 }
             }
         }

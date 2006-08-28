@@ -120,7 +120,7 @@ class OSGUTIL_EXPORT Tesselator : public osg::Referenced
          * these will leak memory if not removed when retesselating. */
         void reduceArray(osg::Array * cold, const unsigned int nnu);
 
-        void collectTesselation(osg::Geometry &cxgeom);
+        void collectTesselation(osg::Geometry &cxgeom, unsigned int originalIndex);
         
         typedef std::map<osg::Vec3*,unsigned int> VertexPtrToIndexMap;
         void addContour(GLenum  mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices);
@@ -236,6 +236,9 @@ class OSGUTIL_EXPORT Tesselator : public osg::Referenced
 
         /** the gluTessNormal for tesselation hint */
         osg::Vec3 tessNormal;
+
+        /** count of number of extra primitives added */
+        unsigned int _extraPrimitives;
 };
 
 }

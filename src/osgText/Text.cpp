@@ -18,6 +18,7 @@
 #include <osg/GL>
 #include <osg/Notify>
 #include <osg/PolygonOffset>
+#include <osg/TexEnv>
 
 #include <osgUtil/CullVisitor>
 
@@ -1452,6 +1453,7 @@ void Text::drawImplementation(osg::State& state) const
 
     state.applyMode(GL_BLEND,true);
     state.applyTextureMode(0,GL_TEXTURE_2D,true);
+    state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
 
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
     {

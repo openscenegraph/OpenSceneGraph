@@ -244,6 +244,7 @@ public:
 
     typedef std::set<osg::Node*> NodeSet;
     typedef std::set<osg::Drawable*> DrawableSet;
+    typedef std::set<osg::StateSet*> StateSetSet;
 
     StatsVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
@@ -253,7 +254,8 @@ public:
         _numInstancedTransform(0),
         _numInstancedGeode(0),
         _numInstancedDrawable(0),
-        _numInstancedGeometry(0) {}
+        _numInstancedGeometry(0),
+        _numInstancedStateSet(0) {}
         
     void reset()
     {
@@ -264,6 +266,7 @@ public:
         _numInstancedGeode = 0;
         _numInstancedDrawable = 0;
         _numInstancedGeometry = 0;
+        _numInstancedStateSet = 0;
 
         _groupSet.clear();
         _transformSet.clear();
@@ -272,13 +275,30 @@ public:
         _geodeSet.clear();
         _drawableSet.clear();
         _geometrySet.clear();
+        _statesetSet.clear();
 
         _uniqueStats.reset();
         _instancedStats.reset();
     }    
     
+    void apply(osg::Node& node)
+    {
+        if (node.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(node.getStateSet());
+        }
+        traverse(node);
+    }
+
     void apply(osg::Group& node)
     {
+        if (node.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(node.getStateSet());
+        }
+    
         ++_numInstancedGroup;
         _groupSet.insert(&node);
         traverse(node);
@@ -286,6 +306,12 @@ public:
 
     void apply(osg::Transform& node)
     {
+        if (node.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(node.getStateSet());
+        }
+    
         ++_numInstancedTransform;
         _transformSet.insert(&node);
         traverse(node);
@@ -293,6 +319,12 @@ public:
 
     void apply(osg::LOD& node)
     {
+        if (node.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(node.getStateSet());
+        }
+    
         ++_numInstancedLOD;
         _lodSet.insert(&node);
         traverse(node);
@@ -300,6 +332,12 @@ public:
 
     void apply(osg::Switch& node)
     {
+        if (node.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(node.getStateSet());
+        }
+    
         ++_numInstancedSwitch;
         _switchSet.insert(&node);
         traverse(node);
@@ -307,6 +345,12 @@ public:
 
     void apply(osg::Geode& node)
     {
+        if (node.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(node.getStateSet());
+        }
+    
         ++_numInstancedGeode;
         _geodeSet.insert(&node);
         
@@ -320,6 +364,12 @@ public:
 
     void apply(osg::Drawable& drawable)
     {
+        if (drawable.getStateSet()) 
+        {
+            ++_numInstancedStateSet;
+            _statesetSet.insert(drawable.getStateSet());
+        }
+
         ++_numInstancedDrawable;
         
         drawable.accept(_instancedStats);
@@ -367,6 +417,7 @@ public:
         }
 
         out<<"Object Type\t#Unique\t#Instanced"<<std::endl;
+        out<<"StateSet      \t"<<_statesetSet.size()<<"\t"<<_numInstancedStateSet<<std::endl;
         out<<"Group      \t"<<_groupSet.size()<<"\t"<<_numInstancedGroup<<std::endl;
         out<<"Transform  \t"<<_transformSet.size()<<"\t"<<_numInstancedTransform<<std::endl;
         out<<"LOD        \t"<<_lodSet.size()<<"\t"<<_numInstancedLOD<<std::endl;
@@ -385,6 +436,7 @@ public:
     unsigned int _numInstancedGeode;
     unsigned int _numInstancedDrawable;
     unsigned int _numInstancedGeometry;
+    unsigned int _numInstancedStateSet;
 
     NodeSet _groupSet;
     NodeSet _transformSet;
@@ -393,6 +445,7 @@ public:
     NodeSet _geodeSet;
     DrawableSet _drawableSet;
     DrawableSet _geometrySet;
+    StateSetSet _statesetSet;
 
     osgUtil::Statistics _uniqueStats;
     osgUtil::Statistics _instancedStats;

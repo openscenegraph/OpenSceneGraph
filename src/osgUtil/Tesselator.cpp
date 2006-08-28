@@ -177,6 +177,7 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     // the reset is needed by the flt loader which reuses a tesselator for triangulating polygons.
     // as such it might be reset by other loaders/developers in future.
     _index=0; // reset the counter for indexed vertices
+    _extraPrimitives = 0;
     if (!_numberVerts) {
         _numberVerts=geom.getVertexArray()->getNumElements();
         // save the contours for complex (winding rule) tesselations
@@ -206,6 +207,7 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     }
     // process all the contours into the tesselator
     int noContours = _Contours.size();
+    int currentPrimitive = 0;
     for(int primNo=0;primNo<noContours;++primNo)
     {
         osg::ref_ptr<osg::PrimitiveSet> primitive = _Contours[primNo].get();
@@ -227,7 +229,8 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
                             addContour(primitive->getMode(),first,last,vertices);
                             first = last;
                         endTesselation();
-                        collectTesselation(geom);
+                        collectTesselation(geom, currentPrimitive);
+                        currentPrimitive++;
                     }
                 }
                 else
@@ -236,7 +239,8 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
                         beginTesselation();
                         addContour(primitive.get(), vertices);
                         endTesselation();
-                        collectTesselation(geom);
+                        collectTesselation(geom, currentPrimitive);
+                        currentPrimitive++;
                     } else { // April 2005 gwm triangles don't need to be retesselated
                         geom.addPrimitiveSet(primitive.get());
                     }
@@ -266,7 +270,7 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     if (_ttype==TESS_TYPE_GEOMETRY) {
         endTesselation();
     
-        collectTesselation(geom);    
+        collectTesselation(geom, 0);    
     }
 }
 
@@ -646,7 +650,7 @@ unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
     return totalNumberOfPrimitives;
 }
 //
-void Tesselator::collectTesselation(osg::Geometry &geom)
+void Tesselator::collectTesselation(osg::Geometry &geom, unsigned int originalIndex)
 {
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     VertexPtrToIndexMap vertexPtrToIndexMap;
@@ -713,7 +717,10 @@ void Tesselator::collectTesselation(osg::Geometry &geom)
               if (primItr==_primList.begin()) 
               {   // first primitive so collect primitive normal & colour.
                   if (normals) {
-                      norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
+                     if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE)
+                        norm=(*normals)[originalIndex + _extraPrimitives];
+                     else
+                        norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
                   }
                   if (cols4) {
                       primCol4=(*cols4)[iprim]; // GWM Dec 2003 the flat shaded rgba colour
@@ -730,7 +737,16 @@ void Tesselator::collectTesselation(osg::Geometry &geom)
               }
               else
               { // later primitives use same colour
-                  if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                  if (normals)
+                  {
+                      if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE)
+                      {
+                          _extraPrimitives++;
+                          normals->insert(normals->begin() + originalIndex + _extraPrimitives, norm);
+                      }
+                      else
+                        normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                  }
                   if (cols4 && _index>=cols4->size()) {
                     cols4->push_back(primCol4); // GWM Dec 2003 add flat shaded colour for new facet
                   }

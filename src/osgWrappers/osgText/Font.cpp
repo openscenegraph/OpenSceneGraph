@@ -14,6 +14,7 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
+#include <osg/TexEnv>
 #include <osg/Texture>
 #include <osg/Vec2>
 #include <osgText/Font>
@@ -35,6 +36,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_Method0(const char *, className);
 	I_Method0(const char *, libraryName);
 	I_Method0(std::string, getFileName);
+	I_Method1(void, setTexEnv, IN, osg::TexEnv *, texenv);
+	I_Method0(osg::TexEnv *, getTexEnv);
+	I_Method0(const osg::TexEnv *, getTexEnv);
 	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset);
 	I_Method0(osg::StateSet *, getStateSet);
 	I_Method0(const osg::StateSet *, getStateSet);
@@ -65,6 +69,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_Property(osg::Texture::FilterMode, MagFilterHint);
 	I_Property(osg::Texture::FilterMode, MinFilterHint);
 	I_Property(osg::StateSet *, StateSet);
+	I_Property(osg::TexEnv *, TexEnv);
 	I_ReadOnlyProperty(unsigned int, TextureHeightHint);
 	I_ReadOnlyProperty(unsigned int, TextureWidthHint);
 END_REFLECTOR

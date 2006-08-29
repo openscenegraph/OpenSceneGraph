@@ -1053,7 +1053,9 @@ void DelaunayTriangulator::removeInternalTriangles(DelaunayConstraint *dc )
     // and move to the constraint line to make an alternative geometry,
     // possibly with alternative texture, and texture map
     int ndel=0;
-    osg::Vec3Array::iterator normitr = normals_->begin();
+    osg::Vec3Array::iterator normitr;
+    if( normals_.valid() )
+        normitr = normals_->begin();
     
     //        osg::notify(osg::WARN) << "DelaunayTriangulator: removeinternals, " << std::endl;
     for (osg::DrawElementsUInt::iterator triit=prim_tris_->begin(); triit!=prim_tris_->end(); )

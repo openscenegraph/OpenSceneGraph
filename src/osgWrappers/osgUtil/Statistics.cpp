@@ -13,6 +13,7 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/LOD>
+#include <osg/Node>
 #include <osg/Switch>
 #include <osg/Transform>
 #include <osg/Vec2>
@@ -87,10 +88,13 @@ TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::StatsVisitor::NodeSet);
 
 TYPE_NAME_ALIAS(std::set< osg::Drawable * >, osgUtil::StatsVisitor::DrawableSet);
 
+TYPE_NAME_ALIAS(std::set< osg::StateSet * >, osgUtil::StatsVisitor::StateSetSet);
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0();
 	I_Method0(void, reset);
+	I_Method1(void, apply, IN, osg::Node &, node);
 	I_Method1(void, apply, IN, osg::Group &, node);
 	I_Method1(void, apply, IN, osg::Transform &, node);
 	I_Method1(void, apply, IN, osg::LOD &, node);
@@ -108,4 +112,6 @@ STD_MAP_REFLECTOR(std::map< GLenum COMMA  unsigned int >);
 STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  unsigned int >);
 
 STD_SET_REFLECTOR(std::set< osg::Drawable * >);
+
+STD_SET_REFLECTOR(std::set< osg::StateSet * >);
 

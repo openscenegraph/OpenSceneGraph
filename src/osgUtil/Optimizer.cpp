@@ -3764,8 +3764,65 @@ void Optimizer::TextureAtlasVisitor::optimize()
     
     // build the atlas'
     _builder.buildAtlas();
+
+
+    typedef std::set<osg::StateSet*> StateSetSet;
+    typedef std::map<osg::Drawable*, StateSetSet> DrawableStateSetMap;
+    DrawableStateSetMap dssm;
+    for(sitr = _statesetMap.begin();
+        sitr != _statesetMap.end();
+        ++sitr)
+    {
+        Drawables& drawables = sitr->second;
+        for(Drawables::iterator ditr = drawables.begin();
+            ditr != drawables.end();
+            ++ditr)
+        {
+            dssm[(*ditr)->asGeometry()].insert(sitr->first);
+        }
+    }
     
-    
+    Drawables drawablesThatHaveMultipleTexturesOnOneUnit;
+    for(DrawableStateSetMap::iterator ditr = dssm.begin();
+        ditr != dssm.end();
+        ++ditr)
+    {
+        osg::Drawable* drawable = ditr->first;
+        StateSetSet& ssm = ditr->second;
+        if (ssm.size()>1)
+        {
+            typedef std::map<unsigned int, Textures> UnitTextureMap;
+            UnitTextureMap unitTextureMap;
+            for(StateSetSet::iterator ssm_itr = ssm.begin();
+                ssm_itr != ssm.end();
+                ++ssm_itr)
+            {
+                osg::StateSet* ss = *ssm_itr;
+                unsigned int numTextureUnits = ss->getTextureAttributeList().size();
+                for(unsigned int unit=0; unit<numTextureUnits; ++unit)
+                {
+                    osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(unit, osg::StateAttribute::TEXTURE));
+                    if (texture) unitTextureMap[unit].insert(texture);
+                }
+            }
+            bool drawablesHasMultiTextureOnOneUnit = false;
+            for(UnitTextureMap::iterator utm_itr = unitTextureMap.begin();
+                utm_itr != unitTextureMap.end() && !drawablesHasMultiTextureOnOneUnit;
+                ++utm_itr)
+            {
+                if (utm_itr->second.size()>1)
+                {
+                    drawablesHasMultiTextureOnOneUnit = true;
+                }
+            }
+            if (drawablesHasMultiTextureOnOneUnit)
+            {
+                drawablesThatHaveMultipleTexturesOnOneUnit.insert(drawable);
+            }
+
+        }
+    }
+        
     // remap the textures in the StateSet's 
     for(sitr = _statesetMap.begin();
         sitr != _statesetMap.end();
@@ -3790,13 +3847,21 @@ void Optimizer::TextureAtlasVisitor::optimize()
                     // first check to see if all drawables are ok for applying texturematrix to.
                     bool canTexMatBeFlattenedToAllDrawables = true;
                     for(Drawables::iterator ditr = drawables.begin();
-                        ditr != drawables.end();
+                        ditr != drawables.end() && canTexMatBeFlattenedToAllDrawables;
                         ++ditr)
                     {
                         osg::Geometry* geom = (*ditr)->asGeometry();
                         osg::Vec2Array* texcoords = geom ? dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(unit)) : 0;
 
-                        if (!texcoords) canTexMatBeFlattenedToAllDrawables = false;
+                        if (!texcoords) 
+                        {
+                            canTexMatBeFlattenedToAllDrawables = false;
+                        }
+                        
+                        if (drawablesThatHaveMultipleTexturesOnOneUnit.count(*ditr)!=0)
+                        {
+                            canTexMatBeFlattenedToAllDrawables = false;
+                        }
                     }
 
                     if (canTexMatBeFlattenedToAllDrawables)

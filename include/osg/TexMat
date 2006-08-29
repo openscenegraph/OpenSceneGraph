@@ -27,6 +27,8 @@ class OSG_EXPORT TexMat : public StateAttribute
 
         TexMat();
 
+        TexMat(const Matrix& matrix):_matrix(matrix) {}
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexMat(const TexMat& texmat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texmat,copyop),

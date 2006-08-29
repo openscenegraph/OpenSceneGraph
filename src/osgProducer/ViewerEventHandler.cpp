@@ -72,6 +72,8 @@ public:
         _fs.resize(10);
         _index = 0;
         
+        Producer::PipeTimer::instance()->setReturnType( Producer::PipeTimer::milliseconds );
+
         _veh->getOsgCameraGroup()->setStatsHandler(this);
         
         _stateset = new osg::StateSet;
@@ -138,6 +140,7 @@ protected:
     TextList                    _cullTimeText;
     CameraTimes                 _drawTimes;
     TextList                    _drawTimeText;
+    TextList                    _gpuTimeText;
     
     // info related methods and data.
     void displayInfo();
@@ -408,21 +411,160 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
 {
     if (!_statsInitialized) createStatsText();
 
-    OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
+    OsgCameraGroup* ocg = _veh->getOsgCameraGroup();
+    OsgSceneHandler* osh = ocg->getSceneHandlerList()[_cameraNumber].get();
     osgUtil::SceneView* sv = osh->getSceneView();
 
+    bool gpuTimingsValid = false;
+
     char tmpText[128];
+
+    // render the text
+    if (_veh->getFrameStatsMode()>=ViewerEventHandler::FRAME_RATE)
+    {
+        // update and draw the frame rate text.
+        
+
+        _frameRateLabelText->draw(*(sv->getState()));
+        if (_fs.size()>1)
+        {
+            unsigned int lindex = (_index + 1) % _fs.size();
+            double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
+            double timePerFrame = timeForFrames/(double)(_fs.size()-1);
+            sprintf(tmpText,"%4.2f",1.0/timePerFrame);
+            _frameRateCounterText->setText(tmpText);
+        }
+        _frameRateCounterText->draw(*(sv->getState()));
+        
+
+        if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
+        {
+
+            TextList::iterator itr;
+            for(itr=_statsLabelList.begin();
+                itr!=_statsLabelList.end();
+                ++itr)
+            {
+                (*itr)->draw(*(sv->getState()));
+            }
+
+            double updateTime = 0.0;
+            std::fill(_cullTimes.begin(),_cullTimes.end(),0.0);
+            std::fill(_drawTimes.begin(),_drawTimes.end(),0.0);
+
+            for(unsigned int frame = 0; frame < _fs.size(); ++frame )
+            {
+                Producer::CameraGroup::FrameStats fs = _fs[frame];
+                updateTime += (fs._endOfUpdate-fs._startOfUpdate);
+
+                for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); ++i )
+                {
+                    Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+
+                    _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
+                    _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
+                }
+            }
+
+            sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
+            _updateTimeText->setText(tmpText);
+
+            _updateTimeText->draw(*(sv->getState()));
+
+            CameraTimes::iterator titr;
+            for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
+                itr!=_cullTimeText.end() && titr!=_cullTimes.end();
+                ++itr,++titr)
+            {
+                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
+                (*itr)->setText(tmpText);
+                (*itr)->draw(*(sv->getState()));
+            }
+            
+            for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
+                itr!=_drawTimeText.end() && titr!=_drawTimes.end();
+                ++itr,++titr)
+            {
+                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
+                (*itr)->setText(tmpText);
+                (*itr)->draw(*(sv->getState()));
+            }
+            
+            unsigned int i;
+            for(itr=_gpuTimeText.begin(), i = 0;
+                itr!=_gpuTimeText.end() && i < ocg->getNumberOfCameras();
+                ++itr, ++i)
+            {
+                double gpuTime = ocg->getCamera(i)->getFrameStats().getPipeStats(Producer::Camera::DrawTime);
+                if (gpuTime!=0.0)
+                {
+                    gpuTimingsValid = true;
+                    sprintf(tmpText,"%4.2f", gpuTime);
+                    (*itr)->setText(tmpText);
+                    (*itr)->draw(*(sv->getState()));
+                }
+            }
+        }
+        
+        if (_veh->getFrameStatsMode()>=ViewerEventHandler::SCENE_STATS)
+        {
+            osgUtil::Statistics stats;
+
+            for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator shitr = _veh->getOsgCameraGroup()->getSceneHandlerList().begin();
+                shitr != _veh->getOsgCameraGroup()->getSceneHandlerList().end();
+                ++shitr)
+            {
+                (*shitr)->getStats(stats); 
+            }
+
+            unsigned int primitives = 0;
+            for(osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr = stats.GetPrimitivesBegin();
+                pcmitr != stats.GetPrimitivesEnd();
+                ++pcmitr)
+            {
+                primitives += pcmitr->second;
+            }
+            
+            for(TextList::iterator itr = _sceneStatsLabelList.begin();
+                itr != _sceneStatsLabelList.end();
+                ++itr)
+            {
+                (*itr)->draw(*(sv->getState()));
+            }
+            
+            sprintf(tmpText,"%d",stats._vertexCount);
+            _numVerticesText->setText(tmpText);
+            _numVerticesText->draw(*(sv->getState()));
+
+            sprintf(tmpText,"%d",primitives);
+            _numPrimitivesText->setText(tmpText);
+            _numPrimitivesText->draw(*(sv->getState()));
+
+            sprintf(tmpText,"%d",stats.numDrawables);
+            _numDrawablesText->setText(tmpText);
+            _numDrawablesText->draw(*(sv->getState()));
+        } 
+    }
 
     // render graphs
     if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
     {
+    
+        sv->getState()->applyTextureMode(0,GL_TEXTURE_2D,false);
 
         // Set up the Orthographic view
         glMatrixMode( GL_PROJECTION );
         glPushMatrix();
         glLoadIdentity();
-//        glOrtho( -.03, .128, 600.0, -20.0, -1.0, 1.0 ); 
-        glOrtho( -0.04, .128, 600.0, -20.0, -1.0, 1.0 ); 
+
+        if (gpuTimingsValid)
+        {
+            glOrtho( -0.075, .128, 600.0, -20.0, -1.0, 1.0 ); 
+        }
+        else
+        {
+            glOrtho( -0.04, .128, 600.0, -20.0, -1.0, 1.0 ); 
+        }
 
 
         unsigned int lindex = (_index + 1) % _fs.size();
@@ -515,118 +657,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         glMatrixMode( GL_MODELVIEW );
         
     }
-
-    // render the text
-    if (_veh->getFrameStatsMode()>=ViewerEventHandler::FRAME_RATE)
-    {
-        // update and draw the frame rate text.
-        
-
-        _frameRateLabelText->draw(*(sv->getState()));
-        if (_fs.size()>1)
-        {
-            unsigned int lindex = (_index + 1) % _fs.size();
-            double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
-            double timePerFrame = timeForFrames/(double)(_fs.size()-1);
-            sprintf(tmpText,"%4.2f",1.0/timePerFrame);
-            _frameRateCounterText->setText(tmpText);
-        }
-        _frameRateCounterText->draw(*(sv->getState()));
-        
-
-        if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
-        {
-
-            TextList::iterator itr;
-            for(itr=_statsLabelList.begin();
-                itr!=_statsLabelList.end();
-                ++itr)
-            {
-                (*itr)->draw(*(sv->getState()));
-            }
-
-            double updateTime = 0.0;
-            std::fill(_cullTimes.begin(),_cullTimes.end(),0.0);
-            std::fill(_drawTimes.begin(),_drawTimes.end(),0.0);
-
-            for(unsigned int frame = 0; frame < _fs.size(); frame++ )
-            {
-                Producer::CameraGroup::FrameStats fs = _fs[frame];
-                updateTime += (fs._endOfUpdate-fs._startOfUpdate);
-
-                for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
-                {
-                    Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
-
-                    _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
-                    _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
-                }
-            }
-
-            sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
-            _updateTimeText->setText(tmpText);
-
-            _updateTimeText->draw(*(sv->getState()));
-
-            CameraTimes::iterator titr;
-            for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
-                itr!=_cullTimeText.end() && titr!=_cullTimes.end();
-                ++itr,++titr)
-            {
-                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
-                (*itr)->setText(tmpText);
-                (*itr)->draw(*(sv->getState()));
-            }
-            for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
-                itr!=_drawTimeText.end() && titr!=_drawTimes.end();
-                ++itr,++titr)
-            {
-                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
-                (*itr)->setText(tmpText);
-                (*itr)->draw(*(sv->getState()));
-            }
-        }
-        
-        if (_veh->getFrameStatsMode()>=ViewerEventHandler::SCENE_STATS)
-        {
-            osgUtil::Statistics stats;
-
-            for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator shitr = _veh->getOsgCameraGroup()->getSceneHandlerList().begin();
-                shitr != _veh->getOsgCameraGroup()->getSceneHandlerList().end();
-                ++shitr)
-            {
-                (*shitr)->getStats(stats); 
-            }
-
-            unsigned int primitives = 0;
-            for(osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr = stats.GetPrimitivesBegin();
-                pcmitr != stats.GetPrimitivesEnd();
-                ++pcmitr)
-            {
-                primitives += pcmitr->second;
-            }
-            
-            for(TextList::iterator itr = _sceneStatsLabelList.begin();
-                itr != _sceneStatsLabelList.end();
-                ++itr)
-            {
-                (*itr)->draw(*(sv->getState()));
-            }
-            
-            sprintf(tmpText,"%d",stats._vertexCount);
-            _numVerticesText->setText(tmpText);
-            _numVerticesText->draw(*(sv->getState()));
-
-            sprintf(tmpText,"%d",primitives);
-            _numPrimitivesText->setText(tmpText);
-            _numPrimitivesText->draw(*(sv->getState()));
-
-            sprintf(tmpText,"%d",stats.numDrawables);
-            _numDrawablesText->setText(tmpText);
-            _numDrawablesText->draw(*(sv->getState()));
-        } 
-    }
-
 }
 
 void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
@@ -639,6 +669,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
     osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
     osg::Vec4 colorCull( 0.0f,1.0f,1.0f,1.0f);
     osg::Vec4 colorDraw( 1.0f,1.0f,0.0f,1.0f);
+    osg::Vec4 colorGPU( 1.0f,0.5f,0.0f,1.0f);
     
     float leftPos = 10.0f;
     
@@ -760,6 +791,34 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
         _drawTimeText.push_back(drawField);
 
         _drawTimes.push_back(0.0);
+
+        pos.x() = drawField->getBound().xMax();
+
+
+        osgText::Text* gpuLabel = new osgText::Text;
+        gpuLabel->setFont("fonts/arial.ttf");
+        gpuLabel->setColor(colorGPU);
+        gpuLabel->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        gpuLabel->setCharacterSize(characterSize);
+        gpuLabel->setPosition(pos);
+        gpuLabel->setAlignment(osgText::Text::BASE_LINE);
+        gpuLabel->setText("GPU: ");
+
+        _statsLabelList.push_back(gpuLabel);
+        
+        pos.x() = gpuLabel->getBound().xMax();
+
+        osgText::Text* gpuField = new osgText::Text;
+
+        gpuField->setFont("fonts/arial.ttf");
+        gpuField->setColor(colorGPU);
+        gpuField->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
+        gpuField->setCharacterSize(characterSize);
+        gpuField->setPosition(pos);
+        gpuField->setAlignment(osgText::Text::BASE_LINE);
+        gpuField->setText("1000.00");
+        
+        _gpuTimeText.push_back(gpuField);
 
         pos.y() -= characterSize;
     }

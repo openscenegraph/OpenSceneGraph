@@ -3191,6 +3191,12 @@ bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maxim
             break;
     }
 
+    if ((_image->getPixelSizeInBits() % 8) != 0) 
+    {
+        // pixel size not byte aligned so report as not suitable to prevent other atlas code from having problems with byte boundaries.
+        return false;
+    }
+
     if (_texture.valid())
     {
 
@@ -3517,20 +3523,137 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
             const osg::Image* sourceImage = source->_image.get();
             osg::Image* atlasImage = atlas->_image.get();
 
+            unsigned int rowSize = sourceImage->getRowSizeInBytes();
+            unsigned int pixelSizeInBits = sourceImage->getPixelSizeInBits();
+            unsigned int pixelSizeInBytes = pixelSizeInBits/8;
+            unsigned int marginSizeInBytes = pixelSizeInBytes*_margin;
+
             unsigned int x = source->_x;
             unsigned int y = source->_y;
-            unsigned int rowWidth = sourceImage->getRowSizeInBytes();
-            for(int t=0; t<sourceImage->t(); ++t, ++y)
+
+            int t;
+            for(t=0; t<sourceImage->t(); ++t, ++y)
             {
                 unsigned char* destPtr = atlasImage->data(x, y);
                 const unsigned char* sourcePtr = sourceImage->data(0, t);
-                for(unsigned int i=0; i<rowWidth; i++)
+                for(unsigned int i=0; i<rowSize; i++)
                 {
                     *(destPtr++) = *(sourcePtr++);
                 }
             }
+            
+            // copy top row margin
+            y = source->_y + sourceImage->t();
+            unsigned int m;
+            for(m=0; m<_margin; ++m, ++y)
+            {
+                unsigned char* destPtr = atlasImage->data(x, y);
+                const unsigned char* sourcePtr = sourceImage->data(0, sourceImage->t()-1);
+                for(unsigned int i=0; i<rowSize; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+                
+            }
+            
+
+
+            // copy bottom row margin
+            y = source->_y-1;
+            for(m=0; m<_margin; ++m, --y)
+            {
+                unsigned char* destPtr = atlasImage->data(x, y);
+                const unsigned char* sourcePtr = sourceImage->data(0, 0);
+                for(unsigned int i=0; i<rowSize; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+                
+            }
+
+            // copy left column margin
+            y = source->_y;
+            for(t=0; t<sourceImage->t(); ++t, ++y)
+            {
+                x = source->_x-1;
+                for(m=0; m<_margin; ++m, --x)
+                {
+                    unsigned char* destPtr = atlasImage->data(x, y);
+                    const unsigned char* sourcePtr = sourceImage->data(0, t);
+                    for(unsigned int i=0; i<pixelSizeInBytes; i++)
+                    {
+                        *(destPtr++) = *(sourcePtr++);
+                    }
+                }
+            }            
+
+            // copy right column margin
+            y = source->_y;
+            for(t=0; t<sourceImage->t(); ++t, ++y)
+            {
+                x = source->_x + sourceImage->s();
+                for(m=0; m<_margin; ++m, ++x)
+                {
+                    unsigned char* destPtr = atlasImage->data(x, y);
+                    const unsigned char* sourcePtr = sourceImage->data(sourceImage->s()-1, t);
+                    for(unsigned int i=0; i<pixelSizeInBytes; i++)
+                    {
+                        *(destPtr++) = *(sourcePtr++);
+                    }
+                }
+            }            
+
+            // copy top left corner margin
+            y = source->_y + sourceImage->t();
+            for(m=0; m<_margin; ++m, ++y)
+            {
+                unsigned char* destPtr = atlasImage->data(source->_x - _margin, y);
+                unsigned char* sourcePtr = atlasImage->data(source->_x - _margin, y-1); // copy from row below
+                for(unsigned int i=0; i<marginSizeInBytes; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+            }
+
+            // copy top right corner margin
+            y = source->_y + sourceImage->t();
+            for(m=0; m<_margin; ++m, ++y)
+            {
+                unsigned char* destPtr = atlasImage->data(source->_x + sourceImage->s(), y);
+                unsigned char* sourcePtr = atlasImage->data(source->_x + sourceImage->s(), y-1); // copy from row below
+                for(unsigned int i=0; i<marginSizeInBytes; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+            }
+
+            // copy bottom left corner margin
+            y = source->_y - 1;
+            for(m=0; m<_margin; ++m, --y)
+            {
+                unsigned char* destPtr = atlasImage->data(source->_x - _margin, y);
+                unsigned char* sourcePtr = atlasImage->data(source->_x - _margin, y+1); // copy from row below
+                for(unsigned int i=0; i<marginSizeInBytes; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+            }
+
+            // copy bottom right corner margin
+            y = source->_y - 1;
+            for(m=0; m<_margin; ++m, --y)
+            {
+                unsigned char* destPtr = atlasImage->data(source->_x + sourceImage->s(), y);
+                unsigned char* sourcePtr = atlasImage->data(source->_x + sourceImage->s(), y+1); // copy from row below
+                for(unsigned int i=0; i<marginSizeInBytes; i++)
+                {
+                    *(destPtr++) = *(sourcePtr++);
+                }
+            }
+
         }
     }
+
 #if 0
     osg::notify(osg::NOTICE)<<"Writing atlas image "<<_image->getFileName()<<std::endl;
     osgDB::writeImageFile(*_image,_image->getFileName());

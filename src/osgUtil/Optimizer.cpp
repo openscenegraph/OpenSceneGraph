@@ -186,7 +186,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         TextureAtlasVisitor tav(this);
         node->accept(tav);
         tav.optimize();
-        
+
         // now merge duplicate state, that may have been introduced by merge textures into texture atlas'
         StateVisitor osv(this);
         node->accept(osv);
@@ -3676,6 +3676,8 @@ void Optimizer::TextureAtlasVisitor::optimize()
     }
 
     Textures alreadyCheckedForRepeat;
+    Textures texturesThatRepeat;
+    Textures texturesThatRepeatAndAreOutOfRange;
 
     StateSetMap::iterator sitr;
     for(sitr = _statesetMap.begin();
@@ -3701,6 +3703,8 @@ void Optimizer::TextureAtlasVisitor::optimize()
                                
                 if (s_repeat || t_repeat)
                 {
+                    texturesThatRepeat.insert(texture);
+                
                     bool s_outOfRange = false;
                     bool t_outOfRange = false;
   
@@ -3716,18 +3720,18 @@ void Optimizer::TextureAtlasVisitor::optimize()
                     {
                         osg::Geometry* geom = (*ditr)->asGeometry();
                         osg::Vec2Array* texcoords = geom ? dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(unit)) : 0;
-                        if (texcoords)
+                        if (texcoords && !texcoords->empty())
                         {
                             for(osg::Vec2Array::iterator titr = texcoords->begin();
-                                titr != texcoords->end() && !s_outOfRange && !t_outOfRange;
+                                titr != texcoords->end() /*&& !s_outOfRange && !t_outOfRange*/;
                                 ++titr)
                             {
                                 osg::Vec2 tc = *titr;
                                 if (tc[0]<s_min) { s_min = tc[0]; s_outOfRange = true; }
                                 if (tc[0]>s_max) { s_max = tc[0]; s_outOfRange = true; }
 
-                                if (tc[1]<t_min) { t_min = tc[1]; s_outOfRange = true; }
-                                if (tc[1]>t_max) { t_max = tc[1]; s_outOfRange = true; }
+                                if (tc[1]<t_min) { t_min = tc[1]; t_outOfRange = true; }
+                                if (tc[1]>t_max) { t_max = tc[1]; t_outOfRange = true; }
                             }
                         }
                         else
@@ -3738,28 +3742,52 @@ void Optimizer::TextureAtlasVisitor::optimize()
                         }                        
                     }
 
-                    bool s_canChangeToClamp = s_repeat && !s_outOfRange;
-                    bool t_canChangeToClamp = t_repeat && !t_outOfRange;
-                    if ((!s_repeat || s_canChangeToClamp) && 
-                        (!t_repeat || t_canChangeToClamp))
-                    {
-                        // safe to convert into CLAMP wrap mode.
-                        osg::notify(osg::INFO)<<"Changing wrap mode to CLAMP"<<std::endl;
-                        if (s_canChangeToClamp) texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture::CLAMP);
-                        if (t_canChangeToClamp) texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP);
+                    if (s_outOfRange || t_outOfRange) 
+                    {                    
+                        texturesThatRepeatAndAreOutOfRange.insert(texture);
                     }
+
                 }
             }
         }
     }
 
+    // now change any texture that repeat but all texcoords to them 
+    // are in 0 to 1 range than converting the to CLAMP mode, to allow them
+    // to be used in an atlas.
+    Textures::iterator titr;
+    for(titr = texturesThatRepeat.begin();
+        titr != texturesThatRepeat.end();
+        ++titr)
+    {
+        osg::Texture2D* texture = *titr;
+        if (texturesThatRepeatAndAreOutOfRange.count(texture)==0)
+        {
+            // safe to convert into CLAMP wrap mode.
+            osg::notify(osg::INFO)<<"Changing wrap mode to CLAMP"<<std::endl;
+            texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture::CLAMP);
+            texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP);
+        }
+    }
 
     // add the textures as sources for the TextureAtlasBuilder
-    for(Textures::iterator titr = _textures.begin();
+    for(titr = _textures.begin();
         titr != _textures.end();
         ++titr)
     {
-        _builder.addSource(*titr);
+        osg::Texture2D* texture = *titr;
+        alreadyCheckedForRepeat.insert(texture);
+
+        bool s_repeat = texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
+                        texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR;
+
+        bool t_repeat = texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
+                        texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR;
+
+        if (!s_repeat && !t_repeat)
+        {
+            _builder.addSource(*titr);
+        }
     }
     
     // build the atlas'
@@ -3835,9 +3863,20 @@ void Optimizer::TextureAtlasVisitor::optimize()
             osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));
             if (texture)
             {
+                bool s_repeat = texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
+                                texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR;
+
+                bool t_repeat = texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
+                                texture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR;
+
                 osg::Texture2D* newTexture = _builder.getTextureAtlas(texture);
                 if (newTexture && newTexture!=texture)
                 {
+                    if (s_repeat || t_repeat)
+                    {
+                        osg::notify(osg::NOTICE)<<"Warning!!! shouldn't get here"<<std::endl;
+                    }
+
                     stateset->setTextureAttribute(unit, newTexture);
                     
                     Drawables& drawables = sitr->second;

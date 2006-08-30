@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libpf.lib libpfdu-util.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"$(OutDir)/osgdb_pfb.dll" /implib:"../../../lib/$(PlatformName)/osgdb_pfb.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"$(PFROOT)/lib"
+# ADD LINK32 libpf.lib libpfdu-util.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /opt:ref /opt:icf /out:"$(OutDir)/osgdb_pfb.dll" /implib:"../../../lib/$(PlatformName)/osgdb_pfb.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"$(PFROOT)/lib"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgPlugin pfb - Win32 Debug"

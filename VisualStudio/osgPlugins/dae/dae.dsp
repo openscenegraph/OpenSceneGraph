@@ -57,7 +57,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /pdbtype:sept
-# ADD LINK32 libcollada_dom.lib libcollada_dae.lib libcollada_STLDatabase.lib libcollada_LIBXMLPlugin.lib libcollada_stdErrPlugin.lib libxml2_a.lib iconv_a.lib zlib.lib wsock32.lib OpenThreadsWin32.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBC" /out:"$(OutDir)/osgdb_dae.dll" /implib:"../../../lib/$(PlatformName)/osgdb_dae.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 libcollada_dom.lib libcollada_dae.lib libcollada_STLDatabase.lib libcollada_LIBXMLPlugin.lib libcollada_stdErrPlugin.lib libxml2_a.lib iconv_a.lib zlib.lib wsock32.lib OpenThreadsWin32.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBC" /opt:ref /opt:icf /out:"$(OutDir)/osgdb_dae.dll" /implib:"../../../lib/$(PlatformName)/osgdb_dae.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgPlugin COLLADA dae - Win32 Debug"

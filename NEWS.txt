@@ -8,9 +8,10 @@ AYRSHIRE, Scotland - August 31th 2006  - [=OpenSceneGraph=] Professional Service
 The OpenSceneGraph-1.1.1 release introduces:
 
 * Support for Windows 64 bit build.
-* Support for HP's AIX operating systems.
+* Support for HP's AIX operating system.
 * Processor affinity.
 * Texture Atlas builder.
+* GPU stats.
 * A range of bug fixes.
 
 For further information and to download the latest release head to the project website:

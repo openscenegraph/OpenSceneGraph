@@ -169,7 +169,7 @@ BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)
-	I_BaseType(osg::Object);
+	I_VirtualBaseType(osg::Object);
 	I_Constructor0();
 	I_Constructor2(IN, const osg::CameraNode::DrawCallback &, x, IN, const osg::CopyOp &, x);
 	I_Method0(osg::Object *, cloneType);

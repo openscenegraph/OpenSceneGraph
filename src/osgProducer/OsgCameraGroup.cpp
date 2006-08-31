@@ -32,7 +32,7 @@
 using namespace Producer;
 using namespace osgProducer;
 
-static osg::ApplicationUsageProxy OsgCameraGroup_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_PROCESSOR_AFFINTIY <mode>", "ON | OFF - Where supported, switch on or off the processor affinity." );
+static osg::ApplicationUsageProxy OsgCameraGroup_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_PROCESSOR_AFFINITY <mode>", "ON | OFF - Where supported, switch on or off the processor affinity." );
 
 OsgCameraGroup::RealizeCallback::~RealizeCallback()
 {
@@ -323,7 +323,7 @@ void OsgCameraGroup::_init()
     
     _enableProccessAffinityHint = false;
 
-    str = getenv("OSG_PROCESSOR_AFFINTIY");
+    str = getenv("OSG_PROCESSOR_AFFINITY");
     if (str && (strcmp(str,"ON")==0 || strcmp(str,"On")==0 || strcmp(str,"on")==0))
     {
         _enableProccessAffinityHint = true;

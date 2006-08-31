@@ -3798,7 +3798,6 @@ void Optimizer::TextureAtlasVisitor::optimize()
         return;
     }
 
-    Textures alreadyCheckedForRepeat;
     Textures texturesThatRepeat;
     Textures texturesThatRepeatAndAreOutOfRange;
 
@@ -3814,10 +3813,8 @@ void Optimizer::TextureAtlasVisitor::optimize()
         for(unsigned int unit=0; unit<tal.size(); ++unit)
         {
             osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset->getTextureAttribute(unit,osg::StateAttribute::TEXTURE));
-            if (texture && alreadyCheckedForRepeat.count(texture)==0)
+            if (texture)
             {
-                alreadyCheckedForRepeat.insert(texture);
-            
                 bool s_repeat = texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
                                 texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR;
 
@@ -3899,7 +3896,6 @@ void Optimizer::TextureAtlasVisitor::optimize()
         ++titr)
     {
         osg::Texture2D* texture = *titr;
-        alreadyCheckedForRepeat.insert(texture);
 
         bool s_repeat = texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::REPEAT ||
                         texture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR;

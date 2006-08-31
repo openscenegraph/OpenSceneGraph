@@ -16,6 +16,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osg/Notify>
 
 #include "Exception.h"
 #include "ProxyNode.h"
@@ -65,6 +66,14 @@ void ProxyNode::write(DataOutputStream* out)
     out->writeUInt(getNumFileNames());
     unsigned int numChildrenToWriteOut = 0;
     unsigned int i;
+    
+    std::string writeDirectory;
+    if (!(out->getOptions()->getDatabasePathList().empty())) writeDirectory = out->getOptions()->getDatabasePathList().front();
+    
+    if (!writeDirectory.empty()) writeDirectory = writeDirectory + "/";
+    
+    bool writeOutExternalIVEFIles = !out->getIncludeExternalReferences() && out->getWriteExternalReferenceFiles() && !out->getUseOriginalExternalReferences();
+    
     for(i=0; i<getNumFileNames(); i++)
     {
         if (getFileName(i).empty())
@@ -75,13 +84,13 @@ void ProxyNode::write(DataOutputStream* out)
         }
         else
         {
-            if(out->getUseOriginalExternalReferences())
+            if(!writeOutExternalIVEFIles)
             {
                 out->writeString(getFileName(i));
             }
             else
             {
-                std::string ivename = osgDB::getFilePath(getFileName(i)) +"/"+ osgDB::getStrippedName(getFileName(i)) +".ive";
+                std::string ivename = writeDirectory + osgDB::getStrippedName(getFileName(i)) +".ive";
                 out->writeString(ivename);
             }
         }
@@ -109,13 +118,13 @@ void ProxyNode::write(DataOutputStream* out)
                 }
                 else if(out->getWriteExternalReferenceFiles())
                 {
-                    if(out->getUseOriginalExternalReferences())
+                    if(!writeOutExternalIVEFIles)
                     {
                         osgDB::writeNodeFile(*getChild(i), getFileName(i));
                     }
                     else
                     {
-                        std::string ivename = osgDB::getFilePath(getFileName(i)) +"/"+ osgDB::getStrippedName(getFileName(i)) +".ive";
+                        std::string ivename = writeDirectory + osgDB::getStrippedName(getFileName(i)) +".ive";
                         osgDB::writeNodeFile(*getChild(i), ivename);
                     }
                 }

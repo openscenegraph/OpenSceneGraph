@@ -315,7 +315,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
  
 
         /** Draw callback for custom operations.*/
-        struct DrawCallback : public Object
+        struct DrawCallback : virtual public Object
         {
             DrawCallback() {}
 

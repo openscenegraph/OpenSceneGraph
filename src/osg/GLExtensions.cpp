@@ -259,7 +259,19 @@ bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
     #endif // NOMINMAX
     #include <windows.h>
 #elif defined(__APPLE__)
-    #include <mach-o/dyld.h>
+    // The NS*Symbol* stuff found in <mach-o/dyld.h> is deprecated.
+    // Since 10.3 (Panther) OS X has provided the dlopen/dlsym/dlclose
+    // family of functions under <dlfcn.h>. Since 10.4 (Tiger), Apple claimed
+    // the dlfcn family was significantly faster than the NS*Symbol* family.
+    // Since 'deprecated' needs to be taken very seriously with the 
+    // coming of 10.5 (Leopard), it makes sense to use the dlfcn family when possible.
+    #include <AvailabilityMacros.h>
+    #if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
+        #define USE_APPLE_LEGACY_NSSYMBOL
+        #include <mach-o/dyld.h>
+    #else
+        #include <dlfcn.h>
+    #endif
 #else
     #include <dlfcn.h>
 #endif
@@ -272,14 +284,30 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 
 #elif defined(__APPLE__)
 
-    std::string temp( "_" );
-    temp += funcName;    // Mac OS X prepends an underscore on function names
-    if ( NSIsSymbolNameDefined( temp.c_str() ) )
-    {
-        NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
-        return NSAddressOfSymbol( symbol );
-    } else
-        return NULL;
+    #if defined(USE_APPLE_LEGACY_NSSYMBOL)
+        std::string temp( "_" );
+        temp += funcName;    // Mac OS X prepends an underscore on function names
+        if ( NSIsSymbolNameDefined( temp.c_str() ) )
+        {
+            NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
+            return NSAddressOfSymbol( symbol );
+        } else
+            return NULL;
+    #else
+        // I am uncertain of the correct and ideal usage of dlsym here.
+        // On the surface, it would seem that the FreeBSD implementation 
+        // would be the ideal one to copy, but ELF and Mach-o are different
+        // and Apple's man page says the following about using RTLD_DEFAULT: 
+        // "This can be a costly search and should be avoided."
+        // The documentation mentions nothing about passing in 0 so I must
+        // assume the behavior is undefined.
+        // So I could try copying the Sun method which I think all this 
+        // actually originated from.
+
+        // return dlsym( RTLD_DEFAULT, funcName );
+        static void *handle = dlopen((const char *)0L, RTLD_LAZY);
+        return dlsym(handle, funcName);
+    #endif
 
 #elif defined (__sun) 
 

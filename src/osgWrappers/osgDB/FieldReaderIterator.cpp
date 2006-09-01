@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Vec2d>

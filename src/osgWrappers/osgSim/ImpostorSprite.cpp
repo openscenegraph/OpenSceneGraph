@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -78,6 +79,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	I_Property(const osg::Vec3 &, StoredLocalEyePoint);
 	I_ReadOnlyProperty(osg::Vec2 *, TexCoords);
 	I_ReadOnlyProperty(osg::Texture2D *, Texture);
+	I_PublicMemberProperty(osg::Vec4, _color);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSpriteManager)

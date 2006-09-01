@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -52,5 +53,7 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	I_Method1(osg::BoundingBox, intersect, IN, const osg::BoundingBox &, bb);
 	I_Method1(bool, intersects, IN, const osg::BoundingBox &, bb);
 	I_Method1(bool, contains, IN, const osg::Vec3 &, v);
+	I_PublicMemberProperty(osg::Vec3, _min);
+	I_PublicMemberProperty(osg::Vec3, _max);
 END_REFLECTOR
 

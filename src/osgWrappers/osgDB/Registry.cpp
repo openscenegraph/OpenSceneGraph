@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/ArgumentParser>
@@ -126,6 +127,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method1(void, setSharedStateManager, IN, osgDB::SharedStateManager *, SharedStateManager);
 	I_Method0(osgDB::SharedStateManager *, getOrCreateSharedStateManager);
 	I_Method0(osgDB::SharedStateManager *, getSharedStateManager);
+	I_StaticMethodWithDefaults1(osgDB::Registry *, instance, IN, bool, erase, false);
 	I_Property(bool, CreateNodeFromImage);
 	I_Property(const osgDB::FilePathList &, DataFilePathList);
 	I_Property(osgDB::DatabasePager *, DatabasePager);
@@ -151,6 +153,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
 	I_Method1(osgDB::ReaderWriter::ReadResult, doRead, IN, osgDB::ReaderWriter &, rw);
 	I_Method1(bool, isValid, IN, osgDB::ReaderWriter::ReadResult &, readResult);
 	I_Method1(bool, isValid, IN, osg::Object *, object);
+	I_PublicMemberProperty(std::string, _filename);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)

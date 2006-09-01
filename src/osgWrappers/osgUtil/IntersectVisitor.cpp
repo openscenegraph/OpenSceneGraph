@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
@@ -70,6 +71,18 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
 	I_ReadOnlyProperty(const osgUtil::Hit::VecIndexList &, VecIndexList);
 	I_ReadOnlyProperty(const osg::Vec3, WorldIntersectNormal);
 	I_ReadOnlyProperty(const osg::Vec3, WorldIntersectPoint);
+	I_PublicMemberProperty(float, _ratio);
+	I_PublicMemberProperty(osg::ref_ptr< osg::LineSegment >, _originalLineSegment);
+	I_PublicMemberProperty(osg::ref_ptr< osg::LineSegment >, _localLineSegment);
+	I_PublicMemberProperty(osg::NodePath, _nodePath);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Geode >, _geode);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, _drawable);
+	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _matrix);
+	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _inverse);
+	I_PublicMemberProperty(osgUtil::Hit::VecIndexList, _vecIndexList);
+	I_PublicMemberProperty(int, _primitiveIndex);
+	I_PublicMemberProperty(osg::Vec3, _intersectPoint);
+	I_PublicMemberProperty(osg::Vec3, _intersectNormal);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList);

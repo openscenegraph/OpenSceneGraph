@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -39,5 +40,6 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeCallback)
 	I_Method1(void, addNestedCallback, IN, osg::NodeCallback *, nc);
 	I_Method1(void, removeNestedCallback, IN, osg::NodeCallback *, nc);
 	I_Property(osg::NodeCallback *, NestedCallback);
+	I_PublicMemberProperty(osg::ref_ptr< osg::NodeCallback >, _nestedCallback);
 END_REFLECTOR
 

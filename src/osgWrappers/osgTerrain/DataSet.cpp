@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingSphere>
@@ -29,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <gdal_priv.h>
+	
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgTerrain::DataSet::CompositeDestination * >, osgTerrain::DataSet::Row);
 
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgTerrain::DataSet::Row >, osgTerrain::DataSet::Level);
@@ -152,6 +155,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_Method2(void, _writeImageFile, IN, const osg::Image &, image, IN, const std::string &, filename);
 	I_Method1(void, setState, IN, osg::State *, state);
 	I_Method0(osg::State *, getState);
+	I_StaticMethod1(std::string, coordinateSystemStringToWTK, IN, const std::string &, coordinateSystem);
+	I_StaticMethod1(void, setNotifyOffset, IN, int, level);
+	I_StaticMethod0(int, getNotifyOffset);
 	I_Property(osgDB::Archive *, Archive);
 	I_Property(const std::string &, ArchiveName);
 	I_Property(const std::string &, CommentString);
@@ -211,6 +217,17 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
 	I_Method0(bool, getSubTilesGenerated);
 	I_ReadOnlyProperty(std::string, SubTileName);
 	I_Property(bool, SubTilesGenerated);
+	I_PublicMemberProperty(osgTerrain::DataSet *, _dataSet);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeDestination *, _parent);
+	I_PublicMemberProperty(std::string, _name);
+	I_PublicMemberProperty(unsigned int, _level);
+	I_PublicMemberProperty(unsigned int, _tileX);
+	I_PublicMemberProperty(unsigned int, _tileY);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeType, _type);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeDestination::TileList, _tiles);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeDestination::ChildList, _children);
+	I_PublicMemberProperty(float, _maxVisibleDistance);
+	I_PublicMemberProperty(bool, _subTileGenerated);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgTerrain::DataSet::Source > >, osgTerrain::DataSet::CompositeSource::SourceList);
@@ -230,6 +247,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeSource)
 	I_Method0(void, setSortValueFromSourceDataResolution);
 	I_Method0(void, sort);
 	I_Property(osgTerrain::DataSet::CompositeType, Type);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeType, _type);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeSource::SourceList, _sourceList);
+	I_PublicMemberProperty(osgTerrain::DataSet::CompositeSource::ChildList, _children);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::DefaultSourceAdvancer)
@@ -253,6 +273,7 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::LODSourceAdvancer)
 	I_ConstructorWithDefaults1(IN, float, targetResolution, 0.0f);
 	I_Method2(bool, advanceToNextSource, IN, const osgTerrain::DataSet::CompositeSource &, composite, IN, int &, index);
+	I_PublicMemberProperty(float, _targetResolution);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osgTerrain::DataSet::DestinationData::ImageList);
@@ -262,6 +283,12 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osgTerrain::DataSet::D
 BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationData)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, osgTerrain::DataSet *, dataSet);
+	I_PublicMemberProperty(osgTerrain::DataSet *, _dataSet);
+	I_PublicMemberProperty(float, _minDistance);
+	I_PublicMemberProperty(float, _maxDistance);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Image >, _image);
+	I_PublicMemberProperty(osg::ref_ptr< osg::HeightField >, _heightField);
+	I_PublicMemberProperty(osgTerrain::DataSet::DestinationData::ModelList, _models);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgTerrain::DataSet::DestinationTile::HeightDeltaList);
@@ -307,10 +334,30 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationTile)
 	I_Method0(void, unrefData);
 	I_Method1(osgTerrain::DataSet::DestinationTile::ImageData &, getImageData, IN, unsigned int, layer);
 	I_Property(bool, TileComplete);
+	I_PublicMemberProperty(osgTerrain::DataSet *, _dataSet);
+	I_PublicMemberProperty(std::string, _name);
+	I_PublicMemberProperty(unsigned int, _level);
+	I_PublicMemberProperty(unsigned int, _tileX);
+	I_PublicMemberProperty(unsigned int, _tileY);
+	I_PublicMemberProperty(GLenum, _pixelFormat);
+	I_PublicMemberProperty(std::vector< osgTerrain::DataSet::DestinationTile::ImageData >, _imagery);
+	I_PublicMemberProperty(osg::ref_ptr< osgTerrain::DataSet::DestinationData >, _terrain);
+	I_PublicMemberProperty(osg::ref_ptr< osgTerrain::DataSet::DestinationData >, _models);
+	I_PublicMemberProperty(unsigned int, _maxSourceLevel);
+	I_PublicMemberProperty(unsigned int, _imagery_maxNumColumns);
+	I_PublicMemberProperty(unsigned int, _imagery_maxNumRows);
+	I_PublicMemberProperty(unsigned int, _terrain_maxNumColumns);
+	I_PublicMemberProperty(unsigned int, _terrain_maxNumRows);
+	I_PublicMemberProperty(float, _terrain_maxSourceResolutionX);
+	I_PublicMemberProperty(float, _terrain_maxSourceResolutionY);
+	I_PublicMemberProperty(bool, _complete);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::DestinationTile::ImageData)
 	I_Constructor0();
+	I_PublicMemberProperty(float, _imagery_maxSourceResolutionX);
+	I_PublicMemberProperty(float, _imagery_maxSourceResolutionY);
+	I_PublicMemberProperty(osg::ref_ptr< osgTerrain::DataSet::DestinationData >, _imagery);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgTerrain::DataSet::Source::ResolutionPair >, osgTerrain::DataSet::Source::ResolutionList);
@@ -394,6 +441,8 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::Source::ResolutionPair)
 	I_Constructor0();
 	I_Constructor2(IN, double, x, IN, double, y);
+	I_PublicMemberProperty(double, _resX);
+	I_PublicMemberProperty(double, _resY);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< const osg::CoordinateSystemNode * COMMA  osgTerrain::DataSet::SpatialProperties >, osgTerrain::DataSet::SourceData::SpatialPropertiesMap);
@@ -410,6 +459,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
 	I_Method1(void, readHeightField, IN, osgTerrain::DataSet::DestinationData &, destination);
 	I_Method1(void, readModels, IN, osgTerrain::DataSet::DestinationData &, destination);
 	I_Method3(float, getInterpolatedValue, IN, GDALRasterBand *, band, IN, double, x, IN, double, y);
+	I_StaticMethod1(osgTerrain::DataSet::SourceData *, readData, IN, osgTerrain::DataSet::Source *, source);
+	I_PublicMemberProperty(osgTerrain::DataSet::Source *, _source);
+	I_PublicMemberProperty(bool, _hasGCPs);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Node >, _model);
+	I_PublicMemberProperty(GDALDataset *, _gdalDataset);
+	I_PublicMemberProperty(osgTerrain::DataSet::SourceData::SpatialPropertiesMap, _spatialPropertiesMap);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::SpatialProperties)
@@ -418,6 +473,12 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::SpatialProperties)
 	I_Constructor2(IN, osg::CoordinateSystemNode *, cs, IN, const osgTerrain::GeospatialExtents &, extents);
 	I_Method1(osgTerrain::DataSet::SpatialProperties &, assignSpatialProperties, IN, const osgTerrain::DataSet::SpatialProperties &, sp);
 	I_Method0(void, computeExtents);
+	I_PublicMemberProperty(osg::ref_ptr< osg::CoordinateSystemNode >, _cs);
+	I_PublicMemberProperty(osg::Matrixd, _geoTransform);
+	I_PublicMemberProperty(osgTerrain::GeospatialExtents, _extents);
+	I_PublicMemberProperty(unsigned int, _numValuesX);
+	I_PublicMemberProperty(unsigned int, _numValuesY);
+	I_PublicMemberProperty(unsigned int, _numValuesZ);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
@@ -440,6 +501,8 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
 	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh);
 	I_Method1(void, expandBy, IN, const osg::Vec3 &, v);
 	I_Method1(void, expandBy, IN, const osgTerrain::GeospatialExtents &, e);
+	I_PublicMemberProperty(osg::Vec2d, _min);
+	I_PublicMemberProperty(osg::Vec2d, _max);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)

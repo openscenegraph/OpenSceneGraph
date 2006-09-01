@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CameraNode>
@@ -166,6 +167,12 @@ BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
 	I_Method0(int, width);
 	I_Method0(int, height);
 	I_Method0(int, depth);
+	I_PublicMemberProperty(GLenum, _internalFormat);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Image >, _image);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Texture >, _texture);
+	I_PublicMemberProperty(unsigned int, _level);
+	I_PublicMemberProperty(unsigned int, _face);
+	I_PublicMemberProperty(bool, _mipMapGeneration);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)

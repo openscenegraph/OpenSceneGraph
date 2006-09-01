@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -81,5 +82,9 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::ScalarBar::TextProperties)
 	I_Constructor0();
+	I_PublicMemberProperty(std::string, _fontFile);
+	I_PublicMemberProperty(std::pair< int COMMA  int >, _fontResolution);
+	I_PublicMemberProperty(float, _characterSize);
+	I_PublicMemberProperty(osg::Vec4, _color);
 END_REFLECTOR
 

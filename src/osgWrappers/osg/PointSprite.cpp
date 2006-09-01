@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -38,6 +39,7 @@ BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
 	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, x);
 	I_Method0(bool, isTextureAttribute);
 	I_Method1(void, apply, IN, osg::State &, state);
+	I_StaticMethod1(bool, isPointSpriteSupported, IN, unsigned int, context);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

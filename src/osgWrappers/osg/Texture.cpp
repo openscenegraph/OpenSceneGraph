@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -146,6 +147,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels);
 	I_Method7(void, applyTexImage2D_subload, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, inInternalFormat, IN, GLsizei, numMipmapLevels);
 	I_Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm);
+	I_StaticMethod2(osg::Texture::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture::Extensions *, extensions);
+	I_StaticMethod1(bool, isCompressedInternalFormat, IN, GLint, internalFormat);
+	I_StaticMethod6(void, getCompressedSize, IN, GLenum, internalFormat, IN, GLint, width, IN, GLint, height, IN, GLint, depth, IN, GLint &, blockSize, IN, GLint &, size);
+	I_StaticMethod2(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target);
+	I_StaticMethod8(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
+	I_StaticMethod1(void, setMinimumNumberOfTextureObjectsToRetainInCache, IN, unsigned int, minimum);
+	I_StaticMethod0(unsigned int, getMinimumNumberOfTextureObjectsToRetainInCache);
+	I_StaticMethod1(void, flushAllDeletedTextureObjects, IN, unsigned int, contextID);
+	I_StaticMethod3(void, flushDeletedTextureObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
 	I_Property(const osg::Vec4 &, BorderColor);
 	I_Property(GLint, BorderWidth);
 	I_Property(bool, ClientStorageHint);
@@ -240,6 +251,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_Method0(bool, isAllocated);
 	I_Method0(bool, isReusable);
 	I_WriteOnlyProperty(bool, Allocated);
+	I_PublicMemberProperty(GLuint, _id);
+	I_PublicMemberProperty(GLenum, _target);
+	I_PublicMemberProperty(GLint, _numMipmapLevels);
+	I_PublicMemberProperty(GLenum, _internalFormat);
+	I_PublicMemberProperty(GLsizei, _width);
+	I_PublicMemberProperty(GLsizei, _height);
+	I_PublicMemberProperty(GLsizei, _depth);
+	I_PublicMemberProperty(GLint, _border);
+	I_PublicMemberProperty(bool, _allocated);
+	I_PublicMemberProperty(double, _timeStamp);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)

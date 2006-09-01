@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
@@ -206,6 +207,11 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
 	I_ConstructorWithDefaults3(IN, osg::Array *, a, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
 	I_ConstructorWithDefaults4(IN, osg::Array *, a, , IN, osg::IndexArray *, i, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
 	I_Method0(bool, empty);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Array >, array);
+	I_PublicMemberProperty(osg::ref_ptr< osg::IndexArray >, indices);
+	I_PublicMemberProperty(osg::Geometry::AttributeBinding, binding);
+	I_PublicMemberProperty(GLboolean, normalize);
+	I_PublicMemberProperty(unsigned long, offset);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
@@ -214,6 +220,11 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
 	I_ConstructorWithDefaults3(IN, osg::Vec3Array *, a, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
 	I_ConstructorWithDefaults4(IN, osg::Vec3Array *, a, , IN, osg::IndexArray *, i, , IN, osg::Geometry::AttributeBinding, b, , IN, GLboolean, n, GL_FALSE);
 	I_Method0(bool, empty);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Vec3Array >, array);
+	I_PublicMemberProperty(osg::ref_ptr< osg::IndexArray >, indices);
+	I_PublicMemberProperty(osg::Geometry::AttributeBinding, binding);
+	I_PublicMemberProperty(GLboolean, normalize);
+	I_PublicMemberProperty(unsigned long, offset);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)

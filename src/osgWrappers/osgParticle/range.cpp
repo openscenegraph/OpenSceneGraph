@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Vec2>
@@ -39,6 +40,8 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< float >)
 	I_Method0(float, mid);
 	I_ReadOnlyProperty(float, _random);
 	I_ReadOnlyProperty(float, _random_sqrtf);
+	I_PublicMemberProperty(float, minimum);
+	I_PublicMemberProperty(float, maximum);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec2 >)
@@ -50,6 +53,8 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec2 >)
 	I_Method0(osg::Vec2, mid);
 	I_ReadOnlyProperty(osg::Vec2, _random);
 	I_ReadOnlyProperty(osg::Vec2, _random_sqrtf);
+	I_PublicMemberProperty(osg::Vec2, minimum);
+	I_PublicMemberProperty(osg::Vec2, maximum);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec3 >)
@@ -61,6 +66,8 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec3 >)
 	I_Method0(osg::Vec3, mid);
 	I_ReadOnlyProperty(osg::Vec3, _random);
 	I_ReadOnlyProperty(osg::Vec3, _random_sqrtf);
+	I_PublicMemberProperty(osg::Vec3, minimum);
+	I_PublicMemberProperty(osg::Vec3, maximum);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec4 >)
@@ -72,5 +79,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec4 >)
 	I_Method0(osg::Vec4, mid);
 	I_ReadOnlyProperty(osg::Vec4, _random);
 	I_ReadOnlyProperty(osg::Vec4, _random_sqrtf);
+	I_PublicMemberProperty(osg::Vec4, minimum);
+	I_PublicMemberProperty(osg::Vec4, maximum);
 END_REFLECTOR
 

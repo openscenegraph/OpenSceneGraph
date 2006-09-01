@@ -7,9 +7,11 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Referenced>
+#include <osg/State>
 #include <osg/StateSet>
 #include <osgUtil/RenderLeaf>
 #include <osgUtil/StateGraph>
@@ -48,9 +50,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	I_Method0(void, prune);
 	I_Method1(osgUtil::StateGraph *, find_or_insert, IN, const osg::StateSet *, stateset);
 	I_Method1(void, addLeaf, IN, osgUtil::RenderLeaf *, leaf);
+	I_StaticMethod3(void, moveStateGraph, IN, osg::State &, state, IN, osgUtil::StateGraph *, sg_curr, IN, osgUtil::StateGraph *, sg_new);
+	I_StaticMethod2(void, moveToRootStateGraph, IN, osg::State &, state, IN, osgUtil::StateGraph *, sg_curr);
 	I_ReadOnlyProperty(float, AverageDistance);
 	I_ReadOnlyProperty(float, MinimumDistance);
 	I_Property(osg::Referenced *, UserData);
+	I_PublicMemberProperty(osgUtil::StateGraph *, _parent);
+	I_PublicMemberProperty(int, _depth);
+	I_PublicMemberProperty(osgUtil::StateGraph::ChildList, _children);
+	I_PublicMemberProperty(osgUtil::StateGraph::LeafList, _leaves);
+	I_PublicMemberProperty(float, _averageDistance);
+	I_PublicMemberProperty(float, _minimumDistance);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, _userData);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)

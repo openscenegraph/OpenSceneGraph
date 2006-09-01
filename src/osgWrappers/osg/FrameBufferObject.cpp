@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CameraNode>
@@ -58,6 +59,20 @@ TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT);
 BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_BaseType(osg::Referenced);
 	I_Method0(bool, isSupported);
+	I_StaticMethod2(osg::FBOExtensions *, instance, IN, unsigned, contextID, IN, bool, createIfNotInitalized);
+	I_PublicMemberProperty(osg::FBOExtensions::TglBindRenderbufferEXT *, glBindRenderbufferEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglGenRenderbuffersEXT *, glGenRenderbuffersEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteRenderbuffersEXT *, glDeleteRenderbuffersEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglRenderbufferStorageEXT *, glRenderbufferStorageEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglBindFramebufferEXT *, glBindFramebufferEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteFramebuffersEXT *, glDeleteFramebuffersEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglGenFramebuffersEXT *, glGenFramebuffersEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglCheckFramebufferStatusEXT *, glCheckFramebufferStatusEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture1DEXT *, glFramebufferTexture1DEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture2DEXT *, glFramebufferTexture2DEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture3DEXT *, glFramebufferTexture3DEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferRenderbufferEXT *, glFramebufferRenderbufferEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglGenerateMipmapEXT *, glGenerateMipmapEXT);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
@@ -93,6 +108,8 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_Method2(void, setAttachment, IN, GLenum, attachment_point, IN, const osg::FrameBufferAttachment &, attachment);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
 	I_Method1(void, apply, IN, osg::State &, state);
+	I_StaticMethod2(void, deleteFrameBufferObject, IN, unsigned int, contextID, IN, GLuint, program);
+	I_StaticMethod3(void, flushDeletedFrameBufferObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
 	I_IndexedProperty1(const osg::FrameBufferAttachment &, Attachment, GLenum, attachment_point);
 	I_ReadOnlyProperty(const osg::FrameBufferObject::AttachmentMap &, AttachmentMap);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
@@ -117,6 +134,8 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	I_Method1(void, setInternalFormat, IN, GLenum, format);
 	I_Method2(GLuint, getObjectID, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext);
 	I_Method1(int, compare, IN, const osg::RenderBuffer &, rb);
+	I_StaticMethod2(void, deleteRenderBuffer, IN, unsigned int, contextID, IN, GLuint, rb);
+	I_StaticMethod3(void, flushDeletedRenderBuffers, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
 	I_Property(int, Height);
 	I_Property(GLenum, InternalFormat);
 	I_Property(int, Width);

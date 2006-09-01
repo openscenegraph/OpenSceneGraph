@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/AnimationPath>
@@ -124,6 +125,15 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	I_Property(double, TimeMultiplier);
 	I_Property(double, TimeOffset);
 	I_Property(bool, UseInverseMatrix);
+	I_PublicMemberProperty(osg::ref_ptr< osg::AnimationPath >, _animationPath);
+	I_PublicMemberProperty(osg::Vec3d, _pivotPoint);
+	I_PublicMemberProperty(bool, _useInverseMatrix);
+	I_PublicMemberProperty(double, _timeOffset);
+	I_PublicMemberProperty(double, _timeMultiplier);
+	I_PublicMemberProperty(double, _firstTime);
+	I_PublicMemberProperty(double, _latestTime);
+	I_PublicMemberProperty(bool, _pause);
+	I_PublicMemberProperty(double, _pauseTime);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< double COMMA  osg::AnimationPath::ControlPoint >);

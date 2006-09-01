@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -57,6 +58,10 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Method1(void, compileGLObjects, IN, osg::State &, state);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
+	I_StaticMethod2(void, deleteVertexProgramObject, IN, unsigned int, contextID, IN, GLuint, handle);
+	I_StaticMethod3(void, flushDeletedVertexProgramObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
+	I_StaticMethod2(osg::VertexProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::VertexProgram::Extensions *, extensions);
 	I_Property(const osg::VertexProgram::LocalParamList &, LocalParameters);
 	I_Property(const osg::VertexProgram::MatrixList &, Matrices);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);

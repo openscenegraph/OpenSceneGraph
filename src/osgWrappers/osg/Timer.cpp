@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Timer>
@@ -27,6 +28,7 @@ BEGIN_VALUE_REFLECTOR(osg::Timer)
 	I_Method2(double, delta_u, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
 	I_Method2(double, delta_n, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
 	I_Method0(double, getSecondsPerTick);
+	I_StaticMethod0(const osg::Timer *, instance);
 	I_ReadOnlyProperty(double, SecondsPerTick);
 END_REFLECTOR
 

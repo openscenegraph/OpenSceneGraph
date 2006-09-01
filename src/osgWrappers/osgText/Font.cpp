@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -88,6 +89,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::FontImplementation)
 	I_ReadOnlyProperty(std::string, FileName);
 	I_WriteOnlyProperty(unsigned int, FontHeight);
 	I_WriteOnlyProperty(unsigned int, FontWidth);
+	I_PublicMemberProperty(osgText::Font *, _facade);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)

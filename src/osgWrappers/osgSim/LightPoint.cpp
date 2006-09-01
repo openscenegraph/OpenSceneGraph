@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Vec3>
@@ -33,5 +34,13 @@ BEGIN_VALUE_REFLECTOR(osgSim::LightPoint)
 	I_Constructor2(IN, const osg::Vec3 &, position, IN, const osg::Vec4 &, color);
 	I_ConstructorWithDefaults8(IN, bool, on, , IN, const osg::Vec3 &, position, , IN, const osg::Vec4 &, color, , IN, float, intensity, 1.0f, IN, float, radius, 1.0f, IN, osgSim::Sector *, sector, 0, IN, osgSim::BlinkSequence *, blinkSequence, 0, IN, osgSim::LightPoint::BlendingMode, blendingMode, osgSim::LightPoint::BLENDED);
 	I_Constructor1(IN, const osgSim::LightPoint &, lp);
+	I_PublicMemberProperty(bool, _on);
+	I_PublicMemberProperty(osg::Vec3, _position);
+	I_PublicMemberProperty(osg::Vec4, _color);
+	I_PublicMemberProperty(float, _intensity);
+	I_PublicMemberProperty(float, _radius);
+	I_PublicMemberProperty(osg::ref_ptr< osgSim::Sector >, _sector);
+	I_PublicMemberProperty(osg::ref_ptr< osgSim::BlinkSequence >, _blinkSequence);
+	I_PublicMemberProperty(osgSim::LightPoint::BlendingMode, _blendingMode);
 END_REFLECTOR
 

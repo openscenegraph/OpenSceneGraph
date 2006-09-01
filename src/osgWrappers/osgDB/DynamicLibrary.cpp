@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osgDB/DynamicLibrary>
@@ -29,6 +30,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	I_Method0(const std::string &, getFullName);
 	I_Method0(osgDB::DynamicLibrary::HANDLE, getHandle);
 	I_Method1(osgDB::DynamicLibrary::PROC_ADDRESS, getProcAddress, IN, const std::string &, procName);
+	I_StaticMethod1(osgDB::DynamicLibrary *, loadLibrary, IN, const std::string &, libraryName);
 	I_ReadOnlyProperty(const std::string &, FullName);
 	I_ReadOnlyProperty(osgDB::DynamicLibrary::HANDLE, Handle);
 	I_ReadOnlyProperty(const std::string &, Name);

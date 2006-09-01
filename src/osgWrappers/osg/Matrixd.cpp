@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -96,6 +97,33 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	I_Method2(void, mult, IN, const osg::Matrixd &, x, IN, const osg::Matrixd &, x);
 	I_Method1(void, preMult, IN, const osg::Matrixd &, x);
 	I_Method1(void, postMult, IN, const osg::Matrixd &, x);
+	I_StaticMethod0(osg::Matrixd, identity);
+	I_StaticMethod1(osg::Matrixd, scale, IN, const osg::Vec3f &, sv);
+	I_StaticMethod1(osg::Matrixd, scale, IN, const osg::Vec3d &, sv);
+	I_StaticMethod3(osg::Matrixd, scale, IN, osg::Matrixd::value_type, sx, IN, osg::Matrixd::value_type, sy, IN, osg::Matrixd::value_type, sz);
+	I_StaticMethod1(osg::Matrixd, translate, IN, const osg::Vec3f &, dv);
+	I_StaticMethod1(osg::Matrixd, translate, IN, const osg::Vec3d &, dv);
+	I_StaticMethod3(osg::Matrixd, translate, IN, osg::Matrixd::value_type, x, IN, osg::Matrixd::value_type, y, IN, osg::Matrixd::value_type, z);
+	I_StaticMethod2(osg::Matrixd, rotate, IN, const osg::Vec3f &, from, IN, const osg::Vec3f &, to);
+	I_StaticMethod2(osg::Matrixd, rotate, IN, const osg::Vec3d &, from, IN, const osg::Vec3d &, to);
+	I_StaticMethod4(osg::Matrixd, rotate, IN, osg::Matrixd::value_type, angle, IN, osg::Matrixd::value_type, x, IN, osg::Matrixd::value_type, y, IN, osg::Matrixd::value_type, z);
+	I_StaticMethod2(osg::Matrixd, rotate, IN, osg::Matrixd::value_type, angle, IN, const osg::Vec3f &, axis);
+	I_StaticMethod2(osg::Matrixd, rotate, IN, osg::Matrixd::value_type, angle, IN, const osg::Vec3d &, axis);
+	I_StaticMethod6(osg::Matrixd, rotate, IN, osg::Matrixd::value_type, angle1, IN, const osg::Vec3f &, axis1, IN, osg::Matrixd::value_type, angle2, IN, const osg::Vec3f &, axis2, IN, osg::Matrixd::value_type, angle3, IN, const osg::Vec3f &, axis3);
+	I_StaticMethod6(osg::Matrixd, rotate, IN, osg::Matrixd::value_type, angle1, IN, const osg::Vec3d &, axis1, IN, osg::Matrixd::value_type, angle2, IN, const osg::Vec3d &, axis2, IN, osg::Matrixd::value_type, angle3, IN, const osg::Vec3d &, axis3);
+	I_StaticMethod1(osg::Matrixd, rotate, IN, const osg::Quat &, quat);
+	I_StaticMethod1(osg::Matrixd, inverse, IN, const osg::Matrixd &, matrix);
+	I_StaticMethod1(osg::Matrixd, orthoNormal, IN, const osg::Matrixd &, matrix);
+	I_StaticMethod6(osg::Matrixd, ortho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar);
+	I_StaticMethod4(osg::Matrixd, ortho2D, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top);
+	I_StaticMethod6(osg::Matrixd, frustum, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar);
+	I_StaticMethod4(osg::Matrixd, perspective, IN, double, fovy, IN, double, aspectRatio, IN, double, zNear, IN, double, zFar);
+	I_StaticMethod3(osg::Matrixd, lookAt, IN, const osg::Vec3f &, eye, IN, const osg::Vec3f &, center, IN, const osg::Vec3f &, up);
+	I_StaticMethod3(osg::Matrixd, lookAt, IN, const osg::Vec3d &, eye, IN, const osg::Vec3d &, center, IN, const osg::Vec3d &, up);
+	I_StaticMethod2(osg::Vec3f, transform3x3, IN, const osg::Vec3f &, v, IN, const osg::Matrixd &, m);
+	I_StaticMethod2(osg::Vec3d, transform3x3, IN, const osg::Vec3d &, v, IN, const osg::Matrixd &, m);
+	I_StaticMethod2(osg::Vec3f, transform3x3, IN, const osg::Matrixd &, m, IN, const osg::Vec3f &, v);
+	I_StaticMethod2(osg::Vec3d, transform3x3, IN, const osg::Matrixd &, m, IN, const osg::Vec3d &, v);
 	I_WriteOnlyProperty(float const *const, );
 	I_ReadOnlyProperty(osg::Quat, Rotate);
 	I_ReadOnlyProperty(osg::Vec3d, Scale);

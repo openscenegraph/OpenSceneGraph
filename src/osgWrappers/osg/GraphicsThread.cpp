@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/GraphicsContext>
@@ -30,6 +31,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_BaseType(osg::GraphicsThread::Operation);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION);
 	I_Method0(void, release);
+	I_PublicMemberProperty(osg::BarrierOperation::PreBlockOp, _preBlockOp);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Block)
@@ -68,6 +70,8 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread::Operation)
 	I_Method0(void, release);
 	I_Property(bool, Keep);
 	I_Property(const std::string &, Name);
+	I_PublicMemberProperty(std::string, _name);
+	I_PublicMemberProperty(bool, _keep);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)

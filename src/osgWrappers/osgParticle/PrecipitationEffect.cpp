@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -126,10 +127,16 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell)
 	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k);
+	I_PublicMemberProperty(int, i);
+	I_PublicMemberProperty(int, j);
+	I_PublicMemberProperty(int, k);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime)
 	I_Constructor0();
+	I_PublicMemberProperty(float, depth);
+	I_PublicMemberProperty(float, startTime);
+	I_PublicMemberProperty(osg::Matrix, modelview);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::LessFunctor)

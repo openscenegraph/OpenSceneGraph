@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -50,6 +51,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_Method1(void, compileShader, IN, unsigned int, contextID);
 	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program);
 	I_Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log);
+	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName);
+	I_StaticMethod2(void, deleteGlShader, IN, unsigned int, contextID, IN, GLuint, shader);
+	I_StaticMethod3(void, flushDeletedGlShaders, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
+	I_StaticMethod1(osg::Shader::Type, getTypeId, IN, const std::string &, tname);
 	I_Property(const std::string &, ShaderSource);
 	I_PropertyWithReturnType(osg::Shader::Type, Type, bool);
 	I_ReadOnlyProperty(const char *, Typename);

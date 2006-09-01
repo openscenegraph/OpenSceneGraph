@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -57,6 +58,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveUniforms, IN, unsigned int, contextID);
 	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveAttribs, IN, unsigned int, contextID);
 	I_Method1(osg::Program::PerContextProgram *, getPCP, IN, unsigned int, contextID);
+	I_StaticMethod2(void, deleteGlProgram, IN, unsigned int, contextID, IN, GLuint, program);
+	I_StaticMethod3(void, flushDeletedGlPrograms, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
 	I_ReadOnlyProperty(const osg::Program::AttribBindingList &, AttribBindingList);
 	I_ArrayProperty_GA(osg::Shader *, Shader, Shaders, unsigned int, bool);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
@@ -65,6 +68,9 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
 	I_Constructor0();
 	I_Constructor3(IN, GLint, loc, IN, GLenum, type, IN, GLint, size);
+	I_PublicMemberProperty(GLint, _location);
+	I_PublicMemberProperty(GLenum, _type);
+	I_PublicMemberProperty(GLint, _size);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)

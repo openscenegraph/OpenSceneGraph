@@ -7,11 +7,13 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
 #include <osg/Drawable>
 #include <osg/Geode>
+#include <osg/Geometry>
 #include <osg/Group>
 #include <osg/Image>
 #include <osg/LOD>
@@ -19,6 +21,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/Object>
+#include <osg/PrimitiveSet>
 #include <osg/ProxyNode>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
@@ -100,6 +103,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	I_Method1(void, apply, IN, osg::LOD &, lod);
 	I_Method0(void, combineLODs);
+	I_PublicMemberProperty(osgUtil::Optimizer::CombineLODsVisitor::GroupList, _groupList);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
@@ -116,6 +120,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	I_Method1(void, apply, IN, osg::Node &, node);
 	I_Method0(void, copySharedNodes);
+	I_PublicMemberProperty(osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList, _sharedNodeList);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList);
@@ -128,6 +133,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
 	I_Method0(void, reset);
 	I_Method1(void, apply, IN, osg::Billboard &, billboard);
 	I_Method0(void, process);
+	I_PublicMemberProperty(osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap, _billboards);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
@@ -165,6 +171,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
 	I_Method1(void, apply, IN, osg::Geode &, geode);
 	I_Method1(void, apply, IN, osg::Billboard &, x);
 	I_Method1(bool, mergeGeode, IN, osg::Geode &, geode);
+	I_StaticMethod1(bool, geometryContainsSharedArrays, IN, osg::Geometry &, geom);
+	I_StaticMethod2(bool, mergeGeometry, IN, osg::Geometry &, lhs, IN, osg::Geometry &, rhs);
+	I_StaticMethod2(bool, mergePrimitive, IN, osg::DrawArrays &, lhs, IN, osg::DrawArrays &, rhs);
+	I_StaticMethod2(bool, mergePrimitive, IN, osg::DrawArrayLengths &, lhs, IN, osg::DrawArrayLengths &, rhs);
+	I_StaticMethod2(bool, mergePrimitive, IN, osg::DrawElementsUByte &, lhs, IN, osg::DrawElementsUByte &, rhs);
+	I_StaticMethod2(bool, mergePrimitive, IN, osg::DrawElementsUShort &, lhs, IN, osg::DrawElementsUShort &, rhs);
+	I_StaticMethod2(bool, mergePrimitive, IN, osg::DrawElementsUInt &, lhs, IN, osg::DrawElementsUInt &, rhs);
 	I_Property(unsigned int, TargetMaximumNumberOfVertices);
 END_REFLECTOR
 
@@ -176,6 +189,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
 	I_Method1(void, apply, IN, osg::Geode &, geode);
 	I_Method1(void, apply, IN, osg::Group &, group);
 	I_Method0(void, removeEmptyNodes);
+	I_PublicMemberProperty(osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList, _redundantNodeList);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList);
@@ -185,6 +199,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	I_Method1(void, apply, IN, osg::ProxyNode &, group);
 	I_Method0(void, removeRedundantNodes);
+	I_PublicMemberProperty(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList, _redundantNodeList);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList);
@@ -195,6 +210,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
 	I_Method1(void, apply, IN, osg::Group &, group);
 	I_Method1(void, apply, IN, osg::Transform &, transform);
 	I_Method0(void, removeRedundantNodes);
+	I_PublicMemberProperty(osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList, _redundantNodeList);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList);
@@ -205,6 +221,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	I_Method1(void, apply, IN, osg::Group &, group);
 	I_MethodWithDefaults1(bool, divide, IN, unsigned int, maxNumTreesPerCell, 8);
 	I_Method2(bool, divide, IN, osg::Group *, group, IN, unsigned int, maxNumTreesPerCell);
+	I_PublicMemberProperty(osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList, _groupsToDivideList);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
@@ -222,6 +239,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TesselateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0);
 	I_Method1(void, apply, IN, osg::Geode &, geode);
+	I_PublicMemberProperty(osgUtil::Optimizer::TesselateVisitor::GroupList, _groupList);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
@@ -271,6 +289,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
 	I_Method1(void, apply, IN, osg::Node &, node);
 	I_Method1(void, apply, IN, osg::StateSet &, stateset);
 	I_Method1(void, apply, IN, osg::Texture &, texture);
+	I_PublicMemberProperty(bool, _changeAutoUnRef);
+	I_PublicMemberProperty(bool, _valueAutoUnRef);
+	I_PublicMemberProperty(bool, _changeClientImageStorage);
+	I_PublicMemberProperty(bool, _valueClientImageStorage);
+	I_PublicMemberProperty(bool, _changeAnisotropy);
+	I_PublicMemberProperty(float, _valueAnisotropy);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >);

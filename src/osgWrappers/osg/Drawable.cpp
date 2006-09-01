@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -121,6 +122,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, x);
 	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x);
 	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x);
+	I_StaticMethodWithDefaults2(GLuint, generateDisplayList, IN, unsigned int, contextID, , IN, unsigned int, sizeHint, 0);
+	I_StaticMethod1(void, setMinimumNumberOfDisplayListsToRetainInCache, IN, unsigned int, minimum);
+	I_StaticMethod0(unsigned int, getMinimumNumberOfDisplayListsToRetainInCache);
+	I_StaticMethodWithDefaults3(void, deleteDisplayList, IN, unsigned int, contextID, , IN, GLuint, globj, , IN, unsigned int, sizeHint, 0);
+	I_StaticMethod1(void, flushAllDeletedDisplayLists, IN, unsigned int, contextID);
+	I_StaticMethod2(void, flushDeletedDisplayLists, IN, unsigned int, contextID, IN, double &, availableTime);
+	I_StaticMethod2(void, deleteVertexBufferObject, IN, unsigned int, contextID, IN, GLuint, globj);
+	I_StaticMethod3(void, flushDeletedVertexBufferObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
+	I_StaticMethod2(osg::Drawable::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Drawable::Extensions *, extensions);
 	I_ReadOnlyProperty(const osg::BoundingBox &, Bound);
 	I_Property(osg::Drawable::ComputeBoundingBoxCallback *, ComputeBoundingBoxCallback);
 	I_Property(osg::Drawable::CullCallback *, CullCallback);

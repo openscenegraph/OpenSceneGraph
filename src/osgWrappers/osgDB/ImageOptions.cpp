@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -44,21 +45,43 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method0(void, init);
+	I_PublicMemberProperty(osgDB::ImageOptions::ImageSamplingMode, _sourceImageSamplingMode);
+	I_PublicMemberProperty(osgDB::ImageOptions::ImageWindowMode, _sourceImageWindowMode);
+	I_PublicMemberProperty(osgDB::ImageOptions::RatioWindow, _sourceRatioWindow);
+	I_PublicMemberProperty(osgDB::ImageOptions::PixelWindow, _sourcePixelWindow);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Image >, _destinationImage);
+	I_PublicMemberProperty(osgDB::ImageOptions::ImageWindowMode, _destinationImageWindowMode);
+	I_PublicMemberProperty(osgDB::ImageOptions::RatioWindow, _destinationRatioWindow);
+	I_PublicMemberProperty(osgDB::ImageOptions::PixelWindow, _destinationPixelWindow);
+	I_PublicMemberProperty(GLenum, _destinationDataType);
+	I_PublicMemberProperty(GLenum, _destinationPixelFormat);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
 	I_Constructor0();
 	I_Method4(void, set, IN, unsigned int, x, IN, unsigned int, y, IN, unsigned int, w, IN, unsigned int, h);
+	I_PublicMemberProperty(unsigned int, windowX);
+	I_PublicMemberProperty(unsigned int, windowY);
+	I_PublicMemberProperty(unsigned int, windowWidth);
+	I_PublicMemberProperty(unsigned int, windowHeight);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
 	I_Constructor0();
 	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
+	I_PublicMemberProperty(double, windowX);
+	I_PublicMemberProperty(double, windowY);
+	I_PublicMemberProperty(double, windowWidth);
+	I_PublicMemberProperty(double, windowHeight);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
 	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
+	I_PublicMemberProperty(double, _x);
+	I_PublicMemberProperty(double, _y);
+	I_PublicMemberProperty(double, _w);
+	I_PublicMemberProperty(double, _h);
 END_REFLECTOR
 

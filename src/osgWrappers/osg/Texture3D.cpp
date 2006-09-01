@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -59,6 +60,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D)
 	I_Method0(unsigned int, getNumMipmapLevels);
 	I_Method8(void, copyTexSubImage3D, IN, osg::State &, state, IN, int, xoffset, IN, int, yoffset, IN, int, zoffset, IN, int, x, IN, int, y, IN, int, width, IN, int, height);
 	I_Method1(void, apply, IN, osg::State &, state);
+	I_StaticMethod2(osg::Texture3D::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture3D::Extensions *, extensions);
 	I_Property(osg::Image *, Image);
 	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);
 	I_Property(osg::Texture3D::SubloadCallback *, SubloadCallback);

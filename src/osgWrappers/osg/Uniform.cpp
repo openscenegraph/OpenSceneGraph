@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
@@ -203,6 +204,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method1(void, setModifiedCount, IN, unsigned int, mc);
 	I_Method0(unsigned int, getModifiedCount);
 	I_Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location);
+	I_StaticMethod1(const char *, getTypename, IN, osg::Uniform::Type, t);
+	I_StaticMethod1(int, getTypeNumComponents, IN, osg::Uniform::Type, t);
+	I_StaticMethod1(osg::Uniform::Type, getTypeId, IN, const std::string &, tname);
+	I_StaticMethod1(osg::Uniform::Type, getGlApiType, IN, osg::Uniform::Type, t);
+	I_StaticMethod1(GLenum, getInternalArrayType, IN, osg::Uniform::Type, t);
 	I_WriteOnlyPropertyWithReturnType(bool, , bool);
 	I_WriteOnlyPropertyWithReturnType(osg::FloatArray *, Array, bool);
 	I_ArrayProperty_Custom(bool, Element, Elements, unsigned int, bool);

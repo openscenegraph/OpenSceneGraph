@@ -146,6 +146,7 @@ namespace osgIntrospection
         /// associated to it. If the conversion can't be completed, an
         /// exception is thrown.
         std::string toString() const;
+        std::wstring toWString() const;
         
         /// Swaps the content of this Value with another Value
         void swap(Value& v);

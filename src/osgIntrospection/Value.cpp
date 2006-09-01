@@ -82,7 +82,7 @@ Value Value::tryConvertTo(const Type& outtype) const
 
 std::string Value::toString() const
 {
-    check_empty();
+  check_empty();
 
     const ReaderWriter* rw = _type->getReaderWriter();
     if (rw)
@@ -90,7 +90,22 @@ std::string Value::toString() const
         std::ostringstream oss;
         if (!rw->writeTextValue(oss, *this))
             throw StreamWriteErrorException();
-        return oss.str();
+     return oss.str();
+    }
+    throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, _type->getStdTypeInfo());
+    }
+
+std::wstring Value::toWString() const
+{
+    check_empty();
+
+    const ReaderWriter* rw = _type->getReaderWriter();
+    if (rw)
+    {
+        std::wostringstream woss;
+        if (!rw->writeTextValue(woss, *this))
+            throw StreamWriteErrorException();
+        return woss.str();
     }
     throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, _type->getStdTypeInfo());
 }

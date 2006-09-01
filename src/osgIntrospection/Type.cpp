@@ -207,6 +207,16 @@ void Type::getAllProperties(PropertyInfoList& props) const
     }
 }
 
+void Type::getPropertiesMap(PropertyInfoMap& props) const
+{
+    check_defined();
+    props[this] = _props;
+    for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
+    {
+        (*i)->getPropertiesMap(props);
+    }
+}
+
 void Type::getAllMethods(MethodInfoList& methods) const
 {
     check_defined();
@@ -214,6 +224,16 @@ void Type::getAllMethods(MethodInfoList& methods) const
     for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
         (*i)->getAllMethods(methods);
+    }
+}
+
+void Type::getMethodsMap(MethodInfoMap& methods) const
+{
+    check_defined();
+    methods[this] = _methods;
+    for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
+    {
+        (*i)->getMethodsMap(methods);
     }
 }
 

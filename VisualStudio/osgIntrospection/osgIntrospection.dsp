@@ -187,6 +187,10 @@ SOURCE=..\..\include\osgIntrospection\PropertyInfo
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgIntrospection\PublicMemberAccessor
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgIntrospection\ReaderWriter
 # End Source File
 # Begin Source File

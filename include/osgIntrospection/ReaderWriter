@@ -26,6 +26,7 @@
 #include <osg/ref_ptr>
 
 #include <iostream>
+#include <sstream>
 
 
 namespace osgIntrospection
@@ -61,6 +62,12 @@ namespace osgIntrospection
         /// Reads a textual representation of the value's content from a stream.
         virtual std::istream &readTextValue(std::istream &, Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getStdTypeInfo()); }
 
+        /// Writes a textual representation of the value's content to a stream.
+      virtual std::wostream &writeTextValue(std::wostream & wos, const Value& v, const Options* op = 0) const { std::ostringstream os; writeTextValue(os, v, op); wos << os; return (wos);}
+
+        /// Reads a textual representation of the value's content from a stream.
+        virtual std::wistream &readTextValue(std::wistream& , Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getStdTypeInfo()); }
+
         /// Writes a binary representation of the value's content to a stream.
         virtual std::ostream &writeBinaryValue(std::ostream &, const Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_WRITE, v.getType().getStdTypeInfo()); }
 
@@ -92,6 +99,34 @@ namespace osgIntrospection
         {
             if (v.isEmpty()) v = Value(T());
             return (is >> variant_cast<T &>(v));
+        }
+
+        virtual std::ostream &writeBinaryValue(std::ostream &os, const Value& v, const Options * = 0) const
+        {
+            return os.write(reinterpret_cast<const char *>(extract_raw_data<T>(v)), sizeof(T));
+        }
+
+        virtual std::istream &readBinaryValue(std::istream &is, Value& v, const Options * = 0) const
+        {
+            if (v.isEmpty()) v = Value(T());
+            return is.read(reinterpret_cast<char *>(extract_raw_data<T>(v)), sizeof(T));
+        }
+
+    };
+
+    template<typename T>
+    class StdWReaderWriter: public ReaderWriter
+    {
+    public:
+        virtual std::wostream &writeTextValue(std::wostream &wos, const Value& v, const Options * = 0) const
+        {
+            return (wos << variant_cast<T>(v));
+        }
+
+        virtual std::wistream &readTextValue(std::wistream &wis, Value& v, const Options * = 0) const
+        {
+            if (v.isEmpty()) v = Value(T());
+            return (wis >> variant_cast<T &>(v));
         }
 
         virtual std::ostream &writeBinaryValue(std::ostream &os, const Value& v, const Options * = 0) const

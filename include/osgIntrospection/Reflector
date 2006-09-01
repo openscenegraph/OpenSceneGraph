@@ -226,6 +226,28 @@ namespace osgIntrospection
         }
     };
 
+    template<typename T>
+    struct WAtomicValueReflector: ValueReflector<T>
+    {
+        typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
+    
+        WAtomicValueReflector(const std::string& name, const std::string& ns)
+        :    ValueReflector<T>(name, ns)
+        {
+            setReaderWriter(new StdWReaderWriter<T>);
+            setComparator(new PartialOrderComparator<T>);
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
+        }
+
+        WAtomicValueReflector(const std::string& qname)
+        :    ValueReflector<T>(qname)
+        {
+            setReaderWriter(new StdWReaderWriter<T>);
+            setComparator(new PartialOrderComparator<T>);
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));            
+        }
+    };
+
 
     /// This reflector is a ValueReflector that should be used to define
     /// enumerations. It assigns an EnumReaderWriter by default.

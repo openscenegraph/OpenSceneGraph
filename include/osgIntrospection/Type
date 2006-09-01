@@ -37,14 +37,20 @@ namespace osgIntrospection
     struct Comparator;
 
     // typedefs for member info lists
-    typedef std::vector<const MethodInfo* > MethodInfoList;    
-    typedef std::vector<const PropertyInfo* > PropertyInfoList;    
+    typedef std::vector<const MethodInfo* > MethodInfoList;
+    typedef std::vector<const PropertyInfo* > PropertyInfoList;
     typedef std::vector<const ParameterInfo* > ParameterInfoList;
     typedef std::vector<const ConstructorInfo* > ConstructorInfoList;
+
+    // typedefs for member info map
+    typedef std::map<const Type*, PropertyInfoList > PropertyInfoMap;
+    typedef std::map<const Type*, MethodInfoList > MethodInfoMap;
 
     // typedef for enum label map
     typedef std::map<int, std::string> EnumLabelMap;
 
+    // typedef for base type
+    typedef std::vector<const Type* > TypeList;
 
     /// Objects of class Type are used to maintain information about
     /// reflected types. They also provide a number of services, like
@@ -92,9 +98,12 @@ namespace osgIntrospection
         /// Returns the i-th base type.
         inline const Type& getBaseType(int i) const;
         
+        /// Returns the base type list.
+        inline const TypeList& getBaseTypeList() const;
+
         /// Returns the number of type name aliases.
         inline int getNumAliases() const;
-        
+
         /// Returns the i-th name alias
         const std::string& getAlias(int i) const;
 
@@ -133,7 +142,11 @@ namespace osgIntrospection
         /// Fills a list of properties that are either defined in this Type 
         /// or in inherited types.
         void getAllProperties(PropertyInfoList& props) const;
-        
+
+        /// Fills a map of "type <-> propertyInfoList" that are either defined in this Type 
+        /// or in inherited types.
+        void getPropertiesMap(PropertyInfoMap& props) const;
+
         /// Returns the list of constructors defined for this type.
         inline const ConstructorInfoList& getConstructors() const;
 
@@ -145,6 +158,10 @@ namespace osgIntrospection
         /// or in inherited types.
         void getAllMethods(MethodInfoList& methods) const;
 
+        /// Fills a map of "type <-> MethodInfoList" that are either defined in this Type 
+        /// or in inherited types.
+        void getMethodsMap(MethodInfoMap& methods) const;
+
         /// Returns the map of enumeration labels. If the type is not an
         /// enumeration, an empty map is returned.
         inline const EnumLabelMap& getEnumLabels() const;
@@ -154,7 +171,7 @@ namespace osgIntrospection
         /// one constructors are suitable for calling, the best match is 
         /// returned.
         const ConstructorInfo* getCompatibleConstructor(const ValueList& values) const;
-        
+
         /// Searches for a constructor whose parameters match exactly the given 
         /// list of parameter descriptions.
         const ConstructorInfo* getConstructor(const ParameterInfoList& params) const;
@@ -186,7 +203,7 @@ namespace osgIntrospection
         /// Returns the instance of the reader/writer object assigned to 
         /// this type, if any. Otherwise it returns the null pointer.
         inline const ReaderWriter* getReaderWriter() const;
-        
+
         /// Returns the instance of the comparator object assigned to
         /// this type, if any. Otherwise it returns the null pointer.
         inline const Comparator* getComparator() const;
@@ -226,7 +243,6 @@ namespace osgIntrospection
         std::string _name;
         std::string _namespace;
 
-        typedef std::vector<const Type* > TypeList;
         TypeList _base;
 
         bool _is_const;
@@ -242,7 +258,7 @@ namespace osgIntrospection
 
         const ReaderWriter* _rw;
         const Comparator* _cmp;
-        
+
         typedef std::vector<std::string> AliasList;
         AliasList _aliases;
     };
@@ -352,7 +368,7 @@ namespace osgIntrospection
         check_defined();
         return _props;
     }
-    
+
     inline const ConstructorInfoList& Type::getConstructors() const
     {
         check_defined();
@@ -419,22 +435,28 @@ namespace osgIntrospection
         return *_base.at(i);
     }
 
+    inline const TypeList& Type::getBaseTypeList() const
+    {
+        check_defined();
+        return _base;
+    }
+
     inline Value Type::createInstance() const
     {
         ValueList args;
         return createInstance(args);
     }
-    
+
     inline int Type::getNumAliases() const
     {
         return static_cast<int>(_aliases.size());
     }
-    
+
     inline const std::string& Type::getAlias(int i) const
     {
         return _aliases[i];
     }
-    
+
     inline bool Type::matchesName(const std::string& name) const
     {
         if (getQualifiedName() == name) 

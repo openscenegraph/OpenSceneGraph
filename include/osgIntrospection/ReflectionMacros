@@ -20,6 +20,7 @@
 #include <osgIntrospection/TypeNameAliasProxy>
 #include <osgIntrospection/ConverterProxy>
 #include <osgIntrospection/Converter>
+#include <osgIntrospection/PublicMemberAccessor>
 
 namespace osgIntrospection
 {
@@ -84,6 +85,9 @@ namespace osgIntrospection
 
 #define ATOMIC_VALUE_REFLECTOR(t) \
     namespace { osgIntrospection::AtomicValueReflector<t > OSG_RM_LINEID(reflector) (#t); }
+
+#define WATOMIC_VALUE_REFLECTOR(t) \
+    namespace { osgIntrospection::WAtomicValueReflector<t > OSG_RM_LINEID(reflector) (#t); }
 
 #define STD_PAIR_REFLECTOR(t) \
     namespace { osgIntrospection::StdPairReflector<t, t::first_type, t::second_type > OSG_RM_LINEID(reflector) (#t); }
@@ -210,6 +214,20 @@ struct BaseTypeConverters<x, reflected_type, true>
     }
 
 #define I_EnumLabel(x)                       addEnumLabel(x, #x, true);
+
+
+
+
+
+
+// --------------------------------------------------------------------------
+// PUBLIC MEMBER PROPERTIES
+// --------------------------------------------------------------------------
+
+#define I_PublicMemberProperty(t, n) \
+  cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, 0, 0)); \
+  cap->addAttribute(new osgIntrospection::CustomPropertyGetAttribute(new osgIntrospection::PublicMemberAccessor<reflected_type, t>(&reflected_type::n))); \
+  cap->addAttribute(new osgIntrospection::CustomPropertySetAttribute(new osgIntrospection::PublicMemberAccessor<reflected_type, t>(&reflected_type::n)));
 
 
 // --------------------------------------------------------------------------

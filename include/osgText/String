@@ -18,7 +18,6 @@
 #include <set>
 #include <string>
 
-#include <osg/Referenced>
 #include <osgText/Export>
 
 namespace osgText {
@@ -41,7 +40,7 @@ public:
 
 class Text;
 
-class OSGTEXT_EXPORT String : public osg::Referenced, public VectorUInt
+class OSGTEXT_EXPORT String : public VectorUInt
 {
     public:
 
@@ -71,7 +70,7 @@ class OSGTEXT_EXPORT String : public osg::Referenced, public VectorUInt
         String(const wchar_t* text) { set(text); }
         String(const std::string& text,Encoding encoding) { set(text,encoding); }
 
-        virtual ~String() {} // public temporily while osgText is still in flux.
+        virtual ~String() {}
 
         String& operator = (const String& str);
 

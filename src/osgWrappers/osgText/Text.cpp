@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -242,6 +243,12 @@ BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 	I_ReadOnlyProperty(osgText::Text::GlyphQuads::Glyphs, Glyphs);
 	I_ReadOnlyProperty(osgText::Text::GlyphQuads::LineNumbers &, LineNumbers);
 	I_ReadOnlyProperty(osgText::Text::GlyphQuads::TexCoords &, TexCoords);
+	I_PublicMemberProperty(osgText::Text::GlyphQuads::Glyphs, _glyphs);
+	I_PublicMemberProperty(osgText::Text::GlyphQuads::Coords2, _coords);
+	I_PublicMemberProperty(osg::buffered_object< osgText::Text::GlyphQuads::Coords3 >, _transformedCoords);
+	I_PublicMemberProperty(osgText::Text::GlyphQuads::TexCoords, _texcoords);
+	I_PublicMemberProperty(osgText::Text::GlyphQuads::LineNumbers, _lineNumbers);
+	I_PublicMemberProperty(osgText::Text::GlyphQuads::ColorCoords, _colorCoords);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)

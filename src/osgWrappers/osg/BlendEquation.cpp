@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BlendEquation>
@@ -50,6 +51,8 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
 	I_Method1(void, setEquation, IN, osg::BlendEquation::Equation, equation);
 	I_Method0(osg::BlendEquation::Equation, getEquation);
 	I_Method1(void, apply, IN, osg::State &, state);
+	I_StaticMethod2(osg::BlendEquation::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BlendEquation::Extensions *, extensions);
 	I_Property(osg::BlendEquation::Equation, Equation);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR

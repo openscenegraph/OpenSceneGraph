@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -43,6 +44,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_MethodWithDefaults3(void, draw, IN, osg::State &, state, , IN, osgUtil::RenderLeaf *&, previous, , IN, const osg::Matrix *, postMultMatrix, 0);
+	I_PublicMemberProperty(osgUtil::PositionalStateContainer::AttrMatrixList, _attrList);
+	I_PublicMemberProperty(osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap, _texAttrListMap);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)

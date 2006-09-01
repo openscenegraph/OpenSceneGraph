@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Drawable>
@@ -82,6 +83,17 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_ReadOnlyProperty(int, Bins);
 	I_WriteOnlyProperty(int, Depth);
 	I_WriteOnlyProperty(osgUtil::Statistics::StatsType, Type);
+	I_PublicMemberProperty(int, numDrawables);
+	I_PublicMemberProperty(int, nummat);
+	I_PublicMemberProperty(int, nbins);
+	I_PublicMemberProperty(int, nlights);
+	I_PublicMemberProperty(int, depth);
+	I_PublicMemberProperty(int, _binNo);
+	I_PublicMemberProperty(osgUtil::Statistics::StatsType, stattype);
+	I_PublicMemberProperty(int, nimpostor);
+	I_PublicMemberProperty(unsigned int, _vertexCount);
+	I_PublicMemberProperty(osgUtil::Statistics::PrimitiveValueMap, _primitiveCount);
+	I_PublicMemberProperty(GLenum, _currentPrimitiveFunctorMode);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::StatsVisitor::NodeSet);
@@ -103,6 +115,24 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_Method1(void, apply, IN, osg::Drawable &, drawable);
 	I_Method0(void, totalUpStats);
 	I_Method1(void, print, IN, std::ostream &, out);
+	I_PublicMemberProperty(unsigned int, _numInstancedGroup);
+	I_PublicMemberProperty(unsigned int, _numInstancedSwitch);
+	I_PublicMemberProperty(unsigned int, _numInstancedLOD);
+	I_PublicMemberProperty(unsigned int, _numInstancedTransform);
+	I_PublicMemberProperty(unsigned int, _numInstancedGeode);
+	I_PublicMemberProperty(unsigned int, _numInstancedDrawable);
+	I_PublicMemberProperty(unsigned int, _numInstancedGeometry);
+	I_PublicMemberProperty(unsigned int, _numInstancedStateSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _groupSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _transformSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _lodSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _switchSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _geodeSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::DrawableSet, _drawableSet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::DrawableSet, _geometrySet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::StateSetSet, _statesetSet);
+	I_PublicMemberProperty(osgUtil::Statistics, _uniqueStats);
+	I_PublicMemberProperty(osgUtil::Statistics, _instancedStats);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >);

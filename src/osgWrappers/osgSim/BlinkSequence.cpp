@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -58,5 +59,6 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SequenceGroup)
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
+	I_PublicMemberProperty(double, _baseTime);
 END_REFLECTOR
 

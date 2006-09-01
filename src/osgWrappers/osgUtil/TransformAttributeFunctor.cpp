@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Drawable>
@@ -26,5 +27,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TransformAttributeFunctor)
 	I_BaseType(osg::Drawable::AttributeFunctor);
 	I_Constructor1(IN, const osg::Matrix &, m);
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, type, IN, unsigned int, count, IN, osg::Vec3 *, begin);
+	I_PublicMemberProperty(osg::Matrix, _m);
+	I_PublicMemberProperty(osg::Matrix, _im);
 END_REFLECTOR
 

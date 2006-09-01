@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -41,6 +42,12 @@ BEGIN_OBJECT_REFLECTOR(osg::PolygonOffset)
 	I_Method1(void, setUnits, IN, float, units);
 	I_Method0(float, getUnits);
 	I_Method1(void, apply, IN, osg::State &, state);
+	I_StaticMethod1(void, setFactorMultiplier, IN, float, multiplier);
+	I_StaticMethod0(float, getFactorMultiplier);
+	I_StaticMethod1(void, setUnitsMultiplier, IN, float, multiplier);
+	I_StaticMethod0(float, getUnitsMultiplier);
+	I_StaticMethod0(bool, areFactorAndUnitsMultipliersSet);
+	I_StaticMethod0(void, setFactorAndUnitsMultipliersUsingBestGuessForDriver);
 	I_Property(float, Factor);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 	I_Property(float, Units);

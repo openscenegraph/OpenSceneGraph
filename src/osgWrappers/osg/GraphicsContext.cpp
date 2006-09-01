@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/GraphicsContext>
@@ -47,6 +48,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext);
 	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer);
 	I_Method0(void, swapBuffersImplementation);
+	I_StaticMethod1(void, setCreateGraphicsContextCallback, IN, osg::GraphicsContext::CreateGraphicContextCallback *, callback);
+	I_StaticMethod0(osg::GraphicsContext::CreateGraphicContextCallback *, getCreateGraphicsContextCallback);
+	I_StaticMethod1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits);
+	I_StaticMethod0(unsigned int, createNewContextID);
+	I_StaticMethod1(void, incrementContextIDUsageCount, IN, unsigned int, contextID);
+	I_StaticMethod1(void, decrementContextIDUsageCount, IN, unsigned int, contextID);
 	I_Property(osg::GraphicsThread *, GraphicsThread);
 	I_Property(osg::State *, State);
 	I_ReadOnlyProperty(const osg::GraphicsContext::Traits *, Traits);
@@ -61,5 +68,29 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
+	I_PublicMemberProperty(std::string, _hostName);
+	I_PublicMemberProperty(unsigned int, _displayNum);
+	I_PublicMemberProperty(unsigned int, _screenNum);
+	I_PublicMemberProperty(unsigned int, _x);
+	I_PublicMemberProperty(unsigned int, _y);
+	I_PublicMemberProperty(unsigned int, _width);
+	I_PublicMemberProperty(unsigned int, _height);
+	I_PublicMemberProperty(std::string, _windowName);
+	I_PublicMemberProperty(bool, _windowDecoration);
+	I_PublicMemberProperty(bool, _supportsResize);
+	I_PublicMemberProperty(unsigned int, _red);
+	I_PublicMemberProperty(unsigned int, _blue);
+	I_PublicMemberProperty(unsigned int, _green);
+	I_PublicMemberProperty(unsigned int, _alpha);
+	I_PublicMemberProperty(unsigned int, _depth);
+	I_PublicMemberProperty(unsigned int, _stencil);
+	I_PublicMemberProperty(bool, _pbuffer);
+	I_PublicMemberProperty(bool, _quadBufferStereo);
+	I_PublicMemberProperty(bool, _doubleBuffer);
+	I_PublicMemberProperty(GLenum, _target);
+	I_PublicMemberProperty(unsigned int, _level);
+	I_PublicMemberProperty(unsigned int, _face);
+	I_PublicMemberProperty(unsigned int, _mipMapGeneration);
+	I_PublicMemberProperty(osg::GraphicsContext *, _sharedContext);
 END_REFLECTOR
 

@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Referenced>
@@ -39,6 +40,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Method0(int, referenceCount);
 	I_Method1(void, addObserver, IN, osg::Observer *, observer);
 	I_Method1(void, removeObserver, IN, osg::Observer *, observer);
+	I_StaticMethod1(void, setThreadSafeReferenceCounting, IN, bool, enableThreadSafeReferenceCounting);
+	I_StaticMethod0(bool, getThreadSafeReferenceCounting);
+	I_StaticMethod1(void, setDeleteHandler, IN, osg::DeleteHandler *, handler);
+	I_StaticMethod0(osg::DeleteHandler *, getDeleteHandler);
 	I_Property(bool, ThreadSafeRefUnref);
 END_REFLECTOR
 

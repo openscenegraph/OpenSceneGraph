@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osgDB/Field>
@@ -63,6 +64,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::Field)
 	I_Method1(bool, matchFloat, IN, float, f);
 	I_Method1(bool, getFloat, IN, float &, f);
 	I_Method1(bool, getFloat, IN, double &, f);
+	I_StaticMethodWithDefaults2(osgDB::Field::FieldType, calculateFieldType, IN, const char *, str, , IN, bool, withinQuotes, false);
 	I_ReadOnlyProperty(osgDB::Field::FieldType, FieldType);
 	I_ReadOnlyProperty(int, NoCharacters);
 	I_Property(int, NoNestedBrackets);

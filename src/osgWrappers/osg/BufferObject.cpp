@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BufferObject>
@@ -39,11 +40,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	I_Method1(void, compileBuffer, IN, osg::State &, state);
 	I_Method1(void, releaseBuffer, IN, osg::State *, state);
 	I_Method3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, x, IN, double &, availableTime);
+	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj);
+	I_StaticMethod2(osg::BufferObject::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BufferObject::Extensions *, extensions);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::BufferObject::BufferEntry)
 	I_Constructor0();
 	I_Constructor1(IN, const osg::BufferObject::BufferEntry &, be);
+	I_PublicMemberProperty(osg::buffered_value< unsigned int >, modifiedCount);
+	I_PublicMemberProperty(unsigned int, dataSize);
+	I_PublicMemberProperty(unsigned int, offset);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)

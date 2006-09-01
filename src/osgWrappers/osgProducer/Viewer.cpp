@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/AnimationPath>
@@ -124,6 +125,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_Method0(osg::Quat, getOrientation);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method0(void, updatedSceneData);
+	I_StaticMethod0(const char *, getDefaultImageFileName);
 	I_Property(osg::AnimationPath *, AnimationPath);
 	I_ReadOnlyProperty(osg::NodePath, CoordinateSystemNodePath);
 	I_Property(bool, Done);

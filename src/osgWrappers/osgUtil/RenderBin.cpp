@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -89,6 +90,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method0(const osgUtil::RenderBin::DrawCallback *, getDrawCallback);
 	I_Method1(bool, getStats, IN, osgUtil::Statistics &, primStats);
 	I_Method0(void, copyLeavesFromStateGraphListToRenderLeafList);
+	I_StaticMethod1(osgUtil::RenderBin *, createRenderBin, IN, const std::string &, binName);
+	I_StaticMethod1(osgUtil::RenderBin *, getRenderBinPrototype, IN, const std::string &, binName);
+	I_StaticMethod2(void, addRenderBinPrototype, IN, const std::string &, binName, IN, osgUtil::RenderBin *, proto);
+	I_StaticMethod1(void, removeRenderBinPrototype, IN, osgUtil::RenderBin *, proto);
+	I_StaticMethod1(void, setDefaultRenderBinSortMode, IN, osgUtil::RenderBin::SortMode, mode);
+	I_StaticMethod0(osgUtil::RenderBin::SortMode, getDefaultRenderBinSortMode);
 	I_ReadOnlyProperty(int, BinNum);
 	I_Property(osgUtil::RenderBin::DrawCallback *, DrawCallback);
 	I_ReadOnlyProperty(osgUtil::RenderBin *, Parent);

@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
@@ -66,6 +67,9 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	I_Method0(osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap);
 	I_Method0(const osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap);
 	I_MethodWithDefaults2(void, writeErrorMessages, IN, std::ostream &, output, , IN, osg::ArgumentParser::ErrorSeverity, sevrity, osg::ArgumentParser::BENIGN);
+	I_StaticMethod1(bool, isOption, IN, const char *, str);
+	I_StaticMethod1(bool, isString, IN, const char *, str);
+	I_StaticMethod1(bool, isNumber, IN, const char *, str);
 	I_ReadOnlyProperty(std::string, ApplicationName);
 	I_Property(osg::ApplicationUsage *, ApplicationUsage);
 	I_ReadOnlyProperty(osg::ArgumentParser::ErrorMessageMap &, ErrorMessageMap);

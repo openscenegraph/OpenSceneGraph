@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -19,6 +20,7 @@
 #include <osg/StateSet>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Viewport>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -81,6 +83,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_Method0(void, popCurrentMask);
 	I_Method1(void, disableAndPushOccludersCurrentMask, IN, osg::NodePath &, nodePath);
 	I_Method1(void, popOccludersCurrentMask, IN, osg::NodePath &, nodePath);
+	I_StaticMethod3(osg::Vec4, computePixelSizeVector, IN, const osg::Viewport &, W, IN, const osg::Matrix &, P, IN, const osg::Matrix &, M);
 	I_WriteOnlyProperty(const osg::CullingSet &, );
 	I_Property(osg::CullingSet::Mask, CullingMask);
 	I_Property(osg::Polytope &, Frustum);

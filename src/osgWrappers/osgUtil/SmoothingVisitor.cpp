@@ -7,9 +7,11 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Geode>
+#include <osg/Geometry>
 #include <osgUtil/SmoothingVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,5 +26,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0();
 	I_Method1(void, apply, IN, osg::Geode &, geode);
+	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset);
 END_REFLECTOR
 

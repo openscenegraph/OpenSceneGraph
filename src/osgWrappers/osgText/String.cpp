@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osgText/String>
@@ -35,7 +36,6 @@ BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::String)
-	I_BaseType(osg::Referenced);
 	I_BaseType(osgText::VectorUInt);
 	I_Constructor0();
 	I_Constructor1(IN, const osgText::String &, str);

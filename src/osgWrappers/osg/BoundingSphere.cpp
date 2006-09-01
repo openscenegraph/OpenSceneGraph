@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -42,5 +43,7 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingSphere)
 	I_Method1(void, expandRadiusBy, IN, const osg::BoundingBox &, bb);
 	I_Method1(bool, contains, IN, const osg::Vec3 &, v);
 	I_Method1(bool, intersects, IN, const osg::BoundingSphere &, bs);
+	I_PublicMemberProperty(osg::Vec3, _center);
+	I_PublicMemberProperty(float, _radius);
 END_REFLECTOR
 

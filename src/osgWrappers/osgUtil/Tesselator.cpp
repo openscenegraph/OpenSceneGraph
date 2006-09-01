@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/Geometry>
@@ -71,6 +72,8 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tesselator::Prim::VecList);
 BEGIN_OBJECT_REFLECTOR(osgUtil::Tesselator::Prim)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, GLenum, mode);
+	I_PublicMemberProperty(GLenum, _mode);
+	I_PublicMemberProperty(osgUtil::Tesselator::Prim::VecList, _vertices);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tesselator::Prim >)

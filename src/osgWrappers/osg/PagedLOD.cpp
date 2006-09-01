@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -72,6 +73,10 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
 	I_Constructor0();
 	I_Constructor1(IN, const osg::PagedLOD::PerRangeData &, prd);
+	I_PublicMemberProperty(std::string, _filename);
+	I_PublicMemberProperty(float, _priorityOffset);
+	I_PublicMemberProperty(float, _priorityScale);
+	I_PublicMemberProperty(double, _timeStamp);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::PagedLOD::PerRangeData >);

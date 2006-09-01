@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/GL2Extensions>
@@ -133,6 +134,8 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	I_Method2(bool, getProgramInfoLog, IN, GLuint, program, IN, std::string &, result);
 	I_Method2(bool, getShaderInfoLog, IN, GLuint, shader, IN, std::string &, result);
 	I_Method2(bool, getAttribLocation, IN, const char *, attribName, IN, GLuint &, slot);
+	I_StaticMethod2(osg::GL2Extensions *, Get, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, Set, IN, unsigned int, contextID, IN, osg::GL2Extensions *, extensions);
 	I_ReadOnlyProperty(GLuint, CurrentProgram);
 	I_WriteOnlyProperty(bool, FragmentShaderSupported);
 	I_ReadOnlyProperty(float, GlVersion);

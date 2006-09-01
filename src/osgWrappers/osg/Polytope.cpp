@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
@@ -85,6 +86,9 @@ BEGIN_VALUE_REFLECTOR(osg::fast_back_stack< osg::Polytope::ClippingMask >)
 	I_Method0(void, push_back);
 	I_Method1(void, push_back, IN, const osg::Polytope::ClippingMask &, value);
 	I_Method0(void, pop_back);
+	I_PublicMemberProperty(osg::Polytope::ClippingMask, _value);
+	I_PublicMemberProperty(std::vector< osg::Polytope::ClippingMask >, _stack);
+	I_PublicMemberProperty(unsigned int, _size);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Plane >);

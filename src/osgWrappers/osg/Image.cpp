@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/BufferObject>
@@ -89,6 +90,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_Method1(void, setPixelBufferObject, IN, osg::PixelBufferObject *, buffer);
 	I_Method0(osg::PixelBufferObject *, getPixelBufferObject);
 	I_Method0(const osg::PixelBufferObject *, getPixelBufferObject);
+	I_StaticMethod1(bool, isPackedType, IN, GLenum, type);
+	I_StaticMethod1(unsigned int, computeNumComponents, IN, GLenum, pixelFormat);
+	I_StaticMethod2(unsigned int, computePixelSizeInBits, IN, GLenum, pixelFormat, IN, GLenum, type);
+	I_StaticMethod4(unsigned int, computeRowWidthInBytes, IN, int, width, IN, GLenum, pixelFormat, IN, GLenum, type, IN, int, packing);
+	I_StaticMethodWithDefaults2(int, computeNearestPowerOfTwo, IN, int, s, , IN, float, bias, 0.5f);
 	I_Property(osg::Image::AllocationMode, AllocationMode);
 	I_Property(GLenum, DataType);
 	I_Property(const std::string &, FileName);

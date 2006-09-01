@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osgFX/Effect>
@@ -26,6 +27,7 @@ BEGIN_OBJECT_REFLECTOR(osgFX::Registry)
 	I_BaseType(osg::Referenced);
 	I_Method1(void, registerEffect, IN, const osgFX::Effect *, effect);
 	I_Method0(const osgFX::Registry::EffectMap &, getEffectMap);
+	I_StaticMethod0(osgFX::Registry *, instance);
 	I_ReadOnlyProperty(const osgFX::Registry::EffectMap &, EffectMap);
 END_REFLECTOR
 

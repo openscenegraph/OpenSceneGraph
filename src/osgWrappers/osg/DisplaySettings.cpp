@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/ArgumentParser>
@@ -105,6 +106,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_Method1(void, setNumMultiSamples, IN, unsigned int, samples);
 	I_Method0(unsigned int, getNumMultiSamples);
 	I_Method0(bool, getMultiSamples);
+	I_StaticMethod0(osg::DisplaySettings *, instance);
 	I_ReadOnlyProperty(bool, AccumBuffer);
 	I_ReadOnlyProperty(bool, AlphaBuffer);
 	I_Property(bool, DepthBuffer);

@@ -7,6 +7,7 @@
 
 #include <osgIntrospection/ReflectionMacros>
 #include <osgIntrospection/TypedMethodInfo>
+#include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
@@ -47,6 +48,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Point)
 	I_Method1(void, setMaxSize, IN, float, maxSize);
 	I_Method0(float, getMaxSize);
 	I_Method1(void, apply, IN, osg::State &, state);
+	I_StaticMethod2(osg::Point::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Point::Extensions *, extensions);
 	I_Property(const osg::Vec3 &, DistanceAttenuation);
 	I_Property(float, FadeThresholdSize);
 	I_Property(float, MaxSize);

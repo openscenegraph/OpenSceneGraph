@@ -46,4 +46,5 @@ ATOMIC_VALUE_REFLECTOR(long double)
 // STL types
 
 ATOMIC_VALUE_REFLECTOR(std::string)
+WATOMIC_VALUE_REFLECTOR(std::wstring)
 

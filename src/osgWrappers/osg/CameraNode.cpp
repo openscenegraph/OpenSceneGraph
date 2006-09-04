@@ -112,8 +112,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(const osg::Matrixd &, getViewMatrix);
 	I_MethodWithDefaults4(void, getViewMatrixAsLookAt, IN, osg::Vec3 &, eye, , IN, osg::Vec3 &, center, , IN, osg::Vec3 &, up, , IN, float, lookDistance, 1.0f);
 	I_Method0(osg::Matrixd, getInverseViewMatrix);
-	I_Method1(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order);
+	I_MethodWithDefaults2(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order, , IN, int, orderNum, 0);
 	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder);
+	I_Method0(int, getRenderOrderNum);
 	I_Method0(bool, isRenderToTextureCamera);
 	I_Method1(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl);
 	I_Method2(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl, IN, osg::CameraNode::RenderTargetImplementation, fallback);
@@ -153,7 +154,8 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Property(osg::CameraNode::DrawCallback *, PostDrawCallback);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
 	I_Property(GLenum, ReadBuffer);
-	I_Property(osg::CameraNode::RenderOrder, RenderOrder);
+	I_ReadOnlyProperty(osg::CameraNode::RenderOrder, RenderOrder);
+	I_ReadOnlyProperty(int, RenderOrderNum);
 	I_ReadOnlyProperty(osg::CameraNode::RenderTargetImplementation, RenderTargetFallback);
 	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation);
 	I_IndexedProperty1(osg::Object *, RenderingCache, unsigned int, contextID);

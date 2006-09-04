@@ -41,8 +41,11 @@ BEGIN_OBJECT_REFLECTOR(osg::TexMat)
 	I_Method1(void, setMatrix, IN, const osg::Matrix &, matrix);
 	I_Method0(osg::Matrix &, getMatrix);
 	I_Method0(const osg::Matrix &, getMatrix);
+	I_Method1(void, setScaleByTextureRectangleSize, IN, bool, flag);
+	I_Method0(bool, getScaleByTextureRectangleSize);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_Property(const osg::Matrix &, Matrix);
+	I_Property(bool, ScaleByTextureRectangleSize);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

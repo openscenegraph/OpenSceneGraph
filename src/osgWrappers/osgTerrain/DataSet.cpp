@@ -497,7 +497,10 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
 	I_Method0(double, radius);
 	I_Method0(double, radius2);
 	I_Method1(osgTerrain::GeospatialExtents, intersect, IN, const osgTerrain::GeospatialExtents &, e);
-	I_Method1(bool, intersects, IN, const osgTerrain::GeospatialExtents &, bb);
+	I_Method1(osgTerrain::GeospatialExtents, intersectGeographicLeft, IN, const osgTerrain::GeospatialExtents &, e);
+	I_Method1(osgTerrain::GeospatialExtents, intersectGeographicRight, IN, const osgTerrain::GeospatialExtents &, e);
+	I_Method1(unsigned int, intersects, IN, const osgTerrain::GeospatialExtents &, bb);
+	I_Method1(unsigned int, intersectsGeographic, IN, const osgTerrain::GeospatialExtents &, bb);
 	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh);
 	I_Method1(void, expandBy, IN, const osg::Vec3 &, v);
 	I_Method1(void, expandBy, IN, const osgTerrain::GeospatialExtents &, e);

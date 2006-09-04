@@ -181,10 +181,13 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         /** Set the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.
           * For rendering to a texture, one typically uses PRE_RENDER.
           * For Head Up Displays, one would typically use POST_RENDER.*/
-        void setRenderOrder(RenderOrder order) { _renderOrder = order; }
+        void setRenderOrder(RenderOrder order, int orderNum = 0) { _renderOrder = order; _renderOrderNum = orderNum; }
         
         /** Get the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.*/
         RenderOrder getRenderOrder() const { return _renderOrder; }
+
+        /** Get the rendering order number of this camera relative to any sibling cameras in this subgraph.*/
+        int getRenderOrderNum() const { return _renderOrderNum; }        
 
         /** Return true if this Camera is set up as a render to texture camera, i.e. it has textures assigned to it.*/
         bool isRenderToTextureCamera() const;
@@ -366,6 +369,7 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         Matrixd                     _viewMatrix;
         
         RenderOrder                 _renderOrder;
+        int                         _renderOrderNum;
         
         GLenum                      _drawBuffer;
         GLenum                      _readBuffer;

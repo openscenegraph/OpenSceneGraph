@@ -1208,11 +1208,11 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // dependancy list.
         switch(camera.getRenderOrder())
         {
-            case osg::CameraNode::PRE_RENDER :
-                getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get());
+            case osg::CameraNode::PRE_RENDER:
+                getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get(),camera.getRenderOrderNum());
                 break;
-            default :
-                getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get());
+            default:
+                getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get(),camera.getRenderOrderNum());
                 break;
         }
 

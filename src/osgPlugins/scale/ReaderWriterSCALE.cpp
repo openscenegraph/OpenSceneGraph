@@ -148,8 +148,6 @@ public:
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        osg::notify(osg::NOTICE) << " sx ="<<sx<<" sy="<<sy<<" sz="<<sz<< std::endl;
-
         // recursively load the subfile.
         osg::Node *node = osgDB::readNodeFile( subFileName, options );
         if( !node )

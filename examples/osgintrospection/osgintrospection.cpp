@@ -47,8 +47,6 @@ bool type_order(const Type *v1, const Type *v2)
     return v1->getQualifiedName().compare(v2->getQualifiedName()) < 0;
 }
 
-typedef std::vector<const Type *> TypeList;
-
 void print_types()
 {
     // get the map of types that have been reflected

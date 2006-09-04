@@ -12,10 +12,13 @@
 */
 #include <osg/GL>
 #include <osg/TexMat>
+#include <osg/Notify>
+#include <osg/TextureRectangle>
 
 using namespace osg;
 
-TexMat::TexMat()
+TexMat::TexMat():
+    _scaleByTextureRectangleSize(false)
 {
 }
 
@@ -24,9 +27,20 @@ TexMat::~TexMat()
 {
 }
 
-void TexMat::apply(State&) const
+void TexMat::apply(State& state) const
 {
+
     glMatrixMode( GL_TEXTURE );
     glLoadMatrix(_matrix.ptr());
+
+    if (_scaleByTextureRectangleSize)
+    {
+        const osg::TextureRectangle* tex = dynamic_cast<const osg::TextureRectangle*>(state.getLastAppliedTextureAttribute(state.getActiveTextureUnit(), osg::StateAttribute::TEXTURE));
+        if (tex)
+        {
+            glScalef(tex->getTextureWidth(),tex->getTextureHeight(),1.0f);
+        }
+    }
+
     glMatrixMode( GL_MODELVIEW );
 }

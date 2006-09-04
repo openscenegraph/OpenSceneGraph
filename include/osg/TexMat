@@ -60,6 +60,16 @@ class OSG_EXPORT TexMat : public StateAttribute
         /** Get the const texture matrix  */
         inline const Matrix& getMatrix() const { return _matrix; }
 
+        /** Switch on/off the post scaling of the TexMat matrix by the size of the last applied texture rectangle.
+          * Use a TexMat alongside a TextureRectangle with this scaling applied allows one to treat a TextureRectnagles texture coordinate
+          * range as if it were the usual non dimensional 0.0 to 1.0 range.
+          * Note, the TexMat matrix itself is not modified by the post scaling, its purely an operation passed to OpenGL to do the post scaling once the 
+          * the TexMat matrix has been loaded.*/
+        void setScaleByTextureRectangleSize(bool flag) { _scaleByTextureRectangleSize = flag; }
+
+        /** Get whether the post scaling of the TexMat matrix, by the size of the last applied texture rectangle, is switched on/off.*/
+        bool getScaleByTextureRectangleSize() const { return _scaleByTextureRectangleSize; }
+
         /** Apply texture matrix to OpenGL state. */
         virtual void apply(State& state) const;
 
@@ -68,6 +78,7 @@ class OSG_EXPORT TexMat : public StateAttribute
         virtual ~TexMat( void );
 
         Matrix _matrix;
+        bool   _scaleByTextureRectangleSize;
 
 };
 

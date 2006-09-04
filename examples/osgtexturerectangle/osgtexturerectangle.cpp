@@ -19,6 +19,7 @@
 #include <osg/TextureRectangle>
 #include <osg/Geometry>
 #include <osg/Geode>
+#include <osg/TexMat>
 
 #include <osg/Group>
 #include <osg/Projection>
@@ -40,10 +41,9 @@
 class TexturePanCallback : public osg::NodeCallback
 {
 public:
-    TexturePanCallback(osg::Geometry* geom, osg::Image* img,
+    TexturePanCallback(osg::TexMat* texmat,
                        double delay = 0.05) :
-        _geom(geom),
-        _img(img),
+        _texmat(texmat),
         _phaseS(35.0f),
         _phaseT(18.0f),
         _phaseScale(5.0f),
@@ -54,7 +54,7 @@ public:
 
     virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
     {
-        if (!_geom || !_img)
+        if (!_texmat)
             return;
 
         if (nv->getFrameStamp()) {
@@ -69,16 +69,11 @@ public:
 
                 // calculate new texture coordinates
                 float s, t;
-                s = ((sin(rad * _phaseS) + 1) * 0.5f) * (_img->s() * scaleR);
-                t = ((sin(rad * _phaseT) + 1) * 0.5f) * (_img->t() * scaleR);
+                s = ((sin(rad * _phaseS) + 1) * 0.5f) * (scaleR);
+                t = ((sin(rad * _phaseT) + 1) * 0.5f) * (scaleR);
 
-                // set new texture coordinate array
-                osg::Vec2Array* texcoords = (osg::Vec2Array*) _geom->getTexCoordArray(0);
-                float w = _img->s() * scale, h = _img->t() * scale;
-                (*texcoords)[0].set(s, t+h);
-                (*texcoords)[1].set(s, t);
-                (*texcoords)[2].set(s+w, t);
-                (*texcoords)[3].set(s+w, t+h);
+
+                _texmat->setMatrix(osg::Matrix::translate(s,t,1.0)*osg::Matrix::scale(scale,scale,1.0));
 
                 // record time
                 _prevTime = currTime;
@@ -87,8 +82,7 @@ public:
     }
 
 private:
-    osg::Geometry* _geom;
-    osg::Image* _img;
+    osg::TexMat* _texmat;
 
     float _phaseS, _phaseT, _phaseScale;
 
@@ -148,13 +142,18 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     osg::StateSet* state = geom->getOrCreateStateSet();
     state->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
 
+    // setup state
+    osg::TexMat* texmat = new osg::TexMat;
+    texmat->setScaleByTextureRectangleSize(true);
+    state->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
+
     // turn off lighting 
     state->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     // install 'update' callback
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
-    geode->setUpdateCallback(new TexturePanCallback(geom, img));
+    geode->setUpdateCallback(new TexturePanCallback(texmat));
     
     return geode;
 }
@@ -194,7 +193,7 @@ osg::Node* createHUD()
     const char* text[] = {
         "TextureRectangle Mini-HOWTO",
         "- essentially behaves like Texture2D, *except* that:",
-        "- tex coords must be non-normalized (0..pixel) instead of (0..1)",
+        "- tex coords must be non-normalized (0..pixel) instead of (0..1),\nalternatively you can use osg::TexMat to scale normal non dimensional texcoords.",
         "- wrap modes must be CLAMP, CLAMP_TO_EDGE, or CLAMP_TO_BORDER\n  repeating wrap modes are not supported",
         "- filter modes must be NEAREST or LINEAR since\n  mipmaps are not supported",
         "- texture borders are not supported",

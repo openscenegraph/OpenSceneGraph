@@ -32,6 +32,12 @@ void TexMat::write(DataOutputStream* out){
 
     // Write mode
     out->writeMatrixf(getMatrix());
+
+    if ( out->getVersion() >= VERSION_0017 )
+    {
+        out->writeBool(getScaleByTextureRectangleSize());
+    }
+
 }
 
 void TexMat::read(DataInputStream* in){
@@ -51,6 +57,11 @@ void TexMat::read(DataInputStream* in){
 
         // Read matrix
         setMatrix(in->readMatrixf());
+        
+        if ( in->getVersion() >= VERSION_0017 )
+        {
+            setScaleByTextureRectangleSize(in->readBool());
+        }
 
     }
     else{

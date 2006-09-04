@@ -212,7 +212,15 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
          return result ? true : false;
 }
 
+void DataSet::SpatialProperties::computeExtents()
+{
+    _extents.init();
+    _extents.expandBy( osg::Vec3(0.0,0.0,0.0)*_geoTransform);
+    _extents.expandBy( osg::Vec3(_numValuesX,_numValuesY,0.0)*_geoTransform);
+    _extents._isGeographic = getCoordinateSystemType(_cs.get())==GEOGRAPHIC;
 
+    my_notify(osg::INFO)<<"DataSet::SpatialProperties::computeExtents() is geographic "<<_extents._isGeographic<<std::endl;
+}
 
 DataSet::SourceData::~SourceData()
 {
@@ -499,504 +507,533 @@ void DataSet::SourceData::read(DestinationData& destination)
 
 void DataSet::SourceData::readImage(DestinationData& destination)
 {
+    my_notify(osg::INFO)<<std::endl<<"readImage "<<std::endl;
+
     if (destination._image.valid())
     {
+        
         GeospatialExtents s_bb = getExtents(destination._cs.get());
-        
         GeospatialExtents d_bb = destination._extents;
-        
-        GeospatialExtents intersect_bb(s_bb.intersect(d_bb));
-        if (!intersect_bb.valid())
+
+        // note, we have to handle the possibility of goegraphic datasets wrapping over on themselves when they pass over the dateline
+        // to do this we have to test geographic datasets via two passes, each with a 360 degree shift of the source cata.
+        double xoffset = d_bb.xMin() < s_bb.xMin() ? -360.0 : 0.0;
+        unsigned int numXChecks = d_bb._isGeographic ? 2 : 1;
+        for(unsigned int ic = 0; ic < numXChecks; ++ic, xoffset += 360.0)
         {
-            my_notify(osg::INFO)<<"Reading image but it does not intesection destination - ignoring"<<std::endl;
-            return;
-        }
         
+            my_notify(osg::INFO)<<"Testing "<<xoffset<<std::endl;
+            my_notify(osg::INFO)<<"  s_bb "<<s_bb.xMin()+xoffset<<" "<<s_bb.xMax()+xoffset<<std::endl;
+            my_notify(osg::INFO)<<"  d_bb "<<d_bb.xMin()<<" "<<d_bb.xMax()<<std::endl;
         
-       int windowX = osg::maximum((int)floorf((float)_numValuesX*(intersect_bb.xMin()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),0);
-       int windowY = osg::maximum((int)floorf((float)_numValuesY*(intersect_bb.yMin()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),0);
-       int windowWidth = osg::minimum((int)ceilf((float)_numValuesX*(intersect_bb.xMax()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),(int)_numValuesX)-windowX;
-       int windowHeight = osg::minimum((int)ceilf((float)_numValuesY*(intersect_bb.yMax()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),(int)_numValuesY)-windowY;
+            GeospatialExtents intersect_bb(d_bb.intersection(s_bb, xoffset));
+            if (!intersect_bb.valid())
+            {   
+                my_notify(osg::INFO)<<"Reading image but it does not intesection destination - ignoring"<<std::endl;
+                continue;
+            }
 
-       int destX = osg::maximum((int)floorf((float)destination._image->s()*(intersect_bb.xMin()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),0);
-       int destY = osg::maximum((int)floorf((float)destination._image->t()*(intersect_bb.yMin()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),0);
-       int destWidth = osg::minimum((int)ceilf((float)destination._image->s()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._image->s())-destX;
-       int destHeight = osg::minimum((int)ceilf((float)destination._image->t()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._image->t())-destY;
-
-        my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
-        my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
-
-        int readWidth = destWidth;
-        int readHeight = destHeight;
-        bool doResample = false;
-
-        float destWindowWidthRatio = (float)destWidth/(float)windowWidth;
-        float destWindowHeightRatio = (float)destHeight/(float)windowHeight;
-        const float resizeTolerance = 1.1;
-        
-        bool interpolateSourceImagery = true;
-        if (interpolateSourceImagery && 
-            (destWindowWidthRatio>resizeTolerance || destWindowHeightRatio>resizeTolerance) &&
-            windowWidth>=2 && windowHeight>=2)
-        {
-            readWidth = windowWidth;
-            readHeight = windowHeight;
-            doResample = true;
-        }
-
-        bool hasRGB = _gdalDataset->GetRasterCount() >= 3;
-        bool hasAlpha = _gdalDataset->GetRasterCount() >= 4;
-        bool hasColorTable = _gdalDataset->GetRasterCount() >= 1 && _gdalDataset->GetRasterBand(1)->GetColorTable();
-        bool hasGreyScale = _gdalDataset->GetRasterCount() == 1;
-        unsigned int numSourceComponents = hasAlpha?4:3;
-
-        if (hasRGB || hasColorTable || hasGreyScale)
-        {
-            // RGB
-
-            unsigned int numBytesPerPixel = 1;
-            GDALDataType targetGDALType = GDT_Byte;
-
-            int pixelSpace=numSourceComponents*numBytesPerPixel;
-
-            my_notify(osg::INFO) << "reading RGB"<<std::endl;
-
-            unsigned char* tempImage = new unsigned char[readWidth*readHeight*pixelSpace];
+            my_notify(osg::INFO)<<"readImage s_bb is geographic "<<s_bb._isGeographic<<std::endl;
+            my_notify(osg::INFO)<<"readImage d_bb is geographic "<<d_bb._isGeographic<<std::endl;
+            my_notify(osg::INFO)<<"readImage intersect_bb is geographic "<<intersect_bb._isGeographic<<std::endl;
 
 
-            /* New code courtesy of Frank Warmerdam of the GDAL group */
 
-            // RGB images ... or at least we assume 3+ band images can be treated 
-            // as RGB. 
-            if( hasRGB ) 
-            { 
-                GDALRasterBand* bandRed = _gdalDataset->GetRasterBand(1); 
-                GDALRasterBand* bandGreen = _gdalDataset->GetRasterBand(2); 
-                GDALRasterBand* bandBlue = _gdalDataset->GetRasterBand(3); 
-                GDALRasterBand* bandAlpha = hasAlpha ? _gdalDataset->GetRasterBand(4) : 0; 
+           int windowX = osg::maximum((int)floorf((float)_numValuesX*(intersect_bb.xMin()-xoffset-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),0);
+           int windowY = osg::maximum((int)floorf((float)_numValuesY*(intersect_bb.yMin()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),0);
+           int windowWidth = osg::minimum((int)ceilf((float)_numValuesX*(intersect_bb.xMax()-xoffset-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),(int)_numValuesX)-windowX;
+           int windowHeight = osg::minimum((int)ceilf((float)_numValuesY*(intersect_bb.yMax()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),(int)_numValuesY)-windowY;
 
-                bandRed->RasterIO(GF_Read, 
-                                  windowX,_numValuesY-(windowY+windowHeight), 
-                                  windowWidth,windowHeight, 
-                                  (void*)(tempImage+0),readWidth,readHeight, 
-                                  targetGDALType,pixelSpace,pixelSpace*readWidth); 
-                bandGreen->RasterIO(GF_Read, 
-                                    windowX,_numValuesY-(windowY+windowHeight), 
-                                    windowWidth,windowHeight, 
-                                    (void*)(tempImage+1),readWidth,readHeight, 
-                                    targetGDALType,pixelSpace,pixelSpace*readWidth); 
-                bandBlue->RasterIO(GF_Read, 
+           int destX = osg::maximum((int)floorf((float)destination._image->s()*(intersect_bb.xMin()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),0);
+           int destY = osg::maximum((int)floorf((float)destination._image->t()*(intersect_bb.yMin()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),0);
+           int destWidth = osg::minimum((int)ceilf((float)destination._image->s()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._image->s())-destX;
+           int destHeight = osg::minimum((int)ceilf((float)destination._image->t()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._image->t())-destY;
+
+            my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
+            my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
+
+            int readWidth = destWidth;
+            int readHeight = destHeight;
+            bool doResample = false;
+
+            float destWindowWidthRatio = (float)destWidth/(float)windowWidth;
+            float destWindowHeightRatio = (float)destHeight/(float)windowHeight;
+            const float resizeTolerance = 1.1;
+
+            bool interpolateSourceImagery = true;
+            if (interpolateSourceImagery && 
+                (destWindowWidthRatio>resizeTolerance || destWindowHeightRatio>resizeTolerance) &&
+                windowWidth>=2 && windowHeight>=2)
+            {
+                readWidth = windowWidth;
+                readHeight = windowHeight;
+                doResample = true;
+            }
+
+            bool hasRGB = _gdalDataset->GetRasterCount() >= 3;
+            bool hasAlpha = _gdalDataset->GetRasterCount() >= 4;
+            bool hasColorTable = _gdalDataset->GetRasterCount() >= 1 && _gdalDataset->GetRasterBand(1)->GetColorTable();
+            bool hasGreyScale = _gdalDataset->GetRasterCount() == 1;
+            unsigned int numSourceComponents = hasAlpha?4:3;
+
+            if (hasRGB || hasColorTable || hasGreyScale)
+            {
+                // RGB
+
+                unsigned int numBytesPerPixel = 1;
+                GDALDataType targetGDALType = GDT_Byte;
+
+                int pixelSpace=numSourceComponents*numBytesPerPixel;
+
+                my_notify(osg::INFO) << "reading RGB"<<std::endl;
+
+                unsigned char* tempImage = new unsigned char[readWidth*readHeight*pixelSpace];
+
+
+                /* New code courtesy of Frank Warmerdam of the GDAL group */
+
+                // RGB images ... or at least we assume 3+ band images can be treated 
+                // as RGB. 
+                if( hasRGB ) 
+                { 
+                    GDALRasterBand* bandRed = _gdalDataset->GetRasterBand(1); 
+                    GDALRasterBand* bandGreen = _gdalDataset->GetRasterBand(2); 
+                    GDALRasterBand* bandBlue = _gdalDataset->GetRasterBand(3); 
+                    GDALRasterBand* bandAlpha = hasAlpha ? _gdalDataset->GetRasterBand(4) : 0; 
+
+                    bandRed->RasterIO(GF_Read, 
+                                      windowX,_numValuesY-(windowY+windowHeight), 
+                                      windowWidth,windowHeight, 
+                                      (void*)(tempImage+0),readWidth,readHeight, 
+                                      targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                    bandGreen->RasterIO(GF_Read, 
+                                        windowX,_numValuesY-(windowY+windowHeight), 
+                                        windowWidth,windowHeight, 
+                                        (void*)(tempImage+1),readWidth,readHeight, 
+                                        targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                    bandBlue->RasterIO(GF_Read, 
+                                       windowX,_numValuesY-(windowY+windowHeight), 
+                                       windowWidth,windowHeight, 
+                                       (void*)(tempImage+2),readWidth,readHeight, 
+                                       targetGDALType,pixelSpace,pixelSpace*readWidth); 
+
+                    if (bandAlpha)
+                    {
+                        bandAlpha->RasterIO(GF_Read, 
+                                           windowX,_numValuesY-(windowY+windowHeight), 
+                                           windowWidth,windowHeight, 
+                                           (void*)(tempImage+3),readWidth,readHeight, 
+                                           targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                    }
+                } 
+
+                else if( hasColorTable ) 
+                { 
+                    // Pseudocolored image.  Convert 1 band + color table to 24bit RGB. 
+
+                    GDALRasterBand *band; 
+                    GDALColorTable *ct; 
+                    int i; 
+
+
+                    band = _gdalDataset->GetRasterBand(1); 
+
+
+                    band->RasterIO(GF_Read, 
+                                   windowX,_numValuesY-(windowY+windowHeight), 
+                                   windowWidth,windowHeight, 
+                                   (void*)(tempImage+0),readWidth,readHeight, 
+                                   targetGDALType,pixelSpace,pixelSpace*readWidth); 
+
+
+                    ct = band->GetColorTable(); 
+
+
+                    for( i = 0; i < readWidth * readHeight; i++ ) 
+                    { 
+                        GDALColorEntry sEntry; 
+
+
+                        // default to greyscale equilvelent. 
+                        sEntry.c1 = tempImage[i*3]; 
+                        sEntry.c2 = tempImage[i*3]; 
+                        sEntry.c3 = tempImage[i*3]; 
+
+
+                        ct->GetColorEntryAsRGB( tempImage[i*3], &sEntry ); 
+
+
+                        // Apply RGB back over destination image. 
+                        tempImage[i*3 + 0] = sEntry.c1; 
+                        tempImage[i*3 + 1] = sEntry.c2; 
+                        tempImage[i*3 + 2] = sEntry.c3; 
+                    } 
+                } 
+
+
+                else if (hasGreyScale)
+                { 
+                    // Greyscale image.  Convert 1 band to 24bit RGB. 
+                    GDALRasterBand *band; 
+
+
+                    band = _gdalDataset->GetRasterBand(1); 
+
+
+                    band->RasterIO(GF_Read, 
+                                   windowX,_numValuesY-(windowY+windowHeight), 
+                                   windowWidth,windowHeight, 
+                                   (void*)(tempImage+0),readWidth,readHeight, 
+                                   targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                    band->RasterIO(GF_Read, 
+                                   windowX,_numValuesY-(windowY+windowHeight), 
+                                   windowWidth,windowHeight, 
+                                   (void*)(tempImage+1),readWidth,readHeight, 
+                                   targetGDALType,pixelSpace,pixelSpace*readWidth); 
+                    band->RasterIO(GF_Read, 
                                    windowX,_numValuesY-(windowY+windowHeight), 
                                    windowWidth,windowHeight, 
                                    (void*)(tempImage+2),readWidth,readHeight, 
                                    targetGDALType,pixelSpace,pixelSpace*readWidth); 
-                                   
-                if (bandAlpha)
-                {
-                    bandAlpha->RasterIO(GF_Read, 
-                                       windowX,_numValuesY-(windowY+windowHeight), 
-                                       windowWidth,windowHeight, 
-                                       (void*)(tempImage+3),readWidth,readHeight, 
-                                       targetGDALType,pixelSpace,pixelSpace*readWidth); 
-                }
-            } 
-
-            else if( hasColorTable ) 
-            { 
-                // Pseudocolored image.  Convert 1 band + color table to 24bit RGB. 
-
-                GDALRasterBand *band; 
-                GDALColorTable *ct; 
-                int i; 
-
-
-                band = _gdalDataset->GetRasterBand(1); 
-
-
-                band->RasterIO(GF_Read, 
-                               windowX,_numValuesY-(windowY+windowHeight), 
-                               windowWidth,windowHeight, 
-                               (void*)(tempImage+0),readWidth,readHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
-
-
-                ct = band->GetColorTable(); 
-
-
-                for( i = 0; i < readWidth * readHeight; i++ ) 
-                { 
-                    GDALColorEntry sEntry; 
-
-
-                    // default to greyscale equilvelent. 
-                    sEntry.c1 = tempImage[i*3]; 
-                    sEntry.c2 = tempImage[i*3]; 
-                    sEntry.c3 = tempImage[i*3]; 
-
-
-                    ct->GetColorEntryAsRGB( tempImage[i*3], &sEntry ); 
-
-
-                    // Apply RGB back over destination image. 
-                    tempImage[i*3 + 0] = sEntry.c1; 
-                    tempImage[i*3 + 1] = sEntry.c2; 
-                    tempImage[i*3 + 2] = sEntry.c3; 
                 } 
-            } 
 
-
-            else if (hasGreyScale)
-            { 
-                // Greyscale image.  Convert 1 band to 24bit RGB. 
-                GDALRasterBand *band; 
-
-
-                band = _gdalDataset->GetRasterBand(1); 
-
-
-                band->RasterIO(GF_Read, 
-                               windowX,_numValuesY-(windowY+windowHeight), 
-                               windowWidth,windowHeight, 
-                               (void*)(tempImage+0),readWidth,readHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
-                band->RasterIO(GF_Read, 
-                               windowX,_numValuesY-(windowY+windowHeight), 
-                               windowWidth,windowHeight, 
-                               (void*)(tempImage+1),readWidth,readHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
-                band->RasterIO(GF_Read, 
-                               windowX,_numValuesY-(windowY+windowHeight), 
-                               windowWidth,windowHeight, 
-                               (void*)(tempImage+2),readWidth,readHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
-            } 
-
-            if (doResample || readWidth!=destWidth || readHeight!=destHeight)
-            {
-                unsigned char* destImage = new unsigned char[destWidth*destHeight*pixelSpace];
-
-                // rescale image by hand as glu seem buggy....
-                for(int j=0;j<destHeight;++j)
+                if (doResample || readWidth!=destWidth || readHeight!=destHeight)
                 {
-                    float  t_d = (float)j/((float)destHeight-1);
-                    for(int i=0;i<destWidth;++i)
+                    unsigned char* destImage = new unsigned char[destWidth*destHeight*pixelSpace];
+
+                    // rescale image by hand as glu seem buggy....
+                    for(int j=0;j<destHeight;++j)
                     {
-                        float s_d = (float)i/((float)destWidth-1);
-                        
-                        float flt_read_i = s_d * ((float)readWidth-1);
-                        float flt_read_j = t_d * ((float)readHeight-1);
-                        
-                        int read_i = (int)flt_read_i;
-                        if (read_i>=readWidth) read_i=readWidth-1;
-
-                        float flt_read_ir = flt_read_i-read_i;
-                        if (read_i==readWidth-1) flt_read_ir=0.0f;
-                        
-                        int read_j = (int)flt_read_j;
-                        if (read_j>=readHeight) read_j=readHeight-1;
-
-                        float flt_read_jr = flt_read_j-read_j;
-                        if (read_j==readHeight-1) flt_read_jr=0.0f;
-                        
-                        unsigned char* dest = destImage + (j*destWidth + i) * pixelSpace;
-                        if (flt_read_ir==0.0f)  // no need to interpolate i axis.
+                        float  t_d = (float)j/((float)destHeight-1);
+                        for(int i=0;i<destWidth;++i)
                         {
-                            if (flt_read_jr==0.0f)  // no need to interpolate j axis.
+                            float s_d = (float)i/((float)destWidth-1);
+
+                            float flt_read_i = s_d * ((float)readWidth-1);
+                            float flt_read_j = t_d * ((float)readHeight-1);
+
+                            int read_i = (int)flt_read_i;
+                            if (read_i>=readWidth) read_i=readWidth-1;
+
+                            float flt_read_ir = flt_read_i-read_i;
+                            if (read_i==readWidth-1) flt_read_ir=0.0f;
+
+                            int read_j = (int)flt_read_j;
+                            if (read_j>=readHeight) read_j=readHeight-1;
+
+                            float flt_read_jr = flt_read_j-read_j;
+                            if (read_j==readHeight-1) flt_read_jr=0.0f;
+
+                            unsigned char* dest = destImage + (j*destWidth + i) * pixelSpace;
+                            if (flt_read_ir==0.0f)  // no need to interpolate i axis.
                             {
-                                // copy pixels
-                                unsigned char* src = tempImage + (read_j*readWidth + read_i) * pixelSpace;
-                                dest[0] = src[0];
-                                dest[1] = src[1];
-                                dest[2] = src[2];
-                                if (numSourceComponents==4) dest[3] = src[3];
-                                //std::cout<<"copy"<<std::endl;
+                                if (flt_read_jr==0.0f)  // no need to interpolate j axis.
+                                {
+                                    // copy pixels
+                                    unsigned char* src = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                    dest[0] = src[0];
+                                    dest[1] = src[1];
+                                    dest[2] = src[2];
+                                    if (numSourceComponents==4) dest[3] = src[3];
+                                    //std::cout<<"copy"<<std::endl;
+                                }
+                                else  // need to interpolate j axis.
+                                {
+                                    // copy pixels
+                                    unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                    unsigned char* src_1 = src_0 + readWidth*pixelSpace;
+                                    float r_0 = 1.0f-flt_read_jr;
+                                    float r_1 = flt_read_jr;
+                                    dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
+                                    dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
+                                    dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
+                                    if (numSourceComponents==4) dest[3] = (unsigned char)((float)src_0[3]*r_0 + (float)src_1[3]*r_1);
+                                    //std::cout<<"interpolate j axis"<<std::endl;
+                                }
                             }
-                            else  // need to interpolate j axis.
+                            else // need to interpolate i axis.
                             {
-                                // copy pixels
-                                unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
-                                unsigned char* src_1 = src_0 + readWidth*pixelSpace;
-                                float r_0 = 1.0f-flt_read_jr;
-                                float r_1 = flt_read_jr;
-                                dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
-                                dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
-                                dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
-                                if (numSourceComponents==4) dest[3] = (unsigned char)((float)src_0[3]*r_0 + (float)src_1[3]*r_1);
-                                //std::cout<<"interpolate j axis"<<std::endl;
+                                if (flt_read_jr==0.0f) // no need to interpolate j axis.
+                                {
+                                    // copy pixels
+                                    unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                    unsigned char* src_1 = src_0 + pixelSpace;
+                                    float r_0 = 1.0f-flt_read_ir;
+                                    float r_1 = flt_read_ir;
+                                    dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
+                                    dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
+                                    dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
+                                    if (numSourceComponents==4) dest[3] = (unsigned char)((float)src_0[3]*r_0 + (float)src_1[3]*r_1);
+                                    //std::cout<<"interpolate i axis"<<std::endl;
+                                }
+                                else  // need to interpolate i and j axis.
+                                {
+                                    unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                    unsigned char* src_1 = src_0 + readWidth*pixelSpace;
+                                    unsigned char* src_2 = src_0 + pixelSpace;
+                                    unsigned char* src_3 = src_1 + pixelSpace;
+                                    float r_0 = (1.0f-flt_read_ir)*(1.0f-flt_read_jr);
+                                    float r_1 = (1.0f-flt_read_ir)*flt_read_jr;
+                                    float r_2 = (flt_read_ir)*(1.0f-flt_read_jr);
+                                    float r_3 = (flt_read_ir)*flt_read_jr;
+                                    dest[0] = (unsigned char)(((float)src_0[0])*r_0 + ((float)src_1[0])*r_1 + ((float)src_2[0])*r_2 + ((float)src_3[0])*r_3);
+                                    dest[1] = (unsigned char)(((float)src_0[1])*r_0 + ((float)src_1[1])*r_1 + ((float)src_2[1])*r_2 + ((float)src_3[1])*r_3);
+                                    dest[2] = (unsigned char)(((float)src_0[2])*r_0 + ((float)src_1[2])*r_1 + ((float)src_2[2])*r_2 + ((float)src_3[2])*r_3);
+                                    if (numSourceComponents==4) dest[3] = (unsigned char)(((float)src_0[3])*r_0 + ((float)src_1[3])*r_1 + ((float)src_2[3])*r_2 + ((float)src_3[3])*r_3);
+                                    //std::cout<<"interpolate i & j axis"<<std::endl;
+                                }
+                            }
+
+                        }
+                    }
+
+                    delete [] tempImage;  
+                    tempImage = destImage;
+                }
+
+                // now copy into destination image
+                unsigned char* sourceRowPtr = tempImage;
+                int sourceRowDelta = pixelSpace*destWidth;
+                unsigned char* destinationRowPtr = destination._image->data(destX,destY+destHeight-1);
+                int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
+                int destination_pixelSpace = destination._image->getPixelSizeInBits()/8;
+                bool destination_hasAlpha = osg::Image::computeNumComponents(destination._image->getPixelFormat())==4;
+
+                // copy image to destination image
+                for(int row=0;
+                    row<destHeight;
+                    ++row, sourceRowPtr+=sourceRowDelta, destinationRowPtr+=destinationRowDelta)
+                {
+                    unsigned char* sourceColumnPtr = sourceRowPtr;
+                    unsigned char* destinationColumnPtr = destinationRowPtr;
+
+                    for(int col=0;
+                        col<destWidth;
+                        ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=destination_pixelSpace)
+                    {
+                        if (hasAlpha)
+                        {
+                            // only copy over source pixel if its alpha value is not 0
+                            if (sourceColumnPtr[3]!=0)
+                            {
+                                if (sourceColumnPtr[3]!=255)
+                                {
+                                    // source alpha is full on so directly copy over.
+                                    destinationColumnPtr[0] = sourceColumnPtr[0];
+                                    destinationColumnPtr[1] = sourceColumnPtr[1];
+                                    destinationColumnPtr[2] = sourceColumnPtr[2];
+
+                                    if (destination_hasAlpha)
+                                        destinationColumnPtr[3] = sourceColumnPtr[3];
+                                }
+                                else
+                                {
+                                    // source value isn't full on so blend it with destination 
+                                    float rs = (float)sourceColumnPtr[3]/255.0f; 
+                                    float rd = 1.0f-rs;
+
+                                    destinationColumnPtr[0] = (int)(rd * (float)destinationColumnPtr[0] + rs * (float)sourceColumnPtr[0]);
+                                    destinationColumnPtr[1] = (int)(rd * (float)destinationColumnPtr[1] + rs * (float)sourceColumnPtr[1]);
+                                    destinationColumnPtr[2] = (int)(rd * (float)destinationColumnPtr[2] + rs * (float)sourceColumnPtr[2]);
+
+                                    if (destination_hasAlpha)
+                                        destinationColumnPtr[3] = osg::maximum(destinationColumnPtr[3],sourceColumnPtr[3]);
+
+                                }
                             }
                         }
-                        else // need to interpolate i axis.
+                        else if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
                         {
-                            if (flt_read_jr==0.0f) // no need to interpolate j axis.
-                            {
-                                // copy pixels
-                                unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
-                                unsigned char* src_1 = src_0 + pixelSpace;
-                                float r_0 = 1.0f-flt_read_ir;
-                                float r_1 = flt_read_ir;
-                                dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
-                                dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
-                                dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
-                                if (numSourceComponents==4) dest[3] = (unsigned char)((float)src_0[3]*r_0 + (float)src_1[3]*r_1);
-                                //std::cout<<"interpolate i axis"<<std::endl;
-                            }
-                            else  // need to interpolate i and j axis.
-                            {
-                                unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
-                                unsigned char* src_1 = src_0 + readWidth*pixelSpace;
-                                unsigned char* src_2 = src_0 + pixelSpace;
-                                unsigned char* src_3 = src_1 + pixelSpace;
-                                float r_0 = (1.0f-flt_read_ir)*(1.0f-flt_read_jr);
-                                float r_1 = (1.0f-flt_read_ir)*flt_read_jr;
-                                float r_2 = (flt_read_ir)*(1.0f-flt_read_jr);
-                                float r_3 = (flt_read_ir)*flt_read_jr;
-                                dest[0] = (unsigned char)(((float)src_0[0])*r_0 + ((float)src_1[0])*r_1 + ((float)src_2[0])*r_2 + ((float)src_3[0])*r_3);
-                                dest[1] = (unsigned char)(((float)src_0[1])*r_0 + ((float)src_1[1])*r_1 + ((float)src_2[1])*r_2 + ((float)src_3[1])*r_3);
-                                dest[2] = (unsigned char)(((float)src_0[2])*r_0 + ((float)src_1[2])*r_1 + ((float)src_2[2])*r_2 + ((float)src_3[2])*r_3);
-                                if (numSourceComponents==4) dest[3] = (unsigned char)(((float)src_0[3])*r_0 + ((float)src_1[3])*r_1 + ((float)src_2[3])*r_2 + ((float)src_3[3])*r_3);
-                                //std::cout<<"interpolate i & j axis"<<std::endl;
-                            }
+                            destinationColumnPtr[0] = sourceColumnPtr[0];
+                            destinationColumnPtr[1] = sourceColumnPtr[1];
+                            destinationColumnPtr[2] = sourceColumnPtr[2];
                         }
-                        
                     }
                 }
 
-                delete [] tempImage;  
-                tempImage = destImage;
+                delete [] tempImage;
+
             }
-
-            // now copy into destination image
-            unsigned char* sourceRowPtr = tempImage;
-            int sourceRowDelta = pixelSpace*destWidth;
-            unsigned char* destinationRowPtr = destination._image->data(destX,destY+destHeight-1);
-            int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
-            int destination_pixelSpace = destination._image->getPixelSizeInBits()/8;
-            bool destination_hasAlpha = osg::Image::computeNumComponents(destination._image->getPixelFormat())==4;
-
-            // copy image to destination image
-            for(int row=0;
-                row<destHeight;
-                ++row, sourceRowPtr+=sourceRowDelta, destinationRowPtr+=destinationRowDelta)
+            else
             {
-                unsigned char* sourceColumnPtr = sourceRowPtr;
-                unsigned char* destinationColumnPtr = destinationRowPtr;
-
-                for(int col=0;
-                    col<destWidth;
-                    ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=destination_pixelSpace)
-                {
-                    if (hasAlpha)
-                    {
-                        // only copy over source pixel if its alpha value is not 0
-                        if (sourceColumnPtr[3]!=0)
-                        {
-                            if (sourceColumnPtr[3]!=255)
-                            {
-                                // source alpha is full on so directly copy over.
-                                destinationColumnPtr[0] = sourceColumnPtr[0];
-                                destinationColumnPtr[1] = sourceColumnPtr[1];
-                                destinationColumnPtr[2] = sourceColumnPtr[2];
-
-                                if (destination_hasAlpha)
-                                    destinationColumnPtr[3] = sourceColumnPtr[3];
-                            }
-                            else
-                            {
-                                // source value isn't full on so blend it with destination 
-                                float rs = (float)sourceColumnPtr[3]/255.0f; 
-                                float rd = 1.0f-rs;
-
-                                destinationColumnPtr[0] = (int)(rd * (float)destinationColumnPtr[0] + rs * (float)sourceColumnPtr[0]);
-                                destinationColumnPtr[1] = (int)(rd * (float)destinationColumnPtr[1] + rs * (float)sourceColumnPtr[1]);
-                                destinationColumnPtr[2] = (int)(rd * (float)destinationColumnPtr[2] + rs * (float)sourceColumnPtr[2]);
-                                
-                                if (destination_hasAlpha)
-                                    destinationColumnPtr[3] = osg::maximum(destinationColumnPtr[3],sourceColumnPtr[3]);
-                                
-                            }
-                        }
-                    }
-                    else if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
-                    {
-                        destinationColumnPtr[0] = sourceColumnPtr[0];
-                        destinationColumnPtr[1] = sourceColumnPtr[1];
-                        destinationColumnPtr[2] = sourceColumnPtr[2];
-                    }
-                }
+                my_notify(osg::INFO)<<"Warning image not read as Red, Blue and Green bands not present"<<std::endl;
             }
-
-            delete [] tempImage;
-
         }
-        else
-        {
-            my_notify(osg::INFO)<<"Warning image not read as Red, Blue and Green bands not present"<<std::endl;
-        }
-
-
     }
 }
 
 void DataSet::SourceData::readHeightField(DestinationData& destination)
 {
     my_notify(osg::INFO)<<"In DataSet::SourceData::readHeightField"<<std::endl;
+
     if (destination._heightField.valid())
     {
         my_notify(osg::INFO)<<"Reading height field"<<std::endl;
 
         GeospatialExtents s_bb = getExtents(destination._cs.get());
-        
         GeospatialExtents d_bb = destination._extents;
-        
-        GeospatialExtents intersect_bb(s_bb.intersect(d_bb));
 
-        if (!intersect_bb.valid())
-        {
-            my_notify(osg::INFO)<<"Reading height field but it does not intesection destination - ignoring"<<std::endl;
-            return;
-        }
-
-       int destX = osg::maximum((int)floorf((float)destination._heightField->getNumColumns()*(intersect_bb.xMin()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),0);
-       int destY = osg::maximum((int)floorf((float)destination._heightField->getNumRows()*(intersect_bb.yMin()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),0);
-       int destWidth = osg::minimum((int)ceilf((float)destination._heightField->getNumColumns()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._heightField->getNumColumns())-destX;
-       int destHeight = osg::minimum((int)ceilf((float)destination._heightField->getNumRows()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._heightField->getNumRows())-destY;
-
-
-        // which band do we want to read from...        
-        int numBands = _gdalDataset->GetRasterCount();
-        GDALRasterBand* bandGray = 0;
-        GDALRasterBand* bandRed = 0;
-        GDALRasterBand* bandGreen = 0;
-        GDALRasterBand* bandBlue = 0;
-        GDALRasterBand* bandAlpha = 0;
-
-        for(int b=1;b<=numBands;++b)
-        {
-            GDALRasterBand* band = _gdalDataset->GetRasterBand(b);
-            if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
-            else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
-            else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
-            else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
-            else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
-            else if (bandGray == 0) bandGray = band;
-        }
-
-
-        GDALRasterBand* bandSelected = 0;
-        if (!bandSelected && bandGray) bandSelected = bandGray;
-        else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
-        else if (!bandSelected && bandRed) bandSelected = bandRed;
-        else if (!bandSelected && bandGreen) bandSelected = bandGreen;
-        else if (!bandSelected && bandBlue) bandSelected = bandBlue;
-
-        if (bandSelected)
+        // note, we have to handle the possibility of goegraphic datasets wrapping over on themselves when they pass over the dateline
+        // to do this we have to test geographic datasets via two passes, each with a 360 degree shift of the source cata.
+        double xoffset = d_bb.xMin() < s_bb.xMin() ? -360.0 : 0.0;
+        unsigned int numXChecks = d_bb._isGeographic ? 2 : 1;
+        for(unsigned int ic = 0; ic < numXChecks; ++ic, xoffset += 360.0)
         {
         
-            if (bandSelected->GetUnitType()) my_notify(osg::INFO) << "bandSelected->GetUnitType()=" << bandSelected->GetUnitType()<<std::endl;
-            else my_notify(osg::INFO) << "bandSelected->GetUnitType()= null" <<std::endl;
-            
+            osg::notify(osg::INFO)<<"Testing "<<xoffset<<std::endl;
+            osg::notify(osg::INFO)<<"  s_bb "<<s_bb.xMin()+xoffset<<" "<<s_bb.xMax()+xoffset<<std::endl;
+            osg::notify(osg::INFO)<<"  d_bb "<<d_bb.xMin()<<" "<<d_bb.xMax()<<std::endl;
+        
+            GeospatialExtents intersect_bb(d_bb.intersection(s_bb, xoffset));
 
-            int success = 0;
-            float noDataValue = bandSelected->GetNoDataValue(&success);
-            if (success)
+            if (!intersect_bb.valid())
             {
-                my_notify(osg::INFO)<<"We have NoDataValue = "<<noDataValue<<std::endl;
-            }
-            else
-            {
-                my_notify(osg::INFO)<<"We have no NoDataValue"<<std::endl;
-                noDataValue = 0.0f;
+                my_notify(osg::INFO)<<"Reading height field but it does not intesection destination - ignoring"<<std::endl;
+                continue;
             }
 
-            float offset = bandSelected->GetOffset(&success);
-            if (success)
+           int destX = osg::maximum((int)floorf((float)destination._heightField->getNumColumns()*(intersect_bb.xMin()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),0);
+           int destY = osg::maximum((int)floorf((float)destination._heightField->getNumRows()*(intersect_bb.yMin()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),0);
+           int destWidth = osg::minimum((int)ceilf((float)destination._heightField->getNumColumns()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._heightField->getNumColumns())-destX;
+           int destHeight = osg::minimum((int)ceilf((float)destination._heightField->getNumRows()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._heightField->getNumRows())-destY;
+
+
+            // which band do we want to read from...        
+            int numBands = _gdalDataset->GetRasterCount();
+            GDALRasterBand* bandGray = 0;
+            GDALRasterBand* bandRed = 0;
+            GDALRasterBand* bandGreen = 0;
+            GDALRasterBand* bandBlue = 0;
+            GDALRasterBand* bandAlpha = 0;
+
+            for(int b=1;b<=numBands;++b)
             {
-                my_notify(osg::INFO)<<"We have Offset = "<<offset<<std::endl;
+                GDALRasterBand* band = _gdalDataset->GetRasterBand(b);
+                if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
+                else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
+                else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
+                else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
+                else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
+                else if (bandGray == 0) bandGray = band;
             }
-            else
+
+
+            GDALRasterBand* bandSelected = 0;
+            if (!bandSelected && bandGray) bandSelected = bandGray;
+            else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
+            else if (!bandSelected && bandRed) bandSelected = bandRed;
+            else if (!bandSelected && bandGreen) bandSelected = bandGreen;
+            else if (!bandSelected && bandBlue) bandSelected = bandBlue;
+
+            if (bandSelected)
             {
-                my_notify(osg::INFO)<<"We have no Offset"<<std::endl;
-                offset = 0.0f;
-            }
 
-            float scale = bandSelected->GetScale(&success);
-            if (success)
-            {
-                my_notify(osg::INFO)<<"We have Scale = "<<scale<<std::endl;
-            }
-            else
-            {
-                scale = destination._dataSet->getVerticalScale();
-                my_notify(osg::INFO)<<"We have no Scale from file so use DataSet vertical scale of "<<scale<<std::endl;
+                if (bandSelected->GetUnitType()) my_notify(osg::INFO) << "bandSelected->GetUnitType()=" << bandSelected->GetUnitType()<<std::endl;
+                else my_notify(osg::INFO) << "bandSelected->GetUnitType()= null" <<std::endl;
 
-            }
-            
-            my_notify(osg::INFO)<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
-            
-            // raad the data.
-            osg::HeightField* hf = destination._heightField.get();
 
-            float noDataValueFill = 0.0f;
-            bool ignoreNoDataValue = true;
-
-            bool interpolateTerrain = true;
-
-            if (interpolateTerrain)
-            {
-                //Sample terrain at each vert to increase accuracy of the terrain.
-                int endX = destX + destWidth;
-                int endY = destY + destHeight;
-
-                double orig_X = hf->getOrigin().x();
-                double orig_Y = hf->getOrigin().y();
-                double delta_X = hf->getXInterval();
-                double delta_Y = hf->getYInterval();
-
-                for (int c = destX; c < endX; ++c)
+                int success = 0;
+                float noDataValue = bandSelected->GetNoDataValue(&success);
+                if (success)
                 {
-                    double geoX = orig_X + (delta_X * (double)c);
-                    for (int r = destY; r < endY; ++r)
-                    {
-                        double geoY = orig_Y + (delta_Y * (double)r);
-                        float h = getInterpolatedValue(bandSelected, geoX, geoY);
-                        if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
-                        else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
-                    }
+                    my_notify(osg::INFO)<<"We have NoDataValue = "<<noDataValue<<std::endl;
                 }
-            }
-            else
-            {
-                // compute dimensions to read from.        
-                int windowX = osg::maximum((int)floorf((float)_numValuesX*(intersect_bb.xMin()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),0);
-                int windowY = osg::maximum((int)floorf((float)_numValuesY*(intersect_bb.yMin()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),0);
-                int windowWidth = osg::minimum((int)ceilf((float)_numValuesX*(intersect_bb.xMax()-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),(int)_numValuesX)-windowX;
-                int windowHeight = osg::minimum((int)ceilf((float)_numValuesY*(intersect_bb.yMax()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),(int)_numValuesY)-windowY;
-
-                my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
-                my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
-
-                // read data into temporary array
-                float* heightData = new float [ destWidth*destHeight ];
-
-                //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
-                bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
-
-                float* heightPtr = heightData;
-
-                for(int r=destY+destHeight-1;r>=destY;--r)
+                else
                 {
-                    for(int c=destX;c<destX+destWidth;++c)
-                    {
-                        float h = *heightPtr++;
-                        if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
-                        else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
-
-                        h = hf->getHeight(c,r);
-                    }
+                    my_notify(osg::INFO)<<"We have no NoDataValue"<<std::endl;
+                    noDataValue = 0.0f;
                 }
 
-                delete [] heightData;
-            }          
+                float offset = bandSelected->GetOffset(&success);
+                if (success)
+                {
+                    my_notify(osg::INFO)<<"We have Offset = "<<offset<<std::endl;
+                }
+                else
+                {
+                    my_notify(osg::INFO)<<"We have no Offset"<<std::endl;
+                    offset = 0.0f;
+                }
+
+                float scale = bandSelected->GetScale(&success);
+                if (success)
+                {
+                    my_notify(osg::INFO)<<"We have Scale = "<<scale<<std::endl;
+                }
+                else
+                {
+                    scale = destination._dataSet->getVerticalScale();
+                    my_notify(osg::INFO)<<"We have no Scale from file so use DataSet vertical scale of "<<scale<<std::endl;
+
+                }
+
+                my_notify(osg::INFO)<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
+
+                // raad the data.
+                osg::HeightField* hf = destination._heightField.get();
+
+                float noDataValueFill = 0.0f;
+                bool ignoreNoDataValue = true;
+
+                bool interpolateTerrain = true;
+
+                if (interpolateTerrain)
+                {
+                    //Sample terrain at each vert to increase accuracy of the terrain.
+                    int endX = destX + destWidth;
+                    int endY = destY + destHeight;
+
+                    double orig_X = hf->getOrigin().x();
+                    double orig_Y = hf->getOrigin().y();
+                    double delta_X = hf->getXInterval();
+                    double delta_Y = hf->getYInterval();
+
+                    for (int c = destX; c < endX; ++c)
+                    {
+                        double geoX = orig_X + (delta_X * (double)c);
+                        for (int r = destY; r < endY; ++r)
+                        {
+                            double geoY = orig_Y + (delta_Y * (double)r);
+                            float h = getInterpolatedValue(bandSelected, geoX-xoffset, geoY);
+                            if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
+                            else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
+                        }
+                    }
+                }
+                else
+                {
+                    // compute dimensions to read from.        
+                   int windowX = osg::maximum((int)floorf((float)_numValuesX*(intersect_bb.xMin()-xoffset-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),0);
+                   int windowY = osg::maximum((int)floorf((float)_numValuesY*(intersect_bb.yMin()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),0);
+                   int windowWidth = osg::minimum((int)ceilf((float)_numValuesX*(intersect_bb.xMax()-xoffset-s_bb.xMin())/(s_bb.xMax()-s_bb.xMin())),(int)_numValuesX)-windowX;
+                   int windowHeight = osg::minimum((int)ceilf((float)_numValuesY*(intersect_bb.yMax()-s_bb.yMin())/(s_bb.yMax()-s_bb.yMin())),(int)_numValuesY)-windowY;
+
+                    my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
+                    my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
+
+                    // read data into temporary array
+                    float* heightData = new float [ destWidth*destHeight ];
+
+                    //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
+                    bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
+
+                    float* heightPtr = heightData;
+
+                    for(int r=destY+destHeight-1;r>=destY;--r)
+                    {
+                        for(int c=destX;c<destX+destWidth;++c)
+                        {
+                            float h = *heightPtr++;
+                            if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
+                            else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
+
+                            h = hf->getHeight(c,r);
+                        }
+                    }
+
+                    delete [] heightData;
+                }          
+            }
         }
     }
 }
@@ -4023,10 +4060,10 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         {
             my_notify(osg::INFO)<<"Need to Divide X + Y for level "<<currentLevel<<std::endl;
             // create four tiles.
-            GeospatialExtents bottom_left(extents.xMin(),extents.yMin(),xCenter,yCenter);
-            GeospatialExtents bottom_right(xCenter,extents.yMin(),extents.xMax(),yCenter);
-            GeospatialExtents top_left(extents.xMin(),yCenter,xCenter,extents.yMax());
-            GeospatialExtents top_right(xCenter,yCenter,extents.xMax(),extents.yMax());
+            GeospatialExtents bottom_left(extents.xMin(),extents.yMin(),xCenter,yCenter, extents._isGeographic);
+            GeospatialExtents bottom_right(xCenter,extents.yMin(),extents.xMax(),yCenter, extents._isGeographic);
+            GeospatialExtents top_left(extents.xMin(),yCenter,xCenter,extents.yMax(), extents._isGeographic);
+            GeospatialExtents top_right(xCenter,yCenter,extents.xMax(),extents.yMax(), extents._isGeographic);
 
             destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
                                                                          cs,
@@ -4084,8 +4121,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
             my_notify(osg::INFO)<<"Need to Divide X only"<<std::endl;
 
             // create two tiles.
-            GeospatialExtents left(extents.xMin(),extents.yMin(),xCenter,extents.yMax());
-            GeospatialExtents right(xCenter,extents.yMin(),extents.xMax(),extents.yMax());
+            GeospatialExtents left(extents.xMin(),extents.yMin(),xCenter,extents.yMax(), extents._isGeographic);
+            GeospatialExtents right(xCenter,extents.yMin(),extents.xMax(),extents.yMax(), extents._isGeographic);
 
             destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
                                                                          cs,
@@ -4124,8 +4161,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
             my_notify(osg::INFO)<<"Need to Divide Y only"<<std::endl;
 
             // create two tiles.
-            GeospatialExtents top(extents.xMin(),yCenter,extents.xMax(),extents.yMax());
-            GeospatialExtents bottom(extents.xMin(),extents.yMin(),extents.xMax(),yCenter);
+            GeospatialExtents top(extents.xMin(),yCenter,extents.xMax(),extents.yMax(), extents._isGeographic);
+            GeospatialExtents bottom(extents.xMin(),extents.yMin(),extents.xMax(),yCenter, extents._isGeographic);
 
             destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
                                                                          cs,
@@ -4222,6 +4259,8 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
 
     // get the extents of the sources and
     GeospatialExtents extents(_extents);
+    extents._isGeographic = destinateCoordSytemType==GEOGRAPHIC;
+
     if (!extents.valid()) 
     {
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
@@ -4232,10 +4271,41 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
                 GeospatialExtents local_extents(sd->getExtents(_intermediateCoordinateSystem.get()));
                 my_notify(osg::INFO)<<"local_extents = xMin()"<<local_extents.xMin()<<" "<<local_extents.xMax()<<std::endl;
                 my_notify(osg::INFO)<<"                yMin()"<<local_extents.yMin()<<" "<<local_extents.yMax()<<std::endl;
+                
+                if (destinateCoordSytemType==GEOGRAPHIC)
+                {
+                    // need to clamp within -180 and 180 range.
+                    if (local_extents.xMin()>180.0) 
+                    {
+                        // shift back to -180 to 180 range
+                        local_extents.xMin() -= 360.0;
+                        local_extents.xMax() -= 360.0;
+                    }
+                    else if (local_extents.xMin()<-180.0) 
+                    {
+                        // shift back to -180 to 180 range
+                        local_extents.xMin() += 360.0;
+                        local_extents.xMax() += 360.0;
+                    }
+                }
+
                 extents.expandBy(local_extents);
             }
         }
     }
+    
+
+    if (destinateCoordSytemType==GEOGRAPHIC)
+    {
+        double xRange = extents.xMax() - extents.xMin();
+        if (xRange>360.0) 
+        {
+            // clamp to proper 360 range.
+            extents.xMin() = -180.0;
+            extents.xMax() = 180.0;
+        }
+    }
+    
 
     // compute the number of texture layers required.
     unsigned int maxTextureUnit = 0;

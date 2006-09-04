@@ -124,7 +124,7 @@ void RenderStage::reset()
         pre_itr != _preRenderList.end();
         ++pre_itr)
     {
-        (*pre_itr)->reset();
+        pre_itr->second->reset();
     }
 
     RenderBin::reset();
@@ -133,7 +133,7 @@ void RenderStage::reset()
         post_itr != _postRenderList.end();
         ++post_itr)
     {
-        (*post_itr)->reset();
+        post_itr->second->reset();
     }
 
     _preRenderList.clear();
@@ -146,7 +146,7 @@ void RenderStage::sort()
         pre_itr != _preRenderList.end();
         ++pre_itr)
     {
-        (*pre_itr)->sort();
+        pre_itr->second->sort();
     }
 
     RenderBin::sort();
@@ -155,18 +155,44 @@ void RenderStage::sort()
         post_itr != _postRenderList.end();
         ++post_itr)
     {
-        (*post_itr)->sort();
+        post_itr->second->sort();
     }
 }
 
-void RenderStage::addPreRenderStage(RenderStage* rs)
+void RenderStage::addPreRenderStage(RenderStage* rs, int order)
 {
-    if (rs) _preRenderList.push_back(rs);
+    if (rs)
+    {
+        RenderStageList::iterator itr;
+        for(itr = _preRenderList.begin(); itr != _preRenderList.end(); ++itr) {
+            if(order < itr->first) {
+                break;
+            }
+        }
+        if(itr == _preRenderList.end()) {
+            _preRenderList.push_back(RenderStageOrderPair(order,rs));
+        } else {
+            _preRenderList.insert(itr,RenderStageOrderPair(order,rs));
+        }
+    }
 }
 
-void RenderStage::addPostRenderStage(RenderStage* rs)
+void RenderStage::addPostRenderStage(RenderStage* rs, int order)
 {
-    if (rs) _postRenderList.push_back(rs);
+    if (rs)
+    {
+        RenderStageList::iterator itr;
+        for(itr = _postRenderList.begin(); itr != _postRenderList.end(); ++itr) {
+            if(order < itr->first) {
+                break;
+            }
+        }
+        if(itr == _postRenderList.end()) {
+            _postRenderList.push_back(RenderStageOrderPair(order,rs));
+        } else {
+            _postRenderList.insert(itr,RenderStageOrderPair(order,rs));
+        }
+    }
 }
 
 void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
@@ -178,7 +204,7 @@ void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
         itr!=_preRenderList.end();
         ++itr)
     {
-        (*itr)->draw(state,previous);
+        itr->second->draw(state,previous);
     }
     //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 }
@@ -940,7 +966,7 @@ void RenderStage::drawPostRenderStages(osg::State& state,RenderLeaf*& previous)
         itr!=_postRenderList.end();
         ++itr)
     {
-        (*itr)->draw(state,previous);
+        itr->second->draw(state,previous);
     }
     //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 }
@@ -954,7 +980,7 @@ bool RenderStage::getStats(Statistics& stats) const
         pre_itr != _preRenderList.end();
         ++pre_itr)
     {
-        if ((*pre_itr)->getStats(stats))
+        if (pre_itr->second->getStats(stats))
         {
             statsCollected = true;
         }
@@ -964,7 +990,7 @@ bool RenderStage::getStats(Statistics& stats) const
         post_itr != _postRenderList.end();
         ++post_itr)
     {
-        if ((*post_itr)->getStats(stats))
+        if (post_itr->second->getStats(stats))
         {
             statsCollected = true;
         }

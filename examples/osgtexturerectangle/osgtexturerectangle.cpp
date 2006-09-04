@@ -131,20 +131,18 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     // disable display list so our modified tex coordinates show up
     geom->setUseDisplayList(false);
 
-    // setup texture
-    osg::TextureRectangle* texture = new osg::TextureRectangle;
-
     // load image
     osg::Image* img = osgDB::readImageFile(filename);
-    texture->setImage(img);
+
+    // setup texture
+    osg::TextureRectangle* texture = new osg::TextureRectangle(img);
+
+    osg::TexMat* texmat = new osg::TexMat;
+    texmat->setScaleByTextureRectangleSize(true);
 
     // setup state
     osg::StateSet* state = geom->getOrCreateStateSet();
     state->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-
-    // setup state
-    osg::TexMat* texmat = new osg::TexMat;
-    texmat->setScaleByTextureRectangleSize(true);
     state->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
 
     // turn off lighting 

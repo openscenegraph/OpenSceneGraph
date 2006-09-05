@@ -567,7 +567,7 @@ ifeq ($(OS),CYGWIN)
   DEPARG            = -M -DWIN32
   INC               += 
   LIB               =
-  DEF               += -DWIN32 -W -Wall -DNOMINMAX
+  DEF               += -DWIN32 -DNOMINMAX -W -Wall -mnop-fun-dllimport
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared \

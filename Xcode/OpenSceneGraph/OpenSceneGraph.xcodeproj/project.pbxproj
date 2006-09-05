@@ -1662,6 +1662,7 @@
 		0096C5F80919635200B255F2 /* ConnectedParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C5F60919635200B255F2 /* ConnectedParticleSystem.cpp */; };
 		0096C5F90919635200B255F2 /* SmokeTrailEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C5F70919635200B255F2 /* SmokeTrailEffect.cpp */; };
 		0096C5FD0919639B00B255F2 /* GraphicsContextImplementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C5FC0919639A00B255F2 /* GraphicsContextImplementation.cpp */; };
+		0096F7A50AAE093D0093E9C7 /* PublicMemberAccessor in Headers */ = {isa = PBXBuildFile; fileRef = 0096F7A40AAE093C0093E9C7 /* PublicMemberAccessor */; settings = {ATTRIBUTES = (Public, ); }; };
 		0098F3910652F05F007615E2 /* KeyboardMouseCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0098F37A0652F05F007615E2 /* KeyboardMouseCallback.cpp */; };
 		0098F3920652F05F007615E2 /* OsgCameraGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0098F37B0652F05F007615E2 /* OsgCameraGroup.cpp */; };
 		0098F3930652F05F007615E2 /* OsgSceneHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0098F37C0652F05F007615E2 /* OsgSceneHandler.cpp */; };
@@ -5247,6 +5248,7 @@
 		0096C5F70919635200B255F2 /* SmokeTrailEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SmokeTrailEffect.cpp; sourceTree = "<group>"; };
 		0096C5FA0919637300B255F2 /* OverlayNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayNode.cpp; sourceTree = "<group>"; };
 		0096C5FC0919639A00B255F2 /* GraphicsContextImplementation.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsContextImplementation.cpp; sourceTree = "<group>"; };
+		0096F7A40AAE093C0093E9C7 /* PublicMemberAccessor */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = PublicMemberAccessor; sourceTree = "<group>"; };
 		0098F3140652ED84007615E2 /* osgProducer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgProducer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0098F3510652F041007615E2 /* Export */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = Export; sourceTree = "<group>"; };
 		0098F3520652F041007615E2 /* KeyboardMouseCallback */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = KeyboardMouseCallback; sourceTree = "<group>"; };
@@ -9520,6 +9522,7 @@
 				00A149F6084D5182000150AD /* MethodInfo */,
 				00A149F7084D5183000150AD /* ParameterInfo */,
 				00A149F8084D5183000150AD /* PropertyInfo */,
+				0096F7A40AAE093C0093E9C7 /* PublicMemberAccessor */,
 				00A149F9084D5183000150AD /* ReaderWriter */,
 				00A149FA084D5184000150AD /* Reflection */,
 				00A149FB084D5184000150AD /* ReflectionMacros */,
@@ -11623,6 +11626,7 @@
 				00A14A0E084D5188000150AD /* InstanceCreator in Headers */,
 				00A14A0F084D5188000150AD /* MethodInfo in Headers */,
 				00A14A10084D5188000150AD /* ParameterInfo in Headers */,
+				0096F7A50AAE093D0093E9C7 /* PublicMemberAccessor in Headers */,
 				00A14A11084D5188000150AD /* PropertyInfo in Headers */,
 				00A14A12084D5188000150AD /* ReaderWriter in Headers */,
 				00A14A13084D5188000150AD /* Reflection in Headers */,

@@ -184,6 +184,7 @@ bool validName(const std::string& first)
     if (first=="Vec4ub") return false;
     if (first=="Proxy") return false;
     if (first=="CullVistor") return false;
+    if (first=="TexMat(Matrix") return false;
     return true;
 }
 

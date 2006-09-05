@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.1.1
+OpenSceneGraph Library 1.2
 
-205 Contributors:
+208 Contributors:
 
 Firstname Surname
 -----------------
@@ -10,13 +10,13 @@ Marco Jez
 Mike Weiblen
 Geoff Michel
 Brede Johansen
-Bob Kuehne
 Farshid Lashkari
-Eric Sokolowsky
+Bob Kuehne
 Paul Martz
+Eric Wing
+Eric Sokolowsky
 Ulrich Hertlein
 Tree 
-Eric Wing
 Norman Vine
 Trajce Nikolov
 Pavel Moloshtan
@@ -30,8 +30,8 @@ Randall Hopper
 Gideon May
 Michael Gronager
 Chris Hanson
-Neil Salter
 Joran Jessurun
+Neil Salter
 Frederic Marmond
 David Fries
 Colin McDonald
@@ -45,6 +45,7 @@ David Spilling
 Daniel Sjölie
 Ben Discoe
 Sasa Bistrovic
+Roger James
 Olaf Flebbe
 Martin Naylor
 Markus Trenkwalder
@@ -55,32 +56,34 @@ Ravi Mathur
 Joseph Steel
 Joakim Simonsson
 Jason Daly
+David Guthrie
 Corbin Holtz
 Toshiyuki Takahei
 Thom DeCarlo
 Simon Julier
-Roger James
+Sebastien Grignard
 Nikolaus Hanekamp
 Loic Dachary
 Leandro Motta Barros
 Gordon Tomlinson
-David Guthrie
 Bruce Clay
 Brad Christiansen
 Alberto Barbati
 Vivek Rajan
 Terry Welsh
 Sohey Yamamoto
-Sebastien Grignard
 Romano Magacho
 Phil Atkin
 Paul Melis
+Mike Wittman
 Ken Sewell
 Julian Ortiz
 Jeremy Bell
 James French
 Gabor Dorka
 Domenico Mangieri
+David Callu
+Daniel Larimer
 Carlo Camporesi
 Andreas Ekstrand
 Ali Botorabi
@@ -96,7 +99,6 @@ Perry Miller
 Per Fahlberg
 Paul de Repentigny
 Nathan Monteleone
-Mike Wittman
 Michael Platings
 Maya Leonard
 Max Behensky
@@ -108,6 +110,7 @@ Keith Steffen
 Joseph Winston
 John Shue
 Johan Nouvel
+Jeremy Moles
 Igor Kravtchenko
 George Tarantilis
 Garret Potts
@@ -115,7 +118,6 @@ Fabio Mierlo
 Donn Mielcarek
 David Ergo
 Daniel Trstenjak
-Daniel Larimer
 Brad Colbert
 Antoine Hue
 Andrew Sampson
@@ -129,6 +131,7 @@ Volker Walkiewicz
 Vladimir Vukicevic
 Vincent Vivanloc
 Vasily Radostev
+Vaclav Bilek
 Tyge 
 Troy Yee
 Tino Schwarze
@@ -169,7 +172,6 @@ John Grant
 John Donovan
 John Davis
 Joan Abadie
-Jeremy Moles
 Jay Zuckerman
 Jason Ballenger
 Jan Ciger
@@ -179,6 +181,7 @@ Gustavo Wagner
 Graeme Harkness
 Glenn Waldrom
 George Papagiannakis
+Gary Quinn
 Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
@@ -192,7 +195,6 @@ Douglas A. Pouk
 Donny Cipperly
 Dean Iverson
 David Jung
-David Callu
 Chuck Sembroski
 Carlos García
 Brad Anderegg
@@ -201,6 +203,7 @@ Blake Williams
 Bart Gallet
 Axel Volley
 Andrew Reyonolds
+Andrew Lorino
 Andreas Jochens
 Anders Backman
 Allen Bierbaum

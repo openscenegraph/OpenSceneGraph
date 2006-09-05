@@ -165,6 +165,9 @@ class FLTReaderWriter : public ReaderWriter
                 document.setPreserveFace((options->getOptionString().find("preserveFace")!=std::string::npos));
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
 
+                document.setPreserveObject((options->getOptionString().find("preserveObject")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveObject=" << document.getPreserveObject() << std::endl;
+
                 document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
 

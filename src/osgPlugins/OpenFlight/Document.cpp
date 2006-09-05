@@ -11,6 +11,7 @@ using namespace flt;
 
 Document::Document() :
     _preserveFace(false),
+    _preserveObject(false),
     _defaultDOFAnimationState(false),
     _useTextureAlphaForTransparancyBinning(true),
     _doUnitsConversion(true),

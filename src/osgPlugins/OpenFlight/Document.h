@@ -144,6 +144,8 @@ class Document
         // Options
         void setPreserveFace(bool flag) { _preserveFace = flag; }
         bool getPreserveFace() const { return _preserveFace; }
+        void setPreserveObject(bool flag) { _preserveObject = flag; }
+        bool getPreserveObject() const { return _preserveObject; }
         void setDefaultDOFAnimationState(bool state) { _defaultDOFAnimationState = state; }
         bool getDefaultDOFAnimationState() const { return _defaultDOFAnimationState; }
         void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTransparancyBinning=flag; }
@@ -161,6 +163,7 @@ class Document
         // Options
         osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
         bool                        _preserveFace;
+        bool                        _preserveObject;
         bool                        _defaultDOFAnimationState;
         bool                        _useTextureAlphaForTransparancyBinning;
         bool                        _doUnitsConversion;

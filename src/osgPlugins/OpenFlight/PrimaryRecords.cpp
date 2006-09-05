@@ -4,6 +4,8 @@
 //  Copyright (C) 2005-2006  Brede Johansen
 //
 
+#include <assert.h>
+#include <typeinfo>
 #include <osg/Notify>
 #include <osg/ShadeModel>
 #include <osg/ProxyNode>
@@ -17,7 +19,6 @@
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
-#include <assert.h>
 
 namespace flt {
 
@@ -122,63 +123,6 @@ protected:
 RegisterRecordProxy<Header> g_Header(HEADER_OP);
 
 
-/** Object
-*/
-class Object : public PrimaryRecord
-{
-    static const unsigned int HIDE_IN_DAYLIGHT = 0x80000000u >> 0;
-    static const unsigned int HIDE_AT_DUSK     = 0x80000000u >> 1;
-    static const unsigned int HIDE_AT_NIGHT    = 0x80000000u >> 2;
-    static const unsigned int NO_ILLUMINATION  = 0x80000000u >> 3;
-    static const unsigned int FLAT_SHADED      = 0x80000000u >> 4;
-    static const unsigned int SHADOW_OBJECT    = 0x80000000u >> 5;
-
-    osg::ref_ptr<osg::Group> _object;
-
-public:
-
-    Object() {}
-
-    META_Record(Object)
-
-    META_setID(_object)
-    META_setComment(_object)
-    META_setMatrix(_object)
-    META_setMultitexture(_object)
-    META_addChild(_object)
-
-protected:
-
-    virtual ~Object() {}
-
-    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
-    {
-        std::string id = in.readString(8);
-        uint32 flags = in.readUInt32();
-
-        _object = new osg::Group;
-        _object->setName(id);
-
-        // Flat shaded?
-        if (flags & FLAT_SHADED)
-        {
-            static osg::ref_ptr<osg::ShadeModel> shademodel;
-            if (!shademodel.valid())
-            {
-                shademodel = new osg::ShadeModel;
-                shademodel->setMode(osg::ShadeModel::FLAT);
-            }
-            _object->getOrCreateStateSet()->setAttribute(shademodel.get());
-        }
-
-        if (_parent.valid())
-            _parent->addChild(*_object);
-    }
-};
-
-RegisterRecordProxy<Object> g_Object(OBJECT_OP);
-
-
 /** Group
 */
 class Group : public PrimaryRecord
@@ -191,10 +135,15 @@ class Group : public PrimaryRecord
     static const unsigned int BACKWARD_ANIM    = 0x80000000u >> 6;
 
     osg::ref_ptr<osg::Group> _group;
+    bool _forwardAnim;
+    bool _backwardAnim;
 
 public:
 
-    Group() {}
+    Group():
+        _forwardAnim(false),
+        _backwardAnim(false)
+    {}
 
     META_Record(Group)
 
@@ -203,6 +152,8 @@ public:
     META_setMatrix(_group)
     META_setMultitexture(_group)
     META_addChild(_group)
+
+    bool hasAnimation() const { return _forwardAnim || _backwardAnim; }
 
 protected:
 
@@ -226,18 +177,18 @@ protected:
         /*float32 lastFrameDuration =*/ in.readFloat32();
 
         // Check for forward animation (sequence)
-        bool forwardAnim = (flags & FORWARD_ANIM) != 0;
+        _forwardAnim = (flags & FORWARD_ANIM) != 0;
 
         // For versions prior to 15.8, the swing bit can be set independently
         // of the animation bit.  This implies forward animation (with swing)
         if ((document.version() < VERSION_15_8) && (flags & SWING_ANIM))
-            forwardAnim = true;
+            _forwardAnim = true;
         
         // OpenFlight 15.8 adds backwards animations
-        const bool backwardAnim = ( (document.version() >= VERSION_15_8) &&
+        _backwardAnim = ( (document.version() >= VERSION_15_8) &&
             ((flags & BACKWARD_ANIM) != 0) );
 
-        if (forwardAnim || backwardAnim)
+        if (_forwardAnim || _backwardAnim)
         {
             osg::ref_ptr<osg::Sequence> sequence = new osg::Sequence;
 
@@ -245,7 +196,7 @@ protected:
             const osg::Sequence::LoopMode loopMode = ((flags & SWING_ANIM) == 0) ?
                 osg::Sequence::LOOP : osg::Sequence::SWING;
 
-            if (forwardAnim)
+            if (_forwardAnim)
                 sequence->setInterval(loopMode, 0, -1);
             else 
                 sequence->setInterval(loopMode, -1, 0);
@@ -811,6 +762,98 @@ protected:
 
 RegisterRecordProxy<Extension> g_Extension(EXTENSION_OP);
 
+
+/** Object
+*/
+class Object : public PrimaryRecord
+{
+    static const unsigned int HIDE_IN_DAYLIGHT = 0x80000000u >> 0;
+    static const unsigned int HIDE_AT_DUSK     = 0x80000000u >> 1;
+    static const unsigned int HIDE_AT_NIGHT    = 0x80000000u >> 2;
+    static const unsigned int NO_ILLUMINATION  = 0x80000000u >> 3;
+    static const unsigned int FLAT_SHADED      = 0x80000000u >> 4;
+    static const unsigned int SHADOW_OBJECT    = 0x80000000u >> 5;
+
+    osg::ref_ptr<osg::Group> _object;
+
+public:
+
+    Object() {}
+
+    META_Record(Object)
+
+    META_setID(_object)
+    META_setComment(_object)
+    META_setMatrix(_object)
+    META_setMultitexture(_object)
+
+    virtual void addChild(osg::Node& child)
+    {
+        // If object excists it means it is preserved.
+        if (_object.valid())
+            _object->addChild(&child);
+        // If no object add child to parent.
+        else if (_parent.valid())
+            _parent->addChild(child);
+    }
+
+protected:
+
+    virtual ~Object() {}
+
+    virtual void readRecord(RecordInputStream& in, Document& document)
+    {
+        // Is it safe to remove the object?
+        if (!document.getPreserveObject())
+        {
+            // The following tests need a valid parent.
+            if (!_parent.valid())
+                return;
+
+            // LODs adds an empty child group so it is safe to remove this object record.
+            if (typeid(*_parent)==typeid(flt::LevelOfDetail))
+                return;
+
+            if (typeid(*_parent)==typeid(flt::OldLevelOfDetail))
+                return;
+
+            // If parent is a Group record we have to check for animation.
+            Group* parentGroup = dynamic_cast<flt::Group*>(_parent.get());
+            if (parentGroup && !parentGroup->hasAnimation())
+                return;
+        }
+
+        std::string id = in.readString(8);
+        _object = new osg::Group;
+        _object->setName(id);
+
+
+#if 1
+        /*uint32 flags =*/ in.readUInt32();
+#else
+
+        // The Object "Flat Shaded" checkbox in Creator is used by the "Calculate Shading" operation,
+        // it is not a flat shaded state attribute.
+        
+        uint32 flags = in.readUInt32();
+        // Flat shaded?
+        if (flags & FLAT_SHADED)
+        {
+            static osg::ref_ptr<osg::ShadeModel> shademodel;
+            if (!shademodel.valid())
+            {
+                shademodel = new osg::ShadeModel;
+                shademodel->setMode(osg::ShadeModel::FLAT);
+            }
+            _object->getOrCreateStateSet()->setAttribute(shademodel.get());
+        }
+#endif
+        if (_parent.valid())
+            _parent->addChild(*_object);
+    }
+};
+
+RegisterRecordProxy<Object> g_Object(OBJECT_OP);
 
 } // end namespace
 

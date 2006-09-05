@@ -226,8 +226,8 @@ struct BaseTypeConverters<x, reflected_type, true>
 
 #define I_PublicMemberProperty(t, n) \
   cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, 0, 0)); \
-  cap->addAttribute(new osgIntrospection::CustomPropertyGetAttribute(new osgIntrospection::PublicMemberAccessor<reflected_type, t>(&reflected_type::n))); \
-  cap->addAttribute(new osgIntrospection::CustomPropertySetAttribute(new osgIntrospection::PublicMemberAccessor<reflected_type, t>(&reflected_type::n)));
+  cap->addAttribute(new osgIntrospection::CustomPropertyGetAttribute(new osgIntrospection::PublicMemberAccessor< reflected_type, t >(&reflected_type::n))); \
+  cap->addAttribute(new osgIntrospection::CustomPropertySetAttribute(new osgIntrospection::PublicMemberAccessor< reflected_type, t >(&reflected_type::n)));
 
 
 // --------------------------------------------------------------------------

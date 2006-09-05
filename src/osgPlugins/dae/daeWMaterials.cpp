@@ -18,6 +18,8 @@
 #include <dom/domConstants.h>
 #include <dom/domProfile_COMMON.h>
 
+#include <sstream>
+
 //#include <dom/domLibrary_effects.h>
 //#include <dom/domLibrary_materials.h>
 
@@ -305,21 +307,10 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             domTechnique *teq = daeSafeCast< domTechnique >( extra->createAndPlace( COLLADA_ELEMENT_TECHNIQUE ) );
             teq->setProfile( "SCEI" );
             domAny *any = (domAny*)(daeElement*)teq->createAndPlace( "color" );
-            char colVal[256];
-            colVal[0] = 0;
-            for ( unsigned int i = 0; i < 4; i++ )
-            {
-                char val[16];
-#if 0
-                itoa( dCol[i], val, 10 );
-#else
-                snprintf(val,16,"%d",int(dCol[i]));
-#endif
-                //strncat( colVal, val,256 );
-                strncat( colVal, " ",256 );
-            }
-            any->setValue( colVal );
-            
+
+            std::ostringstream colVal;
+            colVal << std::dec << " " << int(dCol[0]) << " " << int(dCol[1]) << " " << int(dCol[2]) << " " << int(dCol[3]);
+            any->setValue( colVal.str().c_str() );
         }
 
         cot = daeSafeCast< domCommon_color_or_texture_type >( phong->createAndPlace( "specular" ) );

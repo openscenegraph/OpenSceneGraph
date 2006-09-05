@@ -44,7 +44,7 @@ set the env vars:
   
   COLLADA_DEBUG_LIBS = yes
   
-  Note, Collda svn trunk currently defaults to debug build.
+  Note, Collada svn trunk currently defaults to debug build.
 
 The above env vars can also be setup in your own custom Make/depdendencies file (copy this and point
 to the locally modified copy using the env var OSG_DEPENDCIES so the the OSG's build system can find

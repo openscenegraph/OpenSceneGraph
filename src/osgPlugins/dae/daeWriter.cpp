@@ -18,6 +18,8 @@
 #include <dom/domNode.h>
 #include <dom/domConstants.h>
 
+#include <sstream>
+
 using namespace osgdae;
 
 daeWriter::daeWriter( const std::string &fname,bool _usePolygons ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
@@ -121,13 +123,9 @@ std::string daeWriter::uniquify( const std::string &name )
     if ( iter != uniqueNames.end() )
     {
         iter->second++;
-        char str[5];
-#if 0
-        itoa( iter->second, str, 10 );
-#else
-        snprintf(str,5,"%d",iter->second);
-#endif
-        return name + "_" + str;
+        std::ostringstream num;
+        num << std::dec << iter->second;
+        return name + "_" + num.str();
     }
     else
     {

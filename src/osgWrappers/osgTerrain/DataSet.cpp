@@ -483,7 +483,7 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
 	I_Constructor0();
-	I_Constructor4(IN, double, xmin, IN, double, ymin, IN, double, xmax, IN, double, ymax);
+	I_Constructor5(IN, double, xmin, IN, double, ymin, IN, double, xmax, IN, double, ymax, IN, bool, isGeographic);
 	I_Method0(double &, xMin);
 	I_Method0(double, xMin);
 	I_Method0(double &, yMin);
@@ -496,16 +496,14 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
 	I_Method0(bool, valid);
 	I_Method0(double, radius);
 	I_Method0(double, radius2);
-	I_Method1(osgTerrain::GeospatialExtents, intersect, IN, const osgTerrain::GeospatialExtents &, e);
-	I_Method1(osgTerrain::GeospatialExtents, intersectGeographicLeft, IN, const osgTerrain::GeospatialExtents &, e);
-	I_Method1(osgTerrain::GeospatialExtents, intersectGeographicRight, IN, const osgTerrain::GeospatialExtents &, e);
-	I_Method1(unsigned int, intersects, IN, const osgTerrain::GeospatialExtents &, bb);
-	I_Method1(unsigned int, intersectsGeographic, IN, const osgTerrain::GeospatialExtents &, bb);
+	I_Method2(osgTerrain::GeospatialExtents, intersection, IN, const osgTerrain::GeospatialExtents &, e, IN, double, xoffset);
+	I_Method1(bool, intersects, IN, const osgTerrain::GeospatialExtents &, bb);
 	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh);
 	I_Method1(void, expandBy, IN, const osg::Vec3 &, v);
 	I_Method1(void, expandBy, IN, const osgTerrain::GeospatialExtents &, e);
 	I_PublicMemberProperty(osg::Vec2d, _min);
 	I_PublicMemberProperty(osg::Vec2d, _max);
+	I_PublicMemberProperty(bool, _isGeographic);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)

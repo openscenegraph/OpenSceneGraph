@@ -218,7 +218,7 @@ int main( int argc, char **argv )
     float x,y,w,h;
     while (arguments.read("-e",x,y,w,h))
     {
-        dataset->setDestinationExtents(osgTerrain::GeospatialExtents(x,y,x+w,y+h));
+        dataset->setDestinationExtents(osgTerrain::GeospatialExtents(x,y,x+w,y+h,false)); // FIXME - need to check whether we a geographic extents of not
     }
     
     while (arguments.read("--HEIGHT_FIELD"))

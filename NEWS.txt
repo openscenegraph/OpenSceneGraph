@@ -1,25 +1,25 @@
 OSG News
 ========
 
-!!!OpenSceneGraph 1.2 release introduces Windows 64bit and AIX support, processor affinity and bug fixes.
+!!!OpenSceneGraph 1.2 release introduces Windows 64bit and AIX support, COLLADA support, processor affinity and texture atlas builder.
 
-AYRSHIRE, Scotland - 1st September 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.1.1, the industry's leading open source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.1.1, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.1.1 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX and AIX and [=FreeBSD=] operating systems. 
+AYRSHIRE, Scotland - 5th September 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.2, the industry's leading open source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.2, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
 
 The OpenSceneGraph-1.2 release introduces:
 
-* Support for Windows 64 bit build.
-* Support for HP's AIX operating system.
-* Processor affinity.
-* Texture Atlas builder.
-* GPU stats.
-* COLLADA plugin.
-* A range of bug fixes.
+* Support for Windows 64 bit build has been added, allowing windows programmers to take advantage of the scalability that Linux, IRIX, Solaris, FreeBSD and OSX prorgramers have enjoyed with the OpenSceneGraph for years.
+* Support for HP's AIX operating system has been added bringing the total number of supported operating systems to 8.
+* COLLADA 1.4 plugin developed by Sony Computer Entertainment and kindly donated to the OpenSceneGraph project as open source, supports both the reading and writing of COLLADA 1.4 .dae files. COLLADA is the new industry standard data asset exchange format that is now supported by a range of 3d modelling packages and provides a unified art path route to and from the OpenSceneGraph.
+* Processor affinity support added allow application to lock cull-draw and database processes to specific processors, thereby avoiding cache coherancy problems associated with processes moving from processor to processor.
+* A Texture Atlas builder has been added to the database optimization classes, allowing either manual or automated setting up of texture atlas.  Using texture atlas can improve performance by reducing the number of state changes required to render a scene, and by allowing databases to batched in large groups of geometry, in a form that better suits modern graphics arhitectures.
+* GPU timing stats have been added to the viewer class, provided the time taken to process allow drawing operations down on the GPU for the previous frame.  Coupled with the existing timing of CPU update, cull and draw dispatch the stats reporting now provides the end user with a clearer idea of whether their application is CPU or GPU limited and server as a better guide to performance optimization work.
+* A range of bug fixes and API refinements.
 
-For further information and to download the latest release head to the project website:
+The OpenSceneGraph-1.2 release is the culmination of 7 years development, with contributions from 208 developers from around the world.  The user base is composed of a wide range of industry and academic users with over 1400 developers subscribed to the projects public support mailing list.
+
+For further information and to download the latest release see the project website:
 
     http://www.openscenegraph.org
-
-The OpenSceneGraph-1.1.1 is the culmination of 7 years development and contributions of over 200 contributors from across the world. 
 
 Robert Osfield\\
 Project Lead and Proprietor [=OpenSceneGraph=] Professional Services

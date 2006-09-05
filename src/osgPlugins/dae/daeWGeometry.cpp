@@ -20,6 +20,8 @@
 #include <dom/domGeometry.h>
 #include <dom/domConstants.h>
 
+#include <sstream>
+
 using namespace osgdae;
 
 //GEODE
@@ -324,13 +326,10 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     //TODO: Do the same as normal and colors for texcoods. But in a loop since you can have many
     for ( unsigned int ti = 0; ti < texcoords.size(); ti++ )
     {
-        char intstr[6];
-#if 0
-        itoa( ti, intstr, 10 );
-#else
-        snprintf(intstr,6,"%d",ti);
-#endif
-        sName = name + "-texcoord_" + intstr;
+        std::ostringstream intstr;
+        intstr << std::dec << ti;
+        sName = name + "-texcoord_" + intstr.str();
+
         domSource *t = createSource( mesh, sName, texcoords[ti].mode, false, true );
         switch( texcoords[ti].mode )
         {

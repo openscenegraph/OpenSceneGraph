@@ -90,21 +90,24 @@ public:
     void writeNode(const osg::Node* sa);
     void writeImage(IncludeImageMode mode, osg::Image *image);
 
+    void setWriteDirectory(const std::string& directoryName) { _writeDirectory = directoryName; }
+    const std::string& getWriteDirectory() const { return _writeDirectory; }
+
     // Set and get include image data in stream
     void setIncludeImageMode(IncludeImageMode mode) {_includeImageMode=mode;};
-    IncludeImageMode getIncludeImageMode() {return _includeImageMode;};
+    IncludeImageMode getIncludeImageMode() const {return _includeImageMode;};
 
     // Set and get include external references in stream
     void setIncludeExternalReferences(bool b) {_includeExternalReferences=b;};
-    bool getIncludeExternalReferences() {return _includeExternalReferences;};
+    bool getIncludeExternalReferences() const {return _includeExternalReferences;};
 
     // Set and get if must be generated external reference ive files
     void setWriteExternalReferenceFiles(bool b) {_writeExternalReferenceFiles=b;};
-    bool getWriteExternalReferenceFiles() {return _writeExternalReferenceFiles;};
+    bool getWriteExternalReferenceFiles() const {return _writeExternalReferenceFiles;};
 
     // Set and get if must be used original external reference files
     void setUseOriginalExternalReferences(bool b) {_useOriginalExternalReferences=b;};
-    bool getUseOriginalExternalReferences() {return _useOriginalExternalReferences;};
+    bool getUseOriginalExternalReferences() const {return _useOriginalExternalReferences;};
 
     bool                _verboseOutput;
 
@@ -128,6 +131,7 @@ private:
     ShapeMap            _shapeMap;
     NodeMap             _nodeMap;
 
+    std::string         _writeDirectory;
     bool                _includeExternalReferences;
     bool                _writeExternalReferenceFiles;
     bool                _useOriginalExternalReferences;

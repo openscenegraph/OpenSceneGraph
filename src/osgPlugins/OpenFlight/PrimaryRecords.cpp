@@ -784,8 +784,20 @@ public:
 
     META_setID(_object)
     META_setComment(_object)
-    META_setMatrix(_object)
-    META_setMultitexture(_object)
+
+    virtual void setMatrix(osg::Matrix& matrix)
+    {
+        if (_object.valid())
+            insertMatrixTransform(*_object,matrix);
+        else
+        {
+            _object = new osg::MatrixTransform(matrix);
+            _object->setDataVariance(osg::Object::STATIC);
+
+            if (_parent.valid())
+                _parent->addChild(*_object);
+        }
+    }
 
     virtual void addChild(osg::Node& child)
     {

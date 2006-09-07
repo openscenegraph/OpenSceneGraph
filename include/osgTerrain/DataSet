@@ -170,7 +170,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         class Source;
 
-        struct SpatialProperties
+        struct OSGTERRAIN_EXPORT SpatialProperties
         {
             SpatialProperties():
                 _numValuesX(0),

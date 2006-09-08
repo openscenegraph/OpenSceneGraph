@@ -7,6 +7,6 @@
 	<key>CFBundleIdentifier</key>
 	<string>org.OpenSceneGraph.osgparametric</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.0</string>
+	<string>1.2.0</string>
 </dict>
 </plist>

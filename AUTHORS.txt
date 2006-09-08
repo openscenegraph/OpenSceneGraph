@@ -12,8 +12,8 @@ Geoff Michel
 Brede Johansen
 Farshid Lashkari
 Bob Kuehne
-Paul Martz
 Eric Wing
+Paul Martz
 Eric Sokolowsky
 Ulrich Hertlein
 Tree 
@@ -63,6 +63,7 @@ Thom DeCarlo
 Simon Julier
 Sebastien Grignard
 Nikolaus Hanekamp
+Mike Wittman
 Loic Dachary
 Leandro Motta Barros
 Gordon Tomlinson
@@ -75,7 +76,6 @@ Sohey Yamamoto
 Romano Magacho
 Phil Atkin
 Paul Melis
-Mike Wittman
 Ken Sewell
 Julian Ortiz
 Jeremy Bell

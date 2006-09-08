@@ -1,3 +1,112 @@
+2006-09-08 14:24  robert
+
+	* NEWS.txt: Cleaned up NEWS for 1.2 release
+
+2006-09-08 11:46  robert
+
+	* Xcode/OpenSceneGraph/: os-Info.plist, osg-Info.plist,
+	  osgDB-Info.plist, osgFX-Info.plist, osgGA-Info.plist,
+	  osgGL2-Info.plist, osgGLUTkeyboardmouse-Info.plist,
+	  osgGLUTsimple-Info.plist, osgParticle-Info.plist,
+	  osgProducer-Info.plist, osgSim-Info.plist, osgTerrain-Info.plist,
+	  osgText-Info.plist, osgUtil-Info.plist, osganimate-Info.plist,
+	  osgarchive-Info.plist, osgautotransform-Info.plist,
+	  osgbillboard-Info.plist, osgblendequation-Info.plist,
+	  osgbluemarble-Info.plist, osgcallback-Info.plist,
+	  osgcamera-Info.plist, osgcameragroup-Info.plist,
+	  osgcatch-Info.plist, osgclip-Info.plist, osgcluster-Info.plist,
+	  osgconv-Info.plist, osgcopy-Info.plist, osgcubemap-Info.plist,
+	  osgdb_freetype-Info.plist, osgdb_freetype2-Info.plist,
+	  osgdb_osgText-Info.plist, osgdelaunay-Info.plist,
+	  osgdem-Info.plist, osgdepthpartition-Info.plist,
+	  osgdepthshadow-Info.plist, osgdistortion-Info.plist,
+	  osgforest-Info.plist, osgfxbrowser-Info.plist,
+	  osggeometry-Info.plist, osghangglide-Info.plist,
+	  osghud-Info.plist, osgimposter-Info.plist,
+	  osgintrospection-Info.plist, osgkeyboard-Info.plist,
+	  osgkeyboardmouse-Info.plist, osglauncher-Info.plist,
+	  osglightpoint-Info.plist, osglist-Info.plist,
+	  osglogicop-Info.plist, osglogo-Info.plist,
+	  osgmotionblur-Info.plist, osgmovie-Info.plist,
+	  osgmultiplecameras-Info.plist, osgmultitexture-Info.plist,
+	  osgocculder-Info.plist, osgpagedlod-Info.plist,
+	  osgparametric-Info.plist, osgparticleExample-Info.plist,
+	  osgparticleeffects-Info.plist, osgphotoalbum-Info.plist,
+	  osgpick-Info.plist, osgplanets-Info.plist, osgpoints-Info.plist,
+	  osgpointsprite-Info.plist, osgprecipitation-Info.plist,
+	  osgprerender-Info.plist, osgprerendercubemap-Info.plist,
+	  osgreflect-Info.plist, osgscalarbar-Info.plist,
+	  osgscribe-Info.plist, osgsequence-Info.plist,
+	  osgshaders-Info.plist, osgshaderterrain-Info.plist,
+	  osgshadowtexture-Info.plist, osgshape-Info.plist,
+	  osgsimple-Info.plist, osgsimplepager-Info.plist,
+	  osgsimplifier-Info.plist, osgsimulation-Info.plist,
+	  osgslice-Info.plist, osgslideshow-Info.plist,
+	  osgspacewarp-Info.plist, osgspheresegment-Info.plist,
+	  osgspotlight-Info.plist, osgstereoimage-Info.plist,
+	  osgteapot-Info.plist, osgtesselate-Info.plist,
+	  osgtextexample-Info.plist, osgtexture1D-Info.plist,
+	  osgtexture2D-Info.plist, osgtexture3D-Info.plist,
+	  osgtexturerectangle-Info.plist, osgunittests-Info.plist,
+	  osgversion-Info.plist, osgvertexprogram-Info.plist,
+	  osgviewer-Info.plist, osgvolume-Info.plist,
+	  osgwindows-Info.plist: From Eric Wing, updated to Xcode projects
+
+2006-09-08 11:07  robert
+
+	* VisualStudio/MUST_READ_ME.txt: Added link to website for build
+	  docs.
+
+2006-09-08 11:07  robert
+
+	* VisualStudio/fixup-vc6-dsps.pl: From Mike Wittman, perl script to
+	  help remain project files for dumb VisualStudio 6.0 limitations.
+
+2006-09-07 11:41  robert
+
+	* include/osgTerrain/DataSet: From Mike Weiblen, added missing
+	  export to fix osgTerrain wrapper linking under VS
+
+2006-09-06 21:11  robert
+
+	* VisualStudio/osgWrappers/osgTerrain/wrapper_osgTerrain.dsp:
+	  Updated osgTerrain wrapper project file with gdal dependencies.
+
+2006-09-06 15:10  robert
+
+	* NEWS.txt: Tweak to NEWS
+
+2006-09-06 14:53  robert
+
+	* src/osgPlugins/ive/DataOutputStream.h: Made get methods const
+
+2006-09-06 10:46  robert
+
+	* src/osgPlugins/OpenFlight/PrimaryRecords.cpp: From Brede
+	  Johansen, "The previous submission didn't handle Objects with
+	  transforms.  The attached file corrects this.
+
+	  I also removed the multitexture macro for the Object record.
+	  Only Face and Mesh records are valid targets."
+
+2006-09-05 21:18  robert
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Eric Wing, updates to Xcode projects
+
+2006-09-05 18:15  robert
+
+	* NEWS.txt: Removed reference to Sony in COLLADA news entry.
+
+2006-09-05 16:22  robert
+
+	* AUTHORS.txt, NEWS.txt, applications/osgversion/osgversion.cpp:
+	  Updated NEWS, AUTHORS file and osgversion for the 1.2-rc1
+
+2006-09-05 16:09  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2006-09-05 10:51  robert
 
 	* include/osgIntrospection/ReflectionMacros,

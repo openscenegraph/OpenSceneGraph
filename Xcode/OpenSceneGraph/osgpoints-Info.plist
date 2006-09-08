@@ -7,6 +7,6 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.MySoftwareCompany.osgpoints</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.0.d1</string>
+	<string>1.2.0</string>
 </dict>
 </plist>

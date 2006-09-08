@@ -1,3 +1,7 @@
+Detailed build documentation can be found on the OpenSceneGraph website at:
+
+  http://openscenegraph.org/osgwiki/pmwiki.php/PlatformSpecifics/VisualStudio
+
 IMPORTANT NOTE: Whilst the OSG will compile cleanly with the basic VC++6.0
 and its own STL implementation, the OSG will crash regularily due to bugs
 in VC++6.0's STL. VC++6.0's STL is horribly broken and therefore is *NOT*
@@ -14,12 +18,15 @@ Deprecated are:
     3.Visual Studio6.0 + Dinkumware's STL bug fix patches
     4.Visual Studio6.0 + STLport
     
-For details on how to patch VisualStudio6.0 read the doc/install.html 
-documentation. Note, osgIntrospection, src/osgWrapper plugins and the 
-osgintrospection example cannot be compiled under VisualStudio plugin.
+For details on how to patch VisualStudio6.0 see the above website link. 
+Note, osgIntrospection, src/osgWrapper plugins and the 
+osgintrospection example cannot be compiled under VisualStudio plugin.  
+You will also need to run the fixup-vc6-dsps.pl script to clean up the
+project files that won't otherwise compile to do new elements required
+for support of Window 64 bit build under VS 7.x and 8.x.    
 
-Several of the plugins and demoes, and two of the core libraries - osgText 
-and osgGLUT require external dependancies.  Full details on where to obtain
+Several of the plugins and demoes, and two of the core libraries - osgTerrain 
+and osgProducer require external dependancies.  Full details on where to obtain
 these can be found in doc/dependancies.html.
 
 

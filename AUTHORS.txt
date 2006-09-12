@@ -1,6 +1,6 @@
 OpenSceneGraph Library 1.2
 
-208 Contributors:
+209 Contributors:
 
 Firstname Surname
 -----------------
@@ -197,6 +197,7 @@ Dean Iverson
 David Jung
 Chuck Sembroski
 Carlos García
+Bryan Thrall
 Brad Anderegg
 Bora Utka
 Blake Williams

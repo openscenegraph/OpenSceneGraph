@@ -180,6 +180,21 @@ bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
     Vec3 se = _e-_s;
     float a = se.length2();
 
+
+    // check for zero length segment.
+    if (a==0.0)
+    {
+        // check if start point outside sphere radius    
+        if (c>0.0) return false;
+    
+        // length segment within radius of bounding sphere but zero length
+        // so return true, and set the ratio so the start point is the one
+        // to be used.
+        r1 = 1.0f;
+        r2 = 0.0f;
+        return true;
+    }
+
     float b = sm*se*2.0f;
 
     float d = b*b-4.0f*a*c;
@@ -187,6 +202,7 @@ bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
     if (d<0.0f) return false;
 
     d = sqrtf(d);
+
 
     float div = 1.0f/(2.0f*a);
 

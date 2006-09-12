@@ -24,6 +24,13 @@
 #define GL_FIXED_ONLY_ARB                       0x891D
 #endif
 
+#ifndef GL_FIXED_ONLY
+#define GL_FIXED_ONLY                           GL_FIXED_ONLY_ARB
+#define GL_CLAMP_VERTEX_COLOR                   GL_CLAMP_VERTEX_COLOR_ARB
+#define GL_CLAMP_READ_COLOR                     GL_CLAMP_READ_COLOR_ARB
+#define GL_CLAMP_FRAGMENT_COLOR                 GL_CLAMP_FRAGMENT_COLOR_ARB
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGL ClampColor state. */
@@ -31,28 +38,16 @@ class OSG_EXPORT ClampColor : public StateAttribute
 {
     public :
 
-        enum Target {
-          CLAMP_VERTEX_COLOR   = GL_CLAMP_VERTEX_COLOR_ARB,
-          CLAMP_FRAGMENT_COLOR = GL_CLAMP_FRAGMENT_COLOR_ARB,
-          CLAMP_READ_COLOR     = GL_CLAMP_READ_COLOR_ARB
-        };
-
-        enum Mode {
-          FIXED_ONLY = GL_FIXED_ONLY_ARB,
-          FALSE      = GL_FALSE,
-          TRUE       = GL_TRUE
-        };
-
-
         ClampColor();
         
-        ClampColor(Target target, Mode mode);
+        ClampColor(GLenum vertexMode, GLenum fragmentMode, GLenum readMode);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        ClampColor(const ClampColor& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(trans,copyop),
-            _target(trans._target),
-            _mode(trans._mode) {}
+        ClampColor(const ClampColor& rhs,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(rhs,copyop),
+            _clampVertexColor(rhs._clampVertexColor),
+            _clampFragmentColor(rhs._clampFragmentColor),
+            _clampReadColor(rhs._clampReadColor) {}
 
         META_StateAttribute(osg, ClampColor,CLAMPCOLOR);
         
@@ -64,26 +59,21 @@ class OSG_EXPORT ClampColor : public StateAttribute
             COMPARE_StateAttribute_Types(ClampColor,sa)
 
             // Compare each parameter in turn against the rhs.
-            COMPARE_StateAttribute_Parameter(_target)
-            COMPARE_StateAttribute_Parameter(_mode)
+            COMPARE_StateAttribute_Parameter(_clampVertexColor)
+            COMPARE_StateAttribute_Parameter(_clampFragmentColor)
+            COMPARE_StateAttribute_Parameter(_clampReadColor)
 
             return 0; // Passed all the above comparison macros, so must be equal.
         }
 
-        inline void setTarget(Target target)
-        {
-            _target = target;
-        }
+        void setClampVertexColor(GLenum mode) { _clampVertexColor = mode; }
+        GLenum getClampVertexColor() const { return _clampVertexColor; }
 
-        inline Target getTarget() const { return _target; }
+        void setClampFragmentColor(GLenum mode) { _clampFragmentColor = mode; }
+        GLenum getClampFragmentColor() const { return _clampFragmentColor; }
 
-
-        inline void setMode(Mode mode)
-        {
-            _mode = mode;
-        }
-
-        inline Mode getMode() const { return _mode; }
+        void setClampReadColor(GLenum mode) { _clampReadColor = mode; }
+        GLenum getClampReadColor() const { return _clampReadColor; }
 
         
         virtual void apply(State& state) const;
@@ -134,9 +124,10 @@ class OSG_EXPORT ClampColor : public StateAttribute
 
         virtual ~ClampColor();
 
+        GLenum _clampVertexColor;
+        GLenum _clampFragmentColor;
+        GLenum _clampReadColor;
 
-        Target _target;
-        Mode   _mode;
 };
 
 }

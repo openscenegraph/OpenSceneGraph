@@ -3,7 +3,7 @@ OSG News
 
 !!![=OpenSceneGraph=] 1.2 release introduces Windows 64bit and AIX support, COLLADA support, processor affinity and texture atlas builder.
 
-PERTHSHIRE, Scotland - 11th September 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.2, the industry's leading open source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.2, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
+PERTHSHIRE, Scotland - 12th September 2006  - [=OpenSceneGraph=] Professional Services announces the release of [=OpenSceneGraph=] 1.2, the industry's leading open source scene graph technology, designed to accelerate application development and improve 3D graphics performance. [=OpenSceneGraph=] 1.2, written entirely in Standard C++ and built upon [=OpenGL=], offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets a real time visualization tool which rivals established commercial scene graph toolkits in functionality and performance. [=OpenSceneGraph=] 1.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and [=FreeBSD=] operating systems.
 
 The [=OpenSceneGraph=]-1.2 release introduces:
 

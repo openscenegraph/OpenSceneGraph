@@ -20,14 +20,16 @@
 using namespace osg;
 
 ClampColor::ClampColor():
-   _target(CLAMP_FRAGMENT_COLOR),
-   _mode(FIXED_ONLY)
+   _clampVertexColor(GL_FIXED_ONLY),
+   _clampFragmentColor(GL_FIXED_ONLY),
+   _clampReadColor(GL_FIXED_ONLY)
 {
 }
 
-ClampColor::ClampColor(Target target, Mode mode):
-   _target(target),
-   _mode(mode)
+ClampColor::ClampColor(GLenum vertexMode, GLenum fragmentMode, GLenum readMode):
+   _clampVertexColor(vertexMode),
+   _clampFragmentColor(fragmentMode),
+   _clampReadColor(readMode)
 {
 }
 
@@ -50,7 +52,9 @@ void ClampColor::apply(State& state) const
         return;
     }
 
-    extensions->glClampColor(static_cast<GLenum>(_target), static_cast<GLenum>(_mode));
+    extensions->glClampColor(GL_CLAMP_VERTEX_COLOR, _clampVertexColor);
+    extensions->glClampColor(GL_CLAMP_FRAGMENT_COLOR, _clampFragmentColor);
+    extensions->glClampColor(GL_CLAMP_READ_COLOR, _clampReadColor);
 }
 
 

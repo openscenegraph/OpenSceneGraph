@@ -24,23 +24,11 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osg::ClampColor::Target)
-	I_EnumLabel(osg::ClampColor::CLAMP_VERTEX_COLOR);
-	I_EnumLabel(osg::ClampColor::CLAMP_FRAGMENT_COLOR);
-	I_EnumLabel(osg::ClampColor::CLAMP_READ_COLOR);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osg::ClampColor::Mode)
-	I_EnumLabel(osg::ClampColor::FIXED_ONLY);
-	I_EnumLabel(osg::ClampColor::FALSE);
-	I_EnumLabel(osg::ClampColor::TRUE);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osg::ClampColor)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0();
-	I_Constructor2(IN, osg::ClampColor::Target, target, IN, osg::ClampColor::Mode, mode);
-	I_ConstructorWithDefaults2(IN, const osg::ClampColor &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Constructor3(IN, GLenum, vertexMode, IN, GLenum, fragmentMode, IN, GLenum, readMode);
+	I_ConstructorWithDefaults2(IN, const osg::ClampColor &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
 	I_Method0(osg::Object *, cloneType);
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
@@ -48,15 +36,18 @@ BEGIN_OBJECT_REFLECTOR(osg::ClampColor)
 	I_Method0(const char *, className);
 	I_Method0(osg::StateAttribute::Type, getType);
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(void, setTarget, IN, osg::ClampColor::Target, target);
-	I_Method0(osg::ClampColor::Target, getTarget);
-	I_Method1(void, setMode, IN, osg::ClampColor::Mode, mode);
-	I_Method0(osg::ClampColor::Mode, getMode);
+	I_Method1(void, setClampVertexColor, IN, GLenum, mode);
+	I_Method0(GLenum, getClampVertexColor);
+	I_Method1(void, setClampFragmentColor, IN, GLenum, mode);
+	I_Method0(GLenum, getClampFragmentColor);
+	I_Method1(void, setClampReadColor, IN, GLenum, mode);
+	I_Method0(GLenum, getClampReadColor);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_StaticMethod2(osg::ClampColor::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::ClampColor::Extensions *, extensions);
-	I_Property(osg::ClampColor::Mode, Mode);
-	I_Property(osg::ClampColor::Target, Target);
+	I_Property(GLenum, ClampFragmentColor);
+	I_Property(GLenum, ClampReadColor);
+	I_Property(GLenum, ClampVertexColor);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

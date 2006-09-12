@@ -1,3 +1,25 @@
+2006-09-12 10:28  robert
+
+	* NEWS.txt: Updated NEWS for 1.2 release
+
+2006-09-12 10:26  robert
+
+	* include/osg/ClampColor, src/osg/ClampColor.cpp,
+	  src/osgWrappers/osg/ClampColor.cpp: Revised the osg::ClampColor
+	  API to allow vertex, fragment and read color clamping to be
+	  applied together.
+
+2006-09-08 21:08  robert
+
+	* src/osgUtil/Optimizer.cpp: From Bryan Thrall, fix to
+	  Optimizer::MergeGeometryVisitor so that it checks the permissable
+	  operation status on Drawables.
+
+2006-09-08 15:31  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  1.2 release
+
 2006-09-08 14:24  robert
 
 	* NEWS.txt: Cleaned up NEWS for 1.2 release

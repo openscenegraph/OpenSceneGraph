@@ -71,7 +71,7 @@ public:
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {
-        if (_vertexArrayPtr==0 && count==0) return;
+        if (_vertexArrayPtr==0 || count==0) return;
 
         switch(mode)
         {

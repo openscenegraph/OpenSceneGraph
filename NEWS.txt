@@ -7,8 +7,8 @@ PERTHSHIRE, Scotland - 12th September 2006  - [=OpenSceneGraph=] Professional Se
 
 The [=OpenSceneGraph=]-1.2 release introduces:
 
-* Support for Windows 64 bit build allowing windows programmers to finally join the scalability that Linux, IRIX, Solaris, [=FreeBSD=] and OSX programers have enjoyed with the [=OpenSceneGraph=] for years.
-* Support for HP's AIX operating system, bringing the total number of supported operating systems to 8.
+* Support for Windows 64 bit build, allowing Windows programmers to take advantage of greater scalability previously only available to [=OpenSceneGraph=] users under Linux, IRIX, Solaris, [=FreeBSD=] and OSX.
+* Support for IBM's AIX operating system, bringing the total number of supported operating systems to 8.
 * COLLADA plugin support for both the reading and writing of COLLADA 1.4 .dae files.  COLLADA is the new industry standard data asset exchange format that is now supported by a range of 3D modelling packages and provides a unified art path route to and from the [=OpenSceneGraph=].
 * Processor affinity support allowing application to lock cull-draw and database processes to specific processors, thereby avoiding cache coherancy problems associated with processes moving from processor to processor.
 * A Texture Atlas builder has been added to the database optimization classes, allowing either manual or automated setting up of texture atlas.  Using texture atlas can improve performance by reducing the number of state changes required to render a scene, and by allowing databases to batched in large groups of geometry, in a form that better suits modern graphics arhitectures.

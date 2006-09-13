@@ -440,13 +440,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
         {
 
-            TextList::iterator itr;
-            for(itr=_statsLabelList.begin();
-                itr!=_statsLabelList.end();
-                ++itr)
-            {
-                (*itr)->draw(*(sv->getState()));
-            }
 
             double updateTime = 0.0;
             std::fill(_cullTimes.begin(),_cullTimes.end(),0.0);
@@ -471,6 +464,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
 
             _updateTimeText->draw(*(sv->getState()));
 
+            TextList::iterator itr;
             CameraTimes::iterator titr;
             for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
                 itr!=_cullTimeText.end() && titr!=_cullTimes.end();
@@ -501,6 +495,16 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                     gpuTimingsValid = true;
                     sprintf(tmpText,"%4.2f", gpuTime);
                     (*itr)->setText(tmpText);
+                    (*itr)->draw(*(sv->getState()));
+                }
+            }
+
+            for(itr=_statsLabelList.begin();
+                itr!=_statsLabelList.end();
+                ++itr)
+            {
+                if (gpuTimingsValid || ((*itr)->getName()!="GPU"))
+                {
                     (*itr)->draw(*(sv->getState()));
                 }
             }
@@ -797,6 +801,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 
         osgText::Text* gpuLabel = new osgText::Text;
         gpuLabel->setFont("fonts/arial.ttf");
+        gpuLabel->setName("GPU");
         gpuLabel->setColor(colorGPU);
         gpuLabel->setFontResolution((unsigned int)characterSize,(unsigned int)characterSize);
         gpuLabel->setCharacterSize(characterSize);

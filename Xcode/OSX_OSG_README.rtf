@@ -1,21 +1,20 @@
 {\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
-{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fmodern\fcharset77 Courier;
-\f3\fnil\fcharset77 Monaco;}
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fswiss\fcharset77 Helvetica-Oblique;
+\f3\fmodern\fcharset77 Courier;\f4\fnil\fcharset77 Monaco;}
 {\colortbl;\red255\green255\blue255;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid3}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
-\margl1440\margr1440\vieww11120\viewh12880\viewkind0
+\margl1440\margr1440\vieww11520\viewh13720\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\b\fs24 \cf0 OpenSceneGraph on OS X
+\f0\b\fs24 \cf0 OpenSceneGraph on Mac OS X
 \f1\b0 \
 \
-This is the readme for the entire OpenThreads/Producer/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.1 release.\
+This is the readme for the entire OpenThreads/Producer/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.2 release.\
 \
 The source code is available at {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/"}}{\fldrslt http://www.openscenegraph.org/}}\
-Our patches are included in this package.\
 \
 Also included is a framework for GDAL. You can get the source code and the full GDAL package at {\field{\*\fldinst{HYPERLINK "http://www.gdal.org/"}}{\fldrslt http://www.gdal.org/}}\
 \
@@ -24,17 +23,90 @@ Also included is a framework for GDAL. You can get the source code and the full 
 \f0\b What's New in this release:
 \f1\b0 \
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	\'a5	}OSG 1.1 synchronization\
+\ls1\ilvl0\cf0 {\listtext	\'a5	}OSG 1.2 synchronization\
 {\listtext	\'a5	}Universal Binaries\
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
-\ls2\ilvl0\cf0 {\listtext	\'a5	}Tested with Xcode 2.3\
+\ls2\ilvl0\cf0 {\listtext	\'a5	}Tested with Xcode 2.4\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b \cf0 Notes for 1.2 release:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f1\b0 \cf0 1.2 was originally intended as a bug fix release for 1.1 (going for 1.1.1), but OSG broke ABI again so the number was bumped to 1.2. There are no significant changes to the Xcode projects or significant OS X specific changes.\
+\
+Since the 1.1 release, we have learned of serious problems (freezing of the window manager) on the (Intel) MacBook Pros using osgText. We believe the problem is with a serious driver bug for ATI in OS X 10.4.7. We believe the bug affects the ATI Radeon X1600. (You can get this string by calling glGetString(GL_RENDERER) when you have a valid OpenGL Context. The string returned to us on affected MacBook Pros is "ATI Radeon X1600 OpenGL Engine".)\
+\
+Robert Osfield says:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\ri0\ql\qnatural\pardirnatural
+
+\f2\i \cf0 osgText subloads small glyphs one by one rather than the whole image, so I'd suspect it is this that is broken.  There is a path way in osgText::Font for uploading the whole image at once, which original was specifically implement as a work around for an Octane driver bug, but for 1.1 I enabled this pathway to be selectable via an env var to see if OSX users could work around the OSX driver bug. 
+\f1\i0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ri0\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 To set the environmental variable through the shell:\
+\
+bash:\
+export OSG_TEXT_INCREMENTAL_SUBLOADING=OFF\
+\
+csh:\
+setenv OSG_TEXT_INCREMENTAL_SUBLOADING OFF\
+\
+If you launch through Xcode, you may also set environment variables. In the Groups & Files panel, go to the section called "Executables" and expand the disclosure triangle. Find your application in the list and bring up the Info inspector. Click on the tab called "Arguments" and there are two tables in the display. The lower table will let you enter environmental variables.  \
+\
+\
+James Hopper suggests another solution that doesn't require you to launch through a shell:\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx9360\li720\ri0\ql\qnatural\pardirnatural
+
+\f2\i \cf0 you can set environement variables that work with applications by creating a file ~/.MacOSX/.environment.plist and put them in there. easiest way is to use the preference pane called RCEnvironment at\
+\
+{\field{\*\fldinst{HYPERLINK "http://www.rubicode.com/Software/RCEnvironment/"}}{\fldrslt http://www.rubicode.com/Software/RCEnvironment/}}
+\f1\i0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
 \
+For deployed application's, environmental variables are tricker. James Hopper's suggestion will work, but you obviously need to figure out how to install the .plist to user accounts. So another solution is to set things directly in your code. You can set environmental variables in C using putenv or setenv. (Use the man pages for more information.)\
+\
+To detect the OS X version number, the only API I know of that can do this Gestalt() which is a Carbon API. (If there are others, please let me know.) The code will look something like this (untested):\
+\
+#ifdef __APPLE__\
+#include <Carbon/Carbon.h>\
+SInt32 MacVersion;\
+\
+if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr)\
+\{\
+    // For 10.4.7\
+    if (MacVersion == 0x1047)\
+    \{\
+        // Test for the specific video cards giving problems and set the proper environment variables if needed.\
+        // I believe you need an initialized GL context to call glGetString (or any GL command) or will crash.\
+        // If a bad video driver, then call putenv("OSG_TEXT_INCREMENTAL_SUBLOADING=OFF")\
+    \}\
+    // For 10.4.8\
+    else if (MacVersion <= 0x1048)\
+    \{\
+         // Do we assume the problem is still broken or do we assume it's fixed?\
+    \}\
+    // By the way, did things work okay in 10.4.6?\
+\
+ \}\
+#endif\
+\
+Don't forget to link against Carbon (-framework Carbon) if you use Gestalt.\
+\
+\
+If you are affected by this, please file a bug report at {\field{\*\fldinst{HYPERLINK "https://bugreport.apple.com"}}{\fldrslt https://bugreport.apple.com}}. Apple lives and dies by the bug report system. If anything is to get done, it must be in the bug reporter. And they keep count of how many people file the same bug, so duplicates are good.\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\b Notes for 1.1 release:\
+\f0\b \cf0 Notes for 1.1 release:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\b0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
+\f1\b0 \cf0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
 The Xcode projects are also set to build as Universal Binaries for both Development and Deployment\
 targets. If you do not need this and want to save build time, you should change the architecture option\
 to your desired setting (most likely to $(NATIVE_ARCH)). It is overridden in the top-level "OpenSceneGraph" project in the Group & Files panel. Don't forget to change OpenThreads and \
@@ -55,8 +127,9 @@ PlugIns, the file size shrunk from about 1GB to about 100MB.\
 We have stopped maintaining the Xcode 1.5/2.0 projects.\
 \
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\b Notes for 1.0 release:
+\f0\b \cf0 Notes for 1.0 release:
 \f1\b0 \
 These projects were primarily developed with gcc 4.0.1 under Tiger 10.4.3 using Xcode 2.2. Starting with gcc 4.0, Apple no longer statically links in the C++ runtime. Apple has made available the g++ 4.0 dynamic runtime for Panther under the 10.3.9 release. To run under Panther, your system must have this update (or you must recompile the binaries for your system).\
 \
@@ -156,13 +229,14 @@ Also remember that OSG will still respond to standard OSG environmental variable
 \
 
 \f0\b Prebinding Addresses:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\b0 \
+\f1\b0 \cf0 \
 	These are now obsolete. Prebinding is now disabled. The old addresses were:\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f2 \cf0 OpenThreads       -seg1addr 0x1FF00000\
+\f3 \cf0 OpenThreads       -seg1addr 0x1FF00000\
 osg               -seg1addr 0x1FF10000\
 osgUtil           -seg1addr 0x20230000\
 osgDB             -seg1addr 0x20380000\
@@ -241,8 +315,9 @@ If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, t
 {\listtext	\'a5	}I noticed that for some reason, Xcode has problems compiling the Carbon header with the OpenThreads framework when autovectorization and precompiled headers were enabled. You might try disabling precompiled headers if it is not already. If the problem persists, you may also need to delete the entry that enables autovectorization. In the Groups and Files panel (left side panel), open the Info inspector for the project (top item) and click on the Build tab. Scroll down to the bottom, and remove the autovectorization option. \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\b Universal Binaries:
+\f0\b \cf0 Universal Binaries:
 \f1\b0 \
 \
 Be aware, when building you're own Universal Binaries and you use the 10.4 SDK, you must explicitly\
@@ -260,9 +335,9 @@ The native Aqua back-end (AGL based) for Producer continues to improve, but it i
 The osgdb_geo plugin is not big endian safe. The Makefile system does not build it for OS X. We have added it for the Xcode projects, but you probably shouldn't use it unless you're on Intel.\
 \
 Do not use the 
-\f3\fs22 -fvisibility=hidden 
+\f4\fs22 -fvisibility=hidden 
 \f1\fs24 flag unless you know what you're doing. In some cases, Xcode 2.2 seems to enable this by default in the project settings. You should verify your project settings and make sure this is disabled. Among other things, this flag will hide RTTI information causing dynamic_cast<> operations to fail. Since parts of OSG are dependent on RTTI, this option should remain off. The flag 
-\f3\fs22 -fvisibility-inlines-hidden 
+\f4\fs22 -fvisibility-inlines-hidden 
 \f1\fs24 may be safe to use. (This is actually enabled in our Xcode projects. If there are problems, please let us know.)\
 \
 Finally, there may still be issues with Zerolink. In the Project Template, we defer to the default for this option and in current Xcode versions, the default is on. The OSG Xcode projects themselves have explicitly disabled Zerolink. In the worst cases, scenes will not render correctly or the application may crash. The worst thing about this is that the problems are so strange, you may not realize Zerolink is the problem. To see this for yourself (we tried in Xcode 2.2), you might try comparing the osgdelaunay example with and without Zerolink, toggling through all values of 'n'. With Zerolink certain objects do not even appear and it crashes. So you are probably should disable this to be safe. However, for the daring, Zerolink does seem to work for some projects though we do not fully understand the criteria for this. Furthermore, Apple constantly works on improving this feature so maybe one day it will all just work right.\
@@ -275,6 +350,13 @@ Included with the OSG Xcode projects are some of the little scripts I used to he
 \
 We're still looking for volunteers to help us write a new CMake based build system. Please contact me\
 or the list if you are interested in helping implement the thing.\
+\
+If you are developing with Leopard under the Apple software seed program, some areas of OpenSceneGraph and Producer are not 64-bit ready/clean. If you can help, please contact me. \
+\
+On a similar note, a Cocoa Producer back end would be very nice (and would avoid most of the 64-bit issues). Nothing on this end is being done currently, but if you have an interest in implementing such a thing, please contact me.\
+\
+On the topic of feature requests, another potentially useful thing to have is a osgtext plugin that can load glyphs rendered by Apple instead of Freetype.\
+\
 \
 \
 -Eric Wing\

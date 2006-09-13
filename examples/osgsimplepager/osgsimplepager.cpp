@@ -262,7 +262,8 @@ int main( int argc, char **argv )
         // do a flush to delete all the OpenGL objects that have been deleted or released from the scene graph.
         sceneView->flushAllDeletedGLObjects();
 
-        // reset the osg::State so that next time its used its in a cleaned state.
+        // if you are reusing the same StateSet then you'll need to reset the osg::State as well so that next time its used its in a cleaned state.
+        // here we are uses a new SceneView for each new graphics context so we don't need the reset().
         // sceneView->getState()->reset();
     
     }

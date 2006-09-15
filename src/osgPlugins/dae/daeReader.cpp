@@ -18,21 +18,17 @@
 
 using namespace osgdae;
 
-daeReader::daeReader()
+daeReader::daeReader(DAE *dae_) : dae(dae_),
+				  rootNode(NULL),
+				  m_numlights(0),
+				  currentEffect(NULL),
+				  geometryMap(),
+				  materialMap()
 {
-    dae = new DAE;
-    m_numlights = 0;
-    currentEffect = NULL;
 }
 
 daeReader::~daeReader()
 {
-    if ( dae )
-    {
-        delete dae;
-        DAE::cleanup();
-        dae = NULL;
-    }
 }
 
 bool daeReader::convert( const std::string &fileURI ) 
@@ -70,9 +66,6 @@ bool daeReader::convert( const std::string &fileURI )
     }
     rootNode = processVisualScene( vs );
 
-    delete dae;
-    DAE::cleanup();
-    dae = NULL;
     return true;
 }
 

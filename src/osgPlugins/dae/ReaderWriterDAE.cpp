@@ -29,8 +29,20 @@
 class ReaderWriterDAE : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterDAE() {}
-    
+    ReaderWriterDAE()
+    {
+        dae_ = new DAE();
+    }
+
+    ~ReaderWriterDAE()
+    {
+        if(dae_ != NULL){
+            delete dae_;
+            DAE::cleanup();
+            dae_ = NULL;
+        }
+    }
+
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }
 
     bool acceptsExtension(const std::string& extension) const
@@ -41,6 +53,11 @@ public:
     ReadResult readNode(const std::string&, const Options*) const;
 
     WriteResult writeNode(const osg::Node&, const std::string&, const Options*) const;
+  
+private:
+
+    DAE *dae_;
+  
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -57,7 +74,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
 
     osg::notify(osg::INFO) << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
 
-    osgdae::daeReader daeReader;
+    osgdae::daeReader daeReader(dae_);
     std::string fileURI( osgDB::convertFileNameToUnixStyle(fileName) );
     if ( ! daeReader.convert( fileURI ) )
     {
@@ -100,7 +117,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
       }
     }
     
-    osgdae::daeWriter daeWriter( fname, usePolygon );
+    osgdae::daeWriter daeWriter(dae_, fname, usePolygon );
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 

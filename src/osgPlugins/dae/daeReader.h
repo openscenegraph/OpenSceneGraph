@@ -101,7 +101,7 @@ bool findInputSourceBySemantic( TInputArray& inputs, const char* semantic, daeEl
 */ 
 class daeReader {
 public:
-    daeReader();
+    daeReader(DAE *dae_);
     virtual ~daeReader();
 
     bool convert( const std::string &fileURI );

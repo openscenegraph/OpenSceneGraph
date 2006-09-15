@@ -51,7 +51,11 @@ int ReentrantMutex::unlock()
     if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
     {
         --_lockCount;
-        if (_lockCount<=0) return Mutex::unlock();
+        if (_lockCount<=0)
+        {
+            _threadHoldingMutex = 0;
+            return Mutex::unlock();
+        }
     }
     return 0;
 }

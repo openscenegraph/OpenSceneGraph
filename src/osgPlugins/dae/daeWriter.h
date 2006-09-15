@@ -74,7 +74,7 @@ protected:
 public:
     enum NodeType { NODE, GEODE, GROUP, LIGHT, CAMERA, MATRIX, POSATT, SWITCH, LOD };
 
-        daeWriter( const std::string &fname, bool usePolygons=false );
+    daeWriter( DAE *dae_, const std::string &fname, bool usePolygons=false );
     virtual ~daeWriter();
 
     void setRootNode( const osg::Node &node );

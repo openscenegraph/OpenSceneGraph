@@ -22,12 +22,12 @@
 
 using namespace osgdae;
 
-daeWriter::daeWriter( const std::string &fname,bool _usePolygons ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
-usePolygons (_usePolygons) 
+daeWriter::daeWriter( DAE *dae_, const std::string &fname,bool _usePolygons ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
+										dae(dae_),
+										usePolygons (_usePolygons) 
 {
     success = true;
 
-    dae = new DAE();
     dae->setDatabase( NULL );
     dae->setIOPlugin( NULL );
     //create document
@@ -58,12 +58,6 @@ usePolygons (_usePolygons)
 
 daeWriter::~daeWriter()
 {
-    if ( dae != NULL )
-    {
-        delete dae;
-        DAE::cleanup();
-        dae = 0;
-    }
 }
 
 void daeWriter::debugPrint( osg::Node &node )

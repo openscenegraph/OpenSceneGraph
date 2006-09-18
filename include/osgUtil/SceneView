@@ -155,7 +155,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Set the uniforms that SceneView should set set up on each frame.*/        
         void setActiveUniforms(int activeUniforms) { _activeUniforms = activeUniforms; }
 
-        /** Get the uniforms that SceneView should set set up on each frame.*/        
+        /** Get the uniforms that SceneView should set set up on each frame.*/
         int getActiveUniforms() const { return _activeUniforms; }
 
         void updateUniforms();
@@ -170,10 +170,18 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         osg::Light* getLight() { return _light.get(); }
         const osg::Light* getLight() const { return _light.get(); }
         
-        void setState(osg::State* state) { _state = state; }
-        osg::State* getState() { return _state.get(); }
-        const osg::State* getState() const { return _state.get(); }
+        void setState(osg::State* state) { _renderInfo.setState(state); }
+        osg::State* getState() { return _renderInfo.getState(); }
+        const osg::State* getState() const { return _renderInfo.getState(); }
+        
+        void setView(osg::View* view) { _renderInfo.setView(view); }
+        osg::View* getView() { return _renderInfo.getView(); }
+        const osg::View* getView() const { return _renderInfo.getView(); }
 
+        void setRenderInfo(osg::RenderInfo& renderInfo) { _renderInfo = renderInfo; }
+        osg::RenderInfo& getRenderInfo() { return _renderInfo; }
+        const osg::RenderInfo& getRenderInfo() const { return _renderInfo; }
+        
 
 
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
@@ -470,7 +478,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         void clearArea(int x,int y,int width,int height,const osg::Vec4& color);
 
         osg::ref_ptr<osg::StateSet>                 _localStateSet;
-        osg::ref_ptr<osg::State>                    _state;
+        osg::RenderInfo                             _renderInfo;
         
         bool                                        _initCalled;
         osg::ref_ptr<osg::NodeVisitor>              _initVisitor;

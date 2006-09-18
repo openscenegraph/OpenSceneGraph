@@ -40,6 +40,7 @@ class TexGenNode;
 class Transform;
 class CameraNode;
 class CameraView;
+class View;
 
 /** Visitor for type safe operations on osg::Nodes.
     Based on GOF's Visitor pattern. The NodeVisitor 
@@ -235,6 +236,7 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(LightSource& node)               { apply((Group&)node); }
 
         virtual void apply(Transform& node)                 { apply((Group&)node); }
+        virtual void apply(View& node)                      { apply((Transform&)node); }
         virtual void apply(CameraNode& node)                { apply((Transform&)node); }
         virtual void apply(CameraView& node)                { apply((Transform&)node); }
         virtual void apply(MatrixTransform& node)           { apply((Transform&)node); }

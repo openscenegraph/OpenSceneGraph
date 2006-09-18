@@ -306,12 +306,12 @@ class OSG_EXPORT StateAttribute : public Object
 
     
         /** apply the OpenGL state attributes. 
-          * The global state for the current OpenGL context is passed
+          * The render info for the current OpenGL context is passed
           * in to allow the StateAttribute to obtain details on the
           * the current context and state.
           */
-        virtual void apply(State&) const = 0;
-        
+        virtual void apply(State&) const {}
+
         /** default to nothing to compile - all state is applied immediately. */
         virtual void compileGLObjects(State&) const {}
 

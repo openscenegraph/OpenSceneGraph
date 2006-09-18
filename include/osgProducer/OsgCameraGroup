@@ -26,6 +26,7 @@
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 #include <osg/CullSettings>
+#include <osg/View>
 #include <osg/Matrixd>
 
 #include <osgProducer/OsgSceneHandler>
@@ -232,6 +233,8 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         GraphicsContextList                     _gcList;
         SceneHandlerList                        _shvec;
+
+        osg::ref_ptr<osg::View>                  _view;
 
         osg::ref_ptr<RealizeCallback>           _realizeCallback;
 

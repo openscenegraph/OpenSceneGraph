@@ -127,7 +127,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         bool getCameraRequiresSetUp() const { return _cameraRequiresSetUp; }
         
         /** Attempt the set the RenderStage from the Camera settings.*/
-        void runCameraSetUp(osg::State& state);
+        void runCameraSetUp(osg::RenderInfo& renderInfo);
         
         void setTexture(osg::Texture* texture, unsigned int level = 0, unsigned int face=0) { _texture = texture; _level = level; _face = face; }
         osg::Texture* getTexture() { return _texture.get(); }
@@ -177,19 +177,19 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             getPositionalStateContainer()->addPositionedTextureAttribute(textureUnit, matrix,attr);
         }
 
-        void copyTexture(osg::State& state);
+        void copyTexture(osg::RenderInfo& renderInfo);
 
         virtual void sort();
         
-        virtual void drawPreRenderStages(osg::State& state,RenderLeaf*& previous);
+        virtual void drawPreRenderStages(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
-        virtual void draw(osg::State& state,RenderLeaf*& previous);
+        virtual void draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
-        virtual void drawInner(osg::State& state,RenderLeaf*& previous, bool& doCopyTexture);
+        virtual void drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, bool& doCopyTexture);
     
-        virtual void drawPostRenderStages(osg::State& state,RenderLeaf*& previous);
+        virtual void drawPostRenderStages(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
-        virtual void drawImplementation(osg::State& state,RenderLeaf*& previous);
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
 
         void addToDependencyList(RenderStage* rs) { addPreRenderStage(rs); }

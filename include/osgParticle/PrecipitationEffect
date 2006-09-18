@@ -117,7 +117,7 @@ namespace osgParticle
             void setNumberOfVertices(unsigned int numVertices) { _numberOfVertices = numVertices; }
             unsigned int getNumberOfVertices() const { return _numberOfVertices; }
 
-            virtual void drawImplementation(osg::State& state) const;
+            virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
             struct Cell
             {

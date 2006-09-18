@@ -417,7 +417,7 @@ public:
     unsigned int getLineCount() const { return _lineCount; }
 
     /** Draw the text.*/
-    virtual void drawImplementation(osg::State& state) const;
+    virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
     /** return false, osgText::Text does not support accept(AttributeFunctor&).*/
     virtual bool supports(const osg::Drawable::AttributeFunctor&) const { return false; }
@@ -567,12 +567,13 @@ protected:
     void computeColorGradientsOverall() const;
     void computeColorGradientsPerCharacter() const;
 
-    void drawForegroundText(osg::State& state, const GlyphQuads& glyphquad) const;
-    void renderOnlyForegroundText(osg::State& state) const;
-    void renderWithPolygonOffset(osg::State& state) const;
-    void renderWithNoDepthBuffer(osg::State& state) const;
-    void renderWithDepthRange(osg::State& state) const;
-    void renderWithStencilBuffer(osg::State& state) const;
+    void drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const;
+    void drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const;
+    void renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMultiplier) const;
+    void renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const;
+    void renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const;
+    void renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const;
+    void renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const;
     
     BackdropType _backdropType;
     BackdropImplementation _backdropImplementation;

@@ -871,18 +871,18 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const Precipit
 
 
 
-void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& state) const
+void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     if (!_geometry) return;
 
-    const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(state.getContextID(),true);
+    const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(renderInfo.getContextID(),true);
     
     // save OpenGL matrices
     glPushMatrix();
     
     if (_requiresPreviousMatrix)
     {
-        state.setActiveTextureUnit(0);
+        renderInfo.getState()->setActiveTextureUnit(0);
         glMatrixMode( GL_TEXTURE );
         glPushMatrix();
     }
@@ -931,7 +931,7 @@ void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::State& 
             glLoadMatrix((*itr)->second.modelview.ptr());
         }
 
-        _geometry->draw(state);
+        _geometry->draw(renderInfo);
         
         unsigned int numVertices = osg::minimum(_geometry->getVertexArray()->getNumElements(), _numberOfVertices);
         glDrawArrays(_drawType, 0, numVertices);

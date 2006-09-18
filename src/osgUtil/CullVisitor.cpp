@@ -740,7 +740,7 @@ void CullVisitor::apply(Geode& node)
 
         if( drawable->getCullCallback() )
         {
-            if( drawable->getCullCallback()->cull( this, drawable, _state.valid()?_state.get():NULL ) == true )
+            if( drawable->getCullCallback()->cull( this, drawable, &_renderInfo ) == true )
             continue;
         }
         

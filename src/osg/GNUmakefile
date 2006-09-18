@@ -115,6 +115,7 @@ CXXFILES =\
 	Vec3.cpp\
 	Version.cpp\
 	VertexProgram.cpp\
+	View.cpp\
 	Viewport.cpp\
 
 DEF     += -DOSG_LIBRARY

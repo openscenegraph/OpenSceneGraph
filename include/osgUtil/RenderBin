@@ -125,13 +125,13 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
 
 
-        virtual void draw(osg::State& state,RenderLeaf*& previous);
+        virtual void draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
-        virtual void drawImplementation(osg::State& state,RenderLeaf*& previous);
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous);
 
         struct DrawCallback : public osg::Referenced    
         {
-            virtual void drawImplementation(RenderBin* bin,osg::State& state,RenderLeaf*& previous) = 0;
+            virtual void drawImplementation(RenderBin* bin,osg::RenderInfo& renderInfo,RenderLeaf*& previous) = 0;
         };
 
         void setDrawCallback(DrawCallback* drawCallback) { _drawCallback = drawCallback; }

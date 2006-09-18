@@ -1,0 +1,174 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_VIEW
+#define OSG_VIEW 1
+
+#include <osg/CameraNode>
+
+#include <OpenThreads/Mutex>
+
+namespace osg {
+
+/** View - is a subclass of Transform which encompasses all the cameras that combine to make up a single view of the scene.
+*/
+class OSG_EXPORT View : public osg::Transform, public CullSettings
+{
+    public :
+
+
+        View();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        View(const View&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, View);
+
+
+        /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
+        inline void setProjectionMatrix(const osg::Matrixf& matrix) { _projectionMatrix.set(matrix);  updateCameras(); }
+
+        /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
+        inline void setProjectionMatrix(const osg::Matrixd& matrix) { _projectionMatrix.set(matrix);  updateCameras(); }
+
+        /** Set to an orthographic projection. See OpenGL glOrtho for documentation further details.*/
+        void setProjectionMatrixAsOrtho(double left, double right,
+                                        double bottom, double top,
+                                        double zNear, double zFar);
+
+        /** Set to a 2D orthographic projection. See OpenGL glOrtho2D documentation for further details.*/
+        void setProjectionMatrixAsOrtho2D(double left, double right,
+                                          double bottom, double top);
+
+        /** Set to a perspective projection. See OpenGL glFrustum documentation for further details.*/
+        void setProjectionMatrixAsFrustum(double left, double right,
+                                          double bottom, double top,
+                                          double zNear, double zFar);
+
+        /** Create a symmetrical perspective projection, See OpenGL gluPerspective documentation for further details.
+          * Aspect ratio is defined as width/height.*/
+        void setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
+                                              double zNear, double zFar);
+
+        /** Get the projection matrix.*/
+        osg::Matrixd& getProjectionMatrix() { return _projectionMatrix; }
+
+        /** Get the const projection matrix.*/
+        const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
+
+        /** Get the othographic settings of the orthographic projection matrix. 
+          * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
+        bool getProjectionMatrixAsOrtho(double& left, double& right,
+                                        double& bottom, double& top,
+                                        double& zNear, double& zFar);
+
+        /** Get the frustum setting of a perspective projection matrix.
+          * Returns false if matrix is not a perspective matrix, where parameter values are undefined.*/
+        bool getProjectionMatrixAsFrustum(double& left, double& right,
+                                          double& bottom, double& top,
+                                          double& zNear, double& zFar);
+
+        /** Get the frustum setting of a symmetric perspective projection matrix.
+          * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
+          * Note, if matrix is not a symmetric perspective matrix then the shear will be lost.
+          * Asymmetric matrices occur when stereo, power walls, caves and reality center display are used.
+          * In these configurations one should use the 'getProjectionMatrixAsFrustum' method instead.*/
+        bool getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
+                                              double& zNear, double& zFar);
+
+
+
+        /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
+        inline void setViewMatrix(const osg::Matrixf& matrix) { _viewMatrix.set(matrix);  dirtyBound(); updateCameras(); }
+        
+        /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
+        inline void setViewMatrix(const osg::Matrixd& matrix) { _viewMatrix.set(matrix);  dirtyBound(); updateCameras(); }
+
+        /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
+        void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
+
+        /** Get the view matrix. */
+        osg::Matrixd& getViewMatrix() { return _viewMatrix; }
+
+        /** Get the const view matrix. */
+        const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
+
+        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
+        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
+
+        /** Get the inverse view matrix.*/
+        Matrixd getInverseViewMatrix() const;
+
+
+        struct CameraData
+        {
+            CameraData() {}
+            CameraData(osg::CameraNode* camera, const osg::Matrixd& projectionOffset, const osg::Matrixd& viewOffset):
+                _camera(camera), _projectionOffset(projectionOffset), _viewOffset(viewOffset) {}
+        
+            CameraData(const CameraData& rhs) :
+                _camera(rhs._camera), _projectionOffset(rhs._projectionOffset), _viewOffset(rhs._viewOffset) {}
+
+            CameraData& operator = (const CameraData& rhs)
+            {
+                _camera = rhs._camera;
+                _projectionOffset = rhs._projectionOffset;
+                _viewOffset = rhs._viewOffset;
+                return *this;
+            }
+
+            osg::ref_ptr<osg::CameraNode>   _camera;
+            osg::Matrixd                    _projectionOffset;
+            osg::Matrixd                    _viewOffset;
+        };
+
+        bool addCamera(osg::CameraNode* camera) { return addCamera(camera, osg::Matrix::identity(), osg::Matrix::identity()); }
+
+        bool addCamera(osg::CameraNode* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffse);
+
+        bool removeCamera(unsigned int pos);
+        
+        unsigned int getNumCameras() const { return _cameras.size(); }
+
+        CameraNode* getCamera(unsigned int pos) { return _cameras[pos]._camera.get(); }
+        const CameraNode* getCamera(unsigned int pos) const { return _cameras[pos]._camera.get(); }
+        
+        CameraData& getCameraData(unsigned int pos) { return _cameras[pos]; }
+        const CameraData& getCameraData(unsigned int pos) const { return _cameras[pos]; }
+
+        
+    public:
+
+        /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
+        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const;
+
+        /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
+        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const;
+
+
+    protected :
+    
+        virtual ~View();
+
+        void updateCameras();
+        
+        Matrixd                     _projectionMatrix;
+        Matrixd                     _viewMatrix;
+        
+        typedef std::vector<CameraData> CameraList;
+        CameraList _cameras;
+};
+
+}
+
+#endif

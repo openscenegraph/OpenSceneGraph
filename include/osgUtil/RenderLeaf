@@ -60,7 +60,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _depth = 0.0f;
         }
     
-        virtual void render(osg::State& state,RenderLeaf* previous);
+        virtual void render(osg::RenderInfo& renderInfo,RenderLeaf* previous);
         
         /// Allow StateGraph to change the RenderLeaf's _parent.
         friend class osgUtil::StateGraph;

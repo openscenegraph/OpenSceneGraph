@@ -18,7 +18,7 @@
 #include <osg/Shape>
 #include <osg/BufferObject>
 #include <osg/PrimitiveSet>
-#include <osg/State>
+#include <osg/RenderInfo>
 
 
 #ifndef GL_NV_occlusion_query
@@ -271,7 +271,7 @@ class OSG_EXPORT Drawable : public Object
           *       \c virtual). Subclasses should override
           *       \c drawImplementation() instead.
           */
-        inline void draw(State& state) const;
+        inline void draw(RenderInfo& renderInfo) const;
 
         /** Immediately compile this \c Drawable into an OpenGL Display List.
           * @note Operation is ignored if \c _useDisplayList is \c false.
@@ -341,8 +341,11 @@ class OSG_EXPORT Drawable : public Object
 
             META_Object(osg,CullCallback);
 
-            /** do customized cull code, return true if drawable should be culled.*/
+            /** deprecated.*/
             virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
+
+            /** do customized cull code, return true if drawable should be culled.*/
+            virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const { return cull(nv, drawable, renderInfo? renderInfo->getState():0); }
         };
 
         /** Set the CullCallback which allows users to customize the culling of Drawable during the cull traversal.*/
@@ -370,8 +373,11 @@ class OSG_EXPORT Drawable : public Object
 
             META_Object(osg,DrawCallback);
 
-            /** do customized draw code.*/
+            /** Deprecated.*/
             virtual void drawImplementation(osg::State&,const osg::Drawable*) const {}
+
+            /** do customized draw code.*/
+            virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const { drawImplementation(*renderInfo.getState(), drawable); }
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
@@ -383,14 +389,15 @@ class OSG_EXPORT Drawable : public Object
         /** Get the const DrawCallback.*/
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
-
+        /** Deprecated. */
+        virtual void drawImplementation(State&) const {}
 
         /** drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
           * drawImplementation(State&) is called from the draw(State&) method, with the draw method handling management of OpenGL display lists,
           * and drawImplementation(State&) handling the actuall drawing itself.  
           * @param state The osg::State object that encapulates the current OpenGL state for the current graphics context. */
-        virtual void drawImplementation(State& state) const = 0;
+        virtual void drawImplementation(RenderInfo& renderInfo) const { drawImplementation(*renderInfo.getState()); }
 
 
         /** Return a OpenGL display list handle a newly generated or reused from display list cache. */
@@ -779,13 +786,13 @@ class OSG_EXPORT Drawable : public Object
         ref_ptr<DrawCallback>   _drawCallback;
 };
 
-inline void Drawable::draw(State& state) const
+inline void Drawable::draw(RenderInfo& renderInfo) const
 {
-    if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && state.isVertexBufferObjectSupported()))
+    if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && renderInfo.getState()->isVertexBufferObjectSupported()))
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
-        unsigned int contextID = state.getContextID();
+        unsigned int contextID = renderInfo.getContextID();
 
         // get the globj for the current contextID.
         GLuint& globj = _globjList[contextID];
@@ -801,9 +808,9 @@ inline void Drawable::draw(State& state) const
             globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE );
             if (_drawCallback.valid())
-                _drawCallback->drawImplementation(state,this);
+                _drawCallback->drawImplementation(renderInfo,this);
             else
-                drawImplementation(state);
+                drawImplementation(renderInfo);
             glEndList();
 
             glCallList( globj);
@@ -811,9 +818,9 @@ inline void Drawable::draw(State& state) const
             globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE_AND_EXECUTE );
             if (_drawCallback.valid())
-                _drawCallback->drawImplementation(state,this);
+                _drawCallback->drawImplementation(renderInfo,this);
             else
-                drawImplementation(state);
+                drawImplementation(renderInfo);
             glEndList();
 #endif
         }
@@ -824,9 +831,9 @@ inline void Drawable::draw(State& state) const
 
     // draw object as nature intended..
     if (_drawCallback.valid())
-        _drawCallback->drawImplementation(state,this);
+        _drawCallback->drawImplementation(renderInfo,this);
     else
-        drawImplementation(state);
+        drawImplementation(renderInfo);
 }
 
 

@@ -171,6 +171,10 @@ SOURCE=..\..\src\osgText\Text.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgText\FadeText.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgText\Version.cpp
 # End Source File
 # End Group
@@ -192,6 +196,10 @@ SOURCE=..\..\include\osgText\String
 # Begin Source File
 
 SOURCE=..\..\include\osgText\Text
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\FadeText
 # End Source File
 # Begin Source File
 

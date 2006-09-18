@@ -771,14 +771,14 @@ class ShaderGeometry : public osg::Drawable
 
         typedef std::vector<osg::Vec4> PositionSizeList;
         
-        virtual void drawImplementation(osg::State& state) const
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const
         {
             for(PositionSizeList::const_iterator itr = _trees.begin();
                 itr != _trees.end();
                 ++itr)
             {
                 glColor4fv(itr->ptr());
-                _geometry->draw(state);
+                _geometry->draw(renderInfo);
             }
         }
 

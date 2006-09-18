@@ -64,7 +64,7 @@ namespace osg {
     }
 
 
-// forward decalr GraphicsContext
+// forward declare GraphicsContext, View and State
 class GraphicsContext;
 
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
@@ -1530,6 +1530,7 @@ inline void State::applyUniformMap(UniformMap& uniformMap)
         }
     }
 }
+
 
 }
 

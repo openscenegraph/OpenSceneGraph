@@ -1447,7 +1447,12 @@ void Text::computeColorGradientsPerCharacter() const
     }
 }
 
-void Text::drawImplementation(osg::State& state) const
+void Text::drawImplementation(osg::RenderInfo& renderInfo) const
+{
+    drawImplementation(*renderInfo.getState(), osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+}
+
+void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -1536,24 +1541,24 @@ void Text::drawImplementation(osg::State& state) const
             switch(_backdropImplementation)
             {
                 case POLYGON_OFFSET:
-                    renderWithPolygonOffset(state);
+                    renderWithPolygonOffset(state,colorMultiplier);
                     break;
                 case NO_DEPTH_BUFFER:
-                    renderWithNoDepthBuffer(state);
+                    renderWithNoDepthBuffer(state,colorMultiplier);
                     break;
                 case DEPTH_RANGE:
-                    renderWithDepthRange(state);
+                    renderWithDepthRange(state,colorMultiplier);
                     break;
                 case STENCIL_BUFFER:
-                    renderWithStencilBuffer(state);
+                    renderWithStencilBuffer(state,colorMultiplier);
                     break;
                 default:
-                    renderWithPolygonOffset(state);
+                    renderWithPolygonOffset(state,colorMultiplier);
             }
         }
         else
         {
-            renderOnlyForegroundText(state);
+            renderOnlyForegroundText(state,colorMultiplier);
         }
     }
 
@@ -1572,7 +1577,7 @@ void Text::drawImplementation(osg::State& state) const
             osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
 
         
-            glColor4f(1.0f,1.0f,0.0f,1.0f);
+            glColor4fv(colorMultiplier.ptr());
             glBegin(GL_LINE_LOOP);
                 glVertex3fv(c00.ptr());
                 glVertex3fv(c10.ptr());
@@ -1584,7 +1589,7 @@ void Text::drawImplementation(osg::State& state) const
 
     if (_drawMode & ALIGNMENT)
     {
-        glColor4f(1.0f,0.0f,1.0f,1.0f);
+        glColor4fv(colorMultiplier.ptr());
 
         float cursorsize = _characterHeight*0.5f;
 
@@ -1895,7 +1900,7 @@ void Text::convertRgbToHsv( float rgb[], float hsv[] ) const
 
 }
 
-void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad) const
+void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -1908,7 +1913,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad) co
         if(_colorGradientMode == SOLID)
         {
             state.disableColorPointer();
-            glColor4fv(_color.ptr());
+            glColor4f(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
         }
         else
         {
@@ -1920,7 +1925,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad) co
     }
 }
 
-void Text::renderOnlyForegroundText(osg::State& state) const
+void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -1931,13 +1936,13 @@ void Text::renderOnlyForegroundText(osg::State& state) const
 
         const GlyphQuads& glyphquad = titr->second;
 
-        drawForegroundText(state, glyphquad);
+        drawForegroundText(state, glyphquad, colorMultiplier);
     }
 
 }
 
 
-void Text::renderWithPolygonOffset(osg::State& state) const
+void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -1992,14 +1997,14 @@ void Text::renderWithPolygonOffset(osg::State& state) const
         // Reset the polygon offset so the foreground text is on top
         glPolygonOffset(0.0f,0.0f);
 
-        drawForegroundText(state, glyphquad);
+        drawForegroundText(state, glyphquad, colorMultiplier);
     }
 
     glPopAttrib();
 }
     
 
-void Text::renderWithNoDepthBuffer(osg::State& state) const
+void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -2042,14 +2047,14 @@ void Text::renderWithNoDepthBuffer(osg::State& state) const
             }
         }
 
-        drawForegroundText(state, glyphquad);
+        drawForegroundText(state, glyphquad, colorMultiplier);
     }
 
     glPopAttrib();
 }
 
 // This idea comes from Paul Martz's OpenGL FAQ: 13.050
-void Text::renderWithDepthRange(osg::State& state) const
+void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -2099,13 +2104,13 @@ void Text::renderWithDepthRange(osg::State& state) const
 
         glDepthRange(0.0, 1.0);
 
-        drawForegroundText(state, glyphquad);
+        drawForegroundText(state, glyphquad, colorMultiplier);
     }
 
     glPopAttrib();
 }
 
-void Text::renderWithStencilBuffer(osg::State& state) const
+void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     /* Here are the steps:
      * 1) Disable drawing color
@@ -2256,7 +2261,7 @@ void Text::renderWithStencilBuffer(osg::State& state) const
             }
         }
 
-        drawForegroundText(state, glyphquad);
+        drawForegroundText(state, glyphquad, colorMultiplier);
     }
     
     glPopAttrib();

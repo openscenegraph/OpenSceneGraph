@@ -352,17 +352,19 @@ RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
     return rb;
 }
 
-void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
+void RenderBin::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     if (_drawCallback.valid()) 
     {
-        _drawCallback->drawImplementation(this,state,previous);
+        _drawCallback->drawImplementation(this,renderInfo,previous);
     }
-    else drawImplementation(state,previous);
+    else drawImplementation(renderInfo,previous);
 }
 
-void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
+void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
+    osg::State& state = *renderInfo.getState();
+
     // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
 
     if (_stateset.valid())
@@ -381,7 +383,7 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
         rbitr!=_bins.end() && rbitr->first<0;
         ++rbitr)
     {
-        rbitr->second->draw(state,previous);
+        rbitr->second->draw(renderInfo,previous);
     }
     
 
@@ -391,7 +393,7 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
         ++rlitr)
     {
         RenderLeaf* rl = *rlitr;
-        rl->render(state,previous);
+        rl->render(renderInfo,previous);
         previous = rl;
     }
 
@@ -407,7 +409,7 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
             ++dw_itr)
         {
             RenderLeaf* rl = dw_itr->get();
-            rl->render(state,previous);
+            rl->render(renderInfo,previous);
             previous = rl;
 
         }
@@ -419,7 +421,7 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
         rbitr!=_bins.end();
         ++rbitr)
     {
-        rbitr->second->draw(state,previous);
+        rbitr->second->draw(renderInfo,previous);
     }
 
     if (_stateset.valid())

@@ -26,6 +26,9 @@
 
 namespace osg {
 
+// forward declare View to allow CameraNode to point back to the View that its within
+class View;
+
 /** CameraNode - is a subclass of Transform which represents encapsulates the settings of a Camera.
 */
 class OSG_EXPORT CameraNode : public Transform, public CullSettings
@@ -39,6 +42,15 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         CameraNode(const CameraNode&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, CameraNode);
+
+        /** Set the View that this Camera is part of. */
+        void setView(View* view) { _view = view; }
+
+        /** Get the View that this Camera is part of. */
+        View* getView() { return _view; }
+
+        /** Get the const View that this Camera is part of. */
+        const View* getView() const { return _view; }
 
 
         /** Sets the clear color. */
@@ -359,6 +371,9 @@ class OSG_EXPORT CameraNode : public Transform, public CullSettings
         
         mutable OpenThreads::Mutex  _dataChangeMutex;
 
+
+        View*                       _view;
+        
         Vec4                        _clearColor;
         GLbitfield                  _clearMask;
         ref_ptr<ColorMask>          _colorMask;

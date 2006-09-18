@@ -6,6 +6,7 @@ CXXFILES = \
     DefaultFont.cpp\
     Font.cpp\
     Text.cpp\
+    FadeText.cpp\
     String.cpp\
     Version.cpp\
 

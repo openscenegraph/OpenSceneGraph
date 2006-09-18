@@ -277,6 +277,7 @@ ifeq ($(PRODUCER_INSTALLED),yes)
         EXAMPLE_DIRS += osgphotoalbum
         EXAMPLE_DIRS += osgbluemarble
         EXAMPLE_DIRS += osgsimulation
+        EXAMPLE_DIRS += osgfadetext
     endif
 
 endif

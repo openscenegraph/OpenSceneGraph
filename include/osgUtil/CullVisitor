@@ -239,9 +239,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         }
         
 
-        void setState(osg::State* state) { _state = state; }
-        osg::State* getState() { return _state.get(); }
-        const osg::State* getState() const { return _state.get(); }
+        void setState(osg::State* state) { _renderInfo.setState(state); }
+        osg::State* getState() { return _renderInfo.getState(); }
+        const osg::State* getState() const { return _renderInfo.getState(); }
+
+        void setRenderInfo(osg::RenderInfo& renderInfo) { _renderInfo = renderInfo; }
+        osg::RenderInfo& getRenderInfo() { return _renderInfo; }
+        const osg::RenderInfo& getRenderInfo() const { return _renderInfo; }
 
     protected:
 
@@ -283,7 +287,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         
         unsigned int _numberOfEncloseOverrideRenderBinDetails;
 
-        osg::ref_ptr<osg::State>                    _state;
+        osg::RenderInfo         _renderInfo;
 
 
         struct MatrixPlanesDrawables

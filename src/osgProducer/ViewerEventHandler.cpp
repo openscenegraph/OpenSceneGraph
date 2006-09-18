@@ -225,21 +225,21 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayHelp()
         ditr!=_descriptionList.end();
         ++ditr)
     {
-        (*ditr)->draw(*(sv->getState()));
+        (*ditr)->draw(sv->getRenderInfo());
     }
 
     for(TextList::iterator oitr=_optionList.begin();
         oitr!=_optionList.end();
         ++oitr)
     {
-        (*oitr)->draw(*(sv->getState()));
+        (*oitr)->draw(sv->getRenderInfo());
     }
 
     for(TextList::iterator eitr=_explanationList.begin();
         eitr!=_explanationList.end();
         ++eitr)
     {
-        (*eitr)->draw(*(sv->getState()));
+        (*eitr)->draw(sv->getRenderInfo());
     }
 }
 
@@ -425,7 +425,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         // update and draw the frame rate text.
         
 
-        _frameRateLabelText->draw(*(sv->getState()));
+        _frameRateLabelText->draw(sv->getRenderInfo());
         if (_fs.size()>1)
         {
             unsigned int lindex = (_index + 1) % _fs.size();
@@ -434,7 +434,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             sprintf(tmpText,"%4.2f",1.0/timePerFrame);
             _frameRateCounterText->setText(tmpText);
         }
-        _frameRateCounterText->draw(*(sv->getState()));
+        _frameRateCounterText->draw(sv->getRenderInfo());
         
 
         if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
@@ -462,7 +462,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
             _updateTimeText->setText(tmpText);
 
-            _updateTimeText->draw(*(sv->getState()));
+            _updateTimeText->draw(sv->getRenderInfo());
 
             TextList::iterator itr;
             CameraTimes::iterator titr;
@@ -472,7 +472,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             {
                 sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
                 (*itr)->setText(tmpText);
-                (*itr)->draw(*(sv->getState()));
+                (*itr)->draw(sv->getRenderInfo());
             }
             
             for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
@@ -481,7 +481,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             {
                 sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
                 (*itr)->setText(tmpText);
-                (*itr)->draw(*(sv->getState()));
+                (*itr)->draw(sv->getRenderInfo());
             }
             
             unsigned int i;
@@ -495,7 +495,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                     gpuTimingsValid = true;
                     sprintf(tmpText,"%4.2f", gpuTime);
                     (*itr)->setText(tmpText);
-                    (*itr)->draw(*(sv->getState()));
+                    (*itr)->draw(sv->getRenderInfo());
                 }
             }
 
@@ -505,7 +505,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             {
                 if (gpuTimingsValid || ((*itr)->getName()!="GPU"))
                 {
-                    (*itr)->draw(*(sv->getState()));
+                    (*itr)->draw(sv->getRenderInfo());
                 }
             }
         }
@@ -533,20 +533,20 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                 itr != _sceneStatsLabelList.end();
                 ++itr)
             {
-                (*itr)->draw(*(sv->getState()));
+                (*itr)->draw(sv->getRenderInfo());
             }
             
             sprintf(tmpText,"%d",stats._vertexCount);
             _numVerticesText->setText(tmpText);
-            _numVerticesText->draw(*(sv->getState()));
+            _numVerticesText->draw(sv->getRenderInfo());
 
             sprintf(tmpText,"%d",primitives);
             _numPrimitivesText->setText(tmpText);
-            _numPrimitivesText->draw(*(sv->getState()));
+            _numPrimitivesText->draw(sv->getRenderInfo());
 
             sprintf(tmpText,"%d",stats.numDrawables);
             _numDrawablesText->setText(tmpText);
-            _numDrawablesText->draw(*(sv->getState()));
+            _numDrawablesText->draw(sv->getRenderInfo());
         } 
     }
 

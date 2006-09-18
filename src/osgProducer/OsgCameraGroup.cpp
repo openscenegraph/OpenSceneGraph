@@ -510,6 +510,9 @@ bool OsgCameraGroup::realize()
     }
 
     _shvec.clear();
+
+    // create the osg::View to keep track of complete views in an OSG centric way.
+    _view = new osg::View;
     
     osg::Node* node = getTopMostSceneData();
     if (node)
@@ -549,6 +552,11 @@ bool OsgCameraGroup::realize()
     
         osgUtil::SceneView* sv = sh->getSceneView();
         sv->setDefaults(_realizeSceneViewOptions);
+
+        // note, should really compute the projection and view offsets...
+        // but not critical as Producer controls the CameraNode matrices via SceneView.
+        _view->addCamera(sv->getCamera());
+        sv->setView(_view.get());
         
         if (_renderSurfaceStateMap.count(rs)==0)
         {

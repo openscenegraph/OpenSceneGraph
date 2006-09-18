@@ -16,6 +16,7 @@
 using namespace osg;
 
 CameraNode::CameraNode():
+    _view(0),
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
     _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
     _transformOrder(PRE_MULTIPLY),
@@ -32,6 +33,7 @@ CameraNode::CameraNode():
 CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
     Transform(camera,copyop),
     CullSettings(camera),
+    _view(camera._view),
     _clearColor(camera._clearColor),
     _clearMask(camera._clearMask),
     _colorMask(camera._colorMask),

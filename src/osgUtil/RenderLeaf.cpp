@@ -17,8 +17,10 @@
 using namespace osg;
 using namespace osgUtil;
 
-void RenderLeaf::render(State& state,RenderLeaf* previous)
+void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
 {
+    osg::State& state = *renderInfo.getState();
+
     // don't draw this leaf if the abort rendering flag has been set.
     if (state.getAbortRendering())
     {
@@ -55,7 +57,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         
 
         // draw the drawable
-        _drawable->draw(state);
+        _drawable->draw(renderInfo);
     }
     else
     {
@@ -69,7 +71,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         state.apply(_parent->_stateset);
 
         // draw the drawable
-        _drawable->draw(state);
+        _drawable->draw(renderInfo);
     }
     
     // osg::notify(osg::NOTICE)<<"RenderLeaf "<<_drawable->getName()<<" "<<_depth<<std::endl;

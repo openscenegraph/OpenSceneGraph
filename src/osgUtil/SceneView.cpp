@@ -155,7 +155,7 @@ void SceneView::setDefaults(unsigned int options)
         _lightingMode = NO_SCENEVIEW_LIGHT;
     }
  
-    _state = new State;
+    _renderInfo.setState(new State);
     
     _rendergraph = new StateGraph;
     _renderStage = new RenderStage;
@@ -245,7 +245,7 @@ void SceneView::init()
         _initVisitor->setFrameStamp(_frameStamp.get());
         
         GLObjectsVisitor* dlv = dynamic_cast<GLObjectsVisitor*>(_initVisitor.get());
-        if (dlv) dlv->setState(_state.get());
+        if (dlv) dlv->setState(_renderInfo.getState());
         
         if (_frameStamp.valid())
         {
@@ -460,14 +460,16 @@ void SceneView::cull()
     // update the active uniforms
     updateUniforms();
 
-    if (!_state)
+    if (!_renderInfo.getState())
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_state attached, creating a default state automatically."<< std::endl;
 
         // note the constructor for osg::State will set ContextID to 0 which will be fine to single context graphics
         // applications which is ok for most apps, but not multiple context/pipe applications.
-        _state = new osg::State;
+        _renderInfo.setState(new osg::State);
     }
+    
+    osg::State* state = _renderInfo.getState();
 
     if (!_localStateSet)
     {
@@ -477,8 +479,8 @@ void SceneView::cull()
     // we in theory should be able to be able to bypass reset, but we'll call it just incase.
     //_state->reset();
    
-    _state->setFrameStamp(_frameStamp.get());
-    _state->setDisplaySettings(_displaySettings.get());
+    state->setFrameStamp(_frameStamp.get());
+    state->setDisplaySettings(_displaySettings.get());
 
 
     if (!_cullVisitor)
@@ -655,7 +657,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     cullVisitor->setStateGraph(rendergraph);
     cullVisitor->setRenderStage(renderStage);
 
-    cullVisitor->setState( _state.get() );
+    cullVisitor->setRenderInfo( _renderInfo );
 
     renderStage->reset();
 
@@ -740,50 +742,56 @@ void SceneView::releaseAllGLObjects()
 {
     if (!_camera) return;
    
-    _camera->releaseGLObjects(_state.get());
+    _camera->releaseGLObjects(_renderInfo.getState());
     
     // we need to reset State as it keeps handles to Program objects.
-    if (_state.valid()) _state->reset();
+    if (_renderInfo.getState()) _renderInfo.getState()->reset();
 }
 
 
 void SceneView::flushAllDeletedGLObjects()
 {
+    osg::State* state = _renderInfo.getState();
+
     _requiresFlush = false;
     
     double availableTime = 100.0f;
-    double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+    double currentTime = state->getFrameStamp()?state->getFrameStamp()->getReferenceTime():0.0;
     
-    osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
-    osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
-    osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
-    osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
-    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
-    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
-    osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
-    osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
-    osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
+    osg::FrameBufferObject::flushDeletedFrameBufferObjects(state->getContextID(),currentTime,availableTime);
+    osg::RenderBuffer::flushDeletedRenderBuffers(state->getContextID(),currentTime,availableTime);
+    osg::Texture::flushAllDeletedTextureObjects(state->getContextID());
+    osg::Drawable::flushAllDeletedDisplayLists(state->getContextID());
+    osg::Drawable::flushDeletedVertexBufferObjects(state->getContextID(),currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(state->getContextID(),currentTime,availableTime);
+    osg::FragmentProgram::flushDeletedFragmentProgramObjects(state->getContextID(),currentTime,availableTime);
+    osg::Program::flushDeletedGlPrograms(state->getContextID(),currentTime,availableTime);
+    osg::Shader::flushDeletedGlShaders(state->getContextID(),currentTime,availableTime);
  }
 
 void SceneView::flushDeletedGLObjects(double& availableTime)
 {
+    osg::State* state = _renderInfo.getState();
+
     _requiresFlush = false;
 
-    double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+    double currentTime = state->getFrameStamp()?state->getFrameStamp()->getReferenceTime():0.0;
 
-    osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
-    osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
-    osg::Texture::flushDeletedTextureObjects(_state->getContextID(),currentTime,availableTime);
-    osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),availableTime);
-    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
-    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
-    osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
-    osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
-    osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
+    osg::FrameBufferObject::flushDeletedFrameBufferObjects(state->getContextID(),currentTime,availableTime);
+    osg::RenderBuffer::flushDeletedRenderBuffers(state->getContextID(),currentTime,availableTime);
+    osg::Texture::flushDeletedTextureObjects(state->getContextID(),currentTime,availableTime);
+    osg::Drawable::flushDeletedDisplayLists(state->getContextID(),availableTime);
+    osg::Drawable::flushDeletedVertexBufferObjects(state->getContextID(),currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(state->getContextID(),currentTime,availableTime);
+    osg::FragmentProgram::flushDeletedFragmentProgramObjects(state->getContextID(),currentTime,availableTime);
+    osg::Program::flushDeletedGlPrograms(state->getContextID(),currentTime,availableTime);
+    osg::Shader::flushDeletedGlShaders(state->getContextID(),currentTime,availableTime);
 }
 
 void SceneView::draw()
 {
+
+    osg::State* state = _renderInfo.getState();
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
     // and texture objects is deferred until the OpenGL context is the correct
@@ -799,7 +807,7 @@ void SceneView::draw()
     // assume the the draw which is about to happen could generate GL objects that need flushing in the next frame.
     _requiresFlush = true;
 
-    _state->setInitialViewMatrix(new osg::RefMatrix(getViewMatrix()));
+    state->setInitialViewMatrix(new osg::RefMatrix(getViewMatrix()));
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
@@ -831,12 +839,12 @@ void SceneView::draw()
                 _renderStageRight->setDrawBuffer(GL_BACK_RIGHT);
                 _renderStageRight->setReadBuffer(GL_BACK_RIGHT);
 
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageRight->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
-                _renderStageLeft->draw(*_state,previous);
+                _renderStageLeft->draw(_renderInfo,previous);
 
-                _renderStageRight->draw(*_state,previous);
+                _renderStageRight->draw(_renderInfo,previous);
 
             }
             break;
@@ -854,8 +862,8 @@ void SceneView::draw()
                 _localStateSet->setAttribute(getViewport());
 
                 
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageRight->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
 
                 // ensure that left eye color planes are active.
@@ -875,7 +883,7 @@ void SceneView::draw()
                 _localStateSet->setAttribute(leftColorMask);
 
                 // draw left eye.
-                _renderStageLeft->draw(*_state,previous);
+                _renderStageLeft->draw(_renderInfo,previous);
                 
                 
 
@@ -897,7 +905,7 @@ void SceneView::draw()
                 _renderStageRight->setColorMask(rightColorMask);
 
                 // draw right eye.
-                _renderStageRight->draw(*_state,previous);
+                _renderStageRight->draw(_renderInfo,previous);
 
             }
             break;
@@ -926,8 +934,8 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageRight->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 int separation = _displaySettings->getSplitStereoHorizontalSeparation();
 
@@ -948,21 +956,21 @@ void SceneView::draw()
                 {
                     _localStateSet->setAttribute(viewportLeft.get());
                     _renderStageLeft->setViewport(viewportLeft.get());
-                    _renderStageLeft->draw(*_state,previous);
+                    _renderStageLeft->draw(_renderInfo,previous);
 
                     _localStateSet->setAttribute(viewportRight.get());
                     _renderStageRight->setViewport(viewportRight.get());
-                    _renderStageRight->draw(*_state,previous);
+                    _renderStageRight->draw(_renderInfo,previous);
                 }
                 else
                 {
                     _localStateSet->setAttribute(viewportRight.get());
                     _renderStageLeft->setViewport(viewportRight.get());
-                    _renderStageLeft->draw(*_state,previous);
+                    _renderStageLeft->draw(_renderInfo,previous);
 
                     _localStateSet->setAttribute(viewportLeft.get());
                     _renderStageRight->setViewport(viewportLeft.get());
-                    _renderStageRight->draw(*_state,previous);
+                    _renderStageRight->draw(_renderInfo,previous);
                 }
 
             }
@@ -992,8 +1000,8 @@ void SceneView::draw()
 
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageRight->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 int separation = _displaySettings->getSplitStereoVerticalSeparation();
 
@@ -1013,21 +1021,21 @@ void SceneView::draw()
                 {
                     _localStateSet->setAttribute(viewportTop.get());
                     _renderStageLeft->setViewport(viewportTop.get());
-                    _renderStageLeft->draw(*_state,previous);
+                    _renderStageLeft->draw(_renderInfo,previous);
 
                     _localStateSet->setAttribute(viewportBottom.get());
                     _renderStageRight->setViewport(viewportBottom.get());
-                    _renderStageRight->draw(*_state,previous);
+                    _renderStageRight->draw(_renderInfo,previous);
                 }
                 else
                 {
                     _localStateSet->setAttribute(viewportBottom.get());
                     _renderStageLeft->setViewport(viewportBottom.get());
-                    _renderStageLeft->draw(*_state,previous);
+                    _renderStageLeft->draw(_renderInfo,previous);
 
                     _localStateSet->setAttribute(viewportTop.get());
                     _renderStageRight->setViewport(viewportTop.get());
-                    _renderStageRight->draw(*_state,previous);
+                    _renderStageRight->draw(_renderInfo,previous);
                 }
             }
             break;
@@ -1055,8 +1063,8 @@ void SceneView::draw()
                 _renderStage->setColorMask(cmask);
 
                 _localStateSet->setAttribute(getViewport());
-                _renderStage->drawPreRenderStages(*_state,previous);
-                _renderStage->draw(*_state,previous);
+                _renderStage->drawPreRenderStages(_renderInfo,previous);
+                _renderStage->draw(_renderInfo,previous);
             }
             break;
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
@@ -1077,8 +1085,8 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageRight->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 glEnable(GL_STENCIL_TEST);
 
@@ -1086,7 +1094,7 @@ void SceneView::draw()
                    _interlacedStereoStencilWidth != getViewport()->width() ||
                   _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    getViewport()->apply(*_state);
+                    getViewport()->apply(*state);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
                     glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
@@ -1117,10 +1125,10 @@ void SceneView::draw()
 
                 glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                 glStencilFunc(GL_EQUAL, 0, ~0u);    
-                _renderStageLeft->draw(*_state,previous);
+                _renderStageLeft->draw(_renderInfo,previous);
                 
                 glStencilFunc(GL_NOTEQUAL, 0, ~0u);
-                _renderStageRight->draw(*_state,previous);
+                _renderStageRight->draw(_renderInfo,previous);
                 glDisable(GL_STENCIL_TEST);
             }
             break;
@@ -1142,8 +1150,8 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageRight->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 glEnable(GL_STENCIL_TEST);
 
@@ -1151,7 +1159,7 @@ void SceneView::draw()
                    _interlacedStereoStencilWidth != getViewport()->width() ||
                   _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    getViewport()->apply(*_state);
+                    getViewport()->apply(*state);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
                     glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
@@ -1182,10 +1190,10 @@ void SceneView::draw()
 
                 glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                 glStencilFunc(GL_EQUAL, 0, ~0u);    
-                _renderStageLeft->draw(*_state,previous);
+                _renderStageLeft->draw(_renderInfo,previous);
                 
                 glStencilFunc(GL_NOTEQUAL, 0, ~0u);
-                _renderStageRight->draw(*_state,previous);
+                _renderStageRight->draw(_renderInfo,previous);
                 glDisable(GL_STENCIL_TEST);
             }
             break;
@@ -1223,20 +1231,20 @@ void SceneView::draw()
         _renderStage->setColorMask(cmask);
 
         // bog standard draw.
-        _renderStage->drawPreRenderStages(*_state,previous);
-        _renderStage->draw(*_state,previous);
+        _renderStage->drawPreRenderStages(_renderInfo,previous);
+        _renderStage->draw(_renderInfo,previous);
     }
     
     // re apply the defalt OGL state.
-    _state->popAllStateSets();
-    _state->apply();
+    state->popAllStateSets();
+    state->apply();
     
     if (_camera->getPostDrawCallback())
     {
         (*(_camera->getPostDrawCallback()))(*_camera);
     }
 
-    if (_state->getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
+    if (state->getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
     {
         GLenum errorNo = glGetError();
         if (errorNo!=GL_NO_ERROR)
@@ -1245,7 +1253,7 @@ void SceneView::draw()
 
             // go into debug mode of OGL error in a fine grained way to help
             // track down OpenGL errors.
-            _state->setCheckForGLErrors(osg::State::ONCE_PER_ATTRIBUTE);
+            state->setCheckForGLErrors(osg::State::ONCE_PER_ATTRIBUTE);
         }
     }
 }
@@ -1309,7 +1317,7 @@ void SceneView::clearArea(int x,int y,int width,int height,const osg::Vec4& colo
     osg::ref_ptr<osg::Viewport> viewport = new osg::Viewport;
     viewport->setViewport(x,y,width,height);
 
-    _state->applyAttribute(viewport.get());
+    _renderInfo.getState()->applyAttribute(viewport.get());
     
     glScissor( x, y, width, height );
     glEnable( GL_SCISSOR_TEST );

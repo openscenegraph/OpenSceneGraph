@@ -608,6 +608,10 @@ SOURCE=..\..\src\osg\VertexProgram.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\View.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Viewport.cpp
 # End Source File
 # End Group
@@ -996,6 +1000,10 @@ SOURCE=..\..\Include\Osg\Referenced
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\RenderInfo
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Scissor
 # End Source File
 # Begin Source File
@@ -1181,6 +1189,10 @@ SOURCE=..\..\Include\Osg\Version
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\VertexProgram
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\View
 # End Source File
 # Begin Source File
 

@@ -195,7 +195,7 @@ void RenderStage::addPostRenderStage(RenderStage* rs, int order)
     }
 }
 
-void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
+void RenderStage::drawPreRenderStages(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     if (_preRenderList.empty()) return;
     
@@ -204,18 +204,20 @@ void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
         itr!=_preRenderList.end();
         ++itr)
     {
-        itr->second->draw(state,previous);
+        itr->second->draw(renderInfo,previous);
     }
     //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 }
 
 
-void RenderStage::runCameraSetUp(osg::State& state)
+void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 {
     _cameraRequiresSetUp = false;
 
     if (!_camera) return;
     
+     osg::State& state = *renderInfo.getState();
+
     osg::CameraNode::RenderTargetImplementation renderTargetImplemntation = _camera->getRenderTargetImplementation();
     osg::CameraNode::RenderTargetImplementation renderTargetFallback = _camera->getRenderTargetFallback();
 
@@ -620,8 +622,10 @@ void RenderStage::runCameraSetUp(osg::State& state)
 
 }
 
-void RenderStage::copyTexture(osg::State& state)
+void RenderStage::copyTexture(osg::RenderInfo& renderInfo)
 {
+    osg::State& state = *renderInfo.getState();
+
     if (_readBuffer != GL_NONE)
     {
         glReadBuffer(_readBuffer);
@@ -690,8 +694,10 @@ void RenderStage::copyTexture(osg::State& state)
 #endif    
 }
 
-void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCopyTexture)
+void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, bool& doCopyTexture)
 {
+    osg::State& state = *renderInfo.getState();
+
     if (_drawBuffer != GL_NONE)
     {    
         glDrawBuffer(_drawBuffer);
@@ -711,7 +717,7 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
     }
 
     // do the drawing itself.    
-    RenderBin::draw(state,previous);
+    RenderBin::draw(renderInfo,previous);
 
 
     if(state.getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
@@ -730,7 +736,7 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
     // now copy the rendered image to attached texture.
     if (doCopyTexture)
     {
-        copyTexture(state);
+        copyTexture(renderInfo);
     }
     
     if (_image.valid())
@@ -784,9 +790,10 @@ void RenderStage::drawInner(osg::State& state,RenderLeaf*& previous, bool& doCop
 
 struct DrawInnerOperation : public osg::GraphicsThread::Operation
 {
-    DrawInnerOperation(RenderStage* stage) : 
+    DrawInnerOperation(RenderStage* stage, osg::RenderInfo& renderInfo) : 
         osg::GraphicsThread::Operation("DrawInnerStage",false),
-        _stage(stage) {}
+        _stage(stage),
+        _renderInfo(renderInfo) {}
 
     virtual void operator() (osg::GraphicsContext* context)
     {
@@ -795,15 +802,17 @@ struct DrawInnerOperation : public osg::GraphicsThread::Operation
         {
             RenderLeaf* previous = 0;
             bool doCopyTexture = false;
-            _stage->drawInner(*(context->getState()), previous, doCopyTexture);
+            _renderInfo.setState(context->getState());
+            _stage->drawInner(_renderInfo, previous, doCopyTexture);
         }
     }
     
     RenderStage* _stage;
+    RenderInfo _renderInfo;
 };
 
 
-void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
+void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     if (_stageDrawnThisFrame) return;
 
@@ -811,18 +820,20 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     // note, SceneView does call to drawPreRenderStages explicitly
     // so there is no need to call it here.
-    drawPreRenderStages(state,previous);
+    drawPreRenderStages(renderInfo,previous);
     
     if (_cameraRequiresSetUp)
     {
-        runCameraSetUp(state);
+        runCameraSetUp(renderInfo);
     }
 
+    osg::State& state = *renderInfo.getState();
 
     osg::State* useState = &state;
     osg::GraphicsContext* callingContext = state.getGraphicsContext();
     osg::GraphicsContext* useContext = callingContext;
     osg::GraphicsThread* useThread = 0;
+    osg::RenderInfo useRenderInfo(renderInfo);
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
     {
@@ -833,6 +844,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
         useState = _graphicsContext->getState();
         useContext = _graphicsContext.get();
         useThread = useContext->getGraphicsThread();
+        useRenderInfo.setState(useState);
         
         // syncronize the frame stamps
         useState->setFrameStamp(const_cast<osg::FrameStamp*>(state.getFrameStamp()));
@@ -846,13 +858,13 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     if (useThread)
     {
-        useThread->add(new DrawInnerOperation( this ), true);
+        useThread->add(new DrawInnerOperation( this, renderInfo ), true);
         
         doCopyTexture = false;
     }
     else
     {
-        drawInner( *useState, previous, doCopyTexture);
+        drawInner( useRenderInfo, previous, doCopyTexture);
     }
 
 
@@ -865,7 +877,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
             callingContext->makeContextCurrent(useContext);
         }
 
-        copyTexture(state);
+        copyTexture(renderInfo);
     }
 
     if (_camera && _camera->getPostDrawCallback())
@@ -887,11 +899,12 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     // place the post draw here temprorarily while we figure out how
     // best to do SceneView.
-    drawPostRenderStages(state,previous);
+    drawPostRenderStages(renderInfo,previous);
 }
 
-void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
+void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
+    osg::State& state = *renderInfo.getState();
 
     if (!_viewport)
     {
@@ -952,12 +965,12 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
     }
 
     // draw the children and local.
-    RenderBin::drawImplementation(state,previous);
+    RenderBin::drawImplementation(renderInfo,previous);
 
     state.apply();
 }
 
-void RenderStage::drawPostRenderStages(osg::State& state,RenderLeaf*& previous)
+void RenderStage::drawPostRenderStages(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     if (_postRenderList.empty()) return;
     
@@ -966,7 +979,7 @@ void RenderStage::drawPostRenderStages(osg::State& state,RenderLeaf*& previous)
         itr!=_postRenderList.end();
         ++itr)
     {
-        itr->second->draw(state,previous);
+        itr->second->draw(renderInfo,previous);
     }
     //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 }

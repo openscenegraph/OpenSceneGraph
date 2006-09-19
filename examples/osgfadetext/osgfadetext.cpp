@@ -99,7 +99,7 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
 
     {
         osg::Geode* geode = new osg::Geode;
-        osgText::Text* text = new osgText::Text;
+        osgText::FadeText* text = new osgText::FadeText;
         
         text->setText("This is a test");
         text->setFont("fonts/arial.ttf");

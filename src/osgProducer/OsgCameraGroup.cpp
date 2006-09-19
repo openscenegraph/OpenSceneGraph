@@ -806,8 +806,23 @@ void OsgCameraGroup::frame()
     osg::Node* node = getTopMostSceneData();
     if (node) node->getBound();
 
+    if (_view.valid())
+    {
+        double left, right, bottom, top, nearClip, farClip;
+        getLensParams(left, right, bottom, top, nearClip, farClip);
 
-    // pass on the cull settings to the scene views to keep
+        if (getLensProjectionType()==Camera::Lens::Perspective)
+        {
+            _view->setProjectionMatrixAsFrustum(left, right, bottom, top, nearClip, farClip);
+        }
+        else
+        {
+            _view->setProjectionMatrixAsOrtho(left, right, bottom, top, nearClip, farClip);
+        }
+        
+        _view->setViewMatrix(getViewMatrix());
+    }
+                                
     // the settings in sync.
     for(SceneHandlerList::iterator itr = _shvec.begin();
         itr != _shvec.end();

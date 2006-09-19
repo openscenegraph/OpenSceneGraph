@@ -20,12 +20,59 @@
 
 using namespace osgText;
 
+struct FadeTextData : public osg::Referenced
+{
+    FadeTextData(FadeText* fadeText=0):
+        _fadeText(fadeText),
+        _visible(true) {}
+        
+    bool operator < (const FadeTextData& rhs) const
+    {
+        return _fadeText < rhs._fadeText;
+    }    
+    
+    float getNearestZ() const
+    {
+        float nearestZ = _vertices[0].z();
+        if (nearestZ > _vertices[1].z()) nearestZ = _vertices[1].z();
+        if (nearestZ > _vertices[2].z()) nearestZ = _vertices[2].z();
+        if (nearestZ > _vertices[3].z()) nearestZ = _vertices[3].z();
+        return nearestZ;
+    }
+
+    FadeText*   _fadeText;
+    osg::Vec3   _vertices[4];
+    bool        _visible;
+};
+
+struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
+{
+    FadeTextPolytopeData(FadeTextData& fadeTextData):
+        FadeTextData(fadeTextData)
+    {
+        _referenceVertexList.push_back(_vertices[0]);
+        _referenceVertexList.push_back(_vertices[1]);
+        _referenceVertexList.push_back(_vertices[2]);
+        _referenceVertexList.push_back(_vertices[3]);
+    }
+     
+    void buildPolytope()
+    {
+        osg::Vec3 edge01 = _vertices[1] - _vertices[0];
+        osg::Vec3 edge12 = _vertices[2] - _vertices[1];
+        osg::Vec3 edge23 = _vertices[3] - _vertices[2];
+        osg::Vec3 edge30 = _vertices[0] - _vertices[3];
+        osg::Vec3 normalFrontFace = edge01 ^ edge12;
+    }
+    
+};
+
 struct FadeTextUserData : public osg::Referenced
 {
     FadeTextUserData():
         _frameNumber(0) {}
 
-    typedef std::list<FadeText*> FadeTextList;
+    typedef std::list<FadeTextData> FadeTextList;
     unsigned int _frameNumber;
     FadeTextList _fadeTextInView;
 };
@@ -34,8 +81,9 @@ struct GlobalFadeText : public osg::Referenced
 {
     typedef std::set< osg::ref_ptr<FadeTextUserData> > UserDataSet;
     typedef std::set<FadeText*> FadeTextSet;
+    typedef std::multimap<float, osg::ref_ptr<FadeTextPolytopeData> > FadeTextPolytopeMap;
     typedef std::map<osg::View*, UserDataSet> ViewUserDataMap;
-    typedef std::map<osg::View*, FadeTextSet> ViewFadeTextMap;
+    typedef std::map<osg::View*, FadeTextSet > ViewFadeTextMap;
 
     GlobalFadeText():
         _frameNumber(0xffffffff)
@@ -65,8 +113,6 @@ struct GlobalFadeText : public osg::Referenced
     {
         _frameNumber = frameNumber;
         
-        osg::notify(osg::NOTICE)<<"New frame, updating GlobalFadeText structure."<<std::endl;
-        
         for(GlobalFadeText::ViewUserDataMap::iterator vitr = _viewMap.begin();
             vitr != _viewMap.end();
             ++vitr)
@@ -76,6 +122,8 @@ struct GlobalFadeText : public osg::Referenced
 
             FadeTextSet& fadeTextSet = _viewFadeTextMap[view];
             fadeTextSet.clear();
+
+            FadeTextPolytopeMap fadeTextPolytopeMap;
 
             for(GlobalFadeText::UserDataSet::iterator uitr = vitr->second.begin();
                 uitr != vitr->second.end();
@@ -90,13 +138,23 @@ struct GlobalFadeText : public osg::Referenced
                         fitr != userData->_fadeTextInView.end();
                         ++fitr)
                     {
-                        FadeText* fadeText = *fitr;
-                        fadeTextSet.insert(fadeText);
+                        FadeTextData& fadeTextData = *fitr;
+                        if (fadeTextSet.count(fadeTextData._fadeText)==0)
+                        { 
+                            fadeTextSet.insert(fadeTextData._fadeText);
+                            fadeTextPolytopeMap.insert(FadeTextPolytopeMap::value_type(
+                                fadeTextData.getNearestZ(), new FadeTextPolytopeData(fadeTextData)));
+                        }
                     }
                 }
             }
 
-            osg::notify(osg::NOTICE)<<"   view="<<view<<"\tnumOfText="<<fadeTextSet.size()<<std::endl;
+            // for each FadeTexPoltopeData            
+            //    create polytopes
+            //    test against all FTPD's later in the list
+            //       test all control points on FTPD against each plane of the current polytope
+            //       if all control points removed or outside then disgard FTPD and make FT visible = false;
+            
 
         }
     }
@@ -120,6 +178,8 @@ GlobalFadeText* getGlobalFadeText()
 
 struct FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
 {
+    FadeTextData _ftd;
+
     virtual void update(osg::NodeVisitor* nv, osg::Drawable* drawable)
     {
         osgText::FadeText* fadeText = dynamic_cast<osgText::FadeText*>(drawable);
@@ -127,14 +187,14 @@ struct FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
     
         unsigned int frameNumber = nv->getFrameStamp()->getFrameNumber();
 
-        osg::notify(osg::NOTICE)<<"Update FadeText "<<fadeText<<std::endl;
-        
-        typedef std::set<FadeText*> FadeTextSet;
-
         GlobalFadeText* gft = getGlobalFadeText();
         gft->updateIfRequired(frameNumber);
         
         osgText::FadeText::ViewBlendColourMap& vbcm = fadeText->getViewBlendColourMap();
+
+        _ftd._fadeText = fadeText;
+        
+        float fadeSpeed = 0.01f;
 
         GlobalFadeText::ViewFadeTextMap& vftm = gft->_viewFadeTextMap;
         for(GlobalFadeText::ViewFadeTextMap::iterator itr = vftm.begin();
@@ -142,18 +202,30 @@ struct FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
             ++itr)
         {
             osg::View* view = itr->first;
-            FadeTextSet& fadeTextSet = itr->second;
-            if (fadeTextSet.count(fadeText)==0)
+            GlobalFadeText::FadeTextSet& fadeTextSet = itr->second;
+            bool visible = fadeTextSet.count(fadeText)!=0;
+
+            osg::Vec4& tec = vbcm[view];
+            tec[0] = 1.0f;
+            tec[1] = 1.0f;
+            tec[2] = 1.0f;
+            if (visible)
             {
-                osg::notify(osg::NOTICE)<<"Text "<<fadeText<<" not in "<<view<<std::endl;
+                if (tec[3]<1.0f)
+                {
+                    tec[3] += fadeSpeed;
+                    if (tec[3]>1.0f) tec[3] = 1.0f;
+                }
+
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Text "<<fadeText<<" is in "<<view<<std::endl;
+                if (tec[3]>0.0f)
+                {
+                    tec[3] -= fadeSpeed;
+                    if (tec[3]<0.0f) tec[3] = 0.0f;
+                }
             }
-
-            osg::Vec4& tec = vbcm[view];
-            tec.set(1.0f,1.0f,1.0f, 0.5f + 0.5f * sin( float(frameNumber)*0.1));
         }
 
     }
@@ -180,6 +252,8 @@ void FadeText::init()
 
 void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+
+    osg::State& state = *renderInfo.getState();
 
     ViewBlendColourMap::iterator itr = _viewBlendColourMap.find(renderInfo.getView());
     if (itr != _viewBlendColourMap.end())
@@ -222,12 +296,27 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
         userData->_fadeTextInView.clear();
     }
 
-    userData->_fadeTextInView.push_back(const_cast<osgText::FadeText*>(this));
+
 
     osgText::Text::AutoTransformCache& atc = _autoTransformCache[renderInfo.getContextID()];
-    osg::Matrix& matrix = atc._matrix;
+    
+    osg::Matrix lmv = atc._matrix;
+    lmv.postMult(state.getModelViewMatrix());
+    
+    if (renderInfo.getView())
+    {
+        // move from camera into the view space.
+        lmv.postMult(state.getInitialInverseViewMatrix());
+        lmv.postMult(renderInfo.getView()->getViewMatrix());
+        lmv.postMult(renderInfo.getView()->getProjectionMatrix());
+    }
+    
+    FadeTextData ftd(const_cast<osgText::FadeText*>(this));
+    ftd._vertices[0].set(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*lmv);
+    ftd._vertices[1].set(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*lmv);
+    ftd._vertices[2].set(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*lmv);
+    ftd._vertices[3].set(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*lmv);
 
-    osg::notify(osg::NOTICE)<<"cull Matrix = "<<matrix<<std::endl;
-
+    userData->_fadeTextInView.push_back(ftd);
 
 }

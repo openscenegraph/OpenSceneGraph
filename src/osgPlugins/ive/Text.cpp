@@ -102,17 +102,17 @@ void Text::write(DataOutputStream* out){
     else
     {
         // do it the hardway...output each character as an int
-        osg::ref_ptr<osg::UByteArray> strarr = new osg::UByteArray(textstring.size());
+        osg::ref_ptr<osg::UIntArray> strarr = new osg::UIntArray(textstring.size());
         
         for(itr=textstring.begin();
             itr!=textstring.end();
             ++itr)
         {
-            strarr->push_back((char)(*itr));
+            strarr->push_back((*itr));
         }
 
         out->writeBool(false);
-        out->writeUByteArray(strarr.get());
+        out->writeUIntArray(strarr.get());
     }
 }
 
@@ -168,16 +168,29 @@ void Text::read(DataInputStream* in){
         setText(in->readString());
     else
     {
-        std::string textstr;
-
-        osg::ref_ptr<osg::UByteArray> arr = in->readUByteArray();
-
-        for(unsigned int i = 0; i < arr->getNumElements(); i++)
+        if ( in->getVersion() >= VERSION_0018 )
         {
-            textstr += (char) arr->at(i);
-        }
+            osgText::String textstr;
+            osg::ref_ptr<osg::UIntArray> arr = in->readUIntArray();
+            for(unsigned int i = 0; i < arr->getNumElements(); i++)
+            {
+                textstr.push_back( arr->at(i) );
+            }
 
-        setText(textstr);
+            setText(textstr);
+        }
+        else
+        {
+            // buggy original path, should have used a UIntArray originally, now fixed above.
+            std::string textstr;
+            osg::ref_ptr<osg::UByteArray> arr = in->readUByteArray();
+            for(unsigned int i = 0; i < arr->getNumElements(); i++)
+            {
+                textstr += (char) arr->at(i);
+            }
+
+            setText(textstr);
+        }
     }
 
     }

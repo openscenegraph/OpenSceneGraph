@@ -133,18 +133,18 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
     
     unsigned int numLat = 15;
     unsigned int numLong = 20;
-    double latitude = 50.0;
-    double longitude = 0.0;
+    double latitude = 0.0;
+    double longitude = -100.0;
     double deltaLatitude = 1.0f;
     double deltaLongitude = 1.0f;
 
     unsigned int t = 0;
     for(unsigned int i = 0; i < numLat; ++i, latitude += deltaLatitude)
     {
-        longitude = 0.0;
-        for(unsigned int j = 0; j < numLong; ++j, ++t, longitude += deltaLongitude)
+        double lgnt = longitude;
+        for(unsigned int j = 0; j < numLong; ++j, ++t, lgnt += deltaLongitude)
         {
-            geode->addDrawable( createText( ellipsoid, latitude, longitude, 0, textList[t % textList.size()]) );
+            geode->addDrawable( createText( ellipsoid, latitude, lgnt, 0, textList[t % textList.size()]) );
         }
     }
 

@@ -7,6 +7,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/MatrixTransform>
 #include <osg/CoordinateSystemNode>
+#include <osg/ClusterCullingCallback>
 
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
@@ -96,7 +97,11 @@ osgText::Text* createText(osg::EllipsoidModel* ellipsoid, double latitude, doubl
     double X,Y,Z;
     ellipsoid->convertLatLongHeightToXYZ( osg::DegreesToRadians(latitude), osg::DegreesToRadians(longitude), height, X, Y, Z);
 
-    osgText::FadeText* text = new osgText::FadeText;
+
+    osgText::Text* text = new osgText::FadeText;
+
+    osg::Vec3 normal = ellipsoid->computeLocalUpVector( X, Y, Z);
+    text->setCullCallback(new osg::ClusterCullingCallback(osg::Vec3(X,Y,Z), normal, 0.0));
 
     text->setText(str);
     text->setFont("fonts/arial.ttf");

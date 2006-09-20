@@ -31,17 +31,20 @@ struct FadeTextData : public osg::Referenced
         return _fadeText < rhs._fadeText;
     }    
     
-    float getNearestZ() const
+    double getNearestZ() const
     {
-        float nearestZ = _vertices[0].z();
+        double nearestZ = _vertices[0].z();
         if (nearestZ < _vertices[1].z()) nearestZ = _vertices[1].z();
         if (nearestZ < _vertices[2].z()) nearestZ = _vertices[2].z();
         if (nearestZ < _vertices[3].z()) nearestZ = _vertices[3].z();
+
+        // osg::notify(osg::NOTICE)<<"getNearestZ()="<<_fadeText->getText().createUTF8EncodedString()<<" "<<nearestZ<<std::endl;
+
         return nearestZ;
     }
 
     FadeText*   _fadeText;
-    osg::Vec3   _vertices[4];
+    osg::Vec3d   _vertices[4];
     bool        _visible;
 };
 
@@ -77,12 +80,12 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         normalFrontFace.normalize();
         add(osg::Plane(normalFrontFace, _vertices[0]));
 
-        addEdgePlane(_vertices[0], edge01);
-        addEdgePlane(_vertices[1], edge12);
-        addEdgePlane(_vertices[2], edge23);
-        addEdgePlane(_vertices[3], edge30);
-
+        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[0], _vertices[1]));
+        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[1], _vertices[2]));
+        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[2], _vertices[3]));
+        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[3], _vertices[0]));
         
+#if 0
         osg::notify(osg::NOTICE)<<" normalFrontFace = "<<normalFrontFace<<std::endl;
         osg::notify(osg::NOTICE)<<" edge01 = "<<edge01<<std::endl;
         osg::notify(osg::NOTICE)<<" edge12 = "<<edge12<<std::endl;
@@ -91,15 +94,17 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         osg::notify(osg::NOTICE)<<" _vertices[1]= "<<_vertices[1]<<std::endl;
         osg::notify(osg::NOTICE)<<" _vertices[2]= "<<_vertices[2]<<std::endl;
         osg::notify(osg::NOTICE)<<" _vertices[3]= "<<_vertices[3]<<std::endl;
-
+#endif
 
         if (needToFlip) flip();
-        
+
+#if 0        
         osg::notify(osg::NOTICE)<<"   plane 0 "<< _planeList[0]<<std::endl;
         osg::notify(osg::NOTICE)<<"   plane 1 "<< _planeList[1]<<std::endl;
         osg::notify(osg::NOTICE)<<"   plane 2 "<< _planeList[2]<<std::endl;
         osg::notify(osg::NOTICE)<<"   plane 3 "<< _planeList[3]<<std::endl;
         osg::notify(osg::NOTICE)<<"   plane 4 "<< _planeList[4]<<std::endl;
+#endif
         
     }
     
@@ -109,21 +114,9 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
             itr != vertices.end();
             ++itr)
         {
-           osg::notify(osg::NOTICE)<<"testing "<<*itr<<std::endl;
-        }
-
-        for(std::vector<osg::Vec3>::const_iterator itr = vertices.begin();
-            itr != vertices.end();
-            ++itr)
-        {
             if (osg::Polytope::contains(*itr))
             {
-                osg::notify(osg::NOTICE)<<"Does contain "<<*itr<<std::endl;
                 return true;
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"Doesn't contain "<<*itr<<std::endl;
             }
         }
         return false;
@@ -145,7 +138,7 @@ struct GlobalFadeText : public osg::Referenced
 {
     typedef std::set< osg::ref_ptr<FadeTextUserData> > UserDataSet;
     typedef std::set<FadeText*> FadeTextSet;
-    typedef std::multimap<float, osg::ref_ptr<FadeTextPolytopeData> > FadeTextPolytopeMap;
+    typedef std::multimap<double, osg::ref_ptr<FadeTextPolytopeData> > FadeTextPolytopeMap;
     typedef std::map<osg::View*, UserDataSet> ViewUserDataMap;
     typedef std::map<osg::View*, FadeTextSet > ViewFadeTextMap;
 
@@ -175,8 +168,6 @@ struct GlobalFadeText : public osg::Referenced
     
     void update(unsigned int frameNumber)
     {
-        osg::notify(osg::NOTICE)<<std::endl<<"update**********************"<<std::endl;
-    
         _frameNumber = frameNumber;
         
         for(GlobalFadeText::ViewUserDataMap::iterator vitr = _viewMap.begin();
@@ -232,13 +223,13 @@ struct GlobalFadeText : public osg::Referenced
                 FadeTextPolytopeData& outer_ftpm = *(outer_itr->second);
                 outer_ftpm.buildPolytope();
 
-                osg::notify(osg::NOTICE)<<"Outer z "<<outer_ftpm.getNearestZ()<<std::endl;
+                // osg::notify(osg::NOTICE)<<"Outer z "<<outer_ftpm.getNearestZ()<<std::endl;
 
                 while(inner_itr != fadeTextPolytopeMap.end())
                 {
                     FadeTextPolytopeData& inner_ftpm = *(inner_itr->second);
                     
-                    osg::notify(osg::NOTICE)<<"Inner z "<<inner_ftpm.getNearestZ()<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"Inner z "<<inner_ftpm.getNearestZ()<<std::endl;
 
                     if (outer_ftpm.contains(inner_ftpm.getReferenceVertexList()))
                     {
@@ -262,9 +253,6 @@ struct GlobalFadeText : public osg::Referenced
                 ++outer_itr;
 
             }
-            
-            osg::notify(osg::NOTICE)<<"fadeTextPolytopeMap.size() = "<<fadeTextPolytopeMap.size()<<std::endl;
-
         }
     }
     
@@ -417,16 +405,9 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
         // move from camera into the view space.
         lmv.postMult(state.getInitialInverseViewMatrix());
         lmv.postMult(renderInfo.getView()->getViewMatrix());
-        lmv.postMult(renderInfo.getView()->getProjectionMatrix());
-        
-        osg::notify(osg::NOTICE)<<"renderInfo.getView()->getProjectionMatrix())="<<renderInfo.getView()->getProjectionMatrix()<<std::endl;
-        osg::notify(osg::NOTICE)<<"lmv="<<lmv<<std::endl;
     }
     
     FadeTextData ftd(const_cast<osgText::FadeText*>(this));
-    
-    osg::notify(osg::NOTICE)<<"osg::Vec3d(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*lmv="<<osg::Vec3d(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*lmv<<std::endl;
-    osg::notify(osg::NOTICE)<<"osg::Vec4d(_textBB.xMin(),_textBB.yMin(),_textBB.zMin(),1.0)*lmv="<<osg::Vec4d(_textBB.xMin(),_textBB.yMin(),_textBB.zMin(),1.0)*lmv<<std::endl;
     
     ftd._vertices[0].set(osg::Vec3d(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*lmv);
     ftd._vertices[1].set(osg::Vec3d(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*lmv);

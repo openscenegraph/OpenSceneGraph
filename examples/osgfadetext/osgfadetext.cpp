@@ -101,7 +101,7 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
         osg::Geode* geode = new osg::Geode;
         osgText::FadeText* text = new osgText::FadeText;
         
-        text->setText("This is a test");
+        text->setText("One");
         text->setFont("fonts/arial.ttf");
         text->setPosition(position);
         text->setCharacterSize(300000.0f);
@@ -118,7 +118,7 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
         osg::Geode* geode = new osg::Geode;
         osgText::FadeText* text = new osgText::FadeText;
         
-        text->setText("This is a test");
+        text->setText("Two");
         text->setFont("fonts/arial.ttf");
         text->setPosition(position);
         text->setCharacterSize(300000.0f);

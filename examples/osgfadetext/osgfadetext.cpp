@@ -91,42 +91,56 @@ osg::Node* createEarth()
     
 }
 
+osgText::Text* createText(osg::EllipsoidModel* ellipsoid, double latitude, double longitude, double height, const std::string& str)
+{
+    double X,Y,Z;
+    ellipsoid->convertLatLongHeightToXYZ( osg::DegreesToRadians(latitude), osg::DegreesToRadians(longitude), height, X, Y, Z);
+
+    osgText::FadeText* text = new osgText::FadeText;
+
+    text->setText(str);
+    text->setFont("fonts/arial.ttf");
+    text->setPosition(osg::Vec3(X,Y,Z));
+    text->setCharacterSize(300000.0f);
+    text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
+    text->setAutoRotateToScreen(true);
+    
+    return text;
+}
+
 osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
 {
     osg::Group* group = new osg::Group;
-    
-    osg::Vec3 position;
 
-    {
-        osg::Geode* geode = new osg::Geode;
-        osgText::FadeText* text = new osgText::FadeText;
-        
-        text->setText("One");
-        text->setFont("fonts/arial.ttf");
-        text->setPosition(position);
-        text->setCharacterSize(300000.0f);
-        text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
-        text->setAutoRotateToScreen(true);
-        
-        geode->addDrawable(text);
-        group->addChild(geode);
-    }
+    group->getOrCreateStateSet()->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     
-    position.z() += 300000.0f;
+    osg::Geode* geode = new osg::Geode;
+    group->addChild(geode);
     
+    std::vector<std::string> textList;
+    textList.push_back("Town");
+    textList.push_back("City");
+    textList.push_back("Village");
+    textList.push_back("River");
+    textList.push_back("Mountain");
+    textList.push_back("Road");
+    textList.push_back("Lake");
+    
+    unsigned int numLat = 15;
+    unsigned int numLong = 20;
+    double latitude = 50.0;
+    double longitude = 0.0;
+    double deltaLatitude = 1.0f;
+    double deltaLongitude = 1.0f;
+
+    unsigned int t = 0;
+    for(unsigned int i = 0; i < numLat; ++i, latitude += deltaLatitude)
     {
-        osg::Geode* geode = new osg::Geode;
-        osgText::FadeText* text = new osgText::FadeText;
-        
-        text->setText("Two");
-        text->setFont("fonts/arial.ttf");
-        text->setPosition(position);
-        text->setCharacterSize(300000.0f);
-        text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
-        text->setAutoRotateToScreen(true);
-        
-        geode->addDrawable(text);
-        group->addChild(geode);
+        longitude = 0.0;
+        for(unsigned int j = 0; j < numLong; ++j, ++t, longitude += deltaLongitude)
+        {
+            geode->addDrawable( createText( ellipsoid, latitude, longitude, 0, textList[t % textList.size()]) );
+        }
     }
 
     return group;

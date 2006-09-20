@@ -30,12 +30,18 @@ ClusterCullingCallback::ClusterCullingCallback():
 
 ClusterCullingCallback::ClusterCullingCallback(const ClusterCullingCallback& ccc,const CopyOp& copyop):
     Drawable::CullCallback(ccc,copyop),
-    _controlPoint(ccc._controlPoint),_normal(ccc._normal),_deviation(ccc._deviation)
+    _controlPoint(ccc._controlPoint),
+    _normal(ccc._normal),
+    _radius(ccc._radius),
+    _deviation(ccc._deviation)
 {
 }
 
 ClusterCullingCallback::ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation):
-    _controlPoint(controlPoint),_normal(normal), _deviation(deviation)
+    _controlPoint(controlPoint),
+    _normal(normal),
+    _radius(-1.0f),
+    _deviation(deviation)
 {
 }
 

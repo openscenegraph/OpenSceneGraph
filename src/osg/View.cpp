@@ -199,7 +199,7 @@ bool View::addCamera(osg::CameraNode* camera, const osg::Matrix& projectionOffse
        
     _cameras.push_back(CameraData(camera, projectionOffset, viewOffset));
 
-    osg::notify(osg::NOTICE)<<"Added camera"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Added camera"<<std::endl;
 
     return true;
 }

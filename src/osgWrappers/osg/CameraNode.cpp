@@ -24,6 +24,7 @@
 #include <osg/Texture>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/View>
 #include <osg/Viewport>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -80,6 +81,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Method0(const char *, className);
 	I_Method0(const char *, libraryName);
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
+	I_Method1(void, setView, IN, osg::View *, view);
+	I_Method0(osg::View *, getView);
+	I_Method0(const osg::View *, getView);
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color);
 	I_Method0(const osg::Vec4 &, getClearColor);
 	I_Method1(void, setClearMask, IN, GLbitfield, mask);
@@ -160,6 +164,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_Property(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation);
 	I_IndexedProperty1(osg::Object *, RenderingCache, unsigned int, contextID);
 	I_Property(osg::CameraNode::TransformOrder, TransformOrder);
+	I_Property(osg::View *, View);
 	I_Property(const osg::Matrixd &, ViewMatrix);
 	I_Property(osg::Viewport *, Viewport);
 END_REFLECTOR

@@ -19,10 +19,12 @@
 #include <osg/Matrixf>
 #include <osg/Node>
 #include <osg/NodeVisitor>
+#include <osg/RenderInfo>
 #include <osg/State>
 #include <osg/StateSet>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/View>
 #include <osg/Viewport>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/RenderStage>
@@ -104,6 +106,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Method1(void, setState, IN, osg::State *, state);
 	I_Method0(osg::State *, getState);
 	I_Method0(const osg::State *, getState);
+	I_Method1(void, setView, IN, osg::View *, view);
+	I_Method0(osg::View *, getView);
+	I_Method0(const osg::View *, getView);
+	I_Method1(void, setRenderInfo, IN, osg::RenderInfo &, renderInfo);
+	I_Method0(osg::RenderInfo &, getRenderInfo);
+	I_Method0(const osg::RenderInfo &, getRenderInfo);
 	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixf &, matrix);
 	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixd &, matrix);
 	I_Method6(void, setProjectionMatrixAsOrtho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar);
@@ -210,6 +218,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Property(bool, PrioritizeTextures);
 	I_Property(const osg::Matrixd &, ProjectionMatrix);
 	I_Property(bool, RedrawInterlacedStereoStencilMask);
+	I_Property(osg::RenderInfo &, RenderInfo);
 	I_Property(osgUtil::RenderStage *, RenderStage);
 	I_Property(osgUtil::RenderStage *, RenderStageLeft);
 	I_Property(osgUtil::RenderStage *, RenderStageRight);
@@ -219,6 +228,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_Property(osgUtil::StateGraph *, StateGraphLeft);
 	I_Property(osgUtil::StateGraph *, StateGraphRight);
 	I_Property(osg::NodeVisitor *, UpdateVisitor);
+	I_Property(osg::View *, View);
 	I_Property(const osg::Matrixd &, ViewMatrix);
 	I_Property(osg::Viewport *, Viewport);
 END_REFLECTOR

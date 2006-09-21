@@ -16,7 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osg/StateSet>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -113,7 +113,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 	I_Method0(GLenum, getDrawType);
 	I_Method1(void, setNumberOfVertices, IN, unsigned int, numVertices);
 	I_Method0(unsigned int, getNumberOfVertices);
-	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
 	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getCurrentCellMatrixMap);
 	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getPreviousCellMatrixMap);
 	I_Method0(void, newFrame);

@@ -27,6 +27,7 @@
 #include <osg/OccluderNode>
 #include <osg/Polytope>
 #include <osg/Projection>
+#include <osg/RenderInfo>
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
@@ -101,12 +102,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_Method1(void, setState, IN, osg::State *, state);
 	I_Method0(osg::State *, getState);
 	I_Method0(const osg::State *, getState);
+	I_Method1(void, setRenderInfo, IN, osg::RenderInfo &, renderInfo);
+	I_Method0(osg::RenderInfo &, getRenderInfo);
+	I_Method0(const osg::RenderInfo &, getRenderInfo);
 	I_ReadOnlyProperty(osgUtil::CullVisitor::value_type, CalculatedFarPlane);
 	I_ReadOnlyProperty(osgUtil::CullVisitor::value_type, CalculatedNearPlane);
 	I_Property(const osg::ClearNode *, ClearNode);
 	I_Property(osgUtil::RenderBin *, CurrentRenderBin);
 	I_ReadOnlyProperty(osgUtil::StateGraph *, CurrentStateGraph);
 	I_ReadOnlyProperty(osg::Vec3, EyePoint);
+	I_Property(osg::RenderInfo &, RenderInfo);
 	I_Property(osgUtil::RenderStage *, RenderStage);
 	I_ReadOnlyProperty(osgUtil::StateGraph *, RootStateGraph);
 	I_Property(osg::State *, State);

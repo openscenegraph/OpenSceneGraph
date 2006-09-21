@@ -18,6 +18,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
+#include <osg/RenderInfo>
 #include <osg/Shape>
 #include <osg/State>
 #include <osg/StateSet>
@@ -96,7 +97,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_Method0(bool, getUseVertexBufferObjects);
 	I_Method0(void, dirtyDisplayList);
 	I_Method0(unsigned int, getGLObjectSizeHint);
-	I_Method1(void, draw, IN, osg::State &, state);
+	I_Method1(void, draw, IN, osg::RenderInfo &, renderInfo);
 	I_Method1(void, compileGLObjects, IN, osg::State &, state);
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
 	I_Method1(void, setUpdateCallback, IN, osg::Drawable::UpdateCallback *, ac);
@@ -113,7 +114,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_Method1(void, setDrawCallback, IN, osg::Drawable::DrawCallback *, dc);
 	I_Method0(osg::Drawable::DrawCallback *, getDrawCallback);
 	I_Method0(const osg::Drawable::DrawCallback *, getDrawCallback);
-	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method1(void, drawImplementation, IN, osg::State &, x);
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
 	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, x);
 	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
@@ -201,6 +203,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method3(bool, cull, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x, IN, osg::State *, x);
+	I_Method3(bool, cull, IN, osg::NodeVisitor *, nv, IN, osg::Drawable *, drawable, IN, osg::RenderInfo *, renderInfo);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
@@ -213,6 +216,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	I_Method0(const char *, libraryName);
 	I_Method0(const char *, className);
 	I_Method2(void, drawImplementation, IN, osg::State &, x, IN, const osg::Drawable *, x);
+	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, const osg::Drawable *, drawable);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)

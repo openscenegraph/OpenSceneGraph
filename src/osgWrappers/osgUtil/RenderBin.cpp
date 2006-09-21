@@ -12,7 +12,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osg/StateSet>
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderLeaf>
@@ -83,8 +83,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method1(void, setSortCallback, IN, osgUtil::RenderBin::SortCallback *, sortCallback);
 	I_Method0(osgUtil::RenderBin::SortCallback *, getSortCallback);
 	I_Method0(const osgUtil::RenderBin::SortCallback *, getSortCallback);
-	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	I_Method2(void, drawImplementation, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, draw, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method1(void, setDrawCallback, IN, osgUtil::RenderBin::DrawCallback *, drawCallback);
 	I_Method0(osgUtil::RenderBin::DrawCallback *, getDrawCallback);
 	I_Method0(const osgUtil::RenderBin::DrawCallback *, getDrawCallback);
@@ -111,7 +111,7 @@ END_REFLECTOR
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::DrawCallback)
 	I_BaseType(osg::Referenced);
 	I_Constructor0();
-	I_Method3(void, drawImplementation, IN, osgUtil::RenderBin *, bin, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method3(void, drawImplementation, IN, osgUtil::RenderBin *, bin, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::SortCallback)

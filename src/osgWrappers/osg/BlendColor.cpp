@@ -39,11 +39,12 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
 	I_Method1(void, setConstantColor, IN, const osg::Vec4 &, color);
-	I_Method0(osg::Vec4, getConstantColor);
+	I_Method0(osg::Vec4 &, getConstantColor);
+	I_Method0(const osg::Vec4 &, getConstantColor);
 	I_Method1(void, apply, IN, osg::State &, state);
 	I_StaticMethod2(osg::BlendColor::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BlendColor::Extensions *, extensions);
-	I_ReadOnlyProperty(osg::Vec4, ConstantColor);
+	I_Property(const osg::Vec4 &, ConstantColor);
 	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
 END_REFLECTOR
 

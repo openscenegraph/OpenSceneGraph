@@ -18,7 +18,7 @@
 #include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Object>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osg/StateAttribute>
 #include <osg/Texture>
 #include <osg/Vec4>
@@ -72,7 +72,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method0(const osg::CameraNode *, getCameraNode);
 	I_Method1(void, setCameraRequiresSetUp, IN, bool, flag);
 	I_Method0(bool, getCameraRequiresSetUp);
-	I_Method1(void, runCameraSetUp, IN, osg::State &, state);
+	I_Method1(void, runCameraSetUp, IN, osg::RenderInfo &, renderInfo);
 	I_MethodWithDefaults3(void, setTexture, IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0);
 	I_Method0(osg::Texture *, getTexture);
 	I_Method1(void, setImage, IN, osg::Image *, image);
@@ -95,13 +95,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method0(osgUtil::PositionalStateContainer *, getPositionalStateContainer);
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	I_Method1(void, copyTexture, IN, osg::State &, state);
+	I_Method1(void, copyTexture, IN, osg::RenderInfo &, renderInfo);
 	I_Method0(void, sort);
-	I_Method2(void, drawPreRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	I_Method2(void, draw, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	I_Method3(void, drawInner, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous, IN, bool &, doCopyTexture);
-	I_Method2(void, drawPostRenderStages, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
-	I_Method2(void, drawImplementation, IN, osg::State &, state, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, drawPreRenderStages, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, draw, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method3(void, drawInner, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous, IN, bool &, doCopyTexture);
+	I_Method2(void, drawPostRenderStages, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
+	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous);
 	I_Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs);
 	I_MethodWithDefaults2(void, addPreRenderStage, IN, osgUtil::RenderStage *, rs, , IN, int, order, 0);
 	I_MethodWithDefaults2(void, addPostRenderStage, IN, osgUtil::RenderStage *, rs, , IN, int, order, 0);

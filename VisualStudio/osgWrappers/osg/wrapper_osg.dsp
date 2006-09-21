@@ -436,6 +436,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\RenderInfo.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Scissor.cpp
 # End Source File
 
@@ -609,6 +613,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec4ub.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\VertexProgram.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\View.cpp
 # End Source File
 
 # Begin Source File

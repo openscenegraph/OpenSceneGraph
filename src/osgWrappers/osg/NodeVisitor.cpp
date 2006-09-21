@@ -35,6 +35,7 @@
 #include <osg/TexGenNode>
 #include <osg/Transform>
 #include <osg/Vec3>
+#include <osg/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -103,6 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	I_Method1(void, apply, IN, osg::TexGenNode &, node);
 	I_Method1(void, apply, IN, osg::LightSource &, node);
 	I_Method1(void, apply, IN, osg::Transform &, node);
+	I_Method1(void, apply, IN, osg::View &, node);
 	I_Method1(void, apply, IN, osg::CameraNode &, node);
 	I_Method1(void, apply, IN, osg::CameraView &, node);
 	I_Method1(void, apply, IN, osg::MatrixTransform &, node);

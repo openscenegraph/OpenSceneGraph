@@ -87,6 +87,7 @@ CXXFILES =\
 	ProxyNode.cpp\
 	Quat.cpp\
 	Referenced.cpp\
+	RenderInfo.cpp\
 	Scissor.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
@@ -131,6 +132,7 @@ CXXFILES =\
 	Vec4s.cpp\
 	Vec4ub.cpp\
 	VertexProgram.cpp\
+	View.cpp\
 	Viewport.cpp\
 	observer_ptr.cpp\
 

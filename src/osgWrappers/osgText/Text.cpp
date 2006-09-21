@@ -16,6 +16,7 @@
 #include <osg/Object>
 #include <osg/PrimitiveSet>
 #include <osg/Quat>
+#include <osg/RenderInfo>
 #include <osg/State>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -172,7 +173,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method1(void, setKerningType, IN, osgText::KerningType, kerningType);
 	I_Method0(osgText::KerningType, getKerningType);
 	I_Method0(unsigned int, getLineCount);
-	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
 	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);

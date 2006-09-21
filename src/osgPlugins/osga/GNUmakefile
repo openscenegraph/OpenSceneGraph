@@ -8,7 +8,7 @@ CXXFILES =\
 
 INC += -I$(THISDIR)
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += -losgDB -losg $(OTHER_LIBS)
 
 TARGET_BASENAME = osga
 include $(TOPDIR)/Make/cygwin_plugin_def

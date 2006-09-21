@@ -82,7 +82,7 @@ AttrData::AttrData() :
     controlPoints(0)
     // TODO:
 {
-    _mips[0]=_mips[1]=_mips[2]=_mips[3]=_mips[4]=_mips[5]=_mips[6]=_mips[7]=0.0f;
+    of_mips[0]=of_mips[1]=of_mips[2]=of_mips[3]=of_mips[4]=of_mips[5]=of_mips[6]=of_mips[7]=0.0f;
 }
 
 AttrData::AttrData(const AttrData& attr, const osg::CopyOp& copyop) :

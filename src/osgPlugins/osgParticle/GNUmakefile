@@ -34,7 +34,7 @@ CXXFILES =\
 	IO_VariableRateCounter.cpp\
 
 
-LIBS   += -losgParticle $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgParticle -losgDB -losgUtil -losg $(OTHER_LIBS)
 
 TARGET_BASENAME = osgParticle
 include $(TOPDIR)/Make/cygwin_plugin_def

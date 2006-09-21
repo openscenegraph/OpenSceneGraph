@@ -12,7 +12,7 @@ CXXFILES =\
         IO_Impostor.cpp\
 
 
-LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgSim -losgText -losgDB -losgUtil -losg $(OTHER_LIBS)
 
 TARGET_BASENAME = osgSim
 include $(TOPDIR)/Make/cygwin_plugin_def

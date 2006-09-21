@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	IO_Text.cpp
 
-LIBS   += -losgText $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgText -losgUtil -losgDB -losg $(OTHER_LIBS)
 
 TARGET_BASENAME = osgText
 include $(TOPDIR)/Make/cygwin_plugin_def

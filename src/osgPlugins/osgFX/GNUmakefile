@@ -11,7 +11,7 @@ CXXFILES =\
 	IO_Effect.cpp\
 
 
-LIBS   += -losgFX $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgFX -losgDB -losgUtil -losg $(OTHER_LIBS)
 
 TARGET_BASENAME = osgFX
 include $(TOPDIR)/Make/cygwin_plugin_def

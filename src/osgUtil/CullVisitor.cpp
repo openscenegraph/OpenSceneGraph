@@ -1073,8 +1073,10 @@ void CullVisitor::apply(osg::CameraNode& camera)
     
     // set the compute near far mode.
     ComputeNearFarMode saved_compute_near_far_mode = getComputeNearFarMode();
-    setComputeNearFarMode( camera.getComputeNearFarMode());
-
+    if (camera.getInheritanceMask() & COMPUTE_NEAR_FAR_MODE)
+    {
+        setComputeNearFarMode( camera.getComputeNearFarMode());
+    }
 
     RefMatrix& originalModelView = getModelViewMatrix();
 

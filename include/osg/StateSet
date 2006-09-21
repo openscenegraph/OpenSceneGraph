@@ -486,6 +486,8 @@ class OSG_EXPORT StateSet : public Object
 
 };
 
+extern OSG_EXPORT bool isTextureMode(StateAttribute::GLMode mode);
+
 }
 
 #endif

@@ -73,6 +73,11 @@ static TextureGLModeSet& getTextureGLModeSet()
     return s_textureGLModeSet;
 }
 
+bool osg::isTextureMode(StateAttribute::GLMode mode)
+{
+    return getTextureGLModeSet().isTextureMode(mode);
+}
+
 StateSet::StateSet()
 {
     setDataVariance(osg::StateAttribute::STATIC);

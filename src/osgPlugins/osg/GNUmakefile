@@ -78,7 +78,7 @@ CXXFILES =\
         Viewport.cpp\
 
 
-LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losg -losgDB $(OTHER_LIBS)
 
 TARGET_BASENAME = osg
 include $(TOPDIR)/Make/cygwin_plugin_def

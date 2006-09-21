@@ -97,7 +97,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         attr->extFormat = in.readInt32();
         attr->useMips = in.readInt32();
         for (int n=0; n<8; n++)
-            attr->_mips[n] = in.readFloat32();
+            attr->of_mips[n] = in.readFloat32();
         attr->useLodScale = in.readInt32();
         attr->lod0 = in.readFloat32();
         attr->scale0 = in.readFloat32();

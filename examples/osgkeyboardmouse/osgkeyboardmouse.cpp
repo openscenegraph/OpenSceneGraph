@@ -17,8 +17,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
-#include <osgGA/EventQueue>
-#include <osgGA/EventVisitor>
+#include <osgGA/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
 
@@ -285,132 +284,50 @@ int main( int argc, char **argv )
     
 
     // create the view of the scene.
-    osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
-    sceneView->setDefaults();
-    sceneView->setSceneData(loadedModel.get());
+    osgGA::SimpleViewer viewer;
+    viewer.setSceneData(loadedModel.get());
     
-    // create the event queue, note that Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits, so
-    // we need to construct the event queue so that it knows about this convention.
-    osg::ref_ptr<osgGA::EventQueue> eventQueue = new osgGA::EventQueue(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-
+    // create the event queue, 
+    
     // set up a KeyboardMouse to manage the events comming in from the RenderSurface
     osg::ref_ptr<Producer::KeyboardMouse>  kbm = new Producer::KeyboardMouse(renderSurface.get());
 
     // create a KeyboardMouseCallback to handle the mouse events within this applications
-    osg::ref_ptr<MyKeyboardMouseCallback> kbmcb = new MyKeyboardMouseCallback(eventQueue.get());
+    osg::ref_ptr<MyKeyboardMouseCallback> kbmcb = new MyKeyboardMouseCallback(viewer.getEventQueue());
 
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
-    osg::ref_ptr<osgGA::TrackballManipulator> cameraManipulator = new osgGA::TrackballManipulator;
+    viewer.setCameraManipulator( new osgGA::TrackballManipulator );
 
-    // keep a list of event handlers to manipulate the application/scene with in response to keyboard/mouse events
-    typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
-    EventHandlers eventHandlers;
-    
     osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
-    statesetManipulator->setStateSet(sceneView->getGlobalStateSet());
-    eventHandlers.push_back(statesetManipulator.get());
-    eventHandlers.push_back(new PickHandler(sceneView.get()));
+    statesetManipulator->setStateSet(viewer.getSceneView()->getGlobalStateSet());
+    viewer.addEventHandler(statesetManipulator.get());
+
+    // add the pick handler
+    viewer.addEventHandler(new PickHandler(viewer.getSceneView()));
     
-    // create an event visitor to pass the events down to the scene graph nodes
-    osg::ref_ptr<osgGA::EventVisitor> eventVisitor = new osgGA::EventVisitor;
+    // set the window dimensions 
+    viewer.getEventQueue()->getCurrentEventState()->setWindowRectangle(100,100,800,600);
 
-    // create an action adapter to allow event handlers to request actions from the GUI.
-    osg::ref_ptr<MyActionAdapter> actionAdapter = new MyActionAdapter;
-
-    // record the timer tick at the start of rendering.    
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    
-    unsigned int frameNum = 0;
-
-    eventQueue->setStartTick(start_tick);
-
-    // set the mouse input range (note WindowSize name in appropriate here so osgGA::GUIEventAdapter API really needs looking at, Robert Osfield, June 2006).
+    // set the mouse input range.
     // Producer defaults to using non-dimensional units, so we pass this onto osgGA, most windowing toolkits use pixel coords so use the window size instead.
-    eventQueue->getCurrentEventState()->setWindowSize(-1.0, -1.0, 1.0, 1.0);
+    viewer.getEventQueue()->getCurrentEventState()->setInputRange(-1.0, -1.0, 1.0, 1.0);
 
+    // Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits.
+    // we need to construct the event queue so that it knows about this convention.
+    viewer.getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
-    // home the manipulator.
-    osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent =  eventQueue->createEvent();
-    cameraManipulator->setNode(sceneView->getSceneData());
-    cameraManipulator->home(*dummyEvent, *actionAdapter);
-
+    viewer.init();
 
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
     while( renderSurface->isRealized() && !kbmcb->done())
     {
-        // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
-        osg::FrameStamp* frameStamp = new osg::FrameStamp;
-        frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
-        frameStamp->setFrameNumber(frameNum++);
-        
-        // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
-        sceneView->setFrameStamp(frameStamp);
+        // update the window dimensions, in case the window has been resized.
+         viewer.getEventQueue()->windowResize(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight(), false);
 
         // pass any keyboard mouse events onto the local keyboard mouse callback.
         kbm->update( *kbmcb );
         
-        // create an event to signal the new frame.
-        eventQueue->frame(frameStamp->getReferenceTime());
-
-        // get the event since the last frame.
-        osgGA::EventQueue::Events events;
-        eventQueue->takeEvents(events);
-
-        if (eventVisitor.valid())
-        {
-            eventVisitor->setTraversalNumber(frameStamp->getFrameNumber());
-        }
-
-        // dispatch the events in order of arrival.
-        for(osgGA::EventQueue::Events::iterator event_itr = events.begin();
-            event_itr != events.end();
-            ++event_itr)
-        {
-            bool handled = false;
-
-            if (eventVisitor.valid() && sceneView->getSceneData())
-            {
-                eventVisitor->reset();
-                eventVisitor->addEvent(event_itr->get());
-                sceneView->getSceneData()->accept(*eventVisitor);
-                if (eventVisitor->getEventHandled())
-                    handled = true;
-            }
-
-            if (cameraManipulator.valid() && !handled)
-            {
-                /*handled =*/ cameraManipulator->handle(*(*event_itr), *actionAdapter);
-            }
-
-            for(EventHandlers::iterator handler_itr=eventHandlers.begin();
-                handler_itr!=eventHandlers.end() && !handled;
-                ++handler_itr)
-            {   
-                handled = (*handler_itr)->handle(*(*event_itr),*actionAdapter,0,0);
-            }
-
-            // osg::notify(osg::NOTICE)<<"  Handled event "<<(*event_itr)->getTime()<<" "<< handled<<std::endl;
-
-        }
-
-
-        // update view matrices
-        if (cameraManipulator.valid())
-        {
-            sceneView->setViewMatrix(cameraManipulator->getInverseMatrix());
-        }
-
-        // update the viewport dimensions, incase the window has been resized.
-        sceneView->setViewport(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight());
-
-        // do the update traversal the scene graph - such as updating animations
-        sceneView->update();
-        
-        // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
-        sceneView->cull();
-        
-        // draw the rendering bins.
-        sceneView->draw();
+        viewer.frame();
 
         // Swap Buffers
         renderSurface->swapBuffers();

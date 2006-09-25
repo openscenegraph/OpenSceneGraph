@@ -215,18 +215,19 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Method1(void, setTime, IN, double, time);
 	I_Method0(double, getTime);
 	I_Method0(double, time);
+	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true);
+	I_Method0(int, getWindowX);
+	I_Method0(int, getWindowY);
+	I_Method0(unsigned int, getWindowWidth);
+	I_Method0(unsigned int, getWindowHeight);
 	I_Method1(void, setKey, IN, int, key);
 	I_Method0(int, getKey);
 	I_Method1(void, setButton, IN, int, button);
 	I_Method0(int, getButton);
-	I_Method4(void, setWindowSize, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
-	I_Method1(void, setXmin, IN, float, x);
+	I_Method4(void, setInputRange, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
 	I_Method0(float, getXmin);
-	I_Method1(void, setXmax, IN, float, x);
 	I_Method0(float, getXmax);
-	I_Method1(void, setYmin, IN, float, y);
 	I_Method0(float, getYmin);
-	I_Method1(void, setYmax, IN, float, y);
 	I_Method0(float, getYmax);
 	I_Method1(void, setX, IN, float, x);
 	I_Method0(float, getX);
@@ -261,13 +262,17 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Property(osgGA::GUIEventAdapter::ScrollingMotion, ScrollingMotion);
 	I_Property(osgGA::GUIEventAdapter::TabletPointerType, TabletPointerType);
 	I_Property(double, Time);
+	I_ReadOnlyProperty(unsigned int, WindowHeight);
+	I_ReadOnlyProperty(unsigned int, WindowWidth);
+	I_ReadOnlyProperty(int, WindowX);
+	I_ReadOnlyProperty(int, WindowY);
 	I_Property(float, X);
-	I_Property(float, Xmax);
-	I_Property(float, Xmin);
+	I_ReadOnlyProperty(float, Xmax);
+	I_ReadOnlyProperty(float, Xmin);
 	I_ReadOnlyProperty(float, Xnormalized);
 	I_Property(float, Y);
-	I_Property(float, Ymax);
-	I_Property(float, Ymin);
+	I_ReadOnlyProperty(float, Ymax);
+	I_ReadOnlyProperty(float, Ymin);
 	I_ReadOnlyProperty(float, Ynormalized);
 END_REFLECTOR
 

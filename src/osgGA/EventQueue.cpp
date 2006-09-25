@@ -77,9 +77,9 @@ bool EventQueue::copyEvents(Events& events) const
 }
 
 
-void EventQueue::windowResize(float Xmin, float Ymin, float Xmax, float Ymax)
+void EventQueue::windowResize(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange)
 {
-    _accumulateEventState->setWindowSize(Xmin, Ymin, Xmax, Ymax);
+    _accumulateEventState->setWindowRectangle(x, y, width, height, updateMouseRange);
 
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::RESIZE);

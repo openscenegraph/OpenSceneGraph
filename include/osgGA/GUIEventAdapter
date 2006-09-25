@@ -271,6 +271,23 @@ public:
         /** deprecated function for getting time of event. */
         double time() const { return _time; }
 
+
+        /** set window rectangle. */
+        void setWindowRectangle(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange = true);
+
+        /** get window x origin.*/
+        int getWindowX() const { return _windowX; }
+
+        /** get window y origin.*/
+        int getWindowY() const { return _windowY; }
+
+        /** get window width.*/
+        unsigned int getWindowWidth() const { return _windowWidth; }
+
+        /** get window height.*/
+        unsigned int getWindowHeight() const { return _windowHeight; }
+
+
         /** set key pressed. */
         inline void setKey(int key) { _key = key; }
 
@@ -283,31 +300,20 @@ public:
         /** button pressed/released, return -1 if inappropriate for this GUIEventAdapter.*/
         int getButton() const { return _button; }
 
-        /** set window size. */
-        void setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax);
 
-        /** set window minimum x. */
-        void setXmin(float x) { _Xmin = x; }
+        /** set mouse input range. */
+        void setInputRange(float Xmin, float Ymin, float Xmax, float Ymax);
 
-        /** get window minimum x. */
+        /** get mouse minimum x. */
         float getXmin() const { return _Xmin; }
 
-        /** set window maximum x. */
-        void setXmax(float x) { _Xmax = x; }
-
-        /** get window maximum x. */
+        /** get mouse maximum x. */
         float getXmax() const { return _Xmax; }
 
-        /** set window minimum y. */
-        void setYmin(float y) { _Ymin = y; }
-
-        /** get window minimum y. */
+        /** get mmouse minimum y. */
         float getYmin() const { return _Ymin; }
 
-        /** set window maYimum y. */
-        void setYmax(float y) { _Ymax = y; }
-
-        /** get window maYimum y. */
+        /** get mouse maYimum y. */
         float getYmax() const { return _Ymax; }
 
         /** set current mouse x position.*/
@@ -388,6 +394,10 @@ public:
         EventType _eventType;
         double _time;
 
+        int _windowX;
+        int _windowY;
+        int _windowWidth;
+        int _windowHeight;
         int _key;
         int _button;
         float _Xmin,_Xmax;

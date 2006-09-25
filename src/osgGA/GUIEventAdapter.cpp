@@ -18,6 +18,10 @@ using namespace osgGA;
 GUIEventAdapter::GUIEventAdapter():
     _eventType(NONE),
     _time(0.0),
+    _windowX(0),
+    _windowY(0),
+    _windowWidth(1280),
+    _windowHeight(1024),
     _key(0),
     _button(0),
     _Xmin(0.0),
@@ -40,6 +44,10 @@ GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
     osg::Referenced(),
     _eventType(rhs._eventType),
     _time(rhs._time),
+    _windowX(rhs._windowX),
+    _windowY(rhs._windowY),
+    _windowWidth(rhs._windowWidth),
+    _windowHeight(rhs._windowHeight),
     _key(rhs._key),
     _button(rhs._button),
     _Xmin(rhs._Xmin),
@@ -62,7 +70,21 @@ GUIEventAdapter::~GUIEventAdapter()
 {
 }
 
-void GUIEventAdapter::setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax)
+void GUIEventAdapter::setWindowRectangle(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange)
+{
+    _windowX = x;
+    _windowY = y;
+    _windowWidth = width;
+    _windowHeight = height;
+    
+    if (updateMouseRange)
+    {
+        setInputRange(x, y, x+width, y+height);
+    }
+    
+}
+
+void GUIEventAdapter::setInputRange(float Xmin, float Ymin, float Xmax, float Ymax)
 {
     _Xmin = Xmin;
     _Ymin = Ymin;

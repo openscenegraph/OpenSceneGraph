@@ -52,7 +52,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
 
         /** Method for adapting window resize event, placing this event on the back of the event queue. */
-        void windowResize(float Xmin, float Ymin, float Xmax, float Ymax);
+        void windowResize(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange = true);
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
         void mouseScroll(GUIEventAdapter::ScrollingMotion sm);

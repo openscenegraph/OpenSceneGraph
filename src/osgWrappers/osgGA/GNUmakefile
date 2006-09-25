@@ -15,6 +15,7 @@ CXXFILES =\
 	MatrixManipulator.cpp\
 	NodeTrackerManipulator.cpp\
 	SetSceneViewVisitor.cpp\
+	SimpleViewer.cpp\
 	StateSetManipulator.cpp\
 	TerrainManipulator.cpp\
 	TrackballManipulator.cpp\

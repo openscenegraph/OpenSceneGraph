@@ -32,7 +32,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_Method1(bool, copyEvents, IN, osgGA::EventQueue::Events &, events);
 	I_Method1(void, appendEvents, IN, osgGA::EventQueue::Events &, events);
 	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
-	I_Method4(void, windowResize, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
+	I_MethodWithDefaults5(void, windowResize, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true);
 	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm);
 	I_Method2(void, mouseScroll2D, IN, float, x, IN, float, y);
 	I_Method1(void, penPressure, IN, float, pressure);

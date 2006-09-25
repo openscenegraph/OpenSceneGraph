@@ -1,0 +1,114 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGGA_SimpleViewer
+#define OSGGA_SimpleViewer 1
+
+#include <osgGA/EventQueue>
+#include <osgGA/EventVisitor>
+#include <osgGA/MatrixManipulator>
+
+#include <osgDB/DatabasePager>
+
+#include <list>
+
+namespace osgGA{
+
+/** SimpleViewer provide a simple interface for setting up rendering of an scene graph, using a single camera view within a single window.*/
+class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter
+{
+    public:
+
+        SimpleViewer();
+        virtual ~SimpleViewer();
+
+        void setSceneData(osg::Node* node);
+        osg::Node* getSceneData();
+        const osg::Node* getSceneData() const;
+
+        osg::CameraNode* getCamera();
+        const osg::CameraNode* getCamera() const;
+
+        void setCameraManipulator(MatrixManipulator* manipulator);
+        MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
+        const MatrixManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
+
+
+        typedef std::list< osg::ref_ptr<GUIEventHandler> > EventHandlers;
+        
+        void addEventHandler(GUIEventHandler* eventHandler);
+        EventHandlers& getEventHandlers() { return _eventHandlers; }
+        const EventHandlers& getEventHandlers() const { return _eventHandlers; }
+
+        EventQueue* getEventQueue() { return _eventQueue.get(); }
+        const EventQueue* getEventQueue() const { return _eventQueue.get(); }
+
+        void setDatabasePager(osgDB::DatabasePager* dp);
+        osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
+        const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
+
+
+        /** Render a complete new frame.
+          * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal().
+          * Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code.*/ 
+        virtual void frame();
+
+        virtual void frameAdvance();
+        virtual void frameEventTraversal();
+        virtual void frameUpdateTraversal();
+        virtual void frameCullTraversal();
+        virtual void frameDrawTraversal();
+
+        /** Clean up all OpenGL objects associated with this viewer scenegraph. Note, must only be called from the graphics context associated with this viewer.*/ 
+        virtual void cleanup();
+
+    public:
+
+        // Override from GUIActionAdapter
+        virtual void requestRedraw() {}
+
+        // Override from GUIActionAdapter
+        virtual void requestContinuousUpdate(bool /*needed*/=true) {}
+
+        // Override from GUIActionAdapter
+        virtual void requestWarpPointer(float /*x*/,float /*y*/) {}
+        
+        osgUtil::SceneView* getSceneView() { return _sceneView.get(); }
+        const osgUtil::SceneView* getSceneView() const { return _sceneView.get(); }
+
+        void init();
+
+    protected:
+    
+    
+        bool                                    _firstFrame;
+        osg::Timer_t                            _startTick;
+        osg::ref_ptr<osg::FrameStamp>           _frameStamp;
+
+        osg::ref_ptr<osgUtil::SceneView>        _sceneView;
+
+        osg::ref_ptr<osgGA::EventQueue>         _eventQueue;
+
+        osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
+        EventHandlers                           _eventHandlers;
+
+        osg::ref_ptr<osgGA::EventVisitor>       _eventVisitor;
+                
+        osg::ref_ptr<osgDB::DatabasePager>      _databasePager;
+    
+};
+
+
+}
+
+#endif

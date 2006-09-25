@@ -158,9 +158,7 @@ void KeyboardMouseCallback::updateWindowSize()
             maxY = osg::maximum(maxY,ir.bottom()+ir.height());
         }
         
-        // osg::notify(osg::NOTICE)<<"IA ea->setWindowSize("<<minX<<","<<minY<<","<<maxX<<","<<maxY<<")"<<std::endl;
-        
-        ea->setWindowSize(minX,minY,maxX,maxY);
+        ea->setInputRange(minX,minY,maxX,maxY);
     }
     else if (rs)
     {
@@ -175,7 +173,12 @@ void KeyboardMouseCallback::updateWindowSize()
 
         // osg::notify(osg::NOTICE)<<"RS ea->setWindowSize("<<minX<<","<<minY<<","<<maxX<<","<<maxY<<")"<<std::endl;
 
-        ea->setWindowSize(minX,minY,maxX,maxY);
+        ea->setInputRange(minX,minY,maxX,maxY);
+    }
+
+    if (rs)
+    {
+        ea->setWindowRectangle(rs->getWindowOriginX(), rs->getWindowOriginY(), rs->getWindowWidth(),rs->getWindowHeight());
     }
 }
 

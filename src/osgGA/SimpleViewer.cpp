@@ -32,6 +32,8 @@ SimpleViewer::SimpleViewer():
     _eventQueue->setStartTick(_startTick);
 
     _eventVisitor = new osgGA::EventVisitor;
+    
+    setDatabasePager(new osgDB::DatabasePager);
 }
 
 SimpleViewer::~SimpleViewer()
@@ -50,6 +52,12 @@ void SimpleViewer::setSceneData(osg::Node* node)
         
         osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
         _cameraManipulator->home(*dummyEvent, *this);
+    }
+
+    if (_databasePager.valid())
+    {    
+        // register any PagedLOD that need to be tracked in the scene graph
+        _databasePager->registerPagedLODs(node);
     }
 }
 
@@ -90,6 +98,18 @@ void SimpleViewer::setCameraManipulator(MatrixManipulator* manipulator)
 void SimpleViewer::addEventHandler(GUIEventHandler* eventHandler)
 {
     _eventHandlers.push_back(eventHandler);
+}
+
+void SimpleViewer::setDatabasePager(osgDB::DatabasePager* dp)
+{
+    _databasePager = dp;
+    
+    if (dp && _sceneView.valid())
+    {
+        // need to register the DatabasePager with the SceneView's CullVisitor so it can pass on request
+        // for files to be loaded.
+        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+    }
 }
 
 void SimpleViewer::init()
@@ -214,6 +234,15 @@ void SimpleViewer::frameUpdateTraversal()
     {
         _sceneView->setViewMatrix(_cameraManipulator->getInverseMatrix());
     }
+
+    if (_databasePager.valid())
+    {    
+        // tell the DatabasePager the frame number of that the scene graph is being actively used to render a frame
+        _databasePager->signalBeginFrame(_frameStamp.get());
+
+        // syncronize changes required by the DatabasePager thread to the scene graph
+        _databasePager->updateSceneGraph(_frameStamp->getReferenceTime());
+    }
     
     _sceneView->update();
 }
@@ -226,10 +255,37 @@ void SimpleViewer::frameCullTraversal()
 void SimpleViewer::frameDrawTraversal()
 {
     _sceneView->draw();
+
+    if (_databasePager.valid())
+    {    
+        // tell the DatabasePager the frame number of that the scene graph is being actively used to render a frame
+        _databasePager->signalEndFrame();
+
+        // clean up  and compile gl objects with a specified limit       
+        double availableTime = 0.0025; // 2.5 ms
+
+        // compile any GL objects that are required.
+        _databasePager->compileGLObjects(*(_sceneView->getState()),availableTime);
+
+        // flush deleted GL objects.
+        _sceneView->flushDeletedGLObjects(availableTime);
+    }
 }
 
 void SimpleViewer::cleanup()
 {
+    if (_databasePager.valid())
+    {    
+        // clear the database pager so its starts a fresh on the next update/cull/draw traversals    
+        _databasePager->clear();
+        
+        // release the GL objects stored in the scene graph.
+        _sceneView->releaseAllGLObjects();
+        
+        // do a flush to delete all the OpenGL objects that have been deleted or released from the scene graph.
+        _sceneView->flushAllDeletedGLObjects();
+    }
+    
     _sceneView->releaseAllGLObjects();
     _sceneView->flushAllDeletedGLObjects();
 }

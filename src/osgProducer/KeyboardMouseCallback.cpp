@@ -178,7 +178,7 @@ void KeyboardMouseCallback::updateWindowSize()
 
     if (rs)
     {
-        ea->setWindowRectangle(rs->getWindowOriginX(), rs->getWindowOriginY(), rs->getWindowWidth(),rs->getWindowHeight());
+        ea->setWindowRectangle(rs->getWindowOriginX(), rs->getWindowOriginY(), rs->getWindowWidth(),rs->getWindowHeight(), false);
     }
 }
 

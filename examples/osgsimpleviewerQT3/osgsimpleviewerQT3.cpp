@@ -105,7 +105,7 @@ int main( int argc, char **argv )
 {
     QApplication a( argc, argv );
     
-        if (argc<2)
+    if (argc<2)
     {
         std::cout << argv[0] <<": requires filename argument." << std::endl;
         return 1;

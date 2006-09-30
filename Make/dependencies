@@ -21,6 +21,8 @@ FREETYPE_INSTALLED ?= yes
 
 XINE_INSTALLED ?= no
 
+QT3_INSTALLED ?= no
+
 ifeq ($(OS),Darwin)
     DARWIN_QUICKTIME ?= yes
 endif

@@ -288,3 +288,9 @@ ifeq ($(GLUT_INSTALLED),yes)
     EXAMPLE_DIRS += osgGLUTkeyboardmouse
 
 endif
+
+ifeq ($(QT3_INSTALLED),yes)
+
+    EXAMPLE_DIRS += osgsimpleviewerQT3
+
+endif

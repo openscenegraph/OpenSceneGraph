@@ -25,7 +25,7 @@
 namespace osgGA{
 
 /** SimpleViewer provide a simple interface for setting up rendering of an scene graph, using a single camera view within a single window.*/
-class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter
+class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter, public osg::Referenced
 {
     public:
 

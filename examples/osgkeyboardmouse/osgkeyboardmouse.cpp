@@ -287,8 +287,6 @@ int main( int argc, char **argv )
     osgGA::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
     
-    // create the event queue, 
-    
     // set up a KeyboardMouse to manage the events comming in from the RenderSurface
     osg::ref_ptr<Producer::KeyboardMouse>  kbm = new Producer::KeyboardMouse(renderSurface.get());
 

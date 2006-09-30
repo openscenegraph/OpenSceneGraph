@@ -12,7 +12,7 @@
 #else
 #  include <GL/glut.h>
 #endif
-#include <osg/Timer>
+
 #include <osgGA/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>

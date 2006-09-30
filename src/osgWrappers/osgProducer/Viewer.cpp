@@ -150,7 +150,5 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_Property(bool, WriteImageWhenDone);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >);
-
 STD_LIST_REFLECTOR(std::list< std::string >);
 

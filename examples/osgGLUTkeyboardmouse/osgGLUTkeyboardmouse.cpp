@@ -13,41 +13,16 @@
 #  include <GL/glut.h>
 #endif
 #include <osg/Timer>
-#include <osgUtil/SceneView>
+#include <osgGA/SimpleViewer>
+#include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-osg::ref_ptr<osgUtil::SceneView> sceneView;
-osg::Timer_t start_tick;
-unsigned int frameNum;
-int lastx, lasty;
-osg::Vec3 centerPos;
-float viewRot, viewElev, viewRadius;
+osg::ref_ptr<osgGA::SimpleViewer> viewer;
 
 void display(void)
 {
-    // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
-    osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
-    frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,osg::Timer::instance()->tick()));
-    frameStamp->setFrameNumber( frameNum++ );
-
-    // pass frame stamp to the SceneView so that the update, cull and draw traversals all use the same FrameStamp
-    sceneView->setFrameStamp( frameStamp.get() );
-
-    // set the view
-    osg::Vec3 viewPos(
-        viewRadius * cos(viewElev) * sin(viewRot),
-        viewRadius * cos(viewElev) * cos(viewRot),
-        viewRadius * sin(viewElev));
-    sceneView->setViewMatrixAsLookAt( centerPos-viewPos, centerPos, osg::Vec3(0.0f,0.0f,1.0f) );
-
-    // do the update traversal the scene graph - such as updating animations
-    sceneView->update();
-
-    // do the cull traversal, collect all objects in the view frustum into a sorted set of rendering bins
-    sceneView->cull();
-
-    // draw the rendering bins.
-    sceneView->draw();
+    // update and render the scene graph
+    viewer->frame();
 
     // Swap Buffers
     glutSwapBuffers();
@@ -56,26 +31,19 @@ void display(void)
 
 void reshape( int w, int h )
 {
-    // update the viewport dimensions, in case the window has been resized.
-    sceneView->setViewport( 0, 0, w, h );
+    // update the window dimensions, in case the window has been resized.
+    viewer->getEventQueue()->windowResize(0, 0, w, h );
 }
 
-void mousedown( int /*button*/, int /*state*/, int x, int y )
+void mousebutton( int button, int state, int x, int y )
 {
-    lastx = x;
-    lasty = y;
+    if (state==0) viewer->getEventQueue()->mouseButtonPress( x, y, button+1 );
+    else viewer->getEventQueue()->mouseButtonRelease( x, y, button+1 );
 }
 
 void mousemove( int x, int y )
 {
-    viewRot  += (x - lastx) / 100.0f;
-    viewElev -= (y - lasty) / 100.0f;
-
-    if( viewElev < -1.5f ) viewElev = -1.5f;
-    if( viewElev >  1.5f ) viewElev =  1.5f;
-
-    lastx = x;
-    lasty = y;
+    viewer->getEventQueue()->mouseMotion( x, y );
 }
 
 void keyboard( unsigned char key, int /*x*/, int /*y*/ )
@@ -83,20 +51,13 @@ void keyboard( unsigned char key, int /*x*/, int /*y*/ )
     switch( key )
     {
         case 27:
-            exit(0);
-            break;
-        case ' ':
-            viewRot = 0.0f;
-            viewElev = 0.0f;
+            glutDestroyWindow(glutGetWindow());
             break;
         default:
+            viewer->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
+            viewer->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
             break;
     }
-}
-
-void menu( int selection )
-{
-    std::cout << "menu selection = " << selection << std::endl;
 }
 
 int main( int argc, char **argv )
@@ -123,30 +84,14 @@ int main( int argc, char **argv )
     glutCreateWindow( argv[0] );
     glutDisplayFunc( display );
     glutReshapeFunc( reshape );
-    glutMouseFunc( mousedown );
+    glutMouseFunc( mousebutton );
     glutMotionFunc( mousemove );
     glutKeyboardFunc( keyboard );
 
-    glutCreateMenu( menu );
-    glutAddMenuEntry( "item 0", 0 );
-    glutAddMenuEntry( "item 1", 1 );
-    glutAttachMenu( GLUT_RIGHT_BUTTON );
-
     // create the view of the scene.
-    sceneView = new osgUtil::SceneView;
-    sceneView->setDefaults();
-    sceneView->setSceneData(loadedModel.get());
-
-    // initialize the view to look at the center of the scene graph
-    const osg::BoundingSphere& bs = loadedModel->getBound();
-    centerPos = bs.center();
-    viewRot = 0.0f;
-    viewElev = 0.0f;
-    viewRadius = 2.0f * bs.radius();
-
-    // record the timer tick at the start of rendering.
-    start_tick = osg::Timer::instance()->tick();
-    frameNum = 0;
+    viewer = new osgGA::SimpleViewer;
+    viewer->setSceneData(loadedModel.get());
+    viewer->setCameraManipulator(new osgGA::TrackballManipulator);
 
     glutMainLoop();
     return 0;

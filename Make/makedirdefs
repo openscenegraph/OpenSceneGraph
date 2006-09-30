@@ -283,14 +283,14 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 endif
 
 ifeq ($(GLUT_INSTALLED),yes)
-
     EXAMPLE_DIRS += osgGLUTsimple
     EXAMPLE_DIRS += osgGLUTkeyboardmouse
-
 endif
 
 ifeq ($(QT3_INSTALLED),yes)
-
     EXAMPLE_DIRS += osgsimpleviewerQT3
+endif
 
+ifeq ($(SDL_INSTALLED),yes)
+    EXAMPLE_DIRS += osgsimpleviewerSDL
 endif

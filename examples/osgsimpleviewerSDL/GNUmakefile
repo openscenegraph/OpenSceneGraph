@@ -1,0 +1,17 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgsimpleviewerSDL.cpp\
+
+LIBS     += -losgGA -losgDB -losgUtil -losg `sdl-config --libs` $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+INSTFILES = \
+	$(CXXFILES)\
+	GNUmakefile.inst=GNUmakefile
+
+EXEC = osgsimpleviewerSDL
+
+INC += $(X_INC) `sdl-config --cflags`
+
+include $(TOPDIR)/Make/makerules 

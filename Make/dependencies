@@ -23,6 +23,8 @@ XINE_INSTALLED ?= no
 
 QT3_INSTALLED ?= no
 
+SDL_INSTALLED ?= no
+
 ifeq ($(OS),Darwin)
     DARWIN_QUICKTIME ?= yes
 endif

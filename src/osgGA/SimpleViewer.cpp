@@ -116,7 +116,11 @@ void SimpleViewer::init()
 {
     osg::ref_ptr<osgGA::GUIEventAdapter> initEvent = _eventQueue->createEvent();
     initEvent->setEventType(osgGA::GUIEventAdapter::FRAME);
-    _cameraManipulator->init(*initEvent, *this);
+    
+    if (_cameraManipulator.valid())
+    {
+        _cameraManipulator->init(*initEvent, *this);
+    }
 }
 
 void SimpleViewer::frame()

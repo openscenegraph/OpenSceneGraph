@@ -31,6 +31,7 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgGA::Simp
 
 BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	I_BaseType(osgGA::GUIActionAdapter);
+	I_BaseType(osg::Referenced);
 	I_Constructor0();
 	I_Method1(void, setSceneData, IN, osg::Node *, node);
 	I_Method0(osg::Node *, getSceneData);

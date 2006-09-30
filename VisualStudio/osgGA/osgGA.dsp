@@ -199,6 +199,10 @@ SOURCE=..\..\src\osgGA\SetSceneViewVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgGA\SimpleViewer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgGA\StateSetManipulator.cpp
 # End Source File
 # Begin Source File
@@ -276,6 +280,10 @@ SOURCE=..\..\Include\osgGA\MatrixManipulator
 # Begin Source File
 
 SOURCE=..\..\Include\osgGA\SetSceneViewVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgGA\SimpleViewer
 # End Source File
 # Begin Source File
 

@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
+#include <osg/PolygonMode>
 #include <osg/StateSet>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
@@ -37,7 +38,20 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method1(void, setMaximumNumOfTextureUnits, IN, unsigned int, i);
 	I_Method0(unsigned int, getMaximumNumOfTextureUnits);
+	I_Method1(void, setBackfaceEnabled, IN, bool, newbackface);
+	I_Method0(bool, getBackfaceEnabled);
+	I_Method1(void, setLightingEnabled, IN, bool, newlighting);
+	I_Method0(bool, getLightingEnabled);
+	I_Method1(void, setTextureEnabled, IN, bool, newtexture);
+	I_Method0(bool, getTextureEnabled);
+	I_Method1(void, setPolygonMode, IN, osg::PolygonMode::Mode, newpolygonmode);
+	I_Method0(osg::PolygonMode::Mode, getPolygonMode);
+	I_Method0(void, cyclePolygonMode);
+	I_Property(bool, BackfaceEnabled);
+	I_Property(bool, LightingEnabled);
 	I_Property(unsigned int, MaximumNumOfTextureUnits);
+	I_Property(osg::PolygonMode::Mode, PolygonMode);
 	I_Property(osg::StateSet *, StateSet);
+	I_Property(bool, TextureEnabled);
 END_REFLECTOR
 

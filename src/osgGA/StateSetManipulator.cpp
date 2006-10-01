@@ -64,62 +64,27 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
         {
 
             case 'b' :
-                _backface = !_backface;
-                if( _backface ) _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
-                else _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+                setBackfaceEnabled(!getBackfaceEnabled());
                 aa.requestRedraw();
                 return true;
                 break;
 
             case 'l' :
-                _lighting = !_lighting ;
-                if( _lighting ) _drawState->setMode(GL_LIGHTING,osg::StateAttribute::ON);
-                else _drawState->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+                setLightingEnabled(!getLightingEnabled());
                 aa.requestRedraw();
                 return true;
                 break;
 
             case 't' :
-            {
-                _texture = !_texture;
-
-//                osg::ref_ptr< osg::Texture > tex = dynamic_cast<osg::Texture*>
-//                    ( _drawState->getAttribute( osg::StateAttribute::TEXTURE ) );
-//                cout << tex->numTextureUnits() << endl;
-
-                unsigned int mode = osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF;
-                if ( _texture ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
-                for( unsigned int ii=0; ii<_maxNumOfTextureUnits; ii++ )
-                {
-                        _drawState->setTextureMode( ii, GL_TEXTURE_1D, mode );
-                        _drawState->setTextureMode( ii, GL_TEXTURE_2D, mode );
-                        _drawState->setTextureMode( ii, GL_TEXTURE_3D, mode );
-                        _drawState->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
-                        _drawState->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
-                }
+                setTextureEnabled(!getTextureEnabled());
                 aa.requestRedraw();
                 return true;
-            }
             break;
 
             case 'w' :
-                {
-                    osg::PolygonMode* polyModeObj = dynamic_cast<osg::PolygonMode*>(_drawState->getAttribute(osg::StateAttribute::POLYGONMODE));
-                    if (!polyModeObj) 
-                    {
-                        polyModeObj = new osg::PolygonMode;
-                        _drawState->setAttribute(polyModeObj);
-                    }
-
-                    // cycle through the available modes.  
-                    switch(polyModeObj->getMode(osg::PolygonMode::FRONT_AND_BACK))
-                    {
-                        case osg::PolygonMode::FILL : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE); break;
-                        case osg::PolygonMode::LINE : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::POINT); break;
-                        case osg::PolygonMode::POINT : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::FILL); break;
-                    }
-                }
+                cyclePolygonMode();
                 break;
+
 #if COMPILE_TEXENVFILTER_USAGE
             case 'm' :
                 {
@@ -151,4 +116,76 @@ void StateSetManipulator::getUsage(osg::ApplicationUsage& usage) const
 void StateSetManipulator::accept(GUIEventHandlerVisitor& gehv)
 {
     gehv.visit(*this);
+}
+
+void StateSetManipulator::setBackfaceEnabled(bool newbackface)
+{
+    _backface = newbackface;
+    if( _backface ) _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
+    else _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+}
+
+void StateSetManipulator::setLightingEnabled(bool newlighting)
+{
+    _lighting = newlighting;
+    if( _lighting ) _drawState->setMode(GL_LIGHTING,osg::StateAttribute::ON);
+    else _drawState->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+}
+
+void StateSetManipulator::setTextureEnabled(bool newtexture)
+{
+    _texture = newtexture;
+//    osg::ref_ptr< osg::Texture > tex = dynamic_cast<osg::Texture*>
+//        ( _drawState->getAttribute( osg::StateAttribute::TEXTURE ) );
+//    cout << tex->numTextureUnits() << endl;
+
+    unsigned int mode = osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF;
+    if ( _texture ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
+    for( unsigned int ii=0; ii<_maxNumOfTextureUnits; ii++ )
+    {
+            _drawState->setTextureMode( ii, GL_TEXTURE_1D, mode );
+            _drawState->setTextureMode( ii, GL_TEXTURE_2D, mode );
+            _drawState->setTextureMode( ii, GL_TEXTURE_3D, mode );
+            _drawState->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
+            _drawState->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
+    }
+}
+
+void StateSetManipulator::setPolygonMode(osg::PolygonMode::Mode newpolygonmode)
+{
+    osg::PolygonMode* polyModeObj = getOrCreatePolygonMode();
+
+    polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,newpolygonmode);
+}
+
+void StateSetManipulator::cyclePolygonMode()
+{
+    osg::PolygonMode* polyModeObj = getOrCreatePolygonMode();
+
+    osg::PolygonMode::Mode currentMode = getPolygonMode();
+    // cycle through the available modes.  
+    switch(currentMode)
+    {
+        case osg::PolygonMode::FILL : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE); break;
+        case osg::PolygonMode::LINE : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::POINT); break;
+        case osg::PolygonMode::POINT : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::FILL); break;
+    }
+}
+
+osg::PolygonMode::Mode StateSetManipulator::getPolygonMode() const
+{
+    osg::PolygonMode* polyModeObj = dynamic_cast<osg::PolygonMode*>(_drawState->getAttribute(osg::StateAttribute::POLYGONMODE));
+    if (polyModeObj) return polyModeObj->getMode(osg::PolygonMode::FRONT_AND_BACK);
+    else return osg::PolygonMode::FILL;
+}
+
+osg::PolygonMode* StateSetManipulator::getOrCreatePolygonMode()
+{
+    osg::PolygonMode* polyModeObj = dynamic_cast<osg::PolygonMode*>(_drawState->getAttribute(osg::StateAttribute::POLYGONMODE));
+    if (!polyModeObj) 
+    {
+        polyModeObj = new osg::PolygonMode;
+        _drawState->setAttribute(polyModeObj);
+    }
+    return polyModeObj;
 }

@@ -13,6 +13,7 @@
 #include <osg/PolygonOffset>
 #include <osg/Depth>
 #include <osg/BlendFunc>
+#include <osgUtil/TransformAttributeFunctor>
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
@@ -416,7 +417,7 @@ protected:
         return osg::PrimitiveSet::POLYGON;
     }
 
-    virtual ~Face()
+    virtual void popLevel(Document& document)
     {
         if (_geode.valid())
         {
@@ -462,6 +463,27 @@ protected:
                         geometry->setNormalBinding(osg::Geometry::BIND_OFF);
                         geometry->setNormalArray(NULL);
                     }
+                }
+            }
+
+            if (document.getUseBillboardCenter())
+            {
+                // Set billboard rotation point to center of face.
+                osg::Billboard* billboard = dynamic_cast<osg::Billboard*>(_geode.get());
+                if (billboard)
+                {
+                    for (unsigned int i=0; i<billboard->getNumDrawables(); ++i)
+                    {
+                        osg::BoundingBox bb = billboard->getDrawable(i)->getBound();
+                        billboard->setPosition(i,bb.center());
+
+                        osgUtil::TransformAttributeFunctor tf(osg::Matrix::translate(-bb.center()));
+                        billboard->getDrawable(i)->accept(tf);
+
+                        billboard->getDrawable(i)->dirtyBound();
+                    }
+                    
+                    billboard->dirtyBound();
                 }
             }
         }

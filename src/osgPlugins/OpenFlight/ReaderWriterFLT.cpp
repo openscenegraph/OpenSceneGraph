@@ -171,11 +171,14 @@ class FLTReaderWriter : public ReaderWriter
                 document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
 
+                document.setUseBillboardCenter((options->getOptionString().find("billboardCenter")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "billboardCenter=" << document.getUseBillboardCenter() << std::endl;
+
                 document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "noTextureAlphaForTransparancyBinning=" << document.getUseTextureAlphaForTransparancyBinning() << std::endl;
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
 
                 document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "noUnitsConversion=" << document.getDoUnitsConversion() << std::endl;
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;
 
                 if (document.getDoUnitsConversion())
                 {

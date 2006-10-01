@@ -150,6 +150,8 @@ class Document
         bool getDefaultDOFAnimationState() const { return _defaultDOFAnimationState; }
         void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTransparancyBinning=flag; }
         bool getUseTextureAlphaForTransparancyBinning() const { return _useTextureAlphaForTransparancyBinning; }
+        void setUseBillboardCenter(bool flag) { _useBillboardCenter=flag; }
+        bool getUseBillboardCenter() const { return _useBillboardCenter; }
         void setDoUnitsConversion(bool flag) { _doUnitsConversion=flag; }
         bool getDoUnitsConversion() const { return _doUnitsConversion; }
         void setDesiredUnits(CoordUnits units ) { _desiredUnits=units; }
@@ -166,6 +168,7 @@ class Document
         bool                        _preserveObject;
         bool                        _defaultDOFAnimationState;
         bool                        _useTextureAlphaForTransparancyBinning;
+        bool                        _useBillboardCenter;
         bool                        _doUnitsConversion;
         CoordUnits                  _desiredUnits;
         

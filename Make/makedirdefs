@@ -291,6 +291,10 @@ ifeq ($(QT3_INSTALLED),yes)
     EXAMPLE_DIRS += osgsimpleviewerQT3
 endif
 
+ifeq ($(QT4_INSTALLED),yes)
+    EXAMPLE_DIRS += osgsimpleviewerQT4
+endif
+
 ifeq ($(SDL_INSTALLED),yes)
     EXAMPLE_DIRS += osgsimpleviewerSDL
 endif

@@ -1,0 +1,14 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgsimpleviewerQT4.cpp\
+
+LIBS     += -losgDB -losgUtil -losg -lqt-mt $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgsimpleviewerQT4
+
+INC      += -I$(QT4_ROOT)/include
+LDFLAGS  += -L$(QT4_ROOT)/lib
+
+include $(TOPDIR)/Make/makerules

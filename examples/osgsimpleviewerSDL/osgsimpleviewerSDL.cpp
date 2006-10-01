@@ -12,6 +12,40 @@
 
 #include <iostream>
 
+bool convertEvent(SDL_Event& event, osgGA::EventQueue& eventQueue)
+{
+    switch (event.type) {
+
+        case SDL_MOUSEMOTION:
+            eventQueue.mouseMotion(event.motion.x, event.motion.y);
+            return true;
+
+        case SDL_MOUSEBUTTONDOWN:
+            eventQueue.mouseButtonPress(event.button.x, event.button.y, event.button.button);
+            return true;
+
+        case SDL_MOUSEBUTTONUP:
+            eventQueue.mouseButtonRelease(event.button.x, event.button.y, event.button.button);
+            return true;
+
+        case SDL_KEYUP:
+            eventQueue.keyRelease( (osgGA::GUIEventAdapter::KeySymbol) event.key.keysym.unicode);
+            return true;
+
+        case SDL_KEYDOWN:
+            eventQueue.keyPress( (osgGA::GUIEventAdapter::KeySymbol) event.key.keysym.unicode);
+            return true;
+
+        case SDL_VIDEORESIZE:
+            eventQueue.windowResize(0, 0, event.resize.w, event.resize.h );
+            return true;
+
+        default:
+            break;
+    }
+    return false;
+}
+
 int main( int argc, char **argv )
 {
     if (argc<2)
@@ -68,39 +102,17 @@ int main( int argc, char **argv )
 
         while ( SDL_PollEvent(&event) )
         {
+            // pass the SDL event into the viewers event queue
+            convertEvent(event, *viewer.getEventQueue());
+
             switch (event.type) {
 
-                case SDL_MOUSEMOTION:
-                    viewer.getEventQueue()->mouseMotion(event.motion.x, event.motion.y);
-                    break;
-
-                case SDL_MOUSEBUTTONDOWN:
-                    viewer.getEventQueue()->mouseButtonPress(event.button.x, event.button.y, event.button.button);
-                    break;
-
-                case SDL_MOUSEBUTTONUP:
-                    viewer.getEventQueue()->mouseButtonRelease(event.button.x, event.button.y, event.button.button);
-                    break;
-
                 case SDL_KEYUP:
-                    viewer.getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) event.key.keysym.unicode);
 
                     if (event.key.keysym.sym==SDLK_ESCAPE) done = true;
                     if (event.key.keysym.sym=='f') SDL_WM_ToggleFullScreen(screen);
 
                     break;
-
-                case SDL_KEYDOWN:
-                    viewer.getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) event.key.keysym.unicode);
-                    break;
-
-                case SDL_VIDEORESIZE:
-                {
-                    viewer.getEventQueue()->windowResize(0, 0, event.resize.w, event.resize.h );
-
-                    std::cout<<"event.resize.w="<<event.resize.w<<"  event.resize.h="<<event.resize.h<<std::endl;
-                    break;
-                }
 
                 case SDL_QUIT:
                     done = true;

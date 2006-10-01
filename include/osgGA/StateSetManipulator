@@ -20,6 +20,8 @@
 #include <osgGA/GUIEventHandler>
 
 #include <osg/StateSet>
+#include <osg/PolygonMode>
+
 
 namespace osgGA{
 
@@ -56,6 +58,20 @@ public:
         
         void setMaximumNumOfTextureUnits(unsigned int i) { _maxNumOfTextureUnits = i; }
         unsigned int getMaximumNumOfTextureUnits() const { return _maxNumOfTextureUnits; }
+        
+        void setBackfaceEnabled(bool newbackface);
+        bool getBackfaceEnabled() const {return _backface;};
+
+        void setLightingEnabled(bool newlighting);
+        bool getLightingEnabled() const {return _lighting;};
+
+        void setTextureEnabled(bool newtexture);
+        bool getTextureEnabled() const {return _texture;};
+
+        void setPolygonMode(osg::PolygonMode::Mode newpolygonmode);
+        osg::PolygonMode::Mode getPolygonMode() const;
+        
+        void cyclePolygonMode();
 
 protected:
 
@@ -66,6 +82,8 @@ protected:
         bool _lighting;
         bool _texture;
         unsigned int _maxNumOfTextureUnits;
+        
+        osg::PolygonMode* getOrCreatePolygonMode();
 };
 
 }

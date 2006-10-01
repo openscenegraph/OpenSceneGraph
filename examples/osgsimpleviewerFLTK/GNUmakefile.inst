@@ -1,0 +1,19 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgsimpleviewerQT3.cpp\
+
+LIBS     += -losgDB -losgUtil -losg -lqt-mt $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgsimpleviewerQT3
+
+INC      += -I/usr/lib/qt3/include
+
+ifeq ($(ARCH),64)
+  LDFLAGS  += -L/usr/lib/qt3/lib64
+else
+  LDFLAGS  += -L/usr/lib/qt3/lib
+endif
+
+include $(TOPDIR)/Make/makerules

@@ -64,6 +64,8 @@ public:
     PrimaryRecord();
 
     virtual void read(RecordInputStream& in, Document& document);
+    virtual void pushLevel(Document& /*document*/) {}
+    virtual void popLevel(Document& /*document*/) {}
 
     // Ancillary operations
     virtual void setID(const std::string& /*id*/) {}

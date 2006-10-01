@@ -14,6 +14,7 @@ Document::Document() :
     _preserveObject(false),
     _defaultDOFAnimationState(false),
     _useTextureAlphaForTransparancyBinning(true),
+    _useBillboardCenter(false),
     _doUnitsConversion(true),
     _desiredUnits(METERS),
     _done(false),
@@ -38,12 +39,14 @@ Document::~Document()
 void Document::pushLevel()
 {
     _levelStack.push_back(_currentPrimaryRecord.get());
+    _levelStack.back()->pushLevel(*this);
     _level++;
 }
 
 
 void Document::popLevel()
 {
+    _levelStack.back()->popLevel(*this);
     _levelStack.pop_back();
 
     if (!_levelStack.empty())

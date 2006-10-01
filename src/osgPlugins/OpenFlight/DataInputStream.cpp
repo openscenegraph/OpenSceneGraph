@@ -77,13 +77,9 @@ uint32 DataInputStream::readUInt32(uint32 def)
 float32 DataInputStream::readFloat32(float32 def)
 {
     float32 d=def;
-    char buf[sizeof(float32)];
-    vread(buf, sizeof(float32));
+    vread((char*)&d, sizeof(float32));
     if (_byteswap && good())
-    {
-        osg::swapBytes4(buf);
-        memcpy(&d,buf,sizeof(float32));
-    }
+        osg::swapBytes4((char*)&d);
     return d;
 }
 
@@ -91,13 +87,9 @@ float32 DataInputStream::readFloat32(float32 def)
 float64 DataInputStream::readFloat64(float64 def)
 {
     float64 d=def;
-    char buf[sizeof(float64)];
-    vread(buf, sizeof(float64));
+    vread((char*)&d, sizeof(float64));
     if (_byteswap && good())
-    {
-        osg::swapBytes8(buf);
-        memcpy(&d,buf,sizeof(float64));
-    }
+        osg::swapBytes8((char*)&d);
     return d;
 }
 

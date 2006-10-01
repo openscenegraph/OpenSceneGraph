@@ -13,6 +13,8 @@ COMPILE_EXAMPLES ?= no
 # follows are dependenices on the various plugins.
 
 COLLADA_INSTALLED ?= no
+COLLADA_DAE_HOME ?= /usr/local
+COLLADA_DEBUG_LIBS ?= yes
 
 GDAL_INSTALLED ?= no
 JASPER_INSTALLED ?= no
@@ -22,6 +24,9 @@ FREETYPE_INSTALLED ?= yes
 XINE_INSTALLED ?= no
 
 QT3_INSTALLED ?= no
+
+QT4_INSTALLED ?= no
+QT4_ROOT ?= /usr/local/
 
 SDL_INSTALLED ?= no
 

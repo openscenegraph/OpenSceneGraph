@@ -353,6 +353,20 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     }
     else if (rhs_uniform_itr == rhs._uniformList.end()) return 1;  
 
+    // check render bin details
+    
+    if ( _binMode < rhs._binMode ) return -1;
+    else if ( _binMode > rhs._binMode ) return 1;
+    
+    if ( _binMode != INHERIT_RENDERBIN_DETAILS )
+    {
+        if ( _binNum < rhs._binNum ) return -1;
+        else if ( _binNum > rhs._binNum ) return 1;
+
+        if ( _binName < rhs._binName ) return -1;
+        else if ( _binName > rhs._binName ) return 1;
+    }
+
     return 0;
 }
 

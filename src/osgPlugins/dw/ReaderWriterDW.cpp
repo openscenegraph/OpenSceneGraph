@@ -932,7 +932,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                         //nrecs=0; // a numVerts is followed by nv vetex postiions
                         if (nexpected>0) obj.readOpenings(fp, nexpected);
                     } else if( strncmp(buff,"UVW:",4)==0) { // texture application matrix
-                        double mx[3][2];
+                        double mx[3][3];
                         sscanf(buff+4,"%lf %lf %lf %lf %lf %lf %lf %lf %lf",
                             &mx[0][0], &mx[0][1], &mx[0][2],
                             &mx[1][0], &mx[1][1], &mx[1][2],

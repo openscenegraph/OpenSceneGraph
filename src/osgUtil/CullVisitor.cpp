@@ -1151,7 +1151,14 @@ void CullVisitor::apply(osg::CameraNode& camera)
 
 
         // set up the background color and clear mask.
-        rtts->setClearColor(camera.getClearColor());
+        if (camera.getInheritanceMask() & CLEAR_COLOR)
+        {
+            rtts->setClearColor(camera.getClearColor());
+        }
+        else
+        {
+            rtts->setClearColor(previous_stage->getClearColor());
+        }
         rtts->setClearMask(camera.getClearMask());
         
         // set the color mask.

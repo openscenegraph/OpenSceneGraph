@@ -29,9 +29,8 @@
 class ReaderWriterDAE : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterDAE()
+    ReaderWriterDAE() : dae_(NULL)
     {
-        dae_ = new DAE();
     }
 
     ~ReaderWriterDAE()
@@ -73,6 +72,9 @@ ReaderWriterDAE::readNode(const std::string& fname,
     if( fileName.empty() ) return ReadResult::FILE_NOT_FOUND;
 
     osg::notify(osg::INFO) << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
+
+    if (dae_ == NULL)
+      const_cast<ReaderWriterDAE *>(this)->dae_ = new DAE();
 
     osgdae::daeReader daeReader(dae_);
     std::string fileURI( osgDB::convertFileNameToUnixStyle(fileName) );
@@ -117,6 +119,9 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
       }
     }
     
+    if (dae_ == NULL)
+      const_cast<ReaderWriterDAE *>(this)->dae_ = new DAE();
+
     osgdae::daeWriter daeWriter(dae_, fname, usePolygon );
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );

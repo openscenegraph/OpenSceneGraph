@@ -57,7 +57,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 OpenThreadsWin32.lib /nologo /dll /debug /machine:I386 /opt:ref /opt:icf /out:"$(OutDir)/osgdb_ESRI.dll" /implib:"../../../lib/$(PlatformName)/osgdb_ESRI.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 OpenThreadsWin32.lib /nologo /dll /debug /machine:I386 /opt:ref /opt:icf /out:"$(OutDir)/osgdb_shp.dll" /implib:"../../../lib/$(PlatformName)/osgdb_shp.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
 
 !ELSEIF  "$(CFG)" == "osgPlugin ESRI - Win32 Debug"
 
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 OpenThreadsWin32d.lib /nologo /dll /debug /machine:I386 /out:"$(OutDir)/osgdb_ESRId.dll" /pdbtype:sept /implib:"../../../lib/$(PlatformName)/osgdb_ESRId.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 OpenThreadsWin32d.lib /nologo /dll /debug /machine:I386 /out:"$(OutDir)/osgdb_shpd.dll" /pdbtype:sept /implib:"../../../lib/$(PlatformName)/osgdb_shpd.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ELSEIF  "$(CFG)" == "osgPlugin ESRI - Win32 Release Static"
@@ -112,7 +112,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nodefaultlib /nologo /out:"$(OutDir)/osgdb_ESRI_s.lib"
+# ADD LIB32 /nodefaultlib /nologo /out:"$(OutDir)/osgdb_shp_s.lib"
 # SUBTRACT LIB32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgPlugin ESRI - Win32 Debug Static"
@@ -140,7 +140,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nodefaultlib /nologo /out:"$(OutDir)/osgdb_ESRId_s.lib"
+# ADD LIB32 /nodefaultlib /nologo /out:"$(OutDir)/osgdb_shpd_s.lib"
 # SUBTRACT LIB32 /nodefaultlib
 
 !ENDIF 

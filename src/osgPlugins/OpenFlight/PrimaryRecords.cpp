@@ -137,6 +137,7 @@ class Group : public PrimaryRecord
     osg::ref_ptr<osg::Group> _group;
     bool _forwardAnim;
     bool _backwardAnim;
+    float32 _loopDuration;
 
 public:
 
@@ -157,7 +158,22 @@ public:
 
 protected:
 
-    virtual ~Group() {}
+    virtual ~Group()
+    {
+        if (!_group.valid())
+            return;
+
+        if ( (_group->getNumChildren() > 0) &&
+            (_forwardAnim || _backwardAnim) )
+        {
+            // Now that we know the number of children, set the loop duration
+            // to the best of our ability (currently, osg::Sequence doesn't
+            // support the OpenFlight last frame duration concept).
+            osg::Sequence* sequence = dynamic_cast<osg::Sequence*>( _group.get() );
+            assert( sequence != NULL );
+            sequence->setDuration( _loopDuration / (float)(_group->getNumChildren()) );
+        }
+    }
 
     void readRecord(RecordInputStream& in, Document& document)
     {
@@ -173,7 +189,7 @@ protected:
         /*int8 layer =*/ in.readInt8();
         in.forward(5);
         /*uint32 loopCount =*/ in.readUInt32();
-        /*float32 loopDuration =*/ in.readFloat32();
+        _loopDuration = in.readFloat32();
         /*float32 lastFrameDuration =*/ in.readFloat32();
 
         // Check for forward animation (sequence)
@@ -201,6 +217,8 @@ protected:
             else 
                 sequence->setInterval(loopMode, -1, 0);
 
+            // Set the duration, temporarily. We'll set the correct value
+            // in the destructor, when we know the number of children.
             float speed=0.1f;
             sequence->setDuration(speed);
             sequence->setMode(osg::Sequence::START);

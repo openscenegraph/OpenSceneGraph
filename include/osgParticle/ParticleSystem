@@ -314,10 +314,9 @@ namespace osgParticle
             if (p.x() + r > _bmax.x()) _bmax.x() = p.x() + r;
             if (p.y() + r > _bmax.y()) _bmax.y() = p.y() + r;
             if (p.z() + r > _bmax.z()) _bmax.z() = p.z() + r;
-            
-            if (!_bounds_computed) 
-                _bounds_computed = true;
         }
+        if (!_bounds_computed) 
+            _bounds_computed = true;
     }
 
     inline Particle& ParticleSystem::getDefaultParticleTemplate()

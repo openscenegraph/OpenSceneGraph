@@ -19,11 +19,11 @@
 using namespace osgdae;
 
 daeReader::daeReader(DAE *dae_) : dae(dae_),
-				  rootNode(NULL),
-				  m_numlights(0),
-				  currentEffect(NULL),
-				  geometryMap(),
-				  materialMap()
+                  rootNode(NULL),
+                  m_numlights(0),
+                  currentEffect(NULL),
+                  geometryMap(),
+                  materialMap()
 {
 }
 
@@ -42,7 +42,9 @@ bool daeReader::convert( const std::string &fileURI )
     {
         fURI = fileURI;
     }
-    if( dae->load( fURI.c_str() ) != DAE_OK ) 
+    daeInt res = dae->load( fURI.c_str() );
+    
+    if( res != DAE_OK && res != DAE_ERR_COLLECTION_ALREADY_EXISTS) 
     {
         osg::notify( osg::WARN ) << "Load failed in COLLADA DOM" << std::endl;
         return false;

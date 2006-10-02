@@ -126,14 +126,14 @@ inline T absolute(T v) { return v<(T)0?-v:v; }
   * meaning that the difference between them is less than an epsilon value
   * which defaults to 1e-6.
 */
-inline float equivalent(float lhs,float rhs,float epsilon=1e-6)
+inline bool equivalent(float lhs,float rhs,float epsilon=1e-6)
   { float delta = rhs-lhs; return delta<0.0f?delta>=-epsilon:delta<=epsilon; }
 
 /** return true if double lhs and rhs are equivalent,
   * meaning that the difference between them is less than an epsilon value
   * which defaults to 1e-6.
 */
-inline double equivalent(double lhs,double rhs,double epsilon=1e-6)
+inline bool equivalent(double lhs,double rhs,double epsilon=1e-6)
   { double delta = rhs-lhs; return delta<0.0?delta>=-epsilon:delta<=epsilon; }
 
 /** return the minimum of two values, equivilent to std::min.

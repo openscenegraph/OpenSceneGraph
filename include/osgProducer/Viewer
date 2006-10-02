@@ -305,6 +305,12 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         /** Update internal structures w.r.t updated scene data.*/
         virtual void updatedSceneData();
 
+        /** Dispatch a clean up frame that should be called before closing a OsgCameraGroup, i.e. on exit from an app.
+          * The clean up frame first release all GL objects associated with all the graphics context associated with
+          * the camera group, then runs a special frame that does the actual OpenGL deletion of GL objects for each
+          * graphics context. */
+        virtual void cleanup_frame();
+
     protected :
 
 

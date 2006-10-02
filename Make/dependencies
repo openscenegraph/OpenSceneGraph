@@ -30,6 +30,8 @@ QT4_ROOT ?= /usr/local/
 
 SDL_INSTALLED ?= no
 
+FLTK_INSTALLED ?= no
+
 ifeq ($(OS),Darwin)
     DARWIN_QUICKTIME ?= yes
 endif

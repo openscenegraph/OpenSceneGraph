@@ -285,6 +285,7 @@ endif
 ifeq ($(GLUT_INSTALLED),yes)
     EXAMPLE_DIRS += osgGLUTsimple
     EXAMPLE_DIRS += osgGLUTkeyboardmouse
+    EXAMPLE_DIRS += osgsimpleviewerGLUT
 endif
 
 ifeq ($(QT3_INSTALLED),yes)
@@ -297,4 +298,12 @@ endif
 
 ifeq ($(SDL_INSTALLED),yes)
     EXAMPLE_DIRS += osgsimpleviewerSDL
+endif
+
+ifeq ($(FLTK_INSTALLED),yes)
+    EXAMPLE_DIRS += osgsimpleviewerFLTK
+endif
+
+ifeq ($(PRODUCER_INSTALLED),yes)
+    EXAMPLE_DIRS += osgsimpleviewerProducer
 endif

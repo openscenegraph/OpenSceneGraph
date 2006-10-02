@@ -69,7 +69,10 @@ class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter, public osg::Re
         virtual void frameCullTraversal();
         virtual void frameDrawTraversal();
 
-        /** Clean up all OpenGL objects associated with this viewer scenegraph. Note, must only be called from the graphics context associated with this viewer.*/ 
+        /** Release all OpenGL objects associated with this viewer's scenegraph. Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained.*/ 
+        virtual void releaseAllGLObjects();
+
+        /** Clean up all OpenGL objects associated with this viewer's scenegraph. Note, must only be called from the graphics context associated with this viewer.*/ 
         virtual void cleanup();
 
     public:

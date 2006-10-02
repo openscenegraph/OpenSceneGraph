@@ -483,6 +483,8 @@ void Drawable::releaseGLObjects(State* state) const
 {
     if (_stateset.valid()) _stateset->releaseGLObjects(state);
 
+    if (_drawCallback.valid()) _drawCallback->releaseGLObjects(state);
+
     if (!_useDisplayList) return;
     
     if (state)

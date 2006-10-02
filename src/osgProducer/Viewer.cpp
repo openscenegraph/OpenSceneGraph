@@ -972,3 +972,14 @@ void Viewer::getUsage(osg::ApplicationUsage& usage) const
     }
 }
 
+void Viewer::cleanup_frame()
+{
+    for(EventHandlerList::iterator itr = _eventHandlerList.begin();
+        itr != _eventHandlerList.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects();
+    }
+
+    OsgCameraGroup::cleanup_frame();
+}

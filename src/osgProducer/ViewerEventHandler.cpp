@@ -104,6 +104,13 @@ public:
 
     virtual void operator()( const Producer::Camera & camera);
 
+    void releaseGLObjects() const
+    {
+        { for(TextList::const_iterator itr = _descriptionList.begin(); itr != _descriptionList.end(); ++itr) (*itr)->releaseGLObjects(); }
+        { for(TextList::const_iterator itr = _optionList.begin(); itr != _optionList.end(); ++itr) (*itr)->releaseGLObjects(); }
+        { for(TextList::const_iterator itr = _explanationList.begin(); itr != _explanationList.end(); ++itr) (*itr)->releaseGLObjects(); }
+    }
+
 protected:
     
     ViewerEventHandler* _veh;
@@ -1237,4 +1244,9 @@ void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("v","Toggle block and vsync");
     usage.addKeyboardMouseBinding("z","Start recording camera path.");
     usage.addKeyboardMouseBinding("Z","If recording camera path stop recording camera path, save to \"saved_animation.path\"\nThen restart camera from beginning on animation path");
+}
+
+void ViewerEventHandler::releaseGLObjects(osg::State*) const
+{
+    if (_statsAndHelpDrawCallback)  _statsAndHelpDrawCallback->releaseGLObjects();
 }

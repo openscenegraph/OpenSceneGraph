@@ -17,10 +17,15 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 
+#include <OpenThreads/ScopedLock>
+#include <osgDB/ReentrantMutex>
+
 #include "daeReader.h"
 #include "daeWriter.h"
 
 #define EXTENSION_NAME "dae"
+
+#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
 
 ///////////////////////////////////////////////////////////////////////////
 // OSG reader/writer plugin for the COLLADA 1.4.x ".dae" format.
@@ -29,16 +34,16 @@
 class ReaderWriterDAE : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterDAE() : dae_(NULL)
+    ReaderWriterDAE() : _dae(NULL)
     {
     }
 
     ~ReaderWriterDAE()
     {
-        if(dae_ != NULL){
-            delete dae_;
+        if(_dae != NULL){
+            delete _dae;
             DAE::cleanup();
-            dae_ = NULL;
+            _dae = NULL;
         }
     }
 
@@ -55,8 +60,9 @@ public:
   
 private:
 
-    DAE *dae_;
-  
+    mutable DAE *_dae;
+    mutable osgDB::ReentrantMutex _serializerMutex;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -65,6 +71,8 @@ osgDB::ReaderWriter::ReadResult
 ReaderWriterDAE::readNode(const std::string& fname,
         const osgDB::ReaderWriter::Options* options) const
 {
+    SERIALIZER();
+    
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
 
@@ -73,10 +81,10 @@ ReaderWriterDAE::readNode(const std::string& fname,
 
     osg::notify(osg::INFO) << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
 
-    if (dae_ == NULL)
-      const_cast<ReaderWriterDAE *>(this)->dae_ = new DAE();
+    if (_dae == NULL)
+      _dae = new DAE();
 
-    osgdae::daeReader daeReader(dae_);
+    osgdae::daeReader daeReader(_dae);
     std::string fileURI( osgDB::convertFileNameToUnixStyle(fileName) );
     if ( ! daeReader.convert( fileURI ) )
     {
@@ -94,6 +102,8 @@ osgDB::ReaderWriter::WriteResult
 ReaderWriterDAE::writeNode( const osg::Node& node,
         const std::string& fname, const osgDB::ReaderWriter::Options* options ) const
 {
+    SERIALIZER();
+
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
 
@@ -119,10 +129,10 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
       }
     }
     
-    if (dae_ == NULL)
-      const_cast<ReaderWriterDAE *>(this)->dae_ = new DAE();
+    if (_dae == NULL)
+      _dae = new DAE();
 
-    osgdae::daeWriter daeWriter(dae_, fname, usePolygon );
+    osgdae::daeWriter daeWriter(_dae, fname, usePolygon );
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 

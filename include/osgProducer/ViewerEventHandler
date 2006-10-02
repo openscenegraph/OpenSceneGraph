@@ -61,6 +61,11 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
         void setWriteImageFileName(const std::string& filename);
         const std::string& getWriteImageFileName() const { return _writeImageFileName; }
 
+        /** release OpenGL objects in specified graphics context if State
+            object is passed, otherwise release OpenGL objexts for all graphics context if
+            State object pointer NULL.*/
+        virtual void releaseGLObjects(osg::State* =0) const;
+
     protected:
         
         osgProducer::OsgCameraGroup* _cg;

@@ -276,20 +276,29 @@ void SimpleViewer::frameDrawTraversal()
     }
 }
 
-void SimpleViewer::cleanup()
+void SimpleViewer::releaseAllGLObjects()
 {
+    for(EventHandlers::iterator hitr = _eventHandlers.begin();
+        hitr != _eventHandlers.end();
+        ++hitr)
+    {
+        (*hitr)->releaseGLObjects(_sceneView->getState());
+    }
+
     if (_databasePager.valid())
     {    
         // clear the database pager so its starts a fresh on the next update/cull/draw traversals    
         _databasePager->clear();
-        
-        // release the GL objects stored in the scene graph.
-        _sceneView->releaseAllGLObjects();
-        
-        // do a flush to delete all the OpenGL objects that have been deleted or released from the scene graph.
-        _sceneView->flushAllDeletedGLObjects();
     }
     
+    // release the GL objects stored in the scene graph.
     _sceneView->releaseAllGLObjects();
+}
+
+void SimpleViewer::cleanup()
+{
+    releaseAllGLObjects();
+
+    // do a flush to delete all the OpenGL objects that have been deleted or released from the scene graph.
     _sceneView->flushAllDeletedGLObjects();
 }

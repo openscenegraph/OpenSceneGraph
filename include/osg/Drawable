@@ -378,6 +378,11 @@ class OSG_EXPORT Drawable : public Object
 
             /** do customized draw code.*/
             virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const { drawImplementation(*renderInfo.getState(), drawable); }
+
+            /** release OpenGL objects in specified graphics context if State
+                object is passed, otherwise release OpenGL objexts for all graphics context if
+                State object pointer NULL.*/
+            virtual void releaseGLObjects(State* =0) const {}
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/

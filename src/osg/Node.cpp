@@ -494,6 +494,9 @@ void Node::dirtyBound()
 void Node::releaseGLObjects(osg::State* state) const
 {
     if (_stateset.valid()) _stateset->releaseGLObjects(state);
+    if (_updateCallback.valid()) _updateCallback->releaseGLObjects(state);
+    if (_eventCallback.valid()) _eventCallback->releaseGLObjects(state);
+    if (_cullCallback.valid()) _cullCallback->releaseGLObjects(state);
 }
 
 

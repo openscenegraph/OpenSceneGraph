@@ -49,8 +49,7 @@ void LightModel::apply(State&) const
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,_ambient.ptr());
 
-    //static bool s_separateSpecularSupported = strcmp((const char *)glGetString(GL_VERSION),"1.2")>=0;
-    static bool s_separateSpecularSupported = (std::string((const char *)glGetString(GL_VERSION)) == "1.2");
+    static bool s_separateSpecularSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
     if (s_separateSpecularSupported)
     {
         if (_colorControl==SEPARATE_SPECULAR_COLOR)

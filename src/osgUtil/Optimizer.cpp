@@ -1096,6 +1096,16 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
     {
         for(unsigned int i=0;i<geode.getNumDrawables();++i)
         {
+            osg::Geometry *geometry = geode.getDrawable(i)->asGeometry();
+            if(geometry)
+            {
+                if(geometry->getVertexArray() && geometry->getVertexArray()->referenceCount() > 1) {
+                    geometry->setVertexArray(dynamic_cast<osg::Array*>(geometry->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
+                }
+                if(geometry->getNormalArray() && geometry->getNormalArray()->referenceCount() > 1) {
+                    geometry->setNormalArray(dynamic_cast<osg::Array*>(geometry->getNormalArray()->clone(osg::CopyOp::DEEP_COPY_ALL)));
+                }
+            }
             _drawableSet.insert(geode.getDrawable(i));
         }
     }

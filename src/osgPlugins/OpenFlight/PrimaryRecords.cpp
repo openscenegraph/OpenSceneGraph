@@ -158,23 +158,6 @@ public:
 
 protected:
 
-    virtual ~Group()
-    {
-        if (!_group.valid())
-            return;
-
-        if ( (_group->getNumChildren() > 0) &&
-            (_forwardAnim || _backwardAnim) )
-        {
-            // Now that we know the number of children, set the loop duration
-            // to the best of our ability (currently, osg::Sequence doesn't
-            // support the OpenFlight last frame duration concept).
-            osg::Sequence* sequence = dynamic_cast<osg::Sequence*>( _group.get() );
-            assert( sequence != NULL );
-            sequence->setDuration( _loopDuration / (float)(_group->getNumChildren()) );
-        }
-    }
-
     void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
@@ -188,6 +171,7 @@ protected:
         /*uint16 significance =*/ in.readUInt16();
         /*int8 layer =*/ in.readInt8();
         in.forward(5);
+        // version >= VERSION_15_8
         /*uint32 loopCount =*/ in.readUInt32();
         _loopDuration = in.readFloat32();
         /*float32 lastFrameDuration =*/ in.readFloat32();
@@ -237,6 +221,21 @@ protected:
             _parent->addChild(*_group);
     }
 
+    virtual void popLevel(Document& document)
+    {
+        // Set loop duration?
+        if (document.version() >= VERSION_15_8)
+        {
+            // Now that we know the number of children, set the loop duration
+            // to the best of our ability (currently, osg::Sequence doesn't
+            // support the OpenFlight last frame duration concept).
+            osg::Sequence* sequence = dynamic_cast<osg::Sequence*>(_group.get());
+            if (sequence && sequence->getNumChildren()>0)
+            {
+                sequence->setDuration( _loopDuration / (float)(_group->getNumChildren()) );
+            }
+        }
+    }
 };
 
 RegisterRecordProxy<Group> g_Group(GROUP_OP);

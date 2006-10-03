@@ -979,6 +979,15 @@ void Viewer::cleanup_frame()
         ++itr)
     {
         (*itr)->releaseGLObjects();
+
+        ViewerEventHandler* veh = dynamic_cast<ViewerEventHandler*>(itr->get());
+        if (veh)
+        {
+            // switch off stats so it doesn't try to redraw them.
+            veh->setFrameStatsMode(ViewerEventHandler::NO_STATS);
+            veh->setDisplayHelp(false);
+            veh->setWriteImageOnNextFrame(false);
+        }
     }
 
     OsgCameraGroup::cleanup_frame();

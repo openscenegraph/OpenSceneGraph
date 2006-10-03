@@ -256,12 +256,14 @@ Font::Glyph* Font::getGlyph(unsigned int charcode)
 
 void Font::releaseGLObjects(osg::State* state) const
 {
-  for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
-    itr!=_glyphTextureList.end();
-    ++itr)
-  {
-    (*itr)->releaseGLObjects(state);
-  }
+    for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
+        itr!=_glyphTextureList.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }    
+    const_cast<Font*>(this)->_glyphTextureList.clear();
+    const_cast<Font*>(this)->_sizeGlyphMap.clear();
 }
 
 osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
@@ -280,11 +282,7 @@ bool Font::hasVertical() const
 
 void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
 {
-
-    //cout << "charcode "<<(char)charcode<<"  "<<&_glyphTextureList<<endl;
-
     _sizeGlyphMap[SizePair(width,height)][charcode]=glyph;
-    
     
     int posX=0,posY=0;
     

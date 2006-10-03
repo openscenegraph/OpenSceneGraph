@@ -115,6 +115,8 @@ osg::Node* daeReader::processNode( domNode *node )
     osg::Node *retVal = new osg::Group();
     osg::Node *current = retVal;
 
+    retVal->setName( node->getId() ? node->getId() : "" );
+
     size_t count = node->getContents().getCount();
     for ( size_t i = 0; i < count; i++ ) 
     {

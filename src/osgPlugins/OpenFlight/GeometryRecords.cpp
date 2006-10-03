@@ -46,7 +46,12 @@ class Face : public PrimaryRecord
 public:
 
     Face() :
-        _primaryColor(1,1,1,1)
+        _primaryColor(1,1,1,1),
+        _drawFlag(SOLID_NO_BACKFACE),
+        _template(FIXED_NO_ALPHA_BLENDING),
+        _transparency(0),
+        _flags(0),
+        _lightMode(FACE_COLOR)
     {
     }
 
@@ -208,7 +213,7 @@ protected:
         std::string id = in.readString(8);
         /*int32 IRColor =*/ in.readInt32();
         /*int16 relativePriority =*/ in.readInt16();
-        _drawFlag = in.readUInt8();
+        _drawFlag = in.readUInt8(SOLID_NO_BACKFACE);
         uint8 texturedWhite = in.readUInt8();
         int16 primaryNameIndex = in.readInt16(-1);
         /*int16 secondaryNameIndex =*/ in.readInt16(-1);
@@ -298,14 +303,12 @@ protected:
         stateset->setMode(GL_LIGHTING, isLit() ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 
         // Material
-        bool isTransparentMaterial = false;
         if (isLit())
         {
             osg::Vec4 col = _primaryColor;
             col.a() = 1.0f - getTransparency();
             osg::Material* material = document.getOrCreateMaterialPool()->getOrCreateMaterial(materialIndex,col);
             stateset->setAttribute(material);
-            isTransparentMaterial = material->getDiffuse(osg::Material::FRONT).a() < 0.99f;
         }
 
         // Shaders
@@ -324,30 +327,6 @@ protected:
         {
             // Merge face stateset with texture stateset
             stateset->merge(*textureStateSet);
-        }
-
-        // Translucent image?
-        bool isImageTranslucent = false;
-        if (textureStateSet)
-        {
-            if (document.getUseTextureAlphaForTransparancyBinning())
-            {
-                osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
-                if (texture)
-                {
-                    osg::Image* image = texture->getImage();
-                    if (image && image->isImageTranslucent())
-                        isImageTranslucent = true;
-                }
-            }
-        }
-
-        // Enable alpha blend?
-        if (isAlphaBlend() || isTransparent() || isTransparentMaterial || isImageTranslucent)
-        {
-            static osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
-            stateset->setAttributeAndModes(blendFunc.get(), osg::StateAttribute::ON);
-            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
         }
 
         // Cull face
@@ -464,6 +443,41 @@ protected:
                         geometry->setNormalArray(NULL);
                     }
                 }
+            }
+
+            osg::StateSet* stateset =  _geode->getOrCreateStateSet();
+
+            // Translucent image?
+            bool isImageTranslucent = false;
+            if (document.getUseTextureAlphaForTransparancyBinning())
+            {
+                for (unsigned int i=0; i<stateset->getTextureAttributeList().size(); ++i)
+                {
+                    osg::StateAttribute* sa = stateset->getTextureAttribute(i,osg::StateAttribute::TEXTURE);
+                    osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(sa);
+                    if (texture)
+                    {
+                        osg::Image* image = texture->getImage();
+                        if (image && image->isImageTranslucent())
+                            isImageTranslucent = true;
+                    }
+                }
+            }
+
+            // Transparent Material?
+            bool isMaterialTransparent = false;
+            osg::Material* material = dynamic_cast<osg::Material*>(stateset->getAttribute(osg::StateAttribute::MATERIAL));
+            if (material)
+            {
+                isMaterialTransparent = material->getDiffuse(osg::Material::FRONT).a() < 0.99f;
+            }
+
+            // Enable alpha blend?
+            if (isAlphaBlend() || isTransparent() || isImageTranslucent || isMaterialTransparent)
+            {
+                static osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+                stateset->setAttributeAndModes(blendFunc.get(), osg::StateAttribute::ON);
+                stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             }
 
             if (document.getUseBillboardCenter())
@@ -659,12 +673,16 @@ class Mesh : public PrimaryRecord
     uint8       _lightMode;
 
     osg::ref_ptr<osg::Geode> _geode;
-    osg::ref_ptr<osg::Geometry> _geometry;
 
 public:
 
     Mesh() :
-        _primaryColor(1,1,1,1)
+        _primaryColor(1,1,1,1),
+        _drawFlag(SOLID_NO_BACKFACE),
+        _template(FIXED_NO_ALPHA_BLENDING),
+        _transparency(0),
+        _flags(0),
+        _lightMode(FACE_COLOR)
     {
     }
 
@@ -754,7 +772,7 @@ protected:
         in.forward(4);
         /*int32 IRColor =*/ in.readInt32();
         /*int16 relativePriority =*/ in.readInt16();
-        _drawFlag = in.readUInt8();
+        _drawFlag = in.readUInt8(SOLID_NO_BACKFACE);
         uint8 texturedWhite = in.readUInt8();
         int16 primaryNameIndex = in.readInt16(-1);
         /*int16 secondaryNameIndex =*/ in.readInt16(-1);
@@ -840,14 +858,12 @@ protected:
         stateset->setMode(GL_LIGHTING, isLit() ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 
         // Material
-        bool isTransparentMaterial = false;
         if (isLit())
         {
             osg::Vec4 col = _primaryColor;
             col.a() = 1.0f - getTransparency();
             osg::Material* material = document.getOrCreateMaterialPool()->getOrCreateMaterial(materialIndex,col);
             stateset->setAttribute(material);
-            isTransparentMaterial = material->getDiffuse(osg::Material::FRONT).a() < 0.99f;
         }
 
         // Shaders
@@ -866,30 +882,6 @@ protected:
         {
             // Merge face stateset with texture stateset
             stateset->merge(*textureStateSet);
-        }
-
-        // Translucent image?
-        bool isImageTranslucent = false;
-        if (textureStateSet)
-        {
-            if (document.getUseTextureAlphaForTransparancyBinning())
-            {
-                osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
-                if (texture)
-                {
-                    osg::Image* image = texture->getImage();
-                    if (image && image->isImageTranslucent())
-                        isImageTranslucent = true;
-                }
-            }
-        }
-
-        // Enable alpha blend?
-        if (isAlphaBlend() || isTransparent() || isTransparentMaterial || isImageTranslucent)
-        {
-            static osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
-            stateset->setAttributeAndModes(blendFunc.get(), osg::StateAttribute::ON);
-            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
         }
 
         // Cull face
@@ -932,7 +924,67 @@ protected:
             _parent->addChild(*_geode);
     }
 
-    virtual ~Mesh() {}
+    virtual void popLevel(Document& document)
+    {
+        if (_geode.valid())
+        {
+            osg::StateSet* stateset =  _geode->getOrCreateStateSet();
+
+            // Translucent image?
+            bool isImageTranslucent = false;
+            if (document.getUseTextureAlphaForTransparancyBinning())
+            {
+                for (unsigned int i=0; i<stateset->getTextureAttributeList().size(); ++i)
+                {
+                    osg::StateAttribute* sa = stateset->getTextureAttribute(i,osg::StateAttribute::TEXTURE);
+                    osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(sa);
+                    if (texture)
+                    {
+                        osg::Image* image = texture->getImage();
+                        if (image && image->isImageTranslucent())
+                            isImageTranslucent = true;
+                    }
+                }
+            }
+
+            // Transparent Material?
+            bool isMaterialTransparent = false;
+            osg::Material* material = dynamic_cast<osg::Material*>(stateset->getAttribute(osg::StateAttribute::MATERIAL));
+            if (material)
+            {
+                isMaterialTransparent = material->getDiffuse(osg::Material::FRONT).a() < 0.99f;
+            }
+
+            // Enable alpha blend?
+            if (isAlphaBlend() || isTransparent() || isImageTranslucent || isMaterialTransparent)
+            {
+                static osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+                stateset->setAttributeAndModes(blendFunc.get(), osg::StateAttribute::ON);
+                stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+            }
+
+            if (document.getUseBillboardCenter())
+            {
+                // Set billboard rotation point to center of face.
+                osg::Billboard* billboard = dynamic_cast<osg::Billboard*>(_geode.get());
+                if (billboard)
+                {
+                    for (unsigned int i=0; i<billboard->getNumDrawables(); ++i)
+                    {
+                        osg::BoundingBox bb = billboard->getDrawable(i)->getBound();
+                        billboard->setPosition(i,bb.center());
+
+                        osgUtil::TransformAttributeFunctor tf(osg::Matrix::translate(-bb.center()));
+                        billboard->getDrawable(i)->accept(tf);
+
+                        billboard->getDrawable(i)->dirtyBound();
+                    }
+                    
+                    billboard->dirtyBound();
+                }
+            }
+        }
+    }
 };
 
 RegisterRecordProxy<Mesh> g_Mesh(MESH_OP);

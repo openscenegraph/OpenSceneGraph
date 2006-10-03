@@ -55,6 +55,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	I_Method0(void, frameUpdateTraversal);
 	I_Method0(void, frameCullTraversal);
 	I_Method0(void, frameDrawTraversal);
+	I_Method0(void, releaseAllGLObjects);
 	I_Method0(void, cleanup);
 	I_Method0(void, requestRedraw);
 	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, x, true);

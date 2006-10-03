@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
+#include <osg/State>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandlerVisitor>
@@ -49,6 +50,7 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)
 	I_Method1(void, setWriteImageOnNextFrame, IN, bool, writeImageOnNextFrame);
 	I_Method1(void, setWriteImageFileName, IN, const std::string &, filename);
 	I_Method0(const std::string &, getWriteImageFileName);
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	I_Property(bool, DisplayHelp);
 	I_Property(osgProducer::ViewerEventHandler::FrameStatsMode, FrameStatsMode);
 	I_ReadOnlyProperty(osgProducer::OsgCameraGroup *, OsgCameraGroup);

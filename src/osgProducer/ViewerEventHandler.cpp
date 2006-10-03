@@ -104,11 +104,41 @@ public:
 
     virtual void operator()( const Producer::Camera & camera);
 
+    typedef std::vector< osg::ref_ptr<osgText::Text> > TextList;
+    void releaseTextList(const TextList& list) const
+    {
+        for(TextList::const_iterator itr = list.begin(); 
+            itr != list.end(); 
+            ++itr)
+        {
+            (*itr)->releaseGLObjects();
+        }
+    }
+
     void releaseGLObjects() const
     {
-        { for(TextList::const_iterator itr = _descriptionList.begin(); itr != _descriptionList.end(); ++itr) (*itr)->releaseGLObjects(); }
-        { for(TextList::const_iterator itr = _optionList.begin(); itr != _optionList.end(); ++itr) (*itr)->releaseGLObjects(); }
-        { for(TextList::const_iterator itr = _explanationList.begin(); itr != _explanationList.end(); ++itr) (*itr)->releaseGLObjects(); }
+        releaseTextList(_descriptionList);
+        releaseTextList(_optionList);
+        releaseTextList(_explanationList);
+        releaseTextList(_statsLabelList);
+        releaseTextList(_infoLabelList);
+        releaseTextList(_sceneStatsLabelList);
+        releaseTextList(_cullTimeText);
+        releaseTextList(_drawTimeText);
+        releaseTextList(_gpuTimeText);
+
+        if (_frameRateLabelText.valid()) _frameRateLabelText->releaseGLObjects();
+        if (_frameRateCounterText.valid()) _frameRateCounterText->releaseGLObjects();
+        if (_updateTimeText.valid()) _updateTimeText->releaseGLObjects();
+
+        if (_positionText.valid()) _positionText->releaseGLObjects();
+        if (_orientationText.valid()) _orientationText->releaseGLObjects();
+        if (_speedText.valid()) _speedText->releaseGLObjects();
+
+        if (_numVerticesText.valid()) _numVerticesText->releaseGLObjects();
+        if (_numPrimitivesText.valid()) _numPrimitivesText->releaseGLObjects();
+        if (_numDrawablesText.valid()) _numDrawablesText->releaseGLObjects();
+
     }
 
 protected:
@@ -125,7 +155,6 @@ protected:
     void displayHelp();
     void createHelpText();
     
-    typedef std::vector< osg::ref_ptr<osgText::Text> > TextList;
     bool        _helpInitialized;
     TextList    _descriptionList;
     TextList    _optionList;

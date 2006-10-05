@@ -365,11 +365,6 @@ public:
                     return false;
             }
         }
-
-        virtual void accept(osgGA::GUIEventHandlerVisitor& v)
-        {
-            v.visit(*this);
-        }
         
         osg::ref_ptr<KeyboardModel> _keyboardModel;
         

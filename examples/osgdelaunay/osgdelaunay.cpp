@@ -734,11 +734,6 @@ public:
           return false;
       }
       
-      virtual void accept(osgGA::GUIEventHandlerVisitor& v)
-      {
-          v.visit(*this);
-      }
-      
       osg::Node *_scene;
       osgProducer::Viewer &viewer;
       int iview;

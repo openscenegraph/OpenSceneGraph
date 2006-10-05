@@ -714,11 +714,6 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
             }
             return false;
         }
-                
-        virtual void accept(osgGA::GUIEventHandlerVisitor& v)
-        {
-            v.visit(*this);
-        }
         
         bool _updateTransparency;
         bool _updateAlphaCutOff;

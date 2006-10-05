@@ -46,8 +46,6 @@ public:
     
     void set(osg::Node* node);
 
-    virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
-
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;

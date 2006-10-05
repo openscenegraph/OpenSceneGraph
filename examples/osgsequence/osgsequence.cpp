@@ -191,9 +191,6 @@ public:
         return false;
     }
 
-    // accept visits
-    virtual void accept(osgGA::GUIEventHandlerVisitor&) {}
-
 private:
     osg::ref_ptr<osg::Sequence> _seq;
 };

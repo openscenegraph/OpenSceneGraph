@@ -45,8 +45,6 @@ public:
 
     META_Object(osgBlendEquationApp,TechniqueEventHandler);
 
-    virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
-
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
 
     virtual void getUsage(osg::ApplicationUsage& usage) const;

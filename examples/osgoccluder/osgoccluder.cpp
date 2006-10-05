@@ -32,11 +32,6 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
 
-        virtual void accept(osgGA::GUIEventHandlerVisitor& v)
-        {
-            v.visit(*this);
-        }
-        
         void addPoint(const osg::Vec3& pos);
                 
         void endOccluder();

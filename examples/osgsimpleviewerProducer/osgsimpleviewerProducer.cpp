@@ -74,6 +74,105 @@ private:
     osg::ref_ptr<osgGA::EventQueue>     _eventQueue;
 };
 
+
+
+#if 1
+
+// first approach uses a custom GraphicsWindow
+// then uses multiple inheritance to create a SimpleViewerWindowProducer
+
+class GraphicsWindowProducer : public virtual osgGA::GraphicsWindow, public Producer::RenderSurface
+{
+    public:
+    
+        GraphicsWindowProducer() 
+        {
+            // create a KeyboardMouseCallback to handle the mouse events within this applications
+            _kbmcb = new MyKeyboardMouseCallback(getEventQueue());
+
+            // set up a KeyboardMouse to manage the events comming in from the RenderSurface
+            _kbm = new Producer::KeyboardMouse(this);
+            _kbm->setCallback(_kbmcb.get());
+
+            // set the mouse input range.
+            // Producer defaults to using non-dimensional units, so we pass this onto osgGA, most windowing toolkits use pixel coords so use the window size instead.
+            getEventQueue()->getCurrentEventState()->setInputRange(-1.0, -1.0, 1.0, 1.0);
+
+            // Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits.
+            // we need to construct the event queue so that it knows about this convention.
+            getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
+        }
+    
+        void setWindowRectangle(int x, int y, unsigned int width, unsigned int height, bool resize = true)
+        {
+            Producer::RenderSurface::setWindowRectangle(x, y, width, height, resize);
+            getEventQueue()->windowResize(x,y,width,height, false);
+        }
+        
+        void realize() { Producer::RenderSurface::realize(); _kbm->startThread(); }
+        bool isRealized() const { return Producer::RenderSurface::isRealized(); }
+        void swapBuffers() { return Producer::RenderSurface::swapBuffers(); }
+        
+    protected:
+    
+        osg::ref_ptr<Producer::KeyboardMouse>  _kbm;
+        osg::ref_ptr<MyKeyboardMouseCallback> _kbmcb;
+};
+
+class SimplerViewerWindowProducer : public osgGA::SimpleViewer, public GraphicsWindowProducer
+{
+    public:
+        SimplerViewerProducer() {}
+};
+
+int main( int argc, char **argv )
+{
+    if (argc<2) 
+    {
+        std::cout << argv[0] <<": requires filename argument." << std::endl;
+        return 1;
+    }
+
+    // load the scene.
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    if (!loadedModel) 
+    {
+        std::cout << argv[0] <<": No data loaded." << std::endl;
+        return 1;
+    }
+    
+    // create the window to draw to.
+    SimplerViewerWindowProducer viewer;
+    viewer.setWindowName("osgkeyboardmouse");
+    viewer.setWindowRectangle(100,100,800,600);
+    viewer.useBorder(true);
+    viewer.realize();
+    
+    // create the view of the scene.
+    viewer.setSceneData(loadedModel.get());
+
+    // create a tracball manipulator to move the camera around in response to keyboard/mouse events
+    viewer.setCameraManipulator( new osgGA::TrackballManipulator );
+
+    // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
+    while( viewer.isRealized() )
+    {
+        // update the window dimensions, in case the window has been resized.
+        viewer.getEventQueue()->windowResize(0,0,viewer.getWindowWidth(),viewer.getWindowHeight(), false);
+        
+        viewer.frame();
+
+        // Swap Buffers
+        viewer.swapBuffers();
+    }
+
+    return 0;
+}
+
+#else
+
+// Second approach is to leave Producer and SimpleViewer decoupled, with the integration done mannually in the main loop
 int main( int argc, char **argv )
 {
     if (argc<2) 
@@ -139,4 +238,4 @@ int main( int argc, char **argv )
 
     return 0;
 }
-
+#endif

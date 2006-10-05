@@ -120,7 +120,7 @@ class GraphicsWindowProducer : public virtual osgGA::GraphicsWindow, public Prod
         osg::ref_ptr<MyKeyboardMouseCallback> _kbmcb;
 };
 
-class SimplerViewerWindowProducer : public osgGA::SimpleViewer, public GraphicsWindowProducer
+class SimplerViewerProducer : public osgGA::SimpleViewer, public GraphicsWindowProducer
 {
     public:
         SimplerViewerProducer() {}
@@ -143,7 +143,7 @@ int main( int argc, char **argv )
     }
     
     // create the window to draw to.
-    SimplerViewerWindowProducer viewer;
+    SimplerViewerProducer viewer;
     viewer.setWindowName("osgkeyboardmouse");
     viewer.setWindowRectangle(100,100,800,600);
     viewer.useBorder(true);

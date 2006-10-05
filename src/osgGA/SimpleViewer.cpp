@@ -27,8 +27,7 @@ SimpleViewer::SimpleViewer():
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
-    
-    _eventQueue = new osgGA::EventQueue;
+
     _eventQueue->setStartTick(_startTick);
 
     _eventVisitor = new osgGA::EventVisitor;

@@ -1,0 +1,91 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_GRAPHICWINDOW
+#define OSG_GRAPHICWINDOW 1
+
+#include <osg/GraphicsContext>
+#include <osg/Notify>
+
+#include <osgGA/EventQueue>
+
+namespace osgGA {
+
+/** Base class for providing Windowing API agnostic access to creating and managing graphisc window and events.
+  * Note, the GraphicsWindow is subclassed from osg::GraphicsContext, and to provide an implemention you'll need to implement its 
+  * range of pure virtual functions, you'll find these all have naming convention methodNameImplemention(..).
+  * GraphicsWindow adds the event queue ontop of the GraphicsContext, thereby adding a mechnism for adapting Windowing events
+  * as well as basics graphics context work, you should wire up custom GraphicsWindowImplementation to push their events through
+  * into the EventQueue. */
+class OSGGA_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgGA::GUIActionAdapter
+{
+    public:
+    
+        GraphicsWindow() { _eventQueue = new osgGA::EventQueue; }
+
+        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
+        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
+        const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
+
+    public:
+
+        /** Realise the GraphicsContext implementation, 
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
+
+        /** Return true if the graphics context has been realised, and is ready to use, implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool isRealizedImplementation() const  { osg::notify(osg::NOTICE)<<"GraphicsWindow::isRealizedImplementation() not implemented."<<std::endl; return false; }
+
+        /** Close the graphics context implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void closeImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::closeImplementation() not implemented."<<std::endl; }
+
+        /** Make this graphics context current implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; }
+        
+        /** Make this graphics context current with specified read context implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; }
+
+        /** Pure virtual, Bind the graphics context to associated texture implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void bindPBufferToTextureImplementation(GLenum /*buffer*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; }
+
+        /** Swap the front and back buffers implementation.
+          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
+        virtual void swapBuffersImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow:: swapBuffersImplementation() not implemented."<<std::endl; }
+
+    public:
+
+        // Override from GUIActionAdapter
+        virtual void requestRedraw() {}
+
+        // Override from GUIActionAdapter
+        virtual void requestContinuousUpdate(bool /*needed*/=true) {}
+
+        // Override from GUIActionAdapter
+        virtual void requestWarpPointer(float /*x*/,float /*y*/) {}
+
+
+    protected:
+    
+        osg::ref_ptr<osgGA::EventQueue> _eventQueue;
+        
+};
+
+
+}
+
+#endif

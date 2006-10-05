@@ -14,9 +14,9 @@
 #ifndef OSGGA_SimpleViewer
 #define OSGGA_SimpleViewer 1
 
-#include <osgGA/EventQueue>
 #include <osgGA/EventVisitor>
 #include <osgGA/MatrixManipulator>
+#include <osgGA/GraphicsWindow>
 
 #include <osgDB/DatabasePager>
 
@@ -25,7 +25,7 @@
 namespace osgGA{
 
 /** SimpleViewer provide a simple interface for setting up rendering of an scene graph, using a single camera view within a single window.*/
-class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter, public osg::Referenced
+class OSGGA_EXPORT SimpleViewer : public virtual osgGA::GraphicsWindow
 {
     public:
 
@@ -49,9 +49,6 @@ class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter, public osg::Re
         void addEventHandler(GUIEventHandler* eventHandler);
         EventHandlers& getEventHandlers() { return _eventHandlers; }
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
-
-        EventQueue* getEventQueue() { return _eventQueue.get(); }
-        const EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
         void setDatabasePager(osgDB::DatabasePager* dp);
         osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
@@ -77,15 +74,6 @@ class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter, public osg::Re
 
     public:
 
-        // Override from GUIActionAdapter
-        virtual void requestRedraw() {}
-
-        // Override from GUIActionAdapter
-        virtual void requestContinuousUpdate(bool /*needed*/=true) {}
-
-        // Override from GUIActionAdapter
-        virtual void requestWarpPointer(float /*x*/,float /*y*/) {}
-        
         osgUtil::SceneView* getSceneView() { return _sceneView.get(); }
         const osgUtil::SceneView* getSceneView() const { return _sceneView.get(); }
 
@@ -99,8 +87,6 @@ class OSGGA_EXPORT SimpleViewer : public osgGA::GUIActionAdapter, public osg::Re
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;
 
         osg::ref_ptr<osgUtil::SceneView>        _sceneView;
-
-        osg::ref_ptr<osgGA::EventQueue>         _eventQueue;
 
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;

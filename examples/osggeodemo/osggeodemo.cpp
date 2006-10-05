@@ -41,11 +41,7 @@ public:
         return false;
         
     }
-    
-    virtual void accept(osgGA::GUIEventHandlerVisitor& v)
-    {
-        v.visit(*this);
-    }
+
     inline float getMouseX(void) {return mouse_x;}; 
     inline float getMouseY(void) {return mouse_y;};
     

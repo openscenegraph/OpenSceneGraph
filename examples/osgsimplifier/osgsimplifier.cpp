@@ -46,11 +46,6 @@ public:
         return false;
     }
 
-    virtual void accept(osgGA::GUIEventHandlerVisitor& v)
-    {
-        v.visit(*this);
-    }
-
 private:
 
     unsigned int& _flag;

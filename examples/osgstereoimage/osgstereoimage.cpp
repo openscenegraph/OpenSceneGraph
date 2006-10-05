@@ -36,8 +36,6 @@ public:
 
     void set(osg::Switch* sw, float offsetX, float offsetY, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float timePerSlide, bool autoSteppingActive);
 
-    virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
-
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;

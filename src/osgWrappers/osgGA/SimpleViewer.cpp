@@ -13,7 +13,6 @@
 #include <osg/CameraNode>
 #include <osg/Node>
 #include <osgDB/DatabasePager>
-#include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
 #include <osgGA/SimpleViewer>
@@ -30,8 +29,7 @@
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgGA::SimpleViewer::EventHandlers);
 
 BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
-	I_BaseType(osgGA::GUIActionAdapter);
-	I_BaseType(osg::Referenced);
+	I_VirtualBaseType(osgGA::GraphicsWindow);
 	I_Constructor0();
 	I_Method1(void, setSceneData, IN, osg::Node *, node);
 	I_Method0(osg::Node *, getSceneData);
@@ -44,8 +42,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	I_Method1(void, addEventHandler, IN, osgGA::GUIEventHandler *, eventHandler);
 	I_Method0(osgGA::SimpleViewer::EventHandlers &, getEventHandlers);
 	I_Method0(const osgGA::SimpleViewer::EventHandlers &, getEventHandlers);
-	I_Method0(osgGA::EventQueue *, getEventQueue);
-	I_Method0(const osgGA::EventQueue *, getEventQueue);
 	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp);
 	I_Method0(osgDB::DatabasePager *, getDatabasePager);
 	I_Method0(const osgDB::DatabasePager *, getDatabasePager);
@@ -57,9 +53,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	I_Method0(void, frameDrawTraversal);
 	I_Method0(void, releaseAllGLObjects);
 	I_Method0(void, cleanup);
-	I_Method0(void, requestRedraw);
-	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, x, true);
-	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, x);
 	I_Method0(osgUtil::SceneView *, getSceneView);
 	I_Method0(const osgUtil::SceneView *, getSceneView);
 	I_Method0(void, init);
@@ -67,9 +60,19 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	I_Property(osgGA::MatrixManipulator *, CameraManipulator);
 	I_Property(osgDB::DatabasePager *, DatabasePager);
 	I_ReadOnlyProperty(osgGA::SimpleViewer::EventHandlers &, EventHandlers);
-	I_ReadOnlyProperty(osgGA::EventQueue *, EventQueue);
 	I_Property(osg::Node *, SceneData);
 	I_ReadOnlyProperty(osgUtil::SceneView *, SceneView);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
+	I_Constructor0();
+	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr);
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
+	I_Method0(osgGA::GUIEventHandler *, get);
+	I_Method0(bool, valid);
+	I_Method0(osgGA::GUIEventHandler *, release);
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
+	I_ReadOnlyProperty(osgGA::GUIEventHandler *, );
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >);

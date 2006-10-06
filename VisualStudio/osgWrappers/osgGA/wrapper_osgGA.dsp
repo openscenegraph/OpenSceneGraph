@@ -128,7 +128,7 @@ SOURCE=..\..\..\src\osgWrappers\osgGA\GUIEventHandler.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgGA\GUIEventHandlerVisitor.cpp
+SOURCE=..\..\..\src\osgWrappers\osgGA\GraphicsWindow.cpp
 # End Source File
 
 # Begin Source File
@@ -141,10 +141,6 @@ SOURCE=..\..\..\src\osgWrappers\osgGA\MatrixManipulator.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgGA\NodeTrackerManipulator.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgGA\SetSceneViewVisitor.cpp
 # End Source File
 
 # Begin Source File

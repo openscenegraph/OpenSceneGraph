@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_GEOSTATE_MANIPULATOR
-#define OSGGA_GEOSTATE_MANIPULATOR 1
+#ifndef OSGGA_STATESTATE_MANIPULATOR
+#define OSGGA_STATESTATE_MANIPULATOR 1
 
 #include <osgGA/Export>
 #include <osgGA/GUIEventAdapter>
@@ -38,20 +38,17 @@ public:
 
         virtual const char* className() const { return "StateSetManipulator"; }
 
-        /** attach a geostate to the manipulator to be used for specifying view.*/
+        /** attach a STATESTATE to the manipulator to be used for specifying view.*/
         virtual void setStateSet(osg::StateSet*);
 
-        /** get the attached a geostate.*/
+        /** get the attached a STATESTATE.*/
         virtual osg::StateSet * getStateSet();
 
-        /** get the attached a geostate.*/
+        /** get the attached a STATESTATE.*/
         virtual const osg::StateSet * getStateSet() const;
 
         /** Handle events, return true if handled, false otherwise.*/
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);        
-
-        /** Handle visitations */
-        virtual void accept(GUIEventHandlerVisitor&);
 
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
@@ -75,7 +72,7 @@ public:
 
 protected:
 
-        // Reference pointer to a geostate
+        // Reference pointer to a STATESTATE
         osg::ref_ptr<osg::StateSet> _drawState;
 
         bool _backface;

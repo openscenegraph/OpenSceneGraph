@@ -113,10 +113,6 @@ void StateSetManipulator::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("w","Toggle polygon fill mode between fill, line (wire frame) and points");
 }
 
-void StateSetManipulator::accept(GUIEventHandlerVisitor& gehv)
-{
-    gehv.visit(*this);
-}
 
 void StateSetManipulator::setBackfaceEnabled(bool newbackface)
 {

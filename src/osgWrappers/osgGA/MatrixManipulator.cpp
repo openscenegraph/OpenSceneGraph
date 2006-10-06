@@ -16,7 +16,6 @@
 #include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
-#include <osgGA/GUIEventHandlerVisitor>
 #include <osgGA/MatrixManipulator>
 #include <osgUtil/SceneView>
 
@@ -60,7 +59,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_Method1(void, home, IN, double, x);
 	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, v);
 	I_Property(bool, AutoComputeHomePosition);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
 	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);

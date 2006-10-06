@@ -10,11 +10,10 @@ CXXFILES =\
 	GUIActionAdapter.cpp\
 	GUIEventAdapter.cpp\
 	GUIEventHandler.cpp\
-	GUIEventHandlerVisitor.cpp\
+	GraphicsWindow.cpp\
 	KeySwitchMatrixManipulator.cpp\
 	MatrixManipulator.cpp\
 	NodeTrackerManipulator.cpp\
-	SetSceneViewVisitor.cpp\
 	SimpleViewer.cpp\
 	StateSetManipulator.cpp\
 	TerrainManipulator.cpp\

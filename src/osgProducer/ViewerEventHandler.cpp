@@ -1258,10 +1258,12 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
 
 }
 
+#ifdef COMPILE_COMPOSITE_EVENTHANDLER
 void ViewerEventHandler::accept(osgGA::GUIEventHandlerVisitor& gehv)
 {
     gehv.visit(*this);
 }
+#endif
 
 void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {

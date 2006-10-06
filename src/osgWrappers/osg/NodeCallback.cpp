@@ -15,7 +15,6 @@
 #include <osg/NodeCallback>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -40,7 +39,6 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeCallback)
 	I_Method0(const osg::NodeCallback *, getNestedCallback);
 	I_Method1(void, addNestedCallback, IN, osg::NodeCallback *, nc);
 	I_Method1(void, removeNestedCallback, IN, osg::NodeCallback *, nc);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 	I_Property(osg::NodeCallback *, NestedCallback);
 	I_PublicMemberProperty(osg::ref_ptr< osg::NodeCallback >, _nestedCallback);
 END_REFLECTOR

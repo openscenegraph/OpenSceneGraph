@@ -14,7 +14,6 @@
 #include <osg/State>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
-#include <osgGA/GUIEventHandlerVisitor>
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/ViewerEventHandler>
 
@@ -37,7 +36,6 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor1(IN, osgProducer::OsgCameraGroup *, cg);
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
-	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, gehv);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method0(osgProducer::OsgCameraGroup *, getOsgCameraGroup);
 	I_Method0(const osgProducer::OsgCameraGroup *, getOsgCameraGroup);

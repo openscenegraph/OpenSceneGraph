@@ -181,9 +181,6 @@ public:
         /** Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-        /** Handle visitations */
-        virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
-
 protected:
 
         MatrixManipulator();

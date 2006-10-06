@@ -17,7 +17,6 @@
 #include <osgGA/Export>
 #include <osgGA/MatrixManipulator>
 #include <osgGA/GUIEventHandler>
-#include <osgGA/GUIEventHandlerVisitor>
 
 namespace osgGA{
 

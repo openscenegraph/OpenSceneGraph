@@ -20,6 +20,7 @@ SRC_DIRS = \
 	osgParticle \
 	osgText \
         osgFX \
+        osgShadow \
 	osgSim
         
 ifeq ($(PRODUCER_INSTALLED),yes)
@@ -200,15 +201,14 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgbillboard \
 	osgblendequation \
 	osgcallback \
-	osgcatch \
 	osgcamera \
 	osgcameragroup \
+	osgcatch \
 	osgclip \
 	osgcluster \
 	osgcopy \
 	osgcubemap \
 	osgdelaunay \
-	osgdepthshadow \
 	osgdepthpartition \
 	osgdistortion \
 	osgforest \
@@ -227,8 +227,8 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osglogo \
         osgmotionblur \
         osgmovie \
-	osgmultitexture \
 	osgmultiplecameras \
+	osgmultitexture \
 	osgoccluder \
 	osgpagedlod \
 	osgparametric \
@@ -247,7 +247,9 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgsequence \
 	osgshaders \
 	osgshaderterrain \
+	osgshadow \
 	osgshadowtexture \
+	osgdepthshadow \
 	osgshape \
 	osgsimple \
 	osgsimplepager \

@@ -183,19 +183,11 @@ SOURCE=..\..\src\osgGA\GUIEventHandler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGA\GUIEventHandlerVisitor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgGA\KeySwitchMatrixManipulator.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\osgGA\MatrixManipulator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgGA\SetSceneViewVisitor.cpp
 # End Source File
 # Begin Source File
 
@@ -267,19 +259,11 @@ SOURCE=..\..\Include\osgGA\GUIEventHandler
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgGA\GUIEventHandlerVisitor
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\osgGA\KeySwitchMatrixManipulator
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\osgGA\MatrixManipulator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgGA\SetSceneViewVisitor
 # End Source File
 # Begin Source File
 

@@ -217,7 +217,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	I_Method0(const char *, className);
 	I_Method2(void, drawImplementation, IN, osg::State &, x, IN, const osg::Drawable *, x);
 	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, const osg::Drawable *, drawable);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)

@@ -15,7 +15,6 @@
 #include <osg/StateSet>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
-#include <osgGA/GUIEventHandlerVisitor>
 #include <osgGA/StateSetManipulator>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -34,7 +33,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_Method0(osg::StateSet *, getStateSet);
 	I_Method0(const osg::StateSet *, getStateSet);
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, accept, IN, osgGA::GUIEventHandlerVisitor &, x);
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
 	I_Method1(void, setMaximumNumOfTextureUnits, IN, unsigned int, i);
 	I_Method0(unsigned int, getMaximumNumOfTextureUnits);

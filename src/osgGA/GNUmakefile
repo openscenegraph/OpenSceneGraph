@@ -12,9 +12,7 @@ CXXFILES = \
         EventQueue.cpp\
         GUIEventAdapter.cpp\
         GUIEventHandler.cpp\
-        GUIEventHandlerVisitor.cpp\
         KeySwitchMatrixManipulator.cpp\
-        SetSceneViewVisitor.cpp\
 	StateSetManipulator.cpp\
 	SimpleViewer.cpp\
 	TerrainManipulator.cpp\

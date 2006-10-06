@@ -11,11 +11,11 @@ CXXFILES = \
     ParallelSplitShadowMap.cpp\
     Version.cpp\
 
-DEF     += -DOSGTEXT_LIBRARY
+DEF     += -DOSGSHADOW_LIBRARY
 
-LIBS  +=  -losgDB -losg $(GL_LIBS) $(OTHER_LIBS)
+LIBS  +=  -losgUtil -losg $(GL_LIBS) $(OTHER_LIBS)
 
-TARGET_BASENAME = osgText
+TARGET_BASENAME = osgShadow
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

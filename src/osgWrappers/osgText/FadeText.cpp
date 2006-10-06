@@ -10,7 +10,11 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CopyOp>
+#include <osg/Object>
+#include <osg/RenderInfo>
 #include <osgText/FadeText>
+#include <osgText/Text>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -22,7 +26,20 @@
 
 TYPE_NAME_ALIAS(std::map< osg::View * COMMA  osg::Vec4 >, osgText::FadeText::ViewBlendColourMap);
 
-TYPE_NAME_ALIAS(std::map< osg::View * COMMA  osg::Vec4 >, osgText::FadeText::ViewBlendColourMap);
+BEGIN_OBJECT_REFLECTOR(osgText::FadeText)
+	I_BaseType(osgText::Text);
+	I_Constructor0();
+	I_ConstructorWithDefaults2(IN, const osgText::Text &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_Method0(osg::Object *, cloneType);
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Method0(const char *, libraryName);
+	I_Method0(const char *, className);
+	I_Method0(osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap);
+	I_Method0(const osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap);
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
+	I_ReadOnlyProperty(osgText::FadeText::ViewBlendColourMap &, ViewBlendColourMap);
+END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::View * COMMA  osg::Vec4 >);
 

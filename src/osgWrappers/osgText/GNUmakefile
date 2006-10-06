@@ -4,7 +4,6 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	Export.cpp\
 	FadeText.cpp\
-	FadeTextBKP.cpp\
 	Font.cpp\
 	String.cpp\
 	Text.cpp\

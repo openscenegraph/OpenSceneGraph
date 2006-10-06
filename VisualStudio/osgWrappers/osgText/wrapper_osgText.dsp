@@ -104,10 +104,6 @@ SOURCE=..\..\..\src\osgWrappers\osgText\FadeText.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgText\FadeTextBKP.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgText\Font.cpp
 # End Source File
 

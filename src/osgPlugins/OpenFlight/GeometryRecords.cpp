@@ -303,8 +303,10 @@ protected:
         stateset->setMode(GL_LIGHTING, isLit() ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 
         // Material
-        if (isLit())
+        if (isLit() || materialIndex>=0)
         {
+            // MaterialPool will return a "default" material if no material is defined for materialIndex.
+            // http://www.multigen-paradigm.com/ubb/Forum1/HTML/000228.html
             osg::Vec4 col = _primaryColor;
             col.a() = 1.0f - getTransparency();
             osg::Material* material = document.getOrCreateMaterialPool()->getOrCreateMaterial(materialIndex,col);
@@ -858,8 +860,10 @@ protected:
         stateset->setMode(GL_LIGHTING, isLit() ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 
         // Material
-        if (isLit())
+        if (isLit() || materialIndex>=0)
         {
+            // MaterialPool will return a "default" material if no material is defined for materialIndex.
+            // http://www.multigen-paradigm.com/ubb/Forum1/HTML/000228.html
             osg::Vec4 col = _primaryColor;
             col.a() = 1.0f - getTransparency();
             osg::Material* material = document.getOrCreateMaterialPool()->getOrCreateMaterial(materialIndex,col);

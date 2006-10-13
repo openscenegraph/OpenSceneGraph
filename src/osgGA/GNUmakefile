@@ -22,7 +22,7 @@ CXXFILES = \
 
 DEF     += -DOSGGA_LIBRARY
 
-LIBS  += -losgUtil -losg $(GL_LIBS) $(OTHER_LIBS)
+LIBS  += -losgDB -losgUtil -losg $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgGA
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

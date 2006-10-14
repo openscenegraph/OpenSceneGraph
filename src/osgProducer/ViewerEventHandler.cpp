@@ -208,6 +208,10 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
     int x,y;
     unsigned int width,height;
     camera.getProjectionRectangle(x,y,width,height);
+    
+    // don't redraw if the new window size is 0 width or height.
+    if (width==0 || height==0) return;
+    
     _viewport->setViewport(x,y,width,height);
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
@@ -1257,13 +1261,6 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
     return false;
 
 }
-
-#ifdef COMPILE_COMPOSITE_EVENTHANDLER
-void ViewerEventHandler::accept(osgGA::GUIEventHandlerVisitor& gehv)
-{
-    gehv.visit(*this);
-}
-#endif
 
 void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {

@@ -23,7 +23,8 @@ Billboard::Billboard()
 {
     _mode = AXIAL_ROT;
     _axis.set(0.0f,0.0f,1.0f);
-    _normal.set(0.0f,-1.0f,0.0f);
+    //_normal.set(0.0f,-1.0f,0.0f);
+    setNormal(Vec3(0.0f,-1.0f,0.0f));
     updateCache();
 }
 
@@ -59,6 +60,22 @@ void Billboard::setNormal(const Vec3& normal)
     _normal = normal;
     _normal.normalize();
     updateCache();
+
+    // Build rotation from normal to z-axis,
+    // for use with POINT_ROT_EYE
+    Vec3 z(0.0, 0.0, 1.0);
+    Vec3 cp(z^_normal);
+    float dot = z*_normal;
+    float cp_len = cp.length();
+    if (cp_len != 0.0f)
+    {
+        cp /= cp_len;
+        float rotation_cp = acosf(dot);
+        Matrix rotateNormalToZ;
+        _rotateNormalToZAxis.makeRotate(-rotation_cp, cp);
+    }
+    else
+        _rotateNormalToZAxis.makeIdentity();
 }
 
 void Billboard::updateCache()
@@ -204,15 +221,7 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             break;
         }
         case(POINT_ROT_WORLD):
-        case(POINT_ROT_EYE):
         {
-            // currently treat both POINT_ROT_WORLD and POINT_ROT_EYE the same,
-            // this is only a temporary and 'incorrect' implementation, will
-            // implement fully on second pass of Billboard.
-            // Will also need up vector to calc POINT_ROT_EYE, so this will
-            // have to be added to the above method paramters.
-            // Robert Osfield, Jan 2001.
-
             float ev_len = ev.length();
             if (ev_len != 0.0f)
             {
@@ -229,6 +238,33 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
                     float rotation_cp = acosf(dot);
                     matrix.makeRotate(-inRadians(rotation_cp),cp[0],cp[1],cp[2]);
                 }
+            }
+            break;
+        }
+        case(POINT_ROT_EYE):
+        {
+            float ev_len = ev.length();
+            if (ev_len != 0.0f)
+            {
+                ev /= ev_len;
+
+                Vec3 up(modelview(0,1), modelview(1,1), modelview(2,1));
+                Vec3 right(up^ev);
+                right.normalize();
+                up = ev^right;
+                up.normalize();
+
+                matrix(0,0) = right.x();
+                matrix(0,1) = right.y();
+                matrix(0,2) = right.z();
+                matrix(1,0) = up.x();
+                matrix(1,1) = up.y();
+                matrix(1,2) = up.z();
+                matrix(2,0) = ev.x();
+                matrix(2,1) = ev.y();
+                matrix(2,2) = ev.z();
+
+                matrix.preMult(_rotateNormalToZAxis);
             }
             break;
         }

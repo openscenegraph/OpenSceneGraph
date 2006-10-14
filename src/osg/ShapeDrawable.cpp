@@ -746,7 +746,7 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
             glVertex3f(c*r,s*r,topz);
         }
 
-        glTexCoord2f(1.0f,0.0f);
+        glTexCoord2f(1.0f,0.5f);
         glVertex3f(r,0.0f,topz);
 
         glEnd();
@@ -774,7 +774,7 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
             glVertex3f(c*r,s*r,basez);
         }
 
-        glTexCoord2f(0.0f,0.0f);
+        glTexCoord2f(1.0f,0.5f);
         glVertex3f(r,0.0f,basez);
 
         glEnd();

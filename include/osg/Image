@@ -46,6 +46,7 @@
     #define GL_COMPRESSED_RGBA              0x84EE
 #endif
 
+
 namespace osg {
 
 /** Image class for encapsulating the storage texture image data. */
@@ -210,6 +211,7 @@ class OSG_EXPORT Image : public Object
 
 
         static bool isPackedType(GLenum type);
+        static GLenum computePixelFormat(GLenum pixelFormat);
         static unsigned int computeNumComponents(GLenum pixelFormat);
         static unsigned int computePixelSizeInBits(GLenum pixelFormat,GLenum type);
         static unsigned int computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing);

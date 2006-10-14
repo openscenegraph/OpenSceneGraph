@@ -143,6 +143,34 @@ bool Image::isPackedType(GLenum type)
     }    
 }
 
+
+GLenum Image::computePixelFormat(GLenum format)
+{
+    switch(format)
+    {
+        case(GL_ALPHA16F_ARB):
+        case(GL_ALPHA32F_ARB):
+            return GL_ALPHA;
+        case(GL_LUMINANCE16F_ARB):
+        case(GL_LUMINANCE32F_ARB):
+            return GL_LUMINANCE;
+        case(GL_INTENSITY16F_ARB):
+        case(GL_INTENSITY32F_ARB):
+            return GL_INTENSITY;
+        case(GL_LUMINANCE_ALPHA16F_ARB):
+        case(GL_LUMINANCE_ALPHA32F_ARB):
+            return GL_LUMINANCE_ALPHA;
+        case(GL_RGB32F_ARB):
+        case(GL_RGB16F_ARB):
+            return GL_RGB;
+        case(GL_RGBA32F_ARB):
+        case(GL_RGBA16F_ARB):
+            return GL_RGBA;
+        default:
+            return format;
+    }
+}
+
 unsigned int Image::computeNumComponents(GLenum pixelFormat)
 {
     switch(pixelFormat)
@@ -158,13 +186,23 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_GREEN): return 1;
         case(GL_BLUE): return 1;
         case(GL_ALPHA): return 1;
+        case(GL_ALPHA16F_ARB): return 1;
+        case(GL_ALPHA32F_ARB): return 1;
         case(GL_RGB): return 3;
         case(GL_BGR): return 3;
+        case(GL_RGB16F_ARB): return 3;
+        case(GL_RGB32F_ARB): return 3;
         case(GL_RGBA): return 4;
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;
+        case(GL_LUMINANCE16F_ARB): return 1;
+        case(GL_LUMINANCE32F_ARB): return 1;
         case(GL_INTENSITY): return 1;
+        case(GL_INTENSITY16F_ARB): return 1;
+        case(GL_INTENSITY32F_ARB): return 1;
         case(GL_LUMINANCE_ALPHA): return 2;
+        case(GL_LUMINANCE_ALPHA16F_ARB): return 2;
+        case(GL_LUMINANCE_ALPHA32F_ARB): return 2;
         case(GL_HILO_NV): return 2;
         case(GL_DSDT_NV): return 2;
         case(GL_DSDT_MAG_NV): return 3;
@@ -600,7 +638,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _t = height;
         _r = depth;
         
-        _pixelFormat = internalformat;
+        _pixelFormat = computePixelFormat(internalformat);
         _dataType = type;
         _internalTextureFormat = internalformat;
         _mipmapData = mipMapData;

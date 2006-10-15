@@ -14,17 +14,14 @@ class QWidget;
 
 #include <iostream>
 
-class OSGWidget : public QGLWidget, public osgGA::SimpleViewer
+class GraphicsWindowQT : public QGLWidget, virtual public osgGA::GraphicsWindow
 {
 public:
 
-    OSGWidget( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
-    virtual ~OSGWidget() {}
+    GraphicsWindowQT( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
+    virtual ~GraphicsWindowQT() {}
 
 protected:
-
-    virtual void initializeGL();
-    virtual void paintGL();
 
     virtual void resizeGL( int width, int height );
     virtual void keyPressEvent( QKeyEvent* event );
@@ -36,39 +33,29 @@ protected:
     QTimer _timer;
 };
 
-OSGWidget::OSGWidget( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f):
+GraphicsWindowQT::GraphicsWindowQT( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f):
     QGLWidget(parent, name, shareWidget, f)
 {
     connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     _timer.start(10);
 }
 
-void OSGWidget::initializeGL()
-{
-    QGLWidget::initializeGL();    
-}
-
-void OSGWidget::paintGL()
-{
-    frame();
-}
-
-void OSGWidget::resizeGL( int width, int height )
+void GraphicsWindowQT::resizeGL( int width, int height )
 {
     getEventQueue()->windowResize(0, 0, width, height );
 }
 
-void OSGWidget::keyPressEvent( QKeyEvent* event )
+void GraphicsWindowQT::keyPressEvent( QKeyEvent* event )
 {
     getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
 }
 
-void OSGWidget::keyReleaseEvent( QKeyEvent* event )
+void GraphicsWindowQT::keyReleaseEvent( QKeyEvent* event )
 {
     getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
 }
 
-void OSGWidget::mousePressEvent( QMouseEvent* event )
+void GraphicsWindowQT::mousePressEvent( QMouseEvent* event )
 {
     int button = 0;
     switch(event->button())
@@ -82,7 +69,7 @@ void OSGWidget::mousePressEvent( QMouseEvent* event )
     getEventQueue()->mouseButtonPress(event->x(), event->y(), button);
 }
 
-void OSGWidget::mouseReleaseEvent( QMouseEvent* event )
+void GraphicsWindowQT::mouseReleaseEvent( QMouseEvent* event )
 {
     int button = 0;
     switch(event->button())
@@ -96,10 +83,29 @@ void OSGWidget::mouseReleaseEvent( QMouseEvent* event )
     getEventQueue()->mouseButtonRelease(event->x(), event->y(), button);
 }
 
-void OSGWidget::mouseMoveEvent( QMouseEvent* event )
+void GraphicsWindowQT::mouseMoveEvent( QMouseEvent* event )
 {
     getEventQueue()->mouseMotion(event->x(), event->y());
 }
+
+
+class SimpleViewerQT : public osgGA::SimpleViewer, public GraphicsWindowQT
+{
+    public:
+        SimpleViewerQT() {}
+
+
+        virtual void initializeGL()
+        {
+            QGLWidget::initializeGL();    
+        }
+
+        virtual void paintGL()
+        {
+            frame();
+        }
+
+};
 
 int main( int argc, char **argv )
 {
@@ -120,7 +126,7 @@ int main( int argc, char **argv )
     }
 
 
-    OSGWidget* viewerWindow = new OSGWidget;
+    SimpleViewerQT* viewerWindow = new SimpleViewerQT;
 
     viewerWindow->setSceneData(loadedModel.get());
     viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);

@@ -12,35 +12,34 @@
 
 #include <iostream>
 
-class Fl_OSG_Widget : public Fl_Gl_Window, public osgGA::SimpleViewer
+class GraphicsWindowFLTK : public Fl_Gl_Window,  virtual osgGA::GraphicsWindow
 {
 public:
 
-    Fl_OSG_Widget(int x, int y, int w, int h, const char *label=0);
-    virtual ~Fl_OSG_Widget() {}
+    GraphicsWindowFLTK(int x, int y, int w, int h, const char *label=0);
+    virtual ~GraphicsWindowFLTK() {}
 
     virtual void resize(int x, int y, int w, int h);
 
 protected:
 
     virtual int handle(int event);
-    virtual void draw();
 
 };
 
-Fl_OSG_Widget::Fl_OSG_Widget(int x, int y, int w, int h, const char *label):
+GraphicsWindowFLTK::GraphicsWindowFLTK(int x, int y, int w, int h, const char *label):
     Fl_Gl_Window(x, y, w, h, label)
 {
     getEventQueue()->windowResize(x, y, w, h );
 }
 
-void Fl_OSG_Widget::resize(int x, int y, int w, int h)
+void GraphicsWindowFLTK::resize(int x, int y, int w, int h)
 {
     getEventQueue()->windowResize(x, y, w, h );
     Fl_Gl_Window::resize(x,y,w,h);
 }
 
-int Fl_OSG_Widget::handle(int event)
+int GraphicsWindowFLTK::handle(int event)
 {
     switch(event){
         case FL_PUSH:
@@ -65,15 +64,22 @@ int Fl_OSG_Widget::handle(int event)
     }
 }
 
-void Fl_OSG_Widget::draw()
-{
-    frame();
-}
-
 void idle_cb()
 {
     Fl::redraw();
 }
+
+
+class SimpleViewerFLTK : public osgGA::SimpleViewer, public GraphicsWindowFLTK
+{
+public:
+    SimpleViewerFLTK(int x, int y, int w, int h, const char *label=0):
+         GraphicsWindowFLTK(x,y,w,h,label) {}
+
+protected:
+    virtual void draw() { frame(); }
+
+};
 
 int main( int argc, char **argv )
 {
@@ -93,7 +99,7 @@ int main( int argc, char **argv )
     }
 
 
-    Fl_OSG_Widget viewerWindow(100,100,800,600);
+    SimpleViewerFLTK viewerWindow(100,100,800,600);
     viewerWindow.resizable(&viewerWindow);
 
     viewerWindow.setSceneData(loadedModel.get());

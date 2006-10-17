@@ -38,8 +38,8 @@ namespace osgIntrospection
     {
     public:
         /// Direct initialization constructor.
-        inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist);
-        
+      inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
+
         /// Destructor
         inline ~MethodInfo();
 
@@ -56,6 +56,12 @@ namespace osgIntrospection
         /// Returns a list of objects that describe the reflected
         /// method's parameters.
         inline const ParameterInfoList& getParameters() const;
+
+        /// Returns the brief help of the reflected method.
+        inline virtual const std::string& getBriefHelp() const;
+
+        /// Returns the detailed help of the reflected method.
+        inline virtual const std::string& getDetailedHelp() const;
 
         /// Returns whether the reflected method is const or not.
         virtual bool isConst() const = 0;
@@ -97,17 +103,22 @@ namespace osgIntrospection
 
         std::string _name;
         const Type& _decltype;
-        const Type& _rtype;        
+        const Type& _rtype;
         ParameterInfoList _params;
+    
+        std::string _briefHelp;
+        std::string _detailedHelp;
     };
 
     // INLINE METHODS
-    
-    inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist)
+
+  inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp, std::string detailedHelp)
     :   CustomAttributeProvider(),
         _decltype(decltype), 
         _rtype(rtype),
-        _params(plist)
+        _params(plist),
+        _briefHelp(briefHelp),
+        _detailedHelp(detailedHelp)
     {
         _name = strip_namespace(qname);
     }
@@ -138,6 +149,16 @@ namespace osgIntrospection
     inline const ParameterInfoList& MethodInfo::getParameters() const
     {
         return _params;
+    }
+
+    inline const std::string& MethodInfo::getBriefHelp() const
+    {
+        return _briefHelp;
+    }
+
+    inline const std::string& MethodInfo::getDetailedHelp() const
+    {
+        return _detailedHelp;
     }
 
     inline Value MethodInfo::invoke(const Value& , ValueList& ) const

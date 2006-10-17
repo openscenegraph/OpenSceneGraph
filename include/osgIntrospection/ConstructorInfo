@@ -26,9 +26,11 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT ConstructorInfo: public CustomAttributeProvider
     {
     public:
-        ConstructorInfo(const Type& decltype, const ParameterInfoList& params)
-        :    _decltype(decltype),
-            _params(params)
+        ConstructorInfo(const Type& decltype, const ParameterInfoList& params, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :   _decltype(decltype),
+        _params(params),
+            _briefHelp(briefHelp),
+            _detailedHelp(detailedHelp)
         {
         }
 
@@ -37,17 +39,35 @@ namespace osgIntrospection
             for (ParameterInfoList::iterator i=_params.begin(); i!=_params.end(); ++i)
                 delete *i;
         }
-        
+
+        /// Returns the brief help of the reflected construtor.
+        inline virtual const std::string& getBriefHelp() const
+        {
+            return _briefHelp;
+        }
+
+        /// Returns the detailed help of the reflected contructor.
+        inline virtual const std::string& getDetailedHelp() const
+        {
+            return _detailedHelp;
+        }
+
+        /// Returns the Type object associated to the type that
+        /// declares the reflected constructor.
         inline const Type& getDeclaringType() const
         {
             return _decltype;
         }
-        
+ 
+        /// Returns a list of objects that describe the reflected
+        /// constructor's parameters.
         inline const ParameterInfoList& getParameters() const
         {
             return _params;
         }
-                
+
+        /// Invokes the reflected constructor dynamically passing it the 
+        /// arguments as a list of Value objects.
         virtual Value createInstance(ValueList& args) const = 0;
         
     protected:
@@ -56,6 +76,9 @@ namespace osgIntrospection
     private:
         const Type& _decltype;
         ParameterInfoList _params;
+
+        std::string _briefHelp;
+        std::string _detailedHelp;
     };
 
 }

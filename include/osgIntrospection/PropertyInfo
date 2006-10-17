@@ -48,8 +48,53 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT PropertyInfo: public CustomAttributeProvider
     {
     public:
-        /// Direct initialization constructor for simple and indexed
-        /// properties.
+        /// Direct initialization constructor for simple properties.
+        /// You must pass the Type object associated to the class that
+        /// declares the property, the Type object that describes the
+        /// type of the property's value, the property name and the
+        /// getter/setter methods. Either the setter or the getter can
+        /// be null, meaning a restricted access. If both are null, the
+        /// user is expected to add a custom accessor attribute to this
+        /// PropertyInfo object.
+        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :   CustomAttributeProvider(),
+            _decltype(decltype),
+            _ptype(ptype),
+            _name(name),
+            _getm(getm),
+            _setm(setm),
+            _numm(0),
+            _addm(0),
+            _insm(0),
+            _remm(0),
+            _is_array(false),
+            _briefHelp(briefHelp),
+            _detailedHelp(detailedHelp)
+        {
+        }
+
+        /// Direct initialization constructor for "array" properties.
+        /// You must pass the Type object associated to the type that
+        /// declares the property, the Type object that describes the
+        /// type of the property's value, the property name and the
+        /// getter/setter/counter/adder/insert/remover methods.
+        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* numm, const MethodInfo* addm, const MethodInfo* insm, const MethodInfo* remm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :   CustomAttributeProvider(),
+            _decltype(decltype),
+            _ptype(ptype),
+            _name(name),
+            _getm(getm),
+            _setm(setm),
+            _numm(numm),
+            _addm(addm),
+            _insm(insm),
+            _remm(remm),
+            _is_array(true),
+            _briefHelp(briefHelp),
+            _detailedHelp(detailedHelp)
+        {
+        }
+        /// Direct initialization constructor for indexed properties.
         /// You must pass the Type object associated to the class that
         /// declares the property, the Type object that describes the
         /// type of the property's value, the property name and the
@@ -60,7 +105,7 @@ namespace osgIntrospection
         /// If the getter method has parameters, the property is considered
         /// to be indexed. The same is true if the getter is null and the
         /// setter has more than one parameter.
-        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm)
+        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* remm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
         :   CustomAttributeProvider(),
             _decltype(decltype),
             _ptype(ptype),
@@ -69,8 +114,11 @@ namespace osgIntrospection
             _setm(setm),
             _numm(0),
             _addm(0),
-            _remm(0),
-            _is_array(false)
+            _insm(0),
+            _remm(remm),
+            _is_array(false),
+            _briefHelp(briefHelp),
+            _detailedHelp(detailedHelp)
         {
             if (_getm)
             {
@@ -87,25 +135,6 @@ namespace osgIntrospection
             }
         }
 
-        /// Direct initialization constructor for "array" properties.
-        /// You must pass the Type object associated to the type that
-        /// declares the property, the Type object that describes the
-        /// type of the property's value, the property name and the
-        /// getter/setter/counter/adder/remover methods.
-        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* numm, const MethodInfo* addm, const MethodInfo* remm)
-        :   CustomAttributeProvider(),
-            _decltype(decltype),
-            _ptype(ptype),
-            _name(name),
-            _getm(getm),
-            _setm(setm),
-            _numm(numm),
-            _addm(addm),
-            _remm(remm),
-            _is_array(true)
-        {
-        }
-
         /// Returns the number of indices
         inline int getNumIndices() const
         {
@@ -116,6 +145,17 @@ namespace osgIntrospection
         inline virtual const std::string& getName() const
         {
             return _name;
+        }
+
+        /// Returns the brief help of the property being described.
+        inline virtual const std::string& getBriefHelp() const
+        {
+            return _briefHelp;
+        }
+        /// Returns the detailed help of the property being described.
+        inline virtual const std::string& getDetailedHelp() const
+        {
+            return _detailedHelp;
         }
 
         /// Returns the type that declares the property.
@@ -155,7 +195,13 @@ namespace osgIntrospection
         {
             return _addm;
         }
-        
+
+        /// Returns the insert method.
+        inline const MethodInfo* getInsertMethod() const
+        {
+            return _insm;
+        }
+
         /// Returns the remover method.
         inline const MethodInfo* getRemoveMethod() const
         {
@@ -185,13 +231,19 @@ namespace osgIntrospection
         {
             return _addm != 0 || isDefined<CustomPropertyAddAttribute>(false);
         }
-        
+
+        /// Returns whether items can be insert to the array property.
+        inline bool canInsert() const
+        {
+            return _insm != 0 || isDefined<CustomPropertyInsertAttribute>(false);
+        }
+
         /// Returns whether items can be removed from the array property.
         inline bool canRemove() const
         {
             return _remm != 0 || isDefined<CustomPropertyRemoveAttribute>(false);
         }
-        
+
 
         /// Returns whether the property is simple.
         inline bool isSimple() const
@@ -254,6 +306,11 @@ namespace osgIntrospection
         /// setter attribute is defined, it will be invoked instead.
         void setIndexedValue(Value& instance, ValueList& indices, const Value& value) const;
 
+        /// Invokes the remover method on the given instance and removes
+        /// an item from the indexed property. If a custom remover attribute
+        /// is defined, it will be invoked instead.
+        void removeIndexedItem(Value& instance, ValueList& indices) const;
+
         /// Invokes the counter method on the given instance and returns 
         /// the number of items of the array property. If a custom counter
         /// attribute is defined, it will be invoked instead.
@@ -278,7 +335,13 @@ namespace osgIntrospection
         /// an item to the array property. If a custom adder attribute is
         /// defined, it will be invoked instead.
         void addArrayItem(Value& instance, const Value& value) const;
-        
+
+        /// Invokes the insert method on the given instance and inserts
+        /// an item  to the array property after the i-th item of the array 
+        /// property. If a custom adder attribute is defined,
+        /// it will be invoked instead.
+        void insertArrayItem(Value& instance, int i, const Value& value) const;
+
         /// Invokes the remover method on the given instance and removes
         /// an item from the array property. If a custom remover attribute
         /// is defined, it will be invoked instead.
@@ -302,9 +365,13 @@ namespace osgIntrospection
         const MethodInfo* _setm;
         const MethodInfo* _numm;
         const MethodInfo* _addm;
+        const MethodInfo* _insm;
         const MethodInfo* _remm;
         ParameterInfoList _indices;
         bool _is_array;
+
+        std::string _briefHelp;
+        std::string _detailedHelp; 
     };
 
 }

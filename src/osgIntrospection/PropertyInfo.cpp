@@ -140,9 +140,9 @@ void PropertyInfo::setIndexedValue(Value& instance, ValueList& args, const Value
     if (!_setm) 
         throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::ISET);
 
-    args.push_back(value);
-    _setm->invoke(instance, args);
-    args.pop_back();
+    ValueList tmpArgs(args);
+    tmpArgs.push_back(value);
+    _setm->invoke(instance, tmpArgs);
 }
 
 int PropertyInfo::getNumArrayItems(const Value& instance) const
@@ -237,6 +237,24 @@ void PropertyInfo::addArrayItem(Value& instance, const Value& value) const
     _addm->invoke(instance, args);
 }
 
+void PropertyInfo::insertArrayItem(Value& instance, int i, const Value& value) const
+{
+    const CustomPropertyInsertAttribute *cadd = getAttribute<CustomPropertyInsertAttribute>(false);
+    if (cadd) 
+    {
+        cadd->getInserter()->insert(instance, i, value);
+        return;
+    }
+
+    if (!_addm) 
+        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::INSERT);
+
+    ValueList args;
+    args.push_back(i);
+    args.push_back(value);
+    _insm->invoke(instance, args);
+}
+
 void PropertyInfo::removeArrayItem(Value& instance, int i) const
 {
     const CustomPropertyRemoveAttribute *crem = getAttribute<CustomPropertyRemoveAttribute>(false);
@@ -291,7 +309,7 @@ void PropertyInfo::getIndexValueSet(int whichindex, const Value& instance, Value
         cia->getIndexInfo()->getIndexValueSet(whichindex, instance, values);
     }
     else
-    {    
+    {
         std::map<int, const IndexTypeAttribute *> ita_map;
         const CustomAttributeList& cal = getCustomAttributes();
         for (CustomAttributeList::const_iterator i=cal.begin(); i!=cal.end(); ++i)
@@ -301,11 +319,17 @@ void PropertyInfo::getIndexValueSet(int whichindex, const Value& instance, Value
                 ita_map[ita->getWhichIndex()] = ita;
         }
 
-        const EnumLabelMap& elm = getIndexParameters().at(whichindex)->getParameterType().getEnumLabels();
-        if (elm.empty())
-            throw IndexValuesNotDefinedException(_name, getIndexParameters().at(whichindex)->getName());
+        const EnumLabelMap* elm = &getIndexParameters().at(whichindex)->getParameterType().getEnumLabels();
+        if (elm->empty())
+        {
+            if (ita_map[whichindex])
+                elm = &ita_map[whichindex]->getIndexType().getEnumLabels();
 
-        for (EnumLabelMap::const_iterator i=elm.begin(); i!=elm.end(); ++i)
+            if (elm->empty())
+                throw IndexValuesNotDefinedException(_name, getIndexParameters().at(whichindex)->getName());
+        }
+
+        for (EnumLabelMap::const_iterator i=elm->begin(); i!=elm->end(); ++i)
         {
             if (ita_map[whichindex])
                 values.push_back(Value(i->first).convertTo(ita_map[whichindex]->getIndexType()));
@@ -325,3 +349,19 @@ const ParameterInfoList& PropertyInfo::getIndexParameters() const
 
     return _indices;
 }
+
+void PropertyInfo::removeIndexedItem(Value& instance, ValueList& args) const
+{
+    const CustomPropertyRemoveAttribute *crem = getAttribute<CustomPropertyRemoveAttribute>(false);
+    if (crem) 
+    {
+        crem->getRemover()->remove(instance, args);
+        return;
+    }
+
+    if (!_remm) 
+        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::REMOVE);
+
+    _remm->invoke(instance, args);    
+}
+

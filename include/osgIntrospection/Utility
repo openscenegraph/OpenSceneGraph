@@ -46,12 +46,19 @@ namespace osgIntrospection
         }
     }
 
+
+    /// Return a const reference on the reflected value given on the instance
+    ///
+    /// NOTE: You should NEVER paste a pointer or a reference to the template parameter T
     template<typename T> const T &getInstance(const Value &instance)
     {
         return instance.isTypedPointer() ?
             *variant_cast<const T*>(instance) : variant_cast<const T&>(instance);
     }
     
+    /// Return a reference on the reflected value given on the instance
+    ///
+    /// NOTE: You should NEVER paste a pointer or a reference to the template parameter T
     template<typename T> T &getInstance(Value &instance)
     {
         return instance.isTypedPointer() ?

@@ -25,8 +25,8 @@ namespace osgIntrospection
     template<typename C, typename IC> 
     struct TypedConstructorInfo0: ConstructorInfo
     {
-        TypedConstructorInfo0(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo0(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -42,8 +42,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0> 
     struct TypedConstructorInfo1: ConstructorInfo
     {
-        TypedConstructorInfo1(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo1(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -61,8 +61,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1> 
     struct TypedConstructorInfo2: ConstructorInfo
     {
-        TypedConstructorInfo2(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo2(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -81,8 +81,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2> 
     struct TypedConstructorInfo3: ConstructorInfo
     {
-        TypedConstructorInfo3(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo3(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -102,8 +102,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3> 
     struct TypedConstructorInfo4: ConstructorInfo
     {
-        TypedConstructorInfo4(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo4(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -124,8 +124,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4> 
     struct TypedConstructorInfo5: ConstructorInfo
     {
-        TypedConstructorInfo5(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo5(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -147,8 +147,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5> 
     struct TypedConstructorInfo6: ConstructorInfo
     {
-        TypedConstructorInfo6(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo6(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -171,8 +171,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6> 
     struct TypedConstructorInfo7: ConstructorInfo
     {
-        TypedConstructorInfo7(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo7(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -196,8 +196,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7> 
     struct TypedConstructorInfo8: ConstructorInfo
     {
-        TypedConstructorInfo8(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo8(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -222,8 +222,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8> 
     struct TypedConstructorInfo9: ConstructorInfo
     {
-        TypedConstructorInfo9(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo9(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -249,8 +249,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9> 
     struct TypedConstructorInfo10: ConstructorInfo
     {
-        TypedConstructorInfo10(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo10(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -277,8 +277,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10> 
     struct TypedConstructorInfo11: ConstructorInfo
     {
-        TypedConstructorInfo11(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo11(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -306,8 +306,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11> 
     struct TypedConstructorInfo12: ConstructorInfo
     {
-        TypedConstructorInfo12(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo12(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -336,8 +336,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12> 
     struct TypedConstructorInfo13: ConstructorInfo
     {
-        TypedConstructorInfo13(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo13(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -367,8 +367,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13> 
     struct TypedConstructorInfo14: ConstructorInfo
     {
-        TypedConstructorInfo14(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo14(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -399,8 +399,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14> 
     struct TypedConstructorInfo15: ConstructorInfo
     {
-        TypedConstructorInfo15(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo15(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 
@@ -432,8 +432,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14, typename P15> 
     struct TypedConstructorInfo16: ConstructorInfo
     {
-        TypedConstructorInfo16(const ParameterInfoList& plist)
-        :    ConstructorInfo(typeof(C), plist)
+        TypedConstructorInfo16(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
         {
         }
 

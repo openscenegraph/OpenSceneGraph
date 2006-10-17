@@ -37,8 +37,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)();
 
-        StaticMethodInfo0(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo0(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -63,8 +63,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0);
 
-        StaticMethodInfo1(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo1(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -91,8 +91,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1);
 
-        StaticMethodInfo2(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo2(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -120,8 +120,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2);
 
-        StaticMethodInfo3(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo3(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -150,8 +150,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3);
 
-        StaticMethodInfo4(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo4(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -181,8 +181,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4);
 
-        StaticMethodInfo5(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo5(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -213,8 +213,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5);
 
-        StaticMethodInfo6(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo6(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -246,8 +246,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6);
 
-        StaticMethodInfo7(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo7(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -280,8 +280,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7);
 
-        StaticMethodInfo8(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo8(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -315,8 +315,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8);
 
-        StaticMethodInfo9(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo9(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -351,8 +351,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9);
 
-        StaticMethodInfo10(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo10(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -388,8 +388,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10);
 
-        StaticMethodInfo11(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo11(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -426,8 +426,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11);
 
-        StaticMethodInfo12(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo12(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -465,8 +465,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12);
 
-        StaticMethodInfo13(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo13(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -505,8 +505,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13);
 
-        StaticMethodInfo14(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo14(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -546,8 +546,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14);
 
-        StaticMethodInfo15(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo15(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -588,8 +588,8 @@ namespace osgIntrospection
     public:
         typedef R (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15);
 
-        StaticMethodInfo16(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(R), plist), f_(f)
+        StaticMethodInfo16(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -631,8 +631,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)();
 
-        StaticMethodInfo0(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo0(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -657,8 +657,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0);
 
-        StaticMethodInfo1(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo1(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -685,8 +685,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1);
 
-        StaticMethodInfo2(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo2(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -714,8 +714,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2);
 
-        StaticMethodInfo3(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo3(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -744,8 +744,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3);
 
-        StaticMethodInfo4(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo4(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -775,8 +775,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4);
 
-        StaticMethodInfo5(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo5(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -807,8 +807,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5);
 
-        StaticMethodInfo6(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo6(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -840,8 +840,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6);
 
-        StaticMethodInfo7(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo7(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -874,8 +874,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7);
 
-        StaticMethodInfo8(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo8(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -909,8 +909,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8);
 
-        StaticMethodInfo9(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo9(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -945,8 +945,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9);
 
-        StaticMethodInfo10(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo10(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -982,8 +982,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10);
 
-        StaticMethodInfo11(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo11(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -1020,8 +1020,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11);
 
-        StaticMethodInfo12(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo12(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -1059,8 +1059,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12);
 
-        StaticMethodInfo13(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo13(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -1099,8 +1099,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13);
 
-        StaticMethodInfo14(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo14(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -1140,8 +1140,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14);
 
-        StaticMethodInfo15(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo15(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 
@@ -1182,8 +1182,8 @@ namespace osgIntrospection
     public:
         typedef void (*FunctionType)(P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15);
 
-        StaticMethodInfo16(const std::string& qname, FunctionType f, const ParameterInfoList& plist)
-        :    MethodInfo(qname, typeof(C), typeof(void), plist), f_(f)
+        StaticMethodInfo16(const std::string& qname, FunctionType f, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, briefHelp, detailedHelp), f_(f)
         {
         }
 

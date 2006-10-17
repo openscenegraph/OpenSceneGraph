@@ -90,6 +90,12 @@ namespace osgIntrospection
         /// name aliases match the given argument
         inline bool matchesName(const std::string& name) const;
 
+        /// Returns the brief help of the reflected type.
+        inline virtual const std::string& getBriefHelp() const;
+
+        /// Returns the detailed help of the reflected type.
+        inline virtual const std::string& getDetailedHelp() const;
+
         /// Returns the number of base types.
         /// This number is zero if the type is not derived from any other 
         /// type.
@@ -261,6 +267,9 @@ namespace osgIntrospection
 
         typedef std::vector<std::string> AliasList;
         AliasList _aliases;
+
+        std::string _briefHelp;
+        std::string _detailedHelp;
     };
 
     // OPERATORS
@@ -331,6 +340,16 @@ namespace osgIntrospection
         if (_pointed_type)
             qname.append(" *");
         return qname;
+    }
+
+    inline const std::string& Type::getBriefHelp() const
+    {
+        return _briefHelp;
+    }
+
+    inline const std::string& Type::getDetailedHelp() const
+    {
+        return _detailedHelp;
     }
 
     inline int Type::getNumBaseTypes() const

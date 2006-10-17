@@ -178,6 +178,7 @@ namespace osgIntrospection
             AGET,
             ASET,
             ADD,
+            INSERT,
             REMOVE,
             COUNT
         };
@@ -200,6 +201,7 @@ namespace osgIntrospection
             case AGET: msg = "retrieved with array index"; break;
             case ASET: msg = "set with array index"; break;
             case ADD: msg = "added"; break;
+            case INSERT: msg = "inserted"; break;
             case REMOVE: msg = "removed"; break;
             case COUNT: msg = "counted"; break;
             default: msg = "?";

@@ -208,7 +208,7 @@ namespace osgIntrospection
     struct AtomicValueReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         AtomicValueReflector(const std::string& name, const std::string& ns)
         :    ValueReflector<T>(name, ns)
         {
@@ -222,7 +222,7 @@ namespace osgIntrospection
         {
             setReaderWriter(new StdReaderWriter<T>);
             setComparator(new PartialOrderComparator<T>);
-            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));            
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
         }
     };
 
@@ -230,7 +230,7 @@ namespace osgIntrospection
     struct WAtomicValueReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         WAtomicValueReflector(const std::string& name, const std::string& ns)
         :    ValueReflector<T>(name, ns)
         {
@@ -244,7 +244,7 @@ namespace osgIntrospection
         {
             setReaderWriter(new StdWReaderWriter<T>);
             setComparator(new PartialOrderComparator<T>);
-            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));            
+            addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
         }
     };
 
@@ -330,17 +330,29 @@ namespace osgIntrospection
             }
         };
 
+        struct Inserter: PropertyInserter
+        {
+            virtual void insert(Value& instance, int i, const Value& v) const
+            {
+                T& ctr = getInstance<T>(instance);
+                typename T::iterator j=ctr.begin();
+                std::advance(j, i);
+                ctr.insert(j, variant_cast<const typename T::value_type& >(v));
+            }
+        };
+
         StdVectorReflector(const std::string& name): ValueReflector<T>(name)
         {
             addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-            
-            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
+
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Item", 0, 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertySetAttribute(new Setter));
             pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
             pi->addAttribute(new CustomPropertyAddAttribute(new Adder));
             pi->addAttribute(new CustomPropertyRemoveAttribute(new Remover));
-            
+            pi->addAttribute(new CustomPropertyInsertAttribute(new Inserter));
+
             if (typeid(VT).before(typeid(typename T::value_type)) ||
                 typeid(typename T::value_type).before(typeid(VT)))
             {
@@ -357,7 +369,7 @@ namespace osgIntrospection
     struct StdSetReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         struct Getter: PropertyGetter
         {
             virtual Value get(Value& instance, int i) const
@@ -392,7 +404,7 @@ namespace osgIntrospection
                 getInstance<T>(instance).insert(variant_cast<const typename T::value_type& >(v));
             }
         };
-        
+
         struct Remover: PropertyRemover
         {
             virtual void remove(Value& instance, int i) const
@@ -407,13 +419,13 @@ namespace osgIntrospection
         StdSetReflector(const std::string& name): ValueReflector<T>(name)
         {
             addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-            
-            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
+
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Item", 0, 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
             pi->addAttribute(new CustomPropertyAddAttribute(new Adder));
             pi->addAttribute(new CustomPropertyRemoveAttribute(new Remover));
-            
+
             if (typeid(VT).before(typeid(typename T::value_type)) ||
                 typeid(typename T::value_type).before(typeid(VT)))
             {
@@ -430,7 +442,7 @@ namespace osgIntrospection
     struct StdListReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         struct Getter: PropertyGetter
         {
             virtual Value get(Value& instance, int i) const
@@ -488,17 +500,29 @@ namespace osgIntrospection
             }
         };
 
+        struct Inserter: PropertyInserter
+        {
+            virtual void insert(Value& instance, int i, const Value& v) const
+            {
+                T& ctr = getInstance<T>(instance);
+                typename T::iterator j=ctr.begin();
+                std::advance(j, i);
+                ctr.insert(j, variant_cast<const typename T::value_type& >(v));
+            }
+        };
+
         StdListReflector(const std::string& name): ValueReflector<T>(name)
         {
             addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-            
-            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0, 0);
+
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Item", 0, 0, 0, 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertySetAttribute(new Setter));
             pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
             pi->addAttribute(new CustomPropertyAddAttribute(new Adder));
             pi->addAttribute(new CustomPropertyRemoveAttribute(new Remover));
-            
+            pi->addAttribute(new CustomPropertyInsertAttribute(new Inserter));
+
             if (typeid(VT).before(typeid(typename T::value_type)) ||
                 typeid(typename T::value_type).before(typeid(VT)))
             {
@@ -515,7 +539,7 @@ namespace osgIntrospection
     struct StdMapReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         typedef typename T::iterator iterator;
         typedef typename T::const_iterator const_iterator;
         typedef typename T::key_type key_type;
@@ -527,17 +551,17 @@ namespace osgIntrospection
             {
                 T& ctr = getInstance<T>(instance);
                 const key_type& key = variant_cast<const key_type& >(indices.front());
-                
+
                 iterator i = ctr.find(key);
                 if (i == ctr.end()) return Value();
                 return i->second;
             }
-            
+
             virtual Value get(const Value& instance, const ValueList& indices) const
             {
                 const T& ctr = getInstance<T>(instance);
                 const key_type& key = variant_cast<const key_type& >(indices.front());
-                
+
                 const_iterator i = ctr.find(key);
                 if (i == ctr.end()) return Value();
                 return i->second;
@@ -586,14 +610,23 @@ namespace osgIntrospection
             }
         };
 
+        struct Remover: PropertyRemover
+        {
+            virtual void remove(Value& instance, ValueList& values) const
+            {
+                getInstance<T>(instance).erase(getInstance<key_type>(values.front()));
+            }
+        };
+
         StdMapReflector(const std::string& name): ValueReflector<T>(name)
         {
             addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-            
-            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::mapped_type), "Items", 0, 0);
+
+            PropertyInfo* pi = new PropertyInfo(typeof(T), typeof(typename T::mapped_type), "Item", 0, 0, 0);
             pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
             pi->addAttribute(new CustomPropertySetAttribute(new Setter));
             pi->addAttribute(new CustomIndexAttribute(new Indexer));
+            pi->addAttribute(new CustomPropertyRemoveAttribute(new Remover));
 
             if (typeid(VT).before(typeid(typename T::mapped_type)) ||
                 typeid(typename T::mapped_type).before(typeid(VT)))
@@ -609,11 +642,11 @@ namespace osgIntrospection
     struct StdPairReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         struct Accessor: PropertyGetter, PropertySetter
         {
             Accessor(int i): _i(i) {}
-            
+
             virtual Value get(const Value& instance) const
             {
                 switch (_i)

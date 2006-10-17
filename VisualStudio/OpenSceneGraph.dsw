@@ -1860,7 +1860,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgshadow"=.\examples\osgshadow\osgshadow.dsp - Package Owner=<4>
+Project: "Example osgshadow"=.\examples\osgshadow\example_osgshadow.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

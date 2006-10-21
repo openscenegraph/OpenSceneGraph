@@ -9,8 +9,12 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 
+#include <osg/Endian>
+
 #include "MovieData.h"
 #include "QTUtils.h"
+
+
 
 using namespace osgQuicktime;
 
@@ -98,11 +102,15 @@ void MovieData::_initImage(osg::Image* image)
     }
 
     buffer = (void*)(((unsigned long)(pointer + 31) >> 5) << 5);
-        
+
+    GLenum internalFormat = (getCpuByteOrder()==osg::BigEndian)?
+                            GL_UNSIGNED_INT_8_8_8_8_REV :
+                            GL_UNSIGNED_INT_8_8_8_8;
+
     image->setImage(_textureWidth,_textureHeight,0,
                    (GLint) GL_RGBA8,
                    (GLenum)GL_BGRA_EXT,
-                   (GLenum)GL_UNSIGNED_INT_8_8_8_8_REV,
+                   internalFormat,
                    (unsigned char*) buffer,osg::Image::USE_MALLOC_FREE,4);
 
 }

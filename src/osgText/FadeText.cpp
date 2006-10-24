@@ -273,7 +273,7 @@ GlobalFadeText* getGlobalFadeText()
     return s_globalFadeText.get();
 }
 
-struct FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
+struct FadeText::FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
 {
     FadeTextData _ftd;
 
@@ -291,7 +291,7 @@ struct FadeTextUpdateCallback : public osg::Drawable::UpdateCallback
 
         _ftd._fadeText = fadeText;
         
-        float fadeSpeed = 0.01f;
+        float fadeSpeed = fadeText->getFadeSpeed();
 
         GlobalFadeText::ViewFadeTextMap& vftm = gft->_viewFadeTextMap;
         for(GlobalFadeText::ViewFadeTextMap::iterator itr = vftm.begin();
@@ -342,6 +342,7 @@ FadeText::FadeText(const Text& text,const osg::CopyOp& copyop):
 
 void FadeText::init()
 {
+    _fadeSpeed = 0.01f;
     setUpdateCallback(new FadeTextUpdateCallback());
 }
 

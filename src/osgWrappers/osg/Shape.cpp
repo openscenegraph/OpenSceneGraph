@@ -29,322 +29,1061 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::Box)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Vec3 &, center, IN, float, width);
-	I_Constructor4(IN, const osg::Vec3 &, center, IN, float, lengthX, IN, float, lengthY, IN, float, lengthZ);
-	I_ConstructorWithDefaults2(IN, const osg::Box &, box, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method0(bool, valid);
-	I_Method2(void, set, IN, const osg::Vec3 &, center, IN, const osg::Vec3 &, halfLengths);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setHalfLengths, IN, const osg::Vec3 &, halfLengths);
-	I_Method0(const osg::Vec3 &, getHalfLengths);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method0(osg::Matrix, computeRotationMatrix);
-	I_Method0(bool, zeroRotation);
-	I_Property(const osg::Vec3 &, Center);
-	I_Property(const osg::Vec3 &, HalfLengths);
-	I_Property(const osg::Quat &, Rotation);
+	I_Constructor0(____Box,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3 &, center, IN, float, width,
+	               ____Box__C5_osg_Vec3_R1__float,
+	               "",
+	               "");
+	I_Constructor4(IN, const osg::Vec3 &, center, IN, float, lengthX, IN, float, lengthY, IN, float, lengthZ,
+	               ____Box__C5_osg_Vec3_R1__float__float__float,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Box &, box, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Box__C5_Box_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method2(void, set, IN, const osg::Vec3 &, center, IN, const osg::Vec3 &, halfLengths,
+	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	          __void__setCenter__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_Vec3_R1__getCenter,
+	          "",
+	          "");
+	I_Method1(void, setHalfLengths, IN, const osg::Vec3 &, halfLengths,
+	          __void__setHalfLengths__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getHalfLengths,
+	          __C5_Vec3_R1__getHalfLengths,
+	          "",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          __void__setRotation__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method0(osg::Matrix, computeRotationMatrix,
+	          __Matrix__computeRotationMatrix,
+	          "",
+	          "");
+	I_Method0(bool, zeroRotation,
+	          __bool__zeroRotation,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, HalfLengths, 
+	                 __C5_Vec3_R1__getHalfLengths, 
+	                 __void__setHalfLengths__C5_Vec3_R1);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Capsule)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
-	I_ConstructorWithDefaults2(IN, const osg::Capsule &, capsule, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method0(bool, valid);
-	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setRadius, IN, float, radius);
-	I_Method0(float, getRadius);
-	I_Method1(void, setHeight, IN, float, height);
-	I_Method0(float, getHeight);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method0(osg::Matrix, computeRotationMatrix);
-	I_Method0(bool, zeroRotation);
-	I_Property(const osg::Vec3 &, Center);
-	I_Property(float, Height);
-	I_Property(float, Radius);
-	I_Property(const osg::Quat &, Rotation);
+	I_Constructor0(____Capsule,
+	               "",
+	               "");
+	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height,
+	               ____Capsule__C5_osg_Vec3_R1__float__float,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Capsule &, capsule, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Capsule__C5_Capsule_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height,
+	          __void__set__C5_Vec3_R1__float__float,
+	          "",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	          __void__setCenter__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_Vec3_R1__getCenter,
+	          "",
+	          "");
+	I_Method1(void, setRadius, IN, float, radius,
+	          __void__setRadius__float,
+	          "",
+	          "");
+	I_Method0(float, getRadius,
+	          __float__getRadius,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, float, height,
+	          __void__setHeight__float,
+	          "",
+	          "");
+	I_Method0(float, getHeight,
+	          __float__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          __void__setRotation__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method0(osg::Matrix, computeRotationMatrix,
+	          __Matrix__computeRotationMatrix,
+	          "",
+	          "");
+	I_Method0(bool, zeroRotation,
+	          __bool__zeroRotation,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(float, Height, 
+	                 __float__getHeight, 
+	                 __void__setHeight__float);
+	I_SimpleProperty(float, Radius, 
+	                 __float__getRadius, 
+	                 __void__setRadius__float);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList);
 
 BEGIN_OBJECT_REFLECTOR(osg::CompositeShape)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::CompositeShape &, cs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method1(void, setShape, IN, osg::Shape *, shape);
-	I_Method0(osg::Shape *, getShape);
-	I_Method0(const osg::Shape *, getShape);
-	I_Method0(unsigned int, getNumChildren);
-	I_Method1(osg::Shape *, getChild, IN, unsigned int, i);
-	I_Method1(const osg::Shape *, getChild, IN, unsigned int, i);
-	I_Method1(void, addChild, IN, osg::Shape *, shape);
-	I_Method1(void, removeChild, IN, unsigned int, i);
-	I_Method1(unsigned int, findChildNo, IN, osg::Shape *, shape);
-	I_ArrayProperty_GA(osg::Shape *, Child, Children, unsigned int, void);
-	I_Property(osg::Shape *, Shape);
+	I_Constructor0(____CompositeShape,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::CompositeShape &, cs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____CompositeShape__C5_CompositeShape_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setShape, IN, osg::Shape *, shape,
+	          __void__setShape__Shape_P1,
+	          "Set the shape that encloses all of the children. ",
+	          "");
+	I_Method0(osg::Shape *, getShape,
+	          __Shape_P1__getShape,
+	          "Get the shape that encloses all of the children. ",
+	          "");
+	I_Method0(const osg::Shape *, getShape,
+	          __C5_Shape_P1__getShape,
+	          "Get the const shape that encloses all of the children. ",
+	          "");
+	I_Method0(unsigned int, getNumChildren,
+	          __unsigned_int__getNumChildren,
+	          "Get the number of children of this composite shape. ",
+	          "");
+	I_Method1(osg::Shape *, getChild, IN, unsigned int, i,
+	          __Shape_P1__getChild__unsigned_int,
+	          "Get a child. ",
+	          "");
+	I_Method1(const osg::Shape *, getChild, IN, unsigned int, i,
+	          __C5_Shape_P1__getChild__unsigned_int,
+	          "Get a const child. ",
+	          "");
+	I_Method1(void, addChild, IN, osg::Shape *, shape,
+	          __void__addChild__Shape_P1,
+	          "Add a child to the list. ",
+	          "");
+	I_Method1(void, removeChild, IN, unsigned int, i,
+	          __void__removeChild__unsigned_int,
+	          "remove a child from the list. ",
+	          "");
+	I_Method1(unsigned int, findChildNo, IN, osg::Shape *, shape,
+	          __unsigned_int__findChildNo__Shape_P1,
+	          "find the index number of child, if child is not found then it returns getNumChildren(), so should be used in similar style to STL's result!=end(). ",
+	          "");
+	I_ArrayProperty(osg::Shape *, Child, 
+	                __Shape_P1__getChild__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumChildren, 
+	                __void__addChild__Shape_P1, 
+	                0, 
+	                __void__removeChild__unsigned_int);
+	I_SimpleProperty(osg::Shape *, Shape, 
+	                 __Shape_P1__getShape, 
+	                 __void__setShape__Shape_P1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Cone)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
-	I_ConstructorWithDefaults2(IN, const osg::Cone &, cone, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method0(bool, valid);
-	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setRadius, IN, float, radius);
-	I_Method0(float, getRadius);
-	I_Method1(void, setHeight, IN, float, height);
-	I_Method0(float, getHeight);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method0(osg::Matrix, computeRotationMatrix);
-	I_Method0(bool, zeroRotation);
-	I_Method0(float, getBaseOffsetFactor);
-	I_Method0(float, getBaseOffset);
-	I_ReadOnlyProperty(float, BaseOffset);
-	I_ReadOnlyProperty(float, BaseOffsetFactor);
-	I_Property(const osg::Vec3 &, Center);
-	I_Property(float, Height);
-	I_Property(float, Radius);
-	I_Property(const osg::Quat &, Rotation);
+	I_Constructor0(____Cone,
+	               "",
+	               "");
+	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height,
+	               ____Cone__C5_osg_Vec3_R1__float__float,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Cone &, cone, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Cone__C5_Cone_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height,
+	          __void__set__C5_Vec3_R1__float__float,
+	          "",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	          __void__setCenter__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_Vec3_R1__getCenter,
+	          "",
+	          "");
+	I_Method1(void, setRadius, IN, float, radius,
+	          __void__setRadius__float,
+	          "",
+	          "");
+	I_Method0(float, getRadius,
+	          __float__getRadius,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, float, height,
+	          __void__setHeight__float,
+	          "",
+	          "");
+	I_Method0(float, getHeight,
+	          __float__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          __void__setRotation__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method0(osg::Matrix, computeRotationMatrix,
+	          __Matrix__computeRotationMatrix,
+	          "",
+	          "");
+	I_Method0(bool, zeroRotation,
+	          __bool__zeroRotation,
+	          "",
+	          "");
+	I_Method0(float, getBaseOffsetFactor,
+	          __float__getBaseOffsetFactor,
+	          "",
+	          "");
+	I_Method0(float, getBaseOffset,
+	          __float__getBaseOffset,
+	          "",
+	          "");
+	I_SimpleProperty(float, BaseOffset, 
+	                 __float__getBaseOffset, 
+	                 0);
+	I_SimpleProperty(float, BaseOffsetFactor, 
+	                 __float__getBaseOffsetFactor, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(float, Height, 
+	                 __float__getHeight, 
+	                 __void__setHeight__float);
+	I_SimpleProperty(float, Radius, 
+	                 __float__getRadius, 
+	                 __void__setRadius__float);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ConstShapeVisitor)
-	I_Constructor0();
-	I_Method1(void, apply, IN, const osg::Sphere &, x);
-	I_Method1(void, apply, IN, const osg::Box &, x);
-	I_Method1(void, apply, IN, const osg::Cone &, x);
-	I_Method1(void, apply, IN, const osg::Cylinder &, x);
-	I_Method1(void, apply, IN, const osg::Capsule &, x);
-	I_Method1(void, apply, IN, const osg::InfinitePlane &, x);
-	I_Method1(void, apply, IN, const osg::TriangleMesh &, x);
-	I_Method1(void, apply, IN, const osg::ConvexHull &, x);
-	I_Method1(void, apply, IN, const osg::HeightField &, x);
-	I_Method1(void, apply, IN, const osg::CompositeShape &, x);
+	I_Constructor0(____ConstShapeVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, const osg::Sphere &, x,
+	          __void__apply__C5_Sphere_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Box &, x,
+	          __void__apply__C5_Box_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Cone &, x,
+	          __void__apply__C5_Cone_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Cylinder &, x,
+	          __void__apply__C5_Cylinder_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Capsule &, x,
+	          __void__apply__C5_Capsule_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::InfinitePlane &, x,
+	          __void__apply__C5_InfinitePlane_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::TriangleMesh &, x,
+	          __void__apply__C5_TriangleMesh_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::ConvexHull &, x,
+	          __void__apply__C5_ConvexHull_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::HeightField &, x,
+	          __void__apply__C5_HeightField_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::CompositeShape &, x,
+	          __void__apply__C5_CompositeShape_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ConvexHull)
 	I_BaseType(osg::TriangleMesh);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::ConvexHull &, hull, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Constructor0(____ConvexHull,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ConvexHull &, hull, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConvexHull__C5_ConvexHull_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Cylinder)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
-	I_ConstructorWithDefaults2(IN, const osg::Cylinder &, cylinder, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method0(bool, valid);
-	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setRadius, IN, float, radius);
-	I_Method0(float, getRadius);
-	I_Method1(void, setHeight, IN, float, height);
-	I_Method0(float, getHeight);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method0(osg::Matrix, computeRotationMatrix);
-	I_Method0(bool, zeroRotation);
-	I_Property(const osg::Vec3 &, Center);
-	I_Property(float, Height);
-	I_Property(float, Radius);
-	I_Property(const osg::Quat &, Rotation);
+	I_Constructor0(____Cylinder,
+	               "",
+	               "");
+	I_Constructor3(IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height,
+	               ____Cylinder__C5_osg_Vec3_R1__float__float,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Cylinder &, cylinder, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Cylinder__C5_Cylinder_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method3(void, set, IN, const osg::Vec3 &, center, IN, float, radius, IN, float, height,
+	          __void__set__C5_Vec3_R1__float__float,
+	          "",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	          __void__setCenter__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_Vec3_R1__getCenter,
+	          "",
+	          "");
+	I_Method1(void, setRadius, IN, float, radius,
+	          __void__setRadius__float,
+	          "",
+	          "");
+	I_Method0(float, getRadius,
+	          __float__getRadius,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, float, height,
+	          __void__setHeight__float,
+	          "",
+	          "");
+	I_Method0(float, getHeight,
+	          __float__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          __void__setRotation__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method0(osg::Matrix, computeRotationMatrix,
+	          __Matrix__computeRotationMatrix,
+	          "",
+	          "");
+	I_Method0(bool, zeroRotation,
+	          __bool__zeroRotation,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(float, Height, 
+	                 __float__getHeight, 
+	                 __void__setHeight__float);
+	I_SimpleProperty(float, Radius, 
+	                 __float__getRadius, 
+	                 __void__setRadius__float);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList);
 
 BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::HeightField &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method2(void, allocate, IN, unsigned int, numColumns, IN, unsigned int, numRows);
-	I_Method0(unsigned int, getNumColumns);
-	I_Method0(unsigned int, getNumRows);
-	I_Method1(void, setOrigin, IN, const osg::Vec3 &, origin);
-	I_Method0(const osg::Vec3 &, getOrigin);
-	I_Method1(void, setXInterval, IN, float, dx);
-	I_Method0(float, getXInterval);
-	I_Method1(void, setYInterval, IN, float, dy);
-	I_Method0(float, getYInterval);
-	I_Method1(void, setSkirtHeight, IN, float, skirtHeight);
-	I_Method0(float, getSkirtHeight);
-	I_Method1(void, setBorderWidth, IN, unsigned int, borderWidth);
-	I_Method0(unsigned int, getBorderWidth);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method0(osg::Matrix, computeRotationMatrix);
-	I_Method0(bool, zeroRotation);
-	I_Method3(void, setHeight, IN, unsigned int, c, IN, unsigned int, r, IN, float, value);
-	I_Method2(float &, getHeight, IN, unsigned int, c, IN, unsigned int, r);
-	I_Method2(float, getHeight, IN, unsigned int, c, IN, unsigned int, r);
-	I_Method0(osg::HeightField::HeightList &, getHeightList);
-	I_Method0(const osg::HeightField::HeightList &, getHeightList);
-	I_Method2(osg::Vec3, getVertex, IN, unsigned int, c, IN, unsigned int, r);
-	I_Method2(osg::Vec3, getNormal, IN, unsigned int, c, IN, unsigned int, r);
-	I_Method2(osg::Vec2, getHeightDelta, IN, unsigned int, c, IN, unsigned int, r);
-	I_Property(unsigned int, BorderWidth);
-	I_IndexedProperty2(float, Height, unsigned int, c, unsigned int, r);
-	I_ReadOnlyProperty(osg::HeightField::HeightList &, HeightList);
-	I_Property(const osg::Vec3 &, Origin);
-	I_Property(const osg::Quat &, Rotation);
-	I_Property(float, SkirtHeight);
-	I_Property(float, XInterval);
-	I_Property(float, YInterval);
+	I_Constructor0(____HeightField,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::HeightField &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____HeightField__C5_HeightField_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(void, allocate, IN, unsigned int, numColumns, IN, unsigned int, numRows,
+	          __void__allocate__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumColumns,
+	          __unsigned_int__getNumColumns,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumRows,
+	          __unsigned_int__getNumRows,
+	          "",
+	          "");
+	I_Method1(void, setOrigin, IN, const osg::Vec3 &, origin,
+	          __void__setOrigin__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getOrigin,
+	          __C5_osg_Vec3_R1__getOrigin,
+	          "",
+	          "");
+	I_Method1(void, setXInterval, IN, float, dx,
+	          __void__setXInterval__float,
+	          "",
+	          "");
+	I_Method0(float, getXInterval,
+	          __float__getXInterval,
+	          "",
+	          "");
+	I_Method1(void, setYInterval, IN, float, dy,
+	          __void__setYInterval__float,
+	          "",
+	          "");
+	I_Method0(float, getYInterval,
+	          __float__getYInterval,
+	          "",
+	          "");
+	I_Method1(void, setSkirtHeight, IN, float, skirtHeight,
+	          __void__setSkirtHeight__float,
+	          "Set the height of the skirt to render around the edge of HeightField. ",
+	          "The skirt is used as a means of disguising edge boundaries between adjacent HeightField, particularly of ones with different resolutions. ");
+	I_Method0(float, getSkirtHeight,
+	          __float__getSkirtHeight,
+	          "Get the height of the skirt to render around the edge of HeightField. ",
+	          "");
+	I_Method1(void, setBorderWidth, IN, unsigned int, borderWidth,
+	          __void__setBorderWidth__unsigned_int,
+	          "Set the width in number of cells in from the edge that the height field should be rendered from. ",
+	          "This exists to allow gradient and curvature continutity to be maintained between adjacent HeightField, where the border cells will overlap adjacent HeightField. ");
+	I_Method0(unsigned int, getBorderWidth,
+	          __unsigned_int__getBorderWidth,
+	          "Get the width in number of cells in from the edge that the height field should be rendered from. ",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          __void__setRotation__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method0(osg::Matrix, computeRotationMatrix,
+	          __Matrix__computeRotationMatrix,
+	          "",
+	          "");
+	I_Method0(bool, zeroRotation,
+	          __bool__zeroRotation,
+	          "",
+	          "");
+	I_Method3(void, setHeight, IN, unsigned int, c, IN, unsigned int, r, IN, float, value,
+	          __void__setHeight__unsigned_int__unsigned_int__float,
+	          "",
+	          "");
+	I_Method2(float &, getHeight, IN, unsigned int, c, IN, unsigned int, r,
+	          __float_R1__getHeight__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method2(float, getHeight, IN, unsigned int, c, IN, unsigned int, r,
+	          __float__getHeight__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method0(osg::HeightField::HeightList &, getHeightList,
+	          __HeightList_R1__getHeightList,
+	          "",
+	          "");
+	I_Method0(const osg::HeightField::HeightList &, getHeightList,
+	          __C5_HeightList_R1__getHeightList,
+	          "",
+	          "");
+	I_Method2(osg::Vec3, getVertex, IN, unsigned int, c, IN, unsigned int, r,
+	          __Vec3__getVertex__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method2(osg::Vec3, getNormal, IN, unsigned int, c, IN, unsigned int, r,
+	          __Vec3__getNormal__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method2(osg::Vec2, getHeightDelta, IN, unsigned int, c, IN, unsigned int, r,
+	          __Vec2__getHeightDelta__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, BorderWidth, 
+	                 __unsigned_int__getBorderWidth, 
+	                 __void__setBorderWidth__unsigned_int);
+	I_IndexedProperty(float, Height, 
+	                  __float__getHeight__unsigned_int__unsigned_int, 
+	                  __void__setHeight__unsigned_int__unsigned_int__float, 
+	                  0);
+	I_SimpleProperty(osg::HeightField::HeightList &, HeightList, 
+	                 __HeightList_R1__getHeightList, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3 &, Origin, 
+	                 __C5_osg_Vec3_R1__getOrigin, 
+	                 __void__setOrigin__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_Quat_R1);
+	I_SimpleProperty(float, SkirtHeight, 
+	                 __float__getSkirtHeight, 
+	                 __void__setSkirtHeight__float);
+	I_SimpleProperty(float, XInterval, 
+	                 __float__getXInterval, 
+	                 __void__setXInterval__float);
+	I_SimpleProperty(float, YInterval, 
+	                 __float__getYInterval, 
+	                 __void__setYInterval__float);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::InfinitePlane)
 	I_BaseType(osg::Shape);
 	I_BaseType(osg::Plane);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::InfinitePlane &, plane, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
+	I_Constructor0(____InfinitePlane,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::InfinitePlane &, plane, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____InfinitePlane__C5_InfinitePlane_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shape)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Shape &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, x);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, x);
+	I_Constructor0(____Shape,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Shape &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Shape__C5_Shape_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, x,
+	          __void__accept__ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, x,
+	          __void__accept__ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ShapeVisitor)
-	I_Constructor0();
-	I_Method1(void, apply, IN, osg::Sphere &, x);
-	I_Method1(void, apply, IN, osg::Box &, x);
-	I_Method1(void, apply, IN, osg::Cone &, x);
-	I_Method1(void, apply, IN, osg::Cylinder &, x);
-	I_Method1(void, apply, IN, osg::Capsule &, x);
-	I_Method1(void, apply, IN, osg::InfinitePlane &, x);
-	I_Method1(void, apply, IN, osg::TriangleMesh &, x);
-	I_Method1(void, apply, IN, osg::ConvexHull &, x);
-	I_Method1(void, apply, IN, osg::HeightField &, x);
-	I_Method1(void, apply, IN, osg::CompositeShape &, x);
+	I_Constructor0(____ShapeVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, osg::Sphere &, x,
+	          __void__apply__Sphere_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Box &, x,
+	          __void__apply__Box_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Cone &, x,
+	          __void__apply__Cone_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Cylinder &, x,
+	          __void__apply__Cylinder_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Capsule &, x,
+	          __void__apply__Capsule_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::InfinitePlane &, x,
+	          __void__apply__InfinitePlane_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::TriangleMesh &, x,
+	          __void__apply__TriangleMesh_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::ConvexHull &, x,
+	          __void__apply__ConvexHull_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::HeightField &, x,
+	          __void__apply__HeightField_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::CompositeShape &, x,
+	          __void__apply__CompositeShape_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Sphere)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Vec3 &, center, IN, float, radius);
-	I_ConstructorWithDefaults2(IN, const osg::Sphere &, sphere, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method0(bool, valid);
-	I_Method2(void, set, IN, const osg::Vec3 &, center, IN, float, radius);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setRadius, IN, float, radius);
-	I_Method0(float, getRadius);
-	I_Property(const osg::Vec3 &, Center);
-	I_Property(float, Radius);
+	I_Constructor0(____Sphere,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3 &, center, IN, float, radius,
+	               ____Sphere__C5_osg_Vec3_R1__float,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Sphere &, sphere, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Sphere__C5_Sphere_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method2(void, set, IN, const osg::Vec3 &, center, IN, float, radius,
+	          __void__set__C5_Vec3_R1__float,
+	          "",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	          __void__setCenter__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_Vec3_R1__getCenter,
+	          "",
+	          "");
+	I_Method1(void, setRadius, IN, float, radius,
+	          __void__setRadius__float,
+	          "",
+	          "");
+	I_Method0(float, getRadius,
+	          __float__getRadius,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(float, Radius, 
+	                 __float__getRadius, 
+	                 __void__setRadius__float);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
 	I_BaseType(osg::Shape);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv);
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv);
-	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices);
-	I_Method0(osg::Vec3Array *, getVertices);
-	I_Method0(const osg::Vec3Array *, getVertices);
-	I_Method1(void, setIndices, IN, osg::IndexArray *, indices);
-	I_Method0(osg::IndexArray *, getIndices);
-	I_Method0(const osg::IndexArray *, getIndices);
-	I_Property(osg::IndexArray *, Indices);
-	I_Property(osg::Vec3Array *, Vertices);
+	I_Constructor0(____TriangleMesh,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TriangleMesh__C5_TriangleMesh_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the attribute's class type. ",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "accept a non const shape visitor which can be used on non const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "accept a const shape visitor which can be used on const shape objects. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices,
+	          __void__setVertices__Vec3Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec3Array *, getVertices,
+	          __Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3Array *, getVertices,
+	          __C5_Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method1(void, setIndices, IN, osg::IndexArray *, indices,
+	          __void__setIndices__IndexArray_P1,
+	          "",
+	          "");
+	I_Method0(osg::IndexArray *, getIndices,
+	          __IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getIndices,
+	          __C5_IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_SimpleProperty(osg::IndexArray *, Indices, 
+	                 __IndexArray_P1__getIndices, 
+	                 __void__setIndices__IndexArray_P1);
+	I_SimpleProperty(osg::Vec3Array *, Vertices, 
+	                 __Vec3Array_P1__getVertices, 
+	                 __void__setVertices__Vec3Array_P1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::HeightField, osg::Grid);
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::Shape *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::Shape > &, rp);
-	I_Method0(osg::Shape *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::Shape *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::Shape > &, rp);
-	I_ReadOnlyProperty(osg::Shape *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Shape *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Shape > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Shape *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Shape *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Shape > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Shape *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< float >);

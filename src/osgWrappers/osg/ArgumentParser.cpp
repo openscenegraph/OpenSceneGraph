@@ -29,50 +29,179 @@ BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::ErrorSeverity)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
-	I_Constructor2(IN, int *, argc, IN, char **, argv);
-	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, usage);
-	I_Method0(osg::ApplicationUsage *, getApplicationUsage);
-	I_Method0(const osg::ApplicationUsage *, getApplicationUsage);
-	I_Method0(int &, argc);
-	I_Method0(char **, argv);
-	I_Method0(std::string, getApplicationName);
-	I_Method1(int, find, IN, const std::string &, str);
-	I_Method1(bool, isOption, IN, int, pos);
-	I_Method1(bool, isString, IN, int, pos);
-	I_Method1(bool, isNumber, IN, int, pos);
-	I_Method0(bool, containsOptions);
-	I_MethodWithDefaults2(void, remove, IN, int, pos, , IN, int, num, 1);
-	I_Method2(bool, match, IN, int, pos, IN, const std::string &, str);
-	I_Method1(bool, read, IN, const std::string &, str);
-	I_Method2(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1);
-	I_Method3(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2);
-	I_Method4(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3);
-	I_Method5(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4);
-	I_Method6(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5);
-	I_Method7(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6);
-	I_Method8(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7);
-	I_Method9(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7, IN, osg::ArgumentParser::Parameter, value8);
-	I_Method2(bool, read, IN, int, pos, IN, const std::string &, str);
-	I_Method3(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1);
-	I_Method4(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2);
-	I_Method5(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3);
-	I_Method6(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4);
-	I_Method7(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5);
-	I_Method8(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6);
-	I_Method9(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7);
-	I_Method10(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7, IN, osg::ArgumentParser::Parameter, value8);
-	I_MethodWithDefaults1(bool, errors, IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::BENIGN);
-	I_MethodWithDefaults2(void, reportError, IN, const std::string &, message, , IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::CRITICAL);
-	I_MethodWithDefaults1(void, reportRemainingOptionsAsUnrecognized, IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::BENIGN);
-	I_Method0(osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap);
-	I_Method0(const osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap);
-	I_MethodWithDefaults2(void, writeErrorMessages, IN, std::ostream &, output, , IN, osg::ArgumentParser::ErrorSeverity, sevrity, osg::ArgumentParser::BENIGN);
-	I_StaticMethod1(bool, isOption, IN, const char *, str);
-	I_StaticMethod1(bool, isString, IN, const char *, str);
-	I_StaticMethod1(bool, isNumber, IN, const char *, str);
-	I_ReadOnlyProperty(std::string, ApplicationName);
-	I_Property(osg::ApplicationUsage *, ApplicationUsage);
-	I_ReadOnlyProperty(osg::ArgumentParser::ErrorMessageMap &, ErrorMessageMap);
+	I_Constructor2(IN, int *, argc, IN, char **, argv,
+	               ____ArgumentParser__int_P1__char_P1P1,
+	               "",
+	               "");
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, usage,
+	          __void__setApplicationUsage__ApplicationUsage_P1,
+	          "",
+	          "");
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          __ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          __C5_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(int &, argc,
+	          __int_R1__argc,
+	          "Return the argument count. ",
+	          "");
+	I_Method0(char **, argv,
+	          __char_P1P1__argv,
+	          "Return the argument array. ",
+	          "");
+	I_Method0(std::string, getApplicationName,
+	          __std_string__getApplicationName,
+	          "Return the application name, as specified by argv[0]. ",
+	          "");
+	I_Method1(int, find, IN, const std::string &, str,
+	          __int__find__C5_std_string_R1,
+	          "Return the position of an occurance of a string in the argument list. ",
+	          "Return -1 if no string is found. ");
+	I_Method1(bool, isOption, IN, int, pos,
+	          __bool__isOption__int,
+	          "Return true if the specified parameter is an option in the form of -option or --option. ",
+	          "");
+	I_Method1(bool, isString, IN, int, pos,
+	          __bool__isString__int,
+	          "Return true if the specified parameter is a string not in the form of an option. ",
+	          "");
+	I_Method1(bool, isNumber, IN, int, pos,
+	          __bool__isNumber__int,
+	          "Return true if the specified parameter is a number. ",
+	          "");
+	I_Method0(bool, containsOptions,
+	          __bool__containsOptions,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, remove, IN, int, pos, , IN, int, num, 1,
+	                      __void__remove__int__int,
+	                      "Remove one or more arguments from the argv argument list, and decrement the argc respectively. ",
+	                      "");
+	I_Method2(bool, match, IN, int, pos, IN, const std::string &, str,
+	          __bool__match__int__C5_std_string_R1,
+	          "Return true if the specified argument matches the given string. ",
+	          "");
+	I_Method1(bool, read, IN, const std::string &, str,
+	          __bool__read__C5_std_string_R1,
+	          "Search for an occurance of a string in the argument list. ",
+	          "If found, remove that occurance and return true. Otherwise, return false. ");
+	I_Method2(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1,
+	          __bool__read__C5_std_string_R1__Parameter,
+	          "",
+	          "");
+	I_Method3(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method4(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method5(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method6(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method7(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method8(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method9(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7, IN, osg::ArgumentParser::Parameter, value8,
+	          __bool__read__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method2(bool, read, IN, int, pos, IN, const std::string &, str,
+	          __bool__read__int__C5_std_string_R1,
+	          "If the argument value at the specified position matches the given string, and subsequent parameters are also matched, then set the parameter values, remove the arguments from the list, and return true. ",
+	          "Otherwise, return false. ");
+	I_Method3(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1,
+	          __bool__read__int__C5_std_string_R1__Parameter,
+	          "",
+	          "");
+	I_Method4(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2,
+	          __bool__read__int__C5_std_string_R1__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method5(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3,
+	          __bool__read__int__C5_std_string_R1__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method6(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4,
+	          __bool__read__int__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method7(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5,
+	          __bool__read__int__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method8(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6,
+	          __bool__read__int__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method9(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7,
+	          __bool__read__int__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method10(bool, read, IN, int, pos, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1, IN, osg::ArgumentParser::Parameter, value2, IN, osg::ArgumentParser::Parameter, value3, IN, osg::ArgumentParser::Parameter, value4, IN, osg::ArgumentParser::Parameter, value5, IN, osg::ArgumentParser::Parameter, value6, IN, osg::ArgumentParser::Parameter, value7, IN, osg::ArgumentParser::Parameter, value8,
+	           __bool__read__int__C5_std_string_R1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	           "",
+	           "");
+	I_MethodWithDefaults1(bool, errors, IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::BENIGN,
+	                      __bool__errors__ErrorSeverity,
+	                      "Return the error flag, true if an error has occured when reading arguments. ",
+	                      "");
+	I_MethodWithDefaults2(void, reportError, IN, const std::string &, message, , IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::CRITICAL,
+	                      __void__reportError__C5_std_string_R1__ErrorSeverity,
+	                      "Report an error message by adding to the ErrorMessageMap. ",
+	                      "");
+	I_MethodWithDefaults1(void, reportRemainingOptionsAsUnrecognized, IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::BENIGN,
+	                      __void__reportRemainingOptionsAsUnrecognized__ErrorSeverity,
+	                      "For each remaining option, report it as unrecognized. ",
+	                      "");
+	I_Method0(osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap,
+	          __ErrorMessageMap_R1__getErrorMessageMap,
+	          "Return the error message, if any has occured. ",
+	          "");
+	I_Method0(const osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap,
+	          __C5_ErrorMessageMap_R1__getErrorMessageMap,
+	          "Return the error message, if any has occured. ",
+	          "");
+	I_MethodWithDefaults2(void, writeErrorMessages, IN, std::ostream &, output, , IN, osg::ArgumentParser::ErrorSeverity, sevrity, osg::ArgumentParser::BENIGN,
+	                      __void__writeErrorMessages__std_ostream_R1__ErrorSeverity,
+	                      "Write error messages to the given ostream, if at or above the given severiity. ",
+	                      "");
+	I_StaticMethod1(bool, isOption, IN, const char *, str,
+	                __bool__isOption__C5_char_P1_S,
+	                "Return true if the specified string is an option in the form -option or --option. ",
+	                "");
+	I_StaticMethod1(bool, isString, IN, const char *, str,
+	                __bool__isString__C5_char_P1_S,
+	                "Return true if string is non-NULL and not an option in the form -option or --option. ",
+	                "");
+	I_StaticMethod1(bool, isNumber, IN, const char *, str,
+	                __bool__isNumber__C5_char_P1_S,
+	                "Return true if specified parameter is a number. ",
+	                "");
+	I_SimpleProperty(std::string, ApplicationName, 
+	                 __std_string__getApplicationName, 
+	                 0);
+	I_SimpleProperty(osg::ApplicationUsage *, ApplicationUsage, 
+	                 __ApplicationUsage_P1__getApplicationUsage, 
+	                 __void__setApplicationUsage__ApplicationUsage_P1);
+	I_SimpleProperty(osg::ArgumentParser::ErrorMessageMap &, ErrorMessageMap, 
+	                 __ErrorMessageMap_R1__getErrorMessageMap, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::Parameter::ParameterType)
@@ -84,14 +213,38 @@ BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::Parameter::ParameterType)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArgumentParser::Parameter)
-	I_Constructor1(IN, float &, value);
-	I_Constructor1(IN, double &, value);
-	I_Constructor1(IN, int &, value);
-	I_Constructor1(IN, unsigned int &, value);
-	I_Constructor1(IN, std::string &, value);
-	I_Constructor1(IN, const osg::ArgumentParser::Parameter &, param);
-	I_Method1(bool, valid, IN, const char *, str);
-	I_Method1(bool, assign, IN, const char *, str);
+	I_Constructor1(IN, float &, value,
+	               ____Parameter__float_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, double &, value,
+	               ____Parameter__double_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, int &, value,
+	               ____Parameter__int_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, unsigned int &, value,
+	               ____Parameter__unsigned_int_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, std::string &, value,
+	               ____Parameter__std_string_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ArgumentParser::Parameter &, param,
+	               ____Parameter__C5_Parameter_R1,
+	               "",
+	               "");
+	I_Method1(bool, valid, IN, const char *, str,
+	          __bool__valid__C5_char_P1,
+	          "",
+	          "");
+	I_Method1(bool, assign, IN, const char *, str,
+	          __bool__assign__C5_char_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >);

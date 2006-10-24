@@ -208,71 +208,244 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Constructor1(IN, const osgGA::GUIEventAdapter &, rhs);
-	I_Method1(void, setEventType, IN, osgGA::GUIEventAdapter::EventType, Type);
-	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType);
-	I_Method1(void, setTime, IN, double, time);
-	I_Method0(double, getTime);
-	I_Method0(double, time);
-	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true);
-	I_Method0(int, getWindowX);
-	I_Method0(int, getWindowY);
-	I_Method0(unsigned int, getWindowWidth);
-	I_Method0(unsigned int, getWindowHeight);
-	I_Method1(void, setKey, IN, int, key);
-	I_Method0(int, getKey);
-	I_Method1(void, setButton, IN, int, button);
-	I_Method0(int, getButton);
-	I_Method4(void, setInputRange, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax);
-	I_Method0(float, getXmin);
-	I_Method0(float, getXmax);
-	I_Method0(float, getYmin);
-	I_Method0(float, getYmax);
-	I_Method1(void, setX, IN, float, x);
-	I_Method0(float, getX);
-	I_Method1(void, setY, IN, float, y);
-	I_Method0(float, getY);
-	I_Method1(void, setButtonMask, IN, unsigned int, mask);
-	I_Method0(unsigned int, getButtonMask);
-	I_Method1(void, setModKeyMask, IN, unsigned int, mask);
-	I_Method0(unsigned int, getModKeyMask);
-	I_Method0(float, getPenPressure);
-	I_Method1(void, setPenPressure, IN, float, pressure);
-	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType);
-	I_Method1(void, setTabletPointerType, IN, osgGA::GUIEventAdapter::TabletPointerType, pt);
-	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion);
-	I_Method0(float, getScrollingDeltaX);
-	I_Method0(float, getScrollingDeltaY);
-	I_Method2(void, setScrollingMotionDelta, IN, float, x, IN, float, y);
-	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion);
-	I_Method0(float, getXnormalized);
-	I_Method0(float, getYnormalized);
-	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo);
-	I_Method0(osgGA::GUIEventAdapter::MouseYOrientation, getMouseYOrientation);
-	I_Property(int, Button);
-	I_Property(unsigned int, ButtonMask);
-	I_Property(osgGA::GUIEventAdapter::EventType, EventType);
-	I_Property(int, Key);
-	I_Property(unsigned int, ModKeyMask);
-	I_Property(osgGA::GUIEventAdapter::MouseYOrientation, MouseYOrientation);
-	I_Property(float, PenPressure);
-	I_ReadOnlyProperty(float, ScrollingDeltaX);
-	I_ReadOnlyProperty(float, ScrollingDeltaY);
-	I_Property(osgGA::GUIEventAdapter::ScrollingMotion, ScrollingMotion);
-	I_Property(osgGA::GUIEventAdapter::TabletPointerType, TabletPointerType);
-	I_Property(double, Time);
-	I_ReadOnlyProperty(unsigned int, WindowHeight);
-	I_ReadOnlyProperty(unsigned int, WindowWidth);
-	I_ReadOnlyProperty(int, WindowX);
-	I_ReadOnlyProperty(int, WindowY);
-	I_Property(float, X);
-	I_ReadOnlyProperty(float, Xmax);
-	I_ReadOnlyProperty(float, Xmin);
-	I_ReadOnlyProperty(float, Xnormalized);
-	I_Property(float, Y);
-	I_ReadOnlyProperty(float, Ymax);
-	I_ReadOnlyProperty(float, Ymin);
-	I_ReadOnlyProperty(float, Ynormalized);
+	I_Constructor0(____GUIEventAdapter,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgGA::GUIEventAdapter &, rhs,
+	               ____GUIEventAdapter__C5_GUIEventAdapter_R1,
+	               "",
+	               "");
+	I_Method1(void, setEventType, IN, osgGA::GUIEventAdapter::EventType, Type,
+	          __void__setEventType__EventType,
+	          "Get the Type of the GUI GUIEventAdapter. ",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType,
+	          __EventType__getEventType,
+	          "Get the Type of the GUI GUIEventAdapter. ",
+	          "");
+	I_Method1(void, setTime, IN, double, time,
+	          __void__setTime__double,
+	          "set time in seconds of event. ",
+	          "");
+	I_Method0(double, getTime,
+	          __double__getTime,
+	          "get time in seconds of event. ",
+	          "");
+	I_Method0(double, time,
+	          __double__time,
+	          "deprecated function for getting time of event. ",
+	          "");
+	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true,
+	                      __void__setWindowRectangle__int__int__unsigned_int__unsigned_int__bool,
+	                      "set window rectangle. ",
+	                      "");
+	I_Method0(int, getWindowX,
+	          __int__getWindowX,
+	          "get window x origin. ",
+	          "");
+	I_Method0(int, getWindowY,
+	          __int__getWindowY,
+	          "get window y origin. ",
+	          "");
+	I_Method0(unsigned int, getWindowWidth,
+	          __unsigned_int__getWindowWidth,
+	          "get window width. ",
+	          "");
+	I_Method0(unsigned int, getWindowHeight,
+	          __unsigned_int__getWindowHeight,
+	          "get window height. ",
+	          "");
+	I_Method1(void, setKey, IN, int, key,
+	          __void__setKey__int,
+	          "set key pressed. ",
+	          "");
+	I_Method0(int, getKey,
+	          __int__getKey,
+	          "get key pressed, return -1 if inappropriate for this GUIEventAdapter. ",
+	          "");
+	I_Method1(void, setButton, IN, int, button,
+	          __void__setButton__int,
+	          "set button pressed/released. ",
+	          "");
+	I_Method0(int, getButton,
+	          __int__getButton,
+	          "button pressed/released, return -1 if inappropriate for this GUIEventAdapter. ",
+	          "");
+	I_Method4(void, setInputRange, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax,
+	          __void__setInputRange__float__float__float__float,
+	          "set mouse input range. ",
+	          "");
+	I_Method0(float, getXmin,
+	          __float__getXmin,
+	          "get mouse minimum x. ",
+	          "");
+	I_Method0(float, getXmax,
+	          __float__getXmax,
+	          "get mouse maximum x. ",
+	          "");
+	I_Method0(float, getYmin,
+	          __float__getYmin,
+	          "get mmouse minimum y. ",
+	          "");
+	I_Method0(float, getYmax,
+	          __float__getYmax,
+	          "get mouse maYimum y. ",
+	          "");
+	I_Method1(void, setX, IN, float, x,
+	          __void__setX__float,
+	          "set current mouse x position. ",
+	          "");
+	I_Method0(float, getX,
+	          __float__getX,
+	          "get current mouse x position. ",
+	          "");
+	I_Method1(void, setY, IN, float, y,
+	          __void__setY__float,
+	          "set current mouse y position. ",
+	          "");
+	I_Method0(float, getY,
+	          __float__getY,
+	          "get current mouse y position. ",
+	          "");
+	I_Method1(void, setButtonMask, IN, unsigned int, mask,
+	          __void__setButtonMask__unsigned_int,
+	          "set current mouse button state ",
+	          "");
+	I_Method0(unsigned int, getButtonMask,
+	          __unsigned_int__getButtonMask,
+	          "get current mouse button state ",
+	          "");
+	I_Method1(void, setModKeyMask, IN, unsigned int, mask,
+	          __void__setModKeyMask__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getModKeyMask,
+	          __unsigned_int__getModKeyMask,
+	          "",
+	          "");
+	I_Method0(float, getPenPressure,
+	          __float__getPenPressure,
+	          "get the pressure, from a tablet input device (range 0 - 1) ",
+	          "");
+	I_Method1(void, setPenPressure, IN, float, pressure,
+	          __void__setPenPressure__float,
+	          "sets the pressure from a tablet ",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType,
+	          __TabletPointerType__getTabletPointerType,
+	          "get the current used tablet pointer type ",
+	          "");
+	I_Method1(void, setTabletPointerType, IN, osgGA::GUIEventAdapter::TabletPointerType, pt,
+	          __void__setTabletPointerType__TabletPointerType,
+	          "set the current used tablet pointer type ",
+	          "");
+	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion,
+	          __void__setScrollingMotion__ScrollingMotion,
+	          "",
+	          "");
+	I_Method0(float, getScrollingDeltaX,
+	          __float__getScrollingDeltaX,
+	          "get the scrolling x-delta ",
+	          "");
+	I_Method0(float, getScrollingDeltaY,
+	          __float__getScrollingDeltaY,
+	          "get the scrolling y-delta ",
+	          "");
+	I_Method2(void, setScrollingMotionDelta, IN, float, x, IN, float, y,
+	          __void__setScrollingMotionDelta__float__float,
+	          "sets the scrolling delta to x,y and the type of scrolling to SCROLL_2D ",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion,
+	          __ScrollingMotion__getScrollingMotion,
+	          "",
+	          "");
+	I_Method0(float, getXnormalized,
+	          __float__getXnormalized,
+	          "return the getX() value normalised to the range of -1 to 1. ",
+	          "-1 would be the left hand side of the window. 0.0 would be the middle of the window. +1 would be the right hand side of the window. ");
+	I_Method0(float, getYnormalized,
+	          __float__getYnormalized,
+	          "return the getY() value normalised to the range of -1 to 1. ",
+	          "-1 would be the bottom of the window. 0.0 would be the middle of the window. +1 would be the top of the window. ");
+	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo,
+	          __void__setMouseYOrientation__MouseYOrientation,
+	          "",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter::MouseYOrientation, getMouseYOrientation,
+	          __MouseYOrientation__getMouseYOrientation,
+	          "",
+	          "");
+	I_SimpleProperty(int, Button, 
+	                 __int__getButton, 
+	                 __void__setButton__int);
+	I_SimpleProperty(unsigned int, ButtonMask, 
+	                 __unsigned_int__getButtonMask, 
+	                 __void__setButtonMask__unsigned_int);
+	I_SimpleProperty(osgGA::GUIEventAdapter::EventType, EventType, 
+	                 __EventType__getEventType, 
+	                 __void__setEventType__EventType);
+	I_SimpleProperty(int, Key, 
+	                 __int__getKey, 
+	                 __void__setKey__int);
+	I_SimpleProperty(unsigned int, ModKeyMask, 
+	                 __unsigned_int__getModKeyMask, 
+	                 __void__setModKeyMask__unsigned_int);
+	I_SimpleProperty(osgGA::GUIEventAdapter::MouseYOrientation, MouseYOrientation, 
+	                 __MouseYOrientation__getMouseYOrientation, 
+	                 __void__setMouseYOrientation__MouseYOrientation);
+	I_SimpleProperty(float, PenPressure, 
+	                 __float__getPenPressure, 
+	                 __void__setPenPressure__float);
+	I_SimpleProperty(float, ScrollingDeltaX, 
+	                 __float__getScrollingDeltaX, 
+	                 0);
+	I_SimpleProperty(float, ScrollingDeltaY, 
+	                 __float__getScrollingDeltaY, 
+	                 0);
+	I_SimpleProperty(osgGA::GUIEventAdapter::ScrollingMotion, ScrollingMotion, 
+	                 __ScrollingMotion__getScrollingMotion, 
+	                 __void__setScrollingMotion__ScrollingMotion);
+	I_SimpleProperty(osgGA::GUIEventAdapter::TabletPointerType, TabletPointerType, 
+	                 __TabletPointerType__getTabletPointerType, 
+	                 __void__setTabletPointerType__TabletPointerType);
+	I_SimpleProperty(double, Time, 
+	                 __double__getTime, 
+	                 __void__setTime__double);
+	I_SimpleProperty(unsigned int, WindowHeight, 
+	                 __unsigned_int__getWindowHeight, 
+	                 0);
+	I_SimpleProperty(unsigned int, WindowWidth, 
+	                 __unsigned_int__getWindowWidth, 
+	                 0);
+	I_SimpleProperty(int, WindowX, 
+	                 __int__getWindowX, 
+	                 0);
+	I_SimpleProperty(int, WindowY, 
+	                 __int__getWindowY, 
+	                 0);
+	I_SimpleProperty(float, X, 
+	                 __float__getX, 
+	                 __void__setX__float);
+	I_SimpleProperty(float, Xmax, 
+	                 __float__getXmax, 
+	                 0);
+	I_SimpleProperty(float, Xmin, 
+	                 __float__getXmin, 
+	                 0);
+	I_SimpleProperty(float, Xnormalized, 
+	                 __float__getXnormalized, 
+	                 0);
+	I_SimpleProperty(float, Y, 
+	                 __float__getY, 
+	                 __void__setY__float);
+	I_SimpleProperty(float, Ymax, 
+	                 __float__getYmax, 
+	                 0);
+	I_SimpleProperty(float, Ymin, 
+	                 __float__getYmin, 
+	                 0);
+	I_SimpleProperty(float, Ynormalized, 
+	                 __float__getYnormalized, 
+	                 0);
 END_REFLECTOR
 

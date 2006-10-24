@@ -31,13 +31,35 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0();
-	I_Method1(void, setShareMode, IN, unsigned int, mode);
-	I_Method0(unsigned int, getShareMode);
-	I_Method0(void, prune);
-	I_MethodWithDefaults2(void, share, IN, osg::Node *, node, , IN, OpenThreads::Mutex *, mt, 0);
-	I_Method1(void, apply, IN, osg::Node &, node);
-	I_Method1(void, apply, IN, osg::Geode &, geode);
-	I_Property(unsigned int, ShareMode);
+	I_Constructor0(____SharedStateManager,
+	               "",
+	               "");
+	I_Method1(void, setShareMode, IN, unsigned int, mode,
+	          __void__setShareMode__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getShareMode,
+	          __unsigned_int__getShareMode,
+	          "",
+	          "");
+	I_Method0(void, prune,
+	          __void__prune,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, share, IN, osg::Node *, node, , IN, OpenThreads::Mutex *, mt, 0,
+	                      __void__share__osg_Node_P1__OpenThreads_Mutex_P1,
+	                      "",
+	                      "");
+	I_Method1(void, apply, IN, osg::Node &, node,
+	          __void__apply__osg_Node_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, ShareMode, 
+	                 __unsigned_int__getShareMode, 
+	                 __void__setShareMode__unsigned_int);
 END_REFLECTOR
 

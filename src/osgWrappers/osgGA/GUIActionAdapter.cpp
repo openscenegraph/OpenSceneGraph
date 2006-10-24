@@ -21,9 +21,20 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIActionAdapter)
-	I_Constructor0();
-	I_Method0(void, requestRedraw);
-	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true);
-	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, y);
+	I_Constructor0(____GUIActionAdapter,
+	               "",
+	               "");
+	I_Method0(void, requestRedraw,
+	          __void__requestRedraw,
+	          "requestRedraw() requests a single redraw. ",
+	          "");
+	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true,
+	                      __void__requestContinuousUpdate__bool,
+	                      "requestContinousUpdate(bool) is for en/disabling a throw or idle callback to be requested by a GUIEventHandler (typically a MatrixManipulator, though other GUIEventHandler's may also provide functionality). ",
+	                      "GUI toolkits can respond to this immediately by registering an idle/timed callback, or can delay setting the callback and update at their own leisure.");
+	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, y,
+	          __void__requestWarpPointer__float__float,
+	          "requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer to a specified x,y location on the window. ",
+	          "This is used by some camera manipulators to initialise the mouse pointer when mouse position relative to a controls neutral mouse position is required, i.e when mimicking a aircrafts joystick.");
 END_REFLECTOR
 

@@ -24,19 +24,58 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ConstantRateCounter)
 	I_BaseType(osgParticle::Counter);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::ConstantRateCounter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setMinimumNumberOfParticlesToCreate, IN, int, minNumToCreate);
-	I_Method0(int, getMinimumNumberOfParticlesToCreate);
-	I_Method1(void, setNumberOfParticlesPerSecondToCreate, IN, double, numPerSecond);
-	I_Method0(double, getNumberOfParticlesPerSecondToCreate);
-	I_Method1(int, numParticlesToCreate, IN, double, dt);
-	I_Property(int, MinimumNumberOfParticlesToCreate);
-	I_Property(double, NumberOfParticlesPerSecondToCreate);
+	I_Constructor0(____ConstantRateCounter,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::ConstantRateCounter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConstantRateCounter__C5_ConstantRateCounter_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setMinimumNumberOfParticlesToCreate, IN, int, minNumToCreate,
+	          __void__setMinimumNumberOfParticlesToCreate__int,
+	          "",
+	          "");
+	I_Method0(int, getMinimumNumberOfParticlesToCreate,
+	          __int__getMinimumNumberOfParticlesToCreate,
+	          "",
+	          "");
+	I_Method1(void, setNumberOfParticlesPerSecondToCreate, IN, double, numPerSecond,
+	          __void__setNumberOfParticlesPerSecondToCreate__double,
+	          "",
+	          "");
+	I_Method0(double, getNumberOfParticlesPerSecondToCreate,
+	          __double__getNumberOfParticlesPerSecondToCreate,
+	          "",
+	          "");
+	I_Method1(int, numParticlesToCreate, IN, double, dt,
+	          __int__numParticlesToCreate__double,
+	          "Return the number of particles to be created in this frame. ",
+	          "");
+	I_SimpleProperty(int, MinimumNumberOfParticlesToCreate, 
+	                 __int__getMinimumNumberOfParticlesToCreate, 
+	                 __void__setMinimumNumberOfParticlesToCreate__int);
+	I_SimpleProperty(double, NumberOfParticlesPerSecondToCreate, 
+	                 __double__getNumberOfParticlesPerSecondToCreate, 
+	                 __void__setNumberOfParticlesPerSecondToCreate__double);
 END_REFLECTOR
 

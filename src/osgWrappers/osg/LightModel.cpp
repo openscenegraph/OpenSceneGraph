@@ -32,28 +32,91 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::LightModel)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::LightModel &, lw, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(void, setAmbientIntensity, IN, const osg::Vec4 &, ambient);
-	I_Method0(const osg::Vec4 &, getAmbientIntensity);
-	I_Method1(void, setColorControl, IN, osg::LightModel::ColorControl, cc);
-	I_Method0(osg::LightModel::ColorControl, getColorControl);
-	I_Method1(void, setLocalViewer, IN, bool, localViewer);
-	I_Method0(bool, getLocalViewer);
-	I_Method1(void, setTwoSided, IN, bool, twoSided);
-	I_Method0(bool, getTwoSided);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(const osg::Vec4 &, AmbientIntensity);
-	I_Property(osg::LightModel::ColorControl, ColorControl);
-	I_Property(bool, LocalViewer);
-	I_Property(bool, TwoSided);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____LightModel,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::LightModel &, lw, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____LightModel__C5_LightModel_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(void, setAmbientIntensity, IN, const osg::Vec4 &, ambient,
+	          __void__setAmbientIntensity__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getAmbientIntensity,
+	          __C5_osg_Vec4_R1__getAmbientIntensity,
+	          "",
+	          "");
+	I_Method1(void, setColorControl, IN, osg::LightModel::ColorControl, cc,
+	          __void__setColorControl__ColorControl,
+	          "",
+	          "");
+	I_Method0(osg::LightModel::ColorControl, getColorControl,
+	          __ColorControl__getColorControl,
+	          "",
+	          "");
+	I_Method1(void, setLocalViewer, IN, bool, localViewer,
+	          __void__setLocalViewer__bool,
+	          "",
+	          "");
+	I_Method0(bool, getLocalViewer,
+	          __bool__getLocalViewer,
+	          "",
+	          "");
+	I_Method1(void, setTwoSided, IN, bool, twoSided,
+	          __void__setTwoSided__bool,
+	          "",
+	          "");
+	I_Method0(bool, getTwoSided,
+	          __bool__getTwoSided,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_SimpleProperty(const osg::Vec4 &, AmbientIntensity, 
+	                 __C5_osg_Vec4_R1__getAmbientIntensity, 
+	                 __void__setAmbientIntensity__C5_osg_Vec4_R1);
+	I_SimpleProperty(osg::LightModel::ColorControl, ColorControl, 
+	                 __ColorControl__getColorControl, 
+	                 __void__setColorControl__ColorControl);
+	I_SimpleProperty(bool, LocalViewer, 
+	                 __bool__getLocalViewer, 
+	                 __void__setLocalViewer__bool);
+	I_SimpleProperty(bool, TwoSided, 
+	                 __bool__getTwoSided, 
+	                 __void__setTwoSided__bool);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 

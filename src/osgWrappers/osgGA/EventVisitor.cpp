@@ -37,30 +37,101 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::Even
 
 BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0();
-	I_Method1(void, setActionAdapter, IN, osgGA::GUIActionAdapter *, actionAdapter);
-	I_Method0(osgGA::GUIActionAdapter *, getActionAdapter);
-	I_Method0(const osgGA::GUIActionAdapter *, getActionAdapter);
-	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
-	I_Method1(void, removeEvent, IN, osgGA::GUIEventAdapter *, event);
-	I_Method1(void, setEventHandled, IN, bool, handled);
-	I_Method0(bool, getEventHandled);
-	I_Method1(void, setEvents, IN, const osgGA::EventQueue::Events &, events);
-	I_Method0(osgGA::EventQueue::Events &, getEvents);
-	I_Method0(const osgGA::EventQueue::Events &, getEvents);
-	I_Method0(void, reset);
-	I_Method1(void, apply, IN, osg::Node &, node);
-	I_Method1(void, apply, IN, osg::Geode &, node);
-	I_Method1(void, apply, IN, osg::Billboard &, node);
-	I_Method1(void, apply, IN, osg::LightSource &, node);
-	I_Method1(void, apply, IN, osg::Group &, node);
-	I_Method1(void, apply, IN, osg::Transform &, node);
-	I_Method1(void, apply, IN, osg::Projection &, node);
-	I_Method1(void, apply, IN, osg::Switch &, node);
-	I_Method1(void, apply, IN, osg::LOD &, node);
-	I_Method1(void, apply, IN, osg::OccluderNode &, node);
-	I_Property(osgGA::GUIActionAdapter *, ActionAdapter);
-	I_Property(bool, EventHandled);
-	I_Property(const osgGA::EventQueue::Events &, Events);
+	I_Constructor0(____EventVisitor,
+	               "",
+	               "");
+	I_Method1(void, setActionAdapter, IN, osgGA::GUIActionAdapter *, actionAdapter,
+	          __void__setActionAdapter__osgGA_GUIActionAdapter_P1,
+	          "",
+	          "");
+	I_Method0(osgGA::GUIActionAdapter *, getActionAdapter,
+	          __osgGA_GUIActionAdapter_P1__getActionAdapter,
+	          "",
+	          "");
+	I_Method0(const osgGA::GUIActionAdapter *, getActionAdapter,
+	          __C5_osgGA_GUIActionAdapter_P1__getActionAdapter,
+	          "",
+	          "");
+	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event,
+	          __void__addEvent__GUIEventAdapter_P1,
+	          "",
+	          "");
+	I_Method1(void, removeEvent, IN, osgGA::GUIEventAdapter *, event,
+	          __void__removeEvent__GUIEventAdapter_P1,
+	          "",
+	          "");
+	I_Method1(void, setEventHandled, IN, bool, handled,
+	          __void__setEventHandled__bool,
+	          "",
+	          "");
+	I_Method0(bool, getEventHandled,
+	          __bool__getEventHandled,
+	          "",
+	          "");
+	I_Method1(void, setEvents, IN, const osgGA::EventQueue::Events &, events,
+	          __void__setEvents__C5_EventQueue_Events_R1,
+	          "",
+	          "");
+	I_Method0(osgGA::EventQueue::Events &, getEvents,
+	          __EventQueue_Events_R1__getEvents,
+	          "",
+	          "");
+	I_Method0(const osgGA::EventQueue::Events &, getEvents,
+	          __C5_EventQueue_Events_R1__getEvents,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "Method to call to reset visitor. ",
+	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_Method1(void, apply, IN, osg::Node &, node,
+	          __void__apply__osg_Node_R1,
+	          "During traversal each type of node calls its callbacks and its children traversed. ",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, node,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Billboard &, node,
+	          __void__apply__osg_Billboard_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LightSource &, node,
+	          __void__apply__osg_LightSource_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Group &, node,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Transform &, node,
+	          __void__apply__osg_Transform_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Projection &, node,
+	          __void__apply__osg_Projection_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Switch &, node,
+	          __void__apply__osg_Switch_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LOD &, node,
+	          __void__apply__osg_LOD_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::OccluderNode &, node,
+	          __void__apply__osg_OccluderNode_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgGA::GUIActionAdapter *, ActionAdapter, 
+	                 __osgGA_GUIActionAdapter_P1__getActionAdapter, 
+	                 __void__setActionAdapter__osgGA_GUIActionAdapter_P1);
+	I_SimpleProperty(bool, EventHandled, 
+	                 __bool__getEventHandled, 
+	                 __void__setEventHandled__bool);
+	I_SimpleProperty(const osgGA::EventQueue::Events &, Events, 
+	                 __C5_EventQueue_Events_R1__getEvents, 
+	                 __void__setEvents__C5_EventQueue_Events_R1);
 END_REFLECTOR
 

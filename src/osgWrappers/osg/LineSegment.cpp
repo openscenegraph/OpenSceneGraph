@@ -26,21 +26,68 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Constructor1(IN, const osg::LineSegment &, seg);
-	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e);
-	I_Method2(void, set, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e);
-	I_Method0(osg::Vec3 &, start);
-	I_Method0(const osg::Vec3 &, start);
-	I_Method0(osg::Vec3 &, end);
-	I_Method0(const osg::Vec3 &, end);
-	I_Method0(bool, valid);
-	I_Method1(bool, intersect, IN, const osg::BoundingBox &, bb);
-	I_Method3(bool, intersect, IN, const osg::BoundingBox &, bb, IN, float &, r1, IN, float &, r2);
-	I_Method1(bool, intersect, IN, const osg::BoundingSphere &, bs);
-	I_Method3(bool, intersect, IN, const osg::BoundingSphere &, bs, IN, float &, r1, IN, float &, r2);
-	I_Method4(bool, intersect, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3, IN, float &, r);
-	I_Method2(void, mult, IN, const osg::LineSegment &, seg, IN, const osg::Matrix &, m);
-	I_Method2(void, mult, IN, const osg::Matrix &, m, IN, const osg::LineSegment &, seg);
+	I_Constructor0(____LineSegment,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::LineSegment &, seg,
+	               ____LineSegment__C5_LineSegment_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
+	               ____LineSegment__C5_Vec3_R1__C5_Vec3_R1,
+	               "",
+	               "");
+	I_Method2(void, set, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
+	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(osg::Vec3 &, start,
+	          __Vec3_R1__start,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, start,
+	          __C5_Vec3_R1__start,
+	          "",
+	          "");
+	I_Method0(osg::Vec3 &, end,
+	          __Vec3_R1__end,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, end,
+	          __C5_Vec3_R1__end,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method1(bool, intersect, IN, const osg::BoundingBox &, bb,
+	          __bool__intersect__C5_BoundingBox_R1,
+	          "return true if segment intersects BoundingBox. ",
+	          "");
+	I_Method3(bool, intersect, IN, const osg::BoundingBox &, bb, IN, float &, r1, IN, float &, r2,
+	          __bool__intersect__C5_BoundingBox_R1__float_R1__float_R1,
+	          "return true if segment intersects BoundingBox and return the intersection ratios. ",
+	          "");
+	I_Method1(bool, intersect, IN, const osg::BoundingSphere &, bs,
+	          __bool__intersect__C5_BoundingSphere_R1,
+	          "return true if segment intersects BoundingSphere. ",
+	          "");
+	I_Method3(bool, intersect, IN, const osg::BoundingSphere &, bs, IN, float &, r1, IN, float &, r2,
+	          __bool__intersect__C5_BoundingSphere_R1__float_R1__float_R1,
+	          "return true if segment intersects BoundingSphere and return the intersection ratio. ",
+	          "");
+	I_Method4(bool, intersect, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3, IN, float &, r,
+	          __bool__intersect__C5_Vec3_R1__C5_Vec3_R1__C5_Vec3_R1__float_R1,
+	          "return true if segment intersects triangle and set ratio long segment. ",
+	          "");
+	I_Method2(void, mult, IN, const osg::LineSegment &, seg, IN, const osg::Matrix &, m,
+	          __void__mult__C5_LineSegment_R1__C5_Matrix_R1,
+	          "post multiply a segment by matrix. ",
+	          "");
+	I_Method2(void, mult, IN, const osg::Matrix &, m, IN, const osg::LineSegment &, seg,
+	          __void__mult__C5_Matrix_R1__C5_LineSegment_R1,
+	          "pre multiply a segment by matrix. ",
+	          "");
 END_REFLECTOR
 

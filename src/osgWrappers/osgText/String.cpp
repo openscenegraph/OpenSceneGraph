@@ -37,23 +37,59 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::String)
 	I_BaseType(osgText::VectorUInt);
-	I_Constructor0();
-	I_Constructor1(IN, const osgText::String &, str);
-	I_Constructor1(IN, const std::string &, str);
-	I_Constructor1(IN, const wchar_t *, text);
-	I_Constructor2(IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
-	I_Method1(void, set, IN, const std::string &, str);
-	I_Method1(void, set, IN, const wchar_t *, text);
-	I_Method2(void, set, IN, const std::string &, text, IN, osgText::String::Encoding, encoding);
-	I_Method0(std::string, createUTF8EncodedString);
-	I_WriteOnlyProperty(const wchar_t *, );
+	I_Constructor0(____String,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgText::String &, str,
+	               ____String__C5_String_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const std::string &, str,
+	               ____String__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const wchar_t *, text,
+	               ____String__C5_wchar_t_P1,
+	               "",
+	               "");
+	I_Constructor2(IN, const std::string &, text, IN, osgText::String::Encoding, encoding,
+	               ____String__C5_std_string_R1__Encoding,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const std::string &, str,
+	          __void__set__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, const wchar_t *, text,
+	          __void__set__C5_wchar_t_P1,
+	          "Set the text using a wchar_t string, which is converted to an internal TextString. ",
+	          "");
+	I_Method2(void, set, IN, const std::string &, text, IN, osgText::String::Encoding, encoding,
+	          __void__set__C5_std_string_R1__Encoding,
+	          "Set the text using a Unicode encoded std::string, which is converted to an internal TextString. ",
+	          "The encoding parameter specificies which Unicode encodeding is used in the std::string. ");
+	I_Method0(std::string, createUTF8EncodedString,
+	          __std_string__createUTF8EncodedString,
+	          "returns a UTF8 encoded version of this osgText::String. ",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::VectorUInt)
 	I_BaseType(std::vector<unsigned int>);
-	I_Constructor0();
-	I_Constructor1(IN, const osgText::VectorUInt &, copy);
-	I_Constructor2(IN, unsigned int *, beg, IN, unsigned int *, end);
-	I_Constructor1(IN, unsigned int, n);
+	I_Constructor0(____VectorUInt,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgText::VectorUInt &, copy,
+	               ____VectorUInt__C5_VectorUInt_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int *, beg, IN, unsigned int *, end,
+	               ____VectorUInt__unsigned_int_P1__unsigned_int_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, unsigned int, n,
+	               ____VectorUInt__unsigned_int,
+	               "",
+	               "");
 END_REFLECTOR
 

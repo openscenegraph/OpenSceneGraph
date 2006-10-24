@@ -27,28 +27,92 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::FluidFrictionOperator)
 	I_BaseType(osgParticle::Operator);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::FluidFrictionOperator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setFluidDensity, IN, float, d);
-	I_Method0(float, getFluidDensity);
-	I_Method1(void, setFluidViscosity, IN, float, v);
-	I_Method0(float, getFluidViscosity);
-	I_Method1(void, setWind, IN, const osg::Vec3 &, wind);
-	I_Method0(const osg::Vec3 &, getWind);
-	I_Method1(void, setOverrideRadius, IN, float, r);
-	I_Method0(float, getOverrideRadius);
-	I_Method0(void, setFluidToAir);
-	I_Method0(void, setFluidToWater);
-	I_Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt);
-	I_Method1(void, beginOperate, IN, osgParticle::Program *, prg);
-	I_Property(float, FluidDensity);
-	I_Property(float, FluidViscosity);
-	I_Property(float, OverrideRadius);
-	I_Property(const osg::Vec3 &, Wind);
+	I_Constructor0(____FluidFrictionOperator,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::FluidFrictionOperator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____FluidFrictionOperator__C5_FluidFrictionOperator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setFluidDensity, IN, float, d,
+	          __void__setFluidDensity__float,
+	          "Set the density of the fluid. ",
+	          "");
+	I_Method0(float, getFluidDensity,
+	          __float__getFluidDensity,
+	          "Get the density of the fluid. ",
+	          "");
+	I_Method1(void, setFluidViscosity, IN, float, v,
+	          __void__setFluidViscosity__float,
+	          "Set the viscosity of the fluid. ",
+	          "");
+	I_Method0(float, getFluidViscosity,
+	          __float__getFluidViscosity,
+	          "Get the viscosity of the fluid. ",
+	          "");
+	I_Method1(void, setWind, IN, const osg::Vec3 &, wind,
+	          __void__setWind__C5_osg_Vec3_R1,
+	          "Set the wind vector. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getWind,
+	          __C5_osg_Vec3_R1__getWind,
+	          "Get the wind vector. ",
+	          "");
+	I_Method1(void, setOverrideRadius, IN, float, r,
+	          __void__setOverrideRadius__float,
+	          "Set the overriden radius value (pass 0 if you want to use particle's radius). ",
+	          "");
+	I_Method0(float, getOverrideRadius,
+	          __float__getOverrideRadius,
+	          "Get the overriden radius value. ",
+	          "");
+	I_Method0(void, setFluidToAir,
+	          __void__setFluidToAir,
+	          "Set the fluid parameters as for air (20°C temperature). ",
+	          "");
+	I_Method0(void, setFluidToWater,
+	          __void__setFluidToWater,
+	          "Set the fluid parameters as for pure water (20°C temperature). ",
+	          "");
+	I_Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt,
+	          __void__operate__Particle_P1__double,
+	          "Apply the friction forces to a particle. Do not call this method manually. ",
+	          "");
+	I_Method1(void, beginOperate, IN, osgParticle::Program *, prg,
+	          __void__beginOperate__Program_P1,
+	          "Perform some initializations. Do not call this method manually. ",
+	          "");
+	I_SimpleProperty(float, FluidDensity, 
+	                 __float__getFluidDensity, 
+	                 __void__setFluidDensity__float);
+	I_SimpleProperty(float, FluidViscosity, 
+	                 __float__getFluidViscosity, 
+	                 __void__setFluidViscosity__float);
+	I_SimpleProperty(float, OverrideRadius, 
+	                 __float__getOverrideRadius, 
+	                 __void__setOverrideRadius__float);
+	I_SimpleProperty(const osg::Vec3 &, Wind, 
+	                 __C5_osg_Vec3_R1__getWind, 
+	                 __void__setWind__C5_osg_Vec3_R1);
 END_REFLECTOR
 

@@ -37,30 +37,100 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Depth)
 	I_BaseType(osg::StateAttribute);
-	I_ConstructorWithDefaults4(IN, osg::Depth::Function, func, osg::Depth::LESS, IN, double, zNear, 0.0, IN, double, zFar, 1.0, IN, bool, writeMask, true);
-	I_ConstructorWithDefaults2(IN, const osg::Depth &, dp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, setFunction, IN, osg::Depth::Function, func);
-	I_Method0(osg::Depth::Function, getFunction);
-	I_Method2(void, setRange, IN, double, zNear, IN, double, zFar);
-	I_Method1(void, setZNear, IN, double, zNear);
-	I_Method0(double, getZNear);
-	I_Method1(void, setZFar, IN, double, zFar);
-	I_Method0(double, getZFar);
-	I_Method1(void, setWriteMask, IN, bool, mask);
-	I_Method0(bool, getWriteMask);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(osg::Depth::Function, Function);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	I_Property(bool, WriteMask);
-	I_Property(double, ZFar);
-	I_Property(double, ZNear);
+	I_ConstructorWithDefaults4(IN, osg::Depth::Function, func, osg::Depth::LESS, IN, double, zNear, 0.0, IN, double, zFar, 1.0, IN, bool, writeMask, true,
+	                           ____Depth__Function__double__double__bool,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osg::Depth &, dp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Depth__C5_Depth_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method1(void, setFunction, IN, osg::Depth::Function, func,
+	          __void__setFunction__Function,
+	          "",
+	          "");
+	I_Method0(osg::Depth::Function, getFunction,
+	          __Function__getFunction,
+	          "",
+	          "");
+	I_Method2(void, setRange, IN, double, zNear, IN, double, zFar,
+	          __void__setRange__double__double,
+	          "",
+	          "");
+	I_Method1(void, setZNear, IN, double, zNear,
+	          __void__setZNear__double,
+	          "",
+	          "");
+	I_Method0(double, getZNear,
+	          __double__getZNear,
+	          "",
+	          "");
+	I_Method1(void, setZFar, IN, double, zFar,
+	          __void__setZFar__double,
+	          "",
+	          "");
+	I_Method0(double, getZFar,
+	          __double__getZFar,
+	          "",
+	          "");
+	I_Method1(void, setWriteMask, IN, bool, mask,
+	          __void__setWriteMask__bool,
+	          "",
+	          "");
+	I_Method0(bool, getWriteMask,
+	          __bool__getWriteMask,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_SimpleProperty(osg::Depth::Function, Function, 
+	                 __Function__getFunction, 
+	                 __void__setFunction__Function);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
+	I_SimpleProperty(bool, WriteMask, 
+	                 __bool__getWriteMask, 
+	                 __void__setWriteMask__bool);
+	I_SimpleProperty(double, ZFar, 
+	                 __double__getZFar, 
+	                 __void__setZFar__double);
+	I_SimpleProperty(double, ZNear, 
+	                 __double__getZNear, 
+	                 __void__setZNear__double);
 END_REFLECTOR
 

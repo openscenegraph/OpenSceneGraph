@@ -30,22 +30,71 @@
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	I_BaseType(osgDB::FieldReaderIterator);
-	I_Constructor0();
-	I_Method1(void, setOptions, IN, const osgDB::ReaderWriter::Options *, options);
-	I_Method0(const osgDB::ReaderWriter::Options *, getOptions);
-	I_Method1(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj);
-	I_Method1(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw);
-	I_Method0(osg::Object *, readObject);
-	I_Method0(osg::Image *, readImage);
-	I_Method0(osg::Drawable *, readDrawable);
-	I_Method0(osg::StateAttribute *, readStateAttribute);
-	I_Method0(osg::Uniform *, readUniform);
-	I_Method0(osg::Node *, readNode);
-	I_Method1(osg::Object *, readObject, IN, const std::string &, fileName);
-	I_Method1(osg::Image *, readImage, IN, const std::string &, fileName);
-	I_Method1(osg::Node *, readNode, IN, const std::string &, fileName);
-	I_Method1(osg::Object *, getObjectForUniqueID, IN, const std::string &, uniqueID);
-	I_Method2(void, regisiterUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj);
-	I_Property(const osgDB::ReaderWriter::Options *, Options);
+	I_Constructor0(____Input,
+	               "",
+	               "");
+	I_Method1(void, setOptions, IN, const osgDB::ReaderWriter::Options *, options,
+	          __void__setOptions__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method0(const osgDB::ReaderWriter::Options *, getOptions,
+	          __C5_ReaderWriter_Options_P1__getOptions,
+	          "",
+	          "");
+	I_Method1(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj,
+	          __osg_Object_P1__readObjectOfType__C5_osg_Object_R1,
+	          "",
+	          "");
+	I_Method1(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw,
+	          __osg_Object_P1__readObjectOfType__C5_basic_type_wrapper_R1,
+	          "",
+	          "");
+	I_Method0(osg::Object *, readObject,
+	          __osg_Object_P1__readObject,
+	          "",
+	          "");
+	I_Method0(osg::Image *, readImage,
+	          __osg_Image_P1__readImage,
+	          "",
+	          "");
+	I_Method0(osg::Drawable *, readDrawable,
+	          __osg_Drawable_P1__readDrawable,
+	          "",
+	          "");
+	I_Method0(osg::StateAttribute *, readStateAttribute,
+	          __osg_StateAttribute_P1__readStateAttribute,
+	          "",
+	          "");
+	I_Method0(osg::Uniform *, readUniform,
+	          __osg_Uniform_P1__readUniform,
+	          "",
+	          "");
+	I_Method0(osg::Node *, readNode,
+	          __osg_Node_P1__readNode,
+	          "",
+	          "");
+	I_Method1(osg::Object *, readObject, IN, const std::string &, fileName,
+	          __osg_Object_P1__readObject__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(osg::Image *, readImage, IN, const std::string &, fileName,
+	          __osg_Image_P1__readImage__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(osg::Node *, readNode, IN, const std::string &, fileName,
+	          __osg_Node_P1__readNode__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(osg::Object *, getObjectForUniqueID, IN, const std::string &, uniqueID,
+	          __osg_Object_P1__getObjectForUniqueID__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method2(void, regisiterUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj,
+	          __void__regisiterUniqueIDForObject__C5_std_string_R1__osg_Object_P1,
+	          "",
+	          "");
+	I_SimpleProperty(const osgDB::ReaderWriter::Options *, Options, 
+	                 __C5_ReaderWriter_Options_P1__getOptions, 
+	                 __void__setOptions__C5_ReaderWriter_Options_P1);
 END_REFLECTOR
 

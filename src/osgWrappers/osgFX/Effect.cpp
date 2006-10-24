@@ -30,26 +30,89 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgFX::Effect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(const char *, effectName);
-	I_Method0(const char *, effectDescription);
-	I_Method0(const char *, effectAuthor);
-	I_Method0(bool, getEnabled);
-	I_Method1(void, setEnabled, IN, bool, v);
-	I_Method0(void, setUpDemo);
-	I_Method0(int, getNumTechniques);
-	I_Method1(osgFX::Technique *, getTechnique, IN, int, i);
-	I_Method1(const osgFX::Technique *, getTechnique, IN, int, i);
-	I_Method0(int, getSelectedTechnique);
-	I_MethodWithDefaults1(void, selectTechnique, IN, int, i, osgFX::Effect::AUTO_DETECT);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, inherited_traverse, IN, osg::NodeVisitor &, nv);
-	I_Property(bool, Enabled);
-	I_ReadOnlyProperty(int, SelectedTechnique);
-	I_ArrayProperty_G(osgFX::Technique *, Technique, Techniques, int, void);
+	I_Constructor0(____Effect,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgFX::Effect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Effect__C5_Effect_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, effectName,
+	          __C5_char_P1__effectName,
+	          "get the name of this Effect ",
+	          "");
+	I_Method0(const char *, effectDescription,
+	          __C5_char_P1__effectDescription,
+	          "get a brief description of this Effect ",
+	          "");
+	I_Method0(const char *, effectAuthor,
+	          __C5_char_P1__effectAuthor,
+	          "get the effect author's name ",
+	          "");
+	I_Method0(bool, getEnabled,
+	          __bool__getEnabled,
+	          "get whether the effect is enabled or not ",
+	          "");
+	I_Method1(void, setEnabled, IN, bool, v,
+	          __void__setEnabled__bool,
+	          "set whether the effect is enabled or not ",
+	          "");
+	I_Method0(void, setUpDemo,
+	          __void__setUpDemo,
+	          "optional: set effect parameters to produce a visually significant result to be used in demo applications like osgfxbrowser. ",
+	          "Default is to do nothing.");
+	I_Method0(int, getNumTechniques,
+	          __int__getNumTechniques,
+	          "get the number of techniques defined for this Effect ",
+	          "");
+	I_Method1(osgFX::Technique *, getTechnique, IN, int, i,
+	          __Technique_P1__getTechnique__int,
+	          "get the i-th Technique ",
+	          "");
+	I_Method1(const osgFX::Technique *, getTechnique, IN, int, i,
+	          __C5_Technique_P1__getTechnique__int,
+	          "get the i-th const Technique ",
+	          "");
+	I_Method0(int, getSelectedTechnique,
+	          __int__getSelectedTechnique,
+	          "get the index of the currently selected Technique ",
+	          "");
+	I_MethodWithDefaults1(void, selectTechnique, IN, int, i, osgFX::Effect::AUTO_DETECT,
+	                      __void__selectTechnique__int,
+	                      "select a technique or enable automatic detection ",
+	                      "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "custom traversal ",
+	          "");
+	I_Method1(void, inherited_traverse, IN, osg::NodeVisitor &, nv,
+	          __void__inherited_traverse__osg_NodeVisitor_R1,
+	          "default traversal ",
+	          "");
+	I_SimpleProperty(bool, Enabled, 
+	                 __bool__getEnabled, 
+	                 __void__setEnabled__bool);
+	I_SimpleProperty(int, SelectedTechnique, 
+	                 __int__getSelectedTechnique, 
+	                 0);
+	I_ArrayProperty(osgFX::Technique *, Technique, 
+	                __Technique_P1__getTechnique__int, 
+	                0, 
+	                __int__getNumTechniques, 
+	                0, 
+	                0, 
+	                0);
 END_REFLECTOR
 

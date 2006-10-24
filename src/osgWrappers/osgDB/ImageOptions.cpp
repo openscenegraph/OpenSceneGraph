@@ -36,15 +36,41 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	I_BaseType(osgDB::ReaderWriter::Options);
-	I_Constructor0();
-	I_Constructor1(IN, const std::string &, str);
-	I_ConstructorWithDefaults2(IN, const osgDB::ImageOptions &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(void, init);
+	I_Constructor0(____ImageOptions,
+	               "",
+	               "");
+	I_Constructor1(IN, const std::string &, str,
+	               ____ImageOptions__C5_std_string_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgDB::ImageOptions &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ImageOptions__C5_ImageOptions_R1__C5_osg_CopyOp,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(void, init,
+	          __void__init,
+	          "",
+	          "");
 	I_PublicMemberProperty(osgDB::ImageOptions::ImageSamplingMode, _sourceImageSamplingMode);
 	I_PublicMemberProperty(osgDB::ImageOptions::ImageWindowMode, _sourceImageWindowMode);
 	I_PublicMemberProperty(osgDB::ImageOptions::RatioWindow, _sourceRatioWindow);
@@ -58,8 +84,13 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
-	I_Constructor0();
-	I_Method4(void, set, IN, unsigned int, x, IN, unsigned int, y, IN, unsigned int, w, IN, unsigned int, h);
+	I_Constructor0(____PixelWindow,
+	               "",
+	               "");
+	I_Method4(void, set, IN, unsigned int, x, IN, unsigned int, y, IN, unsigned int, w, IN, unsigned int, h,
+	          __void__set__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
 	I_PublicMemberProperty(unsigned int, windowX);
 	I_PublicMemberProperty(unsigned int, windowY);
 	I_PublicMemberProperty(unsigned int, windowWidth);
@@ -67,8 +98,13 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
-	I_Constructor0();
-	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
+	I_Constructor0(____RatioWindow,
+	               "",
+	               "");
+	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h,
+	          __void__set__double__double__double__double,
+	          "",
+	          "");
 	I_PublicMemberProperty(double, windowX);
 	I_PublicMemberProperty(double, windowY);
 	I_PublicMemberProperty(double, windowWidth);
@@ -77,8 +113,13 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h);
+	I_Constructor0(____TexCoordRange,
+	               "",
+	               "");
+	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h,
+	          __void__set__double__double__double__double,
+	          "",
+	          "");
 	I_PublicMemberProperty(double, _x);
 	I_PublicMemberProperty(double, _y);
 	I_PublicMemberProperty(double, _w);

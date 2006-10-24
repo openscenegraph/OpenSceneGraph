@@ -53,68 +53,245 @@ TYPE_NAME_ALIAS(osg::Matrix::value_type, osgUtil::CullVisitor::value_type);
 BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_BaseType(osg::CullStack);
-	I_Constructor0();
-	I_Method0(osgUtil::CullVisitor *, cloneType);
-	I_Method0(void, reset);
-	I_Method0(osg::Vec3, getEyePoint);
-	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
-	I_Method2(float, getDistanceFromEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale);
-	I_Method1(void, apply, IN, osg::Node &, x);
-	I_Method1(void, apply, IN, osg::Geode &, node);
-	I_Method1(void, apply, IN, osg::Billboard &, node);
-	I_Method1(void, apply, IN, osg::LightSource &, node);
-	I_Method1(void, apply, IN, osg::ClipNode &, node);
-	I_Method1(void, apply, IN, osg::TexGenNode &, node);
-	I_Method1(void, apply, IN, osg::Group &, node);
-	I_Method1(void, apply, IN, osg::Transform &, node);
-	I_Method1(void, apply, IN, osg::Projection &, node);
-	I_Method1(void, apply, IN, osg::Switch &, node);
-	I_Method1(void, apply, IN, osg::LOD &, node);
-	I_Method1(void, apply, IN, osg::ClearNode &, node);
-	I_Method1(void, apply, IN, osg::CameraNode &, node);
-	I_Method1(void, apply, IN, osg::OccluderNode &, node);
-	I_Method1(void, setClearNode, IN, const osg::ClearNode *, earthSky);
-	I_Method0(const osg::ClearNode *, getClearNode);
-	I_Method1(void, pushStateSet, IN, const osg::StateSet *, ss);
-	I_Method0(void, popStateSet);
-	I_Method1(void, setStateGraph, IN, osgUtil::StateGraph *, rg);
-	I_Method0(osgUtil::StateGraph *, getRootStateGraph);
-	I_Method0(osgUtil::StateGraph *, getCurrentStateGraph);
-	I_Method1(void, setRenderStage, IN, osgUtil::RenderStage *, rg);
-	I_Method0(osgUtil::RenderStage *, getRenderStage);
-	I_Method0(osgUtil::RenderBin *, getCurrentRenderBin);
-	I_Method1(void, setCurrentRenderBin, IN, osgUtil::RenderBin *, rb);
-	I_Method0(osgUtil::CullVisitor::value_type, getCalculatedNearPlane);
-	I_Method0(osgUtil::CullVisitor::value_type, getCalculatedFarPlane);
-	I_Method3(osgUtil::CullVisitor::value_type, computeNearestPointInFrustum, IN, const osg::Matrix &, matrix, IN, const osg::Polytope::PlaneList &, planes, IN, const osg::Drawable &, drawable);
-	I_Method2(bool, updateCalculatedNearFar, IN, const osg::Matrix &, matrix, IN, const osg::BoundingBox &, bb);
-	I_MethodWithDefaults3(bool, updateCalculatedNearFar, IN, const osg::Matrix &, matrix, , IN, const osg::Drawable &, drawable, , IN, bool, isBillboard, false);
-	I_Method1(void, updateCalculatedNearFar, IN, const osg::Vec3 &, pos);
-	I_Method2(void, addDrawable, IN, osg::Drawable *, drawable, IN, osg::RefMatrix *, matrix);
-	I_Method3(void, addDrawableAndDepth, IN, osg::Drawable *, drawable, IN, osg::RefMatrix *, matrix, IN, float, depth);
-	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	I_Method0(void, popProjectionMatrix);
-	I_Method3(bool, clampProjectionMatrixImplementation, IN, osg::Matrixf &, projection, IN, double &, znear, IN, double &, zfar);
-	I_Method3(bool, clampProjectionMatrixImplementation, IN, osg::Matrixd &, projection, IN, double &, znear, IN, double &, zfar);
-	I_Method3(bool, clampProjectionMatrix, IN, osg::Matrixf &, projection, IN, osgUtil::CullVisitor::value_type &, znear, IN, osgUtil::CullVisitor::value_type &, zfar);
-	I_Method3(bool, clampProjectionMatrix, IN, osg::Matrixd &, projection, IN, osgUtil::CullVisitor::value_type &, znear, IN, osgUtil::CullVisitor::value_type &, zfar);
-	I_Method1(void, setState, IN, osg::State *, state);
-	I_Method0(osg::State *, getState);
-	I_Method0(const osg::State *, getState);
-	I_Method1(void, setRenderInfo, IN, osg::RenderInfo &, renderInfo);
-	I_Method0(osg::RenderInfo &, getRenderInfo);
-	I_Method0(const osg::RenderInfo &, getRenderInfo);
-	I_ReadOnlyProperty(osgUtil::CullVisitor::value_type, CalculatedFarPlane);
-	I_ReadOnlyProperty(osgUtil::CullVisitor::value_type, CalculatedNearPlane);
-	I_Property(const osg::ClearNode *, ClearNode);
-	I_Property(osgUtil::RenderBin *, CurrentRenderBin);
-	I_ReadOnlyProperty(osgUtil::StateGraph *, CurrentStateGraph);
-	I_ReadOnlyProperty(osg::Vec3, EyePoint);
-	I_Property(osg::RenderInfo &, RenderInfo);
-	I_Property(osgUtil::RenderStage *, RenderStage);
-	I_ReadOnlyProperty(osgUtil::StateGraph *, RootStateGraph);
-	I_Property(osg::State *, State);
-	I_WriteOnlyProperty(osgUtil::StateGraph *, StateGraph);
+	I_Constructor0(____CullVisitor,
+	               "",
+	               "");
+	I_Method0(osgUtil::CullVisitor *, cloneType,
+	          __CullVisitor_P1__cloneType,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osg::Vec3, getEyePoint,
+	          __osg_Vec3__getEyePoint,
+	          "Get the eye point in local coordinates. ",
+	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. ");
+	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale,
+	          __float__getDistanceToEyePoint__C5_osg_Vec3_R1__bool,
+	          "Get the distance from a point to the eye point, distance value in local coordinate system. ",
+	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. If the getDistanceFromEyePoint(pos) is not implemented then a default value of 0.0 is returned. ");
+	I_Method2(float, getDistanceFromEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale,
+	          __float__getDistanceFromEyePoint__C5_osg_Vec3_R1__bool,
+	          "Get the distance of a point from the eye point, distance value in the eye coordinate system. ",
+	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. If the getDistanceFromEyePoint(pos) is not implemented than a default value of 0.0 is returned. ");
+	I_Method1(void, apply, IN, osg::Node &, x,
+	          __void__apply__osg_Node_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, node,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Billboard &, node,
+	          __void__apply__osg_Billboard_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LightSource &, node,
+	          __void__apply__osg_LightSource_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::ClipNode &, node,
+	          __void__apply__osg_ClipNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::TexGenNode &, node,
+	          __void__apply__osg_TexGenNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Group &, node,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Transform &, node,
+	          __void__apply__osg_Transform_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Projection &, node,
+	          __void__apply__osg_Projection_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Switch &, node,
+	          __void__apply__osg_Switch_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LOD &, node,
+	          __void__apply__osg_LOD_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::ClearNode &, node,
+	          __void__apply__osg_ClearNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::CameraNode &, node,
+	          __void__apply__osg_CameraNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::OccluderNode &, node,
+	          __void__apply__osg_OccluderNode_R1,
+	          "",
+	          "");
+	I_Method1(void, setClearNode, IN, const osg::ClearNode *, earthSky,
+	          __void__setClearNode__C5_osg_ClearNode_P1,
+	          "",
+	          "");
+	I_Method0(const osg::ClearNode *, getClearNode,
+	          __C5_osg_ClearNode_P1__getClearNode,
+	          "",
+	          "");
+	I_Method1(void, pushStateSet, IN, const osg::StateSet *, ss,
+	          __void__pushStateSet__C5_osg_StateSet_P1,
+	          "Push state set on the current state group. ",
+	          "If the state exists in a child state group of the current state group then move the current state group to that child. Otherwise, create a new state group for the state set, add it to the current state group then move the current state group pointer to the new state group.");
+	I_Method0(void, popStateSet,
+	          __void__popStateSet,
+	          "Pop the top state set and hence associated state group. ",
+	          "Move the current state group to the parent of the popped state group.");
+	I_Method1(void, setStateGraph, IN, osgUtil::StateGraph *, rg,
+	          __void__setStateGraph__StateGraph_P1,
+	          "",
+	          "");
+	I_Method0(osgUtil::StateGraph *, getRootStateGraph,
+	          __StateGraph_P1__getRootStateGraph,
+	          "",
+	          "");
+	I_Method0(osgUtil::StateGraph *, getCurrentStateGraph,
+	          __StateGraph_P1__getCurrentStateGraph,
+	          "",
+	          "");
+	I_Method1(void, setRenderStage, IN, osgUtil::RenderStage *, rg,
+	          __void__setRenderStage__RenderStage_P1,
+	          "",
+	          "");
+	I_Method0(osgUtil::RenderStage *, getRenderStage,
+	          __RenderStage_P1__getRenderStage,
+	          "",
+	          "");
+	I_Method0(osgUtil::RenderBin *, getCurrentRenderBin,
+	          __RenderBin_P1__getCurrentRenderBin,
+	          "",
+	          "");
+	I_Method1(void, setCurrentRenderBin, IN, osgUtil::RenderBin *, rb,
+	          __void__setCurrentRenderBin__RenderBin_P1,
+	          "",
+	          "");
+	I_Method0(osgUtil::CullVisitor::value_type, getCalculatedNearPlane,
+	          __value_type__getCalculatedNearPlane,
+	          "",
+	          "");
+	I_Method0(osgUtil::CullVisitor::value_type, getCalculatedFarPlane,
+	          __value_type__getCalculatedFarPlane,
+	          "",
+	          "");
+	I_Method3(osgUtil::CullVisitor::value_type, computeNearestPointInFrustum, IN, const osg::Matrix &, matrix, IN, const osg::Polytope::PlaneList &, planes, IN, const osg::Drawable &, drawable,
+	          __value_type__computeNearestPointInFrustum__C5_osg_Matrix_R1__C5_osg_Polytope_PlaneList_R1__C5_osg_Drawable_R1,
+	          "",
+	          "");
+	I_Method2(bool, updateCalculatedNearFar, IN, const osg::Matrix &, matrix, IN, const osg::BoundingBox &, bb,
+	          __bool__updateCalculatedNearFar__C5_osg_Matrix_R1__C5_osg_BoundingBox_R1,
+	          "",
+	          "");
+	I_MethodWithDefaults3(bool, updateCalculatedNearFar, IN, const osg::Matrix &, matrix, , IN, const osg::Drawable &, drawable, , IN, bool, isBillboard, false,
+	                      __bool__updateCalculatedNearFar__C5_osg_Matrix_R1__C5_osg_Drawable_R1__bool,
+	                      "",
+	                      "");
+	I_Method1(void, updateCalculatedNearFar, IN, const osg::Vec3 &, pos,
+	          __void__updateCalculatedNearFar__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method2(void, addDrawable, IN, osg::Drawable *, drawable, IN, osg::RefMatrix *, matrix,
+	          __void__addDrawable__osg_Drawable_P1__osg_RefMatrix_P1,
+	          "Add a drawable to current render graph. ",
+	          "");
+	I_Method3(void, addDrawableAndDepth, IN, osg::Drawable *, drawable, IN, osg::RefMatrix *, matrix, IN, float, depth,
+	          __void__addDrawableAndDepth__osg_Drawable_P1__osg_RefMatrix_P1__float,
+	          "Add a drawable and depth to current render graph. ",
+	          "");
+	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          __void__addPositionedAttribute__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
+	          "Add an attribute which is positioned relative to the modelview matrix. ",
+	          "");
+	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          __void__addPositionedTextureAttribute__unsigned_int__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
+	          "Add an attribute which is positioned relative to the modelview matrix. ",
+	          "");
+	I_Method0(void, popProjectionMatrix,
+	          __void__popProjectionMatrix,
+	          "Re-implement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far. ",
+	          "");
+	I_Method3(bool, clampProjectionMatrixImplementation, IN, osg::Matrixf &, projection, IN, double &, znear, IN, double &, zfar,
+	          __bool__clampProjectionMatrixImplementation__osg_Matrixf_R1__double_R1__double_R1,
+	          "CullVisitor's default clamping of the projection float matrix to computed near and far values. ",
+	          "Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback. ");
+	I_Method3(bool, clampProjectionMatrixImplementation, IN, osg::Matrixd &, projection, IN, double &, znear, IN, double &, zfar,
+	          __bool__clampProjectionMatrixImplementation__osg_Matrixd_R1__double_R1__double_R1,
+	          "CullVisitor's default clamping of the projection double matrix to computed near and far values. ",
+	          "Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback. ");
+	I_Method3(bool, clampProjectionMatrix, IN, osg::Matrixf &, projection, IN, osgUtil::CullVisitor::value_type &, znear, IN, osgUtil::CullVisitor::value_type &, zfar,
+	          __bool__clampProjectionMatrix__osg_Matrixf_R1__value_type_R1__value_type_R1,
+	          "Clamp the projection float matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitor implementation. ",
+	          "");
+	I_Method3(bool, clampProjectionMatrix, IN, osg::Matrixd &, projection, IN, osgUtil::CullVisitor::value_type &, znear, IN, osgUtil::CullVisitor::value_type &, zfar,
+	          __bool__clampProjectionMatrix__osg_Matrixd_R1__value_type_R1__value_type_R1,
+	          "Clamp the projection double matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitor implementation. ",
+	          "");
+	I_Method1(void, setState, IN, osg::State *, state,
+	          __void__setState__osg_State_P1,
+	          "",
+	          "");
+	I_Method0(osg::State *, getState,
+	          __osg_State_P1__getState,
+	          "",
+	          "");
+	I_Method0(const osg::State *, getState,
+	          __C5_osg_State_P1__getState,
+	          "",
+	          "");
+	I_Method1(void, setRenderInfo, IN, osg::RenderInfo &, renderInfo,
+	          __void__setRenderInfo__osg_RenderInfo_R1,
+	          "",
+	          "");
+	I_Method0(osg::RenderInfo &, getRenderInfo,
+	          __osg_RenderInfo_R1__getRenderInfo,
+	          "",
+	          "");
+	I_Method0(const osg::RenderInfo &, getRenderInfo,
+	          __C5_osg_RenderInfo_R1__getRenderInfo,
+	          "",
+	          "");
+	I_SimpleProperty(osgUtil::CullVisitor::value_type, CalculatedFarPlane, 
+	                 __value_type__getCalculatedFarPlane, 
+	                 0);
+	I_SimpleProperty(osgUtil::CullVisitor::value_type, CalculatedNearPlane, 
+	                 __value_type__getCalculatedNearPlane, 
+	                 0);
+	I_SimpleProperty(const osg::ClearNode *, ClearNode, 
+	                 __C5_osg_ClearNode_P1__getClearNode, 
+	                 __void__setClearNode__C5_osg_ClearNode_P1);
+	I_SimpleProperty(osgUtil::RenderBin *, CurrentRenderBin, 
+	                 __RenderBin_P1__getCurrentRenderBin, 
+	                 __void__setCurrentRenderBin__RenderBin_P1);
+	I_SimpleProperty(osgUtil::StateGraph *, CurrentStateGraph, 
+	                 __StateGraph_P1__getCurrentStateGraph, 
+	                 0);
+	I_SimpleProperty(osg::Vec3, EyePoint, 
+	                 __osg_Vec3__getEyePoint, 
+	                 0);
+	I_SimpleProperty(osg::RenderInfo &, RenderInfo, 
+	                 __osg_RenderInfo_R1__getRenderInfo, 
+	                 __void__setRenderInfo__osg_RenderInfo_R1);
+	I_SimpleProperty(osgUtil::RenderStage *, RenderStage, 
+	                 __RenderStage_P1__getRenderStage, 
+	                 __void__setRenderStage__RenderStage_P1);
+	I_SimpleProperty(osgUtil::StateGraph *, RootStateGraph, 
+	                 __StateGraph_P1__getRootStateGraph, 
+	                 0);
+	I_SimpleProperty(osg::State *, State, 
+	                 __osg_State_P1__getState, 
+	                 __void__setState__osg_State_P1);
+	I_SimpleProperty(osgUtil::StateGraph *, StateGraph, 
+	                 0, 
+	                 __void__setStateGraph__StateGraph_P1);
 END_REFLECTOR
 

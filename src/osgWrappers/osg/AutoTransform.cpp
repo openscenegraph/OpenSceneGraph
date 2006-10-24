@@ -35,40 +35,137 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	I_BaseType(osg::Transform);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::AutoTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(osg::AutoTransform *, asAutoTransform);
-	I_Method0(const osg::AutoTransform *, asAutoTransform);
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos);
-	I_Method0(const osg::Vec3 &, getPosition);
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method1(void, setScale, IN, float, scale);
-	I_Method1(void, setScale, IN, const osg::Vec3 &, scale);
-	I_Method0(const osg::Vec3 &, getScale);
-	I_Method1(void, setPivotPoint, IN, const osg::Vec3 &, pivot);
-	I_Method0(const osg::Vec3 &, getPivotPoint);
-	I_Method1(void, setAutoUpdateEyeMovementTolerance, IN, float, tolerance);
-	I_Method0(float, getAutoUpdateEyeMovementTolerance);
-	I_Method1(void, setAutoRotateMode, IN, osg::AutoTransform::AutoRotateMode, mode);
-	I_Method0(osg::AutoTransform::AutoRotateMode, getAutoRotateMode);
-	I_Method1(void, setAutoScaleToScreen, IN, bool, autoScaleToScreen);
-	I_Method0(bool, getAutoScaleToScreen);
-	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_Property(osg::AutoTransform::AutoRotateMode, AutoRotateMode);
-	I_Property(bool, AutoScaleToScreen);
-	I_Property(float, AutoUpdateEyeMovementTolerance);
-	I_Property(const osg::Vec3 &, PivotPoint);
-	I_Property(const osg::Vec3 &, Position);
-	I_Property(const osg::Quat &, Rotation);
-	I_Property(const osg::Vec3 &, Scale);
+	I_Constructor0(____AutoTransform,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::AutoTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AutoTransform__C5_AutoTransform_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(osg::AutoTransform *, asAutoTransform,
+	          __AutoTransform_P1__asAutoTransform,
+	          "",
+	          "");
+	I_Method0(const osg::AutoTransform *, asAutoTransform,
+	          __C5_AutoTransform_P1__asAutoTransform,
+	          "",
+	          "");
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
+	          __void__setPosition__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getPosition,
+	          __C5_Vec3_R1__getPosition,
+	          "",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          __void__setRotation__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method1(void, setScale, IN, float, scale,
+	          __void__setScale__float,
+	          "",
+	          "");
+	I_Method1(void, setScale, IN, const osg::Vec3 &, scale,
+	          __void__setScale__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getScale,
+	          __C5_Vec3_R1__getScale,
+	          "",
+	          "");
+	I_Method1(void, setPivotPoint, IN, const osg::Vec3 &, pivot,
+	          __void__setPivotPoint__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getPivotPoint,
+	          __C5_Vec3_R1__getPivotPoint,
+	          "",
+	          "");
+	I_Method1(void, setAutoUpdateEyeMovementTolerance, IN, float, tolerance,
+	          __void__setAutoUpdateEyeMovementTolerance__float,
+	          "",
+	          "");
+	I_Method0(float, getAutoUpdateEyeMovementTolerance,
+	          __float__getAutoUpdateEyeMovementTolerance,
+	          "",
+	          "");
+	I_Method1(void, setAutoRotateMode, IN, osg::AutoTransform::AutoRotateMode, mode,
+	          __void__setAutoRotateMode__AutoRotateMode,
+	          "",
+	          "");
+	I_Method0(osg::AutoTransform::AutoRotateMode, getAutoRotateMode,
+	          __AutoRotateMode__getAutoRotateMode,
+	          "",
+	          "");
+	I_Method1(void, setAutoScaleToScreen, IN, bool, autoScaleToScreen,
+	          __void__setAutoScaleToScreen__bool,
+	          "",
+	          "");
+	I_Method0(bool, getAutoScaleToScreen,
+	          __bool__getAutoScaleToScreen,
+	          "",
+	          "");
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
+	          __bool__computeLocalToWorldMatrix__Matrix_R1__NodeVisitor_P1,
+	          "",
+	          "");
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
+	          __bool__computeWorldToLocalMatrix__Matrix_R1__NodeVisitor_P1,
+	          "",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          __BoundingSphere__computeBound,
+	          "Overrides Group's computeBound. ",
+	          "There is no need to override in subclasses from osg::Transform since this computeBound() uses the underlying matrix (calling computeMatrix if required).");
+	I_SimpleProperty(osg::AutoTransform::AutoRotateMode, AutoRotateMode, 
+	                 __AutoRotateMode__getAutoRotateMode, 
+	                 __void__setAutoRotateMode__AutoRotateMode);
+	I_SimpleProperty(bool, AutoScaleToScreen, 
+	                 __bool__getAutoScaleToScreen, 
+	                 __void__setAutoScaleToScreen__bool);
+	I_SimpleProperty(float, AutoUpdateEyeMovementTolerance, 
+	                 __float__getAutoUpdateEyeMovementTolerance, 
+	                 __void__setAutoUpdateEyeMovementTolerance__float);
+	I_SimpleProperty(const osg::Vec3 &, PivotPoint, 
+	                 __C5_Vec3_R1__getPivotPoint, 
+	                 __void__setPivotPoint__C5_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, Position, 
+	                 __C5_Vec3_R1__getPosition, 
+	                 __void__setPosition__C5_Vec3_R1);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_Quat_R1);
+	I_SimpleProperty(const osg::Vec3 &, Scale, 
+	                 __C5_Vec3_R1__getScale, 
+	                 __void__setScale__C5_Vec3_R1);
 END_REFLECTOR
 

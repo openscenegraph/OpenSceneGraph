@@ -55,126 +55,428 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_BaseType(osg::Object);
-	I_ConstructorWithDefaults3(IN, osg::Array::Type, arrayType, osg::Array::ArrayType, IN, GLint, dataSize, 0, IN, GLenum, dataType, 0);
-	I_ConstructorWithDefaults2(IN, const osg::Array &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, x);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, x);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, x);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, x);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(osg::Array::Type, getType);
-	I_Method0(GLint, getDataSize);
-	I_Method0(GLenum, getDataType);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method0(void, trim);
-	I_Method0(void, dirty);
-	I_Method1(void, setModifiedCount, IN, unsigned int, value);
-	I_Method0(unsigned int, getModifiedCount);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(GLint, DataSize);
-	I_ReadOnlyProperty(GLenum, DataType);
-	I_Property(unsigned int, ModifiedCount);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
-	I_ReadOnlyProperty(osg::Array::Type, Type);
+	I_ConstructorWithDefaults3(IN, osg::Array::Type, arrayType, osg::Array::ArrayType, IN, GLint, dataSize, 0, IN, GLenum, dataType, 0,
+	                           ____Array__Type__GLint__GLenum,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osg::Array &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Array__C5_Array_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, x,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, x,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, x,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, x,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(osg::Array::Type, getType,
+	          __Type__getType,
+	          "",
+	          "");
+	I_Method0(GLint, getDataSize,
+	          __GLint__getDataSize,
+	          "",
+	          "");
+	I_Method0(GLenum, getDataType,
+	          __GLenum__getDataType,
+	          "",
+	          "");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(void, dirty,
+	          __void__dirty,
+	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
+	          "");
+	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          __void__setModifiedCount__unsigned_int,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(GLint, DataSize, 
+	                 __GLint__getDataSize, 
+	                 0);
+	I_SimpleProperty(GLenum, DataType, 
+	                 __GLenum__getDataType, 
+	                 0);
+	I_SimpleProperty(unsigned int, ModifiedCount, 
+	                 __unsigned_int__getModifiedCount, 
+	                 __void__setModifiedCount__unsigned_int);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
+	I_SimpleProperty(osg::Array::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArrayVisitor)
-	I_Constructor0();
-	I_Method1(void, apply, IN, osg::Array &, x);
-	I_Method1(void, apply, IN, osg::ByteArray &, x);
-	I_Method1(void, apply, IN, osg::ShortArray &, x);
-	I_Method1(void, apply, IN, osg::IntArray &, x);
-	I_Method1(void, apply, IN, osg::UByteArray &, x);
-	I_Method1(void, apply, IN, osg::UShortArray &, x);
-	I_Method1(void, apply, IN, osg::UIntArray &, x);
-	I_Method1(void, apply, IN, osg::FloatArray &, x);
-	I_Method1(void, apply, IN, osg::Vec2Array &, x);
-	I_Method1(void, apply, IN, osg::Vec3Array &, x);
-	I_Method1(void, apply, IN, osg::Vec4Array &, x);
-	I_Method1(void, apply, IN, osg::Vec4ubArray &, x);
-	I_Method1(void, apply, IN, osg::Vec2bArray &, x);
-	I_Method1(void, apply, IN, osg::Vec3bArray &, x);
-	I_Method1(void, apply, IN, osg::Vec4bArray &, x);
-	I_Method1(void, apply, IN, osg::Vec2sArray &, x);
-	I_Method1(void, apply, IN, osg::Vec3sArray &, x);
-	I_Method1(void, apply, IN, osg::Vec4sArray &, x);
+	I_Constructor0(____ArrayVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, osg::Array &, x,
+	          __void__apply__Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::ByteArray &, x,
+	          __void__apply__ByteArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::ShortArray &, x,
+	          __void__apply__ShortArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::IntArray &, x,
+	          __void__apply__IntArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::UByteArray &, x,
+	          __void__apply__UByteArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::UShortArray &, x,
+	          __void__apply__UShortArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::UIntArray &, x,
+	          __void__apply__UIntArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::FloatArray &, x,
+	          __void__apply__FloatArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec2Array &, x,
+	          __void__apply__Vec2Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec3Array &, x,
+	          __void__apply__Vec3Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4Array &, x,
+	          __void__apply__Vec4Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4ubArray &, x,
+	          __void__apply__Vec4ubArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec2bArray &, x,
+	          __void__apply__Vec2bArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec3bArray &, x,
+	          __void__apply__Vec3bArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4bArray &, x,
+	          __void__apply__Vec4bArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec2sArray &, x,
+	          __void__apply__Vec2sArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec3sArray &, x,
+	          __void__apply__Vec3sArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4sArray &, x,
+	          __void__apply__Vec4sArray_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ConstArrayVisitor)
-	I_Constructor0();
-	I_Method1(void, apply, IN, const osg::Array &, x);
-	I_Method1(void, apply, IN, const osg::ByteArray &, x);
-	I_Method1(void, apply, IN, const osg::ShortArray &, x);
-	I_Method1(void, apply, IN, const osg::IntArray &, x);
-	I_Method1(void, apply, IN, const osg::UByteArray &, x);
-	I_Method1(void, apply, IN, const osg::UShortArray &, x);
-	I_Method1(void, apply, IN, const osg::UIntArray &, x);
-	I_Method1(void, apply, IN, const osg::FloatArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec2Array &, x);
-	I_Method1(void, apply, IN, const osg::Vec3Array &, x);
-	I_Method1(void, apply, IN, const osg::Vec4Array &, x);
-	I_Method1(void, apply, IN, const osg::Vec4ubArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec2bArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec3bArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec4bArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec2sArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec3sArray &, x);
-	I_Method1(void, apply, IN, const osg::Vec4sArray &, x);
+	I_Constructor0(____ConstArrayVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, const osg::Array &, x,
+	          __void__apply__C5_Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::ByteArray &, x,
+	          __void__apply__C5_ByteArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::ShortArray &, x,
+	          __void__apply__C5_ShortArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::IntArray &, x,
+	          __void__apply__C5_IntArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::UByteArray &, x,
+	          __void__apply__C5_UByteArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::UShortArray &, x,
+	          __void__apply__C5_UShortArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::UIntArray &, x,
+	          __void__apply__C5_UIntArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::FloatArray &, x,
+	          __void__apply__C5_FloatArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec2Array &, x,
+	          __void__apply__C5_Vec2Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec3Array &, x,
+	          __void__apply__C5_Vec3Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4Array &, x,
+	          __void__apply__C5_Vec4Array_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4ubArray &, x,
+	          __void__apply__C5_Vec4ubArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec2bArray &, x,
+	          __void__apply__C5_Vec2bArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec3bArray &, x,
+	          __void__apply__C5_Vec3bArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4bArray &, x,
+	          __void__apply__C5_Vec4bArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec2sArray &, x,
+	          __void__apply__C5_Vec2sArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec3sArray &, x,
+	          __void__apply__C5_Vec3sArray_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4sArray &, x,
+	          __void__apply__C5_Vec4sArray_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ConstValueVisitor)
-	I_Constructor0();
-	I_Method1(void, apply, IN, const GLbyte &, x);
-	I_Method1(void, apply, IN, const GLshort &, x);
-	I_Method1(void, apply, IN, const GLint &, x);
-	I_Method1(void, apply, IN, const GLushort &, x);
-	I_Method1(void, apply, IN, const GLubyte &, x);
-	I_Method1(void, apply, IN, const GLuint &, x);
-	I_Method1(void, apply, IN, const GLfloat &, x);
-	I_Method1(void, apply, IN, const osg::Vec4ub &, x);
-	I_Method1(void, apply, IN, const osg::Vec2 &, x);
-	I_Method1(void, apply, IN, const osg::Vec3 &, x);
-	I_Method1(void, apply, IN, const osg::Vec4 &, x);
-	I_Method1(void, apply, IN, const osg::Vec2b &, x);
-	I_Method1(void, apply, IN, const osg::Vec3b &, x);
-	I_Method1(void, apply, IN, const osg::Vec4b &, x);
-	I_Method1(void, apply, IN, const osg::Vec2s &, x);
-	I_Method1(void, apply, IN, const osg::Vec3s &, x);
-	I_Method1(void, apply, IN, const osg::Vec4s &, x);
+	I_Constructor0(____ConstValueVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, const GLbyte &, x,
+	          __void__apply__C5_GLbyte_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const GLshort &, x,
+	          __void__apply__C5_GLshort_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const GLint &, x,
+	          __void__apply__C5_GLint_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const GLushort &, x,
+	          __void__apply__C5_GLushort_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const GLubyte &, x,
+	          __void__apply__C5_GLubyte_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const GLuint &, x,
+	          __void__apply__C5_GLuint_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const GLfloat &, x,
+	          __void__apply__C5_GLfloat_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4ub &, x,
+	          __void__apply__C5_Vec4ub_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec2 &, x,
+	          __void__apply__C5_Vec2_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec3 &, x,
+	          __void__apply__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4 &, x,
+	          __void__apply__C5_Vec4_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec2b &, x,
+	          __void__apply__C5_Vec2b_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec3b &, x,
+	          __void__apply__C5_Vec3b_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4b &, x,
+	          __void__apply__C5_Vec4b_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec2s &, x,
+	          __void__apply__C5_Vec2s_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec3s &, x,
+	          __void__apply__C5_Vec3s_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Vec4s &, x,
+	          __void__apply__C5_Vec4s_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::IndexArray)
 	I_BaseType(osg::Array);
-	I_ConstructorWithDefaults3(IN, osg::Array::Type, arrayType, osg::Array::ArrayType, IN, GLint, dataSize, 0, IN, GLenum, dataType, 0);
-	I_ConstructorWithDefaults2(IN, const osg::Array &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
+	I_ConstructorWithDefaults3(IN, osg::Array::Type, arrayType, osg::Array::ArrayType, IN, GLint, dataSize, 0, IN, GLenum, dataType, 0,
+	                           ____IndexArray__Type__GLint__GLenum,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osg::Array &, array, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____IndexArray__C5_Array_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ValueVisitor)
-	I_Constructor0();
-	I_Method1(void, apply, IN, GLbyte &, x);
-	I_Method1(void, apply, IN, GLshort &, x);
-	I_Method1(void, apply, IN, GLint &, x);
-	I_Method1(void, apply, IN, GLushort &, x);
-	I_Method1(void, apply, IN, GLubyte &, x);
-	I_Method1(void, apply, IN, GLuint &, x);
-	I_Method1(void, apply, IN, GLfloat &, x);
-	I_Method1(void, apply, IN, osg::Vec2 &, x);
-	I_Method1(void, apply, IN, osg::Vec3 &, x);
-	I_Method1(void, apply, IN, osg::Vec4 &, x);
-	I_Method1(void, apply, IN, osg::Vec4ub &, x);
-	I_Method1(void, apply, IN, osg::Vec2b &, x);
-	I_Method1(void, apply, IN, osg::Vec3b &, x);
-	I_Method1(void, apply, IN, osg::Vec4b &, x);
-	I_Method1(void, apply, IN, osg::Vec2s &, x);
-	I_Method1(void, apply, IN, osg::Vec3s &, x);
-	I_Method1(void, apply, IN, osg::Vec4s &, x);
+	I_Constructor0(____ValueVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, GLbyte &, x,
+	          __void__apply__GLbyte_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, GLshort &, x,
+	          __void__apply__GLshort_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, GLint &, x,
+	          __void__apply__GLint_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, GLushort &, x,
+	          __void__apply__GLushort_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, GLubyte &, x,
+	          __void__apply__GLubyte_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, GLuint &, x,
+	          __void__apply__GLuint_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, GLfloat &, x,
+	          __void__apply__GLfloat_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec2 &, x,
+	          __void__apply__Vec2_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec3 &, x,
+	          __void__apply__Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4 &, x,
+	          __void__apply__Vec4_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4ub &, x,
+	          __void__apply__Vec4ub_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec2b &, x,
+	          __void__apply__Vec2b_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec3b &, x,
+	          __void__apply__Vec3b_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4b &, x,
+	          __void__apply__Vec4b_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec2s &, x,
+	          __void__apply__Vec2s_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec3s &, x,
+	          __void__apply__Vec3s_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Vec4s &, x,
+	          __void__apply__Vec4s_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE >, osg::ByteArray);
@@ -214,381 +516,1215 @@ TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<GLfloat>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLfloat *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLfloat *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec2>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec2 *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec2 *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec2b>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec2b *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec2b *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec2s>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec2s *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec2s *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec3>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec3 *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec3 *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec3b>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec3b *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec3b *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec3s>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec3s *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec3s *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4 *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4 *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4b>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4b *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4b *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4s>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4s *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4s *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4ub>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4ub *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateArray__C5_TemplateArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, osg::Vec4ub *, ptr,
+	               ____TemplateArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLbyte>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLbyte *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateIndexArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateIndexArray__C5_TemplateIndexArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateIndexArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLbyte *, ptr,
+	               ____TemplateIndexArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLint>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLint *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateIndexArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateIndexArray__C5_TemplateIndexArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateIndexArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLint *, ptr,
+	               ____TemplateIndexArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLshort>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLshort *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateIndexArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateIndexArray__C5_TemplateIndexArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateIndexArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLshort *, ptr,
+	               ____TemplateIndexArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLubyte>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLubyte *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateIndexArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateIndexArray__C5_TemplateIndexArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateIndexArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLubyte *, ptr,
+	               ____TemplateIndexArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLuint>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLuint *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateIndexArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateIndexArray__C5_TemplateIndexArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateIndexArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLuint *, ptr,
+	               ____TemplateIndexArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLushort>);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Constructor1(IN, unsigned int, no);
-	I_Constructor2(IN, unsigned int, no, IN, GLushort *, ptr);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(void, accept, IN, osg::ArrayVisitor &, av);
-	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv);
-	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv);
-	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs);
-	I_Method0(void, trim);
-	I_Method0(const GLvoid *, getDataPointer);
-	I_Method0(unsigned int, getTotalDataSize);
-	I_Method0(unsigned int, getNumElements);
-	I_Method1(unsigned int, index, IN, unsigned int, pos);
-	I_ReadOnlyProperty(const GLvoid *, DataPointer);
-	I_ReadOnlyProperty(unsigned int, TotalDataSize);
+	I_Constructor0(____TemplateIndexArray,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT > &, ta, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TemplateIndexArray__C5_TemplateIndexArray_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, unsigned int, no,
+	               ____TemplateIndexArray__unsigned_int,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, GLushort *, ptr,
+	               ____TemplateIndexArray__unsigned_int__T_P1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osg::ArrayVisitor &, av,
+	          __void__accept__ArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstArrayVisitor &, av,
+	          __void__accept__ConstArrayVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ValueVisitor &, vv,
+	          __void__accept__unsigned_int__ValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(void, accept, IN, unsigned int, index, IN, osg::ConstValueVisitor &, vv,
+	          __void__accept__unsigned_int__ConstValueVisitor_R1,
+	          "",
+	          "");
+	I_Method2(int, compare, IN, unsigned int, lhs, IN, unsigned int, rhs,
+	          __int__compare__unsigned_int__unsigned_int,
+	          "Return -1 if lhs element is less than rhs element, 0 if equal, 1 if lhs element is greater than rhs element. ",
+	          "");
+	I_Method0(void, trim,
+	          __void__trim,
+	          "Frees unused space on this vector - i.e. ",
+	          "the difference between size() and max_size() of the underlying vector. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumElements,
+	          __unsigned_int__getNumElements,
+	          "",
+	          "");
+	I_Method1(unsigned int, index, IN, unsigned int, pos,
+	          __unsigned_int__index__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
 END_REFLECTOR
 
 

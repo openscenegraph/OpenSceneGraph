@@ -31,24 +31,77 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_Constructor1(IN, osg::TexGen *, texgen);
-	I_ConstructorWithDefaults2(IN, const osg::TexGenNode &, tgb, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setReferenceFrame, IN, osg::TexGenNode::ReferenceFrame, rf);
-	I_Method0(osg::TexGenNode::ReferenceFrame, getReferenceFrame);
-	I_Method1(void, setTextureUnit, IN, unsigned int, textureUnit);
-	I_Method0(unsigned int, getTextureUnit);
-	I_Method1(void, setTexGen, IN, osg::TexGen *, texgen);
-	I_Method0(osg::TexGen *, getTexGen);
-	I_Method0(const osg::TexGen *, getTexGen);
-	I_Property(osg::TexGenNode::ReferenceFrame, ReferenceFrame);
-	I_Property(osg::TexGen *, TexGen);
-	I_Property(unsigned int, TextureUnit);
+	I_Constructor0(____TexGenNode,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::TexGen *, texgen,
+	               ____TexGenNode__TexGen_P1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TexGenNode &, tgb, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TexGenNode__C5_TexGenNode_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, setReferenceFrame, IN, osg::TexGenNode::ReferenceFrame, rf,
+	          __void__setReferenceFrame__ReferenceFrame,
+	          "Set the TexGenNode's ReferenceFrame, either to be relative to its parent reference frame. ",
+	          "");
+	I_Method0(osg::TexGenNode::ReferenceFrame, getReferenceFrame,
+	          __ReferenceFrame__getReferenceFrame,
+	          "Ge thte TexGenNode's ReferenceFrame. ",
+	          "");
+	I_Method1(void, setTextureUnit, IN, unsigned int, textureUnit,
+	          __void__setTextureUnit__unsigned_int,
+	          "Set the texture unit that this TexGenNode is associated with. ",
+	          "");
+	I_Method0(unsigned int, getTextureUnit,
+	          __unsigned_int__getTextureUnit,
+	          "",
+	          "");
+	I_Method1(void, setTexGen, IN, osg::TexGen *, texgen,
+	          __void__setTexGen__TexGen_P1,
+	          "Set the TexGen. ",
+	          "");
+	I_Method0(osg::TexGen *, getTexGen,
+	          __TexGen_P1__getTexGen,
+	          "Get the TexGen. ",
+	          "");
+	I_Method0(const osg::TexGen *, getTexGen,
+	          __C5_TexGen_P1__getTexGen,
+	          "Get the const TexGen. ",
+	          "");
+	I_SimpleProperty(osg::TexGenNode::ReferenceFrame, ReferenceFrame, 
+	                 __ReferenceFrame__getReferenceFrame, 
+	                 __void__setReferenceFrame__ReferenceFrame);
+	I_SimpleProperty(osg::TexGen *, TexGen, 
+	                 __TexGen_P1__getTexGen, 
+	                 __void__setTexGen__TexGen_P1);
+	I_SimpleProperty(unsigned int, TextureUnit, 
+	                 __unsigned_int__getTextureUnit, 
+	                 __void__setTextureUnit__unsigned_int);
 END_REFLECTOR
 

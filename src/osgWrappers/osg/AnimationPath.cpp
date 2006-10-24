@@ -38,93 +38,315 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::AnimationPath &, ap, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method2(bool, getMatrix, IN, double, time, IN, osg::Matrixf &, matrix);
-	I_Method2(bool, getMatrix, IN, double, time, IN, osg::Matrixd &, matrix);
-	I_Method2(bool, getInverse, IN, double, time, IN, osg::Matrixf &, matrix);
-	I_Method2(bool, getInverse, IN, double, time, IN, osg::Matrixd &, matrix);
-	I_Method2(bool, getInterpolatedControlPoint, IN, double, time, IN, osg::AnimationPath::ControlPoint &, controlPoint);
-	I_Method2(void, insert, IN, double, time, IN, const osg::AnimationPath::ControlPoint &, controlPoint);
-	I_Method0(double, getFirstTime);
-	I_Method0(double, getLastTime);
-	I_Method0(double, getPeriod);
-	I_Method1(void, setLoopMode, IN, osg::AnimationPath::LoopMode, lm);
-	I_Method0(osg::AnimationPath::LoopMode, getLoopMode);
-	I_Method1(void, setTimeControlPointMap, IN, osg::AnimationPath::TimeControlPointMap &, tcpm);
-	I_Method0(osg::AnimationPath::TimeControlPointMap &, getTimeControlPointMap);
-	I_Method0(const osg::AnimationPath::TimeControlPointMap &, getTimeControlPointMap);
-	I_Method0(bool, empty);
-	I_Method1(void, read, IN, std::istream &, in);
-	I_Method1(void, write, IN, std::ostream &, out);
-	I_ReadOnlyProperty(double, FirstTime);
-	I_ReadOnlyProperty(double, LastTime);
-	I_Property(osg::AnimationPath::LoopMode, LoopMode);
-	I_ReadOnlyProperty(double, Period);
-	I_Property(osg::AnimationPath::TimeControlPointMap &, TimeControlPointMap);
+	I_Constructor0(____AnimationPath,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::AnimationPath &, ap, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AnimationPath__C5_AnimationPath_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(bool, getMatrix, IN, double, time, IN, osg::Matrixf &, matrix,
+	          __bool__getMatrix__double__Matrixf_R1,
+	          "Given a specific time, return the transformation matrix for a point. ",
+	          "");
+	I_Method2(bool, getMatrix, IN, double, time, IN, osg::Matrixd &, matrix,
+	          __bool__getMatrix__double__Matrixd_R1,
+	          "Given a specific time, return the transformation matrix for a point. ",
+	          "");
+	I_Method2(bool, getInverse, IN, double, time, IN, osg::Matrixf &, matrix,
+	          __bool__getInverse__double__Matrixf_R1,
+	          "Given a specific time, return the inverse transformation matrix for a point. ",
+	          "");
+	I_Method2(bool, getInverse, IN, double, time, IN, osg::Matrixd &, matrix,
+	          __bool__getInverse__double__Matrixd_R1,
+	          "",
+	          "");
+	I_Method2(bool, getInterpolatedControlPoint, IN, double, time, IN, osg::AnimationPath::ControlPoint &, controlPoint,
+	          __bool__getInterpolatedControlPoint__double__ControlPoint_R1,
+	          "Given a specific time, return the local ControlPoint frame for a point. ",
+	          "");
+	I_Method2(void, insert, IN, double, time, IN, const osg::AnimationPath::ControlPoint &, controlPoint,
+	          __void__insert__double__C5_ControlPoint_R1,
+	          "",
+	          "");
+	I_Method0(double, getFirstTime,
+	          __double__getFirstTime,
+	          "",
+	          "");
+	I_Method0(double, getLastTime,
+	          __double__getLastTime,
+	          "",
+	          "");
+	I_Method0(double, getPeriod,
+	          __double__getPeriod,
+	          "",
+	          "");
+	I_Method1(void, setLoopMode, IN, osg::AnimationPath::LoopMode, lm,
+	          __void__setLoopMode__LoopMode,
+	          "",
+	          "");
+	I_Method0(osg::AnimationPath::LoopMode, getLoopMode,
+	          __LoopMode__getLoopMode,
+	          "",
+	          "");
+	I_Method1(void, setTimeControlPointMap, IN, osg::AnimationPath::TimeControlPointMap &, tcpm,
+	          __void__setTimeControlPointMap__TimeControlPointMap_R1,
+	          "",
+	          "");
+	I_Method0(osg::AnimationPath::TimeControlPointMap &, getTimeControlPointMap,
+	          __TimeControlPointMap_R1__getTimeControlPointMap,
+	          "",
+	          "");
+	I_Method0(const osg::AnimationPath::TimeControlPointMap &, getTimeControlPointMap,
+	          __C5_TimeControlPointMap_R1__getTimeControlPointMap,
+	          "",
+	          "");
+	I_Method0(bool, empty,
+	          __bool__empty,
+	          "",
+	          "");
+	I_Method1(void, read, IN, std::istream &, in,
+	          __void__read__std_istream_R1,
+	          "Read the animation path from a flat ASCII file stream. ",
+	          "");
+	I_Method1(void, write, IN, std::ostream &, out,
+	          __void__write__std_ostream_R1,
+	          "Write the animation path to a flat ASCII file stream. ",
+	          "");
+	I_SimpleProperty(double, FirstTime, 
+	                 __double__getFirstTime, 
+	                 0);
+	I_SimpleProperty(double, LastTime, 
+	                 __double__getLastTime, 
+	                 0);
+	I_SimpleProperty(osg::AnimationPath::LoopMode, LoopMode, 
+	                 __LoopMode__getLoopMode, 
+	                 __void__setLoopMode__LoopMode);
+	I_SimpleProperty(double, Period, 
+	                 __double__getPeriod, 
+	                 0);
+	I_SimpleProperty(osg::AnimationPath::TimeControlPointMap &, TimeControlPointMap, 
+	                 __TimeControlPointMap_R1__getTimeControlPointMap, 
+	                 __void__setTimeControlPointMap__TimeControlPointMap_R1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::AnimationPath::ControlPoint)
-	I_Constructor0();
-	I_Constructor1(IN, const osg::Vec3d &, position);
-	I_Constructor2(IN, const osg::Vec3d &, position, IN, const osg::Quat &, rotation);
-	I_Constructor3(IN, const osg::Vec3d &, position, IN, const osg::Quat &, rotation, IN, const osg::Vec3d &, scale);
-	I_Method1(void, setPosition, IN, const osg::Vec3d &, position);
-	I_Method0(const osg::Vec3d &, getPosition);
-	I_Method1(void, setRotation, IN, const osg::Quat &, rotation);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method1(void, setScale, IN, const osg::Vec3d &, scale);
-	I_Method0(const osg::Vec3d &, getScale);
-	I_Method3(void, interpolate, IN, float, ratio, IN, const osg::AnimationPath::ControlPoint &, first, IN, const osg::AnimationPath::ControlPoint &, second);
-	I_Method3(void, interpolate, IN, double, ratio, IN, const osg::AnimationPath::ControlPoint &, first, IN, const osg::AnimationPath::ControlPoint &, second);
-	I_Method1(void, getMatrix, IN, osg::Matrixf &, matrix);
-	I_Method1(void, getMatrix, IN, osg::Matrixd &, matrix);
-	I_Method1(void, getInverse, IN, osg::Matrixf &, matrix);
-	I_Method1(void, getInverse, IN, osg::Matrixd &, matrix);
-	I_Property(const osg::Vec3d &, Position);
-	I_Property(const osg::Quat &, Rotation);
-	I_Property(const osg::Vec3d &, Scale);
+	I_Constructor0(____ControlPoint,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Vec3d &, position,
+	               ____ControlPoint__C5_osg_Vec3d_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3d &, position, IN, const osg::Quat &, rotation,
+	               ____ControlPoint__C5_osg_Vec3d_R1__C5_osg_Quat_R1,
+	               "",
+	               "");
+	I_Constructor3(IN, const osg::Vec3d &, position, IN, const osg::Quat &, rotation, IN, const osg::Vec3d &, scale,
+	               ____ControlPoint__C5_osg_Vec3d_R1__C5_osg_Quat_R1__C5_osg_Vec3d_R1,
+	               "",
+	               "");
+	I_Method1(void, setPosition, IN, const osg::Vec3d &, position,
+	          __void__setPosition__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getPosition,
+	          __C5_osg_Vec3d_R1__getPosition,
+	          "",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, rotation,
+	          __void__setRotation__C5_osg_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_osg_Quat_R1__getRotation,
+	          "",
+	          "");
+	I_Method1(void, setScale, IN, const osg::Vec3d &, scale,
+	          __void__setScale__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getScale,
+	          __C5_osg_Vec3d_R1__getScale,
+	          "",
+	          "");
+	I_Method3(void, interpolate, IN, float, ratio, IN, const osg::AnimationPath::ControlPoint &, first, IN, const osg::AnimationPath::ControlPoint &, second,
+	          __void__interpolate__float__C5_ControlPoint_R1__C5_ControlPoint_R1,
+	          "",
+	          "");
+	I_Method3(void, interpolate, IN, double, ratio, IN, const osg::AnimationPath::ControlPoint &, first, IN, const osg::AnimationPath::ControlPoint &, second,
+	          __void__interpolate__double__C5_ControlPoint_R1__C5_ControlPoint_R1,
+	          "",
+	          "");
+	I_Method1(void, getMatrix, IN, osg::Matrixf &, matrix,
+	          __void__getMatrix__Matrixf_R1,
+	          "",
+	          "");
+	I_Method1(void, getMatrix, IN, osg::Matrixd &, matrix,
+	          __void__getMatrix__Matrixd_R1,
+	          "",
+	          "");
+	I_Method1(void, getInverse, IN, osg::Matrixf &, matrix,
+	          __void__getInverse__Matrixf_R1,
+	          "",
+	          "");
+	I_Method1(void, getInverse, IN, osg::Matrixd &, matrix,
+	          __void__getInverse__Matrixd_R1,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3d &, Position, 
+	                 __C5_osg_Vec3d_R1__getPosition, 
+	                 __void__setPosition__C5_osg_Vec3d_R1);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_osg_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_osg_Quat_R1);
+	I_SimpleProperty(const osg::Vec3d &, Scale, 
+	                 __C5_osg_Vec3d_R1__getScale, 
+	                 __void__setScale__C5_osg_Vec3d_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	I_BaseType(osg::NodeCallback);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::AnimationPathCallback &, apc, IN, const osg::CopyOp &, copyop);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_ConstructorWithDefaults3(IN, osg::AnimationPath *, ap, , IN, double, timeOffset, 0.0, IN, double, timeMultiplier, 1.0);
-	I_Constructor3(IN, const osg::Vec3d &, pivot, IN, const osg::Vec3d &, axis, IN, float, angularVelocity);
-	I_Method1(void, setAnimationPath, IN, osg::AnimationPath *, path);
-	I_Method0(osg::AnimationPath *, getAnimationPath);
-	I_Method0(const osg::AnimationPath *, getAnimationPath);
-	I_Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot);
-	I_Method0(const osg::Vec3d &, getPivotPoint);
-	I_Method1(void, setUseInverseMatrix, IN, bool, useInverseMatrix);
-	I_Method0(bool, getUseInverseMatrix);
-	I_Method1(void, setTimeOffset, IN, double, offset);
-	I_Method0(double, getTimeOffset);
-	I_Method1(void, setTimeMultiplier, IN, double, multiplier);
-	I_Method0(double, getTimeMultiplier);
-	I_Method0(void, reset);
-	I_Method1(void, setPause, IN, bool, pause);
-	I_Method0(bool, getPause);
-	I_Method0(double, getAnimationTime);
-	I_Method1(void, update, IN, osg::Node &, node);
-	I_Property(osg::AnimationPath *, AnimationPath);
-	I_ReadOnlyProperty(double, AnimationTime);
-	I_Property(bool, Pause);
-	I_Property(const osg::Vec3d &, PivotPoint);
-	I_Property(double, TimeMultiplier);
-	I_Property(double, TimeOffset);
-	I_Property(bool, UseInverseMatrix);
+	I_Constructor0(____AnimationPathCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::AnimationPathCallback &, apc, IN, const osg::CopyOp &, copyop,
+	               ____AnimationPathCallback__C5_AnimationPathCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_ConstructorWithDefaults3(IN, osg::AnimationPath *, ap, , IN, double, timeOffset, 0.0, IN, double, timeMultiplier, 1.0,
+	                           ____AnimationPathCallback__AnimationPath_P1__double__double,
+	                           "Construct an AnimationPathCallback with a specified animation path. ",
+	                           "");
+	I_Constructor3(IN, const osg::Vec3d &, pivot, IN, const osg::Vec3d &, axis, IN, float, angularVelocity,
+	               ____AnimationPathCallback__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__float,
+	               "Construct an AnimationPathCallback and automatical create an animation path to produce a rotation about a point. ",
+	               "");
+	I_Method1(void, setAnimationPath, IN, osg::AnimationPath *, path,
+	          __void__setAnimationPath__AnimationPath_P1,
+	          "",
+	          "");
+	I_Method0(osg::AnimationPath *, getAnimationPath,
+	          __AnimationPath_P1__getAnimationPath,
+	          "",
+	          "");
+	I_Method0(const osg::AnimationPath *, getAnimationPath,
+	          __C5_AnimationPath_P1__getAnimationPath,
+	          "",
+	          "");
+	I_Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot,
+	          __void__setPivotPoint__C5_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getPivotPoint,
+	          __C5_Vec3d_R1__getPivotPoint,
+	          "",
+	          "");
+	I_Method1(void, setUseInverseMatrix, IN, bool, useInverseMatrix,
+	          __void__setUseInverseMatrix__bool,
+	          "",
+	          "");
+	I_Method0(bool, getUseInverseMatrix,
+	          __bool__getUseInverseMatrix,
+	          "",
+	          "");
+	I_Method1(void, setTimeOffset, IN, double, offset,
+	          __void__setTimeOffset__double,
+	          "",
+	          "");
+	I_Method0(double, getTimeOffset,
+	          __double__getTimeOffset,
+	          "",
+	          "");
+	I_Method1(void, setTimeMultiplier, IN, double, multiplier,
+	          __void__setTimeMultiplier__double,
+	          "",
+	          "");
+	I_Method0(double, getTimeMultiplier,
+	          __double__getTimeMultiplier,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method1(void, setPause, IN, bool, pause,
+	          __void__setPause__bool,
+	          "",
+	          "");
+	I_Method0(bool, getPause,
+	          __bool__getPause,
+	          "",
+	          "");
+	I_Method0(double, getAnimationTime,
+	          __double__getAnimationTime,
+	          "Get the animation time that is used to specify the position along the AnimationPath. ",
+	          "Animation time is computed from the formula: ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier. ");
+	I_Method1(void, update, IN, osg::Node &, node,
+	          __void__update__osg_Node_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::AnimationPath *, AnimationPath, 
+	                 __AnimationPath_P1__getAnimationPath, 
+	                 __void__setAnimationPath__AnimationPath_P1);
+	I_SimpleProperty(double, AnimationTime, 
+	                 __double__getAnimationTime, 
+	                 0);
+	I_SimpleProperty(bool, Pause, 
+	                 __bool__getPause, 
+	                 __void__setPause__bool);
+	I_SimpleProperty(const osg::Vec3d &, PivotPoint, 
+	                 __C5_Vec3d_R1__getPivotPoint, 
+	                 __void__setPivotPoint__C5_Vec3d_R1);
+	I_SimpleProperty(double, TimeMultiplier, 
+	                 __double__getTimeMultiplier, 
+	                 __void__setTimeMultiplier__double);
+	I_SimpleProperty(double, TimeOffset, 
+	                 __double__getTimeOffset, 
+	                 __void__setTimeOffset__double);
+	I_SimpleProperty(bool, UseInverseMatrix, 
+	                 __bool__getUseInverseMatrix, 
+	                 __void__setUseInverseMatrix__bool);
 	I_PublicMemberProperty(osg::ref_ptr< osg::AnimationPath >, _animationPath);
 	I_PublicMemberProperty(osg::Vec3d, _pivotPoint);
 	I_PublicMemberProperty(bool, _useInverseMatrix);

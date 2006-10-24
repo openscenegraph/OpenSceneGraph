@@ -40,92 +40,308 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplement
 TYPE_NAME_ALIAS(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
 
 BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
-	I_Constructor0();
-	I_Constructor1(IN, Producer::CameraConfig *, cfg);
-	I_Constructor1(IN, const std::string &, configFile);
-	I_Constructor1(IN, osg::ArgumentParser &, arguments);
-	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au);
-	I_Method0(osg::ApplicationUsage *, getApplicationUsage);
-	I_Method0(const osg::ApplicationUsage *, getApplicationUsage);
-	I_Method1(void, setGraphicsContextList, IN, osgProducer::OsgCameraGroup::GraphicsContextList &, gcList);
-	I_Method0(osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList);
-	I_Method0(const osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList);
-	I_Method0(osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
-	I_Method0(const osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList);
-	I_Method1(void, setSceneData, IN, osg::Node *, scene);
-	I_Method0(osg::Node *, getSceneData);
-	I_Method0(const osg::Node *, getSceneData);
-	I_Method1(void, setSceneDecorator, IN, osg::Group *, decorator);
-	I_Method0(osg::Group *, getSceneDecorator);
-	I_Method0(const osg::Group *, getSceneDecorator);
-	I_Method0(osg::Node *, getTopMostSceneData);
-	I_Method0(const osg::Node *, getTopMostSceneData);
-	I_Method0(void, updatedSceneData);
-	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds);
-	I_Method0(osg::DisplaySettings *, getDisplaySettings);
-	I_Method0(const osg::DisplaySettings *, getDisplaySettings);
-	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, cs);
-	I_Method0(osg::CullSettings &, getCullSettings);
-	I_Method0(const osg::CullSettings &, getCullSettings);
-	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs);
-	I_Method0(osg::FrameStamp *, getFrameStamp);
-	I_Method0(const osg::FrameStamp *, getFrameStamp);
-	I_Method1(void, setGlobalStateSet, IN, osg::StateSet *, sset);
-	I_Method0(osg::StateSet *, getGlobalStateSet);
-	I_Method0(const osg::StateSet *, getGlobalStateSet);
-	I_Method1(void, setClearColor, IN, const osg::Vec4 &, clearColor);
-	I_Method0(const osg::Vec4 &, getClearColor);
-	I_Method1(void, setLODScale, IN, float, scale);
-	I_Method0(float, getLODScale);
-	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f);
-	I_Method1(void, setRealizeSceneViewOptions, IN, unsigned int, options);
-	I_Method0(unsigned int, getRealizeSceneViewOptions);
-	I_Method1(void, setEnableProcessorAffinityHint, IN, bool, enableProccessAffinityHint);
-	I_Method0(bool, getEnableProcessorAffinityHint);
-	I_Method1(void, setRealizeCallback, IN, osgProducer::OsgCameraGroup::RealizeCallback *, cb);
-	I_Method0(osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
-	I_Method0(const osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback);
-	I_Method0(void, advance);
-	I_Method1(bool, realize, IN, osgProducer::OsgCameraGroup::ThreadingModel, thread_model);
-	I_Method0(bool, realize);
-	I_Method1(void, setView, IN, const osg::Matrixd &, matrix);
-	I_Method0(osg::Matrixd, getViewMatrix);
-	I_Method0(void, sync);
-	I_Method0(void, frame);
-	I_Method0(void, cleanup_frame);
-	I_Property(osg::ApplicationUsage *, ApplicationUsage);
-	I_Property(const osg::Vec4 &, ClearColor);
-	I_Property(const osg::CullSettings &, CullSettings);
-	I_Property(osg::DisplaySettings *, DisplaySettings);
-	I_Property(bool, EnableProcessorAffinityHint);
-	I_Property(osg::FrameStamp *, FrameStamp);
-	I_Property(osg::StateSet *, GlobalStateSet);
-	I_Property(osgProducer::OsgCameraGroup::GraphicsContextList &, GraphicsContextList);
-	I_Property(float, LODScale);
-	I_Property(osgProducer::OsgCameraGroup::RealizeCallback *, RealizeCallback);
-	I_Property(unsigned int, RealizeSceneViewOptions);
-	I_Property(osg::Node *, SceneData);
-	I_Property(osg::Group *, SceneDecorator);
-	I_ReadOnlyProperty(osgProducer::OsgCameraGroup::SceneHandlerList &, SceneHandlerList);
-	I_ReadOnlyProperty(osg::Node *, TopMostSceneData);
-	I_WriteOnlyProperty(const osg::Matrixd &, View);
-	I_ReadOnlyProperty(osg::Matrixd, ViewMatrix);
+	I_Constructor0(____OsgCameraGroup,
+	               "",
+	               "");
+	I_Constructor1(IN, Producer::CameraConfig *, cfg,
+	               ____OsgCameraGroup__Producer_CameraConfig_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const std::string &, configFile,
+	               ____OsgCameraGroup__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::ArgumentParser &, arguments,
+	               ____OsgCameraGroup__osg_ArgumentParser_R1,
+	               "",
+	               "");
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au,
+	          __void__setApplicationUsage__osg_ApplicationUsage_P1,
+	          "",
+	          "");
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          __osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          __C5_osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method1(void, setGraphicsContextList, IN, osgProducer::OsgCameraGroup::GraphicsContextList &, gcList,
+	          __void__setGraphicsContextList__GraphicsContextList_R1,
+	          "",
+	          "");
+	I_Method0(osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList,
+	          __GraphicsContextList_R1__getGraphicsContextList,
+	          "",
+	          "");
+	I_Method0(const osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList,
+	          __C5_GraphicsContextList_R1__getGraphicsContextList,
+	          "",
+	          "");
+	I_Method0(osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList,
+	          __SceneHandlerList_R1__getSceneHandlerList,
+	          "",
+	          "");
+	I_Method0(const osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList,
+	          __C5_SceneHandlerList_R1__getSceneHandlerList,
+	          "",
+	          "");
+	I_Method1(void, setSceneData, IN, osg::Node *, scene,
+	          __void__setSceneData__osg_Node_P1,
+	          "Set the scene data to be rendered. ",
+	          " param scene The node to be used as the starting point during the rendering traversal of the scene graph. ");
+	I_Method0(osg::Node *, getSceneData,
+	          __osg_Node_P1__getSceneData,
+	          "Get the scene data being used for rendering. ",
+	          "The node being used as the starting point during the rendering traversal of the scene graph. ");
+	I_Method0(const osg::Node *, getSceneData,
+	          __C5_osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method1(void, setSceneDecorator, IN, osg::Group *, decorator,
+	          __void__setSceneDecorator__osg_Group_P1,
+	          "",
+	          "");
+	I_Method0(osg::Group *, getSceneDecorator,
+	          __osg_Group_P1__getSceneDecorator,
+	          "",
+	          "");
+	I_Method0(const osg::Group *, getSceneDecorator,
+	          __C5_osg_Group_P1__getSceneDecorator,
+	          "",
+	          "");
+	I_Method0(osg::Node *, getTopMostSceneData,
+	          __osg_Node_P1__getTopMostSceneData,
+	          "",
+	          "");
+	I_Method0(const osg::Node *, getTopMostSceneData,
+	          __C5_osg_Node_P1__getTopMostSceneData,
+	          "",
+	          "");
+	I_Method0(void, updatedSceneData,
+	          __void__updatedSceneData,
+	          "Update internal structures w.r.t updated scene data. ",
+	          "");
+	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
+	          __void__setDisplaySettings__osg_DisplaySettings_P1,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings *, getDisplaySettings,
+	          __osg_DisplaySettings_P1__getDisplaySettings,
+	          "",
+	          "");
+	I_Method0(const osg::DisplaySettings *, getDisplaySettings,
+	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
+	          "",
+	          "");
+	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, cs,
+	          __void__setCullSettings__C5_osg_CullSettings_R1,
+	          "",
+	          "");
+	I_Method0(osg::CullSettings &, getCullSettings,
+	          __osg_CullSettings_R1__getCullSettings,
+	          "",
+	          "");
+	I_Method0(const osg::CullSettings &, getCullSettings,
+	          __C5_osg_CullSettings_R1__getCullSettings,
+	          "",
+	          "");
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
+	          __void__setFrameStamp__osg_FrameStamp_P1,
+	          "",
+	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          __osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          __C5_osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method1(void, setGlobalStateSet, IN, osg::StateSet *, sset,
+	          __void__setGlobalStateSet__osg_StateSet_P1,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getGlobalStateSet,
+	          __osg_StateSet_P1__getGlobalStateSet,
+	          "",
+	          "");
+	I_Method0(const osg::StateSet *, getGlobalStateSet,
+	          __C5_osg_StateSet_P1__getGlobalStateSet,
+	          "",
+	          "");
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, clearColor,
+	          __void__setClearColor__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getClearColor,
+	          __C5_osg_Vec4_R1__getClearColor,
+	          "",
+	          "");
+	I_Method1(void, setLODScale, IN, float, scale,
+	          __void__setLODScale__float,
+	          "",
+	          "");
+	I_Method0(float, getLODScale,
+	          __float__getLODScale,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f,
+	                      __void__setFusionDistance__osgUtil_SceneView_FusionDistanceMode__float,
+	                      "",
+	                      "");
+	I_Method1(void, setRealizeSceneViewOptions, IN, unsigned int, options,
+	          __void__setRealizeSceneViewOptions__unsigned_int,
+	          "Set the options to set up SceneView with, see osgUtil::SceneView::Options for available options. ",
+	          "");
+	I_Method0(unsigned int, getRealizeSceneViewOptions,
+	          __unsigned_int__getRealizeSceneViewOptions,
+	          "Get the options to set up SceneView with. ",
+	          "");
+	I_Method1(void, setEnableProcessorAffinityHint, IN, bool, enableProccessAffinityHint,
+	          __void__setEnableProcessorAffinityHint__bool,
+	          "Set whether processor affinity should be enable where supported by hardware. ",
+	          "");
+	I_Method0(bool, getEnableProcessorAffinityHint,
+	          __bool__getEnableProcessorAffinityHint,
+	          "Get whether processor affinity should be enable where supported by hardware. ",
+	          "");
+	I_Method1(void, setRealizeCallback, IN, osgProducer::OsgCameraGroup::RealizeCallback *, cb,
+	          __void__setRealizeCallback__RealizeCallback_P1,
+	          "Set the realize callback to use when once the render surfaces are realized. ",
+	          "");
+	I_Method0(osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback,
+	          __RealizeCallback_P1__getRealizeCallback,
+	          "Get the realize callback. ",
+	          "");
+	I_Method0(const osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback,
+	          __C5_RealizeCallback_P1__getRealizeCallback,
+	          "Get the const realize callback. ",
+	          "");
+	I_Method0(void, advance,
+	          __void__advance,
+	          "",
+	          "");
+	I_Method1(bool, realize, IN, osgProducer::OsgCameraGroup::ThreadingModel, thread_model,
+	          __bool__realize__ThreadingModel,
+	          "Set the threading model and then call realize(). ",
+	          "");
+	I_Method0(bool, realize,
+	          __bool__realize,
+	          "Realize the render surfaces (OpenGL graphics) and various threads, and call any realize callbacks. ",
+	          "");
+	I_Method1(void, setView, IN, const osg::Matrixd &, matrix,
+	          __void__setView__C5_osg_Matrixd_R1,
+	          "Set the model view matrix of the camera group, by individually set all the camera groups's camera. ",
+	          "");
+	I_Method0(osg::Matrixd, getViewMatrix,
+	          __osg_Matrixd__getViewMatrix,
+	          "Get the model view martrix of the camera group, taking its value for camera 0. ",
+	          "");
+	I_Method0(void, sync,
+	          __void__sync,
+	          "",
+	          "");
+	I_Method0(void, frame,
+	          __void__frame,
+	          "Dispatch the cull and draw for each of the Camera's for this frame. ",
+	          "");
+	I_Method0(void, cleanup_frame,
+	          __void__cleanup_frame,
+	          "Dispatch a clean up frame that should be called before closing a OsgCameraGroup, i.e. ",
+	          "on exit from an app. The clean up frame first release all GL objects associated with all the graphics context associated with the camera group, then runs a special frame that does the actual OpenGL deletion of GL objects for each graphics context. ");
+	I_SimpleProperty(osg::ApplicationUsage *, ApplicationUsage, 
+	                 __osg_ApplicationUsage_P1__getApplicationUsage, 
+	                 __void__setApplicationUsage__osg_ApplicationUsage_P1);
+	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
+	                 __C5_osg_Vec4_R1__getClearColor, 
+	                 __void__setClearColor__C5_osg_Vec4_R1);
+	I_SimpleProperty(const osg::CullSettings &, CullSettings, 
+	                 __C5_osg_CullSettings_R1__getCullSettings, 
+	                 __void__setCullSettings__C5_osg_CullSettings_R1);
+	I_SimpleProperty(osg::DisplaySettings *, DisplaySettings, 
+	                 __osg_DisplaySettings_P1__getDisplaySettings, 
+	                 __void__setDisplaySettings__osg_DisplaySettings_P1);
+	I_SimpleProperty(bool, EnableProcessorAffinityHint, 
+	                 __bool__getEnableProcessorAffinityHint, 
+	                 __void__setEnableProcessorAffinityHint__bool);
+	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
+	                 __osg_FrameStamp_P1__getFrameStamp, 
+	                 __void__setFrameStamp__osg_FrameStamp_P1);
+	I_SimpleProperty(osg::StateSet *, GlobalStateSet, 
+	                 __osg_StateSet_P1__getGlobalStateSet, 
+	                 __void__setGlobalStateSet__osg_StateSet_P1);
+	I_SimpleProperty(osgProducer::OsgCameraGroup::GraphicsContextList &, GraphicsContextList, 
+	                 __GraphicsContextList_R1__getGraphicsContextList, 
+	                 __void__setGraphicsContextList__GraphicsContextList_R1);
+	I_SimpleProperty(float, LODScale, 
+	                 __float__getLODScale, 
+	                 __void__setLODScale__float);
+	I_SimpleProperty(osgProducer::OsgCameraGroup::RealizeCallback *, RealizeCallback, 
+	                 __RealizeCallback_P1__getRealizeCallback, 
+	                 __void__setRealizeCallback__RealizeCallback_P1);
+	I_SimpleProperty(unsigned int, RealizeSceneViewOptions, 
+	                 __unsigned_int__getRealizeSceneViewOptions, 
+	                 __void__setRealizeSceneViewOptions__unsigned_int);
+	I_SimpleProperty(osg::Node *, SceneData, 
+	                 __osg_Node_P1__getSceneData, 
+	                 __void__setSceneData__osg_Node_P1);
+	I_SimpleProperty(osg::Group *, SceneDecorator, 
+	                 __osg_Group_P1__getSceneDecorator, 
+	                 __void__setSceneDecorator__osg_Group_P1);
+	I_SimpleProperty(osgProducer::OsgCameraGroup::SceneHandlerList &, SceneHandlerList, 
+	                 __SceneHandlerList_R1__getSceneHandlerList, 
+	                 0);
+	I_SimpleProperty(osg::Node *, TopMostSceneData, 
+	                 __osg_Node_P1__getTopMostSceneData, 
+	                 0);
+	I_SimpleProperty(const osg::Matrixd &, View, 
+	                 0, 
+	                 __void__setView__C5_osg_Matrixd_R1);
+	I_SimpleProperty(osg::Matrixd, ViewMatrix, 
+	                 __osg_Matrixd__getViewMatrix, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgCameraGroup::RealizeCallback)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
+	I_Constructor0(____RealizeCallback,
+	               "",
+	               "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::GraphicsContextImplementation >)
-	I_Constructor0();
-	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
-	I_Method0(osgProducer::GraphicsContextImplementation *, get);
-	I_Method0(bool, valid);
-	I_Method0(osgProducer::GraphicsContextImplementation *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp);
-	I_ReadOnlyProperty(osgProducer::GraphicsContextImplementation *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgProducer::GraphicsContextImplementation *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgProducer::GraphicsContextImplementation *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgProducer::GraphicsContextImplementation *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >);

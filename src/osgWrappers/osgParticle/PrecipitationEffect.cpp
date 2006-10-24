@@ -32,115 +32,352 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	I_BaseType(osg::Node);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::PrecipitationEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, rain, IN, float, intensity);
-	I_Method1(void, snow, IN, float, intensity);
-	I_Method1(void, setMaximumParticleDensity, IN, float, density);
-	I_Method0(float, setMaximumParticleDensity);
-	I_Method1(void, setWind, IN, const osg::Vec3 &, wind);
-	I_Method0(const osg::Vec3 &, getWind);
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, position);
-	I_Method0(const osg::Vec3 &, getPosition);
-	I_Method1(void, setCellSize, IN, const osg::Vec3 &, cellSize);
-	I_Method0(const osg::Vec3 &, getCellSize);
-	I_Method1(void, setParticleSpeed, IN, float, particleSpeed);
-	I_Method0(float, getParticleSpeed);
-	I_Method1(void, setParticleSize, IN, float, particleSize);
-	I_Method0(float, getParticleSize);
-	I_Method1(void, setParticleColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getParticleColor);
-	I_Method1(void, setNearTransition, IN, float, nearTransition);
-	I_Method0(float, getNearTransition);
-	I_Method1(void, setFarTransition, IN, float, farTransition);
-	I_Method0(float, getFarTransition);
-	I_Method1(void, setUseFarLineSegments, IN, bool, useFarLineSegments);
-	I_Method0(bool, getUseFarLineSegments);
-	I_Method1(void, setFog, IN, osg::Fog *, fog);
-	I_Method0(osg::Fog *, getFog);
-	I_Method0(const osg::Fog *, getFog);
-	I_Method0(osg::Geometry *, getQuadGeometry);
-	I_Method0(osg::StateSet *, getQuadStateSet);
-	I_Method0(osg::Geometry *, getLineGeometry);
-	I_Method0(osg::StateSet *, getLineStateSet);
-	I_Method0(osg::Geometry *, getPointGeometry);
-	I_Method0(osg::StateSet *, getPointStateSet);
-	I_Property(const osg::Vec3 &, CellSize);
-	I_Property(float, FarTransition);
-	I_Property(osg::Fog *, Fog);
-	I_ReadOnlyProperty(osg::Geometry *, LineGeometry);
-	I_ReadOnlyProperty(osg::StateSet *, LineStateSet);
-	I_WriteOnlyProperty(float, MaximumParticleDensity);
-	I_Property(float, NearTransition);
-	I_Property(const osg::Vec4 &, ParticleColor);
-	I_Property(float, ParticleSize);
-	I_Property(float, ParticleSpeed);
-	I_ReadOnlyProperty(osg::Geometry *, PointGeometry);
-	I_ReadOnlyProperty(osg::StateSet *, PointStateSet);
-	I_Property(const osg::Vec3 &, Position);
-	I_ReadOnlyProperty(osg::Geometry *, QuadGeometry);
-	I_ReadOnlyProperty(osg::StateSet *, QuadStateSet);
-	I_Property(bool, UseFarLineSegments);
-	I_Property(const osg::Vec3 &, Wind);
+	I_Constructor0(____PrecipitationEffect,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::PrecipitationEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____PrecipitationEffect__C5_PrecipitationEffect_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method1(void, rain, IN, float, intensity,
+	          __void__rain__float,
+	          "Set all the parameters to create an rain effect of specified intensity. ",
+	          "");
+	I_Method1(void, snow, IN, float, intensity,
+	          __void__snow__float,
+	          "Set all the parameters to create an snow effect of specified intensity. ",
+	          "");
+	I_Method1(void, setMaximumParticleDensity, IN, float, density,
+	          __void__setMaximumParticleDensity__float,
+	          "",
+	          "");
+	I_Method0(float, setMaximumParticleDensity,
+	          __float__setMaximumParticleDensity,
+	          "",
+	          "");
+	I_Method1(void, setWind, IN, const osg::Vec3 &, wind,
+	          __void__setWind__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getWind,
+	          __C5_osg_Vec3_R1__getWind,
+	          "",
+	          "");
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, position,
+	          __void__setPosition__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getPosition,
+	          __C5_osg_Vec3_R1__getPosition,
+	          "",
+	          "");
+	I_Method1(void, setCellSize, IN, const osg::Vec3 &, cellSize,
+	          __void__setCellSize__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCellSize,
+	          __C5_osg_Vec3_R1__getCellSize,
+	          "",
+	          "");
+	I_Method1(void, setParticleSpeed, IN, float, particleSpeed,
+	          __void__setParticleSpeed__float,
+	          "",
+	          "");
+	I_Method0(float, getParticleSpeed,
+	          __float__getParticleSpeed,
+	          "",
+	          "");
+	I_Method1(void, setParticleSize, IN, float, particleSize,
+	          __void__setParticleSize__float,
+	          "",
+	          "");
+	I_Method0(float, getParticleSize,
+	          __float__getParticleSize,
+	          "",
+	          "");
+	I_Method1(void, setParticleColor, IN, const osg::Vec4 &, color,
+	          __void__setParticleColor__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getParticleColor,
+	          __C5_osg_Vec4_R1__getParticleColor,
+	          "",
+	          "");
+	I_Method1(void, setNearTransition, IN, float, nearTransition,
+	          __void__setNearTransition__float,
+	          "",
+	          "");
+	I_Method0(float, getNearTransition,
+	          __float__getNearTransition,
+	          "",
+	          "");
+	I_Method1(void, setFarTransition, IN, float, farTransition,
+	          __void__setFarTransition__float,
+	          "",
+	          "");
+	I_Method0(float, getFarTransition,
+	          __float__getFarTransition,
+	          "",
+	          "");
+	I_Method1(void, setUseFarLineSegments, IN, bool, useFarLineSegments,
+	          __void__setUseFarLineSegments__bool,
+	          "",
+	          "");
+	I_Method0(bool, getUseFarLineSegments,
+	          __bool__getUseFarLineSegments,
+	          "",
+	          "");
+	I_Method1(void, setFog, IN, osg::Fog *, fog,
+	          __void__setFog__osg_Fog_P1,
+	          "",
+	          "");
+	I_Method0(osg::Fog *, getFog,
+	          __osg_Fog_P1__getFog,
+	          "",
+	          "");
+	I_Method0(const osg::Fog *, getFog,
+	          __C5_osg_Fog_P1__getFog,
+	          "",
+	          "");
+	I_Method0(osg::Geometry *, getQuadGeometry,
+	          __osg_Geometry_P1__getQuadGeometry,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getQuadStateSet,
+	          __osg_StateSet_P1__getQuadStateSet,
+	          "",
+	          "");
+	I_Method0(osg::Geometry *, getLineGeometry,
+	          __osg_Geometry_P1__getLineGeometry,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getLineStateSet,
+	          __osg_StateSet_P1__getLineStateSet,
+	          "",
+	          "");
+	I_Method0(osg::Geometry *, getPointGeometry,
+	          __osg_Geometry_P1__getPointGeometry,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getPointStateSet,
+	          __osg_StateSet_P1__getPointStateSet,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, CellSize, 
+	                 __C5_osg_Vec3_R1__getCellSize, 
+	                 __void__setCellSize__C5_osg_Vec3_R1);
+	I_SimpleProperty(float, FarTransition, 
+	                 __float__getFarTransition, 
+	                 __void__setFarTransition__float);
+	I_SimpleProperty(osg::Fog *, Fog, 
+	                 __osg_Fog_P1__getFog, 
+	                 __void__setFog__osg_Fog_P1);
+	I_SimpleProperty(osg::Geometry *, LineGeometry, 
+	                 __osg_Geometry_P1__getLineGeometry, 
+	                 0);
+	I_SimpleProperty(osg::StateSet *, LineStateSet, 
+	                 __osg_StateSet_P1__getLineStateSet, 
+	                 0);
+	I_SimpleProperty(float, MaximumParticleDensity, 
+	                 0, 
+	                 __void__setMaximumParticleDensity__float);
+	I_SimpleProperty(float, NearTransition, 
+	                 __float__getNearTransition, 
+	                 __void__setNearTransition__float);
+	I_SimpleProperty(const osg::Vec4 &, ParticleColor, 
+	                 __C5_osg_Vec4_R1__getParticleColor, 
+	                 __void__setParticleColor__C5_osg_Vec4_R1);
+	I_SimpleProperty(float, ParticleSize, 
+	                 __float__getParticleSize, 
+	                 __void__setParticleSize__float);
+	I_SimpleProperty(float, ParticleSpeed, 
+	                 __float__getParticleSpeed, 
+	                 __void__setParticleSpeed__float);
+	I_SimpleProperty(osg::Geometry *, PointGeometry, 
+	                 __osg_Geometry_P1__getPointGeometry, 
+	                 0);
+	I_SimpleProperty(osg::StateSet *, PointStateSet, 
+	                 __osg_StateSet_P1__getPointStateSet, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3 &, Position, 
+	                 __C5_osg_Vec3_R1__getPosition, 
+	                 __void__setPosition__C5_osg_Vec3_R1);
+	I_SimpleProperty(osg::Geometry *, QuadGeometry, 
+	                 __osg_Geometry_P1__getQuadGeometry, 
+	                 0);
+	I_SimpleProperty(osg::StateSet *, QuadStateSet, 
+	                 __osg_StateSet_P1__getQuadStateSet, 
+	                 0);
+	I_SimpleProperty(bool, UseFarLineSegments, 
+	                 __bool__getUseFarLineSegments, 
+	                 __void__setUseFarLineSegments__bool);
+	I_SimpleProperty(const osg::Vec3 &, Wind, 
+	                 __C5_osg_Vec3_R1__getWind, 
+	                 __void__setWind__C5_osg_Vec3_R1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >, osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap);
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 	I_BaseType(osg::Drawable);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::PrecipitationEffect::PrecipitationDrawable &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
-	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, x);
-	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x);
-	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x);
-	I_Method1(void, setRequiresPreviousMatrix, IN, bool, flag);
-	I_Method0(bool, getRequiresPreviousMatrix);
-	I_Method1(void, setGeometry, IN, osg::Geometry *, geom);
-	I_Method0(osg::Geometry *, getGeometry);
-	I_Method0(const osg::Geometry *, getGeometry);
-	I_Method1(void, setDrawType, IN, GLenum, type);
-	I_Method0(GLenum, getDrawType);
-	I_Method1(void, setNumberOfVertices, IN, unsigned int, numVertices);
-	I_Method0(unsigned int, getNumberOfVertices);
-	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
-	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getCurrentCellMatrixMap);
-	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getPreviousCellMatrixMap);
-	I_Method0(void, newFrame);
-	I_ReadOnlyProperty(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, CurrentCellMatrixMap);
-	I_Property(GLenum, DrawType);
-	I_Property(osg::Geometry *, Geometry);
-	I_Property(unsigned int, NumberOfVertices);
-	I_ReadOnlyProperty(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, PreviousCellMatrixMap);
-	I_Property(bool, RequiresPreviousMatrix);
+	I_Constructor0(____PrecipitationDrawable,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::PrecipitationEffect::PrecipitationDrawable &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____PrecipitationDrawable__C5_PrecipitationDrawable_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
+	          __bool__supports__C5_osg_PrimitiveFunctor_R1,
+	          "Return true if the Drawable subclass supports accept(PrimitiveFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, x,
+	          __void__accept__osg_PrimitiveFunctor_R1,
+	          "Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
+	          "return true if functor handled by drawable, return false on failure of drawable to generate functor calls. Note, PrimtiveFunctor only provides const access of the primitives, as primitives may be procedurally generated so one cannot modify it. ");
+	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x,
+	          __bool__supports__C5_osg_PrimitiveIndexFunctor_R1,
+	          "Return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x,
+	          __void__accept__osg_PrimitiveIndexFunctor_R1,
+	          "Accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
+	          "return true if functor handled by drawable, return false on failure of drawable to generate functor calls. Note, PrimtiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated so one cannot modify it. ");
+	I_Method1(void, setRequiresPreviousMatrix, IN, bool, flag,
+	          __void__setRequiresPreviousMatrix__bool,
+	          "",
+	          "");
+	I_Method0(bool, getRequiresPreviousMatrix,
+	          __bool__getRequiresPreviousMatrix,
+	          "",
+	          "");
+	I_Method1(void, setGeometry, IN, osg::Geometry *, geom,
+	          __void__setGeometry__osg_Geometry_P1,
+	          "",
+	          "");
+	I_Method0(osg::Geometry *, getGeometry,
+	          __osg_Geometry_P1__getGeometry,
+	          "",
+	          "");
+	I_Method0(const osg::Geometry *, getGeometry,
+	          __C5_osg_Geometry_P1__getGeometry,
+	          "",
+	          "");
+	I_Method1(void, setDrawType, IN, GLenum, type,
+	          __void__setDrawType__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getDrawType,
+	          __GLenum__getDrawType,
+	          "",
+	          "");
+	I_Method1(void, setNumberOfVertices, IN, unsigned int, numVertices,
+	          __void__setNumberOfVertices__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumberOfVertices,
+	          __unsigned_int__getNumberOfVertices,
+	          "",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
+	          __void__drawImplementation__osg_RenderInfo_R1,
+	          "drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
+	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
+	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getCurrentCellMatrixMap,
+	          __CellMatrixMap_R1__getCurrentCellMatrixMap,
+	          "",
+	          "");
+	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getPreviousCellMatrixMap,
+	          __CellMatrixMap_R1__getPreviousCellMatrixMap,
+	          "",
+	          "");
+	I_Method0(void, newFrame,
+	          __void__newFrame,
+	          "",
+	          "");
+	I_SimpleProperty(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, CurrentCellMatrixMap, 
+	                 __CellMatrixMap_R1__getCurrentCellMatrixMap, 
+	                 0);
+	I_SimpleProperty(GLenum, DrawType, 
+	                 __GLenum__getDrawType, 
+	                 __void__setDrawType__GLenum);
+	I_SimpleProperty(osg::Geometry *, Geometry, 
+	                 __osg_Geometry_P1__getGeometry, 
+	                 __void__setGeometry__osg_Geometry_P1);
+	I_SimpleProperty(unsigned int, NumberOfVertices, 
+	                 __unsigned_int__getNumberOfVertices, 
+	                 __void__setNumberOfVertices__unsigned_int);
+	I_SimpleProperty(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, PreviousCellMatrixMap, 
+	                 __CellMatrixMap_R1__getPreviousCellMatrixMap, 
+	                 0);
+	I_SimpleProperty(bool, RequiresPreviousMatrix, 
+	                 __bool__getRequiresPreviousMatrix, 
+	                 __void__setRequiresPreviousMatrix__bool);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell)
-	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k);
+	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k,
+	               ____Cell__int__int__int,
+	               "",
+	               "");
 	I_PublicMemberProperty(int, i);
 	I_PublicMemberProperty(int, j);
 	I_PublicMemberProperty(int, k);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime)
-	I_Constructor0();
+	I_Constructor0(____DepthMatrixStartTime,
+	               "",
+	               "");
 	I_PublicMemberProperty(float, depth);
 	I_PublicMemberProperty(float, startTime);
 	I_PublicMemberProperty(osg::Matrix, modelview);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::LessFunctor)
-	I_Constructor0();
+	I_Constructor0(____LessFunctor,
+	               "",
+	               "");
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >);

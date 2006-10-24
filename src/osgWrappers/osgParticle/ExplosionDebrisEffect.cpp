@@ -28,22 +28,71 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ExplosionDebrisEffect)
 	I_BaseType(osgParticle::ParticleEffect);
-	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true);
-	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, position, , IN, float, scale, 1.0f, IN, float, intensity, 1.0f);
-	I_ConstructorWithDefaults2(IN, const osgParticle::ExplosionDebrisEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(void, setDefaults);
-	I_Method0(void, setUpEmitterAndProgram);
-	I_Method0(osgParticle::Emitter *, getEmitter);
-	I_Method0(const osgParticle::Emitter *, getEmitter);
-	I_Method0(osgParticle::Program *, getProgram);
-	I_Method0(const osgParticle::Program *, getProgram);
-	I_ReadOnlyProperty(osgParticle::Emitter *, Emitter);
-	I_ReadOnlyProperty(osgParticle::Program *, Program);
+	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true,
+	                           ____ExplosionDebrisEffect__bool,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, position, , IN, float, scale, 1.0f, IN, float, intensity, 1.0f,
+	                           ____ExplosionDebrisEffect__C5_osg_Vec3_R1__float__float,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::ExplosionDebrisEffect &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ExplosionDebrisEffect__C5_ExplosionDebrisEffect_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(void, setDefaults,
+	          __void__setDefaults,
+	          "",
+	          "");
+	I_Method0(void, setUpEmitterAndProgram,
+	          __void__setUpEmitterAndProgram,
+	          "",
+	          "");
+	I_Method0(osgParticle::Emitter *, getEmitter,
+	          __Emitter_P1__getEmitter,
+	          "",
+	          "");
+	I_Method0(const osgParticle::Emitter *, getEmitter,
+	          __C5_Emitter_P1__getEmitter,
+	          "",
+	          "");
+	I_Method0(osgParticle::Program *, getProgram,
+	          __Program_P1__getProgram,
+	          "",
+	          "");
+	I_Method0(const osgParticle::Program *, getProgram,
+	          __C5_Program_P1__getProgram,
+	          "",
+	          "");
+	I_SimpleProperty(osgParticle::Emitter *, Emitter, 
+	                 __Emitter_P1__getEmitter, 
+	                 0);
+	I_SimpleProperty(osgParticle::Program *, Program, 
+	                 __Program_P1__getProgram, 
+	                 0);
 END_REFLECTOR
 

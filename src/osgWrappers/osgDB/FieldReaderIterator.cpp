@@ -29,39 +29,139 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::FieldReaderIterator)
-	I_Constructor0();
-	I_Constructor1(IN, const osgDB::FieldReaderIterator &, ic);
-	I_Method1(void, attach, IN, std::istream *, input);
-	I_Method0(void, detach);
-	I_Method0(bool, eof);
-	I_Method0(osgDB::FieldReader &, getFieldReader);
-	I_Method2(void, insert, IN, int, pos, IN, osgDB::Field *, field);
-	I_Method2(void, insert, IN, int, pos, IN, const char *, str);
-	I_Method1(osgDB::Field &, field, IN, int, pos);
-	I_Method0(void, advanceOverCurrentFieldOrBlock);
-	I_Method0(void, advanceToEndOfCurrentBlock);
-	I_Method1(void, advanceToEndOfBlock, IN, int, noNestBrackets);
-	I_Method1(bool, matchSequence, IN, const char *, str);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, std::string &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, unsigned int &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, int &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, float &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2f &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3f &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4f &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2d &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3d &, value);
-	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4d &, value);
-	I_Method1(bool, readSequence, IN, std::string &, value);
-	I_Method1(bool, readSequence, IN, unsigned int &, value);
-	I_Method1(bool, readSequence, IN, int &, value);
-	I_Method1(bool, readSequence, IN, float &, value);
-	I_Method1(bool, readSequence, IN, osg::Vec2f &, value);
-	I_Method1(bool, readSequence, IN, osg::Vec3f &, value);
-	I_Method1(bool, readSequence, IN, osg::Vec4f &, value);
-	I_Method1(bool, readSequence, IN, osg::Vec2d &, value);
-	I_Method1(bool, readSequence, IN, osg::Vec3d &, value);
-	I_Method1(bool, readSequence, IN, osg::Vec4d &, value);
-	I_ReadOnlyProperty(osgDB::FieldReader &, FieldReader);
+	I_Constructor0(____FieldReaderIterator,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgDB::FieldReaderIterator &, ic,
+	               ____FieldReaderIterator__C5_FieldReaderIterator_R1,
+	               "",
+	               "");
+	I_Method1(void, attach, IN, std::istream *, input,
+	          __void__attach__std_istream_P1,
+	          "",
+	          "");
+	I_Method0(void, detach,
+	          __void__detach,
+	          "",
+	          "");
+	I_Method0(bool, eof,
+	          __bool__eof,
+	          "",
+	          "");
+	I_Method0(osgDB::FieldReader &, getFieldReader,
+	          __FieldReader_R1__getFieldReader,
+	          "",
+	          "");
+	I_Method2(void, insert, IN, int, pos, IN, osgDB::Field *, field,
+	          __void__insert__int__Field_P1,
+	          "",
+	          "");
+	I_Method2(void, insert, IN, int, pos, IN, const char *, str,
+	          __void__insert__int__C5_char_P1,
+	          "",
+	          "");
+	I_Method1(osgDB::Field &, field, IN, int, pos,
+	          __Field_R1__field__int,
+	          "",
+	          "");
+	I_Method0(void, advanceOverCurrentFieldOrBlock,
+	          __void__advanceOverCurrentFieldOrBlock,
+	          "increments the iterator of the next simple field or whole block if the current field[0] is an open bracket ",
+	          "");
+	I_Method0(void, advanceToEndOfCurrentBlock,
+	          __void__advanceToEndOfCurrentBlock,
+	          "",
+	          "");
+	I_Method1(void, advanceToEndOfBlock, IN, int, noNestBrackets,
+	          __void__advanceToEndOfBlock__int,
+	          "",
+	          "");
+	I_Method1(bool, matchSequence, IN, const char *, str,
+	          __bool__matchSequence__C5_char_P1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, std::string &, value,
+	          __bool__readSequence__C5_char_P1__std_string_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, unsigned int &, value,
+	          __bool__readSequence__C5_char_P1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, int &, value,
+	          __bool__readSequence__C5_char_P1__int_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, float &, value,
+	          __bool__readSequence__C5_char_P1__float_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2f &, value,
+	          __bool__readSequence__C5_char_P1__osg_Vec2f_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3f &, value,
+	          __bool__readSequence__C5_char_P1__osg_Vec3f_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4f &, value,
+	          __bool__readSequence__C5_char_P1__osg_Vec4f_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec2d &, value,
+	          __bool__readSequence__C5_char_P1__osg_Vec2d_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec3d &, value,
+	          __bool__readSequence__C5_char_P1__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method2(bool, readSequence, IN, const char *, keyword, IN, osg::Vec4d &, value,
+	          __bool__readSequence__C5_char_P1__osg_Vec4d_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, std::string &, value,
+	          __bool__readSequence__std_string_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, unsigned int &, value,
+	          __bool__readSequence__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, int &, value,
+	          __bool__readSequence__int_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, float &, value,
+	          __bool__readSequence__float_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, osg::Vec2f &, value,
+	          __bool__readSequence__osg_Vec2f_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, osg::Vec3f &, value,
+	          __bool__readSequence__osg_Vec3f_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, osg::Vec4f &, value,
+	          __bool__readSequence__osg_Vec4f_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, osg::Vec2d &, value,
+	          __bool__readSequence__osg_Vec2d_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, osg::Vec3d &, value,
+	          __bool__readSequence__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method1(bool, readSequence, IN, osg::Vec4d &, value,
+	          __bool__readSequence__osg_Vec4d_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgDB::FieldReader &, FieldReader, 
+	                 __FieldReader_R1__getFieldReader, 
+	                 0);
 END_REFLECTOR
 

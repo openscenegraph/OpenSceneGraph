@@ -25,8 +25,16 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::TransformCallback)
 	I_BaseType(osg::NodeCallback);
-	I_Constructor3(IN, const osg::Vec3 &, pivot, IN, const osg::Vec3 &, axis, IN, float, angularVelocity);
-	I_Method1(void, setPause, IN, bool, pause);
-	I_WriteOnlyProperty(bool, Pause);
+	I_Constructor3(IN, const osg::Vec3 &, pivot, IN, const osg::Vec3 &, axis, IN, float, angularVelocity,
+	               ____TransformCallback__C5_osg_Vec3_R1__C5_osg_Vec3_R1__float,
+	               "",
+	               "");
+	I_Method1(void, setPause, IN, bool, pause,
+	          __void__setPause__bool,
+	          "",
+	          "");
+	I_SimpleProperty(bool, Pause, 
+	                 0, 
+	                 __void__setPause__bool);
 END_REFLECTOR
 

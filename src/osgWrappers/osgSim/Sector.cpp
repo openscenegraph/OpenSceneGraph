@@ -27,115 +27,342 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_BaseType(osgSim::ElevationRange);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
+	I_Constructor0(____AzimElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimElevationSector__C5_AzimElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimElevationSector__float__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
-	I_Constructor0();
-	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f);
-	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle);
-	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal);
+	I_Constructor0(____AzimRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                      __void__setAzimuthRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle,
+	          __void__getAzimuthRange__float_R1__float_R1__float_R1,
+	          "",
+	          "");
+	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal,
+	          __float__azimSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
+	I_Constructor0(____AzimSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimSector__C5_AzimSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 	I_BaseType(osgSim::Sector);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis);
-	I_Method0(const osg::Vec3 &, getAxis);
-	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f);
-	I_Method0(float, getAngle);
-	I_Method0(float, getFadeAngle);
-	I_ReadOnlyProperty(float, Angle);
-	I_Property(const osg::Vec3 &, Axis);
-	I_ReadOnlyProperty(float, FadeAngle);
+	I_Constructor0(____ConeSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConeSector__C5_ConeSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                           ____ConeSector__C5_osg_Vec3_R1__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis,
+	          __void__setAxis__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getAxis,
+	          __C5_osg_Vec3_R1__getAxis,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                      __void__setAngle__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getAngle,
+	          __float__getAngle,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_SimpleProperty(float, Angle, 
+	                 __float__getAngle, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3 &, Axis, 
+	                 __C5_osg_Vec3_R1__getAxis, 
+	                 __void__setAxis__C5_osg_Vec3_R1);
+	I_SimpleProperty(float, FadeAngle, 
+	                 __float__getFadeAngle, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	I_BaseType(osgSim::Sector);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction);
-	I_Method0(const osg::Vec3 &, getDirection);
-	I_Method1(void, setHorizLobeAngle, IN, float, angle);
-	I_Method0(float, getHorizLobeAngle);
-	I_Method1(void, setLobeRollAngle, IN, float, angle);
-	I_Method0(float, getLobeRollAngle);
-	I_Method1(void, setVertLobeAngle, IN, float, angle);
-	I_Method0(float, getVertLobeAngle);
-	I_Method1(void, setFadeAngle, IN, float, angle);
-	I_Method0(float, getFadeAngle);
-	I_Method0(void, computeMatrix);
-	I_Property(const osg::Vec3 &, Direction);
-	I_Property(float, FadeAngle);
-	I_Property(float, HorizLobeAngle);
-	I_Property(float, LobeRollAngle);
-	I_Property(float, VertLobeAngle);
+	I_Constructor0(____DirectionalSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DirectionalSector__C5_DirectionalSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f,
+	                           ____DirectionalSector__C5_osg_Vec3_R1__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
+	          __void__setDirection__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getDirection,
+	          __C5_osg_Vec3_R1__getDirection,
+	          "",
+	          "");
+	I_Method1(void, setHorizLobeAngle, IN, float, angle,
+	          __void__setHorizLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getHorizLobeAngle,
+	          __float__getHorizLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setLobeRollAngle, IN, float, angle,
+	          __void__setLobeRollAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getLobeRollAngle,
+	          __float__getLobeRollAngle,
+	          "",
+	          "");
+	I_Method1(void, setVertLobeAngle, IN, float, angle,
+	          __void__setVertLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getVertLobeAngle,
+	          __float__getVertLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setFadeAngle, IN, float, angle,
+	          __void__setFadeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method0(void, computeMatrix,
+	          __void__computeMatrix,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Direction, 
+	                 __C5_osg_Vec3_R1__getDirection, 
+	                 __void__setDirection__C5_osg_Vec3_R1);
+	I_SimpleProperty(float, FadeAngle, 
+	                 __float__getFadeAngle, 
+	                 __void__setFadeAngle__float);
+	I_SimpleProperty(float, HorizLobeAngle, 
+	                 __float__getHorizLobeAngle, 
+	                 __void__setHorizLobeAngle__float);
+	I_SimpleProperty(float, LobeRollAngle, 
+	                 __float__getLobeRollAngle, 
+	                 __void__setLobeRollAngle__float);
+	I_SimpleProperty(float, VertLobeAngle, 
+	                 __float__getVertLobeAngle, 
+	                 __void__setVertLobeAngle__float);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
-	I_Constructor0();
-	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
-	I_Method0(float, getMinElevation);
-	I_Method0(float, getMaxElevation);
-	I_Method0(float, getFadeAngle);
-	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal);
-	I_ReadOnlyProperty(float, FadeAngle);
-	I_ReadOnlyProperty(float, MaxElevation);
-	I_ReadOnlyProperty(float, MinElevation);
+	I_Constructor0(____ElevationRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                      __void__setElevationRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getMinElevation,
+	          __float__getMinElevation,
+	          "",
+	          "");
+	I_Method0(float, getMaxElevation,
+	          __float__getMaxElevation,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal,
+	          __float__elevationSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_SimpleProperty(float, FadeAngle, 
+	                 __float__getFadeAngle, 
+	                 0);
+	I_SimpleProperty(float, MaxElevation, 
+	                 __float__getMaxElevation, 
+	                 0);
+	I_SimpleProperty(float, MinElevation, 
+	                 __float__getMinElevation, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::ElevationRange);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
+	I_Constructor0(____ElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ElevationSector__C5_ElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____ElevationSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
+	I_Constructor0(____Sector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Sector__C5_Sector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
 END_REFLECTOR
 

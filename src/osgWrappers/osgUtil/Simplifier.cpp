@@ -26,36 +26,110 @@ TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList);
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	I_BaseType(osg::NodeVisitor);
-	I_ConstructorWithDefaults3(IN, float, sampleRatio, 1.0f, IN, float, maximumError, FLT_MAX, IN, float, maximumLength, 0.0);
-	I_Method1(void, setSampleRatio, IN, float, sampleRatio);
-	I_Method0(float, getSampleRatio);
-	I_Method1(void, setMaximumError, IN, float, error);
-	I_Method0(float, getMaximumError);
-	I_Method1(void, setMaximumLength, IN, float, length);
-	I_Method0(float, getMaximumLength);
-	I_Method1(void, setDoTriStrip, IN, bool, on);
-	I_Method0(bool, getDoTriStrip);
-	I_Method1(void, setSmoothing, IN, bool, on);
-	I_Method0(bool, getSmoothing);
-	I_Method1(void, setContinueSimplificationCallback, IN, osgUtil::Simplifier::ContinueSimplificationCallback *, cb);
-	I_Method0(osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
-	I_Method0(const osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback);
-	I_Method3(bool, continueSimplification, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
-	I_Method3(bool, continueSimplificationImplementation, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
-	I_Method1(void, apply, IN, osg::Geode &, geode);
-	I_Method1(void, simplify, IN, osg::Geometry &, geometry);
-	I_Method2(void, simplify, IN, osg::Geometry &, geometry, IN, const osgUtil::Simplifier::IndexList &, protectedPoints);
-	I_Property(osgUtil::Simplifier::ContinueSimplificationCallback *, ContinueSimplificationCallback);
-	I_Property(bool, DoTriStrip);
-	I_Property(float, MaximumError);
-	I_Property(float, MaximumLength);
-	I_Property(float, SampleRatio);
-	I_Property(bool, Smoothing);
+	I_ConstructorWithDefaults3(IN, float, sampleRatio, 1.0f, IN, float, maximumError, FLT_MAX, IN, float, maximumLength, 0.0,
+	                           ____Simplifier__float__float__float,
+	                           "",
+	                           "");
+	I_Method1(void, setSampleRatio, IN, float, sampleRatio,
+	          __void__setSampleRatio__float,
+	          "",
+	          "");
+	I_Method0(float, getSampleRatio,
+	          __float__getSampleRatio,
+	          "",
+	          "");
+	I_Method1(void, setMaximumError, IN, float, error,
+	          __void__setMaximumError__float,
+	          "Set the maximum point error that all point removals must be less than to permit removal of a point. ",
+	          "Note, Only used when down sampling. i.e. sampleRatio < 1.0 ");
+	I_Method0(float, getMaximumError,
+	          __float__getMaximumError,
+	          "",
+	          "");
+	I_Method1(void, setMaximumLength, IN, float, length,
+	          __void__setMaximumLength__float,
+	          "Set the maximum length target that all edges must be shorted than. ",
+	          "Note, Only used when up sampling i.e. sampleRatio > 1.0. ");
+	I_Method0(float, getMaximumLength,
+	          __float__getMaximumLength,
+	          "",
+	          "");
+	I_Method1(void, setDoTriStrip, IN, bool, on,
+	          __void__setDoTriStrip__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDoTriStrip,
+	          __bool__getDoTriStrip,
+	          "",
+	          "");
+	I_Method1(void, setSmoothing, IN, bool, on,
+	          __void__setSmoothing__bool,
+	          "",
+	          "");
+	I_Method0(bool, getSmoothing,
+	          __bool__getSmoothing,
+	          "",
+	          "");
+	I_Method1(void, setContinueSimplificationCallback, IN, osgUtil::Simplifier::ContinueSimplificationCallback *, cb,
+	          __void__setContinueSimplificationCallback__ContinueSimplificationCallback_P1,
+	          "",
+	          "");
+	I_Method0(osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback,
+	          __ContinueSimplificationCallback_P1__getContinueSimplificationCallback,
+	          "",
+	          "");
+	I_Method0(const osgUtil::Simplifier::ContinueSimplificationCallback *, getContinueSimplificationCallback,
+	          __C5_ContinueSimplificationCallback_P1__getContinueSimplificationCallback,
+	          "",
+	          "");
+	I_Method3(bool, continueSimplification, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
+	          __bool__continueSimplification__float__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method3(bool, continueSimplificationImplementation, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
+	          __bool__continueSimplificationImplementation__float__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, simplify, IN, osg::Geometry &, geometry,
+	          __void__simplify__osg_Geometry_R1,
+	          "simply the geometry. ",
+	          "");
+	I_Method2(void, simplify, IN, osg::Geometry &, geometry, IN, const osgUtil::Simplifier::IndexList &, protectedPoints,
+	          __void__simplify__osg_Geometry_R1__C5_IndexList_R1,
+	          "simply the geometry, whilst protecting key points from being modified. ",
+	          "");
+	I_SimpleProperty(osgUtil::Simplifier::ContinueSimplificationCallback *, ContinueSimplificationCallback, 
+	                 __ContinueSimplificationCallback_P1__getContinueSimplificationCallback, 
+	                 __void__setContinueSimplificationCallback__ContinueSimplificationCallback_P1);
+	I_SimpleProperty(bool, DoTriStrip, 
+	                 __bool__getDoTriStrip, 
+	                 __void__setDoTriStrip__bool);
+	I_SimpleProperty(float, MaximumError, 
+	                 __float__getMaximumError, 
+	                 __void__setMaximumError__float);
+	I_SimpleProperty(float, MaximumLength, 
+	                 __float__getMaximumLength, 
+	                 __void__setMaximumLength__float);
+	I_SimpleProperty(float, SampleRatio, 
+	                 __float__getSampleRatio, 
+	                 __void__setSampleRatio__float);
+	I_SimpleProperty(bool, Smoothing, 
+	                 __bool__getSmoothing, 
+	                 __void__setSmoothing__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier::ContinueSimplificationCallback)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives);
+	I_Constructor0(____ContinueSimplificationCallback,
+	               "",
+	               "");
+	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
+	          __bool__continueSimplification__C5_Simplifier_R1__float__unsigned_int__unsigned_int,
+	          "return true if mesh should be continued to be simplified, return false to stop simplification. ",
+	          "");
 END_REFLECTOR
 

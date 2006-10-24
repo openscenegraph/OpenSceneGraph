@@ -27,29 +27,95 @@
 
 BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
-	I_ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0);
-	I_Constructor1(IN, const std::string &, filename);
-	I_Method0(const char *, className);
-	I_Method1(void, setPrintOutTimingInfo, IN, bool, printOutTiminInfo);
-	I_Method0(bool, getPrintOutTimingInfo);
-	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method0(osg::Matrixd, getMatrix);
-	I_Method0(osg::Matrixd, getInverseMatrix);
-	I_Method1(void, setAnimationPath, IN, osg::AnimationPath *, animationPath);
-	I_Method0(osg::AnimationPath *, getAnimationPath);
-	I_Method0(const osg::AnimationPath *, getAnimationPath);
-	I_Method0(bool, valid);
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, home, IN, double, currentTime);
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	I_Property(osg::AnimationPath *, AnimationPath);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	I_ReadOnlyProperty(osg::Matrixd, Matrix);
-	I_Property(bool, PrintOutTimingInfo);
+	I_ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0,
+	                           ____AnimationPathManipulator__osg_AnimationPath_P1,
+	                           "",
+	                           "");
+	I_Constructor1(IN, const std::string &, filename,
+	               ____AnimationPathManipulator__C5_std_string_R1,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setPrintOutTimingInfo, IN, bool, printOutTiminInfo,
+	          __void__setPrintOutTimingInfo__bool,
+	          "",
+	          "");
+	I_Method0(bool, getPrintOutTimingInfo,
+	          __bool__getPrintOutTimingInfo,
+	          "",
+	          "");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method1(void, setAnimationPath, IN, osg::AnimationPath *, animationPath,
+	          __void__setAnimationPath__osg_AnimationPath_P1,
+	          "",
+	          "");
+	I_Method0(osg::AnimationPath *, getAnimationPath,
+	          __osg_AnimationPath_P1__getAnimationPath,
+	          "",
+	          "");
+	I_Method0(const osg::AnimationPath *, getAnimationPath,
+	          __C5_osg_AnimationPath_P1__getAnimationPath,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "FIXME: what does this actually mean? Provide examples.");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate.");
+	I_Method1(void, home, IN, double, currentTime,
+	          __void__home__double,
+	          "Move the camera to the default position. ",
+	          "This version does not require GUIEventAdapter and GUIActionAdapter so may be called from somewhere other than a handle() method in GUIEventHandler. Application must be aware of implications.");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_SimpleProperty(osg::AnimationPath *, AnimationPath, 
+	                 __osg_AnimationPath_P1__getAnimationPath, 
+	                 __void__setAnimationPath__osg_AnimationPath_P1);
+	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
+	                 0, 
+	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
+	                 0, 
+	                 __void__setByMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
+	                 __osg_Matrixd__getInverseMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, Matrix, 
+	                 __osg_Matrixd__getMatrix, 
+	                 0);
+	I_SimpleProperty(bool, PrintOutTimingInfo, 
+	                 __bool__getPrintOutTimingInfo, 
+	                 __void__setPrintOutTimingInfo__bool);
 END_REFLECTOR
 

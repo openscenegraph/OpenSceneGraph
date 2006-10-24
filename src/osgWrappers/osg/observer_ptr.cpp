@@ -21,7 +21,12 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Observer)
-	I_Constructor0();
-	I_Method1(void, objectDeleted, IN, void *, x);
+	I_Constructor0(____Observer,
+	               "",
+	               "");
+	I_Method1(void, objectDeleted, IN, void *, x,
+	          __void__objectDeleted__void_P1,
+	          "",
+	          "");
 END_REFLECTOR
 

@@ -22,28 +22,85 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::DeleteHandler)
-	I_Constructor0();
-	I_Method0(void, flush);
-	I_Method1(void, doDelete, IN, const osg::Referenced *, object);
-	I_Method1(void, requestDelete, IN, const osg::Referenced *, object);
+	I_Constructor0(____DeleteHandler,
+	               "",
+	               "");
+	I_Method0(void, flush,
+	          __void__flush,
+	          "flush any cache of objects that need to be deleted by doing an actual delete. ",
+	          "");
+	I_Method1(void, doDelete, IN, const osg::Referenced *, object,
+	          __void__doDelete__C5_Referenced_P1,
+	          "",
+	          "");
+	I_Method1(void, requestDelete, IN, const osg::Referenced *, object,
+	          __void__requestDelete__C5_Referenced_P1,
+	          "Request the deletion of an object. ",
+	          "Depending on users implementation of DeleteHandler, the delete of the object may occur straight away or be delayed until doDelete is called. The default implementation does a delete straight away. ");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Referenced)
-	I_Constructor0();
-	I_Constructor1(IN, bool, threadSafeRefUnref);
-	I_Constructor1(IN, const osg::Referenced &, x);
-	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe);
-	I_Method0(bool, getThreadSafeRefUnref);
-	I_Method0(void, ref);
-	I_Method0(void, unref);
-	I_Method0(void, unref_nodelete);
-	I_Method0(int, referenceCount);
-	I_Method1(void, addObserver, IN, osg::Observer *, observer);
-	I_Method1(void, removeObserver, IN, osg::Observer *, observer);
-	I_StaticMethod1(void, setThreadSafeReferenceCounting, IN, bool, enableThreadSafeReferenceCounting);
-	I_StaticMethod0(bool, getThreadSafeReferenceCounting);
-	I_StaticMethod1(void, setDeleteHandler, IN, osg::DeleteHandler *, handler);
-	I_StaticMethod0(osg::DeleteHandler *, getDeleteHandler);
-	I_Property(bool, ThreadSafeRefUnref);
+	I_Constructor0(____Referenced,
+	               "",
+	               "");
+	I_Constructor1(IN, bool, threadSafeRefUnref,
+	               ____Referenced__bool,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Referenced &, x,
+	               ____Referenced__C5_Referenced_R1,
+	               "",
+	               "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method0(bool, getThreadSafeRefUnref,
+	          __bool__getThreadSafeRefUnref,
+	          "Get whether a mutex is used to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method0(void, ref,
+	          __void__ref,
+	          "Increment the reference count by one, indicating that this object has another pointer which is referencing it. ",
+	          "");
+	I_Method0(void, unref,
+	          __void__unref,
+	          "Decrement the reference count by one, indicating that a pointer to this object is referencing it. ",
+	          "If the reference count goes to zero, it is assumed that this object is no longer referenced and is automatically deleted. ");
+	I_Method0(void, unref_nodelete,
+	          __void__unref_nodelete,
+	          "Decrement the reference count by one, indicating that a pointer to this object is referencing it. ",
+	          "However, do not delete it, even if ref count goes to 0. Warning, unref_nodelete() should only be called if the user knows exactly who will be resonsible for, one should prefer unref() over unref_nodelete() as the later can lead to memory leaks. ");
+	I_Method0(int, referenceCount,
+	          __int__referenceCount,
+	          "Return the number pointers currently referencing this object. ",
+	          "");
+	I_Method1(void, addObserver, IN, osg::Observer *, observer,
+	          __void__addObserver__Observer_P1,
+	          "Add a Observer that is observering this object, notify the Observer when this object gets deleted. ",
+	          "");
+	I_Method1(void, removeObserver, IN, osg::Observer *, observer,
+	          __void__removeObserver__Observer_P1,
+	          "Add a Observer that is observering this object, notify the Observer when this object gets deleted. ",
+	          "");
+	I_StaticMethod1(void, setThreadSafeReferenceCounting, IN, bool, enableThreadSafeReferenceCounting,
+	                __void__setThreadSafeReferenceCounting__bool_S,
+	                "Set whether reference counting should be use a mutex to create thread reference counting. ",
+	                "");
+	I_StaticMethod0(bool, getThreadSafeReferenceCounting,
+	                __bool__getThreadSafeReferenceCounting_S,
+	                "Get whether reference counting is active. ",
+	                "");
+	I_StaticMethod1(void, setDeleteHandler, IN, osg::DeleteHandler *, handler,
+	                __void__setDeleteHandler__DeleteHandler_P1_S,
+	                "Set a DeleteHandler to which deletion of all referenced counted objects will be delegated to. ",
+	                "");
+	I_StaticMethod0(osg::DeleteHandler *, getDeleteHandler,
+	                __DeleteHandler_P1__getDeleteHandler_S,
+	                "Get a DeleteHandler. ",
+	                "");
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 __bool__getThreadSafeRefUnref, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 

@@ -24,11 +24,28 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Counter)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::Counter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method1(int, numParticlesToCreate, IN, double, dt);
+	I_Constructor0(____Counter,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::Counter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Counter__C5_Counter_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method1(int, numParticlesToCreate, IN, double, dt,
+	          __int__numParticlesToCreate__double,
+	          "",
+	          "");
 END_REFLECTOR
 

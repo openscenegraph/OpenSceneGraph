@@ -34,26 +34,83 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)
 	I_BaseType(osgGA::GUIEventHandler);
-	I_Constructor1(IN, osgProducer::OsgCameraGroup *, cg);
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa);
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	I_Method0(osgProducer::OsgCameraGroup *, getOsgCameraGroup);
-	I_Method0(const osgProducer::OsgCameraGroup *, getOsgCameraGroup);
-	I_Method1(void, setWriteNodeFileName, IN, const std::string &, filename);
-	I_Method0(const std::string &, getWriteNodeFileName);
-	I_Method1(void, setDisplayHelp, IN, bool, displayHelp);
-	I_Method0(bool, getDisplayHelp);
-	I_Method1(void, setFrameStatsMode, IN, osgProducer::ViewerEventHandler::FrameStatsMode, mode);
-	I_Method0(osgProducer::ViewerEventHandler::FrameStatsMode, getFrameStatsMode);
-	I_Method1(void, setWriteImageOnNextFrame, IN, bool, writeImageOnNextFrame);
-	I_Method1(void, setWriteImageFileName, IN, const std::string &, filename);
-	I_Method0(const std::string &, getWriteImageFileName);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	I_Property(bool, DisplayHelp);
-	I_Property(osgProducer::ViewerEventHandler::FrameStatsMode, FrameStatsMode);
-	I_ReadOnlyProperty(osgProducer::OsgCameraGroup *, OsgCameraGroup);
-	I_Property(const std::string &, WriteImageFileName);
-	I_WriteOnlyProperty(bool, WriteImageOnNextFrame);
-	I_Property(const std::string &, WriteNodeFileName);
+	I_Constructor1(IN, osgProducer::OsgCameraGroup *, cg,
+	               ____ViewerEventHandler__OsgCameraGroup_P1,
+	               "",
+	               "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method0(osgProducer::OsgCameraGroup *, getOsgCameraGroup,
+	          __OsgCameraGroup_P1__getOsgCameraGroup,
+	          "",
+	          "");
+	I_Method0(const osgProducer::OsgCameraGroup *, getOsgCameraGroup,
+	          __C5_OsgCameraGroup_P1__getOsgCameraGroup,
+	          "",
+	          "");
+	I_Method1(void, setWriteNodeFileName, IN, const std::string &, filename,
+	          __void__setWriteNodeFileName__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getWriteNodeFileName,
+	          __C5_std_string_R1__getWriteNodeFileName,
+	          "",
+	          "");
+	I_Method1(void, setDisplayHelp, IN, bool, displayHelp,
+	          __void__setDisplayHelp__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDisplayHelp,
+	          __bool__getDisplayHelp,
+	          "",
+	          "");
+	I_Method1(void, setFrameStatsMode, IN, osgProducer::ViewerEventHandler::FrameStatsMode, mode,
+	          __void__setFrameStatsMode__FrameStatsMode,
+	          "",
+	          "");
+	I_Method0(osgProducer::ViewerEventHandler::FrameStatsMode, getFrameStatsMode,
+	          __FrameStatsMode__getFrameStatsMode,
+	          "",
+	          "");
+	I_Method1(void, setWriteImageOnNextFrame, IN, bool, writeImageOnNextFrame,
+	          __void__setWriteImageOnNextFrame__bool,
+	          "",
+	          "");
+	I_Method1(void, setWriteImageFileName, IN, const std::string &, filename,
+	          __void__setWriteImageFileName__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getWriteImageFileName,
+	          __C5_std_string_R1__getWriteImageFileName,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL. ",
+	                      "");
+	I_SimpleProperty(bool, DisplayHelp, 
+	                 __bool__getDisplayHelp, 
+	                 __void__setDisplayHelp__bool);
+	I_SimpleProperty(osgProducer::ViewerEventHandler::FrameStatsMode, FrameStatsMode, 
+	                 __FrameStatsMode__getFrameStatsMode, 
+	                 __void__setFrameStatsMode__FrameStatsMode);
+	I_SimpleProperty(osgProducer::OsgCameraGroup *, OsgCameraGroup, 
+	                 __OsgCameraGroup_P1__getOsgCameraGroup, 
+	                 0);
+	I_SimpleProperty(const std::string &, WriteImageFileName, 
+	                 __C5_std_string_R1__getWriteImageFileName, 
+	                 __void__setWriteImageFileName__C5_std_string_R1);
+	I_SimpleProperty(bool, WriteImageOnNextFrame, 
+	                 0, 
+	                 __void__setWriteImageOnNextFrame__bool);
+	I_SimpleProperty(const std::string &, WriteNodeFileName, 
+	                 __C5_std_string_R1__getWriteNodeFileName, 
+	                 __void__setWriteNodeFileName__C5_std_string_R1);
 END_REFLECTOR
 

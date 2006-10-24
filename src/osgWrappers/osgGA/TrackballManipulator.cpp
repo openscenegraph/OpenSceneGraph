@@ -30,43 +30,144 @@
 
 BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
-	I_Constructor0();
-	I_Method0(const char *, className);
-	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method0(osg::Matrixd, getMatrix);
-	I_Method0(osg::Matrixd, getInverseMatrix);
-	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode);
-	I_Method0(float, getFusionDistanceValue);
-	I_Method1(void, setNode, IN, osg::Node *, x);
-	I_Method0(const osg::Node *, getNode);
-	I_Method0(osg::Node *, getNode);
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, home, IN, double, x);
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	I_Method1(void, setMinimumZoomScale, IN, double, minimumZoomScale);
-	I_Method0(double, getMinimumZoomScale);
-	I_Method1(void, setCenter, IN, const osg::Vec3d &, center);
-	I_Method0(const osg::Vec3d &, getCenter);
-	I_Method1(void, setRotation, IN, const osg::Quat &, rotation);
-	I_Method0(const osg::Quat &, getRotation);
-	I_Method1(void, setDistance, IN, double, distance);
-	I_Method0(double, getDistance);
-	I_Method1(void, setTrackballSize, IN, float, size);
-	I_Method0(float, getTrackballSize);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	I_Property(const osg::Vec3d &, Center);
-	I_Property(double, Distance);
-	I_ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
-	I_ReadOnlyProperty(float, FusionDistanceValue);
-	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	I_ReadOnlyProperty(osg::Matrixd, Matrix);
-	I_Property(double, MinimumZoomScale);
-	I_Property(osg::Node *, Node);
-	I_Property(const osg::Quat &, Rotation);
-	I_Property(float, TrackballSize);
+	I_Constructor0(____TrackballManipulator,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
+	          "Get the FusionDistanceMode. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method0(float, getFusionDistanceValue,
+	          __float__getFusionDistanceValue,
+	          "Get the FusionDistanceValue. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method1(void, setNode, IN, osg::Node *, x,
+	          __void__setNode__osg_Node_P1,
+	          "Attach a node to the manipulator. ",
+	          "Automatically detaches previously attached node. setNode(NULL) detaches previously nodes. Is ignored by manipulators which do not require a reference model. ");
+	I_Method0(const osg::Node *, getNode,
+	          __C5_osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          __osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate. ");
+	I_Method1(void, home, IN, double, x,
+	          __void__home__double,
+	          "Move the camera to the default position. ",
+	          "This version does not require GUIEventAdapter and GUIActionAdapter so may be called from somewhere other than a handle() method in GUIEventHandler. Application must be aware of implications.");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method1(void, setMinimumZoomScale, IN, double, minimumZoomScale,
+	          __void__setMinimumZoomScale__double,
+	          "set the minimum distance (as ratio) the eye point can be zoomed in towards the center before the center is pushed forward. ",
+	          "");
+	I_Method0(double, getMinimumZoomScale,
+	          __double__getMinimumZoomScale,
+	          "get the minimum distance (as ratio) the eye point can be zoomed in ",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3d &, center,
+	          __void__setCenter__C5_osg_Vec3d_R1,
+	          "Set the center of the trackball. ",
+	          "");
+	I_Method0(const osg::Vec3d &, getCenter,
+	          __C5_osg_Vec3d_R1__getCenter,
+	          "Get the center of the trackball. ",
+	          "");
+	I_Method1(void, setRotation, IN, const osg::Quat &, rotation,
+	          __void__setRotation__C5_osg_Quat_R1,
+	          "Set the rotation of the trackball. ",
+	          "");
+	I_Method0(const osg::Quat &, getRotation,
+	          __C5_osg_Quat_R1__getRotation,
+	          "Get the rotation of the trackball. ",
+	          "");
+	I_Method1(void, setDistance, IN, double, distance,
+	          __void__setDistance__double,
+	          "Set the distance of the trackball. ",
+	          "");
+	I_Method0(double, getDistance,
+	          __double__getDistance,
+	          "Get the distance of the trackball. ",
+	          "");
+	I_Method1(void, setTrackballSize, IN, float, size,
+	          __void__setTrackballSize__float,
+	          "Set the size of the trackball. ",
+	          "");
+	I_Method0(float, getTrackballSize,
+	          __float__getTrackballSize,
+	          "Get the size of the trackball. ",
+	          "");
+	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
+	                 0, 
+	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
+	                 0, 
+	                 __void__setByMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Vec3d &, Center, 
+	                 __C5_osg_Vec3d_R1__getCenter, 
+	                 __void__setCenter__C5_osg_Vec3d_R1);
+	I_SimpleProperty(double, Distance, 
+	                 __double__getDistance, 
+	                 __void__setDistance__double);
+	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
+	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
+	                 0);
+	I_SimpleProperty(float, FusionDistanceValue, 
+	                 __float__getFusionDistanceValue, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
+	                 __osg_Matrixd__getInverseMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, Matrix, 
+	                 __osg_Matrixd__getMatrix, 
+	                 0);
+	I_SimpleProperty(double, MinimumZoomScale, 
+	                 __double__getMinimumZoomScale, 
+	                 __void__setMinimumZoomScale__double);
+	I_SimpleProperty(osg::Node *, Node, 
+	                 __osg_Node_P1__getNode, 
+	                 __void__setNode__osg_Node_P1);
+	I_SimpleProperty(const osg::Quat &, Rotation, 
+	                 __C5_osg_Quat_R1__getRotation, 
+	                 __void__setRotation__C5_osg_Quat_R1);
+	I_SimpleProperty(float, TrackballSize, 
+	                 __float__getTrackballSize, 
+	                 __void__setTrackballSize__float);
 END_REFLECTOR
 

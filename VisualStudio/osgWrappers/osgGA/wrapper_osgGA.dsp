@@ -128,10 +128,6 @@ SOURCE=..\..\..\src\osgWrappers\osgGA\GUIEventHandler.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgGA\GraphicsWindow.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgGA\KeySwitchMatrixManipulator.cpp
 # End Source File
 

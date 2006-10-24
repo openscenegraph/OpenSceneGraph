@@ -37,28 +37,94 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Sequence &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setValue, IN, int, value);
-	I_Method0(int, getValue);
-	I_Method2(void, setTime, IN, int, frame, IN, float, t);
-	I_Method1(float, getTime, IN, int, frame);
-	I_Method0(unsigned int, getNumFrames);
-	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end);
-	I_Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end);
-	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1);
-	I_Method2(void, getDuration, IN, float &, speed, IN, int &, nreps);
-	I_Method1(void, setMode, IN, osg::Sequence::SequenceMode, mode);
-	I_Method0(osg::Sequence::SequenceMode, getMode);
-	I_Property(osg::Sequence::SequenceMode, Mode);
-	I_IndexedProperty1(float, Time, int, frame);
-	I_Property(int, Value);
+	I_Constructor0(____Sequence,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Sequence &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Sequence__C5_Sequence_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method1(void, setValue, IN, int, value,
+	          __void__setValue__int,
+	          "",
+	          "");
+	I_Method0(int, getValue,
+	          __int__getValue,
+	          "",
+	          "");
+	I_Method2(void, setTime, IN, int, frame, IN, float, t,
+	          __void__setTime__int__float,
+	          "Set time in seconds for child. ",
+	          "");
+	I_Method1(float, getTime, IN, int, frame,
+	          __float__getTime__int,
+	          "Get time for child. ",
+	          "");
+	I_Method0(unsigned int, getNumFrames,
+	          __unsigned_int__getNumFrames,
+	          "Get number of frames. ",
+	          "");
+	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end,
+	          __void__setInterval__LoopMode__int__int,
+	          "Set sequence mode & interval (range of children to be displayed). ",
+	          "");
+	I_Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end,
+	          __void__getInterval__LoopMode_R1__int_R1__int_R1,
+	          "Get sequence mode & interval. ",
+	          "");
+	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1,
+	                      __void__setDuration__float__int,
+	                      "Set duration: speed-up & number of repeats. ",
+	                      "");
+	I_Method2(void, getDuration, IN, float &, speed, IN, int &, nreps,
+	          __void__getDuration__float_R1__int_R1,
+	          "Get duration & number of repeats. ",
+	          "");
+	I_Method1(void, setMode, IN, osg::Sequence::SequenceMode, mode,
+	          __void__setMode__SequenceMode,
+	          "Set sequence mode. ",
+	          "Start/stop & pause/resume. ");
+	I_Method0(osg::Sequence::SequenceMode, getMode,
+	          __SequenceMode__getMode,
+	          "Get sequence mode. ",
+	          "");
+	I_SimpleProperty(osg::Sequence::SequenceMode, Mode, 
+	                 __SequenceMode__getMode, 
+	                 __void__setMode__SequenceMode);
+	I_IndexedProperty(float, Time, 
+	                  __float__getTime__int, 
+	                  __void__setTime__int__float, 
+	                  0);
+	I_SimpleProperty(int, Value, 
+	                 __int__getValue, 
+	                 __void__setValue__int);
 END_REFLECTOR
 

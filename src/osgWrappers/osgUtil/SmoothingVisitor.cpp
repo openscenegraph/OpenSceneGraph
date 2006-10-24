@@ -24,8 +24,16 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0();
-	I_Method1(void, apply, IN, osg::Geode &, geode);
-	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset);
+	I_Constructor0(____SmoothingVisitor,
+	               "default to traversing all children. ",
+	               "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          __void__apply__osg_Geode_R1,
+	          "apply smoothing method to all geode geosets. ",
+	          "");
+	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset,
+	                __void__smooth__osg_Geometry_R1_S,
+	                "smooth geoset by creating per vertex normals. ",
+	                "");
 END_REFLECTOR
 

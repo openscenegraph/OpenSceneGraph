@@ -61,253 +61,875 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Drawable &, drawable, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::Geometry *, asGeometry);
-	I_Method0(const osg::Geometry *, asGeometry);
-	I_Method0(const osg::Drawable::ParentList &, getParents);
-	I_Method0(osg::Drawable::ParentList, getParents);
-	I_Method1(osg::Node *, getParent, IN, unsigned int, i);
-	I_Method1(const osg::Node *, getParent, IN, unsigned int, i);
-	I_Method0(unsigned int, getNumParents);
-	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset);
-	I_Method0(osg::StateSet *, getStateSet);
-	I_Method0(const osg::StateSet *, getStateSet);
-	I_Method0(osg::StateSet *, getOrCreateStateSet);
-	I_Method1(void, setInitialBound, IN, const osg::BoundingBox &, bbox);
-	I_Method0(const osg::BoundingBox &, getInitialBound);
-	I_Method0(void, dirtyBound);
-	I_Method0(const osg::BoundingBox &, getBound);
-	I_Method0(osg::BoundingBox, computeBound);
-	I_Method1(void, setComputeBoundingBoxCallback, IN, osg::Drawable::ComputeBoundingBoxCallback *, callback);
-	I_Method0(osg::Drawable::ComputeBoundingBoxCallback *, getComputeBoundingBoxCallback);
-	I_Method0(const osg::Drawable::ComputeBoundingBoxCallback *, getComputeBoundingBoxCallback);
-	I_Method1(void, setShape, IN, osg::Shape *, shape);
-	I_Method0(osg::Shape *, getShape);
-	I_Method0(const osg::Shape *, getShape);
-	I_Method1(void, setSupportsDisplayList, IN, bool, flag);
-	I_Method0(bool, getSupportsDisplayList);
-	I_Method1(void, setUseDisplayList, IN, bool, flag);
-	I_Method0(bool, getUseDisplayList);
-	I_Method1(GLuint &, getDisplayList, IN, unsigned int, contextID);
-	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag);
-	I_Method0(bool, getUseVertexBufferObjects);
-	I_Method0(void, dirtyDisplayList);
-	I_Method0(unsigned int, getGLObjectSizeHint);
-	I_Method1(void, draw, IN, osg::RenderInfo &, renderInfo);
-	I_Method1(void, compileGLObjects, IN, osg::State &, state);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	I_Method1(void, setUpdateCallback, IN, osg::Drawable::UpdateCallback *, ac);
-	I_Method0(osg::Drawable::UpdateCallback *, getUpdateCallback);
-	I_Method0(const osg::Drawable::UpdateCallback *, getUpdateCallback);
-	I_Method0(bool, requiresUpdateTraversal);
-	I_Method1(void, setEventCallback, IN, osg::Drawable::EventCallback *, ac);
-	I_Method0(osg::Drawable::EventCallback *, getEventCallback);
-	I_Method0(const osg::Drawable::EventCallback *, getEventCallback);
-	I_Method0(bool, requiresEventTraversal);
-	I_Method1(void, setCullCallback, IN, osg::Drawable::CullCallback *, cc);
-	I_Method0(osg::Drawable::CullCallback *, getCullCallback);
-	I_Method0(const osg::Drawable::CullCallback *, getCullCallback);
-	I_Method1(void, setDrawCallback, IN, osg::Drawable::DrawCallback *, dc);
-	I_Method0(osg::Drawable::DrawCallback *, getDrawCallback);
-	I_Method0(const osg::Drawable::DrawCallback *, getDrawCallback);
-	I_Method1(void, drawImplementation, IN, osg::State &, x);
-	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
-	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
-	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, x);
-	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
-	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, x);
-	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
-	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, x);
-	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x);
-	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x);
-	I_StaticMethodWithDefaults2(GLuint, generateDisplayList, IN, unsigned int, contextID, , IN, unsigned int, sizeHint, 0);
-	I_StaticMethod1(void, setMinimumNumberOfDisplayListsToRetainInCache, IN, unsigned int, minimum);
-	I_StaticMethod0(unsigned int, getMinimumNumberOfDisplayListsToRetainInCache);
-	I_StaticMethodWithDefaults3(void, deleteDisplayList, IN, unsigned int, contextID, , IN, GLuint, globj, , IN, unsigned int, sizeHint, 0);
-	I_StaticMethod1(void, flushAllDeletedDisplayLists, IN, unsigned int, contextID);
-	I_StaticMethod2(void, flushDeletedDisplayLists, IN, unsigned int, contextID, IN, double &, availableTime);
-	I_StaticMethod2(void, deleteVertexBufferObject, IN, unsigned int, contextID, IN, GLuint, globj);
-	I_StaticMethod3(void, flushDeletedVertexBufferObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
-	I_StaticMethod2(osg::Drawable::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
-	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Drawable::Extensions *, extensions);
-	I_ReadOnlyProperty(const osg::BoundingBox &, Bound);
-	I_Property(osg::Drawable::ComputeBoundingBoxCallback *, ComputeBoundingBoxCallback);
-	I_Property(osg::Drawable::CullCallback *, CullCallback);
-	I_Property(osg::Drawable::DrawCallback *, DrawCallback);
-	I_Property(osg::Drawable::EventCallback *, EventCallback);
-	I_ReadOnlyProperty(unsigned int, GLObjectSizeHint);
-	I_Property(const osg::BoundingBox &, InitialBound);
-	I_ArrayProperty_G(osg::Node *, Parent, Parents, unsigned int, void);
-	I_ReadOnlyProperty(osg::Drawable::ParentList, Parents);
-	I_Property(osg::Shape *, Shape);
-	I_Property(osg::StateSet *, StateSet);
-	I_Property(bool, SupportsDisplayList);
-	I_Property(osg::Drawable::UpdateCallback *, UpdateCallback);
-	I_Property(bool, UseDisplayList);
-	I_Property(bool, UseVertexBufferObjects);
+	I_Constructor0(____Drawable,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Drawable &, drawable, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Drawable__C5_Drawable_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(osg::Geometry *, asGeometry,
+	          __Geometry_P1__asGeometry,
+	          "Convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<Geometry*>(this). ");
+	I_Method0(const osg::Geometry *, asGeometry,
+	          __C5_Geometry_P1__asGeometry,
+	          "Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<const Geometry*>(this). ");
+	I_Method0(const osg::Drawable::ParentList &, getParents,
+	          __C5_ParentList_R1__getParents,
+	          "Get the parent list of drawable. ",
+	          "");
+	I_Method0(osg::Drawable::ParentList, getParents,
+	          __ParentList__getParents,
+	          "Get the a copy of parent list of node. ",
+	          "A copy is returned to prevent modification of the parent list. ");
+	I_Method1(osg::Node *, getParent, IN, unsigned int, i,
+	          __Node_P1__getParent__unsigned_int,
+	          "Get a single parent of Drawable. ",
+	          " param i index of the parent to get.   return the parent i.");
+	I_Method1(const osg::Node *, getParent, IN, unsigned int, i,
+	          __C5_Node_P1__getParent__unsigned_int,
+	          "Get a single const parent of Drawable. ",
+	          " param i index of the parent to get.   return the parent i.");
+	I_Method0(unsigned int, getNumParents,
+	          __unsigned_int__getNumParents,
+	          "Get the number of parents of node. ",
+	          "the number of parents of this node. ");
+	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset,
+	          __void__setStateSet__StateSet_P1,
+	          "Set the StateSet attached to the Drawable. ",
+	          "Previously attached StateSet are automatically unreferenced on assignment of a new drawstate. ");
+	I_Method0(osg::StateSet *, getStateSet,
+	          __StateSet_P1__getStateSet,
+	          "Get the attached StateSet. ",
+	          "");
+	I_Method0(const osg::StateSet *, getStateSet,
+	          __C5_StateSet_P1__getStateSet,
+	          "Get the attached const StateSet. ",
+	          "");
+	I_Method0(osg::StateSet *, getOrCreateStateSet,
+	          __StateSet_P1__getOrCreateStateSet,
+	          "Get the attached const StateSet, if one is not already attached create one, attach it to the drawable and return a pointer to it. ",
+	          "");
+	I_Method1(void, setInitialBound, IN, const osg::BoundingBox &, bbox,
+	          __void__setInitialBound__C5_osg_BoundingBox_R1,
+	          "Set the initial bounding volume to use when computing the overall bounding volume. ",
+	          "");
+	I_Method0(const osg::BoundingBox &, getInitialBound,
+	          __C5_BoundingBox_R1__getInitialBound,
+	          "Set the initial bounding volume to use when computing the overall bounding volume. ",
+	          "");
+	I_Method0(void, dirtyBound,
+	          __void__dirtyBound,
+	          "Dirty the bounding box, forcing a computeBound() on the next call to getBound(). ",
+	          "Should be called in the internal geometry of the Drawable is modified. ");
+	I_Method0(const osg::BoundingBox &, getBound,
+	          __C5_BoundingBox_R1__getBound,
+	          "Get BoundingBox of Drawable. ",
+	          "If the BoundingBox is not up to date then its updated via an internal call to computeBond().");
+	I_Method0(osg::BoundingBox, computeBound,
+	          __BoundingBox__computeBound,
+	          "Compute the bounding box around Drawables's geometry. ",
+	          "");
+	I_Method1(void, setComputeBoundingBoxCallback, IN, osg::Drawable::ComputeBoundingBoxCallback *, callback,
+	          __void__setComputeBoundingBoxCallback__ComputeBoundingBoxCallback_P1,
+	          "Set the compute bound callback to override the default computeBound. ",
+	          "");
+	I_Method0(osg::Drawable::ComputeBoundingBoxCallback *, getComputeBoundingBoxCallback,
+	          __ComputeBoundingBoxCallback_P1__getComputeBoundingBoxCallback,
+	          "Get the compute bound callback. ",
+	          "");
+	I_Method0(const osg::Drawable::ComputeBoundingBoxCallback *, getComputeBoundingBoxCallback,
+	          __C5_ComputeBoundingBoxCallback_P1__getComputeBoundingBoxCallback,
+	          "Get the const compute bound callback. ",
+	          "");
+	I_Method1(void, setShape, IN, osg::Shape *, shape,
+	          __void__setShape__Shape_P1,
+	          "Set the Shape of the Drawable. ",
+	          "The shape can be used to speed up collision detection or as a guide for procedural geometry generation. osg::Shape. ");
+	I_Method0(osg::Shape *, getShape,
+	          __Shape_P1__getShape,
+	          "Get the Shape of the Drawable. ",
+	          "");
+	I_Method0(const osg::Shape *, getShape,
+	          __C5_Shape_P1__getShape,
+	          "Get the const Shape of the const Drawable. ",
+	          "");
+	I_Method1(void, setSupportsDisplayList, IN, bool, flag,
+	          __void__setSupportsDisplayList__bool,
+	          "Set the drawable so that it can or cannot be used in conjunction with OpenGL display lists. ",
+	          "When set to true, calls to Drawable::setUseDisplayList, whereas when set to false, no display lists can be created and calls to setUseDisplayList are ignored, and a warning is produced. The latter is typically used to guard against the switching on of display lists on objects with dynamic internal data such as continuous Level of Detail algorithms. ");
+	I_Method0(bool, getSupportsDisplayList,
+	          __bool__getSupportsDisplayList,
+	          "Get whether display lists are supported for this drawable instance. ",
+	          "");
+	I_Method1(void, setUseDisplayList, IN, bool, flag,
+	          __void__setUseDisplayList__bool,
+	          "When set to true, force the draw method to use OpenGL Display List for rendering. ",
+	          "If false, rendering directly. If the display list has not been compiled already, the next call to draw will automatically create the display list. ");
+	I_Method0(bool, getUseDisplayList,
+	          __bool__getUseDisplayList,
+	          "Return whether OpenGL display lists are being used for rendering. ",
+	          "");
+	I_Method1(GLuint &, getDisplayList, IN, unsigned int, contextID,
+	          __GLuint_R1__getDisplayList__unsigned_int,
+	          "Return OpenGL display list for specified contextID. ",
+	          "");
+	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag,
+	          __void__setUseVertexBufferObjects__bool,
+	          "When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation method to use OpenGL vertex buffer objects for rendering. ",
+	          "");
+	I_Method0(bool, getUseVertexBufferObjects,
+	          __bool__getUseVertexBufferObjects,
+	          "Return whether OpenGL vertex buffer objects should be used when supported by OpenGL driver. ",
+	          "");
+	I_Method0(void, dirtyDisplayList,
+	          __void__dirtyDisplayList,
+	          "Force a recompile on next draw() of any OpenGL display list associated with this geoset. ",
+	          "");
+	I_Method0(unsigned int, getGLObjectSizeHint,
+	          __unsigned_int__getGLObjectSizeHint,
+	          "Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable. ",
+	          "This size is used a hint for reuse of deleted display lists/vertex buffer objects. ");
+	I_Method1(void, draw, IN, osg::RenderInfo &, renderInfo,
+	          __void__draw__RenderInfo_R1,
+	          "Draw OpenGL primitives. ",
+	          "If the Drawable has _useDisplayList set to true, then use an OpenGL display list, automatically compiling one if required. Otherwise, call drawImplementation(). This method should not be overridden in subclasses, as it manages the optional display list (notice this is not even virtual). Subclasses should override drawImplementation() instead. ");
+	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          __void__compileGLObjects__State_R1,
+	          "Immediately compile this Drawable into an OpenGL Display List. ",
+	          "Operation is ignored if _useDisplayList is false. ");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      __void__releaseGLObjects__State_P1,
+	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method1(void, setUpdateCallback, IN, osg::Drawable::UpdateCallback *, ac,
+	          __void__setUpdateCallback__UpdateCallback_P1,
+	          "Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal. ",
+	          "");
+	I_Method0(osg::Drawable::UpdateCallback *, getUpdateCallback,
+	          __UpdateCallback_P1__getUpdateCallback,
+	          "Get the non const UpdateCallback. ",
+	          "");
+	I_Method0(const osg::Drawable::UpdateCallback *, getUpdateCallback,
+	          __C5_UpdateCallback_P1__getUpdateCallback,
+	          "Get the const UpdateCallback. ",
+	          "");
+	I_Method0(bool, requiresUpdateTraversal,
+	          __bool__requiresUpdateTraversal,
+	          "Return whether this Drawable has update callbacks associated with it, and therefore must be traversed. ",
+	          "");
+	I_Method1(void, setEventCallback, IN, osg::Drawable::EventCallback *, ac,
+	          __void__setEventCallback__EventCallback_P1,
+	          "Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal. ",
+	          "");
+	I_Method0(osg::Drawable::EventCallback *, getEventCallback,
+	          __EventCallback_P1__getEventCallback,
+	          "Get the non const EventCallback. ",
+	          "");
+	I_Method0(const osg::Drawable::EventCallback *, getEventCallback,
+	          __C5_EventCallback_P1__getEventCallback,
+	          "Get the const EventCallback. ",
+	          "");
+	I_Method0(bool, requiresEventTraversal,
+	          __bool__requiresEventTraversal,
+	          "Return whether this Drawable has event callbacks associated with it, and therefore must be traversed. ",
+	          "");
+	I_Method1(void, setCullCallback, IN, osg::Drawable::CullCallback *, cc,
+	          __void__setCullCallback__CullCallback_P1,
+	          "Set the CullCallback which allows users to customize the culling of Drawable during the cull traversal. ",
+	          "");
+	I_Method0(osg::Drawable::CullCallback *, getCullCallback,
+	          __CullCallback_P1__getCullCallback,
+	          "Get the non const CullCallback. ",
+	          "");
+	I_Method0(const osg::Drawable::CullCallback *, getCullCallback,
+	          __C5_CullCallback_P1__getCullCallback,
+	          "Get the const CullCallback. ",
+	          "");
+	I_Method1(void, setDrawCallback, IN, osg::Drawable::DrawCallback *, dc,
+	          __void__setDrawCallback__DrawCallback_P1,
+	          "Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object. ",
+	          "");
+	I_Method0(osg::Drawable::DrawCallback *, getDrawCallback,
+	          __DrawCallback_P1__getDrawCallback,
+	          "Get the non const DrawCallback. ",
+	          "");
+	I_Method0(const osg::Drawable::DrawCallback *, getDrawCallback,
+	          __C5_DrawCallback_P1__getDrawCallback,
+	          "Get the const DrawCallback. ",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::State &, x,
+	          __void__drawImplementation__State_R1,
+	          "Deprecated. ",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
+	          __void__drawImplementation__RenderInfo_R1,
+	          "drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
+	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
+	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
+	          __bool__supports__C5_AttributeFunctor_R1,
+	          "Return true if the Drawable subclass supports accept(AttributeFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, x,
+	          __void__accept__AttributeFunctor_R1,
+	          "accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. ",
+	          "return true if functor handled by drawable, return false on failure of drawable to generate functor calls. ");
+	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x,
+	          __bool__supports__C5_ConstAttributeFunctor_R1,
+	          "Return true if the Drawable subclass supports accept(ConstAttributeFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, x,
+	          __void__accept__ConstAttributeFunctor_R1,
+	          "Accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. ",
+	          "return true if functor handled by drawable, return false on failure of drawable to generate functor calls. ");
+	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
+	          __bool__supports__C5_PrimitiveFunctor_R1,
+	          "Return true if the Drawable subclass supports accept(PrimitiveFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, x,
+	          __void__accept__PrimitiveFunctor_R1,
+	          "Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
+	          "return true if functor handled by drawable, return false on failure of drawable to generate functor calls. Note, PrimtiveFunctor only provides const access of the primitives, as primitives may be procedurally generated so one cannot modify it. ");
+	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x,
+	          __bool__supports__C5_PrimitiveIndexFunctor_R1,
+	          "Return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, x,
+	          __void__accept__PrimitiveIndexFunctor_R1,
+	          "Accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
+	          "return true if functor handled by drawable, return false on failure of drawable to generate functor calls. Note, PrimtiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated so one cannot modify it. ");
+	I_StaticMethodWithDefaults2(GLuint, generateDisplayList, IN, unsigned int, contextID, , IN, unsigned int, sizeHint, 0,
+	                            __GLuint__generateDisplayList__unsigned_int__unsigned_int_S,
+	                            "Return a OpenGL display list handle a newly generated or reused from display list cache. ",
+	                            "");
+	I_StaticMethod1(void, setMinimumNumberOfDisplayListsToRetainInCache, IN, unsigned int, minimum,
+	                __void__setMinimumNumberOfDisplayListsToRetainInCache__unsigned_int_S,
+	                "Set the minimum number of display lists to retain in the deleted display list cache. ",
+	                "");
+	I_StaticMethod0(unsigned int, getMinimumNumberOfDisplayListsToRetainInCache,
+	                __unsigned_int__getMinimumNumberOfDisplayListsToRetainInCache_S,
+	                "Get the minimum number of display lists to retain in the deleted display list cache. ",
+	                "");
+	I_StaticMethodWithDefaults3(void, deleteDisplayList, IN, unsigned int, contextID, , IN, GLuint, globj, , IN, unsigned int, sizeHint, 0,
+	                            __void__deleteDisplayList__unsigned_int__GLuint__unsigned_int_S,
+	                            "Use deleteDisplayList instead of glDeleteList to allow OpenGL display list to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                            "");
+	I_StaticMethod1(void, flushAllDeletedDisplayLists, IN, unsigned int, contextID,
+	                __void__flushAllDeletedDisplayLists__unsigned_int_S,
+	                "Flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(void, flushDeletedDisplayLists, IN, unsigned int, contextID, IN, double &, availableTime,
+	                __void__flushDeletedDisplayLists__unsigned_int__double_R1_S,
+	                "Flush the cached display list which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(void, deleteVertexBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
+	                __void__deleteVertexBufferObject__unsigned_int__GLuint_S,
+	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                "");
+	I_StaticMethod3(void, flushDeletedVertexBufferObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedVertexBufferObjects__unsigned_int__double__double_R1_S,
+	                "Flush all the cached vertex buffer objects which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(osg::Drawable::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object is only created with the graphics context associated with ContextID.. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Drawable::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions allows users to override the extensions across graphics contexts. ",
+	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_SimpleProperty(const osg::BoundingBox &, Bound, 
+	                 __C5_BoundingBox_R1__getBound, 
+	                 0);
+	I_SimpleProperty(osg::Drawable::ComputeBoundingBoxCallback *, ComputeBoundingBoxCallback, 
+	                 __ComputeBoundingBoxCallback_P1__getComputeBoundingBoxCallback, 
+	                 __void__setComputeBoundingBoxCallback__ComputeBoundingBoxCallback_P1);
+	I_SimpleProperty(osg::Drawable::CullCallback *, CullCallback, 
+	                 __CullCallback_P1__getCullCallback, 
+	                 __void__setCullCallback__CullCallback_P1);
+	I_SimpleProperty(osg::Drawable::DrawCallback *, DrawCallback, 
+	                 __DrawCallback_P1__getDrawCallback, 
+	                 __void__setDrawCallback__DrawCallback_P1);
+	I_SimpleProperty(osg::Drawable::EventCallback *, EventCallback, 
+	                 __EventCallback_P1__getEventCallback, 
+	                 __void__setEventCallback__EventCallback_P1);
+	I_SimpleProperty(unsigned int, GLObjectSizeHint, 
+	                 __unsigned_int__getGLObjectSizeHint, 
+	                 0);
+	I_SimpleProperty(const osg::BoundingBox &, InitialBound, 
+	                 __C5_BoundingBox_R1__getInitialBound, 
+	                 __void__setInitialBound__C5_osg_BoundingBox_R1);
+	I_ArrayProperty(osg::Node *, Parent, 
+	                __Node_P1__getParent__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumParents, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(osg::Drawable::ParentList, Parents, 
+	                 __ParentList__getParents, 
+	                 0);
+	I_SimpleProperty(osg::Shape *, Shape, 
+	                 __Shape_P1__getShape, 
+	                 __void__setShape__Shape_P1);
+	I_SimpleProperty(osg::StateSet *, StateSet, 
+	                 __StateSet_P1__getStateSet, 
+	                 __void__setStateSet__StateSet_P1);
+	I_SimpleProperty(bool, SupportsDisplayList, 
+	                 __bool__getSupportsDisplayList, 
+	                 __void__setSupportsDisplayList__bool);
+	I_SimpleProperty(osg::Drawable::UpdateCallback *, UpdateCallback, 
+	                 __UpdateCallback_P1__getUpdateCallback, 
+	                 __void__setUpdateCallback__UpdateCallback_P1);
+	I_SimpleProperty(bool, UseDisplayList, 
+	                 __bool__getUseDisplayList, 
+	                 __void__setUseDisplayList__bool);
+	I_SimpleProperty(bool, UseVertexBufferObjects, 
+	                 __bool__getUseVertexBufferObjects, 
+	                 __void__setUseVertexBufferObjects__bool);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
-	I_Constructor0();
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLbyte *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLshort *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLint *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLubyte *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLushort *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLuint *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, float *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec2 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec3 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4ub *, x);
+	I_Constructor0(____AttributeFunctor,
+	               "",
+	               "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLbyte *, x,
+	          __void__apply__AttributeType__unsigned__GLbyte_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLshort *, x,
+	          __void__apply__AttributeType__unsigned__GLshort_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLint *, x,
+	          __void__apply__AttributeType__unsigned__GLint_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLubyte *, x,
+	          __void__apply__AttributeType__unsigned__GLubyte_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLushort *, x,
+	          __void__apply__AttributeType__unsigned__GLushort_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, GLuint *, x,
+	          __void__apply__AttributeType__unsigned__GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, float *, x,
+	          __void__apply__AttributeType__unsigned__float_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec2 *, x,
+	          __void__apply__AttributeType__unsigned__Vec2_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec3 *, x,
+	          __void__apply__AttributeType__unsigned__Vec3_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4 *, x,
+	          __void__apply__AttributeType__unsigned__Vec4_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4ub *, x,
+	          __void__apply__AttributeType__unsigned__Vec4ub_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Drawable::ComputeBoundingBoxCallback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(osg::BoundingBox, computeBound, IN, const osg::Drawable &, x);
+	I_Constructor0(____ComputeBoundingBoxCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Drawable::ComputeBoundingBoxCallback &, x, IN, const osg::CopyOp &, x,
+	               ____ComputeBoundingBoxCallback__C5_ComputeBoundingBoxCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::BoundingBox, computeBound, IN, const osg::Drawable &, x,
+	          __BoundingBox__computeBound__C5_osg_Drawable_R1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
-	I_Constructor0();
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLbyte *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLshort *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLint *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLubyte *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLushort *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLuint *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const float *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec2 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec3 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec4 *, x);
-	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec4ub *, x);
+	I_Constructor0(____ConstAttributeFunctor,
+	               "",
+	               "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLbyte *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_GLbyte_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLshort *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_GLshort_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLint *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_GLint_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLubyte *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_GLubyte_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLushort *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_GLushort_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const GLuint *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const float *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_float_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec2 *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_Vec2_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec3 *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_Vec3_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec4 *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_Vec4_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, const unsigned, int, IN, const osg::Vec4ub *, x,
+	          __void__apply__AttributeType__C5_unsigned__C5_Vec4ub_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Drawable::CullCallback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method3(bool, cull, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x, IN, osg::State *, x);
-	I_Method3(bool, cull, IN, osg::NodeVisitor *, nv, IN, osg::Drawable *, drawable, IN, osg::RenderInfo *, renderInfo);
+	I_Constructor0(____CullCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Drawable::CullCallback &, x, IN, const osg::CopyOp &, x,
+	               ____CullCallback__C5_CullCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method3(bool, cull, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x, IN, osg::State *, x,
+	          __bool__cull__osg_NodeVisitor_P1__osg_Drawable_P1__osg_State_P1,
+	          "deprecated. ",
+	          "");
+	I_Method3(bool, cull, IN, osg::NodeVisitor *, nv, IN, osg::Drawable *, drawable, IN, osg::RenderInfo *, renderInfo,
+	          __bool__cull__osg_NodeVisitor_P1__osg_Drawable_P1__osg_RenderInfo_P1,
+	          "do customized cull code, return true if drawable should be culled. ",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Drawable::DrawCallback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method2(void, drawImplementation, IN, osg::State &, x, IN, const osg::Drawable *, x);
-	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, const osg::Drawable *, drawable);
+	I_Constructor0(____DrawCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Drawable::DrawCallback &, x, IN, const osg::CopyOp &, x,
+	               ____DrawCallback__C5_DrawCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(void, drawImplementation, IN, osg::State &, x, IN, const osg::Drawable *, x,
+	          __void__drawImplementation__osg_State_R1__C5_osg_Drawable_P1,
+	          "Deprecated. ",
+	          "");
+	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, const osg::Drawable *, drawable,
+	          __void__drawImplementation__osg_RenderInfo_R1__C5_osg_Drawable_P1,
+	          "do customized draw code. ",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Drawable::EventCallback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method2(void, event, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x);
+	I_Constructor0(____EventCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Drawable::EventCallback &, x, IN, const osg::CopyOp &, x,
+	               ____EventCallback__C5_EventCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(void, event, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x,
+	          __void__event__osg_NodeVisitor_P1__osg_Drawable_P1,
+	          "do customized Event code. ",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID);
-	I_Constructor1(IN, const osg::Drawable::Extensions &, rhs);
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Drawable::Extensions &, rhs);
-	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
-	I_Method1(void, setVertexProgramSupported, IN, bool, flag);
-	I_Method0(bool, isVertexProgramSupported);
-	I_Method1(void, setSecondaryColorSupported, IN, bool, flag);
-	I_Method0(bool, isSecondaryColorSupported);
-	I_Method1(void, setFogCoordSupported, IN, bool, flag);
-	I_Method0(bool, isFogCoordSupported);
-	I_Method1(void, setMultiTexSupported, IN, bool, flag);
-	I_Method0(bool, isMultiTexSupported);
-	I_Method1(void, setOcclusionQuerySupported, IN, bool, flag);
-	I_Method0(bool, isOcclusionQuerySupported);
-	I_Method1(void, setARBOcclusionQuerySupported, IN, bool, flag);
-	I_Method0(bool, isARBOcclusionQuerySupported);
-	I_Method1(void, glSecondaryColor3ubv, IN, const GLubyte *, coord);
-	I_Method1(void, glSecondaryColor3fv, IN, const GLfloat *, coord);
-	I_Method1(void, glFogCoordfv, IN, const GLfloat *, coord);
-	I_Method2(void, glMultiTexCoord1f, IN, GLenum, target, IN, GLfloat, coord);
-	I_Method2(void, glMultiTexCoord2fv, IN, GLenum, target, IN, const GLfloat *, coord);
-	I_Method2(void, glMultiTexCoord3fv, IN, GLenum, target, IN, const GLfloat *, coord);
-	I_Method2(void, glMultiTexCoord4fv, IN, GLenum, target, IN, const GLfloat *, coord);
-	I_Method2(void, glVertexAttrib1s, IN, unsigned int, index, IN, GLshort, s);
-	I_Method2(void, glVertexAttrib1f, IN, unsigned int, index, IN, GLfloat, f);
-	I_Method2(void, glVertexAttrib2fv, IN, unsigned int, index, IN, const GLfloat *, v);
-	I_Method2(void, glVertexAttrib3fv, IN, unsigned int, index, IN, const GLfloat *, v);
-	I_Method2(void, glVertexAttrib4fv, IN, unsigned int, index, IN, const GLfloat *, v);
-	I_Method2(void, glVertexAttrib4ubv, IN, unsigned int, index, IN, const GLubyte *, v);
-	I_Method2(void, glVertexAttrib4Nubv, IN, unsigned int, index, IN, const GLubyte *, v);
-	I_Method2(void, glGenBuffers, IN, GLsizei, n, IN, GLuint *, buffers);
-	I_Method2(void, glBindBuffer, IN, GLenum, target, IN, GLuint, buffer);
-	I_Method4(void, glBufferData, IN, GLenum, target, IN, GLsizeiptrARB, size, IN, const GLvoid *, data, IN, GLenum, usage);
-	I_Method4(void, glBufferSubData, IN, GLenum, target, IN, GLintptrARB, offset, IN, GLsizeiptrARB, size, IN, const GLvoid *, data);
-	I_Method2(void, glDeleteBuffers, IN, GLsizei, n, IN, const GLuint *, buffers);
-	I_Method1(GLboolean, glIsBuffer, IN, GLuint, buffer);
-	I_Method4(void, glGetBufferSubData, IN, GLenum, target, IN, GLintptrARB, offset, IN, GLsizeiptrARB, size, IN, GLvoid *, data);
-	I_Method2(GLvoid *, glMapBuffer, IN, GLenum, target, IN, GLenum, access);
-	I_Method1(GLboolean, glUnmapBuffer, IN, GLenum, target);
-	I_Method3(void, glGetBufferParameteriv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params);
-	I_Method3(void, glGetBufferPointerv, IN, GLenum, target, IN, GLenum, pname, IN, GLvoid **, params);
-	I_Method2(void, glGenOcclusionQueries, IN, GLsizei, n, IN, GLuint *, ids);
-	I_Method2(void, glDeleteOcclusionQueries, IN, GLsizei, n, IN, const GLuint *, ids);
-	I_Method1(GLboolean, glIsOcclusionQuery, IN, GLuint, id);
-	I_Method1(void, glBeginOcclusionQuery, IN, GLuint, id);
-	I_Method0(void, glEndOcclusionQuery);
-	I_Method3(void, glGetOcclusionQueryiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params);
-	I_Method3(void, glGetOcclusionQueryuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params);
-	I_Method3(void, glGetQueryiv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params);
-	I_Method2(void, glGenQueries, IN, GLsizei, n, IN, GLuint *, ids);
-	I_Method2(void, glBeginQuery, IN, GLenum, target, IN, GLuint, id);
-	I_Method1(void, glEndQuery, IN, GLenum, target);
-	I_Method1(GLboolean, glIsQuery, IN, GLuint, id);
-	I_Method2(void, glDeleteQueries, IN, GLsizei, n, IN, const GLuint *, ids);
-	I_Method3(void, glGetQueryObjectiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params);
-	I_Method3(void, glGetQueryObjectuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params);
-	I_WriteOnlyProperty(bool, ARBOcclusionQuerySupported);
-	I_WriteOnlyProperty(bool, FogCoordSupported);
-	I_WriteOnlyProperty(bool, MultiTexSupported);
-	I_WriteOnlyProperty(bool, OcclusionQuerySupported);
-	I_WriteOnlyProperty(bool, SecondaryColorSupported);
-	I_WriteOnlyProperty(bool, VertexProgramSupported);
-	I_WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_Constructor1(IN, unsigned int, contextID,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Drawable::Extensions &, rhs,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::Drawable::Extensions &, rhs,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	          __void__setupGLExtenions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setVertexProgramSupported, IN, bool, flag,
+	          __void__setVertexProgramSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isVertexProgramSupported,
+	          __bool__isVertexProgramSupported,
+	          "",
+	          "");
+	I_Method1(void, setSecondaryColorSupported, IN, bool, flag,
+	          __void__setSecondaryColorSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isSecondaryColorSupported,
+	          __bool__isSecondaryColorSupported,
+	          "",
+	          "");
+	I_Method1(void, setFogCoordSupported, IN, bool, flag,
+	          __void__setFogCoordSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isFogCoordSupported,
+	          __bool__isFogCoordSupported,
+	          "",
+	          "");
+	I_Method1(void, setMultiTexSupported, IN, bool, flag,
+	          __void__setMultiTexSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isMultiTexSupported,
+	          __bool__isMultiTexSupported,
+	          "",
+	          "");
+	I_Method1(void, setOcclusionQuerySupported, IN, bool, flag,
+	          __void__setOcclusionQuerySupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isOcclusionQuerySupported,
+	          __bool__isOcclusionQuerySupported,
+	          "",
+	          "");
+	I_Method1(void, setARBOcclusionQuerySupported, IN, bool, flag,
+	          __void__setARBOcclusionQuerySupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isARBOcclusionQuerySupported,
+	          __bool__isARBOcclusionQuerySupported,
+	          "",
+	          "");
+	I_Method1(void, glSecondaryColor3ubv, IN, const GLubyte *, coord,
+	          __void__glSecondaryColor3ubv__C5_GLubyte_P1,
+	          "",
+	          "");
+	I_Method1(void, glSecondaryColor3fv, IN, const GLfloat *, coord,
+	          __void__glSecondaryColor3fv__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method1(void, glFogCoordfv, IN, const GLfloat *, coord,
+	          __void__glFogCoordfv__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord1f, IN, GLenum, target, IN, GLfloat, coord,
+	          __void__glMultiTexCoord1f__GLenum__GLfloat,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord2fv, IN, GLenum, target, IN, const GLfloat *, coord,
+	          __void__glMultiTexCoord2fv__GLenum__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord3fv, IN, GLenum, target, IN, const GLfloat *, coord,
+	          __void__glMultiTexCoord3fv__GLenum__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord4fv, IN, GLenum, target, IN, const GLfloat *, coord,
+	          __void__glMultiTexCoord4fv__GLenum__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib1s, IN, unsigned int, index, IN, GLshort, s,
+	          __void__glVertexAttrib1s__unsigned_int__GLshort,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib1f, IN, unsigned int, index, IN, GLfloat, f,
+	          __void__glVertexAttrib1f__unsigned_int__GLfloat,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib2fv, IN, unsigned int, index, IN, const GLfloat *, v,
+	          __void__glVertexAttrib2fv__unsigned_int__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib3fv, IN, unsigned int, index, IN, const GLfloat *, v,
+	          __void__glVertexAttrib3fv__unsigned_int__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib4fv, IN, unsigned int, index, IN, const GLfloat *, v,
+	          __void__glVertexAttrib4fv__unsigned_int__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib4ubv, IN, unsigned int, index, IN, const GLubyte *, v,
+	          __void__glVertexAttrib4ubv__unsigned_int__C5_GLubyte_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib4Nubv, IN, unsigned int, index, IN, const GLubyte *, v,
+	          __void__glVertexAttrib4Nubv__unsigned_int__C5_GLubyte_P1,
+	          "",
+	          "");
+	I_Method2(void, glGenBuffers, IN, GLsizei, n, IN, GLuint *, buffers,
+	          __void__glGenBuffers__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method2(void, glBindBuffer, IN, GLenum, target, IN, GLuint, buffer,
+	          __void__glBindBuffer__GLenum__GLuint,
+	          "",
+	          "");
+	I_Method4(void, glBufferData, IN, GLenum, target, IN, GLsizeiptrARB, size, IN, const GLvoid *, data, IN, GLenum, usage,
+	          __void__glBufferData__GLenum__GLsizeiptrARB__C5_GLvoid_P1__GLenum,
+	          "",
+	          "");
+	I_Method4(void, glBufferSubData, IN, GLenum, target, IN, GLintptrARB, offset, IN, GLsizeiptrARB, size, IN, const GLvoid *, data,
+	          __void__glBufferSubData__GLenum__GLintptrARB__GLsizeiptrARB__C5_GLvoid_P1,
+	          "",
+	          "");
+	I_Method2(void, glDeleteBuffers, IN, GLsizei, n, IN, const GLuint *, buffers,
+	          __void__glDeleteBuffers__GLsizei__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method1(GLboolean, glIsBuffer, IN, GLuint, buffer,
+	          __GLboolean__glIsBuffer__GLuint,
+	          "",
+	          "");
+	I_Method4(void, glGetBufferSubData, IN, GLenum, target, IN, GLintptrARB, offset, IN, GLsizeiptrARB, size, IN, GLvoid *, data,
+	          __void__glGetBufferSubData__GLenum__GLintptrARB__GLsizeiptrARB__GLvoid_P1,
+	          "",
+	          "");
+	I_Method2(GLvoid *, glMapBuffer, IN, GLenum, target, IN, GLenum, access,
+	          __GLvoid_P1__glMapBuffer__GLenum__GLenum,
+	          "",
+	          "");
+	I_Method1(GLboolean, glUnmapBuffer, IN, GLenum, target,
+	          __GLboolean__glUnmapBuffer__GLenum,
+	          "",
+	          "");
+	I_Method3(void, glGetBufferParameteriv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params,
+	          __void__glGetBufferParameteriv__GLenum__GLenum__GLint_P1,
+	          "",
+	          "");
+	I_Method3(void, glGetBufferPointerv, IN, GLenum, target, IN, GLenum, pname, IN, GLvoid **, params,
+	          __void__glGetBufferPointerv__GLenum__GLenum__GLvoid_P1P1,
+	          "",
+	          "");
+	I_Method2(void, glGenOcclusionQueries, IN, GLsizei, n, IN, GLuint *, ids,
+	          __void__glGenOcclusionQueries__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method2(void, glDeleteOcclusionQueries, IN, GLsizei, n, IN, const GLuint *, ids,
+	          __void__glDeleteOcclusionQueries__GLsizei__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method1(GLboolean, glIsOcclusionQuery, IN, GLuint, id,
+	          __GLboolean__glIsOcclusionQuery__GLuint,
+	          "",
+	          "");
+	I_Method1(void, glBeginOcclusionQuery, IN, GLuint, id,
+	          __void__glBeginOcclusionQuery__GLuint,
+	          "",
+	          "");
+	I_Method0(void, glEndOcclusionQuery,
+	          __void__glEndOcclusionQuery,
+	          "",
+	          "");
+	I_Method3(void, glGetOcclusionQueryiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params,
+	          __void__glGetOcclusionQueryiv__GLuint__GLenum__GLint_P1,
+	          "",
+	          "");
+	I_Method3(void, glGetOcclusionQueryuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params,
+	          __void__glGetOcclusionQueryuiv__GLuint__GLenum__GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, glGetQueryiv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params,
+	          __void__glGetQueryiv__GLenum__GLenum__GLint_P1,
+	          "",
+	          "");
+	I_Method2(void, glGenQueries, IN, GLsizei, n, IN, GLuint *, ids,
+	          __void__glGenQueries__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method2(void, glBeginQuery, IN, GLenum, target, IN, GLuint, id,
+	          __void__glBeginQuery__GLenum__GLuint,
+	          "",
+	          "");
+	I_Method1(void, glEndQuery, IN, GLenum, target,
+	          __void__glEndQuery__GLenum,
+	          "",
+	          "");
+	I_Method1(GLboolean, glIsQuery, IN, GLuint, id,
+	          __GLboolean__glIsQuery__GLuint,
+	          "",
+	          "");
+	I_Method2(void, glDeleteQueries, IN, GLsizei, n, IN, const GLuint *, ids,
+	          __void__glDeleteQueries__GLsizei__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, glGetQueryObjectiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params,
+	          __void__glGetQueryObjectiv__GLuint__GLenum__GLint_P1,
+	          "",
+	          "");
+	I_Method3(void, glGetQueryObjectuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params,
+	          __void__glGetQueryObjectuiv__GLuint__GLenum__GLuint_P1,
+	          "",
+	          "");
+	I_SimpleProperty(bool, ARBOcclusionQuerySupported, 
+	                 0, 
+	                 __void__setARBOcclusionQuerySupported__bool);
+	I_SimpleProperty(bool, FogCoordSupported, 
+	                 0, 
+	                 __void__setFogCoordSupported__bool);
+	I_SimpleProperty(bool, MultiTexSupported, 
+	                 0, 
+	                 __void__setMultiTexSupported__bool);
+	I_SimpleProperty(bool, OcclusionQuerySupported, 
+	                 0, 
+	                 __void__setOcclusionQuerySupported__bool);
+	I_SimpleProperty(bool, SecondaryColorSupported, 
+	                 0, 
+	                 __void__setSecondaryColorSupported__bool);
+	I_SimpleProperty(bool, VertexProgramSupported, 
+	                 0, 
+	                 __void__setVertexProgramSupported__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Drawable::UpdateCallback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method2(void, update, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x);
+	I_Constructor0(____UpdateCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Drawable::UpdateCallback &, x, IN, const osg::CopyOp &, x,
+	               ____UpdateCallback__C5_UpdateCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(void, update, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x,
+	          __void__update__osg_NodeVisitor_P1__osg_Drawable_P1,
+	          "do customized update code. ",
+	          "");
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Node * >);

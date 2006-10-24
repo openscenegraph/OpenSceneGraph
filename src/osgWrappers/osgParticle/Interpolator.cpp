@@ -27,14 +27,40 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Interpolator)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::Interpolator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method3(float, interpolate, IN, float, t, IN, float, y1, IN, float, y2);
-	I_Method3(osg::Vec2, interpolate, IN, float, t, IN, const osg::Vec2 &, y1, IN, const osg::Vec2 &, y2);
-	I_Method3(osg::Vec3, interpolate, IN, float, t, IN, const osg::Vec3 &, y1, IN, const osg::Vec3 &, y2);
-	I_Method3(osg::Vec4, interpolate, IN, float, t, IN, const osg::Vec4 &, y1, IN, const osg::Vec4 &, y2);
+	I_Constructor0(____Interpolator,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::Interpolator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Interpolator__C5_Interpolator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method3(float, interpolate, IN, float, t, IN, float, y1, IN, float, y2,
+	          __float__interpolate__float__float__float,
+	          "Interpolate between floats. Must be overriden in descendant classes. ",
+	          "");
+	I_Method3(osg::Vec2, interpolate, IN, float, t, IN, const osg::Vec2 &, y1, IN, const osg::Vec2 &, y2,
+	          __osg_Vec2__interpolate__float__C5_osg_Vec2_R1__C5_osg_Vec2_R1,
+	          "Interpolate between 2-dimensional vectors. Default behavior is to interpolate each component separately. ",
+	          "");
+	I_Method3(osg::Vec3, interpolate, IN, float, t, IN, const osg::Vec3 &, y1, IN, const osg::Vec3 &, y2,
+	          __osg_Vec3__interpolate__float__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	          "Interpolate between 3-dimensional vectors. Default behavior is to interpolate each component separately. ",
+	          "");
+	I_Method3(osg::Vec4, interpolate, IN, float, t, IN, const osg::Vec4 &, y1, IN, const osg::Vec4 &, y2,
+	          __osg_Vec4__interpolate__float__C5_osg_Vec4_R1__C5_osg_Vec4_R1,
+	          "Interpolate between 4-dimensional vectors. Default behavior is to interpolate each component separately. ",
+	          "");
 END_REFLECTOR
 

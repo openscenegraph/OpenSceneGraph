@@ -22,14 +22,39 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::FieldReader)
-	I_Constructor0();
-	I_Constructor1(IN, const osgDB::FieldReader &, ic);
-	I_Method1(void, attach, IN, std::istream *, input);
-	I_Method0(void, detach);
-	I_Method0(bool, eof);
-	I_Method1(bool, readField, IN, osgDB::Field &, fieldPtr);
-	I_Method0(void, ignoreField);
-	I_Method0(int, getNoNestedBrackets);
-	I_ReadOnlyProperty(int, NoNestedBrackets);
+	I_Constructor0(____FieldReader,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgDB::FieldReader &, ic,
+	               ____FieldReader__C5_FieldReader_R1,
+	               "",
+	               "");
+	I_Method1(void, attach, IN, std::istream *, input,
+	          __void__attach__std_istream_P1,
+	          "",
+	          "");
+	I_Method0(void, detach,
+	          __void__detach,
+	          "",
+	          "");
+	I_Method0(bool, eof,
+	          __bool__eof,
+	          "",
+	          "");
+	I_Method1(bool, readField, IN, osgDB::Field &, fieldPtr,
+	          __bool__readField__Field_R1,
+	          "",
+	          "");
+	I_Method0(void, ignoreField,
+	          __void__ignoreField,
+	          "",
+	          "");
+	I_Method0(int, getNoNestedBrackets,
+	          __int__getNoNestedBrackets,
+	          "no of unmatched `{' encountered so far in file ",
+	          "");
+	I_SimpleProperty(int, NoNestedBrackets, 
+	                 __int__getNoNestedBrackets, 
+	                 0);
 END_REFLECTOR
 

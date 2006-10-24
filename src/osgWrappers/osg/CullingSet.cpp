@@ -52,55 +52,181 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Constructor1(IN, const osg::CullingSet &, cs);
-	I_Constructor3(IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector);
-	I_Method1(void, set, IN, const osg::CullingSet &, cs);
-	I_Method3(void, set, IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector);
-	I_Method1(void, setCullingMask, IN, osg::CullingSet::Mask, mask);
-	I_Method0(osg::CullingSet::Mask, getCullingMask);
-	I_Method1(void, setFrustum, IN, osg::Polytope &, cv);
-	I_Method0(osg::Polytope &, getFrustum);
-	I_Method0(const osg::Polytope &, getFrustum);
-	I_Method2(void, addStateFrustum, IN, osg::StateSet *, stateset, IN, osg::Polytope &, polytope);
-	I_Method1(void, getStateFrustumList, IN, osg::CullingSet::StateFrustumList &, sfl);
-	I_Method0(osg::CullingSet::StateFrustumList &, getStateFrustumList);
-	I_Method1(void, addOccluder, IN, osg::ShadowVolumeOccluder &, cv);
-	I_Method1(void, setPixelSizeVector, IN, const osg::Vec4 &, v);
-	I_Method0(osg::Vec4 &, getPixelSizeVector);
-	I_Method0(const osg::Vec4 &, getPixelSizeVector);
-	I_Method1(void, setSmallFeatureCullingPixelSize, IN, float, value);
-	I_Method0(float &, getSmallFeatureCullingPixelSize);
-	I_Method0(float, getSmallFeatureCullingPixelSize);
-	I_Method2(float, pixelSize, IN, const osg::Vec3 &, v, IN, float, radius);
-	I_Method1(float, pixelSize, IN, const osg::BoundingSphere &, bs);
-	I_Method2(float, clampedPixelSize, IN, const osg::Vec3 &, v, IN, float, radius);
-	I_Method1(float, clampedPixelSize, IN, const osg::BoundingSphere &, bs);
-	I_Method1(bool, isCulled, IN, const std::vector< osg::Vec3 > &, vertices);
-	I_Method1(bool, isCulled, IN, const osg::BoundingBox &, bb);
-	I_Method1(bool, isCulled, IN, const osg::BoundingSphere &, bs);
-	I_Method0(void, pushCurrentMask);
-	I_Method0(void, popCurrentMask);
-	I_Method1(void, disableAndPushOccludersCurrentMask, IN, osg::NodePath &, nodePath);
-	I_Method1(void, popOccludersCurrentMask, IN, osg::NodePath &, nodePath);
-	I_StaticMethod3(osg::Vec4, computePixelSizeVector, IN, const osg::Viewport &, W, IN, const osg::Matrix &, P, IN, const osg::Matrix &, M);
-	I_WriteOnlyProperty(const osg::CullingSet &, );
-	I_Property(osg::CullingSet::Mask, CullingMask);
-	I_Property(osg::Polytope &, Frustum);
-	I_Property(const osg::Vec4 &, PixelSizeVector);
-	I_Property(float, SmallFeatureCullingPixelSize);
-	I_ReadOnlyProperty(osg::CullingSet::StateFrustumList &, StateFrustumList);
+	I_Constructor0(____CullingSet,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::CullingSet &, cs,
+	               ____CullingSet__C5_CullingSet_R1,
+	               "",
+	               "");
+	I_Constructor3(IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector,
+	               ____CullingSet__C5_CullingSet_R1__C5_Matrix_R1__C5_Vec4_R1,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const osg::CullingSet &, cs,
+	          __void__set__C5_CullingSet_R1,
+	          "",
+	          "");
+	I_Method3(void, set, IN, const osg::CullingSet &, cs, IN, const osg::Matrix &, matrix, IN, const osg::Vec4 &, pixelSizeVector,
+	          __void__set__C5_CullingSet_R1__C5_Matrix_R1__C5_Vec4_R1,
+	          "",
+	          "");
+	I_Method1(void, setCullingMask, IN, osg::CullingSet::Mask, mask,
+	          __void__setCullingMask__Mask,
+	          "",
+	          "");
+	I_Method0(osg::CullingSet::Mask, getCullingMask,
+	          __Mask__getCullingMask,
+	          "",
+	          "");
+	I_Method1(void, setFrustum, IN, osg::Polytope &, cv,
+	          __void__setFrustum__Polytope_R1,
+	          "",
+	          "");
+	I_Method0(osg::Polytope &, getFrustum,
+	          __Polytope_R1__getFrustum,
+	          "",
+	          "");
+	I_Method0(const osg::Polytope &, getFrustum,
+	          __C5_Polytope_R1__getFrustum,
+	          "",
+	          "");
+	I_Method2(void, addStateFrustum, IN, osg::StateSet *, stateset, IN, osg::Polytope &, polytope,
+	          __void__addStateFrustum__StateSet_P1__Polytope_R1,
+	          "",
+	          "");
+	I_Method1(void, getStateFrustumList, IN, osg::CullingSet::StateFrustumList &, sfl,
+	          __void__getStateFrustumList__StateFrustumList_R1,
+	          "",
+	          "");
+	I_Method0(osg::CullingSet::StateFrustumList &, getStateFrustumList,
+	          __StateFrustumList_R1__getStateFrustumList,
+	          "",
+	          "");
+	I_Method1(void, addOccluder, IN, osg::ShadowVolumeOccluder &, cv,
+	          __void__addOccluder__ShadowVolumeOccluder_R1,
+	          "",
+	          "");
+	I_Method1(void, setPixelSizeVector, IN, const osg::Vec4 &, v,
+	          __void__setPixelSizeVector__C5_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(osg::Vec4 &, getPixelSizeVector,
+	          __Vec4_R1__getPixelSizeVector,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getPixelSizeVector,
+	          __C5_Vec4_R1__getPixelSizeVector,
+	          "",
+	          "");
+	I_Method1(void, setSmallFeatureCullingPixelSize, IN, float, value,
+	          __void__setSmallFeatureCullingPixelSize__float,
+	          "",
+	          "");
+	I_Method0(float &, getSmallFeatureCullingPixelSize,
+	          __float_R1__getSmallFeatureCullingPixelSize,
+	          "",
+	          "");
+	I_Method0(float, getSmallFeatureCullingPixelSize,
+	          __float__getSmallFeatureCullingPixelSize,
+	          "",
+	          "");
+	I_Method2(float, pixelSize, IN, const osg::Vec3 &, v, IN, float, radius,
+	          __float__pixelSize__C5_Vec3_R1__float,
+	          "Compute the pixel of an object at position v, with specified radius. ",
+	          "");
+	I_Method1(float, pixelSize, IN, const osg::BoundingSphere &, bs,
+	          __float__pixelSize__C5_BoundingSphere_R1,
+	          "Compute the pixel of a bounding sphere. ",
+	          "");
+	I_Method2(float, clampedPixelSize, IN, const osg::Vec3 &, v, IN, float, radius,
+	          __float__clampedPixelSize__C5_Vec3_R1__float,
+	          "Compute the pixel of an object at position v, with specified radius. ",
+	          "fabs()ed to always be positive. ");
+	I_Method1(float, clampedPixelSize, IN, const osg::BoundingSphere &, bs,
+	          __float__clampedPixelSize__C5_BoundingSphere_R1,
+	          "Compute the pixel of a bounding sphere. ",
+	          "fabs()ed to always be positive. ");
+	I_Method1(bool, isCulled, IN, const std::vector< osg::Vec3 > &, vertices,
+	          __bool__isCulled__C5_std_vectorT1_Vec3__R1,
+	          "",
+	          "");
+	I_Method1(bool, isCulled, IN, const osg::BoundingBox &, bb,
+	          __bool__isCulled__C5_BoundingBox_R1,
+	          "",
+	          "");
+	I_Method1(bool, isCulled, IN, const osg::BoundingSphere &, bs,
+	          __bool__isCulled__C5_BoundingSphere_R1,
+	          "",
+	          "");
+	I_Method0(void, pushCurrentMask,
+	          __void__pushCurrentMask,
+	          "",
+	          "");
+	I_Method0(void, popCurrentMask,
+	          __void__popCurrentMask,
+	          "",
+	          "");
+	I_Method1(void, disableAndPushOccludersCurrentMask, IN, osg::NodePath &, nodePath,
+	          __void__disableAndPushOccludersCurrentMask__NodePath_R1,
+	          "",
+	          "");
+	I_Method1(void, popOccludersCurrentMask, IN, osg::NodePath &, nodePath,
+	          __void__popOccludersCurrentMask__NodePath_R1,
+	          "",
+	          "");
+	I_StaticMethod3(osg::Vec4, computePixelSizeVector, IN, const osg::Viewport &, W, IN, const osg::Matrix &, P, IN, const osg::Matrix &, M,
+	                __osg_Vec4__computePixelSizeVector__C5_Viewport_R1__C5_Matrix_R1__C5_Matrix_R1_S,
+	                "",
+	                "");
+	I_SimpleProperty(osg::CullingSet::Mask, CullingMask, 
+	                 __Mask__getCullingMask, 
+	                 __void__setCullingMask__Mask);
+	I_SimpleProperty(osg::Polytope &, Frustum, 
+	                 __Polytope_R1__getFrustum, 
+	                 __void__setFrustum__Polytope_R1);
+	I_SimpleProperty(const osg::Vec4 &, PixelSizeVector, 
+	                 __C5_Vec4_R1__getPixelSizeVector, 
+	                 __void__setPixelSizeVector__C5_Vec4_R1);
+	I_SimpleProperty(float, SmallFeatureCullingPixelSize, 
+	                 __float__getSmallFeatureCullingPixelSize, 
+	                 __void__setSmallFeatureCullingPixelSize__float);
+	I_SimpleProperty(osg::CullingSet::StateFrustumList &, StateFrustumList, 
+	                 __StateFrustumList_R1__getStateFrustumList, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::StateSet *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp);
-	I_Method0(osg::StateSet *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::StateSet *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::StateSet > &, rp);
-	I_ReadOnlyProperty(osg::StateSet *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::StateSet *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::StateSet *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::StateSet > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::StateSet *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >);

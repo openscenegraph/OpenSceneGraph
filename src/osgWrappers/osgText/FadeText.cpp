@@ -28,17 +28,48 @@ TYPE_NAME_ALIAS(std::map< osg::View * COMMA  osg::Vec4 >, osgText::FadeText::Vie
 
 BEGIN_OBJECT_REFLECTOR(osgText::FadeText)
 	I_BaseType(osgText::Text);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgText::Text &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap);
-	I_Method0(const osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap);
-	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo);
-	I_ReadOnlyProperty(osgText::FadeText::ViewBlendColourMap &, ViewBlendColourMap);
+	I_Constructor0(____FadeText,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgText::Text &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____FadeText__C5_Text_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap,
+	          __ViewBlendColourMap_R1__getViewBlendColourMap,
+	          "",
+	          "");
+	I_Method0(const osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap,
+	          __C5_ViewBlendColourMap_R1__getViewBlendColourMap,
+	          "",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
+	          __void__drawImplementation__osg_RenderInfo_R1,
+	          "Draw the text. ",
+	          "");
+	I_SimpleProperty(osgText::FadeText::ViewBlendColourMap &, ViewBlendColourMap, 
+	                 __ViewBlendColourMap_R1__getViewBlendColourMap, 
+	                 0);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::View * COMMA  osg::Vec4 >);

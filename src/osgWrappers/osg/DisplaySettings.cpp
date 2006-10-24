@@ -51,89 +51,312 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Constructor1(IN, osg::ArgumentParser &, arguments);
-	I_Constructor1(IN, const osg::DisplaySettings &, vs);
-	I_Method1(void, setDisplaySettings, IN, const osg::DisplaySettings &, vs);
-	I_Method1(void, merge, IN, const osg::DisplaySettings &, vs);
-	I_Method0(void, setDefaults);
-	I_Method0(void, readEnvironmentalVariables);
-	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, arguments);
-	I_Method1(void, setDisplayType, IN, osg::DisplaySettings::DisplayType, type);
-	I_Method0(osg::DisplaySettings::DisplayType, getDisplayType);
-	I_Method1(void, setStereo, IN, bool, on);
-	I_Method0(bool, getStereo);
-	I_Method1(void, setStereoMode, IN, osg::DisplaySettings::StereoMode, mode);
-	I_Method0(osg::DisplaySettings::StereoMode, getStereoMode);
-	I_Method1(void, setEyeSeparation, IN, float, eyeSeparation);
-	I_Method0(float, getEyeSeparation);
-	I_Method1(void, setSplitStereoHorizontalEyeMapping, IN, osg::DisplaySettings::SplitStereoHorizontalEyeMapping, m);
-	I_Method0(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, getSplitStereoHorizontalEyeMapping);
-	I_Method1(void, setSplitStereoHorizontalSeparation, IN, int, s);
-	I_Method0(int, getSplitStereoHorizontalSeparation);
-	I_Method1(void, setSplitStereoVerticalEyeMapping, IN, osg::DisplaySettings::SplitStereoVerticalEyeMapping, m);
-	I_Method0(osg::DisplaySettings::SplitStereoVerticalEyeMapping, getSplitStereoVerticalEyeMapping);
-	I_Method1(void, setSplitStereoVerticalSeparation, IN, int, s);
-	I_Method0(int, getSplitStereoVerticalSeparation);
-	I_Method1(void, setSplitStereoAutoAjustAspectRatio, IN, bool, flag);
-	I_Method0(bool, getSplitStereoAutoAjustAspectRatio);
-	I_Method1(void, setScreenWidth, IN, float, width);
-	I_Method0(float, getScreenWidth);
-	I_Method1(void, setScreenHeight, IN, float, height);
-	I_Method0(float, getScreenHeight);
-	I_Method1(void, setScreenDistance, IN, float, distance);
-	I_Method0(float, getScreenDistance);
-	I_Method1(void, setDoubleBuffer, IN, bool, flag);
-	I_Method0(bool, getDoubleBuffer);
-	I_Method1(void, setRGB, IN, bool, flag);
-	I_Method0(bool, getRGB);
-	I_Method1(void, setDepthBuffer, IN, bool, flag);
-	I_Method0(bool, getDepthBuffer);
-	I_Method1(void, setMinimumNumAlphaBits, IN, unsigned int, bits);
-	I_Method0(unsigned int, getMinimumNumAlphaBits);
-	I_Method0(bool, getAlphaBuffer);
-	I_Method1(void, setMinimumNumStencilBits, IN, unsigned int, bits);
-	I_Method0(unsigned int, getMinimumNumStencilBits);
-	I_Method0(bool, getStencilBuffer);
-	I_Method4(void, setMinimumNumAccumBits, IN, unsigned int, red, IN, unsigned int, green, IN, unsigned int, blue, IN, unsigned int, alpha);
-	I_Method0(unsigned int, getMinimumNumAccumRedBits);
-	I_Method0(unsigned int, getMinimumNumAccumGreenBits);
-	I_Method0(unsigned int, getMinimumNumAccumBlueBits);
-	I_Method0(unsigned int, getMinimumNumAccumAlphaBits);
-	I_Method0(bool, getAccumBuffer);
-	I_Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num);
-	I_Method0(unsigned int, getMaxNumberOfGraphicsContexts);
-	I_Method1(void, setNumMultiSamples, IN, unsigned int, samples);
-	I_Method0(unsigned int, getNumMultiSamples);
-	I_Method0(bool, getMultiSamples);
-	I_StaticMethod0(osg::DisplaySettings *, instance);
-	I_ReadOnlyProperty(bool, AccumBuffer);
-	I_ReadOnlyProperty(bool, AlphaBuffer);
-	I_Property(bool, DepthBuffer);
-	I_WriteOnlyProperty(const osg::DisplaySettings &, DisplaySettings);
-	I_Property(osg::DisplaySettings::DisplayType, DisplayType);
-	I_Property(bool, DoubleBuffer);
-	I_Property(float, EyeSeparation);
-	I_Property(unsigned int, MaxNumberOfGraphicsContexts);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumAlphaBits);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumBlueBits);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumGreenBits);
-	I_ReadOnlyProperty(unsigned int, MinimumNumAccumRedBits);
-	I_Property(unsigned int, MinimumNumAlphaBits);
-	I_Property(unsigned int, MinimumNumStencilBits);
-	I_ReadOnlyProperty(bool, MultiSamples);
-	I_WriteOnlyProperty(unsigned int, NumMultiSamples);
-	I_Property(bool, RGB);
-	I_Property(float, ScreenDistance);
-	I_Property(float, ScreenHeight);
-	I_Property(float, ScreenWidth);
-	I_Property(bool, SplitStereoAutoAjustAspectRatio);
-	I_Property(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, SplitStereoHorizontalEyeMapping);
-	I_Property(int, SplitStereoHorizontalSeparation);
-	I_Property(osg::DisplaySettings::SplitStereoVerticalEyeMapping, SplitStereoVerticalEyeMapping);
-	I_Property(int, SplitStereoVerticalSeparation);
-	I_ReadOnlyProperty(bool, StencilBuffer);
-	I_Property(bool, Stereo);
-	I_Property(osg::DisplaySettings::StereoMode, StereoMode);
+	I_Constructor0(____DisplaySettings,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::ArgumentParser &, arguments,
+	               ____DisplaySettings__ArgumentParser_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::DisplaySettings &, vs,
+	               ____DisplaySettings__C5_DisplaySettings_R1,
+	               "",
+	               "");
+	I_Method1(void, setDisplaySettings, IN, const osg::DisplaySettings &, vs,
+	          __void__setDisplaySettings__C5_DisplaySettings_R1,
+	          "",
+	          "");
+	I_Method1(void, merge, IN, const osg::DisplaySettings &, vs,
+	          __void__merge__C5_DisplaySettings_R1,
+	          "",
+	          "");
+	I_Method0(void, setDefaults,
+	          __void__setDefaults,
+	          "",
+	          "");
+	I_Method0(void, readEnvironmentalVariables,
+	          __void__readEnvironmentalVariables,
+	          "read the environmental variables. ",
+	          "");
+	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, arguments,
+	          __void__readCommandLine__ArgumentParser_R1,
+	          "read the commandline arguments. ",
+	          "");
+	I_Method1(void, setDisplayType, IN, osg::DisplaySettings::DisplayType, type,
+	          __void__setDisplayType__DisplayType,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings::DisplayType, getDisplayType,
+	          __DisplayType__getDisplayType,
+	          "",
+	          "");
+	I_Method1(void, setStereo, IN, bool, on,
+	          __void__setStereo__bool,
+	          "",
+	          "");
+	I_Method0(bool, getStereo,
+	          __bool__getStereo,
+	          "",
+	          "");
+	I_Method1(void, setStereoMode, IN, osg::DisplaySettings::StereoMode, mode,
+	          __void__setStereoMode__StereoMode,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings::StereoMode, getStereoMode,
+	          __StereoMode__getStereoMode,
+	          "",
+	          "");
+	I_Method1(void, setEyeSeparation, IN, float, eyeSeparation,
+	          __void__setEyeSeparation__float,
+	          "",
+	          "");
+	I_Method0(float, getEyeSeparation,
+	          __float__getEyeSeparation,
+	          "",
+	          "");
+	I_Method1(void, setSplitStereoHorizontalEyeMapping, IN, osg::DisplaySettings::SplitStereoHorizontalEyeMapping, m,
+	          __void__setSplitStereoHorizontalEyeMapping__SplitStereoHorizontalEyeMapping,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, getSplitStereoHorizontalEyeMapping,
+	          __SplitStereoHorizontalEyeMapping__getSplitStereoHorizontalEyeMapping,
+	          "",
+	          "");
+	I_Method1(void, setSplitStereoHorizontalSeparation, IN, int, s,
+	          __void__setSplitStereoHorizontalSeparation__int,
+	          "",
+	          "");
+	I_Method0(int, getSplitStereoHorizontalSeparation,
+	          __int__getSplitStereoHorizontalSeparation,
+	          "",
+	          "");
+	I_Method1(void, setSplitStereoVerticalEyeMapping, IN, osg::DisplaySettings::SplitStereoVerticalEyeMapping, m,
+	          __void__setSplitStereoVerticalEyeMapping__SplitStereoVerticalEyeMapping,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings::SplitStereoVerticalEyeMapping, getSplitStereoVerticalEyeMapping,
+	          __SplitStereoVerticalEyeMapping__getSplitStereoVerticalEyeMapping,
+	          "",
+	          "");
+	I_Method1(void, setSplitStereoVerticalSeparation, IN, int, s,
+	          __void__setSplitStereoVerticalSeparation__int,
+	          "",
+	          "");
+	I_Method0(int, getSplitStereoVerticalSeparation,
+	          __int__getSplitStereoVerticalSeparation,
+	          "",
+	          "");
+	I_Method1(void, setSplitStereoAutoAjustAspectRatio, IN, bool, flag,
+	          __void__setSplitStereoAutoAjustAspectRatio__bool,
+	          "",
+	          "");
+	I_Method0(bool, getSplitStereoAutoAjustAspectRatio,
+	          __bool__getSplitStereoAutoAjustAspectRatio,
+	          "",
+	          "");
+	I_Method1(void, setScreenWidth, IN, float, width,
+	          __void__setScreenWidth__float,
+	          "",
+	          "");
+	I_Method0(float, getScreenWidth,
+	          __float__getScreenWidth,
+	          "",
+	          "");
+	I_Method1(void, setScreenHeight, IN, float, height,
+	          __void__setScreenHeight__float,
+	          "",
+	          "");
+	I_Method0(float, getScreenHeight,
+	          __float__getScreenHeight,
+	          "",
+	          "");
+	I_Method1(void, setScreenDistance, IN, float, distance,
+	          __void__setScreenDistance__float,
+	          "",
+	          "");
+	I_Method0(float, getScreenDistance,
+	          __float__getScreenDistance,
+	          "",
+	          "");
+	I_Method1(void, setDoubleBuffer, IN, bool, flag,
+	          __void__setDoubleBuffer__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDoubleBuffer,
+	          __bool__getDoubleBuffer,
+	          "",
+	          "");
+	I_Method1(void, setRGB, IN, bool, flag,
+	          __void__setRGB__bool,
+	          "",
+	          "");
+	I_Method0(bool, getRGB,
+	          __bool__getRGB,
+	          "",
+	          "");
+	I_Method1(void, setDepthBuffer, IN, bool, flag,
+	          __void__setDepthBuffer__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDepthBuffer,
+	          __bool__getDepthBuffer,
+	          "",
+	          "");
+	I_Method1(void, setMinimumNumAlphaBits, IN, unsigned int, bits,
+	          __void__setMinimumNumAlphaBits__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumAlphaBits,
+	          __unsigned_int__getMinimumNumAlphaBits,
+	          "",
+	          "");
+	I_Method0(bool, getAlphaBuffer,
+	          __bool__getAlphaBuffer,
+	          "",
+	          "");
+	I_Method1(void, setMinimumNumStencilBits, IN, unsigned int, bits,
+	          __void__setMinimumNumStencilBits__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumStencilBits,
+	          __unsigned_int__getMinimumNumStencilBits,
+	          "",
+	          "");
+	I_Method0(bool, getStencilBuffer,
+	          __bool__getStencilBuffer,
+	          "",
+	          "");
+	I_Method4(void, setMinimumNumAccumBits, IN, unsigned int, red, IN, unsigned int, green, IN, unsigned int, blue, IN, unsigned int, alpha,
+	          __void__setMinimumNumAccumBits__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumAccumRedBits,
+	          __unsigned_int__getMinimumNumAccumRedBits,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumAccumGreenBits,
+	          __unsigned_int__getMinimumNumAccumGreenBits,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumAccumBlueBits,
+	          __unsigned_int__getMinimumNumAccumBlueBits,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumAccumAlphaBits,
+	          __unsigned_int__getMinimumNumAccumAlphaBits,
+	          "",
+	          "");
+	I_Method0(bool, getAccumBuffer,
+	          __bool__getAccumBuffer,
+	          "",
+	          "");
+	I_Method1(void, setMaxNumberOfGraphicsContexts, IN, unsigned int, num,
+	          __void__setMaxNumberOfGraphicsContexts__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxNumberOfGraphicsContexts,
+	          __unsigned_int__getMaxNumberOfGraphicsContexts,
+	          "",
+	          "");
+	I_Method1(void, setNumMultiSamples, IN, unsigned int, samples,
+	          __void__setNumMultiSamples__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumMultiSamples,
+	          __unsigned_int__getNumMultiSamples,
+	          "",
+	          "");
+	I_Method0(bool, getMultiSamples,
+	          __bool__getMultiSamples,
+	          "",
+	          "");
+	I_StaticMethod0(osg::DisplaySettings *, instance,
+	                __DisplaySettings_P1__instance_S,
+	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
+	                "");
+	I_SimpleProperty(bool, AccumBuffer, 
+	                 __bool__getAccumBuffer, 
+	                 0);
+	I_SimpleProperty(bool, AlphaBuffer, 
+	                 __bool__getAlphaBuffer, 
+	                 0);
+	I_SimpleProperty(bool, DepthBuffer, 
+	                 __bool__getDepthBuffer, 
+	                 __void__setDepthBuffer__bool);
+	I_SimpleProperty(const osg::DisplaySettings &, DisplaySettings, 
+	                 0, 
+	                 __void__setDisplaySettings__C5_DisplaySettings_R1);
+	I_SimpleProperty(osg::DisplaySettings::DisplayType, DisplayType, 
+	                 __DisplayType__getDisplayType, 
+	                 __void__setDisplayType__DisplayType);
+	I_SimpleProperty(bool, DoubleBuffer, 
+	                 __bool__getDoubleBuffer, 
+	                 __void__setDoubleBuffer__bool);
+	I_SimpleProperty(float, EyeSeparation, 
+	                 __float__getEyeSeparation, 
+	                 __void__setEyeSeparation__float);
+	I_SimpleProperty(unsigned int, MaxNumberOfGraphicsContexts, 
+	                 __unsigned_int__getMaxNumberOfGraphicsContexts, 
+	                 __void__setMaxNumberOfGraphicsContexts__unsigned_int);
+	I_SimpleProperty(unsigned int, MinimumNumAccumAlphaBits, 
+	                 __unsigned_int__getMinimumNumAccumAlphaBits, 
+	                 0);
+	I_SimpleProperty(unsigned int, MinimumNumAccumBlueBits, 
+	                 __unsigned_int__getMinimumNumAccumBlueBits, 
+	                 0);
+	I_SimpleProperty(unsigned int, MinimumNumAccumGreenBits, 
+	                 __unsigned_int__getMinimumNumAccumGreenBits, 
+	                 0);
+	I_SimpleProperty(unsigned int, MinimumNumAccumRedBits, 
+	                 __unsigned_int__getMinimumNumAccumRedBits, 
+	                 0);
+	I_SimpleProperty(unsigned int, MinimumNumAlphaBits, 
+	                 __unsigned_int__getMinimumNumAlphaBits, 
+	                 __void__setMinimumNumAlphaBits__unsigned_int);
+	I_SimpleProperty(unsigned int, MinimumNumStencilBits, 
+	                 __unsigned_int__getMinimumNumStencilBits, 
+	                 __void__setMinimumNumStencilBits__unsigned_int);
+	I_SimpleProperty(bool, MultiSamples, 
+	                 __bool__getMultiSamples, 
+	                 0);
+	I_SimpleProperty(unsigned int, NumMultiSamples, 
+	                 0, 
+	                 __void__setNumMultiSamples__unsigned_int);
+	I_SimpleProperty(bool, RGB, 
+	                 __bool__getRGB, 
+	                 __void__setRGB__bool);
+	I_SimpleProperty(float, ScreenDistance, 
+	                 __float__getScreenDistance, 
+	                 __void__setScreenDistance__float);
+	I_SimpleProperty(float, ScreenHeight, 
+	                 __float__getScreenHeight, 
+	                 __void__setScreenHeight__float);
+	I_SimpleProperty(float, ScreenWidth, 
+	                 __float__getScreenWidth, 
+	                 __void__setScreenWidth__float);
+	I_SimpleProperty(bool, SplitStereoAutoAjustAspectRatio, 
+	                 __bool__getSplitStereoAutoAjustAspectRatio, 
+	                 __void__setSplitStereoAutoAjustAspectRatio__bool);
+	I_SimpleProperty(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, SplitStereoHorizontalEyeMapping, 
+	                 __SplitStereoHorizontalEyeMapping__getSplitStereoHorizontalEyeMapping, 
+	                 __void__setSplitStereoHorizontalEyeMapping__SplitStereoHorizontalEyeMapping);
+	I_SimpleProperty(int, SplitStereoHorizontalSeparation, 
+	                 __int__getSplitStereoHorizontalSeparation, 
+	                 __void__setSplitStereoHorizontalSeparation__int);
+	I_SimpleProperty(osg::DisplaySettings::SplitStereoVerticalEyeMapping, SplitStereoVerticalEyeMapping, 
+	                 __SplitStereoVerticalEyeMapping__getSplitStereoVerticalEyeMapping, 
+	                 __void__setSplitStereoVerticalEyeMapping__SplitStereoVerticalEyeMapping);
+	I_SimpleProperty(int, SplitStereoVerticalSeparation, 
+	                 __int__getSplitStereoVerticalSeparation, 
+	                 __void__setSplitStereoVerticalSeparation__int);
+	I_SimpleProperty(bool, StencilBuffer, 
+	                 __bool__getStencilBuffer, 
+	                 0);
+	I_SimpleProperty(bool, Stereo, 
+	                 __bool__getStereo, 
+	                 __void__setStereo__bool);
+	I_SimpleProperty(osg::DisplaySettings::StereoMode, StereoMode, 
+	                 __StereoMode__getStereoMode, 
+	                 __void__setStereoMode__StereoMode);
 END_REFLECTOR
 

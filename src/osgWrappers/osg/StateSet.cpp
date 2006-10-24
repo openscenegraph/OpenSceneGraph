@@ -56,140 +56,494 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::StateSet &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_MethodWithDefaults2(int, compare, IN, const osg::StateSet &, rhs, , IN, bool, compareAttributeContents, false);
-	I_Method0(const osg::StateSet::ParentList &, getParents);
-	I_Method0(osg::StateSet::ParentList, getParents);
-	I_Method1(osg::Object *, getParent, IN, unsigned int, i);
-	I_Method1(const osg::Object *, getParent, IN, unsigned int, i);
-	I_Method0(unsigned int, getNumParents);
-	I_Method0(void, setGlobalDefaults);
-	I_Method0(void, clear);
-	I_Method1(void, merge, IN, const osg::StateSet &, rhs);
-	I_Method2(void, setMode, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
-	I_Method1(void, removeMode, IN, osg::StateAttribute::GLMode, mode);
-	I_Method1(osg::StateAttribute::GLModeValue, getMode, IN, osg::StateAttribute::GLMode, mode);
-	I_Method1(void, setModeList, IN, osg::StateSet::ModeList &, ml);
-	I_Method0(osg::StateSet::ModeList &, getModeList);
-	I_Method0(const osg::StateSet::ModeList &, getModeList);
-	I_MethodWithDefaults2(void, setAttribute, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF);
-	I_MethodWithDefaults2(void, setAttributeAndModes, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
-	I_MethodWithDefaults2(void, removeAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method1(void, removeAttribute, IN, osg::StateAttribute *, attribute);
-	I_MethodWithDefaults2(osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_MethodWithDefaults2(const osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_MethodWithDefaults2(const osg::StateSet::RefAttributePair *, getAttributePair, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0);
-	I_Method1(void, setAttributeList, IN, osg::StateSet::AttributeList &, al);
-	I_Method0(osg::StateSet::AttributeList &, getAttributeList);
-	I_Method0(const osg::StateSet::AttributeList &, getAttributeList);
-	I_Method3(void, setTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value);
-	I_Method2(void, removeTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	I_Method2(osg::StateAttribute::GLModeValue, getTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode);
-	I_Method1(void, setTextureModeList, IN, osg::StateSet::TextureModeList &, tml);
-	I_Method0(osg::StateSet::TextureModeList &, getTextureModeList);
-	I_Method0(const osg::StateSet::TextureModeList &, getTextureModeList);
-	I_MethodWithDefaults3(void, setTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF);
-	I_MethodWithDefaults3(void, setTextureAttributeAndModes, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
-	I_Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	I_Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute *, attribute);
-	I_Method2(osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	I_Method2(const osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	I_Method2(const osg::StateSet::RefAttributePair *, getTextureAttributePair, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type);
-	I_Method1(void, setTextureAttributeList, IN, osg::StateSet::TextureAttributeList &, tal);
-	I_Method0(osg::StateSet::TextureAttributeList &, getTextureAttributeList);
-	I_Method0(const osg::StateSet::TextureAttributeList &, getTextureAttributeList);
-	I_Method2(void, setAssociatedModes, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value);
-	I_Method3(void, setAssociatedTextureModes, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value);
-	I_MethodWithDefaults2(void, addUniform, IN, osg::Uniform *, uniform, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::ON);
-	I_Method1(void, removeUniform, IN, const std::string &, name);
-	I_Method1(void, removeUniform, IN, osg::Uniform *, uniform);
-	I_Method1(osg::Uniform *, getUniform, IN, const std::string &, name);
-	I_MethodWithDefaults3(osg::Uniform *, getOrCreateUniform, IN, const std::string &, name, , IN, osg::Uniform::Type, type, , IN, unsigned int, numElements, 1);
-	I_Method1(const osg::Uniform *, getUniform, IN, const std::string &, name);
-	I_Method1(const osg::StateSet::RefUniformPair *, getUniformPair, IN, const std::string &, name);
-	I_Method1(void, setUniformList, IN, osg::StateSet::UniformList &, al);
-	I_Method0(osg::StateSet::UniformList &, getUniformList);
-	I_Method0(const osg::StateSet::UniformList &, getUniformList);
-	I_Method1(void, setRenderingHint, IN, int, hint);
-	I_Method0(int, getRenderingHint);
-	I_MethodWithDefaults3(void, setRenderBinDetails, IN, int, binNum, , IN, const std::string &, binName, , IN, osg::StateSet::RenderBinMode, mode, osg::StateSet::USE_RENDERBIN_DETAILS);
-	I_Method0(void, setRenderBinToInherit);
-	I_Method0(bool, useRenderBinDetails);
-	I_Method1(void, setRenderBinMode, IN, osg::StateSet::RenderBinMode, mode);
-	I_Method0(osg::StateSet::RenderBinMode, getRenderBinMode);
-	I_Method1(void, setBinNumber, IN, int, num);
-	I_Method0(int, getBinNumber);
-	I_Method1(void, setBinName, IN, const std::string &, name);
-	I_Method0(const std::string &, getBinName);
-	I_Method1(void, setUpdateCallback, IN, osg::StateSet::Callback *, ac);
-	I_Method0(osg::StateSet::Callback *, getUpdateCallback);
-	I_Method0(const osg::StateSet::Callback *, getUpdateCallback);
-	I_Method0(bool, requiresUpdateTraversal);
-	I_Method0(unsigned int, getNumChildrenRequiringUpdateTraversal);
-	I_Method1(void, runUpdateCallbacks, IN, osg::NodeVisitor *, nv);
-	I_Method1(void, setEventCallback, IN, osg::StateSet::Callback *, ac);
-	I_Method0(osg::StateSet::Callback *, getEventCallback);
-	I_Method0(const osg::StateSet::Callback *, getEventCallback);
-	I_Method0(bool, requiresEventTraversal);
-	I_Method0(unsigned int, getNumChildrenRequiringEventTraversal);
-	I_Method1(void, runEventCallbacks, IN, osg::NodeVisitor *, nv);
-	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, state);
-	I_Method1(void, compileGLObjects, IN, osg::State &, state);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	I_Property(osg::StateSet::AttributeList &, AttributeList);
-	I_Property(const std::string &, BinName);
-	I_Property(int, BinNumber);
-	I_Property(osg::StateSet::Callback *, EventCallback);
+	I_Constructor0(____StateSet,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::StateSet &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____StateSet__C5_StateSet_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_MethodWithDefaults2(int, compare, IN, const osg::StateSet &, rhs, , IN, bool, compareAttributeContents, false,
+	                      __int__compare__C5_StateSet_R1__bool,
+	                      "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	                      "");
+	I_Method0(const osg::StateSet::ParentList &, getParents,
+	          __C5_ParentList_R1__getParents,
+	          "Get the parent list of this StateSet. ",
+	          "");
+	I_Method0(osg::StateSet::ParentList, getParents,
+	          __ParentList__getParents,
+	          "Get the a copy of parent list of node. ",
+	          "A copy is returned to prevent modification of the parent list. ");
+	I_Method1(osg::Object *, getParent, IN, unsigned int, i,
+	          __Object_P1__getParent__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::Object *, getParent, IN, unsigned int, i,
+	          __C5_Object_P1__getParent__unsigned_int,
+	          "Get a single const parent of this StateSet. ",
+	          " param i index of the parent to get.   return the parent i.");
+	I_Method0(unsigned int, getNumParents,
+	          __unsigned_int__getNumParents,
+	          "Get the number of parents of this StateSet. ",
+	          "the number of parents of this StateSet. ");
+	I_Method0(void, setGlobalDefaults,
+	          __void__setGlobalDefaults,
+	          "Set all the modes to on or off so that it defines a complete state, typically used for a default global state. ",
+	          "");
+	I_Method0(void, clear,
+	          __void__clear,
+	          "Clear the StateSet of all modes and attributes. ",
+	          "");
+	I_Method1(void, merge, IN, const osg::StateSet &, rhs,
+	          __void__merge__C5_StateSet_R1,
+	          "Merge this StateSet with the StateSet passed as parameter. ",
+	          "Every mode and attribute in this StateSet that is marked with StateAttribute::OVERRIDE is replaced with the equivalent mode or attribute from rhs.");
+	I_Method2(void, setMode, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value,
+	          __void__setMode__StateAttribute_GLMode__StateAttribute_GLModeValue,
+	          "Set this StateSet to contain the specified GLMode with a given value. ",
+	          "Don't use this method to set modes related to textures. For this purpose, use setTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call. ");
+	I_Method1(void, removeMode, IN, osg::StateAttribute::GLMode, mode,
+	          __void__removeMode__StateAttribute_GLMode,
+	          "Remove mode from this StateSet. ",
+	          "Don't use this method to remove modes related to textures. For this purpose, use removeTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call. ");
+	I_Method1(osg::StateAttribute::GLModeValue, getMode, IN, osg::StateAttribute::GLMode, mode,
+	          __StateAttribute_GLModeValue__getMode__StateAttribute_GLMode,
+	          "Get the value for a given GLMode. ",
+	          " param mode The GLMode whose value is desired.   return If mode is contained within this StateSet, returns the value associated with it. Otherwise, returns StateAttribute::INHERIT.  note Don't use this method to get the value of modes related to textures. For this purpose, use removeTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call.");
+	I_Method1(void, setModeList, IN, osg::StateSet::ModeList &, ml,
+	          __void__setModeList__ModeList_R1,
+	          "Set the list of all GLModes contained in this StateSet. ",
+	          "");
+	I_Method0(osg::StateSet::ModeList &, getModeList,
+	          __ModeList_R1__getModeList,
+	          "Return the list of all GLModes contained in this StateSet. ",
+	          "");
+	I_Method0(const osg::StateSet::ModeList &, getModeList,
+	          __C5_ModeList_R1__getModeList,
+	          "Return the const list of all GLModes contained in this const StateSet. ",
+	          "");
+	I_MethodWithDefaults2(void, setAttribute, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF,
+	                      __void__setAttribute__StateAttribute_P1__StateAttribute_OverrideValue,
+	                      "Set this StateSet to contain specified attribute and override flag. ",
+	                      "");
+	I_MethodWithDefaults2(void, setAttributeAndModes, IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON,
+	                      __void__setAttributeAndModes__StateAttribute_P1__StateAttribute_GLModeValue,
+	                      "Set this StateSet to contain specified attribute and set the associated GLMode's to specified value. ",
+	                      "");
+	I_MethodWithDefaults2(void, removeAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0,
+	                      __void__removeAttribute__StateAttribute_Type__unsigned_int,
+	                      "remove attribute of specified type from StateSet. ",
+	                      "");
+	I_Method1(void, removeAttribute, IN, osg::StateAttribute *, attribute,
+	          __void__removeAttribute__StateAttribute_P1,
+	          "remove attribute from StateSet. ",
+	          "");
+	I_MethodWithDefaults2(osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0,
+	                      __StateAttribute_P1__getAttribute__StateAttribute_Type__unsigned_int,
+	                      "Get specified StateAttribute for specified type. ",
+	                      "Returns NULL if no type is contained within StateSet. ");
+	I_MethodWithDefaults2(const osg::StateAttribute *, getAttribute, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0,
+	                      __C5_StateAttribute_P1__getAttribute__StateAttribute_Type__unsigned_int,
+	                      "Get specified const StateAttribute for specified type. ",
+	                      "Returns NULL if no type is contained within const StateSet. ");
+	I_MethodWithDefaults2(const osg::StateSet::RefAttributePair *, getAttributePair, IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0,
+	                      __C5_RefAttributePair_P1__getAttributePair__StateAttribute_Type__unsigned_int,
+	                      "Get specified RefAttributePair for specified type. ",
+	                      "Returns NULL if no type is contained within StateSet. ");
+	I_Method1(void, setAttributeList, IN, osg::StateSet::AttributeList &, al,
+	          __void__setAttributeList__AttributeList_R1,
+	          "set the list of all StateAttributes contained in this StateSet. ",
+	          "");
+	I_Method0(osg::StateSet::AttributeList &, getAttributeList,
+	          __AttributeList_R1__getAttributeList,
+	          "return the list of all StateAttributes contained in this StateSet. ",
+	          "");
+	I_Method0(const osg::StateSet::AttributeList &, getAttributeList,
+	          __C5_AttributeList_R1__getAttributeList,
+	          "return the const list of all StateAttributes contained in this const StateSet. ",
+	          "");
+	I_Method3(void, setTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value,
+	          __void__setTextureMode__unsigned_int__StateAttribute_GLMode__StateAttribute_GLModeValue,
+	          "Set this StateSet to contain specified GLMode with a given value. ",
+	          " param unit The texture unit to be affected (used with multi-texturing).  mode The OpenGL mode to be added to the StateSet.  value The value to be assigned to mode. ");
+	I_Method2(void, removeTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode,
+	          __void__removeTextureMode__unsigned_int__StateAttribute_GLMode,
+	          "Remove texture mode from StateSet. ",
+	          "");
+	I_Method2(osg::StateAttribute::GLModeValue, getTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode,
+	          __StateAttribute_GLModeValue__getTextureMode__unsigned_int__StateAttribute_GLMode,
+	          "Get specified GLModeValue for specified GLMode. ",
+	          "returns INHERIT if no GLModeValue is contained within StateSet. ");
+	I_Method1(void, setTextureModeList, IN, osg::StateSet::TextureModeList &, tml,
+	          __void__setTextureModeList__TextureModeList_R1,
+	          "set the list of all Texture related GLModes contained in this StateSet. ",
+	          "");
+	I_Method0(osg::StateSet::TextureModeList &, getTextureModeList,
+	          __TextureModeList_R1__getTextureModeList,
+	          "return the list of all Texture related GLModes contained in this StateSet. ",
+	          "");
+	I_Method0(const osg::StateSet::TextureModeList &, getTextureModeList,
+	          __C5_TextureModeList_R1__getTextureModeList,
+	          "return the const list of all Texture related GLModes contained in this const StateSet. ",
+	          "");
+	I_MethodWithDefaults3(void, setTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::OFF,
+	                      __void__setTextureAttribute__unsigned_int__StateAttribute_P1__StateAttribute_OverrideValue,
+	                      "Set this StateSet to contain specified attribute and override flag. ",
+	                      "");
+	I_MethodWithDefaults3(void, setTextureAttributeAndModes, IN, unsigned int, unit, , IN, osg::StateAttribute *, attribute, , IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON,
+	                      __void__setTextureAttributeAndModes__unsigned_int__StateAttribute_P1__StateAttribute_GLModeValue,
+	                      "Set this StateSet to contain specified attribute and set the associated GLMode's to specified value. ",
+	                      "");
+	I_Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type,
+	          __void__removeTextureAttribute__unsigned_int__StateAttribute_Type,
+	          "remove texture attribute of specified type from StateSet. ",
+	          "");
+	I_Method2(void, removeTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute *, attribute,
+	          __void__removeTextureAttribute__unsigned_int__StateAttribute_P1,
+	          "remove texture attribute from StateSet. ",
+	          "");
+	I_Method2(osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type,
+	          __StateAttribute_P1__getTextureAttribute__unsigned_int__StateAttribute_Type,
+	          "Get specified Texture related StateAttribute for specified type. ",
+	          "Returns NULL if no type is contained within StateSet. ");
+	I_Method2(const osg::StateAttribute *, getTextureAttribute, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type,
+	          __C5_StateAttribute_P1__getTextureAttribute__unsigned_int__StateAttribute_Type,
+	          "Get specified Texture related const StateAttribute for specified type. ",
+	          "Returns NULL if no type is contained within const StateSet. ");
+	I_Method2(const osg::StateSet::RefAttributePair *, getTextureAttributePair, IN, unsigned int, unit, IN, osg::StateAttribute::Type, type,
+	          __C5_RefAttributePair_P1__getTextureAttributePair__unsigned_int__StateAttribute_Type,
+	          "Get specified Texture related RefAttributePair for specified type. ",
+	          "Returns NULL if no type is contained within StateSet. ");
+	I_Method1(void, setTextureAttributeList, IN, osg::StateSet::TextureAttributeList &, tal,
+	          __void__setTextureAttributeList__TextureAttributeList_R1,
+	          "Set the list of all Texture related StateAttributes contained in this StateSet. ",
+	          "");
+	I_Method0(osg::StateSet::TextureAttributeList &, getTextureAttributeList,
+	          __TextureAttributeList_R1__getTextureAttributeList,
+	          "Return the list of all Texture related StateAttributes contained in this StateSet. ",
+	          "");
+	I_Method0(const osg::StateSet::TextureAttributeList &, getTextureAttributeList,
+	          __C5_TextureAttributeList_R1__getTextureAttributeList,
+	          "Return the const list of all Texture related StateAttributes contained in this const StateSet. ",
+	          "");
+	I_Method2(void, setAssociatedModes, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value,
+	          __void__setAssociatedModes__C5_StateAttribute_P1__StateAttribute_GLModeValue,
+	          "",
+	          "");
+	I_Method3(void, setAssociatedTextureModes, IN, unsigned int, unit, IN, const osg::StateAttribute *, attribute, IN, osg::StateAttribute::GLModeValue, value,
+	          __void__setAssociatedTextureModes__unsigned_int__C5_StateAttribute_P1__StateAttribute_GLModeValue,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, addUniform, IN, osg::Uniform *, uniform, , IN, osg::StateAttribute::OverrideValue, value, osg::StateAttribute::ON,
+	                      __void__addUniform__Uniform_P1__StateAttribute_OverrideValue,
+	                      "Set this StateSet to contain specified uniform and override flag. ",
+	                      "");
+	I_Method1(void, removeUniform, IN, const std::string &, name,
+	          __void__removeUniform__C5_std_string_R1,
+	          "remove uniform of specified name from StateSet. ",
+	          "");
+	I_Method1(void, removeUniform, IN, osg::Uniform *, uniform,
+	          __void__removeUniform__Uniform_P1,
+	          "remove Uniform from StateSet. ",
+	          "");
+	I_Method1(osg::Uniform *, getUniform, IN, const std::string &, name,
+	          __Uniform_P1__getUniform__C5_std_string_R1,
+	          "Get Uniform for specified name. ",
+	          "Returns NULL if no matching Uniform is contained within StateSet. ");
+	I_MethodWithDefaults3(osg::Uniform *, getOrCreateUniform, IN, const std::string &, name, , IN, osg::Uniform::Type, type, , IN, unsigned int, numElements, 1,
+	                      __Uniform_P1__getOrCreateUniform__C5_std_string_R1__Uniform_Type__unsigned_int,
+	                      "Get Uniform for specified name, if one is not available create it, add it to this StateSet and return a pointer to it. ",
+	                      "");
+	I_Method1(const osg::Uniform *, getUniform, IN, const std::string &, name,
+	          __C5_Uniform_P1__getUniform__C5_std_string_R1,
+	          "Get const Uniform for specified name. ",
+	          "Returns NULL if no matching Uniform is contained within StateSet. ");
+	I_Method1(const osg::StateSet::RefUniformPair *, getUniformPair, IN, const std::string &, name,
+	          __C5_RefUniformPair_P1__getUniformPair__C5_std_string_R1,
+	          "Get specified RefUniformPair for specified Uniform name. ",
+	          "Returns NULL if no Uniform is contained within StateSet. ");
+	I_Method1(void, setUniformList, IN, osg::StateSet::UniformList &, al,
+	          __void__setUniformList__UniformList_R1,
+	          "set the list of all Uniforms contained in this StateSet. ",
+	          "");
+	I_Method0(osg::StateSet::UniformList &, getUniformList,
+	          __UniformList_R1__getUniformList,
+	          "return the list of all Uniforms contained in this StateSet. ",
+	          "");
+	I_Method0(const osg::StateSet::UniformList &, getUniformList,
+	          __C5_UniformList_R1__getUniformList,
+	          "return the const list of all Uniforms contained in this const StateSet. ",
+	          "");
+	I_Method1(void, setRenderingHint, IN, int, hint,
+	          __void__setRenderingHint__int,
+	          "Set the RenderingHint of this StateSet. ",
+	          "RenderingHint is used by the renderer to determine which draw bin to drop associated osg::Drawables in. Typically, users will set this to either StateSet::OPAQUE_BIN or StateSet::TRANSPARENT_BIN. Drawables in the opaque bin are sorted by their StateSet, so that the number of expensive changes in the OpenGL state is minimized. Drawables in the transparent bin are sorted by depth, so that objects farther from the viewer are rendered first (and hence alpha blending works nicely for translucent objects).");
+	I_Method0(int, getRenderingHint,
+	          __int__getRenderingHint,
+	          "Get the RenderingHint of this StateSet. ",
+	          "");
+	I_MethodWithDefaults3(void, setRenderBinDetails, IN, int, binNum, , IN, const std::string &, binName, , IN, osg::StateSet::RenderBinMode, mode, osg::StateSet::USE_RENDERBIN_DETAILS,
+	                      __void__setRenderBinDetails__int__C5_std_string_R1__RenderBinMode,
+	                      "Set the render bin details. ",
+	                      "");
+	I_Method0(void, setRenderBinToInherit,
+	          __void__setRenderBinToInherit,
+	          "Set the render bin details to inherit. ",
+	          "");
+	I_Method0(bool, useRenderBinDetails,
+	          __bool__useRenderBinDetails,
+	          "Get whether the render bin details are set and should be used. ",
+	          "");
+	I_Method1(void, setRenderBinMode, IN, osg::StateSet::RenderBinMode, mode,
+	          __void__setRenderBinMode__RenderBinMode,
+	          "Set the render bin mode. ",
+	          "");
+	I_Method0(osg::StateSet::RenderBinMode, getRenderBinMode,
+	          __RenderBinMode__getRenderBinMode,
+	          "Get the render bin mode. ",
+	          "");
+	I_Method1(void, setBinNumber, IN, int, num,
+	          __void__setBinNumber__int,
+	          "Set the render bin number. ",
+	          "");
+	I_Method0(int, getBinNumber,
+	          __int__getBinNumber,
+	          "Get the render bin number. ",
+	          "");
+	I_Method1(void, setBinName, IN, const std::string &, name,
+	          __void__setBinName__C5_std_string_R1,
+	          "Set the render bin name. ",
+	          "");
+	I_Method0(const std::string &, getBinName,
+	          __C5_std_string_R1__getBinName,
+	          "Get the render bin name. ",
+	          "");
+	I_Method1(void, setUpdateCallback, IN, osg::StateSet::Callback *, ac,
+	          __void__setUpdateCallback__Callback_P1,
+	          "Set the Update Callback which allows users to attach customize the updating of an object during the update traversal. ",
+	          "");
+	I_Method0(osg::StateSet::Callback *, getUpdateCallback,
+	          __Callback_P1__getUpdateCallback,
+	          "Get the non const Update Callback. ",
+	          "");
+	I_Method0(const osg::StateSet::Callback *, getUpdateCallback,
+	          __C5_Callback_P1__getUpdateCallback,
+	          "Get the const Update Callback. ",
+	          "");
+	I_Method0(bool, requiresUpdateTraversal,
+	          __bool__requiresUpdateTraversal,
+	          "Return whether this StateSet has update callbacks associated with it, and therefore must be traversed. ",
+	          "");
+	I_Method0(unsigned int, getNumChildrenRequiringUpdateTraversal,
+	          __unsigned_int__getNumChildrenRequiringUpdateTraversal,
+	          "Get the number of Objects of this StateSet which require Update traversal, since they have an Update Callback attached to them or their children. ",
+	          "");
+	I_Method1(void, runUpdateCallbacks, IN, osg::NodeVisitor *, nv,
+	          __void__runUpdateCallbacks__osg_NodeVisitor_P1,
+	          "Run the update callbacks attached directly to this StateSet or to its children. ",
+	          "");
+	I_Method1(void, setEventCallback, IN, osg::StateSet::Callback *, ac,
+	          __void__setEventCallback__Callback_P1,
+	          "Set the Event Callback which allows users to attach customize the updating of an object during the event traversal. ",
+	          "");
+	I_Method0(osg::StateSet::Callback *, getEventCallback,
+	          __Callback_P1__getEventCallback,
+	          "Get the non const Event Callback. ",
+	          "");
+	I_Method0(const osg::StateSet::Callback *, getEventCallback,
+	          __C5_Callback_P1__getEventCallback,
+	          "Get the const Event Callback. ",
+	          "");
+	I_Method0(bool, requiresEventTraversal,
+	          __bool__requiresEventTraversal,
+	          "Return whether this StateSet has event callbacks associated with it, and therefore must be traversed. ",
+	          "");
+	I_Method0(unsigned int, getNumChildrenRequiringEventTraversal,
+	          __unsigned_int__getNumChildrenRequiringEventTraversal,
+	          "Get the number of Objects of this StateSet which require Event traversal, since they have an Eevnt Callback attached to them or their children. ",
+	          "");
+	I_Method1(void, runEventCallbacks, IN, osg::NodeVisitor *, nv,
+	          __void__runEventCallbacks__osg_NodeVisitor_P1,
+	          "Run the event callbacks attached directly to this StateSet or to its children. ",
+	          "");
+	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, state,
+	          __bool__checkValidityOfAssociatedModes__State_R1,
+	          "Check the modes associated with this StateSet are supported by current OpenGL drivers, and if not set the associated mode in osg::State to be black listed/invalid. ",
+	          "Return true if all associated modes are valid. ");
+	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          __void__compileGLObjects__State_R1,
+	          "call compile on all StateAttributes contained within this StateSet. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      __void__releaseGLObjects__State_P1,
+	                      "call release on all StateAttributes contained within this StateSet. ",
+	                      "");
+	I_SimpleProperty(osg::StateSet::AttributeList &, AttributeList, 
+	                 __AttributeList_R1__getAttributeList, 
+	                 __void__setAttributeList__AttributeList_R1);
+	I_SimpleProperty(const std::string &, BinName, 
+	                 __C5_std_string_R1__getBinName, 
+	                 __void__setBinName__C5_std_string_R1);
+	I_SimpleProperty(int, BinNumber, 
+	                 __int__getBinNumber, 
+	                 __void__setBinNumber__int);
+	I_SimpleProperty(osg::StateSet::Callback *, EventCallback, 
+	                 __Callback_P1__getEventCallback, 
+	                 __void__setEventCallback__Callback_P1);
 
-	I_Property(osg::StateSet::ModeList &, ModeList);
-	I_ArrayProperty_G(osg::Object *, Parent, Parents, unsigned int, void);
-	I_ReadOnlyProperty(osg::StateSet::ParentList, Parents);
-	I_Property(osg::StateSet::RenderBinMode, RenderBinMode);
-	I_Property(int, RenderingHint);
-	I_Property(osg::StateSet::TextureAttributeList &, TextureAttributeList);
-	I_IndexedProperty2(osg::StateAttribute::GLModeValue, TextureMode, unsigned int, unit, osg::StateAttribute::GLMode, mode);
-	I_Property(osg::StateSet::TextureModeList &, TextureModeList);
-	I_Property(osg::StateSet::UniformList &, UniformList);
-	I_Property(osg::StateSet::Callback *, UpdateCallback);
+	I_SimpleProperty(osg::StateSet::ModeList &, ModeList, 
+	                 __ModeList_R1__getModeList, 
+	                 __void__setModeList__ModeList_R1);
+	I_ArrayProperty(osg::Object *, Parent, 
+	                __Object_P1__getParent__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumParents, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(osg::StateSet::ParentList, Parents, 
+	                 __ParentList__getParents, 
+	                 0);
+	I_SimpleProperty(osg::StateSet::RenderBinMode, RenderBinMode, 
+	                 __RenderBinMode__getRenderBinMode, 
+	                 __void__setRenderBinMode__RenderBinMode);
+	I_SimpleProperty(int, RenderingHint, 
+	                 __int__getRenderingHint, 
+	                 __void__setRenderingHint__int);
+	I_SimpleProperty(osg::StateSet::TextureAttributeList &, TextureAttributeList, 
+	                 __TextureAttributeList_R1__getTextureAttributeList, 
+	                 __void__setTextureAttributeList__TextureAttributeList_R1);
+	I_IndexedProperty(osg::StateAttribute::GLModeValue, TextureMode, 
+	                  __StateAttribute_GLModeValue__getTextureMode__unsigned_int__StateAttribute_GLMode, 
+	                  __void__setTextureMode__unsigned_int__StateAttribute_GLMode__StateAttribute_GLModeValue, 
+	                  0);
+	I_SimpleProperty(osg::StateSet::TextureModeList &, TextureModeList, 
+	                 __TextureModeList_R1__getTextureModeList, 
+	                 __void__setTextureModeList__TextureModeList_R1);
+	I_SimpleProperty(osg::StateSet::UniformList &, UniformList, 
+	                 __UniformList_R1__getUniformList, 
+	                 __void__setUniformList__UniformList_R1);
+	I_SimpleProperty(osg::StateSet::Callback *, UpdateCallback, 
+	                 __Callback_P1__getUpdateCallback, 
+	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateSet::Callback)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::StateSet::Callback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
+	I_Constructor0(____Callback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::StateSet::Callback &, x, IN, const osg::CopyOp &, x,
+	               ____Callback__C5_Callback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::StateAttribute *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::StateAttribute > &, rp);
-	I_Method0(osg::StateAttribute *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::StateAttribute *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::StateAttribute > &, rp);
-	I_ReadOnlyProperty(osg::StateAttribute *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::StateAttribute *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::StateAttribute > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::StateAttribute *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::StateAttribute *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::StateAttribute > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::StateAttribute *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::Uniform *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp);
-	I_Method0(osg::Uniform *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::Uniform *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::Uniform > &, rp);
-	I_ReadOnlyProperty(osg::Uniform *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Uniform *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Uniform > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Uniform *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Uniform *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Uniform > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Uniform *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR_WITH_TYPES(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateAttribute::GLMode, osg::StateAttribute::Values);

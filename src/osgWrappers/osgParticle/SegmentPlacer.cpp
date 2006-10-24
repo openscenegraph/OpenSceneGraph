@@ -26,24 +26,77 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::SegmentPlacer)
 	I_BaseType(osgParticle::Placer);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::SegmentPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(const osg::Vec3 &, getVertexA);
-	I_Method1(void, setVertexA, IN, const osg::Vec3 &, v);
-	I_Method3(void, setVertexA, IN, float, x, IN, float, y, IN, float, z);
-	I_Method0(const osg::Vec3 &, getVertexB);
-	I_Method1(void, setVertexB, IN, const osg::Vec3 &, v);
-	I_Method3(void, setVertexB, IN, float, x, IN, float, y, IN, float, z);
-	I_Method2(void, setSegment, IN, const osg::Vec3 &, A, IN, const osg::Vec3 &, B);
-	I_Method1(void, place, IN, osgParticle::Particle *, P);
-	I_Method0(osg::Vec3, getControlPosition);
-	I_ReadOnlyProperty(osg::Vec3, ControlPosition);
-	I_Property(const osg::Vec3 &, VertexA);
-	I_Property(const osg::Vec3 &, VertexB);
+	I_Constructor0(____SegmentPlacer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::SegmentPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____SegmentPlacer__C5_SegmentPlacer_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(const osg::Vec3 &, getVertexA,
+	          __C5_osg_Vec3_R1__getVertexA,
+	          "get vertex A. ",
+	          "");
+	I_Method1(void, setVertexA, IN, const osg::Vec3 &, v,
+	          __void__setVertexA__C5_osg_Vec3_R1,
+	          "Set vertex A of the segment as a vector. ",
+	          "");
+	I_Method3(void, setVertexA, IN, float, x, IN, float, y, IN, float, z,
+	          __void__setVertexA__float__float__float,
+	          "Set vertex A of the segment as three floats. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getVertexB,
+	          __C5_osg_Vec3_R1__getVertexB,
+	          "get vertex B. ",
+	          "");
+	I_Method1(void, setVertexB, IN, const osg::Vec3 &, v,
+	          __void__setVertexB__C5_osg_Vec3_R1,
+	          "Set vertex B of the segment as a vector. ",
+	          "");
+	I_Method3(void, setVertexB, IN, float, x, IN, float, y, IN, float, z,
+	          __void__setVertexB__float__float__float,
+	          "Set vertex B of the segment as three floats. ",
+	          "");
+	I_Method2(void, setSegment, IN, const osg::Vec3 &, A, IN, const osg::Vec3 &, B,
+	          __void__setSegment__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	          "Set both vertices. ",
+	          "");
+	I_Method1(void, place, IN, osgParticle::Particle *, P,
+	          __void__place__Particle_P1,
+	          "Place a particle. This method is called by ModularEmitter, do not call it manually. ",
+	          "");
+	I_Method0(osg::Vec3, getControlPosition,
+	          __osg_Vec3__getControlPosition,
+	          "return the control position ",
+	          "");
+	I_SimpleProperty(osg::Vec3, ControlPosition, 
+	                 __osg_Vec3__getControlPosition, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3 &, VertexA, 
+	                 __C5_osg_Vec3_R1__getVertexA, 
+	                 __void__setVertexA__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, VertexB, 
+	                 __C5_osg_Vec3_R1__getVertexB, 
+	                 __void__setVertexB__C5_osg_Vec3_R1);
 END_REFLECTOR
 

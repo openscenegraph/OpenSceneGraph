@@ -28,37 +28,127 @@
 
 BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
 	I_BaseType(osgFX::Effect);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgFX::BumpMapping &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(const char *, effectName);
-	I_Method0(const char *, effectDescription);
-	I_Method0(const char *, effectAuthor);
-	I_Method0(int, getLightNumber);
-	I_Method1(void, setLightNumber, IN, int, n);
-	I_Method0(int, getDiffuseTextureUnit);
-	I_Method1(void, setDiffuseTextureUnit, IN, int, n);
-	I_Method0(int, getNormalMapTextureUnit);
-	I_Method1(void, setNormalMapTextureUnit, IN, int, n);
-	I_Method0(osg::Texture2D *, getOverrideDiffuseTexture);
-	I_Method0(const osg::Texture2D *, getOverrideDiffuseTexture);
-	I_Method1(void, setOverrideDiffuseTexture, IN, osg::Texture2D *, texture);
-	I_Method0(osg::Texture2D *, getOverrideNormalMapTexture);
-	I_Method0(const osg::Texture2D *, getOverrideNormalMapTexture);
-	I_Method1(void, setOverrideNormalMapTexture, IN, osg::Texture2D *, texture);
-	I_Method1(void, prepareGeometry, IN, osg::Geometry *, geo);
-	I_Method1(void, prepareNode, IN, osg::Node *, node);
-	I_Method0(void, prepareChildren);
-	I_Method0(void, setUpDemo);
-	I_Property(int, DiffuseTextureUnit);
-	I_Property(int, LightNumber);
-	I_Property(int, NormalMapTextureUnit);
-	I_Property(osg::Texture2D *, OverrideDiffuseTexture);
-	I_Property(osg::Texture2D *, OverrideNormalMapTexture);
+	I_Constructor0(____BumpMapping,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgFX::BumpMapping &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____BumpMapping__C5_BumpMapping_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(const char *, effectName,
+	          __C5_char_P1__effectName,
+	          "get the name of this Effect ",
+	          "");
+	I_Method0(const char *, effectDescription,
+	          __C5_char_P1__effectDescription,
+	          "get a brief description of this Effect ",
+	          "");
+	I_Method0(const char *, effectAuthor,
+	          __C5_char_P1__effectAuthor,
+	          "get the effect author's name ",
+	          "");
+	I_Method0(int, getLightNumber,
+	          __int__getLightNumber,
+	          "get the OpenGL light number ",
+	          "");
+	I_Method1(void, setLightNumber, IN, int, n,
+	          __void__setLightNumber__int,
+	          "set the OpenGL light number that will be used in lighting computations ",
+	          "");
+	I_Method0(int, getDiffuseTextureUnit,
+	          __int__getDiffuseTextureUnit,
+	          "get the texture unit that contains diffuse color texture. ",
+	          "Default is 1 ");
+	I_Method1(void, setDiffuseTextureUnit, IN, int, n,
+	          __void__setDiffuseTextureUnit__int,
+	          "set the texture unit that contains diffuse color texture. ",
+	          "Default is 1 ");
+	I_Method0(int, getNormalMapTextureUnit,
+	          __int__getNormalMapTextureUnit,
+	          "get the texture unit that contains normal map texture. ",
+	          "Default is 0 ");
+	I_Method1(void, setNormalMapTextureUnit, IN, int, n,
+	          __void__setNormalMapTextureUnit__int,
+	          "set the texture unit that contains normal map texture. ",
+	          "Default is 0 ");
+	I_Method0(osg::Texture2D *, getOverrideDiffuseTexture,
+	          __osg_Texture2D_P1__getOverrideDiffuseTexture,
+	          "get the diffuse color texture that overrides children's texture ",
+	          "");
+	I_Method0(const osg::Texture2D *, getOverrideDiffuseTexture,
+	          __C5_osg_Texture2D_P1__getOverrideDiffuseTexture,
+	          "get the const diffuse color texture that overrides children's texture ",
+	          "");
+	I_Method1(void, setOverrideDiffuseTexture, IN, osg::Texture2D *, texture,
+	          __void__setOverrideDiffuseTexture__osg_Texture2D_P1,
+	          "set the diffuse color texture that overrides children's texture ",
+	          "");
+	I_Method0(osg::Texture2D *, getOverrideNormalMapTexture,
+	          __osg_Texture2D_P1__getOverrideNormalMapTexture,
+	          "get the normal map texture that overrides children's texture ",
+	          "");
+	I_Method0(const osg::Texture2D *, getOverrideNormalMapTexture,
+	          __C5_osg_Texture2D_P1__getOverrideNormalMapTexture,
+	          "get the const normal map texture that overrides children's texture ",
+	          "");
+	I_Method1(void, setOverrideNormalMapTexture, IN, osg::Texture2D *, texture,
+	          __void__setOverrideNormalMapTexture__osg_Texture2D_P1,
+	          "set the normal map texture that overrides children's texture ",
+	          "");
+	I_Method1(void, prepareGeometry, IN, osg::Geometry *, geo,
+	          __void__prepareGeometry__osg_Geometry_P1,
+	          "prepare a Geometry for bump lighting. ",
+	          "Tangent-space basis vectors are generated and attached to the geometry as vertex attribute arrays.");
+	I_Method1(void, prepareNode, IN, osg::Node *, node,
+	          __void__prepareNode__osg_Node_P1,
+	          "prepare a Node for bump lighting, calling prepareGeometry() for each Geometry ",
+	          "");
+	I_Method0(void, prepareChildren,
+	          __void__prepareChildren,
+	          "prepare children for bump lighting. ",
+	          "Actually calls prepareNode() for each child ");
+	I_Method0(void, setUpDemo,
+	          __void__setUpDemo,
+	          "set up a demo environment with predefined diffuse and normal maps, as well as texture coordinates ",
+	          "");
+	I_SimpleProperty(int, DiffuseTextureUnit, 
+	                 __int__getDiffuseTextureUnit, 
+	                 __void__setDiffuseTextureUnit__int);
+	I_SimpleProperty(int, LightNumber, 
+	                 __int__getLightNumber, 
+	                 __void__setLightNumber__int);
+	I_SimpleProperty(int, NormalMapTextureUnit, 
+	                 __int__getNormalMapTextureUnit, 
+	                 __void__setNormalMapTextureUnit__int);
+	I_SimpleProperty(osg::Texture2D *, OverrideDiffuseTexture, 
+	                 __osg_Texture2D_P1__getOverrideDiffuseTexture, 
+	                 __void__setOverrideDiffuseTexture__osg_Texture2D_P1);
+	I_SimpleProperty(osg::Texture2D *, OverrideNormalMapTexture, 
+	                 __osg_Texture2D_P1__getOverrideNormalMapTexture, 
+	                 __void__setOverrideNormalMapTexture__osg_Texture2D_P1);
 END_REFLECTOR
 
